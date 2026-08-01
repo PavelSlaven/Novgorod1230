@@ -143,6 +143,7 @@ exact-head evidence не активировало production; последующ
 | Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |
 | Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |
 | Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |
+| Определить новую реакцию или действие NPC | `temporal_world_and_interruptible_activities.md`, раздел 15 | `npc_generation_profiles.txt`, `llm_agent_prompt_templates.md`, профильные action/activity/movement/item/conflict contracts |
 | Обработать физический конфликт, угрозу, удар, борьбу, стрельбу, защиту, бегство | `combat_system.md` | `weapons_and_armor.txt`, `character_parameters.txt`, `character_inventory_equipment.txt` |
 | Проверить оружие, броню, щит, опасность, защиту, право ношения и социальный риск | `weapons_and_armor.txt` | `combat_system.md`, `character_inventory_equipment.txt`, `items_and_property.txt` |
 | Создать исторический фон, слух, войну, власть, князя, фазу события | `historical_events_and_figures.txt` | `world_regions.txt`, `time_system.txt`, `world_generation_and_turns.txt` |

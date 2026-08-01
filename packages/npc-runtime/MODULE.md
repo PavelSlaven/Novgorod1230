@@ -32,6 +32,22 @@
 
 Входы schedule содержат sealed normalized NPC state, applicable approved schedule profile, exact `scheduled_at`, dependency pins и recheck snapshot; выход — frozen proposal/evidence либо hard block. Perception принимает sealed signal, propagation, environment, attention, recognition и policy snapshots с pins; результат не изменяет knowledge state. Bounded decision принимает formal request, current state version, precondition digest, exact validation timestamp и, если нужно, selection только из supplied options. Повтор с persisted evidence/trace допускается исключительно при совпадении immutable input digest и idempotency identity.
 
+## Поток выбора действия NPC
+
+`@rus/npc-runtime` участвует только при meaningful decision boundary. Он
+проецирует applicable approved policy/command records на текущие perception,
+knowledge, role/obligation и factual access preconditions и возвращает
+конечный option set. Он не придумывает команды из личности NPC и не исполняет
+маршрут, item transition, check или consequence.
+
+Ноль options даёт typed gap, один option передаётся registered handler без
+LLM, несколько options — bounded selector только по policy. После selection
+владелец хода повторно проверяет causal identity и preconditions; выбранный
+command исполняет его code-owned handler. Продолжение ранее сохранённого
+намерения и автоматические последствия не создают новую decision boundary.
+Полный норматив находится в разделе 15
+`temporal_world_and_interruptible_activities.md`.
+
 ## Typed errors и gaps
 
 Пакет fail-closed возвращает typed hard block: `npc_schedule_gap`, `npc_decision_policy_gap`, `perception_policy_gap`, `temporal_candidate_stale`, `activity_precondition_stale`, `temporal_execution_unbounded`, `time_timestamp_invalid`, `idempotency_conflict`, `temporal_change_set_conflict`; внутренне также защищает contract output через `generated_schema_mismatch`. Пустой или неоднозначный candidate set, несовместимые pins, stale state и неподтверждённые preconditions не получают fallback.

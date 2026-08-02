@@ -157,7 +157,7 @@ export function phase5Writes({ partyId, state, next, factual, visibleEnvelope,
       turnNumber, changeSetId, idemId, execution
     });
   }
-  appendPhase5ResourceStateWrites({ updates, appends, state, next, partyId,
+  appendPhase5ResourceStateWrites({ inserts, updates, appends, state, next, partyId,
     changeSetId, idemId, treatment, contracts });
   for (const slot of ['onisim_boatman', 'eremey_fisher',
     contracts.actors.participating_fisher.participant_slot_ref]) {

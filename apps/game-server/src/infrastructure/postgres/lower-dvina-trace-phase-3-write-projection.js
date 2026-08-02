@@ -8,6 +8,7 @@ import {
   appendPhase3MovementTraversal
 } from './lower-dvina-trace-phase-3-movement-writes.js';
 import { phase3ActivityRef } from './lower-dvina-trace-phase-3-state.js';
+import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 
 export function phase3Writes(input) {
   const {
@@ -63,6 +64,8 @@ export function phase3Writes(input) {
     });
     appendKnowledge(inserts, state, partyId,
       'trace_ld_v1_route_camp_to_wreck', []);
+    appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
+      changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
   } else {
     appendActivity({
       inserts, appends, state, next, factual, partyId, turnNumber,

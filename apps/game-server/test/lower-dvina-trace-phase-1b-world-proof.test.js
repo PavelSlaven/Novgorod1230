@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   loadLowerDvinaTracePhase1BPublication
 } from '../src/internal/lower-dvina-trace-phase-1b-publication.js';
@@ -7,6 +10,8 @@ import {
   loadLowerDvinaTraceMaterializationBundle,
   resolveLowerDvinaTraceStartTimestamp
 } from '../src/internal/lower-dvina-trace-phase-1a.js';
+import { loadLowerDvinaTraceRevision12Bundle } from
+  '../src/internal/lower-dvina-trace-phase-6-bundle.js';
 import {
   MATERIALIZER_VERSION,
   RNG_VERSION
@@ -67,3 +72,45 @@ test('direct Phase 1A materializer rejects a fabricated descendant world proof',
     { code: 'TRACE_WORLD_PIN_INCOMPATIBLE' }
   );
 });
+
+test('revision 12 fails closed when the v8 reused binding ref is tampered', async (t) => {
+  const root = await copyRevision12BundleClosure();
+  t.after(() => rm(root, { recursive: true, force: true }));
+  const path = join(root,
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8',
+    'materialization-bindings.json');
+  const bindings = JSON.parse(await readFile(path, 'utf8'));
+  bindings.reused_immutable_binding_ref.digest = '0'.repeat(64);
+  await writeFile(path, `${JSON.stringify(bindings, null, 2)}\n`);
+
+  await assert.rejects(() => loadLowerDvinaTraceRevision12Bundle({
+    rootDir: root,
+    historicalBundle: revision11BundleStub(),
+    fail: (code) => { throw Object.assign(new Error(code), { code }); },
+    freezeDeep: (value) => value,
+    validateDefinitionPins() {}
+  }), { code: 'TRACE_PHASE_6_CONTENT_INVALID' });
+});
+
+async function copyRevision12BundleClosure() {
+  const root = await mkdtemp(join(tmpdir(), 'trace-phase-6-bundle-'));
+  for (const relative of [
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v7/materialization-bindings.json',
+    'data/world-catalogs/common/inventory-archetypes.json'
+  ]) {
+    await cp(relative, join(root, relative), { recursive: true });
+  }
+  return root;
+}
+
+function revision11BundleStub() {
+  return {
+    artifact_pins: {
+      definition: { digest: '65ea080f3ba0897b47fd9ac6ed4ce92b7831ba3cc04de965bcbe7f956d2f7cd9' },
+      phase_1a_manifest: { digest: '5cc5a06136b2f4cbdb8b842558b0d749a2c70c3eff0f1c088aca9a7e0395d1a9' },
+      materialization_bindings: { digest: '8d6af94cd5f89577bf55211b1262b81266c7d2646f09e7807475f8c6f1d86565' }
+    }
+  };
+}

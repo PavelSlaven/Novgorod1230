@@ -15,7 +15,8 @@ export const TRACE_PHASE_5_IDS = Object.freeze({
 });
 
 export function resolveTracePhase5Contracts({ state, bundle }) {
-  if (bundle.definition_revision !== 11 || bundle.definition?.revision !== 11) {
+  if (![11, 12].includes(bundle.definition_revision)
+      || ![11, 12].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_5_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_5_IDS;
@@ -74,6 +75,18 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )]));
+  if (bundle.definition_revision === 12) {
+    resourceInventoryProfiles.water = exact(
+      bundle.item_container_set.item_inventory_profiles,
+      'inventory_profile_id',
+      'trace_ld_v1_inventory_profile_eremey_drinking_water_vessel'
+    );
+  }
+  const ropeInventoryProfile = bundle.definition_revision === 12
+    ? exact(bundle.item_container_set.item_inventory_profiles,
+      'inventory_profile_id',
+      'trace_ld_v1_inventory_profile_ratsha_binding_rope')
+    : null;
   const resourceArrivalBinding = bundle.materialization_bindings
     ?.phase_5_initial_state_binding?.phase_5_resource_arrival_binding;
   const stages = activity.treatment_stages;
@@ -124,6 +137,18 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
         && profile.external_hand_cost === 1
         && profile.status === 'approved';
     })
+    || (bundle.definition_revision === 12
+      && (resourceInventoryProfiles.water.item_template_ref !== ids.water
+        || resourceInventoryProfiles.water.mass_grams !== 100
+        || resourceInventoryProfiles.water.carry_form !== 'compact'
+        || resourceInventoryProfiles.water.external_hand_cost !== 0
+        || resourceInventoryProfiles.water.status !== 'approved'))
+    || (bundle.definition_revision === 12
+      && (ropeInventoryProfile.item_template_ref !== ids.rope
+        || ropeInventoryProfile.mass_grams !== 1200
+        || ropeInventoryProfile.carry_form !== 'long'
+        || ropeInventoryProfile.external_hand_cost !== 1
+        || ropeInventoryProfile.status !== 'approved'))
     || !consentPolicy.option_set?.some(
       ({ option_id: optionId }) => optionId === 'accept_first_aid')
     || consentExecution.policy_id !== consentPolicy.policy_id
@@ -138,7 +163,7 @@ export function resolveTracePhase5Contracts({ state, bundle }) {
   return Object.freeze({ ids, activity, check, success, failure, bodyEffect,
     injury, itemTemplate, inventoryProfile, transition, consentPolicy,
     consentExecution, actors, resourceTransitions, itemTemplates,
-    resourceInventoryProfiles, resourceArrivalBinding,
+    resourceInventoryProfiles, ropeInventoryProfile, resourceArrivalBinding,
     anchors: { shed: state.prepared_scenes?.find(
       ({ location_profile_ref: ref }) => ref === ids.shed
     )?.anchor?.instance_id },

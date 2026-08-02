@@ -75,7 +75,7 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 11);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 12);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
@@ -234,7 +234,7 @@ test('trace recovery rehydrates Phase 1A and attaches one stable session', async
 
 test('historical Phase 1A commits recover through their pinned publications', async (t) => {
   for (const [revision, historical] of TRACE_PHASE_1B_SESSION_IDENTITIES
-    .slice(0, 4).entries()) {
+    .slice(0, 6).entries()) {
     await t.test(`v${revision + 1}`, async () => {
       const requestId = `historical-phase-1a-v${revision + 1}-orphan`;
       const partyId = `party:${hash(requestId).slice(0, 24)}`;

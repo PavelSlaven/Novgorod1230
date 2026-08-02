@@ -21,6 +21,8 @@ import { createTracePhase5Command } from
   './lower-dvina-trace-phase-5-command.js';
 import { resolveTracePhase5Contracts } from
   './lower-dvina-trace-phase-5-contracts.js';
+import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
+import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
 import {
   committedTraceScenarioDefinitionRevision
 } from './lower-dvina-trace-committed-revision.js';
@@ -33,6 +35,7 @@ export function createLowerDvinaTracePhase2Runtime({
   randomSourceFactory,
   decisionSecret,
   npcDecisionSelector = null,
+  temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
     loadLowerDvinaTraceMaterializationBundle({
@@ -101,14 +104,17 @@ export function createLowerDvinaTracePhase2Runtime({
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9, 10, 11].includes(bundle.definition_revision)
+      const phase3Contracts = [9, 10, 11, 12].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10, 11].includes(bundle.definition_revision)
+      const phase4Contracts = [10, 11, 12].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = bundle.definition_revision === 11
+      const phase5Contracts = [11, 12].includes(bundle.definition_revision)
         ? resolveTracePhase5Contracts({ state, bundle })
+        : null;
+      const phase6Contracts = bundle.definition_revision === 12
+        ? resolveTracePhase6Contracts({ bundle })
         : null;
       const registry = createTurnCommandRegistry([
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
@@ -124,6 +130,10 @@ export function createLowerDvinaTracePhase2Runtime({
         ...(phase5Contracts ? [createTracePhase5Command({
           contracts: phase5Contracts,
           inputDigest
+        })] : []),
+        ...(phase6Contracts ? [createTracePhase6CarryCommand({
+          contracts: phase6Contracts, inputDigest,
+          temporalAdvanceOwner
         })] : [])
       ]);
       const issuedAt = now();
@@ -156,6 +166,7 @@ export function createLowerDvinaTracePhase2Runtime({
         phase3Contracts,
         phase4Contracts,
         phase5Contracts,
+        phase6Contracts,
         registry,
         repository,
         semanticResolver,

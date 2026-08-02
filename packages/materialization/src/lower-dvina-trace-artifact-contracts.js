@@ -101,3 +101,20 @@ export const PHASE_5_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ],
   body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 5]
 });
+
+export const PHASE_6_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...PHASE_5_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 8],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    8
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 12],
+  item_container_set: ['rus.trace_item_container_set.v1', 4],
+  activity_check_consequence_profiles: [
+    'rus.trace_activity_check_consequence_profiles.v1',
+    4
+  ],
+  movement_bindings: ['rus.trace_movement_bindings.v1', 2],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 6]
+});

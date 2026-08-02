@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
 
-export function appendPhase5ResourceStateWrites({ updates, appends, state,
+export function appendPhase5ResourceStateWrites({ inserts, updates, appends, state,
   next, partyId, changeSetId, idemId, treatment, contracts }) {
   const templates = [contracts.ids.net, contracts.ids.poles,
     contracts.ids.water];
@@ -40,9 +40,13 @@ export function appendPhase5ResourceStateWrites({ updates, appends, state,
   const priorStages = new Set(
     state.phase5_treatment?.completed_stage_ids ?? []
   );
-  if (treatment.completed_stage_ids.includes('prepare_cloth_and_expose_injury')
-      && !priorStages.has('prepare_cloth_and_expose_injury')
-      && !treatment.final) {
+  const releaseCommitted = treatment.completed_stage_ids
+    .includes('prepare_cloth_and_expose_injury')
+      && !priorStages.has('prepare_cloth_and_expose_injury');
+  if (releaseCommitted && contracts.ropeInventoryProfile != null) {
+    appendReleasedRope({ inserts, next, partyId, changeSetId, contracts });
+  }
+  if (releaseCommitted && !treatment.final) {
     appends.push(row('party_npc_runtime_transitions',
       `npc-transition:${partyId}:trace-phase5:release`, {
         transition_id: `npc-transition:${partyId}:trace-phase5:release`,
@@ -63,6 +67,28 @@ export function appendPhase5ResourceStateWrites({ updates, appends, state,
         }
       }));
   }
+}
+
+function appendReleasedRope({ inserts, next, partyId, changeSetId, contracts }) {
+  if (!Array.isArray(inserts)) throw new Error('TRACE_PHASE_5_ROPE_INSERT_TARGET_MISSING');
+  const onisim = next.npcs.find(({ participant_slot_ref }) => participant_slot_ref === 'onisim_boatman');
+  const binding = onisim?.machine_state?.binding_item;
+  const matches = next.items.filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_ratsha_binding_rope'
+  );
+  const rope = matches[0];
+  const profile = contracts.ropeInventoryProfile;
+  if (matches.length !== 1 || binding?.normalized_item_id !== rope?.item_id
+      || !rope?.item_id || !rope?.template_id || !profile
+      || profile.mass_grams !== 1200 || profile.carry_form !== 'long'
+      || profile.external_hand_cost !== 1) throw new Error('TRACE_PHASE_5_ROPE_APPROVED_PROFILE_GAP');
+  inserts.push(row('party_items', rope.item_id, { party_id: partyId, item_id: rope.item_id,
+    run_id: rope.run_id, template_id: rope.template_id, profile_id: profile.inventory_profile_id,
+    category_id: rope.category_id, quantity: 1, condition_state: 'serviceable',
+    legal_status: rope.legal_status, state: rope.state }));
+  inserts.push(row('party_item_placements', rope.item_id, { party_id: partyId, item_id: rope.item_id,
+    anchor_id: null, container_id: null, holder_npc_id: contracts.actors.eremey_fisher.instance_id,
+    holder_character_id: null, physical_position: 'external_load', equipment_slot_category_id: null }));
 }
 
 export function phase5TimedExecutionRecord({ state, factual, execution, next,

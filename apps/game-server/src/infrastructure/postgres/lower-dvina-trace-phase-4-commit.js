@@ -36,6 +36,11 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     expected('party_server_sessions', partyId,
       state.party_state.session_state_version),
     expected('party_clocks', partyId, state.party_state.clock_state_version),
+    ...(factual.body_update?.applied === true ? [expected(
+      'party_actor_body_states', `player_character:${state.actor_id}`,
+      state.party_state.body_state_version
+    ), ...expectedChangedConditions(state,
+      factual.body_update.state_after)] : []),
     ...(writes.updates.some(({ target_table: table }) =>
       table === 'party_obligations') ? [expected(
       'party_obligations', state.promise_instances[0].obligation_id,
@@ -49,6 +54,19 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   return { ...committed, state_version: nextVersion, turn_number: turnNumber, package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest };
 }
 function fail(code, details = null) { return serverError(code, 'Phase 4 factual commit failed closed.', { status: 409, details }); }
+
+function expectedChangedConditions(state, nextBodyState) {
+  const changed = new Set((nextBodyState.active_conditions ?? [])
+    .filter(({ condition_outcome: outcome }) => Boolean(outcome))
+    .map(({ storage_condition_id: id }) => id));
+  return (state.body_state.active_conditions ?? [])
+    .filter(({ storage_condition_id: id }) => changed.has(id))
+    .map((condition) => expected(
+      'party_actor_active_conditions',
+      `player_character:${state.actor_id}:${condition.storage_condition_id}`,
+      condition.state_version
+    ));
+}
 
 function phase4CommitRechecks({ partyId, state, factual, phase4Contracts,
   inputDigest }) {

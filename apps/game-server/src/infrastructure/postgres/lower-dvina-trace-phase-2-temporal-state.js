@@ -12,6 +12,7 @@ export async function loadTracePhase2TemporalSourceProof(
   const [events, schedules] = await Promise.all([
     partyPool.query(
       `SELECT e.event_id,e.event_kind,
+              e.state_version,
               e.scheduled_at_whole_minutes::text,
               e.scheduled_at_subminute_numerator::text,
               e.scheduled_at_subminute_denominator::text,
@@ -55,13 +56,13 @@ export async function loadTracePhase2TemporalSourceProof(
     }
     return candidate({
       boundaryId: row.event_id,
-      boundaryKind: row.event_kind,
+      boundaryKind: 'exact_timer',
       timestamp: timestampFrom(row, 'scheduled_at'),
-      sourceRef: { entity_kind: 'temporal_event', entity_id: row.event_id },
+      sourceRef: { entity_kind: 'source_record', entity_id: row.event_id },
       primarySubjectRef: row.subjects[0],
       partyId,
-      ruleRef: row.rule_ref,
-      policyRef: row.policy_ref,
+      ruleRef: versionedRef(row.rule_ref),
+      policyRef: versionedRef(row.policy_ref),
       preconditionsDigest: row.preconditions_digest,
       resolutionClass,
       idempotencyKey: row.idempotency_key,
@@ -73,11 +74,11 @@ export async function loadTracePhase2TemporalSourceProof(
     boundaryId: `npc-schedule:${row.id}`,
     boundaryKind: 'npc_schedule',
     timestamp: timestampFrom(row, 'next_transition_at'),
-    sourceRef: { entity_kind: 'npc_schedule', entity_id: row.id },
+    sourceRef: { entity_kind: 'npc', entity_id: row.npc_id },
     primarySubjectRef: { entity_kind: 'npc', entity_id: row.npc_id },
     partyId,
-    ruleRef: row.schedule_profile_ref,
-    policyRef: row.causal_state_ref,
+    ruleRef: versionedRef(row.schedule_profile_ref),
+    policyRef: versionedRef(row.causal_state_ref),
     preconditionsDigest: row.causal_state_ref?.canonical_digest,
     resolutionClass: 'npc_schedule',
     idempotencyKey: `npc-schedule:${row.id}:${row.next_transition_at_whole_minutes}`,
@@ -85,6 +86,9 @@ export async function loadTracePhase2TemporalSourceProof(
     causalParentRefs: []
   }));
   const candidates = [...eventCandidates, ...scheduleCandidates];
+  const eventVersions = Object.fromEntries(events.rows.map((row) => [
+    row.event_id, Number(row.state_version)
+  ]));
   return Object.freeze({
     version: 2,
     schema: 'lower_dvina_trace_temporal_source_proof',
@@ -95,6 +99,7 @@ export async function loadTracePhase2TemporalSourceProof(
     pending_event_count: eventCandidates.length,
     active_schedule_count: scheduleCandidates.length,
     candidate_count: candidates.length,
+    event_versions: eventVersions,
     candidates
   });
 }
@@ -137,6 +142,13 @@ function timestampFrom(row, prefix) {
 
 function nonEmpty(value) {
   return typeof value === 'string' && value.length > 0;
+}
+
+function versionedRef(value) {
+  return {
+    entity_ref: structuredClone(value?.entity_ref),
+    authoring_version: value?.authoring_version
+  };
 }
 
 function temporalGap(details = {}) {

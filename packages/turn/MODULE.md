@@ -16,11 +16,23 @@
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet` и `resolveTurnSemanticIntent`.
 - `createTurnAvailableActionSet({ registry, committedState, actorId, policyPins })` строит полный детерминированный player-safe набор зарегистрированных и доступных действий без raw text. `resolveTurnSemanticIntent({ rawText, actionSet, decisionNow, ... })` применяет однозначный exact fast path либо существующий bounded-decision protocol и возвращает только точный approved `option_id` или typed unknown. После асинхронного resolver code-owned `decisionNow()` проверяет expiry; exact fast path clock не вызывает. Затем workflow повторно читает committed state и отклоняет stale option до RNG.
-- `./temporal-advance`: `createTemporalAdvanceEngine`; `./temporal-carriers`: `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`: `mergeTemporalProposals`, `TemporalProposalMergeError`.
+- `./temporal-advance`: `createTemporalAdvanceEngine`,
+  `advanceTemporalBoundaryBatch`, `createTemporalSourceResolver`,
+  `createTemporalAdvanceOwner`;
+  `./temporal-carriers`:
+  `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
+  `mergeTemporalProposals`, `TemporalProposalMergeError`.
 - `createTemporalAdvanceEngine` повторно собирает candidates после каждого
   deterministic slice из последней явно возвращённой immutable working
   projection; handlers не получают скрытое состояние и не владеют clock
   ordering.
+- Handler может запросить `stop_after_current_batch` только как общую границу
+  остановки advance: engine сначала полностью разрешает весь ordered same-time
+  cascade и его follow-up events, затем возвращает единый change set.
+- `createTemporalAdvanceOwner` связывает stable exact source/effect
+  registrations один раз в composition root. Сценарный consumer передаёт
+  только candidates и declarative effect descriptors; callback execution,
+  same-time ordering и finalization остаются у общего owner.
 - Spatial/target surfaces: `./spatial-v3-*` (request profile, orchestration, execution, write plan, target shadow composition) и `createCombinedWritePlanBuilder`; `./compat` — explicit legacy adapter.
 - `./spatial-v3-target-composition` exports separate reviewed factories for
   historical target/shadow tests and active `production_sole_owner` wiring;

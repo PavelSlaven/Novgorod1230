@@ -56,6 +56,9 @@ export function routeToShedEffect({
     participantGroup: participants
   });
   return createTracePhase4Consequence({ inputDigest, duration: 12, kind: 'movement', detail: {
+    ...(contracts.routeBodyEffect ? {
+      body_effect_ref: contracts.routeBodyEffect.effect_profile_id
+    } : {}),
     movement: { activity_ref: contracts.routeActivity.profile_id, route_ref: contracts.route.route_id,
       source_location_ref: state.position.location_ref, destination_location_ref: contracts.ids.shed,
       participants,

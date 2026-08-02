@@ -31,6 +31,11 @@ import {
   createSeededRandomSource
 } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
+  '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
+import { lowerDvinaTraceTemporalSourceRegistrations } from
+  '../lower-dvina-trace-phase-6-temporal-source.js';
 import { serverError } from '../../errors.js';
 
 export { firstPlayableCommitRecheck };
@@ -203,6 +208,13 @@ function createTraceTurnRuntime({ partyPool, committer, env, config }) {
         ...identity
       })
     ),
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      source_registrations: lowerDvinaTraceTemporalSourceRegistrations(
+        config.temporalBoundaryRegistrations ?? []
+      ),
+      effect_registrations:
+        lowerDvinaTracePhase6TemporalEffectRegistrations()
+    }),
     decisionSecret
   });
 }

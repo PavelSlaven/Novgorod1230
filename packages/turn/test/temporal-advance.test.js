@@ -4,7 +4,8 @@ import {
   computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
-import { createTemporalAdvanceEngine } from '../src/temporal-advance.js';
+import { advanceTemporalBoundaryBatch, createTemporalAdvanceEngine } from
+  '../src/temporal-advance.js';
 import { mergeTemporalProposals } from '../src/temporal-proposal-merger.js';
 import {
   createSpatialV3PerceptionBoundaryParticipant
@@ -239,6 +240,88 @@ test('same-time fire, smoke and alarm follow-ups stabilize in one zero-time slic
   assert.deepEqual(result.trace.processed_boundary_ids, ['fire', 'smoke', 'alarm']);
   assert.equal(result.combined_change_set.time_slice_results.length, 1);
   assert.equal(result.combined_change_set.time_slice_results[0].result_kind, 'zero_time_cascade');
+});
+
+test('batch uses evolving projection', () => {
+  const calls = [];
+  const hazard = candidate('hazard', 11,
+    { resolution_class: 'physical_hazard_access' });
+  const execution = candidate('carrier-rebind', 11,
+    { boundary_kind: 'carrier_sync', resolution_class: 'execution_outcome' });
+  const sourceProvider = provider('hazard-p', hazard);
+  const registeredProvider = provider('execution-p', execution);
+  const providers = [sourceProvider, registeredProvider];
+  const advanced = advanceTemporalBoundaryBatch({
+    request: request(providers, 12),
+    engine_version: 'temporal-advance-v1',
+    temporal_resolution_policy_version: 'temporal-resolution-v1',
+    safety_limits: { max_slices: 20, max_candidates: 100, max_iterations: 100 },
+    source_provider_ref: sourceProvider.provider_ref,
+    source_candidates: [hazard],
+    registered_provider_ref: registeredProvider.provider_ref,
+    registered_candidates: [execution],
+    apply_continuous: (slice, { projection }) => ({
+      proposals: [{ proposal_id: 'progress-to-boundary',
+        write_target: 'activity-progress' }],
+      state_projection: { ...projection, progress_minutes: 10 }
+    }),
+    resolve_source_candidate(value, { projection }) {
+      calls.push({ replacement_available: projection.replacement_available,
+        active_carriers: projection.active_carriers ?? ['player'] });
+      if (value.boundary_id === 'hazard') {
+        return {
+          disposition: 'execute',
+          proposals: [{ proposal_id: 'hazard-effect',
+            write_target: 'replacement-access' }],
+          state_projection: { ...projection, replacement_available: false },
+          follow_up_candidates: [candidate('reaction', 11, {
+            resolution_class: 'reaction_decision',
+            causal_parent_refs: [ref('temporal_boundary_candidate', 'hazard')]
+          })]
+        };
+      }
+      return {
+        disposition: 'execute',
+        proposals: [{ proposal_id: 'reaction-effect',
+          write_target: 'npc-reaction' }],
+        state_projection: projection
+      };
+    },
+    resolve_registered_candidate(_value, { projection }) {
+      calls.push({ replacement_available: projection.replacement_available,
+        active_carriers: projection.active_carriers ?? ['player'] });
+      return {
+        disposition: projection.replacement_available === false
+          ? 'cancel' : 'execute',
+        proposals: [{ proposal_id: 'carrier-outcome',
+          write_target: 'carrier-group' }],
+        state_projection: { ...projection,
+          active_carriers: projection.replacement_available === false
+            ? ['player'] : ['replacement'] }
+      };
+    },
+    finalize: ({ request: advanceRequest }) => ({
+      temporal_status: 'completed',
+      execution_state_ref: advanceRequest.requested_execution_ref,
+      visible_package_candidate: visibleEnvelope(advanceRequest,
+        advanceRequest.idempotency_context.change_set_id),
+      validation_report: { ok: true }
+    })
+  });
+  const result = advanced.result;
+
+  assert.deepEqual(result.trace.processed_boundary_ids,
+    ['hazard', 'carrier-rebind', 'reaction']);
+  assert.deepEqual(result.trace.dispositions, [
+    { boundary_id: 'hazard', disposition: 'execute' },
+    { boundary_id: 'carrier-rebind', disposition: 'cancel' },
+    { boundary_id: 'reaction', disposition: 'execute' }
+  ]);
+  assert.equal(result.clock_after.whole_minutes, '11');
+  assert.deepEqual(calls.slice(1), [
+    { replacement_available: false, active_carriers: ['player'] },
+    { replacement_available: false, active_carriers: ['player'] }
+  ]);
 });
 
 test('journey providers observe the latest immutable working projection between slices and same-time handlers', () => {

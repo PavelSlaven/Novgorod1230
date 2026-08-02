@@ -1,0 +1,25 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_6_content_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_6_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 12,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_definition_ref": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/definition.json", "id": "lower_dvina_trace_v1", "revision": 11, "schema": "rus.trace_scenario_definition.v1", "digest": "65ea080f3ba0897b47fd9ac6ed4ce92b7831ba3cc04de965bcbe7f956d2f7cd9"},
+  "content_refs": {
+    "definition": {"path": "definition.json", "id": "lower_dvina_trace_v1", "revision": 12, "schema": "rus.trace_scenario_definition.v1", "digest": "a2baf870be8784ca520319abd232c4383fdb4fb70fe1e39f50ab2d407c1c1b18"},
+    "activity_check_consequence_profiles": {"path": "activity-check-consequence-profiles.json", "id": "trace_ld_v1_activity_check_consequence_profiles", "revision": 4, "schema": "rus.trace_activity_check_consequence_profiles.v1", "digest": "3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef"},
+    "body_environment_profiles": {"path": "body-environment-profiles.json", "id": "trace_ld_v1_body_environment_profiles", "revision": 6, "schema": "rus.trace_body_environment_profiles.v2", "digest": "c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2"},
+    "movement_bindings": {"path": "movement-bindings.json", "id": "trace_ld_v1_movement_bindings", "revision": 2, "schema": "rus.trace_movement_bindings.v1", "digest": "ca7969ba4491f770995b4365d21ebe903c9b06056520081e129a2a7f069eaa3f"},
+    "item_container_set_overlay": {"path": "item-container-set-overlay.json", "id": "trace_ld_v1_item_container_set", "revision": 4, "schema": "rus.trace_item_container_set_overlay.v1", "digest": "37880f82402fdb4cf70316e6849e17f22b9729b2642ae02e4aaf6c3b8dd67440"}
+  },
+  "files": {"activity-check-consequence-profiles.json": "3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef", "body-environment-profiles.json": "c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2", "definition.json": "a2baf870be8784ca520319abd232c4383fdb4fb70fe1e39f50ab2d407c1c1b18", "item-container-set-overlay.json": "37880f82402fdb4cf70316e6849e17f22b9729b2642ae02e4aaf6c3b8dd67440", "movement-bindings.json": "ca7969ba4491f770995b4365d21ebe903c9b06056520081e129a2a7f069eaa3f"},
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "45257525b6bc183c54a4ef4fcf8b54a658ff0843070a277e547f18016269b7d2",
+  "scope": ["phase_6_exact_route_and_carry_content"],
+  "excludes": ["runtime_handlers", "persistence", "ddl", "api", "ui"]
+}

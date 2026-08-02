@@ -30,8 +30,29 @@ export function phase5ParticipatingFisher(payload) {
   return matches[0];
 }
 
+export function loadPhase5ReleasedRope(pool, partyId) {
+  return pool.query(
+    `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,i.quantity,
+            i.condition_state,i.legal_status,i.state,
+            p.anchor_id,p.container_id,p.holder_npc_id,
+            p.holder_character_id,p.physical_position,
+            p.equipment_slot_category_id,
+            o.ownership_id,o.owner_npc_id,o.owner_character_id,
+            o.owner_external_ref,o.owner_party,o.controller_npc_id,
+            o.controller_character_id,o.claim_state
+       FROM party_runtime.party_items i
+       JOIN party_runtime.party_item_placements p
+         ON p.party_id=i.party_id AND p.item_id=i.item_id
+       LEFT JOIN party_runtime.party_ownership o
+         ON o.party_id=i.party_id AND o.item_id=i.item_id
+      WHERE i.party_id=$1
+        AND i.template_id='trace_ld_v1_item_ratsha_binding_rope'`,
+    [partyId]
+  );
+}
+
 export function assertPhase5TreatmentResources({ payload, treatmentResources,
-  releaseTransition, npcTransitions, history, onisim }) {
+  releaseTransition, releasedRope, npcTransitions, history, onisim }) {
   const templateIds = [
     'trace_ld_v1_item_fishing_net',
     'trace_ld_v1_item_carry_poles',
@@ -78,8 +99,16 @@ export function assertPhase5TreatmentResources({ payload, treatmentResources,
     treatment.completed_stage_ids?.includes('prepare_cloth_and_expose_injury')
   );
   if (!prepare) {
-    if (releaseTransition.rowCount !== 0) fail();
+    if (releaseTransition.rowCount !== 0 || releasedRope.rowCount !== 0) fail();
     return;
+  }
+  const normalizedRopeCount = payload.items?.filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_ratsha_binding_rope'
+  ).length ?? 0;
+  if (normalizedRopeCount === 0) {
+    if (releasedRope.rowCount !== 0) fail();
+  } else {
+    assertReleasedRope(payload, releasedRope);
   }
   if (releaseTransition.rowCount === 1) {
     const transition = releaseTransition.rows[0];
@@ -107,6 +136,36 @@ export function assertPhase5TreatmentResources({ payload, treatmentResources,
         !== 'trace_ld_v1_property_eremey_water_vessel_used_for_onisim') {
     fail();
   }
+}
+
+function assertReleasedRope(payload, result) {
+  const matches = payload.items?.filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_ratsha_binding_rope'
+  ) ?? [];
+  if (matches.length !== 1 || result.rowCount !== 1) fail();
+  const expected = matches[0];
+  const entry = result.rows[0];
+  const actual = {
+    item_id: entry.item_id,
+    run_id: entry.run_id,
+    template_id: entry.template_id,
+    profile_id: entry.profile_id,
+    category_id: entry.category_id,
+    quantity: Number(entry.quantity),
+    condition_state: entry.condition_state,
+    legal_status: entry.legal_status,
+    placement: {
+      anchor_id: entry.anchor_id,
+      container_id: entry.container_id,
+      holder_npc_id: entry.holder_npc_id,
+      holder_character_id: entry.holder_character_id,
+      physical_position: entry.physical_position,
+      equipment_slot_category_id: entry.equipment_slot_category_id
+    },
+    state: entry.state
+  };
+  if (entry.ownership_id != null
+      || canonicalDigest(actual) !== canonicalDigest(expected)) fail();
 }
 
 export function assertPhase5TreatmentKnowledge({ knowledge, history, final,

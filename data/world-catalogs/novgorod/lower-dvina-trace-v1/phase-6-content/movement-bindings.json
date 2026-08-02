@@ -1,0 +1,138 @@
+{
+  "schema": "rus.trace_movement_bindings.v1",
+  "set_id": "trace_ld_v1_movement_bindings",
+  "revision": 2,
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_movement_bindings",
+    "revision": 1,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/movement-bindings.json",
+    "digest": "dcad38f997150d7cdab887db02ac51862b405284835bbefbd83c809810e34a29"
+  },
+  "owner": "@rus/movement-routes",
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "route_bindings": [
+    {
+      "route_id": "trace_ld_v1_route_shed_to_camp_carry_onisim",
+      "schema": "rus.trace_movement_binding.v1",
+      "version": 2,
+      "source_endpoint": "trace_ld_v1_ep_drying_shed_ridge_to_camp",
+      "destination_endpoint": "trace_ld_v1_ep_camp_ridge_to_drying_shed",
+      "reverse_route_ref": null,
+      "asymmetry_basis": "synchronized_carried_actor_load",
+      "movement_method": "stretcher_carry",
+      "time_profile_ref": "trace_ld_v1_time_20m",
+      "duration_minutes": 20,
+      "environment_applicability": ["trace_ld_v1_env_open_path"],
+      "knowledge_state": "known_after_forward_traversal_or_guide",
+      "knowledge_unlock_conditions": ["route_known", "guide_present"],
+      "guide_effect": "removes_navigation_check_only",
+      "navigation_check_policy": "no_check_if_known_or_guided",
+      "body_load_factors": ["carrier_load", "onisim_injured"],
+      "participant_limits": {"min": 4, "max": 7},
+      "required_free_external_hands": 1,
+      "carried_actor_rules": {
+        "carried_slot": "onisim_boatman",
+        "minimum_carrier_count": 3,
+        "carrier_candidate_slots": [
+          "player_clerk",
+          "eremey_fisher",
+          "ratsha_storehouse_helper",
+          "resolved_participating_fisher"
+        ],
+        "initial_carrier_binding": ["player_clerk", "eremey_fisher", "ratsha_storehouse_helper"],
+        "carrier_eligibility_bindings": {
+          "player_clerk": "player_accepts_current_carry_activity_and_committed_load_admitted",
+          "eremey_fisher": "assist_rescue_and_committed_load_admitted",
+          "ratsha_storehouse_helper": "surrendered_under_observation_and_committed_load_admitted",
+          "resolved_participating_fisher": "committed_participating_fisher_and_load_admitted"
+        },
+        "single_root_clock": true,
+        "same_progress_for_whole_group": true,
+        "independent_movement": "forbidden",
+        "carrier_rebinding": {
+          "decision_boundary": {
+            "boundary_id": "trace_ld_v1_boundary_mikula_carry_load_limit_10m",
+            "elapsed_minutes": 10,
+            "route_progress_ppm": 500000,
+            "kind": "committed_synchronized_route_boundary",
+            "reason_code": "shoulder_load_limit_reached",
+            "outgoing": "player_clerk",
+            "incoming": "resolved_participating_fisher",
+            "shoulder": {
+              "condition_profile_ref": "trace_ld_v1_condition_shoulder_bruise",
+              "from": "shoulder_bruise",
+              "to": "shoulder_bruise",
+              "outcome": "load_penalty"
+            },
+            "rng_consumption": "forbidden"
+          },
+          "trigger": "bound_carrier_unavailable_or_body_load_no_longer_admitted",
+          "replacement_slot": "trace_ld_v1_audience_slot_participating_fisher",
+          "replacement_selection_policy": "use_exact_committed_participating_fisher_or_fail_closed",
+          "eligible_replacement_rules": [
+            "candidate_is_present_at_boundary",
+            "candidate_is_not_already_bound_as_carrier",
+            "candidate_body_state_admits_recalculated_load",
+            "candidate_has_slot_specific_admitted_option_ref"
+          ],
+          "binding_update": "replace_unavailable_carrier_slot_without_changing_carried_slot",
+          "preserve_committed_elapsed": true,
+          "preserve_committed_route_progress": true,
+          "rewind_or_reroll": "forbidden",
+          "load_recalculation": "recalculate_outgoing_incoming_and_remaining_carrier_load_from_committed_boundary_state",
+          "no_valid_replacement_failure": "typed_carry_rebinding_unavailable"
+        },
+        "loss_of_carrier_or_resource": "attempt_rebinding_at_committed_boundary_then_stop_without_rewind_if_minimum_count_or_resources_cannot_be_satisfied"
+      },
+      "assembly_snapshot_policy": {
+        "source": "phase_5_terminal_resource_snapshot",
+        "required_item_template_refs": ["trace_ld_v1_item_fishing_net", "trace_ld_v1_item_carry_poles"],
+        "required_preserved_item_ids": ["trace_ld_v1_item_fishing_net", "trace_ld_v1_item_carry_poles"],
+        "property_transition_refs": [],
+        "new_item_or_property_change": "forbidden"
+      },
+      "body_effect_profile_refs": ["trace_ld_v1_body_carry_carrier_20m", "trace_ld_v1_body_carry_carrier_10m", "trace_ld_v1_body_carry_carried_actor_stabilized_20m", "trace_ld_v1_body_carry_carried_actor_unstabilized_20m"],
+      "body_effect_bindings": {
+        "eremey_fisher": "trace_ld_v1_body_carry_carrier_20m",
+        "ratsha_storehouse_helper": "trace_ld_v1_body_carry_carrier_20m",
+        "player_clerk": "trace_ld_v1_body_carry_carrier_10m",
+        "resolved_participating_fisher": "trace_ld_v1_body_carry_carrier_10m",
+        "onisim_boatman": {
+          "onisim_stabilized_unable_to_walk": "trace_ld_v1_body_carry_carried_actor_stabilized_20m",
+          "onisim_first_aid_completed_without_stabilization": "trace_ld_v1_body_carry_carried_actor_unstabilized_20m"
+        }
+      },
+      "interruption_boundaries": ["committed_synchronized_route_boundary", "earliest_temporal_boundary"],
+      "item_resource_constraints": ["trace_ld_v1_item_carry_poles", "trace_ld_v1_item_fishing_net"],
+      "terminal_position_outcome": "trace_ld_v1_loc_fishing_camp",
+      "terminal_placement_contract": {
+        "group": {
+          "location_ref": "trace_ld_v1_loc_fishing_camp",
+          "anchor_template_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+          "zone_ref": "working_camp"
+        },
+        "carried_actor": {
+          "participant_slot_ref": "onisim_boatman",
+          "location_ref": "trace_ld_v1_loc_fishing_camp",
+          "anchor_template_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+          "zone_ref": "fire_rest_area",
+          "independent_movement_history": "forbidden"
+        },
+        "ratsha_observation": {
+          "participant_slot_ref": "ratsha_storehouse_helper",
+          "state": "surrendered_under_group_observation",
+          "committed_fact_output": "ratsha_under_group_observation_committed"
+        }
+      },
+      "route_history_effects": ["route_traversed", "carried_actor_arrived_with_group"],
+      "spatial_refs": ["trace_ld_v1_ep_drying_shed_ridge_to_camp", "trace_ld_v1_ep_camp_ridge_to_drying_shed"]
+    }
+  ],
+  "selected_routes": [],
+  "materialized_traversals": [],
+  "excludes": ["runtime_handler", "persistence", "party_instance", "api", "ui", "teleport"]
+}

@@ -1,5 +1,7 @@
 import { buildTracePhase5ArrivalResources } from
   '../../runtime/lower-dvina-trace-phase-5-resources.js';
+import { commitPhase2BodyState } from
+  './lower-dvina-trace-phase-2-state.js';
 
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts }) {
@@ -8,6 +10,19 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   next.party_state = { ...next.party_state, state_version: nextVersion,
     session_state_version: next.party_state.session_state_version + 1,
     clock_state_version: next.party_state.clock_state_version + 1, turn_number: turnNumber };
+  if (factual.body_update?.applied === true) {
+    next.body_state = commitPhase2BodyState({
+      before: state.body_state,
+      proposed: factual.body_update.state_after
+    });
+    next.body_effect_history = [...(next.body_effect_history ?? []), {
+      history_id: `body-history:${state.party_id}:trace-phase4:${turnNumber}`,
+      effect_ref: factual.body_update.proposal.profile_ref,
+      activity_attempt_id: factual.body_update.proposal.activity_attempt_id,
+      occurred_at: structuredClone(factual.time_update.clock_after)
+    }];
+    next.party_state.body_state_version = state.party_state.body_state_version + 1;
+  }
   next.clock = structuredClone(factual.time_update.clock_after);
   next.clock_weather_light.clock = structuredClone(next.clock);
   const c = factual.consequence;

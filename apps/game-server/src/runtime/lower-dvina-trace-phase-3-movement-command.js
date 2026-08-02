@@ -16,22 +16,27 @@ import {
   packageBase,
   phase3WriteTargets
 } from './lower-dvina-trace-phase-3-command-shared.js';
+import { tracePhase3PreconditionSatisfied } from
+  './lower-dvina-trace-phase-3-admission.js';
 
 export function createTracePhase3MovementCommand({
   contracts,
   inputDigest
 }) {
   const { ids, movement, route } = contracts;
+  const preconditions = [{
+    kind: 'committed_location',
+    location_ref: movement.preconditions.location_ref
+  }, ...(contracts.routeBodyEffect == null ? [] : [{
+    kind: 'approved_route_body_source_state'
+  }])];
   return {
     command_id: 'lower_dvina_trace.follow_path_to_fishing_camp',
     option_id: ids.moveOption,
     label: 'Пройти по тропе к рыбацкому стану',
     target_id: ids.campLocation,
     approved_record: contracts.activityPins[0],
-    preconditions: [{
-      kind: 'committed_location',
-      location_ref: movement.preconditions.location_ref
-    }],
+    preconditions,
     expected_cost: { kind: 'exact_time', value: 8 },
     known_risks: [],
     reason_visible_to_actor: 'От берега к стану ведёт заметная местная тропа.',
@@ -41,8 +46,8 @@ export function createTracePhase3MovementCommand({
     matches: exactMatcher(ids.moveOption),
     availability(context) {
       const state = context.committed_state ?? context.retrievedState;
-      const allowed = state.position?.location_ref
-        === movement.preconditions.location_ref
+      const allowed = preconditions.every((precondition) =>
+        tracePhase3PreconditionSatisfied(precondition, state, contracts))
         && Boolean(state.position?.g5_anchor_id);
       return available(allowed, [], allowed ? [] : ['wrong_location']);
     },
@@ -102,6 +107,9 @@ export function createTracePhase3MovementCommand({
         inputDigest,
         duration: 8,
         kind: 'movement',
+        ...(contracts.routeBodyEffect ? {
+          body_effect_ref: contracts.routeBodyEffect.effect_profile_id
+        } : {}),
         movement: {
           owner: '@rus/movement-routes',
           activity_ref: movement.profile_id,

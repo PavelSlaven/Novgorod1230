@@ -83,7 +83,12 @@ export async function commitLowerDvinaTracePhase3({
       expected('party_server_sessions', partyId,
         state.party_state.session_state_version),
       expected('party_clocks', partyId,
-        state.party_state.clock_state_version)
+        state.party_state.clock_state_version),
+      ...(factual.body_update?.applied === true ? [expected(
+        'party_actor_body_states', `player_character:${state.actor_id}`,
+        state.party_state.body_state_version
+      ), ...expectedChangedConditions(state,
+        factual.body_update.state_after)] : [])
     ],
     validation_report: {
       status: 'pass',
@@ -160,6 +165,19 @@ export async function commitLowerDvinaTracePhase3({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest
   };
+}
+
+function expectedChangedConditions(state, nextBodyState) {
+  const changed = new Set((nextBodyState.active_conditions ?? [])
+    .filter(({ condition_outcome: outcome }) => Boolean(outcome))
+    .map(({ storage_condition_id: id }) => id));
+  return (state.body_state.active_conditions ?? [])
+    .filter(({ storage_condition_id: id }) => changed.has(id))
+    .map((condition) => expected(
+      'party_actor_active_conditions',
+      `player_character:${state.actor_id}:${condition.storage_condition_id}`,
+      condition.state_version
+    ));
 }
 
 function target(writePlan, name) {

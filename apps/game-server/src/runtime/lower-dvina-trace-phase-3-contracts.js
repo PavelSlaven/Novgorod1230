@@ -18,7 +18,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11].includes(bundle.definition_revision)) {
+  if (![9, 10, 11, 12].includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
   const activities = bundle.activity_check_consequence_profiles.activity_profiles;
@@ -35,6 +35,8 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'route_id',
     ids.moveRoute
   );
+  const routeBodyEffect = routeEffect(bundle.body_environment_profiles?.effect_profiles,
+    'trace_ld_v1_body_open_route_8m', ids.moveActivity, route.duration_minutes);
   const sourceEndpoint = exact(
     bundle.location_topology_set.endpoints,
     'endpoint_id',
@@ -170,7 +172,7 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     gap('TRACE_PHASE_3_MOVEMENT_ADMISSION_INVALID');
   }
   return Object.freeze({
-    ids, movement, talk, evidenceTalk, check, route,
+    ids, movement, talk, evidenceTalk, check, route, routeBodyEffect,
     sourceEndpoint, destinationEndpoint, access, capacity,
     npcPolicy, executions, statementEffects, eremeyKnowledge,
     firstMapping, disclosureMapping, blueWoolPickup,
@@ -186,6 +188,14 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
       };
     })
   });
+}
+function routeEffect(records, effectId, activityRef, elapsedMinutes) {
+  const effect = (records ?? []).find((entry) => entry.effect_profile_id === effectId);
+  // Range-only historical profiles cannot be guessed or retroactively charged.
+  if (!effect?.exact_deltas || !Array.isArray(effect.condition_outcomes)) return null;
+  if (effect.activity_ref !== activityRef || effect.elapsed_minutes !== elapsedMinutes
+      || effect.selection_policy !== 'fixed_approved_effect' || effect.rng_consumption !== 'forbidden') gap('TRACE_PHASE_3_ROUTE_BODY_EFFECT_INVALID');
+  return structuredClone(effect);
 }
 
 function selection(state, kind, id) {

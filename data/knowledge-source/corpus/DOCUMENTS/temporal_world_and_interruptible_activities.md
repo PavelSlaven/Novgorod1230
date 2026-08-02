@@ -696,6 +696,10 @@ scheduled_at
 11. discover follow-up candidates at the same timestamp;
 12. repeat until stable.
 
+Все события одного timestamp образуют единый same-time batch. Общий temporal owner сортирует их по канонической policy, последовательно применяет к общей рабочей версии состояния, повторно проверяет условия перед каждым событием и обрабатывает возникшие follow-up события до стабильного состояния.
+
+Providers и сценарные модули только регистрируют candidates. Им запрещено исполнять их, разделять batch или самостоятельно задавать порядок событий разных подсистем.
+
 ### 10.3. Co-occurring outcomes
 
 - Если traversal progress достиг prepared endpoint, spatial-v3 `segment_completed` владеет location transition. Co-occurring damage или loss of consciousness не отменяет arrival, но применяется в том же change set.
@@ -977,6 +981,113 @@ command_token:
 `request_id` и `options_digest` детерминированы causal state. Selection сохраняется в technical decision trace до factual commit либо атомарно связывается с ним; retry переиспользует ту же validated selection и не обращается к LLM повторно с возможностью выбрать другой option. Если LLM/decision service недоступен до validated selection, factual commit не выполняется и game time не меняется. Несколько bounded NPC decisions одного timestamp упорядочиваются общей temporal policy; каждый следующий option set строится из обновлённой immutable working projection.
 
 Technical issued/expires timestamps decision lease могут быть `TIMESTAMPTZ`; они не являются игровыми deadlines. Gameplay deadline хранится отдельно как `GameTimestamp`.
+
+### 15.5. От decision boundary до фактического действия NPC
+
+Действие NPC определяется совместно кодом и bounded LLM selector, но их
+ответственность не пересекается:
+
+```text
+код: момент решения + конечный допустимый option set + исполнение
+LLM: одно человеческое намерение из переданного option set
+код: повторная проверка + фактический результат + atomic persistence
+```
+
+Код владеет factual state: perception и knowledge NPC, placement, body,
+items, access, routes, текущей activity, временем, checks, consequences и
+write targets. LLM не определяет успех, длительность, маршрут, бросок,
+телесный эффект, переход имущества, новое знание или change set. Её
+объяснение выбора не становится фактом мира.
+
+#### Когда требуется новое решение
+
+Новая decision boundary возникает только при содержательной необходимости:
+
+- завершилось текущее занятие или нужен следующий план;
+- прежнее намерение стало невыполнимым;
+- NPC воспринял значимую угрозу, просьбу, приказ, обвинение, предложение или
+  иное событие;
+- изменились доступность цели, предмета, человека или маршрута;
+- появилось противоречие целей, обязанностей или действующих обещаний.
+
+Продолжение уже выбранного намерения исполняет код без нового LLM-вызова.
+Traversal по открытому маршруту, следующий approved activity segment и
+завершение начатой работы не являются новым человеческим выбором, пока
+значимое состояние не изменилось. Автоматические физические последствия —
+падение при потере сознания, body effect, потеря доступа, невозможность пройти
+закрытый проход — также принадлежат соответствующим code owners.
+
+#### Откуда берётся option set
+
+`@rus/npc-runtime` не перебирает свободно мыслимые поступки. Он строит
+конечные options только из applicable approved decision policies, exact
+command records и зарегистрированных handlers, связывая их с текущими:
+
+- action/activity, movement, item/property, conversation/knowledge и
+  conflict contracts;
+- actor/target/item/destination slots;
+- perceived event, knowledge, memory и hypotheses NPC;
+- role, duties, goals, relations, obligations и approved ограничения;
+- placement, body state, resources, access, routes и witnesses.
+
+Сценарий или регион предоставляет конкретное содержание и approved bindings,
+но не создаёт отдельный NPC engine. Механически поддерживаемые классы действий
+могут покрывать движение, работу с предметом, общение, помощь, защиту,
+удержание, освобождение, нападение, сдачу и lifecycle activity. Это не требует
+моделировать моргание, движение пальцев, каждый шаг, каждую реплику или каждый
+удар инструмента: такие детали либо не моделируются, либо входят в исполнение
+крупного намерения.
+
+Код исключает option при нарушении factual precondition или exact approved
+policy rule. Он не вправе на лету сочинять психологическое правило вроде
+«гордый NPC не сдаётся» или «испуганный NPC обязан бежать». Личность,
+настроение, страх, выгода и отношения влияют на выбор LLM; они становятся
+code-owned eligibility gate только когда такая precondition явно утверждена в
+versioned policy. Один добровольный option на настоящей decision boundary
+требует проверки полноты policy: это может быть честная безальтернативность,
+но не результат неявного психологического отсечения.
+
+Каждый конкретный option содержит stable `option_id`, exact `command_ref`,
+заполненные actor/target/item/destination refs, известные NPC обстоятельства и
+preconditions digest. Например, общий approved command скрытия предмета может
+создать option «Жданко прячет дорожную сумку в доступном месте» только когда
+Жданко контролирует exact item, знает exact destination, имеет доступ, а
+capacity и body state допускают действие. Отсутствующая сумка, место, маршрут
+или handler удаляет option или создаёт typed gap по утверждённой policy; код и
+LLM не подставляют похожую сущность.
+
+#### Decision projection и выбор
+
+Bounded request содержит только знания и восприятие самого NPC, релевантные
+части его существующего профиля и состояния, а также закрытые options. Hidden
+truth, невоспринятые события, неизвестные маршруты, чужие секреты и будущие
+факты не передаются. В option description раскрывается человеческий смысл
+намерения, но не вычисляемая вероятность успеха и не обещанный consequence.
+
+LLM сопоставляет options с личностью, настроением, отношениями, обязанностями,
+мотивами, памятью, состоянием тела, воспринимаемым риском, свидетелями и
+прежними решениями NPC. Она возвращает только точный `request_id`,
+`state_version`, `option_id` и `command_token`.
+
+После ответа код повторно проверяет expiry, policy/state version, membership,
+token и preconditions на текущей immutable working projection. Сохранившийся
+option передаётся его единственному registered handler. Stale option
+отменяется, получает только явно approved adjustment либо создаёт новую
+decision boundary; свободная корректировка запрещена. Handler затем владеет
+activity/traversal/check, временем, предметными переходами, factual
+consequences и следующей meaningful boundary.
+
+Разговор использует тот же порядок. Код формирует options только из знания,
+knowledge scope, доступных тем, approved disclosure/withholding/lie records и
+адресата. LLM выбирает смысловой speech act, а narrator формулирует реплику из
+player-safe результата. Ложь остаётся assertion NPC и не переписывает
+objective fact, perception, knowledge, hypothesis или memory.
+
+Validated selection и её causal identity сохраняются до factual execution или
+атомарно вместе с ним. Retry/restart не вызывает LLM повторно для уже
+сохранённой boundary, не меняет выбранное намерение и не повторяет consequence.
+Так вариативность существует до решения, а совершившаяся причинность остаётся
+воспроизводимой.
 
 ## 16. Interruption
 

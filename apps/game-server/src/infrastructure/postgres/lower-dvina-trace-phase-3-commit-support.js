@@ -46,9 +46,24 @@ export function phase3SemanticCommitContext({
   }
   if (!isConversation) return null;
   const envelope = writePlan.turn_step_commit;
+  const exactFastPath = envelope == null
+    && writePlan.command_trace?.decision_protocol
+      === 'code_exact_fast_path_v1';
+  if (semanticExchange == null) {
+    fail('TRACE_M2_PHASE_3_SEMANTIC_LINEAGE_INVALID');
+  }
+  if (exactFastPath) {
+    const rootTurnId = writePlan.turn_id;
+    if (typeof rootTurnId !== 'string'
+        || rootTurnId.length === 0
+        || rootTurnId !== factual.mode_resolution.turn_id) {
+      fail('TRACE_M2_PHASE_3_SEMANTIC_LINEAGE_INVALID');
+    }
+    return { rootTurnId, workingRevision: 0, semanticExchange };
+  }
   const rootTurnId = envelope?.root_turn_id;
   const workingRevision = envelope?.loop_trace?.working_revision;
-  if (semanticExchange == null
+  if (writePlan.command_trace?.decision_protocol !== 'turn_step_plan_v1'
       || envelope?.schema !== 'turn_step_commit_envelope_v1'
       || typeof rootTurnId !== 'string'
       || rootTurnId.length === 0

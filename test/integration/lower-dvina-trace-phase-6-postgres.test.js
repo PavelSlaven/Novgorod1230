@@ -23,6 +23,8 @@ import { validatePhase6TemporalSourceResolution } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import { createM2ConversationModels } from
   '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import { createLowerDvinaTraceTurnStepTestModel } from
+  '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v3_candidate_001', digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea' });
@@ -111,7 +113,9 @@ function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
   });
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels();
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
+    turnStepModel,
     playerConversationModel, npcSemanticModel,
     semanticResolver: async ({ raw_text, action_set }) => ({ option_id: option(raw_text, action_set) }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),

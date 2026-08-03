@@ -11,6 +11,9 @@ import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import {
+  createLowerDvinaTraceTurnStepTestModel
+} from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import {
@@ -146,6 +149,11 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   const surrendered = await restarted.submitTurn(party.party_id, surrenderInput);
   assert.equal(surrendered.option_id,
     'offer_conditional_protection_and_seek_surrender');
+  assert.deepEqual(surrendered.conversation.semantic_exchange, {
+    response_kind: 'surrender',
+    npc_utterance: 'Сдаюсь. Нож отдам.',
+    disclosed_route_ref: null
+  });
   assert.deepEqual((await pool.query(
     `SELECT result_kind
        FROM party_runtime.party_check_resolutions
@@ -185,9 +193,9 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
     party.party_id
   );
 
-  await runConfessionPath({ pool, release, runtimeCatalogPin });
-  await runThreatPath({ pool, release, runtimeCatalogPin });
-  await runAttackPath({ pool, release, runtimeCatalogPin });
+  await runLiePath({ pool, release, runtimeCatalogPin });
+  await runBargainPath({ pool, release, runtimeCatalogPin });
+  await runCombatHandoffPath({ pool, release, runtimeCatalogPin });
 
   const rollbackParty = await createParty(runtime, 'phase-4-rollback');
   await advanceToCampWithRouteKnowledge(runtime, rollbackParty.party_id,
@@ -241,7 +249,7 @@ function buildRuntime({
   pool,
   release,
   runtimeCatalogPin,
-  npcOption = 'surrender_without_confession',
+  ratshaResponseKind = 'surrender',
   randomValue = 0.99,
   counters = null
 }) {
@@ -252,13 +260,6 @@ function buildRuntime({
   const repository = createLowerDvinaTracePhase2PostgresRepository({
     partyPool: pool, committer
   });
-  const ratshaResponseKind = ({
-    surrender_without_confession: 'surrender',
-    surrender_and_confess: 'surrender',
-    threaten_and_bargain: 'bargain',
-    attack_and_escape: 'combat_handoff'
-  })[npcOption];
-  assert.ok(ratshaResponseKind, `Unsupported M2 NPC test outcome: ${npcOption}`);
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels({
       ratshaResponseKind,
@@ -270,8 +271,10 @@ function buildRuntime({
         }
       }
     });
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
+    turnStepModel,
     playerConversationModel,
     npcSemanticModel,
     semanticResolver: async ({ raw_text, action_set }) => ({
@@ -290,16 +293,6 @@ function buildRuntime({
           ? randomValue(request_id)
           : randomValue
       );
-    },
-    npcDecisionSelector: async (request) => {
-      if (counters) counters.npc += 1;
-      const option = request.options.find(
-        ({ option_id }) => option_id === npcOption
-      );
-      assert.ok(option, `${npcOption}: ${request.options
-        .map(({ option_id: id }) => id).join(',')}`);
-      return { request_id: request.request_id, state_version: request.state_version,
-        option_id: option.option_id, command_token: option.command_token };
     },
     decisionSecret: 'phase-4-postgres-secret',
     now: () => '2026-07-30T08:00:00.000Z'
@@ -344,46 +337,40 @@ function approvedNarration(requestId) {
     generation_history: [], audit_history: [], repair_history: [], diagnostics: {} };
 }
 
-async function runConfessionPath({ pool, release, runtimeCatalogPin }) {
+async function runLiePath({ pool, release, runtimeCatalogPin }) {
   const counters = { rng: 0, npc: 0 };
   const runtime = buildRuntime({
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'surrender_and_confess',
+    ratshaResponseKind: 'lie',
     counters
   });
-  const party = await createParty(runtime, 'phase-4-confession');
-  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'confession');
+  const party = await createParty(runtime, 'phase-4-lie');
+  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'lie');
   await runtime.submitTurn(party.party_id,
-    turn('phase-4-confession-route',
+    turn('phase-4-lie-route',
       'Пройти известной тропой к старой сушильне.'));
-  const input = turn('phase-4-confession-surrender',
+  const before = await latestSnapshot(pool, party.party_id);
+  const input = turn('phase-4-lie-attempt',
     'Предложить Ратше условную защиту и потребовать сдачи.');
   const result = await runtime.submitTurn(party.party_id, input);
-  await assertSuccessRows(pool, party.party_id);
-  const interaction = (await pool.query(
-    `SELECT terminal_evidence_ref
-       FROM party_runtime.party_actor_npc_interactions
-      WHERE party_id=$1 AND interaction_id LIKE '%:confession'`,
-    [party.party_id]
-  )).rows;
-  assert.equal(interaction.length, 1);
-  assert.equal(interaction[0].terminal_evidence_ref.truth_projection,
-    'forbidden');
+  assert.deepEqual(result.conversation.semantic_exchange, {
+    response_kind: 'lie',
+    npc_utterance: 'Я здесь случайно и никого не видел.',
+    disclosed_route_ref: null
+  });
+  const after = await latestSnapshot(pool, party.party_id);
   assert.equal(
-    interaction[0].terminal_evidence_ref.assertion.assertion_id,
-    'trace_ld_v1_assertion_ratsha_confession'
+    Number(after.clock.whole_minutes) - Number(before.clock.whole_minutes),
+    10
   );
-  assert.equal(interaction[0].terminal_evidence_ref.audience_ids.length, 3);
-  assert.equal((await pool.query(
-    `SELECT count(*)::int AS count
-       FROM party_runtime.party_actor_npc_interaction_summaries s
-       JOIN party_runtime.party_actor_npc_interactions i
-         ON i.interaction_id=s.interaction_id
-      WHERE i.party_id=$1 AND i.interaction_id LIKE '%:confession'`,
-    [party.party_id]
-  )).rows[0].count, 2);
+  await assertNonSurrenderSemanticRows(pool, party.party_id, 'lie');
+  const lie = after.interactions.find(({ interaction_id: id }) =>
+    id.endsWith(':lie'));
+  assert.equal(lie?.truth_projection, 'speaker_statement_only');
+  assert.equal(lie?.objective_truth_write, 'forbidden');
+  assert.equal(lie?.claims[0]?.speaker_posture, 'knowingly_false');
   const forbiddenTruth = (await pool.query(
     `SELECT count(*)::int AS count
        FROM party_runtime.party_character_knowledge
@@ -402,41 +389,49 @@ async function runConfessionPath({ pool, release, runtimeCatalogPin }) {
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'surrender_and_confess',
+    ratshaResponseKind: 'lie',
     counters
   });
   assert.deepEqual(await restarted.submitTurn(party.party_id, input), result);
   assert.deepEqual(counters, beforeReplay);
 }
 
-async function runThreatPath({ pool, release, runtimeCatalogPin }) {
+async function runBargainPath({ pool, release, runtimeCatalogPin }) {
   const counters = { rng: 0, npc: 0 };
   const runtime = buildRuntime({
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'threaten_and_bargain',
+    ratshaResponseKind: 'bargain',
     randomValue: (requestId) =>
-      requestId.includes('threat-attempt')
-        || requestId.includes('threat-second-attempt')
+      requestId.includes('bargain-attempt')
+        || requestId.includes('bargain-second-attempt')
         ? 0
         : 0.99,
     counters
   });
-  const party = await createParty(runtime, 'phase-4-threat');
-  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'threat');
+  const party = await createParty(runtime, 'phase-4-bargain');
+  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'bargain');
   await runtime.submitTurn(party.party_id, turn(
-    'phase-4-threat-route',
+    'phase-4-bargain-route',
     'Пройти известной тропой к старой сушильне.'
   ));
-  const input = turn('phase-4-threat-attempt',
+  const before = await latestSnapshot(pool, party.party_id);
+  const input = turn('phase-4-bargain-attempt',
     'Предложить Ратше условную защиту и потребовать сдачи.');
   const result = await runtime.submitTurn(party.party_id, input);
-  await assertHostileRows(pool, party.party_id, {
-    optionId: 'threaten_and_bargain',
-    attack: false
+  assert.deepEqual(result.conversation.semantic_exchange, {
+    response_kind: 'bargain',
+    npc_utterance: 'Отпустите меня, и я скажу, кто меня послал.',
+    disclosed_route_ref: null
   });
   const offeredSnapshot = await latestSnapshot(pool, party.party_id);
+  assert.equal(
+    Number(offeredSnapshot.clock.whole_minutes)
+      - Number(before.clock.whole_minutes),
+    10
+  );
+  await assertNonSurrenderSemanticRows(pool, party.party_id, 'bargain');
   const offeredPromise = offeredSnapshot.promise_instances[0];
   const offeredNormalized = (await pool.query(
     `SELECT created_change_set_id,last_change_set_id,state_version
@@ -452,31 +447,19 @@ async function runThreatPath({ pool, release, runtimeCatalogPin }) {
     ...offeredNormalized,
     state_version: Number(offeredNormalized.state_version)
   });
-  const threat = (await pool.query(
-    `SELECT terminal_evidence_ref
-       FROM party_runtime.party_actor_npc_interactions
-      WHERE party_id=$1 AND interaction_id LIKE '%:threat'`,
-    [party.party_id]
-  )).rows;
-  assert.equal(threat.length, 1);
-  assert.deepEqual({
-    source_rule: threat[0].terminal_evidence_ref.source_rule,
-    immediate_threat: threat[0].terminal_evidence_ref.immediate_threat,
-    truth_projection: threat[0].terminal_evidence_ref.truth_projection
-  }, {
-    source_rule: 'speaker_current_threat_or_offer_only',
-    immediate_threat: true,
-    truth_projection: 'forbidden'
-  });
+  const bargain = offeredSnapshot.interactions.find(
+    ({ interaction_id: id }) => id.endsWith(':bargain'));
+  assert.equal(bargain?.truth_projection, 'speaker_statement_only');
+  assert.equal(bargain?.objective_truth_write, 'forbidden');
   const beforeReplay = { ...counters };
   const restarted = buildRuntime({
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'threaten_and_bargain',
+    ratshaResponseKind: 'bargain',
     randomValue: (requestId) =>
-      requestId.includes('threat-attempt')
-        || requestId.includes('threat-repeat-')
+      requestId.includes('bargain-attempt')
+        || requestId.includes('bargain-repeat-')
         ? 0
         : 0.99,
     counters
@@ -488,7 +471,7 @@ async function runThreatPath({ pool, release, runtimeCatalogPin }) {
   while (current.party_state.turn_number < 10) {
     const targetTurn = current.party_state.turn_number + 1;
     await restarted.submitTurn(party.party_id, turn(
-      `phase-4-threat-repeat-${targetTurn}`,
+      `phase-4-bargain-repeat-${targetTurn}`,
       'Ещё раз предложить Ратше условную защиту и потребовать сдачи.'
     ));
     repeatedAttempts += 1;
@@ -524,46 +507,55 @@ async function runThreatPath({ pool, release, runtimeCatalogPin }) {
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'threaten_and_bargain',
+    ratshaResponseKind: 'bargain',
     counters
   });
   await afterRestart.getPartyScreen(party.party_id);
 }
 
-async function runAttackPath({ pool, release, runtimeCatalogPin }) {
+async function runCombatHandoffPath({ pool, release, runtimeCatalogPin }) {
   const counters = { rng: 0, npc: 0 };
   const runtime = buildRuntime({
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'attack_and_escape',
+    ratshaResponseKind: 'combat_handoff',
     randomValue: (requestId) =>
-      requestId.includes('attack-attempt') ? 0 : 0.99,
+      requestId.includes('combat-handoff-attempt') ? 0 : 0.99,
     counters
   });
-  const party = await createParty(runtime, 'phase-4-attack');
-  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'attack');
+  const party = await createParty(runtime, 'phase-4-combat-handoff');
+  await advanceToCampWithRouteKnowledge(
+    runtime,
+    party.party_id,
+    'combat-handoff'
+  );
   await runtime.submitTurn(party.party_id, turn(
-    'phase-4-attack-route',
+    'phase-4-combat-handoff-route',
     'Пройти известной тропой к старой сушильне.'
   ));
   const before = await latestSnapshot(pool, party.party_id);
-  const input = turn('phase-4-attack-attempt',
+  const input = turn('phase-4-combat-handoff-attempt',
     'Предложить Ратше условную защиту и потребовать сдачи.');
   const result = await runtime.submitTurn(party.party_id, input);
+  assert.deepEqual(result.conversation.semantic_exchange, {
+    response_kind: 'combat_handoff',
+    npc_utterance: null,
+    disclosed_route_ref: null
+  });
   const after = await latestSnapshot(pool, party.party_id);
   assert.equal(
     Number(after.clock.whole_minutes) - Number(before.clock.whole_minutes),
-    12
+    10
   );
   assert.deepEqual(after.body_state, before.body_state);
   assert.deepEqual(after.player_response_boundary, {
-    activity_ref: 'trace_ld_v1_activity_ratsha_attack_and_escape_attempt',
-    time_profile_ref: 'trace_ld_v1_time_2m',
-    duration_minutes: 2,
-    status: 'player_response_required',
-    automatic_harm: false,
-    automatic_escape: false
+    kind: 'combat',
+    intent: 'transfer control to the combat owner',
+    target_actor_refs: [{
+      entity_kind: 'player_character',
+      entity_id: before.actor_id
+    }]
   });
   const activities = (await pool.query(
     `SELECT original_total_minutes::int AS minutes,
@@ -585,26 +577,21 @@ async function runAttackPath({ pool, release, runtimeCatalogPin }) {
       execution_start: Number(before.clock.whole_minutes),
       execution_end: Number(before.clock.whole_minutes) + 10,
       attempt_start: Number(before.clock.whole_minutes),
-      attempt_end: Number(before.clock.whole_minutes) + 10 },
-    { minutes: 2, actual: 2, status: 'completed',
-      result_kind: 'completed',
-      execution_start: Number(before.clock.whole_minutes) + 10,
-      execution_end: Number(before.clock.whole_minutes) + 12,
-      attempt_start: Number(before.clock.whole_minutes) + 10,
-      attempt_end: Number(before.clock.whole_minutes) + 12 }
+      attempt_end: Number(before.clock.whole_minutes) + 10 }
   ]);
-  await assertHostileRows(pool, party.party_id, {
-    optionId: 'attack_and_escape',
-    attack: true
-  });
+  await assertNonSurrenderSemanticRows(
+    pool,
+    party.party_id,
+    'combat_handoff'
+  );
   const beforeReplay = { ...counters };
   const restarted = buildRuntime({
     pool,
     release,
     runtimeCatalogPin,
-    npcOption: 'attack_and_escape',
+    ratshaResponseKind: 'combat_handoff',
     randomValue: (requestId) =>
-      requestId.includes('attack-attempt') ? 0 : 0.99,
+      requestId.includes('combat-handoff-attempt') ? 0 : 0.99,
     counters
   });
   assert.deepEqual(await restarted.submitTurn(party.party_id, input), result);
@@ -612,7 +599,7 @@ async function runAttackPath({ pool, release, runtimeCatalogPin }) {
   assert.deepEqual(await latestSnapshot(pool, party.party_id), after);
 }
 
-async function assertHostileRows(pool, partyId, { optionId, attack }) {
+async function assertNonSurrenderSemanticRows(pool, partyId, responseKind) {
   const promise = (await pool.query(
     `SELECT current_state,current_state_fact
        FROM party_runtime.party_obligations
@@ -625,15 +612,7 @@ async function assertHostileRows(pool, partyId, { optionId, attack }) {
   }]);
   assert.equal(await count(pool,
     'party_runtime.party_obligation_transitions', partyId), 1);
-  const decision = (await pool.query(
-    `SELECT option_id
-       FROM party_runtime.party_npc_decision_traces d
-       JOIN party_runtime.party_v3_change_sets c
-         ON c.party_id=d.party_id AND c.id=d.change_set_id
-      WHERE d.party_id=$1 AND c.operation_kind='trace_phase_4_turn'`,
-    [partyId]
-  )).rows;
-  assert.deepEqual(decision, [{ option_id: optionId }]);
+  await assertPhase4SemanticDecision(pool, partyId, responseKind);
   const knife = (await pool.query(
     `SELECT o.owner_npc_id,o.controller_npc_id,p.holder_npc_id,
             p.physical_position
@@ -656,23 +635,77 @@ async function assertHostileRows(pool, partyId, { optionId, attack }) {
         AND fact_id='ratsha_surrender_without_further_harm_committed'`,
     [partyId]
   )).rows[0].count, 0);
-  if (attack) {
-    const facts = (await pool.query(
-      `SELECT fact_id
-         FROM party_runtime.party_character_knowledge
-        WHERE party_id=$1
-          AND fact_id IN (
-            'ratsha_attack_attempt_committed',
-            'ratsha_attack_player_response_required'
-          )
-        ORDER BY fact_id`,
-      [partyId]
-    )).rows;
-    assert.deepEqual(facts, [
-      { fact_id: 'ratsha_attack_attempt_committed' },
-      { fact_id: 'ratsha_attack_player_response_required' }
-    ]);
+  const attackFacts = (await pool.query(
+    `SELECT fact_id
+       FROM party_runtime.party_character_knowledge
+      WHERE party_id=$1
+        AND fact_id IN (
+          'ratsha_attack_attempt_committed',
+          'ratsha_attack_player_response_required'
+        )`,
+    [partyId]
+  )).rows;
+  assert.deepEqual(attackFacts, []);
+}
+
+async function assertPhase4SemanticDecision(pool, partyId, responseKind) {
+  const decisions = (await pool.query(
+    `SELECT d.option_id,d.status,d.decision_mode,d.semantic_trace_schema,
+            d.semantic_plan,s.status AS session_status,
+            claim.status AS claim_status,
+            claim.semantic_plan=d.semantic_plan AS claim_matches_trace
+       FROM party_runtime.party_npc_decision_traces d
+       JOIN party_runtime.party_v3_change_sets c
+         ON c.party_id=d.party_id AND c.id=d.change_set_id
+       JOIN party_runtime.party_conversation_sessions s
+         ON s.party_id=d.party_id
+        AND s.conversation_id=d.semantic_request->>'conversation_id'
+       JOIN party_runtime.party_npc_semantic_decision_claims claim
+         ON claim.party_id=d.party_id AND claim.boundary_id=d.boundary_id
+      WHERE d.party_id=$1 AND c.operation_kind='trace_phase_4_turn'
+      ORDER BY d.state_version,d.request_id`,
+    [partyId]
+  )).rows;
+  assert.equal(decisions.length, 1);
+  const decision = decisions[0];
+  assert.deepEqual({
+    option_id: decision.option_id,
+    status: decision.status,
+    decision_mode: decision.decision_mode,
+    semantic_trace_schema: decision.semantic_trace_schema,
+    session_status: decision.session_status,
+    claim_status: decision.claim_status,
+    claim_matches_trace: decision.claim_matches_trace
+  }, {
+    option_id: null,
+    status: 'committed',
+    decision_mode: 'conversation',
+    semantic_trace_schema: 'npc_semantic_decision_trace_v1',
+    session_status: responseKind === 'combat_handoff' ? 'suspended' : 'ended',
+    claim_status: 'completed',
+    claim_matches_trace: true
+  });
+  if (responseKind === 'combat_handoff') {
+    assert.equal(decision.semantic_plan.contribution_kind, 'combat_handoff');
+    assert.equal(decision.semantic_plan.speech, null);
+    assert.equal(decision.semantic_plan.handoff.kind, 'combat');
+  } else {
+    assert.equal(decision.semantic_plan.contribution_kind, 'speech');
+    assert.deepEqual(
+      decision.semantic_plan.speech.interaction_tags,
+      [responseKind]
+    );
   }
+  const statementCount = (await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_conversation_statements statement
+       JOIN party_runtime.party_v3_change_sets c
+         ON c.party_id=statement.party_id AND c.id=statement.change_set_id
+      WHERE statement.party_id=$1
+        AND c.operation_kind='trace_phase_4_turn'`,
+    [partyId]
+  )).rows[0].count;
+  assert.equal(statementCount, responseKind === 'combat_handoff' ? 1 : 2);
 }
 
 async function latestSnapshot(pool, partyId) {
@@ -726,6 +759,7 @@ async function assertSuccessRows(pool, partyId) {
   assert.deepEqual(promise, [{ current_state: 'active',
     current_state_fact: 'promise_current_active' }]);
   assert.equal(await count(pool, 'party_runtime.party_obligation_transitions', partyId), 2);
+  await assertPhase4SemanticDecision(pool, partyId, 'surrender');
 }
 
 async function assertTamperRejected(pool, runtime, partyId, sql) {
@@ -842,30 +876,33 @@ async function assertPhase4SemanticTamperingRejected(pool, runtime, partyId) {
     pool, runtime, partyId,
     table: 'party_runtime.party_npc_decision_traces',
     trigger: 'temporal_append_only',
-    selectSql: `SELECT request_id,option_id
-                  FROM party_runtime.party_npc_decision_traces
-                 WHERE party_id=$1
-                   AND option_id IN (
-                     'surrender_without_confession',
-                     'surrender_and_confess'
-                   )
-                 ORDER BY request_id LIMIT 1`,
+    selectSql: `SELECT request_id,semantic_plan
+                   FROM party_runtime.party_npc_decision_traces
+                  WHERE party_id=$1
+                    AND semantic_plan->'speech'->'interaction_tags'
+                      @> '["surrender"]'::jsonb
+                  ORDER BY request_id LIMIT 1`,
     tamperSql: `UPDATE party_runtime.party_npc_decision_traces
-                   SET option_id='threaten_and_bargain'
+                   SET semantic_plan=jsonb_set(
+                     semantic_plan,
+                     '{speech,utterance_text}',
+                     '"tampered"'::jsonb,
+                     false
+                   )
                  WHERE request_id=(
                    SELECT request_id
                      FROM party_runtime.party_npc_decision_traces
                     WHERE party_id=$1
-                      AND option_id IN (
-                        'surrender_without_confession',
-                        'surrender_and_confess'
-                      )
+                      AND semantic_plan->'speech'->'interaction_tags'
+                        @> '["surrender"]'::jsonb
                     ORDER BY request_id LIMIT 1
                  )`,
     restoreSql: `UPDATE party_runtime.party_npc_decision_traces
-                    SET option_id=$2
+                    SET semantic_plan=$2::jsonb
                   WHERE party_id=$1 AND request_id=$3`,
-    restoreValues: (row) => [row.option_id, row.request_id]
+    restoreValues: (row) => [
+      JSON.stringify(row.semantic_plan), row.request_id
+    ]
   });
 }
 

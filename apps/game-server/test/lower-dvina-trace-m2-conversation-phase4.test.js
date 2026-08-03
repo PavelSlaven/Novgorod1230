@@ -7,6 +7,9 @@ import {
   phase2PublicResult
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import {
+  phase4SemanticCommitContext
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-commit.js';
+import {
   assertPersistedStatePayloadSafe,
   checkResult,
   digest,
@@ -16,6 +19,65 @@ import {
   revision14Bundle,
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('revision 14 Phase 4 semantic lineage accepts only exact or M1-owned turns', () => {
+  const semanticExchange = { response_kind: 'surrender' };
+  const turnId = 'turn:party-1:4';
+  const factual = {
+    mode_resolution: { turn_id: turnId },
+    consequence: {
+      phase4_kind: 'negotiation',
+      negotiation: { semantic_exchange: semanticExchange }
+    }
+  };
+  assert.deepEqual(phase4SemanticCommitContext({
+    scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: turnId,
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    }
+  }), {
+    rootTurnId: turnId,
+    workingRevision: 0,
+    semanticExchange
+  });
+  assert.deepEqual(phase4SemanticCommitContext({
+    scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: turnId,
+      command_trace: { decision_protocol: 'turn_step_plan_v1' },
+      turn_step_commit: {
+        schema: 'turn_step_commit_envelope_v1',
+        root_turn_id: turnId,
+        loop_trace: { root_turn_id: turnId, working_revision: 2 }
+      }
+    }
+  }), {
+    rootTurnId: turnId,
+    workingRevision: 2,
+    semanticExchange
+  });
+  for (const decisionProtocol of ['bounded_decision_v2', 'unknown']) {
+    assert.throws(() => phase4SemanticCommitContext({
+      scenarioRevision: 14,
+      factual,
+      writePlan: {
+        turn_id: turnId,
+        command_trace: { decision_protocol: decisionProtocol }
+      }
+    }), { code: 'TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID' });
+  }
+  assert.throws(() => phase4SemanticCommitContext({
+    scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: 'turn:party-1:forged',
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    }
+  }), { code: 'TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID' });
+});
 
 test('the same code-owned social check exposes delivery cues but does not choose Ratsha branch', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();

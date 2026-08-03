@@ -123,7 +123,7 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
 }
 function fail(code, details = null) { return serverError(code, 'Phase 4 factual commit failed closed.', { status: 409, details }); }
 
-function phase4SemanticCommitContext({
+export function phase4SemanticCommitContext({
   writePlan,
   factual,
   scenarioRevision
@@ -141,9 +141,24 @@ function phase4SemanticCommitContext({
   }
   if (!isNegotiation) return null;
   const envelope = writePlan.turn_step_commit;
+  const exactFastPath = envelope == null
+    && writePlan.command_trace?.decision_protocol
+      === 'code_exact_fast_path_v1';
+  if (semanticExchange == null) {
+    throw fail('TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID');
+  }
+  if (exactFastPath) {
+    const rootTurnId = writePlan.turn_id;
+    if (typeof rootTurnId !== 'string'
+        || rootTurnId.length === 0
+        || rootTurnId !== factual.mode_resolution.turn_id) {
+      throw fail('TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID');
+    }
+    return { rootTurnId, workingRevision: 0, semanticExchange };
+  }
   const rootTurnId = envelope?.root_turn_id;
   const workingRevision = envelope?.loop_trace?.working_revision;
-  if (semanticExchange == null
+  if (writePlan.command_trace?.decision_protocol !== 'turn_step_plan_v1'
       || envelope?.schema !== 'turn_step_commit_envelope_v1'
       || typeof rootTurnId !== 'string'
       || rootTurnId.length === 0

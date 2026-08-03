@@ -27,7 +27,7 @@ import {
   buildNpcSemanticConversationWriteInput
 } from './npc-semantic-conversation-writes.js';
 
-import { exactActivityRoots, validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
+import { validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
 
 export function appendSemanticNegotiation({
   inserts,
@@ -55,7 +55,10 @@ export function appendSemanticNegotiation({
         contracts })) {
     throw new Error('TRACE_PHASE_4_PROMISE_TRANSITION_INVALID');
   }
-  const roots = exactActivityRoots(n);
+  const roots = n.activity_roots ?? [];
+  if (roots.length !== 1 || roots[0]?.duration_minutes !== 10) {
+    throw new Error('TRACE_M2_PHASE_4_SEMANTIC_ACTIVITY_ROOT_INVALID');
+  }
   const negotiationActivityId =
     `activity:${partyId}:trace-phase4:${turnNumber}:negotiation`;
   appendPhase4ActivityExecution({
@@ -65,7 +68,7 @@ export function appendSemanticNegotiation({
     state,
     factual,
     next,
-    root: roots.negotiation,
+    root: roots[0],
     id: negotiationActivityId,
     seriesOrdinal: 0,
     activitySeriesId:
@@ -75,9 +78,6 @@ export function appendSemanticNegotiation({
     changeSetId,
     idemId
   });
-  if (roots.continuation) {
-    throw new Error('TRACE_M2_PHASE_4_SEMANTIC_CONTINUATION_INVALID');
-  }
   const checkId = `check:${partyId}:trace-phase4:${turnNumber}`;
   const offerAppends = [];
   const activationAppends = [];

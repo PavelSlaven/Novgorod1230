@@ -14,6 +14,9 @@ import {
   createM2ConversationModels
 } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import {
+  createLowerDvinaTraceTurnStepTestModel
+} from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import {
@@ -130,13 +133,19 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     idempotency_key: 'phase-3-a-talk',
     raw_text: 'Поговорить с Еремеем о крушении.'
   });
-  assert.equal(firstTalk.conversation.decision.trace.option_id,
-    'evade_and_withhold');
+  assert.deepEqual(firstTalk.conversation.semantic_exchange, {
+    response_kind: 'withhold',
+    npc_utterance: 'Нечего мне больше сказать.',
+    disclosed_route_ref: null
+  });
   assert.equal(firstTalk.time_update.exact_elapsed.exact_minutes.numerator,
     '5');
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyA.party_id), 1);
-  assert.equal(await summariesFor(pool, partyA.party_id), 2);
+    'party_runtime.party_conversation_sessions', partyA.party_id), 1);
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_statements', partyA.party_id), 2);
+  assert.equal(await count(pool,
+    'party_runtime.party_actor_npc_interactions', partyA.party_id), 0);
   assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 1);
   assert.equal(await knowledgeCount(pool, partyA.party_id,
@@ -152,16 +161,21 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
   });
   assert.deepEqual(replayA, firstTalk);
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyA.party_id), 1);
+    'party_runtime.party_conversation_statements', partyA.party_id), 2);
   const repeatedTalk = await restartedA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-talk-repeat',
     idempotency_key: 'phase-3-a-talk-repeat',
     raw_text: 'Ещё раз спросить Еремея о крушении.'
   });
-  assert.equal(repeatedTalk.conversation.statement_is_new, false);
+  assert.deepEqual(repeatedTalk.conversation.semantic_exchange, {
+    response_kind: 'withhold',
+    npc_utterance: 'Нечего мне больше сказать.',
+    disclosed_route_ref: null
+  });
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyA.party_id), 2);
-  assert.equal(await summariesFor(pool, partyA.party_id), 2);
+    'party_runtime.party_conversation_statements', partyA.party_id), 4);
+  assert.equal(await count(pool,
+    'party_runtime.party_npc_decision_traces', partyA.party_id), 2);
 
   const pathB = buildRuntime({
     pool, release, runtimeCatalogPin,
@@ -185,28 +199,45 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
   };
   const disclosed = await pathB.submitTurn(partyB.party_id, disclosureInput);
   assert.equal(disclosed.check.outcome.success, true);
-  assert.equal(disclosed.conversation.decision.trace.option_id,
-    'bounded_disclosure');
-  assert.equal(disclosed.conversation.statement_ref,
-    'trace_ld_v1_statement_eremey_disclosure');
+  assert.deepEqual(disclosed.conversation.semantic_exchange, {
+    response_kind: 'route_disclosure',
+    npc_utterance: 'От лагеря иди к старой сушильне по тропе.',
+    disclosed_route_ref: 'trace_ld_v1_route_camp_to_shed'
+  });
   assert.equal(disclosed.time_update.exact_elapsed.exact_minutes.numerator,
     '10');
   assert.deepEqual(await positionFor(pool, partyB.party_id), positionBefore);
   assert.equal(await knowledgeCount(pool, partyB.party_id,
     'trace_ld_v1_route_camp_to_shed'), 1);
-  assert.equal(await knowledgeCount(pool, partyB.party_id,
-    'trace_ld_v1_statement_eremey_disclosure'), 1);
+  const disclosureStatement = (await pool.query(
+    `SELECT statement_id
+       FROM party_runtime.party_conversation_statements
+      WHERE party_id=$1
+        AND interaction_tags @> '["route_disclosure"]'::jsonb`,
+    [partyB.party_id]
+  )).rows;
+  assert.equal(disclosureStatement.length, 1);
+  assert.deepEqual((await pool.query(
+    `SELECT knowledge_state,evidence
+       FROM party_runtime.party_character_knowledge
+      WHERE party_id=$1 AND fact_id='trace_ld_v1_route_camp_to_shed'`,
+    [partyB.party_id]
+  )).rows, [{
+    knowledge_state: 'known_from_committed_source',
+    evidence: [disclosureStatement[0].statement_id]
+  }]);
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyB.party_id), 1);
+    'party_runtime.party_conversation_statements', partyB.party_id), 2);
+  assert.equal(await count(pool,
+    'party_runtime.party_actor_npc_interactions', partyB.party_id), 0);
   await assert.rejects(
     () => pathB.submitTurn(partyB.party_id, {
       request_id: 'phase-3-b-post-disclosure-talk',
       idempotency_key: 'phase-3-b-post-disclosure-talk',
       raw_text: 'Снова спросить Еремея о крушении.'
     }),
-    { code: 'TURN_SEMANTIC_OPTION_INVALID' }
+    { code: 'TURN_STEP_DOMAIN_BINDING_MISSING' }
   );
-  assert.equal(await summariesFor(pool, partyB.party_id), 2);
   assert.equal(await count(pool,
     'party_runtime.party_check_resolutions', partyB.party_id), 2);
 
@@ -221,7 +252,7 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     disclosed
   );
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyB.party_id), 1);
+    'party_runtime.party_conversation_statements', partyB.party_id), 2);
   await pool.query(
     `UPDATE party_runtime.party_ownership o
         SET owner_external_ref=$2::jsonb
@@ -289,9 +320,11 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     raw_text: 'Показать улику Еремею и попросить помочь.'
   });
   assert.equal(guarded.check.outcome.success, false);
-  assert.equal(guarded.conversation.decision.trace.option_id,
-    'evade_and_withhold');
-  assert.equal(guarded.conversation.route_knowledge_ref, null);
+  assert.deepEqual(guarded.conversation.semantic_exchange, {
+    response_kind: 'withhold',
+    npc_utterance: 'Нечего мне больше сказать.',
+    disclosed_route_ref: null
+  });
   assert.equal(await knowledgeCount(pool, partyC.party_id,
     'trace_ld_v1_route_camp_to_shed'), 0);
   assert.equal(
@@ -344,8 +377,10 @@ function buildRuntime({
   });
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels();
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
+    turnStepModel,
     playerConversationModel,
     npcSemanticModel,
     semanticResolver: async (request) => ({
@@ -488,17 +523,6 @@ async function installWorldLineage(pool) {
 async function count(pool, table, partyId) {
   return (await pool.query(
     `SELECT count(*)::int AS count FROM ${table} WHERE party_id=$1`,
-    [partyId]
-  )).rows[0].count;
-}
-
-async function summariesFor(pool, partyId) {
-  return (await pool.query(
-    `SELECT count(*)::int AS count
-       FROM party_runtime.party_actor_npc_interaction_summaries s
-       JOIN party_runtime.party_actor_npc_interactions i
-         ON i.interaction_id=s.interaction_id
-      WHERE i.party_id=$1`,
     [partyId]
   )).rows[0].count;
 }

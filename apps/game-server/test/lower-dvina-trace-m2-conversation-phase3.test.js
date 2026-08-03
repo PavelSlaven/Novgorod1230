@@ -10,6 +10,9 @@ import {
   phase2PublicResult
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import {
+  phase3SemanticCommitContext
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-3-commit-support.js';
+import {
   assertPersistedStatePayloadSafe,
   checkResult,
   digest,
@@ -20,6 +23,37 @@ import {
   revision14Bundle,
   runPhase3
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('revision 14 exact commands bind semantic persistence to the root turn without a fabricated M1 envelope', () => {
+  const semanticExchange = { response_kind: 'withhold' };
+  const factual = {
+    mode_resolution: { turn_id: 'turn:party-1:3' },
+    consequence: {
+      phase3_kind: 'conversation',
+      conversation: { semantic_exchange: semanticExchange }
+    }
+  };
+  assert.deepEqual(phase3SemanticCommitContext({
+    scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: 'turn:party-1:3',
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    }
+  }), {
+    rootTurnId: 'turn:party-1:3',
+    workingRevision: 0,
+    semanticExchange
+  });
+  assert.throws(() => phase3SemanticCommitContext({
+    scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: 'turn:party-1:3',
+      command_trace: { decision_protocol: 'bounded_decision_v2' }
+    }
+  }), { code: 'TRACE_M2_PHASE_3_SEMANTIC_LINEAGE_INVALID' });
+});
 
 test('revision 14 Eremey semantic plans withhold or disclose and persist the exact heard exchange', async () => {
   assert.equal(revision14Bundle.definition_revision, 14);

@@ -57,13 +57,14 @@ function publicConversationProjection({ conversation, payload }) {
   const responseKind = semantic.response_kind;
   const speechResponse = SPEECH_RESPONSE_KINDS.has(responseKind);
   const nonSpeechResponse = NON_SPEECH_RESPONSE_KINDS.has(responseKind);
-  if (!speechResponse && !nonSpeechResponse) {
+  const noResponse = responseKind === null;
+  if (!speechResponse && !nonSpeechResponse && !noResponse) {
     throw new TypeError(
       'Semantic conversation response kind is not player-projectable.'
     );
   }
   const statementRefs = semantic.statement_refs;
-  const expectedStatementCount = speechResponse ? 1 : 0;
+  const expectedStatementCount = speechResponse || noResponse ? 1 : 0;
   if (!Array.isArray(statementRefs)
       || statementRefs.length !== expectedStatementCount
       || statementRefs.some(({ entity_kind: kind, entity_id: id }) =>
@@ -79,9 +80,10 @@ function publicConversationProjection({ conversation, payload }) {
     throw new TypeError('Semantic statement references are duplicated.');
   }
   const npcRef = semantic.npc_ref;
-  if (npcRef?.entity_kind !== 'npc'
-      || typeof npcRef.entity_id !== 'string'
-      || npcRef.entity_id.length === 0) {
+  if ((noResponse && npcRef !== null)
+      || (!noResponse && (npcRef?.entity_kind !== 'npc'
+        || typeof npcRef.entity_id !== 'string'
+        || npcRef.entity_id.length === 0))) {
     throw new TypeError('Semantic NPC reference is invalid.');
   }
   const routeDisclosure = semantic.route_disclosure;
@@ -92,20 +94,29 @@ function publicConversationProjection({ conversation, payload }) {
       : routeDisclosure !== null) {
     throw new TypeError('Semantic route disclosure is invalid.');
   }
-  const npcStatements = (payload.conversation_statements ?? []).filter(
+  const referencedStatements = (payload.conversation_statements ?? []).filter(
     ({ statement_id: statementId }) => statementIds.has(statementId)
   );
-  if (npcStatements.length !== expectedStatementCount
-      || npcStatements.some(({ speaker_ref: speaker }) =>
-        speaker?.entity_kind !== npcRef.entity_kind
-        || speaker.entity_id !== npcRef.entity_id)) {
+  if (referencedStatements.length !== expectedStatementCount) {
+    throw new TypeError('Semantic statement references are incomplete.');
+  }
+  if (noResponse && referencedStatements.some(({ speaker_ref: speaker }) =>
+    speaker?.entity_kind !== 'player_character'
+      || speaker.entity_id !== payload.actor_id)) {
+    throw new TypeError(
+      'Semantic statement does not belong to the projected player.'
+    );
+  }
+  if (!noResponse && referencedStatements.some(({ speaker_ref: speaker }) =>
+    speaker?.entity_kind !== npcRef.entity_kind
+      || speaker.entity_id !== npcRef.entity_id)) {
     throw new TypeError(
       'Semantic statement does not belong to the projected NPC.'
     );
   }
   let npcUtterance = null;
   if (speechResponse) {
-    const playerMessages = npcStatements.flatMap((statement) => {
+    const playerMessages = referencedStatements.flatMap((statement) => {
       const audience = (payload.conversation_audiences ?? []).find(
         ({ statement_ref: statementRef }) =>
           statementRef?.entity_kind === 'conversation_statement'
@@ -120,7 +131,7 @@ function publicConversationProjection({ conversation, payload }) {
           && utterance === statement.utterance_text
       );
     });
-    if (npcStatements.length !== 1 || playerMessages.length !== 1) {
+    if (referencedStatements.length !== 1 || playerMessages.length !== 1) {
       throw new TypeError(
         'Semantic conversation has no single player-visible NPC utterance.'
       );

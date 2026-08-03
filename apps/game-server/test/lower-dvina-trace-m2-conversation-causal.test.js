@@ -17,12 +17,15 @@ import { promiseOfferStage } from
   '../src/runtime/lower-dvina-trace-phase-4-command-shared.js';
 import { createTracePhase3TemporalAdvance } from
   '../src/runtime/lower-dvina-trace-phase-3-effects.js';
+import { phase2PublicResult } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { assertLowerDvinaTraceSemanticConversationRows } from
   '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
 import { semanticReadPool } from
   './lower-dvina-trace-semantic-persistence-read-pool.js';
 import {
   digest,
+  phase2ConversationPayload,
   phase4ArrivalState,
   phase3State,
   projectPhase3Conversation,
@@ -99,6 +102,21 @@ test('unheard target keeps player fact and skips NPC model', async () => {
     table === 'party_conversation_statements').length, 1);
   assert.deepEqual(await assertLowerDvinaTraceSemanticConversationRows(
     semanticReadPool(writes), next), []);
+  const publicResult = phase2PublicResult({
+    payload: phase2ConversationPayload({
+      state,
+      optionId: contracts.ids.talkOption,
+      check: null,
+      activityRef: contracts.talk.profile_id,
+      result: exchange.result
+    }),
+    screen: { schema: 'test-screen' }
+  });
+  assert.deepEqual(publicResult.conversation.semantic_exchange, {
+    response_kind: null,
+    npc_utterance: null,
+    disclosed_route_ref: null
+  });
   assert.doesNotThrow(() => projectPhase3Conversation({ state, contracts,
     result: exchange.result, inputDigest: digest('b') }));
 });

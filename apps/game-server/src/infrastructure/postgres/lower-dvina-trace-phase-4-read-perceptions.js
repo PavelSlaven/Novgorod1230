@@ -50,7 +50,7 @@ export function assertPhase4PerceptionRows({
   if (canonicalDigest(rows.map(({ perception_id: id }) => id))
         !== canonicalDigest(expectedIds)
       || witnesses.length !== rows.length
-      || replayRows.length !== rows.length) fail();
+      || replayRows.length !== rows.length) fail('perception_cardinality');
   const witnessById = new Map(witnesses.map((row) => [
     row.perception_id,
     row
@@ -60,7 +60,7 @@ export function assertPhase4PerceptionRows({
     row
   ]));
   if (witnessById.size !== witnesses.length
-      || replayById.size !== replayRows.length) fail();
+      || replayById.size !== replayRows.length) fail('perception_identity');
   for (const row of rows) {
     const snapshot = expectedSnapshots.get(row.perception_id);
     const history = phase4HistoryForPerception(payload, row.perception_id);
@@ -87,14 +87,14 @@ export function assertPhase4PerceptionRows({
           policy_versions_digest: replay.policy_versions_digest,
           idempotency_key: replay.idempotency_key,
           change_set_id: replay.change_set_id
-        })) fail();
+        })) fail('perception_common_lineage');
     const legacyRouteExecutionId = legacyArrivals.get(row.perception_id);
     if (legacyRouteExecutionId !== undefined) {
       if (row.event_kind !== 'committed_scene_observation'
           || row.event_version !== '2'
           || row.rule_ref?.route_execution_id !== legacyRouteExecutionId
           || row.knowledge_update_refs?.[0]?.entity_id
-            !== 'onisim_found_alive') fail();
+            !== 'onisim_found_alive') fail('legacy_arrival_perception');
       continue;
     }
     const exactPayload = m2PerceptionPayload(snapshot, row, partyId);
@@ -107,7 +107,9 @@ export function assertPhase4PerceptionRows({
         || row.perceived_at_subminute_numerator
           !== String(snapshot.occurred_at?.subminute_numerator)
         || row.perceived_at_subminute_denominator
-          !== String(snapshot.occurred_at?.subminute_denominator)) fail();
+          !== String(snapshot.occurred_at?.subminute_denominator)) {
+      fail('semantic_phase4_perception');
+    }
   }
 }
 
@@ -126,10 +128,12 @@ export function m2PerceptionPayload(snapshot, row, partyId) {
         || canonicalDigest(row.signal_refs)
           !== canonicalDigest([snapshot.signal_ref])
         || canonicalDigest(row.knowledge_update_refs)
-          !== canonicalDigest([])) fail();
+          !== canonicalDigest([])) fail('ratsha_arrival_perception');
     return snapshot;
   }
-  if (!snapshot.perception_id.includes(':knife-loss:')) fail();
+  if (!snapshot.perception_id.includes(':knife-loss:')) {
+    fail('unknown_phase4_perception');
+  }
   const turnPrefix = snapshot.perception_id.slice(
     0,
     snapshot.perception_id.indexOf(':knife-loss:')
@@ -147,7 +151,7 @@ export function m2PerceptionPayload(snapshot, row, partyId) {
       || row.event_version !== '2'
       || canonicalDigest(row.signal_refs) !== canonicalDigest([signalRef])
       || canonicalDigest(row.knowledge_update_refs) !== canonicalDigest([])) {
-    fail();
+    fail('knife_loss_perception');
   }
   return {
     schema: 'rus.lower_dvina_trace_phase_4_knife_loss_perception.v1',
@@ -163,7 +167,11 @@ export function m2PerceptionPayload(snapshot, row, partyId) {
     signal_ref: signalRef
   };
 }
-export function fail() { throw phase2IntegrityError(); }
+export function fail(invariant = null) {
+  const error = phase2IntegrityError();
+  if (invariant !== null) error.message += ` [${invariant}]`;
+  throw error;
+}
 
 export function timestampColumns(prefix, timestamp) {
   return {

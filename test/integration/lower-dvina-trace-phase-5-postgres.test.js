@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
@@ -16,6 +17,8 @@ import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-p
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { createM2ConversationModels } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v3_candidate_001', digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea' });
@@ -113,7 +116,12 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
         ? treatmentRandomValue : randomValue;
       return roll(request_id, value);
     },
-    npcDecisionSelector: async (request) => { const option = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(option); return { request_id: request.request_id, state_version: request.state_version, option_id: option.option_id, command_token: option.command_token }; }, decisionSecret: 'phase-5-postgres-secret', now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
+    npcDecisionSelector: async (request) => { const option = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(option); return { request_id: request.request_id, state_version: request.state_version, option_id: option.option_id, command_token: option.command_token }; }, decisionSecret: 'phase-5-postgres-secret',
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations:
+        lowerDvinaTraceConversationTemporalEffectRegistrations()
+    }),
+    now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
   return createFirstPlayablePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 

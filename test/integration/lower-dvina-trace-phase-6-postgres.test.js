@@ -19,6 +19,8 @@ import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-p
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { validatePhase6TemporalSourceResolution } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import { createM2ConversationModels } from
@@ -140,8 +142,10 @@ function phase6TemporalOwner(resolve) {
       source('source_record', 'phase_6_test_interruption_rule',
         'phase_6_test_interruption_policy')
     ],
-    effect_registrations:
-      lowerDvinaTracePhase6TemporalEffectRegistrations()
+    effect_registrations: [
+      ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
+      ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+    ]
   });
 }
 function pauseOnlyTemporalBoundaryResolver(candidate, { projection }) {

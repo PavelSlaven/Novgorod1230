@@ -36,9 +36,17 @@ export function assertChangeSetLineage(sessions, statements, decisions) {
     if (byExchange.has(exchangeKey)) fail();
     byExchange.set(exchangeKey, decision);
     const current = latestByConversation.get(request.conversation_id);
-    if (!current
-        || Number(current.working_revision)
-          < Number(decision.working_revision)) {
+    const currentStateVersion = Number(
+      current?.semantic_request.state_version ?? -1
+    );
+    const decisionStateVersion = Number(request.state_version);
+    const currentWorkingRevision = Number(current?.working_revision ?? -1);
+    const decisionWorkingRevision = Number(decision.working_revision);
+    if (current && currentStateVersion === decisionStateVersion
+        && currentWorkingRevision === decisionWorkingRevision) fail();
+    if (!current || currentStateVersion < decisionStateVersion
+        || (currentStateVersion === decisionStateVersion
+          && currentWorkingRevision < decisionWorkingRevision)) {
       latestByConversation.set(request.conversation_id, decision);
     }
   }

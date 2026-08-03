@@ -20,6 +20,8 @@ import {
 import {
   assertLowerDvinaTraceSemanticConversationRows
 } from '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
+import { assertChangeSetLineage } from
+  '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read-rows.js';
 import {
   assertPhase4NormalizedRows
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-read.js';
@@ -124,6 +126,42 @@ test('semantic restart is symmetric and rejects corrupt audience digest', async 
     ),
     integrityFailure
   );
+});
+
+test('stateful conversation lineage selects the latest turn before working revision', () => {
+  const conversationId = 'conversation:stateful';
+  const decisions = [1, 2].map((stateVersion) => ({
+    semantic_request: {
+      conversation_id: conversationId,
+      exchange_id: `exchange:${stateVersion}`,
+      state_version: stateVersion
+    },
+    working_revision: '0',
+    change_set_id: `change:${stateVersion}`
+  }));
+  const statements = decisions.map((decision) => ({
+    conversation_id: conversationId,
+    exchange_id: decision.semantic_request.exchange_id,
+    change_set_id: decision.change_set_id
+  }));
+
+  assert.doesNotThrow(() => assertChangeSetLineage([{
+    conversation_id: conversationId,
+    updated_change_set_id: 'change:2'
+  }], statements, decisions));
+  const conflictingBranch = {
+    semantic_request: {
+      conversation_id: conversationId,
+      exchange_id: 'exchange:2:conflict',
+      state_version: 2
+    },
+    working_revision: '0',
+    change_set_id: 'change:2:conflict'
+  };
+  assert.throws(() => assertChangeSetLineage([], [], [
+    ...decisions,
+    conflictingBranch
+  ]));
 });
 
 test('Phase 4 restart accepts historical player arrival', async () => {

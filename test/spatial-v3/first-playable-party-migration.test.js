@@ -25,14 +25,19 @@ const turnStepItemsSql = readFileSync(
   new URL('../../schemas/party-db/015_party_runtime_turn_step_items.sql', import.meta.url),
   'utf8'
 );
+const npcSemanticConversationSql = readFileSync(
+  new URL('../../schemas/party-db/016_party_runtime_npc_semantic_conversation.sql', import.meta.url),
+  'utf8'
+);
 
-test('target chain appends migrations 012 through 015 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 15);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-5), sql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-4), externalOwnershipSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), obligationsSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), resumeTerminalSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), turnStepItemsSql);
+test('target chain appends migrations 012 through 016 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 16);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-6), sql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-5), externalOwnershipSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-4), obligationsSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), resumeTerminalSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), turnStepItemsSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), npcSemanticConversationSql);
 });
 
 test('013 keeps general obligations in the P16 change-set transaction and history append-only', () => {

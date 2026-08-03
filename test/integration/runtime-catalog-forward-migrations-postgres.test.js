@@ -107,9 +107,11 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
   const partyFiles = (await readdir(new URL('../../schemas/party-db/', import.meta.url)))
     .filter((file) => /^\d+.*\.sql$/u.test(file))
     .sort();
-  for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_')
-      && !value.startsWith('014_'))) {
+  const catalogMigrationIndex = partyFiles.findIndex((file) =>
+    file.startsWith('012_')
+  );
+  assert.equal(catalogMigrationIndex, 11);
+  for (const file of partyFiles.slice(0, catalogMigrationIndex)) {
     await pool.query(await readFile(
       new URL(`../../schemas/party-db/${file}`, import.meta.url),
       'utf8'
@@ -136,27 +138,12 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     runPartyRuntimeCatalogMigration(pool)
   ]);
   assert.deepEqual(repeated.map(({ status }) => status), ['already_applied', 'already_applied']);
-  await pool.query(await readFile(
-    new URL(
-      '../../schemas/party-db/012_party_runtime_external_ownership.sql',
-      import.meta.url
-    ),
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    new URL(
-      '../../schemas/party-db/013_party_runtime_obligations.sql',
-      import.meta.url
-    ),
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    new URL(
-      '../../schemas/party-db/014_party_runtime_activity_resume_terminal.sql',
-      import.meta.url
-    ),
-    'utf8'
-  ));
+  for (const file of partyFiles.slice(catalogMigrationIndex)) {
+    await pool.query(await readFile(
+      new URL(`../../schemas/party-db/${file}`, import.meta.url),
+      'utf8'
+    ));
+  }
   await pool.query(
     'GRANT UPDATE ON world_base.catalog_imports TO runtime_catalog_importer'
   );

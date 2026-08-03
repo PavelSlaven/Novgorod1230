@@ -40,6 +40,9 @@ import {
 import {
   runPartyRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import {
+  createM2ConversationModels
+} from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 
 const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
@@ -249,8 +252,28 @@ function buildRuntime({
   const repository = createLowerDvinaTracePhase2PostgresRepository({
     partyPool: pool, committer
   });
+  const ratshaResponseKind = ({
+    surrender_without_confession: 'surrender',
+    surrender_and_confess: 'surrender',
+    threaten_and_bargain: 'bargain',
+    attack_and_escape: 'combat_handoff'
+  })[npcOption];
+  assert.ok(ratshaResponseKind, `Unsupported M2 NPC test outcome: ${npcOption}`);
+  const { playerConversationModel, npcSemanticModel } =
+    createM2ConversationModels({
+      ratshaResponseKind,
+      onNpcCall: (request) => {
+        if (counters
+            && !request.decision_scope.operation_contract
+              .disclose_known_route) {
+          counters.npc += 1;
+        }
+      }
+    });
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
+    playerConversationModel,
+    npcSemanticModel,
     semanticResolver: async ({ raw_text, action_set }) => ({
       option_id: semanticOption(raw_text, action_set)
     }),

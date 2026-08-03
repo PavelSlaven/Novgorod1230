@@ -11,6 +11,9 @@ import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import {
+  createM2ConversationModels
+} from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import {
@@ -339,8 +342,12 @@ function buildRuntime({
     partyPool: pool,
     committer
   });
+  const { playerConversationModel, npcSemanticModel } =
+    createM2ConversationModels();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
+    playerConversationModel,
+    npcSemanticModel,
     semanticResolver: async (request) => ({
       option_id: semanticOption(request.raw_text, request.action_set)
     }),

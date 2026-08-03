@@ -30,6 +30,47 @@ export const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 export const digest = (character) => character.repeat(64);
 export const revision14Bundle = await loadScenarioBundle(14);
 
+const EREMEY_DISCLOSURE_CUES = new Set([
+  'delivery_compelling',
+  'delivery_credible',
+  'delivery_credible_with_visible_cost'
+]);
+const RATSHA_RESPONSE_KINDS = new Set([
+  'surrender',
+  'bargain',
+  'lie',
+  'silence',
+  'combat_handoff'
+]);
+
+export function createM2ConversationModels({
+  ratshaResponseKind = 'surrender',
+  onNpcCall = () => {}
+} = {}) {
+  if (!RATSHA_RESPONSE_KINDS.has(ratshaResponseKind)) {
+    throw new TypeError(`Unsupported Ratsha response kind: ${ratshaResponseKind}`);
+  }
+  return {
+    playerConversationModel: playerPlan,
+    npcSemanticModel: (request) => {
+      const routeOperation = request.decision_scope
+        ?.operation_contract?.disclose_known_route;
+      if (routeOperation) {
+        const responseKind = (request.social_context?.delivery_cues ?? [])
+          .some((cue) => EREMEY_DISCLOSURE_CUES.has(cue))
+          ? 'route_disclosure'
+          : 'withhold';
+        onNpcCall(request, responseKind);
+        return eremeyPlan(request, responseKind, routeOperation);
+      }
+      const playerId = request.public_conversation_history[0]
+        .speaker_ref.entity_id;
+      onNpcCall(request, ratshaResponseKind);
+      return ratshaPlan(request, ratshaResponseKind, playerId);
+    }
+  };
+}
+
 export function phase3State() {
   const state = structuredClone(fixture({
     scenarioBundle: revision14Bundle
@@ -135,7 +176,11 @@ export async function runPhase3({
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
-      return eremeyPlan(request, responseKind, contracts);
+      return eremeyPlan(
+        request,
+        responseKind,
+        request.decision_scope.operation_contract.disclose_known_route
+      );
     },
     revalidateStateVersion: async () => state.party_state.state_version
   });
@@ -202,11 +247,10 @@ function playerPlan(request) {
   };
 }
 
-function eremeyPlan(request, responseKind, contracts) {
+function eremeyPlan(request, responseKind, routeOperation) {
   const disclosure = responseKind === 'route_disclosure';
-  const routeRef = contracts.disclosureMapping
-    .route_knowledge_disclosure.route_ref;
-  const knowledgeScopeRef = contracts.eremeyKnowledge.knowledge_scope_ref;
+  const routeRef = routeOperation.route_ref;
+  const knowledgeScopeRef = routeOperation.source_knowledge_scope_ref;
   return npcSpeechPlan(request, {
     utteranceText: disclosure
       ? 'От лагеря иди к старой сушильне по тропе.'

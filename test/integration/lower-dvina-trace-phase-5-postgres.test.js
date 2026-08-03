@@ -14,6 +14,7 @@ import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastru
 import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { createM2ConversationModels } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v3_candidate_001', digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea' });
@@ -97,7 +98,10 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
   treatmentRandomValue = randomValue, counters = null }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: firstPlayableCommitRecheck, now: () => new Date('2026-07-30T08:00:00.000Z') });
   const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer });
+  const { playerConversationModel, npcSemanticModel } =
+    createM2ConversationModels();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
+    playerConversationModel, npcSemanticModel,
     semanticResolver: async ({ raw_text, action_set }) => ({ option_id: semanticOption(raw_text, action_set) }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => {

@@ -85,7 +85,10 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
     let started = timeUpdate?.clock_before;
     if (!started) fail();
     return c.negotiation.activity_roots.map((root) => {
-      const activityKind = root.duration_minutes === 10 ? 'negotiation' : 'response';
+      const { activityKind, seriesOrdinal } = phase4ActivityIdentity({
+        semanticRevision,
+        durationMinutes: root.duration_minutes
+      });
       const ended = addElapsedTime(started, {
         exact_minutes: {
           numerator: String(root.duration_minutes), denominator: '1'
@@ -97,7 +100,7 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
         original_total_minutes: String(root.duration_minutes),
         status: 'completed',
         activity_series_id: `series:${partyId}:trace-phase4:${turn}:${activityKind}`,
-        series_ordinal: root.duration_minutes === 10 ? 0 : 1, attempt_ordinal: 0,
+        series_ordinal: seriesOrdinal, attempt_ordinal: 0,
         actual_time_numerator: String(root.duration_minutes),
         result_kind: 'completed',
         result_code: root.activity_ref,
@@ -195,4 +198,15 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
       || envelope.package_digest !== payload.last_turn.visible_package.package_digest
       || !['committed_presentation_pending', 'ready'].includes(screenStatus)
       || head.screen?.current_projection_anchor?.package_id !== envelope.package_id) fail();
+}
+
+export function phase4ActivityIdentity({
+  semanticRevision,
+  durationMinutes
+}) {
+  const negotiation = semanticRevision || durationMinutes === 10;
+  return {
+    activityKind: negotiation ? 'negotiation' : 'response',
+    seriesOrdinal: negotiation ? 0 : 1
+  };
 }

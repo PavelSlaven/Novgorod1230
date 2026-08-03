@@ -25,7 +25,8 @@ import { assertChangeSetLineage } from
 import { conversationExchangeVersions } from
   '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read-messages.js';
 import {
-  assertPhase4NormalizedRows
+  assertPhase4NormalizedRows,
+  phase4ActivityIdentity
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-read.js';
 import {
   same as samePhase4SemanticValue
@@ -179,6 +180,23 @@ test('Phase 4 restart accepts historical player arrival', async () => {
     fixture.payload,
     fixture.head
   ));
+});
+
+test('Phase 4 semantic readback keeps total contribution time on negotiation', () => {
+  assert.deepEqual(phase4ActivityIdentity({
+    semanticRevision: true,
+    durationMinutes: 20
+  }), {
+    activityKind: 'negotiation',
+    seriesOrdinal: 0
+  });
+  assert.deepEqual(phase4ActivityIdentity({
+    semanticRevision: false,
+    durationMinutes: 2
+  }), {
+    activityKind: 'response',
+    seriesOrdinal: 1
+  });
 });
 
 test('Phase 4 restart accepts Ratsha arrival and two knife observers', async () => {

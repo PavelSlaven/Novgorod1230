@@ -42,6 +42,7 @@ export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
 function assertCurrentEffect(history, payload) {
   const envelope = payload.last_turn?.turn_step_commit;
   if (!envelope) return;
+  const batch = payload.last_turn?.turn_step_operation_batch;
   const current = history.filter(({ effect_ref: effect }) =>
     effect?.root_turn_id === envelope.root_turn_id);
   const preparedLedger = envelope.time_update?.prepared_effect_ledger;
@@ -71,6 +72,11 @@ function assertCurrentEffect(history, payload) {
         || current.length !== 0) invalid();
     return;
   }
+  if (batch == null) {
+    if (current.length !== 0) invalid();
+    return;
+  }
+  if (batch.root_turn_id !== envelope.root_turn_id) invalid();
   if (envelope.body_update?.applied !== true) {
     if (current.length !== 0) invalid();
     return;
@@ -81,7 +87,7 @@ function assertCurrentEffect(history, payload) {
   try {
     effectRef = buildTurnStepBodyEffectRef({
       factual: envelope,
-      batch: { root_turn_id: envelope.root_turn_id }
+      batch
     });
   } catch {
     invalid();

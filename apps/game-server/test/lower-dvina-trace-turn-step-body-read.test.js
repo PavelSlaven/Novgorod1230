@@ -91,6 +91,28 @@ test('M1 body restart accepts prepared effects owned by the domain writer',
     ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
   });
 
+test('M1 body restart leaves no-batch effects with the domain writer',
+  async () => {
+    const factual = bodyCommit();
+    const prepared = prepareTurnStepBodyHistory({
+      partyId: 'p', state: state(), factual,
+      batch: { root_turn_id: 'turn:p:1' },
+      changeSetId: 'change-1', idemId: 'idem-1'
+    });
+    const payload = restartPayload(null, factual);
+    payload.turn_step_body_history = [];
+    delete payload.last_turn.turn_step_operation_batch;
+    await assert.doesNotReject(() => assertTurnStepBodyHistoryRows(
+      pool([]), payload, bodyRow()
+    ));
+
+    const forged = structuredClone(payload);
+    forged.turn_step_body_history = [prepared.snapshot];
+    await assert.rejects(() => assertTurnStepBodyHistoryRows(
+      pool([prepared.snapshot]), forged, bodyRow()
+    ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  });
+
 function preparedBodyCommit() {
   const before = { health: 100, satiety: 90, energy: 80 };
   const after = { health: 99, satiety: 90, energy: 80 };
@@ -181,6 +203,7 @@ function restartPayload(history, envelope) {
     turn_step_body_history: [history],
     last_turn: {
       turn_step_commit: envelope,
+      turn_step_operation_batch: { root_turn_id: envelope.root_turn_id },
       turn_step_idempotency_record_id: 'idem-1',
       visible_package: { change_set_id: 'change-1' }
     } };

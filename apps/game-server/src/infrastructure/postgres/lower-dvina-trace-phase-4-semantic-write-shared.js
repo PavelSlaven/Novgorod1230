@@ -1,3 +1,5 @@
+import { canonicalDigest } from '@rus/materialization';
+
 export function ref(entityKind, entityId) {
   return { entity_kind: entityKind, entity_id: entityId };
 }

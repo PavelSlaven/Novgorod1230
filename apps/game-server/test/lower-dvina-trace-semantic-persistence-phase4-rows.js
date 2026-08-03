@@ -183,6 +183,6 @@ export function phase4PerceptionRow({
     status: 'resolved',
     event_change_set_id: changeSetId,
     terminal_change_set_id: changeSetId,
-    event_version: knife ? '1' : '2'
+    event_version: '2'
   };
 }

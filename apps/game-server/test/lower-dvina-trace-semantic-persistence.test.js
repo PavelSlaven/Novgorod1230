@@ -23,6 +23,9 @@ import {
 import {
   assertPhase4NormalizedRows
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-read.js';
+import {
+  same as samePhase4SemanticValue
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-semantic-write-shared.js';
 
 const PARTY_ID = 'party-semantic-persistence';
 const CHANGE_SET_ID = 'change:' + PARTY_ID + ':semantic';
@@ -38,6 +41,17 @@ import { semanticWriterFixture } from './lower-dvina-trace-semantic-persistence-
 import { semanticReadPool } from './lower-dvina-trace-semantic-persistence-read-pool.js';
 import { phase4ReadFixture } from './lower-dvina-trace-semantic-persistence-phase4-fixture.js';
 import { integrityFailure, only, rows } from './lower-dvina-trace-semantic-persistence-pool.js';
+
+test('Phase 4 semantic persistence compares canonical values', () => {
+  assert.equal(samePhase4SemanticValue(
+    { category: 'others', significance: 'material' },
+    { significance: 'material', category: 'others' }
+  ), true);
+  assert.equal(samePhase4SemanticValue(
+    { category: 'others', significance: 'material' },
+    { category: 'objective', significance: 'material' }
+  ), false);
+});
 
 test('semantic writer persists CAS, audiences, lineage and actual messages', () => {
   const fixture = semanticWriterFixture();

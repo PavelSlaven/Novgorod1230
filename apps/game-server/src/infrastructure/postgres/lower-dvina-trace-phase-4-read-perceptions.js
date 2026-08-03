@@ -144,7 +144,7 @@ export function m2PerceptionPayload(snapshot, row, partyId) {
   };
   if (row.event_id !== `event:${partyId}:trace-phase4:${turn}:knife-loss`
       || row.event_kind !== 'item_property_transition_observed'
-      || row.event_version !== '1'
+      || row.event_version !== '2'
       || canonicalDigest(row.signal_refs) !== canonicalDigest([signalRef])
       || canonicalDigest(row.knowledge_update_refs) !== canonicalDigest([])) {
     fail();

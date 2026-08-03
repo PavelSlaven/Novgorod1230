@@ -13,6 +13,7 @@ import {
   buildNpcDecisionSignal,
   buildNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
+import { projectConversationAudience } from '@rus/visibility-knowledge-memory';
 import {
   appendNpcSemanticConversationWrites,
   buildNpcSemanticConversationWriteInput
@@ -46,7 +47,14 @@ export function semanticWriterFixture() {
   );
   const npcStatement = statement(
     'statement-eremey', conversationId, exchangeId, npc, player,
-    'К старой сушильне.'
+    'К старой сушильне.', [{
+      claim_id: 'eremey-route-disclosure',
+      content_summary: 'К старой сушильне ведёт тропа.',
+      form: 'assertion',
+      speaker_posture: 'believed_true',
+      source_knowledge_refs: [ref('knowledge_scope', 'eremey-route')],
+      mentioned_entity_refs: [ref('route', 'camp-to-shed')]
+    }]
   );
   const playerPerception =
     ref('perception_result', 'perception-statement-player-eremey');
@@ -238,7 +246,7 @@ export function conversationPlan(request, npcStatement, player) {
       dominant_act: npcStatement.dominant_act,
       interaction_tags: [],
       topic_refs: [],
-      claims: [],
+      claims: structuredClone(npcStatement.claims),
       response_expectation: { kind: 'none', target_refs: [] }
     },
     interpretation: {
@@ -255,7 +263,15 @@ export function conversationPlan(request, npcStatement, player) {
   };
 }
 
-export function statement(id, conversationId, exchangeId, speaker, addressee, text) {
+export function statement(
+  id,
+  conversationId,
+  exchangeId,
+  speaker,
+  addressee,
+  text,
+  claims = []
+) {
   return buildConversationStatementEvent({
     schema: 'conversation_statement_event_v1',
     statement_id: id,
@@ -267,7 +283,7 @@ export function statement(id, conversationId, exchangeId, speaker, addressee, te
     dominant_act: 'inform',
     interaction_tags: [],
     topic_refs: [],
-    claims: [],
+    claims: structuredClone(claims),
     message_completeness: 'complete',
     spoken_at: AT,
     duration: {
@@ -280,21 +296,15 @@ export function statement(id, conversationId, exchangeId, speaker, addressee, te
 }
 
 export function audience(source, listener, perception) {
-  const sourceRef = ref('conversation_statement', source.statement_id);
-  return {
-    schema: 'conversation_audience_projection_v1',
-    statement_ref: sourceRef,
-    actual_listener_refs: [listener],
-    received_messages: [{
-      source_statement_ref: sourceRef,
+  return projectConversationAudience({
+    statement: source,
+    listener_results: [{
       listener_ref: listener,
       perception_result_ref: perception,
+      perception_result: 'recognized',
       comprehension: 'full',
-      speaker_ref: source.speaker_ref,
-      utterance_text: source.utterance_text,
-      claims: source.claims,
-      delivery_cues: []
-    }],
-    witness_candidate_refs: [listener]
-  };
+      speaker_recognized: true,
+      witness_policy_allows: true
+    }]
+  });
 }

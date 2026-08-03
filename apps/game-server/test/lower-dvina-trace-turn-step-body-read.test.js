@@ -1,5 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {
+  buildTurnStepPreparedBodyUpdate,
+  buildTurnStepPreparedEffectLedger,
+  buildTurnStepPreparedTimeUpdate
+} from '@rus/turn';
 import { prepareTurnStepBodyHistory } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-body-history.js';
 import { assertTurnStepBodyHistoryRows } from
@@ -61,6 +66,80 @@ test('M1 body restart cross-binds envelope, snapshot and normalized row',
       pool([structuredClone(prepared.snapshot)]), forgedProfile, normalized
     ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
   });
+
+test('M1 body restart accepts prepared effects owned by the domain writer',
+  async () => {
+    const factual = preparedBodyCommit();
+    const payload = restartPayload(null, factual);
+    payload.turn_step_body_history = [];
+    await assert.doesNotReject(() => assertTurnStepBodyHistoryRows(
+      pool([]), payload, bodyRow()
+    ));
+
+    const tampered = structuredClone(payload);
+    tampered.last_turn.turn_step_commit.body_update
+      .prepared_effect_ledger_digest = 'b'.repeat(64);
+    await assert.rejects(() => assertTurnStepBodyHistoryRows(
+      pool([]), tampered, bodyRow()
+    ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+
+    const missingLedger = structuredClone(payload);
+    delete missingLedger.last_turn.turn_step_commit.time_update
+      .prepared_effect_ledger;
+    await assert.rejects(() => assertTurnStepBodyHistoryRows(
+      pool([]), missingLedger, bodyRow()
+    ), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  });
+
+function preparedBodyCommit() {
+  const before = { health: 100, satiety: 90, energy: 80 };
+  const after = { health: 99, satiety: 90, energy: 80 };
+  const clockBefore = { whole_minutes: '19',
+    subminute_numerator: '0', subminute_denominator: '1' };
+  const clockAfter = { whole_minutes: '20',
+    subminute_numerator: '0', subminute_denominator: '1' };
+  const ledger = buildTurnStepPreparedEffectLedger({
+    rootTurnId: 'turn:p:1',
+    committedStateVersion: 1,
+    effects: [{
+      effect: {
+        step_index: 1,
+        effect_kind: 'domain_command',
+        owner_ref: 'test.domain-owner',
+        operation_ref: 'test.operation',
+        availability: {},
+        consequence: { duration_minutes: 1 },
+        time_update: {
+          schema: 'turn_time_update',
+          clock_before: clockBefore,
+          clock_after: clockAfter,
+          exact_elapsed: { exact_minutes: {
+            numerator: '1', denominator: '1'
+          } }
+        },
+        body_update: {
+          schema: 'turn_body_update',
+          applied: true,
+          proposal: { profile_ref: 'test.body-effect' },
+          state_after: after
+        },
+        body_state_before: before
+      },
+      working_projection_before: { clock: clockBefore },
+      working_projection_after: { clock: clockAfter }
+    }]
+  });
+  return {
+    root_turn_id: 'turn:p:1',
+    base_state_version: 1,
+    consequence: {
+      duration_minutes: 1,
+      prepared_effect_ledger_digest: ledger.ledger_digest
+    },
+    body_update: buildTurnStepPreparedBodyUpdate(ledger),
+    time_update: buildTurnStepPreparedTimeUpdate(ledger)
+  };
+}
 
 function bodyCommit() {
   const profilePin = pin();

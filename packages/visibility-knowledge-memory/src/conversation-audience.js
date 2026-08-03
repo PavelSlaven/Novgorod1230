@@ -57,13 +57,14 @@ function refKey(value) {
   return `${value.entity_kind}\u0000${value.entity_id}`;
 }
 
-function receivedClaim(claim) {
-  return {
+export function projectConversationReceivedClaims(claims) {
+  if (!Array.isArray(claims)) invalid();
+  return claims.map((claim) => ({
     claim_id: claim.claim_id,
     content_summary: claim.content_summary,
     form: claim.form,
     mentioned_entity_refs: claim.mentioned_entity_refs
-  };
+  }));
 }
 
 function validListenerResult(value) {
@@ -158,7 +159,7 @@ export function projectConversationAudience(input = {}) {
       utterance_text: result.comprehension === 'full' ? statement.utterance_text : null,
       claims: result.comprehension === 'full'
         && result.perception_result !== 'misinterpreted'
-        ? statement.claims.map(receivedClaim)
+        ? projectConversationReceivedClaims(statement.claims)
         : [],
       delivery_cues: deliveryCues
     })),

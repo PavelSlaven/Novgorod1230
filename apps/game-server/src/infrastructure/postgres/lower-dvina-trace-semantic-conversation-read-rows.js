@@ -10,6 +10,8 @@ import {
   validateNpcDecisionSignal,
   validateNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
+import { projectConversationReceivedClaims } from
+  '@rus/visibility-knowledge-memory';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
@@ -133,7 +135,9 @@ export function assertStatementsAndAudiences(payload, rows) {
             !== canonicalDigest(statement.speaker_ref)
           || message.utterance_text !== statement.utterance_text
           || canonicalDigest(message.claims)
-            !== canonicalDigest(statement.claims)
+            !== canonicalDigest(
+              projectConversationReceivedClaims(statement.claims)
+            )
         )
         || row.audience_digest !== canonicalDigest(audience)) fail();
     actualStatements.push(statement);

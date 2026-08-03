@@ -9,6 +9,8 @@ import {
   validateNpcDecisionBoundary,
   validateNpcDecisionSignal
 } from '@rus/npc-runtime';
+import { projectConversationReceivedClaims } from
+  '@rus/visibility-knowledge-memory';
 import { row } from './first-playable/plan-shared.js';
 import {
   actualMessages,
@@ -82,11 +84,14 @@ export function buildNpcSemanticConversationWriteInput({
       const statement = statementsById.get(
         message.source_statement_ref?.entity_id
       );
-      if (!statement
+      if (!validateConversationStatementEvent(statement)
           || message.comprehension !== 'full'
           || !sameRef(message.speaker_ref, statement.speaker_ref)
           || message.utterance_text !== statement.utterance_text
-          || canonicalDigest(message.claims) !== canonicalDigest(statement.claims)) {
+          || canonicalDigest(message.claims)
+            !== canonicalDigest(
+              projectConversationReceivedClaims(statement.claims)
+            )) {
         fail('Audience projection does not prove a full recognized received message');
       }
       const messageSignalRefs = signalRecords

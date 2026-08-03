@@ -4,7 +4,10 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 
-export { projectConversationAudience } from './conversation-audience.js';
+export {
+  projectConversationAudience,
+  projectConversationReceivedClaims
+} from './conversation-audience.js';
 
 export const VISIBLE_PACKAGE_KEYS = deepFreeze(['version','schema','visible_scene','visible_changes','sensory_details','visible_npc','visible_objects','known_context','uncertainties','allowed_tensions','do_not_imply']);
 const FORBIDDEN_KEYS = ['hidden_state','hidden','secret','sourceDossier','audit','state_delta','dossier','witnesses','objectiveMap','requestRaw','responseRaw','world'];

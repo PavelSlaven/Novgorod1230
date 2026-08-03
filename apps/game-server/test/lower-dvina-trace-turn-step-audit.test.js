@@ -78,6 +78,10 @@ test('replay rejects tampered command digest, dependency pins and envelope diges
   () => {
     const fixture = replayFixture();
     assert.doesNotThrow(() => assertReplay(fixture));
+    const postgresRoundTrip = structuredClone(fixture);
+    postgresRoundTrip.record.semantic_command_digest =
+      postgresRoundTrip.record.semantic_command_digest.replace('sha256:', '');
+    assert.doesNotThrow(() => assertReplay(postgresRoundTrip));
     const tampers = [
       (record) => {
         record.semantic_command_digest = `sha256:${'f'.repeat(64)}`;

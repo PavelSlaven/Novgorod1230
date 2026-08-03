@@ -58,7 +58,7 @@ validation; изменение технического digest без измен
 - телесные изменения и пороговые состояния;
 - временные границы и детерминированные same-time cascades;
 - расписания, перемещение, восприятие и реакции NPC;
-- bounded NPC decisions;
+- semantic NPC decision signals/boundaries и explicitly pinned historical bounded decisions;
 - свет, доступ, погоду, состояние места и исторические фазы;
 - синхронизированное время внутри движущихся носителей;
 - lazy catch-up дальнего materialized мира;
@@ -690,7 +690,7 @@ scheduled_at
 5. compose activity/traversal outcomes by domain same-time policy;
 6. apply NPC schedule transitions;
 7. resolve signal reach, perception and knowledge;
-8. resolve deterministic reactions and bounded decisions;
+8. resolve deterministic reactions and NPC decision signals/boundaries;
 9. apply propagation/background processes;
 10. determine interruption, player decision и terminal state;
 11. discover follow-up candidates at the same timestamp;
@@ -904,7 +904,7 @@ LLM запрещено назначать приблизительные дат�
 
 Hidden phase identity не передаётся игроку; видимы только воспринимаемые признаки.
 
-## 15. NPC runtime и bounded decisions
+## 15. NPC runtime и semantic decision boundaries
 
 ### 15.1. Runtime state
 
@@ -959,7 +959,38 @@ misinterpreted
 
 `misinterpreted` создаёт belief/hypothesis, но не изменяет factual event. Memory update без perception или полученного сообщения запрещён.
 
-### 15.4. Bounded NPC decision
+### 15.4. Active semantic NPC decision protocol (revision 14)
+
+Domain owners сохраняют factual transitions и дополнительно выдают только
+generic signal descriptors. Единственный active словарь причин содержит ровно
+`self`, `others`, `environment`, `objective`, `communication`; significance —
+только `material` либо `critical`. Perception-required signal допускается к
+aggregation лишь после фактического восприятия или received message.
+
+Все новые signals одного NPC в одном fully resolved same-time batch
+агрегируются в не более чем одну `npc_decision_boundary_v1`; наличие critical
+делает boundary critical. Одна такая NPC/batch pair вызывает не более одного
+LLM-вызова, а replay использует persisted trace. Conversation не вводит
+собственный trigger schema или scheduler.
+
+Semantic request содержит только восприятие, received knowledge, memory и
+private state самого NPC, exact boundary identity и зарегистрированный
+operation contract. Чужие private knowledge, hidden truth и prompts не
+передаются. LLM возвращает одно ближайшее действие/contribution, но не RNG,
+успех, exact time, body delta, решение другого actor или write plan. Code owner
+повторно проверяет state/version/preconditions и рассчитывает consequence.
+
+Listener/witness может воспринять statement и получить received knowledge без
+response boundary. Social check изменяет только наблюдаемое качество подачи и
+credibility; решение responder остаётся отдельным semantic result. Combat в
+revision 14 только получает typed handoff и здесь не разрешается. Full
+autonomous action outside conversation и combat resolution остаются proposed.
+
+### 15.5. Historical bounded NPC decision (explicit revision pin only)
+
+Следующий bounded protocol сохраняет смысл только для genuinely closed domain
+choices и historical Lower Dvina revisions, выбранных явным pin. Он не является
+fallback current revision-14 conversation path.
 
 Код строит конечный option set из approved role, duties, goals, fears, relations, authority, resources, routes, witnesses, body state и perceived event.
 
@@ -982,7 +1013,7 @@ command_token:
 
 Technical issued/expires timestamps decision lease могут быть `TIMESTAMPTZ`; они не являются игровыми deadlines. Gameplay deadline хранится отдельно как `GameTimestamp`.
 
-### 15.5. От decision boundary до фактического действия NPC
+### 15.6. Historical bounded execution details (explicit revision pin only)
 
 Действие NPC определяется совместно кодом и bounded LLM selector, но их
 ответственность не пересекается:

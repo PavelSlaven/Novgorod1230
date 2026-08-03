@@ -2,7 +2,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
 import { buildLocalTraversalWriteSet } from './local-traversal-write-set.js';
 import {
-  appendArrivalObservation
+  appendArrivalObservation,
+  appendM2ArrivalPerception
 } from './lower-dvina-trace-phase-4-semantic-writes.js';
 
 export function appendPhase4Movement({
@@ -116,6 +117,17 @@ export function appendPhase4Movement({
   appends.push(...set.appends);
   appendArrivalObservation({
     inserts,
+    appends,
+    state,
+    next,
+    factual,
+    partyId,
+    turnNumber,
+    changeSetId,
+    idemId,
+    contracts
+  });
+  appendM2ArrivalPerception({
     appends,
     state,
     next,

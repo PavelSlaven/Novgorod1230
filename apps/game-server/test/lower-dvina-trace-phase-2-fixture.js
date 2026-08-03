@@ -3,6 +3,7 @@ import {
   materializeLowerDvinaTracePartyInstance
 } from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
 import {
+  canonicalDigest,
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
@@ -66,6 +67,8 @@ export function fixture({
   turnStepModel = null,
   committedState = null,
   npcOption = 'surrender_and_confess',
+  playerConversationModel = unexpectedPlayerConversationModel,
+  npcSemanticModel = unexpectedNpcSemanticModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null
 } = {}) {
@@ -186,8 +189,36 @@ export function fixture({
   let bodyUpdateCount = 0;
   let itemCreationCount = 0;
   let narratorInput = null;
+  let playerConversationInput = null;
+  let npcSemanticInput = null;
+  let playerConversationCount = 0;
+  let npcSemanticCount = 0;
   const bundleRequests = [];
+  const npcSemanticClaims = new Map();
   const repository = {
+    createNpcSemanticDecisionStore() {
+      return {
+        async resolve({ boundary, request, semanticModel }) {
+          const key = boundary.boundary_id;
+          const input = canonicalDigest({ boundary, request });
+          const existing = npcSemanticClaims.get(key);
+          if (existing) {
+            if (existing.input !== input || existing.status !== 'completed') {
+              throw new Error('NPC semantic claim conflict');
+            }
+            return structuredClone(existing.plan);
+          }
+          npcSemanticClaims.set(key, { input, status: 'pending' });
+          const plan = await semanticModel(request);
+          npcSemanticClaims.set(key, {
+            input,
+            status: 'completed',
+            plan: structuredClone(plan)
+          });
+          return plan;
+        }
+      };
+    },
     async loadPhase2State() {
       events.push('load_state');
       return structuredClone(state);
@@ -239,7 +270,10 @@ export function fixture({
           turnNumber,
           inputDigest,
           changeSetId,
-          contracts: phase4Contracts
+          contracts: phase4Contracts,
+          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+          workingRevision:
+            writePlan.turn_step_commit?.loop_trace?.working_revision
         }));
       } else if (factual.consequence.phase3_kind != null) {
         replaceState(state, nextPhase3State({
@@ -249,7 +283,10 @@ export function fixture({
           turnNumber,
           inputDigest,
           changeSetId,
-          contracts: phase3Contracts
+          contracts: phase3Contracts,
+          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+          workingRevision:
+            writePlan.turn_step_commit?.loop_trace?.working_revision
         }));
       } else {
         if (clue && !state.items.some(
@@ -372,6 +409,16 @@ export function fixture({
         return turnStepModel(input, repairContext);
       }
     } : {}),
+    playerConversationModel: async (input) => {
+      playerConversationCount += 1;
+      playerConversationInput = structuredClone(input);
+      return playerConversationModel(input);
+    },
+    npcSemanticModel: async (input) => {
+      npcSemanticCount += 1;
+      npcSemanticInput = structuredClone(input);
+      return npcSemanticModel(input);
+    },
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
     npcDecisionSelector: async (request) => {
@@ -422,6 +469,10 @@ export function fixture({
     commitCount: () => commitCount,
     events,
     narratorInput: () => narratorInput,
+    playerConversationCount: () => playerConversationCount,
+    playerConversationInput: () => playerConversationInput,
+    npcSemanticCount: () => npcSemanticCount,
+    npcSemanticInput: () => npcSemanticInput,
     lastCommitInput: () => lastCommitInput,
     lastWritePlan: () => lastWritePlan,
     itemCreationCount: () => itemCreationCount,
@@ -435,6 +486,14 @@ export function fixture({
     turnStepInput: () => turnStepInput,
     state
   };
+}
+
+async function unexpectedPlayerConversationModel() {
+  throw new Error('Unexpected player conversation model call');
+}
+
+async function unexpectedNpcSemanticModel() {
+  throw new Error('Unexpected NPC semantic model call');
 }
 
 function replaceState(target, source) {

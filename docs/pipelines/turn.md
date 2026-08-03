@@ -7,6 +7,9 @@ production composition. Lower Dvina Trace revision 13 additionally activates one
 `turn_step_request_v1` → `turn_step_plan_v1`. Exact registered commands remain
 ahead of it. V2 is an explicit migration/rollback source only; mixed reads,
 dual writes, runtime fallback and a second player planner are forbidden.
+Revision 14 / `spatial-v3-production-v4` additionally activates the Phase 3–4
+conversation contribution path and removes their bounded NPC selector from
+production; historical revisions remain available only by explicit pin.
 
 ## Этапы
 
@@ -17,6 +20,7 @@ dual writes, runtime fallback and a second player planner are forbidden.
    - exact registered command — выполняется без LLM и decision clock;
    - иначе `turn_step_admission` строит player-safe `turn_step_request_v1`, строго валидирует `turn_step_plan_v1` и исполняет до восьми внутренних шагов через code-owned registry.
    После каждого применённого semantic шага обновляется working projection и заново строится player-safe state. Невалидный plan допускает один structural repair до execution; повторная ошибка не создаёт draft writes.
+   Active conversation mode интерпретирует один player contribution, фиксирует statement, отдельно проецирует фактических listeners/witnesses и создаёт semantic NPC request только при meaningful common decision boundary.
 5. `revalidate_context` — повторно читает committed state и отклоняет stale exact command, semantic domain binding или base version до RNG и commit.
 6. `availability` — зарегистрированный code handler повторно проверяет доступность выбранного действия.
 7. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
@@ -51,7 +55,15 @@ materialization run.
 
 Код не придумывает authored categories и отсутствующие significant candidates. Exact path выбирает зарегистрированный handler; player planner возвращает только строгий следующий step, а code registry/admission рассчитывает последствия и формирует write fragments. LLM не возвращает SQL, physical write targets, state patch, derived mechanics, hidden facts, NPC/combat result или narration. Ordinary direct action result допускается только через code-owned origin/admission/inventory gates и persisted exact runtime mechanics snapshot. Stale state, invalid plan/repair, ambiguous domain binding, поддельный bounded token или невалидный change set останавливают pipeline без частичного commit.
 
-Autonomous NPC, conversation и combat semantic contracts остаются `proposed`; `emit_interaction` в revision 13 только делегирует попытку существующему registered owner.
+Revision-14 conversation использует общий `npc_decision_signal_v1` →
+`npc_decision_boundary_v1`: ровно категории `self`, `others`, `environment`,
+`objective`, `communication`, только significance `material|critical`, не более
+одной boundary и одного LLM-вызова для одного NPC/same-time batch. Отдельной
+conversation trigger subsystem нет. Listener/witness может получить
+perception/received knowledge без обязательного ответа; private knowledge
+между NPC не переносится. Social check меняет только delivery/credibility, а
+не решение NPC. Full autonomous NPC и combat resolution остаются `proposed`;
+conversation допускает только combat handoff.
 
 ## Temporal World v4 active sequence
 

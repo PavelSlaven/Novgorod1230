@@ -3,6 +3,11 @@ import { constants as fsConstants } from 'node:fs';
 
 const standardPath = 'data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md';
 const temporalAmendmentPath = 'data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md';
+const npcAmendmentPaths = Object.freeze([
+  'data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md',
+  'data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md',
+  'data/knowledge-source/corpus/DOCUMENTS/npc_conversation_mode_contract.md'
+]);
 const matrixPath = 'docs/migration/spatial-v3/contract-implementation-matrix.json';
 
 const exists = async (path) => access(path, fsConstants.F_OK).then(() => true, () => false);
@@ -62,14 +67,32 @@ export async function loadHistoricalTarget() {
 }
 
 export async function loadCanonicalTarget() {
-  const [historical, temporalAmendment] = await Promise.all([loadHistoricalTarget(), readFile(temporalAmendmentPath, 'utf8')]);
+  const [historical, temporalAmendment, ...npcAmendments] = await Promise.all([
+    loadHistoricalTarget(),
+    readFile(temporalAmendmentPath, 'utf8'),
+    ...npcAmendmentPaths.map((path) => readFile(path, 'utf8'))
+  ]);
   const amendmentContracts = parseContracts(temporalAmendment);
+  const npcAmendmentContracts = npcAmendments.map(parseContracts);
   const amendmentErrors = parseTypedErrors(temporalAmendment, '# Приложение B. Temporal typed-error amendment', '# Приложение C.');
-  const contracts = mergeByName(historical.contracts, amendmentContracts);
+  const contracts = mergeByName(historical.contracts, [
+    ...amendmentContracts,
+    ...npcAmendmentContracts.flat()
+  ]);
   const errors = mergeByName(historical.errors, amendmentErrors);
   if (amendmentContracts.length !== 62 || amendmentErrors.length !== 24) throw new Error('Temporal/PR8 amendment totals changed; refresh the target contract evidence');
-  if (contracts.length !== 213 || errors.length !== 82) throw new Error('Current 4.4 target union no longer matches the base plus temporal/PR8 amendment');
-  return { contracts, errors, stateMachines: historical.stateMachines, historical, amendment: { contracts: amendmentContracts.sort(), errors: amendmentErrors.sort() } };
+  if (npcAmendmentContracts.map((contracts) => contracts.length).join(',') !== '2,3,7') throw new Error('M2 NPC contract amendment totals changed; refresh the target contract evidence');
+  if (contracts.length !== 225 || errors.length !== 82) throw new Error('Current 4.5 target union no longer matches the canonical amendments');
+  return {
+    contracts,
+    errors,
+    stateMachines: historical.stateMachines,
+    historical,
+    amendment: {
+      contracts: [...amendmentContracts, ...npcAmendmentContracts.flat()].sort(),
+      errors: amendmentErrors.sort()
+    }
+  };
 }
 
 async function loadJsonModule(path) {

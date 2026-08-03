@@ -120,8 +120,7 @@ export function validateTurnWritePlan(value) {
   }
   const semanticTargets = (Array.isArray(value.write_targets)
     ? value.write_targets : []).filter(({ target } = {}) =>
-    ['party_turn_step_operations', 'party_player_visible_message']
-      .includes(target));
+    target === 'party_turn_step_operations');
   if (value.turn_step_commit != null) {
     errors.push(...validateTurnStepCommitEnvelope(value.turn_step_commit, {
       party_id: value.party_id,

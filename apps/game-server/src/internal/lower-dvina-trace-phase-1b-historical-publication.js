@@ -12,6 +12,8 @@ import {
   loadHistoricalLowerDvinaTracePhase1BV5Publication,
   loadHistoricalLowerDvinaTracePhase1BV7Publication
 } from './lower-dvina-trace-phase-1b-historical-revisions-4-5-7.js';
+import { loadHistoricalLowerDvinaTracePhase1BV8Publication } from
+  './lower-dvina-trace-phase-1b-historical-revision-8.js';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const HISTORICAL_PHASE_1A_DIGEST =
@@ -28,12 +30,19 @@ const HISTORICAL_PHASE_1A_V6_DIGEST =
   '5cc5a06136b2f4cbdb8b842558b0d749a2c70c3eff0f1c088aca9a7e0395d1a9';
 const HISTORICAL_PHASE_1A_V7_DIGEST =
   'b696a7420a3331915a2c00827f455671e54b005fbe29bf6749fa90482f73a10b';
+const HISTORICAL_PHASE_1A_V8_DIGEST =
+  'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0';
 
 export async function loadHistoricalLowerDvinaTracePhase1BPublication({
   rootDir,
   phase1AManifestDigest
 }) {
   const shared = { rootDir, readJson, fail, freezeDeep };
+  if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V8_DIGEST) {
+    return loadHistoricalLowerDvinaTracePhase1BV8Publication({
+      ...shared, phase1ADigest: HISTORICAL_PHASE_1A_V8_DIGEST
+    });
+  }
   if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V7_DIGEST) {
     return loadHistoricalLowerDvinaTracePhase1BV7Publication({
       ...shared, phase1ADigest: HISTORICAL_PHASE_1A_V7_DIGEST
@@ -134,7 +143,8 @@ export async function loadHistoricalLowerDvinaTracePhase1BPublication({
 }
 
 export function isHistoricalLowerDvinaTracePhase1AManifestDigest(value) {
-  return value === HISTORICAL_PHASE_1A_DIGEST
+  return value === HISTORICAL_PHASE_1A_V8_DIGEST
+    || value === HISTORICAL_PHASE_1A_DIGEST
     || value === HISTORICAL_PHASE_1A_V2_DIGEST
     || value === HISTORICAL_PHASE_1A_V3_DIGEST
     || value === HISTORICAL_PHASE_1A_V4_DIGEST

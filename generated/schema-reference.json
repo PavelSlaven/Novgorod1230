@@ -948,6 +948,12 @@
       "type": "sql"
     },
     {
+      "bytes": 12865,
+      "path": "schemas/party-db/016_party_runtime_npc_semantic_conversation.sql",
+      "sha256": "b912e4b3f6105948fb9b23999ba867fd9d6335340ba7778360ef0c78b6ebbf20",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

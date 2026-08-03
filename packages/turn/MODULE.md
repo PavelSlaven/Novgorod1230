@@ -2,23 +2,24 @@
 
 ## Назначение
 
-Оркестратор игрового хода, active player semantic step boundary и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированный `turn_step_plan_v1` через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
+Оркестратор игрового хода, active player semantic step boundary, revision-14 conversation exchange и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированные semantic plans через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
 
 ## Владеет
 
-- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate.
+- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate.
 
 ## Не владеет
 
-Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Active player planner не активирует proposed autonomous NPC, conversation или combat contracts.
+Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Full autonomous NPC и combat resolution contracts остаются proposed; conversation может завершиться только combat handoff.
 
 ## Public API
 
-- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
+- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
+- `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC/same-time batch получает не более одной boundary/decision; listeners и witnesses без meaningful response boundary не становятся responders.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `createTemporalSourceResolver`,
   `createTemporalAdvanceOwner`;
@@ -57,14 +58,16 @@
 ## Target / activation
 
 Temporal v4 surfaces use current `temporal-world-v1.1` /
-`4.4.0-target.1` and immutable accepted base `temporal-world-v1` /
+`4.5.0-target.1` and immutable accepted base `temporal-world-v1` /
 `4.3.0-target.1`. Accepted historical P28 evidence не активировало runtime;
 последующий `versioned production activation cutover` release
 `spatial-v3-production-v1` сделал v3 sole production composition. `turn` не
 реализует persistence fallback. Lower Dvina Trace revision 13 активировал
 `turn_step_plan_v1` как sole semantic path свободной заявки игрока и сохранил
-exact registered path перед ним. NPC/autonomous/conversation/combat semantic
-documents остаются `proposed`.
+exact registered path перед ним. Revision 14 / `spatial-v3-production-v4`
+активировал conversation contribution path для фаз 3–4 без bounded fallback.
+Full autonomous NPC и combat resolution documents остаются `proposed`;
+historical bounded Phase 3/4 доступен только по явному revision pin.
 
 ## Тесты
 

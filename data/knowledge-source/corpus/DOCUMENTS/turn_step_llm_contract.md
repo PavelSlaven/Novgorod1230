@@ -122,7 +122,7 @@ LLM получает:
 
 `turn_step_plan_v1` не содержит NPC trigger types, signal significance или NPC decision boundaries и не выбирает ответ либо действие NPC. Операция `emit_interaction` только передаёт фактическую попытку текущему зарегистрированному domain owner.
 
-Общий semantic signal/boundary protocol для autonomous NPC, conversation и combat описан только в proposed-документах `npc_autonomous_decision_contract.md`, `npc_conversation_mode_contract.md` и `npc_combat_and_trigger_contract.md`. Он не активирован revision 13, не является частью этого player contract и не должен добавляться как частичный production path.
+Общий semantic signal/boundary protocol для NPC не активирован revision 13 и не является частью этого player contract. Conversation-профиль протокола активен только для Lower Dvina Trace revision 14 по `npc_conversation_mode_contract.md`; autonomous и combat профили остаются proposed по `npc_autonomous_decision_contract.md` и `npc_combat_and_trigger_contract.md`. Ни один профиль нельзя добавлять как частичный либо fallback path внутри другой decision boundary.
 
 ## 4. Что ожидается от LLM
 

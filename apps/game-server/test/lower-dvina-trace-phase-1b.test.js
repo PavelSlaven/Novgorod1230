@@ -75,18 +75,18 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 13);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 14);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.stage26_result.publication_binding_id,
-    'lower_dvina_trace_phase_1b_publication_v8');
-  assert.equal(session.stage26_result.publication_binding_revision, 8);
-  assert.equal(session.stage26_result.scenario_definition_revision, 13);
+    'lower_dvina_trace_phase_1b_publication_v9');
+  assert.equal(session.stage26_result.publication_binding_revision, 9);
+  assert.equal(session.stage26_result.scenario_definition_revision, 14);
   assert.equal(session.stage26_result.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v9');
+    'lower_dvina_trace_phase_1a_materialization_bindings_v10');
   const serialized = JSON.stringify(started);
   for (const forbidden of [
     'hidden_truth',
@@ -296,8 +296,8 @@ test('exact trace replay bypasses changed publication and materializer', async (
   };
   const started = await first.startNewGame(request);
   const historical = TRACE_PHASE_1B_SESSION_IDENTITIES.at(-2);
-  assert.equal(historical.publication_binding_revision, 7);
-  assert.equal(historical.scenario_definition_revision, 12);
+  assert.equal(historical.publication_binding_revision, 8);
+  assert.equal(historical.scenario_definition_revision, 13);
   const historicalSession = f.repository.sessions.get(started.party_id);
   Object.assign(historicalSession.stage26_result, historical);
   historicalSession.party_scenario_manifest_digest =

@@ -42,6 +42,8 @@ export const TABLE_MODES = Object.freeze({
   party_perception_replay_evidence: ['appends'],
   party_npc_reaction_option_proposals: ['appends'],
   party_npc_decision_traces: ['appends'],
+  party_conversation_sessions: ['inserts', 'updates'],
+  party_conversation_statements: ['appends'],
   party_npc_reaction_consequences: ['appends'],
   party_npc_knowledge_merge_results: ['appends'],
   party_body_temporal_history: ['appends'],
@@ -159,6 +161,8 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                           : write?.target_table === 'party_perception_replay_evidence' ? write.record?.perception_id === write.id
                             : write?.target_table === 'party_npc_reaction_option_proposals' ? write.record?.request_id === write.id
                               : write?.target_table === 'party_npc_decision_traces' ? write.record?.request_id === write.id
+                                : write?.target_table === 'party_conversation_sessions' ? write.record?.conversation_id === write.id
+                                  : write?.target_table === 'party_conversation_statements' ? write.record?.statement_id === write.id
                             : write?.target_table === 'party_npc_reaction_consequences' ? write.record?.request_id === write.id
                               : write?.target_table === 'party_npc_knowledge_merge_results' ? write.record?.proposal_id === write.id
                                 : write?.target_table === 'party_npc_knowledge_merge_states' ? write.id === `${write.record?.party_id}:${write.record?.npc_id}`
@@ -213,6 +217,19 @@ export function childParentIdentities(write) {
     case 'party_perception_replay_evidence':
       return [
         `party_runtime.party_perception_records:${write.record?.perception_id}`,
+        `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
+      ];
+    case 'party_npc_decision_traces':
+      return write.record?.change_set_id == null
+        ? []
+        : [`party_runtime.party_v3_change_sets:${write.record.change_set_id}`];
+    case 'party_conversation_sessions':
+      return [
+        `party_runtime.party_v3_change_sets:${write.record?.updated_change_set_id}`
+      ];
+    case 'party_conversation_statements':
+      return [
+        `party_runtime.party_conversation_sessions:${write.record?.conversation_id}`,
         `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
       ];
     case 'party_npc_reaction_option_proposals':

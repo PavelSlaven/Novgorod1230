@@ -41,7 +41,7 @@ if (registry.schema_version !== 'rus.spatial_v3_public_interface_registry.v1'
   || registry.status !== 'target'
   || registry.activation !== 'versioned production activation cutover only'
   || registry.failure_mode !== 'typed_fail_closed_without_fallback'
-  || registry.contract_version !== '4.4.0-target.1'
+  || registry.contract_version !== '4.5.0-target.1'
   || registry.temporal_contract !== 'temporal-world-v1.1'
   || !Array.isArray(registry.owner_contract_refs)
   || !Array.isArray(registry.interfaces)) {

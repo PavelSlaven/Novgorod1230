@@ -1,4 +1,7 @@
 import { serverError } from './errors.js';
+import {
+  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
+} from './runtime/load-spatial-v3-bindings.js';
 
 const MODULAR_FLAGS = Object.freeze([
   'modulesEnabled',
@@ -48,7 +51,8 @@ export function readServerConfig(env = process.env) {
     compositionModule:
       text(env.RUS_COMPOSITION_MODULE) || 'builtin:production-spatial-v3',
     spatialV3BindingsModule:
-      text(env.RUS_SPATIAL_V3_BINDINGS_MODULE) || null,
+      text(env.RUS_SPATIAL_V3_BINDINGS_MODULE)
+        || SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
     runtimeCatalogPinManifestDigest: digestText(
       env.RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST
     ),
@@ -79,10 +83,11 @@ export function assertModularStartupConfig(config) {
       { status: 500 }
     );
   }
-  if (!config.spatialV3BindingsModule) {
+  if (config.spatialV3BindingsModule
+      !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
     throw serverError(
-      'RUNTIME_BINDINGS_MODULE_REQUIRED',
-      'RUS_SPATIAL_V3_BINDINGS_MODULE is required for spatial-v3 production.',
+      'RUNTIME_BINDINGS_MODULE_INACTIVE',
+      'Only the production-v4 spatial-v3 runtime binding may be selected.',
       { status: 500 }
     );
   }

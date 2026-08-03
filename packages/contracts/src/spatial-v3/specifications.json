@@ -2,7 +2,21 @@
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
   "amendment_scope": "Appendix A.1-A.7",
-  "source_version": "4.4.0-target.1",
+  "additional_amendment_sources": [
+    {
+      "source": "data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
+      "scope": "Appendix A"
+    },
+    {
+      "source": "data/knowledge-source/corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
+      "scope": "Appendix A"
+    },
+    {
+      "source": "data/knowledge-source/corpus/DOCUMENTS/npc_conversation_mode_contract.md",
+      "scope": "Appendix A"
+    }
+  ],
+  "source_version": "4.5.0-target.1",
   "specifications": [
     {
       "contract_name": "entity_ref",
@@ -13334,6 +13348,983 @@
         "options_digest equals decision_request.options_digest and covers the complete ordered options including their request-bound command_token values.",
         "Zero applicable options returns npc_decision_policy_gap instead of this proposal.",
         "One option proceeds without LLM; more than one uses bounded selection only when policy_snapshot permits it."
+      ]
+    },
+    {
+      "contract_name": "npc_decision_signal_v1",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "signal_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_decision_signal_v1]"
+        },
+        {
+          "name": "signal_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "occurred_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "category",
+          "required": true,
+          "type": "enum[self, others, environment, objective, communication]"
+        },
+        {
+          "name": "significance",
+          "required": true,
+          "type": "enum[material, critical]"
+        },
+        {
+          "name": "source_event_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "subject_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "scope_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "perception_required",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "name": "source_perception_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "causal_parent_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The signal belongs to exactly one NPC and contains no ready action or hidden objective truth.",
+        "A perception-required signal has one matching perceived result; a non-perception signal carries null source_perception_ref.",
+        "signal_id and idempotency_key are the same deterministic identity derived from the factual cause and NPC."
+      ]
+    },
+    {
+      "contract_name": "npc_decision_boundary_v1",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "boundary_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_decision_boundary_v1]"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "decision_mode",
+          "required": true,
+          "type": "enum[autonomous, conversation, combat]"
+        },
+        {
+          "name": "scheduled_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "same_time_batch_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "significance",
+          "required": true,
+          "type": "enum[material, critical]"
+        },
+        {
+          "name": "categories",
+          "required": true,
+          "type": "nonempty_relation_set[enum[self, others, environment, objective, communication]]"
+        },
+        {
+          "name": "signal_refs",
+          "required": true,
+          "type": "nonempty_relation_set[entity_ref]"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "positive_decimal_string"
+        },
+        {
+          "name": "resolution_class",
+          "required": true,
+          "type": "enum[reaction_decision]"
+        },
+        {
+          "name": "idempotency_key",
+          "required": true,
+          "type": "stable_id"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "One boundary aggregates all new signals for one NPC in one same-time batch in canonical category order.",
+        "The boundary contains no ready decision and always uses the shared reaction_decision resolution class.",
+        "Signal consumption is committed only with the decision result or a terminal deterministic outcome."
+      ]
+    },
+    {
+      "contract_name": "npc_action_decision_request_v1",
+      "storage": "immutable_request",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_action_decision_request_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "root_turn_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "committed_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "working_revision",
+          "required": true,
+          "type": "non_negative_integer"
+        },
+        {
+          "name": "decision_index",
+          "required": true,
+          "type": "positive_integer"
+        },
+        {
+          "name": "occurred_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "decision_reasons",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "historical_context",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "npc",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "perception",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "knowledge",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "memory",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "decision_scope",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The request exposes only NPC-available subjective information plus technical identities and contracts.",
+        "Decision categories use only the common five-category vocabulary in canonical order.",
+        "Allowed refs and the operation contract are closed to the capabilities supplied by code."
+      ]
+    },
+    {
+      "contract_name": "npc_step_plan_v1",
+      "storage": "immutable_response",
+      "identity": [
+        "request_id",
+        "decision_index"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_step_plan_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "root_turn_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "committed_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "working_revision",
+          "required": true,
+          "type": "non_negative_integer"
+        },
+        {
+          "name": "decision_index",
+          "required": true,
+          "type": "positive_integer"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "interpretation",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "resolution",
+          "required": true,
+          "type": "enum[direct, generic_check, domain_request]"
+        },
+        {
+          "name": "goal_result",
+          "required": true,
+          "type": "enum[pending, achieved, partially_achieved, not_achieved]"
+        },
+        {
+          "name": "activity",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "operations",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "check",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "reason_code",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "reason",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The plan contains exactly one self-contained NPC action and no implicit continuation.",
+        "Unused nullable values remain null and operations stay within the request operation contract.",
+        "Generic checks expose all five outcomes; domain-owned actions are delegated without claiming their result."
+      ]
+    },
+    {
+      "contract_name": "npc_semantic_decision_trace_v1",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "boundary_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_semantic_decision_trace_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "root_turn_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "committed_state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "working_revision",
+          "required": true,
+          "type": "non_negative_integer"
+        },
+        {
+          "name": "plan",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "applied_change_set_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[committed]"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "One committed boundary has at most one persisted semantic decision trace.",
+        "Replay returns the persisted plan and never invokes the model or applies the change set again.",
+        "Internal decision reasons remain hidden from player-safe projections and other NPCs."
+      ]
+    },
+    {
+      "contract_name": "conversation_session_v1",
+      "storage": "party_runtime_mutable_lifecycle",
+      "identity": [
+        "conversation_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[conversation_session_v1]"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "status",
+          "required": true,
+          "type": "enum[active, suspended, ended]"
+        },
+        {
+          "name": "started_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "location_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "initiator_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "active_participant_refs",
+          "required": true,
+          "type": "nonempty_relation_set[entity_ref]"
+        },
+        {
+          "name": "last_contribution_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "topic_refs",
+          "required": true,
+          "type": "relation_set[stable_id]"
+        },
+        {
+          "name": "status_reason",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The initiator is an active participant and active contributions are accepted only while status is active.",
+        "The actual audience is resolved per statement and is not persisted as a session-wide audience list."
+      ]
+    },
+    {
+      "contract_name": "player_conversation_input_v1",
+      "storage": "immutable_request",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[player_conversation_input_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "speaker_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "raw_text",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "received_at",
+          "required": true,
+          "type": "system_timestamp"
+        },
+        {
+          "name": "player_safe_context",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "operation_contract",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "raw_text is player input rather than a factual utterance until semantic interpretation and commit.",
+        "The context is player-safe and the operation contract contains only code-supported capabilities."
+      ]
+    },
+    {
+      "contract_name": "player_conversation_contribution_plan_v1",
+      "storage": "immutable_response",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[player_conversation_contribution_plan_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "speaker_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "input_mode",
+          "required": true,
+          "type": "enum[verbatim, intent_paraphrase]"
+        },
+        {
+          "name": "contribution_kind",
+          "required": true,
+          "type": "enum[speech, silence, leave_conversation, action_handoff, combat_handoff]"
+        },
+        {
+          "name": "primary_addressee_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "intended_addressee_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "affected_actor_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "speech",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "interpretation",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "resolution",
+          "required": true,
+          "type": "enum[automatic, check_required]"
+        },
+        {
+          "name": "activity",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "supporting_operations",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "check",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "handoff",
+          "required": false,
+          "type": "json_object"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "One plan contains exactly one conversation contribution and no implicit continuation.",
+        "Verbatim input preserves the player's words and cannot use historical_equivalent adaptation.",
+        "Speech, check and handoff branches are mutually constrained by contribution_kind and resolution."
+      ]
+    },
+    {
+      "contract_name": "conversation_statement_event_v1",
+      "storage": "party_runtime_append_only",
+      "identity": [
+        "statement_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[conversation_statement_event_v1]"
+        },
+        {
+          "name": "statement_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "exchange_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "speaker_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "intended_addressee_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "utterance_text",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "dominant_act",
+          "required": true,
+          "type": "enum[greet, farewell, question, answer, inform, request, command, offer, accept, refuse, negotiate, promise, threaten, accuse, confess, evade, warn, challenge, apologize]"
+        },
+        {
+          "name": "interaction_tags",
+          "required": true,
+          "type": "relation_set[stable_id]"
+        },
+        {
+          "name": "topic_refs",
+          "required": true,
+          "type": "relation_set[stable_id]"
+        },
+        {
+          "name": "claims",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "message_completeness",
+          "required": true,
+          "type": "enum[complete]"
+        },
+        {
+          "name": "spoken_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "duration",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "social_delivery_result",
+          "required": false,
+          "type": "social_delivery_result_v1"
+        },
+        {
+          "name": "source_plan_ref",
+          "required": true,
+          "type": "entity_ref"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The exact utterance is factual after commit while its claims do not become objective truth.",
+        "Perception determines the actual audience and witnesses after the statement exists."
+      ]
+    },
+    {
+      "contract_name": "npc_conversation_response_request_v1",
+      "storage": "immutable_request",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[npc_conversation_response_request_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "exchange_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "requested_at",
+          "required": true,
+          "type": "game_timestamp"
+        },
+        {
+          "name": "npc_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "decision_reasons",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "npc",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "perceived_message",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "public_conversation_history",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "knowledge",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "memory",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "social_context",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "available_resources",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "decision_scope",
+          "required": true,
+          "type": "json_object"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The request contains only the message and conversation history actually perceived by this NPC.",
+        "Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.",
+        "Hidden reasons, objective unknown facts and other model prompts are excluded."
+      ]
+    },
+    {
+      "contract_name": "conversation_contribution_plan_v1",
+      "storage": "immutable_response",
+      "identity": [
+        "request_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[conversation_contribution_plan_v1]"
+        },
+        {
+          "name": "request_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "boundary_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "conversation_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "exchange_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "state_version",
+          "required": true,
+          "type": "state_version"
+        },
+        {
+          "name": "speaker_ref",
+          "required": true,
+          "type": "entity_ref"
+        },
+        {
+          "name": "contribution_kind",
+          "required": true,
+          "type": "enum[speech, silence, leave_conversation, action_handoff, combat_handoff]"
+        },
+        {
+          "name": "primary_addressee_ref",
+          "required": false,
+          "type": "entity_ref"
+        },
+        {
+          "name": "intended_addressee_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "affected_actor_refs",
+          "required": true,
+          "type": "relation_set[entity_ref]"
+        },
+        {
+          "name": "speech",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "interpretation",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "resolution",
+          "required": true,
+          "type": "enum[automatic, check_required]"
+        },
+        {
+          "name": "activity",
+          "required": true,
+          "type": "json_object"
+        },
+        {
+          "name": "supporting_operations",
+          "required": true,
+          "type": "relation_set[json_object]"
+        },
+        {
+          "name": "check",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "handoff",
+          "required": false,
+          "type": "json_object"
+        },
+        {
+          "name": "reason",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "One plan contains one contribution and can hand off at most one ordinary action or combat intent.",
+        "The reason is internal trace data and never becomes a world fact or player-visible content.",
+        "A check affects observable delivery only and cannot force the listener's decision."
+      ]
+    },
+    {
+      "contract_name": "social_delivery_result_v1",
+      "storage": "immutable_result",
+      "identity": [
+        "check_resolution_id"
+      ],
+      "fields": [
+        {
+          "name": "schema",
+          "required": true,
+          "type": "enum[social_delivery_result_v1]"
+        },
+        {
+          "name": "check_resolution_id",
+          "required": true,
+          "type": "stable_id"
+        },
+        {
+          "name": "outcome_band",
+          "required": true,
+          "type": "enum[clean_success, success, success_with_cost, failure_with_consequence, severe_failure]"
+        },
+        {
+          "name": "delivery_quality",
+          "required": true,
+          "type": "enum[compelling, credible, credible_with_visible_cost, unconvincing, transparently_manipulative]"
+        },
+        {
+          "name": "observable_effects",
+          "required": true,
+          "type": "relation_set[stable_id]"
+        }
+      ],
+      "relations": [],
+      "invariants": [
+        "The result records exactly one code-selected five-band check outcome and its matching delivery quality.",
+        "Observable effects are factual and listener responses remain separate NPC decisions."
       ]
     }
   ]

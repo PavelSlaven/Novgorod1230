@@ -10,6 +10,7 @@ Social role and occupation references, rights, restrictions, authority and legal
 - rights/restriction evaluation
 - authority and social-risk contracts
 - legal consequence packages
+- party-local commitment proposal from committed conversation facts
 
 ## Не делает
 
@@ -25,10 +26,11 @@ Social role and occupation references, rights, restrictions, authority and legal
 - `buildSocialRisk`
 - `buildLegalConsequencePackage`
 - `planPromiseLifecycle`
+- `planPartyLocalCommitment`
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. `planPromiseLifecycle` принимает переданную exact approved policy и строит proposal только для разрешённых ею `initialize`, `not_offered → offered` или `offered → active`; persistence, legal completion и semantic fallback запрещены. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. `planPromiseLifecycle` принимает переданную exact approved policy и строит proposal только для разрешённых ею `initialize`, `not_offered → offered` или `offered → active`; `planPartyLocalCommitment` связывает только уже committed statement/perception/surrender facts и фактических witnesses. Social delivery/check quality не активирует обещание самостоятельно и не выбирает ответ NPC. Persistence, legal completion и semantic fallback запрещены. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
 
 ## Зависимости
 

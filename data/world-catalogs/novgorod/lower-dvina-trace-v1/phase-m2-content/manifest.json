@@ -1,0 +1,50 @@
+{
+  "schema": "rus.lower_dvina_trace_m2_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m2_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 14,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/manifest.json",
+    "id": "lower_dvina_trace_m1_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m1_content_manifest.v1",
+    "digest": "a2de5d91cba73927725dfd78428e45baa27e08d4db5eca231ccdf83db547ce0f"
+  },
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 13,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 14,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "e5a3a6d937458dbefa651b0d7eae4c526df6f4e10f406657c7c4ee3d01cb437f"
+    },
+    "conversation_semantic_bindings": {
+      "path": "conversation-semantic-bindings.json",
+      "id": "lower_dvina_trace_conversation_semantic_bindings_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_conversation_semantic_bindings.v1",
+      "digest": "f8483ced332cf000c81a7bc432b331762cca3c0a5b3e906628b924b8d71742c0"
+    }
+  },
+  "files": {
+    "conversation-semantic-bindings.json": "f8483ced332cf000c81a7bc432b331762cca3c0a5b3e906628b924b8d71742c0",
+    "definition.json": "e5a3a6d937458dbefa651b0d7eae4c526df6f4e10f406657c7c4ee3d01cb437f"
+  },
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "aedcfa2253fb87445c639da3fc67ba1696af8458dddfe8a0310e623cd06ef2f9",
+  "scope": ["m2_npc_autonomous_and_conversation_semantic_bindings"],
+  "excludes": ["closed_npc_option_sets", "combat_resolver", "runtime_handlers", "persistence", "ddl", "api", "ui"]
+}

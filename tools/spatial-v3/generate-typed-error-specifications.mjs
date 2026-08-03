@@ -50,5 +50,5 @@ const acceptedTemporalArtifact = {
   errors
 };
 await writeArtifact(temporalBaselineOutput, acceptedTemporalArtifact);
-await writeArtifact(output, { ...acceptedTemporalArtifact, source_version: '4.4.0-target.1' });
+await writeArtifact(output, { ...acceptedTemporalArtifact, source_version: '4.5.0-target.1' });
 console.log(`Generated ${output}: ${errors.length} merged Spatial v4.2 + Temporal v4 typed errors.`);

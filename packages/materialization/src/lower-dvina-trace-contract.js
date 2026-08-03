@@ -3,6 +3,8 @@ import {
   ARTIFACT_CONTRACTS,
   M1_ARTIFACT_CONTRACT_OVERRIDES,
   M1_REQUIRED_ARTIFACTS,
+  M2_ARTIFACT_CONTRACT_OVERRIDES,
+  M2_REQUIRED_ARTIFACTS,
   PHASE_3_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_3_PICKUP_ARTIFACT_CONTRACT_OVERRIDES,
   PHASE_4_ARTIFACT_CONTRACT_OVERRIDES,
@@ -20,6 +22,7 @@ export const LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION = 10;
 export const LOWER_DVINA_TRACE_PHASE_5_DEFINITION_REVISION = 11;
 export const LOWER_DVINA_TRACE_PHASE_6_DEFINITION_REVISION = 12;
 export const LOWER_DVINA_TRACE_M1_DEFINITION_REVISION = 13;
+export const LOWER_DVINA_TRACE_M2_DEFINITION_REVISION = 14;
 export const LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT = 'lower_dvina_trace_phase_1a_mikula_v1';
 export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
@@ -36,12 +39,13 @@ export function assertLowerDvinaTraceRequest(input) {
       LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION,
       LOWER_DVINA_TRACE_PHASE_5_DEFINITION_REVISION,
       LOWER_DVINA_TRACE_PHASE_6_DEFINITION_REVISION,
-      LOWER_DVINA_TRACE_M1_DEFINITION_REVISION
+      LOWER_DVINA_TRACE_M1_DEFINITION_REVISION,
+      LOWER_DVINA_TRACE_M2_DEFINITION_REVISION
     ]
       .includes(input.scenario_definition_revision)) {
     fail(
       'TRACE_SCENARIO_REVISION_UNSUPPORTED',
-      'Only approved Lower Dvina trace definition revisions 7 through 13 are supported.'
+      'Only approved Lower Dvina trace definition revisions 7 through 14 are supported.'
     );
   }
   if (input.materializer_version !== MATERIALIZER_VERSION || input.rng_algorithm_id !== RNG_VERSION) fail('TRACE_MATERIALIZER_VERSION_UNSUPPORTED', 'Materializer and RNG pins must match production versions.');
@@ -75,9 +79,12 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
   if (!bundle || bundle.schema !== 'rus.lower_dvina_trace_materialization_bundle.v1' || bundle.version !== 1) fail('TRACE_SCENARIO_BUNDLE_INVALID', 'Pinned materialization bundle v1 is required.');
   if (bundle.scenario_id !== input.scenario_id || bundle.definition_revision !== input.scenario_definition_revision || bundle.manifest_digest !== input.scenario_manifest_digest) fail('TRACE_SCENARIO_MANIFEST_MISMATCH', 'Scenario bundle identity does not match the request.');
   const requiredArtifacts = input.scenario_definition_revision
-      === LOWER_DVINA_TRACE_M1_DEFINITION_REVISION
-    ? M1_REQUIRED_ARTIFACTS
-    : REQUIRED_ARTIFACTS;
+      === LOWER_DVINA_TRACE_M2_DEFINITION_REVISION
+    ? M2_REQUIRED_ARTIFACTS
+    : input.scenario_definition_revision
+        === LOWER_DVINA_TRACE_M1_DEFINITION_REVISION
+      ? M1_REQUIRED_ARTIFACTS
+      : REQUIRED_ARTIFACTS;
   for (const key of requiredArtifacts) {
     const artifact = bundle[key];
     const pin = bundle.artifact_pins?.[key];
@@ -110,13 +117,15 @@ export function assertLowerDvinaTraceBundle(bundle, input) {
       phase4: LOWER_DVINA_TRACE_PHASE_4_DEFINITION_REVISION,
       phase5: LOWER_DVINA_TRACE_PHASE_5_DEFINITION_REVISION,
       phase6: LOWER_DVINA_TRACE_PHASE_6_DEFINITION_REVISION,
-      m1: LOWER_DVINA_TRACE_M1_DEFINITION_REVISION
+      m1: LOWER_DVINA_TRACE_M1_DEFINITION_REVISION,
+      m2: LOWER_DVINA_TRACE_M2_DEFINITION_REVISION
     }
   });
   return bundle;
 }
 
 function artifactContractFor(key, definitionRevision) {
+  if (definitionRevision === LOWER_DVINA_TRACE_M2_DEFINITION_REVISION) return M2_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   if (definitionRevision === LOWER_DVINA_TRACE_M1_DEFINITION_REVISION) return M1_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   if (definitionRevision === LOWER_DVINA_TRACE_PHASE_6_DEFINITION_REVISION) return PHASE_6_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];
   if (definitionRevision === LOWER_DVINA_TRACE_PHASE_5_DEFINITION_REVISION) return PHASE_5_ARTIFACT_CONTRACT_OVERRIDES[key] ?? ARTIFACT_CONTRACTS[key];

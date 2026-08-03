@@ -12,19 +12,28 @@ export { tracePhase3PreconditionSatisfied };
 
 export function createTracePhase3Commands({
   contracts,
-  inputDigest
+  inputDigest,
+  playerConversationModel = null,
+  npcSemanticModel = null,
+  revalidateStateVersion = null
 }) {
   return [
     createTracePhase3MovementCommand({ contracts, inputDigest }),
     createTracePhase3ConversationCommand({
       contracts,
       inputDigest,
-      evidence: false
+      evidence: false,
+      playerConversationModel,
+      npcSemanticModel,
+      revalidateStateVersion
     }),
     createTracePhase3ConversationCommand({
       contracts,
       inputDigest,
-      evidence: true
+      evidence: true,
+      playerConversationModel,
+      npcSemanticModel,
+      revalidateStateVersion
     })
   ];
 }

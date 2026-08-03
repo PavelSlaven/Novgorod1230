@@ -49,7 +49,7 @@ const journeyBase = {
 };
 
 test('PR8 additive handoff amendment is a new current contract set and preserves the accepted 4.3 snapshot', () => {
-  assert.equal(SPATIAL_V3_CONTRACT_VERSION, '4.4.0-target.1');
+  assert.equal(SPATIAL_V3_CONTRACT_VERSION, '4.5.0-target.1');
   assert.ok(SPATIAL_V3_SUPPORTED_CONTRACT_VERSIONS.includes('4.3.0-target.1'));
 
   const names = contractDefinitions.map(({ contract_name }) => contract_name);

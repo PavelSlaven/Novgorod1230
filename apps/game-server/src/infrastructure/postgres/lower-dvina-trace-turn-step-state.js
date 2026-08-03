@@ -5,6 +5,8 @@ import {
 import { row } from './first-playable/plan-shared.js';
 import { serverError } from '../../errors.js';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
 
 export function buildLowerDvinaTraceTurnStepVisibleEnvelope({
   partyId, turnNumber, nextVersion, changeSetId, idemId, envelope
@@ -52,6 +54,7 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   visibleEnvelope
 }) {
   const next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
   delete next.relevant_hidden_state;
   const clockChanged = canonicalDigest(envelope.time_update.clock_after)
     !== canonicalDigest(state.clock);
@@ -107,7 +110,10 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
       change_set_id: changeSetId
     }
   };
-  return { snapshot: next, clockChanged };
+  return {
+    snapshot: assertSharedSemanticSnapshotSafe(next),
+    clockChanged
+  };
 }
 
 export function deriveLowerDvinaTraceTurnStepVisibleDependencyPins(envelope) {

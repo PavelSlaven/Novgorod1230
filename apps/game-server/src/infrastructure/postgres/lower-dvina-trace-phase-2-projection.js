@@ -1,7 +1,20 @@
 import { canonicalDigest } from '@rus/materialization';
 import { createTurnScreenReadModel } from '@rus/presentation';
 
+const SPEECH_RESPONSE_KINDS = new Set([
+  'route_disclosure',
+  'withhold',
+  'surrender',
+  'lie',
+  'bargain'
+]);
+const NON_SPEECH_RESPONSE_KINDS = new Set([
+  'silence',
+  'combat_handoff'
+]);
+
 export function phase2PublicResult({ payload, screen }) {
+  const consequence = payload.last_turn.consequence;
   return {
     party_id: payload.party_id,
     turn_number: payload.party_state.turn_number,
@@ -11,11 +24,119 @@ export function phase2PublicResult({ payload, screen }) {
     check: payload.last_turn.check_result,
     time_update: payload.last_turn.time_update,
     body_update: payload.last_turn.body_update,
-    observations: payload.last_turn.consequence.observations ?? [],
-    evidence: payload.last_turn.consequence.evidence_relations ?? [],
-    clue: payload.last_turn.consequence.clue_materialization ?? null,
-    movement: payload.last_turn.consequence.movement ?? null,
-    conversation: payload.last_turn.consequence.conversation ?? null
+    observations: consequence.observations ?? [],
+    evidence: consequence.evidence_relations ?? [],
+    clue: consequence.clue_materialization ?? null,
+    movement: consequence.movement ?? null,
+    conversation: publicConversationProjection({
+      conversation: consequence.conversation
+        ?? semanticNegotiationCandidate(consequence.negotiation),
+      payload
+    })
+  };
+}
+
+function semanticNegotiationCandidate(negotiation) {
+  return negotiation?.semantic_exchange_projection != null
+      || negotiation?.semantic_exchange != null
+    ? negotiation
+    : null;
+}
+
+function publicConversationProjection({ conversation, payload }) {
+  if (conversation?.semantic_exchange != null) {
+    throw new TypeError(
+      'Private semantic exchange cannot be projected from shared state.'
+    );
+  }
+  const semantic = conversation?.semantic_exchange_projection;
+  if (semantic == null) return conversation;
+  const responseKind = semantic.response_kind;
+  const speechResponse = SPEECH_RESPONSE_KINDS.has(responseKind);
+  const nonSpeechResponse = NON_SPEECH_RESPONSE_KINDS.has(responseKind);
+  if (!speechResponse && !nonSpeechResponse) {
+    throw new TypeError(
+      'Semantic conversation response kind is not player-projectable.'
+    );
+  }
+  const statementRefs = semantic.statement_refs;
+  const expectedStatementCount = speechResponse ? 1 : 0;
+  if (!Array.isArray(statementRefs)
+      || statementRefs.length !== expectedStatementCount
+      || statementRefs.some(({ entity_kind: kind, entity_id: id }) =>
+        kind !== 'conversation_statement'
+        || typeof id !== 'string'
+        || id.length === 0)) {
+    throw new TypeError('Semantic statement references are invalid.');
+  }
+  const statementIds = new Set(statementRefs.map(
+    ({ entity_id: statementId }) => statementId
+  ));
+  if (statementIds.size !== statementRefs.length) {
+    throw new TypeError('Semantic statement references are duplicated.');
+  }
+  const npcRef = semantic.npc_ref;
+  if (npcRef?.entity_kind !== 'npc'
+      || typeof npcRef.entity_id !== 'string'
+      || npcRef.entity_id.length === 0) {
+    throw new TypeError('Semantic NPC reference is invalid.');
+  }
+  const routeDisclosure = semantic.route_disclosure;
+  const disclosedRouteRef = routeDisclosure?.route_ref;
+  if (responseKind === 'route_disclosure'
+      ? typeof disclosedRouteRef !== 'string'
+        || disclosedRouteRef.length === 0
+      : routeDisclosure !== null) {
+    throw new TypeError('Semantic route disclosure is invalid.');
+  }
+  const npcStatements = (payload.conversation_statements ?? []).filter(
+    ({ statement_id: statementId }) => statementIds.has(statementId)
+  );
+  if (npcStatements.length !== expectedStatementCount
+      || npcStatements.some(({ speaker_ref: speaker }) =>
+        speaker?.entity_kind !== npcRef.entity_kind
+        || speaker.entity_id !== npcRef.entity_id)) {
+    throw new TypeError(
+      'Semantic statement does not belong to the projected NPC.'
+    );
+  }
+  let npcUtterance = null;
+  if (speechResponse) {
+    const playerMessages = npcStatements.flatMap((statement) => {
+      const audience = (payload.conversation_audiences ?? []).find(
+        ({ statement_ref: statementRef }) =>
+          statementRef?.entity_kind === 'conversation_statement'
+          && statementRef.entity_id === statement.statement_id
+      );
+      return (audience?.received_messages ?? []).filter(
+        ({ listener_ref: listener, comprehension,
+          utterance_text: utterance }) =>
+          listener?.entity_kind === 'player_character'
+          && listener.entity_id === payload.actor_id
+          && comprehension === 'full'
+          && utterance === statement.utterance_text
+      );
+    });
+    if (npcStatements.length !== 1 || playerMessages.length !== 1) {
+      throw new TypeError(
+        'Semantic conversation has no single player-visible NPC utterance.'
+      );
+    }
+    npcUtterance = playerMessages[0].utterance_text;
+  }
+  const {
+    semantic_exchange_projection: _semanticProjection,
+    ...publicConversation
+  } = conversation;
+  return {
+    ...structuredClone(publicConversation),
+    semantic_exchange: {
+      response_kind: responseKind,
+      npc_utterance: npcUtterance,
+      disclosed_route_ref: responseKind === 'route_disclosure'
+        ? disclosedRouteRef
+        : null
+    }
   };
 }
 

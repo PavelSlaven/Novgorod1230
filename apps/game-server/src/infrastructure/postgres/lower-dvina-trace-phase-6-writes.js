@@ -9,6 +9,8 @@ import { appendTraversal } from './lower-dvina-trace-phase-6-traversal-writes.js
 import { appendActivity } from './lower-dvina-trace-phase-6-activity-writes.js';
 import { appendPlayerBodyEffect, appendTerminal } from
   './lower-dvina-trace-phase-6-terminal-writes.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
 
 export function phase6VisibleEnvelope({ partyId, nextVersion, turnNumber,
   changeSetId, idemId, factual, visibleContext }) {
@@ -87,6 +89,7 @@ export function phase6PendingScreen({ state, factual, visibleEnvelope,
 
 export function phase6Writes({ partyId, state, next, factual, turnNumber,
   changeSetId, idemId, visibleEnvelope, pendingScreen }) {
+  assertSharedSemanticSnapshotSafe(next);
   const carry = factual.consequence.carry;
   const intent = carry.intent;
   const traversal = carry.traversal;

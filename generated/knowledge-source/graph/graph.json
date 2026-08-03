@@ -960,7 +960,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 380
+        "line_end": 386
       }
     },
     {
@@ -984,7 +984,7 @@
       "source_location": {
         "file": "development_rules.txt",
         "line_start": 1,
-        "line_end": 673
+        "line_end": 677
       }
     },
     {
@@ -1044,7 +1044,7 @@
       "source_location": {
         "file": "information_sources_llm_prompts.md",
         "line_start": 1,
-        "line_end": 1071
+        "line_end": 1082
       }
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1074
+        "line_end": 1083
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 303
+        "line_end": 310
       }
     },
     {
@@ -1129,6 +1129,18 @@
         "file": "new_game_start_pipeline.txt",
         "line_start": 1,
         "line_end": 92
+      }
+    },
+    {
+      "id": "canonical-document:npc-conversation-mode-contract",
+      "type": "canonical_document",
+      "label": "npc_conversation_mode_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/npc_conversation_mode_contract.md",
+      "source_location": {
+        "file": "npc_conversation_mode_contract.md",
+        "line_start": 1,
+        "line_end": 3032
       }
     },
     {
@@ -1200,7 +1212,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 2977
+        "line_end": 3008
       }
     },
     {

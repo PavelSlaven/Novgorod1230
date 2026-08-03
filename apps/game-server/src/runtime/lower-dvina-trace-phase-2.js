@@ -37,10 +37,18 @@ import {
 import {
   createLowerDvinaTraceTurnStepGenericOwners
 } from './lower-dvina-trace-turn-step-generic-owners.js';
+import {
+  createStateVersionRevalidator,
+  requiredTraceTurnText,
+  validateConversationDependencies,
+  validatePhase2RuntimeDependencies
+} from './lower-dvina-trace-phase-2-runtime-input.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
   turnStepModel = null,
+  playerConversationModel = null,
+  npcSemanticModel = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
   randomSourceFactory,
@@ -57,7 +65,7 @@ export function createLowerDvinaTracePhase2Runtime({
     }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle
 } = {}) {
-  validateDependencies({
+  validatePhase2RuntimeDependencies({
     repository,
     semanticResolver,
     narrator,
@@ -70,15 +78,15 @@ export function createLowerDvinaTracePhase2Runtime({
       return true;
     },
     async submitTurn({ partyId, input = {} }) {
-      const requestId = requiredText(
+      const requestId = requiredTraceTurnText(
         input.request_id,
         'TRACE_TURN_REQUEST_ID_REQUIRED'
       );
-      const idempotencyKey = requiredText(
+      const idempotencyKey = requiredTraceTurnText(
         input.idempotency_key ?? input.request_id,
         'TRACE_TURN_IDEMPOTENCY_KEY_REQUIRED'
       );
-      const rawText = requiredText(
+      const rawText = requiredTraceTurnText(
         input.raw_text,
         'TRACE_TURN_RAW_TEXT_REQUIRED'
       );
@@ -112,28 +120,49 @@ export function createLowerDvinaTracePhase2Runtime({
       ]);
       const scenarioDefinitionRevision =
         committedTraceScenarioDefinitionRevision(state);
+      validateConversationDependencies({
+        scenarioDefinitionRevision,
+        playerConversationModel,
+        npcSemanticModel
+      });
+      const npcDecisionStore = npcSemanticModel
+        && repository.createNpcSemanticDecisionStore?.(partyId);
+      if (npcSemanticModel && !npcDecisionStore) {
+        throw serverError(
+          'TRACE_NPC_SEMANTIC_DECISION_STORE_MISSING',
+          'Durable NPC semantic decision storage is required.',
+          { status: 503 }
+        );
+      }
+      const durableNpcSemanticModel = npcDecisionStore
+        ? (request, { boundary } = {}) => npcDecisionStore.resolve({
+            boundary,
+            request,
+            semanticModel: npcSemanticModel
+          })
+        : npcSemanticModel;
       const bundle = await bundleLoader({ scenarioDefinitionRevision });
       const contracts = resolveTracePhase2Contracts({
         state,
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9, 10, 11, 12, 13].includes(
+      const phase3Contracts = [9, 10, 11, 12, 13, 14].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10, 11, 12, 13].includes(
+      const phase4Contracts = [10, 11, 12, 13, 14].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11, 12, 13].includes(
+      const phase5Contracts = [11, 12, 13, 14].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12, 13].includes(bundle.definition_revision)
+      const phase6Contracts = [12, 13, 14].includes(bundle.definition_revision)
         ? resolveTracePhase6Contracts({ bundle })
         : null;
       const genericOwners = bundle.turn_step_owner_profiles
@@ -146,12 +175,26 @@ export function createLowerDvinaTracePhase2Runtime({
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
         ...(phase3Contracts ? createTracePhase3Commands({
           contracts: phase3Contracts,
-          inputDigest
+          inputDigest,
+          playerConversationModel,
+          npcSemanticModel: durableNpcSemanticModel,
+          revalidateStateVersion: createStateVersionRevalidator({
+            repository,
+            partyId,
+            idempotencyKey
+          })
         }) : []),
         ...(phase4Contracts ? createTracePhase4Commands({
           contracts: phase4Contracts,
           inputDigest,
-          selectNpcDecision: npcDecisionSelector
+          selectNpcDecision: npcDecisionSelector,
+          playerConversationModel,
+          npcSemanticModel: durableNpcSemanticModel,
+          revalidateStateVersion: createStateVersionRevalidator({
+            repository,
+            partyId,
+            idempotencyKey
+          })
         }) : []),
         ...(phase5Contracts ? [createTracePhase5Command({
           contracts: phase5Contracts,
@@ -241,46 +284,4 @@ export function createLowerDvinaTracePhase2Runtime({
       });
     }
   });
-}
-function validateDependencies({
-  repository,
-  semanticResolver,
-  narrator,
-  randomSourceFactory,
-  decisionSecret
-}) {
-  const repositoryMethods = [
-    'loadPhase2State',
-    'commitPhase2Turn',
-    'loadPhase2VisibleContext',
-    'persistPhase2Screen',
-    'loadPhase2Replay'
-  ];
-  if (!repository
-      || repositoryMethods.some(
-        (name) => typeof repository[name] !== 'function'
-      )) {
-    throw new TypeError('Lower Dvina Phase 2 repository ports are required.');
-  }
-  if (typeof semanticResolver !== 'function'
-      || typeof narrator?.run !== 'function'
-      || typeof randomSourceFactory !== 'function'
-      || !String(decisionSecret ?? '').trim()) {
-    throw serverError(
-      'TRACE_PHASE_2_DEPENDENCY_MISSING',
-      'Phase 2 requires semantic, narration, RNG and bounded-decision ports.',
-      { status: 503 }
-    );
-  }
-}
-function requiredText(value, code) {
-  const normalized = String(value ?? '').trim();
-  if (!normalized) {
-    throw serverError(
-      code,
-      'Required trace turn identity is missing.',
-      { status: 400 }
-    );
-  }
-  return normalized;
 }

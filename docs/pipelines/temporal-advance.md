@@ -40,7 +40,7 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
      package);
    - `@rus/environment-state` — weather/light effects;
    - `@rus/time-events-history` — historical phases and due event effects;
-   - `@rus/npc-runtime` — schedule and perception proposals;
+   - `@rus/npc-runtime` — schedule, perception и generic NPC signal proposals;
    - temporal carrier handling — synchronized transport/local results with one
      root clock owner;
    - `@rus/world-processes` — approved remote catch-up and propagation
@@ -49,6 +49,10 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    incompatible transition, double move/resource consumption, missing event
    dependency or conflicting clock owner is `temporal_change_set_conflict` or
    `time_owner_conflict`, never a best-effort choice.
+   После fully resolved same-time batch новые `material|critical` signals
+   одного NPC агрегируются в не более чем одну `npc_decision_boundary_v1`.
+   Conversation LLM вызывается владельцем хода вне синхронного resolver и не
+   более одного раза для этой NPC/batch pair; replay использует persisted trace.
 5. `@rus/turn` applies the merged proposals to an immutable candidate
    post-change state. `@rus/visibility-knowledge-memory` creates a player-safe
    package candidate and validates hidden-leak absence.

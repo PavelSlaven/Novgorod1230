@@ -1,11 +1,22 @@
-import { commitPhase2BodyState } from
-  './lower-dvina-trace-phase-2-state.js';
-
+import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
+import { assertSharedSemanticSnapshotSafe,
+  projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from
+  './lower-dvina-trace-conversation-state.js';
 export function nextState({
-  state, factual, nextVersion, turnNumber, inputDigest, changeSetId
+  state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
+  rootTurnId, workingRevision
 }) {
-  const next = structuredClone(state);
+  let next = structuredClone(state);
   const routeTime = phase3RouteTimeUpdate(factual);
+  delete next.npc_semantic_decision_traces;
+  next.activity_history = (next.activity_history ?? []).map((entry) => ({
+    ...entry,
+    execution_result: entry.execution_result?.semantic_exchange == null
+      ? entry.execution_result
+      : projectSharedSemanticConsequence({
+          conversation: entry.execution_result
+        }).conversation
+  }));
   delete next.relevant_hidden_state;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = {
@@ -66,39 +77,57 @@ export function nextState({
     }]);
   } else {
     const conversation = factual.consequence.conversation;
-    const interaction = {
-      interaction_id: `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
-      activity_ref: conversation.activity_ref,
-      npc_id: conversation.npc_id,
-      statement_ref: conversation.statement_ref,
-      memory_ref: conversation.memory_ref,
-      journal_ref: conversation.journal_ref,
-      consequence_ref: conversation.consequence_ref,
-      memory_text: conversation.memory_text,
-      journal_text: conversation.journal_text,
-      decision_trace: conversation.decision.trace,
-      statement_is_new: conversation.statement_is_new,
-      started_at: factual.time_update.clock_before,
-      occurred_at: factual.time_update.clock_after
-    };
-    next.interactions = [...(next.interactions ?? []), interaction];
-    if (conversation.route_knowledge_ref) {
-      next.route_knowledge = [...new Set([
-        ...(next.route_knowledge ?? []),
-        conversation.route_knowledge_ref
-      ])];
-      next.knowledge = mergeKnowledge(next.knowledge, [{
-        fact_id: conversation.route_knowledge_ref,
-        knowledge_state: 'known_from_committed_source',
-        evidence_refs: [conversation.statement_ref]
-      }]);
-    }
-    if (conversation.testimonial_evidence_ref) {
-      next.knowledge = mergeKnowledge(next.knowledge, [{
-        fact_id: conversation.statement_ref,
-        knowledge_state: 'known_from_committed_source',
-        evidence_refs: [conversation.testimonial_evidence_ref]
-      }]);
+    if (conversation.semantic_exchange != null) {
+      next = projectSemanticConversationSnapshot({
+        state: next,
+        semanticExchange: conversation.semantic_exchange,
+        rootTurnId,
+        workingRevision,
+        appliedChangeSetId: changeSetId
+      });
+      next = projectPhase3SemanticConversation({
+        next,
+        state,
+        factual,
+        conversation,
+        turnNumber
+      });
+    } else {
+      const interaction = {
+        interaction_id:
+          `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
+        activity_ref: conversation.activity_ref,
+        npc_id: conversation.npc_id,
+        statement_ref: conversation.statement_ref,
+        memory_ref: conversation.memory_ref,
+        journal_ref: conversation.journal_ref,
+        consequence_ref: conversation.consequence_ref,
+        memory_text: conversation.memory_text,
+        journal_text: conversation.journal_text,
+        decision_trace: conversation.decision.trace,
+        statement_is_new: conversation.statement_is_new,
+        started_at: factual.time_update.clock_before,
+        occurred_at: factual.time_update.clock_after
+      };
+      next.interactions = [...(next.interactions ?? []), interaction];
+      if (conversation.route_knowledge_ref) {
+        next.route_knowledge = [...new Set([
+          ...(next.route_knowledge ?? []),
+          conversation.route_knowledge_ref
+        ])];
+        next.knowledge = mergeKnowledge(next.knowledge, [{
+          fact_id: conversation.route_knowledge_ref,
+          knowledge_state: 'known_from_committed_source',
+          evidence_refs: [conversation.statement_ref]
+        }]);
+      }
+      if (conversation.testimonial_evidence_ref) {
+        next.knowledge = mergeKnowledge(next.knowledge, [{
+          fact_id: conversation.statement_ref,
+          knowledge_state: 'known_from_committed_source',
+          evidence_refs: [conversation.testimonial_evidence_ref]
+        }]);
+      }
     }
   }
   next.last_turn = {
@@ -116,12 +145,89 @@ export function nextState({
       structuredClone(factual.availability.check_requests[0] ?? null),
     check_result:
       structuredClone(factual.consequence.conversation?.check_result ?? null),
-    consequence: structuredClone(factual.consequence),
+    consequence: projectSharedSemanticConsequence(factual.consequence),
     time_update: structuredClone(factual.time_update),
     body_update: structuredClone(factual.body_update),
     visible_package: null
   };
+  return assertSharedSemanticSnapshotSafe(next);
+}
+
+function projectPhase3SemanticConversation({
+  next, state, factual, conversation, turnNumber
+}) {
+  const semantic = conversation.semantic_exchange;
+  const npcRef = semantic.decision_request?.npc_ref;
+  const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
+    sameRef(speaker, npcRef));
+  if (npcRef?.entity_kind !== 'npc'
+      || npcStatements.length !== 1
+      || conversation.npc_id !== npcRef.entity_id
+      || semantic.decision_plan?.contribution_kind !== 'speech'
+      || !Array.isArray(conversation.objective_fact_outputs)
+      || conversation.objective_fact_outputs.length !== 0
+      || !['route_disclosure', 'withhold'].includes(semantic.response_kind)) {
+    semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
+  }
+  const statement = npcStatements[0];
+  const audience = semantic.audiences.find(({ statement_ref: statementRef }) =>
+    statementRef.entity_kind === 'conversation_statement'
+      && statementRef.entity_id === statement.statement_id);
+  if (!audience) semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
+  next.interactions = [...(next.interactions ?? []), {
+    interaction_id:
+      `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
+    activity_ref: conversation.activity_ref,
+    npc_id: npcRef.entity_id,
+    statement_ref: statement.statement_id,
+    utterance_text: statement.utterance_text,
+    dominant_act: statement.dominant_act,
+    interaction_tags: structuredClone(statement.interaction_tags),
+    topic_refs: structuredClone(statement.topic_refs),
+    claims: structuredClone(statement.claims),
+    actual_listener_refs:
+      structuredClone(audience.actual_listener_refs),
+    truth_projection: 'speaker_statement_only',
+    objective_truth_write: 'forbidden',
+    started_at: structuredClone(factual.time_update.clock_before),
+    occurred_at: structuredClone(factual.time_update.clock_after)
+  }];
+
+  const disclosure = semantic.route_disclosure;
+  if (semantic.response_kind === 'route_disclosure') {
+    if (!disclosure
+        || disclosure.objective_truth_write !== 'forbidden'
+        || disclosure.source_statement_ref?.entity_kind
+          !== 'conversation_statement'
+        || disclosure.source_statement_ref.entity_id
+          !== statement.statement_id
+        || typeof disclosure.route_ref !== 'string'
+        || !disclosure.route_ref.trim()) {
+      semanticFail('TRACE_M2_PHASE_3_ROUTE_DISCLOSURE_INVALID');
+    }
+    next.route_knowledge = [...new Set([
+      ...(next.route_knowledge ?? []),
+      disclosure.route_ref
+    ])].sort();
+    next.knowledge = mergeKnowledge(next.knowledge, [{
+      fact_id: disclosure.route_ref,
+      knowledge_state: 'known_from_committed_source',
+      evidence_refs: [statement.statement_id]
+    }]);
+  } else if (disclosure !== null) {
+    semanticFail('TRACE_M2_PHASE_3_ROUTE_DISCLOSURE_INVALID');
+  }
   return next;
+}
+
+function sameRef(left, right) {
+  return left?.entity_kind === right?.entity_kind &&
+    left?.entity_id === right?.entity_id;
+}
+
+function semanticFail(code) {
+  throw Object.assign(new Error(
+    'The Phase 3 semantic conversation projection is incomplete.'), { code });
 }
 
 function preparedScene(state, locationRef) {
@@ -146,6 +252,9 @@ export function activityHistoryEntry({
   changeSetId
 }) {
   const phase3Kind = factual.consequence.phase3_kind;
+  const sharedConsequence = projectSharedSemanticConsequence(
+    factual.consequence
+  );
   const time = phase3Kind === 'movement'
     ? phase3RouteTimeUpdate(factual) : factual.time_update;
   const duration = phase3Kind === 'movement'
@@ -170,7 +279,7 @@ export function activityHistoryEntry({
     execution_result: structuredClone(
       phase3Kind === 'movement'
         ? factual.consequence.movement
-        : factual.consequence.conversation
+        : sharedConsequence.conversation
     )
   };
 }

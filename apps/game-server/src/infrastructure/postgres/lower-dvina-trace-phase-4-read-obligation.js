@@ -1,5 +1,6 @@
+
 import { canonicalDigest } from '@rus/materialization';
-import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
+import { compareRefs, fail } from './lower-dvina-trace-phase-4-read-obligation-shared.js';
 
 export function assertPhase4PromiseAndSurrender({
   payload,
@@ -45,6 +46,8 @@ export function assertPhase4PromiseAndSurrender({
     });
   }
 }
+
+export { assertPhase4SemanticPromiseAndSurrender } from './lower-dvina-trace-phase-4-read-semantic-obligation.js';
 
 function assertPromiseTransitions({ promise, transitions }) {
   const relevant = transitions.filter(
@@ -127,5 +130,3 @@ function assertSurrender({
         ({ fact_id: id }) => id === 'promise_activation_basis_committed'
       )) fail();
 }
-
-function fail() { throw phase2IntegrityError(); }

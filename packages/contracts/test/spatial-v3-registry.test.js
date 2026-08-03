@@ -8,10 +8,10 @@ import {
 import { loadCanonicalTarget } from '../../../tools/spatial-v3/red-contract-harness.mjs';
 import { stateMachineDefinitions } from '../src/spatial-v3/state-machines.js';
 
-test('P07 registry exposes exactly the current 213 contracts and 82 typed errors once', async () => {
+test('P07 registry exposes exactly the current 225 contracts and 82 typed errors once', async () => {
   const target = await loadCanonicalTarget();
-  assert.equal(contractDefinitions.length, 213);
-  assert.equal(new Set(contractDefinitions.map(({ contract_name }) => contract_name)).size, 213);
+  assert.equal(contractDefinitions.length, 225);
+  assert.equal(new Set(contractDefinitions.map(({ contract_name }) => contract_name)).size, 225);
   assert.ok(contractImplementationBatches.every(({ contract_names }) => contract_names.length <= 20));
   assert.equal(typedErrorDefinitions.length, 82);
   assert.equal(new Set(typedErrorDefinitions.map(({ error_code }) => error_code)).size, 82);

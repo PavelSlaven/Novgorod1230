@@ -15,6 +15,8 @@ import {
   phase5ActivityAttemptRecord,
   phase5TimedExecutionRecord
 } from './lower-dvina-trace-phase-5-temporal-writes.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
 
 export function phase5VisibleEnvelope({ partyId, nextVersion, turnNumber,
   changeSetId, idemId, factual, visibleContext, contracts }) {
@@ -94,6 +96,7 @@ export function phase5PendingScreen({ state, factual, visibleEnvelope,
 
 export function phase5Writes({ partyId, state, next, factual, visibleEnvelope,
   pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts }) {
+  assertSharedSemanticSnapshotSafe(next);
   const treatment = factual.consequence.treatment;
   const first = state.phase5_treatment == null;
   const execution = treatment.activity_execution;

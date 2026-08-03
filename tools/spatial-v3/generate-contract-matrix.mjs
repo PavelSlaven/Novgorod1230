@@ -48,7 +48,7 @@ const errors = typedErrors.errors
   .map(({ error_code }) => error_code)
   .sort((a, b) => a.localeCompare(b));
 
-if (new Set(contracts).size !== 213 || contracts.length !== 213) throw new Error(`Expected 213 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
+if (new Set(contracts).size !== 225 || contracts.length !== 225) throw new Error(`Expected 225 unique contracts, got ${contracts.length}/${new Set(contracts).size}`);
 if (new Set(errors).size !== 82 || errors.length !== 82) throw new Error(`Expected 82 unique errors, got ${errors.length}/${new Set(errors).size}`);
 
 const matrix = {
@@ -82,7 +82,7 @@ const summary = [
   '',
   'Статус: `target`; записи являются обязательным планом владения, не утверждением о существующей реализации.',
   '',
-  `- Contracts: ${matrix.contracts.length}/213; errors: ${matrix.errors.length}/82.`,
+  `- Contracts: ${matrix.contracts.length}/225; errors: ${matrix.errors.length}/82.`,
   '- Каждый contract и error имеет ровно одного planned owner; все implementation fields привязаны к последующим шагам плана.',
   '',
   '## Распределение контрактов',

@@ -95,8 +95,12 @@ test('Phase 5 one-command completion releases Onisim, spends water and applies t
     availability: admitted,
     checks: { results: [checkResult(true)] }
   });
+  const hydrated = structuredClone(initial);
+  hydrated.npc_semantic_decision_traces = [{
+    plan: { private_marker: 'phase5-private-semantic-plan' }
+  }];
   const next = nextPhase5State({
-    state: initial,
+    state: hydrated,
     factual: factual(consequence, plus(initial.clock, 25)),
     nextVersion: 13,
     turnNumber: 5,
@@ -104,6 +108,14 @@ test('Phase 5 one-command completion releases Onisim, spends water and applies t
     changeSetId: 'phase5-change',
     contracts
   });
+  assert.equal(
+    Object.hasOwn(next, 'npc_semantic_decision_traces'),
+    false
+  );
+  assert.equal(
+    JSON.stringify(next).includes('phase5-private-semantic-plan'),
+    false
+  );
   const onisim = actor(next, 'onisim_boatman');
   const eremey = actor(next, 'eremey_fisher');
   assert.deepEqual({

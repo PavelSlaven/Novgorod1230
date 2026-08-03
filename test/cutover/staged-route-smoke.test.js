@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readServerConfig, featureFlagProfile, assertModularStartupConfig } from '../../apps/game-server/src/config.js';
+import {
+  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
+} from '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
 
 const EXPECTED_BY_STEP = Object.freeze([
   'modulesEnabled', 'llmRuntimeModulesEnabled', 'dataModulesEnabled', 'partyStoreModulesEnabled',
@@ -13,7 +16,7 @@ test('completed cutover profile keeps every modular flag enabled', () => {
     ...process.env,
     RUS_CUTOVER_STAGE: '13',
     RUS_SPATIAL_V3_BINDINGS_MODULE:
-      './test/fixtures/runtime-bindings/spatial-v3-production-bindings.js',
+      SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: 'e'.repeat(64)
   });
   const stage = 13;

@@ -10,15 +10,15 @@
 | `@rus/time-events-history` | clock, duration, timers, delayed event records, historical phases, time-update requests | создание исторических событий и их смысловых последствий |
 | `@rus/checks-rng` | dice requests, `RandomSource`, characteristic bonus, check formula и result envelope | решение о необходимости проверки, narrative consequence |
 | `@rus/combat-health` | combat state contracts, attack/defense requests, quality bands, harm packages, wound application | решение NPC атаковать, выбор цели/оружия, narration |
-| `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages | создание права региона, вынесение смыслового приговора |
-| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package | prose generation, hidden-state mutation, DB reads |
+| `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages, party-local commitments from committed conversation facts | создание права региона, вынесение смыслового приговора, выбор NPC response или активация обязательства одной лишь репликой |
+| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package, factual conversation audience projection | prose generation, hidden-state mutation, DB reads, выбор responder или перенос private knowledge между NPC |
 | `@rus/runtime-catalog` | read-only active/historical domain pin loading, exact import reconstruction, world-pin compatibility и applicable item/container projection | authoring, import/activation writes, party persistence, materialization |
 
 ## Spatial v3 production ownership (P08)
 
 Historical P28 evidence did not itself activate production. The later
-`versioned production activation cutover` completed as
-`spatial-v3-production-v1`; these owners now form the sole production
+`versioned production activation cutover` currently culminates in
+`spatial-v3-production-v4`; these owners form the sole production
 composition. Dual write, mixed reads and compatibility fallback remain
 forbidden.
 
@@ -39,18 +39,18 @@ The target public ports are deliberately typed-failure stubs until their individ
 ## Temporal World v4 production ownership
 
 The completed `versioned production activation cutover` made these
-responsibilities authoritative in release `spatial-v3-production-v1`.
-Production v2 is an explicit migration/rollback source only.
+responsibilities authoritative in current release `spatial-v3-production-v4`.
+Production v3 is an explicit rollback source only.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|
 | `@rus/time-events-history` | exact `GameTimestamp`/rational arithmetic, calendar projection, `(from,to]` boundary selection, ordering and same-time cascade; historical proposals | no body/environment/NPC/access calculation and no commit |
 | `@rus/body-state` | pure body effect and threshold proposals from supplied exact elapsed and pins | no clock arithmetic, state persistence or cause invention |
-| `@rus/turn` | temporal workflow, owner invocation, deterministic proposal merge, logical combined plan, limits and idempotency orchestration | no PostgreSQL transaction and no second place/access engine |
+| `@rus/turn` | temporal workflow, owner invocation, deterministic proposal merge, revision-14 conversation exchange/semantic plan validation and replay, logical combined plan, limits and idempotency orchestration | no PostgreSQL transaction, second place/access engine, NPC perception/knowledge ownership, social consequence or combat resolution |
 | `@rus/party-store` | normalized placement/capacity/ownership/holder/controller/access validation and logical-plan persistence boundary | no orchestration, semantic fallback or physical database transaction ownership |
 | `@rus/game-server` | physical target PostgreSQL transaction for the combined factual commit | no domain proposals or narration fact creation |
 | `@rus/environment-state` | pure pinned weather/light/access-effect proposals from supplied time result | no global clock, DB, defaults or place/access persistence override |
-| `@rus/npc-runtime` | pure pinned schedule, perception and bounded-decision proposals | no initial NPC materialization, DB, LLM or workflow control |
+| `@rus/npc-runtime` | pure pinned schedule/perception proposals; common `npc_decision_signal_v1` validation and per-NPC/same-time-batch `npc_decision_boundary_v1` aggregation; revision-14 conversation contract validation; historical/genuinely closed bounded decisions | no initial NPC materialization, DB, LLM invocation, workflow control, full autonomous action or combat resolution |
 | `@rus/turn` carrier proposal engine | synchronized root/local transport proposals; root result owns the one shared clock update | local carrier result never advances the party clock again |
 | `@rus/world-processes` | pure bounded remote catch-up and propagation proposals | no continuous global simulation, persistence, or direct calls to peer owners |
 | `@rus/visibility-knowledge-memory` | code-owned player-safe factual visible package | no narration, hidden-state mutation or factual commit |

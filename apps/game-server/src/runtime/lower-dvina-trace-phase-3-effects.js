@@ -92,19 +92,31 @@ export function createTracePhase3VisibleProjector({
         };
       }
       const conversation = consequence.conversation;
-      const disclosed = conversation.route_knowledge_ref != null;
+      const semantic = conversation.semantic_exchange ?? null;
+      const disclosed = semantic
+        ? semantic.route_disclosure != null
+        : conversation.route_knowledge_ref != null;
+      const semanticUtterance = semantic
+        ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
+        : null;
+      const visibleChanges = semantic
+        ? semantic.statements.map(({ statement_id: statementId }) =>
+            statementId)
+        : [conversation.statement_ref];
       return {
         version: 1,
         schema: 'visible_context_package',
-        visible_scene: disclosed
-          ? 'Еремей рассказал, что слышал удар и видел мокрого Ратшу с чужой сумкой.'
-          : 'Еремей уклонился от полного ответа о крушении.',
-        visible_changes: [conversation.statement_ref],
+        visible_scene: semantic
+          ? `Еремей говорит: «${semanticUtterance}»`
+          : disclosed
+            ? 'Еремей рассказал, что слышал удар и видел мокрого Ратшу с чужой сумкой.'
+            : 'Еремей уклонился от полного ответа о крушении.',
+        visible_changes: visibleChanges,
         sensory_details: [],
         visible_npc: contracts.actors.map(playerSafeNpc),
         visible_objects: [],
         known_context: [
-          conversation.journal_ref,
+          ...(semantic ? [] : [conversation.journal_ref]),
           ...(disclosed ? [
             'Еремей указал существующий путь к сушильне.',
             'Слова Еремея и найденная синяя шерсть остаются независимыми сведениями.'
@@ -122,6 +134,34 @@ export function createTracePhase3VisibleProjector({
       };
     }
   });
+}
+
+function perceivedNpcUtterance(semantic, code) {
+  const statements = semantic?.statements?.filter(
+    ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'
+  ) ?? [];
+  if (statements.length !== 1) throw visibleGap(code);
+  const statement = statements[0];
+  const audience = semantic.audiences?.find(
+    ({ statement_ref: statementRef }) =>
+      statementRef?.entity_kind === 'conversation_statement'
+      && statementRef.entity_id === statement.statement_id
+  );
+  const playerMessages = audience?.received_messages?.filter(
+    ({ listener_ref: listener, comprehension, utterance_text: utterance }) =>
+      listener?.entity_kind === 'player_character'
+      && comprehension === 'full'
+      && utterance === statement.utterance_text
+  ) ?? [];
+  if (playerMessages.length !== 1) throw visibleGap(code);
+  return statement.utterance_text;
+}
+
+function visibleGap(code) {
+  return Object.assign(
+    new Error('The semantic NPC utterance is not player-visible.'),
+    { code }
+  );
 }
 
 function playerSafeNpc(actor) {

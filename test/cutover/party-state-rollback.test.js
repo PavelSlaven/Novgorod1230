@@ -5,6 +5,9 @@ import {
   assertModularStartupConfig,
   readServerConfig
 } from '../../apps/game-server/src/config.js';
+import {
+  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
+} from '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
 
 test('rollback identity does not expose a v2 runtime route or mutate state', async () => {
   const store = createInMemorySessionStore();
@@ -13,7 +16,8 @@ test('rollback identity does not expose a v2 runtime route or mutate state', asy
 
   const staging = readServerConfig({
     RUS_RUNTIME_ROUTE: 'legacy',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: './bindings.js'
+    RUS_SPATIAL_V3_BINDINGS_MODULE:
+      SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
   });
   assert.throws(
     () => assertModularStartupConfig(staging),
@@ -24,7 +28,8 @@ test('rollback identity does not expose a v2 runtime route or mutate state', asy
 
   const modular = readServerConfig({
     RUS_RUNTIME_ROUTE: 'modular',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: './bindings.js',
+    RUS_SPATIAL_V3_BINDINGS_MODULE:
+      SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: 'e'.repeat(64)
   });
   assert.equal(modular.runtimeRoute, 'modular');

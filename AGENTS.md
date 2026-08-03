@@ -129,7 +129,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 
 - код не придумывает отсутствующие категории, исторические факты и допустимые варианты;
 - authored, significant и hidden экземпляры создаются только из утверждённого candidate set;
-- пустой обязательный candidate set для authored, significant или hidden materialization возвращает типизированную ошибку или data gap;
+- пустой обязательный candidate set возвращает типизированную ошибку или data gap для authored, significant или hidden materialization;
 - запрещено ослаблять фильтры и создавать смысловые fallback;
 - LLM выбирает только из переданного закрытого набора, когда операция является bounded choice;
 - для свободной заявки игрока единственная активная semantic boundary — `turn_step_request_v1` → `turn_step_plan_v1` в общем `@rus/turn`; exact registered commands сохраняют приоритет, а scenario-local planner и параллельный semantic fallback запрещены;
@@ -139,7 +139,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 - LLM не пишет непосредственно в базу данных;
 - сохранённые экземпляры не материализуются повторно без явной migration или repair-процедуры.
 
-Контракты autonomous NPC, conversation и combat остаются `proposed` до отдельного code cutover и не расширяют активную player semantic boundary.
+Conversation активен только для Lower Dvina Trace revision 14: meaningful NPC response проходит через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1` с `decision_mode = conversation` и общий code-owned execution/commit. Full autonomous NPC action и combat resolution остаются `proposed` и не расширяют активную player semantic boundary; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback revision-14 conversation.
 
 ## 7. Тестирование
 

@@ -1,6 +1,6 @@
 # Контракт режима разговора с NPC
 
-**Статус:** `proposed`\
+**Статус:** `active` для Lower Dvina Trace revision 14\
 **Идентификатор контракта:** `npc_conversation_mode_v1`\
 **Проект:** «Русь XIII век»\
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`\
@@ -11,6 +11,12 @@
 **Владелец знаний, восприятия и памяти:** `@rus/visibility-knowledge-memory`\
 **Владелец социальных прав, риска и обязательств:** `@rus/social-law`\
 **Не входит в этот контракт:** художественная narration, разрешение боя, создание объективных скрытых фактов, произвольная материализация NPC и предметов.
+
+**Production cutover:** revision 14 активирует этот контракт для разговоров
+фаз 3–4 через `spatial-v3-production-v4`. Описания состояния старого `main` и
+bounded Phase 3/4 ниже сохраняются только как историческая база миграции;
+production не обращается к ним без явного historical revision pin. Combat в
+этом cutover заканчивается только типизированным handoff и не разрешается.
 
 ---
 
@@ -117,9 +123,10 @@ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/knowledge-lie-
 - evolving working state;
 - остановку после полного текущего batch для внешнего асинхронного LLM-вызова.
 
-### 2.2. Чего пока нет
+### 2.2. Historical gaps до revision-14 cutover
 
-В текущем `main` отсутствует общий stateful conversation runtime.
+На зафиксированном при подготовке документа снимке `main` отсутствовал общий
+stateful conversation runtime.
 
 Сценарная беседа:
 
@@ -130,7 +137,10 @@ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content/knowledge-lie-
 - не создаёт универсальную очередь ответов;
 - использует закрытые сценарные варианты вместо semantic contribution plan.
 
-Также активные нормативы сейчас утверждают, что runtime LLM может только выбрать `option_id` из закрытого набора. Поэтому данный контракт не может стать `active` отдельно от согласованного cutover кода и документации.
+На том снимке active-нормативы также разрешали NPC runtime LLM только bounded
+`option_id`. Согласованный revision-14 code/documentation cutover устранил эти
+gaps для Phase 3/4 conversation; описание выше сохраняется как migration
+context, а не current production behavior.
 
 ---
 
@@ -1150,7 +1160,7 @@ LLM не вызывается для NPC только потому, что он:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "decision_mode": "conversation",
   "scheduled_at": {},
   "npc_ref": {
@@ -1173,7 +1183,7 @@ LLM не вызывается для NPC только потому, что он:
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:conversation:batch-42:eremey"
+  "idempotency_key": "npc-decision:batch-42:eremey"
 }
 ```
 
@@ -1222,7 +1232,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
 {
   "schema": "npc_conversation_response_request_v1",
   "request_id": "conversation-response-request-42",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "conversation_id": "conversation:party-1:42",
   "exchange_id": "exchange:conversation-42:7",
   "state_version": 17,
@@ -2843,4 +2853,180 @@ Knowledge owner сохраняет received messages без превращени
 Все действия используют общий actor-step pipeline.
 @rus/turn ведёт exchange до ближайшей player-response boundary.
 Факты и player-safe package сохраняются атомарно до narration.
+```
+
+# Приложение A. Machine contract specifications
+
+```yaml
+contract_name: conversation_session_v1
+storage: party_runtime_mutable_lifecycle
+identity:
+  - conversation_id
+fields:
+  schema: required enum[conversation_session_v1]
+  conversation_id: required stable_id
+  state_version: required state_version
+  status: required enum[active, suspended, ended]
+  started_at: required game_timestamp
+  location_ref: required entity_ref
+  initiator_ref: required entity_ref
+  active_participant_refs: required nonempty_relation_set[entity_ref]
+  last_contribution_ref: optional entity_ref
+  topic_refs: required relation_set[stable_id]
+  status_reason: optional string
+invariants:
+  - The initiator is an active participant and active contributions are accepted only while status is active.
+  - The actual audience is resolved per statement and is not persisted as a session-wide audience list.
+```
+
+```yaml
+contract_name: player_conversation_input_v1
+storage: immutable_request
+identity:
+  - request_id
+fields:
+  schema: required enum[player_conversation_input_v1]
+  request_id: required stable_id
+  conversation_id: required stable_id
+  state_version: required state_version
+  speaker_ref: required entity_ref
+  raw_text: required string
+  received_at: required system_timestamp
+  player_safe_context: required json_object
+  operation_contract: required json_object
+invariants:
+  - raw_text is player input rather than a factual utterance until semantic interpretation and commit.
+  - The context is player-safe and the operation contract contains only code-supported capabilities.
+```
+
+```yaml
+contract_name: player_conversation_contribution_plan_v1
+storage: immutable_response
+identity:
+  - request_id
+fields:
+  schema: required enum[player_conversation_contribution_plan_v1]
+  request_id: required stable_id
+  conversation_id: required stable_id
+  state_version: required state_version
+  speaker_ref: required entity_ref
+  input_mode: required enum[verbatim, intent_paraphrase]
+  contribution_kind: required enum[speech, silence, leave_conversation, action_handoff, combat_handoff]
+  primary_addressee_ref: optional entity_ref
+  intended_addressee_refs: required relation_set[entity_ref]
+  affected_actor_refs: required relation_set[entity_ref]
+  speech: optional json_object
+  interpretation: required json_object
+  resolution: required enum[automatic, check_required]
+  activity: required json_object
+  supporting_operations: required relation_set[json_object]
+  check: optional json_object
+  handoff: optional json_object
+invariants:
+  - One plan contains exactly one conversation contribution and no implicit continuation.
+  - Verbatim input preserves the player's words and cannot use historical_equivalent adaptation.
+  - Speech, check and handoff branches are mutually constrained by contribution_kind and resolution.
+```
+
+```yaml
+contract_name: conversation_statement_event_v1
+storage: party_runtime_append_only
+identity:
+  - statement_id
+fields:
+  schema: required enum[conversation_statement_event_v1]
+  statement_id: required stable_id
+  conversation_id: required stable_id
+  exchange_id: required stable_id
+  speaker_ref: required entity_ref
+  intended_addressee_refs: required relation_set[entity_ref]
+  utterance_text: required string
+  dominant_act: required enum[greet, farewell, question, answer, inform, request, command, offer, accept, refuse, negotiate, promise, threaten, accuse, confess, evade, warn, challenge, apologize]
+  interaction_tags: required relation_set[stable_id]
+  topic_refs: required relation_set[stable_id]
+  claims: required relation_set[json_object]
+  message_completeness: required enum[complete]
+  spoken_at: required game_timestamp
+  duration: required json_object
+  social_delivery_result: optional social_delivery_result_v1
+  source_plan_ref: required entity_ref
+invariants:
+  - The exact utterance is factual after commit while its claims do not become objective truth.
+  - Perception determines the actual audience and witnesses after the statement exists.
+```
+
+```yaml
+contract_name: npc_conversation_response_request_v1
+storage: immutable_request
+identity:
+  - request_id
+fields:
+  schema: required enum[npc_conversation_response_request_v1]
+  request_id: required stable_id
+  boundary_id: required stable_id
+  conversation_id: required stable_id
+  exchange_id: required stable_id
+  state_version: required state_version
+  requested_at: required game_timestamp
+  npc_ref: required entity_ref
+  decision_reasons: required json_object
+  npc: required json_object
+  perceived_message: required json_object
+  public_conversation_history: required relation_set[json_object]
+  knowledge: required json_object
+  memory: required json_object
+  social_context: required json_object
+  available_resources: required relation_set[json_object]
+  decision_scope: required json_object
+invariants:
+  - The request contains only the message and conversation history actually perceived by this NPC.
+  - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
+  - Hidden reasons, objective unknown facts and other model prompts are excluded.
+```
+
+```yaml
+contract_name: conversation_contribution_plan_v1
+storage: immutable_response
+identity:
+  - request_id
+fields:
+  schema: required enum[conversation_contribution_plan_v1]
+  request_id: required stable_id
+  boundary_id: required stable_id
+  conversation_id: required stable_id
+  exchange_id: required stable_id
+  state_version: required state_version
+  speaker_ref: required entity_ref
+  contribution_kind: required enum[speech, silence, leave_conversation, action_handoff, combat_handoff]
+  primary_addressee_ref: optional entity_ref
+  intended_addressee_refs: required relation_set[entity_ref]
+  affected_actor_refs: required relation_set[entity_ref]
+  speech: optional json_object
+  interpretation: required json_object
+  resolution: required enum[automatic, check_required]
+  activity: required json_object
+  supporting_operations: required relation_set[json_object]
+  check: optional json_object
+  handoff: optional json_object
+  reason: required string
+invariants:
+  - One plan contains one contribution and can hand off at most one ordinary action or combat intent.
+  - The reason is internal trace data and never becomes a world fact or player-visible content.
+  - A check affects observable delivery only and cannot force the listener's decision.
+```
+
+```yaml
+contract_name: social_delivery_result_v1
+storage: immutable_result
+identity:
+  - check_resolution_id
+fields:
+  schema: required enum[social_delivery_result_v1]
+  check_resolution_id: required stable_id
+  outcome_band: required enum[clean_success, success, success_with_cost, failure_with_consequence, severe_failure]
+  delivery_quality: required enum[compelling, credible, credible_with_visible_cost, unconvincing, transparently_manipulative]
+  observable_effects: required relation_set[stable_id]
+invariants:
+  - The result records exactly one code-selected five-band check outcome and its matching delivery quality.
+  - Observable effects are factual and listener responses remain separate NPC decisions.
 ```

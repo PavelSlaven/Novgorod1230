@@ -17,8 +17,8 @@ import {
 import { resolveTracePhase3ConversationExchange } from
   './lower-dvina-trace-m2-conversation.js';
 import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
-  prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage
-} from './lower-dvina-trace-m2-conversation-player.js';
+  prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
+  './lower-dvina-trace-m2-conversation-player.js';
 
 export function createTracePhase3ConversationCommand({
   contracts,
@@ -235,6 +235,7 @@ function createSemanticConversationCommand({
       const playerPlan = await prepareTracePhase3PlayerConversationPlan({
         state,
         contracts,
+        evidence,
         playerInput: context.playerInput,
         inputDigest,
         playerConversationModel,
@@ -261,18 +262,17 @@ function createSemanticConversationCommand({
       if (playerPlan.resolution === 'check_required' && !checkResult) {
         fail('TRACE_PHASE_3_CHECK_RESULT_MISSING');
       }
-      const semanticExchange =
-        await resolveTracePhase3ConversationExchange({
-          state,
-          contracts,
-          playerInput,
-          inputDigest,
-          checkResult,
-          playerConversationModel,
-          npcSemanticModel,
-          revalidateStateVersion,
-          playerPlan
-        });
+      const semanticExchange = await resolveTracePhase3ConversationExchange({
+        state,
+        contracts,
+        playerInput,
+        inputDigest,
+        checkResult,
+        playerConversationModel,
+        npcSemanticModel,
+        revalidateStateVersion,
+        playerPlan
+      });
       return packageBase({
         inputDigest,
         duration: activity.duration_minutes,

@@ -1,7 +1,13 @@
 import {
   createM2ConversationContext,
-  executeM2ConversationExchange
+  executeM2ConversationExchange,
+  prepareM2PlayerConversationPlan
 } from './lower-dvina-trace-m2-conversation-exchange.js';
+import {
+  phase3AvailableEvidence,
+  phase3PlayerOperationContract,
+  phase3PresentedEvidence
+} from './lower-dvina-trace-m2-conversation-player.js';
 import { classifyEremeyPlan, classifyRatshaPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import {
@@ -9,7 +15,6 @@ import {
   fail,
   freezeResult,
   LIE_OPERATION,
-  PLAYER_OPERATION,
   PROMISE_OPERATION,
   requireCommonInput,
   ROUTE_OPERATION,
@@ -38,17 +43,12 @@ export async function resolveTracePhase3ConversationExchange({
     npcSemanticModel,
     revalidateStateVersion
   });
-  const evidence = checkResult !== null;
-  const mapping = contracts.conversationSignalMappings?.[
-    evidence ? 'evidence' : 'question'
-  ];
   const target = contracts.actors?.find(
     ({ ref }) => ref === contracts.ids?.eremeyRef
   );
   const routeRef = contracts.disclosureMapping
     ?.route_knowledge_disclosure?.route_ref;
-  if (!mapping || !target?.instance_id || !routeRef
-      || mapping.target_npc_ref !== contracts.ids.eremeyRef
+  if (!target?.instance_id || !routeRef
       || (checkResult !== null
         && checkResult.check_id !== contracts.check.check_id)) {
     fail(
@@ -56,15 +56,15 @@ export async function resolveTracePhase3ConversationExchange({
       'The exact Phase 3 conversation binding is required.'
     );
   }
-
-  const context = createM2ConversationContext({
+  const availableEvidence = phase3AvailableEvidence(state, contracts);
+  const initialContext = createM2ConversationContext({
     phase: 'phase_3',
     state,
     contracts,
     playerInput,
     inputDigest,
     checkResult,
-    mapping,
+    mapping: contracts.conversationSignalMappings?.question,
     targetActor: target,
     actualNpcActors: contracts.actors.filter(
       ({ anchor_id: anchorId }) =>
@@ -73,12 +73,8 @@ export async function resolveTracePhase3ConversationExchange({
     playerConversationModel,
     npcSemanticModel,
     revalidateStateVersion,
-    playerOperationContract: {
-      [PLAYER_OPERATION]: {
-        owner: '@rus/turn',
-        utterance_policy: 'semantic_contribution'
-      }
-    },
+    availableEvidence,
+    playerOperationContract: phase3PlayerOperationContract(availableEvidence),
     npcOperationContract: {
       [ROUTE_OPERATION]: {
         owner: '@rus/visibility-knowledge-memory',
@@ -97,6 +93,42 @@ export async function resolveTracePhase3ConversationExchange({
     }),
     playerPlan
   });
+  const effectivePlayerPlan = playerPlan ??
+    await prepareM2PlayerConversationPlan(initialContext);
+  const evidencePresented = phase3PresentedEvidence({
+    state, contracts, plan: effectivePlayerPlan
+  });
+  const mapping = contracts.conversationSignalMappings?.[
+    evidencePresented ? 'evidence' : 'question'
+  ];
+  if (!mapping || mapping.target_npc_ref !== contracts.ids.eremeyRef) {
+    fail(
+      'TRACE_M2_PHASE_3_CONTRACT_GAP',
+      'The exact Phase 3 conversation binding is required.'
+    );
+  }
+  const context = {
+    ...initialContext,
+    evidencePresented,
+    evidencePresentation: evidencePresented ? Object.freeze({
+      schema: 'conversation_supporting_operation_event_v1',
+      event_id: `evidence-presentation:${inputDigest}`,
+      conversation_id: initialContext.conversationId,
+      exchange_id: initialContext.exchangeId,
+      op: 'emit_interaction',
+      interaction_kind: 'present_item_as_evidence',
+      actor_ref: {
+        entity_kind: 'player_character',
+        entity_id: state.actor_id
+      },
+      target_ref: structuredClone(initialContext.targetRef),
+      entity_ref: structuredClone(availableEvidence.item_ref),
+      evidence_ref: contracts.ids.evidence,
+      occurred_at: structuredClone(state.clock)
+    }) : null,
+    mapping,
+    playerPlan: effectivePlayerPlan
+  };
   const result = await executeM2ConversationExchange(context);
   const disclosure = result.npcOutcome.kind === 'route_disclosure'
     ? Object.freeze({
@@ -113,7 +145,6 @@ export async function resolveTracePhase3ConversationExchange({
         objective_truth_write: 'forbidden'
       })
     : null;
-
   return freezeResult({
     exchange: result.exchange,
     statements: result.statements,
@@ -124,6 +155,7 @@ export async function resolveTracePhase3ConversationExchange({
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,
+    evidence_presentation: structuredClone(context.evidencePresentation),
     route_disclosure: disclosure,
     response_kind: result.npcOutcome.kind,
     speech: result.npcOutcome.kind === 'speech'
@@ -194,10 +226,6 @@ export async function resolveTracePhase4ConversationExchange({
     npcSemanticModel,
     revalidateStateVersion,
     playerOperationContract: {
-      [PLAYER_OPERATION]: {
-        owner: '@rus/turn',
-        utterance_policy: 'semantic_contribution'
-      },
       [PROMISE_OPERATION]: {
         owner: '@rus/social-law',
         policy_ref: contracts.promisePolicy.policy_id
@@ -262,6 +290,8 @@ export async function resolveTracePhase4ConversationExchange({
       ? result.npcOutcome.factualProjection
       : null,
     silence: result.npcOutcome.kind === 'silence',
+    leave_conversation:
+      result.npcOutcome.kind === 'leave_conversation',
     combat_handoff: combatHandoff,
     response_kind: result.npcOutcome.kind,
     objective_truth_writes: []

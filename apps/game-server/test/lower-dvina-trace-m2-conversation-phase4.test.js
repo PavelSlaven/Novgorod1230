@@ -33,7 +33,7 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
       const plan = structuredClone(await baseModel(request));
       plan.resolution = 'automatic';
       plan.check = null;
-      plan.supporting_operations = [{ op: 'speak_exact_utterance' }];
+      plan.supporting_operations = [];
       return plan;
     },
     npcSemanticModel: async () => null,
@@ -197,9 +197,10 @@ test('Ratsha semantic boundary also accepts ordinary valid speech without a scen
     'bargain',
     'speech',
     'silence',
+    'leave_conversation',
     'combat_handoff'
   ];
-  const digestCharacters = ['6', '7', '8', 'd', '9', 'e'];
+  const digestCharacters = ['6', '7', '8', 'd', '9', 'f', 'e'];
   const results = new Map();
 
   for (const [index, responseKind] of responseKinds.entries()) {
@@ -221,9 +222,21 @@ test('Ratsha semantic boundary also accepts ordinary valid speech without a scen
     } else {
       assert.ok(exchange.result[responseKind]);
     }
+    if (responseKind === 'leave_conversation') {
+      const projected = projectPhase4Negotiation({
+        state,
+        contracts,
+        result: exchange.result,
+        inputDigest: digest(digestCharacters[index])
+      });
+      assert.equal(projected.conversation_sessions.at(-1).status, 'ended');
+    }
   }
 
-  for (const responseKind of ['lie', 'bargain', 'speech', 'silence', 'combat_handoff']) {
+  for (const responseKind of [
+    'lie', 'bargain', 'speech', 'silence', 'leave_conversation',
+    'combat_handoff'
+  ]) {
     assert.equal(results.get(responseKind).commitment, null);
     assert.equal(results.get(responseKind).knife_transition_eligibility, null);
   }

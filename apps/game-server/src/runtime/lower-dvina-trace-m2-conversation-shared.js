@@ -1,7 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
 import { buildSocialDeliveryResult } from '@rus/npc-runtime';
 
-export const PLAYER_OPERATION = 'speak_exact_utterance';
+export const EVIDENCE_OPERATION = 'emit_interaction';
+export const EVIDENCE_INTERACTION = 'present_item_as_evidence';
 export const PROMISE_OPERATION = 'offer_conditional_protection';
 export const ROUTE_OPERATION = 'disclose_known_route';
 export const SURRENDER_OPERATION = 'commit_surrender';

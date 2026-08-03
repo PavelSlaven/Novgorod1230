@@ -24,7 +24,8 @@ export function projectPhase4SemanticNegotiation({
   const semantic = negotiation.semantic_exchange;
   const responseKind = semantic.response_kind;
   const validKinds = new Set([
-    'surrender', 'lie', 'bargain', 'speech', 'silence', 'combat_handoff'
+    'surrender', 'lie', 'bargain', 'speech', 'silence',
+    'leave_conversation', 'combat_handoff'
   ]);
   const npcRef = semantic.decision_request?.npc_ref;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>

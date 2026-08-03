@@ -41,6 +41,7 @@ const RATSHA_RESPONSE_KINDS = new Set([
   'lie',
   'speech',
   'silence',
+  'leave_conversation',
   'combat_handoff'
 ]);
 
@@ -54,10 +55,12 @@ export function createM2ConversationModels({
   return {
     playerConversationModel: (request) => playerPlan(request, {
       checkRequired: Boolean(
-        request.player_safe_context.presented_evidence_ref
+        request.player_safe_context.required_supporting_operation
         || request.player_safe_context.offer_policy_ref
       ),
-      offer: Boolean(request.player_safe_context.offer_policy_ref)
+      offer: Boolean(request.player_safe_context.offer_policy_ref),
+      evidence: request.player_safe_context.required_supporting_operation
+        === 'present_item_as_evidence'
     }),
     npcSemanticModel: (request) => {
       const routeOperation = request.decision_scope
@@ -70,7 +73,7 @@ export function createM2ConversationModels({
         onNpcCall(request, responseKind);
         return eremeyPlan(request, responseKind, routeOperation);
       }
-      const playerId = request.public_conversation_history[0]
+      const playerId = request.public_conversation_history.at(-1)
         .speaker_ref.entity_id;
       onNpcCall(request, ratshaResponseKind);
       return ratshaPlan(request, ratshaResponseKind, playerId);
@@ -96,6 +99,39 @@ export function phase3State() {
     g5_node_id: camp.node.instance_id,
     g5_anchor_id: contracts.campAnchor
   };
+  return state;
+}
+
+export function withAccessibleBlueWool(state, contracts) {
+  state.items = [...(state.items ?? []), {
+    item_id: 'item:m2:blue-wool',
+    template_id: contracts.blueWoolPickup.item_template_ref,
+    profile_id: contracts.blueWoolPickup.item_template_ref,
+    quantity: 1,
+    placement: {
+      holder_character_id: state.actor_id,
+      physical_position: 'hands'
+    },
+    state: {
+      evidence_ref: contracts.ids.evidence,
+      property_state: {
+        owner_ref: 'ratsha_storehouse_helper',
+        holder_ref: state.actor_id,
+        controller_ref: state.actor_id
+      },
+      pickup_transition: {
+        transition_template_ref:
+          contracts.blueWoolPickup.transition_template_id,
+        source_placement_ref:
+          contracts.blueWoolPickup.source_placement_ref
+      }
+    }
+  }];
+  state.knowledge = [...(state.knowledge ?? []), {
+    fact_id: contracts.ids.evidence,
+    knowledge_state: 'known_from_committed_source',
+    evidence_refs: [contracts.ids.evidence]
+  }];
   return state;
 }
 
@@ -242,7 +278,8 @@ function playerPlan(request, {
   checkRequired = false,
   inputMode = 'verbatim',
   utteranceText = request.raw_text,
-  offer = false
+  offer = false,
+  evidence = false
 } = {}) {
   const availableCheck = request.player_safe_context.available_check;
   return {
@@ -263,9 +300,15 @@ function playerPlan(request, {
     interpretation: interpretation('speak the exact player utterance'),
     resolution: checkRequired ? 'check_required' : 'automatic',
     activity: activity(),
-    supporting_operations: [{
-      op: offer ? 'offer_conditional_protection' : 'speak_exact_utterance'
-    }],
+    supporting_operations: offer ? [{
+      op: 'offer_conditional_protection'
+    }] : evidence ? [{
+      op: 'emit_interaction',
+      interaction_kind: 'present_item_as_evidence',
+      actor_ref: request.speaker_ref,
+      target_ref: request.player_safe_context.target_npc_ref,
+      entity_ref: request.player_safe_context.available_evidence.item_ref
+    }] : [],
     check: checkRequired ? {
       purpose: 'resolve social delivery',
       attribute_ref: availableCheck.attribute_ref,
@@ -290,6 +333,13 @@ function playerPlan(request, {
 }
 
 function eremeyPlan(request, responseKind, routeOperation) {
+  if (['silence', 'leave_conversation'].includes(responseKind)) {
+    return npcNonSpeechPlan(
+      request,
+      responseKind,
+      request.public_conversation_history.at(-1).speaker_ref.entity_id
+    );
+  }
   const disclosure = responseKind === 'route_disclosure';
   const ordinarySpeech = responseKind === 'speech';
   const routeRef = routeOperation.route_ref;
@@ -319,7 +369,8 @@ function eremeyPlan(request, responseKind, routeOperation) {
   });
 }
 function ratshaPlan(request, responseKind, playerId) {
-  if (responseKind === 'silence' || responseKind === 'combat_handoff') {
+  if (['silence', 'leave_conversation', 'combat_handoff']
+    .includes(responseKind)) {
     return npcNonSpeechPlan(request, responseKind, playerId);
   }
   const variants = {
@@ -369,7 +420,7 @@ function npcSpeechPlan(request, {
   claims = [],
   supportingOperations = []
 }) {
-  const playerRef = request.public_conversation_history[0].speaker_ref;
+  const playerRef = request.public_conversation_history.at(-1).speaker_ref;
   return {
     schema: 'conversation_contribution_plan_v1',
     request_id: request.request_id,
@@ -415,7 +466,9 @@ function npcNonSpeechPlan(request, responseKind, playerId) {
     speech: null,
     interpretation: interpretation(combat
       ? 'leave conversation through the combat owner handoff'
-      : 'remain silent'),
+      : responseKind === 'leave_conversation'
+        ? 'end participation in the conversation'
+        : 'remain silent'),
     resolution: 'automatic',
     activity: activity(),
     supporting_operations: [],
@@ -514,10 +567,14 @@ export function projectPhase3Conversation({ state, contracts, result, inputDiges
         phase3_kind: 'conversation',
         duration_minutes: 1,
         conversation: {
-          activity_ref: contracts.evidenceTalk.profile_id,
+          activity_ref: result.evidence_presentation
+            ? contracts.evidenceTalk.profile_id
+            : contracts.talk.profile_id,
           npc_id: result.decision_request.npc_ref.entity_id,
           semantic_exchange: result,
           objective_fact_outputs: [],
+          evidence_input_ref:
+            result.evidence_presentation?.evidence_ref ?? null,
           check_result: null
         }
       }

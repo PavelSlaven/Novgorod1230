@@ -11,6 +11,8 @@ const SPEECH_RESPONSE_KINDS = new Set([
 ]);
 const NON_SPEECH_RESPONSE_KINDS = new Set([
   'silence',
+  'leave_conversation',
+  'action_handoff',
   'combat_handoff'
 ]);
 

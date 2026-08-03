@@ -62,7 +62,10 @@ export function buildNpcDecision(context, working, playerStatement) {
       source_statement_ref: perceivedMessage.source_statement_ref,
       perception_result_ref: perceivedMessage.perception_result_ref
     },
-    public_conversation_history: [structuredClone(perceivedMessage)],
+    public_conversation_history: publicConversationHistory(
+      context,
+      perceivedMessage
+    ),
     knowledge: ownKnowledgeProjection(context.targetActor),
     memory: ownMemoryProjection(
       context.targetActor,
@@ -72,6 +75,9 @@ export function buildNpcDecision(context, working, playerStatement) {
     social_context: {
       delivery_cues: structuredClone(perceivedMessage.delivery_cues),
       claims_are_speaker_assertions_not_objective_truth: true,
+      ...(context.phase === 'phase_3' && context.evidencePresented
+        ? { presented_evidence_ref: context.contracts.ids.evidence }
+        : {}),
       ...(context.phase === 'phase_4' && context.offerStage
         ? {
             offer_stage_ref: context.offerStage.fact_id,
@@ -107,19 +113,45 @@ export function buildNpcDecision(context, working, playerStatement) {
   };
 }
 
+function publicConversationHistory(context, currentMessage) {
+  const receivedByTarget = new Map(
+    (context.state.received_messages ?? [])
+      .filter(({ listener_ref: listenerRef }) =>
+        sameRef(listenerRef, context.targetRef))
+      .map((message) => [message.source_statement_ref?.entity_id, message])
+  );
+  const history = (context.state.conversation_statements ?? [])
+    .filter(({ conversation_id: conversationId }) =>
+      conversationId === context.conversationId)
+    .flatMap((statement) => {
+      if (sameRef(statement.speaker_ref, context.targetRef)) {
+        return [structuredClone(statement)];
+      }
+      const received = receivedByTarget.get(statement.statement_id);
+      return received ? [structuredClone(received)] : [];
+    });
+  history.push(structuredClone(currentMessage));
+  return history;
+}
+
 export function currentSignalRecords(
   context,
   playerStatement,
   communicationPerceptionRef
 ) {
-  return context.mapping.signal_descriptors.map((descriptor, index) => {
+  return context.mapping.signal_descriptors.map((descriptor) => {
     const communication = descriptor.category === 'communication';
     const sourceEventRef = communication
       ? ref('conversation_statement', playerStatement.statement_id)
-      : ref(
-          'evidence_presentation',
-          `evidence-presentation:${context.inputDigest}:${index}`
-        );
+      : context.evidencePresentation === null
+        ? fail(
+            'TRACE_M2_EVIDENCE_PRESENTATION_MISSING',
+            'An environment evidence signal requires an executed operation.'
+          )
+        : ref(
+            'evidence_presentation',
+            context.evidencePresentation.event_id
+          );
     // The evidence presentation is part of the same actually perceived
     // player contribution. Reuse that committed perception result instead of
     // inventing a second perception identity that has no persisted owner.

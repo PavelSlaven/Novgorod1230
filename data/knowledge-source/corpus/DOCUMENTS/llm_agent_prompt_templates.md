@@ -22,6 +22,12 @@ knowledge принадлежат коду. Канонические role/payload
 active `npc_conversation_mode_contract.md`, разделы 5.6–5.7; этот общий файл не
 создаёт второй расходящийся conversation prompt.
 
+Lower Dvina Trace revision 14 передаёт NPC responder пустые списки допустимых
+attribute/skill refs, поэтому его contribution обязан использовать
+`resolution = automatic` и `check = null`. Общая conversation schema допускает
+NPC `check_required` только в профиле, где code-owned check owner явно
+зарегистрировал непустой scope; prompt не может расширить этот scope.
+
 ## Назначение документа
 
 Этот документ содержит типовые промты для LLM-агентов исторической текстовой RPG «Русь XIII век».

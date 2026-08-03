@@ -50,7 +50,7 @@ const world = Object.freeze({
     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
 });
 
-test('Phase 3 movement and Eremey conversations commit atomically and survive restart', async (t) => {
+test('historical bounded Phase 3 writes without semantic exchange and survives restart', async (t) => {
   if (docker(['version']).status !== 0) {
     t.skip('Docker is required for isolated Phase 3 PostgreSQL integration');
     return;

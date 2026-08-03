@@ -7,7 +7,7 @@ export function tracePhase3PreconditionSatisfied(
     return state.position?.location_ref === precondition.location_ref;
   }
   if (precondition.kind === 'committed_evidence_access') {
-    return hasAccessibleBlueWool(state, contracts);
+    return accessibleBlueWoolItem(state, contracts) !== null;
   }
   if (precondition.kind === 'materialized_present_npc') {
     const actor = contracts.actors.find(({ ref }) => ref === precondition.ref);
@@ -44,10 +44,10 @@ export function resolveEremeyPolicyState(state) {
   return disclosed ? 'cooperation_enabled' : 'guarded';
 }
 
-function hasAccessibleBlueWool(state, contracts) {
+export function accessibleBlueWoolItem(state, contracts) {
   const evidenceRef = contracts.ids.evidence;
   const transition = contracts.blueWoolPickup;
-  return state.items?.some((item) =>
+  return state.items?.find((item) =>
     item.template_id === transition.item_template_ref
     && item.state?.evidence_ref === evidenceRef
     && item.placement?.holder_character_id === state.actor_id
@@ -60,5 +60,5 @@ function hasAccessibleBlueWool(state, contracts) {
       === transition.source_placement_ref
     && (state.knowledge ?? []).some((knowledge) =>
       knowledge.fact_id === evidenceRef
-      && knowledge.evidence_refs?.includes(evidenceRef)));
+      && knowledge.evidence_refs?.includes(evidenceRef))) ?? null;
 }

@@ -69,7 +69,10 @@ export function applyNpcPlan(
   contributionIndex,
   npcOutcome
 ) {
-  const handoff = npcOutcome.kind === 'combat_handoff'
+  const contributionKind = proposal.plan.contribution_kind;
+  const handoff = ['action_handoff', 'combat_handoff'].includes(
+    contributionKind
+  )
     ? structuredClone(proposal.plan.handoff)
     : null;
   const statement = proposal.plan.contribution_kind === 'speech'
@@ -129,8 +132,12 @@ export function applyNpcPlan(
       ]
     },
     contributionEvent,
-    playerResponseBoundary: false,
-    sessionStatus: handoff ? 'suspended' : 'ended',
+    playerResponseBoundary: ['speech', 'silence'].includes(contributionKind),
+    sessionStatus: handoff
+      ? 'suspended'
+      : contributionKind === 'leave_conversation'
+        ? 'ended'
+        : 'active',
     handoff
   });
 }
@@ -161,9 +168,9 @@ function statementFromPlan({
     duration: {
       owner: 'approved_activity_contract',
       activity_ref: context.phase === 'phase_3'
-        ? (context.checkResult === null
-            ? context.contracts.talk.profile_id
-            : context.contracts.evidenceTalk.profile_id)
+        ? (context.evidencePresented
+            ? context.contracts.evidenceTalk.profile_id
+            : context.contracts.talk.profile_id)
         : context.contracts.negotiation.profile_id
     },
     social_delivery_result: socialDeliveryResult,

@@ -2,11 +2,13 @@ import { committedPlayerKnowledgeRefs } from
   './lower-dvina-trace-m2-conversation-projections.js';
 import {
   BARGAIN_OPERATION,
+  EVIDENCE_INTERACTION,
+  EVIDENCE_OPERATION,
   exactKeys,
   fail,
   LIE_OPERATION,
-  PLAYER_OPERATION,
   PROMISE_OPERATION,
+  ref,
   refKey,
   requiredRawText,
   ROUTE_OPERATION,
@@ -18,11 +20,14 @@ export function classifyEremeyPlan(plan, {
   routeRef,
   knowledgeScopeRef
 }) {
-  requireCodeOwnedNpcResolution(plan);
+  if (plan.contribution_kind === 'silence'
+      || plan.contribution_kind === 'leave_conversation') {
+    return { kind: plan.contribution_kind };
+  }
   if (plan.contribution_kind !== 'speech') {
     fail(
       'TRACE_M2_EREMEY_RESPONSE_INVALID',
-      'Eremey must answer with one exact speech contribution.'
+      'Eremey returned an unavailable handoff contribution.'
     );
   }
   const operation = plan.supporting_operations[0] ?? null;
@@ -61,7 +66,6 @@ export function classifyEremeyPlan(plan, {
 }
 
 export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
-  requireCodeOwnedNpcResolution(plan);
   if (plan.contribution_kind === 'combat_handoff') {
     if (plan.handoff?.kind !== 'combat') {
       fail(
@@ -73,6 +77,9 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
   }
   if (plan.contribution_kind === 'silence') {
     return { kind: 'silence' };
+  }
+  if (plan.contribution_kind === 'leave_conversation') {
+    return { kind: 'leave_conversation' };
   }
   if (plan.contribution_kind !== 'speech') {
     fail(
@@ -139,6 +146,9 @@ export function requirePlayerSpeech(context, plan) {
   const offerOperation = plan.supporting_operations.find(
     ({ op } = {}) => op === PROMISE_OPERATION
   );
+  const evidenceOperation = plan.supporting_operations.find(
+    ({ op } = {}) => op === EVIDENCE_OPERATION
+  );
   if (plan.contribution_kind !== 'speech'
       || (plan.input_mode === 'verbatim'
         && plan.speech?.utterance_text !== requiredRawText(context.playerInput))
@@ -152,8 +162,17 @@ export function requirePlayerSpeech(context, plan) {
       || plan.handoff !== null
       || hasUncommittedClaimSource
       || plan.supporting_operations.some((operation) => {
-        if (exactKeys(operation, ['op'])
-            && operation.op === PLAYER_OPERATION) return false;
+        if (context.phase === 'phase_3'
+            && exactKeys(operation, [
+              'op', 'interaction_kind', 'actor_ref', 'target_ref', 'entity_ref'
+            ])
+            && operation.op === EVIDENCE_OPERATION
+            && operation.interaction_kind === EVIDENCE_INTERACTION
+            && sameRef(operation.actor_ref, ref('player_character', context.state.actor_id))
+            && sameRef(operation.target_ref, context.targetRef)
+            && sameRef(operation.entity_ref, context.availableEvidence?.item_ref)) {
+          return false;
+        }
         return !(context.phase === 'phase_4'
           && exactKeys(operation, ['op'])
           && operation.op === PROMISE_OPERATION);
@@ -165,13 +184,11 @@ export function requirePlayerSpeech(context, plan) {
       'Player contribution must preserve its input mode and match available mechanics.'
     );
   }
-}
-
-function requireCodeOwnedNpcResolution(plan) {
-  if (plan.resolution !== 'automatic' || plan.check !== null) {
+  if (context.phase === 'phase_3'
+      && Boolean(evidenceOperation) !== Boolean(context.evidencePresented)) {
     fail(
-      'TRACE_M2_NPC_CHECK_FORBIDDEN',
-      'NPC semantic output cannot resolve or request domain checks.'
+      'TRACE_M2_PLAYER_EVIDENCE_OPERATION_INVALID',
+      'The applied evidence effect must match the validated player operation.'
     );
   }
 }

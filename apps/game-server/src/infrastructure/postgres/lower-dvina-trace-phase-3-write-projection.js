@@ -15,12 +15,14 @@ import {
 } from './npc-semantic-conversation-writes.js';
 import { assertSharedSemanticSnapshotSafe } from
   './lower-dvina-trace-conversation-state.js';
+import { appendPhase3SemanticInteraction } from
+  './lower-dvina-trace-phase-3-semantic-interaction-write.js';
 
 export function phase3Writes(input) {
   const {
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
-    phase3Contracts, scenarioRevision, rootTurnId, workingRevision
+    phase3Contracts, rootTurnId, workingRevision
   } = input;
   assertSharedSemanticSnapshotSafe(next);
   const inserts = [row(
@@ -78,9 +80,9 @@ export function phase3Writes(input) {
       inserts, appends, state, next, factual, partyId, turnNumber,
       changeSetId, idemId, inputDigest
     });
-    if (scenarioRevision === 14) {
-      const semanticExchange =
-        factual.consequence.conversation?.semantic_exchange;
+    const semanticExchange =
+      factual.consequence.conversation?.semantic_exchange ?? null;
+    if (semanticExchange !== null) {
       const semanticInput = buildNpcSemanticConversationWriteInput({
         state,
         next,
@@ -133,6 +135,15 @@ function appendPhase3SemanticConsequences({
   inputDigest
 }) {
   const conversation = factual.consequence.conversation;
+  appendPhase3SemanticInteraction({
+    appends,
+    state,
+    factual,
+    semanticExchange,
+    partyId,
+    turnNumber,
+    changeSetId
+  });
   const disclosure = semanticExchange.route_disclosure;
   if (disclosure != null) {
     appendKnowledge(

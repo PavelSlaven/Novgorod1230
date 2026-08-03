@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1083
+        "line_end": 1089
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
-        "line_end": 3032
+        "line_end": 3051
       }
     },
     {

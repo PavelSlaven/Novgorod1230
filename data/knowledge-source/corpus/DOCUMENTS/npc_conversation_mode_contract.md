@@ -18,6 +18,14 @@ bounded Phase 3/4 ниже сохраняются только как истор
 production не обращается к ним без явного historical revision pin. Combat в
 этом cutover заканчивается только типизированным handoff и не разрешается.
 
+Профиль Lower Dvina Trace revision 14 активирует common social check для
+contribution игрока, но NPC responder в этом conformance scenario работает
+только с `resolution = automatic`: его request передаёт пустые
+`allowed_attribute_refs` и `allowed_skill_refs`. Общая schema сохраняет
+`check_required` для NPC contribution и валидирует его при непустом явно
+зарегистрированном scope, однако такой NPC-check owner/profile не активирован
+данным cutover. Это ограничение профиля, а не сценарный запрет общей schema.
+
 ---
 
 ## 1. Назначение
@@ -956,6 +964,15 @@ NPC может:
 - позвать помощь;
 - напасть;
 - промолчать.
+
+### 17.5. Activation profile Lower Dvina revision 14
+
+Для player contribution применяются правила разделов 17.1–17.4. Для NPC
+responder в Lower Dvina revision 14 `decision_scope.allowed_attribute_refs` и
+`decision_scope.allowed_skill_refs` пусты, поэтому допустим только
+`resolution = automatic` и `check = null`. `check_required` для NPC становится
+доступен только после отдельной активации общего check owner и непустого
+профильного scope; сценарный classifier не вправе вводить собственный бросок.
 
 ---
 
@@ -2750,7 +2767,9 @@ hidden_information_leak
 14. Убеждение вызывает common check.
 15. RNG выполняет код.
 16. Outcome не заставляет NPC согласиться.
-17. NPC response может иметь собственный social check.
+17. Общий NPC contribution contract принимает собственный social check при
+    зарегистрированных refs; Lower Dvina revision 14 явно использует
+    automatic-only NPC profile.
 
 ### Историчность
 

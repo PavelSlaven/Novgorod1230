@@ -51,13 +51,20 @@ export function createM2ConversationContext(input) {
     input.state.party_id,
     input.state.clock
   );
+  const activeSession = findActiveSession(
+    input.state,
+    ref('player_character', input.state.actor_id),
+    targetRef
+  );
   return {
     ...input,
     stateVersion,
     targetRef,
     actualNpcActors,
     batchKey,
-    conversationId: `conversation:${input.inputDigest.slice(0, 32)}`,
+    activeSession,
+    conversationId: activeSession?.conversation_id
+      ?? `conversation:${input.inputDigest.slice(0, 32)}`,
     exchangeId: `exchange:${input.inputDigest.slice(0, 32)}`,
     socialDeliveryResult: deliveryResult(
       input.checkResult,
@@ -66,6 +73,27 @@ export function createM2ConversationContext(input) {
       input.state.party_state.turn_number + 1
     )
   };
+}
+
+function findActiveSession(state, playerRef, targetRef) {
+  const candidates = (state.conversation_sessions ?? []).filter((session) =>
+    session?.status === 'active'
+      && session.location_ref?.entity_id === state.position.location_ref
+      && session.active_participant_refs?.some(
+        (participant) => participant.entity_kind === playerRef.entity_kind
+          && participant.entity_id === playerRef.entity_id
+      )
+      && session.active_participant_refs?.some(
+        (participant) => participant.entity_kind === targetRef.entity_kind
+          && participant.entity_id === targetRef.entity_id
+      ));
+  if (candidates.length > 1) {
+    fail(
+      'TRACE_M2_CONVERSATION_SESSION_AMBIGUOUS',
+      'Only one active conversation with the target may be resumed.'
+    );
+  }
+  return candidates[0] ?? null;
 }
 
 export async function executeM2ConversationExchange(context) {
@@ -178,8 +206,15 @@ export function buildPlayerRequest(context) {
         skill_ref: context.contracts.check.skill,
         difficulty_band: context.contracts.check.check_id
       },
-      ...(context.phase === 'phase_3' && context.checkResult !== null
-        ? { presented_evidence_ref: context.contracts.ids.evidence }
+      ...(context.phase === 'phase_3' && context.availableEvidence !== null
+        ? { available_evidence: structuredClone(context.availableEvidence) }
+        : {}),
+      ...(context.requiredSupportingOperation !== null
+        && context.requiredSupportingOperation !== undefined
+        ? {
+            required_supporting_operation:
+              context.requiredSupportingOperation
+          }
         : {}),
       ...(context.phase === 'phase_4'
         ? {

@@ -45,13 +45,11 @@ export function phase3SemanticCommitContext({
     return null;
   }
   if (!isConversation) return null;
+  if (semanticExchange == null) return null;
   const envelope = writePlan.turn_step_commit;
   const exactFastPath = envelope == null
     && writePlan.command_trace?.decision_protocol
       === 'code_exact_fast_path_v1';
-  if (semanticExchange == null) {
-    fail('TRACE_M2_PHASE_3_SEMANTIC_LINEAGE_INVALID');
-  }
   if (exactFastPath) {
     const rootTurnId = writePlan.turn_id;
     if (typeof rootTurnId !== 'string'

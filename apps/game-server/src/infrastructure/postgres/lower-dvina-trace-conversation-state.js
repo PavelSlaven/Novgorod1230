@@ -198,6 +198,7 @@ function conversationSession({ state, exchange, statements, audiences,
   const first = statements[0];
   const last = exchange.contributions.at(-1);
   const activeParticipantRefs = uniqueRefs([
+    ...(existing?.active_participant_refs ?? []),
     ...statements.map(({ speaker_ref: speakerRef }) => speakerRef),
     ...audiences.flatMap(
       ({ actual_listener_refs: listenerRefs }) => listenerRefs
@@ -230,9 +231,10 @@ function conversationSession({ state, exchange, statements, audiences,
     initiator_ref: existing?.initiator_ref ?? first.speaker_ref,
     active_participant_refs: activeParticipantRefs,
     last_contribution_ref: lastContributionRef,
-    topic_refs: [...new Set(statements.flatMap(
-      ({ topic_refs: topicRefs }) => topicRefs
-    ))].sort(compareText),
+    topic_refs: [...new Set([
+      ...(existing?.topic_refs ?? []),
+      ...statements.flatMap(({ topic_refs: topicRefs }) => topicRefs)
+    ])].sort(compareText),
     status_reason: exchange.stop_reason
   };
   try {

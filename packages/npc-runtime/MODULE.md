@@ -35,6 +35,13 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 Входы schedule содержат sealed normalized NPC state, applicable approved schedule profile, exact `scheduled_at`, dependency pins и recheck snapshot; выход — frozen proposal/evidence либо hard block. Perception принимает sealed signal, propagation, environment, attention, recognition и policy snapshots с pins; результат не изменяет knowledge state. Semantic request содержит только subjective state одного NPC, exact boundary identity и зарегистрированный operation contract. Повтор с persisted evidence/trace допускается исключительно при совпадении immutable input digest и idempotency identity; private knowledge одного NPC не проецируется другому.
 
+Conversation contribution schema поддерживает `automatic` и
+`check_required`; во втором случае refs обязаны входить в
+`decision_scope.allowed_attribute_refs`/`allowed_skill_refs`, а бросок остаётся
+у code-owned check owner. Lower Dvina Trace revision 14 публикует для NPC
+пустые списки и тем самым активирует automatic-only responder profile, не
+сужая общий контракт пакета.
+
 ## Поток выбора действия NPC
 
 `@rus/npc-runtime` участвует только при meaningful decision boundary. Domain

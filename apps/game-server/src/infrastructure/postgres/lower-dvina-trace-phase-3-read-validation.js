@@ -23,27 +23,32 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
     traversals
   } = results;
   const phase3InteractionPrefix = `interaction:${payload.party_id}:trace-phase3:`;
-  const expectedInteractions = semanticRevision
-    ? []
-    : (payload.interactions ?? []).filter(
-      ({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix)
-    );
+  const expectedInteractions = (payload.interactions ?? []).filter(
+    ({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix)
+  );
   const activityProof = phase3ActivityReadProof(payload, activities.rows);
   const actualInteractions = interactions.rows
     .filter(({ interaction_id: id }) => id.startsWith(phase3InteractionPrefix))
     .map((row) => ({
       interaction_id: row.interaction_id, npc_id: row.npc_id,
       statement_ref: row.terminal_evidence_ref?.statement_ref,
-      consequence_ref: row.terminal_evidence_ref?.consequence_ref ?? null
+      consequence_ref: row.terminal_evidence_ref?.consequence_ref ?? null,
+      contribution_ref:
+        row.terminal_evidence_ref?.contribution_ref ?? null,
+      supporting_operation_event_ref:
+        row.terminal_evidence_ref?.supporting_operation_event_ref ?? null
     }));
   const expectedInteractionProof = expectedInteractions.map((entry) => ({
     interaction_id: entry.interaction_id,
     npc_id: entry.npc_id,
     statement_ref: entry.statement_ref,
-    consequence_ref: entry.consequence_ref ?? null
+    consequence_ref: entry.consequence_ref ?? null,
+    contribution_ref: entry.contribution_ref ?? null,
+    supporting_operation_event_ref:
+      entry.supporting_operation_event_ref ?? null
   }));
   const expectedSummaries = expectedInteractions.flatMap((entry) =>
-    entry.statement_is_new === false ? [] : [{
+    entry.statement_is_new !== true ? [] : [{
       summary_id: `summary:${entry.interaction_id}:npc_memory`,
       interaction_id: entry.interaction_id,
       summary_scope: 'npc_memory',
@@ -65,13 +70,15 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
       remembering_subject_id: row.remembering_subject_id,
       summary_text: row.summary_text
     }));
-  const expectedDecisions = expectedInteractions.map((entry) => ({
+  const expectedDecisions = expectedInteractions
+    .filter(({ decision_trace: trace }) => trace != null)
+    .map((entry) => ({
     request_id: entry.decision_trace.request_id,
     npc_id: entry.npc_id,
     option_id: entry.decision_trace.option_id,
     options_digest: entry.decision_trace.options_digest,
     trace_digest: entry.decision_trace.trace_digest
-  })).sort((left, right) => left.request_id.localeCompare(right.request_id));
+    })).sort((left, right) => left.request_id.localeCompare(right.request_id));
   const expectedDecisionIds = new Set(expectedDecisions.map(({ request_id: id }) => id));
   const actualDecisions = decisions.rows
     .filter(({ request_id: id }) => expectedDecisionIds.has(id))

@@ -2,6 +2,8 @@ import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe,
   projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from
   './lower-dvina-trace-conversation-state.js';
+import { phase3SemanticInteractions } from
+  './lower-dvina-trace-phase-3-state-interactions.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -160,38 +162,31 @@ function projectPhase3SemanticConversation({
   const npcRef = semantic.decision_request?.npc_ref;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
+  const speechResponse = ['route_disclosure', 'withhold', 'speech']
+    .includes(semantic.response_kind);
+  const expectedContributionKind = speechResponse
+    ? 'speech' : semantic.response_kind;
   if (npcRef?.entity_kind !== 'npc'
-      || npcStatements.length !== 1
+      || npcStatements.length !== (speechResponse ? 1 : 0)
       || conversation.npc_id !== npcRef.entity_id
-      || semantic.decision_plan?.contribution_kind !== 'speech'
+      || semantic.decision_plan?.contribution_kind
+        !== expectedContributionKind
       || !Array.isArray(conversation.objective_fact_outputs)
       || conversation.objective_fact_outputs.length !== 0
-      || !['route_disclosure', 'withhold', 'speech'].includes(semantic.response_kind)) {
+      || ![
+        'route_disclosure', 'withhold', 'speech', 'silence',
+        'leave_conversation'
+      ].includes(semantic.response_kind)) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
-  const statement = npcStatements[0];
-  const audience = semantic.audiences.find(({ statement_ref: statementRef }) =>
-    statementRef.entity_kind === 'conversation_statement'
-      && statementRef.entity_id === statement.statement_id);
-  if (!audience) semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
-  next.interactions = [...(next.interactions ?? []), {
-    interaction_id:
-      `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
-    activity_ref: conversation.activity_ref,
-    npc_id: npcRef.entity_id,
-    statement_ref: statement.statement_id,
-    utterance_text: statement.utterance_text,
-    dominant_act: statement.dominant_act,
-    interaction_tags: structuredClone(statement.interaction_tags),
-    topic_refs: structuredClone(statement.topic_refs),
-    claims: structuredClone(statement.claims),
-    actual_listener_refs:
-      structuredClone(audience.actual_listener_refs),
-    truth_projection: 'speaker_statement_only',
-    objective_truth_write: 'forbidden',
-    started_at: structuredClone(factual.time_update.clock_before),
-    occurred_at: structuredClone(factual.time_update.clock_after)
-  }];
+  const statement = npcStatements[0] ?? null;
+  next.interactions = [
+    ...(next.interactions ?? []),
+    ...phase3SemanticInteractions({
+      semantic, conversation, npcRef, npcStatements, state, factual,
+      turnNumber
+    })
+  ];
 
   const disclosure = semantic.route_disclosure;
   if (semantic.response_kind === 'route_disclosure') {

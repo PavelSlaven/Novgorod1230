@@ -24,7 +24,8 @@ import {
   projectPhase3Conversation,
   ref,
   revision14Bundle,
-  runPhase3
+  runPhase3,
+  withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
 test('player conversation meaning controls whether the common social check runs', async () => {
@@ -98,6 +99,23 @@ test('revision 14 exact commands bind semantic persistence to the root turn with
   }), { code: 'TRACE_M2_PHASE_3_SEMANTIC_LINEAGE_INVALID' });
 });
 
+test('historical bounded Phase 3 does not require a semantic exchange', () => {
+  assert.equal(phase3SemanticCommitContext({
+    scenarioRevision: 14,
+    factual: {
+      mode_resolution: { turn_id: 'turn:historical:3' },
+      consequence: {
+        phase3_kind: 'conversation',
+        conversation: { semantic_exchange: null }
+      }
+    },
+    writePlan: {
+      turn_id: 'turn:historical:3',
+      command_trace: { decision_protocol: 'bounded_decision_v2' }
+    }
+  }), null);
+});
+
 test('revision 14 Eremey semantic plans withhold or disclose and persist the exact heard exchange', async () => {
   assert.equal(revision14Bundle.definition_revision, 14);
   const state = phase3State();
@@ -117,6 +135,7 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     state,
     bundle: revision14Bundle
   });
+  withAccessibleBlueWool(state, contracts);
 
   const withheld = await runPhase3({
     state,
@@ -137,7 +156,8 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
     rawText: utterance,
     inputDigest: digest('2'),
     responseKind: 'route_disclosure',
-    checkResult: checkResult(contracts.check.check_id, 'success')
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    playerPlanOptions: { evidence: true }
   });
 
   assert.equal(disclosed.result.response_kind, 'route_disclosure');
@@ -340,6 +360,128 @@ test('Eremey may answer with ordinary speech and an intent paraphrase becomes na
     exchange.result.statements[0].utterance_text,
     'Еремей, скажи по совести: что ты видел у лодки?'
   );
+});
+
+test('a social check does not present evidence without the supporting operation', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Еремей, ты обязан сказать правду.',
+    inputDigest: digest('3'),
+    responseKind: 'speech',
+    checkResult: checkResult(contracts.check.check_id, 'success')
+  });
+
+  assert.deepEqual(exchange.result.decision_boundary.categories, [
+    'communication'
+  ]);
+  assert.equal(
+    JSON.stringify(exchange.npcRequest).includes('presented_evidence_ref'),
+    false
+  );
+  assert.equal(exchange.result.new_signal_records.some(
+    ({ signal }) => signal.source_event_ref.entity_kind
+      === 'evidence_presentation'
+  ), false);
+  assert.equal(exchange.result.evidence_presentation, null);
+});
+
+test('evidence presentation requires and executes its supporting operation', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Вот синяя шерсть с берега. Что ты знаешь?',
+    inputDigest: digest('4'),
+    responseKind: 'route_disclosure',
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    playerPlanOptions: { evidence: true }
+  });
+
+  assert.deepEqual(exchange.result.decision_boundary.categories, [
+    'environment',
+    'communication'
+  ]);
+  assert.equal(exchange.result.new_signal_records.some(
+    ({ signal }) => signal.source_event_ref.entity_kind
+      === 'evidence_presentation'
+  ), true);
+  assert.equal(
+    exchange.result.evidence_presentation.interaction_kind,
+    'present_item_as_evidence'
+  );
+  const tampered = structuredClone(exchange.result);
+  tampered.evidence_presentation.entity_ref.entity_id = 'item:not-held';
+  assert.throws(() => projectPhase3Conversation({
+    state,
+    contracts,
+    result: tampered,
+    inputDigest: digest('4')
+  }), { code: 'TRACE_M2_PHASE_3_EVIDENCE_EVENT_INVALID' });
+});
+
+test('ordinary NPC response keeps one session active across player boundaries', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const first = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Еремей, что ты видел?',
+    inputDigest: digest('5'),
+    responseKind: 'speech'
+  });
+  assert.equal(first.result.exchange.session_status, 'active');
+  assert.equal(first.result.exchange.stop_reason, 'player_response');
+  const continuedState = projectSemanticConversationSnapshot({
+    state,
+    semanticExchange: first.result,
+    rootTurnId: 'turn:conversation:first',
+    workingRevision: 0,
+    appliedChangeSetId: 'change:conversation:first'
+  });
+  const secondContracts = resolveTracePhase3Contracts({
+    state: continuedState,
+    bundle: revision14Bundle
+  });
+  const second = await runPhase3({
+    state: continuedState,
+    contracts: secondContracts,
+    rawText: 'А что было потом?',
+    inputDigest: digest('6'),
+    responseKind: 'speech'
+  });
+
+  assert.equal(
+    second.result.decision_request.conversation_id,
+    first.result.decision_request.conversation_id
+  );
+  assert.ok(second.npcRequest.public_conversation_history.length >= 3);
+  assert.equal(second.result.exchange.session_status, 'active');
+});
+
+test('Eremey may leave a conversation through the common contribution contract', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Еремей, задержись.',
+    inputDigest: digest('7'),
+    responseKind: 'leave_conversation'
+  });
+  assert.equal(exchange.result.response_kind, 'leave_conversation');
+  assert.equal(exchange.result.exchange.session_status, 'ended');
+  const projected = projectPhase3Conversation({
+    state,
+    contracts,
+    result: exchange.result,
+    inputDigest: digest('7')
+  });
+  assert.equal(projected.conversation_sessions.at(-1).status, 'ended');
 });
 
 test('conversation audience uses listener hearing state instead of fixed recognition', async () => {

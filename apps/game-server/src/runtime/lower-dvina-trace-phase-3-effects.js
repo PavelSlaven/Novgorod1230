@@ -93,10 +93,14 @@ export function createTracePhase3VisibleProjector({
       }
       const conversation = consequence.conversation;
       const semantic = conversation.semantic_exchange ?? null;
+      const responseKind = semantic?.response_kind ?? null;
       const disclosed = semantic
         ? semantic.route_disclosure != null
         : conversation.route_knowledge_ref != null;
-      const semanticUtterance = semantic
+      const speechResponse = semantic !== null && [
+        'route_disclosure', 'withhold', 'speech'
+      ].includes(responseKind);
+      const semanticUtterance = speechResponse
         ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
         : null;
       const visibleChanges = semantic
@@ -106,8 +110,14 @@ export function createTracePhase3VisibleProjector({
       return {
         version: 1,
         schema: 'visible_context_package',
-        visible_scene: semantic
+        visible_scene: speechResponse
           ? `Еремей говорит: «${semanticUtterance}»`
+          : responseKind === 'silence'
+            ? 'Еремей молчит.'
+            : responseKind === 'leave_conversation'
+              ? 'Еремей прекращает разговор.'
+              : semantic
+                ? 'Разговор с Еремеем остановлен.'
           : disclosed
             ? 'Еремей рассказал, что слышал удар и видел мокрого Ратшу с чужой сумкой.'
             : 'Еремей уклонился от полного ответа о крушении.',

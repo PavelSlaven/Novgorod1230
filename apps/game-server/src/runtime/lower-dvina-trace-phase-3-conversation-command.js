@@ -1,6 +1,5 @@
-import {
-  tracePhase3PreconditionSatisfied
-} from './lower-dvina-trace-phase-3-admission.js';
+import { tracePhase3PreconditionSatisfied } from
+  './lower-dvina-trace-phase-3-admission.js';
 import {
   available,
   exact,
@@ -232,6 +231,7 @@ function createSemanticConversationCommand({
       const allowed = preconditions.every((precondition) =>
         tracePhase3PreconditionSatisfied(precondition, state, contracts));
       if (!allowed) return available(false, [], ['conversation_precondition_failed']);
+      if (context.action_set_evaluation === true) return available(true, [], []);
       const playerPlan = await prepareTracePhase3PlayerConversationPlan({
         state,
         contracts,

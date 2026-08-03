@@ -68,6 +68,32 @@ test('player conversation meaning controls whether the common social check runs'
   assert.equal(persuasiveAvailability.check_requests.length, 1);
 });
 
+test('action-set evaluation does not require player input or invoke the interpreter', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  let playerCalls = 0;
+  const command = createTracePhase3ConversationCommand({
+    contracts,
+    evidence: false,
+    inputDigest: digest('action-set'),
+    playerConversationModel: async () => {
+      playerCalls += 1;
+      throw new Error('interpreter must not run while listing actions');
+    },
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  });
+
+  const availability = await command.availability({
+    committed_state: state,
+    action_set_evaluation: true
+  });
+
+  assert.equal(availability.status, 'available');
+  assert.deepEqual(availability.check_requests, []);
+  assert.equal(playerCalls, 0);
+});
+
 test('revision 14 exact commands bind semantic persistence to the root turn without a fabricated M1 envelope', () => {
   const semanticExchange = { response_kind: 'withhold' };
   const factual = {

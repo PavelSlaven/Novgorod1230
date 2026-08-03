@@ -94,10 +94,13 @@ export function createLowerDvinaTracePlayerConversationModel({
   roleRunner
 } = {}) {
   requireRoleRunner(roleRunner);
-  return async function interpretPlayerConversation(request) {
+  return async function interpretPlayerConversation(request, context = {}) {
+    const repair = context.repair ?? null;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
-      role_id: 'player_conversation_interpreter',
+      role_id: repair
+        ? 'player_conversation_interpreter_format_repair'
+        : 'player_conversation_interpreter',
       messages: [{
         role: 'system',
         content: [
@@ -107,19 +110,21 @@ export function createLowerDvinaTracePlayerConversationModel({
           'Use subjective/player-safe request data only; never infer or',
           'transfer hidden cross-NPC knowledge.',
           'Do not resolve RNG, exact time, consequences, database writes,',
-          'or narration. Social delivery never dictates an NPC response.'
+          'or narration. Social delivery never dictates an NPC response.',
+          repair
+            ? 'Repair only structure, refs, and enum values. Preserve the original contribution meaning.'
+            : 'Interpret verbatim quotes as verbatim and described intent as a natural historical paraphrase.'
         ].join(' ')
       }, {
         role: 'user',
-        content: JSON.stringify(request)
+        content: JSON.stringify(repair ? {
+          request,
+          original_output: repair.original_output,
+          validation_errors: repair.validation_errors
+        } : request)
       }],
       overrides: { temperature: 0, maxTokens: 8000 }
     });
-    if (!plainObject(response?.output)) {
-      throw dependencyError(
-        'Player conversation interpreter returned no JSON object.'
-      );
-    }
     return response.output;
   };
 }
@@ -128,10 +133,13 @@ export function createLowerDvinaTraceNpcSemanticModel({
   roleRunner
 } = {}) {
   requireRoleRunner(roleRunner);
-  return async function planNpcConversationResponse(request) {
+  return async function planNpcConversationResponse(request, context = {}) {
+    const repair = context.repair ?? null;
     const response = await roleRunner.run({
       scope: 'turn_runtime',
-      role_id: 'npc_conversation_responder',
+      role_id: repair
+        ? 'npc_conversation_responder_format_repair'
+        : 'npc_conversation_responder',
       messages: [{
         role: 'system',
         content: [
@@ -142,19 +150,21 @@ export function createLowerDvinaTraceNpcSemanticModel({
           'transfer hidden cross-NPC knowledge.',
           'Do not resolve RNG, exact time, consequences, database writes,',
           'or narration. Social delivery never dictates the NPC response.',
-          'The NPC reason is internal and must not appear in speech or narration.'
+          'The NPC reason is internal and must not appear in speech or narration.',
+          repair
+            ? 'Repair only structure, refs, and enum values. Preserve the original contribution meaning.'
+            : 'Ordinary valid speech is allowed without a scenario outcome operation.'
         ].join(' ')
       }, {
         role: 'user',
-        content: JSON.stringify(request)
+        content: JSON.stringify(repair ? {
+          request,
+          original_output: repair.original_output,
+          validation_errors: repair.validation_errors
+        } : request)
       }],
       overrides: { temperature: 0, maxTokens: 8000 }
     });
-    if (!plainObject(response?.output)) {
-      throw dependencyError(
-        'NPC conversation responder returned no JSON object.'
-      );
-    }
     return response.output;
   };
 }

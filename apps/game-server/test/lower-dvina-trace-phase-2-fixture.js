@@ -194,31 +194,7 @@ export function fixture({
   let playerConversationCount = 0;
   let npcSemanticCount = 0;
   const bundleRequests = [];
-  const npcSemanticClaims = new Map();
   const repository = {
-    createNpcSemanticDecisionStore() {
-      return {
-        async resolve({ boundary, request, semanticModel }) {
-          const key = boundary.boundary_id;
-          const input = canonicalDigest({ boundary, request });
-          const existing = npcSemanticClaims.get(key);
-          if (existing) {
-            if (existing.input !== input || existing.status !== 'completed') {
-              throw new Error('NPC semantic claim conflict');
-            }
-            return structuredClone(existing.plan);
-          }
-          npcSemanticClaims.set(key, { input, status: 'pending' });
-          const plan = await semanticModel(request);
-          npcSemanticClaims.set(key, {
-            input,
-            status: 'completed',
-            plan: structuredClone(plan)
-          });
-          return plan;
-        }
-      };
-    },
     async loadPhase2State() {
       events.push('load_state');
       return structuredClone(state);

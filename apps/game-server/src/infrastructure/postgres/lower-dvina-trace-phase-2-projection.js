@@ -6,7 +6,8 @@ const SPEECH_RESPONSE_KINDS = new Set([
   'withhold',
   'surrender',
   'lie',
-  'bargain'
+  'bargain',
+  'speech'
 ]);
 const NON_SPEECH_RESPONSE_KINDS = new Set([
   'silence',

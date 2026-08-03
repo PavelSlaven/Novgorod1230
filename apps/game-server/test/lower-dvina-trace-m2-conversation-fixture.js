@@ -39,6 +39,7 @@ const RATSHA_RESPONSE_KINDS = new Set([
   'surrender',
   'bargain',
   'lie',
+  'speech',
   'silence',
   'combat_handoff'
 ]);
@@ -51,7 +52,13 @@ export function createM2ConversationModels({
     throw new TypeError(`Unsupported Ratsha response kind: ${ratshaResponseKind}`);
   }
   return {
-    playerConversationModel: playerPlan,
+    playerConversationModel: (request) => playerPlan(request, {
+      checkRequired: Boolean(
+        request.player_safe_context.presented_evidence_ref
+        || request.player_safe_context.offer_policy_ref
+      ),
+      offer: Boolean(request.player_safe_context.offer_policy_ref)
+    }),
     npcSemanticModel: (request) => {
       const routeOperation = request.decision_scope
         ?.operation_contract?.disclose_known_route;
@@ -158,7 +165,8 @@ export async function runPhase3({
   rawText,
   inputDigest,
   responseKind,
-  checkResult: resolvedCheck = null
+  checkResult: resolvedCheck = null,
+  playerPlanOptions = {}
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -171,7 +179,10 @@ export async function runPhase3({
     checkResult: resolvedCheck,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      return playerPlan(request);
+      return playerPlan(request, {
+        checkRequired: resolvedCheck !== null,
+        ...playerPlanOptions
+      });
     },
     npcSemanticModel: async (request) => {
       npcCalls += 1;
@@ -195,7 +206,8 @@ export async function runPhase4({
   responseKind,
   checkResult: resolvedCheck,
   offerStage,
-  checkRequest
+  checkRequest,
+  playerPlanOptions = {}
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -210,7 +222,11 @@ export async function runPhase4({
     checkRequest,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      return playerPlan(request);
+      return playerPlan(request, {
+        checkRequired: resolvedCheck !== null,
+        offer: offerStage !== null,
+        ...playerPlanOptions
+      });
     },
     npcSemanticModel: async (request) => {
       npcCalls += 1;
@@ -222,41 +238,71 @@ export async function runPhase4({
   return { result, playerCalls, npcCalls, npcRequest };
 }
 
-function playerPlan(request) {
+function playerPlan(request, {
+  checkRequired = false,
+  inputMode = 'verbatim',
+  utteranceText = request.raw_text,
+  offer = false
+} = {}) {
+  const availableCheck = request.player_safe_context.available_check;
   return {
     schema: 'player_conversation_contribution_plan_v1',
     request_id: request.request_id,
     conversation_id: request.conversation_id,
     state_version: request.state_version,
     speaker_ref: request.speaker_ref,
-    input_mode: 'verbatim',
+    input_mode: inputMode,
     contribution_kind: 'speech',
     primary_addressee_ref: request.player_safe_context.target_npc_ref,
     intended_addressee_refs: [request.player_safe_context.target_npc_ref],
     affected_actor_refs: [],
     speech: speech({
-      utteranceText: request.raw_text,
+      utteranceText,
       dominantAct: 'request'
     }),
     interpretation: interpretation('speak the exact player utterance'),
-    resolution: 'automatic',
+    resolution: checkRequired ? 'check_required' : 'automatic',
     activity: activity(),
-    supporting_operations: [{ op: 'speak_exact_utterance' }],
-    check: null,
+    supporting_operations: [{
+      op: offer ? 'offer_conditional_protection' : 'speak_exact_utterance'
+    }],
+    check: checkRequired ? {
+      purpose: 'resolve social delivery',
+      attribute_ref: availableCheck.attribute_ref,
+      skill_ref: availableCheck.skill_ref,
+      difficulty_band: availableCheck.difficulty_band,
+      outcomes: {
+        clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+        success: { delivery_quality: 'credible', observable_effects: [] },
+        success_with_cost: {
+          delivery_quality: 'credible_with_visible_cost', observable_effects: []
+        },
+        failure_with_consequence: {
+          delivery_quality: 'unconvincing', observable_effects: []
+        },
+        severe_failure: {
+          delivery_quality: 'transparently_manipulative', observable_effects: []
+        }
+      }
+    } : null,
     handoff: null
   };
 }
 
 function eremeyPlan(request, responseKind, routeOperation) {
   const disclosure = responseKind === 'route_disclosure';
+  const ordinarySpeech = responseKind === 'speech';
   const routeRef = routeOperation.route_ref;
   const knowledgeScopeRef = routeOperation.source_knowledge_scope_ref;
   return npcSpeechPlan(request, {
     utteranceText: disclosure
       ? 'От лагеря иди к старой сушильне по тропе.'
-      : 'Нечего мне больше сказать.',
-    dominantAct: disclosure ? 'inform' : 'evade',
-    interactionTags: [disclosure ? 'route_disclosure' : 'withhold'],
+      : ordinarySpeech
+        ? 'Я отвечу лишь на то, что сам видел.'
+        : 'Нечего мне больше сказать.',
+    dominantAct: disclosure ? 'inform' : ordinarySpeech ? 'answer' : 'evade',
+    interactionTags: ordinarySpeech
+      ? [] : [disclosure ? 'route_disclosure' : 'withhold'],
     claims: disclosure ? [{
       claim_id: 'eremey-route-disclosure',
       content_summary: 'К старой сушильне ведёт тропа.',
@@ -304,6 +350,13 @@ function ratshaPlan(request, responseKind, playerId) {
       interactionTags: ['bargain'],
       claims: [],
       supportingOperations: [{ op: 'state_bargain' }]
+    },
+    speech: {
+      utteranceText: 'Я не стану отвечать на это обвинение.',
+      dominantAct: 'refuse',
+      interactionTags: [],
+      claims: [],
+      supportingOperations: []
     }
   };
   return npcSpeechPlan(request, variants[responseKind]);

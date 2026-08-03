@@ -72,7 +72,7 @@ export function buildNpcDecision(context, working, playerStatement) {
     social_context: {
       delivery_cues: structuredClone(perceivedMessage.delivery_cues),
       claims_are_speaker_assertions_not_objective_truth: true,
-      ...(context.phase === 'phase_4'
+      ...(context.phase === 'phase_4' && context.offerStage
         ? {
             offer_stage_ref: context.offerStage.fact_id,
             offer_policy_ref: context.contracts.promisePolicy.policy_id

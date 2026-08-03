@@ -8,7 +8,8 @@ export function createTracePhase4Command({
   availability: canAttempt,
   consequence,
   check = null,
-  checkContext = null
+  checkContext = null,
+  prepareAvailability = null
 }) {
   return {
     command_id: `lower_dvina_trace.${optionId}`,
@@ -35,9 +36,22 @@ export function createTracePhase4Command({
       }
     },
     matches: () => false,
-    availability(context) {
+    async availability(context) {
       const state = context.committed_state ?? context.retrievedState;
       const allowed = canAttempt(state);
+      if (allowed && prepareAvailability) {
+        const prepared = await prepareAvailability({ ...context, state });
+        return {
+          version: 1,
+          schema: 'turn_availability_decision',
+          status: prepared.check_requests.length
+            ? 'check_required' : 'available',
+          can_attempt: true,
+          reasons: [],
+          check_requests: prepared.check_requests,
+          causal_stages: prepared.causal_stages
+        };
+      }
       const causalStage = check && allowed && checkContext
         ? checkContext(state)
         : null;
@@ -52,7 +66,7 @@ export function createTracePhase4Command({
         can_attempt: allowed,
         reasons: allowed ? [] : ['phase4_precondition_failed'],
         check_requests: check && allowed
-          ? [buildCheckRequest(check, causalStage)]
+          ? [buildPhase4CheckRequest(check, causalStage)]
           : [],
         ...(causalStage ? { causal_stages: [causalStage] } : {})
       };
@@ -105,7 +119,7 @@ export function validOfferBeforeCheck({
       });
 }
 
-function buildCheckRequest(check, offerStage) {
+export function buildPhase4CheckRequest(check, offerStage = null) {
   return {
     check_id: check.check_id,
     difficulty: check.dc,
@@ -115,8 +129,8 @@ function buildCheckRequest(check, offerStage) {
     equipment_modifier: check.modifiers.item_or_evidence,
     circumstance_modifier: check.modifiers.circumstance,
     audit_ordinal: 1,
-    causal_predecessor_fact_id: offerStage?.fact_id,
-    causal_predecessor_stage_digest: offerStage?.stage_digest,
+    causal_predecessor_fact_id: offerStage?.fact_id ?? null,
+    causal_predecessor_stage_digest: offerStage?.stage_digest ?? null,
     circumstance_modifier_provenance: offerStage == null
       ? null
       : {

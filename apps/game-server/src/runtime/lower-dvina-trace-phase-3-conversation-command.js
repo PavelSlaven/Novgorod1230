@@ -14,9 +14,11 @@ import {
   assertTracePhase3ConversationExecution,
   resolveTracePhase3NpcDecision
 } from './lower-dvina-trace-phase-3-npc-decision.js';
-import {
-  resolveTracePhase3ConversationExchange
-} from './lower-dvina-trace-m2-conversation.js';
+import { resolveTracePhase3ConversationExchange } from
+  './lower-dvina-trace-m2-conversation.js';
+import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
+  prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage
+} from './lower-dvina-trace-m2-conversation-player.js';
 
 export function createTracePhase3ConversationCommand({
   contracts,
@@ -225,37 +227,38 @@ function createSemanticConversationCommand({
       'npc_interaction', 'knowledge_memory', 'time_progression'
     ]),
     matches: exactMatcher(optionId),
-    availability(context) {
+    async availability(context) {
       const state = context.committed_state ?? context.retrievedState;
       const allowed = preconditions.every((precondition) =>
         tracePhase3PreconditionSatisfied(precondition, state, contracts));
-      const checkRequests = evidence && allowed ? [{
-        check_id: contracts.check.check_id,
-        difficulty: contracts.check.dc,
-        attribute_value:
-          state.player_profile.attributes[contracts.check.attribute].value,
-        skill_bonus:
-          state.player_profile.skills[contracts.check.skill].bonus,
-        state_modifier: contracts.check.modifiers.state,
-        equipment_modifier: contracts.check.modifiers.item_or_evidence,
-        circumstance_modifier: contracts.check.modifiers.circumstance,
-        profile_version: contracts.check.version,
-        consequence_refs: structuredClone(contracts.check.outcome_refs),
-        retry_policy: contracts.check.retry_policy
-      }] : [];
-      return available(
-        allowed,
-        checkRequests,
-        allowed ? [] : ['conversation_precondition_failed']
-      );
+      if (!allowed) return available(false, [], ['conversation_precondition_failed']);
+      const playerPlan = await prepareTracePhase3PlayerConversationPlan({
+        state,
+        contracts,
+        playerInput: context.playerInput,
+        inputDigest,
+        playerConversationModel,
+        revalidateStateVersion
+      });
+      const checkRequests = buildTracePhase3ConversationCheckRequests({
+        plan: playerPlan,
+        state,
+        contracts,
+        evidence
+      });
+      return {
+        ...available(true, checkRequests, []),
+        causal_stages: [buildPlayerConversationPlanStage(playerPlan)]
+      };
     },
-    async consequence({ retrievedState: state, checks, playerInput }) {
-      const checkResult = evidence
+    async consequence({ retrievedState: state, availability, checks, playerInput }) {
+      const playerPlan = requirePlayerConversationPlanStage(availability);
+      const checkResult = playerPlan.resolution === 'check_required'
         ? checks.results.find(
             ({ check_id: id }) => id === contracts.check.check_id
           )
         : null;
-      if (evidence && !checkResult) {
+      if (playerPlan.resolution === 'check_required' && !checkResult) {
         fail('TRACE_PHASE_3_CHECK_RESULT_MISSING');
       }
       const semanticExchange =
@@ -267,7 +270,8 @@ function createSemanticConversationCommand({
           checkResult,
           playerConversationModel,
           npcSemanticModel,
-          revalidateStateVersion
+          revalidateStateVersion,
+          playerPlan
         });
       return packageBase({
         inputDigest,
@@ -275,8 +279,8 @@ function createSemanticConversationCommand({
         kind: 'conversation',
         conversation: {
           activity_ref: activity.profile_id,
-          check_result: evidence ? structuredClone(checkResult) : null,
-          consequence_ref: evidence
+          check_result: checkResult ? structuredClone(checkResult) : null,
+          consequence_ref: checkResult
             ? contracts.check.outcome_refs[
                 checkResult.outcome.success ? 'success' : 'failure'
               ]

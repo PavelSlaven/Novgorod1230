@@ -197,9 +197,9 @@ test('Phase 4 temporal owner commits route once and preserves separate negotiati
   }), { code: 'TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING' });
 });
 
-test('command availability exposes exact influence/communication DC 13 modifiers', () => {
+test('command availability exposes exact influence/communication DC 13 modifiers', async () => {
   const [, negotiation] = createTracePhase4Commands({ contracts, inputDigest: 'c'.repeat(64), selectNpcDecision: async () => null });
-  const available = negotiation.availability({ retrievedState: {
+  const available = await negotiation.availability({ retrievedState: {
     actor_id: 'player',
     position: { location_ref: 'shed' },
     route_knowledge: ['camp-to-shed'],
@@ -236,7 +236,7 @@ test('command availability exposes exact influence/communication DC 13 modifiers
   }, { check_id: 'ratsha-check', difficulty: 13, attribute: 'influence',
     skill: 'communication', state_modifier: -1, equipment_modifier: 0,
     circumstance_modifier: 1 });
-  const blocked = negotiation.availability({ retrievedState: {
+  const blocked = await negotiation.availability({ retrievedState: {
     actor_id: 'player',
     position: { location_ref: 'shed' },
     route_knowledge: ['camp-to-shed'],

@@ -125,22 +125,6 @@ export function createLowerDvinaTracePhase2Runtime({
         playerConversationModel,
         npcSemanticModel
       });
-      const npcDecisionStore = npcSemanticModel
-        && repository.createNpcSemanticDecisionStore?.(partyId);
-      if (npcSemanticModel && !npcDecisionStore) {
-        throw serverError(
-          'TRACE_NPC_SEMANTIC_DECISION_STORE_MISSING',
-          'Durable NPC semantic decision storage is required.',
-          { status: 503 }
-        );
-      }
-      const durableNpcSemanticModel = npcDecisionStore
-        ? (request, { boundary } = {}) => npcDecisionStore.resolve({
-            boundary,
-            request,
-            semanticModel: npcSemanticModel
-          })
-        : npcSemanticModel;
       const bundle = await bundleLoader({ scenarioDefinitionRevision });
       const contracts = resolveTracePhase2Contracts({
         state,
@@ -177,7 +161,7 @@ export function createLowerDvinaTracePhase2Runtime({
           contracts: phase3Contracts,
           inputDigest,
           playerConversationModel,
-          npcSemanticModel: durableNpcSemanticModel,
+          npcSemanticModel,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,
             partyId,
@@ -189,7 +173,7 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest,
           selectNpcDecision: npcDecisionSelector,
           playerConversationModel,
-          npcSemanticModel: durableNpcSemanticModel,
+          npcSemanticModel,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,
             partyId,

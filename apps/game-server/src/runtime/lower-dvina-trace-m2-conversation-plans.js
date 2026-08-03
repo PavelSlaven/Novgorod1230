@@ -6,6 +6,7 @@ import {
   fail,
   LIE_OPERATION,
   PLAYER_OPERATION,
+  PROMISE_OPERATION,
   refKey,
   requiredRawText,
   ROUTE_OPERATION,
@@ -32,7 +33,11 @@ export function classifyEremeyPlan(plan, {
         'Eremey returned an unsupported operation.'
       );
     }
-    return { kind: 'withhold', statementRef: null };
+    return {
+      kind: plan.speech.interaction_tags.includes('withhold')
+        ? 'withhold' : 'speech',
+      statementRef: null
+    };
   }
   if (!exactKeys(operation, [
     'op', 'route_ref', 'source_knowledge_scope_ref'
@@ -55,7 +60,7 @@ export function classifyEremeyPlan(plan, {
   return { kind: 'route_disclosure', statementRef: null };
 }
 
-export function classifyRatshaPlan(plan) {
+export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
   requireCodeOwnedNpcResolution(plan);
   if (plan.contribution_kind === 'combat_handoff') {
     if (plan.handoff?.kind !== 'combat') {
@@ -77,6 +82,7 @@ export function classifyRatshaPlan(plan) {
   }
   const operation = plan.supporting_operations[0] ?? null;
   if (operation?.op === SURRENDER_OPERATION
+      && offerAvailable
       && exactKeys(operation, ['op'])
       && ['accept', 'promise', 'confess'].includes(
         plan.speech.dominant_act
@@ -100,13 +106,16 @@ export function classifyRatshaPlan(plan) {
       )) {
     return { kind: 'lie', statementRef: null };
   }
+  if (operation === null) {
+    return { kind: 'speech', statementRef: null };
+  }
   fail(
     'TRACE_M2_RATSHA_RESPONSE_INVALID',
-    'Ratsha response must be surrender, lie, bargain, silence, or combat handoff.'
+    'Ratsha returned an unsupported mechanical operation.'
   );
 }
 
-export function requireExactPlayerSpeech(context, plan) {
+export function requirePlayerSpeech(context, plan) {
   const intended = plan.intended_addressee_refs ?? [];
   const present = new Set(
     context.actualNpcActors.map(({ instance_id: instanceId }) => instanceId)
@@ -119,25 +128,41 @@ export function requireExactPlayerSpeech(context, plan) {
       (sourceRef) => !committedKnowledge.has(refKey(sourceRef))
     )
   );
-  if (plan.input_mode !== 'verbatim'
-      || plan.contribution_kind !== 'speech'
-      || plan.speech?.utterance_text !== requiredRawText(context.playerInput)
+  const expectedResolution = context.checkResult === null
+    ? 'automatic'
+    : 'check_required';
+  const checkMatches = plan.resolution === 'automatic'
+    ? plan.check === null
+    : plan.check?.attribute_ref === context.contracts.check.attribute
+      && plan.check?.skill_ref === context.contracts.check.skill
+      && plan.check?.difficulty_band === context.contracts.check.check_id;
+  const offerOperation = plan.supporting_operations.find(
+    ({ op } = {}) => op === PROMISE_OPERATION
+  );
+  if (plan.contribution_kind !== 'speech'
+      || (plan.input_mode === 'verbatim'
+        && plan.speech?.utterance_text !== requiredRawText(context.playerInput))
       || !sameRef(plan.primary_addressee_ref, context.targetRef)
       || !intended.some((listener) => sameRef(listener, context.targetRef))
       || intended.some((listener) =>
         listener.entity_kind !== 'npc'
         || !present.has(listener.entity_id))
-      || plan.resolution !== 'automatic'
-      || plan.check !== null
+      || plan.resolution !== expectedResolution
+      || !checkMatches
       || plan.handoff !== null
       || hasUncommittedClaimSource
-      || plan.supporting_operations.some(
-        (operation) => !exactKeys(operation, ['op'])
-          || operation.op !== PLAYER_OPERATION
-      )) {
+      || plan.supporting_operations.some((operation) => {
+        if (exactKeys(operation, ['op'])
+            && operation.op === PLAYER_OPERATION) return false;
+        return !(context.phase === 'phase_4'
+          && exactKeys(operation, ['op'])
+          && operation.op === PROMISE_OPERATION);
+      })
+      || (context.phase === 'phase_4'
+        && Boolean(offerOperation) !== Boolean(context.offerStage))) {
     fail(
       'TRACE_M2_PLAYER_CONTRIBUTION_INVALID',
-      'Player contribution must preserve the exact utterance and present audience.'
+      'Player contribution must preserve its input mode and match available mechanics.'
     );
   }
 }

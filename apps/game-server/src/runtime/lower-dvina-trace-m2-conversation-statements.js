@@ -1,9 +1,12 @@
-import { buildConversationStatementEvent } from '@rus/npc-runtime';
+import {
+  buildConversationStatementEvent,
+  resolveConversationListenerPerception
+} from '@rus/npc-runtime';
 import { projectConversationAudience } from
   '@rus/visibility-knowledge-memory';
 import { currentSignalRecords } from
   './lower-dvina-trace-m2-conversation-decision.js';
-import { requireExactPlayerSpeech } from
+import { requirePlayerSpeech } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import {
   compareRefs,
@@ -14,7 +17,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 
 export function applyPlayerPlan(context, working, plan) {
-  requireExactPlayerSpeech(context, plan);
+  requirePlayerSpeech(context, plan);
   const statement = statementFromPlan({
     context,
     plan,
@@ -177,29 +180,56 @@ function audienceForStatement(
   listenerActors,
   extraListenerRefs
 ) {
-  const witnessIds = context.phase === 'phase_4'
-    ? new Set([
-        context.contracts.actors.eremey_fisher.instance_id,
-        context.contracts.actors.participating_fisher.instance_id
-      ])
-    : new Set();
+  const witnessIds = new Set(
+    context.state.promise_instances?.[0]?.witness_actor_ids ?? []
+  );
   const listenerRefs = [
     ...listenerActors.map(({ instance_id: instanceId }) => npcRef(instanceId)),
     ...extraListenerRefs
   ].sort(compareRefs);
   return projectConversationAudience({
     statement,
-    listener_results: listenerRefs.map((listenerRef) => ({
-      listener_ref: listenerRef,
-      perception_result_ref: ref(
-        'perception_result',
-        `perception:${statement.statement_id}:${listenerRef.entity_id}`
-      ),
-      perception_result: 'recognized',
-      comprehension: 'full',
-      speaker_recognized: true,
-      witness_policy_allows: witnessIds.has(listenerRef.entity_id)
-    }))
+    listener_results: listenerRefs.map((listenerRef) => {
+      const actor = listenerRef.entity_kind === 'npc'
+        ? context.actualNpcActors.find(
+            ({ instance_id: instanceId }) => instanceId === listenerRef.entity_id
+          )
+        : null;
+      const speakerActor = statement.speaker_ref.entity_kind === 'npc'
+        ? context.actualNpcActors.find(
+            ({ instance_id: instanceId }) =>
+              instanceId === statement.speaker_ref.entity_id
+          )
+        : null;
+      const listenerAnchor = listenerRef.entity_kind === 'player_character'
+        ? context.state.position.g5_anchor_id
+        : actor?.anchor_id;
+      const speakerAnchor = statement.speaker_ref.entity_kind === 'player_character'
+        ? context.state.position.g5_anchor_id
+        : speakerActor?.anchor_id;
+      const machine = actor?.machine_state ?? {};
+      const semantic = actor?.semantic_state ?? {};
+      return resolveConversationListenerPerception({
+        listener_ref: listenerRef,
+        perception_result_ref: ref(
+          'perception_result',
+          `perception:${statement.statement_id}:${listenerRef.entity_id}`
+        ),
+        acoustic_path: listenerAnchor && listenerAnchor === speakerAnchor
+          ? 'clear' : 'blocked',
+        distance_band: listenerAnchor && listenerAnchor === speakerAnchor
+          ? 'conversation' : 'distant',
+        ambient_noise: context.state.environment?.ambient_noise ?? 'ordinary',
+        hearing_capability: machine.hearing_capability ?? 'full',
+        attention: ['unconscious', 'incapacitated'].includes(machine.status)
+          ? 'unavailable'
+          : machine.attention ?? 'available',
+        language_comprehension:
+          semantic.language_comprehension ?? 'full',
+        speaker_recognition: semantic.speaker_recognition ?? 'recognized',
+        witness_policy_allows: witnessIds.has(listenerRef.entity_id)
+      });
+    })
   });
 }
 

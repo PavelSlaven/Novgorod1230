@@ -12,9 +12,12 @@ import {
 import {
   phase3SemanticCommitContext
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-3-commit-support.js';
+import { createTracePhase3ConversationCommand } from
+  '../src/runtime/lower-dvina-trace-phase-3-conversation-command.js';
 import {
   assertPersistedStatePayloadSafe,
   checkResult,
+  createM2ConversationModels,
   digest,
   phase2ConversationPayload,
   phase3State,
@@ -23,6 +26,46 @@ import {
   revision14Bundle,
   runPhase3
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('player conversation meaning controls whether the common social check runs', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const baseModel = createM2ConversationModels().playerConversationModel;
+  const common = {
+    contracts,
+    evidence: false,
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  };
+  const ordinary = createTracePhase3ConversationCommand({
+    ...common,
+    inputDigest: digest('a'),
+    playerConversationModel: baseModel
+  });
+  const ordinaryAvailability = await ordinary.availability({
+    retrievedState: state,
+    playerInput: { raw_text: 'Еремей, что ты видел?' }
+  });
+  assert.equal(ordinaryAvailability.status, 'available');
+  assert.deepEqual(ordinaryAvailability.check_requests, []);
+
+  const persuasive = createTracePhase3ConversationCommand({
+    ...common,
+    inputDigest: digest('b'),
+    playerConversationModel: async (request) => {
+      const plan = structuredClone(await baseModel(request));
+      plan.resolution = 'check_required';
+      plan.check = socialCheck(request.player_safe_context.available_check);
+      return plan;
+    }
+  });
+  const persuasiveAvailability = await persuasive.availability({
+    retrievedState: state,
+    playerInput: { raw_text: 'Убеди Еремея рассказать всё, что он скрывает.' }
+  });
+  assert.equal(persuasiveAvailability.status, 'check_required');
+  assert.equal(persuasiveAvailability.check_requests.length, 1);
+});
 
 test('revision 14 exact commands bind semantic persistence to the root turn without a fabricated M1 envelope', () => {
   const semanticExchange = { response_kind: 'withhold' };
@@ -276,3 +319,70 @@ test('revision 14 Eremey semantic plans withhold or disclose and persist the exa
       .execution_result
   });
 });
+
+test('Eremey may answer with ordinary speech and an intent paraphrase becomes natural utterance', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'попросить Еремея рассказать правду',
+    inputDigest: digest('f'),
+    responseKind: 'speech',
+    playerPlanOptions: {
+      inputMode: 'intent_paraphrase',
+      utteranceText: 'Еремей, скажи по совести: что ты видел у лодки?'
+    }
+  });
+
+  assert.equal(exchange.result.response_kind, 'speech');
+  assert.equal(
+    exchange.result.statements[0].utterance_text,
+    'Еремей, скажи по совести: что ты видел у лодки?'
+  );
+});
+
+test('conversation audience uses listener hearing state instead of fixed recognition', async () => {
+  const state = phase3State();
+  const fisher = state.npcs.find(
+    ({ participant_slot_ref: slot }) => slot === 'background_fisher_1'
+  );
+  fisher.machine_state = { ...fisher.machine_state, hearing_capability: 'none' };
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Еремей, что ты видел?',
+    inputDigest: digest('0'),
+    responseKind: 'speech'
+  });
+  const audience = exchange.result.audiences[0];
+  assert.equal(audience.actual_listener_refs.some(
+    ({ entity_id: id }) => id === fisher.instance_id
+  ), false);
+  assert.equal(audience.witness_candidate_refs.some(
+    ({ entity_id: id }) => id === fisher.instance_id
+  ), false);
+});
+
+function socialCheck(profile) {
+  return {
+    purpose: 'resolve persuasive delivery',
+    attribute_ref: profile.attribute_ref,
+    skill_ref: profile.skill_ref,
+    difficulty_band: profile.difficulty_band,
+    outcomes: {
+      clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+      success: { delivery_quality: 'credible', observable_effects: [] },
+      success_with_cost: {
+        delivery_quality: 'credible_with_visible_cost', observable_effects: []
+      },
+      failure_with_consequence: {
+        delivery_quality: 'unconvincing', observable_effects: []
+      },
+      severe_failure: {
+        delivery_quality: 'transparently_manipulative', observable_effects: []
+      }
+    }
+  };
+}

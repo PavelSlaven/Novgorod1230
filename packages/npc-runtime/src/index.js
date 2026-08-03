@@ -36,7 +36,10 @@ export {
   validateNpcSemanticDecisionTrace,
   validateNpcStepPlan
 } from './semantic-decision-contracts.js';
-export { proposeNpcPerception } from './perception.js';
+export {
+  proposeNpcPerception,
+  resolveConversationListenerPerception
+} from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow

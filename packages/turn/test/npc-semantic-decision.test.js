@@ -13,7 +13,7 @@ const requestedAt = {
   subminute_denominator: '1'
 };
 
-function boundary() {
+function boundary(overrides = {}) {
   return buildNpcDecisionBoundary({
     decision_mode: 'conversation',
     scheduled_at: requestedAt,
@@ -22,7 +22,8 @@ function boundary() {
     significance: 'material',
     categories: ['communication'],
     signal_refs: [ref('npc_decision_signal', 'signal-1')],
-    state_version: '2'
+    state_version: '2',
+    ...overrides
   });
 }
 
@@ -178,4 +179,90 @@ test('committed semantic trace replays without model or state revalidation calls
   assert.deepEqual(result.signal_ids_to_consume, []);
   assert.equal(modelCalls, 0);
   assert.equal(revalidationCalls, 0);
+});
+
+test('one invalid NPC response receives one structural repair attempt', async () => {
+  const decisionRequest = request();
+  const calls = [];
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      calls.push(context);
+      return calls.length === 1 ? { schema: 'broken' } : plan(decisionRequest);
+    },
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'planned');
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].repair, null);
+  assert.deepEqual(calls[1].repair.original_output, { schema: 'broken' });
+  assert.equal(calls[1].repair.validation_errors.length, 1);
+});
+
+test('failed uncommitted NPC decision releases its in-flight claim for retry', async () => {
+  const decisionRequest = request();
+  let modelCalls = 0;
+  const semanticModel = async () => {
+    modelCalls += 1;
+    if (modelCalls === 1) throw new Error('temporary outage');
+    return plan(decisionRequest);
+  };
+
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel,
+    revalidateStateVersion: async () => 2
+  }), (error) => error?.code === 'TURN_NPC_MODEL_FAILED');
+
+  const retry = await requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel,
+    revalidateStateVersion: async () => 2
+  });
+  assert.equal(retry.status, 'planned');
+  assert.equal(modelCalls, 2);
+});
+
+test('stale uncommitted NPC response allows a new request for changed state', async () => {
+  let modelCalls = 0;
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: request(),
+    semanticModel: async (source) => {
+      modelCalls += 1;
+      return plan(source);
+    },
+    revalidateStateVersion: async () => 3
+  }), (error) => error?.code === 'TURN_NPC_STATE_STALE');
+
+  const currentRequest = request({ state_version: 3 });
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary({ state_version: '3' }),
+    request: currentRequest,
+    semanticModel: async (source) => {
+      modelCalls += 1;
+      return plan(source);
+    },
+    revalidateStateVersion: async () => 3
+  });
+  assert.equal(result.status, 'planned');
+  assert.equal(modelCalls, 2);
+});
+
+test('second invalid NPC response returns a typed contract failure', async () => {
+  let modelCalls = 0;
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: request(),
+    semanticModel: async () => {
+      modelCalls += 1;
+      return { schema: 'broken' };
+    },
+    revalidateStateVersion: async () => 2
+  }), (error) => error?.code === 'TURN_NPC_PLAN_INVALID');
+  assert.equal(modelCalls, 2);
 });

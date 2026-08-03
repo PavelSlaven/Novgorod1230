@@ -46,13 +46,14 @@ export function appendSemanticNegotiation({
 }) {
   const n = factual.consequence.negotiation;
   const semantic = n?.semantic_exchange;
-  if (!n?.offer_committed_before_check
-      || semantic == null
+  if (semantic == null
       || !['not_offered', 'offered'].includes(
         state.promise_instances?.[0]?.current_state
       )
-      || !validPersistedOfferStage({ state, factual, negotiation: n,
-        contracts })) {
+      || (n.offer_committed_before_check
+        ? !validPersistedOfferStage({ state, factual, negotiation: n,
+            contracts })
+        : n.offer_stage !== null)) {
     throw new Error('TRACE_PHASE_4_PROMISE_TRANSITION_INVALID');
   }
   const roots = n.activity_roots ?? [];
@@ -78,10 +79,11 @@ export function appendSemanticNegotiation({
     changeSetId,
     idemId
   });
-  const checkId = `check:${partyId}:trace-phase4:${turnNumber}`;
+  const checkId = n.check_result
+    ? `check:${partyId}:trace-phase4:${turnNumber}` : null;
   const offerAppends = [];
   const activationAppends = [];
-  appendPromiseTransition({
+  if (n.offer_committed_before_check) appendPromiseTransition({
     updates,
     offerAppends,
     activationAppends,
@@ -102,7 +104,7 @@ export function appendSemanticNegotiation({
     contracts
   });
   appends.push(...offerAppends);
-  appendNegotiationCheckResolution({
+  if (n.check_result) appendNegotiationCheckResolution({
     appends,
     partyId,
     factual,

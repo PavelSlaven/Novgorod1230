@@ -10,6 +10,7 @@ import {
   freezeResult,
   LIE_OPERATION,
   PLAYER_OPERATION,
+  PROMISE_OPERATION,
   requireCommonInput,
   ROUTE_OPERATION,
   SURRENDER_OPERATION
@@ -25,7 +26,8 @@ export async function resolveTracePhase3ConversationExchange({
   checkResult = null,
   playerConversationModel,
   npcSemanticModel,
-  revalidateStateVersion
+  revalidateStateVersion,
+  playerPlan = null
 } = {}) {
   requireCommonInput({
     state,
@@ -74,7 +76,7 @@ export async function resolveTracePhase3ConversationExchange({
     playerOperationContract: {
       [PLAYER_OPERATION]: {
         owner: '@rus/turn',
-        utterance_policy: 'verbatim_player_input'
+        utterance_policy: 'semantic_contribution'
       }
     },
     npcOperationContract: {
@@ -92,7 +94,8 @@ export async function resolveTracePhase3ConversationExchange({
     classifyNpcPlan: (plan) => classifyEremeyPlan(plan, {
       routeRef,
       knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref
-    })
+    }),
+    playerPlan
   });
   const result = await executeM2ConversationExchange(context);
   const disclosure = result.npcOutcome.kind === 'route_disclosure'
@@ -123,6 +126,9 @@ export async function resolveTracePhase3ConversationExchange({
     consumed_signal_ids: result.consumedSignalIds,
     route_disclosure: disclosure,
     response_kind: result.npcOutcome.kind,
+    speech: result.npcOutcome.kind === 'speech'
+      ? result.npcOutcome.factualProjection
+      : null,
     objective_truth_writes: []
   });
 }
@@ -136,7 +142,8 @@ export async function resolveTracePhase4ConversationExchange({
   checkRequest,
   playerConversationModel,
   npcSemanticModel,
-  revalidateStateVersion
+  revalidateStateVersion,
+  playerPlan = null
 } = {}) {
   requireCommonInput({
     state,
@@ -147,12 +154,14 @@ export async function resolveTracePhase4ConversationExchange({
     npcSemanticModel,
     revalidateStateVersion
   });
-  if (checkResult == null || offerStage == null || checkRequest == null
-      || checkResult.check_id !== contracts.check?.check_id
-      || checkRequest.check_id !== contracts.check?.check_id
-      || typeof offerStage.stage_digest !== 'string'
-      || checkRequest.causal_predecessor_stage_digest
-        !== offerStage.stage_digest) {
+  const hasCheck = checkResult !== null || checkRequest !== null;
+  if ((checkResult === null) !== (checkRequest === null)
+      || (hasCheck && (checkResult.check_id !== contracts.check?.check_id
+        || checkRequest.check_id !== contracts.check?.check_id))
+      || (offerStage !== null && typeof offerStage.stage_digest !== 'string')
+      || (offerStage !== null && hasCheck
+        && checkRequest.causal_predecessor_stage_digest
+          !== offerStage.stage_digest)) {
     fail(
       'TRACE_M2_PHASE_4_CAUSAL_INPUT_MISSING',
       'The committed offer stage and code-owned check are required.'
@@ -187,8 +196,11 @@ export async function resolveTracePhase4ConversationExchange({
     playerOperationContract: {
       [PLAYER_OPERATION]: {
         owner: '@rus/turn',
-        utterance_policy: 'verbatim_player_input',
-        offer_stage_digest: offerStage.stage_digest
+        utterance_policy: 'semantic_contribution'
+      },
+      [PROMISE_OPERATION]: {
+        owner: '@rus/social-law',
+        policy_ref: contracts.promisePolicy.policy_id
       }
     },
     npcOperationContract: {
@@ -211,7 +223,10 @@ export async function resolveTracePhase4ConversationExchange({
     },
     offerStage,
     checkRequest,
-    classifyNpcPlan: classifyRatshaPlan
+    classifyNpcPlan: (plan) => classifyRatshaPlan(plan, {
+      offerAvailable: offerStage !== null
+    }),
+    playerPlan
   });
   const result = await executeM2ConversationExchange(context);
   const surrender = result.npcOutcome.kind === 'surrender'
@@ -241,6 +256,9 @@ export async function resolveTracePhase4ConversationExchange({
       ? result.npcOutcome.factualProjection
       : null,
     bargain: result.npcOutcome.kind === 'bargain'
+      ? result.npcOutcome.factualProjection
+      : null,
+    speech: result.npcOutcome.kind === 'speech'
       ? result.npcOutcome.factualProjection
       : null,
     silence: result.npcOutcome.kind === 'silence',

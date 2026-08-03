@@ -166,7 +166,7 @@ function projectPhase3SemanticConversation({
       || semantic.decision_plan?.contribution_kind !== 'speech'
       || !Array.isArray(conversation.objective_fact_outputs)
       || conversation.objective_fact_outputs.length !== 0
-      || !['route_disclosure', 'withhold'].includes(semantic.response_kind)) {
+      || !['route_disclosure', 'withhold', 'speech'].includes(semantic.response_kind)) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
   const statement = npcStatements[0];
@@ -266,7 +266,7 @@ export function activityHistoryEntry({
         ? `route-execution:${partyId}:trace-phase3:${turnNumber}`
         : `activity:${partyId}:trace-phase3:${turnNumber}`,
     activity_snapshot: {
-    activity_ref: phase3ActivityRef(factual),
+      activity_ref: phase3ActivityRef(factual),
       consequence: phase3Kind
     },
     option_id: factual.mode_resolution.option_id,

@@ -5,8 +5,9 @@ export function validPersistedOfferStage({ state, factual, negotiation, contract
   const stage = negotiation.offer_stage;
   const request = negotiation.check_request;
   const factualRequest = factual.availability?.check_requests?.[0];
-  if (!stage || !request || canonicalDigest(request)
-      !== canonicalDigest(factualRequest)) return false;
+  if (!stage || ((request === null) !== (factualRequest == null))
+      || (request !== null && canonicalDigest(request)
+        !== canonicalDigest(factualRequest))) return false;
   const { stage_digest: suppliedDigest, ...payload } = stage;
   return suppliedDigest === canonicalDigest(payload)
     && stage.audit_ordinal === 0
@@ -22,9 +23,11 @@ export function validPersistedOfferStage({ state, factual, negotiation, contract
     && canonicalDigest(stage.witness_actor_ids)
       === canonicalDigest(promise.witness_actor_ids)
     && stage.scope_digest === canonicalDigest(promise.scope_snapshot)
-    && request.audit_ordinal === 1
-    && request.causal_predecessor_fact_id === stage.fact_id
-    && request.causal_predecessor_stage_digest === stage.stage_digest;
+    && (request === null || (
+      request.audit_ordinal === 1
+      && request.causal_predecessor_fact_id === stage.fact_id
+      && request.causal_predecessor_stage_digest === stage.stage_digest
+    ));
 }
 
 export function exactActivityRoots(n) {

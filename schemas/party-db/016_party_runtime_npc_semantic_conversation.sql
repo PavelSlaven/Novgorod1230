@@ -164,31 +164,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS party_npc_decision_traces_batch_npc_key
   )
   WHERE boundary_id IS NOT NULL;
 
--- The durable claim closes the pre-commit LLM gap.  A crashed pending claim
--- is deliberately not retried through a semantic fallback.
-CREATE TABLE IF NOT EXISTS party_runtime.party_npc_semantic_decision_claims (
-  party_id text NOT NULL
-    REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
-  boundary_id text NOT NULL,
-  npc_id text NOT NULL,
-  same_time_batch_id text NOT NULL,
-  decision_mode text NOT NULL
-    CHECK (decision_mode IN ('autonomous', 'conversation', 'combat')),
-  canonical_input_digest text NOT NULL,
-  semantic_plan jsonb
-    CHECK (semantic_plan IS NULL OR jsonb_typeof(semantic_plan) = 'object'),
-  status text NOT NULL CHECK (status IN ('pending', 'completed')),
-  created_at timestamptz NOT NULL DEFAULT now(),
-  completed_at timestamptz,
-  CHECK (
-    (status = 'pending' AND semantic_plan IS NULL AND completed_at IS NULL)
-    OR (status = 'completed' AND semantic_plan IS NOT NULL
-      AND completed_at IS NOT NULL)
-  ),
-  PRIMARY KEY (party_id, boundary_id),
-  UNIQUE (party_id, npc_id, same_time_batch_id)
-);
-
 -- Conversation sessions are mutable current projections updated through CAS.
 CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_sessions (
   conversation_id text PRIMARY KEY,

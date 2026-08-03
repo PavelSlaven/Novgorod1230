@@ -26,8 +26,6 @@ import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js'
 import { assertPhase6NormalizedRows } from './lower-dvina-trace-phase-6-persistence.js';
 import { assertTurnStepNormalizedRows } from
   './lower-dvina-trace-turn-step-read.js';
-import { createNpcSemanticDecisionStore } from
-  './lower-dvina-trace-npc-semantic-decision-store.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -267,9 +265,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     replayPhase2Turn,
     commitPhase2Turn,
     loadPhase2VisibleContext,
-    persistPhase2Screen,
-    createNpcSemanticDecisionStore: (partyId) =>
-      createNpcSemanticDecisionStore({ partyPool, partyId })
+    persistPhase2Screen
   });
 }
 

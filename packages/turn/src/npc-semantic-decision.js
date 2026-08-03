@@ -79,6 +79,23 @@ function immutable(value) {
   return deepFreeze(structuredClone(value));
 }
 
+function repairContext(rawPlan) {
+  let originalOutput = null;
+  try {
+    originalOutput = structuredClone(rawPlan);
+  } catch {
+    // A non-cloneable response is structurally invalid and is represented as null.
+  }
+  return immutable({
+    original_output: originalOutput,
+    validation_errors: [{
+      code: 'conversation_contribution_schema_invalid',
+      path: '$',
+      message: 'Response must match the requested NPC semantic plan schema exactly.'
+    }]
+  });
+}
+
 function replayProposal(trace) {
   return immutable({
     status: 'replayed',
@@ -111,7 +128,7 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
   const safeRequest = immutable(request);
   let rawPlan;
   try {
-    rawPlan = await semanticModel(safeRequest, immutable({ boundary }));
+    rawPlan = await semanticModel(safeRequest, immutable({ boundary, repair: null }));
   } catch (error) {
     throw turnFailure('TURN_NPC_MODEL_FAILED', 'NPC semantic model request failed', {
       request_id: request.request_id,
@@ -121,11 +138,25 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
   }
 
   if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
-    fail(
-      'TURN_NPC_PLAN_INVALID',
-      'NPC semantic model response must be a strict plan matching its request',
-      { request_id: request.request_id, boundary_id: boundary.boundary_id }
-    );
+    try {
+      rawPlan = await semanticModel(safeRequest, immutable({
+        boundary,
+        repair: repairContext(rawPlan)
+      }));
+    } catch (error) {
+      throw turnFailure('TURN_NPC_MODEL_FAILED', 'NPC format repair request failed', {
+        request_id: request.request_id,
+        boundary_id: boundary.boundary_id,
+        cause: error instanceof Error ? error.message : String(error)
+      });
+    }
+    if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
+      fail(
+        'TURN_NPC_PLAN_INVALID',
+        'NPC semantic response and its format repair must match the request',
+        { request_id: request.request_id, boundary_id: boundary.boundary_id }
+      );
+    }
   }
 
   const expectedStateVersion = requestStateVersion(request, mode);

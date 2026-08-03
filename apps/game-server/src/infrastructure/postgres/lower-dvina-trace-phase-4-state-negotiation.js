@@ -24,12 +24,13 @@ export function projectPhase4SemanticNegotiation({
   const semantic = negotiation.semantic_exchange;
   const responseKind = semantic.response_kind;
   const validKinds = new Set([
-    'surrender', 'lie', 'bargain', 'silence', 'combat_handoff'
+    'surrender', 'lie', 'bargain', 'speech', 'silence', 'combat_handoff'
   ]);
   const npcRef = semantic.decision_request?.npc_ref;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
-  const speechResponse = ['surrender', 'lie', 'bargain'].includes(responseKind);
+  const speechResponse = ['surrender', 'lie', 'bargain', 'speech']
+    .includes(responseKind);
   const expectedContributionKind = speechResponse ? 'speech' : responseKind;
   if (!validKinds.has(responseKind)
       || npcRef?.entity_kind !== 'npc'
@@ -44,6 +45,7 @@ export function projectPhase4SemanticNegotiation({
   }
 
   const commitmentActive = semantic.commitment?.status === 'active';
+  const offerCommitted = negotiation.offer_stage !== null;
   if ((responseKind === 'surrender') !== commitmentActive
       || (responseKind === 'surrender'
         && (!semantic.surrender
@@ -56,7 +58,9 @@ export function projectPhase4SemanticNegotiation({
   }
   const prior = next.promise_instances?.[0];
   if (!prior) semanticFail('TRACE_PHASE_4_PROMISE_MISSING');
-  const promiseState = commitmentActive ? 'active' : 'offered';
+  const promiseState = commitmentActive
+    ? 'active'
+    : offerCommitted ? 'offered' : prior.current_state;
   const transitionCount = (prior.current_state === 'not_offered' ? 1 : 0)
     + (promiseState === 'active' ? 1 : 0);
   next.promise_instances = [{
@@ -79,7 +83,7 @@ export function projectPhase4SemanticNegotiation({
       contracts,
       turnNumber
     });
-  } else if (responseKind === 'lie' || responseKind === 'bargain') {
+  } else if (['lie', 'bargain', 'speech'].includes(responseKind)) {
     appendSemanticSpeakerInteraction({
       next,
       state,

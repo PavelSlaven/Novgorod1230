@@ -1,5 +1,8 @@
 import { buildPlayerConversationInput } from '@rus/npc-runtime';
-import { runConversationExchange } from '@rus/turn';
+import {
+  requestPlayerConversationContribution,
+  runConversationExchange
+} from '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
 import { committedPlayerKnowledgeRefs } from
@@ -82,7 +85,9 @@ export async function executeM2ConversationExchange(context) {
     maxContributionsPerExchange:
       context.contracts.conversationBindings.max_contributions_per_exchange
   }, {
-    conversationModel: context.playerConversationModel,
+    conversationModel: context.playerPlan
+      ? async () => structuredClone(context.playerPlan)
+      : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(context, working, plan),
@@ -139,7 +144,16 @@ export async function executeM2ConversationExchange(context) {
   };
 }
 
-function buildPlayerRequest(context) {
+export async function prepareM2PlayerConversationPlan(context) {
+  const decision = await requestPlayerConversationContribution({
+    request: buildPlayerRequest(context),
+    conversationModel: context.playerConversationModel,
+    revalidateStateVersion: context.revalidateStateVersion
+  });
+  return decision.plan;
+}
+
+export function buildPlayerRequest(context) {
   const playerRef = ref('player_character', context.state.actor_id);
   const presentListenerRefs = context.actualNpcActors.map(
     ({ instance_id: instanceId }) => npcRef(instanceId)
@@ -159,13 +173,17 @@ function buildPlayerRequest(context) {
       present_listener_refs: presentListenerRefs,
       committed_knowledge_refs:
         committedPlayerKnowledgeRefs(context.state),
+      available_check: {
+        attribute_ref: context.contracts.check.attribute,
+        skill_ref: context.contracts.check.skill,
+        difficulty_band: context.contracts.check.check_id
+      },
       ...(context.phase === 'phase_3' && context.checkResult !== null
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),
       ...(context.phase === 'phase_4'
         ? {
-            offer_policy_ref: context.contracts.promisePolicy.policy_id,
-            offer_stage_digest: context.offerStage.stage_digest
+            offer_policy_ref: context.contracts.promisePolicy.policy_id
           }
         : {})
     },

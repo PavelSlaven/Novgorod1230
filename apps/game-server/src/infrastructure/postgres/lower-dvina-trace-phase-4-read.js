@@ -112,8 +112,9 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
   });
   if (canonicalDigest(activities.rows) !== canonicalDigest(expectedActivities)) fail();
 
-  const expectedChecks = negotiationHistory.map(({ turn_number: turn, request_id,
-    option_id, consequence: c }) => ({
+  const expectedChecks = negotiationHistory.filter(
+    ({ consequence: c }) => c.negotiation.check_result !== null
+  ).map(({ turn_number: turn, request_id, option_id, consequence: c }) => ({
     check_resolution_id: `check:${partyId}:trace-phase4:${turn}`,
     check_scope_key: {
       request_id,

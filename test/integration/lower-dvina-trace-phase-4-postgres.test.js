@@ -651,17 +651,13 @@ async function assertNonSurrenderSemanticRows(pool, partyId, responseKind) {
 async function assertPhase4SemanticDecision(pool, partyId, responseKind) {
   const decisions = (await pool.query(
     `SELECT d.option_id,d.status,d.decision_mode,d.semantic_trace_schema,
-            d.semantic_plan,s.status AS session_status,
-            claim.status AS claim_status,
-            claim.semantic_plan=d.semantic_plan AS claim_matches_trace
+            d.semantic_plan,s.status AS session_status
        FROM party_runtime.party_npc_decision_traces d
        JOIN party_runtime.party_v3_change_sets c
          ON c.party_id=d.party_id AND c.id=d.change_set_id
        JOIN party_runtime.party_conversation_sessions s
          ON s.party_id=d.party_id
         AND s.conversation_id=d.semantic_request->>'conversation_id'
-       JOIN party_runtime.party_npc_semantic_decision_claims claim
-         ON claim.party_id=d.party_id AND claim.boundary_id=d.boundary_id
       WHERE d.party_id=$1 AND c.operation_kind='trace_phase_4_turn'
       ORDER BY d.state_version,d.request_id`,
     [partyId]
@@ -673,17 +669,13 @@ async function assertPhase4SemanticDecision(pool, partyId, responseKind) {
     status: decision.status,
     decision_mode: decision.decision_mode,
     semantic_trace_schema: decision.semantic_trace_schema,
-    session_status: decision.session_status,
-    claim_status: decision.claim_status,
-    claim_matches_trace: decision.claim_matches_trace
+    session_status: decision.session_status
   }, {
     option_id: null,
     status: 'committed',
     decision_mode: 'conversation',
     semantic_trace_schema: 'npc_semantic_decision_trace_v1',
-    session_status: responseKind === 'combat_handoff' ? 'suspended' : 'ended',
-    claim_status: 'completed',
-    claim_matches_trace: true
+    session_status: responseKind === 'combat_handoff' ? 'suspended' : 'ended'
   });
   if (responseKind === 'combat_handoff') {
     assert.equal(decision.semantic_plan.contribution_kind, 'combat_handoff');

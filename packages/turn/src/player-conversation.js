@@ -17,6 +17,23 @@ function causeMessage(error) {
   return error instanceof Error ? error.message : String(error);
 }
 
+function repairContext(rawPlan) {
+  let originalOutput = null;
+  try {
+    originalOutput = structuredClone(rawPlan);
+  } catch {
+    // A non-cloneable response is structurally invalid and is represented as null.
+  }
+  return immutableClone({
+    original_output: originalOutput,
+    validation_errors: [{
+      code: 'conversation_contribution_schema_invalid',
+      path: '$',
+      message: 'Response must match player_conversation_contribution_plan_v1 exactly.'
+    }]
+  });
+}
+
 export async function requestPlayerConversationContribution({
   request,
   conversationModel,
@@ -44,7 +61,7 @@ export async function requestPlayerConversationContribution({
   const safeRequest = immutableClone(request);
   let rawPlan;
   try {
-    rawPlan = await conversationModel(safeRequest);
+    rawPlan = await conversationModel(safeRequest, immutableClone({ repair: null }));
   } catch (error) {
     throw turnFailure(
       'TURN_CONVERSATION_MODEL_FAILED',
@@ -54,10 +71,23 @@ export async function requestPlayerConversationContribution({
   }
 
   if (!validatePlayerConversationContributionPlan(rawPlan, safeRequest)) {
-    fail(
-      'TURN_CONVERSATION_PLAN_INVALID',
-      'Conversation model response must be a strict plan matching its request'
-    );
+    try {
+      rawPlan = await conversationModel(safeRequest, immutableClone({
+        repair: repairContext(rawPlan)
+      }));
+    } catch (error) {
+      throw turnFailure(
+        'TURN_CONVERSATION_MODEL_FAILED',
+        'Player conversation format repair request failed',
+        { cause: causeMessage(error) }
+      );
+    }
+    if (!validatePlayerConversationContributionPlan(rawPlan, safeRequest)) {
+      fail(
+        'TURN_CONVERSATION_PLAN_INVALID',
+        'Conversation model response and its format repair must match the request'
+      );
+    }
   }
   const plan = immutableClone(rawPlan);
 

@@ -2,6 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { buildSocialDeliveryResult } from '@rus/npc-runtime';
 
 export const PLAYER_OPERATION = 'speak_exact_utterance';
+export const PROMISE_OPERATION = 'offer_conditional_protection';
 export const ROUTE_OPERATION = 'disclose_known_route';
 export const SURRENDER_OPERATION = 'commit_surrender';
 export const BARGAIN_OPERATION = 'state_bargain';

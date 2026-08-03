@@ -9,9 +9,12 @@ import {
 import {
   phase4SemanticCommitContext
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-commit.js';
+import { semanticNegotiationCommand } from
+  '../src/runtime/lower-dvina-trace-phase-4-semantic-command.js';
 import {
   assertPersistedStatePayloadSafe,
   checkResult,
+  createM2ConversationModels,
   digest,
   phase4ArrivalState,
   projectPhase4Negotiation,
@@ -19,6 +22,34 @@ import {
   revision14Bundle,
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('Phase 4 does not create a promise or check for an ordinary question', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  const baseModel = createM2ConversationModels().playerConversationModel;
+  const command = semanticNegotiationCommand({
+    contracts,
+    inputDigest: digest('1'),
+    playerConversationModel: async (request) => {
+      const plan = structuredClone(await baseModel(request));
+      plan.resolution = 'automatic';
+      plan.check = null;
+      plan.supporting_operations = [{ op: 'speak_exact_utterance' }];
+      return plan;
+    },
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  });
+  const availability = await command.availability({
+    retrievedState: state,
+    playerInput: { raw_text: 'Ратша, кто велел тебе прийти сюда?' }
+  });
+
+  assert.equal(availability.status, 'available');
+  assert.deepEqual(availability.check_requests, []);
+  assert.equal(availability.causal_stages.some(
+    ({ schema }) => schema === 'rus.trace_promise_offer_stage.v1'
+  ), false);
+});
 
 test('revision 14 Phase 4 semantic lineage accepts only exact or M1-owned turns', () => {
   const semanticExchange = { response_kind: 'surrender' };
@@ -158,16 +189,17 @@ test('arrival, invalidated objective and surrender demand share one Ratsha bound
   );
 });
 
-test('Ratsha semantic boundary accepts surrender, lie, bargain, silence and combat handoff only', async () => {
+test('Ratsha semantic boundary also accepts ordinary valid speech without a scenario outcome', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
   const responseKinds = [
     'surrender',
     'lie',
     'bargain',
+    'speech',
     'silence',
     'combat_handoff'
   ];
-  const digestCharacters = ['6', '7', '8', '9', 'e'];
+  const digestCharacters = ['6', '7', '8', 'd', '9', 'e'];
   const results = new Map();
 
   for (const [index, responseKind] of responseKinds.entries()) {
@@ -191,7 +223,7 @@ test('Ratsha semantic boundary accepts surrender, lie, bargain, silence and comb
     }
   }
 
-  for (const responseKind of ['lie', 'bargain', 'silence', 'combat_handoff']) {
+  for (const responseKind of ['lie', 'bargain', 'speech', 'silence', 'combat_handoff']) {
     assert.equal(results.get(responseKind).commitment, null);
     assert.equal(results.get(responseKind).knife_transition_eligibility, null);
   }

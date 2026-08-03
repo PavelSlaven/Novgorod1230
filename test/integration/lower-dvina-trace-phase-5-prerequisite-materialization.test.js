@@ -25,6 +25,12 @@ const bundle = await loadLowerDvinaTraceMaterializationBundle({
 const bundle12 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 12
 });
+const bundle13 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 13
+});
+const bundle14 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 14
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 function request(overrides = {}) {
@@ -170,6 +176,48 @@ test('revision 12 preserves the revision 11 prepared NPCs and Phase 5 items', ()
       ?.records.length,
     5
   );
+});
+
+test('revisions 13 and 14 persist every NPC referenced by held items', () => {
+  for (const [revision, scenarioBundle] of [
+    [13, bundle13],
+    [14, bundle14]
+  ]) {
+    const pin = lowerDvinaTracePhase1ADomainPin(scenarioBundle);
+    const creation = request({
+      scenario_definition_revision: revision,
+      scenario_manifest_digest: scenarioBundle.manifest_digest,
+      scenario_bundle: scenarioBundle,
+      domain_catalog_pin: pin,
+      idempotency_key: `trace-phase-${revision}-prerequisite-idempotency`
+    });
+    const result = materializeLowerDvinaTracePartyInstance(creation);
+    const plan = stage24Plan(result, creation, pin);
+    const npcBatch = plan.write_batches.find(
+      ({ target_table: targetTable }) => targetTable === 'party_npcs'
+    );
+    const placementBatch = plan.write_batches.find(
+      ({ target_table: targetTable }) => targetTable === 'party_item_placements'
+    );
+    const batch = (table) => plan.write_batches.find(
+      ({ target_table: targetTable }) => targetTable === table
+    )?.records ?? [];
+    const npcIds = new Set(batch('party_npcs').map(({ npc_id: npcId }) => npcId));
+    const holderIds = batch('party_item_placements')
+      .map(({ holder_npc_id: holderNpcId }) => holderNpcId)
+      .filter(Boolean);
+
+    assert.equal(npcIds.size, 5, `revision ${revision}`);
+    assert.ok(holderIds.length > 0, `revision ${revision}`);
+    assert.ok(npcBatch.order < placementBatch.order, `revision ${revision}`);
+    assert.ok(
+      placementBatch.depends_on_batches.includes(npcBatch.batch_id),
+      `revision ${revision}`
+    );
+    for (const holderId of holderIds) {
+      assert.equal(npcIds.has(holderId), true, `revision ${revision}: ${holderId}`);
+    }
+  }
 });
 
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {

@@ -51,6 +51,30 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   ), false);
 });
 
+test('Phase 4 action-set evaluation does not invoke the conversation interpreter', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  let playerCalls = 0;
+  const command = semanticNegotiationCommand({
+    contracts,
+    inputDigest: digest('action-set'),
+    playerConversationModel: async () => {
+      playerCalls += 1;
+      throw new Error('interpreter must not run while listing actions');
+    },
+    npcSemanticModel: async () => null,
+    revalidateStateVersion: async () => state.party_state.state_version
+  });
+
+  const availability = await command.availability({
+    committed_state: state,
+    action_set_evaluation: true
+  });
+
+  assert.equal(availability.status, 'available');
+  assert.deepEqual(availability.check_requests, []);
+  assert.equal(playerCalls, 0);
+});
+
 test('revision 14 Phase 4 semantic lineage accepts only exact or M1-owned turns', () => {
   const semanticExchange = { response_kind: 'surrender' };
   const turnId = 'turn:party-1:4';

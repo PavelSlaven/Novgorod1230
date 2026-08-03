@@ -50,7 +50,7 @@ const world = Object.freeze({
     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
 });
 
-test('historical bounded Phase 3 writes without semantic exchange and survives restart', async (t) => {
+test('Phase 3 PostgreSQL semantic conversation persists and survives restart', async (t) => {
   if (docker(['version']).status !== 0) {
     t.skip('Docker is required for isolated Phase 3 PostgreSQL integration');
     return;
@@ -145,7 +145,7 @@ test('historical bounded Phase 3 writes without semantic exchange and survives r
   assert.equal(await count(pool,
     'party_runtime.party_conversation_statements', partyA.party_id), 2);
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyA.party_id), 0);
+    'party_runtime.party_actor_npc_interactions', partyA.party_id), 1);
   assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 1);
   assert.equal(await knowledgeCount(pool, partyA.party_id,
@@ -229,7 +229,7 @@ test('historical bounded Phase 3 writes without semantic exchange and survives r
   assert.equal(await count(pool,
     'party_runtime.party_conversation_statements', partyB.party_id), 2);
   assert.equal(await count(pool,
-    'party_runtime.party_actor_npc_interactions', partyB.party_id), 0);
+    'party_runtime.party_actor_npc_interactions', partyB.party_id), 1);
   const postDisclosureTalk = await pathB.submitTurn(partyB.party_id, {
     request_id: 'phase-3-b-post-disclosure-talk',
     idempotency_key: 'phase-3-b-post-disclosure-talk',

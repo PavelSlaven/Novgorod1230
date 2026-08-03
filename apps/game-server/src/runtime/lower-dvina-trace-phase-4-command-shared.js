@@ -39,7 +39,8 @@ export function createTracePhase4Command({
     async availability(context) {
       const state = context.committed_state ?? context.retrievedState;
       const allowed = canAttempt(state);
-      if (allowed && prepareAvailability) {
+      if (allowed && prepareAvailability
+          && context.action_set_evaluation !== true) {
         const prepared = await prepareAvailability({ ...context, state });
         return {
           version: 1,

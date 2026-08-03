@@ -202,7 +202,9 @@ export function conversationExchangeVersions(decisions, sessions) {
   const versions = new Map();
   for (const [conversationId, values] of byConversation) {
     values.sort((left, right) =>
-      Number(left.working_revision) - Number(right.working_revision));
+      Number(left.semantic_request.state_version)
+        - Number(right.semantic_request.state_version)
+      || Number(left.working_revision) - Number(right.working_revision));
     const current = Number(sessions.get(conversationId)?.state_version);
     if (!Number.isSafeInteger(current) || current < values.length) fail();
     values.forEach((row, index) => versions.set(

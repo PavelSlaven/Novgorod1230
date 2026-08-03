@@ -22,6 +22,8 @@ import {
 } from '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
 import { assertChangeSetLineage } from
   '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read-rows.js';
+import { conversationExchangeVersions } from
+  '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read-messages.js';
 import {
   assertPhase4NormalizedRows
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-read.js';
@@ -149,6 +151,12 @@ test('stateful conversation lineage selects the latest turn before working revis
     conversation_id: conversationId,
     updated_change_set_id: 'change:2'
   }], statements, decisions));
+  const versions = conversationExchangeVersions(
+    [...decisions].reverse(),
+    new Map([[conversationId, { state_version: '3' }]])
+  );
+  assert.equal(versions.get(`${conversationId}\u0000exchange:1`), 2);
+  assert.equal(versions.get(`${conversationId}\u0000exchange:2`), 3);
   const conflictingBranch = {
     semantic_request: {
       conversation_id: conversationId,

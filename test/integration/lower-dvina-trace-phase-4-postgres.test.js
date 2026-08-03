@@ -675,7 +675,7 @@ async function assertPhase4SemanticDecision(pool, partyId, responseKind) {
     status: 'committed',
     decision_mode: 'conversation',
     semantic_trace_schema: 'npc_semantic_decision_trace_v1',
-    session_status: responseKind === 'combat_handoff' ? 'suspended' : 'ended'
+    session_status: responseKind === 'combat_handoff' ? 'suspended' : 'active'
   });
   if (responseKind === 'combat_handoff') {
     assert.equal(decision.semantic_plan.contribution_kind, 'combat_handoff');

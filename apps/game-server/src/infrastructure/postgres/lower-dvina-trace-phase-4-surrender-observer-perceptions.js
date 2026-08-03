@@ -102,7 +102,7 @@ export function appendM2SurrenderObserverPerceptions({
       `${factual.player_input.idempotency_key}:knife-loss-event`,
     change_set_id: changeSetId,
     terminal_change_set_id: changeSetId,
-    state_version: 1
+    state_version: 2
   }));
   for (const observer of observers) {
     const observerId = observer.instance_id;

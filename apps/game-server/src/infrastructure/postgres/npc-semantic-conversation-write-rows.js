@@ -108,7 +108,7 @@ export function appendMessageWrites({
       idempotency_key: idempotencyKey,
       change_set_id: changeSetId,
       terminal_change_set_id: changeSetId,
-      state_version: 1
+      state_version: 2
     }));
     const perceptionPayload = {
       schema: 'conversation_message_perception_v1',

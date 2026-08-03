@@ -79,7 +79,12 @@ test('semantic writer persists CAS, audiences, lineage and actual messages', () 
       ({ perception_result_ref: perception }) => perception.entity_id
     ).sort()
   );
-  assert.equal(rows(inserts, 'party_temporal_events').length, 2);
+  const temporalEvents = rows(inserts, 'party_temporal_events');
+  assert.equal(temporalEvents.length, 2);
+  assert.deepEqual(
+    temporalEvents.map(({ record }) => record.state_version),
+    [2, 2]
+  );
   assert.equal(rows(appends, 'party_perception_witnesses').length, 2);
   assert.equal(rows(appends, 'party_perception_replay_evidence').length, 2);
 });

@@ -82,7 +82,7 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
         || row.witness_id !== row.perceiver_id
         || row.event_kind !== 'conversation_message_received'
         || row.event_status !== 'resolved'
-        || row.event_version !== '1'
+        || row.event_version !== '2'
         || canonicalDigest(row.rule_ref)
           !== canonicalDigest(message.source_statement_ref)
         || row.change_set_id !== statement.change_set_id

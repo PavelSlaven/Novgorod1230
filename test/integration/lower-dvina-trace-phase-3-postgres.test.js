@@ -230,14 +230,20 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     'party_runtime.party_conversation_statements', partyB.party_id), 2);
   assert.equal(await count(pool,
     'party_runtime.party_actor_npc_interactions', partyB.party_id), 0);
-  await assert.rejects(
-    () => pathB.submitTurn(partyB.party_id, {
-      request_id: 'phase-3-b-post-disclosure-talk',
-      idempotency_key: 'phase-3-b-post-disclosure-talk',
-      raw_text: 'Снова спросить Еремея о крушении.'
-    }),
-    { code: 'TURN_STEP_DOMAIN_BINDING_MISSING' }
-  );
+  const postDisclosureTalk = await pathB.submitTurn(partyB.party_id, {
+    request_id: 'phase-3-b-post-disclosure-talk',
+    idempotency_key: 'phase-3-b-post-disclosure-talk',
+    raw_text: 'Снова спросить Еремея о крушении.'
+  });
+  assert.deepEqual(postDisclosureTalk.conversation.semantic_exchange, {
+    response_kind: 'withhold',
+    npc_utterance: 'Нечего мне больше сказать.',
+    disclosed_route_ref: null
+  });
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_statements', partyB.party_id), 4);
+  assert.equal(await count(pool,
+    'party_runtime.party_npc_decision_traces', partyB.party_id), 2);
   assert.equal(await count(pool,
     'party_runtime.party_check_resolutions', partyB.party_id), 2);
 
@@ -252,7 +258,7 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
     disclosed
   );
   assert.equal(await count(pool,
-    'party_runtime.party_conversation_statements', partyB.party_id), 2);
+    'party_runtime.party_conversation_statements', partyB.party_id), 4);
   await pool.query(
     `UPDATE party_runtime.party_ownership o
         SET owner_external_ref=$2::jsonb
@@ -439,7 +445,7 @@ function semanticOption(rawText, actionSet) {
         ? 'follow_path_to_fishing_camp'
         : 'ask_eremey_about_wreck';
   const available = actionSet.some(({ option_id: id }) => id === selected);
-  assert.equal(available, !normalized.includes('снова'));
+  assert.equal(available, true);
   return selected;
 }
 

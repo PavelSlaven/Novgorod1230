@@ -13,7 +13,10 @@ export function appendPhase3SemanticInteraction({
   const interactionId =
     `interaction:${partyId}:trace-phase3:${turnNumber}`;
   const activityId = `activity:${partyId}:trace-phase3:${turnNumber}`;
-  const npcRef = semanticExchange.decision_request.npc_ref;
+  const npcRef = semanticExchange.decision_request?.npc_ref ?? {
+    entity_kind: 'npc',
+    entity_id: factual.consequence.conversation.npc_id
+  };
   const npcStatement = semanticExchange.statements.find(
     ({ speaker_ref: speaker }) => speaker.entity_kind === npcRef.entity_kind
       && speaker.entity_id === npcRef.entity_id

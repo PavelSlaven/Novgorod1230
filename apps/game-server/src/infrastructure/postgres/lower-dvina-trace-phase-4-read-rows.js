@@ -92,6 +92,7 @@ export async function loadPhase4ReadRows(pool, partyId, payload) {
          FROM party_runtime.party_perception_records p
          JOIN party_runtime.party_temporal_events e ON e.event_id=p.event_id
         WHERE p.party_id=$1 AND left(p.perception_id,length($2))=$2
+          AND e.event_kind<>'conversation_message_received'
         ORDER BY p.perception_id`,
       [partyId, `perception:${partyId}:trace-phase4:`]),
     pool.query(
@@ -99,17 +100,23 @@ export async function loadPhase4ReadRows(pool, partyId, payload) {
          FROM party_runtime.party_perception_witnesses w
          JOIN party_runtime.party_perception_records p
            ON p.perception_id=w.perception_id
+         JOIN party_runtime.party_temporal_events e ON e.event_id=p.event_id
         WHERE p.party_id=$1 AND left(p.perception_id,length($2))=$2
+          AND e.event_kind<>'conversation_message_received'
         ORDER BY w.perception_id,w.witness_kind,w.witness_id`,
       [partyId, `perception:${partyId}:trace-phase4:`]),
     pool.query(
-      `SELECT perception_id,party_id,canonical_input_digest,
-              perception_digest,expected_state_versions_digest,
-              dependency_pins_digest,policy_versions_digest,
-              idempotency_key,canonical_digest,change_set_id
-         FROM party_runtime.party_perception_replay_evidence
-        WHERE party_id=$1 AND left(perception_id,length($2))=$2
-        ORDER BY perception_id`,
+      `SELECT r.perception_id,r.party_id,r.canonical_input_digest,
+              r.perception_digest,r.expected_state_versions_digest,
+              r.dependency_pins_digest,r.policy_versions_digest,
+              r.idempotency_key,r.canonical_digest,r.change_set_id
+         FROM party_runtime.party_perception_replay_evidence r
+         JOIN party_runtime.party_perception_records p
+           ON p.party_id=r.party_id AND p.perception_id=r.perception_id
+         JOIN party_runtime.party_temporal_events e ON e.event_id=p.event_id
+        WHERE r.party_id=$1 AND left(r.perception_id,length($2))=$2
+          AND e.event_kind<>'conversation_message_received'
+        ORDER BY r.perception_id`,
       [partyId, `perception:${partyId}:trace-phase4:`]),
     pool.query(
       `SELECT t.transition_id,t.npc_id,t.transition_kind,t.trace,

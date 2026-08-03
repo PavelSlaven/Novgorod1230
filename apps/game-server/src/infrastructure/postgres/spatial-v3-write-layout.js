@@ -83,6 +83,7 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                               : write?.target_table === 'party_npc_decision_traces' ? write.record?.request_id === write.id
                                 : write?.target_table === 'party_conversation_sessions' ? write.record?.conversation_id === write.id
                                   : write?.target_table === 'party_conversation_statements' ? write.record?.statement_id === write.id
+                                    : write?.target_table === 'party_conversation_contributions' ? write.record?.contribution_id === write.id
                             : write?.target_table === 'party_npc_reaction_consequences' ? write.record?.request_id === write.id
                               : write?.target_table === 'party_npc_knowledge_merge_results' ? write.record?.proposal_id === write.id
                                 : write?.target_table === 'party_npc_knowledge_merge_states' ? write.id === `${write.record?.party_id}:${write.record?.npc_id}`
@@ -172,6 +173,7 @@ export function childParentKeys(write) {
         `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`
       ];
     case 'party_conversation_statements':
+    case 'party_conversation_contributions':
       return [
         `party_runtime.party_conversation_sessions:${write.record?.conversation_id}`,
         `party_runtime.party_v3_change_sets:${write.record?.change_set_id}`

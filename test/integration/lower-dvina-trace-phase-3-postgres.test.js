@@ -28,6 +28,8 @@ import {
 import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { digestRunIdentity } from
+  '../../apps/game-server/src/infrastructure/postgres/party-store-turn.js';
 import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
@@ -139,11 +141,13 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     disclosed_route_ref: null
   });
   assert.equal(firstTalk.time_update.exact_elapsed.exact_minutes.numerator,
-    '5');
+    '10');
   assert.equal(await count(pool,
     'party_runtime.party_conversation_sessions', partyA.party_id), 1);
   assert.equal(await count(pool,
     'party_runtime.party_conversation_statements', partyA.party_id), 2);
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_contributions', partyA.party_id), 2);
   assert.equal(await count(pool,
     'party_runtime.party_actor_npc_interactions', partyA.party_id), 1);
   assert.equal(await count(pool,
@@ -175,6 +179,8 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
   assert.equal(await count(pool,
     'party_runtime.party_conversation_statements', partyA.party_id), 4);
   assert.equal(await count(pool,
+    'party_runtime.party_conversation_contributions', partyA.party_id), 4);
+  assert.equal(await count(pool,
     'party_runtime.party_npc_decision_traces', partyA.party_id), 2);
 
   const pathB = buildRuntime({
@@ -205,7 +211,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     disclosed_route_ref: 'trace_ld_v1_route_camp_to_shed'
   });
   assert.equal(disclosed.time_update.exact_elapsed.exact_minutes.numerator,
-    '10');
+    '20');
   assert.deepEqual(await positionFor(pool, partyB.party_id), positionBefore);
   assert.equal(await knowledgeCount(pool, partyB.party_id,
     'trace_ld_v1_route_camp_to_shed'), 1);
@@ -337,7 +343,151 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     JSON.stringify(guarded.screen).includes('must-not-reach-llm'),
     false
   );
+
+  await assertPerceptionRestartVariants({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
 });
+
+async function assertPerceptionRestartVariants({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const variants = [
+    {
+      suffix: 'unheard',
+      participantSlot: 'eremey_fisher',
+      machinePatch: { hearing_capability: 'none' },
+      expectedResult: null,
+      expectedDecisionCount: 0
+    },
+    {
+      suffix: 'partial',
+      participantSlot: 'eremey_fisher',
+      machinePatch: { hearing_capability: 'partial' },
+      expectedResult: 'perceived_partial',
+      expectedDecisionCount: 1
+    },
+    {
+      suffix: 'unidentified',
+      participantSlot: 'eremey_fisher',
+      semanticPatch: { speaker_recognition: 'unidentified' },
+      expectedResult: 'perceived_unidentified',
+      expectedDecisionCount: 1
+    },
+    {
+      suffix: 'partial-bystander',
+      participantSlot: 'background_fisher_1',
+      machinePatch: { hearing_capability: 'partial' },
+      expectedResult: 'perceived_partial',
+      expectedDecisionCount: 1
+    }
+  ];
+  for (const variant of variants) {
+    const runtime = buildRuntime({ pool, release, runtimeCatalogPin });
+    const party = await createParty(
+      runtime,
+      `phase-3-perception-${variant.suffix}`
+    );
+    await inspectAndMove(runtime, party.party_id, variant.suffix);
+    const perceiverId = await patchNpcPerceptionState(
+      pool,
+      party.party_id,
+      variant
+    );
+    const patchedRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
+    await patchedRuntime.submitTurn(party.party_id, {
+      request_id: `phase-3-${variant.suffix}-talk`,
+      idempotency_key: `phase-3-${variant.suffix}-talk`,
+      raw_text: 'Поговорить с Еремеем о крушении.'
+    });
+    assert.equal(await count(pool,
+      'party_runtime.party_conversation_contributions', party.party_id),
+    variant.expectedDecisionCount + 1);
+    assert.equal(await count(pool,
+      'party_runtime.party_npc_decision_traces', party.party_id),
+    variant.expectedDecisionCount);
+    const perceptionRows = (await pool.query(
+      `SELECT p.perceiver_id,p.result_kind
+         FROM party_runtime.party_perception_records p
+         JOIN party_runtime.party_temporal_events e ON e.event_id=p.event_id
+        WHERE p.party_id=$1
+          AND e.event_kind='conversation_message_received'
+        ORDER BY p.perceiver_id`,
+      [party.party_id]
+    )).rows;
+    if (variant.expectedResult === null) {
+      assert.equal(perceptionRows.some(
+        ({ perceiver_id: candidateId }) => candidateId === perceiverId
+      ), false);
+    } else {
+      assert.equal(perceptionRows.some(({ perceiver_id: candidateId,
+        result_kind: resultKind }) => candidateId === perceiverId
+          && resultKind === variant.expectedResult), true);
+    }
+    const restarted = buildRuntime({ pool, release, runtimeCatalogPin });
+    await restarted.getPartyScreen(party.party_id);
+  }
+}
+
+async function patchNpcPerceptionState(pool, partyId, {
+  participantSlot,
+  machinePatch = {},
+  semanticPatch = {}
+}) {
+  const latest = (await pool.query(
+    `SELECT state_version,state_payload
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1
+      ORDER BY state_version DESC
+      LIMIT 1`,
+    [partyId]
+  )).rows[0];
+  const payload = structuredClone(latest.state_payload);
+  const npc = payload.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === participantSlot);
+  assert.ok(npc,
+    `NPC slot ${participantSlot} must exist in the persisted test state`);
+  npc.machine_state = { ...npc.machine_state, ...machinePatch };
+  npc.semantic_state = { ...npc.semantic_state, ...semanticPatch };
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(
+      `UPDATE party_runtime.party_npcs
+          SET machine_state=machine_state || $3::jsonb,
+              semantic_state=semantic_state || $4::jsonb
+        WHERE party_id=$1 AND npc_id=$2`,
+      [partyId, npc.instance_id, JSON.stringify(machinePatch),
+        JSON.stringify(semanticPatch)]
+    );
+    await client.query(
+      `ALTER TABLE party_runtime.party_state_snapshots
+         DISABLE TRIGGER USER`
+    );
+    await client.query(
+      `UPDATE party_runtime.party_state_snapshots
+          SET state_payload=$3::jsonb,state_digest=$4
+        WHERE party_id=$1 AND state_version=$2`,
+      [partyId, latest.state_version, JSON.stringify(payload),
+        digestRunIdentity(payload)]
+    );
+    await client.query(
+      `ALTER TABLE party_runtime.party_state_snapshots
+         ENABLE TRIGGER USER`
+    );
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+  return npc.instance_id;
+}
 
 async function createParty(runtime, requestId) {
   const party = await runtime.startNewGame({

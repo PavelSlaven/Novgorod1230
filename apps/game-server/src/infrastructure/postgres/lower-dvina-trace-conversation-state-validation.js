@@ -71,6 +71,42 @@ export function validateAudiences(values, statements) {
     compareText(refKey(left.statement_ref), refKey(right.statement_ref)));
 }
 
+export function validateContributions(values, statements, request) {
+  if (!Array.isArray(values) || values.length < 1) {
+    fail('TRACE_M2_CONVERSATION_CONTRIBUTIONS_INVALID');
+  }
+  const statementsById = new Map(statements.map(
+    (statement) => [statement.statement_id, statement]
+  ));
+  const identities = new Set();
+  const contributions = structuredClone(values);
+  for (const contribution of contributions) {
+    const statement = contribution?.schema === 'conversation_statement_event_v1'
+      ? statementsById.get(contribution.statement_id) : null;
+    const nonStatement = contribution?.schema
+      === 'conversation_non_statement_contribution_v1';
+    const identity = statement?.statement_id ?? contribution?.contribution_id;
+    if (!text(identity) || identities.has(identity)
+        || contribution.conversation_id !== request?.conversation_id
+        || contribution.exchange_id !== request?.exchange_id
+        || (statement && canonicalJson(statement) !== canonicalJson(contribution))
+        || (!statement && (!nonStatement
+          || !['silence', 'leave_conversation', 'action_handoff',
+            'combat_handoff'].includes(contribution.contribution_kind)
+          || !text(contribution.speaker_ref?.entity_kind)
+          || !text(contribution.speaker_ref?.entity_id)
+          || !(contribution.handoff === null || record(contribution.handoff))))) {
+      fail('TRACE_M2_CONVERSATION_CONTRIBUTIONS_INVALID');
+    }
+    identities.add(identity);
+  }
+  if (statements.some(({ statement_id: statementId }) =>
+    !identities.has(statementId))) {
+    fail('TRACE_M2_CONVERSATION_CONTRIBUTIONS_INVALID');
+  }
+  return contributions;
+}
+
 export function validateSignalRecords(values) {
   if (!Array.isArray(values)) fail('TRACE_M2_NPC_SIGNALS_INVALID');
   const records = structuredClone(values);
@@ -112,8 +148,7 @@ export function mergeAppendOnly(current = [], added, identity, conflictCode) {
     }
     if (!prior) byId.set(id, structuredClone(entry));
   }
-  return [...byId.entries()].sort(([left], [right]) =>
-    compareText(left, right)).map(([, entry]) => entry);
+  return [...byId.values()];
 }
 
 export function uniqueRefs(values) {

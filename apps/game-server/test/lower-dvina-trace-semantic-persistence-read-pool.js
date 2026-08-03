@@ -43,13 +43,28 @@ import {
 } from './lower-dvina-trace-semantic-persistence-pool.js';
 
 export function semanticReadPool(writes) {
-  const sessions = rows(writes.updates, 'party_conversation_sessions')
+  const sessions = [
+    ...rows(writes.inserts, 'party_conversation_sessions'),
+    ...rows(writes.updates, 'party_conversation_sessions')
+  ]
     .map(({ record }) => structuredClone(record))
     .sort((left, right) =>
       left.conversation_id.localeCompare(right.conversation_id));
   const statements = rows(writes.appends, 'party_conversation_statements')
     .map(({ record }) => structuredClone(record))
     .sort((left, right) => left.statement_id.localeCompare(right.statement_id));
+  const contributions = rows(
+    writes.appends,
+    'party_conversation_contributions'
+  ).map(({ record }) => ({
+    ...structuredClone(record),
+    party_state_version: String(record.party_state_version),
+    session_state_version: String(record.session_state_version),
+    contribution_index: String(record.contribution_index)
+  })).sort((left, right) =>
+    left.conversation_id.localeCompare(right.conversation_id)
+      || Number(left.session_state_version) - Number(right.session_state_version)
+      || Number(left.contribution_index) - Number(right.contribution_index));
   const decisions = rows(writes.appends, 'party_npc_decision_traces')
     .map(({ record }) => structuredClone(record))
     .sort((left, right) => left.request_id.localeCompare(right.request_id));
@@ -109,6 +124,9 @@ export function semanticReadPool(writes) {
       if (sql.includes('party_conversation_sessions')) return result(sessions);
       if (sql.includes('party_conversation_statements')) {
         return result(statements);
+      }
+      if (sql.includes('party_conversation_contributions')) {
+        return result(contributions);
       }
       if (sql.includes('party_npc_decision_traces')) return result(decisions);
       if (sql.includes("e.event_kind='conversation_message_received'")) {

@@ -29,6 +29,7 @@ export const TABLES = Object.freeze({
   party_npc_decision_traces: { modes: ['append'], key: ['request_id'] },
   party_conversation_sessions: { modes: ['insert', 'update'], key: ['conversation_id'], version: true },
   party_conversation_statements: { modes: ['append'], key: ['statement_id'] },
+  party_conversation_contributions: { modes: ['append'], key: ['contribution_id'] },
   party_npc_reaction_consequences: { modes: ['append'], key: ['request_id'] },
   party_npc_knowledge_merge_results: { modes: ['append'], key: ['proposal_id'] },
   party_body_temporal_history: { modes: ['append'], key: ['history_id'] },

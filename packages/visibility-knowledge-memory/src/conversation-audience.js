@@ -7,6 +7,8 @@ const LISTENER_RESULT_KEYS = [
   'listener_ref',
   'perception_result_ref',
   'perception_result',
+  'perceived_at',
+  'same_time_batch_ref',
   'comprehension',
   'speaker_recognized',
   'witness_policy_allows'
@@ -14,6 +16,7 @@ const LISTENER_RESULT_KEYS = [
 const REF_KEYS = ['entity_kind', 'entity_id'];
 const LISTENER_KINDS = new Set(['npc', 'player_character']);
 const PERCEPTION_REF_KINDS = new Set(['perception_result']);
+const TEMPORAL_BATCH_KINDS = new Set(['temporal_batch']);
 const PERCEPTION_RESULTS = new Set([
   'not_perceived',
   'perceived_unidentified',
@@ -71,6 +74,8 @@ function validListenerResult(value) {
   if (!(exactRecord(value, LISTENER_RESULT_KEYS)
     && exactRef(value.listener_ref, LISTENER_KINDS)
     && exactRef(value.perception_result_ref, PERCEPTION_REF_KINDS)
+    && exactRef(value.same_time_batch_ref, TEMPORAL_BATCH_KINDS)
+    && exactTimestamp(value.perceived_at)
     && PERCEPTION_RESULTS.has(value.perception_result)
     && COMPREHENSION_LEVELS.has(value.comprehension)
     && typeof value.speaker_recognized === 'boolean'
@@ -88,6 +93,14 @@ function validListenerResult(value) {
   }
   return value.perception_result !== 'recognized'
     || value.speaker_recognized;
+}
+
+function exactTimestamp(value) {
+  return exactRecord(value, [
+    'whole_minutes', 'subminute_numerator', 'subminute_denominator'
+  ]) && /^\d+$/u.test(value.whole_minutes)
+    && /^\d+$/u.test(value.subminute_numerator)
+    && /^[1-9]\d*$/u.test(value.subminute_denominator);
 }
 
 function formalInput(input) {
@@ -154,6 +167,9 @@ export function projectConversationAudience(input = {}) {
       source_statement_ref: statementRef,
       listener_ref: result.listener_ref,
       perception_result_ref: result.perception_result_ref,
+      perception_result: result.perception_result,
+      perceived_at: result.perceived_at,
+      same_time_batch_ref: result.same_time_batch_ref,
       comprehension: result.comprehension,
       speaker_ref: result.speaker_recognized ? statement.speaker_ref : null,
       utterance_text: result.comprehension === 'full' ? statement.utterance_text : null,

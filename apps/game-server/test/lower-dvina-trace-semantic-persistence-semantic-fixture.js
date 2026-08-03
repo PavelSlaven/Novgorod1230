@@ -145,8 +145,10 @@ export function semanticWriterFixture() {
   const semanticExchange = {
     exchange: {
       schema: 'conversation_exchange_result_v1',
-      session_status: 'ended'
+      session_status: 'ended',
+      contributions: [playerStatement, npcStatement]
     },
+    same_time_batch_ref: boundary.same_time_batch_ref,
     decision_boundary: boundary,
     decision_request: request,
     decision_plan: plan,
@@ -156,6 +158,7 @@ export function semanticWriterFixture() {
   const next = {
     conversation_sessions: [session],
     conversation_statements: [playerStatement, npcStatement],
+    conversation_contributions: [playerStatement, npcStatement],
     conversation_audiences: audiences,
     npc_decision_signals: [{
       signal,
@@ -163,7 +166,10 @@ export function semanticWriterFixture() {
     }]
   };
   const input = buildNpcSemanticConversationWriteInput({
-    state: { conversation_sessions: [existingSession] },
+    state: {
+      party_state: { state_version: request.state_version },
+      conversation_sessions: [existingSession]
+    },
     next,
     semanticExchange
   });
@@ -178,7 +184,10 @@ export function semanticWriterFixture() {
     sessionWrite: input.sessionWrite,
     semanticExchange: input.semanticExchange,
     signalRecords: input.signalRecords,
-    actualMessageEvidence: input.actualMessageEvidence
+    actualMessageEvidence: input.actualMessageEvidence,
+    partyStateVersion: input.partyStateVersion,
+    sameTimeBatchRef: input.sameTimeBatchRef,
+    contributions: input.contributions
   });
   const trace = buildNpcSemanticDecisionTrace({
     request,
@@ -207,6 +216,7 @@ export function semanticWriterFixture() {
       party_id: PARTY_ID,
       conversation_sessions: [session],
       conversation_statements: [playerStatement, npcStatement],
+      conversation_contributions: [playerStatement, npcStatement],
       conversation_audiences: audiences,
       received_messages: receivedMessages,
       npc_semantic_decision_refs: [{
@@ -302,6 +312,8 @@ export function audience(source, listener, perception) {
       listener_ref: listener,
       perception_result_ref: perception,
       perception_result: 'recognized',
+      perceived_at: AT,
+      same_time_batch_ref: ref('temporal_batch', 'batch-conversation-1'),
       comprehension: 'full',
       speaker_recognized: true,
       witness_policy_allows: true

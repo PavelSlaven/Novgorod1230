@@ -24,7 +24,7 @@ import {
 } from './lower-dvina-trace-semantic-conversation-read-shared.js';
 
 export function assertMessages({ partyId, payload, sessions, statements, decisions,
-  rows }) {
+  contributions, rows }) {
   const expected = sortedMessages(payload.received_messages ?? []);
   if (rows.length !== expected.length) fail();
   const messageByPerceptionId = new Map(expected.map((message) => [
@@ -61,8 +61,13 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
   ));
   const exchangeVersions = conversationExchangeVersions(
     decisions,
-    sessionById
+    sessionById,
+    contributions
   );
+  const contributionByExchange = new Map((contributions ?? []).map((row) => [
+    `${row.conversation_id}\u0000${row.exchange_id}`,
+    row
+  ]));
   for (let index = 0; index < expected.length; index += 1) {
     const message = expected[index];
     const row = rows[index];
@@ -73,11 +78,16 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
     const decision = statement && decisionByExchange.get(
       `${statement.conversation_id}\u0000${statement.exchange_id}`
     );
-    if (!statement || !decision || row.perception_id !== perceptionId
+    const exchangeKey = statement
+      ? `${statement.conversation_id}\u0000${statement.exchange_id}`
+      : null;
+    const contribution = contributionByExchange.get(exchangeKey);
+    if (!statement || (!decision && !contribution)
+        || row.perception_id !== perceptionId
         || row.event_id !== `conversation-message-event:${perceptionId}`
         || row.perceiver_kind !== message.listener_ref?.entity_kind
         || row.perceiver_id !== message.listener_ref?.entity_id
-        || row.result_kind !== 'recognized'
+        || row.result_kind !== message.perception_result
         || row.witness_kind !== row.perceiver_kind
         || row.witness_id !== row.perceiver_id
         || row.event_kind !== 'conversation_message_received'
@@ -91,14 +101,19 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
         || row.replay_change_set_id !== statement.change_set_id
         || row.idempotency_record_id !== row.idempotency_key
         || row.replay_idempotency_key !== row.idempotency_key) fail();
-    const boundary = decision.boundary_snapshot;
-    const evidence = messageEvidence({ message, statement, decision });
+    const sameTimeBatchRef = message.same_time_batch_ref;
+    const evidence = messageEvidence({
+      message,
+      statement,
+      decision,
+      sameTimeBatchRef
+    });
     const messageInput = {
       schema: 'conversation_received_message_persistence_input_v1',
       statement: statementContract(statement),
       received_message: message,
       evidence,
-      same_time_batch_ref: boundary.same_time_batch_ref
+      same_time_batch_ref: sameTimeBatchRef
     };
     const perceptionPayload = {
       schema: 'conversation_message_perception_v1',
@@ -123,9 +138,10 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
       canonical_input_digest: inputDigest,
       perception_digest: perceptionDigest,
       expected_state_versions_digest: canonicalDigest({
-        party_state_version: decision.semantic_request.state_version,
+        party_state_version: decision?.semantic_request.state_version
+          ?? Number(contribution.party_state_version),
         conversation_state_version: exchangeVersions.get(
-          `${statement.conversation_id}\u0000${statement.exchange_id}`
+          exchangeKey
         )
       }),
       dependency_pins_digest: canonicalDigest(evidence.dependency_pins),
@@ -133,7 +149,7 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
       idempotency_key: row.idempotency_key,
       change_set_id: statement.change_set_id
     };
-    if (!timestampMatches(row, statement.spoken_at)
+    if (!timestampMatches(row, message.perceived_at)
         || canonicalDigest(row.policy_ref)
           !== canonicalDigest(evidence.visibility_policy_ref)
         || canonicalDigest(row.recognition_policy_ref)
@@ -155,14 +171,14 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
   }
 }
 
-export function messageEvidence({ message, statement, decision }) {
-  const boundary = decision.boundary_snapshot;
+export function messageEvidence({ message, statement, decision,
+  sameTimeBatchRef = decision?.boundary_snapshot?.same_time_batch_ref }) {
   return {
     source_statement_ref: message.source_statement_ref,
     listener_ref: message.listener_ref,
     perception_result_ref: message.perception_result_ref,
-    result_kind: 'recognized',
-    received_at: statement.spoken_at,
+    result_kind: message.perception_result,
+    received_at: message.perceived_at,
     recognition_policy_ref: {
       entity_kind: 'contract_schema',
       entity_id: 'conversation_audience_projection_v1'
@@ -171,7 +187,7 @@ export function messageEvidence({ message, statement, decision }) {
       entity_kind: 'contract_schema',
       entity_id: 'conversation_statement_event_v1'
     },
-    signal_refs: decision.signal_records.filter((signal) =>
+    signal_refs: (decision?.signal_records ?? []).filter((signal) =>
       canonicalDigest(signal.source_perception_ref)
         === canonicalDigest(message.perception_result_ref)
     ).map(({ signal_id: signalId }) => ({
@@ -184,7 +200,7 @@ export function messageEvidence({ message, statement, decision }) {
         entity_id: statement.conversation_id
       },
       statement_ref: message.source_statement_ref,
-      same_time_batch_ref: boundary.same_time_batch_ref
+      same_time_batch_ref: sameTimeBatchRef
     },
     policy_versions: {
       audience_projection: 'conversation_audience_projection_v1',
@@ -193,7 +209,26 @@ export function messageEvidence({ message, statement, decision }) {
   };
 }
 
-export function conversationExchangeVersions(decisions, sessions) {
+export function conversationExchangeVersions(decisions, sessions,
+  contributions = null) {
+  if (Array.isArray(contributions) && contributions.length > 0) {
+    const exchangesByConversation = new Map();
+    for (const row of contributions) {
+      const values = exchangesByConversation.get(row.conversation_id) ?? [];
+      if (!values.includes(row.exchange_id)) values.push(row.exchange_id);
+      exchangesByConversation.set(row.conversation_id, values);
+    }
+    const versions = new Map();
+    for (const [conversationId, exchangeIds] of exchangesByConversation) {
+      const current = Number(sessions.get(conversationId)?.state_version);
+      if (!Number.isSafeInteger(current) || current < exchangeIds.length) fail();
+      exchangeIds.forEach((exchangeId, index) => versions.set(
+        `${conversationId}\u0000${exchangeId}`,
+        current - exchangeIds.length + index + 1
+      ));
+    }
+    return versions;
+  }
   const byConversation = new Map();
   for (const row of decisions) {
     const id = row.semantic_request.conversation_id;

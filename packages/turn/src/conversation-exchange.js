@@ -107,10 +107,14 @@ function requirePorts(ports) {
     'conversationModel',
     'revalidatePlayerStateVersion',
     'applyPlayerContribution',
+    'advanceContributionTime',
+    'revalidateAfterContribution',
+    'projectPlayerContributionPerception',
     'buildNpcResponseBatch',
     'npcSemanticModel',
     'revalidateNpcStateVersion',
-    'applyNpcContribution'
+    'applyNpcContribution',
+    'projectNpcContributionPerception'
   ];
   for (const port of required) {
     if (typeof ports[port] !== 'function') {
@@ -121,6 +125,74 @@ function requirePorts(ports) {
       );
     }
   }
+}
+
+function normalizeTimeProgress(value) {
+  if (!exactKeys(value, [
+    'working_state', 'temporal_boundary_refs', 'session_status'
+  ]) || !plainRecord(value.working_state)
+      || !Array.isArray(value.temporal_boundary_refs)
+      || !SESSION_STATUSES.has(value.session_status)) {
+    fail(
+      'TURN_CONVERSATION_TIME_PROGRESS_INVALID',
+      'Contribution time progress must return exact working state and boundaries'
+    );
+  }
+  return immutableClone(value);
+}
+
+async function progressAndProject({
+  ports,
+  applied,
+  plan,
+  contributionIndex,
+  perceptionPort,
+  request = null,
+  proposal = null
+}) {
+  const progressed = normalizeTimeProgress(await callPort(
+    ports.advanceContributionTime,
+    {
+      working_state: applied.working_state,
+      contribution_event: applied.contribution_event,
+      plan,
+      contribution_index: contributionIndex
+    },
+    'TURN_CONVERSATION_TIME_PROGRESS_FAILED',
+    'Conversation contribution time could not be advanced'
+  ));
+  await callPort(
+    ports.revalidateAfterContribution,
+    {
+      working_state: progressed.working_state,
+      contribution_event: applied.contribution_event,
+      contribution_index: contributionIndex
+    },
+    'TURN_CONVERSATION_STALE_AFTER_TIME',
+    'Conversation state changed while contribution time advanced'
+  );
+  const projected = normalizeApplyResult(await callPort(
+    perceptionPort,
+    {
+      working_state: progressed.working_state,
+      contribution_event: applied.contribution_event,
+      plan,
+      contribution_index: contributionIndex,
+      request,
+      proposal
+    },
+    'TURN_CONVERSATION_PERCEPTION_FAILED',
+    'Conversation contribution perception could not be projected'
+  ), 'TURN_CONVERSATION_PERCEPTION_INVALID');
+  return {
+    applied: immutableClone({
+      ...projected,
+      session_status: progressed.temporal_boundary_refs.length > 0
+        ? progressed.session_status
+        : projected.session_status
+    }),
+    temporalBoundaryRefs: progressed.temporal_boundary_refs
+  };
 }
 
 function normalizeApplyResult(value, code) {
@@ -280,10 +352,18 @@ export async function runConversationExchange(input = {}, ports = {}) {
     'TURN_CONVERSATION_PLAYER_APPLY_FAILED',
     'Player conversation contribution could not be applied'
   );
-  const playerResult = normalizeApplyResult(
+  const playerApplied = normalizeApplyResult(
     rawPlayerResult,
     'TURN_CONVERSATION_PLAYER_APPLY_INVALID'
   );
+  const playerProgress = await progressAndProject({
+    ports,
+    applied: playerApplied,
+    plan: playerDecision.plan,
+    contributionIndex: 1,
+    perceptionPort: ports.projectPlayerContributionPerception
+  });
+  const playerResult = playerProgress.applied;
 
   let workingState = playerResult.working_state;
   let latestContribution = playerResult.contribution_event;
@@ -295,6 +375,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const processedBoundaryIds = [];
   const processedBoundaryIdSet = new Set();
   const processedDecisionPairs = new Set();
+  const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
+  if (temporalBoundaryRefs.length > 0) stopReason = 'temporal_boundary';
 
   while (stopReason === null) {
     if (contributions.length >= normalized.maxContributionsPerExchange) {
@@ -342,10 +424,20 @@ export async function runConversationExchange(input = {}, ports = {}) {
       'TURN_CONVERSATION_NPC_APPLY_FAILED',
       'NPC conversation contribution could not be applied'
     );
-    const npcResult = normalizeApplyResult(
+    const npcApplied = normalizeApplyResult(
       rawNpcResult,
       'TURN_CONVERSATION_NPC_APPLY_INVALID'
     );
+    const npcProgress = await progressAndProject({
+      ports,
+      applied: npcApplied,
+      plan: proposal.plan,
+      contributionIndex: contributions.length + 1,
+      perceptionPort: ports.projectNpcContributionPerception,
+      request: decision.request,
+      proposal
+    });
+    const npcResult = npcProgress.applied;
 
     workingState = npcResult.working_state;
     latestContribution = npcResult.contribution_event;
@@ -361,6 +453,10 @@ export async function runConversationExchange(input = {}, ports = {}) {
     processedBoundaryIdSet.add(decision.boundary.boundary_id);
     processedDecisionPairs.add(decisionPairKey(decision.boundary));
     stopReason = stopAfterApply(npcResult);
+    temporalBoundaryRefs.push(...npcProgress.temporalBoundaryRefs);
+    if (npcProgress.temporalBoundaryRefs.length > 0) {
+      stopReason = 'temporal_boundary';
+    }
   }
 
   return immutableClone({
@@ -371,6 +467,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     contributions,
     npc_decisions: npcDecisions,
     processed_boundary_ids: processedBoundaryIds,
+    temporal_boundary_refs: temporalBoundaryRefs,
     handoff,
     session_status: sessionStatus
   });

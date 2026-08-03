@@ -1,4 +1,6 @@
 import { addElapsedTime } from '@rus/time-events-history';
+import { projectConversationTemporalAdvance } from
+  './lower-dvina-trace-m2-conversation-time.js';
 
 export function createTracePhase3TemporalAdvance({ phase2Advance }) {
   return async function advance(input) {
@@ -45,6 +47,18 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
           processed_boundary_ids: []
         }
       };
+    }
+    const semantic = input.consequence.conversation?.semantic_exchange;
+    if (semantic != null) {
+      return projectConversationTemporalAdvance({
+        clockBefore: input.clock_before,
+        semanticExchange: semantic,
+        candidates,
+        roots: [{
+          activity_ref: input.consequence.conversation.activity_ref,
+          duration_minutes: semantic.exact_elapsed_minutes
+        }]
+      });
     }
     return {
       clock_before: input.clock_before,

@@ -205,6 +205,9 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     npcPolicy, executions, statementEffects, eremeyKnowledge,
     firstMapping, disclosureMapping, blueWoolPickup,
     conversationBindings, conversationSignalMappings,
+    conversationTimeProfiles: structuredClone(
+      bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
+    ),
     projectionText,
     campAnchor,
     actors,

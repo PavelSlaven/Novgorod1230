@@ -18,8 +18,12 @@ export function buildNpcSemanticConversationWriteInput({
   }
   const request = semanticExchange.decision_request;
   const boundary = semanticExchange.decision_boundary;
-  const conversationId = request?.conversation_id;
-  const exchangeId = request?.exchange_id;
+  const firstContribution = semanticExchange.exchange?.contributions?.[0];
+  const conversationId = request?.conversation_id
+    ?? firstContribution?.conversation_id;
+  const exchangeId = request?.exchange_id ?? firstContribution?.exchange_id;
+  const sameTimeBatchRef = boundary?.same_time_batch_ref
+    ?? semanticExchange.same_time_batch_ref;
   const session = (next.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === conversationId
   );
@@ -47,7 +51,7 @@ export function buildNpcSemanticConversationWriteInput({
   const signalRecordsById = new Map(next.npc_decision_signals.map(
     (entry) => [entry?.signal?.signal_id, entry?.signal]
   ));
-  const signalRecords = boundary.signal_refs.map(
+  const signalRecords = (boundary?.signal_refs ?? []).map(
     ({ entity_id: signalId }) => signalRecordsById.get(signalId)
   );
   if (signalRecords.some((signal) => signal === undefined)) {
@@ -62,14 +66,8 @@ export function buildNpcSemanticConversationWriteInput({
         message.source_statement_ref?.entity_id
       );
       if (!validateConversationStatementEvent(statement)
-          || message.comprehension !== 'full'
-          || !sameRef(message.speaker_ref, statement.speaker_ref)
-          || message.utterance_text !== statement.utterance_text
-          || canonicalDigest(message.claims)
-            !== canonicalDigest(
-              projectConversationReceivedClaims(statement.claims)
-            )) {
-        fail('Audience projection does not prove a full recognized received message');
+          || !matchesPerceptionProjection(message, statement)) {
+        fail('Audience projection does not prove the actual received message');
       }
       const messageSignalRefs = signalRecords
         .filter((signal) => sameRef(
@@ -84,8 +82,8 @@ export function buildNpcSemanticConversationWriteInput({
         source_statement_ref: message.source_statement_ref,
         listener_ref: message.listener_ref,
         perception_result_ref: message.perception_result_ref,
-        result_kind: 'recognized',
-        received_at: statement.spoken_at,
+        result_kind: message.perception_result,
+        received_at: message.perceived_at,
         recognition_policy_ref: {
           entity_kind: 'contract_schema',
           entity_id: 'conversation_audience_projection_v1'
@@ -102,7 +100,7 @@ export function buildNpcSemanticConversationWriteInput({
             entity_id: conversationId
           },
           statement_ref: message.source_statement_ref,
-          same_time_batch_ref: boundary.same_time_batch_ref
+          same_time_batch_ref: message.same_time_batch_ref
         },
         policy_versions: {
           audience_projection: 'conversation_audience_projection_v1',
@@ -122,6 +120,33 @@ export function buildNpcSemanticConversationWriteInput({
     },
     signalRecords,
     actualMessageEvidence,
-    expectedSessionStateVersion: existingSession?.state_version ?? null
+    expectedSessionStateVersion: existingSession?.state_version ?? null,
+    partyStateVersion: state.party_state?.state_version,
+    sameTimeBatchRef,
+    contributions: structuredClone(
+      semanticExchange.exchange?.contributions ?? []
+    )
   };
+}
+
+function matchesPerceptionProjection(message, statement) {
+  if (!['recognized', 'perceived_partial', 'perceived_unidentified',
+    'misinterpreted'].includes(message?.perception_result)) return false;
+  const full = message.comprehension === 'full';
+  const partial = message.comprehension === 'partial';
+  if (!full && !partial) return false;
+  if (message.utterance_text !== (full ? statement.utterance_text : null)) {
+    return false;
+  }
+  const speakerRecognized = sameRef(message.speaker_ref, statement.speaker_ref);
+  if (message.perception_result === 'recognized'
+      && (!full || !speakerRecognized)) return false;
+  if (message.perception_result === 'perceived_partial' && !partial) return false;
+  if (['perceived_unidentified', 'misinterpreted']
+    .includes(message.perception_result)
+      && (message.speaker_ref !== null || !full)) return false;
+  const expectedClaims = full && message.perception_result !== 'misinterpreted'
+    ? projectConversationReceivedClaims(statement.claims)
+    : [];
+  return canonicalDigest(message.claims) === canonicalDigest(expectedClaims);
 }

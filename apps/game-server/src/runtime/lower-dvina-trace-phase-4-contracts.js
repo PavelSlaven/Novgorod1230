@@ -260,6 +260,9 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect,
     conversationBindings, conversationSignalMappings,
+    conversationTimeProfiles: structuredClone(
+      bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
+    ),
     knifeTransition, promisePolicy: structuredClone(bundle.promise_policy),
     resourceArrivalBinding: structuredClone(resourceArrivalBinding),
     itemTemplates: structuredClone(itemTemplates),

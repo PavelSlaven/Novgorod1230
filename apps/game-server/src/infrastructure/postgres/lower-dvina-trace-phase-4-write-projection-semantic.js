@@ -57,7 +57,10 @@ export function appendSemanticNegotiation({
     throw new Error('TRACE_PHASE_4_PROMISE_TRANSITION_INVALID');
   }
   const roots = n.activity_roots ?? [];
-  if (roots.length !== 1 || roots[0]?.duration_minutes !== 10) {
+  if (roots.length !== 1
+      || !Number.isSafeInteger(semantic.exact_elapsed_minutes)
+      || semantic.exact_elapsed_minutes < 1
+      || roots[0]?.duration_minutes !== semantic.exact_elapsed_minutes) {
     throw new Error('TRACE_M2_PHASE_4_SEMANTIC_ACTIVITY_ROOT_INVALID');
   }
   const negotiationActivityId =
@@ -92,7 +95,9 @@ export function appendSemanticNegotiation({
     n: {
       ...n,
       npc_decision: {
-        trace: { request_id: semantic.decision_request.request_id }
+        trace: {
+          request_id: semantic.decision_request?.request_id ?? null
+        }
       }
     },
     partyId,
@@ -129,7 +134,10 @@ export function appendSemanticNegotiation({
     sessionWrite: semanticInput.sessionWrite,
     semanticExchange: semanticInput.semanticExchange,
     signalRecords: semanticInput.signalRecords,
-    actualMessageEvidence: semanticInput.actualMessageEvidence
+    actualMessageEvidence: semanticInput.actualMessageEvidence,
+    partyStateVersion: semanticInput.partyStateVersion,
+    sameTimeBatchRef: semanticInput.sameTimeBatchRef,
+    contributions: semanticInput.contributions
   });
   appends.push(...activationAppends);
   if (semantic.response_kind === 'surrender') {

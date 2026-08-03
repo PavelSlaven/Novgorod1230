@@ -169,7 +169,7 @@ test('the same code-owned social check exposes delivery cues but does not choose
     bargained.result.social_delivery_result);
 });
 
-test('arrival, invalidated objective and surrender demand share one Ratsha boundary and model call', async () => {
+test('Ratsha responds once to the post-elapsed surrender demand boundary', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
   const eremey = state.npcs.find(
     ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
@@ -196,7 +196,7 @@ test('arrival, invalidated objective and surrender demand share one Ratsha bound
 
   assert.deepEqual(
     exchange.result.decision_boundary.categories,
-    ['others', 'objective', 'communication']
+    ['communication']
   );
   assert.equal(exchange.result.exchange.npc_decisions.length, 1);
   assert.equal(exchange.npcCalls, 1);

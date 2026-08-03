@@ -201,7 +201,7 @@ function createSemanticConversationCommand({
   }, {
     kind: 'npc_policy_state',
     state: 'guarded'
-  }, ...(evidence ? [{
+  }, { kind: 'no_current_temporal_boundary_candidates' }, ...(evidence ? [{
     kind: 'committed_evidence_access',
     evidence_ref: ids.evidence
   }] : [])];
@@ -275,7 +275,7 @@ function createSemanticConversationCommand({
       });
       return packageBase({
         inputDigest,
-        duration: activity.duration_minutes,
+        duration: semanticExchange.exact_elapsed_minutes,
         kind: 'conversation',
         conversation: {
           activity_ref: activity.profile_id,

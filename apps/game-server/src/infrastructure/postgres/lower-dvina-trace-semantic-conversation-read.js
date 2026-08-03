@@ -16,6 +16,8 @@ import {
   assertSessions,
   assertStatementsAndAudiences
 } from './lower-dvina-trace-semantic-conversation-read-rows.js';
+import { assertContributions } from
+  './lower-dvina-trace-semantic-conversation-read-contributions.js';
 import { assertMessages } from './lower-dvina-trace-semantic-conversation-read-messages.js';
 
 export function isLowerDvinaTraceSemanticRevision(payload) {
@@ -29,7 +31,18 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
 ) {
   if (!isLowerDvinaTraceSemanticRevision(payload)) return [];
   const partyId = payload.party_id;
-  const [sessions, statements, decisions, messages] = await Promise.all([
+  const [contributions, sessions, statements, decisions, messages] = await Promise.all([
+    pool.query(
+      `SELECT contribution_id,conversation_id,exchange_id,
+              party_state_version::text,
+              session_state_version::text,contribution_index::text,
+              contribution_schema,contribution_payload,change_set_id,
+              idempotency_key,canonical_digest
+         FROM party_runtime.party_conversation_contributions
+        WHERE party_id=$1
+        ORDER BY party_state_version,contribution_index,conversation_id`,
+      [partyId]
+    ),
     pool.query(
       `SELECT conversation_id,state_version::text,status,started_at,
               location_ref,initiator_ref,active_participant_refs,
@@ -102,14 +115,21 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
 
   const sessionRows = assertSessions(payload, sessions.rows);
   const statementRows = assertStatementsAndAudiences(payload, statements.rows);
+  const contributionRows = assertContributions(payload, contributions.rows);
   const decisionProof = assertDecisions(payload, decisions.rows);
-  assertChangeSetLineage(sessionRows, statementRows, decisionProof.rows);
+  assertChangeSetLineage(
+    sessionRows,
+    statementRows,
+    decisionProof.rows,
+    contributionRows
+  );
   assertMessages({
     partyId,
     payload,
     sessions: sessionRows,
     statements: statementRows,
     decisions: decisionProof.rows,
+    contributions: contributionRows,
     rows: messages.rows
   });
   return decisionProof.traces;

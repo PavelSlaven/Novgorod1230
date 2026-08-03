@@ -1,3 +1,5 @@
+import { compareGameTimestamp } from '@rus/time-events-history';
+
 export function tracePhase3PreconditionSatisfied(
   precondition,
   state,
@@ -23,6 +25,9 @@ export function tracePhase3PreconditionSatisfied(
   if (precondition.kind === 'npc_policy_state') {
     return resolveEremeyPolicyState(state) === precondition.state;
   }
+  if (precondition.kind === 'no_current_temporal_boundary_candidates') {
+    return noCurrentTemporalBoundary(state);
+  }
   if (precondition.kind === 'approved_route_body_source_state') {
     const required = contracts.routeBodyEffect?.condition_outcomes;
     const current = new Set(
@@ -32,6 +37,12 @@ export function tracePhase3PreconditionSatisfied(
       && required.every(({ from }) => current.has(from));
   }
   return false;
+}
+
+function noCurrentTemporalBoundary(state) {
+  return Array.isArray(state.temporal_boundary_candidates)
+    && state.temporal_boundary_candidates.every(({ scheduled_at: scheduledAt }) =>
+      compareGameTimestamp(scheduledAt, state.clock) > 0);
 }
 
 export function resolveEremeyPolicyState(state) {

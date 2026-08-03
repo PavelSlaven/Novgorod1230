@@ -27,18 +27,21 @@ export function projectPhase4SemanticNegotiation({
     'surrender', 'lie', 'bargain', 'speech', 'silence',
     'leave_conversation', 'combat_handoff'
   ]);
-  const npcRef = semantic.decision_request?.npc_ref;
+  const hasDecision = semantic.decision_request !== null;
+  const npcRef = semantic.decision_request?.npc_ref ?? npcRefForContracts(contracts);
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['surrender', 'lie', 'bargain', 'speech']
     .includes(responseKind);
   const expectedContributionKind = speechResponse ? 'speech' : responseKind;
-  if (!validKinds.has(responseKind)
+  if ((hasDecision && !validKinds.has(responseKind))
+      || (!hasDecision && responseKind !== null)
       || npcRef?.entity_kind !== 'npc'
       || npcRef.entity_id
         !== contracts.actors?.ratsha_storehouse_helper?.instance_id
-      || semantic.decision_plan?.contribution_kind
-        !== expectedContributionKind
+      || (hasDecision && semantic.decision_plan?.contribution_kind
+        !== expectedContributionKind)
+      || (!hasDecision && semantic.decision_plan !== null)
       || !Array.isArray(negotiation.objective_fact_outputs)
       || negotiation.objective_fact_outputs.length !== 0
       || npcStatements.length !== (speechResponse ? 1 : 0)) {
@@ -110,6 +113,13 @@ export function projectPhase4SemanticNegotiation({
     next.player_response_boundary = null;
   }
   return next;
+}
+
+function npcRefForContracts(contracts) {
+  return {
+    entity_kind: 'npc',
+    entity_id: contracts.actors?.ratsha_storehouse_helper?.instance_id
+  };
 }
 
 function applySemanticSurrender({

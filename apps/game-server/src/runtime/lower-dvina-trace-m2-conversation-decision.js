@@ -120,14 +120,22 @@ function publicConversationHistory(context, currentMessage) {
         sameRef(listenerRef, context.targetRef))
       .map((message) => [message.source_statement_ref?.entity_id, message])
   );
-  const history = (context.state.conversation_statements ?? [])
+  const priorContributions = context.state.conversation_contributions
+    ?? context.state.conversation_statements
+    ?? [];
+  const history = priorContributions
     .filter(({ conversation_id: conversationId }) =>
       conversationId === context.conversationId)
-    .flatMap((statement) => {
-      if (sameRef(statement.speaker_ref, context.targetRef)) {
-        return [structuredClone(statement)];
+    .flatMap((contribution) => {
+      if (contribution.schema === 'conversation_non_statement_contribution_v1') {
+        return sameRef(contribution.speaker_ref, context.targetRef)
+          ? [structuredClone(contribution)]
+          : [];
       }
-      const received = receivedByTarget.get(statement.statement_id);
+      if (sameRef(contribution.speaker_ref, context.targetRef)) {
+        return [structuredClone(contribution)];
+      }
+      const received = receivedByTarget.get(contribution.statement_id);
       return received ? [structuredClone(received)] : [];
     });
   history.push(structuredClone(currentMessage));

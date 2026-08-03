@@ -16,6 +16,7 @@ import {
   text,
   uniqueRefs,
   validateAudiences,
+  validateContributions,
   validateConsumedSignalIds,
   validateSignalRecords,
   validateStatements
@@ -47,51 +48,68 @@ export function projectSemanticConversationSnapshot({
   const boundary = semanticExchange.decision_boundary;
   const request = semanticExchange.decision_request;
   const plan = semanticExchange.decision_plan;
+  const hasDecision = exchange?.npc_decisions?.length === 1;
+  const firstContribution = exchange?.contributions?.[0];
+  const exchangeIdentity = hasDecision ? request : {
+    conversation_id: firstContribution?.conversation_id,
+    exchange_id: firstContribution?.exchange_id
+  };
   if (!record(exchange)
       || exchange.schema !== 'conversation_exchange_result_v1'
       || !Array.isArray(exchange.contributions)
-      || exchange.contributions.length < 2
+      || exchange.contributions.length < 1
       || !Array.isArray(exchange.npc_decisions)
-      || exchange.npc_decisions.length !== 1
-      || !validateNpcDecisionBoundary(boundary)
-      || boundary.boundary_id !== request?.boundary_id
-      || boundary.npc_ref.entity_id !== request?.npc_ref?.entity_id
-      || boundary.state_version !== String(request?.state_version)
+      || exchange.npc_decisions.length > 1
       || !Array.isArray(semanticExchange.objective_truth_writes)
       || semanticExchange.objective_truth_writes.length !== 0
-      || exchange.npc_decisions[0]?.boundary?.boundary_id
-        !== boundary.boundary_id
-      || exchange.npc_decisions[0]?.request?.request_id
-        !== request?.request_id
-      || exchange.npc_decisions[0]?.proposal?.plan?.request_id
-        !== plan?.request_id) {
+      || (hasDecision && (!validateNpcDecisionBoundary(boundary)
+        || boundary.boundary_id !== request?.boundary_id
+        || boundary.npc_ref.entity_id !== request?.npc_ref?.entity_id
+        || boundary.state_version !== String(request?.state_version)
+        || exchange.npc_decisions[0]?.boundary?.boundary_id
+          !== boundary.boundary_id
+        || exchange.npc_decisions[0]?.request?.request_id
+          !== request?.request_id
+        || exchange.npc_decisions[0]?.proposal?.plan?.request_id
+          !== plan?.request_id))
+      || (!hasDecision && (boundary !== null || request !== null || plan !== null))) {
     fail(
       'TRACE_M2_SEMANTIC_EXCHANGE_INVALID',
-      'The committed semantic exchange must contain one exact NPC decision.'
+      'The committed semantic exchange has an invalid NPC decision cardinality.'
     );
   }
 
-  let trace;
-  try {
-    trace = buildNpcSemanticDecisionTrace({
-      request,
-      plan,
-      root_turn_id: rootTurnId,
-      working_revision: workingRevision,
-      applied_change_set_id: appliedChangeSetId
-    });
-  } catch (error) {
-    fail(
-      'TRACE_M2_SEMANTIC_TRACE_INVALID',
-      'The semantic decision trace lineage is incomplete.',
-      error
-    );
+  let trace = null;
+  if (hasDecision) {
+    try {
+      trace = buildNpcSemanticDecisionTrace({
+        request,
+        plan,
+        root_turn_id: rootTurnId,
+        working_revision: workingRevision,
+        applied_change_set_id: appliedChangeSetId
+      });
+    } catch (error) {
+      fail(
+        'TRACE_M2_SEMANTIC_TRACE_INVALID',
+        'The semantic decision trace lineage is incomplete.',
+        error
+      );
+    }
   }
 
-  const statements = validateStatements(semanticExchange.statements, request);
+  const statements = validateStatements(
+    semanticExchange.statements,
+    exchangeIdentity
+  );
   const audiences = validateAudiences(
     semanticExchange.audiences,
     statements
+  );
+  const contributions = validateContributions(
+    exchange.contributions,
+    statements,
+    exchangeIdentity
   );
   const signalRecords = validateSignalRecords(
     semanticExchange.new_signal_records
@@ -99,14 +117,18 @@ export function projectSemanticConversationSnapshot({
   const consumedSignalIds = validateConsumedSignalIds(
     semanticExchange.consumed_signal_ids
   );
-  requireBoundarySignalLineage({
-    state,
-    boundary,
-    signalRecords,
-    consumedSignalIds
-  });
+  if (hasDecision) {
+    requireBoundarySignalLineage({
+      state,
+      boundary,
+      signalRecords,
+      consumedSignalIds
+    });
+  } else if (signalRecords.length !== 0 || consumedSignalIds.length !== 0) {
+    fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
+  }
   const session = conversationSession({ state, exchange, statements,
-    audiences, request });
+    audiences, request: exchangeIdentity });
   const next = structuredClone(state);
   next.conversation_sessions = mergeMutableById(
     next.conversation_sessions,
@@ -118,6 +140,12 @@ export function projectSemanticConversationSnapshot({
     statements,
     ({ statement_id: id }) => id,
     'TRACE_M2_CONVERSATION_STATEMENT_CONFLICT'
+  );
+  next.conversation_contributions = mergeAppendOnly(
+    next.conversation_contributions,
+    contributions,
+    contributionIdentity,
+    'TRACE_M2_CONVERSATION_CONTRIBUTION_CONFLICT'
   );
   next.conversation_audiences = mergeAppendOnly(
     next.conversation_audiences,
@@ -143,13 +171,23 @@ export function projectSemanticConversationSnapshot({
     ...consumedSignalIds
   ])].sort(compareText);
   delete next.npc_semantic_decision_traces;
-  next.npc_semantic_decision_refs = mergeAppendOnly(
-    next.npc_semantic_decision_refs,
-    [semanticDecisionTraceReference(trace)],
-    ({ request_id: id }) => id,
-    'TRACE_M2_SEMANTIC_TRACE_CONFLICT'
-  );
+  if (trace !== null) {
+    next.npc_semantic_decision_refs = mergeAppendOnly(
+      next.npc_semantic_decision_refs,
+      [semanticDecisionTraceReference(trace)],
+      ({ request_id: id }) => id,
+      'TRACE_M2_SEMANTIC_TRACE_CONFLICT'
+    );
+  }
   return next;
+}
+
+function contributionIdentity(contribution) {
+  return contribution?.schema === 'conversation_statement_event_v1'
+    ? contribution.statement_id
+    : contribution?.schema === 'conversation_non_statement_contribution_v1'
+      ? contribution.contribution_id
+      : null;
 }
 
 function requireBoundarySignalLineage({
@@ -200,6 +238,9 @@ function conversationSession({ state, exchange, statements, audiences,
   const activeParticipantRefs = uniqueRefs([
     ...(existing?.active_participant_refs ?? []),
     ...statements.map(({ speaker_ref: speakerRef }) => speakerRef),
+    ...statements.flatMap(
+      ({ intended_addressee_refs: intendedRefs }) => intendedRefs
+    ),
     ...audiences.flatMap(
       ({ actual_listener_refs: listenerRefs }) => listenerRefs
     )

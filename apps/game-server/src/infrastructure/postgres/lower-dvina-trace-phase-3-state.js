@@ -159,7 +159,10 @@ function projectPhase3SemanticConversation({
   next, state, factual, conversation, turnNumber
 }) {
   const semantic = conversation.semantic_exchange;
-  const npcRef = semantic.decision_request?.npc_ref;
+  const npcRef = semantic.decision_request?.npc_ref ?? {
+    entity_kind: 'npc', entity_id: conversation.npc_id
+  };
+  const hasDecision = semantic.decision_request !== null;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
@@ -169,14 +172,16 @@ function projectPhase3SemanticConversation({
   if (npcRef?.entity_kind !== 'npc'
       || npcStatements.length !== (speechResponse ? 1 : 0)
       || conversation.npc_id !== npcRef.entity_id
-      || semantic.decision_plan?.contribution_kind
-        !== expectedContributionKind
+      || (hasDecision && semantic.decision_plan?.contribution_kind
+        !== expectedContributionKind)
+      || (!hasDecision && (semantic.response_kind !== null
+        || semantic.decision_plan !== null))
       || !Array.isArray(conversation.objective_fact_outputs)
       || conversation.objective_fact_outputs.length !== 0
-      || ![
+      || (hasDecision && ![
         'route_disclosure', 'withhold', 'speech', 'silence',
         'leave_conversation'
-      ].includes(semantic.response_kind)) {
+      ].includes(semantic.response_kind))) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
   const statement = npcStatements[0] ?? null;

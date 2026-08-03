@@ -100,7 +100,10 @@ export function phase3Writes(input) {
         sessionWrite: semanticInput.sessionWrite,
         semanticExchange: semanticInput.semanticExchange,
         signalRecords: semanticInput.signalRecords,
-        actualMessageEvidence: semanticInput.actualMessageEvidence
+        actualMessageEvidence: semanticInput.actualMessageEvidence,
+        partyStateVersion: semanticInput.partyStateVersion,
+        sameTimeBatchRef: semanticInput.sameTimeBatchRef,
+        contributions: semanticInput.contributions
       });
       appendPhase3SemanticConsequences({
         appends,

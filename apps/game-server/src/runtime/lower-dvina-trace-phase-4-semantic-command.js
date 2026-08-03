@@ -41,7 +41,7 @@ export function semanticNegotiationCommand({
     { kind: 'communication_admitted' },
     { kind: 'exact_promise_contract' },
     { kind: 'promise_state', allowed: ['not_offered', 'offered'] },
-    { kind: 'no_temporal_boundary_candidates' },
+    { kind: 'no_current_temporal_boundary_candidates' },
     { kind: 'no_player_response_boundary' }
   ];
   return createTracePhase4Command({
@@ -156,7 +156,7 @@ function semanticConsequence({ contracts, inputDigest, checkResult,
     schema: 'turn_consequence_package',
     status: 'resolved',
     activity_attempt_id: `attempt:${inputDigest.slice(0, 32)}`,
-    duration_minutes: 10,
+    duration_minutes: semanticExchange.exact_elapsed_minutes,
     phase4_kind: 'negotiation',
     negotiation: {
       activity_ref: contracts.negotiation.profile_id,
@@ -174,7 +174,7 @@ function semanticConsequence({ contracts, inputDigest, checkResult,
       player_response_boundary: semanticExchange.combat_handoff ?? null,
       activity_roots: [{
         activity_ref: contracts.negotiation.profile_id,
-        duration_minutes: 10
+        duration_minutes: semanticExchange.exact_elapsed_minutes
       }]
     },
     visible_seed: {},

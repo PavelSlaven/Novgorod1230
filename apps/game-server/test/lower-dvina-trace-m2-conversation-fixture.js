@@ -431,7 +431,7 @@ function npcSpeechPlan(request, {
     speaker_ref: request.npc_ref,
     contribution_kind: 'speech',
     primary_addressee_ref: playerRef,
-    intended_addressee_refs: [playerRef],
+    intended_addressee_refs: playerRef === null ? [] : [playerRef],
     affected_actor_refs: [],
     speech: speech({
       utteranceText,
@@ -570,7 +570,10 @@ export function projectPhase3Conversation({ state, contracts, result, inputDiges
           activity_ref: result.evidence_presentation
             ? contracts.evidenceTalk.profile_id
             : contracts.talk.profile_id,
-          npc_id: result.decision_request.npc_ref.entity_id,
+          npc_id: result.decision_request?.npc_ref.entity_id
+            ?? contracts.actors.find(
+              ({ ref: actorRef }) => actorRef === 'eremey_fisher'
+            ).instance_id,
           semantic_exchange: result,
           objective_fact_outputs: [],
           evidence_input_ref:

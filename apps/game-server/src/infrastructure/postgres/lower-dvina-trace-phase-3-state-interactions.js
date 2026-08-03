@@ -8,13 +8,17 @@ export function phase3SemanticInteractions({
   turnNumber
 }) {
   const evidencePresentation = semantic.evidence_presentation ?? null;
+  const hasDecision = semantic.decision_request !== null;
+  const firstContribution = semantic.exchange.contributions[0];
   const environmentSignals = semantic.new_signal_records.filter(
     ({ signal }) => signal.category === 'environment'
   );
   const presentedItem = evidencePresentation === null ? null
     : state.items?.find(({ item_id: itemId }) =>
         itemId === evidencePresentation.entity_ref?.entity_id) ?? null;
-  if ((evidencePresentation === null) !== (environmentSignals.length === 0)
+  if ((hasDecision && (evidencePresentation === null)
+        !== (environmentSignals.length === 0))
+      || (!hasDecision && environmentSignals.length !== 0)
       || (evidencePresentation !== null
         && (evidencePresentation.schema
             !== 'conversation_supporting_operation_event_v1'
@@ -22,9 +26,9 @@ export function phase3SemanticInteractions({
           || evidencePresentation.interaction_kind
             !== 'present_item_as_evidence'
           || evidencePresentation.conversation_id
-            !== semantic.decision_request.conversation_id
+            !== firstContribution.conversation_id
           || evidencePresentation.exchange_id
-            !== semantic.decision_request.exchange_id
+            !== firstContribution.exchange_id
           || evidencePresentation.evidence_ref
             !== conversation.evidence_input_ref
           || !sameRef(evidencePresentation.actor_ref, {
@@ -75,7 +79,9 @@ export function phase3SemanticInteractions({
         `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
       activity_ref: conversation.activity_ref,
       npc_id: npcRef.entity_id,
-      contribution_kind: semantic.decision_plan.contribution_kind,
+      contribution_kind: semantic.decision_plan?.contribution_kind
+        ?? lastContribution.contribution_kind
+        ?? 'speech',
       contribution_ref: contributionRef,
       statement_ref: statement?.statement_id ?? null,
       supporting_operation_event_ref:

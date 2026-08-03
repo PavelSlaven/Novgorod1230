@@ -68,6 +68,40 @@ export function appendStatementWrites(
     }));
   }
 }
+
+export function appendContributionWrites(
+  appends,
+  contributions,
+  session,
+  partyStateVersion,
+  partyId,
+  changeSetId
+) {
+  contributions.forEach((contribution, index) => {
+    const contributionId = contribution.schema
+      === 'conversation_statement_event_v1'
+      ? contribution.statement_id
+      : contribution.contribution_id;
+    appends.push(row(
+      'party_conversation_contributions',
+      contributionId,
+      {
+        contribution_id: contributionId,
+        party_id: partyId,
+        conversation_id: contribution.conversation_id,
+        exchange_id: contribution.exchange_id,
+        party_state_version: partyStateVersion,
+        session_state_version: session.state_version,
+        contribution_index: index + 1,
+        contribution_schema: contribution.schema,
+        contribution_payload: contribution,
+        change_set_id: changeSetId,
+        idempotency_key: `conversation-contribution:${contributionId}`,
+        canonical_digest: canonicalDigest(contribution)
+      }
+    ));
+  });
+}
 export function appendMessageWrites({
   inserts,
   appends,
@@ -78,8 +112,7 @@ export function appendMessageWrites({
   changeSetId,
   idempotencyRecordId,
   stateVersion,
-  conversationStateVersion,
-  sameTimeBatchRef
+  conversationStateVersion
 }) {
   for (const message of messages) {
     const perceptionId = message.perception_result_ref.entity_id;
@@ -87,12 +120,13 @@ export function appendMessageWrites({
     const statement = statementsById.get(message.source_statement_ref.entity_id);
     const eventId = `conversation-message-event:${perceptionId}`;
     const idempotencyKey = `${idempotencyRecordId}:conversation-message:${perceptionId}`;
+    const messageBatchRef = evidence.dependency_pins.same_time_batch_ref;
     const messageInput = {
       schema: 'conversation_received_message_persistence_input_v1',
       statement,
       received_message: message,
       evidence,
-      same_time_batch_ref: sameTimeBatchRef
+      same_time_batch_ref: messageBatchRef
     };
     inserts.push(row('party_temporal_events', eventId, {
       event_id: eventId,

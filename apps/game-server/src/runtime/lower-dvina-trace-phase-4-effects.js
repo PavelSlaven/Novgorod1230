@@ -8,6 +8,8 @@ import {
 import {
   buildTracePhase4M2ArrivalPayload
 } from './lower-dvina-trace-phase-4-arrival.js';
+import { projectConversationTemporalAdvance } from
+  './lower-dvina-trace-m2-conversation-time.js';
 
 export function createTracePhase4Consequence({ inputDigest, duration, kind, detail }) {
   return { version: 1, schema: 'turn_consequence_package', status: 'resolved',
@@ -143,6 +145,15 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
     if (input.consequence?.phase4_kind == null) return phase3Advance(input);
     const candidates = input.relevant_state.temporal_boundary_candidates;
     if (!Array.isArray(candidates)) fail('TRACE_PHASE_4_TEMPORAL_STATE_INVALID');
+    const semantic = input.consequence.negotiation?.semantic_exchange;
+    if (semantic != null) {
+      return projectConversationTemporalAdvance({
+        clockBefore: input.clock_before,
+        semanticExchange: semantic,
+        candidates,
+        roots: input.consequence.negotiation.activity_roots
+      });
+    }
     if (candidates.length > 0) {
       fail('TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING');
     }

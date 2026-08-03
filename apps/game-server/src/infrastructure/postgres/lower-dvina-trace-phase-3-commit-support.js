@@ -76,7 +76,8 @@ export function phase3SemanticCommitContext({
 
 export function expectedSemanticConversationSession(state, semanticExchange) {
   if (semanticExchange == null) return [];
-  const conversationId = semanticExchange.decision_request?.conversation_id;
+  const conversationId = semanticExchange.decision_request?.conversation_id
+    ?? semanticExchange.exchange?.contributions?.[0]?.conversation_id;
   const existing = (state.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === conversationId
   );

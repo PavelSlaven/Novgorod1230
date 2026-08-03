@@ -17,8 +17,15 @@ import {
   requiredRawText,
   sameTimeBatchKey
 } from './lower-dvina-trace-m2-conversation-shared.js';
-import { applyNpcPlan, applyPlayerPlan } from
+import {
+  applyNpcPlan,
+  applyPlayerPlan,
+  projectNpcPerception,
+  projectPlayerPerception
+} from
   './lower-dvina-trace-m2-conversation-statements.js';
+import { advanceConversationContributionTime } from
+  './lower-dvina-trace-m2-conversation-time.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -100,6 +107,10 @@ export async function executeM2ConversationExchange(context) {
   const playerRequest = buildPlayerRequest(context);
   const initialWorkingState = {
     state_version: context.stateVersion,
+    clock: structuredClone(context.state.clock),
+    world_state: structuredClone(context.state),
+    elapsed_minutes: 0,
+    temporal_boundary_refs: [],
     statements: [],
     audiences: [],
     new_signal_records: [],
@@ -118,7 +129,22 @@ export async function executeM2ConversationExchange(context) {
       : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
-      applyPlayerPlan(context, working, plan),
+      applyPlayerPlan(workingContext(context, working), working, plan),
+    advanceContributionTime: ({ working_state: working, plan }) =>
+      advanceConversationContributionTime(context, working, plan),
+    revalidateAfterContribution: async () => {
+      const current = await context.revalidateStateVersion();
+      if (current !== context.stateVersion) {
+        throw new Error('Conversation committed state changed during elapsed time.');
+      }
+      return true;
+    },
+    projectPlayerContributionPerception: ({
+      working_state: working,
+      contribution_event: contributionEvent
+    }) => projectPlayerPerception(
+      workingContext(context, working), working, contributionEvent
+    ),
     buildNpcResponseBatch: ({
       working_state: working,
       latest_contribution: latestContribution,
@@ -129,7 +155,17 @@ export async function executeM2ConversationExchange(context) {
             'player_character') {
         return { decisions: [], direct_addressee_refs: [] };
       }
-      decision = buildNpcDecision(context, working, latestContribution);
+      const targetReceived = working.audiences.at(-1)?.received_messages.some(
+        ({ listener_ref: listenerRef }) =>
+          listenerRef.entity_kind === context.targetRef.entity_kind
+          && listenerRef.entity_id === context.targetRef.entity_id
+      );
+      if (!targetReceived) {
+        return { decisions: [], direct_addressee_refs: [] };
+      }
+      decision = buildNpcDecision(
+        workingContext(context, working), working, latestContribution
+      );
       return {
         decisions: [decision],
         direct_addressee_refs: [context.targetRef]
@@ -145,30 +181,65 @@ export async function executeM2ConversationExchange(context) {
     }) => {
       npcOutcome = context.classifyNpcPlan(proposal.plan);
       return applyNpcPlan(
-        context,
+        workingContext(context, working),
         working,
         request,
         proposal,
         contributionIndex,
         npcOutcome
       );
-    }
+    },
+    projectNpcContributionPerception: ({
+      working_state: working,
+      contribution_event: contributionEvent
+    }) => projectNpcPerception(
+      workingContext(context, working),
+      working,
+      contributionEvent,
+      npcOutcome
+    )
   });
-  if (!decision || !npcOutcome || exchange.npc_decisions.length !== 1) {
+  if (exchange.npc_decisions.length > 1
+      || (exchange.npc_decisions.length === 1 && (!decision || !npcOutcome))
+      || (exchange.npc_decisions.length === 0 && (decision || npcOutcome))) {
     fail(
       'TRACE_M2_CONVERSATION_DECISION_CARDINALITY',
-      'Exactly one NPC boundary and semantic decision are required.'
+      'The exchange may contain at most one exact NPC semantic decision.'
     );
   }
   return {
     exchange,
-    decision: exchange.npc_decisions[0],
+    decision: exchange.npc_decisions[0] ?? null,
     statements: exchange.working_state.statements,
     audiences: exchange.working_state.audiences,
     newSignalRecords: exchange.working_state.new_signal_records,
     consumedSignalIds: exchange.working_state.consumed_signal_ids,
+    clockAfter: exchange.working_state.clock,
+    elapsedMinutes: exchange.working_state.elapsed_minutes,
+    temporalBoundaryRefs: exchange.temporal_boundary_refs,
     socialDeliveryResult: context.socialDeliveryResult,
     npcOutcome
+  };
+}
+
+function workingContext(context, working) {
+  const state = {
+    ...context.state,
+    ...structuredClone(working.world_state ?? {}),
+    clock: structuredClone(working.clock)
+  };
+  const stateActors = new Map((state.npcs ?? []).map(
+    (actor) => [actor.instance_id, actor]
+  ));
+  const actualNpcActors = context.actualNpcActors.map((actor) => ({
+    ...actor,
+    ...(stateActors.get(actor.instance_id) ?? {})
+  }));
+  return {
+    ...context,
+    state,
+    actualNpcActors,
+    batchKey: sameTimeBatchKey(state.party_id, state.clock)
   };
 }
 

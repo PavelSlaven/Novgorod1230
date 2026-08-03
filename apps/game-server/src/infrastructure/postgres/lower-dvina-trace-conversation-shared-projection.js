@@ -34,6 +34,28 @@ export function projectSharedSemanticConsequence(consequence) {
 export function projectSharedSemanticExchange(semanticExchange) {
   const request = semanticExchange?.decision_request;
   const boundary = semanticExchange?.decision_boundary;
+  const firstContribution = semanticExchange?.exchange?.contributions?.[0];
+  if (request === null && boundary === null
+      && semanticExchange?.decision_plan === null
+      && record(firstContribution)) {
+    return {
+      request_id: null,
+      boundary_id: null,
+      conversation_id: firstContribution.conversation_id,
+      exchange_id: firstContribution.exchange_id,
+      npc_ref: null,
+      response_kind: null,
+      statement_refs: (semanticExchange.statements ?? []).map(
+        ({ statement_id: statementId }) => ({
+          entity_kind: 'conversation_statement', entity_id: statementId
+        })
+      ),
+      route_disclosure: null,
+      commitment: structuredClone(semanticExchange.commitment ?? null),
+      surrender: null,
+      knife_transition_eligibility: null
+    };
+  }
   if (!record(request)
       || !record(boundary)
       || request.request_id !== semanticExchange?.decision_plan?.request_id

@@ -218,6 +218,9 @@ export function actualMessages(audiences, statementsById) {
         'source_statement_ref',
         'listener_ref',
         'perception_result_ref',
+        'perception_result',
+        'perceived_at',
+        'same_time_batch_ref',
         'comprehension',
         'speaker_ref',
         'utterance_text',
@@ -231,6 +234,9 @@ export function actualMessages(audiences, statementsById) {
           )
           || !entityRef(message.listener_ref)
           || !entityRef(message.perception_result_ref, 'perception_result')
+          || !entityRef(message.same_time_batch_ref, 'temporal_batch')
+          || !record(message.perceived_at)
+          || !ACTUAL_RESULTS.has(message.perception_result)
           || !['full', 'partial'].includes(message.comprehension)
           || !(message.speaker_ref === null || entityRef(message.speaker_ref))
           || !(message.utterance_text === null

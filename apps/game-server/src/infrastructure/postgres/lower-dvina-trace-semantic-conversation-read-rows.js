@@ -27,7 +27,8 @@ import {
   timestampMatches
 } from './lower-dvina-trace-semantic-conversation-read-shared.js';
 
-export function assertChangeSetLineage(sessions, statements, decisions) {
+export function assertChangeSetLineage(sessions, statements, decisions,
+  contributions = []) {
   const byExchange = new Map();
   const latestByConversation = new Map();
   for (const decision of decisions) {
@@ -48,6 +49,16 @@ export function assertChangeSetLineage(sessions, statements, decisions) {
         || (currentStateVersion === decisionStateVersion
           && currentWorkingRevision < decisionWorkingRevision)) {
       latestByConversation.set(request.conversation_id, decision);
+    }
+  }
+  for (const contribution of contributions) {
+    const exchangeKey = `${contribution.conversation_id}\u0000${
+      contribution.exchange_id}`;
+    if (!byExchange.has(exchangeKey)) byExchange.set(exchangeKey, contribution);
+    const current = latestByConversation.get(contribution.conversation_id);
+    if (!current || Number(current.session_state_version ?? -1)
+        < Number(contribution.session_state_version)) {
+      latestByConversation.set(contribution.conversation_id, contribution);
     }
   }
   if (statements.some((statement) =>
@@ -136,16 +147,9 @@ export function assertStatementsAndAudiences(payload, rows) {
         || canonicalDigest(audienceListenerKeys)
           !== canonicalDigest(messageListenerKeys)
         || audience.received_messages.some((message) =>
-          message.comprehension !== 'full'
-          || refKey(message.source_statement_ref)
+          refKey(message.source_statement_ref)
             !== refKey(audience.statement_ref)
-          || canonicalDigest(message.speaker_ref)
-            !== canonicalDigest(statement.speaker_ref)
-          || message.utterance_text !== statement.utterance_text
-          || canonicalDigest(message.claims)
-            !== canonicalDigest(
-              projectConversationReceivedClaims(statement.claims)
-            )
+          || !matchesPerceptionProjection(message, statement)
         )
         || row.audience_digest !== canonicalDigest(audience)) fail();
     actualStatements.push(statement);
@@ -161,6 +165,29 @@ export function assertStatementsAndAudiences(payload, rows) {
     fail();
   }
   return rows;
+}
+
+function matchesPerceptionProjection(message, statement) {
+  if (!['recognized', 'perceived_partial', 'perceived_unidentified',
+    'misinterpreted'].includes(message?.perception_result)) return false;
+  const full = message.comprehension === 'full';
+  const partial = message.comprehension === 'partial';
+  if (!full && !partial) return false;
+  if (message.utterance_text !== (full ? statement.utterance_text : null)) {
+    return false;
+  }
+  const speakerRecognized = canonicalDigest(message.speaker_ref)
+    === canonicalDigest(statement.speaker_ref);
+  if (message.perception_result === 'recognized'
+      && (!full || !speakerRecognized)) return false;
+  if (message.perception_result === 'perceived_partial' && !partial) return false;
+  if (['perceived_unidentified', 'misinterpreted']
+    .includes(message.perception_result)
+      && (message.speaker_ref !== null || !full)) return false;
+  const expectedClaims = full && message.perception_result !== 'misinterpreted'
+    ? projectConversationReceivedClaims(statement.claims)
+    : [];
+  return canonicalDigest(message.claims) === canonicalDigest(expectedClaims);
 }
 
 export function assertDecisions(payload, rows) {

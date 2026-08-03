@@ -24,30 +24,35 @@ export function applyPlayerPlan(context, working, plan) {
     contributionIndex: 1,
     socialDeliveryResult: context.socialDeliveryResult
   });
+  return applyResult({
+    working: {
+      ...working,
+      statements: [...working.statements, statement]
+    },
+    contributionEvent: statement,
+    playerResponseBoundary: false,
+    sessionStatus: 'active',
+    handoff: null
+  });
+}
+
+export function projectPlayerPerception(context, working, statement) {
   const audience = audienceForStatement(
-    context,
-    statement,
-    context.actualNpcActors,
-    []
+    context, statement, context.actualNpcActors, []
   );
   const targetMessage = audience.received_messages.find(
     ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
   );
-  if (!targetMessage) {
-    fail(
-      'TRACE_M2_CONVERSATION_TARGET_NOT_PERCEIVING',
-      'The target NPC must receive the committed player statement.'
-    );
-  }
-  const newSignalRecords = currentSignalRecords(
-    context,
-    statement,
-    targetMessage.perception_result_ref
-  );
+  const newSignalRecords = targetMessage
+    ? currentSignalRecords(
+        context,
+        statement,
+        targetMessage.perception_result_ref
+      )
+    : [];
   return applyResult({
     working: {
       ...working,
-      statements: [...working.statements, statement],
       audiences: [...working.audiences, audience],
       new_signal_records: [
         ...working.new_signal_records,
@@ -83,29 +88,11 @@ export function applyNpcPlan(
         socialDeliveryResult: null
       })
     : null;
-  const listenerActors = context.actualNpcActors.filter(
-    ({ instance_id: instanceId }) => instanceId !== context.targetRef.entity_id
-  );
-  const audience = statement
-    ? audienceForStatement(
-        context,
-        statement,
-        listenerActors,
-        [ref('player_character', context.state.actor_id)]
-      )
-    : null;
   if (statement) {
     npcOutcome.statementRef = ref(
       'conversation_statement',
       statement.statement_id
     );
-    npcOutcome.factualProjection = Object.freeze({
-      statement_ref: npcOutcome.statementRef,
-      utterance_text: statement.utterance_text,
-      claims: structuredClone(statement.claims),
-      actual_listener_refs: structuredClone(audience.actual_listener_refs),
-      objective_truth_write: 'forbidden'
-    });
   }
   const contributionEvent = statement ?? {
     schema: 'conversation_non_statement_contribution_v1',
@@ -123,9 +110,6 @@ export function applyNpcPlan(
       statements: statement
         ? [...working.statements, statement]
         : working.statements,
-      audiences: audience
-        ? [...working.audiences, audience]
-        : working.audiences,
       consumed_signal_ids: [
         ...working.consumed_signal_ids,
         ...proposal.signal_ids_to_consume
@@ -139,6 +123,54 @@ export function applyNpcPlan(
         ? 'ended'
         : 'active',
     handoff
+  });
+}
+
+export function projectNpcPerception(
+  context,
+  working,
+  contributionEvent,
+  npcOutcome
+) {
+  if (contributionEvent.schema !== 'conversation_statement_event_v1') {
+    return applyResult({
+      working,
+      contributionEvent,
+      playerResponseBoundary: ['speech', 'silence'].includes(
+        contributionEvent.contribution_kind
+      ),
+      sessionStatus: contributionEvent.handoff
+        ? 'suspended'
+        : contributionEvent.contribution_kind === 'leave_conversation'
+          ? 'ended' : 'active',
+      handoff: contributionEvent.handoff
+    });
+  }
+  const listenerActors = context.actualNpcActors.filter(
+    ({ instance_id: instanceId }) => instanceId !== context.targetRef.entity_id
+  );
+  const audience = audienceForStatement(
+    context,
+    contributionEvent,
+    listenerActors,
+    [ref('player_character', context.state.actor_id)]
+  );
+  npcOutcome.factualProjection = Object.freeze({
+    statement_ref: npcOutcome.statementRef,
+    utterance_text: contributionEvent.utterance_text,
+    claims: structuredClone(contributionEvent.claims),
+    actual_listener_refs: structuredClone(audience.actual_listener_refs),
+    objective_truth_write: 'forbidden'
+  });
+  return applyResult({
+    working: {
+      ...working,
+      audiences: [...working.audiences, audience]
+    },
+    contributionEvent,
+    playerResponseBoundary: true,
+    sessionStatus: 'active',
+    handoff: null
   });
 }
 
@@ -216,7 +248,7 @@ function audienceForStatement(
         : speakerActor?.anchor_id;
       const machine = actor?.machine_state ?? {};
       const semantic = actor?.semantic_state ?? {};
-      return resolveConversationListenerPerception({
+      const perception = resolveConversationListenerPerception({
         listener_ref: listenerRef,
         perception_result_ref: ref(
           'perception_result',
@@ -236,6 +268,11 @@ function audienceForStatement(
         speaker_recognition: semantic.speaker_recognition ?? 'recognized',
         witness_policy_allows: witnessIds.has(listenerRef.entity_id)
       });
+      return {
+        ...perception,
+        perceived_at: structuredClone(context.state.clock),
+        same_time_batch_ref: ref('temporal_batch', context.batchKey)
+      };
     })
   });
 }

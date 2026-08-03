@@ -49,6 +49,12 @@ test('actual listeners come from perception, not intended audience, and an ordin
     listener_results: [{
       listener_ref: ordinaryWitness,
       perception_result_ref: ref('perception_result', 'perception-witness'),
+      perceived_at: {
+        whole_minutes: '10',
+        subminute_numerator: '0',
+        subminute_denominator: '1'
+      },
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
       perception_result: 'recognized',
       comprehension: 'full',
       speaker_recognized: true,

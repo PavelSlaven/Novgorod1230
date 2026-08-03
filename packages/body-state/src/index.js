@@ -57,6 +57,8 @@ export function applyBodyStateChange(state = {}, change = {}) {
   return deepFreeze(next);
 }
 
+export { applyApprovedFixedBodyEffect } from './fixed-approved-effect.js';
+
 export function stateModifier(state = {}, relevantMetrics = BODY_METRICS) {
   const normalized = normalizeBodyState(state);
   let modifier = 0;

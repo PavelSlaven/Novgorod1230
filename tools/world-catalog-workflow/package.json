@@ -6,5 +6,8 @@
   "bin": {
     "rus-world-catalog": "src/cli.js"
   },
-  "exports": "./src/index.js"
+  "exports": "./src/index.js",
+  "dependencies": {
+    "@rus/items-property": "0.13.0"
+  }
 }

@@ -1,3 +1,4 @@
+import { sha256 } from '@rus/kernel';
 import {
   AVAILABILITY_STATUSES,
   TURN_ALLOWED_CHECKS,
@@ -8,10 +9,19 @@ import {
   TURN_PRIMARY_MODES,
   TURN_STATUSES
 } from './contracts.js';
+import {
+  validateTurnStepCommitChecks,
+  validateTurnStepLoopTrace
+} from './turn-step-commit-validator.js';
 
 export function validatePlayerTurnInput(value) {
   const errors = [];
   if (!plain(value)) return fail('player turn input must be an object');
+  exactKeys(errors, value, [
+    'version', 'schema', 'party_id', 'turn_number', 'request_id',
+    'idempotency_key', 'raw_text', 'selected_action_option_id',
+    'input_source', 'received_at', 'interpretation_status', 'contract'
+  ], 'player_input');
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.raw_text, 'raw_text');
   requiredText(errors, value.request_id, 'request_id');
@@ -87,7 +97,7 @@ export function validateTurnWritePlan(value) {
   const errors = [];
   if (!plain(value)) return fail('turn write plan must be an object');
   if (value.schema !== 'party_turn_write_plan' || value.version !== 2 || value.sealed_by !== 'turn_code_planner_v2') errors.push('write plan must be sealed party_turn_write_plan v2');
-  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','first_entry_materialization','destination_position']);
+  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','turn_step_commit','first_entry_materialization','destination_position']);
   for (const key of Object.keys(value)) if (!allowedKeys.has(key)) errors.push(`write plan field is forbidden: ${key}`);
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.turn_id, 'turn_id');
@@ -96,13 +106,133 @@ export function validateTurnWritePlan(value) {
     if (!plain(target)) errors.push('write target must be an object');
     else {
       if (Object.keys(target).some((key) => !['target','value'].includes(key))) errors.push('write target contains forbidden fields');
-      if (!TURN_ALLOWED_WRITE_TARGETS.includes(text(target.target))) errors.push(`invalid write target: ${text(target.target) || '<empty>'}`);
+      if (typeof target.target !== 'string'
+          || target.target.trim() !== target.target
+          || !TURN_ALLOWED_WRITE_TARGETS.includes(target.target)) {
+        errors.push('invalid write target: exact primitive string required');
+      }
     }
   }
   if (value.first_entry_materialization != null) {
     if (!plain(value.first_entry_materialization)) errors.push('first_entry_materialization must be an object');
     else requiredText(errors, value.first_entry_materialization.g4_id, 'first_entry_materialization.g4_id');
     if (!plain(value.destination_position)) errors.push('destination_position must be an object for first-entry materialization');
+  }
+  const semanticTargets = (Array.isArray(value.write_targets)
+    ? value.write_targets : []).filter(({ target } = {}) =>
+    ['party_turn_step_operations', 'party_player_visible_message']
+      .includes(target));
+  if (value.turn_step_commit != null) {
+    errors.push(...validateTurnStepCommitEnvelope(value.turn_step_commit, {
+      party_id: value.party_id,
+      turn_id: value.turn_id,
+      base_state_version: value.base_state_version,
+      command_trace: value.command_trace,
+      write_targets: value.write_targets
+    }).errors.map((error) => `turn_step_commit.${error}`));
+  } else if (semanticTargets.length > 0) {
+    errors.push('turn_step_commit is required for semantic persistence');
+  }
+  return result(errors);
+}
+
+export function validateTurnStepCommitEnvelope(value, binding = null) {
+  const errors = [];
+  if (!plain(value)) return fail('must be an object');
+  exactKeys(errors, value, [
+    'version', 'schema', 'party_id', 'root_turn_id', 'base_state_version',
+    'player_input', 'mode_resolution', 'checks', 'consequence',
+    'time_update', 'body_update', 'hidden_update', 'visible_context',
+    'loop_trace'
+  ], 'envelope');
+  if (value.version !== 1
+      || value.schema !== 'turn_step_commit_envelope_v1') {
+    errors.push('must be turn_step_commit_envelope_v1 version 1');
+  }
+  requiredText(errors, value.party_id, 'party_id');
+  requiredText(errors, value.root_turn_id, 'root_turn_id');
+  if (!Number.isSafeInteger(value.base_state_version)
+      || value.base_state_version < 0) {
+    errors.push('base_state_version must be a non-negative safe integer');
+  }
+  if (!strictJson(value)) {
+    errors.push('must contain only detached strict JSON data');
+  }
+  if (!plain(value.player_input)
+      || !validatePlayerTurnInput(value.player_input).ok) {
+    errors.push('player_input must be a valid player_turn_input');
+  }
+  if (!plain(value.mode_resolution)
+      || !validateTurnModeResolution(value.mode_resolution).ok) {
+    errors.push('mode_resolution must be a valid turn_mode_resolution');
+  }
+  if (!plain(value.checks) || value.checks.schema !== 'turn_check_results'
+      || !Array.isArray(value.checks.requests)
+      || !Array.isArray(value.checks.results)) {
+    errors.push('checks must be a turn_check_results object');
+  } else {
+    validateTurnStepCommitChecks(errors, value.checks);
+  }
+  if (!validateConsequencePackage(value.consequence).ok) {
+    errors.push('consequence must be a valid turn_consequence_package');
+  }
+  if (!plain(value.time_update)
+      || value.time_update.schema !== 'turn_time_update') {
+    errors.push('time_update must be a turn_time_update object');
+  }
+  if (!plain(value.body_update)
+      || value.body_update.schema !== 'turn_body_update'
+      || typeof value.body_update.applied !== 'boolean') {
+    errors.push('body_update must be a turn_body_update object');
+  }
+  if (!plain(value.hidden_update)
+      || value.hidden_update.schema !== 'turn_hidden_update'
+      || !plain(value.hidden_update.approved_update)) {
+    errors.push('hidden_update must be a turn_hidden_update object');
+  }
+  if (!plain(value.visible_context)
+      || value.visible_context.schema !== 'visible_context_package') {
+    errors.push('visible_context must be a visible_context_package');
+  }
+  validateTurnStepLoopTrace(errors, value.loop_trace, value);
+  if (value.player_input?.party_id !== value.party_id
+      || value.mode_resolution?.turn_id !== value.root_turn_id
+      || value.loop_trace?.root_turn_id !== value.root_turn_id
+      || value.loop_trace?.request_id
+        !== value.player_input?.request_id
+      || value.root_turn_id
+        !== `turn:${value.party_id}:${value.player_input?.turn_number}`
+      || value.loop_trace?.committed_state_version
+        !== value.base_state_version
+      || value.mode_resolution?.decision_trace?.state_version
+        !== value.base_state_version) {
+    errors.push('root identities and committed state version must cross-bind');
+  }
+  if (binding && (binding.party_id !== value.party_id
+      || binding.turn_id !== value.root_turn_id
+      || binding.base_state_version !== value.base_state_version
+      || !sameJson(binding.command_trace,
+        value.mode_resolution?.decision_trace))) {
+    errors.push('write plan identity and decision trace must cross-bind');
+  }
+  if (binding) {
+    const clarification = value.loop_trace?.clarification;
+    const message = binding.write_targets?.filter(({ target } = {}) =>
+      target === 'party_player_visible_message') ?? [];
+    if ((clarification == null) !== (message.length === 0)
+        || message.length > 1
+        || (message.length === 1
+          && !sameJson(message[0].value?.clarification, clarification))) {
+      errors.push('clarification must cross-bind to one player-visible message');
+    }
+    const batch = binding.write_targets?.filter(({ target } = {}) =>
+      target === 'party_turn_step_operations') ?? [];
+    if (clarification != null && batch.length === 0
+        && (Number(value.consequence?.duration_minutes) !== 0
+          || value.body_update?.applied !== false
+          || value.checks?.results?.length !== 0)) {
+      errors.push('pure clarification must have zero duration, body, and checks');
+    }
   }
   return result(errors);
 }
@@ -137,4 +267,46 @@ function enumValue(errors, value, allowed, label) { if (!allowed.includes(text(v
 function enumArray(errors, value, allowed, label) {
   if (!Array.isArray(value)) { errors.push(`${label} must be an array`); return; }
   for (const item of value) if (!allowed.includes(text(item))) { errors.push(`${label} contains invalid value`); return; }
+}
+
+function exactKeys(errors, value, keys, label) {
+  const expected = [...keys].sort();
+  const actual = Object.keys(value).sort();
+  if (expected.length !== actual.length
+      || expected.some((key, index) => key !== actual[index])) {
+    errors.push(`${label} must contain exact fields`);
+  }
+}
+
+function sameJson(left, right) {
+  try {
+    return sha256(left) === sha256(right);
+  } catch {
+    return false;
+  }
+}
+
+function strictJson(value, ancestors = new Set()) {
+  if (value === null || typeof value === 'string'
+      || typeof value === 'boolean') return true;
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (typeof value !== 'object' || ancestors.has(value)) return false;
+  if (!Array.isArray(value)
+      && Object.getPrototypeOf(value) !== Object.prototype) return false;
+  ancestors.add(value);
+  const keys = Reflect.ownKeys(value);
+  const valid = keys.every((key) => {
+    if (typeof key !== 'string' || (Array.isArray(value) && key === 'length')) {
+      return Array.isArray(value) && key === 'length';
+    }
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    return descriptor?.enumerable === true
+      && Object.hasOwn(descriptor, 'value')
+      && strictJson(descriptor.value, ancestors);
+  });
+  const dense = !Array.isArray(value)
+    || (keys.length === value.length + 1
+      && value.every((_entry, index) => Object.hasOwn(value, index)));
+  ancestors.delete(value);
+  return valid && dense;
 }

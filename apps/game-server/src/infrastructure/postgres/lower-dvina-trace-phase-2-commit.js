@@ -10,9 +10,8 @@ import {
   mergePhase2Knowledge
 } from './lower-dvina-trace-phase-2-read.js';
 import {
-  phase2ScreenDigest,
-  phase2VisibleContextFromPayload
-} from './lower-dvina-trace-phase-2-projection.js';
+  buildLowerDvinaTracePendingScreen
+} from './lower-dvina-trace-turn-presentation.js';
 import {
   buildPhase2Snapshot,
   commitPhase2BodyState
@@ -32,6 +31,16 @@ import {
 } from './lower-dvina-trace-phase-4-commit.js';
 import { commitLowerDvinaTracePhase5 } from './lower-dvina-trace-phase-5-commit.js';
 import { commitLowerDvinaTracePhase6 } from './lower-dvina-trace-phase-6-commit.js';
+import {
+  mergeLowerDvinaTraceTurnStepWrites,
+  prepareLowerDvinaTraceTurnStepPersistence
+} from './lower-dvina-trace-turn-step-persistence.js';
+import {
+  routeLowerDvinaTraceTurnStepCommit
+} from './lower-dvina-trace-turn-step-route.js';
+import {
+  bindLowerDvinaTraceTurnStepIdempotency
+} from './lower-dvina-trace-turn-step-idempotency.js';
 export async function commitLowerDvinaTracePhase2({
   partyId,
   writePlan,
@@ -40,11 +49,15 @@ export async function commitLowerDvinaTracePhase2({
   phase3Contracts,
   phase4Contracts,
   phase5Contracts, phase6Contracts,
+  turnStepApprovedOwners,
   loadState,
   committer
 }) {
-  const factual = writePlan.write_targets
-    .find(({ target }) => target === 'party_state')?.value;
+  const routed = await routeLowerDvinaTraceTurnStepCommit({
+    partyId, writePlan, inputDigest, contracts, loadState, committer
+  });
+  if (routed.handled) return routed.result;
+  const factual = routed.factual;
   if (factual?.consequence?.phase6_kind) return commitLowerDvinaTracePhase6({ partyId, writePlan, inputDigest, phase6Contracts, loadState, committer });
   if (factual?.consequence?.phase5_kind) {
     return commitLowerDvinaTracePhase5({
@@ -57,6 +70,7 @@ export async function commitLowerDvinaTracePhase2({
       writePlan,
       inputDigest,
       phase3Contracts,
+      turnStepApprovedOwners,
       loadState,
       committer
     });
@@ -102,21 +116,28 @@ export async function commitLowerDvinaTracePhase2({
     partyId, turnNumber, nextVersion, changeSetId, idemId,
     context: visibleContext, contracts
   });
-  const snapshot = buildPhase2Snapshot({
+  const baseSnapshot = buildPhase2Snapshot({
     state, factual, nextVersion, turnNumber, nextItems,
     nextKnowledge, nextBodyState, visibleEnvelope, changeSetId, inputDigest
   });
-  const pendingScreen = buildPendingScreen({
-    state, factual, nextVersion, turnNumber, visibleEnvelope
+  const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId, writePlan, state, snapshot: baseSnapshot, factual,
+    changeSetId, idemId, phase3Contracts, turnStepApprovedOwners
   });
-  const writes = buildPhase2Writes({
+  const snapshot = turnStep.snapshot;
+  const pendingScreen = buildLowerDvinaTracePendingScreen({
+    state, turnId: factual.mode_resolution.turn_id,
+    nextVersion, turnNumber, visibleEnvelope
+  });
+  const writes = mergeLowerDvinaTraceTurnStepWrites(buildPhase2Writes({
     partyId, state, snapshot, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, clue, inputDigest,
     nextBodyState
-  });
+  }), turnStep.writes);
   const built = await buildP16Plan({
     partyId, state, factual, visibleEnvelope, writes, nextVersion,
-    turnNumber, changeSetId, idemId, inputDigest, contracts
+    turnNumber, changeSetId, idemId, inputDigest, contracts,
+    turnStepCommit: writePlan.turn_step_commit
   });
   const committed = await committer.commit({
     plan: built.plan,
@@ -140,36 +161,10 @@ export async function commitLowerDvinaTracePhase2({
   };
 }
 
-function buildPendingScreen({
-  state, factual, nextVersion, turnNumber, visibleEnvelope
-}) {
-  const screen = {
-    version: 1,
-    schema: 'lower_dvina_trace_turn_screen',
-    scenario_id: 'lower_dvina_trace_v1',
-    party_id: state.party_id,
-    turn_id: factual.mode_resolution.turn_id,
-    turn_number: turnNumber,
-    screen_status: 'committed_presentation_pending',
-    opening_screen_digest:
-      state.opening_identity.opening_screen_digest,
-    current_projection_anchor: {
-      committed_state_version: nextVersion,
-      package_id: visibleEnvelope.package_id,
-      package_digest: visibleEnvelope.package_digest,
-      narration_output_digest: null
-    },
-    visible_context:
-      phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
-    main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
-  };
-  screen.screen_digest = phase2ScreenDigest(screen);
-  return screen;
-}
 async function buildP16Plan(input) {
   const {
     partyId, state, factual, visibleEnvelope, writes, turnNumber,
-    changeSetId, idemId, inputDigest, contracts
+    changeSetId, idemId, inputDigest, contracts, turnStepCommit
   } = input;
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
@@ -201,22 +196,25 @@ async function buildP16Plan(input) {
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      semantic_command_snapshot: {
-        schema: 'rus.lower_dvina_trace_phase_2_command_snapshot.v1',
-        input_digest: inputDigest,
-        raw_text: factual.player_input.raw_text,
-        action_set_digest:
-          factual.mode_resolution.decision_trace.action_set_digest,
-        selected_option_id: factual.mode_resolution.option_id,
-        semantic_trace: factual.mode_resolution.decision_trace
-      },
-      semantic_command_digest: normalizeDigest(canonicalDigest({
-        input_digest: inputDigest,
-        selected_option_id: factual.mode_resolution.option_id
-      })),
-      semantic_dependency_pins: {
-        activity: contracts.activityPin
-      },
+      ...bindLowerDvinaTraceTurnStepIdempotency({
+        envelope: turnStepCommit,
+        inputDigest,
+        semanticCommandSnapshot: {
+          schema: 'rus.lower_dvina_trace_phase_2_command_snapshot.v1',
+          input_digest: inputDigest,
+          raw_text: factual.player_input.raw_text,
+          action_set_digest:
+            factual.mode_resolution.decision_trace.action_set_digest,
+          selected_option_id: factual.mode_resolution.option_id,
+          semantic_trace: factual.mode_resolution.decision_trace
+        },
+        semanticCommandDigest: normalizeDigest(canonicalDigest({
+          input_digest: inputDigest,
+          selected_option_id: factual.mode_resolution.option_id
+        })),
+        semanticDependencyPins: { activity: contracts.activityPin },
+        visibleDependencyPins: visibleEnvelope.dependency_pins
+      }),
       request_id: factual.player_input.request_id
     },
     change_set: { id: changeSetId },

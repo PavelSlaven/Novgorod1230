@@ -78,6 +78,7 @@ export const TURN_ALLOWED_WRITE_TARGETS = deepFreeze([
   'party_npcs',
   'party_items',
   'party_containers',
+  'party_turn_step_operations',
   'party_narrator_output',
   'party_player_visible_message'
 ]);

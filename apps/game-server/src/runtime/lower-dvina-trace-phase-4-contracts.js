@@ -15,8 +15,8 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
 });
 
 export function resolveTracePhase4Contracts({ state, bundle }) {
-  if (![10, 11, 12].includes(bundle.definition_revision)
-      || ![10, 11, 12].includes(bundle.definition?.revision)) {
+  if (![10, 11, 12, 13].includes(bundle.definition_revision)
+      || ![10, 11, 12, 13].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_4_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_4_IDS;
@@ -90,7 +90,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   );
   if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
   const fisher = fishers[0];
-  const phase5Enabled = [11, 12].includes(bundle.definition_revision);
+  const phase5Enabled = [11, 12, 13].includes(bundle.definition_revision);
   const resourceArrivalBinding = phase5Enabled
     ? bundle.materialization_bindings?.phase_5_initial_state_binding
       ?.phase_5_resource_arrival_binding
@@ -110,7 +110,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )])) : null;
-  if (bundle.definition_revision === 12) {
+  if ([12, 13].includes(bundle.definition_revision)) {
     resourceInventoryProfiles.water = exact(
       bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
@@ -215,7 +215,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
           && profile.external_hand_cost === 1
           && profile.status === 'approved';
       }))
-      || (bundle.definition_revision === 12
+      || ([12, 13].includes(bundle.definition_revision)
         && (resourceInventoryProfiles.water.item_template_ref
           !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
           || resourceInventoryProfiles.water.mass_grams !== 100

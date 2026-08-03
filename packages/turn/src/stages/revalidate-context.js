@@ -1,5 +1,6 @@
 import { createTurnAvailableActionSet } from '../command-registry.js';
 import { freezeOutput } from './shared.js';
+import { getTurnStepWorkflowDraft } from '../turn-step-workflow-draft.js';
 
 export async function revalidateTurnContextStage({
   playerInput,
@@ -7,17 +8,31 @@ export async function revalidateTurnContextStage({
   routingContext = {},
   actionSet,
   commandRegistry,
-  stateReader
+  stateReader,
+  finalCommit = false
 }) {
   const state = await stateReader.read({
     party_id: playerInput.party_id,
     turn_number: playerInput.turn_number,
     requested_blocks: structuredClone(commandRegistry.stateBlocks()),
     routing_context: structuredClone(routingContext),
-    revalidation: true
+    revalidation: true,
+    ...(finalCommit ? { final_commit: true } : {})
   });
   if (!state || typeof state !== 'object' || Array.isArray(state)) {
     throw new TypeError('stateReader.read must return an object');
+  }
+  const draft = getTurnStepWorkflowDraft(modeResolution);
+  if (draft && Number(state.party_state?.state_version
+      ?? state.state_version) !== draft.base_state_version) {
+    throw staleError();
+  }
+  if (draft && draft.selected_command_id == null) {
+    return freezeOutput({
+      version: 1,
+      schema: 'revalidated_turn_state',
+      ...state
+    });
   }
   let refreshed;
   try {

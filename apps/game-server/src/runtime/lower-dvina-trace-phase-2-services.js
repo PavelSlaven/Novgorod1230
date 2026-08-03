@@ -17,11 +17,27 @@ import {
   tracePhase6PreconditionSatisfied
 } from './lower-dvina-trace-phase-6-carry.js';
 import { createTracePhase6BodyEffect, createTracePhase6TemporalAdvance, createTracePhase6VisibleProjector } from './lower-dvina-trace-phase-6-effects.js';
+import { createLowerDvinaTraceTurnStepRuntimePorts } from
+  './lower-dvina-trace-turn-step-runtime-ports.js';
+import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
+  './lower-dvina-trace-player-safe-working.js';
+import { createCommittedItemMechanicsResolver } from
+  './lower-dvina-trace-committed-inventory.js';
+import {
+  createLowerDvinaTraceCompositeBodyEffect,
+  createLowerDvinaTraceTurnStepVisibleProjector
+} from
+  './lower-dvina-trace-turn-step-generic-owners.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
+    turnStepModel, playerSafeStateProjector,
+    turnStepBodyEventOwner, turnStepSemanticActivityOwner,
+    turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
+    turnStepOrdinaryResultPolicy, turnStepApprovedOwners,
+    turnStepPackingCalculator,
     narrator, randomSourceFactory, decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts
   } = context;
@@ -39,6 +55,50 @@ export function buildLowerDvinaTracePhase2Services(context) {
       { status: 409 }
     );
   }
+  const workingProjectionAuthority =
+    createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const temporalAdvance = createTracePhase6TemporalAdvance({
+    fallback: createTracePhase5TemporalAdvance({
+      phase4Advance: createTracePhase4TemporalAdvance({
+        phase3Advance: createTracePhase3TemporalAdvance({
+          phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+        })
+      })
+    })
+  });
+  const bodyEffect = createLowerDvinaTraceCompositeBodyEffect({
+    genericBodyEffect: turnStepGenericBodyEffect,
+    fallback: createTracePhase6BodyEffect({
+      fallback: createTracePhase5BodyEffect({
+        phase2BodyEffect: createTraceRouteBodyEffect({
+          phase2BodyEffect: createTracePhase2BodyEffect({ contracts }),
+          phase3Contracts,
+          phase4Contracts
+        }),
+        contracts: phase5Contracts
+      }),
+      contracts: phase6Contracts
+    })
+  });
+  const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
+    bodyEffect,
+    bodyEventOwner: turnStepBodyEventOwner,
+    committedState: state,
+    genericCheckContextOwner: turnStepGenericCheckContextOwner,
+    ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
+    resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
+      packingCalculator: turnStepPackingCalculator
+    }),
+    semanticActivityOwner: turnStepSemanticActivityOwner,
+    temporalAdvance,
+    workingProjectionAuthority
+  });
+  const turnStepPlayerSafeStateProjector = playerSafeStateProjector
+    ? (input) => playerSafeStateProjector({
+        ...input,
+        working_projection_authority: workingProjectionAuthority
+      })
+    : null;
   return {
     commandRegistry: registry,
     stateReader: {
@@ -51,6 +111,20 @@ export function buildLowerDvinaTracePhase2Services(context) {
       }
     },
     semanticResolver,
+    ...(turnStepModel ? { turnStepModel } : {}),
+    ...(turnStepPlayerSafeStateProjector ? {
+      playerSafeStateProjector: turnStepPlayerSafeStateProjector
+    } : {}),
+    turnStepExecutionRegistry: turnStepPorts.executionRegistry,
+    turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
+    ...(turnStepPorts.preparedDomainEffect ? {
+      turnStepPreparedDomainEffect: turnStepPorts.preparedDomainEffect,
+      turnStepPreparedEffectContext: turnStepPorts.preparedEffectContext,
+      turnStepPreparedEffectTimeOwner: turnStepPorts.preparedEffectTimeOwner,
+      turnStepPreparedEffectBodyOwner: turnStepPorts.preparedEffectBodyOwner,
+      turnStepPreparedEffectProjectionOwner:
+        turnStepPorts.preparedEffectProjectionOwner
+    } : {}),
     decisionSecret,
     decisionNow: context.decisionNow,
     decisionExpiresAt: addMinutes(issuedAt, 5),
@@ -67,34 +141,24 @@ export function buildLowerDvinaTracePhase2Services(context) {
         ));
     },
     randomSource,
-    temporalAdvance: createTracePhase6TemporalAdvance({ fallback: createTracePhase5TemporalAdvance({
-      phase4Advance: createTracePhase4TemporalAdvance({
-        phase3Advance: createTracePhase3TemporalAdvance({
-          phase2Advance: createTracePhase2TemporalAdvance({ contracts })
-        })
-      })
-    }) }),
-    bodyEffect: createTracePhase6BodyEffect({ fallback: createTracePhase5BodyEffect({
-      phase2BodyEffect: createTraceRouteBodyEffect({
-        phase2BodyEffect: createTracePhase2BodyEffect({ contracts }),
-        phase3Contracts,
-        phase4Contracts
-      }),
-      contracts: phase5Contracts
-    }), contracts: phase6Contracts }),
-    visibleProjector: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
+    temporalAdvance,
+    bodyEffect,
+    visibleProjector: createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
       phase4Projector: createTracePhase4VisibleProjector({
         phase3Projector: createTracePhase3VisibleProjector({
           phase2Projector: createTracePhase2VisibleProjector({ contracts }),
           contracts: phase3Contracts
         })
       })
-    }) }),
+    }) })
+    }),
     partyStore: {
       commit(writePlan) {
         return repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
-          phase4Contracts, phase5Contracts, phase6Contracts
+          phase4Contracts, phase5Contracts, phase6Contracts,
+          turnStepApprovedOwners
         });
       }
     },

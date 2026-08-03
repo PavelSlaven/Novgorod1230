@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "daef8b52f39d202c7f418992c5fb372ee71a281e5005426042c70daa45ba33b1",
+  "baseline_manifest_sha256": "96e92aa475eb5a619cbbdaddf1f1bfd0d8698dd43647d0c52a09489e9cea50fb",
   "default_statuses": [
     "active"
   ],
@@ -854,6 +854,188 @@
       ],
       "conflicts_with_document_ids": [],
       "semantic_coverage_disposition": "covered"
+    },
+    {
+      "document_id": "npc-autonomous-decision-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "npc",
+        "turn",
+        "temporal",
+        "llm"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates",
+        "llm-documentation-navigation",
+        "turn-step-llm-contract",
+        "npc-conversation-mode-contract",
+        "npc-combat-and-trigger-contract"
+      ],
+      "related_module_paths": [
+        "packages/npc-runtime",
+        "packages/turn",
+        "packages/visibility-knowledge-memory"
+      ],
+      "related_contracts": [
+        "npc_step_plan_v1",
+        "npc_decision_signal_v1",
+        "npc_decision_boundary_v1"
+      ],
+      "search_terms": [
+        "autonomous NPC",
+        "npc semantic decision",
+        "npc step plan",
+        "decision signal",
+        "decision boundary",
+        "same-time batch aggregation"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "npc-combat-and-trigger-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "combat",
+        "npc",
+        "turn",
+        "temporal",
+        "llm"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "combat-system",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates",
+        "llm-documentation-navigation",
+        "turn-step-llm-contract",
+        "npc-autonomous-decision-contract",
+        "npc-conversation-mode-contract"
+      ],
+      "related_module_paths": [
+        "packages/combat-health",
+        "packages/body-state",
+        "packages/turn",
+        "packages/npc-runtime"
+      ],
+      "related_contracts": [
+        "npc_combat_intent_plan_v1",
+        "combat_session_v1",
+        "combat_intent_v1",
+        "npc_decision_boundary_v1"
+      ],
+      "search_terms": [
+        "NPC combat reassessment",
+        "combat intent",
+        "automatic combat exchange",
+        "combat decision boundary",
+        "universal NPC triggers"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "combat-system",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "npc-conversation-mode-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "npc",
+        "conversation",
+        "social",
+        "knowledge",
+        "llm"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates",
+        "llm-documentation-navigation",
+        "turn-step-llm-contract",
+        "npc-autonomous-decision-contract",
+        "npc-combat-and-trigger-contract"
+      ],
+      "related_module_paths": [
+        "packages/turn",
+        "packages/npc-runtime",
+        "packages/social-law",
+        "packages/visibility-knowledge-memory"
+      ],
+      "related_contracts": [
+        "conversation_session_v1",
+        "conversation_contribution_plan_v1",
+        "npc_decision_boundary_v1"
+      ],
+      "search_terms": [
+        "NPC conversation",
+        "conversation contribution",
+        "subjective NPC response",
+        "statement audience",
+        "message-derived knowledge"
+      ],
+      "conflicts_with_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "temporal-world-and-interruptible-activities",
+        "npc-generation-profiles",
+        "llm-agent-prompt-templates"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "turn-step-llm-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "turn",
+        "orchestration",
+        "llm"
+      ],
+      "related_document_ids": [
+        "code-driven-world-materialization-architecture",
+        "world-generation-and-turns",
+        "base-turn-orchestration",
+        "llm-agent-prompt-templates",
+        "llm-documentation-navigation",
+        "items-and-property",
+        "character-inventory-equipment"
+      ],
+      "related_module_paths": [
+        "packages/turn",
+        "packages/checks-rng",
+        "packages/items-property",
+        "apps/game-server"
+      ],
+      "related_contracts": [
+        "turn_step_plan_v1",
+        "shared actor-step execution",
+        "one active semantic contract per boundary"
+      ],
+      "search_terms": [
+        "free player action",
+        "turn step plan",
+        "semantic planner",
+        "working projection",
+        "remaining intent"
+      ],
+      "conflicts_with_document_ids": [],
+      "semantic_coverage_disposition": "baseline_gap"
     },
     {
       "document_id": "spatial-v3-target-code-driven-world-materialization-architecture",

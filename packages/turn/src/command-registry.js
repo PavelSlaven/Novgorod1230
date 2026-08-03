@@ -4,20 +4,32 @@ import {
   issueBoundedDecisionRequest,
   validateBoundedDecisionResult
 } from '@rus/materialization';
+import {
+  isDomainStepOperation,
+  resolveBoundTurnStepCommand
+} from './turn-step-admission.js';
 
 const registries = new WeakSet();
 const actionSets = new WeakMap();
+const stepBindings = new WeakMap();
 const sealedPlans = new WeakSet();
 
 export function createTurnCommandRegistry(definitions = []) {
   const commands = new Map();
   const options = new Map();
+  const semanticBindings = [];
   for (const definition of definitions) {
     if (!definition?.command_id || commands.has(definition.command_id) || typeof definition.matches !== 'function' || typeof definition.availability !== 'function' || typeof definition.consequence !== 'function' || typeof definition.writeTargets !== 'function') throw new TypeError('Every turn command requires unique ID and code handlers.');
     const normalized = deepFreeze(structuredCloneHandlers(definition));
     if (options.has(normalized.option_id)) throw new TypeError('Every turn command requires a unique stable option_id.');
     commands.set(definition.command_id, normalized);
     options.set(normalized.option_id, normalized);
+    if (normalized.semantic_binding) {
+      semanticBindings.push({
+        command: normalized,
+        binding: normalized.semantic_binding
+      });
+    }
   }
   const registry = Object.freeze({
     eligible(context) { return [...commands.values()].filter((command) => command.matches(context) === true).sort((left, right) => left.command_id.localeCompare(right.command_id)); },
@@ -30,6 +42,7 @@ export function createTurnCommandRegistry(definitions = []) {
     getByOptionId(optionId) { return options.get(optionId) ?? null; }
   });
   registries.add(registry);
+  stepBindings.set(registry, deepFreeze(semanticBindings));
   return registry;
 }
 
@@ -50,6 +63,7 @@ export async function createTurnAvailableActionSet({
   }
   const included = [];
   const handlers = new Map();
+  const availabilityDecisions = new Map();
   for (const command of registry.registered()) {
     assertApprovedRecordBinding(command, policyPins);
     const availability = await command.availability(deepFreeze({
@@ -76,6 +90,8 @@ export async function createTurnAvailableActionSet({
     };
     included.push(option);
     handlers.set(command.option_id, command);
+    availabilityDecisions.set(command.option_id,
+      deepFreeze(structuredClone(availability)));
   }
   included.sort((left, right) => left.option_id.localeCompare(right.option_id));
   if (included.length === 0) {
@@ -89,7 +105,13 @@ export async function createTurnAvailableActionSet({
     options: included,
     options_digest: canonicalDigest(included)
   });
-  actionSets.set(actionSet, { registry, handlers, committedState, policyPins });
+  actionSets.set(actionSet, {
+    registry,
+    handlers,
+    availabilityDecisions,
+    committedState,
+    policyPins
+  });
   return actionSet;
 }
 
@@ -118,31 +140,9 @@ export async function resolveTurnSemanticIntent({
   if (canonicalDigest(actionSet.options) !== actionSet.options_digest) {
     throw turnCommandError('TURN_ACTION_SET_DIGEST_MISMATCH', 'Available action set digest changed.');
   }
-  const exactMatches = actionSet.options.filter((option) =>
-    capability.handlers.get(option.option_id)?.matches(deepFreeze({
-      raw_text: String(rawText ?? ''),
-      playerInput: {
-        raw_text: String(rawText ?? '')
-      },
-      player_input: {
-        raw_text: String(rawText ?? '')
-      },
-      action_set_digest: actionSet.options_digest
-    })) === true);
-  if (exactMatches.length === 1) {
-    const option = exactMatches[0];
-    return deepFreeze({
-      status: 'resolved',
-      option_id: option.option_id,
-      command_id: capability.handlers.get(option.option_id).command_id,
-      trace: {
-        decision_protocol: 'code_exact_fast_path_v1',
-        action_set_digest: actionSet.options_digest,
-        state_version: stateVersion,
-        policy_version: policyVersion
-      }
-    });
-  }
+  const exact = resolveExactTurnIntent({ rawText, actionSet, capability,
+    stateVersion, policyVersion });
+  if (exact) return exact;
   if (typeof semanticResolver !== 'function') {
     throw turnCommandError('TURN_SEMANTIC_RESOLVER_MISSING', 'Free-form intent requires the configured semantic resolver.');
   }
@@ -301,6 +301,34 @@ export async function resolveRegisteredTurnCommand({
     actorId: routingContext.actor_id ?? playerInput.party_id,
     policyPins: routingContext.policy_pins ?? []
   });
+  const capability = actionSets.get(resolvedActionSet);
+  const exact = resolveExactTurnIntent({
+    rawText: playerInput.raw_text,
+    actionSet: resolvedActionSet,
+    capability,
+    stateVersion: resolvedActionSet.state_version,
+    policyVersion: String(routingContext.policy_version ?? '1')
+  });
+  if (exact) {
+    return {
+      command: registry.get(exact.command_id),
+      decisionTrace: exact.trace,
+      optionId: exact.option_id
+    };
+  }
+  const semanticBindings = stepBindings.get(registry) ?? [];
+  if (semanticBindings.length > 0) {
+    return resolveBoundTurnStepCommand({
+      registry,
+      semanticBindings,
+      playerInput,
+      routingContext,
+      services,
+      committedState,
+      actionSet: resolvedActionSet,
+      availabilityDecisions: capability.availabilityDecisions
+    });
+  }
   const resolved = await resolveTurnSemanticIntent({
     rawText: playerInput.raw_text,
     actionSet: resolvedActionSet,
@@ -326,6 +354,35 @@ export async function resolveRegisteredTurnCommand({
   };
 }
 
+
+function resolveExactTurnIntent({ rawText, actionSet, capability,
+  stateVersion, policyVersion }) {
+  if (!capability) {
+    throw turnCommandError('TURN_ACTION_SET_INVALID',
+      'Action set must be built by createTurnAvailableActionSet.');
+  }
+  const exactMatches = actionSet.options.filter((option) =>
+    capability.handlers.get(option.option_id)?.matches(deepFreeze({
+      raw_text: String(rawText ?? ''),
+      playerInput: { raw_text: String(rawText ?? '') },
+      player_input: { raw_text: String(rawText ?? '') },
+      action_set_digest: actionSet.options_digest
+    })) === true);
+  if (exactMatches.length !== 1) return null;
+  const option = exactMatches[0];
+  return deepFreeze({
+    status: 'resolved',
+    option_id: option.option_id,
+    command_id: capability.handlers.get(option.option_id).command_id,
+    trace: {
+      decision_protocol: 'code_exact_fast_path_v1',
+      action_set_digest: actionSet.options_digest,
+      state_version: stateVersion,
+      policy_version: policyVersion
+    }
+  });
+}
+
 export function sealTurnWritePlan(plan) {
   const sealed = deepFreeze(structuredClone(plan));
   sealedPlans.add(sealed);
@@ -347,7 +404,23 @@ function structuredCloneHandlers(value) {
     preconditions: structuredClone(value.preconditions ?? []),
     expected_cost: structuredClone(value.expected_cost ?? { kind: 'time', value: 0 }),
     known_risks: structuredClone(value.known_risks ?? []),
-    reason_visible_to_actor: value.reason_visible_to_actor ?? 'Разрешённая команда.'
+    reason_visible_to_actor: value.reason_visible_to_actor ?? 'Разрешённая команда.',
+    semantic_binding: normalizeSemanticBinding(value.semantic_binding)
+  };
+}
+function normalizeSemanticBinding(value) {
+  if (value == null) return null;
+  if (!plain(value) || !stable(value.binding_id)
+      || !isDomainStepOperation(value.operation)
+      || typeof value.matches !== 'function'
+      || Object.keys(value).some((key) =>
+        !['binding_id', 'operation', 'matches'].includes(key))) {
+    throw new TypeError('semantic_binding requires binding_id, domain operation and code matcher.');
+  }
+  return {
+    binding_id: value.binding_id,
+    operation: value.operation,
+    matches: value.matches
   };
 }
 function assertApprovedRecordBinding(command, policyPins) {

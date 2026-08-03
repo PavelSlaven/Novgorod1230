@@ -4,7 +4,7 @@
 
 Игрок действует как человек своей эпохи: путешествует, общается, торгует, работает, исследует местность, вступает в конфликты и сталкивается с последствиями собственных решений. Мир сохраняет время, положение персонажа, состояние мест, NPC, предметы, отношения, знания и произошедшие события.
 
-Редакторские каталоги задают категории, шаблоны, профили, правила и историю. Код детерминированно материализует конкретные G5, NPC, предметы и последствия из этих данных. LLM создаёт персонажа игрока и прозу, проводит аудит и принимает только формально ограниченные решения.
+Редакторские каталоги задают категории, шаблоны, профили, правила и историю. Код детерминированно материализует конкретные G5, NPC, значимые предметы и последствия из этих данных. LLM создаёт персонажа игрока и прозу, проводит аудит, выбирает закрытые варианты и через активный `turn_step_plan_v1` предлагает следующий исполнимый шаг свободной заявки игрока; код валидирует и применяет план через профильных владельцев.
 
 Первым подробно разрабатываемым регионом является Новгородская земля около 1230 года. Карта строится как вложенный граф G0–G5: от исторического региона и дневных территорий до конкретных мест, локаций и точек сцены.
 
@@ -39,6 +39,11 @@ Production v2 сохранён только как explicit migration/rollback s
 activation, dual write, authoritative mixed read и v3→v2 runtime fallback
 запрещены.
 
+Lower Dvina Trace revision 13 активировал одну player semantic boundary:
+exact registered command выполняется без LLM, остальной свободный ввод идёт
+через `turn_step_request_v1` → `turn_step_plan_v1` в `@rus/turn`. Контракты
+autonomous NPC, conversation и combat пока остаются `proposed`.
+
 ## Основные принципы
 
 - свободный текстовый ввод вместо жёсткого списка команд;
@@ -54,8 +59,8 @@ activation, dual write, authoritative mixed read и v3→v2 runtime fallback
 Проект организован как набор изолированных модулей с формальными контрактами.
 
 - `packages/new-game` — конвейер создания новой игры, Stages 2–26;
-- `packages/materialization` — code-only materializer v2 и bounded decision protocol;
-- `packages/turn` — обработка игрового хода;
+- `packages/materialization` — code-only materializer значимого мира и closed candidate sets;
+- `packages/turn` — exact fast path, активный player semantic step loop, domain routing и orchestration игрового хода;
 - `packages/time-events-history` — exact game timestamp, calendar projection и temporal boundary ordering;
 - `packages/environment-state` — pure target weather/light/access-effect proposals;
 - `packages/npc-runtime` — pure target schedule, perception и bounded-decision proposals;
@@ -72,7 +77,8 @@ activation, dual write, authoritative mixed read и v3→v2 runtime fallback
 
 ```text
 Код не придумывает категории, историю и отсутствующие варианты.
-Код материализует экземпляры из утверждённых profiles/rules; LLM выбирает только из закрытых команд.
+Код материализует authored/significant экземпляры из утверждённых profiles/rules.
+LLM выбирает закрытые варианты либо возвращает строгий player `turn_step_plan_v1`; факты, производные механики и запись остаются code-owned.
 ```
 
 ## Быстрый запуск
@@ -100,6 +106,7 @@ npm run start:cli
 - [Политика knowledge-source](docs/architecture/KNOWLEDGE_SOURCE_POLICY.md)
 - [Конвейер новой игры](docs/pipelines/new-game.md)
 - [Конвейер игрового хода](docs/pipelines/turn.md)
+- [Player semantic step contract (active)](data/knowledge-source/corpus/DOCUMENTS/turn_step_llm_contract.md)
 - [Temporal advance target pipeline](docs/pipelines/temporal-advance.md)
 - [Схема world_base](infra/world-base/SCHEMA_REFERENCE.md)
 - [Высший норматив materialization v2](data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md)

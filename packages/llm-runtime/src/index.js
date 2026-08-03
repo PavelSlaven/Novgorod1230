@@ -1,5 +1,8 @@
 export { executeRoleLlmCall, createScopedChatCompletionClient } from './runtime.js';
-export { resolveLlmExecutionConfig } from './provider-config.js';
+export {
+  TurnRuntimeRoles,
+  resolveLlmExecutionConfig
+} from './provider-config.js';
 export {
   NewGameVisibleContextRoles, NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS, getNewGameVisibleContextRoleDescriptor
 } from './provider-config.js';

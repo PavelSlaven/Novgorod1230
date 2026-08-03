@@ -5,6 +5,7 @@ import {
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';
 import {
+  applyApprovedFixedBodyEffect,
   applyBodyStateChange,
   calculateBodyTimeEffectProposal,
   normalizeBodyState,
@@ -12,6 +13,41 @@ import {
   stateModifier,
   validateBodyState
 } from '../src/index.js';
+
+test('fixed body effect clones and transitions existing conditions', () => {
+  const result = applyApprovedFixedBodyEffect({
+    body_state: {
+      health: 100,
+      satiety: 90,
+      energy: 80,
+      active_conditions: [{ id: 'fatigued', effect: 'tired' }]
+    },
+    selected_context: { kind: 'route', effort: 'light' },
+    body_effect_profile: {
+      schema: 'rus.body_state.fixed_approved_effect.v1',
+      profile_ref: 'body:route-light',
+      profile_pin: { artifact_id: 'body-profiles', revision: 1,
+        digest: '1'.repeat(64) },
+      status: 'approved',
+      applicability: { kind: 'route', effort: 'light' },
+      exact_deltas: { health: 0, satiety: -1, energy: -2 },
+      condition_outcomes: [{ from: 'fatigued', to: 'resting',
+        outcome: 'recovering' }],
+      selection_policy: 'fixed_approved_effect',
+      rng_consumption: 'forbidden'
+    }
+  });
+
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.state_after, {
+    health: 100,
+    satiety: 89,
+    energy: 78,
+    active_conditions: [{
+      id: 'resting', effect: 'recovering', cause: 'body:route-light'
+    }]
+  });
+});
 
 test('body-state applies bounded approved change formula', () => {
   const next = applyBodyStateChange({ health:80, satiety:40, energy:20 }, { restore:{ energy:10 }, spend:{ satiety:5 }, harm:{ health:15 } });

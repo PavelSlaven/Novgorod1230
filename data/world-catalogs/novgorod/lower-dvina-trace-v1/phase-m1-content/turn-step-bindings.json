@@ -1,0 +1,74 @@
+{
+  "schema": "rus.lower_dvina_trace_turn_step_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_turn_step_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 13,
+  "semantic_contract": "turn_step_plan_v1",
+  "max_internal_steps": 8,
+  "exact_fast_path": "preserved",
+  "legacy_bounded_fallback": "forbidden",
+  "fallback_policy": "forbidden",
+  "domain_bindings": [
+    {
+      "binding_id": "trace_ld_v1_step_inspect_wreck",
+      "operation": "request_discovery",
+      "command_id": "lower_dvina_trace.inspect_wreck_in_detail",
+      "discovery_kinds": ["look", "inspect", "search"],
+      "target_semantics": ["wreck_shore", "wreck", "boat", "rope", "tracks"]
+    },
+    {
+      "binding_id": "trace_ld_v1_step_follow_path_to_camp",
+      "operation": "request_movement",
+      "command_id": "lower_dvina_trace.follow_path_to_fishing_camp",
+      "movement_kinds": ["local", "route"],
+      "target_semantics": ["fishing_camp"]
+    },
+    {
+      "binding_id": "trace_ld_v1_step_ask_eremey",
+      "operation": "emit_interaction",
+      "command_id": "lower_dvina_trace.ask_eremey_about_wreck",
+      "interaction_kinds": ["speech", "request"],
+      "target_semantics": ["eremey_fisher"],
+      "instrument_semantics": []
+    },
+    {
+      "binding_id": "trace_ld_v1_step_show_clue_to_eremey",
+      "operation": "emit_interaction",
+      "command_id": "lower_dvina_trace.show_clue_and_seek_eremey_cooperation",
+      "interaction_kinds": ["speech", "offer", "request"],
+      "target_semantics": ["eremey_fisher"],
+      "instrument_semantics": ["blue_wool_evidence"]
+    },
+    {
+      "binding_id": "trace_ld_v1_step_follow_route_to_shed",
+      "operation": "request_movement",
+      "command_id": "lower_dvina_trace.follow_known_route_to_drying_shed",
+      "movement_kinds": ["local", "route"],
+      "target_semantics": ["old_drying_shed"]
+    },
+    {
+      "binding_id": "trace_ld_v1_step_negotiate_ratsha_surrender",
+      "operation": "emit_interaction",
+      "command_id": "lower_dvina_trace.offer_conditional_protection_and_seek_surrender",
+      "interaction_kinds": ["speech", "offer", "request"],
+      "target_semantics": ["ratsha_storehouse_helper"],
+      "instrument_semantics": []
+    },
+    {
+      "binding_id": "trace_ld_v1_step_treat_onisim",
+      "operation": "request_activity",
+      "command_id": "lower_dvina_trace.attempt_risky_first_aid_onisim",
+      "activity_kinds": ["recover", "work", "other"],
+      "target_semantics": ["onisim_boatman"]
+    },
+    {
+      "binding_id": "trace_ld_v1_step_carry_onisim",
+      "operation": "request_activity",
+      "command_id": "lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp",
+      "activity_kinds": ["carry", "work", "other"],
+      "target_semantics": ["onisim_boatman", "camp"]
+    }
+  ]
+}

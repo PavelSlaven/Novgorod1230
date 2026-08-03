@@ -1,16 +1,20 @@
 import { deepFreeze } from '@rus/kernel';
 import { calculateContainerUsage } from './inventory-container-usage.js';
+import { resolveInventoryLoad } from './inventory-load.js';
+import { resolveInventoryMechanicsProfile } from './runtime-instance-mechanics.js';
+import {
+  calculateInventoryMassFromTopology,
+  inventoryItemIsCarried
+} from './inventory-mass.js';
 
 const PHYSICAL_POSITIONS = new Set(['hands', 'worn', 'worn_quick', 'equipped', 'external', 'external_load']);
 
 export { calculateContainerUsage } from './inventory-container-usage.js';
 export { deriveInventoryZone } from './inventory-zone.js';
 export { buildInventoryStackSignature } from './inventory-signature.js';
+export { resolveInventoryLoad } from './inventory-load.js';
 
-/**
- * Validates the normalized party-runtime placement graph. It is deliberately
- * pure: SQL protects row-local FK/exactly-one rules; this gate protects paths.
- */
+/** Pure path validation; SQL owns row-local FK/exactly-one rules. */
 export function validateInventoryTopology(input = {}) {
   const errors = [];
   const items = list(input.items);
@@ -31,7 +35,39 @@ export function validateInventoryTopology(input = {}) {
     if (placement.parent_container_id && !containerIds.has(placement.parent_container_id)) errors.push(error('INVENTORY_CONTAINER_NOT_FOUND', 'topology', { container_id: placement.parent_container_id }));
     if (placement.parent_container_id === placement.container_id) errors.push(error('INVENTORY_CYCLE_DETECTED', 'topology', { container_id: placement.container_id }));
   }
-  for (const placement of itemPlacements) if (placement.container_id && !containerIds.has(placement.container_id)) errors.push(error('INVENTORY_CONTAINER_NOT_FOUND', 'topology', { container_id: placement.container_id }));
+  for (const placement of itemPlacements) {
+    const targets = [
+      placement.anchor_id,
+      placement.location_ref,
+      placement.container_id,
+      placement.holder_npc_id,
+      placement.holder_character_id,
+      placement.attached_item_id
+    ].filter((value) => value != null);
+    if (targets.length !== 1) errors.push(error(
+      'INVENTORY_PLACEMENT_EXACTLY_ONE_REQUIRED', 'topology', {
+        item_id: placement.item_id
+      }));
+    if (placement.container_id && !containerIds.has(placement.container_id)) errors.push(error('INVENTORY_CONTAINER_NOT_FOUND', 'topology', { container_id: placement.container_id }));
+    if (placement.attached_item_id && !itemIds.has(placement.attached_item_id)) errors.push(error('INVENTORY_ITEM_NOT_FOUND', 'topology', { item_id: placement.attached_item_id }));
+    if (placement.attached_item_id === placement.item_id) errors.push(error('INVENTORY_CYCLE_DETECTED', 'topology', { item_id: placement.item_id, attached_item_id: placement.attached_item_id }));
+  }
+
+  for (const itemId of itemIds) {
+    const trail = new Set([itemId]);
+    let current = itemPlacementById.get(itemId)?.attached_item_id ?? null;
+    while (current) {
+      if (trail.has(current)) {
+        errors.push(error('INVENTORY_CYCLE_DETECTED', 'topology', {
+          item_id: itemId,
+          attached_item_id: current
+        }));
+        break;
+      }
+      trail.add(current);
+      current = itemPlacementById.get(current)?.attached_item_id ?? null;
+    }
+  }
 
   for (const [containerId] of containerPlacementById) {
     const trail = new Set([containerId]);
@@ -70,47 +106,8 @@ export function validateInventoryTopology(input = {}) {
 }
 
 export function calculateInventoryMass(input = {}) {
-  const topology = validateInventoryTopology(input);
-  const errors = [...topology.errors];
-  if (errors.length > 0) return massResult(errors, null);
-  const counted = new Set();
-  let total = 0;
-  for (const item of list(input.items)) {
-    if (!isCarriedItem(input, item.item_id) || counted.has(`item:${item.item_id}`)) continue;
-    counted.add(`item:${item.item_id}`);
-    const profile = profileFor(input.item_profiles, item.template_id);
-    const itemQuantity = quantity(item.quantity);
-    if (!itemQuantity) errors.push(error('INVENTORY_QUANTITY_INVALID', 'data_gap', { item_id: item.item_id, quantity: item.quantity ?? null }));
-    else if (profile?.quantity_dimension) {
-      const expectedUnit = text(profile.quantity_unit_id);
-      const actualUnit = text(item.quantity_unit_id);
-      if (!expectedUnit || !actualUnit) errors.push(error('ITEM_QUANTITY_UNIT_REQUIRED', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
-      else if (expectedUnit !== actualUnit) errors.push(error('ITEM_QUANTITY_UNIT_MISMATCH', 'validation', { item_id: item.item_id, template_id: item.template_id, expected_quantity_unit_id: expectedUnit, actual_quantity_unit_id: actualUnit }));
-      else if (!Number.isFinite(profile.mass_grams_per_unit) || profile.mass_grams_per_unit <= 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
-      else total += profile.mass_grams_per_unit * itemQuantity;
-    } else if (!Number.isInteger(profile?.mass_grams) || profile.mass_grams < 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { item_id: item.item_id, template_id: item.template_id }));
-    else total += profile.mass_grams * itemQuantity;
-  }
-  for (const container of list(input.containers)) {
-    if (!isCarriedContainer(input, container.container_id) || counted.has(`container:${container.container_id}`)) continue;
-    counted.add(`container:${container.container_id}`);
-    const profile = profileFor(input.container_profiles, container.template_id);
-    const mass = profile?.mass_grams;
-    if (!Number.isInteger(mass) || mass < 0) errors.push(error('ITEM_MASS_DATA_GAP', 'data_gap', { container_id: container.container_id, template_id: container.template_id }));
-    else total += mass;
-  }
-  return massResult(errors, errors.length ? null : total);
-}
-
-export function resolveInventoryLoad({ total_mass_grams: totalMass, strength } = {}) {
-  const errors = [];
-  if (!Number.isInteger(totalMass) || totalMass < 0 || !Number.isInteger(strength) || strength < 0) errors.push(error('ITEM_MASS_DATA_GAP', 'validation', { total_mass_grams: totalMass, strength }));
-  if (errors.length) return deepFreeze({ pass: false, load_category: null, at_limit: false, errors });
-  const light = strength * 2 * 1000;
-  const moderate = strength * 4 * 1000;
-  const limit = strength * 6 * 1000;
-  const loadCategory = totalMass <= light ? 'light' : totalMass <= moderate ? 'moderate' : totalMass <= limit ? 'heavy' : 'overloaded';
-  return deepFreeze({ pass: true, load_category: loadCategory, at_limit: totalMass === limit, errors: [] });
+  return calculateInventoryMassFromTopology(
+    input, validateInventoryTopology(input));
 }
 
 export function calculateHandsState(input = {}) {
@@ -120,14 +117,18 @@ export function calculateHandsState(input = {}) {
   for (const item of list(input.items)) {
     const placement = findPlacement(input.item_placements, 'item_id', item.item_id);
     if (placement?.holder_character_id !== input.actor_id || !['hands', 'external', 'external_load'].includes(placement.physical_position)) continue;
-    const profile = profileFor(input.item_profiles, item.template_id);
+    const resolution = mechanics(item, input.item_profiles, errors);
+    if (!resolution) continue;
+    const profile = resolution.profile;
     if (![0, 1, 2].includes(profile?.external_hand_cost)) errors.push(error('ITEM_CARRY_PROFILE_DATA_GAP', 'data_gap', { item_id: item.item_id }));
     else used += profile.external_hand_cost;
   }
   for (const container of list(input.containers)) {
     const placement = findPlacement(input.container_placements, 'container_id', container.container_id);
     if (placement?.holder_character_id !== input.actor_id || !['hands', 'external', 'external_load'].includes(placement.physical_position)) continue;
-    const profile = profileFor(input.container_profiles, container.template_id);
+    const resolution = mechanics(container, input.container_profiles, errors);
+    if (!resolution) continue;
+    const profile = resolution.profile;
     if (![0, 1, 2].includes(profile?.external_hand_cost)) errors.push(error('ITEM_CARRY_PROFILE_DATA_GAP', 'data_gap', { container_id: container.container_id }));
     else used += profile.external_hand_cost;
   }
@@ -139,7 +140,7 @@ export function resolveInventoryAccess(input = {}) {
   const topology = validateInventoryTopology(input);
   if (!topology.pass) return deepFreeze({ pass: false, access: null, errors: topology.errors });
   const item = list(input.items).find((value) => value.item_id === input.item_id);
-  if (!item || !isCarriedItem(input, item.item_id)) return accessResult('unavailable', []);
+  if (!item || !inventoryItemIsCarried(input, item.item_id)) return accessResult('unavailable', []);
   const placement = findPlacement(input.item_placements, 'item_id', item.item_id);
   if (placement?.holder_character_id === input.actor_id) return accessResult(placement.physical_position === 'hands' ? 'immediate' : 'quick', ['retrieve_item']);
   const chain = containerChain(input, placement?.container_id);
@@ -262,16 +263,6 @@ function validatePlanAfter(next, affectedContainerId = null) {
   if (load.load_category === 'overloaded') return { pass: false, error: error('INVENTORY_LOAD_EXCEEDED', 'capacity', { total_mass_grams: mass.total_mass_grams, strength: next.strength }) };
   return { pass: true, mass, hands, load };
 }
-function isCarriedItem(input, itemId) {
-  const placement = findPlacement(input.item_placements, 'item_id', itemId);
-  return placement?.holder_character_id === input.actor_id || Boolean(placement?.container_id && isCarriedContainer(input, placement.container_id));
-}
-function isCarriedContainer(input, containerId, seen = new Set()) {
-  if (seen.has(containerId)) return false;
-  seen.add(containerId);
-  const placement = findPlacement(input.container_placements, 'container_id', containerId);
-  return placement?.holder_character_id === input.actor_id || Boolean(placement?.parent_container_id && isCarriedContainer(input, placement.parent_container_id, seen));
-}
 function containerChain(input, containerId) {
   const containers = [];
   const seen = new Set();
@@ -288,7 +279,6 @@ function containerChain(input, containerId) {
   return { pass: true, containers, errors: [] };
 }
 function accessResult(tier, steps) { return deepFreeze({ pass: true, access: deepFreeze({ tier, steps: deepFreeze([...steps]) }), errors: [] }); }
-function massResult(errors, total) { return deepFreeze({ pass: errors.length === 0, total_mass_grams: total, errors }); }
 function result(errors, topology) { return deepFreeze({ pass: errors.length === 0, errors, topology: deepFreeze(topology) }); }
 function error(code, category, details = {}) { return deepFreeze({ code, category, retryable: false, message: code, details: deepFreeze(structuredClone(details)) }); }
 function placementMap(values, key, knownIds, errors) {
@@ -320,8 +310,15 @@ function validateCharacterPhysicalPlacement(placement, errors) {
     if (text(slot) && position !== 'equipped') errors.push(error('INVENTORY_EQUIPMENT_SLOT_INVALID', 'topology', { physical_position: position ?? null }));
   } else if (position != null || text(slot)) errors.push(error('INVENTORY_PHYSICAL_POSITION_INVALID', 'topology', { physical_position: position ?? null }));
 }
+function mechanics(instance, profiles, errors) {
+  const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
+  if (!resolved.pass && resolved.source !== 'authored_profile') {
+    errors.push(...resolved.errors);
+    return null;
+  }
+  return resolved;
+}
 function profileFor(collection, templateId) { return Array.isArray(collection) ? collection.find((value) => value?.template_id === templateId) ?? null : collection?.[templateId] ?? null; }
 function findPlacement(values, key, id) { return list(values).find((value) => value?.[key] === id) ?? null; }
-function quantity(value) { return Number.isInteger(value) && value > 0 ? value : null; }
 function list(value) { return Array.isArray(value) ? value : []; }
 function text(value) { return String(value ?? '').trim(); }

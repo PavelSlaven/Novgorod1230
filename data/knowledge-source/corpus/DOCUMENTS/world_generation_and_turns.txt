@@ -2,12 +2,13 @@
 
 ## Статус и граница миграции
 
-Этот документ задаёт **target materialization v3** для генерации мира и ходов.
-Принятое историческое P28 evidence не активировало runtime. До отдельного
-`versioned production activation cutover` production runtime обслуживается
-только active materialization v2. Target-правила разрешены лишь для
-документации, contracts, fixtures, migration и shadow composition; partial
-activation, dual write и v3→v2 fallback запрещены.
+Этот документ задаёт active materialization v3 для генерации мира и ходов.
+Завершённый `versioned production activation cutover` сделал Spatial v3 sole
+production owner; v2 сохранён только как explicit migration/rollback source.
+Lower Dvina Trace revision 13
+дополнительно активировал единственную player semantic boundary
+`turn_step_request_v1` → `turn_step_plan_v1`. Partial activation, dual write,
+scenario-local player planner и v3→v2 runtime fallback запрещены.
 
 Temporal execution дополнительно регулирует active target-норматив
 `temporal_world_and_interruptible_activities.md`. Ход применяет event-driven
@@ -38,13 +39,27 @@ New-game фиксирует только утверждённые входы: и
 
 `world_base` target-владельцем canonical G0–G5, route topology, templates и profiles. Party state владеет ограниченно generated G5 из approved G4 expansion profile, G6, `scene_position`, динамическими instances и append-only последствиями. Generated G5 создаётся только через конкретный open frontier, конечные approved candidates и capacity; код не создаёт G1–G4 или исторические факты во время хода.
 
-Подготовка G6, NPC, items, containers и slots возвращает proposal/report из существующих templates/profiles/rules. Единственный commit component применяет утверждённый write set атомарно. NPC и предметы не создаются по имени, свободному тексту игрока или LLM; для каждого нужен approved slot/candidate и причинная связь. Повторная preparation использует idempotency/trace, а не создаёт второй baseline.
+Подготовка G6, NPC, authored/significant/hidden items, containers и slots возвращает proposal/report из существующих templates/profiles/rules. Единственный commit component применяет утверждённый write set атомарно. Для каждого такого экземпляра нужен approved slot/candidate и причинная связь; свободный текст игрока или LLM не расширяет этот набор. Ordinary direct action result регулируется отдельной player-turn границей раздела 3 и не является fallback materialization. Повторная preparation использует idempotency/trace, а не создаёт второй baseline.
 
 ## 3. Expansion and turn boundary
 
 Path query отделён от resolution/preparation: option с `requires_frontier_resolution` или `requires_preparation` не executable, не перемещает персонажа и не двигает время. Только новый запрос после отдельного commit может вернуть `ready` option с полными steps. Ход исполняет только `immediate_action`, `timed_activity` или `timed_traversal`; смена G-ancestor, endpoint binding и подготовка не добавляют скрытого времени.
 
-LLM выбирает только bounded option и создаёт разрешённую прозу из player-safe context. Он не создаёт factual topology, routes, endpoints, G5/G6, NPC/item slots или write patch. Target traceability: `spatial_architecture_standard_g0_g6.md` §§1–2, 5–6, 9–10, 12, 14–16.
+Обработка player turn имеет два входных пути:
+
+```text
+одна exact registered command → code fast path без LLM
+иначе → player-safe turn_step_request_v1
+       → strict turn_step_plan_v1 для следующего шага
+       → code-owned execution / domain delegation
+       → обновлённая working projection
+       → continuation либо player-response/terminal boundary
+       → единый atomic commit → persisted visible package → narration
+```
+
+Player planner не создаёт factual topology, routes, endpoints, G5/G6, NPC/item slots, hidden facts или write patch. Direct `create_entity` допускается только для `direct_partition`, `ambient_ordinary` и `crafted`: код проверяет доступный origin, ordinary allowlist, refs, placement и inventory invariants и сохраняет exact runtime mechanics snapshot конкретного экземпляра. Authored/significant/hidden предметы и container contents остаются code-owned candidate materialization.
+
+Внутренние LLM-шаги работают с code-owned player-safe working projection, ограничены восемью шагами и не являются temporal scheduler. Перед commit код повторно проверяет committed state version. Bounded decision сохраняется только для genuinely closed choices. Autonomous NPC, conversation и combat semantic contracts остаются `proposed`. Target traceability: `turn_step_llm_contract.md` и `spatial_architecture_standard_g0_g6.md` §§1–2, 5–6, 9–10, 12, 14–16.
 
 ---
 

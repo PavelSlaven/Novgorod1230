@@ -1,10 +1,13 @@
 ## Предметы и имущество
 
-### Нормативная актуализация materialization v2
+### Active two-class materialization boundary
 
-Конкретные предметы, контейнеры и имущественные связи материализует код из активных category/template/profile/rule записей. Требуются causal basis, допустимый slot, quantity policy и раздельные owner/holder/controller/access/visibility/condition/legal-status relations. Selection использует versioned deterministic RNG и сохраняется в trace; повторный осмотр не запускает материализацию заново.
+Для runtime действуют два несмешиваемых класса materialization.
 
-LLM не создаёт предметы и не заполняет отсутствующие варианты. Если required candidate set пуст, операция блокируется и создаётся data gap. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.
+1. Authored, significant, hidden и informational предметы, контейнеры и имущественные связи материализует код из активных category/template/profile/rule записей. Требуются causal basis, допустимый slot, quantity policy и раздельные owner/holder/controller/access/visibility/condition/legal-status relations. Selection использует versioned deterministic RNG и сохраняется в trace; повторный осмотр не запускает материализацию заново. Пустой required candidate set блокирует операцию и создаёт data gap.
+2. Ordinary direct action result может возникнуть только через валидированный player `turn_step_plan_v1` как `direct_partition`, `ambient_ordinary` или `crafted`. Он обязан иметь доступные source refs, незапрещённую ordinary semantics, явные primitive mechanics и placement. Код проверяет admission и inventory invariants и сохраняет immutable `rus.items.runtime_instance_mechanics_snapshot.v1` для конкретного экземпляра.
+
+Второй класс не заполняет пустой authored candidate set и не разрешает создавать NPC, места, оружие, деньги, письма, улики, чужие/ценные/уникальные/скрытые предметы или container contents. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.
 
 ### Packing slots v1
 
@@ -24,8 +27,8 @@ placement target, parent container, quantity, condition, container closure и eq
 slot. Zone, access tier, total mass, load, hands и packing usage выводятся code из этого
 графа и могут присутствовать только в immutable trace либо versioned visible read model.
 
-Packing slots, масса и руки независимы. Масса берётся только из approved inventory profile,
-без `0`/среднего fallback. Личный путь v1 допускает не более двух контейнеров; cycle или
+Packing slots, масса и руки независимы. Масса берётся ровно из approved inventory profile
+либо persisted runtime instance mechanics snapshot, без `0`/среднего fallback. Личный путь v1 допускает не более двух контейнеров; cycle или
 глубокая вложенность блокируется. Primary container можно оставить в G5 без изменения
 owner/controller или contents; это делает содержимое physically unavailable. Outward —
 только вдохновение отделения quick/primary load, не исторический источник.
@@ -43,13 +46,13 @@ owner/controller или contents; это делает содержимое physi
 
 ### 2. Главное правило материализации
 
-Заявка игрока не создаёт предмет и не меняет уже определённое содержимое сцены.
+Заявка игрока не создаёт authored/significant/hidden предмет и не меняет уже определённое содержимое сцены. Ordinary direct result существует только после фактического действия, strict player step plan и code-owned admission; одно лишь утверждение игрока о наличии вещи недостаточно.
 
 Обработка заявки с предметом выполняется по цепочке:
 
-заявка → проверка уже зафиксированных предметов и допустимых категорий → определение видимости, доступа и риска → результат действия
+заявка → exact command или strict player step → проверка сохранённых sources/candidates → code-owned admission, доступ и риск → persisted result
 
-Если предмет уже существует, используется существующий факт. Если предмет ещё не создан, его можно материализовать только при наличии причинного основания и в пределах заранее допустимого профиля места.
+Если предмет уже существует, используется существующий факт. Если предмет ещё не создан, authored/significant/hidden экземпляр требует причинного основания и approved profile/candidate. Ordinary portion, crafted result или обычная ambient конкретизация требует непосредственного доступного source, разрешённого origin kind и отдельного exact runtime mechanics snapshot; этот путь не меняет скрытое содержимое мира.
 
 ### 3. Обязательные параметры значимого предмета
 «Значимый предмет» — это предмет, который может повлиять на действие, проверку, доступ, риск, владение, сцену, память мира или последствия партии.
@@ -342,7 +345,7 @@ owner/controller или contents; это делает содержимое physi
 ### 13. Ограничения для предметов и имущества
 
 При работе с предметами запрещено:
-1. Создавать предмет как прямой ответ на желание игрока, если для него нет заранее заданного или причинно допустимого основания.
+1. Создавать authored/significant/hidden предмет как прямой ответ на желание игрока либо принимать declared possession за факт. Ordinary result допустим только как непосредственный фактический результат действия по active player step contract.
 2. Менять уже определённое содержимое контейнера, тайника, комнаты или иной активной зоны при повторном осмотре.
 3. Считать отсутствие записи о предмете доказательством того, что предмета точно нет.
 4. Обрабатывать контейнеры как случайные наборы наград без связи с местом, владельцем, доступом и ситуацией.

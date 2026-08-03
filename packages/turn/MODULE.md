@@ -2,20 +2,23 @@
 
 ## Назначение
 
-Оркестратор игрового хода и target Temporal World v4 execution composition. Он связывает explicit ports, собирает proposals и carriers, применяет gates и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
+Оркестратор игрового хода, active player semantic step boundary и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированный `turn_step_plan_v1` через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.
 
 ## Владеет
 
-- Владеет `PlayerTurnInput`/`TurnResult`, stage plan, command sequence, idempotency/lock orchestration, bounded decision handoff, temporal advance/carrier proposal engines, `mergeTemporalProposals`, combined logical write-plan composition и visible-package security gate.
+- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate.
 
 ## Не владеет
 
-Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями.
+Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Active player planner не активирует proposed autonomous NPC, conversation или combat contracts.
 
 ## Public API
 
-- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet` и `resolveTurnSemanticIntent`.
-- `createTurnAvailableActionSet({ registry, committedState, actorId, policyPins })` строит полный детерминированный player-safe набор зарегистрированных и доступных действий без raw text. `resolveTurnSemanticIntent({ rawText, actionSet, decisionNow, ... })` применяет однозначный exact fast path либо существующий bounded-decision protocol и возвращает только точный approved `option_id` или typed unknown. После асинхронного resolver code-owned `decisionNow()` проверяет expiry; exact fast path clock не вызывает. Затем workflow повторно читает committed state и отклоняет stale option до RNG.
+- `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
+- `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
+- `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
+- Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `createTemporalSourceResolver`,
   `createTemporalAdvanceOwner`;
@@ -45,11 +48,11 @@
 
 ## Формальные входы, выходы и ошибки
 
-`runTurnWorkflow` получает validated intent, immutable state projection, explicit service ports и options; после semantic resolution он обязательно повторно читает committed state, перестраивает action set и лишь затем допускает RNG. Target temporal engines получают exact request, pinned rules/providers, clock-owner and carrier state. Выход — frozen turn result, temporal result/proposal or one merged logical `combined_write_plan`; failures — typed `TURN_*`, `TemporalProposalMergeError` and target typed temporal/contract codes. Merge отклоняет conflicting owners, duplicate targets и inconsistent exact elapsed; orchestration не продолжает pipeline после failed gate.
+`runTurnWorkflow` получает validated player input, immutable committed projection, explicit service ports и options. Resolve-mode выбирает exact command либо единственный active player semantic loop; после выбора workflow повторно читает committed state до RNG/domain execution и ещё раз revalidates base перед commit. Target temporal engines получают exact request, pinned rules/providers, clock-owner and carrier state. Выход — frozen turn result, temporal result/proposal or one merged logical write plan; failures — typed `TURN_*`, `TemporalProposalMergeError` and target typed temporal/contract codes. Orchestration не продолжает pipeline после failed gate и не фиксирует частичный semantic draft.
 
 ## Зависимости и side effects
 
-Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, semantic resolver, post-resolver `decisionNow`, persisted-visible reader, projector, narrator, party store, bounded-decision identity, optional RNG). Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL: commit передаётся party-store/server adapter. Порядок общего workflow фиксирован как committed state → полный action set → semantic resolution → check/consequence/time/body → factual commit → persisted safe projection → narration.
+Зависимости: declared public packages and injected ports (`commandRegistry`, state reader, `turnStepModel`, player-safe working projector, step execution registry, check-context resolver, optional RNG, persisted-visible reader, code-owned visible projector, narrator и party-store/server adapters). Closed bounded choices дополнительно используют прежние identity/expiry ports. Сам модуль не использует DB/network/LLM implicitly и не пишет PostgreSQL. Порядок общего workflow фиксирован как committed state → exact command или player step loop → revalidation → domain/check/time/body owners → code-owned write plan → factual commit → persisted safe projection → narration.
 
 ## Target / activation
 
@@ -58,8 +61,11 @@ Temporal v4 surfaces use current `temporal-world-v1.1` /
 `4.3.0-target.1`. Accepted historical P28 evidence не активировало runtime;
 последующий `versioned production activation cutover` release
 `spatial-v3-production-v1` сделал v3 sole production composition. `turn` не
-реализует persistence fallback.
+реализует persistence fallback. Lower Dvina Trace revision 13 активировал
+`turn_step_plan_v1` как sole semantic path свободной заявки игрока и сохранил
+exact registered path перед ним. NPC/autonomous/conversation/combat semantic
+documents остаются `proposed`.
 
 ## Тесты
 
-`turn-workflow.test.js`, `bounded-decision.test.js`, `autonomous-update.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js`, `first-entry-materialization.test.js`; target execution/orchestration coverage also lives in `test/spatial-v3/p19-execution.test.js` and `p21-orchestration.test.js`.
+Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

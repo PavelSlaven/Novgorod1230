@@ -93,13 +93,17 @@ Background, scene и key NPC имеют один источник создани
 
 Время, состояние тела, износ, расписания, перемещение, доступ, содержимое уже предусмотренного slot, автономные обновления и применение утверждённых последствий рассчитываются кодом.
 
-### D-010. LLM выбирает только из закрытого набора
+### D-010. LLM работает только через активный формальный контракт роли
 
-Если правила не определяют сложное решение однозначно, код формирует bounded decision request. LLM возвращает ровно один переданный `option_id` и соответствующий `command_token`.
+Для closed domain choice код формирует bounded decision request, а LLM возвращает ровно один переданный `option_id` и соответствующий `command_token`.
 
-### D-011. Выбор LLM не является последствием
+Для свободной заявки персонажа игрока единственный активный semantic contract — `turn_step_request_v1` → `turn_step_plan_v1` владельца `@rus/turn`. План описывает только следующий исполнимый шаг, direct operations, generic check или domain request из закрытой схемы. Exact registered command имеет приоритет и LLM не вызывает. Autonomous NPC, conversation и combat semantic contracts остаются `proposed` до отдельного cutover.
 
-После выбора код заново проверяет preconditions и state version, выполняет проверки, рассчитывает consequence и формирует change set. LLM не объявляет исход и не возвращает конечное состояние мира.
+### D-011. Выбор или semantic plan LLM не является последствием
+
+После bounded choice или player step plan код заново проверяет schema, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.
+
+`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`). LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.
 
 ### D-012. LLM не пишет в базы
 
@@ -107,11 +111,13 @@ LLM не формирует SQL, имена таблиц, произвольны
 
 ### D-013. Все изменения трассируются
 
-Materialization, bounded decisions, autonomous updates и applied change sets имеют version pins, input/catalog digests, idempotency key, validation report и ссылки на созданные или изменённые записи.
+Materialization, bounded decisions, player semantic steps, autonomous updates и applied change sets имеют version pins, input/catalog digests, idempotency identity, validation report и ссылки на созданные или изменённые записи. Player semantic trace дополнительно связывает root turn, committed base version, ordered step traces, один optional repair, operation batch и итоговый commit envelope; scratchpad и скрытые provider payloads не сохраняются как факты мира.
 
-### D-014. Пустой набор блокирует
+### D-014. Пустой authored candidate set блокирует; ordinary action result отделён
 
-Отсутствие допустимого варианта создаёт диагностируемый gap и hard block. Запрещены ослабление фильтра, выбор запрещённого варианта и создание временного удобного объекта.
+Для authored, significant, hidden и informational materialization отсутствие допустимого варианта создаёт диагностируемый gap и hard block. Запрещены ослабление фильтра, выбор запрещённого варианта и создание временного удобного объекта.
+
+Ordinary direct action result не выбирается из authored candidate set и поэтому не превращает его пустоту в fallback. Он допустим только когда действие непосредственно отделяет, изготавливает или конкретизирует обычный доступный материал, проходит code-owned allowlist/admission и получает persisted exact runtime mechanics snapshot. NPC, места, оружие, деньги, письма, улики, container contents, уникальные, ценные, чужие и скрытые объекты этим путём не создаются.
 
 ### D-015. Персонаж игрока — явное исключение
 
@@ -141,7 +147,11 @@ Repair/migration обязана указать причину, прежний и
 
 ### 4.4. LLM
 
-Допустим для bounded decisions, разрешённой конкретизации key entity, аудита, персонажа игрока и прозы из visible context. Он не создаёт runtime G5/NPC/items и не изменяет party state.
+Допустим для closed bounded decisions, активного player `turn_step_plan_v1`, разрешённой конкретизации key entity, аудита, персонажа игрока и прозы из persisted visible context.
+
+Player step planner получает только player-safe working projection и возвращает следующий шаг по строгой schema. Один structural repair получает исходный request и перечень schema violations, но не новое состояние мира. Код владеет admission, exact fast path, checks, domain routing, working projection, derived mechanics, commit-time revalidation и записью.
+
+LLM не создаёт runtime G5/NPC, authored/significant/hidden items, container contents или party-state patch. Узкий ordinary result из D-011/D-014 становится экземпляром только после code-owned validation и сохранения exact runtime mechanics snapshot. Visible factual projection формирует код; narrator читает её только после commit.
 
 ### 4.5. Party database
 

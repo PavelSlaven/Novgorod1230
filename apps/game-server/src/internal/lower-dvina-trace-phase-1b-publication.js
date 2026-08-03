@@ -19,8 +19,8 @@ import {
 export * from './lower-dvina-trace-phase-1b-identities.js';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
-const MANIFEST_PATH = `${ROOT}/phase-1b-v7/manifest.json`;
-const BINDING_PATH = `${ROOT}/phase-1b-v7/publication-binding.json`;
+const MANIFEST_PATH = `${ROOT}/phase-1b-v8/manifest.json`;
+const BINDING_PATH = `${ROOT}/phase-1b-v8/publication-binding.json`;
 
 export async function loadLowerDvinaTracePhase1BPublication({
   rootDir = process.cwd(),
@@ -51,8 +51,8 @@ export async function loadLowerDvinaTracePhase1BPublication({
   }
   const manifest = manifestFile.value;
   if (manifest?.schema !== 'rus.lower_dvina_trace_phase_1b_manifest.v1'
-    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v7'
-    || manifest.revision !== 7
+    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v8'
+    || manifest.revision !== 8
     || manifest.status !== 'approved'
     || manifest.scenario_id !== 'lower_dvina_trace_v1'
     || manifest.publication_status !== 'public'
@@ -71,8 +71,8 @@ export async function loadLowerDvinaTracePhase1BPublication({
   }
   assertExactRef(manifest.content_refs?.publication_binding, bindingFile, {
     path: BINDING_PATH,
-    id: 'lower_dvina_trace_phase_1b_publication_v7',
-    revision: 7,
+    id: 'lower_dvina_trace_phase_1b_publication_v8',
+    revision: 8,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
   const binding = bindingFile.value;
@@ -82,9 +82,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     manifest.superseded_package_ref?.path
   );
   assertExactRef(manifest.superseded_package_ref, supersededManifest, {
-    path: `${ROOT}/phase-1b-v6/manifest.json`,
-    id: 'lower_dvina_trace_phase_1b_v6',
-    revision: 6,
+    path: `${ROOT}/phase-1b-v7/manifest.json`,
+    id: 'lower_dvina_trace_phase_1b_v7',
+    revision: 7,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1'
   }, 'package_id');
   const supersededBinding = await readJson(
@@ -92,9 +92,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     binding.superseded_binding_ref?.path
   );
   assertExactRef(binding.superseded_binding_ref, supersededBinding, {
-    path: `${ROOT}/phase-1b-v6/publication-binding.json`,
-    id: 'lower_dvina_trace_phase_1b_publication_v6',
-    revision: 6,
+    path: `${ROOT}/phase-1b-v7/publication-binding.json`,
+    id: 'lower_dvina_trace_phase_1b_publication_v7',
+    revision: 7,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
 
@@ -109,13 +109,13 @@ export async function loadLowerDvinaTracePhase1BPublication({
     );
   }
   assertExactRef(binding.phase_1a_manifest_ref, phase1A, {
-    path: `${ROOT}/phase-1a-v8/manifest.json`,
-    id: 'lower_dvina_trace_phase_1a_v8',
-    revision: 8,
+    path: `${ROOT}/phase-1a-v9/manifest.json`,
+    id: 'lower_dvina_trace_phase_1a_v9',
+    revision: 9,
     schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
   }, 'package_id');
   if (phase1A.value.scenario_id !== binding.scenario_id
-    || phase1A.value.scenario_definition_revision !== 12
+    || phase1A.value.scenario_definition_revision !== 13
     || phase1A.value.content_refs?.materialization_bindings?.id
       !== binding.materializer_binding_id) {
     fail(
@@ -131,9 +131,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     phase1A.value.superseded_package_ref,
     supersededPhase1A,
     {
-      path: `${ROOT}/phase-1a-v7/manifest.json`,
-      id: 'lower_dvina_trace_phase_1a_v7',
-      revision: 7,
+      path: `${ROOT}/phase-1a-v8/manifest.json`,
+      id: 'lower_dvina_trace_phase_1a_v8',
+      revision: 8,
       schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
     },
     'package_id'
@@ -150,15 +150,15 @@ export async function loadLowerDvinaTracePhase1BPublication({
     );
   }
   assertExactRef(binding.scenario_definition_ref, definition, {
-    path: `${ROOT}/phase-6-content/definition.json`,
+    path: `${ROOT}/phase-m1-content/definition.json`,
     id: 'lower_dvina_trace_v1',
-    revision: 12,
+    revision: 13,
     schema: 'rus.trace_scenario_definition.v1'
   }, 'scenario_id');
   if (definition.value.required_unresolved_refs?.length !== 0) {
     fail(
       'TRACE_PHASE_1B_DEFINITION_INCOMPLETE',
-      'Only the complete scenario definition revision 12 can be published.'
+      'Only the complete scenario definition revision 13 can be published.'
     );
   }
 
@@ -188,8 +188,8 @@ function assertBinding(binding) {
   const projection = binding?.opening_projection;
   const identity = binding?.execution_identity;
   if (binding?.schema !== 'rus.lower_dvina_trace_publication_binding.v1'
-    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v7'
-    || binding.revision !== 7
+    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v8'
+    || binding.revision !== 8
     || binding.status !== 'approved'
     || binding.scenario_id !== 'lower_dvina_trace_v1'
     || binding.publication_availability !== 'public'
@@ -198,9 +198,9 @@ function assertBinding(binding) {
     || !text(metadata?.description)
     || metadata.available !== true
     || binding.materializer_binding_id
-      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v8'
+      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v9'
     || projection?.projection_id
-      !== 'lower_dvina_trace_phase_1b_opening_projection_v7'
+      !== 'lower_dvina_trace_phase_1b_opening_projection_v8'
     || projection.schema !== 'first_game_screen'
     || projection.version !== 1
     || !Array.isArray(projection.visible_field_allowlist)

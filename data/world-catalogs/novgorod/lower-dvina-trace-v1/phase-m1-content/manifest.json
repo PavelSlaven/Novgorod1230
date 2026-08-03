@@ -1,0 +1,51 @@
+{
+  "schema": "rus.lower_dvina_trace_m1_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m1_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 13,
+  "status": "approved",
+  "publication_status": "internal_only",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 12,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "a2baf870be8784ca520319abd232c4383fdb4fb70fe1e39f50ab2d407c1c1b18"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 13,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef"
+    },
+    "turn_step_bindings": {
+      "path": "turn-step-bindings.json",
+      "id": "lower_dvina_trace_turn_step_bindings_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_turn_step_bindings.v1",
+      "digest": "83cf0f13fd4d4bdb3381ca86a4fe465bcd8734485a7e80df01a1d8a116610a2a"
+    },
+    "turn_step_owner_profiles": {
+      "path": "turn-step-owner-profiles.json",
+      "id": "trace_ld_v1_turn_step_owner_profiles",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_turn_step_owner_profiles.v1",
+      "digest": "585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823"
+    }
+  },
+  "files": {
+    "definition.json": "cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef",
+    "turn-step-bindings.json": "83cf0f13fd4d4bdb3381ca86a4fe465bcd8734485a7e80df01a1d8a116610a2a",
+    "turn-step-owner-profiles.json": "585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823"
+  },
+  "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
+  "content_digest": "3b6a87f1266fa7b599bb715f3299958a0f8cbcb66bf0ed63f02a38233d570132",
+  "scope": ["m1_player_semantic_step_admission"],
+  "excludes": ["npc_semantic_decisions", "conversation_mode", "combat_mode", "runtime_handlers", "persistence", "ddl", "api", "ui"]
+}

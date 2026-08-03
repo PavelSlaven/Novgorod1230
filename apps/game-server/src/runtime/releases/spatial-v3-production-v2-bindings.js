@@ -22,7 +22,8 @@ import {
 import {
   createLowerDvinaTraceNarrationService,
   createLowerDvinaTraceNpcDecisionSelector,
-  createLowerDvinaTraceSemanticResolver
+  createLowerDvinaTraceSemanticResolver,
+  createLowerDvinaTraceTurnStepModel
 } from '../lower-dvina-trace-phase-2-llm.js';
 import {
   createProductionLlmRoleRunner
@@ -32,6 +33,7 @@ import {
 } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { calculatePackingSlots } from '@rus/items-property';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
@@ -196,6 +198,8 @@ function createTraceTurnRuntime({ partyPool, committer, env, config }) {
     }),
     semanticResolver:
       createLowerDvinaTraceSemanticResolver({ roleRunner }),
+    turnStepModel:
+      createLowerDvinaTraceTurnStepModel({ roleRunner }),
     npcDecisionSelector:
       createLowerDvinaTraceNpcDecisionSelector({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
@@ -215,6 +219,7 @@ function createTraceTurnRuntime({ partyPool, committer, env, config }) {
       effect_registrations:
         lowerDvinaTracePhase6TemporalEffectRegistrations()
     }),
+    turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret
   });
 }

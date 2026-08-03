@@ -26,6 +26,11 @@ export const REQUIRED_ARTIFACTS = Object.freeze([
   'spatial_manifest'
 ]);
 
+export const M1_REQUIRED_ARTIFACTS = Object.freeze([
+  ...REQUIRED_ARTIFACTS,
+  'turn_step_bindings'
+]);
+
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
   materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 3],
@@ -117,4 +122,15 @@ export const PHASE_6_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ],
   movement_bindings: ['rus.trace_movement_bindings.v1', 2],
   body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 6]
+});
+
+export const M1_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...PHASE_6_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 9],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    9
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 13],
+  turn_step_bindings: ['rus.lower_dvina_trace_turn_step_bindings.v1', 1]
 });

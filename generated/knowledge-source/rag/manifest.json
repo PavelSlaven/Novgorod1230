@@ -3,21 +3,21 @@
   "generator": "tools/docs-tools/src/knowledge-materializer-v2.js",
   "generation_mode": "approved_semantic_snapshot_plus_deterministic_lexical_coverage",
   "corpus_root": "data/knowledge-source/corpus/DOCUMENTS",
-  "corpus_manifest_sha256": "daef8b52f39d202c7f418992c5fb372ee71a281e5005426042c70daa45ba33b1",
-  "corpus_hash": "698b3504480f181151fdd2d0e25a2e07166c22e708c171d7873500ce9ddbbc3c",
+  "corpus_manifest_sha256": "96e92aa475eb5a619cbbdaddf1f1bfd0d8698dd43647d0c52a09489e9cea50fb",
+  "corpus_hash": "1b87b7b9012f71b87d1b7969b5f8bef3dafa52e9ee2e18aa66ee59f760396a07",
   "source_snapshot": "data/knowledge-source/imports/rag/index.json",
   "source_snapshot_sha256": "b89d573dd6c3fec6c9e42eca8ba629475098a3ba96b147d9a205ae4e37bc383e",
   "semantic_index": "generated/knowledge-source/rag/index.json",
   "semantic_index_sha256": "90b5ced51daf4b5b3d2d1c502e8f23df62ef8fcb0213eeece5badaab2bfffcc0",
   "lexical_index": "generated/knowledge-source/rag/lexical-index.json",
-  "lexical_index_sha256": "c6bde19be95f36e980049fc63e9f33902fcdad703ab949486639de7f3bd22b04",
-  "registered_document_count": 36,
-  "source_document_count": 36,
-  "active_document_count": 30,
+  "lexical_index_sha256": "4fe300013e44f9e4d921db4eff494b02cdb13622a1ca17532e570de8161b9cbe",
+  "registered_document_count": 40,
+  "source_document_count": 40,
+  "active_document_count": 31,
   "semantic_document_count": 2,
-  "lexical_only_document_count": 34,
+  "lexical_only_document_count": 38,
   "semantic_chunk_count": 44,
-  "lexical_chunk_count": 1410,
+  "lexical_chunk_count": 2087,
   "model": "jina-embeddings-v3",
   "dimensions": 1024,
   "coverage": [
@@ -155,6 +155,27 @@
       "semantic_reason": "approved_embedding_absent"
     },
     {
+      "document_id": "npc-autonomous-decision-contract",
+      "file_name": "npc_autonomous_decision_contract.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "npc-combat-and-trigger-contract",
+      "file_name": "npc_combat_and_trigger_contract.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "npc-conversation-mode-contract",
+      "file_name": "npc_conversation_mode_contract.md",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
       "document_id": "npc-generation-profiles",
       "file_name": "npc_generation_profiles.txt",
       "lexical_indexed": true,
@@ -227,6 +248,13 @@
     {
       "document_id": "time-system",
       "file_name": "time_system.txt",
+      "lexical_indexed": true,
+      "semantic_indexed": false,
+      "semantic_reason": "approved_embedding_absent"
+    },
+    {
+      "document_id": "turn-step-llm-contract",
+      "file_name": "turn_step_llm_contract.md",
       "lexical_indexed": true,
       "semantic_indexed": false,
       "semantic_reason": "approved_embedding_absent"

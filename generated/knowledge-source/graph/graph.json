@@ -924,7 +924,7 @@
       "source_location": {
         "file": "character_inventory_equipment.txt",
         "line_start": 1,
-        "line_end": 345
+        "line_end": 352
       }
     },
     {
@@ -960,7 +960,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 370
+        "line_end": 380
       }
     },
     {
@@ -1044,7 +1044,7 @@
       "source_location": {
         "file": "information_sources_llm_prompts.md",
         "line_start": 1,
-        "line_end": 1067
+        "line_end": 1071
       }
     },
     {
@@ -1068,7 +1068,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 376
+        "line_end": 379
       }
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1037
+        "line_end": 1074
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 288
+        "line_end": 303
       }
     },
     {
@@ -1164,7 +1164,7 @@
       "source_location": {
         "file": "player_character_generation.txt",
         "line_start": 1,
-        "line_end": 853
+        "line_end": 855
       }
     },
     {
@@ -1216,6 +1216,18 @@
       }
     },
     {
+      "id": "canonical-document:turn-step-llm-contract",
+      "type": "canonical_document",
+      "label": "turn_step_llm_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/turn_step_llm_contract.md",
+      "source_location": {
+        "file": "turn_step_llm_contract.md",
+        "line_start": 1,
+        "line_end": 1387
+      }
+    },
+    {
       "id": "canonical-document:world-base-materialization-table-requirements",
       "type": "canonical_document",
       "label": "world_base_materialization_table_requirements.md",
@@ -1236,7 +1248,7 @@
       "source_location": {
         "file": "world_generation_and_turns.txt",
         "line_start": 1,
-        "line_end": 1566
+        "line_end": 1581
       }
     },
     {

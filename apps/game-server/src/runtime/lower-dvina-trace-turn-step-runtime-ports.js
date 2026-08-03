@@ -1,0 +1,170 @@
+import { createTurnStepExecutionRegistry } from '@rus/turn';
+import {
+  applyBodyEvent,
+  applySemanticActivity,
+  resolveLowerDvinaTraceTurnStepCheckContext
+} from './lower-dvina-trace-turn-step-delegated-ports.js';
+import {
+  createItemOperationHandlers,
+  initializeRuntimeState
+} from './lower-dvina-trace-turn-step-item-operations.js';
+import { createContainerAccessHandler } from
+  './lower-dvina-trace-turn-step-container-access.js';
+import {
+  createLowerDvinaTracePreparedDomainEffect
+} from './lower-dvina-trace-turn-step-prepared-effects.js';
+
+export function createLowerDvinaTraceTurnStepRuntimePorts({
+  bodyEventOwner = null,
+  committedState = null,
+  genericCheckContextOwner = null,
+  ordinaryResultPolicy = null,
+  resolveItemMechanics = null,
+  semanticActivityOwner = null,
+  temporalAdvance = null,
+  bodyEffect = null,
+  workingProjectionAuthority
+} = {}) {
+  if (typeof workingProjectionAuthority?.admit !== 'function') {
+    throw new TypeError('workingProjectionAuthority.admit is required.');
+  }
+  const state = initializeRuntimeState(committedState);
+  const containerAccessHandler = createContainerAccessHandler(state);
+  const handlers = {
+    ...createItemOperationHandlers(state, {
+      ordinaryResultPolicy,
+      resolveItemMechanics
+    }),
+    apply_body_event: (execution) =>
+      applyBodyEvent(execution, state, bodyEventOwner)
+  };
+  const direct = Object.fromEntries(Object.entries(handlers)
+    .map(([operation, handler]) => [
+      operation,
+      (execution) => admitResult(
+        handler(execution), workingProjectionAuthority)
+    ]));
+  const domain = {
+    request_container_access: (execution) => admitResult(
+      containerAccessHandler(execution),
+      workingProjectionAuthority
+    )
+  };
+  const preparedDomainEffect = typeof temporalAdvance === 'function'
+      && typeof bodyEffect?.apply === 'function'
+    ? createLowerDvinaTracePreparedDomainEffect({
+        state, committedState, temporalAdvance, bodyEffect
+      })
+    : null;
+  return Object.freeze({
+    executionRegistry: createTurnStepExecutionRegistry({
+      direct,
+      domain,
+      applySemanticActivity: (execution) =>
+        admitResult(
+          applySemanticActivity(execution, state, semanticActivityOwner),
+          workingProjectionAuthority
+        )
+    }),
+    ...(preparedDomainEffect == null ? {} : {
+      preparedDomainEffect: Object.freeze({
+        supports: (input) => preparedDomainEffect.supports(input),
+        apply: (input) => admitResult(
+          preparedDomainEffect.apply(input), workingProjectionAuthority)
+      })
+    }),
+    ...(preparedDomainEffect == null ? {} : {
+      preparedEffectContext: Object.freeze({
+        current_clock: structuredClone(
+          committedState?.clock_weather_light?.clock
+            ?? committedState?.clock),
+        current_body_state: structuredClone(committedState?.body_state)
+      }),
+      preparedEffectTimeOwner: (input) => prepareEffectTime(
+        input, committedState, temporalAdvance),
+      preparedEffectBodyOwner: (input) => prepareEffectBody(
+        input, committedState, bodyEffect),
+      preparedEffectProjectionOwner: ({ working_projection: projection }) =>
+        workingProjectionAuthority.admit(projection)
+    }),
+    resolveCheckContext: (input) =>
+      resolveLowerDvinaTraceTurnStepCheckContext(
+        {
+          ...input,
+          actor: input.prepared_chain_context?.current_body_state == null
+            ? input.actor : {
+            ...input.actor,
+            body: structuredClone(
+              input.prepared_chain_context.current_body_state)
+          }
+        },
+        genericCheckContextOwner)
+  });
+}
+
+async function prepareEffectTime(input, committedState, temporalAdvance) {
+  if (typeof temporalAdvance !== 'function') {
+    throw new TypeError('temporalAdvance is required for prepared effects.');
+  }
+  const duration = Number(input.consequence?.duration_minutes);
+  if (!Number.isSafeInteger(duration) || duration < 0) {
+    throw new TypeError('Prepared effect duration must be integral.');
+  }
+  const exactElapsed = {
+    exact_minutes: { numerator: String(duration), denominator: '1' }
+  };
+  const result = await temporalAdvance({
+    clock_before: structuredClone(
+      input.prepared_chain_context.current_clock),
+    exact_elapsed: exactElapsed,
+    relevant_state: structuredClone(committedState),
+    consequence: structuredClone(input.consequence)
+  });
+  return Object.freeze({
+    version: 2,
+    schema: 'turn_time_update',
+    owner: '@rus/time-events-history',
+    ...structuredClone(result)
+  });
+}
+
+async function prepareEffectBody(input, committedState, bodyEffect) {
+  if (input.effect_kind === 'semantic_activity') {
+    return Object.freeze({
+      version: 1,
+      schema: 'turn_body_update',
+      owner: '@rus/body-state',
+      applied: false,
+      proposal: null,
+      state_after: structuredClone(
+        input.prepared_chain_context.current_body_state)
+    });
+  }
+  if (typeof bodyEffect?.apply !== 'function') {
+    throw new TypeError('bodyEffect.apply is required for prepared effects.');
+  }
+  const result = await bodyEffect.apply({
+    committed_state: {
+      ...structuredClone(committedState),
+      body_state: structuredClone(
+        input.prepared_chain_context.current_body_state)
+    },
+    consequence: structuredClone(input.consequence),
+    time_update: structuredClone(input.time_update)
+  });
+  return Object.freeze({
+    version: 1,
+    schema: 'turn_body_update',
+    ...structuredClone(result)
+  });
+}
+
+async function admitResult(pending, authority) {
+  const result = await pending;
+  return Object.freeze({
+    ...result,
+    working_projection: authority.admit(result.working_projection)
+  });
+}
+
+export { resolveLowerDvinaTraceTurnStepCheckContext };

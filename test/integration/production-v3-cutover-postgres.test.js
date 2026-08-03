@@ -143,8 +143,11 @@ test(
       health.party_schema_version,
       'party_runtime_v3_first_playable'
     );
-    assert.equal(health.migration_count, 12);
-    assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
+    assert.equal(health.migration_count, 15);
+    assert.equal(
+      health.migration_chain_digest,
+      '1e075ca34cda4c00fe7d9acc051c8c902785d2adcf604e695f70d18167d11d8f'
+    );
     assert.equal(
       health.runtime_catalog_pin.activation_event_id,
       'cutover-runtime-activation-v1'

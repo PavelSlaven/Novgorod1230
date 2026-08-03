@@ -1,6 +1,40 @@
-export { runTurnWorkflow } from './orchestrator.js';
-export { createTurnWorkflowContext } from './context.js';
-export { TURN_WORKFLOW_STAGE_PLAN, validateTurnWorkflowStagePlan } from './stage-plan.js';
+import { createTurnWorkflowContext } from './context.js';
+import { runTurnWorkflow } from './orchestrator.js';
+import {
+  TURN_WORKFLOW_STAGE_PLAN,
+  validateTurnWorkflowStagePlan
+} from './stage-plan.js';
+import {
+  requireTurnStepOperationBatch,
+  TURN_STEP_OPERATION_BATCH_TARGET,
+  validateTurnStepOperationBatch
+} from './turn-step-operation-batch.js';
+import { TurnWorkflowError } from './errors.js';
+import {
+  createTurnDecisionRequest,
+  resolveTurnDecision
+} from './bounded-decision.js';
+import { enterG4WithMaterialization } from './first-entry-materialization.js';
+import {
+  buildTurnStepPreparedBodyUpdate,
+  buildTurnStepPreparedEffectLedger,
+  buildTurnStepPreparedTimeUpdate,
+  requireTurnStepPreparedEffectLedger
+} from './turn-step-prepared-effects.js';
+
+export {
+  createTurnWorkflowContext,
+  runTurnWorkflow,
+  TURN_WORKFLOW_STAGE_PLAN,
+  validateTurnWorkflowStagePlan,
+  TURN_STEP_OPERATION_BATCH_TARGET,
+  validateTurnStepOperationBatch,
+  requireTurnStepOperationBatch,
+  buildTurnStepPreparedBodyUpdate,
+  buildTurnStepPreparedEffectLedger,
+  buildTurnStepPreparedTimeUpdate,
+  requireTurnStepPreparedEffectLedger
+};
 export {
   TURN_PRIMARY_MODES,
   TURN_ALLOWED_SUBSYSTEMS,
@@ -18,12 +52,35 @@ export {
   validateAvailabilityDecision,
   validateConsequencePackage,
   validateNarrationResult,
+  validateTurnStepCommitEnvelope,
   validateTurnWritePlan,
   validateTurnResult
 } from './validators.js';
-export { TurnWorkflowError } from './errors.js';
-export { createTurnDecisionRequest, resolveTurnDecision } from './bounded-decision.js';
-export { enterG4WithMaterialization } from './first-entry-materialization.js';
+export {
+  requireTurnStepCommitEnvelope
+} from './turn-step-commit-envelope.js';
+export {
+  TURN_STEP_REQUEST_V1_SCHEMA,
+  TURN_STEP_PLAN_V1_SCHEMA,
+  validateTurnStepRequest,
+  validateTurnStepPlan,
+  requestTurnStepPlan
+} from './turn-step-contracts.js';
+export {
+  createTurnStepExecutionRegistry,
+  runTurnStepLoop
+} from './turn-step-loop.js';
+export {
+  resolveTurnStepExactTimeWindow,
+  resolveTurnStepSemanticActivityTime
+} from
+  './semantic-activity-time.js';
+export {
+  TurnWorkflowError,
+  createTurnDecisionRequest,
+  resolveTurnDecision,
+  enterG4WithMaterialization
+};
 export {
   createTurnAvailableActionSet,
   createTurnCommandRegistry,

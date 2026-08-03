@@ -9,12 +9,13 @@ export function createTraceRouteBodyEffect({ phase2BodyEffect, phase3Contracts, 
         ? phase3Contracts?.routeBodyEffect
         : input.consequence?.phase4_kind === 'movement'
           ? phase4Contracts?.routeBodyEffect : null;
-      return effect == null ? phase2BodyEffect.apply(input) : applyRouteEffect(input, effect);
+      return effect == null ? phase2BodyEffect.apply(input)
+        : applyApprovedTraceRouteBodyEffect({ ...input, effect });
     }
   });
 }
 
-function applyRouteEffect(input, effect) {
+export function applyApprovedTraceRouteBodyEffect({ effect, ...input }) {
   const elapsed = input.time_update?.exact_elapsed?.exact_minutes;
   if (!valid(effect) || elapsed?.numerator !== String(effect.elapsed_minutes) || elapsed?.denominator !== '1') throw fail('TRACE_ROUTE_BODY_PROFILE_MISMATCH');
   const delta = effect.exact_deltas;

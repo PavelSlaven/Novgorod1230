@@ -2,15 +2,15 @@
 
 ## Нормативная актуализация materialization v2
 
-Шаблоны ниже применяются только в разрешённых ролях: `bounded_decision`, `player_character`, `audit`, `visible_context` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит закрытые options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; свободные state patches, SQL, новые entity/category/template/profile/rule IDs запрещены.
+Шаблоны ниже применяются только в разрешённых ролях: `turn_step_planner`, `turn_step_planner_repair`, `bounded_decision`, `player_character`, `audit` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит закрытые options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; этот протокол не является fallback для свободной заявки игрока. Для player planner допустим только строгий `turn_step_request_v1` → `turn_step_plan_v1`.
 
-G5, NPC, items, containers, inventories и штатные последствия материализует код. Если старый шаблон ниже поручает это LLM, такая инструкция не применяется и должна быть заменена code materializer call или bounded protocol.
+G5, NPC, authored/significant/hidden items, containers, inventories и штатные последствия материализует код. Player step plan может предложить ordinary direct action result только в трёх разрешённых origin classes; code-owned admission проверяет его и сохраняет exact runtime mechanics snapshot. Если старый шаблон ниже поручает LLM materialization вне этой границы, такая инструкция не применяется.
 
 Temporal World v4 дополнительно запрещает LLM-проектор безопасности. Видимый
 factual package формирует код, сохраняет его атомарно со state change и только
 после commit передаёт narrator. LLM не создаёт даты, schedules, temporal
 boundaries, weather transitions, consequences или отсутствующие options.
-Профильный proposed-норматив:
+Профильный active-норматив:
 `temporal_world_and_interruptible_activities.md`.
 
 ## Назначение документа
@@ -101,9 +101,14 @@ boundaries, weather transitions, consequences или отсутствующие 
 
 ```text
 ввод игрока
-→ code registry и, при необходимости, bounded choice
-→ code-проверка доступности действия
-→ code-расчёт последствий
+→ однозначный exact registered command без LLM
+  или player-safe turn_step_request_v1
+→ turn_step_planner: один следующий исполнимый шаг
+→ strict validation, optional one structural repair
+→ code execution/direct operation или делегирование domain owner
+→ обновлённая code-owned working projection
+→ следующий внутренний шаг либо player-response/terminal boundary
+→ commit-time revalidation
 → валидированный logical change set
 → code-owned отделение видимого от скрытого
 → atomic commit состояния и factual visible package
@@ -127,10 +132,42 @@ boundaries, weather transitions, consequences или отсутствующие 
 
 ---
 
-<!-- knowledge-retrieval-exclude:start -->
-# 3. Промт агента отбора видимого контекста
+## 2.1. Active player `turn_step_planner`
 
-Этот агент особенно важен. Он стоит между ведущим игры и агентом художественной прозы.
+Каноническая роль применяется только к свободной заявке персонажа игрока, если exact command registry не дал один однозначный результат. Autonomous NPC, conversation и combat semantic planners этим шаблоном не активируются.
+
+```md
+# Роль
+
+Ты — semantic planner следующего исполнимого шага одного root turn.
+
+# Ввод
+
+Используй только переданный `turn_step_request_v1`: root action, remaining intent, committed state version, working revision, completed steps, actor и player-safe state.
+
+# Задача
+
+Верни ровно один `turn_step_plan_v1`. Сохрани цель игрока, адаптируй невозможное намерение к ближайшей реальной попытке и выбери только допустимый `direct`, `generic_check`, `domain_request` или `clarification_required`.
+
+# Ограничения
+
+Не объявляй успех, RNG, exact elapsed, route, body delta, derived inventory values, NPC decision, combat result, hidden fact, SQL, write plan или state patch. Не придумывай container contents и authored/significant/hidden entity. Планируй только следующий шаг; остаток намерения возвращай как continuation.
+
+# Формат
+
+Верни только JSON, строго соответствующий `turn_step_plan_v1`, без дополнительных полей и прозы.
+```
+
+## 2.2. Structural repair player plan
+
+Если первый ответ структурно невалиден, допускается ровно один вызов `turn_step_planner_repair`. Он получает тот же immutable `turn_step_request_v1` и только список structural errors. Repair возвращает полный `turn_step_plan_v1`, не меняет request, не получает новый factual context и не добавляет новых игровых фактов. Повторная ошибка останавливает root turn до execution и commit.
+
+---
+
+<!-- knowledge-retrieval-exclude:start -->
+# 3. Архивный промт агента отбора видимого контекста
+
+Этот шаблон сохранён только для migration traceability. В active runtime player-safe factual projection является code-owned и отдельный LLM visible projector запрещён.
 
 Он может видеть полное состояние текущей сцены, включая скрытые процессы, но его задача — не писать прозу, а подготовить безопасный видимый пакет.
 
@@ -426,7 +463,7 @@ boundaries, weather transitions, consequences или отсутствующие 
 
 Отдельного LLM-агента последствий нет. Доступность, checks, consequences, hidden update и logical change set рассчитывают зарегистрированные code handlers.
 
-LLM вызывается только если код сформировал не менее двух допустимых вариантов. Она получает `bounded_decision_request_v2` и возвращает точный `bounded_decision_result_v2` с `request_id`, `state_version`, `option_id` и `command_token`. Проза, новые команды, state patches, физические таблицы и дополнительные поля запрещены. Код проверяет expiry, policy/state version, option membership, token и актуальные preconditions; затем зарегистрированный handler рассчитывает последствие.
+LLM вызывается только для genuinely closed domain choice, когда код сформировал не менее двух допустимых вариантов. Она получает `bounded_decision_request_v2` и возвращает точный `bounded_decision_result_v2` с `request_id`, `state_version`, `option_id` и `command_token`. Проза, новые команды, state patches, физические таблицы и дополнительные поля запрещены. Код проверяет expiry, policy/state version, option membership, token и актуальные preconditions; затем зарегистрированный handler рассчитывает последствие. Unknown/free-form player input не переводится в bounded options и использует active player step planner.
 
 Для NPC bounded request описывает только человеческий смысл уже approved
 options и player-hidden, но NPC-known decision projection: релевантные части

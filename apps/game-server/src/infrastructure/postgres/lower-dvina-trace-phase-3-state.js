@@ -5,6 +5,7 @@ export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId
 }) {
   const next = structuredClone(state);
+  const routeTime = phase3RouteTimeUpdate(factual);
   delete next.relevant_hidden_state;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = {
@@ -23,7 +24,7 @@ export function nextState({
       history_id: `body-history:${state.party_id}:trace-phase3:${turnNumber}`,
       effect_ref: factual.body_update.proposal.profile_ref,
       activity_attempt_id: factual.body_update.proposal.activity_attempt_id,
-      occurred_at: structuredClone(factual.time_update.clock_after)
+      occurred_at: structuredClone(routeTime.clock_after)
     }];
     next.party_state.body_state_version = state.party_state.body_state_version + 1;
   }
@@ -50,8 +51,8 @@ export function nextState({
     next.route_history = [...(next.route_history ?? []), {
       route_ref: factual.consequence.movement.route_ref,
       activity_ref: factual.consequence.movement.activity_ref,
-      started_at: factual.time_update.clock_before,
-      ended_at: factual.time_update.clock_after,
+      started_at: routeTime.clock_before,
+      ended_at: routeTime.clock_after,
       change_set_id: changeSetId
     }];
     next.route_knowledge = [...new Set([
@@ -145,6 +146,11 @@ export function activityHistoryEntry({
   changeSetId
 }) {
   const phase3Kind = factual.consequence.phase3_kind;
+  const time = phase3Kind === 'movement'
+    ? phase3RouteTimeUpdate(factual) : factual.time_update;
+  const duration = phase3Kind === 'movement'
+    ? Number(time.exact_elapsed?.exact_minutes?.numerator)
+    : factual.consequence.duration_minutes;
   return {
     activity_execution_id:
       phase3Kind === 'movement'
@@ -158,15 +164,23 @@ export function activityHistoryEntry({
     request_id: factual.player_input.request_id,
     input_digest: inputDigest,
     change_set_id: changeSetId,
-    duration_minutes: factual.consequence.duration_minutes,
-    started_at: structuredClone(factual.time_update.clock_before),
-    ended_at: structuredClone(factual.time_update.clock_after),
+    duration_minutes: duration,
+    started_at: structuredClone(time.clock_before),
+    ended_at: structuredClone(time.clock_after),
     execution_result: structuredClone(
       phase3Kind === 'movement'
         ? factual.consequence.movement
         : factual.consequence.conversation
     )
   };
+}
+
+function phase3RouteTimeUpdate(factual) {
+  const route = factual.time_update?.prepared_effect_ledger?.slices?.find(
+    ({ effect_kind: kind, owner_ref: owner }) =>
+      kind === 'domain_command'
+      && owner === 'lower_dvina_trace.follow_path_to_fishing_camp');
+  return route?.time_update ?? factual.time_update;
 }
 
 export function phase3ActivityRef(factual) {

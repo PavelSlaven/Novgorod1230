@@ -113,8 +113,8 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
     'failure after migration 009 must roll back every 001→009 DDL effect'
   );
 
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 14);
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 14, '001→014 chain is re-applicable');
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 15);
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 15, '001→015 chain is re-applicable');
 
   const timestampTruth = await pool.query(`SELECT
     party_runtime.game_timestamp_parts_valid(12,1,3) AS valid,
@@ -135,6 +135,136 @@ test('Temporal World target persistence is exact, party-isolated, replay-safe an
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ('party-one',3,'w','d','m','r','c','b'),('party-two',3,'w','d','m','r','c','b')`);
+  await pool.query(`INSERT INTO party_runtime.party_materialization_runs
+    (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
+     materializer_version,rng_version,result_digest,idempotency_key,status)
+    VALUES ('party-one','authored-run','g4','expansion','s','i','c','m','r','o',
+      'authored-run','committed')`);
+  const runtimeMechanicsSnapshot = {
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
+    version: 1,
+    provenance: {
+      source_kind: 'ordinary_direct_action_result',
+      root_turn_id: 'turn-one',
+      step_index: 1,
+      operation_ref: 'operation-one',
+      origin_kind: 'ambient_ordinary',
+      source_refs: ['shore']
+    },
+    mechanics: {
+      mass_grams: 40,
+      external_hand_cost: 0,
+      carry_form: 'compact',
+      packing_slot_cost: 1,
+      quantity: { value: 1, unit: 'piece' },
+      container: null
+    }
+  };
+  const changedSnapshotJson = (change) => {
+    const snapshot = structuredClone(runtimeMechanicsSnapshot);
+    change(snapshot);
+    return JSON.stringify(snapshot);
+  };
+  const quantityLiteralSnapshotJson = (literal) =>
+    JSON.stringify(runtimeMechanicsSnapshot).replace(
+      '"quantity":{"value":1,"unit":"piece"}',
+      `"quantity":{"value":${literal},"unit":"piece"}`
+    );
+  await pool.query(`INSERT INTO party_runtime.party_items
+    (party_id,item_id,run_id,template_id,profile_id,category_id,
+     condition_state,legal_status,state)
+    VALUES
+      ('party-one','authored-item','authored-run','template','profile','category',
+       'intact','ordinary','{}'),
+      ('party-one','runtime-item',NULL,NULL,NULL,NULL,'intact','ordinary',
+       jsonb_build_object('runtime_instance_mechanics_snapshot',$1::jsonb)),
+      ('party-two','foreign-item',NULL,NULL,NULL,NULL,'intact','ordinary',
+       jsonb_build_object('runtime_instance_mechanics_snapshot',$1::jsonb))`,
+  [JSON.stringify(runtimeMechanicsSnapshot)]);
+  await pool.query(`INSERT INTO party_runtime.party_items
+    (party_id,item_id,run_id,template_id,profile_id,category_id,
+     condition_state,legal_status,state)
+    VALUES
+      ('party-one','runtime-null-quantity',NULL,NULL,NULL,NULL,
+       'intact','ordinary',jsonb_build_object(
+         'runtime_instance_mechanics_snapshot',$1::jsonb)),
+      ('party-one','runtime-max-quantity',NULL,NULL,NULL,NULL,
+       'intact','ordinary',jsonb_build_object(
+         'runtime_instance_mechanics_snapshot',$2::jsonb))`, [
+    changedSnapshotJson((snapshot) => {
+      snapshot.mechanics.quantity = null;
+    }),
+    changedSnapshotJson((snapshot) => {
+      snapshot.mechanics.quantity.value = Number.MAX_VALUE;
+    })
+  ]);
+  await pool.query(`INSERT INTO party_runtime.party_item_placements
+    (party_id,item_id,attached_item_id)
+    VALUES ('party-one','runtime-item','authored-item')`);
+  await expectRejected(pool, `INSERT INTO party_runtime.party_items
+    (party_id,item_id,run_id,template_id,profile_id,category_id,
+     condition_state,legal_status,state)
+    VALUES ('party-one','mixed-item',NULL,'template',NULL,NULL,'intact','ordinary',
+      jsonb_build_object('runtime_instance_mechanics_snapshot',$1::jsonb))`,
+  [JSON.stringify(runtimeMechanicsSnapshot)], 'mixed mechanics sources must fail');
+  await expectRejected(pool, `INSERT INTO party_runtime.party_items
+    (party_id,item_id,run_id,template_id,profile_id,category_id,
+     condition_state,legal_status,state)
+    VALUES ('party-one','malformed-item',NULL,NULL,NULL,NULL,'intact','ordinary',
+      jsonb_build_object('runtime_instance_mechanics_snapshot',$1::jsonb))`,
+  [JSON.stringify({ ...runtimeMechanicsSnapshot, version: 2 })],
+  'malformed runtime mechanics snapshot must fail');
+  const invalidRuntimeSnapshots = [
+    ['root-tab', changedSnapshotJson((snapshot) => {
+      snapshot.provenance.root_turn_id = '\tturn-one';
+    })],
+    ['operation-lf', changedSnapshotJson((snapshot) => {
+      snapshot.provenance.operation_ref = 'operation-one\n';
+    })],
+    ['source-cr', changedSnapshotJson((snapshot) => {
+      snapshot.provenance.source_refs = ['\rshore'];
+    })],
+    ['unit-nbsp', changedSnapshotJson((snapshot) => {
+      snapshot.mechanics.quantity.unit = '\u00a0piece';
+    })],
+    ['root-bom', changedSnapshotJson((snapshot) => {
+      snapshot.provenance.root_turn_id = '\ufeffturn-one';
+    })],
+    ['source-unicode-space', changedSnapshotJson((snapshot) => {
+      snapshot.provenance.source_refs = ['shore\u2003'];
+    })],
+    ['unsafe-mass', changedSnapshotJson((snapshot) => {
+      snapshot.mechanics.mass_grams = Number.MAX_SAFE_INTEGER + 1;
+    })],
+    ['unsafe-packing', changedSnapshotJson((snapshot) => {
+      snapshot.mechanics.packing_slot_cost = Number.MAX_SAFE_INTEGER + 1;
+    })],
+    ['quantity-overflow', quantityLiteralSnapshotJson('1e309')],
+    ['quantity-underflow', quantityLiteralSnapshotJson('1e-400')]
+  ];
+  for (const [caseId, snapshotJson] of invalidRuntimeSnapshots) {
+    const validation = await pool.query(
+      `SELECT party_runtime.runtime_instance_mechanics_snapshot_valid(
+        $1::jsonb
+      ) AS valid`,
+      [snapshotJson]
+    );
+    assert.equal(validation.rows[0].valid, false, caseId);
+    await expectRejected(pool, `INSERT INTO party_runtime.party_items
+      (party_id,item_id,run_id,template_id,profile_id,category_id,
+       condition_state,legal_status,state)
+      VALUES ('party-one',$1,NULL,NULL,NULL,NULL,'intact','ordinary',
+        jsonb_build_object('runtime_instance_mechanics_snapshot',$2::jsonb))`,
+    [`invalid-${caseId}`, snapshotJson], `${caseId} snapshot must fail`);
+  }
+  await expectRejected(pool, `INSERT INTO party_runtime.party_item_placements
+    (party_id,item_id,attached_item_id)
+    VALUES ('party-one','authored-item','foreign-item')`, [],
+  'attached item must belong to the same party');
+  await expectRejected(pool, `INSERT INTO party_runtime.party_item_placements
+    (party_id,item_id,attached_item_id)
+    VALUES ('party-one','authored-item','authored-item')`, [],
+  'self-attached item placement must fail');
   await expectRejected(pool, `INSERT INTO party_runtime.party_temporal_events
     (event_id,party_id,event_kind,status,scheduled_at_whole_minutes,scheduled_at_subminute_numerator,scheduled_at_subminute_denominator,rule_ref,policy_ref,preconditions_digest,idempotency_key,change_set_id)
     VALUES ('bad-time','party-one','timer','pending',1,2,4,'{}','{}','d','bad-time','cs')`, [], 'non-reduced event timestamp must fail');

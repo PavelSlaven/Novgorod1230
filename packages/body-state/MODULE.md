@@ -14,7 +14,7 @@ Pure owner body metrics and target Temporal v4 body-time proposals. Из exact e
 
 ## Public API и контракты
 
-`BODY_METRICS`, `clampBodyMetric`, `normalizeBodyState`, `applyBodyStateChange`, `stateModifier`, `validateBodyState`; target API принимает closed approved profile + exact rational elapsed (или `(window_start, window_end]`), explicit `body_state_ref`, scope, environment snapshot, conditions and matching dependency pins. Выход — frozen `{ ok: true, body_change_proposal | threshold_candidate, validation_report, trace }`; threshold can be `null` when none is reached.
+`BODY_METRICS`, `clampBodyMetric`, `normalizeBodyState`, `applyBodyStateChange`, `applyApprovedFixedBodyEffect`, `stateModifier`, `validateBodyState`; target API принимает closed approved profile + exact rational elapsed (или `(window_start, window_end]`), explicit `body_state_ref`, scope, environment snapshot, conditions and matching dependency pins. `applyApprovedFixedBodyEffect` отдельно применяет один exact digest-pinned semantic/direct event без владения clock или persistence. Выход — frozen `{ ok: true, body_change_proposal | threshold_candidate, validation_report, trace }`; threshold can be `null` when none is reached.
 
 Versioned declarative registry `src/declarative-content-contracts.v2.json` exact-supersedes v1 и добавляет schema `rus.trace_body_environment_profiles.v2`. Runtime-ready fixed effect обязан содержать точные числовые deltas, точные `from`/`to` condition outcomes, единственную policy `fixed_approved_effect` и запрет RNG; ranges, `may`, aliases и неявный выбор значения блокируют admission. Registry остаётся generic: он не содержит scenario-specific IDs, runtime handlers или persistence.
 

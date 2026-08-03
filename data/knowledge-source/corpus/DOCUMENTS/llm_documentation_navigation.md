@@ -16,7 +16,7 @@ fallback.
 
 ## Приоритет кодовой материализации
 
-Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC/items из утверждённых profiles/rules. LLM ограничен bounded decisions, персонажем игрока, аудитом и прозой. Это правило заменяет прежние формулы «LLM создаёт смысл, код только хранит» во всех нижестоящих описаниях.
+Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC и authored/significant/hidden items из утверждённых profiles/rules. LLM ограничен active player `turn_step_plan_v1`, genuinely closed bounded decisions, персонажем игрока, аудитом и прозой. Ordinary direct action result проходит отдельный code-owned admission и получает persisted exact runtime mechanics snapshot; он не является fallback для пустого authored candidate set.
 
 Для domain-scoped activation `item_container_materialization_v2` дополнительно
 обязательны `read_only_database_and_graph_architecture.md` и generated
@@ -27,7 +27,7 @@ fallback.
 readiness, выполненных queries/checks и operator blockers. Эти implementation
 paths не заменяют active-нормативы.
 
-Актуализировано: 2026-07-14.
+Актуализировано: 2026-08-03.
 
 Этот файл нужен для быстрой ориентации LLM, разработчика или аудитора в папке `DOCUMENTS`. Он не заменяет нормативные документы и не вводит новых правил. Если этот README расходится с высшим нормативом materialization v2 или профильным документом, применяется установленный ниже приоритет.
 
@@ -60,6 +60,18 @@ processes его необходимо читать полностью вмест
 Его active status означает нормативную власть amendment. Историческое P28
 exact-head evidence не активировало production; последующий release
 `spatial-v3-production-v1` прошёл собственную candidate-bound validation.
+
+### Active и proposed semantic LLM contracts
+
+- free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13);
+- autonomous NPC → `npc_autonomous_decision_contract.md` (`proposed`);
+- conversation → `npc_conversation_mode_contract.md` (`proposed`);
+- combat/NPC triggers → `npc_combat_and_trigger_contract.md` (`proposed`).
+
+Active player contract доступен в default retrieval и является единственной
+semantic boundary свободной заявки игрока после exact fast path. Три NPC
+документа доступны только при явном retrieval с `--statuses proposed`, не
+меняют production semantics и активируются только собственным code cutover.
 
 Дополнительные правила навигации:
 
@@ -98,10 +110,11 @@ exact-head evidence не активировало production; последующ
 
 ### Для LLM-архитектуры, промтов и работы с источниками
 
-1. `information_sources_llm_prompts.md`
-2. `llm_agent_prompt_templates.md`
-3. `world_generation_and_turns.txt`
-4. `interface_ux.md`
+1. `turn_step_llm_contract.md` — для свободной заявки игрока и player semantic boundary
+2. `information_sources_llm_prompts.md`
+3. `llm_agent_prompt_templates.md`
+4. `world_generation_and_turns.txt`
+5. `interface_ux.md`
 
 ## 3. Карта документов
 
@@ -111,13 +124,14 @@ exact-head evidence не активировало production; последующ
 | `world_regions.txt` | Список допустимых регионов мира RUS13. Задаёт историко-географическую сетку, в пределах которой выбираются стартовые и последующие регионы партии. | При выборе региона, смене региона, проверке географической допустимости, создании исторического фона и маршрутов. |
 | `spatial_architecture_standard_g0_g6.md` | Главный production v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release boundary. | При проектировании пространственной модели, contracts, DDL/migration plan и проверке sole-owner production boundary. |
 | `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
-| `world_generation_and_turns.txt` | Production v3: G0–G6/position, bounded preparation/materialization и turn boundary; archived v2 источник сохранён для migration/rollback traceability. | При проектировании start/materialization/slots/expansion и проверке active v3 boundary. |
+| `turn_step_llm_contract.md` | Active strict contract свободной заявки игрока: exact fast path, player-safe request, `turn_step_plan_v1`, working projection, direct/check/domain execution, one repair и atomic commit. NPC semantic modes не активирует. | При изменении player input, turn-step schemas/prompts, semantic loop, ordinary direct action results, continuation и commit boundary. |
+| `world_generation_and_turns.txt` | Production v3: G0–G6/position, bounded preparation/materialization и active player turn-step boundary; archived v2 источник сохранён для migration/rollback traceability. | При проектировании start/materialization/slots/expansion и проверке active v3/player-turn boundary. |
 | `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |
 | `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |
 | `time_system.txt` | Target routing для exact времени; authoritative Temporal World v4 details находятся в профильном amendment, архивная v2-проза исключена из retrieval. | При любом действии, которое занимает время; для target implementation обязательно затем читать active temporal amendment. |
 | `movement_locations_regions.txt` | Target v3: typed endpoints, authored topology, readiness, immutable plans и execution; archived v2 источник сохранён для traceability. | При target-проектировании перемещения, path query, route/segment authoring и boundary. |
-| `items_and_property.txt` | Общие правила материальной среды: предметы, имущество, доступ, контейнеры, обнаружимость, право владения, состояние, ценность, следы, риски, материализация предметов и связь вещей с локацией/персонажами. | При создании или проверке предметов сцены, контейнеров, собственности, доступа, кражи, обмена, ремонта, поиска, ценности и правдоподобия материальной среды. |
-| `character_inventory_equipment.txt` | Правила для вещей, которые персонаж физически несёт при себе. Описывает вес, нагрузку, быстрый доступ, контейнеры, занятые руки, влияние предметов на проверки, износ, владение и социально-правовые риски. | Когда персонаж берёт, несёт, достаёт, теряет, использует или показывает предмет; при расчёте нагрузки, доступа к вещам и влияния снаряжения на действия. |
+| `items_and_property.txt` | Два класса materialization: code-owned authored/significant/hidden предметы из approved candidates и ordinary direct action results с exact runtime mechanics snapshot; также имущество, доступ, контейнеры, видимость, право и риск. | При создании или проверке предметов сцены, player-created ordinary results, контейнеров, собственности, доступа, поиска и правдоподобия материальной среды. |
+| `character_inventory_equipment.txt` | Правила инвентаря и два допустимых источника exact mechanics: approved authored profile либо persisted runtime instance snapshot. Derived mass/load/hands/capacity остаются code-owned. | Когда персонаж берёт, создаёт действием, несёт, достаёт, теряет или использует предмет; при расчёте нагрузки и доступа. |
 | `npc_inventory_item_marks.txt` | Правила для предметов, которые NPC держит при себе или контролирует в текущей сцене. Описывает владельца, держателя, доступность, видимость, метки, узнавание вещи, скрытые предметы, кражу, передачу и последствия обнаружения. | При обыске NPC, краже, передаче вещей, распознавании чужого предмета, проверке улик, меток собственности и реакции владельца. |
 | `npc_generation_profiles.txt` | Описывает три уровня NPC: фоновый, сценический и ключевой. Задаёт, какие параметры нужны каждому уровню, когда профиль повышается/понижается, как хранить память, отношение, знания, ресурсы, навыки и последствия. | При создании NPC, взаимодействии с NPC, повышении NPC до сценического или ключевого уровня, сохранении отношений, долгов, памяти и долговременных последствий. |
 | `weapons_and_armor.txt` | Типы оружия, брони, щитов и боевого снаряжения как сочетание боевого эффекта, веса, доступности, состояния, права и риска. | При выборе оружия, определении опасности попадания, снижении вреда бронёй, проверке допустимости ношения оружия, социального риска и физической нагрузки. |
@@ -128,13 +142,14 @@ exact-head evidence не активировало production; последующ
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
-| `llm_agent_prompt_templates.md` | Рабочие шаблоны только для разрешённых LLM-ролей. Security projection является code-owned; narrator получает уже persisted player-safe package. | При изменении LLM-пайплайна, разрешённых bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
+| `llm_agent_prompt_templates.md` | Active player planner/repair pipeline и шаблоны разрешённых LLM-ролей. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении turn-step planner, LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
 
 ## 4. Как выбирать нужный документ по задаче
 
 | Задача | Читать сначала | Затем сверить |
 |---|---|---|
-| Создать новую партию, стартовую сцену, новый узел мира или обработать ход | `world_generation_and_turns.txt` | `time_system.txt`, `movement_locations_regions.txt`, `interface_ux.md` |
+| Обработать свободную заявку игрока или изменить player semantic loop | `turn_step_llm_contract.md` | `world_generation_and_turns.txt`, `packages/turn/MODULE.md`, `docs/pipelines/turn.md` |
+| Создать новую партию, стартовую сцену или новый узел мира | `world_generation_and_turns.txt` | `time_system.txt`, `movement_locations_regions.txt`, `interface_ux.md` |
 | Создать или проверить персонажа игрока | `player_character_generation.txt` | `character_parameters.txt`, `character_inventory_equipment.txt`, `items_and_property.txt` |
 | Рассчитать проверку, состояние тела, штраф или навык | `character_parameters.txt` | `formulas.md`, релевантный документ системы действия |
 | Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `temporal_world_and_interruptible_activities.md` | `time_system.txt`, `character_parameters.txt`, `historical_events_and_figures.txt` |

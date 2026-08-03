@@ -4,6 +4,9 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
   createFirstPlayablePublicRuntime
 } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
@@ -295,6 +298,10 @@ function buildRuntime({
       );
     },
     decisionSecret: 'phase-4-postgres-secret',
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations:
+        lowerDvinaTraceConversationTemporalEffectRegistrations()
+    }),
     now: () => '2026-07-30T08:00:00.000Z'
   });
   return createFirstPlayablePublicRuntime({ partyPool: pool, committer, release,
@@ -363,7 +370,7 @@ async function runLiePath({ pool, release, runtimeCatalogPin }) {
   const after = await latestSnapshot(pool, party.party_id);
   assert.equal(
     Number(after.clock.whole_minutes) - Number(before.clock.whole_minutes),
-    20
+    10
   );
   await assertNonSurrenderSemanticRows(pool, party.party_id, 'lie');
   const lie = after.interactions.find(({ interaction_id: id }) =>
@@ -429,7 +436,7 @@ async function runBargainPath({ pool, release, runtimeCatalogPin }) {
   assert.equal(
     Number(offeredSnapshot.clock.whole_minutes)
       - Number(before.clock.whole_minutes),
-    20
+    10
   );
   await assertNonSurrenderSemanticRows(pool, party.party_id, 'bargain');
   const offeredPromise = offeredSnapshot.promise_instances[0];
@@ -546,7 +553,7 @@ async function runCombatHandoffPath({ pool, release, runtimeCatalogPin }) {
   const after = await latestSnapshot(pool, party.party_id);
   assert.equal(
     Number(after.clock.whole_minutes) - Number(before.clock.whole_minutes),
-    20
+    10
   );
   assert.deepEqual(after.body_state, before.body_state);
   assert.deepEqual(after.player_response_boundary, {
@@ -572,12 +579,12 @@ async function runCombatHandoffPath({ pool, release, runtimeCatalogPin }) {
     [`activity:${party.party_id}:trace-phase4:5:`]
   )).rows;
   assert.deepEqual(activities, [
-    { minutes: 20, actual: 20, status: 'completed',
+    { minutes: 10, actual: 10, status: 'completed',
       result_kind: 'completed',
       execution_start: Number(before.clock.whole_minutes),
-      execution_end: Number(before.clock.whole_minutes) + 20,
+      execution_end: Number(before.clock.whole_minutes) + 10,
       attempt_start: Number(before.clock.whole_minutes),
-      attempt_end: Number(before.clock.whole_minutes) + 20 }
+      attempt_end: Number(before.clock.whole_minutes) + 10 }
   ]);
   await assertNonSurrenderSemanticRows(
     pool,

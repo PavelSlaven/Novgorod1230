@@ -17,11 +17,14 @@ import {
   signalRecord
 } from './lower-dvina-trace-phase-4-state-shared.js';
 import { appendSurrenderDecisionSignals } from './lower-dvina-trace-phase-4-state-surrender.js';
+import { applyConversationTemporalNpcWrites } from
+  './lower-dvina-trace-conversation-temporal.js';
 
 export function projectPhase4SemanticNegotiation({
   next, state, negotiation, turnNumber, changeSetId, contracts
 }) {
   const semantic = negotiation.semantic_exchange;
+  applyConversationTemporalNpcWrites(next, semantic);
   const responseKind = semantic.response_kind;
   const validKinds = new Set([
     'surrender', 'lie', 'bargain', 'speech', 'silence',
@@ -49,7 +52,8 @@ export function projectPhase4SemanticNegotiation({
   }
 
   const commitmentActive = semantic.commitment?.status === 'active';
-  const offerCommitted = negotiation.offer_stage !== null;
+  const offerCommitted = negotiation.offer_stage !== null
+    && semantic.exchange.applied_contribution_count >= 1;
   if ((responseKind === 'surrender') !== commitmentActive
       || (responseKind === 'surrender'
         && (!semantic.surrender

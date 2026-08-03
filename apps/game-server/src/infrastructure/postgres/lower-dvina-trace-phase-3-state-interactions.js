@@ -7,6 +7,7 @@ export function phase3SemanticInteractions({
   factual,
   turnNumber
 }) {
+  if (semantic.exchange.applied_contribution_count < 1) return [];
   const evidencePresentation = semantic.evidence_presentation ?? null;
   const hasDecision = semantic.decision_request !== null;
   const firstContribution = semantic.exchange.contributions[0];

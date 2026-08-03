@@ -7,6 +7,11 @@ export function appendPhase4ActivityExecution({
   activitySeriesId, attemptOrdinal, turnNumber, changeSetId, idemId
 }) {
   const duration = root.duration_minutes;
+  const budget = factual.consequence.negotiation?.semantic_exchange
+    ?.exchange?.time_budget ?? null;
+  const actual = budget?.elapsed_minutes ?? duration;
+  const remaining = budget?.remaining_minutes ?? 0;
+  const completed = budget?.status !== 'paused';
   const reachesPlayerBoundary = root.status === 'player_response_required';
   const started = seriesOrdinal === 0 ? factual.time_update.clock_before : {
     whole_minutes: String(
@@ -16,7 +21,7 @@ export function appendPhase4ActivityExecution({
     subminute_denominator: factual.time_update.clock_before.subminute_denominator
   };
   const ended = addElapsedTime(started, {
-    exact_minutes: { numerator: String(duration), denominator: '1' }
+    exact_minutes: { numerator: String(actual), denominator: '1' }
   });
   if (seriesOrdinal === 1
       && canonicalDigest(ended) !== canonicalDigest(next.clock)) {
@@ -28,15 +33,15 @@ export function appendPhase4ActivityExecution({
       activity_ref: root.activity_ref, phase4_kind: 'negotiation'
     },
     original_total_minutes: duration,
-    cumulative_elapsed_numerator: duration,
+    cumulative_elapsed_numerator: actual,
     cumulative_elapsed_denominator: 1,
-    remaining_time_numerator: 0,
+    remaining_time_numerator: remaining,
     remaining_time_denominator: 1,
     next_attempt_ordinal: attemptOrdinal + 1,
-    status: 'completed',
+    status: completed ? 'completed' : 'paused',
     state_version: 1,
     updated_change_set_id: changeSetId,
-    terminal_change_set_id: changeSetId,
+    terminal_change_set_id: completed ? changeSetId : null,
     execution_scope: 'standalone',
     activity_series_id: activitySeriesId,
     activity_owner_ref: { entity_kind: 'actor', entity_id: state.actor_id },
@@ -65,9 +70,11 @@ export function appendPhase4ActivityExecution({
     next_boundary_at_subminute_denominator: null,
     progress: {},
     preconditions_digest: canonicalDigest(factual.mode_resolution),
-    terminal_reason_code: reachesPlayerBoundary
-      ? 'player_response_boundary_reached'
-      : 'phase_4_activity_completed'
+    terminal_reason_code: completed
+      ? reachesPlayerBoundary
+        ? 'player_response_boundary_reached'
+        : 'phase_4_activity_completed'
+      : null
   }));
   appends.push(row('party_timed_activity_attempts', `${id}:${attemptOrdinal}`, {
     activity_execution_id: id,
@@ -76,20 +83,20 @@ export function appendPhase4ActivityExecution({
     remaining_before_denominator: 1,
     planned_time_numerator: duration,
     planned_time_denominator: 1,
-    actual_time_numerator: duration,
+    actual_time_numerator: actual,
     actual_time_denominator: 1,
-    remaining_after_numerator: 0,
+    remaining_after_numerator: remaining,
     remaining_after_denominator: 1,
     cumulative_time_before_numerator: 0,
     cumulative_time_before_denominator: 1,
-    cumulative_time_after_numerator: duration,
+    cumulative_time_after_numerator: actual,
     cumulative_time_after_denominator: 1,
-    crossed_whole_minute_boundaries: duration,
+    crossed_whole_minute_boundaries: actual,
     clock_commit_mode: 'direct_party_clock',
     execution_context_snapshot: {
       option_id: factual.mode_resolution.option_id
     },
-    result_kind: 'completed',
+    result_kind: completed ? 'completed' : 'paused',
     result_code: root.activity_ref,
     dynamic_dependency_pins: {},
     result_change_set_id: changeSetId,
@@ -101,9 +108,11 @@ export function appendPhase4ActivityExecution({
     ended_at_whole_minutes: ended.whole_minutes,
     ended_at_subminute_numerator: ended.subminute_numerator,
     ended_at_subminute_denominator: ended.subminute_denominator,
-    reason_code: reachesPlayerBoundary
-      ? 'player_response_boundary_reached'
-      : 'phase_4_activity_completed',
+    reason_code: completed
+      ? reachesPlayerBoundary
+        ? 'player_response_boundary_reached'
+        : 'phase_4_activity_completed'
+      : 'temporal_boundary_interruption',
     progress_before: {},
     progress_after: {},
     resource_reservations: [],

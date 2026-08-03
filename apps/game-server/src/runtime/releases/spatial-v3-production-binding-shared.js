@@ -35,6 +35,8 @@ import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-source.js';
 import { serverError } from '../../errors.js';
@@ -231,7 +233,10 @@ function createTraceTurnRuntime({
         config.temporalBoundaryRegistrations ?? []
       ),
       effect_registrations:
-        lowerDvinaTracePhase6TemporalEffectRegistrations()
+        [
+          ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+        ]
     }),
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret

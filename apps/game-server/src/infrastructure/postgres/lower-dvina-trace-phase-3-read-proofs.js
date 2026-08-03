@@ -21,11 +21,20 @@ export function phase3ActivityReadProof(payload, rows) {
       ended_at: entry.ended_at,
       execution_result: entry.execution_result
     }));
-  const valid = rows.every((entry) =>
-    entry.status === 'completed'
-    && entry.result_kind === 'completed'
-    && entry.actual_time_numerator === entry.original_total_minutes
-    && entry.actual_time_denominator === '1');
+  const expectedById = new Map((payload.activity_history ?? []).map(
+    (entry) => [entry.activity_execution_id, entry]
+  ));
+  const valid = rows.every((entry) => {
+    const budget = expectedById.get(entry.id)?.execution_result
+      ?.semantic_exchange?.exchange?.time_budget ?? null;
+    const status = budget?.status ?? 'completed';
+    const elapsed = String(budget?.elapsed_minutes
+      ?? entry.original_total_minutes);
+    return entry.status === status
+      && entry.result_kind === status
+      && entry.actual_time_numerator === elapsed
+      && entry.actual_time_denominator === '1';
+  });
   return { actual, expected, valid };
 }
 

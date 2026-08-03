@@ -13,6 +13,7 @@ export { tracePhase4PreconditionSatisfied };
 
 export function createTracePhase4Commands({ contracts, inputDigest,
   selectNpcDecision, playerConversationModel = null, npcSemanticModel = null,
+  temporalAdvanceOwner = null,
   revalidateStateVersion = null }) {
   const conversation = contracts.conversationBindings != null
     ? semanticNegotiationCommand({
@@ -20,6 +21,7 @@ export function createTracePhase4Commands({ contracts, inputDigest,
         inputDigest,
         playerConversationModel,
         npcSemanticModel,
+        temporalAdvanceOwner,
         revalidateStateVersion
       })
     : negotiationCommand({ contracts, inputDigest, selectNpcDecision });

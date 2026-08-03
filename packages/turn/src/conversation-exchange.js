@@ -1,14 +1,10 @@
 import { deepFreeze } from '@rus/kernel';
-import {
-  orderNpcConversationDecisionRequests,
-  validateNpcConversationResponseRequest,
-  validateNpcDecisionBoundary,
-  validateNpcSemanticDecisionTrace,
-  validatePlayerConversationInput
-} from '@rus/npc-runtime';
+import { validatePlayerConversationInput } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
+import { decisionPairKey, normalizeNpcBatch } from
+  './conversation-exchange-npc-batch.js';
 
 const DEFAULT_EXCHANGE_LIMIT = 8;
 const MAX_EXCHANGE_LIMIT = 32;
@@ -16,7 +12,8 @@ const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const INPUT_KEYS = new Set([
   'playerRequest',
   'initialWorkingState',
-  'maxContributionsPerExchange'
+  'maxContributionsPerExchange',
+  'timeBudget'
 ]);
 const APPLY_RESULT_KEYS = [
   'working_state',
@@ -86,6 +83,20 @@ function normalizeInput(input) {
     );
   }
 
+  const timeBudget = input.timeBudget;
+  if (!exactKeys(timeBudget, ['total_minutes', 'contribution_slots'])
+      || !Number.isSafeInteger(timeBudget.total_minutes)
+      || timeBudget.total_minutes < 1
+      || !Number.isSafeInteger(timeBudget.contribution_slots)
+      || timeBudget.contribution_slots < 1
+      || timeBudget.contribution_slots > maxContributionsPerExchange
+      || timeBudget.contribution_slots > timeBudget.total_minutes) {
+    fail(
+      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
+      'timeBudget must define one positive whole-exchange budget and bounded contribution slots'
+    );
+  }
+
   return {
     playerRequest: clone(input.playerRequest,
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
@@ -95,7 +106,8 @@ function normalizeInput(input) {
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'initialWorkingState must be a plain cloneable object'
     ),
-    maxContributionsPerExchange
+    maxContributionsPerExchange,
+    timeBudget: structuredClone(timeBudget)
   };
 }
 
@@ -108,6 +120,7 @@ function requirePorts(ports) {
     'revalidatePlayerStateVersion',
     'applyPlayerContribution',
     'advanceContributionTime',
+    'completeExchangeTime',
     'revalidateAfterContribution',
     'projectPlayerContributionPerception',
     'buildNpcResponseBatch',
@@ -129,10 +142,14 @@ function requirePorts(ports) {
 
 function normalizeTimeProgress(value) {
   if (!exactKeys(value, [
-    'working_state', 'temporal_boundary_refs', 'session_status'
+    'working_state', 'temporal_boundary_refs', 'session_status',
+    'elapsed_minutes', 'completed'
   ]) || !plainRecord(value.working_state)
       || !Array.isArray(value.temporal_boundary_refs)
-      || !SESSION_STATUSES.has(value.session_status)) {
+      || !SESSION_STATUSES.has(value.session_status)
+      || !Number.isSafeInteger(value.elapsed_minutes)
+      || value.elapsed_minutes < 0
+      || typeof value.completed !== 'boolean') {
     fail(
       'TURN_CONVERSATION_TIME_PROGRESS_INVALID',
       'Contribution time progress must return exact working state and boundaries'
@@ -148,7 +165,8 @@ async function progressAndProject({
   contributionIndex,
   perceptionPort,
   request = null,
-  proposal = null
+  proposal = null,
+  plannedMinutes
 }) {
   const progressed = normalizeTimeProgress(await callPort(
     ports.advanceContributionTime,
@@ -156,7 +174,8 @@ async function progressAndProject({
       working_state: applied.working_state,
       contribution_event: applied.contribution_event,
       plan,
-      contribution_index: contributionIndex
+      contribution_index: contributionIndex,
+      planned_duration_minutes: plannedMinutes
     },
     'TURN_CONVERSATION_TIME_PROGRESS_FAILED',
     'Conversation contribution time could not be advanced'
@@ -191,8 +210,17 @@ async function progressAndProject({
         ? progressed.session_status
         : projected.session_status
     }),
-    temporalBoundaryRefs: progressed.temporal_boundary_refs
+    temporalBoundaryRefs: progressed.temporal_boundary_refs,
+    elapsedMinutes: progressed.elapsed_minutes,
+    completed: progressed.completed
   };
+}
+
+function contributionSlices({ total_minutes: total, contribution_slots: slots }) {
+  const quotient = Math.floor(total / slots);
+  const remainder = total % slots;
+  return Array.from({ length: slots }, (_, index) =>
+    quotient + (index < remainder ? 1 : 0));
 }
 
 function normalizeApplyResult(value, code) {
@@ -205,116 +233,6 @@ function normalizeApplyResult(value, code) {
     fail(code, 'Contribution applier returned an invalid result');
   }
   return clone(value, code, 'Contribution applier result must be cloneable');
-}
-
-function sameRef(left, right) {
-  return left?.entity_kind === right?.entity_kind
-    && left?.entity_id === right?.entity_id;
-}
-
-function sameRefs(left, right) {
-  return left.length === right.length
-    && left.every((reference, index) => sameRef(reference, right[index]));
-}
-
-function exactBoundaryRequestLink(boundary, request) {
-  return boundary.decision_mode === 'conversation'
-    && boundary.boundary_id === request.boundary_id
-    && sameRef(boundary.npc_ref, request.npc_ref)
-    && boundary.state_version === String(request.state_version)
-    && boundary.significance === request.decision_reasons.significance
-    && boundary.categories.length === request.decision_reasons.categories.length
-    && boundary.categories.every((category, index) =>
-      category === request.decision_reasons.categories[index])
-    && sameRefs(boundary.signal_refs, request.decision_reasons.signal_refs);
-}
-
-function decisionPairKey(boundary) {
-  return `${boundary.npc_ref.entity_kind}\u0000${boundary.npc_ref.entity_id}`
-    + `\u0000${boundary.same_time_batch_ref.entity_kind}`
-    + `\u0000${boundary.same_time_batch_ref.entity_id}`;
-}
-
-function normalizeNpcBatch(value, processedBoundaryIds, processedDecisionPairs) {
-  const batch = clone(value,
-    'TURN_CONVERSATION_NPC_BATCH_INVALID',
-    'NPC response batch must be cloneable');
-  if (!exactKeys(batch, ['decisions', 'direct_addressee_refs'])
-    || !Array.isArray(batch.decisions)
-    || !Array.isArray(batch.direct_addressee_refs)) {
-    fail(
-      'TURN_CONVERSATION_NPC_BATCH_INVALID',
-      'NPC response batch must contain decisions and direct_addressee_refs arrays'
-    );
-  }
-
-  const boundaryIds = new Set();
-  const requestIds = new Set();
-  const batchDecisionPairs = new Set();
-  for (const decision of batch.decisions) {
-    if (!exactKeys(decision, ['boundary', 'request', 'persisted_trace'])
-      || !validateNpcDecisionBoundary(decision.boundary)
-      || !validateNpcConversationResponseRequest(decision.request)
-      || !exactBoundaryRequestLink(decision.boundary, decision.request)
-      || !(decision.persisted_trace === null
-        || (plainRecord(decision.persisted_trace)
-          && validateNpcSemanticDecisionTrace(decision.persisted_trace, decision.request)))) {
-      fail(
-        'TURN_CONVERSATION_NPC_BATCH_INVALID',
-        'Every NPC response decision must be formal and exactly linked'
-      );
-    }
-
-    const { boundary_id: boundaryId } = decision.boundary;
-    const { request_id: requestId } = decision.request;
-    if (boundaryIds.has(boundaryId) || requestIds.has(requestId)) {
-      fail(
-        'TURN_CONVERSATION_NPC_BATCH_DUPLICATE',
-        'NPC response batch contains a duplicate boundary or request'
-      );
-    }
-    if (processedBoundaryIds.has(boundaryId)) {
-      fail(
-        'TURN_CONVERSATION_NPC_BOUNDARY_REPLAYED',
-        'NPC response batch returned an already processed boundary',
-        { boundary_id: boundaryId }
-      );
-    }
-
-    const pairKey = decisionPairKey(decision.boundary);
-    if (batchDecisionPairs.has(pairKey) || processedDecisionPairs.has(pairKey)) {
-      fail(
-        'TURN_CONVERSATION_NPC_DECISION_DUPLICATE',
-        'An NPC may have at most one decision per same-time batch in an exchange',
-        { boundary_id: boundaryId }
-      );
-    }
-    boundaryIds.add(boundaryId);
-    requestIds.add(requestId);
-    batchDecisionPairs.add(pairKey);
-  }
-
-  let orderedRequests;
-  try {
-    orderedRequests = orderNpcConversationDecisionRequests(
-      batch.decisions.map(({ request }) => request),
-      batch.direct_addressee_refs
-    );
-  } catch (error) {
-    throw turnFailure(
-      'TURN_CONVERSATION_NPC_BATCH_INVALID',
-      'NPC response batch ordering inputs are invalid',
-      { cause: causeMessage(error) }
-    );
-  }
-  const decisionsByRequestId = new Map(
-    batch.decisions.map((decision) => [decision.request.request_id, decision])
-  );
-  return {
-    decisions: orderedRequests.map((request) =>
-      decisionsByRequestId.get(request.request_id)),
-    direct_addressee_refs: batch.direct_addressee_refs
-  };
 }
 
 async function callPort(port, argument, failureCode, failureMessage) {
@@ -336,6 +254,10 @@ function stopAfterApply(applied) {
 export async function runConversationExchange(input = {}, ports = {}) {
   const normalized = normalizeInput(input);
   requirePorts(ports);
+  const timeSlices = contributionSlices(normalized.timeBudget);
+  let elapsedBudgetMinutes = 0;
+  let completedContributionCount = 0;
+  let appliedContributionCount = 0;
 
   const playerDecision = await requestPlayerConversationContribution({
     request: normalized.playerRequest,
@@ -361,6 +283,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     applied: playerApplied,
     plan: playerDecision.plan,
     contributionIndex: 1,
+    plannedMinutes: timeSlices[0],
     perceptionPort: ports.projectPlayerContributionPerception
   });
   const playerResult = playerProgress.applied;
@@ -376,7 +299,15 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const processedBoundaryIdSet = new Set();
   const processedDecisionPairs = new Set();
   const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
-  if (temporalBoundaryRefs.length > 0) stopReason = 'temporal_boundary';
+  elapsedBudgetMinutes += playerProgress.elapsedMinutes;
+  if (playerProgress.completed) completedContributionCount += 1;
+  if (playerProgress.completed
+      && playerProgress.temporalBoundaryRefs.length === 0) {
+    appliedContributionCount += 1;
+  }
+  if (!playerProgress.completed || temporalBoundaryRefs.length > 0) {
+    stopReason = 'temporal_boundary';
+  }
 
   while (stopReason === null) {
     if (contributions.length >= normalized.maxContributionsPerExchange) {
@@ -433,6 +364,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       applied: npcApplied,
       plan: proposal.plan,
       contributionIndex: contributions.length + 1,
+      plannedMinutes: timeSlices[contributions.length]
+        ?? normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
       perceptionPort: ports.projectNpcContributionPerception,
       request: decision.request,
       proposal
@@ -454,7 +387,35 @@ export async function runConversationExchange(input = {}, ports = {}) {
     processedDecisionPairs.add(decisionPairKey(decision.boundary));
     stopReason = stopAfterApply(npcResult);
     temporalBoundaryRefs.push(...npcProgress.temporalBoundaryRefs);
-    if (npcProgress.temporalBoundaryRefs.length > 0) {
+    elapsedBudgetMinutes += npcProgress.elapsedMinutes;
+    if (npcProgress.completed) completedContributionCount += 1;
+    if (npcProgress.completed
+        && npcProgress.temporalBoundaryRefs.length === 0) {
+      appliedContributionCount += 1;
+    }
+    if (!npcProgress.completed || npcProgress.temporalBoundaryRefs.length > 0) {
+      stopReason = 'temporal_boundary';
+    }
+  }
+
+  const remainingBudgetMinutes = normalized.timeBudget.total_minutes
+    - elapsedBudgetMinutes;
+  if (stopReason !== 'temporal_boundary' && remainingBudgetMinutes > 0) {
+    const tail = normalizeTimeProgress(await callPort(
+      ports.completeExchangeTime,
+      {
+        working_state: workingState,
+        planned_duration_minutes: remainingBudgetMinutes
+      },
+      'TURN_CONVERSATION_TIME_PROGRESS_FAILED',
+      'Conversation exchange remaining time could not be advanced'
+    ));
+    workingState = tail.working_state;
+    sessionStatus = tail.session_status === 'suspended'
+      ? 'suspended' : sessionStatus;
+    elapsedBudgetMinutes += tail.elapsed_minutes;
+    temporalBoundaryRefs.push(...tail.temporal_boundary_refs);
+    if (!tail.completed || tail.temporal_boundary_refs.length > 0) {
       stopReason = 'temporal_boundary';
     }
   }
@@ -468,6 +429,16 @@ export async function runConversationExchange(input = {}, ports = {}) {
     npc_decisions: npcDecisions,
     processed_boundary_ids: processedBoundaryIds,
     temporal_boundary_refs: temporalBoundaryRefs,
+    time_budget: {
+      total_minutes: normalized.timeBudget.total_minutes,
+      elapsed_minutes: elapsedBudgetMinutes,
+      remaining_minutes:
+        normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
+      status: elapsedBudgetMinutes === normalized.timeBudget.total_minutes
+        ? 'completed' : 'paused'
+    },
+    completed_contribution_count: completedContributionCount,
+    applied_contribution_count: appliedContributionCount,
     handoff,
     session_status: sessionStatus
   });

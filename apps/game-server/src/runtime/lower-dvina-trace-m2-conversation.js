@@ -30,6 +30,7 @@ export async function resolveTracePhase3ConversationExchange({
   checkResult = null,
   playerConversationModel,
   npcSemanticModel,
+  temporalAdvanceOwner,
   revalidateStateVersion,
   playerPlan = null
 } = {}) {
@@ -72,6 +73,7 @@ export async function resolveTracePhase3ConversationExchange({
     playerConversationModel,
     npcSemanticModel,
     revalidateStateVersion,
+    temporalAdvanceOwner,
     availableEvidence,
     playerOperationContract: phase3PlayerOperationContract(availableEvidence),
     npcOperationContract: {
@@ -161,7 +163,9 @@ export async function resolveTracePhase3ConversationExchange({
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,
-    evidence_presentation: structuredClone(context.evidencePresentation),
+    evidence_presentation:
+      result.exchange.applied_contribution_count >= 1
+        ? structuredClone(context.evidencePresentation) : null,
     route_disclosure: disclosure,
     response_kind: result.npcOutcome?.kind ?? null,
     speech: result.npcOutcome?.kind === 'speech'

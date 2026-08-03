@@ -10,6 +10,7 @@ export function appendPhase3SemanticInteraction({
   turnNumber,
   changeSetId
 }) {
+  if (semanticExchange.exchange.applied_contribution_count < 1) return;
   const interactionId =
     `interaction:${partyId}:trace-phase3:${turnNumber}`;
   const activityId = `activity:${partyId}:trace-phase3:${turnNumber}`;

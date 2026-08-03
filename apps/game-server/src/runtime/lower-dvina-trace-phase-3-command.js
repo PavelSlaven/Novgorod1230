@@ -15,6 +15,7 @@ export function createTracePhase3Commands({
   inputDigest,
   playerConversationModel = null,
   npcSemanticModel = null,
+  temporalAdvanceOwner = null,
   revalidateStateVersion = null
 }) {
   return [
@@ -25,6 +26,7 @@ export function createTracePhase3Commands({
       evidence: false,
       playerConversationModel,
       npcSemanticModel,
+      temporalAdvanceOwner,
       revalidateStateVersion
     }),
     createTracePhase3ConversationCommand({
@@ -33,6 +35,7 @@ export function createTracePhase3Commands({
       evidence: true,
       playerConversationModel,
       npcSemanticModel,
+      temporalAdvanceOwner,
       revalidateStateVersion
     })
   ];

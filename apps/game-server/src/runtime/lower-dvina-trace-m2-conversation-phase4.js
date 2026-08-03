@@ -21,7 +21,7 @@ import { buildSurrenderProjection } from
 export async function resolveTracePhase4ConversationExchange({
   state, contracts, playerInput, inputDigest, checkResult, offerStage,
   checkRequest, playerConversationModel, npcSemanticModel,
-  revalidateStateVersion, playerPlan = null
+  temporalAdvanceOwner, revalidateStateVersion, playerPlan = null
 } = {}) {
   requireCommonInput({ state, contracts, playerInput, inputDigest,
     playerConversationModel, npcSemanticModel, revalidateStateVersion });
@@ -40,7 +40,7 @@ export async function resolveTracePhase4ConversationExchange({
     phase: 'phase_4', state, contracts, playerInput, inputDigest, checkResult,
     mapping, targetActor: { ref: 'ratsha_storehouse_helper', ...target },
     actualNpcActors, playerConversationModel, npcSemanticModel,
-    revalidateStateVersion,
+    revalidateStateVersion, temporalAdvanceOwner,
     playerOperationContract: {
       [PROMISE_OPERATION]: {
         owner: '@rus/social-law', policy_ref: contracts.promisePolicy.policy_id

@@ -4,6 +4,9 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
   createFirstPlayablePublicRuntime
 } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
@@ -141,7 +144,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     disclosed_route_ref: null
   });
   assert.equal(firstTalk.time_update.exact_elapsed.exact_minutes.numerator,
-    '10');
+    '5');
   assert.equal(await count(pool,
     'party_runtime.party_conversation_sessions', partyA.party_id), 1);
   assert.equal(await count(pool,
@@ -211,7 +214,7 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     disclosed_route_ref: 'trace_ld_v1_route_camp_to_shed'
   });
   assert.equal(disclosed.time_update.exact_elapsed.exact_minutes.numerator,
-    '20');
+    '10');
   assert.deepEqual(await positionFor(pool, partyB.party_id), positionBefore);
   assert.equal(await knowledgeCount(pool, partyB.party_id,
     'trace_ld_v1_route_camp_to_shed'), 1);
@@ -567,6 +570,10 @@ function buildRuntime({
       };
     },
     decisionSecret: 'phase-3-postgres-secret',
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations:
+        lowerDvinaTraceConversationTemporalEffectRegistrations()
+    }),
     now: () => '2026-07-30T08:00:00.000Z'
   });
   return createFirstPlayablePublicRuntime({

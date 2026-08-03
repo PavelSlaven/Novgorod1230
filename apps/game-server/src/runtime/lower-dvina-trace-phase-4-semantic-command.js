@@ -19,6 +19,7 @@ export function semanticNegotiationCommand({
   inputDigest,
   playerConversationModel,
   npcSemanticModel,
+  temporalAdvanceOwner,
   revalidateStateVersion
 }) {
   const preconditions = [
@@ -129,6 +130,7 @@ export function semanticNegotiationCommand({
           playerPlan,
           playerConversationModel,
           npcSemanticModel,
+          temporalAdvanceOwner,
           revalidateStateVersion
         });
       const outcomeRef = checkResult
@@ -174,7 +176,8 @@ function semanticConsequence({ contracts, inputDigest, checkResult,
       player_response_boundary: semanticExchange.combat_handoff ?? null,
       activity_roots: [{
         activity_ref: contracts.negotiation.profile_id,
-        duration_minutes: semanticExchange.exact_elapsed_minutes
+        duration_minutes:
+          semanticExchange.exchange.time_budget.total_minutes
       }]
     },
     visible_seed: {},

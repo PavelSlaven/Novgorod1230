@@ -1,12 +1,9 @@
-import { buildPlayerConversationInput } from '@rus/npc-runtime';
 import {
   requestPlayerConversationContribution,
   runConversationExchange
 } from '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
-import { committedPlayerKnowledgeRefs } from
-  './lower-dvina-trace-m2-conversation-projections.js';
 import {
   canonicalActors,
   deliveryResult,
@@ -14,9 +11,12 @@ import {
   fail,
   npcRef,
   ref,
-  requiredRawText,
   sameTimeBatchKey
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { buildPlayerRequest } from
+  './lower-dvina-trace-m2-conversation-request.js';
+export { buildPlayerRequest } from
+  './lower-dvina-trace-m2-conversation-request.js';
 import {
   applyNpcPlan,
   applyPlayerPlan,
@@ -24,7 +24,10 @@ import {
   projectPlayerPerception
 } from
   './lower-dvina-trace-m2-conversation-statements.js';
-import { advanceConversationContributionTime } from
+import {
+  advanceConversationContributionTime,
+  conversationExchangeDurationMinutes
+} from
   './lower-dvina-trace-m2-conversation-time.js';
 
 export function createM2ConversationContext(input) {
@@ -105,12 +108,14 @@ function findActiveSession(state, playerRef, targetRef) {
 
 export async function executeM2ConversationExchange(context) {
   const playerRequest = buildPlayerRequest(context);
+  const exchangeDurationMinutes = conversationExchangeDurationMinutes(context);
   const initialWorkingState = {
     state_version: context.stateVersion,
     clock: structuredClone(context.state.clock),
     world_state: structuredClone(context.state),
     elapsed_minutes: 0,
     temporal_boundary_refs: [],
+    temporal_advance_results: [],
     statements: [],
     audiences: [],
     new_signal_records: [],
@@ -122,7 +127,11 @@ export async function executeM2ConversationExchange(context) {
     playerRequest,
     initialWorkingState,
     maxContributionsPerExchange:
-      context.contracts.conversationBindings.max_contributions_per_exchange
+      context.contracts.conversationBindings.max_contributions_per_exchange,
+    timeBudget: {
+      total_minutes: exchangeDurationMinutes,
+      contribution_slots: 2
+    }
   }, {
     conversationModel: context.playerPlan
       ? async () => structuredClone(context.playerPlan)
@@ -130,8 +139,18 @@ export async function executeM2ConversationExchange(context) {
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingContext(context, working), working, plan),
-    advanceContributionTime: ({ working_state: working, plan }) =>
-      advanceConversationContributionTime(context, working, plan),
+    advanceContributionTime: ({
+      working_state: working,
+      planned_duration_minutes: plannedDurationMinutes
+    }) => advanceConversationContributionTime(
+      context, working, plannedDurationMinutes
+    ),
+    completeExchangeTime: ({
+      working_state: working,
+      planned_duration_minutes: plannedDurationMinutes
+    }) => advanceConversationContributionTime(
+      context, working, plannedDurationMinutes
+    ),
     revalidateAfterContribution: async () => {
       const current = await context.revalidateStateVersion();
       if (current !== context.stateVersion) {
@@ -250,49 +269,4 @@ export async function prepareM2PlayerConversationPlan(context) {
     revalidateStateVersion: context.revalidateStateVersion
   });
   return decision.plan;
-}
-
-export function buildPlayerRequest(context) {
-  const playerRef = ref('player_character', context.state.actor_id);
-  const presentListenerRefs = context.actualNpcActors.map(
-    ({ instance_id: instanceId }) => npcRef(instanceId)
-  );
-  return buildPlayerConversationInput({
-    schema: 'player_conversation_input_v1',
-    request_id: `player-conversation-request:${context.inputDigest}`,
-    conversation_id: context.conversationId,
-    state_version: context.stateVersion,
-    speaker_ref: playerRef,
-    raw_text: requiredRawText(context.playerInput),
-    received_at: `turn-input:${context.inputDigest}`,
-    player_safe_context: {
-      phase: context.phase,
-      location_ref: context.state.position.location_ref,
-      target_npc_ref: context.targetRef,
-      present_listener_refs: presentListenerRefs,
-      committed_knowledge_refs:
-        committedPlayerKnowledgeRefs(context.state),
-      available_check: {
-        attribute_ref: context.contracts.check.attribute,
-        skill_ref: context.contracts.check.skill,
-        difficulty_band: context.contracts.check.check_id
-      },
-      ...(context.phase === 'phase_3' && context.availableEvidence !== null
-        ? { available_evidence: structuredClone(context.availableEvidence) }
-        : {}),
-      ...(context.requiredSupportingOperation !== null
-        && context.requiredSupportingOperation !== undefined
-        ? {
-            required_supporting_operation:
-              context.requiredSupportingOperation
-          }
-        : {}),
-      ...(context.phase === 'phase_4'
-        ? {
-            offer_policy_ref: context.contracts.promisePolicy.policy_id
-          }
-        : {})
-    },
-    operation_contract: context.playerOperationContract
-  });
 }

@@ -4,6 +4,12 @@ import { assertSharedSemanticSnapshotSafe,
   './lower-dvina-trace-conversation-state.js';
 import { phase3SemanticInteractions } from
   './lower-dvina-trace-phase-3-state-interactions.js';
+import { applyConversationTemporalNpcWrites } from
+  './lower-dvina-trace-conversation-temporal.js';
+import { activityHistoryEntry, phase3ActivityRef,
+  phase3RouteTimeUpdate } from './lower-dvina-trace-phase-3-activity-state.js';
+export { activityHistoryEntry, phase3ActivityRef } from
+  './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -159,6 +165,7 @@ function projectPhase3SemanticConversation({
   next, state, factual, conversation, turnNumber
 }) {
   const semantic = conversation.semantic_exchange;
+  applyConversationTemporalNpcWrites(next, semantic);
   const npcRef = semantic.decision_request?.npc_ref ?? {
     entity_kind: 'npc', entity_id: conversation.npc_id
   };
@@ -243,57 +250,4 @@ function mergeKnowledge(current = [], added = []) {
     byId.set(entry.fact_id, entry);
   }
   return [...byId.values()].sort((a, b) => a.fact_id.localeCompare(b.fact_id));
-}
-export function activityHistoryEntry({
-  partyId,
-  turnNumber,
-  factual,
-  inputDigest,
-  changeSetId
-}) {
-  const phase3Kind = factual.consequence.phase3_kind;
-  const sharedConsequence = projectSharedSemanticConsequence(
-    factual.consequence
-  );
-  const time = phase3Kind === 'movement'
-    ? phase3RouteTimeUpdate(factual) : factual.time_update;
-  const duration = phase3Kind === 'movement'
-    ? Number(time.exact_elapsed?.exact_minutes?.numerator)
-    : factual.consequence.duration_minutes;
-  return {
-    activity_execution_id:
-      phase3Kind === 'movement'
-        ? `route-execution:${partyId}:trace-phase3:${turnNumber}`
-        : `activity:${partyId}:trace-phase3:${turnNumber}`,
-    activity_snapshot: {
-      activity_ref: phase3ActivityRef(factual),
-      consequence: phase3Kind
-    },
-    option_id: factual.mode_resolution.option_id,
-    request_id: factual.player_input.request_id,
-    input_digest: inputDigest,
-    change_set_id: changeSetId,
-    duration_minutes: duration,
-    started_at: structuredClone(time.clock_before),
-    ended_at: structuredClone(time.clock_after),
-    execution_result: structuredClone(
-      phase3Kind === 'movement'
-        ? factual.consequence.movement
-        : sharedConsequence.conversation
-    )
-  };
-}
-
-function phase3RouteTimeUpdate(factual) {
-  const route = factual.time_update?.prepared_effect_ledger?.slices?.find(
-    ({ effect_kind: kind, owner_ref: owner }) =>
-      kind === 'domain_command'
-      && owner === 'lower_dvina_trace.follow_path_to_fishing_camp');
-  return route?.time_update ?? factual.time_update;
-}
-
-export function phase3ActivityRef(factual) {
-  return factual.consequence.phase3_kind === 'movement'
-    ? factual.consequence.movement.activity_ref
-    : factual.consequence.conversation.activity_ref;
 }

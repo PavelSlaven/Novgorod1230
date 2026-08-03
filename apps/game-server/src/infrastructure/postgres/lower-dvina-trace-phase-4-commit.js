@@ -12,6 +12,7 @@ import { serverError } from '../../errors.js';
 import { mergeLowerDvinaTraceTurnStepWrites, prepareLowerDvinaTraceTurnStepPersistence } from './lower-dvina-trace-turn-step-persistence.js';
 import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn-step-idempotency.js';
 import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -84,7 +85,7 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     semanticDependencyPins: { activity: phase4Contracts.activityPins },
     visibleDependencyPins: visibleEnvelope.dependency_pins
   });
-  const built = await builder.build({
+  const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase4:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -115,7 +116,15 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     commit_rechecks: phase4CommitRechecks({
       partyId, state, factual, phase4Contracts, inputDigest
     })
+  };
+  const integratedInput = integrateConversationTemporalWrites({
+    input: baseWritePlanInput,
+    semanticExchange: semanticContext?.semanticExchange,
+    fail: (error) => {
+      throw fail('TRACE_PHASE_4_TEMPORAL_WRITE_CONFLICT', error);
+    }
   });
+  const built = await builder.build(integratedInput);
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({ plan: built.plan, created_at_turn: turnNumber });
   if (!committed.ok) throw fail('TRACE_PHASE_4_COMMIT_FAILED', committed.error);

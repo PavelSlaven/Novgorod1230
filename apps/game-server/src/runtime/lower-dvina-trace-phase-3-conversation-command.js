@@ -1,5 +1,4 @@
-import { tracePhase3PreconditionSatisfied } from
-  './lower-dvina-trace-phase-3-admission.js';
+import { tracePhase3PreconditionSatisfied } from './lower-dvina-trace-phase-3-admission.js';
 import {
   available,
   exact,
@@ -13,18 +12,16 @@ import {
   assertTracePhase3ConversationExecution,
   resolveTracePhase3NpcDecision
 } from './lower-dvina-trace-phase-3-npc-decision.js';
-import { resolveTracePhase3ConversationExchange } from
-  './lower-dvina-trace-m2-conversation.js';
+import { resolveTracePhase3ConversationExchange } from './lower-dvina-trace-m2-conversation.js';
 import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
   prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
   './lower-dvina-trace-m2-conversation-player.js';
 
 export function createTracePhase3ConversationCommand({
-  contracts,
-  inputDigest,
-  evidence,
+  contracts, inputDigest, evidence,
   playerConversationModel = null,
   npcSemanticModel = null,
+  temporalAdvanceOwner = null,
   revalidateStateVersion = null
 }) {
   if (contracts.conversationBindings != null) {
@@ -34,6 +31,7 @@ export function createTracePhase3ConversationCommand({
       evidence,
       playerConversationModel,
       npcSemanticModel,
+      temporalAdvanceOwner,
       revalidateStateVersion
     });
   }
@@ -183,6 +181,7 @@ function createSemanticConversationCommand({
   evidence,
   playerConversationModel,
   npcSemanticModel,
+  temporalAdvanceOwner,
   revalidateStateVersion
 }) {
   const ids = contracts.ids;
@@ -270,6 +269,7 @@ function createSemanticConversationCommand({
         checkResult,
         playerConversationModel,
         npcSemanticModel,
+        temporalAdvanceOwner,
         revalidateStateVersion,
         playerPlan
       });

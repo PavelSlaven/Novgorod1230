@@ -182,10 +182,10 @@ test('Phase 4 restart accepts historical player arrival', async () => {
   ));
 });
 
-test('Phase 4 semantic readback keeps total contribution time on negotiation', () => {
+test('Phase 4 semantic readback keeps the approved exchange total on negotiation', () => {
   assert.deepEqual(phase4ActivityIdentity({
     semanticRevision: true,
-    durationMinutes: 20
+    durationMinutes: 10
   }), {
     activityKind: 'negotiation',
     seriesOrdinal: 0

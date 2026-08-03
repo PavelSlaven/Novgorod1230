@@ -27,6 +27,8 @@ import {
 import {
   committedTraceScenarioDefinitionRevision
 } from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { integrateConversationTemporalWrites } from
+  './lower-dvina-trace-conversation-temporal.js';
 
 import {
   expectedChangedConditions,
@@ -109,7 +111,7 @@ export async function commitLowerDvinaTracePhase3({
         && candidate.canonical_input_digest === canonicalInputDigest
     })
   });
-  const built = await builder.build({
+  const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase3:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -184,7 +186,19 @@ export async function commitLowerDvinaTracePhase3({
       phase3Contracts,
       inputDigest
     })
+  };
+  const integratedInput = integrateConversationTemporalWrites({
+    input: baseWritePlanInput,
+    semanticExchange: semanticContext?.semanticExchange,
+    fail: (error) => {
+      throw serverError(
+        'TRACE_PHASE_3_TEMPORAL_WRITE_CONFLICT',
+        'Conversation temporal writes conflict with Phase 3 persistence.',
+        { status: 409, details: error }
+      );
+    }
   });
+  const built = await builder.build(integratedInput);
   if (!built.ok) {
     throw serverError(
       'TRACE_PHASE_3_WRITE_PLAN_REJECTED',

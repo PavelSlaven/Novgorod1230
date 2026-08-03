@@ -8,7 +8,13 @@ export function appendActivity(input) {
     changeSetId, idemId, inputDigest
   } = input;
   const id = `activity:${partyId}:trace-phase3:${turnNumber}`;
-  const duration = factual.consequence.duration_minutes;
+  const semanticBudget = factual.consequence.conversation?.semantic_exchange
+    ?.exchange?.time_budget ?? null;
+  const duration = semanticBudget?.total_minutes
+    ?? factual.consequence.duration_minutes;
+  const elapsed = semanticBudget?.elapsed_minutes ?? duration;
+  const remaining = semanticBudget?.remaining_minutes ?? 0;
+  const completed = semanticBudget?.status !== 'paused';
   const historyEntry = activityHistoryEntry({
     partyId,
     turnNumber,
@@ -21,15 +27,15 @@ export function appendActivity(input) {
     series_ordinal: 0,
     activity_snapshot: historyEntry.activity_snapshot,
     original_total_minutes: duration,
-    cumulative_elapsed_numerator: duration,
+    cumulative_elapsed_numerator: elapsed,
     cumulative_elapsed_denominator: 1,
-    remaining_time_numerator: 0,
+    remaining_time_numerator: remaining,
     remaining_time_denominator: 1,
     next_attempt_ordinal: 1,
-    status: 'completed',
+    status: completed ? 'completed' : 'paused',
     state_version: 2,
     updated_change_set_id: changeSetId,
-    terminal_change_set_id: changeSetId,
+    terminal_change_set_id: completed ? changeSetId : null,
     execution_scope: 'standalone',
     activity_series_id: `series:${partyId}:trace-phase3:${turnNumber}`,
     activity_owner_ref: { entity_kind: 'actor', entity_id: state.actor_id },
@@ -60,7 +66,7 @@ export function appendActivity(input) {
     next_boundary_at_subminute_denominator: null,
     progress: {},
     preconditions_digest: canonicalDigest(factual.mode_resolution),
-    terminal_reason_code: 'phase_3_activity_completed'
+    terminal_reason_code: completed ? 'phase_3_activity_completed' : null
   }));
   appends.push(row('party_timed_activity_attempts', `${id}:0`, {
     activity_execution_id: id,
@@ -69,21 +75,22 @@ export function appendActivity(input) {
     remaining_before_denominator: 1,
     planned_time_numerator: duration,
     planned_time_denominator: 1,
-    actual_time_numerator: duration,
+    actual_time_numerator: elapsed,
     actual_time_denominator: 1,
-    remaining_after_numerator: 0,
+    remaining_after_numerator: remaining,
     remaining_after_denominator: 1,
     cumulative_time_before_numerator: 0,
     cumulative_time_before_denominator: 1,
-    cumulative_time_after_numerator: duration,
+    cumulative_time_after_numerator: elapsed,
     cumulative_time_after_denominator: 1,
-    crossed_whole_minute_boundaries: duration,
+    crossed_whole_minute_boundaries: elapsed,
     clock_commit_mode: 'direct_party_clock',
     execution_context_snapshot: {
       option_id: factual.mode_resolution.option_id
     },
-    result_kind: 'completed',
-    result_code: 'phase_3_activity_completed',
+    result_kind: completed ? 'completed' : 'paused',
+    result_code: completed
+      ? 'phase_3_activity_completed' : 'temporal_boundary_interruption',
     dynamic_dependency_pins: {},
     result_change_set_id: changeSetId,
     idempotency_record_id: idemId,
@@ -97,7 +104,8 @@ export function appendActivity(input) {
     ended_at_whole_minutes: next.clock.whole_minutes,
     ended_at_subminute_numerator: next.clock.subminute_numerator,
     ended_at_subminute_denominator: next.clock.subminute_denominator,
-    reason_code: 'phase_3_activity_completed',
+    reason_code: completed
+      ? 'phase_3_activity_completed' : 'temporal_boundary_interruption',
     progress_before: {},
     progress_after: {},
     resource_reservations: [],

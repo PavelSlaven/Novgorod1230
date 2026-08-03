@@ -11,6 +11,10 @@ import { appendNpcSemanticConversationWrites } from
   '../src/infrastructure/postgres/npc-semantic-conversation-writes.js';
 import { appendSemanticNegotiation } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection-semantic.js';
+import { appendActivity } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-3-activity-writes.js';
+import { integrateConversationTemporalWrites } from
+  '../src/infrastructure/postgres/lower-dvina-trace-conversation-temporal.js';
 import { nextPhase4State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
 import { promiseOfferStage } from
@@ -32,7 +36,8 @@ import {
   ref,
   revision14Bundle,
   runPhase3,
-  runPhase4
+  runPhase4,
+  withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
 test('continued history preserves append order instead of digest order', async () => {
@@ -185,7 +190,36 @@ test('boundary after player speech suspends before NPC model call', async () => 
   const contracts = resolveContracts(state);
   const exchange = await runPhase3({ state, contracts,
     rawText: 'Еремей, что ты видел?', inputDigest: digest('f'),
-    responseKind: 'speech' });
+    responseKind: 'speech',
+    resolveTemporalBoundary(_candidate, { projection }) {
+      const next = structuredClone(projection);
+      const target = next.conversation_state.world_state.npcs.find(
+        ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
+      );
+      target.machine_state = {
+        ...target.machine_state, hearing_capability: 'none'
+      };
+      return {
+        disposition: 'execute', proposals: [{
+          proposal_id: 'conversation-boundary:disable-hearing',
+          write_target: `party_npcs:${target.instance_id}`,
+          write_set: {
+            inserts: [], appends: [], deletes: [],
+            updates: [{
+              target_table: 'party_npcs', id: target.instance_id,
+              record: { party_id: state.party_id,
+                npc_id: target.instance_id,
+                machine_state: structuredClone(target.machine_state) }
+            }]
+          },
+          expected_state_versions: [],
+          physical_keys: [
+            `party_runtime.party_npcs:${state.party_id}:${target.instance_id}`
+          ]
+        }], state_projection: next,
+        follow_up_candidates: []
+      };
+    } });
 
   assert.equal(exchange.npcCalls, 0);
   assert.equal(exchange.result.exchange.stop_reason, 'temporal_boundary');
@@ -195,8 +229,30 @@ test('boundary after player speech suspends before NPC model call', async () => 
   assert.deepEqual(exchange.result.temporal_boundary_refs, [
     ref('temporal_boundary_candidate', 'boundary:conversation-interruption')
   ]);
-  assert.deepEqual(exchange.result.audiences[0]
-    .received_messages[0].perceived_at, scheduledAt);
+  assert.equal(exchange.result.audiences[0].received_messages.some(
+    ({ listener_ref: listener }) =>
+      listener.entity_id === npcBySlot(state, 'eremey_fisher').instance_id
+  ), false);
+  const restarted = projectPhase3Conversation({ state, contracts,
+    result: exchange.result, inputDigest: digest('f') });
+  assert.equal(npcBySlot(restarted, 'eremey_fisher')
+    .machine_state.hearing_capability, 'none');
+  const integrated = integrateConversationTemporalWrites({
+    input: {
+      party_id: state.party_id,
+      canonical_input_digest: digest('f'),
+      approved_write_sets: [{
+        inserts: [], updates: [], appends: [], deletes: []
+      }],
+      expected_state_versions: [],
+      lock_context: { physical_keys: [] }
+    },
+    semanticExchange: exchange.result,
+    fail(error) { throw error; }
+  });
+  assert.equal(integrated.approved_write_sets.flatMap(
+    ({ updates }) => updates).some(({ target_table: table }) =>
+    table === 'party_npcs'), true);
   const temporal = await createTracePhase3TemporalAdvance({
     phase2Advance: async () => null
   })({
@@ -217,9 +273,10 @@ test('boundary after player speech suspends before NPC model call', async () => 
     scheduled_at: scheduledAt,
     boundary_ids: ['boundary:conversation-interruption']
   });
-  assert.deepEqual(temporal.boundary_trace.processed_boundary_ids, []);
-  assert.deepEqual(temporal.boundary_trace.deferred_to_source_owner_ids,
+  assert.deepEqual(temporal.boundary_trace.processed_boundary_ids,
     ['boundary:conversation-interruption']);
+  assert.deepEqual(temporal.boundary_trace.deferred_to_source_owner_ids,
+    []);
 });
 
 test('each contribution advances before perception and next request', async () => {
@@ -227,18 +284,121 @@ test('each contribution advances before perception and next request', async () =
   const exchange = await runPhase3({ state, contracts: resolveContracts(state),
     rawText: 'Еремей, что ты видел?', inputDigest: digest('1'),
     responseKind: 'speech' });
-  const afterPlayer = plusMinutes(state.clock, '5');
-  const afterNpc = plusMinutes(afterPlayer, '5');
+  const afterNpc = plusMinutes(state.clock, '5');
   const [playerStatement, npcStatement] = exchange.result.statements;
   assert.deepEqual(playerStatement.spoken_at, state.clock);
-  assert.deepEqual(exchange.result.audiences[0]
-    .received_messages[0].perceived_at, afterPlayer);
+  const afterPlayer = exchange.result.audiences[0]
+    .received_messages[0].perceived_at;
+  assert.equal(Number(afterPlayer.whole_minutes)
+    > Number(state.clock.whole_minutes), true);
+  assert.equal(Number(afterPlayer.whole_minutes)
+    < Number(afterNpc.whole_minutes), true);
   assert.deepEqual(exchange.result.decision_request.requested_at, afterPlayer);
   assert.deepEqual(npcStatement.spoken_at, afterPlayer);
   assert.deepEqual(exchange.result.audiences[1]
     .received_messages[0].perceived_at, afterNpc);
-  assert.equal(exchange.result.exact_elapsed_minutes, 10);
+  assert.equal(exchange.result.exact_elapsed_minutes, 5);
   assert.deepEqual(exchange.result.clock_after, afterNpc);
+});
+
+test('approved conversation profiles are charged once per whole exchange', async () => {
+  const phase3 = phase3State();
+  const ordinary = await runPhase3({ state: phase3,
+    contracts: resolveContracts(phase3), rawText: 'Что ты видел?',
+    inputDigest: digest('3'), responseKind: 'speech' });
+  const evidenceState = phase3State();
+  const evidenceContracts = resolveContracts(evidenceState);
+  withAccessibleBlueWool(evidenceState, evidenceContracts);
+  const evidence = await runPhase3({ state: evidenceState,
+    contracts: evidenceContracts, rawText: 'Посмотри на шерсть.',
+    inputDigest: digest('4'), responseKind: 'speech',
+    playerPlanOptions: { evidence: true } });
+  const phase4 = phase4ArrivalState();
+  const negotiation = await runPhase4({ ...phase4,
+    rawText: 'Ратша, поговорим.', inputDigest: digest('5'),
+    responseKind: 'speech', checkResult: null, checkRequest: null,
+    offerStage: null });
+
+  assert.equal(ordinary.result.exact_elapsed_minutes, 5);
+  assert.equal(evidence.result.exact_elapsed_minutes, 10);
+  assert.equal(negotiation.result.exact_elapsed_minutes, 10);
+});
+
+test('interrupted player contribution persists paused exact progress only', async () => {
+  const state = phase3State();
+  const contracts = resolveContracts(state);
+  withAccessibleBlueWool(state, contracts);
+  const scheduledAt = plusMinutes(state.clock, '2');
+  state.temporal_boundary_candidates = [boundaryCandidate(state, scheduledAt)];
+  const exchange = await runPhase3({ state, contracts,
+    rawText: 'Вот синяя шерсть.', inputDigest: digest('7'),
+    responseKind: 'speech', playerPlanOptions: { evidence: true } });
+  assert.equal(exchange.result.evidence_presentation, null);
+  assert.equal(exchange.result.exchange.time_budget.status, 'paused');
+  assert.deepEqual(exchange.result.exchange.time_budget, {
+    total_minutes: 10, elapsed_minutes: 2, remaining_minutes: 8,
+    status: 'paused'
+  });
+
+  const inserts = [];
+  const appends = [];
+  const factual = phase3Factual(state, contracts, exchange.result, 'paused');
+  appendActivity({ inserts, appends, state,
+    next: { clock: exchange.result.clock_after }, factual,
+    partyId: state.party_id,
+    turnNumber: state.party_state.turn_number + 1,
+    changeSetId: 'change:paused', idemId: 'idem:paused',
+    inputDigest: digest('7') });
+  const execution = inserts.find(
+    ({ target_table: table }) => table === 'party_timed_activity_executions'
+  ).record;
+  const attempt = appends.find(
+    ({ target_table: table }) => table === 'party_timed_activity_attempts'
+  ).record;
+  assert.equal(execution.status, 'paused');
+  assert.equal(execution.original_total_minutes, 10);
+  assert.equal(execution.cumulative_elapsed_numerator, 2);
+  assert.equal(execution.remaining_time_numerator, 8);
+  assert.equal(execution.terminal_change_set_id, null);
+  assert.equal(attempt.result_kind, 'paused');
+  assert.equal(attempt.planned_time_numerator, 10);
+  assert.equal(attempt.actual_time_numerator, 2);
+  assert.equal(attempt.remaining_after_numerator, 8);
+});
+
+test('same-time boundary at contribution end blocks supporting consequences', async () => {
+  const state = phase3State();
+  const contracts = resolveContracts(state);
+  withAccessibleBlueWool(state, contracts);
+  state.temporal_boundary_candidates = [boundaryCandidate(
+    state, plusMinutes(state.clock, '5')
+  )];
+  const evidence = await runPhase3({ state, contracts,
+    rawText: 'Вот синяя шерсть.', inputDigest: digest('6'),
+    responseKind: 'speech', playerPlanOptions: { evidence: true } });
+  assert.equal(evidence.result.exchange.completed_contribution_count, 1);
+  assert.equal(evidence.result.exchange.applied_contribution_count, 0);
+  assert.equal(evidence.result.evidence_presentation, null);
+
+  const phase4 = phase4ArrivalState();
+  const promise = promiseOfferStage(phase4.state, phase4.contracts);
+  phase4.state.temporal_boundary_candidates = [boundaryCandidate(
+    phase4.state, plusMinutes(phase4.state.clock, '5')
+  )];
+  const negotiation = await runPhase4({ ...phase4,
+    rawText: 'Сдавайся, и я обещаю защиту.', inputDigest: digest('a'),
+    responseKind: 'speech', checkResult: null, checkRequest: null,
+    offerStage: promise, playerPlanOptions: { offer: true } });
+  const factual = phase4Factual(phase4.state, phase4.contracts,
+    negotiation.result, promise, 'boundary-promise');
+  const next = nextPhase4State({ state: phase4.state, factual,
+    nextVersion: phase4.state.party_state.state_version + 1,
+    turnNumber: phase4.state.party_state.turn_number + 1,
+    inputDigest: digest('a'), changeSetId: 'change:boundary-promise',
+    contracts: phase4.contracts, rootTurnId: 'turn:boundary-promise',
+    workingRevision: 0 });
+  assert.equal(negotiation.result.exchange.applied_contribution_count, 0);
+  assert.equal(next.promise_instances[0].current_state, 'not_offered');
 });
 
 test('Phase 4 persists an offered promise when the target hears nothing', async () => {
@@ -310,19 +470,22 @@ function boundaryCandidate(state, scheduledAt) {
   return {
     boundary_id: 'boundary:conversation-interruption',
     boundary_kind: 'exact_timer', scheduled_at: scheduledAt,
-    source_ref: ref('timer', 'timer:conversation-interruption'),
-    primary_subject_ref: ref('npc', state.npcs[0].instance_id),
+    source_ref: ref(
+      'party_route_plan_execution_event',
+      'timer:conversation-interruption'
+    ),
+    primary_subject_ref: ref('actor', state.npcs[0].instance_id),
     subject_refs: [], scope_ref: ref('party', state.party_id),
-    rule_ref: { entity_ref: ref('event_rule', 'rule:conversation-interruption'),
+    rule_ref: { entity_ref: ref('action_contract', 'rule:conversation-interruption'),
       authoring_version: '1' },
     policy_ref: {
-      entity_ref: ref('event_policy', 'policy:conversation-interruption'),
+      entity_ref: ref('activity_contract', 'policy:conversation-interruption'),
       authoring_version: '1'
     },
     preconditions_digest: digest('a'), resolution_class: 'execution_outcome',
-    interrupt_effect: 'interrupt_active',
+    interrupt_effect: 'background',
     visibility_policy_ref: {
-      entity_ref: ref('visibility_policy', 'visible:conversation-interruption'),
+      entity_ref: ref('visibility_modifier', 'visible:conversation-interruption'),
       authoring_version: '1'
     },
     idempotency_key: 'timer:conversation-interruption:2', causal_parent_refs: []
@@ -366,8 +529,31 @@ function phase4Factual(state, contracts, semanticExchange, offerStage, suffix) {
         player_response_boundary: null,
         activity_roots: [{
           activity_ref: contracts.negotiation.profile_id,
-          duration_minutes: duration
+          duration_minutes:
+            semanticExchange.exchange.time_budget.total_minutes
         }]
+      }
+    }
+  };
+}
+
+function phase3Factual(state, contracts, semanticExchange, suffix) {
+  return {
+    player_input: { request_id: `request:${suffix}` },
+    mode_resolution: {
+      option_id: contracts.ids.evidenceOption,
+      decision_trace: { action_set_digest: `action-set:${suffix}` }
+    },
+    time_update: {
+      clock_before: structuredClone(state.clock),
+      clock_after: structuredClone(semanticExchange.clock_after)
+    },
+    consequence: {
+      phase3_kind: 'conversation',
+      duration_minutes: semanticExchange.exact_elapsed_minutes,
+      conversation: {
+        activity_ref: contracts.evidenceTalk.profile_id,
+        semantic_exchange: semanticExchange
       }
     }
   };

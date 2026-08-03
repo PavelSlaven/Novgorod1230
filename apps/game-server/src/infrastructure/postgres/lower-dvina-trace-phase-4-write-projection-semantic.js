@@ -60,7 +60,8 @@ export function appendSemanticNegotiation({
   if (roots.length !== 1
       || !Number.isSafeInteger(semantic.exact_elapsed_minutes)
       || semantic.exact_elapsed_minutes < 1
-      || roots[0]?.duration_minutes !== semantic.exact_elapsed_minutes) {
+      || roots[0]?.duration_minutes
+        !== semantic.exchange?.time_budget?.total_minutes) {
     throw new Error('TRACE_M2_PHASE_4_SEMANTIC_ACTIVITY_ROOT_INVALID');
   }
   const negotiationActivityId =
@@ -86,7 +87,9 @@ export function appendSemanticNegotiation({
     ? `check:${partyId}:trace-phase4:${turnNumber}` : null;
   const offerAppends = [];
   const activationAppends = [];
-  if (n.offer_committed_before_check) appendPromiseTransition({
+  if (n.offer_committed_before_check
+      && semantic.exchange.applied_contribution_count >= 1) {
+    appendPromiseTransition({
     updates,
     offerAppends,
     activationAppends,
@@ -107,7 +110,8 @@ export function appendSemanticNegotiation({
     activityId: negotiationActivityId,
     checkId,
     contracts
-  });
+    });
+  }
   appends.push(...offerAppends);
   if (n.check_result) appendNegotiationCheckResolution({
     appends,

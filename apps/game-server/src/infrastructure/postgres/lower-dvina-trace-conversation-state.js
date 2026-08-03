@@ -124,7 +124,7 @@ export function projectSemanticConversationSnapshot({
       signalRecords,
       consumedSignalIds
     });
-  } else if (signalRecords.length !== 0 || consumedSignalIds.length !== 0) {
+  } else if (consumedSignalIds.length !== 0) {
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
   const session = conversationSession({ state, exchange, statements,

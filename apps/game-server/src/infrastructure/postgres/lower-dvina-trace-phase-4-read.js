@@ -85,24 +85,27 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
     let started = timeUpdate?.clock_before;
     if (!started) fail();
     return c.negotiation.activity_roots.map((root) => {
+      const budget = c.negotiation.semantic_exchange?.exchange?.time_budget;
+      const actualMinutes = budget?.elapsed_minutes ?? root.duration_minutes;
+      const status = budget?.status ?? 'completed';
       const { activityKind, seriesOrdinal } = phase4ActivityIdentity({
         semanticRevision,
         durationMinutes: root.duration_minutes
       });
       const ended = addElapsedTime(started, {
         exact_minutes: {
-          numerator: String(root.duration_minutes), denominator: '1'
+          numerator: String(actualMinutes), denominator: '1'
         }
       });
       const expected = {
         id: `activity:${partyId}:trace-phase4:${turn}:${activityKind}`,
         activity_snapshot: { activity_ref: root.activity_ref, phase4_kind: 'negotiation' },
         original_total_minutes: String(root.duration_minutes),
-        status: 'completed',
+        status,
         activity_series_id: `series:${partyId}:trace-phase4:${turn}:${activityKind}`,
         series_ordinal: seriesOrdinal, attempt_ordinal: 0,
-        actual_time_numerator: String(root.duration_minutes),
-        result_kind: 'completed',
+        actual_time_numerator: String(actualMinutes),
+        result_kind: status,
         result_code: root.activity_ref,
         ...timestampColumns('execution_started', started),
         ...timestampColumns('execution_ended', ended),

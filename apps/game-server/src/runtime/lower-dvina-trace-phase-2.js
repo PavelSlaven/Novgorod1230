@@ -162,6 +162,7 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest,
           playerConversationModel,
           npcSemanticModel,
+          temporalAdvanceOwner,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,
             partyId,
@@ -174,6 +175,7 @@ export function createLowerDvinaTracePhase2Runtime({
           selectNpcDecision: npcDecisionSelector,
           playerConversationModel,
           npcSemanticModel,
+          temporalAdvanceOwner,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,
             partyId,

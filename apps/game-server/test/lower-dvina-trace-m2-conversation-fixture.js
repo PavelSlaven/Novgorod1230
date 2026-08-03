@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict';
+import { canonicalDigest } from '@rus/materialization';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
   resolveTracePhase3Contracts
 } from '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
@@ -202,7 +206,8 @@ export async function runPhase3({
   inputDigest,
   responseKind,
   checkResult: resolvedCheck = null,
-  playerPlanOptions = {}
+  playerPlanOptions = {},
+  resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -229,6 +234,9 @@ export async function runPhase3({
         request.decision_scope.operation_contract.disclose_known_route
       );
     },
+    temporalAdvanceOwner: conversationTemporalOwner(
+      state, resolveTemporalBoundary
+    ),
     revalidateStateVersion: async () => state.party_state.state_version
   });
   return { result, playerCalls, npcCalls, npcRequest };
@@ -243,7 +251,8 @@ export async function runPhase4({
   checkResult: resolvedCheck,
   offerStage,
   checkRequest,
-  playerPlanOptions = {}
+  playerPlanOptions = {},
+  resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
   let npcCalls = 0;
@@ -269,9 +278,40 @@ export async function runPhase4({
       npcRequest = structuredClone(request);
       return ratshaPlan(request, responseKind, state.actor_id);
     },
+    temporalAdvanceOwner: conversationTemporalOwner(
+      state, resolveTemporalBoundary
+    ),
     revalidateStateVersion: async () => state.party_state.state_version
   });
   return { result, playerCalls, npcCalls, npcRequest };
+}
+
+function conversationTemporalOwner(state, resolver) {
+  const candidates = state.temporal_boundary_candidates ?? [];
+  const unique = new Map(candidates.map((candidate) => [canonicalDigest({
+    rule_ref: candidate.rule_ref,
+    policy_ref: candidate.policy_ref
+  }), candidate]));
+  return createTemporalAdvanceOwner({
+    source_registrations: [...unique.values()].map((candidate) => ({
+      rule_ref: candidate.rule_ref,
+      policy_ref: candidate.policy_ref,
+      resolve(value, context) {
+        if (resolver) return resolver(value, context);
+        return {
+          disposition: 'execute',
+          proposals: [{
+            proposal_id: `temporal-event:${value.boundary_id}`,
+            write_target: `temporal-event:${value.boundary_id}`
+          }],
+          state_projection: context.projection,
+          follow_up_candidates: []
+        };
+      }
+    })),
+    effect_registrations:
+      lowerDvinaTraceConversationTemporalEffectRegistrations()
+  });
 }
 
 function playerPlan(request, {

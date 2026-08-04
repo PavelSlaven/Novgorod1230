@@ -289,6 +289,25 @@ test('NPC conversation reasons, supporting operations and check refs are closed 
   nonCanonicalCategories.decision_reasons.categories.reverse();
   assert.equal(validateNpcConversationResponseRequest(nonCanonicalCategories), false);
 
+  const environmentRequest = copy(request);
+  environmentRequest.decision_reasons.categories = ['environment'];
+  environmentRequest.perceived_message = null;
+  assert.equal(validateNpcConversationResponseRequest(environmentRequest), true);
+
+  const communicationWithoutMessage = copy(request);
+  communicationWithoutMessage.perceived_message = null;
+  assert.equal(
+    validateNpcConversationResponseRequest(communicationWithoutMessage),
+    false
+  );
+
+  const environmentWithMessage = copy(environmentRequest);
+  environmentWithMessage.perceived_message = request.perceived_message;
+  assert.equal(
+    validateNpcConversationResponseRequest(environmentWithMessage),
+    false
+  );
+
   assert.equal(validateNpcConversationResponseRequest({
     ...request,
     conversation_trigger: 'direct_question'

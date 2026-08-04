@@ -440,13 +440,9 @@ test('evidence presentation requires and executes its supporting operation', asy
     'environment',
     'communication'
   ]);
-  assert.equal(
-    Object.hasOwn(
-      exchange.npcRequest.social_context,
-      'presented_evidence_ref'
-    ),
-    true
-  );
+  assert.equal(Object.hasOwn(
+    exchange.npcRequest.social_context, 'presented_evidence_ref'
+  ), true);
   assert.equal(exchange.result.new_signal_records.some(
     ({ signal }) => signal.source_event_ref.entity_kind
       === 'evidence_presentation'
@@ -520,7 +516,7 @@ test('hearing evidence words without seeing the item creates only communication 
     semanticReadPool(writes), restarted)).length, 1);
 });
 
-test('seeing evidence without hearing the words creates only environment signal', async () => {
+test('seeing evidence without hearing the words creates and consumes an environment decision', async () => {
   const state = phase3State();
   const eremey = state.npcs.find(
     ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
@@ -543,23 +539,29 @@ test('seeing evidence without hearing the words creates only environment signal'
     playerPlanOptions: { evidence: true }
   });
 
-  assert.equal(exchange.npcCalls, 0);
-  assert.equal(exchange.result.decision_boundary, null);
+  assert.equal(exchange.npcCalls, 1);
+  assert.deepEqual(exchange.result.decision_boundary.categories, ['environment']);
+  assert.equal(exchange.npcRequest.perceived_message, null);
+  assert.equal(exchange.npcRequest.public_conversation_history.length, 0);
+  assert.doesNotMatch(JSON.stringify(exchange.npcRequest), /Вот синяя шерсть/);
+  assert.equal(
+    Object.hasOwn(
+      exchange.npcRequest.social_context,
+      'presented_evidence_ref'
+    ),
+    true
+  );
   assert.deepEqual(
     exchange.result.new_signal_records.map(({ signal }) => signal.category),
     ['environment']
   );
   const environmentSignal = exchange.result.new_signal_records[0].signal;
-  assert.equal(
-    environmentSignal.source_event_ref.entity_kind,
-    'evidence_presentation'
-  );
-  assert.equal(
-    environmentSignal.source_perception_ref.entity_id.includes(
-      'evidence-presentation'
-    ),
-    true
-  );
+  assert.deepEqual(exchange.result.consumed_signal_ids,
+    [environmentSignal.signal_id]);
+  assert.equal(environmentSignal.source_event_ref.entity_kind,
+    'evidence_presentation');
+  assert.equal(environmentSignal.source_perception_ref.entity_id
+    .includes('evidence-presentation'), true);
   const restarted = projectPhase3Conversation({
     state,
     contracts,
@@ -591,7 +593,7 @@ test('seeing evidence without hearing the words creates only environment signal'
     entity_id: environmentSignal.signal_id
   }]);
   assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
-    semanticReadPool(writes), restarted)).length, 0);
+    semanticReadPool(writes), restarted)).length, 1);
   const tampered = structuredClone(writes);
   tampered.appends.find(({ target_table: table, record }) =>
     table === 'party_perception_records'

@@ -124,6 +124,26 @@ test('unheard target keeps player fact and skips NPC model', async () => {
     result: exchange.result, inputDigest: digest('b') }));
 });
 
+test('combined communication and environment decision requires visual evidence', async () => {
+  const state = phase3State();
+  const contracts = resolveContracts(state);
+  withAccessibleBlueWool(state, contracts);
+  const exchange = await runPhase3({ state, contracts,
+    rawText: 'Вот синяя шерсть.', inputDigest: digest('7'),
+    responseKind: 'withhold',
+    checkResult: null, playerPlanOptions: { evidence: true } });
+  assert.deepEqual(exchange.result.decision_boundary.categories,
+    ['environment', 'communication']);
+  const next = project(exchange, state, 'combined-environment');
+  const unbacked = structuredClone(exchange.result);
+  unbacked.supporting_operation_perceptions = [];
+  const input = buildNpcSemanticConversationWriteInput({
+    state, next, semanticExchange: unbacked
+  });
+  assert.throws(() => writeSemantic(state, input, 'combined-environment'),
+    { code: 'NPC_SEMANTIC_CONVERSATION_PERSISTENCE_INVALID' });
+});
+
 test('target partial and unidentified perception persist unchanged', async () => {
   const variants = [
     { label: 'partial', machine: { hearing_capability: 'partial' },

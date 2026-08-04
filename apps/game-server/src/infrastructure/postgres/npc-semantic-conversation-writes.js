@@ -119,14 +119,24 @@ export function appendNpcSemanticConversationWrites({
   );
   if (hasDecision) {
     const perceivedMessage = request.perceived_message;
-    const targetEvidence = evidenceByPerceptionId.get(
-      perceivedMessage.perception_result_ref.entity_id
-    );
-    if (!targetEvidence
-        || !sameRef(targetEvidence.source_statement_ref,
-          perceivedMessage.source_statement_ref)
-        || !sameRef(targetEvidence.listener_ref, request.npc_ref)) {
-      fail('Semantic decision request must be based on an actual persisted received message');
+    if (perceivedMessage !== null) {
+      const targetEvidence = evidenceByPerceptionId.get(
+        perceivedMessage.perception_result_ref.entity_id
+      );
+      if (!targetEvidence
+          || !sameRef(targetEvidence.source_statement_ref,
+            perceivedMessage.source_statement_ref)
+          || !sameRef(targetEvidence.listener_ref, request.npc_ref)) {
+        fail('Semantic decision request must be based on an actual persisted received message');
+      }
+    }
+    if (boundary.categories.includes('environment')
+        && !hasSupportingOperationDecisionEvidence({
+          request,
+          signalRecords: orderedSignals,
+          supportingOperationEvidence
+        })) {
+      fail('Environment decision request must be based on actual persisted perception');
     }
   }
 
@@ -254,4 +264,30 @@ function validSupportingOperationEvidence(values) {
         ? entry.signal_refs.length === 0
         : entry.signal_refs.length <= 1);
   });
+}
+
+function hasSupportingOperationDecisionEvidence({
+  request,
+  signalRecords,
+  supportingOperationEvidence
+}) {
+  const environmentSignals = signalRecords.filter(
+    ({ category }) => category === 'environment'
+  );
+  return environmentSignals.length > 0
+    && environmentSignals.every((signal) =>
+      supportingOperationEvidence.some(({ perception, signal_refs: refs }) =>
+        perception.result_kind !== 'not_perceived'
+          && sameRef(perception.observer_ref, request.npc_ref)
+          && sameRef(perception.source_event_ref, signal.source_event_ref)
+          && sameRef(
+            {
+              entity_kind: 'perception_result',
+              entity_id: perception.perception_id
+            },
+            signal.source_perception_ref
+          )
+          && refs.some(({ entity_id: signalId }) =>
+            signalId === signal.signal_id))
+    );
 }

@@ -33,10 +33,7 @@ export function buildNpcDecision(context, working, playerStatement) {
     state_version: String(context.stateVersion)
   });
   if (!evaluation.boundary) {
-    fail(
-      'TRACE_M2_CONVERSATION_BOUNDARY_MISSING',
-      'The current exchange must produce one common NPC boundary.'
-    );
+    return null;
   }
   const evidencePerceived = resolvedRecords.some(({ signal }) =>
     signal.category === 'environment'
@@ -65,7 +62,7 @@ export function buildNpcDecision(context, working, playerStatement) {
       perceived_changes: perceivedChanges(resolvedRecords)
     },
     npc: ownNpcProjection(context.targetActor),
-    perceived_message: {
+    perceived_message: perceivedMessage === undefined ? null : {
       source_statement_ref: perceivedMessage.source_statement_ref,
       perception_result_ref: perceivedMessage.perception_result_ref
     },
@@ -80,7 +77,7 @@ export function buildNpcDecision(context, working, playerStatement) {
       context.targetRef
     ),
     social_context: {
-      delivery_cues: structuredClone(perceivedMessage.delivery_cues),
+      delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
       ...(context.phase === 'phase_3' && evidencePerceived
         ? { presented_evidence_ref: context.contracts.ids.evidence }
@@ -145,7 +142,9 @@ function publicConversationHistory(context, currentMessage) {
       const received = receivedByTarget.get(contribution.statement_id);
       return received ? [structuredClone(received)] : [];
     });
-  history.push(structuredClone(currentMessage));
+  if (currentMessage !== undefined) {
+    history.push(structuredClone(currentMessage));
+  }
   return history;
 }
 

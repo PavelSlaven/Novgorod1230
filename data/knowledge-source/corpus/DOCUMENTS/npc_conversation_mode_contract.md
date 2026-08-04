@@ -1300,7 +1300,12 @@ Conversation exchange сохраняет конечный `max_contributions_per
 }
 ```
 
-`decision_reasons` использует только общий закрытый словарь. Предметное содержание передаётся кратко в `perceived_changes` и `perceived_message`.
+`decision_reasons` использует только общий закрытый словарь. Предметное содержание
+передаётся кратко в `perceived_changes`. `perceived_message` содержит только
+фактически воспринятое текущее сообщение и обязателен для boundary с категорией
+`communication`. Если boundary создан исключительно неречевыми signals, включая
+фактически воспринятый `environment`, `perceived_message` равен `null`, а request
+опирается на referenced perception signal и не раскрывает неуслышанную реплику.
 
 ## 25. Контекст NPC
 
@@ -2990,7 +2995,7 @@ fields:
   npc_ref: required entity_ref
   decision_reasons: required json_object
   npc: required json_object
-  perceived_message: required json_object
+  perceived_message: required json_object_or_null
   public_conversation_history: required relation_set[json_object]
   knowledge: required json_object
   memory: required json_object
@@ -2998,7 +3003,8 @@ fields:
   available_resources: required relation_set[json_object]
   decision_scope: required json_object
 invariants:
-  - The request contains only the message and conversation history actually perceived by this NPC.
+  - A communication boundary requires the current actually perceived message; a boundary without communication requires perceived_message = null.
+  - The request contains only messages and conversation history actually perceived by this NPC.
   - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
 ```

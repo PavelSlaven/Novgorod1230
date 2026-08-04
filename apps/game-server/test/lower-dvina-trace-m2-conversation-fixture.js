@@ -397,7 +397,7 @@ function eremeyPlan(request, responseKind, routeOperation) {
     return npcNonSpeechPlan(
       request,
       responseKind,
-      request.public_conversation_history.at(-1).speaker_ref.entity_id
+      request.public_conversation_history.at(-1)?.speaker_ref.entity_id ?? null
     );
   }
   const disclosure = responseKind === 'route_disclosure';
@@ -480,7 +480,8 @@ function npcSpeechPlan(request, {
   claims = [],
   supportingOperations = []
 }) {
-  const playerRef = request.public_conversation_history.at(-1).speaker_ref;
+  const playerRef = request.public_conversation_history.at(-1)?.speaker_ref
+    ?? null;
   return {
     schema: 'conversation_contribution_plan_v1',
     request_id: request.request_id,

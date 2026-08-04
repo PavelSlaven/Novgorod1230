@@ -174,17 +174,12 @@ export async function executeM2ConversationExchange(context) {
             'player_character') {
         return { decisions: [], direct_addressee_refs: [] };
       }
-      const targetReceived = working.audiences.at(-1)?.received_messages.some(
-        ({ listener_ref: listenerRef }) =>
-          listenerRef.entity_kind === context.targetRef.entity_kind
-          && listenerRef.entity_id === context.targetRef.entity_id
-      );
-      if (!targetReceived) {
-        return { decisions: [], direct_addressee_refs: [] };
-      }
       decision = buildNpcDecision(
         workingContext(context, working), working, latestContribution
       );
+      if (decision === null) {
+        return { decisions: [], direct_addressee_refs: [] };
+      }
       return {
         decisions: [decision],
         direct_addressee_refs: [context.targetRef]

@@ -35,14 +35,15 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
       || decisions.some((decision) => {
         const request = decision.semantic_request;
         const perceived = request.perceived_message;
+        if (perceived === null) return false;
         const actual = messageByPerceptionId.get(
-          perceived?.perception_result_ref?.entity_id
+          perceived.perception_result_ref.entity_id
         );
         return !actual
           || canonicalDigest(actual.source_statement_ref)
-            !== canonicalDigest(perceived?.source_statement_ref)
+            !== canonicalDigest(perceived.source_statement_ref)
           || canonicalDigest(actual.perception_result_ref)
-            !== canonicalDigest(perceived?.perception_result_ref)
+            !== canonicalDigest(perceived.perception_result_ref)
           || canonicalDigest(actual.listener_ref)
             !== canonicalDigest(request.npc_ref);
       })) fail();

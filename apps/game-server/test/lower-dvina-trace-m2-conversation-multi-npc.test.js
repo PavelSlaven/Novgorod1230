@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { createTracePhase3VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { projectSemanticConversationSnapshot } from
   '../src/infrastructure/postgres/lower-dvina-trace-conversation-state.js';
 import { buildNpcSemanticConversationWriteInput } from
@@ -14,6 +16,7 @@ import { semanticReadPool } from
   './lower-dvina-trace-semantic-persistence-read-pool.js';
 import {
   digest,
+  phase2ConversationPayload,
   phase3State,
   ref,
   revision14Bundle,
@@ -192,6 +195,32 @@ test('NPC A may decide again after NPC B creates a new causal batch',
     assert.equal(new Set(persisted.map(({ request_id: requestId }) =>
       requestId)).size, 3);
     assert.equal(restarted.consumed_npc_decision_signal_ids.length, 3);
+
+    const publicPayload = phase2ConversationPayload({
+      state,
+      optionId: contracts.ids.talkOption,
+      check: null,
+      activityRef: contracts.talk.profile_id,
+      result: exchange.result
+    });
+    const projectedStatementRefs = publicPayload.last_turn.consequence
+      .conversation.semantic_exchange_projection.statement_refs;
+    assert.deepEqual(projectedStatementRefs, [ref(
+      'conversation_statement',
+      exchange.result.statements.find(({ speaker_ref: speaker }) =>
+        speaker.entity_id === eremey.instance_id).statement_id
+    )]);
+    const visible = await createTracePhase3VisibleProjector({
+      phase2Projector: { project: async () => null },
+      contracts
+    }).project({
+      consequence: {
+        phase3_kind: 'conversation',
+        conversation: { semantic_exchange: exchange.result }
+      }
+    });
+    assert.equal(visible.visible_scene,
+      'Еремей говорит: «Я отвечу лишь на то, что сам видел.»');
   });
 
 function resolveContracts(state) {

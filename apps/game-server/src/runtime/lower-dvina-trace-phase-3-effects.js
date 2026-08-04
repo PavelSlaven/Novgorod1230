@@ -115,7 +115,10 @@ export function createTracePhase3VisibleProjector({
         'route_disclosure', 'withhold', 'speech'
       ].includes(responseKind);
       const semanticUtterance = speechResponse
-        ? perceivedNpcUtterance(semantic, 'TRACE_M2_PHASE_3_VISIBLE_GAP')
+        ? perceivedNpcUtterance(
+            semantic,
+            'TRACE_M2_PHASE_3_VISIBLE_GAP'
+          )
         : null;
       const visibleChanges = semantic
         ? semantic.statements.map(({ statement_id: statementId }) =>
@@ -161,11 +164,14 @@ export function createTracePhase3VisibleProjector({
 }
 
 function perceivedNpcUtterance(semantic, code) {
-  const statements = semantic?.statements?.filter(
-    ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'
-  ) ?? [];
-  if (statements.length !== 1) throw visibleGap(code);
-  const statement = statements[0];
+  const primaryNpcRef = semantic?.resumed_npc_execution?.plan?.speaker_ref
+    ?? semantic?.decision_request?.npc_ref;
+  const statement = semantic?.statements?.find(
+    ({ speaker_ref: speaker }) =>
+      speaker?.entity_kind === primaryNpcRef?.entity_kind
+      && speaker.entity_id === primaryNpcRef.entity_id
+  );
+  if (statement == null) throw visibleGap(code);
   const audience = semantic.audiences?.find(
     ({ statement_ref: statementRef }) =>
       statementRef?.entity_kind === 'conversation_statement'

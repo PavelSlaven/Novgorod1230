@@ -3,6 +3,8 @@ import test from 'node:test';
 import { addElapsedTime } from '@rus/time-events-history';
 import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { createTracePhase3VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-3-effects.js';
 import { projectSemanticConversationSnapshot } from
   '../src/infrastructure/postgres/lower-dvina-trace-conversation-state.js';
 import { buildNpcSemanticConversationWriteInput } from
@@ -15,6 +17,7 @@ import { semanticReadPool } from
   './lower-dvina-trace-semantic-persistence-read-pool.js';
 import {
   digest,
+  phase2ConversationPayload,
   phase3State,
   projectPhase3Conversation,
   ref,
@@ -89,6 +92,17 @@ test('NPC response survives two interruptions and resumes one exact plan',
     assert.equal(completed.knowledge.filter(({ fact_id: factId }) =>
       factId === contracts.disclosureMapping.route_knowledge_disclosure
         .route_ref).length, 1);
+    const visible = await createTracePhase3VisibleProjector({
+      phase2Projector: { project: async () => null },
+      contracts: resolveContracts(pausedAgain)
+    }).project({
+      consequence: {
+        phase3_kind: 'conversation',
+        conversation: { semantic_exchange: third.result }
+      }
+    });
+    assert.equal(visible.visible_scene,
+      'Еремей говорит: «От лагеря иди к старой сушильне по тропе.»');
   });
 
 test('remaining addressed NPC responds after interrupted first responder reload',
@@ -137,6 +151,20 @@ test('remaining addressed NPC responds after interrupted first responder reload'
     const completed = projectPhase3Conversation({ state: restarted,
       contracts: resolveContracts(restarted), result: resumed.result,
       inputDigest: digest('5') });
+    const sharedProjection = phase2ConversationPayload({
+      state: restarted,
+      optionId: contracts.ids.talkOption,
+      check: null,
+      activityRef: contracts.talk.profile_id,
+      result: resumed.result
+    }).last_turn.consequence.conversation.semantic_exchange_projection;
+    const resumedEremeyStatement = resumed.result.statements.find(
+      ({ speaker_ref: speaker }) => speaker.entity_id === eremey.instance_id
+    );
+    assert.deepEqual(sharedProjection.npc_ref, eremeyRef);
+    assert.deepEqual(sharedProjection.statement_refs, [ref(
+      'conversation_statement', resumedEremeyStatement.statement_id
+    )]);
     const resumedWrites = writeSemantic(restarted, completed, resumed.result,
       '555555555555');
     assert.equal(resumedWrites.appends.filter(({ target_table: table }) =>

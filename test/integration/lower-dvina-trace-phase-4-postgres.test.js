@@ -405,7 +405,7 @@ function conversationTestSourceRegistration() {
           }],
           physical_keys: [
             `party_runtime.party_temporal_events:${candidate.boundary_id}`,
-            `party_runtime.party_npcs:${world.party_id}:${ratsha.instance_id}`
+            `party_runtime.party_npcs:${ratsha.instance_id}`
           ]
         }],
         state_projection: next,

@@ -212,7 +212,7 @@ test('background boundary updates perception without pausing conversation', asyn
           },
           expected_state_versions: [],
           physical_keys: [
-            `party_runtime.party_npcs:${state.party_id}:${target.instance_id}`
+            `party_runtime.party_npcs:${target.instance_id}`
           ]
         }], state_projection: next,
         follow_up_candidates: []

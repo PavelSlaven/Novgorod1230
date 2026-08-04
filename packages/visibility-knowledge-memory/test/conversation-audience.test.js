@@ -57,8 +57,7 @@ test('actual listeners come from perception, not intended audience, and an ordin
       same_time_batch_ref: ref('temporal_batch', 'batch-1'),
       perception_result: 'recognized',
       comprehension: 'full',
-      speaker_recognized: true,
-      witness_policy_allows: false
+      speaker_recognized: true
     }]
   });
 
@@ -81,7 +80,7 @@ test('actual listeners come from perception, not intended audience, and an ordin
     Object.hasOwn(result.received_messages[0].claims[0], 'speaker_posture'),
     false
   );
-  assert.deepEqual(result.witness_candidate_refs, []);
+  assert.deepEqual(result.witness_candidate_refs, [ordinaryWitness]);
   assert.equal(Object.hasOwn(result, 'decision_boundary_refs'), false);
   assert.equal(Object.hasOwn(result, 'selected_response_ref'), false);
 });

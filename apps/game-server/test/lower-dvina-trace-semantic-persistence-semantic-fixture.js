@@ -321,8 +321,7 @@ export function audience(source, listener, perception) {
       perceived_at: AT,
       same_time_batch_ref: ref('temporal_batch', 'batch-conversation-1'),
       comprehension: 'full',
-      speaker_recognized: true,
-      witness_policy_allows: true
+      speaker_recognized: true
     }]
   });
 }

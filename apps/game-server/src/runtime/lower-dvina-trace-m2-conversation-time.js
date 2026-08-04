@@ -22,8 +22,18 @@ export function advanceConversationContributionTime(
   plannedDurationMinutes
 ) {
   const durationMinutes = plannedDurationMinutes;
-  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 1) {
+  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 0) {
     fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
+  }
+  if (durationMinutes === 0) {
+    return {
+      working_state: structuredClone(working),
+      temporal_boundary_refs: [],
+      session_status: 'active',
+      elapsed_minutes: 0,
+      completed: true,
+      interrupted: false
+    };
   }
   const clockBefore = working.clock;
   const limit = addElapsedTime(clockBefore, {

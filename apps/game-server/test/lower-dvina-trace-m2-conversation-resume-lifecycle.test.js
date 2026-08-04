@@ -272,6 +272,91 @@ test('exchange limit preserves a persisted NPC follow-up for the next exchange',
       pendingSignal.signal_id), true);
   });
 
+test('resumed recurrent NPC chain stops at the exchange contribution limit',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const responder = npcBySlot(state, 'background_fisher_1');
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const responderRef = ref('npc', responder.instance_id);
+    state.temporal_boundary_candidates = [boundaryCandidate(
+      state, plusMinutes(state.clock, '3'), 'recurrent-cap'
+    )];
+    const first = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Еремей и рыбак, отвечайте друг другу.',
+      inputDigest: digest('c'),
+      responseKind: 'speech',
+      resolveTemporalBoundary: interruptResolution,
+      playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef, responderRef]
+      },
+      transformNpcPlan(plan) {
+        plan.primary_addressee_ref = responderRef;
+        plan.intended_addressee_refs = [responderRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [responderRef]
+        };
+        return plan;
+      }
+    });
+    assert.equal(first.npcCalls, 1);
+    const firstProjected = projectSemantic(first, state, 'recurrent-cap');
+    const firstWrites = writeSemantic(
+      state, firstProjected, first.result, 'recurrent-cap'
+    );
+    const restarted = projectPhase3Conversation({
+      state,
+      contracts,
+      result: first.result,
+      inputDigest: digest('c')
+    });
+    restarted.npc_semantic_decision_traces =
+      await assertLowerDvinaTraceSemanticConversationRows(
+        semanticReadPool(firstWrites), firstProjected
+      );
+    // The persisted plan resumes at slot seven, leaving one responder slot.
+    restarted.pending_npc_conversation_execution.contribution_index = 7;
+    restarted.temporal_boundary_candidates = [];
+
+    const resumed = await runPhase3({
+      state: restarted,
+      contracts: resolveContracts(restarted),
+      rawText: 'Продолжить.',
+      inputDigest: digest('d'),
+      responseKind: 'speech',
+      transformNpcPlan(plan, { request }) {
+        const targetRef = request.npc_ref.entity_id === eremey.instance_id
+          ? responderRef : eremeyRef;
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [targetRef]
+        };
+        return plan;
+      }
+    });
+
+    assert.deepEqual({
+      playerCalls: resumed.playerCalls,
+      npcCalls: resumed.npcCalls,
+      decisions: resumed.result.exchange.npc_decisions.length,
+      stopReason: resumed.result.exchange.stop_reason,
+      applied: resumed.result.exchange.applied_contribution_count,
+      elapsed: resumed.result.exact_elapsed_minutes
+    }, {
+      playerCalls: 0,
+      npcCalls: 1,
+      decisions: 1,
+      stopReason: 'exchange_limit',
+      applied: 2,
+      elapsed: 1
+    });
+  });
+
 test('terminal resumed responder does not invoke the remaining NPC queue',
   async () => {
     const state = phase3State();

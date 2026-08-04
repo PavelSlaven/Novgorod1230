@@ -29,8 +29,7 @@ const CONVERSATION_PERCEPTION_INPUT_KEYS = [
   'hearing_capability',
   'attention',
   'language_comprehension',
-  'speaker_recognition',
-  'witness_policy_allows'
+  'speaker_recognition'
 ];
 
 const CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS = [
@@ -346,8 +345,7 @@ export function resolveConversationListenerPerception(input = {}) {
       || !['available', 'distracted', 'unavailable'].includes(input.attention)
       || !['full', 'partial', 'none'].includes(input.language_comprehension)
       || !['recognized', 'unidentified', 'misinterpreted']
-        .includes(input.speaker_recognition)
-      || typeof input.witness_policy_allows !== 'boolean') {
+        .includes(input.speaker_recognition)) {
     throw Object.assign(new TypeError(
       'Conversation listener perception requires one exact factual snapshot.'
     ), { code: 'CONVERSATION_PERCEPTION_INPUT_INVALID' });
@@ -363,7 +361,6 @@ export function resolveConversationListenerPerception(input = {}) {
       input,
       'not_perceived',
       'none',
-      false,
       false
     );
   }
@@ -386,16 +383,11 @@ export function resolveConversationListenerPerception(input = {}) {
         ? 'perceived_unidentified'
         : 'recognized';
   const speakerRecognized = input.speaker_recognition === 'recognized';
-  const witness = input.witness_policy_allows
-    && perception === 'recognized'
-    && comprehension === 'full'
-    && speakerRecognized;
   return conversationPerceptionResult(
     input,
     perception,
     comprehension,
-    speakerRecognized,
-    witness
+    speakerRecognized
   );
 }
 
@@ -460,15 +452,13 @@ function conversationPerceptionResult(
   input,
   perceptionResult,
   comprehension,
-  speakerRecognized,
-  witnessPolicyAllows
+  speakerRecognized
 ) {
   return freeze({
     listener_ref: structuredClone(input.listener_ref),
     perception_result_ref: structuredClone(input.perception_result_ref),
     perception_result: perceptionResult,
     comprehension,
-    speaker_recognized: speakerRecognized,
-    witness_policy_allows: witnessPolicyAllows
+    speaker_recognized: speakerRecognized
   });
 }

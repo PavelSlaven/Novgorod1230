@@ -73,3 +73,25 @@ test('party-local commitment rejects acceptance outside the exact committed stat
       && error.code === 'PARTY_LOCAL_COMMITMENT_REFERENCE_MISMATCH'
   );
 });
+
+test('party-local commitment applies witness eligibility after factual perception', () => {
+  const eligibleWitness = ref('npc', 'eligible-witness');
+  const ineligibleWitness = ref('npc', 'ineligible-witness');
+  const result = planPartyLocalCommitment(commitmentInput({
+    party_perceptions: [beneficiaryRef, eligibleWitness, ineligibleWitness]
+      .sort((left, right) => left.entity_id.localeCompare(right.entity_id))
+      .map((partyRef) => ({
+        comprehension: 'full',
+        party_ref: partyRef,
+        speaker_recognized: true,
+        statement_refs: [acceptanceRef, offerRef]
+      })),
+    policy: {
+      ...commitmentInput().policy,
+      eligible_witness_refs: [eligibleWitness]
+    },
+    witness_candidates: [eligibleWitness, ineligibleWitness]
+  }));
+
+  assert.deepEqual(result.witness_refs, [eligibleWitness]);
+});

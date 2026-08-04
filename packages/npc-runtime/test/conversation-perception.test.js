@@ -18,7 +18,6 @@ function input(overrides = {}) {
     attention: 'available',
     language_comprehension: 'full',
     speaker_recognition: 'recognized',
-    witness_policy_allows: true,
     ...overrides
   };
 }
@@ -31,8 +30,7 @@ test('conversation perception excludes unheard listeners', () => {
     perception_result_ref: ref('perception_result', 'perception-1'),
     perception_result: 'not_perceived',
     comprehension: 'none',
-    speaker_recognized: false,
-    witness_policy_allows: false
+    speaker_recognized: false
   });
 });
 
@@ -45,8 +43,7 @@ test('conversation perception preserves partial comprehension', () => {
     perception_result_ref: ref('perception_result', 'perception-1'),
     perception_result: 'perceived_partial',
     comprehension: 'partial',
-    speaker_recognized: true,
-    witness_policy_allows: false
+    speaker_recognized: true
   });
 });
 

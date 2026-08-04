@@ -51,8 +51,8 @@ export function buildNpcDecision(context, working, boundary,
   );
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
-    request_id: `npc-conversation-request:${context.inputDigest}:${
-      context.targetRef.entity_id}`,
+    request_id: `npc-conversation-request:${boundary.boundary_id}:${
+      context.exchangeId}`,
     boundary_id: boundary.boundary_id,
     conversation_id: context.conversationId,
     exchange_id: context.exchangeId,

@@ -350,6 +350,12 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     false
   );
 
+  await assertRepeatedNpcCausalChain({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
+
   await assertTemporalConversationRestart({
     pool, release, runtimeCatalogPin
   });
@@ -360,6 +366,86 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
     runtimeCatalogPin
   });
 });
+
+async function assertRepeatedNpcCausalChain({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const baseModels = createM2ConversationModels();
+  let eremeyRef = null;
+  let responderRef = null;
+  let npcCalls = 0;
+  const requestIds = [];
+  const conversationModels = {
+    playerConversationModel: baseModels.playerConversationModel,
+    async npcSemanticModel(request) {
+      npcCalls += 1;
+      requestIds.push(request.request_id);
+      const plan = await baseModels.npcSemanticModel(request);
+      const targetRef = npcCalls === 1
+        ? responderRef : npcCalls === 2 ? eremeyRef : null;
+      if (targetRef !== null) {
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer',
+          target_refs: [targetRef]
+        };
+      }
+      return plan;
+    }
+  };
+  const runtime = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    conversationModels
+  });
+  const party = await createParty(runtime, 'phase-3-causal-a-b-a');
+  await inspectAndMove(runtime, party.party_id, 'causal-a-b-a');
+  const before = await latestSnapshot(pool, party.party_id);
+  eremeyRef = refForNpc(before, 'eremey_fisher');
+  responderRef = refForNpc(before, 'background_fisher_1');
+  const input = {
+    request_id: 'phase-3-causal-a-b-a-talk',
+    idempotency_key: 'phase-3-causal-a-b-a-talk',
+    raw_text: 'Спросить Еремея о крушении.'
+  };
+  const result = await runtime.submitTurn(party.party_id, input);
+
+  assert.equal(npcCalls, 3);
+  assert.equal(new Set(requestIds).size, 3);
+  assert.equal(await count(pool,
+    'party_runtime.party_npc_decision_traces', party.party_id), 3);
+  const persistedRequestIds = (await pool.query(
+    `SELECT semantic_request->>'request_id' AS request_id
+       FROM party_runtime.party_npc_decision_traces
+      WHERE party_id=$1`,
+    [party.party_id]
+  )).rows.map(({ request_id: requestId }) => requestId);
+  assert.equal(new Set(persistedRequestIds).size, 3);
+
+  const restarted = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    conversationModels
+  });
+  await restarted.getPartyScreen(party.party_id);
+  const replay = await restarted.submitTurn(party.party_id, input);
+  assert.deepEqual(replay, result);
+  assert.equal(npcCalls, 3);
+  assert.equal(await count(pool,
+    'party_runtime.party_npc_decision_traces', party.party_id), 3);
+}
+
+function refForNpc(state, participantSlot) {
+  const npc = state.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === participantSlot);
+  assert.ok(npc, `NPC slot ${participantSlot} must exist`);
+  return { entity_kind: 'npc', entity_id: npc.instance_id };
+}
 
 async function assertPerceptionRestartVariants({
   pool,
@@ -711,7 +797,8 @@ function buildRuntime({
   pool,
   release,
   runtimeCatalogPin,
-  rollForRequest = () => 0.99
+  rollForRequest = () => 0.99,
+  conversationModels = null
 }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({
     pool,
@@ -723,7 +810,7 @@ function buildRuntime({
     committer
   });
   const { playerConversationModel, npcSemanticModel } =
-    createM2ConversationModels();
+    conversationModels ?? createM2ConversationModels();
   const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,

@@ -460,15 +460,17 @@ function plannedNpcContributionMinutes({
     `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
   const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
     ? [] : plan.speech?.response_expectation?.target_refs ?? [];
+  let recurrentResponse = false;
   for (const reference of expectedRefs) {
     const key = `${reference.entity_kind}\u0000${reference.entity_id}`;
-    if (!processedKeys.has(key)) queuedKeys.add(key);
+    queuedKeys.add(key);
+    if (processedKeys.has(key)) recurrentResponse = true;
   }
   const futureReserve = Math.min(
     queuedKeys.size,
-    Math.max(0, remainingBudgetMinutes - 1)
+    Math.max(0, remainingBudgetMinutes - (recurrentResponse ? 0 : 1))
   );
-  return Math.max(1, Math.min(
+  return Math.max(recurrentResponse ? 0 : 1, Math.min(
     defaultMinutes,
     remainingBudgetMinutes - futureReserve
   ));

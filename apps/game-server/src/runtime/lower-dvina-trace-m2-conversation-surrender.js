@@ -47,6 +47,10 @@ export function buildSurrenderProjection(result, context) {
       (witness) => sameRef(witness, candidate)
     )
   ).sort(compareRefs);
+  const eligibleWitnessRefs = [
+    npcRef(context.contracts.actors.eremey_fisher.instance_id),
+    npcRef(context.contracts.actors.participating_fisher.instance_id)
+  ].sort(compareRefs);
   const partyRefs = [playerRef, ratshaRef, ...witnessRefs].sort(compareRefs);
   const policyRef = ref(
     'promise_policy',
@@ -71,7 +75,7 @@ export function buildSurrenderProjection(result, context) {
       })),
     policy: {
       acceptance_required: true,
-      eligible_witness_refs: witnessRefs,
+      eligible_witness_refs: eligibleWitnessRefs,
       policy_ref: policyRef,
       required_perceiving_party_refs: [ratshaRef],
       witness_policy_ref: witnessPolicyRef

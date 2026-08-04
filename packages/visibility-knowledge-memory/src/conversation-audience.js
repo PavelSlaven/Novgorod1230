@@ -10,8 +10,7 @@ const LISTENER_RESULT_KEYS = [
   'perceived_at',
   'same_time_batch_ref',
   'comprehension',
-  'speaker_recognized',
-  'witness_policy_allows'
+  'speaker_recognized'
 ];
 const REF_KEYS = ['entity_kind', 'entity_id'];
 const LISTENER_KINDS = new Set(['npc', 'player_character']);
@@ -78,14 +77,12 @@ function validListenerResult(value) {
     && exactTimestamp(value.perceived_at)
     && PERCEPTION_RESULTS.has(value.perception_result)
     && COMPREHENSION_LEVELS.has(value.comprehension)
-    && typeof value.speaker_recognized === 'boolean'
-    && typeof value.witness_policy_allows === 'boolean')) {
+    && typeof value.speaker_recognized === 'boolean')) {
     return false;
   }
   if (value.perception_result === 'not_perceived') {
     return value.comprehension === 'none'
-      && value.speaker_recognized === false
-      && value.witness_policy_allows === false;
+      && value.speaker_recognized === false;
   }
   if (value.perception_result === 'perceived_unidentified'
       && value.speaker_recognized) {
@@ -182,8 +179,7 @@ export function projectConversationAudience(input = {}) {
     witness_candidate_refs: actualListeners
       .filter((result) => result.speaker_recognized
         && result.comprehension === 'full'
-        && result.perception_result !== 'misinterpreted'
-        && result.witness_policy_allows)
+        && result.perception_result !== 'misinterpreted')
       .map(({ listener_ref }) => listener_ref)
   });
 }

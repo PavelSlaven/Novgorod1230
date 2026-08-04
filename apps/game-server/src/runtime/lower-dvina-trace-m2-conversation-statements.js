@@ -222,9 +222,6 @@ function audienceForStatement(
   listenerActors,
   extraListenerRefs
 ) {
-  const witnessIds = new Set(
-    context.state.promise_instances?.[0]?.witness_actor_ids ?? []
-  );
   const listenerRefs = [
     ...listenerActors.map(({ instance_id: instanceId }) => npcRef(instanceId)),
     ...extraListenerRefs
@@ -268,8 +265,7 @@ function audienceForStatement(
           : machine.attention ?? 'available',
         language_comprehension:
           semantic.language_comprehension ?? 'full',
-        speaker_recognition: semantic.speaker_recognition ?? 'recognized',
-        witness_policy_allows: witnessIds.has(listenerRef.entity_id)
+        speaker_recognition: semantic.speaker_recognition ?? 'recognized'
       });
       return {
         ...perception,

@@ -2,6 +2,16 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { projectSemanticConversationSnapshot } from
+  '../src/infrastructure/postgres/lower-dvina-trace-conversation-state.js';
+import { buildNpcSemanticConversationWriteInput } from
+  '../src/infrastructure/postgres/npc-semantic-conversation-write-input.js';
+import { appendNpcSemanticConversationWrites } from
+  '../src/infrastructure/postgres/npc-semantic-conversation-writes.js';
+import { assertLowerDvinaTraceSemanticConversationRows } from
+  '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
+import { semanticReadPool } from
+  './lower-dvina-trace-semantic-persistence-read-pool.js';
 import {
   digest,
   phase3State,
@@ -114,6 +124,74 @@ test('NPC response expectation creates one perceived follow-up responder',
     assert.equal(followUpSignal.significance, 'material');
     assert.equal(exchange.result.consumed_signal_ids.includes(
       followUpSignal.signal_id), true);
+  });
+
+test('NPC A may decide again after NPC B creates a new causal batch',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const responder = npcBySlot(state, 'background_fisher_1');
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const responderRef = ref('npc', responder.instance_id);
+    const exchange = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Еремей, спроси рыбака и ответь на его вопрос.',
+      inputDigest: digest('a'),
+      responseKind: 'speech',
+      playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef]
+      },
+      transformNpcPlan: (plan, { call_index: callIndex }) => {
+        const targetRef = callIndex === 1
+          ? responderRef : callIndex === 2 ? eremeyRef : null;
+        if (targetRef === null) return plan;
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [targetRef]
+        };
+        return plan;
+      }
+    });
+
+    assert.equal(exchange.npcCalls, 3);
+    assert.deepEqual(exchange.npcRequests.map(({ npc_ref: npcRef }) => npcRef),
+      [eremeyRef, responderRef, eremeyRef]);
+    assert.equal(new Set(exchange.npcRequests.map(
+      ({ request_id: requestId }) => requestId)).size, 3);
+
+    const restarted = projectSemanticConversationSnapshot({
+      state,
+      semanticExchange: exchange.result,
+      rootTurnId: 'turn:multi-npc:a-b-a',
+      workingRevision: 0,
+      appliedChangeSetId: 'change:multi-npc:a-b-a'
+    });
+    const writeInput = buildNpcSemanticConversationWriteInput({
+      state,
+      next: restarted,
+      semanticExchange: exchange.result
+    });
+    const writes = { inserts: [], updates: [], appends: [] };
+    appendNpcSemanticConversationWrites({
+      ...writes,
+      partyId: state.party_id,
+      changeSetId: 'change:multi-npc:a-b-a',
+      idempotencyRecordId: 'idem:multi-npc:a-b-a',
+      rootTurnId: 'turn:multi-npc:a-b-a',
+      workingRevision: 0,
+      ...writeInput
+    });
+    const persisted = await assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(writes), restarted
+    );
+    assert.equal(persisted.length, 3);
+    assert.equal(new Set(persisted.map(({ request_id: requestId }) =>
+      requestId)).size, 3);
+    assert.equal(restarted.consumed_npc_decision_signal_ids.length, 3);
   });
 
 function resolveContracts(state) {

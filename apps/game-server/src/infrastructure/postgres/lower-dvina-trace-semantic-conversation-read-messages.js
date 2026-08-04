@@ -76,6 +76,12 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
         candidate.change_set_id === statement?.change_set_id);
     const decision = exchangeDecisions.find((candidate) =>
       canonicalDigest(candidate.semantic_request.npc_ref)
+          === canonicalDigest(message.listener_ref)
+        && canonicalDigest(candidate.semantic_request.perceived_message
+          ?.perception_result_ref)
+          === canonicalDigest(message.perception_result_ref)
+    ) ?? exchangeDecisions.find((candidate) =>
+      canonicalDigest(candidate.semantic_request.npc_ref)
         === canonicalDigest(message.listener_ref)
     ) ?? exchangeDecisions[0];
     const contribution = contributionById.get(statement?.statement_id);

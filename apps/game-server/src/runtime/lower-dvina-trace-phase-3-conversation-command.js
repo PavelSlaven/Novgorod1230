@@ -197,9 +197,6 @@ function createSemanticConversationCommand({
   }, {
     kind: 'materialized_present_npc',
     ref: ids.eremeyRef
-  }, {
-    kind: 'npc_policy_state',
-    state: 'guarded'
   }, { kind: 'no_current_temporal_boundary_candidates' }, ...(evidence ? [{
     kind: 'committed_evidence_access',
     evidence_ref: ids.evidence

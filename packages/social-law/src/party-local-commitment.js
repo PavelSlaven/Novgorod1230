@@ -96,12 +96,6 @@ export function planPartyLocalCommitment(input = {}) {
     'acceptance_statement_refs',
     'committed_statement_refs'
   );
-  requireSubset(
-    witnessCandidates,
-    input.policy.eligible_witness_refs,
-    'witness_candidates',
-    'policy.eligible_witness_refs'
-  );
 
   if (!input.policy.acceptance_required && acceptanceStatementRefs.length !== 0) {
     mismatch('Acceptance statements are forbidden when acceptance is not required.', {
@@ -135,8 +129,15 @@ export function planPartyLocalCommitment(input = {}) {
     );
   }
 
+  const eligibleWitnessKeys = new Set(
+    input.policy.eligible_witness_refs.map(refKey)
+  );
   const witnessRefs = witnessCandidates.filter((candidate) =>
-    fullyPerceived(perceptionByParty.get(refKey(candidate)), offerStatementRefs)
+    eligibleWitnessKeys.has(refKey(candidate))
+      && fullyPerceived(
+        perceptionByParty.get(refKey(candidate)),
+        offerStatementRefs
+      )
   );
   const requiredBeneficiaryKeys = new Set(
     input.policy.required_perceiving_party_refs.map(refKey)

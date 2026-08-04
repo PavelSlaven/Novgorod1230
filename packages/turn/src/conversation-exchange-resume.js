@@ -56,6 +56,13 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     let latestContribution = firstProgress.applied.contribution_event;
     while (queuedMinutes > 0
         && [null, 'player_response'].includes(stopReason)) {
+      const completedExchangeContributions = pending.contribution_index - 1
+        + contributions.length;
+      if (completedExchangeContributions
+          >= normalized.maxContributionsPerExchange) {
+        stopReason = 'exchange_limit';
+        break;
+      }
       const batch = normalizeNpcBoundaryBatch(await callPort(
         ports.buildNpcResponseBoundaries,
         { working_state: workingState,
@@ -207,12 +214,14 @@ function plannedNpcMinutes({
   const processedKeys = new Set(processedNpcRefs.map(refKey));
   const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
     ? [] : plan.speech?.response_expectation?.target_refs ?? [];
+  let recurrentResponse = false;
   for (const reference of expectedRefs) {
-    if (!processedKeys.has(refKey(reference))) queuedKeys.add(refKey(reference));
+    queuedKeys.add(refKey(reference));
+    if (processedKeys.has(refKey(reference))) recurrentResponse = true;
   }
-  return Math.max(1, remainingMinutes - Math.min(
+  return Math.max(recurrentResponse ? 0 : 1, remainingMinutes - Math.min(
     queuedKeys.size,
-    Math.max(0, remainingMinutes - 1)
+    Math.max(0, remainingMinutes - (recurrentResponse ? 0 : 1))
   ));
 }
 

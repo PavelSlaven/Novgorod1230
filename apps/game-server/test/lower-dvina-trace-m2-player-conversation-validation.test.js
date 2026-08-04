@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { resolveTracePhase3Contracts } from
   '../src/runtime/lower-dvina-trace-phase-3-contracts.js';
+import { createTracePhase3ConversationCommand } from
+  '../src/runtime/lower-dvina-trace-phase-3-conversation-command.js';
 import {
   digest,
   phase3State,
@@ -57,4 +59,23 @@ test('unknown player entity ref is rejected before statement or state change',
       }
     }), ({ code }) => code === 'TURN_CONVERSATION_PLAN_INVALID');
     assert.deepEqual(state, before);
+  });
+
+test('revision 14 semantic command has no bounded-only NPC policy precondition',
+  () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({
+      state, bundle: revision14Bundle
+    });
+    const command = createTracePhase3ConversationCommand({
+      contracts,
+      evidence: false,
+      inputDigest: digest('semantic-preconditions'),
+      playerConversationModel: async () => null,
+      npcSemanticModel: async () => null,
+      revalidateStateVersion: async () => state.party_state.state_version
+    });
+
+    assert.equal(command.preconditions.some(
+      ({ kind }) => kind === 'npc_policy_state'), false);
   });

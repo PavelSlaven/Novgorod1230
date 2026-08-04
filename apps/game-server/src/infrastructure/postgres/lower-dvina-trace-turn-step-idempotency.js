@@ -87,10 +87,11 @@ export function validLowerDvinaTraceTurnStepReplayEvidence({
       : visibleDependencyPins;
     return record?.semantic_command_snapshot?.turn_step_commit_digest
         === canonicalDigest(envelope)
-      && record.semantic_command_digest === normalizeDigest(canonicalDigest({
-        input_digest: inputDigest,
-        turn_step_commit: envelope
-      }))
+      && normalizeDigest(record.semantic_command_digest)
+        === normalizeDigest(canonicalDigest({
+          input_digest: inputDigest,
+          turn_step_commit: envelope
+        }))
       && (record.operation_kind !== 'trace_turn_step'
         || canonicalDigest(visibleDependencyPins)
           === canonicalDigest(expectedVisiblePins))

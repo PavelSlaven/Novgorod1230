@@ -34,6 +34,8 @@ import {
 import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { digestRunIdentity } from
+  '../../apps/game-server/src/infrastructure/postgres/party-store-turn.js';
 import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';

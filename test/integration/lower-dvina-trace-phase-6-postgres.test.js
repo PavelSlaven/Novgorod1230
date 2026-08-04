@@ -9,6 +9,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
@@ -107,7 +108,9 @@ function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
   const repository = createLowerDvinaTracePhase2PostgresRepository({
     partyPool: pool, committer
   });
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
+    turnStepModel,
     semanticResolver: async ({ raw_text, action_set }) => ({ option_id: option(raw_text, action_set) }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => { if (counters) counters.rng_factories += 1; const source = createSeededRandomSource(`phase-6:${request_id}`); return { next: () => { if (counters) counters.rng_draws += 1; return 0.99; }, snapshot: () => source.snapshot() }; },

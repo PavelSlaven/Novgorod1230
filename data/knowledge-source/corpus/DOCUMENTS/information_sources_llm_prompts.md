@@ -2,9 +2,13 @@
 
 ## Нормативная актуализация materialization v2
 
-Этот документ подчинён `code_driven_world_materialization_architecture.md`. Источники и редакторский процесс утверждают категории, шаблоны, профили, правила и исторические факты. Runtime-код материализует конкретные G5/NPC/items и рассчитывает обычные последствия. LLM не выполняет свободную смысловую генерацию runtime-state и не пишет в базы.
+Этот документ подчинён `code_driven_world_materialization_architecture.md`. Источники и редакторский процесс утверждают категории, шаблоны, профили, правила и исторические факты. Runtime-код материализует конкретные G5/NPC и authored/significant/hidden items и рассчитывает обычные последствия. Active player planner предлагает только следующий строгий step, но не генерирует свободный runtime-state и не пишет в базы.
 
-Допустимые runtime-роли LLM: bounded decision по закрытому списку с `option_id` и `command_token`, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит JSON Schema, state-version, token, option-membership и change-set gates; фактическое последствие всегда рассчитывает код.
+Допустимые runtime-роли LLM: bounded decision по закрытому списку с `option_id` и `command_token`, активный player `turn_step_planner`, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит профильные JSON Schema, state-version и code-owned admission gates; фактическое последствие всегда рассчитывает код.
+
+`turn_step_planner` получает только `turn_step_request_v1`: root player action, remaining intent, committed state version, working revision, ordered summaries уже выполненных шагов, actor и текущую player-safe working projection. Он возвращает только `turn_step_plan_v1` для следующего шага. Provider не получает hidden state, SQL, write plan, container contents или объективные сведения вне восприятия персонажа.
+
+Одна planner session принадлежит одному root turn, использует не более восьми внутренних шагов и после каждого применённого результата получает заново построенную player-safe projection. Допускается один structural repair невалидного плана; repair видит исходный request и структурные ошибки, но не новый factual context. Exact registered command обходит planner. Все шаги накапливаются в code-owned draft и фиксируются только единым commit после revalidation.
 
 Для Temporal World v4 security projection является code-owned. Factual
 visible package создаётся и сохраняется в atomic commit до narration;
@@ -93,7 +97,7 @@ LLM не должна менять сохранённые игровые фак�
 9. типовые риски, конфликты и дорожные ситуации;
 10. справки о сезонности, климате и хозяйстве.
 
-Утверждённая база не должна быть художественной прозой. Это нормативный слой, из которого код получает категории, profiles, templates и rules для материализации и расчёта, а LLM — только разрешённый контекст для bounded decisions, аудита и visible prose.
+Утверждённая база не должна быть художественной прозой. Это нормативный слой, из которого код получает категории, profiles, templates и rules для материализации и расчёта, а LLM — только разрешённый контекст своей роли: closed bounded choice, player-safe `turn_step_planner`, аудит или visible prose.
 
 ---
 

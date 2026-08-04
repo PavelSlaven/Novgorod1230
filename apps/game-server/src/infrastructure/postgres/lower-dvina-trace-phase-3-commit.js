@@ -16,12 +16,20 @@ import {
   phase3Writes,
   visibleEnvelopeFor
 } from './lower-dvina-trace-phase-3-write-projection.js';
+import {
+  mergeLowerDvinaTraceTurnStepWrites,
+  prepareLowerDvinaTraceTurnStepPersistence
+} from './lower-dvina-trace-turn-step-persistence.js';
+import {
+  bindLowerDvinaTraceTurnStepIdempotency
+} from './lower-dvina-trace-turn-step-idempotency.js';
 
 export async function commitLowerDvinaTracePhase3({
   partyId,
   writePlan,
   inputDigest,
   phase3Contracts,
+  turnStepApprovedOwners,
   loadState,
   committer
 }) {
@@ -44,9 +52,14 @@ export async function commitLowerDvinaTracePhase3({
   const idemId = `idem:${partyId}:${canonicalDigest(
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
-  const next = nextState({
+  let next = nextState({
     state, factual, nextVersion, turnNumber, inputDigest, changeSetId
   });
+  const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId,
+    phase3Contracts, turnStepApprovedOwners
+  });
+  next = turnStep.snapshot;
   const visibleEnvelope = visibleEnvelopeFor({
     partyId, nextVersion, turnNumber, changeSetId, idemId,
     visibleContext, factual, phase3Contracts
@@ -59,11 +72,11 @@ export async function commitLowerDvinaTracePhase3({
   const pendingScreen = pendingScreenFor({
     state: next, factual, visibleEnvelope
   });
-  const writes = phase3Writes({
+  const writes = mergeLowerDvinaTraceTurnStepWrites(phase3Writes({
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
     phase3Contracts
-  });
+  }), turnStep.writes);
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
@@ -100,24 +113,29 @@ export async function commitLowerDvinaTracePhase3({
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      semantic_command_snapshot: {
-        schema: 'rus.lower_dvina_trace_command_snapshot.v2',
-        input_digest: inputDigest,
-        raw_text: factual.player_input.raw_text,
-        action_set_digest:
-          factual.mode_resolution.decision_trace.action_set_digest,
-        selected_option_id: factual.mode_resolution.option_id,
-        semantic_trace: factual.mode_resolution.decision_trace
-      },
-      semantic_command_digest: normalizeDigest(canonicalDigest({
-        input_digest: inputDigest,
-        selected_option_id: factual.mode_resolution.option_id
-      })),
-      semantic_dependency_pins: {
-        activity: phase3Contracts.activityPins.find(
-          ({ id }) => id === phase3ActivityRef(factual)
-        )
-      },
+      ...bindLowerDvinaTraceTurnStepIdempotency({
+        envelope: writePlan.turn_step_commit,
+        inputDigest,
+        semanticCommandSnapshot: {
+          schema: 'rus.lower_dvina_trace_command_snapshot.v2',
+          input_digest: inputDigest,
+          raw_text: factual.player_input.raw_text,
+          action_set_digest:
+            factual.mode_resolution.decision_trace.action_set_digest,
+          selected_option_id: factual.mode_resolution.option_id,
+          semantic_trace: factual.mode_resolution.decision_trace
+        },
+        semanticCommandDigest: normalizeDigest(canonicalDigest({
+          input_digest: inputDigest,
+          selected_option_id: factual.mode_resolution.option_id
+        })),
+        semanticDependencyPins: {
+          activity: phase3Contracts.activityPins.find(
+            ({ id }) => id === phase3ActivityRef(factual)
+          )
+        },
+        visibleDependencyPins: visibleEnvelope.dependency_pins
+      }),
       request_id: factual.player_input.request_id
     },
     change_set: { id: changeSetId },

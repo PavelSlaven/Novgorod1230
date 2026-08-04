@@ -1,0 +1,191 @@
+import { serverError } from '../errors.js';
+
+const EXPECTED = Object.freeze({
+  'lower_dvina_trace.inspect_wreck_in_detail': {
+    operation: 'request_discovery',
+    kindField: 'discovery_kind',
+    kindsField: 'discovery_kinds',
+    kind: 'inspect',
+    targetKey: 'wreck',
+    targetSemantic: 'wreck_shore'
+  },
+  'lower_dvina_trace.follow_path_to_fishing_camp': {
+    operation: 'request_movement',
+    kindField: 'movement_kind',
+    kindsField: 'movement_kinds',
+    kind: 'route',
+    targetKey: 'fishingCamp',
+    targetSemantic: 'fishing_camp'
+  },
+  'lower_dvina_trace.ask_eremey_about_wreck': {
+    operation: 'emit_interaction',
+    kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds',
+    kind: 'request',
+    targetKey: 'eremey',
+    targetSemantic: 'eremey_fisher',
+    instrument: 'none'
+  },
+  'lower_dvina_trace.show_clue_and_seek_eremey_cooperation': {
+    operation: 'emit_interaction',
+    kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds',
+    kind: 'offer',
+    targetKey: 'eremey',
+    targetSemantic: 'eremey_fisher',
+    instrument: 'evidence',
+    instrumentSemantic: 'blue_wool_evidence'
+  },
+  'lower_dvina_trace.follow_known_route_to_drying_shed': {
+    operation: 'request_movement',
+    kindField: 'movement_kind',
+    kindsField: 'movement_kinds',
+    kind: 'route',
+    targetKey: 'dryingShed',
+    targetSemantic: 'old_drying_shed'
+  },
+  'lower_dvina_trace.offer_conditional_protection_and_seek_surrender': {
+    operation: 'emit_interaction',
+    kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds',
+    kind: 'offer',
+    targetKey: 'ratsha',
+    targetSemantic: 'ratsha_storehouse_helper',
+    instrument: 'none'
+  },
+  'lower_dvina_trace.attempt_risky_first_aid_onisim': {
+    operation: 'request_activity',
+    kindField: 'activity_kind',
+    kindsField: 'activity_kinds',
+    kind: 'recover',
+    targetKey: 'onisim',
+    targetSemantic: 'onisim_boatman'
+  },
+  'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp': {
+    operation: 'request_activity',
+    kindField: 'activity_kind',
+    kindsField: 'activity_kinds',
+    kind: 'carry',
+    targetKey: 'onisim',
+    targetSemantic: 'onisim_boatman'
+  }
+});
+
+const REVISION_13_EXACT_TEXTS = Object.freeze({
+  'lower_dvina_trace.follow_known_route_to_drying_shed': new Set([
+    'пройти известной тропой к старой сушильне.'
+  ]),
+  'lower_dvina_trace.offer_conditional_protection_and_seek_surrender':
+    new Set([
+      'предложить ратше условную защиту и потребовать сдачи.'
+    ]),
+  'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp': new Set([
+    'сделать носилки и отнести онисима в стан.'
+    ])
+});
+
+export function bindLowerDvinaTraceTurnStepCommands({
+  commands,
+  bundle,
+  targetRefs
+}) {
+  if (bundle.definition_revision !== 13) return commands;
+  const records = bundle.turn_step_bindings?.domain_bindings;
+  const byCommand = new Map();
+  if (!Array.isArray(records) || records.length !== Object.keys(EXPECTED).length) {
+    gap();
+  }
+  for (const record of records) {
+    if (!record?.command_id || byCommand.has(record.command_id)) gap();
+    byCommand.set(record.command_id, record);
+  }
+
+  const bound = commands.map((command) => {
+    const expected = EXPECTED[command.command_id];
+    if (!expected) return command;
+    const record = byCommand.get(command.command_id);
+    const targetRef = targetRefs?.[expected.targetKey];
+    const actorRef = targetRefs?.actor;
+    if (!validRecord(record, expected)
+        || typeof targetRef !== 'string' || targetRef.length === 0
+        || typeof actorRef !== 'string' || actorRef.length === 0) {
+      gap();
+    }
+    return {
+      ...command,
+      ...(REVISION_13_EXACT_TEXTS[command.command_id] ? {
+        matches: ({ raw_text: rawText }) =>
+          REVISION_13_EXACT_TEXTS[command.command_id].has(
+            normalizeExactText(rawText)
+          )
+      } : {}),
+      semantic_binding: {
+        binding_id: record.binding_id,
+        operation: record.operation,
+        matches: ({ operation }) => matchesOperation({
+          operation,
+          expected,
+          allowedKinds: expected.operation === 'request_activity'
+            ? [expected.kind]
+            : record[expected.kindsField],
+          actorRef,
+          targetRef,
+          evidenceRef: targetRefs?.evidence
+        })
+      }
+    };
+  });
+  if ([...byCommand.keys()].some((commandId) =>
+    !bound.some((command) => command.command_id === commandId
+      && command.semantic_binding))) {
+    gap();
+  }
+  return bound;
+}
+
+function normalizeExactText(value) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
+function validRecord(record, expected) {
+  return record?.operation === expected.operation
+    && Array.isArray(record[expected.kindsField])
+    && record[expected.kindsField].includes(expected.kind)
+    && record.target_semantics?.includes(expected.targetSemantic) === true
+    && (expected.instrumentSemantic == null
+      || record.instrument_semantics?.includes(
+        expected.instrumentSemantic
+      ) === true);
+}
+
+function matchesOperation({ operation, expected, allowedKinds, actorRef,
+  targetRef, evidenceRef }) {
+  if (operation?.op !== expected.operation
+      || operation.actor_ref !== actorRef
+      || !allowedKinds.includes(operation[expected.kindField])) {
+    return false;
+  }
+  if (expected.operation === 'request_movement') {
+    return operation.target_ref === targetRef;
+  }
+  const targetField = expected.operation === 'emit_interaction'
+    ? 'target_actor_refs'
+    : 'target_refs';
+  if (operation[targetField]?.includes(targetRef) !== true) return false;
+  if (expected.instrument === 'none') {
+    return operation.instrument_refs?.length === 0;
+  }
+  if (expected.instrument === 'evidence') {
+    return typeof evidenceRef === 'string'
+      && operation.instrument_refs?.includes(evidenceRef) === true;
+  }
+  return true;
+}
+
+function gap() {
+  throw serverError(
+    'TRACE_TURN_STEP_BINDING_INVALID',
+    'Revision 13 requires the exact approved semantic command bindings.',
+    { status: 409 }
+  );
+}

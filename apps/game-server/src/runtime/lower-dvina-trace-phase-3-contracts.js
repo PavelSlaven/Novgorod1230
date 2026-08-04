@@ -18,7 +18,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12].includes(bundle.definition_revision)) {
+  if (![9, 10, 11, 12, 13].includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
   const activities = bundle.activity_check_consequence_profiles.activity_profiles;

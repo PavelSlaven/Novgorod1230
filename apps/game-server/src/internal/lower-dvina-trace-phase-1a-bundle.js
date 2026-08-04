@@ -46,7 +46,7 @@ export async function loadLowerDvinaTraceMaterializationBundle({
   if (scenarioDefinitionRevision === 7) {
     return loadRevision7Bundle({ rootDir });
   }
-  if ([8, 9, 10, 11, 12].includes(scenarioDefinitionRevision)) {
+  if ([8, 9, 10, 11, 12, 13].includes(scenarioDefinitionRevision)) {
     return loadLowerDvinaTraceRevisionBundle({
       scenarioDefinitionRevision,
       rootDir,

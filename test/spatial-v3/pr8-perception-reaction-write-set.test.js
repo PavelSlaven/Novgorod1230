@@ -359,7 +359,7 @@ test('PostgreSQL commit persists the causal slice and replays without duplicate 
     database: 'pr8',
     max: 4
   });
-  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 10);
+  assert.equal((await runSpatialV3TargetMigrations(pool)).applied, 15);
   await pool.query(`
     INSERT INTO party_runtime.parties
       (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)

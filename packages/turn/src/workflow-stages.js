@@ -20,6 +20,11 @@ import {
   loadPersistedVisibleProjectionStage
 } from './stages/persisted-visible-projection.js';
 import { buildScreenProjectionStage } from './stages/screen-projection.js';
+import {
+  getTurnStepWorkflowDraft,
+  turnStepDraftOperationBatch,
+  turnStepDraftPreparedEffectLedger
+} from './turn-step-workflow-draft.js';
 
 export function createTurnStageDefinitions({ context, services, rawInput, now }) {
   const definitions = [
@@ -65,7 +70,11 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       retrievedState: state.revalidatedState,
       commandRegistry: services.commandRegistry
     }), context)),
-    stage(7, 'checks', async (state) => next(state, 'checks', executeApprovedChecksStage({ availability: state.availability, services }), context)),
+    stage(7, 'checks', async (state) => next(state, 'checks', executeApprovedChecksStage({
+      availability: state.availability,
+      services,
+      modeResolution: state.modeResolution
+    }), context)),
     stage(8, 'consequence', async (state) => {
       const consequence = await resolveConsequenceStage({
         playerInput: state.playerInput,
@@ -83,13 +92,19 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
     stage(9, 'time_update', async (state) => next(state, 'timeUpdate', await buildTimeUpdateStage({
       retrievedState: state.revalidatedState,
       consequence: state.consequence,
-      temporalAdvance: services.temporalAdvance
+      temporalAdvance: services.temporalAdvance,
+      turnStepOperationBatch: turnStepDraftOperationBatch(
+        getTurnStepWorkflowDraft(state.modeResolution)),
+      preparedEffectLedger: turnStepDraftPreparedEffectLedger(
+        getTurnStepWorkflowDraft(state.modeResolution))
     }), context)),
     stage(10, 'body_update', async (state) => next(state, 'bodyUpdate', await buildBodyUpdateStage({
       retrievedState: state.revalidatedState,
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
-      bodyEffect: services.bodyEffect
+      bodyEffect: services.bodyEffect,
+      preparedEffectLedger: turnStepDraftPreparedEffectLedger(
+        getTurnStepWorkflowDraft(state.modeResolution))
     }), context)),
     stage(11, 'hidden_update', async (state) => next(state, 'hiddenUpdate', await buildHiddenUpdateStage({
       playerInput: state.playerInput,
@@ -113,6 +128,7 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       retrievedState: state.revalidatedState,
       modeResolution: state.modeResolution,
       availability: state.availability,
+      checks: state.checks,
       consequence: state.consequence,
       timeUpdate: state.timeUpdate,
       bodyUpdate: state.bodyUpdate,
@@ -120,7 +136,25 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       visibleContext: state.visibleContext,
       commandRegistry: services.commandRegistry
     }), context)),
-    stage(14, 'commit', async (state) => next(state, 'commit', await commitTurnStage({ writePlan: state.writePlan, partyStore: services.partyStore, materializer: services.materializer }), context)),
+    stage(14, 'commit', async (state) => {
+      if (getTurnStepWorkflowDraft(state.modeResolution)) {
+        await revalidateTurnContextStage({
+          playerInput: state.playerInput,
+          modeResolution: state.modeResolution,
+          routingContext:
+            rawInput.routing_context ?? rawInput.routingContext ?? {},
+          actionSet: state.actionSet,
+          commandRegistry: services.commandRegistry,
+          stateReader: services.stateReader,
+          finalCommit: true
+        });
+      }
+      return next(state, 'commit', await commitTurnStage({
+        writePlan: state.writePlan,
+        partyStore: services.partyStore,
+        materializer: services.materializer
+      }), context);
+    }),
     stage(15, 'persisted_visible_projection', async (state) => next(state, 'persistedVisibleContext', await loadPersistedVisibleProjectionStage({
       playerInput: state.playerInput,
       modeResolution: state.modeResolution,
@@ -163,17 +197,18 @@ function approved(artifact) {
 
 function next(state, key, value, context) {
   context.setStage(stageNameForKey(key), value);
-  // The action set and write plan carry in-process capability seals. Cloning
-  // either deliberately strips the corresponding validation capability.
+  // The action set, semantic mode and write plan carry in-process capability
+  // seals. Cloning deliberately strips the corresponding validation capability.
   const serializable = Object.fromEntries(
     Object.entries(state).filter(([name]) =>
-      !['actionSet', 'writePlan'].includes(name))
+      !['actionSet', 'modeResolution', 'writePlan'].includes(name))
   );
   return deepFreeze({
     ...structuredClone(serializable),
     ...(state.actionSet ? { actionSet: state.actionSet } : {}),
+    ...(state.modeResolution ? { modeResolution: state.modeResolution } : {}),
     ...(state.writePlan ? { writePlan: state.writePlan } : {}),
-    [key]: ['actionSet', 'writePlan'].includes(key)
+    [key]: ['actionSet', 'modeResolution', 'writePlan'].includes(key)
       ? value
       : structuredClone(value)
   });

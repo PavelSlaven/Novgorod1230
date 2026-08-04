@@ -25,6 +25,8 @@ BEGIN
 END $$;
 
 ALTER TABLE party_runtime.party_item_placements
+  DROP CONSTRAINT IF EXISTS party_item_placements_holder_position_check;
+ALTER TABLE party_runtime.party_item_placements
   ADD CONSTRAINT party_item_placements_holder_position_check CHECK (
     (physical_position IS NOT NULL) = (
       holder_npc_id IS NOT NULL OR holder_character_id IS NOT NULL
@@ -54,7 +56,7 @@ AS $$
     );
 $$;
 
-CREATE TABLE party_runtime.party_obligations (
+CREATE TABLE IF NOT EXISTS party_runtime.party_obligations (
   obligation_id text PRIMARY KEY,
   party_id text NOT NULL
     REFERENCES party_runtime.parties(party_id) ON DELETE CASCADE,
@@ -93,7 +95,7 @@ CREATE TABLE party_runtime.party_obligations (
     ON DELETE RESTRICT
 );
 
-CREATE TABLE party_runtime.party_obligation_transitions (
+CREATE TABLE IF NOT EXISTS party_runtime.party_obligation_transitions (
   obligation_transition_id text PRIMARY KEY,
   party_id text NOT NULL,
   obligation_id text NOT NULL,
@@ -163,10 +165,10 @@ BEGIN
   RETURN NEW;
 END $$;
 
-CREATE TRIGGER party_obligation_current_immutable
+CREATE OR REPLACE TRIGGER party_obligation_current_immutable
 BEFORE UPDATE ON party_runtime.party_obligations
 FOR EACH ROW EXECUTE FUNCTION party_runtime.obligation_current_immutable();
 
-CREATE TRIGGER party_obligation_transition_append_only
+CREATE OR REPLACE TRIGGER party_obligation_transition_append_only
 BEFORE UPDATE OR DELETE ON party_runtime.party_obligation_transitions
 FOR EACH ROW EXECUTE FUNCTION party_runtime.temporal_append_only();

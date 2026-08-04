@@ -16,6 +16,13 @@ import {
   phase6VisibleEnvelope,
   phase6Writes
 } from './lower-dvina-trace-phase-6-writes.js';
+import {
+  mergeLowerDvinaTraceTurnStepWrites,
+  prepareLowerDvinaTraceTurnStepPersistence
+} from './lower-dvina-trace-turn-step-persistence.js';
+import {
+  bindLowerDvinaTraceFactualTurnStepIdempotency
+} from './lower-dvina-trace-turn-step-idempotency.js';
 
 export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
   inputDigest, phase6Contracts, loadState, committer }) {
@@ -38,7 +45,7 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
   assertOwnerResult({ factual, state, changeSetId, idemId });
-  const next = nextPhase6State({ state, factual, nextVersion, turnNumber,
+  let next = nextPhase6State({ state, factual, nextVersion, turnNumber,
     changeSetId, inputDigest });
   const visibleEnvelope = phase6VisibleEnvelope({
     partyId, nextVersion, turnNumber, changeSetId, idemId, factual,
@@ -49,11 +56,16 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest,
     change_set_id: changeSetId
   };
+  const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId
+  });
+  next = turnStep.snapshot;
   const pendingScreen = phase6PendingScreen({
     state, factual, visibleEnvelope, turnNumber, nextVersion
   });
-  const writes = phase6Writes({ partyId, state, next, factual, turnNumber,
-    changeSetId, idemId, visibleEnvelope, pendingScreen });
+  const writes = mergeLowerDvinaTraceTurnStepWrites(phase6Writes({ partyId,
+    state, next, factual, turnNumber, changeSetId, idemId, visibleEnvelope,
+    pendingScreen }), turnStep.writes);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
       ok: candidate.party_id === partyId
@@ -74,21 +86,17 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      semantic_command_snapshot: {
-        schema: 'rus.lower_dvina_trace_command_snapshot.v2',
-        input_digest: inputDigest,
-        raw_text: factual.player_input.raw_text,
-        action_set_digest:
-          factual.mode_resolution.decision_trace.action_set_digest,
-        selected_option_id: factual.mode_resolution.option_id,
-        semantic_trace: factual.mode_resolution.decision_trace
-      },
-      semantic_command_digest: normalizeDigest(canonicalDigest({
-        input_digest: inputDigest,
-        option_id: factual.mode_resolution.option_id
-      })),
-      semantic_dependency_pins:
-        factual.consequence.carry.traversal.dependency_pins,
+      ...bindLowerDvinaTraceFactualTurnStepIdempotency({
+        envelope: writePlan.turn_step_commit,
+        inputDigest, factual,
+        semanticCommandDigest: normalizeDigest(canonicalDigest({
+          input_digest: inputDigest,
+          option_id: factual.mode_resolution.option_id
+        })),
+        semanticDependencyPins:
+          factual.consequence.carry.traversal.dependency_pins,
+        visibleDependencyPins: visibleEnvelope.dependency_pins
+      }),
       request_id: factual.player_input.request_id
     },
     change_set: { id: changeSetId },
@@ -276,13 +284,11 @@ function ownerKeys(factual, state) {
   ])];
 }
 
-function target(writePlan, name) {
-  return writePlan.write_targets.find(({ target: id }) => id === name)?.value;
-}
+const target = (writePlan, name) => writePlan.write_targets
+  .find(({ target: id }) => id === name)?.value;
 
-function normalizeDigest(value) {
-  return `sha256:${String(value).replace('sha256:', '')}`;
-}
+const normalizeDigest = (value) =>
+  `sha256:${String(value).replace('sha256:', '')}`;
 
 function fail(code, details = null) {
   throw serverError(code, 'Phase 6 factual commit failed closed.', {

@@ -196,7 +196,7 @@ function validPersistedOfferStage({ state, factual, negotiation, contracts }) {
       : 'reuse_current_offer')
     && stage.resulting_state === 'offered'
     && stage.fact_id === 'promise_current_offered'
-    && stage.obligation_id === promise.obligation_id
+    && stage.obligation_id === (promise.obligation_id ?? promise.instance_id)
     && stage.policy_id === contracts.promisePolicy.policy_id
     && stage.beneficiary_actor_id === promise.beneficiary_actor_id
     && canonicalDigest(stage.witness_actor_ids)

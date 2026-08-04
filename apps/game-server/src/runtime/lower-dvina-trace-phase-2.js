@@ -28,13 +28,27 @@ import {
 } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from
   './lower-dvina-trace-phase-2-services.js';
+import {
+  bindLowerDvinaTraceTurnStepCommands
+} from './lower-dvina-trace-turn-step-bindings.js';
+import {
+  projectLowerDvinaTracePlayerSafeState
+} from './lower-dvina-trace-player-safe-state.js';
+import {
+  createLowerDvinaTraceTurnStepGenericOwners
+} from './lower-dvina-trace-turn-step-generic-owners.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
+  turnStepModel = null,
+  playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
   randomSourceFactory,
   decisionSecret,
   npcDecisionSelector = null,
+  turnStepBodyEventOwner = null,
+  turnStepPackingCalculator = null,
+  turnStepSemanticActivityOwner = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -104,19 +118,31 @@ export function createLowerDvinaTracePhase2Runtime({
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9, 10, 11, 12].includes(bundle.definition_revision)
+      const phase3Contracts = [9, 10, 11, 12, 13].includes(
+        bundle.definition_revision
+      )
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10, 11, 12].includes(bundle.definition_revision)
+      const phase4Contracts = [10, 11, 12, 13].includes(
+        bundle.definition_revision
+      )
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11, 12].includes(bundle.definition_revision)
+      const phase5Contracts = [11, 12, 13].includes(
+        bundle.definition_revision
+      )
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = bundle.definition_revision === 12
+      const phase6Contracts = [12, 13].includes(bundle.definition_revision)
         ? resolveTracePhase6Contracts({ bundle })
         : null;
-      const registry = createTurnCommandRegistry([
+      const genericOwners = bundle.turn_step_owner_profiles
+        ? createLowerDvinaTraceTurnStepGenericOwners({
+            profiles: bundle.turn_step_owner_profiles,
+            artifactPin: bundle.artifact_pins.turn_step_owner_profiles
+          })
+        : null;
+      const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
         ...(phase3Contracts ? createTracePhase3Commands({
           contracts: phase3Contracts,
@@ -135,7 +161,25 @@ export function createLowerDvinaTracePhase2Runtime({
           contracts: phase6Contracts, inputDigest,
           temporalAdvanceOwner
         })] : [])
-      ]);
+      ];
+      const registry = createTurnCommandRegistry(
+        bindLowerDvinaTraceTurnStepCommands({
+          commands,
+          bundle,
+          targetRefs: {
+            actor: state.actor_id,
+            wreck: contracts.locationRef,
+            fishingCamp: phase3Contracts?.ids.campLocation,
+            eremey: phase3Contracts?.actors[0]?.instance_id,
+            evidence: phase3Contracts?.ids.evidence,
+            dryingShed: phase4Contracts?.ids.shed,
+            ratsha:
+              phase4Contracts?.actors.ratsha_storehouse_helper.instance_id,
+            onisim:
+              phase5Contracts?.actors.onisim_boatman.instance_id
+          }
+        })
+      );
       const issuedAt = now();
       const result = await runTurnWorkflow({
         party_id: partyId,
@@ -170,6 +214,18 @@ export function createLowerDvinaTracePhase2Runtime({
         registry,
         repository,
         semanticResolver,
+        turnStepModel,
+        playerSafeStateProjector,
+        turnStepBodyEventOwner:
+          turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner,
+        turnStepSemanticActivityOwner:
+          turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
+        turnStepGenericCheckContextOwner:
+          genericOwners?.genericCheckContextOwner,
+        turnStepGenericBodyEffect: genericOwners?.bodyEffect,
+        turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+        turnStepApprovedOwners: genericOwners,
+        turnStepPackingCalculator,
         narrator,
         randomSourceFactory,
         decisionSecret,

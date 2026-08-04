@@ -5,15 +5,19 @@
 | normalize_intent | raw player input | `player_turn_input` | structural code only |
 | load_context | requested state blocks | `retrieved_turn_state` | state reader adapter |
 | available_actions | committed state + command registry | `turn_available_action_set` | registered code handlers |
-| resolve_mode | raw input + closed action set | `turn_mode_resolution` | exact code path or bounded LLM `option_id` |
-| revalidate_context | selected option + fresh committed state | `revalidated_turn_state` | state reader + command registry |
+| resolve_mode | raw input + available registered actions | `turn_mode_resolution` | exact code path or active player step admission |
+| turn_step_request | root/remaining intent + player-safe working projection | `turn_step_request_v1` | code-owned projector + `@rus/turn` |
+| turn_step_plan | immutable step request | strict `turn_step_plan_v1` | `turn_step_planner`; one optional structural repair |
+| turn_step_execution | validated direct/check/domain step | updated working projection + fragments | code-owned execution registry and domain owners |
+| turn_step_draft | ordered applied steps | `party_turn_step_operation_batch_v1` + commit trace | `@rus/turn`; no partial commit |
+| revalidate_context | exact command/semantic draft + fresh committed state | `revalidated_turn_state` | state reader + command registry |
 | availability | command + retrieved facts | `turn_availability_decision` | registered code handler |
 | checks | approved check requests | `turn_check_results` | code RNG formula |
 | consequence | registered command + facts + checks | `turn_consequence_package` | registered code handler |
 | time_update | approved duration + clock | `turn_time_update` | time domain formula |
 | body_update | approved body effect + committed state | `turn_body_update` | body-state owner |
 | hidden_update | approved consequence | `turn_hidden_update` | code projection |
-| visible_projection | facts + approved changes | `visible_context_package` | semantic projector + security gate |
+| visible_projection | facts + approved changes | `visible_context_package` | code-owned projector + security gate |
 | persistence_plan | approved artifacts + command handler | sealed `party_turn_write_plan` | code planner with logical target allowlist |
 | commit | in-process code-owned write plan | `turn_commit_result` | party-store physical mapping + idempotency |
 | persisted_visible_projection | commit identity | committed visible context | persisted-visible reader |
@@ -25,6 +29,9 @@
 - raw player text → direct state mutation;
 - unregistered or regex-only command selection;
 - LLM-generated consequence/change set/physical write target;
+- bounded option synthesis as fallback for unknown/free-form player input;
+- second player semantic planner or scenario-local step loop;
+- partial commit of internal semantic steps;
 - stale, expired or unsigned bounded option;
 - narrator access to hidden state;
 - DB commit before visible/narration gates;

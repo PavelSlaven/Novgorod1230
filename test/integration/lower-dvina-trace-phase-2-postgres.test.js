@@ -12,6 +12,9 @@ import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import {
+  createLowerDvinaTraceTurnStepTestModel
+} from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import {
@@ -571,8 +574,12 @@ function buildRuntime({
       committer
     })
   );
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel({
+    onCall: semanticObserver
+  });
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
+    turnStepModel,
     semanticResolver: async (request) => {
       semanticObserver(request);
       return {
@@ -878,27 +885,20 @@ async function installSchemas(pool) {
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
-  for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_')
-      && !value.startsWith('014_'))) {
+  const catalogMigrationIndex = partyFiles.findIndex((file) =>
+    file.startsWith('012_')
+  );
+  assert.equal(catalogMigrationIndex, 11);
+  for (const file of partyFiles.slice(0, catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
   assert.equal(
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
-  await pool.query(await readFile(
-    'schemas/party-db/012_party_runtime_external_ownership.sql',
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    'schemas/party-db/013_party_runtime_obligations.sql',
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    'schemas/party-db/014_party_runtime_activity_resume_terminal.sql',
-    'utf8'
-  ));
+  for (const file of partyFiles.slice(catalogMigrationIndex)) {
+    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  }
 }
 
 async function installWorldLineage(pool) {

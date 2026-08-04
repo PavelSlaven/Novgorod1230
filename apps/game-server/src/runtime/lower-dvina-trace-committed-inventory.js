@@ -1,7 +1,12 @@
 import {
+  calculateContainerUsage,
   calculateHandsState,
   calculateInventoryMass,
-  resolveInventoryLoad
+  projectRuntimeInventoryInstance,
+  resolveInventoryMechanicsProfile,
+  resolveInventoryLoad,
+  runtimeItemIsTerminal,
+  validateInventoryTopology
 } from '@rus/items-property';
 
 export function buildCommittedInventoryInput(
@@ -11,7 +16,8 @@ export function buildCommittedInventoryInput(
   const placementByItemId = new Map(
     itemPlacementChanges.map((placement) => [placement.item_id, placement])
   );
-  const items = [...(state.items ?? []), ...additionalItems];
+  const items = [...(state.items ?? []), ...additionalItems]
+    .filter((item) => !runtimeItemIsTerminal(item));
   const itemProfiles = [];
   const profileTemplateIds = new Set();
   for (const item of items) {
@@ -28,11 +34,7 @@ export function buildCommittedInventoryInput(
     expected_state_version: state.party_state.state_version,
     current_g5_anchor_id: state.position.g5_anchor_id,
     strength: state.player_profile.attributes.strength.value,
-    items: items.map((item) => ({
-      item_id: item.item_id,
-      template_id: item.template_id,
-      quantity: item.quantity
-    })),
+    items: items.map(projectRuntimeInventoryInstance),
     item_placements: items.map((item) => {
       const placement = placementByItemId.get(item.item_id)
         ?? item.placement;
@@ -46,6 +48,89 @@ export function buildCommittedInventoryInput(
   };
 }
 
+export function createCommittedItemMechanicsResolver(
+  state,
+  { packingCalculator = null } = {}
+) {
+  const committedInput = buildCommittedInventoryInput(state);
+  return Object.freeze((ref, { runtimeItems = [], retiredItemRefs = [] } = {}) => {
+    const input = runtimeItems.length > 0 || retiredItemRefs.length > 0
+      ? buildCommittedInventoryInput(withRuntimeItemOverlay(
+          state, runtimeItems, retiredItemRefs))
+      : committedInput;
+    const itemsById = new Map(input.items.map((item) => [item.item_id, item]));
+    const containersById = new Map(input.containers.map((container) =>
+      [container.container_id, container]));
+    const item = itemsById.get(ref);
+    if (item) {
+      const resolved = resolveInventoryMechanicsProfile({
+        instance: item,
+        profiles: input.item_profiles
+      });
+      return resolved.pass ? structuredClone(resolved.profile) : null;
+    }
+    const container = containersById.get(ref);
+    if (!container) return null;
+    const resolved = resolveInventoryMechanicsProfile({
+      instance: container,
+      profiles: input.container_profiles
+    });
+    if (!resolved.pass) return null;
+    const usage = calculateContainerUsage({
+      ...input,
+      container_id: ref,
+      container_compatibility: structuredClone(
+        state.container_compatibility ?? []),
+      packing_calculator: packingCalculator
+    });
+    return {
+      ...structuredClone(resolved.profile),
+      ...(usage.pass ? { used_slots: usage.used_slots } : {})
+    };
+  });
+}
+
+export function validateCommittedInventoryState(
+  state,
+  { packingCalculator = null } = {}
+) {
+  const input = buildCommittedInventoryInput(state);
+  const topology = validateInventoryTopology(input);
+  const errors = [...topology.errors];
+  for (const container of input.containers) {
+    const usage = calculateContainerUsage({
+      ...input,
+      container_id: container.container_id,
+      container_compatibility: structuredClone(
+        state.container_compatibility ?? []),
+      packing_calculator: packingCalculator
+    });
+    errors.push(...usage.errors);
+  }
+  const mass = calculateInventoryMass(input);
+  const hands = calculateHandsState(input);
+  errors.push(...mass.errors, ...hands.errors);
+  const load = mass.pass ? resolveInventoryLoad({
+    total_mass_grams: mass.total_mass_grams,
+    strength: input.strength
+  }) : Object.freeze({ pass: false, load_category: null, errors: mass.errors });
+  if (mass.pass) errors.push(...load.errors);
+  if (load.pass && load.load_category === 'overloaded') {
+    errors.push(inventoryIssue('INVENTORY_LOAD_EXCEEDED', 'capacity', {
+      total_mass_grams: mass.total_mass_grams,
+      strength: input.strength
+    }));
+  }
+  return Object.freeze({
+    pass: errors.length === 0,
+    errors: Object.freeze(errors),
+    topology,
+    mass,
+    hands,
+    load
+  });
+}
+
 export function getCommittedInventoryLoad(state, options) {
   const inventory = buildCommittedInventoryInput(state, options);
   const mass = calculateInventoryMass(inventory);
@@ -57,4 +142,33 @@ export function getCommittedInventoryLoad(state, options) {
     })
     : { pass: false, load_category: null, errors: mass.errors };
   return Object.freeze({ inventory, mass, hands, load });
+}
+
+function withRuntimeItemOverlay(state, runtimeItems, retiredItemRefs) {
+  const byId = new Map((state.items ?? []).map((item) => [
+    item?.item_id ?? item?.instance_id,
+    structuredClone(item)
+  ]));
+  for (const itemId of retiredItemRefs) byId.delete(itemId);
+  for (const item of runtimeItems) {
+    const itemId = item?.item_id ?? item?.instance_id;
+    if (typeof itemId !== 'string' || itemId.length === 0) continue;
+    byId.set(itemId, {
+      ...byId.get(itemId),
+      ...structuredClone(item),
+      item_id: itemId,
+      instance_id: itemId
+    });
+  }
+  return { ...state, items: [...byId.values()] };
+}
+
+function inventoryIssue(code, category, details) {
+  return Object.freeze({
+    code,
+    category,
+    retryable: false,
+    message: code,
+    details: Object.freeze(structuredClone(details))
+  });
 }

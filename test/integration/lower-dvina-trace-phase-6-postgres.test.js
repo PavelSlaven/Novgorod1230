@@ -9,6 +9,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
@@ -107,7 +108,9 @@ function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
   const repository = createLowerDvinaTracePhase2PostgresRepository({
     partyPool: pool, committer
   });
+  const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
+    turnStepModel,
     semanticResolver: async ({ raw_text, action_set }) => ({ option_id: option(raw_text, action_set) }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => { if (counters) counters.rng_factories += 1; const source = createSeededRandomSource(`phase-6:${request_id}`); return { next: () => { if (counters) counters.rng_draws += 1; return 0.99; }, snapshot: () => source.snapshot() }; },
@@ -636,6 +639,20 @@ async function boundaryStatus(pool, partyId) {
   )).rows[0]?.status;
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
-async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); for (const file of files.filter((file) => !file.startsWith('012_') && !file.startsWith('013_') && !file.startsWith('014_'))) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of ['012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql']) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
+async function installSchemas(pool) {
+  const files = (await readdir('schemas/party-db'))
+    .filter((file) => /^\d+.*\.sql$/u.test(file)).sort();
+  const catalogMigrationIndex = files.findIndex((file) =>
+    file.startsWith('012_')
+  );
+  assert.equal(catalogMigrationIndex, 11);
+  for (const file of files.slice(0, catalogMigrationIndex)) {
+    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  }
+  assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
+  for (const file of files.slice(catalogMigrationIndex)) {
+    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  }
+}
 async function installWorldLineage(pool) { await pool.query('CREATE SCHEMA IF NOT EXISTS world_base'); await pool.query('CREATE TABLE world_base.spatial_v3_world_revisions (id text PRIMARY KEY,parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),catalog_digest text NOT NULL,status text NOT NULL)'); await pool.query("INSERT INTO world_base.spatial_v3_world_revisions (id,parent_revision_id,catalog_digest,status) VALUES ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')"); }
 async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', user, '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }

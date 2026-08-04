@@ -1,11 +1,11 @@
 export const TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST =
-  'a7393882ab5528fb3d78115b159f5d9486de9e91b3934eaba5cc694f87125e8d';
+  'd797da2ec7d78eabaa5ee46c0854948559d453a8127710c8c721b9e3978d5e50';
 export const TRACE_PHASE_1B_APPROVED_BINDING_DIGEST =
-  'f9e10a38b349ab1ce4136185754acea0a2bae22f626f84ab6d8ce128eeabe4e4';
+  'e2eed14f0cafe3335f28941b8e0471ce2e327eb84b722f304ebcc94330d45a81';
 export const TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST =
-  'b696a7420a3331915a2c00827f455671e54b005fbe29bf6749fa90482f73a10b';
+  'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0';
 export const TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST =
-  'a2baf870be8784ca520319abd232c4383fdb4fb70fe1e39f50ab2d407c1c1b18';
+  'cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef';
 export const TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION =
   'code_materializer_v2';
 export const TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID =
@@ -104,17 +104,32 @@ export const TRACE_PHASE_1B_SESSION_IDENTITIES = Object.freeze([
   }),
   Object.freeze({
     publication_manifest_digest:
-      TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST,
+      'a7393882ab5528fb3d78115b159f5d9486de9e91b3934eaba5cc694f87125e8d',
     publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v7',
     publication_binding_revision: 7,
+    publication_binding_digest:
+      'f9e10a38b349ab1ce4136185754acea0a2bae22f626f84ab6d8ce128eeabe4e4',
+    phase_1a_manifest_digest:
+      'b696a7420a3331915a2c00827f455671e54b005fbe29bf6749fa90482f73a10b',
+    scenario_definition_revision: 12,
+    scenario_definition_digest:
+      'a2baf870be8784ca520319abd232c4383fdb4fb70fe1e39f50ab2d407c1c1b18',
+    materializer_binding_id:
+      'lower_dvina_trace_phase_1a_materialization_bindings_v8'
+  }),
+  Object.freeze({
+    publication_manifest_digest:
+      TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST,
+    publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v8',
+    publication_binding_revision: 8,
     publication_binding_digest:
       TRACE_PHASE_1B_APPROVED_BINDING_DIGEST,
     phase_1a_manifest_digest:
       TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
-    scenario_definition_revision: 12,
+    scenario_definition_revision: 13,
     scenario_definition_digest:
       TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
     materializer_binding_id:
-      'lower_dvina_trace_phase_1a_materialization_bindings_v8'
+      'lower_dvina_trace_phase_1a_materialization_bindings_v9'
   })
 ]);

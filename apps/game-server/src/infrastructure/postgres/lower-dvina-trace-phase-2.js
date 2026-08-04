@@ -15,14 +15,17 @@ import {
   phase2ScreenDigest,
   phase2VisibleContextFromPayload
 } from './lower-dvina-trace-phase-2-projection.js';
-import { loadHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
+import {
+  loadCurrentOrHistoricalPhase2Replay
+} from './lower-dvina-trace-phase-2-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import { assertPhase3NormalizedRows } from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
 import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js';
-import { assertPhase6NormalizedRows } from
-  './lower-dvina-trace-phase-6-persistence.js';
+import { assertPhase6NormalizedRows } from './lower-dvina-trace-phase-6-persistence.js';
+import { assertTurnStepNormalizedRows } from
+  './lower-dvina-trace-turn-step-read.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -49,6 +52,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
               s.stage26_result,s.screen,s.last_turn_id,
               snapshot.state_payload,snapshot.state_digest,
               b.state_version AS body_state_version,
+              b.health::text AS body_health,
+              b.energy::text AS body_energy,
+              b.satiety::text AS body_satiety,
+              b.updated_change_set_id AS body_updated_change_set_id,
               c.state_version AS clock_state_version
          FROM party_runtime.parties p
          JOIN party_runtime.party_server_sessions s
@@ -105,6 +112,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       await assertPhase4NormalizedRows(partyPool, payload, row);
       await assertPhase5NormalizedRows(partyPool, payload, row);
       await assertPhase6NormalizedRows(partyPool, payload, row);
+      await assertTurnStepNormalizedRows(partyPool, payload, row);
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }
@@ -121,31 +129,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   }
 
   async function loadPhase2Replay({ partyId, idempotencyKey }) {
-    const state = await loadPhase2State(partyId, {
-      presentationIdempotencyKey: idempotencyKey
+    return loadCurrentOrHistoricalPhase2Replay({
+      partyPool, partyId, idempotencyKey, loadState: loadPhase2State
     });
-    if (state.last_turn?.idempotency_key !== idempotencyKey) {
-      return loadHistoricalPhase2Replay({
-        partyPool,
-        partyId,
-        idempotencyKey
-      });
-    }
-    const result = await partyPool.query(
-      `SELECT screen,turn_number
-         FROM party_runtime.party_server_sessions
-        WHERE party_id=$1`,
-      [partyId]
-    );
-    return {
-      input_digest: state.last_turn.input_digest,
-      state,
-      screen: result.rows[0]?.screen,
-      public_result: phase2PublicResult({
-        payload: state,
-        screen: result.rows[0].screen
-      })
-    };
   }
 
   async function replayPhase2Turn({ partyId, replay, narrator }) {

@@ -1,7 +1,10 @@
 import { serverError } from '../errors.js';
 
 export function resolveTracePhase6Contracts({ bundle }) {
-  if (bundle.definition_revision !== 12 || bundle.definition?.revision !== 12) gap('TRACE_PHASE_6_REVISION_MISMATCH');
+  if (![12, 13].includes(bundle.definition_revision)
+      || ![12, 13].includes(bundle.definition?.revision)) {
+    gap('TRACE_PHASE_6_REVISION_MISMATCH');
+  }
   const route = exact(bundle.movement_bindings?.route_bindings, 'route_id', 'trace_ld_v1_route_shed_to_camp_carry_onisim');
   const bodyEffects = route.body_effect_profile_refs.map((id) => exact(bundle.body_environment_profiles?.effect_profiles, 'effect_profile_id', id));
   if (route.duration_minutes !== 20 || route.carried_actor_rules?.single_root_clock !== true || route.carried_actor_rules?.carrier_rebinding?.decision_boundary?.elapsed_minutes !== 10 || route.carried_actor_rules.carrier_rebinding.decision_boundary.route_progress_ppm !== 500000 || bodyEffects.some((effect) => effect.rng_consumption !== 'forbidden')) gap('TRACE_PHASE_6_CHAIN_INVALID');

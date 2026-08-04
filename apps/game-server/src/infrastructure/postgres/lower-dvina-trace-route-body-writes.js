@@ -2,6 +2,7 @@ import { row } from './first-playable/plan-shared.js';
 
 export function appendRouteBodyWrites({ updates, appends, partyId, state, next, factual, changeSetId, idemId, historyId }) {
   if (factual.body_update?.applied !== true) return;
+  const occurredAt = routeBodyClockAfter(factual);
   updates.push(row('party_actor_body_states', `player_character:${state.actor_id}`, {
     party_id: partyId, actor_kind: 'player_character', actor_id: state.actor_id,
     health: next.body_state.health, energy: next.body_state.energy,
@@ -21,8 +22,16 @@ export function appendRouteBodyWrites({ updates, appends, partyId, state, next, 
     effect_ref: { entity_kind: 'body_effect', entity_id: factual.body_update.proposal.profile_ref,
       activity_attempt_id: factual.body_update.proposal.activity_attempt_id },
     change_set_id: changeSetId, idempotency_record_id: idemId,
-    occurred_at_whole_minutes: factual.time_update.clock_after.whole_minutes,
-    occurred_at_subminute_numerator: factual.time_update.clock_after.subminute_numerator,
-    occurred_at_subminute_denominator: factual.time_update.clock_after.subminute_denominator
+    occurred_at_whole_minutes: occurredAt.whole_minutes,
+    occurred_at_subminute_numerator: occurredAt.subminute_numerator,
+    occurred_at_subminute_denominator: occurredAt.subminute_denominator
   }));
+}
+
+function routeBodyClockAfter(factual) {
+  const route = factual.time_update?.prepared_effect_ledger?.slices?.find(
+    ({ effect_kind: kind, owner_ref: owner }) =>
+      kind === 'domain_command'
+      && owner === 'lower_dvina_trace.follow_path_to_fishing_camp');
+  return route?.time_update?.clock_after ?? factual.time_update.clock_after;
 }

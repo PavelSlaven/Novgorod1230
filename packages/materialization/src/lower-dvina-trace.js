@@ -169,7 +169,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
-  const phase3Prepared = [8, 9, 10, 11, 12].includes(input.scenario_definition_revision)
+  const phase3Prepared = [8, 9, 10, 11, 12, 13].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -178,7 +178,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10, 11, 12].includes(input.scenario_definition_revision)
+  const phase4Prepared = [10, 11, 12, 13].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');

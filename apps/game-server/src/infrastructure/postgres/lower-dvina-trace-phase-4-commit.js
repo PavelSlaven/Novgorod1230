@@ -9,6 +9,8 @@ import {
   phase4Writes
 } from './lower-dvina-trace-phase-4-write-projection.js';
 import { serverError } from '../../errors.js';
+import { mergeLowerDvinaTraceTurnStepWrites, prepareLowerDvinaTraceTurnStepPersistence } from './lower-dvina-trace-turn-step-persistence.js';
+import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn-step-idempotency.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -17,7 +19,7 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
   const nextVersion = state.party_state.state_version + 1, turnNumber = state.party_state.turn_number + 1;
   const changeSetId = `change:${partyId}:trace-phase4:${turnNumber}`, idemId = `idem:${partyId}:${canonicalDigest(factual.player_input.idempotency_key).slice(0, 20)}`;
-  const next = nextPhase4State({ state, factual, nextVersion, turnNumber,
+  let next = nextPhase4State({ state, factual, nextVersion, turnNumber,
     inputDigest, changeSetId, contracts: phase4Contracts });
   const builder = createCombinedWritePlanBuilder({ verifyApproval: async (candidate) => ({ ok: candidate.party_id === partyId && candidate.operation_kind === 'trace_phase_4_turn' }) });
   const context = writePlan.write_targets.find((entry) => entry.target === 'party_visible_context_package')?.value;
@@ -26,11 +28,14 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     changeSetId, idemId, factual, visibleContext: context, contracts: phase4Contracts });
   next.last_turn.visible_package = { package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest, change_set_id: changeSetId };
+  const turnStep = prepareLowerDvinaTraceTurnStepPersistence({ partyId,
+    writePlan, state, snapshot: next, factual, changeSetId, idemId });
+  next = turnStep.snapshot;
   const pendingScreen = phase4PendingScreen({ state, factual, visibleEnvelope,
     turnNumber, nextVersion });
-  const writes = phase4Writes({ partyId, state, next, factual, visibleEnvelope,
+  const writes = mergeLowerDvinaTraceTurnStepWrites(phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     pendingScreen, nextVersion, turnNumber, changeSetId, idemId,
-    contracts: phase4Contracts });
+    contracts: phase4Contracts }), turnStep.writes);
   const expectedStateVersions = [
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
@@ -47,7 +52,55 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
       Number(state.promise_instances[0].state_version)
     )] : [])
   ];
-  const built = await builder.build({ plan_id: `p16:${partyId}:trace-phase4:${turnNumber}`, party_id: partyId, write_plan_kind: 'semantic_commit', operation_kind: 'trace_phase_4_turn', canonical_input_digest: `sha256:${inputDigest.replace('sha256:', '')}`, expected_state_versions: expectedStateVersions, validation_report: { status: 'pass', digest: `sha256:${canonicalDigest(factual).replace('sha256:', '')}` }, idempotency: { id: idemId, key: factual.player_input.idempotency_key, semantic_command_snapshot: { schema: 'rus.lower_dvina_trace_command_snapshot.v2', input_digest: inputDigest, raw_text: factual.player_input.raw_text, action_set_digest: factual.mode_resolution.decision_trace.action_set_digest, selected_option_id: factual.mode_resolution.option_id, semantic_trace: factual.mode_resolution.decision_trace }, semantic_command_digest: `sha256:${canonicalDigest(inputDigest).replace('sha256:', '')}`, semantic_dependency_pins: { activity: phase4Contracts.activityPins }, request_id: factual.player_input.request_id }, change_set: { id: changeSetId }, visible_package_envelope: visibleEnvelope, approved_write_sets: [writes], lock_context: { owner_keys: [`actor:${state.actor_id}`], execution_keys: [], g4_keys: [], physical_keys: Object.values(writes).flat().map((write) => `party_runtime.${write.target_table}:${write.id}`) }, commit_rechecks: phase4CommitRechecks({ partyId, state, factual, phase4Contracts, inputDigest }) });
+  const turnStepIdempotency = bindLowerDvinaTraceTurnStepIdempotency({
+    envelope: writePlan.turn_step_commit,
+    inputDigest,
+    semanticCommandSnapshot: {
+      schema: 'rus.lower_dvina_trace_command_snapshot.v2',
+      input_digest: inputDigest,
+      raw_text: factual.player_input.raw_text,
+      action_set_digest:
+        factual.mode_resolution.decision_trace.action_set_digest,
+      selected_option_id: factual.mode_resolution.option_id,
+      semantic_trace: factual.mode_resolution.decision_trace
+    },
+    semanticCommandDigest:
+      `sha256:${canonicalDigest(inputDigest).replace('sha256:', '')}`,
+    semanticDependencyPins: { activity: phase4Contracts.activityPins },
+    visibleDependencyPins: visibleEnvelope.dependency_pins
+  });
+  const built = await builder.build({
+    plan_id: `p16:${partyId}:trace-phase4:${turnNumber}`,
+    party_id: partyId,
+    write_plan_kind: 'semantic_commit',
+    operation_kind: 'trace_phase_4_turn',
+    canonical_input_digest:
+      `sha256:${inputDigest.replace('sha256:', '')}`,
+    expected_state_versions: expectedStateVersions,
+    validation_report: {
+      status: 'pass',
+      digest: `sha256:${canonicalDigest(factual).replace('sha256:', '')}`
+    },
+    idempotency: {
+      id: idemId,
+      key: factual.player_input.idempotency_key,
+      ...turnStepIdempotency,
+      request_id: factual.player_input.request_id
+    },
+    change_set: { id: changeSetId },
+    visible_package_envelope: visibleEnvelope,
+    approved_write_sets: [writes],
+    lock_context: {
+      owner_keys: [`actor:${state.actor_id}`],
+      execution_keys: [],
+      g4_keys: [],
+      physical_keys: Object.values(writes).flat().map(
+        (write) => `party_runtime.${write.target_table}:${write.id}`)
+    },
+    commit_rechecks: phase4CommitRechecks({
+      partyId, state, factual, phase4Contracts, inputDigest
+    })
+  });
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({ plan: built.plan, created_at_turn: turnNumber });
   if (!committed.ok) throw fail('TRACE_PHASE_4_COMMIT_FAILED', committed.error);

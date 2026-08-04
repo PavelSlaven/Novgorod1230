@@ -10,6 +10,13 @@ import {
   phase5VisibleEnvelope,
   phase5Writes
 } from './lower-dvina-trace-phase-5-writes.js';
+import {
+  mergeLowerDvinaTraceTurnStepWrites,
+  prepareLowerDvinaTraceTurnStepPersistence
+} from './lower-dvina-trace-turn-step-persistence.js';
+import {
+  bindLowerDvinaTraceTurnStepIdempotency
+} from './lower-dvina-trace-turn-step-idempotency.js';
 
 export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
   inputDigest, phase5Contracts, loadState, committer }) {
@@ -26,7 +33,7 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
   const changeSetId = `change:${partyId}:trace-phase5:${turnNumber}`;
   const idemId = `idem:${partyId}:${canonicalDigest(
     factual.player_input.idempotency_key).slice(0, 20)}`;
-  const next = nextPhase5State({
+  let next = nextPhase5State({
     state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
     contracts: phase5Contracts
   });
@@ -43,14 +50,18 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest,
     change_set_id: changeSetId
   };
+  const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
+    partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId
+  });
+  next = turnStep.snapshot;
   const pendingScreen = phase5PendingScreen({
     state, factual, visibleEnvelope, turnNumber, nextVersion
   });
-  const writes = phase5Writes({
+  const writes = mergeLowerDvinaTraceTurnStepWrites(phase5Writes({
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId,
     contracts: phase5Contracts
-  });
+  }), turnStep.writes);
   const expectedStateVersions = [
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
@@ -84,20 +95,25 @@ export async function commitLowerDvinaTracePhase5({ partyId, writePlan,
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      semantic_command_snapshot: {
-        schema: 'rus.lower_dvina_trace_command_snapshot.v2',
-        input_digest: inputDigest,
-        raw_text: factual.player_input.raw_text,
-        action_set_digest:
-          factual.mode_resolution.decision_trace.action_set_digest,
-        selected_option_id: factual.mode_resolution.option_id,
-        semantic_trace: factual.mode_resolution.decision_trace
-      },
-      semantic_command_digest:
-        `sha256:${canonicalDigest(inputDigest).replace('sha256:', '')}`,
-      semantic_dependency_pins: {
-        activity: phase5Contracts.activityPins
-      },
+      ...bindLowerDvinaTraceTurnStepIdempotency({
+        envelope: writePlan.turn_step_commit,
+        inputDigest,
+        semanticCommandSnapshot: {
+          schema: 'rus.lower_dvina_trace_command_snapshot.v2',
+          input_digest: inputDigest,
+          raw_text: factual.player_input.raw_text,
+          action_set_digest:
+            factual.mode_resolution.decision_trace.action_set_digest,
+          selected_option_id: factual.mode_resolution.option_id,
+          semantic_trace: factual.mode_resolution.decision_trace
+        },
+        semanticCommandDigest:
+          `sha256:${canonicalDigest(inputDigest).replace('sha256:', '')}`,
+        semanticDependencyPins: {
+          activity: phase5Contracts.activityPins
+        },
+        visibleDependencyPins: visibleEnvelope.dependency_pins
+      }),
       request_id: factual.player_input.request_id
     },
     change_set: { id: changeSetId },

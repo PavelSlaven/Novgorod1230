@@ -1,8 +1,15 @@
 ## Инвентарь и снаряжение персонажа
 
-### Нормативная актуализация materialization v2
+### Active authored/runtime mechanics boundary
 
-Начальный и изменяемый инвентарь является нормализованным party state. Его конкретные экземпляры создаёт или изменяет код из утверждённых item/equipment/property profiles и правил; LLM не добавляет вещи в ответ на заявку или прозу. Owner, holder, container, equipment slot, access, quantity, condition и legal status фиксируются раздельно, а каждое изменение проходит invariant и commit gates.
+Начальный и изменяемый инвентарь является нормализованным party state. Начальные, authored и significant экземпляры создаёт или изменяет код из утверждённых item/equipment/property profiles и правил. Ordinary direct action result может быть предложен только active player `turn_step_plan_v1`; код проверяет origin/admission/placement и сохраняет его как отдельный runtime instance. Одно лишь утверждение игрока или проза не добавляют вещь.
+
+Exact mechanics имеют ровно два допустимых источника:
+
+1. approved authored item/inventory profile с pinned revision/digest;
+2. persisted immutable `rus.items.runtime_instance_mechanics_snapshot.v1` ordinary runtime instance.
+
+Из выбранного источника code-owned inventory owner рассчитывает total mass, load category, hands used/free, packing usage, capacity compatibility, access steps и производные ограничения. LLM не возвращает и не переопределяет эти derived values. Owner, holder, container, equipment slot, access, quantity, condition и legal status фиксируются раздельно, а каждое изменение проходит invariant и commit gates.
 
 Инвентарь — это предметы, которые персонаж физически несёт при себе и может использовать в текущей сцене.
 
@@ -16,7 +23,7 @@
 
 ### Упаковка и вес
 
-Packing slots контейнера описывают укладку, а не вес, литры либо общие inventory slots персонажа. Их формула — `ceil(quantity / packing_bundle_size) × packing_slot_cost` — применяется только к approved `size_band` binding одинакового template и состояния. Вес считается независимо: вложенный контейнер занимает внешний packing slot cost, но масса и его содержимого всё равно входят в общий вес. Переполнение не сокращает quantity и не создаёт fallback-контейнер.
+Packing slots контейнера описывают укладку, а не вес, литры либо общие inventory slots персонажа. Для authored instance binding берётся из approved profile и использует формулу `ceil(quantity / packing_bundle_size) × packing_slot_cost` только для одинакового template и состояния. Ordinary runtime instance сохраняет уже exact quantity и primitive `packing_slot_cost` в immutable mechanics snapshot и не изобретает authored bundling. Вес считается независимо: вложенный контейнер занимает внешний packing slot cost, но масса и его содержимого всё равно входят в общий вес. Переполнение не сокращает quantity и не создаёт fallback-контейнер.
 
 ### Inventory foundation v1
 

@@ -2,19 +2,22 @@
 
 Канонический владелец orchestration: `@rus/turn`.
 
-Accepted historical P28 evidence changed no production composition. Active
-production continues to use v2 until the separate `versioned production
-activation cutover`. The Temporal World v4 sequence below is
-target/shadow/migration-only and must not be combined with a v2 write,
-authoritative read or fallback.
+Завершённый `versioned production activation cutover` сделал Spatial v3 sole
+production composition. Lower Dvina Trace revision 13 additionally activates one player semantic boundary:
+`turn_step_request_v1` → `turn_step_plan_v1`. Exact registered commands remain
+ahead of it. V2 is an explicit migration/rollback source only; mixed reads,
+dual writes, runtime fallback and a second player planner are forbidden.
 
 ## Этапы
 
 1. `normalize_intent` — сохраняет слова игрока как намерение, а не факт мира.
 2. `load_context` — читает committed state через `PartyStateReader`.
-3. `available_actions` — строит полный закрытый player-safe набор доступных действий без raw text.
-4. `resolve_mode` — exact fast path либо bounded semantic resolver возвращает только точный `option_id` или typed unknown.
-5. `revalidate_context` — повторно читает committed state, перестраивает набор и отклоняет stale state/option до RNG.
+3. `available_actions` — строит полный player-safe набор зарегистрированных и доступных code handlers без raw text.
+4. `resolve_mode` выбирает ровно один путь:
+   - exact registered command — выполняется без LLM и decision clock;
+   - иначе `turn_step_admission` строит player-safe `turn_step_request_v1`, строго валидирует `turn_step_plan_v1` и исполняет до восьми внутренних шагов через code-owned registry.
+   После каждого применённого semantic шага обновляется working projection и заново строится player-safe state. Невалидный plan допускает один structural repair до execution; повторная ошибка не создаёт draft writes.
+5. `revalidate_context` — повторно читает committed state и отклоняет stale exact command, semantic domain binding или base version до RNG и commit.
 6. `availability` — зарегистрированный code handler повторно проверяет доступность выбранного действия.
 7. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
 8. `consequence` — зарегистрированный code handler вычисляет последствия либо возвращает repair request.
@@ -30,11 +33,11 @@ authoritative read or fallback.
 
 ## Результат
 
-`runTurnWorkflow` возвращает `turn_result` version 1: статус, режим, публичный экран, commit metadata, техническую summary и checkpoint. Hidden state, provider payload и write plan не входят в screen.
+`runTurnWorkflow` возвращает `turn_result` version 1: статус, режим, публичный экран, commit metadata, техническую summary и checkpoint. Semantic execution сохраняет только code-owned ordered step trace и `party_turn_step_operation_batch_v1`; hidden state, provider payload, scratchpad и write plan не входят в screen.
 
 ## Ports
 
-State reader, code-owned command registry, visible projector, narrator, party store, materializer, random source и screen projector передаются явно. Для semantic resolver нужны exact decision identity, secret и expiry; после его ответа state reader вызывается повторно до RNG.
+State reader, code-owned command registry, `turnStepModel`, player-safe working projector, step execution registry, check-context resolver, random source, code-owned visible projector, narrator, party store и screen projector передаются явно. Closed bounded choices отдельно используют identity/secret/expiry ports; свободный player input их не использует. State reader вызывается перед каждым semantic step и повторно до финального commit.
 
 Reload/turn получает item/container catalog только из persisted
 `party_catalog_pins` и exact historical import через `@rus/runtime-catalog`.
@@ -46,11 +49,13 @@ materialization run.
 
 ## Границы
 
-Код не придумывает смысловые категории и отсутствующие варианты. Он выбирает зарегистрированный handler, рассчитывает штатные последствия и формирует change set. LLM не возвращает mode/consequence/write targets; её допустимый структурированный ответ — только точный bounded-decision result. Неизвестная команда, stale state/policy, поддельный token или невалидный change set останавливают pipeline.
+Код не придумывает authored categories и отсутствующие significant candidates. Exact path выбирает зарегистрированный handler; player planner возвращает только строгий следующий step, а code registry/admission рассчитывает последствия и формирует write fragments. LLM не возвращает SQL, physical write targets, state patch, derived mechanics, hidden facts, NPC/combat result или narration. Ordinary direct action result допускается только через code-owned origin/admission/inventory gates и persisted exact runtime mechanics snapshot. Stale state, invalid plan/repair, ambiguous domain binding, поддельный bounded token или невалидный change set останавливают pipeline без частичного commit.
 
-## Temporal World v4 target sequence
+Autonomous NPC, conversation и combat semantic contracts остаются `proposed`; `emit_interaction` в revision 13 только делегирует попытку существующему registered owner.
 
-The complete target-only flow is specified in
+## Temporal World v4 active sequence
+
+The complete active flow is specified in
 [`temporal-advance.md`](temporal-advance.md).
 
 `runTemporalAdvance` processes the exact `(from,to]` interval: it selects the

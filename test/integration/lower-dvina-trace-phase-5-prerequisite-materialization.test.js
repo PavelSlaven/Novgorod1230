@@ -25,6 +25,9 @@ const bundle = await loadLowerDvinaTraceMaterializationBundle({
 const bundle12 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 12
 });
+const bundle13 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 13
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 function request(overrides = {}) {
@@ -170,6 +173,40 @@ test('revision 12 preserves the revision 11 prepared NPCs and Phase 5 items', ()
       ?.records.length,
     5
   );
+});
+
+test('revision 13 persists every NPC referenced by held items', () => {
+  const pin = lowerDvinaTracePhase1ADomainPin(bundle13);
+  const creation = request({
+    scenario_definition_revision: 13,
+    scenario_manifest_digest: bundle13.manifest_digest,
+    scenario_bundle: bundle13,
+    domain_catalog_pin: pin,
+    idempotency_key: 'trace-phase-13-prerequisite-idempotency'
+  });
+  const result = materializeLowerDvinaTracePartyInstance(creation);
+  const plan = stage24Plan(result, creation, pin);
+  const npcBatch = plan.write_batches.find(
+    ({ target_table: targetTable }) => targetTable === 'party_npcs'
+  );
+  const placementBatch = plan.write_batches.find(
+    ({ target_table: targetTable }) => targetTable === 'party_item_placements'
+  );
+  const batch = (table) => plan.write_batches.find(
+    ({ target_table: targetTable }) => targetTable === table
+  )?.records ?? [];
+  const npcIds = new Set(batch('party_npcs').map(({ npc_id: npcId }) => npcId));
+  const holderIds = batch('party_item_placements')
+    .map(({ holder_npc_id: holderNpcId }) => holderNpcId)
+    .filter(Boolean);
+
+  assert.equal(npcIds.size, 5);
+  assert.ok(holderIds.length > 0);
+  assert.ok(npcBatch.order < placementBatch.order);
+  assert.ok(placementBatch.depends_on_batches.includes(npcBatch.batch_id));
+  for (const holderId of holderIds) {
+    assert.equal(npcIds.has(holderId), true, holderId);
+  }
 });
 
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {

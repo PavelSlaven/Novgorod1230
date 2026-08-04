@@ -17,11 +17,21 @@ import {
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import { nextState as nextPhase3State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-3-state.js';
+import { nextPhase4State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
+import { nextPhase5State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-5-state.js';
+import { nextPhase6State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 9
 });
+export const loadScenarioBundle = (scenarioDefinitionRevision) =>
+  loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision });
 
 function phase1AInstance(partyId, scenarioBundle = bundle) {
   return materializeLowerDvinaTracePartyInstance({
@@ -52,16 +62,24 @@ export function fixture({
   narrationFails = false,
   scenarioBundle = bundle,
   materializationBundle = scenarioBundle,
-  rollValue = null
+  rollValue = null,
+  turnStepModel = null,
+  committedState = null,
+  npcOption = 'surrender_and_confess',
+  playerSafeStateProjector = null,
+  temporalAdvanceOwner = null
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle);
-  const state = {
+  const state = committedState == null ? {
     party_id: partyId,
     actor_id: instance.immediate.player.instance_id,
     party_state: {
       state_version: 1,
-      turn_number: 0
+      turn_number: 0,
+      session_state_version: 1,
+      clock_state_version: 1,
+      body_state_version: 1
     },
     player_profile: instance.immediate.player.dossier,
     body_state: {
@@ -87,10 +105,20 @@ export function fixture({
       light: {}
     },
     environment_snapshot: instance.immediate.environment_snapshot,
+    world_identity: {
+      world_revision_id:
+        materializationBundle.location_topology_set.spatial_source_ref
+          .world_revision_id,
+      world_catalog_digest:
+        materializationBundle.location_topology_set.spatial_source_ref
+          .world_revision_catalog_digest
+    },
     materialization_trace: structuredClone(instance.trace),
     prepared_scenes:
       structuredClone(instance.immediate.prepared_scenes ?? []),
     npcs: structuredClone(instance.immediate.npcs ?? []),
+    promise_instances:
+      structuredClone(instance.immediate.promise_instances ?? []),
     interactions: [],
     route_history: [],
     route_knowledge: [],
@@ -98,14 +126,28 @@ export function fixture({
     policy_pins: structuredClone(instance.policy_profile_pins),
     relevant_events: [],
     historical_events: [],
+    temporal_boundary_candidates: [],
     items: instance.immediate.items.map((item) => ({
       item_id: item.instance_id,
       template_id: item.template_id,
       profile_id: item.profile_id,
       quantity: item.quantity,
+      condition_state: item.condition_state,
+      legal_status: item.legal_status,
+      claim_state: item.claim_state,
       placement: {
+        anchor_id: item.anchor_id ?? null,
+        container_id: item.container_id ?? null,
         holder_character_id: item.holder_character_id,
+        holder_npc_id: item.holder_npc_id,
         physical_position: item.physical_position
+      },
+      ownership: {
+        owner_character_id: item.owner_character_id,
+        controller_character_id: item.controller_character_id,
+        owner_npc_id: item.owner_npc_id,
+        controller_npc_id: item.controller_npc_id,
+        claim_state: item.claim_state
       },
       state: structuredClone(item.state)
     })),
@@ -129,14 +171,20 @@ export function fixture({
       active_schedule_count: 0,
       candidate_count: 0
     }
-  };
+  } : structuredClone(committedState);
   const replays = new Map();
   const events = [];
   let committedVisible = null;
   let lastWritePlan = null;
+  let lastCommitInput = null;
   let semanticInput = null;
+  let turnStepInput = null;
+  let turnStepCount = 0;
   let rollCount = 0;
   let commitCount = 0;
+  let timeUpdateCount = 0;
+  let bodyUpdateCount = 0;
+  let itemCreationCount = 0;
   let narratorInput = null;
   const bundleRequests = [];
   const repository = {
@@ -147,9 +195,12 @@ export function fixture({
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
     },
-    async commitPhase2Turn({ writePlan, inputDigest }) {
+    async commitPhase2Turn(commitInput) {
+      const { writePlan, inputDigest, phase3Contracts,
+        phase4Contracts, phase5Contracts, phase6Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
+      lastCommitInput = commitInput;
       lastWritePlan = structuredClone(writePlan);
       const factual = writePlan.write_targets.find(
         ({ target }) => target === 'party_state'
@@ -158,44 +209,94 @@ export function fixture({
         ({ target }) => target === 'party_visible_context_package'
       ).value;
       const clue = factual.consequence.clue_materialization;
-      if (clue && !state.items.some(
-        (item) => item.template_id === clue.template_id
-      )) {
-        state.items.push({
-          item_id: clue.instance_id,
-          template_id: clue.template_id,
-          profile_id: clue.profile_id,
-          quantity: clue.quantity,
-          placement: structuredClone(clue.placement),
-          state: {
-            evidence_ref: 'trace_ld_v1_evidence_blue_wool',
-            property_state: structuredClone(clue.property_state),
-            inventory_profile_snapshot:
-              structuredClone(clue.inventory_profile),
-            inventory_effect: structuredClone(clue.inventory_effect),
-            pickup_transition: structuredClone(clue.pickup_transition)
-          }
+      const nextVersion = state.party_state.state_version + 1;
+      const turnNumber = state.party_state.turn_number + 1;
+      const changeSetId = `change:${partyId}:${turnNumber}`;
+      if (factual.consequence.phase6_kind != null) {
+        replaceState(state, nextPhase6State({
+          state,
+          factual,
+          nextVersion,
+          turnNumber,
+          changeSetId,
+          inputDigest
+        }));
+      } else if (factual.consequence.phase5_kind != null) {
+        replaceState(state, nextPhase5State({
+          state,
+          factual,
+          nextVersion,
+          turnNumber,
+          inputDigest,
+          changeSetId,
+          contracts: phase5Contracts
+        }));
+      } else if (factual.consequence.phase4_kind != null) {
+        replaceState(state, nextPhase4State({
+          state,
+          factual,
+          nextVersion,
+          turnNumber,
+          inputDigest,
+          changeSetId,
+          contracts: phase4Contracts
+        }));
+      } else if (factual.consequence.phase3_kind != null) {
+        replaceState(state, nextPhase3State({
+          state,
+          factual,
+          nextVersion,
+          turnNumber,
+          inputDigest,
+          changeSetId,
+          contracts: phase3Contracts
+        }));
+      } else {
+        if (clue && !state.items.some(
+          (item) => item.template_id === clue.template_id
+        )) {
+          itemCreationCount += 1;
+          state.items.push({
+            item_id: clue.instance_id,
+            template_id: clue.template_id,
+            profile_id: clue.profile_id,
+            quantity: clue.quantity,
+            placement: structuredClone(clue.placement),
+            state: {
+              evidence_ref: 'trace_ld_v1_evidence_blue_wool',
+              property_state: structuredClone(clue.property_state),
+              inventory_profile_snapshot:
+                structuredClone(clue.inventory_profile),
+              inventory_effect: structuredClone(clue.inventory_effect),
+              pickup_transition: structuredClone(clue.pickup_transition)
+            }
+          });
+        }
+        timeUpdateCount += 1;
+        state.clock = factual.time_update.clock_after;
+        state.clock_weather_light.clock = state.clock;
+        bodyUpdateCount += 1;
+        state.body_state = factual.body_update.state_after;
+        state.body_effect_history.push({
+          history_id:
+            `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
+          effect_ref: factual.consequence.body_effect_ref,
+          activity_attempt_id: factual.consequence.activity_attempt_id,
+          execution_variant_id:
+            factual.body_update.proposal.execution_variant_id,
+          occurred_at: structuredClone(factual.time_update.clock_after)
         });
+        state.knowledge.push(
+          ...factual.consequence.knowledge_records.map(
+            (entry) => structuredClone(entry)
+          )
+        );
+        state.party_state.state_version += 1;
+        state.party_state.turn_number += 1;
+        state.party_state.session_state_version += 1;
+        state.party_state.clock_state_version += 1;
+        state.party_state.body_state_version += 1;
       }
-      state.clock = factual.time_update.clock_after;
-      state.clock_weather_light.clock = state.clock;
-      state.body_state = factual.body_update.state_after;
-      state.body_effect_history.push({
-        history_id:
-          `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
-        effect_ref: factual.consequence.body_effect_ref,
-        activity_attempt_id: factual.consequence.activity_attempt_id,
-        execution_variant_id:
-          factual.body_update.proposal.execution_variant_id,
-        occurred_at: structuredClone(factual.time_update.clock_after)
-      });
-      state.knowledge.push(
-        ...factual.consequence.knowledge_records.map(
-          (entry) => structuredClone(entry)
-        )
-      );
-      state.party_state.state_version += 1;
-      state.party_state.turn_number += 1;
       const commit = {
         committed: true,
         state_version: state.party_state.state_version,
@@ -228,7 +329,14 @@ export function fixture({
         evidence:
           result.checkpoint.stages.consequence.evidence_relations,
         clue:
-          result.checkpoint.stages.consequence.clue_materialization
+          result.checkpoint.stages.consequence.clue_materialization,
+        movement: result.checkpoint.stages.consequence.movement ?? null,
+        conversation:
+          result.checkpoint.stages.consequence.conversation ?? null,
+        negotiation:
+          result.checkpoint.stages.consequence.negotiation ?? null,
+        treatment: result.checkpoint.stages.consequence.treatment ?? null,
+        carry: result.checkpoint.stages.consequence.carry ?? null
       };
       const replay = [...replays.values()].find(
         (entry) => entry.input_digest === inputDigest
@@ -256,6 +364,26 @@ export function fixture({
         };
       }
       return { option_id: input.action_set[0].option_id };
+    },
+    ...(turnStepModel ? {
+      turnStepModel: async (input, repairContext) => {
+        turnStepCount += 1;
+        turnStepInput = structuredClone(input);
+        return turnStepModel(input, repairContext);
+      }
+    } : {}),
+    ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
+    ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
+    npcDecisionSelector: async (request) => {
+      const selected = request.options.find(
+        ({ option_id: optionId }) => optionId === npcOption
+      ) ?? request.options[0];
+      return {
+        request_id: request.request_id,
+        state_version: request.state_version,
+        option_id: selected.option_id,
+        command_token: selected.command_token
+      };
     },
     randomSourceFactory: () => {
       const source = createSeededRandomSource(
@@ -289,18 +417,29 @@ export function fixture({
     }
   });
   return {
+    bodyUpdateCount: () => bodyUpdateCount,
     bundleRequests,
     commitCount: () => commitCount,
     events,
     narratorInput: () => narratorInput,
+    lastCommitInput: () => lastCommitInput,
     lastWritePlan: () => lastWritePlan,
+    itemCreationCount: () => itemCreationCount,
     partyId,
     repository,
     rollCount: () => rollCount,
     runtime,
     semanticInput: () => semanticInput,
+    timeUpdateCount: () => timeUpdateCount,
+    turnStepCount: () => turnStepCount,
+    turnStepInput: () => turnStepInput,
     state
   };
+}
+
+function replaceState(target, source) {
+  for (const key of Object.keys(target)) delete target[key];
+  Object.assign(target, structuredClone(source));
 }
 
 function approvedNarration(requestId) {

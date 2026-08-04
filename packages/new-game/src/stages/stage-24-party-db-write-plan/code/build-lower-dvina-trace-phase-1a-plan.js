@@ -386,14 +386,14 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12].includes(
+  if (![8, 9, 10, 11, 12, 13].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;
   const preparedNpcs = result.immediate.npcs;
-  const phase4 = [10, 11, 12].includes(
+  const phase4 = [10, 11, 12, 13].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)

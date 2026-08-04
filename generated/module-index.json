@@ -150,7 +150,8 @@
         "item and container contracts",
         "ownership and holder relations",
         "physical access",
-        "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans"
+        "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans",
+        "immutable mechanics snapshots for template-less ordinary direct-action instances"
       ],
       "path": "packages/items-property",
       "public_entry": "./src/index.js",
@@ -437,11 +438,11 @@
       ],
       "name": "@rus/turn",
       "owns": [
-        "Владеет `PlayerTurnInput`/`TurnResult`, stage plan, command sequence, idempotency/lock orchestration, bounded decision handoff, temporal advance/carrier proposal engines, `mergeTemporalProposals`, combined logical write-plan composition и visible-package security gate"
+        "Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate"
       ],
       "path": "packages/turn",
       "public_entry": "./src/index.js",
-      "purpose": "Оркестратор игрового хода и target Temporal World v4 execution composition. Он связывает explicit ports, собирает proposals и carriers, применяет gates и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.",
+      "purpose": "Оркестратор игрового хода, active player semantic step boundary и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированный `turn_step_plan_v1` через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.",
       "version": "0.15.0"
     },
     {
@@ -610,7 +611,9 @@
       "version": "0.20.0"
     },
     {
-      "dependencies": [],
+      "dependencies": [
+        "@rus/items-property"
+      ],
       "name": "@rus/world-catalog-workflow",
       "owns": [
         "контрактами `rus.region_map_revision.v1`, `rus.g1_work_queue.v1`, `rus.g1_cell_package.v1` и `rus.g1_boundary_contract.v1`",

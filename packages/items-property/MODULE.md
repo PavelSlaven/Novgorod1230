@@ -10,6 +10,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - ownership and holder relations
 - physical access
 - normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans
+- immutable mechanics snapshots for template-less ordinary direct-action instances
 
 ## Не делает
 
@@ -28,10 +29,12 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `validatePropertyRelation`
 - `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
 - `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
+- `createRuntimeInstanceMechanicsSnapshot` — строго валидирует и отделённо замораживает exact mechanics/provenance обычного direct-action экземпляра
+- `resolveInventoryMechanicsProfile` — выбирает ровно один источник механики: authored template profile либо template-less runtime snapshot
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Runtime snapshot допустим только без `template_id`, с полным exact profile и provenance `ordinary_direct_action_result`; authored instance всегда использует template/profile path. Одновременное наличие обоих источников запрещено. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` или `{ pass, errors }` либо выбрасываются фабрикой строгого snapshot до его передачи runtime-владельцу.
 
 ## Зависимости
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import {
   SPATIAL_V3_PRODUCTION_RELEASE,
@@ -43,6 +44,16 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   compatible_world_catalog_digest:
     SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
   compatible_world_pin_manifest_digest: TEST_PIN_MANIFEST_DIGEST
+});
+
+test('production trace runtime wires the canonical packing calculator', async () => {
+  const source = await readFile(new URL(
+    '../../apps/game-server/src/runtime/releases/spatial-v3-production-v2-bindings.js',
+    import.meta.url
+  ), 'utf8');
+  assert.match(source,
+    /turnStepPackingCalculator:\s*calculatePackingSlots/u);
+  assert.match(source, /from '@rus\/items-property'/u);
 });
 
 function fixture() {
@@ -230,8 +241,11 @@ test('production-v3 root is a sole-owner composition with no v2 fallback identit
     health.runtime_catalog_pin.activation_event_id,
     TEST_RUNTIME_CATALOG_PIN.activation_event_id
   );
-  assert.equal(health.migration_count, 12);
-  assert.match(health.migration_chain_digest, /^[a-f0-9]{64}$/u);
+  assert.equal(health.migration_count, 15);
+  assert.equal(
+    health.migration_chain_digest,
+    SPATIAL_V3_PRODUCTION_RELEASE.target_migration_chain_digest
+  );
   assert.deepEqual(health.migration_readiness, {
     party_count: 0,
     incompatible_party_count: 0,
@@ -467,7 +481,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   assert.equal(statements.includes('COMMIT'), false);
 });
 
-test('restart extends the exact immutable catalog ledger only with migration 012', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 015', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -497,7 +511,7 @@ test('restart extends the exact immutable catalog ledger only with migration 012
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 1);
+  assert.equal(result.newly_applied, 4);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -507,6 +521,17 @@ test('restart extends the exact immutable catalog ledger only with migration 012
     statements.filter((sql) => sql.includes('owner_external_ref')).length,
     1
   );
+  for (const marker of [
+    'party_obligations',
+    'terminal activity execution does not match its append-only attempt',
+    'runtime_instance_mechanics_snapshot_valid'
+  ]) {
+    assert.equal(
+      statements.filter((sql) => sql.includes(marker)).length,
+      1,
+      marker
+    );
+  }
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

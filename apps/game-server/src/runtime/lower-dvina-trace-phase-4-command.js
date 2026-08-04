@@ -196,7 +196,7 @@ function promiseOfferStage(state, contracts) {
     prior_state: promise.current_state,
     resulting_state: 'offered',
     fact_id: 'promise_current_offered',
-    obligation_id: promise.obligation_id,
+    obligation_id: promise.obligation_id ?? promise.instance_id,
     policy_id: contracts.promisePolicy.policy_id,
     beneficiary_actor_id: promise.beneficiary_actor_id,
     witness_actor_ids: structuredClone(promise.witness_actor_ids),

@@ -1,0 +1,32 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v9",
+  "revision": 9,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 13,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v8",
+    "revision": 8,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "58cff435df3e824d20eb6aa62f9f99a6b3aa2967129eb317ea768fa80ee2a5a4"
+  },
+  "reused_immutable_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v8",
+    "revision": 8,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "58cff435df3e824d20eb6aa62f9f99a6b3aa2967129eb317ea768fa80ee2a5a4"
+  },
+  "binding_resolution_policy": "reuse_exact_superseded_initial_materialization_bindings_or_fail_closed",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "binding_overrides": {},
+  "sealed_selection_inventory_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_sealed_selection_inventory_v8",
+    "digest": "58cff435df3e824d20eb6aa62f9f99a6b3aa2967129eb317ea768fa80ee2a5a4"
+  },
+  "excludes": ["materialization_override", "runtime_handler", "persistence", "party_instance", "api", "ui"]
+}

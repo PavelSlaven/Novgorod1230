@@ -1,0 +1,78 @@
+{
+  "schema": "rus.lower_dvina_trace_turn_step_owner_profiles.v1",
+  "profile_set_id": "trace_ld_v1_turn_step_owner_profiles",
+  "revision": 1,
+  "status": "approved",
+  "fallback_policy": "forbidden",
+  "semantic_activity_profile_namespace": "trace_ld_v1_semantic_activity",
+  "semantic_duration_profiles": [
+    {"duration_class": "moment", "duration_minutes": 1},
+    {"duration_class": "brief", "duration_minutes": 5},
+    {"duration_class": "short", "duration_minutes": 15},
+    {"duration_class": "extended", "duration_minutes": 60}
+  ],
+  "semantic_effort_profiles": [
+    {"effort": "none", "exact_deltas": {"health": 0, "satiety": 0, "energy": 0}, "condition_outcomes": []},
+    {"effort": "light", "exact_deltas": {"health": 0, "satiety": 0, "energy": -1}, "condition_outcomes": []},
+    {"effort": "moderate", "exact_deltas": {"health": 0, "satiety": -1, "energy": -2}, "condition_outcomes": []},
+    {"effort": "heavy", "exact_deltas": {"health": 0, "satiety": -2, "energy": -4}, "condition_outcomes": []},
+    {"effort": "extreme", "exact_deltas": {"health": -1, "satiety": -3, "energy": -6}, "condition_outcomes": []}
+  ],
+  "direct_body_effect_profile_namespace": "trace_ld_v1_direct_body_event",
+  "direct_body_mechanism_profiles": [
+    {"mechanism": "impact"},
+    {"mechanism": "cut"},
+    {"mechanism": "puncture"},
+    {"mechanism": "burn"},
+    {"mechanism": "strain"},
+    {"mechanism": "crush"},
+    {"mechanism": "fall"},
+    {"mechanism": "cold"},
+    {"mechanism": "heat"},
+    {"mechanism": "suffocation"},
+    {"mechanism": "poison"},
+    {"mechanism": "other"}
+  ],
+  "direct_body_severity_profiles": [
+    {"severity": "minor", "exact_deltas": {"health": -1, "satiety": 0, "energy": 0}, "condition_outcomes": []},
+    {"severity": "moderate", "exact_deltas": {"health": -5, "satiety": 0, "energy": -1}, "condition_outcomes": []},
+    {"severity": "severe", "exact_deltas": {"health": -15, "satiety": 0, "energy": -3}, "condition_outcomes": []},
+    {"severity": "critical", "exact_deltas": {"health": -30, "satiety": 0, "energy": -6}, "condition_outcomes": []}
+  ],
+  "direct_body_part_policy": {
+    "null_allowed": true,
+    "allowed_body_part_refs": ["head", "neck", "torso", "chest", "abdomen", "back", "left_arm", "right_arm", "left_hand", "right_hand", "left_leg", "right_leg", "left_foot", "right_foot"]
+  },
+  "generic_check_modifier_policy": {
+    "profile_ref": "trace_ld_v1_generic_check_modifiers_v1",
+    "check_policy_ref": {"entity_kind": "check_policy", "entity_id": "trace_ld_v1_generic_check_modifiers_v1", "authoring_version": "1"},
+    "consequence_policy_ref": {"entity_kind": "consequence_policy", "entity_id": "trace_ld_v1_generic_check_five_band_v1", "authoring_version": "1"},
+    "state_relevance_by_attribute": {
+      "strength": ["health", "satiety", "energy"],
+      "dexterity": ["health", "energy"],
+      "endurance": ["health", "satiety", "energy"],
+      "reason": ["health", "energy"],
+      "attention": ["health", "energy"],
+      "influence": ["health", "energy"]
+    },
+    "load_category_modifiers": {"light": 0, "moderate": -1, "heavy": -2, "overloaded": -4},
+    "circumstance_policy": "explicit_absence_yields_zero"
+  },
+  "ordinary_result_policy": {
+    "schema": "rus.items.ordinary_result_admission_policy.v1",
+    "version": 1,
+    "status": "approved",
+    "candidates": [
+      {"semantic_type": "material_portion", "name": "горсть мокрого песка", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary", "direct_partition"], "approved_fact_texts": ["это мокрый речной песок, набранный с берега"]},
+      {"semantic_type": "material_portion", "name": "ком глины", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary", "direct_partition"], "approved_fact_texts": []},
+      {"semantic_type": "material_portion", "name": "щепка", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary", "direct_partition"], "approved_fact_texts": []},
+      {"semantic_type": "material_portion", "name": "кусок коры", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary", "direct_partition"], "approved_fact_texts": []},
+      {"semantic_type": "material_portion", "name": "пучок обычной травы", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary", "direct_partition"], "approved_fact_texts": []},
+      {"semantic_type": "ordinary_stone", "name": "обычный камень", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary"], "approved_fact_texts": []},
+      {"semantic_type": "ordinary_stone", "name": "камень", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary"], "approved_fact_texts": []},
+      {"semantic_type": "ordinary_shell", "name": "ракушка", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary"], "approved_fact_texts": []},
+      {"semantic_type": "ordinary_root", "name": "корень", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary"], "approved_fact_texts": []},
+      {"semantic_type": "ordinary_worm", "name": "червь", "significance": "ordinary", "allowed_origin_kinds": ["ambient_ordinary"], "approved_fact_texts": []}
+    ]
+  }
+}

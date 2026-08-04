@@ -55,9 +55,11 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
   await pool.query('SELECT 1');
   const partyFiles = (await readdir('schemas/party-db'))
     .filter((value) => /^\d+.*\.sql$/u.test(value)).sort();
-  for (const file of partyFiles.filter((value) =>
-    !value.startsWith('012_') && !value.startsWith('013_')
-      && !value.startsWith('014_'))) {
+  const catalogMigrationIndex = partyFiles.findIndex((file) =>
+    file.startsWith('012_')
+  );
+  assert.equal(catalogMigrationIndex, 11);
+  for (const file of partyFiles.slice(0, catalogMigrationIndex)) {
     try {
       await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
     } catch (error) {
@@ -66,18 +68,9 @@ test('Phase 1A commits atomically, replays, rehydrates and isolates hidden truth
     }
   }
   assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
-  await pool.query(await readFile(
-    'schemas/party-db/012_party_runtime_external_ownership.sql',
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    'schemas/party-db/013_party_runtime_obligations.sql',
-    'utf8'
-  ));
-  await pool.query(await readFile(
-    'schemas/party-db/014_party_runtime_activity_resume_terminal.sql',
-    'utf8'
-  ));
+  for (const file of partyFiles.slice(catalogMigrationIndex)) {
+    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  }
   const schema = await readSchemaSnapshot(pool);
   const world = worldSnapshot();
   const bundle = await loadLowerDvinaTraceMaterializationBundle();

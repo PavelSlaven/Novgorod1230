@@ -123,7 +123,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if (input.scenario_definition_revision === 12) {
+  if ([12, 13].includes(input.scenario_definition_revision)) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',

@@ -1,6 +1,9 @@
 import { assertValid, validateTurnModeResolution } from '../validators.js';
 import { freezeOutput } from './shared.js';
 import { resolveRegisteredTurnCommand } from '../command-registry.js';
+import {
+  bindTurnStepWorkflowDraft
+} from '../turn-step-workflow-draft.js';
 
 export async function resolveTurnModeStage({
   playerInput,
@@ -28,5 +31,9 @@ export async function resolveTurnModeStage({
     resolution_plan: structuredClone(mode.resolution_plan), decision_trace: resolved.decisionTrace
   };
   assertValid('turn_mode_resolution', validateTurnModeResolution(output));
-  return freezeOutput(output);
+  const frozen = freezeOutput(output);
+  if (resolved.executionDraft) {
+    bindTurnStepWorkflowDraft(frozen, resolved.executionDraft);
+  }
+  return frozen;
 }

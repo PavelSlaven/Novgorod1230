@@ -18,7 +18,9 @@ export const TurnRuntimeRoles = Object.freeze({
   INTENT_ROUTER: 'intent_router',
   ORCHESTRATOR: 'orchestrator',
   AUDITOR: 'auditor',
-  FORMAT_REPAIRER: 'format_repairer'
+  FORMAT_REPAIRER: 'format_repairer',
+  TURN_STEP_PLANNER: 'turn_step_planner',
+  TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair'
 });
 
 export const NewGameVisibleContextRoles = Object.freeze({
@@ -212,6 +214,40 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     temperature: 0,
     topP: 1,
     outputContractMode: OutputContractModes.JSON_REPAIR,
+    parseJson: true,
+    targetInputTokens: 30000,
+    comfortableInputTokens: 30000,
+    hardInputLimitTokens: 100000,
+    reserveOutputTokens: 4000,
+    reserveRepairTokens: 4000
+  },
+  [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
+    envPrefix: 'TURN_STEP_PLANNER',
+    model: 'deepseek-v4-pro',
+    thinking: 'enabled',
+    reasoningEffort: 'high',
+    responseFormat: 'json_object',
+    maxTokens: 8000,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'turn_step_plan_v1',
+    parseJson: true,
+    targetInputTokens: 100000,
+    comfortableInputTokens: 220000,
+    hardInputLimitTokens: 600000,
+    reserveOutputTokens: 8000,
+    reserveRepairTokens: 30000
+  },
+  [TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR]: {
+    envPrefix: 'TURN_STEP_PLANNER_REPAIR',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
+    responseFormat: 'json_object',
+    maxTokens: 4000,
+    temperature: 0,
+    topP: 1,
+    outputContractMode: OutputContractModes.JSON_REPAIR,
+    expectedSchema: 'turn_step_plan_v1',
     parseJson: true,
     targetInputTokens: 30000,
     comfortableInputTokens: 30000,

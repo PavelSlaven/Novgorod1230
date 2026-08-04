@@ -54,6 +54,19 @@ function publicConversationProjection({ conversation, payload }) {
   }
   const semantic = conversation?.semantic_exchange_projection;
   if (semantic == null) return conversation;
+  if (semantic.factual_status === 'not_applied') {
+    if (semantic.npc_ref !== null
+        || semantic.response_kind !== null
+        || semantic.time_budget?.status !== 'paused'
+        || !Array.isArray(semantic.statement_refs)
+        || semantic.statement_refs.length !== 0
+        || semantic.route_disclosure !== null) {
+      throw new TypeError(
+        'Unapplied semantic conversation projection is invalid.'
+      );
+    }
+    return null;
+  }
   const responseKind = semantic.response_kind;
   const speechResponse = SPEECH_RESPONSE_KINDS.has(responseKind);
   const nonSpeechResponse = NON_SPEECH_RESPONSE_KINDS.has(responseKind);

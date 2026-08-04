@@ -954,9 +954,9 @@
       "type": "sql"
     },
     {
-      "bytes": 1779,
+      "bytes": 1762,
       "path": "schemas/party-db/017_party_runtime_conversation_transcript.sql",
-      "sha256": "9ca4c79acbc751408337b98f1f5a399f9aa6138b2c0a12d3a1aee70bafa8a553",
+      "sha256": "3eed33f61aca6f0889057d9758e22e0aa7550f38359e6563c3b4a5b0141a6611",
       "type": "sql"
     },
     {

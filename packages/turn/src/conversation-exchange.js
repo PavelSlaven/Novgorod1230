@@ -199,6 +199,19 @@ async function progressAndProject({
     'TURN_CONVERSATION_STALE_AFTER_TIME',
     'Conversation state changed while contribution time advanced'
   );
+  if (!progressed.completed || progressed.interrupted) {
+    return {
+      applied: immutableClone({
+        ...applied,
+        working_state: progressed.working_state,
+        session_status: progressed.session_status
+      }),
+      temporalBoundaryRefs: progressed.temporal_boundary_refs,
+      elapsedMinutes: progressed.elapsed_minutes,
+      completed: progressed.completed,
+      interrupted: progressed.interrupted
+    };
+  }
   const projected = normalizeApplyResult(await callPort(
     perceptionPort,
     {
@@ -304,7 +317,9 @@ export async function runConversationExchange(input = {}, ports = {}) {
   let handoff = playerResult.handoff;
   let sessionStatus = playerResult.session_status;
   let stopReason = stopAfterApply(playerResult);
-  const contributions = [playerResult.contribution_event];
+  const contributions = playerProgress.completed && !playerProgress.interrupted
+    ? [playerResult.contribution_event]
+    : [];
   const npcDecisions = [];
   const processedBoundaryIds = [];
   const processedBoundaryIdSet = new Set();
@@ -387,7 +402,9 @@ export async function runConversationExchange(input = {}, ports = {}) {
     latestContribution = npcResult.contribution_event;
     handoff = npcResult.handoff;
     sessionStatus = npcResult.session_status;
-    contributions.push(npcResult.contribution_event);
+    if (npcProgress.completed && !npcProgress.interrupted) {
+      contributions.push(npcResult.contribution_event);
+    }
     npcDecisions.push({
       boundary: decision.boundary,
       request: decision.request,

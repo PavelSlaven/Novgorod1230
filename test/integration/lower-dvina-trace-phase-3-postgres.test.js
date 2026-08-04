@@ -476,6 +476,56 @@ async function assertTemporalConversationRestart({
   await buildRuntime({ pool, release, runtimeCatalogPin })
     .getPartyScreen(backgroundParty.party_id);
 
+  const interruptedPlayerRuntime = buildRuntime({
+    pool, release, runtimeCatalogPin
+  });
+  const interruptedPlayerParty = await createParty(
+    interruptedPlayerRuntime, 'phase-3-interrupted-player'
+  );
+  await inspectAndMove(interruptedPlayerRuntime,
+    interruptedPlayerParty.party_id, 'interrupted-player');
+  await insertConversationBoundary(pool, interruptedPlayerParty.party_id, {
+    minutes: 2, interruptEffect: 'hard_interrupt'
+  });
+  const interruptedPlayer = await buildRuntime({
+    pool, release, runtimeCatalogPin
+  }).submitTurn(interruptedPlayerParty.party_id, {
+    request_id: 'phase-3-interrupted-player-talk',
+    idempotency_key: 'phase-3-interrupted-player-talk',
+    raw_text: 'Поговорить с Еремеем о крушении.'
+  });
+  assert.equal(interruptedPlayer.time_update.exact_elapsed.exact_minutes
+    .numerator, '2');
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_statements',
+    interruptedPlayerParty.party_id), 0);
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_contributions',
+    interruptedPlayerParty.party_id), 0);
+  assert.equal(await count(pool,
+    'party_runtime.party_npc_decision_traces',
+    interruptedPlayerParty.party_id), 0);
+  const interruptedPlayerReload = await latestSnapshot(
+    pool, interruptedPlayerParty.party_id
+  );
+  assert.deepEqual(interruptedPlayerReload.conversation_statements ?? [], []);
+  assert.deepEqual(interruptedPlayerReload.conversation_contributions ?? [], []);
+  assert.deepEqual(interruptedPlayerReload.conversation_audiences ?? [], []);
+  assert.deepEqual(interruptedPlayerReload.received_messages ?? [], []);
+  assert.deepEqual(interruptedPlayerReload.npc_decision_signals ?? [], []);
+  assert.deepEqual(
+    interruptedPlayerReload.consumed_npc_decision_signal_ids ?? [], []
+  );
+  assert.deepEqual(
+    interruptedPlayerReload.activity_history.at(-1).execution_result
+      .semantic_exchange_projection,
+    {
+      response_kind: null, npc_utterance: null, disclosed_route_ref: null
+    }
+  );
+  await buildRuntime({ pool, release, runtimeCatalogPin })
+    .getPartyScreen(interruptedPlayerParty.party_id);
+
   const interruptedRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
   const interruptedParty = await createParty(
     interruptedRuntime, 'phase-3-interrupted-npc'
@@ -517,6 +567,19 @@ async function assertTemporalConversationRestart({
   const reloaded = await latestSnapshot(pool, interruptedParty.party_id);
   assert.equal(reloaded.activity_history.at(-1).execution_result
     .semantic_exchange_projection.response_kind, null);
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_statements',
+    interruptedParty.party_id), 1);
+  assert.equal(await count(pool,
+    'party_runtime.party_conversation_contributions',
+    interruptedParty.party_id), 1);
+  assert.equal(reloaded.conversation_statements.length, 1);
+  assert.equal(reloaded.conversation_statements[0].speaker_ref.entity_kind,
+    'player_character');
+  assert.equal(reloaded.conversation_contributions.length, 1);
+  assert.equal(reloaded.conversation_audiences.length, 1);
+  assert.equal(reloaded.received_messages.some(({ speaker_ref: speaker }) =>
+    speaker?.entity_kind === 'npc'), false);
   await buildRuntime({ pool, release, runtimeCatalogPin })
     .getPartyScreen(interruptedParty.party_id);
 }

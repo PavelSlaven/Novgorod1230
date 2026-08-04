@@ -111,13 +111,15 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   } else {
     const n = c.negotiation;
     if (n.semantic_exchange != null) {
-      next = projectSemanticConversationSnapshot({
-        state: next,
-        semanticExchange: n.semantic_exchange,
-        rootTurnId,
-        workingRevision,
-        appliedChangeSetId: changeSetId
-      });
+      if (n.semantic_exchange.exchange.applied_contribution_count > 0) {
+        next = projectSemanticConversationSnapshot({
+          state: next,
+          semanticExchange: n.semantic_exchange,
+          rootTurnId,
+          workingRevision,
+          appliedChangeSetId: changeSetId
+        });
+      }
       next = projectPhase4SemanticNegotiation({
         next,
         state,

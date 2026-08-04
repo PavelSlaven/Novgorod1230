@@ -227,7 +227,9 @@ export async function executeM2ConversationExchange(context) {
     );
   }
   const npcContributionApplied = exchange.npc_decisions.length === 1
-    && exchange.applied_contribution_count === exchange.contributions.length;
+    && exchange.contributions.some(({ speaker_ref: speaker }) =>
+      speaker?.entity_kind === context.targetRef.entity_kind
+      && speaker.entity_id === context.targetRef.entity_id);
   return {
     exchange,
     decision: exchange.npc_decisions[0] ?? null,

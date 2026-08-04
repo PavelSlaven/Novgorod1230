@@ -11,6 +11,9 @@ export function phase3SemanticInteractions({
   const evidencePresentation = semantic.evidence_presentation ?? null;
   const hasDecision = semantic.decision_request !== null;
   const firstContribution = semantic.exchange.contributions[0];
+  const npcContributionApplied = semantic.exchange.contributions.some(
+    ({ speaker_ref: speaker }) => sameRef(speaker, npcRef)
+  );
   const environmentSignals = semantic.new_signal_records.filter(
     ({ signal }) => signal.category === 'environment'
   );
@@ -63,8 +66,7 @@ export function phase3SemanticInteractions({
   if (typeof contributionRef !== 'string' || !contributionRef) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
-  return [
-    ...(evidencePresentation === null ? [] : [{
+  const supportingInteractions = evidencePresentation === null ? [] : [{
       interaction_id: evidencePresentation.event_id,
       activity_ref: conversation.activity_ref,
       npc_id: npcRef.entity_id,
@@ -74,7 +76,10 @@ export function phase3SemanticInteractions({
       entity_ref: structuredClone(evidencePresentation.entity_ref),
       evidence_ref: evidencePresentation.evidence_ref,
       occurred_at: structuredClone(evidencePresentation.occurred_at)
-    }]),
+    }];
+  if (!npcContributionApplied) return supportingInteractions;
+  return [
+    ...supportingInteractions,
     {
       interaction_id:
         `interaction:${state.party_id}:trace-phase3:${turnNumber}`,

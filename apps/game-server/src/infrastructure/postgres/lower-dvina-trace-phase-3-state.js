@@ -86,13 +86,16 @@ export function nextState({
   } else {
     const conversation = factual.consequence.conversation;
     if (conversation.semantic_exchange != null) {
-      next = projectSemanticConversationSnapshot({
-        state: next,
-        semanticExchange: conversation.semantic_exchange,
-        rootTurnId,
-        workingRevision,
-        appliedChangeSetId: changeSetId
-      });
+      if (conversation.semantic_exchange.exchange
+          .applied_contribution_count > 0) {
+        next = projectSemanticConversationSnapshot({
+          state: next,
+          semanticExchange: conversation.semantic_exchange,
+          rootTurnId,
+          workingRevision,
+          appliedChangeSetId: changeSetId
+        });
+      }
       next = projectPhase3SemanticConversation({
         next,
         state,
@@ -171,8 +174,8 @@ function projectPhase3SemanticConversation({
   };
   const hasDecision = semantic.decision_request !== null;
   const npcApplied = hasDecision
-    && semantic.exchange.applied_contribution_count
-      === semantic.exchange.contributions.length;
+    && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
+      sameRef(speaker, npcRef));
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
@@ -183,7 +186,7 @@ function projectPhase3SemanticConversation({
     ? (speechResponse ? 'speech' : semantic.response_kind)
     : semantic.decision_plan?.contribution_kind;
   if (npcRef?.entity_kind !== 'npc'
-      || npcStatements.length !== (npcSpeechContribution ? 1 : 0)
+      || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)
       || conversation.npc_id !== npcRef.entity_id
       || (hasDecision && semantic.decision_plan?.contribution_kind
         !== expectedContributionKind)

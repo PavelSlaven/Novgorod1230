@@ -1,5 +1,3 @@
-BEGIN;
-
 CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions (
   contribution_id text PRIMARY KEY,
   party_id text NOT NULL
@@ -46,5 +44,3 @@ CREATE INDEX IF NOT EXISTS party_conversation_contributions_transcript_idx
     session_state_version,
     contribution_index
   );
-
-COMMIT;

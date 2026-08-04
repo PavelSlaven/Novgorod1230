@@ -82,7 +82,8 @@ export function phase3Writes(input) {
     });
     const semanticExchange =
       factual.consequence.conversation?.semantic_exchange ?? null;
-    if (semanticExchange !== null) {
+    if (semanticExchange !== null
+        && semanticExchange.exchange.applied_contribution_count > 0) {
       const semanticInput = buildNpcSemanticConversationWriteInput({
         state,
         next,
@@ -116,7 +117,7 @@ export function phase3Writes(input) {
         changeSetId,
         inputDigest
       });
-    } else {
+    } else if (semanticExchange === null) {
       appendConversation({
         appends, inserts, state, next, factual, partyId, turnNumber,
         changeSetId, inputDigest

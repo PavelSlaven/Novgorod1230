@@ -88,6 +88,15 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
   assert.equal(exchange.result.exchange.time_budget.status, 'paused');
   assert.equal(exchange.result.route_disclosure, null);
   assert.equal(exchange.result.response_kind, null);
+  assert.equal(exchange.result.statements.length, 1);
+  assert.equal(exchange.result.statements[0].speaker_ref.entity_kind,
+    'player_character');
+  assert.equal(exchange.result.audiences.length, 1);
+  assert.equal(exchange.result.audiences[0].statement_ref.entity_id,
+    exchange.result.statements[0].statement_id);
+  assert.equal(exchange.result.new_signal_records.length > 0, true);
+  assert.deepEqual(exchange.result.consumed_signal_ids,
+    exchange.result.new_signal_records.map(({ signal }) => signal.signal_id));
   const restarted = projectPhase3Conversation({ state, contracts,
     result: exchange.result, inputDigest: digest('e') });
   assert.equal((restarted.knowledge ?? []).some(({ fact_id: id }) =>
@@ -134,6 +143,10 @@ test('interrupted NPC surrender has no commitment or item transition', async () 
   assert.equal(exchange.result.surrender, null);
   assert.equal(exchange.result.commitment, null);
   assert.equal(exchange.result.knife_transition_eligibility, null);
+  assert.equal(exchange.result.statements.length, 1);
+  assert.equal(exchange.result.statements[0].speaker_ref.entity_kind,
+    'player_character');
+  assert.equal(exchange.result.audiences.length, 1);
   const factual = phase4Factual(state, contracts, exchange.result,
     offerStage, 'interrupted-npc-surrender');
   const restarted = nextPhase4State({ state, factual,
@@ -179,10 +192,22 @@ test('interrupted player contribution persists paused exact progress only', asyn
     resolveTemporalBoundary: interruptResolution });
   assert.equal(exchange.result.evidence_presentation, null);
   assert.equal(exchange.result.exchange.time_budget.status, 'paused');
+  assert.deepEqual(exchange.result.statements, []);
+  assert.deepEqual(exchange.result.audiences, []);
+  assert.deepEqual(exchange.result.new_signal_records, []);
+  assert.deepEqual(exchange.result.consumed_signal_ids, []);
   assert.deepEqual(exchange.result.exchange.time_budget, {
     total_minutes: 10, elapsed_minutes: 2, remaining_minutes: 8,
     status: 'paused'
   });
+  const restarted = projectPhase3Conversation({ state, contracts,
+    result: exchange.result, inputDigest: digest('7') });
+  assert.deepEqual(restarted.conversation_statements ?? [], []);
+  assert.deepEqual(restarted.conversation_contributions ?? [], []);
+  assert.deepEqual(restarted.conversation_audiences ?? [], []);
+  assert.deepEqual(restarted.received_messages ?? [], []);
+  assert.equal(phase2PublicResult({ payload: restarted,
+    screen: { schema: 'test-screen' } }).conversation, null);
 
   const inserts = [];
   const appends = [];
@@ -209,6 +234,57 @@ test('interrupted player contribution persists paused exact progress only', asyn
   assert.equal(attempt.actual_time_numerator, 2);
   assert.equal(attempt.remaining_after_numerator, 8);
 });
+
+test('interrupted player offer does not change the promise or transcript',
+  async () => {
+    const { state, contracts } = phase4ArrivalState();
+    state.promise_instances[0].created_change_set_id = 'change:phase4-arrival';
+    const beforePromise = structuredClone(state.promise_instances[0]);
+    const offerStage = promiseOfferStage(state, contracts);
+    state.temporal_boundary_candidates = [boundaryCandidate(
+      state, plusMinutes(state.clock, '2'), 'hard_interrupt'
+    )];
+    const exchange = await runPhase4({ state, contracts,
+      rawText: 'Ратша, я обещаю тебе защиту.', inputDigest: digest('8'),
+      responseKind: 'surrender', checkResult: null, checkRequest: null,
+      offerStage, playerPlanOptions: { offer: true },
+      resolveTemporalBoundary: interruptResolution });
+
+    assert.equal(exchange.npcCalls, 0);
+    assert.equal(exchange.result.exchange.applied_contribution_count, 0);
+    assert.deepEqual(exchange.result.statements, []);
+    assert.deepEqual(exchange.result.audiences, []);
+    assert.deepEqual(exchange.result.new_signal_records, []);
+    assert.deepEqual(exchange.result.consumed_signal_ids, []);
+    const factual = phase4Factual(state, contracts, exchange.result,
+      offerStage, 'interrupted-player-offer');
+    const restarted = nextPhase4State({ state, factual,
+      nextVersion: state.party_state.state_version + 1,
+      turnNumber: state.party_state.turn_number + 1,
+      inputDigest: digest('8'), changeSetId: 'change:interrupted-player-offer',
+      contracts, rootTurnId: 'turn:interrupted-player-offer',
+      workingRevision: 0 });
+    assert.deepEqual(restarted.promise_instances[0], beforePromise);
+    assert.deepEqual(restarted.conversation_statements ?? [], []);
+    assert.deepEqual(restarted.conversation_contributions ?? [], []);
+    assert.deepEqual(restarted.conversation_audiences ?? [], []);
+    assert.deepEqual(restarted.received_messages ?? [], []);
+    assert.equal(phase2PublicResult({ payload: restarted,
+      screen: { schema: 'test-screen' } }).conversation, null);
+
+    const writes = { inserts: [], updates: [], appends: [] };
+    appendSemanticNegotiation({
+      ...writes, partyId: state.party_id, state, next: restarted, factual,
+      turnNumber: state.party_state.turn_number + 1,
+      changeSetId: 'change:interrupted-player-offer',
+      idemId: 'idem:interrupted-player-offer', contracts,
+      rootTurnId: 'turn:interrupted-player-offer', workingRevision: 0
+    });
+    assert.equal(writes.inserts.some(({ target_table: table }) =>
+      table === 'party_timed_activity_executions'), true);
+    assert.equal(writes.appends.some(({ target_table: table }) =>
+      table !== 'party_timed_activity_attempts'), false);
+  });
 
 test('same-time boundary at contribution end blocks supporting consequences', async () => {
   const state = phase3State();
@@ -309,7 +385,8 @@ function phase4Factual(state, contracts, semanticExchange, offerStage, suffix) {
     player_input: {
       request_id: `request:${suffix}`,
       idempotency_key: `idempotency:${suffix}`,
-      raw_text: semanticExchange.statements[0].utterance_text
+      raw_text: semanticExchange.statements[0]?.utterance_text
+        ?? 'interrupted conversation contribution'
     },
     mode_resolution: {
       turn_id: `turn:${suffix}`,

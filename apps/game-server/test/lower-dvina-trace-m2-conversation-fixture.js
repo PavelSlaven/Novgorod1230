@@ -617,7 +617,8 @@ export function projectPhase3Conversation({ state, contracts, result, inputDiges
       player_input: {
         request_id: `request:${inputDigest.slice(0, 12)}`,
         idempotency_key: `idempotency:${inputDigest.slice(0, 12)}`,
-        raw_text: result.statements[0].utterance_text,
+        raw_text: result.statements[0]?.utterance_text
+          ?? 'interrupted conversation contribution',
         received_at: clock
       },
       mode_resolution: {

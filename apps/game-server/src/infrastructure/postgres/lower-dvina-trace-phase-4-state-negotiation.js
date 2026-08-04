@@ -31,10 +31,10 @@ export function projectPhase4SemanticNegotiation({
     'leave_conversation', 'combat_handoff', null
   ]);
   const hasDecision = semantic.decision_request !== null;
-  const npcApplied = hasDecision
-    && semantic.exchange.applied_contribution_count
-      === semantic.exchange.contributions.length;
   const npcRef = semantic.decision_request?.npc_ref ?? npcRefForContracts(contracts);
+  const npcApplied = hasDecision
+    && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
+      sameRef(speaker, npcRef));
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['surrender', 'lie', 'bargain', 'speech']
@@ -55,7 +55,7 @@ export function projectPhase4SemanticNegotiation({
       || (!hasDecision && semantic.decision_plan !== null)
       || !Array.isArray(negotiation.objective_fact_outputs)
       || negotiation.objective_fact_outputs.length !== 0
-      || npcStatements.length !== (npcSpeechContribution ? 1 : 0)) {
+      || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)) {
     semanticFail('TRACE_M2_PHASE_4_SEMANTIC_SHAPE_INVALID');
   }
 
@@ -77,18 +77,21 @@ export function projectPhase4SemanticNegotiation({
   const promiseState = commitmentActive
     ? 'active'
     : offerCommitted ? 'offered' : prior.current_state;
-  const transitionCount = (prior.current_state === 'not_offered' ? 1 : 0)
-    + (promiseState === 'active' ? 1 : 0);
+  const transitionCount = promiseState === prior.current_state
+    ? 0
+    : prior.current_state === 'not_offered' && promiseState === 'active'
+      ? 2
+      : 1;
   next.promise_instances = [{
     ...prior,
     current_state: promiseState,
     current_state_fact: promiseState === 'active'
       ? 'promise_current_active'
-      : 'promise_current_offered',
+      : promiseState === 'offered'
+        ? 'promise_current_offered'
+        : prior.current_state_fact,
     state_version: Number(prior.state_version) + transitionCount,
-    last_change_set_id: transitionCount > 0
-      ? changeSetId
-      : prior.last_change_set_id
+    ...(transitionCount > 0 ? { last_change_set_id: changeSetId } : {})
   }];
 
   if (responseKind === 'surrender') {

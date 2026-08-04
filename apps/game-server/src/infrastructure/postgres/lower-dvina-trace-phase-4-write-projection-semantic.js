@@ -83,6 +83,7 @@ export function appendSemanticNegotiation({
     changeSetId,
     idemId
   });
+  if (semantic.exchange.applied_contribution_count === 0) return;
   const checkId = n.check_result
     ? `check:${partyId}:trace-phase4:${turnNumber}` : null;
   const offerAppends = [];

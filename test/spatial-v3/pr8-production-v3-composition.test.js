@@ -549,12 +549,31 @@ test('persisted historical catalog pins survive a later active activation', asyn
 
 test('target DDL rolls back when the in-transaction release gate fails', async () => {
   const statements = [];
+  const committedTables = new Set();
+  let transactionalTables = new Set();
   const expected = new Error('release pin mismatch');
   await assert.rejects(
     runSpatialV3TargetMigrations({
       connect: async () => ({
         query: async (sql) => {
           statements.push(sql);
+          if (sql === 'BEGIN') {
+            transactionalTables = new Set(committedTables);
+          } else if (sql.includes(
+            'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions'
+          )) {
+            transactionalTables.add(
+              'party_runtime.party_conversation_contributions'
+            );
+            if (/\bCOMMIT\s*;/u.test(sql)) {
+              committedTables.clear();
+              for (const table of transactionalTables) {
+                committedTables.add(table);
+              }
+            }
+          } else if (sql === 'ROLLBACK') {
+            transactionalTables = new Set(committedTables);
+          }
           return { rows: [] };
         },
         release() {}
@@ -569,9 +588,13 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   assert.equal(statements[0], 'BEGIN');
   assert.equal(statements.at(-1), 'ROLLBACK');
   assert.equal(statements.includes('COMMIT'), false);
+  assert.equal(
+    committedTables.has('party_runtime.party_conversation_contributions'),
+    false
+  );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 016', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 017', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -601,7 +624,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 5);
+  assert.equal(result.newly_applied, 6);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -615,7 +638,8 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     'party_obligations',
     'terminal activity execution does not match its append-only attempt',
     'runtime_instance_mechanics_snapshot_valid',
-    'party_conversation_sessions'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_sessions',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,

@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import pg from 'pg';
 import {
+  runSpatialV3TargetMigrations,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 
@@ -11,6 +13,62 @@ const docker = (args, input = null) => spawnSync(
   { input, encoding: 'utf8', timeout: 60_000 }
 );
 const containerName = `lower-dvina-party-011-${process.pid}`;
+const rollbackContainerName =
+  `lower-dvina-party-017-rollback-${process.pid}`;
+
+test('017 is rolled back when the in-transaction readiness gate fails',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for the isolated PostgreSQL migration gate.');
+      return;
+    }
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', rollbackContainerName]);
+    });
+    const started = docker([
+      'run', '-d', '--name', rollbackContainerName,
+      '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=rollback_local',
+      '-e', 'POSTGRES_USER=rollback',
+      '-e', 'POSTGRES_DB=rollback',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      if (docker([
+        'exec', rollbackContainerName, 'pg_isready',
+        '-U', 'rollback', '-d', 'rollback'
+      ]).status === 0) {
+        ready = true;
+        break;
+      }
+    }
+    assert.equal(ready, true);
+    const port = Number(docker([
+      'port', rollbackContainerName, '5432'
+    ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port,
+      user: 'rollback', password: 'rollback_local', database: 'rollback' });
+
+    await assert.rejects(
+      runSpatialV3TargetMigrations(pool, {
+        beforeCommit: async () => {
+          throw new Error('forced readiness failure');
+        }
+      }),
+      /forced readiness failure/u
+    );
+    const table = await pool.query(
+      `SELECT to_regclass(
+        'party_runtime.party_conversation_contributions'
+      ) AS relation`
+    );
+    assert.equal(table.rows[0].relation, null);
+  });
 
 test('011 applies to isolated PostgreSQL and permits transport departure without losing controls', async (t) => {
   if (docker(['version']).status !== 0) {

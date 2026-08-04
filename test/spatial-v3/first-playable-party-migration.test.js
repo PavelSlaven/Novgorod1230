@@ -45,6 +45,11 @@ test('target chain appends migrations 012 through 017 in exact order', () => {
   assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), conversationTranscriptSql);
 });
 
+test('017 delegates transaction ownership to the target migration runner', () => {
+  assert.doesNotMatch(conversationTranscriptSql, /^\s*BEGIN\s*;/imu);
+  assert.doesNotMatch(conversationTranscriptSql, /^\s*COMMIT\s*;/imu);
+});
+
 test('013 keeps general obligations in the P16 change-set transaction and history append-only', () => {
   for (const table of ['party_obligations', 'party_obligation_transitions']) {
     assert.match(obligationsSql, new RegExp(`CREATE TABLE IF NOT EXISTS party_runtime\\.${table}`, 'u'));

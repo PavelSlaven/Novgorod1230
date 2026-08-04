@@ -288,6 +288,17 @@ async function assertInterruptedSurrenderRestart({
   const after = await latestSnapshot(pool, party.party_id);
   assert.equal(after.ratsha_surrendered === true, false);
   assert.equal(after.promise_instances[0].current_state, 'offered');
+  assert.equal(after.conversation_statements.length,
+    (before.conversation_statements ?? []).length + 1);
+  assert.equal(after.conversation_statements.at(-1).speaker_ref.entity_kind,
+    'player_character');
+  assert.equal(after.conversation_contributions.length,
+    (before.conversation_contributions ?? []).length + 1);
+  assert.equal(after.conversation_audiences.length,
+    (before.conversation_audiences ?? []).length + 1);
+  assert.equal(after.received_messages.length,
+    (before.received_messages ?? []).length
+      + after.conversation_audiences.at(-1).received_messages.length);
   assert.deepEqual(after.items.find(({ template_id: templateId }) =>
     templateId === 'trace_ld_v1_item_ratsha_knife'), beforeKnife);
   assert.deepEqual((await pool.query(

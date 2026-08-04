@@ -25,10 +25,7 @@ export function applyPlayerPlan(context, working, plan) {
     socialDeliveryResult: context.socialDeliveryResult
   });
   return applyResult({
-    working: {
-      ...working,
-      statements: [...working.statements, statement]
-    },
+    working,
     contributionEvent: statement,
     playerResponseBoundary: false,
     sessionStatus: 'active',
@@ -53,6 +50,7 @@ export function projectPlayerPerception(context, working, statement) {
   return applyResult({
     working: {
       ...working,
+      statements: [...working.statements, statement],
       audiences: [...working.audiences, audience],
       new_signal_records: [
         ...working.new_signal_records,
@@ -107,9 +105,6 @@ export function applyNpcPlan(
   return applyResult({
     working: {
       ...working,
-      statements: statement
-        ? [...working.statements, statement]
-        : working.statements,
       consumed_signal_ids: [
         ...working.consumed_signal_ids,
         ...proposal.signal_ids_to_consume
@@ -165,6 +160,7 @@ export function projectNpcPerception(
   return applyResult({
     working: {
       ...working,
+      statements: [...working.statements, contributionEvent],
       audiences: [...working.audiences, audience]
     },
     contributionEvent,

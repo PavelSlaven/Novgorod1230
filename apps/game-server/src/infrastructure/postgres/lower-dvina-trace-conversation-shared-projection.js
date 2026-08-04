@@ -35,6 +35,23 @@ export function projectSharedSemanticExchange(semanticExchange) {
   const request = semanticExchange?.decision_request;
   const boundary = semanticExchange?.decision_boundary;
   const firstContribution = semanticExchange?.exchange?.contributions?.[0];
+  if (semanticExchange?.exchange?.applied_contribution_count === 0) {
+    return {
+      request_id: null,
+      boundary_id: null,
+      conversation_id: null,
+      exchange_id: null,
+      npc_ref: null,
+      response_kind: null,
+      factual_status: 'not_applied',
+      time_budget: structuredClone(semanticExchange.exchange.time_budget),
+      statement_refs: [],
+      route_disclosure: null,
+      commitment: null,
+      surrender: null,
+      knife_transition_eligibility: null
+    };
+  }
   if (request === null && boundary === null
       && semanticExchange?.decision_plan === null
       && record(firstContribution)) {
@@ -140,7 +157,8 @@ export function assertSharedSemanticSnapshotSafe(state) {
   for (const projection of projections) {
     const allowed = new Set([
       'request_id', 'boundary_id', 'conversation_id', 'exchange_id',
-      'npc_ref', 'response_kind', 'time_budget', 'statement_refs',
+      'npc_ref', 'response_kind', 'factual_status', 'time_budget',
+      'statement_refs',
       'route_disclosure',
       'commitment', 'surrender', 'knife_transition_eligibility'
     ]);

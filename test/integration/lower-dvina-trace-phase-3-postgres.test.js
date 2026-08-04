@@ -204,7 +204,7 @@ test('Phase 3 movement and Eremey conversations commit atomically and survive re
       idempotency_key: 'phase-3-b-post-disclosure-talk',
       raw_text: 'Снова спросить Еремея о крушении.'
     }),
-    { code: 'TURN_SEMANTIC_OPTION_INVALID' }
+    { code: 'TURN_STEP_DOMAIN_BINDING_MISSING' }
   );
   assert.equal(await summariesFor(pool, partyB.party_id), 2);
   assert.equal(await count(pool,

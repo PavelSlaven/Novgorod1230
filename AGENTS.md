@@ -129,7 +129,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 
 - код не придумывает отсутствующие категории, исторические факты и допустимые варианты;
 - authored, significant и hidden экземпляры создаются только из утверждённого candidate set;
-- пустой обязательный candidate set для authored, significant или hidden materialization возвращает типизированную ошибку или data gap;
+- пустой обязательный candidate set возвращает типизированную ошибку или data gap для authored, significant или hidden materialization;
 - запрещено ослаблять фильтры и создавать смысловые fallback;
 - LLM выбирает только из переданного закрытого набора, когда операция является bounded choice;
 - для свободной заявки игрока единственная активная semantic boundary — `turn_step_request_v1` → `turn_step_plan_v1` в общем `@rus/turn`; exact registered commands сохраняют приоритет, а scenario-local planner и параллельный semantic fallback запрещены;

@@ -62,7 +62,7 @@ test('canonical agent instructions preserve critical project invariants without 
   assert.doesNotMatch(developmentRules, /До повышения `code_driven_world_materialization_architecture\.md` в active/u);
 
   const navigation = await readFile(join(root, 'data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md'), 'utf8');
-  assert.match(navigation, /Актуализировано: 2026-07-14/u);
+  assert.match(navigation, /Актуализировано: 2026-08-03/u);
   assert.match(navigation, /## 1\. Приоритет источников\s+1\. `code_driven_world_materialization_architecture\.md`[\s\S]*2\. Профильный норматив[\s\S]*3\. `development_rules\.txt`[\s\S]*4\. DDL, схемы и формальные контракты/u);
   assert.doesNotMatch(navigation, /Профильный документ по конкретной системе имеет высший приоритет/u);
 });

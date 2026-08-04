@@ -35,13 +35,8 @@ export function buildNpcDecision(context, working, playerStatement) {
   if (!evaluation.boundary) {
     return null;
   }
-  const evidencePerceived = resolvedRecords.some(({ signal }) =>
-    signal.category === 'environment'
-      && context.evidencePresentation !== null
-      && sameRef(
-        signal.source_event_ref,
-        ref('evidence_presentation', context.evidencePresentation.event_id)
-      ));
+  const presentedEvidenceRecognized = resolvedRecords.some(({ signal }) =>
+    recognizedPresentedEvidenceSignal(context, working, signal));
   const playerAudience = working.audiences[0];
   const perceivedMessage = playerAudience.received_messages.find(
     ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
@@ -59,7 +54,9 @@ export function buildNpcDecision(context, working, playerStatement) {
       significance: evaluation.boundary.significance,
       categories: structuredClone(evaluation.boundary.categories),
       signal_refs: structuredClone(evaluation.boundary.signal_refs),
-      perceived_changes: perceivedChanges(resolvedRecords)
+      perceived_changes: perceivedChanges(resolvedRecords, {
+        presentedEvidenceRecognized
+      })
     },
     npc: ownNpcProjection(context.targetActor),
     perceived_message: perceivedMessage === undefined ? null : {
@@ -79,7 +76,7 @@ export function buildNpcDecision(context, working, playerStatement) {
     social_context: {
       delivery_cues: structuredClone(perceivedMessage?.delivery_cues ?? []),
       claims_are_speaker_assertions_not_objective_truth: true,
-      ...(context.phase === 'phase_3' && evidencePerceived
+      ...(context.phase === 'phase_3' && presentedEvidenceRecognized
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),
       ...(context.phase === 'phase_4' && context.offerStage
@@ -115,6 +112,31 @@ export function buildNpcDecision(context, working, playerStatement) {
     request,
     persisted_trace: persistedTrace
   };
+}
+
+function recognizedPresentedEvidenceSignal(context, working, signal) {
+  if (signal.category !== 'environment'
+      || context.evidencePresentation === null
+      || !sameRef(
+        signal.source_event_ref,
+        ref('evidence_presentation', context.evidencePresentation.event_id)
+      )) {
+    return false;
+  }
+  const perceptions = [
+    ...(context.state.supporting_operation_perceptions ?? []),
+    ...(working.supporting_operation_perceptions ?? [])
+  ];
+  return perceptions.some((perception) =>
+    perception.result_kind === 'recognized'
+      && signal.source_perception_ref?.entity_kind === 'perception_result'
+      && perception.perception_id === signal.source_perception_ref.entity_id
+      && sameRef(perception.observer_ref, context.targetRef)
+      && sameRef(perception.source_event_ref, signal.source_event_ref)
+      && sameRef(
+        perception.subject_ref,
+        context.evidencePresentation.entity_ref
+      ));
 }
 
 function publicConversationHistory(context, currentMessage) {

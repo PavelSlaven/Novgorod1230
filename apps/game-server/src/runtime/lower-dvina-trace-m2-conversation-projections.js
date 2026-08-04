@@ -8,14 +8,16 @@ import {
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
 
-export function perceivedChanges(records) {
+export function perceivedChanges(records, { presentedEvidenceRecognized }) {
   const categories = new Set(records.map(({ signal }) => signal.category));
   return [...categories].sort().map((category) => {
     if (category === 'communication') {
-      return 'The NPC perceived the exact current player statement.';
+      return 'The NPC received the current perceived message.';
     }
     if (category === 'environment') {
-      return 'The NPC perceived the presented committed evidence.';
+      return presentedEvidenceRecognized
+        ? 'The NPC recognized the presented committed evidence.'
+        : 'The NPC noticed a presented object but did not recognize it.';
     }
     if (category === 'others') {
       return 'The NPC perceived the present group in the current scene.';

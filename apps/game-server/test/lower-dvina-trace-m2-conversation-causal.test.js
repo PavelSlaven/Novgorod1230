@@ -144,6 +144,41 @@ test('combined communication and environment decision requires visual evidence',
     { code: 'NPC_SEMANTIC_CONVERSATION_PERSISTENCE_INVALID' });
 });
 
+test('partial visual evidence perception stays imprecise and is consumed', async () => {
+  const state = phase3State();
+  const eremey = npcBySlot(state, 'eremey_fisher');
+  eremey.machine_state = { ...eremey.machine_state,
+    hearing_capability: 'none', visual_capability: 'partial' };
+  const contracts = resolveContracts(state);
+  withAccessibleBlueWool(state, contracts);
+  const exchange = await runPhase3({ state, contracts,
+    rawText: 'Вот синяя шерсть.', inputDigest: digest('4'),
+    responseKind: 'withhold', checkResult: null,
+    playerPlanOptions: { evidence: true } });
+
+  assert.equal(exchange.npcCalls, 1);
+  assert.equal(exchange.npcRequest.perceived_message, null);
+  assert.deepEqual(exchange.result.decision_boundary.categories,
+    ['environment']);
+  assert.deepEqual(exchange.npcRequest.decision_reasons.perceived_changes,
+    ['The NPC noticed a presented object but did not recognize it.']);
+  assert.equal(Object.hasOwn(exchange.npcRequest.social_context,
+    'presented_evidence_ref'), false);
+  assert.equal(JSON.stringify(exchange.npcRequest)
+    .includes(contracts.ids.evidence), false);
+  const signal = exchange.result.new_signal_records[0].signal;
+  assert.deepEqual(exchange.result.consumed_signal_ids, [signal.signal_id]);
+  const next = project(exchange, state, 'partial-visual-evidence');
+  assert.equal(next.supporting_operation_perceptions.at(-1).result_kind,
+    'perceived_partial');
+  const input = buildNpcSemanticConversationWriteInput({
+    state, next, semanticExchange: exchange.result
+  });
+  const writes = writeSemantic(state, input, 'partial-visual-evidence');
+  assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+    semanticReadPool(writes), next)).length, 1);
+});
+
 test('target partial and unidentified perception persist unchanged', async () => {
   const variants = [
     { label: 'partial', machine: { hearing_capability: 'partial' },
@@ -167,6 +202,10 @@ test('target partial and unidentified perception persist unchanged', async () =>
       ({ listener_ref: listener }) => listener.entity_id === eremey.instance_id);
     assert.equal(message.perception_result, variant.result);
     assert.equal(message.comprehension, variant.comprehension);
+    assert.deepEqual(exchange.npcRequest.decision_reasons.perceived_changes,
+      ['The NPC received the current perceived message.']);
+    assert.equal(JSON.stringify(exchange.npcRequest)
+      .includes('exact current player statement'), false);
     assert.equal(message.speaker_ref?.entity_kind ?? null, variant.speaker);
     assert.equal(message.utterance_text, variant.text);
     const next = project(exchange, state, variant.label);

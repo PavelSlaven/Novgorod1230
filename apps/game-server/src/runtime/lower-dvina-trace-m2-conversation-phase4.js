@@ -1,6 +1,7 @@
 import {
   createM2ConversationContext,
-  executeM2ConversationExchange
+  executeM2ConversationExchange,
+  prepareM2PlayerConversationPlan
 } from './lower-dvina-trace-m2-conversation-exchange.js';
 import { classifyRatshaPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
@@ -36,7 +37,7 @@ export async function resolveTracePhase4ConversationExchange({
   const actualNpcActors = Object.entries(contracts.actors)
     .map(([actorRef, actor]) => ({ ref: actorRef, ...structuredClone(actor) }))
     .filter(({ anchor_id: anchorId }) => anchorId === contracts.anchors.shed);
-  const context = createM2ConversationContext({
+  const initialContext = createM2ConversationContext({
     phase: 'phase_4', state, contracts, playerInput, inputDigest, checkResult,
     mapping, targetActor: { ref: 'ratsha_storehouse_helper', ...target },
     actualNpcActors, playerConversationModel, npcSemanticModel,
@@ -69,6 +70,9 @@ export async function resolveTracePhase4ConversationExchange({
     }),
     playerPlan
   });
+  const effectivePlayerPlan = playerPlan
+    ?? await prepareM2PlayerConversationPlan(initialContext);
+  const context = { ...initialContext, playerPlan: effectivePlayerPlan };
   return resultProjection(
     await executeM2ConversationExchange(context),
     context,

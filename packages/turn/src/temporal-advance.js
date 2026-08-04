@@ -337,6 +337,7 @@ function advance(config, rawRequest) {
     processedBoundaryIds,
     dispositions,
     deferredCandidates,
-    digests
+    digests,
+    stopAfterCurrentBatch
   );
 }

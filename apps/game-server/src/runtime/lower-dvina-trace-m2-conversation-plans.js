@@ -20,6 +20,7 @@ export function classifyEremeyPlan(plan, {
   routeRef,
   knowledgeScopeRef
 }) {
+  requireDomainOwned(plan);
   if (plan.contribution_kind === 'silence'
       || plan.contribution_kind === 'leave_conversation') {
     return { kind: plan.contribution_kind };
@@ -66,6 +67,7 @@ export function classifyEremeyPlan(plan, {
 }
 
 export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
+  requireDomainOwned(plan);
   if (plan.contribution_kind === 'combat_handoff') {
     if (plan.handoff?.kind !== 'combat') {
       fail(
@@ -123,6 +125,7 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
 }
 
 export function requirePlayerSpeech(context, plan) {
+  requireDomainOwned(plan);
   const intended = plan.intended_addressee_refs ?? [];
   const present = new Set(
     context.actualNpcActors.map(({ instance_id: instanceId }) => instanceId)
@@ -190,5 +193,12 @@ export function requirePlayerSpeech(context, plan) {
       'TRACE_M2_PLAYER_EVIDENCE_OPERATION_INVALID',
       'The applied evidence effect must match the validated player operation.'
     );
+  }
+}
+
+function requireDomainOwned(plan) {
+  if (plan?.activity?.duration_class !== 'domain_owned') {
+    fail('TRACE_M2_CONVERSATION_DURATION_CLASS_INVALID',
+      'Lower Dvina revision 14 conversation duration is domain-owned.');
   }
 }

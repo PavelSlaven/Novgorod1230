@@ -138,18 +138,27 @@ function requirePorts(ports) {
       );
     }
   }
+  for (const validator of ['validatePlayerPlan', 'validateNpcPlan']) {
+    if (ports[validator] !== undefined
+        && typeof ports[validator] !== 'function') {
+      fail('TURN_CONVERSATION_PORT_MISSING',
+        `${validator} must be an injected function when provided`,
+        { port: validator });
+    }
+  }
 }
 
 function normalizeTimeProgress(value) {
   if (!exactKeys(value, [
     'working_state', 'temporal_boundary_refs', 'session_status',
-    'elapsed_minutes', 'completed'
+    'elapsed_minutes', 'completed', 'interrupted'
   ]) || !plainRecord(value.working_state)
       || !Array.isArray(value.temporal_boundary_refs)
       || !SESSION_STATUSES.has(value.session_status)
       || !Number.isSafeInteger(value.elapsed_minutes)
       || value.elapsed_minutes < 0
-      || typeof value.completed !== 'boolean') {
+      || typeof value.completed !== 'boolean'
+      || typeof value.interrupted !== 'boolean') {
     fail(
       'TURN_CONVERSATION_TIME_PROGRESS_INVALID',
       'Contribution time progress must return exact working state and boundaries'
@@ -206,13 +215,14 @@ async function progressAndProject({
   return {
     applied: immutableClone({
       ...projected,
-      session_status: progressed.temporal_boundary_refs.length > 0
+      session_status: progressed.interrupted
         ? progressed.session_status
         : projected.session_status
     }),
     temporalBoundaryRefs: progressed.temporal_boundary_refs,
     elapsedMinutes: progressed.elapsed_minutes,
-    completed: progressed.completed
+    completed: progressed.completed,
+    interrupted: progressed.interrupted
   };
 }
 
@@ -262,7 +272,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const playerDecision = await requestPlayerConversationContribution({
     request: normalized.playerRequest,
     conversationModel: ports.conversationModel,
-    revalidateStateVersion: ports.revalidatePlayerStateVersion
+    revalidateStateVersion: ports.revalidatePlayerStateVersion,
+    validatePlan: ports.validatePlayerPlan ?? null
   });
   const rawPlayerResult = await callPort(
     ports.applyPlayerContribution,
@@ -301,11 +312,10 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
   elapsedBudgetMinutes += playerProgress.elapsedMinutes;
   if (playerProgress.completed) completedContributionCount += 1;
-  if (playerProgress.completed
-      && playerProgress.temporalBoundaryRefs.length === 0) {
+  if (playerProgress.completed && !playerProgress.interrupted) {
     appliedContributionCount += 1;
   }
-  if (!playerProgress.completed || temporalBoundaryRefs.length > 0) {
+  if (playerProgress.interrupted) {
     stopReason = 'temporal_boundary';
   }
 
@@ -341,7 +351,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       request: decision.request,
       semanticModel: ports.npcSemanticModel,
       persistedTrace: decision.persisted_trace,
-      revalidateStateVersion: ports.revalidateNpcStateVersion
+      revalidateStateVersion: ports.revalidateNpcStateVersion,
+      validatePlan: ports.validateNpcPlan ?? null
     });
     const rawNpcResult = await callPort(
       ports.applyNpcContribution,
@@ -389,11 +400,10 @@ export async function runConversationExchange(input = {}, ports = {}) {
     temporalBoundaryRefs.push(...npcProgress.temporalBoundaryRefs);
     elapsedBudgetMinutes += npcProgress.elapsedMinutes;
     if (npcProgress.completed) completedContributionCount += 1;
-    if (npcProgress.completed
-        && npcProgress.temporalBoundaryRefs.length === 0) {
+    if (npcProgress.completed && !npcProgress.interrupted) {
       appliedContributionCount += 1;
     }
-    if (!npcProgress.completed || npcProgress.temporalBoundaryRefs.length > 0) {
+    if (npcProgress.interrupted) {
       stopReason = 'temporal_boundary';
     }
   }
@@ -415,7 +425,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
       ? 'suspended' : sessionStatus;
     elapsedBudgetMinutes += tail.elapsed_minutes;
     temporalBoundaryRefs.push(...tail.temporal_boundary_refs);
-    if (!tail.completed || tail.temporal_boundary_refs.length > 0) {
+    if (tail.interrupted) {
       stopReason = 'temporal_boundary';
     }
   }

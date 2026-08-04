@@ -207,6 +207,8 @@ export async function runPhase3({
   responseKind,
   checkResult: resolvedCheck = null,
   playerPlanOptions = {},
+  playerDurationClasses = ['domain_owned'],
+  npcDurationClasses = ['domain_owned'],
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -220,19 +222,27 @@ export async function runPhase3({
     checkResult: resolvedCheck,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      return playerPlan(request, {
+      const plan = playerPlan(request, {
         checkRequired: resolvedCheck !== null,
         ...playerPlanOptions
       });
+      plan.activity.duration_class = durationForCall(
+        playerDurationClasses, playerCalls
+      );
+      return plan;
     },
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
-      return eremeyPlan(
+      const plan = eremeyPlan(
         request,
         responseKind,
         request.decision_scope.operation_contract.disclose_known_route
       );
+      plan.activity.duration_class = durationForCall(
+        npcDurationClasses, npcCalls
+      );
+      return plan;
     },
     temporalAdvanceOwner: conversationTemporalOwner(
       state, resolveTemporalBoundary
@@ -252,6 +262,8 @@ export async function runPhase4({
   offerStage,
   checkRequest,
   playerPlanOptions = {},
+  playerDurationClasses = ['domain_owned'],
+  npcDurationClasses = ['domain_owned'],
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -267,16 +279,24 @@ export async function runPhase4({
     checkRequest,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      return playerPlan(request, {
+      const plan = playerPlan(request, {
         checkRequired: resolvedCheck !== null,
         offer: offerStage !== null,
         ...playerPlanOptions
       });
+      plan.activity.duration_class = durationForCall(
+        playerDurationClasses, playerCalls
+      );
+      return plan;
     },
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
-      return ratshaPlan(request, responseKind, state.actor_id);
+      const plan = ratshaPlan(request, responseKind, state.actor_id);
+      plan.activity.duration_class = durationForCall(
+        npcDurationClasses, npcCalls
+      );
+      return plan;
     },
     temporalAdvanceOwner: conversationTemporalOwner(
       state, resolveTemporalBoundary
@@ -550,6 +570,10 @@ function interpretation(groundedContribution) {
 
 function activity() {
   return { duration_class: 'domain_owned', effort: 'none' };
+}
+
+function durationForCall(values, callNumber) {
+  return values[Math.min(callNumber - 1, values.length - 1)];
 }
 
 export function checkResult(checkId, band) {

@@ -170,14 +170,20 @@ function projectPhase3SemanticConversation({
     entity_kind: 'npc', entity_id: conversation.npc_id
   };
   const hasDecision = semantic.decision_request !== null;
+  const npcApplied = hasDecision
+    && semantic.exchange.applied_contribution_count
+      === semantic.exchange.contributions.length;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
     .includes(semantic.response_kind);
-  const expectedContributionKind = speechResponse
-    ? 'speech' : semantic.response_kind;
+  const npcSpeechContribution = hasDecision
+    && semantic.decision_plan?.contribution_kind === 'speech';
+  const expectedContributionKind = npcApplied
+    ? (speechResponse ? 'speech' : semantic.response_kind)
+    : semantic.decision_plan?.contribution_kind;
   if (npcRef?.entity_kind !== 'npc'
-      || npcStatements.length !== (speechResponse ? 1 : 0)
+      || npcStatements.length !== (npcSpeechContribution ? 1 : 0)
       || conversation.npc_id !== npcRef.entity_id
       || (hasDecision && semantic.decision_plan?.contribution_kind
         !== expectedContributionKind)
@@ -185,9 +191,10 @@ function projectPhase3SemanticConversation({
         || semantic.decision_plan !== null))
       || !Array.isArray(conversation.objective_fact_outputs)
       || conversation.objective_fact_outputs.length !== 0
+      || (hasDecision && !npcApplied && semantic.response_kind !== null)
       || (hasDecision && ![
         'route_disclosure', 'withhold', 'speech', 'silence',
-        'leave_conversation'
+        'leave_conversation', null
       ].includes(semantic.response_kind))) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }

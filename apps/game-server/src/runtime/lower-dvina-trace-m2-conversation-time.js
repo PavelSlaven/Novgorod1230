@@ -59,13 +59,13 @@ export function advanceConversationContributionTime(
       visible_package_candidate: visibleEnvelope(request),
       validation_report: { ok: true }
     },
-    stop_after_source_batch: true
+    stop_after_source_batch: false
   });
   const clockAfter = advanced.result.clock_after;
   const processedBoundaryIds = advanced.result.trace.processed_boundary_ids;
   const contributionCompleted = compareGameTimestamp(clockAfter, limit) === 0;
   const interrupted = !contributionCompleted
-    || processedBoundaryIds.length > 0;
+    || advanced.result.trace.stopped_after_current_batch === true;
   const elapsed = subtractGameTimestamp(clockAfter, clockBefore);
   if (elapsed.denominator !== '1') {
     fail(
@@ -95,7 +95,8 @@ export function advanceConversationContributionTime(
       ref('temporal_boundary_candidate', boundaryId)),
     session_status: interrupted ? 'suspended' : 'active',
     elapsed_minutes: Number(elapsed.numerator),
-    completed: contributionCompleted
+    completed: contributionCompleted,
+    interrupted
   };
 }
 
@@ -179,10 +180,10 @@ function versioned(entityKind, entityId, authoringVersion) {
 }
 
 export function conversationExchangeDurationMinutes(context) {
-  const activity = context.playerPlan?.activity ?? {
-    duration_class: 'domain_owned'
-  };
-  return exactDurationMinutes(context, activity);
+  if (context.playerPlan?.activity?.duration_class !== 'domain_owned') {
+    fail('TRACE_M2_CONVERSATION_DURATION_CLASS_INVALID');
+  }
+  return exactDurationMinutes(context);
 }
 
 export function projectConversationTemporalAdvance({
@@ -218,7 +219,8 @@ export function projectConversationTemporalAdvance({
   const processed = referencedIds.map((id) => candidatesById.get(id));
   if (processed.some((candidate) => candidate == null)
       || processed.some((candidate) =>
-        compareGameTimestamp(candidate.scheduled_at, clockAfter) !== 0)) {
+        compareGameTimestamp(candidate.scheduled_at, clockBefore) < 0
+        || compareGameTimestamp(candidate.scheduled_at, clockAfter) > 0)) {
     fail('TRACE_M2_CONVERSATION_TEMPORAL_RESULT_INVALID');
   }
   const boundaryIds = [...referencedIds];
@@ -229,7 +231,7 @@ export function projectConversationTemporalAdvance({
       exact_minutes: { numerator: String(exactMinutes), denominator: '1' }
     },
     nearest_boundary: processed.length === 0 ? null : {
-      scheduled_at: structuredClone(clockAfter),
+      scheduled_at: structuredClone(processed[0].scheduled_at),
       boundary_ids: boundaryIds
     },
     boundary_trace: {
@@ -243,26 +245,14 @@ export function projectConversationTemporalAdvance({
   };
 }
 
-function exactDurationMinutes(context, activity) {
-  const durationClass = activity?.duration_class;
-  if (durationClass === 'domain_owned') {
-    const profile = context.phase === 'phase_3'
-      ? (context.evidencePresented
-          ? context.contracts.evidenceTalk : context.contracts.talk)
-      : context.contracts.negotiation;
-    if (!Number.isSafeInteger(profile?.duration_minutes)
-        || profile.duration_minutes < 1) {
-      fail('TRACE_M2_CONVERSATION_TIME_PROFILE_GAP');
-    }
-    return profile.duration_minutes;
-  }
-  const matches = (context.contracts.conversationTimeProfiles ?? []).filter(
-    ({ duration_class: candidate }) => candidate === durationClass
-  );
-  if (matches.length !== 1
-      || !Number.isSafeInteger(matches[0].duration_minutes)
-      || matches[0].duration_minutes < 1) {
+function exactDurationMinutes(context) {
+  const profile = context.phase === 'phase_3'
+    ? (context.evidencePresented
+        ? context.contracts.evidenceTalk : context.contracts.talk)
+    : context.contracts.negotiation;
+  if (!Number.isSafeInteger(profile?.duration_minutes)
+      || profile.duration_minutes < 1) {
     fail('TRACE_M2_CONVERSATION_TIME_PROFILE_GAP');
   }
-  return matches[0].duration_minutes;
+  return profile.duration_minutes;
 }

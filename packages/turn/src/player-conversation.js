@@ -37,7 +37,8 @@ function repairContext(rawPlan) {
 export async function requestPlayerConversationContribution({
   request,
   conversationModel,
-  revalidateStateVersion
+  revalidateStateVersion,
+  validatePlan = null
 } = {}) {
   if (!validatePlayerConversationInput(request)) {
     fail(
@@ -70,7 +71,7 @@ export async function requestPlayerConversationContribution({
     );
   }
 
-  if (!validatePlayerConversationContributionPlan(rawPlan, safeRequest)) {
+  if (!acceptedPlan(rawPlan, safeRequest, validatePlan)) {
     try {
       rawPlan = await conversationModel(safeRequest, immutableClone({
         repair: repairContext(rawPlan)
@@ -82,7 +83,7 @@ export async function requestPlayerConversationContribution({
         { cause: causeMessage(error) }
       );
     }
-    if (!validatePlayerConversationContributionPlan(rawPlan, safeRequest)) {
+    if (!acceptedPlan(rawPlan, safeRequest, validatePlan)) {
       fail(
         'TURN_CONVERSATION_PLAN_INVALID',
         'Conversation model response and its format repair must match the request'
@@ -124,4 +125,9 @@ export async function requestPlayerConversationContribution({
   }
 
   return immutableClone({ status: 'planned', plan });
+}
+
+function acceptedPlan(plan, request, validatePlan) {
+  return validatePlayerConversationContributionPlan(plan, request)
+    && (validatePlan === null || validatePlan(plan, request) === true);
 }

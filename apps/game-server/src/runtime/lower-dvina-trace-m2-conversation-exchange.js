@@ -137,6 +137,7 @@ export async function executeM2ConversationExchange(context) {
       ? async () => structuredClone(context.playerPlan)
       : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
+    validatePlayerPlan: domainOwnedPlan,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingContext(context, working), working, plan),
     advanceContributionTime: ({
@@ -192,6 +193,7 @@ export async function executeM2ConversationExchange(context) {
     },
     npcSemanticModel: context.npcSemanticModel,
     revalidateNpcStateVersion: context.revalidateStateVersion,
+    validateNpcPlan: domainOwnedPlan,
     applyNpcContribution: ({
       working_state: working,
       request,
@@ -226,6 +228,8 @@ export async function executeM2ConversationExchange(context) {
       'The exchange may contain at most one exact NPC semantic decision.'
     );
   }
+  const npcContributionApplied = exchange.npc_decisions.length === 1
+    && exchange.applied_contribution_count === exchange.contributions.length;
   return {
     exchange,
     decision: exchange.npc_decisions[0] ?? null,
@@ -237,7 +241,7 @@ export async function executeM2ConversationExchange(context) {
     elapsedMinutes: exchange.working_state.elapsed_minutes,
     temporalBoundaryRefs: exchange.temporal_boundary_refs,
     socialDeliveryResult: context.socialDeliveryResult,
-    npcOutcome
+    npcOutcome: npcContributionApplied ? npcOutcome : null
   };
 }
 
@@ -266,7 +270,12 @@ export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
     conversationModel: context.playerConversationModel,
-    revalidateStateVersion: context.revalidateStateVersion
+    revalidateStateVersion: context.revalidateStateVersion,
+    validatePlan: domainOwnedPlan
   });
   return decision.plan;
+}
+
+function domainOwnedPlan(plan) {
+  return plan?.activity?.duration_class === 'domain_owned';
 }

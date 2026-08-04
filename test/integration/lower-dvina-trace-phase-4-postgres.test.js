@@ -4,9 +4,12 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { addElapsedTime } from '@rus/time-events-history';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
+import { lowerDvinaTraceTemporalSourceRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import {
   createFirstPlayablePublicRuntime
 } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
@@ -37,6 +40,8 @@ import {
 import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
+import { digestRunIdentity } from
+  '../../apps/game-server/src/infrastructure/postgres/party-store-turn.js';
 import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
@@ -199,6 +204,9 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
   await runLiePath({ pool, release, runtimeCatalogPin });
   await runBargainPath({ pool, release, runtimeCatalogPin });
   await runCombatHandoffPath({ pool, release, runtimeCatalogPin });
+  await assertInterruptedSurrenderRestart({
+    pool, release, runtimeCatalogPin
+  });
 
   const rollbackParty = await createParty(runtime, 'phase-4-rollback');
   await advanceToCampWithRouteKnowledge(runtime, rollbackParty.party_id,
@@ -248,13 +256,192 @@ async function createParty(runtime, requestId) {
   return party;
 }
 
+async function assertInterruptedSurrenderRestart({
+  pool, release, runtimeCatalogPin
+}) {
+  const runtime = buildRuntime({
+    pool, release, runtimeCatalogPin, conversationSource: true
+  });
+  const party = await createParty(runtime, 'phase-4-interrupted-surrender');
+  await advanceToCampWithRouteKnowledge(
+    runtime, party.party_id, 'interrupted-surrender'
+  );
+  await runtime.submitTurn(party.party_id, turn(
+    'phase-4-interrupted-surrender-route',
+    'Пройти известной тропой к старой сушильне.'
+  ));
+  const before = await latestSnapshot(pool, party.party_id);
+  const beforeKnife = before.items.find(({ template_id: templateId }) =>
+    templateId === 'trace_ld_v1_item_ratsha_knife');
+  await patchPhase4ConversationBoundary(pool, party.party_id, 7);
+
+  const input = turn(
+    'phase-4-interrupted-surrender-demand',
+    'Предложить Ратше условную защиту и потребовать сдачи.'
+  );
+  const result = await buildRuntime({
+    pool, release, runtimeCatalogPin, conversationSource: true
+  }).submitTurn(party.party_id, input);
+  assert.equal(result.time_update.exact_elapsed.exact_minutes.numerator, '7');
+  assert.deepEqual(result.conversation.semantic_exchange, {
+    response_kind: null, npc_utterance: null, disclosed_route_ref: null
+  });
+
+  const after = await latestSnapshot(pool, party.party_id);
+  assert.equal(after.ratsha_surrendered === true, false);
+  assert.equal(after.promise_instances[0].current_state, 'offered');
+  assert.deepEqual(after.items.find(({ template_id: templateId }) =>
+    templateId === 'trace_ld_v1_item_ratsha_knife'), beforeKnife);
+  assert.deepEqual((await pool.query(
+    `SELECT current_state,current_state_fact
+       FROM party_runtime.party_obligations WHERE party_id=$1`,
+    [party.party_id]
+  )).rows, [{ current_state: 'offered',
+    current_state_fact: 'promise_current_offered' }]);
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_character_knowledge
+      WHERE party_id=$1
+        AND fact_id='ratsha_surrender_without_further_harm_committed'`,
+    [party.party_id]
+  )).rows[0].count, 0);
+  const activity = (await pool.query(
+    `SELECT status,original_total_minutes::int AS total,
+            cumulative_elapsed_numerator::int AS elapsed,
+            remaining_time_numerator::int AS remaining
+       FROM party_runtime.party_timed_activity_executions
+      WHERE party_id=$1 AND id LIKE $2
+      ORDER BY id DESC LIMIT 1`,
+    [party.party_id,
+      `activity:${party.party_id}:trace-phase4:%:negotiation`]
+  )).rows[0];
+  assert.deepEqual(activity, {
+    status: 'paused', total: 10, elapsed: 7, remaining: 3
+  });
+  const restarted = buildRuntime({
+    pool, release, runtimeCatalogPin, conversationSource: true
+  });
+  await restarted.getPartyScreen(party.party_id);
+  assert.deepEqual(await restarted.submitTurn(party.party_id, input), result);
+}
+
+async function patchPhase4ConversationBoundary(pool, partyId, minutes) {
+  const latest = (await pool.query(
+    `SELECT state_version,state_payload
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 ORDER BY state_version DESC LIMIT 1`,
+    [partyId]
+  )).rows[0];
+  const payload = structuredClone(latest.state_payload);
+  const ratsha = payload.npcs.find(
+    ({ participant_slot_ref: slot }) => slot === 'ratsha_storehouse_helper'
+  );
+  payload.temporal_boundary_candidates = [phase4ConversationBoundaryCandidate({
+    partyId,
+    npcId: ratsha.instance_id,
+    scheduledAt: addElapsedTime(payload.clock, { exact_minutes: {
+      numerator: String(minutes), denominator: '1'
+    } })
+  })];
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query(
+      'ALTER TABLE party_runtime.party_state_snapshots DISABLE TRIGGER USER'
+    );
+    await client.query(
+      `UPDATE party_runtime.party_state_snapshots
+          SET state_payload=$3::jsonb,state_digest=$4
+        WHERE party_id=$1 AND state_version=$2`,
+      [partyId, latest.state_version, JSON.stringify(payload),
+        digestRunIdentity(payload)]
+    );
+    await client.query(
+      'ALTER TABLE party_runtime.party_state_snapshots ENABLE TRIGGER USER'
+    );
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+function conversationTestSourceRegistration() {
+  return {
+    rule_ref: phase4VersionedRef('action_contract',
+      'rule:conversation-postgres-boundary'),
+    policy_ref: phase4VersionedRef('activity_contract',
+      'policy:conversation-postgres-boundary'),
+    resolve(candidate, { projection }) {
+      const next = structuredClone(projection);
+      const world = next.conversation_state.world_state;
+      const ratsha = world.npcs.find(
+        ({ participant_slot_ref: slot }) =>
+          slot === 'ratsha_storehouse_helper'
+      );
+      ratsha.machine_state = {
+        ...ratsha.machine_state, hearing_capability: 'none'
+      };
+      return {
+        disposition: 'execute',
+        proposals: [{
+          proposal_id: `${candidate.boundary_id}:disable-hearing`,
+          write_target: `party_npcs:${ratsha.instance_id}`,
+          write_set: { inserts: [], appends: [], deletes: [], updates: [{
+            target_table: 'party_npcs', id: ratsha.instance_id,
+            record: { party_id: world.party_id, npc_id: ratsha.instance_id,
+              machine_state: structuredClone(ratsha.machine_state) }
+          }] },
+          expected_state_versions: [],
+          physical_keys: [
+            `party_runtime.party_npcs:${world.party_id}:${ratsha.instance_id}`
+          ]
+        }],
+        state_projection: next,
+        follow_up_candidates: [],
+        stop_after_current_batch: true
+      };
+    }
+  };
+}
+
+function phase4ConversationBoundaryCandidate({ partyId, npcId, scheduledAt }) {
+  return {
+    boundary_id: `boundary:${partyId}:hard-interrupt`,
+    boundary_kind: 'exact_timer', scheduled_at: scheduledAt,
+    source_ref: { entity_kind: 'party_route_plan_execution_event',
+      entity_id: `timer:${partyId}:hard-interrupt` },
+    primary_subject_ref: { entity_kind: 'actor', entity_id: npcId },
+    subject_refs: [],
+    scope_ref: { entity_kind: 'party', entity_id: partyId },
+    rule_ref: phase4VersionedRef('action_contract',
+      'rule:conversation-postgres-boundary'),
+    policy_ref: phase4VersionedRef('activity_contract',
+      'policy:conversation-postgres-boundary'),
+    preconditions_digest: 'a'.repeat(64),
+    resolution_class: 'execution_outcome', interrupt_effect: 'hard_interrupt',
+    visibility_policy_ref: phase4VersionedRef('visibility_modifier',
+      'visible:conversation-postgres-boundary'),
+    idempotency_key: `timer:${partyId}:hard-interrupt`,
+    causal_parent_refs: []
+  };
+}
+
+function phase4VersionedRef(entityKind, entityId) {
+  return { entity_ref: { entity_kind: entityKind, entity_id: entityId },
+    authoring_version: '1' };
+}
+
 function buildRuntime({
   pool,
   release,
   runtimeCatalogPin,
   ratshaResponseKind = 'surrender',
   randomValue = 0.99,
-  counters = null
+  counters = null,
+  conversationSource = false
 }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({
     pool, recheck: firstPlayableCommitRecheck,
@@ -299,6 +486,11 @@ function buildRuntime({
     },
     decisionSecret: 'phase-4-postgres-secret',
     temporalAdvanceOwner: createTemporalAdvanceOwner({
+      ...(conversationSource ? {
+        source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
+          conversationTestSourceRegistration()
+        ])
+      } : {}),
       effect_registrations:
         lowerDvinaTraceConversationTemporalEffectRegistrations()
     }),

@@ -104,13 +104,6 @@ export async function commitLowerDvinaTracePhase3({
     workingRevision: semanticContext?.workingRevision
   }), turnStep.writes);
   const canonicalInputDigest = normalizeDigest(inputDigest);
-  const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_phase_3_turn'
-        && candidate.canonical_input_digest === canonicalInputDigest
-    })
-  });
   const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase3:${turnNumber}`,
     party_id: partyId,
@@ -197,6 +190,14 @@ export async function commitLowerDvinaTracePhase3({
         { status: 409, details: error }
       );
     }
+  });
+  const builder = createCombinedWritePlanBuilder({
+    verifyApproval: async (candidate) => ({
+      ok: candidate.party_id === partyId
+        && candidate.operation_kind === 'trace_phase_3_turn'
+        && candidate.canonical_input_digest
+          === integratedInput.canonical_input_digest
+    })
   });
   const built = await builder.build(integratedInput);
   if (!built.ok) {

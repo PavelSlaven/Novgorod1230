@@ -114,7 +114,7 @@ function plannedProposal(boundary, plan) {
   });
 }
 
-async function requestFreshDecision({ boundary, request, semanticModel, revalidateStateVersion, mode }) {
+async function requestFreshDecision({ boundary, request, semanticModel, revalidateStateVersion, mode, validatePlan }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
   }
@@ -137,7 +137,7 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
     });
   }
 
-  if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
+  if (!acceptedPlan(rawPlan, safeRequest, mode, validatePlan)) {
     try {
       rawPlan = await semanticModel(safeRequest, immutable({
         boundary,
@@ -150,7 +150,7 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
         cause: error instanceof Error ? error.message : String(error)
       });
     }
-    if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
+    if (!acceptedPlan(rawPlan, safeRequest, mode, validatePlan)) {
       fail(
         'TURN_NPC_PLAN_INVALID',
         'NPC semantic response and its format repair must match the request',
@@ -208,7 +208,8 @@ export async function requestNpcSemanticDecision({
   request,
   semanticModel,
   persistedTrace = null,
-  revalidateStateVersion
+  revalidateStateVersion,
+  validatePlan = null
 } = {}) {
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
@@ -256,7 +257,8 @@ export async function requestNpcSemanticDecision({
     request: immutable(request),
     semanticModel,
     revalidateStateVersion,
-    mode
+    mode,
+    validatePlan
   });
   const inFlight = { inputDigest, pending };
   inFlightDecisions.set(inFlightKey, inFlight);
@@ -267,4 +269,9 @@ export async function requestNpcSemanticDecision({
       inFlightDecisions.delete(inFlightKey);
     }
   }
+}
+
+function acceptedPlan(plan, request, mode, validatePlan) {
+  return validatePlanForMode(plan, request, mode)
+    && (validatePlan === null || validatePlan(plan, request) === true);
 }

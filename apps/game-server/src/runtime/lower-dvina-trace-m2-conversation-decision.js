@@ -38,6 +38,13 @@ export function buildNpcDecision(context, working, playerStatement) {
       'The current exchange must produce one common NPC boundary.'
     );
   }
+  const evidencePerceived = resolvedRecords.some(({ signal }) =>
+    signal.category === 'environment'
+      && context.evidencePresentation !== null
+      && sameRef(
+        signal.source_event_ref,
+        ref('evidence_presentation', context.evidencePresentation.event_id)
+      ));
   const playerAudience = working.audiences[0];
   const perceivedMessage = playerAudience.received_messages.find(
     ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
@@ -75,7 +82,7 @@ export function buildNpcDecision(context, working, playerStatement) {
     social_context: {
       delivery_cues: structuredClone(perceivedMessage.delivery_cues),
       claims_are_speaker_assertions_not_objective_truth: true,
-      ...(context.phase === 'phase_3' && context.evidencePresented
+      ...(context.phase === 'phase_3' && evidencePerceived
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),
       ...(context.phase === 'phase_4' && context.offerStage

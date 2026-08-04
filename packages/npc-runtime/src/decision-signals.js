@@ -92,10 +92,6 @@ function signalIdentity(sourceEventRef, subjectRef, category) {
     sourceEventRef.entity_id}:${subjectRef.entity_id}:${category}`;
 }
 
-function legacySignalIdentity(sourceEventRef, subjectRef) {
-  return `decision-signal:${sourceEventRef.entity_id}:${subjectRef.entity_id}`;
-}
-
 function boundaryIdentity(batchRef, npcRef) {
   return `npc-decision:${batchRef.entity_id}:${npcRef.entity_id}`;
 }
@@ -166,11 +162,7 @@ export function validateNpcDecisionSignal(value) {
     value.subject_ref,
     value.category
   );
-  const legacyIdentity = legacySignalIdentity(
-    value.source_event_ref,
-    value.subject_ref
-  );
-  if (![identity, legacyIdentity].includes(value.signal_id)
+  if (value.signal_id !== identity
       || value.idempotency_key !== value.signal_id) return false;
   return value.perception_required
     ? exactEntityRef(value.source_perception_ref, 'perception_result')

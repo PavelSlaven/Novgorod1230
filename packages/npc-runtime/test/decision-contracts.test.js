@@ -162,7 +162,7 @@ test('one factual event may create two decision signal categories for one NPC', 
   assert.equal(result.boundary.signal_refs.length, 2);
 });
 
-test('legacy v1 decision signal identity remains readable but is never generated', () => {
+test('decision signal validation rejects the pre-cutover legacy identity', () => {
   const generated = buildNpcDecisionSignal({
     occurred_at: at(),
     category: 'environment',
@@ -178,7 +178,7 @@ test('legacy v1 decision signal identity remains readable but is never generated
     idempotency_key: legacyId
   };
 
-  assert.equal(validateNpcDecisionSignal(legacy), true);
+  assert.equal(validateNpcDecisionSignal(legacy), false);
   assert.notEqual(generated.signal_id, legacyId);
 });
 

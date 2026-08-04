@@ -440,6 +440,13 @@ test('evidence presentation requires and executes its supporting operation', asy
     'environment',
     'communication'
   ]);
+  assert.equal(
+    Object.hasOwn(
+      exchange.npcRequest.social_context,
+      'presented_evidence_ref'
+    ),
+    true
+  );
   assert.equal(exchange.result.new_signal_records.some(
     ({ signal }) => signal.source_event_ref.entity_kind
       === 'evidence_presentation'
@@ -483,6 +490,13 @@ test('hearing evidence words without seeing the item creates only communication 
   assert.deepEqual(
     exchange.result.new_signal_records.map(({ signal }) => signal.category),
     ['communication']
+  );
+  assert.equal(
+    Object.hasOwn(
+      exchange.npcRequest.social_context,
+      'presented_evidence_ref'
+    ),
+    false
   );
   const restarted = projectPhase3Conversation({
     state,

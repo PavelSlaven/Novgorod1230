@@ -516,15 +516,18 @@ async function assertTemporalConversationRestart({
   assert.deepEqual(
     interruptedPlayerReload.consumed_npc_decision_signal_ids ?? [], []
   );
-  assert.deepEqual(
-    interruptedPlayerReload.activity_history.at(-1).execution_result
-      .semantic_exchange_projection,
-    {
-      response_kind: null, npc_utterance: null, disclosed_route_ref: null
-    }
-  );
-  await buildRuntime({ pool, release, runtimeCatalogPin })
-    .getPartyScreen(interruptedPlayerParty.party_id);
+  const interruptedPlayerProjection = interruptedPlayerReload.activity_history
+    .at(-1).execution_result.semantic_exchange_projection;
+  assert.equal(interruptedPlayerProjection.factual_status, 'not_applied');
+  assert.equal(interruptedPlayerProjection.npc_ref, null);
+  assert.deepEqual(interruptedPlayerProjection.statement_refs, []);
+  assert.deepEqual(interruptedPlayerProjection.time_budget, {
+    total_minutes: 5, elapsed_minutes: 2, remaining_minutes: 3,
+    status: 'paused'
+  });
+  await buildRuntime({
+    pool, release, runtimeCatalogPin
+  }).getPartyScreen(interruptedPlayerParty.party_id);
 
   const interruptedRuntime = buildRuntime({ pool, release, runtimeCatalogPin });
   const interruptedParty = await createParty(

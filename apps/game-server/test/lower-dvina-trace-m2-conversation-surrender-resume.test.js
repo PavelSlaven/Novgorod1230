@@ -79,6 +79,15 @@ test('interrupted NPC surrender resumes after reload without another LLM call',
     assert.equal(resumedWrites.appends.filter(({ target_table: table }) =>
       table === 'party_timed_activity_attempts')[0].record
       .actual_time_numerator, 3);
+    const resumedExecution = resumedWrites.updates.find(
+      ({ target_table: table }) =>
+        table === 'party_timed_activity_executions'
+    ).record;
+    const resumedAttempt = resumedWrites.appends.find(
+      ({ target_table: table }) =>
+        table === 'party_timed_activity_attempts'
+    ).record;
+    assert.deepEqual(resumedExecution.progress, resumedAttempt.progress_after);
   });
 
 function semanticWrites({ state, next, factual, contracts, suffix }) {

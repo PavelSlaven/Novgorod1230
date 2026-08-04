@@ -70,6 +70,22 @@ test('background source batch continues into the NPC response boundary', async (
   assert.equal(exchange.result.exchange.applied_contribution_count, 2);
   assert.equal(exchange.result.exchange.session_status, 'active');
   assert.equal(exchange.result.response_kind, 'speech');
+  const next = projectPhase3Conversation({ state,
+    contracts: resolveContracts(state), result: exchange.result,
+    inputDigest: digest('b') });
+  const writes = { inserts: [], updates: [], appends: [] };
+  appendActivity({ ...writes, state, next,
+    factual: phase3Factual(state, resolveContracts(state), exchange.result,
+      'completed-conversation'),
+    partyId: state.party_id,
+    turnNumber: state.party_state.turn_number + 1,
+    changeSetId: 'change:completed-conversation',
+    idemId: 'idem:completed-conversation', inputDigest: digest('b') });
+  const execution = writes.inserts.find(({ target_table: table }) =>
+    table === 'party_timed_activity_executions').record;
+  const attempt = writes.appends.find(({ target_table: table }) =>
+    table === 'party_timed_activity_attempts').record;
+  assert.deepEqual(execution.progress, attempt.progress_after);
 });
 
 test('interrupted NPC route disclosure has no mechanical consequence', async () => {
@@ -195,6 +211,10 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
   assert.equal(completedActivityWrites.appends[0].record.attempt_ordinal, 1);
   assert.equal(completedActivityWrites.appends[0].record
     .actual_time_numerator, 3);
+  assert.deepEqual(
+    completedActivityWrites.updates[0].record.progress,
+    completedActivityWrites.appends[0].record.progress_after
+  );
   const resumedWriteInput = buildNpcSemanticConversationWriteInput({
     state: restarted, next: completed, semanticExchange: resumed.result
   });
@@ -262,6 +282,7 @@ test('interrupted player contribution persists paused exact progress only', asyn
   assert.equal(attempt.planned_time_numerator, 10);
   assert.equal(attempt.actual_time_numerator, 2);
   assert.equal(attempt.remaining_after_numerator, 8);
+  assert.deepEqual(execution.progress, attempt.progress_after);
 });
 
 test('interrupted player offer does not change the promise or transcript',

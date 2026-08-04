@@ -54,6 +54,7 @@ export function appendPhase4ActivityExecution({
       )
     })
   };
+  const progress = completed ? {} : currentContext;
   (resumed ? updates : inserts).push(row('party_timed_activity_executions', id, {
     id, series_ordinal: seriesOrdinal,
     activity_snapshot: {
@@ -93,7 +94,7 @@ export function appendPhase4ActivityExecution({
     next_boundary_at_whole_minutes: null,
     next_boundary_at_subminute_numerator: null,
     next_boundary_at_subminute_denominator: null,
-    progress: currentContext,
+    progress,
     preconditions_digest: canonicalDigest(factual.mode_resolution),
     terminal_reason_code: completed
       ? reachesPlayerBoundary
@@ -141,10 +142,7 @@ export function appendPhase4ActivityExecution({
       elapsed_minutes: cumulativeBefore,
       remaining_minutes: duration - cumulativeBefore
     } : {},
-    progress_after: completed ? {
-      elapsed_minutes: duration,
-      remaining_minutes: 0
-    } : currentContext,
+    progress_after: progress,
     resource_reservations: [],
     resource_consumptions: [],
     body_effect_refs: [],

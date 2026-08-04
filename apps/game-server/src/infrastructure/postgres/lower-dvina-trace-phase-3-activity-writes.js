@@ -42,6 +42,7 @@ export function appendActivity(input) {
       )
     })
   };
+  const progress = completed ? {} : currentContext;
   const historyEntry = activityHistoryEntry({
     partyId,
     turnNumber,
@@ -92,7 +93,7 @@ export function appendActivity(input) {
     next_boundary_at_whole_minutes: null,
     next_boundary_at_subminute_numerator: null,
     next_boundary_at_subminute_denominator: null,
-    progress: currentContext,
+    progress,
     preconditions_digest: canonicalDigest(factual.mode_resolution),
     terminal_reason_code: completed ? 'phase_3_activity_completed' : null
   }));
@@ -137,10 +138,7 @@ export function appendActivity(input) {
       elapsed_minutes: cumulativeBefore,
       remaining_minutes: duration - cumulativeBefore
     } : {},
-    progress_after: completed ? {
-      elapsed_minutes: duration,
-      remaining_minutes: 0
-    } : currentContext,
+    progress_after: progress,
     resource_reservations: [],
     resource_consumptions: [],
     body_effect_refs: [],

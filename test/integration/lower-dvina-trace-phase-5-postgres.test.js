@@ -7,6 +7,7 @@ import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';

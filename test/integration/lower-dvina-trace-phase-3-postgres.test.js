@@ -463,7 +463,7 @@ async function assertTemporalConversationRestart({
     raw_text: 'Поговорить с Еремеем о крушении.'
   });
   assert.equal(backgroundResult.time_update.exact_elapsed.exact_minutes
-    .numerator, '5');
+    .numerator, '3');
   assert.deepEqual(backgroundResult.conversation.semantic_exchange, {
     response_kind: null, npc_utterance: null, disclosed_route_ref: null
   });

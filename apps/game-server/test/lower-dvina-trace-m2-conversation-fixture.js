@@ -209,6 +209,7 @@ export async function runPhase3({
   playerPlanOptions = {},
   playerDurationClasses = ['domain_owned'],
   npcDurationClasses = ['domain_owned'],
+  transformNpcPlan = (plan) => plan,
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -236,14 +237,14 @@ export async function runPhase3({
       npcCalls += 1;
       npcRequest = structuredClone(request);
       npcRequests.push(structuredClone(request));
-      const plan = eremeyPlan(
+      const plan = transformNpcPlan(eremeyPlan(
         request,
         responseKind,
         request.decision_scope.operation_contract.disclose_known_route ?? {
           route_ref: 'unused-route',
           source_knowledge_scope_ref: 'unused-knowledge-scope'
         }
-      );
+      ), { request, call_index: npcCalls });
       plan.activity.duration_class = durationForCall(
         npcDurationClasses, npcCalls
       );
@@ -269,6 +270,7 @@ export async function runPhase4({
   playerPlanOptions = {},
   playerDurationClasses = ['domain_owned'],
   npcDurationClasses = ['domain_owned'],
+  transformNpcPlan = (plan) => plan,
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -297,7 +299,10 @@ export async function runPhase4({
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
-      const plan = ratshaPlan(request, responseKind, state.actor_id);
+      const plan = transformNpcPlan(
+        ratshaPlan(request, responseKind, state.actor_id),
+        { request, call_index: npcCalls }
+      );
       plan.activity.duration_class = durationForCall(
         npcDurationClasses, npcCalls
       );

@@ -25,6 +25,9 @@ export function conversationNpcContext(context, targetRef) {
       action_handoff_available: false,
       combat_handoff_available: false
     },
+    npcContributionReferencePolicy: {
+      entity_refs: [], knowledge_refs: [], combat_target_refs: []
+    },
     classifyNpcPlan: classifyOrdinaryConversationPlan
   };
 }

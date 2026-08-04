@@ -1,9 +1,9 @@
 import {
   buildNpcConversationResponseRequest,
-  buildNpcDecisionSignal,
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
 import {
+  allowedNpcContributionReferences,
   ownKnowledgeProjection,
   ownMemoryProjection,
   ownNpcProjection,
@@ -102,8 +102,12 @@ export function buildNpcDecision(context, working, boundary,
           resource_ref: context.contracts.knifeTransition
             .transition_profile_id,
           current_access: 'self_controlled_until_committed_surrender'
-        }]
+      }]
       : [],
+    allowed_references: allowedNpcContributionReferences(context, {
+      entityRefs: presentedEvidenceRecognized
+        ? [ref('evidence', context.contracts.ids.evidence)] : []
+    }),
     decision_scope: {
       conversation_mode: true,
       action_handoff_available:
@@ -253,45 +257,4 @@ function publicConversationHistory(
     }
   }
   return history;
-}
-
-export function currentSignalRecords(
-  context,
-  playerStatement,
-  communicationPerceptionRef,
-  evidencePerceptionRef
-) {
-  return context.mapping.signal_descriptors.flatMap((descriptor) => {
-    const communication = descriptor.category === 'communication';
-    const sourcePerceptionRef = communication
-      ? communicationPerceptionRef
-      : evidencePerceptionRef;
-    if (sourcePerceptionRef === null) return [];
-    const sourceEventRef = communication
-      ? ref('conversation_statement', playerStatement.statement_id)
-      : context.evidencePresentation === null
-        ? fail(
-            'TRACE_M2_EVIDENCE_PRESENTATION_MISSING',
-            'An environment evidence signal requires an executed operation.'
-          )
-        : ref(
-            'evidence_presentation',
-            context.evidencePresentation.event_id
-          );
-    const signal = buildNpcDecisionSignal({
-      occurred_at: structuredClone(context.state.clock),
-      category: descriptor.category,
-      significance: descriptor.significance,
-      source_event_ref: sourceEventRef,
-      subject_ref: context.targetRef,
-      scope_refs: [],
-      perception_required: true,
-      source_perception_ref: sourcePerceptionRef,
-      causal_parent_refs: []
-    });
-    return [Object.freeze({
-      signal,
-      same_time_batch_key: context.batchKey
-    })];
-  });
 }

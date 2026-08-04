@@ -245,6 +245,16 @@ function npcConversationRequest() {
     memory: {},
     social_context: {},
     available_resources: [],
+    allowed_references: {
+      actor_refs: [
+        ref('npc', 'listener'),
+        ref('npc', 'speaker'),
+        ref('player_character', 'player')
+      ],
+      entity_refs: [],
+      knowledge_refs: [],
+      combat_target_refs: []
+    },
     decision_scope: {
       conversation_mode: true,
       action_handoff_available: true,
@@ -276,6 +286,38 @@ function npcConversationPlan(request = npcConversationRequest()) {
       }
     }),
     reason: 'NPC решил ответить.'
+  };
+}
+
+function npcCombatPlan(request, targetRef) {
+  return {
+    schema: 'conversation_contribution_plan_v1',
+    request_id: request.request_id,
+    boundary_id: request.boundary_id,
+    conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id,
+    state_version: request.state_version,
+    speaker_ref: request.npc_ref,
+    contribution_kind: 'combat_handoff',
+    primary_addressee_ref: null,
+    intended_addressee_refs: [],
+    affected_actor_refs: [],
+    speech: null,
+    interpretation: {
+      intent: 'передать управление бою',
+      grounded_contribution: 'начать конфликт',
+      adaptation: 'literal'
+    },
+    resolution: 'automatic',
+    activity: { duration_class: 'brief', effort: 'none' },
+    supporting_operations: [],
+    check: null,
+    handoff: {
+      kind: 'combat',
+      intent: 'transfer control to the combat owner',
+      target_actor_refs: [targetRef]
+    },
+    reason: 'NPC выбирает боевую передачу управления.'
   };
 }
 
@@ -328,6 +370,49 @@ test('NPC conversation reasons, supporting operations and check refs are closed 
   const mismatchedDelivery = copy(plan);
   mismatchedDelivery.check.outcomes.severe_failure.delivery_quality = 'compelling';
   assert.equal(validateConversationContributionPlan(mismatchedDelivery, request), false);
+});
+
+test('NPC contribution refs are closed to the request safe context', () => {
+  const request = npcConversationRequest();
+
+  const unknownActor = npcConversationPlan(request);
+  unknownActor.primary_addressee_ref = ref('npc', 'unknown-actor');
+  unknownActor.intended_addressee_refs = [ref('npc', 'unknown-actor')];
+  assert.equal(validateConversationContributionPlan(unknownActor, request), false);
+
+  const foreignKnowledge = npcConversationPlan(request);
+  foreignKnowledge.speech.claims = [{
+    claim_id: 'foreign-knowledge-claim',
+    content_summary: 'Чужое знание.',
+    form: 'assertion',
+    speaker_posture: 'believed_true',
+    source_knowledge_refs: [ref('knowledge_scope', 'foreign-knowledge')],
+    mentioned_entity_refs: []
+  }];
+  assert.equal(validateConversationContributionPlan(foreignKnowledge, request),
+    false);
+
+  const hiddenEntity = npcConversationPlan(request);
+  hiddenEntity.speech.claims = [{
+    claim_id: 'hidden-entity-claim',
+    content_summary: 'Скрытая вещь.',
+    form: 'assertion',
+    speaker_posture: 'believed_true',
+    source_knowledge_refs: [],
+    mentioned_entity_refs: [ref('item', 'hidden-item')]
+  }];
+  assert.equal(validateConversationContributionPlan(hiddenEntity, request),
+    false);
+
+  const combatRequest = copy(request);
+  combatRequest.decision_scope.combat_handoff_available = true;
+  combatRequest.allowed_references.combat_target_refs = [
+    ref('player_character', 'player')
+  ];
+  assert.equal(validateConversationContributionPlan(npcCombatPlan(
+    combatRequest, ref('player_character', 'player')), combatRequest), true);
+  assert.equal(validateConversationContributionPlan(npcCombatPlan(
+    combatRequest, ref('npc', 'unknown-combat-target')), combatRequest), false);
 });
 
 test('social delivery result accepts only the matching five-band delivery quality', () => {

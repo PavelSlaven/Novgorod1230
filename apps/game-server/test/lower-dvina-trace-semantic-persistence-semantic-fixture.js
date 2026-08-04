@@ -110,6 +110,12 @@ export function semanticWriterFixture() {
     memory: {},
     social_context: {},
     available_resources: [],
+    allowed_references: {
+      actor_refs: [npc, player],
+      entity_refs: [ref('route', 'camp-to-shed')],
+      knowledge_refs: [ref('knowledge_scope', 'eremey-route')],
+      combat_target_refs: []
+    },
     decision_scope: {
       conversation_mode: true,
       action_handoff_available: false,

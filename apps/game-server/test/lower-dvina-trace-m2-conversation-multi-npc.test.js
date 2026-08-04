@@ -45,10 +45,16 @@ test('second responder receives only the perceived part of the first reply',
       rawText: 'Еремей и рыбак, что вы видели?', inputDigest: digest('3'),
       responseKind: 'speech', playerPlanOptions: {
         primaryAddresseeRef: ref('npc', eremey.instance_id),
-        intendedAddresseeRefs: [
-          ref('npc', eremey.instance_id),
-          ref('npc', responder.instance_id)
-        ]
+        intendedAddresseeRefs: [ref('npc', eremey.instance_id)]
+      }, transformNpcPlan: (plan, { call_index: callIndex }) => {
+        if (callIndex !== 1) return plan;
+        const responderRef = ref('npc', responder.instance_id);
+        plan.primary_addressee_ref = responderRef;
+        plan.intended_addressee_refs = [responderRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [responderRef]
+        };
+        return plan;
       } });
     const firstStatement = exchange.result.statements.find(
       ({ speaker_ref: speaker }) => speaker.entity_id === eremey.instance_id
@@ -62,6 +68,52 @@ test('second responder receives only the perceived part of the first reply',
     assert.equal(receivedFirstReply.perception_result, 'perceived_partial');
     assert.equal(receivedFirstReply.utterance_text, null);
     assert.deepEqual(receivedFirstReply.claims, []);
+  });
+
+test('NPC response expectation creates one perceived follow-up responder',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const responder = npcBySlot(state, 'background_fisher_1');
+    const bystander = npcBySlot(state, 'background_fisher_2');
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const responderRef = ref('npc', responder.instance_id);
+    const exchange = await runPhase3({ state, contracts,
+      rawText: 'Еремей, что ты видел?', inputDigest: digest('2'),
+      responseKind: 'speech', playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef]
+      }, transformNpcPlan: (plan, { call_index: callIndex }) => {
+        if (callIndex !== 1) return plan;
+        plan.primary_addressee_ref = responderRef;
+        plan.intended_addressee_refs = [responderRef];
+        plan.speech.response_expectation = {
+          kind: 'answer',
+          target_refs: [responderRef]
+        };
+        return plan;
+      } });
+
+    assert.equal(exchange.npcCalls, 2);
+    assert.deepEqual(exchange.npcRequests.map(({ npc_ref: npcRef }) => npcRef),
+      [eremeyRef, responderRef]);
+    assert.equal(exchange.npcRequests.some(({ npc_ref: npcRef }) =>
+      npcRef.entity_id === bystander.instance_id), false);
+    const eremeyStatement = exchange.result.statements.find(
+      ({ speaker_ref: speakerRef }) => speakerRef.entity_id === eremey.instance_id
+    );
+    assert.equal(exchange.npcRequests[1].public_conversation_history.some(
+      ({ source_statement_ref: statementRef }) =>
+        statementRef?.entity_id === eremeyStatement.statement_id), true);
+    const followUpSignal = exchange.result.new_signal_records.find(
+      ({ signal }) => signal.subject_ref.entity_id === responder.instance_id
+        && signal.source_event_ref.entity_id === eremeyStatement.statement_id
+    ).signal;
+    assert.equal(followUpSignal.category, 'communication');
+    assert.equal(followUpSignal.significance, 'material');
+    assert.equal(exchange.result.consumed_signal_ids.includes(
+      followUpSignal.signal_id), true);
   });
 
 function resolveContracts(state) {

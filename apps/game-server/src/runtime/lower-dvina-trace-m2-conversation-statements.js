@@ -4,8 +4,10 @@ import {
 } from '@rus/npc-runtime';
 import { projectConversationAudience } from
   '@rus/visibility-knowledge-memory';
-import { currentSignalRecords } from
-  './lower-dvina-trace-m2-conversation-decision.js';
+import {
+  npcResponseSignalRecords,
+  playerSignalRecords
+} from './lower-dvina-trace-m2-conversation-signals.js';
 import { requirePlayerSpeech } from
   './lower-dvina-trace-m2-conversation-plans.js';
 import {
@@ -50,7 +52,7 @@ export function projectPlayerPerception(context, working, statement) {
     : null;
   const newSignalRecords = playerDecisionSignalRecords({
     context, audience, statement, evidencePerceptionRef,
-    buildRecords: currentSignalRecords
+    buildRecords: playerSignalRecords
   });
   return applyResult({
     working: {
@@ -130,12 +132,8 @@ export function applyNpcPlan(
   });
 }
 
-export function projectNpcPerception(
-  context,
-  working,
-  contributionEvent,
-  npcOutcome
-) {
+export function projectNpcPerception(context, working, contributionEvent,
+  npcOutcome, plan) {
   if (contributionEvent.schema !== 'conversation_statement_event_v1') {
     return applyResult({
       working,
@@ -166,11 +164,17 @@ export function projectNpcPerception(
     actual_listener_refs: structuredClone(audience.actual_listener_refs),
     objective_truth_write: 'forbidden'
   });
+  const newSignalRecords = npcResponseSignalRecords(context, contributionEvent,
+    audience, plan);
   return applyResult({
     working: {
       ...working,
       statements: [...working.statements, contributionEvent],
-      audiences: [...working.audiences, audience]
+      audiences: [...working.audiences, audience],
+      new_signal_records: [
+        ...working.new_signal_records,
+        ...newSignalRecords
+      ]
     },
     contributionEvent,
     playerResponseBoundary: true,
@@ -178,12 +182,8 @@ export function projectNpcPerception(
     handoff: null
   });
 }
-function statementFromPlan({
-  context,
-  plan,
-  contributionIndex,
-  socialDeliveryResult
-}) {
+function statementFromPlan({ context, plan, contributionIndex,
+  socialDeliveryResult }) {
   const speech = plan.speech;
   return buildConversationStatementEvent({
     schema: 'conversation_statement_event_v1',

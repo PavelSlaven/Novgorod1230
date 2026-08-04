@@ -2,8 +2,10 @@ import {
   requestPlayerConversationContribution,
   runConversationExchange
 } from '@rus/turn';
-import { buildNpcBoundary, buildNpcDecision } from
+import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
+import { buildNpcResponseBoundaryBatch } from
+  './lower-dvina-trace-m2-conversation-boundaries.js';
 import {
   canonicalActors,
   deliveryResult,
@@ -29,7 +31,7 @@ import {
   conversationExchangeDurationMinutes
 } from
   './lower-dvina-trace-m2-conversation-time.js';
-import { conversationNpcContext, conversationPlayerStatement } from
+import { conversationNpcContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import {
   findResumableConversationSession,
@@ -160,33 +162,16 @@ export async function executeM2ConversationExchange(context) {
     ),
     buildNpcResponseBoundaries: ({
       working_state: working,
+      latest_contribution: latestContribution,
       processed_boundary_ids: processedBoundaryIds,
+      pending_boundaries: pendingBoundaries = [],
+      pending_responder_refs: pendingResponderRefs = [],
       same_time_batch_ref: resumedBatchRef = null
-    }) => {
-      const playerStatement = conversationPlayerStatement(context, working);
-      const directAddresseeRefs = playerStatement.intended_addressee_refs
-        .filter(({ entity_kind: entityKind }) => entityKind === 'npc');
-      const processed = new Set(processedBoundaryIds);
-      const boundaries = directAddresseeRefs.flatMap((targetRef) => {
-        const targetContext = conversationNpcContext(
-          {
-            ...workingContext(context, working),
-            ...(resumedBatchRef === null ? {}
-              : { batchKey: resumedBatchRef.entity_id })
-          },
-          targetRef
-        );
-        const boundary = buildNpcBoundary(targetContext, working);
-        if (boundary === null || processed.has(boundary.boundary_id)) {
-          return [];
-        }
-        return [boundary];
-      });
-      return {
-        boundaries,
-        direct_addressee_refs: directAddresseeRefs
-      };
-    },
+    }) => buildNpcResponseBoundaryBatch(
+      workingContext(context, working), working,
+      { latestContribution, processedBoundaryIds, pendingBoundaries,
+        pendingResponderRefs, resumedBatchRef }
+    ),
     buildNpcResponseDecision: ({ working_state: working,
       latest_contribution: latestContribution, boundary }) => {
       const targetContext = conversationNpcContext({
@@ -243,13 +228,15 @@ export async function executeM2ConversationExchange(context) {
     projectNpcContributionPerception: ({
       working_state: working,
       contribution_event: contributionEvent,
-      request
+      request,
+      proposal
     }) => projectNpcPerception(
       conversationNpcContext(workingContext(context, working),
         request?.npc_ref ?? contributionEvent.speaker_ref),
       working,
       contributionEvent,
-      request === null ? resumedOutcome : npcOutcomes.get(request.request_id)
+      request === null ? resumedOutcome : npcOutcomes.get(request.request_id),
+      proposal.plan
     )
   });
   if (pendingExecution === null && (

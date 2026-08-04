@@ -91,6 +91,13 @@ export async function resolveTracePhase3ConversationExchange({
       action_handoff_available: false,
       combat_handoff_available: false
     },
+    npcContributionReferencePolicy: {
+      entity_refs: [ref('route', routeRef)],
+      knowledge_refs: [ref(
+        'knowledge_scope', contracts.eremeyKnowledge.knowledge_scope_ref
+      )],
+      combat_target_refs: []
+    },
     classifyNpcPlan: (plan) => classifyEremeyPlan(plan, {
       routeRef,
       knowledgeScopeRef: contracts.eremeyKnowledge.knowledge_scope_ref

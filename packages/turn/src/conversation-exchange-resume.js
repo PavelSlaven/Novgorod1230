@@ -34,6 +34,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
   const npcDecisions = [];
   const temporalBoundaryRefs = [...firstProgress.temporalBoundaryRefs];
   const processedBoundaryIds = [pending.boundary_id];
+  const processedNpcRefs = [pending.plan.speaker_ref];
   let remainingRefs = [...pending.remaining_responder_refs];
   let nextPending = firstProgress.interrupted ? pendingRecord({
     pending,
@@ -49,32 +50,36 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     ? 'temporal_boundary' : stopAfterApply(firstProgress.applied);
 
   if (!firstProgress.interrupted
-      && remainingRefs.length > 0
       && [null, 'player_response'].includes(stopReason)) {
-    const queuedMinutes = pending.remaining_exchange_minutes
+    let queuedMinutes = pending.remaining_exchange_minutes
       - pending.remaining_minutes;
-    const slices = contributionSlices(queuedMinutes, remainingRefs.length);
     let latestContribution = firstProgress.applied.contribution_event;
-    const batch = normalizeNpcBoundaryBatch(await callPort(
-      ports.buildNpcResponseBoundaries,
-      { working_state: workingState,
-        latest_contribution: latestContribution,
-        processed_boundary_ids: processedBoundaryIds,
-        same_time_batch_ref: pending.same_time_batch_ref },
-      'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
-      'NPC response boundary batch could not be built'
-    ), new Set(processedBoundaryIds), new Set());
-    const remainingKeys = new Set(remainingRefs.map(refKey));
-    const queue = batch.boundaries.filter(({ npc_ref: npcRef }) =>
-      remainingKeys.has(refKey(npcRef)));
-    if (queue.length !== remainingKeys.size
-        || new Set(queue.map(({ npc_ref: npcRef }) => refKey(npcRef))).size
-          !== remainingKeys.size) {
-      fail('TURN_CONVERSATION_PENDING_NPC_QUEUE_INVALID',
-        'Pending NPC responders must rebuild one exact boundary each');
-    }
-    for (let index = 0; queue.length > 0; index += 1) {
-      const boundary = queue.shift();
+    while (queuedMinutes > 0
+        && [null, 'player_response'].includes(stopReason)) {
+      const batch = normalizeNpcBoundaryBatch(await callPort(
+        ports.buildNpcResponseBoundaries,
+        { working_state: workingState,
+          latest_contribution: latestContribution,
+          processed_boundary_ids: processedBoundaryIds,
+          pending_responder_refs: remainingRefs,
+          same_time_batch_ref: pending.same_time_batch_ref },
+        'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
+        'NPC response boundary batch could not be built'
+      ), new Set(processedBoundaryIds), new Set());
+      const requiredKeys = new Set(remainingRefs.map(refKey));
+      const availableKeys = new Set(batch.boundaries.map(
+        ({ npc_ref: npcRef }) => refKey(npcRef)));
+      if ([...requiredKeys].some((key) => !availableKeys.has(key))) {
+        fail('TURN_CONVERSATION_PENDING_NPC_QUEUE_INVALID',
+          'Pending NPC responders must rebuild one exact boundary each');
+      }
+      if (batch.boundaries.length === 0) {
+        remainingRefs = [];
+        stopReason = 'player_response';
+        break;
+      }
+      const [boundary, ...queuedBoundaries] = batch.boundaries;
+      remainingRefs = queuedBoundaries.map(({ npc_ref: npcRef }) => npcRef);
       const decision = normalizeNpcDecision(await callPort(
         ports.buildNpcResponseDecision,
         { working_state: workingState,
@@ -93,6 +98,12 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       });
       const contributionIndex = pending.contribution_index
         + contributions.length;
+      const plannedMinutes = plannedNpcMinutes({
+        remainingMinutes: queuedMinutes,
+        queuedBoundaries,
+        plan: proposal.plan,
+        processedNpcRefs
+      });
       const applied = normalizeApplyResult(await callPort(
         ports.applyNpcContribution,
         { working_state: workingState, boundary: decision.boundary,
@@ -103,7 +114,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       ), 'TURN_CONVERSATION_NPC_APPLY_INVALID');
       const progress = await progressAndProject({
         ports, applied, plan: proposal.plan, contributionIndex,
-        plannedMinutes: slices[index],
+        plannedMinutes,
         perceptionPort: ports.projectNpcContributionPerception,
         request: decision.request, proposal
       });
@@ -112,6 +123,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       sessionStatus = progress.applied.session_status;
       handoff = progress.applied.handoff;
       elapsedMinutes += progress.elapsedMinutes;
+      queuedMinutes -= progress.elapsedMinutes;
       if (progress.completed) completedCount += 1;
       if (progress.completed && !progress.interrupted) {
         appliedCount += 1;
@@ -120,6 +132,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       npcDecisions.push({ boundary: decision.boundary,
         request: decision.request, proposal });
       processedBoundaryIds.push(decision.boundary.boundary_id);
+      processedNpcRefs.push(decision.request.npc_ref);
       remainingRefs = remainingRefs.filter((reference) =>
         refKey(reference) !== refKey(decision.request.npc_ref));
       temporalBoundaryRefs.push(...progress.temporalBoundaryRefs);
@@ -127,17 +140,19 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       if (progress.interrupted) {
         nextPending = pendingRecord({ pending, plan: proposal.plan,
           boundaryId: decision.boundary.boundary_id, contributionIndex,
-          remainingMinutes: slices[index] - progress.elapsedMinutes,
+          remainingMinutes: plannedMinutes - progress.elapsedMinutes,
           remainingExchangeMinutes:
             pending.remaining_exchange_minutes - elapsedMinutes,
-          remainingRefs });
+          remainingRefs,
+          sourceDecisionTraceRef: {
+            entity_kind: 'npc_decision_trace',
+            entity_id: decision.request.request_id
+          } });
         stopReason = 'temporal_boundary';
         break;
       }
       if (![null, 'player_response'].includes(stopReason)) break;
-      if (remainingRefs.length > 0 && stopReason === 'player_response') {
-        stopReason = null;
-      }
+      if (stopReason === 'player_response') stopReason = null;
     }
   }
   const finalBudgetMinutes = stopReason === 'temporal_boundary'
@@ -167,7 +182,8 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
 }
 
 function pendingRecord({ pending, plan, boundaryId, contributionIndex,
-  remainingMinutes, remainingExchangeMinutes, remainingRefs }) {
+  remainingMinutes, remainingExchangeMinutes, remainingRefs,
+  sourceDecisionTraceRef = pending.source_decision_trace_ref }) {
   return {
     plan,
     boundary_id: boundaryId,
@@ -176,15 +192,28 @@ function pendingRecord({ pending, plan, boundaryId, contributionIndex,
     remaining_exchange_minutes: remainingExchangeMinutes,
     remaining_responder_refs: remainingRefs,
     same_time_batch_ref: pending.same_time_batch_ref,
-    source_decision_trace_ref: pending.source_decision_trace_ref
+    source_decision_trace_ref: sourceDecisionTraceRef
   };
 }
 
-function contributionSlices(total, count) {
-  if (count === 0) return [];
-  const base = Math.floor(total / count);
-  return Array.from({ length: count }, (_, index) =>
-    base + (index < total % count ? 1 : 0));
+function plannedNpcMinutes({
+  remainingMinutes,
+  queuedBoundaries,
+  plan,
+  processedNpcRefs
+}) {
+  const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
+    refKey(npcRef)));
+  const processedKeys = new Set(processedNpcRefs.map(refKey));
+  const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
+    ? [] : plan.speech?.response_expectation?.target_refs ?? [];
+  for (const reference of expectedRefs) {
+    if (!processedKeys.has(refKey(reference))) queuedKeys.add(refKey(reference));
+  }
+  return Math.max(1, remainingMinutes - Math.min(
+    queuedKeys.size,
+    Math.max(0, remainingMinutes - 1)
+  ));
 }
 
 function refKey(reference) {

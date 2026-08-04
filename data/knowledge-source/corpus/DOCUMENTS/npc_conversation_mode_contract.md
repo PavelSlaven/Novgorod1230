@@ -1240,10 +1240,22 @@ Ordering не является trigger vocabulary.
 ### 23.4. NPC-to-NPC response
 
 Новый signal другого NPC возникает только из нового factual contribution и применимой policy. `response_expectation` помогает выбрать descriptor, но не создаёт отдельный trigger type.
+Для ожидаемого ответа code-owned projection пересекает
+`response_expectation.target_refs`, фактических intended addressees и реально
+получивших сообщение NPC. Только это пересечение получает обычный
+`communication / material` signal. Обычный свидетель signal не получает;
+`perceived_partial` сохраняет signal, но не раскрывает точный текст и claims.
+После commit/restart consumed signal и decision trace не создаются повторно.
+Если safety limit или исчерпанный budget завершил exchange до исполнения этого
+signal, следующий exchange восстанавливает его только по точной persisted
+lineage `NPC statement -> received message -> perception -> listener`; старые
+signals других категорий не становятся conversation response автоматически.
 
 ### 23.5. Safety limit
 
 Conversation exchange сохраняет конечный `max_contributions_per_exchange`. Это техническая защита от бесконечного цикла, не trigger category и не основание для дополнительного LLM-вызова.
+Уже созданный непогашенный NPC-to-NPC communication signal при этом остаётся
+воспроизводимым pending input, а не теряется вместе с локальной очередью.
 
 ## 24. NPC conversation response request
 
@@ -1291,6 +1303,21 @@ Conversation exchange сохраняет конечный `max_contributions_per
   "memory": {},
   "social_context": {},
   "available_resources": [],
+  "allowed_references": {
+    "actor_refs": [
+      {
+        "entity_kind": "npc",
+        "entity_id": "eremey"
+      },
+      {
+        "entity_kind": "player_character",
+        "entity_id": "mikula"
+      }
+    ],
+    "entity_refs": [],
+    "knowledge_refs": [],
+    "combat_target_refs": []
+  },
   "decision_scope": {
     "conversation_mode": true,
     "action_handoff_available": true,
@@ -1308,6 +1335,13 @@ Conversation exchange сохраняет конечный `max_contributions_per
 `communication`. Если boundary создан исключительно неречевыми signals, включая
 фактически воспринятый `environment`, `perceived_message` равен `null`, а request
 опирается на referenced perception signal и не раскрывает неуслышанную реплику.
+`allowed_references` — code-owned закрытый набор ссылок, уже допустимых в
+NPC-safe context. `primary_addressee_ref`, `intended_addressee_refs`,
+`affected_actor_refs` и `response_expectation.target_refs` обязаны входить в
+`actor_refs`; `source_knowledge_refs` — в `knowledge_refs`;
+`mentioned_entity_refs` — в `entity_refs` или `actor_refs`; цель combat handoff
+— в `combat_target_refs`. Синтаксически корректная, но отсутствующая в этих
+наборах ссылка отклоняется до factual commit.
 
 ## 25. Контекст NPC
 
@@ -3003,12 +3037,14 @@ fields:
   memory: required json_object
   social_context: required json_object
   available_resources: required relation_set[json_object]
+  allowed_references: required json_object
   decision_scope: required json_object
 invariants:
   - A communication boundary requires the current actually perceived message; a boundary without communication requires perceived_message = null.
   - The request contains only messages and conversation history actually perceived by this NPC.
   - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
+  - Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.
 ```
 
 ```yaml
@@ -3040,6 +3076,7 @@ invariants:
   - One plan contains one contribution and can hand off at most one ordinary action or combat intent.
   - The reason is internal trace data and never becomes a world fact or player-visible content.
   - A check affects observable delivery only and cannot force the listener's decision.
+  - Addressees, affected actors, response expectations, claim sources, mentioned entities and combat targets are closed to the originating request allowed_references.
 ```
 
 ```yaml

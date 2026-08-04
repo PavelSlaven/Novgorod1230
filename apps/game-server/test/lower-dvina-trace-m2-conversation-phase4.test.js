@@ -305,6 +305,25 @@ test('Ratsha semantic boundary also accepts ordinary valid speech without a scen
   assert.equal(Object.hasOwn(combat, 'escape'), false);
 });
 
+test('Ratsha combat handoff rejects a target outside the request safe context',
+  async () => {
+    const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
+    await assert.rejects(runPhase4({
+      state,
+      contracts,
+      rawText: 'Что ты сделаешь?',
+      inputDigest: digest('a'),
+      responseKind: 'combat_handoff',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      offerStage,
+      checkRequest,
+      transformNpcPlan: (plan) => {
+        plan.handoff.target_actor_refs = [ref('npc', 'unknown-target')];
+        return plan;
+      }
+    }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
+  });
+
 test('silence and combat handoff have closed player-safe post-commit and replay projections', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
   for (const [responseKind, digestCharacter] of [

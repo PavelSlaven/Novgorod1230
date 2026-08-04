@@ -14138,7 +14138,7 @@
         {
           "name": "perceived_message",
           "required": true,
-          "type": "json_object"
+          "type": "json_object_or_null"
         },
         {
           "name": "public_conversation_history",
@@ -14166,6 +14166,11 @@
           "type": "relation_set[json_object]"
         },
         {
+          "name": "allowed_references",
+          "required": true,
+          "type": "json_object"
+        },
+        {
           "name": "decision_scope",
           "required": true,
           "type": "json_object"
@@ -14173,9 +14178,11 @@
       ],
       "relations": [],
       "invariants": [
-        "The request contains only the message and conversation history actually perceived by this NPC.",
+        "A communication boundary requires the current actually perceived message; a boundary without communication requires perceived_message = null.",
+        "The request contains only messages and conversation history actually perceived by this NPC.",
         "Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.",
-        "Hidden reasons, objective unknown facts and other model prompts are excluded."
+        "Hidden reasons, objective unknown facts and other model prompts are excluded.",
+        "Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set."
       ]
     },
     {
@@ -14285,7 +14292,8 @@
       "invariants": [
         "One plan contains one contribution and can hand off at most one ordinary action or combat intent.",
         "The reason is internal trace data and never becomes a world fact or player-visible content.",
-        "A check affects observable delivery only and cannot force the listener's decision."
+        "A check affects observable delivery only and cannot force the listener's decision.",
+        "Addressees, affected actors, response expectations, claim sources, mentioned entities and combat targets are closed to the originating request allowed_references."
       ]
     },
     {

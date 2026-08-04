@@ -53,6 +53,15 @@ function request(overrides = {}) {
     memory: {},
     social_context: {},
     available_resources: [],
+    allowed_references: {
+      actor_refs: [
+        ref('npc', 'speaker'),
+        ref('player_character', 'player')
+      ],
+      entity_refs: [],
+      knowledge_refs: [],
+      combat_target_refs: []
+    },
     decision_scope: {
       conversation_mode: true,
       action_handoff_available: true,

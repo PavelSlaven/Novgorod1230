@@ -296,28 +296,30 @@ export async function runConversationExchange(input = {}, ports = {}) {
       stopReason = 'exchange_limit';
       break;
     }
-
+    const rawBatch = await callPort(
+      ports.buildNpcResponseBoundaries,
+      {
+        working_state: workingState,
+        latest_contribution: latestContribution,
+        processed_boundary_ids: processedBoundaryIds,
+        pending_boundaries: queuedNpcBoundaries
+      },
+      'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
+      'NPC response boundary batch could not be built'
+    );
+    const batch = normalizeNpcBoundaryBatch(
+      rawBatch,
+      processedBoundaryIdSet,
+      processedDecisionPairs
+    );
+    queuedNpcBoundaries = [...batch.boundaries];
     if (queuedNpcBoundaries.length === 0) {
-      const rawBatch = await callPort(
-        ports.buildNpcResponseBoundaries,
-        {
-          working_state: workingState,
-          latest_contribution: latestContribution,
-          processed_boundary_ids: processedBoundaryIds
-        },
-        'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
-        'NPC response boundary batch could not be built'
-      );
-      const batch = normalizeNpcBoundaryBatch(
-        rawBatch,
-        processedBoundaryIdSet,
-        processedDecisionPairs
-      );
-      queuedNpcBoundaries = [...batch.boundaries];
-      if (queuedNpcBoundaries.length === 0) {
-        stopReason = 'player_response';
-        break;
-      }
+      stopReason = 'player_response';
+      break;
+    }
+    if (elapsedBudgetMinutes >= normalized.timeBudget.total_minutes) {
+      stopReason = 'exchange_limit';
+      break;
     }
     const boundary = queuedNpcBoundaries.shift();
     const decision = normalizeNpcDecision(await callPort(
@@ -354,8 +356,16 @@ export async function runConversationExchange(input = {}, ports = {}) {
       rawNpcResult,
       'TURN_CONVERSATION_NPC_APPLY_INVALID'
     );
-    const plannedMinutes = timeSlices[contributions.length]
-      ?? normalized.timeBudget.total_minutes - elapsedBudgetMinutes;
+    const remainingBudgetMinutes = normalized.timeBudget.total_minutes
+      - elapsedBudgetMinutes;
+    const plannedMinutes = plannedNpcContributionMinutes({
+      defaultMinutes: timeSlices[contributions.length]
+        ?? remainingBudgetMinutes,
+      remainingBudgetMinutes,
+      queuedBoundaries: queuedNpcBoundaries,
+      plan: proposal.plan,
+      processedNpcRefs: npcDecisions.map(({ request }) => request.npc_ref)
+    });
     const npcProgress = await progressAndProject({
       ports,
       applied: npcApplied,
@@ -407,8 +417,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
         }
       });
       stopReason = 'temporal_boundary';
-    } else if (stopReason === 'player_response'
-        && queuedNpcBoundaries.length > 0) {
+    } else if ([null, 'player_response'].includes(stopReason)) {
       stopReason = null;
     }
   }
@@ -436,4 +445,31 @@ export async function runConversationExchange(input = {}, ports = {}) {
     session_status: sessionStatus,
     pending_npc_execution: pendingNpcExecution
   });
+}
+
+function plannedNpcContributionMinutes({
+  defaultMinutes,
+  remainingBudgetMinutes,
+  queuedBoundaries,
+  plan,
+  processedNpcRefs
+}) {
+  const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
+    `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
+  const processedKeys = new Set(processedNpcRefs.map((npcRef) =>
+    `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
+  const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
+    ? [] : plan.speech?.response_expectation?.target_refs ?? [];
+  for (const reference of expectedRefs) {
+    const key = `${reference.entity_kind}\u0000${reference.entity_id}`;
+    if (!processedKeys.has(key)) queuedKeys.add(key);
+  }
+  const futureReserve = Math.min(
+    queuedKeys.size,
+    Math.max(0, remainingBudgetMinutes - 1)
+  );
+  return Math.max(1, Math.min(
+    defaultMinutes,
+    remainingBudgetMinutes - futureReserve
+  ));
 }

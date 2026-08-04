@@ -1,4 +1,3 @@
-
 import {
   exactKeys,
   freeze,
@@ -7,7 +6,7 @@ import {
   stableId,
   uniqueStableIds
 } from './internal.js';
-
+import { validateNpcContributionReferences } from './conversation-reference-contracts.js';
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const CONTRIBUTION_KINDS = new Set([
   'speech',
@@ -83,7 +82,6 @@ const DELIVERY_QUALITY_BY_OUTCOME = Object.freeze({
   failure_with_consequence: 'unconvincing',
   severe_failure: 'transparently_manipulative'
 });
-
 function plainRecord(value) {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
   const prototype = Object.getPrototypeOf(value);
@@ -276,6 +274,12 @@ function validateContributionBody(value, request = null) {
     )
     || !RESOLUTIONS.has(value.resolution)
     || !validateHandoff(value.handoff, value.contribution_kind)) {
+    return false;
+  }
+
+  if (request?.schema === 'npc_conversation_response_request_v1'
+      && !validateNpcContributionReferences(value,
+        request.allowed_references)) {
     return false;
   }
 

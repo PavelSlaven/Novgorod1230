@@ -69,6 +69,34 @@ function validateDecisionScope(value) {
     && jsonSafe(value.operation_contract);
 }
 
+function canonicalEntityRefs(value) {
+  return uniqueRefsOfKind(value) && canonicalRefs(value);
+}
+
+function validateAllowedReferences(value, npcRef, decisionScope) {
+  if (!exactKeys(value, [
+    'actor_refs',
+    'entity_refs',
+    'knowledge_refs',
+    'combat_target_refs'
+  ])
+      || !canonicalEntityRefs(value.actor_refs)
+      || value.actor_refs.some(({ entity_kind: entityKind }) =>
+        !['npc', 'player_character'].includes(entityKind))
+      || !canonicalEntityRefs(value.entity_refs)
+      || !canonicalEntityRefs(value.knowledge_refs)
+      || !canonicalEntityRefs(value.combat_target_refs)) {
+    return false;
+  }
+  const actorKeys = new Set(value.actor_refs.map(refKey));
+  return actorKeys.has(refKey(npcRef))
+    && value.combat_target_refs.every((reference) =>
+      actorKeys.has(refKey(reference)))
+    && (decisionScope.combat_handoff_available
+      ? value.combat_target_refs.length > 0
+      : value.combat_target_refs.length === 0);
+}
+
 export function validateNpcConversationResponseRequest(value) {
   return exactKeys(value, [
     'schema',
@@ -87,6 +115,7 @@ export function validateNpcConversationResponseRequest(value) {
     'memory',
     'social_context',
     'available_resources',
+    'allowed_references',
     'decision_scope'
   ])
     && value.schema === 'npc_conversation_response_request_v1'
@@ -108,6 +137,11 @@ export function validateNpcConversationResponseRequest(value) {
     && plainRecord(value.social_context)
     && Array.isArray(value.available_resources)
     && validateDecisionScope(value.decision_scope)
+    && validateAllowedReferences(
+      value.allowed_references,
+      value.npc_ref,
+      value.decision_scope
+    )
     && jsonSafe(value);
 }
 

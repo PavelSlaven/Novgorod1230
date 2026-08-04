@@ -68,6 +68,11 @@ export async function resolveTracePhase4ConversationExchange({
     npcDecisionScope: {
       action_handoff_available: false, combat_handoff_available: true
     },
+    npcContributionReferencePolicy: {
+      entity_refs: [],
+      knowledge_refs: [],
+      combat_target_refs: [ref('player_character', state.actor_id)]
+    },
     offerStage, checkRequest,
     classifyNpcPlan: (plan) => classifyRatshaPlan(plan, {
       offerAvailable: offerStage !== null

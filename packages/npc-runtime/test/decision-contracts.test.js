@@ -67,7 +67,7 @@ function speechBody(overrides = {}) {
   };
 }
 
-test('decision boundary canonicalizes signal refs and has one identity per NPC and same-time batch', () => {
+test('decision boundary identity includes NPC, same-time batch and mode', () => {
   const input = {
     scheduled_at: at(),
     npc_ref: ref('npc', 'guard'),
@@ -85,11 +85,15 @@ test('decision boundary canonicalizes signal refs and has one identity per NPC a
 
   assert.equal(
     autonomous.boundary_id,
-    'npc-decision:batch-1:guard'
+    'npc-decision:autonomous:batch-1:guard'
+  );
+  assert.notEqual(
+    conversation.boundary_id,
+    autonomous.boundary_id
   );
   assert.equal(
     conversation.boundary_id,
-    autonomous.boundary_id
+    'npc-decision:conversation:batch-1:guard'
   );
   assert.deepEqual(autonomous.categories, ['self', 'communication']);
   assert.deepEqual(autonomous.signal_refs.map(({ entity_id }) => entity_id), [

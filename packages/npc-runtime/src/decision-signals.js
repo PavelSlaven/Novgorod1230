@@ -92,8 +92,9 @@ function signalIdentity(sourceEventRef, subjectRef, category) {
     sourceEventRef.entity_id}:${subjectRef.entity_id}:${category}`;
 }
 
-function boundaryIdentity(batchRef, npcRef) {
-  return `npc-decision:${batchRef.entity_id}:${npcRef.entity_id}`;
+function boundaryIdentity(decisionMode, batchRef, npcRef) {
+  return `npc-decision:${decisionMode}:${batchRef.entity_id}:${
+    npcRef.entity_id}`;
 }
 
 function canonicalCategories(categories) {
@@ -225,6 +226,7 @@ export function validateNpcDecisionBoundary(value) {
     return false;
   }
   const identity = boundaryIdentity(
+    value.decision_mode,
     value.same_time_batch_ref,
     value.npc_ref
   );
@@ -246,7 +248,7 @@ export function buildNpcDecisionBoundary({
     invalid('NPC_DECISION_BOUNDARY_INVALID', 'NPC decision boundary categories are not formal');
   }
   const identity = decision_mode && same_time_batch_ref && npc_ref
-    ? boundaryIdentity(same_time_batch_ref, npc_ref)
+    ? boundaryIdentity(decision_mode, same_time_batch_ref, npc_ref)
     : null;
   const boundary = {
     schema: 'npc_decision_boundary_v1',

@@ -2,7 +2,11 @@ import { deepFreeze } from '@rus/kernel';
 import { turnFailure } from './errors.js';
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
-import { decisionPairKey, normalizeNpcBatch } from
+import {
+  decisionPairKey,
+  normalizeNpcBoundaryBatch,
+  normalizeNpcDecision
+} from
   './conversation-exchange-npc-batch.js';
 import { normalizeConversationExchangeInput } from
   './conversation-exchange-input.js';
@@ -59,10 +63,10 @@ function requirePorts(ports) {
     'revalidatePlayerStateVersion',
     'applyPlayerContribution',
     'advanceContributionTime',
-    'completeExchangeTime',
     'revalidateAfterContribution',
     'projectPlayerContributionPerception',
-    'buildNpcResponseBatch',
+    'buildNpcResponseBoundaries',
+    'buildNpcResponseDecision',
     'npcSemanticModel',
     'revalidateNpcStateVersion',
     'applyNpcContribution',
@@ -224,7 +228,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
       );
     }
     return resumePendingNpcExecution(normalized, ports, {
-      callPort, fail, immutableClone, normalizeApplyResult, normalizeTimeProgress,
+      callPort, fail, immutableClone, normalizeApplyResult,
       progressAndProject, stopAfterApply
     });
   }
@@ -275,7 +279,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const processedBoundaryIds = [];
   const processedBoundaryIdSet = new Set();
   const processedDecisionPairs = new Set();
-  let queuedNpcDecisions = [];
+  let queuedNpcBoundaries = [];
   let pendingNpcExecution = null;
   const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
   elapsedBudgetMinutes += playerProgress.elapsedMinutes;
@@ -293,30 +297,39 @@ export async function runConversationExchange(input = {}, ports = {}) {
       break;
     }
 
-    if (queuedNpcDecisions.length === 0) {
+    if (queuedNpcBoundaries.length === 0) {
       const rawBatch = await callPort(
-        ports.buildNpcResponseBatch,
+        ports.buildNpcResponseBoundaries,
         {
           working_state: workingState,
           latest_contribution: latestContribution,
           processed_boundary_ids: processedBoundaryIds
         },
         'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
-        'NPC response batch could not be built'
+        'NPC response boundary batch could not be built'
       );
-      const batch = normalizeNpcBatch(
+      const batch = normalizeNpcBoundaryBatch(
         rawBatch,
         processedBoundaryIdSet,
         processedDecisionPairs
       );
-      queuedNpcDecisions = [...batch.decisions];
-      if (queuedNpcDecisions.length === 0) {
+      queuedNpcBoundaries = [...batch.boundaries];
+      if (queuedNpcBoundaries.length === 0) {
         stopReason = 'player_response';
         break;
       }
     }
-
-    const decision = queuedNpcDecisions.shift();
+    const boundary = queuedNpcBoundaries.shift();
+    const decision = normalizeNpcDecision(await callPort(
+      ports.buildNpcResponseDecision,
+      {
+        working_state: workingState,
+        latest_contribution: latestContribution,
+        boundary
+      },
+      'TURN_CONVERSATION_NPC_DECISION_BUILD_FAILED',
+      'NPC response decision could not be built'
+    ), boundary);
     const proposal = await requestNpcSemanticDecision({
       boundary: decision.boundary,
       request: decision.request,
@@ -385,9 +398,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
         remaining_minutes: plannedMinutes - npcProgress.elapsedMinutes,
         remaining_exchange_minutes:
           normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
-        remaining_responder_refs: queuedNpcDecisions.map(
-          ({ request }) => request.npc_ref
-        ),
+        remaining_responder_refs: queuedNpcBoundaries.map(
+          ({ npc_ref: npcRef }) => npcRef),
         same_time_batch_ref: decision.boundary.same_time_batch_ref,
         source_decision_trace_ref: {
           entity_kind: 'npc_decision_trace',
@@ -396,32 +408,12 @@ export async function runConversationExchange(input = {}, ports = {}) {
       });
       stopReason = 'temporal_boundary';
     } else if (stopReason === 'player_response'
-        && queuedNpcDecisions.length > 0) {
+        && queuedNpcBoundaries.length > 0) {
       stopReason = null;
     }
   }
-
-  const remainingBudgetMinutes = normalized.timeBudget.total_minutes
-    - elapsedBudgetMinutes;
-  if (stopReason !== 'temporal_boundary' && remainingBudgetMinutes > 0) {
-    const tail = normalizeTimeProgress(await callPort(
-      ports.completeExchangeTime,
-      {
-        working_state: workingState,
-        planned_duration_minutes: remainingBudgetMinutes
-      },
-      'TURN_CONVERSATION_TIME_PROGRESS_FAILED',
-      'Conversation exchange remaining time could not be advanced'
-    ));
-    workingState = tail.working_state;
-    sessionStatus = tail.session_status === 'suspended'
-      ? 'suspended' : sessionStatus;
-    elapsedBudgetMinutes += tail.elapsed_minutes;
-    temporalBoundaryRefs.push(...tail.temporal_boundary_refs);
-    if (tail.interrupted) {
-      stopReason = 'temporal_boundary';
-    }
-  }
+  const finalBudgetMinutes = stopReason === 'temporal_boundary'
+    ? normalized.timeBudget.total_minutes : elapsedBudgetMinutes;
 
   return immutableClone({
     schema: 'conversation_exchange_result_v1',
@@ -433,12 +425,10 @@ export async function runConversationExchange(input = {}, ports = {}) {
     processed_boundary_ids: processedBoundaryIds,
     temporal_boundary_refs: temporalBoundaryRefs,
     time_budget: {
-      total_minutes: normalized.timeBudget.total_minutes,
+      total_minutes: finalBudgetMinutes,
       elapsed_minutes: elapsedBudgetMinutes,
-      remaining_minutes:
-        normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
-      status: elapsedBudgetMinutes === normalized.timeBudget.total_minutes
-        ? 'completed' : 'paused'
+      remaining_minutes: finalBudgetMinutes - elapsedBudgetMinutes,
+      status: stopReason === 'temporal_boundary' ? 'paused' : 'completed'
     },
     completed_contribution_count: completedContributionCount,
     applied_contribution_count: appliedContributionCount,

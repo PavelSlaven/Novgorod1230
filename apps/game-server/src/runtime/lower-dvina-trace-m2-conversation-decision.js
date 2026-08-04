@@ -16,54 +16,53 @@ import {
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
 
-export function buildNpcDecision(context, working, playerStatement) {
-  const resolvedRecords = [
-    ...pendingCurrentBatchRecords(context),
-    ...working.new_signal_records.filter(({ signal }) =>
-      sameRef(signal.subject_ref, context.targetRef))
-  ];
+export function buildNpcBoundary(context, working) {
+  const resolvedRecords = allSignalRecords(context, working).filter(
+    ({ same_time_batch_key: batchKey }) => batchKey === context.batchKey
+  );
   const evaluation = evaluateNpcDecisionSignals({
     npc_ref: context.targetRef,
     active_mode: 'conversation',
     current_intent: null,
     decision_capability: true,
     resolved_signals: resolvedRecords.map(({ signal }) => signal),
-    consumed_signal_ids:
-      structuredClone(context.state.consumed_npc_decision_signal_ids ?? []),
+    consumed_signal_ids: [
+      ...(context.state.consumed_npc_decision_signal_ids ?? []),
+      ...(working.consumed_signal_ids ?? [])
+    ],
     same_time_batch_ref: ref('temporal_batch', context.batchKey),
     state_version: String(context.stateVersion)
   });
-  if (!evaluation.boundary) {
-    return null;
-  }
+  return evaluation.boundary;
+}
+
+export function buildNpcDecision(context, working, boundary,
+  latestContribution = null) {
+  const signalIds = new Set(boundary.signal_refs.map(
+    ({ entity_id: entityId }) => entityId
+  ));
+  const resolvedRecords = allSignalRecords(context, working).filter(
+    ({ signal }) => signalIds.has(signal.signal_id)
+  );
   const presentedEvidenceRecognized = resolvedRecords.some(({ signal }) =>
     recognizedPresentedEvidenceSignal(context, working, signal));
-  const playerAudience = working.audiences.find(({ statement_ref: reference }) =>
-    reference?.entity_id === playerStatement.statement_id)
-    ?? (context.state.conversation_audiences ?? []).find(
-      ({ statement_ref: reference }) =>
-        reference?.entity_id === playerStatement.statement_id);
-  if (playerAudience === undefined) {
-    fail('TRACE_M2_CONVERSATION_PLAYER_AUDIENCE_MISSING',
-      'NPC decisions require the exact player statement audience.');
-  }
-  const perceivedMessage = playerAudience.received_messages.find(
-    ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
+  const perceivedMessage = perceivedBoundaryMessage(
+    context, working, resolvedRecords
   );
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
     request_id: `npc-conversation-request:${context.inputDigest}:${
       context.targetRef.entity_id}`,
-    boundary_id: evaluation.boundary.boundary_id,
+    boundary_id: boundary.boundary_id,
     conversation_id: context.conversationId,
     exchange_id: context.exchangeId,
     state_version: context.stateVersion,
     requested_at: structuredClone(context.state.clock),
     npc_ref: context.targetRef,
     decision_reasons: {
-      significance: evaluation.boundary.significance,
-      categories: structuredClone(evaluation.boundary.categories),
-      signal_refs: structuredClone(evaluation.boundary.signal_refs),
+      significance: boundary.significance,
+      categories: structuredClone(boundary.categories),
+      signal_refs: structuredClone(boundary.signal_refs),
       perceived_changes: perceivedChanges(resolvedRecords, {
         presentedEvidenceRecognized
       })
@@ -75,7 +74,9 @@ export function buildNpcDecision(context, working, playerStatement) {
     },
     public_conversation_history: publicConversationHistory(
       context,
-      perceivedMessage
+      working,
+      perceivedMessage,
+      latestContribution
     ),
     knowledge: ownKnowledgeProjection(context.targetActor),
     memory: ownMemoryProjection(
@@ -116,12 +117,42 @@ export function buildNpcDecision(context, working, playerStatement) {
   });
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])
     .find(({ boundary_id: boundaryId }) =>
-      boundaryId === evaluation.boundary.boundary_id) ?? null;
+      boundaryId === boundary.boundary_id) ?? null;
   return {
-    boundary: evaluation.boundary,
+    boundary,
     request,
     persisted_trace: persistedTrace
   };
+}
+
+function allSignalRecords(context, working) {
+  return [
+    ...(context.state.npc_decision_signals ?? []).filter((record) =>
+      plainRecord(record)
+        && plainRecord(record.signal)
+        && sameRef(record.signal.subject_ref, context.targetRef)),
+    ...(working.new_signal_records ?? []).filter(({ signal }) =>
+      sameRef(signal.subject_ref, context.targetRef))
+  ];
+}
+
+function perceivedBoundaryMessage(context, working, resolvedRecords) {
+  const statementId = resolvedRecords.find(({ signal }) =>
+    signal.category === 'communication'
+      && signal.source_event_ref.entity_kind === 'conversation_statement')
+    ?.signal.source_event_ref.entity_id;
+  if (statementId === undefined) return undefined;
+  const statement = [
+    ...(context.state.conversation_contributions
+      ?? context.state.conversation_statements
+      ?? []),
+    ...(working.statements ?? [])
+  ].find(({ statement_id: candidateId }) => candidateId === statementId);
+  if (statement === undefined) {
+    fail('TRACE_M2_CONVERSATION_SIGNAL_STATEMENT_MISSING',
+      'A communication boundary requires its exact perceived statement.');
+  }
+  return messageForStatement(context, working, statement);
 }
 
 function recognizedPresentedEvidenceSignal(context, working, signal) {
@@ -149,16 +180,40 @@ function recognizedPresentedEvidenceSignal(context, working, signal) {
       ));
 }
 
-function publicConversationHistory(context, currentMessage) {
+function messageForStatement(context, working, statement) {
+  const audiences = [
+    ...(context.state.conversation_audiences ?? []),
+    ...(working.audiences ?? [])
+  ];
+  return audiences.find(({ statement_ref: reference }) =>
+    reference?.entity_id === statement.statement_id)
+    ?.received_messages.find(({ listener_ref: listenerRef }) =>
+      sameRef(listenerRef, context.targetRef));
+}
+
+function publicConversationHistory(
+  context,
+  working,
+  currentMessage,
+  latestContribution
+) {
   const receivedByTarget = new Map(
-    (context.state.received_messages ?? [])
+    [
+      ...(context.state.received_messages ?? []),
+      ...(working.audiences ?? []).flatMap(
+        ({ received_messages: messages }) => messages
+      )
+    ]
       .filter(({ listener_ref: listenerRef }) =>
         sameRef(listenerRef, context.targetRef))
       .map((message) => [message.source_statement_ref?.entity_id, message])
   );
-  const priorContributions = context.state.conversation_contributions
-    ?? context.state.conversation_statements
-    ?? [];
+  const priorContributions = [
+    ...(context.state.conversation_contributions
+      ?? context.state.conversation_statements
+      ?? []),
+    ...(working.statements ?? [])
+  ];
   const history = priorContributions
     .filter(({ conversation_id: conversationId }) =>
       conversationId === context.conversationId)
@@ -174,8 +229,28 @@ function publicConversationHistory(context, currentMessage) {
       const received = receivedByTarget.get(contribution.statement_id);
       return received ? [structuredClone(received)] : [];
     });
-  if (currentMessage !== undefined) {
+  if (currentMessage !== undefined && !history.some((entry) =>
+    entry.source_statement_ref?.entity_id
+      === currentMessage.source_statement_ref?.entity_id
+      || entry.statement_id === currentMessage.source_statement_ref?.entity_id
+  )) {
     history.push(structuredClone(currentMessage));
+  }
+  if (latestContribution !== null) {
+    const latestVisible = sameRef(
+      latestContribution.speaker_ref,
+      context.targetRef
+    )
+      ? latestContribution
+      : messageForStatement(context, working, latestContribution);
+    const latestId = latestVisible?.source_statement_ref?.entity_id
+      ?? latestVisible?.statement_id;
+    if (latestId !== undefined && !history.some((entry) =>
+      entry.source_statement_ref?.entity_id === latestId
+        || entry.statement_id === latestId
+    )) {
+      history.push(structuredClone(latestVisible));
+    }
   }
   return history;
 }
@@ -219,13 +294,4 @@ export function currentSignalRecords(
       same_time_batch_key: context.batchKey
     })];
   });
-}
-
-function pendingCurrentBatchRecords(context) {
-  return (context.state.npc_decision_signals ?? []).filter((record) =>
-    plainRecord(record)
-      && plainRecord(record.signal)
-      && record.same_time_batch_key === context.batchKey
-      && sameRef(record.signal.subject_ref, context.targetRef)
-  );
 }

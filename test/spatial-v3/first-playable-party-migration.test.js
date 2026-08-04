@@ -33,21 +33,36 @@ const conversationTranscriptSql = readFileSync(
   new URL('../../schemas/party-db/017_party_runtime_conversation_transcript.sql', import.meta.url),
   'utf8'
 );
+const npcDecisionModeIdentitySql = readFileSync(
+  new URL('../../schemas/party-db/018_party_runtime_npc_decision_mode_identity.sql', import.meta.url),
+  'utf8'
+);
 
-test('target chain appends migrations 012 through 017 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 17);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-7), sql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-6), externalOwnershipSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-5), obligationsSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-4), resumeTerminalSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), turnStepItemsSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), npcSemanticConversationSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), conversationTranscriptSql);
+test('target chain appends migrations 011 through 018 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 18);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-8), sql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-7), externalOwnershipSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-6), obligationsSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-5), resumeTerminalSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-4), turnStepItemsSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), npcSemanticConversationSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), conversationTranscriptSql);
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1),
+    npcDecisionModeIdentitySql);
 });
 
 test('017 delegates transaction ownership to the target migration runner', () => {
   assert.doesNotMatch(conversationTranscriptSql, /^\s*BEGIN\s*;/imu);
   assert.doesNotMatch(conversationTranscriptSql, /^\s*COMMIT\s*;/imu);
+});
+
+test('018 makes same-batch NPC decision uniqueness mode-aware', () => {
+  assert.match(npcDecisionModeIdentitySql,
+    /DROP INDEX IF EXISTS\s+party_runtime\.party_npc_decision_traces_batch_npc_key/u);
+  assert.match(npcDecisionModeIdentitySql,
+    /party_id,\s*npc_id,\s*decision_mode,\s*\(same_time_batch_ref ->> 'entity_id'\)/u);
+  assert.doesNotMatch(npcDecisionModeIdentitySql, /^\s*BEGIN\s*;/imu);
+  assert.doesNotMatch(npcDecisionModeIdentitySql, /^\s*COMMIT\s*;/imu);
 });
 
 test('013 keeps general obligations in the P16 change-set transaction and history append-only', () => {

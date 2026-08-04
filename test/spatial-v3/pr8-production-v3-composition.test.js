@@ -594,7 +594,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 017', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 018', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -624,7 +624,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 6);
+  assert.equal(result.newly_applied, 7);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

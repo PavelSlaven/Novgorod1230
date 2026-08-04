@@ -1,5 +1,4 @@
 import {
-  orderNpcConversationDecisionRequests,
   validateNpcConversationResponseRequest,
   validateNpcDecisionBoundary,
   validateNpcSemanticDecisionTrace
@@ -17,6 +16,14 @@ const sameRef = (left, right) => left?.entity_kind === right?.entity_kind
   && left?.entity_id === right?.entity_id;
 const sameRefs = (left, right) => left.length === right.length
   && left.every((reference, index) => sameRef(reference, right[index]));
+const refKey = (reference) =>
+  `${reference.entity_kind}\u0000${reference.entity_id}`;
+const exactNpcRef = (reference) => exactKeys(
+  reference, ['entity_kind', 'entity_id']
+) && reference.entity_kind === 'npc'
+  && typeof reference.entity_id === 'string'
+  && reference.entity_id.length > 0
+  && reference.entity_id === reference.entity_id.trim();
 
 function clone(value) {
   try {
@@ -44,43 +51,44 @@ function exactBoundaryRequestLink(boundary, request) {
 export function decisionPairKey(boundary) {
   return `${boundary.npc_ref.entity_kind}\u0000${boundary.npc_ref.entity_id}`
     + `\u0000${boundary.same_time_batch_ref.entity_kind}`
-    + `\u0000${boundary.same_time_batch_ref.entity_id}`;
+    + `\u0000${boundary.same_time_batch_ref.entity_id}`
+    + `\u0000${boundary.decision_mode}`;
 }
 
-export function normalizeNpcBatch(value, processedBoundaryIds,
+export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
   processedDecisionPairs) {
   const batch = clone(value);
-  if (!exactKeys(batch, ['decisions', 'direct_addressee_refs'])
-      || !Array.isArray(batch.decisions)
+  if (!exactKeys(batch, ['boundaries', 'direct_addressee_refs'])
+      || !Array.isArray(batch.boundaries)
       || !Array.isArray(batch.direct_addressee_refs)) {
     throw turnFailure(
       'TURN_CONVERSATION_NPC_BATCH_INVALID',
-      'NPC response batch must contain decisions and direct_addressee_refs arrays'
+      'NPC response batch must contain boundaries and direct_addressee_refs arrays'
     );
   }
   const boundaryIds = new Set();
-  const requestIds = new Set();
   const batchDecisionPairs = new Set();
-  for (const decision of batch.decisions) {
-    if (!exactKeys(decision, ['boundary', 'request', 'persisted_trace'])
-        || !validateNpcDecisionBoundary(decision.boundary)
-        || !validateNpcConversationResponseRequest(decision.request)
-        || !exactBoundaryRequestLink(decision.boundary, decision.request)
-        || !(decision.persisted_trace === null
-          || (record(decision.persisted_trace)
-            && validateNpcSemanticDecisionTrace(
-              decision.persisted_trace, decision.request)))) {
+  const directKeys = new Set(batch.direct_addressee_refs.map(refKey));
+  if (directKeys.size !== batch.direct_addressee_refs.length
+      || batch.direct_addressee_refs.some((reference) =>
+        !exactNpcRef(reference))) {
+    throw turnFailure(
+      'TURN_CONVERSATION_NPC_BATCH_INVALID',
+      'NPC response batch direct addressees must be unique NPC refs'
+    );
+  }
+  for (const boundary of batch.boundaries) {
+    if (!validateNpcDecisionBoundary(boundary)) {
       throw turnFailure(
         'TURN_CONVERSATION_NPC_BATCH_INVALID',
-        'Every NPC response decision must be formal and exactly linked'
+        'Every NPC response boundary must be formal'
       );
     }
-    const { boundary_id: boundaryId } = decision.boundary;
-    const { request_id: requestId } = decision.request;
-    if (boundaryIds.has(boundaryId) || requestIds.has(requestId)) {
+    const { boundary_id: boundaryId } = boundary;
+    if (boundaryIds.has(boundaryId)) {
       throw turnFailure(
         'TURN_CONVERSATION_NPC_BATCH_DUPLICATE',
-        'NPC response batch contains a duplicate boundary or request'
+        'NPC response batch contains a duplicate boundary'
       );
     }
     if (processedBoundaryIds.has(boundaryId)) {
@@ -90,7 +98,7 @@ export function normalizeNpcBatch(value, processedBoundaryIds,
         { boundary_id: boundaryId }
       );
     }
-    const pairKey = decisionPairKey(decision.boundary);
+    const pairKey = decisionPairKey(boundary);
     if (batchDecisionPairs.has(pairKey) || processedDecisionPairs.has(pairKey)) {
       throw turnFailure(
         'TURN_CONVERSATION_NPC_DECISION_DUPLICATE',
@@ -99,28 +107,37 @@ export function normalizeNpcBatch(value, processedBoundaryIds,
       );
     }
     boundaryIds.add(boundaryId);
-    requestIds.add(requestId);
     batchDecisionPairs.add(pairKey);
   }
-  let orderedRequests;
-  try {
-    orderedRequests = orderNpcConversationDecisionRequests(
-      batch.decisions.map(({ request }) => request),
-      batch.direct_addressee_refs
-    );
-  } catch (error) {
-    throw turnFailure(
-      'TURN_CONVERSATION_NPC_BATCH_INVALID',
-      'NPC response batch ordering inputs are invalid',
-      { cause: error instanceof Error ? error.message : String(error) }
-    );
-  }
-  const decisionsByRequestId = new Map(batch.decisions.map(
-    (decision) => [decision.request.request_id, decision]
-  ));
+  const boundaries = [...batch.boundaries].sort((left, right) => {
+    const leftDirect = directKeys.has(refKey(left.npc_ref));
+    const rightDirect = directKeys.has(refKey(right.npc_ref));
+    return Number(rightDirect) - Number(leftDirect)
+      || refKey(left.npc_ref).localeCompare(refKey(right.npc_ref), 'en')
+      || left.boundary_id.localeCompare(right.boundary_id, 'en');
+  });
   return {
-    decisions: orderedRequests.map((request) =>
-      decisionsByRequestId.get(request.request_id)),
+    boundaries,
     direct_addressee_refs: batch.direct_addressee_refs
   };
+}
+
+export function normalizeNpcDecision(value, expectedBoundary) {
+  const decision = clone(value);
+  if (!exactKeys(decision, ['boundary', 'request', 'persisted_trace'])
+      || !validateNpcDecisionBoundary(decision.boundary)
+      || decision.boundary.boundary_id !== expectedBoundary.boundary_id
+      || JSON.stringify(decision.boundary) !== JSON.stringify(expectedBoundary)
+      || !validateNpcConversationResponseRequest(decision.request)
+      || !exactBoundaryRequestLink(decision.boundary, decision.request)
+      || !(decision.persisted_trace === null
+        || (record(decision.persisted_trace)
+          && validateNpcSemanticDecisionTrace(
+            decision.persisted_trace, decision.request)))) {
+    throw turnFailure(
+      'TURN_CONVERSATION_NPC_DECISION_INVALID',
+      'NPC response decision must be freshly built for the exact boundary'
+    );
+  }
+  return decision;
 }

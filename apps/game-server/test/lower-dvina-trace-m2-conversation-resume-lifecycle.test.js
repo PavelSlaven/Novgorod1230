@@ -187,6 +187,7 @@ test('terminal resumed responder does not invoke the remaining NPC queue',
     assert.equal(resumed.result.exchange.npc_decisions.length, 0);
     assert.equal(resumed.result.exchange.session_status, 'ended');
     assert.equal(resumed.result.response_kind, 'leave_conversation');
+    assert.equal(resumed.result.exact_elapsed_minutes, 1);
   });
 
 function resolveContracts(state) {

@@ -258,8 +258,13 @@ test('two addressed active NPCs respond once while a bystander only hears',
     assert.deepEqual(exchange.npcRequests.map(({ npc_ref: npc }) => npc),
       [eremeyRef, responderRef].sort((left, right) =>
         left.entity_id.localeCompare(right.entity_id, 'en')));
-    assert.equal(exchange.npcRequests.some(({ npc_ref: npc }) =>
-      npc.entity_id === bystander.instance_id), false);
+    assert.equal(exchange.npcRequests.some(({ npc_ref }) =>
+      npc_ref.entity_id === bystander.instance_id), false);
+    const firstReply = exchange.result.statements.find(({ speaker_ref }) =>
+      speaker_ref.entity_id === exchange.npcRequests[0].npc_ref.entity_id);
+    assert.equal(exchange.npcRequests[1].public_conversation_history.some(
+      ({ source_statement_ref: seen }) =>
+        seen?.entity_id === firstReply.statement_id), true);
     assert.equal(exchange.result.statements.filter(({ speaker_ref: speaker }) =>
       speaker.entity_kind === 'npc').length, 2);
     const next = project(exchange, state, 'two-active-responders');
@@ -317,8 +322,8 @@ test('background boundary updates perception without pausing conversation', asyn
   assert.equal(exchange.result.exchange.stop_reason, 'player_response');
   assert.equal(exchange.result.exchange.session_status, 'active');
   assert.equal(exchange.result.exchange.time_budget.status, 'completed');
-  assert.equal(exchange.result.exact_elapsed_minutes, 5);
-  assert.deepEqual(exchange.result.clock_after, plusMinutes(state.clock, '5'));
+  assert.equal(exchange.result.exact_elapsed_minutes, 3);
+  assert.deepEqual(exchange.result.clock_after, plusMinutes(state.clock, '3'));
   assert.deepEqual(exchange.result.temporal_boundary_refs, [
     ref('temporal_boundary_candidate', 'boundary:conversation-interruption')
   ]);

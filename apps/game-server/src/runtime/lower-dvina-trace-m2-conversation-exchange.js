@@ -2,7 +2,7 @@ import {
   requestPlayerConversationContribution,
   runConversationExchange
 } from '@rus/turn';
-import { buildNpcDecision } from
+import { buildNpcBoundary, buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
 import {
   canonicalActors,
@@ -145,12 +145,6 @@ export async function executeM2ConversationExchange(context) {
     }) => advanceConversationContributionTime(
       context, working, plannedDurationMinutes
     ),
-    completeExchangeTime: ({
-      working_state: working,
-      planned_duration_minutes: plannedDurationMinutes
-    }) => advanceConversationContributionTime(
-      context, working, plannedDurationMinutes
-    ),
     revalidateAfterContribution: async () => {
       const current = await context.revalidateStateVersion();
       if (current !== context.stateVersion) {
@@ -164,7 +158,7 @@ export async function executeM2ConversationExchange(context) {
     }) => projectPlayerPerception(
       workingContext(context, working), working, contributionEvent
     ),
-    buildNpcResponseBatch: ({
+    buildNpcResponseBoundaries: ({
       working_state: working,
       processed_boundary_ids: processedBoundaryIds,
       same_time_batch_ref: resumedBatchRef = null
@@ -173,7 +167,7 @@ export async function executeM2ConversationExchange(context) {
       const directAddresseeRefs = playerStatement.intended_addressee_refs
         .filter(({ entity_kind: entityKind }) => entityKind === 'npc');
       const processed = new Set(processedBoundaryIds);
-      const batchDecisions = directAddresseeRefs.flatMap((targetRef) => {
+      const boundaries = directAddresseeRefs.flatMap((targetRef) => {
         const targetContext = conversationNpcContext(
           {
             ...workingContext(context, working),
@@ -182,19 +176,27 @@ export async function executeM2ConversationExchange(context) {
           },
           targetRef
         );
-        const decision = buildNpcDecision(
-          targetContext, working, playerStatement
-        );
-        if (decision === null || processed.has(decision.boundary.boundary_id)) {
+        const boundary = buildNpcBoundary(targetContext, working);
+        if (boundary === null || processed.has(boundary.boundary_id)) {
           return [];
         }
-        decisions.set(decision.request.request_id, decision);
-        return [decision];
+        return [boundary];
       });
       return {
-        decisions: batchDecisions,
+        boundaries,
         direct_addressee_refs: directAddresseeRefs
       };
+    },
+    buildNpcResponseDecision: ({ working_state: working,
+      latest_contribution: latestContribution, boundary }) => {
+      const targetContext = conversationNpcContext({
+        ...workingContext(context, working),
+        batchKey: boundary.same_time_batch_ref.entity_id
+      }, boundary.npc_ref);
+      const decision = buildNpcDecision(targetContext, working, boundary,
+        latestContribution);
+      decisions.set(decision.request.request_id, decision);
+      return decision;
     },
     npcSemanticModel: context.npcSemanticModel,
     revalidateNpcStateVersion: context.revalidateStateVersion,
@@ -283,7 +285,6 @@ function workingContext(context, working) {
     batchKey: sameTimeBatchKey(state.party_id, state.clock)
   };
 }
-
 export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
@@ -293,7 +294,6 @@ export async function prepareM2PlayerConversationPlan(context) {
   });
   return decision.plan;
 }
-
 function domainOwnedPlan(plan) {
   return plan?.activity?.duration_class === 'domain_owned';
 }

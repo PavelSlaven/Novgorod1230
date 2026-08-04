@@ -960,6 +960,12 @@
       "type": "sql"
     },
     {
+      "bytes": 539,
+      "path": "schemas/party-db/018_party_runtime_npc_decision_mode_identity.sql",
+      "sha256": "9b0df152ac31f395b2c263d32d10746684d2723c0a9c69b3eec02047f1da4a62",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

@@ -51,6 +51,25 @@ test('revision 14 repairs non-domain player and NPC duration classes', async () 
   assert.equal(repairedNpc.result.exact_elapsed_minutes, 5);
 });
 
+test('background source batch continues into the NPC response boundary', async () => {
+  const state = phase3State();
+  state.temporal_boundary_candidates = [boundaryCandidate(
+    state, plusMinutes(state.clock, '2')
+  )];
+  const exchange = await runPhase3({ state,
+    contracts: resolveContracts(state), rawText: 'Что ты видел?',
+    inputDigest: digest('b'), responseKind: 'speech',
+    resolveTemporalBoundary(_candidate, { projection }) {
+      return { disposition: 'execute', proposals: [],
+        state_projection: projection, follow_up_candidates: [] };
+    } });
+
+  assert.equal(exchange.npcCalls, 1);
+  assert.equal(exchange.result.exchange.applied_contribution_count, 2);
+  assert.equal(exchange.result.exchange.session_status, 'active');
+  assert.equal(exchange.result.response_kind, 'speech');
+});
+
 test('interrupted NPC route disclosure has no mechanical consequence', async () => {
   const state = phase3State();
   const contracts = resolveContracts(state);

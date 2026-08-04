@@ -34,8 +34,6 @@ import {
 import {
   createSpatialV3PostgresCombinedAtomicCommitter
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
-import { digestRunIdentity } from
-  '../../apps/game-server/src/infrastructure/postgres/party-store-turn.js';
 import {
   firstPlayableCommitRecheck
 } from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
@@ -452,7 +450,7 @@ async function assertTemporalConversationRestart({
   );
   await inspectAndMove(backgroundRuntime, backgroundParty.party_id,
     'background-boundary');
-  await patchConversationBoundary(pool, backgroundParty.party_id, {
+  await insertConversationBoundary(pool, backgroundParty.party_id, {
     minutes: 2, interruptEffect: 'background'
   });
   const backgroundResult = await buildRuntime({
@@ -470,6 +468,9 @@ async function assertTemporalConversationRestart({
   assert.equal((await latestSnapshot(pool, backgroundParty.party_id)).npcs
     .find(({ participant_slot_ref: slot }) => slot === 'eremey_fisher')
     .machine_state.hearing_capability, 'none');
+  assert.equal(await conversationEventStatus(
+    pool, backgroundParty.party_id, 'background'
+  ), 'resolved');
   await buildRuntime({ pool, release, runtimeCatalogPin })
     .getPartyScreen(backgroundParty.party_id);
 
@@ -479,7 +480,7 @@ async function assertTemporalConversationRestart({
   );
   await inspectAndMove(interruptedRuntime, interruptedParty.party_id,
     'interrupted-npc');
-  await patchConversationBoundary(pool, interruptedParty.party_id, {
+  await insertConversationBoundary(pool, interruptedParty.party_id, {
     minutes: 7, interruptEffect: 'hard_interrupt'
   });
   const interrupted = await buildRuntime({
@@ -496,6 +497,9 @@ async function assertTemporalConversationRestart({
   });
   assert.equal(await knowledgeCount(pool, interruptedParty.party_id,
     'trace_ld_v1_route_camp_to_shed'), 0);
+  assert.equal(await conversationEventStatus(
+    pool, interruptedParty.party_id, 'hard_interrupt'
+  ), 'resolved');
   const activity = (await pool.query(
     `SELECT status,original_total_minutes::int AS total,
             cumulative_elapsed_numerator::int AS elapsed,
@@ -572,45 +576,41 @@ async function patchNpcPerceptionState(pool, partyId, {
   return npc.instance_id;
 }
 
-async function patchConversationBoundary(pool, partyId, {
+async function insertConversationBoundary(pool, partyId, {
   minutes, interruptEffect
 }) {
-  const latest = await latestSnapshotRow(pool, partyId);
-  const payload = structuredClone(latest.state_payload);
+  const payload = await latestSnapshot(pool, partyId);
   const eremey = payload.npcs.find(
     ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
   );
-  payload.temporal_boundary_candidates = [conversationBoundaryCandidate({
-    partyId,
-    npcId: eremey.instance_id,
-    scheduledAt: addElapsedTime(payload.clock, { exact_minutes: {
-      numerator: String(minutes), denominator: '1'
-    } }),
-    interruptEffect
-  })];
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    await client.query(
-      `ALTER TABLE party_runtime.party_state_snapshots DISABLE TRIGGER USER`
-    );
-    await client.query(
-      `UPDATE party_runtime.party_state_snapshots
-          SET state_payload=$3::jsonb,state_digest=$4
-        WHERE party_id=$1 AND state_version=$2`,
-      [partyId, latest.state_version, JSON.stringify(payload),
-        digestRunIdentity(payload)]
-    );
-    await client.query(
-      `ALTER TABLE party_runtime.party_state_snapshots ENABLE TRIGGER USER`
-    );
-    await client.query('COMMIT');
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+  const eventId = `event:${partyId}:conversation:${interruptEffect}`;
+  const scheduledAt = addElapsedTime(payload.clock, { exact_minutes: {
+    numerator: String(minutes), denominator: '1'
+  } });
+  await pool.query(
+    `INSERT INTO party_runtime.party_temporal_events(
+       event_id,party_id,event_kind,status,
+       scheduled_at_whole_minutes,scheduled_at_subminute_numerator,
+       scheduled_at_subminute_denominator,rule_ref,policy_ref,
+       preconditions_digest,idempotency_key,change_set_id
+     ) VALUES($1,$2,'conversation_test_boundary','pending',$3,$4,$5,
+       $6::jsonb,$7::jsonb,$8,$9,$10)`, [
+      eventId, partyId, scheduledAt.whole_minutes,
+      scheduledAt.subminute_numerator, scheduledAt.subminute_denominator,
+      JSON.stringify({ ...versionedRef('action_contract',
+        'rule:conversation-postgres-boundary'),
+      resolution_class: 'execution_outcome' }),
+      JSON.stringify(versionedRef('activity_contract',
+        'policy:conversation-postgres-boundary')),
+      'a'.repeat(64), eventId, `${eventId}:created`
+    ]
+  );
+  await pool.query(
+    `INSERT INTO party_runtime.party_temporal_event_subjects(
+       event_id,subject_kind,subject_id,subject_role)
+     VALUES($1,'npc',$2,'conversation_listener')`,
+    [eventId, eremey.instance_id]
+  );
 }
 
 async function createParty(runtime, requestId) {
@@ -731,53 +731,41 @@ function conversationTestSourceRegistration() {
       eremey.machine_state = {
         ...eremey.machine_state, hearing_capability: 'none'
       };
+      const eventVersion = world.temporal_source_proof
+        .event_versions[candidate.boundary_id];
+      const changeSetId = `change:${world.party_id}:trace-phase3:${
+        world.party_state.turn_number + 1}`;
+      const writeSet = { inserts: [], appends: [], deletes: [], updates: [{
+        target_table: 'party_temporal_events', id: candidate.boundary_id,
+        record: { event_id: candidate.boundary_id, party_id: world.party_id,
+          status: 'resolved', terminal_change_set_id: changeSetId,
+          state_version: eventVersion + 1 }
+      }, {
+        target_table: 'party_npcs', id: eremey.instance_id,
+        record: { party_id: world.party_id, npc_id: eremey.instance_id,
+          machine_state: structuredClone(eremey.machine_state) }
+      }] };
       return {
         disposition: 'execute',
         proposals: [{
           proposal_id: `${candidate.boundary_id}:disable-hearing`,
           write_target: `party_npcs:${eremey.instance_id}`,
-          write_set: { inserts: [], appends: [], deletes: [], updates: [{
-            target_table: 'party_npcs', id: eremey.instance_id,
-            record: { party_id: world.party_id, npc_id: eremey.instance_id,
-              machine_state: structuredClone(eremey.machine_state) }
-          }] },
-          expected_state_versions: [],
+          write_set: writeSet,
+          expected_state_versions: [{
+            target_table: 'party_temporal_events', id: candidate.boundary_id,
+            state_version: eventVersion
+          }],
           physical_keys: [
+            `party_runtime.party_temporal_events:${candidate.boundary_id}`,
             `party_runtime.party_npcs:${world.party_id}:${eremey.instance_id}`
           ]
         }],
         state_projection: next,
         follow_up_candidates: [],
-        stop_after_current_batch: candidate.interrupt_effect !== 'background'
+        stop_after_current_batch:
+          candidate.boundary_id.endsWith(':hard_interrupt')
       };
     }
-  };
-}
-
-function conversationBoundaryCandidate({
-  partyId, npcId, scheduledAt, interruptEffect
-}) {
-  return {
-    boundary_id: `boundary:${partyId}:${interruptEffect}`,
-    boundary_kind: 'exact_timer', scheduled_at: scheduledAt,
-    source_ref: {
-      entity_kind: 'party_route_plan_execution_event',
-      entity_id: `timer:${partyId}:${interruptEffect}`
-    },
-    primary_subject_ref: { entity_kind: 'actor', entity_id: npcId },
-    subject_refs: [],
-    scope_ref: { entity_kind: 'party', entity_id: partyId },
-    rule_ref: versionedRef('action_contract',
-      'rule:conversation-postgres-boundary'),
-    policy_ref: versionedRef('activity_contract',
-      'policy:conversation-postgres-boundary'),
-    preconditions_digest: 'a'.repeat(64),
-    resolution_class: 'execution_outcome',
-    interrupt_effect: interruptEffect,
-    visibility_policy_ref: versionedRef('visibility_modifier',
-      'visible:conversation-postgres-boundary'),
-    idempotency_key: `timer:${partyId}:${interruptEffect}`,
-    causal_parent_refs: []
   };
 }
 
@@ -797,6 +785,14 @@ async function latestSnapshotRow(pool, partyId) {
       WHERE party_id=$1 ORDER BY state_version DESC LIMIT 1`,
     [partyId]
   )).rows[0];
+}
+
+async function conversationEventStatus(pool, partyId, interruptEffect) {
+  return (await pool.query(
+    `SELECT status FROM party_runtime.party_temporal_events
+      WHERE event_id=$1 AND party_id=$2`,
+    [`event:${partyId}:conversation:${interruptEffect}`, partyId]
+  )).rows[0]?.status;
 }
 
 function semanticOption(rawText, actionSet) {

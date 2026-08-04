@@ -167,11 +167,9 @@ export async function executeM2ConversationExchange(context) {
     ),
     buildNpcResponseBatch: ({
       working_state: working,
-      latest_contribution: latestContribution,
-      processed_boundary_ids: processedBoundaryIds
+      latest_contribution: latestContribution
     }) => {
-      if (processedBoundaryIds.length > 0
-          || latestContribution.speaker_ref?.entity_kind !==
+      if (latestContribution.speaker_ref?.entity_kind !==
             'player_character') {
         return { decisions: [], direct_addressee_refs: [] };
       }

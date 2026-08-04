@@ -18,6 +18,11 @@ export function appendPhase3SemanticInteraction({
     entity_kind: 'npc',
     entity_id: factual.consequence.conversation.npc_id
   };
+  const npcContributionApplied = semanticExchange.exchange.contributions.some(
+    ({ speaker_ref: speaker }) => speaker?.entity_kind === npcRef.entity_kind
+      && speaker.entity_id === npcRef.entity_id
+  );
+  if (!npcContributionApplied) return;
   const npcStatement = semanticExchange.statements.find(
     ({ speaker_ref: speaker }) => speaker.entity_kind === npcRef.entity_kind
       && speaker.entity_id === npcRef.entity_id

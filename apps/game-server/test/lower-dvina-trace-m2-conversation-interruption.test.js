@@ -115,6 +115,8 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
   const writeInput = buildNpcSemanticConversationWriteInput({ state,
     next: semanticProjection, semanticExchange: exchange.result });
   const writes = writeSemantic(state, writeInput, 'interrupted-route');
+  assert.equal(writes.appends.some(({ target_table: table }) =>
+    table === 'party_actor_npc_interactions'), false);
   assert.equal(writes.appends.some(({ target_table: table, record }) =>
     table === 'party_character_knowledge'
       && record.fact_id

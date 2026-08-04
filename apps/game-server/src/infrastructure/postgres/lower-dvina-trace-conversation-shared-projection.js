@@ -45,6 +45,9 @@ export function projectSharedSemanticExchange(semanticExchange) {
       exchange_id: firstContribution.exchange_id,
       npc_ref: null,
       response_kind: null,
+      time_budget: structuredClone(
+        semanticExchange.exchange.time_budget
+      ),
       statement_refs: (semanticExchange.statements ?? []).map(
         ({ statement_id: statementId }) => ({
           entity_kind: 'conversation_statement', entity_id: statementId
@@ -75,6 +78,7 @@ export function projectSharedSemanticExchange(semanticExchange) {
       ? null
       : structuredClone(request.npc_ref),
     response_kind: semanticExchange.response_kind,
+    time_budget: structuredClone(semanticExchange.exchange.time_budget),
     statement_refs: (semanticExchange.statements ?? [])
       .filter(({ speaker_ref: speaker }) => noAppliedNpcResponse
         ? speaker?.entity_kind === 'player_character'
@@ -136,7 +140,8 @@ export function assertSharedSemanticSnapshotSafe(state) {
   for (const projection of projections) {
     const allowed = new Set([
       'request_id', 'boundary_id', 'conversation_id', 'exchange_id',
-      'npc_ref', 'response_kind', 'statement_refs', 'route_disclosure',
+      'npc_ref', 'response_kind', 'time_budget', 'statement_refs',
+      'route_disclosure',
       'commitment', 'surrender', 'knife_transition_eligibility'
     ]);
     if (!record(projection)

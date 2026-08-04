@@ -85,7 +85,7 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
     let started = timeUpdate?.clock_before;
     if (!started) fail();
     return c.negotiation.activity_roots.map((root) => {
-      const budget = c.negotiation.semantic_exchange?.exchange?.time_budget;
+      const budget = c.negotiation.semantic_exchange_projection?.time_budget;
       const actualMinutes = budget?.elapsed_minutes ?? root.duration_minutes;
       const status = budget?.status ?? 'completed';
       const { activityKind, seriesOrdinal } = phase4ActivityIdentity({

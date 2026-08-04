@@ -26,7 +26,7 @@ export function phase3ActivityReadProof(payload, rows) {
   ));
   const valid = rows.every((entry) => {
     const budget = expectedById.get(entry.id)?.execution_result
-      ?.semantic_exchange?.exchange?.time_budget ?? null;
+      ?.semantic_exchange_projection?.time_budget ?? null;
     const status = budget?.status ?? 'completed';
     const elapsed = String(budget?.elapsed_minutes
       ?? entry.original_total_minutes);

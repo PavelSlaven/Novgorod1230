@@ -97,6 +97,11 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
     screen: { schema: 'test-screen' } }));
   assert.equal(restarted.last_turn.consequence.conversation
     .semantic_exchange_projection.npc_ref, null);
+  assert.deepEqual(restarted.last_turn.consequence.conversation
+    .semantic_exchange_projection.time_budget, {
+    total_minutes: 10, elapsed_minutes: 7, remaining_minutes: 3,
+    status: 'paused'
+  });
   const semanticProjection = project(exchange, state, 'interrupted-route');
   const writeInput = buildNpcSemanticConversationWriteInput({ state,
     next: semanticProjection, semanticExchange: exchange.result });
@@ -145,6 +150,11 @@ test('interrupted NPC surrender has no commitment or item transition', async () 
     screen: { schema: 'test-screen' } }));
   assert.equal(restarted.last_turn.consequence.negotiation
     .semantic_exchange_projection.npc_ref, null);
+  assert.deepEqual(restarted.last_turn.consequence.negotiation
+    .semantic_exchange_projection.time_budget, {
+    total_minutes: 10, elapsed_minutes: 7, remaining_minutes: 3,
+    status: 'paused'
+  });
   const writes = { inserts: [], updates: [], appends: [] };
   assert.doesNotThrow(() => appendSemanticNegotiation({
     ...writes, partyId: state.party_id, state, next: restarted, factual,

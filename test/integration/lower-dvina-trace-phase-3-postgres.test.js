@@ -505,10 +505,9 @@ async function assertTemporalConversationRestart({
             cumulative_elapsed_numerator::int AS elapsed,
             remaining_time_numerator::int AS remaining
       FROM party_runtime.party_timed_activity_executions
-      WHERE party_id=$1 AND id LIKE $2
+      WHERE left(id,length($1))=$1
       ORDER BY id DESC LIMIT 1`,
-    [interruptedParty.party_id,
-      `activity:${interruptedParty.party_id}:trace-phase3:%`]
+    [`activity:${interruptedParty.party_id}:trace-phase3:`]
   )).rows[0];
   assert.deepEqual(activity, {
     status: 'paused', total: 10, elapsed: 7, remaining: 3

@@ -65,17 +65,21 @@ export function projectSharedSemanticExchange(semanticExchange) {
       'The shared semantic projection requires exact persisted lineage.'
     );
   }
+  const noAppliedNpcResponse = semanticExchange.response_kind === null;
   return {
     request_id: request.request_id,
     boundary_id: boundary.boundary_id,
     conversation_id: request.conversation_id,
     exchange_id: request.exchange_id,
-    npc_ref: structuredClone(request.npc_ref),
+    npc_ref: noAppliedNpcResponse
+      ? null
+      : structuredClone(request.npc_ref),
     response_kind: semanticExchange.response_kind,
     statement_refs: (semanticExchange.statements ?? [])
-      .filter(({ speaker_ref: speaker }) =>
-        speaker?.entity_kind === 'npc'
-        && speaker.entity_id === request.npc_ref.entity_id)
+      .filter(({ speaker_ref: speaker }) => noAppliedNpcResponse
+        ? speaker?.entity_kind === 'player_character'
+        : speaker?.entity_kind === 'npc'
+          && speaker.entity_id === request.npc_ref.entity_id)
       .map(({ statement_id: statementId }) => ({
         entity_kind: 'conversation_statement',
         entity_id: statementId

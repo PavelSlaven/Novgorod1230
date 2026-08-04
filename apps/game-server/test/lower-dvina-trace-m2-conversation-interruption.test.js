@@ -15,6 +15,8 @@ import { appendActivity } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-3-activity-writes.js';
 import { nextPhase4State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
+import { phase2PublicResult } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { promiseOfferStage } from
   '../src/runtime/lower-dvina-trace-phase-4-command-shared.js';
 import { assertLowerDvinaTraceSemanticConversationRows } from
@@ -91,6 +93,10 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
   assert.equal((restarted.knowledge ?? []).some(({ fact_id: id }) =>
     id === contracts.disclosureMapping.route_knowledge_disclosure.route_ref),
   false);
+  assert.doesNotThrow(() => phase2PublicResult({ payload: restarted,
+    screen: { schema: 'test-screen' } }));
+  assert.equal(restarted.last_turn.consequence.conversation
+    .semantic_exchange_projection.npc_ref, null);
   const semanticProjection = project(exchange, state, 'interrupted-route');
   const writeInput = buildNpcSemanticConversationWriteInput({ state,
     next: semanticProjection, semanticExchange: exchange.result });
@@ -135,6 +141,10 @@ test('interrupted NPC surrender has no commitment or item transition', async () 
   assert.equal(restarted.items.some(({ state: itemState }) =>
     itemState?.property_state?.controller_ref ===
       contracts.actors.participating_fisher.instance_id), false);
+  assert.doesNotThrow(() => phase2PublicResult({ payload: restarted,
+    screen: { schema: 'test-screen' } }));
+  assert.equal(restarted.last_turn.consequence.negotiation
+    .semantic_exchange_projection.npc_ref, null);
   const writes = { inserts: [], updates: [], appends: [] };
   assert.doesNotThrow(() => appendSemanticNegotiation({
     ...writes, partyId: state.party_id, state, next: restarted, factual,

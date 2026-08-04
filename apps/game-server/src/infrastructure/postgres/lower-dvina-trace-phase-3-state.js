@@ -202,7 +202,7 @@ function projectPhase3SemanticConversation({
     && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
       sameRef(speaker, npcRef));
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
-    sameRef(speaker, npcRef));
+    sameRef(speaker, npcRef)).slice(0, 1);
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
     .includes(semantic.response_kind);
   const npcSpeechContribution = hasDecision

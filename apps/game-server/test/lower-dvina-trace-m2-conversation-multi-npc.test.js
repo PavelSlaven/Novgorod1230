@@ -18,6 +18,7 @@ import {
   digest,
   phase2ConversationPayload,
   phase3State,
+  projectPhase3Conversation,
   ref,
   revision14Bundle,
   runPhase3
@@ -165,6 +166,16 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       [eremeyRef, responderRef, eremeyRef]);
     assert.equal(new Set(exchange.npcRequests.map(
       ({ request_id: requestId }) => requestId)).size, 3);
+
+    const projectedPhase3 = projectPhase3Conversation({
+      state,
+      contracts,
+      result: exchange.result,
+      inputDigest: digest('b')
+    });
+    assert.equal(projectedPhase3.conversation_statements.filter(
+      ({ speaker_ref: speaker }) => speaker.entity_kind === 'npc'
+    ).length, 3);
 
     const restarted = projectSemanticConversationSnapshot({
       state,

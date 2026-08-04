@@ -8,10 +8,24 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 
 export function buildSurrenderProjection(result, context) {
-  const playerStatement = result.statements[0];
-  const npcStatement = result.statements[1];
-  const playerAudience = result.audiences[0];
-  const npcAudience = result.audiences[1];
+  const statements = [
+    ...(context.state.conversation_statements ?? []),
+    ...result.statements
+  ].filter(({ conversation_id: conversationId, exchange_id: exchangeId }) =>
+    conversationId === context.conversationId
+      && exchangeId === context.exchangeId);
+  const audiences = [
+    ...(context.state.conversation_audiences ?? []),
+    ...result.audiences
+  ];
+  const playerStatement = statements.find(({ speaker_ref: speaker }) =>
+    speaker?.entity_kind === 'player_character');
+  const npcStatement = statements.find(({ speaker_ref: speaker }) =>
+    sameRef(speaker, context.targetRef));
+  const playerAudience = audiences.find(({ statement_ref: statementRef }) =>
+    statementRef?.entity_id === playerStatement?.statement_id);
+  const npcAudience = audiences.find(({ statement_ref: statementRef }) =>
+    statementRef?.entity_id === npcStatement?.statement_id);
   if (!playerStatement || !npcStatement || !playerAudience || !npcAudience) {
     fail(
       'TRACE_M2_SURRENDER_STATEMENT_GAP',

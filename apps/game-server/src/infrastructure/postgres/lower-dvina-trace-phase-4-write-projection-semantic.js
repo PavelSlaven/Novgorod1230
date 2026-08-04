@@ -68,6 +68,7 @@ export function appendSemanticNegotiation({
     `activity:${partyId}:trace-phase4:${turnNumber}:negotiation`;
   appendPhase4ActivityExecution({
     inserts,
+    updates,
     appends,
     partyId,
     state,
@@ -100,7 +101,9 @@ export function appendSemanticNegotiation({
       ...n,
       npc_decision: {
         trace: {
-          request_id: semantic.decision_request?.request_id ?? null
+          request_id: semantic.decision_request?.request_id
+            ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id
+            ?? null
         }
       }
     },
@@ -140,6 +143,8 @@ export function appendSemanticNegotiation({
     semanticExchange: semanticInput.semanticExchange,
     signalRecords: semanticInput.signalRecords,
     actualMessageEvidence: semanticInput.actualMessageEvidence,
+    persistedMessageStatements: semanticInput.persistedMessageStatements,
+    persistedMessageAudiences: semanticInput.persistedMessageAudiences,
     supportingOperationEvidence:
       semanticInput.supportingOperationEvidence,
     partyStateVersion: semanticInput.partyStateVersion,
@@ -237,6 +242,8 @@ function appendSemanticSurrenderStateWrites({
   changeSetId,
   idemId
 }) {
+  const decisionRequestId = semantic.decision_request?.request_id
+    ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
   const ratsha = next.npcs.find(
     ({ participant_slot_ref: ref }) => ref === 'ratsha_storehouse_helper'
   );
@@ -268,7 +275,7 @@ function appendSemanticSurrenderStateWrites({
       occurred_at_subminute_numerator: next.clock.subminute_numerator,
       occurred_at_subminute_denominator: next.clock.subminute_denominator,
       trace: {
-        decision_request_id: semantic.decision_request.request_id,
+        decision_request_id: decisionRequestId,
         fact_id: surrenderFact
       }
     }
@@ -286,7 +293,7 @@ function appendSemanticSurrenderStateWrites({
         character_id: state.actor_id,
         fact_id: factId,
         knowledge_state: 'known_from_committed_source',
-        evidence: [semantic.decision_request.request_id]
+        evidence: [decisionRequestId]
       }));
   }
 }

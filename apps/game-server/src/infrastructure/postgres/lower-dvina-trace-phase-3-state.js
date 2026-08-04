@@ -6,8 +6,12 @@ import { phase3SemanticInteractions } from
   './lower-dvina-trace-phase-3-state-interactions.js';
 import { applyConversationTemporalNpcWrites } from
   './lower-dvina-trace-conversation-temporal.js';
-import { activityHistoryEntry, phase3ActivityRef,
-  phase3RouteTimeUpdate } from './lower-dvina-trace-phase-3-activity-state.js';
+import { phase3RouteTimeUpdate } from
+  './lower-dvina-trace-phase-3-activity-state.js';
+import { appendPhase3ActivityHistory } from
+  './lower-dvina-trace-phase-3-activity-history.js';
+import { projectRepeatedPendingNpcExecution } from
+  './lower-dvina-trace-pending-npc-state.js';
 export { activityHistoryEntry, phase3ActivityRef } from
   './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
@@ -49,14 +53,9 @@ export function nextState({
   }
   next.clock = structuredClone(factual.time_update.clock_after);
   next.clock_weather_light.clock = structuredClone(next.clock);
-  next.activity_history = [...(next.activity_history ?? []),
-    activityHistoryEntry({
-      partyId: state.party_id,
-      turnNumber,
-      factual,
-      inputDigest,
-      changeSetId
-    })];
+  appendPhase3ActivityHistory({
+    next, state, factual, turnNumber, inputDigest, changeSetId
+  });
   if (factual.consequence.phase3_kind === 'movement') {
     next.position = {
       ...next.position,
@@ -84,7 +83,7 @@ export function nextState({
       evidence_refs: []
     }]);
   } else {
-    const conversation = factual.consequence.conversation;
+  const conversation = factual.consequence.conversation;
     if (conversation.semantic_exchange != null) {
       if (conversation.semantic_exchange.exchange
           .applied_contribution_count > 0) {
@@ -95,6 +94,10 @@ export function nextState({
           workingRevision,
           appliedChangeSetId: changeSetId
         });
+      } else if (conversation.semantic_exchange.pending_npc_execution != null) {
+        next = projectRepeatedPendingNpcExecution(
+          next, conversation.semantic_exchange
+        );
       }
       next = projectPhase3SemanticConversation({
         next,
@@ -103,6 +106,24 @@ export function nextState({
         conversation,
         turnNumber
       });
+      if (next.pending_npc_conversation_execution != null
+          && next.pending_npc_conversation_execution.activity_execution_id
+            == null) {
+        next.pending_npc_conversation_execution = {
+          ...next.pending_npc_conversation_execution,
+          activity_execution_id:
+            `activity:${state.party_id}:trace-phase3:${turnNumber}`,
+          total_minutes: conversation.semantic_exchange.exchange.time_budget
+            .total_minutes,
+          elapsed_minutes: conversation.semantic_exchange.exchange.time_budget
+            .elapsed_minutes,
+          started_at: structuredClone(factual.time_update.clock_before),
+          option_id: factual.mode_resolution.option_id,
+          originating_request_id: factual.player_input.request_id,
+          next_attempt_ordinal: 1,
+          activity_state_version: 2
+        };
+      }
     } else {
       const interaction = {
         interaction_id:
@@ -169,11 +190,15 @@ function projectPhase3SemanticConversation({
 }) {
   const semantic = conversation.semantic_exchange;
   applyConversationTemporalNpcWrites(next, semantic);
-  const npcRef = semantic.decision_request?.npc_ref ?? {
+  const resumedPlan = semantic.resumed_npc_execution?.plan ?? null;
+  const npcPlan = resumedPlan ?? semantic.decision_plan;
+  const npcRef = resumedPlan?.speaker_ref
+    ?? semantic.decision_request?.npc_ref ?? {
     entity_kind: 'npc', entity_id: conversation.npc_id
   };
   const hasDecision = semantic.decision_request !== null;
-  const npcApplied = hasDecision
+  const resumed = resumedPlan !== null;
+  const npcApplied = (hasDecision || resumed)
     && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
       sameRef(speaker, npcRef));
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
@@ -181,21 +206,24 @@ function projectPhase3SemanticConversation({
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
     .includes(semantic.response_kind);
   const npcSpeechContribution = hasDecision
-    && semantic.decision_plan?.contribution_kind === 'speech';
+    || resumed
+    ? npcPlan?.contribution_kind === 'speech'
+    : false;
   const expectedContributionKind = npcApplied
     ? (speechResponse ? 'speech' : semantic.response_kind)
-    : semantic.decision_plan?.contribution_kind;
+    : npcPlan?.contribution_kind;
   if (npcRef?.entity_kind !== 'npc'
       || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)
       || conversation.npc_id !== npcRef.entity_id
-      || (hasDecision && semantic.decision_plan?.contribution_kind
+      || ((hasDecision || resumed) && npcPlan?.contribution_kind
         !== expectedContributionKind)
-      || (!hasDecision && (semantic.response_kind !== null
+      || (!hasDecision && !resumed && (semantic.response_kind !== null
         || semantic.decision_plan !== null))
       || !Array.isArray(conversation.objective_fact_outputs)
       || conversation.objective_fact_outputs.length !== 0
-      || (hasDecision && !npcApplied && semantic.response_kind !== null)
-      || (hasDecision && ![
+      || ((hasDecision || resumed) && !npcApplied
+        && semantic.response_kind !== null)
+      || ((hasDecision || resumed) && ![
         'route_disclosure', 'withhold', 'speech', 'silence',
         'leave_conversation', null
       ].includes(semantic.response_kind))) {

@@ -1,20 +1,15 @@
 import { deepFreeze } from '@rus/kernel';
-import { validatePlayerConversationInput } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
 import { decisionPairKey, normalizeNpcBatch } from
   './conversation-exchange-npc-batch.js';
+import { normalizeConversationExchangeInput } from
+  './conversation-exchange-input.js';
+import { resumePendingNpcExecution } from
+  './conversation-exchange-resume.js';
 
-const DEFAULT_EXCHANGE_LIMIT = 8;
-const MAX_EXCHANGE_LIMIT = 32;
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
-const INPUT_KEYS = new Set([
-  'playerRequest',
-  'initialWorkingState',
-  'maxContributionsPerExchange',
-  'timeBudget'
-]);
 const APPLY_RESULT_KEYS = [
   'working_state',
   'contribution_event',
@@ -53,62 +48,6 @@ function clone(value, code, message) {
 
 function immutableClone(value) {
   return deepFreeze(structuredClone(value));
-}
-
-function clonePlainRecord(value, code, message) {
-  if (!plainRecord(value)) fail(code, message);
-  return clone(value, code, message);
-}
-
-function normalizeInput(input) {
-  if (!plainRecord(input)
-    || Object.keys(input).some((key) => !INPUT_KEYS.has(key))
-    || !Object.hasOwn(input, 'playerRequest')
-    || !Object.hasOwn(input, 'initialWorkingState')
-    || !validatePlayerConversationInput(input.playerRequest)) {
-    fail(
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'Conversation exchange input must contain an exact formal player request and working state'
-    );
-  }
-
-  const maxContributionsPerExchange = input.maxContributionsPerExchange
-    ?? DEFAULT_EXCHANGE_LIMIT;
-  if (!Number.isSafeInteger(maxContributionsPerExchange)
-    || maxContributionsPerExchange < 1
-    || maxContributionsPerExchange > MAX_EXCHANGE_LIMIT) {
-    fail(
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'maxContributionsPerExchange must be a positive safe integer no greater than 32'
-    );
-  }
-
-  const timeBudget = input.timeBudget;
-  if (!exactKeys(timeBudget, ['total_minutes', 'contribution_slots'])
-      || !Number.isSafeInteger(timeBudget.total_minutes)
-      || timeBudget.total_minutes < 1
-      || !Number.isSafeInteger(timeBudget.contribution_slots)
-      || timeBudget.contribution_slots < 1
-      || timeBudget.contribution_slots > maxContributionsPerExchange
-      || timeBudget.contribution_slots > timeBudget.total_minutes) {
-    fail(
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'timeBudget must define one positive whole-exchange budget and bounded contribution slots'
-    );
-  }
-
-  return {
-    playerRequest: clone(input.playerRequest,
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'playerRequest must be cloneable'),
-    initialWorkingState: clonePlainRecord(
-      input.initialWorkingState,
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'initialWorkingState must be a plain cloneable object'
-    ),
-    maxContributionsPerExchange,
-    timeBudget: structuredClone(timeBudget)
-  };
 }
 
 function requirePorts(ports) {
@@ -275,8 +214,20 @@ function stopAfterApply(applied) {
 }
 
 export async function runConversationExchange(input = {}, ports = {}) {
-  const normalized = normalizeInput(input);
+  const normalized = normalizeConversationExchangeInput(input);
   requirePorts(ports);
+  if (normalized.pendingNpcExecution !== null) {
+    if (typeof ports.applyPendingNpcContribution !== 'function') {
+      fail(
+        'TURN_CONVERSATION_PORT_MISSING',
+        'applyPendingNpcContribution must be injected for resume'
+      );
+    }
+    return resumePendingNpcExecution(normalized, ports, {
+      callPort, fail, immutableClone, normalizeApplyResult, normalizeTimeProgress,
+      progressAndProject, stopAfterApply
+    });
+  }
   const timeSlices = contributionSlices(normalized.timeBudget);
   let elapsedBudgetMinutes = 0;
   let completedContributionCount = 0;
@@ -324,6 +275,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const processedBoundaryIds = [];
   const processedBoundaryIdSet = new Set();
   const processedDecisionPairs = new Set();
+  let queuedNpcDecisions = [];
+  let pendingNpcExecution = null;
   const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
   elapsedBudgetMinutes += playerProgress.elapsedMinutes;
   if (playerProgress.completed) completedContributionCount += 1;
@@ -340,27 +293,30 @@ export async function runConversationExchange(input = {}, ports = {}) {
       break;
     }
 
-    const rawBatch = await callPort(
-      ports.buildNpcResponseBatch,
-      {
-        working_state: workingState,
-        latest_contribution: latestContribution,
-        processed_boundary_ids: processedBoundaryIds
-      },
-      'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
-      'NPC response batch could not be built'
-    );
-    const batch = normalizeNpcBatch(
-      rawBatch,
-      processedBoundaryIdSet,
-      processedDecisionPairs
-    );
-    if (batch.decisions.length === 0) {
-      stopReason = 'player_response';
-      break;
+    if (queuedNpcDecisions.length === 0) {
+      const rawBatch = await callPort(
+        ports.buildNpcResponseBatch,
+        {
+          working_state: workingState,
+          latest_contribution: latestContribution,
+          processed_boundary_ids: processedBoundaryIds
+        },
+        'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
+        'NPC response batch could not be built'
+      );
+      const batch = normalizeNpcBatch(
+        rawBatch,
+        processedBoundaryIdSet,
+        processedDecisionPairs
+      );
+      queuedNpcDecisions = [...batch.decisions];
+      if (queuedNpcDecisions.length === 0) {
+        stopReason = 'player_response';
+        break;
+      }
     }
 
-    const decision = batch.decisions[0];
+    const decision = queuedNpcDecisions.shift();
     const proposal = await requestNpcSemanticDecision({
       boundary: decision.boundary,
       request: decision.request,
@@ -385,13 +341,14 @@ export async function runConversationExchange(input = {}, ports = {}) {
       rawNpcResult,
       'TURN_CONVERSATION_NPC_APPLY_INVALID'
     );
+    const plannedMinutes = timeSlices[contributions.length]
+      ?? normalized.timeBudget.total_minutes - elapsedBudgetMinutes;
     const npcProgress = await progressAndProject({
       ports,
       applied: npcApplied,
       plan: proposal.plan,
       contributionIndex: contributions.length + 1,
-      plannedMinutes: timeSlices[contributions.length]
-        ?? normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
+      plannedMinutes,
       perceptionPort: ports.projectNpcContributionPerception,
       request: decision.request,
       proposal
@@ -421,7 +378,26 @@ export async function runConversationExchange(input = {}, ports = {}) {
       appliedContributionCount += 1;
     }
     if (npcProgress.interrupted) {
+      pendingNpcExecution = immutableClone({
+        plan: proposal.plan,
+        boundary_id: decision.boundary.boundary_id,
+        contribution_index: contributions.length + 1,
+        remaining_minutes: plannedMinutes - npcProgress.elapsedMinutes,
+        remaining_exchange_minutes:
+          normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
+        remaining_responder_refs: queuedNpcDecisions.map(
+          ({ request }) => request.npc_ref
+        ),
+        same_time_batch_ref: decision.boundary.same_time_batch_ref,
+        source_decision_trace_ref: {
+          entity_kind: 'npc_decision_trace',
+          entity_id: decision.request.request_id
+        }
+      });
       stopReason = 'temporal_boundary';
+    } else if (stopReason === 'player_response'
+        && queuedNpcDecisions.length > 0) {
+      stopReason = null;
     }
   }
 
@@ -467,6 +443,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     completed_contribution_count: completedContributionCount,
     applied_contribution_count: appliedContributionCount,
     handoff,
-    session_status: sessionStatus
+    session_status: sessionStatus,
+    pending_npc_execution: pendingNpcExecution
   });
 }

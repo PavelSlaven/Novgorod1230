@@ -57,12 +57,15 @@ export async function resolveTracePhase3ConversationExchange({
     );
   }
   const availableEvidence = phase3AvailableEvidence(state, contracts);
+  const pendingExecution = state.pending_npc_conversation_execution ?? null;
+  const effectiveInputDigest = pendingExecution?.source_input_digest
+    ?? inputDigest;
   const initialContext = createM2ConversationContext({
     phase: 'phase_3',
     state,
     contracts,
     playerInput,
-    inputDigest,
+    inputDigest: effectiveInputDigest,
     checkResult,
     mapping: contracts.conversationSignalMappings?.question,
     targetActor: target,
@@ -94,11 +97,11 @@ export async function resolveTracePhase3ConversationExchange({
     }),
     playerPlan
   });
-  const effectivePlayerPlan = playerPlan ??
-    await prepareM2PlayerConversationPlan(initialContext);
-  const evidencePresented = phase3PresentedEvidence({
-    state, contracts, plan: effectivePlayerPlan
-  });
+  const effectivePlayerPlan = pendingExecution === null
+    ? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext)
+    : null;
+  const evidencePresented = effectivePlayerPlan === null ? false
+    : phase3PresentedEvidence({ state, contracts, plan: effectivePlayerPlan });
   const mapping = contracts.conversationSignalMappings?.[
     evidencePresented ? 'evidence' : 'question'
   ];
@@ -113,7 +116,7 @@ export async function resolveTracePhase3ConversationExchange({
     evidencePresented,
     evidencePresentation: evidencePresented ? Object.freeze({
       schema: 'conversation_supporting_operation_event_v1',
-      event_id: `evidence-presentation:${inputDigest}`,
+      event_id: `evidence-presentation:${effectiveInputDigest}`,
       conversation_id: initialContext.conversationId,
       exchange_id: initialContext.exchangeId,
       op: 'emit_interaction',
@@ -147,6 +150,7 @@ export async function resolveTracePhase3ConversationExchange({
       })
     : null;
   return freezeResult({
+    input_digest: effectiveInputDigest,
     exchange: result.exchange,
     same_time_batch_ref: ref(
       'temporal_batch',
@@ -162,6 +166,11 @@ export async function resolveTracePhase3ConversationExchange({
     decision_boundary: result.decision?.boundary ?? null,
     decision_request: result.decision?.request ?? null,
     decision_plan: result.decision?.proposal.plan ?? null,
+    decisions: structuredClone(result.decisions),
+    pending_npc_execution:
+      structuredClone(result.exchange.pending_npc_execution),
+    resumed_npc_execution:
+      structuredClone(result.resumedNpcExecution),
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,

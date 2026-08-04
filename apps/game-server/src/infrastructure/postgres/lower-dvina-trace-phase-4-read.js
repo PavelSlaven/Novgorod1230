@@ -80,14 +80,69 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
   assertPhase5ArrivalResourceRows({ payload, movementHistory,
     rows: phase5Resources.rows });
 
-  const expectedActivities = negotiationHistory.flatMap(({ turn_number: turn,
-    consequence: c, time_update: timeUpdate }) => {
+  const expectedActivities = [];
+  for (let historyIndex = 0; historyIndex < negotiationHistory.length;
+    historyIndex += 1) {
+    const { turn_number: turn, consequence: c,
+      time_update: timeUpdate } = negotiationHistory[historyIndex];
     let started = timeUpdate?.clock_before;
     if (!started) fail();
-    return c.negotiation.activity_roots.map((root) => {
+    const projection = c.negotiation.semantic_exchange_projection;
+    const previous = negotiationHistory[historyIndex - 1];
+    const previousProjection = previous?.consequence?.negotiation
+      ?.semantic_exchange_projection;
+    const resumesPrevious = projection?.request_id != null
+      && projection.request_id === previousProjection?.request_id
+      && previousProjection?.time_budget?.status === 'paused';
+    for (const root of c.negotiation.activity_roots) {
       const budget = c.negotiation.semantic_exchange_projection?.time_budget;
       const actualMinutes = budget?.elapsed_minutes ?? root.duration_minutes;
       const status = budget?.status ?? 'completed';
+      if (resumesPrevious) {
+        let originIndex = historyIndex - 1;
+        while (originIndex > 0
+          && negotiationHistory[originIndex - 1].consequence.negotiation
+            .semantic_exchange_projection?.request_id
+            === projection.request_id) originIndex -= 1;
+        const origin = negotiationHistory[originIndex];
+        const previousRoot = origin.consequence.negotiation.activity_roots[0];
+        const previousId = `activity:${partyId}:trace-phase4:${
+          origin.turn_number}:negotiation`;
+        const ended = addElapsedTime(started, {
+          exact_minutes: {
+            numerator: String(actualMinutes), denominator: '1'
+          }
+        });
+        for (const expected of expectedActivities) {
+          if (expected.id === previousId) {
+            expected.status = status;
+            Object.assign(expected, timestampColumns('execution_ended', ended));
+          }
+        }
+        expectedActivities.push({
+          id: previousId,
+          activity_snapshot: {
+            activity_ref: previousRoot.activity_ref,
+            phase4_kind: 'negotiation'
+          },
+          original_total_minutes: String(previousRoot.duration_minutes),
+          status,
+          activity_series_id:
+            `series:${partyId}:trace-phase4:${origin.turn_number}:negotiation`,
+          series_ordinal: 0,
+          attempt_ordinal: historyIndex - originIndex,
+          actual_time_numerator: String(actualMinutes),
+          result_kind: status,
+          result_code: previousRoot.activity_ref,
+          ...timestampColumns('execution_started',
+            origin.time_update.clock_before),
+          ...timestampColumns('execution_ended', ended),
+          ...timestampColumns('attempt_started', started),
+          ...timestampColumns('attempt_ended', ended)
+        });
+        started = ended;
+        continue;
+      }
       const { activityKind, seriesOrdinal } = phase4ActivityIdentity({
         semanticRevision,
         durationMinutes: root.duration_minutes
@@ -97,7 +152,7 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
           numerator: String(actualMinutes), denominator: '1'
         }
       });
-      const expected = {
+      expectedActivities.push({
         id: `activity:${partyId}:trace-phase4:${turn}:${activityKind}`,
         activity_snapshot: { activity_ref: root.activity_ref, phase4_kind: 'negotiation' },
         original_total_minutes: String(root.duration_minutes),
@@ -111,11 +166,10 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
         ...timestampColumns('execution_ended', ended),
         ...timestampColumns('attempt_started', started),
         ...timestampColumns('attempt_ended', ended)
-      };
+      });
       started = ended;
-      return expected;
-    });
-  });
+    }
+  }
   if (canonicalDigest(activities.rows) !== canonicalDigest(expectedActivities)) fail();
 
   const expectedChecks = negotiationHistory.filter(

@@ -37,8 +37,12 @@ export async function resolveTracePhase4ConversationExchange({
   const actualNpcActors = Object.entries(contracts.actors)
     .map(([actorRef, actor]) => ({ ref: actorRef, ...structuredClone(actor) }))
     .filter(({ anchor_id: anchorId }) => anchorId === contracts.anchors.shed);
+  const pendingExecution = state.pending_npc_conversation_execution ?? null;
+  const effectiveInputDigest = pendingExecution?.source_input_digest
+    ?? inputDigest;
   const initialContext = createM2ConversationContext({
-    phase: 'phase_4', state, contracts, playerInput, inputDigest, checkResult,
+    phase: 'phase_4', state, contracts, playerInput,
+    inputDigest: effectiveInputDigest, checkResult,
     mapping, targetActor: { ref: 'ratsha_storehouse_helper', ...target },
     actualNpcActors, playerConversationModel, npcSemanticModel,
     revalidateStateVersion, temporalAdvanceOwner,
@@ -70,15 +74,17 @@ export async function resolveTracePhase4ConversationExchange({
     }),
     playerPlan
   });
-  const effectivePlayerPlan = playerPlan
-    ?? await prepareM2PlayerConversationPlan(initialContext);
+  const effectivePlayerPlan = pendingExecution === null
+    ? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext)
+    : null;
   const context = { ...initialContext, playerPlan: effectivePlayerPlan };
   return resultProjection(
     await executeM2ConversationExchange(context),
     context,
     state,
     offerStage,
-    checkRequest
+    checkRequest,
+    effectiveInputDigest
   );
 }
 
@@ -96,12 +102,14 @@ function requireCausalInput({ checkResult, checkRequest, offerStage, contracts }
   }
 }
 
-function resultProjection(result, context, state, offerStage, checkRequest) {
+function resultProjection(result, context, state, offerStage, checkRequest,
+  inputDigest) {
   const surrender = result.npcOutcome?.kind === 'surrender'
     ? buildSurrenderProjection(result, context) : null;
   const combatHandoff = result.npcOutcome?.kind === 'combat_handoff'
     ? structuredClone(result.exchange.handoff) : null;
   return freezeResult({
+    input_digest: inputDigest,
     exchange: result.exchange,
     same_time_batch_ref: ref('temporal_batch',
       sameTimeBatchKey(state.party_id, result.clockAfter)),
@@ -112,6 +120,11 @@ function resultProjection(result, context, state, offerStage, checkRequest) {
     decision_boundary: result.decision?.boundary ?? null,
     decision_request: result.decision?.request ?? null,
     decision_plan: result.decision?.proposal.plan ?? null,
+    decisions: structuredClone(result.decisions),
+    pending_npc_execution:
+      structuredClone(result.exchange.pending_npc_execution),
+    resumed_npc_execution:
+      structuredClone(result.resumedNpcExecution),
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,

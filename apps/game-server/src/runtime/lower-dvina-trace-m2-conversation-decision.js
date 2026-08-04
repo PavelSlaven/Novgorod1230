@@ -19,7 +19,8 @@ import {
 export function buildNpcDecision(context, working, playerStatement) {
   const resolvedRecords = [
     ...pendingCurrentBatchRecords(context),
-    ...working.new_signal_records
+    ...working.new_signal_records.filter(({ signal }) =>
+      sameRef(signal.subject_ref, context.targetRef))
   ];
   const evaluation = evaluateNpcDecisionSignals({
     npc_ref: context.targetRef,
@@ -37,13 +38,22 @@ export function buildNpcDecision(context, working, playerStatement) {
   }
   const presentedEvidenceRecognized = resolvedRecords.some(({ signal }) =>
     recognizedPresentedEvidenceSignal(context, working, signal));
-  const playerAudience = working.audiences[0];
+  const playerAudience = working.audiences.find(({ statement_ref: reference }) =>
+    reference?.entity_id === playerStatement.statement_id)
+    ?? (context.state.conversation_audiences ?? []).find(
+      ({ statement_ref: reference }) =>
+        reference?.entity_id === playerStatement.statement_id);
+  if (playerAudience === undefined) {
+    fail('TRACE_M2_CONVERSATION_PLAYER_AUDIENCE_MISSING',
+      'NPC decisions require the exact player statement audience.');
+  }
   const perceivedMessage = playerAudience.received_messages.find(
     ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
   );
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
-    request_id: `npc-conversation-request:${context.inputDigest}`,
+    request_id: `npc-conversation-request:${context.inputDigest}:${
+      context.targetRef.entity_id}`,
     boundary_id: evaluation.boundary.boundary_id,
     conversation_id: context.conversationId,
     exchange_id: context.exchangeId,

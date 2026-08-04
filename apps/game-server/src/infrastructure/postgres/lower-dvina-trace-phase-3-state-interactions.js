@@ -109,6 +109,7 @@ export function phase3SemanticInteractions({
       activity_ref: conversation.activity_ref,
       npc_id: npcRef.entity_id,
       contribution_kind: semantic.decision_plan?.contribution_kind
+        ?? semantic.resumed_npc_execution?.plan?.contribution_kind
         ?? lastContribution.contribution_kind
         ?? 'speech',
       contribution_ref: contributionRef,

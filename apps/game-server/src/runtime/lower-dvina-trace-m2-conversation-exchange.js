@@ -29,6 +29,14 @@ import {
   conversationExchangeDurationMinutes
 } from
   './lower-dvina-trace-m2-conversation-time.js';
+import { conversationNpcContext, conversationPlayerStatement } from
+  './lower-dvina-trace-m2-conversation-participants.js';
+import {
+  findResumableConversationSession,
+  hydratedPendingNpcExecution
+} from './lower-dvina-trace-m2-conversation-resume.js';
+import { projectM2ConversationExecutionResult } from
+  './lower-dvina-trace-m2-conversation-result.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -61,7 +69,7 @@ export function createM2ConversationContext(input) {
     input.state.party_id,
     input.state.clock
   );
-  const activeSession = findActiveSession(
+  const activeSession = findResumableConversationSession(
     input.state,
     ref('player_character', input.state.actor_id),
     targetRef
@@ -75,7 +83,8 @@ export function createM2ConversationContext(input) {
     activeSession,
     conversationId: activeSession?.conversation_id
       ?? `conversation:${input.inputDigest.slice(0, 32)}`,
-    exchangeId: `exchange:${input.inputDigest.slice(0, 32)}`,
+    exchangeId: input.state.pending_npc_conversation_execution?.exchange_id
+      ?? `exchange:${input.inputDigest.slice(0, 32)}`,
     socialDeliveryResult: deliveryResult(
       input.checkResult,
       input.phase,
@@ -85,30 +94,11 @@ export function createM2ConversationContext(input) {
   };
 }
 
-function findActiveSession(state, playerRef, targetRef) {
-  const candidates = (state.conversation_sessions ?? []).filter((session) =>
-    session?.status === 'active'
-      && session.location_ref?.entity_id === state.position.location_ref
-      && session.active_participant_refs?.some(
-        (participant) => participant.entity_kind === playerRef.entity_kind
-          && participant.entity_id === playerRef.entity_id
-      )
-      && session.active_participant_refs?.some(
-        (participant) => participant.entity_kind === targetRef.entity_kind
-          && participant.entity_id === targetRef.entity_id
-      ));
-  if (candidates.length > 1) {
-    fail(
-      'TRACE_M2_CONVERSATION_SESSION_AMBIGUOUS',
-      'Only one active conversation with the target may be resumed.'
-    );
-  }
-  return candidates[0] ?? null;
-}
-
 export async function executeM2ConversationExchange(context) {
+  const pendingExecution = hydratedPendingNpcExecution(context);
   const playerRequest = buildPlayerRequest(context);
-  const exchangeDurationMinutes = conversationExchangeDurationMinutes(context);
+  const exchangeDurationMinutes = pendingExecution?.remaining_exchange_minutes
+    ?? conversationExchangeDurationMinutes(context);
   const initialWorkingState = {
     state_version: context.stateVersion,
     clock: structuredClone(context.state.clock),
@@ -122,8 +112,15 @@ export async function executeM2ConversationExchange(context) {
     new_signal_records: [],
     consumed_signal_ids: []
   };
-  let decision = null;
-  let npcOutcome = null;
+  const decisions = new Map();
+  const npcOutcomes = new Map();
+  let resumedOutcome = null;
+  const contributionSlots = Math.min(
+    context.contracts.conversationBindings.max_contributions_per_exchange,
+    pendingExecution === null
+      ? 1 + context.playerPlan.intended_addressee_refs.length
+      : 1 + pendingExecution.remaining_responder_refs.length
+  );
   const exchange = await runConversationExchange({
     playerRequest,
     initialWorkingState,
@@ -131,8 +128,9 @@ export async function executeM2ConversationExchange(context) {
       context.contracts.conversationBindings.max_contributions_per_exchange,
     timeBudget: {
       total_minutes: exchangeDurationMinutes,
-      contribution_slots: 2
-    }
+      contribution_slots: contributionSlots
+    },
+    pendingNpcExecution: pendingExecution
   }, {
     conversationModel: context.playerPlan
       ? async () => structuredClone(context.playerPlan)
@@ -168,21 +166,34 @@ export async function executeM2ConversationExchange(context) {
     ),
     buildNpcResponseBatch: ({
       working_state: working,
-      latest_contribution: latestContribution
+      processed_boundary_ids: processedBoundaryIds,
+      same_time_batch_ref: resumedBatchRef = null
     }) => {
-      if (latestContribution.speaker_ref?.entity_kind !==
-            'player_character') {
-        return { decisions: [], direct_addressee_refs: [] };
-      }
-      decision = buildNpcDecision(
-        workingContext(context, working), working, latestContribution
-      );
-      if (decision === null) {
-        return { decisions: [], direct_addressee_refs: [] };
-      }
+      const playerStatement = conversationPlayerStatement(context, working);
+      const directAddresseeRefs = playerStatement.intended_addressee_refs
+        .filter(({ entity_kind: entityKind }) => entityKind === 'npc');
+      const processed = new Set(processedBoundaryIds);
+      const batchDecisions = directAddresseeRefs.flatMap((targetRef) => {
+        const targetContext = conversationNpcContext(
+          {
+            ...workingContext(context, working),
+            ...(resumedBatchRef === null ? {}
+              : { batchKey: resumedBatchRef.entity_id })
+          },
+          targetRef
+        );
+        const decision = buildNpcDecision(
+          targetContext, working, playerStatement
+        );
+        if (decision === null || processed.has(decision.boundary.boundary_id)) {
+          return [];
+        }
+        decisions.set(decision.request.request_id, decision);
+        return [decision];
+      });
       return {
-        decisions: [decision],
-        direct_addressee_refs: [context.targetRef]
+        decisions: batchDecisions,
+        direct_addressee_refs: directAddresseeRefs
       };
     },
     npcSemanticModel: context.npcSemanticModel,
@@ -194,9 +205,13 @@ export async function executeM2ConversationExchange(context) {
       proposal,
       contribution_index: contributionIndex
     }) => {
-      npcOutcome = context.classifyNpcPlan(proposal.plan);
+      const targetContext = conversationNpcContext(
+        workingContext(context, working), request.npc_ref
+      );
+      const npcOutcome = targetContext.classifyNpcPlan(proposal.plan);
+      npcOutcomes.set(request.request_id, npcOutcome);
       return applyNpcPlan(
-        workingContext(context, working),
+        targetContext,
         working,
         request,
         proposal,
@@ -204,43 +219,48 @@ export async function executeM2ConversationExchange(context) {
         npcOutcome
       );
     },
+    applyPendingNpcContribution: ({
+      working_state: working,
+      plan,
+      contribution_index: contributionIndex
+    }) => {
+      const targetRef = plan.speaker_ref;
+      const targetContext = conversationNpcContext(
+        workingContext(context, working), targetRef
+      );
+      resumedOutcome = targetContext.classifyNpcPlan(plan);
+      return applyNpcPlan(
+        targetContext,
+        working,
+        null,
+        { plan, signal_ids_to_consume: [] },
+        contributionIndex,
+        resumedOutcome
+      );
+    },
     projectNpcContributionPerception: ({
       working_state: working,
-      contribution_event: contributionEvent
+      contribution_event: contributionEvent,
+      request
     }) => projectNpcPerception(
-      workingContext(context, working),
+      conversationNpcContext(workingContext(context, working),
+        request?.npc_ref ?? contributionEvent.speaker_ref),
       working,
       contributionEvent,
-      npcOutcome
+      request === null ? resumedOutcome : npcOutcomes.get(request.request_id)
     )
   });
-  if (exchange.npc_decisions.length > 1
-      || (exchange.npc_decisions.length === 1 && (!decision || !npcOutcome))
-      || (exchange.npc_decisions.length === 0 && (decision || npcOutcome))) {
+  if (pendingExecution === null && (
+    exchange.npc_decisions.some(({ request }) =>
+      !decisions.has(request.request_id) || !npcOutcomes.has(request.request_id))
+      || npcOutcomes.size !== exchange.npc_decisions.length)) {
     fail(
       'TRACE_M2_CONVERSATION_DECISION_CARDINALITY',
-      'The exchange may contain at most one exact NPC semantic decision.'
+      'Every executed NPC semantic decision must have one exact outcome.'
     );
   }
-  const npcContributionApplied = exchange.npc_decisions.length === 1
-    && exchange.contributions.some(({ speaker_ref: speaker }) =>
-      speaker?.entity_kind === context.targetRef.entity_kind
-      && speaker.entity_id === context.targetRef.entity_id);
-  return {
-    exchange,
-    decision: exchange.npc_decisions[0] ?? null,
-    statements: exchange.working_state.statements,
-    audiences: exchange.working_state.audiences,
-    supportingOperationPerceptions:
-      exchange.working_state.supporting_operation_perceptions,
-    newSignalRecords: exchange.working_state.new_signal_records,
-    consumedSignalIds: exchange.working_state.consumed_signal_ids,
-    clockAfter: exchange.working_state.clock,
-    elapsedMinutes: exchange.working_state.elapsed_minutes,
-    temporalBoundaryRefs: exchange.temporal_boundary_refs,
-    socialDeliveryResult: context.socialDeliveryResult,
-    npcOutcome: npcContributionApplied ? npcOutcome : null
-  };
+  return projectM2ConversationExecutionResult({ exchange, context,
+    pendingExecution, npcOutcomes, resumedOutcome });
 }
 
 function workingContext(context, working) {

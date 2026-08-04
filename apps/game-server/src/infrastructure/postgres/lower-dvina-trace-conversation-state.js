@@ -1,7 +1,6 @@
 import {
   buildConversationSession,
-  buildNpcSemanticDecisionTrace,
-  validateNpcDecisionBoundary
+  buildNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
 import {
   compareText,
@@ -27,6 +26,10 @@ import {
   semanticDecisionTraceReference
 } from './lower-dvina-trace-conversation-shared-projection.js';
 import { validateSupportingOperationPerceptions } from './lower-dvina-trace-supporting-operation-perception-state.js';
+import { projectPendingNpcConversationExecution } from
+  './lower-dvina-trace-pending-npc-state.js';
+import { assertSemanticExchangeShape } from
+  './lower-dvina-trace-semantic-exchange-shape.js';
 
 export { assertSharedSemanticSnapshotSafe,
   projectSharedSemanticConsequence,
@@ -43,50 +46,27 @@ export function projectSemanticConversationSnapshot({
   requireRecord(state, 'TRACE_M2_CONVERSATION_SNAPSHOT_INVALID');
   requireRecord(semanticExchange, 'TRACE_M2_SEMANTIC_EXCHANGE_INVALID');
   const exchange = semanticExchange.exchange;
-  const boundary = semanticExchange.decision_boundary;
-  const request = semanticExchange.decision_request;
-  const plan = semanticExchange.decision_plan;
-  const hasDecision = exchange?.npc_decisions?.length === 1;
+  const decisions = exchange?.npc_decisions ?? [];
+  const hasDecision = decisions.length > 0;
+  const primaryDecision = decisions[0] ?? null;
   const firstContribution = exchange?.contributions?.[0];
-  const exchangeIdentity = hasDecision ? request : {
+  const exchangeIdentity = hasDecision ? primaryDecision.request : {
     conversation_id: firstContribution?.conversation_id,
     exchange_id: firstContribution?.exchange_id
   };
-  if (!record(exchange)
-      || exchange.schema !== 'conversation_exchange_result_v1'
-      || !Array.isArray(exchange.contributions)
-      || exchange.contributions.length < 1
-      || !Array.isArray(exchange.npc_decisions)
-      || exchange.npc_decisions.length > 1
-      || !Array.isArray(semanticExchange.objective_truth_writes)
-      || semanticExchange.objective_truth_writes.length !== 0
-      || (hasDecision && (!validateNpcDecisionBoundary(boundary)
-        || boundary.boundary_id !== request?.boundary_id
-        || boundary.npc_ref.entity_id !== request?.npc_ref?.entity_id
-        || boundary.state_version !== String(request?.state_version)
-        || exchange.npc_decisions[0]?.boundary?.boundary_id
-          !== boundary.boundary_id
-        || exchange.npc_decisions[0]?.request?.request_id
-          !== request?.request_id
-        || exchange.npc_decisions[0]?.proposal?.plan?.request_id
-          !== plan?.request_id))
-      || (!hasDecision && (boundary !== null || request !== null || plan !== null))) {
-    fail(
-      'TRACE_M2_SEMANTIC_EXCHANGE_INVALID',
-      'The committed semantic exchange has an invalid NPC decision cardinality.'
-    );
-  }
+  assertSemanticExchangeShape({ semanticExchange, exchange, decisions,
+    primaryDecision, record, fail });
 
-  let trace = null;
+  let traces = [];
   if (hasDecision) {
     try {
-      trace = buildNpcSemanticDecisionTrace({
-        request,
-        plan,
+      traces = decisions.map((decision) => buildNpcSemanticDecisionTrace({
+        request: decision.request,
+        plan: decision.proposal.plan,
         root_turn_id: rootTurnId,
         working_revision: workingRevision,
         applied_change_set_id: appliedChangeSetId
-      });
+      }));
     } catch (error) {
       fail(
         'TRACE_M2_SEMANTIC_TRACE_INVALID',
@@ -120,12 +100,14 @@ export function projectSemanticConversationSnapshot({
     semanticExchange.consumed_signal_ids
   );
   if (hasDecision) {
-    requireBoundarySignalLineage({
-      state,
-      boundary,
-      signalRecords,
-      consumedSignalIds
-    });
+    for (const decision of decisions) {
+      requireBoundarySignalLineage({
+        state,
+        boundary: decision.boundary,
+        signalRecords,
+        consumedSignalIds
+      });
+    }
   } else if (consumedSignalIds.length !== 0) {
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
@@ -179,15 +161,17 @@ export function projectSemanticConversationSnapshot({
     ...consumedSignalIds
   ])].sort(compareText);
   delete next.npc_semantic_decision_traces;
-  if (trace !== null) {
+  if (traces.length > 0) {
     next.npc_semantic_decision_refs = mergeAppendOnly(
       next.npc_semantic_decision_refs,
-      [semanticDecisionTraceReference(trace)],
+      traces.map(semanticDecisionTraceReference),
       ({ request_id: id }) => id,
       'TRACE_M2_SEMANTIC_TRACE_CONFLICT'
     );
   }
-  return next;
+  return projectPendingNpcConversationExecution({
+    next, semanticExchange, exchange, traces, decisions, fail
+  });
 }
 
 function contributionIdentity(contribution) {

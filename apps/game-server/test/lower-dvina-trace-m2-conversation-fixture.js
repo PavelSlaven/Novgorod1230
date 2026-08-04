@@ -214,6 +214,7 @@ export async function runPhase3({
   let playerCalls = 0;
   let npcCalls = 0;
   let npcRequest = null;
+  const npcRequests = [];
   const result = await resolveTracePhase3ConversationExchange({
     state,
     contracts,
@@ -234,10 +235,14 @@ export async function runPhase3({
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
+      npcRequests.push(structuredClone(request));
       const plan = eremeyPlan(
         request,
         responseKind,
-        request.decision_scope.operation_contract.disclose_known_route
+        request.decision_scope.operation_contract.disclose_known_route ?? {
+          route_ref: 'unused-route',
+          source_knowledge_scope_ref: 'unused-knowledge-scope'
+        }
       );
       plan.activity.duration_class = durationForCall(
         npcDurationClasses, npcCalls
@@ -249,7 +254,7 @@ export async function runPhase3({
     ),
     revalidateStateVersion: async () => state.party_state.state_version
   });
-  return { result, playerCalls, npcCalls, npcRequest };
+  return { result, playerCalls, npcCalls, npcRequest, npcRequests };
 }
 
 export async function runPhase4({
@@ -339,7 +344,9 @@ function playerPlan(request, {
   inputMode = 'verbatim',
   utteranceText = request.raw_text,
   offer = false,
-  evidence = false
+  evidence = false,
+  primaryAddresseeRef = request.player_safe_context.target_npc_ref,
+  intendedAddresseeRefs = [request.player_safe_context.target_npc_ref]
 } = {}) {
   const availableCheck = request.player_safe_context.available_check;
   return {
@@ -350,8 +357,8 @@ function playerPlan(request, {
     speaker_ref: request.speaker_ref,
     input_mode: inputMode,
     contribution_kind: 'speech',
-    primary_addressee_ref: request.player_safe_context.target_npc_ref,
-    intended_addressee_refs: [request.player_safe_context.target_npc_ref],
+    primary_addressee_ref: primaryAddresseeRef,
+    intended_addressee_refs: intendedAddresseeRefs,
     affected_actor_refs: [],
     speech: speech({
       utteranceText,
@@ -636,7 +643,8 @@ export function projectPhase3Conversation({ state, contracts, result, inputDiges
           activity_ref: result.evidence_presentation
             ? contracts.evidenceTalk.profile_id
             : contracts.talk.profile_id,
-          npc_id: result.decision_request?.npc_ref.entity_id
+          npc_id: result.resumed_npc_execution?.plan?.speaker_ref.entity_id
+            ?? result.decision_request?.npc_ref.entity_id
             ?? contracts.actors.find(
               ({ ref: actorRef }) => actorRef === 'eremey_fisher'
             ).instance_id,

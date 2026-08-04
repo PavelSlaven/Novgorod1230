@@ -120,6 +120,12 @@ export async function commitLowerDvinaTracePhase3({
         state,
         semanticContext?.semanticExchange
       ),
+      ...(semanticContext?.semanticExchange?.resumed_npc_execution == null
+        ? [] : [expected(
+            'party_timed_activity_executions',
+            state.pending_npc_conversation_execution.activity_execution_id,
+            state.pending_npc_conversation_execution.activity_state_version
+          )]),
       ...(factual.body_update?.applied === true ? [expected(
         'party_actor_body_states', `player_character:${state.actor_id}`,
         state.party_state.body_state_version

@@ -77,7 +77,7 @@ export function phase3Writes(input) {
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
   } else {
     appendActivity({
-      inserts, appends, state, next, factual, partyId, turnNumber,
+      inserts, updates, appends, state, next, factual, partyId, turnNumber,
       changeSetId, idemId, inputDigest
     });
     const semanticExchange =
@@ -102,6 +102,10 @@ export function phase3Writes(input) {
         semanticExchange: semanticInput.semanticExchange,
         signalRecords: semanticInput.signalRecords,
         actualMessageEvidence: semanticInput.actualMessageEvidence,
+        persistedMessageStatements:
+          semanticInput.persistedMessageStatements,
+        persistedMessageAudiences:
+          semanticInput.persistedMessageAudiences,
         supportingOperationEvidence:
           semanticInput.supportingOperationEvidence,
         partyStateVersion: semanticInput.partyStateVersion,

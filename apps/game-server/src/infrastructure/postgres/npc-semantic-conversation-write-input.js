@@ -18,6 +18,13 @@ export function buildNpcSemanticConversationWriteInput({
   }
   const request = semanticExchange.decision_request;
   const boundary = semanticExchange.decision_boundary;
+  const decisions = semanticExchange.exchange?.npc_decisions?.length > 0
+    ? semanticExchange.exchange.npc_decisions
+    : semanticExchange.decision_request == null ? [] : [{
+        boundary: semanticExchange.decision_boundary,
+        request: semanticExchange.decision_request,
+        proposal: { plan: semanticExchange.decision_plan }
+      }];
   const firstContribution = semanticExchange.exchange?.contributions?.[0];
   const conversationId = request?.conversation_id
     ?? firstContribution?.conversation_id;
@@ -30,9 +37,15 @@ export function buildNpcSemanticConversationWriteInput({
   const existingSession = (state.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === conversationId
   ) ?? null;
+  const currentStatementIds = new Set(
+    (semanticExchange.statements ?? []).map(({ statement_id: id }) => id)
+  );
   const statements = (next.conversation_statements ?? []).filter(
-    ({ conversation_id: id, exchange_id: candidateExchangeId }) =>
-      id === conversationId && candidateExchangeId === exchangeId
+    ({ statement_id: id, conversation_id: candidateConversationId,
+      exchange_id: candidateExchangeId }) =>
+      currentStatementIds.has(id)
+      && candidateConversationId === conversationId
+      && candidateExchangeId === exchangeId
   );
   const statementIds = new Set(statements.map(
     ({ statement_id: id }) => id
@@ -51,7 +64,13 @@ export function buildNpcSemanticConversationWriteInput({
   const signalRecordsById = new Map(next.npc_decision_signals.map(
     (entry) => [entry?.signal?.signal_id, entry?.signal]
   ));
-  const signalRecords = (boundary?.signal_refs ?? []).map(
+  const decisionSignalRefs = decisions.flatMap(
+    (decision) => decision.boundary?.signal_refs ?? []
+  );
+  const uniqueSignalRefs = [...new Map(decisionSignalRefs.map(
+    (reference) => [reference.entity_id, reference]
+  )).values()];
+  const signalRecords = uniqueSignalRefs.map(
     ({ entity_id: signalId }) => signalRecordsById.get(signalId)
   );
   if (signalRecords.some((signal) => signal === undefined)) {
@@ -108,6 +127,28 @@ export function buildNpcSemanticConversationWriteInput({
         }
       };
     }));
+  const currentPerceptionIds = new Set(actualMessageEvidence.map(
+    ({ perception_result_ref: reference }) => reference.entity_id
+  ));
+  const persistedPerceptionIds = new Set(decisions.flatMap(({ request: entry }) => {
+    const message = entry.perceived_message;
+    return message !== null
+      && !currentPerceptionIds.has(message.perception_result_ref.entity_id)
+      ? [message.perception_result_ref.entity_id] : [];
+  }));
+  const persistedMessages = (state.received_messages ?? []).filter(
+    ({ perception_result_ref: reference }) =>
+      persistedPerceptionIds.has(reference?.entity_id)
+  );
+  const persistedStatementIds = new Set(persistedMessages.map(
+    ({ source_statement_ref: reference }) => reference.entity_id
+  ));
+  const persistedMessageStatements = (state.conversation_statements ?? [])
+    .filter(({ statement_id: statementId }) =>
+      persistedStatementIds.has(statementId));
+  const persistedMessageAudiences = (state.conversation_audiences ?? [])
+    .filter(({ statement_ref: reference }) =>
+      persistedStatementIds.has(reference?.entity_id));
   const supportingOperationEvidence = (
     semanticExchange.supporting_operation_perceptions ?? []
   ).map((perception) => ({
@@ -138,6 +179,8 @@ export function buildNpcSemanticConversationWriteInput({
     },
     signalRecords,
     actualMessageEvidence,
+    persistedMessageStatements,
+    persistedMessageAudiences,
     supportingOperationEvidence,
     expectedSessionStateVersion: existingSession?.state_version ?? null,
     partyStateVersion: state.party_state?.state_version,

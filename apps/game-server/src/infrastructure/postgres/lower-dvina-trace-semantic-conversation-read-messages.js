@@ -50,24 +50,16 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
   const statementById = new Map(statements.map(
     (row) => [row.statement_id, row]
   ));
-  const decisionByExchange = new Map(decisions.map(
-    (row) => [
-      `${row.semantic_request.conversation_id}\u0000${
-        row.semantic_request.exchange_id}`,
-      row
-    ]
-  ));
-  const sessionById = new Map(sessions.map(
-    (row) => [row.conversation_id, row]
-  ));
-  const exchangeVersions = conversationExchangeVersions(
-    decisions,
-    sessionById,
-    contributions
-  );
-  const contributionByExchange = new Map((contributions ?? []).map((row) => [
-    `${row.conversation_id}\u0000${row.exchange_id}`,
-    row
+  const decisionsByExchange = new Map();
+  for (const row of decisions) {
+    const key = `${row.semantic_request.conversation_id}\u0000${
+      row.semantic_request.exchange_id}`;
+    decisionsByExchange.set(key, [
+      ...(decisionsByExchange.get(key) ?? []), row
+    ]);
+  }
+  const contributionById = new Map((contributions ?? []).map((row) => [
+    row.contribution_id, row
   ]));
   for (let index = 0; index < expected.length; index += 1) {
     const message = expected[index];
@@ -76,13 +68,17 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
     const statement = statementById.get(
       message.source_statement_ref?.entity_id
     );
-    const decision = statement && decisionByExchange.get(
-      `${statement.conversation_id}\u0000${statement.exchange_id}`
-    );
     const exchangeKey = statement
       ? `${statement.conversation_id}\u0000${statement.exchange_id}`
       : null;
-    const contribution = contributionByExchange.get(exchangeKey);
+    const exchangeDecisions = (decisionsByExchange.get(exchangeKey) ?? [])
+      .filter((candidate) =>
+        candidate.change_set_id === statement?.change_set_id);
+    const decision = exchangeDecisions.find((candidate) =>
+      canonicalDigest(candidate.semantic_request.npc_ref)
+        === canonicalDigest(message.listener_ref)
+    ) ?? exchangeDecisions[0];
+    const contribution = contributionById.get(statement?.statement_id);
     if (!statement || (!decision && !contribution)
         || row.perception_id !== perceptionId
         || row.event_id !== `conversation-message-event:${perceptionId}`
@@ -139,11 +135,9 @@ export function assertMessages({ partyId, payload, sessions, statements, decisio
       canonical_input_digest: inputDigest,
       perception_digest: perceptionDigest,
       expected_state_versions_digest: canonicalDigest({
-        party_state_version: decision?.semantic_request.state_version
-          ?? Number(contribution.party_state_version),
-        conversation_state_version: exchangeVersions.get(
-          exchangeKey
-        )
+        party_state_version: Number(contribution.party_state_version),
+        conversation_state_version:
+          Number(contribution.session_state_version)
       }),
       dependency_pins_digest: canonicalDigest(evidence.dependency_pins),
       policy_versions_digest: canonicalDigest(evidence.policy_versions),

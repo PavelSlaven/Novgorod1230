@@ -17,6 +17,8 @@ export function appendM2SurrenderObserverPerceptions({
   const semantic =
     factual.consequence.negotiation?.semantic_exchange;
   if (semantic?.response_kind !== 'surrender') return;
+  const decisionRequestId = semantic.decision_request?.request_id
+    ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
   if (contracts.conversationBindings == null) {
     semanticFail('TRACE_M2_PHASE_4_KNIFE_BINDING_MISSING');
   }
@@ -84,7 +86,7 @@ export function appendM2SurrenderObserverPerceptions({
       observers.map(({ instance_id: id }) => ref('npc', id)),
     decision_request_ref: ref(
       'npc_conversation_response_request',
-      semantic.decision_request.request_id
+      decisionRequestId
     )
   };
   inserts.push(row('party_temporal_events', eventId, {

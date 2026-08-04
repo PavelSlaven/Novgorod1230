@@ -31,28 +31,33 @@ export function projectPhase4SemanticNegotiation({
     'leave_conversation', 'combat_handoff', null
   ]);
   const hasDecision = semantic.decision_request !== null;
-  const npcRef = semantic.decision_request?.npc_ref ?? npcRefForContracts(contracts);
-  const npcApplied = hasDecision
+  const resumedPlan = semantic.resumed_npc_execution?.plan ?? null;
+  const npcPlan = semantic.decision_plan ?? resumedPlan;
+  const resumed = resumedPlan !== null;
+  const npcRef = semantic.decision_request?.npc_ref
+    ?? resumedPlan?.speaker_ref ?? npcRefForContracts(contracts);
+  const npcApplied = (hasDecision || resumed)
     && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
       sameRef(speaker, npcRef));
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
   const speechResponse = ['surrender', 'lie', 'bargain', 'speech']
     .includes(responseKind);
-  const npcSpeechContribution = hasDecision
-    && semantic.decision_plan?.contribution_kind === 'speech';
+  const npcSpeechContribution = (hasDecision || resumed)
+    && npcPlan?.contribution_kind === 'speech';
   const expectedContributionKind = npcApplied
     ? (speechResponse ? 'speech' : responseKind)
-    : semantic.decision_plan?.contribution_kind;
-  if ((hasDecision && !validKinds.has(responseKind))
-      || (hasDecision && !npcApplied && responseKind !== null)
-      || (!hasDecision && responseKind !== null)
+    : npcPlan?.contribution_kind;
+  if (((hasDecision || resumed) && !validKinds.has(responseKind))
+      || ((hasDecision || resumed) && !npcApplied && responseKind !== null)
+      || (!hasDecision && !resumed && responseKind !== null)
       || npcRef?.entity_kind !== 'npc'
       || npcRef.entity_id
         !== contracts.actors?.ratsha_storehouse_helper?.instance_id
-      || (hasDecision && semantic.decision_plan?.contribution_kind
+      || ((hasDecision || resumed) && npcPlan?.contribution_kind
         !== expectedContributionKind)
-      || (!hasDecision && semantic.decision_plan !== null)
+      || (!hasDecision && !resumed && semantic.decision_plan !== null)
+      || (resumed && semantic.decision_plan !== null)
       || !Array.isArray(negotiation.objective_fact_outputs)
       || negotiation.objective_fact_outputs.length !== 0
       || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)) {
@@ -116,7 +121,7 @@ export function projectPhase4SemanticNegotiation({
 
   if (responseKind === 'combat_handoff') {
     if (!semantic.combat_handoff
-        || semantic.decision_plan?.contribution_kind !== 'combat_handoff') {
+        || npcPlan?.contribution_kind !== 'combat_handoff') {
       semanticFail('TRACE_M2_PHASE_4_COMBAT_HANDOFF_INVALID');
     }
     next.player_response_boundary =
@@ -140,6 +145,8 @@ function npcRefForContracts(contracts) {
 function applySemanticSurrender({
   next, state, semantic, contracts, turnNumber
 }) {
+  const decisionRequestId = semantic.decision_request?.request_id
+    ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
   const knifeWrites = contracts?.knifeTransition?.writes;
   if (!knifeWrites?.physical_position || !knifeWrites?.accessibility) {
     semanticFail('TRACE_PHASE_4_KNIFE_TRANSITION_WRITES_MISSING');
@@ -164,11 +171,11 @@ function applySemanticSurrender({
   next.knowledge = mergeKnowledge(next.knowledge, [{
     fact_id: 'ratsha_surrender_without_further_harm_committed',
     knowledge_state: 'known_from_committed_source',
-    evidence_refs: [semantic.decision_request.request_id]
+    evidence_refs: [decisionRequestId]
   }, {
     fact_id: 'promise_activation_basis_committed',
     knowledge_state: 'known_from_committed_source',
-    evidence_refs: [semantic.decision_request.request_id]
+    evidence_refs: [decisionRequestId]
   }]);
   next.items = next.items.map((item) =>
     item.template_id !== 'trace_ld_v1_item_ratsha_knife'

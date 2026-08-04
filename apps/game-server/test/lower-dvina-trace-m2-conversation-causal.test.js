@@ -238,6 +238,41 @@ test('partial bystander perception persists unchanged', async () => {
     semanticReadPool(writes), next)).length, 1);
 });
 
+test('two addressed active NPCs respond once while a bystander only hears',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const responder = npcBySlot(state, 'background_fisher_1');
+    const bystander = npcBySlot(state, 'background_fisher_2');
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const responderRef = ref('npc', responder.instance_id);
+    const exchange = await runPhase3({ state, contracts,
+      rawText: 'Еремей и рыбак, что вы видели?', inputDigest: digest('5'),
+      responseKind: 'speech', playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef, responderRef]
+      } });
+
+    assert.equal(exchange.npcCalls, 2);
+    assert.deepEqual(exchange.npcRequests.map(({ npc_ref: npc }) => npc),
+      [eremeyRef, responderRef].sort((left, right) =>
+        left.entity_id.localeCompare(right.entity_id, 'en')));
+    assert.equal(exchange.npcRequests.some(({ npc_ref: npc }) =>
+      npc.entity_id === bystander.instance_id), false);
+    assert.equal(exchange.result.statements.filter(({ speaker_ref: speaker }) =>
+      speaker.entity_kind === 'npc').length, 2);
+    const next = project(exchange, state, 'two-active-responders');
+    const writeInput = buildNpcSemanticConversationWriteInput({
+      state, next, semanticExchange: exchange.result
+    });
+    const writes = writeSemantic(state, writeInput, 'two-active-responders');
+    assert.equal(writes.appends.filter(({ target_table: table }) =>
+      table === 'party_npc_decision_traces').length, 2);
+    assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(writes), next)).length, 2);
+  });
+
 test('background boundary updates perception without pausing conversation', async () => {
   const state = phase3State();
   const scheduledAt = addElapsedTime(state.clock, {

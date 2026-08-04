@@ -55,13 +55,16 @@ export function projectSharedSemanticExchange(semanticExchange) {
   if (request === null && boundary === null
       && semanticExchange?.decision_plan === null
       && record(firstContribution)) {
+    const resumed = semanticExchange.resumed_npc_execution ?? null;
     return {
-      request_id: null,
+      request_id: resumed?.decision_trace_ref?.entity_id ?? null,
       boundary_id: null,
       conversation_id: firstContribution.conversation_id,
       exchange_id: firstContribution.exchange_id,
-      npc_ref: null,
-      response_kind: null,
+      npc_ref: resumed === null
+        ? null : structuredClone(firstContribution.speaker_ref),
+      response_kind: resumed === null
+        ? null : semanticExchange.response_kind,
       time_budget: structuredClone(
         semanticExchange.exchange.time_budget
       ),
@@ -70,10 +73,27 @@ export function projectSharedSemanticExchange(semanticExchange) {
           entity_kind: 'conversation_statement', entity_id: statementId
         })
       ),
-      route_disclosure: null,
+      route_disclosure: semanticExchange.route_disclosure == null
+        ? null : {
+            route_ref: semanticExchange.route_disclosure.route_ref,
+            source_statement_ref: structuredClone(
+              semanticExchange.route_disclosure.source_statement_ref
+            )
+          },
       commitment: structuredClone(semanticExchange.commitment ?? null),
-      surrender: null,
-      knife_transition_eligibility: null
+      surrender: semanticExchange.surrender == null
+        ? null : {
+            fact_id: semanticExchange.surrender.fact_id,
+            source_statement_ref: structuredClone(
+              semanticExchange.surrender.source_statement_ref
+            )
+          },
+      knife_transition_eligibility:
+        semanticExchange.knife_transition_eligibility == null
+          ? null : {
+              eligible:
+                semanticExchange.knife_transition_eligibility.eligible === true
+            }
     };
   }
   if (!record(request)

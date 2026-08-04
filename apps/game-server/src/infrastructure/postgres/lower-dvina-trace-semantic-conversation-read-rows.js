@@ -1,4 +1,3 @@
-
 import { canonicalDigest } from '@rus/materialization';
 import {
   buildNpcSemanticDecisionTrace,
@@ -15,7 +14,6 @@ import { projectConversationReceivedClaims } from
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
-
 import {
   fail,
   refKey,
@@ -26,16 +24,11 @@ import {
   statementContract,
   timestampMatches
 } from './lower-dvina-trace-semantic-conversation-read-shared.js';
-
 export function assertChangeSetLineage(sessions, statements, decisions,
   contributions = []) {
-  const byExchange = new Map();
   const latestByConversation = new Map();
   for (const decision of decisions) {
     const request = decision.semantic_request;
-    const exchangeKey = `${request.conversation_id}\u0000${request.exchange_id}`;
-    if (byExchange.has(exchangeKey)) fail();
-    byExchange.set(exchangeKey, decision);
     const current = latestByConversation.get(request.conversation_id);
     const currentStateVersion = Number(
       current?.semantic_request.state_version ?? -1
@@ -44,32 +37,43 @@ export function assertChangeSetLineage(sessions, statements, decisions,
     const currentWorkingRevision = Number(current?.working_revision ?? -1);
     const decisionWorkingRevision = Number(decision.working_revision);
     if (current && currentStateVersion === decisionStateVersion
-        && currentWorkingRevision === decisionWorkingRevision) fail();
+        && currentWorkingRevision === decisionWorkingRevision
+        && (current.change_set_id !== decision.change_set_id
+          || current.semantic_request.exchange_id !== request.exchange_id)) {
+      fail();
+    }
     if (!current || currentStateVersion < decisionStateVersion
         || (currentStateVersion === decisionStateVersion
           && currentWorkingRevision < decisionWorkingRevision)) {
       latestByConversation.set(request.conversation_id, decision);
     }
   }
+  const contributionsById = new Map();
   for (const contribution of contributions) {
-    const exchangeKey = `${contribution.conversation_id}\u0000${
-      contribution.exchange_id}`;
-    if (!byExchange.has(exchangeKey)) byExchange.set(exchangeKey, contribution);
+    if (contributionsById.has(contribution.contribution_id)) fail();
+    contributionsById.set(contribution.contribution_id, contribution);
     const current = latestByConversation.get(contribution.conversation_id);
     if (!current || Number(current.session_state_version ?? -1)
         < Number(contribution.session_state_version)) {
       latestByConversation.set(contribution.conversation_id, contribution);
     }
   }
-  if (statements.some((statement) =>
-    byExchange.get(`${statement.conversation_id}\u0000${
-      statement.exchange_id}`)?.change_set_id !== statement.change_set_id
-  ) || sessions.some((session) =>
+  if (statements.some((statement) => {
+    const contribution = contributionsById.get(statement.statement_id);
+    if (contribution) {
+      return contribution.conversation_id !== statement.conversation_id
+        || contribution.exchange_id !== statement.exchange_id
+        || contribution.change_set_id !== statement.change_set_id;
+    }
+    return !decisions.some((decision) =>
+      decision.semantic_request.conversation_id === statement.conversation_id
+        && decision.semantic_request.exchange_id === statement.exchange_id
+        && decision.change_set_id === statement.change_set_id);
+  }) || sessions.some((session) =>
     latestByConversation.get(session.conversation_id)?.change_set_id
       !== session.updated_change_set_id
   )) fail();
 }
-
 export function assertSessions(payload, rows) {
   const expected = sorted(
     payload.conversation_sessions ?? [],
@@ -95,7 +99,6 @@ export function assertSessions(payload, rows) {
       || canonicalDigest(actual) !== canonicalDigest(expected)) fail();
   return rows;
 }
-
 export function assertStatementsAndAudiences(payload, rows) {
   const expectedStatements = sorted(
     payload.conversation_statements ?? [],
@@ -189,7 +192,6 @@ function matchesPerceptionProjection(message, statement) {
     : [];
   return canonicalDigest(message.claims) === canonicalDigest(expectedClaims);
 }
-
 export function assertDecisions(payload, rows) {
   if (Object.hasOwn(payload, 'npc_semantic_decision_traces')) fail();
   const expected = sorted(

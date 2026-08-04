@@ -16,6 +16,8 @@ import {
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { evidencePresentationPerception } from './lower-dvina-trace-m2-conversation-supporting-perception.js';
+import { playerDecisionSignalRecords } from
+  './lower-dvina-trace-m2-conversation-participants.js';
 
 export function applyPlayerPlan(context, working, plan) {
   requirePlayerSpeech(context, plan);
@@ -38,9 +40,6 @@ export function projectPlayerPerception(context, working, statement) {
   const audience = audienceForStatement(
     context, statement, context.actualNpcActors, []
   );
-  const targetMessage = audience.received_messages.find(
-    ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
-  );
   const supportingOperationPerception = evidencePresentationPerception(context);
   const evidencePerceptionRef = supportingOperationPerception !== null
     && supportingOperationPerception.result_kind !== 'not_perceived'
@@ -49,12 +48,10 @@ export function projectPlayerPerception(context, working, statement) {
         supportingOperationPerception.perception_id
       )
     : null;
-  const newSignalRecords = currentSignalRecords(
-    context,
-    statement,
-    targetMessage?.perception_result_ref ?? null,
-    evidencePerceptionRef
-  );
+  const newSignalRecords = playerDecisionSignalRecords({
+    context, audience, statement, evidencePerceptionRef,
+    buildRecords: currentSignalRecords
+  });
   return applyResult({
     working: {
       ...working,

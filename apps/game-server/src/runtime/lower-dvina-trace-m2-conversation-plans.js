@@ -124,6 +124,21 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
   );
 }
 
+export function classifyOrdinaryConversationPlan(plan) {
+  requireDomainOwned(plan);
+  if (['silence', 'leave_conversation'].includes(plan.contribution_kind)) {
+    return { kind: plan.contribution_kind };
+  }
+  if (plan.contribution_kind === 'speech'
+      && plan.supporting_operations.length === 0) {
+    return { kind: 'speech', statementRef: null };
+  }
+  fail(
+    'TRACE_M2_ORDINARY_NPC_RESPONSE_INVALID',
+    'An additional conversation participant may only contribute ordinary speech, silence, or leave.'
+  );
+}
+
 export function requirePlayerSpeech(context, plan) {
   requireDomainOwned(plan);
   const intended = plan.intended_addressee_refs ?? [];

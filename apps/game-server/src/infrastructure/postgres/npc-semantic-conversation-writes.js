@@ -1,7 +1,5 @@
 
-import { canonicalDigest } from '@rus/materialization';
 import {
-  buildNpcSemanticDecisionTrace,
   validateConversationContributionPlan,
   validateConversationSession,
   validateNpcConversationResponseRequest,
@@ -29,6 +27,8 @@ import {
 } from './npc-semantic-conversation-write-rows.js';
 import { appendSupportingOperationPerceptionWrites } from
   './npc-semantic-conversation-supporting-operation-writes.js';
+import { appendNpcDecisionTraceWrites } from
+  './npc-semantic-conversation-decision-writes.js';
 
 export { buildNpcSemanticConversationWriteInput } from
   './npc-semantic-conversation-write-input.js';
@@ -50,12 +50,22 @@ export function appendNpcSemanticConversationWrites({
   semanticExchange,
   signalRecords,
   actualMessageEvidence,
+  persistedMessageStatements = [],
+  persistedMessageAudiences = [],
   supportingOperationEvidence = [],
   partyStateVersion,
   sameTimeBatchRef,
   contributions
 } = {}) {
-  const hasDecision = semanticExchange?.decision_request !== null;
+  const decisions = semanticExchange?.exchange?.npc_decisions?.length > 0
+    ? semanticExchange.exchange.npc_decisions
+    : semanticExchange?.decision_request == null ? [] : [{
+        boundary: semanticExchange.decision_boundary,
+        request: semanticExchange.decision_request,
+        proposal: { plan: semanticExchange.decision_plan }
+      }];
+  const hasDecision = decisions.length > 0;
+  const primaryDecision = decisions[0] ?? null;
   if (!writeArraysValid(inserts, updates, appends)
       || ![partyId, changeSetId, idempotencyRecordId, rootTurnId].every(stableId)
       || !Number.isSafeInteger(workingRevision)
@@ -71,17 +81,23 @@ export function appendNpcSemanticConversationWrites({
       || sameTimeBatchRef.entity_kind !== 'temporal_batch'
       || !Array.isArray(contributions)
       || contributions.length < 1
+      || !Array.isArray(persistedMessageStatements)
+      || !Array.isArray(persistedMessageAudiences)
       || !validSupportingOperationEvidence(supportingOperationEvidence)
-      || (hasDecision && (!validateNpcDecisionBoundary(semanticExchange.decision_boundary)
-        || !validateNpcConversationResponseRequest(semanticExchange.decision_request)
+      || (hasDecision && (decisions.some((decision) =>
+        !validateNpcDecisionBoundary(decision?.boundary)
+        || !validateNpcConversationResponseRequest(decision?.request)
         || !validateConversationContributionPlan(
-          semanticExchange.decision_plan,
-          semanticExchange.decision_request
+          decision?.proposal?.plan,
+          decision.request
         )
-        || !exactBoundaryLink(
-          semanticExchange.decision_boundary,
-          semanticExchange.decision_request
-        )))
+        || !exactBoundaryLink(decision.boundary, decision.request))
+        || primaryDecision.boundary.boundary_id
+          !== semanticExchange.decision_boundary?.boundary_id
+        || primaryDecision.request.request_id
+          !== semanticExchange.decision_request?.request_id
+        || primaryDecision.proposal.plan.request_id
+          !== semanticExchange.decision_plan?.request_id))
       || (!hasDecision && (semanticExchange.decision_boundary !== null
         || semanticExchange.decision_plan !== null))
       || semanticExchange.exchange?.schema
@@ -90,17 +106,24 @@ export function appendNpcSemanticConversationWrites({
   }
   const session = sessionWrite.session;
   const request = semanticExchange.decision_request;
-  const boundary = semanticExchange.decision_boundary;
   if ((request?.conversation_id
         ?? contributions[0]?.conversation_id) !== session.conversation_id
-      || (hasDecision && request.npc_ref.entity_id
-        !== semanticExchange.decision_plan.speaker_ref.entity_id)
+      || decisions.some((decision) =>
+        decision.request.conversation_id !== session.conversation_id
+        || decision.request.exchange_id
+          !== primaryDecision.request.exchange_id
+        || decision.request.npc_ref.entity_id
+          !== decision.proposal.plan.speaker_ref.entity_id)
       || session.status !== semanticExchange.exchange.session_status) {
     fail('Conversation session, semantic request, and plan identities do not match');
   }
-  const orderedSignals = hasDecision
-    ? orderedSignalRecords(signalRecords, boundary)
-    : [];
+  const decisionRecords = decisions.map((decision) => ({
+    ...decision,
+    orderedSignals: orderedSignalRecords(signalRecords.filter((signal) =>
+      decision.boundary.signal_refs.some(
+        ({ entity_id: signalId }) => signal.signal_id === signalId
+      )), decision.boundary)
+  }));
   if (!hasDecision && (!Array.isArray(signalRecords)
       || signalRecords.length !== 0)) {
     fail('A no-response exchange cannot persist NPC decision signals');
@@ -117,50 +140,43 @@ export function appendNpcSemanticConversationWrites({
     actualMessageEvidence,
     messages
   );
-  if (hasDecision) {
-    const perceivedMessage = request.perceived_message;
+  const persistedStatementsById = persistedMessageStatements.length === 0
+    ? new Map()
+    : statementIndex(persistedMessageStatements, session.conversation_id);
+  const persistedMessages = persistedStatementsById.size === 0
+    ? []
+    : actualMessages(persistedMessageAudiences, persistedStatementsById);
+  const decisionMessagesByPerceptionId = new Map();
+  for (const message of [...messages, ...persistedMessages]) {
+    const perceptionId = message.perception_result_ref.entity_id;
+    if (decisionMessagesByPerceptionId.has(perceptionId)) {
+      fail('Decision received-message proofs must have unique perception identity');
+    }
+    decisionMessagesByPerceptionId.set(perceptionId, message);
+  }
+  for (const decision of decisionRecords) {
+    const { request: decisionRequest, boundary } = decision;
+    const perceivedMessage = decisionRequest.perceived_message;
     if (perceivedMessage !== null) {
-      const targetEvidence = evidenceByPerceptionId.get(
+      const persistedMessage = decisionMessagesByPerceptionId.get(
         perceivedMessage.perception_result_ref.entity_id
       );
-      if (!targetEvidence
-          || !sameRef(targetEvidence.source_statement_ref,
+      if (!persistedMessage
+          || !sameRef(persistedMessage.source_statement_ref,
             perceivedMessage.source_statement_ref)
-          || !sameRef(targetEvidence.listener_ref, request.npc_ref)) {
+          || !sameRef(persistedMessage.listener_ref, decisionRequest.npc_ref)) {
         fail('Semantic decision request must be based on an actual persisted received message');
       }
     }
     if (boundary.categories.includes('environment')
         && !hasSupportingOperationDecisionEvidence({
-          request,
-          signalRecords: orderedSignals,
+          request: decisionRequest,
+          signalRecords: decision.orderedSignals,
           supportingOperationEvidence
         })) {
       fail('Environment decision request must be based on actual persisted perception');
     }
   }
-
-  const trace = hasDecision ? buildNpcSemanticDecisionTrace({
-      request,
-      plan: semanticExchange.decision_plan,
-      root_turn_id: rootTurnId,
-      working_revision: workingRevision,
-      applied_change_set_id: changeSetId,
-      status: 'committed'
-    }) : null;
-  const canonicalInputDigest = hasDecision ? canonicalDigest({
-      schema: 'npc_semantic_decision_input_v1',
-      request,
-      boundary,
-      signal_records: orderedSignals
-    }) : null;
-  const persistedTrace = hasDecision ? {
-      trace,
-      request_snapshot: request,
-      boundary_snapshot: boundary,
-      signal_records: orderedSignals,
-      canonical_input_digest: canonicalInputDigest
-    } : null;
 
   const sessionTarget = sessionWrite.mode === 'insert' ? inserts : updates;
   sessionTarget.push(row(
@@ -168,36 +184,8 @@ export function appendNpcSemanticConversationWrites({
     session.conversation_id,
     sessionRecord(session, partyId, changeSetId)
   ));
-  if (hasDecision) appends.push(row('party_npc_decision_traces', request.request_id, {
-    request_id: request.request_id,
-    party_id: partyId,
-    npc_id: request.npc_ref.entity_id,
-    state_version: request.state_version,
-    option_id: null,
-    command_token: null,
-    options_digest: null,
-    status: 'committed',
-    validated_at_whole_minutes: boundary.scheduled_at.whole_minutes,
-    validated_at_subminute_numerator: boundary.scheduled_at.subminute_numerator,
-    validated_at_subminute_denominator: boundary.scheduled_at.subminute_denominator,
-    idempotency_key: boundary.idempotency_key,
-    change_set_id: changeSetId,
-    trace_digest: canonicalDigest(persistedTrace),
-    boundary_id: boundary.boundary_id,
-    decision_mode: boundary.decision_mode,
-    root_turn_id: rootTurnId,
-    working_revision: workingRevision,
-    signal_refs: boundary.signal_refs,
-    decision_categories: boundary.categories,
-    aggregate_significance: boundary.significance,
-    same_time_batch_ref: boundary.same_time_batch_ref,
-    semantic_request: request,
-    boundary_snapshot: boundary,
-    signal_records: orderedSignals,
-    semantic_plan: semanticExchange.decision_plan,
-    canonical_input_digest: canonicalInputDigest,
-    semantic_trace_schema: trace.schema
-  }));
+  appendNpcDecisionTraceWrites({ appends, decisionRecords, partyId,
+    changeSetId, rootTurnId, workingRevision });
   appendContributionWrites(
     appends,
     contributions,

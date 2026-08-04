@@ -372,7 +372,9 @@ async function assertRepeatedNpcCausalChain({
   release,
   runtimeCatalogPin
 }) {
-  const baseModels = createM2ConversationModels();
+  const baseModels = createM2ConversationModels({
+    ratshaResponseKind: 'speech'
+  });
   let eremeyRef = null;
   let responderRef = null;
   let npcCalls = 0;

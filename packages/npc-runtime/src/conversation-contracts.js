@@ -19,6 +19,8 @@ import {
   uniqueRefsOfKind,
   validateContributionBody
 } from './conversation-contract-core.js';
+import { validateAllowedContributionReferences } from
+  './conversation-reference-contracts.js';
 
 export {
   buildConversationSession,
@@ -69,23 +71,8 @@ function validateDecisionScope(value) {
     && jsonSafe(value.operation_contract);
 }
 
-function canonicalEntityRefs(value) {
-  return uniqueRefsOfKind(value) && canonicalRefs(value);
-}
-
 function validateAllowedReferences(value, npcRef, decisionScope) {
-  if (!exactKeys(value, [
-    'actor_refs',
-    'entity_refs',
-    'knowledge_refs',
-    'combat_target_refs'
-  ])
-      || !canonicalEntityRefs(value.actor_refs)
-      || value.actor_refs.some(({ entity_kind: entityKind }) =>
-        !['npc', 'player_character'].includes(entityKind))
-      || !canonicalEntityRefs(value.entity_refs)
-      || !canonicalEntityRefs(value.knowledge_refs)
-      || !canonicalEntityRefs(value.combat_target_refs)) {
+  if (!validateAllowedContributionReferences(value)) {
     return false;
   }
   const actorKeys = new Set(value.actor_refs.map(refKey));

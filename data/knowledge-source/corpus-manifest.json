@@ -215,8 +215,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "e181d649245348ec5e6b963ba2d83ac70981fed0cea85b3402db3dae5f89f58d",
-      "bytes": 97091,
+      "sha256": "bad2eb0bdeaf70bb28e5451ea8487fc4d496ebef73930252b15c7eb61a0db0bc",
+      "bytes": 97245,
       "status": "proposed",
       "provenance_mode": "native"
     },
@@ -224,8 +224,8 @@
       "document_id": "npc-combat-and-trigger-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
       "file_name": "npc_combat_and_trigger_contract.md",
-      "sha256": "edc940f9b60458a54d5bbf5351f69b2d98ca19270dc23f3c9fd2f02df16e9be8",
-      "bytes": 95966,
+      "sha256": "158066409855f1aaa295f3edd6fc3099a5efcf549ef00b21b9ca8ca76219cacc",
+      "bytes": 96091,
       "status": "proposed",
       "provenance_mode": "native"
     },
@@ -233,8 +233,8 @@
       "document_id": "npc-conversation-mode-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "file_name": "npc_conversation_mode_contract.md",
-      "sha256": "226d75a07dd8bb5be593a6441d35e0613321e94bec9fcc98712e40f3fb64d310",
-      "bytes": 117147,
+      "sha256": "43f5cadad2dd4e133107472a7a30801acb7df6a9cdaf0f83738a8af7e5f1bec5",
+      "bytes": 118199,
       "status": "active",
       "provenance_mode": "native"
     },

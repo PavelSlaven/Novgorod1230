@@ -112,3 +112,25 @@ export function allowedNpcContributionReferences(context, {
     combat_target_refs: canonical(policy.combat_target_refs ?? [])
   };
 }
+
+export function allowedPlayerContributionReferences(context) {
+  const knowledgeRefs = committedPlayerKnowledgeRefs(context.state);
+  const entityRefs = [
+    ...knowledgeRefs,
+    ...(context.availableEvidence?.item_ref == null
+      ? [] : [context.availableEvidence.item_ref])
+  ];
+  const canonical = (references) => [...new Map(references.map((reference) => [
+    refKey(reference), structuredClone(reference)
+  ])).values()].sort(compareRefs);
+  return {
+    actor_refs: canonical([
+      ref('player_character', context.state.actor_id),
+      ...context.actualNpcActors.map(({ instance_id: instanceId }) =>
+        ref('npc', instanceId))
+    ]),
+    entity_refs: canonical(entityRefs),
+    knowledge_refs: canonical(knowledgeRefs),
+    combat_target_refs: []
+  };
+}

@@ -67,7 +67,7 @@ function speechBody(overrides = {}) {
   };
 }
 
-test('decision boundary identity includes NPC, same-time batch and mode', () => {
+test('decision boundary identity includes only NPC and same-time batch', () => {
   const input = {
     scheduled_at: at(),
     npc_ref: ref('npc', 'guard'),
@@ -85,15 +85,15 @@ test('decision boundary identity includes NPC, same-time batch and mode', () => 
 
   assert.equal(
     autonomous.boundary_id,
-    'npc-decision:autonomous:batch-1:guard'
+    'npc-decision:batch-1:guard'
   );
-  assert.notEqual(
+  assert.equal(
     conversation.boundary_id,
     autonomous.boundary_id
   );
   assert.equal(
     conversation.boundary_id,
-    'npc-decision:conversation:batch-1:guard'
+    'npc-decision:batch-1:guard'
   );
   assert.deepEqual(autonomous.categories, ['self', 'communication']);
   assert.deepEqual(autonomous.signal_refs.map(({ entity_id }) => entity_id), [
@@ -195,7 +195,15 @@ test('player conversation supporting operations are closed by the request operat
     speaker_ref: ref('player_character', 'player'),
     raw_text: 'Показываю на лодку.',
     received_at: 'system-time-1',
-    player_safe_context: {},
+    player_safe_context: {
+      allowed_references: {
+        actor_refs: [
+          ref('npc', 'listener'),
+          ref('player_character', 'player')
+        ],
+        entity_refs: [], knowledge_refs: [], combat_target_refs: []
+      }
+    },
     operation_contract: { emit_interaction: {} }
   };
   const plan = {
@@ -214,6 +222,62 @@ test('player conversation supporting operations are closed by the request operat
     ...request,
     operation_contract: {}
   }), false);
+});
+
+test('player contribution refs are closed to player-safe allowlists', () => {
+  const request = {
+    schema: 'player_conversation_input_v1',
+    request_id: 'request-player-refs',
+    conversation_id: 'conversation-1',
+    state_version: 1,
+    speaker_ref: ref('player_character', 'player'),
+    raw_text: 'Еремей, ответь.',
+    received_at: 'system-time-1',
+    player_safe_context: {
+      allowed_references: {
+        actor_refs: [
+          ref('npc', 'listener'),
+          ref('player_character', 'player')
+        ],
+        entity_refs: [ref('route', 'known-route')],
+        knowledge_refs: [ref('knowledge_scope', 'known-scope')],
+        combat_target_refs: []
+      }
+    },
+    operation_contract: { emit_interaction: {} }
+  };
+  const valid = {
+    schema: 'player_conversation_contribution_plan_v1',
+    request_id: request.request_id,
+    conversation_id: request.conversation_id,
+    state_version: request.state_version,
+    speaker_ref: request.speaker_ref,
+    input_mode: 'verbatim',
+    ...speechBody({ supporting_operations: [] })
+  };
+  assert.equal(validatePlayerConversationContributionPlan(valid, request), true);
+
+  const unknownMention = copy(valid);
+  unknownMention.speech.claims = [{
+    claim_id: 'unknown-mention', content_summary: 'Скрытая дорога.',
+    form: 'assertion', speaker_posture: 'believed_true',
+    source_knowledge_refs: [],
+    mentioned_entity_refs: [ref('route', 'hidden-route')]
+  }];
+  assert.equal(validatePlayerConversationContributionPlan(
+    unknownMention, request), false);
+
+  const absentActor = copy(valid);
+  absentActor.affected_actor_refs = [ref('npc', 'absent-npc')];
+  assert.equal(validatePlayerConversationContributionPlan(
+    absentActor, request), false);
+
+  const unsupportedResponse = copy(valid);
+  unsupportedResponse.speech.response_expectation = {
+    kind: 'answer', target_refs: [ref('npc', 'absent-npc')]
+  };
+  assert.equal(validatePlayerConversationContributionPlan(
+    unsupportedResponse, request), false);
 });
 
 function npcConversationRequest() {

@@ -13881,7 +13881,8 @@
       "relations": [],
       "invariants": [
         "raw_text is player input rather than a factual utterance until semantic interpretation and commit.",
-        "The context is player-safe and the operation contract contains only code-supported capabilities."
+        "The context is player-safe and the operation contract contains only code-supported capabilities.",
+        "player_safe_context contains code-owned allowed actor, entity, knowledge and combat target references for the contribution plan."
       ]
     },
     {
@@ -13980,7 +13981,8 @@
       "relations": [],
       "invariants": [
         "One plan contains exactly one conversation contribution and no implicit continuation.",
-        "Verbatim input preserves the player's words and cannot use historical_equivalent adaptation.",
+        "Verbatim input persists only the explicitly spoken words, excluding wrappers such as `Говорю: «...»`, and cannot use historical_equivalent adaptation.",
+        "Addressees, affected actors, response targets, claim sources, mentioned entities and combat targets belong to player_safe_context.allowed_references.",
         "Speech, check and handoff branches are mutually constrained by contribution_kind and resolution."
       ]
     },

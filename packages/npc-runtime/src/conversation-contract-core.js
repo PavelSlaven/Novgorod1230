@@ -6,7 +6,7 @@ import {
   stableId,
   uniqueStableIds
 } from './internal.js';
-import { validateNpcContributionReferences } from './conversation-reference-contracts.js';
+import { validateAllowedContributionReferences, validateContributionReferences } from './conversation-reference-contracts.js';
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const CONTRIBUTION_KINDS = new Set([
   'speech',
@@ -87,7 +87,6 @@ function plainRecord(value) {
   const prototype = Object.getPrototypeOf(value);
   return prototype === Object.prototype || prototype === null;
 }
-
 function jsonSafe(value, ancestors = new Set()) {
   if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
   if (typeof value === 'number') return Number.isFinite(value);
@@ -277,11 +276,10 @@ function validateContributionBody(value, request = null) {
     return false;
   }
 
-  if (request?.schema === 'npc_conversation_response_request_v1'
-      && !validateNpcContributionReferences(value,
-        request.allowed_references)) {
-    return false;
-  }
+  const allowedReferences = request?.schema === 'player_conversation_input_v1'
+    ? request.player_safe_context.allowed_references
+    : request?.schema === 'npc_conversation_response_request_v1' ? request.allowed_references : null;
+  if (allowedReferences !== null && !validateContributionReferences(value, allowedReferences)) return false;
 
   if (value.contribution_kind === 'speech') {
     if (!validateSpeech(value.speech)) return false;
@@ -355,6 +353,8 @@ export function validatePlayerConversationInput(value) {
     && nonEmptyText(value.raw_text)
     && stableId(value.received_at)
     && plainRecord(value.player_safe_context)
+    && validateAllowedContributionReferences(
+      value.player_safe_context.allowed_references)
     && plainRecord(value.operation_contract)
     && jsonSafe(value);
 }

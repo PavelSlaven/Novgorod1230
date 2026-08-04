@@ -10,7 +10,7 @@ import {
   PROMISE_OPERATION,
   ref,
   refKey,
-  requiredRawText,
+  requiredVerbatimUtteranceText,
   ROUTE_OPERATION,
   sameRef,
   SURRENDER_OPERATION
@@ -169,7 +169,8 @@ export function requirePlayerSpeech(context, plan) {
   );
   if (plan.contribution_kind !== 'speech'
       || (plan.input_mode === 'verbatim'
-        && plan.speech?.utterance_text !== requiredRawText(context.playerInput))
+        && plan.speech?.utterance_text
+          !== requiredVerbatimUtteranceText(context.playerInput))
       || !sameRef(plan.primary_addressee_ref, context.targetRef)
       || !intended.some((listener) => sameRef(listener, context.targetRef))
       || intended.some((listener) =>

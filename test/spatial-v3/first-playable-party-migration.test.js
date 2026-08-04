@@ -56,11 +56,21 @@ test('017 delegates transaction ownership to the target migration runner', () =>
   assert.doesNotMatch(conversationTranscriptSql, /^\s*COMMIT\s*;/imu);
 });
 
-test('018 makes same-batch NPC decision uniqueness mode-aware', () => {
+test('018 restores one NPC decision per fully resolved same-time batch', () => {
   assert.match(npcDecisionModeIdentitySql,
-    /DROP INDEX IF EXISTS\s+party_runtime\.party_npc_decision_traces_batch_npc_key/u);
+    /HAVING count\(\*\) > 1/u);
   assert.match(npcDecisionModeIdentitySql,
-    /party_id,\s*npc_id,\s*decision_mode,\s*\(same_time_batch_ref ->> 'entity_id'\)/u);
+    /party_npc_decision_batch_identity_conflict: operator repair required/u);
+  assert.ok(
+    npcDecisionModeIdentitySql.indexOf('operator repair required')
+      < npcDecisionModeIdentitySql.indexOf('DROP INDEX IF EXISTS')
+  );
+  assert.match(npcDecisionModeIdentitySql,
+    /DROP INDEX IF EXISTS\s+party_runtime\.party_npc_decision_traces_batch_npc_mode_key/u);
+  assert.match(npcDecisionModeIdentitySql,
+    /party_id,\s*npc_id,\s*\(same_time_batch_ref ->> 'entity_id'\)/u);
+  assert.doesNotMatch(npcDecisionModeIdentitySql,
+    /party_id,\s*npc_id,\s*decision_mode/u);
   assert.doesNotMatch(npcDecisionModeIdentitySql, /^\s*BEGIN\s*;/imu);
   assert.doesNotMatch(npcDecisionModeIdentitySql, /^\s*COMMIT\s*;/imu);
 });

@@ -15,6 +15,87 @@ const docker = (args, input = null) => spawnSync(
 const containerName = `lower-dvina-party-011-${process.pid}`;
 const rollbackContainerName =
   `lower-dvina-party-017-rollback-${process.pid}`;
+const conflictContainerName =
+  `lower-dvina-party-018-conflict-${process.pid}`;
+
+test('018 preserves mode-split traces and requires explicit operator repair',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for the isolated PostgreSQL migration gate.');
+      return;
+    }
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', conflictContainerName]);
+    });
+    const started = docker([
+      'run', '-d', '--name', conflictContainerName,
+      '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=conflict_local',
+      '-e', 'POSTGRES_USER=conflict',
+      '-e', 'POSTGRES_DB=conflict',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      if (docker([
+        'exec', conflictContainerName, 'pg_isready',
+        '-U', 'conflict', '-d', 'conflict'
+      ]).status === 0) {
+        ready = true;
+        break;
+      }
+    }
+    assert.equal(ready, true);
+    const port = Number(docker([
+      'port', conflictContainerName, '5432'
+    ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port,
+      user: 'conflict', password: 'conflict_local', database: 'conflict' });
+    await pool.query(`
+      CREATE SCHEMA party_runtime;
+      CREATE TABLE party_runtime.party_npc_decision_traces (
+        party_id text NOT NULL,
+        npc_id text NOT NULL,
+        decision_mode text NOT NULL,
+        boundary_id text,
+        same_time_batch_ref jsonb
+      );
+      CREATE UNIQUE INDEX party_npc_decision_traces_batch_npc_mode_key
+        ON party_runtime.party_npc_decision_traces (
+          party_id,npc_id,decision_mode,
+          (same_time_batch_ref ->> 'entity_id')
+        ) WHERE boundary_id IS NOT NULL;
+      INSERT INTO party_runtime.party_npc_decision_traces VALUES
+        ('party','npc','conversation','conversation-boundary',
+          '{"entity_kind":"temporal_batch","entity_id":"batch"}'),
+        ('party','npc','combat','combat-boundary',
+          '{"entity_kind":"temporal_batch","entity_id":"batch"}');
+    `);
+
+    await assert.rejects(
+      pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1)),
+      /party_npc_decision_batch_identity_conflict: operator repair required/u
+    );
+    const readback = await pool.query(`
+      SELECT count(*)::integer AS trace_count,
+        to_regclass(
+          'party_runtime.party_npc_decision_traces_batch_npc_mode_key'
+        ) IS NOT NULL AS mode_index_present,
+        to_regclass(
+          'party_runtime.party_npc_decision_traces_batch_npc_key'
+        ) IS NOT NULL AS strict_index_present
+      FROM party_runtime.party_npc_decision_traces
+    `);
+    assert.deepEqual(readback.rows[0], {
+      trace_count: 2,
+      mode_index_present: true,
+      strict_index_present: false
+    });
+  });
 
 test('017 is rolled back when the in-transaction readiness gate fails',
   async (t) => {

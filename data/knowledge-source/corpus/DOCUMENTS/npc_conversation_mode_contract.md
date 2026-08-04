@@ -577,7 +577,18 @@ Session приостанавливается, когда:
   },
   "raw_text": "Еремей, скажи прямо: кого ты видел у лодки?",
   "received_at": "technical timestamp only",
-  "player_safe_context": {},
+  "player_safe_context": {
+    "verbatim_utterance_text": "Еремей, скажи прямо: кого ты видел у лодки?",
+    "allowed_references": {
+      "actor_refs": [
+        { "entity_kind": "npc", "entity_id": "eremey" },
+        { "entity_kind": "player_character", "entity_id": "mikula" }
+      ],
+      "entity_refs": [],
+      "knowledge_refs": [],
+      "combat_target_refs": []
+    }
+  },
   "operation_contract": {}
 }
 ```
@@ -594,7 +605,9 @@ Player interpreter обязан различать два режима.
 
 Игрок явно задаёт слова персонажа кавычками либо формулировкой «говорю: ...».
 
-LLM сохраняет смысл и формулировку максимально точно.
+Код выделяет из явной оболочки точный произносимый текст и передаёт его как
+`player_safe_context.verbatim_utterance_text`. LLM сохраняет именно этот текст,
+не включая в factual statement служебную оболочку `Говорю: «...»`.
 
 Она не заменяет анахроничное слово историческим аналогом без явной необходимости.
 
@@ -1177,7 +1190,7 @@ LLM не вызывается для NPC только потому, что он:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "decision_mode": "conversation",
   "scheduled_at": {},
   "npc_ref": {
@@ -1200,13 +1213,15 @@ LLM не вызывается для NPC только потому, что он:
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:conversation:batch-42:eremey"
+  "idempotency_key": "npc-decision:batch-42:eremey"
 }
 ```
 
 `conversation_id`, `exchange_id`, source statements и perceived messages загружаются при построении mode-specific request из active session и referenced signals. Boundary не дублирует эти данные.
 
-`decision_mode` входит в `boundary_id` и `idempotency_key`: один NPC в одном same-time batch может иметь разные conversation, autonomous и combat boundaries без identity collision.
+`decision_mode` выбирает профиль решения, но не входит в `boundary_id` или
+`idempotency_key`. Один NPC в одном fully resolved same-time batch имеет не
+более одной aggregated boundary и одного LLM-вызова независимо от режима.
 
 ## 23. Несколько NPC и порядок ответов
 
@@ -1263,7 +1278,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
 {
   "schema": "npc_conversation_response_request_v1",
   "request_id": "conversation-response-request-42",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "conversation_id": "conversation:party-1:42",
   "exchange_id": "exchange:conversation-42:7",
   "state_version": 17,
@@ -2957,6 +2972,7 @@ fields:
 invariants:
   - raw_text is player input rather than a factual utterance until semantic interpretation and commit.
   - The context is player-safe and the operation contract contains only code-supported capabilities.
+  - player_safe_context contains code-owned allowed actor, entity, knowledge and combat target references for the contribution plan.
 ```
 
 ```yaml
@@ -2984,7 +3000,8 @@ fields:
   handoff: optional json_object
 invariants:
   - One plan contains exactly one conversation contribution and no implicit continuation.
-  - Verbatim input preserves the player's words and cannot use historical_equivalent adaptation.
+  - Verbatim input persists only the explicitly spoken words, excluding wrappers such as `Говорю: «...»`, and cannot use historical_equivalent adaptation.
+  - Addressees, affected actors, response targets, claim sources, mentioned entities and combat targets belong to player_safe_context.allowed_references.
   - Speech, check and handoff branches are mutually constrained by contribution_kind and resolution.
 ```
 

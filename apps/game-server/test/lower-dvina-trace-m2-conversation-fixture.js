@@ -209,6 +209,7 @@ export async function runPhase3({
   playerPlanOptions = {},
   playerDurationClasses = ['domain_owned'],
   npcDurationClasses = ['domain_owned'],
+  transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
   resolveTemporalBoundary = null
 }) {
@@ -224,10 +225,10 @@ export async function runPhase3({
     checkResult: resolvedCheck,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      const plan = playerPlan(request, {
+      const plan = transformPlayerPlan(playerPlan(request, {
         checkRequired: resolvedCheck !== null,
         ...playerPlanOptions
-      });
+      }), { request, call_index: playerCalls });
       plan.activity.duration_class = durationForCall(
         playerDurationClasses, playerCalls
       );
@@ -270,6 +271,7 @@ export async function runPhase4({
   playerPlanOptions = {},
   playerDurationClasses = ['domain_owned'],
   npcDurationClasses = ['domain_owned'],
+  transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
   resolveTemporalBoundary = null
 }) {
@@ -286,11 +288,11 @@ export async function runPhase4({
     checkRequest,
     playerConversationModel: async (request) => {
       playerCalls += 1;
-      const plan = playerPlan(request, {
+      const plan = transformPlayerPlan(playerPlan(request, {
         checkRequired: resolvedCheck !== null,
         offer: offerStage !== null,
         ...playerPlanOptions
-      });
+      }), { request, call_index: playerCalls });
       plan.activity.duration_class = durationForCall(
         playerDurationClasses, playerCalls
       );

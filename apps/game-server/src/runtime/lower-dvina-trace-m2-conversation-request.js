@@ -1,7 +1,15 @@
 import { buildPlayerConversationInput } from '@rus/npc-runtime';
-import { committedPlayerKnowledgeRefs } from
+import {
+  allowedPlayerContributionReferences,
+  committedPlayerKnowledgeRefs
+} from
   './lower-dvina-trace-m2-conversation-projections.js';
-import { npcRef, ref, requiredRawText } from
+import {
+  npcRef,
+  ref,
+  requiredRawText,
+  requiredVerbatimUtteranceText
+} from
   './lower-dvina-trace-m2-conversation-shared.js';
 
 export function buildPlayerRequest(context) {
@@ -21,8 +29,12 @@ export function buildPlayerRequest(context) {
       phase: context.phase,
       location_ref: context.state.position.location_ref,
       target_npc_ref: context.targetRef,
+      verbatim_utterance_text: requiredVerbatimUtteranceText(
+        context.playerInput
+      ),
       present_listener_refs: presentListenerRefs,
       committed_knowledge_refs: committedPlayerKnowledgeRefs(context.state),
+      allowed_references: allowedPlayerContributionReferences(context),
       available_check: {
         attribute_ref: context.contracts.check.attribute,
         skill_ref: context.contracts.check.skill,

@@ -399,7 +399,7 @@ LLM не вызывается из-за:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:autonomous:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:batch-18:npc-ratsha",
   "decision_mode": "autonomous",
   "scheduled_at": {},
   "npc_ref": {
@@ -419,13 +419,15 @@ LLM не вызывается из-за:
   "signal_refs": [],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:autonomous:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
 }
 ```
 
 Инварианты:
 
 - `decision_mode = autonomous`;
+- `decision_mode` выбирает профиль решения, но не входит в identity boundary;
+- один NPC имеет не более одной aggregated boundary в одном fully resolved batch;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;
@@ -644,7 +646,7 @@ LLM не может объявить:
   "schema": "npc_action_decision_request_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -818,7 +820,7 @@ LLM не может объявить:
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -1468,7 +1470,7 @@ NPC может действовать на основании ложного у�
   "schema": "npc_semantic_decision_trace_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:event-17:npc-ratsha",
   "npc_ref": "npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
@@ -1523,7 +1525,7 @@ LLM не вызывается внутри SQL transaction.
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-guard-1",
   "root_turn_id": "turn-18",
-  "boundary_id": "npc-decision:autonomous:entry-1:guard-1",
+  "boundary_id": "npc-decision:entry-1:guard-1",
   "committed_state_version": 18,
   "working_revision": 2,
   "decision_index": 1,

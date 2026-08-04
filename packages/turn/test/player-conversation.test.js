@@ -13,7 +13,17 @@ function request() {
     speaker_ref: ref('player_character', 'player'),
     raw_text: 'попросить Еремея рассказать правду',
     received_at: 'input-1',
-    player_safe_context: {},
+    player_safe_context: {
+      allowed_references: {
+        actor_refs: [
+          ref('npc', 'eremey'),
+          ref('player_character', 'player')
+        ],
+        entity_refs: [],
+        knowledge_refs: [],
+        combat_target_refs: []
+      }
+    },
     operation_contract: {}
   };
 }

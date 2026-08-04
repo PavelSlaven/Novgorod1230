@@ -88,6 +88,15 @@ export function requiredRawText(playerInput) {
   return value;
 }
 
+export function requiredVerbatimUtteranceText(playerInput) {
+  const rawText = requiredRawText(playerInput);
+  const quoted = rawText.match(/[«“„"]([^»”"]+)[»”"]/u)?.[1]?.trim();
+  if (quoted) return quoted;
+  const spoken = rawText.match(/^\s*(?:я\s+)?говорю\s*:\s*(.+)$/iu)?.[1]
+    ?.trim();
+  return spoken || rawText;
+}
+
 export function sameTimeBatchKey(partyId, clock) {
   return `conversation-batch:${canonicalDigest({
     schema: 'rus.lower_dvina_trace_conversation_batch_identity.v1',

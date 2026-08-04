@@ -145,10 +145,15 @@ function publicConversationHistory(context, currentMessage) {
 export function currentSignalRecords(
   context,
   playerStatement,
-  communicationPerceptionRef
+  communicationPerceptionRef,
+  evidencePerceptionRef
 ) {
-  return context.mapping.signal_descriptors.map((descriptor) => {
+  return context.mapping.signal_descriptors.flatMap((descriptor) => {
     const communication = descriptor.category === 'communication';
+    const sourcePerceptionRef = communication
+      ? communicationPerceptionRef
+      : evidencePerceptionRef;
+    if (sourcePerceptionRef === null) return [];
     const sourceEventRef = communication
       ? ref('conversation_statement', playerStatement.statement_id)
       : context.evidencePresentation === null
@@ -160,10 +165,6 @@ export function currentSignalRecords(
             'evidence_presentation',
             context.evidencePresentation.event_id
           );
-    // The evidence presentation is part of the same actually perceived
-    // player contribution. Reuse that committed perception result instead of
-    // inventing a second perception identity that has no persisted owner.
-    const sourcePerceptionRef = communicationPerceptionRef;
     const signal = buildNpcDecisionSignal({
       occurred_at: structuredClone(context.state.clock),
       category: descriptor.category,
@@ -175,10 +176,10 @@ export function currentSignalRecords(
       source_perception_ref: sourcePerceptionRef,
       causal_parent_refs: []
     });
-    return Object.freeze({
+    return [Object.freeze({
       signal,
       same_time_batch_key: context.batchKey
-    });
+    })];
   });
 }
 

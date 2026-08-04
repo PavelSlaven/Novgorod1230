@@ -4,7 +4,8 @@ import {
   buildNpcDecisionBoundary,
   buildNpcDecisionSignal,
   evaluateNpcDecisionSignals,
-  validateNpcDecisionBoundary
+  validateNpcDecisionBoundary,
+  validateNpcDecisionSignal
 } from '../src/decision-signals.js';
 import {
   validateConversationContributionPlan,
@@ -123,13 +124,62 @@ test('decision signal evaluation is canonical for input order', () => {
   });
 
   assert.deepEqual(result.boundary.signal_refs.map(({ entity_id }) => entity_id), [
-    'decision-signal:a-event:guard',
-    'decision-signal:z-event:guard'
+    'decision-signal:conversation_statement:a-event:guard:self',
+    'decision-signal:conversation_statement:z-event:guard:communication'
   ]);
   assert.deepEqual(result.consumed_signal_ids, [
-    'decision-signal:a-event:guard',
-    'decision-signal:z-event:guard'
+    'decision-signal:conversation_statement:a-event:guard:self',
+    'decision-signal:conversation_statement:z-event:guard:communication'
   ]);
+});
+
+test('one factual event may create two decision signal categories for one NPC', () => {
+  const npc = ref('npc', 'guard');
+  const event = ref('temporal_event', 'arrival-1');
+  const signal = (category) => buildNpcDecisionSignal({
+    occurred_at: at(),
+    category,
+    significance: 'material',
+    source_event_ref: event,
+    subject_ref: npc,
+    perception_required: false
+  });
+  const others = signal('others');
+  const objective = signal('objective');
+
+  assert.notEqual(others.signal_id, objective.signal_id);
+  const result = evaluateNpcDecisionSignals({
+    npc_ref: npc,
+    active_mode: 'conversation',
+    current_intent: null,
+    decision_capability: true,
+    resolved_signals: [objective, others],
+    consumed_signal_ids: [],
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    state_version: '4'
+  });
+  assert.deepEqual(result.boundary.categories, ['others', 'objective']);
+  assert.equal(result.boundary.signal_refs.length, 2);
+});
+
+test('legacy v1 decision signal identity remains readable but is never generated', () => {
+  const generated = buildNpcDecisionSignal({
+    occurred_at: at(),
+    category: 'environment',
+    significance: 'material',
+    source_event_ref: ref('world_event', 'event-17'),
+    subject_ref: ref('npc', 'guard'),
+    perception_required: false
+  });
+  const legacyId = 'decision-signal:event-17:guard';
+  const legacy = {
+    ...structuredClone(generated),
+    signal_id: legacyId,
+    idempotency_key: legacyId
+  };
+
+  assert.equal(validateNpcDecisionSignal(legacy), true);
+  assert.notEqual(generated.signal_id, legacyId);
 });
 
 test('player conversation supporting operations are closed by the request operation contract', () => {

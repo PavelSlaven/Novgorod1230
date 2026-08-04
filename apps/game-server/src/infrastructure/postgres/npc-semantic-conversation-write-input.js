@@ -108,6 +108,24 @@ export function buildNpcSemanticConversationWriteInput({
         }
       };
     }));
+  const supportingOperationEvidence = (
+    semanticExchange.supporting_operation_perceptions ?? []
+  ).map((perception) => ({
+    perception: structuredClone(perception),
+    signal_refs: (next.npc_decision_signals ?? [])
+      .map(({ signal }) => signal)
+      .filter((signal) => sameRef(
+        signal?.source_perception_ref,
+        {
+          entity_kind: 'perception_result',
+          entity_id: perception.perception_id
+        }
+      ))
+      .map(({ signal_id: signalId }) => ({
+        entity_kind: 'npc_decision_signal',
+        entity_id: signalId
+      }))
+  }));
   return {
     sessionWrite: {
       mode: existingSession === null ? 'insert' : 'update',
@@ -120,6 +138,7 @@ export function buildNpcSemanticConversationWriteInput({
     },
     signalRecords,
     actualMessageEvidence,
+    supportingOperationEvidence,
     expectedSessionStateVersion: existingSession?.state_version ?? null,
     partyStateVersion: state.party_state?.state_version,
     sameTimeBatchRef,

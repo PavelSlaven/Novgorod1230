@@ -7,6 +7,14 @@ import {
   projectSemanticConversationSnapshot
 } from '../src/infrastructure/postgres/lower-dvina-trace-conversation-state.js';
 import {
+  appendNpcSemanticConversationWrites,
+  buildNpcSemanticConversationWriteInput
+} from '../src/infrastructure/postgres/npc-semantic-conversation-writes.js';
+import { assertLowerDvinaTraceSemanticConversationRows } from
+  '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
+import { semanticReadPool } from
+  './lower-dvina-trace-semantic-persistence-read-pool.js';
+import {
   phase2PublicResult
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import {
@@ -450,6 +458,139 @@ test('evidence presentation requires and executes its supporting operation', asy
   }), { code: 'TRACE_M2_PHASE_3_EVIDENCE_EVENT_INVALID' });
 });
 
+test('hearing evidence words without seeing the item creates only communication signal', async () => {
+  const state = phase3State();
+  const eremey = state.npcs.find(
+    ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
+  );
+  eremey.machine_state = {
+    ...eremey.machine_state,
+    visual_capability: 'none'
+  };
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Вот синяя шерсть с берега. Что ты знаешь?',
+    inputDigest: digest('e'),
+    responseKind: 'withhold',
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    playerPlanOptions: { evidence: true }
+  });
+
+  assert.deepEqual(
+    exchange.result.new_signal_records.map(({ signal }) => signal.category),
+    ['communication']
+  );
+  const restarted = projectPhase3Conversation({
+    state,
+    contracts,
+    result: exchange.result,
+    inputDigest: digest('e')
+  });
+  assert.equal(
+    restarted.supporting_operation_perceptions.at(-1).result_kind,
+    'not_perceived'
+  );
+  const writes = conversationWrites(
+    state, restarted, exchange.result, 'evidence-not-seen'
+  );
+  const perceptionId =
+    restarted.supporting_operation_perceptions.at(-1).perception_id;
+  assert.equal(writes.appends.some(({ target_table: table, record }) =>
+    table === 'party_perception_witnesses'
+      && record.perception_id === perceptionId), false);
+  assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+    semanticReadPool(writes), restarted)).length, 1);
+});
+
+test('seeing evidence without hearing the words creates only environment signal', async () => {
+  const state = phase3State();
+  const eremey = state.npcs.find(
+    ({ participant_slot_ref: slot }) => slot === 'eremey_fisher'
+  );
+  eremey.machine_state = {
+    ...eremey.machine_state,
+    hearing_capability: 'none',
+    visual_capability: 'full'
+  };
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Вот синяя шерсть с берега. Что ты знаешь?',
+    inputDigest: digest('d'),
+    responseKind: 'withhold',
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    playerPlanOptions: { evidence: true }
+  });
+
+  assert.equal(exchange.npcCalls, 0);
+  assert.equal(exchange.result.decision_boundary, null);
+  assert.deepEqual(
+    exchange.result.new_signal_records.map(({ signal }) => signal.category),
+    ['environment']
+  );
+  const environmentSignal = exchange.result.new_signal_records[0].signal;
+  assert.equal(
+    environmentSignal.source_event_ref.entity_kind,
+    'evidence_presentation'
+  );
+  assert.equal(
+    environmentSignal.source_perception_ref.entity_id.includes(
+      'evidence-presentation'
+    ),
+    true
+  );
+  const restarted = projectPhase3Conversation({
+    state,
+    contracts,
+    result: exchange.result,
+    inputDigest: digest('d')
+  });
+  assert.equal(
+    restarted.supporting_operation_perceptions.at(-1).result_kind,
+    'recognized'
+  );
+  assert.equal(
+    restarted.npc_decision_signals.some(
+      ({ signal }) => signal.signal_id === environmentSignal.signal_id
+    ),
+    true
+  );
+  const writes = conversationWrites(
+    state, restarted, exchange.result, 'evidence-visual-perception'
+  );
+  const persistedPerception = writes.appends.find(
+    ({ target_table: table, record }) =>
+      table === 'party_perception_records'
+        && record.perception_id ===
+          restarted.supporting_operation_perceptions.at(-1).perception_id
+  );
+  assert.equal(persistedPerception.record.result_kind, 'recognized');
+  assert.deepEqual(persistedPerception.record.signal_refs, [{
+    entity_kind: 'npc_decision_signal',
+    entity_id: environmentSignal.signal_id
+  }]);
+  assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+    semanticReadPool(writes), restarted)).length, 0);
+  const tampered = structuredClone(writes);
+  tampered.appends.find(({ target_table: table, record }) =>
+    table === 'party_perception_records'
+      && record.perception_id === persistedPerception.record.perception_id
+  ).record.signal_refs = [];
+  await assert.rejects(
+    () => assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(tampered), restarted
+    ),
+    { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' }
+  );
+});
+
 test('ordinary NPC response keeps one session active across player boundaries', async () => {
   const state = phase3State();
   const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
@@ -553,4 +694,27 @@ function socialCheck(profile) {
       }
     }
   };
+}
+
+function conversationWrites(state, next, semanticExchange, suffix) {
+  const writeInput = buildNpcSemanticConversationWriteInput({
+    state,
+    next,
+    semanticExchange
+  });
+  const writes = { inserts: [], updates: [], appends: [] };
+  const traceRef = (next.npc_semantic_decision_refs ?? []).find(
+    ({ request_id: requestId }) =>
+      requestId === semanticExchange.decision_request?.request_id
+  ) ?? null;
+  appendNpcSemanticConversationWrites({
+    ...writes,
+    partyId: state.party_id,
+    changeSetId: traceRef?.applied_change_set_id ?? `change:${suffix}`,
+    idempotencyRecordId: `idem:${suffix}`,
+    rootTurnId: traceRef?.root_turn_id ?? `turn:${suffix}`,
+    workingRevision: traceRef?.working_revision ?? 0,
+    ...writeInput
+  });
+  return writes;
 }

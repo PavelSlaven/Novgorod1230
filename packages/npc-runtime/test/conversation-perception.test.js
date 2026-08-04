@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolveConversationListenerPerception } from '../src/index.js';
+import {
+  resolveConversationListenerPerception,
+  resolveConversationVisualPerception
+} from '../src/index.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 
@@ -45,4 +48,23 @@ test('conversation perception preserves partial comprehension', () => {
     speaker_recognized: true,
     witness_policy_allows: false
   });
+});
+
+test('conversation visual perception is independent from hearing', () => {
+  const visual = (overrides = {}) => resolveConversationVisualPerception({
+    observer_ref: ref('npc', 'listener'),
+    perception_result_ref: ref('perception_result', 'visual-perception-1'),
+    visual_path: 'clear',
+    distance_band: 'conversation',
+    ambient_visibility: 'clear',
+    visual_capability: 'full',
+    attention: 'available',
+    ...overrides
+  });
+
+  assert.equal(visual().perception_result, 'recognized');
+  assert.equal(visual({ visual_capability: 'none' }).perception_result,
+    'not_perceived');
+  assert.equal(visual({ ambient_visibility: 'degraded' }).perception_result,
+    'perceived_partial');
 });

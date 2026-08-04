@@ -70,12 +70,14 @@ export function buildTracePhase4M2ArrivalPayload({
         arrival.source_observation_profile_id,
       perception_requirement: arrival.perception_requirement,
       signal_descriptor: structuredClone(arrival.signal_descriptors[0]),
-      source_event_ref: perceptionRef,
+      source_event_ref: temporalEventRef,
       source_perception_ref: perceptionRef,
-      causal_parent_refs: [temporalEventRef],
+      causal_parent_refs: [],
       expected_signal_ref: ref(
         'npc_decision_signal',
-        `decision-signal:${perceptionRef.entity_id}:${ratshaId}`
+        `decision-signal:${temporalEventRef.entity_kind}:${
+          temporalEventRef.entity_id}:${ratshaId}:${
+          arrival.signal_descriptors[0].category}`
       ),
       perceived_actor_refs: participants.map((actorId) =>
         ref('actor', actorId))
@@ -92,7 +94,9 @@ export function buildTracePhase4M2ArrivalPayload({
       causal_parent_refs: [],
       expected_signal_ref: ref(
         'npc_decision_signal',
-        `decision-signal:${temporalEventRef.entity_id}:${ratshaId}`
+        `decision-signal:${temporalEventRef.entity_kind}:${
+          temporalEventRef.entity_id}:${ratshaId}:${
+          objective.signal_descriptors[0].category}`
       )
     }
   };

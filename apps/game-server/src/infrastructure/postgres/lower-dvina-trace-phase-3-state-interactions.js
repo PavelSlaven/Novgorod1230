@@ -9,7 +9,6 @@ export function phase3SemanticInteractions({
 }) {
   if (semantic.exchange.applied_contribution_count < 1) return [];
   const evidencePresentation = semantic.evidence_presentation ?? null;
-  const hasDecision = semantic.decision_request !== null;
   const firstContribution = semantic.exchange.contributions[0];
   const npcContributionApplied = semantic.exchange.contributions.some(
     ({ speaker_ref: speaker }) => sameRef(speaker, npcRef)
@@ -17,12 +16,17 @@ export function phase3SemanticInteractions({
   const environmentSignals = semantic.new_signal_records.filter(
     ({ signal }) => signal.category === 'environment'
   );
+  const evidencePerceptions =
+    semantic.supporting_operation_perceptions ?? [];
+  const evidencePerception = evidencePerceptions[0] ?? null;
+  const evidencePerceived = evidencePerception !== null
+    && evidencePerception.result_kind !== 'not_perceived';
   const presentedItem = evidencePresentation === null ? null
     : state.items?.find(({ item_id: itemId }) =>
         itemId === evidencePresentation.entity_ref?.entity_id) ?? null;
-  if ((hasDecision && (evidencePresentation === null)
-        !== (environmentSignals.length === 0))
-      || (!hasDecision && environmentSignals.length !== 0)
+  if ((evidencePresentation === null
+        && (environmentSignals.length !== 0
+          || evidencePerceptions.length !== 0))
       || (evidencePresentation !== null
         && (evidencePresentation.schema
             !== 'conversation_supporting_operation_event_v1'
@@ -43,11 +47,30 @@ export function phase3SemanticInteractions({
           || presentedItem?.state?.evidence_ref
             !== evidencePresentation.evidence_ref
           || presentedItem.placement?.holder_character_id !== state.actor_id
+          || evidencePerceptions.length !== 1
+          || evidencePerception.schema
+            !== 'conversation_supporting_operation_perception_v1'
+          || evidencePerception.observer_ref?.entity_kind !== npcRef.entity_kind
+          || evidencePerception.observer_ref?.entity_id !== npcRef.entity_id
+          || evidencePerception.source_event_ref?.entity_kind
+            !== 'evidence_presentation'
+          || evidencePerception.source_event_ref.entity_id
+            !== evidencePresentation.event_id
+          || evidencePerception.subject_ref?.entity_kind !== 'item'
+          || evidencePerception.subject_ref.entity_id
+            !== evidencePresentation.entity_ref.entity_id
+          || !['not_perceived', 'perceived_partial', 'recognized']
+            .includes(evidencePerception.result_kind)
+          || environmentSignals.length !== (evidencePerceived ? 1 : 0)
           || environmentSignals.some(({ signal }) =>
             signal.source_event_ref?.entity_kind
               !== 'evidence_presentation'
             || signal.source_event_ref.entity_id
-              !== evidencePresentation.event_id)))) {
+              !== evidencePresentation.event_id
+            || signal.source_perception_ref?.entity_kind
+              !== 'perception_result'
+            || signal.source_perception_ref.entity_id
+              !== evidencePerception.perception_id)))) {
     semanticFail('TRACE_M2_PHASE_3_EVIDENCE_EVENT_INVALID');
   }
   const statement = npcStatements[0] ?? null;

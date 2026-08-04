@@ -267,7 +267,7 @@ critical
 ```json
 {
   "schema": "npc_decision_signal_v1",
-  "signal_id": "decision-signal:event-17:npc-ratsha",
+  "signal_id": "decision-signal:world_event:event-17:npc-ratsha:environment",
   "occurred_at": {},
   "category": "environment",
   "significance": "material",
@@ -286,7 +286,7 @@ critical
     "entity_id": "perception-event-17-ratsha"
   },
   "causal_parent_refs": [],
-  "idempotency_key": "decision-signal:event-17:npc-ratsha"
+  "idempotency_key": "decision-signal:world_event:event-17:npc-ratsha:environment"
 }
 ```
 
@@ -664,11 +664,11 @@ LLM не может объявить:
     "signal_refs": [
       {
         "entity_kind": "npc_decision_signal",
-        "entity_id": "decision-signal:entry-17:npc-ratsha"
+        "entity_id": "decision-signal:temporal_event:entry-17:npc-ratsha:others"
       },
       {
         "entity_kind": "npc_decision_signal",
-        "entity_id": "decision-signal:intent-17:npc-ratsha"
+        "entity_id": "decision-signal:objective_change:intent-17:npc-ratsha:objective"
       }
     ],
     "perceived_changes": [

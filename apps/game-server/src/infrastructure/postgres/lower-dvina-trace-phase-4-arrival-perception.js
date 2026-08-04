@@ -31,11 +31,11 @@ export function appendM2ArrivalPerception({
   const perceptionRef = ref('perception_result', perceptionId);
   const expectedSignalRef = ref(
     'npc_decision_signal',
-    `decision-signal:${perceptionId}:${ratshaId}`
+    `decision-signal:temporal_event:${eventId}:${ratshaId}:others`
   );
   const objectiveSignalRef = ref(
     'npc_decision_signal',
-    `decision-signal:${eventId}:${ratshaId}`
+    `decision-signal:temporal_event:${eventId}:${ratshaId}:objective`
   );
   const expectedBatchKey = `conversation-batch:${canonicalDigest({
     schema: 'rus.lower_dvina_trace_conversation_batch_identity.v1',
@@ -63,10 +63,9 @@ export function appendM2ArrivalPerception({
         arrival.perceived_group?.signal_descriptor,
         groupMapping?.signal_descriptors?.[0]
       )
-      || !same(arrival.perceived_group?.source_event_ref, perceptionRef)
+      || !same(arrival.perceived_group?.source_event_ref, temporalEventRef)
       || !same(arrival.perceived_group?.source_perception_ref, perceptionRef)
-      || !same(arrival.perceived_group?.causal_parent_refs,
-        [temporalEventRef])
+      || !same(arrival.perceived_group?.causal_parent_refs, [])
       || !same(arrival.perceived_group?.expected_signal_ref,
         expectedSignalRef)
       || !same(arrival.perceived_group?.perceived_actor_refs,
@@ -102,7 +101,7 @@ export function appendM2ArrivalPerception({
       || !same(resolved.event_ref, temporalEventRef)
       || !same(resolved.observer_ref, ref('npc', ratshaId))
       || !same(resolved.subject_ref, ref('party', partyId))
-      || !same(resolved.source_event_ref, perceptionRef)
+      || !same(resolved.source_event_ref, temporalEventRef)
       || resolved.observation_ref
         !== groupMapping.source_observation_profile_id
       || resolved.result_kind !== 'recognized'
@@ -133,7 +132,7 @@ export function appendM2ArrivalPerception({
     event_ref: temporalEventRef,
     observer_ref: input.observer_ref,
     subject_ref: input.subject_ref,
-    source_event_ref: perceptionRef,
+    source_event_ref: temporalEventRef,
     observation_ref: groupMapping.source_observation_profile_id,
     result_kind: 'recognized',
     occurred_at: structuredClone(timestamp),

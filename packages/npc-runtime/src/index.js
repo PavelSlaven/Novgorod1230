@@ -38,7 +38,8 @@ export {
 } from './semantic-decision-contracts.js';
 export {
   proposeNpcPerception,
-  resolveConversationListenerPerception
+  resolveConversationListenerPerception,
+  resolveConversationVisualPerception
 } from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
 export {

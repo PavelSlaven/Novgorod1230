@@ -79,9 +79,9 @@ export function semanticReadPool(writes) {
     writes.appends,
     'party_perception_replay_evidence'
   );
-  const messages = [...perceptions.values()].map(({ record }) => {
+  const perceptionRow = ({ record }) => {
     const event = events.get(record.event_id).record;
-    const witness = witnesses.get(record.perception_id).record;
+    const witness = witnesses.get(record.perception_id)?.record ?? null;
     const evidence = replay.get(record.perception_id).record;
     return {
       ...structuredClone(record),
@@ -105,8 +105,8 @@ export function semanticReadPool(writes) {
       event_change_set_id: event.change_set_id,
       terminal_change_set_id: event.terminal_change_set_id,
       event_version: String(event.state_version),
-      witness_kind: witness.witness_kind,
-      witness_id: witness.witness_id,
+      witness_kind: witness?.witness_kind ?? null,
+      witness_id: witness?.witness_id ?? null,
       canonical_input_digest: evidence.canonical_input_digest,
       replay_digest: evidence.perception_digest,
       expected_state_versions_digest:
@@ -117,8 +117,16 @@ export function semanticReadPool(writes) {
       replay_canonical_digest: evidence.canonical_digest,
       replay_change_set_id: evidence.change_set_id
     };
-  }).sort((left, right) =>
+  };
+  const messages = [...perceptions.values()].filter(({ record }) =>
+    events.get(record.event_id)?.record?.event_kind
+      === 'conversation_message_received').map(perceptionRow).sort((left, right) =>
     left.perception_id.localeCompare(right.perception_id));
+  const supporting = [...perceptions.values()].filter(({ record }) =>
+    events.get(record.event_id)?.record?.event_kind
+      === 'conversation_supporting_operation').map(perceptionRow).sort(
+    (left, right) => left.perception_id.localeCompare(right.perception_id)
+  );
   return {
     async query(sql) {
       if (sql.includes('party_conversation_sessions')) return result(sessions);
@@ -131,6 +139,9 @@ export function semanticReadPool(writes) {
       if (sql.includes('party_npc_decision_traces')) return result(decisions);
       if (sql.includes("e.event_kind='conversation_message_received'")) {
         return result(messages);
+      }
+      if (sql.includes("e.event_kind='conversation_supporting_operation'")) {
+        return result(supporting);
       }
       throw new Error('Unexpected semantic read query: ' + sql);
     }

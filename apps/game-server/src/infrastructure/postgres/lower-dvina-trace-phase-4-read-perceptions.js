@@ -140,7 +140,9 @@ export function m2PerceptionPayload(snapshot, row, partyId) {
   const signalRef = {
     entity_kind: 'npc_decision_signal',
     entity_id:
-      `decision-signal:${snapshot.source_event_ref.entity_id}:${snapshot.observer_ref.entity_id}`
+      `decision-signal:${snapshot.source_event_ref.entity_kind}:${
+        snapshot.source_event_ref.entity_id}:${
+        snapshot.observer_ref.entity_id}:others`
   };
   if (row.event_id !== `event:${partyId}:trace-phase4:${turn}:knife-loss`
       || row.event_kind !== 'item_property_transition_observed'

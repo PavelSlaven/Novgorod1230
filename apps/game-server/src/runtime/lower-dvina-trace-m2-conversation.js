@@ -157,6 +157,8 @@ export async function resolveTracePhase3ConversationExchange({
     temporal_boundary_refs: structuredClone(result.temporalBoundaryRefs),
     statements: result.statements,
     audiences: result.audiences,
+    supporting_operation_perceptions:
+      result.supportingOperationPerceptions,
     decision_boundary: result.decision?.boundary ?? null,
     decision_request: result.decision?.request ?? null,
     decision_plan: result.decision?.proposal.plan ?? null,

@@ -33,6 +33,16 @@ const CONVERSATION_PERCEPTION_INPUT_KEYS = [
   'witness_policy_allows'
 ];
 
+const CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS = [
+  'observer_ref',
+  'perception_result_ref',
+  'visual_path',
+  'distance_band',
+  'ambient_visibility',
+  'visual_capability',
+  'attention'
+];
+
 const orderedRefs = (values) => [...values].sort(
   (left, right) => refKey(left).localeCompare(refKey(right), 'en')
 );
@@ -387,6 +397,50 @@ export function resolveConversationListenerPerception(input = {}) {
     speakerRecognized,
     witness
   );
+}
+
+export function resolveConversationVisualPerception(input = {}) {
+  if (!plainRecord(input)
+      || Object.keys(input).length
+        !== CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS.length
+      || CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS.some(
+        (key) => !Object.hasOwn(input, key)
+      )
+      || !exactConversationRef(input.observer_ref, 'npc')
+      || !exactConversationRef(
+        input.perception_result_ref,
+        'perception_result'
+      )
+      || !['clear', 'degraded', 'blocked'].includes(input.visual_path)
+      || !['conversation', 'nearby', 'distant'].includes(input.distance_band)
+      || !['clear', 'degraded', 'blocked']
+        .includes(input.ambient_visibility)
+      || !['full', 'partial', 'none'].includes(input.visual_capability)
+      || !['available', 'distracted', 'unavailable'].includes(input.attention)) {
+    throw Object.assign(new TypeError(
+      'Conversation visual perception requires one exact factual snapshot.'
+    ), { code: 'CONVERSATION_VISUAL_PERCEPTION_INPUT_INVALID' });
+  }
+
+  const notPerceived = input.visual_path === 'blocked'
+    || input.distance_band === 'distant'
+    || input.ambient_visibility === 'blocked'
+    || input.visual_capability === 'none'
+    || input.attention === 'unavailable';
+  const partial = !notPerceived && (
+    input.visual_path === 'degraded'
+      || input.distance_band === 'nearby'
+      || input.ambient_visibility === 'degraded'
+      || input.visual_capability === 'partial'
+      || input.attention === 'distracted'
+  );
+  return freeze({
+    observer_ref: structuredClone(input.observer_ref),
+    perception_result_ref: structuredClone(input.perception_result_ref),
+    perception_result: notPerceived
+      ? 'not_perceived'
+      : partial ? 'perceived_partial' : 'recognized'
+  });
 }
 
 function plainRecord(value) {

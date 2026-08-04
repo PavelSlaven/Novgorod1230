@@ -118,6 +118,7 @@ export async function executeM2ConversationExchange(context) {
     temporal_advance_results: [],
     statements: [],
     audiences: [],
+    supporting_operation_perceptions: [],
     new_signal_records: [],
     consumed_signal_ids: []
   };
@@ -235,6 +236,8 @@ export async function executeM2ConversationExchange(context) {
     decision: exchange.npc_decisions[0] ?? null,
     statements: exchange.working_state.statements,
     audiences: exchange.working_state.audiences,
+    supportingOperationPerceptions:
+      exchange.working_state.supporting_operation_perceptions,
     newSignalRecords: exchange.working_state.new_signal_records,
     consumedSignalIds: exchange.working_state.consumed_signal_ids,
     clockAfter: exchange.working_state.clock,

@@ -123,7 +123,8 @@ export function appendM2SurrenderObserverPerceptions({
     }
     const expectedSignalRef = ref(
       'npc_decision_signal',
-      `decision-signal:${sourceEventRef.entity_id}:${observerId}`
+      `decision-signal:${sourceEventRef.entity_kind}:${
+        sourceEventRef.entity_id}:${observerId}:others`
     );
     const perceptionRef = ref('perception_result', perceptionId);
     const signalRecord = next.npc_decision_signals?.find((record) =>

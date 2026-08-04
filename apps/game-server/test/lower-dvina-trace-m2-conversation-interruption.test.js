@@ -95,8 +95,12 @@ test('interrupted NPC route disclosure has no mechanical consequence', async () 
   assert.equal(exchange.result.audiences[0].statement_ref.entity_id,
     exchange.result.statements[0].statement_id);
   assert.equal(exchange.result.new_signal_records.length > 0, true);
-  assert.deepEqual(exchange.result.consumed_signal_ids,
-    exchange.result.new_signal_records.map(({ signal }) => signal.signal_id));
+  assert.deepEqual(
+    [...exchange.result.consumed_signal_ids].sort(),
+    exchange.result.new_signal_records
+      .map(({ signal }) => signal.signal_id)
+      .sort()
+  );
   const restarted = projectPhase3Conversation({ state, contracts,
     result: exchange.result, inputDigest: digest('e') });
   assert.equal((restarted.knowledge ?? []).some(({ fact_id: id }) =>

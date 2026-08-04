@@ -80,14 +80,18 @@ export function ratshaArrival({ partyId, turn }) {
     ),
     observer_ref: ref('npc', 'ratsha'),
     subject_ref: ref('party', partyId),
-    source_event_ref: ref('perception_result', perceptionId),
+    source_event_ref: ref(
+      'temporal_event',
+      'event:' + partyId + ':trace-phase4:' + turn + ':arrival'
+    ),
     observation_ref: 'ratsha-group-observation',
     result_kind: 'recognized',
     occurred_at: AT,
     perceived_actor_refs: [ref('actor', 'player')],
     signal_ref: ref(
       'npc_decision_signal',
-      'decision-signal:' + perceptionId + ':ratsha'
+      'decision-signal:temporal_event:event:' + partyId
+        + ':trace-phase4:' + turn + ':arrival:ratsha:others'
     )
   };
 }
@@ -128,8 +132,9 @@ export function phase4PerceptionRow({
   const signalRef = knife
     ? ref(
         'npc_decision_signal',
-        'decision-signal:' + snapshot.source_event_ref.entity_id
-          + ':' + snapshot.observer_ref.entity_id
+        'decision-signal:' + snapshot.source_event_ref.entity_kind + ':'
+          + snapshot.source_event_ref.entity_id + ':'
+          + snapshot.observer_ref.entity_id + ':others'
       )
     : snapshot.signal_ref;
   const exactPayload = legacy

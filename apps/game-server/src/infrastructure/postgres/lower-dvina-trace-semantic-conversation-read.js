@@ -19,6 +19,8 @@ import {
 import { assertContributions } from
   './lower-dvina-trace-semantic-conversation-read-contributions.js';
 import { assertMessages } from './lower-dvina-trace-semantic-conversation-read-messages.js';
+import { assertSupportingOperationPerceptions } from
+  './lower-dvina-trace-semantic-conversation-read-supporting-perceptions.js';
 
 export function isLowerDvinaTraceSemanticRevision(payload) {
   return Number(payload?.materialization_trace?.seed_context
@@ -31,7 +33,8 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
 ) {
   if (!isLowerDvinaTraceSemanticRevision(payload)) return [];
   const partyId = payload.party_id;
-  const [contributions, sessions, statements, decisions, messages] = await Promise.all([
+  const [contributions, sessions, statements, decisions, messages,
+    supportingPerceptions] = await Promise.all([
     pool.query(
       `SELECT contribution_id,conversation_id,exchange_id,
               party_state_version::text,
@@ -110,6 +113,40 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
           AND e.event_kind='conversation_message_received'
         ORDER BY p.perception_id,w.witness_kind,w.witness_id`,
       [partyId]
+    ),
+    pool.query(
+      `SELECT p.perception_id,p.event_id,p.perceiver_kind,p.perceiver_id,
+              p.result_kind,p.perceived_at_whole_minutes::text,
+              p.perceived_at_subminute_numerator::text,
+              p.perceived_at_subminute_denominator::text,
+              p.recognition_policy_ref,p.visibility_policy_ref,
+              p.canonical_digest AS perception_digest,p.signal_refs,
+              p.knowledge_update_refs,p.change_set_id,
+              p.idempotency_record_id,
+              e.event_kind,e.status AS event_status,
+              e.scheduled_at_whole_minutes::text,
+              e.scheduled_at_subminute_numerator::text,
+              e.scheduled_at_subminute_denominator::text,e.rule_ref,
+              e.policy_ref,e.preconditions_digest,e.idempotency_key,
+              e.change_set_id AS event_change_set_id,
+              e.terminal_change_set_id,e.state_version::text AS event_version,
+              w.witness_kind,w.witness_id,
+              r.canonical_input_digest,r.perception_digest AS replay_digest,
+              r.expected_state_versions_digest,r.dependency_pins_digest,
+              r.policy_versions_digest,
+              r.idempotency_key AS replay_idempotency_key,
+              r.canonical_digest AS replay_canonical_digest,
+              r.change_set_id AS replay_change_set_id
+         FROM party_runtime.party_perception_records p
+         JOIN party_runtime.party_temporal_events e ON e.event_id=p.event_id
+         LEFT JOIN party_runtime.party_perception_witnesses w
+           ON w.perception_id=p.perception_id
+         JOIN party_runtime.party_perception_replay_evidence r
+           ON r.party_id=p.party_id AND r.perception_id=p.perception_id
+        WHERE p.party_id=$1
+          AND e.event_kind='conversation_supporting_operation'
+        ORDER BY p.perception_id,w.witness_kind,w.witness_id`,
+      [partyId]
     )
   ]);
 
@@ -131,6 +168,11 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
     decisions: decisionProof.rows,
     contributions: contributionRows,
     rows: messages.rows
+  });
+  assertSupportingOperationPerceptions({
+    payload,
+    rows: supportingPerceptions.rows,
+    contributions: contributionRows
   });
   return decisionProof.traces;
 }

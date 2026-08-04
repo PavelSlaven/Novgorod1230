@@ -15,6 +15,7 @@ import {
   ref,
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { evidencePresentationPerception } from './lower-dvina-trace-m2-conversation-supporting-perception.js';
 
 export function applyPlayerPlan(context, working, plan) {
   requirePlayerSpeech(context, plan);
@@ -40,13 +41,20 @@ export function projectPlayerPerception(context, working, statement) {
   const targetMessage = audience.received_messages.find(
     ({ listener_ref: listenerRef }) => sameRef(listenerRef, context.targetRef)
   );
-  const newSignalRecords = targetMessage
-    ? currentSignalRecords(
-        context,
-        statement,
-        targetMessage.perception_result_ref
+  const supportingOperationPerception = evidencePresentationPerception(context);
+  const evidencePerceptionRef = supportingOperationPerception !== null
+    && supportingOperationPerception.result_kind !== 'not_perceived'
+    ? ref(
+        'perception_result',
+        supportingOperationPerception.perception_id
       )
-    : [];
+    : null;
+  const newSignalRecords = currentSignalRecords(
+    context,
+    statement,
+    targetMessage?.perception_result_ref ?? null,
+    evidencePerceptionRef
+  );
   return applyResult({
     working: {
       ...working,
@@ -55,6 +63,11 @@ export function projectPlayerPerception(context, working, statement) {
       new_signal_records: [
         ...working.new_signal_records,
         ...newSignalRecords
+      ],
+      supporting_operation_perceptions: [
+        ...(working.supporting_operation_perceptions ?? []),
+        ...(supportingOperationPerception === null
+          ? [] : [supportingOperationPerception])
       ]
     },
     contributionEvent: statement,
@@ -63,7 +76,6 @@ export function projectPlayerPerception(context, working, statement) {
     handoff: null
   });
 }
-
 export function applyNpcPlan(
   context,
   working,
@@ -169,7 +181,6 @@ export function projectNpcPerception(
     handoff: null
   });
 }
-
 function statementFromPlan({
   context,
   plan,
@@ -208,7 +219,6 @@ function statementFromPlan({
     )
   });
 }
-
 function audienceForStatement(
   context,
   statement,
@@ -272,7 +282,6 @@ function audienceForStatement(
     })
   });
 }
-
 function applyResult({
   working,
   contributionEvent,

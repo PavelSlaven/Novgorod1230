@@ -55,10 +55,9 @@ export function projectPhase4ArrivalSignals({
         !== arrival.source_observation_profile_id
       || JSON.stringify(group.signal_descriptor)
         !== JSON.stringify(arrival.signal_descriptors[0])
-      || !sameRef(group.source_event_ref, group.source_perception_ref)
-      || group.source_event_ref?.entity_kind !== 'perception_result'
-      || group.causal_parent_refs?.length !== 1
-      || !sameRef(group.causal_parent_refs[0], payload.temporal_event_ref)
+      || !sameRef(group.source_event_ref, payload.temporal_event_ref)
+      || group.source_perception_ref?.entity_kind !== 'perception_result'
+      || group.causal_parent_refs?.length !== 0
       || invalidation?.mapping_id !== objective.mapping_id
       || invalidation.source_activity_id !== objective.source_activity_id
       || invalidation.source_boundary !== objective.source_boundary

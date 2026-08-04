@@ -140,6 +140,8 @@ export function appendSemanticNegotiation({
     semanticExchange: semanticInput.semanticExchange,
     signalRecords: semanticInput.signalRecords,
     actualMessageEvidence: semanticInput.actualMessageEvidence,
+    supportingOperationEvidence:
+      semanticInput.supportingOperationEvidence,
     partyStateVersion: semanticInput.partyStateVersion,
     sameTimeBatchRef: semanticInput.sameTimeBatchRef,
     contributions: semanticInput.contributions

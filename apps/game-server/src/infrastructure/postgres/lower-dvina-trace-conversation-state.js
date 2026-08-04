@@ -1,4 +1,3 @@
-
 import {
   buildConversationSession,
   buildNpcSemanticDecisionTrace,
@@ -27,14 +26,13 @@ import {
   projectSharedSemanticExchange,
   semanticDecisionTraceReference
 } from './lower-dvina-trace-conversation-shared-projection.js';
+import { validateSupportingOperationPerceptions } from './lower-dvina-trace-supporting-operation-perception-state.js';
 
-export {
-  assertSharedSemanticSnapshotSafe,
+export { assertSharedSemanticSnapshotSafe,
   projectSharedSemanticConsequence,
   projectSharedSemanticExchange,
   semanticDecisionTraceReference
 };
-
 export function projectSemanticConversationSnapshot({
   state,
   semanticExchange,
@@ -97,7 +95,6 @@ export function projectSemanticConversationSnapshot({
       );
     }
   }
-
   const statements = validateStatements(
     semanticExchange.statements,
     exchangeIdentity
@@ -114,6 +111,11 @@ export function projectSemanticConversationSnapshot({
   const signalRecords = validateSignalRecords(
     semanticExchange.new_signal_records
   );
+  const supportingOperationPerceptions =
+    validateSupportingOperationPerceptions(
+      semanticExchange.supporting_operation_perceptions ?? [],
+      { fail, record, text }
+    );
   const consumedSignalIds = validateConsumedSignalIds(
     semanticExchange.consumed_signal_ids
   );
@@ -159,6 +161,12 @@ export function projectSemanticConversationSnapshot({
     (message) => `${refKey(message.source_statement_ref)}\u0000${
       refKey(message.listener_ref)}`,
     'TRACE_M2_RECEIVED_MESSAGE_CONFLICT'
+  );
+  next.supporting_operation_perceptions = mergeAppendOnly(
+    next.supporting_operation_perceptions,
+    supportingOperationPerceptions,
+    ({ perception_id: id }) => id,
+    'TRACE_M2_SUPPORTING_OPERATION_PERCEPTION_CONFLICT'
   );
   next.npc_decision_signals = mergeAppendOnly(
     next.npc_decision_signals,

@@ -23,6 +23,33 @@ import {
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
+test('one arrival event creates distinct others and objective signals', () => {
+  const { state, contracts } = phase4ArrivalState();
+  const ratshaId = contracts.actors.ratsha_storehouse_helper.instance_id;
+  const signals = state.npc_decision_signals
+    .map(({ signal }) => signal)
+    .filter(({ subject_ref: subjectRef }) => subjectRef.entity_id === ratshaId)
+    .filter(({ category }) => ['others', 'objective'].includes(category));
+
+  assert.equal(signals.length, 2);
+  assert.equal(new Set(signals.map(({ signal_id: id }) => id)).size, 2);
+  assert.deepEqual(
+    signals.map(({ category }) => category).sort(),
+    ['objective', 'others']
+  );
+  assert.equal(new Set(signals.map(
+    ({ source_event_ref: source }) =>
+      `${source.entity_kind}:${source.entity_id}`
+  )).size, 1);
+  assert.equal(signals.every(
+    ({ source_event_ref: source }) => source.entity_kind === 'temporal_event'
+  ), true);
+  const perceived = signals.find(({ category }) => category === 'others');
+  const objective = signals.find(({ category }) => category === 'objective');
+  assert.equal(perceived.source_perception_ref.entity_kind, 'perception_result');
+  assert.equal(objective.source_perception_ref, null);
+});
+
 test('Phase 4 does not create a promise or check for an ordinary question', async () => {
   const { state, contracts } = phase4ArrivalState();
   const baseModel = createM2ConversationModels().playerConversationModel;

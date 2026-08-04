@@ -676,7 +676,7 @@ critical
 ```json
 {
   "schema": "npc_decision_signal_v1",
-  "signal_id": "decision-signal:event-17:npc-ratsha",
+  "signal_id": "decision-signal:world_event:event-17:npc-ratsha:environment",
   "occurred_at": {
     "whole_minutes": "620",
     "subminute_numerator": "0",
@@ -709,7 +709,7 @@ critical
       "entity_id": "combat-exchange-4"
     }
   ],
-  "idempotency_key": "decision-signal:event-17:npc-ratsha"
+  "idempotency_key": "decision-signal:world_event:event-17:npc-ratsha:environment"
 }
 ```
 
@@ -718,6 +718,8 @@ critical
 - `category` — только одна из пяти категорий;
 - `significance` — только `material` или `critical`;
 - один signal относится к одному NPC;
+- identity включает kind/id factual event, NPC и category, поэтому одно
+  событие может породить несколько категорий для одного NPC без collision;
 - `source_event_ref` указывает на factual event;
 - при `perception_required: true` обязателен matching perceived result;
 - `not_perceived` не создаёт resolved signal;

@@ -27,6 +27,8 @@ import {
   appendStatementWrites,
   sessionRecord
 } from './npc-semantic-conversation-write-rows.js';
+import { appendSupportingOperationPerceptionWrites } from
+  './npc-semantic-conversation-supporting-operation-writes.js';
 
 export { buildNpcSemanticConversationWriteInput } from
   './npc-semantic-conversation-write-input.js';
@@ -48,6 +50,7 @@ export function appendNpcSemanticConversationWrites({
   semanticExchange,
   signalRecords,
   actualMessageEvidence,
+  supportingOperationEvidence = [],
   partyStateVersion,
   sameTimeBatchRef,
   contributions
@@ -68,6 +71,7 @@ export function appendNpcSemanticConversationWrites({
       || sameTimeBatchRef.entity_kind !== 'temporal_batch'
       || !Array.isArray(contributions)
       || contributions.length < 1
+      || !validSupportingOperationEvidence(supportingOperationEvidence)
       || (hasDecision && (!validateNpcDecisionBoundary(semanticExchange.decision_boundary)
         || !validateNpcConversationResponseRequest(semanticExchange.decision_request)
         || !validateConversationContributionPlan(
@@ -210,5 +214,44 @@ export function appendNpcSemanticConversationWrites({
     idempotencyRecordId,
     stateVersion: partyStateVersion,
     conversationStateVersion: session.state_version
+  });
+  appendSupportingOperationPerceptionWrites({
+    inserts,
+    appends,
+    evidence: supportingOperationEvidence,
+    partyId,
+    changeSetId,
+    idempotencyRecordId,
+    stateVersion: partyStateVersion,
+    conversationStateVersion: session.state_version
+  });
+}
+
+function validSupportingOperationEvidence(values) {
+  return Array.isArray(values) && values.every((entry) => {
+    const perception = entry?.perception;
+    return exactKeys(entry, ['perception', 'signal_refs'])
+      && record(perception)
+      && perception.schema
+        === 'conversation_supporting_operation_perception_v1'
+      && stableId(perception.perception_id)
+      && stableId(perception.conversation_id)
+      && stableId(perception.exchange_id)
+      && perception.observer_ref?.entity_kind === 'npc'
+      && stableId(perception.observer_ref?.entity_id)
+      && perception.source_event_ref?.entity_kind === 'evidence_presentation'
+      && stableId(perception.source_event_ref?.entity_id)
+      && perception.subject_ref?.entity_kind === 'item'
+      && stableId(perception.subject_ref?.entity_id)
+      && ['not_perceived', 'perceived_partial', 'recognized']
+        .includes(perception.result_kind)
+      && record(perception.occurred_at)
+      && Array.isArray(entry.signal_refs)
+      && entry.signal_refs.every((reference) =>
+        reference?.entity_kind === 'npc_decision_signal'
+          && stableId(reference.entity_id))
+      && (perception.result_kind === 'not_perceived'
+        ? entry.signal_refs.length === 0
+        : entry.signal_refs.length <= 1);
   });
 }

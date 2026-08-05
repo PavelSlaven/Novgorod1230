@@ -21,8 +21,45 @@ import {
   projectPhase3Conversation,
   ref,
   revision14Bundle,
-  runPhase3
+  runPhase3,
+  withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('late Eremey route disclosure is the applied target outcome', async () => {
+  const state = phase3State();
+  const contracts = resolveContracts(state);
+  withAccessibleBlueWool(state, contracts);
+  const eremey = npcBySlot(state, 'eremey_fisher');
+  const responder = npcBySlot(state, 'background_fisher_1');
+  const eremeyRef = ref('npc', eremey.instance_id);
+  const responderRef = ref('npc', responder.instance_id);
+  const exchange = await runPhase3({ state, contracts,
+    rawText: 'Еремей, спроси рыбака и скажи, где сушильня.',
+    inputDigest: digest('b'),
+    responseKind: (_request, callIndex) =>
+      callIndex === 3 ? 'route_disclosure' : 'speech',
+    playerPlanOptions: { evidence: true },
+    transformNpcPlan(plan, { call_index: callIndex }) {
+      const targetRef = callIndex === 1 ? responderRef
+        : callIndex === 2 ? eremeyRef : null;
+      if (targetRef !== null) {
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [targetRef]
+        };
+      }
+      return plan;
+    }
+  });
+
+  assert.equal(exchange.npcCalls, 3);
+  assert.equal(exchange.result.response_kind, 'route_disclosure');
+  const next = projectPhase3Conversation({ state, contracts,
+    result: exchange.result, inputDigest: digest('b') });
+  assert.equal(next.route_knowledge.includes(
+    contracts.disclosureMapping.route_knowledge_disclosure.route_ref), true);
+});
 
 test('terminal first responder does not spend the remaining NPC slot',
   async () => {
@@ -134,6 +171,7 @@ test('NPC A may decide again after NPC B creates a new causal batch',
   async () => {
     const state = phase3State();
     const contracts = resolveContracts(state);
+    withAccessibleBlueWool(state, contracts);
     const eremey = npcBySlot(state, 'eremey_fisher');
     const responder = npcBySlot(state, 'background_fisher_1');
     const eremeyRef = ref('npc', eremey.instance_id);
@@ -146,7 +184,8 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       responseKind: 'speech',
       playerPlanOptions: {
         primaryAddresseeRef: eremeyRef,
-        intendedAddresseeRefs: [eremeyRef]
+        intendedAddresseeRefs: [eremeyRef],
+        evidence: true
       },
       transformNpcPlan: (plan, { call_index: callIndex }) => {
         const targetRef = callIndex === 1
@@ -170,7 +209,7 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       exchange.result.exchange.working_state.temporal_advance_results.length,
       exchange.result.exchange.contributions.length
     );
-    assert.equal(exchange.result.exact_elapsed_minutes, 6);
+    assert.equal(exchange.result.exact_elapsed_minutes, 10);
 
     const projectedPhase3 = projectPhase3Conversation({
       state,
@@ -210,7 +249,10 @@ test('NPC A may decide again after NPC B creates a new causal batch',
     assert.equal(persisted.length, 3);
     assert.equal(new Set(persisted.map(({ request_id: requestId }) =>
       requestId)).size, 3);
-    assert.equal(restarted.consumed_npc_decision_signal_ids.length, 3);
+    const consumedBoundarySignalIds = new Set(exchange.result.decisions.flatMap(
+      ({ boundary }) => boundary.signal_refs.map(({ entity_id: id }) => id)));
+    assert.equal(restarted.consumed_npc_decision_signal_ids.length,
+      consumedBoundarySignalIds.size);
 
     const publicPayload = phase2ConversationPayload({
       state,
@@ -223,8 +265,8 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       .conversation.semantic_exchange_projection.statement_refs;
     assert.deepEqual(projectedStatementRefs, [ref(
       'conversation_statement',
-      exchange.result.statements.find(({ speaker_ref: speaker }) =>
-        speaker.entity_id === eremey.instance_id).statement_id
+      exchange.result.statements.filter(({ speaker_ref: speaker }) =>
+        speaker.entity_id === eremey.instance_id).at(-1).statement_id
     )]);
     const visible = await createTracePhase3VisibleProjector({
       phase2Projector: { project: async () => null },
@@ -243,6 +285,7 @@ test('NPC A may perceive and react when NPC B deliberately stays silent',
   async () => {
     const state = phase3State();
     const contracts = resolveContracts(state);
+    withAccessibleBlueWool(state, contracts);
     const eremey = npcBySlot(state, 'eremey_fisher');
     const responder = npcBySlot(state, 'background_fisher_1');
     const bystander = npcBySlot(state, 'background_fisher_2');
@@ -256,7 +299,8 @@ test('NPC A may perceive and react when NPC B deliberately stays silent',
       responseKind: 'speech',
       playerPlanOptions: {
         primaryAddresseeRef: eremeyRef,
-        intendedAddresseeRefs: [eremeyRef]
+        intendedAddresseeRefs: [eremeyRef],
+        evidence: true
       },
       transformNpcPlan: (plan, { call_index: callIndex }) => {
         if (callIndex === 1) {

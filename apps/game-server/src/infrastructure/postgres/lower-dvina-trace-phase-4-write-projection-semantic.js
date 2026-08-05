@@ -1,4 +1,3 @@
-
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
@@ -15,9 +14,7 @@ import {
   appendM2SurrenderObserverPerceptions,
   appendSurrenderSemantics
 } from './lower-dvina-trace-phase-4-semantic-writes.js';
-import {
-  appendPhase4Movement
-} from './lower-dvina-trace-phase-4-movement-writes.js';
+import { appendPhase4Movement } from './lower-dvina-trace-phase-4-movement-writes.js';
 import {
   appendPhase4ActivityExecution
 } from './lower-dvina-trace-phase-4-activity-writes.js';
@@ -26,7 +23,6 @@ import {
   appendNpcSemanticConversationWrites,
   buildNpcSemanticConversationWriteInput
 } from './npc-semantic-conversation-writes.js';
-
 import { validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
 
 export function appendSemanticNegotiation({
@@ -57,9 +53,12 @@ export function appendSemanticNegotiation({
     throw new Error('TRACE_PHASE_4_PROMISE_TRANSITION_INVALID');
   }
   const roots = n.activity_roots ?? [];
+  const exactEndResume = semantic.exact_elapsed_minutes === 0
+    && semantic.resumed_npc_execution != null
+    && semantic.exchange?.time_budget?.total_minutes === 0;
   if (roots.length !== 1
       || !Number.isSafeInteger(semantic.exact_elapsed_minutes)
-      || semantic.exact_elapsed_minutes < 1
+      || (semantic.exact_elapsed_minutes < 1 && !exactEndResume)
       || roots[0]?.duration_minutes
         !== semantic.exchange?.time_budget?.total_minutes) {
     throw new Error('TRACE_M2_PHASE_4_SEMANTIC_ACTIVITY_ROOT_INVALID');

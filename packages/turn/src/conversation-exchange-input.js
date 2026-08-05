@@ -60,19 +60,26 @@ export function normalizeConversationExchangeInput(input) {
     );
   }
   const timeBudget = input.timeBudget;
+  const pendingNpcExecution = input.pendingNpcExecution ?? null;
+  const exactEndResume = pendingNpcExecution !== null
+    && timeBudget?.total_minutes === 0
+    && timeBudget?.contribution_slots === 1
+    && pendingNpcExecution.remaining_minutes === 0
+    && pendingNpcExecution.remaining_exchange_minutes === 0
+    && pendingNpcExecution.remaining_responder_refs?.length === 0;
   if (!exactKeys(timeBudget, ['total_minutes', 'contribution_slots'])
       || !Number.isSafeInteger(timeBudget.total_minutes)
-      || timeBudget.total_minutes < 1
+      || (timeBudget.total_minutes < 1 && !exactEndResume)
       || !Number.isSafeInteger(timeBudget.contribution_slots)
       || timeBudget.contribution_slots < 1
       || timeBudget.contribution_slots > maxContributionsPerExchange
-      || timeBudget.contribution_slots > timeBudget.total_minutes) {
+      || (timeBudget.contribution_slots > timeBudget.total_minutes
+        && !exactEndResume)) {
     fail(
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'timeBudget must define one positive whole-exchange budget and bounded contribution slots'
     );
   }
-  const pendingNpcExecution = input.pendingNpcExecution ?? null;
   if (pendingNpcExecution !== null
       && (!exactKeys(pendingNpcExecution, [
         'plan', 'boundary_id', 'contribution_index', 'remaining_minutes',
@@ -85,7 +92,7 @@ export function normalizeConversationExchangeInput(input) {
         || !Number.isSafeInteger(pendingNpcExecution.contribution_index)
         || pendingNpcExecution.contribution_index < 2
         || !Number.isSafeInteger(pendingNpcExecution.remaining_minutes)
-        || pendingNpcExecution.remaining_minutes < 1
+        || pendingNpcExecution.remaining_minutes < 0
         || !Number.isSafeInteger(
           pendingNpcExecution.remaining_exchange_minutes)
         || pendingNpcExecution.remaining_exchange_minutes

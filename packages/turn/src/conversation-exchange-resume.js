@@ -19,6 +19,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     ports, applied: firstApplied, plan: pending.plan,
     contributionIndex: pending.contribution_index,
     plannedMinutes: pending.remaining_minutes,
+    elapsedAlreadyComplete: pending.remaining_minutes === 0,
     perceptionPort: ports.projectNpcContributionPerception,
     proposal: { plan: pending.plan, signal_ids_to_consume: [] }
   });
@@ -109,7 +110,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
         remainingMinutes: queuedMinutes,
         queuedBoundaries,
         plan: proposal.plan,
-        processedNpcRefs
+        priorNpcDecisionCount: processedNpcRefs.length
       });
       const applied = normalizeApplyResult(await callPort(
         ports.applyNpcContribution,
@@ -212,7 +213,7 @@ function plannedNpcMinutes({
   remainingMinutes,
   queuedBoundaries,
   plan,
-  processedNpcRefs
+  priorNpcDecisionCount
 }) {
   const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
     refKey(npcRef)));
@@ -221,19 +222,17 @@ function plannedNpcMinutes({
   )) {
     queuedKeys.clear();
   }
+  if (plan.contribution_kind === 'silence'
+      && priorNpcDecisionCount > 0
+      && remainingMinutes > 1) {
+    return 1;
+  }
   const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
     ? [] : plan.speech?.response_expectation?.target_refs ?? [];
-  const processedKeys = new Set(processedNpcRefs.map(refKey));
-  let recurrentResponse = false;
   for (const reference of expectedRefs) {
     queuedKeys.add(refKey(reference));
-    if (processedKeys.has(refKey(reference))) recurrentResponse = true;
   }
-  if (recurrentResponse) return 1;
-  return Math.max(1, remainingMinutes - Math.min(
-    queuedKeys.size,
-    Math.max(0, remainingMinutes - 1)
-  ));
+  return queuedKeys.size > 0 ? 1 : remainingMinutes;
 }
 
 function refKey(reference) {

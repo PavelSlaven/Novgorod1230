@@ -1,19 +1,11 @@
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
-import { assertSharedSemanticSnapshotSafe,
-  projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from
-  './lower-dvina-trace-conversation-state.js';
-import { phase3SemanticInteractions } from
-  './lower-dvina-trace-phase-3-state-interactions.js';
-import { applyConversationTemporalNpcWrites } from
-  './lower-dvina-trace-conversation-temporal.js';
-import { phase3RouteTimeUpdate } from
-  './lower-dvina-trace-phase-3-activity-state.js';
-import { appendPhase3ActivityHistory } from
-  './lower-dvina-trace-phase-3-activity-history.js';
-import { projectRepeatedPendingNpcExecution } from
-  './lower-dvina-trace-pending-npc-state.js';
-export { activityHistoryEntry, phase3ActivityRef } from
-  './lower-dvina-trace-phase-3-activity-state.js';
+import { assertSharedSemanticSnapshotSafe, projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from './lower-dvina-trace-conversation-state.js';
+import { phase3SemanticInteractions } from './lower-dvina-trace-phase-3-state-interactions.js';
+import { applyConversationTemporalNpcWrites } from './lower-dvina-trace-conversation-temporal.js';
+import { phase3RouteTimeUpdate } from './lower-dvina-trace-phase-3-activity-state.js';
+import { appendPhase3ActivityHistory } from './lower-dvina-trace-phase-3-activity-history.js';
+import { projectRepeatedPendingNpcExecution } from './lower-dvina-trace-pending-npc-state.js';
+export { activityHistoryEntry, phase3ActivityRef } from './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -191,18 +183,27 @@ function projectPhase3SemanticConversation({
   const semantic = conversation.semantic_exchange;
   applyConversationTemporalNpcWrites(next, semantic);
   const resumedPlan = semantic.resumed_npc_execution?.plan ?? null;
-  const npcPlan = resumedPlan ?? semantic.decision_plan;
   const npcRef = resumedPlan?.speaker_ref
     ?? semantic.decision_request?.npc_ref ?? {
     entity_kind: 'npc', entity_id: conversation.npc_id
   };
+  const appliedTargetOutcomes = (semantic.npc_outcomes ?? []).filter(
+    ({ npc_ref: outcomeNpcRef, applied }) => applied
+      && sameRef(outcomeNpcRef, npcRef));
+  const finalOutcome = appliedTargetOutcomes.at(-1) ?? null;
+  const finalDecision = semantic.decisions?.find(({ request }) => request.request_id === finalOutcome?.request_id) ?? null;
+  const resumedRequestId = semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
+  const npcPlan = finalDecision?.proposal?.plan ?? (finalOutcome?.request_id === resumedRequestId ? resumedPlan : null)
+    ?? (finalOutcome === null ? resumedPlan ?? semantic.decision_plan : null);
   const hasDecision = semantic.decision_request !== null;
   const resumed = resumedPlan !== null;
-  const npcApplied = (hasDecision || resumed)
-    && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
-      sameRef(speaker, npcRef));
+  const npcApplied = appliedTargetOutcomes.length > 0;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
-    sameRef(speaker, npcRef)).slice(0, 1);
+    sameRef(speaker, npcRef));
+  const expectedStatementIds = new Set(appliedTargetOutcomes
+    .filter(({ contribution_ref: contributionRef }) =>
+      contributionRef?.entity_kind === 'conversation_statement')
+    .map(({ contribution_ref: contributionRef }) => contributionRef.entity_id));
   const speechResponse = ['route_disclosure', 'withhold', 'speech']
     .includes(semantic.response_kind);
   const npcSpeechContribution = hasDecision
@@ -213,8 +214,12 @@ function projectPhase3SemanticConversation({
     ? (speechResponse ? 'speech' : semantic.response_kind)
     : npcPlan?.contribution_kind;
   if (npcRef?.entity_kind !== 'npc'
-      || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)
+      || npcStatements.length !== expectedStatementIds.size
+      || npcStatements.some(({ statement_id: statementId }) =>
+        !expectedStatementIds.has(statementId))
       || conversation.npc_id !== npcRef.entity_id
+      || (npcApplied
+        && finalOutcome?.outcome?.kind !== semantic.response_kind)
       || ((hasDecision || resumed) && npcPlan?.contribution_kind
         !== expectedContributionKind)
       || (!hasDecision && !resumed && (semantic.response_kind !== null
@@ -229,7 +234,11 @@ function projectPhase3SemanticConversation({
       ].includes(semantic.response_kind))) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
-  const statement = npcStatements[0] ?? null;
+  const statement = semantic.route_disclosure === null
+    ? npcStatements.at(-1) ?? null
+    : npcStatements.find(({ statement_id: statementId }) =>
+      statementId === semantic.route_disclosure.source_statement_ref?.entity_id)
+      ?? null;
   next.interactions = [
     ...(next.interactions ?? []),
     ...phase3SemanticInteractions({
@@ -269,7 +278,6 @@ function sameRef(left, right) {
   return left?.entity_kind === right?.entity_kind &&
     left?.entity_id === right?.entity_id;
 }
-
 function semanticFail(code) {
   throw Object.assign(new Error(
     'The Phase 3 semantic conversation projection is incomplete.'), { code });

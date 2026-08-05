@@ -112,7 +112,7 @@ export function projectSemanticConversationSnapshot({
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
   const session = conversationSession({ state, exchange, statements,
-    audiences, request: exchangeIdentity });
+    request: exchangeIdentity });
   const next = structuredClone(state);
   next.conversation_sessions = mergeMutableById(
     next.conversation_sessions,
@@ -220,8 +220,7 @@ export function appendPendingNpcDecisionSignalRecords({ state, records }) {
   return next;
 }
 
-function conversationSession({ state, exchange, statements, audiences,
-  request }) {
+function conversationSession({ state, exchange, statements, request }) {
   const existing = (state.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === request.conversation_id
   );
@@ -232,9 +231,6 @@ function conversationSession({ state, exchange, statements, audiences,
     ...statements.map(({ speaker_ref: speakerRef }) => speakerRef),
     ...statements.flatMap(
       ({ intended_addressee_refs: intendedRefs }) => intendedRefs
-    ),
-    ...audiences.flatMap(
-      ({ actual_listener_refs: listenerRefs }) => listenerRefs
     )
   ]);
   const lastContributionRef = last?.schema

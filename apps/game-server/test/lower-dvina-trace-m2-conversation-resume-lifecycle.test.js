@@ -195,7 +195,7 @@ test('persisted NPC reply creates one perceived follow-up after restart',
     )];
     const first = await runPhase3({ state, contracts,
       rawText: 'Вот синяя шерсть.', inputDigest: digest('8'),
-      responseKind: 'route_disclosure', playerPlanOptions: { evidence: true },
+      responseKind: 'speech', playerPlanOptions: { evidence: true },
       resolveTemporalBoundary: interruptResolution,
       transformNpcPlan: (plan, { call_index: callIndex }) => {
         if (callIndex !== 1) return plan;
@@ -221,11 +221,24 @@ test('persisted NPC reply creates one perceived follow-up after restart',
 
     const resumed = await runPhase3({ state: restarted,
       contracts: resolveContracts(restarted), rawText: 'Продолжить.',
-      inputDigest: digest('9'), responseKind: 'speech' });
+      inputDigest: digest('9'),
+      responseKind: (_request, callIndex) =>
+        callIndex === 2 ? 'route_disclosure' : 'speech',
+      transformNpcPlan(plan, { call_index: callIndex }) {
+        if (callIndex === 1) {
+          const eremeyRef = ref('npc', eremey.instance_id);
+          plan.primary_addressee_ref = eremeyRef;
+          plan.intended_addressee_refs = [eremeyRef];
+          plan.speech.response_expectation = {
+            kind: 'answer', target_refs: [eremeyRef]
+          };
+        }
+        return plan;
+      } });
     assert.equal(resumed.playerCalls, 0);
-    assert.equal(resumed.npcCalls, 1);
+    assert.equal(resumed.npcCalls, 2);
     assert.deepEqual(resumed.npcRequests.map(({ npc_ref: npcRef }) => npcRef),
-      [responderRef]);
+      [responderRef, ref('npc', eremey.instance_id)]);
     assert.equal(resumed.npcRequests.some(({ npc_ref: npcRef }) =>
       npcRef.entity_id === bystander.instance_id), false);
     const eremeyStatement = resumed.result.statements.find(
@@ -236,16 +249,19 @@ test('persisted NPC reply creates one perceived follow-up after restart',
         statementRef?.entity_id === eremeyStatement.statement_id), true);
     assert.equal(resumed.result.exact_elapsed_minutes, 4);
     assert.equal(resumed.result.pending_npc_execution, null);
+    assert.equal(resumed.result.response_kind, 'route_disclosure');
     const completed = projectPhase3Conversation({ state: restarted,
       contracts: resolveContracts(restarted), result: resumed.result,
       inputDigest: digest('9') });
+    assert.equal(completed.route_knowledge.includes(
+      contracts.disclosureMapping.route_knowledge_disclosure.route_ref), true);
     const resumedWrites = writeSemantic(restarted, completed, resumed.result,
       '999999999999');
     assert.equal(resumedWrites.appends.filter(({ target_table: table }) =>
-      table === 'party_npc_decision_traces').length, 1);
+      table === 'party_npc_decision_traces').length, 2);
     assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
       semanticReadPool(combineWrites(firstWrites, resumedWrites)), completed)
-    ).length, 2);
+    ).length, 3);
   });
 
 test('causal NPC follow-up extends time positively instead of using zero minutes',
@@ -256,33 +272,40 @@ test('causal NPC follow-up extends time positively instead of using zero minutes
     const pendingResponder = npcBySlot(state, 'background_fisher_2');
     const responderRef = ref('npc', responder.instance_id);
     const pendingResponderRef = ref('npc', pendingResponder.instance_id);
+    state.temporal_boundary_candidates = [boundaryCandidate(
+      state, plusMinutes(state.clock, '6'), 'sixth-minute'
+    )];
     const first = await runPhase3({ state, contracts,
       rawText: 'Еремей, спроси рыбака.', inputDigest: digest('a'),
       responseKind: 'speech',
       transformNpcPlan: (plan, { call_index: callIndex }) => {
-        const targetRef = callIndex === 1
-          ? responderRef : pendingResponderRef;
-        plan.primary_addressee_ref = targetRef;
-        plan.intended_addressee_refs = [targetRef];
-        plan.speech.response_expectation = {
-          kind: 'answer', target_refs: [targetRef]
-        };
+        const targetRef = callIndex === 1 ? responderRef
+          : callIndex === 2 ? pendingResponderRef : null;
+        if (targetRef !== null) {
+          plan.primary_addressee_ref = targetRef;
+          plan.intended_addressee_refs = [targetRef];
+          plan.speech.response_expectation = {
+            kind: 'answer', target_refs: [targetRef]
+          };
+        }
         return plan;
       } });
-    assert.equal(first.npcCalls, 3);
-    assert.equal(first.result.exchange.stop_reason, 'player_response');
+    assert.equal(first.npcCalls, 2);
+    assert.equal(first.result.exchange.stop_reason, 'exchange_budget');
     const pendingSignal = first.result.new_signal_records.find(({ signal }) =>
       signal.subject_ref.entity_id === pendingResponder.instance_id).signal;
     assert.equal(first.result.consumed_signal_ids.includes(
-      pendingSignal.signal_id), true);
+      pendingSignal.signal_id), false);
     const firstProjected = projectSemantic(first, state, 'aaaaaaaaaaaa');
     const firstWrites = writeSemantic(state, firstProjected, first.result,
       'aaaaaaaaaaaa');
     const firstTraces = await assertLowerDvinaTraceSemanticConversationRows(
       semanticReadPool(firstWrites), firstProjected);
-    assert.equal(firstTraces.length, 3);
+    assert.equal(firstTraces.length, 2);
     assert.equal(first.result.exchange.working_state.temporal_advance_results
       .length, first.result.exchange.contributions.length);
+    assert.equal(first.result.exact_elapsed_minutes, 5);
+    assert.deepEqual(first.result.temporal_boundary_refs, []);
   });
 
 test('resumed recurrent NPC chain stops at the exchange contribution limit',

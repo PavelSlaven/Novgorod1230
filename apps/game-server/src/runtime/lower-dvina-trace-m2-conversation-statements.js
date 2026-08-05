@@ -4,14 +4,10 @@ import {
 } from '@rus/npc-runtime';
 import { projectConversationAudience } from
   '@rus/visibility-knowledge-memory';
-import {
-  npcResponseSignalRecords,
-  playerSignalRecords
-} from './lower-dvina-trace-m2-conversation-signals.js';
-import { requirePlayerSpeech } from
-  './lower-dvina-trace-m2-conversation-plans.js';
-import { compareRefs, fail, npcRef, ref, sameRef } from
-  './lower-dvina-trace-m2-conversation-shared.js';
+import { npcResponseSignalRecords, playerSignalRecords } from
+  './lower-dvina-trace-m2-conversation-signals.js';
+import { requirePlayerSpeech } from './lower-dvina-trace-m2-conversation-plans.js';
+import { compareRefs, fail, npcRef, ref, sameRef } from './lower-dvina-trace-m2-conversation-shared.js';
 import { evidencePresentationPerception } from './lower-dvina-trace-m2-conversation-supporting-perception.js';
 import { playerDecisionSignalRecords } from
   './lower-dvina-trace-m2-conversation-participants.js';
@@ -110,6 +106,10 @@ export function applyNpcPlan(
     handoff,
     nonverbal_audience: null
   };
+  npcOutcome.contributionRef = contributionEvent.schema
+    === 'conversation_statement_event_v1'
+    ? ref('conversation_statement', contributionEvent.statement_id)
+    : ref('conversation_contribution', contributionEvent.contribution_id);
   return applyResult({
     working: {
       ...working,

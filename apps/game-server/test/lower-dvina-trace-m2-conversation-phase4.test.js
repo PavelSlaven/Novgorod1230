@@ -30,6 +30,37 @@ import {
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
+test('Phase 4 persists an offered promise when the target hears nothing', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  state.promise_instances[0].created_change_set_id = 'change:phase4-arrival';
+  const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'ratsha_storehouse_helper');
+  ratsha.machine_state = { ...ratsha.machine_state, hearing_capability: 'none' };
+  const offerStage = promiseOfferStage(state, contracts);
+  const exchange = await runPhase4({ state, contracts,
+    rawText: 'Ратша, сдавайся — я обещаю тебе защиту.',
+    inputDigest: digest('2'), responseKind: 'speech',
+    checkResult: null, checkRequest: null, offerStage,
+    playerPlanOptions: { offer: true } });
+  assert.equal(exchange.npcCalls, 0);
+  const next = projectPhase4Negotiation({ state, contracts,
+    result: exchange.result, inputDigest: digest('2') });
+  const factual = phase4Factual({ state, contracts,
+    result: exchange.result, inputDigest: digest('2') });
+  factual.consequence.negotiation.offer_stage = offerStage;
+  const writes = { inserts: [], updates: [], appends: [] };
+  assert.doesNotThrow(() => appendSemanticNegotiation({
+    ...writes, partyId: state.party_id, state, next, factual,
+    turnNumber: state.party_state.turn_number + 1,
+    changeSetId: 'change:phase4-unheard', idemId: 'idem:phase4-unheard',
+    contracts, rootTurnId: 'turn:phase4-unheard', workingRevision: 0
+  }));
+  assert.equal(writes.appends.some(({ target_table: table }) =>
+    table === 'party_npc_decision_traces'), false);
+  assert.equal(writes.appends.some(({ target_table: table }) =>
+    table === 'party_obligation_transitions'), true);
+});
+
 test('one arrival event creates distinct others and objective signals', () => {
   const { state, contracts } = phase4ArrivalState();
   const ratshaId = contracts.actors.ratsha_storehouse_helper.instance_id;
@@ -330,6 +361,88 @@ test('Ratsha combat handoff rejects a target outside the request safe context',
       }
     }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
   });
+
+test('late Ratsha surrender applies after another NPC contribution', async () => {
+  const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
+  const ratshaRef = ref('npc',
+    contracts.actors.ratsha_storehouse_helper.instance_id);
+  const fisherRef = ref('npc',
+    contracts.actors.participating_fisher.instance_id);
+  const exchange = await runPhase4({
+    state,
+    contracts,
+    rawText: 'Ратша, сдавайся и отдай нож.',
+    inputDigest: digest('1'),
+    responseKind: (_request, callIndex) =>
+      callIndex === 1 ? 'bargain'
+        : callIndex === 2 ? 'speech' : 'surrender',
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    offerStage,
+    checkRequest,
+    transformNpcPlan(plan, { call_index: callIndex }) {
+      const targetRef = callIndex === 1 ? fisherRef
+        : callIndex === 2 ? ratshaRef : null;
+      if (targetRef !== null) {
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [targetRef]
+        };
+      }
+      return plan;
+    }
+  });
+
+  assert.equal(exchange.npcCalls, 3);
+  assert.equal(exchange.result.response_kind, 'surrender');
+  assert.equal(exchange.result.commitment.status, 'active');
+  const ratshaStatements = exchange.result.statements.filter(
+    ({ speaker_ref: speaker }) => speaker.entity_id === ratshaRef.entity_id);
+  assert.equal(ratshaStatements.length, 2);
+  assert.equal(exchange.result.surrender.source_statement_ref.entity_id,
+    ratshaStatements.at(-1).statement_id);
+  const next = projectPhase4Negotiation({ state, contracts,
+    result: exchange.result, inputDigest: digest('1') });
+  assert.equal(next.ratsha_surrendered, true);
+});
+
+test('late Ratsha combat handoff terminates the causal exchange', async () => {
+  const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
+  const ratshaRef = ref('npc',
+    contracts.actors.ratsha_storehouse_helper.instance_id);
+  const fisherRef = ref('npc',
+    contracts.actors.participating_fisher.instance_id);
+  const exchange = await runPhase4({
+    state,
+    contracts,
+    rawText: 'Ратша, решай.',
+    inputDigest: digest('2'),
+    responseKind: (_request, callIndex) =>
+      callIndex === 1 ? 'bargain'
+        : callIndex === 2 ? 'speech' : 'combat_handoff',
+    checkResult: checkResult(contracts.check.check_id, 'success'),
+    offerStage,
+    checkRequest,
+    transformNpcPlan(plan, { call_index: callIndex }) {
+      const targetRef = callIndex === 1 ? fisherRef
+        : callIndex === 2 ? ratshaRef : null;
+      if (targetRef !== null) {
+        plan.primary_addressee_ref = targetRef;
+        plan.intended_addressee_refs = [targetRef];
+        plan.speech.response_expectation = {
+          kind: 'answer', target_refs: [targetRef]
+        };
+      }
+      return plan;
+    }
+  });
+
+  assert.equal(exchange.npcCalls, 3);
+  assert.equal(exchange.result.response_kind, 'combat_handoff');
+  assert.equal(exchange.result.exchange.stop_reason, 'handoff');
+  assert.deepEqual(exchange.result.combat_handoff.target_actor_refs,
+    [ref('player_character', state.actor_id)]);
+});
 
 test('silence and combat handoff have closed player-safe post-commit and replay projections', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();

@@ -23,15 +23,19 @@ export function appendPhase3SemanticInteraction({
       && speaker.entity_id === npcRef.entity_id
   );
   if (!npcContributionApplied) return;
+  const finalOutcome = (semanticExchange.npc_outcomes ?? []).filter(
+    ({ npc_ref: outcomeNpcRef, applied }) => applied
+      && outcomeNpcRef.entity_kind === npcRef.entity_kind
+      && outcomeNpcRef.entity_id === npcRef.entity_id).at(-1) ?? null;
+  const contributionRef = finalOutcome?.contribution_ref?.entity_id ?? null;
   const npcStatement = semanticExchange.statements.find(
-    ({ speaker_ref: speaker }) => speaker.entity_kind === npcRef.entity_kind
-      && speaker.entity_id === npcRef.entity_id
+    ({ statement_id: statementId }) =>
+      finalOutcome?.contribution_ref?.entity_kind === 'conversation_statement'
+        && statementId === finalOutcome.contribution_ref.entity_id
   ) ?? null;
-  const lastContribution = semanticExchange.exchange.contributions.at(-1);
-  const contributionRef = lastContribution.schema
-    === 'conversation_statement_event_v1'
-    ? lastContribution.statement_id
-    : lastContribution.contribution_id;
+  if (typeof contributionRef !== 'string' || contributionRef.length === 0) {
+    return;
+  }
   const evidencePresentation = semanticExchange.evidence_presentation ?? null;
   const terminalEvidence = {
     activity_execution_id: activityId,

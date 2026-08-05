@@ -20,8 +20,14 @@ export function buildSurrenderProjection(result, context) {
   ];
   const playerStatement = statements.find(({ speaker_ref: speaker }) =>
     speaker?.entity_kind === 'player_character');
-  const npcStatement = statements.find(({ speaker_ref: speaker }) =>
-    sameRef(speaker, context.targetRef));
+  const acceptanceStatementRef = result.npcOutcome?.statementRef
+    ?? (result.npc_outcomes ?? []).filter(
+      ({ npc_ref: npcRef, applied, outcome }) => applied
+        && sameRef(npcRef, context.targetRef)
+        && outcome?.kind === 'surrender').at(-1)?.outcome?.statementRef;
+  const npcStatement = statements.find(({ statement_id: statementId }) =>
+    acceptanceStatementRef?.entity_kind === 'conversation_statement'
+      && statementId === acceptanceStatementRef.entity_id);
   const playerAudience = audiences.find(({ statement_ref: statementRef }) =>
     statementRef?.entity_id === playerStatement?.statement_id);
   const npcAudience = audiences.find(({ statement_ref: statementRef }) =>

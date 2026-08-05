@@ -32,15 +32,27 @@ export function projectPhase4SemanticNegotiation({
   ]);
   const hasDecision = semantic.decision_request !== null;
   const resumedPlan = semantic.resumed_npc_execution?.plan ?? null;
-  const npcPlan = semantic.decision_plan ?? resumedPlan;
   const resumed = resumedPlan !== null;
   const npcRef = semantic.decision_request?.npc_ref
     ?? resumedPlan?.speaker_ref ?? npcRefForContracts(contracts);
-  const npcApplied = (hasDecision || resumed)
-    && semantic.exchange.contributions.some(({ speaker_ref: speaker }) =>
-      sameRef(speaker, npcRef));
+  const appliedTargetOutcomes = (semantic.npc_outcomes ?? []).filter(
+    ({ npc_ref: outcomeNpcRef, applied }) => applied
+      && sameRef(outcomeNpcRef, npcRef));
+  const finalOutcome = appliedTargetOutcomes.at(-1) ?? null;
+  const finalDecision = semantic.decisions?.find(({ request }) =>
+    request.request_id === finalOutcome?.request_id) ?? null;
+  const resumedRequestId = semantic.resumed_npc_execution
+    ?.decision_trace_ref?.entity_id;
+  const npcPlan = finalDecision?.proposal?.plan
+    ?? (finalOutcome?.request_id === resumedRequestId ? resumedPlan : null)
+    ?? (finalOutcome === null ? resumedPlan ?? semantic.decision_plan : null);
+  const npcApplied = appliedTargetOutcomes.length > 0;
   const npcStatements = semantic.statements.filter(({ speaker_ref: speaker }) =>
     sameRef(speaker, npcRef));
+  const expectedStatementIds = new Set(appliedTargetOutcomes
+    .filter(({ contribution_ref: contributionRef }) =>
+      contributionRef?.entity_kind === 'conversation_statement')
+    .map(({ contribution_ref: contributionRef }) => contributionRef.entity_id));
   const speechResponse = ['surrender', 'lie', 'bargain', 'speech']
     .includes(responseKind);
   const npcSpeechContribution = (hasDecision || resumed)
@@ -54,13 +66,16 @@ export function projectPhase4SemanticNegotiation({
       || npcRef?.entity_kind !== 'npc'
       || npcRef.entity_id
         !== contracts.actors?.ratsha_storehouse_helper?.instance_id
+      || (npcApplied && finalOutcome?.outcome?.kind !== responseKind)
       || ((hasDecision || resumed) && npcPlan?.contribution_kind
         !== expectedContributionKind)
       || (!hasDecision && !resumed && semantic.decision_plan !== null)
       || (resumed && semantic.decision_plan !== null)
       || !Array.isArray(negotiation.objective_fact_outputs)
       || negotiation.objective_fact_outputs.length !== 0
-      || npcStatements.length !== (npcApplied && npcSpeechContribution ? 1 : 0)) {
+      || npcStatements.length !== expectedStatementIds.size
+      || npcStatements.some(({ statement_id: statementId }) =>
+        !expectedStatementIds.has(statementId))) {
     semanticFail('TRACE_M2_PHASE_4_SEMANTIC_SHAPE_INVALID');
   }
 
@@ -114,12 +129,15 @@ export function projectPhase4SemanticNegotiation({
       turnNumber
     });
   } else if (['lie', 'bargain', 'speech'].includes(responseKind)) {
+    const statement = npcStatements.find(({ statement_id: statementId }) =>
+      finalOutcome?.contribution_ref?.entity_kind === 'conversation_statement'
+        && statementId === finalOutcome.contribution_ref.entity_id);
     appendSemanticSpeakerInteraction({
       next,
       state,
       semantic,
       responseKind,
-      statement: npcStatements[0],
+      statement,
       turnNumber,
       activityRef: negotiation.activity_ref
     });

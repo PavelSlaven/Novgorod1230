@@ -10,9 +10,6 @@ export function phase3SemanticInteractions({
   if (semantic.exchange.applied_contribution_count < 1) return [];
   const evidencePresentation = semantic.evidence_presentation ?? null;
   const firstContribution = semantic.exchange.contributions[0];
-  const npcContributionApplied = semantic.exchange.contributions.some(
-    ({ speaker_ref: speaker }) => sameRef(speaker, npcRef)
-  );
   const environmentSignals = semantic.new_signal_records.filter(
     ({ signal }) => signal.category === 'environment'
   );
@@ -73,7 +70,20 @@ export function phase3SemanticInteractions({
               !== evidencePerception.perception_id)))) {
     semanticFail('TRACE_M2_PHASE_3_EVIDENCE_EVENT_INVALID');
   }
-  const statement = npcStatements[0] ?? null;
+  const finalOutcome = (semantic.npc_outcomes ?? []).filter(
+    ({ npc_ref: outcomeNpcRef, applied }) => applied
+      && sameRef(outcomeNpcRef, npcRef)).at(-1);
+  const finalDecision = semantic.decisions?.find(({ request }) =>
+    request.request_id === finalOutcome?.request_id) ?? null;
+  const resumedRequestId = semantic.resumed_npc_execution
+    ?.decision_trace_ref?.entity_id;
+  const finalPlan = finalDecision?.proposal?.plan
+    ?? (finalOutcome?.request_id === resumedRequestId
+      ? semantic.resumed_npc_execution?.plan : null);
+  const statement = npcStatements.find(({ statement_id: statementId }) =>
+    finalOutcome?.contribution_ref?.entity_kind === 'conversation_statement'
+      && statementId === finalOutcome.contribution_ref.entity_id)
+    ?? npcStatements.at(-1) ?? null;
   const audience = statement === null ? null : semantic.audiences.find(
     ({ statement_ref: statementRef }) =>
       statementRef.entity_kind === 'conversation_statement'
@@ -81,12 +91,14 @@ export function phase3SemanticInteractions({
   if (statement !== null && !audience) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
-  const lastContribution = semantic.exchange.contributions.at(-1);
-  const contributionRef = lastContribution?.schema
-    === 'conversation_statement_event_v1'
-    ? lastContribution.statement_id
-    : lastContribution?.contribution_id;
-  if (typeof contributionRef !== 'string' || !contributionRef) {
+  const contributionRef = finalOutcome?.contribution_ref?.entity_id;
+  const contribution = semantic.exchange.contributions.find((candidate) => {
+    const candidateRef = candidate.schema === 'conversation_statement_event_v1'
+      ? candidate.statement_id : candidate.contribution_id;
+    return candidateRef === contributionRef;
+  });
+  if (finalOutcome !== undefined && (!finalPlan || !contribution
+      || typeof contributionRef !== 'string' || !contributionRef)) {
     semanticFail('TRACE_M2_PHASE_3_SEMANTIC_SHAPE_INVALID');
   }
   const supportingInteractions = evidencePresentation === null ? [] : [{
@@ -100,7 +112,7 @@ export function phase3SemanticInteractions({
       evidence_ref: evidencePresentation.evidence_ref,
       occurred_at: structuredClone(evidencePresentation.occurred_at)
     }];
-  if (!npcContributionApplied) return supportingInteractions;
+  if (finalOutcome === undefined) return supportingInteractions;
   return [
     ...supportingInteractions,
     {
@@ -108,10 +120,7 @@ export function phase3SemanticInteractions({
         `interaction:${state.party_id}:trace-phase3:${turnNumber}`,
       activity_ref: conversation.activity_ref,
       npc_id: npcRef.entity_id,
-      contribution_kind: semantic.decision_plan?.contribution_kind
-        ?? semantic.resumed_npc_execution?.plan?.contribution_kind
-        ?? lastContribution.contribution_kind
-        ?? 'speech',
+      contribution_kind: finalPlan.contribution_kind,
       contribution_ref: contributionRef,
       statement_ref: statement?.statement_id ?? null,
       supporting_operation_event_ref:

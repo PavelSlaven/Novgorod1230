@@ -47,7 +47,7 @@ export function projectPendingNpcConversationExecution({
       || pending.plan?.conversation_id !== pendingRequest.conversation_id
       || pending.plan?.exchange_id !== pendingRequest.exchange_id
       || pending.contribution_index < 2
-      || pending.remaining_minutes < 1
+      || pending.remaining_minutes < 0
       || pending.remaining_exchange_minutes < pending.remaining_minutes
       || !Array.isArray(pending.remaining_responder_refs)
       || pending.same_time_batch_ref?.entity_kind !== 'temporal_batch'

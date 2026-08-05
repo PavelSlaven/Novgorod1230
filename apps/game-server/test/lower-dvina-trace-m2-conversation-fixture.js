@@ -238,9 +238,12 @@ export async function runPhase3({
       npcCalls += 1;
       npcRequest = structuredClone(request);
       npcRequests.push(structuredClone(request));
+      const selectedResponseKind = typeof responseKind === 'function'
+        ? responseKind(request, npcCalls)
+        : responseKind;
       const plan = transformNpcPlan(eremeyPlan(
         request,
-        responseKind,
+        selectedResponseKind,
         request.decision_scope.operation_contract.disclose_known_route ?? {
           route_ref: 'unused-route',
           source_knowledge_scope_ref: 'unused-knowledge-scope'
@@ -278,6 +281,7 @@ export async function runPhase4({
   let playerCalls = 0;
   let npcCalls = 0;
   let npcRequest = null;
+  const npcRequests = [];
   const result = await resolveTracePhase4ConversationExchange({
     state,
     contracts,
@@ -301,8 +305,12 @@ export async function runPhase4({
     npcSemanticModel: async (request) => {
       npcCalls += 1;
       npcRequest = structuredClone(request);
+      npcRequests.push(structuredClone(request));
+      const selectedResponseKind = typeof responseKind === 'function'
+        ? responseKind(request, npcCalls)
+        : responseKind;
       const plan = transformNpcPlan(
-        ratshaPlan(request, responseKind, state.actor_id),
+        ratshaPlan(request, selectedResponseKind, state.actor_id),
         { request, call_index: npcCalls }
       );
       plan.activity.duration_class = durationForCall(
@@ -315,7 +323,7 @@ export async function runPhase4({
     ),
     revalidateStateVersion: async () => state.party_state.state_version
   });
-  return { result, playerCalls, npcCalls, npcRequest };
+  return { result, playerCalls, npcCalls, npcRequest, npcRequests };
 }
 
 function conversationTemporalOwner(state, resolver) {

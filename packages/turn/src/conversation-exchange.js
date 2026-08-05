@@ -12,6 +12,8 @@ import { normalizeConversationExchangeInput } from
   './conversation-exchange-input.js';
 import { resumePendingNpcExecution } from
   './conversation-exchange-resume.js';
+import { contributionSlices, plannedNpcContributionMinutes } from
+  './conversation-exchange-time.js';
 
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const APPLY_RESULT_KEYS = [
@@ -118,8 +120,41 @@ async function progressAndProject({
   perceptionPort,
   request = null,
   proposal = null,
-  plannedMinutes
+  plannedMinutes,
+  elapsedAlreadyComplete = false
 }) {
+  if (elapsedAlreadyComplete) {
+    await callPort(
+      ports.revalidateAfterContribution,
+      {
+        working_state: applied.working_state,
+        contribution_event: applied.contribution_event,
+        contribution_index: contributionIndex
+      },
+      'TURN_CONVERSATION_STALE_AFTER_TIME',
+      'Conversation state changed before completed contribution perception'
+    );
+    const projected = normalizeApplyResult(await callPort(
+      perceptionPort,
+      {
+        working_state: applied.working_state,
+        contribution_event: applied.contribution_event,
+        plan,
+        contribution_index: contributionIndex,
+        request,
+        proposal
+      },
+      'TURN_CONVERSATION_PERCEPTION_FAILED',
+      'Conversation contribution perception could not be projected'
+    ), 'TURN_CONVERSATION_PERCEPTION_INVALID');
+    return {
+      applied: immutableClone(projected),
+      temporalBoundaryRefs: [],
+      elapsedMinutes: 0,
+      completed: true,
+      interrupted: false
+    };
+  }
   const progressed = normalizeTimeProgress(await callPort(
     ports.advanceContributionTime,
     {
@@ -182,13 +217,6 @@ async function progressAndProject({
   };
 }
 
-function contributionSlices({ total_minutes: total, contribution_slots: slots }) {
-  const quotient = Math.floor(total / slots);
-  const remainder = total % slots;
-  return Array.from({ length: slots }, (_, index) =>
-    quotient + (index < remainder ? 1 : 0));
-}
-
 function normalizeApplyResult(value, code) {
   if (!exactKeys(value, APPLY_RESULT_KEYS)
     || !plainRecord(value.working_state)
@@ -233,7 +261,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     });
   }
   const timeSlices = contributionSlices(normalized.timeBudget);
-  let totalBudgetMinutes = normalized.timeBudget.total_minutes;
+  const totalBudgetMinutes = normalized.timeBudget.total_minutes;
   let elapsedBudgetMinutes = 0;
   let completedContributionCount = 0;
   let appliedContributionCount = 0;
@@ -319,7 +347,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       break;
     }
     if (elapsedBudgetMinutes >= totalBudgetMinutes) {
-      totalBudgetMinutes += 1;
+      stopReason = 'exchange_budget';
+      break;
     }
     const boundary = queuedNpcBoundaries.shift();
     const decision = normalizeNpcDecision(await callPort(
@@ -363,7 +392,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
         ?? remainingBudgetMinutes,
       remainingBudgetMinutes,
       queuedBoundaries: queuedNpcBoundaries,
-      plan: proposal.plan
+      plan: proposal.plan,
+      priorNpcDecisionCount: npcDecisions.length
     });
     const npcProgress = await progressAndProject({
       ports,
@@ -444,31 +474,4 @@ export async function runConversationExchange(input = {}, ports = {}) {
     session_status: sessionStatus,
     pending_npc_execution: pendingNpcExecution
   });
-}
-
-function plannedNpcContributionMinutes({
-  defaultMinutes,
-  remainingBudgetMinutes,
-  queuedBoundaries,
-  plan
-}) {
-  const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
-    `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
-  if (['leave_conversation', 'action_handoff', 'combat_handoff'].includes(
-    plan.contribution_kind
-  )) {
-    queuedKeys.clear();
-  }
-  const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
-    ? [] : plan.speech?.response_expectation?.target_refs ?? [];
-  for (const reference of expectedRefs) {
-    const key = `${reference.entity_kind}\u0000${reference.entity_id}`;
-    queuedKeys.add(key);
-  }
-  const futureReserve = Math.min(
-    queuedKeys.size,
-    Math.max(0, remainingBudgetMinutes - 1)
-  );
-  return Math.max(1, Math.min(defaultMinutes,
-    remainingBudgetMinutes - futureReserve));
 }

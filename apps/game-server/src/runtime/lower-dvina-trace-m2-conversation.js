@@ -174,6 +174,7 @@ export async function resolveTracePhase3ConversationExchange({
     decision_request: result.decision?.request ?? null,
     decision_plan: result.decision?.proposal.plan ?? null,
     decisions: structuredClone(result.decisions),
+    npc_outcomes: structuredClone(result.npcOutcomes),
     pending_npc_execution:
       structuredClone(result.exchange.pending_npc_execution),
     resumed_npc_execution:

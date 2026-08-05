@@ -108,6 +108,13 @@ export function projectSharedSemanticExchange(semanticExchange) {
   const noAppliedNpcResponse = semanticExchange.response_kind === null;
   const responseNpcRef = semanticExchange.resumed_npc_execution
     ?.plan?.speaker_ref ?? request.npc_ref;
+  const responseOutcome = (semanticExchange.npc_outcomes ?? []).filter(
+    ({ npc_ref: npcRef, applied }) => applied
+      && npcRef?.entity_kind === responseNpcRef.entity_kind
+      && npcRef.entity_id === responseNpcRef.entity_id).at(-1) ?? null;
+  const responseStatementRef = responseOutcome?.contribution_ref?.entity_kind
+    === 'conversation_statement'
+    ? responseOutcome.contribution_ref : null;
   return {
     request_id: request.request_id,
     boundary_id: boundary.boundary_id,
@@ -118,16 +125,17 @@ export function projectSharedSemanticExchange(semanticExchange) {
       : structuredClone(responseNpcRef),
     response_kind: semanticExchange.response_kind,
     time_budget: structuredClone(semanticExchange.exchange.time_budget),
-    statement_refs: (semanticExchange.statements ?? [])
-      .filter(({ speaker_ref: speaker }) => noAppliedNpcResponse
-        ? speaker?.entity_kind === 'player_character'
-        : speaker?.entity_kind === 'npc'
-          && speaker.entity_id === responseNpcRef.entity_id)
-      .slice(0, 1)
-      .map(({ statement_id: statementId }) => ({
-        entity_kind: 'conversation_statement',
-        entity_id: statementId
-      })),
+    statement_refs: noAppliedNpcResponse
+      ? (semanticExchange.statements ?? [])
+          .filter(({ speaker_ref: speaker }) =>
+            speaker?.entity_kind === 'player_character')
+          .slice(0, 1)
+          .map(({ statement_id: statementId }) => ({
+            entity_kind: 'conversation_statement',
+            entity_id: statementId
+          }))
+      : responseStatementRef === null ? []
+        : [structuredClone(responseStatementRef)],
     route_disclosure: semanticExchange.route_disclosure == null
       ? null
       : {

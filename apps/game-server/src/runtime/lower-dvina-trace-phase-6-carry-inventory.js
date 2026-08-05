@@ -33,8 +33,20 @@ export function carrierInventorySnapshot({ state, actorId,
   const isPlayer = actorId === state.actor_id;
   const playerStrength = state.player_profile?.attributes?.strength?.value;
   if (isPlayer && (!Number.isSafeInteger(playerStrength) || playerStrength < 0)) fail('TRACE_PHASE_6_CARRIER_STRENGTH_MISSING', { actor_id: actorId });
-  const items = (state.items ?? []).filter(({ item_id: itemId }) => !excludedAssemblyItemIds.has(itemId)).map((item) => ({ ...item, placement: normalizeNpcHolder(item.placement) }));
-  const inventory = buildCommittedInventoryInput({ ...state, actor_id: actorId, items, container_placements: (state.container_placements ?? []).map(normalizeNpcHolder) });
+  const items = (state.items ?? []).filter(
+    ({ item_id: itemId }) => !excludedAssemblyItemIds.has(itemId)
+  ).map((item) => ({
+    ...item,
+    placement: normalizeNpcHolder(item.placement, actorId)
+  }));
+  const inventory = buildCommittedInventoryInput({
+    ...state,
+    actor_id: actorId,
+    items,
+    container_placements: (state.container_placements ?? []).map(
+      (placement) => normalizeNpcHolder(placement, actorId)
+    )
+  });
   inventory.strength = isPlayer ? playerStrength : null;
   const mass = calculateInventoryMass(inventory);
   const hands = calculateHandsState(inventory);
@@ -45,7 +57,7 @@ export function carrierInventorySnapshot({ state, actorId,
   return { ...value, canonical_digest: canonicalDigest(value) };
 }
 
-function normalizeNpcHolder(value) { const next = structuredClone(value ?? {}); if (next.holder_npc_id != null) { next.holder_character_id = next.holder_npc_id; delete next.holder_npc_id; } return next; }
+function normalizeNpcHolder(value, actorId) { const next = structuredClone(value ?? {}); if (next.holder_npc_id === actorId) { next.holder_character_id = next.holder_npc_id; delete next.holder_npc_id; } return next; }
 function carriedInventoryIds(inventory, actorId) {
   const containerPlacements = new Map(inventory.container_placements.map((placement) => [placement.container_id, placement]));
   const carriedContainer = (containerId) => { const seen = new Set(); let current = containerId; while (current != null) { if (seen.has(current)) return false; seen.add(current); const placement = containerPlacements.get(current); if (placement?.holder_character_id === actorId) return true; current = placement?.parent_container_id ?? null; } return false; };

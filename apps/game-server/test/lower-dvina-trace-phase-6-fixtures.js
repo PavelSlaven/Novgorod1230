@@ -136,6 +136,14 @@ export const state = () => ({
   knowledge: [{ fact_id: 'onisim_first_aid_completed' },
     { fact_id: 'ratsha_surrender_without_further_harm_committed' }],
   temporal_boundary_candidates: [],
+  containers: [{
+    container_id: 'zhdanko-road-bag',
+    template_id: 'trace_ld_v1_container_road_bag'
+  }],
+  container_placements: [{
+    container_id: 'zhdanko-road-bag',
+    holder_npc_id: 'zhdanko_storehouse_controller'
+  }],
   items: [{ template_id: 'trace_ld_v1_item_fishing_net', item_id: 'net',
     quantity: 1, condition_state: 'serviceable',
     placement: { holder_npc_id: 'onisim_boatman',

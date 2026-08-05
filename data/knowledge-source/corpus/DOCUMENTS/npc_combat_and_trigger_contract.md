@@ -1019,8 +1019,10 @@ LLM не вызывается.
 
 - `resolution_class` остаётся `reaction_decision`;
 - `decision_mode` определяет профиль LLM: autonomous, conversation или combat;
-- `decision_mode` входит в `boundary_id` и `idempotency_key`;
-- один NPC имеет не более одной aggregated boundary на режим в одном fully resolved batch;
+- `decision_mode` является свойством boundary и не входит в `boundary_id`,
+  `idempotency_key` или другую identity;
+- один NPC имеет не более одной aggregated boundary и одного LLM-вызова
+  на один fully resolved same-time batch суммарно по всем режимам;
 - одна boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готовое решение;
 - повторная обработка возвращает persisted trace;

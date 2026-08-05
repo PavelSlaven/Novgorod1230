@@ -1,6 +1,7 @@
 import {
   fail,
-  record
+  record,
+  validateTerminalNpcOutcomes
 } from './lower-dvina-trace-conversation-state-validation.js';
 
 export function semanticDecisionTraceReference(trace) {
@@ -49,7 +50,8 @@ export function projectSharedSemanticExchange(semanticExchange) {
       route_disclosure: null,
       commitment: null,
       surrender: null,
-      knife_transition_eligibility: null
+      knife_transition_eligibility: null,
+      ...terminalOutcomesProjection(semanticExchange)
     };
   }
   if (request === null && boundary === null
@@ -93,7 +95,8 @@ export function projectSharedSemanticExchange(semanticExchange) {
           ? null : {
               eligible:
                 semanticExchange.knife_transition_eligibility.eligible === true
-            }
+            },
+      ...terminalOutcomesProjection(semanticExchange)
     };
   }
   if (!record(request)
@@ -159,8 +162,18 @@ export function projectSharedSemanticExchange(semanticExchange) {
         : {
             eligible:
               semanticExchange.knife_transition_eligibility.eligible === true
-          }
+          },
+    ...terminalOutcomesProjection(semanticExchange)
   };
+}
+
+function terminalOutcomesProjection(semanticExchange) {
+  return (semanticExchange.terminal_npc_outcomes?.length ?? 0) === 0
+    ? {} : {
+        terminal_npc_outcomes: structuredClone(
+          semanticExchange.terminal_npc_outcomes
+        )
+      };
 }
 
 export function assertSharedSemanticSnapshotSafe(state) {
@@ -191,13 +204,16 @@ export function assertSharedSemanticSnapshotSafe(state) {
       'npc_ref', 'response_kind', 'factual_status', 'time_budget',
       'statement_refs',
       'route_disclosure',
-      'commitment', 'surrender', 'knife_transition_eligibility'
+      'commitment', 'surrender', 'knife_transition_eligibility',
+      'terminal_npc_outcomes'
     ]);
     if (!record(projection)
         || Object.keys(projection).some((key) => !allowed.has(key))) {
       privateSnapshotFail();
     }
+    validateTerminalNpcOutcomes(projection.terminal_npc_outcomes ?? []);
   }
+  validateTerminalNpcOutcomes(state.npc_decision_terminal_outcomes ?? []);
   const traceRefKeys = [
     'request_id', 'boundary_id', 'npc_ref', 'committed_state_version',
     'root_turn_id', 'working_revision', 'applied_change_set_id', 'status'

@@ -133,6 +133,72 @@ export function validateConsumedSignalIds(values) {
   return [...values];
 }
 
+export function validateTerminalNpcOutcomes(values) {
+  if (!Array.isArray(values)) {
+    fail('TRACE_M2_NPC_TERMINAL_OUTCOMES_INVALID');
+  }
+  const outcomes = structuredClone(values);
+  const outcomeKeys = new Set();
+  const signalIds = new Set();
+  for (const outcome of outcomes) {
+    const keys = Object.keys(outcome ?? {}).sort();
+    if (keys.join('\u0000') !== [
+      'npc_ref', 'outcome', 'same_time_batch_ref', 'signal_ids_to_consume'
+    ].sort().join('\u0000')
+        || outcome.npc_ref?.entity_kind !== 'npc'
+        || !text(outcome.npc_ref?.entity_id)
+        || outcome.same_time_batch_ref?.entity_kind !== 'temporal_batch'
+        || !text(outcome.same_time_batch_ref?.entity_id)
+        || outcome.outcome !== 'npc_unavailable'
+        || !Array.isArray(outcome.signal_ids_to_consume)
+        || outcome.signal_ids_to_consume.length === 0
+        || outcome.signal_ids_to_consume.some((id) => !text(id))) {
+      fail('TRACE_M2_NPC_TERMINAL_OUTCOMES_INVALID');
+    }
+    const outcomeKey = `${refKey(outcome.npc_ref)}\u0000${
+      refKey(outcome.same_time_batch_ref)}`;
+    if (outcomeKeys.has(outcomeKey)) {
+      fail('TRACE_M2_NPC_TERMINAL_OUTCOMES_INVALID');
+    }
+    outcomeKeys.add(outcomeKey);
+    for (const signalId of outcome.signal_ids_to_consume) {
+      if (signalIds.has(signalId)) {
+        fail('TRACE_M2_NPC_TERMINAL_OUTCOMES_INVALID');
+      }
+      signalIds.add(signalId);
+    }
+  }
+  return outcomes;
+}
+
+export function requireBoundarySignalLineage(input) {
+  const { boundary } = input;
+  requireSignalLineage({ ...input, npcRef: boundary.npc_ref,
+    batchRef: boundary.same_time_batch_ref,
+    signalIds: boundary.signal_refs.map(({ entity_id: signalId }) => signalId) });
+}
+
+export function requireSignalLineage({ state, npcRef, batchRef, signalIds,
+  signalRecords, consumedSignalIds }) {
+  const available = new Map([
+    ...(state.npc_decision_signals ?? []),
+    ...signalRecords
+  ].map((record) => [record?.signal?.signal_id, record]));
+  const consumed = new Set([
+    ...(state.consumed_npc_decision_signal_ids ?? []),
+    ...consumedSignalIds
+  ]);
+  if (signalIds.some((signalId) => {
+    const record = available.get(signalId);
+    return !record || !consumed.has(signalId)
+      || record.same_time_batch_key !== batchRef.entity_id
+      || record.signal.subject_ref.entity_id !== npcRef.entity_id;
+  })) {
+    fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID',
+      'The NPC outcome must consume exact persisted same-time signals.');
+  }
+}
+
 export function mergeMutableById(current = [], added, idKey) {
   if (!Array.isArray(current)) fail('TRACE_M2_CONVERSATION_SNAPSHOT_INVALID');
   const byId = new Map(current.map((entry) => [entry?.[idKey], entry]));

@@ -99,7 +99,6 @@ export function createM2ConversationContext(input) {
     )
   };
 }
-
 export async function executeM2ConversationExchange(context) {
   const pendingExecution = hydratedPendingNpcExecution(context);
   const playerRequest = buildPlayerRequest(context);
@@ -116,7 +115,8 @@ export async function executeM2ConversationExchange(context) {
     audiences: [],
     supporting_operation_perceptions: [],
     new_signal_records: [],
-    consumed_signal_ids: []
+    consumed_signal_ids: [],
+    terminal_npc_outcomes: []
   };
   const decisions = new Map();
   const npcOutcomes = new Map();
@@ -125,7 +125,8 @@ export async function executeM2ConversationExchange(context) {
     context.contracts.conversationBindings.max_contributions_per_exchange,
     pendingExecution === null
       ? 1 + context.playerPlan.intended_addressee_refs.length
-      : 1 + pendingExecution.remaining_responder_refs.length
+      : Math.max(1, pendingExecution.remaining_responder_refs.length
+        + (pendingExecution.remaining_minutes > 0 ? 1 : 0))
   );
   const exchange = await runConversationExchange({
     playerRequest,
@@ -244,6 +245,18 @@ export async function executeM2ConversationExchange(context) {
     },
     revalidatePendingNpcContribution: ({ working_state: working, plan }) =>
       revalidatePendingNpcContribution(context, working, plan),
+    applyNpcTerminalOutcomes: ({ working_state: working,
+      terminal_outcomes: outcomes }) => ({
+      ...working,
+      consumed_signal_ids: [...new Set([
+        ...working.consumed_signal_ids,
+        ...outcomes.flatMap(({ signal_ids_to_consume: ids }) => ids)
+      ])],
+      terminal_npc_outcomes: [
+        ...(working.terminal_npc_outcomes ?? []),
+        ...structuredClone(outcomes)
+      ]
+    }),
     projectNpcContributionPerception: ({
       working_state: working,
       contribution_event: contributionEvent,

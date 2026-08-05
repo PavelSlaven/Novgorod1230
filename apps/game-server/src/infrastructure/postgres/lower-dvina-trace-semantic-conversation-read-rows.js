@@ -14,6 +14,7 @@ import { projectConversationReceivedClaims } from
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
+import { terminalConsumedSignalIds } from './lower-dvina-trace-semantic-conversation-read-terminal.js';
 import {
   fail,
   refKey,
@@ -169,7 +170,6 @@ export function assertStatementsAndAudiences(payload, rows) {
   }
   return rows;
 }
-
 function matchesPerceptionProjection(message, statement) {
   if (!['recognized', 'perceived_partial', 'perceived_unidentified',
     'misinterpreted'].includes(message?.perception_result)) return false;
@@ -286,6 +286,10 @@ export function assertDecisions(payload, rows) {
           || canonicalDigest(snapshot.signal) !== canonicalDigest(signal)) fail();
     }
   }
+  consumedSignalIds.push(...terminalConsumedSignalIds(
+    payload,
+    new Set(persistedSignals.keys())
+  ));
   const actualRefs = actual.map(semanticDecisionTraceReference);
   if (canonicalDigest(actualRefs) !== canonicalDigest(expected)
       || canonicalDigest([...consumedSignalIds].sort())

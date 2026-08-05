@@ -106,8 +106,9 @@ export function normalizeConversationExchangeInput(input) {
           reference?.entity_kind !== 'npc'
             || typeof reference.entity_id !== 'string'
             || reference.entity_id.length === 0)
-        || pendingNpcExecution.remaining_responder_refs.length + 1
-          !== timeBudget.contribution_slots
+        || Math.max(1, pendingNpcExecution.remaining_responder_refs.length
+          + (pendingNpcExecution.remaining_minutes > 0 ? 1 : 0))
+            !== timeBudget.contribution_slots
         || pendingNpcExecution.same_time_batch_ref?.entity_kind
           !== 'temporal_batch'
         || typeof pendingNpcExecution.same_time_batch_ref?.entity_id

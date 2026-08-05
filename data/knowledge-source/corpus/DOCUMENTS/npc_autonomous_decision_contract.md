@@ -426,8 +426,9 @@ LLM не вызывается из-за:
 Инварианты:
 
 - `decision_mode = autonomous`;
-- `decision_mode` входит в identity boundary;
-- один NPC имеет не более одной aggregated boundary на режим в одном fully resolved batch;
+- `decision_mode` является свойством boundary и не входит в её identity;
+- один NPC имеет не более одной aggregated boundary и одного LLM-вызова
+  на один fully resolved same-time batch суммарно по всем режимам;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;

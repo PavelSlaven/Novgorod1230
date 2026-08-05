@@ -41,6 +41,8 @@ export function projectM2ConversationExecutionResult({
       exchange.working_state.supporting_operation_perceptions,
     newSignalRecords: exchange.working_state.new_signal_records,
     consumedSignalIds: exchange.working_state.consumed_signal_ids,
+    terminalNpcOutcomes:
+      exchange.working_state.terminal_npc_outcomes ?? [],
     clockAfter: exchange.working_state.clock,
     elapsedMinutes: exchange.working_state.elapsed_minutes,
     temporalBoundaryRefs: exchange.temporal_boundary_refs,

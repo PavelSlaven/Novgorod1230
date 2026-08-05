@@ -10,14 +10,17 @@ import {
   record,
   ref,
   refKey,
+  requireBoundarySignalLineage,
   requireRecord,
+  requireSignalLineage,
   text,
   uniqueRefs,
   validateAudiences,
   validateContributions,
   validateConsumedSignalIds,
   validateSignalRecords,
-  validateStatements
+  validateStatements,
+  validateTerminalNpcOutcomes
 } from './lower-dvina-trace-conversation-state-validation.js';
 import {
   assertSharedSemanticSnapshotSafe,
@@ -105,16 +108,34 @@ export function projectSemanticConversationSnapshot({
   const consumedSignalIds = validateConsumedSignalIds(
     semanticExchange.consumed_signal_ids
   );
-  if (hasDecision) {
-    for (const decision of decisions) {
-      requireBoundarySignalLineage({
-        state,
-        boundary: decision.boundary,
-        signalRecords,
-        consumedSignalIds
-      });
+  const terminalOutcomes = validateTerminalNpcOutcomes(
+    semanticExchange.terminal_npc_outcomes ?? []
+  );
+  const explainedSignalIds = new Set();
+  for (const decision of decisions) {
+    requireBoundarySignalLineage({ state, boundary: decision.boundary,
+      signalRecords, consumedSignalIds });
+    for (const { entity_id: signalId } of decision.boundary.signal_refs) {
+      if (explainedSignalIds.has(signalId)) {
+        fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
+      }
+      explainedSignalIds.add(signalId);
     }
-  } else if (consumedSignalIds.length !== 0) {
+  }
+  for (const outcome of terminalOutcomes) {
+    requireSignalLineage({ state, npcRef: outcome.npc_ref,
+      batchRef: outcome.same_time_batch_ref,
+      signalIds: outcome.signal_ids_to_consume,
+      signalRecords, consumedSignalIds });
+    for (const signalId of outcome.signal_ids_to_consume) {
+      if (explainedSignalIds.has(signalId)) {
+        fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
+      }
+      explainedSignalIds.add(signalId);
+    }
+  }
+  if (consumedSignalIds.some((signalId) =>
+    !explainedSignalIds.has(signalId))) {
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
   const session = conversationSession({ state, exchange, statements,
@@ -166,6 +187,12 @@ export function projectSemanticConversationSnapshot({
     ...(next.consumed_npc_decision_signal_ids ?? []),
     ...consumedSignalIds
   ])].sort(compareText);
+  next.npc_decision_terminal_outcomes = mergeAppendOnly(
+    next.npc_decision_terminal_outcomes,
+    terminalOutcomes,
+    terminalOutcomeIdentity,
+    'TRACE_M2_NPC_TERMINAL_OUTCOME_CONFLICT'
+  );
   delete next.npc_semantic_decision_traces;
   if (traces.length > 0) {
     next.npc_semantic_decision_refs = mergeAppendOnly(
@@ -188,30 +215,9 @@ function contributionIdentity(contribution) {
       : null;
 }
 
-function requireBoundarySignalLineage({
-  state, boundary, signalRecords, consumedSignalIds
-}) {
-  const available = new Map([
-    ...(state.npc_decision_signals ?? []),
-    ...signalRecords
-  ].map((record) => [record?.signal?.signal_id, record]));
-  const consumed = new Set([
-    ...(state.consumed_npc_decision_signal_ids ?? []),
-    ...consumedSignalIds
-  ]);
-  if (boundary.signal_refs.some(({ entity_id: signalId }) => {
-    const record = available.get(signalId);
-    return !record
-      || !consumed.has(signalId)
-      || record.same_time_batch_key
-        !== boundary.same_time_batch_ref.entity_id
-      || record.signal.subject_ref.entity_id !== boundary.npc_ref.entity_id;
-  })) {
-    fail(
-      'TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID',
-      'The decision boundary must consume exact persisted same-time signals.'
-    );
-  }
+function terminalOutcomeIdentity(outcome) {
+  return `${refKey(outcome.npc_ref)}\u0000${
+    refKey(outcome.same_time_batch_ref)}`;
 }
 
 export function appendPendingNpcDecisionSignalRecords({ state, records }) {

@@ -24,6 +24,8 @@ const exactNpcRef = (reference) => exactKeys(
   && typeof reference.entity_id === 'string'
   && reference.entity_id.length > 0
   && reference.entity_id === reference.entity_id.trim();
+const exactSignalId = (value) => typeof value === 'string'
+  && value.length > 0 && value === value.trim();
 
 function clone(value) {
   try {
@@ -57,9 +59,16 @@ export function decisionPairKey(boundary) {
 export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
   processedDecisionPairs) {
   const batch = clone(value);
-  if (!exactKeys(batch, ['boundaries', 'direct_addressee_refs'])
+  const batchKeysValid = exactKeys(
+    batch, ['boundaries', 'direct_addressee_refs']
+  ) || exactKeys(
+    batch, ['boundaries', 'direct_addressee_refs', 'terminal_outcomes']
+  );
+  if (!batchKeysValid
       || !Array.isArray(batch.boundaries)
-      || !Array.isArray(batch.direct_addressee_refs)) {
+      || !Array.isArray(batch.direct_addressee_refs)
+      || !(batch.terminal_outcomes === undefined
+        || Array.isArray(batch.terminal_outcomes))) {
     throw turnFailure(
       'TURN_CONVERSATION_NPC_BATCH_INVALID',
       'NPC response batch must contain boundaries and direct_addressee_refs arrays'
@@ -67,6 +76,8 @@ export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
   }
   const boundaryIds = new Set();
   const batchDecisionPairs = new Set();
+  const boundaryNpcKeys = new Set();
+  const boundarySignalIds = new Set();
   const directKeys = new Set(batch.direct_addressee_refs.map(refKey));
   if (directKeys.size !== batch.direct_addressee_refs.length
       || batch.direct_addressee_refs.some((reference) =>
@@ -108,6 +119,50 @@ export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
     }
     boundaryIds.add(boundaryId);
     batchDecisionPairs.add(pairKey);
+    boundaryNpcKeys.add(refKey(boundary.npc_ref));
+    for (const { entity_id: signalId } of boundary.signal_refs) {
+      boundarySignalIds.add(signalId);
+    }
+  }
+  const terminalNpcKeys = new Set();
+  const terminalSignalIds = new Set();
+  const terminalOutcomes = batch.terminal_outcomes ?? [];
+  for (const outcome of terminalOutcomes) {
+    if (!exactKeys(
+      outcome, ['npc_ref', 'same_time_batch_ref', 'outcome',
+        'signal_ids_to_consume']
+    ) || !exactNpcRef(outcome.npc_ref)
+        || !exactKeys(
+          outcome.same_time_batch_ref, ['entity_kind', 'entity_id']
+        )
+        || outcome.same_time_batch_ref.entity_kind !== 'temporal_batch'
+        || !exactSignalId(outcome.same_time_batch_ref.entity_id)
+        || outcome.outcome !== 'npc_unavailable'
+        || !Array.isArray(outcome.signal_ids_to_consume)
+        || outcome.signal_ids_to_consume.length === 0
+        || outcome.signal_ids_to_consume.some((id) => !exactSignalId(id))) {
+      throw turnFailure(
+        'TURN_CONVERSATION_NPC_BATCH_INVALID',
+        'Every terminal NPC outcome must consume formal signal ids'
+      );
+    }
+    const npcKey = refKey(outcome.npc_ref);
+    if (terminalNpcKeys.has(npcKey) || boundaryNpcKeys.has(npcKey)) {
+      throw turnFailure(
+        'TURN_CONVERSATION_NPC_BATCH_INVALID',
+        'One NPC cannot have both a boundary and terminal outcome'
+      );
+    }
+    terminalNpcKeys.add(npcKey);
+    for (const signalId of outcome.signal_ids_to_consume) {
+      if (terminalSignalIds.has(signalId) || boundarySignalIds.has(signalId)) {
+        throw turnFailure(
+          'TURN_CONVERSATION_NPC_BATCH_INVALID',
+          'NPC batch signal consumption must be unique'
+        );
+      }
+      terminalSignalIds.add(signalId);
+    }
   }
   const boundaries = [...batch.boundaries].sort((left, right) => {
     const leftDirect = directKeys.has(refKey(left.npc_ref));
@@ -118,7 +173,8 @@ export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
   });
   return {
     boundaries,
-    direct_addressee_refs: batch.direct_addressee_refs
+    direct_addressee_refs: batch.direct_addressee_refs,
+    terminal_outcomes: terminalOutcomes
   };
 }
 

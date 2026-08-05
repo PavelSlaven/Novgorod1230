@@ -20,6 +20,25 @@ export function pendingNpcConversationBatchKey(context, working) {
     ?.same_time_batch_key ?? null;
 }
 
+export function unconsumedNpcSignalIdsForBatch(
+  context,
+  working,
+  targetRef,
+  batchKey
+) {
+  const consumed = new Set([
+    ...(context.state.consumed_npc_decision_signal_ids ?? []),
+    ...(working.consumed_signal_ids ?? [])
+  ]);
+  return [...new Set([
+    ...(context.state.npc_decision_signals ?? []),
+    ...(working.new_signal_records ?? [])
+  ].filter((record) => record?.same_time_batch_key === batchKey
+      && sameRef(record.signal?.subject_ref, targetRef)
+      && !consumed.has(record.signal.signal_id))
+    .map(({ signal }) => signal.signal_id))].sort();
+}
+
 export function playerSignalRecords(
   context,
   playerStatement,

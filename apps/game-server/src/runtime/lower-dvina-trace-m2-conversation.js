@@ -182,6 +182,7 @@ export async function resolveTracePhase3ConversationExchange({
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,
+    terminal_npc_outcomes: structuredClone(result.terminalNpcOutcomes),
     evidence_presentation:
       result.exchange.applied_contribution_count >= 1
         ? structuredClone(context.evidencePresentation) : null,

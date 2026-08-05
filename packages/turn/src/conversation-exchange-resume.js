@@ -102,12 +102,23 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       const requiredKeys = new Set(remainingRefs.map(refKey));
       const availableKeys = new Set(batch.boundaries.map(
         ({ npc_ref: npcRef }) => refKey(npcRef)));
-      if ([...requiredKeys].some((key) => !availableKeys.has(key))) {
+      const terminalKeys = new Set(batch.terminal_outcomes.map(
+        ({ npc_ref: npcRef }) => refKey(npcRef)));
+      if (batch.terminal_outcomes.some(({ npc_ref: npcRef }) =>
+        !requiredKeys.has(refKey(npcRef)))
+          || [...requiredKeys].some((key) =>
+            !availableKeys.has(key) && !terminalKeys.has(key))) {
         fail('TURN_CONVERSATION_PENDING_NPC_QUEUE_INVALID',
-          'Pending NPC responders must rebuild one exact boundary each');
+          'Pending NPC responders require one boundary or terminal outcome');
+      }
+      if (batch.terminal_outcomes.length > 0) {
+        workingState = await applyTerminalNpcOutcomes(
+          ports, callPort, fail, workingState, batch.terminal_outcomes
+        );
+        remainingRefs = remainingRefs.filter((reference) =>
+          !terminalKeys.has(refKey(reference)));
       }
       if (batch.boundaries.length === 0) {
-        remainingRefs = [];
         stopReason = 'player_response';
         break;
       }
@@ -228,6 +239,30 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     session_status: sessionStatus,
     pending_npc_execution: nextPending
   });
+}
+
+async function applyTerminalNpcOutcomes(
+  ports,
+  callPort,
+  fail,
+  workingState,
+  terminalOutcomes
+) {
+  if (typeof ports.applyNpcTerminalOutcomes !== 'function') {
+    fail('TURN_CONVERSATION_PORT_MISSING',
+      'Terminal NPC outcomes require one application port');
+  }
+  const next = await callPort(
+    ports.applyNpcTerminalOutcomes,
+    { working_state: workingState, terminal_outcomes: terminalOutcomes },
+    'TURN_CONVERSATION_NPC_TERMINAL_APPLY_FAILED',
+    'Terminal NPC outcomes could not be applied'
+  );
+  if (next === null || typeof next !== 'object' || Array.isArray(next)) {
+    fail('TURN_CONVERSATION_NPC_TERMINAL_APPLY_INVALID',
+      'Terminal NPC outcomes must return one working state');
+  }
+  return next;
 }
 
 function unavailablePendingResult(normalized, pending, immutableClone) {

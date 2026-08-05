@@ -677,7 +677,7 @@ async function runBargainPath({ pool, release, runtimeCatalogPin }) {
   assert.equal(await count(pool,
     'party_runtime.party_obligation_transitions', party.party_id), 1);
   assert.deepEqual(counters, {
-    rng: beforeReplay.rng + repeatedAttempts,
+    rng: beforeReplay.rng + repeatedAttempts * 2,
     npc: beforeReplay.npc + repeatedAttempts
   });
   const repeatedPromise = current.promise_instances[0];

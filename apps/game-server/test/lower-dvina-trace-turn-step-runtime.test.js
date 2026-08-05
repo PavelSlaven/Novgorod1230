@@ -9,9 +9,10 @@ import { createPhase6TestTemporalOwner } from
 import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 
-const [bundle12, bundle13] = await Promise.all([
+const [bundle12, bundle13, bundle15] = await Promise.all([
   loadScenarioBundle(12),
-  loadScenarioBundle(13)
+  loadScenarioBundle(13),
+  loadScenarioBundle(15)
 ]);
 
 test('revision 12 free input stays on the historical bounded path', async () => {
@@ -28,6 +29,23 @@ test('revision 12 free input stays on the historical bounded path', async () => 
   assert.equal(result.option_id, 'inspect_wreck_in_detail');
   assert.equal(f.semanticInput()?.schema,
     'turn_semantic_resolution_request');
+  assert.equal(f.turnStepCount(), 0);
+  assert.equal(f.commitCount(), 1);
+});
+
+test('revision 15 early turns carry the Phase 7 action policy pin', async () => {
+  const f = fixture({
+    scenarioBundle: bundle15,
+    materializationBundle: bundle15,
+    rollValue: 0
+  });
+  const result = await submit(f, {
+    request_id: 'turn-step-rev15-early',
+    idempotency_key: 'turn-step-rev15-early',
+    raw_text: 'Осмотреть место крушения подробно.'
+  });
+
+  assert.equal(result.option_id, 'inspect_wreck_in_detail');
   assert.equal(f.turnStepCount(), 0);
   assert.equal(f.commitCount(), 1);
 });

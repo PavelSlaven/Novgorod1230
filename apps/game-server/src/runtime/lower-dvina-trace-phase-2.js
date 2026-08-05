@@ -19,8 +19,7 @@ import { resolveTracePhase4Contracts } from
   './lower-dvina-trace-phase-4-contracts.js';
 import { createTracePhase5Command } from
   './lower-dvina-trace-phase-5-command.js';
-import { resolveTracePhase5Contracts } from
-  './lower-dvina-trace-phase-5-contracts.js';
+import { resolveTracePhase5Contracts } from './lower-dvina-trace-phase-5-contracts.js';
 import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
 import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
@@ -249,7 +248,8 @@ export function createLowerDvinaTracePhase2Runtime({
             contracts.activityPin,
             ...(phase3Contracts?.activityPins ?? []),
             ...(phase4Contracts?.activityPins ?? []),
-            ...(phase5Contracts?.activityPins ?? [])
+            ...(phase5Contracts?.activityPins ?? []),
+            ...(phase7Contracts ? [phase7Contracts.activityPin] : [])
           ]
         }
       }, buildLowerDvinaTracePhase2Services({

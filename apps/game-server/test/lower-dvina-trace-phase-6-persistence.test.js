@@ -99,6 +99,9 @@ const contracts = {
 
 test('Phase 6 P16 plan atomically persists one owner traversal and terminal carry state', async () => {
   const state = committedState();
+  state.npc_semantic_decision_traces = [{
+    plan: { private_marker: 'phase6-private-semantic-plan' }
+  }];
   const intent = planTracePhase6SynchronizedCarry({
     state,
     contracts,
@@ -128,6 +131,14 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
     .occurred_at_whole_minutes, '110');
   assert.equal(rows(plan, 'party_activity_resource_bindings').length, 2);
   const snapshot = rows(plan, 'party_state_snapshots')[0].record.state_payload;
+  assert.equal(
+    Object.hasOwn(snapshot, 'npc_semantic_decision_traces'),
+    false
+  );
+  assert.equal(
+    JSON.stringify(snapshot).includes('phase6-private-semantic-plan'),
+    false
+  );
   assert.deepEqual([
     snapshot.body_state.health,
     snapshot.body_state.energy,

@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { resolveRatshaNpcSocialCheckProfile } from './lower-dvina-trace-phase-4-social-check.js';
 
 export const TRACE_PHASE_4_IDS = Object.freeze({
   routeOption: 'follow_known_route_to_drying_shed',
@@ -13,10 +14,9 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
   observation: 'trace_ld_v1_observation_onisim_alive_at_drying_shed',
   ratshaPolicy: 'trace_ld_v1_npc_ratsha_decisions'
 });
-
 export function resolveTracePhase4Contracts({ state, bundle }) {
-  if (![10, 11, 12, 13].includes(bundle.definition_revision)
-      || ![10, 11, 12, 13].includes(bundle.definition?.revision)) {
+  if (![10, 11, 12, 13, 14].includes(bundle.definition_revision)
+      || ![10, 11, 12, 13, 14].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_4_REVISION_MISMATCH');
   }
   const ids = TRACE_PHASE_4_IDS;
@@ -58,6 +58,24 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   const npcPolicy = exact(bundle.npc_decision_schedule_policies.decision_policies, 'policy_id', ids.ratshaPolicy);
   const knifeTransition = exact(bundle.npc_decision_schedule_policies.property_transition_profiles,
     'transition_profile_id', 'trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher');
+  const conversationBindings = bundle.definition_revision === 14
+    ? bundle.conversation_semantic_bindings
+    : null;
+  const conversationSignalMappings = conversationBindings == null
+    ? null
+    : Object.fromEntries([
+        ['arrival', 'trace_ld_v1_phase_4_group_appears_to_ratsha_signal_v1'],
+        ['objective', 'trace_ld_v1_phase_4_ratsha_waiting_invalidated_signal_v1'],
+        ['demand', 'trace_ld_v1_phase_4_ratsha_promise_surrender_signal_v1'],
+        ['knifeSelf', 'trace_ld_v1_phase_4_ratsha_loses_knife_access_signal_v1'],
+        ['knifeObservers', 'trace_ld_v1_phase_4_observed_ratsha_knife_loss_signal_v1']
+      ].map(([key, id]) => [key, exact(
+        conversationBindings.signal_mappings,
+        'mapping_id',
+        id
+      )]));
+  const npcSocialCheckProfile =
+    resolveRatshaNpcSocialCheckProfile(conversationBindings);
   const npcExecutions =
     bundle.npc_decision_schedule_policies.decision_execution_bindings
       .filter((entry) => entry.policy_id === ids.ratshaPolicy);
@@ -90,7 +108,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   );
   if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
   const fisher = fishers[0];
-  const phase5Enabled = [11, 12, 13].includes(bundle.definition_revision);
+  const phase5Enabled = [11, 12, 13, 14].includes(bundle.definition_revision);
   const resourceArrivalBinding = phase5Enabled
     ? bundle.materialization_bindings?.phase_5_initial_state_binding
       ?.phase_5_resource_arrival_binding
@@ -110,7 +128,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )])) : null;
-  if ([12, 13].includes(bundle.definition_revision)) {
+  if ([12, 13, 14].includes(bundle.definition_revision)) {
     resourceInventoryProfiles.water = exact(
       bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
@@ -205,6 +223,20 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
       || threatEffect.source_rule !== 'speaker_current_threat_or_offer_only'
       || threatEffect.audience_rule
         !== 'materialized_present_audience_only'
+      || (conversationBindings != null && (
+        conversationBindings.legacy_bounded_production_path !== 'forbidden'
+        || conversationBindings.combat_policy?.handoff !== 'required'
+        || conversationSignalMappings.demand.target_npc_ref
+          !== 'ratsha_storehouse_helper'
+        || conversationSignalMappings.demand.mechanics_refs.activity_id
+          !== ids.negotiationActivity
+        || conversationSignalMappings.demand.mechanics_refs.check_id
+          !== ids.check
+        || conversationSignalMappings.arrival.source_activity_id
+          !== ids.routeActivity
+        || conversationSignalMappings.knifeSelf.source_property_transition_id
+          !== knifeTransition.transition_profile_id
+      ))
       || !['objective_truth', 'confession', 'hidden_truth',
         'completion_state'].every((target) =>
         threatEffect.forbidden_write_targets.includes(target))
@@ -215,7 +247,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
           && profile.external_hand_cost === 1
           && profile.status === 'approved';
       }))
-      || ([12, 13].includes(bundle.definition_revision)
+      || ([12, 13, 14].includes(bundle.definition_revision)
         && (resourceInventoryProfiles.water.item_template_ref
           !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
           || resourceInventoryProfiles.water.mass_grams !== 100
@@ -229,6 +261,11 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
       digest: canonicalDigest(reverseRoute) },
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect,
+    npcSocialCheckProfile,
+    conversationBindings, conversationSignalMappings,
+    conversationTimeProfiles: structuredClone(
+      bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
+    ),
     knifeTransition, promisePolicy: structuredClone(bundle.promise_policy),
     resourceArrivalBinding: structuredClone(resourceArrivalBinding),
     itemTemplates: structuredClone(itemTemplates),

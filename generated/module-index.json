@@ -284,11 +284,11 @@
       "owns": [
         "проверкой и построением детерминированных proposal из переданных sealed snapshots",
         "применением supplied approved profiles и versioned dependency pins",
-        "schedule, perception и bounded-decision traces в границах формальных контрактов"
+        "schedule, perception, signal aggregation и semantic-decision traces в границах формальных контрактов"
       ],
       "path": "packages/npc-runtime",
       "public_entry": "./src/index.js",
-      "purpose": "`@rus/npc-runtime` — active-norm owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия и ограниченного выбора действия. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил пакет в sole production v3 composition.",
+      "purpose": "`@rus/npc-runtime` — active-norm owner Temporal World v4 для чистых предложений переходов расписания NPC, восприятия, общих decision signals/boundaries и versioned semantic decision contracts. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил пакет в sole production v3 composition.",
       "version": "0.1.0"
     },
     {
@@ -385,7 +385,8 @@
         "social bindings and references",
         "rights/restriction evaluation",
         "authority and social-risk contracts",
-        "legal consequence packages"
+        "legal consequence packages",
+        "party-local commitment proposal from committed conversation facts"
       ],
       "path": "packages/social-law",
       "public_entry": "./src/index.js",
@@ -438,11 +439,11 @@
       ],
       "name": "@rus/turn",
       "owns": [
-        "Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate"
+        "Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate"
       ],
       "path": "packages/turn",
       "public_entry": "./src/index.js",
-      "purpose": "Оркестратор игрового хода, active player semantic step boundary и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированный `turn_step_plan_v1` через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.",
+      "purpose": "Оркестратор игрового хода, active player semantic step boundary, revision-14 conversation exchange и Temporal World v4 execution composition. Он сохраняет exact command fast path, связывает explicit ports, исполняет валидированные semantic plans через code-owned handlers, собирает proposals и передаёт approved logical plan дальше; не владеет доменными формулами или физической транзакцией.",
       "version": "0.15.0"
     },
     {
@@ -452,7 +453,7 @@
       ],
       "name": "@rus/visibility-knowledge-memory",
       "owns": [
-        "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package"
+        "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package и factual conversation audience projection"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",

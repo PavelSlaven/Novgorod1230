@@ -9,13 +9,22 @@ import {
 } from './lower-dvina-trace-phase-3-movement-writes.js';
 import { phase3ActivityRef } from './lower-dvina-trace-phase-3-state.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
+import {
+  appendNpcSemanticConversationWrites,
+  buildNpcSemanticConversationWriteInput
+} from './npc-semantic-conversation-writes.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
+import { appendPhase3SemanticInteraction } from
+  './lower-dvina-trace-phase-3-semantic-interaction-write.js';
 
 export function phase3Writes(input) {
   const {
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
-    phase3Contracts
+    phase3Contracts, rootTurnId, workingRevision
   } = input;
+  assertSharedSemanticSnapshotSafe(next);
   const inserts = [row(
     'party_state_snapshots',
     `${partyId}:${nextVersion}`,
@@ -68,15 +77,128 @@ export function phase3Writes(input) {
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
   } else {
     appendActivity({
-      inserts, appends, state, next, factual, partyId, turnNumber,
+      inserts, updates, appends, state, next, factual, partyId, turnNumber,
       changeSetId, idemId, inputDigest
     });
-    appendConversation({
-      appends, inserts, state, next, factual, partyId, turnNumber,
-      changeSetId, inputDigest
-    });
+    const semanticExchange =
+      factual.consequence.conversation?.semantic_exchange ?? null;
+    if (semanticExchange !== null
+        && (semanticExchange.exchange.applied_contribution_count > 0
+          || semanticExchange.exchange.stop_reason === 'npc_unavailable')) {
+      const semanticInput = buildNpcSemanticConversationWriteInput({
+        state,
+        next,
+        semanticExchange
+      });
+      appendNpcSemanticConversationWrites({
+        inserts,
+        updates,
+        appends,
+        partyId,
+        changeSetId,
+        idempotencyRecordId: idemId,
+        rootTurnId,
+        workingRevision,
+        sessionWrite: semanticInput.sessionWrite,
+        semanticExchange: semanticInput.semanticExchange,
+        signalRecords: semanticInput.signalRecords,
+        actualMessageEvidence: semanticInput.actualMessageEvidence,
+        persistedMessageStatements:
+          semanticInput.persistedMessageStatements,
+        persistedMessageAudiences:
+          semanticInput.persistedMessageAudiences,
+        supportingOperationEvidence:
+          semanticInput.supportingOperationEvidence,
+        partyStateVersion: semanticInput.partyStateVersion,
+        sameTimeBatchRef: semanticInput.sameTimeBatchRef,
+        contributions: semanticInput.contributions
+      });
+      appendPhase3SemanticConsequences({
+        appends,
+        inserts,
+        state,
+        factual,
+        semanticExchange,
+        partyId,
+        turnNumber,
+        changeSetId,
+        inputDigest
+      });
+    } else if (semanticExchange === null) {
+      appendConversation({
+        appends, inserts, state, next, factual, partyId, turnNumber,
+        changeSetId, inputDigest
+      });
+    }
   }
   return { inserts, updates, appends, deletes: [] };
+}
+
+function appendPhase3SemanticConsequences({
+  appends,
+  inserts,
+  state,
+  factual,
+  semanticExchange,
+  partyId,
+  turnNumber,
+  changeSetId,
+  inputDigest
+}) {
+  const conversation = factual.consequence.conversation;
+  appendPhase3SemanticInteraction({
+    appends,
+    state,
+    factual,
+    semanticExchange,
+    partyId,
+    turnNumber,
+    changeSetId
+  });
+  const disclosure = semanticExchange.route_disclosure;
+  if (disclosure != null) {
+    appendKnowledge(
+      inserts,
+      state,
+      partyId,
+      disclosure.route_ref,
+      [disclosure.source_statement_ref.entity_id]
+    );
+  }
+  if (conversation.check_result == null) return;
+  appends.push(row('party_check_resolutions',
+    `check:${partyId}:trace-phase3:${turnNumber}`, {
+      check_resolution_id:
+        `check:${partyId}:trace-phase3:${turnNumber}`,
+      party_id: partyId,
+      check_scope_kind: 'immediate_action',
+      check_scope_key: {
+        request_id: factual.player_input.request_id,
+        option_id: factual.mode_resolution.option_id
+      },
+      check_policy_ref: {
+        entity_kind: 'check_policy',
+        entity_id: factual.availability.check_requests[0].check_id,
+        authoring_version: '1'
+      },
+      deterministic_roll_input_digest: canonicalDigest({
+        input_digest: inputDigest,
+        audit: conversation.check_result.audit
+      }),
+      roll_value: conversation.check_result.roll,
+      modifier_snapshot: conversation.check_result.modifiers,
+      target_value: conversation.check_result.difficulty,
+      result_kind: conversation.check_result.outcome.success
+        ? 'success'
+        : 'failure',
+      consequence_policy_ref: {
+        entity_kind: 'consequence_policy',
+        entity_id: conversation.consequence_ref,
+        authoring_version: '1'
+      },
+      result_change_set_id: changeSetId,
+      canonical_digest: canonicalDigest(conversation.check_result)
+    }));
 }
 
 export function visibleEnvelopeFor({

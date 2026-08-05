@@ -8,7 +8,7 @@ for (const script of ['spatial-v3:red', 'spatial-v3:verify-red', 'spatial-v3:che
 }
 const conformance = await collectConformanceReport();
 if (conformance.target.historical.contracts.length !== 160 || conformance.target.historical.errors.length !== 58) throw new Error('P06 harness did not preserve frozen P05 totals');
-if (conformance.target.contracts.length !== 213 || conformance.target.errors.length !== 82) throw new Error('P06 harness did not parse the current 4.4 target union');
+if (conformance.target.contracts.length !== 225 || conformance.target.errors.length !== 82) throw new Error('P06 harness did not parse the current 4.5 target union');
 if (conformance.target.stateMachines.executionTransitions.length !== 16 || conformance.target.stateMachines.executionEvents.length !== 12) throw new Error('P06 harness did not parse Appendix A execution matrices');
 const stateMachines = await collectStateMachineReport();
 const compatibility = await collectCompatibilityReport();
@@ -23,4 +23,4 @@ const result = spawnSync(process.execPath, [
 ], { encoding: 'utf8' });
 const output = `${result.stdout}\n${result.stderr}`;
 if (result.status !== 0) throw new Error(`P27 legacy-contract regression suite failed:\n${output}`);
-console.log('P06/P27 contract handoff passed: historical P05 160/58, current 4.4 213/82, Appendix A 16/12 and explicit no-mixing composition are green.');
+console.log('P06/P27 contract handoff passed: historical P05 160/58, current 4.5 225/82, Appendix A 16/12 and explicit no-mixing composition are green.');

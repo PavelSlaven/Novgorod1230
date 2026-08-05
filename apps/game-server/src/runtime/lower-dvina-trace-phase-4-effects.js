@@ -5,6 +5,11 @@ import {
 import {
   executeTraceLocalTraversal
 } from './lower-dvina-trace-local-traversal.js';
+import {
+  buildTracePhase4M2ArrivalPayload
+} from './lower-dvina-trace-phase-4-arrival.js';
+import { projectConversationTemporalAdvance } from
+  './lower-dvina-trace-m2-conversation-time.js';
 
 export function createTracePhase4Consequence({ inputDigest, duration, kind, detail }) {
   return { version: 1, schema: 'turn_consequence_package', status: 'resolved',
@@ -55,6 +60,12 @@ export function routeToShedEffect({
     },
     participantGroup: participants
   });
+  const m2Arrival = buildTracePhase4M2ArrivalPayload({
+    contracts,
+    state,
+    participants,
+    traversal
+  });
   return createTracePhase4Consequence({ inputDigest, duration: 12, kind: 'movement', detail: {
     ...(contracts.routeBodyEffect ? {
       body_effect_ref: contracts.routeBodyEffect.effect_profile_id
@@ -67,6 +78,7 @@ export function routeToShedEffect({
       reverse_route_digest: contracts.reverseRoute.digest,
       arrival_observation_ref: contracts.ids.observation, onisim_status: 'alive_observed',
       inventory_load: structuredClone(traversal.inventory_load),
+      ...(m2Arrival === null ? {} : { m2_arrival: m2Arrival }),
       traversal }
   } });
 }
@@ -133,6 +145,15 @@ export function createTracePhase4TemporalAdvance({ phase3Advance }) {
     if (input.consequence?.phase4_kind == null) return phase3Advance(input);
     const candidates = input.relevant_state.temporal_boundary_candidates;
     if (!Array.isArray(candidates)) fail('TRACE_PHASE_4_TEMPORAL_STATE_INVALID');
+    const semantic = input.consequence.negotiation?.semantic_exchange;
+    if (semantic != null) {
+      return projectConversationTemporalAdvance({
+        clockBefore: input.clock_before,
+        semanticExchange: semantic,
+        candidates,
+        roots: input.consequence.negotiation.activity_roots
+      });
+    }
     if (candidates.length > 0) {
       fail('TRACE_PHASE_4_TEMPORAL_BOUNDARY_PENDING');
     }
@@ -175,8 +196,55 @@ export function createTracePhase4VisibleProjector({ phase3Projector }) {
     if (input.consequence?.phase4_kind == null) return phase3Projector.project(input);
     const c = input.consequence;
     if (c.phase4_kind === 'movement') return { version: 1, schema: 'visible_context_package', visible_scene: 'У старой сушильни Онисим жив, ранен и не может идти; Ратша здесь.', visible_changes: ['onisim_found_alive'], sensory_details: [], visible_npc: [], visible_objects: [], known_context: ['Ратша присутствует; ситуация требует решения.'], uncertainties: ['Причины случившегося не установлены.'], allowed_tensions: ['danger'], do_not_imply: ['hidden_truth', 'zhdanko_motive'] };
-    return { version: 1, schema: 'visible_context_package', visible_scene: c.negotiation.npc_decision.outcome === 'surrender' ? 'Ратша сдался.' : 'Ратша не принял сдачу.', visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: ['objective_truth'] };
+    const semantic = c.negotiation.semantic_exchange ?? null;
+    const responseKind = semantic?.response_kind
+      ?? c.negotiation.npc_decision?.outcome;
+    const speechResponse = semantic !== null
+      && ['surrender', 'lie', 'bargain', 'speech'].includes(responseKind);
+    const visibleScene = semantic === null
+      ? (responseKind === 'surrender'
+          ? 'Ратша сдался.'
+          : 'Ратша не принял сдачу.')
+      : speechResponse
+        ? `Ратша говорит: «${perceivedNpcUtterance(
+            semantic,
+            'TRACE_M2_PHASE_4_VISIBLE_GAP'
+          )}»`
+        : responseKind === 'silence'
+          ? 'Ратша молчит.'
+          : responseKind === 'leave_conversation'
+            ? 'Ратша прекращает разговор.'
+          : 'Ратша переводит столкновение в открытый бой.';
+    return { version: 1, schema: 'visible_context_package', visible_scene: visibleScene, visible_changes: semantic?.statements.map(({ statement_id: statementId }) => statementId) ?? [], sensory_details: [], visible_npc: [], visible_objects: [], known_context: [], uncertainties: [], allowed_tensions: responseKind === 'combat_handoff' ? ['danger'] : [], do_not_imply: ['objective_truth'] };
   } };
+}
+
+function perceivedNpcUtterance(semantic, code) {
+  const statements = semantic?.statements?.filter(
+    ({ speaker_ref: speaker }) => speaker?.entity_kind === 'npc'
+  ) ?? [];
+  if (statements.length !== 1) throw visibleGap(code);
+  const statement = statements[0];
+  const audience = semantic.audiences?.find(
+    ({ statement_ref: statementRef }) =>
+      statementRef?.entity_kind === 'conversation_statement'
+      && statementRef.entity_id === statement.statement_id
+  );
+  const playerMessages = audience?.received_messages?.filter(
+    ({ listener_ref: listener, comprehension, utterance_text: utterance }) =>
+      listener?.entity_kind === 'player_character'
+      && comprehension === 'full'
+      && utterance === statement.utterance_text
+  ) ?? [];
+  if (playerMessages.length !== 1) throw visibleGap(code);
+  return statement.utterance_text;
+}
+
+function visibleGap(code) {
+  return Object.assign(
+    new Error('The semantic NPC utterance is not player-visible.'),
+    { code }
+  );
 }
 
 function temporalResult({ before, after, exactMinutes, owner, candidates, roots }) {

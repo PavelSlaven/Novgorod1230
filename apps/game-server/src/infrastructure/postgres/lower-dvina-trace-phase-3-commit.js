@@ -1,3 +1,4 @@
+
 import { canonicalDigest } from '@rus/materialization';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { serverError } from '../../errors.js';
@@ -23,6 +24,23 @@ import {
 import {
   bindLowerDvinaTraceTurnStepIdempotency
 } from './lower-dvina-trace-turn-step-idempotency.js';
+import {
+  committedTraceScenarioDefinitionRevision
+} from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { integrateConversationTemporalWrites } from
+  './lower-dvina-trace-conversation-temporal.js';
+import { resumedPendingConversationActivity } from
+  './lower-dvina-trace-pending-activity-state.js';
+
+import {
+  expectedChangedConditions,
+  expectedSemanticConversationSession,
+  fail,
+  normalizeDigest,
+  phase3CommitRechecks,
+  phase3SemanticCommitContext,
+  target
+} from './lower-dvina-trace-phase-3-commit-support.js';
 
 export async function commitLowerDvinaTracePhase3({
   partyId,
@@ -46,6 +64,12 @@ export async function commitLowerDvinaTracePhase3({
       factual.player_input.idempotency_key
   });
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
+  const scenarioRevision = committedTraceScenarioDefinitionRevision(state);
+  const semanticContext = phase3SemanticCommitContext({
+    writePlan,
+    factual,
+    scenarioRevision
+  });
   const nextVersion = state.party_state.state_version + 1;
   const turnNumber = state.party_state.turn_number + 1;
   const changeSetId = `change:${partyId}:trace-phase3:${turnNumber}`;
@@ -53,7 +77,9 @@ export async function commitLowerDvinaTracePhase3({
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
   let next = nextState({
-    state, factual, nextVersion, turnNumber, inputDigest, changeSetId
+    state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
+    rootTurnId: semanticContext?.rootTurnId,
+    workingRevision: semanticContext?.workingRevision
   });
   const turnStep = prepareLowerDvinaTraceTurnStepPersistence({
     partyId, writePlan, state, snapshot: next, factual, changeSetId, idemId,
@@ -75,17 +101,15 @@ export async function commitLowerDvinaTracePhase3({
   const writes = mergeLowerDvinaTraceTurnStepWrites(phase3Writes({
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
-    phase3Contracts
+    phase3Contracts, scenarioRevision,
+    rootTurnId: semanticContext?.rootTurnId,
+    workingRevision: semanticContext?.workingRevision
   }), turnStep.writes);
   const canonicalInputDigest = normalizeDigest(inputDigest);
-  const builder = createCombinedWritePlanBuilder({
-    verifyApproval: async (candidate) => ({
-      ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_phase_3_turn'
-        && candidate.canonical_input_digest === canonicalInputDigest
-    })
-  });
-  const built = await builder.build({
+  const resumedActivity = resumedPendingConversationActivity(
+    state, semanticContext?.semanticExchange
+  );
+  const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase3:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -97,6 +121,16 @@ export async function commitLowerDvinaTracePhase3({
         state.party_state.session_state_version),
       expected('party_clocks', partyId,
         state.party_state.clock_state_version),
+      ...expectedSemanticConversationSession(
+        state,
+        semanticContext?.semanticExchange
+      ),
+      ...(resumedActivity == null
+        ? [] : [expected(
+            'party_timed_activity_executions',
+            resumedActivity.activity_execution_id,
+            resumedActivity.activity_state_version
+          )]),
       ...(factual.body_update?.applied === true ? [expected(
         'party_actor_body_states', `player_character:${state.actor_id}`,
         state.party_state.body_state_version
@@ -156,7 +190,27 @@ export async function commitLowerDvinaTracePhase3({
       phase3Contracts,
       inputDigest
     })
+  };
+  const integratedInput = integrateConversationTemporalWrites({
+    input: baseWritePlanInput,
+    semanticExchange: semanticContext?.semanticExchange,
+    fail: (error) => {
+      throw serverError(
+        'TRACE_PHASE_3_TEMPORAL_WRITE_CONFLICT',
+        'Conversation temporal writes conflict with Phase 3 persistence.',
+        { status: 409, details: error }
+      );
+    }
   });
+  const builder = createCombinedWritePlanBuilder({
+    verifyApproval: async (candidate) => ({
+      ok: candidate.party_id === partyId
+        && candidate.operation_kind === 'trace_phase_3_turn'
+        && candidate.canonical_input_digest
+          === integratedInput.canonical_input_digest
+    })
+  });
+  const built = await builder.build(integratedInput);
   if (!built.ok) {
     throw serverError(
       'TRACE_PHASE_3_WRITE_PLAN_REJECTED',
@@ -184,86 +238,3 @@ export async function commitLowerDvinaTracePhase3({
     package_digest: visibleEnvelope.package_digest
   };
 }
-
-function expectedChangedConditions(state, nextBodyState) {
-  const changed = new Set((nextBodyState.active_conditions ?? [])
-    .filter(({ condition_outcome: outcome }) => Boolean(outcome))
-    .map(({ storage_condition_id: id }) => id));
-  return (state.body_state.active_conditions ?? [])
-    .filter(({ storage_condition_id: id }) => changed.has(id))
-    .map((condition) => expected(
-      'party_actor_active_conditions',
-      `player_character:${state.actor_id}:${condition.storage_condition_id}`,
-      condition.state_version
-    ));
-}
-
-function target(writePlan, name) {
-  return writePlan.write_targets.find(({ target }) => target === name)?.value;
-}
-function phase3CommitRechecks({
-  partyId,
-  state,
-  factual,
-  phase3Contracts,
-  inputDigest
-}) {
-  const movement = factual.consequence.phase3_kind === 'movement'
-    ? factual.consequence.movement
-    : null;
-  return [
-    sealedCheck('physical', {
-      party_id: partyId,
-      location_ref: state.position.location_ref,
-      g5_anchor_id: state.position.g5_anchor_id
-    }),
-    sealedCheck('state', {
-      party_id: partyId,
-      expected_party_state_version: state.party_state.state_version
-    }),
-    sealedCheck('pin', {
-      activity_pin: phase3Contracts.activityPins.find(
-      ({ id }) => id === phase3ActivityRef(factual)
-      )
-    }),
-    sealedCheck('endpoint', {
-      destination_ref: movement?.destination.location_ref ?? null
-    }),
-    sealedCheck('route', {
-      route_binding_ref: movement?.route_ref ?? null
-    }),
-    sealedCheck('capacity', movement ? {
-      party_id: partyId,
-      capacity_model: 'trace_phase3_location_actor_capacity',
-      destination_anchor_id: movement.destination.g5_anchor_id,
-      destination_location_ref: movement.destination.location_ref,
-      capacity_contract_ref: phase3Contracts.capacity.contract_id,
-      access_policy_ref: phase3Contracts.access.policy_id,
-      zone_ref: movement.destination.zone_ref,
-      max_actors: phase3Contracts.capacity.zones.find(
-        ({ zone_id: id }) => id === movement.destination.zone_ref
-      )?.max_actors,
-      incoming_participant_slot: 'player_clerk',
-      allowed_participant_slots:
-        phase3Contracts.capacity.admission_model.allowed_participant_slots,
-      expected_present_npcs: phase3Contracts.actors.map((actor) => ({
-        npc_id: actor.instance_id,
-        participant_slot_ref: actor.ref
-      }))
-    } : { party_id: partyId }),
-    sealedCheck('time', {
-      expected_clock_state_version: state.party_state.clock_state_version
-    }),
-    sealedCheck('change_set', {
-      canonical_input_digest: inputDigest
-    })
-  ];
-}
-function fail(code, details = null) {
-  throw serverError(code, 'Phase 3 factual commit failed closed.', {
-    status: 409,
-    details
-  });
-}
-const normalizeDigest = (value) =>
-  `sha256:${String(value).replace('sha256:', '')}`;

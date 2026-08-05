@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import pg from 'pg';
 import {
+  runSpatialV3TargetMigrations,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 
@@ -11,6 +13,143 @@ const docker = (args, input = null) => spawnSync(
   { input, encoding: 'utf8', timeout: 60_000 }
 );
 const containerName = `lower-dvina-party-011-${process.pid}`;
+const rollbackContainerName =
+  `lower-dvina-party-017-rollback-${process.pid}`;
+const conflictContainerName =
+  `lower-dvina-party-018-conflict-${process.pid}`;
+
+test('018 replaces mode-split identity with one trace per NPC and batch',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for the isolated PostgreSQL migration gate.');
+      return;
+    }
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', conflictContainerName]);
+    });
+    const started = docker([
+      'run', '-d', '--name', conflictContainerName,
+      '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=conflict_local',
+      '-e', 'POSTGRES_USER=conflict',
+      '-e', 'POSTGRES_DB=conflict',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      if (docker([
+        'exec', conflictContainerName, 'pg_isready',
+        '-U', 'conflict', '-d', 'conflict'
+      ]).status === 0) {
+        ready = true;
+        break;
+      }
+    }
+    assert.equal(ready, true);
+    const port = Number(docker([
+      'port', conflictContainerName, '5432'
+    ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port,
+      user: 'conflict', password: 'conflict_local', database: 'conflict' });
+    await pool.query(`
+      CREATE SCHEMA party_runtime;
+      CREATE TABLE party_runtime.party_npc_decision_traces (
+        party_id text NOT NULL,
+        npc_id text NOT NULL,
+        decision_mode text NOT NULL,
+        boundary_id text,
+        same_time_batch_ref jsonb
+      );
+      CREATE UNIQUE INDEX party_npc_decision_traces_batch_npc_mode_key
+        ON party_runtime.party_npc_decision_traces (
+          party_id,npc_id,decision_mode,
+          (same_time_batch_ref ->> 'entity_id')
+        ) WHERE boundary_id IS NOT NULL;
+      INSERT INTO party_runtime.party_npc_decision_traces VALUES
+        ('party','npc','conversation','conversation-boundary',
+          '{"entity_kind":"temporal_batch","entity_id":"batch"}');
+    `);
+
+    await pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1));
+    await assert.rejects(pool.query(`
+      INSERT INTO party_runtime.party_npc_decision_traces VALUES
+        ('party','npc','combat','duplicate-cross-mode-boundary',
+          '{"entity_kind":"temporal_batch","entity_id":"batch"}')
+    `), /duplicate key value violates unique constraint/u);
+    const readback = await pool.query(`
+      SELECT count(*)::integer AS trace_count,
+        to_regclass(
+          'party_runtime.party_npc_decision_traces_batch_npc_mode_key'
+        ) IS NOT NULL AS mode_index_present,
+        to_regclass(
+          'party_runtime.party_npc_decision_traces_batch_npc_key'
+        ) IS NOT NULL AS strict_index_present
+      FROM party_runtime.party_npc_decision_traces
+    `);
+    assert.deepEqual(readback.rows[0], {
+      trace_count: 1,
+      mode_index_present: false,
+      strict_index_present: true
+    });
+  });
+
+test('017 is rolled back when the in-transaction readiness gate fails',
+  async (t) => {
+    if (docker(['version']).status !== 0) {
+      t.skip('Docker is required for the isolated PostgreSQL migration gate.');
+      return;
+    }
+    let pool;
+    t.after(async () => {
+      if (pool) await pool.end();
+      docker(['rm', '-f', rollbackContainerName]);
+    });
+    const started = docker([
+      'run', '-d', '--name', rollbackContainerName,
+      '-p', '127.0.0.1::5432',
+      '-e', 'POSTGRES_PASSWORD=rollback_local',
+      '-e', 'POSTGRES_USER=rollback',
+      '-e', 'POSTGRES_DB=rollback',
+      'postgres:16-alpine'
+    ]);
+    assert.equal(started.status, 0, started.stderr);
+    let ready = false;
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 350));
+      if (docker([
+        'exec', rollbackContainerName, 'pg_isready',
+        '-U', 'rollback', '-d', 'rollback'
+      ]).status === 0) {
+        ready = true;
+        break;
+      }
+    }
+    assert.equal(ready, true);
+    const port = Number(docker([
+      'port', rollbackContainerName, '5432'
+    ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
+    pool = new pg.Pool({ host: '127.0.0.1', port,
+      user: 'rollback', password: 'rollback_local', database: 'rollback' });
+
+    await assert.rejects(
+      runSpatialV3TargetMigrations(pool, {
+        beforeCommit: async () => {
+          throw new Error('forced readiness failure');
+        }
+      }),
+      /forced readiness failure/u
+    );
+    const table = await pool.query(
+      `SELECT to_regclass(
+        'party_runtime.party_conversation_contributions'
+      ) AS relation`
+    );
+    assert.equal(table.rows[0].relation, null);
+  });
 
 test('011 applies to isolated PostgreSQL and permits transport departure without losing controls', async (t) => {
   if (docker(['version']).status !== 0) {

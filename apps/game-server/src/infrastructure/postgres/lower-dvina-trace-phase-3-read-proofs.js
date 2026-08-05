@@ -1,7 +1,9 @@
 import { canonicalDigest } from '@rus/materialization';
 
 export function phase3ActivityReadProof(payload, rows) {
-  const actual = rows.map((entry) => ({
+  const latestRows = [...new Map(rows.map((entry) => [entry.id, entry]))
+    .values()];
+  const actual = latestRows.map((entry) => ({
     activity_execution_id: entry.id,
     activity_snapshot: entry.activity_snapshot,
     option_id: entry.execution_context_snapshot?.option_id,
@@ -21,11 +23,26 @@ export function phase3ActivityReadProof(payload, rows) {
       ended_at: entry.ended_at,
       execution_result: entry.execution_result
     }));
-  const valid = rows.every((entry) =>
-    entry.status === 'completed'
-    && entry.result_kind === 'completed'
-    && entry.actual_time_numerator === entry.original_total_minutes
-    && entry.actual_time_denominator === '1');
+  const expectedById = new Map((payload.activity_history ?? []).map(
+    (entry) => [entry.activity_execution_id, entry]
+  ));
+  const elapsedByExecution = new Map();
+  for (const entry of rows) {
+    elapsedByExecution.set(entry.id,
+      (elapsedByExecution.get(entry.id) ?? 0)
+        + Number(entry.actual_time_numerator)
+          / Number(entry.actual_time_denominator));
+  }
+  const valid = latestRows.every((entry) => {
+    const budget = expectedById.get(entry.id)?.execution_result
+      ?.semantic_exchange_projection?.time_budget ?? null;
+    const status = budget?.status ?? 'completed';
+    const elapsed = String(budget?.elapsed_minutes
+      ?? entry.original_total_minutes);
+    return entry.status === status
+      && entry.result_kind === status
+      && elapsedByExecution.get(entry.id) === Number(elapsed);
+  });
   return { actual, expected, valid };
 }
 

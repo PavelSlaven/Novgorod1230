@@ -267,7 +267,7 @@ critical
 ```json
 {
   "schema": "npc_decision_signal_v1",
-  "signal_id": "decision-signal:event-17:npc-ratsha",
+  "signal_id": "decision-signal:world_event:event-17:npc-ratsha:environment",
   "occurred_at": {},
   "category": "environment",
   "significance": "material",
@@ -286,7 +286,7 @@ critical
     "entity_id": "perception-event-17-ratsha"
   },
   "causal_parent_refs": [],
-  "idempotency_key": "decision-signal:event-17:npc-ratsha"
+  "idempotency_key": "decision-signal:world_event:event-17:npc-ratsha:environment"
 }
 ```
 
@@ -399,7 +399,7 @@ LLM не вызывается из-за:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:autonomous:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:batch-18:npc-ratsha",
   "decision_mode": "autonomous",
   "scheduled_at": {},
   "npc_ref": {
@@ -419,13 +419,16 @@ LLM не вызывается из-за:
   "signal_refs": [],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:autonomous:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
 }
 ```
 
 Инварианты:
 
 - `decision_mode = autonomous`;
+- `decision_mode` является свойством boundary и не входит в её identity;
+- один NPC имеет не более одной aggregated boundary и одного LLM-вызова
+  на один fully resolved same-time batch суммарно по всем режимам;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;
@@ -664,11 +667,11 @@ LLM не может объявить:
     "signal_refs": [
       {
         "entity_kind": "npc_decision_signal",
-        "entity_id": "decision-signal:entry-17:npc-ratsha"
+        "entity_id": "decision-signal:temporal_event:entry-17:npc-ratsha:others"
       },
       {
         "entity_kind": "npc_decision_signal",
-        "entity_id": "decision-signal:intent-17:npc-ratsha"
+        "entity_id": "decision-signal:objective_change:intent-17:npc-ratsha:objective"
       }
     ],
     "perceived_changes": [
@@ -2255,3 +2258,84 @@ LLM выбирает только option_id/command_token из закрытог�
 15. Hidden context не попадает в player-facing output.
 16. Новая таблица, scheduler или параллельный decision engine не добавлены без необходимости.
 17. Базовая документация обновлена одновременно с production cutover.
+
+# Приложение A. Machine contract specifications
+
+```yaml
+contract_name: npc_action_decision_request_v1
+storage: immutable_request
+identity:
+  - request_id
+fields:
+  schema: required enum[npc_action_decision_request_v1]
+  request_id: required stable_id
+  root_turn_id: required stable_id
+  boundary_id: required stable_id
+  committed_state_version: required state_version
+  working_revision: required non_negative_integer
+  decision_index: required positive_integer
+  occurred_at: required game_timestamp
+  npc_ref: required stable_id
+  decision_reasons: required json_object
+  historical_context: required json_object
+  npc: required json_object
+  perception: required json_object
+  knowledge: required json_object
+  memory: required json_object
+  decision_scope: required json_object
+invariants:
+  - The request exposes only NPC-available subjective information plus technical identities and contracts.
+  - Decision categories use only the common five-category vocabulary in canonical order.
+  - Allowed refs and the operation contract are closed to the capabilities supplied by code.
+```
+
+```yaml
+contract_name: npc_step_plan_v1
+storage: immutable_response
+identity:
+  - request_id
+  - decision_index
+fields:
+  schema: required enum[npc_step_plan_v1]
+  request_id: required stable_id
+  root_turn_id: required stable_id
+  boundary_id: required stable_id
+  committed_state_version: required state_version
+  working_revision: required non_negative_integer
+  decision_index: required positive_integer
+  npc_ref: required stable_id
+  interpretation: required json_object
+  resolution: required enum[direct, generic_check, domain_request]
+  goal_result: required enum[pending, achieved, partially_achieved, not_achieved]
+  activity: required json_object
+  operations: required relation_set[json_object]
+  check: optional json_object
+  reason_code: required stable_id
+  reason: required string
+invariants:
+  - The plan contains exactly one self-contained NPC action and no implicit continuation.
+  - Unused nullable values remain null and operations stay within the request operation contract.
+  - Generic checks expose all five outcomes; domain-owned actions are delegated without claiming their result.
+```
+
+```yaml
+contract_name: npc_semantic_decision_trace_v1
+storage: party_runtime_append_only
+identity:
+  - boundary_id
+fields:
+  schema: required enum[npc_semantic_decision_trace_v1]
+  request_id: required stable_id
+  root_turn_id: required stable_id
+  boundary_id: required stable_id
+  npc_ref: required stable_id
+  committed_state_version: required state_version
+  working_revision: required non_negative_integer
+  plan: required json_object
+  applied_change_set_id: required stable_id
+  status: required enum[committed]
+invariants:
+  - One committed boundary has at most one persisted semantic decision trace.
+  - Replay returns the persisted plan and never invokes the model or applies the change set again.
+  - Internal decision reasons remain hidden from player-safe projections and other NPCs.
+```

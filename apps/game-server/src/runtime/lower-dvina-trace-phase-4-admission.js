@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { compareGameTimestamp } from '@rus/time-events-history';
 
 export function tracePhase4PreconditionSatisfied(precondition, state, contracts) {
   if (precondition.kind === 'committed_location') {
@@ -98,6 +99,13 @@ export function tracePhase4PreconditionSatisfied(precondition, state, contracts)
   if (precondition.kind === 'no_temporal_boundary_candidates') {
     return Array.isArray(state.temporal_boundary_candidates)
       && state.temporal_boundary_candidates.length === 0;
+  }
+  if (precondition.kind === 'no_current_temporal_boundary_candidates') {
+    return Array.isArray(state.temporal_boundary_candidates)
+      && state.temporal_boundary_candidates.every(
+        ({ scheduled_at: scheduledAt }) =>
+          compareGameTimestamp(scheduledAt, state.clock) > 0
+      );
   }
   return false;
 }

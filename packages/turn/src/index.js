@@ -15,6 +15,9 @@ import {
   resolveTurnDecision
 } from './bounded-decision.js';
 import { enterG4WithMaterialization } from './first-entry-materialization.js';
+import { requestPlayerConversationContribution } from './player-conversation.js';
+import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
+import { runConversationExchange } from './conversation-exchange.js';
 import {
   buildTurnStepPreparedBodyUpdate,
   buildTurnStepPreparedEffectLedger,
@@ -33,7 +36,10 @@ export {
   buildTurnStepPreparedBodyUpdate,
   buildTurnStepPreparedEffectLedger,
   buildTurnStepPreparedTimeUpdate,
-  requireTurnStepPreparedEffectLedger
+  requireTurnStepPreparedEffectLedger,
+  requestPlayerConversationContribution,
+  requestNpcSemanticDecision,
+  runConversationExchange
 };
 export {
   TURN_PRIMARY_MODES,

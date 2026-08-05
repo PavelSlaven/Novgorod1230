@@ -4,7 +4,43 @@ export {
   NPC_RUNTIME_TYPED_ERRORS
 } from './runtime-configuration.js';
 export { orderNpcDecisionRequests } from './bounded-decision.js';
-export { proposeNpcPerception } from './perception.js';
+export {
+  buildNpcDecisionBoundary,
+  buildNpcDecisionSignal,
+  evaluateNpcDecisionSignals,
+  validateNpcDecisionBoundary,
+  validateNpcDecisionSignal
+} from './decision-signals.js';
+export {
+  buildConversationContributionPlan,
+  buildConversationSession,
+  buildConversationStatementEvent,
+  buildNpcConversationResponseRequest,
+  buildPlayerConversationContributionPlan,
+  buildPlayerConversationInput,
+  buildSocialDeliveryResult,
+  orderNpcConversationDecisionRequests,
+  validateConversationContributionPlan,
+  validateConversationSession,
+  validateConversationStatementEvent,
+  validateNpcConversationResponseRequest,
+  validatePlayerConversationContributionPlan,
+  validatePlayerConversationInput,
+  validateSocialDeliveryResult
+} from './conversation-contracts.js';
+export {
+  buildNpcActionDecisionRequest,
+  buildNpcSemanticDecisionTrace,
+  buildNpcStepPlan,
+  validateNpcActionDecisionRequest,
+  validateNpcSemanticDecisionTrace,
+  validateNpcStepPlan
+} from './semantic-decision-contracts.js';
+export {
+  proposeNpcPerception,
+  resolveConversationListenerPerception,
+  resolveConversationVisualPerception
+} from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow

@@ -4,9 +4,9 @@ import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
-import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase2DurableNarrator } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
@@ -15,6 +15,10 @@ import { firstPlayableCommitRecheck } from '../../apps/game-server/src/infrastru
 import { loadLowerDvinaTraceMaterializationBundle } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
 import { lowerDvinaTracePhase1ADomainPin } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { createM2ConversationModels } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import { createLowerDvinaTraceTurnStepTestModel } from '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
 const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v3_candidate_001', digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea' });
@@ -98,9 +102,12 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
   treatmentRandomValue = randomValue, counters = null }) {
   const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck: firstPlayableCommitRecheck, now: () => new Date('2026-07-30T08:00:00.000Z') });
   const repository = createLowerDvinaTracePhase2PostgresRepository({ partyPool: pool, committer });
+  const { playerConversationModel, npcSemanticModel } =
+    createM2ConversationModels();
   const turnStepModel = createLowerDvinaTraceTurnStepTestModel();
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({ repository,
     turnStepModel,
+    playerConversationModel, npcSemanticModel,
     semanticResolver: async ({ raw_text, action_set }) => ({ option_id: semanticOption(raw_text, action_set) }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => {
@@ -109,7 +116,12 @@ function buildRuntime({ pool, release, runtimeCatalogPin, randomValue = 0.99,
         ? treatmentRandomValue : randomValue;
       return roll(request_id, value);
     },
-    npcDecisionSelector: async (request) => { const option = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(option); return { request_id: request.request_id, state_version: request.state_version, option_id: option.option_id, command_token: option.command_token }; }, decisionSecret: 'phase-5-postgres-secret', now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
+    npcDecisionSelector: async (request) => { const option = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(option); return { request_id: request.request_id, state_version: request.state_version, option_id: option.option_id, command_token: option.command_token }; }, decisionSecret: 'phase-5-postgres-secret',
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations:
+        lowerDvinaTraceConversationTemporalEffectRegistrations()
+    }),
+    now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
   return createFirstPlayablePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 
@@ -452,21 +464,7 @@ async function resolveTreatmentBoundary(pool, partyId) {
   );
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
-async function installSchemas(pool) {
-  const files = (await readdir('schemas/party-db'))
-    .filter((file) => /^\d+.*\.sql$/u.test(file)).sort();
-  const catalogMigrationIndex = files.findIndex((file) =>
-    file.startsWith('012_')
-  );
-  assert.equal(catalogMigrationIndex, 11);
-  for (const file of files.slice(0, catalogMigrationIndex)) {
-    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
-  }
-  assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied');
-  for (const file of files.slice(catalogMigrationIndex)) {
-    await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
-  }
-}
+async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
 async function installWorldLineage(pool) { await pool.query('CREATE SCHEMA IF NOT EXISTS world_base'); await pool.query('CREATE TABLE world_base.spatial_v3_world_revisions (id text PRIMARY KEY,parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),catalog_digest text NOT NULL,status text NOT NULL)'); await pool.query("INSERT INTO world_base.spatial_v3_world_revisions (id,parent_revision_id,catalog_digest,status) VALUES ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')"); }
 async function waitForPostgres(name) {
   for (let i = 0; i < 30; i += 1) {

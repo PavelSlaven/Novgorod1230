@@ -1,0 +1,163 @@
+{
+  "schema": "rus.lower_dvina_trace_conversation_semantic_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_conversation_semantic_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 14,
+  "fallback_policy": "forbidden",
+  "legacy_bounded_production_path": "forbidden",
+  "contract_refs": [
+    "npc_decision_signal_v1",
+    "npc_decision_boundary_v1",
+    "player_conversation_contribution_plan_v1",
+    "conversation_contribution_plan_v1"
+  ],
+  "decision_modes": ["autonomous", "conversation"],
+  "combat_policy": {
+    "handoff": "required",
+    "conversation_resolver": "forbidden"
+  },
+  "decision_signal_policy": {
+    "categories": ["self", "others", "environment", "objective", "communication"],
+    "significance": ["material", "critical"],
+    "descriptor_role": "declarative_applicability_not_scenario_trigger_type"
+  },
+  "max_contributions_per_exchange": 8,
+  "closed_npc_option_sets": "forbidden",
+  "participant_refs": {
+    "eremey": "eremey_fisher",
+    "ratsha": "ratsha_storehouse_helper",
+    "participating_fisher": "trace_ld_v1_audience_slot_participating_fisher"
+  },
+  "npc_social_check_profiles": [
+    {
+      "profile_id": "trace_ld_v1_npc_ratsha_social_delivery_check_v1",
+      "actor_ref": "ratsha_storehouse_helper",
+      "attribute_ref": "influence",
+      "attribute_value": 12,
+      "skill_ref": "communication",
+      "skill_bonus": 1,
+      "difficulty": 13,
+      "state_modifier": -1,
+      "equipment_modifier": 0,
+      "circumstance_modifier": 1,
+      "outcome_policy": "checks_rng_margin_bands_only",
+      "retry_policy": "reuse_committed_roll_for_same_boundary"
+    }
+  ],
+  "signal_mappings": [
+    {
+      "mapping_id": "trace_ld_v1_phase_3_eremey_question_signal_v1",
+      "phase": "phase_3",
+      "source_command_id": "lower_dvina_trace.ask_eremey_about_wreck",
+      "target_npc_ref": "eremey_fisher",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {"category": "communication", "significance": "material"}
+      ],
+      "mechanics_refs": {
+        "activity_id": "trace_ld_v1_activity_first_eremey_talk",
+        "check_id": null,
+        "statement_template_ids": ["trace_ld_v1_statement_eremey_first_answer"],
+        "knowledge_scope_id": "trace_ld_v1_knowledge_scope_local_fisher_v1",
+        "promise_policy_id": null
+      }
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_3_eremey_blue_wool_request_signal_v1",
+      "phase": "phase_3",
+      "source_command_id": "lower_dvina_trace.show_clue_and_seek_eremey_cooperation",
+      "target_npc_ref": "eremey_fisher",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {"category": "environment", "significance": "material"},
+        {"category": "communication", "significance": "material"}
+      ],
+      "mechanics_refs": {
+        "activity_id": "trace_ld_v1_activity_eremey_with_evidence",
+        "check_id": "trace_ld_v1_check_eremey_cooperation",
+        "statement_template_ids": [
+          "trace_ld_v1_statement_eremey_first_answer",
+          "trace_ld_v1_statement_eremey_disclosure"
+        ],
+        "knowledge_scope_id": "trace_ld_v1_knowledge_scope_local_fisher_v1",
+        "promise_policy_id": null
+      }
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_4_group_appears_to_ratsha_signal_v1",
+      "phase": "phase_4",
+      "source_activity_id": "trace_ld_v1_activity_route_to_drying_shed",
+      "source_boundary": "terminal_position_committed",
+      "source_observation_profile_id": "trace_ld_v1_observation_onisim_alive_at_drying_shed",
+      "target_npc_ref": "ratsha_storehouse_helper",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {"category": "others", "significance": "material"}
+      ]
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_4_ratsha_waiting_invalidated_signal_v1",
+      "phase": "phase_4",
+      "source_activity_id": "trace_ld_v1_activity_route_to_drying_shed",
+      "source_boundary": "terminal_position_committed",
+      "applicability": "current_conversation_objective_invalidated",
+      "target_npc_ref": "ratsha_storehouse_helper",
+      "perception_requirement": "perception_not_required",
+      "signal_descriptors": [
+        {"category": "objective", "significance": "material"}
+      ]
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_4_ratsha_promise_surrender_signal_v1",
+      "phase": "phase_4",
+      "source_command_id": "lower_dvina_trace.offer_conditional_protection_and_seek_surrender",
+      "target_npc_ref": "ratsha_storehouse_helper",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {"category": "communication", "significance": "material"}
+      ],
+      "mechanics_refs": {
+        "activity_id": "trace_ld_v1_activity_ratsha_negotiation",
+        "check_id": "trace_ld_v1_check_ratsha_surrender_attempt",
+        "statement_template_ids": ["trace_ld_v1_statement_ratsha_confession"],
+        "knowledge_scope_id": "trace_ld_v1_knowledge_scope_storehouse_helper_v1",
+        "promise_policy_id": "trace_ld_v1_promise_no_summary_killing"
+      }
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_4_ratsha_loses_knife_access_signal_v1",
+      "phase": "phase_4",
+      "source_fact_id": "ratsha_surrender_without_further_harm_committed",
+      "source_property_transition_id": "trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher",
+      "target_npc_ref": "ratsha_storehouse_helper",
+      "perception_requirement": "perception_not_required",
+      "signal_descriptors": [
+        {"category": "self", "significance": "material"}
+      ]
+    },
+    {
+      "mapping_id": "trace_ld_v1_phase_4_observed_ratsha_knife_loss_signal_v1",
+      "phase": "phase_4",
+      "source_fact_id": "ratsha_surrender_without_further_harm_committed",
+      "source_property_transition_id": "trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher",
+      "target_npc_refs": ["eremey_fisher", "trace_ld_v1_audience_slot_participating_fisher"],
+      "applicability": "approved_observer_policy_only",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {"category": "others", "significance": "material"}
+      ]
+    }
+  ],
+  "excludes": [
+    "closed_npc_option_sets",
+    "scenario_trigger_types",
+    "scenario_resolver",
+    "runtime_handler",
+    "persistence",
+    "ddl",
+    "api",
+    "ui"
+  ]
+}

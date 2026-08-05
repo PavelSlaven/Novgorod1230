@@ -1,5 +1,10 @@
 import { deepFreeze } from '@rus/kernel';
 
+export {
+  PartyLocalCommitmentPlanningError,
+  planPartyLocalCommitment
+} from './party-local-commitment.js';
+
 const SUPPORTED_PROMISE_OPERATIONS = new Set(['initialize', 'offer', 'activate']);
 
 export class PromiseLifecyclePlanningError extends Error {

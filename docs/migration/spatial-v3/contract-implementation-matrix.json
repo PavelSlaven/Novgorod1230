@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "source_standard": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "source_amendment": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_version": "4.4.0-target.1",
+  "source_version": "4.5.0-target.1",
   "activation_status": "target",
   "contracts": [
     {
@@ -177,6 +177,36 @@
     },
     {
       "contract_name": "continuation_length_rule",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "conversation_contribution_plan_v1",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "conversation_session_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "conversation_statement_event_v1",
       "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
@@ -806,6 +836,36 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "npc_action_decision_request_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_conversation_response_request_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_decision_boundary_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "npc_decision_option",
       "owner_package": "@rus/contracts",
       "json_schema_or_dto": "planned/P06+",
@@ -818,6 +878,16 @@
     {
       "contract_name": "npc_decision_request",
       "owner_package": "@rus/contracts",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_decision_signal_v1",
+      "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -918,6 +988,26 @@
     {
       "contract_name": "npc_reaction_policy_snapshot",
       "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_semantic_decision_trace_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "npc_step_plan_v1",
+      "owner_package": "@rus/party-store",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",
@@ -1356,6 +1446,26 @@
       "migration_step": "planned/P06-P25"
     },
     {
+      "contract_name": "player_conversation_contribution_plan_v1",
+      "owner_package": "@rus/party-store",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "player_conversation_input_v1",
+      "owner_package": "@rus/materialization",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
       "contract_name": "portal_entity",
       "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
@@ -1688,6 +1798,16 @@
     {
       "contract_name": "scene_template",
       "owner_package": "@rus/space-map",
+      "json_schema_or_dto": "planned/P06+",
+      "ddl_table_or_value": "planned/P09+",
+      "validator": "planned/P06+",
+      "repository": "planned/P13+",
+      "tests": "planned/P06+",
+      "migration_step": "planned/P06-P25"
+    },
+    {
+      "contract_name": "social_delivery_result_v1",
+      "owner_package": "@rus/materialization",
       "json_schema_or_dto": "planned/P06+",
       "ddl_table_or_value": "planned/P09+",
       "validator": "planned/P06+",

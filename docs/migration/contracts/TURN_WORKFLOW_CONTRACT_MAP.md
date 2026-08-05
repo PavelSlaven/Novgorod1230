@@ -8,6 +8,9 @@
 | resolve_mode | raw input + available registered actions | `turn_mode_resolution` | exact code path or active player step admission |
 | turn_step_request | root/remaining intent + player-safe working projection | `turn_step_request_v1` | code-owned projector + `@rus/turn` |
 | turn_step_plan | immutable step request | strict `turn_step_plan_v1` | `turn_step_planner`; one optional structural repair |
+| player_conversation_plan | `player_conversation_input_v1` + player-safe context | strict `player_conversation_contribution_plan_v1` | `@rus/turn` conversation boundary + injected semantic model |
+| npc_conversation_boundary | committed statement + per-NPC perception + new `npc_decision_signal_v1` records | at most one `npc_decision_boundary_v1` per NPC/same-time batch | common `@rus/npc-runtime` signal validation and aggregation |
+| npc_conversation_plan | conversation boundary + subjective NPC context | strict `conversation_contribution_plan_v1` or typed action/combat handoff | `@rus/turn` boundary/replay validation + injected semantic model |
 | turn_step_execution | validated direct/check/domain step | updated working projection + fragments | code-owned execution registry and domain owners |
 | turn_step_draft | ordered applied steps | `party_turn_step_operation_batch_v1` + commit trace | `@rus/turn`; no partial commit |
 | revalidate_context | exact command/semantic draft + fresh committed state | `revalidated_turn_state` | state reader + command registry |
@@ -30,6 +33,7 @@
 - unregistered or regex-only command selection;
 - LLM-generated consequence/change set/physical write target;
 - bounded option synthesis as fallback for unknown/free-form player input;
+- bounded selector fallback from revision-14 conversation;
 - second player semantic planner or scenario-local step loop;
 - partial commit of internal semantic steps;
 - stale, expired or unsigned bounded option;
@@ -37,4 +41,6 @@
 - DB commit before visible/narration gates;
 - provider or SQL call from `@rus/turn`.
 
-Autonomous updates use the same boundary: a code-owned rule produces `party_change_set_v2`, the repository checks the base state version and atomically persists the change set, update trace, new snapshot and incremented party version.
+Revision-14 conversation is the active semantic contribution mode covered by this map. Full autonomous NPC action and combat resolution remain proposed; bounded selection remains available only for genuinely closed choices and explicitly pinned historical revisions.
+
+Deterministic autonomous updates use the same commit boundary: a code-owned rule produces `party_change_set_v2`, the repository checks the base state version and atomically persists the change set, update trace, new snapshot and incremented party version. This does not activate full autonomous NPC semantic action.

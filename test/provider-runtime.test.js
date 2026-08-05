@@ -91,6 +91,44 @@ test('turn step planner roles expose exact JSON planning and repair contracts', 
   }).config.model, 'repair-model');
 });
 
+test('conversation roles expose semantic planning and one JSON repair contract', () => {
+  const env = { DEEPSEEK_API_KEY: 'test-key' };
+  const roles = [
+    [
+      TurnRuntimeRoles.PLAYER_CONVERSATION_INTERPRETER,
+      'player_conversation_contribution_plan_v1',
+      'json_object_with_schema'
+    ],
+    [
+      TurnRuntimeRoles.PLAYER_CONVERSATION_INTERPRETER_REPAIR,
+      'player_conversation_contribution_plan_v1',
+      'json_repair'
+    ],
+    [
+      TurnRuntimeRoles.NPC_CONVERSATION_RESPONDER,
+      'conversation_contribution_plan_v1',
+      'json_object_with_schema'
+    ],
+    [
+      TurnRuntimeRoles.NPC_CONVERSATION_RESPONDER_REPAIR,
+      'conversation_contribution_plan_v1',
+      'json_repair'
+    ]
+  ];
+
+  for (const [roleId, expectedSchema, outputContractMode] of roles) {
+    const result = resolvePackageLlmExecutionConfig({
+      scope: 'turn_runtime',
+      roleId,
+      env
+    });
+    assert.equal(result.enabled, true);
+    assert.equal(result.config.expectedSchema, expectedSchema);
+    assert.equal(result.config.outputContractMode, outputContractMode);
+    assert.equal(result.config.parseJson, true);
+  }
+});
+
 test('resolveLlmExecutionConfig applies shared scope role defaults and safe overrides in order', () => {
   const result = resolveLlmExecutionConfig({
     scope: LLM_SCOPES.TURN_RUNTIME,

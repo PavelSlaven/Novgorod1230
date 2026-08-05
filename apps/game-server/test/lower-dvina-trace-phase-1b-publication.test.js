@@ -21,7 +21,7 @@ test('publication loader rejects an exact binding digest mismatch', async (t) =>
   const root = await copyPublicationClosure();
   t.after(() => rm(root, { recursive: true, force: true }));
   const path = join(root,
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v9',
     'publication-binding.json');
   const binding = JSON.parse(await readFile(path, 'utf8'));
   binding.public_metadata.title = 'Подменённое название';
@@ -74,50 +74,50 @@ test('publication root pin rejects resealed semantic mutations', async (t) => {
   }
 });
 
-test('current publication pins the exact v8 -> Phase 1A v9 -> revision 13 chain', async () => {
+test('current publication pins the exact v9 -> Phase 1A v10 -> revision 14 chain', async () => {
   const publication = await loadLowerDvinaTracePhase1BPublication();
-  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v8');
-  assert.equal(publication.manifest.revision, 8);
+  assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v9');
+  assert.equal(publication.manifest.revision, 9);
   assert.equal(publication.manifest_digest,
-    'd797da2ec7d78eabaa5ee46c0854948559d453a8127710c8c721b9e3978d5e50');
+    '58bf6d6328daa5fbbfd4c74739731741fef84dca2aeaa8042e791ff3277552e4');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
-    path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v7/manifest.json',
-    id: 'lower_dvina_trace_phase_1b_v7',
-    revision: 7,
+    path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8/manifest.json',
+    id: 'lower_dvina_trace_phase_1b_v8',
+    revision: 8,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1',
-    digest: 'a7393882ab5528fb3d78115b159f5d9486de9e91b3934eaba5cc694f87125e8d'
+    digest: 'd797da2ec7d78eabaa5ee46c0854948559d453a8127710c8c721b9e3978d5e50'
   });
   assert.equal(publication.binding.binding_id,
-    'lower_dvina_trace_phase_1b_publication_v8');
-  assert.equal(publication.binding.revision, 8);
+    'lower_dvina_trace_phase_1b_publication_v9');
+  assert.equal(publication.binding.revision, 9);
   assert.equal(publication.binding_digest,
-    'e2eed14f0cafe3335f28941b8e0471ce2e327eb84b722f304ebcc94330d45a81');
+    '693aa8990e303fafb35867a83f803964ece0ac3bc0b598a4ee2c504b15a0ba1f');
   assert.equal(publication.binding.superseded_binding_ref.digest,
-    'f9e10a38b349ab1ce4136185754acea0a2bae22f626f84ab6d8ce128eeabe4e4');
+    'e2eed14f0cafe3335f28941b8e0471ce2e327eb84b722f304ebcc94330d45a81');
   assert.equal(publication.phase_1a_manifest.package_id,
-    'lower_dvina_trace_phase_1a_v9');
-  assert.equal(publication.phase_1a_manifest.revision, 9);
+    'lower_dvina_trace_phase_1a_v10');
+  assert.equal(publication.phase_1a_manifest.revision, 10);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0');
+    '55acd22d21bbb0ddac6bb3437e558d9857a120900844a4880ded8e1fb1d3a406');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
-    'b696a7420a3331915a2c00827f455671e54b005fbe29bf6749fa90482f73a10b');
-  assert.equal(publication.definition.revision, 13);
+    'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0');
+  assert.equal(publication.definition.revision, 14);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    'cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef');
+    '25cb47dbde6922bf58734802210253254b74bb4a5d60a93a45126a74f73f3414');
   assert.equal(
     publication.binding.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v9'
+    'lower_dvina_trace_phase_1a_materialization_bindings_v10'
   );
 });
 
-test('current publication rejects tampered Phase 1A v9 or revision 13 content', async (t) => {
+test('current publication rejects tampered Phase 1A v10 or revision 14 content', async (t) => {
   for (const [relative, code] of [
     [
-      'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v9/manifest.json',
+      'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v10/manifest.json',
       'TRACE_PHASE_1B_PHASE_1A_REF_INVALID'
     ],
     [
-      'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/definition.json',
+      'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/definition.json',
       'TRACE_PHASE_1B_DEFINITION_REF_INVALID'
     ]
   ]) {
@@ -168,9 +168,9 @@ test('publication loader rejects resealed dependency and lineage mutations', asy
 
 test('publication cutover rejects mutations of exact superseded packages', async (t) => {
   for (const relative of [
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v7/manifest.json',
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v7/publication-binding.json',
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8/manifest.json'
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8/manifest.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8/publication-binding.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v9/manifest.json'
   ]) {
     const root = await copyPublicationClosure();
     t.after(() => rm(root, { recursive: true, force: true }));
@@ -328,6 +328,7 @@ test('historical recovery rejects an absent or unknown persisted identity', asyn
 async function copyPublicationClosure() {
   const root = await mkdtemp(join(tmpdir(), 'trace-phase-1b-'));
   for (const relative of [
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v9',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v6',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v5',
@@ -336,6 +337,7 @@ async function copyPublicationClosure() {
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v2',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v7',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v10/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v9/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v8/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v7/manifest.json',
@@ -346,6 +348,7 @@ async function copyPublicationClosure() {
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v2/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a/manifest.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content/definition.json',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-5-content/definition.json',
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d-v4/definition.json',
@@ -364,7 +367,7 @@ async function copyPublicationClosure() {
 async function mutateAndResealPublication(root, mutate) {
   const directory = join(
     root,
-    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8'
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v9'
   );
   const bindingPath = join(directory, 'publication-binding.json');
   const manifestPath = join(directory, 'manifest.json');

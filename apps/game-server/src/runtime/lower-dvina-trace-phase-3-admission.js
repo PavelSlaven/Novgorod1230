@@ -1,3 +1,5 @@
+import { compareGameTimestamp } from '@rus/time-events-history';
+
 export function tracePhase3PreconditionSatisfied(
   precondition,
   state,
@@ -7,7 +9,7 @@ export function tracePhase3PreconditionSatisfied(
     return state.position?.location_ref === precondition.location_ref;
   }
   if (precondition.kind === 'committed_evidence_access') {
-    return hasAccessibleBlueWool(state, contracts);
+    return accessibleBlueWoolItem(state, contracts) !== null;
   }
   if (precondition.kind === 'materialized_present_npc') {
     const actor = contracts.actors.find(({ ref }) => ref === precondition.ref);
@@ -23,6 +25,9 @@ export function tracePhase3PreconditionSatisfied(
   if (precondition.kind === 'npc_policy_state') {
     return resolveEremeyPolicyState(state) === precondition.state;
   }
+  if (precondition.kind === 'no_current_temporal_boundary_candidates') {
+    return noCurrentTemporalBoundary(state);
+  }
   if (precondition.kind === 'approved_route_body_source_state') {
     const required = contracts.routeBodyEffect?.condition_outcomes;
     const current = new Set(
@@ -32,6 +37,12 @@ export function tracePhase3PreconditionSatisfied(
       && required.every(({ from }) => current.has(from));
   }
   return false;
+}
+
+function noCurrentTemporalBoundary(state) {
+  return Array.isArray(state.temporal_boundary_candidates)
+    && state.temporal_boundary_candidates.every(({ scheduled_at: scheduledAt }) =>
+      compareGameTimestamp(scheduledAt, state.clock) > 0);
 }
 
 export function resolveEremeyPolicyState(state) {
@@ -44,10 +55,10 @@ export function resolveEremeyPolicyState(state) {
   return disclosed ? 'cooperation_enabled' : 'guarded';
 }
 
-function hasAccessibleBlueWool(state, contracts) {
+export function accessibleBlueWoolItem(state, contracts) {
   const evidenceRef = contracts.ids.evidence;
   const transition = contracts.blueWoolPickup;
-  return state.items?.some((item) =>
+  return state.items?.find((item) =>
     item.template_id === transition.item_template_ref
     && item.state?.evidence_ref === evidenceRef
     && item.placement?.holder_character_id === state.actor_id
@@ -60,5 +71,5 @@ function hasAccessibleBlueWool(state, contracts) {
       === transition.source_placement_ref
     && (state.knowledge ?? []).some((knowledge) =>
       knowledge.fact_id === evidenceRef
-      && knowledge.evidence_refs?.includes(evidenceRef)));
+      && knowledge.evidence_refs?.includes(evidenceRef))) ?? null;
 }

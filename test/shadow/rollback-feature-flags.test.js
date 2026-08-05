@@ -3,10 +3,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 import { assertModularStartupConfig, featureFlagProfile, readServerConfig } from '../../apps/game-server/src/config.js';
+import {
+  SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
+} from '../../apps/game-server/src/runtime/load-spatial-v3-bindings.js';
 
 test('spatial v3 is the sole modular route after production cutover', () => {
   const config = readServerConfig({
-    RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js',
+    RUS_SPATIAL_V3_BINDINGS_MODULE:
+      SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST: 'e'.repeat(64)
   });
   assert.equal(config.runtimeRoute, 'modular');
@@ -31,7 +35,8 @@ test('partial modular profile fails closed', () => {
     RUS_CUTOVER_STAGE: '12',
     RUS_MODULES_ENABLED: 'true',
     RUS_UI_MODULES_ENABLED: 'false',
-    RUS_SPATIAL_V3_BINDINGS_MODULE: './spatial-v3-bindings.js'
+    RUS_SPATIAL_V3_BINDINGS_MODULE:
+      SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
   });
   assert.throws(() => assertModularStartupConfig(config), (error) => error.code === 'MODULAR_FEATURE_FLAGS_INCOMPLETE');
 });

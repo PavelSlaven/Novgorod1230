@@ -16,7 +16,7 @@ fallback.
 
 ## Приоритет кодовой материализации
 
-Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC и authored/significant/hidden items из утверждённых profiles/rules. LLM ограничен active player `turn_step_plan_v1`, genuinely closed bounded decisions, персонажем игрока, аудитом и прозой. Ordinary direct action result проходит отдельный code-owned admission и получает persisted exact runtime mechanics snapshot; он не является fallback для пустого authored candidate set.
+Высший норматив разделения кода и LLM — `code_driven_world_materialization_architecture.md`; технический норматив данных — `world_base_materialization_table_requirements.md`. Код не придумывает категории и историю, но материализует конкретные G5/NPC и authored/significant/hidden items из утверждённых profiles/rules. LLM ограничен active player `turn_step_plan_v1`, active revision-14 conversation plans, genuinely closed bounded decisions, персонажем игрока, аудитом и прозой. Ordinary direct action result проходит отдельный code-owned admission и получает persisted exact runtime mechanics snapshot; он не является fallback для пустого authored candidate set.
 
 Для domain-scoped activation `item_container_materialization_v2` дополнительно
 обязательны `read_only_database_and_graph_architecture.md` и generated
@@ -63,15 +63,19 @@ exact-head evidence не активировало production; последующ
 
 ### Active и proposed semantic LLM contracts
 
-- free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13);
-- autonomous NPC → `npc_autonomous_decision_contract.md` (`proposed`);
-- conversation → `npc_conversation_mode_contract.md` (`proposed`);
-- combat/NPC triggers → `npc_combat_and_trigger_contract.md` (`proposed`).
+- free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13+);
+- autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`proposed`);
+- conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
+- combat resolution → `npc_combat_and_trigger_contract.md` (`proposed`).
 
-Active player contract доступен в default retrieval и является единственной
-semantic boundary свободной заявки игрока после exact fast path. Три NPC
-документа доступны только при явном retrieval с `--statuses proposed`, не
-меняют production semantics и активируются только собственным code cutover.
+Active player contract остаётся единственной semantic boundary свободной
+заявки игрока после exact fast path. Revision 14 дополнительно активирует
+conversation path: общие `npc_decision_signal_v1` и
+`npc_decision_boundary_v1`, player conversation contribution и ровно один
+semantic responder для одного NPC/same-time batch. Полные autonomous и combat
+контракты остаются proposed; conversation может только передать combat handoff.
+Historical bounded Phase 3/4 доступен исключительно по явному revision pin и
+не является production fallback.
 
 Дополнительные правила навигации:
 
@@ -111,10 +115,11 @@ semantic boundary свободной заявки игрока после exact 
 ### Для LLM-архитектуры, промтов и работы с источниками
 
 1. `turn_step_llm_contract.md` — для свободной заявки игрока и player semantic boundary
-2. `information_sources_llm_prompts.md`
-3. `llm_agent_prompt_templates.md`
-4. `world_generation_and_turns.txt`
-5. `interface_ux.md`
+2. `npc_conversation_mode_contract.md` — для active revision-14 conversation path
+3. `information_sources_llm_prompts.md`
+4. `llm_agent_prompt_templates.md`
+5. `world_generation_and_turns.txt`
+6. `interface_ux.md`
 
 ## 3. Карта документов
 
@@ -125,6 +130,7 @@ semantic boundary свободной заявки игрока после exact 
 | `spatial_architecture_standard_g0_g6.md` | Главный production v4.2.0: G0–G6, topology, movement, materialization, player projection, migration и release boundary. | При проектировании пространственной модели, contracts, DDL/migration plan и проверке sole-owner production boundary. |
 | `temporal_world_and_interruptible_activities.md` | Active production Temporal World v4 amendment: exact `GameTimestamp`, interruptible activities, event-driven boundaries, domain/NPC/carrier/remote updates, persistence и post-commit narration. | При любой задаче времени, activity/traversal timing, schedules, same-time cascades, environment, carrier clocks, catch-up или propagation; default active-only retrieval обязан находить документ. |
 | `turn_step_llm_contract.md` | Active strict contract свободной заявки игрока: exact fast path, player-safe request, `turn_step_plan_v1`, working projection, direct/check/domain execution, one repair и atomic commit. NPC semantic modes не активирует. | При изменении player input, turn-step schemas/prompts, semantic loop, ordinary direct action results, continuation и commit boundary. |
+| `npc_conversation_mode_contract.md` | Active revision-14 contract разговора: player/NPC contribution plans, единые NPC signals/boundaries, фактическая аудитория, social delivery и combat handoff. | При изменении Phase 3/4 conversation, responder boundary, listeners/witnesses, conversation knowledge/memory или promises. |
 | `world_generation_and_turns.txt` | Production v3: G0–G6/position, bounded preparation/materialization и active player turn-step boundary; archived v2 источник сохранён для migration/rollback traceability. | При проектировании start/materialization/slots/expansion и проверке active v3/player-turn boundary. |
 | `player_character_generation.txt` | Правила создания персонажа игрока как человека, встроенного в эпоху, место, статус, тело, знания, имущество, связи и стартовую сцену. | При создании нового персонажа, интерпретации заявки игрока, проверке стартового статуса, биографии, навыков, имущества, связей и причин нахождения в сцене. |
 | `character_parameters.txt` | Базовая механика характеристик, навыков, бонусов, состояний, тела и проверок. Фиксирует формулу d20, диапазоны характеристик, здоровье, сытость, бодрость, активные состояния и влияние тела. | При любой проверке, расчёте бонусов, изменении состояния, создании персонажа/NPC, применении штрафов от голода, усталости, ран, болезни и иных состояний. |
@@ -142,7 +148,7 @@ semantic boundary свободной заявки игрока после exact 
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
-| `llm_agent_prompt_templates.md` | Active player planner/repair pipeline и шаблоны разрешённых LLM-ролей. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении turn-step planner, LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
+| `llm_agent_prompt_templates.md` | Active player planner/repair и revision-14 conversation roles. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении turn-step/conversation LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
 
 ## 4. Как выбирать нужный документ по задаче
 
@@ -159,6 +165,7 @@ semantic boundary свободной заявки игрока после exact 
 | Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |
 | Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |
 | Определить новую реакцию или действие NPC | `temporal_world_and_interruptible_activities.md`, раздел 15 | `npc_generation_profiles.txt`, `llm_agent_prompt_templates.md`, профильные action/activity/movement/item/conflict contracts |
+| Обработать разговор Phase 3/4, listeners, witnesses, social delivery или promise | `npc_conversation_mode_contract.md` | `temporal_world_and_interruptible_activities.md`, `packages/turn/MODULE.md`, `docs/pipelines/turn.md` |
 | Обработать физический конфликт, угрозу, удар, борьбу, стрельбу, защиту, бегство | `combat_system.md` | `weapons_and_armor.txt`, `character_parameters.txt`, `character_inventory_equipment.txt` |
 | Проверить оружие, броню, щит, опасность, защиту, право ношения и социальный риск | `weapons_and_armor.txt` | `combat_system.md`, `character_inventory_equipment.txt`, `items_and_property.txt` |
 | Создать исторический фон, слух, войну, власть, князя, фазу события | `historical_events_and_figures.txt` | `world_regions.txt`, `time_system.txt`, `world_generation_and_turns.txt` |

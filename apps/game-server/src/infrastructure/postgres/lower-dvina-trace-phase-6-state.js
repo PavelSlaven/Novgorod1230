@@ -1,9 +1,12 @@
 import { commitPhase2BodyState } from
   './lower-dvina-trace-phase-2-state.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
 
 export function nextPhase6State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest }) {
   const next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
   const carry = factual.consequence.carry;
   const intent = carry.intent;
   const terminal = intent.execution_after.status === 'completed';
@@ -83,7 +86,7 @@ export function nextPhase6State({ state, factual, nextVersion, turnNumber,
     visible_package: null,
     change_set_id: changeSetId
   };
-  return next;
+  return assertSharedSemanticSnapshotSafe(next);
 }
 
 function applyTemporalNpcWrites(next, temporalResult) {

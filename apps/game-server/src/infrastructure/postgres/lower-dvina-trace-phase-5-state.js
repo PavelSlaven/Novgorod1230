@@ -1,9 +1,12 @@
 import { applyTracePhase5ResourceTransitions } from
   '../../runtime/lower-dvina-trace-phase-5-resource-transitions.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
 
 export function nextPhase5State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts }) {
   const next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
   const treatment = factual.consequence.treatment;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = {
@@ -158,7 +161,7 @@ export function nextPhase5State({ state, factual, nextVersion, turnNumber,
     visible_package: null,
     change_set_id: changeSetId
   };
-  return next;
+  return assertSharedSemanticSnapshotSafe(next);
 }
 
 function bandage(state, contracts) {

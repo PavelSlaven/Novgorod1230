@@ -1,7 +1,7 @@
 {
   "source": "data/knowledge-source/corpus/DOCUMENTS/spatial_architecture_standard_g0_g6.md",
   "amendment_source": "data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
-  "source_version": "4.4.0-target.1",
+  "source_version": "4.5.0-target.1",
   "errors": [
     {
       "error_code": "normative_contract_conflict",

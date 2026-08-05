@@ -676,7 +676,7 @@ critical
 ```json
 {
   "schema": "npc_decision_signal_v1",
-  "signal_id": "decision-signal:event-17:npc-ratsha",
+  "signal_id": "decision-signal:world_event:event-17:npc-ratsha:environment",
   "occurred_at": {
     "whole_minutes": "620",
     "subminute_numerator": "0",
@@ -709,7 +709,7 @@ critical
       "entity_id": "combat-exchange-4"
     }
   ],
-  "idempotency_key": "decision-signal:event-17:npc-ratsha"
+  "idempotency_key": "decision-signal:world_event:event-17:npc-ratsha:environment"
 }
 ```
 
@@ -718,6 +718,8 @@ critical
 - `category` — только одна из пяти категорий;
 - `significance` — только `material` или `critical`;
 - один signal относится к одному NPC;
+- identity включает kind/id factual event, NPC и category, поэтому одно
+  событие может породить несколько категорий для одного NPC без collision;
 - `source_event_ref` указывает на factual event;
 - при `perception_required: true` обязателен matching perceived result;
 - `not_perceived` не создаёт resolved signal;
@@ -976,7 +978,7 @@ LLM не вызывается.
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:combat-7:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:batch-18:npc-ratsha",
   "decision_mode": "combat",
   "scheduled_at": {
     "whole_minutes": "620",
@@ -1009,7 +1011,7 @@ LLM не вызывается.
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:combat-7:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
 }
 ```
 
@@ -1017,6 +1019,10 @@ LLM не вызывается.
 
 - `resolution_class` остаётся `reaction_decision`;
 - `decision_mode` определяет профиль LLM: autonomous, conversation или combat;
+- `decision_mode` является свойством boundary и не входит в `boundary_id`,
+  `idempotency_key` или другую identity;
+- один NPC имеет не более одной aggregated boundary и одного LLM-вызова
+  на один fully resolved same-time batch суммарно по всем режимам;
 - одна boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готовое решение;
 - повторная обработка возвращает persisted trace;
@@ -1293,7 +1299,7 @@ Risk posture влияет только через approved combat execution prof
   "persistence": "until_decision_boundary",
   "created_from_boundary_ref": {
     "entity_kind": "npc_decision_boundary",
-    "entity_id": "npc-decision:combat-7:batch-18:ratsha"
+    "entity_id": "npc-decision:batch-18:ratsha"
   },
   "state_version": "1",
   "status": "active"
@@ -1772,7 +1778,7 @@ LLM не объявляет бой завершённым напрямую.
 {
   "schema": "npc_combat_decision_request_v1",
   "request_id": "npc-combat-decision-42",
-  "boundary_id": "npc-decision:combat-7:batch-18:ratsha",
+  "boundary_id": "npc-decision:batch-18:ratsha",
   "state_version": "17",
   "combat_id": "combat:party-1:7",
   "exchange_ordinal": 4,
@@ -1880,7 +1886,7 @@ NPC получает пригодное для решения qualitative сос
 {
   "schema": "npc_combat_intent_plan_v1",
   "request_id": "npc-combat-decision-42",
-  "boundary_id": "npc-decision:combat-7:batch-18:ratsha",
+  "boundary_id": "npc-decision:batch-18:ratsha",
   "state_version": "17",
   "combat_id": "combat:party-1:7",
   "npc_ref": {
@@ -2897,4 +2903,54 @@ NPC LLM выбирает одно устойчивое combat intent.
 
 Новый LLM-вызов возможен только после следующего
 edge-triggered significant transition.
+```
+
+# Приложение A. Machine contract specifications
+
+```yaml
+contract_name: npc_decision_signal_v1
+storage: party_runtime_append_only
+identity:
+  - signal_id
+fields:
+  schema: required enum[npc_decision_signal_v1]
+  signal_id: required stable_id
+  occurred_at: required game_timestamp
+  category: required enum[self, others, environment, objective, communication]
+  significance: required enum[material, critical]
+  source_event_ref: required entity_ref
+  subject_ref: required entity_ref
+  scope_refs: required relation_set[entity_ref]
+  perception_required: required boolean
+  source_perception_ref: optional entity_ref
+  causal_parent_refs: required relation_set[entity_ref]
+  idempotency_key: required stable_id
+invariants:
+  - The signal belongs to exactly one NPC and contains no ready action or hidden objective truth.
+  - A perception-required signal has one matching perceived result; a non-perception signal carries null source_perception_ref.
+  - signal_id and idempotency_key are the same deterministic identity derived from the factual cause and NPC.
+```
+
+```yaml
+contract_name: npc_decision_boundary_v1
+storage: party_runtime_append_only
+identity:
+  - boundary_id
+fields:
+  schema: required enum[npc_decision_boundary_v1]
+  boundary_id: required stable_id
+  decision_mode: required enum[autonomous, conversation, combat]
+  scheduled_at: required game_timestamp
+  npc_ref: required entity_ref
+  same_time_batch_ref: required entity_ref
+  significance: required enum[material, critical]
+  categories: required nonempty_relation_set[enum[self, others, environment, objective, communication]]
+  signal_refs: required nonempty_relation_set[entity_ref]
+  state_version: required positive_decimal_string
+  resolution_class: required enum[reaction_decision]
+  idempotency_key: required stable_id
+invariants:
+  - One boundary aggregates all new signals for one NPC in one same-time batch in canonical category order.
+  - The boundary contains no ready decision and always uses the shared reaction_decision resolution class.
+  - Signal consumption is committed only with the decision result or a terminal deterministic outcome.
 ```

@@ -18,7 +18,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12, 13].includes(bundle.definition_revision)) {
+  if (![9, 10, 11, 12, 13, 14].includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
   const activities = bundle.activity_check_consequence_profiles.activity_profiles;
@@ -120,6 +120,23 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'transition_template_id',
     'trace_ld_v1_transition_blue_wool_pickup'
   );
+  const conversationBindings = bundle.definition_revision === 14
+    ? bundle.conversation_semantic_bindings
+    : null;
+  const conversationSignalMappings = conversationBindings == null
+    ? null
+    : {
+        question: exact(
+          conversationBindings.signal_mappings,
+          'source_command_id',
+          'lower_dvina_trace.ask_eremey_about_wreck'
+        ),
+        evidence: exact(
+          conversationBindings.signal_mappings,
+          'source_command_id',
+          'lower_dvina_trace.show_clue_and_seek_eremey_cooperation'
+        )
+      };
   for (const activity of [movement, talk, evidenceTalk]) {
     const selected = selection(state, 'activities', activity.profile_id);
     if (!selected || selected.record_digest !== canonicalDigest(activity)) {
@@ -136,7 +153,18 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
       || disclosureMapping.decision_option_ref !== 'bounded_disclosure'
       || !npcPolicy.knowledge_and_perception_refs.includes(
         eremeyKnowledge.knowledge_scope_ref
-      )) {
+      )
+      || (conversationBindings != null && (
+        conversationBindings.legacy_bounded_production_path !== 'forbidden'
+        || conversationSignalMappings.question.target_npc_ref !== ids.eremeyRef
+        || conversationSignalMappings.evidence.target_npc_ref !== ids.eremeyRef
+        || conversationSignalMappings.question.mechanics_refs.activity_id
+          !== ids.talkActivity
+        || conversationSignalMappings.evidence.mechanics_refs.activity_id
+          !== ids.evidenceActivity
+        || conversationSignalMappings.evidence.mechanics_refs.check_id
+          !== ids.evidenceCheck
+      ))) {
     gap('TRACE_PHASE_3_APPROVED_CHAIN_INVALID');
   }
   const prepared = state.prepared_scenes?.find(
@@ -176,6 +204,10 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     sourceEndpoint, destinationEndpoint, access, capacity,
     npcPolicy, executions, statementEffects, eremeyKnowledge,
     firstMapping, disclosureMapping, blueWoolPickup,
+    conversationBindings, conversationSignalMappings,
+    conversationTimeProfiles: structuredClone(
+      bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
+    ),
     projectionText,
     campAnchor,
     actors,

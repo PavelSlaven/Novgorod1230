@@ -1,6 +1,4 @@
-import {
-  tracePhase3PreconditionSatisfied
-} from './lower-dvina-trace-phase-3-admission.js';
+import { tracePhase3PreconditionSatisfied } from './lower-dvina-trace-phase-3-admission.js';
 import {
   available,
   exact,
@@ -14,12 +12,30 @@ import {
   assertTracePhase3ConversationExecution,
   resolveTracePhase3NpcDecision
 } from './lower-dvina-trace-phase-3-npc-decision.js';
+import { resolveTracePhase3ConversationExchange } from './lower-dvina-trace-m2-conversation.js';
+import { conversationHandoffProjection } from './lower-dvina-trace-m2-conversation-handoff.js';
+import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
+  prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
+  './lower-dvina-trace-m2-conversation-player.js';
 
 export function createTracePhase3ConversationCommand({
-  contracts,
-  inputDigest,
-  evidence
+  contracts, inputDigest, evidence,
+  playerConversationModel = null,
+  npcSemanticModel = null,
+  temporalAdvanceOwner = null,
+  revalidateStateVersion = null
 }) {
+  if (contracts.conversationBindings != null) {
+    return createSemanticConversationCommand({
+      contracts,
+      inputDigest,
+      evidence,
+      playerConversationModel,
+      npcSemanticModel,
+      temporalAdvanceOwner,
+      revalidateStateVersion
+    });
+  }
   const ids = contracts.ids;
   const activity = evidence ? contracts.evidenceTalk : contracts.talk;
   const optionId = evidence ? ids.evidenceOption : ids.talkOption;
@@ -151,6 +167,127 @@ export function createTracePhase3ConversationCommand({
           testimonial_evidence_ref: evidence && success
             ? 'trace_ld_v1_evidence_eremey_words'
             : null,
+          evidence_input_ref: evidence ? ids.evidence : null,
+          objective_fact_outputs: []
+        }
+      });
+    },
+    writeTargets: phase3WriteTargets
+  };
+}
+
+function createSemanticConversationCommand({
+  contracts,
+  inputDigest,
+  evidence,
+  playerConversationModel,
+  npcSemanticModel,
+  temporalAdvanceOwner,
+  revalidateStateVersion
+}) {
+  const ids = contracts.ids;
+  const activity = evidence ? contracts.evidenceTalk : contracts.talk;
+  const optionId = evidence ? ids.evidenceOption : ids.talkOption;
+  const activityPin = contracts.activityPins[evidence ? 2 : 1];
+  const preconditions = [{
+    kind: 'committed_location',
+    location_ref: ids.campLocation
+  }, {
+    kind: 'approved_access_policy',
+    policy_ref: contracts.access.policy_id
+  }, {
+    kind: 'materialized_present_npc',
+    ref: ids.eremeyRef
+  }, { kind: 'no_current_temporal_boundary_candidates' }, ...(evidence ? [{
+    kind: 'committed_evidence_access',
+    evidence_ref: ids.evidence
+  }] : [])];
+  return {
+    command_id: `lower_dvina_trace.${optionId}`,
+    option_id: optionId,
+    label: evidence
+      ? 'Показать Еремею синюю шерсть и попросить содействия'
+      : 'Спросить Еремея о крушении',
+    target_id: contracts.actors[0].instance_id,
+    approved_record: activityPin,
+    preconditions,
+    expected_cost: {
+      kind: 'exact_time',
+      value: activity.duration_minutes
+    },
+    known_risks: evidence ? ['Еремей может остаться настороженным.'] : [],
+    reason_visible_to_actor: evidence
+      ? 'Найденная синяя шерсть доступна для предъявления.'
+      : 'Еремей находится в стане и может ответить.',
+    mode: mode('social_npc', [
+      'npc_interaction', 'knowledge_memory', 'time_progression'
+    ]),
+    matches: exactMatcher(optionId),
+    async availability(context) {
+      const state = context.committed_state ?? context.retrievedState;
+      const allowed = preconditions.every((precondition) =>
+        tracePhase3PreconditionSatisfied(precondition, state, contracts));
+      if (!allowed) return available(false, [], ['conversation_precondition_failed']);
+      if (context.action_set_evaluation === true) return available(true, [], []);
+      const playerPlan = await prepareTracePhase3PlayerConversationPlan({
+        state,
+        contracts,
+        evidence,
+        playerInput: context.playerInput,
+        inputDigest,
+        playerConversationModel,
+        revalidateStateVersion
+      });
+      const checkRequests = buildTracePhase3ConversationCheckRequests({
+        plan: playerPlan,
+        state,
+        contracts,
+        evidence
+      });
+      return {
+        ...available(true, checkRequests, []),
+        causal_stages: [buildPlayerConversationPlanStage(playerPlan)]
+      };
+    },
+    async consequence({ retrievedState: state, availability, checks, playerInput }) {
+      const playerPlan = requirePlayerConversationPlanStage(availability);
+      const checkResult = playerPlan.resolution === 'check_required'
+        ? checks.results.find(
+            ({ check_id: id }) => id === contracts.check.check_id
+          )
+        : null;
+      if (playerPlan.resolution === 'check_required' && !checkResult) {
+        fail('TRACE_PHASE_3_CHECK_RESULT_MISSING');
+      }
+      const semanticExchange = await resolveTracePhase3ConversationExchange({
+        state,
+        contracts,
+        playerInput,
+        inputDigest,
+        checkResult,
+        playerConversationModel,
+        npcSemanticModel,
+        temporalAdvanceOwner,
+        revalidateStateVersion,
+        playerPlan
+      });
+      return packageBase({
+        inputDigest,
+        duration: semanticExchange.exact_elapsed_minutes,
+        kind: 'conversation',
+        conversation: {
+          activity_ref: activity.profile_id,
+          check_result: checkResult ? structuredClone(checkResult) : null,
+          consequence_ref: checkResult
+            ? contracts.check.outcome_refs[
+                checkResult.outcome.success ? 'success' : 'failure'
+              ]
+            : null,
+          npc_ref: ids.eremeyRef,
+          npc_id: contracts.actors[0].instance_id,
+          semantic_exchange: semanticExchange,
+          ...conversationHandoffProjection(semanticExchange),
+          response_kind: semanticExchange.response_kind,
           evidence_input_ref: evidence ? ids.evidence : null,
           objective_fact_outputs: []
         }

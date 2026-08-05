@@ -2,7 +2,7 @@
 
 ## Нормативная актуализация materialization v2
 
-Шаблоны ниже применяются только в разрешённых ролях: `turn_step_planner`, `turn_step_planner_repair`, `bounded_decision`, `player_character`, `audit` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит закрытые options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; этот протокол не является fallback для свободной заявки игрока. Для player planner допустим только строгий `turn_step_request_v1` → `turn_step_plan_v1`.
+Шаблоны ниже применяются только в разрешённых ролях: `turn_step_planner`, `turn_step_planner_repair`, revision-14 player conversation interpreter и NPC conversation responder, `bounded_decision`, `player_character`, `audit` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит genuinely closed options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; этот протокол не является fallback для player/NPC semantic boundary. Для player planner допустим только строгий `turn_step_request_v1` → `turn_step_plan_v1`; conversation роли возвращают ровно один contribution plan по профильному active contract.
 
 G5, NPC, authored/significant/hidden items, containers, inventories и штатные последствия материализует код. Player step plan может предложить ordinary direct action result только в трёх разрешённых origin classes; code-owned admission проверяет его и сохраняет exact runtime mechanics snapshot. Если старый шаблон ниже поручает LLM materialization вне этой границы, такая инструкция не применяется.
 
@@ -12,6 +12,21 @@ factual package формирует код, сохраняет его атома�
 boundaries, weather transitions, consequences или отсутствующие options.
 Профильный active-норматив:
 `temporal_world_and_interruptible_activities.md`.
+
+Revision-14 conversation prompts получают только субъективно доступный
+контекст соответствующего actor. Они не получают private knowledge другого
+NPC, не решают за слушателей, не объявляют factual outcome social check и не
+разрешают combat. Combat contribution заканчивается типизированным handoff.
+Обычный listener/witness не требует responder-вызова: восприятие и received
+knowledge принадлежат коду. Канонические role/payload ограничения находятся в
+active `npc_conversation_mode_contract.md`, разделы 5.6–5.7; этот общий файл не
+создаёт второй расходящийся conversation prompt.
+
+Lower Dvina Trace revision 14 передаёт NPC responder пустые списки допустимых
+attribute/skill refs, поэтому его contribution обязан использовать
+`resolution = automatic` и `check = null`. Общая conversation schema допускает
+NPC `check_required` только в профиле, где code-owned check owner явно
+зарегистрировал непустой scope; prompt не может расширить этот scope.
 
 ## Назначение документа
 

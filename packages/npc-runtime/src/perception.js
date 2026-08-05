@@ -20,6 +20,28 @@ const PERCEPTION_RESULTS = new Set([
   'misinterpreted'
 ]);
 
+const CONVERSATION_PERCEPTION_INPUT_KEYS = [
+  'listener_ref',
+  'perception_result_ref',
+  'acoustic_path',
+  'distance_band',
+  'ambient_noise',
+  'hearing_capability',
+  'attention',
+  'language_comprehension',
+  'speaker_recognition'
+];
+
+const CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS = [
+  'observer_ref',
+  'perception_result_ref',
+  'visual_path',
+  'distance_band',
+  'ambient_visibility',
+  'visual_capability',
+  'attention'
+];
+
 const orderedRefs = (values) => [...values].sort(
   (left, right) => refKey(left).localeCompare(refKey(right), 'en')
 );
@@ -297,5 +319,146 @@ export function proposeNpcPerception({
       path_state: pathState,
       attended: attentionPermits
     }
+  });
+}
+
+export function resolveConversationListenerPerception(input = {}) {
+  if (!plainRecord(input)
+      || Object.keys(input).length !== CONVERSATION_PERCEPTION_INPUT_KEYS.length
+      || CONVERSATION_PERCEPTION_INPUT_KEYS.some(
+        (key) => !Object.hasOwn(input, key)
+      )
+      || !exactConversationRef(
+        input.listener_ref,
+        input.listener_ref?.entity_kind
+      )
+      || !['npc', 'player_character'].includes(input.listener_ref.entity_kind)
+      || !exactConversationRef(
+        input.perception_result_ref,
+        'perception_result'
+      )
+      || !['clear', 'degraded', 'blocked'].includes(input.acoustic_path)
+      || !['conversation', 'nearby', 'distant'].includes(input.distance_band)
+      || !['quiet', 'ordinary', 'loud', 'overwhelming']
+        .includes(input.ambient_noise)
+      || !['full', 'partial', 'none'].includes(input.hearing_capability)
+      || !['available', 'distracted', 'unavailable'].includes(input.attention)
+      || !['full', 'partial', 'none'].includes(input.language_comprehension)
+      || !['recognized', 'unidentified', 'misinterpreted']
+        .includes(input.speaker_recognition)) {
+    throw Object.assign(new TypeError(
+      'Conversation listener perception requires one exact factual snapshot.'
+    ), { code: 'CONVERSATION_PERCEPTION_INPUT_INVALID' });
+  }
+
+  const unheard = input.acoustic_path === 'blocked'
+    || input.distance_band === 'distant'
+    || input.ambient_noise === 'overwhelming'
+    || input.hearing_capability === 'none'
+    || input.attention === 'unavailable';
+  if (unheard) {
+    return conversationPerceptionResult(
+      input,
+      'not_perceived',
+      'none',
+      false
+    );
+  }
+
+  const degraded = input.acoustic_path === 'degraded'
+    || input.distance_band === 'nearby'
+    || input.ambient_noise === 'loud'
+    || input.hearing_capability === 'partial'
+    || input.attention === 'distracted';
+  const comprehension = input.language_comprehension === 'none'
+    ? 'none'
+    : degraded || input.language_comprehension === 'partial'
+      ? 'partial'
+      : 'full';
+  const perception = input.speaker_recognition === 'misinterpreted'
+    ? 'misinterpreted'
+    : degraded
+      ? 'perceived_partial'
+      : input.speaker_recognition === 'unidentified'
+        ? 'perceived_unidentified'
+        : 'recognized';
+  const speakerRecognized = input.speaker_recognition === 'recognized';
+  return conversationPerceptionResult(
+    input,
+    perception,
+    comprehension,
+    speakerRecognized
+  );
+}
+
+export function resolveConversationVisualPerception(input = {}) {
+  if (!plainRecord(input)
+      || Object.keys(input).length
+        !== CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS.length
+      || CONVERSATION_VISUAL_PERCEPTION_INPUT_KEYS.some(
+        (key) => !Object.hasOwn(input, key)
+      )
+      || !exactConversationRef(input.observer_ref, 'npc')
+      || !exactConversationRef(
+        input.perception_result_ref,
+        'perception_result'
+      )
+      || !['clear', 'degraded', 'blocked'].includes(input.visual_path)
+      || !['conversation', 'nearby', 'distant'].includes(input.distance_band)
+      || !['clear', 'degraded', 'blocked']
+        .includes(input.ambient_visibility)
+      || !['full', 'partial', 'none'].includes(input.visual_capability)
+      || !['available', 'distracted', 'unavailable'].includes(input.attention)) {
+    throw Object.assign(new TypeError(
+      'Conversation visual perception requires one exact factual snapshot.'
+    ), { code: 'CONVERSATION_VISUAL_PERCEPTION_INPUT_INVALID' });
+  }
+
+  const notPerceived = input.visual_path === 'blocked'
+    || input.distance_band === 'distant'
+    || input.ambient_visibility === 'blocked'
+    || input.visual_capability === 'none'
+    || input.attention === 'unavailable';
+  const partial = !notPerceived && (
+    input.visual_path === 'degraded'
+      || input.distance_band === 'nearby'
+      || input.ambient_visibility === 'degraded'
+      || input.visual_capability === 'partial'
+      || input.attention === 'distracted'
+  );
+  return freeze({
+    observer_ref: structuredClone(input.observer_ref),
+    perception_result_ref: structuredClone(input.perception_result_ref),
+    perception_result: notPerceived
+      ? 'not_perceived'
+      : partial ? 'perceived_partial' : 'recognized'
+  });
+}
+
+function plainRecord(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function exactConversationRef(value, kind) {
+  return plainRecord(value)
+    && Object.keys(value).length === 2
+    && value.entity_kind === kind
+    && typeof value.entity_id === 'string'
+    && value.entity_id.trim() === value.entity_id
+    && value.entity_id.length > 0;
+}
+
+function conversationPerceptionResult(
+  input,
+  perceptionResult,
+  comprehension,
+  speakerRecognized
+) {
+  return freeze({
+    listener_ref: structuredClone(input.listener_ref),
+    perception_result_ref: structuredClone(input.perception_result_ref),
+    perception_result: perceptionResult,
+    comprehension,
+    speaker_recognized: speakerRecognized
   });
 }

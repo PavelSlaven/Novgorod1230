@@ -89,7 +89,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (bundle.definition_revision !== 13) return commands;
+  if (![13, 14].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const byCommand = new Map();
   if (!Array.isArray(records) || records.length !== Object.keys(EXPECTED).length) {
@@ -185,7 +185,7 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
 function gap() {
   throw serverError(
     'TRACE_TURN_STEP_BINDING_INVALID',
-    'Revision 13 requires the exact approved semantic command bindings.',
+    'The active semantic revisions require exact approved command bindings.',
     { status: 409 }
   );
 }

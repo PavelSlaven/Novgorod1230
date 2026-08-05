@@ -107,8 +107,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     });
     const temporalSourceProof =
       await loadTracePhase2TemporalSourceProof(partyPool, partyId);
+    let semanticDecisionTraces = [];
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
-      await assertPhase3NormalizedRows(partyPool, payload, row);
+      semanticDecisionTraces =
+        await assertPhase3NormalizedRows(partyPool, payload, row);
       await assertPhase4NormalizedRows(partyPool, payload, row);
       await assertPhase5NormalizedRows(partyPool, payload, row);
       await assertPhase6NormalizedRows(partyPool, payload, row);
@@ -116,8 +118,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }
+    const loadedPayload = structuredClone(payload);
+    if (semanticDecisionTraces.length > 0) {
+      // Private request/plan state is hydrated only from its normalized owner.
+      // Every snapshot builder strips this transient replay seam before write.
+      loadedPayload.npc_semantic_decision_traces =
+        structuredClone(semanticDecisionTraces);
+    }
     return {
-      ...structuredClone(payload),
+      ...loadedPayload,
       world_identity: {
         world_revision_id: row.world_revision_id,
         world_catalog_digest: row.world_catalog_digest

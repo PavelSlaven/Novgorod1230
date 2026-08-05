@@ -11,18 +11,16 @@ import {
   assertWorldReleaseReadiness,
   withRuntimeCatalogActivationLock
 } from '../infrastructure/postgres/spatial-v3-production-readiness.js';
+import { createPostgresPools, probePostgresPool } from
+  '../infrastructure/postgres/pools.js';
 import {
-  createPostgresPools,
-  probePostgresPool
-} from '../infrastructure/postgres/pools.js';
-import {
-  loadSpatialV3RuntimeBindings,
+  loadSpatialV3RuntimeBindings, resolveSpatialV3ProductionBindingsModule,
   validateSpatialV3RuntimeBindings
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js';
 export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v3';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v4';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
@@ -48,22 +46,23 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     '9f574d2782cdbaeeba190d8237fe38c26bddd65775f060749079d3d0163ef32d',
   party_runtime_catalog_target_fingerprint:
     '47cb21b39db8be7336d10533ed319fe314f5bda65d850f1297c8321de6c9d165',
-  target_migration_count: 15,
+  target_migration_count: SPATIAL_V3_TARGET_MIGRATIONS.length,
   target_migration_chain_digest:
-    '1e075ca34cda4c00fe7d9acc051c8c902785d2adcf604e695f70d18167d11d8f',
+    SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v2',
+  rollback_source_release_id: 'spatial-v3-production-v3',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
-      'novgorod_spatial_v3_production_v2_candidate_001',
+      'novgorod_spatial_v3_production_v3_candidate_001',
     world_catalog_digest:
-      'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+      '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
     world_catalog_manifest_sha256:
-      '3ed17f7d540f5707a8b72392d7e4d5736be947048673ff5135d5c07aacbb951a'
+      '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
   }),
   boundary_crossing_capability: 'ready_for_runtime_acceptance',
+  npc_conversation_capability: 'ready_for_runtime_acceptance',
   release_status: 'validated_candidate_not_active',
   production_activation: false,
   runtime_selectable_in_canonical_production: false,
@@ -135,8 +134,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           release
         )
       : await loadSpatialV3RuntimeBindings(
-          config.spatialV3BindingsModule
-            ?? env.RUS_SPATIAL_V3_BINDINGS_MODULE,
+          resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({
@@ -231,6 +229,8 @@ export async function createSpatialV3ProductionCompositionRoot({
         authoritative_reads: 'spatial_v3_only',
         authoritative_writes: 'spatial_v3_only',
         runtime_fallback: 'forbidden',
+        npc_conversation_capability:
+          SPATIAL_V3_PRODUCTION_RELEASE.npc_conversation_capability,
         rollback_source_release_id:
           SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
         rollback_runtime_selectable: false,

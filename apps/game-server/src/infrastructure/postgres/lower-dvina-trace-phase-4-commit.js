@@ -11,16 +11,27 @@ import {
 import { serverError } from '../../errors.js';
 import { mergeLowerDvinaTraceTurnStepWrites, prepareLowerDvinaTraceTurnStepPersistence } from './lower-dvina-trace-turn-step-persistence.js';
 import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn-step-idempotency.js';
+import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dvina-trace-committed-revision.js';
+import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
+import { resumedPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
   if (!factual?.consequence?.phase4_kind) throw fail('TRACE_PHASE_4_WRITE_PLAN_INVALID');
   const state = await loadState(partyId, { presentationIdempotencyKey: factual.player_input.idempotency_key });
   assertPhase2CurrentStateVersion({ writePlan, factual, state });
+  const scenarioRevision = committedTraceScenarioDefinitionRevision(state);
+  const semanticContext = phase4SemanticCommitContext({
+    writePlan,
+    factual,
+    scenarioRevision
+  });
   const nextVersion = state.party_state.state_version + 1, turnNumber = state.party_state.turn_number + 1;
   const changeSetId = `change:${partyId}:trace-phase4:${turnNumber}`, idemId = `idem:${partyId}:${canonicalDigest(factual.player_input.idempotency_key).slice(0, 20)}`;
   let next = nextPhase4State({ state, factual, nextVersion, turnNumber,
-    inputDigest, changeSetId, contracts: phase4Contracts });
+    inputDigest, changeSetId, contracts: phase4Contracts,
+    rootTurnId: semanticContext?.rootTurnId,
+    workingRevision: semanticContext?.workingRevision });
   const builder = createCombinedWritePlanBuilder({ verifyApproval: async (candidate) => ({ ok: candidate.party_id === partyId && candidate.operation_kind === 'trace_phase_4_turn' }) });
   const context = writePlan.write_targets.find((entry) => entry.target === 'party_visible_context_package')?.value;
   if (!context) throw fail('TRACE_PHASE_4_VISIBLE_CONTEXT_MISSING');
@@ -35,12 +46,27 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     turnNumber, nextVersion });
   const writes = mergeLowerDvinaTraceTurnStepWrites(phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     pendingScreen, nextVersion, turnNumber, changeSetId, idemId,
-    contracts: phase4Contracts }), turnStep.writes);
+    contracts: phase4Contracts, scenarioRevision,
+    rootTurnId: semanticContext?.rootTurnId,
+    workingRevision: semanticContext?.workingRevision }), turnStep.writes);
+  const resumedActivity = resumedPendingConversationActivity(
+    state, semanticContext?.semanticExchange
+  );
   const expectedStateVersions = [
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
       state.party_state.session_state_version),
     expected('party_clocks', partyId, state.party_state.clock_state_version),
+    ...expectedSemanticConversationSession(
+      state,
+      semanticContext?.semanticExchange
+    ),
+    ...(resumedActivity == null
+      ? [] : [expected(
+          'party_timed_activity_executions',
+          resumedActivity.activity_execution_id,
+          resumedActivity.activity_state_version
+        )]),
     ...(factual.body_update?.applied === true ? [expected(
       'party_actor_body_states', `player_character:${state.actor_id}`,
       state.party_state.body_state_version
@@ -69,7 +95,7 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     semanticDependencyPins: { activity: phase4Contracts.activityPins },
     visibleDependencyPins: visibleEnvelope.dependency_pins
   });
-  const built = await builder.build({
+  const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase4:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
@@ -100,13 +126,88 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     commit_rechecks: phase4CommitRechecks({
       partyId, state, factual, phase4Contracts, inputDigest
     })
+  };
+  const integratedInput = integrateConversationTemporalWrites({
+    input: baseWritePlanInput,
+    semanticExchange: semanticContext?.semanticExchange,
+    fail: (error) => {
+      throw fail('TRACE_PHASE_4_TEMPORAL_WRITE_CONFLICT', error);
+    }
   });
+  const built = await builder.build(integratedInput);
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({ plan: built.plan, created_at_turn: turnNumber });
   if (!committed.ok) throw fail('TRACE_PHASE_4_COMMIT_FAILED', committed.error);
   return { ...committed, state_version: nextVersion, turn_number: turnNumber, package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest };
 }
 function fail(code, details = null) { return serverError(code, 'Phase 4 factual commit failed closed.', { status: 409, details }); }
+
+export function phase4SemanticCommitContext({
+  writePlan,
+  factual,
+  scenarioRevision
+}) {
+  const isNegotiation =
+    factual.consequence.phase4_kind === 'negotiation';
+  const semanticExchange = isNegotiation
+    ? factual.consequence.negotiation?.semantic_exchange
+    : null;
+  if (scenarioRevision !== 14) {
+    if (semanticExchange != null) {
+      throw fail('TRACE_M2_PHASE_4_SEMANTIC_REVISION_INVALID');
+    }
+    return null;
+  }
+  if (!isNegotiation) return null;
+  const envelope = writePlan.turn_step_commit;
+  const exactFastPath = envelope == null
+    && writePlan.command_trace?.decision_protocol
+      === 'code_exact_fast_path_v1';
+  if (semanticExchange == null) {
+    throw fail('TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID');
+  }
+  if (exactFastPath) {
+    const rootTurnId = writePlan.turn_id;
+    if (typeof rootTurnId !== 'string'
+        || rootTurnId.length === 0
+        || rootTurnId !== factual.mode_resolution.turn_id) {
+      throw fail('TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID');
+    }
+    return { rootTurnId, workingRevision: 0, semanticExchange };
+  }
+  const rootTurnId = envelope?.root_turn_id;
+  const workingRevision = envelope?.loop_trace?.working_revision;
+  if (writePlan.command_trace?.decision_protocol !== 'turn_step_plan_v1'
+      || envelope?.schema !== 'turn_step_commit_envelope_v1'
+      || typeof rootTurnId !== 'string'
+      || rootTurnId.length === 0
+      || rootTurnId !== factual.mode_resolution.turn_id
+      || envelope.loop_trace?.root_turn_id !== rootTurnId
+      || !Number.isSafeInteger(workingRevision)
+      || workingRevision < 0) {
+    throw fail('TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID');
+  }
+  return { rootTurnId, workingRevision, semanticExchange };
+}
+
+function expectedSemanticConversationSession(state, semanticExchange) {
+  if (semanticExchange == null) return [];
+  const conversationId = semanticExchange.decision_request?.conversation_id
+    ?? semanticExchange.exchange?.contributions?.[0]?.conversation_id;
+  const existing = (state.conversation_sessions ?? []).find(
+    ({ conversation_id: id }) => id === conversationId
+  );
+  if (existing == null) return [];
+  if (!Number.isSafeInteger(existing.state_version)
+      || existing.state_version < 1) {
+    throw fail('TRACE_M2_CONVERSATION_SESSION_VERSION_INVALID');
+  }
+  return [expected(
+    'party_conversation_sessions',
+    conversationId,
+    existing.state_version
+  )];
+}
 
 function expectedChangedConditions(state, nextBodyState) {
   const changed = new Set((nextBodyState.active_conditions ?? [])

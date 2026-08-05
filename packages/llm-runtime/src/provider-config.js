@@ -1,3 +1,6 @@
+import { conversationTurnRoleDefaults } from
+  './conversation-role-defaults.js';
+
 const DEFAULT_DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
 
@@ -20,7 +23,13 @@ export const TurnRuntimeRoles = Object.freeze({
   AUDITOR: 'auditor',
   FORMAT_REPAIRER: 'format_repairer',
   TURN_STEP_PLANNER: 'turn_step_planner',
-  TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair'
+  TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
+  PLAYER_CONVERSATION_INTERPRETER: 'player_conversation_interpreter',
+  PLAYER_CONVERSATION_INTERPRETER_REPAIR:
+    'player_conversation_interpreter_format_repair',
+  NPC_CONVERSATION_RESPONDER: 'npc_conversation_responder',
+  NPC_CONVERSATION_RESPONDER_REPAIR:
+    'npc_conversation_responder_format_repair'
 });
 
 export const NewGameVisibleContextRoles = Object.freeze({
@@ -254,7 +263,8 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     hardInputLimitTokens: 100000,
     reserveOutputTokens: 4000,
     reserveRepairTokens: 4000
-  }
+  },
+  ...conversationTurnRoleDefaults(OutputContractModes)
 });
 
 const LEGACY_WORLD_ROLE_DEFAULTS = Object.freeze({

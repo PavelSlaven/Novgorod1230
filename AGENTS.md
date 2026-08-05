@@ -139,7 +139,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 - LLM не пишет непосредственно в базу данных;
 - сохранённые экземпляры не материализуются повторно без явной migration или repair-процедуры.
 
-Контракты autonomous NPC, conversation и combat остаются `proposed` до отдельного code cutover и не расширяют активную player semantic boundary.
+Conversation активен только для Lower Dvina Trace revision 14: meaningful NPC response проходит через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1` с `decision_mode = conversation` и общий code-owned execution/commit. Full autonomous NPC action и combat resolution остаются `proposed` и не расширяют активную player semantic boundary; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback revision-14 conversation.
 
 ## 7. Тестирование
 

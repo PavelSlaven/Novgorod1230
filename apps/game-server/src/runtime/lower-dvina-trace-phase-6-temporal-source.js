@@ -10,9 +10,12 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
     }
     return { ...registration,
       resolve(candidate, context) {
-        return validatePhase6TemporalSourceResolution({ candidate,
-          projection: context.projection,
-          resolution: registration.resolve(candidate, context) });
+        const resolution = registration.resolve(candidate, context);
+        return context.projection.conversation_state == null
+          ? validatePhase6TemporalSourceResolution({ candidate,
+              projection: context.projection, resolution })
+          : validateConversationTemporalSourceResolution({ candidate,
+              projection: context.projection, resolution });
       } };
   });
 }
@@ -20,16 +23,42 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
 export function validatePhase6TemporalSourceResolution({ candidate,
   projection, resolution }) {
   const nextProjection = resolution?.state_projection ?? projection;
-  const before = projection.phase6_state;
-  const after = nextProjection.phase6_state;
+  return validateNpcStateProjection({ candidate, resolution, projection,
+    nextProjection, before: projection.phase6_state,
+    after: nextProjection.phase6_state,
+    invalidCode: 'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_INVALID',
+    unsupportedCode: 'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED',
+    writeGapCode: 'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP' });
+}
+
+export function validateConversationTemporalSourceResolution({ candidate,
+  projection, resolution }) {
+  const nextProjection = resolution?.state_projection ?? projection;
+  if ((resolution?.proposals ?? []).some((proposal) =>
+    (proposal.expected_state_versions ?? []).some((entry) =>
+      entry.target_table === 'party_npcs'))) {
+    fail(candidate, 'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP');
+  }
+  return validateNpcStateProjection({ candidate, resolution, projection,
+    nextProjection,
+    before: projection.conversation_state?.world_state,
+    after: nextProjection.conversation_state?.world_state,
+    invalidCode: 'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_INVALID',
+    unsupportedCode:
+      'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED',
+    writeGapCode: 'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP' });
+}
+
+function validateNpcStateProjection({ candidate, resolution, before, after,
+  invalidCode, unsupportedCode, writeGapCode }) {
   if (before?.party_id !== after?.party_id) fail(candidate,
-    'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_INVALID');
+    invalidCode);
   const beforeRest = structuredClone(before);
   const afterRest = structuredClone(after);
   delete beforeRest.npcs;
   delete afterRest.npcs;
   if (canonicalDigest(beforeRest) !== canonicalDigest(afterRest)) {
-    fail(candidate, 'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED');
+    fail(candidate, unsupportedCode);
   }
   const beforeNpcs = new Map((before.npcs ?? []).map(
     (npc) => [npc.instance_id, npc]
@@ -38,7 +67,7 @@ export function validatePhase6TemporalSourceResolution({ candidate,
     (npc) => [npc.instance_id, npc]
   ));
   if (beforeNpcs.size !== afterNpcs.size) fail(candidate,
-    'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED');
+    unsupportedCode);
   const writes = (resolution.proposals ?? []).flatMap((proposal) =>
     proposal.write_set?.updates ?? []).filter((write) =>
     write.target_table === 'party_npcs');
@@ -46,7 +75,7 @@ export function validatePhase6TemporalSourceResolution({ candidate,
   for (const [npcId, prior] of beforeNpcs) {
     const next = afterNpcs.get(npcId);
     if (next == null) fail(candidate,
-      'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED');
+      unsupportedCode);
     const priorPhysical = physicalNpcState(prior);
     const nextPhysical = physicalNpcState(next);
     if (canonicalDigest(priorPhysical) === canonicalDigest(nextPhysical)) {
@@ -58,13 +87,13 @@ export function validatePhase6TemporalSourceResolution({ candidate,
       && write.record?.npc_id === npcId
       && matchesPhysicalWrite(priorPhysical, nextPhysical, write.record));
     if (matching.length !== 1) fail(candidate,
-      'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP', {
+      writeGapCode, {
         npc_id: npcId, matching_write_count: matching.length,
         write_ids: writes.map((write) => write.id)
       });
   }
   if (writes.some((write) => !changed.includes(write.id))) fail(candidate,
-    'TRACE_PHASE_6_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP');
+    writeGapCode);
   return resolution;
 }
 

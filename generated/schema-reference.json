@@ -948,6 +948,18 @@
       "type": "sql"
     },
     {
+      "bytes": 11809,
+      "path": "schemas/party-db/016_party_runtime_npc_semantic_conversation.sql",
+      "sha256": "6c1f48de83313bf32b31d33d74e9c78d9dbd8b8963f7167b99cc0ac4cedc8b7f",
+      "type": "sql"
+    },
+    {
+      "bytes": 1762,
+      "path": "schemas/party-db/017_party_runtime_conversation_transcript.sql",
+      "sha256": "3eed33f61aca6f0889057d9758e22e0aa7550f38359e6563c3b4a5b0141a6611",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

@@ -1,11 +1,45 @@
+
+import { canonicalDigest } from '@rus/materialization';
+import { buildNpcDecisionSignal } from '@rus/npc-runtime';
 import { buildTracePhase5ArrivalResources } from
   '../../runtime/lower-dvina-trace-phase-5-resources.js';
 import { commitPhase2BodyState } from
   './lower-dvina-trace-phase-2-state.js';
+import {
+  projectPhase4ArrivalSignals
+} from './lower-dvina-trace-phase-4-state-arrival.js';
+import {
+  projectPhase4SemanticNegotiation
+} from './lower-dvina-trace-phase-4-state-negotiation.js';
+import {
+  mergeKnowledge
+} from './lower-dvina-trace-phase-4-state-shared.js';
+import {
+  assertSharedSemanticSnapshotSafe,
+  projectSharedSemanticConsequence,
+  projectSemanticConversationSnapshot
+} from './lower-dvina-trace-conversation-state.js';
+import { projectRepeatedPendingNpcExecution } from
+  './lower-dvina-trace-pending-npc-state.js';
+import { attachPendingConversationActivity } from
+  './lower-dvina-trace-pending-activity-state.js';
 
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
-  inputDigest, changeSetId, contracts }) {
-  const next = structuredClone(state);
+  inputDigest, changeSetId, contracts, rootTurnId, workingRevision }) {
+  let next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
+  next.activity_history = (next.activity_history ?? []).map((entry) => ({
+    ...entry,
+    execution_result: entry.execution_result?.semantic_exchange == null
+      ? entry.execution_result
+      : projectSharedSemanticConsequence({
+          conversation: entry.execution_result
+        }).conversation
+  }));
+  next.phase4_history = (next.phase4_history ?? []).map((entry) => ({
+    ...entry,
+    consequence: projectSharedSemanticConsequence(entry.consequence)
+  }));
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = { ...next.party_state, state_version: nextVersion,
     session_state_version: next.party_state.session_state_version + 1,
@@ -67,8 +101,49 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
       fact_id: 'onisim_found_alive',
       causal_route_execution_id: c.movement.traversal.ids.execution_id
     }];
+    if (contracts.conversationSignalMappings != null) {
+      next = projectPhase4ArrivalSignals({
+        next,
+        state,
+        movement: c.movement,
+        turnNumber,
+        contracts
+      });
+    } else if (c.movement.m2_arrival != null) {
+      semanticFail('TRACE_M2_PHASE_4_ARRIVAL_SIGNAL_MAPPING_INVALID');
+    }
   } else {
     const n = c.negotiation;
+    if (n.semantic_exchange != null) {
+      if (n.semantic_exchange.exchange.applied_contribution_count > 0
+          || n.semantic_exchange.exchange.stop_reason === 'npc_unavailable') {
+        next = projectSemanticConversationSnapshot({
+          state: next,
+          semanticExchange: n.semantic_exchange,
+          rootTurnId,
+          workingRevision,
+          appliedChangeSetId: changeSetId
+        });
+      } else if (n.semantic_exchange.pending_npc_execution != null
+          || n.semantic_exchange.pending_player_execution != null) {
+        next = projectRepeatedPendingNpcExecution(next, n.semantic_exchange);
+      }
+      next = projectPhase4SemanticNegotiation({
+        next,
+        state,
+        negotiation: n,
+        turnNumber,
+        changeSetId,
+        contracts
+      });
+      attachPendingConversationActivity({ next,
+        semanticExchange: n.semantic_exchange,
+        activityExecutionId:
+          `activity:${state.party_id}:trace-phase4:${turnNumber}:negotiation`,
+        startedAt: factual.time_update.clock_before,
+        optionId: factual.mode_resolution.option_id,
+        originatingRequestId: factual.player_input.request_id });
+    } else {
     const prior = next.promise_instances?.[0];
     if (!prior) throw new Error('TRACE_PHASE_4_PROMISE_MISSING');
     const promiseState = n.npc_decision.outcome === 'surrender'
@@ -162,6 +237,7 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
         })));
     }
     next.player_response_boundary = n.player_response_boundary;
+    }
   }
   next.phase4_history = [...(next.phase4_history ?? []), {
     turn_number: turnNumber,
@@ -170,20 +246,11 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
     option_id: factual.mode_resolution.option_id,
     phase4_kind: c.phase4_kind,
     time_update: structuredClone(factual.time_update),
-    consequence: structuredClone(c)
+    consequence: projectSharedSemanticConsequence(c)
   }];
   next.last_turn = { request_id: factual.player_input.request_id, idempotency_key: factual.player_input.idempotency_key,
     input_digest: inputDigest, raw_text: factual.player_input.raw_text, option_id: factual.mode_resolution.option_id,
     action_set_digest: factual.mode_resolution.decision_trace.action_set_digest, semantic_trace: structuredClone(factual.mode_resolution.decision_trace),
-    consequence: structuredClone(c), time_update: structuredClone(factual.time_update), visible_package: null, change_set_id: changeSetId };
-  return next;
-}
-
-function mergeKnowledge(current = [], added = []) {
-  const byId = new Map(current.map((entry) => [entry.fact_id, entry]));
-  for (const entry of added) if (!byId.has(entry.fact_id)) {
-    byId.set(entry.fact_id, entry);
-  }
-  return [...byId.values()].sort((left, right) =>
-    left.fact_id.localeCompare(right.fact_id));
+    consequence: projectSharedSemanticConsequence(c), time_update: structuredClone(factual.time_update), visible_package: null, change_set_id: changeSetId };
+  return assertSharedSemanticSnapshotSafe(next);
 }

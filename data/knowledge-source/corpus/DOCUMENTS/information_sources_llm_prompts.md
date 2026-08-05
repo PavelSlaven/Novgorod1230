@@ -4,11 +4,22 @@
 
 Этот документ подчинён `code_driven_world_materialization_architecture.md`. Источники и редакторский процесс утверждают категории, шаблоны, профили, правила и исторические факты. Runtime-код материализует конкретные G5/NPC и authored/significant/hidden items и рассчитывает обычные последствия. Active player planner предлагает только следующий строгий step, но не генерирует свободный runtime-state и не пишет в базы.
 
-Допустимые runtime-роли LLM: bounded decision по закрытому списку с `option_id` и `command_token`, активный player `turn_step_planner`, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит профильные JSON Schema, state-version и code-owned admission gates; фактическое последствие всегда рассчитывает код.
+Допустимые runtime-роли LLM: bounded decision по genuinely closed списку с `option_id` и `command_token`, активный player `turn_step_planner`, revision-14 player conversation interpreter и NPC conversation responder, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит профильные JSON Schema, state-version и code-owned admission gates; фактическое последствие всегда рассчитывает код.
 
 `turn_step_planner` получает только `turn_step_request_v1`: root player action, remaining intent, committed state version, working revision, ordered summaries уже выполненных шагов, actor и текущую player-safe working projection. Он возвращает только `turn_step_plan_v1` для следующего шага. Provider не получает hidden state, SQL, write plan, container contents или объективные сведения вне восприятия персонажа.
 
 Одна planner session принадлежит одному root turn, использует не более восьми внутренних шагов и после каждого применённого результата получает заново построенную player-safe projection. Допускается один structural repair невалидного плана; repair видит исходный request и структурные ошибки, но не новый factual context. Exact registered command обходит planner. Все шаги накапливаются в code-owned draft и фиксируются только единым commit после revalidation.
+
+Conversation interpreter получает только player-safe context и возвращает один
+`player_conversation_contribution_plan_v1`. NPC responder получает только
+фактически воспринятое сообщение, persisted knowledge/memory самого NPC и
+общую boundary; private knowledge, скрытые причины и prompts других NPC ему не
+передаются. Слушатель или свидетель может получить perception/received
+knowledge без response boundary. Social check сообщает лишь delivery quality
+и credibility; ответ NPC остаётся отдельным semantic решением. Conversation
+не имеет собственной trigger subsystem и использует общие пять категорий
+`self`, `others`, `environment`, `objective`, `communication` с уровнями
+`material` и `critical`.
 
 Для Temporal World v4 security projection является code-owned. Factual
 visible package создаётся и сохраняется в atomic commit до narration;

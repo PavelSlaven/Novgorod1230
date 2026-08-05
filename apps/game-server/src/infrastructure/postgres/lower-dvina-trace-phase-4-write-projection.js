@@ -1,3 +1,4 @@
+
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
@@ -11,6 +12,7 @@ import {
 } from './lower-dvina-trace-phase-2-projection.js';
 import {
   appendHostileSemantics,
+  appendM2SurrenderObserverPerceptions,
   appendSurrenderSemantics
 } from './lower-dvina-trace-phase-4-semantic-writes.js';
 import {
@@ -20,9 +22,19 @@ import {
   appendPhase4ActivityExecution
 } from './lower-dvina-trace-phase-4-activity-writes.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
+import {
+  appendNpcSemanticConversationWrites,
+  buildNpcSemanticConversationWriteInput
+} from './npc-semantic-conversation-writes.js';
+import { assertSharedSemanticSnapshotSafe } from
+  './lower-dvina-trace-conversation-state.js';
+
+import { appendSemanticNegotiation } from './lower-dvina-trace-phase-4-write-projection-semantic.js';
+import { exactActivityRoots, validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
 
 export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
-  pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts }) {
+  pendingScreen, nextVersion, turnNumber, changeSetId, idemId, contracts,
+  scenarioRevision, rootTurnId, workingRevision }) {
   const inserts = [];
   const updates = [
     row('parties', partyId, { party_id: partyId, status: 'active' }),
@@ -46,18 +58,26 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase4:${turnNumber}` });
   } else if (factual.consequence.phase4_kind === 'negotiation') {
-    appendNegotiation({ inserts, updates, appends, partyId, state, next, factual,
-      turnNumber, changeSetId, idemId, contracts });
+    if (scenarioRevision === 14) {
+      appendSemanticNegotiation({
+        inserts, updates, appends, partyId, state, next, factual,
+        turnNumber, changeSetId, idemId, contracts, rootTurnId,
+        workingRevision
+      });
+    } else {
+      appendNegotiation({ inserts, updates, appends, partyId, state, next, factual,
+        turnNumber, changeSetId, idemId, contracts });
+    }
   } else {
     throw new Error('TRACE_PHASE_4_KIND_INVALID');
   }
+  assertSharedSemanticSnapshotSafe(next);
   inserts.unshift(row('party_state_snapshots', `${partyId}:${nextVersion}`, {
     party_id: partyId, state_version: nextVersion, state_payload: next,
     state_digest: canonicalDigest(next)
   }));
   return { inserts, updates, appends, deletes: [] };
 }
-
 function appendNegotiation({ inserts, updates, appends, partyId, state, next,
   factual, turnNumber, changeSetId, idemId, contracts }) {
   const n = factual.consequence.negotiation;
@@ -178,44 +198,6 @@ function appendNegotiation({ inserts, updates, appends, partyId, state, next,
       activityId: negotiationActivityId
     });
   }
-}
-
-function validPersistedOfferStage({ state, factual, negotiation, contracts }) {
-  const promise = state.promise_instances[0];
-  const stage = negotiation.offer_stage;
-  const request = negotiation.check_request;
-  const factualRequest = factual.availability?.check_requests?.[0];
-  if (!stage || !request || canonicalDigest(request)
-      !== canonicalDigest(factualRequest)) return false;
-  const { stage_digest: suppliedDigest, ...payload } = stage;
-  return suppliedDigest === canonicalDigest(payload)
-    && stage.audit_ordinal === 0
-    && stage.prior_state === promise.current_state
-    && stage.operation === (promise.current_state === 'not_offered'
-      ? 'offer'
-      : 'reuse_current_offer')
-    && stage.resulting_state === 'offered'
-    && stage.fact_id === 'promise_current_offered'
-    && stage.obligation_id === (promise.obligation_id ?? promise.instance_id)
-    && stage.policy_id === contracts.promisePolicy.policy_id
-    && stage.beneficiary_actor_id === promise.beneficiary_actor_id
-    && canonicalDigest(stage.witness_actor_ids)
-      === canonicalDigest(promise.witness_actor_ids)
-    && stage.scope_digest === canonicalDigest(promise.scope_snapshot)
-    && request.audit_ordinal === 1
-    && request.causal_predecessor_fact_id === stage.fact_id
-    && request.causal_predecessor_stage_digest === stage.stage_digest;
-}
-
-function exactActivityRoots(n) {
-  const roots = n.activity_roots ?? [];
-  const negotiation = roots.filter(({ duration_minutes }) => duration_minutes === 10);
-  const continuation = roots.filter(({ duration_minutes }) => duration_minutes === 2);
-  if (negotiation.length !== 1 || continuation.length > 1
-      || (Boolean(n.player_response_boundary) !== Boolean(continuation.length))) {
-    throw new Error('TRACE_PHASE_4_ACTIVITY_ROOTS_INVALID');
-  }
-  return { negotiation: negotiation[0], continuation: continuation[0] ?? null };
 }
 
 export function phase4VisibleEnvelope({ partyId, nextVersion, turnNumber, changeSetId,

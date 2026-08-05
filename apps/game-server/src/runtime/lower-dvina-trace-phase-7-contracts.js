@@ -28,9 +28,13 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const localTransition = exact(bundle.movement_bindings
     ?.local_transition_bindings, 'transition_id',
   'trace_ld_v1_local_transition_storehouse_to_river_access');
-  const allowedScheduleExecutions = autonomous.schedule_execution_binding_refs
-    .map((id) => exact(bundle.npc_decision_schedule_policies
-      ?.schedule_execution_bindings, 'execution_binding_id', id));
+  const autonomousActivityBindings = autonomous.activity_profile_bindings
+    .map((binding) => ({
+      ...structuredClone(binding),
+      execution_profile: exact(bundle.npc_decision_schedule_policies
+        ?.schedule_execution_bindings, 'execution_binding_id',
+      binding.execution_profile_ref)
+    }));
   const zhdanko = actor(state, autonomous.target_npc_ref);
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
@@ -49,11 +53,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || signal.significance !== 'material'
       || signal.perception_requirement !== 'perception_not_required'
       || autonomous.operation_contract !== 'npc_semantic_request_v1'
-      || canonicalDigest(autonomous.schedule_execution_binding_refs)
-        !== canonicalDigest([
-          'trace_ld_v1_schedule_execution_wait',
-          'trace_ld_v1_schedule_execution_move_bag'
-        ])
+      || !validAutonomousActivityBindings(autonomousActivityBindings)
       || canonicalDigest(autonomous.available_resource_refs)
         !== canonicalDigest(['trace_ld_v1_container_road_bag'])
       || canonicalDigest(autonomous.known_route_refs)
@@ -71,8 +71,6 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || bodyEffect.exact_deltas.satiety > 0
       || !approvedRestOutcomes(bodyEffect.condition_outcomes)
       || localTransition.duration_minutes !== 5
-      || allowedScheduleExecutions.some((binding) =>
-        binding.time_profile_ref !== 'trace_ld_v1_time_5m')
       || roadBag.item_ref !== 'trace_ld_v1_container_road_bag'
       || bagTransition.subject_ref !== roadBag.item_ref) {
     gap('TRACE_PHASE_7_APPROVED_CHAIN_INVALID');
@@ -87,7 +85,8 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     roadBag: structuredClone(roadBag),
     bagTransition: structuredClone(bagTransition),
     localTransition: structuredClone(localTransition),
-    allowedScheduleExecutions: structuredClone(allowedScheduleExecutions),
+    autonomousActivityBindings:
+      structuredClone(autonomousActivityBindings),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start
@@ -98,6 +97,31 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       version: restActivity.version,
       digest: canonicalDigest(restActivity)
     }
+  });
+}
+
+function validAutonomousActivityBindings(bindings) {
+  const expected = [
+    ['trace_ld_v1_autonomous_activity_wait',
+      'trace_ld_v1_activity_zhdanko_wait',
+      'trace_ld_v1_schedule_execution_wait'],
+    ['trace_ld_v1_autonomous_activity_move_road_bag',
+      'trace_ld_v1_activity_zhdanko_move_bag',
+      'trace_ld_v1_schedule_execution_move_bag']
+  ];
+  if (bindings.length !== expected.length) return false;
+  return expected.every(([bindingRef, activityRef, executionRef], index) => {
+    const binding = bindings[index];
+    return binding.binding_ref === bindingRef
+      && binding.activity_profile_ref === activityRef
+      && binding.execution_profile_ref === executionRef
+      && binding.execution_profile.execution_binding_id === executionRef
+      && binding.execution_profile.activity_profile_ref === activityRef
+      && binding.applicability?.operation === 'request_activity'
+      && Array.isArray(binding.applicability.activity_kinds)
+      && binding.applicability.activity_kinds.length > 0
+      && Array.isArray(binding.applicability.required_target_refs)
+      && Array.isArray(binding.applicability.allowed_target_refs);
   });
 }
 

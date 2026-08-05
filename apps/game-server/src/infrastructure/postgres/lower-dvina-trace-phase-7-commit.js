@@ -233,17 +233,15 @@ function assertOwnerResult({ factual, state, phase7Contracts, changeSetId }) {
       || scheduleTemporal.result.clock_before.whole_minutes
         !== temporal.result.clock_after.whole_minutes
       || scheduleTemporal.result.clock_after.whole_minutes
-        !== schedule.clock_after.whole_minutes
-      || temporal.result.clock_before.whole_minutes !== state.clock.whole_minutes
-      || schedule.exact_elapsed.exact_minutes.numerator !== '5'
-      || schedule.exact_elapsed.exact_minutes.denominator !== '1'
-      || schedule.root_clock_write_count !== 1
-      || schedule.clock_after.whole_minutes
         !== factual.time_update.clock_after.whole_minutes
+      || temporal.result.clock_before.whole_minutes !== state.clock.whole_minutes
+      || !['executed', 'unavailable'].includes(schedule.status)
+      || schedule.exact_elapsed.exact_minutes.denominator !== '1'
+      || Number(schedule.exact_elapsed.exact_minutes.numerator) < 0
+      || Number(schedule.exact_elapsed.exact_minutes.numerator) > 5
+      || schedule.root_clock_write_count !== 0
       || schedule.parent_state_version !== state.party_state.state_version
-      || !phase7Contracts.allowedScheduleExecutions.some(
-        ({ execution_binding_id: id }) =>
-          id === schedule.execution_binding_ref)
+      || !validScheduleProfile(schedule, phase7Contracts)
       || temporal.result.combined_change_set.change_set_id
         !== changeSetId
       || scheduleTemporal.result.combined_change_set.change_set_id
@@ -253,6 +251,19 @@ function assertOwnerResult({ factual, state, phase7Contracts, changeSetId }) {
         !== phase7Contracts.bodyEffect.effect_profile_id) {
     fail('TRACE_PHASE_7_OWNER_RESULT_INVALID');
   }
+}
+
+function validScheduleProfile(schedule, contracts) {
+  if (schedule.status === 'unavailable') {
+    return schedule.execution_binding_ref === null
+      && schedule.activity_profile_ref === null
+      && schedule.failure_code === 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE';
+  }
+  return contracts.autonomousActivityBindings.some(
+    ({ execution_profile: profile }) =>
+      profile.execution_binding_id === schedule.execution_binding_ref
+      && profile.activity_profile_ref === schedule.activity_profile_ref
+  );
 }
 
 const target = (writePlan, name) => writePlan.write_targets

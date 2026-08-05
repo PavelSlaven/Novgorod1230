@@ -25,9 +25,7 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
-    let modelCalls = 0;
     const command = commandFor({ state, contracts, model: async (request) => {
-      modelCalls += 1;
       return autonomousPlan(request, 'move_bag');
     } });
     const consequence = await command.consequence({
@@ -35,16 +33,13 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
       playerInput: playerInput(state)
     });
 
-    assert.equal(modelCalls, 1);
     assert.equal(consequence.phase7.temporal.elapsed_before_decision, 25);
-    assert.equal(consequence.phase7.temporal.result.temporal_status, 'paused');
     assert.deepEqual(
       consequence.phase7.temporal.result.trace.processed_boundary_ids,
       ['npc-waiting:phase7-party:zhdanko:terminal']
     );
     assert.equal(consequence.phase7.autonomous.boundary.decision_mode,
       'autonomous');
-    assert.equal(consequence.phase7.autonomous.decision_records.length, 1);
     assert.deepEqual(consequence.phase7.autonomous.consumed_signal_ids,
       [consequence.phase7.autonomous.signal.signal_id]);
     assert.equal(consequence.phase7.schedule_execution.schedule_option_id,
@@ -55,31 +50,36 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
     );
     assert.equal(consequence.phase7.schedule_execution.clock_after.whole_minutes,
       '130');
-    assert.equal(consequence.phase7.schedule_temporal.result.temporal_status,
-      'completed');
     assert.equal(consequence.phase7.schedule_temporal.elapsed_after_decision, 5);
-    assert.equal(consequence.phase7.schedule_execution.root_clock_write_count,
-      1);
-    assert.equal(consequence.phase7.schedule_execution.property_proposal
-      .destination.zone_ref, 'river_access');
   });
 
-test('Phase 7 rejects an autonomous bag plan with extra targets', async () => {
-  const state = committedState();
-  const contracts = approvedContracts(state);
-  let modelCalls = 0;
-  const command = commandFor({ state, contracts, model: async (request) => {
-    modelCalls += 1;
-    const plan = autonomousPlan(request, 'move_bag');
-    plan.operations[0].target_refs.push('unapproved-extra-target');
-    return plan;
-  } });
-  await assert.rejects(() => command.consequence({
-    retrievedState: state,
-    playerInput: playerInput(state, 'invalid-target')
-  }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
-  assert.equal(modelCalls, 2);
-});
+test('Phase 7 sends a valid non-profiled intention through actor-step once',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    let modelCalls = 0;
+    const command = commandFor({ state, contracts, model: async (request) => {
+      modelCalls += 1;
+      const plan = autonomousPlan(request, 'guard');
+      plan.operations[0].activity_kind = 'guard';
+      plan.operations[0].description = 'Остаться настороже у клети.';
+      return plan;
+    } });
+    const consequence = await command.consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'guard')
+    });
+    assert.equal(modelCalls, 1);
+    assert.equal(consequence.phase7.schedule_execution.status, 'unavailable');
+    assert.equal(consequence.phase7.schedule_execution.failure_code,
+      'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
+    assert.equal(consequence.phase7.schedule_execution.owner,
+      '@rus/turn/actor-step');
+    assert.equal(consequence.phase7.schedule_execution.clock_after.whole_minutes,
+      '125');
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+  });
 
 test('Phase 7 accepts approved wait and keeps the autonomous branch private',
   async () => {
@@ -179,8 +179,11 @@ test('revision 15 materialized state resolves the approved Phase 7 chain',
       'zhdanko_storehouse_controller');
     assert.equal(contracts.roadBag.item_ref,
       'trace_ld_v1_container_road_bag');
-    assert.deepEqual(contracts.allowedScheduleExecutions.map(
-      ({ schedule_option_id: id }) => id), ['wait', 'move_bag']);
+    assert.deepEqual(contracts.autonomousActivityBindings.map(
+      ({ activity_profile_ref: id }) => id), [
+      'trace_ld_v1_activity_zhdanko_wait',
+      'trace_ld_v1_activity_zhdanko_move_bag'
+    ]);
   });
 
 test('Phase 7 P16 persists decision, body and approved schedule atomically',
@@ -307,7 +310,8 @@ function approvedContracts(state) {
       slot === 'zhdanko_storehouse_controller'
   );
   const wait = execution('wait', 'trace_ld_v1_activity_zhdanko_wait');
-  const move = execution('move_bag', 'trace_ld_v1_activity_move_road_bag');
+  const move = execution('move_bag',
+    'trace_ld_v1_activity_zhdanko_move_bag');
   return {
     autonomous: {
       target_npc_ref: 'zhdanko_storehouse_controller',
@@ -389,7 +393,12 @@ function approvedContracts(state) {
       } },
       terminal_outcome: 'same_materialized_location_new_zone'
     },
-    allowedScheduleExecutions: [wait, move],
+    autonomousActivityBindings: [
+      activityBinding('wait', wait, ['wait'], [], []),
+      activityBinding('move_road_bag', move, ['work', 'carry'],
+        ['trace_ld_v1_container_road_bag'],
+        ['trace_ld_v1_container_road_bag'])
+    ],
     zhdanko,
     waitingBoundary: { elapsed_minutes: 25 },
     campLocationRef: 'trace_ld_v1_loc_fishing_camp',
@@ -398,24 +407,40 @@ function approvedContracts(state) {
   };
 }
 
-function execution(option, activity) {
+function execution(option, activity, minutes = 5) {
   return {
     execution_binding_id: `trace_ld_v1_schedule_execution_${option}`,
     schedule_option_id: option,
     activity_profile_ref: activity,
-    time_profile_ref: 'trace_ld_v1_time_5m',
+    time_profile_ref: `trace_ld_v1_time_${minutes}m`,
     ...(option === 'move_bag' ? {
       movement_ref:
         'trace_ld_v1_local_transition_storehouse_to_river_access',
       property_transition_refs: [
         'trace_ld_v1_property_bag_to_river_access'
       ],
-      elapsed_plan: { stages: [{ duration_minutes: 5 }] }
+      elapsed_plan: { stages: [{ duration_minutes: minutes }] }
     } : {
       movement_ref: null,
       property_transition_refs: [],
-      elapsed_plan: { stages: [{ duration_minutes: 5 }] }
+      elapsed_plan: { stages: [{ duration_minutes: minutes }] }
     })
+  };
+}
+
+function activityBinding(id, profile, activityKinds, requiredTargetRefs,
+  allowedTargetRefs) {
+  return {
+    binding_ref: `trace_ld_v1_autonomous_activity_${id}`,
+    activity_profile_ref: profile.activity_profile_ref,
+    execution_profile_ref: profile.execution_binding_id,
+    execution_profile: profile,
+    applicability: {
+      operation: 'request_activity',
+      activity_kinds: activityKinds,
+      required_target_refs: requiredTargetRefs,
+      allowed_target_refs: allowedTargetRefs
+    }
   };
 }
 

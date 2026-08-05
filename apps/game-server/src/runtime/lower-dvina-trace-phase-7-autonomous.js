@@ -56,11 +56,8 @@ export async function resolveTracePhase7AutonomousDecision({
     request,
     semanticModel: npcAutonomousModel,
     persistedTrace,
-    revalidateStateVersion,
-    validatePlan: (plan) => classifySchedulePlan(plan, contracts) !== null
+    revalidateStateVersion
   });
-  const scheduleExecution = classifySchedulePlan(proposal.plan, contracts);
-  if (!scheduleExecution) fail('TRACE_PHASE_7_AUTONOMOUS_PLAN_UNSUPPORTED');
   const alreadyRecorded = (state.npc_decision_signals ?? []).some(
     (record) => record?.signal?.signal_id === signal.signal_id
   );
@@ -69,7 +66,6 @@ export async function resolveTracePhase7AutonomousDecision({
     boundary,
     request,
     proposal,
-    schedule_execution: scheduleExecution,
     new_signal_records: alreadyRecorded ? [] : [{
       signal,
       same_time_batch_key: batchRef.entity_id
@@ -196,40 +192,22 @@ function buildRequest({ state, contracts, boundary, signal }) {
       operation_contract: {
         request_activity: {
           owner: '@rus/turn',
-          execution_binding_refs:
-            contracts.allowedScheduleExecutions.map(
-              ({ execution_binding_id: id }) => id
-            ),
-          allowed_activity_refs:
-            contracts.allowedScheduleExecutions.map(
+          activity_profile_refs:
+            contracts.autonomousActivityBindings.map(
               ({ activity_profile_ref: id }) => id
             ),
+          applicability: contracts.autonomousActivityBindings.map(
+            ({ binding_ref: bindingRef, activity_profile_ref: activityRef,
+              applicability }) => ({
+              binding_ref: bindingRef,
+              activity_profile_ref: activityRef,
+              ...structuredClone(applicability)
+            })),
           factual_outcome_write: 'forbidden'
         }
       }
     }
   });
-}
-
-function classifySchedulePlan(plan, contracts) {
-  if (plan?.resolution !== 'domain_request'
-      || plan.goal_result !== 'pending'
-      || plan.operations?.length !== 1
-      || plan.operations[0].op !== 'request_activity') return null;
-  const operation = plan.operations[0];
-  if (operation.actor_ref !== plan.npc_ref
-      || !Array.isArray(operation.target_refs)) return null;
-  const optionId = operation.activity_kind === 'wait'
-    && operation.target_refs.length === 0
-    ? 'wait'
-    : operation.activity_kind === 'work'
-      && operation.target_refs.length === 1
-      && operation.target_refs[0] === contracts.roadBag.item_ref
-      ? 'move_bag'
-      : null;
-  return contracts.allowedScheduleExecutions.find(
-    ({ schedule_option_id: id }) => id === optionId
-  ) ?? null;
 }
 
 function assertSignalIdentity(state, signal) {

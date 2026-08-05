@@ -9,7 +9,7 @@ export function createTracePhase7TemporalAdvance({ fallback }) {
     const phase7 = input.consequence.phase7;
     return {
       clock_before: structuredClone(input.clock_before),
-      clock_after: structuredClone(phase7.schedule_execution.clock_after),
+      clock_after: structuredClone(phase7.schedule_temporal.result.clock_after),
       exact_elapsed: {
         exact_minutes: { numerator: '30', denominator: '1' }
       },

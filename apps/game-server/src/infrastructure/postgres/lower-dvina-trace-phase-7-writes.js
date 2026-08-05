@@ -216,7 +216,7 @@ function appendScheduleProjection({ updates, partyId, state, next, phase7,
     anchor_id: npc.anchor_id,
     machine_state: npc.machine_state
   }));
-  if (phase7.schedule_execution.schedule_option_id !== 'move_bag') return;
+  if (!phase7.schedule_execution.property_proposal) return;
   const beforeBag = state.containers.find(({ template_id: id }) =>
     id === 'trace_ld_v1_container_road_bag');
   const bag = next.containers.find(

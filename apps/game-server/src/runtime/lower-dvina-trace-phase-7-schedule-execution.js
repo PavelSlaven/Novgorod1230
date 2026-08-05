@@ -1,31 +1,102 @@
 import { planApprovedItemZoneTransition } from '@rus/items-property';
 import { planApprovedLocalZoneTransition } from '@rus/movement-routes';
+import { addElapsedTime } from '@rus/time-events-history';
+import {
+  createTurnStepExecutionRegistry,
+  executeTurnStepActorStep
+} from '@rus/turn';
 
-export function executeTracePhase7SchedulePlan({
+export async function executeTracePhase7SchedulePlan({
   state,
   contracts,
   temporal,
   scheduleTemporal,
   autonomous
 }) {
-  const binding = autonomous.schedule_execution;
-  if (binding.schedule_option_id === 'wait') {
+  const registry = createTurnStepExecutionRegistry({
+    domain: {
+      request_activity: (execution) => executeActivityOwner({
+        execution,
+        state,
+        contracts,
+        temporal,
+        scheduleTemporal
+      })
+    }
+  });
+  const execution = await executeTurnStepActorStep({
+    plan: autonomous.proposal.plan,
+    request: autonomous.request,
+    workingProjection: state,
+    preparedChainContext: null,
+    registry,
+    ports: {}
+  });
+  if (execution.consequenceFragments.length !== 1) {
+    fail('TRACE_PHASE_7_ACTOR_STEP_RESULT_INVALID');
+  }
+  return Object.freeze(execution.consequenceFragments[0]);
+}
+
+function executeActivityOwner({ execution, state, contracts, temporal,
+  scheduleTemporal }) {
+  const operation = execution.operation;
+  const matching = contracts.autonomousActivityBindings.filter(
+    (binding) => applicable(binding.applicability, operation)
+  );
+  if (matching.length > 1) {
+    fail('TRACE_PHASE_7_ACTIVITY_PROFILE_AMBIGUOUS');
+  }
+  const result = matching.length === 0
+    ? unavailable({ state, temporal, scheduleTemporal, operation,
+      npcRef: contracts.zhdanko.instance_id })
+    : executeProfile({ state, contracts, temporal, scheduleTemporal,
+      operation, binding: matching[0] });
+  return {
+    working_projection: execution.working_projection,
+    summary: result.status === 'executed'
+      ? `npc_activity:${result.activity_profile_ref}`
+      : 'npc_activity:unavailable',
+    consequence_fragment: result,
+    goal_result: result.status === 'executed'
+      ? execution.plan.goal_result : 'not_achieved',
+    continuation: null,
+    player_response_boundary: true
+  };
+}
+
+function applicable(applicability, operation) {
+  if (applicability?.operation !== operation.op
+      || !applicability.activity_kinds.includes(operation.activity_kind)) {
+    return false;
+  }
+  const targets = new Set(operation.target_refs);
+  const allowed = new Set(applicability.allowed_target_refs);
+  return applicability.required_target_refs.every((ref) => targets.has(ref))
+    && operation.target_refs.every((ref) => allowed.has(ref));
+}
+
+function executeProfile({ state, contracts, temporal, scheduleTemporal,
+  operation, binding }) {
+  const profile = binding.execution_profile;
+  if (profile.movement_ref === null
+      && profile.property_transition_refs.length === 0) {
     return finish({
       state,
       temporal,
       scheduleTemporal,
-      binding,
+      operation,
+      profile,
       npcRef: contracts.zhdanko.instance_id,
       movement: null,
       property: null
     });
   }
-  if (binding.schedule_option_id !== 'move_bag'
-      || binding.movement_ref !== contracts.localTransition.transition_id
-      || !binding.property_transition_refs.includes(
+  if (profile.movement_ref !== contracts.localTransition.transition_id
+      || !profile.property_transition_refs.includes(
         contracts.bagTransition.transition_profile_id
       )) {
-    fail('TRACE_PHASE_7_SCHEDULE_EXECUTION_UNSUPPORTED');
+    fail('TRACE_PHASE_7_ACTIVITY_PROFILE_OWNER_MISSING');
   }
   const npc = contracts.zhdanko;
   const bag = findBag(state, contracts);
@@ -38,7 +109,7 @@ export function executeTracePhase7SchedulePlan({
   const movement = planApprovedLocalZoneTransition({
     expected_state_version: state.party_state.state_version,
     state_version: state.party_state.state_version,
-    parent_execution_ref: binding.execution_binding_id,
+    parent_execution_ref: profile.execution_binding_id,
     transition_binding: contracts.localTransition,
     actor: actorSource
   });
@@ -57,48 +128,81 @@ export function executeTracePhase7SchedulePlan({
       controller_actor_id: bag.state?.controller_npc_id
     }
   });
-  if (!movement.pass || !property.pass
-      || movement.proposal.exact_elapsed.exact_minutes.numerator
-        !== String(binding.elapsed_plan.stages[0].duration_minutes)) {
+  if (!movement.pass || !property.pass) {
     fail('TRACE_PHASE_7_SCHEDULE_OWNER_REJECTED', {
       movement: movement.errors,
       property: property.errors
     });
   }
-  return finish({ state, temporal, scheduleTemporal, binding,
+  return finish({ state, temporal, scheduleTemporal, operation, profile,
     npcRef: contracts.zhdanko.instance_id,
     movement: movement.proposal, property: property.proposal });
 }
 
-function finish({ state, temporal, scheduleTemporal, binding, npcRef,
-  movement, property }) {
-  const minutes = Number(binding.time_profile_ref === 'trace_ld_v1_time_5m'
-    ? 5 : NaN);
-  if (!Number.isSafeInteger(minutes)
-      || scheduleTemporal?.elapsed_after_decision !== minutes
+function finish({ state, temporal, scheduleTemporal, operation, profile,
+  npcRef, movement, property }) {
+  const minutes = (profile.elapsed_plan?.stages ?? []).reduce(
+    (sum, stage) => sum + stage.duration_minutes, 0
+  );
+  if (!Number.isSafeInteger(minutes) || minutes < 1
+      || minutes > scheduleTemporal.elapsed_after_decision
       || scheduleTemporal.result.clock_before.whole_minutes
         !== temporal.result.clock_after.whole_minutes
       || scheduleTemporal.result.clock_after.whole_minutes
         !== temporal.limit_timestamp.whole_minutes
-      || scheduleTemporal.result.temporal_status !== 'completed') {
+      || scheduleTemporal.result.temporal_status !== 'completed'
+      || (movement && movement.exact_elapsed.exact_minutes.numerator
+        !== String(minutes))) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
   return Object.freeze({
-    owner: '@rus/npc-runtime',
+    owner: '@rus/turn/actor-step',
+    domain_owner: '@rus/npc-runtime',
+    status: 'executed',
     npc_ref: npcRef,
-    execution_binding_ref: binding.execution_binding_id,
-    schedule_option_id: binding.schedule_option_id,
-    activity_profile_ref: binding.activity_profile_ref,
+    semantic_operation: structuredClone(operation),
+    execution_binding_ref: profile.execution_binding_id,
+    schedule_option_id: profile.schedule_option_id,
+    activity_profile_ref: profile.activity_profile_ref,
     exact_elapsed: { exact_minutes: {
       numerator: String(minutes), denominator: '1'
     } },
     clock_before: structuredClone(scheduleTemporal.result.clock_before),
-    clock_after: structuredClone(scheduleTemporal.result.clock_after),
-    temporal_result: scheduleTemporal.result,
-    root_clock_write_count: 1,
+    clock_after: addElapsedTime(scheduleTemporal.result.clock_before, {
+      exact_minutes: { numerator: String(minutes), denominator: '1' }
+    }),
+    root_clock_write_count: 0,
     movement_proposal: movement,
     property_proposal: property,
-    factual_result_source: 'code_owned_approved_execution_binding',
+    factual_result_source: 'code_owned_actor_step_domain_execution',
+    parent_state_version: state.party_state.state_version
+  });
+}
+
+function unavailable({ state, temporal, scheduleTemporal, operation,
+  npcRef }) {
+  if (scheduleTemporal.result.clock_before.whole_minutes
+        !== temporal.result.clock_after.whole_minutes
+      || scheduleTemporal.result.temporal_status !== 'completed') {
+    fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
+  }
+  return Object.freeze({
+    owner: '@rus/turn/actor-step',
+    domain_owner: '@rus/npc-runtime',
+    status: 'unavailable',
+    failure_code: 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE',
+    npc_ref: npcRef,
+    semantic_operation: structuredClone(operation),
+    execution_binding_ref: null,
+    schedule_option_id: null,
+    activity_profile_ref: null,
+    exact_elapsed: { exact_minutes: { numerator: '0', denominator: '1' } },
+    clock_before: structuredClone(scheduleTemporal.result.clock_before),
+    clock_after: structuredClone(scheduleTemporal.result.clock_before),
+    root_clock_write_count: 0,
+    movement_proposal: null,
+    property_proposal: null,
+    factual_result_source: 'code_owned_actor_step_domain_admission',
     parent_state_version: state.party_state.state_version
   });
 }

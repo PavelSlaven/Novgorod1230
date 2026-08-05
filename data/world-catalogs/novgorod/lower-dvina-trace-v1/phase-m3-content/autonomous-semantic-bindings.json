@@ -16,7 +16,20 @@
   "parent_player_activity_ref": "trace_ld_v1_activity_fire_rest",
   "signal_descriptor": {"category": "objective", "significance": "material", "perception_requirement": "perception_not_required"},
   "operation_contract": "npc_semantic_request_v1",
-  "schedule_execution_binding_refs": ["trace_ld_v1_schedule_execution_wait", "trace_ld_v1_schedule_execution_move_bag"],
+  "activity_profile_bindings": [
+    {
+      "binding_ref": "trace_ld_v1_autonomous_activity_wait",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_wait",
+      "execution_profile_ref": "trace_ld_v1_schedule_execution_wait",
+      "applicability": {"operation": "request_activity", "activity_kinds": ["wait"], "required_target_refs": [], "allowed_target_refs": []}
+    },
+    {
+      "binding_ref": "trace_ld_v1_autonomous_activity_move_road_bag",
+      "activity_profile_ref": "trace_ld_v1_activity_zhdanko_move_bag",
+      "execution_profile_ref": "trace_ld_v1_schedule_execution_move_bag",
+      "applicability": {"operation": "request_activity", "activity_kinds": ["work", "carry"], "required_target_refs": ["trace_ld_v1_container_road_bag"], "allowed_target_refs": ["trace_ld_v1_container_road_bag"]}
+    }
+  ],
   "available_resource_refs": ["trace_ld_v1_container_road_bag"],
   "known_route_refs": ["trace_ld_v1_local_transition_storehouse_to_river_access"],
   "signal_mappings": [
@@ -28,10 +41,10 @@
       "perception_requirement": "perception_not_required",
       "signal_descriptors": [{"category": "objective", "significance": "material"}],
       "schedule_policy_ref": "trace_ld_v1_zhdanko_autonomous_schedule",
-      "execution_binding_refs": ["trace_ld_v1_schedule_execution_wait", "trace_ld_v1_schedule_execution_move_bag"],
       "profile_refs": {
         "activity_profile_id": "trace_ld_v1_activity_fire_rest",
-        "body_effect_profile_id": "trace_ld_v1_body_fire_rest_30m"
+        "body_effect_profile_id": "trace_ld_v1_body_fire_rest_30m",
+        "npc_activity_profile_ids": ["trace_ld_v1_activity_zhdanko_wait", "trace_ld_v1_activity_zhdanko_move_bag"]
       }
     }
   ],

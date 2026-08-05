@@ -112,8 +112,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
 function applyScheduleResult(next, execution, changeSetId) {
   const npc = next.npcs.find(({ instance_id: id }) =>
     id === execution.npc_ref);
-  if (!npc || !['wait', 'move_bag'].includes(
-    execution.schedule_option_id)) {
+  if (!npc || !['executed', 'unavailable'].includes(execution.status)) {
     fail('TRACE_PHASE_7_SCHEDULE_STATE_INVALID');
   }
   const history = scheduleHistoryEntry(execution, changeSetId);
@@ -123,19 +122,17 @@ function applyScheduleResult(next, execution, changeSetId) {
       location_ref: execution.movement_proposal.location_ref,
       spatial_zone_ref: execution.movement_proposal.destination_zone_ref
     } : {}),
-    status: execution.schedule_option_id === 'wait'
-      ? 'waiting' : 'preparing_departure',
-    current_activity_ref: execution.activity_profile_ref,
+    ...(execution.status === 'executed' ? {
+      status: activityStatus(execution.semantic_operation),
+      current_activity_ref: execution.activity_profile_ref
+    } : {}),
     last_phase7_change_set_id: changeSetId,
     last_schedule_execution: history,
     npc_schedule_history: [
       ...(npc.machine_state?.npc_schedule_history ?? []), history
     ]
   };
-  if (execution.schedule_option_id === 'wait') return;
-  if (!execution.property_proposal) {
-    fail('TRACE_PHASE_7_SCHEDULE_STATE_INVALID');
-  }
+  if (!execution.property_proposal) return;
   const property = execution.property_proposal;
   const container = next.containers.find(
     ({ container_id: id }) => id === property.item_id
@@ -158,8 +155,17 @@ function applyScheduleResult(next, execution, changeSetId) {
   container.state_version += 1;
 }
 
+function activityStatus(operation) {
+  if (operation?.activity_kind === 'wait') return 'waiting';
+  if (operation?.activity_kind === 'observe') return 'observing';
+  return 'active';
+}
+
 function scheduleHistoryEntry(execution, changeSetId) {
   return {
+    status: execution.status,
+    failure_code: execution.failure_code ?? null,
+    semantic_operation: structuredClone(execution.semantic_operation),
     execution_binding_ref: execution.execution_binding_ref,
     schedule_option_id: execution.schedule_option_id,
     activity_profile_ref: execution.activity_profile_ref,

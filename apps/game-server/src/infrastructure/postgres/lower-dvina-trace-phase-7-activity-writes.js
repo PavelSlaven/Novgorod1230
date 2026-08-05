@@ -58,6 +58,9 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
 
 function scheduleTrace(execution, changeSetId) {
   return {
+    status: execution.status,
+    failure_code: execution.failure_code ?? null,
+    semantic_operation: structuredClone(execution.semantic_operation),
     execution_binding_ref: execution.execution_binding_ref,
     schedule_option_id: execution.schedule_option_id,
     activity_profile_ref: execution.activity_profile_ref,

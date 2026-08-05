@@ -24,6 +24,7 @@ import {
   buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger
 } from './turn-step-prepared-effects.js';
+import { executeTurnStepActorStep } from './turn-step-actor-step.js';
 
 export {
   createTurnWorkflowContext,
@@ -39,7 +40,8 @@ export {
   requireTurnStepPreparedEffectLedger,
   requestPlayerConversationContribution,
   requestNpcSemanticDecision,
-  runConversationExchange
+  runConversationExchange,
+  executeTurnStepActorStep
 };
 export {
   TURN_PRIMARY_MODES,

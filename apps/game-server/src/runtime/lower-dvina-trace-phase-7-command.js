@@ -75,7 +75,7 @@ export function createTracePhase7FireRestCommand({
         temporalAdvanceOwner,
         commandIdempotencyKey: playerInput.idempotency_key
       });
-      const scheduleExecution = executeTracePhase7SchedulePlan({
+      const scheduleExecution = await executeTracePhase7SchedulePlan({
         state,
         contracts,
         temporal,

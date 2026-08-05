@@ -14,6 +14,7 @@ export const PHASE_1A_TABLES = Object.freeze([
   'party_actor_body_states',
   'party_actor_active_conditions',
   'party_items',
+  'party_containers',
   'party_item_placements',
   'party_ownership',
   'party_obligations',

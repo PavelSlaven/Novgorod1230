@@ -25,8 +25,7 @@ export function expectedVersions({ partyId, state, factual }) {
       `player_character:${state.actor_id}:${condition.storage_condition_id}`,
       condition.state_version));
   }
-  if (factual.consequence.phase7.schedule_execution.schedule_option_id
-      === 'move_bag') {
+  if (factual.consequence.phase7.schedule_execution.property_proposal) {
     const bag = roadBag(state);
     if (!Number.isInteger(bag.state_version)) {
       fail('TRACE_PHASE_7_ROAD_BAG_VERSION_MISSING');
@@ -83,8 +82,9 @@ export function commitRechecks({ partyId, state, factual, phase7Contracts,
 }
 
 export function scheduleItemKeys(state, factual) {
-  if (factual.consequence.phase7.schedule_execution.schedule_option_id
-      !== 'move_bag') return [];
+  if (!factual.consequence.phase7.schedule_execution.property_proposal) {
+    return [];
+  }
   return [`party_runtime.party_containers:${roadBag(state).container_id}`];
 }
 

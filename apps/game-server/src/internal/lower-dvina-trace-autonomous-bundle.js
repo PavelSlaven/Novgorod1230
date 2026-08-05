@@ -231,11 +231,7 @@ function validAutonomousBindings(value) {
     && value.signal_descriptor?.category === 'objective'
     && value.signal_descriptor?.significance === 'material'
     && value.operation_contract === 'npc_semantic_request_v1'
-    && JSON.stringify(value.schedule_execution_binding_refs)
-      === JSON.stringify([
-        'trace_ld_v1_schedule_execution_wait',
-        'trace_ld_v1_schedule_execution_move_bag'
-      ])
+    && validAutonomousActivityProfiles(value.activity_profile_bindings)
     && Array.isArray(value.available_resource_refs)
     && JSON.stringify(value.available_resource_refs)
       === JSON.stringify(['trace_ld_v1_container_road_bag'])
@@ -245,6 +241,22 @@ function validAutonomousBindings(value) {
     && signal?.source_activity_id === 'trace_ld_v1_activity_zhdanko_wait'
     && signal.target_npc_ref === 'zhdanko_storehouse_controller'
     && signal.schedule_policy_ref === 'trace_ld_v1_zhdanko_autonomous_schedule';
+}
+
+function validAutonomousActivityProfiles(bindings) {
+  return Array.isArray(bindings)
+    && bindings.length > 0
+    && new Set(bindings.map(({ binding_ref: ref }) => ref)).size
+      === bindings.length
+    && bindings.every((binding) => binding?.applicability?.operation
+      === 'request_activity'
+      && typeof binding.binding_ref === 'string'
+      && typeof binding.activity_profile_ref === 'string'
+      && typeof binding.execution_profile_ref === 'string'
+      && Array.isArray(binding.applicability.activity_kinds)
+      && binding.applicability.activity_kinds.length > 0
+      && Array.isArray(binding.applicability.required_target_refs)
+      && Array.isArray(binding.applicability.allowed_target_refs));
 }
 
 async function readJson(rootDir, path) {

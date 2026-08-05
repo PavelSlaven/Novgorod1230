@@ -112,7 +112,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
 function applyScheduleResult(next, execution, changeSetId) {
   const npc = next.npcs.find(({ instance_id: id }) =>
     id === execution.npc_ref);
-  if (!npc || !['executed', 'unavailable'].includes(execution.status)) {
+  if (!npc || execution.status !== 'executed') {
     fail('TRACE_PHASE_7_SCHEDULE_STATE_INVALID');
   }
   const history = scheduleHistoryEntry(execution, changeSetId);
@@ -122,10 +122,8 @@ function applyScheduleResult(next, execution, changeSetId) {
       location_ref: execution.movement_proposal.location_ref,
       spatial_zone_ref: execution.movement_proposal.destination_zone_ref
     } : {}),
-    ...(execution.status === 'executed' ? {
-      status: activityStatus(execution.semantic_operation),
-      current_activity_ref: execution.activity_profile_ref
-    } : {}),
+    status: activityStatus(execution.semantic_operation),
+    current_activity_ref: execution.activity_profile_ref,
     last_phase7_change_set_id: changeSetId,
     last_schedule_execution: history,
     npc_schedule_history: [
@@ -143,6 +141,9 @@ function applyScheduleResult(next, execution, changeSetId) {
     location_ref: property.destination.location_ref,
     zone_ref: property.destination.zone_ref,
     controller_npc_id: property.destination.controller_actor_id,
+    ...(property.destination.visibility_state == null ? {} : {
+      visibility_state: property.destination.visibility_state
+    }),
     approved_transition_history: [
       ...(container.state?.approved_transition_history ?? []),
       {

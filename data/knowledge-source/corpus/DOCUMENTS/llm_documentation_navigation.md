@@ -74,8 +74,10 @@ conversation path: общие `npc_decision_signal_v1` и
 `npc_decision_boundary_v1`, player conversation contribution и ровно один
 semantic responder для одного NPC/same-time batch. Phase-7 autonomous contract
 active: «Отдых у огня» advances 30 minutes, creates Жданко's boundary at +25
-and resolves one approved 5-minute schedule action through code-owned
-temporal/persistence/visibility owners. Combat остаётся proposed; conversation
+and applies one actor-step from the operations actually registered in the
+runtime at the same timestamp, then resumes the common temporal owner to +30
+from the updated working projection. Persistence and visibility remain
+code-owned. Combat остаётся proposed; conversation
 может только передать combat handoff.
 Historical bounded Phase 3/4 доступен исключительно по явному revision pin и
 не является production fallback.

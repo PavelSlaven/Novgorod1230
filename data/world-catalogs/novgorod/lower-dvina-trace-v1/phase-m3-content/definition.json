@@ -28,7 +28,7 @@
     "turn_step_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_bindings.v1", "id": "lower_dvina_trace_turn_step_bindings_v2", "revision": 2, "digest": "c082b9361b42e89e9e1bedfd24ad4d6d6610604268806618c9bb33252d4cd3f5"},
     "turn_step_owner_profiles": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_owner_profiles.v1", "id": "trace_ld_v1_turn_step_owner_profiles", "revision": 1, "digest": "585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823"},
     "conversation_semantic_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_conversation_semantic_bindings.v1", "id": "lower_dvina_trace_conversation_semantic_bindings_v1", "revision": 1, "digest": "835dc461c658a7149053046537c2f1341c3966acf384d0f3ba77758b13263557"},
-    "autonomous_semantic_bindings": {"owner": "@rus/npc-runtime", "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "digest": "54a1cb0f944b30e5f1fab06b67cd6c0d03811c15cc9752191b6889e25852b5e4"}
+    "autonomous_semantic_bindings": {"owner": "@rus/npc-runtime", "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "digest": "a06603da7d14cac7b0e28454839a7bf4924a0134dfeaa13d5a3b9a9dd8533194"}
   },
   "required_unresolved_refs": [],
   "scope": ["phase_0_immutable_definition", "m1_player_semantic_step_admission", "m2_npc_conversation_semantic_bindings", "m3_autonomous_npc_semantic_bindings", "phase_7_fire_rest_temporal_admission"],

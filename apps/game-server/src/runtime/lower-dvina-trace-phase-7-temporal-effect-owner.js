@@ -1,10 +1,16 @@
-import { subtractGameTimestamp } from '@rus/time-events-history';
+import {
+  compareGameTimestamp,
+  subtractGameTimestamp
+} from '@rus/time-events-history';
 
 export const PHASE7_REST_PROGRESS_EFFECT_REF = versioned(
   'temporal_effect', 'lower-dvina-trace-fire-rest-progress', '1'
 );
 export const PHASE7_WAITING_TERMINAL_EFFECT_REF = versioned(
   'temporal_effect', 'lower-dvina-trace-waiting-terminal', '1'
+);
+export const PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF = versioned(
+  'temporal_effect', 'npc-actor-step-completion', '1'
 );
 
 export function lowerDvinaTracePhase7TemporalEffectRegistrations() {
@@ -14,6 +20,9 @@ export function lowerDvinaTracePhase7TemporalEffectRegistrations() {
   }, {
     effect_ref: PHASE7_WAITING_TERMINAL_EFFECT_REF,
     resolve: resolveWaitingTerminal
+  }, {
+    effect_ref: PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
+    resolve: resolveNpcActorStepCompletion
   }];
 }
 
@@ -59,6 +68,33 @@ function resolveWaitingTerminal({ candidate, context, descriptor }) {
     },
     follow_up_candidates: [],
     stop_after_current_batch: true
+  };
+}
+
+function resolveNpcActorStepCompletion({ candidate, context, descriptor }) {
+  const active = context.projection.active_npc_actor_step;
+  if (descriptor?.transition_kind !== 'npc_actor_step_completed'
+      || active?.npc_ref !== descriptor.npc_ref
+      || active.status !== 'started'
+      || compareGameTimestamp(candidate.scheduled_at,
+        descriptor.scheduled_at) !== 0) {
+    fail('TRACE_PHASE_7_NPC_ACTOR_STEP_COMPLETION_INVALID');
+  }
+  return {
+    disposition: 'execute',
+    proposals: [{
+      proposal_id: `npc-actor-step:${candidate.boundary_id}`,
+      write_target: `npc-actor-step:${descriptor.npc_ref}`
+    }],
+    state_projection: {
+      ...context.projection,
+      active_npc_actor_step: {
+        ...active,
+        status: 'completed',
+        completed_at: structuredClone(candidate.scheduled_at)
+      }
+    },
+    follow_up_candidates: []
   };
 }
 

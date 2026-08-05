@@ -17,6 +17,10 @@
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `createTurnStepExecutionRegistry(...)` публикует через
+  `operationContract()` только те semantic operations, для которых в этом же
+  registry зарегистрирован фактический handler; request не получает
+  сценарный exhaustive option set.
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
 - `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC/same-time batch получает не более одной boundary/decision суммарно по всем режимам; listeners и witnesses без meaningful response boundary не становятся responders.
@@ -25,8 +29,8 @@
   Lower Dvina revision 14 такой scope активен для лжи и торга Ратши; результат
   определяет только качество подачи и не выбирает ответ NPC.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
-  `advanceTemporalBoundaryBatch`, `createTemporalSourceResolver`,
-  `createTemporalAdvanceOwner`;
+  `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
+  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.
@@ -71,7 +75,8 @@ Temporal v4 surfaces use current `temporal-world-v1.1` /
 exact registered path перед ним. Revision 14 / `spatial-v3-production-v4`
 активировал conversation contribution path для фаз 3–4 без bounded fallback.
 `spatial-v3-production-v5` активировал Phase 7 autonomous NPC path: fire rest
-30 minutes, boundary at +25 and one 5-minute approved schedule action. Combat
+30 minutes, boundary at +25, actor-step at that same timestamp and continuation
+of the common temporal owner to +30 from the updated working projection. Combat
 resolution document остаётся `proposed`;
 historical bounded Phase 3/4 доступен только по явному revision pin.
 

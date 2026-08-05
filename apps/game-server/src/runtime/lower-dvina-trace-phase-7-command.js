@@ -1,6 +1,12 @@
 import { resolveTracePhase7AutonomousDecision } from
   './lower-dvina-trace-phase-7-autonomous.js';
-import { executeTracePhase7SchedulePlan } from
+import { advanceTemporalNpcDecisionBoundary } from
+  '@rus/turn/temporal-advance';
+import {
+  createTracePhase7ActorStepRuntime,
+  executeTracePhase7SchedulePlan,
+  finalizeTracePhase7ScheduleExecution
+} from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 import { resolveTracePhase7ScheduleTemporalAdvance } from
   './lower-dvina-trace-phase-7-schedule-temporal.js';
@@ -56,31 +62,52 @@ export function createTracePhase7FireRestCommand({
     },
     async consequence({ retrievedState: state, playerInput }) {
       if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
-      const temporal = resolveTracePhase7RestTemporalAdvance({
-        state,
-        contracts,
-        temporalAdvanceOwner,
-        commandIdempotencyKey: playerInput.idempotency_key
+      let actorStepRuntime = null;
+      const flow = await advanceTemporalNpcDecisionBoundary({
+        advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
+          state,
+          contracts,
+          temporalAdvanceOwner,
+          commandIdempotencyKey: playerInput.idempotency_key
+        }),
+        async resolveDecision({ temporal }) {
+          actorStepRuntime = createTracePhase7ActorStepRuntime({
+            state, contracts, temporal
+          });
+          const autonomous = await resolveTracePhase7AutonomousDecision({
+            state,
+            contracts,
+            temporal,
+            operationContract:
+              actorStepRuntime.registry.operationContract(),
+            npcAutonomousModel,
+            revalidateStateVersion
+          });
+          return { boundary: autonomous.boundary, autonomous };
+        },
+        executeActorStep: ({ temporal, decision }) =>
+          executeTracePhase7SchedulePlan({
+            state,
+            contracts,
+            temporal,
+            autonomous: decision.autonomous,
+            actorStepRuntime
+          }),
+        continueAdvance: ({ temporal, actor_step: actorStep }) =>
+          resolveTracePhase7ScheduleTemporalAdvance({
+            state,
+            temporal,
+            actorStep,
+            temporalAdvanceOwner,
+            commandIdempotencyKey: playerInput.idempotency_key
+          })
       });
-      const autonomous = await resolveTracePhase7AutonomousDecision({
-        state,
-        contracts,
-        temporal,
-        npcAutonomousModel,
-        revalidateStateVersion
-      });
-      const scheduleTemporal = resolveTracePhase7ScheduleTemporalAdvance({
-        state,
-        temporal,
-        temporalAdvanceOwner,
-        commandIdempotencyKey: playerInput.idempotency_key
-      });
-      const scheduleExecution = await executeTracePhase7SchedulePlan({
-        state,
-        contracts,
-        temporal,
-        scheduleTemporal,
-        autonomous
+      const temporal = flow.temporal;
+      const autonomous = flow.decision.autonomous;
+      const scheduleTemporal = flow.continuation;
+      const scheduleExecution = finalizeTracePhase7ScheduleExecution({
+        actorStep: flow.actor_step,
+        scheduleTemporal
       });
       return {
         version: 1,
@@ -95,6 +122,7 @@ export function createTracePhase7FireRestCommand({
           input_digest: inputDigest,
           temporal,
           autonomous,
+          actor_step: flow.actor_step.result,
           schedule_temporal: scheduleTemporal,
           schedule_execution: scheduleExecution
         },

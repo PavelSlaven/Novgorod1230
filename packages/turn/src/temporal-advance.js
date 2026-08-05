@@ -26,6 +26,21 @@ import {
 
 const engines = new WeakSet();
 
+function timestamp(value) {
+  return value != null
+    && typeof value === 'object'
+    && typeof value.whole_minutes === 'string'
+    && typeof value.subminute_numerator === 'string'
+    && typeof value.subminute_denominator === 'string';
+}
+
+function fail(code, message, details = {}) {
+  const error = new Error(message);
+  error.code = code;
+  error.details = cloneFrozen(details);
+  throw error;
+}
+
 export function createTemporalAdvanceEngine(configuration) {
   validateConfiguration(configuration);
   const config = immutableConfiguration(configuration);
@@ -105,6 +120,69 @@ export function advanceTemporalBoundaryBatch({ request, engine_version,
     result: engine.advance(request),
     state_projection: cloneFrozen(finalProjection)
   });
+}
+
+export async function advanceTemporalNpcDecisionBoundary({
+  advanceToBoundary,
+  resolveDecision,
+  executeActorStep,
+  continueAdvance
+} = {}) {
+  for (const [name, handler] of Object.entries({
+    advanceToBoundary,
+    resolveDecision,
+    executeActorStep,
+    continueAdvance
+  })) {
+    if (typeof handler !== 'function') {
+      throw new TypeError(`temporal NPC decision ${name} is required`);
+    }
+  }
+  const temporal = await advanceToBoundary();
+  const decisionTimestamp = temporal?.result?.clock_after;
+  if (temporal?.result?.temporal_status !== 'paused'
+      || !timestamp(decisionTimestamp)) {
+    fail('temporal_change_set_conflict',
+      'NPC decision handoff requires one fully resolved paused batch.');
+  }
+  const decision = await resolveDecision(cloneFrozen({ temporal }));
+  if (!timestamp(decision?.boundary?.scheduled_at)
+      || compareGameTimestamp(
+        decision.boundary.scheduled_at, decisionTimestamp
+      ) !== 0) {
+    fail('temporal_candidate_stale',
+      'NPC decision boundary must match the paused temporal timestamp.');
+  }
+  const actorStep = await executeActorStep(cloneFrozen({
+    temporal,
+    decision
+  }));
+  if (!timestamp(actorStep?.started_at)
+      || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
+      || actorStep?.working_projection == null
+      || typeof actorStep.working_projection !== 'object'
+      || Array.isArray(actorStep.working_projection)) {
+    fail('temporal_change_set_conflict',
+      'NPC actor-step must start on the decision timestamp and return working state.');
+  }
+  const continuation = await continueAdvance(cloneFrozen({
+    temporal,
+    decision,
+    actor_step: actorStep
+  }));
+  if (!timestamp(continuation?.result?.clock_before)
+      || !timestamp(continuation?.result?.clock_after)
+      || compareGameTimestamp(
+        continuation.result.clock_before, decisionTimestamp
+      ) !== 0
+      || compareGameTimestamp(
+        continuation.result.clock_after, decisionTimestamp
+      ) < 0) {
+    fail('temporal_change_set_conflict',
+      'Temporal continuation must resume from the applied actor-step timestamp.');
+  }
+  return cloneFrozen({ temporal, decision, actor_step: actorStep,
+    continuation });
 }
 
 export function createTemporalSourceResolver({ registrations = [] } = {}) {

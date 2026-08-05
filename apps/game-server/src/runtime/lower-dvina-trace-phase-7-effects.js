@@ -72,10 +72,6 @@ export function createTracePhase7VisibleProjector({ fallback }) {
         uncertainties: [],
         allowed_tensions: [],
         do_not_imply: [
-          'npc_decision_signal',
-          'npc_action_decision_request',
-          'zhdanko_plan',
-          'road_bag_new_location',
           'headache_cured',
           'shoulder_bruise_cured',
           'clothes_fully_dry',

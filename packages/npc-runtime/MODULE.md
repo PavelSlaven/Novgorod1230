@@ -72,7 +72,9 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 В active `spatial-v3-production-v5` revision-14 conversation и Phase-7 autonomous
 contracts применяются через единый orchestration/write path. Phase 7 фиксирует
-fire rest на 30 минут, boundary Жданко на +25 и 5-minute schedule action;
+fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
+фактически зарегистрированные actor-step operations, применяется на том же
+timestamp, после чего общий temporal owner продолжает интервал до +30;
 temporal/persistence/visibility остаются code-owned. Production v4 является explicit
 migration/rollback source, но не runtime path; partial activation, dual write
 и in-turn fallback запрещены. Tests:

@@ -984,9 +984,12 @@ Listener/witness может воспринять statement и получить r
 response boundary. Social check изменяет только наблюдаемое качество подачи и
 credibility; решение responder остаётся отдельным semantic result. Production
 v5 активирует autonomous mode для Phase 7: «Отдых у огня» длится 30 минут, на
-+25 создаётся boundary Жданко и один approved schedule action занимает 5
-минут; temporal, persistence и visible projection остаются code-owned. Combat
-в revision 14 только получает typed handoff и остаётся proposed.
++25 создаётся boundary Жданко. Semantic request получает операции, для которых
+текущий actor-step registry имеет фактических domain handlers, а не сценарный
+exhaustive option set. Выбранный actor-step применяется на +25, затем общий
+temporal owner продолжает обработку до +30 из обновлённой working projection;
+persistence и visible projection остаются code-owned. Combat в revision 14
+только получает typed handoff и остаётся proposed.
 
 ### 15.5. Historical bounded NPC decision (explicit revision pin only)
 

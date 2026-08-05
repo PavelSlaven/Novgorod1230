@@ -79,7 +79,7 @@ test('current publication pins the exact v10 -> Phase 1A v11 -> revision 15 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v10');
   assert.equal(publication.manifest.revision, 10);
   assert.equal(publication.manifest_digest,
-    '44886d135b1c34fce347473b09eb77d18afe952083af091db1eead38a97abdf3');
+    'd84307439a4295c57cfc2b721b2301862aa1f7be95cde6468580aadceb46c33e');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v9/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v9',
@@ -91,19 +91,19 @@ test('current publication pins the exact v10 -> Phase 1A v11 -> revision 15 chai
     'lower_dvina_trace_phase_1b_publication_v10');
   assert.equal(publication.binding.revision, 10);
   assert.equal(publication.binding_digest,
-    '214e19de2a9681e00040b34067d1648df3435307638083cfe22e57e5ad9395b2');
+    '37de711c54532dc2d88607f4517c77e06611e37a0032c9999d06939ffa6dfce7');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     '693aa8990e303fafb35867a83f803964ece0ac3bc0b598a4ee2c504b15a0ba1f');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v11');
   assert.equal(publication.phase_1a_manifest.revision, 11);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    'f85631110c1df2ac7ef92a32f3dd5f533a1424048088f62bab67e603a4d8c68e');
+    'd4d391939657396a51feafb3ecdd5da00e34ff1fb7024313d660fdcc9c4df6a8');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     '55acd22d21bbb0ddac6bb3437e558d9857a120900844a4880ded8e1fb1d3a406');
   assert.equal(publication.definition.revision, 15);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    '2da515f0ac9e4b6b91a15e2dac3c01c4df8d2ab91a1514639c2daf36fad0f94f');
+    '7609b3f2d31a79551737f679c3bcd644ef916230313e838132e856d238939578');
   assert.equal(
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v11'

@@ -1,5 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { planApprovedItemZoneTransition } from './approved-item-zone-transition.js';
+import { planApprovedItemVisibilityTransition } from
+  './approved-item-visibility-transition.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export { planApprovedActorItemTransition } from './approved-actor-item-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
@@ -137,7 +139,12 @@ export function validatePropertyRelation(relation = {}) {
   return { ok: errors.length === 0, errors };
 }
 
-export { normalizeItem, planApprovedItemZoneTransition, validateItem };
+export {
+  normalizeItem,
+  planApprovedItemVisibilityTransition,
+  planApprovedItemZoneTransition,
+  validateItem
+};
 
 function normalizePlacement(value) {
   const key = text(value).toLowerCase();

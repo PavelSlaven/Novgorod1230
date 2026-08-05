@@ -25,16 +25,19 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const bagTransition = exact(bundle.npc_decision_schedule_policies
     ?.property_transition_profiles, 'transition_profile_id',
   'trace_ld_v1_property_bag_to_river_access');
+  const bagConcealTransition = exact(bundle.npc_decision_schedule_policies
+    ?.property_transition_profiles, 'transition_profile_id',
+  'trace_ld_v1_property_bag_concealed_in_storehouse');
   const localTransition = exact(bundle.movement_bindings
     ?.local_transition_bindings, 'transition_id',
   'trace_ld_v1_local_transition_storehouse_to_river_access');
-  const autonomousActivityBindings = autonomous.activity_profile_bindings
-    .map((binding) => ({
-      ...structuredClone(binding),
-      execution_profile: exact(bundle.npc_decision_schedule_policies
-        ?.schedule_execution_bindings, 'execution_binding_id',
-      binding.execution_profile_ref)
-    }));
+  const scheduleExecutions = resolveScheduleExecutions({
+    records: bundle.npc_decision_schedule_policies
+      ?.schedule_execution_bindings,
+    waitActivity,
+    localTransition,
+    bagTransition
+  });
   const zhdanko = actor(state, autonomous.target_npc_ref);
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
@@ -53,7 +56,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || signal.significance !== 'material'
       || signal.perception_requirement !== 'perception_not_required'
       || autonomous.operation_contract !== 'npc_semantic_request_v1'
-      || !validAutonomousActivityBindings(autonomousActivityBindings)
+      || Object.hasOwn(autonomous, 'activity_profile_bindings')
       || canonicalDigest(autonomous.available_resource_refs)
         !== canonicalDigest(['trace_ld_v1_container_road_bag'])
       || canonicalDigest(autonomous.known_route_refs)
@@ -84,9 +87,9 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     schedulePolicy: structuredClone(schedulePolicy),
     roadBag: structuredClone(roadBag),
     bagTransition: structuredClone(bagTransition),
+    bagConcealTransition: structuredClone(bagConcealTransition),
     localTransition: structuredClone(localTransition),
-    autonomousActivityBindings:
-      structuredClone(autonomousActivityBindings),
+    scheduleExecutions: structuredClone(scheduleExecutions),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start
@@ -100,29 +103,23 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   });
 }
 
-function validAutonomousActivityBindings(bindings) {
-  const expected = [
-    ['trace_ld_v1_autonomous_activity_wait',
-      'trace_ld_v1_activity_zhdanko_wait',
-      'trace_ld_v1_schedule_execution_wait'],
-    ['trace_ld_v1_autonomous_activity_move_road_bag',
-      'trace_ld_v1_activity_zhdanko_move_bag',
-      'trace_ld_v1_schedule_execution_move_bag']
-  ];
-  if (bindings.length !== expected.length) return false;
-  return expected.every(([bindingRef, activityRef, executionRef], index) => {
-    const binding = bindings[index];
-    return binding.binding_ref === bindingRef
-      && binding.activity_profile_ref === activityRef
-      && binding.execution_profile_ref === executionRef
-      && binding.execution_profile.execution_binding_id === executionRef
-      && binding.execution_profile.activity_profile_ref === activityRef
-      && binding.applicability?.operation === 'request_activity'
-      && Array.isArray(binding.applicability.activity_kinds)
-      && binding.applicability.activity_kinds.length > 0
-      && Array.isArray(binding.applicability.required_target_refs)
-      && Array.isArray(binding.applicability.allowed_target_refs);
-  });
+function resolveScheduleExecutions({ records, waitActivity, localTransition,
+  bagTransition }) {
+  const wait = unique(records, (profile) =>
+    profile.activity_profile_ref === waitActivity.profile_id
+      && profile.movement_ref === null
+      && profile.property_transition_refs?.length === 0);
+  const moveBag = unique(records, (profile) =>
+    profile.movement_ref === localTransition.transition_id
+      && profile.property_transition_refs?.includes(
+        bagTransition.transition_profile_id));
+  return { wait, moveBag };
+}
+
+function unique(records, predicate) {
+  const matches = (records ?? []).filter(predicate);
+  if (matches.length !== 1) gap('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
+  return matches[0];
 }
 
 function resolveFireRestEffect(source) {

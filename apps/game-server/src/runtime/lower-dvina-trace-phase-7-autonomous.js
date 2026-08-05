@@ -10,6 +10,7 @@ export async function resolveTracePhase7AutonomousDecision({
   state,
   contracts,
   temporal,
+  operationContract,
   npcAutonomousModel,
   revalidateStateVersion
 }) {
@@ -42,7 +43,9 @@ export async function resolveTracePhase7AutonomousDecision({
   });
   const boundary = evaluation.boundary;
   if (!boundary) fail('TRACE_PHASE_7_AUTONOMOUS_BOUNDARY_MISSING');
-  const request = buildRequest({ state, contracts, boundary, signal });
+  const request = buildRequest({
+    state, contracts, boundary, signal, operationContract
+  });
   const persistedTrace = (state.npc_semantic_decision_traces ?? []).find(
     ({ boundary_id: boundaryId }) => boundaryId === boundary.boundary_id
   ) ?? null;
@@ -82,7 +85,8 @@ export async function resolveTracePhase7AutonomousDecision({
   });
 }
 
-function buildRequest({ state, contracts, boundary, signal }) {
+function buildRequest({ state, contracts, boundary, signal,
+  operationContract }) {
   const policy = contracts.npcPolicy;
   const resourceRefs = contracts.autonomous.available_resource_refs;
   const routeRefs = contracts.autonomous.known_route_refs;
@@ -168,8 +172,15 @@ function buildRequest({ state, contracts, boundary, signal }) {
       present_actors: [],
       visible_objects: resourceRefs.map((resourceRef) => ({ resource_ref:
         resourceRef })),
-      known_routes_and_exits: routeRefs.map((routeRef) => ({ route_ref:
-        routeRef })),
+      known_routes_and_exits: routeRefs.map((routeRef) => ({
+        route_ref: routeRef,
+        location_ref: contracts.localTransition.location_ref,
+        source_zone_refs: structuredClone(
+          contracts.localTransition.source_zone_candidates
+        ),
+        destination_zone_ref:
+          contracts.localTransition.destination_zone_ref
+      })),
       uncertainties: [{ fact: 'Причина задержки Ратши неизвестна.' }]
     },
     knowledge: {
@@ -189,23 +200,7 @@ function buildRequest({ state, contracts, boundary, signal }) {
       mode: 'autonomous_action',
       allowed_attribute_refs: [],
       allowed_skill_refs: [],
-      operation_contract: {
-        request_activity: {
-          owner: '@rus/turn',
-          activity_profile_refs:
-            contracts.autonomousActivityBindings.map(
-              ({ activity_profile_ref: id }) => id
-            ),
-          applicability: contracts.autonomousActivityBindings.map(
-            ({ binding_ref: bindingRef, activity_profile_ref: activityRef,
-              applicability }) => ({
-              binding_ref: bindingRef,
-              activity_profile_ref: activityRef,
-              ...structuredClone(applicability)
-            })),
-          factual_outcome_write: 'forbidden'
-        }
-      }
+      operation_contract: structuredClone(operationContract)
     }
   });
 }

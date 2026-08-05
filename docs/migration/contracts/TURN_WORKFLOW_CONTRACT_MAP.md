@@ -42,6 +42,6 @@
 - DB commit before visible/narration gates;
 - provider or SQL call from `@rus/turn`.
 
-Revision-14 conversation and the Phase-7 autonomous NPC path are active semantic modes covered by this map. Phase 7 runs «Отдых у огня» for 30 minutes, creates Жданко's autonomous boundary at +25 and resolves one approved 5-minute schedule action through code-owned temporal, persistence and visibility owners. Combat resolution remains proposed; bounded selection remains available only for genuinely closed choices and explicitly pinned historical revisions.
+Revision-14 conversation and the Phase-7 autonomous NPC path are active semantic modes covered by this map. Phase 7 runs «Отдых у огня» for 30 minutes, creates Жданко's autonomous boundary at +25, applies the chosen actor-step from the operations actually registered in the runtime at the same timestamp, then resumes the common temporal owner to +30 from the updated working projection. Persistence and visibility remain code-owned. Combat resolution remains proposed; bounded selection remains available only for genuinely closed choices and explicitly pinned historical revisions.
 
 Deterministic autonomous updates use the same commit boundary: a code-owned rule produces `party_change_set_v2`, the repository checks the base state version and atomically persists the change set, update trace, new snapshot and incremented party version. Phase-7 semantic autonomous action is separately admitted through `npc_action_decision_request_v1` and cannot bypass that boundary.

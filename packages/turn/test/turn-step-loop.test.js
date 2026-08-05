@@ -500,6 +500,27 @@ test('stale committed state stops before RNG or domain effects', async () => {
   assert.equal(effects, 0);
 });
 
+test('execution registry exposes only contracts backed by registered handlers', () => {
+  const registry = createTurnStepExecutionRegistry({
+    domain: { request_movement: async () => ({}) },
+    operationContract: {
+      request_movement: { owner: '@rus/movement-routes',
+        movement_kinds: ['local'] }
+    }
+  });
+  const contract = registry.operationContract();
+  assert.deepEqual(contract, {
+    request_movement: { owner: '@rus/movement-routes',
+      movement_kinds: ['local'] }
+  });
+  contract.request_movement.movement_kinds.push('remote');
+  assert.deepEqual(registry.operationContract().request_movement
+    .movement_kinds, ['local']);
+  assert.throws(() => createTurnStepExecutionRegistry({
+    operationContract: { request_activity: { owner: '@rus/turn' } }
+  }), /registered handler/u);
+});
+
 function checkPolicyRefs() {
   return {
     policy_profile_ref: 'test_generic_check_profile',

@@ -77,8 +77,11 @@ NPC-safe context → semantic LLM decision → structured actor step plan
 
 Schedule, perception, temporal ordering, persistence и профильные владельцы механики сохраняются.
 Phase 7 «Отдых у огня» длится ровно 30 минут: на +25 возникает общая
-autonomous boundary Жданко, затем один approved schedule action занимает 5
-минут. Temporal execution, persistence и player-safe visibility остаются
+autonomous boundary Жданко. Request получает не scenario option set, а
+фактически зарегистрированные текущим actor-step операции и доступные refs.
+Выбранный plan применяется к working projection на том же timestamp +25;
+после этого общий temporal owner продолжает интервал до +30 уже с начатым
+действием. Temporal execution, persistence и player-safe visibility остаются
 code-owned. Combat resolution не активируется и остаётся `proposed`.
 
 ## 4. Архитектурные владельцы

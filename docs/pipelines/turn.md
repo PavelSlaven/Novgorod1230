@@ -65,9 +65,11 @@ conversation trigger subsystem нет. Listener/witness может получи�
 perception/received knowledge без обязательного ответа; private knowledge
 между NPC не переносится. Social check меняет только delivery/credibility, а
 не решение NPC. Autonomous NPC action active: Phase 7 «Отдых у огня» advances
-30 minutes, produces Жданко's boundary at +25 minutes and resolves one
-approved schedule action for 5 minutes through code-owned temporal, persistence
-and visibility owners. Combat resolution остаётся `proposed`; conversation
+30 minutes and produces Жданко's boundary at +25 minutes. The request exposes
+only operations backed by the current actor-step registry; the chosen step is
+applied at +25, then the common temporal owner resumes to +30 from that updated
+working projection. Persistence and visibility remain code-owned. Combat
+resolution остаётся `proposed`; conversation
 допускает только combat handoff.
 
 ## Temporal World v4 active sequence

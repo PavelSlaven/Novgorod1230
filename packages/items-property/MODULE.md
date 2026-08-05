@@ -28,6 +28,10 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
 - `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
+- `planApprovedItemZoneTransition` и
+  `planApprovedItemVisibilityTransition` — pure proposals для утверждённых
+  перемещения предмета между зонами и изменения его видимости без смены
+  владельца, держателя или контролёра
 - `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
 - `createRuntimeInstanceMechanicsSnapshot` — строго валидирует и отделённо замораживает exact mechanics/provenance обычного direct-action экземпляра
 - `resolveInventoryMechanicsProfile` — выбирает ровно один источник механики: authored template profile либо template-less runtime snapshot

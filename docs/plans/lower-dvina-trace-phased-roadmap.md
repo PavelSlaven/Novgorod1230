@@ -680,17 +680,19 @@ profiles Жданко; эта фаза подключает activity/body/NPC ha
 record задаёт duration 30 minutes, условия огня и drying/body effects.
 Сохраняются activity, exact elapsed interval, body/clothing state, Жданко
 schedule transition/semantic decision trace и воспринимаемые последствия. На
-25-й минуте создаётся common autonomous decision boundary; выбранное approved
-schedule action занимает оставшиеся 5 минут. Время, persistence и visible
-projection остаются code-owned.
+25-й минуте создаётся common autonomous decision boundary; выбранный
+actor-step применяется на том же timestamp, а общий temporal owner ведёт
+оставшиеся 5 минут из обновлённой working projection. Время, persistence и
+visible projection остаются code-owned.
 
 ### Тесты
 
 - elapsed ровно 30 минут;
 - одежда переходит только в approved более сухое состояние;
 - бодрость восстанавливается один раз;
-- boundary Жданко возникает ровно на 25-й минуте, а schedule action занимает
-  ровно 5 минут;
+- boundary Жданко возникает ровно на 25-й минуте, выбранный actor-step
+  применяется на том же timestamp, а общий temporal owner обрабатывает
+  оставшиеся 5 минут из обновлённой working projection;
 - Жданко действует на том же factual advance через semantic autonomous plan;
 - NPC action воспроизводимо, ограничено знаниями и не раскрывает hidden truth;
 - restart/replay не повторяют effects/decision.

@@ -67,13 +67,19 @@ export function projectPhase4SemanticNegotiation({
   const commitmentActive = semantic.commitment?.status === 'active';
   const offerCommitted = negotiation.offer_stage !== null
     && semantic.exchange.applied_contribution_count >= 1;
-  if ((responseKind === 'surrender') !== commitmentActive
-      || (responseKind === 'surrender'
-        && (!semantic.surrender
+  const surrenderResponse = responseKind === 'surrender';
+  if ((surrenderResponse && semantic.commitment === null)
+      || (!surrenderResponse && semantic.commitment !== null)
+      || (commitmentActive
+        && (!surrenderResponse
+          || !semantic.surrender
           || semantic.knife_transition_eligibility?.eligible !== true))
-      || (responseKind !== 'surrender'
-        && (semantic.commitment !== null
+      || (surrenderResponse && !commitmentActive
+        && (semantic.commitment?.status !== 'offered'
           || semantic.surrender !== null
+          || semantic.knife_transition_eligibility !== null))
+      || (responseKind !== 'surrender'
+        && (semantic.surrender !== null
           || semantic.knife_transition_eligibility !== null))) {
     semanticFail('TRACE_M2_PHASE_4_COMMITMENT_INVALID');
   }
@@ -99,7 +105,7 @@ export function projectPhase4SemanticNegotiation({
     ...(transitionCount > 0 ? { last_change_set_id: changeSetId } : {})
   }];
 
-  if (responseKind === 'surrender') {
+  if (commitmentActive) {
     applySemanticSurrender({
       next,
       state,

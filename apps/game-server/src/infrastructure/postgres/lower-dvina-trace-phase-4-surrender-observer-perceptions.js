@@ -16,7 +16,7 @@ export function appendM2SurrenderObserverPerceptions({
 }) {
   const semantic =
     factual.consequence.negotiation?.semantic_exchange;
-  if (semantic?.response_kind !== 'surrender') return;
+  if (semantic?.commitment?.status !== 'active') return;
   const decisionRequestId = semantic.decision_request?.request_id
     ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id;
   if (contracts.conversationBindings == null) {

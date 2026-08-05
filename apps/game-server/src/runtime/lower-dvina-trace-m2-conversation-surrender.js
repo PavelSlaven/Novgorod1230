@@ -77,7 +77,8 @@ export function buildSurrenderProjection(result, context) {
       acceptance_required: true,
       eligible_witness_refs: eligibleWitnessRefs,
       policy_ref: policyRef,
-      required_perceiving_party_refs: [ratshaRef],
+      required_acceptance_perceiving_party_refs: [playerRef],
+      required_offer_perceiving_party_refs: [ratshaRef],
       witness_policy_ref: witnessPolicyRef
     },
     terms: {
@@ -93,23 +94,18 @@ export function buildSurrenderProjection(result, context) {
     },
     witness_candidates: witnessRefs
   });
-  if (commitment.status !== 'active') {
-    fail(
-      'TRACE_M2_SURRENDER_COMMITMENT_INCOMPLETE',
-      'Committed perceived surrender must activate the party-local commitment.'
-    );
-  }
+  const active = commitment.status === 'active';
   return {
-    surrender: {
+    surrender: active ? {
       fact_id: context.contracts.promisePolicy.offer_timing
         .surrender_condition,
       source_statement_ref: acceptanceRef,
       semantic_act: npcStatement.dominant_act,
       semantic_tag: 'surrender',
       claim_truth_projection: 'speaker_claim_only'
-    },
+    } : null,
     commitment,
-    knifeTransitionEligibility: {
+    knifeTransitionEligibility: active ? {
       eligible: true,
       requires_fact_id: context.contracts.promisePolicy.offer_timing
         .surrender_condition,
@@ -119,7 +115,7 @@ export function buildSurrenderProjection(result, context) {
         context.contracts.actors.participating_fisher.instance_id
       ),
       execution_owner: 'item_property_transition_owner'
-    }
+    } : null
   };
 }
 

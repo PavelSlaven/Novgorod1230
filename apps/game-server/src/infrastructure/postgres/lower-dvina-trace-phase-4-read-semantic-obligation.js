@@ -40,7 +40,8 @@ export function assertPhase4SemanticPromiseAndSurrender({
   );
   const surrenderHistory = semanticNegotiations.filter(
     ({ consequence: c }) =>
-      c.negotiation.semantic_exchange_projection.response_kind === 'surrender'
+      c.negotiation.semantic_exchange_projection.commitment?.status
+        === 'active'
   );
   if ((promise.current_state === 'active')
       !== (payload.ratsha_surrendered === true)) fail();

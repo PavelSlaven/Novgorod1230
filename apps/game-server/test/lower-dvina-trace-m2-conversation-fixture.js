@@ -715,29 +715,10 @@ export function projectPhase4Negotiation({
   result,
   inputDigest
 }) {
-  const playerInput = {
-    request_id: `request:${inputDigest.slice(0, 12)}`,
-    idempotency_key: `idempotency:${inputDigest.slice(0, 12)}`,
-    raw_text: result.statements[0].utterance_text
-  };
+  const factual = phase4Factual({ state, contracts, result, inputDigest });
   return nextPhase4State({
     state,
-    factual: {
-      player_input: playerInput,
-      mode_resolution: {
-        option_id: contracts.ids.negotiationOption,
-        decision_trace: { action_set_digest: 'm2-negotiation-action-set' }
-      },
-      time_update: { clock_after: state.clock },
-      consequence: {
-        phase4_kind: 'negotiation',
-        negotiation: {
-          activity_ref: contracts.negotiation.profile_id,
-          semantic_exchange: result,
-          objective_fact_outputs: []
-        }
-      }
-    },
+    factual,
     nextVersion: state.party_state.state_version + 1,
     turnNumber: state.party_state.turn_number + 1,
     inputDigest,
@@ -746,4 +727,51 @@ export function projectPhase4Negotiation({
     rootTurnId: `turn:${inputDigest.slice(0, 12)}`,
     workingRevision: 0
   });
+}
+
+export function phase4Factual({ state, contracts, result, inputDigest }) {
+  const suffix = inputDigest.slice(0, 12);
+  const duration = result.exact_elapsed_minutes;
+  const playerInput = {
+    request_id: `request:${suffix}`,
+    idempotency_key: `idempotency:${suffix}`,
+    raw_text: result.statements[0].utterance_text
+  };
+  return {
+    player_input: playerInput,
+    mode_resolution: {
+      turn_id: `turn:${suffix}`,
+      option_id: contracts.ids.negotiationOption,
+      decision_trace: { action_set_digest: 'm2-negotiation-action-set' }
+    },
+    time_update: {
+      clock_before: structuredClone(state.clock),
+      clock_after: structuredClone(result.clock_after),
+      exact_elapsed: {
+        exact_minutes: { numerator: String(duration), denominator: '1' }
+      }
+    },
+    consequence: {
+      phase4_kind: 'negotiation',
+      negotiation: {
+        activity_ref: contracts.negotiation.profile_id,
+        offer_committed_before_check: true,
+        offer_stage: structuredClone(result.offer_stage),
+        check_request: null,
+        check_result: null,
+        outcome_ref: null,
+        semantic_exchange: result,
+        response_kind: null,
+        participating_fisher_id:
+          contracts.actors.participating_fisher.instance_id,
+        promise_state: 'offer_only',
+        objective_fact_outputs: [],
+        player_response_boundary: null,
+        activity_roots: [{
+          activity_ref: contracts.negotiation.profile_id,
+          duration_minutes: result.exchange.time_budget.total_minutes
+        }]
+      }
+    }
+  };
 }

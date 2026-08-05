@@ -19,17 +19,20 @@ function commitmentInput(overrides = {}) {
       beneficiary_refs: [beneficiaryRef],
       promisor_ref: promisorRef
     },
-    party_perceptions: [{
-      comprehension: 'full',
-      party_ref: beneficiaryRef,
-      speaker_recognized: true,
-      statement_refs: [acceptanceRef, offerRef]
-    }],
+    party_perceptions: [beneficiaryRef, promisorRef]
+      .sort((left, right) => left.entity_id.localeCompare(right.entity_id))
+      .map((partyRef) => ({
+        comprehension: 'full',
+        party_ref: partyRef,
+        speaker_recognized: true,
+        statement_refs: [acceptanceRef, offerRef]
+      })),
     policy: {
       acceptance_required: true,
       eligible_witness_refs: [],
       policy_ref: ref('social_policy', 'promise-policy'),
-      required_perceiving_party_refs: [beneficiaryRef],
+      required_acceptance_perceiving_party_refs: [promisorRef],
+      required_offer_perceiving_party_refs: [beneficiaryRef],
       witness_policy_ref: null
     },
     terms: {
@@ -54,13 +57,31 @@ test('party-local commitment becomes active only after committed acceptance was 
   assert.deepEqual(active.acceptance_statement_refs, [acceptanceRef]);
 
   const offered = planPartyLocalCommitment(commitmentInput({
-    party_perceptions: [{
-      comprehension: 'full',
-      party_ref: beneficiaryRef,
-      speaker_recognized: true,
-      statement_refs: [offerRef]
-    }]
+    party_perceptions: [beneficiaryRef, promisorRef]
+      .sort((left, right) => left.entity_id.localeCompare(right.entity_id))
+      .map((partyRef) => ({
+        comprehension: 'full',
+        party_ref: partyRef,
+        speaker_recognized: true,
+        statement_refs: [offerRef]
+      }))
   }));
+  assert.equal(offered.status, 'offered');
+});
+
+test('acceptance does not activate before its policy perceiver hears it', () => {
+  const offered = planPartyLocalCommitment(commitmentInput({
+    party_perceptions: [beneficiaryRef, promisorRef]
+      .sort((left, right) => left.entity_id.localeCompare(right.entity_id))
+      .map((partyRef) => ({
+        comprehension: 'full',
+        party_ref: partyRef,
+        speaker_recognized: true,
+        statement_refs: partyRef === promisorRef
+          ? [offerRef] : [acceptanceRef, offerRef]
+      }))
+  }));
+
   assert.equal(offered.status, 'offered');
 });
 
@@ -78,7 +99,8 @@ test('party-local commitment applies witness eligibility after factual perceptio
   const eligibleWitness = ref('npc', 'eligible-witness');
   const ineligibleWitness = ref('npc', 'ineligible-witness');
   const result = planPartyLocalCommitment(commitmentInput({
-    party_perceptions: [beneficiaryRef, eligibleWitness, ineligibleWitness]
+    party_perceptions: [beneficiaryRef, eligibleWitness, ineligibleWitness,
+      promisorRef]
       .sort((left, right) => left.entity_id.localeCompare(right.entity_id))
       .map((partyRef) => ({
         comprehension: 'full',

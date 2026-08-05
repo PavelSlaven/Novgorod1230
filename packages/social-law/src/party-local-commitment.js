@@ -29,7 +29,8 @@ const POLICY_KEYS = [
   'acceptance_required',
   'eligible_witness_refs',
   'policy_ref',
-  'required_perceiving_party_refs',
+  'required_acceptance_perceiving_party_refs',
+  'required_offer_perceiving_party_refs',
   'witness_policy_ref'
 ];
 const REF_KEYS = ['entity_id', 'entity_kind'];
@@ -117,7 +118,8 @@ export function planPartyLocalCommitment(input = {}) {
   const perceptionByParty = new Map(
     input.party_perceptions.map((perception) => [refKey(perception.party_ref), perception])
   );
-  const invalidRequiredPerceptions = input.policy.required_perceiving_party_refs.filter((partyRef) =>
+  const invalidRequiredPerceptions =
+    input.policy.required_offer_perceiving_party_refs.filter((partyRef) =>
     !partyKeys.has(refKey(partyRef))
       || !fullyPerceived(perceptionByParty.get(refKey(partyRef)), offerStatementRefs)
   );
@@ -125,7 +127,10 @@ export function planPartyLocalCommitment(input = {}) {
     throw new PartyLocalCommitmentPlanningError(
       POLICY_GAP,
       'Required perceivers must be parties with full recognized perception of the committed offer.',
-      { invalid_required_perceiving_party_refs:invalidRequiredPerceptions }
+      {
+        invalid_required_offer_perceiving_party_refs:
+          invalidRequiredPerceptions
+      }
     );
   }
 
@@ -139,16 +144,26 @@ export function planPartyLocalCommitment(input = {}) {
         offerStatementRefs
       )
   );
-  const requiredBeneficiaryKeys = new Set(
-    input.policy.required_perceiving_party_refs.map(refKey)
+  const requiredAcceptancePerceivers =
+    input.policy.required_acceptance_perceiving_party_refs;
+  const invalidAcceptancePerceivers = requiredAcceptancePerceivers.filter(
+    (partyRef) => !partyKeys.has(refKey(partyRef))
   );
-  const requiredBeneficiaries = input.parties.beneficiary_refs.filter((beneficiary) =>
-    requiredBeneficiaryKeys.has(refKey(beneficiary))
-  );
+  if (invalidAcceptancePerceivers.length !== 0) {
+    throw new PartyLocalCommitmentPlanningError(
+      POLICY_GAP,
+      'Required acceptance perceivers must be commitment parties.',
+      {
+        invalid_required_acceptance_perceiving_party_refs:
+          invalidAcceptancePerceivers
+      }
+    );
+  }
   const acceptanceComplete = input.policy.acceptance_required
     && acceptanceStatementRefs.length !== 0
-    && requiredBeneficiaries.every((beneficiary) =>
-      fullyPerceived(perceptionByParty.get(refKey(beneficiary)), acceptanceStatementRefs)
+    && requiredAcceptancePerceivers.every((partyRef) =>
+      fullyPerceived(perceptionByParty.get(refKey(partyRef)),
+        acceptanceStatementRefs)
     );
   const status = input.policy.acceptance_required
     ? (acceptanceComplete ? 'active' : 'offered')
@@ -218,11 +233,26 @@ function validatePolicy(policy) {
   validateExactObject(policy, POLICY_KEYS, 'policy');
   validateRef(policy.policy_ref, 'policy.policy_ref');
   validateRefArray(
-    policy.required_perceiving_party_refs,
-    'policy.required_perceiving_party_refs',
+    policy.required_offer_perceiving_party_refs,
+    'policy.required_offer_perceiving_party_refs',
     { nonEmpty:true }
   );
   validateBoolean(policy.acceptance_required, 'policy.acceptance_required');
+  validateRefArray(
+    policy.required_acceptance_perceiving_party_refs,
+    'policy.required_acceptance_perceiving_party_refs',
+    { nonEmpty:policy.acceptance_required }
+  );
+  if (!policy.acceptance_required
+      && policy.required_acceptance_perceiving_party_refs.length !== 0) {
+    mismatch(
+      'Acceptance perceivers are forbidden when acceptance is not required.',
+      {
+        required_acceptance_perceiving_party_refs:
+          policy.required_acceptance_perceiving_party_refs
+      }
+    );
+  }
   validateNullableRef(policy.witness_policy_ref, 'policy.witness_policy_ref');
   validateRefArray(policy.eligible_witness_refs, 'policy.eligible_witness_refs');
 }

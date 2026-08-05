@@ -152,7 +152,7 @@ export function appendSemanticNegotiation({
     contributions: semanticInput.contributions
   });
   appends.push(...activationAppends);
-  if (semantic.response_kind === 'surrender') {
+  if (semantic.commitment?.status === 'active') {
     appendSemanticSurrenderStateWrites({
       inserts,
       updates,

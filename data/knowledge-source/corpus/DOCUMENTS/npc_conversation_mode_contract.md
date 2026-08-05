@@ -1723,6 +1723,7 @@ planPartyLocalCommitment(...)
 - parties;
 - фактическое восприятие сторон;
 - acceptance statement refs;
+- отдельные policy refs сторон, обязанных воспринять offer и acceptance;
 - applicable social/jurisdiction policy;
 - фактических witness candidates.
 
@@ -2641,6 +2642,9 @@ orderNpcConversationDecisionRequests
 - обработку structured commitment candidate;
 - `planPartyLocalCommitment` либо эквивалентное минимальное расширение существующего owner;
 - activation только из committed offer/acceptance statements;
+- раздельную policy восприятия offer и acceptance; acceptance активирует
+  commitment только после factual full perception каждой требуемой policy
+  стороны;
 - factual witness perception;
 - authority/intervention policies for response boundaries.
 

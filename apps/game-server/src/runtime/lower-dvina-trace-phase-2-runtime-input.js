@@ -16,8 +16,7 @@ export function createStateVersionRevalidator({
 export function validateConversationDependencies({
   scenarioDefinitionRevision,
   playerConversationModel,
-  npcSemanticModel,
-  npcAutonomousModel
+  npcSemanticModel
 }) {
   if (![14, 15].includes(scenarioDefinitionRevision)) return;
   if (typeof playerConversationModel !== 'function'
@@ -25,14 +24,6 @@ export function validateConversationDependencies({
     throw serverError(
       'TRACE_M2_CONVERSATION_DEPENDENCY_MISSING',
       'Revision 14 requires player and NPC semantic conversation models.',
-      { status: 503 }
-    );
-  }
-  if (scenarioDefinitionRevision === 15
-      && typeof npcAutonomousModel !== 'function') {
-    throw serverError(
-      'TRACE_M3_AUTONOMOUS_DEPENDENCY_MISSING',
-      'Revision 15 requires the autonomous NPC semantic model.',
       { status: 503 }
     );
   }

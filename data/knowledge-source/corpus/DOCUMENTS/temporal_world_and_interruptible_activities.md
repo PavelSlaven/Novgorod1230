@@ -967,10 +967,10 @@ generic signal descriptors. Единственный active словарь пр�
 только `material` либо `critical`. Perception-required signal допускается к
 aggregation лишь после фактического восприятия или received message.
 
-Все новые signals одного NPC в одном fully resolved same-time batch
+Все новые signals одного NPC в одном fully resolved same-time batch и режиме
 агрегируются в не более чем одну `npc_decision_boundary_v1`; наличие critical
-делает boundary critical. Одна такая NPC/batch pair вызывает не более одного
-LLM-вызова, а replay использует persisted trace. Conversation не вводит
+делает boundary critical. Одна такая mode/NPC/batch identity вызывает не более
+одного LLM-вызова, а replay использует persisted trace. Conversation не вводит
 собственный trigger schema или scheduler.
 
 Semantic request содержит только восприятие, received knowledge, memory и

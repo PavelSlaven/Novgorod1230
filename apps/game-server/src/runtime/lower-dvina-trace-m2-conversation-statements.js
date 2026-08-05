@@ -10,16 +10,13 @@ import {
 } from './lower-dvina-trace-m2-conversation-signals.js';
 import { requirePlayerSpeech } from
   './lower-dvina-trace-m2-conversation-plans.js';
-import {
-  compareRefs,
-  fail,
-  npcRef,
-  ref,
-  sameRef
-} from './lower-dvina-trace-m2-conversation-shared.js';
+import { compareRefs, fail, npcRef, ref, sameRef } from
+  './lower-dvina-trace-m2-conversation-shared.js';
 import { evidencePresentationPerception } from './lower-dvina-trace-m2-conversation-supporting-perception.js';
 import { playerDecisionSignalRecords } from
   './lower-dvina-trace-m2-conversation-participants.js';
+import { projectSilencePerception } from
+  './lower-dvina-trace-m2-conversation-nonverbal.js';
 
 export function applyPlayerPlan(context, working, plan) {
   requirePlayerSpeech(context, plan);
@@ -37,7 +34,6 @@ export function applyPlayerPlan(context, working, plan) {
     handoff: null
   });
 }
-
 export function projectPlayerPerception(context, working, statement) {
   const audience = audienceForStatement(
     context, statement, context.actualNpcActors, []
@@ -111,7 +107,8 @@ export function applyNpcPlan(
     exchange_id: context.exchangeId,
     speaker_ref: context.targetRef,
     contribution_kind: proposal.plan.contribution_kind,
-    handoff
+    handoff,
+    nonverbal_audience: null
   };
   return applyResult({
     working: {
@@ -131,10 +128,19 @@ export function applyNpcPlan(
     handoff
   });
 }
-
 export function projectNpcPerception(context, working, contributionEvent,
-  npcOutcome, plan) {
+  npcOutcome, plan, request = null) {
   if (contributionEvent.schema !== 'conversation_statement_event_v1') {
+    if (contributionEvent.contribution_kind === 'silence') {
+      const projected = projectSilencePerception(
+        context, working, contributionEvent, request
+      );
+      return applyResult({
+        ...projected,
+        sessionStatus: 'active',
+        handoff: null
+      });
+    }
     return applyResult({
       working,
       contributionEvent,

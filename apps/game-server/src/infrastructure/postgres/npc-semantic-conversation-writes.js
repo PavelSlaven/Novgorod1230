@@ -19,6 +19,8 @@ import {
   statementIndex,
   writeArraysValid
 } from './npc-semantic-conversation-write-validation.js';
+import { hasNonverbalDecisionEvidence } from
+  './npc-semantic-conversation-nonverbal-validation.js';
 import {
   appendContributionWrites,
   appendMessageWrites,
@@ -175,6 +177,12 @@ export function appendNpcSemanticConversationWrites({
           supportingOperationEvidence
         })) {
       fail('Environment decision request must be based on actual persisted perception');
+    }
+    if (!hasNonverbalDecisionEvidence({
+      signalRecords: decision.orderedSignals,
+      contributions
+    })) {
+      fail('Nonverbal decision request must be based on actual persisted perception');
     }
   }
 

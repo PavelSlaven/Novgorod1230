@@ -72,6 +72,30 @@ export function npcResponseSignalRecords(context, statement, audience, plan) {
   });
 }
 
+export function npcSilenceSignalRecords(
+  context,
+  contribution,
+  audience,
+  request
+) {
+  const perceivedStatementRef = request?.perceived_message
+    ?.source_statement_ref;
+  const priorSpeakerRef = request?.public_conversation_history?.find(
+    ({ source_statement_ref: statementRef }) =>
+      sameRef(statementRef, perceivedStatementRef)
+  )?.speaker_ref;
+  if (priorSpeakerRef?.entity_kind !== 'npc') return [];
+  const observation = audience.observations.find(
+    ({ observer_ref: observerRef, speaker_ref: speakerRef }) =>
+      sameRef(observerRef, priorSpeakerRef) && speakerRef !== null
+  );
+  if (observation === undefined) return [];
+  return [signalRecord(context, {
+    category: 'others', significance: 'material'
+  }, ref('conversation_contribution', contribution.contribution_id),
+  observation.perception_result_ref, priorSpeakerRef)];
+}
+
 function signalRecord(
   context,
   descriptor,
@@ -98,10 +122,17 @@ function persistedNpcFollowUpMatches(context, record, consumed) {
   if (!plainRecord(record)
       || !plainRecord(signal)
       || consumed.has(signal.signal_id)
-      || signal.category !== 'communication'
       || signal.significance !== 'material'
-      || signal.source_event_ref?.entity_kind !== 'conversation_statement'
       || !sameRef(signal.subject_ref, context.targetRef)) {
+    return false;
+  }
+  if (signal.category === 'others'
+      && signal.source_event_ref?.entity_kind
+        === 'conversation_contribution') {
+    return persistedNonverbalFollowUpMatches(context, signal);
+  }
+  if (signal.category !== 'communication'
+      || signal.source_event_ref?.entity_kind !== 'conversation_statement') {
     return false;
   }
   const statement = [
@@ -125,4 +156,21 @@ function persistedNpcFollowUpMatches(context, record, consumed) {
     sameRef(message.source_statement_ref, signal.source_event_ref)
       && sameRef(message.listener_ref, context.targetRef)
       && sameRef(message.perception_result_ref, signal.source_perception_ref));
+}
+
+function persistedNonverbalFollowUpMatches(context, signal) {
+  const contribution = (context.state.conversation_contributions ?? []).find(
+    ({ contribution_id: contributionId }) =>
+      contributionId === signal.source_event_ref.entity_id
+  );
+  return contribution?.conversation_id === context.conversationId
+    && contribution.contribution_kind === 'silence'
+    && contribution.speaker_ref?.entity_kind === 'npc'
+    && contribution.nonverbal_audience?.observations?.some((observation) =>
+      sameRef(observation.observer_ref, context.targetRef)
+        && sameRef(observation.speaker_ref, contribution.speaker_ref)
+        && sameRef(observation.source_contribution_ref,
+          signal.source_event_ref)
+        && sameRef(observation.perception_result_ref,
+          signal.source_perception_ref));
 }

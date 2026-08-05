@@ -183,3 +183,81 @@ export function projectConversationAudience(input = {}) {
       .map(({ listener_ref }) => listener_ref)
   });
 }
+
+export function projectConversationNonverbalAudience(input = {}) {
+  const contribution = input?.contribution;
+  const observerResults = input?.observer_results;
+  if (!exactRecord(input, ['contribution', 'observer_results'])
+      || !exactRecord(contribution, [
+        'schema', 'contribution_id', 'conversation_id', 'exchange_id',
+        'speaker_ref', 'contribution_kind', 'handoff', 'nonverbal_audience'
+      ])
+      || contribution.schema
+        !== 'conversation_non_statement_contribution_v1'
+      || contribution.contribution_kind !== 'silence'
+      || !exactText(contribution.contribution_id)
+      || !exactText(contribution.conversation_id)
+      || !exactText(contribution.exchange_id)
+      || !exactRef(contribution.speaker_ref, new Set(['npc']))
+      || contribution.handoff !== null
+      || contribution.nonverbal_audience !== null
+      || !Array.isArray(observerResults)
+      || observerResults.some((result) => !validNonverbalObserver(result))) {
+    invalid();
+  }
+  const observerKeys = observerResults.map(({ observer_ref: observerRef }) =>
+    refKey(observerRef));
+  const perceptionKeys = observerResults.map(
+    ({ perception_result_ref: perceptionRef }) => refKey(perceptionRef)
+  );
+  if (new Set(observerKeys).size !== observerKeys.length
+      || new Set(perceptionKeys).size !== perceptionKeys.length) {
+    invalid();
+  }
+  const contributionRef = {
+    entity_kind: 'conversation_contribution',
+    entity_id: contribution.contribution_id
+  };
+  const actualObservers = observerResults
+    .filter(({ perception_result: result }) => result !== 'not_perceived')
+    .sort((left, right) => refKey(left.observer_ref).localeCompare(
+      refKey(right.observer_ref), 'en'
+    ));
+  return deepFreeze({
+    schema: 'conversation_nonverbal_audience_projection_v1',
+    contribution_ref: contributionRef,
+    actual_observer_refs: actualObservers.map(
+      ({ observer_ref: observerRef }) => observerRef
+    ),
+    observations: actualObservers.map((result) => ({
+      source_contribution_ref: contributionRef,
+      observer_ref: result.observer_ref,
+      perception_result_ref: result.perception_result_ref,
+      perception_result: result.perception_result,
+      perceived_at: result.perceived_at,
+      same_time_batch_ref: result.same_time_batch_ref,
+      speaker_ref: result.speaker_recognized
+        ? contribution.speaker_ref : null,
+      observed_kind: 'silence'
+    })),
+    witness_candidate_refs: actualObservers
+      .filter(({ speaker_recognized: speakerRecognized }) => speakerRecognized)
+      .map(({ observer_ref: observerRef }) => observerRef)
+  });
+}
+
+function validNonverbalObserver(value) {
+  return exactRecord(value, [
+    'observer_ref', 'perception_result_ref', 'perception_result',
+    'perceived_at', 'same_time_batch_ref', 'speaker_recognized'
+  ])
+    && exactRef(value.observer_ref, LISTENER_KINDS)
+    && exactRef(value.perception_result_ref, PERCEPTION_REF_KINDS)
+    && exactRef(value.same_time_batch_ref, TEMPORAL_BATCH_KINDS)
+    && exactTimestamp(value.perceived_at)
+    && ['not_perceived', 'perceived_partial', 'recognized']
+      .includes(value.perception_result)
+    && typeof value.speaker_recognized === 'boolean'
+    && (value.perception_result !== 'not_perceived'
+      || value.speaker_recognized === false);
+}

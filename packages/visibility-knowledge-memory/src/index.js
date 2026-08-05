@@ -6,6 +6,7 @@ import {
 
 export {
   projectConversationAudience,
+  projectConversationNonverbalAudience,
   projectConversationReceivedClaims
 } from './conversation-audience.js';
 

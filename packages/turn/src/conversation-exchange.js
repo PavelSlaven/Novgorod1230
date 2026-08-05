@@ -233,6 +233,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     });
   }
   const timeSlices = contributionSlices(normalized.timeBudget);
+  let totalBudgetMinutes = normalized.timeBudget.total_minutes;
   let elapsedBudgetMinutes = 0;
   let completedContributionCount = 0;
   let appliedContributionCount = 0;
@@ -317,9 +318,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       stopReason = 'player_response';
       break;
     }
-    if (elapsedBudgetMinutes >= normalized.timeBudget.total_minutes) {
-      stopReason = 'exchange_limit';
-      break;
+    if (elapsedBudgetMinutes >= totalBudgetMinutes) {
+      totalBudgetMinutes += 1;
     }
     const boundary = queuedNpcBoundaries.shift();
     const decision = normalizeNpcDecision(await callPort(
@@ -356,15 +356,14 @@ export async function runConversationExchange(input = {}, ports = {}) {
       rawNpcResult,
       'TURN_CONVERSATION_NPC_APPLY_INVALID'
     );
-    const remainingBudgetMinutes = normalized.timeBudget.total_minutes
+    const remainingBudgetMinutes = totalBudgetMinutes
       - elapsedBudgetMinutes;
     const plannedMinutes = plannedNpcContributionMinutes({
       defaultMinutes: timeSlices[contributions.length]
         ?? remainingBudgetMinutes,
       remainingBudgetMinutes,
       queuedBoundaries: queuedNpcBoundaries,
-      plan: proposal.plan,
-      processedNpcRefs: npcDecisions.map(({ request }) => request.npc_ref)
+      plan: proposal.plan
     });
     const npcProgress = await progressAndProject({
       ports,
@@ -407,7 +406,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
         contribution_index: contributions.length + 1,
         remaining_minutes: plannedMinutes - npcProgress.elapsedMinutes,
         remaining_exchange_minutes:
-          normalized.timeBudget.total_minutes - elapsedBudgetMinutes,
+          totalBudgetMinutes - elapsedBudgetMinutes,
         remaining_responder_refs: queuedNpcBoundaries.map(
           ({ npc_ref: npcRef }) => npcRef),
         same_time_batch_ref: decision.boundary.same_time_batch_ref,
@@ -422,7 +421,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     }
   }
   const finalBudgetMinutes = stopReason === 'temporal_boundary'
-    ? normalized.timeBudget.total_minutes : elapsedBudgetMinutes;
+    ? totalBudgetMinutes : elapsedBudgetMinutes;
 
   return immutableClone({
     schema: 'conversation_exchange_result_v1',
@@ -451,27 +450,25 @@ function plannedNpcContributionMinutes({
   defaultMinutes,
   remainingBudgetMinutes,
   queuedBoundaries,
-  plan,
-  processedNpcRefs
+  plan
 }) {
   const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
     `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
-  const processedKeys = new Set(processedNpcRefs.map((npcRef) =>
-    `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
+  if (['leave_conversation', 'action_handoff', 'combat_handoff'].includes(
+    plan.contribution_kind
+  )) {
+    queuedKeys.clear();
+  }
   const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
     ? [] : plan.speech?.response_expectation?.target_refs ?? [];
-  let recurrentResponse = false;
   for (const reference of expectedRefs) {
     const key = `${reference.entity_kind}\u0000${reference.entity_id}`;
     queuedKeys.add(key);
-    if (processedKeys.has(key)) recurrentResponse = true;
   }
   const futureReserve = Math.min(
     queuedKeys.size,
-    Math.max(0, remainingBudgetMinutes - (recurrentResponse ? 0 : 1))
+    Math.max(0, remainingBudgetMinutes - 1)
   );
-  return Math.max(recurrentResponse ? 0 : 1, Math.min(
-    defaultMinutes,
-    remainingBudgetMinutes - futureReserve
-  ));
+  return Math.max(1, Math.min(defaultMinutes,
+    remainingBudgetMinutes - futureReserve));
 }

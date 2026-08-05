@@ -223,9 +223,12 @@ function publicConversationHistory(
       conversationId === context.conversationId)
     .flatMap((contribution) => {
       if (contribution.schema === 'conversation_non_statement_contribution_v1') {
-        return sameRef(contribution.speaker_ref, context.targetRef)
-          ? [structuredClone(contribution)]
-          : [];
+        const visible = visibleContributionFor(
+          context,
+          working,
+          contribution
+        );
+        return visible === undefined ? [] : [structuredClone(visible)];
       }
       if (sameRef(contribution.speaker_ref, context.targetRef)) {
         return [structuredClone(contribution)];
@@ -241,20 +244,39 @@ function publicConversationHistory(
     history.push(structuredClone(currentMessage));
   }
   if (latestContribution !== null) {
-    const latestVisible = sameRef(
-      latestContribution.speaker_ref,
-      context.targetRef
-    )
-      ? latestContribution
-      : messageForStatement(context, working, latestContribution);
+    const latestVisible = visibleContributionFor(
+      context,
+      working,
+      latestContribution
+    );
     const latestId = latestVisible?.source_statement_ref?.entity_id
-      ?? latestVisible?.statement_id;
+      ?? latestVisible?.source_contribution_ref?.entity_id
+      ?? latestVisible?.statement_id
+      ?? latestVisible?.contribution_id;
     if (latestId !== undefined && !history.some((entry) =>
       entry.source_statement_ref?.entity_id === latestId
+        || entry.source_contribution_ref?.entity_id === latestId
         || entry.statement_id === latestId
+        || entry.contribution_id === latestId
     )) {
       history.push(structuredClone(latestVisible));
     }
   }
   return history;
+}
+
+function visibleContributionFor(context, working, contribution) {
+  if (sameRef(contribution.speaker_ref, context.targetRef)) {
+    if (contribution.schema
+        === 'conversation_non_statement_contribution_v1') {
+      return { ...contribution, nonverbal_audience: null };
+    }
+    return contribution;
+  }
+  if (contribution.schema === 'conversation_statement_event_v1') {
+    return messageForStatement(context, working, contribution);
+  }
+  return contribution.nonverbal_audience?.observations?.find(
+    ({ observer_ref: observerRef }) => sameRef(observerRef, context.targetRef)
+  );
 }

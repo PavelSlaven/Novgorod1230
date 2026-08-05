@@ -248,11 +248,10 @@ test('persisted NPC reply creates one perceived follow-up after restart',
     ).length, 2);
   });
 
-test('exchange limit preserves a persisted NPC follow-up for the next exchange',
+test('causal NPC follow-up extends time positively instead of using zero minutes',
   async () => {
     const state = phase3State();
     const contracts = resolveContracts(state);
-    const eremey = npcBySlot(state, 'eremey_fisher');
     const responder = npcBySlot(state, 'background_fisher_1');
     const pendingResponder = npcBySlot(state, 'background_fisher_2');
     const responderRef = ref('npc', responder.instance_id);
@@ -270,34 +269,20 @@ test('exchange limit preserves a persisted NPC follow-up for the next exchange',
         };
         return plan;
       } });
-    assert.equal(first.npcCalls, 2);
-    assert.equal(first.result.exchange.stop_reason, 'exchange_limit');
+    assert.equal(first.npcCalls, 3);
+    assert.equal(first.result.exchange.stop_reason, 'player_response');
     const pendingSignal = first.result.new_signal_records.find(({ signal }) =>
       signal.subject_ref.entity_id === pendingResponder.instance_id).signal;
     assert.equal(first.result.consumed_signal_ids.includes(
-      pendingSignal.signal_id), false);
+      pendingSignal.signal_id), true);
     const firstProjected = projectSemantic(first, state, 'aaaaaaaaaaaa');
     const firstWrites = writeSemantic(state, firstProjected, first.result,
       'aaaaaaaaaaaa');
     const firstTraces = await assertLowerDvinaTraceSemanticConversationRows(
       semanticReadPool(firstWrites), firstProjected);
-    const restarted = projectPhase3Conversation({ state,
-      contracts, result: first.result,
-      inputDigest: digest('a') });
-    restarted.clock = structuredClone(
-      first.result.exchange.working_state.clock
-    );
-    restarted.npc_semantic_decision_traces = firstTraces;
-
-    const second = await runPhase3({ state: restarted,
-      contracts: resolveContracts(restarted), rawText: 'А что дальше?',
-      inputDigest: digest('b'), responseKind: 'speech' });
-    assert.equal(second.npcCalls, 2);
-    assert.deepEqual(second.npcRequests.map(({ npc_ref: npc }) => npc), [
-      ref('npc', eremey.instance_id), pendingResponderRef
-    ]);
-    assert.equal(second.result.consumed_signal_ids.includes(
-      pendingSignal.signal_id), true);
+    assert.equal(firstTraces.length, 3);
+    assert.equal(first.result.exchange.working_state.temporal_advance_results
+      .length, first.result.exchange.contributions.length);
   });
 
 test('resumed recurrent NPC chain stops at the exchange contribution limit',
@@ -381,7 +366,7 @@ test('resumed recurrent NPC chain stops at the exchange contribution limit',
       decisions: 1,
       stopReason: 'exchange_limit',
       applied: 2,
-      elapsed: 1
+      elapsed: 2
     });
   });
 

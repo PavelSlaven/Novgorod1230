@@ -2,6 +2,8 @@ import {
   buildConversationStatementEvent,
   validateNpcDecisionSignal
 } from '@rus/npc-runtime';
+import { validNonverbalAudience } from
+  './npc-semantic-conversation-nonverbal-validation.js';
 
 export function validateStatements(values, request) {
   if (!Array.isArray(values) || values.length === 0) {
@@ -95,7 +97,10 @@ export function validateContributions(values, statements, request) {
             'combat_handoff'].includes(contribution.contribution_kind)
           || !text(contribution.speaker_ref?.entity_kind)
           || !text(contribution.speaker_ref?.entity_id)
-          || !(contribution.handoff === null || record(contribution.handoff))))) {
+          || !(contribution.handoff === null || record(contribution.handoff))
+          || (contribution.contribution_kind === 'silence'
+            ? !validNonverbalAudience(contribution)
+            : contribution.nonverbal_audience !== null)))) {
       fail('TRACE_M2_CONVERSATION_CONTRIBUTIONS_INVALID');
     }
     identities.add(identity);

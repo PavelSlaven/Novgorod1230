@@ -69,10 +69,11 @@ test('continued history includes a prior NPC silence contribution', async () => 
     contracts: resolveContracts(continued), rawText: 'Я повторяю вопрос.',
     inputDigest: digest('9'), responseKind: 'speech' });
 
-  assert.equal(second.npcRequest.public_conversation_history.some((entry) =>
-    entry.schema === 'conversation_non_statement_contribution_v1'
-      && entry.exchange_id === first.result.decision_request.exchange_id
-      && entry.contribution_kind === 'silence'), true);
+  const ownSilence = second.npcRequest.public_conversation_history.find(
+    (entry) => entry.contribution_kind === 'silence');
+  assert.equal(ownSilence.exchange_id,
+    first.result.decision_request.exchange_id);
+  assert.equal(ownSilence.nonverbal_audience, null);
 });
 
 test('unheard target keeps player fact and skips NPC model', async () => {

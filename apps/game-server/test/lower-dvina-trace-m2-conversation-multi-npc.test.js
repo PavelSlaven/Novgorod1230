@@ -166,6 +166,11 @@ test('NPC A may decide again after NPC B creates a new causal batch',
       [eremeyRef, responderRef, eremeyRef]);
     assert.equal(new Set(exchange.npcRequests.map(
       ({ request_id: requestId }) => requestId)).size, 3);
+    assert.equal(
+      exchange.result.exchange.working_state.temporal_advance_results.length,
+      exchange.result.exchange.contributions.length
+    );
+    assert.equal(exchange.result.exact_elapsed_minutes, 6);
 
     const projectedPhase3 = projectPhase3Conversation({
       state,
@@ -232,6 +237,132 @@ test('NPC A may decide again after NPC B creates a new causal batch',
     });
     assert.equal(visible.visible_scene,
       'Еремей говорит: «Я отвечу лишь на то, что сам видел.»');
+  });
+
+test('NPC A may perceive and react when NPC B deliberately stays silent',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const responder = npcBySlot(state, 'background_fisher_1');
+    const bystander = npcBySlot(state, 'background_fisher_2');
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const responderRef = ref('npc', responder.instance_id);
+    const exchange = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Еремей, спроси рыбака, почему он молчит.',
+      inputDigest: digest('c'),
+      responseKind: 'speech',
+      playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef]
+      },
+      transformNpcPlan: (plan, { call_index: callIndex }) => {
+        if (callIndex === 1) {
+          plan.primary_addressee_ref = responderRef;
+          plan.intended_addressee_refs = [responderRef];
+          plan.speech.response_expectation = {
+            kind: 'answer', target_refs: [responderRef]
+          };
+        }
+        if (callIndex === 2) {
+          plan.contribution_kind = 'silence';
+          plan.primary_addressee_ref = null;
+          plan.intended_addressee_refs = [];
+          plan.speech = null;
+          plan.supporting_operations = [];
+          plan.handoff = null;
+        }
+        return plan;
+      }
+    });
+
+    assert.deepEqual(exchange.npcRequests.map(({ npc_ref: npcRef }) => npcRef),
+      [eremeyRef, responderRef, eremeyRef]);
+    const silence = exchange.result.exchange.contributions.find(
+      ({ contribution_kind: contributionKind }) =>
+        contributionKind === 'silence'
+    );
+    assert.equal(silence.nonverbal_audience.observations.some(
+      ({ observer_ref: observerRef }) =>
+        observerRef.entity_id === eremey.instance_id), true);
+    assert.equal(silence.nonverbal_audience.observations.some(
+      ({ observer_ref: observerRef }) =>
+        observerRef.entity_id === bystander.instance_id), true);
+    const silenceSignal = exchange.result.new_signal_records.find(
+      ({ signal }) => signal.source_event_ref.entity_kind
+        === 'conversation_contribution'
+        && signal.source_event_ref.entity_id === silence.contribution_id
+        && signal.subject_ref.entity_id === eremey.instance_id
+    ).signal;
+    assert.equal(silenceSignal.category, 'others');
+    assert.equal(silenceSignal.significance, 'material');
+    assert.equal(exchange.result.consumed_signal_ids.includes(
+      silenceSignal.signal_id), true);
+    assert.equal(exchange.npcRequests.some(({ npc_ref: npcRef }) =>
+      npcRef.entity_id === bystander.instance_id), false);
+
+    const restarted = projectSemanticConversationSnapshot({
+      state,
+      semanticExchange: exchange.result,
+      rootTurnId: 'turn:multi-npc:silence',
+      workingRevision: 0,
+      appliedChangeSetId: 'change:multi-npc:silence'
+    });
+    const writeInput = buildNpcSemanticConversationWriteInput({
+      state,
+      next: restarted,
+      semanticExchange: exchange.result
+    });
+    const unbackedInput = structuredClone(writeInput);
+    const unbackedSilence = unbackedInput.contributions.find(
+      ({ contribution_kind: contributionKind }) =>
+        contributionKind === 'silence'
+    );
+    unbackedSilence.nonverbal_audience.observations =
+      unbackedSilence.nonverbal_audience.observations.filter(
+        ({ observer_ref: observerRef }) =>
+          observerRef.entity_id !== eremey.instance_id
+      );
+    assert.throws(() => appendNpcSemanticConversationWrites({
+      inserts: [], updates: [], appends: [],
+      partyId: state.party_id,
+      changeSetId: 'change:multi-npc:silence:unbacked',
+      idempotencyRecordId: 'idem:multi-npc:silence:unbacked',
+      rootTurnId: 'turn:multi-npc:silence:unbacked',
+      workingRevision: 0,
+      ...unbackedInput
+    }), { code: 'NPC_SEMANTIC_CONVERSATION_PERSISTENCE_INVALID' });
+    const duplicateObserverInput = structuredClone(writeInput);
+    const duplicateObserverSilence = duplicateObserverInput.contributions.find(
+      ({ contribution_kind: contributionKind }) =>
+        contributionKind === 'silence'
+    );
+    duplicateObserverSilence.nonverbal_audience.observations[1].observer_ref =
+      duplicateObserverSilence.nonverbal_audience.observations[0].observer_ref;
+    assert.throws(() => appendNpcSemanticConversationWrites({
+      inserts: [], updates: [], appends: [],
+      partyId: state.party_id,
+      changeSetId: 'change:multi-npc:silence:duplicate-observer',
+      idempotencyRecordId: 'idem:multi-npc:silence:duplicate-observer',
+      rootTurnId: 'turn:multi-npc:silence:duplicate-observer',
+      workingRevision: 0,
+      ...duplicateObserverInput
+    }), { code: 'NPC_SEMANTIC_CONVERSATION_PERSISTENCE_INVALID' });
+    const writes = { inserts: [], updates: [], appends: [] };
+    appendNpcSemanticConversationWrites({
+      ...writes,
+      partyId: state.party_id,
+      changeSetId: 'change:multi-npc:silence',
+      idempotencyRecordId: 'idem:multi-npc:silence',
+      rootTurnId: 'turn:multi-npc:silence',
+      workingRevision: 0,
+      ...writeInput
+    });
+    assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(writes), restarted
+    )).length, 3);
   });
 
 function resolveContracts(state) {

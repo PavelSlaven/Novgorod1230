@@ -19,7 +19,7 @@
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
-- `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC/same-time batch получает не более одной boundary/decision; listeners и witnesses без meaningful response boundary не становятся responders.
+- `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один mode/NPC/same-time batch получает не более одной boundary/decision; listeners и witnesses без meaningful response boundary не становятся responders.
 - NPC contribution может запросить common social check только через refs,
   явно разрешённые request scope и исполненные code-owned check owner. В
   Lower Dvina revision 14 эти списки пусты, поэтому активный NPC responder

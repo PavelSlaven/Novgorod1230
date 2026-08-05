@@ -11,7 +11,7 @@ const at = {
   subminute_denominator: '1'
 };
 
-test('one NPC and same-time batch cannot enter two decision modes', () => {
+test('one NPC and same-time batch may enter separate decision modes', () => {
   const common = {
     scheduled_at: at,
     npc_ref: ref('npc', 'guard'),
@@ -24,9 +24,13 @@ test('one NPC and same-time batch cannot enter two decision modes', () => {
   const boundaries = ['conversation', 'autonomous'].map((decision_mode) =>
     buildNpcDecisionBoundary({ ...common, decision_mode }));
 
-  assert.throws(() => normalizeNpcBoundaryBatch({
+  const normalized = normalizeNpcBoundaryBatch({
     boundaries,
     direct_addressee_refs: [ref('npc', 'guard')]
-  }, new Set(), new Set()), ({ code }) =>
-    code === 'TURN_CONVERSATION_NPC_DECISION_DUPLICATE');
+  }, new Set(), new Set());
+
+  assert.deepEqual(normalized.boundaries.map(({ decision_mode: mode }) => mode),
+    ['autonomous', 'conversation']);
+  assert.equal(new Set(normalized.boundaries.map(
+    ({ boundary_id: boundaryId }) => boundaryId)).size, 2);
 });

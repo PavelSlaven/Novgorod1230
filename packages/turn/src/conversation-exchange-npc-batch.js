@@ -49,7 +49,8 @@ function exactBoundaryRequestLink(boundary, request) {
 }
 
 export function decisionPairKey(boundary) {
-  return `${boundary.npc_ref.entity_kind}\u0000${boundary.npc_ref.entity_id}`
+  return `${boundary.decision_mode}`
+    + `\u0000${boundary.npc_ref.entity_kind}\u0000${boundary.npc_ref.entity_id}`
     + `\u0000${boundary.same_time_batch_ref.entity_kind}`
     + `\u0000${boundary.same_time_batch_ref.entity_id}`;
 }
@@ -94,7 +95,7 @@ export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
     if (boundaryIds.has(boundaryId)) {
       throw turnFailure(
         'TURN_CONVERSATION_NPC_DECISION_DUPLICATE',
-        'An NPC may have at most one decision per same-time batch in an exchange',
+        'An NPC may have at most one decision per mode and same-time batch in an exchange',
         { boundary_id: boundaryId }
       );
     }
@@ -102,7 +103,7 @@ export function normalizeNpcBoundaryBatch(value, processedBoundaryIds,
     if (batchDecisionPairs.has(pairKey) || processedDecisionPairs.has(pairKey)) {
       throw turnFailure(
         'TURN_CONVERSATION_NPC_DECISION_DUPLICATE',
-        'An NPC may have at most one decision per same-time batch in an exchange',
+        'An NPC may have at most one decision per mode and same-time batch in an exchange',
         { boundary_id: boundaryId }
       );
     }

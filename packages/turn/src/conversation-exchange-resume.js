@@ -162,6 +162,11 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
       if (stopReason === 'player_response') stopReason = null;
     }
   }
+  if ([null, 'player_response'].includes(stopReason)
+      && pending.contribution_index - 1 + contributions.length
+        >= normalized.maxContributionsPerExchange) {
+    stopReason = 'exchange_limit';
+  }
   const finalBudgetMinutes = stopReason === 'temporal_boundary'
     ? pending.remaining_exchange_minutes : elapsedMinutes;
   return immutableClone({
@@ -211,17 +216,23 @@ function plannedNpcMinutes({
 }) {
   const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
     refKey(npcRef)));
-  const processedKeys = new Set(processedNpcRefs.map(refKey));
+  if (['leave_conversation', 'action_handoff', 'combat_handoff'].includes(
+    plan.contribution_kind
+  )) {
+    queuedKeys.clear();
+  }
   const expectedRefs = plan.speech?.response_expectation?.kind === 'none'
     ? [] : plan.speech?.response_expectation?.target_refs ?? [];
+  const processedKeys = new Set(processedNpcRefs.map(refKey));
   let recurrentResponse = false;
   for (const reference of expectedRefs) {
     queuedKeys.add(refKey(reference));
     if (processedKeys.has(refKey(reference))) recurrentResponse = true;
   }
-  return Math.max(recurrentResponse ? 0 : 1, remainingMinutes - Math.min(
+  if (recurrentResponse) return 1;
+  return Math.max(1, remainingMinutes - Math.min(
     queuedKeys.size,
-    Math.max(0, remainingMinutes - (recurrentResponse ? 0 : 1))
+    Math.max(0, remainingMinutes - 1)
   ));
 }
 

@@ -22,18 +22,8 @@ export function advanceConversationContributionTime(
   plannedDurationMinutes
 ) {
   const durationMinutes = plannedDurationMinutes;
-  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 0) {
+  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 1) {
     fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
-  }
-  if (durationMinutes === 0) {
-    return {
-      working_state: structuredClone(working),
-      temporal_boundary_refs: [],
-      session_status: 'active',
-      elapsed_minutes: 0,
-      completed: true,
-      interrupted: false
-    };
   }
   const clockBefore = working.clock;
   const limit = addElapsedTime(clockBefore, {
@@ -222,7 +212,7 @@ export function projectConversationTemporalAdvance({
       fail('TRACE_M2_CONVERSATION_TEMPORAL_RESULT_INVALID');
     }
     return reference.entity_id;
-  }).sort();
+  });
   const candidatesById = new Map(candidates.map((candidate) => [
     candidate.boundary_id, candidate
   ]));
@@ -230,10 +220,20 @@ export function projectConversationTemporalAdvance({
   if (processed.some((candidate) => candidate == null)
       || processed.some((candidate) =>
         compareGameTimestamp(candidate.scheduled_at, clockBefore) < 0
-        || compareGameTimestamp(candidate.scheduled_at, clockAfter) > 0)) {
+        || compareGameTimestamp(candidate.scheduled_at, clockAfter) > 0)
+      || processed.some((candidate, index) => index > 0
+        && compareGameTimestamp(
+          processed[index - 1].scheduled_at,
+          candidate.scheduled_at
+        ) > 0)) {
     fail('TRACE_M2_CONVERSATION_TEMPORAL_RESULT_INVALID');
   }
   const boundaryIds = [...referencedIds];
+  const nearestAt = processed[0]?.scheduled_at ?? null;
+  const nearestBoundaryIds = nearestAt === null ? [] : processed
+    .filter(({ scheduled_at: scheduledAt }) =>
+      compareGameTimestamp(scheduledAt, nearestAt) === 0)
+    .map(({ boundary_id: boundaryId }) => boundaryId);
   return {
     clock_before: structuredClone(clockBefore),
     clock_after: structuredClone(clockAfter),
@@ -241,8 +241,8 @@ export function projectConversationTemporalAdvance({
       exact_minutes: { numerator: String(exactMinutes), denominator: '1' }
     },
     nearest_boundary: processed.length === 0 ? null : {
-      scheduled_at: structuredClone(processed[0].scheduled_at),
-      boundary_ids: boundaryIds
+      scheduled_at: structuredClone(nearestAt),
+      boundary_ids: nearestBoundaryIds
     },
     boundary_trace: {
       owner: '@rus/time-events-history/temporal-boundaries',

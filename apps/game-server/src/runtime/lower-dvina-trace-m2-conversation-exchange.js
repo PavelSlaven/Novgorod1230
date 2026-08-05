@@ -236,7 +236,8 @@ export async function executeM2ConversationExchange(context) {
       working,
       contributionEvent,
       request === null ? resumedOutcome : npcOutcomes.get(request.request_id),
-      proposal.plan
+      proposal.plan,
+      request
     )
   });
   if (pendingExecution === null && (

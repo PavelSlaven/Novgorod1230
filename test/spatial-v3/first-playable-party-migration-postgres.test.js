@@ -18,7 +18,7 @@ const rollbackContainerName =
 const conflictContainerName =
   `lower-dvina-party-018-conflict-${process.pid}`;
 
-test('018 preserves mode-split traces and requires explicit operator repair',
+test('018 preserves mode-split traces and enforces uniqueness within mode',
   async (t) => {
     if (docker(['version']).status !== 0) {
       t.skip('Docker is required for the isolated PostgreSQL migration gate.');
@@ -76,10 +76,12 @@ test('018 preserves mode-split traces and requires explicit operator repair',
           '{"entity_kind":"temporal_batch","entity_id":"batch"}');
     `);
 
-    await assert.rejects(
-      pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1)),
-      /party_npc_decision_batch_identity_conflict: operator repair required/u
-    );
+    await pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1));
+    await assert.rejects(pool.query(`
+      INSERT INTO party_runtime.party_npc_decision_traces VALUES
+        ('party','npc','conversation','duplicate-conversation-boundary',
+          '{"entity_kind":"temporal_batch","entity_id":"batch"}')
+    `), /duplicate key value violates unique constraint/u);
     const readback = await pool.query(`
       SELECT count(*)::integer AS trace_count,
         to_regclass(

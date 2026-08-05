@@ -399,7 +399,7 @@ LLM не вызывается из-за:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:batch-18:npc-ratsha",
   "decision_mode": "autonomous",
   "scheduled_at": {},
   "npc_ref": {
@@ -419,15 +419,15 @@ LLM не вызывается из-за:
   "signal_refs": [],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:autonomous:batch-18:npc-ratsha"
 }
 ```
 
 Инварианты:
 
 - `decision_mode = autonomous`;
-- `decision_mode` выбирает профиль решения, но не входит в identity boundary;
-- один NPC имеет не более одной aggregated boundary в одном fully resolved batch;
+- `decision_mode` входит в identity boundary;
+- один NPC имеет не более одной aggregated boundary на режим в одном fully resolved batch;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;

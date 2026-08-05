@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { projectConversationAudience } from '../src/conversation-audience.js';
+import {
+  projectConversationAudience,
+  projectConversationNonverbalAudience
+} from '../src/conversation-audience.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 
@@ -83,4 +86,49 @@ test('actual listeners come from perception, not intended audience, and an ordin
   assert.deepEqual(result.witness_candidate_refs, [ordinaryWitness]);
   assert.equal(Object.hasOwn(result, 'decision_boundary_refs'), false);
   assert.equal(Object.hasOwn(result, 'selected_response_ref'), false);
+});
+
+test('deliberate silence projects factual observations without response policy', () => {
+  const observer = ref('npc', 'observer');
+  const projection = projectConversationNonverbalAudience({
+    contribution: {
+      schema: 'conversation_non_statement_contribution_v1',
+      contribution_id: 'contribution-1',
+      conversation_id: 'conversation-1',
+      exchange_id: 'exchange-1',
+      speaker_ref: ref('npc', 'speaker'),
+      contribution_kind: 'silence',
+      handoff: null,
+      nonverbal_audience: null
+    },
+    observer_results: [{
+      observer_ref: observer,
+      perception_result_ref: ref('perception_result', 'silence-perception'),
+      perception_result: 'recognized',
+      perceived_at: {
+        whole_minutes: '10',
+        subminute_numerator: '0',
+        subminute_denominator: '1'
+      },
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      speaker_recognized: true
+    }]
+  });
+
+  assert.deepEqual(projection.actual_observer_refs, [observer]);
+  assert.deepEqual(projection.observations[0], {
+    source_contribution_ref: ref('conversation_contribution', 'contribution-1'),
+    observer_ref: observer,
+    perception_result_ref: ref('perception_result', 'silence-perception'),
+    perception_result: 'recognized',
+    perceived_at: {
+      whole_minutes: '10',
+      subminute_numerator: '0',
+      subminute_denominator: '1'
+    },
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    speaker_ref: ref('npc', 'speaker'),
+    observed_kind: 'silence'
+  });
+  assert.equal(Object.hasOwn(projection, 'decision_boundary_refs'), false);
 });

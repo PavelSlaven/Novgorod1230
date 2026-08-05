@@ -31,7 +31,7 @@ function request(overrides = {}) {
   return {
     schema: 'npc_conversation_response_request_v1',
     request_id: 'request-1',
-    boundary_id: 'npc-decision:batch-1:speaker',
+    boundary_id: 'npc-decision:conversation:batch-1:speaker',
     conversation_id: 'conversation-1',
     exchange_id: 'exchange-1',
     state_version: 2,

@@ -62,7 +62,7 @@ test('one NPC and same-time batch produce one boundary for all resolved signals'
 
   assert.equal(
     result.boundary.boundary_id,
-    'npc-decision:batch-1:guard'
+    'npc-decision:conversation:batch-1:guard'
   );
   assert.deepEqual(result.boundary.categories, ['environment', 'communication']);
   assert.equal(result.boundary.significance, 'critical');

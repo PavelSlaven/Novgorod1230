@@ -1,5 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { resolveRatshaNpcSocialCheckProfile } from './lower-dvina-trace-phase-4-social-check.js';
 
 export const TRACE_PHASE_4_IDS = Object.freeze({
   routeOption: 'follow_known_route_to_drying_shed',
@@ -13,7 +14,6 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
   observation: 'trace_ld_v1_observation_onisim_alive_at_drying_shed',
   ratshaPolicy: 'trace_ld_v1_npc_ratsha_decisions'
 });
-
 export function resolveTracePhase4Contracts({ state, bundle }) {
   if (![10, 11, 12, 13, 14].includes(bundle.definition_revision)
       || ![10, 11, 12, 13, 14].includes(bundle.definition?.revision)) {
@@ -74,6 +74,8 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
         'mapping_id',
         id
       )]));
+  const npcSocialCheckProfile =
+    resolveRatshaNpcSocialCheckProfile(conversationBindings);
   const npcExecutions =
     bundle.npc_decision_schedule_policies.decision_execution_bindings
       .filter((entry) => entry.policy_id === ids.ratshaPolicy);
@@ -259,6 +261,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
       digest: canonicalDigest(reverseRoute) },
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect,
+    npcSocialCheckProfile,
     conversationBindings, conversationSignalMappings,
     conversationTimeProfiles: structuredClone(
       bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []

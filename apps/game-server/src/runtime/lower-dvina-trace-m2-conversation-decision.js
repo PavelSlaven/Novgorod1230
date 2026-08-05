@@ -49,6 +49,7 @@ export function buildNpcDecision(context, working, boundary,
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
   );
+  const socialCheckProfile = context.npcSocialCheckProfile ?? null;
   const request = buildNpcConversationResponseRequest({
     schema: 'npc_conversation_response_request_v1',
     request_id: `npc-conversation-request:${boundary.boundary_id}:${
@@ -114,8 +115,12 @@ export function buildNpcDecision(context, working, boundary,
         context.npcDecisionScope.action_handoff_available,
       combat_handoff_available:
         context.npcDecisionScope.combat_handoff_available,
-      allowed_attribute_refs: [],
-      allowed_skill_refs: [],
+      allowed_attribute_refs: socialCheckProfile === null
+        ? [] : [socialCheckProfile.attribute_ref],
+      allowed_skill_refs: socialCheckProfile === null
+        ? [] : [socialCheckProfile.skill_ref],
+      allowed_check_profile_refs: socialCheckProfile === null
+        ? [] : [socialCheckProfile.profile_id],
       operation_contract: context.npcOperationContract
     }
   });

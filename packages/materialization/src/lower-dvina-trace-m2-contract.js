@@ -6,19 +6,19 @@ const SCENARIO_ID = 'lower_dvina_trace_v1';
 const M1_DEFINITION_DIGEST =
   'cef9ad459b2ceb3f3d4edbe93926332cb22782d03e30622d74301f21aba025ef';
 const M2_DEFINITION_DIGEST =
-  'e5a3a6d937458dbefa651b0d7eae4c526df6f4e10f406657c7c4ee3d01cb437f';
+  '25cb47dbde6922bf58734802210253254b74bb4a5d60a93a45126a74f73f3414';
 const M2_CONTENT_MANIFEST_DIGEST =
-  '524419db0d21b1885e6036e1b00435a5e10866321bfe60ffba064c0798b5881c';
+  'e76ebdf8bce04c2baf985e937e07c1ea3ab29c8f0aa340dfe0548cfda9e508d8';
 const PHASE_1A_V9_MANIFEST_DIGEST =
   'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0';
 const PHASE_1A_V9_BINDINGS_DIGEST =
   '3449ae2336d896aa8c633f666351e58f67c86bbd12bf5a8bdb9f25640387d74b';
 const PHASE_1A_V10_MANIFEST_DIGEST =
-  '34f4c5b683ac3035df5d4176bfa273f08ac7ba269570b886271caac75f07ebe5';
+  '55acd22d21bbb0ddac6bb3437e558d9857a120900844a4880ded8e1fb1d3a406';
 const PHASE_1A_V10_BINDINGS_DIGEST =
   '6e5a025f918124bb557fff6d261539afbeccd3e0ab04404111d3bbbe1c545854';
 const SEMANTIC_BINDINGS_DIGEST =
-  'f8483ced332cf000c81a7bc432b331762cca3c0a5b3e906628b924b8d71742c0';
+  '835dc461c658a7149053046537c2f1341c3966acf384d0f3ba77758b13263557';
 
 export function assertLowerDvinaTraceM2Cutover(bundle, fail) {
   const manifest = bundle.phase_1a_manifest;
@@ -229,6 +229,7 @@ function exactSemanticBindings(value, pins) {
     || value.closed_npc_option_sets !== 'forbidden'
     || value.participant_refs?.eremey !== 'eremey_fisher'
     || value.participant_refs?.ratsha !== 'ratsha_storehouse_helper'
+    || !exactNpcSocialCheckProfile(value.npc_social_check_profiles)
     || pins.conversation_semantic_bindings?.digest
       !== SEMANTIC_BINDINGS_DIGEST
     || !Array.isArray(mappings)
@@ -268,6 +269,24 @@ function exactSemanticBindings(value, pins) {
       ['others'], 'material', 'perception_required'
     )
     && exactSemanticMechanicRefs(byId);
+}
+
+function exactNpcSocialCheckProfile(profiles) {
+  if (!Array.isArray(profiles) || profiles.length !== 1) return false;
+  const profile = profiles[0];
+  return profile?.profile_id
+      === 'trace_ld_v1_npc_ratsha_social_delivery_check_v1'
+    && profile.actor_ref === 'ratsha_storehouse_helper'
+    && profile.attribute_ref === 'influence'
+    && profile.attribute_value === 12
+    && profile.skill_ref === 'communication'
+    && profile.skill_bonus === 1
+    && profile.difficulty === 13
+    && profile.state_modifier === -1
+    && profile.equipment_modifier === 0
+    && profile.circumstance_modifier === 1
+    && profile.outcome_policy === 'checks_rng_margin_bands_only'
+    && profile.retry_policy === 'reuse_committed_roll_for_same_boundary';
 }
 
 function exactSemanticMechanicRefs(byId) {

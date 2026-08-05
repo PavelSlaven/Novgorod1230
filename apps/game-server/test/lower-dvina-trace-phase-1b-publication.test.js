@@ -79,7 +79,7 @@ test('current publication pins the exact v9 -> Phase 1A v10 -> revision 14 chain
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v9');
   assert.equal(publication.manifest.revision, 9);
   assert.equal(publication.manifest_digest,
-    '8f0ab581d68d857ac3e429d111d33e62b8df3d0bd57c015d61e3bda4cc2a6cdb');
+    '58bf6d6328daa5fbbfd4c74739731741fef84dca2aeaa8042e791ff3277552e4');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v8/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v8',
@@ -91,19 +91,19 @@ test('current publication pins the exact v9 -> Phase 1A v10 -> revision 14 chain
     'lower_dvina_trace_phase_1b_publication_v9');
   assert.equal(publication.binding.revision, 9);
   assert.equal(publication.binding_digest,
-    'b9c6c87c0a6df0e9849c2f19f6486096c1e5cc71fe70fa1e7dd321ca7e948197');
+    '693aa8990e303fafb35867a83f803964ece0ac3bc0b598a4ee2c504b15a0ba1f');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     'e2eed14f0cafe3335f28941b8e0471ce2e327eb84b722f304ebcc94330d45a81');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v10');
   assert.equal(publication.phase_1a_manifest.revision, 10);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '34f4c5b683ac3035df5d4176bfa273f08ac7ba269570b886271caac75f07ebe5');
+    '55acd22d21bbb0ddac6bb3437e558d9857a120900844a4880ded8e1fb1d3a406');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0');
   assert.equal(publication.definition.revision, 14);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    'e5a3a6d937458dbefa651b0d7eae4c526df6f4e10f406657c7c4ee3d01cb437f');
+    '25cb47dbde6922bf58734802210253254b74bb4a5d60a93a45126a74f73f3414');
   assert.equal(
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v10'

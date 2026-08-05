@@ -67,7 +67,7 @@ function speechBody(overrides = {}) {
   };
 }
 
-test('decision boundary identity includes mode, NPC and same-time batch', () => {
+test('decision boundary identity is shared by all modes for one NPC and same-time batch', () => {
   const input = {
     scheduled_at: at(),
     npc_ref: ref('npc', 'guard'),
@@ -85,13 +85,13 @@ test('decision boundary identity includes mode, NPC and same-time batch', () => 
 
   assert.equal(
     autonomous.boundary_id,
-    'npc-decision:autonomous:batch-1:guard'
+    'npc-decision:batch-1:guard'
   );
   assert.equal(
     conversation.boundary_id,
-    'npc-decision:conversation:batch-1:guard'
+    'npc-decision:batch-1:guard'
   );
-  assert.notEqual(conversation.boundary_id, autonomous.boundary_id);
+  assert.equal(conversation.boundary_id, autonomous.boundary_id);
   assert.deepEqual(autonomous.categories, ['self', 'communication']);
   assert.deepEqual(autonomous.signal_refs.map(({ entity_id }) => entity_id), [
     'signal-a',
@@ -322,6 +322,7 @@ function npcConversationRequest() {
       combat_handoff_available: false,
       allowed_attribute_refs: ['influence'],
       allowed_skill_refs: ['communication'],
+      allowed_check_profile_refs: ['risky'],
       operation_contract: { emit_interaction: {} }
     }
   };

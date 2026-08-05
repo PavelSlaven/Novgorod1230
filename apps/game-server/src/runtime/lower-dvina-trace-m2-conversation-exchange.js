@@ -156,9 +156,10 @@ export async function executeM2ConversationExchange(context) {
     },
     projectPlayerContributionPerception: ({
       working_state: working,
-      contribution_event: contributionEvent
+      contribution_event: contributionEvent,
+      plan
     }) => projectPlayerPerception(
-      workingContext(context, working), working, contributionEvent
+      workingContext(context, working), working, contributionEvent, plan
     ),
     buildNpcResponseBoundaries: ({
       working_state: working,
@@ -184,12 +185,16 @@ export async function executeM2ConversationExchange(context) {
       return decision;
     },
     npcSemanticModel: context.npcSemanticModel,
+    resolveNpcContributionCheck:
+      context.npcSocialCheckResolver ?? undefined,
     revalidateNpcStateVersion: context.revalidateStateVersion,
     validateNpcPlan: domainOwnedPlan,
     applyNpcContribution: ({
       working_state: working,
       request,
       proposal,
+      check_result: checkResult,
+      social_delivery_result: socialDeliveryResult,
       contribution_index: contributionIndex
     }) => {
       const targetContext = conversationNpcContext(
@@ -203,12 +208,16 @@ export async function executeM2ConversationExchange(context) {
         request,
         proposal,
         contributionIndex,
-        npcOutcome
+        npcOutcome,
+        socialDeliveryResult,
+        checkResult
       );
     },
     applyPendingNpcContribution: ({
       working_state: working,
       plan,
+      check_result: checkResult,
+      social_delivery_result: socialDeliveryResult,
       contribution_index: contributionIndex
     }) => {
       const targetRef = plan.speaker_ref;
@@ -222,7 +231,9 @@ export async function executeM2ConversationExchange(context) {
         null,
         { plan, signal_ids_to_consume: [] },
         contributionIndex,
-        resumedOutcome
+        resumedOutcome,
+        socialDeliveryResult,
+        checkResult
       );
     },
     projectNpcContributionPerception: ({

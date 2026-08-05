@@ -6,7 +6,7 @@ import { validNonverbalAudience } from
   './npc-semantic-conversation-nonverbal-validation.js';
 
 export function validateStatements(values, request) {
-  if (!Array.isArray(values) || values.length === 0) {
+  if (!Array.isArray(values)) {
     fail('TRACE_M2_CONVERSATION_STATEMENTS_INVALID');
   }
   let statements;

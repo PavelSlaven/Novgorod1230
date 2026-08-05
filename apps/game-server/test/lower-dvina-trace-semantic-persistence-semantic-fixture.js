@@ -122,6 +122,7 @@ export function semanticWriterFixture() {
       combat_handoff_available: false,
       allowed_attribute_refs: [],
       allowed_skill_refs: [],
+      allowed_check_profile_refs: [],
       operation_contract: {}
     }
   });

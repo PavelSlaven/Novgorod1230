@@ -131,6 +131,8 @@ export function allowedPlayerContributionReferences(context) {
     ]),
     entity_refs: canonical(entityRefs),
     knowledge_refs: canonical(knowledgeRefs),
-    combat_target_refs: []
+    combat_target_refs: canonical(context.actualNpcActors.map(
+      ({ instance_id: instanceId }) => ref('npc', instanceId)
+    ))
   };
 }

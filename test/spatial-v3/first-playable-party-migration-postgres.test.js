@@ -18,7 +18,7 @@ const rollbackContainerName =
 const conflictContainerName =
   `lower-dvina-party-018-conflict-${process.pid}`;
 
-test('018 preserves mode-split traces and enforces uniqueness within mode',
+test('018 replaces mode-split identity with one trace per NPC and batch',
   async (t) => {
     if (docker(['version']).status !== 0) {
       t.skip('Docker is required for the isolated PostgreSQL migration gate.');
@@ -71,15 +71,13 @@ test('018 preserves mode-split traces and enforces uniqueness within mode',
         ) WHERE boundary_id IS NOT NULL;
       INSERT INTO party_runtime.party_npc_decision_traces VALUES
         ('party','npc','conversation','conversation-boundary',
-          '{"entity_kind":"temporal_batch","entity_id":"batch"}'),
-        ('party','npc','combat','combat-boundary',
           '{"entity_kind":"temporal_batch","entity_id":"batch"}');
     `);
 
     await pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1));
     await assert.rejects(pool.query(`
       INSERT INTO party_runtime.party_npc_decision_traces VALUES
-        ('party','npc','conversation','duplicate-conversation-boundary',
+        ('party','npc','combat','duplicate-cross-mode-boundary',
           '{"entity_kind":"temporal_batch","entity_id":"batch"}')
     `), /duplicate key value violates unique constraint/u);
     const readback = await pool.query(`
@@ -93,9 +91,9 @@ test('018 preserves mode-split traces and enforces uniqueness within mode',
       FROM party_runtime.party_npc_decision_traces
     `);
     assert.deepEqual(readback.rows[0], {
-      trace_count: 2,
-      mode_index_present: true,
-      strict_index_present: false
+      trace_count: 1,
+      mode_index_present: false,
+      strict_index_present: true
     });
   });
 

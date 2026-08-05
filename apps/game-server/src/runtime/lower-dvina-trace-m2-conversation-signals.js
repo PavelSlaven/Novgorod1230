@@ -96,6 +96,23 @@ export function npcSilenceSignalRecords(
   observation.perception_result_ref, priorSpeakerRef)];
 }
 
+export function playerSilenceSignalRecords(
+  context,
+  contribution,
+  audience,
+  plan
+) {
+  const intended = new Set((plan?.intended_addressee_refs ?? []).map(refKey));
+  return audience.observations.flatMap((observation) => {
+    if (observation.observer_ref.entity_kind !== 'npc'
+        || !intended.has(refKey(observation.observer_ref))) return [];
+    return [signalRecord(context, {
+      category: 'others', significance: 'material'
+    }, ref('conversation_contribution', contribution.contribution_id),
+    observation.perception_result_ref, observation.observer_ref)];
+  });
+}
+
 function signalRecord(
   context,
   descriptor,

@@ -19,6 +19,7 @@ export function semanticNegotiationCommand({
   inputDigest,
   playerConversationModel,
   npcSemanticModel,
+  npcSocialCheckResolver,
   temporalAdvanceOwner,
   revalidateStateVersion
 }) {
@@ -130,6 +131,7 @@ export function semanticNegotiationCommand({
           playerPlan,
           playerConversationModel,
           npcSemanticModel,
+          npcSocialCheckResolver,
           temporalAdvanceOwner,
           revalidateStateVersion
         });

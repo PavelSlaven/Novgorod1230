@@ -166,8 +166,8 @@ export function orderedSignalRecords(signalRecords, boundary) {
 }
 
 export function statementIndex(statements, conversationId) {
-  if (!Array.isArray(statements) || statements.length === 0) {
-    fail('Conversation persistence requires at least one immutable statement');
+  if (!Array.isArray(statements)) {
+    fail('Conversation persistence requires an immutable statement list');
   }
   const byId = new Map();
   for (const statement of statements) {

@@ -30,6 +30,22 @@
     "ratsha": "ratsha_storehouse_helper",
     "participating_fisher": "trace_ld_v1_audience_slot_participating_fisher"
   },
+  "npc_social_check_profiles": [
+    {
+      "profile_id": "trace_ld_v1_npc_ratsha_social_delivery_check_v1",
+      "actor_ref": "ratsha_storehouse_helper",
+      "attribute_ref": "influence",
+      "attribute_value": 12,
+      "skill_ref": "communication",
+      "skill_bonus": 1,
+      "difficulty": 13,
+      "state_modifier": -1,
+      "equipment_modifier": 0,
+      "circumstance_modifier": 1,
+      "outcome_policy": "checks_rng_margin_bands_only",
+      "retry_policy": "reuse_committed_roll_for_same_boundary"
+    }
+  ],
   "signal_mappings": [
     {
       "mapping_id": "trace_ld_v1_phase_3_eremey_question_signal_v1",

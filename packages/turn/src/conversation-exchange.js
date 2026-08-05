@@ -14,6 +14,8 @@ import { resumePendingNpcExecution } from
   './conversation-exchange-resume.js';
 import { contributionSlices, plannedNpcContributionMinutes } from
   './conversation-exchange-time.js';
+import { resolveNpcContributionSocialCheck } from
+  './conversation-exchange-social-check.js';
 
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const APPLY_RESULT_KEYS = [
@@ -90,6 +92,12 @@ function requirePorts(ports) {
         `${validator} must be an injected function when provided`,
         { port: validator });
     }
+  }
+  if (ports.resolveNpcContributionCheck !== undefined
+      && typeof ports.resolveNpcContributionCheck !== 'function') {
+    fail('TURN_CONVERSATION_PORT_MISSING',
+      'resolveNpcContributionCheck must be an injected function when provided',
+      { port: 'resolveNpcContributionCheck' });
   }
 }
 
@@ -369,6 +377,12 @@ export async function runConversationExchange(input = {}, ports = {}) {
       revalidateStateVersion: ports.revalidateNpcStateVersion,
       validatePlan: ports.validateNpcPlan ?? null
     });
+    const npcCheck = await resolveNpcContributionSocialCheck({
+      plan: proposal.plan,
+      request: decision.request,
+      boundary: decision.boundary,
+      resolver: ports.resolveNpcContributionCheck
+    });
     const rawNpcResult = await callPort(
       ports.applyNpcContribution,
       {
@@ -376,6 +390,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
         boundary: decision.boundary,
         request: decision.request,
         proposal,
+        check_result: npcCheck.check_result,
+        social_delivery_result: npcCheck.social_delivery_result,
         contribution_index: contributions.length + 1
       },
       'TURN_CONVERSATION_NPC_APPLY_FAILED',
@@ -440,6 +456,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
         remaining_responder_refs: queuedNpcBoundaries.map(
           ({ npc_ref: npcRef }) => npcRef),
         same_time_batch_ref: decision.boundary.same_time_batch_ref,
+        check_result: npcCheck.check_result,
+        social_delivery_result: npcCheck.social_delivery_result,
         source_decision_trace_ref: {
           entity_kind: 'npc_decision_trace',
           entity_id: decision.request.request_id

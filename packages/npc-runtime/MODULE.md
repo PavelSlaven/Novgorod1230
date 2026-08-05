@@ -23,7 +23,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `NPC_RUNTIME_OWNER`, `NPC_RUNTIME_RESOURCE_LIMITS`, `NPC_RUNTIME_TYPED_ERRORS`
 - `proposeNpcScheduleTransition(input)` — возвращает frozen schedule proposal, evidence и exact temporal boundary.
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
-- `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного mode/NPC/same-time batch не более одной boundary.
+- `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
 - Semantic decision builders/validators — `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; current revision-14 production consumer использует conversation mode.
 - `proposeNpcReactionOptions({ context_snapshot, policy_snapshot, persisted_proposal? })` — чисто фильтрует approved rules, возвращает формальный конечный request и проверяет replay по полной causal identity.
@@ -37,10 +37,10 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 Conversation contribution schema поддерживает `automatic` и
 `check_required`; во втором случае refs обязаны входить в
-`decision_scope.allowed_attribute_refs`/`allowed_skill_refs`, а бросок остаётся
-у code-owned check owner. Lower Dvina Trace revision 14 публикует для NPC
-пустые списки и тем самым активирует automatic-only responder profile, не
-сужая общий контракт пакета.
+`decision_scope.allowed_attribute_refs`/`allowed_skill_refs` и
+`allowed_check_profile_refs`, а бросок остаётся у code-owned check owner.
+Lower Dvina Trace revision 14 публикует такой scope для лжи и торга Ратши;
+прочие NPC без профильного scope остаются automatic-only.
 
 ## Поток выбора действия NPC
 
@@ -48,7 +48,7 @@ Conversation contribution schema поддерживает `automatic` и
 owners сохраняют factual transitions и выдают только generic signal
 descriptors. Perception-required signal допускается после фактического
 восприятия; все новые signals одного NPC за fully resolved same-time batch
-агрегируются в одну mode-scoped boundary и не более одного LLM-вызова. Conversation не
+агрегируются в одну NPC/batch boundary и не более одного LLM-вызова. Conversation не
 создаёт отдельную trigger subsystem.
 
 `@rus/turn` повторно проверяет causal identity, state version и operation

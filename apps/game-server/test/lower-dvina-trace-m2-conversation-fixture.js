@@ -29,6 +29,8 @@ import {
   fixture,
   loadScenarioBundle
 } from './lower-dvina-trace-phase-2-fixture.js';
+import { requireRatshaSocialCheck } from
+  './lower-dvina-trace-m2-social-check-fixture.js';
 
 export const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 export const digest = (character) => character.repeat(64);
@@ -276,6 +278,8 @@ export async function runPhase4({
   npcDurationClasses = ['domain_owned'],
   transformPlayerPlan = (plan) => plan,
   transformNpcPlan = (plan) => plan,
+  npcSocialCheckResolver = async ({ request }) =>
+    checkResult(`npc:${request.request_id}`, 'success'),
   resolveTemporalBoundary = null
 }) {
   let playerCalls = 0;
@@ -290,6 +294,7 @@ export async function runPhase4({
     checkResult: resolvedCheck,
     offerStage,
     checkRequest,
+    npcSocialCheckResolver,
     playerConversationModel: async (request) => {
       playerCalls += 1;
       const plan = transformPlayerPlan(playerPlan(request, {
@@ -492,7 +497,10 @@ function ratshaPlan(request, responseKind, playerId) {
       supportingOperations: []
     }
   };
-  return npcSpeechPlan(request, variants[responseKind]);
+  const plan = npcSpeechPlan(request, variants[responseKind]);
+  return ['lie', 'bargain'].includes(responseKind)
+    ? requireRatshaSocialCheck(plan, request, responseKind)
+    : plan;
 }
 
 function npcSpeechPlan(request, {

@@ -28,6 +28,7 @@ export function conversationNpcContext(context, targetRef) {
     npcContributionReferencePolicy: {
       entity_refs: [], knowledge_refs: [], combat_target_refs: []
     },
+    npcSocialCheckProfile: null,
     classifyNpcPlan: classifyOrdinaryConversationPlan
   };
 }

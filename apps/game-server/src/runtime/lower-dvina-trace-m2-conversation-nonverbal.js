@@ -3,23 +3,28 @@ import { projectConversationNonverbalAudience } from
   '@rus/visibility-knowledge-memory';
 import { npcSilenceSignalRecords } from
   './lower-dvina-trace-m2-conversation-signals.js';
-import { compareRefs, npcRef, ref } from
+import { playerSilenceSignalRecords } from
+  './lower-dvina-trace-m2-conversation-signals.js';
+import { compareRefs, npcRef, ref, sameRef } from
   './lower-dvina-trace-m2-conversation-shared.js';
 
 export function projectSilencePerception(
   context,
   working,
   contribution,
-  request
+  request,
+  plan = null
 ) {
   const audience = audienceForSilence(context, contribution);
   const contributionEvent = { ...contribution, nonverbal_audience: audience };
-  const newSignalRecords = npcSilenceSignalRecords(
-    context,
-    contributionEvent,
-    audience,
-    request
-  );
+  const newSignalRecords = contribution.speaker_ref.entity_kind
+      === 'player_character'
+    ? playerSilenceSignalRecords(
+        context, contributionEvent, audience, plan
+      )
+    : npcSilenceSignalRecords(
+        context, contributionEvent, audience, request
+      );
   return {
     working: {
       ...working,
@@ -34,13 +39,14 @@ export function projectSilencePerception(
 }
 
 function audienceForSilence(context, contribution) {
+  const playerRef = ref('player_character', context.state.actor_id);
   const observerRefs = [
     ...context.actualNpcActors
-      .filter(({ instance_id: instanceId }) =>
-        instanceId !== contribution.speaker_ref.entity_id)
       .map(({ instance_id: instanceId }) => npcRef(instanceId)),
-    ref('player_character', context.state.actor_id)
-  ].sort(compareRefs);
+    playerRef
+  ].filter((observerRef) => !sameRef(
+    observerRef, contribution.speaker_ref
+  )).sort(compareRefs);
   const speaker = context.actualNpcActors.find(
     ({ instance_id: instanceId }) =>
       instanceId === contribution.speaker_ref.entity_id
@@ -75,8 +81,11 @@ function observerResult(context, contribution, observerRef, speaker) {
   );
   const machine = actor?.machine_state ?? {};
   const semantic = actor?.semantic_state ?? {};
-  const sameAnchor = actor?.anchor_id && speaker?.anchor_id
-    && actor.anchor_id === speaker.anchor_id;
+  const speakerAnchor = contribution.speaker_ref.entity_kind
+      === 'player_character'
+    ? context.state.position.g5_anchor_id : speaker?.anchor_id;
+  const sameAnchor = actor?.anchor_id && speakerAnchor
+    && actor.anchor_id === speakerAnchor;
   const perception = resolveConversationVisualPerception({
     observer_ref: observerRef,
     perception_result_ref: perceptionResultRef,

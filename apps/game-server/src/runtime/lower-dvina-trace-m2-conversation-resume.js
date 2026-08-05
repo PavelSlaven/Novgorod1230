@@ -42,7 +42,12 @@ export function hydratedPendingNpcExecution(context) {
       || typeof pending.boundary_id !== 'string'
       || !Array.isArray(pending.remaining_responder_refs)
       || pending.same_time_batch_ref?.entity_kind !== 'temporal_batch'
-      || typeof pending.same_time_batch_ref?.entity_id !== 'string') {
+      || typeof pending.same_time_batch_ref?.entity_id !== 'string'
+      || (trace.plan.resolution === 'check_required'
+        ? pending.check_result?.outcome?.band
+            !== pending.social_delivery_result?.outcome_band
+        : (pending.check_result ?? null) !== null
+          || (pending.social_delivery_result ?? null) !== null)) {
     fail(
       'TRACE_M2_PENDING_NPC_EXECUTION_INVALID',
       'A suspended conversation requires its exact hydrated decision trace.'
@@ -57,6 +62,9 @@ export function hydratedPendingNpcExecution(context) {
     remaining_responder_refs:
       structuredClone(pending.remaining_responder_refs ?? []),
     same_time_batch_ref: structuredClone(pending.same_time_batch_ref),
+    check_result: structuredClone(pending.check_result ?? null),
+    social_delivery_result:
+      structuredClone(pending.social_delivery_result ?? null),
     source_decision_trace_ref:
       structuredClone(pending.decision_trace_ref)
   };

@@ -7,6 +7,9 @@ import {
   uniqueStableIds
 } from './internal.js';
 import { validateAllowedContributionReferences, validateContributionReferences } from './conversation-reference-contracts.js';
+import { CHECK_OUTCOMES, DELIVERY_QUALITY_BY_OUTCOME,
+  validateSocialDeliveryResult } from
+  './conversation-social-delivery-contract.js';
 const SESSION_STATUSES = new Set(['active', 'suspended', 'ended']);
 const CONTRIBUTION_KINDS = new Set([
   'speech',
@@ -61,27 +64,6 @@ const DECISION_CATEGORIES = Object.freeze([
   'communication'
 ]);
 const DECISION_CATEGORY_SET = new Set(DECISION_CATEGORIES);
-const CHECK_OUTCOMES = [
-  'clean_success',
-  'success',
-  'success_with_cost',
-  'failure_with_consequence',
-  'severe_failure'
-];
-const DELIVERY_QUALITIES = new Set([
-  'compelling',
-  'credible',
-  'credible_with_visible_cost',
-  'unconvincing',
-  'transparently_manipulative'
-]);
-const DELIVERY_QUALITY_BY_OUTCOME = Object.freeze({
-  clean_success: 'compelling',
-  success: 'credible',
-  success_with_cost: 'credible_with_visible_cost',
-  failure_with_consequence: 'unconvincing',
-  severe_failure: 'transparently_manipulative'
-});
 function plainRecord(value) {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;
   const prototype = Object.getPrototypeOf(value);
@@ -208,7 +190,8 @@ function validateCheckOutcome(value, outcome) {
     && uniqueStableIds(value.observable_effects);
 }
 
-function validateCheck(value, allowedAttributeRefs = null, allowedSkillRefs = null) {
+function validateCheck(value, allowedAttributeRefs = null,
+  allowedSkillRefs = null, allowedCheckProfileRefs = null) {
   return exactKeys(value, ['purpose', 'attribute_ref', 'skill_ref', 'difficulty_band', 'outcomes'])
     && nonEmptyText(value.purpose)
     && stableId(value.attribute_ref)
@@ -217,7 +200,9 @@ function validateCheck(value, allowedAttributeRefs = null, allowedSkillRefs = nu
     && exactKeys(value.outcomes, CHECK_OUTCOMES)
     && CHECK_OUTCOMES.every((outcome) => validateCheckOutcome(value.outcomes[outcome], outcome))
     && (allowedAttributeRefs === null || allowedAttributeRefs.includes(value.attribute_ref))
-    && (allowedSkillRefs === null || allowedSkillRefs.includes(value.skill_ref));
+    && (allowedSkillRefs === null || allowedSkillRefs.includes(value.skill_ref))
+    && (allowedCheckProfileRefs === null
+      || allowedCheckProfileRefs.includes(value.difficulty_band));
 }
 
 function validateHandoff(value, contributionKind) {
@@ -258,6 +243,10 @@ function validateContributionBody(value, request = null) {
   const allowedSkillRefs = request?.schema === 'npc_conversation_response_request_v1'
     ? request.decision_scope.allowed_skill_refs
     : null;
+  const allowedCheckProfileRefs = request?.schema
+      === 'npc_conversation_response_request_v1'
+    ? request.decision_scope.allowed_check_profile_refs
+    : null;
   if (!CONTRIBUTION_KINDS.has(value.contribution_kind)
     || !nullableEntityRef(value.primary_addressee_ref)
     || !uniqueContractEntityRefs(value.intended_addressee_refs)
@@ -289,7 +278,8 @@ function validateContributionBody(value, request = null) {
 
   return value.resolution === 'automatic'
     ? value.check === null
-    : validateCheck(value.check, allowedAttributeRefs, allowedSkillRefs);
+    : validateCheck(value.check, allowedAttributeRefs, allowedSkillRefs,
+      allowedCheckProfileRefs);
 }
 
 function buildValidated(value, validator, contractName) {
@@ -455,31 +445,6 @@ export function validateConversationStatementEvent(value) {
 
 export function buildConversationStatementEvent(value) {
   return buildValidated(value, validateConversationStatementEvent, 'conversation_statement_event_v1');
-}
-
-export function validateSocialDeliveryResult(value) {
-  return exactKeys(value, [
-    'schema',
-    'check_resolution_id',
-    'outcome_band',
-    'delivery_quality',
-    'observable_effects'
-  ])
-    && value.schema === 'social_delivery_result_v1'
-    && stableId(value.check_resolution_id)
-    && CHECK_OUTCOMES.includes(value.outcome_band)
-    && DELIVERY_QUALITIES.has(value.delivery_quality)
-    && value.delivery_quality === DELIVERY_QUALITY_BY_OUTCOME[value.outcome_band]
-    && uniqueStableIds(value.observable_effects)
-    && jsonSafe(value);
-}
-
-export function buildSocialDeliveryResult(value) {
-  return buildValidated(
-    value,
-    validateSocialDeliveryResult,
-    'social_delivery_result_v1'
-  );
 }
 
 export {

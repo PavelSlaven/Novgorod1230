@@ -112,7 +112,7 @@ export function projectSemanticConversationSnapshot({
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
   const session = conversationSession({ state, exchange, statements,
-    request: exchangeIdentity });
+    contributions, request: exchangeIdentity });
   const next = structuredClone(state);
   next.conversation_sessions = mergeMutableById(
     next.conversation_sessions,
@@ -220,15 +220,16 @@ export function appendPendingNpcDecisionSignalRecords({ state, records }) {
   return next;
 }
 
-function conversationSession({ state, exchange, statements, request }) {
+function conversationSession({ state, exchange, statements, contributions,
+  request }) {
   const existing = (state.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === request.conversation_id
   );
-  const first = statements[0];
-  const last = exchange.contributions.at(-1);
+  const firstContribution = contributions[0];
+  const last = contributions.at(-1);
   const activeParticipantRefs = uniqueRefs([
     ...(existing?.active_participant_refs ?? []),
-    ...statements.map(({ speaker_ref: speakerRef }) => speakerRef),
+    ...contributions.map(({ speaker_ref: speakerRef }) => speakerRef),
     ...statements.flatMap(
       ({ intended_addressee_refs: intendedRefs }) => intendedRefs
     )
@@ -254,10 +255,12 @@ function conversationSession({ state, exchange, statements, request }) {
     conversation_id: request.conversation_id,
     state_version: existing ? existing.state_version + 1 : 1,
     status: exchange.session_status,
-    started_at: existing?.started_at ?? first.spoken_at,
+    started_at: existing?.started_at
+      ?? (firstContribution.schema === 'conversation_statement_event_v1'
+        ? firstContribution.spoken_at : structuredClone(state.clock)),
     location_ref: existing?.location_ref
       ?? ref('location', state.position.location_ref),
-    initiator_ref: existing?.initiator_ref ?? first.speaker_ref,
+    initiator_ref: existing?.initiator_ref ?? firstContribution.speaker_ref,
     active_participant_refs: activeParticipantRefs,
     last_contribution_ref: lastContributionRef,
     topic_refs: [...new Set([

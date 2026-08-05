@@ -1,36 +1,60 @@
 import {
-  buildConversationStatementEvent,
-  resolveConversationListenerPerception
+  buildConversationStatementEvent
 } from '@rus/npc-runtime';
-import { projectConversationAudience } from
-  '@rus/visibility-knowledge-memory';
 import { npcResponseSignalRecords, playerSignalRecords } from
   './lower-dvina-trace-m2-conversation-signals.js';
-import { requirePlayerSpeech } from './lower-dvina-trace-m2-conversation-plans.js';
-import { compareRefs, fail, npcRef, ref, sameRef } from './lower-dvina-trace-m2-conversation-shared.js';
+import { requirePlayerContribution } from './lower-dvina-trace-m2-conversation-plans.js';
+import { fail, ref, sameRef } from './lower-dvina-trace-m2-conversation-shared.js';
 import { evidencePresentationPerception } from './lower-dvina-trace-m2-conversation-supporting-perception.js';
 import { playerDecisionSignalRecords } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import { projectSilencePerception } from
   './lower-dvina-trace-m2-conversation-nonverbal.js';
+import { audienceForStatement } from
+  './lower-dvina-trace-m2-conversation-audience.js';
 
 export function applyPlayerPlan(context, working, plan) {
-  requirePlayerSpeech(context, plan);
-  const statement = statementFromPlan({
-    context,
-    plan,
-    contributionIndex: 1,
-    socialDeliveryResult: context.socialDeliveryResult
-  });
+  requirePlayerContribution(context, plan);
+  const handoff = ['action_handoff', 'combat_handoff'].includes(
+    plan.contribution_kind) ? structuredClone(plan.handoff) : null;
+  const statement = plan.contribution_kind === 'speech'
+    ? statementFromPlan({
+        context,
+        plan,
+        contributionIndex: 1,
+        socialDeliveryResult: context.socialDeliveryResult
+      })
+    : nonStatementContribution(context, plan, 1);
   return applyResult({
     working,
     contributionEvent: statement,
     playerResponseBoundary: false,
-    sessionStatus: 'active',
-    handoff: null
+    sessionStatus: handoff
+      ? 'suspended'
+      : plan.contribution_kind === 'leave_conversation' ? 'ended' : 'active',
+    handoff
   });
 }
-export function projectPlayerPerception(context, working, statement) {
+export function projectPlayerPerception(context, working, statement, plan) {
+  if (statement.schema !== 'conversation_statement_event_v1') {
+    if (statement.contribution_kind === 'silence') {
+      const projected = projectSilencePerception(
+        context, working, statement, null, plan
+      );
+      return applyResult({
+        ...projected,
+        sessionStatus: 'active',
+        handoff: null
+      });
+    }
+    return applyResult({
+      working,
+      contributionEvent: statement,
+      playerResponseBoundary: false,
+      sessionStatus: statement.handoff ? 'suspended' : 'ended',
+      handoff: statement.handoff
+    });
+  }
   const audience = audienceForStatement(
     context, statement, context.actualNpcActors, []
   );
@@ -73,7 +97,9 @@ export function applyNpcPlan(
   request,
   proposal,
   contributionIndex,
-  npcOutcome
+  npcOutcome,
+  socialDeliveryResult = null,
+  checkResult = null
 ) {
   const contributionKind = proposal.plan.contribution_kind;
   const handoff = ['action_handoff', 'combat_handoff'].includes(
@@ -86,7 +112,7 @@ export function applyNpcPlan(
         context,
         plan: proposal.plan,
         contributionIndex,
-        socialDeliveryResult: null
+        socialDeliveryResult
       })
     : null;
   if (statement) {
@@ -95,21 +121,15 @@ export function applyNpcPlan(
       statement.statement_id
     );
   }
-  const contributionEvent = statement ?? {
-    schema: 'conversation_non_statement_contribution_v1',
-    contribution_id:
-      `contribution:${context.inputDigest}:${contributionIndex}`,
-    conversation_id: context.conversationId,
-    exchange_id: context.exchangeId,
-    speaker_ref: context.targetRef,
-    contribution_kind: proposal.plan.contribution_kind,
-    handoff,
-    nonverbal_audience: null
-  };
+  const contributionEvent = statement ?? nonStatementContribution(
+    context, proposal.plan, contributionIndex
+  );
   npcOutcome.contributionRef = contributionEvent.schema
     === 'conversation_statement_event_v1'
     ? ref('conversation_statement', contributionEvent.statement_id)
     : ref('conversation_contribution', contributionEvent.contribution_id);
+  npcOutcome.checkResult = structuredClone(checkResult);
+  npcOutcome.socialDeliveryResult = structuredClone(socialDeliveryResult);
   return applyResult({
     working: {
       ...working,
@@ -222,64 +242,19 @@ function statementFromPlan({ context, plan, contributionIndex,
     )
   });
 }
-function audienceForStatement(
-  context,
-  statement,
-  listenerActors,
-  extraListenerRefs
-) {
-  const listenerRefs = [
-    ...listenerActors.map(({ instance_id: instanceId }) => npcRef(instanceId)),
-    ...extraListenerRefs
-  ].sort(compareRefs);
-  return projectConversationAudience({
-    statement,
-    listener_results: listenerRefs.map((listenerRef) => {
-      const actor = listenerRef.entity_kind === 'npc'
-        ? context.actualNpcActors.find(
-            ({ instance_id: instanceId }) => instanceId === listenerRef.entity_id
-          )
-        : null;
-      const speakerActor = statement.speaker_ref.entity_kind === 'npc'
-        ? context.actualNpcActors.find(
-            ({ instance_id: instanceId }) =>
-              instanceId === statement.speaker_ref.entity_id
-          )
-        : null;
-      const listenerAnchor = listenerRef.entity_kind === 'player_character'
-        ? context.state.position.g5_anchor_id
-        : actor?.anchor_id;
-      const speakerAnchor = statement.speaker_ref.entity_kind === 'player_character'
-        ? context.state.position.g5_anchor_id
-        : speakerActor?.anchor_id;
-      const machine = actor?.machine_state ?? {};
-      const semantic = actor?.semantic_state ?? {};
-      const perception = resolveConversationListenerPerception({
-        listener_ref: listenerRef,
-        perception_result_ref: ref(
-          'perception_result',
-          `perception:${statement.statement_id}:${listenerRef.entity_id}`
-        ),
-        acoustic_path: listenerAnchor && listenerAnchor === speakerAnchor
-          ? 'clear' : 'blocked',
-        distance_band: listenerAnchor && listenerAnchor === speakerAnchor
-          ? 'conversation' : 'distant',
-        ambient_noise: context.state.environment?.ambient_noise ?? 'ordinary',
-        hearing_capability: machine.hearing_capability ?? 'full',
-        attention: ['unconscious', 'incapacitated'].includes(machine.status)
-          ? 'unavailable'
-          : machine.attention ?? 'available',
-        language_comprehension:
-          semantic.language_comprehension ?? 'full',
-        speaker_recognition: semantic.speaker_recognition ?? 'recognized'
-      });
-      return {
-        ...perception,
-        perceived_at: structuredClone(context.state.clock),
-        same_time_batch_ref: ref('temporal_batch', context.batchKey)
-      };
-    })
-  });
+
+function nonStatementContribution(context, plan, contributionIndex) {
+  return {
+    schema: 'conversation_non_statement_contribution_v1',
+    contribution_id:
+      `contribution:${context.inputDigest}:${contributionIndex}`,
+    conversation_id: context.conversationId,
+    exchange_id: context.exchangeId,
+    speaker_ref: structuredClone(plan.speaker_ref),
+    contribution_kind: plan.contribution_kind,
+    handoff: plan.handoff === null ? null : structuredClone(plan.handoff),
+    nonverbal_audience: null
+  };
 }
 function applyResult({
   working,

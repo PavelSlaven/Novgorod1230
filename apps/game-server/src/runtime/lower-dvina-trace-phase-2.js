@@ -43,6 +43,8 @@ import {
   validateConversationDependencies,
   validatePhase2RuntimeDependencies
 } from './lower-dvina-trace-phase-2-runtime-input.js';
+import { createNpcSocialCheckResolver } from
+  './lower-dvina-trace-npc-social-check.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
@@ -175,6 +177,13 @@ export function createLowerDvinaTracePhase2Runtime({
           selectNpcDecision: npcDecisionSelector,
           playerConversationModel,
           npcSemanticModel,
+          npcSocialCheckResolver: createNpcSocialCheckResolver({
+            contracts: phase4Contracts,
+            randomSourceFactory,
+            partyId,
+            requestId,
+            idempotencyKey
+          }),
           temporalAdvanceOwner,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,

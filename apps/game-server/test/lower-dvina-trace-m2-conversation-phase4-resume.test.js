@@ -7,7 +7,7 @@ import { appendSemanticNegotiation } from
 import { promiseOfferStage } from
   '../src/runtime/lower-dvina-trace-phase-4-command-shared.js';
 import { digest, phase4ArrivalState, phase4Factual,
-  projectPhase4Negotiation, ref, runPhase4 } from
+  checkResult, projectPhase4Negotiation, ref, runPhase4 } from
   './lower-dvina-trace-m2-conversation-fixture.js';
 
 test('Phase 4 exact-end resume persists without more time or LLM', async () => {
@@ -57,6 +57,62 @@ test('Phase 4 exact-end resume persists without more time or LLM', async () => {
   assert.equal(resumedWrites.updates.some(({ target_table: table }) =>
     table === 'party_timed_activity_executions'), true);
 });
+
+test('interrupted Ratsha social check resumes without reroll or another LLM',
+  async () => {
+    const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
+    state.temporal_boundary_candidates = [boundaryCandidate(
+      state, addElapsedTime(state.clock, {
+        exact_minutes: { numerator: '7', denominator: '1' }
+      })
+    )];
+    let checkCalls = 0;
+    const first = await runPhase4({ state, contracts,
+      rawText: 'Ратша, отвечай.', inputDigest: digest('2'),
+      responseKind: 'lie',
+      checkResult: checkResult(contracts.check.check_id, 'success'),
+      checkRequest, offerStage,
+      npcSocialCheckResolver: async ({ request }) => {
+        checkCalls += 1;
+        return checkResult(`npc:${request.request_id}`, 'success_with_cost');
+      },
+      resolveTemporalBoundary: hardInterrupt });
+
+    assert.equal(checkCalls, 1);
+    assert.equal(first.result.pending_npc_execution.remaining_minutes, 3);
+    assert.equal(first.result.pending_npc_execution.check_result.outcome.band,
+      'success_with_cost');
+    assert.equal(first.result.pending_npc_execution.social_delivery_result
+      .outcome_band, 'success_with_cost');
+    assert.equal(first.result.statements.length, 1);
+
+    const projected = projectPhase4Negotiation({ state, contracts,
+      result: first.result, inputDigest: digest('2') });
+    projected.npc_semantic_decision_traces = first.result.decisions.map(
+      ({ request, proposal }) => buildNpcSemanticDecisionTrace({ request,
+        plan: proposal.plan, root_turn_id: 'turn:phase4-social-first',
+        working_revision: 0,
+        applied_change_set_id: 'change:phase4-social-first',
+        status: 'committed' }));
+    projected.temporal_boundary_candidates = [];
+
+    const resumed = await runPhase4({ state: projected, contracts,
+      rawText: 'Продолжить.', inputDigest: digest('3'),
+      responseKind: 'bargain', checkResult: null, checkRequest: null,
+      offerStage: null,
+      npcSocialCheckResolver: async () => {
+        throw new Error('persisted NPC social check must not be rerolled');
+      } });
+
+    assert.equal(checkCalls, 1);
+    assert.equal(resumed.playerCalls, 0);
+    assert.equal(resumed.npcCalls, 0);
+    assert.equal(resumed.result.pending_npc_execution, null);
+    assert.equal(resumed.result.response_kind, 'lie');
+    assert.equal(resumed.result.statements.length, 1);
+    assert.equal(resumed.result.statements[0].social_delivery_result
+      .outcome_band, 'success_with_cost');
+  });
 
 function persist(state, next, contracts, result, suffix) {
   const factual = phase4Factual({ state, contracts, result,

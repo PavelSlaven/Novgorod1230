@@ -103,6 +103,7 @@ function assertConversationBindings(value, fail) {
     || value.closed_npc_option_sets !== 'forbidden'
     || value.participant_refs?.eremey !== 'eremey_fisher'
     || value.participant_refs?.ratsha !== 'ratsha_storehouse_helper'
+    || !validNpcSocialCheckProfile(value.npc_social_check_profiles)
     || !Array.isArray(mappings)
     || mappings.length !== expectedMappings.size
     || mappings.some((mapping) => {
@@ -122,6 +123,24 @@ function assertConversationBindings(value, fail) {
       'M2 semantic descriptors must match the approved Phase 3/4 plan.');
   }
   assertMechanicsRefs(value, mappings, fail);
+}
+
+function validNpcSocialCheckProfile(profiles) {
+  const profile = Array.isArray(profiles) && profiles.length === 1
+    ? profiles[0] : null;
+  return profile?.profile_id
+      === 'trace_ld_v1_npc_ratsha_social_delivery_check_v1'
+    && profile.actor_ref === 'ratsha_storehouse_helper'
+    && profile.attribute_ref === 'influence'
+    && profile.attribute_value === 12
+    && profile.skill_ref === 'communication'
+    && profile.skill_bonus === 1
+    && profile.difficulty === 13
+    && profile.state_modifier === -1
+    && profile.equipment_modifier === 0
+    && profile.circumstance_modifier === 1
+    && profile.outcome_policy === 'checks_rng_margin_bands_only'
+    && profile.retry_policy === 'reuse_committed_roll_for_same_boundary';
 }
 
 function assertMechanicsRefs(value, mappings, fail) {

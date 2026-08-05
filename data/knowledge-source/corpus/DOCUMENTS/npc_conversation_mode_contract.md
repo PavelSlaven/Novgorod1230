@@ -19,12 +19,11 @@ production не обращается к ним без явного historical re
 этом cutover заканчивается только типизированным handoff и не разрешается.
 
 Профиль Lower Dvina Trace revision 14 активирует common social check для
-contribution игрока, но NPC responder в этом conformance scenario работает
-только с `resolution = automatic`: его request передаёт пустые
-`allowed_attribute_refs` и `allowed_skill_refs`. Общая schema сохраняет
-`check_required` для NPC contribution и валидирует его при непустом явно
-зарегистрированном scope, однако такой NPC-check owner/profile не активирован
-данным cutover. Это ограничение профиля, а не сценарный запрет общей schema.
+contribution игрока и для попыток Ратши солгать либо выторговать уступку.
+NPC request передаёт только явно зарегистрированные attribute, skill и check
+profile refs; бросок выполняет code-owned check owner после выбора semantic
+contribution и до его фактического применения. NPC без такого профильного
+scope может использовать только `resolution = automatic`.
 
 ---
 
@@ -980,12 +979,12 @@ NPC может:
 
 ### 17.5. Activation profile Lower Dvina revision 14
 
-Для player contribution применяются правила разделов 17.1–17.4. Для NPC
-responder в Lower Dvina revision 14 `decision_scope.allowed_attribute_refs` и
-`decision_scope.allowed_skill_refs` пусты, поэтому допустим только
-`resolution = automatic` и `check = null`. `check_required` для NPC становится
-доступен только после отдельной активации общего check owner и непустого
-профильного scope; сценарный classifier не вправе вводить собственный бросок.
+Для player contribution применяются правила разделов 17.1–17.4. Для Ратши
+revision 14 регистрирует непустые `allowed_attribute_refs`,
+`allowed_skill_refs` и `allowed_check_profile_refs`: ложь и торг требуют
+`check_required`, а common check owner возвращает code-owned outcome до
+применения contribution. Для остальных NPC пустой scope сохраняет
+`resolution = automatic`; сценарный classifier не вправе вводить свой бросок.
 
 ---
 
@@ -1190,7 +1189,7 @@ LLM не вызывается для NPC только потому, что он:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "decision_mode": "conversation",
   "scheduled_at": {},
   "npc_ref": {
@@ -1213,15 +1212,15 @@ LLM не вызывается для NPC только потому, что он:
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:conversation:batch-42:eremey"
+  "idempotency_key": "npc-decision:batch-42:eremey"
 }
 ```
 
 `conversation_id`, `exchange_id`, source statements и perceived messages загружаются при построении mode-specific request из active session и referenced signals. Boundary не дублирует эти данные.
 
-`decision_mode` входит в `boundary_id` и `idempotency_key`. Один NPC в одном
-fully resolved same-time batch имеет не более одной aggregated boundary и
-одного LLM-вызова для каждого режима решения.
+`decision_mode` является свойством выбранной boundary, но не частью её
+identity. Один NPC в одном fully resolved same-time batch имеет не более одной
+aggregated boundary и одного LLM-вызова суммарно по всем режимам решения.
 
 ## 23. Несколько NPC и порядок ответов
 
@@ -1278,7 +1277,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
 {
   "schema": "npc_conversation_response_request_v1",
   "request_id": "conversation-response-request-42",
-  "boundary_id": "npc-decision:conversation:batch-42:eremey",
+  "boundary_id": "npc-decision:batch-42:eremey",
   "conversation_id": "conversation:party-1:42",
   "exchange_id": "exchange:conversation-42:7",
   "state_version": 17,
@@ -1339,6 +1338,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
     "combat_handoff_available": true,
     "allowed_attribute_refs": [],
     "allowed_skill_refs": [],
+    "allowed_check_profile_refs": [],
     "operation_contract": {}
   }
 }
@@ -2828,8 +2828,8 @@ hidden_information_leak
 15. RNG выполняет код.
 16. Outcome не заставляет NPC согласиться.
 17. Общий NPC contribution contract принимает собственный social check при
-    зарегистрированных refs; Lower Dvina revision 14 явно использует
-    automatic-only NPC profile.
+    зарегистрированных refs; Lower Dvina revision 14 активирует его для лжи и
+    торга Ратши.
 
 ### Историчность
 
@@ -3066,6 +3066,7 @@ invariants:
   - Decision reasons reuse the common five categories and contain no mode-specific trigger vocabulary.
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
   - Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.
+  - Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.
 ```
 
 ```yaml

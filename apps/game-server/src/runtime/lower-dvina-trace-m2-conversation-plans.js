@@ -90,6 +90,8 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
     );
   }
   const operation = plan.supporting_operations[0] ?? null;
+  const checkRequired = plan.resolution === 'check_required'
+    && plan.check !== null;
   if (operation?.op === SURRENDER_OPERATION
       && offerAvailable
       && exactKeys(operation, ['op'])
@@ -100,6 +102,7 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
     return { kind: 'surrender', statementRef: null };
   }
   if (operation?.op === BARGAIN_OPERATION
+      && checkRequired
       && exactKeys(operation, ['op'])
       && ['negotiate', 'offer', 'threaten'].includes(
         plan.speech.dominant_act
@@ -108,6 +111,7 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
     return { kind: 'bargain', statementRef: null };
   }
   if (operation?.op === LIE_OPERATION
+      && checkRequired
       && exactKeys(operation, ['op'])
       && plan.speech.interaction_tags.includes('lie')
       && plan.speech.claims.some(
@@ -139,7 +143,7 @@ export function classifyOrdinaryConversationPlan(plan) {
   );
 }
 
-export function requirePlayerSpeech(context, plan) {
+export function requirePlayerContribution(context, plan) {
   requireDomainOwned(plan);
   const intended = plan.intended_addressee_refs ?? [];
   const present = new Set(
@@ -167,20 +171,32 @@ export function requirePlayerSpeech(context, plan) {
   const evidenceOperation = plan.supporting_operations.find(
     ({ op } = {}) => op === EVIDENCE_OPERATION
   );
-  if (plan.contribution_kind !== 'speech'
-      || (plan.input_mode === 'verbatim'
+  const speech = plan.contribution_kind === 'speech';
+  const lifecycleValid = speech
+    ? plan.handoff === null
+    : plan.resolution === 'automatic'
+      && plan.check === null
+      && plan.supporting_operations.length === 0
+      && plan.primary_addressee_ref === null
+      && (plan.contribution_kind === 'silence'
+        ? plan.handoff === null
+          && intended.every((listener) => listener.entity_kind === 'npc'
+            && present.has(listener.entity_id))
+        : plan.intended_addressee_refs.length === 0);
+  if (!lifecycleValid
+      || (speech && plan.input_mode === 'verbatim'
         && plan.speech?.utterance_text
           !== requiredVerbatimUtteranceText(context.playerInput))
-      || !sameRef(plan.primary_addressee_ref, context.targetRef)
-      || !intended.some((listener) => sameRef(listener, context.targetRef))
-      || intended.some((listener) =>
+      || (speech && !sameRef(plan.primary_addressee_ref, context.targetRef))
+      || (speech && !intended.some((listener) =>
+        sameRef(listener, context.targetRef)))
+      || (speech && intended.some((listener) =>
         listener.entity_kind !== 'npc'
-        || !present.has(listener.entity_id))
-      || plan.resolution !== expectedResolution
-      || !checkMatches
-      || plan.handoff !== null
+        || !present.has(listener.entity_id)))
+      || (speech && plan.resolution !== expectedResolution)
+      || (speech && !checkMatches)
       || hasUncommittedClaimSource
-      || plan.supporting_operations.some((operation) => {
+      || (speech && plan.supporting_operations.some((operation) => {
         if (context.phase === 'phase_3'
             && exactKeys(operation, [
               'op', 'interaction_kind', 'actor_ref', 'target_ref', 'entity_ref'
@@ -195,15 +211,15 @@ export function requirePlayerSpeech(context, plan) {
         return !(context.phase === 'phase_4'
           && exactKeys(operation, ['op'])
           && operation.op === PROMISE_OPERATION);
-      })
-      || (context.phase === 'phase_4'
+      }))
+      || (speech && context.phase === 'phase_4'
         && Boolean(offerOperation) !== Boolean(context.offerStage))) {
     fail(
       'TRACE_M2_PLAYER_CONTRIBUTION_INVALID',
       'Player contribution must preserve its input mode and match available mechanics.'
     );
   }
-  if (context.phase === 'phase_3'
+  if (speech && context.phase === 'phase_3'
       && Boolean(evidenceOperation) !== Boolean(context.evidencePresented)) {
     fail(
       'TRACE_M2_PLAYER_EVIDENCE_OPERATION_INVALID',

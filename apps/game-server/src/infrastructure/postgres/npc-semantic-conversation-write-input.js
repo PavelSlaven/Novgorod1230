@@ -57,7 +57,8 @@ export function buildNpcSemanticConversationWriteInput({
   );
   if (!validateConversationSession(session)
       || !Array.isArray(next.npc_decision_signals)
-      || statements.length === 0
+      || !Array.isArray(semanticExchange.exchange?.contributions)
+      || semanticExchange.exchange.contributions.length === 0
       || audiences.length !== statements.length) {
     fail('Conversation-state projection lacks exact session or exchange records');
   }

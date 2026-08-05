@@ -27,13 +27,13 @@ export {
   buildConversationStatementEvent,
   buildPlayerConversationContributionPlan,
   buildPlayerConversationInput,
-  buildSocialDeliveryResult,
   validateConversationSession,
   validateConversationStatementEvent,
   validatePlayerConversationContributionPlan,
   validatePlayerConversationInput,
-  validateSocialDeliveryResult
 } from './conversation-contract-core.js';
+export { buildSocialDeliveryResult, validateSocialDeliveryResult } from
+  './conversation-social-delivery-contract.js';
 
 function validateDecisionReasons(value) {
   return exactKeys(value, ['significance', 'categories', 'signal_refs', 'perceived_changes'])
@@ -60,6 +60,7 @@ function validateDecisionScope(value) {
     'combat_handoff_available',
     'allowed_attribute_refs',
     'allowed_skill_refs',
+    'allowed_check_profile_refs',
     'operation_contract'
   ])
     && value.conversation_mode === true
@@ -67,6 +68,7 @@ function validateDecisionScope(value) {
     && typeof value.combat_handoff_available === 'boolean'
     && uniqueStableIds(value.allowed_attribute_refs)
     && uniqueStableIds(value.allowed_skill_refs)
+    && uniqueStableIds(value.allowed_check_profile_refs)
     && plainRecord(value.operation_contract)
     && jsonSafe(value.operation_contract);
 }

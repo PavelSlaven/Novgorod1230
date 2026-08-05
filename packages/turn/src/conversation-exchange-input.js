@@ -1,5 +1,6 @@
 import { validateConversationContributionPlan,
-  validatePlayerConversationInput } from '@rus/npc-runtime';
+  validatePlayerConversationInput,
+  validateSocialDeliveryResult } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
 
 const INPUT_KEYS = new Set([
@@ -84,7 +85,8 @@ export function normalizeConversationExchangeInput(input) {
       && (!exactKeys(pendingNpcExecution, [
         'plan', 'boundary_id', 'contribution_index', 'remaining_minutes',
         'remaining_exchange_minutes', 'remaining_responder_refs',
-        'same_time_batch_ref', 'source_decision_trace_ref'
+        'same_time_batch_ref', 'check_result', 'social_delivery_result',
+        'source_decision_trace_ref'
       ])
         || !validateConversationContributionPlan(pendingNpcExecution.plan)
         || typeof pendingNpcExecution.boundary_id !== 'string'
@@ -111,6 +113,14 @@ export function normalizeConversationExchangeInput(input) {
         || typeof pendingNpcExecution.same_time_batch_ref?.entity_id
           !== 'string'
         || pendingNpcExecution.same_time_batch_ref.entity_id.length === 0
+        || (pendingNpcExecution.plan.resolution === 'check_required'
+          ? typeof pendingNpcExecution.check_result?.check_id !== 'string'
+            || !validateSocialDeliveryResult(
+              pendingNpcExecution.social_delivery_result)
+            || pendingNpcExecution.check_result.outcome?.band
+              !== pendingNpcExecution.social_delivery_result.outcome_band
+          : pendingNpcExecution.check_result !== null
+            || pendingNpcExecution.social_delivery_result !== null)
         || pendingNpcExecution.source_decision_trace_ref?.entity_kind
           !== 'npc_decision_trace'
         || typeof pendingNpcExecution.source_decision_trace_ref?.entity_id

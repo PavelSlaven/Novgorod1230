@@ -56,11 +56,11 @@ test('017 delegates transaction ownership to the target migration runner', () =>
   assert.doesNotMatch(conversationTranscriptSql, /^\s*COMMIT\s*;/imu);
 });
 
-test('018 restores mode-scoped NPC decision identity', () => {
+test('018 restores one NPC decision identity per same-time batch', () => {
   assert.match(npcDecisionModeIdentitySql,
-    /DROP INDEX IF EXISTS\s+party_runtime\.party_npc_decision_traces_batch_npc_key/u);
+    /DROP INDEX IF EXISTS\s+party_runtime\.party_npc_decision_traces_batch_npc_mode_key/u);
   assert.match(npcDecisionModeIdentitySql,
-    /party_id,\s*npc_id,\s*decision_mode,\s*\(same_time_batch_ref ->> 'entity_id'\)/u);
+    /party_id,\s*npc_id,\s*\(same_time_batch_ref ->> 'entity_id'\)/u);
   assert.doesNotMatch(npcDecisionModeIdentitySql,
     /operator repair required|HAVING count\(\*\) > 1/u);
   assert.doesNotMatch(npcDecisionModeIdentitySql, /^\s*BEGIN\s*;/imu);

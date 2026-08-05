@@ -948,9 +948,9 @@
       "type": "sql"
     },
     {
-      "bytes": 11833,
+      "bytes": 11809,
       "path": "schemas/party-db/016_party_runtime_npc_semantic_conversation.sql",
-      "sha256": "99e937804bf0f5149707273b6abd2dcf6b698d01b57e95d96772fb5b6f81f9d3",
+      "sha256": "6c1f48de83313bf32b31d33d74e9c78d9dbd8b8963f7167b99cc0ac4cedc8b7f",
       "type": "sql"
     },
     {
@@ -960,9 +960,9 @@
       "type": "sql"
     },
     {
-      "bytes": 563,
+      "bytes": 471,
       "path": "schemas/party-db/018_party_runtime_npc_decision_mode_identity.sql",
-      "sha256": "0510de68aa977f7974f9b591dccbeffe1549eb6297449b009e6c1adba92d6a13",
+      "sha256": "fa69e0dd295d426785639e29af81b118ef51e5a1a56a87968e0c9d7306575879",
       "type": "sql"
     },
     {

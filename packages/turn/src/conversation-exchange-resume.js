@@ -1,8 +1,11 @@
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
 import {
+  decisionPairKey,
   normalizeNpcBoundaryBatch,
   normalizeNpcDecision
 } from './conversation-exchange-npc-batch.js';
+import { resolveNpcContributionSocialCheck } from
+  './conversation-exchange-social-check.js';
 
 export async function resumePendingNpcExecution(normalized, ports, helpers) {
   const { callPort, fail, immutableClone, normalizeApplyResult,
@@ -11,7 +14,9 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
   const firstApplied = normalizeApplyResult(await callPort(
     ports.applyPendingNpcContribution,
     { working_state: normalized.initialWorkingState, plan: pending.plan,
-      contribution_index: pending.contribution_index },
+      contribution_index: pending.contribution_index,
+      check_result: pending.check_result,
+      social_delivery_result: pending.social_delivery_result },
     'TURN_CONVERSATION_NPC_APPLY_FAILED',
     'Persisted NPC conversation contribution could not be resumed'
   ), 'TURN_CONVERSATION_NPC_APPLY_INVALID');
@@ -36,6 +41,10 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
   const temporalBoundaryRefs = [...firstProgress.temporalBoundaryRefs];
   const processedBoundaryIds = [pending.boundary_id];
   const processedNpcRefs = [pending.plan.speaker_ref];
+  const processedDecisionPairs = new Set([decisionPairKey({
+    npc_ref: pending.plan.speaker_ref,
+    same_time_batch_ref: pending.same_time_batch_ref
+  })]);
   let remainingRefs = [...pending.remaining_responder_refs];
   let nextPending = firstProgress.interrupted ? pendingRecord({
     pending,
@@ -73,7 +82,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
           same_time_batch_ref: pending.same_time_batch_ref },
         'TURN_CONVERSATION_NPC_BATCH_BUILD_FAILED',
         'NPC response boundary batch could not be built'
-      ), new Set(processedBoundaryIds), new Set());
+      ), new Set(processedBoundaryIds), processedDecisionPairs);
       const requiredKeys = new Set(remainingRefs.map(refKey));
       const availableKeys = new Set(batch.boundaries.map(
         ({ npc_ref: npcRef }) => refKey(npcRef)));
@@ -104,6 +113,12 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
         revalidateStateVersion: ports.revalidateNpcStateVersion,
         validatePlan: ports.validateNpcPlan ?? null
       });
+      const npcCheck = await resolveNpcContributionSocialCheck({
+        plan: proposal.plan,
+        request: decision.request,
+        boundary: decision.boundary,
+        resolver: ports.resolveNpcContributionCheck
+      });
       const contributionIndex = pending.contribution_index
         + contributions.length;
       const plannedMinutes = plannedNpcMinutes({
@@ -116,6 +131,8 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
         ports.applyNpcContribution,
         { working_state: workingState, boundary: decision.boundary,
           request: decision.request, proposal,
+          check_result: npcCheck.check_result,
+          social_delivery_result: npcCheck.social_delivery_result,
           contribution_index: contributionIndex },
         'TURN_CONVERSATION_NPC_APPLY_FAILED',
         'NPC conversation contribution could not be applied'
@@ -141,6 +158,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
         request: decision.request, proposal });
       processedBoundaryIds.push(decision.boundary.boundary_id);
       processedNpcRefs.push(decision.request.npc_ref);
+      processedDecisionPairs.add(decisionPairKey(decision.boundary));
       remainingRefs = remainingRefs.filter((reference) =>
         refKey(reference) !== refKey(decision.request.npc_ref));
       temporalBoundaryRefs.push(...progress.temporalBoundaryRefs);
@@ -152,6 +170,8 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
           remainingExchangeMinutes:
             pending.remaining_exchange_minutes - elapsedMinutes,
           remainingRefs,
+          checkResult: npcCheck.check_result,
+          socialDeliveryResult: npcCheck.social_delivery_result,
           sourceDecisionTraceRef: {
             entity_kind: 'npc_decision_trace',
             entity_id: decision.request.request_id
@@ -196,6 +216,8 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
 
 function pendingRecord({ pending, plan, boundaryId, contributionIndex,
   remainingMinutes, remainingExchangeMinutes, remainingRefs,
+  checkResult = pending.check_result,
+  socialDeliveryResult = pending.social_delivery_result,
   sourceDecisionTraceRef = pending.source_decision_trace_ref }) {
   return {
     plan,
@@ -205,6 +227,8 @@ function pendingRecord({ pending, plan, boundaryId, contributionIndex,
     remaining_exchange_minutes: remainingExchangeMinutes,
     remaining_responder_refs: remainingRefs,
     same_time_batch_ref: pending.same_time_batch_ref,
+    check_result: checkResult,
+    social_delivery_result: socialDeliveryResult,
     source_decision_trace_ref: sourceDecisionTraceRef
   };
 }

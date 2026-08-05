@@ -16,7 +16,7 @@
   },
   "base_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/manifest.json",
-    "digest": "524419db0d21b1885e6036e1b00435a5e10866321bfe60ffba064c0798b5881c",
+    "digest": "e76ebdf8bce04c2baf985e937e07c1ea3ab29c8f0aa340dfe0548cfda9e508d8",
     "package_id": "lower_dvina_trace_m2_content_v1",
     "revision": 1,
     "schema": "rus.lower_dvina_trace_m2_content_manifest.v1"

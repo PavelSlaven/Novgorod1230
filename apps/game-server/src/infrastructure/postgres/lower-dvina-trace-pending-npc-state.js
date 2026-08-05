@@ -51,7 +51,12 @@ export function projectPendingNpcConversationExecution({
       || pending.remaining_exchange_minutes < pending.remaining_minutes
       || !Array.isArray(pending.remaining_responder_refs)
       || pending.same_time_batch_ref?.entity_kind !== 'temporal_batch'
-      || typeof pending.same_time_batch_ref?.entity_id !== 'string') {
+      || typeof pending.same_time_batch_ref?.entity_id !== 'string'
+      || (pending.plan.resolution === 'check_required'
+        ? pending.check_result?.outcome?.band
+            !== pending.social_delivery_result?.outcome_band
+        : pending.check_result !== null
+          || pending.social_delivery_result !== null)) {
     fail(
       'TRACE_M2_PENDING_NPC_EXECUTION_INVALID',
       'A suspended NPC contribution must reference its committed semantic decision.'
@@ -74,6 +79,9 @@ export function projectPendingNpcConversationExecution({
       structuredClone(pending.remaining_responder_refs),
     same_time_batch_ref: structuredClone(pending.same_time_batch_ref),
     boundary_id: pending.boundary_id,
+    check_result: structuredClone(pending.check_result),
+    social_delivery_result:
+      structuredClone(pending.social_delivery_result),
     ...(priorPending?.conversation_id === pendingRequest.conversation_id
       && priorPending?.exchange_id === pendingRequest.exchange_id
       ? preservedActivity(

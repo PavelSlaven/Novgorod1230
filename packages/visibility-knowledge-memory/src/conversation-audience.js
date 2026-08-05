@@ -198,7 +198,8 @@ export function projectConversationNonverbalAudience(input = {}) {
       || !exactText(contribution.contribution_id)
       || !exactText(contribution.conversation_id)
       || !exactText(contribution.exchange_id)
-      || !exactRef(contribution.speaker_ref, new Set(['npc']))
+      || !exactRef(contribution.speaker_ref,
+        new Set(['npc', 'player_character']))
       || contribution.handoff !== null
       || contribution.nonverbal_audience !== null
       || !Array.isArray(observerResults)

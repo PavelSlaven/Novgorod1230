@@ -15,8 +15,6 @@ import { semanticNegotiationCommand } from
   '../src/runtime/lower-dvina-trace-phase-4-semantic-command.js';
 import { promiseOfferStage } from
   '../src/runtime/lower-dvina-trace-phase-4-command-shared.js';
-import { buildSurrenderProjection } from
-  '../src/runtime/lower-dvina-trace-m2-conversation-surrender.js';
 import {
   assertPersistedStatePayloadSafe,
   checkResult,
@@ -277,6 +275,26 @@ test('Ratsha responds once to the post-elapsed surrender demand boundary', async
       .knowledge_profile_snapshot
   );
 });
+
+test('incapacitated Ratsha does not receive a conversation LLM request',
+  async () => {
+    const { state, contracts } = phase4ArrivalState();
+    const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'ratsha_storehouse_helper');
+    ratsha.machine_state = {
+      ...ratsha.machine_state,
+      status: 'incapacitated',
+      speech_capability: 'none'
+    };
+    const exchange = await runPhase4({ state, contracts,
+      rawText: 'Ратша, отвечай.', inputDigest: digest('c'),
+      responseKind: 'speech', checkResult: null, offerStage: null,
+      checkRequest: null });
+
+    assert.equal(exchange.npcCalls, 0);
+    assert.equal(exchange.result.decision_request, null);
+    assert.equal(exchange.result.response_kind, null);
+  });
 
 test('Ratsha semantic boundary also accepts ordinary valid speech without a scenario outcome', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
@@ -593,93 +611,3 @@ test('only surrender activates the party-local commitment and projects the knife
   assert.equal(liedState.npc_decision_signals.some(({ signal }) =>
     signal.source_event_ref.entity_kind === 'item_property_transition'), false);
 });
-
-test('unperceived acceptance keeps the promise offered and blocks knife transition',
-  async () => {
-    const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
-    state.promise_instances[0].created_change_set_id =
-      'change:phase4-arrival';
-    const exchange = await runPhase4({
-      state,
-      contracts,
-      rawText: 'Обещаю защиту, если сдашься и отдашь нож.',
-      inputDigest: digest('e'),
-      responseKind: 'surrender',
-      checkResult: checkResult(contracts.check.check_id, 'success'),
-      offerStage,
-      checkRequest
-    });
-    const withoutPlayerAcceptance = structuredClone(exchange.result);
-    const playerRef = ref('player_character', state.actor_id);
-    const ratshaStatement = withoutPlayerAcceptance.statements.find(
-      ({ speaker_ref: speakerRef }) => speakerRef.entity_kind === 'npc'
-    );
-    const ratshaAudience = withoutPlayerAcceptance.audiences.find(
-      ({ statement_ref: statementRef }) =>
-        statementRef.entity_id === ratshaStatement.statement_id
-    );
-    for (const key of ['actual_listener_refs', 'witness_candidate_refs']) {
-      ratshaAudience[key] = ratshaAudience[key].filter(
-        (reference) => reference.entity_kind !== playerRef.entity_kind
-          || reference.entity_id !== playerRef.entity_id
-      );
-    }
-    ratshaAudience.received_messages = ratshaAudience.received_messages.filter(
-      ({ listener_ref: listenerRef }) =>
-        listenerRef.entity_kind !== playerRef.entity_kind
-          || listenerRef.entity_id !== playerRef.entity_id
-    );
-    const projection = buildSurrenderProjection(withoutPlayerAcceptance, {
-      state,
-      contracts,
-      conversationId: exchange.result.decision_request.conversation_id,
-      exchangeId: exchange.result.decision_request.exchange_id,
-      targetRef: exchange.result.decision_request.npc_ref
-    });
-
-    assert.equal(projection.commitment.status, 'offered');
-    assert.equal(projection.surrender, null);
-    assert.equal(projection.knifeTransitionEligibility, null);
-
-    withoutPlayerAcceptance.commitment = projection.commitment;
-    withoutPlayerAcceptance.surrender = projection.surrender;
-    withoutPlayerAcceptance.knife_transition_eligibility =
-      projection.knifeTransitionEligibility;
-    const next = projectPhase4Negotiation({
-      state,
-      contracts,
-      result: withoutPlayerAcceptance,
-      inputDigest: digest('e')
-    });
-    assert.equal(next.promise_instances[0].current_state, 'offered');
-    assert.equal(next.ratsha_surrendered, undefined);
-    const knife = next.items.find(({ template_id: templateId }) =>
-      templateId === 'trace_ld_v1_item_ratsha_knife');
-    assert.equal(knife.placement.holder_npc_id,
-      contracts.actors.ratsha_storehouse_helper.instance_id);
-
-    const factual = phase4Factual({ state, contracts,
-      result: withoutPlayerAcceptance, inputDigest: digest('e') });
-    assert.equal(next.promise_instances[0].obligation_id,
-      state.promise_instances[0].obligation_id);
-    factual.consequence.negotiation.offer_stage =
-      promiseOfferStage(state, contracts);
-    const writes = { inserts: [], updates: [], appends: [] };
-    appendSemanticNegotiation({
-      ...writes,
-      partyId: state.party_id,
-      state,
-      next,
-      factual,
-      turnNumber: state.party_state.turn_number + 1,
-      changeSetId: `change:${digest('e').slice(0, 12)}`,
-      idemId: 'idem:unperceived-acceptance',
-      contracts,
-      rootTurnId: `turn:${digest('e').slice(0, 12)}`,
-      workingRevision: 0
-    });
-    assert.equal(writes.updates.some(({ target_table: table }) =>
-      table === 'party_items' || table === 'party_npcs'), false);
-    assert.equal(writes.appends.some(({ target_table: table }) =>
-      table === 'party_npc_runtime_transitions'), false);
-  });

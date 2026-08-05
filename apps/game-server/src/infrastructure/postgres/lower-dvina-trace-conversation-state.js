@@ -50,10 +50,15 @@ export function projectSemanticConversationSnapshot({
   const hasDecision = decisions.length > 0;
   const primaryDecision = decisions[0] ?? null;
   const firstContribution = exchange?.contributions?.[0];
-  const exchangeIdentity = hasDecision ? primaryDecision.request : {
-    conversation_id: firstContribution?.conversation_id,
-    exchange_id: firstContribution?.exchange_id
-  };
+  const resumedPlan = semanticExchange.resumed_npc_execution?.plan;
+  const exchangeIdentity = hasDecision ? primaryDecision.request
+    : firstContribution ? {
+        conversation_id: firstContribution.conversation_id,
+        exchange_id: firstContribution.exchange_id
+      } : {
+        conversation_id: resumedPlan?.conversation_id,
+        exchange_id: resumedPlan?.exchange_id
+      };
   assertSemanticExchangeShape({ semanticExchange, exchange, decisions,
     primaryDecision, record, fail });
 
@@ -83,11 +88,12 @@ export function projectSemanticConversationSnapshot({
     semanticExchange.audiences,
     statements
   );
-  const contributions = validateContributions(
-    exchange.contributions,
-    statements,
-    exchangeIdentity
-  );
+  const contributions = exchange.contributions.length === 0
+    ? [] : validateContributions(
+      exchange.contributions,
+      statements,
+      exchangeIdentity
+    );
   const signalRecords = validateSignalRecords(
     semanticExchange.new_signal_records
   );
@@ -240,11 +246,12 @@ function conversationSession({ state, exchange, statements, contributions,
     : last?.schema === 'conversation_non_statement_contribution_v1'
       && text(last.contribution_id)
       ? ref('conversation_contribution', last.contribution_id)
-      : null;
+      : existing?.last_contribution_ref ?? null;
   if (!lastContributionRef
       || !text(state.position?.location_ref)
       || !text(exchange.session_status)
-      || !text(exchange.stop_reason)) {
+      || !text(exchange.stop_reason)
+      || (firstContribution == null && existing == null)) {
     fail(
       'TRACE_M2_CONVERSATION_SESSION_INVALID',
       'The semantic exchange cannot produce a formal conversation session.'
@@ -256,11 +263,11 @@ function conversationSession({ state, exchange, statements, contributions,
     state_version: existing ? existing.state_version + 1 : 1,
     status: exchange.session_status,
     started_at: existing?.started_at
-      ?? (firstContribution.schema === 'conversation_statement_event_v1'
+      ?? (firstContribution?.schema === 'conversation_statement_event_v1'
         ? firstContribution.spoken_at : structuredClone(state.clock)),
     location_ref: existing?.location_ref
       ?? ref('location', state.position.location_ref),
-    initiator_ref: existing?.initiator_ref ?? firstContribution.speaker_ref,
+    initiator_ref: existing?.initiator_ref ?? firstContribution?.speaker_ref,
     active_participant_refs: activeParticipantRefs,
     last_contribution_ref: lastContributionRef,
     topic_refs: [...new Set([

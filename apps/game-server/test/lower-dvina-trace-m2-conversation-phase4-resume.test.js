@@ -114,6 +114,91 @@ test('interrupted Ratsha social check resumes without reroll or another LLM',
       .outcome_band, 'success_with_cost');
   });
 
+test('incapacitated Ratsha cannot execute a persisted contribution', async () => {
+  const { projected, contracts } = await interruptedRatshaSpeech('4');
+  const ratsha = projected.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'ratsha_storehouse_helper');
+  ratsha.machine_state = {
+    ...ratsha.machine_state,
+    status: 'incapacitated',
+    speech_capability: 'none'
+  };
+
+  const resumed = await resumePersistedContribution(projected, contracts, '5');
+
+  assert.equal(resumed.playerCalls, 0);
+  assert.equal(resumed.npcCalls, 0);
+  assert.equal(resumed.result.exact_elapsed_minutes, 0);
+  assert.equal(resumed.result.response_kind, null);
+  assert.deepEqual(resumed.result.statements, []);
+  const ended = projectPhase4Negotiation({ state: projected, contracts,
+    result: resumed.result, inputDigest: digest('5') });
+  assert.equal(ended.pending_npc_conversation_execution, undefined);
+  assert.equal(ended.conversation_sessions.at(-1).status, 'ended');
+  assert.equal(ended.conversation_sessions.at(-1).status_reason,
+    'npc_unavailable');
+  const writes = persist(projected, ended, contracts, resumed.result,
+    'phase4-incapacitated-resume');
+  assert.equal(writes.updates.some(({ target_table: table, record }) =>
+    table === 'party_conversation_sessions'
+      && record.status === 'ended'), true);
+  assert.equal(writes.appends.some(({ target_table: table }) =>
+    table === 'party_conversation_statements'), false);
+});
+
+test('Ratsha moved away cannot execute a persisted contribution', async () => {
+  const { projected, contracts } = await interruptedRatshaSpeech('6');
+  const ratsha = projected.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'ratsha_storehouse_helper');
+  ratsha.anchor_id = 'g5_anchor:moved-away';
+  ratsha.location_profile_ref = 'trace_ld_v1_loc_fishing_camp';
+  ratsha.zone_ref = 'working_camp';
+
+  const resumed = await resumePersistedContribution(projected, contracts, '7');
+
+  assert.equal(resumed.playerCalls, 0);
+  assert.equal(resumed.npcCalls, 0);
+  assert.equal(resumed.result.exact_elapsed_minutes, 0);
+  assert.equal(resumed.result.response_kind, null);
+  assert.deepEqual(resumed.result.statements, []);
+  const ended = projectPhase4Negotiation({ state: projected, contracts,
+    result: resumed.result, inputDigest: digest('7') });
+  assert.equal(ended.pending_npc_conversation_execution, undefined);
+  assert.equal(ended.conversation_sessions.at(-1).status, 'ended');
+  assert.equal(ended.conversation_sessions.at(-1).status_reason,
+    'npc_unavailable');
+});
+
+async function interruptedRatshaSpeech(inputCharacter) {
+  const { state, contracts } = phase4ArrivalState();
+  state.temporal_boundary_candidates = [boundaryCandidate(
+    state, addElapsedTime(state.clock, {
+      exact_minutes: { numerator: '7', denominator: '1' }
+    })
+  )];
+  const first = await runPhase4({ state, contracts,
+    rawText: 'Ратша, отвечай.', inputDigest: digest(inputCharacter),
+    responseKind: 'speech', checkResult: null, checkRequest: null,
+    offerStage: null, resolveTemporalBoundary: hardInterrupt });
+  assert.equal(first.result.pending_npc_execution.remaining_minutes, 3);
+  const projected = projectPhase4Negotiation({ state, contracts,
+    result: first.result, inputDigest: digest(inputCharacter) });
+  projected.npc_semantic_decision_traces = first.result.decisions.map(
+    ({ request, proposal }) => buildNpcSemanticDecisionTrace({ request,
+      plan: proposal.plan, root_turn_id: `turn:phase4-revalidate-${inputCharacter}`,
+      working_revision: 0,
+      applied_change_set_id: `change:phase4-revalidate-${inputCharacter}`,
+      status: 'committed' }));
+  projected.temporal_boundary_candidates = [];
+  return { projected, contracts };
+}
+
+function resumePersistedContribution(state, contracts, inputCharacter) {
+  return runPhase4({ state, contracts, rawText: 'Продолжить.',
+    inputDigest: digest(inputCharacter), responseKind: 'speech',
+    checkResult: null, checkRequest: null, offerStage: null });
+}
+
 function persist(state, next, contracts, result, suffix) {
   const factual = phase4Factual({ state, contracts, result,
     inputDigest: digest(suffix === 'phase4-exact-first' ? '0' : '1') });

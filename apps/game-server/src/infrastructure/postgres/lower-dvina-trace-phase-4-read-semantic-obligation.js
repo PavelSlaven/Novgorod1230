@@ -38,29 +38,32 @@ export function assertPhase4SemanticPromiseAndSurrender({
     ({ consequence: c }) =>
       c.negotiation.semantic_exchange_projection != null
   );
-  const surrenderHistory = semanticNegotiations.filter(
+  const activationHistory = semanticNegotiations.filter(
     ({ consequence: c }) =>
       c.negotiation.semantic_exchange_projection.commitment?.status
         === 'active'
   );
-  if ((promise.current_state === 'active')
-      !== (payload.ratsha_surrendered === true)) fail();
+  const surrenderHistory = semanticNegotiations.filter(
+    ({ consequence: c }) =>
+      c.negotiation.semantic_exchange_projection.surrender !== null
+  );
   assertSemanticPromiseTransitions({
     promise,
     transitions,
-    surrender: surrenderHistory[0] ?? null
+    surrender: activationHistory[0] ?? null
   });
   if (promise.current_state === 'active') {
-    if (surrenderHistory.length !== 1) fail();
+    if (activationHistory.length !== 1) fail();
     assertSemanticCommitment({
       payload,
       promise,
-      entry: surrenderHistory[0]
+      entry: activationHistory[0]
     });
-  } else if (surrenderHistory.length !== 0) {
+  } else if (activationHistory.length !== 0) {
     fail();
   }
   if (payload.ratsha_surrendered) {
+    if (surrenderHistory.length !== 1) fail();
     assertSemanticSurrender({
       payload,
       entry: surrenderHistory[0],
@@ -68,6 +71,8 @@ export function assertPhase4SemanticPromiseAndSurrender({
       npcTransitions,
       knowledge
     });
+  } else if (surrenderHistory.length !== 0) {
+    fail();
   }
 }
 
@@ -181,6 +186,9 @@ function assertSemanticSurrender({
     ({ transition_kind: kind }) => kind === 'surrendered_without_further_harm'
   );
   const surrenderKnowledge = knowledge.find(
+    ({ fact_id: id }) => id === 'ratsha_surrender_without_further_harm_committed'
+  );
+  const activationKnowledge = knowledge.some(
     ({ fact_id: id }) => id === 'promise_activation_basis_committed'
   );
   if (semantic?.surrender?.fact_id
@@ -205,5 +213,8 @@ function assertSemanticSurrender({
         !== 'ratsha_surrender_without_further_harm_committed'
       || surrenderKnowledge?.knowledge_state
         !== 'known_from_committed_source'
-      || !surrenderKnowledge?.evidence?.includes(requestId)) fail();
+      || !surrenderKnowledge?.evidence?.includes(requestId)
+      || activationKnowledge !== (semantic.commitment?.status === 'active')) {
+    fail();
+  }
 }

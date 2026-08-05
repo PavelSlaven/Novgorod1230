@@ -76,9 +76,7 @@ export async function resolveTracePhase4ConversationExchange({
       combat_target_refs: [ref('player_character', state.actor_id)]
     },
     offerStage, checkRequest,
-    classifyNpcPlan: (plan) => classifyRatshaPlan(plan, {
-      offerAvailable: offerStage !== null
-    }),
+    classifyNpcPlan: classifyRatshaPlan,
     playerPlan
   });
   const effectivePlayerPlan = pendingExecution === null

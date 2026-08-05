@@ -14,7 +14,7 @@ export function conversationNpcContext(context, targetRef) {
     );
   }
   if (sameRef(targetRef, context.targetRef)) {
-    return { ...context, targetRef };
+    return { ...context, targetRef, targetActor };
   }
   return {
     ...context,
@@ -31,6 +31,26 @@ export function conversationNpcContext(context, targetRef) {
     npcSocialCheckProfile: null,
     classifyNpcPlan: classifyOrdinaryConversationPlan
   };
+}
+
+export function npcConversationDecisionCapability(context) {
+  const actor = context.targetActor;
+  const machine = actor?.machine_state ?? {};
+  if (!actor
+      || ['unconscious', 'incapacitated', 'dead'].includes(machine.status)
+      || machine.speech_capability === 'none') {
+    return false;
+  }
+  const actorLocation = actor.location_ref ?? actor.location_profile_ref;
+  const playerLocation = context.state.position?.location_ref;
+  const actorAnchor = actor.g5_anchor_id ?? actor.anchor_id;
+  const playerAnchor = context.state.position?.g5_anchor_id
+    ?? context.state.position?.anchor_id;
+  if (actorAnchor != null && playerAnchor != null) {
+    return actorAnchor === playerAnchor;
+  }
+  return actorLocation == null || playerLocation == null
+    || actorLocation === playerLocation;
 }
 
 export function playerDecisionSignalRecords({

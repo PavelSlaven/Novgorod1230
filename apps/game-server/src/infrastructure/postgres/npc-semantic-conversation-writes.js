@@ -68,6 +68,10 @@ export function appendNpcSemanticConversationWrites({
       }];
   const hasDecision = decisions.length > 0;
   const primaryDecision = decisions[0] ?? null;
+  const unavailableResume = semanticExchange?.exchange?.stop_reason
+    === 'npc_unavailable'
+    && contributions?.length === 0
+    && semanticExchange?.resumed_npc_execution?.plan != null;
   if (!writeArraysValid(inserts, updates, appends)
       || ![partyId, changeSetId, idempotencyRecordId, rootTurnId].every(stableId)
       || !Number.isSafeInteger(workingRevision)
@@ -82,7 +86,7 @@ export function appendNpcSemanticConversationWrites({
       || !record(sameTimeBatchRef)
       || sameTimeBatchRef.entity_kind !== 'temporal_batch'
       || !Array.isArray(contributions)
-      || contributions.length < 1
+      || (contributions.length < 1 && !unavailableResume)
       || !Array.isArray(persistedMessageStatements)
       || !Array.isArray(persistedMessageAudiences)
       || !validSupportingOperationEvidence(supportingOperationEvidence)
@@ -109,7 +113,9 @@ export function appendNpcSemanticConversationWrites({
   const session = sessionWrite.session;
   const request = semanticExchange.decision_request;
   if ((request?.conversation_id
-        ?? contributions[0]?.conversation_id) !== session.conversation_id
+        ?? contributions[0]?.conversation_id
+        ?? semanticExchange.resumed_npc_execution?.plan?.conversation_id)
+        !== session.conversation_id
       || decisions.some((decision) =>
         decision.request.conversation_id !== session.conversation_id
         || decision.request.exchange_id

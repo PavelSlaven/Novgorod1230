@@ -257,10 +257,11 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const normalized = normalizeConversationExchangeInput(input);
   requirePorts(ports);
   if (normalized.pendingNpcExecution !== null) {
-    if (typeof ports.applyPendingNpcContribution !== 'function') {
+    if (typeof ports.applyPendingNpcContribution !== 'function'
+        || typeof ports.revalidatePendingNpcContribution !== 'function') {
       fail(
         'TURN_CONVERSATION_PORT_MISSING',
-        'applyPendingNpcContribution must be injected for resume'
+        'Pending NPC resume requires revalidation and application ports'
       );
     }
     return resumePendingNpcExecution(normalized, ports, {

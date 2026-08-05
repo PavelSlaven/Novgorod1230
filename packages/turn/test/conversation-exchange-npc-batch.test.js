@@ -77,6 +77,7 @@ test('resume remembers the pending NPC and batch across legacy boundary ids',
       }
     }, {
       applyPendingNpcContribution: async () => applied,
+      revalidatePendingNpcContribution: async () => true,
       buildNpcResponseBoundaries: async () => ({
         boundaries: [boundary], direct_addressee_refs: [npcRef]
       })
@@ -98,4 +99,46 @@ test('resume remembers the pending NPC and batch across legacy boundary ids',
       }),
       stopAfterApply: () => null
     }), { code: 'TURN_CONVERSATION_NPC_DECISION_DUPLICATE' });
+  });
+
+test('resume cancels an unavailable pending NPC without time or application',
+  async () => {
+    let applyCalls = 0;
+    const result = await resumePendingNpcExecution({
+      initialWorkingState: { state_version: 4 },
+      maxContributionsPerExchange: 8,
+      pendingNpcExecution: {
+        plan: { speaker_ref: ref('npc', 'guard') },
+        boundary_id: 'npc-decision:batch-1:guard',
+        contribution_index: 2,
+        remaining_minutes: 3,
+        remaining_exchange_minutes: 3,
+        remaining_responder_refs: [],
+        same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+        check_result: null,
+        social_delivery_result: null,
+        source_decision_trace_ref: ref('npc_decision_trace', 'trace-1')
+      }
+    }, {
+      revalidatePendingNpcContribution: async () => false,
+      applyPendingNpcContribution: async () => {
+        applyCalls += 1;
+        throw new Error('unavailable pending contribution must not apply');
+      }
+    }, {
+      callPort: (port, argument) => port(argument),
+      fail(code, message) {
+        const error = new Error(message);
+        error.code = code;
+        throw error;
+      },
+      immutableClone: structuredClone
+    });
+
+    assert.equal(applyCalls, 0);
+    assert.equal(result.stop_reason, 'npc_unavailable');
+    assert.equal(result.session_status, 'ended');
+    assert.equal(result.time_budget.elapsed_minutes, 0);
+    assert.deepEqual(result.contributions, []);
+    assert.equal(result.pending_npc_execution, null);
   });

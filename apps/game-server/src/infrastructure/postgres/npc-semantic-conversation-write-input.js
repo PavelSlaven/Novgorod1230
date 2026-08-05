@@ -26,9 +26,11 @@ export function buildNpcSemanticConversationWriteInput({
         proposal: { plan: semanticExchange.decision_plan }
       }];
   const firstContribution = semanticExchange.exchange?.contributions?.[0];
+  const resumedPlan = semanticExchange.resumed_npc_execution?.plan;
   const conversationId = request?.conversation_id
-    ?? firstContribution?.conversation_id;
-  const exchangeId = request?.exchange_id ?? firstContribution?.exchange_id;
+    ?? firstContribution?.conversation_id ?? resumedPlan?.conversation_id;
+  const exchangeId = request?.exchange_id ?? firstContribution?.exchange_id
+    ?? resumedPlan?.exchange_id;
   const sameTimeBatchRef = boundary?.same_time_batch_ref
     ?? semanticExchange.same_time_batch_ref;
   const session = (next.conversation_sessions ?? []).find(
@@ -55,10 +57,15 @@ export function buildNpcSemanticConversationWriteInput({
       statementRef?.entity_kind === 'conversation_statement'
       && statementIds.has(statementRef.entity_id)
   );
+  const unavailableResume = semanticExchange.exchange?.stop_reason
+    === 'npc_unavailable'
+    && semanticExchange.exchange.contributions.length === 0
+    && resumedPlan != null;
   if (!validateConversationSession(session)
       || !Array.isArray(next.npc_decision_signals)
       || !Array.isArray(semanticExchange.exchange?.contributions)
-      || semanticExchange.exchange.contributions.length === 0
+      || (semanticExchange.exchange.contributions.length === 0
+        && !unavailableResume)
       || audiences.length !== statements.length) {
     fail('Conversation-state projection lacks exact session or exchange records');
   }

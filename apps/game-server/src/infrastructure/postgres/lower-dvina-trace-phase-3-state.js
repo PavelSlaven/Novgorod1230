@@ -75,10 +75,12 @@ export function nextState({
       evidence_refs: []
     }]);
   } else {
-  const conversation = factual.consequence.conversation;
+    const conversation = factual.consequence.conversation;
     if (conversation.semantic_exchange != null) {
-      if (conversation.semantic_exchange.exchange
-          .applied_contribution_count > 0) {
+      const { exchange } = conversation.semantic_exchange;
+      const applied = exchange.applied_contribution_count > 0;
+      const unavailable = exchange.stop_reason === 'npc_unavailable';
+      if (applied || unavailable) {
         next = projectSemanticConversationSnapshot({
           state: next,
           semanticExchange: conversation.semantic_exchange,
@@ -176,7 +178,6 @@ export function nextState({
   };
   return assertSharedSemanticSnapshotSafe(next);
 }
-
 function projectPhase3SemanticConversation({
   next, state, factual, conversation, turnNumber
 }) {
@@ -246,7 +247,6 @@ function projectPhase3SemanticConversation({
       turnNumber
     })
   ];
-
   const disclosure = semantic.route_disclosure;
   if (semantic.response_kind === 'route_disclosure') {
     if (!disclosure
@@ -282,7 +282,6 @@ function semanticFail(code) {
   throw Object.assign(new Error(
     'The Phase 3 semantic conversation projection is incomplete.'), { code });
 }
-
 function preparedScene(state, locationRef) {
   const scene = state.prepared_scenes?.find(
     ({ location_profile_ref: ref }) => ref === locationRef

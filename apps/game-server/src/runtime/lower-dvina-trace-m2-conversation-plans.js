@@ -66,7 +66,7 @@ export function classifyEremeyPlan(plan, {
   return { kind: 'route_disclosure', statementRef: null };
 }
 
-export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
+export function classifyRatshaPlan(plan) {
   requireDomainOwned(plan);
   if (plan.contribution_kind === 'combat_handoff') {
     if (plan.handoff?.kind !== 'combat') {
@@ -93,7 +93,6 @@ export function classifyRatshaPlan(plan, { offerAvailable = false } = {}) {
   const checkRequired = plan.resolution === 'check_required'
     && plan.check !== null;
   if (operation?.op === SURRENDER_OPERATION
-      && offerAvailable
       && exactKeys(operation, ['op'])
       && ['accept', 'promise', 'confess'].includes(
         plan.speech.dominant_act

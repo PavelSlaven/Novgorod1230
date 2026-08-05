@@ -15,6 +15,8 @@ import {
   ref,
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { npcConversationDecisionCapability } from
+  './lower-dvina-trace-m2-conversation-participants.js';
 
 export function buildNpcBoundary(context, working) {
   const resolvedRecords = allSignalRecords(context, working).filter(
@@ -24,7 +26,7 @@ export function buildNpcBoundary(context, working) {
     npc_ref: context.targetRef,
     active_mode: 'conversation',
     current_intent: null,
-    decision_capability: true,
+    decision_capability: npcConversationDecisionCapability(context),
     resolved_signals: resolvedRecords.map(({ signal }) => signal),
     consumed_signal_ids: [
       ...(context.state.consumed_npc_decision_signal_ids ?? []),

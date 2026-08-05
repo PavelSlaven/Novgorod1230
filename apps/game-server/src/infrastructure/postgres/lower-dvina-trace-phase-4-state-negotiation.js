@@ -83,19 +83,14 @@ export function projectPhase4SemanticNegotiation({
   const offerCommitted = negotiation.offer_stage !== null
     && semantic.exchange.applied_contribution_count >= 1;
   const surrenderResponse = responseKind === 'surrender';
-  if ((surrenderResponse && semantic.commitment === null)
-      || (!surrenderResponse && semantic.commitment !== null)
-      || (commitmentActive
-        && (!surrenderResponse
-          || !semantic.surrender
-          || semantic.knife_transition_eligibility?.eligible !== true))
-      || (surrenderResponse && !commitmentActive
-        && (semantic.commitment?.status !== 'offered'
-          || semantic.surrender !== null
-          || semantic.knife_transition_eligibility !== null))
-      || (responseKind !== 'surrender'
-        && (semantic.surrender !== null
-          || semantic.knife_transition_eligibility !== null))) {
+  const commitmentValid = semantic.commitment === null
+    || ['offered', 'active'].includes(semantic.commitment.status);
+  if ((surrenderResponse && (!commitmentValid
+        || semantic.surrender === null
+        || semantic.knife_transition_eligibility?.eligible !== true))
+      || (!surrenderResponse && (semantic.commitment !== null
+        || semantic.surrender !== null
+        || semantic.knife_transition_eligibility !== null))) {
     semanticFail('TRACE_M2_PHASE_4_COMMITMENT_INVALID');
   }
   const prior = next.promise_instances?.[0];
@@ -120,7 +115,7 @@ export function projectPhase4SemanticNegotiation({
     ...(transitionCount > 0 ? { last_change_set_id: changeSetId } : {})
   }];
 
-  if (commitmentActive) {
+  if (surrenderResponse) {
     applySemanticSurrender({
       next,
       state,
@@ -196,11 +191,11 @@ function applySemanticSurrender({
     fact_id: 'ratsha_surrender_without_further_harm_committed',
     knowledge_state: 'known_from_committed_source',
     evidence_refs: [decisionRequestId]
-  }, {
-    fact_id: 'promise_activation_basis_committed',
-    knowledge_state: 'known_from_committed_source',
-    evidence_refs: [decisionRequestId]
-  }]);
+  }, ...(semantic.commitment?.status === 'active' ? [{
+      fact_id: 'promise_activation_basis_committed',
+      knowledge_state: 'known_from_committed_source',
+      evidence_refs: [decisionRequestId]
+    }] : [])]);
   next.items = next.items.map((item) =>
     item.template_id !== 'trace_ld_v1_item_ratsha_knife'
       ? item

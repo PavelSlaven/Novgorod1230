@@ -34,6 +34,10 @@ import {
 import { conversationNpcContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import {
+  revalidatePendingNpcContribution,
+  workingConversationContext
+} from './lower-dvina-trace-m2-conversation-working-state.js';
+import {
   findResumableConversationSession,
   hydratedPendingNpcExecution
 } from './lower-dvina-trace-m2-conversation-resume.js';
@@ -140,7 +144,8 @@ export async function executeM2ConversationExchange(context) {
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     validatePlayerPlan: domainOwnedPlan,
     applyPlayerContribution: ({ working_state: working, plan }) =>
-      applyPlayerPlan(workingContext(context, working), working, plan),
+      applyPlayerPlan(workingConversationContext(context, working), working,
+        plan),
     advanceContributionTime: ({
       working_state: working,
       planned_duration_minutes: plannedDurationMinutes
@@ -159,7 +164,8 @@ export async function executeM2ConversationExchange(context) {
       contribution_event: contributionEvent,
       plan
     }) => projectPlayerPerception(
-      workingContext(context, working), working, contributionEvent, plan
+      workingConversationContext(context, working), working, contributionEvent,
+      plan
     ),
     buildNpcResponseBoundaries: ({
       working_state: working,
@@ -169,14 +175,14 @@ export async function executeM2ConversationExchange(context) {
       pending_responder_refs: pendingResponderRefs = [],
       same_time_batch_ref: resumedBatchRef = null
     }) => buildNpcResponseBoundaryBatch(
-      workingContext(context, working), working,
+      workingConversationContext(context, working), working,
       { latestContribution, processedBoundaryIds, pendingBoundaries,
         pendingResponderRefs, resumedBatchRef }
     ),
     buildNpcResponseDecision: ({ working_state: working,
       latest_contribution: latestContribution, boundary }) => {
       const targetContext = conversationNpcContext({
-        ...workingContext(context, working),
+        ...workingConversationContext(context, working),
         batchKey: boundary.same_time_batch_ref.entity_id
       }, boundary.npc_ref);
       const decision = buildNpcDecision(targetContext, working, boundary,
@@ -198,7 +204,7 @@ export async function executeM2ConversationExchange(context) {
       contribution_index: contributionIndex
     }) => {
       const targetContext = conversationNpcContext(
-        workingContext(context, working), request.npc_ref
+        workingConversationContext(context, working), request.npc_ref
       );
       const npcOutcome = targetContext.classifyNpcPlan(proposal.plan);
       npcOutcomes.set(request.request_id, npcOutcome);
@@ -222,7 +228,7 @@ export async function executeM2ConversationExchange(context) {
     }) => {
       const targetRef = plan.speaker_ref;
       const targetContext = conversationNpcContext(
-        workingContext(context, working), targetRef
+        workingConversationContext(context, working), targetRef
       );
       resumedOutcome = targetContext.classifyNpcPlan(plan);
       return applyNpcPlan(
@@ -236,13 +242,15 @@ export async function executeM2ConversationExchange(context) {
         checkResult
       );
     },
+    revalidatePendingNpcContribution: ({ working_state: working, plan }) =>
+      revalidatePendingNpcContribution(context, working, plan),
     projectNpcContributionPerception: ({
       working_state: working,
       contribution_event: contributionEvent,
       request,
       proposal
     }) => projectNpcPerception(
-      conversationNpcContext(workingContext(context, working),
+      conversationNpcContext(workingConversationContext(context, working),
         request?.npc_ref ?? contributionEvent.speaker_ref),
       working,
       contributionEvent,
@@ -264,26 +272,6 @@ export async function executeM2ConversationExchange(context) {
     pendingExecution, npcOutcomes, resumedOutcome });
 }
 
-function workingContext(context, working) {
-  const state = {
-    ...context.state,
-    ...structuredClone(working.world_state ?? {}),
-    clock: structuredClone(working.clock)
-  };
-  const stateActors = new Map((state.npcs ?? []).map(
-    (actor) => [actor.instance_id, actor]
-  ));
-  const actualNpcActors = context.actualNpcActors.map((actor) => ({
-    ...actor,
-    ...(stateActors.get(actor.instance_id) ?? {})
-  }));
-  return {
-    ...context,
-    state,
-    actualNpcActors,
-    batchKey: sameTimeBatchKey(state.party_id, state.clock)
-  };
-}
 export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),

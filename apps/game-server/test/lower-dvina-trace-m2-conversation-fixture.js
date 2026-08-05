@@ -751,7 +751,8 @@ export function phase4Factual({ state, contracts, result, inputDigest }) {
   const playerInput = {
     request_id: `request:${suffix}`,
     idempotency_key: `idempotency:${suffix}`,
-    raw_text: result.statements[0].utterance_text
+    raw_text: result.statements[0]?.utterance_text
+      ?? 'resume invalidated by current NPC state'
   };
   return {
     player_input: playerInput,
@@ -771,7 +772,7 @@ export function phase4Factual({ state, contracts, result, inputDigest }) {
       phase4_kind: 'negotiation',
       negotiation: {
         activity_ref: contracts.negotiation.profile_id,
-        offer_committed_before_check: true,
+        offer_committed_before_check: result.offer_stage !== null,
         offer_stage: structuredClone(result.offer_stage),
         check_request: null,
         check_result: null,

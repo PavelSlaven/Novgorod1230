@@ -13,10 +13,17 @@ export function assertSemanticExchangeShape({
   const request = semanticExchange.decision_request;
   const plan = semanticExchange.decision_plan;
   const hasDecision = decisions.length > 0;
+  const unavailableResume = exchange?.contributions?.length === 0
+    && semanticExchange.resumed_npc_execution?.plan != null
+    && semanticExchange.pending_npc_execution === null
+    && exchange.applied_contribution_count === 0
+    && exchange.completed_contribution_count === 0
+    && exchange.session_status === 'ended'
+    && exchange.stop_reason === 'npc_unavailable';
   if (!record(exchange)
       || exchange.schema !== 'conversation_exchange_result_v1'
       || !Array.isArray(exchange.contributions)
-      || exchange.contributions.length < 1
+      || (exchange.contributions.length < 1 && !unavailableResume)
       || !Array.isArray(exchange.npc_decisions)
       || !Array.isArray(semanticExchange.objective_truth_writes)
       || semanticExchange.objective_truth_writes.length !== 0

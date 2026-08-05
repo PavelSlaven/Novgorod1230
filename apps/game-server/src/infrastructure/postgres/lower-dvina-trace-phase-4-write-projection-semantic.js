@@ -83,7 +83,14 @@ export function appendSemanticNegotiation({
     changeSetId,
     idemId
   });
-  if (semantic.exchange.applied_contribution_count === 0) return;
+  if (semantic.exchange.applied_contribution_count === 0) {
+    if (semantic.exchange.stop_reason === 'npc_unavailable') {
+      appendConversationPersistence({ inserts, updates, appends, partyId,
+        changeSetId, idemId, rootTurnId, workingRevision, state, next,
+        semantic });
+    }
+    return;
+  }
   const checkId = n.check_result
     ? `check:${partyId}:trace-phase4:${turnNumber}` : null;
   const offerAppends = [];
@@ -124,34 +131,10 @@ export function appendSemanticNegotiation({
     changeSetId,
     checkId
   });
-  const semanticInput = buildNpcSemanticConversationWriteInput({
-    state,
-    next,
-    semanticExchange: semantic
-  });
-  appendNpcSemanticConversationWrites({
-    inserts,
-    updates,
-    appends,
-    partyId,
-    changeSetId,
-    idempotencyRecordId: idemId,
-    rootTurnId,
-    workingRevision,
-    sessionWrite: semanticInput.sessionWrite,
-    semanticExchange: semanticInput.semanticExchange,
-    signalRecords: semanticInput.signalRecords,
-    actualMessageEvidence: semanticInput.actualMessageEvidence,
-    persistedMessageStatements: semanticInput.persistedMessageStatements,
-    persistedMessageAudiences: semanticInput.persistedMessageAudiences,
-    supportingOperationEvidence:
-      semanticInput.supportingOperationEvidence,
-    partyStateVersion: semanticInput.partyStateVersion,
-    sameTimeBatchRef: semanticInput.sameTimeBatchRef,
-    contributions: semanticInput.contributions
-  });
+  appendConversationPersistence({ inserts, updates, appends, partyId,
+    changeSetId, idemId, rootTurnId, workingRevision, state, next, semantic });
   appends.push(...activationAppends);
-  if (semantic.commitment?.status === 'active') {
+  if (semantic.surrender !== null) {
     appendSemanticSurrenderStateWrites({
       inserts,
       updates,
@@ -185,6 +168,25 @@ export function appendSemanticNegotiation({
       contracts
     });
   }
+}
+
+function appendConversationPersistence({ inserts, updates, appends, partyId,
+  changeSetId, idemId, rootTurnId, workingRevision, state, next, semantic }) {
+  const input = buildNpcSemanticConversationWriteInput({
+    state, next, semanticExchange: semantic
+  });
+  appendNpcSemanticConversationWrites({ inserts, updates, appends, partyId,
+    changeSetId, idempotencyRecordId: idemId, rootTurnId, workingRevision,
+    sessionWrite: input.sessionWrite,
+    semanticExchange: input.semanticExchange,
+    signalRecords: input.signalRecords,
+    actualMessageEvidence: input.actualMessageEvidence,
+    persistedMessageStatements: input.persistedMessageStatements,
+    persistedMessageAudiences: input.persistedMessageAudiences,
+    supportingOperationEvidence: input.supportingOperationEvidence,
+    partyStateVersion: input.partyStateVersion,
+    sameTimeBatchRef: input.sameTimeBatchRef,
+    contributions: input.contributions });
 }
 
 function appendNegotiationCheckResolution({
@@ -279,10 +281,9 @@ function appendSemanticSurrenderStateWrites({
       }
     }
   ));
-  for (const factId of [
-    surrenderFact,
-    'promise_activation_basis_committed'
-  ]) {
+  for (const factId of [surrenderFact,
+    ...(semantic.commitment?.status === 'active'
+      ? ['promise_activation_basis_committed'] : [])]) {
     if ((state.knowledge ?? []).some(({ fact_id: id }) => id === factId)) {
       continue;
     }

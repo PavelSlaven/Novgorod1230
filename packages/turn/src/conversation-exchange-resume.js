@@ -11,6 +11,22 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
   const { callPort, fail, immutableClone, normalizeApplyResult,
     progressAndProject, stopAfterApply } = helpers;
   const pending = normalized.pendingNpcExecution;
+  const eligible = await callPort(
+    ports.revalidatePendingNpcContribution,
+    { working_state: normalized.initialWorkingState, plan: pending.plan,
+      boundary_id: pending.boundary_id,
+      same_time_batch_ref: pending.same_time_batch_ref,
+      source_decision_trace_ref: pending.source_decision_trace_ref },
+    'TURN_CONVERSATION_PENDING_NPC_REVALIDATION_FAILED',
+    'Persisted NPC conversation contribution could not be revalidated'
+  );
+  if (typeof eligible !== 'boolean') {
+    fail('TURN_CONVERSATION_PENDING_NPC_REVALIDATION_INVALID',
+      'Pending NPC contribution revalidation must return a boolean');
+  }
+  if (!eligible) {
+    return unavailablePendingResult(normalized, pending, immutableClone);
+  }
   const firstApplied = normalizeApplyResult(await callPort(
     ports.applyPendingNpcContribution,
     { working_state: normalized.initialWorkingState, plan: pending.plan,
@@ -211,6 +227,30 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     handoff,
     session_status: sessionStatus,
     pending_npc_execution: nextPending
+  });
+}
+
+function unavailablePendingResult(normalized, pending, immutableClone) {
+  return immutableClone({
+    schema: 'conversation_exchange_result_v1',
+    status: 'resolved',
+    stop_reason: 'npc_unavailable',
+    working_state: normalized.initialWorkingState,
+    contributions: [],
+    npc_decisions: [],
+    processed_boundary_ids: [pending.boundary_id],
+    temporal_boundary_refs: [],
+    time_budget: {
+      total_minutes: 0,
+      elapsed_minutes: 0,
+      remaining_minutes: 0,
+      status: 'completed'
+    },
+    completed_contribution_count: 0,
+    applied_contribution_count: 0,
+    handoff: null,
+    session_status: 'ended',
+    pending_npc_execution: null
   });
 }
 

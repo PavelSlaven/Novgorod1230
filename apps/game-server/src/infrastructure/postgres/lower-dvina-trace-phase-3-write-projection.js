@@ -83,7 +83,8 @@ export function phase3Writes(input) {
     const semanticExchange =
       factual.consequence.conversation?.semantic_exchange ?? null;
     if (semanticExchange !== null
-        && semanticExchange.exchange.applied_contribution_count > 0) {
+        && (semanticExchange.exchange.applied_contribution_count > 0
+          || semanticExchange.exchange.stop_reason === 'npc_unavailable')) {
       const semanticInput = buildNpcSemanticConversationWriteInput({
         state,
         next,

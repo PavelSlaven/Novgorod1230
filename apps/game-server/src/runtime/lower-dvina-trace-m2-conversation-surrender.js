@@ -32,10 +32,49 @@ export function buildSurrenderProjection(result, context) {
     statementRef?.entity_id === playerStatement?.statement_id);
   const npcAudience = audiences.find(({ statement_ref: statementRef }) =>
     statementRef?.entity_id === npcStatement?.statement_id);
-  if (!playerStatement || !npcStatement || !playerAudience || !npcAudience) {
+  if (!npcStatement || !npcAudience) {
     fail(
       'TRACE_M2_SURRENDER_STATEMENT_GAP',
-      'Surrender requires committed offer and acceptance statements.'
+      'Surrender requires its exact committed statement and audience.'
+    );
+  }
+  const acceptanceRef = ref(
+    'conversation_statement',
+    npcStatement.statement_id
+  );
+  const commitment = context.offerStage === null ? null
+    : buildCommitment({ context, playerStatement, npcStatement,
+      playerAudience, npcAudience, acceptanceRef });
+  return {
+    surrender: {
+      fact_id: context.contracts.promisePolicy.offer_timing
+        .surrender_condition,
+      source_statement_ref: acceptanceRef,
+      semantic_act: npcStatement.dominant_act,
+      semantic_tag: 'surrender',
+      claim_truth_projection: 'speaker_claim_only'
+    },
+    commitment,
+    knifeTransitionEligibility: {
+      eligible: true,
+      requires_fact_id: context.contracts.promisePolicy.offer_timing
+        .surrender_condition,
+      transition_profile_ref:
+        context.contracts.knifeTransition.transition_profile_id,
+      recipient_actor_ref: npcRef(
+        context.contracts.actors.participating_fisher.instance_id
+      ),
+      execution_owner: 'item_property_transition_owner'
+    }
+  };
+}
+
+function buildCommitment({ context, playerStatement, npcStatement,
+  playerAudience, npcAudience, acceptanceRef }) {
+  if (!playerStatement || !playerAudience) {
+    fail(
+      'TRACE_M2_PROMISE_STATEMENT_GAP',
+      'Promise activation requires the exact committed offer statement.'
     );
   }
   const playerRef = ref('player_character', context.state.actor_id);
@@ -44,10 +83,6 @@ export function buildSurrenderProjection(result, context) {
     .map(({ statement_id: statementId }) =>
       ref('conversation_statement', statementId))
     .sort(compareRefs);
-  const acceptanceRef = ref(
-    'conversation_statement',
-    npcStatement.statement_id
-  );
   const witnessRefs = playerAudience.witness_candidate_refs.filter(
     (candidate) => npcAudience.witness_candidate_refs.some(
       (witness) => sameRef(witness, candidate)
@@ -66,7 +101,7 @@ export function buildSurrenderProjection(result, context) {
     'witness_policy',
     `${context.contracts.promisePolicy.policy_id}:present-witnesses`
   );
-  const commitment = planPartyLocalCommitment({
+  return planPartyLocalCommitment({
     acceptance_statement_refs: [acceptanceRef],
     committed_statement_refs: statementRefs,
     parties: {
@@ -100,29 +135,6 @@ export function buildSurrenderProjection(result, context) {
     },
     witness_candidates: witnessRefs
   });
-  const active = commitment.status === 'active';
-  return {
-    surrender: active ? {
-      fact_id: context.contracts.promisePolicy.offer_timing
-        .surrender_condition,
-      source_statement_ref: acceptanceRef,
-      semantic_act: npcStatement.dominant_act,
-      semantic_tag: 'surrender',
-      claim_truth_projection: 'speaker_claim_only'
-    } : null,
-    commitment,
-    knifeTransitionEligibility: active ? {
-      eligible: true,
-      requires_fact_id: context.contracts.promisePolicy.offer_timing
-        .surrender_condition,
-      transition_profile_ref:
-        context.contracts.knifeTransition.transition_profile_id,
-      recipient_actor_ref: npcRef(
-        context.contracts.actors.participating_fisher.instance_id
-      ),
-      execution_owner: 'item_property_transition_owner'
-    } : null
-  };
 }
 
 function commitmentPerceptionForParty({ partyRef, statements, audiences }) {

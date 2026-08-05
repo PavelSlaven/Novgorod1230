@@ -42,6 +42,7 @@ import {
   hydratedPendingNpcExecution
 } from './lower-dvina-trace-m2-conversation-resume.js';
 import {
+  applyTerminalConversationOutcomes,
   initialConversationParticipantRefs,
   retireTerminalConversationParticipants
 } from './lower-dvina-trace-m2-conversation-session.js';
@@ -249,17 +250,8 @@ export async function executeM2ConversationExchange(context) {
     revalidatePendingNpcContribution: ({ working_state: working, plan }) =>
       revalidatePendingNpcContribution(context, working, plan),
     applyNpcTerminalOutcomes: ({ working_state: working,
-      terminal_outcomes: outcomes }) => ({
-      ...retireTerminalConversationParticipants(working, outcomes),
-      consumed_signal_ids: [...new Set([
-        ...working.consumed_signal_ids,
-        ...outcomes.flatMap(({ signal_ids_to_consume: ids }) => ids)
-      ])],
-      terminal_npc_outcomes: [
-        ...(working.terminal_npc_outcomes ?? []),
-        ...structuredClone(outcomes)
-      ]
-    }),
+      terminal_outcomes: outcomes }) =>
+      applyTerminalConversationOutcomes(working, outcomes),
     projectNpcContributionPerception: ({
       working_state: working,
       contribution_event: contributionEvent,

@@ -286,11 +286,9 @@ export function assertDecisions(payload, rows) {
           || canonicalDigest(snapshot.signal) !== canonicalDigest(signal)) fail();
     }
   }
-  consumedSignalIds.push(...terminalConsumedSignalIds(
-    payload,
-    new Set(persistedSignals.keys())
-  ));
   const actualRefs = actual.map(semanticDecisionTraceReference);
+  consumedSignalIds.push(...terminalConsumedSignalIds(payload,
+    new Set(persistedSignals.keys()), actualRefs));
   if (canonicalDigest(actualRefs) !== canonicalDigest(expected)
       || canonicalDigest([...consumedSignalIds].sort())
         !== canonicalDigest([...(payload.consumed_npc_decision_signal_ids ?? [])]

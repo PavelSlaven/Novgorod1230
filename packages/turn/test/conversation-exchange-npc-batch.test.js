@@ -104,6 +104,7 @@ test('resume remembers the pending NPC and batch across legacy boundary ids',
 test('resume cancels an unavailable pending NPC without time or application',
   async () => {
     let applyCalls = 0;
+    let terminalOutcomes = null;
     const result = await resumePendingNpcExecution({
       initialWorkingState: { state_version: 4 },
       maxContributionsPerExchange: 8,
@@ -124,6 +125,11 @@ test('resume cancels an unavailable pending NPC without time or application',
       applyPendingNpcContribution: async () => {
         applyCalls += 1;
         throw new Error('unavailable pending contribution must not apply');
+      },
+      applyNpcTerminalOutcomes: async ({ working_state: workingState,
+        terminal_outcomes: outcomes }) => {
+        terminalOutcomes = outcomes;
+        return { working_state: workingState, session_status: 'ended' };
       }
     }, {
       callPort: (port, argument) => port(argument),
@@ -141,4 +147,11 @@ test('resume cancels an unavailable pending NPC without time or application',
     assert.equal(result.time_budget.elapsed_minutes, 0);
     assert.deepEqual(result.contributions, []);
     assert.equal(result.pending_npc_execution, null);
+    assert.deepEqual(terminalOutcomes, [{
+      npc_ref: ref('npc', 'guard'),
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      outcome: 'npc_unavailable',
+      signal_ids_to_consume: [],
+      source_decision_trace_ref: ref('npc_decision_trace', 'trace-1')
+    }]);
   });

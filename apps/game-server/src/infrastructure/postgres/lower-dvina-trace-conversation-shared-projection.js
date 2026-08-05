@@ -1,8 +1,9 @@
 import {
   fail,
-  record,
-  validateTerminalNpcOutcomes
+  record
 } from './lower-dvina-trace-conversation-state-validation.js';
+import { validateTerminalNpcOutcomes } from
+  './lower-dvina-trace-conversation-terminal-state.js';
 
 export function semanticDecisionTraceReference(trace) {
   return {

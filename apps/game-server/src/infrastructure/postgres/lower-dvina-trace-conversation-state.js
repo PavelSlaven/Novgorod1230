@@ -18,9 +18,12 @@ import {
   validateContributions,
   validateConsumedSignalIds,
   validateSignalRecords,
-  validateStatements,
-  validateTerminalNpcOutcomes
+  validateStatements
 } from './lower-dvina-trace-conversation-state-validation.js';
+import {
+  requirePendingDecisionTerminalLineage,
+  validateTerminalNpcOutcomes
+} from './lower-dvina-trace-conversation-terminal-state.js';
 import {
   assertSharedSemanticSnapshotSafe,
   projectSharedSemanticConsequence,
@@ -124,10 +127,14 @@ export function projectSemanticConversationSnapshot({
     }
   }
   for (const outcome of terminalOutcomes) {
-    requireSignalLineage({ state, npcRef: outcome.npc_ref,
-      batchRef: outcome.same_time_batch_ref,
-      signalIds: outcome.signal_ids_to_consume,
-      signalRecords, consumedSignalIds });
+    if (outcome.source_decision_trace_ref === undefined) {
+      requireSignalLineage({ state, npcRef: outcome.npc_ref,
+        batchRef: outcome.same_time_batch_ref,
+        signalIds: outcome.signal_ids_to_consume,
+        signalRecords, consumedSignalIds });
+    } else {
+      requirePendingDecisionTerminalLineage(state, outcome);
+    }
     for (const signalId of outcome.signal_ids_to_consume) {
       if (explainedSignalIds.has(signalId)) {
         fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');

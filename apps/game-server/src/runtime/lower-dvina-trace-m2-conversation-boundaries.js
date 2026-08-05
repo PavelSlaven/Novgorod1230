@@ -12,7 +12,7 @@ import {
   './lower-dvina-trace-m2-conversation-participants.js';
 
 export function buildNpcResponseBoundaryBatch(context, working, input) {
-  const directNpcRefs = (input.latestContribution.intended_addressee_refs ?? [])
+  const directNpcRefs = (input.latestContribution?.intended_addressee_refs ?? [])
     .filter(({ entity_kind: entityKind }) => entityKind === 'npc');
   const processed = new Set(input.processedBoundaryIds);
   const pendingResponderKeys = new Set(input.pendingResponderRefs.map(

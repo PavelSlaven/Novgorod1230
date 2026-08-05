@@ -48,6 +48,25 @@ export function npcConversationSessionStatus(working) {
   ) ? 'active' : 'ended';
 }
 
+export function applyTerminalConversationOutcomes(working, outcomes) {
+  const retired = retireTerminalConversationParticipants(working, outcomes);
+  const next = {
+    ...retired,
+    consumed_signal_ids: [...new Set([
+      ...working.consumed_signal_ids,
+      ...outcomes.flatMap(({ signal_ids_to_consume: ids }) => ids)
+    ])],
+    terminal_npc_outcomes: [
+      ...(working.terminal_npc_outcomes ?? []),
+      ...structuredClone(outcomes)
+    ]
+  };
+  return {
+    working_state: next,
+    session_status: npcConversationSessionStatus(next)
+  };
+}
+
 function withParticipants(working, participants) {
   return {
     ...working,

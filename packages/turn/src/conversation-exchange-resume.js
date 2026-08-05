@@ -24,37 +24,16 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     fail('TURN_CONVERSATION_PENDING_NPC_REVALIDATION_INVALID',
       'Pending NPC contribution revalidation must return a boolean');
   }
-  if (!eligible) {
-    return unavailablePendingResult(normalized, pending, immutableClone);
-  }
-  const firstApplied = normalizeApplyResult(await callPort(
-    ports.applyPendingNpcContribution,
-    { working_state: normalized.initialWorkingState, plan: pending.plan,
-      contribution_index: pending.contribution_index,
-      check_result: pending.check_result,
-      social_delivery_result: pending.social_delivery_result },
-    'TURN_CONVERSATION_NPC_APPLY_FAILED',
-    'Persisted NPC conversation contribution could not be resumed'
-  ), 'TURN_CONVERSATION_NPC_APPLY_INVALID');
-  const firstProgress = await progressAndProject({
-    ports, applied: firstApplied, plan: pending.plan,
-    contributionIndex: pending.contribution_index,
-    plannedMinutes: pending.remaining_minutes,
-    elapsedAlreadyComplete: pending.remaining_minutes === 0,
-    perceptionPort: ports.projectNpcContributionPerception,
-    proposal: { plan: pending.plan, signal_ids_to_consume: [] }
-  });
-  let workingState = firstProgress.applied.working_state;
-  let sessionStatus = firstProgress.applied.session_status;
-  let handoff = firstProgress.applied.handoff;
-  let elapsedMinutes = firstProgress.elapsedMinutes;
-  let completedCount = firstProgress.completed ? 1 : 0;
-  let appliedCount = firstProgress.completed && !firstProgress.interrupted
-    ? 1 : 0;
-  const contributions = appliedCount === 1
-    ? [firstProgress.applied.contribution_event] : [];
+  let firstProgress = null;
+  let workingState;
+  let sessionStatus;
+  let handoff = null;
+  let elapsedMinutes = 0;
+  let completedCount = 0;
+  let appliedCount = 0;
+  const contributions = [];
   const npcDecisions = [];
-  const temporalBoundaryRefs = [...firstProgress.temporalBoundaryRefs];
+  const temporalBoundaryRefs = [];
   const processedBoundaryIds = [pending.boundary_id];
   const processedNpcRefs = [pending.plan.speaker_ref];
   const processedDecisionPairs = new Set([decisionPairKey({
@@ -62,24 +41,68 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     same_time_batch_ref: pending.same_time_batch_ref
   })]);
   let remainingRefs = [...pending.remaining_responder_refs];
-  let nextPending = firstProgress.interrupted ? pendingRecord({
-    pending,
-    plan: pending.plan,
-    boundaryId: pending.boundary_id,
-    contributionIndex: pending.contribution_index,
-    remainingMinutes: pending.remaining_minutes - firstProgress.elapsedMinutes,
-    remainingExchangeMinutes:
-      pending.remaining_exchange_minutes - firstProgress.elapsedMinutes,
-    remainingRefs
-  }) : null;
-  let stopReason = firstProgress.interrupted
-    ? 'temporal_boundary' : stopAfterApply(firstProgress.applied);
+  let nextPending = null;
+  let stopReason;
 
-  if (!firstProgress.interrupted
+  if (eligible) {
+    const firstApplied = normalizeApplyResult(await callPort(
+      ports.applyPendingNpcContribution,
+      { working_state: normalized.initialWorkingState, plan: pending.plan,
+        contribution_index: pending.contribution_index,
+        check_result: pending.check_result,
+        social_delivery_result: pending.social_delivery_result },
+      'TURN_CONVERSATION_NPC_APPLY_FAILED',
+      'Persisted NPC conversation contribution could not be resumed'
+    ), 'TURN_CONVERSATION_NPC_APPLY_INVALID');
+    firstProgress = await progressAndProject({
+      ports, applied: firstApplied, plan: pending.plan,
+      contributionIndex: pending.contribution_index,
+      plannedMinutes: pending.remaining_minutes,
+      elapsedAlreadyComplete: pending.remaining_minutes === 0,
+      perceptionPort: ports.projectNpcContributionPerception,
+      proposal: { plan: pending.plan, signal_ids_to_consume: [] }
+    });
+    workingState = firstProgress.applied.working_state;
+    sessionStatus = firstProgress.applied.session_status;
+    handoff = firstProgress.applied.handoff;
+    elapsedMinutes = firstProgress.elapsedMinutes;
+    completedCount = firstProgress.completed ? 1 : 0;
+    appliedCount = firstProgress.completed && !firstProgress.interrupted
+      ? 1 : 0;
+    if (appliedCount === 1) {
+      contributions.push(firstProgress.applied.contribution_event);
+    }
+    temporalBoundaryRefs.push(...firstProgress.temporalBoundaryRefs);
+    nextPending = firstProgress.interrupted ? pendingRecord({
+      pending,
+      plan: pending.plan,
+      boundaryId: pending.boundary_id,
+      contributionIndex: pending.contribution_index,
+      remainingMinutes: pending.remaining_minutes - firstProgress.elapsedMinutes,
+      remainingExchangeMinutes:
+        pending.remaining_exchange_minutes - firstProgress.elapsedMinutes,
+      remainingRefs
+    }) : null;
+    stopReason = firstProgress.interrupted
+      ? 'temporal_boundary' : stopAfterApply(firstProgress.applied);
+  } else {
+    const terminal = await applyTerminalNpcOutcomes(
+      ports,
+      callPort,
+      fail,
+      normalized.initialWorkingState,
+      [pendingUnavailableOutcome(pending)]
+    );
+    workingState = terminal.workingState;
+    sessionStatus = terminal.sessionStatus;
+    stopReason = sessionStatus === 'ended' ? 'npc_unavailable' : null;
+  }
+
+  if (!firstProgress?.interrupted
       && [null, 'player_response'].includes(stopReason)) {
     let queuedMinutes = pending.remaining_exchange_minutes
       - pending.remaining_minutes;
-    let latestContribution = firstProgress.applied.contribution_event;
+    let latestContribution = firstProgress?.applied.contribution_event ?? null;
     while (queuedMinutes > 0
         && [null, 'player_response'].includes(stopReason)) {
       const completedExchangeContributions = pending.contribution_index - 1
@@ -112,9 +135,11 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
           'Pending NPC responders require one boundary or terminal outcome');
       }
       if (batch.terminal_outcomes.length > 0) {
-        workingState = await applyTerminalNpcOutcomes(
+        const terminal = await applyTerminalNpcOutcomes(
           ports, callPort, fail, workingState, batch.terminal_outcomes
         );
+        workingState = terminal.workingState;
+        sessionStatus = terminal.sessionStatus;
         remainingRefs = remainingRefs.filter((reference) =>
           !terminalKeys.has(refKey(reference)));
       }
@@ -258,35 +283,28 @@ async function applyTerminalNpcOutcomes(
     'TURN_CONVERSATION_NPC_TERMINAL_APPLY_FAILED',
     'Terminal NPC outcomes could not be applied'
   );
-  if (next === null || typeof next !== 'object' || Array.isArray(next)) {
+  if (next === null || typeof next !== 'object' || Array.isArray(next)
+      || next.working_state === null
+      || typeof next.working_state !== 'object'
+      || Array.isArray(next.working_state)
+      || !['active', 'ended'].includes(next.session_status)) {
     fail('TURN_CONVERSATION_NPC_TERMINAL_APPLY_INVALID',
-      'Terminal NPC outcomes must return one working state');
+      'Terminal NPC outcomes must return working state and session status');
   }
-  return next;
+  return {
+    workingState: next.working_state,
+    sessionStatus: next.session_status
+  };
 }
 
-function unavailablePendingResult(normalized, pending, immutableClone) {
-  return immutableClone({
-    schema: 'conversation_exchange_result_v1',
-    status: 'resolved',
-    stop_reason: 'npc_unavailable',
-    working_state: normalized.initialWorkingState,
-    contributions: [],
-    npc_decisions: [],
-    processed_boundary_ids: [pending.boundary_id],
-    temporal_boundary_refs: [],
-    time_budget: {
-      total_minutes: 0,
-      elapsed_minutes: 0,
-      remaining_minutes: 0,
-      status: 'completed'
-    },
-    completed_contribution_count: 0,
-    applied_contribution_count: 0,
-    handoff: null,
-    session_status: 'ended',
-    pending_npc_execution: null
-  });
+function pendingUnavailableOutcome(pending) {
+  return {
+    npc_ref: pending.plan.speaker_ref,
+    same_time_batch_ref: pending.same_time_batch_ref,
+    outcome: 'npc_unavailable',
+    signal_ids_to_consume: [],
+    source_decision_trace_ref: pending.source_decision_trace_ref
+  };
 }
 
 function pendingRecord({ pending, plan, boundaryId, contributionIndex,

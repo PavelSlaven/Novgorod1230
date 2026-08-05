@@ -102,7 +102,7 @@ test('action-set evaluation does not require player input or invoke the interpre
   assert.equal(playerCalls, 0);
 });
 
-test('revision 14 exact commands bind semantic persistence to the root turn without a fabricated M1 envelope', () => {
+test('revisions 14 and 15 bind exact semantic persistence to the root turn', () => {
   const semanticExchange = { response_kind: 'withhold' };
   const factual = {
     mode_resolution: { turn_id: 'turn:party-1:3' },
@@ -111,18 +111,20 @@ test('revision 14 exact commands bind semantic persistence to the root turn with
       conversation: { semantic_exchange: semanticExchange }
     }
   };
-  assert.deepEqual(phase3SemanticCommitContext({
-    scenarioRevision: 14,
-    factual,
-    writePlan: {
-      turn_id: 'turn:party-1:3',
-      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
-    }
-  }), {
-    rootTurnId: 'turn:party-1:3',
-    workingRevision: 0,
-    semanticExchange
-  });
+  for (const scenarioRevision of [14, 15]) {
+    assert.deepEqual(phase3SemanticCommitContext({
+      scenarioRevision,
+      factual,
+      writePlan: {
+        turn_id: 'turn:party-1:3',
+        command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+      }
+    }), {
+      rootTurnId: 'turn:party-1:3',
+      workingRevision: 0,
+      semanticExchange
+    });
+  }
   assert.throws(() => phase3SemanticCommitContext({
     scenarioRevision: 14,
     factual,

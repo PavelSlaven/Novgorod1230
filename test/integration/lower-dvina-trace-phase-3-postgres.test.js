@@ -410,9 +410,9 @@ async function assertRepeatedNpcCausalChain({
   eremeyRef = refForNpc(before, 'eremey_fisher');
   responderRef = refForNpc(before, 'background_fisher_1');
   const input = {
-    request_id: 'phase-3-causal-a-b-a-talk',
-    idempotency_key: 'phase-3-causal-a-b-a-talk',
-    raw_text: 'Спросить Еремея о крушении.'
+    request_id: 'phase-3-causal-a-b-a-evidence',
+    idempotency_key: 'phase-3-causal-a-b-a-evidence',
+    raw_text: 'Показать Еремею синюю шерсть.'
   };
   const result = await runtime.submitTurn(party.party_id, input);
 

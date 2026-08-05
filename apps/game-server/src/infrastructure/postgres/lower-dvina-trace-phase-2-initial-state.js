@@ -88,6 +88,16 @@ export async function loadInitialTracePhase2State({
       state: item.state
     })),
     containers: structuredClone(initial.containers ?? []),
+    container_placements: (initial.containers ?? []).map((container) => ({
+      party_id: partyId,
+      container_id: container.container_id,
+      anchor_id: container.anchor_id,
+      parent_container_id: container.parent_container_id,
+      holder_npc_id: container.holder_npc_id,
+      holder_character_id: container.holder_character_id,
+      physical_position: container.physical_position,
+      equipment_slot_category_id: container.equipment_slot_category_id
+    })),
     knowledge: [],
     opening_identity: {
       opening_screen_digest: row.stage26_result.opening_screen_digest

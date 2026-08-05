@@ -14,7 +14,7 @@ export async function loadLowerDvinaTraceRevision15Bundle({
   validateDefinitionPins
 }) {
   const [manifest, definition, autonomous, turnSteps, movement, phase1a, bindings,
-    reused, activityProfiles, bodyProfiles] = await Promise.all([
+    reused] = await Promise.all([
     readJson(rootDir, `${CONTENT_ROOT}/manifest.json`),
     readJson(rootDir, `${CONTENT_ROOT}/definition.json`),
     readJson(rootDir, `${CONTENT_ROOT}/autonomous-semantic-bindings.json`),
@@ -22,12 +22,10 @@ export async function loadLowerDvinaTraceRevision15Bundle({
     readJson(rootDir, `${CONTENT_ROOT}/movement-bindings.json`),
     readJson(rootDir, `${ROOT}/phase-1a-v11/manifest.json`),
     readJson(rootDir, `${ROOT}/phase-1a-v11/materialization-bindings.json`),
-    readJson(rootDir, `${ROOT}/phase-1a-v10/materialization-bindings.json`),
-    readJson(rootDir, `${ROOT}/phase-5-content/activity-check-consequence-profiles.json`),
-    readJson(rootDir, `${ROOT}/phase-5-content/body-environment-profiles.json`)
+    readJson(rootDir, `${ROOT}/phase-1a-v10/materialization-bindings.json`)
   ]);
   assertRevision15Package({ historicalBundle, manifest, definition, autonomous,
-    turnSteps, movement, phase1a, bindings, reused, activityProfiles, bodyProfiles, fail });
+    turnSteps, movement, phase1a, bindings, reused, fail });
 
   const historical = structuredClone(historicalBundle);
   const materializationBindings = {
@@ -44,8 +42,6 @@ export async function loadLowerDvinaTraceRevision15Bundle({
   historical.phase_1a_manifest = phase1a.value;
   historical.definition = definition.value;
   historical.materialization_bindings = materializationBindings;
-  historical.activity_check_consequence_profiles = activityProfiles.value;
-  historical.body_environment_profiles = bodyProfiles.value;
   historical.movement_bindings = {
     ...structuredClone(movement.value),
     route_bindings: structuredClone(historicalBundle.movement_bindings.route_bindings)
@@ -56,8 +52,6 @@ export async function loadLowerDvinaTraceRevision15Bundle({
     ['phase_1a_manifest', phase1a, `${ROOT}/phase-1a-v11/manifest.json`, phase1a.value],
     ['materialization_bindings', bindings, `${ROOT}/phase-1a-v11/materialization-bindings.json`, materializationBindings],
     ['definition', definition, `${CONTENT_ROOT}/definition.json`, definition.value],
-    ['activity_check_consequence_profiles', activityProfiles, `${ROOT}/phase-5-content/activity-check-consequence-profiles.json`, activityProfiles.value],
-    ['body_environment_profiles', bodyProfiles, `${ROOT}/phase-5-content/body-environment-profiles.json`, bodyProfiles.value],
     ['movement_bindings', movement, `${CONTENT_ROOT}/movement-bindings.json`, historical.movement_bindings],
     ['turn_step_bindings', turnSteps, `${CONTENT_ROOT}/turn-step-bindings.json`, turnSteps.value],
     ['autonomous_semantic_bindings', autonomous, `${CONTENT_ROOT}/autonomous-semantic-bindings.json`, autonomous.value]
@@ -91,8 +85,7 @@ function applySealedSelectionInventoryOverrides(inventory, overrides) {
 }
 
 function assertRevision15Package({ historicalBundle, manifest, definition,
-  autonomous, turnSteps, movement, phase1a, bindings, reused, activityProfiles,
-  bodyProfiles, fail }) {
+  autonomous, turnSteps, movement, phase1a, bindings, reused, fail }) {
   const content = manifest.value;
   if (content?.schema !== 'rus.lower_dvina_trace_m3_content_manifest.v1'
     || content.package_id !== 'lower_dvina_trace_m3_content_v1'
@@ -117,9 +110,9 @@ function assertRevision15Package({ historicalBundle, manifest, definition,
     || definition.value.resolved_policy_refs?.autonomous_semantic_bindings?.digest
       !== autonomous.digest
     || definition.value.resolved_policy_refs?.activity_check_consequence_profiles?.digest
-      !== activityProfiles.digest
+      !== historicalBundle.artifact_pins.activity_check_consequence_profiles.digest
     || definition.value.resolved_policy_refs?.body_environment_profiles?.digest
-      !== bodyProfiles.digest
+      !== historicalBundle.artifact_pins.body_environment_profiles.digest
     || definition.value.resolved_policy_refs?.movement_bindings?.digest
       !== movement.digest
     || phase1a.value?.package_id !== 'lower_dvina_trace_phase_1a_v11'
@@ -183,9 +176,9 @@ function validInitialProjection(value) {
     ])
     && inventory?.source_artifact_digests
       ?.activity_check_consequence_profiles
-      === '9125cb1cee920c9ec8a5c92cad9a2ee5c0e874a867388c2fc4411aaebf8ca434'
+      === '3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef'
     && inventory.source_artifact_digests.body_environment_profiles
-      === '23b6ef4931f29613108025363924bdcd57c13bcb5d54ca52f8fd4bc9c9335720'
+      === 'c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2'
     && inventory.source_artifact_digests.movement_bindings
       === 'c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d';
 }

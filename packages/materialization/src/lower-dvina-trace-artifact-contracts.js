@@ -167,11 +167,6 @@ export const M3_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
     11
   ],
   definition: ['rus.trace_scenario_definition.v1', 15],
-  activity_check_consequence_profiles: [
-    'rus.trace_activity_check_consequence_profiles.v1',
-    3
-  ],
-  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 5],
   movement_bindings: ['rus.trace_movement_bindings.v1', 3],
   turn_step_bindings: ['rus.lower_dvina_trace_turn_step_bindings.v1', 2],
   autonomous_semantic_bindings: [

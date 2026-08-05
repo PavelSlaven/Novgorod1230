@@ -9,11 +9,14 @@ export function appendActivity(input) {
   } = input;
   const semantic = factual.consequence.conversation?.semantic_exchange ?? null;
   const semanticBudget = semantic?.exchange?.time_budget ?? null;
-  const resumed = semantic?.resumed_npc_execution != null;
-  const pending = resumed ? state.pending_npc_conversation_execution : null;
+  const resumedNpc = semantic?.resumed_npc_execution != null;
+  const resumedPlayer = semantic?.resumed_player_execution != null;
+  const resumed = resumedNpc || resumedPlayer;
+  const pending = resumedNpc ? state.pending_npc_conversation_execution
+    : resumedPlayer ? state.pending_player_conversation_execution : null;
   if (resumed && (pending?.activity_execution_id == null
       || pending.total_minutes == null || pending.elapsed_minutes == null)) {
-    throw new Error('TRACE_M2_PENDING_NPC_ACTIVITY_INVALID');
+    throw new Error('TRACE_M2_PENDING_CONVERSATION_ACTIVITY_INVALID');
   }
   const id = pending?.activity_execution_id
     ?? `activity:${partyId}:trace-phase3:${turnNumber}`;
@@ -28,17 +31,30 @@ export function appendActivity(input) {
   const cumulativeBefore = resumed ? pending.elapsed_minutes : 0;
   const currentContext = resumed ? {
     option_id: pending.option_id,
-    resumed_npc_execution: {
-      decision_trace_ref: structuredClone(pending.decision_trace_ref),
-      conversation_id: pending.conversation_id,
-      exchange_id: pending.exchange_id,
-      contribution_index: pending.contribution_index
-    }
+    ...(resumedNpc ? {
+      resumed_npc_execution: {
+        decision_trace_ref: structuredClone(pending.decision_trace_ref),
+        conversation_id: pending.conversation_id,
+        exchange_id: pending.exchange_id,
+        contribution_index: pending.contribution_index
+      }
+    } : {
+      resumed_player_execution: {
+        conversation_id: pending.conversation_id,
+        exchange_id: pending.exchange_id,
+        contribution_index: pending.contribution_index
+      }
+    })
   } : {
     option_id: factual.mode_resolution.option_id,
     ...(next.pending_npc_conversation_execution == null ? {} : {
       pending_npc_execution: structuredClone(
         next.pending_npc_conversation_execution
+      )
+    }),
+    ...(next.pending_player_conversation_execution == null ? {} : {
+      pending_player_execution: structuredClone(
+        next.pending_player_conversation_execution
       )
     })
   };

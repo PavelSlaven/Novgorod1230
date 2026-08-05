@@ -21,6 +21,8 @@ import {
 } from './lower-dvina-trace-conversation-state.js';
 import { projectRepeatedPendingNpcExecution } from
   './lower-dvina-trace-pending-npc-state.js';
+import { attachPendingConversationActivity } from
+  './lower-dvina-trace-pending-activity-state.js';
 
 export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts, rootTurnId, workingRevision }) {
@@ -122,7 +124,8 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
           workingRevision,
           appliedChangeSetId: changeSetId
         });
-      } else if (n.semantic_exchange.pending_npc_execution != null) {
+      } else if (n.semantic_exchange.pending_npc_execution != null
+          || n.semantic_exchange.pending_player_execution != null) {
         next = projectRepeatedPendingNpcExecution(next, n.semantic_exchange);
       }
       next = projectPhase4SemanticNegotiation({
@@ -133,23 +136,13 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
         changeSetId,
         contracts
       });
-      if (next.pending_npc_conversation_execution != null
-          && next.pending_npc_conversation_execution.activity_execution_id
-            == null) {
-        next.pending_npc_conversation_execution = {
-          ...next.pending_npc_conversation_execution,
-          activity_execution_id:
-            `activity:${state.party_id}:trace-phase4:${turnNumber}:negotiation`,
-          total_minutes: n.semantic_exchange.exchange.time_budget.total_minutes,
-          elapsed_minutes:
-            n.semantic_exchange.exchange.time_budget.elapsed_minutes,
-          started_at: structuredClone(factual.time_update.clock_before),
-          option_id: factual.mode_resolution.option_id,
-          originating_request_id: factual.player_input.request_id,
-          next_attempt_ordinal: 1,
-          activity_state_version: 2
-        };
-      }
+      attachPendingConversationActivity({ next,
+        semanticExchange: n.semantic_exchange,
+        activityExecutionId:
+          `activity:${state.party_id}:trace-phase4:${turnNumber}:negotiation`,
+        startedAt: factual.time_update.clock_before,
+        optionId: factual.mode_resolution.option_id,
+        originatingRequestId: factual.player_input.request_id });
     } else {
     const prior = next.promise_instances?.[0];
     if (!prior) throw new Error('TRACE_PHASE_4_PROMISE_MISSING');

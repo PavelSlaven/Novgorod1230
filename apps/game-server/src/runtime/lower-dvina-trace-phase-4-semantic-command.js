@@ -4,6 +4,7 @@ import {
 import { prepareTracePhase4PlayerConversationPlan } from
   './lower-dvina-trace-m2-conversation-player.js';
 import { PROMISE_OPERATION } from './lower-dvina-trace-m2-conversation-shared.js';
+import { conversationHandoffProjection } from './lower-dvina-trace-m2-conversation-handoff.js';
 import {
   tracePhase4PreconditionSatisfied
 } from './lower-dvina-trace-phase-4-admission.js';
@@ -170,6 +171,7 @@ function semanticConsequence({ contracts, inputDigest, checkResult,
       check_result: structuredClone(checkResult),
       outcome_ref: outcomeRef,
       semantic_exchange: semanticExchange,
+      ...conversationHandoffProjection(semanticExchange),
       response_kind: semanticExchange.response_kind,
       participating_fisher_id:
         contracts.actors.participating_fisher.instance_id,

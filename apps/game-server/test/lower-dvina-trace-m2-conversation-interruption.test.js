@@ -246,6 +246,7 @@ test('interrupted player contribution persists paused exact progress only', asyn
     rawText: 'Вот синяя шерсть.', inputDigest: digest('7'),
     responseKind: 'speech', playerPlanOptions: { evidence: true },
     resolveTemporalBoundary: interruptResolution });
+  assert.equal(exchange.playerCalls, 1);
   assert.equal(exchange.result.evidence_presentation, null);
   assert.equal(exchange.result.exchange.time_budget.status, 'paused');
   assert.deepEqual(exchange.result.statements, []);
@@ -256,6 +257,9 @@ test('interrupted player contribution persists paused exact progress only', asyn
     total_minutes: 10, elapsed_minutes: 2, remaining_minutes: 8,
     status: 'paused'
   });
+  assert.equal(exchange.result.pending_player_execution.remaining_minutes, 3);
+  assert.equal(exchange.result.pending_player_execution
+    .remaining_exchange_minutes, 8);
   const restarted = projectPhase3Conversation({ state, contracts,
     result: exchange.result, inputDigest: digest('7') });
   assert.deepEqual(restarted.conversation_statements ?? [], []);
@@ -269,7 +273,7 @@ test('interrupted player contribution persists paused exact progress only', asyn
   const appends = [];
   const factual = phase3Factual(state, contracts, exchange.result, 'paused');
   appendActivity({ inserts, appends, state,
-    next: { clock: exchange.result.clock_after }, factual,
+    next: restarted, factual,
     partyId: state.party_id,
     turnNumber: state.party_state.turn_number + 1,
     changeSetId: 'change:paused', idemId: 'idem:paused',
@@ -290,6 +294,27 @@ test('interrupted player contribution persists paused exact progress only', asyn
   assert.equal(attempt.actual_time_numerator, 2);
   assert.equal(attempt.remaining_after_numerator, 8);
   assert.deepEqual(execution.progress, attempt.progress_after);
+  assert.equal(execution.execution_context_snapshot.pending_player_execution
+    .remaining_minutes, 3);
+  assert.equal(restarted.pending_player_conversation_execution.exchange_id,
+    exchange.result.pending_player_execution.exchange_id);
+
+  restarted.temporal_boundary_candidates = [];
+  const resumed = await runPhase3({ state: restarted,
+    contracts: resolveContracts(restarted), rawText: 'Продолжить.',
+    inputDigest: digest('5'), responseKind: 'speech' });
+  assert.equal(resumed.playerCalls, 0);
+  assert.equal(resumed.npcCalls, 1);
+  assert.equal(resumed.result.exact_elapsed_minutes, 8);
+  assert.equal(resumed.result.pending_player_execution, null);
+  assert.equal(resumed.result.exchange.contributions[0].exchange_id,
+    exchange.result.pending_player_execution.exchange_id);
+  assert.equal(resumed.result.statements.filter(
+    ({ speaker_ref: speaker }) => speaker.entity_kind === 'player_character'
+  ).length, 1);
+  assert.equal(resumed.result.statements[0].utterance_text,
+    'Вот синяя шерсть.');
+  assert.notEqual(resumed.result.evidence_presentation, null);
 });
 
 test('interrupted player offer does not change the promise or transcript',
@@ -436,7 +461,15 @@ function interruptResolution(_candidate, { projection }) {
     stop_after_current_batch: true };
 }
 
-function phase4Factual(state, contracts, semanticExchange, offerStage, suffix) {
+function phase4Factual(
+  state,
+  contracts,
+  semanticExchange,
+  offerStage,
+  suffix,
+  checkRequest = null,
+  resolvedCheck = null
+) {
   const duration = semanticExchange.exact_elapsed_minutes;
   return {
     player_input: {
@@ -463,8 +496,8 @@ function phase4Factual(state, contracts, semanticExchange, offerStage, suffix) {
         activity_ref: contracts.negotiation.profile_id,
         offer_committed_before_check: true,
         offer_stage: structuredClone(offerStage),
-        check_request: null,
-        check_result: null,
+        check_request: structuredClone(checkRequest),
+        check_result: structuredClone(resolvedCheck),
         outcome_ref: null,
         semantic_exchange: semanticExchange,
         response_kind: null,
@@ -478,6 +511,10 @@ function phase4Factual(state, contracts, semanticExchange, offerStage, suffix) {
             semanticExchange.exchange.time_budget.total_minutes
         }]
       }
+    },
+    availability: {
+      check_requests: checkRequest === null
+        ? [] : [structuredClone(checkRequest)]
     }
   };
 }

@@ -138,9 +138,20 @@ export function projectPhase4SemanticNegotiation({
     });
   }
 
-  if (responseKind === 'combat_handoff') {
+  const playerCombatHandoffs = semantic.exchange.contributions.filter(
+    (contribution) => contribution.contribution_kind === 'combat_handoff'
+      && contribution.speaker_ref?.entity_kind === 'player_character'
+      && canonicalDigest(contribution.handoff)
+        === canonicalDigest(semantic.combat_handoff)
+  );
+  const npcCombatHandoff = responseKind === 'combat_handoff';
+  const playerCombatHandoff = responseKind === null
+    && semantic.combat_handoff !== null;
+  if (npcCombatHandoff || playerCombatHandoff) {
     if (!semantic.combat_handoff
-        || npcPlan?.contribution_kind !== 'combat_handoff') {
+        || (npcCombatHandoff
+          ? npcPlan?.contribution_kind !== 'combat_handoff'
+          : playerCombatHandoffs.length !== 1)) {
       semanticFail('TRACE_M2_PHASE_4_COMBAT_HANDOFF_INVALID');
     }
     next.player_response_boundary =

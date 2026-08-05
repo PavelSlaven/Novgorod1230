@@ -15,6 +15,8 @@ import {
   ref,
   sameRef
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { fullyPerceivedCurrentOffer } from
+  './lower-dvina-trace-m2-conversation-offer-privacy.js';
 import { npcConversationDecisionCapability } from
   './lower-dvina-trace-m2-conversation-participants.js';
 
@@ -50,6 +52,9 @@ export function buildNpcDecision(context, working, boundary,
     recognizedPresentedEvidenceSignal(context, working, signal));
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
+  );
+  const currentOfferPerceived = fullyPerceivedCurrentOffer(
+    context, perceivedMessage
   );
   const socialCheckProfile = context.npcSocialCheckProfile ?? null;
   const request = buildNpcConversationResponseRequest({
@@ -93,7 +98,7 @@ export function buildNpcDecision(context, working, boundary,
       ...(context.phase === 'phase_3' && presentedEvidenceRecognized
         ? { presented_evidence_ref: context.contracts.ids.evidence }
         : {}),
-      ...(context.phase === 'phase_4' && context.offerStage
+      ...(currentOfferPerceived
         ? {
             offer_stage_ref: context.offerStage.fact_id,
             offer_policy_ref: context.contracts.promisePolicy.policy_id

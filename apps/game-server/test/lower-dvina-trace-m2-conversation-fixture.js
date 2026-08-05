@@ -331,7 +331,7 @@ export async function runPhase4({
   return { result, playerCalls, npcCalls, npcRequest, npcRequests };
 }
 
-function conversationTemporalOwner(state, resolver) {
+export function conversationTemporalOwner(state, resolver) {
   const candidates = state.temporal_boundary_candidates ?? [];
   const unique = new Map(candidates.map((candidate) => [canonicalDigest({
     rule_ref: candidate.rule_ref,

@@ -18,6 +18,8 @@ import {
   ROUTE_OPERATION,
   sameTimeBatchKey
 } from './lower-dvina-trace-m2-conversation-shared.js';
+import { hydratedPendingPlayerExecution } from
+  './lower-dvina-trace-m2-conversation-resume.js';
 
 export { resolveTracePhase4ConversationExchange } from
   './lower-dvina-trace-m2-conversation-phase4.js';
@@ -58,7 +60,18 @@ export async function resolveTracePhase3ConversationExchange({
   }
   const availableEvidence = phase3AvailableEvidence(state, contracts);
   const pendingExecution = state.pending_npc_conversation_execution ?? null;
-  const effectiveInputDigest = pendingExecution?.source_input_digest
+  const pendingPlayer = hydratedPendingPlayerExecution({ state });
+  const persistedPlayer = state.pending_player_conversation_execution ?? null;
+  const effectiveCheckResult = persistedPlayer?.check_result ?? checkResult;
+  if (effectiveCheckResult !== null
+      && effectiveCheckResult.check_id !== contracts.check.check_id) {
+    fail(
+      'TRACE_M2_PHASE_3_CONTRACT_GAP',
+      'The resumed Phase 3 check must match its active contract.'
+    );
+  }
+  const effectiveInputDigest = (pendingExecution ?? persistedPlayer)
+    ?.source_input_digest
     ?? inputDigest;
   const initialContext = createM2ConversationContext({
     phase: 'phase_3',
@@ -66,7 +79,7 @@ export async function resolveTracePhase3ConversationExchange({
     contracts,
     playerInput,
     inputDigest: effectiveInputDigest,
-    checkResult,
+    checkResult: effectiveCheckResult,
     mapping: contracts.conversationSignalMappings?.question,
     targetActor: target,
     actualNpcActors: contracts.actors.filter(
@@ -104,9 +117,9 @@ export async function resolveTracePhase3ConversationExchange({
     }),
     playerPlan
   });
-  const effectivePlayerPlan = pendingExecution === null
-    ? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext)
-    : null;
+  const effectivePlayerPlan = pendingExecution !== null ? null
+    : pendingPlayer?.plan
+      ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
   const evidencePresented = effectivePlayerPlan === null ? false
     : phase3PresentedEvidence({ state, contracts, plan: effectivePlayerPlan });
   const mapping = contracts.conversationSignalMappings?.[
@@ -156,6 +169,7 @@ export async function resolveTracePhase3ConversationExchange({
         objective_truth_write: 'forbidden'
       })
     : null;
+  const handoff = structuredClone(result.exchange.handoff);
   return freezeResult({
     input_digest: effectiveInputDigest,
     exchange: result.exchange,
@@ -177,8 +191,19 @@ export async function resolveTracePhase3ConversationExchange({
     npc_outcomes: structuredClone(result.npcOutcomes),
     pending_npc_execution:
       structuredClone(result.exchange.pending_npc_execution),
+    pending_player_execution: result.exchange.pending_player_execution == null
+      ? null : {
+          ...structuredClone(result.exchange.pending_player_execution),
+          conversation_id: context.conversationId,
+          exchange_id: context.exchangeId,
+          check_result: structuredClone(effectiveCheckResult),
+          social_delivery_result:
+            structuredClone(context.socialDeliveryResult)
+        },
     resumed_npc_execution:
       structuredClone(result.resumedNpcExecution),
+    resumed_player_execution:
+      structuredClone(result.resumedPlayerExecution),
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,
@@ -188,6 +213,9 @@ export async function resolveTracePhase3ConversationExchange({
         ? structuredClone(context.evidencePresentation) : null,
     route_disclosure: disclosure,
     response_kind: result.npcOutcome?.kind ?? null,
+    handoff,
+    action_handoff: handoff?.kind === 'actor_step' ? handoff : null,
+    combat_handoff: handoff?.kind === 'combat' ? handoff : null,
     speech: result.npcOutcome?.kind === 'speech'
       ? result.npcOutcome.factualProjection
       : null,

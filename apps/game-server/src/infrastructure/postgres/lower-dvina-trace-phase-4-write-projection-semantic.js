@@ -15,9 +15,8 @@ import {
   appendSurrenderSemantics
 } from './lower-dvina-trace-phase-4-semantic-writes.js';
 import { appendPhase4Movement } from './lower-dvina-trace-phase-4-movement-writes.js';
-import {
-  appendPhase4ActivityExecution
-} from './lower-dvina-trace-phase-4-activity-writes.js';
+import { appendPhase4ActivityExecution } from
+  './lower-dvina-trace-phase-4-activity-writes.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 import {
   appendNpcSemanticConversationWrites,
@@ -54,7 +53,8 @@ export function appendSemanticNegotiation({
   }
   const roots = n.activity_roots ?? [];
   const exactEndResume = semantic.exact_elapsed_minutes === 0
-    && semantic.resumed_npc_execution != null
+    && (semantic.resumed_npc_execution != null
+      || semantic.resumed_player_execution != null)
     && semantic.exchange?.time_budget?.total_minutes === 0;
   if (roots.length !== 1
       || !Number.isSafeInteger(semantic.exact_elapsed_minutes)

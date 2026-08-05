@@ -2,6 +2,7 @@ export function projectM2ConversationExecutionResult({
   exchange,
   context,
   pendingExecution,
+  pendingPlayerExecution,
   npcOutcomes,
   resumedOutcome
 }) {
@@ -54,6 +55,9 @@ export function projectM2ConversationExecutionResult({
         context.state.pending_npc_conversation_execution.decision_trace_ref
       ),
       plan: structuredClone(pendingExecution.plan)
+    },
+    resumedPlayerExecution: pendingPlayerExecution === null ? null : {
+      plan: structuredClone(pendingPlayerExecution.plan)
     }
   };
 }

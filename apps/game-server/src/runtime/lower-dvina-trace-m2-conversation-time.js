@@ -195,9 +195,11 @@ export function projectConversationTemporalAdvance({
   const exactMinutes = semanticExchange?.exact_elapsed_minutes;
   const clockAfter = semanticExchange?.clock_after;
   const boundaryRefs = semanticExchange?.temporal_boundary_refs;
+  const resumedExecution = semanticExchange?.resumed_npc_execution
+    ?? semanticExchange?.resumed_player_execution ?? null;
   if (!Number.isSafeInteger(exactMinutes) || exactMinutes < 0
       || (exactMinutes === 0
-        && semanticExchange?.resumed_npc_execution == null)
+        && resumedExecution == null)
       || !Array.isArray(candidates) || !Array.isArray(roots)
       || !Array.isArray(boundaryRefs)
       || (exactMinutes === 0 && boundaryRefs.length !== 0)) {

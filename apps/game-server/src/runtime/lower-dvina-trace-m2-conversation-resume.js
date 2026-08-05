@@ -1,7 +1,9 @@
+import { validatePlayerConversationContributionPlan } from '@rus/npc-runtime';
 import { fail } from './lower-dvina-trace-m2-conversation-shared.js';
 
 export function findResumableConversationSession(state, playerRef, targetRef) {
-  const pending = state.pending_npc_conversation_execution ?? null;
+  const pending = state.pending_npc_conversation_execution
+    ?? state.pending_player_conversation_execution ?? null;
   const candidates = (state.conversation_sessions ?? []).filter((session) =>
     (session?.status === 'active'
       || (session?.status === 'suspended'
@@ -22,6 +24,34 @@ export function findResumableConversationSession(state, playerRef, targetRef) {
     );
   }
   return candidates[0] ?? null;
+}
+
+export function hydratedPendingPlayerExecution(context) {
+  const pending = context.state.pending_player_conversation_execution ?? null;
+  if (pending === null) return null;
+  if (pending.schema !== 'pending_player_conversation_execution_v1'
+      || !validatePlayerConversationContributionPlan(pending.plan)
+      || pending.plan?.speaker_ref?.entity_kind !== 'player_character'
+      || pending.plan?.speaker_ref?.entity_id !== context.state.actor_id
+      || pending.plan?.conversation_id !== pending.conversation_id
+      || typeof pending.exchange_id !== 'string'
+      || pending.exchange_id.length === 0
+      || pending.contribution_index !== 1
+      || !Number.isSafeInteger(pending.remaining_minutes)
+      || pending.remaining_minutes < 0
+      || !Number.isSafeInteger(pending.remaining_exchange_minutes)
+      || pending.remaining_exchange_minutes < pending.remaining_minutes) {
+    fail(
+      'TRACE_M2_PENDING_PLAYER_EXECUTION_INVALID',
+      'A suspended conversation requires its exact persisted player plan.'
+    );
+  }
+  return {
+    plan: structuredClone(pending.plan),
+    contribution_index: 1,
+    remaining_minutes: pending.remaining_minutes,
+    remaining_exchange_minutes: pending.remaining_exchange_minutes
+  };
 }
 
 export function hydratedPendingNpcExecution(context) {

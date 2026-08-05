@@ -10,6 +10,8 @@ import { appendNpcSemanticConversationWrites } from
   '../src/infrastructure/postgres/npc-semantic-conversation-writes.js';
 import {
   digest,
+  createM2ConversationModels,
+  conversationTemporalOwner,
   phase3State,
   projectPhase3Conversation,
   ref,
@@ -137,6 +139,11 @@ test('player conversation supports non-speech lifecycle contributions',
 
       assert.equal(exchange.result.exchange.session_status, expectedStatus);
       assert.deepEqual(exchange.result.exchange.handoff, handoff);
+      assert.deepEqual(exchange.result.handoff, handoff);
+      assert.deepEqual(exchange.result.action_handoff,
+        contributionKind === 'action_handoff' ? handoff : null);
+      assert.deepEqual(exchange.result.combat_handoff,
+        contributionKind === 'combat_handoff' ? handoff : null);
       assert.equal(exchange.npcCalls, contributionKind === 'silence' ? 1 : 0);
       const next = projectPhase3Conversation({ state, contracts,
         result: exchange.result, inputDigest: digest(digestCharacter) });
@@ -161,4 +168,60 @@ test('player conversation supports non-speech lifecycle contributions',
       assert.equal(writes.appends.some(({ target_table: table }) =>
         table === 'party_conversation_contributions'), true);
     }
+  });
+
+test('player action handoff reaches the production actor-step boundary',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveTracePhase3Contracts({
+      state, bundle: revision14Bundle
+    });
+    const baseModel = createM2ConversationModels().playerConversationModel;
+    const handoff = {
+      kind: 'actor_step',
+      intent: 'leave the conversation and continue acting'
+    };
+    let npcCalls = 0;
+    const command = createTracePhase3ConversationCommand({
+      contracts,
+      evidence: false,
+      inputDigest: digest('a'),
+      playerConversationModel: async (request) => {
+        const plan = structuredClone(await baseModel(request));
+        plan.contribution_kind = 'action_handoff';
+        plan.primary_addressee_ref = null;
+        plan.intended_addressee_refs = [];
+        plan.speech = null;
+        plan.interpretation = {
+          intent: 'continue with one ordinary actor step',
+          grounded_contribution: handoff.intent,
+          adaptation: 'literal'
+        };
+        plan.resolution = 'automatic';
+        plan.check = null;
+        plan.supporting_operations = [];
+        plan.handoff = handoff;
+        return plan;
+      },
+      npcSemanticModel: async () => {
+        npcCalls += 1;
+        return null;
+      },
+      temporalAdvanceOwner: conversationTemporalOwner(state),
+      revalidateStateVersion: async () => state.party_state.state_version
+    });
+    const playerInput = { raw_text: 'Прекращаю разговор и иду дальше.' };
+    const availability = await command.availability({
+      retrievedState: state, playerInput
+    });
+    const consequence = await command.consequence({
+      retrievedState: state,
+      availability,
+      checks: { results: [] },
+      playerInput
+    });
+
+    assert.deepEqual(consequence.conversation.actor_step_handoff, handoff);
+    assert.deepEqual(consequence.conversation.handoff, handoff);
+    assert.equal(npcCalls, 0);
   });

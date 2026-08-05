@@ -39,6 +39,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-working-state.js';
 import {
   findResumableConversationSession,
+  hydratedPendingPlayerExecution,
   hydratedPendingNpcExecution
 } from './lower-dvina-trace-m2-conversation-resume.js';
 import {
@@ -48,6 +49,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-session.js';
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
+import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -94,20 +96,26 @@ export function createM2ConversationContext(input) {
     activeSession,
     conversationId: activeSession?.conversation_id
       ?? `conversation:${input.inputDigest.slice(0, 32)}`,
-    exchangeId: input.state.pending_npc_conversation_execution?.exchange_id
+    exchangeId: (input.state.pending_npc_conversation_execution
+      ?? input.state.pending_player_conversation_execution)?.exchange_id
       ?? `exchange:${input.inputDigest.slice(0, 32)}`,
-    socialDeliveryResult: deliveryResult(
-      input.checkResult,
-      input.phase,
-      input.state.party_id,
-      input.state.party_state.turn_number + 1
-    )
+    socialDeliveryResult:
+      input.state.pending_player_conversation_execution
+        ?.social_delivery_result
+      ?? deliveryResult(
+        input.checkResult,
+        input.phase,
+        input.state.party_id,
+        input.state.party_state.turn_number + 1
+      )
   };
 }
 export async function executeM2ConversationExchange(context) {
+  const pendingPlayerExecution = hydratedPendingPlayerExecution(context);
   const pendingExecution = hydratedPendingNpcExecution(context);
   const playerRequest = buildPlayerRequest(context);
-  const exchangeDurationMinutes = pendingExecution?.remaining_exchange_minutes
+  const exchangeDurationMinutes = (pendingPlayerExecution ?? pendingExecution)
+    ?.remaining_exchange_minutes
     ?? conversationExchangeDurationMinutes(context);
   const initialWorkingState = {
     state_version: context.stateVersion,
@@ -130,7 +138,8 @@ export async function executeM2ConversationExchange(context) {
   const contributionSlots = Math.min(
     context.contracts.conversationBindings.max_contributions_per_exchange,
     pendingExecution === null
-      ? 1 + context.playerPlan.intended_addressee_refs.length
+      ? 1 + (pendingPlayerExecution?.plan ?? context.playerPlan)
+        .intended_addressee_refs.length
       : Math.max(1, pendingExecution.remaining_responder_refs.length
         + (pendingExecution.remaining_minutes > 0 ? 1 : 0))
   );
@@ -143,15 +152,15 @@ export async function executeM2ConversationExchange(context) {
       total_minutes: exchangeDurationMinutes,
       contribution_slots: contributionSlots
     },
+    pendingPlayerExecution,
     pendingNpcExecution: pendingExecution
   }, {
-    conversationModel: context.playerPlan
-      ? async () => structuredClone(context.playerPlan)
-      : context.playerConversationModel,
+    conversationModel: context.playerPlan ? async () =>
+      structuredClone(context.playerPlan) : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
-      applyPlayerPlan(workingConversationContext(context, working), working,
-        plan),
+      applyPlayerPlan(workingConversationContext(context, working), working, plan),
+    applyPendingPlayerContribution: ({ working_state: working, plan }) => applyPersistedPlayerPlan(context, working, plan),
     advanceContributionTime: ({
       working_state: working,
       planned_duration_minutes: plannedDurationMinutes
@@ -277,7 +286,7 @@ export async function executeM2ConversationExchange(context) {
     );
   }
   return projectM2ConversationExecutionResult({ exchange, context,
-    pendingExecution, npcOutcomes, resumedOutcome });
+    pendingExecution, pendingPlayerExecution, npcOutcomes, resumedOutcome });
 }
 
 export async function prepareM2PlayerConversationPlan(context) {

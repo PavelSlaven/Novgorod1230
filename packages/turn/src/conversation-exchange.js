@@ -1,7 +1,8 @@
 import { deepFreeze } from '@rus/kernel';
 import { turnFailure } from './errors.js';
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
-import { requestPlayerConversationContribution } from './player-conversation.js';
+import { startPlayerConversationContribution } from
+  './conversation-exchange-player.js';
 import {
   decisionPairKey,
   normalizeNpcBoundaryBatch,
@@ -275,34 +276,11 @@ export async function runConversationExchange(input = {}, ports = {}) {
   let completedContributionCount = 0;
   let appliedContributionCount = 0;
 
-  const playerDecision = await requestPlayerConversationContribution({
-    request: normalized.playerRequest,
-    conversationModel: ports.conversationModel,
-    revalidateStateVersion: ports.revalidatePlayerStateVersion,
-    validatePlan: ports.validatePlayerPlan ?? null
-  });
-  const rawPlayerResult = await callPort(
-    ports.applyPlayerContribution,
-    {
-      working_state: normalized.initialWorkingState,
-      plan: playerDecision.plan,
-      contribution_index: 1
-    },
-    'TURN_CONVERSATION_PLAYER_APPLY_FAILED',
-    'Player conversation contribution could not be applied'
-  );
-  const playerApplied = normalizeApplyResult(
-    rawPlayerResult,
-    'TURN_CONVERSATION_PLAYER_APPLY_INVALID'
-  );
-  const playerProgress = await progressAndProject({
-    ports,
-    applied: playerApplied,
-    plan: playerDecision.plan,
-    contributionIndex: 1,
-    plannedMinutes: timeSlices[0],
-    perceptionPort: ports.projectPlayerContributionPerception
-  });
+  const { pendingPlayer, playerPlan, playerProgress } =
+    await startPlayerConversationContribution({
+      normalized, ports, fail, callPort, normalizeApplyResult,
+      progressAndProject, plannedMinutes: timeSlices[0]
+    });
   const playerResult = playerProgress.applied;
 
   let workingState = playerResult.working_state;
@@ -318,6 +296,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
   const processedBoundaryIdSet = new Set();
   const processedDecisionPairs = new Set();
   let queuedNpcBoundaries = [];
+  let pendingPlayerExecution = null;
   let pendingNpcExecution = null;
   const temporalBoundaryRefs = [...playerProgress.temporalBoundaryRefs];
   elapsedBudgetMinutes += playerProgress.elapsedMinutes;
@@ -326,6 +305,16 @@ export async function runConversationExchange(input = {}, ports = {}) {
     appliedContributionCount += 1;
   }
   if (playerProgress.interrupted) {
+    const plannedPlayerMinutes = pendingPlayer?.remaining_minutes
+      ?? timeSlices[0];
+    pendingPlayerExecution = immutableClone({
+      plan: playerPlan,
+      contribution_index: 1,
+      remaining_minutes:
+        plannedPlayerMinutes - playerProgress.elapsedMinutes,
+      remaining_exchange_minutes:
+        totalBudgetMinutes - elapsedBudgetMinutes
+    });
     stopReason = 'temporal_boundary';
   }
 
@@ -491,6 +480,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
     applied_contribution_count: appliedContributionCount,
     handoff,
     session_status: sessionStatus,
+    pending_player_execution: pendingPlayerExecution,
     pending_npc_execution: pendingNpcExecution
   });
 }

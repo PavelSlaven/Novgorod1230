@@ -37,3 +37,23 @@ test('conversation temporal projection preserves owner order and exact nearest b
     boundary_ids: ['z-earlier']
   });
 });
+
+test('conversation temporal projection accepts exact-end player resume', () => {
+  const clockBefore = phase3State().clock;
+  const projected = projectConversationTemporalAdvance({
+    clockBefore,
+    semanticExchange: {
+      exact_elapsed_minutes: 0,
+      clock_after: structuredClone(clockBefore),
+      temporal_boundary_refs: [],
+      resumed_player_execution: {
+        exchange_id: 'exchange:player-exact-end'
+      }
+    },
+    candidates: [],
+    roots: []
+  });
+
+  assert.deepEqual(projected.clock_after, clockBefore);
+  assert.deepEqual(projected.boundary_trace.processed_boundary_ids, []);
+});

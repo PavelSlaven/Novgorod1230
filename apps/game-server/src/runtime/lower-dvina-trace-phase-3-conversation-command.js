@@ -13,6 +13,7 @@ import {
   resolveTracePhase3NpcDecision
 } from './lower-dvina-trace-phase-3-npc-decision.js';
 import { resolveTracePhase3ConversationExchange } from './lower-dvina-trace-m2-conversation.js';
+import { conversationHandoffProjection } from './lower-dvina-trace-m2-conversation-handoff.js';
 import { buildPlayerConversationPlanStage, buildTracePhase3ConversationCheckRequests,
   prepareTracePhase3PlayerConversationPlan, requirePlayerConversationPlanStage } from
   './lower-dvina-trace-m2-conversation-player.js';
@@ -285,6 +286,7 @@ function createSemanticConversationCommand({
           npc_ref: ids.eremeyRef,
           npc_id: contracts.actors[0].instance_id,
           semantic_exchange: semanticExchange,
+          ...conversationHandoffProjection(semanticExchange),
           response_kind: semanticExchange.response_kind,
           evidence_input_ref: evidence ? ids.evidence : null,
           objective_fact_outputs: []

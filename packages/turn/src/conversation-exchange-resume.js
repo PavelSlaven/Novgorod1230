@@ -262,6 +262,7 @@ export async function resumePendingNpcExecution(normalized, ports, helpers) {
     applied_contribution_count: appliedCount,
     handoff,
     session_status: sessionStatus,
+    pending_player_execution: null,
     pending_npc_execution: nextPending
   });
 }

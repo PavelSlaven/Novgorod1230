@@ -228,9 +228,47 @@ test('the same code-owned social check exposes delivery cues but does not choose
     bargained.npcRequest.social_context.delivery_cues,
     lied.npcRequest.social_context.delivery_cues
   );
+  assert.equal(lied.npcRequest.social_context.offer_stage_ref,
+    offerStage.fact_id);
+  assert.equal(lied.npcRequest.social_context.offer_policy_ref,
+    contracts.promisePolicy.policy_id);
   assert.deepEqual(lied.result.social_delivery_result,
     bargained.result.social_delivery_result);
 });
+
+test('partial offer perception does not disclose offer or policy refs to Ratsha',
+  async () => {
+    const { state, contracts } = phase4ArrivalState();
+    const ratsha = state.npcs.find(
+      ({ participant_slot_ref: slot }) => slot === 'ratsha_storehouse_helper'
+    );
+    ratsha.machine_state = {
+      ...ratsha.machine_state,
+      hearing_capability: 'partial'
+    };
+    const offerStage = promiseOfferStage(state, contracts);
+    const exchange = await runPhase4({ state, contracts,
+      rawText: 'Ратша, сдавайся, и я обещаю защиту.',
+      inputDigest: digest('5'), responseKind: 'speech',
+      checkResult: null, checkRequest: null, offerStage,
+      playerPlanOptions: { offer: true } });
+
+    assert.equal(exchange.npcCalls, 1);
+    const received = exchange.result.audiences[0].received_messages.find(
+      ({ listener_ref: listener }) => listener.entity_id === ratsha.instance_id
+    );
+    assert.equal(received.comprehension, 'partial');
+    assert.equal(received.utterance_text, null);
+    assert.equal(Object.hasOwn(
+      exchange.npcRequest.social_context, 'offer_stage_ref'
+    ), false);
+    assert.equal(Object.hasOwn(
+      exchange.npcRequest.social_context, 'offer_policy_ref'
+    ), false);
+    const serialized = JSON.stringify(exchange.npcRequest);
+    assert.equal(serialized.includes(offerStage.fact_id), false);
+    assert.equal(serialized.includes(contracts.promisePolicy.policy_id), false);
+  });
 
 test('Ratsha responds once to the post-elapsed surrender demand boundary', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
@@ -379,6 +417,45 @@ test('Ratsha combat handoff rejects a target outside the request safe context',
       }
     }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
   });
+
+test('player combat handoff reaches the persisted combat boundary', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  const targetRef = ref(
+    'npc', contracts.actors.ratsha_storehouse_helper.instance_id
+  );
+  const handoff = {
+    kind: 'combat',
+    intent: 'attack Ratsha',
+    target_actor_refs: [targetRef]
+  };
+  const exchange = await runPhase4({ state, contracts,
+    rawText: 'Бросаюсь на Ратшу.', inputDigest: digest('4'),
+    responseKind: 'speech', checkResult: null, offerStage: null,
+    checkRequest: null,
+    transformPlayerPlan(plan) {
+      plan.contribution_kind = 'combat_handoff';
+      plan.primary_addressee_ref = null;
+      plan.intended_addressee_refs = [];
+      plan.speech = null;
+      plan.interpretation = {
+        intent: 'start combat with Ratsha',
+        grounded_contribution: handoff.intent,
+        adaptation: 'literal'
+      };
+      plan.resolution = 'automatic';
+      plan.check = null;
+      plan.supporting_operations = [];
+      plan.handoff = handoff;
+      return plan;
+    }
+  });
+  assert.deepEqual(exchange.result.combat_handoff, handoff);
+
+  const next = projectPhase4Negotiation({
+    state, contracts, result: exchange.result, inputDigest: digest('4')
+  });
+  assert.deepEqual(next.player_response_boundary, handoff);
+});
 
 test('late Ratsha surrender applies after another NPC contribution', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();

@@ -29,6 +29,8 @@ import {
 } from '../../runtime/lower-dvina-trace-committed-revision.js';
 import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
+import { resumedPendingConversationActivity } from
+  './lower-dvina-trace-pending-activity-state.js';
 
 import {
   expectedChangedConditions,
@@ -104,6 +106,9 @@ export async function commitLowerDvinaTracePhase3({
     workingRevision: semanticContext?.workingRevision
   }), turnStep.writes);
   const canonicalInputDigest = normalizeDigest(inputDigest);
+  const resumedActivity = resumedPendingConversationActivity(
+    state, semanticContext?.semanticExchange
+  );
   const baseWritePlanInput = {
     plan_id: `p16:${partyId}:trace-phase3:${turnNumber}`,
     party_id: partyId,
@@ -120,11 +125,11 @@ export async function commitLowerDvinaTracePhase3({
         state,
         semanticContext?.semanticExchange
       ),
-      ...(semanticContext?.semanticExchange?.resumed_npc_execution == null
+      ...(resumedActivity == null
         ? [] : [expected(
             'party_timed_activity_executions',
-            state.pending_npc_conversation_execution.activity_execution_id,
-            state.pending_npc_conversation_execution.activity_state_version
+            resumedActivity.activity_execution_id,
+            resumedActivity.activity_state_version
           )]),
       ...(factual.body_update?.applied === true ? [expected(
         'party_actor_body_states', `player_character:${state.actor_id}`,

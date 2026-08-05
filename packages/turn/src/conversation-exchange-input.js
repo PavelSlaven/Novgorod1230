@@ -1,4 +1,5 @@
 import { validateConversationContributionPlan,
+  validatePlayerConversationContributionPlan,
   validatePlayerConversationInput,
   validateSocialDeliveryResult } from '@rus/npc-runtime';
 import { turnFailure } from './errors.js';
@@ -8,6 +9,7 @@ const INPUT_KEYS = new Set([
   'initialWorkingState',
   'maxContributionsPerExchange',
   'timeBudget',
+  'pendingPlayerExecution',
   'pendingNpcExecution'
 ]);
 const DEFAULT_EXCHANGE_LIMIT = 8;
@@ -61,13 +63,19 @@ export function normalizeConversationExchangeInput(input) {
     );
   }
   const timeBudget = input.timeBudget;
+  const pendingPlayerExecution = input.pendingPlayerExecution ?? null;
   const pendingNpcExecution = input.pendingNpcExecution ?? null;
-  const exactEndResume = pendingNpcExecution !== null
+  if (pendingPlayerExecution !== null && pendingNpcExecution !== null) {
+    fail('TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
+      'Only one pending conversation contribution may be resumed');
+  }
+  const pendingExecution = pendingPlayerExecution ?? pendingNpcExecution;
+  const exactEndResume = pendingExecution !== null
     && timeBudget?.total_minutes === 0
     && timeBudget?.contribution_slots === 1
-    && pendingNpcExecution.remaining_minutes === 0
-    && pendingNpcExecution.remaining_exchange_minutes === 0
-    && pendingNpcExecution.remaining_responder_refs?.length === 0;
+    && pendingExecution.remaining_minutes === 0
+    && pendingExecution.remaining_exchange_minutes === 0
+    && (pendingExecution.remaining_responder_refs?.length ?? 0) === 0;
   if (!exactKeys(timeBudget, ['total_minutes', 'contribution_slots'])
       || !Number.isSafeInteger(timeBudget.total_minutes)
       || (timeBudget.total_minutes < 1 && !exactEndResume)
@@ -131,6 +139,29 @@ export function normalizeConversationExchangeInput(input) {
       'Pending NPC execution must contain one exact persisted plan and remaining duration'
     );
   }
+  if (pendingPlayerExecution !== null
+      && (!exactKeys(pendingPlayerExecution, [
+        'plan', 'contribution_index', 'remaining_minutes',
+        'remaining_exchange_minutes'
+      ])
+        || !validatePlayerConversationContributionPlan(
+          pendingPlayerExecution.plan)
+        || pendingPlayerExecution.plan.speaker_ref?.entity_kind
+          !== 'player_character'
+        || pendingPlayerExecution.contribution_index !== 1
+        || !Number.isSafeInteger(pendingPlayerExecution.remaining_minutes)
+        || pendingPlayerExecution.remaining_minutes < 0
+        || !Number.isSafeInteger(
+          pendingPlayerExecution.remaining_exchange_minutes)
+        || pendingPlayerExecution.remaining_exchange_minutes
+          < pendingPlayerExecution.remaining_minutes
+        || pendingPlayerExecution.remaining_exchange_minutes
+          !== timeBudget.total_minutes)) {
+    fail(
+      'TURN_CONVERSATION_PENDING_PLAYER_EXECUTION_INVALID',
+      'Pending player execution must contain one exact persisted plan and remaining duration'
+    );
+  }
   if (!plainRecord(input.initialWorkingState)) {
     fail('TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'initialWorkingState must be a plain cloneable object');
@@ -144,6 +175,10 @@ export function normalizeConversationExchangeInput(input) {
       'initialWorkingState must be a plain cloneable object'),
     maxContributionsPerExchange,
     timeBudget: structuredClone(timeBudget),
+    pendingPlayerExecution: pendingPlayerExecution === null ? null
+      : clone(pendingPlayerExecution,
+        'TURN_CONVERSATION_PENDING_PLAYER_EXECUTION_INVALID',
+        'Pending player execution must be cloneable'),
     pendingNpcExecution: pendingNpcExecution === null ? null
       : clone(pendingNpcExecution,
         'TURN_CONVERSATION_PENDING_NPC_EXECUTION_INVALID',

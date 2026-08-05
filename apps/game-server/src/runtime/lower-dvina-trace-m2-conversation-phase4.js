@@ -18,6 +18,8 @@ import {
 } from './lower-dvina-trace-m2-conversation-shared.js';
 import { buildSurrenderProjection } from
   './lower-dvina-trace-m2-conversation-surrender.js';
+import { hydratedPendingPlayerExecution } from
+  './lower-dvina-trace-m2-conversation-resume.js';
 
 export async function resolveTracePhase4ConversationExchange({
   state, contracts, playerInput, inputDigest, checkResult, offerStage,
@@ -27,7 +29,13 @@ export async function resolveTracePhase4ConversationExchange({
 } = {}) {
   requireCommonInput({ state, contracts, playerInput, inputDigest,
     playerConversationModel, npcSemanticModel, revalidateStateVersion });
-  requireCausalInput({ checkResult, checkRequest, offerStage, contracts });
+  const persistedPlayer = state.pending_player_conversation_execution ?? null;
+  const effectiveCheckResult = persistedPlayer?.check_result ?? checkResult;
+  const effectiveCheckRequest = persistedPlayer?.check_request ?? checkRequest;
+  const effectiveOfferStage = persistedPlayer?.offer_stage ?? offerStage;
+  requireCausalInput({ checkResult: effectiveCheckResult,
+    checkRequest: effectiveCheckRequest, offerStage: effectiveOfferStage,
+    contracts });
   const mapping = contracts.conversationSignalMappings?.demand;
   const target = contracts.actors?.ratsha_storehouse_helper;
   if (!mapping || !target?.instance_id
@@ -39,11 +47,13 @@ export async function resolveTracePhase4ConversationExchange({
     .map(([actorRef, actor]) => ({ ref: actorRef, ...structuredClone(actor) }))
     .filter(({ anchor_id: anchorId }) => anchorId === contracts.anchors.shed);
   const pendingExecution = state.pending_npc_conversation_execution ?? null;
-  const effectiveInputDigest = pendingExecution?.source_input_digest
+  const pendingPlayer = hydratedPendingPlayerExecution({ state });
+  const effectiveInputDigest = (pendingExecution ?? persistedPlayer)
+    ?.source_input_digest
     ?? inputDigest;
   const initialContext = createM2ConversationContext({
     phase: 'phase_4', state, contracts, playerInput,
-    inputDigest: effectiveInputDigest, checkResult,
+    inputDigest: effectiveInputDigest, checkResult: effectiveCheckResult,
     mapping, targetActor: { ref: 'ratsha_storehouse_helper', ...target },
     actualNpcActors, playerConversationModel, npcSemanticModel,
     revalidateStateVersion, temporalAdvanceOwner, npcSocialCheckResolver,
@@ -75,20 +85,20 @@ export async function resolveTracePhase4ConversationExchange({
       knowledge_refs: [],
       combat_target_refs: [ref('player_character', state.actor_id)]
     },
-    offerStage, checkRequest,
+    offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
     classifyNpcPlan: classifyRatshaPlan,
     playerPlan
   });
-  const effectivePlayerPlan = pendingExecution === null
-    ? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext)
-    : null;
+  const effectivePlayerPlan = pendingExecution !== null ? null
+    : pendingPlayer?.plan
+      ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
   const context = { ...initialContext, playerPlan: effectivePlayerPlan };
   return resultProjection(
     await executeM2ConversationExchange(context),
     context,
     state,
-    offerStage,
-    checkRequest,
+    effectiveOfferStage,
+    effectiveCheckRequest,
     effectiveInputDigest
   );
 }
@@ -111,8 +121,7 @@ function resultProjection(result, context, state, offerStage, checkRequest,
   inputDigest) {
   const surrender = result.npcOutcome?.kind === 'surrender'
     ? buildSurrenderProjection(result, context) : null;
-  const combatHandoff = result.npcOutcome?.kind === 'combat_handoff'
-    ? structuredClone(result.exchange.handoff) : null;
+  const handoff = structuredClone(result.exchange.handoff);
   return freezeResult({
     input_digest: inputDigest,
     exchange: result.exchange,
@@ -129,8 +138,21 @@ function resultProjection(result, context, state, offerStage, checkRequest,
     npc_outcomes: structuredClone(result.npcOutcomes),
     pending_npc_execution:
       structuredClone(result.exchange.pending_npc_execution),
+    pending_player_execution: result.exchange.pending_player_execution == null
+      ? null : {
+          ...structuredClone(result.exchange.pending_player_execution),
+          conversation_id: context.conversationId,
+          exchange_id: context.exchangeId,
+          check_result: structuredClone(context.checkResult),
+          social_delivery_result:
+            structuredClone(context.socialDeliveryResult),
+          offer_stage: structuredClone(offerStage),
+          check_request: structuredClone(checkRequest)
+        },
     resumed_npc_execution:
       structuredClone(result.resumedNpcExecution),
+    resumed_player_execution:
+      structuredClone(result.resumedPlayerExecution),
     social_delivery_result: result.socialDeliveryResult,
     new_signal_records: result.newSignalRecords,
     consumed_signal_ids: result.consumedSignalIds,
@@ -148,7 +170,9 @@ function resultProjection(result, context, state, offerStage, checkRequest,
       ? result.npcOutcome.factualProjection : null,
     silence: result.npcOutcome?.kind === 'silence',
     leave_conversation: result.npcOutcome?.kind === 'leave_conversation',
-    combat_handoff: combatHandoff,
+    handoff,
+    action_handoff: handoff?.kind === 'actor_step' ? handoff : null,
+    combat_handoff: handoff?.kind === 'combat' ? handoff : null,
     response_kind: result.npcOutcome?.kind ?? null,
     objective_truth_writes: []
   });

@@ -13,6 +13,7 @@ import { mergeLowerDvinaTraceTurnStepWrites, prepareLowerDvinaTraceTurnStepPersi
 import { bindLowerDvinaTraceTurnStepIdempotency } from './lower-dvina-trace-turn-step-idempotency.js';
 import { committedTraceScenarioDefinitionRevision } from '../../runtime/lower-dvina-trace-committed-revision.js';
 import { integrateConversationTemporalWrites } from './lower-dvina-trace-conversation-temporal.js';
+import { resumedPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
 
 export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDigest, phase4Contracts, loadState, committer }) {
   const factual = writePlan.write_targets.find((entry) => entry.target === 'party_state')?.value;
@@ -48,6 +49,9 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
     contracts: phase4Contracts, scenarioRevision,
     rootTurnId: semanticContext?.rootTurnId,
     workingRevision: semanticContext?.workingRevision }), turnStep.writes);
+  const resumedActivity = resumedPendingConversationActivity(
+    state, semanticContext?.semanticExchange
+  );
   const expectedStateVersions = [
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
@@ -57,11 +61,11 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
       state,
       semanticContext?.semanticExchange
     ),
-    ...(semanticContext?.semanticExchange?.resumed_npc_execution == null
+    ...(resumedActivity == null
       ? [] : [expected(
           'party_timed_activity_executions',
-          state.pending_npc_conversation_execution.activity_execution_id,
-          state.pending_npc_conversation_execution.activity_state_version
+          resumedActivity.activity_execution_id,
+          resumedActivity.activity_state_version
         )]),
     ...(factual.body_update?.applied === true ? [expected(
       'party_actor_body_states', `player_character:${state.actor_id}`,

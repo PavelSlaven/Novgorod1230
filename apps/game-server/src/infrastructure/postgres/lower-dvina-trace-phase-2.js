@@ -24,6 +24,7 @@ import { assertPhase3NormalizedRows } from './lower-dvina-trace-phase-3-read.js'
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
 import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js';
 import { assertPhase6NormalizedRows } from './lower-dvina-trace-phase-6-persistence.js';
+import { assertPhase7NormalizedRows } from './lower-dvina-trace-phase-7-read.js';
 import { assertTurnStepNormalizedRows } from
   './lower-dvina-trace-turn-step-read.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
@@ -114,6 +115,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       await assertPhase4NormalizedRows(partyPool, payload, row);
       await assertPhase5NormalizedRows(partyPool, payload, row);
       await assertPhase6NormalizedRows(partyPool, payload, row);
+      await assertPhase7NormalizedRows(partyPool, payload, row);
       await assertTurnStepNormalizedRows(partyPool, payload, row);
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);

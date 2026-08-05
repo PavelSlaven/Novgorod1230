@@ -68,6 +68,15 @@ const EXPECTED = Object.freeze({
     kind: 'carry',
     targetKey: 'onisim',
     targetSemantic: 'onisim_boatman'
+  },
+  'lower_dvina_trace.rest_by_fire_and_dry_clothing': {
+    minRevision: 15,
+    operation: 'request_activity',
+    kindField: 'activity_kind',
+    kindsField: 'activity_kinds',
+    kind: 'rest',
+    targetKey: 'fishingCamp',
+    targetSemantic: 'camp_fire'
   }
 });
 
@@ -81,7 +90,10 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
     ]),
   'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp': new Set([
     'сделать носилки и отнести онисима в стан.'
-    ])
+  ]),
+  'lower_dvina_trace.rest_by_fire_and_dry_clothing': new Set([
+    'отдохнуть у огня полчаса и подсушить одежду.'
+  ])
 });
 
 export function bindLowerDvinaTraceTurnStepCommands({
@@ -89,10 +101,13 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
+  const expectedCommands = Object.entries(EXPECTED).filter(
+    ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision
+  );
   const byCommand = new Map();
-  if (!Array.isArray(records) || records.length !== Object.keys(EXPECTED).length) {
+  if (!Array.isArray(records) || records.length !== expectedCommands.length) {
     gap();
   }
   for (const record of records) {
@@ -102,7 +117,10 @@ export function bindLowerDvinaTraceTurnStepCommands({
 
   const bound = commands.map((command) => {
     const expected = EXPECTED[command.command_id];
-    if (!expected) return command;
+    if (!expected
+        || (expected.minRevision ?? 13) > bundle.definition_revision) {
+      return command;
+    }
     const record = byCommand.get(command.command_id);
     const targetRef = targetRefs?.[expected.targetKey];
     const actorRef = targetRefs?.actor;

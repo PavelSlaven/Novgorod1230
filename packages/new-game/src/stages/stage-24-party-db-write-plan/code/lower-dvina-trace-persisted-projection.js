@@ -10,6 +10,7 @@ export function buildLowerDvinaTracePersistedProjection({
   const playerId = player.instance_id;
   const preparedScenes = result.immediate.prepared_scenes ?? [];
   const preparedNpcs = result.immediate.npcs ?? [];
+  const preparedContainers = result.immediate.containers ?? [];
   return {
     schema: 'rus.lower_dvina_trace_persisted_projection.v2',
     materialization_run: structuredClone(runRecord),
@@ -166,6 +167,25 @@ export function buildLowerDvinaTracePersistedProjection({
         claim_state: item.claim_state
       }
     })).sort((left, right) => left.item_id.localeCompare(right.item_id)),
+    containers: preparedContainers.map((container) => ({
+      container_id: container.instance_id,
+      run_id: result.run_id,
+      template_id: container.template_id,
+      anchor_id: container.anchor_id ?? null,
+      parent_container_id: null,
+      holder_npc_id: container.holder_npc_id ?? null,
+      holder_character_id: null,
+      physical_position: null,
+      equipment_slot_category_id: null,
+      condition_state: container.state?.physical_condition?.overall ?? null,
+      closure_state: container.closure_state,
+      state: {
+        ...structuredClone(container.state),
+        owner_external_ref: container.owner_external_ref,
+        controller_npc_id: container.controller_npc_id
+      },
+      state_version: 1
+    })).sort((left, right) => left.container_id.localeCompare(right.container_id)),
     obligations: (result.immediate.promise_instances ?? []).map((promise) => ({
       obligation_id: promise.instance_id,
       policy_ref: structuredClone(promise.policy_ref),

@@ -35,6 +35,8 @@ import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
+import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
+  '../lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
@@ -235,6 +237,7 @@ function createTraceTurnRuntime({
       effect_registrations:
         [
           ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
+          ...lowerDvinaTracePhase7TemporalEffectRegistrations(),
           ...lowerDvinaTraceConversationTemporalEffectRegistrations()
         ]
     }),

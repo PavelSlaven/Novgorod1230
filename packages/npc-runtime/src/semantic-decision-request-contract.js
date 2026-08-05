@@ -308,7 +308,7 @@ function validateMemory(value) {
 function validateOperationContract(value) {
   return record(value)
     && Object.keys(value).every((operation) => SUPPORTED_OPERATIONS.has(operation))
-    && Object.values(value).every(jsonSafe);
+    && Object.values(value).every((entry) => jsonSafe(entry));
 }
 
 function validateDecisionScope(value) {

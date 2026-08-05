@@ -50,14 +50,14 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   compatible_world_pin_manifest_digest: TEST_PIN_MANIFEST_DIGEST
 });
 
-test('production-v4 trace runtime wires canonical packing and semantic conversation models', async () => {
+test('production-v5 trace runtime wires canonical packing and semantic NPC models', async () => {
   const [sharedSource, releaseSource] = await Promise.all([
     readFile(new URL(
       '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js',
       import.meta.url
     ), 'utf8'),
     readFile(new URL(
-      '../../apps/game-server/src/runtime/releases/spatial-v3-production-v4-bindings.js',
+      '../../apps/game-server/src/runtime/releases/spatial-v3-production-v5-bindings.js',
       import.meta.url
     ), 'utf8')
   ]);
@@ -76,10 +76,14 @@ test('production-v4 trace runtime wires canonical packing and semantic conversat
     releaseSource,
     /npcSemanticModel:\s*createLowerDvinaTraceNpcSemanticModel\(\{ roleRunner \}\)/u
   );
+  assert.match(
+    releaseSource,
+    /npcAutonomousModel:\s*createLowerDvinaTraceNpcAutonomousModel\(\{ roleRunner \}\)/u
+  );
   assert.doesNotMatch(releaseSource, /npcDecisionSelector/u);
 });
 
-test('builtin v4 binding constructs the production semantic runtime', async () => {
+test('builtin v5 binding constructs the production semantic runtime', async () => {
   const setup = fixture();
   const calls = [];
   const bindings = await loadSpatialV3RuntimeBindings(
@@ -193,14 +197,14 @@ function fixture() {
   const bindingsFactory = async ({ release }) => {
     assert.equal(release.release_id, SPATIAL_V3_PRODUCTION_RELEASE_ID);
     return {
-      targetCompositionPorts: { port_marker: 'v4-only' },
+      targetCompositionPorts: { port_marker: 'v5-only' },
       commitRecheck: async () => ({ ok: true }),
       createPublicRuntimeFacade: async () => ({
         listScenarios: async () => ({ scenarios: [] }),
-        startNewGame: async () => ({ ok: true, owner: 'v4' }),
-        acknowledgeOpening: async () => ({ ok: true, owner: 'v4' }),
-        submitTurn: async () => ({ ok: true, owner: 'v4' }),
-        getPartyScreen: async () => ({ ok: true, owner: 'v4' })
+        startNewGame: async () => ({ ok: true, owner: 'v5' }),
+        acknowledgeOpening: async () => ({ ok: true, owner: 'v5' }),
+        submitTurn: async () => ({ ok: true, owner: 'v5' }),
+        getPartyScreen: async () => ({ ok: true, owner: 'v5' })
       }),
       releaseBinding: { ...release },
       runtimeCatalogPin: { ...TEST_RUNTIME_CATALOG_PIN }
@@ -215,7 +219,7 @@ function fixture() {
   };
 }
 
-test('v4 release requires exact committed activation readback', () => {
+test('v5 release requires exact committed activation readback', () => {
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.release_status,
     'validated_candidate_not_active'
@@ -254,7 +258,7 @@ test('v4 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v4 root is sole owner with production-v3 rollback identity', async () => {
+test('production-v5 root is sole owner with production-v4 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -277,7 +281,7 @@ test('production-v4 root is sole owner with production-v3 rollback identity', as
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v3'
+    'spatial-v3-production-v4'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -328,9 +332,9 @@ test('production-v4 root is sole owner with production-v3 rollback identity', as
   });
   assert.equal(health.release_id, SPATIAL_V3_PRODUCTION_RELEASE_ID);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.composition_id, 'builtin:production-spatial-v3');
-  assert.equal(setup.received().port_marker, 'v4-only');
+  assert.equal(setup.received().port_marker, 'v5-only');
   assert.equal(typeof setup.received().committer.commit, 'function');
-  assert.equal((await root.getPartyScreen()).owner, 'v4');
+  assert.equal((await root.getPartyScreen()).owner, 'v5');
   await root.close();
   assert.equal(setup.closed(), 1);
 });
@@ -360,7 +364,7 @@ test('production cutover fails closed while any persisted party remains v2', asy
   );
 });
 
-test('configured composition loader selects only the activated v4 release', async () => {
+test('configured composition loader selects only the activated v5 release', async () => {
   const setup = fixture();
   const root = await loadConfiguredComposition(
     'builtin:production-spatial-v3',
@@ -387,7 +391,7 @@ test('configured composition loader selects only the activated v4 release', asyn
   );
 });
 
-test('production composition rejects every binding except builtin v4', async () => {
+test('production composition rejects every binding except builtin v5', async () => {
   const setup = fixture();
   await assert.rejects(
     createSpatialV3ProductionCompositionRoot({
@@ -403,7 +407,7 @@ test('production composition rejects every binding except builtin v4', async () 
   assert.equal(setup.closed(), 1);
 });
 
-test('production-v4 binding validation fails closed without every sole-owner port', () => {
+test('production-v5 binding validation fails closed without every sole-owner port', () => {
   assert.throws(
     () => validateSpatialV3RuntimeBindings({
       targetCompositionPorts: {},
@@ -415,7 +419,7 @@ test('production-v4 binding validation fails closed without every sole-owner por
   );
 });
 
-test('production-v4 bindings reject release and runtime-catalog pin drift', () => {
+test('production-v5 bindings reject release and runtime-catalog pin drift', () => {
   const valid = {
     targetCompositionPorts: {},
     commitRecheck: async () => ({ ok: true }),
@@ -460,7 +464,7 @@ test('production-v4 bindings reject release and runtime-catalog pin drift', () =
   );
 });
 
-test('production-v4 world readiness rejects active catalog pin drift', async () => {
+test('production-v5 world readiness rejects active catalog pin drift', async () => {
   await assert.rejects(
     assertSpatialV3WorldReleaseReadiness({
       query: async (sql) => /spatial_v3_world_revisions/u.test(sql)
@@ -650,7 +654,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config defaults to builtin v4 and rejects every other binding', () => {
+test('cutover config defaults to builtin v5 and rejects every other binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST

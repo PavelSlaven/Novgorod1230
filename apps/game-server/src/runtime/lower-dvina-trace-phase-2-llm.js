@@ -1,5 +1,7 @@
 import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
+export { createLowerDvinaTraceNpcAutonomousModel } from
+  './lower-dvina-trace-autonomous-llm.js';
 
 export function createLowerDvinaTraceSemanticResolver({
   roleRunner
@@ -275,14 +277,6 @@ function requireRoleRunner(roleRunner) {
   if (typeof roleRunner?.run !== 'function') {
     throw dependencyError('Configured LLM role runner is required.');
   }
-}
-
-function plainObject(value) {
-  if (value === null || typeof value !== 'object' || Array.isArray(value)) {
-    return false;
-  }
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === Object.prototype || prototype === null;
 }
 
 function dependencyError(message) {

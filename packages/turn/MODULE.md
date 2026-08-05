@@ -10,7 +10,7 @@
 
 ## Не владеет
 
-Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Full autonomous NPC и combat resolution contracts остаются proposed; conversation может завершиться только combat handoff.
+Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Autonomous NPC action active в Phase 7 через общий temporal/persistence/visibility pipeline; combat resolution остаётся proposed, conversation может завершиться только combat handoff.
 
 ## Public API
 
@@ -70,7 +70,9 @@ Temporal v4 surfaces use current `temporal-world-v1.1` /
 `turn_step_plan_v1` как sole semantic path свободной заявки игрока и сохранил
 exact registered path перед ним. Revision 14 / `spatial-v3-production-v4`
 активировал conversation contribution path для фаз 3–4 без bounded fallback.
-Full autonomous NPC и combat resolution documents остаются `proposed`;
+`spatial-v3-production-v5` активировал Phase 7 autonomous NPC path: fire rest
+30 minutes, boundary at +25 and one 5-minute approved schedule action. Combat
+resolution document остаётся `proposed`;
 historical bounded Phase 3/4 доступен только по явному revision pin.
 
 ## Тесты

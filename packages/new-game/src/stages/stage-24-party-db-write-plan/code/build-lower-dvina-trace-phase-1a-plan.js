@@ -26,7 +26,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const player = result.immediate.player;
   const playerId = player.instance_id;
   const runId = result.run_id;
-  const { preparedScenes, preparedNpcs } = phase3PreparedInputs(result);
+  const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -62,6 +62,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
         { domain: 'g5_anchor', instance_id: scene.anchor.instance_id }
       ]),
       ...preparedNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
+      ...preparedContainers.map((container) => ({ domain: 'container', instance_id: container.instance_id })),
       ...result.immediate.items.map((item) => ({ domain: 'item', instance_id: item.instance_id }))
     ]
   };
@@ -172,6 +173,25 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
       profile_record_digest: npc.profile_record_digest
     }
   })), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
+  addBatch(batches, 'party_containers', preparedContainers.map((container) => ({
+    party_id: partyId,
+    container_id: container.instance_id,
+    run_id: runId,
+    template_id: container.template_id,
+    anchor_id: container.anchor_id ?? null,
+    parent_container_id: null,
+    holder_npc_id: container.holder_npc_id ?? null,
+    holder_character_id: null,
+    physical_position: null,
+    equipment_slot_category_id: null,
+    condition_state: container.state?.physical_condition?.overall ?? null,
+    closure_state: container.closure_state,
+    state: {
+      ...structuredClone(container.state),
+      owner_external_ref: container.owner_external_ref,
+      controller_npc_id: container.controller_npc_id
+    }
+  })), ['party_materialization_runs', 'party_npcs'], sourceTrace);
   addBatch(batches, 'party_positions', [{
     party_id: partyId,
     g4_id: result.immediate.spatial.position.g4_id,
@@ -386,27 +406,31 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15].includes(
     result.request_identity.scenario_definition_revision
   )) {
-    return { preparedScenes: [], preparedNpcs: [] };
+    return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;
   const preparedNpcs = result.immediate.npcs;
+  const preparedContainers = result.immediate.containers ?? [];
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
+  const phase7 = result.request_identity.scenario_definition_revision === 15;
   if (!Array.isArray(preparedScenes)
-    || preparedScenes.length !== (phase4 ? 2 : 1)
+    || preparedScenes.length !== (phase7 ? 3 : phase4 ? 2 : 1)
     || !Array.isArray(preparedNpcs)
-    || preparedNpcs.length !== (phase4 ? 5 : 3)) {
+    || preparedNpcs.length !== (phase7 ? 6 : phase4 ? 5 : 3)
+    || !Array.isArray(preparedContainers)
+    || preparedContainers.length !== (phase7 ? 1 : 0)) {
     const error = new Error(
       'Lower Dvina trace prepared scene and NPC inventory is incomplete.'
     );
     error.code = 'LOWER_DVINA_TRACE_PHASE_3_PREPARED_STATE_INVALID';
     throw error;
   }
-  return { preparedScenes, preparedNpcs };
+  return { preparedScenes, preparedNpcs, preparedContainers };
 }
 
 function assertInput(input) {

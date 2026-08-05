@@ -87,6 +87,7 @@ export async function loadInitialTracePhase2State({
       },
       state: item.state
     })),
+    containers: structuredClone(initial.containers ?? []),
     knowledge: [],
     opening_identity: {
       opening_screen_digest: row.stage26_result.opening_screen_digest

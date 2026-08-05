@@ -1,6 +1,6 @@
 # Контракт автономных решений и действий NPC
 
-**Статус:** `proposed`, подготовлен к тестированию и последующему внедрению\
+**Статус:** `active`, production contract Phase 7 / `spatial-v3-production-v5`\
 **Идентификатор:** `npc_autonomous_decision_contract_v1`\
 **Владелец решения NPC:** `@rus/npc-runtime`\
 **Владелец оркестрации и общего actor-step:** `@rus/turn`\
@@ -48,7 +48,7 @@ LLM возвращает одно односоставное действие в
 9. Закрытый словарь причин содержит только `self`, `others`, `environment`, `objective`, `communication`; значимость — только `material` или `critical`.
 10. Все новые сигналы одного NPC в одном полностью разрешённом same-time batch агрегируются в одну boundary и один LLM-вызов; новая очередь, scheduler или таблица триггеров не создаются.
 
-## 3. Текущее состояние `main` и целевое изменение
+## 3. Текущее состояние `main` и active-модель
 
 В актуальном `main` уже существуют:
 
@@ -64,21 +64,22 @@ LLM возвращает одно односоставное действие в
 - остановка temporal batch через `stop_after_current_batch`;
 - детерминированное упорядочивание NPC decision requests.
 
-Текущая active-модель строит закрытый набор утверждённых вариантов и разрешает LLM выбрать только `option_id` и `command_token`.
+Historical bounded-модель строит закрытый набор утверждённых вариантов и
+разрешает LLM выбрать только `option_id` и `command_token`. Она сохраняется
+только для genuinely closed choices и явно pinned historical revisions.
 
-Целевая модель заменяет содержание `reaction_decision`:
+Active Phase 7 заменяет содержание `reaction_decision` для autonomous mode:
 
 ```text
-текущий main:
-approved option set → bounded LLM choice → code-owned command
-
-целевой контракт:
+active autonomous:
 NPC-safe context → semantic LLM decision → structured actor step plan
 ```
 
 Schedule, perception, temporal ordering, persistence и профильные владельцы механики сохраняются.
-
-До согласованного code/documentation cutover этот документ имеет статус `proposed`.
+Phase 7 «Отдых у огня» длится ровно 30 минут: на +25 возникает общая
+autonomous boundary Жданко, затем один approved schedule action занимает 5
+минут. Temporal execution, persistence и player-safe visibility остаются
+code-owned. Combat resolution не активируется и остаётся `proposed`.
 
 ## 4. Архитектурные владельцы
 

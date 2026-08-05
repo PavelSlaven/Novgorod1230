@@ -26,6 +26,8 @@ import { nextPhase5State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-5-state.js';
 import { nextPhase6State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
+import { nextPhase7State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-state.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -69,6 +71,7 @@ export function fixture({
   npcOption = 'surrender_and_confess',
   playerConversationModel = unexpectedPlayerConversationModel,
   npcSemanticModel = unexpectedNpcSemanticModel,
+  npcAutonomousModel = unexpectedNpcAutonomousModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null
 } = {}) {
@@ -154,6 +157,15 @@ export function fixture({
       },
       state: structuredClone(item.state)
     })),
+    containers: (instance.immediate.containers ?? []).map((container) => ({
+      container_id: container.instance_id,
+      template_id: container.template_id,
+      anchor_id: container.anchor_id ?? null,
+      holder_npc_id: container.holder_npc_id ?? null,
+      closure_state: container.closure_state,
+      state: structuredClone(container.state),
+      state_version: 1
+    })),
     knowledge: [],
     opening_identity: {
       opening_screen_digest: 'a'.repeat(64)
@@ -219,7 +231,16 @@ export function fixture({
       const nextVersion = state.party_state.state_version + 1;
       const turnNumber = state.party_state.turn_number + 1;
       const changeSetId = `change:${partyId}:${turnNumber}`;
-      if (factual.consequence.phase6_kind != null) {
+      if (factual.consequence.phase7_kind != null) {
+        replaceState(state, nextPhase7State({
+          state,
+          factual,
+          nextVersion,
+          turnNumber,
+          changeSetId,
+          inputDigest
+        }));
+      } else if (factual.consequence.phase6_kind != null) {
         replaceState(state, nextPhase6State({
           state,
           factual,
@@ -395,6 +416,7 @@ export function fixture({
       npcSemanticInput = structuredClone(input);
       return npcSemanticModel(input);
     },
+    npcAutonomousModel,
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
     npcDecisionSelector: async (request) => {
@@ -470,6 +492,10 @@ async function unexpectedPlayerConversationModel() {
 
 async function unexpectedNpcSemanticModel() {
   throw new Error('Unexpected NPC semantic model call');
+}
+
+async function unexpectedNpcAutonomousModel() {
+  throw new Error('Unexpected autonomous NPC model call');
 }
 
 function replaceState(target, source) {

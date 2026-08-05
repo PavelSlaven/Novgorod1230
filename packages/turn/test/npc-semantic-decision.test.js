@@ -111,6 +111,176 @@ function plan(sourceRequest = request()) {
   };
 }
 
+function autonomousBoundary(overrides = {}) {
+  return boundary({
+    decision_mode: 'autonomous',
+    categories: ['objective'],
+    state_version: '2',
+    ...overrides
+  });
+}
+
+function autonomousRequest(overrides = {}) {
+  return {
+    schema: 'npc_action_decision_request_v1',
+    request_id: 'autonomous-request-1',
+    root_turn_id: 'turn-1',
+    boundary_id: 'npc-decision:batch-1:speaker',
+    committed_state_version: 2,
+    working_revision: 0,
+    decision_index: 1,
+    occurred_at: requestedAt,
+    npc_ref: 'speaker',
+    decision_reasons: {
+      significance: 'material',
+      categories: ['objective'],
+      signal_refs: [ref('npc_decision_signal', 'signal-1')],
+      perceived_changes: ['Ожидание завершилось без возвращения Ратши.']
+    },
+    historical_context: {
+      year: 1230,
+      season: 'late_summer',
+      region: 'Нижняя Двина',
+      applicable_norms: [],
+      known_local_customs: []
+    },
+    npc: {
+      profile_level: 'scene',
+      identity: { name_or_label: 'Жданко', age_range: 'adult', origin: null },
+      social_role: {
+        role_ref: 'storehouse_controller',
+        status: 'управляющий',
+        authority: [],
+        dependencies: []
+      },
+      attributes: [],
+      skills: [],
+      body_state: { summary: 'может действовать', conditions: [] },
+      mood: { state: 'тревожен', intensity: 'material' },
+      temperament: [],
+      values: [],
+      goals: [{ goal_ref: 'prepare_departure' }],
+      fears: [{ fear_ref: 'accountability' }],
+      obligations: [],
+      relationships: [],
+      current_activity: {
+        activity_ref: 'wait-ratsha',
+        summary: 'ожидает возвращения Ратши',
+        status: 'decision_required',
+        can_continue_automatically: false
+      },
+      available_resources: [{ item_ref: 'road-bag' }]
+    },
+    perception: {
+      visible_scene: [], perceived_changes: [], heard: [], felt: [],
+      present_actors: [], visible_objects: [], known_routes_and_exits: [],
+      uncertainties: []
+    },
+    knowledge: { known_facts: [], beliefs: [], hypotheses: [] },
+    memory: {
+      recent_events: [], relevant_long_term_events: [], previous_decisions: []
+    },
+    decision_scope: {
+      mode: 'autonomous_action',
+      allowed_attribute_refs: [],
+      allowed_skill_refs: [],
+      operation_contract: { request_activity: { activity_refs: ['move-bag'] } }
+    },
+    ...overrides
+  };
+}
+
+function autonomousPlan(sourceRequest = autonomousRequest()) {
+  return {
+    schema: 'npc_step_plan_v1',
+    request_id: sourceRequest.request_id,
+    root_turn_id: sourceRequest.root_turn_id,
+    boundary_id: sourceRequest.boundary_id,
+    committed_state_version: sourceRequest.committed_state_version,
+    working_revision: sourceRequest.working_revision,
+    decision_index: sourceRequest.decision_index,
+    npc_ref: sourceRequest.npc_ref,
+    interpretation: {
+      npc_goal: 'подготовиться к уходу',
+      grounded_attempt: 'начать перенос дорожной сумки',
+      adaptation: 'literal'
+    },
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{
+      op: 'request_activity',
+      actor_ref: sourceRequest.npc_ref,
+      activity_kind: 'work',
+      target_refs: ['road-bag'],
+      description: 'Начать перенос дорожной сумки.'
+    }],
+    check: null,
+    reason_code: 'prepare_departure',
+    reason: 'Ратша не вернулся к сроку.'
+  };
+}
+
+test('autonomous request uses one model call and returns signal consumption', async () => {
+  let calls = 0;
+  const sourceRequest = autonomousRequest();
+  const result = await requestNpcSemanticDecision({
+    boundary: autonomousBoundary(),
+    request: sourceRequest,
+    semanticModel: async () => {
+      calls += 1;
+      return autonomousPlan(sourceRequest);
+    },
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'planned');
+  assert.equal(calls, 1);
+  assert.deepEqual(result.signal_ids_to_consume, ['signal-1']);
+});
+
+test('persisted autonomous trace replays without model call', async () => {
+  const sourceRequest = autonomousRequest();
+  const sourcePlan = autonomousPlan(sourceRequest);
+  const persistedTrace = buildNpcSemanticDecisionTrace({
+    request: sourceRequest,
+    plan: sourcePlan,
+    applied_change_set_id: 'change-1'
+  });
+  let calls = 0;
+  const result = await requestNpcSemanticDecision({
+    boundary: autonomousBoundary(),
+    request: sourceRequest,
+    persistedTrace,
+    semanticModel: async () => {
+      calls += 1;
+      return sourcePlan;
+    },
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'replayed');
+  assert.equal(calls, 0);
+  assert.deepEqual(result.signal_ids_to_consume, []);
+});
+
+test('autonomous mode rejects stale state and combat remains unsupported', async () => {
+  const sourceRequest = autonomousRequest();
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: autonomousBoundary(),
+    request: sourceRequest,
+    semanticModel: async () => autonomousPlan(sourceRequest),
+    revalidateStateVersion: async () => 3
+  }), (error) => error?.code === 'TURN_NPC_STATE_STALE');
+
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: boundary({ decision_mode: 'combat' }),
+    request: sourceRequest,
+    semanticModel: async () => autonomousPlan(sourceRequest),
+    revalidateStateVersion: async () => 2
+  }), (error) => error?.code === 'TURN_NPC_MODE_UNSUPPORTED');
+});
+
 test('concurrent identical boundary input shares one NPC model call and conflicting input does not call it again', async () => {
   const decisionBoundary = boundary();
   const decisionRequest = request();

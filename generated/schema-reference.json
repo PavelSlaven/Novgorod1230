@@ -960,6 +960,12 @@
       "type": "sql"
     },
     {
+      "bytes": 444,
+      "path": "schemas/party-db/018_party_runtime_phase7_container_state.sql",
+      "sha256": "ed6e61b2a1a7d9d0f882ba4904f48ff61426d5e0037571f8af35ff449848053f",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

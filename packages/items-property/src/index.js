@@ -1,4 +1,5 @@
 import { deepFreeze } from '@rus/kernel';
+import { planApprovedItemZoneTransition } from './approved-item-zone-transition.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export { planApprovedActorItemTransition } from './approved-actor-item-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
@@ -30,7 +31,7 @@ export { calculatePackingSlots } from './packing-slots.js';
 const ACCESS = new Set(['immediate','quick','top_bag','deep_bag','contained','closed_container','not_carried','borrowed','held_for_others','restricted']);
 const PLACEMENT = new Set(['held','equipped','carried','contained','property','borrowed','held_for_others']);
 
-export function normalizeItem(item = {}) {
+function normalizeItem(item = {}) {
   return deepFreeze({
     id: text(item.id) || null,
     profile_id: text(item.profile_id ?? item.profileId) || null,
@@ -52,7 +53,7 @@ export function normalizeItem(item = {}) {
   });
 }
 
-export function validateItem(item = {}) {
+function validateItem(item = {}) {
   const errors = [];
   const normalized = normalizeItem(item);
   if (!normalized.id) errors.push('item.id is required');
@@ -135,6 +136,8 @@ export function validatePropertyRelation(relation = {}) {
   if (!text(relation.subject_id)) errors.push('property relation subject_id is required');
   return { ok: errors.length === 0, errors };
 }
+
+export { normalizeItem, planApprovedItemZoneTransition, validateItem };
 
 function normalizePlacement(value) {
   const key = text(value).toLowerCase();

@@ -1,0 +1,84 @@
+import { subtractGameTimestamp } from '@rus/time-events-history';
+
+export const PHASE7_REST_PROGRESS_EFFECT_REF = versioned(
+  'temporal_effect', 'lower-dvina-trace-fire-rest-progress', '1'
+);
+export const PHASE7_WAITING_TERMINAL_EFFECT_REF = versioned(
+  'temporal_effect', 'lower-dvina-trace-waiting-terminal', '1'
+);
+
+export function lowerDvinaTracePhase7TemporalEffectRegistrations() {
+  return [{
+    effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
+    resolve: resolveRestProgress
+  }, {
+    effect_ref: PHASE7_WAITING_TERMINAL_EFFECT_REF,
+    resolve: resolveWaitingTerminal
+  }];
+}
+
+function resolveRestProgress({ slice, context }) {
+  const elapsed = integerElapsed(slice.from_timestamp, slice.to_timestamp);
+  return {
+    proposals: [{
+      proposal_id: `${slice.slice_id}:phase7-rest-progress`,
+      write_target: `activity-progress:${slice.slice_id}`
+    }],
+    state_projection: {
+      ...context.projection,
+      cumulative_elapsed_minutes:
+        context.projection.cumulative_elapsed_minutes + elapsed
+    }
+  };
+}
+
+function resolveWaitingTerminal({ candidate, context, descriptor }) {
+  if (descriptor?.npc_ref !== 'zhdanko_storehouse_controller'
+      || descriptor?.transition_kind !== 'waiting_terminal_reached'
+      || context.projection.waiting_terminal_reached === true) {
+    fail('TRACE_PHASE_7_WAITING_TRANSITION_INVALID');
+  }
+  return {
+    disposition: 'execute',
+    proposals: [{
+      proposal_id: `waiting-terminal:${candidate.boundary_id}`,
+      write_target: `npc-activity:${descriptor.npc_ref}`
+    }],
+    state_projection: {
+      ...context.projection,
+      waiting_terminal_reached: true,
+      waiting_transition: {
+        schema: 'rus.npc_activity_factual_transition.v1',
+        transition_id: candidate.boundary_id,
+        npc_ref: descriptor.npc_ref,
+        activity_ref: descriptor.activity_ref,
+        from: 'waiting',
+        to: 'decision_required',
+        occurred_at: structuredClone(candidate.scheduled_at)
+      }
+    },
+    follow_up_candidates: [],
+    stop_after_current_batch: true
+  };
+}
+
+function integerElapsed(from, to) {
+  const exact = subtractGameTimestamp(to, from);
+  if (exact.denominator !== '1') fail('TRACE_PHASE_7_TEMPORAL_FRACTION_GAP');
+  const value = Number(exact.numerator);
+  if (!Number.isSafeInteger(value) || value < 0) {
+    fail('TRACE_PHASE_7_TEMPORAL_INTERVAL_INVALID');
+  }
+  return value;
+}
+
+function versioned(entityKind, entityId, authoringVersion) {
+  return {
+    entity_ref: { entity_kind: entityKind, entity_id: entityId },
+    authoring_version: authoringVersion
+  };
+}
+
+function fail(code) {
+  throw Object.assign(new Error(code), { code });
+}

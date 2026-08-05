@@ -4,7 +4,7 @@
 
 Этот документ подчинён `code_driven_world_materialization_architecture.md`. Источники и редакторский процесс утверждают категории, шаблоны, профили, правила и исторические факты. Runtime-код материализует конкретные G5/NPC и authored/significant/hidden items и рассчитывает обычные последствия. Active player planner предлагает только следующий строгий step, но не генерирует свободный runtime-state и не пишет в базы.
 
-Допустимые runtime-роли LLM: bounded decision по genuinely closed списку с `option_id` и `command_token`, активный player `turn_step_planner`, revision-14 player conversation interpreter и NPC conversation responder, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит профильные JSON Schema, state-version и code-owned admission gates; фактическое последствие всегда рассчитывает код.
+Допустимые runtime-роли LLM: bounded decision по genuinely closed списку с `option_id` и `command_token`, активный player `turn_step_planner`, player conversation interpreter, NPC conversation responder, revision-15 NPC autonomous decider, генерация персонажа игрока, аудит и проза только из visible context. Любой структурированный ответ проходит профильные JSON Schema, state-version и code-owned admission gates; фактическое последствие всегда рассчитывает код. Player turn-step, NPC conversation и NPC autonomous decision активны; NPC combat decision остаётся `proposed`.
 
 `turn_step_planner` получает только `turn_step_request_v1`: root player action, remaining intent, committed state version, working revision, ordered summaries уже выполненных шагов, actor и текущую player-safe working projection. Он возвращает только `turn_step_plan_v1` для следующего шага. Provider не получает hidden state, SQL, write plan, container contents или объективные сведения вне восприятия персонажа.
 
@@ -20,6 +20,15 @@ knowledge без response boundary. Social check сообщает лишь deliv
 не имеет собственной trigger subsystem и использует общие пять категорий
 `self`, `others`, `environment`, `objective`, `communication` с уровнями
 `material` и `critical`.
+
+Autonomous decider получает один `npc_action_decision_request_v1` только с
+субъективным состоянием самого NPC и возвращает один `npc_step_plan_v1`.
+Он не получает hidden state других actor, не назначает factual outcome, RNG,
+exact elapsed, body delta или write plan. Один structural repair исправляет
+только schema, enum и refs. Код повторно проверяет state version и исполняет
+одно ближайшее намерение через зарегистрированных movement, activity, items и
+temporal owners. Persisted semantic trace при retry/restart исключает повторный
+model call и повторное применение последствия. Combat этим path не активирован.
 
 Для Temporal World v4 security projection является code-owned. Factual
 visible package создаётся и сохраняется в atomic commit до narration;

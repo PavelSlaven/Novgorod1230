@@ -1044,7 +1044,7 @@
       "source_location": {
         "file": "information_sources_llm_prompts.md",
         "line_start": 1,
-        "line_end": 1082
+        "line_end": 1091
       }
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1089
+        "line_end": 1097
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 310
+        "line_end": 313
       }
     },
     {
@@ -1129,6 +1129,18 @@
         "file": "new_game_start_pipeline.txt",
         "line_start": 1,
         "line_end": 92
+      }
+    },
+    {
+      "id": "canonical-document:npc-autonomous-decision-contract",
+      "type": "canonical_document",
+      "label": "npc_autonomous_decision_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/npc_autonomous_decision_contract.md",
+      "source_location": {
+        "file": "npc_autonomous_decision_contract.md",
+        "line_start": 1,
+        "line_end": 2342
       }
     },
     {
@@ -1212,7 +1224,7 @@
       "source_location": {
         "file": "temporal_world_and_interruptible_activities.md",
         "line_start": 1,
-        "line_end": 3008
+        "line_end": 3010
       }
     },
     {

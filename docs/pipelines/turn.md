@@ -10,6 +10,8 @@ dual writes, runtime fallback and a second player planner are forbidden.
 Revision 14 / `spatial-v3-production-v4` additionally activates the Phase 3–4
 conversation contribution path and removes their bounded NPC selector from
 production; historical revisions remain available only by explicit pin.
+`spatial-v3-production-v5` additionally activates the Phase 7 autonomous NPC
+path through the same common signal/boundary protocol.
 
 ## Этапы
 
@@ -62,8 +64,11 @@ Revision-14 conversation использует общий `npc_decision_signal_v1
 conversation trigger subsystem нет. Listener/witness может получить
 perception/received knowledge без обязательного ответа; private knowledge
 между NPC не переносится. Social check меняет только delivery/credibility, а
-не решение NPC. Full autonomous NPC и combat resolution остаются `proposed`;
-conversation допускает только combat handoff.
+не решение NPC. Autonomous NPC action active: Phase 7 «Отдых у огня» advances
+30 minutes, produces Жданко's boundary at +25 minutes and resolves one
+approved schedule action for 5 minutes through code-owned temporal, persistence
+and visibility owners. Combat resolution остаётся `proposed`; conversation
+допускает только combat handoff.
 
 ## Temporal World v4 active sequence
 

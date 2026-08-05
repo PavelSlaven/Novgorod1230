@@ -243,7 +243,8 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
         && consequence.phase3_kind == null
         && consequence.phase4_kind == null
         && consequence.phase5_kind == null
-        && consequence.phase6_kind == null;
+        && consequence.phase6_kind == null
+        && consequence.phase7_kind == null;
       if (!synthetic) return fallback.project(input);
       const directSeeds = Object.entries(consequence.visible_seed)
         .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));

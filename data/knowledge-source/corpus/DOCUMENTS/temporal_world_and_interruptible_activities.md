@@ -982,9 +982,11 @@ operation contract. Чужие private knowledge, hidden truth и prompts не
 
 Listener/witness может воспринять statement и получить received knowledge без
 response boundary. Social check изменяет только наблюдаемое качество подачи и
-credibility; решение responder остаётся отдельным semantic result. Combat в
-revision 14 только получает typed handoff и здесь не разрешается. Full
-autonomous action outside conversation и combat resolution остаются proposed.
+credibility; решение responder остаётся отдельным semantic result. Production
+v5 активирует autonomous mode для Phase 7: «Отдых у огня» длится 30 минут, на
++25 создаётся boundary Жданко и один approved schedule action занимает 5
+минут; temporal, persistence и visible projection остаются code-owned. Combat
+в revision 14 только получает typed handoff и остаётся proposed.
 
 ### 15.5. Historical bounded NPC decision (explicit revision pin only)
 

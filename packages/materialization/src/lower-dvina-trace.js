@@ -18,13 +18,15 @@ import {
   LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
   LOWER_DVINA_TRACE_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_M2_DEFINITION_REVISION,
+  LOWER_DVINA_TRACE_M3_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_SCENARIO_ID,
   lowerDvinaTraceRequestIdentity
 } from './lower-dvina-trace-contract.js';
 import { assertLowerDvinaTraceSelectionClosure } from './lower-dvina-trace-selection-closure.js';
 import {
   materializeLowerDvinaTracePreparedCamp,
-  materializeLowerDvinaTracePreparedDryingShed
+  materializeLowerDvinaTracePreparedDryingShed,
+  materializeLowerDvinaTracePreparedStorehouse
 } from './lower-dvina-trace-phase-3.js';
 import {
   buildLowerDvinaTraceSealedSelections
@@ -36,6 +38,7 @@ export {
   LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
   LOWER_DVINA_TRACE_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_M2_DEFINITION_REVISION,
+  LOWER_DVINA_TRACE_M3_DEFINITION_REVISION,
   LOWER_DVINA_TRACE_SCENARIO_ID
 };
 
@@ -171,7 +174,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const playerId = deterministicInstanceId(input.party_id, runId, 'player_character', 'player_clerk', 0);
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
-  const phase3Prepared = [8, 9, 10, 11, 12, 13, 14].includes(input.scenario_definition_revision)
+  const phase3Prepared = [8, 9, 10, 11, 12, 13, 14, 15].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -180,8 +183,13 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10, 11, 12, 13, 14].includes(input.scenario_definition_revision)
+  const phase4Prepared = [10, 11, 12, 13, 14, 15].includes(input.scenario_definition_revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
+    : null;
+  const phase7Prepared = input.scenario_definition_revision === 15
+    ? materializeLowerDvinaTracePreparedStorehouse({
+      input, bundle, runId, participantSelections, locationSelections
+    })
     : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
@@ -339,13 +347,21 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         inventory_profile_snapshot: structuredClone(ratshaKnifeProfile)
       }
     }] : []), ...(phase5Bandage ? [phase5Bandage] : [])],
-    containers: [],
+    containers: phase7Prepared ? [phase7Prepared.container] : [],
     timestamp,
     environment_snapshot: structuredClone(environment),
     ...(phase3Prepared
       ? {
-        prepared_scenes: [phase3Prepared.scene, ...(phase4Prepared ? [phase4Prepared.scene] : [])],
-        npcs: [...phase3Prepared.npcs, ...(phase4Prepared ? phase4Prepared.npcs : [])]
+        prepared_scenes: [
+          phase3Prepared.scene,
+          ...(phase4Prepared ? [phase4Prepared.scene] : []),
+          ...(phase7Prepared ? [phase7Prepared.scene] : [])
+        ],
+        npcs: [
+          ...phase3Prepared.npcs,
+          ...(phase4Prepared ? phase4Prepared.npcs : []),
+          ...(phase7Prepared ? [phase7Prepared.npc] : [])
+        ]
       }
       : {}),
     ...(phase4Promise ? { promise_instances: [phase4Promise] } : {})

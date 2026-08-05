@@ -5,7 +5,7 @@
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\
 **Дата активации:** 2026-08-03\
 **Production basis:** Lower Dvina Trace scenario revision 13, `turn_step_plan_v1`\
-**Граница активации:** только свободная заявка персонажа игрока; autonomous NPC, conversation и combat semantic contracts остаются `proposed`
+**Граница активации:** свободная заявка персонажа игрока; conversation и autonomous NPC имеют отдельные active contracts, combat semantic contract остаётся `proposed`
 
 ## 1. Назначение
 
@@ -122,7 +122,7 @@ LLM получает:
 
 `turn_step_plan_v1` не содержит NPC trigger types, signal significance или NPC decision boundaries и не выбирает ответ либо действие NPC. Операция `emit_interaction` только передаёт фактическую попытку текущему зарегистрированному domain owner.
 
-Общий semantic signal/boundary protocol для NPC не активирован revision 13 и не является частью этого player contract. Conversation-профиль протокола активен только для Lower Dvina Trace revision 14 по `npc_conversation_mode_contract.md`; autonomous и combat профили остаются proposed по `npc_autonomous_decision_contract.md` и `npc_combat_and_trigger_contract.md`. Ни один профиль нельзя добавлять как частичный либо fallback path внутри другой decision boundary.
+Общий semantic signal/boundary protocol для NPC не активирован revision 13 и не является частью этого player contract. Conversation-профиль активен для Lower Dvina Trace revision 14, а autonomous-профиль — для Phase 7 / `spatial-v3-production-v5` по `npc_autonomous_decision_contract.md`; combat остаётся proposed по `npc_combat_and_trigger_contract.md`. Ни один профиль нельзя добавлять как частичный либо fallback path внутри другой decision boundary.
 
 ## 4. Что ожидается от LLM
 

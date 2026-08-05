@@ -666,7 +666,7 @@ restart продолжает тот же carry; final placement меняется
 
 Игрок выполняет отдельное действие **отдых у огня — 30 минут**. Одежда
 подсушивается, бодрость восстанавливается по approved body effect, а Жданко за
-тот же temporal interval выполняет своё bounded самостоятельное действие.
+тот же temporal interval выполняет одно semantic autonomous действие.
 
 ### Владельцы
 
@@ -679,14 +679,19 @@ perception/reaction cycle и `@rus/turn`.
 profiles Жданко; эта фаза подключает activity/body/NPC handlers. Fire-rest
 record задаёт duration 30 minutes, условия огня и drying/body effects.
 Сохраняются activity, exact elapsed interval, body/clothing state, Жданко
-schedule transition/decision trace и воспринимаемые последствия.
+schedule transition/semantic decision trace и воспринимаемые последствия. На
+25-й минуте создаётся common autonomous decision boundary; выбранное approved
+schedule action занимает оставшиеся 5 минут. Время, persistence и visible
+projection остаются code-owned.
 
 ### Тесты
 
 - elapsed ровно 30 минут;
 - одежда переходит только в approved более сухое состояние;
 - бодрость восстанавливается один раз;
-- Жданко действует на том же factual advance;
+- boundary Жданко возникает ровно на 25-й минуте, а schedule action занимает
+  ровно 5 минут;
+- Жданко действует на том же factual advance через semantic autonomous plan;
 - NPC action воспроизводимо, ограничено знаниями и не раскрывает hidden truth;
 - restart/replay не повторяют effects/decision.
 

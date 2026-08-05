@@ -1,0 +1,17 @@
+{
+  "schema": "rus.trace_movement_bindings.v1",
+  "set_id": "trace_ld_v1_movement_bindings",
+  "revision": 3,
+  "publication_status": "unpublished",
+  "owner": "@rus/movement-routes",
+  "clock_owner": "@rus/time-events-history",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "supersedes_ref": {"id": "trace_ld_v1_movement_bindings", "revision": 2, "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content/movement-bindings.json", "digest": "ca7969ba4491f770995b4365d21ebe903c9b06056520081e129a2a7f069eaa3f"},
+  "route_bindings_resolution": "reuse_exact_superseded_route_bindings_or_fail_closed",
+  "local_transition_bindings": [{"transition_id": "trace_ld_v1_local_transition_storehouse_to_river_access", "schema": "rus.trace_local_zone_transition.v1", "version": 1, "location_ref": "trace_ld_v1_loc_zhdanko_storehouse", "source_g4_ref": {"id": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_locality", "version": 1, "canonical_digest": "4d97b4672c7bee146559f0e31a0ffdb80dd2d7507630a806a09af083ef421174"}, "source_zone_candidates": ["storehouse_interior", "yard"], "destination_zone_ref": "river_access", "admitted_subject_classes": ["actor", "container", "transport"], "time_profile_ref": "trace_ld_v1_time_5m", "duration_minutes": 5, "elapsed_accounting": {"parent_execution_roles": {"trace_ld_v1_schedule_execution_move_bag": {"role": "root_interval", "clock_owner_mode": "direct_party_clock", "clock_write": "single", "clock_write_target": "elapsed_game_time"}, "trace_ld_v1_schedule_execution_prepare_boat": {"role": "included_child_interval", "clock_owner_mode": "shared_root_transport_clock", "clock_write": "forbidden", "duration_accounting": "included_in_parent_root_total_never_additive"}}}, "capacity_contract_ref": "trace_ld_v1_capacity_zhdanko_storehouse", "interruption_boundaries": ["local_zone_transition_interval", "earliest_temporal_boundary"], "terminal_outcome": "same_materialized_location_new_zone", "forbidden_effects": ["new_location", "new_g5", "teleport", "external_destination_invention"]}],
+  "selected_routes": [],
+  "materialized_traversals": [],
+  "excludes": ["runtime_handler", "persistence", "party_instance", "api", "ui", "teleport"]
+}

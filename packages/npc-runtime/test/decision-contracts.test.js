@@ -14,7 +14,10 @@ import {
   validatePlayerConversationInput,
   validateSocialDeliveryResult
 } from '../src/conversation-contracts.js';
-import { validateNpcActionDecisionRequest } from '../src/semantic-decision-contracts.js';
+import {
+  validateNpcActionDecisionRequest,
+  validateNpcStepPlan
+} from '../src/semantic-decision-contracts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const at = (whole_minutes = '10') => ({
@@ -591,4 +594,83 @@ test('autonomous decision reasons require canonical common categories and signal
   const signalsOutOfOrder = copy(request);
   signalsOutOfOrder.decision_reasons.signal_refs.reverse();
   assert.equal(validateNpcActionDecisionRequest(signalsOutOfOrder), false);
+});
+
+function npcActionPlan(request = npcActionRequest(), overrides = {}) {
+  return {
+    schema: 'npc_step_plan_v1',
+    request_id: request.request_id,
+    root_turn_id: request.root_turn_id,
+    boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index,
+    npc_ref: request.npc_ref,
+    interpretation: {
+      npc_goal: 'сохранить контроль над дорожной сумкой',
+      grounded_attempt: 'перенести сумку к речному выходу',
+      adaptation: 'literal'
+    },
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{
+      op: 'request_activity',
+      actor_ref: request.npc_ref,
+      activity_kind: 'work',
+      target_refs: ['road-bag'],
+      description: 'Перенести дорожную сумку к речному выходу.'
+    }],
+    check: null,
+    reason_code: 'protect_controlled_property',
+    reason: 'Ожидание завершилось, сумку следует подготовить к уходу.',
+    ...overrides
+  };
+}
+
+test('autonomous plan accepts one grounded direct or domain intention only', () => {
+  const request = npcActionRequest();
+  request.npc.available_resources = [{ item_ref: 'road-bag' }];
+  request.decision_scope.operation_contract = {
+    request_activity: { activity_refs: ['move-bag'] },
+    move_entity: { entity_refs: ['road-bag'] }
+  };
+
+  assert.equal(validateNpcStepPlan(npcActionPlan(request), request), true);
+
+  const direct = npcActionPlan(request, {
+    resolution: 'direct',
+    goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{
+      op: 'move_entity',
+      entity_ref: 'road-bag',
+      placement: { relation: 'held_by', target_ref: request.npc_ref }
+    }]
+  });
+  assert.equal(validateNpcStepPlan(direct, request), true);
+
+  const twoDomainRequests = copy(npcActionPlan(request));
+  twoDomainRequests.operations.push(copy(twoDomainRequests.operations[0]));
+  assert.equal(validateNpcStepPlan(twoDomainRequests, request), false);
+});
+
+test('autonomous plan rejects foreign actors, hidden refs and factual outcomes', () => {
+  const request = npcActionRequest();
+  request.npc.available_resources = [{ item_ref: 'road-bag' }];
+  request.decision_scope.operation_contract = {
+    request_activity: { activity_refs: ['move-bag'] }
+  };
+
+  const foreignActor = npcActionPlan(request);
+  foreignActor.operations[0].actor_ref = 'other-npc';
+  assert.equal(validateNpcStepPlan(foreignActor, request), false);
+
+  const hiddenRef = npcActionPlan(request);
+  hiddenRef.operations[0].target_refs = ['hidden-packet'];
+  assert.equal(validateNpcStepPlan(hiddenRef, request), false);
+
+  const factualOutcome = npcActionPlan(request);
+  factualOutcome.operations[0].result = 'bag_moved_successfully';
+  assert.equal(validateNpcStepPlan(factualOutcome, request), false);
 });

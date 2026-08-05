@@ -23,6 +23,8 @@ import { resolveTracePhase5Contracts } from
   './lower-dvina-trace-phase-5-contracts.js';
 import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
+import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
+import { createTracePhase7FireRestCommand } from './lower-dvina-trace-phase-7-command.js';
 import {
   committedTraceScenarioDefinitionRevision
 } from './lower-dvina-trace-committed-revision.js';
@@ -51,6 +53,7 @@ export function createLowerDvinaTracePhase2Runtime({
   turnStepModel = null,
   playerConversationModel = null,
   npcSemanticModel = null,
+  npcAutonomousModel = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
   randomSourceFactory,
@@ -125,7 +128,8 @@ export function createLowerDvinaTracePhase2Runtime({
       validateConversationDependencies({
         scenarioDefinitionRevision,
         playerConversationModel,
-        npcSemanticModel
+        npcSemanticModel,
+        npcAutonomousModel
       });
       const bundle = await bundleLoader({ scenarioDefinitionRevision });
       const contracts = resolveTracePhase2Contracts({
@@ -133,23 +137,26 @@ export function createLowerDvinaTracePhase2Runtime({
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9, 10, 11, 12, 13, 14].includes(
+      const phase3Contracts = [9, 10, 11, 12, 13, 14, 15].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10, 11, 12, 13, 14].includes(
+      const phase4Contracts = [10, 11, 12, 13, 14, 15].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11, 12, 13, 14].includes(
+      const phase5Contracts = [11, 12, 13, 14, 15].includes(
         bundle.definition_revision
       )
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12, 13, 14].includes(bundle.definition_revision)
+      const phase6Contracts = [12, 13, 14, 15].includes(bundle.definition_revision)
         ? resolveTracePhase6Contracts({ bundle })
+        : null;
+      const phase7Contracts = bundle.definition_revision === 15
+        ? resolveTracePhase7Contracts({ state, bundle })
         : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
@@ -165,11 +172,8 @@ export function createLowerDvinaTracePhase2Runtime({
           playerConversationModel,
           npcSemanticModel,
           temporalAdvanceOwner,
-          revalidateStateVersion: createStateVersionRevalidator({
-            repository,
-            partyId,
-            idempotencyKey
-          })
+          revalidateStateVersion: createStateVersionRevalidator({ repository,
+            partyId, idempotencyKey })
         }) : []),
         ...(phase4Contracts ? createTracePhase4Commands({
           contracts: phase4Contracts,
@@ -198,6 +202,17 @@ export function createLowerDvinaTracePhase2Runtime({
         ...(phase6Contracts ? [createTracePhase6CarryCommand({
           contracts: phase6Contracts, inputDigest,
           temporalAdvanceOwner
+        })] : []),
+        ...(phase7Contracts ? [createTracePhase7FireRestCommand({
+          contracts: phase7Contracts,
+          inputDigest,
+          npcAutonomousModel,
+          temporalAdvanceOwner,
+          revalidateStateVersion: createStateVersionRevalidator({
+            repository,
+            partyId,
+            idempotencyKey
+          })
         })] : [])
       ];
       const registry = createTurnCommandRegistry(
@@ -249,10 +264,12 @@ export function createLowerDvinaTracePhase2Runtime({
         phase4Contracts,
         phase5Contracts,
         phase6Contracts,
+        phase7Contracts,
         registry,
         repository,
         semanticResolver,
         turnStepModel,
+        npcAutonomousModel,
         playerSafeStateProjector,
         turnStepBodyEventOwner:
           turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner,

@@ -25,7 +25,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; current revision-14 production consumer использует conversation mode.
+- Semantic decision builders/validators — `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
 - `proposeNpcReactionOptions({ context_snapshot, policy_snapshot, persisted_proposal? })` — чисто фильтрует approved rules, возвращает формальный конечный request и проверяет replay по полной causal identity.
 - `buildNpcReactionPolicySnapshotFromAuthoringRow(row)` — чисто проецирует одну exact approved authoring-запись в закрытый policy/command snapshot и fail-closed проверяет handler/consequence bindings.
 - `decideBoundedNpcAction(...)` — валидирует один `option_id` и `command_token` из конечного option set и возвращает decision trace.
@@ -70,8 +70,10 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 ## Activation и тесты
 
-В active `spatial-v3-production-v4` revision-14 conversation contract применяется только через единый
-v3 orchestration/write path. Production v2 является explicit
+В active `spatial-v3-production-v5` revision-14 conversation и Phase-7 autonomous
+contracts применяются через единый orchestration/write path. Phase 7 фиксирует
+fire rest на 30 минут, boundary Жданко на +25 и 5-minute schedule action;
+temporal/persistence/visibility остаются code-owned. Production v4 является explicit
 migration/rollback source, но не runtime path; partial activation, dual write
 и in-turn fallback запрещены. Tests:
 Tests покрывают exact schedule/perception, five-category signals, one

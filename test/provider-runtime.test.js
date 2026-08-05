@@ -129,6 +129,34 @@ test('conversation roles expose semantic planning and one JSON repair contract',
   }
 });
 
+test('autonomous NPC roles expose one semantic plan and one format repair', () => {
+  assert.equal(
+    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
+    'npc_autonomous_decider'
+  );
+  assert.equal(
+    TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR,
+    'npc_autonomous_decider_format_repair'
+  );
+  const env = { DEEPSEEK_API_KEY: 'test-key' };
+  const semantic = resolvePackageLlmExecutionConfig({
+    scope: 'turn_runtime',
+    roleId: TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER,
+    env
+  });
+  const repair = resolvePackageLlmExecutionConfig({
+    scope: 'turn_runtime',
+    roleId: TurnRuntimeRoles.NPC_AUTONOMOUS_DECIDER_REPAIR,
+    env
+  });
+  assert.equal(semantic.config.expectedSchema, 'npc_step_plan_v1');
+  assert.equal(semantic.config.outputContractMode, 'json_object_with_schema');
+  assert.equal(repair.config.expectedSchema, 'npc_step_plan_v1');
+  assert.equal(repair.config.outputContractMode, 'json_repair');
+  assert.equal(repair.config.temperature, 0);
+  assert.equal(repair.config.topP, 1);
+});
+
 test('resolveLlmExecutionConfig applies shared scope role defaults and safe overrides in order', () => {
   const result = resolveLlmExecutionConfig({
     scope: LLM_SCOPES.TURN_RUNTIME,

@@ -36,6 +36,11 @@ export const M2_REQUIRED_ARTIFACTS = Object.freeze([
   'conversation_semantic_bindings'
 ]);
 
+export const M3_REQUIRED_ARTIFACTS = Object.freeze([
+  ...M2_REQUIRED_ARTIFACTS,
+  'autonomous_semantic_bindings'
+]);
+
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
   materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 3],
@@ -150,6 +155,27 @@ export const M2_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   definition: ['rus.trace_scenario_definition.v1', 14],
   conversation_semantic_bindings: [
     'rus.lower_dvina_trace_conversation_semantic_bindings.v1',
+    1
+  ]
+});
+
+export const M3_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M2_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 11],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    11
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 15],
+  activity_check_consequence_profiles: [
+    'rus.trace_activity_check_consequence_profiles.v1',
+    3
+  ],
+  body_environment_profiles: ['rus.trace_body_environment_profiles.v2', 5],
+  movement_bindings: ['rus.trace_movement_bindings.v1', 3],
+  turn_step_bindings: ['rus.lower_dvina_trace_turn_step_bindings.v1', 2],
+  autonomous_semantic_bindings: [
+    'rus.lower_dvina_trace_autonomous_semantic_bindings.v1',
     1
   ]
 });

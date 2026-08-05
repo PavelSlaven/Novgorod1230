@@ -233,8 +233,8 @@
       "document_id": "npc-conversation-mode-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "file_name": "npc_conversation_mode_contract.md",
-      "sha256": "69165bea7ddd7a4dd2e01ce17ac17c2646a4d96aa4b247c532fa4104edf16819",
-      "bytes": 118575,
+        "sha256": "7ddb18e8d2c3871b5ad5b00806ab45720c79839907b65999bf2e19f49b6753e9",
+        "bytes": 118896,
       "status": "active",
       "provenance_mode": "native"
     },

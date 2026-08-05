@@ -14,7 +14,6 @@ import {
   requireRecord,
   requireSignalLineage,
   text,
-  uniqueRefs,
   validateAudiences,
   validateContributions,
   validateConsumedSignalIds,
@@ -33,6 +32,8 @@ import { projectPendingNpcConversationExecution } from
   './lower-dvina-trace-pending-npc-state.js';
 import { assertSemanticExchangeShape } from
   './lower-dvina-trace-semantic-exchange-shape.js';
+import { projectActiveConversationParticipantRefs } from
+  './lower-dvina-trace-conversation-participants-state.js';
 
 export { assertSharedSemanticSnapshotSafe,
   projectSharedSemanticConsequence,
@@ -139,7 +140,7 @@ export function projectSemanticConversationSnapshot({
     fail('TRACE_M2_SEMANTIC_SIGNAL_LINEAGE_INVALID');
   }
   const session = conversationSession({ state, exchange, statements,
-    contributions, request: exchangeIdentity });
+    audiences, contributions, terminalOutcomes, request: exchangeIdentity });
   const next = structuredClone(state);
   next.conversation_sessions = mergeMutableById(
     next.conversation_sessions,
@@ -232,20 +233,16 @@ export function appendPendingNpcDecisionSignalRecords({ state, records }) {
   return next;
 }
 
-function conversationSession({ state, exchange, statements, contributions,
-  request }) {
+function conversationSession({ state, exchange, statements, audiences,
+  contributions, terminalOutcomes, request }) {
   const existing = (state.conversation_sessions ?? []).find(
     ({ conversation_id: id }) => id === request.conversation_id
   );
   const firstContribution = contributions[0];
   const last = contributions.at(-1);
-  const activeParticipantRefs = uniqueRefs([
-    ...(existing?.active_participant_refs ?? []),
-    ...contributions.map(({ speaker_ref: speakerRef }) => speakerRef),
-    ...statements.flatMap(
-      ({ intended_addressee_refs: intendedRefs }) => intendedRefs
-    )
-  ]);
+  const activeParticipantRefs = projectActiveConversationParticipantRefs({
+    existing, contributions, audiences, terminalOutcomes
+  });
   const lastContributionRef = last?.schema
     === 'conversation_statement_event_v1'
     ? ref('conversation_statement', last.statement_id)

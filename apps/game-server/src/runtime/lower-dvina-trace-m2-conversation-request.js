@@ -34,6 +34,7 @@ export function buildPlayerRequest(context) {
       ),
       present_listener_refs: presentListenerRefs,
       committed_knowledge_refs: committedPlayerKnowledgeRefs(context.state),
+      allowed_duration_classes: ['domain_owned'],
       allowed_references: allowedPlayerContributionReferences(context),
       available_check: {
         attribute_ref: context.contracts.check.attribute,

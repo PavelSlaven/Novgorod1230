@@ -123,6 +123,7 @@ export function buildNpcDecision(context, working, boundary,
         ? [] : [socialCheckProfile.skill_ref],
       allowed_check_profile_refs: socialCheckProfile === null
         ? [] : [socialCheckProfile.profile_id],
+      allowed_duration_classes: ['domain_owned'],
       operation_contract: context.npcOperationContract
     }
   });

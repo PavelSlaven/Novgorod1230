@@ -35,22 +35,29 @@ import {
   withAccessibleBlueWool
 } from './lower-dvina-trace-m2-conversation-fixture.js';
 
-test('revision 14 repairs non-domain player and NPC duration classes', async () => {
-  const playerState = phase3State();
-  const repairedPlayer = await runPhase3({ state: playerState,
-    contracts: resolveContracts(playerState), rawText: 'Что ты видел?',
-    inputDigest: digest('c'), responseKind: 'speech',
-    playerDurationClasses: ['moment', 'domain_owned'] });
-  assert.equal(repairedPlayer.playerCalls, 2);
-  assert.equal(repairedPlayer.result.exact_elapsed_minutes, 5);
+test('revision 14 declares its one allowed duration class to both models',
+  async () => {
+    const state = phase3State();
+    let playerRequest;
+    const exchange = await runPhase3({ state,
+      contracts: resolveContracts(state), rawText: 'Что ты видел?',
+      inputDigest: digest('c'), responseKind: 'speech',
+      transformPlayerPlan(plan, { request }) {
+        playerRequest = request;
+        return plan;
+      } });
 
-  const npcState = phase3State();
-  const repairedNpc = await runPhase3({ state: npcState,
-    contracts: resolveContracts(npcState), rawText: 'Что ты видел?',
-    inputDigest: digest('d'), responseKind: 'speech',
-    npcDurationClasses: ['short', 'domain_owned'] });
-  assert.equal(repairedNpc.npcCalls, 2);
-  assert.equal(repairedNpc.result.exact_elapsed_minutes, 5);
+    assert.equal(exchange.playerCalls, 1);
+    assert.equal(exchange.npcCalls, 1);
+    assert.deepEqual(
+      playerRequest.player_safe_context.allowed_duration_classes,
+      ['domain_owned']
+    );
+    assert.deepEqual(
+      exchange.npcRequest.decision_scope.allowed_duration_classes,
+      ['domain_owned']
+    );
+    assert.equal(exchange.result.exact_elapsed_minutes, 5);
 });
 
 test('background source batch continues into the NPC response boundary', async () => {

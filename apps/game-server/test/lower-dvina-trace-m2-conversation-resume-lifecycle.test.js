@@ -393,7 +393,7 @@ test('resumed recurrent NPC chain stops at the exchange contribution limit',
     });
   });
 
-test('terminal resumed responder does not invoke the remaining NPC queue',
+test('leaving resumed responder continues the remaining NPC queue',
   async () => {
     const state = phase3State();
     const contracts = resolveContracts(state);
@@ -423,11 +423,25 @@ test('terminal resumed responder does not invoke the remaining NPC queue',
       contracts: resolveContracts(restarted), rawText: 'Продолжить.',
       inputDigest: digest('7'), responseKind: 'speech' });
     assert.equal(resumed.playerCalls, 0);
-    assert.equal(resumed.npcCalls, 0);
-    assert.equal(resumed.result.exchange.npc_decisions.length, 0);
-    assert.equal(resumed.result.exchange.session_status, 'ended');
+    assert.equal(resumed.npcCalls, 1);
+    assert.equal(resumed.result.exchange.npc_decisions.length, 1);
+    assert.equal(resumed.result.exchange.session_status, 'active');
     assert.equal(resumed.result.response_kind, 'leave_conversation');
-    assert.equal(resumed.result.exact_elapsed_minutes, 1);
+    assert.equal(resumed.result.exact_elapsed_minutes, 2);
+    const completed = projectSemantic(
+      resumed, restarted, '777777777777'
+    );
+    const session = completed.conversation_sessions.at(-1);
+    assert.equal(session.active_participant_refs.some(
+      ({ entity_id: entityId }) => entityId === eremeyRef.entity_id), false);
+    assert.equal(session.active_participant_refs.some(
+      ({ entity_id: entityId }) => entityId === responderRef.entity_id), true);
+    const resumedWrites = writeSemantic(
+      restarted, completed, resumed.result, '777777777777'
+    );
+    assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(combineWrites(firstWrites, resumedWrites)), completed
+    )).length, 2);
   });
 
 function resolveContracts(state) {

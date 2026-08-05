@@ -193,6 +193,7 @@ test('player conversation supporting operations are closed by the request operat
     raw_text: 'Показываю на лодку.',
     received_at: 'system-time-1',
     player_safe_context: {
+      allowed_duration_classes: ['brief'],
       allowed_references: {
         actor_refs: [
           ref('npc', 'listener'),
@@ -215,6 +216,10 @@ test('player conversation supporting operations are closed by the request operat
 
   assert.equal(validatePlayerConversationInput(request), true);
   assert.equal(validatePlayerConversationContributionPlan(plan, request), true);
+  const disallowedDuration = copy(plan);
+  disallowedDuration.activity.duration_class = 'short';
+  assert.equal(validatePlayerConversationContributionPlan(
+    disallowedDuration, request), false);
   assert.equal(validatePlayerConversationContributionPlan(plan, {
     ...request,
     operation_contract: {}
@@ -231,6 +236,7 @@ test('player contribution refs are closed to player-safe allowlists', () => {
     raw_text: 'Еремей, ответь.',
     received_at: 'system-time-1',
     player_safe_context: {
+      allowed_duration_classes: ['brief'],
       allowed_references: {
         actor_refs: [
           ref('npc', 'listener'),
@@ -323,6 +329,7 @@ function npcConversationRequest() {
       allowed_attribute_refs: ['influence'],
       allowed_skill_refs: ['communication'],
       allowed_check_profile_refs: ['risky'],
+      allowed_duration_classes: ['brief'],
       operation_contract: { emit_interaction: {} }
     }
   };
@@ -388,6 +395,11 @@ test('NPC conversation reasons, supporting operations and check refs are closed 
   const plan = npcConversationPlan(request);
   assert.equal(validateNpcConversationResponseRequest(request), true);
   assert.equal(validateConversationContributionPlan(plan, request), true);
+
+  const disallowedDuration = copy(plan);
+  disallowedDuration.activity.duration_class = 'short';
+  assert.equal(validateConversationContributionPlan(
+    disallowedDuration, request), false);
 
   const nonCanonicalReasons = copy(request);
   nonCanonicalReasons.decision_reasons.signal_refs.reverse();

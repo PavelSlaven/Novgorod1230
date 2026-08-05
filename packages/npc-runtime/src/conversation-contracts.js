@@ -61,6 +61,7 @@ function validateDecisionScope(value) {
     'allowed_attribute_refs',
     'allowed_skill_refs',
     'allowed_check_profile_refs',
+    'allowed_duration_classes',
     'operation_contract'
   ])
     && value.conversation_mode === true
@@ -69,6 +70,12 @@ function validateDecisionScope(value) {
     && uniqueStableIds(value.allowed_attribute_refs)
     && uniqueStableIds(value.allowed_skill_refs)
     && uniqueStableIds(value.allowed_check_profile_refs)
+    && Array.isArray(value.allowed_duration_classes)
+    && value.allowed_duration_classes.length > 0
+    && value.allowed_duration_classes.every((durationClass) =>
+      ['moment', 'brief', 'short', 'domain_owned'].includes(durationClass))
+    && new Set(value.allowed_duration_classes).size
+      === value.allowed_duration_classes.length
     && plainRecord(value.operation_contract)
     && jsonSafe(value.operation_contract);
 }

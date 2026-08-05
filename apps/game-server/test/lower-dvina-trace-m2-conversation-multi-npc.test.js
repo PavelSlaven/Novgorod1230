@@ -61,7 +61,7 @@ test('late Eremey route disclosure is the applied target outcome', async () => {
     contracts.disclosureMapping.route_knowledge_disclosure.route_ref), true);
 });
 
-test('terminal first responder does not spend the remaining NPC slot',
+test('leaving first responder does not end the remaining NPC conversation',
   async () => {
     const state = phase3State();
     const contracts = resolveContracts(state);
@@ -69,7 +69,8 @@ test('terminal first responder does not spend the remaining NPC slot',
     const responder = npcBySlot(state, 'background_fisher_1');
     const exchange = await runPhase3({ state, contracts,
       rawText: 'Еремей и рыбак, что вы видели?', inputDigest: digest('4'),
-      responseKind: 'leave_conversation', playerPlanOptions: {
+      responseKind: (_request, callIndex) => callIndex === 1
+        ? 'leave_conversation' : 'speech', playerPlanOptions: {
         primaryAddresseeRef: ref('npc', eremey.instance_id),
         intendedAddresseeRefs: [
           ref('npc', eremey.instance_id),
@@ -77,9 +78,79 @@ test('terminal first responder does not spend the remaining NPC slot',
         ]
       } });
 
+    assert.equal(exchange.npcCalls, 2);
+    assert.equal(exchange.result.exchange.stop_reason, 'player_response');
+    assert.equal(exchange.result.exact_elapsed_minutes, 5);
+    const restarted = projectSemanticConversationSnapshot({
+      state,
+      semanticExchange: exchange.result,
+      rootTurnId: 'turn:multi-npc:first-leaves',
+      workingRevision: 0,
+      appliedChangeSetId: 'change:multi-npc:first-leaves'
+    });
+    const session = restarted.conversation_sessions.at(-1);
+    assert.equal(session.status, 'active');
+    assert.deepEqual(session.active_participant_refs, [
+      ref('npc', responder.instance_id),
+      ref('player_character', state.actor_id)
+    ]);
+    const writeInput = buildNpcSemanticConversationWriteInput({
+      state,
+      next: restarted,
+      semanticExchange: exchange.result
+    });
+    const writes = { inserts: [], updates: [], appends: [] };
+    appendNpcSemanticConversationWrites({
+      ...writes,
+      partyId: state.party_id,
+      changeSetId: 'change:multi-npc:first-leaves',
+      idempotencyRecordId: 'idem:multi-npc:first-leaves',
+      rootTurnId: 'turn:multi-npc:first-leaves',
+      workingRevision: 0,
+      ...writeInput
+    });
+    assert.equal((await assertLowerDvinaTraceSemanticConversationRows(
+      semanticReadPool(writes), restarted
+    )).length, 2);
+  });
+
+test('an intended NPC who did not perceive speech is not an active participant',
+  async () => {
+    const state = phase3State();
+    const contracts = resolveContracts(state);
+    const eremey = npcBySlot(state, 'eremey_fisher');
+    const unheard = npcBySlot(state, 'background_fisher_1');
+    unheard.machine_state = {
+      ...unheard.machine_state,
+      hearing_capability: 'none'
+    };
+    const eremeyRef = ref('npc', eremey.instance_id);
+    const unheardRef = ref('npc', unheard.instance_id);
+    const exchange = await runPhase3({
+      state,
+      contracts,
+      rawText: 'Еремей и рыбак, что вы видели?',
+      inputDigest: digest('5'),
+      responseKind: 'speech',
+      playerPlanOptions: {
+        primaryAddresseeRef: eremeyRef,
+        intendedAddresseeRefs: [eremeyRef, unheardRef]
+      }
+    });
+
     assert.equal(exchange.npcCalls, 1);
-    assert.equal(exchange.result.exchange.stop_reason, 'session_ended');
-    assert.equal(exchange.result.exact_elapsed_minutes, 4);
+    const restarted = projectSemanticConversationSnapshot({
+      state,
+      semanticExchange: exchange.result,
+      rootTurnId: 'turn:multi-npc:unheard-target',
+      workingRevision: 0,
+      appliedChangeSetId: 'change:multi-npc:unheard-target'
+    });
+    const session = restarted.conversation_sessions.at(-1);
+    assert.deepEqual(session.active_participant_refs, [
+      eremeyRef,
+      ref('player_character', state.actor_id)
+    ]);
   });
 
 test('second responder receives only the perceived part of the first reply',

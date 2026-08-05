@@ -123,6 +123,7 @@ export function semanticWriterFixture() {
       allowed_attribute_refs: [],
       allowed_skill_refs: [],
       allowed_check_profile_refs: [],
+      allowed_duration_classes: ['domain_owned'],
       operation_contract: {}
     }
   });

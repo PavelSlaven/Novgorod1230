@@ -41,6 +41,10 @@ import {
   findResumableConversationSession,
   hydratedPendingNpcExecution
 } from './lower-dvina-trace-m2-conversation-resume.js';
+import {
+  initialConversationParticipantRefs,
+  retireTerminalConversationParticipants
+} from './lower-dvina-trace-m2-conversation-session.js';
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
 
@@ -116,7 +120,8 @@ export async function executeM2ConversationExchange(context) {
     supporting_operation_perceptions: [],
     new_signal_records: [],
     consumed_signal_ids: [],
-    terminal_npc_outcomes: []
+    terminal_npc_outcomes: [],
+    active_participant_refs: initialConversationParticipantRefs(context)
   };
   const decisions = new Map();
   const npcOutcomes = new Map();
@@ -143,7 +148,6 @@ export async function executeM2ConversationExchange(context) {
       ? async () => structuredClone(context.playerPlan)
       : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
-    validatePlayerPlan: domainOwnedPlan,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingConversationContext(context, working), working,
         plan),
@@ -195,7 +199,6 @@ export async function executeM2ConversationExchange(context) {
     resolveNpcContributionCheck:
       context.npcSocialCheckResolver ?? undefined,
     revalidateNpcStateVersion: context.revalidateStateVersion,
-    validateNpcPlan: domainOwnedPlan,
     applyNpcContribution: ({
       working_state: working,
       request,
@@ -247,7 +250,7 @@ export async function executeM2ConversationExchange(context) {
       revalidatePendingNpcContribution(context, working, plan),
     applyNpcTerminalOutcomes: ({ working_state: working,
       terminal_outcomes: outcomes }) => ({
-      ...working,
+      ...retireTerminalConversationParticipants(working, outcomes),
       consumed_signal_ids: [...new Set([
         ...working.consumed_signal_ids,
         ...outcomes.flatMap(({ signal_ids_to_consume: ids }) => ids)
@@ -289,11 +292,7 @@ export async function prepareM2PlayerConversationPlan(context) {
   const decision = await requestPlayerConversationContribution({
     request: buildPlayerRequest(context),
     conversationModel: context.playerConversationModel,
-    revalidateStateVersion: context.revalidateStateVersion,
-    validatePlan: domainOwnedPlan
+    revalidateStateVersion: context.revalidateStateVersion
   });
   return decision.plan;
-}
-function domainOwnedPlan(plan) {
-  return plan?.activity?.duration_class === 'domain_owned';
 }

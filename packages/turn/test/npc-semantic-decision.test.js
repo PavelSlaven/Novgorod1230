@@ -69,6 +69,7 @@ function request(overrides = {}) {
       allowed_attribute_refs: [],
       allowed_skill_refs: [],
       allowed_check_profile_refs: [],
+      allowed_duration_classes: ['moment', 'brief', 'short', 'domain_owned'],
       operation_contract: {}
     },
     ...overrides

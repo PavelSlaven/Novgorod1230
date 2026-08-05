@@ -578,6 +578,7 @@ Session приостанавливается, когда:
   "received_at": "technical timestamp only",
   "player_safe_context": {
     "verbatim_utterance_text": "Еремей, скажи прямо: кого ты видел у лодки?",
+    "allowed_duration_classes": ["moment", "brief", "short", "domain_owned"],
     "allowed_references": {
       "actor_refs": [
         { "entity_kind": "npc", "entity_id": "eremey" },
@@ -1339,6 +1340,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
     "allowed_attribute_refs": [],
     "allowed_skill_refs": [],
     "allowed_check_profile_refs": [],
+    "allowed_duration_classes": ["moment", "brief", "short", "domain_owned"],
     "operation_contract": {}
   }
 }
@@ -2977,6 +2979,7 @@ invariants:
   - raw_text is player input rather than a factual utterance until semantic interpretation and commit.
   - The context is player-safe and the operation contract contains only code-supported capabilities.
   - player_safe_context contains code-owned allowed actor, entity, knowledge and combat target references for the contribution plan.
+  - activity.duration_class belongs to player_safe_context.allowed_duration_classes.
 ```
 
 ```yaml
@@ -3067,6 +3070,7 @@ invariants:
   - Hidden reasons, objective unknown facts and other model prompts are excluded.
   - Every actor, entity, knowledge and combat target reference in the response must belong to the explicit code-owned allowed_references set.
   - Every check attribute, skill and profile reference must belong to the explicit decision_scope allowlists.
+  - activity.duration_class belongs to decision_scope.allowed_duration_classes.
 ```
 
 ```yaml

@@ -12,6 +12,11 @@ import { projectSilencePerception } from
   './lower-dvina-trace-m2-conversation-nonverbal.js';
 import { audienceForStatement } from
   './lower-dvina-trace-m2-conversation-audience.js';
+import {
+  addContributionParticipants,
+  npcConversationSessionStatus,
+  removeConversationParticipant
+} from './lower-dvina-trace-m2-conversation-session.js';
 
 export function applyPlayerPlan(context, working, plan) {
   requirePlayerContribution(context, plan);
@@ -72,7 +77,7 @@ export function projectPlayerPerception(context, working, statement, plan) {
   });
   return applyResult({
     working: {
-      ...working,
+      ...addContributionParticipants(working, statement, audience),
       statements: [...working.statements, statement],
       audiences: [...working.audiences, audience],
       new_signal_records: [
@@ -130,9 +135,12 @@ export function applyNpcPlan(
     : ref('conversation_contribution', contributionEvent.contribution_id);
   npcOutcome.checkResult = structuredClone(checkResult);
   npcOutcome.socialDeliveryResult = structuredClone(socialDeliveryResult);
+  const participantWorking = contributionKind === 'leave_conversation'
+    ? removeConversationParticipant(working, proposal.plan.speaker_ref)
+    : addContributionParticipants(working, contributionEvent);
   return applyResult({
     working: {
-      ...working,
+      ...participantWorking,
       consumed_signal_ids: [
         ...working.consumed_signal_ids,
         ...proposal.signal_ids_to_consume
@@ -143,7 +151,7 @@ export function applyNpcPlan(
     sessionStatus: handoff
       ? 'suspended'
       : contributionKind === 'leave_conversation'
-        ? 'ended'
+        ? npcConversationSessionStatus(participantWorking)
         : 'active',
     handoff
   });
@@ -170,7 +178,7 @@ export function projectNpcPerception(context, working, contributionEvent,
       sessionStatus: contributionEvent.handoff
         ? 'suspended'
         : contributionEvent.contribution_kind === 'leave_conversation'
-          ? 'ended' : 'active',
+          ? npcConversationSessionStatus(working) : 'active',
       handoff: contributionEvent.handoff
     });
   }
@@ -194,7 +202,7 @@ export function projectNpcPerception(context, working, contributionEvent,
     audience, plan);
   return applyResult({
     working: {
-      ...working,
+      ...addContributionParticipants(working, contributionEvent, audience),
       statements: [...working.statements, contributionEvent],
       audiences: [...working.audiences, audience],
       new_signal_records: [

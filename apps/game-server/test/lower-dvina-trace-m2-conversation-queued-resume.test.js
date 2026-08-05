@@ -163,6 +163,9 @@ async function assertSkippedQueuedResponder(resumed, fixture) {
   assert.equal(projected.pending_npc_conversation_execution, undefined);
   assert.deepEqual(projected.npc_decision_terminal_outcomes,
     resumed.result.terminal_npc_outcomes);
+  assert.equal(projected.conversation_sessions.at(-1)
+    .active_participant_refs.some(({ entity_id: entityId }) =>
+      entityId === fixture.responderRef.entity_id), false);
   await assertTerminalResumeReadback(projected, resumed.result, fixture);
 }
 

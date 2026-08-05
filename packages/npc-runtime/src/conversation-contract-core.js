@@ -184,6 +184,13 @@ function validateActivity(value) {
     && stableId(value.effort);
 }
 
+function validateAllowedDurationClasses(value) {
+  return Array.isArray(value)
+    && value.length > 0
+    && value.every((durationClass) => DURATION_CLASSES.has(durationClass))
+    && new Set(value).size === value.length;
+}
+
 function validateCheckOutcome(value, outcome) {
   return exactKeys(value, ['delivery_quality', 'observable_effects'])
     && value.delivery_quality === DELIVERY_QUALITY_BY_OUTCOME[outcome]
@@ -247,6 +254,12 @@ function validateContributionBody(value, request = null) {
       === 'npc_conversation_response_request_v1'
     ? request.decision_scope.allowed_check_profile_refs
     : null;
+  const allowedDurationClasses = request?.schema
+      === 'npc_conversation_response_request_v1'
+    ? request.decision_scope.allowed_duration_classes
+    : request?.schema === 'player_conversation_input_v1'
+      ? request.player_safe_context.allowed_duration_classes
+      : null;
   if (!CONTRIBUTION_KINDS.has(value.contribution_kind)
     || !nullableEntityRef(value.primary_addressee_ref)
     || !uniqueContractEntityRefs(value.intended_addressee_refs)
@@ -255,6 +268,8 @@ function validateContributionBody(value, request = null) {
       && !value.intended_addressee_refs.some((reference) => refKey(reference) === refKey(value.primary_addressee_ref)))
     || !validateInterpretation(value.interpretation)
     || !validateActivity(value.activity)
+    || (allowedDurationClasses !== null
+      && !allowedDurationClasses.includes(value.activity.duration_class))
     || !validateSupportingOperations(
       value.supporting_operations,
       value.contribution_kind,
@@ -343,6 +358,8 @@ export function validatePlayerConversationInput(value) {
     && nonEmptyText(value.raw_text)
     && stableId(value.received_at)
     && plainRecord(value.player_safe_context)
+    && validateAllowedDurationClasses(
+      value.player_safe_context.allowed_duration_classes)
     && validateAllowedContributionReferences(
       value.player_safe_context.allowed_references)
     && plainRecord(value.operation_contract)

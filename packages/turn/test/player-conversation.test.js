@@ -14,6 +14,7 @@ function request() {
     raw_text: 'попросить Еремея рассказать правду',
     received_at: 'input-1',
     player_safe_context: {
+      allowed_duration_classes: ['moment', 'brief', 'short', 'domain_owned'],
       allowed_references: {
         actor_refs: [
           ref('npc', 'eremey'),

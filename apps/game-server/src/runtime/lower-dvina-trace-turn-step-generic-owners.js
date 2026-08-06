@@ -40,10 +40,24 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
     ...directBodyEventProfiles
   ].map((profile) => [profile.body_effect_profile_ref, profile]));
 
+  const semanticActivityScheduleOwner = Object.freeze({
+    resolve({ activity } = {}) {
+      const selected = activityByKey.get(activityKey(activity));
+      if (!selected) ownerFail('TRACE_TURN_STEP_ACTIVITY_PROFILE_DATA_GAP');
+      return deepFreeze({
+        profile_ref: selected.profile_ref,
+        profile_pin: structuredClone(admitted.profile_pin),
+        duration_class: selected.duration_class,
+        effort: selected.effort,
+        duration_minutes: selected.duration_minutes
+      });
+    }
+  });
+
   const semanticActivityOwner = Object.freeze({
     resolve({ activity, actor } = {}) {
       const selected = activityByKey.get(activityKey(activity));
-      if (!selected) ownerFail('TRACE_TURN_STEP_ACTIVITY_PROFILE_DATA_GAP');
+      const schedule = semanticActivityScheduleOwner.resolve({ activity });
       const context = semanticBodyContext(selected);
       const bodyResult = applyApprovedFixedBodyEffect({
         body_state: actor?.body,
@@ -55,11 +69,7 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
       const changesBody = Object.values(bodyResult.proposal.exact_deltas)
         .some((value) => value !== 0);
       return deepFreeze({
-        profile_ref: selected.profile_ref,
-        profile_pin: structuredClone(admitted.profile_pin),
-        duration_class: selected.duration_class,
-        effort: selected.effort,
-        duration_minutes: selected.duration_minutes,
+        ...schedule,
         body_effect_ref: changesBody ? GENERIC_BODY_EFFECT_REF : null,
         body_effect_profile_ref: selected.body_effect_profile_ref,
         exact_deltas: structuredClone(bodyResult.proposal.exact_deltas),
@@ -203,6 +213,7 @@ export function createLowerDvinaTraceTurnStepGenericOwners({
   });
 
   return Object.freeze({
+    semanticActivityScheduleOwner,
     semanticActivityOwner,
     bodyEventOwner,
     genericCheckContextOwner,

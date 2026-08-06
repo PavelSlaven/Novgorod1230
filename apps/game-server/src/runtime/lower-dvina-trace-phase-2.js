@@ -5,9 +5,8 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTracePhase2Bundle } from
   '../internal/lower-dvina-trace-phase-2-bundle.js';
-import {
-  createTracePhase2InspectionCommand
-} from './lower-dvina-trace-phase-2-command.js';
+import { createTracePhase2InspectionCommand } from
+  './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from
   './lower-dvina-trace-phase-2-contracts.js';
 import {
@@ -154,14 +153,14 @@ export function createLowerDvinaTracePhase2Runtime({
       const phase6Contracts = [12, 13, 14, 15].includes(bundle.definition_revision)
         ? resolveTracePhase6Contracts({ bundle })
         : null;
-      const phase7Contracts = bundle.definition_revision === 15
-        ? resolveTracePhase7Contracts({ state, bundle })
-        : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
             profiles: bundle.turn_step_owner_profiles,
             artifactPin: bundle.artifact_pins.turn_step_owner_profiles
           })
+        : null;
+      const phase7Contracts = bundle.definition_revision === 15
+        ? resolveTracePhase7Contracts({ state, bundle })
         : null;
       const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
@@ -206,6 +205,7 @@ export function createLowerDvinaTracePhase2Runtime({
           contracts: phase7Contracts,
           inputDigest,
           npcAutonomousModel,
+          semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
           temporalAdvanceOwner,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,

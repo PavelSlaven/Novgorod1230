@@ -157,6 +157,7 @@ function applyScheduleResult(next, execution, changeSetId) {
 }
 
 function activityStatus(operation) {
+  if (operation?.op === 'apply_semantic_activity') return 'idle';
   if (operation?.activity_kind === 'wait') return 'waiting';
   if (operation?.activity_kind === 'observe') return 'observing';
   return 'active';

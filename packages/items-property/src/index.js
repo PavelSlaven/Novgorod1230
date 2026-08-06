@@ -2,6 +2,8 @@ import { deepFreeze } from '@rus/kernel';
 import { planApprovedItemZoneTransition } from './approved-item-zone-transition.js';
 import { planApprovedItemVisibilityTransition } from
   './approved-item-visibility-transition.js';
+import { planApplicableApprovedItemTransition } from
+  './applicable-approved-item-transition.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export { planApprovedActorItemTransition } from './approved-actor-item-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
@@ -141,6 +143,7 @@ export function validatePropertyRelation(relation = {}) {
 
 export {
   normalizeItem,
+  planApplicableApprovedItemTransition,
   planApprovedItemVisibilityTransition,
   planApprovedItemZoneTransition,
   validateItem

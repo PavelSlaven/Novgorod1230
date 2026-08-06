@@ -19,6 +19,7 @@ export function createTracePhase7FireRestCommand({
   contracts,
   inputDigest,
   npcAutonomousModel,
+  semanticActivityScheduleOwner,
   temporalAdvanceOwner,
   revalidateStateVersion
 }) {
@@ -72,7 +73,7 @@ export function createTracePhase7FireRestCommand({
         }),
         async resolveDecision({ temporal }) {
           actorStepRuntime = createTracePhase7ActorStepRuntime({
-            state, contracts, temporal
+            state, contracts, temporal, semanticActivityScheduleOwner
           });
           const autonomous = await resolveTracePhase7AutonomousDecision({
             state,

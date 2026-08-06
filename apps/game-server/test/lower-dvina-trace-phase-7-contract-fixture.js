@@ -55,6 +55,25 @@ export function approvedPhase7Contracts(state) {
     localTransition: localTransition(move),
     bagConcealTransition: bagConcealTransition(),
     scheduleExecutions: { wait, moveBag: move },
+    scheduleActivityProfiles: [
+      activityProfile(wait.activity_profile_ref, 'autonomous_wait', []),
+      activityProfile(move.activity_profile_ref,
+        'autonomous_local_property_transfer',
+        ['trace_ld_v1_container_road_bag'])
+    ],
+    semanticActivityProfiles: [{
+      profile_ref: 'trace_ld_v1_semantic_activity:moment:none',
+      profile_pin: {
+        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
+        revision: 1,
+        digest
+      },
+      body_effect_profile_ref:
+        'trace_ld_v1_semantic_activity:body:moment:none',
+      duration_class: 'moment', duration_minutes: 1, effort: 'none',
+      exact_deltas: { health: 0, satiety: 0, energy: 0 },
+      condition_outcomes: []
+    }],
     zhdanko,
     waitingBoundary: { elapsed_minutes: 25 },
     campLocationRef: 'trace_ld_v1_loc_fishing_camp',
@@ -84,7 +103,7 @@ export function phase7ItemPlan(request) {
     operations: [{
       op: 'request_item_use', actor_ref: request.npc_ref,
       item_ref: 'trace_ld_v1_container_road_bag', use_kind: 'operate',
-      target_refs: ['concealed_requires_search']
+      target_refs: ['storehouse_inside']
     }],
     check: null,
     reason_code: 'protect_property',
@@ -115,8 +134,11 @@ export function phase7AutonomousPlan(request, option) {
       op: 'request_activity',
       actor_ref: request.npc_ref,
       activity_kind: move ? 'carry' : 'wait',
-      target_refs: move ? ['trace_ld_v1_container_road_bag'] : [],
-      description: move ? 'Перенести дорожную сумку.' : 'Ждать ещё.'
+      target_refs: move ? [
+        'trace_ld_v1_container_road_bag', 'river_access'
+      ] : [],
+      description: move
+        ? 'Перенести дорожную сумку к речному выходу.' : 'Ждать ещё.'
     }],
     check: null,
     reason_code: move ? 'prepare_departure' : 'continue_waiting',
@@ -124,7 +146,7 @@ export function phase7AutonomousPlan(request, option) {
   };
 }
 
-export function phase7MovementPlan(request) {
+export function phase7DirectPlan(request) {
   return {
     schema: 'npc_step_plan_v1',
     request_id: request.request_id,
@@ -135,22 +157,17 @@ export function phase7MovementPlan(request) {
     decision_index: request.decision_index,
     npc_ref: request.npc_ref,
     interpretation: {
-      npc_goal: 'начать уход',
-      grounded_attempt: 'перейти к речному выходу',
+      npc_goal: 'проверить, не слышно ли возвращения',
+      grounded_attempt: 'остаться на месте и прислушаться',
       adaptation: 'literal'
     },
-    resolution: 'domain_request',
-    goal_result: 'pending',
-    activity: { owner: 'domain', duration_class: null, effort: null },
-    operations: [{
-      op: 'request_movement',
-      actor_ref: request.npc_ref,
-      target_ref: 'river_access',
-      movement_kind: 'local'
-    }],
+    resolution: 'direct',
+    goal_result: 'not_achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [],
     check: null,
-    reason_code: 'begin_departure',
-    reason: 'Ратша не вернулся к ожидаемому сроку.'
+    reason_code: 'listen_for_return',
+    reason: 'Жданко не услышал признаков возвращения Ратши.'
   };
 }
 
@@ -228,6 +245,14 @@ function execution(option, activity, minutes = 5) {
     property_transition_refs: option === 'move_bag'
       ? ['trace_ld_v1_property_bag_to_river_access'] : [],
     elapsed_plan: { stages: [{ duration_minutes: minutes }] }
+  };
+}
+
+function activityProfile(profileId, activityType, resourceRefs) {
+  return {
+    profile_id: profileId,
+    activity_type: activityType,
+    resource_refs: resourceRefs
   };
 }
 

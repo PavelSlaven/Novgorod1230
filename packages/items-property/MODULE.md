@@ -32,6 +32,9 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
   `planApprovedItemVisibilityTransition` — pure proposals для утверждённых
   перемещения предмета между зонами и изменения его видимости без смены
   владельца, держателя или контролёра
+- `planApplicableApprovedItemTransition` — выбирает ровно один применимый
+  approved transition по реальному target item/location ref; итоговое состояние
+  видимости остаётся результатом item owner, а не входным semantic write-state
 - `validateInventoryArchetypes` / `resolveInventoryProfile` — разворачивают переданный authoring archetype в точный immutable inventory-профиль до runtime
 - `createRuntimeInstanceMechanicsSnapshot` — строго валидирует и отделённо замораживает exact mechanics/provenance обычного direct-action экземпляра
 - `resolveInventoryMechanicsProfile` — выбирает ровно один источник механики: authored template profile либо template-less runtime snapshot

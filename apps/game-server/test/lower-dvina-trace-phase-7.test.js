@@ -21,10 +21,15 @@ import { fixture, loadScenarioBundle } from
 import {
   approvedPhase7Contracts as approvedContracts,
   phase7AutonomousPlan as autonomousPlan,
-  phase7ItemPlan as itemPlan,
-  phase7MovementPlan as movementPlan
+  phase7DirectPlan as directPlan,
+  phase7ItemPlan as itemPlan
 } from
   './lower-dvina-trace-phase-7-contract-fixture.js';
+import {
+  phase7Command as commandFor,
+  phase7CommittedState as committedState,
+  phase7PlayerInput as playerInput
+} from './lower-dvina-trace-phase-7-runtime-fixture.js';
 
 const digest = 'a'.repeat(64);
 
@@ -33,6 +38,12 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
     const state = committedState();
     const contracts = approvedContracts(state);
     const command = commandFor({ state, contracts, model: async (request) => {
+      assert.deepEqual(Object.keys(request.decision_scope.operation_contract),
+        ['request_activity', 'request_item_use']);
+      assert.deepEqual(request.decision_scope.operation_contract
+        .request_activity.target_refs, [
+        'trace_ld_v1_container_road_bag', 'river_access'
+      ]);
       return autonomousPlan(request, 'move_bag');
     } });
     const consequence = await command.consequence({
@@ -66,34 +77,71 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
       .active_npc_actor_step.status, 'completed');
   });
 
-test('Phase 7 executes a supported movement domain request without an activity whitelist',
+test('Phase 7 rejects a carry request without an explicit destination',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
-    let modelCalls = 0;
     const command = commandFor({ state, contracts, model: async (request) => {
-      modelCalls += 1;
-      assert.deepEqual(Object.keys(request.decision_scope.operation_contract),
-        ['request_activity', 'request_item_use', 'request_movement']);
-      assert.equal(JSON.stringify(request.decision_scope.operation_contract)
-        .includes('activity_profile_ref'), false);
-      return movementPlan(request);
+      const plan = autonomousPlan(request, 'move_bag');
+      plan.operations[0].target_refs = [contracts.roadBag.item_ref];
+      return plan;
     } });
-    const consequence = await command.consequence({
-      retrievedState: state, playerInput: playerInput(state, 'movement')
+    await assert.rejects(
+      () => command.consequence({
+        retrievedState: state,
+        playerInput: playerInput(state, 'carry-without-destination')
+      }),
+      ({ code }) => code === 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE'
+    );
+  });
+
+test('Phase 7 executes a direct NPC step and continues the rest interval',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const consequence = await commandFor({ state, contracts,
+      model: async (request) => directPlan(request)
+    }).consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'direct-listen')
     });
-    assert.equal(modelCalls, 1);
-    assert.equal(consequence.phase7.schedule_execution.status, 'executed');
-    assert.equal(consequence.phase7.schedule_execution.failure_code, null);
-    assert.equal(consequence.phase7.schedule_execution.owner,
-      '@rus/turn/actor-step');
-    assert.equal(consequence.phase7.schedule_execution.clock_after.whole_minutes,
-      '130');
-    assert.equal(consequence.phase7.schedule_execution.movement_proposal
-      .destination_zone_ref, 'river_access');
-    assert.equal(consequence.phase7.schedule_execution.property_proposal, null);
-    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
-      .whole_minutes, '130');
+    assert.equal(consequence.phase7.actor_step.status, 'started');
+    assert.equal(
+      consequence.phase7.schedule_execution.exact_elapsed.exact_minutes
+        .numerator,
+      '1'
+    );
+    assert.equal(
+      consequence.phase7.schedule_execution.clock_after.whole_minutes,
+      '126'
+    );
+    assert.equal(
+      consequence.phase7.schedule_temporal.result.clock_after.whole_minutes,
+      '130'
+    );
+    const timeUpdate = {
+      clock_before: state.clock,
+      clock_after: consequence.phase7.schedule_temporal.result.clock_after,
+      exact_elapsed: { exact_minutes: { numerator: '30', denominator: '1' } }
+    };
+    const bodyUpdate = createTracePhase7BodyEffect({
+      contracts,
+      fallback: { apply() { throw new Error('unexpected fallback'); } }
+    }).apply({ committed_state: state, consequence, time_update: timeUpdate });
+    const committed = await buildLowerDvinaTracePhase7Commit({
+      partyId: state.party_id,
+      factual: factualTurn(state, consequence, timeUpdate, bodyUpdate),
+      state,
+      inputDigest: digest,
+      visibleContext: visibleContext(),
+      phase7Contracts: contracts
+    });
+    const snapshot = rows(committed.plan, 'party_state_snapshots')[0]
+      .record.state_payload;
+    assert.equal(snapshot.clock.whole_minutes, '130');
+    assert.equal(snapshot.phase7_fire_rest.schedule_result.clock_after
+      .whole_minutes, '126');
+    assert.equal(snapshot.npcs[1].machine_state.status, 'idle');
   });
 
 test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
@@ -108,7 +156,8 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
     const command = createTracePhase7FireRestCommand({
       contracts,
       inputDigest: digest,
-      npcAutonomousModel: async (request) => movementPlan(request),
+      npcAutonomousModel: async (request) =>
+        autonomousPlan(request, 'move_bag'),
       temporalAdvanceOwner: {
         advance(input) {
           if (input.request.clock_before.whole_minutes === '125') {
@@ -138,7 +187,13 @@ test('Phase 7 delegates an autonomous concealment attempt to the item owner',
     const state = committedState();
     const contracts = approvedContracts(state);
     const consequence = await commandFor({ state, contracts,
-      model: async (request) => itemPlan(request)
+      model: async (request) => {
+        assert.deepEqual([...request.decision_scope.operation_contract
+          .request_item_use.target_refs], ['storehouse_inside']);
+        assert.equal(JSON.stringify(request.decision_scope.operation_contract)
+          .includes('concealed_requires_search'), false);
+        return itemPlan(request);
+      }
     }).consequence({
       retrievedState: state,
       playerInput: playerInput(state, 'conceal')
@@ -446,119 +501,6 @@ test('Phase 7 P16 persists an item-owner concealment without movement',
     assert.equal(snapshot.npcs[1].machine_state.spatial_zone_ref,
       'storehouse_inside');
   });
-
-function commandFor({ state, contracts, model }) {
-  return createTracePhase7FireRestCommand({
-    contracts,
-    inputDigest: digest,
-    npcAutonomousModel: model,
-    temporalAdvanceOwner: createTemporalAdvanceOwner({
-      effect_registrations:
-        lowerDvinaTracePhase7TemporalEffectRegistrations()
-    }),
-    revalidateStateVersion: async () => state.party_state.state_version
-  });
-}
-
-function committedState() {
-  return {
-    schema: 'rus.lower_dvina_trace_turn_snapshot.v2',
-    party_id: 'phase7-party',
-    actor_id: 'mikula',
-    party_state: {
-      state_version: 7,
-      session_state_version: 8,
-      clock_state_version: 7,
-      body_state_version: 4,
-      turn_number: 7
-    },
-    opening_identity: { opening_screen_digest: 'opening-digest' },
-    world_identity: {
-      world_revision_id: 'world-revision',
-      world_catalog_digest: 'world-digest'
-    },
-    clock: {
-      whole_minutes: '100',
-      subminute_numerator: '0',
-      subminute_denominator: '1'
-    },
-    clock_weather_light: { clock: {
-      whole_minutes: '100', subminute_numerator: '0',
-      subminute_denominator: '1'
-    } },
-    position: {
-      location_ref: 'trace_ld_v1_loc_fishing_camp',
-      zone_ref: 'working_camp',
-      g4_id: 'camp-g4',
-      g5_node_id: 'camp-node',
-      g5_anchor_id: 'camp-anchor'
-    },
-    phase6_carry_execution: { status: 'completed' },
-    body_state: {
-      health: 70,
-      energy: 30,
-      satiety: 40,
-      active_conditions: [
-        condition('wet-clothing', 'wet'),
-        condition('shivering', 'strong_shivering'),
-        condition('headache', 'headache'),
-        condition('bruise', 'shoulder_bruise')
-      ]
-    },
-    body_effect_history: [],
-    knowledge: [],
-    items: [],
-    containers: [{
-      container_id: 'road-bag-1',
-      template_id: 'trace_ld_v1_container_road_bag',
-      holder_npc_id: 'zhdanko-1',
-      state_version: 1,
-      state: {
-        location_ref: 'trace_ld_v1_loc_storehouse',
-        zone_ref: 'storehouse_inside',
-        controller_npc_id: 'zhdanko-1'
-      }
-    }],
-    npcs: [{
-      participant_slot_ref: 'onisim_boatman',
-      instance_id: 'onisim-1',
-      anchor_id: 'camp-anchor',
-      machine_state: { spatial_zone_ref: 'fire_rest_area' }
-    }, {
-      participant_slot_ref: 'zhdanko_storehouse_controller',
-      instance_id: 'zhdanko-1',
-      anchor_id: 'storehouse-anchor',
-      machine_state: {
-        status: 'waiting',
-        location_ref: 'trace_ld_v1_loc_storehouse',
-        spatial_zone_ref: 'storehouse_inside'
-      }
-    }],
-    temporal_boundary_candidates: [],
-    npc_decision_signals: [],
-    consumed_npc_decision_signal_ids: [],
-    npc_semantic_decision_refs: []
-  };
-}
-
-function condition(storageId, id) {
-  return {
-    storage_condition_id: storageId,
-    id,
-    status: 'active',
-    state_version: 1,
-    condition_profile_ref: { entity_id: storageId, state: id }
-  };
-}
-
-function playerInput(state, suffix = 'move') {
-  return {
-    party_id: state.party_id,
-    request_id: `phase7-${suffix}-request`,
-    idempotency_key: `phase7-${suffix}-idem`,
-    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду'
-  };
-}
 
 function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
   return {

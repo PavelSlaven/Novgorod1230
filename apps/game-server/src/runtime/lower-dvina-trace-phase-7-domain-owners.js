@@ -1,47 +1,48 @@
-import {
-  planApprovedItemVisibilityTransition,
-  planApprovedItemZoneTransition
-} from '@rus/items-property';
-import { planApprovedLocalZoneTransition } from '@rus/movement-routes';
+import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
 import { subtractGameTimestamp } from '@rus/time-events-history';
+import {
+  resolveTracePhase7DomainProposals,
+  tracePhase7ItemUseTransitions,
+  tracePhase7PropertyTransitions,
+  tracePhase7TransitionTarget
+} from './lower-dvina-trace-phase-7-owner-proposals.js';
+import { resolveTracePhase7SemanticActivity } from
+  './lower-dvina-trace-phase-7-semantic-activity.js';
 
-const ACTIVITY_KINDS = [
-  'wait', 'sleep', 'work', 'recover', 'carry', 'other'
-];
+const ACTIVITY_KINDS = ['wait', 'carry'];
 
 export function createTracePhase7DomainExecution({ state, contracts,
-  temporal }) {
+  temporal, semanticActivityScheduleOwner }) {
   const resources = contracts.autonomous.available_resource_refs;
-  const transitions = propertyTransitions(contracts);
+  const transitions = tracePhase7ItemUseTransitions(contracts);
   return Object.freeze({
+    semantic_activity_handler: async (execution) => {
+      const semantic = await resolveTracePhase7SemanticActivity({
+        execution, contracts, semanticActivityScheduleOwner
+      });
+      return started({ execution, temporal, ...semantic,
+        movement: null, property: null });
+    },
     handlers: {
       request_activity: (execution) => executeActivity({
         execution, state, contracts, temporal
       }),
       request_item_use: (execution) => executeItem({
         execution, state, contracts, temporal
-      }),
-      request_movement: (execution) => executeMovement({
-        execution, state, contracts, temporal
       })
     },
     operation_contract: {
       request_activity: {
         owner: '@rus/turn', activity_kinds: ACTIVITY_KINDS,
-        target_refs: structuredClone(resources),
+        target_refs: [...structuredClone(resources),
+          contracts.localTransition.destination_zone_ref],
         maximum_elapsed_minutes: remainingMinutes(temporal),
         factual_outcome_write: 'forbidden'
       },
       request_item_use: {
         owner: '@rus/items-property', item_refs: structuredClone(resources),
         use_kinds: ['operate', 'other'],
-        target_refs: transitions.map(transitionTarget),
-        factual_outcome_write: 'owner_only'
-      },
-      request_movement: {
-        owner: '@rus/movement-routes', movement_kinds: ['local'],
-        target_refs: [contracts.localTransition.destination_zone_ref],
-        route_refs: [contracts.localTransition.transition_id],
+        target_refs: transitions.map(tracePhase7TransitionTarget),
         factual_outcome_write: 'owner_only'
       }
     }
@@ -52,59 +53,51 @@ function executeActivity({ execution, state, contracts, temporal }) {
   const operation = execution.operation;
   requireActorAndTargets(operation, contracts, {
     kinds: ACTIVITY_KINDS,
-    targetRefs: contracts.autonomous.available_resource_refs,
+    targetRefs: [
+      ...contracts.autonomous.available_resource_refs,
+      contracts.localTransition.destination_zone_ref
+    ],
     kindField: 'activity_kind'
   });
-  const carriesBag = operation.activity_kind === 'carry'
-    && sameRefs(operation.target_refs, [contracts.roadBag.item_ref]);
-  const profile = carriesBag
-    ? contracts.scheduleExecutions.moveBag
-    : operation.activity_kind === 'wait' && operation.target_refs.length === 0
-      ? contracts.scheduleExecutions.wait : null;
-  if (!carriesBag) {
-    return started({ execution, temporal, profile, movement: null,
-      property: null });
+  const selection = selectApplicableNpcActivityExecution({
+    operation,
+    activity_profiles: contracts.scheduleActivityProfiles,
+    execution_bindings: Object.values(contracts.scheduleExecutions),
+    movement_bindings: [contracts.localTransition],
+    property_transition_profiles: tracePhase7PropertyTransitions(contracts)
+  });
+  if (!selection.pass) {
+    fail(selection.errors[0].code, selection.errors);
   }
-  const owned = planMovementAndProperty({ state, contracts, profile });
+  const profile = selection.execution_binding;
+  const owned = resolveTracePhase7DomainProposals({
+    operation, state, contracts, profile
+  });
   return started({ execution, temporal, profile,
     movement: owned.movement, property: owned.property });
 }
 
-function executeMovement({ execution, state, contracts, temporal }) {
-  const operation = execution.operation;
-  requireActorAndTargets(operation, contracts, {
-    kinds: ['local'],
-    targetRefs: [contracts.localTransition.destination_zone_ref],
-    kindField: 'movement_kind', singleTargetField: 'target_ref'
-  });
-  const movement = planMovement({ state, contracts,
-    parentExecutionRef:
-      contracts.scheduleExecutions.moveBag.execution_binding_id });
-  return started({ execution, temporal, profile: null, movement,
-    property: null, minutes: movement.exact_elapsed.exact_minutes.numerator });
-}
-
 function executeItem({ execution, state, contracts, temporal }) {
   const operation = execution.operation;
-  const transitions = propertyTransitions(contracts);
+  const transitions = tracePhase7ItemUseTransitions(contracts);
   requireActorAndTargets(operation, contracts, {
     kinds: ['operate', 'other'],
-    targetRefs: transitions.map(transitionTarget), kindField: 'use_kind'
+    targetRefs: transitions.map(tracePhase7TransitionTarget),
+    kindField: 'use_kind'
   });
   if (operation.item_ref !== contracts.roadBag.item_ref
       || operation.target_refs.length !== 1) {
     fail('TRACE_PHASE_7_ITEM_REQUEST_NOT_APPLICABLE');
   }
-  const matches = transitions.filter((transition) =>
-    transitionTarget(transition) === operation.target_refs[0]);
-  if (matches.length !== 1) fail('TRACE_PHASE_7_ITEM_TRANSITION_AMBIGUOUS');
-  const property = planProperty({ state, contracts, transition: matches[0] });
+  const { property } = resolveTracePhase7DomainProposals({
+    operation, state, contracts
+  });
   return started({ execution, temporal, profile: null, movement: null,
     property });
 }
 
 function started({ execution, temporal, profile, movement, property,
-  minutes = null }) {
+  minutes = null, npcRef = null }) {
   const duration = minutes == null
     ? profileMinutes(profile) ?? remainingMinutes(temporal) : Number(minutes);
   if (!Number.isSafeInteger(duration) || duration < 1
@@ -113,7 +106,7 @@ function started({ execution, temporal, profile, movement, property,
   }
   const operation = execution.operation;
   const active = {
-    npc_ref: operation.actor_ref, status: 'started',
+    npc_ref: npcRef ?? operation.actor_ref, status: 'started',
     started_at: structuredClone(temporal.result.clock_after),
     semantic_operation: structuredClone(operation),
     planned_exact_elapsed: {
@@ -128,7 +121,8 @@ function started({ execution, temporal, profile, movement, property,
     summary: `npc_actor_step:${operation.op}`,
     consequence_fragment: Object.freeze({
       owner: '@rus/turn/actor-step', domain_owner: domainOwner(operation.op),
-      status: 'started', failure_code: null, npc_ref: operation.actor_ref,
+      status: 'started', failure_code: null,
+      npc_ref: npcRef ?? operation.actor_ref,
       semantic_operation: structuredClone(operation),
       execution_binding_ref: profile?.execution_binding_id ?? null,
       schedule_option_id: profile?.schedule_option_id ?? null,
@@ -147,60 +141,6 @@ function started({ execution, temporal, profile, movement, property,
   };
 }
 
-function planMovementAndProperty({ state, contracts, profile }) {
-  if (profile?.movement_ref !== contracts.localTransition.transition_id
-      || !profile.property_transition_refs.includes(
-        contracts.bagTransition.transition_profile_id)) {
-    fail('TRACE_PHASE_7_ACTIVITY_PROFILE_OWNER_MISSING');
-  }
-  return {
-    movement: planMovement({ state, contracts,
-      parentExecutionRef: profile.execution_binding_id }),
-    property: planProperty({ state, contracts,
-      transition: contracts.bagTransition })
-  };
-}
-
-function planMovement({ state, contracts, parentExecutionRef }) {
-  const npc = contracts.zhdanko;
-  const result = planApprovedLocalZoneTransition({
-    expected_state_version: state.party_state.state_version,
-    state_version: state.party_state.state_version,
-    parent_execution_ref: parentExecutionRef,
-    transition_binding: contracts.localTransition,
-    actor: {
-      actor_id: npc.instance_id,
-      location_ref: npc.machine_state?.location_ref
-        ?? npc.location_profile_ref,
-      zone_ref: npc.machine_state?.spatial_zone_ref ?? npc.zone_ref
-    }
-  });
-  if (!result.pass) fail('TRACE_PHASE_7_MOVEMENT_OWNER_REJECTED', result.errors);
-  return result.proposal;
-}
-
-function planProperty({ state, contracts, transition }) {
-  const bag = findBag(state, contracts);
-  const plan = transition.writes.visibility_state == null
-    ? planApprovedItemZoneTransition : planApprovedItemVisibilityTransition;
-  const result = plan({
-    expected_state_version: state.party_state.state_version,
-    state_version: state.party_state.state_version,
-    approved_transition: transition,
-    item: bag,
-    resolved_actor_refs: {
-      zhdanko_storehouse_controller: contracts.zhdanko.instance_id
-    },
-    source: {
-      location_ref: bag.state?.location_ref, zone_ref: bag.state?.zone_ref,
-      holder_actor_id: bag.holder_npc_id,
-      controller_actor_id: bag.state?.controller_npc_id
-    }
-  });
-  if (!result.pass) fail('TRACE_PHASE_7_PROPERTY_OWNER_REJECTED', result.errors);
-  return result.proposal;
-}
-
 function requireActorAndTargets(operation, contracts, {
   kinds, targetRefs, kindField, singleTargetField = null
 }) {
@@ -211,16 +151,6 @@ function requireActorAndTargets(operation, contracts, {
       || refs.some((ref) => !targetRefs.includes(ref))) {
     fail('TRACE_PHASE_7_DOMAIN_REQUEST_NOT_APPLICABLE');
   }
-}
-
-function propertyTransitions(contracts) {
-  return [contracts.bagTransition, contracts.bagConcealTransition]
-    .filter(Boolean);
-}
-
-function transitionTarget(transition) {
-  return transition.writes.visibility_state
-    ?? transition.writes.zone_ref ?? transition.writes.location_ref;
 }
 
 function remainingMinutes(temporal) {
@@ -241,21 +171,9 @@ function profileMinutes(profile) {
 }
 
 function domainOwner(operation) {
-  if (operation === 'request_movement') return '@rus/movement-routes';
+  if (operation === 'apply_semantic_activity') return '@rus/turn';
   if (operation === 'request_item_use') return '@rus/items-property';
   return '@rus/turn';
-}
-
-function sameRefs(left, right) {
-  return left.length === right.length
-    && left.every((value, index) => value === right[index]);
-}
-
-function findBag(state, contracts) {
-  const matches = (state.containers ?? []).filter(
-    ({ template_id: id }) => id === contracts.roadBag.item_ref);
-  if (matches.length !== 1) fail('TRACE_PHASE_7_ROAD_BAG_INSTANCE_MISSING');
-  return matches[0];
 }
 
 function fail(code, details = null) {

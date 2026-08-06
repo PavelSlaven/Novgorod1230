@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planApprovedItemVisibilityTransition } from '../src/index.js';
+import {
+  planApplicableApprovedItemTransition,
+  planApprovedItemVisibilityTransition
+} from '../src/index.js';
 
 const transition = {
   transition_profile_id: 'conceal-bag',
@@ -48,4 +51,20 @@ test('approved visibility owner rejects a stale physical source', () => {
   assert.equal(result.pass, false);
   assert.equal(result.errors[0].code,
     'APPROVED_ITEM_VISIBILITY_TRANSITION_SOURCE_MISMATCH');
+});
+
+test('item owner derives concealment from a real location target', () => {
+  const result = planApplicableApprovedItemTransition({
+    approved_transitions: [transition],
+    target_ref: 'inside',
+    expected_state_version: 4,
+    state_version: 4,
+    item: { item_id: 'bag-1', template_id: 'road-bag' },
+    resolved_actor_refs: { zhdanko: 'npc-1' },
+    source: { location_ref: 'storehouse', zone_ref: 'inside',
+      holder_actor_id: 'npc-1', controller_actor_id: 'npc-1' }
+  });
+  assert.equal(result.pass, true);
+  assert.equal(result.proposal.destination.visibility_state,
+    'concealed_requires_search');
 });

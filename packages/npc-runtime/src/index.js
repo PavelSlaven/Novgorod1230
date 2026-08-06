@@ -42,6 +42,8 @@ export {
   resolveConversationVisualPerception
 } from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
+export { selectApplicableNpcActivityExecution } from
+  './activity-execution-selection.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow
 } from './reaction-policy.js';

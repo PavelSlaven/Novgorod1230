@@ -1,5 +1,9 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import {
+  admitTurnStepOwnerProfiles,
+  expandActivityProfiles
+} from './lower-dvina-trace-turn-step-owner-profiles.js';
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (bundle.definition_revision !== 15 || bundle.definition?.revision !== 15) {
@@ -10,6 +14,9 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     ?.activity_profiles, 'profile_id', 'trace_ld_v1_activity_fire_rest');
   const waitActivity = exact(bundle.activity_check_consequence_profiles
     ?.activity_profiles, 'profile_id', 'trace_ld_v1_activity_zhdanko_wait');
+  const moveBagActivity = exact(bundle.activity_check_consequence_profiles
+    ?.activity_profiles, 'profile_id',
+  'trace_ld_v1_activity_zhdanko_move_bag');
   const bodyEffectSource = exact(
     bundle.body_environment_profiles?.effect_profiles,
     'effect_profile_id', 'trace_ld_v1_body_fire_rest_30m');
@@ -38,6 +45,16 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     localTransition,
     bagTransition
   });
+  const admittedOwnerProfiles = admitTurnStepOwnerProfiles(
+    bundle.turn_step_owner_profiles,
+    bundle.artifact_pins?.turn_step_owner_profiles
+  );
+  const semanticActivityProfiles = expandActivityProfiles(
+    admittedOwnerProfiles
+  ).map((profile) => ({
+    ...profile,
+    profile_pin: structuredClone(admittedOwnerProfiles.profile_pin)
+  }));
   const zhdanko = actor(state, autonomous.target_npc_ref);
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
@@ -90,6 +107,10 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     bagConcealTransition: structuredClone(bagConcealTransition),
     localTransition: structuredClone(localTransition),
     scheduleExecutions: structuredClone(scheduleExecutions),
+    scheduleActivityProfiles: structuredClone([
+      waitActivity, moveBagActivity
+    ]),
+    semanticActivityProfiles: structuredClone(semanticActivityProfiles),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start

@@ -1,4 +1,8 @@
-import { subtractGameTimestamp } from '@rus/time-events-history';
+import { canonicalDigest } from '@rus/materialization';
+import {
+  compareGameTimestamp,
+  subtractGameTimestamp
+} from '@rus/time-events-history';
 import {
   createTurnStepExecutionRegistry,
   executeTurnStepActorStep
@@ -9,13 +13,15 @@ import { createTracePhase7DomainExecution } from
 export function createTracePhase7ActorStepRuntime({
   state,
   contracts,
-  temporal
+  temporal,
+  semanticActivityScheduleOwner
 }) {
   const domainExecution = createTracePhase7DomainExecution({
-    state, contracts, temporal
+    state, contracts, temporal, semanticActivityScheduleOwner
   });
   const registry = createTurnStepExecutionRegistry({
     domain: domainExecution.handlers,
+    applySemanticActivity: domainExecution.semantic_activity_handler,
     operationContract: domainExecution.operation_contract
   });
   return Object.freeze({ registry });
@@ -51,13 +57,18 @@ export function finalizeTracePhase7ScheduleExecution({
   scheduleTemporal
 }) {
   const started = actorStep.result;
-  const elapsed = exactIntegerElapsed(
-    started.clock_before, scheduleTemporal.result.clock_after
-  );
+  const completionClock = scheduleTemporal.projection
+    .active_npc_actor_step?.completed_at;
+  if (completionClock == null) {
+    fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+  }
+  const elapsed = exactIntegerElapsed(started.clock_before, completionClock);
   if (started.status !== 'started'
       || scheduleTemporal.result.temporal_status !== 'completed'
-      || scheduleTemporal.result.clock_before.whole_minutes
-        !== started.clock_before.whole_minutes
+      || canonicalDigest(scheduleTemporal.result.clock_before)
+        !== canonicalDigest(started.clock_before)
+      || compareGameTimestamp(completionClock,
+        scheduleTemporal.result.clock_after) > 0
       || elapsed !== Number(started.exact_elapsed.exact_minutes.numerator)
       || scheduleTemporal.projection.active_npc_actor_step?.npc_ref
         !== started.npc_ref
@@ -69,7 +80,7 @@ export function finalizeTracePhase7ScheduleExecution({
     ...structuredClone(started),
     status: 'executed',
     failure_code: null,
-    clock_after: structuredClone(scheduleTemporal.result.clock_after)
+    clock_after: structuredClone(completionClock)
   });
 }
 

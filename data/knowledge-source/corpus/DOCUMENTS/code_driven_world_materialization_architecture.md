@@ -110,9 +110,9 @@ path `npc_action_decision_request_v1` → `npc_step_plan_v1`: один субъ�
 
 ### D-011. Выбор или semantic plan LLM не является последствием
 
-После bounded choice, player step plan или conversation contribution plan код заново проверяет schema, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.
+После bounded choice или semantic plan соответствующего player/NPC-режима код заново проверяет schema, operation contract, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.
 
-`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`). LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.
+`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) в валидированном semantic plan соответствующего player/NPC-режима. LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.
 
 ### D-012. LLM не пишет в базы
 

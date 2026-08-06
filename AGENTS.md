@@ -133,7 +133,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 - запрещено ослаблять фильтры и создавать смысловые fallback;
 - LLM выбирает только из переданного закрытого набора, когда операция является bounded choice;
 - для свободной заявки игрока единственная активная semantic boundary — `turn_step_request_v1` → `turn_step_plan_v1` в общем `@rus/turn`; exact registered commands сохраняют приоритет, а scenario-local planner и параллельный semantic fallback запрещены;
-- ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) не является authored world materialization: он допускается только через валидированный player step plan, code-owned admission и отдельный persisted exact runtime mechanics snapshot;
+- ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) не является authored world materialization: он допускается только через валидированный semantic plan соответствующего player/NPC-режима, code-owned admission и отдельный persisted exact runtime mechanics snapshot;
 - ordinary direct action result не может создавать NPC, места, значимые или скрытые предметы, оружие, деньги, письма, улики, container contents, исторические факты либо отсутствующие категории;
 - последствия выбора рассчитывает код;
 - LLM не пишет непосредственно в базу данных;

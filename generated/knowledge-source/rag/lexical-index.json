@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "f74f26ca6128ed1517b0530ed76566a0b3408b5b08aba2082eda937daf837622",
+  "corpus_hash": "ebb3d5e4b4c0b77bd97062faae2218ee7b34e486f67bb587036e2fd578eeb90d",
   "chunk_count": 2115,
   "chunks": [
     {
@@ -684,8 +684,8 @@
       "section": "D-011. Выбор или semantic plan LLM не является последствием",
       "line_start": 111,
       "line_end": 116,
-      "text": "## code_driven_world_materialization_architecture.md — D-011. Выбор или semantic plan LLM не является последствием\n### D-011. Выбор или semantic plan LLM не является последствием\n\nПосле bounded choice, player step plan или conversation contribution plan код заново проверяет schema, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.\n\n`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`). LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.",
-      "char_count": 1094
+      "text": "## code_driven_world_materialization_architecture.md — D-011. Выбор или semantic plan LLM не является последствием\n### D-011. Выбор или semantic plan LLM не является последствием\n\nПосле bounded choice или semantic plan соответствующего player/NPC-режима код заново проверяет schema, operation contract, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.\n\n`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) в валидированном semantic plan соответствующего player/NPC-режима. LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.",
+      "char_count": 1180
     },
     {
       "id": "code_driven_world_materialization_architecture.md:D-012. LLM не пишет в базы:0",

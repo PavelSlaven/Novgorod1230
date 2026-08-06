@@ -73,6 +73,18 @@ export function approvedPhase7Contracts(state) {
       duration_class: 'moment', duration_minutes: 1, effort: 'none',
       exact_deltas: { health: 0, satiety: 0, energy: 0 },
       condition_outcomes: []
+    }, {
+      profile_ref: 'trace_ld_v1_semantic_activity:short:none',
+      profile_pin: {
+        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
+        revision: 1,
+        digest
+      },
+      body_effect_profile_ref:
+        'trace_ld_v1_semantic_activity:body:short:none',
+      duration_class: 'short', duration_minutes: 15, effort: 'none',
+      exact_deltas: { health: 0, satiety: 0, energy: 0 },
+      condition_outcomes: []
     }],
     zhdanko,
     waitingBoundary: { elapsed_minutes: 25 },

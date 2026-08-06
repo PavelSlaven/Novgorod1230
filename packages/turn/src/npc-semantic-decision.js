@@ -228,7 +228,9 @@ export async function requestNpcSemanticDecision({
   requireBoundaryRequestIdentity(boundary, request, mode);
 
   if (persistedTrace !== null) {
-    if (!validateNpcSemanticDecisionTrace(persistedTrace, request)) {
+    if (!validateNpcSemanticDecisionTrace(persistedTrace, request)
+        || (validatePlan !== null
+          && validatePlan(persistedTrace.plan, request) !== true)) {
       fail(
         'TURN_NPC_TRACE_INVALID',
         'persistedTrace must be a committed semantic trace matching the request',

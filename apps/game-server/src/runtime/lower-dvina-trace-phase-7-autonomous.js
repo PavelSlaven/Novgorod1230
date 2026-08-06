@@ -5,6 +5,7 @@ import {
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
 import { requestNpcSemanticDecision } from '@rus/turn';
+import { validateTracePhase7Plan } from './lower-dvina-trace-phase-7-plan-validation.js';
 
 export async function resolveTracePhase7AutonomousDecision({
   state,
@@ -59,7 +60,14 @@ export async function resolveTracePhase7AutonomousDecision({
     request,
     semanticModel: npcAutonomousModel,
     persistedTrace,
-    revalidateStateVersion
+    revalidateStateVersion,
+    validatePlan: (plan, validatedRequest) =>
+      validateTracePhase7Plan({
+        plan,
+        request: validatedRequest,
+        contracts,
+        operationContract
+      })
   });
   const alreadyRecorded = (state.npc_decision_signals ?? []).some(
     (record) => record?.signal?.signal_id === signal.signal_id

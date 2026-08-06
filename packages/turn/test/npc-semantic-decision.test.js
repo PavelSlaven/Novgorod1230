@@ -264,6 +264,35 @@ test('persisted autonomous trace replays without model call', async () => {
   assert.deepEqual(result.signal_ids_to_consume, []);
 });
 
+test('persisted autonomous trace must pass caller operation contract gate',
+  async () => {
+    const sourceRequest = autonomousRequest();
+    const sourcePlan = autonomousPlan(sourceRequest);
+    const persistedTrace = buildNpcSemanticDecisionTrace({
+      request: sourceRequest,
+      plan: sourcePlan,
+      applied_change_set_id: 'change-1'
+    });
+    let modelCalls = 0;
+    let revalidationCalls = 0;
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary: autonomousBoundary(),
+      request: sourceRequest,
+      persistedTrace,
+      semanticModel: async () => {
+        modelCalls += 1;
+        return sourcePlan;
+      },
+      revalidateStateVersion: async () => {
+        revalidationCalls += 1;
+        return 2;
+      },
+      validatePlan: () => false
+    }), ({ code }) => code === 'TURN_NPC_TRACE_INVALID');
+    assert.equal(modelCalls, 0);
+    assert.equal(revalidationCalls, 0);
+  });
+
 test('autonomous mode rejects stale state and combat remains unsupported', async () => {
   const sourceRequest = autonomousRequest();
   await assert.rejects(requestNpcSemanticDecision({

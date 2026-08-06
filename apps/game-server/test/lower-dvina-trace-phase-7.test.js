@@ -77,22 +77,47 @@ test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
       .active_npc_actor_step.status, 'completed');
   });
 
-test('Phase 7 rejects a carry request without an explicit destination',
+test('Phase 7 repairs invalid carry targets',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
+    let modelCalls = 0;
+    const command = commandFor({ state, contracts,
+      model: async (request) => {
+        const plan = autonomousPlan(request, 'move_bag');
+        if (modelCalls++ === 0) {
+          plan.operations[0].target_refs = [contracts.roadBag.item_ref];
+        }
+        return plan;
+      }
+    });
+    const consequence = await command.consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'carry-without-destination')
+    });
+    assert.equal(modelCalls, 2);
+    assert.equal(consequence.phase7.schedule_execution.schedule_option_id,
+      'move_bag');
+  });
+
+test('Phase 7 rejects two invalid carry plans without state changes',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const stateBefore = structuredClone(state);
+    let modelCalls = 0;
     const command = commandFor({ state, contracts, model: async (request) => {
+      modelCalls += 1;
       const plan = autonomousPlan(request, 'move_bag');
       plan.operations[0].target_refs = [contracts.roadBag.item_ref];
       return plan;
     } });
-    await assert.rejects(
-      () => command.consequence({
-        retrievedState: state,
-        playerInput: playerInput(state, 'carry-without-destination')
-      }),
-      ({ code }) => code === 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE'
-    );
+    await assert.rejects(() => command.consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'carry-invalid')
+    }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
+    assert.equal(modelCalls, 2);
+    assert.deepEqual(state, stateBefore);
   });
 
 test('Phase 7 executes a direct NPC step and continues the rest interval',
@@ -142,6 +167,33 @@ test('Phase 7 executes a direct NPC step and continues the rest interval',
     assert.equal(snapshot.phase7_fire_rest.schedule_result.clock_after
       .whole_minutes, '126');
     assert.equal(snapshot.npcs[1].machine_state.status, 'idle');
+  });
+
+test('Phase 7 repairs overlong activity',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    let modelCalls = 0;
+    const consequence = await commandFor({ state, contracts,
+      model: async (request) => {
+        const plan = directPlan(request);
+        if (modelCalls++ === 0) {
+          plan.activity.duration_class = 'short';
+        }
+        return plan;
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'repair-long-direct-activity')
+    });
+    assert.equal(modelCalls, 2);
+    assert.equal(
+      consequence.phase7.schedule_execution.exact_elapsed.exact_minutes
+        .numerator,
+      '1'
+    );
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
   });
 
 test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',

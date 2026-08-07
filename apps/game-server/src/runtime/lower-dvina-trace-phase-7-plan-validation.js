@@ -24,6 +24,9 @@ export function validateTracePhase7Plan({ plan, request, contracts,
   const operation = plan.operations.find(({ op }) =>
     op === 'request_activity' || op === 'request_item_use');
   if (operation?.op === 'request_activity') {
+    if (!matchesAllowed(activityContract.allowed, operation)) {
+      return rejected('NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+    }
     const selection = selectApplicableNpcActivityExecution({
       operation,
       activity_profiles: contracts.scheduleActivityProfiles,
@@ -34,7 +37,6 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       ]
     });
     return selection.pass
-      && activityContract.activity_kinds.includes(operation.activity_kind)
       && withinAvailableTime(
         profileMinutes(selection.execution_binding), activityContract)
       ? accepted()
@@ -44,11 +46,25 @@ export function validateTracePhase7Plan({ plan, request, contracts,
   const itemContract = operationContract.request_item_use;
   return operation?.op === 'request_item_use'
     && itemContract != null
-    && itemContract.item_refs.includes(operation.item_ref)
-    && itemContract.use_kinds.includes(operation.use_kind)
-    && sameSet(operation.target_refs, itemContract.target_refs)
+    && matchesAllowed(itemContract.allowed, operation)
     ? accepted()
     : rejected('NPC_ITEM_OPERATION_NOT_APPLICABLE');
+}
+
+function matchesAllowed(allowed, operation) {
+  return Array.isArray(allowed)
+    && allowed.some((entry) => {
+      if (operation.op === 'request_activity') {
+        return entry.activity_kind === operation.activity_kind
+          && sameSet(entry.target_refs, operation.target_refs);
+      }
+      if (operation.op === 'request_item_use') {
+        return entry.item_ref === operation.item_ref
+          && entry.use_kind === operation.use_kind
+          && sameSet(entry.target_refs, operation.target_refs);
+      }
+      return false;
+    });
 }
 
 function profileMinutes(profile) {

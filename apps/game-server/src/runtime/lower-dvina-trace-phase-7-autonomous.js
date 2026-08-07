@@ -20,7 +20,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const persistedTrace = persistedInput?.trace ?? null;
   const request = buildRequestFromSnapshots({
     state, contracts, boundary, orderedSignals, operationContract,
-    currentActivity: temporal.projection.waiting_transition
+    waitingTransition: temporal.projection.waiting_transition
   });
   const proposal = await requestNpcSemanticDecision({
     boundary,
@@ -66,14 +66,19 @@ export async function resolveTracePhase7AutonomousDecision({
 }
 
 function buildRequestFromSnapshots({ state, contracts, boundary,
-  orderedSignals, operationContract, currentActivity }) {
+  orderedSignals, operationContract, waitingTransition }) {
   const npc = contracts.zhdanko;
+  const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
-    .filter(({ npc_ref: npc }) => npc?.entity_id === contracts.zhdanko.instance_id)
+    .filter(({ npc_ref: npcRef }) => npcRef?.entity_id === npc.instance_id)
     .map(({ request_id: requestId, boundary_id: boundaryId }) => ({
       request_ref: requestId,
       boundary_ref: boundaryId
     }));
+  const transitionRef = {
+    entity_kind: 'npc_activity_factual_transition',
+    entity_id: waitingTransition.transition_id
+  };
   return buildNpcActionDecisionRequestFromSnapshots({
     request_identity: {
       request_id: `npc-action-request:${boundary.boundary_id}`,
@@ -84,11 +89,16 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
       decision_index: 1
     },
     boundary,
-    npc_snapshot: npc,
+    npc_snapshot: {
+      ...npc,
+      goals: policyEntries(policy.goals, 'goal_ref'),
+      fears: policyEntries(policy.fears, 'fear_ref'),
+      obligations: obligationEntries(policy.relations_and_obligations)
+    },
     current_activity_snapshot: {
-      activity_ref: currentActivity.activity_ref,
-      summary: null,
-      status: currentActivity.to,
+      activity_ref: waitingTransition.activity_ref,
+      summary: waitingActivitySummary(waitingTransition),
+      status: waitingTransition.to,
       can_continue_automatically: false
     },
     historical_context_snapshot: state.historical_context ?? null,
@@ -96,8 +106,21 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     mood_snapshot: npc.mood ?? null,
     relationship_snapshots: npc.relationships ?? [],
     resource_snapshots: state.containers ?? [],
-    perception_snapshot: npc.perception_snapshot ?? null,
-    knowledge_snapshot: npc.knowledge_snapshot ?? null,
+    perception_snapshot: {
+      ...(npc.perception_snapshot ?? {}),
+      perceived_changes: [{
+        source_event_ref: transitionRef,
+        summary: waitingPerceivedChange(waitingTransition, contracts)
+      }],
+      known_routes_and_exits: knownRoutes(contracts)
+    },
+    knowledge_snapshot: {
+      ...(npc.knowledge_snapshot ?? {}),
+      known_facts: [
+        ...(npc.knowledge_snapshot?.known_facts ?? []),
+        ...ratshaDelayFacts(contracts)
+      ]
+    },
     memory_snapshot: {
       ...(npc.memory_snapshot ?? {}),
       previous_decisions: previousDecisions
@@ -105,6 +128,71 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     resolved_signals: orderedSignals,
     operation_contract: operationContract
   });
+}
+
+function policyEntries(values, refKey) {
+  return (values ?? []).flatMap((value) => {
+    if (typeof value !== 'string' || value.length === 0) return [];
+    return [{ [refKey]: value, summary: value }];
+  });
+}
+
+function obligationEntries(values) {
+  return (values ?? []).flatMap((value) => {
+    if (typeof value !== 'string' || value.length === 0) return [];
+    const separator = value.indexOf(':');
+    return [{
+      obligation_ref: value,
+      actor_ref: separator >= 0 ? value.slice(separator + 1) : null,
+      summary: value,
+      status: 'active'
+    }];
+  });
+}
+
+function knownRoutes(contracts) {
+  const routes = [];
+  for (const routeRef of contracts.autonomous?.known_route_refs ?? []) {
+    routes.push({
+      route_ref: routeRef,
+      destination_zone_ref:
+        contracts.localTransition?.destination_zone_ref ?? null,
+      summary: routeRef
+    });
+  }
+  for (const resourceRef of contracts.npcPolicy?.available_resources ?? []) {
+    if (resourceRef.includes('boat') || resourceRef.includes('route')) {
+      routes.push({
+        resource_ref: resourceRef,
+        summary: resourceRef
+      });
+    }
+  }
+  return routes;
+}
+
+function ratshaDelayFacts(contracts) {
+  const inputs = contracts.schedulePolicy?.decision_inputs ?? [];
+  if (!inputs.includes('ratsha_presence_or_return')) return [];
+  return [{
+    fact_ref: 'ratsha_presence_or_return',
+    summary: 'ratsha_presence_or_return',
+    state: 'expected_return_boundary_crossed',
+    confidence: 'known'
+  }];
+}
+
+function waitingPerceivedChange(transition, contracts) {
+  const inputs = contracts.schedulePolicy?.decision_inputs ?? [];
+  const parts = [waitingActivitySummary(transition)];
+  if (inputs.includes('ratsha_presence_or_return')) {
+    parts.push('ratsha_presence_or_return:expected_return_boundary_crossed');
+  }
+  return parts.join('; ');
+}
+
+function waitingActivitySummary(transition) {
+  return `${transition.activity_ref}: ${transition.from}→${transition.to}`;
 }
 
 function fail(code) {

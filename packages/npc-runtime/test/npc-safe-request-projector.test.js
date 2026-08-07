@@ -114,5 +114,64 @@ test('NPC-safe projector allowlists persisted subjective snapshots', () => {
   assert.equal(request.perception.visible_objects[0].summary, 'дрова');
   assert.equal(request.knowledge.known_facts[0].fact_ref, 'fact-1');
   assert.equal(request.memory.recent_events[0].event_ref, 'event-1');
+  assert.equal(request.decision_reasons.perceived_changes[0],
+    'event:event-1');
   assert.doesNotMatch(JSON.stringify(request), /hidden|secret/u);
+});
+
+test('NPC-safe projector prefers authored perceived change summaries', () => {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt,
+    category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('npc_activity_factual_transition', 'waiting-1'),
+    subject_ref: ref('npc', 'speaker'),
+    scope_refs: [],
+    perception_required: false,
+    source_perception_ref: null,
+    causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: ref('npc', 'speaker'),
+    decision_mode: 'autonomous',
+    scheduled_at: occurredAt,
+    significance: 'material',
+    categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    state_version: '1'
+  });
+  const request = buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: {
+      request_id: 'request-perceived',
+      root_turn_id: 'turn-perceived',
+      committed_state_version: 1,
+      working_revision: 1,
+      decision_index: 1
+    },
+    boundary,
+    npc_snapshot: {
+      instance_id: 'speaker',
+      attributes: [],
+      skills: [],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: 'wait-profile',
+      summary: 'wait-profile: waiting→decision_required',
+      status: 'decision_required',
+      can_continue_automatically: false
+    },
+    perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('npc_activity_factual_transition', 'waiting-1'),
+        summary: 'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed'
+      }]
+    },
+    resolved_signals: [signal],
+    operation_contract: {}
+  });
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(request.decision_reasons.perceived_changes[0],
+    'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed');
 });

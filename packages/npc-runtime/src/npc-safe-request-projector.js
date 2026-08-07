@@ -39,8 +39,9 @@ export function buildNpcActionDecisionRequestFromSnapshots({
       significance: boundary.significance,
       categories: structuredClone(boundary.categories),
       signal_refs: structuredClone(boundary.signal_refs),
-      perceived_changes: orderedSignals.map(({ source_event_ref: source }) =>
-        `${source.entity_kind}:${source.entity_id}`)
+      perceived_changes: projectPerceivedChanges(
+        orderedSignals, perception_snapshot
+      )
     },
     historical_context: {
       year: historical_context_snapshot?.year ?? null,
@@ -193,6 +194,22 @@ export function projectNpcSafeResourceSnapshots({
     }];
   }).filter(({ resource_ref: resourceRef }) =>
     typeof resourceRef === 'string' && resourceRef.length > 0);
+}
+
+function projectPerceivedChanges(orderedSignals, perception_snapshot) {
+  const bySource = new Map();
+  for (const entry of perception_snapshot?.perceived_changes ?? []) {
+    const source = entry?.source_event_ref;
+    const summary = entry?.summary ?? entry?.content;
+    if (source?.entity_kind && source?.entity_id
+        && typeof summary === 'string' && summary.length > 0) {
+      bySource.set(`${source.entity_kind}:${source.entity_id}`, summary);
+    }
+  }
+  return orderedSignals.map(({ source_event_ref: source }) => {
+    const key = `${source.entity_kind}:${source.entity_id}`;
+    return bySource.get(key) ?? `${source.entity_kind}:${source.entity_id}`;
+  });
 }
 
 function completePerceptionSnapshot(snapshot) {

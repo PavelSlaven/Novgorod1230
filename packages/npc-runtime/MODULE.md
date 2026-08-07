@@ -25,7 +25,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots, а общий resource projector допускает persisted controlled либо factually accessible resources без scenario allowlist; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
+- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots, а общий resource projector допускает persisted controlled либо factually accessible resources без scenario allowlist; `decision_reasons.perceived_changes` берёт authored/factual summary из perception snapshot по source event, иначе technical ref; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
 - `selectApplicableNpcActivityExecution(input)` — выбирает ровно один
   applicable approved activity execution по semantic activity kind и реальным
   item/location refs; отсутствующая цель или неоднозначность дают typed reject.
@@ -76,11 +76,12 @@ genuinely closed choices и historical revisions, выбранных явным 
 В active `spatial-v3-production-v5` revision-14 conversation и Phase-7 autonomous
 contracts применяются через единый orchestration/write path. Phase 7 фиксирует
 fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
-фактически зарегистрированные actor-step operations, применяется на том же
-timestamp, после чего общий temporal owner продолжает интервал до +30;
-temporal/persistence/visibility остаются code-owned. Production v4 является explicit
-migration/rollback source, но не runtime path; partial activation, dual write
-и in-turn fallback запрещены. Tests:
+точные actor-step operations из зарегистрированных domain handlers
+(`operation_contract.allowed` перечисляет только исполняемые kind/target
+комбинации), применяется на том же timestamp, после чего общий temporal owner
+продолжает интервал до +30; temporal/persistence/visibility остаются
+code-owned. Production v4 является explicit migration/rollback source, но не
+runtime path; partial activation, dual write и in-turn fallback запрещены.
 Tests покрывают exact schedule/perception, five-category signals, one
 NPC/batch aggregation, semantic contracts, conversation contracts, replay и
 historical bounded choices.

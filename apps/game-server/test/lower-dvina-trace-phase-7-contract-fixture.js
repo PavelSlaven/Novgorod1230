@@ -42,13 +42,39 @@ export function approvedPhase7Contracts(state) {
       ]
     },
     npcPolicy: {
-      goals: ['protect_storehouse_property'],
-      fears: ['loss_of_property'],
-      relations_and_obligations: ['responsible_for_storehouse']
+      goals: [
+        'conceal_committed_shortage_if_selected_truth',
+        'retain_control_of_property',
+        'avoid_accountability'
+      ],
+      fears: [
+        'witnesses',
+        'documentary_reconciliation',
+        'loss_of_escape_route'
+      ],
+      relations_and_obligations: [
+        'work_supervisor_of:ratsha_storehouse_helper'
+      ],
+      available_resources: [
+        'trace_ld_v1_container_road_bag',
+        'trace_ld_v1_item_sealed_packet',
+        'trace_ld_v1_item_second_small_boat',
+        'trace_ld_v1_item_zhdanko_axe',
+        'trace_ld_v1_item_zhdanko_rope'
+      ]
     },
     schedulePolicy: {
       schedule_policy_id: 'trace_ld_v1_zhdanko_autonomous_schedule',
-      version: 1
+      version: 1,
+      decision_inputs: [
+        'current_game_timestamp',
+        'current_location',
+        'committed_knowledge',
+        'ratsha_presence_or_return',
+        'road_bag_state',
+        'second_small_boat_availability',
+        'available_exit_routes'
+      ]
     },
     roadBag: { item_ref: 'trace_ld_v1_container_road_bag' },
     bagTransition: bagTransition(),

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { validateNpcStepPlan } from '@rus/npc-runtime';
 import {
   approvedPhase7Contracts,
   phase7AutonomousPlan,
@@ -20,10 +21,18 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     model: async (request) => {
       assert.deepEqual(Object.keys(request.decision_scope.operation_contract),
         ['request_activity', 'request_item_use']);
-      assert.deepEqual(request.decision_scope.operation_contract
-        .request_activity.target_refs, [
-        'trace_ld_v1_container_road_bag', 'river_access'
-      ]);
+      assert.deepEqual(
+        request.decision_scope.operation_contract.request_activity.allowed,
+        [
+          { activity_kind: 'wait', target_refs: [] },
+          {
+            activity_kind: 'carry',
+            target_refs: [
+              'trace_ld_v1_container_road_bag', 'river_access'
+            ]
+          }
+        ]
+      );
       return phase7AutonomousPlan(request, 'move_bag');
     }
   }).consequence({
@@ -75,7 +84,7 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     .active_npc_actor_step.decision_trace_ref]);
 });
 
-test('Phase 7 returns one typed domain result for invalid carry targets',
+test('Phase 7 rejects combinations outside the exact operation contract',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
@@ -89,20 +98,49 @@ test('Phase 7 returns one typed domain result for invalid carry targets',
         return plan;
       }
     });
-    const consequence = await command.consequence({
-      retrievedState: state,
-      playerInput: phase7PlayerInput(state, 'carry-without-destination')
-    });
-
-    assert.equal(modelCalls, 1);
-    assert.equal(consequence.status, 'blocked');
-    assert.equal(consequence.duration_minutes, 0);
-    assert.equal(Object.hasOwn(consequence, 'phase7_kind'), false);
-    assert.equal(consequence.hidden_update.npc_autonomous_domain_result.pass,
-      false);
-    assert.equal(consequence.hidden_update.npc_autonomous_domain_result
-      .errors[0].code, 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+    await assert.rejects(
+      () => command.consequence({
+        retrievedState: state,
+        playerInput: phase7PlayerInput(state, 'carry-without-destination')
+      }),
+      (error) => error?.code === 'TURN_NPC_PLAN_INVALID'
+    );
+    assert.equal(modelCalls, 2);
     assert.deepEqual(state, stateBefore);
+  });
+
+test('Phase 7 exact contract accepts wait and carry bindings only',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    const captured = [];
+    await phase7Command({
+      state,
+      contracts,
+      model: async (request) => {
+        captured.push(request);
+        return phase7AutonomousPlan(request, 'wait');
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'exact-wait')
+    });
+    const allowed = captured[0].decision_scope.operation_contract
+      .request_activity.allowed;
+    assert.deepEqual(allowed, [
+      { activity_kind: 'wait', target_refs: [] },
+      {
+        activity_kind: 'carry',
+        target_refs: ['trace_ld_v1_container_road_bag', 'river_access']
+      }
+    ]);
+    const validWait = phase7AutonomousPlan(captured[0], 'wait');
+    const validCarry = phase7AutonomousPlan(captured[0], 'move_bag');
+    const invalidCarry = phase7AutonomousPlan(captured[0], 'move_bag');
+    invalidCarry.operations[0].target_refs = [contracts.roadBag.item_ref];
+    assert.equal(validateNpcStepPlan(validWait, captured[0]), true);
+    assert.equal(validateNpcStepPlan(validCarry, captured[0]), true);
+    assert.equal(validateNpcStepPlan(invalidCarry, captured[0]), false);
   });
 
 test('Phase 7 rejects overlong activity without a second model decision',

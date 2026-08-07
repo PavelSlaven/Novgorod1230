@@ -72,7 +72,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || signal.category !== 'objective'
       || signal.significance !== 'material'
       || signal.perception_requirement !== 'perception_not_required'
-      || autonomous.operation_contract !== 'npc_semantic_request_v1'
+      || autonomous.operation_contract !== 'npc_action_decision_request_v1'
       || Object.hasOwn(autonomous, 'activity_profile_bindings')
       || canonicalDigest(autonomous.available_resource_refs)
         !== canonicalDigest(['trace_ld_v1_container_road_bag'])

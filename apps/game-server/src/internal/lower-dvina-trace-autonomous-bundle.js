@@ -223,7 +223,7 @@ function validAutonomousBindings(value) {
     && value.parent_player_activity_ref === 'trace_ld_v1_activity_fire_rest'
     && value.signal_descriptor?.category === 'objective'
     && value.signal_descriptor?.significance === 'material'
-    && value.operation_contract === 'npc_semantic_request_v1'
+    && value.operation_contract === 'npc_action_decision_request_v1'
     && !Object.hasOwn(value, 'activity_profile_bindings')
     && Array.isArray(value.available_resource_refs)
     && JSON.stringify(value.available_resource_refs)

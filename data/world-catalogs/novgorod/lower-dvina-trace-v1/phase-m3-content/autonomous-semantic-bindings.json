@@ -6,7 +6,7 @@
   "scenario_id": "lower_dvina_trace_v1",
   "scenario_definition_revision": 15,
   "fallback_policy": "forbidden",
-  "contract_refs": ["npc_decision_signal_v1", "npc_decision_boundary_v1", "npc_semantic_request_v1", "npc_semantic_plan_v1"],
+  "contract_refs": ["npc_decision_signal_v1", "npc_decision_boundary_v1", "npc_action_decision_request_v1", "npc_step_plan_v1"],
   "decision_mode": "autonomous",
   "temporal_owner": "@rus/turn",
   "schedule_owner": "@rus/npc-runtime",
@@ -15,7 +15,7 @@
   "source_factual_transition": {"activity_profile_ref": "trace_ld_v1_activity_zhdanko_wait", "boundary": "five_minutes_committed", "boundary_elapsed_minutes_from_parent_start": 25},
   "parent_player_activity_ref": "trace_ld_v1_activity_fire_rest",
   "signal_descriptor": {"category": "objective", "significance": "material", "perception_requirement": "perception_not_required"},
-  "operation_contract": "npc_semantic_request_v1",
+  "operation_contract": "npc_action_decision_request_v1",
   "available_resource_refs": ["trace_ld_v1_container_road_bag"],
   "known_route_refs": ["trace_ld_v1_local_transition_storehouse_to_river_access"],
   "signal_mappings": [

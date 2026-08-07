@@ -12,14 +12,14 @@
   "superseded_package_ref": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/manifest.json", "id": "lower_dvina_trace_m2_content_v1", "revision": 1, "schema": "rus.lower_dvina_trace_m2_content_manifest.v1", "digest": "e76ebdf8bce04c2baf985e937e07c1ea3ab29c8f0aa340dfe0548cfda9e508d8"},
   "superseded_definition_ref": {"path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/definition.json", "id": "lower_dvina_trace_v1", "revision": 14, "schema": "rus.trace_scenario_definition.v1", "digest": "25cb47dbde6922bf58734802210253254b74bb4a5d60a93a45126a74f73f3414"},
   "content_refs": {
-    "definition": {"path": "definition.json", "id": "lower_dvina_trace_v1", "revision": 15, "schema": "rus.trace_scenario_definition.v1", "digest": "7609b3f2d31a79551737f679c3bcd644ef916230313e838132e856d238939578"},
+    "definition": {"path": "definition.json", "id": "lower_dvina_trace_v1", "revision": 15, "schema": "rus.trace_scenario_definition.v1", "digest": "23d77e919e2e5f29769d0a6c1297715d7f456de1826be2f357589393253cd650"},
     "turn_step_bindings": {"path": "turn-step-bindings.json", "id": "lower_dvina_trace_turn_step_bindings_v2", "revision": 2, "schema": "rus.lower_dvina_trace_turn_step_bindings.v1", "digest": "c082b9361b42e89e9e1bedfd24ad4d6d6610604268806618c9bb33252d4cd3f5"},
-    "autonomous_semantic_bindings": {"path": "autonomous-semantic-bindings.json", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "digest": "a06603da7d14cac7b0e28454839a7bf4924a0134dfeaa13d5a3b9a9dd8533194"},
+    "autonomous_semantic_bindings": {"path": "autonomous-semantic-bindings.json", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "digest": "5c986b4d5339cb234382a273508e67f574b5979db6bb437eb2b544d2b439c720"},
     "movement_bindings": {"path": "movement-bindings.json", "id": "trace_ld_v1_movement_bindings", "revision": 3, "schema": "rus.trace_movement_bindings.v1", "digest": "c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d"}
   },
-  "files": {"autonomous-semantic-bindings.json": "a06603da7d14cac7b0e28454839a7bf4924a0134dfeaa13d5a3b9a9dd8533194", "definition.json": "7609b3f2d31a79551737f679c3bcd644ef916230313e838132e856d238939578", "movement-bindings.json": "c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d", "turn-step-bindings.json": "c082b9361b42e89e9e1bedfd24ad4d6d6610604268806618c9bb33252d4cd3f5"},
+  "files": {"autonomous-semantic-bindings.json": "5c986b4d5339cb234382a273508e67f574b5979db6bb437eb2b544d2b439c720", "definition.json": "23d77e919e2e5f29769d0a6c1297715d7f456de1826be2f357589393253cd650", "movement-bindings.json": "c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d", "turn-step-bindings.json": "c082b9361b42e89e9e1bedfd24ad4d6d6610604268806618c9bb33252d4cd3f5"},
   "content_digest_algorithm": "sha256_sorted_filename_colon_digest_lf_v1",
-  "content_digest": "3aeac200f483b58278c0ffeb2d4f6a8669c351e4dbefd02ec8f595783a93aa00",
+  "content_digest": "d7133c1f833d03935c5abc1cc99b6a3f0db1da4d5fc265a5639061fca78ea057",
   "scope": ["m3_autonomous_npc_semantic_bindings", "phase_7_fire_rest_turn_step_admission"],
   "excludes": ["scenario_local_scheduler", "runtime_handlers", "persistence", "ddl", "api", "ui"]
 }

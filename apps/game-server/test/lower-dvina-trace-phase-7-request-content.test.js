@@ -46,23 +46,32 @@ test('Phase 7 LLM request carries Zhdanko subjective policy context',
     assert.equal(
       request.knowledge.known_facts.some(({ fact_ref: ref }) =>
         ref === 'ratsha_presence_or_return'),
-      true
+      false
     );
-    assert.equal(
-      request.perception.known_routes_and_exits.some(({ route_ref: ref }) =>
-        ref === contracts.autonomous.known_route_refs[0]),
-      true
+    assert.deepEqual(
+      request.perception.known_routes_and_exits.map(
+        ({ route_ref: ref }) => ref
+      ),
+      contracts.autonomous.known_route_refs
     );
     assert.equal(
       request.perception.known_routes_and_exits.some(({ resource_ref: ref }) =>
         ref === 'trace_ld_v1_item_second_small_boat'),
-      true
+      false
     );
     assert.equal(request.decision_reasons.perceived_changes.length, 1);
     assert.match(request.decision_reasons.perceived_changes[0],
       /waiting→decision_required/);
-    assert.match(request.decision_reasons.perceived_changes[0],
-      /ratsha_presence_or_return/);
+    assert.equal(
+      request.decision_reasons.perceived_changes[0]
+        .includes('ratsha_presence_or_return'),
+      false
+    );
+    assert.equal(
+      request.decision_reasons.perceived_changes[0]
+        .includes('expected_return_boundary_crossed'),
+      false
+    );
     assert.equal(
       request.decision_reasons.perceived_changes[0]
         .includes('npc_activity_factual_transition:'),

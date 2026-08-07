@@ -177,28 +177,18 @@ export async function advanceTemporalNpcDecisionBoundary({
         },
         decision
       }));
-      if (actorStep?.domain_result?.pass === false
-          && actorStep?.working_projection != null
-          && typeof actorStep.working_projection === 'object'
-          && !Array.isArray(actorStep.working_projection)) {
-        return cloneFrozen({
-          temporal,
-          decision,
-          actor_step: actorStep,
-          continuation: null,
-          resolved_batches: [...resolvedBatches, {
-            same_time_batch_ref: signalBatch.same_time_batch_ref,
-            same_time_batch_ordinal: batchOrdinal,
-            decision,
-            actor_step: actorStep
-          }]
-        });
-      }
-      if (!timestamp(actorStep?.started_at)
-          || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
-          || actorStep?.working_projection == null
-          || typeof actorStep.working_projection !== 'object'
-          || Array.isArray(actorStep.working_projection)) {
+      // Domain reject for one NPC is recorded below and siblings still run.
+      // Single-NPC path (runSingleNpcDecisionPass) still aborts continuation.
+      const domainRejected = actorStep?.domain_result?.pass === false
+        && actorStep?.working_projection != null
+        && typeof actorStep.working_projection === 'object'
+        && !Array.isArray(actorStep.working_projection);
+      if (!domainRejected
+          && (!timestamp(actorStep?.started_at)
+            || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
+            || actorStep?.working_projection == null
+            || typeof actorStep.working_projection !== 'object'
+            || Array.isArray(actorStep.working_projection))) {
         fail('temporal_change_set_conflict',
           'NPC actor-step must start on the decision timestamp and return working state.');
       }

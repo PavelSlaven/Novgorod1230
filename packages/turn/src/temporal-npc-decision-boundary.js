@@ -1,4 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
+import {
+  orderNpcDecisionBoundaries
+} from '@rus/npc-runtime';
 import { compareGameTimestamp } from '@rus/time-events-history';
 import { cloneFrozen } from './temporal-advance-support.js';
 import { aggregateTemporalNpcDecisionSignals } from
@@ -17,6 +20,37 @@ function fail(code, message, details = {}) {
   error.code = code;
   error.details = cloneFrozen(details);
   throw error;
+}
+
+function refKey(value) {
+  return `${value.entity_kind}\u0000${value.entity_id}`;
+}
+
+function resolveNpcRefs(decisionSignalState, descriptors) {
+  if (Array.isArray(decisionSignalState.npc_refs)
+      && decisionSignalState.npc_refs.length > 0) {
+    const unique = new Map();
+    for (const npcRef of decisionSignalState.npc_refs) {
+      unique.set(refKey(npcRef), npcRef);
+    }
+    return [...unique.values()].sort((left, right) =>
+      refKey(left).localeCompare(refKey(right), 'en'));
+  }
+  const discovered = new Map();
+  for (const descriptor of descriptors ?? []) {
+    const subject = descriptor?.subject_ref;
+    if (subject?.entity_kind === 'npc' && typeof subject.entity_id === 'string') {
+      discovered.set(refKey(subject), subject);
+    }
+  }
+  if (discovered.size > 0) {
+    return [...discovered.values()].sort((left, right) =>
+      refKey(left).localeCompare(refKey(right), 'en'));
+  }
+  if (decisionSignalState.npc_ref != null) {
+    return [decisionSignalState.npc_ref];
+  }
+  return [];
 }
 
 export async function advanceTemporalNpcDecisionBoundary({
@@ -66,20 +100,38 @@ export async function advanceTemporalNpcDecisionBoundary({
   let factualState = cloneFrozen(decisionSignalState.factual_state);
   let decision = null;
   let actorStep = null;
+  let lastResolvedOrdinal = 0;
   const resolvedBatches = [];
 
   for (let batchOrdinal = 1; batchOrdinal <= maxBatches; batchOrdinal += 1) {
-    const signalBatch = aggregateTemporalNpcDecisionSignals({
-      temporal: {
-        ...temporal,
-        projection,
-        state_projection: projection
-      },
-      ...decisionSignalState,
-      factual_state: factualState,
-      same_time_batch_ordinal: batchOrdinal
-    });
-    if (signalBatch === null) {
+    const descriptors = projection?.npc_decision_signal_descriptors ?? [];
+    const npcRefs = resolveNpcRefs(decisionSignalState, descriptors);
+    if (npcRefs.length === 0) {
+      if (batchOrdinal === 1) {
+        fail('temporal_change_set_conflict',
+          'Paused NPC decision batch requires at least one NPC subject.');
+      }
+      break;
+    }
+
+    const signalBatches = [];
+    for (const npcRef of npcRefs) {
+      const signalBatch = aggregateTemporalNpcDecisionSignals({
+        temporal: {
+          ...temporal,
+          projection,
+          state_projection: projection
+        },
+        ...decisionSignalState,
+        npc_ref: npcRef,
+        factual_state: factualState,
+        same_time_batch_ordinal: batchOrdinal
+      });
+      if (signalBatch !== null) {
+        signalBatches.push(signalBatch);
+      }
+    }
+    if (signalBatches.length === 0) {
       if (batchOrdinal === 1) {
         fail('temporal_change_set_conflict',
           'Paused NPC decision batch did not produce one decision boundary.');
@@ -87,97 +139,111 @@ export async function advanceTemporalNpcDecisionBoundary({
       break;
     }
 
-    decision = await resolveDecision(cloneFrozen({
-      temporal: {
-        ...temporal,
-        projection,
-        state_projection: projection
-      },
-      signal_batch: signalBatch
-    }));
-    if (!timestamp(decision?.boundary?.scheduled_at)
-        || compareGameTimestamp(
-          decision.boundary.scheduled_at, decisionTimestamp
-        ) !== 0) {
-      fail('temporal_candidate_stale',
-        'NPC decision boundary must match the paused temporal timestamp.');
-    }
-    if (decision.boundary.same_time_batch_ref != null
-        && canonicalDigest(decision.boundary.same_time_batch_ref)
-          !== canonicalDigest(signalBatch.same_time_batch_ref)) {
-      fail('temporal_change_set_conflict',
-        'NPC decision boundary batch identity must match the resolved batch.');
-    }
+    const orderedBoundaries = orderNpcDecisionBoundaries(
+      signalBatches.map(({ boundary }) => boundary)
+    );
+    const orderedBatches = orderedBoundaries.map((boundary) =>
+      signalBatches.find(({ boundary: candidate }) =>
+        candidate.boundary_id === boundary.boundary_id));
 
-    actorStep = await executeActorStep(cloneFrozen({
-      temporal: {
-        ...temporal,
-        projection,
-        state_projection: projection
-      },
-      decision
-    }));
-    if (actorStep?.domain_result?.pass === false
-        && actorStep?.working_projection != null
-        && typeof actorStep.working_projection === 'object'
-        && !Array.isArray(actorStep.working_projection)) {
-      return cloneFrozen({
-        temporal,
-        decision,
-        actor_step: actorStep,
-        continuation: null,
-        resolved_batches: [...resolvedBatches, {
-          same_time_batch_ref: signalBatch.same_time_batch_ref,
-          same_time_batch_ordinal: batchOrdinal,
+    for (const signalBatch of orderedBatches) {
+      decision = await resolveDecision(cloneFrozen({
+        temporal: {
+          ...temporal,
+          projection,
+          state_projection: projection
+        },
+        signal_batch: signalBatch
+      }));
+      if (!timestamp(decision?.boundary?.scheduled_at)
+          || compareGameTimestamp(
+            decision.boundary.scheduled_at, decisionTimestamp
+          ) !== 0) {
+        fail('temporal_candidate_stale',
+          'NPC decision boundary must match the paused temporal timestamp.');
+      }
+      if (decision.boundary.same_time_batch_ref != null
+          && canonicalDigest(decision.boundary.same_time_batch_ref)
+            !== canonicalDigest(signalBatch.same_time_batch_ref)) {
+        fail('temporal_change_set_conflict',
+          'NPC decision boundary batch identity must match the resolved batch.');
+      }
+
+      actorStep = await executeActorStep(cloneFrozen({
+        temporal: {
+          ...temporal,
+          projection,
+          state_projection: projection
+        },
+        decision
+      }));
+      if (actorStep?.domain_result?.pass === false
+          && actorStep?.working_projection != null
+          && typeof actorStep.working_projection === 'object'
+          && !Array.isArray(actorStep.working_projection)) {
+        return cloneFrozen({
+          temporal,
           decision,
-          actor_step: actorStep
-        }]
-      });
-    }
-    if (!timestamp(actorStep?.started_at)
-        || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
-        || actorStep?.working_projection == null
-        || typeof actorStep.working_projection !== 'object'
-        || Array.isArray(actorStep.working_projection)) {
-      fail('temporal_change_set_conflict',
-        'NPC actor-step must start on the decision timestamp and return working state.');
-    }
+          actor_step: actorStep,
+          continuation: null,
+          resolved_batches: [...resolvedBatches, {
+            same_time_batch_ref: signalBatch.same_time_batch_ref,
+            same_time_batch_ordinal: batchOrdinal,
+            decision,
+            actor_step: actorStep
+          }]
+        });
+      }
+      if (!timestamp(actorStep?.started_at)
+          || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
+          || actorStep?.working_projection == null
+          || typeof actorStep.working_projection !== 'object'
+          || Array.isArray(actorStep.working_projection)) {
+        fail('temporal_change_set_conflict',
+          'NPC actor-step must start on the decision timestamp and return working state.');
+      }
 
-    projection = cloneFrozen(actorStep.working_projection);
-    const consumed = [
-      ...(factualState.consumed_npc_decision_signal_ids ?? []),
-      ...(decision.autonomous?.consumed_signal_ids
-        ?? signalBatch.ordered_signals.map(({ signal_id: id }) => id))
-    ];
-    const knownSignals = [
-      ...(factualState.npc_decision_signals ?? []),
-      ...signalBatch.new_signal_records
-    ];
-    factualState = cloneFrozen({
-      ...factualState,
-      consumed_npc_decision_signal_ids: [...new Set(consumed)],
-      npc_decision_signals: knownSignals
-    });
-    resolvedBatches.push({
-      same_time_batch_ref: signalBatch.same_time_batch_ref,
-      same_time_batch_ordinal: batchOrdinal,
-      decision,
-      actor_step: actorStep
-    });
+      projection = cloneFrozen(actorStep.working_projection);
+      const consumed = [
+        ...(factualState.consumed_npc_decision_signal_ids ?? []),
+        ...(decision.autonomous?.consumed_signal_ids
+          ?? signalBatch.ordered_signals.map(({ signal_id: id }) => id))
+      ];
+      const knownSignals = [
+        ...(factualState.npc_decision_signals ?? []),
+        ...signalBatch.new_signal_records
+      ];
+      factualState = cloneFrozen({
+        ...factualState,
+        consumed_npc_decision_signal_ids: [...new Set(consumed)],
+        npc_decision_signals: knownSignals
+      });
+      resolvedBatches.push({
+        same_time_batch_ref: signalBatch.same_time_batch_ref,
+        same_time_batch_ordinal: batchOrdinal,
+        decision,
+        actor_step: actorStep
+      });
+      lastResolvedOrdinal = batchOrdinal;
+    }
   }
 
-  if (resolvedBatches.length >= maxBatches) {
-    const again = aggregateTemporalNpcDecisionSignals({
-      temporal: {
-        ...temporal,
-        projection,
-        state_projection: projection
-      },
-      ...decisionSignalState,
-      factual_state: factualState,
-      same_time_batch_ordinal: maxBatches + 1
-    });
-    if (again !== null) {
+  if (lastResolvedOrdinal >= maxBatches) {
+    const descriptors = projection?.npc_decision_signal_descriptors ?? [];
+    const npcRefs = resolveNpcRefs(decisionSignalState, descriptors);
+    const again = npcRefs.some((npcRef) =>
+      aggregateTemporalNpcDecisionSignals({
+        temporal: {
+          ...temporal,
+          projection,
+          state_projection: projection
+        },
+        ...decisionSignalState,
+        npc_ref: npcRef,
+        factual_state: factualState,
+        same_time_batch_ordinal: maxBatches + 1
+      }) !== null);
+    if (again) {
       fail('temporal_boundary_cycle',
         'Temporal same-time NPC reaction loop did not reach a fixed point.');
     }

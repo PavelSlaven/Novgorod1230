@@ -2,7 +2,8 @@ import { stateModifier } from '@rus/body-state';
 import { DC, attributeBonus, evaluateCheckOutcome } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
 
-export function validTracePhase7ActorStepCheck(phase7, contracts, factual) {
+export function validTracePhase7ActorStepCheck(phase7, contracts, factual,
+  state = null) {
   const plan = phase7.autonomous.proposal.plan;
   const check = phase7.actor_step_check;
   if (plan.resolution !== 'generic_check') return check === null;
@@ -16,14 +17,17 @@ export function validTracePhase7ActorStepCheck(phase7, contracts, factual) {
   const skill = plan.check.skill_ref == null ? null
     : context.skills.find(({ skill_ref: ref }) =>
       ref === plan.check.skill_ref);
+  const npc = liveNpc(state, contracts.zhdanko);
+  const body = authoritativeNpcCheckBody(npc);
+  const loadCategory = authoritativeNpcLoadCategory(npc);
+  if (body == null || loadCategory == null) return false;
   const relevantMetrics =
     policy.state_relevance_by_attribute[plan.check.attribute_ref];
   const expectedModifiers = {
     attribute: attributeBonus(attribute?.value),
     skill: skill?.value ?? 0,
-    state: stateModifier(context.body, relevantMetrics),
-    equipment:
-      policy.load_category_modifiers[context.inventory.load_category],
+    state: stateModifier(body, relevantMetrics),
+    equipment: policy.load_category_modifiers[loadCategory],
     circumstances: 0
   };
   const total = result?.roll + Object.values(expectedModifiers).reduce(
@@ -49,6 +53,43 @@ export function validTracePhase7ActorStepCheck(phase7, contracts, factual) {
     && result.difficulty === difficulty
     && canonicalDigest(result.outcome) === canonicalDigest(outcome)
     && validCheckAudit(result.audit, result.roll, factual.player_input);
+}
+
+function liveNpc(state, fallback) {
+  if (state?.npcs == null) return fallback;
+  const match = state.npcs.find(
+    ({ instance_id: id }) => id === fallback?.instance_id
+  );
+  return match ?? fallback;
+}
+
+function authoritativeNpcCheckBody(npc) {
+  const metrics = npc?.check_body_state;
+  const health = Number(metrics?.health);
+  const satiety = Number(metrics?.satiety);
+  const energy = Number(metrics?.energy);
+  if (![health, satiety, energy].every(Number.isFinite)
+      || !Array.isArray(metrics?.active_conditions)) {
+    return null;
+  }
+  return {
+    health,
+    satiety,
+    energy,
+    active_conditions: structuredClone(metrics.active_conditions)
+  };
+}
+
+function authoritativeNpcLoadCategory(npc) {
+  const fromMachine = npc?.machine_state?.load_category;
+  if (typeof fromMachine === 'string' && fromMachine.length > 0) {
+    return fromMachine;
+  }
+  const fromInventory = npc?.inventory?.load_category;
+  if (typeof fromInventory === 'string' && fromInventory.length > 0) {
+    return fromInventory;
+  }
+  return null;
 }
 
 function validCheckAudit(audit, roll, playerInput) {

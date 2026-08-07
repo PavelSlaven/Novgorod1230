@@ -251,6 +251,42 @@ test('Phase 7 executes a valid autonomous generic check without blocking rest',
       'clean_success');
   });
 
+test('Phase 7 generic check uses live NPC body and load, not binding snapshot',
+  async () => {
+    const state = phase7CommittedState();
+    const zhdanko = state.npcs.find(
+      ({ instance_id: id }) => id === 'zhdanko-1'
+    );
+    zhdanko.check_body_state = {
+      health: 10, satiety: 100, energy: 10, active_conditions: []
+    };
+    zhdanko.machine_state.load_category = 'heavy';
+    const contracts = approvedPhase7Contracts(state);
+    assert.equal(Object.hasOwn(contracts.genericCheckContext, 'body'), false);
+    assert.equal(Object.hasOwn(contracts.genericCheckContext, 'inventory'),
+      false);
+    const rawProfiles = await readFile(ownerProfilesUrl);
+    const owners = createLowerDvinaTraceTurnStepGenericOwners({
+      profiles: JSON.parse(rawProfiles),
+      artifactPin: {
+        digest: createHash('sha256').update(rawProfiles).digest('hex')
+      }
+    });
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      genericCheckContextOwner: owners.genericCheckContextOwner,
+      randomSource: { next() { return 0.95; } },
+      model: async (request) => phase7GenericCheckPlan(request)
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'generic-check-live')
+    });
+    const modifiers = consequence.phase7.actor_step_check.result.modifiers;
+    assert.equal(modifiers.state, -2);
+    assert.equal(modifiers.equipment, -2);
+  });
+
 test('Phase 7 composes an approved generic-check additional activity',
   async () => {
     const state = phase7CommittedState();

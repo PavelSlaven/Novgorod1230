@@ -145,11 +145,33 @@ export function decideBoundedNpcAction({
 
 export function orderNpcDecisionRequests(requests) {
   if (!Array.isArray(requests)
-    || requests.some((request) => !validateDecisionRequest(request))
-    || new Set(requests.map(({ request_id }) => request_id)).size !== requests.length) {
+      || new Set(requests.map(({ request_id: id }) => id)).size !== requests.length) {
     throw new TypeError('NPC decision requests must be a unique formal request array');
   }
-  return freeze([...requests].sort((left, right) => compareGameTimestamp(left.requested_at, right.requested_at)
-    || refKey(left.npc_ref).localeCompare(refKey(right.npc_ref), 'en')
-    || left.request_id.localeCompare(right.request_id, 'en')));
+  if (requests.every((request) => validateDecisionRequest(request))) {
+    return freeze([...requests].sort((left, right) =>
+      compareGameTimestamp(left.requested_at, right.requested_at)
+        || refKey(left.npc_ref).localeCompare(refKey(right.npc_ref), 'en')
+        || left.request_id.localeCompare(right.request_id, 'en')));
+  }
+  if (requests.every((request) => isAutonomousDecisionRequest(request))) {
+    return freeze([...requests].sort((left, right) =>
+      compareGameTimestamp(left.occurred_at, right.occurred_at)
+        || String(left.npc_ref).localeCompare(String(right.npc_ref), 'en')
+        || left.boundary_id.localeCompare(right.boundary_id, 'en')));
+  }
+  throw new TypeError(
+    'NPC decision requests must be one formal schema: bounded or autonomous'
+  );
+}
+
+function isAutonomousDecisionRequest(value) {
+  return value != null
+    && typeof value === 'object'
+    && value.schema === 'npc_action_decision_request_v1'
+    && typeof value.request_id === 'string'
+    && typeof value.boundary_id === 'string'
+    && typeof value.npc_ref === 'string'
+    && value.occurred_at != null
+    && typeof value.occurred_at === 'object';
 }

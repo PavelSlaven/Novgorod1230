@@ -574,3 +574,39 @@ test('same-time NPC decisions use deterministic temporal order', () => {
   assert.deepEqual(ordered.map(({ request_id }) => request_id), ['a', 'c', 'b']);
   assert.equal(Object.isFrozen(ordered), true);
 });
+
+test('autonomous NPC decision requests order by occurred_at, npc_ref, boundary_id', () => {
+  const stamp = (minutes) => ({
+    whole_minutes: String(minutes),
+    subminute_numerator: '0',
+    subminute_denominator: '1'
+  });
+  const autonomous = (overrides) => ({
+    schema: 'npc_action_decision_request_v1',
+    request_id: overrides.request_id,
+    boundary_id: overrides.boundary_id,
+    npc_ref: overrides.npc_ref,
+    occurred_at: overrides.occurred_at
+  });
+  const ordered = orderNpcDecisionRequests([
+    autonomous({
+      request_id: 'r-b', npc_ref: 'npc-b', boundary_id: 'b-2',
+      occurred_at: stamp(25)
+    }),
+    autonomous({
+      request_id: 'r-a2', npc_ref: 'npc-a', boundary_id: 'b-2',
+      occurred_at: stamp(25)
+    }),
+    autonomous({
+      request_id: 'r-a1', npc_ref: 'npc-a', boundary_id: 'b-1',
+      occurred_at: stamp(25)
+    }),
+    autonomous({
+      request_id: 'r-early', npc_ref: 'npc-z', boundary_id: 'b-0',
+      occurred_at: stamp(20)
+    })
+  ]);
+  assert.deepEqual(ordered.map(({ request_id: id }) => id), [
+    'r-early', 'r-a1', 'r-a2', 'r-b'
+  ]);
+});

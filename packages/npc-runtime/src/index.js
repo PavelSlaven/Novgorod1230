@@ -8,6 +8,7 @@ export {
   buildNpcDecisionBoundary,
   buildNpcDecisionSignal,
   evaluateNpcDecisionSignals,
+  orderNpcDecisionBoundaries,
   validateNpcDecisionBoundary,
   validateNpcDecisionSignal
 } from './decision-signals.js';

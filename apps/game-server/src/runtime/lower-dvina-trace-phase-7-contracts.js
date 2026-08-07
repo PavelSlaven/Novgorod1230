@@ -141,11 +141,8 @@ function validGenericCheckContext(profile) {
     && canonicalDigest(profile.skills) === canonicalDigest([{
       skill_ref: 'observation', label: 'наблюдательность', value: 2
     }])
-    && canonicalDigest(profile.body) === canonicalDigest({
-      health: 100, satiety: 100, energy: 50, active_conditions: []
-    })
-    && canonicalDigest(profile.inventory)
-      === canonicalDigest({ load_category: 'moderate' });
+    && !Object.hasOwn(profile, 'body')
+    && !Object.hasOwn(profile, 'inventory');
 }
 
 function resolveScheduleExecutions({ records, waitActivity, localTransition,

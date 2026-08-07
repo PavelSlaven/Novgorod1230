@@ -34,10 +34,11 @@
 - `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
   выводит batch identity (включая ordinal successive resolved batches на том же
   GameTimestamp), consumption и persisted replay input из factual state,
-  преобразует generic NPC signal descriptors в общий агрегат и только
-  затем передаёт boundary semantic resolver; после actor-step снова
-  factual→signal protocol на том же timestamp до fixed point либо typed
-  temporal safety error, затем `continueAdvance`;
+  агрегирует signals отдельно по каждому NPC subject, упорядочивает
+  boundaries по `scheduled_at → npc_ref → boundary_id`, последовательно
+  вызывает semantic resolver и actor-step на evolving working state; после
+  actor-step снова factual→signal protocol на том же timestamp до fixed point
+  либо typed temporal safety error, затем `continueAdvance`;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.

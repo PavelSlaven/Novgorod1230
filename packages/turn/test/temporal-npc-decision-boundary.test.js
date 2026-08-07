@@ -204,3 +204,98 @@ test('same-time follow-up reaction reaches fixed point with distinct batch ids',
     ]);
     assert.equal(second.signal_id.length > 0, true);
   });
+
+test('multi-NPC same-time batch orders by npc_ref then boundary_id sequentially',
+  async () => {
+    const npcA = { entity_kind: 'npc', entity_id: 'npc-b' };
+    const npcB = { entity_kind: 'npc', entity_id: 'npc-a' };
+    const descriptorFor = (npc, entityId) => ({
+      occurred_at: at(25),
+      category: 'objective',
+      significance: 'material',
+      source_event_ref: {
+        entity_kind: 'npc_activity_factual_transition',
+        entity_id: entityId
+      },
+      subject_ref: npc,
+      scope_refs: [],
+      perception_required: false,
+      source_perception_ref: null,
+      causal_parent_refs: [],
+      perceived_change_summary: `change:${entityId}`
+    });
+    const descriptors = [
+      descriptorFor(npcA, 'cause-b'),
+      descriptorFor(npcB, 'cause-a')
+    ];
+    const seenNpcRefs = [];
+    const seenProjections = [];
+
+    const flow = await advanceTemporalNpcDecisionBoundary({
+      advanceToBoundary: async () => ({
+        result: { temporal_status: 'paused', clock_after: at(25) },
+        projection: {
+          npc_decision_signal_descriptors: descriptors,
+          marker: 'initial'
+        }
+      }),
+      decisionSignalState: {
+        factual_state: {
+          party_id: 'party-multi',
+          party_state: { state_version: 2 },
+          npc_decision_signals: [],
+          consumed_npc_decision_signal_ids: [],
+          npc_semantic_decision_inputs: []
+        },
+        active_mode: 'autonomous',
+        current_intent: null,
+        decision_capability: true
+      },
+      resolveDecision: async ({ signal_batch: signalBatch }) => ({
+        boundary: signalBatch.boundary,
+        autonomous: {
+          consumed_signal_ids: signalBatch.ordered_signals.map(
+            ({ signal_id: id }) => id
+          )
+        }
+      }),
+      executeActorStep: async ({ temporal, decision }) => {
+        seenNpcRefs.push(decision.boundary.npc_ref.entity_id);
+        seenProjections.push(temporal.projection.marker);
+        return {
+          started_at: at(25),
+          working_projection: {
+            npc_decision_signal_descriptors: descriptors,
+            marker: `after:${decision.boundary.npc_ref.entity_id}`,
+            last_boundary: decision.boundary.boundary_id
+          }
+        };
+      },
+      continueAdvance: async ({ actor_step: actorStep }) => ({
+        result: {
+          clock_before: at(25),
+          clock_after: at(30),
+          last: actorStep.working_projection.last_boundary
+        }
+      })
+    });
+
+    assert.deepEqual(seenNpcRefs, ['npc-a', 'npc-b']);
+    assert.deepEqual(seenProjections, ['initial', 'after:npc-a']);
+    assert.equal(flow.resolved_batches.length, 2);
+    assert.equal(
+      flow.resolved_batches[0].decision.boundary.npc_ref.entity_id,
+      'npc-a'
+    );
+    assert.equal(
+      flow.resolved_batches[1].decision.boundary.npc_ref.entity_id,
+      'npc-b'
+    );
+    assert.equal(
+      flow.resolved_batches[0].decision.boundary.boundary_id
+        < flow.resolved_batches[1].decision.boundary.boundary_id
+        || flow.resolved_batches[0].decision.boundary.npc_ref.entity_id
+          < flow.resolved_batches[1].decision.boundary.npc_ref.entity_id,
+      true
+    );
+  });

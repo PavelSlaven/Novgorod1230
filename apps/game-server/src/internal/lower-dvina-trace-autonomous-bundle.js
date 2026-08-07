@@ -235,8 +235,8 @@ function validAutonomousBindings(value) {
       === 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1'
     && value.generic_check_context_profile?.attributes?.length === 1
     && value.generic_check_context_profile?.skills?.length === 1
-    && value.generic_check_context_profile?.inventory?.load_category
-      === 'moderate'
+    && !Object.hasOwn(value.generic_check_context_profile, 'body')
+    && !Object.hasOwn(value.generic_check_context_profile, 'inventory')
     && signal?.source_activity_id === 'trace_ld_v1_activity_zhdanko_wait'
     && signal.target_npc_ref === 'zhdanko_storehouse_controller'
     && signal.schedule_policy_ref === 'trace_ld_v1_zhdanko_autonomous_schedule';

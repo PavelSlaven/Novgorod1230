@@ -119,11 +119,7 @@ export function approvedPhase7Contracts(state) {
       }],
       skills: [{
         skill_ref: 'observation', label: 'наблюдательность', value: 2
-      }],
-      body: {
-        health: 100, satiety: 100, energy: 50, active_conditions: []
-      },
-      inventory: { load_category: 'moderate' }
+      }]
     },
     genericCheckModifierPolicy: {
       profile_ref: 'trace_ld_v1_generic_check_modifiers_v1',

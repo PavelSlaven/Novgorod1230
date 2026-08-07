@@ -32,7 +32,8 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `proposeNpcReactionOptions({ context_snapshot, policy_snapshot, persisted_proposal? })` — чисто фильтрует approved rules, возвращает формальный конечный request и проверяет replay по полной causal identity.
 - `buildNpcReactionPolicySnapshotFromAuthoringRow(row)` — чисто проецирует одну exact approved authoring-запись в закрытый policy/command snapshot и fail-closed проверяет handler/consequence bindings.
 - `decideBoundedNpcAction(...)` — валидирует один `option_id` и `command_token` из конечного option set и возвращает decision trace.
-- `orderNpcDecisionRequests(requests)` — детерминированно упорядочивает formal requests по exact timestamp, NPC и request id.
+- `orderNpcDecisionRequests(requests)` — детерминированно упорядочивает formal requests по exact timestamp, NPC и request id/boundary_id; поддерживает bounded `npc_decision_request` и autonomous `npc_action_decision_request_v1`.
+- `orderNpcDecisionBoundaries(boundaries)` — сортирует `npc_decision_boundary_v1` по `scheduled_at → npc_ref → boundary_id`.
 
 ## Формальные контракты
 

@@ -53,9 +53,9 @@ export async function executeTracePhase7SchedulePlan({
   }
   const execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
-    request: actorStepRequest(autonomous.request, contracts),
+    request: actorStepRequest(autonomous.request, contracts, state),
     workingProjection: checkWorkingProjection(
-      temporal.projection, contracts.genericCheckContext),
+      temporal.projection, state, contracts),
     preparedChainContext: null,
     registry: actorStepRuntime.registry,
     ports: actorStepRuntime.ports
@@ -75,9 +75,10 @@ export async function executeTracePhase7SchedulePlan({
   });
 }
 
-function actorStepRequest(request, contracts) {
-  const npc = contracts.zhdanko;
+function actorStepRequest(request, contracts, state) {
+  const npc = liveNpc(state, contracts.zhdanko);
   const context = contracts.genericCheckContext ?? {};
+  const body = authoritativeNpcCheckBody(npc);
   return {
     ...structuredClone(request),
     step_index: request.decision_index,
@@ -85,16 +86,55 @@ function actorStepRequest(request, contracts) {
       actor_id: npc.instance_id,
       attributes: ratedMap(context.attributes, 'attribute_ref', 'value'),
       skills: ratedMap(context.skills, 'skill_ref', 'bonus'),
-      body: structuredClone(context.body ?? null)
+      body: structuredClone(body)
     }
   };
 }
 
-function checkWorkingProjection(projection, context) {
+function checkWorkingProjection(projection, state, contracts) {
+  const npc = liveNpc(state, contracts.zhdanko);
   return {
     ...structuredClone(projection),
-    inventory: structuredClone(context?.inventory ?? null)
+    inventory: {
+      load_category: authoritativeNpcLoadCategory(npc)
+    }
   };
+}
+
+function liveNpc(state, fallback) {
+  const match = (state?.npcs ?? []).find(
+    ({ instance_id: id }) => id === fallback?.instance_id
+  );
+  return match ?? fallback;
+}
+
+function authoritativeNpcCheckBody(npc) {
+  const metrics = npc?.check_body_state;
+  const health = Number(metrics?.health);
+  const satiety = Number(metrics?.satiety);
+  const energy = Number(metrics?.energy);
+  if (![health, satiety, energy].every(Number.isFinite)
+      || !Array.isArray(metrics?.active_conditions)) {
+    fail('TRACE_PHASE_7_NPC_CHECK_BODY_DATA_GAP');
+  }
+  return {
+    health,
+    satiety,
+    energy,
+    active_conditions: structuredClone(metrics.active_conditions)
+  };
+}
+
+function authoritativeNpcLoadCategory(npc) {
+  const fromMachine = npc?.machine_state?.load_category;
+  if (typeof fromMachine === 'string' && fromMachine.length > 0) {
+    return fromMachine;
+  }
+  const fromInventory = npc?.inventory?.load_category;
+  if (typeof fromInventory === 'string' && fromInventory.length > 0) {
+    return fromInventory;
+  }
+  fail('TRACE_PHASE_7_NPC_CHECK_LOAD_DATA_GAP');
 }
 
 function finalActorStepConsequence(fragments) {
@@ -129,12 +169,37 @@ export function finalizeTracePhase7ScheduleExecution({
 }) {
   const started = actorStep.result;
   const active = scheduleTemporal.projection?.active_npc_actor_step;
+  const temporalStatus = scheduleTemporal.result.temporal_status;
   if (started.status !== 'started'
-      || scheduleTemporal.result.temporal_status !== 'completed'
+      || !['completed', 'paused'].includes(temporalStatus)
       || canonicalDigest(scheduleTemporal.result.clock_before)
         !== canonicalDigest(started.clock_before)
       || active?.npc_ref !== started.npc_ref) {
     fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+  }
+  if (temporalStatus === 'paused') {
+    if (!['started', 'completed'].includes(active.status)) {
+      fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+    }
+    if (active.status === 'completed') {
+      const completionClock = active.completed_at;
+      if (completionClock == null
+          || compareGameTimestamp(completionClock,
+            scheduleTemporal.result.clock_after) > 0) {
+        fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+      }
+      return Object.freeze({
+        ...structuredClone(started),
+        status: 'executed',
+        failure_code: null,
+        clock_after: structuredClone(completionClock)
+      });
+    }
+    return Object.freeze({
+      ...structuredClone(started),
+      status: 'started',
+      failure_code: null
+    });
   }
   if (active.status === 'completed') {
     const completionClock = active.completed_at;

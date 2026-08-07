@@ -73,6 +73,18 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     temporal.result.clock_after, advanced.result.clock_after
   );
   const active = advanced.state_projection.active_npc_actor_step;
+  if (advanced.result.temporal_status === 'paused') {
+    if (active?.npc_ref !== actorStep.result.npc_ref
+        || !['started', 'completed'].includes(active?.status)) {
+      fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
+    }
+    return Object.freeze({
+      elapsed_after_decision: elapsed,
+      result: advanced.result,
+      projection: structuredClone(advanced.state_projection),
+      completion_candidate: structuredClone(completion)
+    });
+  }
   const finished = active?.status === 'completed';
   const stillRunning = active?.status === 'started';
   if (advanced.result.temporal_status !== 'completed'

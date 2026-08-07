@@ -12,26 +12,32 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   const phase7 = factual.consequence.phase7;
   const autonomous = phase7.autonomous;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
+  const restCompleted =
+    phase7.schedule_temporal.result.temporal_status === 'completed';
   next.party_state = {
     ...next.party_state,
     state_version: nextVersion,
     session_state_version: state.party_state.session_state_version + 1,
     clock_state_version: state.party_state.clock_state_version + 1,
-    body_state_version: state.party_state.body_state_version + 1,
+    body_state_version: restCompleted
+      ? state.party_state.body_state_version + 1
+      : state.party_state.body_state_version,
     turn_number: turnNumber
   };
   next.clock = structuredClone(factual.time_update.clock_after);
   next.clock_weather_light.clock = structuredClone(next.clock);
-  next.body_state = commitPhase2BodyState({
-    before: state.body_state,
-    proposed: factual.body_update.state_after
-  });
-  next.body_effect_history = [...(next.body_effect_history ?? []), {
-    history_id: `body-history:${state.party_id}:trace-phase7:fire-rest`,
-    effect_ref: factual.body_update.proposal.profile_ref,
-    activity_attempt_id: factual.consequence.activity_attempt_id,
-    occurred_at: structuredClone(next.clock)
-  }];
+  if (restCompleted) {
+    next.body_state = commitPhase2BodyState({
+      before: state.body_state,
+      proposed: factual.body_update.state_after
+    });
+    next.body_effect_history = [...(next.body_effect_history ?? []), {
+      history_id: `body-history:${state.party_id}:trace-phase7:fire-rest`,
+      effect_ref: factual.body_update.proposal.profile_ref,
+      activity_attempt_id: factual.consequence.activity_attempt_id,
+      occurred_at: structuredClone(next.clock)
+    }];
+  }
   next.npc_decision_signals = appendUnique(
     next.npc_decision_signals,
     autonomous.new_signal_records,
@@ -59,10 +65,14 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     phase7.schedule_temporal.projection?.active_npc_actor_step);
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
-    status: 'completed',
+    status: restCompleted ? 'completed' : 'paused',
     activity_execution_id: factual.consequence.activity_attempt_id,
-    exact_elapsed_minutes: 30,
-    body_effect_ref: factual.body_update.proposal.profile_ref,
+    exact_elapsed_minutes: restCompleted
+      ? 30
+      : Number(factual.time_update.exact_elapsed.exact_minutes.numerator),
+    body_effect_ref: restCompleted
+      ? factual.body_update.proposal.profile_ref
+      : null,
     waiting_terminal_candidate_id:
       phase7.temporal.terminal_candidate.boundary_id,
     waiting_transition_id:

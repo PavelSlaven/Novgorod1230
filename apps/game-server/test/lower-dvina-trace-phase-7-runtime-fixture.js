@@ -122,14 +122,24 @@ export function phase7CommittedState() {
         summary: 'устал после работы',
         conditions: [{ condition_ref: 'tired' }]
       },
+      check_body_state: {
+        health: 100,
+        satiety: 100,
+        energy: 50,
+        active_conditions: []
+      },
       mood: { state: 'сосредоточен', intensity: 'moderate' },
       relationships: [{
         actor_ref: 'ratsha-1',
         relation: 'старший по работе'
       }],
       machine_state: {
-        status: 'waiting', location_ref: 'trace_ld_v1_loc_storehouse',
-        spatial_zone_ref: 'storehouse_inside'
+        status: 'waiting',
+        location_ref: 'trace_ld_v1_loc_storehouse',
+        spatial_zone_ref: 'storehouse_inside',
+        load_category: 'moderate',
+        npc_schedule_history: [],
+        last_schedule_execution: null
       }
     }],
     temporal_boundary_candidates: [],

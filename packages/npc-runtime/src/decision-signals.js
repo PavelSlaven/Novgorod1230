@@ -1,3 +1,4 @@
+import { compareGameTimestamp } from '@rus/time-events-history';
 import {
   digest,
   exactKeys,
@@ -267,6 +268,21 @@ export function buildNpcDecisionBoundary({
     invalid('NPC_DECISION_BOUNDARY_INVALID', 'NPC decision boundary input is not formal');
   }
   return freeze(boundary);
+}
+
+export function orderNpcDecisionBoundaries(boundaries) {
+  if (!Array.isArray(boundaries)
+      || boundaries.some((boundary) => !validateNpcDecisionBoundary(boundary))
+      || new Set(boundaries.map(({ boundary_id: id }) => id)).size
+        !== boundaries.length) {
+    throw new TypeError(
+      'NPC decision boundaries must be a unique formal boundary array'
+    );
+  }
+  return freeze([...boundaries].sort((left, right) =>
+    compareGameTimestamp(left.scheduled_at, right.scheduled_at)
+      || refKey(left.npc_ref).localeCompare(refKey(right.npc_ref), 'en')
+      || left.boundary_id.localeCompare(right.boundary_id, 'en')));
 }
 
 export function evaluateNpcDecisionSignals(input = {}) {

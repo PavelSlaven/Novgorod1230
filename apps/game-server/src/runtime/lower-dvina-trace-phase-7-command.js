@@ -127,6 +127,8 @@ export function createTracePhase7FireRestCommand({
         actorStep: flow.actor_step,
         scheduleTemporal
       });
+      const restCompleted =
+        scheduleTemporal.result.temporal_status === 'completed';
       return {
         version: 1,
         schema: 'turn_consequence_package',
@@ -134,8 +136,13 @@ export function createTracePhase7FireRestCommand({
         phase7_kind: 'fire_rest',
         activity_attempt_id:
           `activity:${state.party_id}:trace-phase7:fire-rest`,
-        body_effect_ref: contracts.bodyEffect.effect_profile_id,
-        duration_minutes: 30,
+        body_effect_ref: restCompleted
+          ? contracts.bodyEffect.effect_profile_id
+          : null,
+        duration_minutes: restCompleted
+          ? 30
+          : scheduleTemporal.elapsed_after_decision
+            + temporal.elapsed_before_decision,
         phase7: {
           input_digest: inputDigest,
           temporal,

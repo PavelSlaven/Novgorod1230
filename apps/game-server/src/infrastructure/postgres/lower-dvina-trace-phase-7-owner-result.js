@@ -16,12 +16,18 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   const schedule = phase7.schedule_execution;
   if (temporal.elapsed_before_decision !== 25
       || temporal.result.temporal_status !== 'paused'
-      || scheduleTemporal?.result?.temporal_status !== 'completed'
-      || scheduleTemporal.elapsed_after_decision !== 5
+      || !['completed', 'paused'].includes(
+        scheduleTemporal?.result?.temporal_status
+      )
+      || (scheduleTemporal.result.temporal_status === 'completed'
+        && (scheduleTemporal.elapsed_after_decision !== 5
+          || !sameClock(scheduleTemporal.result.clock_after,
+            factual.time_update.clock_after)))
+      || (scheduleTemporal.result.temporal_status === 'paused'
+        && !sameClock(scheduleTemporal.result.clock_after,
+          factual.time_update.clock_after))
       || !sameClock(scheduleTemporal.result.clock_before,
         temporal.result.clock_after)
-      || !sameClock(scheduleTemporal.result.clock_after,
-        factual.time_update.clock_after)
       || !sameClock(temporal.result.clock_before, state.clock)
       || !['executed', 'started'].includes(schedule.status)
       || schedule.exact_elapsed.exact_minutes.denominator !== '1'
@@ -32,13 +38,16 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       || !validScheduleExecution(schedule, phase7Contracts,
         phase7.autonomous.request, phase7.autonomous.proposal.plan,
         phase7.actor_step_check)
-      || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual)
+      || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
+        state)
       || temporal.result.combined_change_set.change_set_id !== changeSetId
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
-      || factual.body_update.applied !== true
-      || factual.body_update.proposal.profile_ref
-        !== phase7Contracts.bodyEffect.effect_profile_id) {
+      || (scheduleTemporal.result.temporal_status === 'completed'
+        ? factual.body_update.applied !== true
+          || factual.body_update.proposal.profile_ref
+            !== phase7Contracts.bodyEffect.effect_profile_id
+        : factual.body_update.applied !== false)) {
     throw serverError(
       'TRACE_PHASE_7_OWNER_RESULT_INVALID',
       'Phase 7 factual commit failed closed.',

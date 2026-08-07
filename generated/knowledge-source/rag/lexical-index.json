@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "e8aee9c65249c618458c92e7e02f702df1fec64906a3ef3facbd419b4943d6c8",
+  "corpus_hash": "fc5a8d75bf1a930d8d361552a01d04fba665e889bad32533f52042eec949408e",
   "chunk_count": 2116,
   "chunks": [
     {
@@ -6048,8 +6048,8 @@
       "section": "23.3. Повтор",
       "line_start": 1505,
       "line_end": 1522,
-      "text": "## npc_autonomous_decision_contract.md — 23.3. Повтор\n### 23.3. Повтор\n\nПовтор допускается только при exact совпадении persisted `boundary_snapshot`,\nordered `signal_records`, `request_snapshot` и их\n`canonical_input_digest`. Один `boundary_id` без этого proof недостаточен:\nизменённый, дополнительный или иначе consumed signal означает\nidempotency conflict. Для autonomous mode trace-only replay запрещён, включая\nlegacy `npc_action_decision_request_v1`: legacy request гидрируется вместе с\nего persisted input proof из normalized decision row.\n\nДопустимый повтор:\n\n- не вызывает LLM;\n- не выполняет действие повторно;\n- возвращает сохранённый decision trace и результат.\n\nЕсли сбой произошёл до commit, решение ещё не стало фактом мира и может быть рассчитано заново.",
-      "char_count": 769
+      "text": "## npc_autonomous_decision_contract.md — 23.3. Повтор\n### 23.3. Повтор\n\nПовтор с тем же committed `boundary_id` (trigger_aligned):\n\n- не вызывает LLM;\n- не выполняет действие повторно;\n- возвращает сохранённый decision trace и результат.\n\nPersisted `boundary_snapshot` / `signal_records` / `request_snapshot` /\n`canonical_input_digest` могут храниться как proof, но сами по себе не\nсоздают новый mandatory mismatch fail: достаточно совпадения committed\n`boundary_id` и сохранённого decision/idempotency. Конфликт объявляется\nтолько при реальном расхождении identity (другой `boundary_id` или\nпротиворечивый persisted trace). Trace-only replay с тем же\n`boundary_id` допускается.\n\nЕсли сбой произошёл до commit, решение ещё не стало фактом мира и может быть рассчитано заново.",
+      "char_count": 775
     },
     {
       "id": "npc_autonomous_decision_contract.md:23.4. Атомарность:0",

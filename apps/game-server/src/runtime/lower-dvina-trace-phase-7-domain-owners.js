@@ -11,7 +11,7 @@ import { resolveTracePhase7SemanticActivity } from
 
 export function createTracePhase7DomainExecution({ state, contracts,
   temporal, semanticActivityScheduleOwner }) {
-  const capabilities = ownerCapabilities(contracts, temporal);
+  const capabilities = ownerCapabilities(contracts);
   return Object.freeze({
     semantic_activity_handler: async (execution) => {
       const semantic = await resolveTracePhase7SemanticActivity({
@@ -35,11 +35,9 @@ export function createTracePhase7DomainExecution({ state, contracts,
   });
 }
 
-function ownerCapabilities(contracts, temporal) {
-  const activity = activityCapabilities(contracts);
-  const itemTargets = Object.freeze(
-    tracePhase7ItemUseTransitions(contracts).map(tracePhase7TransitionTarget)
-  );
+function ownerCapabilities(contracts) {
+  const activityAllowed = exactActivityAllowed(contracts);
+  const itemAllowed = exactItemAllowed(contracts);
   const movement = contracts.localTransition == null ? null : Object.freeze({
     owner: '@rus/movement-routes',
     movement_kinds: Object.freeze(['local']),
@@ -52,32 +50,25 @@ function ownerCapabilities(contracts, temporal) {
   const operationContract = {
     request_activity: {
       owner: '@rus/turn',
-      activity_kinds: activity.kinds,
-      target_refs: activity.target_refs,
-      maximum_elapsed_minutes: remainingMinutes(temporal),
+      allowed: activityAllowed,
       factual_outcome_write: 'forbidden'
     },
     request_item_use: {
       owner: '@rus/items-property',
-      item_refs: Object.freeze([contracts.roadBag.item_ref]),
-      use_kinds: Object.freeze(['operate', 'other']),
-      target_refs: itemTargets,
+      allowed: itemAllowed,
       factual_outcome_write: 'owner_only'
     }
   };
   if (movement != null) operationContract.request_movement = movement;
   return Object.freeze({
-    activity_kinds: activity.kinds,
-    activity_target_refs: activity.target_refs,
-    item_refs: operationContract.request_item_use.item_refs,
-    use_kinds: operationContract.request_item_use.use_kinds,
-    item_target_refs: itemTargets,
+    activity_allowed: activityAllowed,
+    item_allowed: itemAllowed,
     movement,
     operation_contract: Object.freeze(operationContract)
   });
 }
 
-function activityCapabilities(contracts) {
+function exactActivityAllowed(contracts) {
   const profiles = new Map(contracts.scheduleActivityProfiles.map(
     (profile) => [profile.profile_id, profile]
   ));
@@ -87,40 +78,48 @@ function activityCapabilities(contracts) {
   const transitions = new Map(tracePhase7PropertyTransitions(contracts).map(
     (profile) => [profile.transition_profile_id, profile]
   ));
-  const kinds = new Set();
-  const targets = new Set();
-  for (const binding of Object.values(contracts.scheduleExecutions)) {
-    const profile = profiles.get(binding.activity_profile_ref);
-    const kind = activityKindFor(profile, binding);
-    if (kind == null) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-    kinds.add(kind);
-    for (const ref of profile.resource_refs ?? []) targets.add(ref);
-    if (binding.movement_ref != null) {
-      const movement = movements.get(binding.movement_ref);
-      if (!movement) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-      targets.add(movement.destination_zone_ref);
+  return Object.freeze(Object.values(contracts.scheduleExecutions).map(
+    (binding) => {
+      const profile = profiles.get(binding.activity_profile_ref);
+      const activityKind = activityKindFor(profile, binding);
+      if (activityKind == null) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
+      const required = new Set(profile.resource_refs ?? []);
+      if (binding.movement_ref != null) {
+        const movement = movements.get(binding.movement_ref);
+        if (!movement) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
+        required.add(movement.destination_zone_ref);
+      }
+      for (const ref of binding.property_transition_refs ?? []) {
+        const transition = transitions.get(ref);
+        if (!transition) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
+        required.add(transition.subject_ref);
+        required.add(transition.writes?.zone_ref
+          ?? transition.writes?.location_ref);
+      }
+      return Object.freeze({
+        activity_kind: activityKind,
+        target_refs: Object.freeze([...required])
+      });
     }
-    for (const ref of binding.property_transition_refs ?? []) {
-      const transition = transitions.get(ref);
-      if (!transition) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-      targets.add(transition.subject_ref);
-      targets.add(transition.writes?.zone_ref
-        ?? transition.writes?.location_ref);
-    }
-  }
-  return Object.freeze({
-    kinds: Object.freeze([...kinds].sort()),
-    target_refs: Object.freeze([...targets].filter(Boolean).sort())
-  });
+  ));
+}
+
+function exactItemAllowed(contracts) {
+  const targets = tracePhase7ItemUseTransitions(contracts)
+    .map(tracePhase7TransitionTarget);
+  return Object.freeze(['operate', 'other'].flatMap((useKind) =>
+    targets.map((target) => Object.freeze({
+      item_ref: contracts.roadBag.item_ref,
+      use_kind: useKind,
+      target_refs: Object.freeze([target])
+    }))));
 }
 
 function executeActivity({ execution, state, contracts, temporal,
   capabilities }) {
   const operation = execution.operation;
   if (operation.actor_ref !== contracts.zhdanko.instance_id
-      || !capabilities.activity_kinds.includes(operation.activity_kind)
-      || operation.target_refs.some((ref) =>
-        !capabilities.activity_target_refs.includes(ref))) {
+      || !matchesAllowed(capabilities.activity_allowed, operation)) {
     fail('TRACE_PHASE_7_DOMAIN_REQUEST_NOT_APPLICABLE');
   }
   const selection = selectApplicableNpcActivityExecution({
@@ -144,10 +143,7 @@ function executeActivity({ execution, state, contracts, temporal,
 function executeItem({ execution, state, contracts, temporal, capabilities }) {
   const operation = execution.operation;
   if (operation.actor_ref !== contracts.zhdanko.instance_id
-      || !capabilities.item_refs.includes(operation.item_ref)
-      || !capabilities.use_kinds.includes(operation.use_kind)
-      || operation.target_refs.some((ref) =>
-        !capabilities.item_target_refs.includes(ref))
+      || !matchesAllowed(capabilities.item_allowed, operation)
       || operation.target_refs.length !== 1) {
     fail('TRACE_PHASE_7_ITEM_REQUEST_NOT_APPLICABLE');
   }
@@ -192,12 +188,28 @@ function activityKindFor(profile, binding) {
   return null;
 }
 
+function matchesAllowed(allowed, operation) {
+  return allowed.some((entry) => {
+    if (operation.op === 'request_activity') {
+      return entry.activity_kind === operation.activity_kind
+        && sameSet(entry.target_refs, operation.target_refs);
+    }
+    if (operation.op === 'request_item_use') {
+      return entry.item_ref === operation.item_ref
+        && entry.use_kind === operation.use_kind
+        && sameSet(entry.target_refs, operation.target_refs);
+    }
+    return false;
+  });
+}
+
 function started({ execution, temporal, profile, movement, property,
   minutes = null, npcRef = null }) {
   const duration = minutes == null
     ? profileMinutes(profile) ?? remainingMinutes(temporal) : Number(minutes);
-  if (!Number.isSafeInteger(duration) || duration < 1
-      || duration > remainingMinutes(temporal)) {
+  // ponytail: allow planned duration past remaining Mikula rest; temporal owner
+  // keeps unfinished actor-step active after T+30. Ceiling: no interrupt policy.
+  if (!Number.isSafeInteger(duration) || duration < 1) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
   const operation = execution.operation;
@@ -258,6 +270,12 @@ function profileMinutes(profile) {
   if (profile == null) return null;
   return (profile.elapsed_plan?.stages ?? []).reduce(
     (sum, stage) => sum + stage.duration_minutes, 0);
+}
+
+function sameSet(left, right) {
+  return left.length === right.length
+    && new Set(left).size === left.length
+    && left.every((value) => right.includes(value));
 }
 
 function domainOwner(operation) {

@@ -107,14 +107,10 @@ test('Phase 7 applicability rejection stops the production workflow',
 
     await assert.rejects(
       () => runTurnWorkflow(input, services),
-      (error) => error?.code === 'TURN_WORKFLOW_STOPPED'
-        && error?.details?.status === 'blocked'
-        && error?.details?.result?.artifact?.hidden_update
-          ?.npc_autonomous_domain_result?.errors?.[0]?.code
-          === 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE'
+      (error) => error?.code === 'TURN_NPC_PLAN_INVALID'
     );
     assert.deepEqual(calls, {
-      model: 1,
+      model: 2,
       time: 0,
       body: 0,
       hidden: 0,

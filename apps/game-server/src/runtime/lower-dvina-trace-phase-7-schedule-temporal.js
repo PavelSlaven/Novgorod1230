@@ -1,6 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
   addElapsedTime,
+  compareGameTimestamp,
   subtractGameTimestamp
 } from '@rus/time-events-history';
 import {
@@ -37,6 +38,9 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     segment: 'schedule'
   });
   const completion = actorStepCompletionCandidate({ state, actorStep });
+  const completionWithinRest = compareGameTimestamp(
+    completion.scheduled_at, temporal.limit_timestamp
+  ) <= 0;
   const advanced = temporalAdvanceOwner.advance({
     request,
     engine_version: 'lower-dvina-trace-phase-7-temporal-adapter-v1',
@@ -46,7 +50,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     source_provider_ref: TRACE_PHASE7_EXTERNAL_PROVIDER,
     source_candidates: sourceCandidates,
     registered_provider_ref: TRACE_PHASE7_PROVIDER,
-    registered_effects: [{
+    registered_effects: completionWithinRest ? [{
       candidate: completion,
       effect_ref: PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
       input: {
@@ -54,7 +58,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
         scheduled_at: structuredClone(completion.scheduled_at),
         transition_kind: 'npc_actor_step_completed'
       }
-    }],
+    }] : [],
     continuous_effect: {
       effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
       input: { execution_id: temporal.execution_id }
@@ -68,13 +72,16 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const elapsed = exactIntegerElapsed(
     temporal.result.clock_after, advanced.result.clock_after
   );
+  const active = advanced.state_projection.active_npc_actor_step;
+  const finished = active?.status === 'completed';
+  const stillRunning = active?.status === 'started';
   if (advanced.result.temporal_status !== 'completed'
       || elapsed !== 5
       || advanced.state_projection.cumulative_elapsed_minutes !== 30
-      || advanced.state_projection.active_npc_actor_step?.npc_ref
-        !== actorStep.result.npc_ref
-      || advanced.state_projection.active_npc_actor_step?.status
-        !== 'completed') {
+      || active?.npc_ref !== actorStep.result.npc_ref
+      || (!finished && !stillRunning)
+      || (finished && !completionWithinRest)
+      || (stillRunning && completionWithinRest)) {
     fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
   }
   return Object.freeze({

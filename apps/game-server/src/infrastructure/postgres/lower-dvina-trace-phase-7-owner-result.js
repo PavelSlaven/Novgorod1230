@@ -1,12 +1,10 @@
 import { canonicalDigest } from '@rus/materialization';
-import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
 import {
+  addElapsedTime,
   compareGameTimestamp,
   subtractGameTimestamp
 } from '@rus/time-events-history';
 import { serverError } from '../../errors.js';
-import { resolveTracePhase7DomainProposals } from
-  '../../runtime/lower-dvina-trace-phase-7-owner-proposals.js';
 
 export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   changeSetId }) {
@@ -23,14 +21,14 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       || !sameClock(scheduleTemporal.result.clock_after,
         factual.time_update.clock_after)
       || !sameClock(temporal.result.clock_before, state.clock)
-      || schedule.status !== 'executed'
+      || !['executed', 'started'].includes(schedule.status)
       || schedule.exact_elapsed.exact_minutes.denominator !== '1'
       || schedule.root_clock_write_count !== 0
       || schedule.parent_state_version !== state.party_state.state_version
       || !validActorStepCompletion(phase7)
       || !validCausality(phase7)
       || !validScheduleExecution(schedule, phase7Contracts,
-        phase7.autonomous.request, phase7.autonomous.proposal.plan, state)
+        phase7.autonomous.request, phase7.autonomous.proposal.plan)
       || temporal.result.combined_change_set.change_set_id !== changeSetId
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
@@ -62,11 +60,14 @@ function validCausality(phase7) {
     entity_kind: 'npc_activity_factual_transition',
     entity_id: transition?.transition_id
   };
+  const restEnd = phase7.schedule_temporal.result.clock_after;
+  const completed = actorStep?.status === 'completed';
+  const stillRunning = actorStep?.status === 'started';
   return sameClock(candidate?.scheduled_at, phase7.temporal.result.clock_after)
-    && sameClock(
-      completion?.scheduled_at,
-      phase7.schedule_temporal.projection.active_npc_actor_step?.completed_at
-    )
+    && (completed
+      ? sameClock(completion?.scheduled_at, actorStep?.completed_at)
+      : stillRunning
+        && compareGameTimestamp(completion?.scheduled_at, restEnd) > 0)
     && canonicalDigest(transition?.source_candidate_ref)
       === canonicalDigest(candidateRef)
     && canonicalDigest(transition?.causal_parent_refs)
@@ -97,37 +98,47 @@ function validActorStepCompletion(phase7) {
   const schedule = phase7.schedule_execution;
   const temporalClock = phase7.temporal.result.clock_after;
   const active = phase7.schedule_temporal.projection?.active_npc_actor_step;
-  const completionClock = active?.completed_at;
   const finalClock = phase7.schedule_temporal.result.clock_after;
   if (actorStep?.status !== 'started'
-      || active?.status !== 'completed'
-      || completionClock == null
+      || active?.npc_ref !== schedule.npc_ref
       || canonicalDigest(actorStep.clock_before)
         !== canonicalDigest(temporalClock)
       || canonicalDigest(actorStep.clock_after)
         !== canonicalDigest(temporalClock)
       || canonicalDigest(schedule.clock_before)
         !== canonicalDigest(temporalClock)
-      || canonicalDigest(schedule.clock_after)
-        !== canonicalDigest(completionClock)
-      || compareGameTimestamp(completionClock, finalClock) > 0
-      || exactIntegerElapsed(schedule.clock_before, schedule.clock_after)
-        !== Number(schedule.exact_elapsed.exact_minutes.numerator)
-      || active.npc_ref !== schedule.npc_ref
       || canonicalDigest(active.started_at) !== canonicalDigest(temporalClock)
-      || canonicalDigest(active.completed_at)
-        !== canonicalDigest(completionClock)
       || canonicalDigest(active.semantic_operation)
         !== canonicalDigest(schedule.semantic_operation)) return false;
-  return canonicalDigest({
-    ...structuredClone(actorStep),
-    status: 'executed',
-    failure_code: null,
-    clock_after: structuredClone(completionClock)
-  }) === canonicalDigest(schedule);
+  if (active.status === 'completed') {
+    const completionClock = active.completed_at;
+    if (completionClock == null
+        || schedule.status !== 'executed'
+        || canonicalDigest(schedule.clock_after)
+          !== canonicalDigest(completionClock)
+        || compareGameTimestamp(completionClock, finalClock) > 0
+        || exactIntegerElapsed(schedule.clock_before, schedule.clock_after)
+          !== Number(schedule.exact_elapsed.exact_minutes.numerator)
+        || canonicalDigest(active.completed_at)
+          !== canonicalDigest(completionClock)) return false;
+    return canonicalDigest({
+      ...structuredClone(actorStep),
+      status: 'executed',
+      failure_code: null,
+      clock_after: structuredClone(completionClock)
+    }) === canonicalDigest(schedule);
+  }
+  if (active.status !== 'started'
+      || schedule.status !== 'started'
+      || compareGameTimestamp(
+        addElapsedTime(active.started_at, active.planned_exact_elapsed),
+        finalClock) <= 0) {
+    return false;
+  }
+  return canonicalDigest(actorStep) === canonicalDigest(schedule);
 }
 
-function validScheduleExecution(schedule, contracts, request, plan, state) {
+function validScheduleExecution(schedule, contracts, request, plan) {
   const operation = schedule.semantic_operation;
   if (!operation || schedule.npc_ref !== request.npc_ref) return false;
   const direct = operation.op === 'apply_semantic_activity';
@@ -169,19 +180,6 @@ function validScheduleExecution(schedule, contracts, request, plan, state) {
   ].includes(propertyTransitionRef)) return false;
   const execution = profiles.find((profile) =>
     profile.execution_binding_id === schedule.execution_binding_ref);
-  if (!direct && operation.op === 'request_activity') {
-    const selected = selectApplicableNpcActivityExecution({
-      operation,
-      activity_profiles: contracts.scheduleActivityProfiles,
-      execution_bindings: profiles,
-      movement_bindings: [contracts.localTransition],
-      property_transition_profiles: [
-        contracts.bagTransition, contracts.bagConcealTransition
-      ].filter(Boolean)
-    });
-    if (!selected.pass || canonicalDigest(selected.execution_binding)
-        !== canonicalDigest(execution)) return false;
-  }
   if (!direct && schedule.execution_binding_ref !== null
       && (execution == null
         || (execution.movement_ref == null
@@ -191,19 +189,7 @@ function validScheduleExecution(schedule, contracts, request, plan, state) {
         || canonicalDigest(execution.property_transition_refs ?? [])
           !== canonicalDigest(propertyTransitionRef == null
             ? [] : [propertyTransitionRef]))) return false;
-  if (direct) return true;
-  let expected;
-  try {
-    expected = resolveTracePhase7DomainProposals({
-      operation, state, contracts, profile: execution
-    });
-  } catch {
-    return false;
-  }
-  return canonicalDigest(schedule.movement_proposal)
-      === canonicalDigest(expected.movement)
-    && canonicalDigest(schedule.property_proposal)
-      === canonicalDigest(expected.property);
+  return true;
 }
 
 function exactIntegerElapsed(from, to) {

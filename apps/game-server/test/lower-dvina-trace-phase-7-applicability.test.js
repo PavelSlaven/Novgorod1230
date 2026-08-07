@@ -23,10 +23,15 @@ test('Phase 7 preserves the boundary causality chain', async () => {
       assert.deepEqual(Object.keys(contract).sort(), [
         'request_activity', 'request_item_use', 'request_movement'
       ]);
-      assert.deepEqual(contract.request_activity.activity_kinds,
-        ['carry', 'wait']);
-      assert.equal(Array.isArray(contract.request_activity.allowed), false);
-      assert.deepEqual(contract.request_movement.movement_kinds, ['local']);
+      assert.deepEqual(contract.request_activity.allowed, [
+        { activity_kind: 'wait', target_refs: [] },
+        {
+          activity_kind: 'carry',
+          target_refs: [
+            'trace_ld_v1_container_road_bag', 'river_access'
+          ]
+        }
+      ]);
       return phase7AutonomousPlan(request, 'move_bag');
     }
   }).consequence({
@@ -76,31 +81,32 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     .active_npc_actor_step.decision_trace_ref]);
 });
 
-test('Phase 7 owner rejects combinations outside executable applicability',
+test('Phase 7 rejects combinations outside executable operation contract',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
     const stateBefore = structuredClone(state);
     let modelCalls = 0;
-    const consequence = await phase7Command({ state, contracts,
+    const command = phase7Command({ state, contracts,
       model: async (request) => {
         const plan = phase7AutonomousPlan(request, 'move_bag');
         modelCalls += 1;
         plan.operations[0].target_refs = [contracts.roadBag.item_ref];
         return plan;
       }
-    }).consequence({
-      retrievedState: state,
-      playerInput: phase7PlayerInput(state, 'carry-without-destination')
     });
-    assert.equal(modelCalls, 1);
-    assert.equal(consequence.status, 'blocked');
-    assert.equal(consequence.hidden_update.npc_autonomous_domain_result
-      .errors[0].code, 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+    await assert.rejects(
+      () => command.consequence({
+        retrievedState: state,
+        playerInput: phase7PlayerInput(state, 'carry-without-destination')
+      }),
+      (error) => error?.code === 'TURN_NPC_PLAN_INVALID'
+    );
+    assert.equal(modelCalls, 2);
     assert.deepEqual(state, stateBefore);
   });
 
-test('Phase 7 operation contract mirrors owner capabilities not exact bindings',
+test('Phase 7 operation contract publishes exact executable combinations',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
@@ -117,27 +123,29 @@ test('Phase 7 operation contract mirrors owner capabilities not exact bindings',
       playerInput: phase7PlayerInput(state, 'exact-wait')
     });
     const contract = captured[0].decision_scope.operation_contract;
-    assert.deepEqual(contract.request_activity.activity_kinds,
-      ['carry', 'wait']);
-    assert.deepEqual(contract.request_activity.target_refs, [
-      'river_access', 'trace_ld_v1_container_road_bag'
+    assert.deepEqual(contract.request_activity.allowed, [
+      { activity_kind: 'wait', target_refs: [] },
+      {
+        activity_kind: 'carry',
+        target_refs: ['trace_ld_v1_container_road_bag', 'river_access']
+      }
     ]);
     assert.equal(Object.hasOwn(contract, 'request_movement'), true);
-    assert.equal(Object.hasOwn(contract.request_activity, 'allowed'), false);
+    assert.equal(Object.hasOwn(contract.request_activity, 'activity_kinds'),
+      false);
     const validWait = phase7AutonomousPlan(captured[0], 'wait');
     const validCarry = phase7AutonomousPlan(captured[0], 'move_bag');
     const invalidCarry = phase7AutonomousPlan(captured[0], 'move_bag');
     invalidCarry.operations[0].target_refs = [contracts.roadBag.item_ref];
     assert.equal(validateNpcStepPlan(validWait, captured[0]), true);
     assert.equal(validateNpcStepPlan(validCarry, captured[0]), true);
-    assert.equal(validateNpcStepPlan(invalidCarry, captured[0]), true);
+    assert.equal(validateNpcStepPlan(invalidCarry, captured[0]), false);
   });
 
-test('Phase 7 rejects overlong activity without a second model decision',
+test('Phase 7 keeps overlong NPC activity active after Mikula rest ends',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
-    const stateBefore = structuredClone(state);
     let modelCalls = 0;
     const consequence = await phase7Command({ state, contracts,
       model: async (request) => {
@@ -152,9 +160,22 @@ test('Phase 7 rejects overlong activity without a second model decision',
     });
 
     assert.equal(modelCalls, 1);
-    assert.equal(consequence.status, 'blocked');
-    assert.equal(consequence.duration_minutes, 0);
-    assert.equal(consequence.hidden_update.npc_autonomous_domain_result
-      .errors[0].code, 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
-    assert.deepEqual(state, stateBefore);
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.schedule_temporal.elapsed_after_decision, 5);
+    assert.equal(
+      consequence.phase7.schedule_temporal.projection.active_npc_actor_step
+        .status,
+      'started'
+    );
+    assert.deepEqual(
+      consequence.phase7.schedule_temporal.projection.active_npc_actor_step
+        .planned_exact_elapsed.exact_minutes,
+      { numerator: '15', denominator: '1' }
+    );
+    assert.equal(consequence.phase7.schedule_execution.status, 'started');
+    assert.deepEqual(
+      consequence.phase7.schedule_temporal.result.trace.processed_boundary_ids,
+      []
+    );
   });

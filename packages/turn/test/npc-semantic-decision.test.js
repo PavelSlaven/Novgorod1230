@@ -300,20 +300,26 @@ test('applicability rejection returns one typed domain result without repair',
     assert.deepEqual(result.signal_ids_to_consume, []);
   });
 
-test('trace-only autonomous replay is rejected', async () => {
+test('trace-only autonomous replay returns committed decision', async () => {
   const sourceRequest = autonomousRequest();
   const trace = buildNpcSemanticDecisionTrace({
     request: sourceRequest,
     plan: autonomousPlan(sourceRequest),
     applied_change_set_id: 'change-trace-only'
   });
-  await assert.rejects(requestNpcSemanticDecision({
+  let calls = 0;
+  const result = await requestNpcSemanticDecision({
     boundary: autonomousBoundary(),
     request: sourceRequest,
     persistedTrace: trace,
-    semanticModel: async () => assert.fail('model must not be called'),
+    semanticModel: async () => {
+      calls += 1;
+      return assert.fail('model must not be called');
+    },
     revalidateStateVersion: async () => 2
-  }), ({ code }) => code === 'TURN_NPC_TRACE_INPUT_MISSING');
+  });
+  assert.equal(result.status, 'replayed');
+  assert.equal(calls, 0);
 });
 
 test('persisted old-v1 autonomous input replays without model call', async () => {
@@ -348,7 +354,7 @@ test('persisted old-v1 autonomous input replays without model call', async () =>
   assert.deepEqual(result.signal_ids_to_consume, []);
 });
 
-test('autonomous replay requires exact ordered aggregate and request digest',
+test('autonomous replay tolerates digest drift when boundary_id matches',
   async () => {
     const decisionBoundary = autonomousBoundary({
       categories: ['self', 'objective'],
@@ -376,31 +382,33 @@ test('autonomous replay requires exact ordered aggregate and request digest',
       request_snapshot: structuredClone(decisionRequest),
       boundary_snapshot: structuredClone(decisionBoundary),
       signal_records: structuredClone(orderedSignals),
-      canonical_input_digest: canonicalDigest({
-        schema: 'npc_semantic_decision_input_v1',
-        request: decisionRequest,
-        boundary: decisionBoundary,
-        signal_records: orderedSignals
-      })
+      canonical_input_digest: 'stale-digest-not-rechecked'
     };
     const result = await requestNpcSemanticDecision({
       boundary: decisionBoundary,
       request: decisionRequest,
       persistedTrace: trace,
       persistedInput,
-      orderedSignals,
+      orderedSignals: [...orderedSignals,
+        { signal_id: 'signal-extra', category: 'environment' }],
       semanticModel: async () => assert.fail('model must not be called'),
       revalidateStateVersion: async () => 2
     });
     assert.equal(result.status, 'replayed');
 
+    const foreignInput = {
+      ...persistedInput,
+      boundary_snapshot: {
+        ...structuredClone(decisionBoundary),
+        boundary_id: 'npc-decision:foreign-boundary'
+      }
+    };
     await assert.rejects(requestNpcSemanticDecision({
       boundary: decisionBoundary,
       request: decisionRequest,
       persistedTrace: trace,
-      persistedInput,
-      orderedSignals: [...orderedSignals,
-        { signal_id: 'signal-extra', category: 'environment' }],
+      persistedInput: foreignInput,
+      orderedSignals,
       semanticModel: async () => decisionPlan,
       revalidateStateVersion: async () => 2
     }), ({ code }) => code === 'TURN_NPC_TRACE_INPUT_MISMATCH');

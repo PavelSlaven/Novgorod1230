@@ -1504,19 +1504,19 @@ NPC может действовать на основании ложного у�
 
 ### 23.3. Повтор
 
-Повтор допускается только при exact совпадении persisted `boundary_snapshot`,
-ordered `signal_records`, `request_snapshot` и их
-`canonical_input_digest`. Один `boundary_id` без этого proof недостаточен:
-изменённый, дополнительный или иначе consumed signal означает
-idempotency conflict. Для autonomous mode trace-only replay запрещён, включая
-legacy `npc_action_decision_request_v1`: legacy request гидрируется вместе с
-его persisted input proof из normalized decision row.
-
-Допустимый повтор:
+Повтор с тем же committed `boundary_id` (trigger_aligned):
 
 - не вызывает LLM;
 - не выполняет действие повторно;
 - возвращает сохранённый decision trace и результат.
+
+Persisted `boundary_snapshot` / `signal_records` / `request_snapshot` /
+`canonical_input_digest` могут храниться как proof, но сами по себе не
+создают новый mandatory mismatch fail: достаточно совпадения committed
+`boundary_id` и сохранённого decision/idempotency. Конфликт объявляется
+только при реальном расхождении identity (другой `boundary_id` или
+противоречивый persisted trace). Trace-only replay с тем же
+`boundary_id` допускается.
 
 Если сбой произошёл до commit, решение ещё не стало фактом мира и может быть рассчитано заново.
 

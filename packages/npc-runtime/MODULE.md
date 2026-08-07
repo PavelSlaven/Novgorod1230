@@ -77,11 +77,11 @@ genuinely closed choices и historical revisions, выбранных явным 
 contracts применяются через единый orchestration/write path. Phase 7 фиксирует
 fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
 точные actor-step operations из зарегистрированных domain handlers
-(`operation_contract` публикует capability-level caps поддерживаемых
-owners — kinds/targets/resources, без scenario exact binding whitelist),
-применяется на том же timestamp, после чего общий temporal owner
-продолжает интервал до +30; temporal/persistence/visibility остаются
-code-owned. Production v4 является explicit migration/rollback source, но не
+(`operation_contract` публикует exact executable combinations owners —
+не narrative whitelist и не cartesian kinds×targets), применяется на
+том же timestamp; activity Жданко может продолжаться после +30, пока
+общий temporal owner завершает rest Микулы; temporal/persistence/
+visibility остаются code-owned. Production v4 является explicit migration/rollback source, но не
 runtime path; partial activation, dual write и in-turn fallback запрещены.
 Tests покрывают exact schedule/perception, five-category signals, one
 NPC/batch aggregation, semantic contracts, conversation contracts, replay и

@@ -46,6 +46,7 @@ export {
 export { proposeNpcScheduleTransition } from './schedule.js';
 export { selectApplicableNpcActivityExecution } from
   './activity-execution-selection.js';
+export { matchesOperationContract } from './operation-contract-match.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow
 } from './reaction-policy.js';

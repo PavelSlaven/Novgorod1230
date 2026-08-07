@@ -1,5 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
-import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
+import {
+  matchesOperationContract,
+  selectApplicableNpcActivityExecution
+} from '@rus/npc-runtime';
 
 export function validateTracePhase7Plan({ plan, request, contracts,
   operationContract }) {
@@ -7,14 +10,11 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       !== canonicalDigest(operationContract)) {
     return rejected('NPC_OPERATION_CONTRACT_STALE');
   }
-  const activityContract = operationContract.request_activity;
-  if (activityContract == null) return rejected('NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   if (plan.resolution === 'direct') {
     const profile = contracts.semanticActivityProfiles.find((candidate) =>
       candidate.duration_class === plan.activity.duration_class
         && candidate.effort === plan.activity.effort);
     return profile != null
-      && withinAvailableTime(profile.duration_minutes, activityContract)
       ? accepted()
       : rejected('NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   }
@@ -25,10 +25,16 @@ export function validateTracePhase7Plan({ plan, request, contracts,
     op === 'request_activity'
       || op === 'request_item_use'
       || op === 'request_movement');
-  if (operation?.op === 'request_activity') {
-    if (!withinActivityCapabilities(activityContract, operation)) {
-      return rejected('NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
-    }
+  if (operation == null
+      || !Object.hasOwn(operationContract, operation.op)
+      || !matchesOperationContract(operation, operationContract[operation.op])) {
+    return rejected(operation?.op === 'request_item_use'
+      ? 'NPC_ITEM_OPERATION_NOT_APPLICABLE'
+      : operation?.op === 'request_movement'
+        ? 'NPC_MOVEMENT_OPERATION_NOT_APPLICABLE'
+        : 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+  }
+  if (operation.op === 'request_activity') {
     const selection = selectApplicableNpcActivityExecution({
       operation,
       activity_profiles: contracts.scheduleActivityProfiles,
@@ -39,59 +45,11 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       ]
     });
     return selection.pass
-      && withinAvailableTime(
-        profileMinutes(selection.execution_binding), activityContract)
       ? accepted()
       : rejected(selection.errors[0]?.code
         ?? 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   }
-  if (operation?.op === 'request_movement') {
-    return withinMovementCapabilities(
-      operationContract.request_movement, operation)
-      ? accepted()
-      : rejected('NPC_MOVEMENT_OPERATION_NOT_APPLICABLE');
-  }
-  const itemContract = operationContract.request_item_use;
-  return operation?.op === 'request_item_use'
-    && itemContract != null
-    && withinItemCapabilities(itemContract, operation)
-    ? accepted()
-    : rejected('NPC_ITEM_OPERATION_NOT_APPLICABLE');
-}
-
-function withinActivityCapabilities(contract, operation) {
-  return Array.isArray(contract.activity_kinds)
-    && contract.activity_kinds.includes(operation.activity_kind)
-    && Array.isArray(contract.target_refs)
-    && operation.target_refs.every((ref) => contract.target_refs.includes(ref));
-}
-
-function withinItemCapabilities(contract, operation) {
-  return Array.isArray(contract.item_refs)
-    && contract.item_refs.includes(operation.item_ref)
-    && Array.isArray(contract.use_kinds)
-    && contract.use_kinds.includes(operation.use_kind)
-    && Array.isArray(contract.target_refs)
-    && operation.target_refs.every((ref) => contract.target_refs.includes(ref));
-}
-
-function withinMovementCapabilities(contract, operation) {
-  return contract != null
-    && Array.isArray(contract.movement_kinds)
-    && contract.movement_kinds.includes(operation.movement_kind)
-    && Array.isArray(contract.target_refs)
-    && contract.target_refs.includes(operation.target_ref);
-}
-
-function profileMinutes(profile) {
-  return (profile.elapsed_plan?.stages ?? []).reduce(
-    (sum, stage) => sum + stage.duration_minutes, 0);
-}
-
-function withinAvailableTime(minutes, contract) {
-  return Number.isSafeInteger(minutes)
-    && minutes > 0
-    && minutes <= contract.maximum_elapsed_minutes;
+  return accepted();
 }
 
 function accepted() {

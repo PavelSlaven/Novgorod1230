@@ -63,30 +63,42 @@ export function finalizeTracePhase7ScheduleExecution({
   scheduleTemporal
 }) {
   const started = actorStep.result;
-  const completionClock = scheduleTemporal.projection
-    .active_npc_actor_step?.completed_at;
-  if (completionClock == null) {
-    fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
-  }
-  const elapsed = exactIntegerElapsed(started.clock_before, completionClock);
+  const active = scheduleTemporal.projection?.active_npc_actor_step;
   if (started.status !== 'started'
       || scheduleTemporal.result.temporal_status !== 'completed'
       || canonicalDigest(scheduleTemporal.result.clock_before)
         !== canonicalDigest(started.clock_before)
-      || compareGameTimestamp(completionClock,
-        scheduleTemporal.result.clock_after) > 0
-      || elapsed !== Number(started.exact_elapsed.exact_minutes.numerator)
-      || scheduleTemporal.projection.active_npc_actor_step?.npc_ref
-        !== started.npc_ref
-      || scheduleTemporal.projection.active_npc_actor_step?.status
-        !== 'completed') {
+      || active?.npc_ref !== started.npc_ref) {
+    fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+  }
+  if (active.status === 'completed') {
+    const completionClock = active.completed_at;
+    if (completionClock == null) {
+      fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+    }
+    const elapsed = exactIntegerElapsed(started.clock_before, completionClock);
+    if (compareGameTimestamp(completionClock,
+          scheduleTemporal.result.clock_after) > 0
+        || elapsed !== Number(started.exact_elapsed.exact_minutes.numerator)) {
+      fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+    }
+    return Object.freeze({
+      ...structuredClone(started),
+      status: 'executed',
+      failure_code: null,
+      clock_after: structuredClone(completionClock)
+    });
+  }
+  if (active.status !== 'started'
+      || compareGameTimestamp(
+        scheduleTemporal.completion_candidate.scheduled_at,
+        scheduleTemporal.result.clock_after) <= 0) {
     fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
   }
   return Object.freeze({
     ...structuredClone(started),
-    status: 'executed',
-    failure_code: null,
-    clock_after: structuredClone(completionClock)
+    status: 'started',
+    failure_code: null
   });
 }
 

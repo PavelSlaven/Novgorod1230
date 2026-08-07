@@ -130,19 +130,19 @@ test('Phase 7 delegates an autonomous concealment attempt to the item owner',
     const consequence = await commandFor({ state, contracts,
       model: async (request) => {
         assert.deepEqual(
-          request.decision_scope.operation_contract.request_item_use.item_refs,
-          ['trace_ld_v1_container_road_bag']
-        );
-        assert.deepEqual(
-          request.decision_scope.operation_contract.request_item_use.use_kinds,
-          ['operate', 'other']
-        );
-        assert.deepEqual(
-          request.decision_scope.operation_contract.request_item_use.target_refs,
-          ['storehouse_inside']
+          request.decision_scope.operation_contract.request_item_use.allowed,
+          [{
+            item_ref: 'trace_ld_v1_container_road_bag',
+            use_kind: 'operate',
+            target_refs: ['storehouse_inside']
+          }, {
+            item_ref: 'trace_ld_v1_container_road_bag',
+            use_kind: 'other',
+            target_refs: ['storehouse_inside']
+          }]
         );
         assert.equal(Object.hasOwn(
-          request.decision_scope.operation_contract.request_item_use, 'allowed'
+          request.decision_scope.operation_contract.request_item_use, 'item_refs'
         ), false);
         assert.equal(JSON.stringify(request.decision_scope.operation_contract)
           .includes('concealed_requires_search'), false);

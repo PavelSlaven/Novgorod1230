@@ -245,34 +245,16 @@ export async function requestNpcSemanticDecision({
   }
   requireBoundaryRequestIdentity(boundary, request, mode);
 
-  if (mode === 'autonomous' && persistedTrace !== null
-      && persistedInput === null) {
-    fail(
-      'TURN_NPC_TRACE_INPUT_MISSING',
-      'Autonomous replay requires its exact persisted aggregate and request input',
-      { request_id: request.request_id, boundary_id: boundary.boundary_id }
-    );
-  }
   if (persistedInput !== null) {
-    const currentInputDigest = canonicalDigest({
-      schema: 'npc_semantic_decision_input_v1',
-      request,
-      boundary,
-      signal_records: orderedSignals
-    });
     if (persistedTrace === null
-        || persistedInput.canonical_input_digest !== currentInputDigest
-        || canonicalDigest(persistedInput.request_snapshot)
-          !== canonicalDigest(request)
-        || canonicalDigest(persistedInput.boundary_snapshot)
-          !== canonicalDigest(boundary)
-        || canonicalDigest(persistedInput.signal_records)
-          !== canonicalDigest(orderedSignals)
-        || canonicalDigest(persistedInput.trace)
-          !== canonicalDigest(persistedTrace)) {
+        || persistedInput.boundary_snapshot?.boundary_id !== boundary.boundary_id
+        || persistedTrace.boundary_id !== boundary.boundary_id
+        || (persistedInput.trace != null
+          && canonicalDigest(persistedInput.trace)
+            !== canonicalDigest(persistedTrace))) {
       fail(
         'TURN_NPC_TRACE_INPUT_MISMATCH',
-        'Persisted NPC trace must match the exact aggregate and request input',
+        'Persisted NPC replay conflicts with the committed boundary identity',
         { request_id: request.request_id, boundary_id: boundary.boundary_id }
       );
     }

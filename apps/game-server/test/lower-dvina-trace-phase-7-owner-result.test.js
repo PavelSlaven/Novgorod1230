@@ -35,6 +35,13 @@ test('Phase 7 admission rejects an operation detached from the NPC plan',
       .semantic_operation = structuredClone(detached);
     assertOwnerRejects(tampered, state, contracts);
 
+    const forgedProposal = structuredClone(consequence);
+    forgedProposal.phase7.actor_step.movement_proposal.destination_zone_ref =
+      'forged-zone';
+    forgedProposal.phase7.schedule_execution.movement_proposal
+      .destination_zone_ref = 'forged-zone';
+    assertOwnerRejects(forgedProposal, state, contracts);
+
     const forgedBinding = structuredClone(consequence);
     for (const result of [forgedBinding.phase7.actor_step,
       forgedBinding.phase7.schedule_execution]) {

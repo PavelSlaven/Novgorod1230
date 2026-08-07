@@ -9,7 +9,8 @@ import {
 import {
   phase7Command,
   phase7CommittedState,
-  phase7PlayerInput
+  phase7PlayerInput,
+  persistPhase7Consequence
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
 
 test('Phase 7 preserves the boundary causality chain', async () => {
@@ -178,4 +179,18 @@ test('Phase 7 keeps overlong NPC activity active after Mikula rest ends',
       consequence.phase7.schedule_temporal.result.trace.processed_boundary_ids,
       []
     );
+
+    const { snapshot } = await persistPhase7Consequence({
+      state, contracts, consequence
+    });
+    const zhdanko = snapshot.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller');
+    assert.equal(snapshot.clock.whole_minutes, '130');
+    assert.equal(snapshot.phase7_fire_rest.status, 'completed');
+    assert.equal(snapshot.phase7_fire_rest.schedule_result.status, 'started');
+    assert.equal(zhdanko.machine_state.status, 'active');
+    assert.equal(zhdanko.machine_state.active_npc_actor_step.status, 'started');
+    assert.equal(zhdanko.machine_state.spatial_zone_ref, 'storehouse_inside');
+    assert.equal(zhdanko.machine_state.last_schedule_execution.status,
+      'started');
   });

@@ -189,7 +189,20 @@ function validScheduleExecution(schedule, contracts, request, plan) {
         || canonicalDigest(execution.property_transition_refs ?? [])
           !== canonicalDigest(propertyTransitionRef == null
             ? [] : [propertyTransitionRef]))) return false;
+  if (!validPinnedMovementShape(schedule.movement_proposal, contracts)) {
+    return false;
+  }
   return true;
+}
+
+function validPinnedMovementShape(proposal, contracts) {
+  if (proposal == null) return true;
+  const binding = contracts.localTransition;
+  if (binding == null) return false;
+  // Shape-check against pinned transition binding; do not re-plan proposals.
+  return proposal.transition_ref === binding.transition_id
+    && proposal.location_ref === binding.location_ref
+    && proposal.destination_zone_ref === binding.destination_zone_ref;
 }
 
 function exactIntegerElapsed(from, to) {

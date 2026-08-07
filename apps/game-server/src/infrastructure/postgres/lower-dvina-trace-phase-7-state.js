@@ -55,7 +55,8 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       'TRACE_PHASE_7_DECISION_TRACE_CONFLICT'
     );
   }
-  applyScheduleResult(next, phase7.schedule_execution, changeSetId);
+  applyScheduleResult(next, phase7.schedule_execution, changeSetId,
+    phase7.schedule_temporal.projection?.active_npc_actor_step);
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: 'completed',
@@ -115,28 +116,38 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   return next;
 }
 
-function applyScheduleResult(next, execution, changeSetId) {
+function applyScheduleResult(next, execution, changeSetId, activeActorStep) {
   const npc = next.npcs.find(({ instance_id: id }) =>
     id === execution.npc_ref);
-  if (!npc || execution.status !== 'executed') {
+  const completed = execution.status === 'executed';
+  const stillRunning = execution.status === 'started'
+    && activeActorStep?.status === 'started'
+    && activeActorStep?.npc_ref === execution.npc_ref;
+  if (!npc || (!completed && !stillRunning)) {
     fail('TRACE_PHASE_7_SCHEDULE_STATE_INVALID');
   }
   const history = scheduleHistoryEntry(execution, changeSetId);
+  // ponytail: started keeps unfinished actor-step; outcomes only on executed.
   npc.machine_state = {
     ...npc.machine_state,
-    ...(execution.movement_proposal ? {
+    ...(completed && execution.movement_proposal ? {
       location_ref: execution.movement_proposal.location_ref,
       spatial_zone_ref: execution.movement_proposal.destination_zone_ref
     } : {}),
-    status: activityStatus(execution.semantic_operation),
+    status: completed
+      ? activityStatus(execution.semantic_operation)
+      : 'active',
     current_activity_ref: execution.activity_profile_ref,
     last_phase7_change_set_id: changeSetId,
     last_schedule_execution: history,
     npc_schedule_history: [
       ...(npc.machine_state?.npc_schedule_history ?? []), history
-    ]
+    ],
+    ...(completed ? {} : {
+      active_npc_actor_step: structuredClone(activeActorStep)
+    })
   };
-  if (!execution.property_proposal) return;
+  if (!completed || !execution.property_proposal) return;
   const property = execution.property_proposal;
   const container = next.containers.find(
     ({ container_id: id }) => id === property.item_id

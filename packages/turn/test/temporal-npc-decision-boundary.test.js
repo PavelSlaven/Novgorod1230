@@ -420,3 +420,157 @@ test('multi-NPC same-time batch continues after first NPC domain rejection',
       'after:npc-a-reject'
     );
   });
+
+test('sole NPC decisionSignalState domain rejection blocks temporal continuation',
+  async () => {
+    const descriptor = signalDescriptor('cause-sole-reject');
+    const domainResult = {
+      pass: false,
+      errors: [{
+        code: 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE',
+        category: 'applicability',
+        retryable: false
+      }]
+    };
+    let continuationCalls = 0;
+
+    const flow = await advanceTemporalNpcDecisionBoundary({
+      advanceToBoundary: async () => ({
+        result: { temporal_status: 'paused', clock_after: at(25) },
+        projection: { npc_decision_signal_descriptors: [descriptor] }
+      }),
+      decisionSignalState: {
+        factual_state: {
+          party_id: 'party-sole-reject',
+          party_state: { state_version: 1 },
+          npc_decision_signals: [],
+          consumed_npc_decision_signal_ids: [],
+          npc_semantic_decision_inputs: []
+        },
+        npc_ref: npcRef,
+        active_mode: 'autonomous',
+        current_intent: null,
+        decision_capability: true
+      },
+      resolveDecision: async ({ signal_batch: signalBatch }) => ({
+        boundary: signalBatch.boundary,
+        autonomous: {
+          consumed_signal_ids: signalBatch.ordered_signals.map(
+            ({ signal_id: id }) => id
+          )
+        }
+      }),
+      executeActorStep: async () => ({
+        working_projection: {
+          npc_decision_signal_descriptors: [descriptor],
+          marker: 'rejected'
+        },
+        domain_result: domainResult
+      }),
+      continueAdvance: async () => {
+        continuationCalls += 1;
+        throw new Error('domain rejection must not continue time');
+      }
+    });
+
+    assert.equal(continuationCalls, 0);
+    assert.equal(flow.continuation, null);
+    assert.equal(flow.resolved_batches.length, 1);
+    assert.equal(flow.resolved_batches[0].actor_step.domain_result.pass, false);
+    assert.deepEqual(flow.actor_step.domain_result, domainResult);
+  });
+
+test('multi-NPC same-time batch blocks continuation when all NPCs domain-reject',
+  async () => {
+    const npcFirst = { entity_kind: 'npc', entity_id: 'npc-a' };
+    const npcSecond = { entity_kind: 'npc', entity_id: 'npc-b' };
+    const descriptorFor = (npc, entityId) => ({
+      occurred_at: at(25),
+      category: 'objective',
+      significance: 'material',
+      source_event_ref: {
+        entity_kind: 'npc_activity_factual_transition',
+        entity_id: entityId
+      },
+      subject_ref: npc,
+      scope_refs: [],
+      perception_required: false,
+      source_perception_ref: null,
+      causal_parent_refs: [],
+      perceived_change_summary: `change:${entityId}`
+    });
+    const descriptors = [
+      descriptorFor(npcFirst, 'cause-a'),
+      descriptorFor(npcSecond, 'cause-b')
+    ];
+    const domainResult = {
+      pass: false,
+      errors: [{
+        code: 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE',
+        category: 'applicability',
+        retryable: false
+      }]
+    };
+    const calls = [];
+    let continuationCalls = 0;
+
+    const flow = await advanceTemporalNpcDecisionBoundary({
+      advanceToBoundary: async () => ({
+        result: { temporal_status: 'paused', clock_after: at(25) },
+        projection: {
+          npc_decision_signal_descriptors: descriptors,
+          marker: 'initial'
+        }
+      }),
+      decisionSignalState: {
+        factual_state: {
+          party_id: 'party-all-reject',
+          party_state: { state_version: 1 },
+          npc_decision_signals: [],
+          consumed_npc_decision_signal_ids: [],
+          npc_semantic_decision_inputs: []
+        },
+        active_mode: 'autonomous',
+        current_intent: null,
+        decision_capability: true
+      },
+      resolveDecision: async ({ signal_batch: signalBatch }) => {
+        calls.push(`decision:${signalBatch.boundary.npc_ref.entity_id}`);
+        return {
+          boundary: signalBatch.boundary,
+          autonomous: {
+            consumed_signal_ids: signalBatch.ordered_signals.map(
+              ({ signal_id: id }) => id
+            )
+          }
+        };
+      },
+      executeActorStep: async ({ decision }) => {
+        const npcId = decision.boundary.npc_ref.entity_id;
+        calls.push(`actor:${npcId}`);
+        return {
+          working_projection: {
+            npc_decision_signal_descriptors: descriptors,
+            marker: `after:${npcId}-reject`
+          },
+          domain_result: domainResult
+        };
+      },
+      continueAdvance: async () => {
+        continuationCalls += 1;
+        throw new Error('all-reject batch must not continue time');
+      }
+    });
+
+    assert.deepEqual(calls, [
+      'decision:npc-a',
+      'actor:npc-a',
+      'decision:npc-b',
+      'actor:npc-b'
+    ]);
+    assert.equal(continuationCalls, 0);
+    assert.equal(flow.continuation, null);
+    assert.equal(flow.resolved_batches.length, 2);
+    assert.equal(flow.resolved_batches[0].actor_step.domain_result.pass, false);
+    assert.equal(flow.resolved_batches[1].actor_step.domain_result.pass, false);
+  });

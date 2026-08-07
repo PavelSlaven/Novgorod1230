@@ -101,6 +101,7 @@ export async function advanceTemporalNpcDecisionBoundary({
   let decision = null;
   let actorStep = null;
   let lastResolvedOrdinal = 0;
+  let hadSuccessfulActorStep = false;
   const resolvedBatches = [];
 
   for (let batchOrdinal = 1; batchOrdinal <= maxBatches; batchOrdinal += 1) {
@@ -178,7 +179,7 @@ export async function advanceTemporalNpcDecisionBoundary({
         decision
       }));
       // Domain reject for one NPC is recorded below and siblings still run.
-      // Single-NPC path (runSingleNpcDecisionPass) still aborts continuation.
+      // Advance continues only if at least one actor-step succeeded.
       const domainRejected = actorStep?.domain_result?.pass === false
         && actorStep?.working_projection != null
         && typeof actorStep.working_projection === 'object'
@@ -191,6 +192,9 @@ export async function advanceTemporalNpcDecisionBoundary({
             || Array.isArray(actorStep.working_projection))) {
         fail('temporal_change_set_conflict',
           'NPC actor-step must start on the decision timestamp and return working state.');
+      }
+      if (!domainRejected) {
+        hadSuccessfulActorStep = true;
       }
 
       projection = cloneFrozen(actorStep.working_projection);
@@ -237,6 +241,16 @@ export async function advanceTemporalNpcDecisionBoundary({
       fail('temporal_boundary_cycle',
         'Temporal same-time NPC reaction loop did not reach a fixed point.');
     }
+  }
+
+  if (!hadSuccessfulActorStep) {
+    return cloneFrozen({
+      temporal,
+      decision,
+      actor_step: actorStep,
+      continuation: null,
+      resolved_batches: resolvedBatches
+    });
   }
 
   const continuation = await continueAdvance(cloneFrozen({

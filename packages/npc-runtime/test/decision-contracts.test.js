@@ -137,6 +137,36 @@ test('decision signal evaluation is canonical for input order', () => {
   ]);
 });
 
+test('decision signal aggregation reconstructs one committed boundary on replay',
+  () => {
+    const npc = ref('npc', 'guard');
+    const signals = ['self', 'objective'].map((category) =>
+      buildNpcDecisionSignal({
+        occurred_at: at(),
+        category,
+        significance: 'material',
+        source_event_ref: ref('temporal_event', `${category}-event`),
+        subject_ref: npc,
+        perception_required: false
+      }));
+    const consumed = signals.map(({ signal_id: signalId }) => signalId);
+    const result = evaluateNpcDecisionSignals({
+      npc_ref: npc,
+      active_mode: 'autonomous',
+      current_intent: null,
+      decision_capability: true,
+      resolved_signals: signals,
+      consumed_signal_ids: consumed,
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      state_version: '4',
+      persisted_boundary_id: 'npc-decision:batch-1:guard'
+    });
+    assert.equal(result.boundary.boundary_id,
+      'npc-decision:batch-1:guard');
+    assert.deepEqual(result.boundary.categories, ['self', 'objective']);
+    assert.deepEqual(result.consumed_signal_ids, consumed.sort());
+  });
+
 test('one factual event may create two decision signal categories for one NPC', () => {
   const npc = ref('npc', 'guard');
   const event = ref('temporal_event', 'arrival-1');
@@ -551,6 +581,7 @@ function npcActionRequest() {
     },
     npc: {
       profile_level: 'scene',
+      profile_ref: 'guard-profile',
       identity: { name_or_label: 'Страж', age_range: 'adult', origin: null },
       social_role: { role_ref: 'guard', status: 'служилый', authority: [], dependencies: [] },
       attributes: [],
@@ -563,6 +594,10 @@ function npcActionRequest() {
       fears: [],
       obligations: [],
       relationships: [],
+      current_location: {
+        location_ref: 'yard',
+        zone_ref: 'gate'
+      },
       current_activity: {
         activity_ref: null,
         summary: null,
@@ -586,6 +621,34 @@ function npcActionRequest() {
 test('autonomous decision reasons require canonical common categories and signal refs', () => {
   const request = npcActionRequest();
   assert.equal(validateNpcActionDecisionRequest(request), true);
+
+  const missingSubjectiveState = copy(request);
+  missingSubjectiveState.historical_context = {
+    year: null,
+    season: null,
+    region: null,
+    applicable_norms: [],
+    known_local_customs: []
+  };
+  missingSubjectiveState.npc.identity = {
+    name_or_label: null,
+    age_range: null,
+    origin: null
+  };
+  missingSubjectiveState.npc.social_role = {
+    role_ref: null,
+    status: null,
+    authority: [],
+    dependencies: []
+  };
+  missingSubjectiveState.npc.body_state.summary = null;
+  missingSubjectiveState.npc.mood = null;
+  assert.equal(validateNpcActionDecisionRequest(missingSubjectiveState), true);
+
+  const persistedV1 = copy(request);
+  delete persistedV1.npc.profile_ref;
+  delete persistedV1.npc.current_location;
+  assert.equal(validateNpcActionDecisionRequest(persistedV1), true);
 
   const categoriesOutOfOrder = copy(request);
   categoriesOutOfOrder.decision_reasons.categories.reverse();

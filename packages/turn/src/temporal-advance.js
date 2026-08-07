@@ -23,6 +23,8 @@ import {
   validateConfiguration,
   validateRequest
 } from './temporal-advance-support.js';
+import { aggregateTemporalNpcDecisionSignals } from
+  './temporal-npc-decision-signals.js';
 
 const engines = new WeakSet();
 
@@ -126,7 +128,8 @@ export async function advanceTemporalNpcDecisionBoundary({
   advanceToBoundary,
   resolveDecision,
   executeActorStep,
-  continueAdvance
+  continueAdvance,
+  decisionSignalState = null
 } = {}) {
   for (const [name, handler] of Object.entries({
     advanceToBoundary,
@@ -145,7 +148,15 @@ export async function advanceTemporalNpcDecisionBoundary({
     fail('temporal_change_set_conflict',
       'NPC decision handoff requires one fully resolved paused batch.');
   }
-  const decision = await resolveDecision(cloneFrozen({ temporal }));
+  const signalBatch = decisionSignalState === null ? null
+    : aggregateTemporalNpcDecisionSignals({
+      temporal,
+      ...decisionSignalState
+    });
+  const decision = await resolveDecision(cloneFrozen({
+    temporal,
+    signal_batch: signalBatch
+  }));
   if (!timestamp(decision?.boundary?.scheduled_at)
       || compareGameTimestamp(
         decision.boundary.scheduled_at, decisionTimestamp

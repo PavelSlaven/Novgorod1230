@@ -1,0 +1,93 @@
+import { canonicalDigest } from '@rus/materialization';
+import {
+  buildNpcDecisionSignal,
+  evaluateNpcDecisionSignals
+} from '@rus/npc-runtime';
+
+export function aggregateTemporalNpcDecisionSignals({
+  temporal,
+  factual_state,
+  npc_ref,
+  active_mode,
+  current_intent = null,
+  decision_capability
+} = {}) {
+  const projection = temporal?.state_projection ?? temporal?.projection;
+  const descriptors = projection?.npc_decision_signal_descriptors;
+  const scheduledAt = temporal?.result?.clock_after;
+  if (!Array.isArray(descriptors) || descriptors.length === 0
+      || typeof factual_state?.party_id !== 'string'
+      || !Number.isSafeInteger(factual_state?.party_state?.state_version)) {
+    fail('temporal_change_set_conflict',
+      'Paused NPC decision batch requires descriptors and factual state.');
+  }
+  const sameTimeBatchRef = {
+    entity_kind: 'temporal_batch',
+    entity_id: `temporal-batch:${factual_state.party_id}:${
+      scheduledAt.whole_minutes}:${scheduledAt.subminute_numerator}/${
+      scheduledAt.subminute_denominator}`
+  };
+  const persistedInputs = (factual_state.npc_semantic_decision_inputs ?? [])
+    .filter(({ boundary_snapshot: boundary }) =>
+      canonicalDigest(boundary?.npc_ref) === canonicalDigest(npc_ref)
+        && canonicalDigest(boundary?.same_time_batch_ref)
+          === canonicalDigest(sameTimeBatchRef));
+  if (persistedInputs.length > 1) {
+    fail('idempotency_conflict',
+      'NPC same-time batch has ambiguous persisted decision inputs.');
+  }
+  const persistedDecisionInput = persistedInputs[0] ?? null;
+  const knownSignalRecords = factual_state.npc_decision_signals ?? [];
+  const consumedSignalIds =
+    factual_state.consumed_npc_decision_signal_ids ?? [];
+  const signals = descriptors.map((descriptor) =>
+    buildNpcDecisionSignal(descriptor));
+  const knownById = new Map(knownSignalRecords.map((record) =>
+    [record?.signal?.signal_id, record]));
+  for (const signal of signals) {
+    const known = knownById.get(signal.signal_id);
+    if (known && (known.same_time_batch_key !== sameTimeBatchRef.entity_id
+        || canonicalDigest(known.signal) !== canonicalDigest(signal))) {
+      fail('idempotency_conflict',
+        'Persisted NPC signal identity has different canonical content.');
+    }
+  }
+  const evaluation = evaluateNpcDecisionSignals({
+    npc_ref,
+    active_mode,
+    current_intent,
+    decision_capability,
+    resolved_signals: signals,
+    consumed_signal_ids: consumedSignalIds,
+    same_time_batch_ref: sameTimeBatchRef,
+    state_version: String(factual_state.party_state.state_version),
+    persisted_boundary_id:
+      persistedDecisionInput?.boundary_snapshot?.boundary_id ?? null
+  });
+  if (evaluation.boundary === null) {
+    fail('temporal_change_set_conflict',
+      'Paused NPC decision batch did not produce one decision boundary.');
+  }
+  const byId = new Map(signals.map((signal) => [signal.signal_id, signal]));
+  const orderedSignals = evaluation.boundary.signal_refs.map(
+    ({ entity_id: signalId }) => byId.get(signalId));
+  if (orderedSignals.some((signal) => signal === undefined)) {
+    fail('temporal_change_set_conflict',
+      'NPC decision boundary references a missing resolved signal.');
+  }
+  return Object.freeze({
+    boundary: evaluation.boundary,
+    ordered_signals: structuredClone(orderedSignals),
+    persisted_decision_input: structuredClone(persistedDecisionInput),
+    new_signal_records: orderedSignals
+      .filter((signal) => !knownById.has(signal.signal_id))
+      .map((signal) => ({
+        signal: structuredClone(signal),
+        same_time_batch_key: sameTimeBatchRef.entity_id
+      }))
+  });
+}
+
+function fail(code, message) {
+  throw Object.assign(new Error(message), { code });
+}

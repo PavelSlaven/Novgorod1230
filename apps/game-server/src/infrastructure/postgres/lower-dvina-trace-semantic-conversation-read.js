@@ -29,7 +29,8 @@ export function isLowerDvinaTraceSemanticRevision(payload) {
 
 export async function assertLowerDvinaTraceSemanticConversationRows(
   pool,
-  payload
+  payload,
+  { replayInputs = null } = {}
 ) {
   if (!isLowerDvinaTraceSemanticRevision(payload)) return [];
   const partyId = payload.party_id;
@@ -176,5 +177,8 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
     rows: supportingPerceptions.rows,
     contributions: contributionRows
   });
+  if (replayInputs !== null) {
+    replayInputs.push(...structuredClone(decisionProof.replayInputs));
+  }
   return decisionProof.traces;
 }

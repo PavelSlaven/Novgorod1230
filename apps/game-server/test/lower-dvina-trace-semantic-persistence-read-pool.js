@@ -65,7 +65,11 @@ export function semanticReadPool(writes) {
     left.conversation_id.localeCompare(right.conversation_id)
       || Number(left.session_state_version) - Number(right.session_state_version)
       || Number(left.contribution_index) - Number(right.contribution_index));
-  const decisions = rows(writes.appends, 'party_npc_decision_traces')
+  const decisions = [
+    ...rows(writes.inserts, 'party_npc_decision_traces'),
+    ...rows(writes.updates, 'party_npc_decision_traces'),
+    ...rows(writes.appends, 'party_npc_decision_traces')
+  ]
     .map(({ record }) => structuredClone(record))
     .sort((left, right) => left.request_id.localeCompare(right.request_id));
   const events = byId(writes.inserts, 'party_temporal_events');

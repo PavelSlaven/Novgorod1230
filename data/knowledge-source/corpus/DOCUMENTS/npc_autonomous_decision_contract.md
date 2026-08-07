@@ -433,6 +433,10 @@ LLM не вызывается из-за:
 - `decision_mode` является свойством boundary и не входит в её identity;
 - один NPC имеет не более одной aggregated boundary и одного LLM-вызова
   на один fully resolved same-time batch суммарно по всем режимам;
+- domain/scenario owners выдают только generic signal descriptors, а общий
+  temporal/turn owner после полного batch выводит batch identity, consumption
+  и persisted replay input из factual state, строит signals и вызывает общий
+  NPC-runtime aggregator;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;
@@ -694,6 +698,7 @@ LLM не может объявить:
 
   "npc": {
     "profile_level": "scene",
+    "profile_ref": "trace_ld_v1_npc_ratsha",
     "identity": {
       "name_or_label": "Ратша",
       "age_range": "adult",
@@ -733,6 +738,10 @@ LLM не может объявить:
     "fears": [],
     "obligations": [],
     "relationships": [],
+    "current_location": {
+      "location_ref": "location-shed",
+      "zone_ref": "shed-inside"
+    },
     "current_activity": {
       "activity_ref": null,
       "summary": null,
@@ -781,10 +790,18 @@ LLM не может объявить:
 - `decision_reasons.significance` содержит только `material` или `critical`.
 - `decision_reasons.perceived_changes` кратко описывает агрегированные source events с точки зрения NPC и не вводит новые trigger types.
 - Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
-- В `available_resources` входят только известные и доступные NPC сущности.
+- В `available_resources` входят только persisted NPC-controlled либо
+  factually accessible по holder/controller/access/location сущности;
+  scenario allowlist не фильтрует фактически доступный runtime resource.
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.
+- `profile_ref`, `social_role.role_ref`, `current_location`, тело, настроение,
+  отношения и ресурсы проецируются общим NPC-safe builder только из supplied
+  persisted snapshots.
+- Если persisted snapshot не содержит необязательное субъективное поле,
+  request сохраняет контрактный `null` или пустой массив; scenario code не
+  подставляет роль, настроение, отношения, ценности или prose facts.
 
 ### 15.2. Профили NPC
 
@@ -1487,7 +1504,15 @@ NPC может действовать на основании ложного у�
 
 ### 23.3. Повтор
 
-Повтор с тем же committed `boundary_id`:
+Повтор допускается только при exact совпадении persisted `boundary_snapshot`,
+ordered `signal_records`, `request_snapshot` и их
+`canonical_input_digest`. Один `boundary_id` без этого proof недостаточен:
+изменённый, дополнительный или иначе consumed signal означает
+idempotency conflict. Для autonomous mode trace-only replay запрещён, включая
+legacy `npc_action_decision_request_v1`: legacy request гидрируется вместе с
+его persisted input proof из normalized decision row.
+
+Допустимый повтор:
 
 - не вызывает LLM;
 - не выполняет действие повторно;

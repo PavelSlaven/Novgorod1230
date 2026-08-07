@@ -1,13 +1,13 @@
 import { canonicalDigest } from '@rus/materialization';
-import {
-  validateNpcDecisionBoundary,
-  validateNpcDecisionSignal
-} from '@rus/npc-runtime';
+import { validateNpcDecisionBoundary, validateNpcDecisionSignal } from
+  '@rus/npc-runtime';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { tracePhase7WaitingTerminalCandidateId } from
   '../../runtime/lower-dvina-trace-phase-7-temporal.js';
 import { tracePhase7WaitingTransitionId } from
   '../../runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
+import { semanticSignalsMatchDecisionBoundary } from
+  './lower-dvina-trace-semantic-decision-shapes.js';
 
 export async function assertPhase7NormalizedRows(pool, payload) {
   const phase7 = payload.phase7_fire_rest;
@@ -148,7 +148,9 @@ function validPersistedCausality(
     'npc_decision_signal', phase7.decision_signal_id
   );
   const decision = decisionResult?.rows?.[0];
-  const signal = decision?.signal_records?.[0];
+  const signals = decision?.signal_records;
+  const signal = signals?.find(({ signal_id: signalId }) =>
+    signalId === phase7.decision_signal_id);
   const boundary = decision?.boundary_snapshot;
   const candidate = causality?.waiting_terminal_candidate;
   const transition = causality?.waiting_transition;
@@ -159,7 +161,7 @@ function validPersistedCausality(
       === tracePhase7WaitingTerminalCandidateId(partyId)
     && candidate?.idempotency_key === candidate?.boundary_id
     && candidate?.boundary_kind === 'npc_schedule'
-    && candidate?.resolution_class === 'reaction_decision'
+    && candidate?.resolution_class === 'npc_schedule'
     && canonicalDigest(candidate?.source_ref)
       === canonicalDigest(ref(
         'party_timed_activity_execution', phase7.activity_execution_id
@@ -184,7 +186,10 @@ function validPersistedCausality(
     && decisionResult?.rowCount === 1
     && decision?.request_id === phase7.decision_request_id
     && decision?.boundary_id === phase7.decision_boundary_id
-    && decision?.signal_records?.length === 1
+    && Array.isArray(signals)
+    && signals.length > 0
+    && signals.every(validateNpcDecisionSignal)
+    && semanticSignalsMatchDecisionBoundary(signals, boundary)
     && validateNpcDecisionSignal(signal)
     && validateNpcDecisionBoundary(boundary)
     && signal?.signal_id === phase7.decision_signal_id
@@ -203,10 +208,14 @@ function validPersistedCausality(
     && canonicalDigest(boundary?.npc_ref)
       === canonicalDigest(candidate?.primary_subject_ref)
     && canonicalDigest(boundary?.categories)
-      === canonicalDigest([signal?.category])
+      === canonicalDigest([
+        'self', 'others', 'environment', 'objective', 'communication'
+      ].filter((category) => signals.some((entry) =>
+        entry.category === category)))
     && boundary?.decision_mode === 'autonomous'
     && canonicalDigest(boundary?.signal_refs)
-      === canonicalDigest([signalRef])
+      === canonicalDigest(signals.map(({ signal_id: signalId }) =>
+        ref('npc_decision_signal', signalId)))
     && canonicalDigest(boundary?.scheduled_at)
       === canonicalDigest(signal?.occurred_at)
     && canonicalDigest(causality.decision_boundary_ref)
@@ -286,7 +295,4 @@ function assertBodyHistory(payload, result) {
         subminute_denominator: row.occurred_at_subminute_denominator
       }) !== canonicalDigest(payload.clock)) fail();
 }
-
-function fail() {
-  throw phase2IntegrityError();
-}
+function fail() { throw phase2IntegrityError(); }

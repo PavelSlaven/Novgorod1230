@@ -52,6 +52,8 @@ function validCausality(phase7) {
   const boundary = phase7.autonomous.boundary;
   const actorStep = phase7.schedule_temporal.projection.active_npc_actor_step;
   const completion = phase7.schedule_temporal.completion_candidate;
+  const orderedSignals =
+    phase7.autonomous.decision_records?.[0]?.orderedSignals;
   const candidateRef = {
     entity_kind: 'temporal_boundary_candidate',
     entity_id: candidate?.boundary_id
@@ -73,11 +75,14 @@ function validCausality(phase7) {
       === canonicalDigest(transitionRef)
     && canonicalDigest(signal?.causal_parent_refs)
       === canonicalDigest([candidateRef])
-    && canonicalDigest(boundary?.signal_refs)
-      === canonicalDigest([{
+    && Array.isArray(orderedSignals)
+    && orderedSignals.some(({ signal_id: signalId }) =>
+      signalId === signal?.signal_id)
+    && canonicalDigest(boundary?.signal_refs) === canonicalDigest(
+      orderedSignals.map(({ signal_id: signalId }) => ({
         entity_kind: 'npc_decision_signal',
-        entity_id: signal?.signal_id
-      }])
+        entity_id: signalId
+      })))
     && canonicalDigest(completion?.source_ref)
       === canonicalDigest(actorStep?.decision_trace_ref)
     && canonicalDigest(completion?.causal_parent_refs)

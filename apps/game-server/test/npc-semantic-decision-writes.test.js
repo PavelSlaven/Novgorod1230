@@ -76,6 +76,7 @@ function autonomousRequest(boundary) {
     },
     npc: {
       profile_level: 'scene',
+      profile_ref: 'zhdanko-profile',
       identity: { name_or_label: 'Жданко', age_range: 'adult', origin: null },
       social_role: {
         role_ref: 'storehouse_controller', status: 'управляющий',
@@ -86,6 +87,10 @@ function autonomousRequest(boundary) {
       mood: { state: 'тревожен', intensity: 'material' },
       temperament: [], values: [], goals: [], fears: [], obligations: [],
       relationships: [],
+      current_location: {
+        location_ref: 'storehouse',
+        zone_ref: 'storehouse_inside'
+      },
       current_activity: {
         activity_ref: null, summary: null, status: 'decision_required',
         can_continue_automatically: false

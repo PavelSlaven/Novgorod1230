@@ -30,6 +30,8 @@ export {
 } from './conversation-contracts.js';
 export {
   buildNpcActionDecisionRequest,
+  buildNpcActionDecisionRequestFromSnapshots,
+  projectNpcSafeResourceSnapshots,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,
   validateNpcActionDecisionRequest,

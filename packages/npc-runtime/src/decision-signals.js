@@ -270,7 +270,9 @@ export function buildNpcDecisionBoundary({
 }
 
 export function evaluateNpcDecisionSignals(input = {}) {
-  if (!exactKeys(input, EVALUATION_KEYS)
+  const hasPersistedBoundary = Object.hasOwn(input, 'persisted_boundary_id');
+  if (!exactKeys(input, hasPersistedBoundary
+    ? [...EVALUATION_KEYS, 'persisted_boundary_id'] : EVALUATION_KEYS)
     || !exactEntityRef(input.npc_ref, 'npc')
     || !DECISION_MODES.has(input.active_mode)
     || !(input.current_intent === null || jsonSafeRecord(input.current_intent))
@@ -279,6 +281,9 @@ export function evaluateNpcDecisionSignals(input = {}) {
     || input.resolved_signals.some((signal) => !validateNpcDecisionSignal(signal))
     || !Array.isArray(input.consumed_signal_ids)
     || input.consumed_signal_ids.some((signalId) => !stableId(signalId))
+    || (hasPersistedBoundary
+      && !(input.persisted_boundary_id === null
+        || stableId(input.persisted_boundary_id)))
     || !exactEntityRef(input.same_time_batch_ref, 'temporal_batch')
     || !positiveDecimal(input.state_version)) {
     invalid('NPC_DECISION_EVALUATION_INVALID', 'NPC decision signal evaluation input is not formal');
@@ -287,18 +292,31 @@ export function evaluateNpcDecisionSignals(input = {}) {
   const consumed = new Set(input.consumed_signal_ids);
   const byId = new Map();
   for (const signal of input.resolved_signals) {
-    if (!sameRef(signal.subject_ref, input.npc_ref) || consumed.has(signal.signal_id)) continue;
+    if (!sameRef(signal.subject_ref, input.npc_ref)) continue;
     const previous = byId.get(signal.signal_id);
     if (previous && digest(previous) !== digest(signal)) {
       invalid('NPC_DECISION_EVALUATION_INVALID', 'Duplicate signal identity has conflicting content');
     }
     if (!previous) byId.set(signal.signal_id, signal);
   }
-  const signals = [...byId.values()].sort((left, right) => {
+  const allSignals = [...byId.values()].sort((left, right) => {
     if (left.signal_id < right.signal_id) return -1;
     if (left.signal_id > right.signal_id) return 1;
     return 0;
   });
+  const expectedBoundaryId = boundaryIdentity(
+    input.same_time_batch_ref,
+    input.npc_ref
+  );
+  const replaying = input.persisted_boundary_id != null;
+  if (replaying && (input.persisted_boundary_id !== expectedBoundaryId
+      || allSignals.some((signal) => !consumed.has(signal.signal_id)))) {
+    invalid('NPC_DECISION_EVALUATION_INVALID',
+      'Persisted boundary does not match the fully consumed signal batch');
+  }
+  const signals = replaying
+    ? allSignals
+    : allSignals.filter((signal) => !consumed.has(signal.signal_id));
   if (!input.decision_capability || signals.length === 0) {
     return freeze({ boundary: null, consumed_signal_ids: [] });
   }

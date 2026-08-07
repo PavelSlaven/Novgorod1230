@@ -25,7 +25,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
+- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots, а общий resource projector допускает persisted controlled либо factually accessible resources без scenario allowlist; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
 - `selectApplicableNpcActivityExecution(input)` — выбирает ровно один
   applicable approved activity execution по semantic activity kind и реальным
   item/location refs; отсутствующая цель или неоднозначность дают typed reject.

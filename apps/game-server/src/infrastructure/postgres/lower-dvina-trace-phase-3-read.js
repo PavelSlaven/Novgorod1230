@@ -1,7 +1,7 @@
 import { assertPhase3SemanticRows } from './lower-dvina-trace-phase-3-read-semantic.js';
 import { assertPhase3ReadRows } from './lower-dvina-trace-phase-3-read-validation.js';
 export async function assertPhase3NormalizedRows(pool, payload) {
-  const { semanticRevision, decisionTraces } =
+  const { semanticRevision, decisionTraces, decisionInputs } =
     await assertPhase3SemanticRows(pool, payload);
   const [
     clock,
@@ -151,5 +151,20 @@ export async function assertPhase3NormalizedRows(pool, payload) {
       traversals
     }
   });
-  return decisionTraces;
+  return { decisionTraces, decisionInputs };
+}
+
+export function hydrateSemanticDecisionReplay(
+  payload,
+  decisionTraces,
+  decisionInputs
+) {
+  if (decisionTraces.length > 0) {
+    payload.npc_semantic_decision_traces = structuredClone(decisionTraces);
+  }
+  const autonomous = decisionInputs.filter(({ request_snapshot: request }) =>
+    request?.schema === 'npc_action_decision_request_v1');
+  if (autonomous.length > 0) {
+    payload.npc_semantic_decision_inputs = structuredClone(autonomous);
+  }
 }

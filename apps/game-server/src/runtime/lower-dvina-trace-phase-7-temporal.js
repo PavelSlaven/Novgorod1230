@@ -54,8 +54,12 @@ export function resolveTracePhase7RestTemporalAdvance({
       effect_ref: PHASE7_WAITING_TERMINAL_EFFECT_REF,
       input: {
         npc_ref: contracts.autonomous.target_npc_ref,
+        signal_subject_npc_ref: contracts.zhdanko.instance_id,
         activity_ref: contracts.waitActivity.profile_id,
-        transition_kind: 'waiting_terminal_reached'
+        transition_kind: 'waiting_terminal_reached',
+        decision_signal: structuredClone(
+          contracts.autonomous.signal_descriptor
+        )
       }
     }],
     continuous_effect: {
@@ -121,7 +125,7 @@ function waitingTerminalCandidate({ state, contracts, executionId }) {
       terminal_state: 'decision_required',
       parent_execution_ref: executionId
     }),
-    resolution_class: 'reaction_decision',
+    resolution_class: 'npc_schedule',
     interrupt_effect: 'background',
     visibility_policy_ref: versioned('visibility_modifier',
       'lower-dvina-trace-phase-7-hidden-npc', '1'),

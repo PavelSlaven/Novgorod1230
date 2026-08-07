@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
@@ -106,7 +105,7 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       },
       revalidateStateVersion: async () => state.party_state.state_version
     });
-    await command.consequence({
+    const consequence = await command.consequence({
       retrievedState: state,
       playerInput: playerInput(state, 'temporal-order')
     });
@@ -118,6 +117,10 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
       .active_npc_actor_step.started_at.whole_minutes, '125');
     assert.equal(continuationInputs[0].registered_effects[0].candidate
       .scheduled_at.whole_minutes, '130');
+    assert.equal(consequence.phase7.temporal.terminal_candidate
+      .resolution_class, 'npc_schedule');
+    assert.equal(consequence.phase7.autonomous.boundary.resolution_class,
+      'reaction_decision');
   });
 
 test('Phase 7 delegates an autonomous concealment attempt to the item owner',
@@ -192,53 +195,6 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       'road_bag_new_location']) {
       assert.equal(visibleJson.includes(hidden), false);
     }
-  });
-
-test('Phase 7 replays a hydrated autonomous decision without the model',
-  async () => {
-    const state = committedState();
-    const contracts = approvedContracts(state);
-    const first = await commandFor({ state, contracts,
-      model: async (request) => autonomousPlan(request, 'move_bag')
-    }).consequence({ retrievedState: state, playerInput: playerInput(state) });
-    const decision = first.phase7.autonomous.decision_records[0];
-    const replayState = structuredClone(state);
-    replayState.npc_semantic_decision_traces = [
-      buildNpcSemanticDecisionTrace({
-        request: decision.request,
-        plan: decision.proposal.plan,
-        applied_change_set_id: 'change:phase7-party:persisted-decision'
-      })
-    ];
-    replayState.npc_decision_signals = [{
-      signal: first.phase7.autonomous.signal,
-      same_time_batch_key: 'persisted-batch'
-    }];
-    replayState.consumed_npc_decision_signal_ids = [
-      first.phase7.autonomous.signal.signal_id
-    ];
-    let modelCalls = 0;
-    const replayed = await commandFor({
-      state: replayState,
-      contracts,
-      model: async () => {
-        modelCalls += 1;
-        throw new Error('persisted autonomous decision must replay');
-      }
-    }).consequence({
-      retrievedState: replayState,
-      playerInput: playerInput(replayState, 'replay')
-    });
-    assert.equal(modelCalls, 0);
-    assert.equal(replayed.phase7.autonomous.proposal.status, 'replayed');
-    assert.equal(replayed.phase7.schedule_execution.schedule_option_id,
-      'move_bag');
-    assert.equal(replayed.phase7.autonomous.signal.signal_id,
-      first.phase7.autonomous.signal.signal_id);
-    assert.deepEqual(
-      replayed.phase7.schedule_temporal.completion_candidate.causal_parent_refs,
-      first.phase7.schedule_temporal.completion_candidate.causal_parent_refs
-    );
   });
 
 test('revision 15 materialized state resolves the approved Phase 7 chain',

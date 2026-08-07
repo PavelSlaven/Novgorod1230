@@ -31,6 +31,10 @@
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
   `createTemporalSourceResolver`, `createTemporalAdvanceOwner`;
+- `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
+  выводит batch identity, consumption и persisted replay input из factual
+  state, преобразует generic NPC signal descriptors в общий агрегат и только
+  затем передаёт одну boundary semantic resolver;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.

@@ -44,9 +44,28 @@ function resolveRestProgress({ slice, context }) {
 function resolveWaitingTerminal({ candidate, context, descriptor }) {
   if (descriptor?.npc_ref !== 'zhdanko_storehouse_controller'
       || descriptor?.transition_kind !== 'waiting_terminal_reached'
+      || descriptor?.decision_signal?.category !== 'objective'
+      || typeof descriptor?.signal_subject_npc_ref !== 'string'
       || context.projection.waiting_terminal_reached === true) {
     fail('TRACE_PHASE_7_WAITING_TRANSITION_INVALID');
   }
+  const transition = {
+    schema: 'rus.npc_activity_factual_transition.v1',
+    transition_id: tracePhase7WaitingTransitionId(candidate.boundary_id),
+    npc_ref: descriptor.npc_ref,
+    activity_ref: descriptor.activity_ref,
+    from: 'waiting',
+    to: 'decision_required',
+    occurred_at: structuredClone(candidate.scheduled_at),
+    source_candidate_ref: {
+      entity_kind: 'temporal_boundary_candidate',
+      entity_id: candidate.boundary_id
+    },
+    causal_parent_refs: [{
+      entity_kind: 'temporal_boundary_candidate',
+      entity_id: candidate.boundary_id
+    }]
+  };
   return {
     disposition: 'execute',
     proposals: [{
@@ -56,23 +75,29 @@ function resolveWaitingTerminal({ candidate, context, descriptor }) {
     state_projection: {
       ...context.projection,
       waiting_terminal_reached: true,
-      waiting_transition: {
-        schema: 'rus.npc_activity_factual_transition.v1',
-        transition_id: tracePhase7WaitingTransitionId(candidate.boundary_id),
-        npc_ref: descriptor.npc_ref,
-        activity_ref: descriptor.activity_ref,
-        from: 'waiting',
-        to: 'decision_required',
-        occurred_at: structuredClone(candidate.scheduled_at),
-        source_candidate_ref: {
-          entity_kind: 'temporal_boundary_candidate',
-          entity_id: candidate.boundary_id
-        },
-        causal_parent_refs: [{
-          entity_kind: 'temporal_boundary_candidate',
-          entity_id: candidate.boundary_id
-        }]
-      }
+      waiting_transition: transition,
+      npc_decision_signal_descriptors: [
+        ...(context.projection.npc_decision_signal_descriptors ?? []),
+        {
+          occurred_at: structuredClone(candidate.scheduled_at),
+          category: descriptor.decision_signal.category,
+          significance: descriptor.decision_signal.significance,
+          source_event_ref: {
+            entity_kind: 'npc_activity_factual_transition',
+            entity_id: transition.transition_id
+          },
+          subject_ref: {
+            entity_kind: 'npc',
+            entity_id: descriptor.signal_subject_npc_ref
+          },
+          scope_refs: [],
+          perception_required: false,
+          source_perception_ref: null,
+          causal_parent_refs: structuredClone(
+            transition.causal_parent_refs
+          )
+        }
+      ]
     },
     follow_up_candidates: [],
     stop_after_current_batch: true

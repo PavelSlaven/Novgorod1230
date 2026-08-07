@@ -201,24 +201,24 @@ function validateDecisionReasons(value) {
 
 function validateHistoricalContext(value) {
   return exactKeys(value, ['year', 'season', 'region', 'applicable_norms', 'known_local_customs'])
-    && finiteInteger(value.year, 1)
-    && stableId(value.season)
-    && text(value.region)
+    && (value.year === null || finiteInteger(value.year, 1))
+    && (value.season === null || stableId(value.season))
+    && (value.region === null || text(value.region))
     && jsonArray(value.applicable_norms)
     && jsonArray(value.known_local_customs);
 }
 
 function validateIdentity(value) {
   return exactKeys(value, ['name_or_label', 'age_range', 'origin'])
-    && text(value.name_or_label)
-    && stableId(value.age_range)
+    && nullableText(value.name_or_label)
+    && nullableStableId(value.age_range)
     && nullableText(value.origin);
 }
 
 function validateSocialRole(value) {
   return exactKeys(value, ['role_ref', 'status', 'authority', 'dependencies'])
-    && stableId(value.role_ref)
-    && text(value.status)
+    && nullableStableId(value.role_ref)
+    && nullableText(value.status)
     && jsonArray(value.authority)
     && jsonArray(value.dependencies);
 }
@@ -231,7 +231,7 @@ function validateRatedRef(value, refKey) {
 }
 
 function validateNpc(value) {
-  return exactKeys(value, [
+  const legacyKeys = [
     'profile_level',
     'identity',
     'social_role',
@@ -247,8 +247,13 @@ function validateNpc(value) {
     'relationships',
     'current_activity',
     'available_resources'
-  ])
-    && enumValue(value.profile_level, ['background', 'scene', 'key'])
+  ];
+  const keys = Object.keys(value ?? {});
+  return (exactKeys(value, legacyKeys)
+      || exactKeys(value, [...legacyKeys, 'profile_ref', 'current_location']))
+    && (value.profile_level === null
+      || enumValue(value.profile_level, ['background', 'scene', 'key']))
+    && (!keys.includes('profile_ref') || nullableStableId(value.profile_ref))
     && validateIdentity(value.identity)
     && validateSocialRole(value.social_role)
     && Array.isArray(value.attributes)
@@ -258,17 +263,22 @@ function validateNpc(value) {
     && value.skills.every((entry) => validateRatedRef(entry, 'skill_ref'))
     && new Set(value.skills.map((entry) => entry.skill_ref)).size === value.skills.length
     && exactKeys(value.body_state, ['summary', 'conditions'])
-    && text(value.body_state.summary)
+    && nullableText(value.body_state.summary)
     && jsonArray(value.body_state.conditions)
-    && exactKeys(value.mood, ['state', 'intensity'])
-    && text(value.mood.state)
-    && stableId(value.mood.intensity)
+    && (value.mood === null
+      || (exactKeys(value.mood, ['state', 'intensity'])
+        && text(value.mood.state)
+        && stableId(value.mood.intensity)))
     && jsonArray(value.temperament)
     && jsonArray(value.values)
     && jsonArray(value.goals)
     && jsonArray(value.fears)
     && jsonArray(value.obligations)
     && jsonArray(value.relationships)
+    && (!keys.includes('current_location')
+      || (exactKeys(value.current_location, ['location_ref', 'zone_ref'])
+        && nullableStableId(value.current_location.location_ref)
+        && nullableStableId(value.current_location.zone_ref)))
     && exactKeys(value.current_activity, [
       'activity_ref',
       'summary',

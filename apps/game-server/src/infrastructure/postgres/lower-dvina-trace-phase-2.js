@@ -20,7 +20,10 @@ import {
 } from './lower-dvina-trace-phase-2-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
-import { assertPhase3NormalizedRows } from './lower-dvina-trace-phase-3-read.js';
+import {
+  assertPhase3NormalizedRows,
+  hydrateSemanticDecisionReplay
+} from './lower-dvina-trace-phase-3-read.js';
 import { assertPhase4NormalizedRows } from './lower-dvina-trace-phase-4-read.js';
 import { assertPhase5NormalizedRows } from './lower-dvina-trace-phase-5-read.js';
 import { assertPhase6NormalizedRows } from './lower-dvina-trace-phase-6-persistence.js';
@@ -108,10 +111,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     });
     const temporalSourceProof =
       await loadTracePhase2TemporalSourceProof(partyPool, partyId);
-    let semanticDecisionTraces = [];
+    let semanticDecisionTraces = [], semanticDecisionInputs = [];
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
-      semanticDecisionTraces =
-        await assertPhase3NormalizedRows(partyPool, payload, row);
+      ({
+        decisionTraces: semanticDecisionTraces,
+        decisionInputs: semanticDecisionInputs
+      } = await assertPhase3NormalizedRows(partyPool, payload, row));
       await assertPhase4NormalizedRows(partyPool, payload, row);
       await assertPhase5NormalizedRows(partyPool, payload, row);
       await assertPhase6NormalizedRows(partyPool, payload, row);
@@ -121,12 +126,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }
     const loadedPayload = structuredClone(payload);
-    if (semanticDecisionTraces.length > 0) {
-      // Private request/plan state is hydrated only from its normalized owner.
-      // Every snapshot builder strips this transient replay seam before write.
-      loadedPayload.npc_semantic_decision_traces =
-        structuredClone(semanticDecisionTraces);
-    }
+    hydrateSemanticDecisionReplay(
+      loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
     return {
       ...loadedPayload,
       world_identity: {

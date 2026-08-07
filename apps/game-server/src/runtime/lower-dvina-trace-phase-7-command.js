@@ -71,7 +71,17 @@ export function createTracePhase7FireRestCommand({
           temporalAdvanceOwner,
           commandIdempotencyKey: playerInput.idempotency_key
         }),
-        async resolveDecision({ temporal }) {
+        decisionSignalState: {
+          factual_state: state,
+          npc_ref: {
+            entity_kind: 'npc',
+            entity_id: contracts.zhdanko.instance_id
+          },
+          active_mode: 'autonomous',
+          current_intent: null,
+          decision_capability: true
+        },
+        async resolveDecision({ temporal, signal_batch: signalBatch }) {
           actorStepRuntime = createTracePhase7ActorStepRuntime({
             state, contracts, temporal, semanticActivityScheduleOwner
           });
@@ -79,6 +89,7 @@ export function createTracePhase7FireRestCommand({
             state,
             contracts,
             temporal,
+            signalBatch,
             operationContract:
               actorStepRuntime.registry.operationContract(),
             npcAutonomousModel,

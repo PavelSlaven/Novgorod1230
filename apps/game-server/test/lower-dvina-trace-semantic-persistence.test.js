@@ -110,15 +110,21 @@ test('semantic writer persists CAS, audiences, lineage and actual messages', () 
 
 test('semantic restart is symmetric and rejects corrupt audience digest', async () => {
   const fixture = semanticWriterFixture();
+  const replayInputs = [];
   const reloadedTraces =
     await assertLowerDvinaTraceSemanticConversationRows(
-      semanticReadPool(fixture.writes), fixture.payload
+      semanticReadPool(fixture.writes), fixture.payload, { replayInputs }
     );
   assert.deepEqual(
     reloadedTraces,
     [fixture.trace],
     'exact replay must hydrate the private plan from its dedicated trace row'
   );
+  const decisionRow = rows(fixture.writes.appends,
+    'party_npc_decision_traces')[0].record;
+  assert.equal(replayInputs[0].canonical_input_digest,
+    decisionRow.canonical_input_digest);
+  assert.deepEqual(replayInputs[0].signal_records, decisionRow.signal_records);
   const corrupt = structuredClone(fixture.writes);
   rows(corrupt.appends, 'party_conversation_statements')[0]
     .record.audience_digest = 'sha256:corrupt';

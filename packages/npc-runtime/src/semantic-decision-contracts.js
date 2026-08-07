@@ -35,6 +35,11 @@ export {
   buildNpcActionDecisionRequest,
   validateNpcActionDecisionRequest
 } from './semantic-decision-request-contract.js';
+export {
+  buildNpcActionDecisionRequestFromSnapshots,
+  projectNpcSafeResourceSnapshots
+} from
+  './npc-safe-request-projector.js';
 
 function validateInterpretation(value) {
   return exactKeys(value, ['npc_goal', 'grounded_attempt', 'adaptation'])

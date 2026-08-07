@@ -8,6 +8,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest }) {
   const next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   const phase7 = factual.consequence.phase7;
   const autonomous = phase7.autonomous;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';

@@ -3,10 +3,22 @@ import { createTracePhase7FireRestCommand } from
   '../src/runtime/lower-dvina-trace-phase-7-command.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
+import { buildLowerDvinaTracePhase7Commit } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
+import { createTracePhase7BodyEffect } from
+  '../src/runtime/lower-dvina-trace-phase-7-effects.js';
 
 const digest = 'a'.repeat(64);
 
-export function phase7Command({ state, contracts, model }) {
+export function phase7Command({
+  state,
+  contracts,
+  model,
+  temporalAdvanceOwner = createTemporalAdvanceOwner({
+    effect_registrations:
+      lowerDvinaTracePhase7TemporalEffectRegistrations()
+  })
+}) {
   return createTracePhase7FireRestCommand({
     contracts,
     inputDigest: digest,
@@ -25,10 +37,7 @@ export function phase7Command({ state, contracts, model }) {
         };
       }
     },
-    temporalAdvanceOwner: createTemporalAdvanceOwner({
-      effect_registrations:
-        lowerDvinaTracePhase7TemporalEffectRegistrations()
-    }),
+    temporalAdvanceOwner,
     revalidateStateVersion: async () => state.party_state.state_version
   });
 }
@@ -91,7 +100,29 @@ export function phase7CommittedState() {
       machine_state: { spatial_zone_ref: 'fire_rest_area' }
     }, {
       participant_slot_ref: 'zhdanko_storehouse_controller',
-      instance_id: 'zhdanko-1', anchor_id: 'storehouse-anchor',
+      instance_id: 'zhdanko-1',
+      profile_id: 'trace_ld_v1_npc_zhdanko',
+      profile_level: 'key',
+      anchor_id: 'storehouse-anchor',
+      location_profile_ref: 'trace_ld_v1_loc_storehouse',
+      zone_ref: 'storehouse_inside',
+      role_ref: {
+        id: 'nov_role_merchant_clerk',
+        source: 'approved_scenario_profile'
+      },
+      identity_state: {
+        canonical_name: 'Жданко',
+        age_range: 'adult'
+      },
+      body_state: {
+        summary: 'устал после работы',
+        conditions: [{ condition_ref: 'tired' }]
+      },
+      mood: { state: 'сосредоточен', intensity: 'moderate' },
+      relationships: [{
+        actor_ref: 'ratsha-1',
+        relation: 'старший по работе'
+      }],
       machine_state: {
         status: 'waiting', location_ref: 'trace_ld_v1_loc_storehouse',
         spatial_zone_ref: 'storehouse_inside'
@@ -111,6 +142,61 @@ export function phase7PlayerInput(state, suffix = 'move') {
     idempotency_key: `phase7-${suffix}-idem`,
     raw_text: 'Отдохнуть у огня полчаса и подсушить одежду'
   };
+}
+
+export async function persistPhase7Consequence({
+  state,
+  contracts,
+  consequence
+}) {
+  const timeUpdate = {
+    clock_before: state.clock,
+    clock_after: consequence.phase7.schedule_temporal.result.clock_after,
+    exact_elapsed: {
+      exact_minutes: { numerator: '30', denominator: '1' }
+    }
+  };
+  const bodyUpdate = createTracePhase7BodyEffect({
+    contracts,
+    fallback: { apply() { throw new Error('unexpected fallback'); } }
+  }).apply({ committed_state: state, consequence, time_update: timeUpdate });
+  const committed = await buildLowerDvinaTracePhase7Commit({
+    partyId: state.party_id,
+    factual: {
+      player_input: phase7PlayerInput(state, 'persisted-replay'),
+      mode_resolution: {
+        option_id: 'rest_by_fire_and_dry_clothing',
+        turn_id: 'phase7-persisted-replay',
+        decision_trace: {
+          state_version: state.party_state.state_version,
+          action_set_digest: 'action-set'
+        }
+      },
+      consequence,
+      time_update: timeUpdate,
+      body_update: bodyUpdate
+    },
+    state,
+    inputDigest: digest,
+    visibleContext: {
+      visible_scene: 'У костра прошло полчаса.',
+      visible_changes: ['elapsed_30_minutes'],
+      sensory_details: [],
+      visible_npc: [],
+      visible_objects: [],
+      known_context: [],
+      uncertainties: []
+    },
+    phase7Contracts: contracts
+  });
+  const snapshot = structuredClone([
+    ...committed.plan.inserts,
+    ...committed.plan.updates,
+    ...committed.plan.appends
+  ].find(
+    ({ target_table: table }) => table === 'party_state_snapshots'
+  ).record.state_payload);
+  return { plan: committed.plan, snapshot };
 }
 
 function condition(storageId, id) {

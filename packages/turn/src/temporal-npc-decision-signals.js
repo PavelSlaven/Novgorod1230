@@ -10,22 +10,28 @@ export function aggregateTemporalNpcDecisionSignals({
   npc_ref,
   active_mode,
   current_intent = null,
-  decision_capability
+  decision_capability,
+  same_time_batch_ordinal = 1
 } = {}) {
   const projection = temporal?.state_projection ?? temporal?.projection;
   const descriptors = projection?.npc_decision_signal_descriptors;
   const scheduledAt = temporal?.result?.clock_after;
-  if (!Array.isArray(descriptors) || descriptors.length === 0
+  if (!Array.isArray(descriptors)
       || typeof factual_state?.party_id !== 'string'
-      || !Number.isSafeInteger(factual_state?.party_state?.state_version)) {
+      || !Number.isSafeInteger(factual_state?.party_state?.state_version)
+      || !Number.isSafeInteger(same_time_batch_ordinal)
+      || same_time_batch_ordinal < 1) {
     fail('temporal_change_set_conflict',
       'Paused NPC decision batch requires descriptors and factual state.');
+  }
+  if (descriptors.length === 0) {
+    return null;
   }
   const sameTimeBatchRef = {
     entity_kind: 'temporal_batch',
     entity_id: `temporal-batch:${factual_state.party_id}:${
       scheduledAt.whole_minutes}:${scheduledAt.subminute_numerator}/${
-      scheduledAt.subminute_denominator}`
+      scheduledAt.subminute_denominator}:${same_time_batch_ordinal}`
   };
   const persistedInputs = (factual_state.npc_semantic_decision_inputs ?? [])
     .filter(({ boundary_snapshot: boundary }) =>
@@ -46,8 +52,8 @@ export function aggregateTemporalNpcDecisionSignals({
     [record?.signal?.signal_id, record]));
   for (const signal of signals) {
     const known = knownById.get(signal.signal_id);
-    if (known && (known.same_time_batch_key !== sameTimeBatchRef.entity_id
-        || canonicalDigest(known.signal) !== canonicalDigest(signal))) {
+    if (known
+        && canonicalDigest(known.signal) !== canonicalDigest(signal)) {
       fail('idempotency_conflict',
         'Persisted NPC signal identity has different canonical content.');
     }
@@ -65,8 +71,7 @@ export function aggregateTemporalNpcDecisionSignals({
       persistedDecisionInput?.boundary_snapshot?.boundary_id ?? null
   });
   if (evaluation.boundary === null) {
-    fail('temporal_change_set_conflict',
-      'Paused NPC decision batch did not produce one decision boundary.');
+    return null;
   }
   const byId = new Map(signals.map((signal) => [signal.signal_id, signal]));
   const orderedSignals = evaluation.boundary.signal_refs.map(
@@ -79,6 +84,8 @@ export function aggregateTemporalNpcDecisionSignals({
     boundary: evaluation.boundary,
     ordered_signals: structuredClone(orderedSignals),
     persisted_decision_input: structuredClone(persistedDecisionInput),
+    same_time_batch_ref: structuredClone(sameTimeBatchRef),
+    same_time_batch_ordinal: same_time_batch_ordinal,
     new_signal_records: orderedSignals
       .filter((signal) => !knownById.has(signal.signal_id))
       .map((signal) => ({

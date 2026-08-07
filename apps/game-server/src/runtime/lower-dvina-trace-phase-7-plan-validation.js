@@ -22,9 +22,11 @@ export function validateTracePhase7Plan({ plan, request, contracts,
     return rejected('NPC_DOMAIN_REQUEST_NOT_APPLICABLE');
   }
   const operation = plan.operations.find(({ op }) =>
-    op === 'request_activity' || op === 'request_item_use');
+    op === 'request_activity'
+      || op === 'request_item_use'
+      || op === 'request_movement');
   if (operation?.op === 'request_activity') {
-    if (!matchesAllowed(activityContract.allowed, operation)) {
+    if (!withinActivityCapabilities(activityContract, operation)) {
       return rejected('NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
     }
     const selection = selectApplicableNpcActivityExecution({
@@ -43,28 +45,42 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       : rejected(selection.errors[0]?.code
         ?? 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   }
+  if (operation?.op === 'request_movement') {
+    return withinMovementCapabilities(
+      operationContract.request_movement, operation)
+      ? accepted()
+      : rejected('NPC_MOVEMENT_OPERATION_NOT_APPLICABLE');
+  }
   const itemContract = operationContract.request_item_use;
   return operation?.op === 'request_item_use'
     && itemContract != null
-    && matchesAllowed(itemContract.allowed, operation)
+    && withinItemCapabilities(itemContract, operation)
     ? accepted()
     : rejected('NPC_ITEM_OPERATION_NOT_APPLICABLE');
 }
 
-function matchesAllowed(allowed, operation) {
-  return Array.isArray(allowed)
-    && allowed.some((entry) => {
-      if (operation.op === 'request_activity') {
-        return entry.activity_kind === operation.activity_kind
-          && sameSet(entry.target_refs, operation.target_refs);
-      }
-      if (operation.op === 'request_item_use') {
-        return entry.item_ref === operation.item_ref
-          && entry.use_kind === operation.use_kind
-          && sameSet(entry.target_refs, operation.target_refs);
-      }
-      return false;
-    });
+function withinActivityCapabilities(contract, operation) {
+  return Array.isArray(contract.activity_kinds)
+    && contract.activity_kinds.includes(operation.activity_kind)
+    && Array.isArray(contract.target_refs)
+    && operation.target_refs.every((ref) => contract.target_refs.includes(ref));
+}
+
+function withinItemCapabilities(contract, operation) {
+  return Array.isArray(contract.item_refs)
+    && contract.item_refs.includes(operation.item_ref)
+    && Array.isArray(contract.use_kinds)
+    && contract.use_kinds.includes(operation.use_kind)
+    && Array.isArray(contract.target_refs)
+    && operation.target_refs.every((ref) => contract.target_refs.includes(ref));
+}
+
+function withinMovementCapabilities(contract, operation) {
+  return contract != null
+    && Array.isArray(contract.movement_kinds)
+    && contract.movement_kinds.includes(operation.movement_kind)
+    && Array.isArray(contract.target_refs)
+    && contract.target_refs.includes(operation.target_ref);
 }
 
 function profileMinutes(profile) {
@@ -76,12 +92,6 @@ function withinAvailableTime(minutes, contract) {
   return Number.isSafeInteger(minutes)
     && minutes > 0
     && minutes <= contract.maximum_elapsed_minutes;
-}
-
-function sameSet(left, right) {
-  return left.length === right.length
-    && new Set(left).size === left.length
-    && left.every((value) => right.includes(value));
 }
 
 function accepted() {

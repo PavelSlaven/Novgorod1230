@@ -266,6 +266,26 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
         visibility_state: 'hidden'
       }
     });
+    state.items.push({
+      item_id: 'accessible-axe-1',
+      template_id: 'trace_ld_v1_item_zhdanko_axe',
+      holder_npc_id: 'zhdanko-1',
+      state: {
+        location_ref: 'trace_ld_v1_loc_storehouse',
+        zone_ref: 'storehouse_inside',
+        controller_npc_id: 'zhdanko-1'
+      }
+    }, {
+      item_id: 'remote-sealed-packet',
+      template_id: 'trace_ld_v1_item_sealed_packet',
+      holder_npc_id: 'other-npc',
+      state: {
+        location_ref: 'trace_ld_v1_loc_fishing_camp',
+        zone_ref: 'working_camp',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    });
     await commandFor({
       state,
       contracts,
@@ -296,6 +316,12 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
         assert.equal(request.npc.available_resources.some(
           ({ resource_ref: resourceRef }) =>
             resourceRef === 'hidden-foreign-resource'), false);
+        assert.equal(request.npc.available_resources.some(
+          ({ resource_ref: resourceRef }) =>
+            resourceRef === 'accessible-axe-1'), true);
+        assert.equal(request.npc.available_resources.some(
+          ({ resource_ref: resourceRef }) =>
+            resourceRef === 'remote-sealed-packet'), false);
         return autonomousPlan(request, 'wait');
       }
     }).consequence({

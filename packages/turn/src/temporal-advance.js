@@ -1,7 +1,5 @@
 import {
-  addElapsedTime,
-  compareGameTimestamp,
-  subtractGameTimestamp
+  compareGameTimestamp
 } from '@rus/time-events-history';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
@@ -23,18 +21,11 @@ import {
   validateConfiguration,
   validateRequest
 } from './temporal-advance-support.js';
-import { aggregateTemporalNpcDecisionSignals } from
-  './temporal-npc-decision-signals.js';
+
+export { advanceTemporalNpcDecisionBoundary } from
+  './temporal-npc-decision-boundary.js';
 
 const engines = new WeakSet();
-
-function timestamp(value) {
-  return value != null
-    && typeof value === 'object'
-    && typeof value.whole_minutes === 'string'
-    && typeof value.subminute_numerator === 'string'
-    && typeof value.subminute_denominator === 'string';
-}
 
 function fail(code, message, details = {}) {
   const error = new Error(message);
@@ -122,89 +113,6 @@ export function advanceTemporalBoundaryBatch({ request, engine_version,
     result: engine.advance(request),
     state_projection: cloneFrozen(finalProjection)
   });
-}
-
-export async function advanceTemporalNpcDecisionBoundary({
-  advanceToBoundary,
-  resolveDecision,
-  executeActorStep,
-  continueAdvance,
-  decisionSignalState = null
-} = {}) {
-  for (const [name, handler] of Object.entries({
-    advanceToBoundary,
-    resolveDecision,
-    executeActorStep,
-    continueAdvance
-  })) {
-    if (typeof handler !== 'function') {
-      throw new TypeError(`temporal NPC decision ${name} is required`);
-    }
-  }
-  const temporal = await advanceToBoundary();
-  const decisionTimestamp = temporal?.result?.clock_after;
-  if (temporal?.result?.temporal_status !== 'paused'
-      || !timestamp(decisionTimestamp)) {
-    fail('temporal_change_set_conflict',
-      'NPC decision handoff requires one fully resolved paused batch.');
-  }
-  const signalBatch = decisionSignalState === null ? null
-    : aggregateTemporalNpcDecisionSignals({
-      temporal,
-      ...decisionSignalState
-    });
-  const decision = await resolveDecision(cloneFrozen({
-    temporal,
-    signal_batch: signalBatch
-  }));
-  if (!timestamp(decision?.boundary?.scheduled_at)
-      || compareGameTimestamp(
-        decision.boundary.scheduled_at, decisionTimestamp
-      ) !== 0) {
-    fail('temporal_candidate_stale',
-      'NPC decision boundary must match the paused temporal timestamp.');
-  }
-  const actorStep = await executeActorStep(cloneFrozen({
-    temporal,
-    decision
-  }));
-  if (actorStep?.domain_result?.pass === false
-      && actorStep?.working_projection != null
-      && typeof actorStep.working_projection === 'object'
-      && !Array.isArray(actorStep.working_projection)) {
-    return cloneFrozen({
-      temporal,
-      decision,
-      actor_step: actorStep,
-      continuation: null
-    });
-  }
-  if (!timestamp(actorStep?.started_at)
-      || compareGameTimestamp(actorStep.started_at, decisionTimestamp) !== 0
-      || actorStep?.working_projection == null
-      || typeof actorStep.working_projection !== 'object'
-      || Array.isArray(actorStep.working_projection)) {
-    fail('temporal_change_set_conflict',
-      'NPC actor-step must start on the decision timestamp and return working state.');
-  }
-  const continuation = await continueAdvance(cloneFrozen({
-    temporal,
-    decision,
-    actor_step: actorStep
-  }));
-  if (!timestamp(continuation?.result?.clock_before)
-      || !timestamp(continuation?.result?.clock_after)
-      || compareGameTimestamp(
-        continuation.result.clock_before, decisionTimestamp
-      ) !== 0
-      || compareGameTimestamp(
-        continuation.result.clock_after, decisionTimestamp
-      ) < 0) {
-    fail('temporal_change_set_conflict',
-      'Temporal continuation must resume from the applied actor-step timestamp.');
-  }
-  return cloneFrozen({ temporal, decision, actor_step: actorStep,
-    continuation });
 }
 
 export function createTemporalSourceResolver({ registrations = [] } = {}) {

@@ -17,6 +17,18 @@ export function resolveTracePhase7DomainProposals({ operation, state,
       operation, state, contracts
     }) };
   }
+  if (operation.op === 'request_movement') {
+    return {
+      movement: planMovement({
+        state,
+        contracts,
+        parentExecutionRef:
+          contracts.scheduleExecutions.moveBag?.execution_binding_id
+          ?? contracts.localTransition.transition_id
+      }),
+      property: null
+    };
+  }
   fail('TRACE_PHASE_7_DOMAIN_REQUEST_NOT_APPLICABLE');
 }
 

@@ -119,6 +119,86 @@ test('NPC-safe projector allowlists persisted subjective snapshots', () => {
   assert.doesNotMatch(JSON.stringify(request), /hidden|secret/u);
 });
 
+test('NPC-safe projector includes accessible non-container resources', () => {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt,
+    category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('event', 'event-2'),
+    subject_ref: ref('npc', 'speaker'),
+    scope_refs: [],
+    perception_required: false,
+    source_perception_ref: null,
+    causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: ref('npc', 'speaker'),
+    decision_mode: 'autonomous',
+    scheduled_at: occurredAt,
+    significance: 'material',
+    categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-2'),
+    state_version: '1'
+  });
+  const request = buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: {
+      request_id: 'request-resources',
+      root_turn_id: 'turn-resources',
+      committed_state_version: 1,
+      working_revision: 1,
+      decision_index: 1
+    },
+    boundary,
+    npc_snapshot: {
+      instance_id: 'speaker',
+      attributes: [],
+      skills: [],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: null,
+      summary: null,
+      status: 'idle',
+      can_continue_automatically: false
+    },
+    resource_snapshots: [{
+      container_id: 'bag-1',
+      template_id: 'bag',
+      holder_npc_id: 'speaker',
+      state: { location_ref: 'yard', zone_ref: 'gate' }
+    }, {
+      item_id: 'axe-1',
+      template_id: 'axe',
+      holder_npc_id: 'speaker',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        controller_npc_id: 'speaker'
+      }
+    }, {
+      item_id: 'remote-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'shed',
+        zone_ref: 'inside',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }],
+    resolved_signals: [signal],
+    operation_contract: {}
+  });
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'bag-1'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'axe-1'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'remote-packet'), false);
+});
+
 test('NPC-safe projector prefers authored perceived change summaries', () => {
   const signal = buildNpcDecisionSignal({
     occurred_at: occurredAt,

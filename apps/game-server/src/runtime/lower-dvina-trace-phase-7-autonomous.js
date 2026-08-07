@@ -105,7 +105,10 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     body_snapshot: npc.body_state ?? null,
     mood_snapshot: npc.mood ?? null,
     relationship_snapshots: npc.relationships ?? [],
-    resource_snapshots: state.containers ?? [],
+    resource_snapshots: [
+      ...(state.containers ?? []),
+      ...(state.items ?? [])
+    ],
     perception_snapshot: {
       ...(npc.perception_snapshot ?? {}),
       perceived_changes: [{

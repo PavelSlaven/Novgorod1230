@@ -231,6 +231,12 @@ function validAutonomousBindings(value) {
     && Array.isArray(value.known_route_refs)
     && JSON.stringify(value.known_route_refs)
       === JSON.stringify(['trace_ld_v1_local_transition_storehouse_to_river_access'])
+    && value.generic_check_context_profile?.profile_ref
+      === 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1'
+    && value.generic_check_context_profile?.attributes?.length === 1
+    && value.generic_check_context_profile?.skills?.length === 1
+    && value.generic_check_context_profile?.inventory?.load_category
+      === 'moderate'
     && signal?.source_activity_id === 'trace_ld_v1_activity_zhdanko_wait'
     && signal.target_npc_ref === 'zhdanko_storehouse_controller'
     && signal.schedule_policy_ref === 'trace_ld_v1_zhdanko_autonomous_schedule';

@@ -37,6 +37,7 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
             ...phase7.schedule_temporal.result.trace.processed_boundary_ids],
         autonomous_decision_request_id:
           phase7.autonomous.request.request_id,
+        npc_actor_step_check: structuredClone(phase7.actor_step_check),
         causality: {
           waiting_terminal_candidate: structuredClone(
             phase7.temporal.terminal_candidate
@@ -100,6 +101,10 @@ function scheduleTrace(execution, changeSetId) {
     status: execution.status,
     failure_code: execution.failure_code ?? null,
     semantic_operation: structuredClone(execution.semantic_operation),
+    ...(execution.additional_semantic_operations?.length > 0 ? {
+      additional_semantic_operations: structuredClone(
+        execution.additional_semantic_operations)
+    } : {}),
     execution_binding_ref: execution.execution_binding_ref,
     schedule_option_id: execution.schedule_option_id,
     activity_profile_ref: execution.activity_profile_ref,

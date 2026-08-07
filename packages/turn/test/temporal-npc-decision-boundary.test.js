@@ -14,7 +14,7 @@ const at = (wholeMinutes) => ({
 
 const npcRef = { entity_kind: 'npc', entity_id: 'npc-a' };
 
-function signalDescriptor(entityId, parents = []) {
+function signalDescriptor(entityId, parents = [], summary = `change:${entityId}`) {
   return {
     occurred_at: at(25),
     category: 'objective',
@@ -27,9 +27,38 @@ function signalDescriptor(entityId, parents = []) {
     scope_refs: [],
     perception_required: false,
     source_perception_ref: null,
-    causal_parent_refs: parents
+    causal_parent_refs: parents,
+    perceived_change_summary: summary
   };
 }
+
+test('NPC signal batch rejects a source without NPC-safe semantic summary',
+  async () => {
+    const descriptor = signalDescriptor('missing-summary');
+    delete descriptor.perceived_change_summary;
+    await assert.rejects(() => advanceTemporalNpcDecisionBoundary({
+      advanceToBoundary: async () => ({
+        result: { temporal_status: 'paused', clock_after: at(25) },
+        projection: { npc_decision_signal_descriptors: [descriptor] }
+      }),
+      decisionSignalState: {
+        factual_state: {
+          party_id: 'party-summary',
+          party_state: { state_version: 1 },
+          npc_decision_signals: [],
+          consumed_npc_decision_signal_ids: [],
+          npc_semantic_decision_inputs: []
+        },
+        npc_ref: npcRef,
+        active_mode: 'autonomous',
+        current_intent: null,
+        decision_capability: true
+      },
+      resolveDecision: async () => assert.fail('must fail before decision'),
+      executeActorStep: async () => assert.fail('must fail before actor step'),
+      continueAdvance: async () => assert.fail('must fail before continuation')
+    }), ({ code }) => code === 'temporal_change_set_conflict');
+  });
 
 test('NPC domain rejection terminates the boundary without temporal continuation',
   async () => {

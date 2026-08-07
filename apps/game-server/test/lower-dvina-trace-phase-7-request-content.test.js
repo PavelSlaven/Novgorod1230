@@ -60,8 +60,8 @@ test('Phase 7 LLM request carries Zhdanko subjective policy context',
       false
     );
     assert.equal(request.decision_reasons.perceived_changes.length, 1);
-    assert.match(request.decision_reasons.perceived_changes[0],
-      /waiting→decision_required/);
+    assert.equal(request.decision_reasons.perceived_changes[0],
+      'Ратша не вернулся к условленному сроку.');
     assert.equal(
       request.decision_reasons.perceived_changes[0]
         .includes('ratsha_presence_or_return'),

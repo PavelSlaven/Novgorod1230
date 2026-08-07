@@ -27,6 +27,15 @@ export function aggregateTemporalNpcDecisionSignals({
   if (descriptors.length === 0) {
     return null;
   }
+  for (const descriptor of descriptors) {
+    if (typeof descriptor?.perceived_change_summary !== 'string'
+        || descriptor.perceived_change_summary.trim()
+          !== descriptor.perceived_change_summary
+        || descriptor.perceived_change_summary.length === 0) {
+      fail('temporal_change_set_conflict',
+        'Every NPC decision signal source requires one NPC-safe semantic summary.');
+    }
+  }
   const sameTimeBatchRef = {
     entity_kind: 'temporal_batch',
     entity_id: `temporal-batch:${factual_state.party_id}:${
@@ -46,8 +55,11 @@ export function aggregateTemporalNpcDecisionSignals({
   const knownSignalRecords = factual_state.npc_decision_signals ?? [];
   const consumedSignalIds =
     factual_state.consumed_npc_decision_signal_ids ?? [];
-  const signals = descriptors.map((descriptor) =>
-    buildNpcDecisionSignal(descriptor));
+  const signalInputs = descriptors.map((descriptor) => ({
+    signal: buildNpcDecisionSignal(descriptor),
+    perceived_change_summary: descriptor.perceived_change_summary
+  }));
+  const signals = signalInputs.map(({ signal }) => signal);
   const knownById = new Map(knownSignalRecords.map((record) =>
     [record?.signal?.signal_id, record]));
   for (const signal of signals) {
@@ -74,6 +86,10 @@ export function aggregateTemporalNpcDecisionSignals({
     return null;
   }
   const byId = new Map(signals.map((signal) => [signal.signal_id, signal]));
+  const summaryById = new Map(signalInputs.map(
+    ({ signal, perceived_change_summary: summary }) =>
+      [signal.signal_id, summary]
+  ));
   const orderedSignals = evaluation.boundary.signal_refs.map(
     ({ entity_id: signalId }) => byId.get(signalId));
   if (orderedSignals.some((signal) => signal === undefined)) {
@@ -83,6 +99,10 @@ export function aggregateTemporalNpcDecisionSignals({
   return Object.freeze({
     boundary: evaluation.boundary,
     ordered_signals: structuredClone(orderedSignals),
+    perceived_changes: orderedSignals.map((signal) => ({
+      source_event_ref: structuredClone(signal.source_event_ref),
+      summary: summaryById.get(signal.signal_id)
+    })),
     persisted_decision_input: structuredClone(persistedDecisionInput),
     same_time_batch_ref: structuredClone(sameTimeBatchRef),
     same_time_batch_ordinal: same_time_batch_ordinal,

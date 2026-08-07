@@ -1,14 +1,9 @@
 import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
 import { subtractGameTimestamp } from '@rus/time-events-history';
-import {
-  resolveTracePhase7DomainProposals,
-  tracePhase7ItemUseTransitions,
-  tracePhase7PropertyTransitions,
-  tracePhase7TransitionTarget
-} from './lower-dvina-trace-phase-7-owner-proposals.js';
-import { resolveTracePhase7SemanticActivity } from
-  './lower-dvina-trace-phase-7-semantic-activity.js';
-
+import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
+  tracePhase7PropertyTransitions, tracePhase7TransitionTarget } from
+  './lower-dvina-trace-phase-7-owner-proposals.js';
+import { resolveTracePhase7SemanticActivity } from './lower-dvina-trace-phase-7-semantic-activity.js';
 export function createTracePhase7DomainExecution({ state, contracts,
   temporal, semanticActivityScheduleOwner }) {
   const capabilities = ownerCapabilities(contracts);
@@ -17,24 +12,20 @@ export function createTracePhase7DomainExecution({ state, contracts,
       const semantic = await resolveTracePhase7SemanticActivity({
         execution, contracts, semanticActivityScheduleOwner
       });
-      return started({ execution, temporal, ...semantic,
-        movement: null, property: null });
+      return started({ execution, temporal, ...semantic, movement: null,
+        property: null });
     },
     handlers: {
-      request_activity: (execution) => executeActivity({
-        execution, state, contracts, temporal, capabilities
-      }),
-      request_item_use: (execution) => executeItem({
-        execution, state, contracts, temporal, capabilities
-      }),
-      request_movement: (execution) => executeMovement({
-        execution, state, contracts, temporal, capabilities
-      })
+      request_activity: (execution) => executeActivity({ execution, state,
+        contracts, temporal, capabilities }),
+      request_item_use: (execution) => executeItem({ execution, state,
+        contracts, temporal, capabilities }),
+      request_movement: (execution) => executeMovement({ execution, state,
+        contracts, temporal, capabilities })
     },
     operation_contract: capabilities.operation_contract
   });
 }
-
 function ownerCapabilities(contracts) {
   const activityAllowed = exactActivityAllowed(contracts);
   const itemAllowed = exactItemAllowed(contracts);
@@ -42,8 +33,7 @@ function ownerCapabilities(contracts) {
     owner: '@rus/movement-routes',
     movement_kinds: Object.freeze(['local']),
     target_refs: Object.freeze([
-      contracts.localTransition.destination_zone_ref
-    ]),
+      contracts.localTransition.destination_zone_ref]),
     route_refs: Object.freeze([contracts.localTransition.transition_id]),
     factual_outcome_write: 'owner_only'
   });
@@ -69,12 +59,10 @@ function ownerCapabilities(contracts) {
 }
 
 function exactActivityAllowed(contracts) {
-  const profiles = new Map(contracts.scheduleActivityProfiles.map(
-    (profile) => [profile.profile_id, profile]
-  ));
-  const movements = new Map([
-    [contracts.localTransition.transition_id, contracts.localTransition]
-  ]);
+  const profiles = new Map(contracts.scheduleActivityProfiles.map((profile) =>
+    [profile.profile_id, profile]));
+  const movements = new Map([[contracts.localTransition.transition_id,
+    contracts.localTransition]]);
   const transitions = new Map(tracePhase7PropertyTransitions(contracts).map(
     (profile) => [profile.transition_profile_id, profile]
   ));
@@ -96,10 +84,8 @@ function exactActivityAllowed(contracts) {
         required.add(transition.writes?.zone_ref
           ?? transition.writes?.location_ref);
       }
-      return Object.freeze({
-        activity_kind: activityKind,
-        target_refs: Object.freeze([...required])
-      });
+      return Object.freeze({ activity_kind: activityKind,
+        target_refs: Object.freeze([...required]) });
     }
   ));
 }
@@ -133,9 +119,8 @@ function executeActivity({ execution, state, contracts, temporal,
     fail(selection.errors[0].code, selection.errors);
   }
   const profile = selection.execution_binding;
-  const owned = resolveTracePhase7DomainProposals({
-    operation, state, contracts, profile
-  });
+  const owned = resolveTracePhase7DomainProposals({ operation, state,
+    contracts, profile });
   return started({ execution, temporal, profile,
     movement: owned.movement, property: owned.property });
 }
@@ -205,23 +190,40 @@ function matchesAllowed(allowed, operation) {
 
 function started({ execution, temporal, profile, movement, property,
   minutes = null, npcRef = null }) {
-  const duration = minutes == null
+  const ownDuration = minutes == null
     ? profileMinutes(profile) ?? remainingMinutes(temporal) : Number(minutes);
   // ponytail: allow planned duration past remaining Mikula rest; temporal owner
   // keeps unfinished actor-step active after T+30. Ceiling: no interrupt policy.
-  if (!Number.isSafeInteger(duration) || duration < 1) {
+  if (!Number.isSafeInteger(ownDuration) || ownDuration < 1) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
   const operation = execution.operation;
-  const decisionTraceRef = {
-    entity_kind: 'npc_decision_trace',
-    entity_id: execution.request.request_id
-  };
+  const decisionTraceRef = { entity_kind: 'npc_decision_trace',
+    entity_id: execution.request.request_id };
+  const prior = execution.working_projection.active_npc_actor_step;
+  const composing = operation.op === 'apply_semantic_activity'
+    && prior?.status === 'started'
+    && prior.semantic_operation?.op === 'apply_semantic_activity'
+    && prior.decision_trace_ref?.entity_id === decisionTraceRef.entity_id;
+  const priorDuration = composing
+    ? Number(prior.planned_exact_elapsed.exact_minutes.numerator) : 0;
+  const duration = priorDuration + ownDuration;
+  const semanticOperation = composing
+    ? prior.semantic_operation : operation;
+  const additionalSemanticOperations = composing
+    ? [...(prior.additional_semantic_operations ?? []), operation]
+    : [];
   const active = {
     npc_ref: npcRef ?? operation.actor_ref, status: 'started',
     started_at: structuredClone(temporal.result.clock_after),
     decision_trace_ref: decisionTraceRef,
-    semantic_operation: structuredClone(operation),
+    semantic_operation: structuredClone(semanticOperation),
+    ...(additionalSemanticOperations.length > 0 ? {
+      additional_semantic_operations: structuredClone(
+        additionalSemanticOperations)
+    } : {}),
+    activity_profile_ref: composing ? prior.activity_profile_ref ?? null
+      : profile?.activity_profile_ref ?? null,
     planned_exact_elapsed: {
       exact_minutes: { numerator: String(duration), denominator: '1' }
     }
@@ -237,10 +239,17 @@ function started({ execution, temporal, profile, movement, property,
       status: 'started', failure_code: null,
       npc_ref: npcRef ?? operation.actor_ref,
       decision_trace_ref: structuredClone(active.decision_trace_ref),
-      semantic_operation: structuredClone(operation),
-      execution_binding_ref: profile?.execution_binding_id ?? null,
-      schedule_option_id: profile?.schedule_option_id ?? null,
-      activity_profile_ref: profile?.activity_profile_ref ?? null,
+      semantic_operation: structuredClone(semanticOperation),
+      ...(additionalSemanticOperations.length > 0 ? {
+        additional_semantic_operations: structuredClone(
+          additionalSemanticOperations)
+      } : {}),
+      execution_binding_ref: composing
+        ? null : profile?.execution_binding_id ?? null,
+      schedule_option_id: composing
+        ? null : profile?.schedule_option_id ?? null,
+      activity_profile_ref: composing ? prior.activity_profile_ref ?? null
+        : profile?.activity_profile_ref ?? null,
       exact_elapsed: structuredClone(active.planned_exact_elapsed),
       clock_before: structuredClone(temporal.result.clock_after),
       clock_after: structuredClone(temporal.result.clock_after),

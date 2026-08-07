@@ -14,6 +14,8 @@ export function phase7Command({
   state,
   contracts,
   model,
+  genericCheckContextOwner = null,
+  randomSource = null,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
     effect_registrations:
       lowerDvinaTracePhase7TemporalEffectRegistrations()
@@ -37,6 +39,8 @@ export function phase7Command({
         };
       }
     },
+    genericCheckContextOwner,
+    randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion: async () => state.party_state.state_version
   });

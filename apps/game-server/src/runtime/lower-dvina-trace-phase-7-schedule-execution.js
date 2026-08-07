@@ -14,7 +14,9 @@ export function createTracePhase7ActorStepRuntime({
   state,
   contracts,
   temporal,
-  semanticActivityScheduleOwner
+  semanticActivityScheduleOwner,
+  genericCheckContextOwner,
+  randomSource
 }) {
   const domainExecution = createTracePhase7DomainExecution({
     state, contracts, temporal, semanticActivityScheduleOwner
@@ -24,7 +26,16 @@ export function createTracePhase7ActorStepRuntime({
     applySemanticActivity: domainExecution.semantic_activity_handler,
     operationContract: domainExecution.operation_contract
   });
-  return Object.freeze({ registry });
+  const ports = Object.freeze({
+    resolveCheckContext: genericCheckContextOwner == null
+      ? null
+      : ({ check, actor, working_projection: projection }) =>
+          genericCheckContextOwner.resolve({
+            check, actor, working_projection: projection
+          }),
+    randomSource
+  });
+  return Object.freeze({ registry, ports });
 }
 
 export async function executeTracePhase7SchedulePlan({
@@ -42,20 +53,74 @@ export async function executeTracePhase7SchedulePlan({
   }
   const execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
-    request: autonomous.request,
-    workingProjection: temporal.projection,
+    request: actorStepRequest(autonomous.request, contracts),
+    workingProjection: checkWorkingProjection(
+      temporal.projection, contracts.genericCheckContext),
     preparedChainContext: null,
     registry: actorStepRuntime.registry,
-    ports: {}
+    ports: actorStepRuntime.ports
   });
-  if (execution.consequenceFragments.length !== 1) {
+  const result = finalActorStepConsequence(execution.consequenceFragments);
+  if (result == null) {
     fail('TRACE_PHASE_7_ACTOR_STEP_RESULT_INVALID');
   }
   return Object.freeze({
     started_at: structuredClone(temporal.result.clock_after),
     working_projection: structuredClone(execution.workingProjection),
-    result: structuredClone(execution.consequenceFragments[0])
+    result: structuredClone(result),
+    check: execution.checkResult == null ? null : {
+      request: structuredClone(execution.checkRequest),
+      result: structuredClone(execution.checkResult)
+    }
   });
+}
+
+function actorStepRequest(request, contracts) {
+  const npc = contracts.zhdanko;
+  const context = contracts.genericCheckContext ?? {};
+  return {
+    ...structuredClone(request),
+    step_index: request.decision_index,
+    actor: {
+      actor_id: npc.instance_id,
+      attributes: ratedMap(context.attributes, 'attribute_ref', 'value'),
+      skills: ratedMap(context.skills, 'skill_ref', 'bonus'),
+      body: structuredClone(context.body ?? null)
+    }
+  };
+}
+
+function checkWorkingProjection(projection, context) {
+  return {
+    ...structuredClone(projection),
+    inventory: structuredClone(context?.inventory ?? null)
+  };
+}
+
+function finalActorStepConsequence(fragments) {
+  if (fragments.length === 1) return fragments[0];
+  if (fragments.length !== 2) return null;
+  const [base, composed] = fragments;
+  const additional = composed?.additional_semantic_operations;
+  return base?.semantic_operation?.op === 'apply_semantic_activity'
+    && composed?.semantic_operation?.op === 'apply_semantic_activity'
+    && Array.isArray(additional)
+    && additional.length === 1
+    && canonicalDigest(base.semantic_operation)
+      === canonicalDigest(composed.semantic_operation)
+      ? composed
+      : null;
+}
+
+function ratedMap(entries, refKey, numericKey) {
+  if (!Array.isArray(entries)) return structuredClone(entries ?? {});
+  return Object.fromEntries(entries.map((entry) => [
+    entry[refKey],
+    {
+      ...structuredClone(entry),
+      [numericKey]: entry[numericKey] ?? entry.value
+    }
+  ]));
 }
 
 export function finalizeTracePhase7ScheduleExecution({

@@ -20,7 +20,8 @@ export async function resolveTracePhase7AutonomousDecision({
   const persistedTrace = persistedInput?.trace ?? null;
   const request = buildRequestFromSnapshots({
     state, contracts, boundary, orderedSignals, operationContract,
-    waitingTransition: temporal.projection.waiting_transition
+    waitingTransition: temporal.projection.waiting_transition,
+    perceivedChanges: signalBatch.perceived_changes
   });
   const proposal = await requestNpcSemanticDecision({
     boundary,
@@ -66,7 +67,7 @@ export async function resolveTracePhase7AutonomousDecision({
 }
 
 function buildRequestFromSnapshots({ state, contracts, boundary,
-  orderedSignals, operationContract, waitingTransition }) {
+  orderedSignals, operationContract, waitingTransition, perceivedChanges }) {
   const npc = contracts.zhdanko;
   const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
@@ -75,10 +76,6 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
       request_ref: requestId,
       boundary_ref: boundaryId
     }));
-  const transitionRef = {
-    entity_kind: 'npc_activity_factual_transition',
-    entity_id: waitingTransition.transition_id
-  };
   return buildNpcActionDecisionRequestFromSnapshots({
     request_identity: {
       request_id: `npc-action-request:${boundary.boundary_id}`,
@@ -91,6 +88,9 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     boundary,
     npc_snapshot: {
       ...npc,
+      attributes: structuredClone(
+        contracts.genericCheckContext?.attributes ?? []),
+      skills: structuredClone(contracts.genericCheckContext?.skills ?? []),
       goals: policyEntries(policy.goals, 'goal_ref'),
       fears: policyEntries(policy.fears, 'fear_ref'),
       obligations: obligationEntries(policy.relations_and_obligations)
@@ -111,10 +111,7 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     ],
     perception_snapshot: {
       ...(npc.perception_snapshot ?? {}),
-      perceived_changes: [{
-        source_event_ref: transitionRef,
-        summary: waitingActivitySummary(waitingTransition)
-      }],
+      perceived_changes: structuredClone(perceivedChanges),
       known_routes_and_exits: knownRoutes(contracts)
     },
     knowledge_snapshot: npc.knowledge_snapshot ?? null,

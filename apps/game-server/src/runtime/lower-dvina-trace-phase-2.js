@@ -5,13 +5,10 @@ import { loadLowerDvinaTraceMaterializationBundle } from
   '../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTracePhase2Bundle } from
   '../internal/lower-dvina-trace-phase-2-bundle.js';
-import { createTracePhase2InspectionCommand } from
-  './lower-dvina-trace-phase-2-command.js';
+import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from
   './lower-dvina-trace-phase-2-contracts.js';
-import {
-  resolveTracePhase3Contracts
-} from './lower-dvina-trace-phase-3-contracts.js';
+import { resolveTracePhase3Contracts } from './lower-dvina-trace-phase-3-contracts.js';
 import { createTracePhase3Commands } from './lower-dvina-trace-phase-3-command.js';
 import { createTracePhase4Commands } from './lower-dvina-trace-phase-4-command.js';
 import { resolveTracePhase4Contracts } from
@@ -23,14 +20,12 @@ import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contrac
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
 import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
 import { createTracePhase7FireRestCommand } from './lower-dvina-trace-phase-7-command.js';
-import {
-  committedTraceScenarioDefinitionRevision
-} from './lower-dvina-trace-committed-revision.js';
+import { committedTraceScenarioDefinitionRevision } from
+  './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from
   './lower-dvina-trace-phase-2-services.js';
-import {
-  bindLowerDvinaTraceTurnStepCommands
-} from './lower-dvina-trace-turn-step-bindings.js';
+import { bindLowerDvinaTraceTurnStepCommands } from
+  './lower-dvina-trace-turn-step-bindings.js';
 import {
   projectLowerDvinaTracePlayerSafeState
 } from './lower-dvina-trace-player-safe-state.js';
@@ -159,6 +154,8 @@ export function createLowerDvinaTracePhase2Runtime({
             artifactPin: bundle.artifact_pins.turn_step_owner_profiles
           })
         : null;
+      const turnRandomSource = randomSourceFactory({ party_id: partyId,
+        request_id: requestId, idempotency_key: idempotencyKey });
       const phase7Contracts = bundle.definition_revision === 15
         ? resolveTracePhase7Contracts({ state, bundle })
         : null;
@@ -206,6 +203,8 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest,
           npcAutonomousModel,
           semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
+          genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
+          randomSource: turnRandomSource,
           temporalAdvanceOwner,
           revalidateStateVersion: createStateVersionRevalidator({
             repository,
@@ -283,6 +282,7 @@ export function createLowerDvinaTracePhase2Runtime({
         turnStepPackingCalculator,
         narrator,
         randomSourceFactory,
+        randomSource: turnRandomSource,
         decisionSecret,
         decisionNow: now
       }), {

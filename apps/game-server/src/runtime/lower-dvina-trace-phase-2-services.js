@@ -45,10 +45,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryResultPolicy, turnStepApprovedOwners,
     turnStepPackingCalculator,
-    narrator, randomSourceFactory, decisionSecret, phase3Contracts,
+    narrator, randomSourceFactory, randomSource: injectedRandomSource,
+    decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts
   } = context;
-  const randomSource = randomSourceFactory({
+  const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
     idempotency_key: idempotencyKey

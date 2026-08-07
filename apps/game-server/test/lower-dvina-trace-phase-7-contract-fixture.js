@@ -112,6 +112,44 @@ export function approvedPhase7Contracts(state) {
       exact_deltas: { health: 0, satiety: 0, energy: 0 },
       condition_outcomes: []
     }],
+    genericCheckContext: {
+      profile_ref: 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1',
+      attributes: [{
+        attribute_ref: 'attention', label: 'внимание', value: 13
+      }],
+      skills: [{
+        skill_ref: 'observation', label: 'наблюдательность', value: 2
+      }],
+      body: {
+        health: 100, satiety: 100, energy: 50, active_conditions: []
+      },
+      inventory: { load_category: 'moderate' }
+    },
+    genericCheckModifierPolicy: {
+      profile_ref: 'trace_ld_v1_generic_check_modifiers_v1',
+      profile_pin: {
+        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
+        revision: 1,
+        digest:
+          '585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823'
+      },
+      check_policy_ref: {
+        entity_kind: 'check_policy',
+        entity_id: 'trace_ld_v1_generic_check_modifiers_v1',
+        authoring_version: '1'
+      },
+      consequence_policy_ref: {
+        entity_kind: 'consequence_policy',
+        entity_id: 'trace_ld_v1_generic_check_five_band_v1',
+        authoring_version: '1'
+      },
+      state_relevance_by_attribute: {
+        attention: ['health', 'energy']
+      },
+      load_category_modifiers: {
+        light: 0, moderate: -1, heavy: -2, overloaded: -4
+      }
+    },
     zhdanko,
     waitingBoundary: { elapsed_minutes: 25 },
     campLocationRef: 'trace_ld_v1_loc_fishing_camp',
@@ -206,6 +244,53 @@ export function phase7DirectPlan(request) {
     check: null,
     reason_code: 'listen_for_return',
     reason: 'Жданко не услышал признаков возвращения Ратши.'
+  };
+}
+
+export function phase7GenericCheckPlan(request, {
+  successWithCostActivity = null
+} = {}) {
+  const outcome = (goalResult) => ({
+    goal_result: goalResult,
+    additional_activity: null,
+    operations: []
+  });
+  return {
+    schema: 'npc_step_plan_v1',
+    request_id: request.request_id,
+    root_turn_id: request.root_turn_id,
+    boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index,
+    npc_ref: request.npc_ref,
+    interpretation: {
+      npc_goal: 'понять, не возвращается ли Ратша',
+      grounded_attempt: 'прислушаться к дороге',
+      adaptation: 'literal'
+    },
+    resolution: 'generic_check',
+    goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [],
+    check: {
+      purpose: 'различить шаги на дороге',
+      attribute_ref: 'attention',
+      skill_ref: 'observation',
+      difficulty_id: 'ordinary',
+      outcomes: {
+        clean_success: outcome('achieved'),
+        success: outcome('achieved'),
+        success_with_cost: {
+          ...outcome('partially_achieved'),
+          additional_activity: successWithCostActivity
+        },
+        failure_with_consequence: outcome('not_achieved'),
+        severe_failure: outcome('not_achieved')
+      }
+    },
+    reason_code: 'listen_for_return',
+    reason: 'Возвращение Ратши всё ещё возможно.'
   };
 }
 

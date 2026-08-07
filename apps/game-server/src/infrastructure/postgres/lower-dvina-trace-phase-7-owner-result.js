@@ -5,6 +5,8 @@ import {
   subtractGameTimestamp
 } from '@rus/time-events-history';
 import { serverError } from '../../errors.js';
+import { validTracePhase7ActorStepCheck } from
+  './lower-dvina-trace-phase-7-check-result.js';
 
 export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   changeSetId }) {
@@ -28,7 +30,9 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       || !validActorStepCompletion(phase7)
       || !validCausality(phase7)
       || !validScheduleExecution(schedule, phase7Contracts,
-        phase7.autonomous.request, phase7.autonomous.proposal.plan)
+        phase7.autonomous.request, phase7.autonomous.proposal.plan,
+        phase7.actor_step_check)
+      || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual)
       || temporal.result.combined_change_set.change_set_id !== changeSetId
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId
@@ -109,7 +113,11 @@ function validActorStepCompletion(phase7) {
         !== canonicalDigest(temporalClock)
       || canonicalDigest(active.started_at) !== canonicalDigest(temporalClock)
       || canonicalDigest(active.semantic_operation)
-        !== canonicalDigest(schedule.semantic_operation)) return false;
+        !== canonicalDigest(schedule.semantic_operation)
+      || canonicalDigest(active.additional_semantic_operations ?? [])
+        !== canonicalDigest(schedule.additional_semantic_operations ?? [])) {
+    return false;
+  }
   if (active.status === 'completed') {
     const completionClock = active.completed_at;
     if (completionClock == null
@@ -138,25 +146,45 @@ function validActorStepCompletion(phase7) {
   return canonicalDigest(actorStep) === canonicalDigest(schedule);
 }
 
-function validScheduleExecution(schedule, contracts, request, plan) {
+function validScheduleExecution(schedule, contracts, request, plan,
+  actorStepCheck) {
   const operation = schedule.semantic_operation;
   if (!operation || schedule.npc_ref !== request.npc_ref) return false;
-  const direct = operation.op === 'apply_semantic_activity';
-  const semanticProfile = direct
+  const semantic = operation.op === 'apply_semantic_activity';
+  const semanticProfile = semantic
     ? contracts.semanticActivityProfiles.find((profile) =>
       profile.duration_class === plan.activity?.duration_class
         && profile.effort === plan.activity?.effort)
     : null;
   const profiles = Object.values(contracts.scheduleExecutions);
-  const profileMatch = direct
-    ? plan.resolution === 'direct'
+  const additionalOperations = schedule.additional_semantic_operations ?? [];
+  const selectedOutcome = plan.resolution === 'generic_check'
+    ? plan.check.outcomes[actorStepCheck?.result?.outcome?.band] : null;
+  const additionalActivities = selectedOutcome?.additional_activity == null
+    ? [] : [selectedOutcome.additional_activity];
+  const possibleAdditionalOperations = additionalActivities.map(
+    (activity) => ({
+      op: 'apply_semantic_activity',
+      activity: { owner: 'semantic', ...activity }
+    }));
+  const additionalDuration = additionalOperations.reduce((sum, candidate) => {
+    const profile = contracts.semanticActivityProfiles.find((value) =>
+      value.duration_class === candidate.activity?.duration_class
+        && value.effort === candidate.activity?.effort);
+    return profile == null ? Number.NaN : sum + profile.duration_minutes;
+  }, 0);
+  const additionalMatch = canonicalDigest(additionalOperations)
+    === canonicalDigest(possibleAdditionalOperations);
+  const profileMatch = semantic
+    ? ['direct', 'generic_check'].includes(plan.resolution)
       && plan.operations.length === 0
       && canonicalDigest(operation.activity) === canonicalDigest(plan.activity)
       && schedule.execution_binding_ref === null
       && schedule.schedule_option_id === null
       && schedule.activity_profile_ref === semanticProfile?.profile_ref
       && Number(schedule.exact_elapsed.exact_minutes.numerator)
-        === semanticProfile?.duration_minutes
+        === semanticProfile?.duration_minutes + additionalDuration
+      && additionalMatch
     : plan.resolution === 'domain_request'
       && plan.operations.length === 1
       && canonicalDigest(operation) === canonicalDigest(plan.operations[0])
@@ -168,8 +196,10 @@ function validScheduleExecution(schedule, contracts, request, plan) {
           profile.execution_binding_id === schedule.execution_binding_ref
             && profile.activity_profile_ref === schedule.activity_profile_ref
             && profile.schedule_option_id === schedule.schedule_option_id));
-  if (!profileMatch) return false;
-  if (direct && (schedule.movement_proposal || schedule.property_proposal)) {
+  if (!profileMatch || (!semantic && additionalOperations.length !== 0)) {
+    return false;
+  }
+  if (semantic && (schedule.movement_proposal || schedule.property_proposal)) {
     return false;
   }
   const propertyTransitionRef =
@@ -180,7 +210,7 @@ function validScheduleExecution(schedule, contracts, request, plan) {
   ].includes(propertyTransitionRef)) return false;
   const execution = profiles.find((profile) =>
     profile.execution_binding_id === schedule.execution_binding_ref);
-  if (!direct && schedule.execution_binding_ref !== null
+  if (!semantic && schedule.execution_binding_ref !== null
       && (execution == null
         || (execution.movement_ref == null
           ? schedule.movement_proposal != null

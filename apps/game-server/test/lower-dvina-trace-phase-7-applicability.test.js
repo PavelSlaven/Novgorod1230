@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { validateNpcStepPlan } from '@rus/npc-runtime';
 import {
   approvedPhase7Contracts,
   phase7AutonomousPlan,
-  phase7DirectPlan
+  phase7DirectPlan,
+  phase7GenericCheckPlan
 } from './lower-dvina-trace-phase-7-contract-fixture.js';
 import {
   phase7Command,
@@ -12,6 +15,13 @@ import {
   phase7PlayerInput,
   persistPhase7Consequence
 } from './lower-dvina-trace-phase-7-runtime-fixture.js';
+import { createLowerDvinaTraceTurnStepGenericOwners } from
+  '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+
+const ownerProfilesUrl = new URL(
+  '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
+  import.meta.url
+);
 
 test('Phase 7 preserves the boundary causality chain', async () => {
   const state = phase7CommittedState();
@@ -193,4 +203,135 @@ test('Phase 7 keeps overlong NPC activity active after Mikula rest ends',
     assert.equal(zhdanko.machine_state.spatial_zone_ref, 'storehouse_inside');
     assert.equal(zhdanko.machine_state.last_schedule_execution.status,
       'started');
+  });
+
+test('Phase 7 executes a valid autonomous generic check without blocking rest',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    const rawProfiles = await readFile(ownerProfilesUrl);
+    const owners = createLowerDvinaTraceTurnStepGenericOwners({
+      profiles: JSON.parse(rawProfiles),
+      artifactPin: {
+        digest: createHash('sha256').update(rawProfiles).digest('hex')
+      }
+    });
+    let rolls = 0;
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      genericCheckContextOwner: owners.genericCheckContextOwner,
+      randomSource: { next() { rolls += 1; return 0.95; } },
+      model: async (request) => phase7GenericCheckPlan(request)
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'generic-check')
+    });
+
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(rolls, 1);
+    assert.equal(consequence.phase7.actor_step_check.result.outcome.band,
+      'clean_success');
+    assert.equal(consequence.phase7.actor_step_check.result.modifiers
+      .equipment, -1);
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+    const persisted = await persistPhase7Consequence({
+      state, contracts, consequence
+    });
+    assert.equal(persisted.snapshot.clock.whole_minutes, '130');
+    const attempt = [
+      ...persisted.plan.inserts,
+      ...persisted.plan.updates,
+      ...persisted.plan.appends
+    ].find(({ target_table: table }) =>
+      table === 'party_timed_activity_attempts').record;
+    assert.equal(attempt.trace.npc_actor_step_check.result.outcome.band,
+      'clean_success');
+  });
+
+test('Phase 7 composes an approved generic-check additional activity',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    const rawProfiles = await readFile(ownerProfilesUrl);
+    const owners = createLowerDvinaTraceTurnStepGenericOwners({
+      profiles: JSON.parse(rawProfiles),
+      artifactPin: {
+        digest: createHash('sha256').update(rawProfiles).digest('hex')
+      }
+    });
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      genericCheckContextOwner: owners.genericCheckContextOwner,
+      randomSource: { next() { return 0.2; } },
+      model: async (request) => phase7GenericCheckPlan(request, {
+        successWithCostActivity: {
+          duration_class: 'short', effort: 'none'
+        }
+      })
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'generic-check-additional')
+    });
+
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.actor_step_check.result.outcome.band,
+      'success_with_cost');
+    assert.deepEqual(
+      consequence.phase7.schedule_execution.exact_elapsed.exact_minutes,
+      { numerator: '16', denominator: '1' }
+    );
+    assert.deepEqual(
+      consequence.phase7.schedule_execution.additional_semantic_operations,
+      [{ op: 'apply_semantic_activity', activity: {
+        owner: 'semantic', duration_class: 'short', effort: 'none'
+      } }]
+    );
+    assert.equal(consequence.phase7.schedule_execution.status, 'started');
+    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
+      .whole_minutes, '130');
+    const persisted = await persistPhase7Consequence({
+      state, contracts, consequence
+    });
+    const attempt = [
+      ...persisted.plan.inserts,
+      ...persisted.plan.updates,
+      ...persisted.plan.appends
+    ].find(({ target_table: table }) =>
+      table === 'party_timed_activity_attempts').record;
+    assert.deepEqual(
+      attempt.trace.npc_schedule_result.additional_semantic_operations,
+      consequence.phase7.schedule_execution.additional_semantic_operations
+    );
+    const forgedCheck = structuredClone(consequence);
+    forgedCheck.phase7.actor_step_check.result.total += 1;
+    await assert.rejects(() => persistPhase7Consequence({
+      state, contracts, consequence: forgedCheck
+    }), { code: 'TRACE_PHASE_7_OWNER_RESULT_INVALID' });
+
+    const omittedCost = structuredClone(consequence);
+    const phase7 = omittedCost.phase7;
+    delete phase7.actor_step.additional_semantic_operations;
+    delete phase7.schedule_execution.additional_semantic_operations;
+    delete phase7.schedule_temporal.projection.active_npc_actor_step
+      .additional_semantic_operations;
+    phase7.actor_step.exact_elapsed.exact_minutes.numerator = '1';
+    phase7.schedule_execution.exact_elapsed.exact_minutes.numerator = '1';
+    const active = phase7.schedule_temporal.projection.active_npc_actor_step;
+    active.planned_exact_elapsed.exact_minutes.numerator = '1';
+    active.status = 'completed';
+    active.completed_at = { whole_minutes: '126',
+      subminute_numerator: '0', subminute_denominator: '1' };
+    phase7.schedule_execution.status = 'executed';
+    phase7.schedule_execution.clock_after = structuredClone(
+      active.completed_at);
+    phase7.schedule_temporal.completion_candidate.scheduled_at =
+      structuredClone(active.completed_at);
+    await assert.rejects(() => persistPhase7Consequence({
+      state, contracts, consequence: omittedCost
+    }), { code: 'TRACE_PHASE_7_OWNER_RESULT_INVALID' });
   });

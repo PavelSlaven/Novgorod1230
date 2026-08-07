@@ -6,7 +6,7 @@ export async function resolveTracePhase7SemanticActivity({ execution,
   const expected = contracts.semanticActivityProfiles.find((profile) =>
     profile.duration_class === activity?.duration_class
       && profile.effort === activity?.effort);
-  if (execution.plan.resolution !== 'direct'
+  if (!['direct', 'generic_check'].includes(execution.plan.resolution)
       || activity?.owner !== 'semantic'
       || execution.plan.operations.length !== 0
       || !expected

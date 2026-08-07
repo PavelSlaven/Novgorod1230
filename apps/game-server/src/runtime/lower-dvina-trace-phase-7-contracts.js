@@ -55,7 +55,12 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     ...profile,
     profile_pin: structuredClone(admittedOwnerProfiles.profile_pin)
   }));
+  const genericCheckModifierPolicy = {
+    ...structuredClone(admittedOwnerProfiles.generic_check_modifier_policy),
+    profile_pin: structuredClone(admittedOwnerProfiles.profile_pin)
+  };
   const zhdanko = actor(state, autonomous.target_npc_ref);
+  const genericCheckContext = autonomous.generic_check_context_profile;
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
   if (autonomous.schema
@@ -78,6 +83,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
         !== canonicalDigest(['trace_ld_v1_container_road_bag'])
       || canonicalDigest(autonomous.known_route_refs)
         !== canonicalDigest([localTransition.transition_id])
+      || !validGenericCheckContext(genericCheckContext)
       || restActivity.duration_minutes !== 30
       || restActivity.time_profile_ref !== 'trace_ld_v1_time_30m'
       || bodyEffect.activity_ref !== restActivity.profile_id
@@ -111,6 +117,8 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       waitActivity, moveBagActivity
     ]),
     semanticActivityProfiles: structuredClone(semanticActivityProfiles),
+    genericCheckModifierPolicy,
+    genericCheckContext: structuredClone(genericCheckContext),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start
@@ -122,6 +130,22 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       digest: canonicalDigest(restActivity)
     }
   });
+}
+
+function validGenericCheckContext(profile) {
+  return profile?.profile_ref
+      === 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1'
+    && canonicalDigest(profile.attributes) === canonicalDigest([{
+      attribute_ref: 'attention', label: 'внимание', value: 13
+    }])
+    && canonicalDigest(profile.skills) === canonicalDigest([{
+      skill_ref: 'observation', label: 'наблюдательность', value: 2
+    }])
+    && canonicalDigest(profile.body) === canonicalDigest({
+      health: 100, satiety: 100, energy: 50, active_conditions: []
+    })
+    && canonicalDigest(profile.inventory)
+      === canonicalDigest({ load_category: 'moderate' });
 }
 
 function resolveScheduleExecutions({ records, waitActivity, localTransition,

@@ -20,6 +20,8 @@ export function createTracePhase7FireRestCommand({
   inputDigest,
   npcAutonomousModel,
   semanticActivityScheduleOwner,
+  genericCheckContextOwner,
+  randomSource,
   temporalAdvanceOwner,
   revalidateStateVersion
 }) {
@@ -83,7 +85,8 @@ export function createTracePhase7FireRestCommand({
         },
         async resolveDecision({ temporal, signal_batch: signalBatch }) {
           actorStepRuntime = createTracePhase7ActorStepRuntime({
-            state, contracts, temporal, semanticActivityScheduleOwner
+            state, contracts, temporal, semanticActivityScheduleOwner,
+            genericCheckContextOwner, randomSource
           });
           const autonomous = await resolveTracePhase7AutonomousDecision({
             state,
@@ -138,6 +141,7 @@ export function createTracePhase7FireRestCommand({
           temporal,
           autonomous,
           actor_step: flow.actor_step.result,
+          actor_step_check: flow.actor_step.check,
           schedule_temporal: scheduleTemporal,
           schedule_execution: scheduleExecution
         },

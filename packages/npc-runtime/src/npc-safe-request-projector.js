@@ -208,7 +208,13 @@ function projectPerceivedChanges(orderedSignals, perception_snapshot) {
   }
   return orderedSignals.map(({ source_event_ref: source }) => {
     const key = `${source.entity_kind}:${source.entity_id}`;
-    return bySource.get(key) ?? `${source.entity_kind}:${source.entity_id}`;
+    const summary = bySource.get(key);
+    if (summary == null) {
+      throw new TypeError(
+        `NPC-safe perceived change summary is required for ${key}`
+      );
+    }
+    return summary;
   });
 }
 

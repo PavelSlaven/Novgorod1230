@@ -56,6 +56,11 @@ test('Phase 7 aggregates every new NPC signal into one decision', async () => {
       assert.deepEqual(request.decision_reasons.categories,
         ['self', 'objective']);
       assert.equal(request.decision_reasons.signal_refs.length, 3);
+      assert.deepEqual(request.decision_reasons.perceived_changes, [
+        'Ратша не вернулся к условленному сроку.',
+        'Жданко устал сильнее, пока ждал.',
+        'На дороге по-прежнему нет Ратши.'
+      ]);
       return autonomousPlan(request, 'wait');
     }
   }).consequence({
@@ -202,7 +207,8 @@ function signalBatchOwner(ruleRef, policyRef) {
           scope_refs: [],
           perception_required: false,
           source_perception_ref: null,
-          causal_parent_refs: []
+          causal_parent_refs: [],
+          perceived_change_summary: 'Жданко устал сильнее, пока ждал.'
         }, {
           occurred_at: structuredClone(candidate.scheduled_at),
           category: 'objective',
@@ -212,7 +218,8 @@ function signalBatchOwner(ruleRef, policyRef) {
           scope_refs: [],
           perception_required: false,
           source_perception_ref: null,
-          causal_parent_refs: []
+          causal_parent_refs: [],
+          perceived_change_summary: 'На дороге по-прежнему нет Ратши.'
         }];
         return {
           disposition: 'execute',

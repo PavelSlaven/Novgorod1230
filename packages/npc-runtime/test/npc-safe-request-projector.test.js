@@ -85,6 +85,10 @@ test('NPC-safe projector allowlists persisted subjective snapshots', () => {
       hidden_contents: { hidden: 'secret' }
     }],
     perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('event', 'event-1'),
+        summary: 'Смена началась.'
+      }],
       visible_objects: [{
         object_ref: 'resource-1',
         summary: 'дрова',
@@ -115,9 +119,57 @@ test('NPC-safe projector allowlists persisted subjective snapshots', () => {
   assert.equal(request.knowledge.known_facts[0].fact_ref, 'fact-1');
   assert.equal(request.memory.recent_events[0].event_ref, 'event-1');
   assert.equal(request.decision_reasons.perceived_changes[0],
-    'event:event-1');
+    'Смена началась.');
   assert.doesNotMatch(JSON.stringify(request), /hidden|secret/u);
 });
+
+test('NPC-safe projector rejects a decision source without NPC-safe summary',
+  () => {
+    const signal = buildNpcDecisionSignal({
+      occurred_at: occurredAt,
+      category: 'objective',
+      significance: 'material',
+      source_event_ref: ref('event', 'missing-summary'),
+      subject_ref: ref('npc', 'speaker'),
+      scope_refs: [],
+      perception_required: false,
+      source_perception_ref: null,
+      causal_parent_refs: []
+    });
+    const boundary = buildNpcDecisionBoundary({
+      npc_ref: ref('npc', 'speaker'),
+      decision_mode: 'autonomous',
+      scheduled_at: occurredAt,
+      significance: 'material',
+      categories: ['objective'],
+      signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+      same_time_batch_ref: ref('temporal_batch', 'missing-summary-batch'),
+      state_version: '1'
+    });
+    assert.throws(() => buildNpcActionDecisionRequestFromSnapshots({
+      request_identity: {
+        request_id: 'request-missing-summary',
+        root_turn_id: 'turn-missing-summary',
+        committed_state_version: 1,
+        working_revision: 1,
+        decision_index: 1
+      },
+      boundary,
+      npc_snapshot: {
+        instance_id: 'speaker', attributes: [], skills: [], machine_state: {}
+      },
+      current_activity_snapshot: {
+        activity_ref: null, summary: null, status: 'idle',
+        can_continue_automatically: false
+      },
+      resolved_signals: [signal],
+      operation_contract: {}
+    }), {
+      name: 'TypeError',
+      message:
+        'NPC-safe perceived change summary is required for event:missing-summary'
+    });
+  });
 
 test('NPC-safe projector includes accessible non-container resources', () => {
   const signal = buildNpcDecisionSignal({
@@ -161,6 +213,12 @@ test('NPC-safe projector includes accessible non-container resources', () => {
       summary: null,
       status: 'idle',
       can_continue_automatically: false
+    },
+    perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('event', 'event-2'),
+        summary: 'Рядом появился доступный предмет.'
+      }]
     },
     resource_snapshots: [{
       container_id: 'bag-1',

@@ -95,7 +95,9 @@ function resolveWaitingTerminal({ candidate, context, descriptor }) {
           source_perception_ref: null,
           causal_parent_refs: structuredClone(
             transition.causal_parent_refs
-          )
+          ),
+          perceived_change_summary:
+            'Ратша не вернулся к условленному сроку.'
         }
       ]
     },

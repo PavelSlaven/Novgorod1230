@@ -10,11 +10,19 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       !== canonicalDigest(operationContract)) {
     return rejected('NPC_OPERATION_CONTRACT_STALE');
   }
-  if (plan.resolution === 'direct') {
+  if (plan.resolution === 'direct' || plan.resolution === 'generic_check') {
     const profile = contracts.semanticActivityProfiles.find((candidate) =>
       candidate.duration_class === plan.activity.duration_class
         && candidate.effort === plan.activity.effort);
-    return profile != null
+    const additionalProfiles = plan.resolution === 'generic_check'
+      ? Object.values(plan.check.outcomes).flatMap(({ additional_activity }) =>
+          additional_activity == null ? [] : [additional_activity])
+      : [];
+    const additionalApplicable = additionalProfiles.every((activity) =>
+      contracts.semanticActivityProfiles.some((candidate) =>
+        candidate.duration_class === activity.duration_class
+          && candidate.effort === activity.effort));
+    return profile != null && additionalApplicable
       ? accepted()
       : rejected('NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   }

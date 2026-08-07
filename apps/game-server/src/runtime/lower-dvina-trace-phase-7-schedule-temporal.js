@@ -80,7 +80,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   return Object.freeze({
     elapsed_after_decision: elapsed,
     result: advanced.result,
-    projection: structuredClone(advanced.state_projection)
+    projection: structuredClone(advanced.state_projection),
+    completion_candidate: structuredClone(completion)
   });
 }
 
@@ -93,9 +94,7 @@ function actorStepCompletionCandidate({ state, actorStep }) {
     boundary_kind: 'npc_schedule',
     scheduled_at: scheduledAt,
     source_ref: {
-      entity_kind: 'party_timed_activity_execution',
-      entity_id:
-        `npc-actor-step:${state.party_id}:${active.npc_ref}`
+      ...structuredClone(active.decision_trace_ref)
     },
     primary_subject_ref: {
       entity_kind: 'npc', entity_id: active.npc_ref
@@ -111,7 +110,7 @@ function actorStepCompletionCandidate({ state, actorStep }) {
       'lower-dvina-trace-phase-7-hidden-npc', '1'),
     idempotency_key:
       `npc-actor-step:${state.party_id}:${active.npc_ref}:complete`,
-    causal_parent_refs: []
+    causal_parent_refs: [structuredClone(active.decision_trace_ref)]
   };
 }
 

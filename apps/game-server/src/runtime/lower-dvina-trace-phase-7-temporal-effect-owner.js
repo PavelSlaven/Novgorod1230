@@ -58,17 +58,29 @@ function resolveWaitingTerminal({ candidate, context, descriptor }) {
       waiting_terminal_reached: true,
       waiting_transition: {
         schema: 'rus.npc_activity_factual_transition.v1',
-        transition_id: candidate.boundary_id,
+        transition_id: tracePhase7WaitingTransitionId(candidate.boundary_id),
         npc_ref: descriptor.npc_ref,
         activity_ref: descriptor.activity_ref,
         from: 'waiting',
         to: 'decision_required',
-        occurred_at: structuredClone(candidate.scheduled_at)
+        occurred_at: structuredClone(candidate.scheduled_at),
+        source_candidate_ref: {
+          entity_kind: 'temporal_boundary_candidate',
+          entity_id: candidate.boundary_id
+        },
+        causal_parent_refs: [{
+          entity_kind: 'temporal_boundary_candidate',
+          entity_id: candidate.boundary_id
+        }]
       }
     },
     follow_up_candidates: [],
     stop_after_current_batch: true
   };
+}
+
+export function tracePhase7WaitingTransitionId(candidateId) {
+  return `waiting-transition:${candidateId}`;
 }
 
 function resolveNpcActorStepCompletion({ candidate, context, descriptor }) {

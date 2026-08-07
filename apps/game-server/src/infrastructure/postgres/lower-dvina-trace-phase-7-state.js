@@ -61,10 +61,15 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     activity_execution_id: factual.consequence.activity_attempt_id,
     exact_elapsed_minutes: 30,
     body_effect_ref: factual.body_update.proposal.profile_ref,
+    waiting_terminal_candidate_id:
+      phase7.temporal.terminal_candidate.boundary_id,
     waiting_transition_id:
       phase7.temporal.projection.waiting_transition.transition_id,
+    decision_signal_id: autonomous.signal.signal_id,
     decision_request_id: autonomous.request.request_id,
     decision_boundary_id: autonomous.boundary.boundary_id,
+    actor_step_completion_candidate_id:
+      phase7.schedule_temporal.completion_candidate.boundary_id,
     schedule_execution_binding_ref:
       phase7.schedule_execution.execution_binding_ref,
     schedule_option_id: phase7.schedule_execution.schedule_option_id,

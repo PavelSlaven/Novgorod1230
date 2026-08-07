@@ -103,6 +103,9 @@ export function createTracePhase7FireRestCommand({
             commandIdempotencyKey: playerInput.idempotency_key
           })
       });
+      if (flow.actor_step.domain_result?.pass === false) {
+        return blockedDomainResult(flow.actor_step.domain_result);
+      }
       const temporal = flow.temporal;
       const autonomous = flow.decision.autonomous;
       const scheduleTemporal = flow.continuation;
@@ -151,6 +154,21 @@ export function createTracePhase7FireRestCommand({
       }];
     }
   });
+}
+
+function blockedDomainResult(domainResult) {
+  return {
+    version: 1,
+    schema: 'turn_consequence_package',
+    status: 'blocked',
+    duration_minutes: 0,
+    visible_seed: {},
+    hidden_update: {
+      npc_autonomous_domain_result: structuredClone(domainResult)
+    },
+    state_changes: [],
+    suggested_actions: []
+  };
 }
 
 export function tracePhase7PreconditionSatisfied(

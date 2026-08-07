@@ -84,8 +84,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
         checks: state.checks,
         commandRegistry: services.commandRegistry
       });
-      if (consequence.status === 'repair_required') {
-        return { status: 'repair_required', artifact: consequence };
+      if (consequence.status === 'repair_required'
+          || consequence.status === 'blocked') {
+        return { status: consequence.status, artifact: consequence };
       }
       return approved(next(state, 'consequence', consequence, context));
     }, true),

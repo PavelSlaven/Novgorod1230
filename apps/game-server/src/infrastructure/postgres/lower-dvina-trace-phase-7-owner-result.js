@@ -28,6 +28,7 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       || schedule.root_clock_write_count !== 0
       || schedule.parent_state_version !== state.party_state.state_version
       || !validActorStepCompletion(phase7)
+      || !validCausality(phase7)
       || !validScheduleExecution(schedule, phase7Contracts,
         phase7.autonomous.request, phase7.autonomous.proposal.plan, state)
       || temporal.result.combined_change_set.change_set_id !== changeSetId
@@ -42,6 +43,45 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
       { status: 409, details: null }
     );
   }
+}
+
+function validCausality(phase7) {
+  const candidate = phase7.temporal.terminal_candidate;
+  const transition = phase7.temporal.projection.waiting_transition;
+  const signal = phase7.autonomous.signal;
+  const boundary = phase7.autonomous.boundary;
+  const actorStep = phase7.schedule_temporal.projection.active_npc_actor_step;
+  const completion = phase7.schedule_temporal.completion_candidate;
+  const candidateRef = {
+    entity_kind: 'temporal_boundary_candidate',
+    entity_id: candidate?.boundary_id
+  };
+  const transitionRef = {
+    entity_kind: 'npc_activity_factual_transition',
+    entity_id: transition?.transition_id
+  };
+  return sameClock(candidate?.scheduled_at, phase7.temporal.result.clock_after)
+    && sameClock(
+      completion?.scheduled_at,
+      phase7.schedule_temporal.projection.active_npc_actor_step?.completed_at
+    )
+    && canonicalDigest(transition?.source_candidate_ref)
+      === canonicalDigest(candidateRef)
+    && canonicalDigest(transition?.causal_parent_refs)
+      === canonicalDigest([candidateRef])
+    && canonicalDigest(signal?.source_event_ref)
+      === canonicalDigest(transitionRef)
+    && canonicalDigest(signal?.causal_parent_refs)
+      === canonicalDigest([candidateRef])
+    && canonicalDigest(boundary?.signal_refs)
+      === canonicalDigest([{
+        entity_kind: 'npc_decision_signal',
+        entity_id: signal?.signal_id
+      }])
+    && canonicalDigest(completion?.source_ref)
+      === canonicalDigest(actorStep?.decision_trace_ref)
+    && canonicalDigest(completion?.causal_parent_refs)
+      === canonicalDigest([actorStep?.decision_trace_ref]);
 }
 
 const sameClock = (left, right) =>

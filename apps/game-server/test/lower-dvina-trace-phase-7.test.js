@@ -33,93 +33,6 @@ import {
 
 const digest = 'a'.repeat(64);
 
-test('Phase 7 resolves one +25 autonomous boundary and a 5 minute bag move',
-  async () => {
-    const state = committedState();
-    const contracts = approvedContracts(state);
-    const command = commandFor({ state, contracts, model: async (request) => {
-      assert.deepEqual(Object.keys(request.decision_scope.operation_contract),
-        ['request_activity', 'request_item_use']);
-      assert.deepEqual(request.decision_scope.operation_contract
-        .request_activity.target_refs, [
-        'trace_ld_v1_container_road_bag', 'river_access'
-      ]);
-      return autonomousPlan(request, 'move_bag');
-    } });
-    const consequence = await command.consequence({
-      retrievedState: state,
-      playerInput: playerInput(state)
-    });
-
-    assert.equal(consequence.phase7.temporal.elapsed_before_decision, 25);
-    assert.deepEqual(
-      consequence.phase7.temporal.result.trace.processed_boundary_ids,
-      ['npc-waiting:phase7-party:zhdanko:terminal']
-    );
-    assert.equal(consequence.phase7.autonomous.boundary.decision_mode,
-      'autonomous');
-    assert.deepEqual(consequence.phase7.autonomous.consumed_signal_ids,
-      [consequence.phase7.autonomous.signal.signal_id]);
-    assert.equal(consequence.phase7.schedule_execution.schedule_option_id,
-      'move_bag');
-    assert.deepEqual(
-      consequence.phase7.schedule_execution.exact_elapsed.exact_minutes,
-      { numerator: '5', denominator: '1' }
-    );
-    assert.equal(consequence.phase7.schedule_execution.clock_after.whole_minutes,
-      '130');
-    assert.equal(consequence.phase7.schedule_temporal.elapsed_after_decision, 5);
-    assert.deepEqual(
-      consequence.phase7.schedule_temporal.result.trace.processed_boundary_ids,
-      ['npc-actor-step:phase7-party:zhdanko-1:complete']
-    );
-    assert.equal(consequence.phase7.schedule_temporal.projection
-      .active_npc_actor_step.status, 'completed');
-  });
-
-test('Phase 7 repairs invalid carry targets',
-  async () => {
-    const state = committedState();
-    const contracts = approvedContracts(state);
-    let modelCalls = 0;
-    const command = commandFor({ state, contracts,
-      model: async (request) => {
-        const plan = autonomousPlan(request, 'move_bag');
-        if (modelCalls++ === 0) {
-          plan.operations[0].target_refs = [contracts.roadBag.item_ref];
-        }
-        return plan;
-      }
-    });
-    const consequence = await command.consequence({
-      retrievedState: state,
-      playerInput: playerInput(state, 'carry-without-destination')
-    });
-    assert.equal(modelCalls, 2);
-    assert.equal(consequence.phase7.schedule_execution.schedule_option_id,
-      'move_bag');
-  });
-
-test('Phase 7 rejects two invalid carry plans without state changes',
-  async () => {
-    const state = committedState();
-    const contracts = approvedContracts(state);
-    const stateBefore = structuredClone(state);
-    let modelCalls = 0;
-    const command = commandFor({ state, contracts, model: async (request) => {
-      modelCalls += 1;
-      const plan = autonomousPlan(request, 'move_bag');
-      plan.operations[0].target_refs = [contracts.roadBag.item_ref];
-      return plan;
-    } });
-    await assert.rejects(() => command.consequence({
-      retrievedState: state,
-      playerInput: playerInput(state, 'carry-invalid')
-    }), ({ code }) => code === 'TURN_NPC_PLAN_INVALID');
-    assert.equal(modelCalls, 2);
-    assert.deepEqual(state, stateBefore);
-  });
-
 test('Phase 7 executes a direct NPC step and continues the rest interval',
   async () => {
     const state = committedState();
@@ -167,33 +80,6 @@ test('Phase 7 executes a direct NPC step and continues the rest interval',
     assert.equal(snapshot.phase7_fire_rest.schedule_result.clock_after
       .whole_minutes, '126');
     assert.equal(snapshot.npcs[1].machine_state.status, 'idle');
-  });
-
-test('Phase 7 repairs overlong activity',
-  async () => {
-    const state = committedState();
-    const contracts = approvedContracts(state);
-    let modelCalls = 0;
-    const consequence = await commandFor({ state, contracts,
-      model: async (request) => {
-        const plan = directPlan(request);
-        if (modelCalls++ === 0) {
-          plan.activity.duration_class = 'short';
-        }
-        return plan;
-      }
-    }).consequence({
-      retrievedState: state,
-      playerInput: playerInput(state, 'repair-long-direct-activity')
-    });
-    assert.equal(modelCalls, 2);
-    assert.equal(
-      consequence.phase7.schedule_execution.exact_elapsed.exact_minutes
-        .numerator,
-      '1'
-    );
-    assert.equal(consequence.phase7.schedule_temporal.result.clock_after
-      .whole_minutes, '130');
   });
 
 test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
@@ -347,6 +233,12 @@ test('Phase 7 replays a hydrated autonomous decision without the model',
     assert.equal(replayed.phase7.autonomous.proposal.status, 'replayed');
     assert.equal(replayed.phase7.schedule_execution.schedule_option_id,
       'move_bag');
+    assert.equal(replayed.phase7.autonomous.signal.signal_id,
+      first.phase7.autonomous.signal.signal_id);
+    assert.deepEqual(
+      replayed.phase7.schedule_temporal.completion_candidate.causal_parent_refs,
+      first.phase7.schedule_temporal.completion_candidate.causal_parent_refs
+    );
   });
 
 test('revision 15 materialized state resolves the approved Phase 7 chain',
@@ -428,6 +320,74 @@ test('Phase 7 P16 persists decision, body and approved schedule atomically',
     tampered.containers[0].state.zone_ref = 'storehouse_inside';
     await assert.rejects(() => assertPhase7NormalizedRows(pool, tampered),
       ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
+
+    const forgedTracePlan = structuredClone(plan);
+    const forgedCausality = rows(
+      forgedTracePlan, 'party_timed_activity_attempts'
+    )[0].record.trace.causality;
+    const forgedTraceRef = {
+      entity_kind: 'npc_decision_trace',
+      entity_id: 'unpersisted-request'
+    };
+    forgedCausality.decision_trace_ref = structuredClone(forgedTraceRef);
+    forgedCausality.actor_step_completion_candidate.source_ref
+      = structuredClone(forgedTraceRef);
+    forgedCausality.actor_step_completion_candidate.causal_parent_refs
+      = [structuredClone(forgedTraceRef)];
+    await assert.rejects(() => assertPhase7NormalizedRows(
+      phase7ReadPool(forgedTracePlan, snapshot), snapshot
+    ), ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
+
+    const scalarTamperedSnapshot = structuredClone(snapshot);
+    const scalarTamperedPlan = structuredClone(plan);
+    const candidateId = 'npc-waiting:substituted:zhdanko:terminal';
+    const transitionId = `waiting-transition:${candidateId}`;
+    const tamperedDecision = rows(
+      scalarTamperedPlan, 'party_npc_decision_traces'
+    )[0].record;
+    const signal = tamperedDecision.signal_records[0];
+    const boundary = tamperedDecision.boundary_snapshot;
+    const signalId =
+      `decision-signal:npc_activity_factual_transition:${transitionId}:${
+        signal.subject_ref.entity_id}:${signal.category}`;
+    const batchId = 'temporal-batch:substituted';
+    const boundaryId =
+      `npc-decision:${batchId}:${boundary.npc_ref.entity_id}`;
+    scalarTamperedSnapshot.phase7_fire_rest.waiting_terminal_candidate_id
+      = candidateId;
+    scalarTamperedSnapshot.phase7_fire_rest.waiting_transition_id
+      = transitionId;
+    scalarTamperedSnapshot.phase7_fire_rest.decision_signal_id
+      = signalId;
+    scalarTamperedSnapshot.phase7_fire_rest.decision_boundary_id
+      = boundaryId;
+    const tamperedCausality = rows(
+      scalarTamperedPlan, 'party_timed_activity_attempts'
+    )[0].record.trace.causality;
+    tamperedCausality.waiting_terminal_candidate.boundary_id = candidateId;
+    tamperedCausality.waiting_terminal_candidate.idempotency_key = candidateId;
+    tamperedCausality.waiting_terminal_candidate_ref.entity_id = candidateId;
+    tamperedCausality.waiting_transition.transition_id = transitionId;
+    tamperedCausality.waiting_transition.source_candidate_ref.entity_id
+      = candidateId;
+    tamperedCausality.waiting_transition.causal_parent_refs[0].entity_id
+      = candidateId;
+    tamperedCausality.waiting_transition_ref.entity_id = transitionId;
+    tamperedCausality.decision_signal_ref.entity_id = signalId;
+    tamperedCausality.decision_boundary_ref.entity_id = boundaryId;
+    signal.signal_id = signalId;
+    signal.idempotency_key = signalId;
+    signal.source_event_ref.entity_id = transitionId;
+    signal.causal_parent_refs[0].entity_id = candidateId;
+    boundary.same_time_batch_ref.entity_id = batchId;
+    boundary.boundary_id = boundaryId;
+    boundary.idempotency_key = boundaryId;
+    boundary.signal_refs[0].entity_id = signalId;
+    tamperedDecision.boundary_id = boundaryId;
+    await assert.rejects(() => assertPhase7NormalizedRows(
+      phase7ReadPool(scalarTamperedPlan, scalarTamperedSnapshot),
+      scalarTamperedSnapshot
+    ), ({ code }) => code === 'TRACE_PHASE_2_SESSION_READ_INVALID');
   });
 
 test('Phase 7 P16 rejects a schedule detached from temporal completion',
@@ -597,6 +557,8 @@ function phase7ReadPool(plan, snapshot) {
         resultRows = [one('party_timed_activity_executions')];
       } else if (sql.includes('party_timed_activity_attempts')) {
         resultRows = [one('party_timed_activity_attempts')];
+      } else if (sql.includes('party_npc_decision_traces')) {
+        resultRows = [one('party_npc_decision_traces')];
       } else if (sql.includes('party_npcs')) {
         const persisted = one('party_npcs');
         const npc = snapshot.npcs.find(

@@ -114,6 +114,16 @@ function plannedProposal(boundary, plan) {
   });
 }
 
+function domainRejectedProposal(plan, domainResult) {
+  return immutable({
+    status: 'domain_rejected',
+    plan,
+    trace: null,
+    domain_result: domainResult,
+    signal_ids_to_consume: []
+  });
+}
+
 async function requestFreshDecision({ boundary, request, semanticModel, revalidateStateVersion, mode, validatePlan }) {
   if (typeof semanticModel !== 'function') {
     fail('TURN_NPC_MODEL_MISSING', 'semanticModel must be a function');
@@ -137,7 +147,7 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
     });
   }
 
-  if (!acceptedPlan(rawPlan, safeRequest, mode, validatePlan)) {
+  if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
     try {
       rawPlan = await semanticModel(safeRequest, immutable({
         boundary,
@@ -150,13 +160,18 @@ async function requestFreshDecision({ boundary, request, semanticModel, revalida
         cause: error instanceof Error ? error.message : String(error)
       });
     }
-    if (!acceptedPlan(rawPlan, safeRequest, mode, validatePlan)) {
+    if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
       fail(
         'TURN_NPC_PLAN_INVALID',
         'NPC semantic response and its format repair must match the request',
         { request_id: request.request_id, boundary_id: boundary.boundary_id }
       );
     }
+  }
+
+  const domainResult = planDomainResult(rawPlan, safeRequest, validatePlan);
+  if (domainResult !== null && domainResult.pass === false) {
+    return domainRejectedProposal(rawPlan, domainResult);
   }
 
   const expectedStateVersion = requestStateVersion(request, mode);
@@ -228,9 +243,17 @@ export async function requestNpcSemanticDecision({
   requireBoundaryRequestIdentity(boundary, request, mode);
 
   if (persistedTrace !== null) {
-    if (!validateNpcSemanticDecisionTrace(persistedTrace, request)
-        || (validatePlan !== null
-          && validatePlan(persistedTrace.plan, request) !== true)) {
+    if (!validateNpcSemanticDecisionTrace(persistedTrace, request)) {
+      fail(
+        'TURN_NPC_TRACE_INVALID',
+        'persistedTrace must be a committed semantic trace matching the request',
+        { request_id: request.request_id, boundary_id: boundary.boundary_id }
+      );
+    }
+    const domainResult = planDomainResult(
+      persistedTrace.plan, request, validatePlan
+    );
+    if (domainResult?.pass === false) {
       fail(
         'TURN_NPC_TRACE_INVALID',
         'persistedTrace must be a committed semantic trace matching the request',
@@ -273,7 +296,27 @@ export async function requestNpcSemanticDecision({
   }
 }
 
-function acceptedPlan(plan, request, mode, validatePlan) {
-  return validatePlanForMode(plan, request, mode)
-    && (validatePlan === null || validatePlan(plan, request) === true);
+function planDomainResult(plan, request, validatePlan) {
+  if (validatePlan === null) return null;
+  const result = validatePlan(plan, request);
+  if (result === true) return null;
+  if (result === false) {
+    return immutable({
+      pass: false,
+      errors: [{
+        code: 'TURN_NPC_PLAN_NOT_APPLICABLE',
+        category: 'applicability',
+        retryable: false
+      }]
+    });
+  }
+  if (result?.pass === true) return null;
+  if (result?.pass === false && Array.isArray(result.errors)
+      && result.errors.length > 0) {
+    return immutable(result);
+  }
+  fail(
+    'TURN_NPC_PLAN_VALIDATOR_INVALID',
+    'validatePlan must return a boolean or typed domain result'
+  );
 }

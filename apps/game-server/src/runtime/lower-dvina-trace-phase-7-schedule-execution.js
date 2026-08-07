@@ -34,6 +34,12 @@ export async function executeTracePhase7SchedulePlan({
   autonomous,
   actorStepRuntime
 }) {
+  if (autonomous.proposal.status === 'domain_rejected') {
+    return Object.freeze({
+      working_projection: structuredClone(temporal.projection),
+      domain_result: structuredClone(autonomous.proposal.domain_result)
+    });
+  }
   const execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
     request: autonomous.request,

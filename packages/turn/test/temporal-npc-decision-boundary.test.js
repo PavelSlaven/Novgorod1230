@@ -9,6 +9,37 @@ const at = (wholeMinutes) => ({
   subminute_denominator: '1'
 });
 
+test('NPC domain rejection terminates the boundary without temporal continuation',
+  async () => {
+    let continuationCalls = 0;
+    const domainResult = {
+      pass: false,
+      errors: [{
+        code: 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE',
+        category: 'applicability',
+        retryable: false
+      }]
+    };
+    const result = await advanceTemporalNpcDecisionBoundary({
+      advanceToBoundary: async () => ({
+        result: { temporal_status: 'paused', clock_after: at(25) }
+      }),
+      resolveDecision: async () => ({ boundary: { scheduled_at: at(25) } }),
+      executeActorStep: async () => ({
+        working_projection: { unchanged: true },
+        domain_result: domainResult
+      }),
+      continueAdvance: async () => {
+        continuationCalls += 1;
+        throw new Error('domain rejection must not continue time');
+      }
+    });
+
+    assert.equal(continuationCalls, 0);
+    assert.deepEqual(result.actor_step.domain_result, domainResult);
+    assert.equal(result.continuation, null);
+  });
+
 test('NPC actor-step starts at the paused timestamp before continuation',
   async () => {
     const calls = [];

@@ -96,7 +96,7 @@ function waitingTerminalCandidate({ state, contracts, executionId }) {
     }
   });
   return {
-    boundary_id: `npc-waiting:${state.party_id}:zhdanko:terminal`,
+    boundary_id: tracePhase7WaitingTerminalCandidateId(state.party_id),
     boundary_kind: 'npc_schedule',
     scheduled_at: scheduledAt,
     source_ref: {
@@ -125,9 +125,13 @@ function waitingTerminalCandidate({ state, contracts, executionId }) {
     interrupt_effect: 'background',
     visibility_policy_ref: versioned('visibility_modifier',
       'lower-dvina-trace-phase-7-hidden-npc', '1'),
-    idempotency_key: `npc-waiting:${state.party_id}:zhdanko:terminal`,
+    idempotency_key: tracePhase7WaitingTerminalCandidateId(state.party_id),
     causal_parent_refs: []
   };
+}
+
+export function tracePhase7WaitingTerminalCandidateId(partyId) {
+  return `npc-waiting:${partyId}:zhdanko:terminal`;
 }
 
 function versioned(entityKind, entityId, authoringVersion) {

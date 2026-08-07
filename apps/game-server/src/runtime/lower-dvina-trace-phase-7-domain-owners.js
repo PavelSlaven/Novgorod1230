@@ -105,9 +105,14 @@ function started({ execution, temporal, profile, movement, property,
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
   const operation = execution.operation;
+  const decisionTraceRef = {
+    entity_kind: 'npc_decision_trace',
+    entity_id: execution.request.request_id
+  };
   const active = {
     npc_ref: npcRef ?? operation.actor_ref, status: 'started',
     started_at: structuredClone(temporal.result.clock_after),
+    decision_trace_ref: decisionTraceRef,
     semantic_operation: structuredClone(operation),
     planned_exact_elapsed: {
       exact_minutes: { numerator: String(duration), denominator: '1' }
@@ -123,6 +128,7 @@ function started({ execution, temporal, profile, movement, property,
       owner: '@rus/turn/actor-step', domain_owner: domainOwner(operation.op),
       status: 'started', failure_code: null,
       npc_ref: npcRef ?? operation.actor_ref,
+      decision_trace_ref: structuredClone(active.decision_trace_ref),
       semantic_operation: structuredClone(operation),
       execution_binding_ref: profile?.execution_binding_id ?? null,
       schedule_option_id: profile?.schedule_option_id ?? null,

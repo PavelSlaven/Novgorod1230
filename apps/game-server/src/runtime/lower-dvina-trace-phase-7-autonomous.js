@@ -23,13 +23,15 @@ export async function resolveTracePhase7AutonomousDecision({
     occurred_at: structuredClone(temporal.result.clock_after),
     category: contracts.autonomous.signal_descriptor.category,
     significance: contracts.autonomous.signal_descriptor.significance,
-    source_event_ref: ref('temporal_boundary_candidate',
+    source_event_ref: ref('npc_activity_factual_transition',
       temporal.projection.waiting_transition.transition_id),
     subject_ref: npcRef,
     scope_refs: [],
     perception_required: false,
     source_perception_ref: null,
-    causal_parent_refs: []
+    causal_parent_refs: structuredClone(
+      temporal.projection.waiting_transition.causal_parent_refs
+    )
   });
   assertSignalIdentity(state, signal);
   const evaluation = evaluateNpcDecisionSignals({

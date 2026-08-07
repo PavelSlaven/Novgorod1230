@@ -239,6 +239,41 @@ test('autonomous request uses one model call and returns signal consumption', as
   assert.deepEqual(result.signal_ids_to_consume, ['signal-1']);
 });
 
+test('applicability rejection returns one typed domain result without repair',
+  async () => {
+    const sourceRequest = autonomousRequest();
+    let modelCalls = 0;
+    let revalidationCalls = 0;
+    const result = await requestNpcSemanticDecision({
+      boundary: autonomousBoundary(),
+      request: sourceRequest,
+      semanticModel: async () => {
+        modelCalls += 1;
+        return autonomousPlan(sourceRequest);
+      },
+      validatePlan: () => ({
+        pass: false,
+        errors: [{
+          code: 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE',
+          category: 'applicability',
+          retryable: false
+        }]
+      }),
+      revalidateStateVersion: async () => {
+        revalidationCalls += 1;
+        return 2;
+      }
+    });
+
+    assert.equal(modelCalls, 1);
+    assert.equal(revalidationCalls, 0);
+    assert.equal(result.status, 'domain_rejected');
+    assert.equal(result.domain_result.pass, false);
+    assert.equal(result.domain_result.errors[0].code,
+      'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+    assert.deepEqual(result.signal_ids_to_consume, []);
+  });
+
 test('persisted autonomous trace replays without model call', async () => {
   const sourceRequest = autonomousRequest();
   const sourcePlan = autonomousPlan(sourceRequest);

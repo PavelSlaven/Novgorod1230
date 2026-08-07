@@ -37,6 +37,41 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
             ...phase7.schedule_temporal.result.trace.processed_boundary_ids],
         autonomous_decision_request_id:
           phase7.autonomous.request.request_id,
+        causality: {
+          waiting_terminal_candidate: structuredClone(
+            phase7.temporal.terminal_candidate
+          ),
+          waiting_terminal_candidate_ref: ref(
+            'temporal_boundary_candidate',
+            phase7.temporal.terminal_candidate.boundary_id
+          ),
+          waiting_transition: structuredClone(
+            phase7.temporal.projection.waiting_transition
+          ),
+          waiting_transition_ref: ref(
+            'npc_activity_factual_transition',
+            phase7.temporal.projection.waiting_transition.transition_id
+          ),
+          decision_signal_ref: ref(
+            'npc_decision_signal',
+            phase7.autonomous.signal.signal_id
+          ),
+          decision_boundary_ref: ref(
+            'npc_decision_boundary',
+            phase7.autonomous.boundary.boundary_id
+          ),
+          decision_trace_ref: structuredClone(
+            phase7.schedule_temporal.projection.active_npc_actor_step
+              .decision_trace_ref
+          ),
+          actor_step_completion_candidate_ref: ref(
+            'temporal_boundary_candidate',
+            phase7.schedule_temporal.completion_candidate.boundary_id
+          ),
+          actor_step_completion_candidate: structuredClone(
+            phase7.schedule_temporal.completion_candidate
+          )
+        },
         npc_schedule_result: scheduleTrace(phase7.schedule_execution,
           changeSetId)
       },
@@ -54,6 +89,10 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
       terminal_change_set_id: null,
       state_version: 1
     }));
+}
+
+function ref(entityKind, entityId) {
+  return { entity_kind: entityKind, entity_id: entityId };
 }
 
 function scheduleTrace(execution, changeSetId) {

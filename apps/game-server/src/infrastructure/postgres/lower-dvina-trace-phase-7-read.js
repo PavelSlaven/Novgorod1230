@@ -1,5 +1,13 @@
 import { canonicalDigest } from '@rus/materialization';
+import {
+  validateNpcDecisionBoundary,
+  validateNpcDecisionSignal
+} from '@rus/npc-runtime';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
+import { tracePhase7WaitingTerminalCandidateId } from
+  '../../runtime/lower-dvina-trace-phase-7-temporal.js';
+import { tracePhase7WaitingTransitionId } from
+  '../../runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 
 export async function assertPhase7NormalizedRows(pool, payload) {
   const phase7 = payload.phase7_fire_rest;
@@ -15,7 +23,7 @@ export async function assertPhase7NormalizedRows(pool, payload) {
     id === 'trace_ld_v1_container_road_bag');
   if (!zhdanko || !bag) fail();
 
-  const [activity, attempts, npc, container, conditions, bodyHistory] =
+  const [activity, attempts, decision, npc, container, conditions, bodyHistory] =
     await Promise.all([
       pool.query(
         `SELECT id,status,state_version::text,activity_snapshot,
@@ -38,6 +46,11 @@ export async function assertPhase7NormalizedRows(pool, payload) {
            FROM party_runtime.party_timed_activity_attempts
           WHERE activity_execution_id=$1 ORDER BY attempt_ordinal`,
         [phase7.activity_execution_id]),
+      pool.query(
+        `SELECT request_id,boundary_id,boundary_snapshot,signal_records
+           FROM party_runtime.party_npc_decision_traces
+          WHERE party_id=$1 AND request_id=$2`,
+        [payload.party_id, phase7.decision_request_id]),
       pool.query(
         `SELECT npc_id,anchor_id,machine_state
            FROM party_runtime.party_npcs
@@ -66,13 +79,13 @@ export async function assertPhase7NormalizedRows(pool, payload) {
           `body-history:${payload.party_id}:trace-phase7:fire-rest`])
     ]);
 
-  assertActivity(payload, activity, attempts);
+  assertActivity(payload, activity, attempts, decision);
   assertNpcAndContainer(phase7, zhdanko, bag, npc, container);
   assertConditions(payload, conditions);
   assertBodyHistory(payload, bodyHistory);
 }
 
-function assertActivity(payload, activity, attempts) {
+function assertActivity(payload, activity, attempts, decision) {
   const phase7 = payload.phase7_fire_rest;
   const execution = activity.rows[0];
   const attempt = attempts.rows[0];
@@ -101,6 +114,9 @@ function assertActivity(payload, activity, attempts) {
       || attempt.clock_commit_mode !== 'direct_party_clock'
       || attempt.trace?.autonomous_decision_request_id
         !== phase7.decision_request_id
+      || !validPersistedCausality(
+        attempt.trace?.causality, phase7, decision, payload.party_id
+      )
       || canonicalDigest(attempt.trace?.npc_schedule_result)
         !== canonicalDigest(phase7.schedule_result)
       || attempt.result_change_set_id !== phase7.change_set_id
@@ -110,6 +126,109 @@ function assertActivity(payload, activity, attempts) {
         !== String(payload.clock.whole_minutes)
       || String(attempt.ended_at_whole_minutes)
         !== String(payload.clock.whole_minutes)) fail();
+}
+
+function validPersistedCausality(
+  causality,
+  phase7,
+  decisionResult,
+  partyId
+) {
+  const waitingCandidateRef = ref(
+    'temporal_boundary_candidate', phase7.waiting_terminal_candidate_id
+  );
+  const completionCandidateRef = ref(
+    'temporal_boundary_candidate',
+    phase7.actor_step_completion_candidate_id
+  );
+  const transitionRef = ref(
+    'npc_activity_factual_transition', phase7.waiting_transition_id
+  );
+  const signalRef = ref(
+    'npc_decision_signal', phase7.decision_signal_id
+  );
+  const decision = decisionResult?.rows?.[0];
+  const signal = decision?.signal_records?.[0];
+  const boundary = decision?.boundary_snapshot;
+  const candidate = causality?.waiting_terminal_candidate;
+  const transition = causality?.waiting_transition;
+  const decisionTraceRef = ref('npc_decision_trace', decision?.request_id);
+  return causality?.waiting_terminal_candidate?.boundary_id
+      === phase7.waiting_terminal_candidate_id
+    && candidate?.boundary_id
+      === tracePhase7WaitingTerminalCandidateId(partyId)
+    && candidate?.idempotency_key === candidate?.boundary_id
+    && candidate?.boundary_kind === 'npc_schedule'
+    && candidate?.resolution_class === 'reaction_decision'
+    && canonicalDigest(candidate?.source_ref)
+      === canonicalDigest(ref(
+        'party_timed_activity_execution', phase7.activity_execution_id
+      ))
+    && canonicalDigest(causality.waiting_terminal_candidate_ref)
+      === canonicalDigest(waitingCandidateRef)
+    && causality.waiting_transition?.transition_id
+      === phase7.waiting_transition_id
+    && transition?.transition_id
+      === tracePhase7WaitingTransitionId(candidate?.boundary_id)
+    && transition?.schema === 'rus.npc_activity_factual_transition.v1'
+    && transition?.from === 'waiting'
+    && transition?.to === 'decision_required'
+    && canonicalDigest(causality.waiting_transition?.source_candidate_ref)
+      === canonicalDigest(waitingCandidateRef)
+    && canonicalDigest(causality.waiting_transition?.causal_parent_refs)
+      === canonicalDigest([waitingCandidateRef])
+    && canonicalDigest(causality.waiting_transition_ref)
+      === canonicalDigest(transitionRef)
+    && canonicalDigest(causality.decision_signal_ref)
+      === canonicalDigest(signalRef)
+    && decisionResult?.rowCount === 1
+    && decision?.request_id === phase7.decision_request_id
+    && decision?.boundary_id === phase7.decision_boundary_id
+    && decision?.signal_records?.length === 1
+    && validateNpcDecisionSignal(signal)
+    && validateNpcDecisionBoundary(boundary)
+    && signal?.signal_id === phase7.decision_signal_id
+    && canonicalDigest(signal?.source_event_ref)
+      === canonicalDigest(transitionRef)
+    && canonicalDigest(signal?.causal_parent_refs)
+      === canonicalDigest(causality.waiting_transition?.causal_parent_refs)
+    && canonicalDigest(signal?.causal_parent_refs)
+      === canonicalDigest([waitingCandidateRef])
+    && canonicalDigest(signal?.occurred_at)
+      === canonicalDigest(causality.waiting_transition?.occurred_at)
+    && canonicalDigest(signal?.occurred_at)
+      === canonicalDigest(causality.waiting_terminal_candidate?.scheduled_at)
+    && canonicalDigest(signal?.subject_ref)
+      === canonicalDigest(candidate?.primary_subject_ref)
+    && canonicalDigest(boundary?.npc_ref)
+      === canonicalDigest(candidate?.primary_subject_ref)
+    && canonicalDigest(boundary?.categories)
+      === canonicalDigest([signal?.category])
+    && boundary?.decision_mode === 'autonomous'
+    && canonicalDigest(boundary?.signal_refs)
+      === canonicalDigest([signalRef])
+    && canonicalDigest(boundary?.scheduled_at)
+      === canonicalDigest(signal?.occurred_at)
+    && canonicalDigest(causality.decision_boundary_ref)
+      === canonicalDigest(ref(
+        'npc_decision_boundary', phase7.decision_boundary_id
+      ))
+    && canonicalDigest(causality.decision_trace_ref)
+      === canonicalDigest(decisionTraceRef)
+    && canonicalDigest(
+      causality.actor_step_completion_candidate?.source_ref
+    ) === canonicalDigest(decisionTraceRef)
+    && canonicalDigest(causality.actor_step_completion_candidate_ref)
+      === canonicalDigest(completionCandidateRef)
+    && causality.actor_step_completion_candidate?.boundary_id
+      === phase7.actor_step_completion_candidate_id
+    && canonicalDigest(
+      causality.actor_step_completion_candidate?.causal_parent_refs
+    ) === canonicalDigest([decisionTraceRef]);
+}
+
+function ref(entityKind, entityId) {
+  return { entity_kind: entityKind, entity_id: entityId };
 }
 
 function assertNpcAndContainer(phase7, zhdanko, bag, npc, container) {

@@ -358,6 +358,16 @@ export async function requestNpcSemanticDecision({
     );
   }
   requireBoundaryRequestIdentity(boundary, request, mode);
+  const historicalBoundaryId = `npc-decision:${
+    boundary.same_time_batch_ref.entity_id}:${boundary.npc_ref.entity_id}`;
+  if (boundary.boundary_id === historicalBoundaryId
+      && persistedTrace === null) {
+    fail(
+      'TURN_NPC_LEGACY_BOUNDARY_REPLAY_REQUIRED',
+      'A historical NPC boundary identity is valid only for committed replay',
+      { request_id: request.request_id, boundary_id: boundary.boundary_id }
+    );
+  }
 
   if (persistedInput !== null) {
     if (persistedTrace === null

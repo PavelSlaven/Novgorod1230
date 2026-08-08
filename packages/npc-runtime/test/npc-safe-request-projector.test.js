@@ -171,7 +171,7 @@ test('NPC-safe projector rejects a decision source without NPC-safe summary',
     });
   });
 
-test('NPC-safe projector includes accessible non-container resources', () => {
+test('NPC-safe projector excludes accessible foreign resources without subjective evidence', () => {
   const signal = buildNpcDecisionSignal({
     occurred_at: occurredAt,
     category: 'objective',
@@ -218,6 +218,37 @@ test('NPC-safe projector includes accessible non-container resources', () => {
       perceived_changes: [{
         source_event_ref: ref('event', 'event-2'),
         summary: 'Рядом появился доступный предмет.'
+      }],
+      visible_objects: [{
+        resource_ref: 'unknown-packet',
+        summary: 'неподтверждённая проекция свёртка'
+      }, {
+        resource_ref: 'perceived-packet',
+        source_event_ref: ref('perception_event', 'packet-seen'),
+        summary: 'замеченный свёрток'
+      }],
+      uncertainties: [{
+        resource_ref: 'uncertain-packet',
+        source_event_ref: ref('perception_event', 'packet-uncertain'),
+        summary: 'возможно, рядом есть ещё один свёрток'
+      }]
+    },
+    knowledge_snapshot: {
+      known_facts: [{
+        fact_ref: 'known-packet-fact',
+        resource_ref: 'known-packet',
+        source_event_ref: ref('knowledge_event', 'packet-known'),
+        summary: 'известный свёрток лежит рядом'
+      }],
+      beliefs: [{
+        resource_ref: 'believed-packet',
+        source_event_ref: ref('rumor_event', 'packet-believed'),
+        summary: 'Жданко думает, что свёрток может быть рядом'
+      }],
+      hypotheses: [{
+        resource_ref: 'hypothetical-packet',
+        source_event_ref: ref('inference_event', 'packet-hypothesis'),
+        summary: 'Жданко допускает существование ещё одного свёртка'
       }]
     },
     resource_snapshots: [{
@@ -235,16 +266,47 @@ test('NPC-safe projector includes accessible non-container resources', () => {
         controller_npc_id: 'speaker'
       }
     }, {
-      item_id: 'remote-packet',
+      item_id: 'unknown-packet',
       template_id: 'packet',
       holder_npc_id: 'other',
       state: {
-        location_ref: 'shed',
-        zone_ref: 'inside',
+        location_ref: 'yard',
+        zone_ref: 'gate',
         access_state: 'available',
         visibility_state: 'visible'
       }
-    }],
+    }, {
+      item_id: 'perceived-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, {
+      item_id: 'known-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, ...['uncertain-packet', 'believed-packet', 'hypothetical-packet'].map(
+      (item_id) => ({
+        item_id,
+        template_id: 'packet',
+        holder_npc_id: 'other',
+        state: {
+          location_ref: 'yard',
+          zone_ref: 'gate',
+          access_state: 'available',
+          visibility_state: 'visible'
+        }
+      }))],
     resolved_signals: [signal],
     operation_contract: {}
   });
@@ -254,7 +316,17 @@ test('NPC-safe projector includes accessible non-container resources', () => {
   assert.equal(request.npc.available_resources.some(
     ({ resource_ref: resourceRef }) => resourceRef === 'axe-1'), true);
   assert.equal(request.npc.available_resources.some(
-    ({ resource_ref: resourceRef }) => resourceRef === 'remote-packet'), false);
+    ({ resource_ref: resourceRef }) => resourceRef === 'unknown-packet'), false);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'perceived-packet'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'known-packet'), true);
+  for (const resourceRef of [
+    'uncertain-packet', 'believed-packet', 'hypothetical-packet'
+  ]) {
+    assert.equal(request.npc.available_resources.some(
+      ({ resource_ref: value }) => value === resourceRef), false);
+  }
 });
 
 test('NPC-safe projector prefers authored perceived change summaries', () => {

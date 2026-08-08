@@ -403,7 +403,7 @@ LLM не вызывается из-за:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:batch-18:npc-ratsha",
   "decision_mode": "autonomous",
   "scheduled_at": {},
   "npc_ref": {
@@ -423,16 +423,18 @@ LLM не вызывается из-за:
   "signal_refs": [],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:autonomous:batch-18:npc-ratsha"
 }
 ```
 
 Инварианты:
 
 - `decision_mode = autonomous`;
-- `decision_mode` является свойством boundary и не входит в её identity;
+- `decision_mode` входит в новую boundary identity;
 - один NPC имеет не более одной aggregated boundary и одного LLM-вызова
-  на один fully resolved same-time batch суммарно по всем режимам;
+  данного mode на один fully resolved same-time batch;
+- persisted historical identity без mode replay-ится без миграции и не
+  используется при создании новой boundary;
 - domain/scenario owners выдают только generic signal descriptors, а общий
   temporal/turn owner после полного batch выводит batch identity, consumption
   и persisted replay input из factual state, строит signals и вызывает общий
@@ -655,7 +657,7 @@ LLM не может объявить:
   "schema": "npc_action_decision_request_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -790,9 +792,12 @@ LLM не может объявить:
 - `decision_reasons.significance` содержит только `material` или `critical`.
 - `decision_reasons.perceived_changes` кратко описывает агрегированные source events с точки зрения NPC и не вводит новые trigger types.
 - Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
-- В `available_resources` входят только persisted NPC-controlled либо
-  factually accessible по holder/controller/access/location сущности;
-  scenario allowlist не фильтрует фактически доступный runtime resource.
+- В `available_resources` входят только известные и доступные NPC сущности.
+  Контролируемый NPC ресурс считается известным; чужой ресурс требует и
+  физической доступности, и persisted source-backed perception/knowledge,
+  ссылающегося на exact resource ref.
+- Belief, hypothesis или uncertainty сами по себе не доказывают наличие и
+  положение чужого ресурса и не добавляют его в `available_resources`.
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.
@@ -842,7 +847,7 @@ LLM не может объявить:
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -1492,7 +1497,7 @@ NPC может действовать на основании ложного у�
   "schema": "npc_semantic_decision_trace_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "npc_ref": "npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
@@ -1555,7 +1560,7 @@ LLM не вызывается внутри SQL transaction.
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-guard-1",
   "root_turn_id": "turn-18",
-  "boundary_id": "npc-decision:entry-1:guard-1",
+  "boundary_id": "npc-decision:autonomous:entry-1:guard-1",
   "committed_state_version": 18,
   "working_revision": 2,
   "decision_index": 1,

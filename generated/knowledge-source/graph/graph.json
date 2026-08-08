@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2370
+        "line_end": 2375
       }
     },
     {
@@ -1152,7 +1152,7 @@
       "source_location": {
         "file": "npc_conversation_mode_contract.md",
         "line_start": 1,
-        "line_end": 3122
+        "line_end": 3123
       }
     },
     {

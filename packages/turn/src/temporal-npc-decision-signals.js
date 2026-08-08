@@ -44,7 +44,8 @@ export function aggregateTemporalNpcDecisionSignals({
   };
   const persistedInputs = (factual_state.npc_semantic_decision_inputs ?? [])
     .filter(({ boundary_snapshot: boundary }) =>
-      canonicalDigest(boundary?.npc_ref) === canonicalDigest(npc_ref)
+      boundary?.decision_mode === active_mode
+        && canonicalDigest(boundary?.npc_ref) === canonicalDigest(npc_ref)
         && canonicalDigest(boundary?.same_time_batch_ref)
           === canonicalDigest(sameTimeBatchRef));
   if (persistedInputs.length > 1) {

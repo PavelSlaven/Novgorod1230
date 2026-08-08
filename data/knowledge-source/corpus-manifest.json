@@ -215,8 +215,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "6bc88ea0d26269c27a5674b201afaf6d528bdb7ef9f422f2a63030737f8f9a83",
-      "bytes": 99723,
+      "sha256": "3b0e34bc8cb4c2c396d899d02816cf17a7e5dd351b8d8718fdeb9ac9fc953449",
+      "bytes": 100228,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -224,8 +224,8 @@
       "document_id": "npc-combat-and-trigger-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_combat_and_trigger_contract.md",
       "file_name": "npc_combat_and_trigger_contract.md",
-      "sha256": "33cbce61694648af940f5fdec614b368677aacd6584270def863d191828f9083",
-      "bytes": 96213,
+      "sha256": "773e4c1c42ef8e1ae877191927f8e228e334f0136d018fdaf6a1885a0f2192cf",
+      "bytes": 96239,
       "status": "proposed",
       "provenance_mode": "native"
     },
@@ -233,8 +233,8 @@
       "document_id": "npc-conversation-mode-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_conversation_mode_contract.md",
       "file_name": "npc_conversation_mode_contract.md",
-      "sha256": "7ddb18e8d2c3871b5ad5b00806ab45720c79839907b65999bf2e19f49b6753e9",
-      "bytes": 118896,
+      "sha256": "f76b3880169006996a46ad287e5504e233298dd1ec54eddbe000fcc9aa255fb3",
+      "bytes": 118994,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -332,8 +332,8 @@
       "document_id": "temporal-world-and-interruptible-activities",
       "canonical_path": "corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md",
       "file_name": "temporal_world_and_interruptible_activities.md",
-      "sha256": "1f9fe45f3de220f0468f42577e26ec8d8aba4ebdb687343262abead0b6265a03",
-      "bytes": 139960,
+      "sha256": "a2a0fe6fb69ce226addcb3ff8662765b8891a4fa106f59101f35864541360466",
+      "bytes": 139940,
       "status": "active",
       "provenance_mode": "native"
     },

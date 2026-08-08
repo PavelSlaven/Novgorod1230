@@ -114,13 +114,18 @@ export function buildNpcActionDecisionRequestFromSnapshots({
       },
       available_resources: projectNpcSafeResourceSnapshots({
         npc_snapshot,
-        resource_snapshots
+        resource_snapshots,
+        perception_snapshot,
+        knowledge_snapshot
       })
     },
     perception: completePerceptionSnapshot(perception_snapshot),
     knowledge: {
       known_facts: projectEntries(knowledge_snapshot?.known_facts,
-        ['fact_ref', 'source_event_ref', 'summary', 'state', 'confidence']),
+        [
+          'fact_ref', 'source_event_ref', 'resource_ref', 'summary', 'state',
+          'confidence'
+        ]),
       beliefs: projectEntries(knowledge_snapshot?.beliefs,
         ['belief_ref', 'source_event_ref', 'summary', 'state', 'confidence']),
       hypotheses: projectEntries(knowledge_snapshot?.hypotheses, [
@@ -150,7 +155,9 @@ export function buildNpcActionDecisionRequestFromSnapshots({
 
 export function projectNpcSafeResourceSnapshots({
   npc_snapshot,
-  resource_snapshots = []
+  resource_snapshots = [],
+  perception_snapshot = null,
+  knowledge_snapshot = null
 } = {}) {
   const npcId = npc_snapshot?.instance_id;
   const machineState = npc_snapshot?.machine_state ?? {};
@@ -179,12 +186,19 @@ export function projectNpcSafeResourceSnapshots({
       .includes(access);
     const hidden = ['hidden', 'concealed', 'unknown']
       .includes(visibility);
-    if ((!controlled && (!colocated || !accessible || hidden)) || blocked) {
+    const resourceRef = resource?.resource_ref ?? resource?.container_id
+      ?? resource?.item_id;
+    const subjectivelyKnown = controlled || hasSubjectiveResourceEvidence({
+      resourceRef,
+      perceptionSnapshot: perception_snapshot,
+      knowledgeSnapshot: knowledge_snapshot
+    });
+    if ((!controlled && (!colocated || !accessible || hidden
+      || !subjectivelyKnown)) || blocked) {
       return [];
     }
     return [{
-      resource_ref: resource?.resource_ref ?? resource?.container_id
-        ?? resource?.item_id,
+      resource_ref: resourceRef,
       template_ref: resource?.template_ref ?? resource?.template_id ?? null,
       location_ref: location,
       zone_ref: zone,
@@ -194,6 +208,54 @@ export function projectNpcSafeResourceSnapshots({
     }];
   }).filter(({ resource_ref: resourceRef }) =>
     typeof resourceRef === 'string' && resourceRef.length > 0);
+}
+
+function hasSubjectiveResourceEvidence({
+  resourceRef,
+  perceptionSnapshot,
+  knowledgeSnapshot
+}) {
+  if (typeof resourceRef !== 'string' || resourceRef.length === 0) {
+    return false;
+  }
+  const perceptionEntries = [
+    'visible_scene', 'perceived_changes', 'heard', 'felt', 'present_actors',
+    'visible_objects', 'known_routes_and_exits'
+  ].flatMap((key) => Array.isArray(perceptionSnapshot?.[key])
+    ? perceptionSnapshot[key] : []);
+  const knowledgeEntries = Array.isArray(knowledgeSnapshot?.known_facts)
+    ? knowledgeSnapshot.known_facts : [];
+  return [...perceptionEntries, ...knowledgeEntries].some((entry) =>
+    sourceBacked(entry) && entryReferencesResource(entry, resourceRef));
+}
+
+function sourceBacked(entry) {
+  return ['source_event_ref', 'source_perception_ref', 'perception_result_ref']
+    .some((field) => stableEvidenceRef(entry?.[field]));
+}
+
+function entryReferencesResource(entry, resourceRef) {
+  const fields = [
+    'resource_ref', 'object_ref', 'item_ref', 'container_ref', 'entity_ref'
+  ];
+  return fields.some((field) => evidenceRefId(entry?.[field]) === resourceRef)
+    || ['resource_refs', 'object_refs', 'item_refs', 'container_refs',
+      'entity_refs', 'scope_refs'].some((field) =>
+      Array.isArray(entry?.[field]) && entry[field].some(
+        (value) => evidenceRefId(value) === resourceRef));
+}
+
+function stableEvidenceRef(value) {
+  return evidenceRefId(value) !== null;
+}
+
+function evidenceRefId(value) {
+  if (typeof value === 'string' && value.length > 0) return value;
+  if (value !== null && typeof value === 'object'
+      && typeof value.entity_id === 'string' && value.entity_id.length > 0) {
+    return value.entity_id;
+  }
+  return null;
 }
 
 function projectPerceivedChanges(orderedSignals, perception_snapshot) {

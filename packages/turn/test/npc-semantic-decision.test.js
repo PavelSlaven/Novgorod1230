@@ -32,7 +32,7 @@ function request(overrides = {}) {
   return {
     schema: 'npc_conversation_response_request_v1',
     request_id: 'request-1',
-    boundary_id: 'npc-decision:batch-1:speaker',
+    boundary_id: 'npc-decision:conversation:batch-1:speaker',
     conversation_id: 'conversation-1',
     exchange_id: 'exchange-1',
     state_version: 2,
@@ -126,7 +126,7 @@ function autonomousRequest(overrides = {}) {
     schema: 'npc_action_decision_request_v1',
     request_id: 'autonomous-request-1',
     root_turn_id: 'turn-1',
-    boundary_id: 'npc-decision:batch-1:speaker',
+    boundary_id: 'npc-decision:autonomous:batch-1:speaker',
     committed_state_version: 2,
     working_revision: 0,
     decision_index: 1,
@@ -322,6 +322,63 @@ test('trace-only autonomous replay returns committed decision', async () => {
   assert.equal(calls, 0);
 });
 
+test('fresh legacy boundary identity cannot call the NPC model', async () => {
+  const legacyId = 'npc-decision:batch-1:speaker';
+  const legacyBoundary = {
+    ...structuredClone(autonomousBoundary()),
+    boundary_id: legacyId,
+    idempotency_key: legacyId
+  };
+  let modelCalls = 0;
+
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: legacyBoundary,
+    request: autonomousRequest({ boundary_id: legacyId }),
+    semanticModel: async () => {
+      modelCalls += 1;
+      return autonomousPlan();
+    },
+    revalidateStateVersion: async () => 2
+  }), ({ code }) => code === 'TURN_NPC_LEGACY_BOUNDARY_REPLAY_REQUIRED');
+  assert.equal(modelCalls, 0);
+});
+
+test('persisted legacy boundary identity replays without model call', async () => {
+  const legacyId = 'npc-decision:batch-1:speaker';
+  const legacyBoundary = {
+    ...structuredClone(autonomousBoundary()),
+    boundary_id: legacyId,
+    idempotency_key: legacyId
+  };
+  const legacyRequest = autonomousRequest({ boundary_id: legacyId });
+  const legacyPlan = autonomousPlan(legacyRequest);
+  const persistedTrace = buildNpcSemanticDecisionTrace({
+    request: legacyRequest,
+    plan: legacyPlan,
+    applied_change_set_id: 'change-legacy'
+  });
+  const { persistedInput, orderedSignals } = persistedInputFor(
+    legacyBoundary, legacyRequest, persistedTrace);
+  let modelCalls = 0;
+
+  const result = await requestNpcSemanticDecision({
+    boundary: legacyBoundary,
+    request: legacyRequest,
+    persistedTrace,
+    persistedInput,
+    orderedSignals,
+    semanticModel: async () => {
+      modelCalls += 1;
+      return assert.fail('model must not be called');
+    },
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'replayed');
+  assert.equal(result.trace.boundary_id, legacyId);
+  assert.equal(modelCalls, 0);
+});
+
 test('persisted old-v1 autonomous input replays without model call', async () => {
   const sourceRequest = autonomousRequest();
   delete sourceRequest.npc.profile_ref;
@@ -451,7 +508,10 @@ test('persisted autonomous trace must pass caller operation contract gate',
 test('combat NPC semantic decisions remain unsupported', async () => {
   const sourceRequest = autonomousRequest();
   await assert.rejects(requestNpcSemanticDecision({
-    boundary: boundary({ decision_mode: 'combat' }),
+    boundary: boundary({
+      decision_mode: 'combat',
+      decision_context_id: 'combat-7'
+    }),
     request: sourceRequest,
     semanticModel: async () => autonomousPlan(sourceRequest),
     revalidateStateVersion: async () => 2
@@ -542,7 +602,7 @@ test('stale autonomous rebuild rejects a different boundary identity',
   async () => {
     const currentRequest = autonomousRequest({
       request_id: 'autonomous-request-current',
-      boundary_id: 'npc-decision:different-batch:speaker',
+      boundary_id: 'npc-decision:autonomous:different-batch:speaker',
       committed_state_version: 3,
       working_revision: 1
     });

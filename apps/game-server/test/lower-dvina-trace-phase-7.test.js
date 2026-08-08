@@ -362,7 +362,7 @@ test('Phase 7 P16 persists decision, body and approved schedule atomically',
         signal.subject_ref.entity_id}:${signal.category}`;
     const batchId = 'temporal-batch:substituted';
     const boundaryId =
-      `npc-decision:${batchId}:${boundary.npc_ref.entity_id}`;
+      `npc-decision:autonomous:${batchId}:${boundary.npc_ref.entity_id}`;
     scalarTamperedSnapshot.phase7_fire_rest.waiting_terminal_candidate_id
       = candidateId;
     scalarTamperedSnapshot.phase7_fire_rest.waiting_transition_id

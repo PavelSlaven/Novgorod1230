@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildNpcDecisionBoundary,
   buildNpcDecisionSignal
 } from '@rus/npc-runtime';
 import { advanceTemporalNpcDecisionBoundary } from
   '../src/temporal-advance.js';
+import { aggregateTemporalNpcDecisionSignals } from
+  '../src/temporal-npc-decision-signals.js';
 
 const at = (wholeMinutes) => ({
   whole_minutes: String(wholeMinutes),
@@ -31,6 +34,63 @@ function signalDescriptor(entityId, parents = [], summary = `change:${entityId}`
     perceived_change_summary: summary
   };
 }
+
+test('persisted same-time boundaries are replayed within their decision mode',
+  () => {
+    const descriptor = signalDescriptor('mode-specific-replay');
+    const signal = buildNpcDecisionSignal(descriptor);
+    const batchRef = {
+      entity_kind: 'temporal_batch',
+      entity_id: 'temporal-batch:party-mode:25:0/1:1'
+    };
+    const boundaryFor = (decisionMode) => {
+      const generated = buildNpcDecisionBoundary({
+        decision_mode: decisionMode,
+        scheduled_at: at(25),
+        npc_ref: npcRef,
+        same_time_batch_ref: batchRef,
+        significance: 'material',
+        categories: ['objective'],
+        signal_refs: [{
+          entity_kind: 'npc_decision_signal',
+          entity_id: signal.signal_id
+        }],
+        state_version: '1'
+      });
+      return {
+        ...structuredClone(generated),
+        boundary_id: 'npc-decision:temporal-batch:party-mode:25:0/1:1:npc-a',
+        idempotency_key:
+          'npc-decision:temporal-batch:party-mode:25:0/1:1:npc-a'
+      };
+    };
+    const autonomous = boundaryFor('autonomous');
+    const conversation = boundaryFor('conversation');
+
+    const result = aggregateTemporalNpcDecisionSignals({
+      temporal: {
+        result: { clock_after: at(25) },
+        projection: { npc_decision_signal_descriptors: [descriptor] }
+      },
+      factual_state: {
+        party_id: 'party-mode',
+        party_state: { state_version: 1 },
+        npc_decision_signals: [{ signal }],
+        consumed_npc_decision_signal_ids: [signal.signal_id],
+        npc_semantic_decision_inputs: [
+          { boundary_snapshot: conversation },
+          { boundary_snapshot: autonomous }
+        ]
+      },
+      npc_ref: npcRef,
+      active_mode: 'autonomous',
+      decision_capability: true
+    });
+
+    assert.equal(result.boundary.boundary_id, autonomous.boundary_id);
+    assert.equal(result.persisted_decision_input.boundary_snapshot.decision_mode,
+      'autonomous');
+  });
 
 test('NPC signal batch rejects a source without NPC-safe semantic summary',
   async () => {

@@ -249,6 +249,16 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
   async () => {
     const state = committedState();
     const contracts = approvedContracts(state);
+    state.npcs[1].perception_snapshot = {
+      visible_objects: [{
+        resource_ref: 'perceived-access-resource',
+        source_event_ref: {
+          entity_kind: 'perception_event',
+          entity_id: 'zhdanko-saw-access-resource'
+        },
+        summary: 'Жданко видит доступный свёрток рядом.'
+      }]
+    };
     state.containers.push({
       container_id: 'new-held-resource',
       template_id: 'new-runtime-template',
@@ -258,8 +268,18 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
         zone_ref: 'storehouse_inside'
       }
     }, {
-      container_id: 'new-access-resource',
+      container_id: 'perceived-access-resource',
       template_id: 'new-access-template',
+      holder_npc_id: 'other-npc',
+      state: {
+        location_ref: 'trace_ld_v1_loc_storehouse',
+        zone_ref: 'storehouse_inside',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, {
+      container_id: 'unknown-access-resource',
+      template_id: 'unknown-access-template',
       holder_npc_id: 'other-npc',
       state: {
         location_ref: 'trace_ld_v1_loc_storehouse',
@@ -324,7 +344,10 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
             resourceRef === 'new-held-resource'), true);
         assert.equal(request.npc.available_resources.some(
           ({ resource_ref: resourceRef }) =>
-            resourceRef === 'new-access-resource'), true);
+            resourceRef === 'perceived-access-resource'), true);
+        assert.equal(request.npc.available_resources.some(
+          ({ resource_ref: resourceRef }) =>
+            resourceRef === 'unknown-access-resource'), false);
         assert.equal(request.npc.available_resources.some(
           ({ resource_ref: resourceRef }) =>
             resourceRef === 'hidden-foreign-resource'), false);

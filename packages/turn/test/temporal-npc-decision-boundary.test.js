@@ -358,7 +358,7 @@ test('multi-NPC same-time batch orders by npc_ref then boundary_id sequentially'
     );
   });
 
-test('multi-NPC same-time batch continues after first NPC domain rejection',
+test('multi-NPC rejection keeps the timestamp paused after siblings resolve',
   async () => {
     const npcFirst = { entity_kind: 'npc', entity_id: 'npc-a' };
     const npcSecond = { entity_kind: 'npc', entity_id: 'npc-b' };
@@ -448,18 +448,34 @@ test('multi-NPC same-time batch continues after first NPC domain rejection',
       }
     });
 
-    assert.deepEqual(calls.slice(0, 4), [
+    assert.deepEqual(calls, [
       'decision:npc-a',
       'actor:npc-a',
       'decision:npc-b',
       'actor:npc-b'
     ]);
-    assert.equal(continuationCalls, 1);
-    assert.notEqual(flow.continuation, null);
+    assert.equal(continuationCalls, 0);
+    assert.equal(flow.continuation, null);
+    assert.equal(
+      flow.unresolved_domain_rejection.decision.boundary.npc_ref.entity_id,
+      'npc-a'
+    );
+    assert.equal(
+      flow.unresolved_domain_rejection.actor_step.domain_result.pass,
+      false
+    );
+    assert.equal(
+      flow.unresolved_domain_rejection.unconsumed_signal_ids.length,
+      1
+    );
     assert.equal(flow.resolved_batches.length, 2);
     assert.equal(
       flow.resolved_batches[0].actor_step.domain_result.pass,
       false
+    );
+    assert.deepEqual(
+      flow.resolved_batches[0].decision.autonomous.consumed_signal_ids,
+      []
     );
     assert.equal(
       flow.resolved_batches[0].decision.boundary.npc_ref.entity_id,

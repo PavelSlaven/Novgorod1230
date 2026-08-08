@@ -135,8 +135,10 @@ export function createTracePhase7FireRestCommand({
             rootTurnId: actualRootTurnId
           })
       });
-      if (flow.actor_step.domain_result?.pass === false) {
-        return blockedDomainResult(flow.actor_step.domain_result);
+      if (flow.unresolved_domain_rejection !== null) {
+        return blockedDomainResult(
+          flow.unresolved_domain_rejection.actor_step.domain_result
+        );
       }
       const temporal = flow.temporal;
       const autonomous = flow.decision.autonomous;

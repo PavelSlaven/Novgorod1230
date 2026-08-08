@@ -39,7 +39,10 @@
   boundaries по `scheduled_at → npc_ref → boundary_id`, последовательно
   вызывает semantic resolver и actor-step на evolving working state; после
   actor-step снова factual→signal protocol на том же timestamp до fixed point
-  либо typed temporal safety error, затем `continueAdvance`;
+  либо typed temporal safety error, затем `continueAdvance`; `domain_rejected`
+  не consume-ит signals своей boundary: остальные same-time siblings получают
+  текущий working state, но `unresolved_domain_rejection` сохраняет rejected
+  result и unconsumed signal IDs, удерживая clock на timestamp;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.

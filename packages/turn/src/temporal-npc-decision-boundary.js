@@ -102,6 +102,8 @@ export async function advanceTemporalNpcDecisionBoundary({
   let actorStep = null;
   let lastResolvedOrdinal = 0;
   let hadSuccessfulActorStep = false;
+  let hadUnresolvedDomainRejection = false;
+  let unresolvedDomainRejection = null;
   const resolvedBatches = [];
 
   for (let batchOrdinal = 1; batchOrdinal <= maxBatches; batchOrdinal += 1) {
@@ -178,8 +180,8 @@ export async function advanceTemporalNpcDecisionBoundary({
         },
         decision
       }));
-      // Domain reject for one NPC is recorded below and siblings still run.
-      // Advance continues only if at least one actor-step succeeded.
+      // Domain reject for one NPC stays unresolved while same-time siblings run.
+      // The unresolved boundary keeps the clock paused after the sibling pass.
       const domainRejected = actorStep?.domain_result?.pass === false
         && actorStep?.working_projection != null
         && typeof actorStep.working_projection === 'object'
@@ -195,12 +197,21 @@ export async function advanceTemporalNpcDecisionBoundary({
       }
       if (!domainRejected) {
         hadSuccessfulActorStep = true;
+      } else {
+        hadUnresolvedDomainRejection = true;
+        unresolvedDomainRejection ??= {
+          decision,
+          actor_step: actorStep,
+          unconsumed_signal_ids: signalBatch.ordered_signals.map(
+            ({ signal_id: id }) => id)
+        };
       }
 
       projection = cloneFrozen(actorStep.working_projection);
       const handledForThisAdvance = [
         ...(factualState.consumed_npc_decision_signal_ids ?? []),
-        ...signalBatch.ordered_signals.map(({ signal_id: id }) => id)
+        ...(domainRejected ? [] : signalBatch.ordered_signals.map(
+          ({ signal_id: id }) => id))
       ];
       const knownSignals = [
         ...(factualState.npc_decision_signals ?? []),
@@ -221,9 +232,10 @@ export async function advanceTemporalNpcDecisionBoundary({
       });
       lastResolvedOrdinal = batchOrdinal;
     }
+    if (hadUnresolvedDomainRejection) break;
   }
 
-  if (lastResolvedOrdinal >= maxBatches) {
+  if (!hadUnresolvedDomainRejection && lastResolvedOrdinal >= maxBatches) {
     const descriptors = projection?.npc_decision_signal_descriptors ?? [];
     const npcRefs = resolveNpcRefs(decisionSignalState, descriptors);
     const again = npcRefs.some((npcRef) =>
@@ -244,12 +256,13 @@ export async function advanceTemporalNpcDecisionBoundary({
     }
   }
 
-  if (!hadSuccessfulActorStep) {
+  if (hadUnresolvedDomainRejection || !hadSuccessfulActorStep) {
     return cloneFrozen({
       temporal,
       decision,
       actor_step: actorStep,
       continuation: null,
+      unresolved_domain_rejection: unresolvedDomainRejection,
       resolved_batches: resolvedBatches
     });
   }
@@ -279,6 +292,7 @@ export async function advanceTemporalNpcDecisionBoundary({
     decision,
     actor_step: actorStep,
     continuation,
+    unresolved_domain_rejection: null,
     resolved_batches: resolvedBatches
   });
 }
@@ -314,6 +328,11 @@ async function runSingleNpcDecisionPass({
       decision,
       actor_step: actorStep,
       continuation: null,
+      unresolved_domain_rejection: {
+        decision,
+        actor_step: actorStep,
+        unconsumed_signal_ids: []
+      },
       resolved_batches: []
     });
   }
@@ -346,6 +365,7 @@ async function runSingleNpcDecisionPass({
     decision,
     actor_step: actorStep,
     continuation,
+    unresolved_domain_rejection: null,
     resolved_batches: []
   });
 }

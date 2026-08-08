@@ -4,8 +4,7 @@ import { validateNpcDecisionBoundary, validateNpcDecisionSignal } from
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
 import { tracePhase7WaitingTerminalCandidateId } from
   '../../runtime/lower-dvina-trace-phase-7-temporal.js';
-import { tracePhase7WaitingTransitionId } from
-  '../../runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
+import { npcScheduleDecisionTransitionId } from '@rus/npc-runtime';
 import { semanticSignalsMatchDecisionBoundary } from
   './lower-dvina-trace-semantic-decision-shapes.js';
 
@@ -171,7 +170,7 @@ function validPersistedCausality(
     && causality.waiting_transition?.transition_id
       === phase7.waiting_transition_id
     && transition?.transition_id
-      === tracePhase7WaitingTransitionId(candidate?.boundary_id)
+      === npcScheduleDecisionTransitionId(candidate?.boundary_id)
     && transition?.schema === 'rus.npc_activity_factual_transition.v1'
     && transition?.from === 'waiting'
     && transition?.to === 'decision_required'

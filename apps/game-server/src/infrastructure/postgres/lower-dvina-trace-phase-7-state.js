@@ -76,7 +76,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     waiting_terminal_candidate_id:
       phase7.temporal.terminal_candidate.boundary_id,
     waiting_transition_id:
-      phase7.temporal.projection.waiting_transition.transition_id,
+      phase7.temporal.waiting_transition.transition_id,
     decision_signal_id: autonomous.signal.signal_id,
     decision_request_id: autonomous.request.request_id,
     decision_boundary_id: autonomous.boundary.boundary_id,

@@ -20,7 +20,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const persistedTrace = persistedInput?.trace ?? null;
   const request = buildRequestFromSnapshots({
     state, contracts, boundary, orderedSignals, operationContract,
-    waitingTransition: temporal.projection.waiting_transition,
+    waitingTransition: temporal.waiting_transition,
     perceivedChanges: signalBatch.perceived_changes
   });
   const proposal = await requestNpcSemanticDecision({
@@ -40,7 +40,7 @@ export async function resolveTracePhase7AutonomousDecision({
       })
   });
   const waitingTransitionId =
-    temporal.projection.waiting_transition.transition_id;
+    temporal.waiting_transition.transition_id;
   const causalSignals = orderedSignals.filter(({ source_event_ref: source }) =>
     source?.entity_kind === 'npc_activity_factual_transition'
       && source.entity_id === waitingTransitionId);

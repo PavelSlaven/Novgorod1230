@@ -22,10 +22,15 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 - `NPC_RUNTIME_OWNER`, `NPC_RUNTIME_RESOURCE_LIMITS`, `NPC_RUNTIME_TYPED_ERRORS`
 - `proposeNpcScheduleTransition(input)` — возвращает frozen schedule proposal, evidence и exact temporal boundary.
+- `createNpcScheduleDecisionTerminalEffect(...)` /
+  `resolveNpcScheduleDecisionTerminal(...)` — строят общий `npc_schedule`
+  candidate и преобразуют применимый terminal schedule state в factual
+  transition и declarative NPC decision signal descriptor; сценарий передаёт
+  только refs, состояния и NPC-safe summary.
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots, а общий resource projector допускает persisted controlled либо factually accessible resources без scenario allowlist; `decision_reasons.perceived_changes` берёт authored/factual summary из perception snapshot по source event, иначе technical ref; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
+- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots, а общий resource projector допускает persisted controlled либо factually accessible resources без scenario allowlist; `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
 - `selectApplicableNpcActivityExecution(input)` — выбирает ровно один
   applicable approved activity execution по semantic activity kind и реальным
   item/location refs; отсутствующая цель или неоднозначность дают typed reject.

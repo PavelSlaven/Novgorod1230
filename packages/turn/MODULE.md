@@ -30,7 +30,8 @@
   определяет только качество подачи и не выбирает ответ NPC.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
   `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
-  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`;
+  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`, а также
+  registration общего NPC schedule-terminal effect из `@rus/npc-runtime`;
 - `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
   выводит batch identity (включая ordinal successive resolved batches на том же
   GameTimestamp), consumption и persisted replay input из factual state,

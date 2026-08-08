@@ -198,10 +198,9 @@ export async function advanceTemporalNpcDecisionBoundary({
       }
 
       projection = cloneFrozen(actorStep.working_projection);
-      const consumed = [
+      const handledForThisAdvance = [
         ...(factualState.consumed_npc_decision_signal_ids ?? []),
-        ...(decision.autonomous?.consumed_signal_ids
-          ?? signalBatch.ordered_signals.map(({ signal_id: id }) => id))
+        ...signalBatch.ordered_signals.map(({ signal_id: id }) => id)
       ];
       const knownSignals = [
         ...(factualState.npc_decision_signals ?? []),
@@ -209,7 +208,9 @@ export async function advanceTemporalNpcDecisionBoundary({
       ];
       factualState = cloneFrozen({
         ...factualState,
-        consumed_npc_decision_signal_ids: [...new Set(consumed)],
+        consumed_npc_decision_signal_ids: [
+          ...new Set(handledForThisAdvance)
+        ],
         npc_decision_signals: knownSignals
       });
       resolvedBatches.push({

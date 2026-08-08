@@ -74,11 +74,11 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     entity_kind: 'temporal_boundary_candidate',
     entity_id: consequence.phase7.temporal.terminal_candidate.boundary_id
   };
-  assert.deepEqual(consequence.phase7.temporal.projection.waiting_transition
+  assert.deepEqual(consequence.phase7.temporal.waiting_transition
     .source_candidate_ref, candidateRef);
   assert.deepEqual(consequence.phase7.autonomous.signal.source_event_ref, {
     entity_kind: 'npc_activity_factual_transition',
-    entity_id: consequence.phase7.temporal.projection.waiting_transition
+    entity_id: consequence.phase7.temporal.waiting_transition
       .transition_id
   });
   assert.deepEqual(consequence.phase7.autonomous.signal.causal_parent_refs,
@@ -91,6 +91,32 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     .causal_parent_refs, [consequence.phase7.schedule_temporal.projection
     .active_npc_actor_step.decision_trace_ref]);
 });
+
+test('Phase 7 resolves one domain-rejected boundary with one model call',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    let modelCalls = 0;
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      model: async (request) => {
+        modelCalls += 1;
+        const plan = phase7DirectPlan(request);
+        plan.activity.duration_class = 'brief';
+        return plan;
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'domain-rejected-once')
+    });
+
+    assert.equal(modelCalls, 1);
+    assert.equal(consequence.status, 'blocked');
+    assert.equal(consequence.duration_minutes, 0);
+    assert.equal(consequence.hidden_update.npc_autonomous_domain_result
+      .errors[0].code, 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
+  });
 
 test('Phase 7 rejects combinations outside executable operation contract',
   async () => {

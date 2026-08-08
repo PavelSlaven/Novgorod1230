@@ -254,9 +254,7 @@ test('multi-NPC same-time batch orders by npc_ref then boundary_id sequentially'
       resolveDecision: async ({ signal_batch: signalBatch }) => ({
         boundary: signalBatch.boundary,
         autonomous: {
-          consumed_signal_ids: signalBatch.ordered_signals.map(
-            ({ signal_id: id }) => id
-          )
+          consumed_signal_ids: []
         }
       }),
       executeActorStep: async ({ temporal, decision }) => {
@@ -358,11 +356,7 @@ test('multi-NPC same-time batch continues after first NPC domain rejection',
         calls.push(`decision:${signalBatch.boundary.npc_ref.entity_id}`);
         return {
           boundary: signalBatch.boundary,
-          autonomous: {
-            consumed_signal_ids: signalBatch.ordered_signals.map(
-              ({ signal_id: id }) => id
-            )
-          }
+          autonomous: { consumed_signal_ids: [] }
         };
       },
       executeActorStep: async ({ temporal, decision }) => {
@@ -454,11 +448,7 @@ test('sole NPC decisionSignalState domain rejection blocks temporal continuation
       },
       resolveDecision: async ({ signal_batch: signalBatch }) => ({
         boundary: signalBatch.boundary,
-        autonomous: {
-          consumed_signal_ids: signalBatch.ordered_signals.map(
-            ({ signal_id: id }) => id
-          )
-        }
+        autonomous: { consumed_signal_ids: [] }
       }),
       executeActorStep: async () => ({
         working_projection: {
@@ -538,11 +528,7 @@ test('multi-NPC same-time batch blocks continuation when all NPCs domain-reject'
         calls.push(`decision:${signalBatch.boundary.npc_ref.entity_id}`);
         return {
           boundary: signalBatch.boundary,
-          autonomous: {
-            consumed_signal_ids: signalBatch.ordered_signals.map(
-              ({ signal_id: id }) => id
-            )
-          }
+          autonomous: { consumed_signal_ids: [] }
         };
       },
       executeActorStep: async ({ decision }) => {

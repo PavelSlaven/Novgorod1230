@@ -47,11 +47,11 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
             phase7.temporal.terminal_candidate.boundary_id
           ),
           waiting_transition: structuredClone(
-            phase7.temporal.projection.waiting_transition
+            phase7.temporal.waiting_transition
           ),
           waiting_transition_ref: ref(
             'npc_activity_factual_transition',
-            phase7.temporal.projection.waiting_transition.transition_id
+            phase7.temporal.waiting_transition.transition_id
           ),
           decision_signal_ref: ref(
             'npc_decision_signal',

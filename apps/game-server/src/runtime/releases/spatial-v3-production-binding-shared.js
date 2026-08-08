@@ -31,7 +31,10 @@ import {
   createSeededRandomSource
 } from '@rus/checks-rng';
 import { canonicalDigest } from '@rus/materialization';
-import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import {
+  createTemporalAdvanceOwner,
+  npcTemporalEffectRegistrations
+} from '@rus/turn/temporal-advance';
 import { calculatePackingSlots } from '@rus/items-property';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-effect-owner.js';
@@ -237,6 +240,7 @@ function createTraceTurnRuntime({
       effect_registrations:
         [
           ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
+          ...npcTemporalEffectRegistrations(),
           ...lowerDvinaTracePhase7TemporalEffectRegistrations(),
           ...lowerDvinaTraceConversationTemporalEffectRegistrations()
         ]

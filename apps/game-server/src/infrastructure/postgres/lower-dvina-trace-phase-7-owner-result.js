@@ -58,7 +58,7 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
 
 function validCausality(phase7) {
   const candidate = phase7.temporal.terminal_candidate;
-  const transition = phase7.temporal.projection.waiting_transition;
+  const transition = phase7.temporal.waiting_transition;
   const signal = phase7.autonomous.signal;
   const boundary = phase7.autonomous.boundary;
   const actorStep = phase7.schedule_temporal.projection.active_npc_actor_step;

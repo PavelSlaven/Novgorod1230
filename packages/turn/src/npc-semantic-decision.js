@@ -1,8 +1,6 @@
+import { isDeepStrictEqual } from 'node:util';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
-import {
-  computeSpatialV3CanonicalDigest
-} from '@rus/contracts/spatial-v3/registry';
 import {
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
@@ -282,10 +280,10 @@ export async function requestNpcSemanticDecision({
   }
 
   const inFlightKey = boundary.boundary_id;
-  const inputDigest = computeSpatialV3CanonicalDigest({ boundary, request });
+  const inputSnapshot = immutable({ boundary, request });
   const existing = inFlightDecisions.get(inFlightKey);
   if (existing) {
-    if (existing.inputDigest !== inputDigest) {
+    if (!isDeepStrictEqual(existing.inputSnapshot, inputSnapshot)) {
       fail(
         'TURN_NPC_IDENTITY_MISMATCH',
         'Concurrent NPC requests reused one identity with different content',
@@ -303,7 +301,7 @@ export async function requestNpcSemanticDecision({
     mode,
     validatePlan
   });
-  const inFlight = { inputDigest, pending };
+  const inFlight = { inputSnapshot, pending };
   inFlightDecisions.set(inFlightKey, inFlight);
   try {
     return await pending;

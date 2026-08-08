@@ -11,7 +11,9 @@ export function approvedPhase7Contracts(state) {
   return {
     autonomous: {
       target_npc_ref: 'zhdanko_storehouse_controller',
-      signal_descriptor: { category: 'objective', significance: 'material' },
+      signal_descriptor: {
+        category: 'objective', significance: 'material'
+      },
       available_resource_refs: ['trace_ld_v1_container_road_bag'],
       known_route_refs: [
         'trace_ld_v1_local_transition_storehouse_to_river_access'

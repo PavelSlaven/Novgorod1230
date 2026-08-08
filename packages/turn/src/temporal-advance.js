@@ -24,6 +24,12 @@ import {
 
 export { advanceTemporalNpcDecisionBoundary } from
   './temporal-npc-decision-boundary.js';
+export {
+  createNpcScheduleDecisionTerminalEffect,
+  NPC_SCHEDULE_DECISION_TERMINAL_EFFECT_REF,
+  npcScheduleDecisionTransitionId,
+  npcTemporalEffectRegistrations
+} from './temporal-npc-effects.js';
 
 const engines = new WeakSet();
 

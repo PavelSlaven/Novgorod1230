@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import {
+  createTemporalAdvanceOwner,
+  npcTemporalEffectRegistrations
+} from '@rus/turn/temporal-advance';
 import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
 import { assertPhase7NormalizedRows } from
@@ -120,8 +123,10 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
     const state = committedState();
     const contracts = approvedContracts(state);
     const owner = createTemporalAdvanceOwner({
-      effect_registrations:
-        lowerDvinaTracePhase7TemporalEffectRegistrations()
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
     });
     const continuationInputs = [];
     const command = createTracePhase7FireRestCommand({

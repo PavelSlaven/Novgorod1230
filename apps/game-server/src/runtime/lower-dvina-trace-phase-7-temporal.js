@@ -1,11 +1,11 @@
-import { canonicalDigest } from '@rus/materialization';
 import {
   addElapsedTime,
   subtractGameTimestamp
 } from '@rus/time-events-history';
+import { createNpcScheduleDecisionTerminalEffect } from
+  '@rus/turn/temporal-advance';
 import {
-  PHASE7_REST_PROGRESS_EFFECT_REF,
-  PHASE7_WAITING_TERMINAL_EFFECT_REF
+  PHASE7_REST_PROGRESS_EFFECT_REF
 } from './lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import {
   buildTracePhase7TemporalRequest,
@@ -24,11 +24,12 @@ export function resolveTracePhase7RestTemporalAdvance({
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
   const executionId = `activity:${state.party_id}:trace-phase7:fire-rest`;
-  const terminalCandidate = waitingTerminalCandidate({
+  const terminalEffect = waitingTerminalEffect({
     state,
     contracts,
     executionId
   });
+  const terminalCandidate = terminalEffect.candidate;
   const limit = addElapsedTime(state.clock, {
     exact_minutes: { numerator: '30', denominator: '1' }
   });
@@ -49,19 +50,7 @@ export function resolveTracePhase7RestTemporalAdvance({
     source_provider_ref: TRACE_PHASE7_EXTERNAL_PROVIDER,
     source_candidates: state.temporal_boundary_candidates ?? [],
     registered_provider_ref: TRACE_PHASE7_PROVIDER,
-    registered_effects: [{
-      candidate: terminalCandidate,
-      effect_ref: PHASE7_WAITING_TERMINAL_EFFECT_REF,
-      input: {
-        npc_ref: contracts.autonomous.target_npc_ref,
-        signal_subject_npc_ref: contracts.zhdanko.instance_id,
-        activity_ref: contracts.waitActivity.profile_id,
-        transition_kind: 'waiting_terminal_reached',
-        decision_signal: structuredClone(
-          contracts.autonomous.signal_descriptor
-        )
-      }
-    }],
+    registered_effects: [terminalEffect],
     continuous_effect: {
       effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
       input: { execution_id: executionId }
@@ -74,12 +63,18 @@ export function resolveTracePhase7RestTemporalAdvance({
   });
   const result = advanced.result;
   const projection = advanced.state_projection;
+  const waitingTransitions = (
+    projection.npc_activity_factual_transitions ?? []
+  ).filter((transition) =>
+    transition.npc_ref === contracts.autonomous.target_npc_ref
+      && transition.activity_ref === contracts.waitActivity.profile_id
+      && transition.from === 'waiting'
+      && transition.to === 'decision_required');
   const elapsedBeforeDecision = integerElapsed(state.clock,
     result.clock_after);
   if (result.temporal_status !== 'paused'
       || elapsedBeforeDecision !== contracts.waitingBoundary.elapsed_minutes
-      || projection.waiting_terminal_reached !== true
-      || !projection.waiting_transition) {
+      || waitingTransitions.length !== 1) {
     fail('TRACE_PHASE_7_WAITING_BOUNDARY_NOT_REACHED');
   }
   return Object.freeze({
@@ -88,50 +83,47 @@ export function resolveTracePhase7RestTemporalAdvance({
     elapsed_before_decision: elapsedBeforeDecision,
     result,
     projection: structuredClone(projection),
+    waiting_transition: structuredClone(waitingTransitions[0]),
     terminal_candidate: structuredClone(terminalCandidate)
   });
 }
 
-function waitingTerminalCandidate({ state, contracts, executionId }) {
+function waitingTerminalEffect({ state, contracts, executionId }) {
   const boundary = contracts.waitingBoundary;
   const scheduledAt = addElapsedTime(state.clock, {
     exact_minutes: {
       numerator: String(boundary.elapsed_minutes), denominator: '1'
     }
   });
-  return {
+  return createNpcScheduleDecisionTerminalEffect({
     boundary_id: tracePhase7WaitingTerminalCandidateId(state.party_id),
-    boundary_kind: 'npc_schedule',
     scheduled_at: scheduledAt,
     source_ref: {
       entity_kind: 'party_timed_activity_execution',
       entity_id: executionId
     },
-    primary_subject_ref: {
+    npc_ref: {
       entity_kind: 'npc', entity_id: contracts.zhdanko.instance_id
     },
-    subject_refs: [],
     scope_ref: { entity_kind: 'party', entity_id: state.party_id },
+    schedule_actor_ref: contracts.autonomous.target_npc_ref,
+    activity_ref: contracts.waitActivity.profile_id,
+    from_state: 'waiting',
+    terminal_state: 'decision_required',
     rule_ref: versioned('action_contract',
       contracts.waitActivity.profile_id,
       String(contracts.waitActivity.version)),
     policy_ref: versioned('activity_contract',
       contracts.schedulePolicy.schedule_policy_id,
       String(contracts.schedulePolicy.version)),
-    preconditions_digest: canonicalDigest({
-      npc_ref: contracts.autonomous.target_npc_ref,
-      source_activity_ref: contracts.waitActivity.profile_id,
-      expected_state: 'waiting',
-      terminal_state: 'decision_required',
-      parent_execution_ref: executionId
-    }),
-    resolution_class: 'npc_schedule',
-    interrupt_effect: 'background',
     visibility_policy_ref: versioned('visibility_modifier',
       'lower-dvina-trace-phase-7-hidden-npc', '1'),
-    idempotency_key: tracePhase7WaitingTerminalCandidateId(state.party_id),
-    causal_parent_refs: []
-  };
+    signal: {
+      category: contracts.autonomous.signal_descriptor.category,
+      significance: contracts.autonomous.signal_descriptor.significance,
+      perceived_change_summary: 'Ратша не вернулся к условленному сроку.'
+    }
+  });
 }
 
 export function tracePhase7WaitingTerminalCandidateId(partyId) {

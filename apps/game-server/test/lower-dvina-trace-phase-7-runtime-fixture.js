@@ -1,4 +1,7 @@
-import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import {
+  createTemporalAdvanceOwner,
+  npcTemporalEffectRegistrations
+} from '@rus/turn/temporal-advance';
 import { createTracePhase7FireRestCommand } from
   '../src/runtime/lower-dvina-trace-phase-7-command.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
@@ -17,8 +20,10 @@ export function phase7Command({
   genericCheckContextOwner = null,
   randomSource = null,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
-    effect_registrations:
-      lowerDvinaTracePhase7TemporalEffectRegistrations()
+    effect_registrations: [
+      ...npcTemporalEffectRegistrations(),
+      ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+    ]
   })
 }) {
   return createTracePhase7FireRestCommand({

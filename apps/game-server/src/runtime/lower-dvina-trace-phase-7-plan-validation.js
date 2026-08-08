@@ -1,4 +1,4 @@
-import { canonicalDigest } from '@rus/materialization';
+import { isDeepStrictEqual } from 'node:util';
 import {
   matchesOperationContract,
   selectApplicableNpcActivityExecution
@@ -6,8 +6,10 @@ import {
 
 export function validateTracePhase7Plan({ plan, request, contracts,
   operationContract }) {
-  if (canonicalDigest(request.decision_scope.operation_contract)
-      !== canonicalDigest(operationContract)) {
+  if (!isDeepStrictEqual(
+    request.decision_scope.operation_contract,
+    operationContract
+  )) {
     return rejected('NPC_OPERATION_CONTRACT_STALE');
   }
   if (plan.resolution === 'direct' || plan.resolution === 'generic_check') {

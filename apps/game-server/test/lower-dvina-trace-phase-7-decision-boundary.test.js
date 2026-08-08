@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest } from '@rus/materialization';
-import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import {
+  createTemporalAdvanceOwner,
+  npcTemporalEffectRegistrations
+} from '@rus/turn/temporal-advance';
 import { requestNpcSemanticDecision } from '@rus/turn';
 import { assertLowerDvinaTraceSemanticConversationRows } from
   '../src/infrastructure/postgres/lower-dvina-trace-semantic-conversation-read.js';
@@ -235,8 +238,10 @@ function signalBatchOwner(ruleRef, policyRef) {
         };
       }
     }],
-    effect_registrations:
-      lowerDvinaTracePhase7TemporalEffectRegistrations()
+    effect_registrations: [
+      ...npcTemporalEffectRegistrations(),
+      ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+    ]
   });
 }
 

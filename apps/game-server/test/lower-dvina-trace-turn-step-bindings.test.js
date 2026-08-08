@@ -145,6 +145,11 @@ test('revision 15 keeps the exact fast path and maps a free rest phrase', () => 
   assert.equal(rest.matches({
     raw_text: 'Давайте немного погреемся у костра и просушим одежду'
   }), false, 'a free phrase must enter the common player-step planner');
+  assert.equal(rest.matches({
+    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду. '
+      + 'Попросить Еремея и рыбака пойти со мной к Жданко.'
+  }), false,
+  'compound Turn 10 must not select the Phase 7 exact command alone');
   assert.equal(rest.semantic_binding.matches({ operation: {
     op: 'request_activity',
     actor_ref: targetRefs.actor,

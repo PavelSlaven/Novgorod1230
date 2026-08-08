@@ -32,6 +32,37 @@ import {
 
 const digest = 'a'.repeat(64);
 
+const COMPOUND_TURN_10 =
+  'Отдохнуть у огня полчаса и подсушить одежду. '
+  + 'Попросить Еремея и рыбака пойти со мной к Жданко.';
+
+test('Phase 7 exact matches admit only the registered rest command', () => {
+  const command = createTracePhase7FireRestCommand({
+    contracts: approvedContracts(committedState()),
+    inputDigest: digest,
+    npcAutonomousModel: async () => {
+      throw new Error('exact matcher must not invoke autonomous model');
+    },
+    temporalAdvanceOwner: {
+      advance() {
+        throw new Error('exact matcher must not advance time');
+      }
+    },
+    revalidateStateVersion: async () => 1
+  });
+  assert.equal(command.matches({
+    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду.'
+  }), true);
+  assert.equal(command.matches({
+    raw_text: '  Отдохнуть у огня полчаса и подсушить одежду.  '
+  }), true);
+  assert.equal(command.matches({ raw_text: COMPOUND_TURN_10 }), false,
+    'compound Turn 10 must leave the exact path so the semantic plan can keep escort clauses');
+  assert.equal(command.matches({
+    raw_text: 'Давайте немного погреемся у костра и просушим одежду'
+  }), false);
+});
+
 test('Phase 7 executes a direct NPC step and continues the rest interval',
   async () => {
     const state = committedState();

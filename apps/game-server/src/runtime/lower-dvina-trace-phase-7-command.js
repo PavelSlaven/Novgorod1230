@@ -15,6 +15,10 @@ import { resolveTracePhase7RestTemporalAdvance } from
 
 const PRECONDITION = 'phase7_fire_rest_admission';
 
+const EXACT = new Set([
+  'отдохнуть у огня полчаса и подсушить одежду.'
+]);
+
 export function createTracePhase7FireRestCommand({
   contracts,
   inputDigest,
@@ -56,9 +60,10 @@ export function createTracePhase7FireRestCommand({
         ]
       }
     },
-    matches: ({ raw_text: rawText }) =>
-      /(?:отдох|передох|посиж).*(?:огн|костр)|(?:огн|костр).*(?:согр|подсуш|обсох)/u
-        .test(String(rawText ?? '').toLowerCase()),
+    matches({ raw_text: rawText }) {
+      return EXACT.has(String(rawText ?? '').trim().toLowerCase()
+        .replace(/\s+/gu, ' '));
+    },
     availability(context) {
       const state = context.committed_state ?? context.retrievedState;
       return available(admitted(state, contracts));

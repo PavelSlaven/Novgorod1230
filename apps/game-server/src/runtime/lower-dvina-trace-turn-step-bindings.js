@@ -92,7 +92,8 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
     'сделать носилки и отнести онисима в стан.'
   ]),
   'lower_dvina_trace.rest_by_fire_and_dry_clothing': new Set([
-    'отдохнуть у огня полчаса и подсушить одежду.'
+    'отдохнуть у огня полчаса и подсушить одежду.',
+    'отдохнуть у огня полчаса и подсушить одежду'
   ])
 });
 
@@ -162,7 +163,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
 }
 
 function normalizeExactText(value) {
-  return String(value ?? '').trim().toLowerCase();
+  return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
 }
 
 function validRecord(record, expected) {

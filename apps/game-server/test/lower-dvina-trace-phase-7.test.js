@@ -54,6 +54,9 @@ test('Phase 7 exact matches admit only the registered rest command', () => {
     raw_text: 'Отдохнуть у огня полчаса и подсушить одежду.'
   }), true);
   assert.equal(command.matches({
+    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду'
+  }), true);
+  assert.equal(command.matches({
     raw_text: '  Отдохнуть у огня полчаса и подсушить одежду.  '
   }), true);
   assert.equal(command.matches({ raw_text: COMPOUND_TURN_10 }), false,

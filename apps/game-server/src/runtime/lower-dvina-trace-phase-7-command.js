@@ -16,7 +16,8 @@ import { resolveTracePhase7RestTemporalAdvance } from
 const PRECONDITION = 'phase7_fire_rest_admission';
 
 const EXACT = new Set([
-  'отдохнуть у огня полчаса и подсушить одежду.'
+  'отдохнуть у огня полчаса и подсушить одежду.',
+  'отдохнуть у огня полчаса и подсушить одежду'
 ]);
 
 export function createTracePhase7FireRestCommand({

@@ -92,7 +92,7 @@ test('Phase 7 preserves the boundary causality chain', async () => {
     .active_npc_actor_step.decision_trace_ref]);
 });
 
-test('Phase 7 resolves one domain-rejected boundary with one model call',
+test('Phase 7 executes a schema-valid brief direct plan without blocking rest',
   async () => {
     const state = phase7CommittedState();
     const contracts = approvedPhase7Contracts(state);
@@ -112,10 +112,35 @@ test('Phase 7 resolves one domain-rejected boundary with one model call',
     });
 
     assert.equal(modelCalls, 1);
-    assert.equal(consequence.status, 'blocked');
-    assert.equal(consequence.duration_minutes, 0);
-    assert.equal(consequence.hidden_update.npc_autonomous_domain_result
-      .errors[0].code, 'NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.actor_step.status, 'started');
+    assert.equal(consequence.phase7.schedule_execution.exact_elapsed
+      .exact_minutes.numerator, '5');
+  });
+
+test('Phase 7 discards a stale response so the root turn can retry',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    const requestedVersions = [];
+    const command = phase7Command({
+      state,
+      contracts,
+      model: async (request) => {
+        requestedVersions.push(request.committed_state_version);
+        return phase7DirectPlan(request);
+      },
+      revalidateStateVersion: async () =>
+        state.party_state.state_version + 1
+    });
+    await assert.rejects(command.consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'stale-rebuild')
+    }), ({ code }) => code ===
+      'TRACE_PHASE_7_AUTONOMOUS_RETRY_REQUIRED');
+
+    assert.deepEqual(requestedVersions, [7]);
   });
 
 test('Phase 7 rejects combinations outside executable operation contract',

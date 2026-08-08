@@ -9,7 +9,8 @@ export const TRACE_PHASE7_PROVIDER = versioned(
 );
 
 export function buildTracePhase7TemporalRequest({ state, contracts,
-  executionId, limit, commandIdempotencyKey, clockBefore = state.clock,
+  executionId, limit, commandIdempotencyKey, rootTurnId,
+  clockBefore = state.clock,
   sourceCandidates = state.temporal_boundary_candidates ?? [],
   projection = null, segment = 'waiting' }) {
   const pins = sealed({ pins: [{
@@ -22,7 +23,7 @@ export function buildTracePhase7TemporalRequest({ state, contracts,
   }] });
   return {
     party_id: state.party_id,
-    turn_id: `turn:${state.party_id}:phase7:${state.party_state.turn_number + 1}`,
+    turn_id: rootTurnId,
     base_state_version: String(state.party_state.state_version),
     clock_before: structuredClone(clockBefore),
     clock_commit_mode: 'direct_party_clock',

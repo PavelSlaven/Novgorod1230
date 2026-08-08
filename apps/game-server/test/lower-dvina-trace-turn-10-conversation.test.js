@@ -160,6 +160,14 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   const persisted = committedPlans[0].inserts.find(
     ({ target_table: table }) => table === 'party_state_snapshots')
     .record.state_payload;
+  const rootTurnId = factual.mode_resolution.turn_id;
+  const decisionTraces = committedPlans[0].appends.filter(
+    ({ target_table: table }) => table === 'party_npc_decision_traces');
+  assert.ok(decisionTraces.length >= 4);
+  assert.deepEqual(new Set(decisionTraces.map(
+    ({ record }) => record.root_turn_id)), new Set([rootTurnId]));
+  assert.equal(factual.consequence.phase7.autonomous.request.root_turn_id,
+    rootTurnId);
   assert.equal(persisted.party_state.state_version,
     state.party_state.state_version + 1);
   assert.equal(persisted.party_state.turn_number,
@@ -182,6 +190,51 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(npcCalls, 3);
   assert.equal(runtimeFixture.commitCount(), 1);
 });
+
+test('a stale Phase 7 response restarts the whole root turn on current state',
+  async () => {
+    const { state } = turn10State({ completedRest: false });
+    const initialVersion = state.party_state.state_version;
+    const requestedVersions = [];
+    let runtimeFixture;
+    runtimeFixture = fixture({
+      scenarioBundle: bundle,
+      materializationBundle: bundle,
+      committedState: state,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+        ]
+      }),
+      npcAutonomousModel(request) {
+        requestedVersions.push(request.committed_state_version);
+        if (requestedVersions.length === 1) {
+          runtimeFixture.state.party_state.state_version += 1;
+        }
+        return phase7AutonomousPlan(request, 'wait');
+      }
+    });
+
+    await runtimeFixture.runtime.submitTurn({
+      partyId: runtimeFixture.partyId,
+      input: {
+        request_id: 'phase7-stale-root-retry',
+        idempotency_key: 'phase7-stale-root-retry',
+        raw_text: 'Отдохнуть у огня полчаса и подсушить одежду.'
+      }
+    });
+
+    assert.deepEqual(requestedVersions, [initialVersion, initialVersion + 1]);
+    assert.equal(runtimeFixture.commitCount(), 1);
+    const factual = runtimeFixture.lastWritePlan().write_targets.find(
+      ({ target }) => target === 'party_state').value;
+    assert.equal(factual.mode_resolution.decision_trace.state_version,
+      initialVersion + 1);
+    assert.equal(factual.consequence.phase7.autonomous.request
+      .committed_state_version, initialVersion + 1);
+    assert.equal(factual.consequence.duration_minutes, 30);
+  });
 
 function turn10State({ completedRest = true } = {}) {
   const state = structuredClone(fixture({ scenarioBundle: bundle }).state);

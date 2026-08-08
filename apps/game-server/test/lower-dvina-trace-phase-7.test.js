@@ -146,7 +146,9 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
     });
     const consequence = await command.consequence({
       retrievedState: state,
-      playerInput: playerInput(state, 'temporal-order')
+      playerInput: playerInput(state, 'temporal-order'),
+      rootTurnId:
+        `turn:${state.party_id}:${state.party_state.turn_number + 1}`
     });
     assert.equal(continuationInputs.length, 1);
     assert.equal(continuationInputs[0].stop_after_source_batch, false);
@@ -527,7 +529,7 @@ function factualTurn(state, consequence, timeUpdate, bodyUpdate) {
     player_input: playerInput(state, 'persist'),
     mode_resolution: {
       option_id: 'rest_by_fire_and_dry_clothing',
-      turn_id: 'phase7-turn',
+      turn_id: consequence.phase7.autonomous.request.root_turn_id,
       decision_trace: {
         state_version: state.party_state.state_version,
         action_set_digest: 'action-set'

@@ -26,9 +26,9 @@ import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-
 import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
-import { createStateVersionRevalidator, requiredTraceTurnText,
-  validateConversationDependencies, validatePhase2RuntimeDependencies } from
-  './lower-dvina-trace-phase-2-runtime-input.js';
+import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry,
+  requiredTraceTurnText, validateConversationDependencies,
+  validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createNpcSocialCheckResolver } from
   './lower-dvina-trace-npc-social-check.js';
 export function createLowerDvinaTracePhase2Runtime({
@@ -85,6 +85,7 @@ export function createLowerDvinaTracePhase2Runtime({
         idempotency_key: idempotencyKey,
         raw_text: rawText
       });
+      const executeAttempt = async () => {
       const replay = await repository.loadPhase2Replay({
         partyId,
         idempotencyKey
@@ -148,11 +149,8 @@ export function createLowerDvinaTracePhase2Runtime({
       const turnRandomSource = randomSourceFactory({ party_id: partyId,
         request_id: requestId, idempotency_key: idempotencyKey });
       const phase7Contracts = bundle.definition_revision === 15
-        ? resolveTracePhase7Contracts({ state, bundle })
-        : null;
-      const revalidateStateVersion = createStateVersionRevalidator({
-        repository, partyId, idempotencyKey
-      });
+        ? resolveTracePhase7Contracts({ state, bundle }) : null;
+      const revalidateStateVersion = createStateVersionRevalidator({ repository, partyId, idempotencyKey });
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,
@@ -294,6 +292,8 @@ export function createLowerDvinaTracePhase2Runtime({
         inputDigest,
         result
       });
+      };
+      return executeTraceTurnWithAutonomousRetry(executeAttempt);
     }
   });
 }

@@ -265,7 +265,7 @@ test('autonomous request uses one model call and returns signal consumption', as
   assert.deepEqual(result.signal_ids_to_consume, ['signal-1']);
 });
 
-test('applicability rejection returns one typed domain result without repair',
+test('applicability runs only after current state revalidation',
   async () => {
     const sourceRequest = autonomousRequest();
     let modelCalls = 0;
@@ -292,7 +292,7 @@ test('applicability rejection returns one typed domain result without repair',
     });
 
     assert.equal(modelCalls, 1);
-    assert.equal(revalidationCalls, 0);
+    assert.equal(revalidationCalls, 1);
     assert.equal(result.status, 'domain_rejected');
     assert.equal(result.domain_result.pass, false);
     assert.equal(result.domain_result.errors[0].code,
@@ -448,15 +448,8 @@ test('persisted autonomous trace must pass caller operation contract gate',
     assert.equal(revalidationCalls, 0);
   });
 
-test('autonomous mode rejects stale state and combat remains unsupported', async () => {
+test('combat NPC semantic decisions remain unsupported', async () => {
   const sourceRequest = autonomousRequest();
-  await assert.rejects(requestNpcSemanticDecision({
-    boundary: autonomousBoundary(),
-    request: sourceRequest,
-    semanticModel: async () => autonomousPlan(sourceRequest),
-    revalidateStateVersion: async () => 3
-  }), (error) => error?.code === 'TURN_NPC_STATE_STALE');
-
   await assert.rejects(requestNpcSemanticDecision({
     boundary: boundary({ decision_mode: 'combat' }),
     request: sourceRequest,
@@ -464,6 +457,112 @@ test('autonomous mode rejects stale state and combat remains unsupported', async
     revalidateStateVersion: async () => 2
   }), (error) => error?.code === 'TURN_NPC_MODE_UNSUPPORTED');
 });
+
+test('stale autonomous response rebuilds the current request before domain validation',
+  async () => {
+    const staleRequest = autonomousRequest();
+    const currentRequest = autonomousRequest({
+      request_id: 'autonomous-request-current',
+      committed_state_version: 3,
+      working_revision: 1
+    });
+    const currentBoundary = autonomousBoundary({ state_version: '3' });
+    let modelCalls = 0;
+    let revalidationCalls = 0;
+    const validatedVersions = [];
+
+    const result = await requestNpcSemanticDecision({
+      boundary: autonomousBoundary(),
+      request: staleRequest,
+      semanticModel: async (source) => {
+        modelCalls += 1;
+        return autonomousPlan(source);
+      },
+      revalidateStateVersion: async () => {
+        revalidationCalls += 1;
+        return 3;
+      },
+      rebuildDecisionContext: async ({
+        stale_boundary: staleBoundary,
+        stale_request: discardedRequest,
+        current_state_version: currentStateVersion
+      }) => {
+        assert.equal(staleBoundary.boundary_id,
+          autonomousBoundary().boundary_id);
+        assert.equal(discardedRequest.committed_state_version, 2);
+        assert.equal(currentStateVersion, 3);
+        return {
+          boundary: currentBoundary,
+          request: currentRequest,
+          ordered_signals: [{ signal_id: 'signal-1' }]
+        };
+      },
+      validatePlan: (_plan, validatedRequest) => {
+        validatedVersions.push(validatedRequest.committed_state_version);
+        return true;
+      }
+    });
+
+    assert.equal(result.status, 'planned');
+    assert.equal(result.plan.committed_state_version, 3);
+    assert.equal(result.decision_context.request.request_id,
+      'autonomous-request-current');
+    assert.equal(modelCalls, 2);
+    assert.equal(revalidationCalls, 2);
+    assert.deepEqual(validatedVersions, [3]);
+  });
+
+test('stale autonomous response is discarded without another model call when its boundary is obsolete',
+  async () => {
+    let modelCalls = 0;
+    let validationCalls = 0;
+    const result = await requestNpcSemanticDecision({
+      boundary: autonomousBoundary(),
+      request: autonomousRequest(),
+      semanticModel: async (source) => {
+        modelCalls += 1;
+        return autonomousPlan(source);
+      },
+      revalidateStateVersion: async () => 3,
+      rebuildDecisionContext: async () => null,
+      validatePlan: () => {
+        validationCalls += 1;
+        return true;
+      }
+    });
+
+    assert.equal(result.status, 'stale_discarded');
+    assert.equal(result.plan, null);
+    assert.equal(modelCalls, 1);
+    assert.equal(validationCalls, 0);
+    assert.deepEqual(result.signal_ids_to_consume, []);
+  });
+
+test('stale autonomous rebuild rejects a different boundary identity',
+  async () => {
+    const currentRequest = autonomousRequest({
+      request_id: 'autonomous-request-current',
+      boundary_id: 'npc-decision:different-batch:speaker',
+      committed_state_version: 3,
+      working_revision: 1
+    });
+    const currentBoundary = autonomousBoundary({
+      same_time_batch_ref: ref('temporal_batch', 'different-batch'),
+      state_version: '3'
+    });
+    await assert.rejects(requestNpcSemanticDecision({
+      boundary: autonomousBoundary(),
+      request: autonomousRequest(),
+      semanticModel: async (source) => autonomousPlan(source),
+      revalidateStateVersion: async () => 3,
+      rebuildDecisionContext: async () => ({
+        boundary: currentBoundary,
+        request: currentRequest,
+        ordered_signals: [{ signal_id: 'signal-1' }]
+      })
+    }), (error) =>
+      error?.code === 'TURN_NPC_STATE_REBUILD_IDENTITY_MISMATCH');
+  });
 
 test('concurrent identical boundary input shares one NPC model call and conflicting input does not call it again', async () => {
   const decisionBoundary = boundary();
@@ -589,32 +688,6 @@ test('failed uncommitted NPC decision releases its in-flight claim for retry', a
     revalidateStateVersion: async () => 2
   });
   assert.equal(retry.status, 'planned');
-  assert.equal(modelCalls, 2);
-});
-
-test('stale uncommitted NPC response allows a new request for changed state', async () => {
-  let modelCalls = 0;
-  await assert.rejects(requestNpcSemanticDecision({
-    boundary: boundary(),
-    request: request(),
-    semanticModel: async (source) => {
-      modelCalls += 1;
-      return plan(source);
-    },
-    revalidateStateVersion: async () => 3
-  }), (error) => error?.code === 'TURN_NPC_STATE_STALE');
-
-  const currentRequest = request({ state_version: 3 });
-  const result = await requestNpcSemanticDecision({
-    boundary: boundary({ state_version: '3' }),
-    request: currentRequest,
-    semanticModel: async (source) => {
-      modelCalls += 1;
-      return plan(source);
-    },
-    revalidateStateVersion: async () => 3
-  });
-  assert.equal(result.status, 'planned');
   assert.equal(modelCalls, 2);
 });
 

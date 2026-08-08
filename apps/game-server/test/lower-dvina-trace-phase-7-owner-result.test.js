@@ -72,20 +72,55 @@ test('Phase 7 direct admission binds the actor to the NPC request', async () => 
   assertOwnerRejects(tampered, state, contracts);
 });
 
+test('Phase 7 commit admission requires the enclosing root turn identity',
+  async () => {
+    const state = committedState();
+    const contracts = approvedContracts(state);
+    const consequence = await commandFor({ state, contracts,
+      model: async (request) => directPlan(request)
+    }).consequence({
+      retrievedState: state,
+      playerInput: playerInput(state, 'root-turn')
+    });
+    const factual = ownerFactual(consequence, contracts);
+    assert.doesNotThrow(() => assertPhase7OwnerResult({
+      factual,
+      state,
+      phase7Contracts: contracts,
+      changeSetId: consequence.phase7.temporal.result
+        .combined_change_set.change_set_id
+    }));
+
+    factual.mode_resolution.turn_id = 'turn:foreign-party:1';
+    assertOwnerRejectsWithFactual(factual, state, contracts);
+  });
+
 function assertOwnerRejects(consequence, state, contracts) {
+  assertOwnerRejectsWithFactual(
+    ownerFactual(consequence, contracts), state, contracts);
+}
+
+function assertOwnerRejectsWithFactual(factual, state, contracts) {
   assert.throws(() => assertPhase7OwnerResult({
-    factual: {
-      consequence,
-      time_update: {
-        clock_after: consequence.phase7.schedule_temporal.result.clock_after
-      },
-      body_update: { applied: true, proposal: {
-        profile_ref: contracts.bodyEffect.effect_profile_id
-      } }
-    },
+    factual,
     state,
     phase7Contracts: contracts,
-    changeSetId: consequence.phase7.temporal.result
+    changeSetId: factual.consequence.phase7.temporal.result
       .combined_change_set.change_set_id
   }), ({ code }) => code === 'TRACE_PHASE_7_OWNER_RESULT_INVALID');
+}
+
+function ownerFactual(consequence, contracts) {
+  return {
+    consequence,
+    mode_resolution: {
+      turn_id: consequence.phase7.autonomous.request.root_turn_id
+    },
+    time_update: {
+      clock_after: consequence.phase7.schedule_temporal.result.clock_after
+    },
+    body_update: { applied: true, proposal: {
+      profile_ref: contracts.bodyEffect.effect_profile_id
+    } }
+  };
 }

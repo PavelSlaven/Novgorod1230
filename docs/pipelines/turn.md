@@ -69,9 +69,16 @@ perception/received knowledge без обязательного ответа; pr
 30 minutes and produces Жданко's boundary at +25 minutes. The request exposes
 only operations backed by the current actor-step registry; the chosen step is
 applied at +25, then the common temporal owner resumes to +30 from that updated
-working projection. The canonical compound Turn 10 conversation starts only
+working projection. Before applicability validation, a model response is
+revalidated against the current decision state; stale output is discarded and
+the request is rebuilt only while its boundary remains applicable. A concurrent
+committed-state change restarts the whole root-turn draft once, rather than
+mixing a fresh NPC request with old temporal state. The canonical
+compound Turn 10 conversation starts only
 after that completed interval, at the resulting +30 timestamp, and contributes
-no second clock or body write. Persistence and visibility remain code-owned. Combat
+no second clock or body write. All NPC traces use the `root_turn_id` created by
+the enclosing `@rus/turn`; Phase 7 creates no local turn identity. Persistence
+and visibility remain code-owned. Combat
 resolution остаётся `proposed`; conversation
 допускает только combat handoff.
 

@@ -19,6 +19,7 @@ export function phase7Command({
   model,
   genericCheckContextOwner = null,
   randomSource = null,
+  revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
     effect_registrations: [
       ...npcTemporalEffectRegistrations(),
@@ -26,7 +27,7 @@ export function phase7Command({
     ]
   })
 }) {
-  return createTracePhase7FireRestCommand({
+  const command = createTracePhase7FireRestCommand({
     contracts,
     inputDigest: digest,
     npcAutonomousModel: model,
@@ -47,7 +48,17 @@ export function phase7Command({
     genericCheckContextOwner,
     randomSource,
     temporalAdvanceOwner,
-    revalidateStateVersion: async () => state.party_state.state_version
+    revalidateStateVersion
+  });
+  return Object.freeze({
+    ...command,
+    consequence(input) {
+      return command.consequence({
+        ...input,
+        rootTurnId:
+          `turn:${state.party_id}:${state.party_state.turn_number + 1}`
+      });
+    }
   });
 }
 
@@ -185,7 +196,7 @@ export async function persistPhase7Consequence({
       player_input: phase7PlayerInput(state, 'persisted-replay'),
       mode_resolution: {
         option_id: 'rest_by_fire_and_dry_clothing',
-        turn_id: 'phase7-persisted-replay',
+        turn_id: consequence.phase7.autonomous.request.root_turn_id,
         decision_trace: {
           state_version: state.party_state.state_version,
           action_set_digest: 'action-set'

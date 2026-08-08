@@ -61,6 +61,12 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    timestamp from the updated working projection until a same-time fixed point
    or a typed temporal safety error. Replay uses the persisted decision trace
    and does not re-call the LLM.
+   Before domain applicability, the turn owner re-reads the current decision
+   state. A stale model response is discarded; the NPC-safe request is rebuilt
+   and the model is called again only when the same boundary remains applicable.
+   An obsolete boundary consumes no signal and applies no actor-step.
+   If the committed base changed concurrently, the application discards the
+   whole draft and performs one bounded root-turn retry from the reloaded state.
    Multiple NPCs at one timestamp keep sequential autonomous decisions ordered
    by `timestamp → npc_ref → boundary_id`; each later NPC sees the updated
    projection. That loop is distinct from a combat snapshot batch, which remains
@@ -70,6 +76,9 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    authoritative working state. It starts at that resulting timestamp with
    zero additional elapsed time; it neither reopens the finished temporal
    interval nor creates another clock/body owner.
+   Every autonomous and conversation decision in that workflow carries the
+   one `root_turn_id` created by `@rus/turn`; temporal/scenario adapters do not
+   synthesize a second turn identity.
 5. `@rus/turn` applies the merged proposals to an immutable candidate
    post-change state. `@rus/visibility-knowledge-memory` creates a player-safe
    package candidate and validates hidden-leak absence.

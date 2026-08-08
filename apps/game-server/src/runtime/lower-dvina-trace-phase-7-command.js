@@ -69,15 +69,25 @@ export function createTracePhase7FireRestCommand({
       const state = context.committed_state ?? context.retrievedState;
       return available(admitted(state, contracts));
     },
-    async consequence({ retrievedState: state, playerInput }) {
+    async consequence({ retrievedState: state, playerInput,
+      modeResolution = null, rootTurnId = null }) {
       if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
+      const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
+      const expectedRootTurnId = [
+        'turn', state.party_id, state.party_state.turn_number + 1
+      ].join(':');
+      if (typeof actualRootTurnId !== 'string'
+          || actualRootTurnId !== expectedRootTurnId) {
+        fail('TRACE_PHASE_7_ROOT_TURN_ID_INVALID');
+      }
       let actorStepRuntime = null;
       const flow = await advanceTemporalNpcDecisionBoundary({
         advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
           state,
           contracts,
           temporalAdvanceOwner,
-          commandIdempotencyKey: playerInput.idempotency_key
+          commandIdempotencyKey: playerInput.idempotency_key,
+          rootTurnId: actualRootTurnId
         }),
         decisionSignalState: {
           factual_state: state,
@@ -102,7 +112,8 @@ export function createTracePhase7FireRestCommand({
             operationContract:
               actorStepRuntime.registry.operationContract(),
             npcAutonomousModel,
-            revalidateStateVersion
+            revalidateStateVersion,
+            rootTurnId: actualRootTurnId
           });
           return { boundary: autonomous.boundary, autonomous };
         },
@@ -120,7 +131,8 @@ export function createTracePhase7FireRestCommand({
             temporal,
             actorStep,
             temporalAdvanceOwner,
-            commandIdempotencyKey: playerInput.idempotency_key
+            commandIdempotencyKey: playerInput.idempotency_key,
+            rootTurnId: actualRootTurnId
           })
       });
       if (flow.actor_step.domain_result?.pass === false) {

@@ -11,7 +11,8 @@ export async function resolveTracePhase7AutonomousDecision({
   signalBatch,
   operationContract,
   npcAutonomousModel,
-  revalidateStateVersion
+  revalidateStateVersion,
+  rootTurnId
 }) {
   const boundary = signalBatch?.boundary;
   if (!boundary) fail('TRACE_PHASE_7_AUTONOMOUS_BOUNDARY_MISSING');
@@ -19,7 +20,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const persistedInput = signalBatch.persisted_decision_input;
   const persistedTrace = persistedInput?.trace ?? null;
   const request = buildRequestFromSnapshots({
-    state, contracts, boundary, orderedSignals, operationContract,
+    state, contracts, boundary, orderedSignals, operationContract, rootTurnId,
     waitingTransition: temporal.waiting_transition,
     perceivedChanges: signalBatch.perceived_changes
   });
@@ -31,6 +32,7 @@ export async function resolveTracePhase7AutonomousDecision({
     persistedInput,
     orderedSignals,
     revalidateStateVersion,
+    rebuildDecisionContext: async () => null,
     validatePlan: (plan, validatedRequest) =>
       validateTracePhase7Plan({
         plan,
@@ -39,9 +41,16 @@ export async function resolveTracePhase7AutonomousDecision({
         operationContract
       })
   });
+  if (proposal.status === 'stale_discarded') {
+    fail('TRACE_PHASE_7_AUTONOMOUS_RETRY_REQUIRED');
+  }
+  const resolved = proposal.decision_context;
+  const resolvedBoundary = resolved.boundary;
+  const resolvedRequest = resolved.request;
+  const resolvedSignals = resolved.ordered_signals;
   const waitingTransitionId =
     temporal.waiting_transition.transition_id;
-  const causalSignals = orderedSignals.filter(({ source_event_ref: source }) =>
+  const causalSignals = resolvedSignals.filter(({ source_event_ref: source }) =>
     source?.entity_kind === 'npc_activity_factual_transition'
       && source.entity_id === waitingTransitionId);
   if (causalSignals.length !== 1) {
@@ -50,24 +59,25 @@ export async function resolveTracePhase7AutonomousDecision({
   const signal = causalSignals[0];
   return Object.freeze({
     signal,
-    boundary,
-    request,
+    boundary: resolvedBoundary,
+    request: resolvedRequest,
     proposal,
     new_signal_records: signalBatch.new_signal_records,
     consumed_signal_ids: proposal.status === 'planned'
       ? [...proposal.signal_ids_to_consume]
       : [],
     decision_records: proposal.status === 'planned' ? [{
-      request,
-      boundary,
-      orderedSignals,
+      request: resolvedRequest,
+      boundary: resolvedBoundary,
+      orderedSignals: resolvedSignals,
       proposal
     }] : []
   });
 }
 
 function buildRequestFromSnapshots({ state, contracts, boundary,
-  orderedSignals, operationContract, waitingTransition, perceivedChanges }) {
+  orderedSignals, operationContract, rootTurnId, waitingTransition,
+  perceivedChanges }) {
   const npc = contracts.zhdanko;
   const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
@@ -79,8 +89,7 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
   return buildNpcActionDecisionRequestFromSnapshots({
     request_identity: {
       request_id: `npc-action-request:${boundary.boundary_id}`,
-      root_turn_id:
-        `turn:${state.party_id}:phase7:${state.party_state.turn_number + 1}`,
+      root_turn_id: rootTurnId,
       committed_state_version: state.party_state.state_version,
       working_revision: state.party_state.turn_number + 1,
       decision_index: 1

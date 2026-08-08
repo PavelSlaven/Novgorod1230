@@ -159,6 +159,7 @@ export async function resolveBoundTurnStepCommand({
         }
         const consequence = await selectedCommand.consequence(deepFreeze({
           playerInput: structuredClone(stepPlayerInput),
+          rootTurnId: execution.request.root_turn_id,
           retrievedState: structuredClone(consequenceState),
           availability: structuredClone(availability),
           checks: {

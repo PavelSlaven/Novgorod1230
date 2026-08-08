@@ -18,7 +18,8 @@ export function resolveTracePhase7RestTemporalAdvance({
   state,
   contracts,
   temporalAdvanceOwner,
-  commandIdempotencyKey
+  commandIdempotencyKey,
+  rootTurnId
 }) {
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
@@ -39,6 +40,7 @@ export function resolveTracePhase7RestTemporalAdvance({
     executionId,
     limit,
     commandIdempotencyKey,
+    rootTurnId,
     segment: 'waiting'
   });
   const advanced = temporalAdvanceOwner.advance({

@@ -13,6 +13,17 @@ export function createStateVersionRevalidator({
   };
 }
 
+export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
+  try {
+    return await executeAttempt();
+  } catch (error) {
+    if (error?.code !== 'TRACE_PHASE_7_AUTONOMOUS_RETRY_REQUIRED') {
+      throw error;
+    }
+  }
+  return executeAttempt();
+}
+
 export function validateConversationDependencies({
   scenarioDefinitionRevision,
   playerConversationModel,

@@ -89,31 +89,7 @@ export function approvedPhase7Contracts(state) {
         'autonomous_local_property_transfer',
         ['trace_ld_v1_container_road_bag'])
     ],
-    semanticActivityProfiles: [{
-      profile_ref: 'trace_ld_v1_semantic_activity:moment:none',
-      profile_pin: {
-        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
-        revision: 1,
-        digest
-      },
-      body_effect_profile_ref:
-        'trace_ld_v1_semantic_activity:body:moment:none',
-      duration_class: 'moment', duration_minutes: 1, effort: 'none',
-      exact_deltas: { health: 0, satiety: 0, energy: 0 },
-      condition_outcomes: []
-    }, {
-      profile_ref: 'trace_ld_v1_semantic_activity:short:none',
-      profile_pin: {
-        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
-        revision: 1,
-        digest
-      },
-      body_effect_profile_ref:
-        'trace_ld_v1_semantic_activity:body:short:none',
-      duration_class: 'short', duration_minutes: 15, effort: 'none',
-      exact_deltas: { health: 0, satiety: 0, energy: 0 },
-      condition_outcomes: []
-    }],
+    semanticActivityProfiles: semanticActivityProfiles(),
     genericCheckContext: {
       profile_ref: 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1',
       attributes: [{
@@ -154,6 +130,36 @@ export function approvedPhase7Contracts(state) {
     activityPin: { id: 'trace_ld_v1_activity_fire_rest', version: 1,
       digest }
   };
+}
+
+function semanticActivityProfiles() {
+  const durations = [
+    ['moment', 1], ['brief', 5], ['short', 15], ['extended', 60]
+  ];
+  const efforts = [
+    ['none', { health: 0, satiety: 0, energy: 0 }],
+    ['light', { health: 0, satiety: 0, energy: -1 }],
+    ['moderate', { health: 0, satiety: -1, energy: -2 }],
+    ['heavy', { health: 0, satiety: -2, energy: -4 }],
+    ['extreme', { health: -1, satiety: -3, energy: -6 }]
+  ];
+  return durations.flatMap(([durationClass, durationMinutes]) =>
+    efforts.map(([effort, exactDeltas]) => ({
+      profile_ref:
+        `trace_ld_v1_semantic_activity:${durationClass}:${effort}`,
+      profile_pin: {
+        artifact_id: 'trace_ld_v1_turn_step_owner_profiles',
+        revision: 1,
+        digest
+      },
+      body_effect_profile_ref:
+        `trace_ld_v1_semantic_activity:body:${durationClass}:${effort}`,
+      duration_class: durationClass,
+      duration_minutes: durationMinutes,
+      effort,
+      exact_deltas: exactDeltas,
+      condition_outcomes: []
+    })));
 }
 
 export function phase7ItemPlan(request) {

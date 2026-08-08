@@ -14,7 +14,9 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   const temporal = phase7.temporal;
   const scheduleTemporal = phase7.schedule_temporal;
   const schedule = phase7.schedule_execution;
-  if (temporal.elapsed_before_decision !== 25
+  if (phase7.autonomous.request.root_turn_id
+        !== factual.mode_resolution?.turn_id
+      || temporal.elapsed_before_decision !== 25
       || temporal.result.temporal_status !== 'paused'
       || !['completed', 'paused'].includes(
         scheduleTemporal?.result?.temporal_status

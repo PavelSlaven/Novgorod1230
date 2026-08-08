@@ -17,7 +17,7 @@ import {
 } from './lower-dvina-trace-phase-7-temporal-request.js';
 
 export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
-  actorStep, temporalAdvanceOwner, commandIdempotencyKey }) {
+  actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId }) {
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
@@ -32,6 +32,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     executionId: temporal.execution_id,
     limit: temporal.limit_timestamp,
     commandIdempotencyKey,
+    rootTurnId,
     clockBefore: temporal.result.clock_after,
     sourceCandidates,
     projection: structuredClone(actorStep.working_projection),

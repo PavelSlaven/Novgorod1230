@@ -10,6 +10,12 @@ import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
 import { appendPhase7Activities } from
   './lower-dvina-trace-phase-7-activity-writes.js';
+import {
+  appendNpcSemanticConversationWrites,
+  buildNpcSemanticConversationWriteInput
+} from './npc-semantic-conversation-writes.js';
+import { appendKnowledge } from
+  './lower-dvina-trace-phase-3-conversation-writes.js';
 
 export function phase7VisibleEnvelope({ partyId, nextVersion, turnNumber,
   changeSetId, idemId, factual, visibleContext, phase7Contracts }) {
@@ -156,7 +162,53 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
     rootTurnId: phase7.autonomous.request.root_turn_id,
     workingRevision: phase7.autonomous.request.working_revision
   });
+  appendTurn10ConversationWrites({
+    inserts, updates, appends, partyId, state, next, factual,
+    changeSetId, idemId
+  });
   return { inserts, updates, appends, deletes: [] };
+}
+
+function appendTurn10ConversationWrites({ inserts, updates, appends, partyId,
+  state, next, factual, changeSetId, idemId }) {
+  if (factual.consequence.turn10_kind !== 'companion_request') return;
+  const semanticExchange =
+    factual.consequence.conversation?.semantic_exchange;
+  const semanticInput = buildNpcSemanticConversationWriteInput({
+    state,
+    next,
+    semanticExchange
+  });
+  appendNpcSemanticConversationWrites({
+    inserts,
+    updates,
+    appends,
+    partyId,
+    changeSetId,
+    idempotencyRecordId: idemId,
+    rootTurnId: factual.mode_resolution.turn_id,
+    workingRevision:
+      factual.mode_resolution.decision_trace?.working_revision ?? 2,
+    sessionWrite: semanticInput.sessionWrite,
+    semanticExchange: semanticInput.semanticExchange,
+    signalRecords: semanticInput.signalRecords,
+    actualMessageEvidence: semanticInput.actualMessageEvidence,
+    persistedMessageStatements: semanticInput.persistedMessageStatements,
+    persistedMessageAudiences: semanticInput.persistedMessageAudiences,
+    supportingOperationEvidence:
+      semanticInput.supportingOperationEvidence,
+    partyStateVersion: semanticInput.partyStateVersion,
+    sameTimeBatchRef: semanticInput.sameTimeBatchRef,
+    contributions: semanticInput.contributions
+  });
+  const guide = (next.route_participant_commitments ?? []).find(
+    ({ role }) => role === 'guide');
+  if (guide?.route_ref != null
+      && !(state.route_knowledge ?? []).includes(guide.route_ref)) {
+    const evidence = (next.knowledge ?? []).find(
+      ({ fact_id: id }) => id === guide.route_ref)?.evidence_refs ?? [];
+    appendKnowledge(inserts, state, partyId, guide.route_ref, evidence);
+  }
 }
 
 function appendConditionUpdates({ updates, partyId, state, next }) {

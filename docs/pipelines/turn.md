@@ -23,6 +23,7 @@ path through the same common signal/boundary protocol.
    - иначе `turn_step_admission` строит player-safe `turn_step_request_v1`, строго валидирует `turn_step_plan_v1` и исполняет до восьми внутренних шагов через code-owned registry.
    После каждого применённого semantic шага обновляется working projection и заново строится player-safe state. Невалидный plan допускает один structural repair до execution; повторная ошибка не создаёт draft writes.
    Active conversation mode интерпретирует один player contribution, фиксирует statement, отдельно проецирует фактических listeners/witnesses и создаёт semantic NPC request только при meaningful common decision boundary.
+   Lower Dvina Trace revision 15 использует этот же loop для канонического составного Хода 10: сначала code-owned Phase 7 rest полностью продвигает время на 30 минут, затем оставшаяся просьба исполняется как conversation domain request на уже обновлённом timestamp. Оба prepared domain result образуют один ordered ledger и один atomic root commit; начальная недоступность второго command не подменяет его повторную availability-проверку на состоянии после отдыха.
 5. `revalidate_context` — повторно читает committed state и отклоняет stale exact command, semantic domain binding или base version до RNG и commit.
 6. `availability` — зарегистрированный code handler повторно проверяет доступность выбранного действия.
 7. `checks` — выполняет только явно запрошенные проверки через `RandomSource`.
@@ -68,7 +69,9 @@ perception/received knowledge без обязательного ответа; pr
 30 minutes and produces Жданко's boundary at +25 minutes. The request exposes
 only operations backed by the current actor-step registry; the chosen step is
 applied at +25, then the common temporal owner resumes to +30 from that updated
-working projection. Persistence and visibility remain code-owned. Combat
+working projection. The canonical compound Turn 10 conversation starts only
+after that completed interval, at the resulting +30 timestamp, and contributes
+no second clock or body write. Persistence and visibility remain code-owned. Combat
 resolution остаётся `proposed`; conversation
 допускает только combat handoff.
 

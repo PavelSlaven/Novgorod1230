@@ -13,8 +13,10 @@ export function plannedNpcContributionMinutes({
   remainingBudgetMinutes,
   queuedBoundaries,
   plan,
-  priorNpcDecisionCount
+  priorNpcDecisionCount,
+  sameTimestamp = false
 }) {
+  if (sameTimestamp) return 0;
   const queuedKeys = new Set(queuedBoundaries.map(({ npc_ref: npcRef }) =>
     `${npcRef.entity_kind}\u0000${npcRef.entity_id}`));
   const terminal = ['leave_conversation', 'action_handoff', 'combat_handoff']

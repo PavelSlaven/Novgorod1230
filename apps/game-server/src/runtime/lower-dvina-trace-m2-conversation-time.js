@@ -22,8 +22,21 @@ export function advanceConversationContributionTime(
   plannedDurationMinutes
 ) {
   const durationMinutes = plannedDurationMinutes;
-  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 1) {
+  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 0) {
     fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
+  }
+  if (durationMinutes === 0) {
+    if (context.conversationTimeContract?.mode !== 'same_timestamp') {
+      fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
+    }
+    return {
+      working_state: structuredClone(working),
+      temporal_boundary_refs: [],
+      session_status: 'active',
+      elapsed_minutes: 0,
+      completed: true,
+      interrupted: false
+    };
   }
   const clockBefore = working.clock;
   const limit = addElapsedTime(clockBefore, {
@@ -198,8 +211,8 @@ export function projectConversationTemporalAdvance({
   const resumedExecution = semanticExchange?.resumed_npc_execution
     ?? semanticExchange?.resumed_player_execution ?? null;
   if (!Number.isSafeInteger(exactMinutes) || exactMinutes < 0
-      || (exactMinutes === 0
-        && resumedExecution == null)
+      || (exactMinutes === 0 && resumedExecution == null
+        && semanticExchange?.exchange?.time_budget?.status !== 'completed')
       || !Array.isArray(candidates) || !Array.isArray(roots)
       || !Array.isArray(boundaryRefs)
       || (exactMinutes === 0 && boundaryRefs.length !== 0)) {
@@ -261,6 +274,9 @@ export function projectConversationTemporalAdvance({
 }
 
 function exactDurationMinutes(context) {
+  if (context.conversationTimeContract?.mode === 'same_timestamp') {
+    return 0;
+  }
   const profile = context.phase === 'phase_3'
     ? (context.evidencePresented
         ? context.contracts.evidenceTalk : context.contracts.talk)

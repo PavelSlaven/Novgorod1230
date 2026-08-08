@@ -74,9 +74,21 @@ const EXPECTED = Object.freeze({
     operation: 'request_activity',
     kindField: 'activity_kind',
     kindsField: 'activity_kinds',
-    kind: 'rest',
+    kind: 'recover',
     targetKey: 'fishingCamp',
     targetSemantic: 'camp_fire'
+  },
+  'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse': {
+    minRevision: 15,
+    operation: 'emit_interaction',
+    kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds',
+    kind: 'request',
+    targetKeys: ['eremey', 'participatingFisher', 'otherFisher'],
+    targetSemantics: [
+      'eremey_fisher', 'participating_fisher', 'other_fisher'
+    ],
+    instrument: 'none'
   }
 });
 
@@ -123,10 +135,14 @@ export function bindLowerDvinaTraceTurnStepCommands({
       return command;
     }
     const record = byCommand.get(command.command_id);
-    const targetRef = targetRefs?.[expected.targetKey];
+    const targetRef = expected.targetKeys == null
+      ? targetRefs?.[expected.targetKey]
+      : expected.targetKeys.map((key) => targetRefs?.[key]);
     const actorRef = targetRefs?.actor;
     if (!validRecord(record, expected)
-        || typeof targetRef !== 'string' || targetRef.length === 0
+        || (Array.isArray(targetRef)
+          ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
+          : typeof targetRef !== 'string' || targetRef.length === 0)
         || typeof actorRef !== 'string' || actorRef.length === 0) {
       gap();
     }
@@ -170,7 +186,10 @@ function validRecord(record, expected) {
   return record?.operation === expected.operation
     && Array.isArray(record[expected.kindsField])
     && record[expected.kindsField].includes(expected.kind)
-    && record.target_semantics?.includes(expected.targetSemantic) === true
+    && (expected.targetSemantics == null
+      ? record.target_semantics?.includes(expected.targetSemantic) === true
+      : expected.targetSemantics.every((semantic) =>
+        record.target_semantics?.includes(semantic) === true))
     && (expected.instrumentSemantic == null
       || record.instrument_semantics?.includes(
         expected.instrumentSemantic
@@ -190,7 +209,10 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   const targetField = expected.operation === 'emit_interaction'
     ? 'target_actor_refs'
     : 'target_refs';
-  if (operation[targetField]?.includes(targetRef) !== true) return false;
+  const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
+  if (operation[targetField]?.length !== expectedTargets.length
+      || expectedTargets.some((ref) =>
+    operation[targetField]?.includes(ref) !== true)) return false;
   if (expected.instrument === 'none') {
     return operation.instrument_refs?.length === 0;
   }

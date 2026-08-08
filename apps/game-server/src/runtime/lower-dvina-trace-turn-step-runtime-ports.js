@@ -69,6 +69,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
     ...(preparedDomainEffect == null ? {} : {
       preparedDomainEffect: Object.freeze({
         supports: (input) => preparedDomainEffect.supports(input),
+        currentState: (input) => preparedDomainEffect.currentState(input),
         apply: (input) => admitResult(
           preparedDomainEffect.apply(input), workingProjectionAuthority)
       })
@@ -84,8 +85,10 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         input, committedState, temporalAdvance),
       preparedEffectBodyOwner: (input) => prepareEffectBody(
         input, committedState, bodyEffect),
-      preparedEffectProjectionOwner: ({ working_projection: projection }) =>
-        workingProjectionAuthority.admit(projection)
+      preparedEffectProjectionOwner: (input) => {
+        preparedDomainEffect.advanceState(input);
+        return workingProjectionAuthority.admit(input.working_projection);
+      }
     }),
     resolveCheckContext: (input) =>
       resolveLowerDvinaTraceTurnStepCheckContext(
@@ -129,7 +132,8 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
 }
 
 async function prepareEffectBody(input, committedState, bodyEffect) {
-  if (input.effect_kind === 'semantic_activity') {
+  if (input.effect_kind === 'semantic_activity'
+      || Number(input.consequence?.duration_minutes) === 0) {
     return Object.freeze({
       version: 1,
       schema: 'turn_body_update',

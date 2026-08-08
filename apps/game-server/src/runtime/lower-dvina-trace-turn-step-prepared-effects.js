@@ -1,25 +1,111 @@
 import { serverError } from '../errors.js';
 import { deepFreeze } from
   './lower-dvina-trace-turn-step-runtime-common.js';
+import { applyTracePhase7ScheduleState } from
+  './lower-dvina-trace-phase-7-state-projection.js';
 
 const PHASE3_ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
+const PHASE7_REST_COMMAND =
+  'lower_dvina_trace.rest_by_fire_and_dry_clothing';
+export const TURN10_COMPANION_COMMAND =
+  'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
 
 export function createLowerDvinaTracePreparedDomainEffect({
   committedState
 }) {
+  let currentState = structuredClone(committedState);
   return Object.freeze({
     supports({ operation, command_id: commandId } = {}) {
-      return operation?.op === 'request_movement'
-        && commandId === PHASE3_ROUTE_COMMAND;
+      return (operation?.op === 'request_movement'
+          && commandId === PHASE3_ROUTE_COMMAND)
+        || (operation?.op === 'request_activity'
+          && commandId === PHASE7_REST_COMMAND)
+        || (operation?.op === 'emit_interaction'
+          && commandId === TURN10_COMPANION_COMMAND);
+    },
+    currentState() {
+      return structuredClone(currentState);
+    },
+    advanceState({ prepared_effect: effect }) {
+      currentState = projectPreparedDomainState(currentState, effect);
+      return structuredClone(currentState);
     },
     async apply(input) {
-      return applyPreparedPhase3Route({
-        input,
-        committedState
-      });
+      if (input?.command_id === PHASE3_ROUTE_COMMAND) {
+        return applyPreparedPhase3Route({ input, committedState });
+      }
+      if (input?.command_id === PHASE7_REST_COMMAND) {
+        return applyPreparedPhase7Rest(input);
+      }
+      if (input?.command_id === TURN10_COMPANION_COMMAND) {
+        return applyPreparedTurn10Conversation(input);
+      }
+      fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
   });
+}
+
+function applyPreparedPhase7Rest(input) {
+  const consequence = input?.consequence;
+  if (consequence?.phase7_kind !== 'fire_rest'
+      || consequence.duration_minutes !== 30
+      || input?.prepared_chain_context?.prior_effect_count !== 0) {
+    fail('TRACE_TURN_STEP_PREPARED_PHASE7_INVALID');
+  }
+  return preparedResult(input, consequence, false);
+}
+
+function applyPreparedTurn10Conversation(input) {
+  const consequence = input?.consequence;
+  if (consequence?.turn10_kind !== 'companion_request'
+      || consequence.duration_minutes !== 0
+      || input?.prepared_chain_context?.prior_effect_count !== 1) {
+    fail('TRACE_TURN_STEP_PREPARED_TURN10_INVALID');
+  }
+  return preparedResult(input, consequence, true);
+}
+
+function preparedResult(input, consequence, playerResponseBoundary) {
+  return deepFreeze({
+    working_projection: structuredClone(input.working_projection),
+    summary: `prepared:${input.command_id}`,
+    write_fragments: [],
+    player_response_boundary: playerResponseBoundary,
+    prepared_effect_request: {
+      effect_kind: 'domain_command',
+      owner_ref: input.command_id,
+      operation_ref: input.operation.op,
+      availability: structuredClone(input.availability),
+      consequence: structuredClone(consequence)
+    }
+  });
+}
+
+function projectPreparedDomainState(state, effect) {
+  let next = structuredClone(state);
+  next.clock = structuredClone(effect.time_update.clock_after);
+  next.clock_weather_light = {
+    ...structuredClone(next.clock_weather_light ?? {}),
+    clock: structuredClone(next.clock)
+  };
+  next.body_state = structuredClone(effect.body_update.state_after);
+  if (effect.consequence?.phase7_kind === 'fire_rest') {
+    const phase7 = effect.consequence.phase7;
+    next = applyTracePhase7ScheduleState({
+      state: next,
+      execution: phase7.schedule_execution,
+      changeSetId: null,
+      activeActorStep:
+        phase7.schedule_temporal.projection?.active_npc_actor_step
+    });
+    next.phase7_fire_rest = {
+      status: phase7.schedule_temporal.result
+        .temporal_status === 'completed' ? 'completed' : 'paused'
+    };
+    next.temporal_boundary_candidates = [];
+  }
+  return next;
 }
 
 async function applyPreparedPhase3Route({

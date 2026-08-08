@@ -25,13 +25,14 @@
     "promise_policy": {"owner": "@rus/social-law", "schema": "rus.trace_promise_policy.v1", "id": "trace_ld_v1_promise_no_summary_killing", "revision": 1, "digest": "9b6c4096886782151bf49f80f2bfdb8a1062576824fbcafde92143859f69574b"},
     "completion_rules": {"owner": "@rus/visibility-knowledge-memory", "schema": "rus.trace_completion_rules.v1", "id": "trace_ld_v1_completion_rules", "revision": 1, "digest": "497e6ed12d4393f890e47e38e61a52a2f103a6ad0546793ec587b329364fc614"},
     "epilogue_rules": {"owner": "@rus/presentation", "schema": "rus.trace_epilogue_rules.v1", "id": "trace_ld_v1_epilogue_rules", "revision": 1, "digest": "959f42e52147d9e19f5ac945e336b0280090f2d7025e79c01159f341a2ed36c3"},
-    "turn_step_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_bindings.v1", "id": "lower_dvina_trace_turn_step_bindings_v2", "revision": 2, "digest": "c082b9361b42e89e9e1bedfd24ad4d6d6610604268806618c9bb33252d4cd3f5"},
+    "turn_step_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_bindings.v1", "id": "lower_dvina_trace_turn_step_bindings_v2", "revision": 2, "digest": "87679ee31c8b74cdf6665b6971efcb51fad3cf73c149048070c3831e6b099738"},
+    "turn_10_companion_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_10_companion_bindings.v1", "id": "lower_dvina_trace_turn_10_companion_bindings_v1", "revision": 1, "digest": "ed4b33ff410c4bfab03abcd2da0c637f3023b653fdaa7e15543bcb0e246ec515"},
     "turn_step_owner_profiles": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_owner_profiles.v1", "id": "trace_ld_v1_turn_step_owner_profiles", "revision": 1, "digest": "585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823"},
     "conversation_semantic_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_conversation_semantic_bindings.v1", "id": "lower_dvina_trace_conversation_semantic_bindings_v1", "revision": 1, "digest": "835dc461c658a7149053046537c2f1341c3966acf384d0f3ba77758b13263557"},
     "autonomous_semantic_bindings": {"owner": "@rus/npc-runtime", "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "digest": "b4c924f9f2f7f10ef9ca1597c316246a8ab17b47401afa297e88b5bfda788bcd"}
   },
   "required_unresolved_refs": [],
-  "scope": ["phase_0_immutable_definition", "m1_player_semantic_step_admission", "m2_npc_conversation_semantic_bindings", "m3_autonomous_npc_semantic_bindings", "phase_7_fire_rest_temporal_admission"],
+  "scope": ["phase_0_immutable_definition", "m1_player_semantic_step_admission", "m2_npc_conversation_semantic_bindings", "m3_autonomous_npc_semantic_bindings", "phase_7_fire_rest_temporal_admission", "canonical_turn_10_companion_conversation"],
   "concrete_party_selections": {"player_name": null, "player_profile": null, "party_truth": null, "npc_decisions": [], "item_placements": [], "rolls": [], "game_timestamp": null, "environment_snapshot": null, "completion_state": null, "epilogue": null},
   "excludes": ["party_instance", "runtime_handlers", "evaluators", "migrations", "api_publication", "ui", "browser_flow", "scenario_local_conversation_resolver", "scenario_local_npc_scheduler"]
 }

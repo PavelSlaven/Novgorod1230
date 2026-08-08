@@ -13,19 +13,20 @@ export async function loadLowerDvinaTraceRevision15Bundle({
   freezeDeep,
   validateDefinitionPins
 }) {
-  const [manifest, definition, autonomous, turnSteps, movement, phase1a, bindings,
+  const [manifest, definition, autonomous, turnSteps, turn10, movement, phase1a, bindings,
     reused] = await Promise.all([
     readJson(rootDir, `${CONTENT_ROOT}/manifest.json`),
     readJson(rootDir, `${CONTENT_ROOT}/definition.json`),
     readJson(rootDir, `${CONTENT_ROOT}/autonomous-semantic-bindings.json`),
     readJson(rootDir, `${CONTENT_ROOT}/turn-step-bindings.json`),
+    readJson(rootDir, `${CONTENT_ROOT}/turn-10-companion-bindings.json`),
     readJson(rootDir, `${CONTENT_ROOT}/movement-bindings.json`),
     readJson(rootDir, `${ROOT}/phase-1a-v11/manifest.json`),
     readJson(rootDir, `${ROOT}/phase-1a-v11/materialization-bindings.json`),
     readJson(rootDir, `${ROOT}/phase-1a-v10/materialization-bindings.json`)
   ]);
   assertRevision15Package({ historicalBundle, manifest, definition, autonomous,
-    turnSteps, movement, phase1a, bindings, reused, fail });
+    turnSteps, turn10, movement, phase1a, bindings, reused, fail });
 
   const historical = structuredClone(historicalBundle);
   const materializationBindings = {
@@ -47,6 +48,7 @@ export async function loadLowerDvinaTraceRevision15Bundle({
     route_bindings: structuredClone(historicalBundle.movement_bindings.route_bindings)
   };
   historical.turn_step_bindings = turnSteps.value;
+  historical.turn_10_companion_bindings = turn10.value;
   historical.autonomous_semantic_bindings = autonomous.value;
   for (const [key, loaded, path, value] of [
     ['phase_1a_manifest', phase1a, `${ROOT}/phase-1a-v11/manifest.json`, phase1a.value],
@@ -54,6 +56,7 @@ export async function loadLowerDvinaTraceRevision15Bundle({
     ['definition', definition, `${CONTENT_ROOT}/definition.json`, definition.value],
     ['movement_bindings', movement, `${CONTENT_ROOT}/movement-bindings.json`, historical.movement_bindings],
     ['turn_step_bindings', turnSteps, `${CONTENT_ROOT}/turn-step-bindings.json`, turnSteps.value],
+    ['turn_10_companion_bindings', turn10, `${CONTENT_ROOT}/turn-10-companion-bindings.json`, turn10.value],
     ['autonomous_semantic_bindings', autonomous, `${CONTENT_ROOT}/autonomous-semantic-bindings.json`, autonomous.value]
   ]) {
     historical.artifact_pins[key] = {
@@ -85,7 +88,7 @@ function applySealedSelectionInventoryOverrides(inventory, overrides) {
 }
 
 function assertRevision15Package({ historicalBundle, manifest, definition,
-  autonomous, turnSteps, movement, phase1a, bindings, reused, fail }) {
+  autonomous, turnSteps, turn10, movement, phase1a, bindings, reused, fail }) {
   const content = manifest.value;
   if (content?.schema !== 'rus.lower_dvina_trace_m3_content_manifest.v1'
     || content.package_id !== 'lower_dvina_trace_m3_content_v1'
@@ -96,10 +99,12 @@ function assertRevision15Package({ historicalBundle, manifest, definition,
     || content.superseded_definition_ref?.digest !== historicalBundle.artifact_pins.definition.digest
     || content.files?.['definition.json'] !== definition.digest
     || content.files?.['turn-step-bindings.json'] !== turnSteps.digest
+    || content.files?.['turn-10-companion-bindings.json'] !== turn10.digest
     || content.files?.['autonomous-semantic-bindings.json'] !== autonomous.digest
     || content.files?.['movement-bindings.json'] !== movement.digest
     || content.content_refs?.definition?.digest !== definition.digest
     || content.content_refs?.turn_step_bindings?.digest !== turnSteps.digest
+    || content.content_refs?.turn_10_companion_bindings?.digest !== turn10.digest
     || content.content_refs?.autonomous_semantic_bindings?.digest !== autonomous.digest
     || content.content_refs?.movement_bindings?.digest !== movement.digest
     || definition.value?.revision !== 15
@@ -107,6 +112,8 @@ function assertRevision15Package({ historicalBundle, manifest, definition,
       !== historicalBundle.artifact_pins.definition.digest
     || definition.value.resolved_policy_refs?.turn_step_bindings?.digest
       !== turnSteps.digest
+    || definition.value.resolved_policy_refs?.turn_10_companion_bindings?.digest
+      !== turn10.digest
     || definition.value.resolved_policy_refs?.autonomous_semantic_bindings?.digest
       !== autonomous.digest
     || definition.value.resolved_policy_refs?.activity_check_consequence_profiles?.digest
@@ -134,6 +141,7 @@ function assertRevision15Package({ historicalBundle, manifest, definition,
     || bindings.value.normalization_policy !== 'forbidden'
     || !validInitialProjection(bindings.value)
     || !validTurnSteps(turnSteps.value)
+    || !validTurn10Bindings(turn10.value)
     || !validAutonomousBindings(autonomous.value)) {
     fail('TRACE_M3_CONTENT_INVALID',
       'Exact approved M3 autonomous bindings and Phase 1A cutover are required.');
@@ -195,11 +203,26 @@ function validTurnSteps(value) {
     && value.fallback_policy === 'forbidden'
     && value.exact_fast_path === 'preserved'
     && value.legacy_bounded_fallback === 'forbidden'
-    && value.domain_bindings?.length === 9
+    && value.domain_bindings?.length === 10
     && fireRest?.operation === 'request_activity'
     && fireRest.command_id === 'lower_dvina_trace.rest_by_fire_and_dry_clothing'
     && fireRest.activity_profile_ref === 'trace_ld_v1_activity_fire_rest'
     && fireRest.body_effect_profile_ref === 'trace_ld_v1_body_fire_rest_30m';
+}
+
+function validTurn10Bindings(value) {
+  return value?.schema
+      === 'rus.lower_dvina_trace_turn_10_companion_bindings.v1'
+    && value.binding_set_id
+      === 'lower_dvina_trace_turn_10_companion_bindings_v1'
+    && value.revision === 1
+    && value.scenario_definition_revision === 15
+    && value.status === 'approved'
+    && value.fallback_policy === 'forbidden'
+    && value.command_binding?.command_id
+      === 'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse'
+    && value.conversation_activity?.duration_minutes === 0
+    && value.route_ref === 'trace_ld_v1_route_camp_to_storehouse';
 }
 
 function validAutonomousBindings(value) {

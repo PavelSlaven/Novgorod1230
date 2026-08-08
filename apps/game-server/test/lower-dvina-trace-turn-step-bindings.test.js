@@ -36,7 +36,9 @@ const targetRefs = Object.freeze({
   evidence: 'trace_ld_v1_evidence_blue_wool',
   dryingShed: 'trace_ld_v1_loc_old_drying_shed',
   ratsha: 'npc:ratsha',
-  onisim: 'npc:onisim'
+  onisim: 'npc:onisim',
+  participatingFisher: 'npc:fisher-1',
+  otherFisher: 'npc:fisher-2'
 });
 
 test('historical revision keeps the original bounded command definitions', () => {
@@ -153,10 +155,24 @@ test('revision 15 keeps the exact fast path and maps a free rest phrase', () => 
   assert.equal(rest.semantic_binding.matches({ operation: {
     op: 'request_activity',
     actor_ref: targetRefs.actor,
-    activity_kind: 'rest',
+    activity_kind: 'recover',
     target_refs: [targetRefs.fishingCamp],
     description: 'погреться у костра и просушить одежду'
   } }), true, 'the validated player-step plan must bind the same command');
+  const companions = bound.find(({ command_id: id }) =>
+    id === 'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse');
+  assert.equal(companions.semantic_binding.matches({ operation: {
+    op: 'emit_interaction',
+    actor_ref: targetRefs.actor,
+    interaction_kind: 'request',
+    target_actor_refs: [
+      targetRefs.eremey,
+      targetRefs.participatingFisher,
+      targetRefs.otherFisher
+    ],
+    instrument_refs: [],
+    content_summary: 'попросить пойти к Жданко'
+  } }), true);
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

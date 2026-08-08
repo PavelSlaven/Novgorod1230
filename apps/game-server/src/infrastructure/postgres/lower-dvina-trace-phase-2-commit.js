@@ -7,9 +7,8 @@ import {
   buildPhase2Writes
 } from './lower-dvina-trace-phase-2-writes.js';
 import { mergePhase2Knowledge } from './lower-dvina-trace-phase-2-read.js';
-import {
-  buildLowerDvinaTracePendingScreen
-} from './lower-dvina-trace-turn-presentation.js';
+import { buildLowerDvinaTracePendingScreen } from
+  './lower-dvina-trace-turn-presentation.js';
 import {
   buildPhase2Snapshot,
   commitPhase2BodyState
@@ -47,7 +46,7 @@ export async function commitLowerDvinaTracePhase2({
   contracts,
   phase3Contracts,
   phase4Contracts,
-  phase5Contracts, phase6Contracts, phase7Contracts,
+  phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
   loadState,
   committer
@@ -58,7 +57,8 @@ export async function commitLowerDvinaTracePhase2({
   if (routed.handled) return routed.result;
   const factual = routed.factual;
   if (factual?.consequence?.phase7_kind) return commitLowerDvinaTracePhase7({
-    partyId, writePlan, inputDigest, phase7Contracts, loadState, committer
+    partyId, writePlan, inputDigest, phase7Contracts, turn10Contracts,
+    loadState, committer
   });
   if (factual?.consequence?.phase6_kind) return commitLowerDvinaTracePhase6({ partyId, writePlan, inputDigest, phase6Contracts, loadState, committer });
   if (factual?.consequence?.phase5_kind) {

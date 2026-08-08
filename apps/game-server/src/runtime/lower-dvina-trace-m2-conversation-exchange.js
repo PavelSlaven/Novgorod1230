@@ -1,7 +1,5 @@
-import {
-  requestPlayerConversationContribution,
-  runConversationExchange
-} from '@rus/turn';
+import { requestPlayerConversationContribution, runConversationExchange } from
+  '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
 import { buildNpcResponseBoundaryBatch } from
@@ -150,7 +148,9 @@ export async function executeM2ConversationExchange(context) {
       context.contracts.conversationBindings.max_contributions_per_exchange,
     timeBudget: {
       total_minutes: exchangeDurationMinutes,
-      contribution_slots: contributionSlots
+      contribution_slots: contributionSlots,
+      ...(context.conversationTimeContract?.mode === 'same_timestamp'
+        ? { mode: 'same_timestamp' } : {})
     },
     pendingPlayerExecution,
     pendingNpcExecution: pendingExecution

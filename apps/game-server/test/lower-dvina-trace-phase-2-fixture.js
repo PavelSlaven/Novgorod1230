@@ -216,7 +216,8 @@ export function fixture({
     },
     async commitPhase2Turn(commitInput) {
       const { writePlan, inputDigest, phase3Contracts,
-        phase4Contracts, phase5Contracts, phase6Contracts } = commitInput;
+        phase4Contracts, phase5Contracts, phase6Contracts,
+        turn10Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
       lastCommitInput = commitInput;
@@ -238,7 +239,8 @@ export function fixture({
           nextVersion,
           turnNumber,
           changeSetId,
-          inputDigest
+          inputDigest,
+          turn10Contracts
         }));
       } else if (factual.consequence.phase6_kind != null) {
         replaceState(state, nextPhase6State({

@@ -3,10 +3,16 @@ import { buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
+import { applyTurn10CompanionState } from
+  './lower-dvina-trace-turn-10-state.js';
+import {
+  applyTracePhase7ScheduleState,
+  tracePhase7ScheduleHistoryEntry
+} from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
-  changeSetId, inputDigest }) {
-  const next = structuredClone(state);
+  changeSetId, inputDigest, turn10Contracts = null }) {
+  let next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;
   const phase7 = factual.consequence.phase7;
@@ -61,8 +67,13 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       'TRACE_PHASE_7_DECISION_TRACE_CONFLICT'
     );
   }
-  applyScheduleResult(next, phase7.schedule_execution, changeSetId,
-    phase7.schedule_temporal.projection?.active_npc_actor_step);
+  next = applyTracePhase7ScheduleState({
+    state: next,
+    execution: phase7.schedule_execution,
+    changeSetId,
+    activeActorStep:
+      phase7.schedule_temporal.projection?.active_npc_actor_step
+  });
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: restCompleted ? 'completed' : 'paused',
@@ -88,7 +99,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     schedule_exact_elapsed: structuredClone(
       phase7.schedule_execution.exact_elapsed
     ),
-    schedule_result: scheduleHistoryEntry(
+    schedule_result: tracePhase7ScheduleHistoryEntry(
       phase7.schedule_execution, changeSetId
     ),
     change_set_id: changeSetId
@@ -123,87 +134,18 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     visible_package: null,
     change_set_id: changeSetId
   };
-  return next;
-}
-
-function applyScheduleResult(next, execution, changeSetId, activeActorStep) {
-  const npc = next.npcs.find(({ instance_id: id }) =>
-    id === execution.npc_ref);
-  const completed = execution.status === 'executed';
-  const stillRunning = execution.status === 'started'
-    && activeActorStep?.status === 'started'
-    && activeActorStep?.npc_ref === execution.npc_ref;
-  if (!npc || (!completed && !stillRunning)) {
-    fail('TRACE_PHASE_7_SCHEDULE_STATE_INVALID');
+  if (factual.consequence.turn10_kind === 'companion_request') {
+    next = applyTurn10CompanionState({
+      next,
+      factual,
+      changeSetId,
+      rootTurnId: factual.mode_resolution.turn_id,
+      workingRevision:
+        factual.mode_resolution.decision_trace?.working_revision ?? 2,
+      turn10Contracts
+    });
   }
-  const history = scheduleHistoryEntry(execution, changeSetId);
-  // ponytail: started keeps unfinished actor-step; outcomes only on executed.
-  npc.machine_state = {
-    ...npc.machine_state,
-    ...(completed && execution.movement_proposal ? {
-      location_ref: execution.movement_proposal.location_ref,
-      spatial_zone_ref: execution.movement_proposal.destination_zone_ref
-    } : {}),
-    status: completed
-      ? activityStatus(execution.semantic_operation)
-      : 'active',
-    current_activity_ref: execution.activity_profile_ref,
-    last_phase7_change_set_id: changeSetId,
-    last_schedule_execution: history,
-    npc_schedule_history: [
-      ...(npc.machine_state?.npc_schedule_history ?? []), history
-    ],
-    ...(completed ? {} : {
-      active_npc_actor_step: structuredClone(activeActorStep)
-    })
-  };
-  if (!completed || !execution.property_proposal) return;
-  const property = execution.property_proposal;
-  const container = next.containers.find(
-    ({ container_id: id }) => id === property.item_id
-  );
-  if (!container) fail('TRACE_PHASE_7_ROAD_BAG_STATE_MISSING');
-  container.state = {
-    ...container.state,
-    location_ref: property.destination.location_ref,
-    zone_ref: property.destination.zone_ref,
-    controller_npc_id: property.destination.controller_actor_id,
-    ...(property.destination.visibility_state == null ? {} : {
-      visibility_state: property.destination.visibility_state
-    }),
-    approved_transition_history: [
-      ...(container.state?.approved_transition_history ?? []),
-      {
-        transition_profile_id: property.transition_profile_id,
-        owner_change: 'forbidden',
-        change_set_id: changeSetId
-      }
-    ]
-  };
-  container.state_version += 1;
-}
-
-function activityStatus(operation) {
-  if (operation?.op === 'apply_semantic_activity') return 'idle';
-  if (operation?.activity_kind === 'wait') return 'waiting';
-  if (operation?.activity_kind === 'observe') return 'observing';
-  return 'active';
-}
-
-function scheduleHistoryEntry(execution, changeSetId) {
-  return {
-    status: execution.status,
-    failure_code: execution.failure_code ?? null,
-    semantic_operation: structuredClone(execution.semantic_operation),
-    execution_binding_ref: execution.execution_binding_ref,
-    schedule_option_id: execution.schedule_option_id,
-    activity_profile_ref: execution.activity_profile_ref,
-    exact_elapsed: structuredClone(execution.exact_elapsed),
-    clock_before: structuredClone(execution.clock_before),
-    clock_after: structuredClone(execution.clock_after),
-    factual_result_source: execution.factual_result_source,
-    change_set_id: changeSetId
-  };
+  return next;
 }
 
 function appendUnique(current = [], additions = [], identity, code) {

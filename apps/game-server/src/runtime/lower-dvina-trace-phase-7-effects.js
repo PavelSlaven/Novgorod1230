@@ -100,17 +100,32 @@ export function createTracePhase7VisibleProjector({ fallback }) {
       }
       const body = input.body_update;
       const transitions = body.proposal?.condition_transitions ?? [];
+      const companionOutcomes = input.consequence.turn10_kind
+        === 'companion_request'
+        ? (input.consequence.conversation?.semantic_exchange?.npc_outcomes
+          ?? []).filter(({ applied, outcome }) => applied
+            && outcome?.kind === 'route_participation')
+        : [];
+      const companionRoles = companionOutcomes.map(
+        ({ outcome }) => outcome.role);
       return {
         version: 1,
         schema: 'visible_context_package',
-        visible_scene:
-          'У костра прошло полчаса. Одежда немного подсохла, стало теплее.',
+        visible_scene: companionOutcomes.length === 0
+          ? 'У костра прошло полчаса. Одежда немного подсохла, стало теплее.'
+          : 'У костра прошло полчаса. После разговора определилось, кто пойдёт к Жданко, а кто останется с Онисимом.',
         visible_changes: [
           'elapsed_30_minutes',
-          ...transitions.map(({ outcome }) => outcome)
+          ...transitions.map(({ outcome }) => outcome),
+          ...companionRoles.map((role) => `npc_commitment:${role}`)
         ],
         sensory_details: ['Тепло огня постепенно отгоняет озноб.'],
-        visible_npc: [],
+        visible_npc: companionOutcomes.map(({ npc_ref: npcRef, outcome }) => ({
+          entity_ref: structuredClone(npcRef),
+          display_label: outcome.role === 'guide' ? 'Еремей' : 'Рыбак',
+          recognition: 'known',
+          visible_status: visibleCompanionStatus(outcome.role)
+        })),
         visible_objects: [],
         known_context: ['Одежда остаётся сырой и не высохла полностью.'],
         uncertainties: [],
@@ -124,4 +139,12 @@ export function createTracePhase7VisibleProjector({ fallback }) {
       };
     }
   });
+}
+
+function visibleCompanionStatus(role) {
+  return role === 'guide'
+    ? 'согласился вести группу'
+    : role === 'escort'
+      ? 'согласился идти с группой'
+      : 'останется с Онисимом';
 }

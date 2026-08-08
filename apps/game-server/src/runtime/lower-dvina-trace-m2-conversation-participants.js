@@ -13,6 +13,14 @@ export function conversationNpcContext(context, targetRef) {
       'Every NPC responder must be an actual present participant.'
     );
   }
+  const resolved = context.resolveNpcConversationContext?.({
+    context,
+    target_ref: structuredClone(targetRef),
+    target_actor: structuredClone(targetActor)
+  });
+  if (resolved != null) {
+    return { ...context, ...resolved, targetRef, targetActor };
+  }
   if (sameRef(targetRef, context.targetRef)) {
     return { ...context, targetRef, targetActor };
   }

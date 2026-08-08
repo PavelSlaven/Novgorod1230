@@ -27,7 +27,7 @@ import {
 } from './lower-dvina-trace-phase-7-commit-policy.js';
 
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
-  inputDigest, phase7Contracts, loadState, committer }) {
+  inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
   const factual = target(writePlan, 'party_state');
   const visibleContext = target(writePlan, 'party_visible_context_package');
   if (factual?.consequence?.phase7_kind !== 'fire_rest'
@@ -53,7 +53,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     nextVersion,
     turnNumber,
     changeSetId,
-    inputDigest
+    inputDigest,
+    turn10Contracts
   });
   const visibleEnvelope = phase7VisibleEnvelope({
     partyId,

@@ -194,9 +194,86 @@ test('prepared effect ledger rejects forged, reordered and missing slices',
     }
   });
 
-test('after a prepared route a second domain or generic check is a boundary',
+test('two prepared domain owners form one ordered ledger', async () => {
+  let secondDomainCalls = 0;
+  const registry = preparedRegistry({ extraDomain: {
+    request_activity: async (execution) => {
+      secondDomainCalls += 1;
+      return {
+        working_projection: {
+          ...execution.working_projection,
+          interaction_status: 'companions_committed'
+        },
+        summary: 'prepared companion conversation',
+        write_fragments: [],
+        prepared_effect_request: {
+          effect_kind: 'domain_command',
+          owner_ref: 'companion_conversation_owner',
+          operation_ref: 'request_activity',
+          availability: available(),
+          consequence: { duration_minutes: 0 }
+        }
+      };
+    }
+  } });
+  const outcome = await runTurnStepLoop(input(), ports({
+    executionRegistry: registry,
+    canContinuePreparedDomain: async () => true,
+    preparedEffectContext: {
+      current_clock: at(0), current_body_state: body()
+    },
+    async preparedEffectTimeOwner({ prepared_chain_context: context,
+      consequence }) {
+      const duration = consequence.duration_minutes;
+      const before = Number(context.current_clock.whole_minutes);
+      return {
+        version: 2, schema: 'turn_time_update',
+        owner: '@rus/time-events-history',
+        clock_before: context.current_clock,
+        clock_after: at(before + duration),
+        exact_elapsed: minutes(duration), nearest_boundary: null
+      };
+    },
+    async preparedEffectBodyOwner({ prepared_chain_context: context }) {
+      return {
+        version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+        applied: false, proposal: null,
+        state_after: context.current_body_state
+      };
+    },
+    turnStepModel: (request) => request.step_index === 1
+      ? routePlan(request) : secondDomainPlan(request)
+  }));
+
+  assert.equal(secondDomainCalls, 1);
+  assert.equal(outcome.working_revision, 2);
+  assert.equal(outcome.stop_reason, 'player_response');
+  assert.equal(outcome.working_projection.interaction_status,
+    'companions_committed');
+  assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) => ({
+    ordinal: slice.ordinal,
+    kind: slice.effect_kind,
+    owner: slice.owner_ref,
+    from: slice.time_update.clock_before.whole_minutes,
+    to: slice.time_update.clock_after.whole_minutes
+  })), [{
+    ordinal: 1,
+    kind: 'domain_command',
+    owner: 'route_owner',
+    from: '0',
+    to: '8'
+  }, {
+    ordinal: 2,
+    kind: 'domain_command',
+    owner: 'companion_conversation_owner',
+    from: '8',
+    to: '8'
+  }]);
+});
+
+test('after a prepared route a generic check is a boundary',
   async (t) => {
-    for (const resolution of ['domain_request', 'generic_check']) {
+    for (const resolution of ['generic_check']) {
       await t.test(resolution, async () => {
         let delegated = 0;
         let rolls = 0;

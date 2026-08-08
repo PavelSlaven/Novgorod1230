@@ -28,18 +28,39 @@ export function turnStepDraftPreparedEffectLedger(draft) {
 }
 
 export function turnStepDraftPreparedDomainSlice(draft) {
+  return turnStepDraftPreparedDomainSlices(draft)[0] ?? null;
+}
+
+export function turnStepDraftPreparedDomainSlices(draft) {
   const ledger = turnStepDraftPreparedEffectLedger(draft);
-  if (ledger == null) return null;
+  if (ledger == null) return [];
   const domains = ledger.slices.filter(
     ({ effect_kind: kind }) => kind === 'domain_command');
-  if (domains.length !== 1
-      || domains[0].owner_ref !== draft.selected_command_id) {
+  const selectedCommandIds = draft.selected_command_ids
+    ?? (draft.selected_command_id == null ? [] : [draft.selected_command_id]);
+  if (domains.length !== selectedCommandIds.length
+      || domains.some(({ owner_ref: ownerRef }, index) =>
+        ownerRef !== selectedCommandIds[index])) {
     throw turnFailure(
       'TURN_STEP_PREPARED_EFFECT_INVALID',
-      'Prepared domain slice must bind the selected command exactly.'
+      'Prepared domain slices must bind the selected commands in order.'
     );
   }
-  return domains[0];
+  return domains;
+}
+
+export function buildTurnStepPreparedDomainConsequence(draft) {
+  const slices = turnStepDraftPreparedDomainSlices(draft);
+  if (slices.length === 0) return null;
+  let combined = structuredClone(slices[0].consequence);
+  for (const [index, slice] of slices.slice(1).entries()) {
+    combined = mergeDomainConsequence(
+      combined,
+      slice.consequence,
+      index + 1
+    );
+  }
+  return deepFreeze(combined);
 }
 
 export function buildTurnStepDraftConsequence(draft) {
@@ -264,6 +285,54 @@ function requireDuration(value, owner) {
 function validDuration(value) {
   const number = Number(value ?? 0);
   return Number.isFinite(number) && number >= 0;
+}
+
+function mergeDomainConsequence(left, right, index) {
+  if (!plain(left) || !plain(right)
+      || left.schema !== 'turn_consequence_package'
+      || right.schema !== 'turn_consequence_package'
+      || left.status !== 'resolved' || right.status !== 'resolved') {
+    throw turnFailure(
+      'TURN_STEP_CONSEQUENCE_FRAGMENT_INVALID',
+      'Prepared domain consequences must be resolved consequence packages.',
+      { index }
+    );
+  }
+  const standard = new Set([
+    'version', 'schema', 'status', 'duration_minutes', 'visible_seed',
+    'hidden_update', 'state_changes', 'suggested_actions',
+    'activity_attempt_id'
+  ]);
+  const merged = {
+    ...structuredClone(left),
+    duration_minutes: requireDuration(left.duration_minutes, 'domain')
+      + requireDuration(right.duration_minutes, 'domain'),
+    visible_seed: mergeRecord(
+      left.visible_seed, right.visible_seed, `domain_consequences[${index}]`),
+    hidden_update: mergeRecord(
+      left.hidden_update, right.hidden_update,
+      `domain_consequences[${index}].hidden_update`),
+    state_changes: [
+      ...structuredClone(left.state_changes ?? []),
+      ...structuredClone(right.state_changes ?? [])
+    ],
+    suggested_actions: [
+      ...structuredClone(left.suggested_actions ?? []),
+      ...structuredClone(right.suggested_actions ?? [])
+    ]
+  };
+  for (const [key, value] of Object.entries(right)) {
+    if (standard.has(key)) continue;
+    if (Object.hasOwn(merged, key) && sha256(merged[key]) !== sha256(value)) {
+      throw turnFailure(
+        'TURN_STEP_CONSEQUENCE_CONFLICT',
+        `Prepared domain consequences conflict on ${key}.`,
+        { field: key, index }
+      );
+    }
+    merged[key] = structuredClone(value);
+  }
+  return merged;
 }
 
 function plain(value) {

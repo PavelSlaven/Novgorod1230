@@ -28,6 +28,7 @@ export function buildPlayerRequest(context) {
     player_safe_context: {
       phase: context.phase,
       location_ref: context.state.position.location_ref,
+      current_game_timestamp: structuredClone(context.state.clock),
       target_npc_ref: context.targetRef,
       verbatim_utterance_text: requiredVerbatimUtteranceText(
         context.playerInput
@@ -36,11 +37,11 @@ export function buildPlayerRequest(context) {
       committed_knowledge_refs: committedPlayerKnowledgeRefs(context.state),
       allowed_duration_classes: ['domain_owned'],
       allowed_references: allowedPlayerContributionReferences(context),
-      available_check: {
+      ...(context.contracts.check == null ? {} : { available_check: {
         attribute_ref: context.contracts.check.attribute,
         skill_ref: context.contracts.check.skill,
         difficulty_band: context.contracts.check.check_id
-      },
+      } }),
       ...(context.phase === 'phase_3' && context.availableEvidence !== null
         ? { available_evidence: structuredClone(context.availableEvidence) }
         : {}),

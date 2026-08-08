@@ -20,24 +20,15 @@ import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contrac
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
 import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
 import { createTracePhase7FireRestCommand } from './lower-dvina-trace-phase-7-command.js';
-import { committedTraceScenarioDefinitionRevision } from
-  './lower-dvina-trace-committed-revision.js';
-import { buildLowerDvinaTracePhase2Services } from
-  './lower-dvina-trace-phase-2-services.js';
-import { bindLowerDvinaTraceTurnStepCommands } from
-  './lower-dvina-trace-turn-step-bindings.js';
-import {
-  projectLowerDvinaTracePlayerSafeState
-} from './lower-dvina-trace-player-safe-state.js';
-import {
-  createLowerDvinaTraceTurnStepGenericOwners
-} from './lower-dvina-trace-turn-step-generic-owners.js';
-import {
-  createStateVersionRevalidator,
-  requiredTraceTurnText,
-  validateConversationDependencies,
-  validatePhase2RuntimeDependencies
-} from './lower-dvina-trace-phase-2-runtime-input.js';
+import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js';
+import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
+import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
+import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js';
+import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
+import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
+import { createStateVersionRevalidator, requiredTraceTurnText,
+  validateConversationDependencies, validatePhase2RuntimeDependencies } from
+  './lower-dvina-trace-phase-2-runtime-input.js';
 import { createNpcSocialCheckResolver } from
   './lower-dvina-trace-npc-social-check.js';
 export function createLowerDvinaTracePhase2Runtime({
@@ -159,6 +150,15 @@ export function createLowerDvinaTracePhase2Runtime({
       const phase7Contracts = bundle.definition_revision === 15
         ? resolveTracePhase7Contracts({ state, bundle })
         : null;
+      const revalidateStateVersion = createStateVersionRevalidator({
+        repository, partyId, idempotencyKey
+      });
+      const turn10 = createTraceTurn10Runtime({
+        state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
+        inputDigest, playerConversationModel, npcSemanticModel,
+        revalidateStateVersion
+      });
+      const turn10Contracts = turn10?.contracts ?? null;
       const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
         ...(phase3Contracts ? createTracePhase3Commands({
@@ -206,12 +206,9 @@ export function createLowerDvinaTracePhase2Runtime({
           genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
           randomSource: turnRandomSource,
           temporalAdvanceOwner,
-          revalidateStateVersion: createStateVersionRevalidator({
-            repository,
-            partyId,
-            idempotencyKey
-          })
-        })] : [])
+          revalidateStateVersion
+        })] : []),
+        ...(turn10 ? [turn10.command] : [])
       ];
       const registry = createTurnCommandRegistry(
         bindLowerDvinaTraceTurnStepCommands({
@@ -227,7 +224,8 @@ export function createLowerDvinaTracePhase2Runtime({
             ratsha:
               phase4Contracts?.actors.ratsha_storehouse_helper.instance_id,
             onisim:
-              phase5Contracts?.actors.onisim_boatman.instance_id
+              phase5Contracts?.actors.onisim_boatman.instance_id,
+            ...(turn10?.targetRefs ?? {})
           }
         })
       );
@@ -248,7 +246,8 @@ export function createLowerDvinaTracePhase2Runtime({
             ...(phase3Contracts?.activityPins ?? []),
             ...(phase4Contracts?.activityPins ?? []),
             ...(phase5Contracts?.activityPins ?? []),
-            ...(phase7Contracts ? [phase7Contracts.activityPin] : [])
+            ...(phase7Contracts ? [phase7Contracts.activityPin] : []),
+            ...(turn10Contracts ? [turn10Contracts.activityPin] : [])
           ]
         }
       }, buildLowerDvinaTracePhase2Services({
@@ -264,6 +263,7 @@ export function createLowerDvinaTracePhase2Runtime({
         phase5Contracts,
         phase6Contracts,
         phase7Contracts,
+        turn10Contracts,
         registry,
         repository,
         semanticResolver,

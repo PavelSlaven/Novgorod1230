@@ -65,6 +65,11 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    by `timestamp → npc_ref → boundary_id`; each later NPC sees the updated
    projection. That loop is distinct from a combat snapshot batch, which remains
    `proposed` and does not share the autonomous sequential decision path.
+   A player conversation clause that follows a completed parent activity is
+   admitted only after the parent temporal result has updated the private
+   authoritative working state. It starts at that resulting timestamp with
+   zero additional elapsed time; it neither reopens the finished temporal
+   interval nor creates another clock/body owner.
 5. `@rus/turn` applies the merged proposals to an immutable candidate
    post-change state. `@rus/visibility-knowledge-memory` creates a player-safe
    package candidate and validates hidden-leak absence.

@@ -2,9 +2,9 @@ import { assertValid, validateConsequencePackage } from '../validators.js';
 import { freezeOutput } from './shared.js';
 import {
   buildTurnStepDraftConsequence,
+  buildTurnStepPreparedDomainConsequence,
   getTurnStepWorkflowDraft,
   mergeTurnStepDraftConsequence,
-  turnStepDraftPreparedDomainSlice,
   turnStepDraftPreparedEffectLedger
 } from '../turn-step-workflow-draft.js';
 import {
@@ -19,8 +19,8 @@ export async function resolveConsequenceStage({ playerInput, modeResolution, ret
     return freezeOutput(output);
   }
   const command = commandRegistry.get(modeResolution.command_id);
-  const preparedDomain = turnStepDraftPreparedDomainSlice(draft);
-  const commandOutput = preparedDomain?.consequence
+  const preparedDomain = buildTurnStepPreparedDomainConsequence(draft);
+  const commandOutput = preparedDomain
     ?? await command.consequence(Object.freeze(structuredClone({ playerInput, modeResolution, retrievedState, availability, checks })));
   assertValid(
     'turn_consequence_package',

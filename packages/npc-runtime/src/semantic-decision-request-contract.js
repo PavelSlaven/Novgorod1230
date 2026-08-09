@@ -231,7 +231,7 @@ function validateRatedRef(value, refKey) {
 }
 
 function validateNpc(value) {
-  const legacyKeys = [
+  const keys = [
     'profile_level',
     'identity',
     'social_role',
@@ -248,12 +248,9 @@ function validateNpc(value) {
     'current_activity',
     'available_resources'
   ];
-  const keys = Object.keys(value ?? {});
-  return (exactKeys(value, legacyKeys)
-      || exactKeys(value, [...legacyKeys, 'profile_ref', 'current_location']))
+  return exactKeys(value, keys)
     && (value.profile_level === null
       || enumValue(value.profile_level, ['background', 'scene', 'key']))
-    && (!keys.includes('profile_ref') || nullableStableId(value.profile_ref))
     && validateIdentity(value.identity)
     && validateSocialRole(value.social_role)
     && Array.isArray(value.attributes)
@@ -275,10 +272,6 @@ function validateNpc(value) {
     && jsonArray(value.fears)
     && jsonArray(value.obligations)
     && jsonArray(value.relationships)
-    && (!keys.includes('current_location')
-      || (exactKeys(value.current_location, ['location_ref', 'zone_ref'])
-        && nullableStableId(value.current_location.location_ref)
-        && nullableStableId(value.current_location.zone_ref)))
     && exactKeys(value.current_activity, [
       'activity_ref',
       'summary',

@@ -51,7 +51,6 @@ function request({ current = false } = {}) {
     },
     npc: {
       profile_level: 'scene',
-      profile_ref: 'zhdanko-profile',
       identity: {
         name_or_label: 'Жданко',
         age_range: 'adult',
@@ -73,10 +72,6 @@ function request({ current = false } = {}) {
       fears: [{ fear_ref: 'accountability' }],
       obligations: [],
       relationships: [],
-      current_location: {
-        location_ref: 'storehouse',
-        zone_ref: 'storehouse_inside'
-      },
       current_activity: {
         activity_ref: 'wait-ratsha',
         summary: 'ожидает возвращения Ратши',

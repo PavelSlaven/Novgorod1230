@@ -583,7 +583,6 @@ function npcActionRequest() {
     },
     npc: {
       profile_level: 'scene',
-      profile_ref: 'guard-profile',
       identity: { name_or_label: 'Страж', age_range: 'adult', origin: null },
       social_role: { role_ref: 'guard', status: 'служилый', authority: [], dependencies: [] },
       attributes: [],
@@ -596,10 +595,6 @@ function npcActionRequest() {
       fears: [],
       obligations: [],
       relationships: [],
-      current_location: {
-        location_ref: 'yard',
-        zone_ref: 'gate'
-      },
       current_activity: {
         activity_ref: null,
         summary: null,
@@ -647,10 +642,14 @@ test('autonomous decision reasons require canonical common categories and signal
   missingSubjectiveState.npc.mood = null;
   assert.equal(validateNpcActionDecisionRequest(missingSubjectiveState), true);
 
-  const persistedV1 = copy(request);
-  delete persistedV1.npc.profile_ref;
-  delete persistedV1.npc.current_location;
-  assert.equal(validateNpcActionDecisionRequest(persistedV1), true);
+  const expandedPrototypeRequest = copy(request);
+  expandedPrototypeRequest.npc.profile_ref = 'guard-profile';
+  expandedPrototypeRequest.npc.current_location = {
+    location_ref: 'yard',
+    zone_ref: 'gate'
+  };
+  assert.equal(validateNpcActionDecisionRequest(expandedPrototypeRequest),
+    false);
 
   const categoriesOutOfOrder = copy(request);
   categoriesOutOfOrder.decision_reasons.categories.reverse();

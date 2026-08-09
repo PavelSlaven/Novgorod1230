@@ -700,7 +700,6 @@ LLM не может объявить:
 
   "npc": {
     "profile_level": "scene",
-    "profile_ref": "trace_ld_v1_npc_ratsha",
     "identity": {
       "name_or_label": "Ратша",
       "age_range": "adult",
@@ -740,10 +739,6 @@ LLM не может объявить:
     "fears": [],
     "obligations": [],
     "relationships": [],
-    "current_location": {
-      "location_ref": "location-shed",
-      "zone_ref": "shed-inside"
-    },
     "current_activity": {
       "activity_ref": null,
       "summary": null,
@@ -801,9 +796,8 @@ LLM не может объявить:
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.
-- `profile_ref`, `social_role.role_ref`, `current_location`, тело, настроение,
-  отношения и ресурсы проецируются общим NPC-safe builder только из supplied
-  persisted snapshots.
+- `social_role.role_ref`, тело, настроение, отношения и ресурсы проецируются
+  общим NPC-safe builder только из supplied persisted snapshots.
 - Если persisted snapshot не содержит необязательное субъективное поле,
   request сохраняет контрактный `null` или пустой массив; scenario code не
   подставляет роль, настроение, отношения, ценности или prose facts.

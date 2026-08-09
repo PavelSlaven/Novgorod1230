@@ -113,6 +113,8 @@ test('NPC-safe projector allowlists persisted subjective snapshots', () => {
     operation_contract: {}
   });
   assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(Object.hasOwn(request.npc, 'profile_ref'), false);
+  assert.equal(Object.hasOwn(request.npc, 'current_location'), false);
   assert.equal(request.npc.relationships[0].relation, 'знакомый');
   assert.equal(request.npc.available_resources[0].resource_ref, 'resource-1');
   assert.equal(request.perception.visible_objects[0].summary, 'дрова');

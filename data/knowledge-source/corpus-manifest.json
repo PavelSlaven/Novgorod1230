@@ -215,8 +215,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "3b0e34bc8cb4c2c396d899d02816cf17a7e5dd351b8d8718fdeb9ac9fc953449",
-      "bytes": 100228,
+      "sha256": "97258c5b5ce23a67b205ec36896450cca6518d192da0f834dddc7441a17e46b4",
+      "bytes": 100042,
       "status": "active",
       "provenance_mode": "native"
     },

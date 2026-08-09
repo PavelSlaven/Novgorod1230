@@ -108,31 +108,6 @@ test('Phase 7 aggregates every new NPC signal into one decision', async () => {
   assert.equal(replayModelCalls, 0);
   assert.equal(replayed.status, 'replayed');
 
-  const legacyPlan = structuredClone(persisted.plan);
-  const legacySnapshot = structuredClone(persisted.snapshot);
-  delete legacySnapshot.npc_semantic_decision_inputs;
-  delete legacySnapshot.npc_semantic_decision_traces;
-  const legacyRow = decisionRow(legacyPlan);
-  delete legacyRow.semantic_request.npc.profile_ref;
-  delete legacyRow.semantic_request.npc.current_location;
-  resealDecisionRow(legacyRow, replayInputs[0].trace);
-  const legacyInputs = [];
-  const legacyTraces = await assertLowerDvinaTraceSemanticConversationRows(
-    semanticReadPool(legacyPlan), legacySnapshot,
-    { replayInputs: legacyInputs }
-  );
-  hydrateSemanticDecisionReplay(legacySnapshot, legacyTraces, legacyInputs);
-  await assert.doesNotReject(() => requestNpcSemanticDecision({
-    boundary: legacyInputs[0].boundary_snapshot,
-    request: legacyInputs[0].request_snapshot,
-    persistedTrace: legacySnapshot.npc_semantic_decision_traces[0],
-    persistedInput: legacySnapshot.npc_semantic_decision_inputs[0],
-    orderedSignals: legacyInputs[0].signal_records,
-    semanticModel: async () => assert.fail('legacy replay must not call model'),
-    revalidateStateVersion: async () =>
-      legacyInputs[0].request_snapshot.committed_state_version
-  }));
-
   for (const [label, mutate] of [
     ['foreign-subject', (signal) => {
       signal.subject_ref = ref('npc', 'foreign-npc');
@@ -322,14 +297,11 @@ test('Phase 7 projects persisted NPC-safe state without invented defaults',
       state,
       contracts,
       model: async (request) => {
-        assert.equal(request.npc.profile_ref, 'trace_ld_v1_npc_zhdanko');
         assert.equal(request.npc.profile_level, 'key');
         assert.equal(request.npc.social_role.role_ref,
           'nov_role_merchant_clerk');
-        assert.deepEqual(request.npc.current_location, {
-          location_ref: 'trace_ld_v1_loc_storehouse',
-          zone_ref: 'storehouse_inside'
-        });
+        assert.equal(Object.hasOwn(request.npc, 'profile_ref'), false);
+        assert.equal(Object.hasOwn(request.npc, 'current_location'), false);
         assert.deepEqual(request.npc.body_state, {
           summary: 'устал после работы',
           conditions: [{ condition_ref: 'tired' }]

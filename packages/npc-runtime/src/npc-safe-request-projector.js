@@ -58,7 +58,6 @@ export function buildNpcActionDecisionRequestFromSnapshots({
     },
     npc: {
       profile_level: npc_snapshot.profile_level ?? null,
-      profile_ref: npc_snapshot.profile_id ?? null,
       identity: {
         name_or_label: identityState.canonical_name ?? null,
         age_range: identityState.age_range ?? null,
@@ -100,11 +99,6 @@ export function buildNpcActionDecisionRequestFromSnapshots({
         'relationship_ref', 'actor_ref', 'relation', 'status', 'trust',
         'hostility', 'dependency'
       ]),
-      current_location: {
-        location_ref: machineState.location_ref
-          ?? npc_snapshot.location_profile_ref ?? null,
-        zone_ref: machineState.spatial_zone_ref ?? npc_snapshot.zone_ref ?? null
-      },
       current_activity: {
         activity_ref: current_activity_snapshot?.activity_ref ?? null,
         summary: current_activity_snapshot?.summary ?? null,

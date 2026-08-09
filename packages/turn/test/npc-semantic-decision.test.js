@@ -147,7 +147,6 @@ function autonomousRequest(overrides = {}) {
     },
     npc: {
       profile_level: 'scene',
-      profile_ref: 'zhdanko-profile',
       identity: { name_or_label: 'Жданко', age_range: 'adult', origin: null },
       social_role: {
         role_ref: 'storehouse_controller',
@@ -165,10 +164,6 @@ function autonomousRequest(overrides = {}) {
       fears: [{ fear_ref: 'accountability' }],
       obligations: [],
       relationships: [],
-      current_location: {
-        location_ref: 'storehouse',
-        zone_ref: 'storehouse_inside'
-      },
       current_activity: {
         activity_ref: 'wait-ratsha',
         summary: 'ожидает возвращения Ратши',
@@ -379,36 +374,24 @@ test('persisted legacy boundary identity replays without model call', async () =
   assert.equal(modelCalls, 0);
 });
 
-test('persisted old-v1 autonomous input replays without model call', async () => {
+test('autonomous v1 rejects prototype-only NPC fields', async () => {
   const sourceRequest = autonomousRequest();
-  delete sourceRequest.npc.profile_ref;
-  delete sourceRequest.npc.current_location;
-  const sourcePlan = autonomousPlan(sourceRequest);
-  const persistedTrace = buildNpcSemanticDecisionTrace({
+  sourceRequest.npc.profile_ref = 'zhdanko-profile';
+  sourceRequest.npc.current_location = {
+    location_ref: 'storehouse',
+    zone_ref: 'storehouse_inside'
+  };
+  let modelCalls = 0;
+  await assert.rejects(requestNpcSemanticDecision({
+    boundary: autonomousBoundary(),
     request: sourceRequest,
-    plan: sourcePlan,
-    applied_change_set_id: 'change-1'
-  });
-  const decisionBoundary = autonomousBoundary();
-  const { persistedInput, orderedSignals } = persistedInputFor(
-    decisionBoundary, sourceRequest, persistedTrace);
-  let calls = 0;
-  const result = await requestNpcSemanticDecision({
-    boundary: decisionBoundary,
-    request: sourceRequest,
-    persistedTrace,
-    persistedInput,
-    orderedSignals,
     semanticModel: async () => {
-      calls += 1;
-      return sourcePlan;
+      modelCalls += 1;
+      return autonomousPlan(sourceRequest);
     },
     revalidateStateVersion: async () => 2
-  });
-
-  assert.equal(result.status, 'replayed');
-  assert.equal(calls, 0);
-  assert.deepEqual(result.signal_ids_to_consume, []);
+  }), ({ code }) => code === 'TURN_NPC_REQUEST_INVALID');
+  assert.equal(modelCalls, 0);
 });
 
 test('autonomous replay tolerates digest drift when boundary_id matches',

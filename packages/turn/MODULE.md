@@ -38,6 +38,10 @@
   `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
   `createTemporalSourceResolver`, `createTemporalAdvanceOwner`, а также
   registration общего NPC schedule-terminal effect из `@rus/npc-runtime`;
+  `startNpcActorStep` и `createNpcActorStepCompletionEffect` владеют общим
+  lifecycle `started → completion candidate → completed` для автономного
+  actor-step. Сценарный adapter передаёт только точную длительность, approved
+  profile refs и уже рассчитанные domain proposals;
 - `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
   выводит batch identity (включая ordinal successive resolved batches на том же
   GameTimestamp), consumption и persisted replay input из factual state,

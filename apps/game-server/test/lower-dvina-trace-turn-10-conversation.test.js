@@ -65,7 +65,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
     },
     npcAutonomousModel(request) {
       autonomousCalls += 1;
-      return phase7AutonomousPlan(request, 'wait');
+      return phase7AutonomousPlan(request, 'move_bag');
     }
   });
   const input = {
@@ -118,8 +118,16 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
     ]);
   assert.equal(runtimeFixture.state.phase7_fire_rest.status, 'completed');
   assert.equal(runtimeFixture.state.body_state.energy, 38);
+  assert.equal(runtimeFixture.state.body_effect_history.length, 1);
   assert.equal(runtimeFixture.state.clock.whole_minutes,
     String(Number(state.clock.whole_minutes) + 30));
+  assert.equal(runtimeFixture.state.containers.find(
+    ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag')
+    .state.zone_ref, 'river_access');
+  assert.equal(runtimeFixture.state.npcs.find(
+    ({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller')
+    .machine_state.spatial_zone_ref, 'river_access');
   assert.deepEqual(runtimeFixture.state.route_participant_commitments.map(
     ({ role }) => role).sort(), [
       'escort', 'guide', 'stay_with_onisim', 'witness'
@@ -157,6 +165,13 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
     state.party_state.state_version + 1);
   assert.equal(persisted.party_state.turn_number,
     state.party_state.turn_number + 1);
+  assert.equal(persisted.body_effect_history.length, 1);
+  assert.equal(persisted.containers.find(
+    ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag')
+    .state.zone_ref, 'river_access');
+  assert.equal(persisted.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'zhdanko_storehouse_controller')
+    .machine_state.spatial_zone_ref, 'river_access');
   assert.deepEqual(persisted.route_participant_commitments.map(
     ({ role }) => role).sort(), [
       'escort', 'guide', 'stay_with_onisim', 'witness'
@@ -166,6 +181,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(JSON.stringify(persisted).includes('known_path_to_klet'),
     false);
 
+  const stateAfterFirst = structuredClone(runtimeFixture.state);
   const replay = await runtimeFixture.runtime.submitTurn({
     partyId: runtimeFixture.partyId,
     input
@@ -176,6 +192,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(playerCalls, 1);
   assert.equal(npcCalls, 4);
   assert.equal(runtimeFixture.commitCount(), 1);
+  assert.deepEqual(runtimeFixture.state, stateAfterFirst);
 });
 
 test('either fisher may choose either approved participation binding',

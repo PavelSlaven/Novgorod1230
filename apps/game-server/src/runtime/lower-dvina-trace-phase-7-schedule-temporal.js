@@ -1,13 +1,11 @@
-import { canonicalDigest } from '@rus/materialization';
 import {
-  addElapsedTime,
   compareGameTimestamp,
   subtractGameTimestamp
 } from '@rus/time-events-history';
 import {
-  PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
-  PHASE7_REST_PROGRESS_EFFECT_REF
-} from
+  createNpcActorStepCompletionEffect
+} from '@rus/turn/temporal-advance';
+import { PHASE7_REST_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import {
   buildTracePhase7TemporalRequest,
@@ -39,16 +37,13 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     projection: structuredClone(actorStep.working_projection),
     segment: 'schedule'
   });
-  const completion = actorStepCompletionCandidate({ state, actorStep });
-  const completionEffect = {
-    candidate: completion,
-    effect_ref: PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
-    input: {
-      npc_ref: actorStep.result.npc_ref,
-      scheduled_at: structuredClone(completion.scheduled_at),
-      transition_kind: 'npc_actor_step_completed'
-    }
-  };
+  const completionEffect = createNpcActorStepCompletionEffect({
+    party_ref: { entity_kind: 'party', entity_id: state.party_id },
+    active_actor_step: actorStep.working_projection.active_npc_actor_step,
+    visibility_policy_ref: versioned('visibility_modifier',
+      'lower-dvina-trace-phase-7-hidden-npc', '1')
+  });
+  const completion = completionEffect.candidate;
   const completionWithinRest = compareGameTimestamp(
     completion.scheduled_at, request.inclusive_limit_timestamp
   ) <= 0;
@@ -112,35 +107,6 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     completion_candidate: structuredClone(completion),
     completion_effect: structuredClone(completionEffect)
   });
-}
-
-function actorStepCompletionCandidate({ state, actorStep }) {
-  const active = actorStep.working_projection.active_npc_actor_step;
-  const scheduledAt = addElapsedTime(actorStep.started_at,
-    active.planned_exact_elapsed);
-  return {
-    boundary_id: `npc-actor-step:${state.party_id}:${active.npc_ref}:complete`,
-    boundary_kind: 'npc_schedule',
-    scheduled_at: scheduledAt,
-    source_ref: {
-      ...structuredClone(active.decision_trace_ref)
-    },
-    primary_subject_ref: {
-      entity_kind: 'npc', entity_id: active.npc_ref
-    },
-    subject_refs: [],
-    scope_ref: { entity_kind: 'party', entity_id: state.party_id },
-    rule_ref: versioned('action_contract', active.semantic_operation.op, '1'),
-    policy_ref: versioned('activity_contract', 'npc-actor-step', '1'),
-    preconditions_digest: canonicalDigest(active),
-    resolution_class: 'execution_outcome',
-    interrupt_effect: 'background',
-    visibility_policy_ref: versioned('visibility_modifier',
-      'lower-dvina-trace-phase-7-hidden-npc', '1'),
-    idempotency_key:
-      `npc-actor-step:${state.party_id}:${active.npc_ref}:complete`,
-    causal_parent_refs: [structuredClone(active.decision_trace_ref)]
-  };
 }
 
 function versioned(entityKind, entityId, authoringVersion) {

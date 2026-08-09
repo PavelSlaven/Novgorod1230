@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  createNpcActorStepCompletionEffect,
   createNpcScheduleDecisionTerminalEffect,
-  npcTemporalEffectRegistrations
-} from '../src/temporal-npc-effects.js';
+  npcTemporalEffectRegistrations,
+  startNpcActorStep
+} from '../src/temporal-advance.js';
 
 const at = (minutes) => ({
   whole_minutes: String(minutes),
@@ -13,6 +15,67 @@ const at = (minutes) => ({
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const versioned = (entityKind, entityId) => ({
   entity_ref: ref(entityKind, entityId), authoring_version: '1'
+});
+
+test('common NPC owner starts and completes one actor-step lifecycle', () => {
+  const started = startNpcActorStep({
+    execution: {
+      request: { request_id: 'decision-1', committed_state_version: 7 },
+      plan: { goal_result: 'pending' },
+      operation: {
+        op: 'request_activity', actor_ref: 'npc-1',
+        activity_kind: 'work', target_refs: ['crate-1']
+      },
+      working_projection: { marker: 'preserved' }
+    },
+    started_at: at(25),
+    duration_minutes: 5,
+    execution_binding_ref: 'execution-1',
+    schedule_option_id: 'carry-crate',
+    activity_profile_ref: 'activity-1',
+    movement_proposal: { owner: '@rus/movement-routes' },
+    property_proposal: { owner: '@rus/items-property' }
+  });
+  const active = started.working_projection.active_npc_actor_step;
+  assert.equal(active.status, 'started');
+  assert.equal(active.started_at.whole_minutes, '25');
+  assert.deepEqual(active.planned_exact_elapsed,
+    { exact_minutes: { numerator: '5', denominator: '1' } });
+  assert.equal(started.consequence_fragment.owner, '@rus/turn/actor-step');
+
+  const completion = createNpcActorStepCompletionEffect({
+    party_ref: ref('party', 'party-1'),
+    active_actor_step: active,
+    visibility_policy_ref: versioned('visibility_modifier', 'hidden')
+  });
+  assert.equal(completion.candidate.scheduled_at.whole_minutes, '30');
+  const nextCompletion = createNpcActorStepCompletionEffect({
+    party_ref: ref('party', 'party-1'),
+    active_actor_step: {
+      ...active,
+      decision_trace_ref: ref('npc_decision_trace', 'decision-2')
+    },
+    visibility_policy_ref: versioned('visibility_modifier', 'hidden')
+  });
+  assert.notEqual(completion.candidate.boundary_id,
+    nextCompletion.candidate.boundary_id);
+  assert.equal(completion.candidate.idempotency_key,
+    completion.candidate.boundary_id);
+  const registration = npcTemporalEffectRegistrations().find(
+    ({ effect_ref: effectRef }) =>
+      effectRef.entity_ref.entity_id === 'npc-actor-step-completion'
+  );
+  const resolved = registration.resolve({
+    candidate: completion.candidate,
+    context: { projection: started.working_projection },
+    descriptor: completion.input
+  });
+
+  assert.equal(resolved.state_projection.marker, 'preserved');
+  assert.equal(resolved.state_projection.active_npc_actor_step.status,
+    'completed');
+  assert.equal(resolved.state_projection.active_npc_actor_step
+    .completed_at.whole_minutes, '30');
 });
 
 test('common NPC temporal owner resolves schedule terminal into one signal',

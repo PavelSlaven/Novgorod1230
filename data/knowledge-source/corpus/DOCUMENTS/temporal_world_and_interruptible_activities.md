@@ -988,7 +988,9 @@ v5 активирует autonomous mode для Phase 7: «Отдых у огня
 текущий actor-step registry имеет фактических domain handlers, а не сценарный
 exhaustive option set. Выбранный actor-step применяется на +25, затем общий
 temporal owner продолжает обработку до +30 из обновлённой working projection;
-persistence и visible projection остаются code-owned. Combat в revision 14
+persistence и visible projection остаются code-owned. Общий `@rus/turn`
+владеет состояниями `started/completed`, exact completion candidate и effect;
+сценарий передаёт только approved profiles и domain proposals. Combat в revision 14
 только получает typed handoff и остаётся proposed.
 
 ### 15.5. Historical bounded NPC decision (explicit revision pin only)

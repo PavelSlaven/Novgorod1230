@@ -65,7 +65,7 @@
     "source_artifact_digests": {
       "activity_check_consequence_profiles": "3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef",
       "body_environment_profiles": "c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2",
-      "movement_bindings": "c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d"
+      "movement_bindings": "66ba6e5c16319da88ab3215692a7cec2b25a51f5322ad581bdee734f3b0a85cd"
     },
     "required_groups": {
       "activities": {"required_record_count": 26, "required_records_digest": "c66b0b11e23dd32163ce8c9fdf3c349bdaf667c09e8cd22dc22d6a5b304dd447"},

@@ -295,6 +295,8 @@ export function materializeLowerDvinaTracePreparedStorehouse({
     state: {
       causal_basis: containerTemplate.causal_basis,
       physical_condition: structuredClone(containerTemplate.physical_condition),
+      owner_external_ref: bag.owner_ref,
+      controller_npc_id: npc.instance_id,
       location_ref: roadBagResource.opening_location_ref,
       zone_ref: roadBagResource.opening_zone_ref,
       exact_content_item_refs: structuredClone(bag.exact_content_item_refs),

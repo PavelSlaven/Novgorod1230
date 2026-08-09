@@ -68,8 +68,11 @@ test('Phase 7 preserves the boundary causality chain', async () => {
   assert.equal(consequence.phase7.schedule_temporal.elapsed_after_decision, 5);
   assert.deepEqual(
     consequence.phase7.schedule_temporal.result.trace.processed_boundary_ids,
-    ['npc-actor-step:phase7-party:zhdanko-1:complete']
+    [consequence.phase7.schedule_temporal.completion_candidate.boundary_id]
   );
+  assert.equal(consequence.phase7.schedule_temporal.completion_candidate
+    .boundary_id.includes(
+      consequence.phase7.autonomous.request.request_id), true);
   const candidateRef = {
     entity_kind: 'temporal_boundary_candidate',
     entity_id: consequence.phase7.temporal.terminal_candidate.boundary_id

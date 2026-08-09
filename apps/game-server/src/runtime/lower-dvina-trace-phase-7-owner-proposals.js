@@ -123,7 +123,7 @@ function itemSource(bag) {
     location_ref: bag.state?.location_ref,
     zone_ref: bag.state?.zone_ref,
     holder_actor_id: bag.holder_npc_id,
-    controller_actor_id: bag.state?.controller_npc_id
+    controller_actor_id: bag.controller_npc_id ?? bag.state?.controller_npc_id
   };
 }
 

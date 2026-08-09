@@ -17,6 +17,7 @@ function baseActorStep() {
       active_npc_actor_step: {
         npc_ref: 'zhdanko-1',
         status: 'started',
+        started_at: at(125),
         planned_exact_elapsed: {
           exact_minutes: { numerator: '5', denominator: '1' }
         },

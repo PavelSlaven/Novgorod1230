@@ -188,7 +188,7 @@ function validInitialProjection(value) {
     && inventory.source_artifact_digests.body_environment_profiles
       === 'c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2'
     && inventory.source_artifact_digests.movement_bindings
-      === 'c4ac3a494d190c63bf9e10fe310a083d6b4638de85ef23ae5b740c9ef745414d';
+      === '66ba6e5c16319da88ab3215692a7cec2b25a51f5322ad581bdee734f3b0a85cd';
 }
 
 function validTurnSteps(value) {

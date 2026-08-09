@@ -61,6 +61,9 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    timestamp from the updated working projection until a same-time fixed point
    or a typed temporal safety error. Replay uses the persisted decision trace
    and does not re-call the LLM.
+   The common turn owner creates the active NPC actor-step, its exact completion
+   candidate and the completion transition. Scenario adapters supply approved
+   profiles and domain proposals but do not implement that lifecycle.
    Before domain applicability, the turn owner re-reads the current decision
    state. A stale model response is discarded; the NPC-safe request is rebuilt
    and the model is called again only when the same boundary remains applicable.

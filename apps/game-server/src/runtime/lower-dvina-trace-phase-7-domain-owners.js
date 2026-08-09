@@ -1,5 +1,6 @@
 import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
 import { subtractGameTimestamp } from '@rus/time-events-history';
+import { startNpcActorStep } from '@rus/turn/temporal-advance';
 import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
   tracePhase7PropertyTransitions, tracePhase7TransitionTarget } from
   './lower-dvina-trace-phase-7-owner-proposals.js';
@@ -197,71 +198,17 @@ function started({ execution, temporal, profile, movement, property,
   if (!Number.isSafeInteger(ownDuration) || ownDuration < 1) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
-  const operation = execution.operation;
-  const decisionTraceRef = { entity_kind: 'npc_decision_trace',
-    entity_id: execution.request.request_id };
-  const prior = execution.working_projection.active_npc_actor_step;
-  const composing = operation.op === 'apply_semantic_activity'
-    && prior?.status === 'started'
-    && prior.semantic_operation?.op === 'apply_semantic_activity'
-    && prior.decision_trace_ref?.entity_id === decisionTraceRef.entity_id;
-  const priorDuration = composing
-    ? Number(prior.planned_exact_elapsed.exact_minutes.numerator) : 0;
-  const duration = priorDuration + ownDuration;
-  const semanticOperation = composing
-    ? prior.semantic_operation : operation;
-  const additionalSemanticOperations = composing
-    ? [...(prior.additional_semantic_operations ?? []), operation]
-    : [];
-  const active = {
-    npc_ref: npcRef ?? operation.actor_ref, status: 'started',
-    started_at: structuredClone(temporal.result.clock_after),
-    decision_trace_ref: decisionTraceRef,
-    semantic_operation: structuredClone(semanticOperation),
-    ...(additionalSemanticOperations.length > 0 ? {
-      additional_semantic_operations: structuredClone(
-        additionalSemanticOperations)
-    } : {}),
-    activity_profile_ref: composing ? prior.activity_profile_ref ?? null
-      : profile?.activity_profile_ref ?? null,
-    planned_exact_elapsed: {
-      exact_minutes: { numerator: String(duration), denominator: '1' }
-    }
-  };
-  return {
-    working_projection: {
-      ...structuredClone(execution.working_projection),
-      active_npc_actor_step: active
-    },
-    summary: `npc_actor_step:${operation.op}`,
-    consequence_fragment: Object.freeze({
-      owner: '@rus/turn/actor-step', domain_owner: domainOwner(operation.op),
-      status: 'started', failure_code: null,
-      npc_ref: npcRef ?? operation.actor_ref,
-      decision_trace_ref: structuredClone(active.decision_trace_ref),
-      semantic_operation: structuredClone(semanticOperation),
-      ...(additionalSemanticOperations.length > 0 ? {
-        additional_semantic_operations: structuredClone(
-          additionalSemanticOperations)
-      } : {}),
-      execution_binding_ref: composing
-        ? null : profile?.execution_binding_id ?? null,
-      schedule_option_id: composing
-        ? null : profile?.schedule_option_id ?? null,
-      activity_profile_ref: composing ? prior.activity_profile_ref ?? null
-        : profile?.activity_profile_ref ?? null,
-      exact_elapsed: structuredClone(active.planned_exact_elapsed),
-      clock_before: structuredClone(temporal.result.clock_after),
-      clock_after: structuredClone(temporal.result.clock_after),
-      root_clock_write_count: 0, movement_proposal: movement,
-      property_proposal: property,
-      factual_result_source: 'code_owned_actor_step_domain_execution',
-      parent_state_version: execution.request.committed_state_version
-    }),
-    goal_result: execution.plan.goal_result,
-    continuation: null,
-    player_response_boundary: true
-  };
+  return startNpcActorStep({
+    execution,
+    started_at: temporal.result.clock_after,
+    actor_ref: npcRef ?? execution.operation.actor_ref,
+    duration_minutes: ownDuration,
+    execution_binding_ref: profile?.execution_binding_id ?? null,
+    schedule_option_id: profile?.schedule_option_id ?? null,
+    activity_profile_ref: profile?.activity_profile_ref ?? null,
+    movement_proposal: movement,
+    property_proposal: property
+  });
 }
 
 function remainingMinutes(temporal) {
@@ -285,13 +232,6 @@ function sameSet(left, right) {
   return left.length === right.length
     && new Set(left).size === left.length
     && left.every((value) => right.includes(value));
-}
-
-function domainOwner(operation) {
-  if (operation === 'apply_semantic_activity') return '@rus/turn';
-  if (operation === 'request_item_use') return '@rus/items-property';
-  if (operation === 'request_movement') return '@rus/movement-routes';
-  return '@rus/turn';
 }
 
 function fail(code, details = null) {

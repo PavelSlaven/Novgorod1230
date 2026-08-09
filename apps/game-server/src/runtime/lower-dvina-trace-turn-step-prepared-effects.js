@@ -3,6 +3,8 @@ import { deepFreeze } from
   './lower-dvina-trace-turn-step-runtime-common.js';
 import { applyTracePhase7ScheduleState } from
   './lower-dvina-trace-phase-7-state-projection.js';
+import { tracePhase7ActorStep } from
+  './lower-dvina-trace-phase-7-schedule-execution.js';
 
 const PHASE3_ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
@@ -15,30 +17,19 @@ export function createLowerDvinaTracePreparedDomainEffect({
   committedState
 }) {
   let currentState = structuredClone(committedState);
-  let reservedTurn10Operation = null;
   return Object.freeze({
-    supports({ operation, command_id: commandId } = {}) {
-      if (reservedTurn10Operation != null) {
-        return commandId === TURN10_COMPANION_COMMAND
-          && sameCompanionOperation(operation, reservedTurn10Operation);
-      }
+    supports({ operation, command_id: commandId,
+      prepared_chain_context: context } = {}) {
+      const priorCount = context?.prior_effect_count ?? 0;
       return (operation?.op === 'request_movement'
-          && commandId === PHASE3_ROUTE_COMMAND)
+          && commandId === PHASE3_ROUTE_COMMAND && priorCount === 0)
         || (operation?.op === 'request_activity'
-          && commandId === PHASE7_REST_COMMAND)
+          && commandId === PHASE7_REST_COMMAND && priorCount === 0)
         || (operation?.op === 'emit_interaction'
-          && commandId === TURN10_COMPANION_COMMAND);
+          && commandId === TURN10_COMPANION_COMMAND && priorCount === 1);
     },
     currentState() {
       return structuredClone(currentState);
-    },
-    assertContinuation({ plan } = {}) {
-      const operation = plan?.resolution === 'domain_request'
-        && plan.operations?.length === 1 ? plan.operations[0] : null;
-      if (reservedTurn10Operation != null
-          && !sameCompanionOperation(operation, reservedTurn10Operation)) {
-        fail('TRACE_TURN10_CONTINUATION_RESERVATION_MISMATCH');
-      }
     },
     advanceState({ prepared_effect: effect }) {
       currentState = projectPreparedDomainState(currentState, effect);
@@ -49,15 +40,10 @@ export function createLowerDvinaTracePreparedDomainEffect({
         return applyPreparedPhase3Route({ input, committedState });
       }
       if (input?.command_id === PHASE7_REST_COMMAND) {
-        const applied = applyPreparedPhase7Rest(input);
-        reservedTurn10Operation = structuredClone(
-          input.consequence.phase7.continuation_operation);
-        return applied;
+        return applyPreparedPhase7Rest(input);
       }
       if (input?.command_id === TURN10_COMPANION_COMMAND) {
-        const applied = applyPreparedTurn10Conversation(input);
-        reservedTurn10Operation = null;
-        return applied;
+        return applyPreparedTurn10Conversation(input);
       }
       fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
@@ -70,25 +56,10 @@ function applyPreparedPhase7Rest(input) {
     ?.rest_completed === true;
   if (consequence?.phase7_kind !== 'fire_rest'
       || consequence.duration_minutes !== (restCompleted ? 30 : 25)
-      || (!restCompleted
-        && consequence.phase7.continuation_operation?.op
-          !== 'emit_interaction')
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_PHASE7_INVALID');
   }
   return preparedResult(input, consequence, false);
-}
-
-function sameCompanionOperation(actual, reserved) {
-  return actual?.op === reserved?.op
-    && actual?.actor_ref === reserved.actor_ref
-    && actual?.interaction_kind === reserved.interaction_kind
-    && actual?.instrument_refs?.length === 0
-    && reserved.instrument_refs?.length === 0
-    && actual?.target_actor_refs?.length
-      === reserved.target_actor_refs?.length
-    && reserved.target_actor_refs.every((ref) =>
-      actual.target_actor_refs.includes(ref));
 }
 
 function applyPreparedTurn10Conversation(input) {
@@ -132,8 +103,8 @@ function projectPreparedDomainState(state, effect) {
       state: next,
       execution: phase7.schedule_execution,
       changeSetId: null,
-      activeActorStep:
-        phase7.schedule_temporal.projection?.active_npc_actor_step
+      activeActorStep: tracePhase7ActorStep(
+        phase7.schedule_temporal.projection, phase7.actor_step)
     });
     next.phase7_fire_rest = {
       status: phase7.schedule_temporal.rest_completed === true
@@ -148,8 +119,8 @@ function projectPreparedDomainState(state, effect) {
       };
       next.cumulative_elapsed_minutes = phase7.schedule_temporal.projection
         .cumulative_elapsed_minutes;
-      next.active_npc_actor_step = structuredClone(
-        phase7.schedule_temporal.projection.active_npc_actor_step);
+      next.active_npc_actor_steps = structuredClone(
+        phase7.schedule_temporal.projection.active_npc_actor_steps);
       next.temporal_boundary_candidates = [structuredClone(
         phase7.schedule_temporal.completion_effect.candidate)];
     } else {
@@ -159,8 +130,8 @@ function projectPreparedDomainState(state, effect) {
   if (effect.consequence?.parent_activity_completion?.status === 'completed') {
     const completion = effect.consequence.parent_activity_completion;
     next.phase7_fire_rest = { status: 'completed' };
-    next.active_npc_actor_step = structuredClone(
-      completion.active_npc_actor_step);
+    next.active_npc_actor_steps = structuredClone(
+      completion.active_npc_actor_steps);
     next.cumulative_elapsed_minutes = completion.cumulative_elapsed_minutes;
     delete next.phase7_parent_temporal;
     next.temporal_boundary_candidates = [];

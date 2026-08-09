@@ -33,8 +33,8 @@ export function completeTurn10Phase7Factual(factual) {
     projection: {
       ...structuredClone(partial.projection),
       cumulative_elapsed_minutes: completion.cumulative_elapsed_minutes,
-      active_npc_actor_step: structuredClone(
-        completion.active_npc_actor_step)
+      active_npc_actor_steps: structuredClone(
+        completion.active_npc_actor_steps)
     }
   };
   const scheduleExecution = finalizeTracePhase7ScheduleExecution({

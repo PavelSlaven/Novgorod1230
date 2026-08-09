@@ -119,7 +119,9 @@ export async function resolveBoundTurnStepCommand({
         && preparedOwner.supports(deepFreeze({
           operation: structuredClone(operation),
           command_id: selectedCommand.command_id,
-          option_id: selectedCommand.option_id
+          option_id: selectedCommand.option_id,
+          prepared_chain_context:
+            structuredClone(execution.prepared_chain_context)
         })) === true;
       if (supportsPreparedEffect) {
         recordSelectedCommand(selectedCommands, selectedCommand);
@@ -232,13 +234,7 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
-    assertPreparedContinuation: ({ plan }) => {
-      const preparedOwner = services.turnStepPreparedDomainEffect;
-      if (typeof preparedOwner?.assertContinuation === 'function') {
-        preparedOwner.assertContinuation({ plan });
-      }
-    },
-    canContinuePreparedDomain: async ({ plan, request,
+    admitPreparedDomainPlan: async ({ plan, request,
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
       if (plan.operations.length !== 1 || operation == null) return false;
@@ -255,12 +251,20 @@ export async function resolveBoundTurnStepCommand({
           committed_state: structuredClone(committedState)
         })) === true);
       if (matches.length !== 1) return false;
-      return typeof preparedOwner?.supports === 'function'
+      const supported = typeof preparedOwner?.supports === 'function'
         && preparedOwner.supports(deepFreeze({
           operation: structuredClone(operation),
           command_id: matches[0].command.command_id,
-          option_id: matches[0].command.option_id
+          option_id: matches[0].command.option_id,
+          prepared_chain_context: structuredClone(preparedChainContext)
         })) === true;
+      if (!supported) {
+        throw turnCommandError(
+          'TURN_STEP_PREPARED_DOMAIN_PLAN_UNSUPPORTED',
+          'The current-state domain plan cannot extend the prepared chain.'
+        );
+      }
+      return true;
     },
     randomSource: services.randomSource,
     resolveCheckContext: services.turnStepCheckContextResolver,

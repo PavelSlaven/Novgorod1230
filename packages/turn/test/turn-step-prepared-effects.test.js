@@ -220,7 +220,7 @@ test('two positive prepared domain segments form one ordered ledger',
   } });
   const outcome = await runTurnStepLoop(input(), ports({
     executionRegistry: registry,
-    canContinuePreparedDomain: async () => true,
+    admitPreparedDomainPlan: async () => true,
     preparedEffectContext: {
       current_clock: at(0), current_body_state: body()
     },

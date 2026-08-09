@@ -153,9 +153,9 @@ test('Phase 7 starts the NPC actor-step at +25 before temporal continuation',
     assert.equal(continuationInputs.length, 1);
     assert.equal(continuationInputs[0].stop_after_source_batch, false);
     assert.equal(continuationInputs[0].request.relevant_state_projection
-      .active_npc_actor_step.npc_ref, 'zhdanko-1');
+      .active_npc_actor_steps[0].npc_ref, 'zhdanko-1');
     assert.equal(continuationInputs[0].request.relevant_state_projection
-      .active_npc_actor_step.started_at.whole_minutes, '125');
+      .active_npc_actor_steps[0].started_at.whole_minutes, '125');
     assert.equal(continuationInputs[0].registered_effects[0].candidate
       .scheduled_at.whole_minutes, '130');
     assert.equal(consequence.phase7.temporal.terminal_candidate

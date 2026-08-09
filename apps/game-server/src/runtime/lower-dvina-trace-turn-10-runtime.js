@@ -18,8 +18,6 @@ export function createTraceTurn10Runtime({ state, bundle, phase3Contracts,
   return Object.freeze({
     contracts,
     companionTargetRefs,
-    matchesOperation: (operation) => matchesCompanionOperation(
-      operation, state.actor_id, companionTargetRefs),
     command: createTraceTurn10CompanionCommand({
       contracts, inputDigest, playerConversationModel, npcSemanticModel,
       temporalAdvanceOwner, revalidateStateVersion
@@ -29,13 +27,4 @@ export function createTraceTurn10Runtime({ state, bundle, phase3Contracts,
       otherFisher: contracts.actors.otherFisher.instance_id
     }
   });
-}
-
-function matchesCompanionOperation(operation, actorRef, targetRefs) {
-  return operation?.op === 'emit_interaction'
-    && operation.actor_ref === actorRef
-    && operation.interaction_kind === 'request'
-    && operation.instrument_refs?.length === 0
-    && operation.target_actor_refs?.length === targetRefs.length
-    && targetRefs.every((ref) => operation.target_actor_refs.includes(ref));
 }

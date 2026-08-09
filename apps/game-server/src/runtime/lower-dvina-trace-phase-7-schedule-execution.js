@@ -7,6 +7,7 @@ import {
   createTurnStepExecutionRegistry,
   executeTurnStepActorStep
 } from '@rus/turn';
+import { npcActorSteps } from '@rus/turn/temporal-advance';
 import { createTracePhase7DomainExecution } from
   './lower-dvina-trace-phase-7-domain-owners.js';
 
@@ -168,7 +169,8 @@ export function finalizeTracePhase7ScheduleExecution({
   scheduleTemporal
 }) {
   const started = actorStep.result;
-  const active = scheduleTemporal.projection?.active_npc_actor_step;
+  const active = tracePhase7ActorStep(
+    scheduleTemporal.projection, started);
   const temporalStatus = scheduleTemporal.result.temporal_status;
   if (started.status !== 'started'
       || !['completed', 'paused'].includes(temporalStatus)
@@ -230,6 +232,20 @@ export function finalizeTracePhase7ScheduleExecution({
     status: 'started',
     failure_code: null
   });
+}
+
+export function tracePhase7ActorStep(projection, started) {
+  const matches = npcActorSteps(projection).filter((step) =>
+    step?.npc_ref === started?.npc_ref
+    && (started?.decision_trace_ref == null
+      || (step?.decision_trace_ref?.entity_kind
+        === started.decision_trace_ref.entity_kind
+        && step?.decision_trace_ref?.entity_id
+          === started.decision_trace_ref.entity_id)));
+  if (matches.length !== 1) {
+    fail('TRACE_PHASE_7_SCHEDULE_COMPLETION_INVALID');
+  }
+  return matches[0];
 }
 
 function exactIntegerElapsed(from, to) {

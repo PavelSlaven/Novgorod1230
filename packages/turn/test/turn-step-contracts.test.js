@@ -165,7 +165,7 @@ test('plan validation accepts every resolution and exact clarification shape', (
   assert.equal(validateTurnStepPlan(clarification, { request: request() }).errors.some(({ code }) => code === 'additional_property'), true);
 });
 
-test('continuation optionally reserves one grounded domain operation', () => {
+test('continuation rejects a reserved future domain operation', () => {
   const reserved = plan();
   reserved.continuation.next_domain_operation = {
     op: 'request_container_access',
@@ -173,15 +173,10 @@ test('continuation optionally reserves one grounded domain operation', () => {
     container_ref: 'chest_1',
     access_kind: 'open_and_view'
   };
-  assert.equal(validateTurnStepPlan(reserved, { request: request() }).ok, true);
-  reserved.continuation.next_domain_operation = {
-    op: 'move_entity',
-    entity_ref: 'chest_1',
-    placement: { relation: 'located_at', target_ref: 'shore' }
-  };
   const invalid = validateTurnStepPlan(reserved, { request: request() });
   assert.equal(invalid.ok, false);
-  assert.equal(invalid.errors.some(({ code }) => code === 'resolution'), true);
+  assert.equal(invalid.errors.some(({ code }) =>
+    code === 'additional_property'), true);
 });
 
 test('plan validation admits refs exposed through a plural ref array', () => {

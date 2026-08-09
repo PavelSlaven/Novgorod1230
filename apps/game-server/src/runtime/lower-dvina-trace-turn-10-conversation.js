@@ -125,7 +125,8 @@ function parentTemporalContract(state) {
   if (parent?.execution_id == null || parent.limit_timestamp == null
       || parent.completion_effect == null
       || state.cumulative_elapsed_minutes !== 25
-      || state.active_npc_actor_step == null) {
+      || !Array.isArray(state.active_npc_actor_steps)
+      || state.active_npc_actor_steps.length === 0) {
     fail('TRACE_TURN10_PARENT_ACTIVITY_INVALID');
   }
   return {
@@ -142,14 +143,14 @@ function parentTemporalContract(state) {
 function parentActivityCompletion(result) {
   const world = result.exchange?.working_state?.world_state;
   if (world?.cumulative_elapsed_minutes !== 30
-      || !['started', 'completed'].includes(
-        world.active_npc_actor_step?.status)) {
+      || !world.active_npc_actor_steps?.some(({ status }) =>
+        ['started', 'completed'].includes(status))) {
     fail('TRACE_TURN10_PARENT_ACTIVITY_INCOMPLETE');
   }
   return {
     status: 'completed',
     cumulative_elapsed_minutes: 30,
-    active_npc_actor_step: structuredClone(world.active_npc_actor_step)
+    active_npc_actor_steps: structuredClone(world.active_npc_actor_steps)
   };
 }
 

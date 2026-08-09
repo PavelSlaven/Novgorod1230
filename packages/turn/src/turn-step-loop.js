@@ -145,18 +145,11 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       request,
       plan
     });
-    if (preparedEffects.length > 0
-        && typeof ports.assertPreparedContinuation === 'function') {
-      await ports.assertPreparedContinuation(deepFreeze({
-        plan: structuredClone(plan),
-        prepared_chain_context: structuredClone(preparedChainContext)
-      }));
-    }
     const preparedContinuationAllowed = preparedEffects.length === 0
       || preparedDirectContinuation(plan)
       || (plan.resolution === 'domain_request'
-        && typeof ports.canContinuePreparedDomain === 'function'
-        && await ports.canContinuePreparedDomain(deepFreeze({
+        && typeof ports.admitPreparedDomainPlan === 'function'
+        && await ports.admitPreparedDomainPlan(deepFreeze({
           plan: structuredClone(plan),
           request: structuredClone(request),
           working_projection: structuredClone(workingProjection),

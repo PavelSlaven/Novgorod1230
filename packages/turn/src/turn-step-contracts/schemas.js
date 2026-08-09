@@ -103,9 +103,6 @@ const planDefinitions = {
       remaining_intent: textSchema,
       depends_on_refs: {
         type: 'array', uniqueItems: true, items: refSchema
-      },
-      next_domain_operation: {
-        anyOf: [{ type: 'null' }, { $ref: '#/$defs/domain_operation' }]
       }
     }
   },

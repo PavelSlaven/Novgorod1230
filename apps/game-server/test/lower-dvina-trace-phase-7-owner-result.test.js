@@ -31,7 +31,7 @@ test('Phase 7 admission rejects an operation detached from the NPC plan',
     tampered.phase7.actor_step.semantic_operation = structuredClone(detached);
     tampered.phase7.schedule_execution.semantic_operation =
       structuredClone(detached);
-    tampered.phase7.schedule_temporal.projection.active_npc_actor_step
+    tampered.phase7.schedule_temporal.projection.active_npc_actor_steps[0]
       .semantic_operation = structuredClone(detached);
     assertOwnerRejects(tampered, state, contracts);
 
@@ -67,7 +67,7 @@ test('Phase 7 direct admission binds the actor to the NPC request', async () => 
   const tampered = structuredClone(consequence);
   tampered.phase7.actor_step.npc_ref = 'onisim-1';
   tampered.phase7.schedule_execution.npc_ref = 'onisim-1';
-  tampered.phase7.schedule_temporal.projection.active_npc_actor_step.npc_ref =
+  tampered.phase7.schedule_temporal.projection.active_npc_actor_steps[0].npc_ref =
     'onisim-1';
   assertOwnerRejects(tampered, state, contracts);
 });

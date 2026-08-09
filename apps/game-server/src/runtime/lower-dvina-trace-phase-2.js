@@ -196,7 +196,6 @@ export function createLowerDvinaTracePhase2Runtime({
         ...(phase7Contracts ? [createTracePhase7FireRestCommand({
           contracts: phase7Contracts,
           continuationTargetRefs: turn10?.companionTargetRefs ?? [],
-          continuationOperationMatcher: turn10?.matchesOperation ?? null,
           inputDigest,
           npcAutonomousModel,
           semanticActivityScheduleOwner:

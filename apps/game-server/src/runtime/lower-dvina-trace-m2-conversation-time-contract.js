@@ -37,8 +37,8 @@ export function conversationTemporalParentProjection(context, working) {
   return {
     cumulative_elapsed_minutes:
       working.world_state.cumulative_elapsed_minutes,
-    active_npc_actor_step: structuredClone(
-      working.world_state.active_npc_actor_step)
+    active_npc_actor_steps: structuredClone(
+      working.world_state.active_npc_actor_steps)
   };
 }
 
@@ -50,6 +50,6 @@ export function conversationTemporalWorld(context, conversationState,
   return {
     ...structuredClone(conversationState.world_state),
     cumulative_elapsed_minutes: projection.cumulative_elapsed_minutes,
-    active_npc_actor_step: structuredClone(projection.active_npc_actor_step)
+    active_npc_actor_steps: structuredClone(projection.active_npc_actor_steps)
   };
 }

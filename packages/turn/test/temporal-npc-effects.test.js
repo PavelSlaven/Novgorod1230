@@ -36,7 +36,7 @@ test('common NPC owner starts and completes one actor-step lifecycle', () => {
     movement_proposal: { owner: '@rus/movement-routes' },
     property_proposal: { owner: '@rus/items-property' }
   });
-  const active = started.working_projection.active_npc_actor_step;
+  const [active] = started.working_projection.active_npc_actor_steps;
   assert.equal(active.status, 'started');
   assert.equal(active.started_at.whole_minutes, '25');
   assert.deepEqual(active.planned_exact_elapsed,
@@ -72,11 +72,88 @@ test('common NPC owner starts and completes one actor-step lifecycle', () => {
   });
 
   assert.equal(resolved.state_projection.marker, 'preserved');
-  assert.equal(resolved.state_projection.active_npc_actor_step.status,
+  assert.equal(resolved.state_projection.active_npc_actor_steps[0].status,
     'completed');
-  assert.equal(resolved.state_projection.active_npc_actor_step
+  assert.equal(resolved.state_projection.active_npc_actor_steps[0]
     .completed_at.whole_minutes, '30');
 });
+
+test('common NPC owner keeps simultaneous positive actor-steps independent',
+  () => {
+    const first = startNpcActorStep({
+      execution: actorExecution('decision-a', 'npc-a', {}),
+      started_at: at(25),
+      duration_minutes: 5,
+      activity_profile_ref: 'activity-a'
+    });
+    const second = startNpcActorStep({
+      execution: actorExecution('decision-b', 'npc-b',
+        first.working_projection),
+      started_at: at(25),
+      duration_minutes: 5,
+      activity_profile_ref: 'activity-b'
+    });
+
+    assert.deepEqual(second.working_projection.active_npc_actor_steps.map(
+      ({ npc_ref: npcRef, status }) => [npcRef, status]), [
+      ['npc-a', 'started'],
+      ['npc-b', 'started']
+    ]);
+
+    const registrations = npcTemporalEffectRegistrations();
+    const resolve = registrations.find(({ effect_ref: effectRef }) =>
+      effectRef.entity_ref.entity_id === 'npc-actor-step-completion').resolve;
+    const [activeA, activeB] = second.working_projection.active_npc_actor_steps;
+    const completionA = completionEffect(activeA);
+    const completionB = completionEffect(activeB);
+    assert.throws(() => resolve({
+      candidate: completionA.candidate,
+      context: { projection: second.working_projection },
+      descriptor: completionB.input
+    }), { code: 'npc_actor_step_completion_gap' });
+    const afterA = resolve({
+      candidate: completionA.candidate,
+      context: { projection: second.working_projection },
+      descriptor: completionA.input
+    }).state_projection;
+
+    assert.deepEqual(afterA.active_npc_actor_steps.map(
+      ({ npc_ref: npcRef, status }) => [npcRef, status]), [
+      ['npc-a', 'completed'],
+      ['npc-b', 'started']
+    ]);
+
+    const afterB = resolve({
+      candidate: completionB.candidate,
+      context: { projection: afterA },
+      descriptor: completionB.input
+    }).state_projection;
+    assert.deepEqual(afterB.active_npc_actor_steps.map(
+      ({ npc_ref: npcRef, status }) => [npcRef, status]), [
+      ['npc-a', 'completed'],
+      ['npc-b', 'completed']
+    ]);
+  });
+
+function actorExecution(decisionId, npcRef, workingProjection) {
+  return {
+    request: { request_id: decisionId, committed_state_version: 7 },
+    plan: { goal_result: 'pending' },
+    operation: {
+      op: 'request_activity', actor_ref: npcRef,
+      activity_kind: 'work', target_refs: []
+    },
+    working_projection: workingProjection
+  };
+}
+
+function completionEffect(active) {
+  return createNpcActorStepCompletionEffect({
+    party_ref: ref('party', 'party-1'),
+    active_actor_step: active,
+    visibility_policy_ref: versioned('visibility_modifier', 'hidden')
+  });
+}
 
 test('common NPC temporal owner resolves schedule terminal into one signal',
   () => {

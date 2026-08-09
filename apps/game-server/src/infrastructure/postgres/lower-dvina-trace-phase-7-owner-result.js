@@ -7,6 +7,8 @@ import {
 import { serverError } from '../../errors.js';
 import { validTracePhase7ActorStepCheck } from
   './lower-dvina-trace-phase-7-check-result.js';
+import { tracePhase7ActorStep } from
+  '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
 
 export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   changeSetId }) {
@@ -63,7 +65,8 @@ function validCausality(phase7) {
   const transition = phase7.temporal.waiting_transition;
   const signal = phase7.autonomous.signal;
   const boundary = phase7.autonomous.boundary;
-  const actorStep = phase7.schedule_temporal.projection.active_npc_actor_step;
+  const actorStep = tracePhase7ActorStep(
+    phase7.schedule_temporal.projection, phase7.actor_step);
   const completion = phase7.schedule_temporal.completion_candidate;
   const orderedSignals =
     phase7.autonomous.decision_records?.[0]?.orderedSignals;
@@ -112,7 +115,8 @@ function validActorStepCompletion(phase7) {
   const actorStep = phase7.actor_step;
   const schedule = phase7.schedule_execution;
   const temporalClock = phase7.temporal.result.clock_after;
-  const active = phase7.schedule_temporal.projection?.active_npc_actor_step;
+  const active = tracePhase7ActorStep(
+    phase7.schedule_temporal.projection, phase7.actor_step);
   const finalClock = phase7.schedule_temporal.result.clock_after;
   if (actorStep?.status !== 'started'
       || active?.npc_ref !== schedule.npc_ref

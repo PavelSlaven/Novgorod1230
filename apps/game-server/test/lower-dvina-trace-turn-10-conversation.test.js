@@ -237,7 +237,7 @@ test('either fisher may choose either approved participation binding',
       contracts.actors.otherFisher.instance_id), 'stay_with_onisim');
   });
 
-test('Turn 10 rejects a second domain step that differs from its reservation',
+test('Turn 10 rejects an unsupported second plan chosen from current state',
   async () => {
     const { state, contracts } = turn10State({ completedRest: false });
     const runtimeFixture = fixture({
@@ -272,8 +272,7 @@ test('Turn 10 rejects a second domain step that differs from its reservation',
         idempotency_key: 'turn10-reservation-mismatch',
         raw_text: COMPOUND_TURN_10
       }
-    }), ({ code }) =>
-      code === 'TRACE_TURN10_CONTINUATION_RESERVATION_MISMATCH');
+    }), ({ code }) => code === 'TURN_STEP_PREPARED_DOMAIN_PLAN_UNSUPPORTED');
     assert.equal(runtimeFixture.commitCount(), 0);
   });
 
@@ -432,8 +431,7 @@ function turn10StepPlan(request, contracts) {
         contracts.actors.eremey.instance_id,
         contracts.actors.participatingFisher.instance_id,
         contracts.actors.otherFisher.instance_id
-      ],
-      next_domain_operation: companionOperation
+      ]
     } : null,
     clarification: null,
     reason_code: first ? 'rest_then_request_companions' : 'request_companions',

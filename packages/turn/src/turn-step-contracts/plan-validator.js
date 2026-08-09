@@ -110,26 +110,14 @@ function validateContinuation(value, path, errors, trace = null) {
     strict(value, path, [], errors);
     return;
   }
-  const normalized = Object.hasOwn(value, 'next_domain_operation')
-    ? value : { ...value, next_domain_operation: null };
-  if (!strict(normalized, path, [
-    'remaining_intent', 'depends_on_refs', 'next_domain_operation'
+  if (!strict(value, path, [
+    'remaining_intent', 'depends_on_refs'
   ], errors)) {
     return;
   }
   requiredText(value.remaining_intent, `${path}.remaining_intent`, errors);
   refs(value.depends_on_refs, `${path}.depends_on_refs`, errors, trace,
     { allowEmpty: true });
-  if (value.next_domain_operation != null) {
-    const continuationTrace = cloneTrace(trace);
-    const kinds = validateOperations([value.next_domain_operation],
-      `${path}.next_domain_operation`, errors, continuationTrace,
-      { directOnly: false });
-    if (!DOMAIN_OPS.has(kinds[0])) {
-      add(errors, `${path}.next_domain_operation`, 'resolution',
-        'must reserve one domain operation');
-    }
-  }
 }
 
 function validateClarification(value, path, errors, trace = null) {

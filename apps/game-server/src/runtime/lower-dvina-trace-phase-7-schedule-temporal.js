@@ -5,6 +5,8 @@ import {
 import {
   createNpcActorStepCompletionEffect
 } from '@rus/turn/temporal-advance';
+import { tracePhase7ActorStep } from
+  './lower-dvina-trace-phase-7-schedule-execution.js';
 import { PHASE7_REST_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import {
@@ -39,7 +41,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   });
   const completionEffect = createNpcActorStepCompletionEffect({
     party_ref: { entity_kind: 'party', entity_id: state.party_id },
-    active_actor_step: actorStep.working_projection.active_npc_actor_step,
+    active_actor_step: tracePhase7ActorStep(
+      actorStep.working_projection, actorStep.result),
     visibility_policy_ref: versioned('visibility_modifier',
       'lower-dvina-trace-phase-7-hidden-npc', '1')
   });
@@ -70,7 +73,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const elapsed = exactIntegerElapsed(
     temporal.result.clock_after, advanced.result.clock_after
   );
-  const active = advanced.state_projection.active_npc_actor_step;
+  const active = tracePhase7ActorStep(
+    advanced.state_projection, actorStep.result);
   if (advanced.result.temporal_status === 'paused') {
     if (active?.npc_ref !== actorStep.result.npc_ref
         || !['started', 'completed'].includes(active?.status)) {

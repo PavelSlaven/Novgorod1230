@@ -92,7 +92,7 @@ test('Phase 7 preserves the boundary causality chain', async () => {
   }]);
   assert.deepEqual(consequence.phase7.schedule_temporal.completion_candidate
     .causal_parent_refs, [consequence.phase7.schedule_temporal.projection
-    .active_npc_actor_step.decision_trace_ref]);
+    .active_npc_actor_steps[0].decision_trace_ref]);
 });
 
 test('Phase 7 executes a schema-valid brief direct plan without blocking rest',
@@ -229,12 +229,12 @@ test('Phase 7 keeps overlong NPC activity active after Mikula rest ends',
     assert.equal(consequence.duration_minutes, 30);
     assert.equal(consequence.phase7.schedule_temporal.elapsed_after_decision, 5);
     assert.equal(
-      consequence.phase7.schedule_temporal.projection.active_npc_actor_step
+      consequence.phase7.schedule_temporal.projection.active_npc_actor_steps[0]
         .status,
       'started'
     );
     assert.deepEqual(
-      consequence.phase7.schedule_temporal.projection.active_npc_actor_step
+      consequence.phase7.schedule_temporal.projection.active_npc_actor_steps[0]
         .planned_exact_elapsed.exact_minutes,
       { numerator: '15', denominator: '1' }
     );
@@ -407,11 +407,11 @@ test('Phase 7 composes an approved generic-check additional activity',
     const phase7 = omittedCost.phase7;
     delete phase7.actor_step.additional_semantic_operations;
     delete phase7.schedule_execution.additional_semantic_operations;
-    delete phase7.schedule_temporal.projection.active_npc_actor_step
+    delete phase7.schedule_temporal.projection.active_npc_actor_steps[0]
       .additional_semantic_operations;
     phase7.actor_step.exact_elapsed.exact_minutes.numerator = '1';
     phase7.schedule_execution.exact_elapsed.exact_minutes.numerator = '1';
-    const active = phase7.schedule_temporal.projection.active_npc_actor_step;
+    const active = phase7.schedule_temporal.projection.active_npc_actor_steps[0];
     active.planned_exact_elapsed.exact_minutes.numerator = '1';
     active.status = 'completed';
     active.completed_at = { whole_minutes: '126',

@@ -50,7 +50,12 @@ export function startNpcActorStep({ execution, started_at: startedAt,
     entity_kind: 'npc_decision_trace',
     entity_id: execution.request.request_id
   };
-  const prior = execution.working_projection.active_npc_actor_step;
+  const actorSteps = npcActorSteps(execution.working_projection);
+  const priorIndex = actorSteps.findIndex((step) =>
+    step?.status === 'started'
+    && step?.npc_ref === npcRef
+    && step?.decision_trace_ref?.entity_id === decisionTraceRef.entity_id);
+  const prior = priorIndex < 0 ? null : actorSteps[priorIndex];
   const composing = operation.op === 'apply_semantic_activity'
     && prior?.status === 'started'
     && prior.semantic_operation?.op === 'apply_semantic_activity'
@@ -80,11 +85,14 @@ export function startNpcActorStep({ execution, started_at: startedAt,
       }
     }
   };
+  const nextActorSteps = [...actorSteps];
+  if (composing) nextActorSteps[priorIndex] = active;
+  else nextActorSteps.push(active);
+  const workingProjection = structuredClone(execution.working_projection);
+  delete workingProjection.active_npc_actor_step;
+  workingProjection.active_npc_actor_steps = nextActorSteps;
   return immutable({
-    working_projection: {
-      ...structuredClone(execution.working_projection),
-      active_npc_actor_step: active
-    },
+    working_projection: workingProjection,
     summary: 'npc_actor_step:' + operation.op,
     consequence_fragment: {
       owner: '@rus/turn/actor-step',
@@ -155,6 +163,7 @@ export function createNpcActorStepCompletionEffect({ party_ref: partyRef,
     effect_ref: NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
     input: {
       npc_ref: active.npc_ref,
+      decision_trace_ref: structuredClone(active.decision_trace_ref),
       scheduled_at: scheduledAt,
       transition_kind: 'npc_actor_step_completed'
     }
@@ -162,30 +171,58 @@ export function createNpcActorStepCompletionEffect({ party_ref: partyRef,
 }
 
 function resolveNpcActorStepCompletion({ candidate, context, descriptor }) {
-  const active = context.projection.active_npc_actor_step;
+  const actorSteps = npcActorSteps(context.projection);
+  const activeIndex = actorSteps.findIndex((step) =>
+    step?.npc_ref === descriptor?.npc_ref
+    && step?.decision_trace_ref?.entity_kind
+      === descriptor?.decision_trace_ref?.entity_kind
+    && step?.decision_trace_ref?.entity_id
+      === descriptor?.decision_trace_ref?.entity_id);
+  const active = activeIndex < 0 ? null : actorSteps[activeIndex];
+  const expectedIdentity = 'npc-actor-step:'
+    + candidate?.scope_ref?.entity_id + ':' + descriptor?.npc_ref + ':'
+    + descriptor?.decision_trace_ref?.entity_id + ':complete';
   if (descriptor?.transition_kind !== 'npc_actor_step_completed'
       || active?.npc_ref !== descriptor.npc_ref
       || active.status !== 'started'
+      || canonicalDigest(candidate?.source_ref)
+        !== canonicalDigest(descriptor.decision_trace_ref)
+      || candidate?.primary_subject_ref?.entity_kind !== 'npc'
+      || candidate.primary_subject_ref.entity_id !== descriptor.npc_ref
+      || candidate?.boundary_id !== expectedIdentity
+      || candidate?.idempotency_key !== expectedIdentity
+      || candidate?.preconditions_digest !== canonicalDigest(active)
       || compareGameTimestamp(candidate.scheduled_at,
         descriptor.scheduled_at) !== 0) {
     fail('npc_actor_step_completion_gap');
   }
+  const completed = {
+    ...active,
+    status: 'completed',
+    completed_at: structuredClone(candidate.scheduled_at)
+  };
+  const nextActorSteps = [...actorSteps];
+  nextActorSteps[activeIndex] = completed;
+  const projection = { ...context.projection };
+  delete projection.active_npc_actor_step;
+  projection.active_npc_actor_steps = nextActorSteps;
   return {
     disposition: 'execute',
     proposals: [{
       proposal_id: 'npc-actor-step:' + candidate.boundary_id,
       write_target: 'npc-actor-step:' + descriptor.npc_ref
     }],
-    state_projection: {
-      ...context.projection,
-      active_npc_actor_step: {
-        ...active,
-        status: 'completed',
-        completed_at: structuredClone(candidate.scheduled_at)
-      }
-    },
+    state_projection: projection,
     follow_up_candidates: []
   };
+}
+
+export function npcActorSteps(projection) {
+  if (Array.isArray(projection?.active_npc_actor_steps)) {
+    return structuredClone(projection.active_npc_actor_steps);
+  }
+  return projection?.active_npc_actor_step == null
+    ? [] : [structuredClone(projection.active_npc_actor_step)];
 }
 
 function exactActorStepMinutes(active) {

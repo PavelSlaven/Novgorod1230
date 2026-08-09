@@ -11,6 +11,8 @@ import {
   applyTracePhase7ScheduleState,
   tracePhase7ScheduleHistoryEntry
 } from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
+import { tracePhase7ActorStep } from
+  '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
@@ -74,8 +76,8 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     state: next,
     execution: phase7.schedule_execution,
     changeSetId,
-    activeActorStep:
-      phase7.schedule_temporal.projection?.active_npc_actor_step
+    activeActorStep: tracePhase7ActorStep(
+      phase7.schedule_temporal.projection, phase7.actor_step)
   });
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',

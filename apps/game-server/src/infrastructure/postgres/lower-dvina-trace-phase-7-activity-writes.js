@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { row } from './first-playable/plan-shared.js';
+import { tracePhase7ActorStep } from
+  '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
 
 export function appendPhase7Activities({ inserts, appends, partyId, state,
   factual, next, turnNumber, changeSetId, idemId }) {
@@ -62,8 +64,9 @@ export function appendPhase7Activities({ inserts, appends, partyId, state,
             phase7.autonomous.boundary.boundary_id
           ),
           decision_trace_ref: structuredClone(
-            phase7.schedule_temporal.projection.active_npc_actor_step
-              .decision_trace_ref
+            tracePhase7ActorStep(
+              phase7.schedule_temporal.projection,
+              phase7.actor_step).decision_trace_ref
           ),
           actor_step_completion_candidate_ref: ref(
             'temporal_boundary_candidate',

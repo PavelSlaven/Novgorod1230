@@ -23,7 +23,6 @@ const EXACT = new Set([
 export function createTracePhase7FireRestCommand({
   contracts,
   continuationTargetRefs = [],
-  continuationOperationMatcher = null,
   inputDigest,
   npcAutonomousModel,
   semanticActivityScheduleOwner,
@@ -85,8 +84,7 @@ export function createTracePhase7FireRestCommand({
       }
       let actorStepRuntime = null;
       const deferRestCompletion = continuationTargetsMatch(
-        semanticPlan?.continuation, continuationTargetRefs,
-        continuationOperationMatcher
+        semanticPlan?.continuation, continuationTargetRefs
       );
       const flow = await advanceTemporalNpcDecisionBoundary({
         advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
@@ -172,10 +170,6 @@ export function createTracePhase7FireRestCommand({
           : scheduleTemporal.elapsed_after_decision
             + temporal.elapsed_before_decision,
         phase7: {
-          continuation_operation: deferRestCompletion
-            ? structuredClone(
-                semanticPlan.continuation.next_domain_operation)
-            : null,
           input_digest: inputDigest,
           temporal,
           autonomous,
@@ -233,11 +227,10 @@ export function tracePhase7PreconditionSatisfied(
   return precondition?.kind === PRECONDITION && admitted(state, contracts);
 }
 
-function continuationTargetsMatch(continuation, requiredRefs,
-  operationMatcher) {
+function continuationTargetsMatch(continuation, requiredRefs) {
   if (continuation == null || requiredRefs.length === 0
-      || typeof operationMatcher !== 'function'
-      || operationMatcher(continuation.next_domain_operation) !== true) {
+      || typeof continuation.remaining_intent !== 'string'
+      || continuation.remaining_intent.length === 0) {
     return false;
   }
   const declared = new Set(continuation.depends_on_refs ?? []);

@@ -31,6 +31,7 @@ export {
   NPC_SCHEDULE_DECISION_TERMINAL_EFFECT_REF,
   npcScheduleDecisionTransitionId,
   npcTemporalEffectRegistrations,
+  npcActorSteps,
   startNpcActorStep
 } from './temporal-npc-effects.js';
 

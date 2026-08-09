@@ -17,12 +17,10 @@
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
-- `continuation.next_domain_operation` является optional validated reservation
-  следующего domain step, а не его исполнением. Prepared parent segment может
-  использовать reservation только после exact binding admission; следующий
-  план обязан снова вернуть и пройти admission этой операции. Любой другой
-  второй direct/domain/clarification plan отклоняет весь неподтверждённый
-  prepared draft до ledger и commit.
+- `continuation` переносит только `remaining_intent` и `depends_on_refs`.
+  Следующий semantic step всегда заново выбирается моделью из обновлённой
+  player-safe working projection и только затем проходит exact binding и
+  applicability admission. Prepared draft не резервирует будущую operation.
 - `createTurnStepExecutionRegistry(...)` публикует через
   `operationContract()` только те semantic operations, для которых в этом же
   registry зарегистрирован фактический handler; request не получает
@@ -30,6 +28,9 @@
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
 - `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на mode-specific boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC получает не более одной boundary/decision данного mode и same-time batch; listeners и witnesses без meaningful response boundary не становятся responders.
+- Общий NPC actor-step хранит `active_npc_actor_steps` как коллекцию:
+  положительные действия нескольких NPC одного timestamp сначала все
+  стартуют, а completion effect меняет только соответствующий decision trace.
 - NPC contribution может запросить common social check только через refs,
   явно разрешённые request scope и исполненные code-owned check owner. В
   Lower Dvina revision 14 такой scope активен для лжи и торга Ратши; результат

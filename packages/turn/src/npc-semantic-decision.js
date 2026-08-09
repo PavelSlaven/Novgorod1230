@@ -79,15 +79,18 @@ function immutable(value) {
   return deepFreeze(structuredClone(value));
 }
 
-function repairContext(rawPlan) {
-  let originalOutput = null;
+function safeModelOutput(rawPlan) {
   try {
-    originalOutput = structuredClone(rawPlan);
+    return structuredClone(rawPlan);
   } catch {
     // A non-cloneable response is structurally invalid and is represented as null.
+    return null;
   }
+}
+
+function repairContext(rawPlan) {
   return immutable({
-    original_output: originalOutput,
+    original_output: safeModelOutput(rawPlan),
     validation_errors: [{
       code: 'conversation_contribution_schema_invalid',
       path: '$',
@@ -164,38 +167,87 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
   let currentRequest = request;
   let currentSignals = orderedSignals;
   let staleRebuilds = 0;
-  while (true) {
+  decisionLoop: while (true) {
     const safeRequest = immutable(currentRequest);
+    let repair = null;
     let rawPlan;
-    try {
-      rawPlan = await semanticModel(safeRequest, immutable({
-        boundary: currentBoundary,
-        repair: null
-      }));
-    } catch (error) {
-      throw turnFailure('TURN_NPC_MODEL_FAILED',
-        'NPC semantic model request failed', {
-        request_id: currentRequest.request_id,
-        boundary_id: currentBoundary.boundary_id,
-        cause: error instanceof Error ? error.message : String(error)
-      });
-    }
-
-    if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
+    while (true) {
       try {
         rawPlan = await semanticModel(safeRequest, immutable({
           boundary: currentBoundary,
-          repair: repairContext(rawPlan)
+          repair
         }));
       } catch (error) {
         throw turnFailure('TURN_NPC_MODEL_FAILED',
-          'NPC format repair request failed', {
+          repair === null
+            ? 'NPC semantic model request failed'
+            : 'NPC format repair request failed', {
           request_id: currentRequest.request_id,
           boundary_id: currentBoundary.boundary_id,
           cause: error instanceof Error ? error.message : String(error)
         });
       }
-      if (!validatePlanForMode(rawPlan, safeRequest, mode)) {
+
+      const expectedStateVersion = requestStateVersion(currentRequest, mode);
+      const revalidationRequest = immutable({
+        request_id: currentRequest.request_id,
+        boundary_id: currentBoundary.boundary_id,
+        expected_state_version: expectedStateVersion
+      });
+      let currentStateVersion;
+      try {
+        currentStateVersion = await revalidateStateVersion(
+          revalidationRequest);
+      } catch (error) {
+        throw turnFailure(
+          'TURN_NPC_STATE_REVALIDATION_FAILED',
+          'NPC state version could not be revalidated after semantic planning',
+          {
+            request_id: currentRequest.request_id,
+            boundary_id: currentBoundary.boundary_id,
+            cause: error instanceof Error ? error.message : String(error)
+          }
+        );
+      }
+
+      if (!Number.isSafeInteger(currentStateVersion)
+          || currentStateVersion < 1) {
+        fail(
+          'TURN_NPC_STATE_REVALIDATION_INVALID',
+          'revalidateStateVersion must return a positive safe integer',
+          { request_id: currentRequest.request_id,
+            boundary_id: currentBoundary.boundary_id }
+        );
+      }
+      if (currentStateVersion !== expectedStateVersion) {
+        const rebuilt = await rebuildStaleDecision({
+          boundary: currentBoundary,
+          request: currentRequest,
+          rawPlan,
+          currentStateVersion,
+          rebuildDecisionContext
+        });
+        if (rebuilt === null) {
+          return staleDiscardedProposal(
+            currentBoundary, currentRequest, currentSignals);
+        }
+        staleRebuilds += 1;
+        if (staleRebuilds > MAX_STALE_REBUILDS) {
+          fail('TURN_NPC_STATE_REBUILD_LIMIT',
+            'NPC decision context changed too many times before application', {
+              boundary_id: currentBoundary.boundary_id,
+              rebuild_count: staleRebuilds
+            });
+        }
+        validateRebuiltDecision(rebuilt, mode, currentBoundary);
+        currentBoundary = immutable(rebuilt.boundary);
+        currentRequest = immutable(rebuilt.request);
+        currentSignals = immutable(rebuilt.ordered_signals);
+        continue decisionLoop;
+      }
+
+      if (validatePlanForMode(rawPlan, safeRequest, mode)) break;
+      if (repair !== null) {
         fail(
           'TURN_NPC_PLAN_INVALID',
           'NPC semantic response and its format repair must match the request',
@@ -203,63 +255,7 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             boundary_id: currentBoundary.boundary_id }
         );
       }
-    }
-
-    const expectedStateVersion = requestStateVersion(currentRequest, mode);
-    const revalidationRequest = immutable({
-      request_id: currentRequest.request_id,
-      boundary_id: currentBoundary.boundary_id,
-      expected_state_version: expectedStateVersion
-    });
-    let currentStateVersion;
-    try {
-      currentStateVersion = await revalidateStateVersion(revalidationRequest);
-    } catch (error) {
-      throw turnFailure(
-        'TURN_NPC_STATE_REVALIDATION_FAILED',
-        'NPC state version could not be revalidated after semantic planning',
-        {
-          request_id: currentRequest.request_id,
-          boundary_id: currentBoundary.boundary_id,
-          cause: error instanceof Error ? error.message : String(error)
-        }
-      );
-    }
-
-    if (!Number.isSafeInteger(currentStateVersion)
-        || currentStateVersion < 1) {
-      fail(
-        'TURN_NPC_STATE_REVALIDATION_INVALID',
-        'revalidateStateVersion must return a positive safe integer',
-        { request_id: currentRequest.request_id,
-          boundary_id: currentBoundary.boundary_id }
-      );
-    }
-    if (currentStateVersion !== expectedStateVersion) {
-      const rebuilt = await rebuildStaleDecision({
-        boundary: currentBoundary,
-        request: currentRequest,
-        rawPlan,
-        currentStateVersion,
-        rebuildDecisionContext
-      });
-      if (rebuilt === null) {
-        return staleDiscardedProposal(
-          currentBoundary, currentRequest, currentSignals);
-      }
-      staleRebuilds += 1;
-      if (staleRebuilds > MAX_STALE_REBUILDS) {
-        fail('TURN_NPC_STATE_REBUILD_LIMIT',
-          'NPC decision context changed too many times before application', {
-            boundary_id: currentBoundary.boundary_id,
-            rebuild_count: staleRebuilds
-          });
-      }
-      validateRebuiltDecision(rebuilt, mode, currentBoundary);
-      currentBoundary = immutable(rebuilt.boundary);
-      currentRequest = immutable(rebuilt.request);
-      currentSignals = immutable(rebuilt.ordered_signals);
-      continue;
+      repair = repairContext(rawPlan);
     }
 
     const domainResult = planDomainResult(rawPlan, safeRequest, validatePlan);
@@ -286,7 +282,7 @@ async function rebuildStaleDecision({ boundary, request, rawPlan,
     return await rebuildDecisionContext(immutable({
       stale_boundary: boundary,
       stale_request: request,
-      discarded_plan: rawPlan,
+      discarded_plan: safeModelOutput(rawPlan),
       current_state_version: currentStateVersion
     }));
   } catch (error) {

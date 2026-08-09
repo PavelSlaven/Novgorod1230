@@ -69,6 +69,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
     ...(preparedDomainEffect == null ? {} : {
       preparedDomainEffect: Object.freeze({
         supports: (input) => preparedDomainEffect.supports(input),
+        assertContinuation: (input) => preparedDomainEffect.assertContinuation(input),
         currentState: (input) => preparedDomainEffect.currentState(input),
         apply: (input) => admitResult(
           preparedDomainEffect.apply(input), workingProjectionAuthority)

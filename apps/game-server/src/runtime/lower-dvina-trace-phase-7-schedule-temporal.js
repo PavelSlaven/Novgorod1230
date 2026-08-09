@@ -17,7 +17,8 @@ import {
 } from './lower-dvina-trace-phase-7-temporal-request.js';
 
 export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
-  actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId }) {
+  actorStep, temporalAdvanceOwner, commandIdempotencyKey, rootTurnId,
+  restLimitTimestamp = null }) {
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
@@ -30,7 +31,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const request = buildTracePhase7TemporalRequest({
     state,
     executionId: temporal.execution_id,
-    limit: temporal.limit_timestamp,
+    limit: restLimitTimestamp ?? temporal.limit_timestamp,
     commandIdempotencyKey,
     rootTurnId,
     clockBefore: temporal.result.clock_after,
@@ -39,8 +40,17 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     segment: 'schedule'
   });
   const completion = actorStepCompletionCandidate({ state, actorStep });
+  const completionEffect = {
+    candidate: completion,
+    effect_ref: PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
+    input: {
+      npc_ref: actorStep.result.npc_ref,
+      scheduled_at: structuredClone(completion.scheduled_at),
+      transition_kind: 'npc_actor_step_completed'
+    }
+  };
   const completionWithinRest = compareGameTimestamp(
-    completion.scheduled_at, temporal.limit_timestamp
+    completion.scheduled_at, request.inclusive_limit_timestamp
   ) <= 0;
   const advanced = temporalAdvanceOwner.advance({
     request,
@@ -51,15 +61,7 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     source_provider_ref: TRACE_PHASE7_EXTERNAL_PROVIDER,
     source_candidates: sourceCandidates,
     registered_provider_ref: TRACE_PHASE7_PROVIDER,
-    registered_effects: completionWithinRest ? [{
-      candidate: completion,
-      effect_ref: PHASE7_NPC_ACTOR_STEP_COMPLETION_EFFECT_REF,
-      input: {
-        npc_ref: actorStep.result.npc_ref,
-        scheduled_at: structuredClone(completion.scheduled_at),
-        transition_kind: 'npc_actor_step_completed'
-      }
-    }] : [],
+    registered_effects: completionWithinRest ? [completionEffect] : [],
     continuous_effect: {
       effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
       input: { execution_id: temporal.execution_id }
@@ -81,16 +83,21 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     }
     return Object.freeze({
       elapsed_after_decision: elapsed,
+      rest_completed: false,
       result: advanced.result,
       projection: structuredClone(advanced.state_projection),
-      completion_candidate: structuredClone(completion)
+      completion_candidate: structuredClone(completion),
+      completion_effect: structuredClone(completionEffect)
     });
   }
+  const restCompleted = compareGameTimestamp(
+    advanced.result.clock_after, temporal.limit_timestamp) === 0;
   const finished = active?.status === 'completed';
   const stillRunning = active?.status === 'started';
   if (advanced.result.temporal_status !== 'completed'
-      || elapsed !== 5
-      || advanced.state_projection.cumulative_elapsed_minutes !== 30
+      || (restCompleted ? elapsed !== 5 : elapsed !== 0)
+      || advanced.state_projection.cumulative_elapsed_minutes
+        !== (restCompleted ? 30 : 25)
       || active?.npc_ref !== actorStep.result.npc_ref
       || (!finished && !stillRunning)
       || (finished && !completionWithinRest)
@@ -99,9 +106,11 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   }
   return Object.freeze({
     elapsed_after_decision: elapsed,
+    rest_completed: restCompleted,
     result: advanced.result,
     projection: structuredClone(advanced.state_projection),
-    completion_candidate: structuredClone(completion)
+    completion_candidate: structuredClone(completion),
+    completion_effect: structuredClone(completionEffect)
   });
 }
 

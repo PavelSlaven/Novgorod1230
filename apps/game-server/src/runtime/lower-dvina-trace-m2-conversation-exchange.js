@@ -48,6 +48,8 @@ import {
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
 import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
+import { conversationContributionSlots } from
+  './lower-dvina-trace-m2-conversation-time-contract.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -133,14 +135,8 @@ export async function executeM2ConversationExchange(context) {
   const decisions = new Map();
   const npcOutcomes = new Map();
   let resumedOutcome = null;
-  const contributionSlots = Math.min(
-    context.contracts.conversationBindings.max_contributions_per_exchange,
-    pendingExecution === null
-      ? 1 + (pendingPlayerExecution?.plan ?? context.playerPlan)
-        .intended_addressee_refs.length
-      : Math.max(1, pendingExecution.remaining_responder_refs.length
-        + (pendingExecution.remaining_minutes > 0 ? 1 : 0))
-  );
+  const contributionSlots = conversationContributionSlots(
+    context, pendingPlayerExecution, pendingExecution);
   const exchange = await runConversationExchange({
     playerRequest,
     initialWorkingState,

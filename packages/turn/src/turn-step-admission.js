@@ -159,6 +159,7 @@ export async function resolveBoundTurnStepCommand({
         }
         const consequence = await selectedCommand.consequence(deepFreeze({
           playerInput: structuredClone(stepPlayerInput),
+          semanticPlan: structuredClone(execution.plan),
           rootTurnId: execution.request.root_turn_id,
           retrievedState: structuredClone(consequenceState),
           availability: structuredClone(availability),
@@ -231,10 +232,17 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
+    assertPreparedContinuation: ({ plan }) => {
+      const preparedOwner = services.turnStepPreparedDomainEffect;
+      if (typeof preparedOwner?.assertContinuation === 'function') {
+        preparedOwner.assertContinuation({ plan });
+      }
+    },
     canContinuePreparedDomain: async ({ plan, request,
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
       if (plan.operations.length !== 1 || operation == null) return false;
+      const preparedOwner = services.turnStepPreparedDomainEffect;
       const matches = semanticBindings.filter(({ command, binding }) =>
         ((preparedChainContext?.prior_effect_count ?? 0) > 0
           || availableOptions.has(command.option_id))
@@ -247,7 +255,6 @@ export async function resolveBoundTurnStepCommand({
           committed_state: structuredClone(committedState)
         })) === true);
       if (matches.length !== 1) return false;
-      const preparedOwner = services.turnStepPreparedDomainEffect;
       return typeof preparedOwner?.supports === 'function'
         && preparedOwner.supports(deepFreeze({
           operation: structuredClone(operation),

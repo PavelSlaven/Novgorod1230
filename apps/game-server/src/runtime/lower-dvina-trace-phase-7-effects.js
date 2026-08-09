@@ -47,24 +47,31 @@ export function createTracePhase7TemporalAdvance({ fallback }) {
 export function createTracePhase7BodyEffect({ fallback, contracts }) {
   return Object.freeze({
     apply(input) {
-      if (input.consequence?.phase7_kind !== 'fire_rest') {
+      const parentCompleted = input.consequence?.parent_activity_completion
+        ?.status === 'completed';
+      if (input.consequence?.phase7_kind !== 'fire_rest'
+          && !parentCompleted) {
         return fallback.apply(input);
       }
-      const schedule = input.consequence.phase7.schedule_temporal;
-      if (schedule.result.temporal_status === 'paused') {
+      const schedule = input.consequence.phase7?.schedule_temporal;
+      if (!parentCompleted && schedule?.rest_completed !== true) {
         return {
           owner: '@rus/body-state',
           applied: false,
-          proposal: {
-            profile_ref: contracts.bodyEffect.effect_profile_id,
-            deferred: true,
-            reason: 'phase7_rest_temporally_paused'
-          },
+          proposal: null,
           state_after: structuredClone(input.committed_state.body_state)
         };
       }
       return applyApprovedTraceRouteBodyEffect({
         ...input,
+        ...(parentCompleted ? {
+          time_update: {
+            ...structuredClone(input.time_update),
+            exact_elapsed: {
+              exact_minutes: { numerator: '30', denominator: '1' }
+            }
+          }
+        } : {}),
         effect: contracts.bodyEffect
       });
     }
@@ -78,7 +85,9 @@ export function createTracePhase7VisibleProjector({ fallback }) {
         return fallback.project(input);
       }
       const schedule = input.consequence.phase7.schedule_temporal;
-      if (schedule.result.temporal_status === 'paused') {
+      const parentCompleted = input.consequence.parent_activity_completion;
+      if (schedule.rest_completed !== true
+          && parentCompleted?.status !== 'completed') {
         return {
           version: 1,
           schema: 'visible_context_package',

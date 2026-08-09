@@ -5,6 +5,7 @@ import {
   runTurnStepLoop
 } from '../src/turn-step-loop.js';
 import {
+  buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger
 } from '../src/turn-step-prepared-effects.js';
 
@@ -194,7 +195,8 @@ test('prepared effect ledger rejects forged, reordered and missing slices',
     }
   });
 
-test('two prepared domain owners form one ordered ledger', async () => {
+test('two positive prepared domain segments form one ordered ledger',
+  async () => {
   let secondDomainCalls = 0;
   const registry = preparedRegistry({ extraDomain: {
     request_activity: async (execution) => {
@@ -211,7 +213,7 @@ test('two prepared domain owners form one ordered ledger', async () => {
           owner_ref: 'companion_conversation_owner',
           operation_ref: 'request_activity',
           availability: available(),
-          consequence: { duration_minutes: 0 }
+          consequence: { duration_minutes: 5 }
         }
       };
     }
@@ -250,6 +252,11 @@ test('two prepared domain owners form one ordered ledger', async () => {
   assert.equal(outcome.stop_reason, 'player_response');
   assert.equal(outcome.working_projection.interaction_status,
     'companions_committed');
+  const aggregateTime = buildTurnStepPreparedTimeUpdate(
+    outcome.prepared_effect_ledger);
+  assert.deepEqual(aggregateTime.exact_elapsed, minutes(13));
+  assert.equal(outcome.prepared_effect_ledger.slices[1]
+    .consequence.duration_minutes, 5);
   assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) => ({
     ordinal: slice.ordinal,
     kind: slice.effect_kind,
@@ -267,7 +274,7 @@ test('two prepared domain owners form one ordered ledger', async () => {
     kind: 'domain_command',
     owner: 'companion_conversation_owner',
     from: '8',
-    to: '8'
+    to: '13'
   }]);
 });
 

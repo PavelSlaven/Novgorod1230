@@ -17,6 +17,8 @@ export function phase7Command({
   state,
   contracts,
   model,
+  continuationTargetRefs = [],
+  continuationOperationMatcher = null,
   genericCheckContextOwner = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
@@ -29,6 +31,8 @@ export function phase7Command({
 }) {
   const command = createTracePhase7FireRestCommand({
     contracts,
+    continuationTargetRefs,
+    continuationOperationMatcher,
     inputDigest: digest,
     npcAutonomousModel: model,
     semanticActivityScheduleOwner: {

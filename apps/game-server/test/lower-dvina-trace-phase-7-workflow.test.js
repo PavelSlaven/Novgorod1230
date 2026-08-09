@@ -120,3 +120,34 @@ test('Phase 7 applicability rejection stops the production workflow',
     assert.deepEqual(state, stateBefore);
     assert.deepEqual(persistedProjection, stateBefore);
   });
+
+test('Phase 7 completes rest when actor refs reserve a different domain operation',
+  async () => {
+    const state = phase7CommittedState();
+    const contracts = approvedPhase7Contracts(state);
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      continuationTargetRefs: ['eremey', 'fisher-1', 'fisher-2'],
+      continuationOperationMatcher: (operation) =>
+        operation?.op === 'emit_interaction',
+      model: async (request) => phase7AutonomousPlan(request, 'wait')
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'unrelated-continuation'),
+      semanticPlan: {
+        continuation: {
+          remaining_intent: 'Осмотреть берег.',
+          depends_on_refs: ['eremey', 'fisher-1', 'fisher-2'],
+          next_domain_operation: {
+            op: 'request_movement',
+            actor_ref: state.actor_id,
+            target_ref: contracts.campLocationRef,
+            movement_kind: 'walk'
+          }
+        }
+      }
+    });
+    assert.equal(consequence.duration_minutes, 30);
+    assert.equal(consequence.phase7.schedule_temporal.rest_completed, true);
+  });

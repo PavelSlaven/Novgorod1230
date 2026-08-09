@@ -22,6 +22,8 @@ const EXACT = new Set([
 
 export function createTracePhase7FireRestCommand({
   contracts,
+  continuationTargetRefs = [],
+  continuationOperationMatcher = null,
   inputDigest,
   npcAutonomousModel,
   semanticActivityScheduleOwner,
@@ -70,6 +72,7 @@ export function createTracePhase7FireRestCommand({
       return available(admitted(state, contracts));
     },
     async consequence({ retrievedState: state, playerInput,
+      semanticPlan = null,
       modeResolution = null, rootTurnId = null }) {
       if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
       const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
@@ -81,6 +84,10 @@ export function createTracePhase7FireRestCommand({
         fail('TRACE_PHASE_7_ROOT_TURN_ID_INVALID');
       }
       let actorStepRuntime = null;
+      const deferRestCompletion = continuationTargetsMatch(
+        semanticPlan?.continuation, continuationTargetRefs,
+        continuationOperationMatcher
+      );
       const flow = await advanceTemporalNpcDecisionBoundary({
         advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
           state,
@@ -132,7 +139,9 @@ export function createTracePhase7FireRestCommand({
             actorStep,
             temporalAdvanceOwner,
             commandIdempotencyKey: playerInput.idempotency_key,
-            rootTurnId: actualRootTurnId
+            rootTurnId: actualRootTurnId,
+            restLimitTimestamp: deferRestCompletion
+              ? temporal.result.clock_after : null
           })
       });
       if (flow.unresolved_domain_rejection !== null) {
@@ -147,8 +156,7 @@ export function createTracePhase7FireRestCommand({
         actorStep: flow.actor_step,
         scheduleTemporal
       });
-      const restCompleted =
-        scheduleTemporal.result.temporal_status === 'completed';
+      const restCompleted = scheduleTemporal.rest_completed === true;
       return {
         version: 1,
         schema: 'turn_consequence_package',
@@ -164,6 +172,10 @@ export function createTracePhase7FireRestCommand({
           : scheduleTemporal.elapsed_after_decision
             + temporal.elapsed_before_decision,
         phase7: {
+          continuation_operation: deferRestCompletion
+            ? structuredClone(
+                semanticPlan.continuation.next_domain_operation)
+            : null,
           input_digest: inputDigest,
           temporal,
           autonomous,
@@ -219,6 +231,17 @@ export function tracePhase7PreconditionSatisfied(
   contracts
 ) {
   return precondition?.kind === PRECONDITION && admitted(state, contracts);
+}
+
+function continuationTargetsMatch(continuation, requiredRefs,
+  operationMatcher) {
+  if (continuation == null || requiredRefs.length === 0
+      || typeof operationMatcher !== 'function'
+      || operationMatcher(continuation.next_domain_operation) !== true) {
+    return false;
+  }
+  const declared = new Set(continuation.depends_on_refs ?? []);
+  return requiredRefs.every((ref) => declared.has(ref));
 }
 
 function admitted(state, contracts) {

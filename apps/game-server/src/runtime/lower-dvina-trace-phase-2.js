@@ -3,8 +3,7 @@ import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
 import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../internal/lower-dvina-trace-phase-1a-bundle.js';
-import { loadLowerDvinaTracePhase2Bundle } from
-  '../internal/lower-dvina-trace-phase-2-bundle.js';
+import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from
   './lower-dvina-trace-phase-2-contracts.js';
@@ -13,8 +12,7 @@ import { createTracePhase3Commands } from './lower-dvina-trace-phase-3-command.j
 import { createTracePhase4Commands } from './lower-dvina-trace-phase-4-command.js';
 import { resolveTracePhase4Contracts } from
   './lower-dvina-trace-phase-4-contracts.js';
-import { createTracePhase5Command } from
-  './lower-dvina-trace-phase-5-command.js';
+import { createTracePhase5Command } from './lower-dvina-trace-phase-5-command.js';
 import { resolveTracePhase5Contracts } from './lower-dvina-trace-phase-5-contracts.js';
 import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
@@ -29,8 +27,7 @@ import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-
 import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry,
   requiredTraceTurnText, validateConversationDependencies,
   validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
-import { createNpcSocialCheckResolver } from
-  './lower-dvina-trace-npc-social-check.js';
+import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
@@ -154,7 +151,7 @@ export function createLowerDvinaTracePhase2Runtime({
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,
-        revalidateStateVersion
+        temporalAdvanceOwner, revalidateStateVersion
       });
       const turn10Contracts = turn10?.contracts ?? null;
       const commands = [
@@ -198,9 +195,12 @@ export function createLowerDvinaTracePhase2Runtime({
         })] : []),
         ...(phase7Contracts ? [createTracePhase7FireRestCommand({
           contracts: phase7Contracts,
+          continuationTargetRefs: turn10?.companionTargetRefs ?? [],
+          continuationOperationMatcher: turn10?.matchesOperation ?? null,
           inputDigest,
           npcAutonomousModel,
-          semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
+          semanticActivityScheduleOwner:
+            genericOwners?.semanticActivityScheduleOwner,
           genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
           randomSource: turnRandomSource,
           temporalAdvanceOwner,

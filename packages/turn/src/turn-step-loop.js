@@ -145,6 +145,13 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       request,
       plan
     });
+    if (preparedEffects.length > 0
+        && typeof ports.assertPreparedContinuation === 'function') {
+      await ports.assertPreparedContinuation(deepFreeze({
+        plan: structuredClone(plan),
+        prepared_chain_context: structuredClone(preparedChainContext)
+      }));
+    }
     const preparedContinuationAllowed = preparedEffects.length === 0
       || preparedDirectContinuation(plan)
       || (plan.resolution === 'domain_request'

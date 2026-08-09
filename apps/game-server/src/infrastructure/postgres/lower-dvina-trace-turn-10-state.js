@@ -5,8 +5,18 @@ import { projectSemanticConversationSnapshot } from
 export function applyTurn10CompanionState({ next, factual, changeSetId,
   rootTurnId, workingRevision, turn10Contracts }) {
   const semantic = factual.consequence.conversation?.semantic_exchange;
-  if (semantic?.exact_elapsed_minutes !== 0
-      || semantic.exchange?.time_budget?.elapsed_minutes !== 0
+  if (semantic?.exact_elapsed_minutes !== 5
+      || semantic.exchange?.time_budget?.elapsed_minutes !== 5
+      || semantic.time_accounting?.mode
+        !== 'parent_activity_final_segment'
+      || semantic.time_accounting?.parent_activity_ref
+        !== turn10Contracts?.binding?.conversation_activity
+          ?.parent_activity_ref
+      || canonicalDigest(semantic.time_accounting?.clock_after)
+        !== canonicalDigest(semantic.clock_after)
+      || semantic.parent_activity_completion?.status !== 'completed'
+      || semantic.parent_activity_completion?.cumulative_elapsed_minutes
+        !== 30
       || semantic.pending_npc_execution != null
       || semantic.pending_player_execution != null) {
     fail('TRACE_TURN10_CONVERSATION_STATE_INVALID');
@@ -27,7 +37,8 @@ export function applyTurn10CompanionState({ next, factual, changeSetId,
     'TRACE_TURN10_COMMITMENT_CONFLICT'
   );
   const admissions = commitments
-    .filter(({ role }) => ['guide', 'escort'].includes(role))
+    .filter(({ activity_ref: activityRef, route_ref: routeRef }) =>
+      activityRef != null && routeRef != null)
     .map((entry) => ({
       npc_ref: structuredClone(entry.npc_ref),
       role: entry.role,
@@ -67,16 +78,14 @@ export function applyTurn10CompanionState({ next, factual, changeSetId,
 
 function collectCommitments(semantic, changeSetId, contracts) {
   const commitments = [];
-  const roleIds = new Set();
   for (const entry of semantic.npc_outcomes ?? []) {
     const outcome = entry.outcome;
     if (!entry.applied || outcome?.kind !== 'route_participation') continue;
-    if (!['guide', 'stay_with_onisim', 'escort'].includes(outcome.role)
-        || roleIds.has(outcome.role)
+    if (!['guide', 'stay_with_onisim', 'escort', 'witness']
+      .includes(outcome.role)
         || typeof outcome.execution_binding_ref !== 'string') {
       fail('TRACE_TURN10_COMMITMENT_INVALID');
     }
-    roleIds.add(outcome.role);
     validateOutcome(entry, outcome, contracts);
     commitments.push({
       npc_ref: structuredClone(entry.npc_ref),
@@ -111,20 +120,25 @@ function validateOutcome(entry, outcome, contracts) {
   if (contracts == null) return;
   const expectedByNpc = new Map([
     [contracts.actors.eremey.instance_id,
-      contracts.binding.npc_operations.eremey_guide],
+      [contracts.binding.npc_operations.eremey_guide]],
+    [contracts.actors.ratsha.instance_id,
+      [contracts.binding.npc_operations.ratsha_witness]],
     [contracts.actors.participatingFisher.instance_id,
-      contracts.binding.npc_operations.participating_fisher_stay],
+      [contracts.binding.npc_operations.fisher_stay,
+        contracts.binding.npc_operations.fisher_escort]],
     [contracts.actors.otherFisher.instance_id,
-      contracts.binding.npc_operations.other_fisher_escort]
+      [contracts.binding.npc_operations.fisher_stay,
+        contracts.binding.npc_operations.fisher_escort]]
   ]);
-  const expected = expectedByNpc.get(entry.npc_ref?.entity_id);
-  if (expected == null
-      || outcome.role !== expected.role
-      || outcome.execution_binding_ref !== expected.execution_binding_ref
-      || outcome.activity_ref !== (expected.activity_ref ?? null)
-      || outcome.route_ref !== (expected.route_ref ?? null)
-      || outcome.protected_actor_slot
-        !== (expected.protected_actor_slot ?? null)) {
+  const expected = expectedByNpc.get(entry.npc_ref?.entity_id) ?? [];
+  const matched = expected.some((candidate) =>
+    outcome.role === candidate.role
+      && outcome.execution_binding_ref === candidate.execution_binding_ref
+      && outcome.activity_ref === (candidate.activity_ref ?? null)
+      && outcome.route_ref === (candidate.route_ref ?? null)
+      && outcome.protected_actor_slot
+        === (candidate.protected_actor_slot ?? null));
+  if (!matched) {
     fail('TRACE_TURN10_COMMITMENT_INVALID');
   }
 }

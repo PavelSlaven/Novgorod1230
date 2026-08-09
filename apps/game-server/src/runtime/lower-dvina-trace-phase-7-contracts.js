@@ -185,7 +185,7 @@ function resolveFireRestEffect(source) {
     source_profile_digest: canonicalDigest(source),
     selection_policy: 'code_owned_within_approved_bounds',
     rng_consumption: 'forbidden',
-    exact_deltas: { health: 0, energy: 2, satiety: -1 },
+    exact_deltas: { health: 0, energy: 3, satiety: -1 },
     condition_outcomes: [{
       condition_profile_ref: 'trace_ld_v1_condition_wet_clothing',
       from: 'wet',

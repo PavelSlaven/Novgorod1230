@@ -38,7 +38,7 @@ export function validatePreparedTurn10({ ledger, traces, envelope, factual,
       || rest.operation_ref !== 'request_activity'
       || rest.step_index !== 1
       || rest.consequence?.phase7_kind !== 'fire_rest'
-      || rest.consequence.duration_minutes !== 30
+      || rest.consequence.duration_minutes !== 25
       || restOperation?.op !== 'request_activity'
       || restTrace.applied !== true
       || restTrace.player_response_boundary !== false
@@ -47,18 +47,17 @@ export function validatePreparedTurn10({ ledger, traces, envelope, factual,
       || conversation.operation_ref !== 'emit_interaction'
       || conversation.step_index !== 2
       || conversation.consequence?.turn10_kind !== 'companion_request'
-      || conversation.consequence.duration_minutes !== 0
+      || conversation.consequence.duration_minutes !== 5
+      || conversation.consequence.parent_activity_completion?.status
+        !== 'completed'
       || conversationOperation?.op !== 'emit_interaction'
       || conversationTrace.applied !== true
       || conversationTrace.player_response_boundary !== true
       || !samePreparedValue(rest.time_update.clock_before, state.clock)
       || !samePreparedValue(conversation.time_update.clock_before,
         rest.time_update.clock_after)
-      || !samePreparedValue(conversation.time_update.clock_after,
-        rest.time_update.clock_after)
-      || conversation.body_update.applied !== false
-      || !samePreparedValue(conversation.body_update.state_after,
-        rest.body_update.state_after)) {
+      || conversation.body_update.applied !== true
+      || rest.body_update.applied !== false) {
     preparedEffectFail(
       'Turn 10 must be one ordered fire-rest then companion conversation');
   }

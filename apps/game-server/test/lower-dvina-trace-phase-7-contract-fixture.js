@@ -29,7 +29,7 @@ export function approvedPhase7Contracts(state) {
     bodyEffect: {
       effect_profile_id: 'trace_ld_v1_body_fire_rest_30m',
       elapsed_minutes: 30,
-      exact_deltas: { health: 0, energy: 2, satiety: -1 },
+      exact_deltas: { health: 0, energy: 3, satiety: -1 },
       selection_policy: 'fixed_approved_effect',
       rng_consumption: 'forbidden',
       condition_outcomes: [

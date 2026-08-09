@@ -12,7 +12,8 @@ import { TURN10_COMPANION_COMMAND } from
   './lower-dvina-trace-turn-step-prepared-effects.js';
 
 export function createTraceTurn10CompanionCommand({ contracts, inputDigest,
-  playerConversationModel, npcSemanticModel, revalidateStateVersion }) {
+  playerConversationModel, npcSemanticModel, temporalAdvanceOwner,
+  revalidateStateVersion }) {
   return Object.freeze({
     command_id: TURN10_COMPANION_COMMAND,
     option_id: 'request_storehouse_companions',
@@ -20,7 +21,7 @@ export function createTraceTurn10CompanionCommand({ contracts, inputDigest,
     target_id: contracts.actors.eremey.instance_id,
     approved_record: contracts.activityPin,
     preconditions: [{ kind: 'turn10_companion_request_admission' }],
-    expected_cost: { kind: 'exact_time', value: 0 },
+    expected_cost: { kind: 'contained_time', value: 5 },
     known_risks: ['Персонажи могут отказаться.'],
     reason_visible_to_actor: 'Еремей и рыбаки находятся у огня.',
     mode: mode('social_npc', ['npc_interaction', 'knowledge_memory']),
@@ -40,6 +41,7 @@ export function createTraceTurn10CompanionCommand({ contracts, inputDigest,
         inputDigest,
         playerConversationModel,
         npcSemanticModel,
+        temporalAdvanceOwner,
         revalidateStateVersion
       });
       return {
@@ -56,6 +58,7 @@ export function createTraceTurn10CompanionCommand({ contracts, inputDigest,
         inputDigest,
         playerConversationModel,
         npcSemanticModel,
+        temporalAdvanceOwner,
         revalidateStateVersion,
         playerPlan
       });
@@ -65,7 +68,9 @@ export function createTraceTurn10CompanionCommand({ contracts, inputDigest,
         status: 'resolved',
         turn10_kind: 'companion_request',
         activity_attempt_id: `attempt:${inputDigest.slice(0, 32)}:turn10`,
-        duration_minutes: 0,
+        duration_minutes: 5,
+        parent_activity_completion:
+          structuredClone(semanticExchange.parent_activity_completion),
         conversation: {
           activity_ref: contracts.binding.conversation_activity.profile_id,
           npc_ref: 'eremey_fisher',
@@ -92,7 +97,7 @@ export function traceTurn10PreconditionSatisfied(precondition, state,
 
 function admitted(state, contracts) {
   const atCamp = state?.position?.location_ref === contracts.campLocationRef;
-  const completedRest = state?.phase7_fire_rest?.status === 'completed';
+  const restStatus = state?.phase7_fire_rest?.status;
   const campAnchor = state.position?.g5_anchor_id
     ?? state.position?.anchor_id;
   const present = Object.values(contracts.actors).every((actor) => {
@@ -100,7 +105,7 @@ function admitted(state, contracts) {
       id === actor.instance_id);
     return (current?.anchor_id ?? current?.g5_anchor_id) === campAnchor;
   });
-  return atCamp && completedRest && present
+  return atCamp && ['active', 'completed'].includes(restStatus) && present
     && !(state.route_activity_admissions ?? []).some(
       ({ activity_ref: ref }) => ref === contracts.binding.route_activity_ref);
 }

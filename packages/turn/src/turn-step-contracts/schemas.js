@@ -95,10 +95,20 @@ const planDefinitions = {
     duration_class: { enum: DURATION_CLASSES },
     effort: { enum: EFFORTS }
   }),
-  continuation: strictObject(['remaining_intent', 'depends_on_refs'], {
-    remaining_intent: textSchema,
-    depends_on_refs: { type: 'array', uniqueItems: true, items: refSchema }
-  }),
+  continuation: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['remaining_intent', 'depends_on_refs'],
+    properties: {
+      remaining_intent: textSchema,
+      depends_on_refs: {
+        type: 'array', uniqueItems: true, items: refSchema
+      },
+      next_domain_operation: {
+        anyOf: [{ type: 'null' }, { $ref: '#/$defs/domain_operation' }]
+      }
+    }
+  },
   clarification: strictObject(['question', 'target_refs'], {
     question: textSchema,
     target_refs: { type: 'array', uniqueItems: true, items: refSchema }

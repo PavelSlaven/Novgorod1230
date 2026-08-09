@@ -221,7 +221,12 @@ function validTurn10Bindings(value) {
     && value.fallback_policy === 'forbidden'
     && value.command_binding?.command_id
       === 'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse'
-    && value.conversation_activity?.duration_minutes === 0
+    && value.conversation_activity?.duration_minutes === 5
+    && value.conversation_activity?.time_mode
+      === 'parent_activity_final_segment'
+    && value.conversation_activity?.parent_activity_ref
+      === 'trace_ld_v1_activity_fire_rest'
+    && value.conversation_activity?.contribution_slots === 5
     && value.route_ref === 'trace_ld_v1_route_camp_to_storehouse';
 }
 

@@ -17,6 +17,12 @@
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `continuation.next_domain_operation` является optional validated reservation
+  следующего domain step, а не его исполнением. Prepared parent segment может
+  использовать reservation только после exact binding admission; следующий
+  план обязан снова вернуть и пройти admission этой операции. Любой другой
+  второй direct/domain/clarification plan отклоняет весь неподтверждённый
+  prepared draft до ledger и commit.
 - `createTurnStepExecutionRegistry(...)` публикует через
   `operationContract()` только те semantic operations, для которых в этом же
   registry зарегистрирован фактический handler; request не получает
@@ -57,6 +63,10 @@
   registrations один раз в composition root. Сценарный consumer передаёт
   только candidates и declarative effect descriptors; callback execution,
   same-time ordering и finalization остаются у общего owner.
+- Один temporal slice может передать ordered `continuous_effects`: общий owner
+  применяет их последовательно к evolving projection и объединяет proposals.
+  Это позволяет положительному conversation segment завершать активную
+  parent activity без второго clock owner или двойного учёта elapsed time.
 - Spatial/target surfaces: `./spatial-v3-*` (request profile, orchestration, execution, write plan, target shadow composition) и `createCombinedWritePlanBuilder`; `./compat` — explicit legacy adapter.
 - `./spatial-v3-target-composition` exports separate reviewed factories for
   historical target/shadow tests and active `production_sole_owner` wiring;
@@ -88,7 +98,10 @@ exact registered path перед ним. Revision 14 / `spatial-v3-production-v4
 активировал conversation contribution path для фаз 3–4 без bounded fallback.
 `spatial-v3-production-v5` активировал Phase 7 autonomous NPC path: fire rest
 30 minutes, boundary at +25, actor-step at that same timestamp and continuation
-of the common temporal owner to +30 from the updated working projection. Combat
+of the common temporal owner to +30 from the updated working projection. В
+составном Ходе 10 разговор занимает последние пять минут этого активного
+отдыха: root elapsed остаётся 30 минут, а parent completion и conversation
+фиксируются на одном T+30 batch. Combat
 resolution document остаётся `proposed`;
 historical bounded Phase 3/4 доступен только по явному revision pin.
 

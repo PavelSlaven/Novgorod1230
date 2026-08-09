@@ -25,9 +25,12 @@ export function resolveTraceTurn10Contracts({ state, bundle, phase3Contracts,
       || binding.status !== 'approved'
       || binding.fallback_policy !== 'forbidden'
       || binding.command_binding?.operation !== 'emit_interaction'
-      || binding.conversation_activity?.duration_minutes !== 0
+      || binding.conversation_activity?.duration_minutes !== 5
       || binding.conversation_activity?.time_mode
-        !== 'same_timestamp_after_completed_parent_activity'
+        !== 'parent_activity_final_segment'
+      || binding.conversation_activity?.parent_activity_ref
+        !== 'trace_ld_v1_activity_fire_rest'
+      || binding.conversation_activity?.contribution_slots !== 5
       || binding.route_ref !== 'trace_ld_v1_route_camp_to_storehouse'
       || binding.route_activity_ref
         !== 'trace_ld_v1_activity_route_to_storehouse'

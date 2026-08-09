@@ -16,64 +16,22 @@ import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import { phase7AutonomousPlan } from
   './lower-dvina-trace-phase-7-contract-fixture.js';
-import {
-  prepareTraceTurn10PlayerPlan,
-  resolveTraceTurn10ConversationExchange
-} from '../src/runtime/lower-dvina-trace-turn-10-conversation.js';
 
 const bundle = await loadScenarioBundle(15);
 const COMPOUND_TURN_10 =
   'Отдохнуть у огня полчаса и подсушить одежду. '
   + 'Попросить Еремея и рыбака пойти со мной к Жданко.';
 
-test('Turn 10 conversation resolves three code-admitted NPC commitments at the post-rest timestamp', async () => {
-  const { state, contracts } = turn10State();
-  let playerCalls = 0;
-  let npcCalls = 0;
-  const playerConversationModel = (request) => {
-    playerCalls += 1;
-    return playerPlan(request, contracts);
-  };
-  const npcSemanticModel = (request) => {
-    npcCalls += 1;
-    return npcPlan(request);
-  };
-  const input = {
-    state,
-    contracts,
-    playerInput: {
-      raw_text: 'Попросить Еремея и рыбаков пойти со мной к Жданко.'
-    },
-    inputDigest: 'e'.repeat(64),
-    playerConversationModel,
-    npcSemanticModel,
-    revalidateStateVersion: async () => state.party_state.state_version
-  };
-  const playerPlanValue = await prepareTraceTurn10PlayerPlan(input);
-  const result = await resolveTraceTurn10ConversationExchange({
-    ...input,
-    playerPlan: playerPlanValue
-  });
-
-  assert.equal(playerCalls, 1);
-  assert.equal(npcCalls, 3);
-  assert.equal(result.exact_elapsed_minutes, 0);
-  assert.deepEqual(result.clock_after, state.clock);
-  assert.deepEqual(result.npc_outcomes.filter(({ applied }) => applied)
-    .map(({ outcome }) => outcome.role).sort(), [
-      'escort', 'guide', 'stay_with_onisim'
-    ]);
-  assert.equal(result.pending_npc_execution, null);
-  assert.equal(result.pending_player_execution, null);
-});
-
 test('canonical Turn 10 runs real rest and companion conversation in one semantic turn', async () => {
   const { state, contracts } = turn10State({ completedRest: false });
   let autonomousCalls = 0;
   let playerCalls = 0;
   let npcCalls = 0;
+  const fisherAffordances = [];
   const runtimeFixture = fixture({
     scenarioBundle: bundle,
     materializationBundle: bundle,
@@ -81,6 +39,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
     temporalAdvanceOwner: createTemporalAdvanceOwner({
       effect_registrations: [
         ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
         ...lowerDvinaTracePhase7TemporalEffectRegistrations()
       ]
     }),
@@ -91,12 +50,18 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
         'Попросить Еремея и рыбака пойти со мной к Жданко.');
       assert.equal(request.player_safe_context.current_game_timestamp
         .whole_minutes,
-        String(Number(state.clock.whole_minutes) + 30));
+        String(Number(state.clock.whole_minutes) + 25));
       return playerPlan(request, contracts);
     },
     npcSemanticModel(request) {
       npcCalls += 1;
-      return npcPlan(request);
+      if ([contracts.actors.participatingFisher.instance_id,
+        contracts.actors.otherFisher.instance_id]
+        .includes(request.npc_ref.entity_id)) {
+        fisherAffordances.push(request.decision_scope.operation_contract
+          .commit_route_participation);
+      }
+      return npcPlan(request, contracts);
     },
     npcAutonomousModel(request) {
       autonomousCalls += 1;
@@ -116,7 +81,12 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(runtimeFixture.turnStepCount(), 2);
   assert.equal(autonomousCalls, 1);
   assert.equal(playerCalls, 1);
-  assert.equal(npcCalls, 3);
+  assert.equal(npcCalls, 4);
+  assert.equal(fisherAffordances.length, 2);
+  for (const affordance of fisherAffordances) {
+    assert.deepEqual(affordance.allowed_bindings.map(
+      ({ role }) => role).sort(), ['escort', 'stay_with_onisim']);
+  }
   assert.equal(runtimeFixture.commitCount(), 1);
   const factual = runtimeFixture.lastWritePlan().write_targets.find(
     ({ target }) => target === 'party_state').value;
@@ -125,6 +95,18 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(factual.consequence.turn10_kind, 'companion_request');
   const conversationWorld = factual.consequence.conversation.semantic_exchange
     .exchange.working_state.world_state;
+  const semantic = factual.consequence.conversation.semantic_exchange;
+  assert.equal(semantic.exact_elapsed_minutes, 5);
+  assert.equal(semantic.time_accounting.mode,
+    'parent_activity_final_segment');
+  assert.equal(semantic.time_accounting.clock_before.whole_minutes,
+    String(Number(state.clock.whole_minutes) + 25));
+  assert.equal(semantic.time_accounting.clock_after.whole_minutes,
+    String(Number(state.clock.whole_minutes) + 30));
+  assert.equal(semantic.statements.some(({ speaker_ref: speaker,
+    utterance_text: text }) =>
+    speaker.entity_id === contracts.actors.ratsha.instance_id
+      && text === 'Возьмите меня с собой к Жданко.'), true);
   assert.equal(conversationWorld.npcs.find(
     ({ participant_slot_ref: slot }) =>
       slot === 'zhdanko_storehouse_controller')
@@ -135,11 +117,14 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
       'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse'
     ]);
   assert.equal(runtimeFixture.state.phase7_fire_rest.status, 'completed');
+  assert.equal(runtimeFixture.state.body_state.energy, 38);
   assert.equal(runtimeFixture.state.clock.whole_minutes,
     String(Number(state.clock.whole_minutes) + 30));
   assert.deepEqual(runtimeFixture.state.route_participant_commitments.map(
-    ({ role }) => role).sort(), ['escort', 'guide', 'stay_with_onisim']);
-  assert.equal(runtimeFixture.state.route_activity_admissions.length, 2);
+    ({ role }) => role).sort(), [
+      'escort', 'guide', 'stay_with_onisim', 'witness'
+    ]);
+  assert.equal(runtimeFixture.state.route_activity_admissions.length, 3);
   assert.ok(runtimeFixture.state.route_knowledge.includes(
     contracts.binding.route_ref));
   const serialized = JSON.stringify(runtimeFixture.state);
@@ -163,7 +148,7 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   const rootTurnId = factual.mode_resolution.turn_id;
   const decisionTraces = committedPlans[0].appends.filter(
     ({ target_table: table }) => table === 'party_npc_decision_traces');
-  assert.ok(decisionTraces.length >= 4);
+  assert.ok(decisionTraces.length >= 5);
   assert.deepEqual(new Set(decisionTraces.map(
     ({ record }) => record.root_turn_id)), new Set([rootTurnId]));
   assert.equal(factual.consequence.phase7.autonomous.request.root_turn_id,
@@ -173,7 +158,9 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(persisted.party_state.turn_number,
     state.party_state.turn_number + 1);
   assert.deepEqual(persisted.route_participant_commitments.map(
-    ({ role }) => role).sort(), ['escort', 'guide', 'stay_with_onisim']);
+    ({ role }) => role).sort(), [
+      'escort', 'guide', 'stay_with_onisim', 'witness'
+    ]);
   assert.equal(JSON.stringify(persisted).includes('companions_assigned'),
     false);
   assert.equal(JSON.stringify(persisted).includes('known_path_to_klet'),
@@ -187,9 +174,91 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(runtimeFixture.turnStepCount(), 2);
   assert.equal(autonomousCalls, 1);
   assert.equal(playerCalls, 1);
-  assert.equal(npcCalls, 3);
+  assert.equal(npcCalls, 4);
   assert.equal(runtimeFixture.commitCount(), 1);
 });
+
+test('either fisher may choose either approved participation binding',
+  async () => {
+    const { state, contracts } = turn10State({ completedRest: false });
+    const preferredFisherRoles = new Map([
+      [contracts.actors.participatingFisher.instance_id, 'escort'],
+      [contracts.actors.otherFisher.instance_id, 'stay_with_onisim']
+    ]);
+    const runtimeFixture = fixture({
+      scenarioBundle: bundle,
+      materializationBundle: bundle,
+      committedState: state,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+        ]
+      }),
+      turnStepModel: (request) => turn10StepPlan(request, contracts),
+      playerConversationModel: (request) => playerPlan(request, contracts),
+      npcSemanticModel: (request) => npcPlan(
+        request, contracts, preferredFisherRoles),
+      npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
+    });
+    await runtimeFixture.runtime.submitTurn({
+      partyId: runtimeFixture.partyId,
+      input: {
+        request_id: 'turn10-swapped-fisher-roles',
+        idempotency_key: 'turn10-swapped-fisher-roles',
+        raw_text: COMPOUND_TURN_10
+      }
+    });
+    const commitments = new Map(runtimeFixture.state
+      .route_participant_commitments.map(({ npc_ref: npc, role }) =>
+        [npc.entity_id, role]));
+
+    assert.equal(commitments.get(
+      contracts.actors.participatingFisher.instance_id), 'escort');
+    assert.equal(commitments.get(
+      contracts.actors.otherFisher.instance_id), 'stay_with_onisim');
+  });
+
+test('Turn 10 rejects a second domain step that differs from its reservation',
+  async () => {
+    const { state, contracts } = turn10State({ completedRest: false });
+    const runtimeFixture = fixture({
+      scenarioBundle: bundle,
+      materializationBundle: bundle,
+      committedState: state,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+        ]
+      }),
+      turnStepModel(request) {
+        const semantic = turn10StepPlan(request, contracts);
+        if (request.step_index === 2) {
+          semantic.operations = [{
+            op: 'request_activity',
+            actor_ref: request.actor.actor_id,
+            activity_kind: 'recover',
+            target_refs: [request.player_safe_state.position.location_ref],
+            description: 'снова отдыхать'
+          }];
+        }
+        return semantic;
+      },
+      npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
+    });
+    await assert.rejects(() => runtimeFixture.runtime.submitTurn({
+      partyId: runtimeFixture.partyId,
+      input: {
+        request_id: 'turn10-reservation-mismatch',
+        idempotency_key: 'turn10-reservation-mismatch',
+        raw_text: COMPOUND_TURN_10
+      }
+    }), ({ code }) =>
+      code === 'TRACE_TURN10_CONTINUATION_RESERVATION_MISMATCH');
+    assert.equal(runtimeFixture.commitCount(), 0);
+  });
 
 test('a stale Phase 7 response restarts the whole root turn on current state',
   async () => {
@@ -288,6 +357,7 @@ function turn10State({ completedRest = true } = {}) {
       status: 'active',
       state_version: 1
     }));
+  state.body_state.energy = 35;
   if (completedRest) state.phase7_fire_rest = { status: 'completed' };
   const committed = JSON.parse(JSON.stringify(state));
   const phase5 = resolveTracePhase5Contracts({ state: committed, bundle });
@@ -302,13 +372,7 @@ function turn10State({ completedRest = true } = {}) {
 
 function turn10StepPlan(request, contracts) {
   const first = request.step_index === 1;
-  const operation = first ? {
-    op: 'request_activity',
-    actor_ref: request.actor.actor_id,
-    activity_kind: 'recover',
-    target_refs: [request.player_safe_state.position.location_ref],
-    description: 'отдохнуть у огня полчаса и подсушить одежду'
-  } : {
+  const companionOperation = {
     op: 'emit_interaction',
     actor_ref: request.actor.actor_id,
     interaction_kind: 'request',
@@ -320,6 +384,13 @@ function turn10StepPlan(request, contracts) {
     instrument_refs: [],
     content: 'попросить Еремея и рыбака пойти к Жданко'
   };
+  const operation = first ? {
+    op: 'request_activity',
+    actor_ref: request.actor.actor_id,
+    activity_kind: 'recover',
+    target_refs: [request.player_safe_state.position.location_ref],
+    description: 'отдохнуть у огня полчаса и подсушить одежду'
+  } : companionOperation;
   return {
     schema: 'turn_step_plan_v1',
     request_id: request.request_id,
@@ -339,7 +410,13 @@ function turn10StepPlan(request, contracts) {
     continuation: first ? {
       remaining_intent:
         'Попросить Еремея и рыбака пойти со мной к Жданко.',
-      depends_on_refs: [request.player_safe_state.position.location_ref]
+      depends_on_refs: [
+        request.player_safe_state.position.location_ref,
+        contracts.actors.eremey.instance_id,
+        contracts.actors.participatingFisher.instance_id,
+        contracts.actors.otherFisher.instance_id
+      ],
+      next_domain_operation: companionOperation
     } : null,
     clarification: null,
     reason_code: first ? 'rest_then_request_companions' : 'request_companions',
@@ -374,12 +451,25 @@ function playerPlan(request, contracts) {
   };
 }
 
-function npcPlan(request) {
+function npcPlan(request, contracts, preferredFisherRoles = null) {
   const contract = request.decision_scope.operation_contract
     .commit_route_participation;
-  const { owner: _owner, ...bound } = contract;
+  const preferredRole = preferredFisherRoles?.get(request.npc_ref.entity_id)
+    ?? (request.npc_ref.entity_id
+      === contracts.actors.participatingFisher.instance_id
+      ? 'stay_with_onisim'
+      : request.npc_ref.entity_id === contracts.actors.otherFisher.instance_id
+        ? 'escort' : null);
+  const bound = contract.allowed_bindings.find(({ role }) =>
+    preferredRole === null || role === preferredRole);
   const operation = { op: 'commit_route_participation', ...bound };
   const playerRef = request.public_conversation_history.at(-1).speaker_ref;
+  const asksRatsha = request.npc_ref.entity_id
+    === contracts.actors.eremey.instance_id;
+  const isRatsha = request.npc_ref.entity_id
+    === contracts.actors.ratsha.instance_id;
+  const ratshaRef = ref('npc', contracts.actors.ratsha.instance_id);
+  const addressee = asksRatsha ? ratshaRef : playerRef;
   return {
     schema: 'conversation_contribution_plan_v1',
     request_id: request.request_id,
@@ -389,10 +479,17 @@ function npcPlan(request) {
     state_version: request.state_version,
     speaker_ref: request.npc_ref,
     contribution_kind: 'speech',
-    primary_addressee_ref: playerRef,
-    intended_addressee_refs: [playerRef],
+    primary_addressee_ref: addressee,
+    intended_addressee_refs: [addressee],
     affected_actor_refs: [],
-    speech: speech('Согласен.', 'accept'),
+    speech: {
+      ...speech(asksRatsha ? 'Ратша, повтори свой рассказ.'
+        : isRatsha ? 'Возьмите меня с собой к Жданко.' : 'Согласен.',
+      asksRatsha ? 'question' : isRatsha ? 'request' : 'accept'),
+      response_expectation: asksRatsha ? {
+        kind: 'answer_requested', target_refs: [ratshaRef]
+      } : { kind: 'none', target_refs: [] }
+    },
     interpretation: interpretation(),
     resolution: 'automatic',
     activity: activity(),

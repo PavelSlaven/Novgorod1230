@@ -176,9 +176,14 @@ export function createTemporalAdvanceOwner({ source_registrations = [],
         effectIdentity(effect.effect_ref);
         byBoundary.set(id, effect);
       }
-      const continuous = input.continuous_effect;
+      const continuousEffects = input.continuous_effects
+        ?? (input.continuous_effect == null ? [] : [input.continuous_effect]);
       const finalization = input.finalization;
-      if (continuous == null || finalization == null) {
+      if (!Array.isArray(continuousEffects)
+          || continuousEffects.length === 0
+          || (input.continuous_effects != null
+            && input.continuous_effect != null)
+          || finalization == null) {
         throw new TypeError('temporal advance owner requires exact effects and finalization');
       }
       return advanceTemporalBoundaryBatch({
@@ -187,9 +192,17 @@ export function createTemporalAdvanceOwner({ source_registrations = [],
           ({ candidate }) => candidate
         ),
         apply_continuous(slice, context) {
-          return resolveEffect(effects, continuous, {
-            kind: 'continuous', slice, context, request: input.request
-          });
+          let projection = context.projection;
+          const proposals = [];
+          for (const effect of continuousEffects) {
+            const resolved = resolveEffect(effects, effect, {
+              kind: 'continuous', slice,
+              context: { ...context, projection }, request: input.request
+            });
+            proposals.push(...(resolved.proposals ?? []));
+            projection = resolved.state_projection;
+          }
+          return { proposals, state_projection: projection };
         },
         resolve_source_candidate: resolveSource,
         resolve_registered_candidate(candidate, context) {

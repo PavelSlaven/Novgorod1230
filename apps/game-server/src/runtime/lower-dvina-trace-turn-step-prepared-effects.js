@@ -15,8 +15,13 @@ export function createLowerDvinaTracePreparedDomainEffect({
   committedState
 }) {
   let currentState = structuredClone(committedState);
+  let reservedTurn10Operation = null;
   return Object.freeze({
     supports({ operation, command_id: commandId } = {}) {
+      if (reservedTurn10Operation != null) {
+        return commandId === TURN10_COMPANION_COMMAND
+          && sameCompanionOperation(operation, reservedTurn10Operation);
+      }
       return (operation?.op === 'request_movement'
           && commandId === PHASE3_ROUTE_COMMAND)
         || (operation?.op === 'request_activity'
@@ -27,6 +32,14 @@ export function createLowerDvinaTracePreparedDomainEffect({
     currentState() {
       return structuredClone(currentState);
     },
+    assertContinuation({ plan } = {}) {
+      const operation = plan?.resolution === 'domain_request'
+        && plan.operations?.length === 1 ? plan.operations[0] : null;
+      if (reservedTurn10Operation != null
+          && !sameCompanionOperation(operation, reservedTurn10Operation)) {
+        fail('TRACE_TURN10_CONTINUATION_RESERVATION_MISMATCH');
+      }
+    },
     advanceState({ prepared_effect: effect }) {
       currentState = projectPreparedDomainState(currentState, effect);
       return structuredClone(currentState);
@@ -36,10 +49,15 @@ export function createLowerDvinaTracePreparedDomainEffect({
         return applyPreparedPhase3Route({ input, committedState });
       }
       if (input?.command_id === PHASE7_REST_COMMAND) {
-        return applyPreparedPhase7Rest(input);
+        const applied = applyPreparedPhase7Rest(input);
+        reservedTurn10Operation = structuredClone(
+          input.consequence.phase7.continuation_operation);
+        return applied;
       }
       if (input?.command_id === TURN10_COMPANION_COMMAND) {
-        return applyPreparedTurn10Conversation(input);
+        const applied = applyPreparedTurn10Conversation(input);
+        reservedTurn10Operation = null;
+        return applied;
       }
       fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
@@ -48,18 +66,36 @@ export function createLowerDvinaTracePreparedDomainEffect({
 
 function applyPreparedPhase7Rest(input) {
   const consequence = input?.consequence;
+  const restCompleted = consequence?.phase7?.schedule_temporal
+    ?.rest_completed === true;
   if (consequence?.phase7_kind !== 'fire_rest'
-      || consequence.duration_minutes !== 30
+      || consequence.duration_minutes !== (restCompleted ? 30 : 25)
+      || (!restCompleted
+        && consequence.phase7.continuation_operation?.op
+          !== 'emit_interaction')
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_PHASE7_INVALID');
   }
   return preparedResult(input, consequence, false);
 }
 
+function sameCompanionOperation(actual, reserved) {
+  return actual?.op === reserved?.op
+    && actual?.actor_ref === reserved.actor_ref
+    && actual?.interaction_kind === reserved.interaction_kind
+    && actual?.instrument_refs?.length === 0
+    && reserved.instrument_refs?.length === 0
+    && actual?.target_actor_refs?.length
+      === reserved.target_actor_refs?.length
+    && reserved.target_actor_refs.every((ref) =>
+      actual.target_actor_refs.includes(ref));
+}
+
 function applyPreparedTurn10Conversation(input) {
   const consequence = input?.consequence;
   if (consequence?.turn10_kind !== 'companion_request'
-      || consequence.duration_minutes !== 0
+      || consequence.duration_minutes !== 5
+      || consequence.parent_activity_completion?.status !== 'completed'
       || input?.prepared_chain_context?.prior_effect_count !== 1) {
     fail('TRACE_TURN_STEP_PREPARED_TURN10_INVALID');
   }
@@ -100,9 +136,33 @@ function projectPreparedDomainState(state, effect) {
         phase7.schedule_temporal.projection?.active_npc_actor_step
     });
     next.phase7_fire_rest = {
-      status: phase7.schedule_temporal.result
-        .temporal_status === 'completed' ? 'completed' : 'paused'
+      status: phase7.schedule_temporal.rest_completed === true
+        ? 'completed' : 'active'
     };
+    if (phase7.schedule_temporal.rest_completed !== true) {
+      next.phase7_parent_temporal = {
+        execution_id: phase7.temporal.execution_id,
+        limit_timestamp: structuredClone(phase7.temporal.limit_timestamp),
+        completion_effect: structuredClone(
+          phase7.schedule_temporal.completion_effect)
+      };
+      next.cumulative_elapsed_minutes = phase7.schedule_temporal.projection
+        .cumulative_elapsed_minutes;
+      next.active_npc_actor_step = structuredClone(
+        phase7.schedule_temporal.projection.active_npc_actor_step);
+      next.temporal_boundary_candidates = [structuredClone(
+        phase7.schedule_temporal.completion_effect.candidate)];
+    } else {
+      next.temporal_boundary_candidates = [];
+    }
+  }
+  if (effect.consequence?.parent_activity_completion?.status === 'completed') {
+    const completion = effect.consequence.parent_activity_completion;
+    next.phase7_fire_rest = { status: 'completed' };
+    next.active_npc_actor_step = structuredClone(
+      completion.active_npc_actor_step);
+    next.cumulative_elapsed_minutes = completion.cumulative_elapsed_minutes;
+    delete next.phase7_parent_temporal;
     next.temporal_boundary_candidates = [];
   }
   return next;

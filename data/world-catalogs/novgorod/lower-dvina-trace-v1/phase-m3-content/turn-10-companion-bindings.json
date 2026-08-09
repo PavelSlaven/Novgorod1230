@@ -17,8 +17,10 @@
   "conversation_activity": {
     "profile_id": "trace_ld_v1_activity_request_storehouse_companions",
     "version": 1,
-    "time_mode": "same_timestamp_after_completed_parent_activity",
-    "duration_minutes": 0,
+    "time_mode": "parent_activity_final_segment",
+    "duration_minutes": 5,
+    "parent_activity_ref": "trace_ld_v1_activity_fire_rest",
+    "contribution_slots": 5,
     "required_participant_slots": ["player_clerk", "eremey_fisher", "resolved_participating_fisher"],
     "actual_listener_slots": ["ratsha_storehouse_helper", "background_fisher_1", "background_fisher_2"]
   },
@@ -41,16 +43,23 @@
       "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
       "route_ref": "trace_ld_v1_route_camp_to_storehouse"
     },
-    "participating_fisher_stay": {
+    "ratsha_witness": {
+      "op": "commit_route_participation",
+      "role": "witness",
+      "execution_binding_ref": "trace_ld_v1_turn10_ratsha_storehouse_witness",
+      "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
+      "route_ref": "trace_ld_v1_route_camp_to_storehouse"
+    },
+    "fisher_stay": {
       "op": "commit_route_participation",
       "role": "stay_with_onisim",
-      "execution_binding_ref": "trace_ld_v1_turn10_participating_fisher_stay_with_onisim",
+      "execution_binding_ref": "trace_ld_v1_turn10_fisher_stay_with_onisim",
       "protected_actor_slot": "onisim_boatman"
     },
-    "other_fisher_escort": {
+    "fisher_escort": {
       "op": "commit_route_participation",
       "role": "escort",
-      "execution_binding_ref": "trace_ld_v1_turn10_other_fisher_storehouse_escort",
+      "execution_binding_ref": "trace_ld_v1_turn10_fisher_storehouse_escort",
       "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
       "route_ref": "trace_ld_v1_route_camp_to_storehouse"
     }

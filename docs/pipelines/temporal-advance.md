@@ -71,11 +71,14 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    by `timestamp → npc_ref → boundary_id`; each later NPC sees the updated
    projection. That loop is distinct from a combat snapshot batch, which remains
    `proposed` and does not share the autonomous sequential decision path.
-   A player conversation clause that follows a completed parent activity is
-   admitted only after the parent temporal result has updated the private
-   authoritative working state. It starts at that resulting timestamp with
-   zero additional elapsed time; it neither reopens the finished temporal
-   interval nor creates another clock/body owner.
+   A conversation clause may occupy a positive final segment of an already
+   active parent activity when the authored time profile declares that
+   relation. The parent first advances to the causal decision point; the
+   conversation and parent continuous effects then advance together through
+   the common temporal owner against one evolving working projection. The
+   parent completion boundary is resolved at the shared final timestamp, its
+   body effect is applied once for the full parent duration, and the root turn
+   records only the parent elapsed time rather than adding both durations.
    Every autonomous and conversation decision in that workflow carries the
    one `root_turn_id` created by `@rus/turn`; temporal/scenario adapters do not
    synthesize a second turn identity.

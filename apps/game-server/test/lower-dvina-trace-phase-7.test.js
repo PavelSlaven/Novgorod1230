@@ -238,7 +238,7 @@ test('Phase 7 accepts approved wait and keeps the autonomous branch private',
       bodyUpdate.state_after.health,
       bodyUpdate.state_after.energy,
       bodyUpdate.state_after.satiety
-    ], [70, 32, 39]);
+    ], [70, 33, 39]);
     assert.deepEqual(bodyUpdate.state_after.active_conditions.map(
       ({ id }) => id), [
       'damp', 'mild_shivering', 'headache', 'shoulder_bruise'

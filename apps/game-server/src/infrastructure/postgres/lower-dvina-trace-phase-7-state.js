@@ -5,6 +5,8 @@ import { semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
 import { applyTurn10CompanionState } from
   './lower-dvina-trace-turn-10-state.js';
+import { completeTurn10Phase7Factual } from
+  './lower-dvina-trace-turn-10-phase7.js';
 import {
   applyTracePhase7ScheduleState,
   tracePhase7ScheduleHistoryEntry
@@ -12,6 +14,7 @@ import {
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
+  factual = completeTurn10Phase7Factual(factual);
   let next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
   delete next.npc_semantic_decision_inputs;

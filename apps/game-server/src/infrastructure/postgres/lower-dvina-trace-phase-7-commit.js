@@ -25,10 +25,15 @@ import {
   expectedVersions,
   scheduleItemKeys
 } from './lower-dvina-trace-phase-7-commit-policy.js';
+import { completeTurn10Phase7Factual } from
+  './lower-dvina-trace-turn-10-phase7.js';
+import { integrateConversationTemporalWrites } from
+  './lower-dvina-trace-conversation-temporal.js';
 
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
-  const factual = target(writePlan, 'party_state');
+  const persistedFactual = target(writePlan, 'party_state');
+  const factual = completeTurn10Phase7Factual(persistedFactual);
   const visibleContext = target(writePlan, 'party_visible_context_package');
   if (factual?.consequence?.phase7_kind !== 'fire_rest'
       || factual.consequence.duration_minutes !== 30
@@ -76,7 +81,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     writePlan,
     state,
     snapshot: next,
-    factual,
+    factual: persistedFactual,
     changeSetId,
     idemId
   });
@@ -183,7 +188,13 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   if (!integrated.ok) {
     fail('TRACE_PHASE_7_TEMPORAL_WRITE_CONFLICT', integrated.error);
   }
-  const built = await builder.build(integrated.input);
+  const finalInput = factual.consequence.turn10_kind === 'companion_request'
+    ? integrateConversationTemporalWrites({
+        input: integrated.input,
+        semanticExchange: factual.consequence.conversation.semantic_exchange
+      })
+    : integrated.input;
+  const built = await builder.build(finalInput);
   if (!built.ok) fail('TRACE_PHASE_7_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({
     plan: built.plan,

@@ -26,6 +26,15 @@ import { tracePhase7PreconditionSatisfied } from
   './lower-dvina-trace-phase-7-command.js';
 import { traceTurn10PreconditionSatisfied } from
   './lower-dvina-trace-turn-10-command.js';
+import { traceCombatPreconditionSatisfied } from
+  './lower-dvina-trace-combat-command.js';
+import { tracePhase8RoutePreconditionSatisfied } from
+  './lower-dvina-trace-phase-8-route-command.js';
+import { tracePhase8AccusationPreconditionSatisfied } from
+  './lower-dvina-trace-phase-8-accusation-command.js';
+import { createTracePhase8TemporalAdvance,
+  createTracePhase8VisibleProjector } from
+  './lower-dvina-trace-phase-8-effects.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   './lower-dvina-trace-turn-step-runtime-ports.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
@@ -50,7 +59,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
-    turn10Contracts
+    turn10Contracts, phase8Contracts
   } = context;
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
@@ -68,7 +77,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
   }
   const workingProjectionAuthority =
     createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-  const temporalAdvance = createTracePhase7TemporalAdvance({
+  const temporalAdvance = createTracePhase8TemporalAdvance({ fallback:
+    createTracePhase7TemporalAdvance({
     fallback: createTracePhase6TemporalAdvance({
       fallback: createTracePhase5TemporalAdvance({
       phase4Advance: createTracePhase4TemporalAdvance({
@@ -78,7 +88,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       })
       })
     })
-  });
+  }) });
   const bodyEffect = createLowerDvinaTraceCompositeBodyEffect({
     genericBodyEffect: turnStepGenericBodyEffect,
     fallback: createTracePhase7BodyEffect({
@@ -158,27 +168,34 @@ export function buildLowerDvinaTracePhase2Services(context) {
           precondition, committedState, phase7Contracts
         )) || (turn10Contracts != null && traceTurn10PreconditionSatisfied(
           precondition, committedState, turn10Contracts
-        ));
+        )) || (phase8Contracts != null
+          && tracePhase8RoutePreconditionSatisfied(precondition,
+            committedState, phase8Contracts))
+        || (phase8Contracts != null
+          && tracePhase8AccusationPreconditionSatisfied(precondition,
+            committedState, phase8Contracts))
+        || traceCombatPreconditionSatisfied(precondition, committedState);
     },
     randomSource,
     temporalAdvance,
     bodyEffect,
     visibleProjector: createLowerDvinaTraceTurnStepVisibleProjector({
-      fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
+      fallback: createTracePhase8VisibleProjector({
+      contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
       phase4Projector: createTracePhase4VisibleProjector({
         phase3Projector: createTracePhase3VisibleProjector({
           phase2Projector: createTracePhase2VisibleProjector({ contracts }),
           contracts: phase3Contracts
         })
       })
-    }) }) })
+    }) }) }) })
     }),
     partyStore: {
       commit(writePlan) {
         return repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
-          turn10Contracts,
+          turn10Contracts, phase8Contracts,
           turnStepApprovedOwners
         });
       }

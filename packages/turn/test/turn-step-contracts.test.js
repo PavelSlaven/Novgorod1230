@@ -198,6 +198,35 @@ test('plan validation admits refs exposed through a plural ref array', () => {
   });
 });
 
+test('plan validation admits an exact player combat intent request', () => {
+  const source = request();
+  source.player_safe_state.destination_refs = ['location:camp'];
+  const combat = plan({
+    operations: [{
+      op: 'request_combat',
+      actor_ref: 'actor_mikula',
+      intent_kind: 'engage',
+      target_refs: ['npc_1'],
+      protected_refs: [],
+      scope_ref: null,
+      destination_ref: null,
+      force_limit: 'nonlethal_if_possible',
+      risk_posture: 'ordinary'
+    }],
+    continuation: null
+  });
+  assert.deepEqual(validateTurnStepPlan(combat, { request: source }), {
+    ok: true,
+    errors: []
+  });
+
+  combat.operations[0].destination_ref = 'location:camp';
+  const invalid = validateTurnStepPlan(combat, { request: source });
+  assert.equal(invalid.ok, false);
+  assert.equal(invalid.errors.some(({ code }) =>
+    code === 'combat_intent_shape'), true);
+});
+
 test('relational validation fails closed on echoes, mixed resolutions and malformed checks', () => {
   const mixed = directPlan({
     request_id: 'wrong-request',

@@ -11,6 +11,8 @@ import { loadLowerDvinaTraceRevision14Bundle } from
   './lower-dvina-trace-conversation-bundle.js';
 import { loadLowerDvinaTraceRevision15Bundle } from
   './lower-dvina-trace-autonomous-bundle.js';
+import { loadLowerDvinaTraceRevision16CombatBundle } from
+  './lower-dvina-trace-combat-bundle.js';
 
 export async function loadLowerDvinaTraceRevisionBundle({
   scenarioDefinitionRevision,
@@ -77,10 +79,18 @@ export async function loadLowerDvinaTraceRevisionBundle({
       validateDefinitionPins
     });
   if (scenarioDefinitionRevision === 14) return revision14();
-  if (scenarioDefinitionRevision === 15) {
-    return loadLowerDvinaTraceRevision15Bundle({
+  const revision15 = async () => loadLowerDvinaTraceRevision15Bundle({
       rootDir,
       historicalBundle: await revision14(),
+      fail,
+      freezeDeep,
+      validateDefinitionPins
+    });
+  if (scenarioDefinitionRevision === 15) return revision15();
+  if (scenarioDefinitionRevision === 16) {
+    return loadLowerDvinaTraceRevision16CombatBundle({
+      rootDir,
+      historicalBundle: await revision15(),
       fail,
       freezeDeep,
       validateDefinitionPins

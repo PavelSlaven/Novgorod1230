@@ -39,6 +39,7 @@ export {
   validateNpcSemanticDecisionTrace,
   validateNpcStepPlan
 } from './semantic-decision-contracts.js';
+export { buildNpcCombatDecisionRequest, buildNpcCombatIntentPlan, validateNpcCombatDecisionRequest, validateNpcCombatIntentPlan, validateNpcCombatPlanApplicability } from './combat-decision-contracts.js';
 export {
   proposeNpcPerception,
   resolveConversationListenerPerception,

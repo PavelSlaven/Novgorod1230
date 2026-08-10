@@ -17,13 +17,12 @@ import {
   validateSpatialV3RuntimeBindings
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
-import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js';
-export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v5';
+import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v6';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.5.0-first-playable.1',
+  contract_version: '4.6.0-first-playable.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
@@ -50,7 +49,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v4',
+  rollback_source_release_id: 'spatial-v3-production-v5',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
@@ -62,7 +61,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   }),
   boundary_crossing_capability: 'ready_for_runtime_acceptance',
   npc_conversation_capability: 'ready_for_runtime_acceptance',
-  npc_autonomous_capability: 'ready_for_runtime_acceptance',
+  npc_autonomous_capability: 'ready_for_runtime_acceptance', npc_combat_capability: 'ready_for_runtime_acceptance',
   release_status: 'validated_candidate_not_active',
   production_activation: false,
   runtime_selectable_in_canonical_production: false,
@@ -231,6 +230,7 @@ export async function createSpatialV3ProductionCompositionRoot({
         runtime_fallback: 'forbidden',
         npc_conversation_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_conversation_capability,
         npc_autonomous_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_autonomous_capability,
+        npc_combat_capability: SPATIAL_V3_PRODUCTION_RELEASE.npc_combat_capability,
         rollback_source_release_id:
           SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
         rollback_runtime_selectable: false,

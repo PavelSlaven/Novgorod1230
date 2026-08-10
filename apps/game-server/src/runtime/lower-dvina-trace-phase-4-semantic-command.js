@@ -14,12 +14,15 @@ import {
   promiseOfferStage,
   validOfferBeforeCheck
 } from './lower-dvina-trace-phase-4-command-shared.js';
+import { initializeTracePhase4Combat } from
+  './lower-dvina-trace-phase-4-combat-initialization.js';
 
 export function semanticNegotiationCommand({
   contracts,
   inputDigest,
   playerConversationModel,
   npcSemanticModel,
+  npcCombatModel = null,
   npcSocialCheckResolver,
   temporalAdvanceOwner,
   revalidateStateVersion
@@ -136,6 +139,16 @@ export function semanticNegotiationCommand({
           temporalAdvanceOwner,
           revalidateStateVersion
         });
+      const combatInitialization = contracts.combatBindings == null
+        ? null
+        : await initializeTracePhase4Combat({
+            state: retrievedState,
+            contracts,
+            semanticExchange,
+            playerInput,
+            npcCombatModel,
+            revalidateStateVersion
+          });
       const outcomeRef = checkResult
         ? contracts.check.outcome_refs[
             checkResult.outcome.success ? 'success' : 'failure'
@@ -148,14 +161,16 @@ export function semanticNegotiationCommand({
         offerStage: promiseStage,
         checkRequest,
         outcomeRef,
-        semanticExchange
+        semanticExchange,
+        combatInitialization
       });
     }
   });
 }
 
 function semanticConsequence({ contracts, inputDigest, checkResult,
-  offerStage, checkRequest, outcomeRef, semanticExchange }) {
+  offerStage, checkRequest, outcomeRef, semanticExchange,
+  combatInitialization }) {
   return {
     version: 1,
     schema: 'turn_consequence_package',
@@ -171,6 +186,7 @@ function semanticConsequence({ contracts, inputDigest, checkResult,
       check_result: structuredClone(checkResult),
       outcome_ref: outcomeRef,
       semantic_exchange: semanticExchange,
+      combat_initialization: structuredClone(combatInitialization),
       ...conversationHandoffProjection(semanticExchange),
       response_kind: semanticExchange.response_kind,
       participating_fisher_id:

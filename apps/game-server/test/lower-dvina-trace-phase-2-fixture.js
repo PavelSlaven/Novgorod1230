@@ -28,6 +28,10 @@ import { nextPhase6State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
 import { nextPhase7State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-state.js';
+import { nextPhase8AccusationState } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-8-state.js';
+import { nextCombatState } from
+  '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -72,6 +76,7 @@ export function fixture({
   playerConversationModel = unexpectedPlayerConversationModel,
   npcSemanticModel = unexpectedNpcSemanticModel,
   npcAutonomousModel = unexpectedNpcAutonomousModel,
+  npcCombatModel = unexpectedNpcCombatModel,
   playerSafeStateProjector = null,
   temporalAdvanceOwner = null
 } = {}) {
@@ -144,15 +149,15 @@ export function fixture({
       placement: {
         anchor_id: item.anchor_id ?? null,
         container_id: item.container_id ?? null,
-        holder_character_id: item.holder_character_id,
-        holder_npc_id: item.holder_npc_id,
-        physical_position: item.physical_position
+        holder_character_id: item.holder_character_id ?? null,
+        holder_npc_id: item.holder_npc_id ?? null,
+        physical_position: item.physical_position ?? null
       },
       ownership: {
-        owner_character_id: item.owner_character_id,
-        controller_character_id: item.controller_character_id,
-        owner_npc_id: item.owner_npc_id,
-        controller_npc_id: item.controller_npc_id,
+        owner_character_id: item.owner_character_id ?? null,
+        controller_character_id: item.controller_character_id ?? null,
+        owner_npc_id: item.owner_npc_id ?? null,
+        controller_npc_id: item.controller_npc_id ?? null,
         claim_state: item.claim_state
       },
       state: structuredClone(item.state)
@@ -205,6 +210,8 @@ export function fixture({
   let npcSemanticInput = null;
   let playerConversationCount = 0;
   let npcSemanticCount = 0;
+  let npcCombatCount = 0;
+  const npcCombatInputs = [];
   const bundleRequests = [];
   const repository = {
     async loadPhase2State() {
@@ -216,7 +223,7 @@ export function fixture({
     },
     async commitPhase2Turn(commitInput) {
       const { writePlan, inputDigest, phase3Contracts,
-        phase4Contracts, phase5Contracts, phase6Contracts,
+        phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts,
         turn10Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
@@ -232,7 +239,19 @@ export function fixture({
       const nextVersion = state.party_state.state_version + 1;
       const turnNumber = state.party_state.turn_number + 1;
       const changeSetId = `change:${partyId}:${turnNumber}`;
-      if (factual.consequence.phase7_kind != null) {
+      if (factual.consequence.combat_kind != null) {
+        replaceState(state, nextCombatState({ state, factual, nextVersion,
+          turnNumber, changeSetId, inputDigest }));
+      } else if (factual.consequence.phase8_kind === 'accusation') {
+        replaceState(state, nextPhase8AccusationState({ state, factual,
+          nextVersion, turnNumber, changeSetId, inputDigest }));
+      } else if (factual.consequence.phase8_kind === 'movement') {
+        replaceState(state, nextPhase3State({ state, factual, nextVersion,
+          turnNumber, inputDigest, changeSetId, contracts: phase8Contracts,
+          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+          workingRevision:
+            writePlan.turn_step_commit?.loop_trace?.working_revision }));
+      } else if (factual.consequence.phase7_kind != null) {
         replaceState(state, nextPhase7State({
           state,
           factual,
@@ -419,6 +438,11 @@ export function fixture({
       return npcSemanticModel(input);
     },
     npcAutonomousModel,
+    npcCombatModel: async (input, repairContext) => {
+      npcCombatCount += 1;
+      npcCombatInputs.push(structuredClone(input));
+      return npcCombatModel(input, repairContext);
+    },
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
     npcDecisionSelector: async (request) => {
@@ -473,6 +497,8 @@ export function fixture({
     playerConversationInput: () => playerConversationInput,
     npcSemanticCount: () => npcSemanticCount,
     npcSemanticInput: () => npcSemanticInput,
+    npcCombatCount: () => npcCombatCount,
+    npcCombatInputs: () => structuredClone(npcCombatInputs),
     lastCommitInput: () => lastCommitInput,
     lastWritePlan: () => lastWritePlan,
     itemCreationCount: () => itemCreationCount,
@@ -498,6 +524,10 @@ async function unexpectedNpcSemanticModel() {
 
 async function unexpectedNpcAutonomousModel() {
   throw new Error('Unexpected autonomous NPC model call');
+}
+
+async function unexpectedNpcCombatModel() {
+  throw new Error('Unexpected NPC combat model call');
 }
 
 function replaceState(target, source) {

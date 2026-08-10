@@ -960,7 +960,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 389
+        "line_end": 391
       }
     },
     {
@@ -1144,6 +1144,18 @@
       }
     },
     {
+      "id": "canonical-document:npc-combat-and-trigger-contract",
+      "type": "canonical_document",
+      "label": "npc_combat_and_trigger_contract.md",
+      "structural_only": true,
+      "source_file": "DOCUMENTS/npc_combat_and_trigger_contract.md",
+      "source_location": {
+        "file": "npc_combat_and_trigger_contract.md",
+        "line_start": 1,
+        "line_end": 2956
+      }
+    },
+    {
       "id": "canonical-document:npc-conversation-mode-contract",
       "type": "canonical_document",
       "label": "npc_conversation_mode_contract.md",
@@ -1164,7 +1176,7 @@
       "source_location": {
         "file": "npc_generation_profiles.txt",
         "line_start": 1,
-        "line_end": 236
+        "line_end": 238
       }
     },
     {

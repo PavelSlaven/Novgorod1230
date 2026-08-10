@@ -178,6 +178,8 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const spatial = binding?.storehouse_spatial_binding;
   const placement = binding?.npc_placement;
   const bag = binding?.container_placement;
+  const weapon = binding?.weapon_placement ?? null;
+  const weaponRequired = input.scenario_definition_revision === 16;
   const location = locationSelections.find(
     ({ slot_key: key }) => key === spatial?.location_profile_ref
   );
@@ -201,6 +203,15 @@ export function materializeLowerDvinaTracePreparedStorehouse({
     || bag.holder_ref !== placement.participant_slot_ref
     || bag.controller_ref !== placement.participant_slot_ref
     || bag.closure_state !== 'tied'
+    || (weaponRequired && (weapon?.item_template_ref
+        !== 'trace_ld_v1_item_zhdanko_axe'
+      || weapon.owner_ref !== placement.participant_slot_ref
+      || weapon.holder_ref !== placement.participant_slot_ref
+      || weapon.controller_ref !== placement.participant_slot_ref
+      || weapon.physical_position !== 'hands'
+      || weapon.accessibility !== 'immediate'
+      || weapon.location_ref !== spatial.location_profile_ref
+      || weapon.zone_ref !== spatial.anchor_template.state.zone_ref))
     || JSON.stringify(bag.exact_content_item_refs)
       !== JSON.stringify([
         'trace_ld_v1_item_sealed_packet',
@@ -303,7 +314,35 @@ export function materializeLowerDvinaTracePreparedStorehouse({
       content_materialization: 'deferred_until_exact_inventory_profiles_are_approved'
     }
   };
-  return { scene, npc, container };
+  const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
+    input, bundle, runId, weapon, npc });
+  return { scene, npc, container, weapon: weaponItem };
+}
+
+function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {
+  const template = requiredById(bundle.item_container_set.item_templates,
+    'item_template_id', weapon.item_template_ref);
+  const profile = requiredById(bundle.item_inventory_profiles, 'id',
+    template.base_catalog_ref.inventory_profile_id);
+  if (template.status !== 'approved'
+      || template.weapon_contract?.owner_ref !== weapon.owner_ref
+      || profile.item_template_id !== template.base_catalog_ref.template_id) {
+    fail('TRACE_M4_STOREHOUSE_WEAPON_INVALID',
+      'The storehouse weapon requires one approved item and inventory profile.');
+  }
+  return { instance_id: deterministicInstanceId(input.party_id, runId,
+    'item', template.item_template_id, 0),
+  template_id: template.item_template_id, profile_id: profile.id,
+  category_id: template.semantic_category, quantity: 1,
+  condition_state: 'serviceable', legal_status: 'owned',
+  claim_state: 'established', owner_npc_id: npc.instance_id,
+  holder_npc_id: npc.instance_id, controller_npc_id: npc.instance_id,
+  physical_position: weapon.physical_position,
+  state: { causal_basis: template.causal_basis,
+    accessibility: weapon.accessibility,
+    location_ref: weapon.location_ref, zone_ref: weapon.zone_ref,
+    weapon_contract: structuredClone(template.weapon_contract),
+    inventory_profile_snapshot: structuredClone(profile) } };
 }
 
 function materializeNpc({

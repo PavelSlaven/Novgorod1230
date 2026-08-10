@@ -56,7 +56,9 @@ export async function commitLowerDvinaTracePhase3({
     writePlan,
     'party_visible_context_package'
   );
-  if (!factual?.consequence?.phase3_kind || !visibleContext) {
+  if (!(factual?.consequence?.phase3_kind
+        || factual?.consequence?.phase8_kind === 'movement')
+      || !visibleContext) {
     fail('TRACE_PHASE_3_WRITE_PLAN_INVALID');
   }
   const state = await loadState(partyId, {

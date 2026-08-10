@@ -488,19 +488,6 @@ test('persisted autonomous trace must pass caller operation contract gate',
     assert.equal(revalidationCalls, 0);
   });
 
-test('combat NPC semantic decisions remain unsupported', async () => {
-  const sourceRequest = autonomousRequest();
-  await assert.rejects(requestNpcSemanticDecision({
-    boundary: boundary({
-      decision_mode: 'combat',
-      decision_context_id: 'combat-7'
-    }),
-    request: sourceRequest,
-    semanticModel: async () => autonomousPlan(sourceRequest),
-    revalidateStateVersion: async () => 2
-  }), (error) => error?.code === 'TURN_NPC_MODE_UNSUPPORTED');
-});
-
 test('stale autonomous response rebuilds the current request before domain validation',
   async () => {
     const staleRequest = autonomousRequest();

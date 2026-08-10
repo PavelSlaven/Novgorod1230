@@ -18,12 +18,15 @@ import {
   isPreparedTurn10Ledger,
   validatePreparedTurn10
 } from './lower-dvina-trace-turn-10-prepared-validation.js';
+import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
+  './lower-dvina-trace-phase-8-prepared-validation.js';
 
 const ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
+const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat';
 const DEFERRED_DOMAIN_OPERATIONS = new Set([
   'request_discovery', 'request_container_access', 'request_movement',
-  'request_item_use', 'request_activity', 'emit_interaction'
+  'request_item_use', 'request_activity', 'emit_interaction', 'request_combat'
 ]);
 
 export function validatePreparedEffectCommit({
@@ -48,6 +51,14 @@ export function validatePreparedEffectCommit({
     return validatePreparedTurn10({
       ledger, traces, envelope, factual, state, batch
     });
+  }
+  if (ledger.slices.length === 1
+      && ledger.slices[0].owner_ref === COMBAT_COMMAND) {
+    return validatePreparedCombat({ ledger, envelope, factual, state, batch });
+  }
+  if (ledger.slices.length === 1
+      && PHASE8_PREPARED_COMMANDS.has(ledger.slices[0].owner_ref)) {
+    return validatePreparedPhase8({ ledger, envelope, factual, state, batch });
   }
   const [route, direct] = slices;
   const [routeTrace, directTrace] = traces ?? [];
@@ -133,6 +144,40 @@ export function validatePreparedEffectCommit({
     route, direct, factual: envelope, state, phase3Contracts
   });
   return { prepared: true, routeSlice: route, directSlice: direct };
+}
+
+function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
+  const slice = ledger.slices[0];
+  const trace = envelope?.loop_trace?.step_traces?.[0];
+  const operation = trace?.approved_plan?.operations?.[0];
+  const expectedTime = buildTurnStepPreparedTimeUpdate(ledger);
+  const expectedBody = buildTurnStepPreparedBodyUpdate(ledger);
+  if (ledger.root_turn_id !== (batch?.root_turn_id ?? envelope.root_turn_id)
+      || ledger.committed_state_version !== (batch?.committed_state_version
+        ?? envelope.base_state_version)
+      || slice.effect_kind !== 'domain_command'
+      || slice.operation_ref !== 'request_combat'
+      || slice.step_index !== 1
+      || slice.consequence?.combat_kind !== 'exchange'
+      || slice.consequence.combat?.session_before?.combat_id
+        !== slice.consequence.combat?.session_after?.combat_id
+      || slice.consequence.combat.session_after.exchange_ordinal
+        !== slice.consequence.combat.session_before.exchange_ordinal + 1
+      || trace?.applied !== true
+      || trace?.player_response_boundary !== true
+      || trace?.approved_plan?.resolution !== 'domain_request'
+      || operation?.op !== 'request_combat'
+      || !samePreparedValue(envelope.consequence, factual?.consequence)
+      || !samePreparedValue(envelope.time_update, factual?.time_update)
+      || !samePreparedValue(envelope.body_update, factual?.body_update)
+      || !samePreparedValue(expectedBody, envelope.body_update)
+      || !sameTimeBase(expectedTime, envelope.time_update)
+      || trace.plan_request?.player_safe_state?.combat_sessions?.length !== 1
+      || !samePreparedValue(trace.plan_request.player_safe_state.clock,
+        state.clock)) {
+    preparedEffectFail('combat prepared ledger is not authoritative');
+  }
+  return { prepared: true, combatSlice: slice };
 }
 
 function validateRouteOnlyBoundaryTrace({

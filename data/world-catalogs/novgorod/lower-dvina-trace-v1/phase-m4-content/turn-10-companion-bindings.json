@@ -1,0 +1,73 @@
+{
+  "schema": "rus.lower_dvina_trace_turn_10_companion_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_turn_10_companion_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 15,
+  "fallback_policy": "forbidden",
+  "command_binding": {
+    "binding_id": "trace_ld_v1_step_request_storehouse_companions",
+    "operation": "emit_interaction",
+    "command_id": "lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse",
+    "interaction_kinds": ["request"],
+    "required_target_slots": ["eremey_fisher", "resolved_participating_fisher"],
+    "destination_ref": "trace_ld_v1_loc_zhdanko_storehouse"
+  },
+  "conversation_activity": {
+    "profile_id": "trace_ld_v1_activity_request_storehouse_companions",
+    "version": 1,
+    "time_mode": "parent_activity_final_segment",
+    "duration_minutes": 5,
+    "parent_activity_ref": "trace_ld_v1_activity_fire_rest",
+    "contribution_slots": 5,
+    "required_participant_slots": ["player_clerk", "eremey_fisher", "resolved_participating_fisher"],
+    "actual_listener_slots": ["ratsha_storehouse_helper", "background_fisher_1", "background_fisher_2"]
+  },
+  "signal_mapping": {
+    "mapping_id": "trace_ld_v1_turn10_companion_request_signal_v1",
+    "source_command_id": "lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse",
+    "perception_requirement": "perception_required",
+    "signal_descriptors": [
+      {"category": "communication", "significance": "material"}
+    ]
+  },
+  "route_activity_ref": "trace_ld_v1_activity_route_to_storehouse",
+  "route_ref": "trace_ld_v1_route_camp_to_storehouse",
+  "destination_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+  "npc_operations": {
+    "eremey_guide": {
+      "op": "commit_route_participation",
+      "role": "guide",
+      "execution_binding_ref": "trace_ld_v1_decision_execution_eremey_guide",
+      "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
+      "route_ref": "trace_ld_v1_route_camp_to_storehouse"
+    },
+    "ratsha_witness": {
+      "op": "commit_route_participation",
+      "role": "witness",
+      "execution_binding_ref": "trace_ld_v1_turn10_ratsha_storehouse_witness",
+      "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
+      "route_ref": "trace_ld_v1_route_camp_to_storehouse"
+    },
+    "fisher_stay": {
+      "op": "commit_route_participation",
+      "role": "stay_with_onisim",
+      "execution_binding_ref": "trace_ld_v1_turn10_fisher_stay_with_onisim",
+      "protected_actor_slot": "onisim_boatman"
+    },
+    "fisher_escort": {
+      "op": "commit_route_participation",
+      "role": "escort",
+      "execution_binding_ref": "trace_ld_v1_turn10_fisher_storehouse_escort",
+      "activity_ref": "trace_ld_v1_activity_route_to_storehouse",
+      "route_ref": "trace_ld_v1_route_camp_to_storehouse"
+    }
+  },
+  "persistence": {
+    "route_knowledge_source": "eremey_guide_commitment",
+    "commitment_collection": "route_participant_commitments",
+    "activity_admission_collection": "route_activity_admissions",
+    "forbidden_shortcuts": ["companions_assigned", "known_path_to_klet"]
+  }
+}

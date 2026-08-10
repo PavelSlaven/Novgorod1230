@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { resolveRatshaNpcSocialCheckProfile } from './lower-dvina-trace-phase-4-social-check.js';
-
+import { resolveTracePhase4CombatBindings } from './lower-dvina-trace-phase-4-combat-contracts.js';
 export const TRACE_PHASE_4_IDS = Object.freeze({
   routeOption: 'follow_known_route_to_drying_shed',
   negotiationOption: 'offer_conditional_protection_and_seek_surrender',
@@ -15,14 +15,12 @@ export const TRACE_PHASE_4_IDS = Object.freeze({
   ratshaPolicy: 'trace_ld_v1_npc_ratsha_decisions'
 });
 export function resolveTracePhase4Contracts({ state, bundle }) {
-  if (![10, 11, 12, 13, 14, 15].includes(bundle.definition_revision)
-      || ![10, 11, 12, 13, 14, 15].includes(bundle.definition?.revision)) {
+  if (![10, 11, 12, 13, 14, 15, 16].includes(bundle.definition_revision)
+      || ![10, 11, 12, 13, 14, 15, 16].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_4_REVISION_MISMATCH');
   }
-  const ids = TRACE_PHASE_4_IDS;
-  const profiles = bundle.activity_check_consequence_profiles;
-  const routeActivity = exact(profiles.activity_profiles, 'profile_id', ids.routeActivity);
-  const negotiation = exact(profiles.activity_profiles, 'profile_id', ids.negotiationActivity);
+  const ids = TRACE_PHASE_4_IDS, profiles = bundle.activity_check_consequence_profiles;
+  const routeActivity = exact(profiles.activity_profiles, 'profile_id', ids.routeActivity), negotiation = exact(profiles.activity_profiles, 'profile_id', ids.negotiationActivity);
   const check = exact(profiles.check_profiles, 'check_id', ids.check);
   const observation = exact(
     profiles.scene_observation_profiles,
@@ -58,9 +56,12 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   const npcPolicy = exact(bundle.npc_decision_schedule_policies.decision_policies, 'policy_id', ids.ratshaPolicy);
   const knifeTransition = exact(bundle.npc_decision_schedule_policies.property_transition_profiles,
     'transition_profile_id', 'trace_ld_v1_property_ratsha_knife_surrendered_to_participating_fisher');
-  const conversationBindings = [14, 15].includes(bundle.definition_revision)
+  const conversationBindings = [14, 15, 16].includes(bundle.definition_revision)
     ? bundle.conversation_semantic_bindings
     : null;
+  const combatBindings = bundle.definition_revision === 16
+    ? resolveTracePhase4CombatBindings(bundle.combat_semantic_bindings,
+        ids.shed) : null;
   const conversationSignalMappings = conversationBindings == null
     ? null
     : Object.fromEntries([
@@ -108,7 +109,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   );
   if (fishers.length !== 1) gap('TRACE_PHASE_4_PARTICIPATING_FISHER_MISSING');
   const fisher = fishers[0];
-  const phase5Enabled = [11, 12, 13, 14, 15].includes(bundle.definition_revision);
+  const phase5Enabled = [11, 12, 13, 14, 15, 16].includes(bundle.definition_revision);
   const resourceArrivalBinding = phase5Enabled
     ? bundle.materialization_bindings?.phase_5_initial_state_binding
       ?.phase_5_resource_arrival_binding
@@ -128,7 +129,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     'inventory_profile_id',
     id
   )])) : null;
-  if ([12, 13, 14, 15].includes(bundle.definition_revision)) {
+  if ([12, 13, 14, 15, 16].includes(bundle.definition_revision)) {
     resourceInventoryProfiles.water = exact(
       bundle.item_container_set.item_inventory_profiles,
       'inventory_profile_id',
@@ -247,7 +248,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
           && profile.external_hand_cost === 1
           && profile.status === 'approved';
       }))
-      || ([12, 13, 14, 15].includes(bundle.definition_revision)
+      || ([12, 13, 14, 15, 16].includes(bundle.definition_revision)
         && (resourceInventoryProfiles.water.item_template_ref
           !== 'trace_ld_v1_item_eremey_drinking_water_vessel'
           || resourceInventoryProfiles.water.mass_grams !== 100
@@ -262,7 +263,7 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect,
     npcSocialCheckProfile,
-    conversationBindings, conversationSignalMappings,
+    conversationBindings, conversationSignalMappings, combatBindings,
     conversationTimeProfiles: structuredClone(
       bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
     ),
@@ -292,7 +293,6 @@ function routeEffect(records, effectId, activityRef, elapsedMinutes) {
       || effect.selection_policy !== 'fixed_approved_effect' || effect.rng_consumption !== 'forbidden') gap('TRACE_PHASE_4_ROUTE_BODY_EFFECT_INVALID');
   return structuredClone(effect);
 }
-
 function actor(state, ref) { const value = (state.npcs ?? []).find((entry) => entry.participant_slot_ref === ref); if (!value?.instance_id) gap('TRACE_PHASE_4_PARTICIPANT_MISSING'); return structuredClone(value); }
 function selection(state, kind, id) { return state.sealed_selections?.find((g) => g.selection_kind === kind)?.records.find((r) => r.selected_id === id) ?? null; }
 function exact(records, key, id) { const matches = (records ?? []).filter((r) => r[key] === id); if (matches.length !== 1) gap('TRACE_PHASE_4_RECORD_GAP'); return matches[0]; }

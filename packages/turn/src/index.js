@@ -31,6 +31,17 @@ import {
 } from './turn-step-workflow-draft.js';
 import { bindTurnStepPreparedConsequence } from
   './turn-step-prepared-effects.js';
+import { executeCombatExchange, prepareCombatExchange,
+  orderCombatTechnicalSteps, resolveCombatExchangeTiming } from
+  './combat-exchange.js';
+import {
+  combatIntentFromOperation,
+  combatIntentFromPlan,
+  installCombatIntent
+} from './combat-intent.js';
+import { buildCombatInitializationDecisionContexts } from './combat-decision-contexts.js';
+import { activateCombatSessionForPlayerIntent, createCombatSession,
+  initializeCombatSession } from './combat-session.js';
 
 export {
   createTurnWorkflowContext,
@@ -50,6 +61,17 @@ export {
   executeTurnStepActorStep,
   buildTurnStepPreparedDomainConsequence,
   mergeTurnStepDraftConsequence,
+  executeCombatExchange,
+  prepareCombatExchange,
+  orderCombatTechnicalSteps,
+  resolveCombatExchangeTiming,
+  combatIntentFromPlan,
+  combatIntentFromOperation,
+  activateCombatSessionForPlayerIntent,
+  installCombatIntent,
+  buildCombatInitializationDecisionContexts,
+  initializeCombatSession,
+  createCombatSession,
   bindTurnStepPreparedConsequence
 };
 export {

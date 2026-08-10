@@ -89,6 +89,25 @@ const EXPECTED = Object.freeze({
       'eremey_fisher', 'participating_fisher', 'other_fisher'
     ],
     instrument: 'none'
+  },
+  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse': {
+    minRevision: 16,
+    operation: 'request_movement', kindField: 'movement_kind',
+    kindsField: 'movement_kinds', kind: 'route',
+    targetKey: 'zhdankoStorehouse', targetSemantic: 'zhdanko_storehouse'
+  },
+  'lower_dvina_trace.accuse_zhdanko_at_storehouse': {
+    minRevision: 16,
+    operation: 'emit_interaction', kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds', kind: 'speech',
+    targetKey: 'zhdanko', targetSemantic: 'zhdanko_storehouse_controller',
+    instrument: 'none'
+  },
+  'lower_dvina_trace.respond_in_active_combat': {
+    minRevision: 16,
+    operation: 'request_combat', kindField: 'intent_kind',
+    kindsField: 'intent_kinds', kind: 'engage',
+    targetKey: 'activeHostileNpc', targetSemantic: 'active_hostile_npc'
   }
 });
 
@@ -114,7 +133,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14, 15].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(
     ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision
@@ -139,10 +158,13 @@ export function bindLowerDvinaTraceTurnStepCommands({
       ? targetRefs?.[expected.targetKey]
       : expected.targetKeys.map((key) => targetRefs?.[key]);
     const actorRef = targetRefs?.actor;
+    const dynamicTargetAbsent = expected.operation === 'request_combat'
+      && targetRef == null;
     if (!validRecord(record, expected)
         || (Array.isArray(targetRef)
           ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
-          : typeof targetRef !== 'string' || targetRef.length === 0)
+          : !dynamicTargetAbsent
+            && (typeof targetRef !== 'string' || targetRef.length === 0))
         || typeof actorRef !== 'string' || actorRef.length === 0) {
       gap();
     }
@@ -205,6 +227,12 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   }
   if (expected.operation === 'request_movement') {
     return operation.target_ref === targetRef;
+  }
+  if (expected.operation === 'request_combat') {
+    const noTarget = ['hold', 'protect', 'reach', 'break_contact',
+      'surrender', 'cease_hostility'].includes(operation.intent_kind);
+    return noTarget || operation.target_refs?.length === 1
+      && operation.target_refs[0] === targetRef;
   }
   const targetField = expected.operation === 'emit_interaction'
     ? 'target_actor_refs'

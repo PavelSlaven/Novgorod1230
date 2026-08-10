@@ -1,0 +1,43 @@
+{
+  "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_autonomous_semantic_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 15,
+  "fallback_policy": "forbidden",
+  "contract_refs": ["npc_decision_signal_v1", "npc_decision_boundary_v1", "npc_action_decision_request_v1", "npc_step_plan_v1"],
+  "decision_mode": "autonomous",
+  "temporal_owner": "@rus/turn",
+  "schedule_owner": "@rus/npc-runtime",
+  "same_time_batch_policy": "common_temporal_owner_only",
+  "target_npc_ref": "zhdanko_storehouse_controller",
+  "source_factual_transition": {"activity_profile_ref": "trace_ld_v1_activity_zhdanko_wait", "boundary": "five_minutes_committed", "boundary_elapsed_minutes_from_parent_start": 25},
+  "parent_player_activity_ref": "trace_ld_v1_activity_fire_rest",
+  "signal_descriptor": {"category": "objective", "significance": "material", "perception_requirement": "perception_not_required"},
+  "operation_contract": "npc_action_decision_request_v1",
+  "available_resource_refs": ["trace_ld_v1_container_road_bag"],
+  "known_route_refs": ["trace_ld_v1_local_transition_storehouse_to_river_access"],
+  "generic_check_context_profile": {
+    "profile_ref": "trace_ld_v1_zhdanko_phase7_generic_check_context_v1",
+    "attributes": [{"attribute_ref": "attention", "label": "внимание", "value": 13}],
+    "skills": [{"skill_ref": "observation", "label": "наблюдательность", "value": 2}]
+  },
+  "signal_mappings": [
+    {
+      "mapping_id": "trace_ld_v1_fire_rest_autonomous_schedule_signal_v1",
+      "source_activity_id": "trace_ld_v1_activity_zhdanko_wait",
+      "source_boundary": "five_minutes_committed",
+      "target_npc_ref": "zhdanko_storehouse_controller",
+      "perception_requirement": "perception_not_required",
+      "signal_descriptors": [{"category": "objective", "significance": "material"}],
+      "schedule_policy_ref": "trace_ld_v1_zhdanko_autonomous_schedule",
+      "profile_refs": {
+        "parent_activity_profile_id": "trace_ld_v1_activity_fire_rest",
+        "trigger_activity_profile_id": "trace_ld_v1_activity_zhdanko_wait",
+        "body_effect_profile_id": "trace_ld_v1_body_fire_rest_30m"
+      }
+    }
+  ],
+  "forbidden": ["scenario_local_scheduler", "closed_npc_option_sets", "combat_resolution", "runtime_handler", "persistence", "ddl", "api", "ui"]
+}

@@ -19,7 +19,8 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'request_movement',
   'request_item_use',
   'request_activity',
-  'emit_interaction'
+  'emit_interaction',
+  'request_combat'
 ]);
 
 export function isDomainStepOperation(value) {

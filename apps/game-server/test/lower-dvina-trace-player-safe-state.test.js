@@ -68,6 +68,29 @@ test('projects the committed player context needed by the step planner', () => {
   });
 });
 
+test('combat projection does not disclose private NPC intents', () => {
+  const committedState = richCommittedState();
+  committedState.combat_sessions = [{ combat_id: 'combat-1',
+    status: 'paused_for_player',
+    scope_ref: { entity_kind: 'location', entity_id: 'shed' },
+    participant_refs: [
+      { entity_kind: 'player_character', entity_id: 'mikula' },
+      { entity_kind: 'npc', entity_id: 'ratsha' }
+    ], participant_states: [{ actor_ref: { entity_kind: 'player_character',
+      entity_id: 'mikula' }, combat_status: 'active', current_intent: null },
+    { actor_ref: { entity_kind: 'npc', entity_id: 'ratsha' },
+      combat_status: 'active', current_intent: { intent_kind: 'engage',
+        target_refs: [{ entity_kind: 'player_character', entity_id: 'mikula' }],
+        force_limit: 'ordinary', risk_posture: 'reckless' } }],
+    exchange_ordinal: 0, player_response_required: true }];
+  const result = projectLowerDvinaTracePlayerSafeState({
+    committed_state: committedState, actor_id: 'mikula' });
+  const serialized = JSON.stringify(result.player_safe_state.combat_sessions);
+  assert.equal(serialized.includes('current_intent'), false);
+  assert.equal(serialized.includes('engage'), false);
+  assert.equal(serialized.includes('reckless'), false);
+});
+
 test('does not serialize hidden state or unknown closed contents', () => {
   const committedState = richCommittedState();
   const hiddenSentinel = 'HIDDEN_SENTINEL_MUST_NOT_SERIALIZE';

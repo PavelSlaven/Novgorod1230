@@ -1,5 +1,6 @@
 
 export const TABLES = Object.freeze({
+  party_combat_sessions: { modes: ['insert', 'update'], key: ['combat_id'], version: true },
   parties: { modes: ['update'], key: ['party_id'], version: true },
   party_server_sessions: {
     modes: ['update'],

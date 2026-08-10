@@ -1,0 +1,90 @@
+{
+  "schema": "rus.lower_dvina_trace_combat_semantic_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_combat_semantic_bindings_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 16,
+  "status": "approved",
+  "fallback_policy": "forbidden",
+  "exchange_timing_profile": {"profile_id": "trace_ld_v1_combat_exchange_2m", "status": "approved", "duration_minutes": 2},
+  "phase_4": {
+    "actor_slot": "ratsha_storehouse_helper",
+    "scope_location_ref": "trace_ld_v1_loc_old_drying_shed",
+    "handoff_kind": "combat",
+    "signal_descriptor": {"category": "objective", "significance": "material", "perception_required": false},
+    "operation_contract": {"allowed_intent_kinds": ["engage", "break_contact", "surrender", "cease_hostility"], "allowed_force_limits": ["ordinary"], "allowed_risk_postures": ["ordinary"], "surrender_available": true, "cease_hostility_available": true, "combat_statement_available": true},
+    "execution_profiles": [
+      {"profile_id": "trace_ld_v1_combat_ratsha_knife_engage", "intent_kind": "engage", "status": "approved", "check_request": {"attribute_value": 12, "skill_bonus": 1, "equipment_modifier": 1, "target_defense": 12, "weapon_danger": 1, "target_protection": 0, "target_vulnerability": 0}},
+      {"profile_id": "trace_ld_v1_combat_ratsha_break_contact", "intent_kind": "break_contact", "status": "approved", "check_request": null},
+      {"profile_id": "trace_ld_v1_combat_ratsha_surrender", "intent_kind": "surrender", "status": "approved", "check_request": null},
+      {"profile_id": "trace_ld_v1_combat_ratsha_cease_hostility", "intent_kind": "cease_hostility", "status": "approved", "check_request": null}
+    ],
+    "player_response_required_before_execution": true,
+    "allowed_target_slots": ["player_clerk"]
+  },
+  "phase_8": {
+    "actor_slot": "zhdanko_storehouse_controller",
+    "scope_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "handoff_kind": "combat",
+    "signal_descriptor": {"category": "objective", "significance": "material", "perception_required": false},
+    "operation_contract": {"allowed_intent_kinds": ["engage", "control", "break_contact", "surrender", "cease_hostility"], "allowed_force_limits": ["ordinary", "nonlethal_if_possible"], "allowed_risk_postures": ["cautious", "ordinary"], "surrender_available": true, "cease_hostility_available": true, "combat_statement_available": true},
+    "execution_profiles": [
+      {"profile_id": "trace_ld_v1_combat_zhdanko_axe_engage", "intent_kind": "engage", "status": "approved", "check_request": {"attribute_value": 13, "skill_bonus": 2, "equipment_modifier": 1, "target_defense": 12, "weapon_danger": 2, "target_protection": 0, "target_vulnerability": 0}},
+      {"profile_id": "trace_ld_v1_combat_zhdanko_control", "intent_kind": "control", "status": "approved", "check_request": {"attribute_value": 13, "skill_bonus": 2, "target_defense": 12}},
+      {"profile_id": "trace_ld_v1_combat_zhdanko_break_contact", "intent_kind": "break_contact", "status": "approved", "check_request": null},
+      {"profile_id": "trace_ld_v1_combat_zhdanko_surrender", "intent_kind": "surrender", "status": "approved", "check_request": null},
+      {"profile_id": "trace_ld_v1_combat_zhdanko_cease_hostility", "intent_kind": "cease_hostility", "status": "approved", "check_request": null}
+    ],
+    "participant_roles": {
+      "eremey_fisher": {
+        "operation_contract": {"allowed_intent_kinds": ["control", "protect", "hold", "cease_hostility"], "allowed_force_limits": ["avoid_harm", "nonlethal_if_possible", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "surrender_available": false, "cease_hostility_available": true, "combat_statement_available": true},
+        "execution_profiles": [
+          {"profile_id": "trace_ld_v1_combat_eremey_control", "intent_kind": "control", "status": "approved", "check_request": {"attribute_value": 12, "skill_bonus": 2, "equipment_modifier": 1, "target_defense": 12, "weapon_danger": 0, "target_protection": 0, "target_vulnerability": 0}, "property_transition": {"transition_profile_id": "trace_ld_v1_property_zhdanko_axe_disarmed_to_eremey", "subject_ref": "trace_ld_v1_item_zhdanko_axe", "requires": {"holder_ref": "zhdanko_storehouse_controller", "controller_ref": "zhdanko_storehouse_controller", "physical_position": "hands", "accessibility": "immediate", "admission_fact": "bounded_group_disarm_transition_admitted"}, "writes": {"holder_ref": "eremey_fisher", "controller_ref": "eremey_fisher", "physical_position": "hands", "accessibility": "secured_not_available_to_zhdanko"}, "owner_change": "forbidden"}, "participant_status_on_success": "restrained"},
+          {"profile_id": "trace_ld_v1_combat_eremey_protect", "intent_kind": "protect", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_eremey_hold", "intent_kind": "hold", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_eremey_cease", "intent_kind": "cease_hostility", "status": "approved", "check_request": null}
+        ]
+      },
+      "ratsha_storehouse_helper": {
+        "operation_contract": {"allowed_intent_kinds": ["reach", "hold", "protect", "cease_hostility"], "allowed_force_limits": ["avoid_harm", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "surrender_available": false, "cease_hostility_available": true, "combat_statement_available": true},
+        "execution_profiles": [
+          {"profile_id": "trace_ld_v1_combat_ratsha_reach_bag", "intent_kind": "reach", "status": "approved", "check_request": {"attribute_value": 11, "skill_bonus": 1, "equipment_modifier": 0, "target_defense": 12, "weapon_danger": 0, "target_protection": 0, "target_vulnerability": 0}},
+          {"profile_id": "trace_ld_v1_combat_ratsha_hold", "intent_kind": "hold", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_ratsha_protect", "intent_kind": "protect", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_ratsha_cease_at_storehouse", "intent_kind": "cease_hostility", "status": "approved", "check_request": null}
+        ]
+      },
+      "participating_fisher": {
+        "operation_contract": {"allowed_intent_kinds": ["control", "hold", "protect", "cease_hostility"], "allowed_force_limits": ["avoid_harm", "nonlethal_if_possible", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "surrender_available": false, "cease_hostility_available": true, "combat_statement_available": true},
+        "execution_profiles": [
+          {"profile_id": "trace_ld_v1_combat_fisher_control", "intent_kind": "control", "status": "approved", "check_request": {"attribute_value": 11, "skill_bonus": 1, "equipment_modifier": 0, "target_defense": 12, "weapon_danger": 0, "target_protection": 0, "target_vulnerability": 0}},
+          {"profile_id": "trace_ld_v1_combat_fisher_hold", "intent_kind": "hold", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_fisher_protect", "intent_kind": "protect", "status": "approved", "check_request": null},
+          {"profile_id": "trace_ld_v1_combat_fisher_cease", "intent_kind": "cease_hostility", "status": "approved", "check_request": null}
+        ]
+      }
+    },
+    "conversation": {
+      "activity_profile_ref": "trace_ld_v1_activity_accuse_zhdanko",
+      "duration_minutes": 5,
+      "signal_mapping": {
+        "mapping_id": "trace_ld_v1_phase_8_accuse_zhdanko_signal_v1",
+        "phase": "phase_8",
+        "source_command_id": "lower_dvina_trace.accuse_zhdanko_at_storehouse",
+        "target_npc_ref": "zhdanko_storehouse_controller",
+        "perception_requirement": "perception_required",
+        "signal_descriptors": [{"category": "communication", "significance": "material"}],
+        "mechanics_refs": {
+          "activity_id": "trace_ld_v1_activity_accuse_zhdanko",
+          "check_id": null,
+          "statement_template_ids": [],
+          "knowledge_scope_id": "trace_ld_v1_knowledge_scope_storehouse_controller_v1",
+          "promise_policy_id": null
+        }
+      }
+    },
+    "player_response_required_before_execution": true,
+    "allowed_target_slots": ["player_clerk"]
+  },
+  "excludes": ["combat_resolver", "combat_ordering", "harm", "persistence", "runtime_handler"]
+}

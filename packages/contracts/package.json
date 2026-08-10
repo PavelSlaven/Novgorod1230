@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./combat-v1": "./src/combat-v1.js",
     "./json": "./src/json.js",
     "./stage": "./src/stage.js",
     "./approval": "./src/approval.js",

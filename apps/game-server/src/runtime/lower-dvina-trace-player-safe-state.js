@@ -70,7 +70,8 @@ export function projectLowerDvinaTracePlayerSafeState({
     current_visible_context: projectVisibleContext(
       committedState.current_visible_context,
       { path: 'current_visible_context' }
-    )
+    ),
+    combat_sessions: projectCombatSessions(committedState.combat_sessions)
   });
   const playerSafeState = applyLowerDvinaTraceWorkingProjection({
     base,
@@ -87,6 +88,18 @@ export function projectLowerDvinaTracePlayerSafeState({
     }),
     player_safe_state: playerSafeState
   });
+}
+
+function projectCombatSessions(sessions = []) {
+  return (sessions ?? []).filter(({ status }) => status !== 'ended').map(
+    (session) => ({ combat_id: session.combat_id, status: session.status,
+      scope_ref: structuredClone(session.scope_ref),
+      participant_refs: structuredClone(session.participant_refs),
+      participant_states: session.participant_states.map((participant) => ({
+        actor_ref: structuredClone(participant.actor_ref),
+        combat_status: participant.combat_status
+      })), exchange_ordinal: session.exchange_ordinal,
+      player_response_required: session.player_response_required }));
 }
 
 function assertProjectionInput(state, actorId) {

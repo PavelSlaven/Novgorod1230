@@ -50,14 +50,14 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
   compatible_world_pin_manifest_digest: TEST_PIN_MANIFEST_DIGEST
 });
 
-test('production-v5 trace runtime wires canonical packing and semantic NPC models', async () => {
+test('production-v6 trace runtime wires canonical packing and semantic NPC models', async () => {
   const [sharedSource, releaseSource] = await Promise.all([
     readFile(new URL(
       '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js',
       import.meta.url
     ), 'utf8'),
     readFile(new URL(
-      '../../apps/game-server/src/runtime/releases/spatial-v3-production-v5-bindings.js',
+      '../../apps/game-server/src/runtime/releases/spatial-v3-production-v6-bindings.js',
       import.meta.url
     ), 'utf8')
   ]);
@@ -78,12 +78,16 @@ test('production-v5 trace runtime wires canonical packing and semantic NPC model
   );
   assert.match(
     releaseSource,
+    /npcCombatModel:\s*createLowerDvinaTraceNpcCombatModel\(\{ roleRunner \}\)/u
+  );
+  assert.match(
+    releaseSource,
     /npcAutonomousModel:\s*createLowerDvinaTraceNpcAutonomousModel\(\{ roleRunner \}\)/u
   );
   assert.doesNotMatch(releaseSource, /npcDecisionSelector/u);
 });
 
-test('builtin v5 binding constructs the production semantic runtime', async () => {
+test('builtin v6 binding constructs the production semantic runtime', async () => {
   const setup = fixture();
   const calls = [];
   const bindings = await loadSpatialV3RuntimeBindings(
@@ -258,7 +262,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v5 root is sole owner with production-v4 rollback identity', async () => {
+test('production-v6 root is sole owner with production-v5 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -280,8 +284,12 @@ test('production-v5 root is sole owner with production-v4 rollback identity', as
     'ready_for_runtime_acceptance'
   );
   assert.equal(
+    health.npc_combat_capability,
+    'ready_for_runtime_acceptance'
+  );
+  assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v4'
+    'spatial-v3-production-v5'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -364,7 +372,7 @@ test('production cutover fails closed while any persisted party remains v2', asy
   );
 });
 
-test('configured composition loader selects only the activated v5 release', async () => {
+test('configured composition loader selects only the activated v6 release', async () => {
   const setup = fixture();
   const root = await loadConfiguredComposition(
     'builtin:production-spatial-v3',
@@ -391,7 +399,7 @@ test('configured composition loader selects only the activated v5 release', asyn
   );
 });
 
-test('production composition rejects every binding except builtin v5', async () => {
+test('production composition rejects every binding except builtin v6', async () => {
   const setup = fixture();
   await assert.rejects(
     createSpatialV3ProductionCompositionRoot({
@@ -407,7 +415,7 @@ test('production composition rejects every binding except builtin v5', async () 
   assert.equal(setup.closed(), 1);
 });
 
-test('production-v5 binding validation fails closed without every sole-owner port', () => {
+test('production-v6 binding validation fails closed without every sole-owner port', () => {
   assert.throws(
     () => validateSpatialV3RuntimeBindings({
       targetCompositionPorts: {},
@@ -419,7 +427,7 @@ test('production-v5 binding validation fails closed without every sole-owner por
   );
 });
 
-test('production-v5 bindings reject release and runtime-catalog pin drift', () => {
+test('production-v6 bindings reject release and runtime-catalog pin drift', () => {
   const valid = {
     targetCompositionPorts: {},
     commitRecheck: async () => ({ ok: true }),
@@ -464,7 +472,7 @@ test('production-v5 bindings reject release and runtime-catalog pin drift', () =
   );
 });
 
-test('production-v5 world readiness rejects active catalog pin drift', async () => {
+test('production-v6 world readiness rejects active catalog pin drift', async () => {
   await assert.rejects(
     assertSpatialV3WorldReleaseReadiness({
       query: async (sql) => /spatial_v3_world_revisions/u.test(sql)
@@ -598,7 +606,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 018', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 019', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -628,7 +636,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 7);
+  assert.equal(result.newly_applied, 8);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -643,7 +651,8 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     'terminal activity execution does not match its append-only attempt',
     'runtime_instance_mechanics_snapshot_valid',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_sessions',
-    'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_combat_sessions'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,
@@ -654,7 +663,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config defaults to builtin v5 and rejects every other binding', () => {
+test('cutover config defaults to builtin v6 and rejects every other binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST

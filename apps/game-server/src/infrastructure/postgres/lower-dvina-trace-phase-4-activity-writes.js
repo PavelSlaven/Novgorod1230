@@ -6,7 +6,8 @@ export function appendPhase4ActivityExecution({
   seriesOrdinal,
   activitySeriesId, attemptOrdinal, turnNumber, changeSetId, idemId
 }) {
-  const semantic = factual.consequence.negotiation?.semantic_exchange ?? null;
+  const semantic = factual.consequence.negotiation?.semantic_exchange
+    ?? factual.consequence.accusation?.semantic_exchange ?? null;
   const budget = semantic?.exchange?.time_budget ?? null;
   const resumedNpc = semantic?.resumed_npc_execution != null;
   const resumedPlayer = semantic?.resumed_player_execution != null;
@@ -74,7 +75,8 @@ export function appendPhase4ActivityExecution({
   (resumed ? updates : inserts).push(row('party_timed_activity_executions', id, {
     id, series_ordinal: seriesOrdinal,
     activity_snapshot: {
-      activity_ref: root.activity_ref, phase4_kind: 'negotiation'
+      activity_ref: root.activity_ref,
+      phase_kind: factual.consequence.phase8_kind ?? 'phase4_negotiation'
     },
     original_total_minutes: duration,
     cumulative_elapsed_numerator: actual,

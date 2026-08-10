@@ -21,7 +21,8 @@ export const TURN_STEP_DOMAIN_OPERATIONS = Object.freeze([
   'request_movement',
   'request_item_use',
   'request_activity',
-  'emit_interaction'
+  'emit_interaction',
+  'request_combat'
 ]);
 
 const DIRECT_OPS = new Set(TURN_STEP_DIRECT_OPERATIONS);

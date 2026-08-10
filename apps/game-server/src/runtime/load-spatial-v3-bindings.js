@@ -3,7 +3,7 @@ import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
 
 export const SPATIAL_V3_PRODUCTION_BINDINGS_MODULE =
-  'builtin:spatial-v3-production-v5';
+  'builtin:spatial-v3-production-v6';
 
 export function resolveSpatialV3ProductionBindingsModule(config, env) {
   const selected = config.spatialV3BindingsModule
@@ -12,7 +12,7 @@ export function resolveSpatialV3ProductionBindingsModule(config, env) {
   if (selected !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v5 spatial-v3 runtime binding may be selected.'
+      'Only the production-v6 spatial-v3 runtime binding may be selected.'
     );
   }
   return selected;
@@ -31,7 +31,7 @@ export async function loadSpatialV3RuntimeBindings(
   }
   const specifier = reference === SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
     ? new URL(
-        './releases/spatial-v3-production-v5-bindings.js',
+        './releases/spatial-v3-production-v6-bindings.js',
         import.meta.url
       ).href
     : reference.startsWith('.') || isAbsolute(reference)
@@ -78,7 +78,8 @@ const RELEASE_IDENTITY_FIELDS = Object.freeze([
   'scenario_binding_id',
   'boundary_crossing_capability',
   'npc_conversation_capability',
-  'npc_autonomous_capability'
+  'npc_autonomous_capability',
+  'npc_combat_capability'
 ]);
 const RUNTIME_PIN_FIELDS = Object.freeze([
   'schema',

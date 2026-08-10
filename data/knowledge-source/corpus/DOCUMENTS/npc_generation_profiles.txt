@@ -16,8 +16,10 @@ conversation профиль входит в субъективный NPC-safe co
 а LLM возвращает валидируемый contribution plan; последствия, время,
 perception, operations и commit остаются code-owned. Revision 15 дополнительно
 активирует autonomous NPC action через `npc_action_decision_request_v1` →
-`npc_step_plan_v1`, общий actor-step и профильных domain owners. Combat semantic
-resolution остаётся `proposed`.
+`npc_step_plan_v1`, общий actor-step и профильных domain owners. Revision 16
+активирует combat semantic intent через NPC-safe snapshot и общий combat
+exchange; профиль NPC остаётся субъективным входом, а checks, harm, body,
+items, time и persistence принадлежат code-owned owners.
 
 В игре используются три профиля генерации NPC:
 1. **Фоновый NPC** — нужен для видимости сцены.

@@ -1,6 +1,6 @@
 # Контракт боя и универсальных триггеров решений NPC
 
-**Статус:** `proposed`\
+**Статус:** `active` для Lower Dvina Trace revision 16 / `spatial-v3-production-v6`\
 **Идентификатор:** `npc_combat_and_decision_triggers_v1`\
 **Проект:** «Русь XIII век»\
 **Канонический репозиторий:** `PavelSlaven/Novgorod1230`\
@@ -8,13 +8,14 @@
 **Дата сверки:** 2 августа 2026 года\
 **Предполагаемый путь после принятия:** `data/knowledge-source/corpus/DOCUMENTS/npc_combat_and_trigger_contract.md`
 
-Связанные proposed-контракты:
+Связанные active-контракты:
 
 - `turn_step_llm_contract.md` — свободная заявка игрока и общий actor-step;
 - `npc_autonomous_decision_contract.md` — самостоятельные решения NPC вне разговора и боя;
 - `npc_conversation_mode_contract.md` — разговор с одним или несколькими NPC.
 
-До одновременного изменения runtime, схем и активной документации этот документ не изменяет production-поведение.
+Production cutover выполнен отдельной immutable revision 16: исторические
+revisions и их committed identities не переписываются.
 
 ---
 
@@ -120,11 +121,9 @@ validateCombatState
 - message;
 - player-safe projection.
 
-### 2.2. Что пока отсутствует
+### 2.2. Production cutover revision 16
 
-В production пока нет общего владельца полного боевого цикла.
-
-Не реализованы как единая общая механика:
+В production активирован общий боевой lifecycle:
 
 - persisted `combat_session`;
 - persisted active combat intents;
@@ -132,7 +131,7 @@ validateCombatState
 - общий combat exchange;
 - общий combat decision signal protocol;
 - NPC combat reassessment LLM;
-- direct-harm body threshold crossing;
+- edge-triggered body threshold crossing;
 - общий multi-NPC post-exchange decision batch.
 
 Сценарная Phase 4 Нижней Двины при выборе Ратшей нападения только фиксирует:
@@ -2472,7 +2471,8 @@ Authoring определяет generic:
 
 ## 40. Обязательные изменения документации при cutover
 
-Все изменения выполняются в одном согласованном release. До этого документ остаётся `proposed`.
+Изменения runtime, схем, release pins и активной документации выполнены одним
+согласованным `spatial-v3-production-v6` cutover.
 
 ### 40.1. `AGENTS.md`
 
@@ -2844,7 +2844,7 @@ Generated files не редактировать вручную.
 
 ## 42. Критерии готовности
 
-Контракт готов к production cutover, когда одновременно выполнено:
+Production cutover считается сохранённым, пока одновременно выполняются:
 
 1. существует один active combat owner — расширенный `@rus/combat-health`;
 2. существует один common trigger evaluator — `@rus/npc-runtime`;

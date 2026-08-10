@@ -1,5 +1,10 @@
 import { DIRECT_OPS, DOMAIN_OPS } from './constants.js';
 import {
+  COMBAT_FORCE_LIMITS,
+  COMBAT_INTENT_KINDS,
+  COMBAT_RISK_POSTURES
+} from '@rus/contracts/combat-v1';
+import {
   add,
   constant,
   enumValue,
@@ -56,7 +61,8 @@ function validateOperation(operation, path, errors, trace) {
     request_movement: validateMovement,
     request_item_use: validateItemUse,
     request_activity: validateRequestedActivity,
-    emit_interaction: validateInteraction
+    emit_interaction: validateInteraction,
+    request_combat: validateCombatRequest
   };
   validators[operation.op]?.(operation, path, errors, trace);
 }
@@ -221,6 +227,66 @@ function validateInteraction(value, path, errors, trace) {
   requiredText(value.content, `${path}.content`, errors);
   refs(value.instrument_refs, `${path}.instrument_refs`, errors, trace,
     { allowEmpty: true });
+}
+
+function validateCombatRequest(value, path, errors, trace) {
+  if (!strict(value, path, [
+    'op', 'actor_ref', 'intent_kind', 'target_refs', 'protected_refs',
+    'scope_ref', 'destination_ref', 'force_limit', 'risk_posture'
+  ], errors)) return;
+  constant(value.op, 'request_combat', `${path}.op`, errors);
+  knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
+  enumValue(value.intent_kind, COMBAT_INTENT_KINDS,
+    `${path}.intent_kind`, errors);
+  refs(value.target_refs, `${path}.target_refs`, errors, trace,
+    { allowEmpty: true });
+  refs(value.protected_refs, `${path}.protected_refs`, errors, trace,
+    { allowEmpty: true });
+  validateNullableKnownRef(value.scope_ref, `${path}.scope_ref`, errors, trace);
+  validateNullableKnownRef(
+    value.destination_ref,
+    `${path}.destination_ref`,
+    errors,
+    trace
+  );
+  enumValue(value.force_limit, COMBAT_FORCE_LIMITS,
+    `${path}.force_limit`, errors);
+  enumValue(value.risk_posture, COMBAT_RISK_POSTURES,
+    `${path}.risk_posture`, errors);
+  validateCombatIntentShape(value, path, errors);
+}
+
+function validateNullableKnownRef(value, path, errors, trace) {
+  if (value !== null) knownRef(value, path, errors, trace);
+}
+
+function validateCombatIntentShape(value, path, errors) {
+  const targets = value.target_refs?.length ?? 0;
+  const protectedCount = value.protected_refs?.length ?? 0;
+  const kind = value.intent_kind;
+  let valid = false;
+  if (['engage', 'control'].includes(kind)) {
+    valid = targets === 1 && protectedCount === 0
+      && value.scope_ref === null && value.destination_ref === null;
+  } else if (kind === 'protect') {
+    valid = targets === 0 && value.destination_ref === null
+      && (protectedCount > 0 || value.scope_ref !== null);
+  } else if (kind === 'hold') {
+    valid = targets === 0 && protectedCount === 0
+      && value.scope_ref !== null && value.destination_ref === null;
+  } else if (kind === 'reach') {
+    valid = targets === 0 && protectedCount === 0
+      && value.scope_ref === null && value.destination_ref !== null;
+  } else if (kind === 'break_contact') {
+    valid = targets === 0 && protectedCount === 0 && value.scope_ref === null;
+  } else if (['surrender', 'cease_hostility'].includes(kind)) {
+    valid = targets === 0 && protectedCount === 0
+      && value.scope_ref === null && value.destination_ref === null;
+  }
+  if (!valid) {
+    add(errors, path, 'combat_intent_shape',
+      'refs must match the selected combat intent kind');
+  }
 }
 
 function validateFacts(value, path, errors, trace) {

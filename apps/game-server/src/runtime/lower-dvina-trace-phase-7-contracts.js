@@ -6,7 +6,8 @@ import {
 } from './lower-dvina-trace-turn-step-owner-profiles.js';
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
-  if (bundle.definition_revision !== 15 || bundle.definition?.revision !== 15) {
+  if (![15, 16].includes(bundle.definition_revision)
+      || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
   const autonomous = bundle.autonomous_semantic_bindings;

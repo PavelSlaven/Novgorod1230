@@ -22,7 +22,9 @@
     "./compat": "./src/compat/index.js"
   },
   "dependencies": {
+    "@rus/body-state": "0.13.0",
     "@rus/checks-rng": "0.13.0",
+    "@rus/combat-health": "0.13.0",
     "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0",
     "@rus/materialization": "2.0.0",

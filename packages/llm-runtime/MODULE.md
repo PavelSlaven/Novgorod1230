@@ -20,7 +20,7 @@
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game. Combat adds `NPC_COMBAT_DECIDER` and its repair role, both constrained to `npc_combat_intent_plan_v1`.
 
 ## Контракты
 

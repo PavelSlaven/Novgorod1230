@@ -5,6 +5,7 @@ import {
   createCombatSession,
   executeCombatExchange,
   initializeCombatSession,
+  orderCombatTechnicalSteps,
   prepareCombatExchange,
   resolveCombatExchangeTiming
 } from '../src/index.js';
@@ -57,6 +58,35 @@ test('common combat timing owner resolves approved exact profile time', () => {
       duration_minutes: 2
     }
   }), { code: 'TURN_COMBAT_TIMING_PROFILE_INVALID' });
+});
+
+test('common combat ordering follows the persisted participant order, not actor ids', () => {
+  const first = ref('npc', 'z-last-lexically');
+  const second = ref('npc', 'a-first-lexically');
+  const orderedSession = {
+    ...session(),
+    participant_refs: [first, second],
+    participant_states: [first, second].map((actor_ref) => ({
+      actor_ref,
+      combat_status: 'active',
+      current_intent: null,
+      next_action_boundary_ref: null
+    }))
+  };
+  const proposals = [second, first].map((actor_ref) => ({
+    proposal_id: `step-${actor_ref.entity_id}`,
+    actor_ref,
+    intent_ref: ref('combat_intent', `intent-${actor_ref.entity_id}`),
+    preconditions_digest: `precondition-${actor_ref.entity_id}`,
+    idempotency_key: `step-${actor_ref.entity_id}`
+  }));
+  assert.deepEqual(orderCombatTechnicalSteps({
+    session: orderedSession,
+    proposals
+  }).map(({ actor_ref: actor }) => actor.entity_id), [
+    first.entity_id,
+    second.entity_id
+  ]);
 });
 
 test('common session initializer creates only the paused decision lifecycle DTO', () => {
@@ -123,7 +153,8 @@ test('checked control has no combat harm or body transition', async () => {
     session: session(control), working_state: { actor_states: { 'player_character\u0000player-1': { body_state: { health: 100, satiety: 100, energy: 100 } } } },
     occurred_at: at, idempotency_key: 'control-1', random_source: { next: () => 0.99 },
     ports: {
-      resolveCombatTiming: () => ({ occurred_at: at, exact_duration: { numerator: '1', denominator: '1' } }),
+      resolveCombatTiming: () => ({ occurred_at: at, exact_duration: {
+        exact_minutes: { numerator: '1', denominator: '1' } } }),
       resolveExecutionProfile: () => ({ preconditions_digest: 'control', check_request: { target_defense: 10, attribute_value: 10, skill_bonus: 0 } }),
       orderTechnicalSteps: ({ proposals }) => proposals,
       applyItemTransitions: ({ working_state }) => ({ working_state }),
@@ -132,6 +163,7 @@ test('checked control has no combat harm or body transition', async () => {
     }
   });
   assert.equal(result.prepared.check_results.length, 1);
+  assert.equal(result.prepared.technical_step_timings.length, 1);
   assert.deepEqual(result.prepared.harm_packages, []);
   assert.deepEqual(result.prepared.body_transitions, []);
 });
@@ -147,8 +179,11 @@ test('blocked intent emits an objective boundary without choosing a replacement'
       random_source: { next: () => { throw new Error('RNG_NOT_EXPECTED'); } },
       ports: {
         resolveCombatTiming: () => ({ occurred_at: at,
-          exact_duration: { numerator: '1', denominator: '1' } }),
+          exact_duration: { exact_minutes: {
+            numerator: '1', denominator: '1' } } }),
         resolveExecutionProfile: () => ({ applicable: false }),
+        orderTechnicalSteps: ({ session: current, proposals }) =>
+          orderCombatTechnicalSteps({ session: current, proposals }),
         applyItemTransitions: () => assert.fail('blocked step must not run'),
         applyPositionTransitions: () => assert.fail('blocked step must not run'),
         resolvePerceptionAndDecisionContexts: async (input) => {
@@ -166,7 +201,7 @@ test('blocked intent emits an objective boundary without choosing a replacement'
 
 for (const [intentKind, expectedStatus] of [
   ['surrender', 'surrendered'],
-  ['break_contact', 'left']
+  ['break_contact', 'disengaging']
 ]) {
   test(`${intentKind} produces a distinct valid terminal combat state`, async () => {
     const intent = makeIntent(ref('npc', 'npc-1'),
@@ -177,7 +212,8 @@ for (const [intentKind, expectedStatus] of [
       random_source: { next: () => { throw new Error('RNG_NOT_EXPECTED'); } },
       ports: {
         resolveCombatTiming: () => ({ occurred_at: at,
-          exact_duration: { numerator: '1', denominator: '1' } }),
+          exact_duration: { exact_minutes: {
+            numerator: '1', denominator: '1' } } }),
         resolveExecutionProfile: () => ({
           preconditions_digest: `alternative-${intentKind}` }),
         orderTechnicalSteps: ({ proposals }) => proposals,
@@ -189,8 +225,64 @@ for (const [intentKind, expectedStatus] of [
     });
     const actor = result.prepared.session_after.participant_states[0];
     assert.equal(actor.combat_status, expectedStatus);
-    assert.equal(actor.current_intent, null);
+    assert.equal(actor.current_intent === null, intentKind === 'surrender');
     assert.deepEqual(result.prepared.harm_packages, []);
     assert.deepEqual(result.prepared.body_transitions, []);
   });
 }
+
+test('break_contact becomes left only after the movement owner confirms departure',
+  async () => {
+    const intent = makeIntent(ref('npc', 'npc-1'),
+      ref('player_character', 'player-1'), 'break_contact');
+    const result = await prepareCombatExchange({
+      session: session(intent), working_state: {}, occurred_at: at,
+      idempotency_key: 'confirmed-break-contact',
+      random_source: { next: () => { throw new Error('RNG_NOT_EXPECTED'); } },
+      ports: {
+        resolveCombatTiming: () => ({ occurred_at: at,
+          exact_duration: { exact_minutes: {
+            numerator: '1', denominator: '1' } } }),
+        resolveExecutionProfile: () => ({
+          preconditions_digest: 'confirmed-break-contact' }),
+        orderTechnicalSteps: ({ session: current, proposals }) =>
+          orderCombatTechnicalSteps({ session: current, proposals }),
+        applyItemTransitions: ({ working_state }) => ({ working_state }),
+        applyPositionTransitions: ({ working_state }) => ({ working_state,
+          participant_status_updates: [{ actor_ref: ref('npc', 'npc-1'),
+            combat_status: 'left', clear_intent: true }] }),
+        resolvePerceptionAndDecisionContexts: async ({ session: current,
+          working_state }) => ({ session_after: current, working_state,
+          signal_records: [] })
+      }
+    });
+    const actor = result.prepared.session_after.participant_states[0];
+    assert.equal(actor.combat_status, 'left');
+    assert.equal(actor.current_intent, null);
+  });
+
+test('item owner cannot confirm departure for break_contact', async () => {
+  const intent = makeIntent(ref('npc', 'npc-1'),
+    ref('player_character', 'player-1'), 'break_contact');
+  await assert.rejects(prepareCombatExchange({
+    session: session(intent), working_state: {}, occurred_at: at,
+    idempotency_key: 'item-owned-break-contact',
+    random_source: { next: () => { throw new Error('RNG_NOT_EXPECTED'); } },
+    ports: {
+      resolveCombatTiming: () => ({ occurred_at: at,
+        exact_duration: { exact_minutes: {
+          numerator: '1', denominator: '1' } } }),
+      resolveExecutionProfile: () => ({
+        preconditions_digest: 'item-owned-break-contact' }),
+      orderTechnicalSteps: ({ session: current, proposals }) =>
+        orderCombatTechnicalSteps({ session: current, proposals }),
+      applyItemTransitions: ({ working_state }) => ({ working_state,
+        participant_status_updates: [{ actor_ref: ref('npc', 'npc-1'),
+          combat_status: 'left', clear_intent: true }] }),
+      applyPositionTransitions: ({ working_state }) => ({ working_state }),
+      resolvePerceptionAndDecisionContexts: async ({ session: current,
+        working_state }) => ({ session_after: current, working_state,
+        signal_records: [] })
+    }
+  }), { code: 'TURN_COMBAT_DOMAIN_OWNER_INVALID' });
+});

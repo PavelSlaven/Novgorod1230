@@ -7,6 +7,8 @@ import {
 } from '@rus/turn';
 import { createTraceCombatCommand } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
+import { projectTraceCombatSubjectiveState } from
+  '../src/runtime/lower-dvina-trace-combat-subjective.js';
 
 const at = { whole_minutes: '620', subminute_numerator: '0',
   subminute_denominator: '1' };
@@ -66,4 +68,26 @@ test('player combat response resolves one common two-minute exchange', async () 
   assert.equal(result.combat.session_after.exchange_ordinal, 1);
   assert.equal(result.combat.session_after.status, 'paused_for_player');
   assert.equal(result.combat.check_results.length, 2);
+  assert.equal(result.combat.technical_step_timings.length, 2);
+  assert.equal(result.combat.technical_step_timings.every(({ exact_duration }) =>
+    exact_duration.exact_minutes.numerator === '2'), true);
 });
+
+test('post-exchange subjective projection reads body and equipment from working state',
+  () => {
+    const state = {
+      npcs: [{ instance_id: 'ratsha-1',
+        participant_slot_ref: 'ratsha_storehouse_helper',
+        machine_state: { body_condition: { health: 100 } } }],
+      actor_states: { 'npc\0ratsha-1': { body_state: { health: 63 } } },
+      items: [{ item_id: 'knife-1', placement: {
+        holder_npc_id: 'ratsha-1' }, ownership: {
+        controller_npc_id: 'ratsha-1' } }, { item_id: 'axe-1', placement: {
+        holder_npc_id: 'other-npc' }, ownership: {
+        controller_npc_id: 'other-npc' } }]
+    };
+    const projected = projectTraceCombatSubjectiveState(ratsha, state);
+    assert.equal(projected.body.health, 63);
+    assert.deepEqual(projected.available_equipment, [{
+      entity_kind: 'item', entity_id: 'knife-1' }]);
+  });

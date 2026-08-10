@@ -34,6 +34,9 @@ const bundle14 = await loadLowerDvinaTraceMaterializationBundle({
 const bundle15 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 15
 });
+const bundle16 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 16
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 function request(overrides = {}) {
@@ -259,6 +262,31 @@ test('revision 15 materializes and persists the approved Zhdanko storehouse road
     holder_npc_id: zhdanko.instance_id,
     closure_state: 'tied'
   }]);
+});
+
+test('revision 16 persists every NPC referenced by its initial held resources', () => {
+  const pin = lowerDvinaTracePhase1ADomainPin(bundle16);
+  const creation = request({
+    scenario_definition_revision: 16,
+    scenario_manifest_digest: bundle16.manifest_digest,
+    scenario_bundle: bundle16,
+    domain_catalog_pin: pin,
+    idempotency_key: 'trace-phase-16-prerequisite-idempotency'
+  });
+  const result = materializeLowerDvinaTracePartyInstance(creation);
+  const plan = stage24Plan(result, creation, pin);
+  const batch = (table) => plan.write_batches.find(
+    ({ target_table: targetTable }) => targetTable === table
+  )?.records ?? [];
+  const npcIds = new Set(batch('party_npcs').map(({ npc_id: id }) => id));
+  const holderIds = [
+    ...batch('party_item_placements'),
+    ...batch('party_containers')
+  ].map(({ holder_npc_id: id }) => id).filter(Boolean);
+
+  assert.equal(npcIds.size, 6);
+  assert.ok(holderIds.length > 0);
+  for (const holderId of holderIds) assert.equal(npcIds.has(holderId), true);
 });
 
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {

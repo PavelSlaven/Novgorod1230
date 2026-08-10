@@ -3,6 +3,7 @@ import {
   activateCombatSessionForPlayerIntent,
   combatIntentFromOperation,
   initializeCombatSession,
+  orderCombatTechnicalSteps,
   prepareCombatExchange,
   resolveCombatExchangeTiming
 } from '@rus/turn';
@@ -10,6 +11,10 @@ import { buildCombatInitializationDecisionContexts } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from
   './lower-dvina-trace-combat-item-owner.js';
+import {
+  projectTraceCombatSubjectiveState,
+  projectTracePerceivedCombatState
+} from './lower-dvina-trace-combat-subjective.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest,
   randomSource, npcCombatModel, revalidateStateVersion }) {
@@ -125,6 +130,7 @@ function exchangePorts(context) {
         requested_at: requestedAt,
         timing_profile: context.bindings.exchange_timing_profile
       }),
+    orderTechnicalSteps: (input) => orderCombatTechnicalSteps(input),
     resolveExecutionProfile: ({ intent }) => resolveProfile(intent, context),
     applyItemTransitions: (input) => applyTraceCombatItemTransition(input,
       context),
@@ -171,23 +177,28 @@ async function resolvePostExchangeDecisions(input, context) {
   if (npcStates.length === 0 || typeof context.npcCombatModel !== 'function') {
     fail('TRACE_COMBAT_DECISION_DEPENDENCY_MISSING');
   }
+  const postExchangeContext = { ...context, state: input.working_state,
+    session: input.session };
   const contexts = buildCombatInitializationDecisionContexts({
     session: input.session,
     signal_descriptors: descriptors,
     npc_contexts: npcStates.map((participant) => ({
       npc_ref: participant.actor_ref,
-      state_version: String(context.state.party_state.state_version),
+      state_version: String(input.working_state.party_state.state_version),
       current_intent: participant.current_intent,
-      npc_subjective_state: subjectiveState(participant.actor_ref, context.state),
-      perceived_combat_state: perceivedCombatState(input.session),
+      npc_subjective_state: projectTraceCombatSubjectiveState(
+        participant.actor_ref, input.working_state),
+      perceived_combat_state: projectTracePerceivedCombatState(input.session,
+        input.working_state, participant.actor_ref),
       relevant_memory: [],
-      operation_contract: operationContractForNpc(participant.actor_ref, context),
+      operation_contract: operationContractForNpc(participant.actor_ref,
+        postExchangeContext),
       validate_plan: validateNpcCombatPlanApplicability,
       semantic_model: context.npcCombatModel
     })),
     same_time_batch_ref: { entity_kind: 'temporal_batch',
       entity_id: `combat-batch:${input.session.combat_id}:${input.session.exchange_ordinal}` },
-    party_id: context.state.party_id,
+    party_id: input.working_state.party_id,
     root_turn_id: context.rootTurnId,
     decided_at: input.occurred_at,
     exchange_ordinal: input.session.exchange_ordinal
@@ -278,17 +289,4 @@ function operationContractForNpc(actorRef, context) {
       { entity_kind: 'location', entity_id: scope }],
     reachable_destination_refs: [], break_contact_destination_refs: [] };
 }
-function subjectiveState(actorRef, state) {
-  const npc = state.npcs?.find(({ instance_id: id }) => id === actorRef.entity_id);
-  return { identity: { name_or_label: npc?.semantic_profile?.identity?.canonical_name
-    ?? npc?.participant_slot_ref ?? 'NPC' }, social_role: {}, combat_experience: 'limited',
-  attributes: [], skills: [], body: structuredClone(npc?.machine_state?.body_condition ?? {}),
-  mood: {}, temperament: [], goals: [], fears: [], obligations: [], relationships: [],
-  available_equipment: [] };
-}
-function perceivedCombatState(session) { return { scope: session.scope_ref,
-  visible_opponents: session.participant_refs.filter((ref) => ref.entity_kind === 'player_character'),
-  visible_allies: [], visible_neutral_actors: [], recognized_weapons: [],
-  known_positions: [], known_exits: [], visible_cover: [], perceived_hazards: [],
-  recent_perceived_events: [], uncertainties: [] }; }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

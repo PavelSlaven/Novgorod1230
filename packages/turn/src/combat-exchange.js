@@ -10,9 +10,15 @@ import { applyBodyStateChange, detectBodyThresholdCrossings } from '@rus/body-st
 import { executeCheck } from '@rus/checks-rng';
 import { deepFreeze } from '@rus/kernel';
 import {
+  addElapsedTime,
+  compareGameTimestamp,
+  compareRationalMinutes,
+  isPositiveRationalMinutes,
   normalizeElapsedTime,
   normalizeGameTimestamp
 } from '@rus/time-events-history';
+import { normalizeTemporalBoundaryCandidates } from
+  '@rus/time-events-history/temporal-boundaries';
 
 export function resolveCombatExchangeTiming({ requested_at: requestedAt,
   timing_profile: profile } = {}) {
@@ -35,14 +41,26 @@ export function resolveCombatExchangeTiming({ requested_at: requestedAt,
   });
 }
 
-export function orderCombatTechnicalSteps({ proposals } = {}) {
-  if (!Array.isArray(proposals) || proposals.some((proposal) => !proposal?.proposal_id)) {
+export function orderCombatTechnicalSteps({ session, proposals,
+  requested_at: requestedAt = session?.started_at } = {}) {
+  if (!validateCombatSession(session) || !Array.isArray(proposals)
+      || proposals.some((proposal) => !proposal?.proposal_id)) {
     throw combatError('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
   }
-  return deepFreeze([...proposals].sort((left, right) =>
-    left.actor_ref.entity_kind.localeCompare(right.actor_ref.entity_kind, 'en')
-    || left.actor_ref.entity_id.localeCompare(right.actor_ref.entity_id, 'en')
-    || left.proposal_id.localeCompare(right.proposal_id, 'en')));
+  const participantOrder = new Map(session.participant_states.map(
+    ({ actor_ref: actor }, index) => [refKey(actor), index]));
+  const actorKeys = proposals.map(({ actor_ref: actor }) => refKey(actor));
+  if (new Set(actorKeys).size !== actorKeys.length
+      || actorKeys.some((key) => !participantOrder.has(key))) {
+    throw combatError('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
+  }
+  const byId = new Map(proposals.map((proposal) => [proposal.proposal_id,
+    proposal]));
+  const candidates = proposals.map((proposal) =>
+    technicalStepTemporalCandidate(proposal, session,
+      participantOrder.get(refKey(proposal.actor_ref)), requestedAt));
+  return deepFreeze(normalizeTemporalBoundaryCandidates(candidates)
+    .map(({ boundary_id: id }) => byId.get(id)));
 }
 
 export async function executeCombatExchange(input = {}) {
@@ -65,23 +83,32 @@ export async function prepareCombatExchange(input = {}) {
     ports, body_threshold_profile = null } = input;
   requireActiveSession(session);
   requirePorts(ports, random_source);
-  const timing = ports.resolveCombatTiming({ session, working_state, requested_at: occurred_at });
-  if (!timing?.occurred_at || !timing?.exact_duration) throw combatError('TURN_COMBAT_TIME_OWNER_INVALID');
-
   let state = structuredClone(working_state);
   const next = structuredClone(session);
   const blockedDescriptors = [];
   const proposals = buildStepProposals(next, state, ports, blockedDescriptors);
-  const steps = validateStepOrder(ports.orderTechnicalSteps
-    ? ports.orderTechnicalSteps({ session: next, proposals })
-    : orderCombatTechnicalSteps({ proposals }), proposals);
+  const exchangeStartedAt = normalizeGameTimestamp(occurred_at);
+  const steps = validateStepOrder(ports.orderTechnicalSteps({
+    session: next,
+    proposals,
+    requested_at: exchangeStartedAt
+  }), proposals);
+  const technicalStepTimings = resolveTechnicalStepTimings({
+    session: next,
+    steps,
+    workingState: state,
+    requestedAt: exchangeStartedAt,
+    resolveTiming: ports.resolveCombatTiming
+  });
+  const exactDuration = longestStepDuration(technicalStepTimings);
+  const exchangeCompletedAt = addElapsedTime(exchangeStartedAt, exactDuration);
   const results = { checks: [], harms: [], body: [], items: [], positions: [], by_step: new Map() };
 
   for (const step of steps) {
     const intent = findIntent(next, step.intent_ref.entity_id);
     const profile = ports.resolveExecutionProfile({ session: next, intent, working_state: state, step });
     if (!validProfile(profile) || profile.applicable === false) {
-      blockedDescriptors.push(blockedDescriptor(step, timing.occurred_at));
+      blockedDescriptors.push(blockedDescriptor(step, exchangeCompletedAt));
       continue;
     }
     const executed = executeStep({ step, intent, profile, state, random_source, body_threshold_profile });
@@ -95,10 +122,10 @@ export async function prepareCombatExchange(input = {}) {
     const position = ports.applyPositionTransitions({ step, check_result: executed.check, harm: executed.harm, working_state: item?.working_state ?? state });
     validateOwnerResult(position, 'position');
     results.positions.push(position ?? null);
-    applyParticipantStatusUpdates(next, [
-      ...(item?.participant_status_updates ?? []),
-      ...(position?.participant_status_updates ?? [])
-    ]);
+    applyParticipantStatusUpdates(next,
+      item?.participant_status_updates ?? [], 'item', step);
+    applyParticipantStatusUpdates(next,
+      position?.participant_status_updates ?? [], 'position', step);
     applyTerminalIntentStatus(next, intent, executed.check);
     state = structuredClone(position?.working_state ?? item?.working_state ?? state);
   }
@@ -112,7 +139,7 @@ export async function prepareCombatExchange(input = {}) {
       check_result: result?.check ?? null, harm_package: result?.harm ?? null });
   }) : [];
   const meaningfulDescriptors = buildMeaningfulDescriptors({ results,
-    blockedDescriptors, occurredAt: timing.occurred_at });
+    blockedDescriptors, occurredAt: exchangeCompletedAt });
   next.exchange_ordinal += exchange ? 1 : 0;
   next.state_version = String(Number(next.state_version) + 1);
   next.status = meaningfulDescriptors.length > 0
@@ -123,8 +150,10 @@ export async function prepareCombatExchange(input = {}) {
     outcome_events: events,
     blocked_descriptors: blockedDescriptors,
     meaningful_descriptors: meaningfulDescriptors,
-    occurred_at: timing.occurred_at,
-    exact_duration: timing.exact_duration
+    occurred_at: exchangeCompletedAt,
+    exchange_started_at: exchangeStartedAt,
+    exact_duration: exactDuration,
+    technical_step_timings: technicalStepTimings
   });
   validateOwnerResult(perceived, 'perception');
   const resolvedSession = perceived?.session_after == null
@@ -140,7 +169,9 @@ export async function prepareCombatExchange(input = {}) {
     resolvedSession.player_response_required = true;
   }
   return deepFreeze({ status: 'prepared', prepared: {
-    idempotency_key, occurred_at: timing.occurred_at, exact_duration: timing.exact_duration,
+    idempotency_key, occurred_at: exchangeCompletedAt,
+    exchange_started_at: exchangeStartedAt, exact_duration: exactDuration,
+    technical_step_timings: technicalStepTimings,
     exchange, session_before: session, session_after: resolvedSession,
     working_state_after: perceived?.working_state ?? state, check_results: results.checks,
     harm_packages: results.harms, body_transitions: results.body,
@@ -212,12 +243,12 @@ function executeStep({ step, intent, profile, state, random_source, body_thresho
 }
 
 function requireActiveSession(session) { if (!validateCombatSession(session) || session.status !== 'active') throw combatError('TURN_COMBAT_SESSION_INVALID'); }
-function requirePorts(ports, random) { for (const key of ['resolveCombatTiming','resolveExecutionProfile','applyItemTransitions','applyPositionTransitions','resolvePerceptionAndDecisionContexts']) if (typeof ports?.[key] !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); if (typeof random?.next !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); }
+function requirePorts(ports, random) { for (const key of ['resolveCombatTiming','resolveExecutionProfile','orderTechnicalSteps','applyItemTransitions','applyPositionTransitions','resolvePerceptionAndDecisionContexts']) if (typeof ports?.[key] !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); if (typeof random?.next !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); }
 function validProfile(value) { return value && typeof value === 'object' && (value.applicable === false || typeof value.preconditions_digest === 'string'); }
 function validateStepOrder(steps, proposals) { if (!Array.isArray(steps) || steps.length !== proposals.length || new Set(steps.map((step) => step.proposal_id)).size !== proposals.length) throw combatError('TURN_COMBAT_TECHNICAL_ORDER_INVALID'); return steps; }
 function findIntent(session, intentId) { return session.participant_states.find((participant) => participant.current_intent?.intent_id === intentId)?.current_intent; }
 function validateOwnerResult(value, owner) { if (value !== undefined && (value === null || typeof value !== 'object')) throw combatError(`TURN_COMBAT_${owner.toUpperCase()}_OWNER_INVALID`); }
-function applyParticipantStatusUpdates(session, updates) {
+function applyParticipantStatusUpdates(session, updates, owner, step) {
   if (!Array.isArray(updates)) throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
   for (const update of updates) {
     const participant = session.participant_states.find(({ actor_ref: actor }) =>
@@ -225,6 +256,13 @@ function applyParticipantStatusUpdates(session, updates) {
       && actor.entity_id === update?.actor_ref?.entity_id);
     if (!participant || !['active','disengaging','restrained','surrendered',
       'incapacitated','left'].includes(update.combat_status)) {
+      throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
+    }
+    if (update.combat_status === 'left'
+        && (owner !== 'position'
+          || update.actor_ref.entity_kind !== step.actor_ref.entity_kind
+          || update.actor_ref.entity_id !== step.actor_ref.entity_id
+          || participant.current_intent?.intent_kind !== 'break_contact')) {
       throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
     }
     participant.combat_status = update.combat_status;
@@ -241,12 +279,67 @@ function applyTerminalIntentStatus(session, intent, check) {
     participant.combat_status = 'surrendered';
     participant.current_intent = null;
   } else if (intent.intent_kind === 'break_contact') {
-    participant.combat_status = 'left';
-    participant.current_intent = null;
+    if (participant.combat_status === 'left') {
+      participant.current_intent = null;
+    } else {
+      participant.combat_status = 'disengaging';
+    }
   } else if (intent.intent_kind === 'cease_hostility') {
     participant.current_intent = null;
   }
 }
 function blockedDescriptor(step, occurred_at) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_technical_step', entity_id: step.proposal_id }, subject_ref: step.actor_ref, occurred_at }; }
 function blockedDescriptorForIntent(intent) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_intent', entity_id: intent.intent_id }, subject_ref: intent.actor_ref, occurred_at: null }; }
+function resolveTechnicalStepTimings({ session, steps, workingState,
+  requestedAt, resolveTiming }) {
+  return deepFreeze(steps.map((step) => {
+    const raw = resolveTiming({ session, working_state: workingState,
+      requested_at: requestedAt, technical_step: step });
+    if (!raw?.occurred_at || !raw?.exact_duration
+        || compareGameTimestamp(raw.occurred_at, requestedAt) !== 0) {
+      throw combatError('TURN_COMBAT_TIME_OWNER_INVALID');
+    }
+    const exactDuration = normalizeElapsedTime(raw.exact_duration);
+    if (!isPositiveRationalMinutes(exactDuration.exact_minutes)) {
+      throw combatError('TURN_COMBAT_TIME_OWNER_INVALID');
+    }
+    return { technical_step_ref: { entity_kind: 'combat_technical_step',
+      entity_id: step.proposal_id }, occurred_at: normalizeGameTimestamp(
+      raw.occurred_at), exact_duration: exactDuration,
+    timing_profile_ref: raw.timing_profile_ref ?? null };
+  }));
+}
+function longestStepDuration(timings) {
+  const zero = normalizeElapsedTime({ exact_minutes: {
+    numerator: '0', denominator: '1' } });
+  return timings.reduce((longest, { exact_duration: current }) =>
+    compareRationalMinutes(current.exact_minutes, longest.exact_minutes) > 0
+      ? current : longest, zero);
+}
+function technicalStepTemporalCandidate(proposal, session, ordinal,
+  requestedAt) {
+  const orderId = String(ordinal).padStart(8, '0');
+  return {
+    boundary_id: proposal.proposal_id,
+    boundary_kind: 'combat_technical_step',
+    scheduled_at: normalizeGameTimestamp(requestedAt),
+    source_ref: proposal.intent_ref,
+    primary_subject_ref: proposal.actor_ref,
+    subject_refs: [proposal.actor_ref],
+    scope_ref: session.scope_ref,
+    rule_ref: { entity_ref: { entity_kind: 'combat_participant_precedence',
+      entity_id: `combat-order:${orderId}` }, authoring_version: '1' },
+    policy_ref: { entity_ref: { entity_kind: 'temporal_policy',
+      entity_id: 'combat-due-step-order-v1' }, authoring_version: '1' },
+    preconditions_digest: proposal.preconditions_digest ?? proposal.proposal_id,
+    resolution_class: 'execution_outcome',
+    interrupt_effect: 'interruptible',
+    visibility_policy_ref: { entity_ref: {
+      entity_kind: 'visibility_policy', entity_id: 'combat-step-v1' },
+    authoring_version: '1' },
+    idempotency_key: proposal.idempotency_key ?? proposal.proposal_id,
+    causal_parent_refs: []
+  };
+}
+function refKey(ref) { return `${ref?.entity_kind ?? ''}\0${ref?.entity_id ?? ''}`; }
 function combatError(code) { return Object.assign(new Error(code), { code }); }

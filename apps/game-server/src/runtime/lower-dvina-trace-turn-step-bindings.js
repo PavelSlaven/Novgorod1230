@@ -127,6 +127,10 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
     'отдохнуть у огня полчаса и подсушить одежду'
   ])
 });
+const STATE_GATED_COMMANDS = new Set([
+  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
+  'lower_dvina_trace.accuse_zhdanko_at_storehouse'
+]);
 
 export function bindLowerDvinaTraceTurnStepCommands({
   commands,
@@ -192,9 +196,12 @@ export function bindLowerDvinaTraceTurnStepCommands({
       }
     };
   });
-  if ([...byCommand.keys()].some((commandId) =>
-    !bound.some((command) => command.command_id === commandId
-      && command.semantic_binding))) {
+  if ([...byCommand.entries()].some(([commandId, record]) => {
+    const command = bound.find(({ command_id: id }) => id === commandId);
+    if (command?.semantic_binding) return false;
+    return !STATE_GATED_COMMANDS.has(commandId)
+      || !validRecord(record, EXPECTED[commandId]);
+  })) {
     gap();
   }
   return bound;

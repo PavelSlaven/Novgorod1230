@@ -74,10 +74,10 @@ export function appendPhase4ActivityExecution({
   const progress = completed ? {} : currentContext;
   (resumed ? updates : inserts).push(row('party_timed_activity_executions', id, {
     id, series_ordinal: seriesOrdinal,
-    activity_snapshot: {
-      activity_ref: root.activity_ref,
-      phase_kind: factual.consequence.phase8_kind ?? 'phase4_negotiation'
-    },
+    activity_snapshot: factual.consequence.phase8_kind == null
+      ? { activity_ref: root.activity_ref, phase4_kind: 'negotiation' }
+      : { activity_ref: root.activity_ref,
+        phase_kind: factual.consequence.phase8_kind },
     original_total_minutes: duration,
     cumulative_elapsed_numerator: actual,
     cumulative_elapsed_denominator: 1,

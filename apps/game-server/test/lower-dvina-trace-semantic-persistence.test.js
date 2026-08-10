@@ -31,6 +31,8 @@ import {
 import {
   same as samePhase4SemanticValue
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-semantic-write-shared.js';
+import { appendPhase4ActivityExecution } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-4-activity-writes.js';
 
 const PARTY_ID = 'party-semantic-persistence';
 const CHANGE_SET_ID = 'change:' + PARTY_ID + ':semantic';
@@ -41,6 +43,34 @@ const AT = Object.freeze({
   subminute_denominator: '1'
 });
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+
+function activitySnapshotFor(consequenceKind) {
+  const inserts = [];
+  appendPhase4ActivityExecution({
+    inserts,
+    appends: [],
+    partyId: PARTY_ID,
+    state: { actor_id: 'player', position: {} },
+    factual: {
+      consequence: consequenceKind,
+      time_update: { clock_before: AT },
+      mode_resolution: { option_id: 'option' },
+      player_input: { request_id: 'request' }
+    },
+    next: { clock: { ...AT, whole_minutes: '125' } },
+    root: { activity_ref: 'activity-profile', duration_minutes: 5,
+      status: 'completed' },
+    id: 'activity-execution',
+    seriesOrdinal: 0,
+    activitySeriesId: 'activity-series',
+    attemptOrdinal: 0,
+    turnNumber: 1,
+    changeSetId: CHANGE_SET_ID,
+    idemId: 'idempotency'
+  });
+  return only(inserts, 'party_timed_activity_executions')
+    .record.activity_snapshot;
+}
 
 import { semanticWriterFixture } from './lower-dvina-trace-semantic-persistence-semantic-fixture.js';
 import { semanticReadPool } from './lower-dvina-trace-semantic-persistence-read-pool.js';
@@ -57,6 +87,16 @@ test('Phase 4 semantic persistence compares canonical values', () => {
     { category: 'objective', significance: 'material' }
   ), false);
 });
+
+test('shared activity writer preserves Phase 4 and Phase 8 snapshot identities',
+  () => {
+    assert.deepEqual(activitySnapshotFor({ phase4_kind: 'negotiation' }), {
+      activity_ref: 'activity-profile', phase4_kind: 'negotiation'
+    });
+    assert.deepEqual(activitySnapshotFor({ phase8_kind: 'accusation' }), {
+      activity_ref: 'activity-profile', phase_kind: 'accusation'
+    });
+  });
 
 test('semantic writer persists CAS, audiences, lineage and actual messages', () => {
   const fixture = semanticWriterFixture();

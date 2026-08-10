@@ -31,6 +31,9 @@ const bundle13 = await loadLowerDvinaTraceMaterializationBundle({
 const bundle14 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 14
 });
+const bundle15 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 15
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 function request(overrides = {}) {
@@ -218,6 +221,44 @@ test('revisions 13 and 14 persist every NPC referenced by held items', () => {
       assert.equal(npcIds.has(holderId), true, `revision ${revision}: ${holderId}`);
     }
   }
+});
+
+test('revision 15 materializes and persists the approved Zhdanko storehouse road bag', () => {
+  const pin = lowerDvinaTracePhase1ADomainPin(bundle15);
+  const creation = request({
+    scenario_definition_revision: 15,
+    scenario_manifest_digest: bundle15.manifest_digest,
+    scenario_bundle: bundle15,
+    domain_catalog_pin: pin,
+    idempotency_key: 'trace-phase-15-prerequisite-idempotency'
+  });
+  const result = materializeLowerDvinaTracePartyInstance(creation);
+  const zhdanko = result.immediate.npcs.find(
+    ({ participant_slot_ref }) => participant_slot_ref === 'zhdanko_storehouse_controller'
+  );
+  const bag = result.immediate.containers.find(
+    ({ template_id }) => template_id === 'trace_ld_v1_container_road_bag'
+  );
+  assert.equal(result.immediate.prepared_scenes.length, 3);
+  assert.equal(result.immediate.npcs.length, 6);
+  assert.ok(zhdanko);
+  assert.equal(bag.holder_npc_id, zhdanko.instance_id);
+  assert.deepEqual(bag.state.exact_content_item_refs, [
+    'trace_ld_v1_item_sealed_packet',
+    'trace_ld_v1_item_wet_cloak',
+    'trace_ld_v1_item_writing_tablet'
+  ]);
+  const plan = stage24Plan(result, creation, pin);
+  const rows = plan.write_batches.find(
+    ({ target_table }) => target_table === 'party_containers'
+  ).records;
+  assert.deepEqual(rows.map(({ template_id, holder_npc_id, closure_state }) => ({
+    template_id, holder_npc_id, closure_state
+  })), [{
+    template_id: 'trace_ld_v1_container_road_bag',
+    holder_npc_id: zhdanko.instance_id,
+    closure_state: 'tied'
+  }]);
 });
 
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {

@@ -9,6 +9,7 @@ import {
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from './conversation-contracts.js';
+import { matchesOperationContract } from './operation-contract-match.js';
 import {
   ADAPTATIONS,
   DIRECT_OPERATIONS,
@@ -35,6 +36,11 @@ export {
   buildNpcActionDecisionRequest,
   validateNpcActionDecisionRequest
 } from './semantic-decision-request-contract.js';
+export {
+  buildNpcActionDecisionRequestFromSnapshots,
+  projectNpcSafeResourceSnapshots
+} from
+  './npc-safe-request-projector.js';
 
 function validateInterpretation(value) {
   return exactKeys(value, ['npc_goal', 'grounded_attempt', 'adaptation'])
@@ -265,6 +271,13 @@ function validateOperations(operations, request, allowedKinds) {
       return false;
     }
     if (request !== null && 'actor_ref' in operation && operation.actor_ref !== request.npc_ref) return false;
+    if (request !== null
+        && !matchesOperationContract(
+          operation,
+          request.decision_scope.operation_contract[operation.op]
+        )) {
+      return false;
+    }
     if (knownRefs !== null && operationRefs(operation).some((reference) => !knownRefs.has(reference)
       && !declared.has(reference))) {
       return false;

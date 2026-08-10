@@ -1,7 +1,5 @@
-import {
-  requestPlayerConversationContribution,
-  runConversationExchange
-} from '@rus/turn';
+import { requestPlayerConversationContribution, runConversationExchange } from
+  '@rus/turn';
 import { buildNpcDecision } from
   './lower-dvina-trace-m2-conversation-decision.js';
 import { buildNpcResponseBoundaryBatch } from
@@ -50,6 +48,8 @@ import {
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
 import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
+import { conversationContributionSlots } from
+  './lower-dvina-trace-m2-conversation-time-contract.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -135,14 +135,8 @@ export async function executeM2ConversationExchange(context) {
   const decisions = new Map();
   const npcOutcomes = new Map();
   let resumedOutcome = null;
-  const contributionSlots = Math.min(
-    context.contracts.conversationBindings.max_contributions_per_exchange,
-    pendingExecution === null
-      ? 1 + (pendingPlayerExecution?.plan ?? context.playerPlan)
-        .intended_addressee_refs.length
-      : Math.max(1, pendingExecution.remaining_responder_refs.length
-        + (pendingExecution.remaining_minutes > 0 ? 1 : 0))
-  );
+  const contributionSlots = conversationContributionSlots(
+    context, pendingPlayerExecution, pendingExecution);
   const exchange = await runConversationExchange({
     playerRequest,
     initialWorkingState,
@@ -150,7 +144,9 @@ export async function executeM2ConversationExchange(context) {
       context.contracts.conversationBindings.max_contributions_per_exchange,
     timeBudget: {
       total_minutes: exchangeDurationMinutes,
-      contribution_slots: contributionSlots
+      contribution_slots: contributionSlots,
+      ...(context.conversationTimeContract?.mode === 'same_timestamp'
+        ? { mode: 'same_timestamp' } : {})
     },
     pendingPlayerExecution,
     pendingNpcExecution: pendingExecution

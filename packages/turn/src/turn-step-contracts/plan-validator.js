@@ -106,7 +106,13 @@ function validateAdditionalActivity(value, path, errors) {
 
 function validateContinuation(value, path, errors, trace = null) {
   if (value === null) return;
-  if (!strict(value, path, ['remaining_intent', 'depends_on_refs'], errors)) {
+  if (!plain(value)) {
+    strict(value, path, [], errors);
+    return;
+  }
+  if (!strict(value, path, [
+    'remaining_intent', 'depends_on_refs'
+  ], errors)) {
     return;
   }
   requiredText(value.remaining_intent, `${path}.remaining_intent`, errors);

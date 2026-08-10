@@ -9,6 +9,7 @@ import { assertLowerDvinaTracePhase5Cutover } from './lower-dvina-trace-phase-5-
 import { assertLowerDvinaTracePhase6Cutover } from './lower-dvina-trace-phase-6-contract.js';
 import { assertLowerDvinaTraceM1Cutover } from './lower-dvina-trace-m1-contract.js';
 import { assertLowerDvinaTraceM2Cutover } from './lower-dvina-trace-m2-contract.js';
+import { assertLowerDvinaTraceM3Cutover } from './lower-dvina-trace-m3-contract.js';
 
 export function assertLowerDvinaTracePhase1AValidation({
   bundle,
@@ -30,12 +31,15 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.phase5,
     revisions.phase6,
     revisions.m1,
-    revisions.m2
+    revisions.m2,
+    revisions.m3
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
       ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m2
+        ? definitionRevision === revisions.m3
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v11'
+          : definitionRevision === revisions.m2
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v10'
           : definitionRevision === revisions.m1
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v9'
@@ -124,6 +128,7 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m3) return assertLowerDvinaTraceM3Cutover(bundle, fail);
   if (definitionRevision === revisions.m2) return assertLowerDvinaTraceM2Cutover(bundle, fail);
   if (definitionRevision === revisions.m1) return assertLowerDvinaTraceM1Cutover(bundle, fail);
   if (definitionRevision === revisions.phase6) return assertLowerDvinaTracePhase6Cutover(bundle, fail);

@@ -11,6 +11,7 @@
 | player_conversation_plan | `player_conversation_input_v1` + player-safe context | strict `player_conversation_contribution_plan_v1` | `@rus/turn` conversation boundary + injected semantic model |
 | npc_conversation_boundary | committed statement + per-NPC perception + new `npc_decision_signal_v1` records | at most one `npc_decision_boundary_v1` per NPC/same-time batch | common `@rus/npc-runtime` signal validation and aggregation |
 | npc_conversation_plan | conversation boundary + subjective NPC context | strict `conversation_contribution_plan_v1` or typed action/combat handoff | `@rus/turn` boundary/replay validation + injected semantic model |
+| npc_autonomous_plan | autonomous boundary + NPC-safe context | strict `npc_step_plan_v1`, then approved schedule/domain owner | `@rus/turn` boundary/replay validation + injected autonomous model |
 | turn_step_execution | validated direct/check/domain step | updated working projection + fragments | code-owned execution registry and domain owners |
 | turn_step_draft | ordered applied steps | `party_turn_step_operation_batch_v1` + commit trace | `@rus/turn`; no partial commit |
 | revalidate_context | exact command/semantic draft + fresh committed state | `revalidated_turn_state` | state reader + command registry |
@@ -41,6 +42,6 @@
 - DB commit before visible/narration gates;
 - provider or SQL call from `@rus/turn`.
 
-Revision-14 conversation is the active semantic contribution mode covered by this map. Full autonomous NPC action and combat resolution remain proposed; bounded selection remains available only for genuinely closed choices and explicitly pinned historical revisions.
+Revision-14 conversation and the Phase-7 autonomous NPC path are active semantic modes covered by this map. Phase 7 runs «Отдых у огня» for 30 minutes, creates Жданко's autonomous boundary at +25, applies the chosen actor-step from the operations actually registered in the runtime at the same timestamp, then resumes the common temporal owner to +30 from the updated working projection. Persistence and visibility remain code-owned. Combat resolution remains proposed; bounded selection remains available only for genuinely closed choices and explicitly pinned historical revisions.
 
-Deterministic autonomous updates use the same commit boundary: a code-owned rule produces `party_change_set_v2`, the repository checks the base state version and atomically persists the change set, update trace, new snapshot and incremented party version. This does not activate full autonomous NPC semantic action.
+Deterministic autonomous updates use the same commit boundary: a code-owned rule produces `party_change_set_v2`, the repository checks the base state version and atomically persists the change set, update trace, new snapshot and incremented party version. Phase-7 semantic autonomous action is separately admitted through `npc_action_decision_request_v1` and cannot bypass that boundary.

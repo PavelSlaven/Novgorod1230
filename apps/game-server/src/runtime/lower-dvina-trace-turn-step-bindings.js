@@ -68,6 +68,27 @@ const EXPECTED = Object.freeze({
     kind: 'carry',
     targetKey: 'onisim',
     targetSemantic: 'onisim_boatman'
+  },
+  'lower_dvina_trace.rest_by_fire_and_dry_clothing': {
+    minRevision: 15,
+    operation: 'request_activity',
+    kindField: 'activity_kind',
+    kindsField: 'activity_kinds',
+    kind: 'recover',
+    targetKey: 'fishingCamp',
+    targetSemantic: 'camp_fire'
+  },
+  'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse': {
+    minRevision: 15,
+    operation: 'emit_interaction',
+    kindField: 'interaction_kind',
+    kindsField: 'interaction_kinds',
+    kind: 'request',
+    targetKeys: ['eremey', 'participatingFisher', 'otherFisher'],
+    targetSemantics: [
+      'eremey_fisher', 'participating_fisher', 'other_fisher'
+    ],
+    instrument: 'none'
   }
 });
 
@@ -81,7 +102,11 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
     ]),
   'lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp': new Set([
     'сделать носилки и отнести онисима в стан.'
-    ])
+  ]),
+  'lower_dvina_trace.rest_by_fire_and_dry_clothing': new Set([
+    'отдохнуть у огня полчаса и подсушить одежду.',
+    'отдохнуть у огня полчаса и подсушить одежду'
+  ])
 });
 
 export function bindLowerDvinaTraceTurnStepCommands({
@@ -89,10 +114,13 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
+  const expectedCommands = Object.entries(EXPECTED).filter(
+    ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision
+  );
   const byCommand = new Map();
-  if (!Array.isArray(records) || records.length !== Object.keys(EXPECTED).length) {
+  if (!Array.isArray(records) || records.length !== expectedCommands.length) {
     gap();
   }
   for (const record of records) {
@@ -102,12 +130,19 @@ export function bindLowerDvinaTraceTurnStepCommands({
 
   const bound = commands.map((command) => {
     const expected = EXPECTED[command.command_id];
-    if (!expected) return command;
+    if (!expected
+        || (expected.minRevision ?? 13) > bundle.definition_revision) {
+      return command;
+    }
     const record = byCommand.get(command.command_id);
-    const targetRef = targetRefs?.[expected.targetKey];
+    const targetRef = expected.targetKeys == null
+      ? targetRefs?.[expected.targetKey]
+      : expected.targetKeys.map((key) => targetRefs?.[key]);
     const actorRef = targetRefs?.actor;
     if (!validRecord(record, expected)
-        || typeof targetRef !== 'string' || targetRef.length === 0
+        || (Array.isArray(targetRef)
+          ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
+          : typeof targetRef !== 'string' || targetRef.length === 0)
         || typeof actorRef !== 'string' || actorRef.length === 0) {
       gap();
     }
@@ -144,14 +179,17 @@ export function bindLowerDvinaTraceTurnStepCommands({
 }
 
 function normalizeExactText(value) {
-  return String(value ?? '').trim().toLowerCase();
+  return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
 }
 
 function validRecord(record, expected) {
   return record?.operation === expected.operation
     && Array.isArray(record[expected.kindsField])
     && record[expected.kindsField].includes(expected.kind)
-    && record.target_semantics?.includes(expected.targetSemantic) === true
+    && (expected.targetSemantics == null
+      ? record.target_semantics?.includes(expected.targetSemantic) === true
+      : expected.targetSemantics.every((semantic) =>
+        record.target_semantics?.includes(semantic) === true))
     && (expected.instrumentSemantic == null
       || record.instrument_semantics?.includes(
         expected.instrumentSemantic
@@ -171,7 +209,10 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   const targetField = expected.operation === 'emit_interaction'
     ? 'target_actor_refs'
     : 'target_refs';
-  if (operation[targetField]?.includes(targetRef) !== true) return false;
+  const expectedTargets = Array.isArray(targetRef) ? targetRef : [targetRef];
+  if (operation[targetField]?.length !== expectedTargets.length
+      || expectedTargets.some((ref) =>
+    operation[targetField]?.includes(ref) !== true)) return false;
   if (expected.instrument === 'none') {
     return operation.instrument_refs?.length === 0;
   }

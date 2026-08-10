@@ -6,6 +6,13 @@ import {
 import {
   firstPlayableCommitRecheck
 } from '../src/infrastructure/postgres/first-playable/recheck.js';
+import {
+  loadInitialTracePhase2State
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
+import {
+  buildCommittedInventoryInput
+} from '../src/runtime/lower-dvina-trace-committed-inventory.js';
+import { validateInventoryTopology } from '@rus/items-property';
 
 test('Phase 2 pins blue wool to one non-consuming local evidence slot', async () => {
   const { binding } = await loadLowerDvinaTracePhase2Bundle();
@@ -117,6 +124,47 @@ test('local evidence-slot recheck validates anchor state, slot capacity and writ
   });
 });
 
+test('initial Phase 2 state rehydrates persisted container placements', async () => {
+  const container = {
+    container_id: 'container:zhdanko-road-bag',
+    template_id: 'trace_ld_v1_container_road_bag',
+    anchor_id: null,
+    parent_container_id: null,
+    holder_npc_id: 'npc:zhdanko',
+    holder_character_id: null,
+    physical_position: null,
+    equipment_slot_category_id: null
+  };
+  const state = await loadInitialTracePhase2State({
+    partyId: 'party:trace-phase-2',
+    row: {
+      world_revision_id: 'world:revision',
+      world_catalog_digest: 'a'.repeat(64),
+      session_state_version: 0,
+      body_state_version: 0,
+      clock_state_version: 0,
+      turn_number: 0,
+      stage26_result: { opening_screen_digest: 'b'.repeat(64) }
+    },
+    phase1A: { loadInternal: async () => initialState(container) },
+    partyPool: { query: async () => ({ rows: [] }) },
+    temporalSourceProof: { candidates: [] }
+  });
+
+  assert.deepEqual(state.container_placements, [{
+    party_id: 'party:trace-phase-2',
+    container_id: container.container_id,
+    anchor_id: null,
+    parent_container_id: null,
+    holder_npc_id: 'npc:zhdanko',
+    holder_character_id: null,
+    physical_position: null,
+    equipment_slot_category_id: null
+  }]);
+  assert.equal(validateInventoryTopology(
+    buildCommittedInventoryInput(state)).pass, true);
+});
+
 function localSlotCheck() {
   return {
     kind: 'capacity',
@@ -166,5 +214,28 @@ function placementPlan(check) {
         anchor_id: check.anchor_id
       }
     }]
+  };
+}
+
+function initialState(container) {
+  return {
+    player: {
+      instance_id: 'character:mikula',
+      dossier: { attributes: { strength: { value: 9 } } }
+    },
+    body: {},
+    position: { g5_anchor_id: 'anchor:wreck' },
+    prepared_scenes: [],
+    npcs: [],
+    promise_instances: [],
+    timestamp: { whole_minutes: '333060',
+      subminute_numerator: '0', subminute_denominator: '1' },
+    environment_snapshot: {},
+    sealed_selections: {},
+    policy_profile_pins: [],
+    items: [],
+    containers: [container],
+    initial_snapshot_identity: {},
+    materialization_trace: {}
   };
 }

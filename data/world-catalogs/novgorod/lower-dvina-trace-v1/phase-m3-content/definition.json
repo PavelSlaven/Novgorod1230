@@ -1,0 +1,38 @@
+{
+  "schema": "rus.trace_scenario_definition.v1",
+  "scenario_id": "lower_dvina_trace_v1",
+  "revision": 15,
+  "publication_status": "unpublished",
+  "supersedes_definition_ref": {"id": "lower_dvina_trace_v1", "revision": 14, "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m2-content/definition.json", "digest": "25cb47dbde6922bf58734802210253254b74bb4a5d60a93a45126a74f73f3414"},
+  "applicability": {"schema": "rus.trace_scenario_applicability.v1", "version": 1, "region_ref": {"node_id": "gn_nov_g1_xp017_yp026", "node_level": "g1"}, "season_id": "late_summer"},
+  "readiness": {"schema": "rus.trace_scenario_readiness.v1", "version": 1, "phase_status": "phase_0_complete", "materialization_status": "definition_accepted_for_later_materialization", "publication_status": "not_publishable"},
+  "immutable_content_refs": {
+    "player_profile_set": {"id": "lower_dvina_trace_player_profile_set_v1", "revision": 1, "digest": "2a25fd04f0e9b71f1ab2805cd3d68620d9ea2d1646e0671e128e886eb54ee865"},
+    "participant_profile_set": {"id": "trace_ld_v1_participant_profile_set", "revision": 1, "digest": "33e45b8b8b57f98debb254e5e76c881cf3ffe10985042811ed85390e38f588ce"},
+    "location_topology_set": {"id": "trace_ld_v1_location_topology_set", "revision": 1, "digest": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce"},
+    "item_container_set": {"id": "trace_ld_v1_item_container_set", "revision": 4, "digest": "37880f82402fdb4cf70316e6849e17f22b9729b2642ae02e4aaf6c3b8dd67440"},
+    "hidden_truth_candidate_set": {"id": "trace_ld_v1_hidden_truth_candidate_set", "revision": 1, "digest": "b4601339813dd253a7a280cd68ad0925202c989998c6cae5bca9e820f1a7b616"},
+    "clue_evidence_graph_set": {"id": "trace_ld_v1_clue_evidence_graph_set", "revision": 1, "digest": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222"},
+    "knowledge_lie_memory_rules": {"id": "trace_ld_v1_knowledge_lie_memory_rules", "revision": 2, "digest": "2e4fc36faf83edb42aacf218f43815b4f4ff1bf04f2938b88208ce00b7e52c48"}
+  },
+  "resolved_policy_refs": {
+    "activity_check_consequence_profiles": {"owner": "@rus/turn", "schema": "rus.trace_activity_check_consequence_profiles.v1", "id": "trace_ld_v1_activity_check_consequence_profiles", "revision": 4, "digest": "3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef"},
+    "npc_decision_schedule_policies": {"owner": "@rus/npc-runtime", "schema": "rus.trace_npc_decision_schedule_policies.v1", "id": "trace_ld_v1_npc_decision_schedule_policies", "revision": 4, "digest": "a00ae410328e3e392cde57484d18691fec01a295a3383a9bde84fac69db20a51"},
+    "movement_bindings": {"owner": "@rus/movement-routes", "schema": "rus.trace_movement_bindings.v1", "id": "trace_ld_v1_movement_bindings", "revision": 3, "digest": "66ba6e5c16319da88ab3215692a7cec2b25a51f5322ad581bdee734f3b0a85cd"},
+    "location_access_policies": {"owner": "@rus/movement-routes", "schema": "rus.trace_scene_access_policy_set.v1", "id": "trace_ld_v1_location_access_policies", "revision": 1, "digest": "68e11b8c85f860674a5d9990b6a8ec72527aab9574c291f199b06fccf4fc2257"},
+    "location_capacity_contracts": {"owner": "@rus/party-store", "schema": "rus.trace_scene_capacity_contract_set.v1", "id": "trace_ld_v1_location_capacity_contracts", "revision": 1, "digest": "8e7698a72f3925f76b6dc7a09485d1d4be7ea1f0a109cd0fe0fccbc2b77af4b6"},
+    "body_environment_profiles": {"owner": "@rus/body-state", "schema": "rus.trace_body_environment_profiles.v2", "id": "trace_ld_v1_body_environment_profiles", "revision": 6, "digest": "c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2"},
+    "promise_policy": {"owner": "@rus/social-law", "schema": "rus.trace_promise_policy.v1", "id": "trace_ld_v1_promise_no_summary_killing", "revision": 1, "digest": "9b6c4096886782151bf49f80f2bfdb8a1062576824fbcafde92143859f69574b"},
+    "completion_rules": {"owner": "@rus/visibility-knowledge-memory", "schema": "rus.trace_completion_rules.v1", "id": "trace_ld_v1_completion_rules", "revision": 1, "digest": "497e6ed12d4393f890e47e38e61a52a2f103a6ad0546793ec587b329364fc614"},
+    "epilogue_rules": {"owner": "@rus/presentation", "schema": "rus.trace_epilogue_rules.v1", "id": "trace_ld_v1_epilogue_rules", "revision": 1, "digest": "959f42e52147d9e19f5ac945e336b0280090f2d7025e79c01159f341a2ed36c3"},
+    "turn_step_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_bindings.v1", "id": "lower_dvina_trace_turn_step_bindings_v2", "revision": 2, "digest": "87679ee31c8b74cdf6665b6971efcb51fad3cf73c149048070c3831e6b099738"},
+    "turn_10_companion_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_10_companion_bindings.v1", "id": "lower_dvina_trace_turn_10_companion_bindings_v1", "revision": 1, "digest": "eee1a89526582749c986471d796d3bd6ff23266143eef79af8e370a858191c67"},
+    "turn_step_owner_profiles": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_turn_step_owner_profiles.v1", "id": "trace_ld_v1_turn_step_owner_profiles", "revision": 1, "digest": "585409afc0b363ac47f98afdc5690067e645fffd63500587241fcce0d7ea5823"},
+    "conversation_semantic_bindings": {"owner": "@rus/turn", "schema": "rus.lower_dvina_trace_conversation_semantic_bindings.v1", "id": "lower_dvina_trace_conversation_semantic_bindings_v1", "revision": 1, "digest": "835dc461c658a7149053046537c2f1341c3966acf384d0f3ba77758b13263557"},
+    "autonomous_semantic_bindings": {"owner": "@rus/npc-runtime", "schema": "rus.lower_dvina_trace_autonomous_semantic_bindings.v1", "id": "lower_dvina_trace_autonomous_semantic_bindings_v1", "revision": 1, "digest": "b4c924f9f2f7f10ef9ca1597c316246a8ab17b47401afa297e88b5bfda788bcd"}
+  },
+  "required_unresolved_refs": [],
+  "scope": ["phase_0_immutable_definition", "m1_player_semantic_step_admission", "m2_npc_conversation_semantic_bindings", "m3_autonomous_npc_semantic_bindings", "phase_7_fire_rest_temporal_admission", "canonical_turn_10_companion_conversation"],
+  "concrete_party_selections": {"player_name": null, "player_profile": null, "party_truth": null, "npc_decisions": [], "item_placements": [], "rolls": [], "game_timestamp": null, "environment_snapshot": null, "completion_state": null, "epilogue": null},
+  "excludes": ["party_instance", "runtime_handlers", "evaluators", "migrations", "api_publication", "ui", "browser_flow", "scenario_local_conversation_resolver", "scenario_local_npc_scheduler"]
+}

@@ -123,7 +123,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if ([12, 13, 14].includes(input.scenario_definition_revision)) {
+  if ([12, 13, 14, 15].includes(input.scenario_definition_revision)) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -165,6 +165,145 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
   ratsha.machine_state.surrender_state = 'not_surrendered';
   ratsha.machine_state.restraint_state = 'not_restrained';
   return { scene, npcs, onisim, ratsha, binding };
+}
+
+export function materializeLowerDvinaTracePreparedStorehouse({
+  input,
+  bundle,
+  runId,
+  participantSelections,
+  locationSelections
+}) {
+  const binding = bundle.materialization_bindings.initial_autonomous_materialization;
+  const spatial = binding?.storehouse_spatial_binding;
+  const placement = binding?.npc_placement;
+  const bag = binding?.container_placement;
+  const location = locationSelections.find(
+    ({ slot_key: key }) => key === spatial?.location_profile_ref
+  );
+  if (!location || binding?.resolution_policy
+      !== 'existing_approved_candidate_sets_only_or_fail_closed'
+    || binding?.contents_policy !== 'approved_existing_container_contents_only'
+    || !spatial || !placement || !bag
+    || spatial.location_profile_ref !== 'trace_ld_v1_loc_zhdanko_storehouse'
+    || spatial.node_template_ref !== 'trace_ld_v1_tpl_zhdanko_storehouse'
+    || spatial.anchor_template?.slot_key !== 'storehouse_yard'
+    || spatial.anchor_template?.state?.access_policy_ref
+      !== 'trace_ld_v1_access_zhdanko_storehouse'
+    || spatial.anchor_template?.state?.capacity_contract_ref
+      !== 'trace_ld_v1_capacity_zhdanko_storehouse'
+    || placement.participant_slot_ref !== 'zhdanko_storehouse_controller'
+    || placement.materialization_depth !== 'key'
+    || placement.location_profile_ref !== spatial.location_profile_ref
+    || placement.zone_ref !== spatial.anchor_template.state.zone_ref
+    || bag.container_template_ref !== 'trace_ld_v1_container_road_bag'
+    || bag.owner_ref !== 'trace_ld_v1_external_owner_savva_tverdich'
+    || bag.holder_ref !== placement.participant_slot_ref
+    || bag.controller_ref !== placement.participant_slot_ref
+    || bag.closure_state !== 'tied'
+    || JSON.stringify(bag.exact_content_item_refs)
+      !== JSON.stringify([
+        'trace_ld_v1_item_sealed_packet',
+        'trace_ld_v1_item_wet_cloak',
+        'trace_ld_v1_item_writing_tablet'
+      ])) {
+    fail('TRACE_M3_INITIAL_PROJECTION_BINDING_INVALID',
+      'The exact approved Zhdanko storehouse and road-bag binding is required.');
+  }
+  const containerTemplate = requiredById(
+    bundle.item_container_set.container_templates,
+    'container_template_id',
+    bag.container_template_ref
+  );
+  if (containerTemplate.status !== 'approved'
+    || containerTemplate.semantic_category !== 'road_bag_container'
+    || containerTemplate.capacity_contract?.unlisted_content_policy !== 'forbidden'
+    || JSON.stringify(containerTemplate.capacity_contract?.exact_allowed_item_template_ids)
+      !== JSON.stringify(bag.exact_content_item_refs)) {
+    fail('TRACE_M3_ROAD_BAG_TEMPLATE_INVALID',
+      'The road bag must resolve to its approved exact content set.');
+  }
+  const nodeId = deterministicInstanceId(
+    input.party_id, runId, 'g5_node', spatial.location_profile_ref, 0
+  );
+  const anchorId = deterministicInstanceId(
+    input.party_id, runId, 'g5_anchor', spatial.anchor_template.template_id, 0
+  );
+  const scene = {
+    location_profile_ref: spatial.location_profile_ref,
+    node: {
+      instance_id: nodeId,
+      parent_g4_id: location.selected.g4_node_ref.id,
+      template_id: spatial.node_template_ref,
+      slot_key: spatial.node_slot_ref,
+      state: {
+        location_profile_ref: location.location.location_profile_id,
+        prepared_for_first_entry: true
+      }
+    },
+    anchor: {
+      instance_id: anchorId,
+      node_id: nodeId,
+      template_id: spatial.anchor_template.template_id,
+      slot_key: spatial.anchor_template.slot_key,
+      npc_capacity: spatial.anchor_template.npc_capacity,
+      item_capacity: spatial.anchor_template.item_capacity,
+      container_capacity: spatial.anchor_template.container_capacity,
+      state: structuredClone(spatial.anchor_template.state)
+    }
+  };
+  const npc = materializeNpc({
+    input,
+    bundle,
+    runId,
+    participantSelections,
+    placement,
+    ordinal: 0,
+    anchorId
+  });
+  const roadBagResource = requiredById(
+    bundle.npc_decision_schedule_policies.schedule_resource_bindings,
+    'resource_binding_id',
+    'trace_ld_v1_schedule_resource_road_bag'
+  );
+  if (roadBagResource.item_ref !== bag.container_template_ref
+      || roadBagResource.holder_ref !== bag.holder_ref
+      || roadBagResource.controller_ref !== bag.controller_ref
+      || roadBagResource.opening_location_ref
+        !== spatial.location_profile_ref
+      || !roadBagResource.allowed_zone_refs.includes(
+        roadBagResource.opening_zone_ref
+      )) {
+    fail('TRACE_M3_ROAD_BAG_OPENING_STATE_INVALID',
+      'The road bag requires one approved opening location and zone.');
+  }
+  npc.machine_state = {
+    ...npc.machine_state,
+    location_ref: placement.location_profile_ref,
+    spatial_zone_ref: placement.zone_ref
+  };
+  const container = {
+    instance_id: deterministicInstanceId(
+      input.party_id, runId, 'container', containerTemplate.container_template_id, 0
+    ),
+    template_id: containerTemplate.container_template_id,
+    anchor_id: null,
+    holder_npc_id: npc.instance_id,
+    owner_external_ref: bag.owner_ref,
+    controller_npc_id: npc.instance_id,
+    closure_state: bag.closure_state,
+    state: {
+      causal_basis: containerTemplate.causal_basis,
+      physical_condition: structuredClone(containerTemplate.physical_condition),
+      owner_external_ref: bag.owner_ref,
+      controller_npc_id: npc.instance_id,
+      location_ref: roadBagResource.opening_location_ref,
+      zone_ref: roadBagResource.opening_zone_ref,
+      exact_content_item_refs: structuredClone(bag.exact_content_item_refs),
+      content_materialization: 'deferred_until_exact_inventory_profiles_are_approved'
+    }
+  };
+  return { scene, npc, container };
 }
 
 function materializeNpc({

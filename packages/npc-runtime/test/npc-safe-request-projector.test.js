@@ -1,0 +1,389 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  buildNpcDecisionBoundary,
+  buildNpcDecisionSignal
+} from '../src/decision-signals.js';
+import {
+  buildNpcActionDecisionRequestFromSnapshots,
+  validateNpcActionDecisionRequest
+} from '../src/semantic-decision-contracts.js';
+
+const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
+const occurredAt = {
+  whole_minutes: '10',
+  subminute_numerator: '0',
+  subminute_denominator: '1'
+};
+
+test('NPC-safe projector allowlists persisted subjective snapshots', () => {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt,
+    category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('event', 'event-1'),
+    subject_ref: ref('npc', 'speaker'),
+    scope_refs: [],
+    perception_required: false,
+    source_perception_ref: null,
+    causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: ref('npc', 'speaker'),
+    decision_mode: 'autonomous',
+    scheduled_at: occurredAt,
+    significance: 'material',
+    categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    state_version: '1'
+  });
+  const request = buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: {
+      request_id: 'request-safe',
+      root_turn_id: 'turn-safe',
+      committed_state_version: 1,
+      working_revision: 1,
+      decision_index: 1
+    },
+    boundary,
+    npc_snapshot: {
+      instance_id: 'speaker',
+      profile_level: 'scene',
+      profile_id: 'speaker-profile',
+      identity_state: { canonical_name: 'Страж', hidden_name: 'secret' },
+      social_role: { role_ref: 'guard' },
+      attributes: [],
+      skills: [],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: null,
+      summary: null,
+      status: 'idle',
+      can_continue_automatically: false,
+      hidden_activity_state: 'secret'
+    },
+    body_snapshot: {
+      summary: 'устал',
+      conditions: [{ condition_ref: 'tired', hidden_cause: 'secret' }]
+    },
+    mood_snapshot: {
+      state: 'спокоен',
+      intensity: 'low',
+      internal_reason: { hidden: 'secret' }
+    },
+    relationship_snapshots: [{
+      actor_ref: 'actor-1',
+      relation: 'знакомый',
+      hidden_history: { hidden: 'secret' }
+    }],
+    resource_snapshots: [{
+      resource_ref: 'resource-1',
+      template_ref: 'wood',
+      holder_npc_id: 'speaker',
+      hidden_contents: { hidden: 'secret' }
+    }],
+    perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('event', 'event-1'),
+        summary: 'Смена началась.'
+      }],
+      visible_objects: [{
+        object_ref: 'resource-1',
+        summary: 'дрова',
+        hidden_owner: { hidden: 'secret' }
+      }]
+    },
+    knowledge_snapshot: {
+      known_facts: ['secret primitive payload', {
+        fact_ref: 'fact-1',
+        summary: 'ворота закрыты',
+        hidden_truth: { hidden: 'secret' }
+      }]
+    },
+    memory_snapshot: {
+      recent_events: [{
+        event_ref: 'event-1',
+        summary: 'смена началась',
+        hidden_detail: { hidden: 'secret' }
+      }]
+    },
+    resolved_signals: [signal],
+    operation_contract: {}
+  });
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(Object.hasOwn(request.npc, 'profile_ref'), false);
+  assert.equal(Object.hasOwn(request.npc, 'current_location'), false);
+  assert.equal(request.npc.relationships[0].relation, 'знакомый');
+  assert.equal(request.npc.available_resources[0].resource_ref, 'resource-1');
+  assert.equal(request.perception.visible_objects[0].summary, 'дрова');
+  assert.equal(request.knowledge.known_facts[0].fact_ref, 'fact-1');
+  assert.equal(request.memory.recent_events[0].event_ref, 'event-1');
+  assert.equal(request.decision_reasons.perceived_changes[0],
+    'Смена началась.');
+  assert.doesNotMatch(JSON.stringify(request), /hidden|secret/u);
+});
+
+test('NPC-safe projector rejects a decision source without NPC-safe summary',
+  () => {
+    const signal = buildNpcDecisionSignal({
+      occurred_at: occurredAt,
+      category: 'objective',
+      significance: 'material',
+      source_event_ref: ref('event', 'missing-summary'),
+      subject_ref: ref('npc', 'speaker'),
+      scope_refs: [],
+      perception_required: false,
+      source_perception_ref: null,
+      causal_parent_refs: []
+    });
+    const boundary = buildNpcDecisionBoundary({
+      npc_ref: ref('npc', 'speaker'),
+      decision_mode: 'autonomous',
+      scheduled_at: occurredAt,
+      significance: 'material',
+      categories: ['objective'],
+      signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+      same_time_batch_ref: ref('temporal_batch', 'missing-summary-batch'),
+      state_version: '1'
+    });
+    assert.throws(() => buildNpcActionDecisionRequestFromSnapshots({
+      request_identity: {
+        request_id: 'request-missing-summary',
+        root_turn_id: 'turn-missing-summary',
+        committed_state_version: 1,
+        working_revision: 1,
+        decision_index: 1
+      },
+      boundary,
+      npc_snapshot: {
+        instance_id: 'speaker', attributes: [], skills: [], machine_state: {}
+      },
+      current_activity_snapshot: {
+        activity_ref: null, summary: null, status: 'idle',
+        can_continue_automatically: false
+      },
+      resolved_signals: [signal],
+      operation_contract: {}
+    }), {
+      name: 'TypeError',
+      message:
+        'NPC-safe perceived change summary is required for event:missing-summary'
+    });
+  });
+
+test('NPC-safe projector excludes accessible foreign resources without subjective evidence', () => {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt,
+    category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('event', 'event-2'),
+    subject_ref: ref('npc', 'speaker'),
+    scope_refs: [],
+    perception_required: false,
+    source_perception_ref: null,
+    causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: ref('npc', 'speaker'),
+    decision_mode: 'autonomous',
+    scheduled_at: occurredAt,
+    significance: 'material',
+    categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-2'),
+    state_version: '1'
+  });
+  const request = buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: {
+      request_id: 'request-resources',
+      root_turn_id: 'turn-resources',
+      committed_state_version: 1,
+      working_revision: 1,
+      decision_index: 1
+    },
+    boundary,
+    npc_snapshot: {
+      instance_id: 'speaker',
+      attributes: [],
+      skills: [],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: null,
+      summary: null,
+      status: 'idle',
+      can_continue_automatically: false
+    },
+    perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('event', 'event-2'),
+        summary: 'Рядом появился доступный предмет.'
+      }],
+      visible_objects: [{
+        resource_ref: 'unknown-packet',
+        summary: 'неподтверждённая проекция свёртка'
+      }, {
+        resource_ref: 'perceived-packet',
+        source_event_ref: ref('perception_event', 'packet-seen'),
+        summary: 'замеченный свёрток'
+      }],
+      uncertainties: [{
+        resource_ref: 'uncertain-packet',
+        source_event_ref: ref('perception_event', 'packet-uncertain'),
+        summary: 'возможно, рядом есть ещё один свёрток'
+      }]
+    },
+    knowledge_snapshot: {
+      known_facts: [{
+        fact_ref: 'known-packet-fact',
+        resource_ref: 'known-packet',
+        source_event_ref: ref('knowledge_event', 'packet-known'),
+        summary: 'известный свёрток лежит рядом'
+      }],
+      beliefs: [{
+        resource_ref: 'believed-packet',
+        source_event_ref: ref('rumor_event', 'packet-believed'),
+        summary: 'Жданко думает, что свёрток может быть рядом'
+      }],
+      hypotheses: [{
+        resource_ref: 'hypothetical-packet',
+        source_event_ref: ref('inference_event', 'packet-hypothesis'),
+        summary: 'Жданко допускает существование ещё одного свёртка'
+      }]
+    },
+    resource_snapshots: [{
+      container_id: 'bag-1',
+      template_id: 'bag',
+      holder_npc_id: 'speaker',
+      state: { location_ref: 'yard', zone_ref: 'gate' }
+    }, {
+      item_id: 'axe-1',
+      template_id: 'axe',
+      holder_npc_id: 'speaker',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        controller_npc_id: 'speaker'
+      }
+    }, {
+      item_id: 'unknown-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, {
+      item_id: 'perceived-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, {
+      item_id: 'known-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'available',
+        visibility_state: 'visible'
+      }
+    }, ...['uncertain-packet', 'believed-packet', 'hypothetical-packet'].map(
+      (item_id) => ({
+        item_id,
+        template_id: 'packet',
+        holder_npc_id: 'other',
+        state: {
+          location_ref: 'yard',
+          zone_ref: 'gate',
+          access_state: 'available',
+          visibility_state: 'visible'
+        }
+      }))],
+    resolved_signals: [signal],
+    operation_contract: {}
+  });
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'bag-1'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'axe-1'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'unknown-packet'), false);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'perceived-packet'), true);
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'known-packet'), true);
+  for (const resourceRef of [
+    'uncertain-packet', 'believed-packet', 'hypothetical-packet'
+  ]) {
+    assert.equal(request.npc.available_resources.some(
+      ({ resource_ref: value }) => value === resourceRef), false);
+  }
+});
+
+test('NPC-safe projector prefers authored perceived change summaries', () => {
+  const signal = buildNpcDecisionSignal({
+    occurred_at: occurredAt,
+    category: 'objective',
+    significance: 'material',
+    source_event_ref: ref('npc_activity_factual_transition', 'waiting-1'),
+    subject_ref: ref('npc', 'speaker'),
+    scope_refs: [],
+    perception_required: false,
+    source_perception_ref: null,
+    causal_parent_refs: []
+  });
+  const boundary = buildNpcDecisionBoundary({
+    npc_ref: ref('npc', 'speaker'),
+    decision_mode: 'autonomous',
+    scheduled_at: occurredAt,
+    significance: 'material',
+    categories: ['objective'],
+    signal_refs: [ref('npc_decision_signal', signal.signal_id)],
+    same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+    state_version: '1'
+  });
+  const request = buildNpcActionDecisionRequestFromSnapshots({
+    request_identity: {
+      request_id: 'request-perceived',
+      root_turn_id: 'turn-perceived',
+      committed_state_version: 1,
+      working_revision: 1,
+      decision_index: 1
+    },
+    boundary,
+    npc_snapshot: {
+      instance_id: 'speaker',
+      attributes: [],
+      skills: [],
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    current_activity_snapshot: {
+      activity_ref: 'wait-profile',
+      summary: 'wait-profile: waiting→decision_required',
+      status: 'decision_required',
+      can_continue_automatically: false
+    },
+    perception_snapshot: {
+      perceived_changes: [{
+        source_event_ref: ref('npc_activity_factual_transition', 'waiting-1'),
+        summary: 'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed'
+      }]
+    },
+    resolved_signals: [signal],
+    operation_contract: {}
+  });
+  assert.equal(validateNpcActionDecisionRequest(request), true);
+  assert.equal(request.decision_reasons.perceived_changes[0],
+    'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed');
+});

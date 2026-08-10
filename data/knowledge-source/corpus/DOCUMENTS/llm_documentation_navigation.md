@@ -64,7 +64,7 @@ exact-head evidence не активировало production; последующ
 ### Active и proposed semantic LLM contracts
 
 - free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13+);
-- autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`proposed`);
+- autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`active`, Phase 7 / `spatial-v3-production-v5`);
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
 - combat resolution → `npc_combat_and_trigger_contract.md` (`proposed`).
 
@@ -72,8 +72,13 @@ Active player contract остаётся единственной semantic bounda
 заявки игрока после exact fast path. Revision 14 дополнительно активирует
 conversation path: общие `npc_decision_signal_v1` и
 `npc_decision_boundary_v1`, player conversation contribution и ровно один
-semantic responder для одного NPC/same-time batch. Полные autonomous и combat
-контракты остаются proposed; conversation может только передать combat handoff.
+semantic responder для одного NPC/same-time batch. Phase-7 autonomous contract
+active: «Отдых у огня» advances 30 minutes, creates Жданко's boundary at +25
+and applies one actor-step from the operations actually registered in the
+runtime at the same timestamp, then resumes the common temporal owner to +30
+from the updated working projection. Persistence and visibility remain
+code-owned. Combat остаётся proposed; conversation
+может только передать combat handoff.
 Historical bounded Phase 3/4 доступен исключительно по явному revision pin и
 не является production fallback.
 

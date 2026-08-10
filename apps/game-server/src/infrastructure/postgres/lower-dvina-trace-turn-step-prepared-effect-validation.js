@@ -14,6 +14,10 @@ import {
 } from './lower-dvina-trace-turn-step-prepared-effect-authority.js';
 import { plain } from
   './lower-dvina-trace-turn-step-persistence-support.js';
+import {
+  isPreparedTurn10Ledger,
+  validatePreparedTurn10
+} from './lower-dvina-trace-turn-10-prepared-validation.js';
 
 const ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
@@ -40,6 +44,11 @@ export function validatePreparedEffectCommit({
   }
   const slices = ledger.slices;
   const traces = envelope.loop_trace?.step_traces;
+  if (isPreparedTurn10Ledger(ledger)) {
+    return validatePreparedTurn10({
+      ledger, traces, envelope, factual, state, batch
+    });
+  }
   const [route, direct] = slices;
   const [routeTrace, directTrace] = traces ?? [];
   const routeOperation = routeTrace?.approved_plan?.operations?.[0];

@@ -17,7 +17,8 @@ const executionRegistries = new WeakSet();
 export function createTurnStepExecutionRegistry({
   direct = {},
   domain = {},
-  applySemanticActivity = null
+  applySemanticActivity = null,
+  operationContract = {}
 } = {}) {
   const directHandlers = handlers(direct, DIRECT_OPS, 'direct');
   const domainHandlers = handlers(domain, DOMAIN_OPS, 'domain');
@@ -25,6 +26,9 @@ export function createTurnStepExecutionRegistry({
       && typeof applySemanticActivity !== 'function') {
     throw new TypeError('applySemanticActivity must be a function.');
   }
+  const contract = normalizeOperationContract(
+    operationContract, directHandlers, domainHandlers
+  );
   const registry = Object.freeze({
     direct(operation) {
       return directHandlers.get(operation?.op) ?? null;
@@ -34,10 +38,37 @@ export function createTurnStepExecutionRegistry({
     },
     semanticActivity() {
       return applySemanticActivity;
+    },
+    operationContract() {
+      return structuredClone(contract);
     }
   });
   executionRegistries.add(registry);
   return registry;
+}
+
+function normalizeOperationContract(value, directHandlers, domainHandlers) {
+  if (!plain(value)) {
+    throw new TypeError('operationContract must be a JSON object.');
+  }
+  const output = {};
+  for (const [operation, descriptor] of Object.entries(value)) {
+    const registered = directHandlers.has(operation)
+      || domainHandlers.has(operation);
+    if (!registered || !plain(descriptor)) {
+      throw new TypeError(
+        `Operation contract requires a registered handler: ${operation}.`
+      );
+    }
+    try {
+      output[operation] = structuredClone(descriptor);
+    } catch {
+      throw new TypeError(
+        `Operation contract descriptor must be cloneable: ${operation}.`
+      );
+    }
+  }
+  return deepFreeze(output);
 }
 
 export function requireTurnStepExecutionRegistry(registry) {
@@ -114,7 +145,17 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       request,
       plan
     });
-    if (preparedEffects.length > 0 && !preparedDirectContinuation(plan)) {
+    const preparedContinuationAllowed = preparedEffects.length === 0
+      || preparedDirectContinuation(plan)
+      || (plan.resolution === 'domain_request'
+        && typeof ports.admitPreparedDomainPlan === 'function'
+        && await ports.admitPreparedDomainPlan(deepFreeze({
+          plan: structuredClone(plan),
+          request: structuredClone(request),
+          working_projection: structuredClone(workingProjection),
+          prepared_chain_context: structuredClone(preparedChainContext)
+        })) === true);
+    if (!preparedContinuationAllowed) {
       const requiresClarification =
         plan.resolution === 'clarification_required';
       clarification = requiresClarification

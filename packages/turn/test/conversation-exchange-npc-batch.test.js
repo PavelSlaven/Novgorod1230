@@ -65,7 +65,7 @@ test('resume remembers the pending NPC and batch across legacy boundary ids',
       maxContributionsPerExchange: 8,
       pendingNpcExecution: {
         plan: { speaker_ref: npcRef },
-        boundary_id: 'npc-decision:conversation:batch-1:guard',
+        boundary_id: 'npc-decision:batch-1:guard',
         contribution_index: 2,
         remaining_minutes: 1,
         remaining_exchange_minutes: 2,

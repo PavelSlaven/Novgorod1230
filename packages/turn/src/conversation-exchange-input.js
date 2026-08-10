@@ -70,20 +70,26 @@ export function normalizeConversationExchangeInput(input) {
       'Only one pending conversation contribution may be resumed');
   }
   const pendingExecution = pendingPlayerExecution ?? pendingNpcExecution;
+  const sameTimestamp = timeBudget?.mode === 'same_timestamp';
   const exactEndResume = pendingExecution !== null
     && timeBudget?.total_minutes === 0
     && timeBudget?.contribution_slots === 1
     && pendingExecution.remaining_minutes === 0
     && pendingExecution.remaining_exchange_minutes === 0
     && (pendingExecution.remaining_responder_refs?.length ?? 0) === 0;
-  if (!exactKeys(timeBudget, ['total_minutes', 'contribution_slots'])
+  const timeBudgetKeys = sameTimestamp
+    ? ['total_minutes', 'contribution_slots', 'mode']
+    : ['total_minutes', 'contribution_slots'];
+  if (!exactKeys(timeBudget, timeBudgetKeys)
       || !Number.isSafeInteger(timeBudget.total_minutes)
-      || (timeBudget.total_minutes < 1 && !exactEndResume)
+      || (sameTimestamp
+        ? timeBudget.total_minutes !== 0 || pendingExecution !== null
+        : timeBudget.total_minutes < 1 && !exactEndResume)
       || !Number.isSafeInteger(timeBudget.contribution_slots)
       || timeBudget.contribution_slots < 1
       || timeBudget.contribution_slots > maxContributionsPerExchange
       || (timeBudget.contribution_slots > timeBudget.total_minutes
-        && !exactEndResume)) {
+        && !exactEndResume && !sameTimestamp)) {
     fail(
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'timeBudget must define one positive whole-exchange budget and bounded contribution slots'

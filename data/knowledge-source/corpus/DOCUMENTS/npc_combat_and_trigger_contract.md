@@ -978,7 +978,7 @@ LLM не вызывается.
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:combat-7:batch-18:npc-ratsha",
   "decision_mode": "combat",
   "scheduled_at": {
     "whole_minutes": "620",
@@ -1011,7 +1011,7 @@ LLM не вызывается.
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:combat-7:batch-18:npc-ratsha"
 }
 ```
 
@@ -1019,10 +1019,10 @@ LLM не вызывается.
 
 - `resolution_class` остаётся `reaction_decision`;
 - `decision_mode` определяет профиль LLM: autonomous, conversation или combat;
-- `decision_mode` является свойством boundary и не входит в `boundary_id`,
-  `idempotency_key` или другую identity;
+- `decision_mode` и combat context входят в `boundary_id` и
+  `idempotency_key` как mode/context segment (`combat-7` в примере);
 - один NPC имеет не более одной aggregated boundary и одного LLM-вызова
-  на один fully resolved same-time batch суммарно по всем режимам;
+  данного combat context на один fully resolved same-time batch;
 - одна boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готовое решение;
 - повторная обработка возвращает persisted trace;
@@ -1299,7 +1299,7 @@ Risk posture влияет только через approved combat execution prof
   "persistence": "until_decision_boundary",
   "created_from_boundary_ref": {
     "entity_kind": "npc_decision_boundary",
-    "entity_id": "npc-decision:batch-18:ratsha"
+    "entity_id": "npc-decision:combat-7:batch-18:ratsha"
   },
   "state_version": "1",
   "status": "active"
@@ -1778,7 +1778,7 @@ LLM не объявляет бой завершённым напрямую.
 {
   "schema": "npc_combat_decision_request_v1",
   "request_id": "npc-combat-decision-42",
-  "boundary_id": "npc-decision:batch-18:ratsha",
+  "boundary_id": "npc-decision:combat-7:batch-18:ratsha",
   "state_version": "17",
   "combat_id": "combat:party-1:7",
   "exchange_ordinal": 4,
@@ -1886,7 +1886,7 @@ NPC получает пригодное для решения qualitative сос
 {
   "schema": "npc_combat_intent_plan_v1",
   "request_id": "npc-combat-decision-42",
-  "boundary_id": "npc-decision:batch-18:ratsha",
+  "boundary_id": "npc-decision:combat-7:batch-18:ratsha",
   "state_version": "17",
   "combat_id": "combat:party-1:7",
   "npc_ref": {

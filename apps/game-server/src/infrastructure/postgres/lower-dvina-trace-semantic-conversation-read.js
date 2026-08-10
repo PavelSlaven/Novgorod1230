@@ -23,13 +23,14 @@ import { assertSupportingOperationPerceptions } from
   './lower-dvina-trace-semantic-conversation-read-supporting-perceptions.js';
 
 export function isLowerDvinaTraceSemanticRevision(payload) {
-  return Number(payload?.materialization_trace?.seed_context
-    ?.scenario_definition_revision) === 14;
+  return [14, 15].includes(Number(payload?.materialization_trace?.seed_context
+    ?.scenario_definition_revision));
 }
 
 export async function assertLowerDvinaTraceSemanticConversationRows(
   pool,
-  payload
+  payload,
+  { replayInputs = null } = {}
 ) {
   if (!isLowerDvinaTraceSemanticRevision(payload)) return [];
   const partyId = payload.party_id;
@@ -76,8 +77,6 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
          FROM party_runtime.party_npc_decision_traces
         WHERE party_id=$1
           AND semantic_trace_schema='npc_semantic_decision_trace_v1'
-          AND semantic_request->>'schema'=
-            'npc_conversation_response_request_v1'
         ORDER BY request_id`,
       [partyId]
     ),
@@ -154,10 +153,14 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
   const statementRows = assertStatementsAndAudiences(payload, statements.rows);
   const contributionRows = assertContributions(payload, contributions.rows);
   const decisionProof = assertDecisions(payload, decisions.rows);
+  const conversationDecisionRows = decisionProof.rows.filter(
+    ({ semantic_request: request }) =>
+      request?.schema === 'npc_conversation_response_request_v1'
+  );
   assertChangeSetLineage(
     sessionRows,
     statementRows,
-    decisionProof.rows,
+    conversationDecisionRows,
     contributionRows
   );
   assertMessages({
@@ -165,7 +168,7 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
     payload,
     sessions: sessionRows,
     statements: statementRows,
-    decisions: decisionProof.rows,
+    decisions: conversationDecisionRows,
     contributions: contributionRows,
     rows: messages.rows
   });
@@ -174,5 +177,8 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
     rows: supportingPerceptions.rows,
     contributions: contributionRows
   });
+  if (replayInputs !== null) {
+    replayInputs.push(...structuredClone(decisionProof.replayInputs));
+  }
   return decisionProof.traces;
 }

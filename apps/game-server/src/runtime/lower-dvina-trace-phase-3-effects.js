@@ -4,18 +4,19 @@ import { projectConversationTemporalAdvance } from
 
 export function createTracePhase3TemporalAdvance({ phase2Advance }) {
   return async function advance(input) {
-    if (input.consequence?.phase3_kind == null) {
+    const semantic = input.consequence?.conversation?.semantic_exchange;
+    if (input.consequence?.phase3_kind == null && semantic == null) {
       return phase2Advance(input);
     }
-    const candidates =
-      input.relevant_state.temporal_boundary_candidates;
+    const candidates = semantic?.temporal_candidates
+      ?? input.relevant_state.temporal_boundary_candidates;
     if (!Array.isArray(candidates)) {
       throw Object.assign(
         new Error('Phase 3 temporal boundary candidates are required.'),
         { code: 'TRACE_PHASE_3_TEMPORAL_STATE_INVALID' }
       );
     }
-    if (input.consequence.phase3_kind === 'movement') {
+    if (input.consequence?.phase3_kind === 'movement') {
       const traversal = input.consequence.movement?.traversal;
       const clockUpdate = traversal?.clock_update;
       const result = traversal?.interval_result;
@@ -48,7 +49,6 @@ export function createTracePhase3TemporalAdvance({ phase2Advance }) {
         }
       };
     }
-    const semantic = input.consequence.conversation?.semantic_exchange;
     if (semantic != null) {
       return projectConversationTemporalAdvance({
         clockBefore: input.clock_before,

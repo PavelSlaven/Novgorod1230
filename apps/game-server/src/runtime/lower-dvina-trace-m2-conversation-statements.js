@@ -237,11 +237,12 @@ function statementFromPlan({ context, plan, contributionIndex,
     spoken_at: structuredClone(context.state.clock),
     duration: {
       owner: 'approved_activity_contract',
-      activity_ref: context.phase === 'phase_3'
+      activity_ref: context.activityProfile?.profile_id
+        ?? (context.phase === 'phase_3'
         ? (context.evidencePresented
             ? context.contracts.evidenceTalk.profile_id
             : context.contracts.talk.profile_id)
-        : context.contracts.negotiation.profile_id
+        : context.contracts.negotiation.profile_id)
     },
     social_delivery_result: socialDeliveryResult,
     source_plan_ref: ref(

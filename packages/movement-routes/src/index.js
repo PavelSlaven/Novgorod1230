@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
 export { createMovementPlanner, createRoutePlanActivationValidator } from './spatial-v3.js';
+export { planApprovedLocalZoneTransition } from './local-zone-transition.js';
 
 export const TRAVEL_CONDITION_MULTIPLIERS = deepFreeze({ normal:1, poor:1.5, bad:2, severe:3 });
 export const TRAVEL_LOAD_MULTIPLIERS = deepFreeze({ light:1, moderate:1.25, heavy:1.5, overloaded:2 });

@@ -10,23 +10,50 @@
 
 ## Не владеет
 
-Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Full autonomous NPC и combat resolution contracts остаются proposed; conversation может завершиться только combat handoff.
+Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Autonomous NPC action active в Phase 7 через общий temporal/persistence/visibility pipeline; combat resolution остаётся proposed, conversation может завершиться только combat handoff.
 
 ## Public API
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
+- `continuation` переносит только `remaining_intent` и `depends_on_refs`.
+  Следующий semantic step всегда заново выбирается моделью из обновлённой
+  player-safe working projection и только затем проходит exact binding и
+  applicability admission. Prepared draft не резервирует будущую operation.
+- `createTurnStepExecutionRegistry(...)` публикует через
+  `operationContract()` только те semantic operations, для которых в этом же
+  registry зарегистрирован фактический handler; request не получает
+  сценарный exhaustive option set.
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
-- `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC/same-time batch получает не более одной boundary/decision суммарно по всем режимам; listeners и witnesses без meaningful response boundary не становятся responders.
+- `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на mode-specific boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC получает не более одной boundary/decision данного mode и same-time batch; listeners и witnesses без meaningful response boundary не становятся responders.
+- Общий NPC actor-step хранит `active_npc_actor_steps` как коллекцию:
+  положительные действия нескольких NPC одного timestamp сначала все
+  стартуют, а completion effect меняет только соответствующий decision trace.
 - NPC contribution может запросить common social check только через refs,
   явно разрешённые request scope и исполненные code-owned check owner. В
   Lower Dvina revision 14 такой scope активен для лжи и торга Ратши; результат
   определяет только качество подачи и не выбирает ответ NPC.
 - `./temporal-advance`: `createTemporalAdvanceEngine`,
-  `advanceTemporalBoundaryBatch`, `createTemporalSourceResolver`,
-  `createTemporalAdvanceOwner`;
+  `advanceTemporalBoundaryBatch`, `advanceTemporalNpcDecisionBoundary`,
+  `createTemporalSourceResolver`, `createTemporalAdvanceOwner`, а также
+  registration общего NPC schedule-terminal effect из `@rus/npc-runtime`;
+  `startNpcActorStep` и `createNpcActorStepCompletionEffect` владеют общим
+  lifecycle `started → completion candidate → completed` для автономного
+  actor-step. Сценарный adapter передаёт только точную длительность, approved
+  profile refs и уже рассчитанные domain proposals;
+- `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
+  выводит batch identity (включая ordinal successive resolved batches на том же
+  GameTimestamp), consumption и persisted replay input из factual state,
+  агрегирует signals отдельно по каждому NPC subject, упорядочивает
+  boundaries по `scheduled_at → npc_ref → boundary_id`, последовательно
+  вызывает semantic resolver и actor-step на evolving working state; после
+  actor-step снова factual→signal protocol на том же timestamp до fixed point
+  либо typed temporal safety error, затем `continueAdvance`; `domain_rejected`
+  не consume-ит signals своей boundary: остальные same-time siblings получают
+  текущий working state, но `unresolved_domain_rejection` сохраняет rejected
+  result и unconsumed signal IDs, удерживая clock на timestamp;
   `./temporal-carriers`:
   `createTemporalCarrierProposalEngine`; `./temporal-proposal-merger`:
   `mergeTemporalProposals`, `TemporalProposalMergeError`.
@@ -41,6 +68,10 @@
   registrations один раз в composition root. Сценарный consumer передаёт
   только candidates и declarative effect descriptors; callback execution,
   same-time ordering и finalization остаются у общего owner.
+- Один temporal slice может передать ordered `continuous_effects`: общий owner
+  применяет их последовательно к evolving projection и объединяет proposals.
+  Это позволяет положительному conversation segment завершать активную
+  parent activity без второго clock owner или двойного учёта elapsed time.
 - Spatial/target surfaces: `./spatial-v3-*` (request profile, orchestration, execution, write plan, target shadow composition) и `createCombinedWritePlanBuilder`; `./compat` — explicit legacy adapter.
 - `./spatial-v3-target-composition` exports separate reviewed factories for
   historical target/shadow tests and active `production_sole_owner` wiring;
@@ -70,7 +101,13 @@ Temporal v4 surfaces use current `temporal-world-v1.1` /
 `turn_step_plan_v1` как sole semantic path свободной заявки игрока и сохранил
 exact registered path перед ним. Revision 14 / `spatial-v3-production-v4`
 активировал conversation contribution path для фаз 3–4 без bounded fallback.
-Full autonomous NPC и combat resolution documents остаются `proposed`;
+`spatial-v3-production-v5` активировал Phase 7 autonomous NPC path: fire rest
+30 minutes, boundary at +25, actor-step at that same timestamp and continuation
+of the common temporal owner to +30 from the updated working projection. В
+составном Ходе 10 разговор занимает последние пять минут этого активного
+отдыха: root elapsed остаётся 30 минут, а parent completion и conversation
+фиксируются на одном T+30 batch. Combat
+resolution document остаётся `proposed`;
 historical bounded Phase 3/4 доступен только по явному revision pin.
 
 ## Тесты

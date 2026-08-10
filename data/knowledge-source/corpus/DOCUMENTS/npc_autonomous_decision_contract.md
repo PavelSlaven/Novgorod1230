@@ -1,6 +1,6 @@
 # Контракт автономных решений и действий NPC
 
-**Статус:** `proposed`, подготовлен к тестированию и последующему внедрению\
+**Статус:** `active`, production contract Phase 7 / `spatial-v3-production-v5`\
 **Идентификатор:** `npc_autonomous_decision_contract_v1`\
 **Владелец решения NPC:** `@rus/npc-runtime`\
 **Владелец оркестрации и общего actor-step:** `@rus/turn`\
@@ -48,7 +48,7 @@ LLM возвращает одно односоставное действие в
 9. Закрытый словарь причин содержит только `self`, `others`, `environment`, `objective`, `communication`; значимость — только `material` или `critical`.
 10. Все новые сигналы одного NPC в одном полностью разрешённом same-time batch агрегируются в одну boundary и один LLM-вызов; новая очередь, scheduler или таблица триггеров не создаются.
 
-## 3. Текущее состояние `main` и целевое изменение
+## 3. Текущее состояние `main` и active-модель
 
 В актуальном `main` уже существуют:
 
@@ -64,21 +64,25 @@ LLM возвращает одно односоставное действие в
 - остановка temporal batch через `stop_after_current_batch`;
 - детерминированное упорядочивание NPC decision requests.
 
-Текущая active-модель строит закрытый набор утверждённых вариантов и разрешает LLM выбрать только `option_id` и `command_token`.
+Historical bounded-модель строит закрытый набор утверждённых вариантов и
+разрешает LLM выбрать только `option_id` и `command_token`. Она сохраняется
+только для genuinely closed choices и явно pinned historical revisions.
 
-Целевая модель заменяет содержание `reaction_decision`:
+Active Phase 7 заменяет содержание `reaction_decision` для autonomous mode:
 
 ```text
-текущий main:
-approved option set → bounded LLM choice → code-owned command
-
-целевой контракт:
+active autonomous:
 NPC-safe context → semantic LLM decision → structured actor step plan
 ```
 
 Schedule, perception, temporal ordering, persistence и профильные владельцы механики сохраняются.
-
-До согласованного code/documentation cutover этот документ имеет статус `proposed`.
+Phase 7 «Отдых у огня» длится ровно 30 минут: на +25 возникает общая
+autonomous boundary Жданко. Request получает не scenario option set, а
+фактически зарегистрированные текущим actor-step операции и доступные refs.
+Выбранный plan применяется к working projection на том же timestamp +25;
+после этого общий temporal owner продолжает интервал до +30 уже с начатым
+действием. Temporal execution, persistence и player-safe visibility остаются
+code-owned. Combat resolution не активируется и остаётся `proposed`.
 
 ## 4. Архитектурные владельцы
 
@@ -399,7 +403,7 @@ LLM не вызывается из-за:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:batch-18:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:batch-18:npc-ratsha",
   "decision_mode": "autonomous",
   "scheduled_at": {},
   "npc_ref": {
@@ -419,16 +423,22 @@ LLM не вызывается из-за:
   "signal_refs": [],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:batch-18:npc-ratsha"
+  "idempotency_key": "npc-decision:autonomous:batch-18:npc-ratsha"
 }
 ```
 
 Инварианты:
 
 - `decision_mode = autonomous`;
-- `decision_mode` является свойством boundary и не входит в её identity;
+- `decision_mode` входит в новую boundary identity;
 - один NPC имеет не более одной aggregated boundary и одного LLM-вызова
-  на один fully resolved same-time batch суммарно по всем режимам;
+  данного mode на один fully resolved same-time batch;
+- persisted historical identity без mode replay-ится без миграции и не
+  используется при создании новой boundary;
+- domain/scenario owners выдают только generic signal descriptors, а общий
+  temporal/turn owner после полного batch выводит batch identity, consumption
+  и persisted replay input из factual state, строит signals и вызывает общий
+  NPC-runtime aggregator;
 - `resolution_class = reaction_decision`;
 - boundary содержит все новые signals NPC этого batch;
 - boundary не содержит готового действия;
@@ -647,7 +657,7 @@ LLM не может объявить:
   "schema": "npc_action_decision_request_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -778,9 +788,19 @@ LLM не может объявить:
 - `decision_reasons.perceived_changes` кратко описывает агрегированные source events с точки зрения NPC и не вводит новые trigger types.
 - Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
 - В `available_resources` входят только известные и доступные NPC сущности.
+  Контролируемый NPC ресурс считается известным; чужой ресурс требует и
+  физической доступности, и persisted source-backed perception/knowledge,
+  ссылающегося на exact resource ref.
+- Belief, hypothesis или uncertainty сами по себе не доказывают наличие и
+  положение чужого ресурса и не добавляют его в `available_resources`.
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.
+- `social_role.role_ref`, тело, настроение, отношения и ресурсы проецируются
+  общим NPC-safe builder только из supplied persisted snapshots.
+- Если persisted snapshot не содержит необязательное субъективное поле,
+  request сохраняет контрактный `null` или пустой массив; scenario code не
+  подставляет роль, настроение, отношения, ценности или prose facts.
 
 ### 15.2. Профили NPC
 
@@ -821,7 +841,7 @@ LLM не может объявить:
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
   "decision_index": 2,
@@ -1471,7 +1491,7 @@ NPC может действовать на основании ложного у�
   "schema": "npc_semantic_decision_trace_v1",
   "request_id": "npc-request-42",
   "root_turn_id": "turn-17",
-  "boundary_id": "npc-decision:event-17:npc-ratsha",
+  "boundary_id": "npc-decision:autonomous:event-17:npc-ratsha",
   "npc_ref": "npc-ratsha",
   "committed_state_version": 17,
   "working_revision": 4,
@@ -1483,11 +1503,19 @@ NPC может действовать на основании ложного у�
 
 ### 23.3. Повтор
 
-Повтор с тем же committed `boundary_id`:
+Повтор с тем же committed `boundary_id` (trigger_aligned):
 
 - не вызывает LLM;
 - не выполняет действие повторно;
 - возвращает сохранённый decision trace и результат.
+
+Persisted `boundary_snapshot` / `signal_records` / `request_snapshot` /
+`canonical_input_digest` могут храниться как proof, но сами по себе не
+создают новый mandatory mismatch fail: достаточно совпадения committed
+`boundary_id` и сохранённого decision/idempotency. Конфликт объявляется
+только при реальном расхождении identity (другой `boundary_id` или
+противоречивый persisted trace). Trace-only replay с тем же
+`boundary_id` допускается.
 
 Если сбой произошёл до commit, решение ещё не стало фактом мира и может быть рассчитано заново.
 
@@ -1526,7 +1554,7 @@ LLM не вызывается внутри SQL transaction.
   "schema": "npc_step_plan_v1",
   "request_id": "npc-request-guard-1",
   "root_turn_id": "turn-18",
-  "boundary_id": "npc-decision:entry-1:guard-1",
+  "boundary_id": "npc-decision:autonomous:entry-1:guard-1",
   "committed_state_version": 18,
   "working_revision": 2,
   "decision_index": 1,

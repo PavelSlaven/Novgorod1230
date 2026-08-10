@@ -1190,7 +1190,7 @@ LLM не вызывается для NPC только потому, что он:
 ```json
 {
   "schema": "npc_decision_boundary_v1",
-  "boundary_id": "npc-decision:batch-42:eremey",
+  "boundary_id": "npc-decision:conversation:batch-42:eremey",
   "decision_mode": "conversation",
   "scheduled_at": {},
   "npc_ref": {
@@ -1213,15 +1213,16 @@ LLM не вызывается для NPC только потому, что он:
   ],
   "state_version": "17",
   "resolution_class": "reaction_decision",
-  "idempotency_key": "npc-decision:batch-42:eremey"
+  "idempotency_key": "npc-decision:conversation:batch-42:eremey"
 }
 ```
 
 `conversation_id`, `exchange_id`, source statements и perceived messages загружаются при построении mode-specific request из active session и referenced signals. Boundary не дублирует эти данные.
 
-`decision_mode` является свойством выбранной boundary, но не частью её
-identity. Один NPC в одном fully resolved same-time batch имеет не более одной
-aggregated boundary и одного LLM-вызова суммарно по всем режимам решения.
+`decision_mode` является частью новой boundary identity. Один NPC в одном fully
+resolved same-time batch имеет не более одной aggregated boundary и одного
+LLM-вызова данного mode. Persisted historical identity без mode replay-ится
+без миграции и не используется для новой boundary.
 
 ## 23. Несколько NPC и порядок ответов
 
@@ -1278,7 +1279,7 @@ Conversation exchange сохраняет конечный `max_contributions_per
 {
   "schema": "npc_conversation_response_request_v1",
   "request_id": "conversation-response-request-42",
-  "boundary_id": "npc-decision:batch-42:eremey",
+  "boundary_id": "npc-decision:conversation:batch-42:eremey",
   "conversation_id": "conversation:party-1:42",
   "exchange_id": "exchange:conversation-42:7",
   "state_version": 17,

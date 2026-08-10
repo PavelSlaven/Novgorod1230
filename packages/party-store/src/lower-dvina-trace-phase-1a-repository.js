@@ -1,5 +1,7 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
+import { normalizedPartyAssets } from
+  './lower-dvina-trace-phase-1a-read-assets.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
@@ -76,6 +78,15 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           WHERE i.party_id=$1 ORDER BY i.item_id`,
         [partyId]
       )).rows;
+      const containers = (await query(
+        `SELECT container_id,run_id,template_id,anchor_id,
+                parent_container_id,holder_npc_id,holder_character_id,
+                physical_position,equipment_slot_category_id,
+                condition_state,closure_state,state,state_version
+           FROM party_runtime.party_containers
+          WHERE party_id=$1 ORDER BY container_id`,
+        [partyId]
+      )).rows;
       const conditions = (await query(
         `SELECT condition_id,condition_profile_ref,status,state_version,created_change_set_id,terminal_change_set_id
            FROM party_runtime.party_actor_active_conditions
@@ -137,6 +148,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         run,
         choices,
         items,
+        containers,
         obligations,
         conditions,
         counts,
@@ -168,6 +180,21 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           controller_character_id: item.controller_character_id,
           claim_state: item.claim_state
         }
+      }));
+      const normalizedContainers = containers.map((container) => ({
+        container_id: container.container_id,
+        run_id: container.run_id,
+        template_id: container.template_id,
+        anchor_id: container.anchor_id,
+        parent_container_id: container.parent_container_id,
+        holder_npc_id: container.holder_npc_id,
+        holder_character_id: container.holder_character_id,
+        physical_position: container.physical_position,
+        equipment_slot_category_id: container.equipment_slot_category_id,
+        condition_state: container.condition_state,
+        closure_state: container.closure_state,
+        state: container.state,
+        state_version: Number(container.state_version)
       }));
       const normalizedObligations = obligations.map((obligation) => {
         const sealed = (payload.immediate.promise_instances ?? []).find(
@@ -216,6 +243,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         materialization_trace: run.trace,
         choices,
         items: normalizedItems,
+        containers: normalizedContainers,
         promise_instances: normalizedObligations,
         initial_snapshot_identity: { state_version: 0, state_digest: snapshot.state_digest },
         integrity: {
@@ -265,6 +293,7 @@ function assertRoundTrip({
   run,
   choices,
   items,
+  containers,
   obligations,
   conditions,
   counts,
@@ -315,8 +344,14 @@ function assertRoundTrip({
     throw error;
   }
   const expectedItemIds = new Set(payload.immediate.items.map((value) => value.instance_id));
+  const expectedContainerIds = new Set(
+    payload.immediate.containers.map((value) => value.instance_id)
+  );
   const expectedNpcIds = new Set(expectedNpcs.map((value) => value.instance_id));
   if (items.some((value) => !expectedItemIds.has(value.item_id))
+    || containers.some(
+      (value) => !expectedContainerIds.has(value.container_id)
+    )
     || npcs.some((value) => !expectedNpcIds.has(value.npc_id))
     || conditions.some((value) => value.status !== 'active'
       || !expectedConditions.some((expected) => expected.state === value.condition_profile_ref?.state))
@@ -340,6 +375,7 @@ function assertRoundTrip({
     npcs,
     clock,
     items,
+    containers,
     obligations,
     conditions,
     run,
@@ -365,6 +401,7 @@ function buildActualPersistedProjection({
   npcs,
   clock,
   items,
+  containers,
   obligations,
   conditions,
   run,
@@ -500,58 +537,6 @@ function buildActualPersistedProjection({
         updated_change_set_id: npc.updated_change_set_id
       }))
     } : {}),
-    items: items.map((item) => ({
-      item_id: item.item_id,
-      run_id: item.run_id,
-      template_id: item.template_id,
-      profile_id: item.profile_id,
-      category_id: item.category_id,
-      quantity: item.quantity,
-      condition_state: item.condition_state,
-      legal_status: item.legal_status,
-      state: item.state,
-      placement: {
-        anchor_id: item.anchor_id,
-        container_id: item.placement_container_id,
-        holder_npc_id: item.holder_npc_id,
-        holder_character_id: item.holder_character_id,
-        physical_position: item.physical_position,
-        equipment_slot_category_id: item.equipment_slot_category_id
-      },
-      ownership: {
-        ownership_id: item.ownership_id,
-        container_id: item.ownership_container_id,
-        owner_npc_id: item.owner_npc_id,
-        owner_character_id: item.owner_character_id,
-        owner_party: item.owner_party,
-        owner_external_ref: item.owner_external_ref,
-        controller_npc_id: item.controller_npc_id,
-        controller_character_id: item.controller_character_id,
-        claim_state: item.claim_state
-      }
-    })),
-    obligations: obligations.map((obligation) => ({
-      obligation_id: obligation.obligation_id,
-      policy_ref: obligation.policy_ref,
-      policy_version: obligation.policy_version,
-      promisor_ref: obligation.promisor_ref,
-      beneficiary_ref: obligation.beneficiary_ref,
-      witness_refs: obligation.witness_refs,
-      scope_snapshot: obligation.scope_snapshot,
-      current_state: obligation.current_state,
-      current_state_fact: obligation.current_state_fact,
-      state_version: Number(obligation.state_version),
-      created_change_set_id: obligation.created_change_set_id,
-      last_change_set_id: obligation.last_change_set_id
-    })),
-    clock: {
-      whole_minutes: clock.whole_minutes,
-      subminute_numerator: clock.subminute_numerator,
-      subminute_denominator: clock.subminute_denominator,
-      clock_owner_kind: clock.clock_owner_kind,
-      clock_owner_id: clock.clock_owner_id,
-      state_version: Number(clock.state_version),
-      updated_change_set_id: clock.updated_change_set_id
-    }
+    ...normalizedPartyAssets({ items, containers, obligations, clock })
   };
 }

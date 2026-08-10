@@ -34,11 +34,13 @@ export function appendNpcDecisionTraceWrites({
       signal_records: orderedSignals,
       canonical_input_digest: canonicalInputDigest
     };
+    const npcId = semanticRequestNpcId(request);
+    const stateVersion = semanticRequestStateVersion(request);
     appends.push(row('party_npc_decision_traces', request.request_id, {
       request_id: request.request_id,
       party_id: partyId,
-      npc_id: request.npc_ref.entity_id,
-      state_version: request.state_version,
+      npc_id: npcId,
+      state_version: stateVersion,
       option_id: null,
       command_token: null,
       options_digest: null,
@@ -67,4 +69,26 @@ export function appendNpcDecisionTraceWrites({
       semantic_trace_schema: trace.schema
     }));
   }
+}
+
+function semanticRequestNpcId(request) {
+  const npcId = request?.schema === 'npc_action_decision_request_v1'
+    ? request.npc_ref
+    : request?.npc_ref?.entity_id;
+  if (typeof npcId !== 'string' || npcId.length === 0) {
+    throw new TypeError('Semantic NPC decision request requires one NPC id.');
+  }
+  return npcId;
+}
+
+function semanticRequestStateVersion(request) {
+  const stateVersion = request?.schema === 'npc_action_decision_request_v1'
+    ? request.committed_state_version
+    : request?.state_version;
+  if (!Number.isSafeInteger(stateVersion) || stateVersion < 1) {
+    throw new TypeError(
+      'Semantic NPC decision request requires a committed state version.'
+    );
+  }
+  return stateVersion;
 }

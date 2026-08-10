@@ -22,14 +22,23 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 - `NPC_RUNTIME_OWNER`, `NPC_RUNTIME_RESOURCE_LIMITS`, `NPC_RUNTIME_TYPED_ERRORS`
 - `proposeNpcScheduleTransition(input)` — возвращает frozen schedule proposal, evidence и exact temporal boundary.
+- `createNpcScheduleDecisionTerminalEffect(...)` /
+  `resolveNpcScheduleDecisionTerminal(...)` — строят общий `npc_schedule`
+  candidate и преобразуют применимый terminal schedule state в factual
+  transition и declarative NPC decision signal descriptor; сценарий передаёт
+  только refs, состояния и NPC-safe summary.
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
-- `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/same-time batch не более одной boundary суммарно по всем режимам.
+- `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/mode/same-time batch не более одной boundary. Новая identity включает mode (`autonomous|conversation`) либо combat context; persisted pre-cutover identity без mode принимается только для exact replay и не переписывается.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; current revision-14 production consumer использует conversation mode.
+- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots. Общий resource projector допускает контролируемый NPC ресурс либо физически доступный чужой ресурс с source-backed factual perception/`known_facts` exact resource ref; одной location/access записи, belief, hypothesis или uncertainty недостаточно. `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
+- `selectApplicableNpcActivityExecution(input)` — выбирает ровно один
+  applicable approved activity execution по semantic activity kind и реальным
+  item/location refs; отсутствующая цель или неоднозначность дают typed reject.
 - `proposeNpcReactionOptions({ context_snapshot, policy_snapshot, persisted_proposal? })` — чисто фильтрует approved rules, возвращает формальный конечный request и проверяет replay по полной causal identity.
 - `buildNpcReactionPolicySnapshotFromAuthoringRow(row)` — чисто проецирует одну exact approved authoring-запись в закрытый policy/command snapshot и fail-closed проверяет handler/consequence bindings.
 - `decideBoundedNpcAction(...)` — валидирует один `option_id` и `command_token` из конечного option set и возвращает decision trace.
-- `orderNpcDecisionRequests(requests)` — детерминированно упорядочивает formal requests по exact timestamp, NPC и request id.
+- `orderNpcDecisionRequests(requests)` — детерминированно упорядочивает formal requests по exact timestamp, NPC и request id/boundary_id; поддерживает bounded `npc_decision_request` и autonomous `npc_action_decision_request_v1`.
+- `orderNpcDecisionBoundaries(boundaries)` — сортирует `npc_decision_boundary_v1` по `scheduled_at → npc_ref → boundary_id`.
 
 ## Формальные контракты
 
@@ -70,10 +79,16 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 ## Activation и тесты
 
-В active `spatial-v3-production-v4` revision-14 conversation contract применяется только через единый
-v3 orchestration/write path. Production v2 является explicit
-migration/rollback source, но не runtime path; partial activation, dual write
-и in-turn fallback запрещены. Tests:
+В active `spatial-v3-production-v5` revision-14 conversation и Phase-7 autonomous
+contracts применяются через единый orchestration/write path. Phase 7 фиксирует
+fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
+точные actor-step operations из зарегистрированных domain handlers
+(`operation_contract` публикует exact executable combinations owners —
+не narrative whitelist и не cartesian kinds×targets), применяется на
+том же timestamp; activity Жданко может продолжаться после +30, пока
+общий temporal owner завершает rest Микулы; temporal/persistence/
+visibility остаются code-owned. Production v4 является explicit migration/rollback source, но не
+runtime path; partial activation, dual write и in-turn fallback запрещены.
 Tests покрывают exact schedule/perception, five-category signals, one
 NPC/batch aggregation, semantic contracts, conversation contracts, replay и
 historical bounded choices.

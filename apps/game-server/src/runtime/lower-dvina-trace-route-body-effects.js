@@ -43,7 +43,8 @@ export function applyApprovedTraceRouteBodyEffect({ effect, ...input }) {
 }
 
 function valid(effect) {
-  return effect?.selection_policy === 'fixed_approved_effect' && effect?.rng_consumption === 'forbidden'
+  return ['fixed_approved_effect', 'code_owned_within_approved_bounds']
+    .includes(effect?.selection_policy) && effect?.rng_consumption === 'forbidden'
     && Number.isSafeInteger(effect.elapsed_minutes) && effect.elapsed_minutes > 0
     && ['health', 'satiety', 'energy'].every((key) => Number.isSafeInteger(effect?.exact_deltas?.[key]))
     && Array.isArray(effect.condition_outcomes);

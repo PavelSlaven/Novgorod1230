@@ -55,6 +55,7 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
 }) {
   const next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   delete next.relevant_hidden_state;
   const clockChanged = canonicalDigest(envelope.time_update.clock_after)
     !== canonicalDigest(state.clock);

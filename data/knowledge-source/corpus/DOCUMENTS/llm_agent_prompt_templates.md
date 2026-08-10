@@ -2,7 +2,7 @@
 
 ## Нормативная актуализация materialization v2
 
-Шаблоны ниже применяются только в разрешённых ролях: `turn_step_planner`, `turn_step_planner_repair`, revision-14 player conversation interpreter и NPC conversation responder, `bounded_decision`, `player_character`, `audit` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит genuinely closed options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; этот протокол не является fallback для player/NPC semantic boundary. Для player planner допустим только строгий `turn_step_request_v1` → `turn_step_plan_v1`; conversation роли возвращают ровно один contribution plan по профильному active contract.
+Шаблоны ниже применяются только в разрешённых ролях: `turn_step_planner`, `turn_step_planner_repair`, player conversation interpreter, NPC conversation responder, `npc_autonomous_decider`, `npc_autonomous_decider_format_repair`, `bounded_decision`, `player_character`, `audit` и `narrator`. Промт не может расширить полномочия роли. Для bounded decision вход содержит genuinely closed options и одноразовые command tokens, а выход — только выбранные `option_id`, `command_token`, `request_id` и `state_version`; этот протокол не является fallback для player/NPC semantic boundary. Для player planner допустим только строгий `turn_step_request_v1` → `turn_step_plan_v1`; conversation роли возвращают ровно один contribution plan, autonomous decider — один `npc_step_plan_v1` по профильному active contract. NPC combat decision остаётся `proposed`.
 
 G5, NPC, authored/significant/hidden items, containers, inventories и штатные последствия материализует код. Player step plan может предложить ordinary direct action result только в трёх разрешённых origin classes; code-owned admission проверяет его и сохраняет exact runtime mechanics snapshot. Если старый шаблон ниже поручает LLM materialization вне этой границы, такая инструкция не применяется.
 
@@ -27,6 +27,14 @@ attribute/skill refs, поэтому его contribution обязан испол
 `resolution = automatic` и `check = null`. Общая conversation schema допускает
 NPC `check_required` только в профиле, где code-owned check owner явно
 зарегистрировал непустой scope; prompt не может расширить этот scope.
+
+Lower Dvina Trace revision 15 передаёт autonomous decider только субъективные
+knowledge, perception, memory, goals, relationships, body state, доступные
+resources и зарегистрированный operation contract самого Жданко. Основная
+роль выбирает одно ближайшее намерение; repair исправляет только структуру,
+enum и refs. Обеим ролям запрещено объявлять factual movement, destruction,
+escape, exact time, RNG, body delta, consequence или write plan. Исполнение,
+повторная state-version проверка, persistence и replay принадлежат коду.
 
 ## Назначение документа
 

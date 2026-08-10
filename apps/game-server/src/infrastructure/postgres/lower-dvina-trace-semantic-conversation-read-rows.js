@@ -1,19 +1,22 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
   buildNpcSemanticDecisionTrace,
-  validateConversationContributionPlan,
   validateConversationSession,
   validateConversationStatementEvent,
-  validateNpcConversationResponseRequest,
   validateNpcDecisionBoundary,
   validateNpcDecisionSignal,
   validateNpcSemanticDecisionTrace
 } from '@rus/npc-runtime';
-import { projectConversationReceivedClaims } from
-  '@rus/visibility-knowledge-memory';
+import { projectConversationReceivedClaims } from '@rus/visibility-knowledge-memory';
+import {
+  semanticPlanValid,
+  semanticRequestNpcId,
+  semanticRequestStateVersion,
+  semanticRequestValid,
+  semanticSignalsMatchBoundary
+} from './lower-dvina-trace-semantic-decision-shapes.js';
 import { phase2IntegrityError } from './lower-dvina-trace-phase-2-read.js';
-import { semanticDecisionTraceReference } from
-  './lower-dvina-trace-conversation-state.js';
+import { semanticDecisionTraceReference } from './lower-dvina-trace-conversation-state.js';
 import { terminalConsumedSignalIds } from './lower-dvina-trace-semantic-conversation-read-terminal.js';
 import {
   fail,
@@ -25,15 +28,14 @@ import {
   statementContract,
   timestampMatches
 } from './lower-dvina-trace-semantic-conversation-read-shared.js';
-export function assertChangeSetLineage(sessions, statements, decisions,
-  contributions = []) {
+export function assertChangeSetLineage(sessions, statements, decisions, contributions = []) {
   const latestByConversation = new Map();
   for (const decision of decisions) {
     const request = decision.semantic_request;
+    if (request?.schema === 'npc_action_decision_request_v1') continue;
     const current = latestByConversation.get(request.conversation_id);
     const currentStateVersion = Number(
-      current?.semantic_request.state_version ?? -1
-    );
+      current?.semantic_request?.state_version ?? -1);
     const decisionStateVersion = Number(request.state_version);
     const currentWorkingRevision = Number(current?.working_revision ?? -1);
     const decisionWorkingRevision = Number(decision.working_revision);
@@ -193,7 +195,8 @@ function matchesPerceptionProjection(message, statement) {
   return canonicalDigest(message.claims) === canonicalDigest(expectedClaims);
 }
 export function assertDecisions(payload, rows) {
-  if (Object.hasOwn(payload, 'npc_semantic_decision_traces')) fail();
+  if (Object.hasOwn(payload, 'npc_semantic_decision_traces')
+      || Object.hasOwn(payload, 'npc_semantic_decision_inputs')) fail();
   const expected = sorted(
     payload.npc_semantic_decision_refs ?? [],
     'request_id'
@@ -201,8 +204,7 @@ export function assertDecisions(payload, rows) {
   const expectedById = new Map(expected.map(
     (trace) => [trace.request_id, trace]
   ));
-  const actual = [];
-  const consumedSignalIds = [];
+  const actual = [], replayInputs = [], consumedSignalIds = [];
   const persistedSignals = new Map();
   const snapshotSignals = new Map((payload.npc_decision_signals ?? []).map(
     (record) => [record?.signal?.signal_id, record]
@@ -213,19 +215,21 @@ export function assertDecisions(payload, rows) {
     const boundary = row.boundary_snapshot;
     const plan = row.semantic_plan;
     const signalRecords = row.signal_records;
-    if (!validateNpcConversationResponseRequest(request)
+    if (!semanticRequestValid(request)
         || !validateNpcDecisionBoundary(boundary)
-        || !validateConversationContributionPlan(plan, request)
+        || !semanticPlanValid(plan, request)
         || !Array.isArray(signalRecords)
         || signalRecords.some((signal) => !validateNpcDecisionSignal(signal))
+        || !semanticSignalsMatchBoundary(
+          signalRecords, boundary, snapshotSignals)
         || row.request_id !== request.request_id
-        || row.npc_id !== request.npc_ref.entity_id
-        || Number(row.state_version) !== request.state_version
+        || row.npc_id !== semanticRequestNpcId(request)
+        || Number(row.state_version) !== semanticRequestStateVersion(request)
         || row.status !== 'committed'
         || boundary.boundary_id !== request.boundary_id
-        || canonicalDigest(boundary.npc_ref)
-          !== canonicalDigest(request.npc_ref)
-        || boundary.state_version !== String(request.state_version)
+        || boundary.npc_ref.entity_id !== semanticRequestNpcId(request)
+        || boundary.state_version
+          !== String(semanticRequestStateVersion(request))
         || row.boundary_id !== boundary.boundary_id
         || row.decision_mode !== boundary.decision_mode
         || row.root_turn_id !== expectedRef?.root_turn_id
@@ -274,16 +278,12 @@ export function assertDecisions(payload, rows) {
         || row.canonical_input_digest !== inputDigest
         || row.trace_digest !== canonicalDigest(persistedTrace)) fail();
     actual.push(trace);
+    replayInputs.push(persistedTrace);
     for (const signal of signalRecords) {
       const signalId = signal.signal_id;
       if (persistedSignals.has(signalId)) fail();
       persistedSignals.set(signalId, signal);
       consumedSignalIds.push(signalId);
-      const snapshot = snapshotSignals.get(signalId);
-      if (!snapshot
-          || snapshot.same_time_batch_key
-            !== boundary.same_time_batch_ref.entity_id
-          || canonicalDigest(snapshot.signal) !== canonicalDigest(signal)) fail();
     }
   }
   const actualRefs = actual.map(semanticDecisionTraceReference);
@@ -293,5 +293,5 @@ export function assertDecisions(payload, rows) {
       || canonicalDigest([...consumedSignalIds].sort())
         !== canonicalDigest([...(payload.consumed_npc_decision_signal_ids ?? [])]
           .sort())) fail();
-  return { rows, traces: actual };
+  return { rows, traces: actual, replayInputs };
 }

@@ -8,6 +8,7 @@ export {
   buildNpcDecisionBoundary,
   buildNpcDecisionSignal,
   evaluateNpcDecisionSignals,
+  orderNpcDecisionBoundaries,
   validateNpcDecisionBoundary,
   validateNpcDecisionSignal
 } from './decision-signals.js';
@@ -30,6 +31,8 @@ export {
 } from './conversation-contracts.js';
 export {
   buildNpcActionDecisionRequest,
+  buildNpcActionDecisionRequestFromSnapshots,
+  projectNpcSafeResourceSnapshots,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,
   validateNpcActionDecisionRequest,
@@ -42,6 +45,15 @@ export {
   resolveConversationVisualPerception
 } from './perception.js';
 export { proposeNpcScheduleTransition } from './schedule.js';
+export {
+  createNpcScheduleDecisionTerminalEffect,
+  NPC_SCHEDULE_DECISION_TERMINAL_EFFECT_REF,
+  npcScheduleDecisionTransitionId,
+  resolveNpcScheduleDecisionTerminal
+} from './schedule-decision-terminal.js';
+export { selectApplicableNpcActivityExecution } from
+  './activity-execution-selection.js';
+export { matchesOperationContract } from './operation-contract-match.js';
 export {
   buildNpcReactionPolicySnapshotFromAuthoringRow
 } from './reaction-policy.js';

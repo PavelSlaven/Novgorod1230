@@ -24,6 +24,13 @@ import {
   buildTurnStepPreparedTimeUpdate,
   requireTurnStepPreparedEffectLedger
 } from './turn-step-prepared-effects.js';
+import { executeTurnStepActorStep } from './turn-step-actor-step.js';
+import {
+  buildTurnStepPreparedDomainConsequence,
+  mergeTurnStepDraftConsequence
+} from './turn-step-workflow-draft.js';
+import { bindTurnStepPreparedConsequence } from
+  './turn-step-prepared-effects.js';
 
 export {
   createTurnWorkflowContext,
@@ -39,7 +46,11 @@ export {
   requireTurnStepPreparedEffectLedger,
   requestPlayerConversationContribution,
   requestNpcSemanticDecision,
-  runConversationExchange
+  runConversationExchange,
+  executeTurnStepActorStep,
+  buildTurnStepPreparedDomainConsequence,
+  mergeTurnStepDraftConsequence,
+  bindTurnStepPreparedConsequence
 };
 export {
   TURN_PRIMARY_MODES,

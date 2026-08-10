@@ -10,6 +10,11 @@ const turnStepBindings = JSON.parse(await readFile(
     + 'phase-m1-content/turn-step-bindings.json',
   'utf8'
 ));
+const revision15Bindings = JSON.parse(await readFile(
+  'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
+    + 'phase-m3-content/turn-step-bindings.json',
+  'utf8'
+));
 const commandIds = turnStepBindings.domain_bindings.map(
   ({ command_id: commandId }) => commandId
 );
@@ -31,7 +36,9 @@ const targetRefs = Object.freeze({
   evidence: 'trace_ld_v1_evidence_blue_wool',
   dryingShed: 'trace_ld_v1_loc_old_drying_shed',
   ratsha: 'npc:ratsha',
-  onisim: 'npc:onisim'
+  onisim: 'npc:onisim',
+  participatingFisher: 'npc:fisher-1',
+  otherFisher: 'npc:fisher-2'
 });
 
 test('historical revision keeps the original bounded command definitions', () => {
@@ -115,6 +122,57 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
   assert.equal(carry.matches({
     raw_text: 'Хочу отнести Онисима, если получится.'
   }), false, 'revision 13 paraphrases must use the step planner');
+});
+
+test('revision 15 keeps the exact fast path and maps a free rest phrase', () => {
+  const revision15Commands = revision15Bindings.domain_bindings.map(
+    ({ command_id: commandId }) => ({
+      command_id: commandId,
+      matches: () => false,
+      ...handlers
+    }));
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: revision15Commands,
+    bundle: {
+      definition_revision: 15,
+      turn_step_bindings: revision15Bindings
+    },
+    targetRefs
+  });
+  const rest = bound.find(({ command_id: id }) =>
+    id === 'lower_dvina_trace.rest_by_fire_and_dry_clothing');
+  assert.equal(rest.matches({
+    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду.'
+  }), true, 'registered Russian text must remain on the code fast path');
+  assert.equal(rest.matches({
+    raw_text: 'Давайте немного погреемся у костра и просушим одежду'
+  }), false, 'a free phrase must enter the common player-step planner');
+  assert.equal(rest.matches({
+    raw_text: 'Отдохнуть у огня полчаса и подсушить одежду. '
+      + 'Попросить Еремея и рыбака пойти со мной к Жданко.'
+  }), false,
+  'compound Turn 10 must not select the Phase 7 exact command alone');
+  assert.equal(rest.semantic_binding.matches({ operation: {
+    op: 'request_activity',
+    actor_ref: targetRefs.actor,
+    activity_kind: 'recover',
+    target_refs: [targetRefs.fishingCamp],
+    description: 'погреться у костра и просушить одежду'
+  } }), true, 'the validated player-step plan must bind the same command');
+  const companions = bound.find(({ command_id: id }) =>
+    id === 'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse');
+  assert.equal(companions.semantic_binding.matches({ operation: {
+    op: 'emit_interaction',
+    actor_ref: targetRefs.actor,
+    interaction_kind: 'request',
+    target_actor_refs: [
+      targetRefs.eremey,
+      targetRefs.participatingFisher,
+      targetRefs.otherFisher
+    ],
+    instrument_refs: [],
+    content_summary: 'попросить пойти к Жданко'
+  } }), true);
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

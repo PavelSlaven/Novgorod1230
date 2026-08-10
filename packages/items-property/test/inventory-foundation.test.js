@@ -90,6 +90,10 @@ test('inventory foundation: topology blocks duplicate placement, cycles, depth, 
   assert.equal(validateInventoryTopology(missingPosition).errors[0].code, 'INVENTORY_PHYSICAL_POSITION_REQUIRED');
   const containerMissingPosition = state({ containers: [{ container_id: 'bag-1', template_id: 'bag' }], container_placements: [{ container_id: 'bag-1', holder_character_id: actorId }] });
   assert.equal(validateInventoryTopology(containerMissingPosition).errors[0].code, 'INVENTORY_PHYSICAL_POSITION_REQUIRED');
+  const npcContainerWithoutPosition = state({ containers: [{ container_id: 'bag-1', template_id: 'bag' }], container_placements: [{ container_id: 'bag-1', holder_npc_id: 'npc-1' }] });
+  assert.equal(validateInventoryTopology(npcContainerWithoutPosition).pass, true);
+  const npcItemWithoutPosition = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_npc_id: 'npc-1' }] });
+  assert.equal(validateInventoryTopology(npcItemWithoutPosition).errors[0].code, 'INVENTORY_PHYSICAL_POSITION_REQUIRED');
   const equippedWithoutSlot = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId, physical_position: 'equipped' }] });
   assert.equal(validateInventoryTopology(equippedWithoutSlot).errors[0].code, 'INVENTORY_EQUIPMENT_SLOT_REQUIRED');
   const duplicate = state({ items: [{ item_id: 'knife-1', template_id: 'knife', quantity: 1 }], item_placements: [{ item_id: 'knife-1', holder_character_id: actorId }, { item_id: 'knife-1', anchor_id: 'g5-1' }] });

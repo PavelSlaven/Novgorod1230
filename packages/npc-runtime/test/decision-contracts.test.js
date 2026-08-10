@@ -14,7 +14,10 @@ import {
   validatePlayerConversationInput,
   validateSocialDeliveryResult
 } from '../src/conversation-contracts.js';
-import { validateNpcActionDecisionRequest } from '../src/semantic-decision-contracts.js';
+import {
+  validateNpcActionDecisionRequest,
+  validateNpcStepPlan
+} from '../src/semantic-decision-contracts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const at = (whole_minutes = '10') => ({
@@ -67,7 +70,7 @@ function speechBody(overrides = {}) {
   };
 }
 
-test('decision boundary identity is shared by all modes for one NPC and same-time batch', () => {
+test('mode-specific boundary ID', () => {
   const input = {
     scheduled_at: at(),
     npc_ref: ref('npc', 'guard'),
@@ -82,16 +85,18 @@ test('decision boundary identity is shared by all modes for one NPC and same-tim
   };
   const autonomous = buildNpcDecisionBoundary({ decision_mode: 'autonomous', ...input });
   const conversation = buildNpcDecisionBoundary({ decision_mode: 'conversation', ...input });
+  const combat = buildNpcDecisionBoundary({ decision_mode: 'combat',
+    decision_context_id: 'combat-7', ...input });
 
   assert.equal(
     autonomous.boundary_id,
-    'npc-decision:batch-1:guard'
+    'npc-decision:autonomous:batch-1:guard'
   );
   assert.equal(
     conversation.boundary_id,
-    'npc-decision:batch-1:guard'
+    'npc-decision:conversation:batch-1:guard'
   );
-  assert.equal(conversation.boundary_id, autonomous.boundary_id);
+  assert.equal(combat.boundary_id, 'npc-decision:combat-7:batch-1:guard');
   assert.deepEqual(autonomous.categories, ['self', 'communication']);
   assert.deepEqual(autonomous.signal_refs.map(({ entity_id }) => entity_id), [
     'signal-a',
@@ -133,6 +138,36 @@ test('decision signal evaluation is canonical for input order', () => {
     'decision-signal:conversation_statement:z-event:guard:communication'
   ]);
 });
+
+test('decision signal aggregation reconstructs one committed boundary on replay',
+  () => {
+    const npc = ref('npc', 'guard');
+    const signals = ['self', 'objective'].map((category) =>
+      buildNpcDecisionSignal({
+        occurred_at: at(),
+        category,
+        significance: 'material',
+        source_event_ref: ref('temporal_event', `${category}-event`),
+        subject_ref: npc,
+        perception_required: false
+      }));
+    const consumed = signals.map(({ signal_id: signalId }) => signalId);
+    const result = evaluateNpcDecisionSignals({
+      npc_ref: npc,
+      active_mode: 'autonomous',
+      current_intent: null,
+      decision_capability: true,
+      resolved_signals: signals,
+      consumed_signal_ids: consumed,
+      same_time_batch_ref: ref('temporal_batch', 'batch-1'),
+      state_version: '4',
+      persisted_boundary_id: 'npc-decision:batch-1:guard'
+    });
+    assert.equal(result.boundary.boundary_id,
+      'npc-decision:batch-1:guard');
+    assert.deepEqual(result.boundary.categories, ['self', 'objective']);
+    assert.deepEqual(result.consumed_signal_ids, consumed.sort());
+  });
 
 test('one factual event may create two decision signal categories for one NPC', () => {
   const npc = ref('npc', 'guard');
@@ -584,6 +619,38 @@ test('autonomous decision reasons require canonical common categories and signal
   const request = npcActionRequest();
   assert.equal(validateNpcActionDecisionRequest(request), true);
 
+  const missingSubjectiveState = copy(request);
+  missingSubjectiveState.historical_context = {
+    year: null,
+    season: null,
+    region: null,
+    applicable_norms: [],
+    known_local_customs: []
+  };
+  missingSubjectiveState.npc.identity = {
+    name_or_label: null,
+    age_range: null,
+    origin: null
+  };
+  missingSubjectiveState.npc.social_role = {
+    role_ref: null,
+    status: null,
+    authority: [],
+    dependencies: []
+  };
+  missingSubjectiveState.npc.body_state.summary = null;
+  missingSubjectiveState.npc.mood = null;
+  assert.equal(validateNpcActionDecisionRequest(missingSubjectiveState), true);
+
+  const expandedPrototypeRequest = copy(request);
+  expandedPrototypeRequest.npc.profile_ref = 'guard-profile';
+  expandedPrototypeRequest.npc.current_location = {
+    location_ref: 'yard',
+    zone_ref: 'gate'
+  };
+  assert.equal(validateNpcActionDecisionRequest(expandedPrototypeRequest),
+    false);
+
   const categoriesOutOfOrder = copy(request);
   categoriesOutOfOrder.decision_reasons.categories.reverse();
   assert.equal(validateNpcActionDecisionRequest(categoriesOutOfOrder), false);
@@ -591,4 +658,83 @@ test('autonomous decision reasons require canonical common categories and signal
   const signalsOutOfOrder = copy(request);
   signalsOutOfOrder.decision_reasons.signal_refs.reverse();
   assert.equal(validateNpcActionDecisionRequest(signalsOutOfOrder), false);
+});
+
+function npcActionPlan(request = npcActionRequest(), overrides = {}) {
+  return {
+    schema: 'npc_step_plan_v1',
+    request_id: request.request_id,
+    root_turn_id: request.root_turn_id,
+    boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index,
+    npc_ref: request.npc_ref,
+    interpretation: {
+      npc_goal: 'сохранить контроль над дорожной сумкой',
+      grounded_attempt: 'перенести сумку к речному выходу',
+      adaptation: 'literal'
+    },
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{
+      op: 'request_activity',
+      actor_ref: request.npc_ref,
+      activity_kind: 'work',
+      target_refs: ['road-bag'],
+      description: 'Перенести дорожную сумку к речному выходу.'
+    }],
+    check: null,
+    reason_code: 'protect_controlled_property',
+    reason: 'Ожидание завершилось, сумку следует подготовить к уходу.',
+    ...overrides
+  };
+}
+
+test('autonomous plan accepts one grounded direct or domain intention only', () => {
+  const request = npcActionRequest();
+  request.npc.available_resources = [{ item_ref: 'road-bag' }];
+  request.decision_scope.operation_contract = {
+    request_activity: { activity_refs: ['move-bag'] },
+    move_entity: { entity_refs: ['road-bag'] }
+  };
+
+  assert.equal(validateNpcStepPlan(npcActionPlan(request), request), true);
+
+  const direct = npcActionPlan(request, {
+    resolution: 'direct',
+    goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{
+      op: 'move_entity',
+      entity_ref: 'road-bag',
+      placement: { relation: 'held_by', target_ref: request.npc_ref }
+    }]
+  });
+  assert.equal(validateNpcStepPlan(direct, request), true);
+
+  const twoDomainRequests = copy(npcActionPlan(request));
+  twoDomainRequests.operations.push(copy(twoDomainRequests.operations[0]));
+  assert.equal(validateNpcStepPlan(twoDomainRequests, request), false);
+});
+
+test('autonomous plan rejects foreign actors, hidden refs and factual outcomes', () => {
+  const request = npcActionRequest();
+  request.npc.available_resources = [{ item_ref: 'road-bag' }];
+  request.decision_scope.operation_contract = {
+    request_activity: { activity_refs: ['move-bag'] }
+  };
+
+  const foreignActor = npcActionPlan(request);
+  foreignActor.operations[0].actor_ref = 'other-npc';
+  assert.equal(validateNpcStepPlan(foreignActor, request), false);
+
+  const hiddenRef = npcActionPlan(request);
+  hiddenRef.operations[0].target_refs = ['hidden-packet'];
+  assert.equal(validateNpcStepPlan(hiddenRef, request), false);
+
+  const factualOutcome = npcActionPlan(request);
+  factualOutcome.operations[0].result = 'bag_moved_successfully';
+  assert.equal(validateNpcStepPlan(factualOutcome, request), false);
 });

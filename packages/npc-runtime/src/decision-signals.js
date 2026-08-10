@@ -1,3 +1,4 @@
+import { compareGameTimestamp } from '@rus/time-events-history';
 import {
   digest,
   exactKeys,
@@ -92,9 +93,34 @@ function signalIdentity(sourceEventRef, subjectRef, category) {
     sourceEventRef.entity_id}:${subjectRef.entity_id}:${category}`;
 }
 
-function boundaryIdentity(batchRef, npcRef) {
+function boundaryIdentity(decisionMode, batchRef, npcRef,
+  decisionContextId = null) {
+  const identityMode = decisionMode === 'combat'
+    ? decisionContextId : decisionMode;
+  return `npc-decision:${identityMode}:${batchRef.entity_id}:${
+    npcRef.entity_id}`;
+}
+
+function historicalBoundaryIdentity(batchRef, npcRef) {
   return `npc-decision:${batchRef.entity_id}:${
     npcRef.entity_id}`;
+}
+
+function currentBoundaryIdentityMatches(value) {
+  if (value.decision_mode !== 'combat') {
+    return value.boundary_id === boundaryIdentity(
+      value.decision_mode,
+      value.same_time_batch_ref,
+      value.npc_ref
+    );
+  }
+  const suffix = `:${value.same_time_batch_ref.entity_id}:${
+    value.npc_ref.entity_id}`;
+  const contextId = value.boundary_id.startsWith('npc-decision:')
+    && value.boundary_id.endsWith(suffix)
+    ? value.boundary_id.slice('npc-decision:'.length, -suffix.length)
+    : null;
+  return typeof contextId === 'string' && /^combat-[A-Za-z0-9._-]+$/u.test(contextId);
 }
 
 function canonicalCategories(categories) {
@@ -225,14 +251,16 @@ export function validateNpcDecisionBoundary(value) {
     || !stableId(value.idempotency_key)) {
     return false;
   }
-  const identity = boundaryIdentity(
+  const historicalIdentity = historicalBoundaryIdentity(
     value.same_time_batch_ref,
     value.npc_ref
   );
-  return value.boundary_id === identity && value.idempotency_key === identity;
+  return (currentBoundaryIdentityMatches(value)
+      || value.boundary_id === historicalIdentity)
+    && value.idempotency_key === value.boundary_id;
 }
 
-export function buildNpcDecisionBoundary({
+function createNpcDecisionBoundary({
   decision_mode,
   scheduled_at,
   npc_ref,
@@ -241,14 +269,7 @@ export function buildNpcDecisionBoundary({
   categories,
   signal_refs,
   state_version
-} = {}) {
-  if (!Array.isArray(categories)
-    || categories.some((category) => !CATEGORY_SET.has(category))) {
-    invalid('NPC_DECISION_BOUNDARY_INVALID', 'NPC decision boundary categories are not formal');
-  }
-  const identity = decision_mode && same_time_batch_ref && npc_ref
-    ? boundaryIdentity(same_time_batch_ref, npc_ref)
-    : null;
+}, identity) {
   const boundary = {
     schema: 'npc_decision_boundary_v1',
     boundary_id: identity,
@@ -269,8 +290,63 @@ export function buildNpcDecisionBoundary({
   return freeze(boundary);
 }
 
+export function buildNpcDecisionBoundary({
+  decision_mode,
+  decision_context_id = null,
+  scheduled_at,
+  npc_ref,
+  same_time_batch_ref,
+  significance,
+  categories,
+  signal_refs,
+  state_version
+} = {}) {
+  if (!Array.isArray(categories)
+    || categories.some((category) => !CATEGORY_SET.has(category))
+    || (decision_mode === 'combat'
+      && !(typeof decision_context_id === 'string'
+        && /^combat-[A-Za-z0-9._-]+$/u.test(decision_context_id)))) {
+    invalid('NPC_DECISION_BOUNDARY_INVALID', 'NPC decision boundary categories are not formal');
+  }
+  const identity = decision_mode && same_time_batch_ref && npc_ref
+    ? boundaryIdentity(
+      decision_mode,
+      same_time_batch_ref,
+      npc_ref,
+      decision_context_id
+    )
+    : null;
+  return createNpcDecisionBoundary({
+    decision_mode,
+    scheduled_at,
+    npc_ref,
+    same_time_batch_ref,
+    significance,
+    categories: canonicalCategories(categories),
+    signal_refs: canonicalRefs(signal_refs),
+    state_version
+  }, identity);
+}
+
+export function orderNpcDecisionBoundaries(boundaries) {
+  if (!Array.isArray(boundaries)
+      || boundaries.some((boundary) => !validateNpcDecisionBoundary(boundary))
+      || new Set(boundaries.map(({ boundary_id: id }) => id)).size
+        !== boundaries.length) {
+    throw new TypeError(
+      'NPC decision boundaries must be a unique formal boundary array'
+    );
+  }
+  return freeze([...boundaries].sort((left, right) =>
+    compareGameTimestamp(left.scheduled_at, right.scheduled_at)
+      || refKey(left.npc_ref).localeCompare(refKey(right.npc_ref), 'en')
+      || left.boundary_id.localeCompare(right.boundary_id, 'en')));
+}
+
 export function evaluateNpcDecisionSignals(input = {}) {
-  if (!exactKeys(input, EVALUATION_KEYS)
+  const hasPersistedBoundary = Object.hasOwn(input, 'persisted_boundary_id');
+  if (!exactKeys(input, hasPersistedBoundary
+    ? [...EVALUATION_KEYS, 'persisted_boundary_id'] : EVALUATION_KEYS)
     || !exactEntityRef(input.npc_ref, 'npc')
     || !DECISION_MODES.has(input.active_mode)
     || !(input.current_intent === null || jsonSafeRecord(input.current_intent))
@@ -279,6 +355,9 @@ export function evaluateNpcDecisionSignals(input = {}) {
     || input.resolved_signals.some((signal) => !validateNpcDecisionSignal(signal))
     || !Array.isArray(input.consumed_signal_ids)
     || input.consumed_signal_ids.some((signalId) => !stableId(signalId))
+    || (hasPersistedBoundary
+      && !(input.persisted_boundary_id === null
+        || stableId(input.persisted_boundary_id)))
     || !exactEntityRef(input.same_time_batch_ref, 'temporal_batch')
     || !positiveDecimal(input.state_version)) {
     invalid('NPC_DECISION_EVALUATION_INVALID', 'NPC decision signal evaluation input is not formal');
@@ -287,18 +366,38 @@ export function evaluateNpcDecisionSignals(input = {}) {
   const consumed = new Set(input.consumed_signal_ids);
   const byId = new Map();
   for (const signal of input.resolved_signals) {
-    if (!sameRef(signal.subject_ref, input.npc_ref) || consumed.has(signal.signal_id)) continue;
+    if (!sameRef(signal.subject_ref, input.npc_ref)) continue;
     const previous = byId.get(signal.signal_id);
     if (previous && digest(previous) !== digest(signal)) {
       invalid('NPC_DECISION_EVALUATION_INVALID', 'Duplicate signal identity has conflicting content');
     }
     if (!previous) byId.set(signal.signal_id, signal);
   }
-  const signals = [...byId.values()].sort((left, right) => {
+  const allSignals = [...byId.values()].sort((left, right) => {
     if (left.signal_id < right.signal_id) return -1;
     if (left.signal_id > right.signal_id) return 1;
     return 0;
   });
+  const expectedBoundaryId = boundaryIdentity(
+    input.active_mode,
+    input.same_time_batch_ref,
+    input.npc_ref,
+    input.active_mode === 'combat' ? input.current_intent?.combat_id : null
+  );
+  const historicalBoundaryId = historicalBoundaryIdentity(
+    input.same_time_batch_ref,
+    input.npc_ref
+  );
+  const replaying = input.persisted_boundary_id != null;
+  if (replaying && (![expectedBoundaryId, historicalBoundaryId]
+    .includes(input.persisted_boundary_id)
+      || allSignals.some((signal) => !consumed.has(signal.signal_id)))) {
+    invalid('NPC_DECISION_EVALUATION_INVALID',
+      'Persisted boundary does not match the fully consumed signal batch');
+  }
+  const signals = replaying
+    ? allSignals
+    : allSignals.filter((signal) => !consumed.has(signal.signal_id));
   if (!input.decision_capability || signals.length === 0) {
     return freeze({ boundary: null, consumed_signal_ids: [] });
   }
@@ -307,8 +406,11 @@ export function evaluateNpcDecisionSignals(input = {}) {
   if (signals.some((signal) => !sameTimestamp(signal.occurred_at, scheduledAt))) {
     invalid('NPC_DECISION_EVALUATION_INVALID', 'Signals for one same-time batch must share one exact occurred_at');
   }
-  const boundary = buildNpcDecisionBoundary({
+  const boundaryInput = {
     decision_mode: input.active_mode,
+    ...(input.active_mode === 'combat' ? {
+      decision_context_id: input.current_intent?.combat_id
+    } : {}),
     scheduled_at: scheduledAt,
     npc_ref: input.npc_ref,
     same_time_batch_ref: input.same_time_batch_ref,
@@ -321,7 +423,10 @@ export function evaluateNpcDecisionSignals(input = {}) {
       entity_id: signal.signal_id
     })),
     state_version: input.state_version
-  });
+  };
+  const boundary = replaying
+    ? createNpcDecisionBoundary(boundaryInput, input.persisted_boundary_id)
+    : buildNpcDecisionBoundary(boundaryInput);
   return freeze({
     boundary,
     consumed_signal_ids: signals.map((signal) => signal.signal_id)

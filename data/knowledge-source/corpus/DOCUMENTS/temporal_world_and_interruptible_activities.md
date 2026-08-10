@@ -967,10 +967,10 @@ generic signal descriptors. Единственный active словарь пр�
 только `material` либо `critical`. Perception-required signal допускается к
 aggregation лишь после фактического восприятия или received message.
 
-Все новые signals одного NPC в одном fully resolved same-time batch
-агрегируются в не более чем одну `npc_decision_boundary_v1`; наличие critical
-делает boundary critical. Одна такая NPC/batch identity вызывает не более
-одного LLM-вызова суммарно по всем режимам, а replay использует persisted trace. Conversation не вводит
+Все новые signals одного NPC и одного mode в одном fully resolved same-time
+batch агрегируются в не более чем одну `npc_decision_boundary_v1`; наличие
+critical делает boundary critical. Одна такая NPC/mode/batch identity вызывает
+не более одного LLM-вызова, а replay использует persisted trace. Conversation не вводит
 собственный trigger schema или scheduler.
 
 Semantic request содержит только восприятие, received knowledge, memory и
@@ -982,9 +982,16 @@ operation contract. Чужие private knowledge, hidden truth и prompts не
 
 Listener/witness может воспринять statement и получить received knowledge без
 response boundary. Social check изменяет только наблюдаемое качество подачи и
-credibility; решение responder остаётся отдельным semantic result. Combat в
-revision 14 только получает typed handoff и здесь не разрешается. Full
-autonomous action outside conversation и combat resolution остаются proposed.
+credibility; решение responder остаётся отдельным semantic result. Production
+v5 активирует autonomous mode для Phase 7: «Отдых у огня» длится 30 минут, на
++25 создаётся boundary Жданко. Semantic request получает операции, для которых
+текущий actor-step registry имеет фактических domain handlers, а не сценарный
+exhaustive option set. Выбранный actor-step применяется на +25, затем общий
+temporal owner продолжает обработку до +30 из обновлённой working projection;
+persistence и visible projection остаются code-owned. Общий `@rus/turn`
+владеет состояниями `started/completed`, exact completion candidate и effect;
+сценарий передаёт только approved profiles и domain proposals. Combat в revision 14
+только получает typed handoff и остаётся proposed.
 
 ### 15.5. Historical bounded NPC decision (explicit revision pin only)
 

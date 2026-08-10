@@ -102,14 +102,17 @@ Background, scene и key NPC имеют один источник создани
 Lower Dvina Trace revision 14 дополнительно активирует conversation semantic
 path: `player_conversation_contribution_plan_v1` для реплики игрока и
 `conversation_contribution_plan_v1` для одного NPC на общей
-`npc_decision_boundary_v1`. Полные autonomous NPC и combat resolution
-контракты остаются `proposed`; combat contribution допускает только handoff.
+`npc_decision_boundary_v1`. Revision 15 активирует autonomous NPC semantic
+path `npc_action_decision_request_v1` → `npc_step_plan_v1`: один субъективный
+план проходит общий actor-step, а activity, movement, items, time и persistence
+остаются code-owned. Combat resolution остаётся `proposed`; combat contribution
+допускает только handoff.
 
 ### D-011. Выбор или semantic plan LLM не является последствием
 
-После bounded choice, player step plan или conversation contribution plan код заново проверяет schema, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.
+После bounded choice или semantic plan соответствующего player/NPC-режима код заново проверяет schema, operation contract, preconditions, refs и committed state version, выполняет проверки, делегирует domain requests, рассчитывает производные механики и формирует code-owned write plan. Social check определяет только качество подачи/достоверность сообщения и не выбирает решение слушателя. LLM не объявляет исход, не возвращает конечное состояние мира и не применяет собственный patch.
 
-`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`). LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.
+`create_entity` является узким исключением только для ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) в валидированном semantic plan соответствующего player/NPC-режима. LLM предлагает непосредственную семантику и primitive mechanics конкретного результата, а код проверяет admissibility, origin, refs, placement и inventory invariants и сохраняет отдельный exact runtime mechanics snapshot. Этот путь не разрешает authored, significant, hidden или informational materialization.
 
 ### D-012. LLM не пишет в базы
 
@@ -294,7 +297,7 @@ state_version
 
 ## 11. Автономные обновления, NPC boundaries и базовый ход
 
-Каждое code-only обновление имеет правило, входное состояние, change set, trace, idempotency key и commit gate. Current revision-14 conversation path сводит фактические причины к ровно пяти категориям `self`, `others`, `environment`, `objective`, `communication` и двум уровням `material`, `critical`. Все новые сигналы одного NPC в одном fully resolved same-time batch образуют не более одной boundary и одного LLM-вызова; продолжение намерения и простое восприятие без meaningful response boundary модель не вызывают. Закрытый bounded request остаётся допустим только для genuinely closed domain choice и historical revision, явно выбранной pin.
+Каждое code-only обновление имеет правило, входное состояние, change set, trace, idempotency key и commit gate. Active revision-15 conversation и autonomous paths сводят фактические причины к ровно пяти категориям `self`, `others`, `environment`, `objective`, `communication` и двум уровням `material`, `critical`. Все новые сигналы одного NPC в одном fully resolved same-time batch образуют не более одной boundary и одного LLM-вызова; продолжение намерения и простое восприятие без meaningful response boundary модель не вызывают. Закрытый bounded request остаётся допустим только для genuinely closed domain choice и historical revision, явно выбранной pin.
 
 Первый успешный вход в нематериализованный G4 включает G5 materialization в ту же атомарную транзакцию, что и перемещение. Ошибка либо пустой candidate set отменяют весь переход.
 

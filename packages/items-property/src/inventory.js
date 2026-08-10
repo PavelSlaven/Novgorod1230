@@ -30,7 +30,8 @@ export function validateInventoryTopology(input = {}) {
 
   for (const placement of itemPlacements) validateParty(placement, input.party_id, errors);
   for (const placement of containerPlacements) validateParty(placement, input.party_id, errors);
-  for (const placement of [...itemPlacements, ...containerPlacements]) validateCharacterPhysicalPlacement(placement, errors);
+  for (const placement of itemPlacements) validateCharacterPhysicalPlacement(placement, errors, false);
+  for (const placement of containerPlacements) validateCharacterPhysicalPlacement(placement, errors, true);
   for (const placement of containerPlacements) {
     if (placement.parent_container_id && !containerIds.has(placement.parent_container_id)) errors.push(error('INVENTORY_CONTAINER_NOT_FOUND', 'topology', { container_id: placement.parent_container_id }));
     if (placement.parent_container_id === placement.container_id) errors.push(error('INVENTORY_CYCLE_DETECTED', 'topology', { container_id: placement.container_id }));
@@ -301,11 +302,20 @@ function uniqueIds(values, key, errors, code) {
   return ids;
 }
 function validateParty(value, partyId, errors) { if (value?.party_id && partyId && value.party_id !== partyId) errors.push(error('INVENTORY_PLACEMENT_NOT_FOUND', 'topology', { party_id: value.party_id })); }
-function validateCharacterPhysicalPlacement(placement, errors) {
+function validateCharacterPhysicalPlacement(
+  placement,
+  errors,
+  allowNpcWithoutPosition
+) {
   const position = placement?.physical_position;
   const slot = placement?.equipment_slot_id ?? placement?.equipment_slot_category_id;
-  if (placement?.holder_character_id || placement?.holder_npc_id) {
+  if (placement?.holder_character_id) {
     if (!PHYSICAL_POSITIONS.has(position)) errors.push(error('INVENTORY_PHYSICAL_POSITION_REQUIRED', 'topology', { physical_position: position ?? null }));
+    if (position === 'equipped' && !text(slot)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_REQUIRED', 'topology', {}));
+    if (text(slot) && position !== 'equipped') errors.push(error('INVENTORY_EQUIPMENT_SLOT_INVALID', 'topology', { physical_position: position ?? null }));
+  } else if (placement?.holder_npc_id) {
+    if (position == null && !allowNpcWithoutPosition) errors.push(error('INVENTORY_PHYSICAL_POSITION_REQUIRED', 'topology', { physical_position: null }));
+    if (position != null && !PHYSICAL_POSITIONS.has(position)) errors.push(error('INVENTORY_PHYSICAL_POSITION_INVALID', 'topology', { physical_position: position }));
     if (position === 'equipped' && !text(slot)) errors.push(error('INVENTORY_EQUIPMENT_SLOT_REQUIRED', 'topology', {}));
     if (text(slot) && position !== 'equipped') errors.push(error('INVENTORY_EQUIPMENT_SLOT_INVALID', 'topology', { physical_position: position ?? null }));
   } else if (position != null || text(slot)) errors.push(error('INVENTORY_PHYSICAL_POSITION_INVALID', 'topology', { physical_position: position ?? null }));

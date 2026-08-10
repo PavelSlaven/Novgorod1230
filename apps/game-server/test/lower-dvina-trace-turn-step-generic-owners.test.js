@@ -29,6 +29,17 @@ test('approved semantic owner maps moment/moderate to one exact profile',
     assert.equal(Object.isFrozen(resolved), true);
   });
 
+test('semantic schedule owner resolves duration without an actor body',
+  async () => {
+    const owners = await createOwners();
+    const resolved = owners.semanticActivityScheduleOwner.resolve({
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' }
+    });
+    assert.equal(resolved.duration_minutes, 1);
+    assert.equal(resolved.profile_ref,
+      'trace_ld_v1_semantic_activity:moment:none');
+  });
+
 test('direct body event ignores prose and body-state calculates exact result',
   async () => {
     const owners = await createOwners();

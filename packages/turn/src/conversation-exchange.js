@@ -272,6 +272,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
   }
   const timeSlices = contributionSlices(normalized.timeBudget);
   const totalBudgetMinutes = normalized.timeBudget.total_minutes;
+  const sameTimestamp = normalized.timeBudget.mode === 'same_timestamp';
   let elapsedBudgetMinutes = 0;
   let completedContributionCount = 0;
   let appliedContributionCount = 0;
@@ -344,7 +345,7 @@ export async function runConversationExchange(input = {}, ports = {}) {
       stopReason = 'player_response';
       break;
     }
-    if (elapsedBudgetMinutes >= totalBudgetMinutes) {
+    if (!sameTimestamp && elapsedBudgetMinutes >= totalBudgetMinutes) {
       stopReason = 'exchange_budget';
       break;
     }
@@ -399,7 +400,8 @@ export async function runConversationExchange(input = {}, ports = {}) {
       remainingBudgetMinutes,
       queuedBoundaries: queuedNpcBoundaries,
       plan: proposal.plan,
-      priorNpcDecisionCount: npcDecisions.length
+      priorNpcDecisionCount: npcDecisions.length,
+      sameTimestamp
     });
     const npcProgress = await progressAndProject({
       ports,

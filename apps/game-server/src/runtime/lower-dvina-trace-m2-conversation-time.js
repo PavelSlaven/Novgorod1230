@@ -6,8 +6,11 @@ import {
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { fail, ref } from './lower-dvina-trace-m2-conversation-shared.js';
-import { CONVERSATION_PROGRESS_EFFECT_REF } from
-  './lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
+import {
+  conversationTemporalComposition,
+  conversationTemporalParentProjection,
+  conversationTemporalWorld
+} from './lower-dvina-trace-m2-conversation-time-contract.js';
 
 const SOURCE_PROVIDER_REF = versioned(
   'dynamic_recheck_policy', 'lower-dvina-trace-pending-boundaries', '1'
@@ -22,8 +25,21 @@ export function advanceConversationContributionTime(
   plannedDurationMinutes
 ) {
   const durationMinutes = plannedDurationMinutes;
-  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 1) {
+  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 0) {
     fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
+  }
+  if (durationMinutes === 0) {
+    if (context.conversationTimeContract?.mode !== 'same_timestamp') {
+      fail('TRACE_M2_CONVERSATION_TIME_BUDGET_INVALID');
+    }
+    return {
+      working_state: structuredClone(working),
+      temporal_boundary_refs: [],
+      session_status: 'active',
+      elapsed_minutes: 0,
+      completed: true,
+      interrupted: false
+    };
   }
   const clockBefore = working.clock;
   const limit = addElapsedTime(clockBefore, {
@@ -40,6 +56,7 @@ export function advanceConversationContributionTime(
     fail('TRACE_M2_CONVERSATION_TEMPORAL_OWNER_MISSING');
   }
   const request = temporalRequest({ context, working, limit, candidates });
+  const composition = conversationTemporalComposition(context, candidates);
   const advanced = context.temporalAdvanceOwner.advance({
     request,
     engine_version: 'lower-dvina-trace-conversation-temporal-adapter-v1',
@@ -48,13 +65,10 @@ export function advanceConversationContributionTime(
       max_slices: 20, max_candidates: 100, max_iterations: 100
     },
     source_provider_ref: SOURCE_PROVIDER_REF,
-    source_candidates: candidates,
+    source_candidates: composition.source_candidates,
     registered_provider_ref: PROGRESS_PROVIDER_REF,
-    registered_effects: [],
-    continuous_effect: {
-      effect_ref: CONVERSATION_PROGRESS_EFFECT_REF,
-      input: {}
-    },
+    registered_effects: composition.registered_effects,
+    continuous_effects: composition.continuous_effects,
     finalization: {
       visible_package_candidate: visibleEnvelope(request),
       validation_report: { ok: true }
@@ -77,9 +91,14 @@ export function advanceConversationContributionTime(
     ...structuredClone(advanced.result),
     canonical_digest: computeSpatialV3CanonicalDigest(advanced.result)
   };
+  const conversationState = advanced.state_projection.conversation_state
+    ?? working;
+  const workingWorld = conversationTemporalWorld(
+    context, conversationState, advanced.state_projection);
   return {
     working_state: {
-      ...(advanced.state_projection.conversation_state ?? working),
+      ...conversationState,
+      world_state: workingWorld,
       clock: structuredClone(clockAfter),
       elapsed_minutes: working.elapsed_minutes + Number(elapsed.numerator),
       temporal_boundary_refs: [
@@ -131,7 +150,8 @@ function temporalRequest({ context, working, limit, candidates }) {
       )],
       active_execution_requires_boundary: false,
       available_event_ids: candidates.map(({ boundary_id: id }) => id),
-      conversation_state: structuredClone(working)
+      conversation_state: structuredClone(working),
+      ...conversationTemporalParentProjection(context, working)
     },
     catalog_pins: pins,
     temporal_resolution_policy_ref: sealed({ policy_ref: versioned(
@@ -198,8 +218,8 @@ export function projectConversationTemporalAdvance({
   const resumedExecution = semanticExchange?.resumed_npc_execution
     ?? semanticExchange?.resumed_player_execution ?? null;
   if (!Number.isSafeInteger(exactMinutes) || exactMinutes < 0
-      || (exactMinutes === 0
-        && resumedExecution == null)
+      || (exactMinutes === 0 && resumedExecution == null
+        && semanticExchange?.exchange?.time_budget?.status !== 'completed')
       || !Array.isArray(candidates) || !Array.isArray(roots)
       || !Array.isArray(boundaryRefs)
       || (exactMinutes === 0 && boundaryRefs.length !== 0)) {
@@ -261,10 +281,13 @@ export function projectConversationTemporalAdvance({
 }
 
 function exactDurationMinutes(context) {
-  const profile = context.phase === 'phase_3'
+  if (context.conversationTimeContract?.mode === 'same_timestamp') {
+    return 0;
+  }
+  const profile = context.activityProfile ?? (context.phase === 'phase_3'
     ? (context.evidencePresented
         ? context.contracts.evidenceTalk : context.contracts.talk)
-    : context.contracts.negotiation;
+    : context.contracts.negotiation);
   if (!Number.isSafeInteger(profile?.duration_minutes)
       || profile.duration_minutes < 1) {
     fail('TRACE_M2_CONVERSATION_TIME_PROFILE_GAP');

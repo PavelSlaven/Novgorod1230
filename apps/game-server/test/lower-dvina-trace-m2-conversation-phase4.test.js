@@ -138,7 +138,7 @@ test('Phase 4 action-set evaluation does not invoke the conversation interpreter
   assert.equal(playerCalls, 0);
 });
 
-test('revision 14 Phase 4 semantic lineage accepts only exact or M1-owned turns', () => {
+test('revisions 14 and 15 accept exact Phase 4 semantic lineage', () => {
   const semanticExchange = { response_kind: 'surrender' };
   const turnId = 'turn:party-1:4';
   const factual = {
@@ -150,6 +150,18 @@ test('revision 14 Phase 4 semantic lineage accepts only exact or M1-owned turns'
   };
   assert.deepEqual(phase4SemanticCommitContext({
     scenarioRevision: 14,
+    factual,
+    writePlan: {
+      turn_id: turnId,
+      command_trace: { decision_protocol: 'code_exact_fast_path_v1' }
+    }
+  }), {
+    rootTurnId: turnId,
+    workingRevision: 0,
+    semanticExchange
+  });
+  assert.deepEqual(phase4SemanticCommitContext({
+    scenarioRevision: 15,
     factual,
     writePlan: {
       turn_id: turnId,

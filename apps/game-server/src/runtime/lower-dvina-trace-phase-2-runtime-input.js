@@ -13,12 +13,23 @@ export function createStateVersionRevalidator({
   };
 }
 
+export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
+  try {
+    return await executeAttempt();
+  } catch (error) {
+    if (error?.code !== 'TRACE_PHASE_7_AUTONOMOUS_RETRY_REQUIRED') {
+      throw error;
+    }
+  }
+  return executeAttempt();
+}
+
 export function validateConversationDependencies({
   scenarioDefinitionRevision,
   playerConversationModel,
   npcSemanticModel
 }) {
-  if (scenarioDefinitionRevision !== 14) return;
+  if (![14, 15].includes(scenarioDefinitionRevision)) return;
   if (typeof playerConversationModel !== 'function'
       || typeof npcSemanticModel !== 'function') {
     throw serverError(

@@ -14,8 +14,10 @@ Temporal runtime NPC регулирует active target-норматив
 конечным approved option set. Для active Lower Dvina Trace revision 14
 conversation профиль входит в субъективный NPC-safe context semantic request,
 а LLM возвращает валидируемый contribution plan; последствия, время,
-perception, operations и commit остаются code-owned. Autonomous NPC action и
-combat semantic resolution остаются `proposed`.
+perception, operations и commit остаются code-owned. Revision 15 дополнительно
+активирует autonomous NPC action через `npc_action_decision_request_v1` →
+`npc_step_plan_v1`, общий actor-step и профильных domain owners. Combat semantic
+resolution остаётся `proposed`.
 
 В игре используются три профиля генерации NPC:
 1. **Фоновый NPC** — нужен для видимости сцены.
@@ -37,11 +39,13 @@ combat semantic resolution остаются `proposed`.
 approved policy/command records и фактической доступности целей, предметов,
 мест, маршрутов и handlers. В active revision-14 conversation тот же owner
 строит boundary и закрытые allowlists actor/entity/knowledge/operation refs,
-но не подменяет semantic contribution конечным набором реплик. Личность и
-настроение помогают LLM сформировать субъективный contribution plan, не
-создавая consequence, objective fact или недоступную ссылку. Если versioned
-policy явно задаёт role/duty/obligation precondition, её применяет код как
-точное правило, а не как психологическую догадку.
+но не подменяет semantic contribution конечным набором реплик. В active
+revision-15 autonomous path он формирует субъективный request, а один
+`npc_step_plan_v1` исполняется общим actor-step без exhaustive option set.
+Личность и настроение помогают LLM сформировать субъективный contribution или
+action plan, не создавая consequence, objective fact или недоступную ссылку.
+Если versioned policy явно задаёт role/duty/obligation precondition, её
+применяет код как точное правило, а не как психологическую догадку.
 
 Продолжение сохранённого намерения и автоматические телесные/пространственные
 последствия не требуют нового LLM-вызова. Полный норматив decision boundaries,

@@ -133,13 +133,13 @@ npm run knowledge:query -- --query "<конкретная нормативная
 - запрещено ослаблять фильтры и создавать смысловые fallback;
 - LLM выбирает только из переданного закрытого набора, когда операция является bounded choice;
 - для свободной заявки игрока единственная активная semantic boundary — `turn_step_request_v1` → `turn_step_plan_v1` в общем `@rus/turn`; exact registered commands сохраняют приоритет, а scenario-local planner и параллельный semantic fallback запрещены;
-- ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) не является authored world materialization: он допускается только через валидированный player step plan, code-owned admission и отдельный persisted exact runtime mechanics snapshot;
+- ordinary direct action result (`direct_partition`, `ambient_ordinary`, `crafted`) не является authored world materialization: он допускается только через валидированный semantic plan соответствующего player/NPC-режима, code-owned admission и отдельный persisted exact runtime mechanics snapshot;
 - ordinary direct action result не может создавать NPC, места, значимые или скрытые предметы, оружие, деньги, письма, улики, container contents, исторические факты либо отсутствующие категории;
 - последствия выбора рассчитывает код;
 - LLM не пишет непосредственно в базу данных;
 - сохранённые экземпляры не материализуются повторно без явной migration или repair-процедуры.
 
-Conversation активен только для Lower Dvina Trace revision 14: meaningful NPC response проходит через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1` с `decision_mode = conversation` и общий code-owned execution/commit. Full autonomous NPC action и combat resolution остаются `proposed` и не расширяют активную player semantic boundary; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback revision-14 conversation.
+Для Lower Dvina Trace revision 14 активен conversation path, а revision 15 дополнительно активирует autonomous NPC path. Meaningful NPC response и автономное решение проходят через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1`, профильные semantic request/plan и общий code-owned execution/commit. Combat resolution остаётся `proposed` и не расширяет активную player semantic boundary; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback conversation или autonomous path.
 
 ## 7. Тестирование
 

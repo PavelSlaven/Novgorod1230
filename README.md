@@ -29,14 +29,14 @@ Exact-head P28 release evidence принят в merged PR #19: обязател�
 hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
 само не выполняло production write и не меняло composition. Последующая цепочка
 `versioned production activation cutover` доведена до current release
-`spatial-v3-production-v4`: composition, authoritative reads/writes, target
+`spatial-v3-production-v5`: composition, authoritative reads/writes, target
 migration path, runtime pins и rollback release identity переключаются одной
 версией. Spatial v3/Temporal World v4 остаются sole production owner.
 Startup принимает только завершённую cutover stage `13`; release фиксирует
 approved Spatial world revision/manifest, `temporal-world-v1.1`, exact
 dependency pins и существующий `rus.runtime_catalog_pin.v2` lifecycle.
-Production v3 сохранён только как explicit rollback source; partial
-activation, dual write, authoritative mixed read и v4→v3 runtime fallback
+Production v4 сохранён только как explicit rollback source; partial
+activation, dual write, authoritative mixed read и v5→v4 runtime fallback
 запрещены.
 
 Lower Dvina Trace revision 13 активировал одну player semantic boundary:
@@ -44,8 +44,12 @@ exact registered command выполняется без LLM, остальной �
 через `turn_step_request_v1` → `turn_step_plan_v1` в `@rus/turn`. Revision 14
 активировал Phase 3–4 conversation: meaningful NPC response использует общие
 `npc_decision_signal_v1` → `npc_decision_boundary_v1` с
-`decision_mode = conversation`. Full autonomous NPC action и combat resolution
-остаются `proposed`; combat заканчивается typed handoff, а bounded selection
+`decision_mode = conversation`. Production v5 дополнительно активирует Phase 7:
+«Отдых у огня» длится ровно 30 минут, на 25-й минуте возникает autonomous
+decision boundary Жданко, а approved schedule action занимает 5 минут.
+Время, persistence и player-safe visibility остаются code-owned. Autonomous
+NPC action active; combat resolution остаётся `proposed` и заканчивается typed
+handoff, а bounded selection
 сохраняется только для genuinely closed choices и явно pinned historical
 revisions, не как conversation fallback.
 

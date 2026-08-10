@@ -1,4 +1,4 @@
-# Temporal advance pipeline (production v4)
+# Temporal advance pipeline (production v5)
 
 `temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
 pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
@@ -6,8 +6,9 @@ historical contract snapshot.
 Accepted historical P28 evidence changed no production composition. The later
 `versioned production activation cutover` completed as
 `spatial-v3-production-v1`; this pipeline is now the sole production path.
-Dual write, mixed authoritative reads, in-turn v4-to-v2 fallback and partial
-activation remain forbidden.
+`spatial-v3-production-v5` additionally activates the Phase 7 autonomous NPC
+path on the same temporal owner. Dual write, mixed authoritative reads,
+in-turn v4-to-v2 fallback and partial activation remain forbidden.
 
 ## Interval and boundary rule
 
@@ -40,7 +41,8 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
      package);
    - `@rus/environment-state` — weather/light effects;
    - `@rus/time-events-history` — historical phases and due event effects;
-   - `@rus/npc-runtime` — schedule, perception и generic NPC signal proposals;
+   - `@rus/npc-runtime` — schedule, perception and generic NPC signal
+     proposals (`npc_decision_signal_v1`);
    - temporal carrier handling — synchronized transport/local results with one
      root clock owner;
    - `@rus/world-processes` — approved remote catch-up and propagation
@@ -49,10 +51,40 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    incompatible transition, double move/resource consumption, missing event
    dependency or conflicting clock owner is `temporal_change_set_conflict` or
    `time_owner_conflict`, never a best-effort choice.
-   После fully resolved same-time batch новые `material|critical` signals
-   одного NPC агрегируются в не более чем одну `npc_decision_boundary_v1`.
-   Conversation LLM вызывается владельцем хода вне синхронного resolver и не
-   более одного раза для этой NPC/batch pair; replay использует persisted trace.
+   After a fully resolved same-time batch, new `material|critical` generic NPC
+   signals for one NPC aggregate into at most one `npc_decision_boundary_v1`.
+   Conversation and autonomous modes share that protocol: a handler may request
+   `stop_after_current_batch` only as a common advance stop after the ordered
+   same-time cascade finishes; the turn owner then builds the NPC-safe request,
+   awaits the decision model outside the synchronous resolver at most once per
+   NPC/batch pair, applies the code-owned actor-step, and resumes the same
+   timestamp from the updated working projection until a same-time fixed point
+   or a typed temporal safety error. Replay uses the persisted decision trace
+   and does not re-call the LLM.
+   The common turn owner creates the active NPC actor-step, its exact completion
+   candidate and the completion transition. Scenario adapters supply approved
+   profiles and domain proposals but do not implement that lifecycle.
+   Before domain applicability, the turn owner re-reads the current decision
+   state. A stale model response is discarded; the NPC-safe request is rebuilt
+   and the model is called again only when the same boundary remains applicable.
+   An obsolete boundary consumes no signal and applies no actor-step.
+   If the committed base changed concurrently, the application discards the
+   whole draft and performs one bounded root-turn retry from the reloaded state.
+   Multiple NPCs at one timestamp keep sequential autonomous decisions ordered
+   by `timestamp → npc_ref → boundary_id`; each later NPC sees the updated
+   projection. That loop is distinct from a combat snapshot batch, which remains
+   `proposed` and does not share the autonomous sequential decision path.
+   A conversation clause may occupy a positive final segment of an already
+   active parent activity when the authored time profile declares that
+   relation. The parent first advances to the causal decision point; the
+   conversation and parent continuous effects then advance together through
+   the common temporal owner against one evolving working projection. The
+   parent completion boundary is resolved at the shared final timestamp, its
+   body effect is applied once for the full parent duration, and the root turn
+   records only the parent elapsed time rather than adding both durations.
+   Every autonomous and conversation decision in that workflow carries the
+   one `root_turn_id` created by `@rus/turn`; temporal/scenario adapters do not
+   synthesize a second turn identity.
 5. `@rus/turn` applies the merged proposals to an immutable candidate
    post-change state. `@rus/visibility-knowledge-memory` creates a player-safe
    package candidate and validates hidden-leak absence.
@@ -85,6 +117,8 @@ catch-up boundary, not as continuous simulation of every distant entity.
 
 ## Boundary of this document
 
-This describes the target lifecycle and its contracts, not a new production
-entrypoint. Production activation remains impossible before the separate
-`versioned production activation cutover` for the exact final PR HEAD.
+This describes the active production temporal lifecycle after the completed
+`versioned production activation cutover`. Composition, authoritative reads and
+writes follow the sole production path; `spatial-v3-production-v5` keeps Phase 7
+autonomous decisions on the same owner without a second scheduler or
+Conversation-LLM-only async handoff.

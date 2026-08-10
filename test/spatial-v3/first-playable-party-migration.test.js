@@ -33,15 +33,28 @@ const conversationTranscriptSql = readFileSync(
   new URL('../../schemas/party-db/017_party_runtime_conversation_transcript.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 017 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 17);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-7), sql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-6), externalOwnershipSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-5), obligationsSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-4), resumeTerminalSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-3), turnStepItemsSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-2), npcSemanticConversationSql);
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.at(-1), conversationTranscriptSql);
+const phase7ContainerSql = readFileSync(
+  new URL('../../schemas/party-db/018_party_runtime_phase7_container_state.sql', import.meta.url),
+  'utf8'
+);
+const combatSessionSql = readFileSync(
+  new URL('../../schemas/party-db/019_party_runtime_combat_sessions.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 019 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 19);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-9), [sql,
+    externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
+    npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
+    combatSessionSql]);
+});
+
+test('019 keeps combat sessions in the target migration transaction', () => {
+  assert.match(combatSessionSql,
+    /CREATE TABLE IF NOT EXISTS party_runtime\.party_combat_sessions/u);
+  assert.match(combatSessionSql, /combat_session_v1/u);
+  assert.match(combatSessionSql, /last_change_set_id/u);
+  assert.doesNotMatch(combatSessionSql, /^\s*(?:BEGIN|COMMIT)\s*;/imu);
 });
 
 test('017 delegates transaction ownership to the target migration runner', () => {

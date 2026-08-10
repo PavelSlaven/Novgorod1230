@@ -23,7 +23,7 @@ import {
   buildNpcSemanticConversationWriteInput
 } from './npc-semantic-conversation-writes.js';
 import { validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
-
+import { appendPhase4CombatInitialization } from './lower-dvina-trace-phase-4-combat-writes.js';
 export function appendSemanticNegotiation({
   inserts,
   updates,
@@ -133,6 +133,9 @@ export function appendSemanticNegotiation({
   });
   appendConversationPersistence({ inserts, updates, appends, partyId,
     changeSetId, idemId, rootTurnId, workingRevision, state, next, semantic });
+  appendPhase4CombatInitialization({ inserts, updates, appends, partyId,
+    changeSetId, rootTurnId, workingRevision,
+    initialization: n.combat_initialization });
   appends.push(...activationAppends);
   if (semantic.surrender !== null) {
     appendSemanticSurrenderStateWrites({
@@ -169,7 +172,6 @@ export function appendSemanticNegotiation({
     });
   }
 }
-
 function appendConversationPersistence({ inserts, updates, appends, partyId,
   changeSetId, idemId, rootTurnId, workingRevision, state, next, semantic }) {
   const input = buildNpcSemanticConversationWriteInput({
@@ -188,7 +190,6 @@ function appendConversationPersistence({ inserts, updates, appends, partyId,
     sameTimeBatchRef: input.sameTimeBatchRef,
     contributions: input.contributions });
 }
-
 function appendNegotiationCheckResolution({
   appends,
   partyId,
@@ -230,7 +231,6 @@ function appendNegotiationCheckResolution({
     canonical_digest: canonicalDigest(negotiation.check_result)
   }));
 }
-
 function appendSemanticSurrenderStateWrites({
   inserts,
   updates,

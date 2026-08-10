@@ -13,6 +13,7 @@ export { tracePhase4PreconditionSatisfied };
 
 export function createTracePhase4Commands({ contracts, inputDigest,
   selectNpcDecision, playerConversationModel = null, npcSemanticModel = null,
+  npcCombatModel = null,
   npcSocialCheckResolver = null,
   temporalAdvanceOwner = null,
   revalidateStateVersion = null }) {
@@ -22,6 +23,7 @@ export function createTracePhase4Commands({ contracts, inputDigest,
         inputDigest,
         playerConversationModel,
         npcSemanticModel,
+        npcCombatModel,
         npcSocialCheckResolver,
         temporalAdvanceOwner,
         revalidateStateVersion

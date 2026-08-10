@@ -66,7 +66,7 @@ exact-head evidence не активировало production; последующ
 - free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13+);
 - autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`active`, Phase 7 / `spatial-v3-production-v5`);
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
-- combat resolution → `npc_combat_and_trigger_contract.md` (`proposed`).
+- combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует

@@ -4,6 +4,7 @@
   "type": "module",
   "exports": "./src/index.js",
   "dependencies": {
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }
 }

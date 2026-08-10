@@ -11,7 +11,9 @@ Revision 14 / `spatial-v3-production-v4` additionally activates the Phase 3–4
 conversation contribution path and removes their bounded NPC selector from
 production; historical revisions remain available only by explicit pin.
 `spatial-v3-production-v5` additionally activates the Phase 7 autonomous NPC
-path through the same common signal/boundary protocol.
+path. Revision 16 / `spatial-v3-production-v6` activates `request_combat`,
+persisted combat sessions and NPC combat intents through the same common
+signal/boundary and atomic commit owners.
 
 ## Этапы
 
@@ -78,9 +80,10 @@ compound Turn 10 conversation starts only
 after that completed interval, at the resulting +30 timestamp, and contributes
 no second clock or body write. All NPC traces use the `root_turn_id` created by
 the enclosing `@rus/turn`; Phase 7 creates no local turn identity. Persistence
-and visibility remain code-owned. Combat
-resolution остаётся `proposed`; conversation
-допускает только combat handoff.
+and visibility remain code-owned. Revision-16 combat turns the Phase-4 hostile
+handoff into a persisted `combat_session_v1`; Phase 8 player `request_combat`
+executes one common exchange while checks, harm/body, items, time, perception
+and writes remain code-owned.
 
 ## Temporal World v4 active sequence
 

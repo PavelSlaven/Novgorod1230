@@ -2,11 +2,11 @@ import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
 import { assertSharedSemanticSnapshotSafe, projectSemanticConversationSnapshot, projectSharedSemanticConsequence } from './lower-dvina-trace-conversation-state.js';
 import { phase3SemanticInteractions } from './lower-dvina-trace-phase-3-state-interactions.js';
 import { applyConversationTemporalNpcWrites } from './lower-dvina-trace-conversation-temporal.js';
-import { phase3RouteTimeUpdate } from './lower-dvina-trace-phase-3-activity-state.js';
+import { phase3RouteTimeUpdate, routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 import { appendPhase3ActivityHistory } from './lower-dvina-trace-phase-3-activity-history.js';
 import { projectRepeatedPendingNpcExecution } from './lower-dvina-trace-pending-npc-state.js';
 import { attachPendingConversationActivity } from './lower-dvina-trace-pending-activity-state.js';
-export { activityHistoryEntry, phase3ActivityRef } from './lower-dvina-trace-phase-3-activity-state.js';
+export { activityHistoryEntry, phase3ActivityRef, routeMovement } from './lower-dvina-trace-phase-3-activity-state.js';
 export function nextState({
   state, factual, nextVersion, turnNumber, inputDigest, changeSetId,
   rootTurnId, workingRevision
@@ -49,7 +49,7 @@ export function nextState({
   appendPhase3ActivityHistory({
     next, state, factual, turnNumber, inputDigest, changeSetId
   });
-  if (factual.consequence.phase3_kind === 'movement') {
+  if (routeMovement(factual)) {
     next.position = {
       ...next.position,
       location_ref:
@@ -66,15 +66,21 @@ export function nextState({
       ended_at: routeTime.clock_after,
       change_set_id: changeSetId
     }];
+    const learnedRoute = factual.consequence.movement.reverse_route_ref
+      ?? 'trace_ld_v1_route_camp_to_wreck';
     next.route_knowledge = [...new Set([
-      ...(next.route_knowledge ?? []),
-      'trace_ld_v1_route_camp_to_wreck'
+      ...(next.route_knowledge ?? []), learnedRoute
     ])];
     next.knowledge = mergeKnowledge(next.knowledge, [{
-      fact_id: 'trace_ld_v1_route_camp_to_wreck',
+      fact_id: learnedRoute,
       knowledge_state: 'known_from_committed_source',
-      evidence_refs: []
+      evidence_refs: [factual.consequence.movement.route_ref]
     }]);
+    const moved = new Set(factual.consequence.movement.participants ?? []);
+    next.npcs = (next.npcs ?? []).map((npc) => moved.has(npc.instance_id)
+      ? { ...npc, anchor_id:
+          factual.consequence.movement.destination.g5_anchor_id }
+      : npc);
   } else {
     const conversation = factual.consequence.conversation;
     if (conversation.semantic_exchange != null) {

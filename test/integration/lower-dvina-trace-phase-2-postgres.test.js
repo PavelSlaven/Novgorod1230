@@ -220,8 +220,19 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'owner_preserved_evidence_held');
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
-  assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 4);
+  assert.deepEqual((await pool.query(
+    `SELECT template_id
+       FROM party_runtime.party_items
+      WHERE party_id=$1
+      ORDER BY template_id`,
+    [opened.party_id]
+  )).rows.map(({ template_id: id }) => id), [
+    'trace_ld_v1_item_bandage_cloth',
+    'trace_ld_v1_item_blue_wool_fragment',
+    'trace_ld_v1_item_mikula_knife',
+    'trace_ld_v1_item_ratsha_knife',
+    'trace_ld_v1_item_zhdanko_axe'
+  ]);
   assert.equal((await pool.query(
     `SELECT count(*)::int AS count
        FROM party_runtime.party_narration_attempts attempts
@@ -254,7 +265,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 4);
+    opened.party_id), 5);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -316,7 +327,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 4);
+    opened.party_id), 5);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -332,7 +343,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 4);
+    opened.party_id), 5);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -384,7 +395,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 3);
+    failureParty.party_id), 4);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions

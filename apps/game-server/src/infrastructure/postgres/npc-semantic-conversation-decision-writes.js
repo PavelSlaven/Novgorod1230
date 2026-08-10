@@ -82,9 +82,10 @@ function semanticRequestNpcId(request) {
 }
 
 function semanticRequestStateVersion(request) {
-  const stateVersion = request?.schema === 'npc_action_decision_request_v1'
+  const rawStateVersion = request?.schema === 'npc_action_decision_request_v1'
     ? request.committed_state_version
     : request?.state_version;
+  const stateVersion = Number(rawStateVersion);
   if (!Number.isSafeInteger(stateVersion) || stateVersion < 1) {
     throw new TypeError(
       'Semantic NPC decision request requires a committed state version.'

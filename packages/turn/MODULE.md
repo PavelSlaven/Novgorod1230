@@ -10,7 +10,7 @@
 
 ## Не владеет
 
-Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Autonomous NPC action active в Phase 7 через общий temporal/persistence/visibility pipeline; combat resolution остаётся proposed, conversation может завершиться только combat handoff.
+Не владеет exact clock/calendar/boundary arithmetic (`@rus/time-events-history`), movement duration/planner, body/NPC/environment/remote formulas, factual DB reads/writes, SQL transaction, prose или presentation delivery. Не подменяет пустые candidate sets/facts fallback-значениями. Autonomous NPC action active в Phase 7 через общий temporal/persistence/visibility pipeline; revision 16 combat orchestration принимает только формальные intents/proposals и делегирует checks, harm/body, items, position, time и persistence профильным owners.
 
 ## Public API
 
@@ -106,8 +106,9 @@ exact registered path перед ним. Revision 14 / `spatial-v3-production-v4
 of the common temporal owner to +30 from the updated working projection. В
 составном Ходе 10 разговор занимает последние пять минут этого активного
 отдыха: root elapsed остаётся 30 минут, а parent completion и conversation
-фиксируются на одном T+30 batch. Combat
-resolution document остаётся `proposed`;
+фиксируются на одном T+30 batch. Revision 16 / `spatial-v3-production-v6`
+активирует persisted combat session, NPC combat intent boundary и общий
+exchange для Phase 4 hostile handoff и Phase 8 storehouse confrontation;
 historical bounded Phase 3/4 доступен только по явному revision pin.
 
 ## Тесты

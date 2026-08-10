@@ -9,6 +9,10 @@ import {
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from './conversation-contracts.js';
+import {
+  validateNpcCombatDecisionRequest,
+  validateNpcCombatIntentPlan
+} from './combat-decision-contracts.js';
 import { matchesOperationContract } from './operation-contract-match.js';
 import {
   ADAPTATIONS,
@@ -437,19 +441,29 @@ function semanticTracePlanValid(plan, request) {
       : validateNpcConversationResponseRequest(request)
         && validateConversationContributionPlan(plan, request);
   }
+  if (plan?.schema === 'npc_combat_intent_plan_v1') {
+    return request === null
+      ? validateNpcCombatIntentPlan(plan)
+      : validateNpcCombatDecisionRequest(request)
+        && validateNpcCombatIntentPlan(plan, request);
+  }
   return false;
 }
 
 function semanticPlanNpcId(plan) {
-  return plan?.schema === 'npc_step_plan_v1'
-    ? plan.npc_ref
-    : plan?.speaker_ref?.entity_id;
+  if (plan?.schema === 'npc_step_plan_v1') return plan.npc_ref;
+  if (plan?.schema === 'npc_combat_intent_plan_v1') {
+    return plan.npc_ref?.entity_id;
+  }
+  return plan?.speaker_ref?.entity_id;
 }
 
 function semanticPlanStateVersion(plan) {
-  return plan?.schema === 'npc_step_plan_v1'
-    ? plan.committed_state_version
-    : plan?.state_version;
+  if (plan?.schema === 'npc_step_plan_v1') {
+    return plan.committed_state_version;
+  }
+  return plan?.schema === 'npc_combat_intent_plan_v1'
+    ? Number(plan.state_version) : plan?.state_version;
 }
 
 function semanticTraceLineageMatches(trace, plan) {
@@ -465,6 +479,12 @@ function semanticTraceRequestMatches(trace, request) {
       && matchingIdentity(trace.plan, request)
       && trace.root_turn_id === request.root_turn_id
       && trace.working_revision === request.working_revision;
+  }
+  if (request.schema === 'npc_combat_decision_request_v1') {
+    return validateNpcCombatDecisionRequest(request)
+      && validateNpcCombatIntentPlan(trace.plan, request)
+      && trace.npc_ref === request.npc_ref.entity_id
+      && trace.committed_state_version === Number(request.state_version);
   }
   return validateNpcConversationResponseRequest(request)
     && validateConversationContributionPlan(trace.plan, request)

@@ -1,4 +1,4 @@
-# Temporal advance pipeline (production v5)
+# Temporal advance pipeline (production v6)
 
 `temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
 pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
@@ -6,8 +6,9 @@ historical contract snapshot.
 Accepted historical P28 evidence changed no production composition. The later
 `versioned production activation cutover` completed as
 `spatial-v3-production-v1`; this pipeline is now the sole production path.
-`spatial-v3-production-v5` additionally activates the Phase 7 autonomous NPC
-path on the same temporal owner. Dual write, mixed authoritative reads,
+`spatial-v3-production-v6` retains the Phase 7 autonomous NPC path and
+activates revision-16 combat on the same turn/temporal ownership boundary.
+Dual write, mixed authoritative reads,
 in-turn v4-to-v2 fallback and partial activation remain forbidden.
 
 ## Interval and boundary rule
@@ -72,8 +73,10 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    whole draft and performs one bounded root-turn retry from the reloaded state.
    Multiple NPCs at one timestamp keep sequential autonomous decisions ordered
    by `timestamp → npc_ref → boundary_id`; each later NPC sees the updated
-   projection. That loop is distinct from a combat snapshot batch, which remains
-   `proposed` and does not share the autonomous sequential decision path.
+   projection. Combat uses one fully constructed exchange snapshot: all
+   eligible NPC intents are chosen from that snapshot before code-owned
+   technical steps run. Meaningful outcome events then aggregate into the next
+   combat decision batch without reusing the sequential autonomous loop.
    A conversation clause may occupy a positive final segment of an already
    active parent activity when the authored time profile declares that
    relation. The parent first advances to the causal decision point; the
@@ -119,6 +122,6 @@ catch-up boundary, not as continuous simulation of every distant entity.
 
 This describes the active production temporal lifecycle after the completed
 `versioned production activation cutover`. Composition, authoritative reads and
-writes follow the sole production path; `spatial-v3-production-v5` keeps Phase 7
-autonomous decisions on the same owner without a second scheduler or
-Conversation-LLM-only async handoff.
+writes follow the sole production path; `spatial-v3-production-v6` keeps Phase 7
+autonomous decisions and revision-16 combat on common owners without a second
+scheduler or scenario-local combat state machine.

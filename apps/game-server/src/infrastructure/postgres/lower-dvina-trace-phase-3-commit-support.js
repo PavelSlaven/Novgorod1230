@@ -38,7 +38,7 @@ export function phase3SemanticCommitContext({
   const semanticExchange = isConversation
     ? factual.consequence.conversation?.semantic_exchange
     : null;
-  if (![14, 15].includes(scenarioRevision)) {
+  if (![14, 15, 16].includes(scenarioRevision)) {
     if (semanticExchange != null) {
       fail('TRACE_M2_PHASE_3_SEMANTIC_REVISION_INVALID');
     }
@@ -154,9 +154,11 @@ export function phase3CommitRechecks({
       incoming_participant_slot: 'player_clerk',
       allowed_participant_slots:
         phase3Contracts.capacity.admission_model.allowed_participant_slots,
-      expected_present_npcs: phase3Contracts.actors.map((actor) => ({
+      expected_present_npcs: (Array.isArray(phase3Contracts.actors)
+        ? phase3Contracts.actors : Object.values(phase3Contracts.actors))
+        .map((actor) => ({
         npc_id: actor.instance_id,
-        participant_slot_ref: actor.ref
+        participant_slot_ref: actor.ref ?? actor.participant_slot_ref
       }))
     } : { party_id: partyId }),
     sealedCheck('time', {

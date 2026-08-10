@@ -20,15 +20,15 @@ import {
   buildLowerDvinaTracePhase2CommitRechecks
 } from './lower-dvina-trace-phase-2-commit-rechecks.js';
 import { phase2LockContext } from './lower-dvina-trace-phase-2-commit-plan.js';
-import {
-  commitLowerDvinaTracePhase3
-} from './lower-dvina-trace-phase-3-commit.js';
-import {
-  commitLowerDvinaTracePhase4
-} from './lower-dvina-trace-phase-4-commit.js';
+import { commitLowerDvinaTracePhase3 } from './lower-dvina-trace-phase-3-commit.js';
+import { commitLowerDvinaTracePhase4 } from './lower-dvina-trace-phase-4-commit.js';
 import { commitLowerDvinaTracePhase5 } from './lower-dvina-trace-phase-5-commit.js';
 import { commitLowerDvinaTracePhase6 } from './lower-dvina-trace-phase-6-commit.js';
 import { commitLowerDvinaTracePhase7 } from './lower-dvina-trace-phase-7-commit.js';
+import { commitLowerDvinaTraceCombat } from './lower-dvina-trace-combat-commit.js';
+import { routeLowerDvinaTracePhase8Commit } from
+  './lower-dvina-trace-phase-8-commit-router.js';
+import { mergePhase2Items } from './lower-dvina-trace-phase-2-commit-items.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -45,7 +45,7 @@ export async function commitLowerDvinaTracePhase2({
   inputDigest,
   contracts,
   phase3Contracts,
-  phase4Contracts,
+  phase4Contracts, phase8Contracts,
   phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
   loadState,
@@ -56,6 +56,13 @@ export async function commitLowerDvinaTracePhase2({
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
+  if (factual?.consequence?.combat_kind) return commitLowerDvinaTraceCombat({
+    partyId, writePlan, inputDigest, loadState, committer
+  });
+  const phase8 = await routeLowerDvinaTracePhase8Commit({ factual, partyId,
+    writePlan, inputDigest, phase8Contracts, turnStepApprovedOwners,
+    loadState, committer });
+  if (phase8.handled) return phase8.result;
   if (factual?.consequence?.phase7_kind) return commitLowerDvinaTracePhase7({
     partyId, writePlan, inputDigest, phase7Contracts, turn10Contracts,
     loadState, committer
@@ -107,7 +114,7 @@ export async function commitLowerDvinaTracePhase2({
       factual.player_input.idempotency_key
     ).slice(0, 20)}`;
   const clue = factual.consequence.clue_materialization;
-  const nextItems = mergeItems(state.items, clue);
+  const nextItems = mergePhase2Items(state.items, clue);
   const nextKnowledge = mergePhase2Knowledge(state.knowledge ?? [],
     factual.consequence.knowledge_records);
   const nextBodyState = commitPhase2BodyState({
@@ -261,39 +268,4 @@ function expectedVersions(partyId, state, nextBodyState) {
       condition.state_version
     )));
 }
-function mergeItems(items, clue) {
-  const next = structuredClone(items);
-  if (clue && !next.some(
-    (item) => item.template_id === clue.template_id
-  )) {
-    const exactPickup = Boolean(clue.pickup_transition);
-    next.push({
-      item_id: clue.instance_id,
-      template_id: clue.template_id,
-      ...(exactPickup ? {
-        profile_id: clue.profile_id,
-        quantity: clue.quantity
-      } : {}),
-      placement: structuredClone(clue.placement),
-      state: exactPickup ? {
-        semantic_category: clue.semantic_category,
-        property_state: structuredClone(clue.property_state),
-        causal_basis: clue.causal_basis,
-        evidence_ref: 'trace_ld_v1_evidence_blue_wool',
-        inventory_profile_snapshot:
-          structuredClone(clue.inventory_profile),
-        inventory_effect: structuredClone(clue.inventory_effect),
-        pickup_transition: structuredClone(clue.pickup_transition)
-      } : {
-        semantic_category: clue.semantic_category,
-        property_state: clue.property_state,
-        causal_basis: clue.causal_basis,
-        evidence_ref: 'trace_ld_v1_evidence_blue_wool',
-        placement_contract: clue.placement
-      }
-    });
-  }
-  return next;
-}
-
 const normalizeDigest = (value) => `sha256:${String(value).replace('sha256:', '')}`;

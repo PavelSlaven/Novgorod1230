@@ -19,9 +19,12 @@ import {
 import { appendSurrenderDecisionSignals } from './lower-dvina-trace-phase-4-state-surrender.js';
 import { applyConversationTemporalNpcWrites } from
   './lower-dvina-trace-conversation-temporal.js';
+import { projectCombatDecisionState } from
+  './lower-dvina-trace-combat-decision-state.js';
 
 export function projectPhase4SemanticNegotiation({
-  next, state, negotiation, turnNumber, changeSetId, contracts
+  next, state, negotiation, turnNumber, changeSetId, contracts,
+  rootTurnId, workingRevision
 }) {
   const semantic = negotiation.semantic_exchange;
   applyConversationTemporalNpcWrites(next, semantic);
@@ -154,9 +157,39 @@ export function projectPhase4SemanticNegotiation({
           : playerCombatHandoffs.length !== 1)) {
       semanticFail('TRACE_M2_PHASE_4_COMBAT_HANDOFF_INVALID');
     }
-    next.player_response_boundary =
-      structuredClone(semantic.combat_handoff);
+    const combat = negotiation.combat_initialization;
+    if (contracts.combatBindings != null) {
+      if (combat?.session?.status !== 'paused_for_player'
+          || combat.session.player_response_required !== true
+          || combat.session.scope_ref?.entity_id !== contracts.ids.shed
+          || combat.decision_records?.length !== 1
+          || combat.root_turn_id !== rootTurnId
+          || !Number.isSafeInteger(workingRevision)
+          || workingRevision < 0) {
+        semanticFail('TRACE_PHASE_4_COMBAT_INITIALIZATION_INVALID');
+      }
+      next.combat_sessions = [{
+        ...structuredClone(combat.session),
+        last_change_set_ref: {
+          entity_kind: 'party_change_set',
+          entity_id: changeSetId
+        }
+      }];
+      next.player_response_boundary = {
+        ...structuredClone(semantic.combat_handoff),
+        combat_id: combat.session.combat_id
+      };
+      next = projectCombatDecisionState({ state: next,
+        decisionRecords: combat.decision_records, changeSetId,
+        rootTurnId, workingRevision });
+    } else {
+      next.player_response_boundary =
+        structuredClone(semantic.combat_handoff);
+    }
   } else {
+    if (negotiation.combat_initialization != null) {
+      semanticFail('TRACE_PHASE_4_COMBAT_INITIALIZATION_INVALID');
+    }
     if (semantic.combat_handoff !== null) {
       semanticFail('TRACE_M2_PHASE_4_COMBAT_HANDOFF_INVALID');
     }

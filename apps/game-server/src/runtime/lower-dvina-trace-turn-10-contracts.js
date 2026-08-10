@@ -22,6 +22,7 @@ export function resolveTraceTurn10Contracts({ state, bundle, phase3Contracts,
   if (binding?.schema
       !== 'rus.lower_dvina_trace_turn_10_companion_bindings.v1'
       || binding.scenario_definition_revision !== 15
+      || ![15, 16].includes(bundle.definition_revision)
       || binding.status !== 'approved'
       || binding.fallback_policy !== 'forbidden'
       || binding.command_binding?.operation !== 'emit_interaction'

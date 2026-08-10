@@ -4,6 +4,8 @@ import { canonicalDigest } from '@rus/materialization';
 import {
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
+  validateNpcCombatDecisionRequest,
+  validateNpcCombatIntentPlan,
   validateNpcConversationResponseRequest,
   validateNpcDecisionBoundary,
   validateNpcSemanticDecisionTrace,
@@ -21,13 +23,14 @@ function fail(code, message, details = {}) {
 function requestMode(request) {
   if (request?.schema === 'npc_action_decision_request_v1') return 'autonomous';
   if (request?.schema === 'npc_conversation_response_request_v1') return 'conversation';
+  if (request?.schema === 'npc_combat_decision_request_v1') return 'combat';
   return null;
 }
 
 function requestStateVersion(request, mode) {
   return mode === 'autonomous'
     ? request.committed_state_version
-    : request.state_version;
+    : Number(request.state_version);
 }
 
 function requestNpcId(request, mode) {
@@ -43,15 +46,11 @@ function sameReferenceList(left, right) {
 }
 
 function validateRequestForMode(request, mode) {
-  return mode === 'autonomous'
-    ? validateNpcActionDecisionRequest(request)
-    : validateNpcConversationResponseRequest(request);
+  return mode === 'autonomous' ? validateNpcActionDecisionRequest(request) : mode === 'combat' ? validateNpcCombatDecisionRequest(request) : validateNpcConversationResponseRequest(request);
 }
 
 function validatePlanForMode(plan, request, mode) {
-  return mode === 'autonomous'
-    ? validateNpcStepPlan(plan, request)
-    : validateConversationContributionPlan(plan, request);
+  return mode === 'autonomous' ? validateNpcStepPlan(plan, request) : mode === 'combat' ? validateNpcCombatIntentPlan(plan, request) : validateConversationContributionPlan(plan, request);
 }
 
 function requireBoundaryRequestIdentity(boundary, request, mode) {
@@ -341,9 +340,6 @@ export async function requestNpcSemanticDecision({
 } = {}) {
   if (!validateNpcDecisionBoundary(boundary)) {
     fail('TURN_NPC_BOUNDARY_INVALID', 'boundary must match npc_decision_boundary_v1');
-  }
-  if (boundary.decision_mode === 'combat') {
-    fail('TURN_NPC_MODE_UNSUPPORTED', 'Combat semantic decisions are outside the M2 boundary');
   }
 
   const mode = requestMode(request);

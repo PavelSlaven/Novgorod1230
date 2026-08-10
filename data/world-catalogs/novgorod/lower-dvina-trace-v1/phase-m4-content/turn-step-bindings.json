@@ -1,0 +1,50 @@
+{
+  "schema": "rus.lower_dvina_trace_turn_step_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_turn_step_bindings_v3",
+  "revision": 3,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 16,
+  "semantic_contract": "turn_step_plan_v1",
+  "max_internal_steps": 8,
+  "exact_fast_path": "preserved",
+  "legacy_bounded_fallback": "forbidden",
+  "fallback_policy": "forbidden",
+  "supersedes_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m3-content/turn-step-bindings.json",
+    "id": "lower_dvina_trace_turn_step_bindings_v2",
+    "revision": 2,
+    "schema": "rus.lower_dvina_trace_turn_step_bindings.v1",
+    "digest": "87679e805870645661892509403593658ac5c96aa1fe777397a879a50fd7e865"
+  },
+  "domain_bindings": [
+    {"binding_id": "trace_ld_v1_step_inspect_wreck", "operation": "request_discovery", "command_id": "lower_dvina_trace.inspect_wreck_in_detail", "discovery_kinds": ["look", "inspect", "search"], "target_semantics": ["wreck_shore", "wreck", "boat", "rope", "tracks"]},
+    {"binding_id": "trace_ld_v1_step_follow_path_to_camp", "operation": "request_movement", "command_id": "lower_dvina_trace.follow_path_to_fishing_camp", "movement_kinds": ["local", "route"], "target_semantics": ["fishing_camp"]},
+    {"binding_id": "trace_ld_v1_step_ask_eremey", "operation": "emit_interaction", "command_id": "lower_dvina_trace.ask_eremey_about_wreck", "interaction_kinds": ["speech", "request"], "target_semantics": ["eremey_fisher"], "instrument_semantics": []},
+    {"binding_id": "trace_ld_v1_step_show_clue_to_eremey", "operation": "emit_interaction", "command_id": "lower_dvina_trace.show_clue_and_seek_eremey_cooperation", "interaction_kinds": ["speech", "offer", "request"], "target_semantics": ["eremey_fisher"], "instrument_semantics": ["blue_wool_evidence"]},
+    {"binding_id": "trace_ld_v1_step_follow_route_to_shed", "operation": "request_movement", "command_id": "lower_dvina_trace.follow_known_route_to_drying_shed", "movement_kinds": ["local", "route"], "target_semantics": ["old_drying_shed"]},
+    {"binding_id": "trace_ld_v1_step_negotiate_ratsha_surrender", "operation": "emit_interaction", "command_id": "lower_dvina_trace.offer_conditional_protection_and_seek_surrender", "interaction_kinds": ["speech", "offer", "request"], "target_semantics": ["ratsha_storehouse_helper"], "instrument_semantics": []},
+    {"binding_id": "trace_ld_v1_step_treat_onisim", "operation": "request_activity", "command_id": "lower_dvina_trace.attempt_risky_first_aid_onisim", "activity_kinds": ["recover", "work", "other"], "target_semantics": ["onisim_boatman"]},
+    {"binding_id": "trace_ld_v1_step_carry_onisim", "operation": "request_activity", "command_id": "lower_dvina_trace.make_stretcher_and_carry_onisim_to_camp", "activity_kinds": ["carry", "work", "other"], "target_semantics": ["onisim_boatman", "camp"]},
+    {"binding_id": "trace_ld_v1_step_rest_at_camp_fire", "operation": "request_activity", "command_id": "lower_dvina_trace.rest_by_fire_and_dry_clothing", "activity_kinds": ["rest", "recover"], "target_semantics": ["camp_fire", "wet_clothing"], "activity_profile_ref": "trace_ld_v1_activity_fire_rest", "body_effect_profile_ref": "trace_ld_v1_body_fire_rest_30m"},
+    {"binding_id": "trace_ld_v1_step_request_storehouse_companions", "operation": "emit_interaction", "command_id": "lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse", "interaction_kinds": ["request"], "target_semantics": ["eremey_fisher", "participating_fisher", "other_fisher"], "instrument_semantics": [], "destination_ref": "trace_ld_v1_loc_zhdanko_storehouse"},
+    {"binding_id": "trace_ld_v1_step_follow_route_to_storehouse", "operation": "request_movement", "command_id": "lower_dvina_trace.follow_known_route_to_zhdanko_storehouse", "movement_kinds": ["route"], "target_semantics": ["zhdanko_storehouse"]},
+    {"binding_id": "trace_ld_v1_step_accuse_zhdanko", "operation": "emit_interaction", "command_id": "lower_dvina_trace.accuse_zhdanko_at_storehouse", "interaction_kinds": ["speech", "request"], "target_semantics": ["zhdanko_storehouse_controller"], "instrument_semantics": []},
+    {
+      "binding_id": "trace_ld_v1_step_combat_response",
+      "operation": "request_combat",
+      "command_id": "lower_dvina_trace.respond_in_active_combat",
+      "intent_kinds": ["engage", "control", "hold", "break_contact", "surrender", "cease_hostility"],
+      "target_semantics": ["active_hostile_npc"],
+      "scope_semantics": ["active_combat_scope"]
+    }
+  ],
+  "player_execution_profiles": [
+    {"profile_id": "trace_ld_v1_combat_player_engage", "intent_kind": "engage", "status": "approved", "allowed_force_limits": ["avoid_harm", "nonlethal_if_possible", "ordinary", "lethal"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": "trace_ld_v1_check_player_combat_engage", "check_request": {"attribute_value": 12, "skill_bonus": 1, "equipment_modifier": 0, "target_defense": 12, "weapon_danger": 1, "target_protection": 0, "target_vulnerability": 0}},
+    {"profile_id": "trace_ld_v1_combat_player_control", "intent_kind": "control", "status": "approved", "allowed_force_limits": ["avoid_harm", "nonlethal_if_possible", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": "trace_ld_v1_check_player_combat_control", "check_request": {"attribute_value": 12, "skill_bonus": 1, "equipment_modifier": 0, "target_defense": 12, "weapon_danger": 0, "target_protection": 0, "target_vulnerability": 0}},
+    {"profile_id": "trace_ld_v1_combat_player_hold", "intent_kind": "hold", "status": "approved", "allowed_force_limits": ["avoid_harm", "nonlethal_if_possible", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": null},
+    {"profile_id": "trace_ld_v1_combat_player_break_contact", "intent_kind": "break_contact", "status": "approved", "allowed_force_limits": ["avoid_harm", "ordinary"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": "trace_ld_v1_check_player_combat_break_contact", "check_request": {"attribute_value": 12, "skill_bonus": 0, "equipment_modifier": 0, "target_defense": 12, "weapon_danger": 0, "target_protection": 0, "target_vulnerability": 0}},
+    {"profile_id": "trace_ld_v1_combat_player_surrender", "intent_kind": "surrender", "status": "approved", "allowed_force_limits": ["avoid_harm"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": null},
+    {"profile_id": "trace_ld_v1_combat_player_cease_hostility", "intent_kind": "cease_hostility", "status": "approved", "allowed_force_limits": ["avoid_harm"], "allowed_risk_postures": ["cautious", "ordinary", "desperate"], "check_profile_ref": null}
+  ]
+}

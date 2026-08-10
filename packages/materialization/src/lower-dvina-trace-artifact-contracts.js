@@ -41,6 +41,11 @@ export const M3_REQUIRED_ARTIFACTS = Object.freeze([
   'autonomous_semantic_bindings'
 ]);
 
+export const M4_REQUIRED_ARTIFACTS = Object.freeze([
+  ...M3_REQUIRED_ARTIFACTS,
+  'combat_semantic_bindings'
+]);
+
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
   materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 3],
@@ -171,6 +176,21 @@ export const M3_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   turn_step_bindings: ['rus.lower_dvina_trace_turn_step_bindings.v1', 2],
   autonomous_semantic_bindings: [
     'rus.lower_dvina_trace_autonomous_semantic_bindings.v1',
+    1
+  ]
+});
+
+export const M4_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M3_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 12],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    12
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 16],
+  turn_step_bindings: ['rus.lower_dvina_trace_turn_step_bindings.v1', 3],
+  combat_semantic_bindings: [
+    'rus.lower_dvina_trace_combat_semantic_bindings.v1',
     1
   ]
 });

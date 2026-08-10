@@ -1,20 +1,28 @@
 import {
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
+  validateNpcCombatDecisionRequest,
+  validateNpcCombatIntentPlan,
   validateNpcConversationResponseRequest,
   validateNpcStepPlan
 } from '@rus/npc-runtime';
 import { canonicalDigest } from '@rus/materialization';
 
 export function semanticRequestValid(request) {
-  return request?.schema === 'npc_action_decision_request_v1'
-    ? validateNpcActionDecisionRequest(request)
+  if (request?.schema === 'npc_action_decision_request_v1') {
+    return validateNpcActionDecisionRequest(request);
+  }
+  return request?.schema === 'npc_combat_decision_request_v1'
+    ? validateNpcCombatDecisionRequest(request)
     : validateNpcConversationResponseRequest(request);
 }
 
 export function semanticPlanValid(plan, request) {
-  return request?.schema === 'npc_action_decision_request_v1'
-    ? validateNpcStepPlan(plan, request)
+  if (request?.schema === 'npc_action_decision_request_v1') {
+    return validateNpcStepPlan(plan, request);
+  }
+  return request?.schema === 'npc_combat_decision_request_v1'
+    ? validateNpcCombatIntentPlan(plan, request)
     : validateConversationContributionPlan(plan, request);
 }
 
@@ -26,8 +34,7 @@ export function semanticRequestNpcId(request) {
 
 export function semanticRequestStateVersion(request) {
   return request?.schema === 'npc_action_decision_request_v1'
-    ? request.committed_state_version
-    : request?.state_version;
+    ? request.committed_state_version : Number(request?.state_version);
 }
 
 export function semanticSignalsMatchBoundary(

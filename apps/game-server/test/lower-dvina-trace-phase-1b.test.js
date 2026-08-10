@@ -51,7 +51,7 @@ test('Phase 1B publishes trace beside unchanged boatman metadata', async () => {
   ]);
 });
 
-test('trace dispatch commits before safe screen and never uses boatman creator', async () => {
+test('trace dispatch commits before its safe screen', async () => {
   const f = fixture();
   const runtime = createRuntime(f);
   const started = await runtime.startNewGame({
@@ -75,18 +75,18 @@ test('trace dispatch commits before safe screen and never uses boatman creator',
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 15);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 16);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.stage26_result.publication_binding_id,
-    'lower_dvina_trace_phase_1b_publication_v10');
-  assert.equal(session.stage26_result.publication_binding_revision, 10);
-  assert.equal(session.stage26_result.scenario_definition_revision, 15);
+    'lower_dvina_trace_phase_1b_publication_v11');
+  assert.equal(session.stage26_result.publication_binding_revision, 11);
+  assert.equal(session.stage26_result.scenario_definition_revision, 16);
   assert.equal(session.stage26_result.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v11');
+    'lower_dvina_trace_phase_1a_materialization_bindings_v12');
   const serialized = JSON.stringify(started);
   for (const forbidden of [
     'hidden_truth',
@@ -287,7 +287,7 @@ test('historical Phase 1A commits recover through their pinned publications', as
   }
 });
 
-test('exact trace replay bypasses changed publication and materializer', async () => {
+test('trace replay bypasses publication', async () => {
   const f = fixture();
   const first = createRuntime(f);
   const request = {
@@ -295,7 +295,8 @@ test('exact trace replay bypasses changed publication and materializer', async (
     request_id: 'historical-session-replay'
   };
   const started = await first.startNewGame(request);
-  const historical = TRACE_PHASE_1B_SESSION_IDENTITIES.at(-2);
+  const historical = TRACE_PHASE_1B_SESSION_IDENTITIES.find(
+    (identity) => identity.publication_binding_revision === 8);
   assert.equal(historical.publication_binding_revision, 8);
   assert.equal(historical.scenario_definition_revision, 13);
   const historicalSession = f.repository.sessions.get(started.party_id);

@@ -10,8 +10,12 @@ const PHASE3_ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
 const PHASE7_REST_COMMAND =
   'lower_dvina_trace.rest_by_fire_and_dry_clothing';
+const PHASE8_ROUTE_COMMAND =
+  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse';
 export const TURN10_COMPANION_COMMAND =
   'lower_dvina_trace.request_eremey_and_fisher_to_zhdanko_storehouse';
+export const COMBAT_RESPONSE_COMMAND =
+  'lower_dvina_trace.respond_in_active_combat';
 
 export function createLowerDvinaTracePreparedDomainEffect({
   committedState
@@ -22,11 +26,14 @@ export function createLowerDvinaTracePreparedDomainEffect({
       prepared_chain_context: context } = {}) {
       const priorCount = context?.prior_effect_count ?? 0;
       return (operation?.op === 'request_movement'
-          && commandId === PHASE3_ROUTE_COMMAND && priorCount === 0)
+          && [PHASE3_ROUTE_COMMAND, PHASE8_ROUTE_COMMAND]
+            .includes(commandId) && priorCount === 0)
         || (operation?.op === 'request_activity'
           && commandId === PHASE7_REST_COMMAND && priorCount === 0)
         || (operation?.op === 'emit_interaction'
-          && commandId === TURN10_COMPANION_COMMAND && priorCount === 1);
+          && commandId === TURN10_COMPANION_COMMAND && priorCount === 1)
+        || (operation?.op === 'request_combat'
+          && commandId === COMBAT_RESPONSE_COMMAND && priorCount === 0);
     },
     currentState() {
       return structuredClone(currentState);
@@ -36,7 +43,8 @@ export function createLowerDvinaTracePreparedDomainEffect({
       return structuredClone(currentState);
     },
     async apply(input) {
-      if (input?.command_id === PHASE3_ROUTE_COMMAND) {
+      if ([PHASE3_ROUTE_COMMAND, PHASE8_ROUTE_COMMAND]
+        .includes(input?.command_id)) {
         return applyPreparedPhase3Route({ input, committedState });
       }
       if (input?.command_id === PHASE7_REST_COMMAND) {
@@ -44,6 +52,9 @@ export function createLowerDvinaTracePreparedDomainEffect({
       }
       if (input?.command_id === TURN10_COMPANION_COMMAND) {
         return applyPreparedTurn10Conversation(input);
+      }
+      if (input?.command_id === COMBAT_RESPONSE_COMMAND) {
+        return applyPreparedCombatExchange(input);
       }
       fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
@@ -69,6 +80,18 @@ function applyPreparedTurn10Conversation(input) {
       || consequence.parent_activity_completion?.status !== 'completed'
       || input?.prepared_chain_context?.prior_effect_count !== 1) {
     fail('TRACE_TURN_STEP_PREPARED_TURN10_INVALID');
+  }
+  return preparedResult(input, consequence, true);
+}
+
+function applyPreparedCombatExchange(input) {
+  const consequence = input?.consequence;
+  if (consequence?.combat_kind !== 'exchange'
+      || consequence.combat?.session_after?.status !== 'paused_for_player'
+      || consequence.combat.session_after.player_response_required !== true
+      || consequence.duration_minutes <= 0
+      || input?.prepared_chain_context?.prior_effect_count !== 0) {
+    fail('TRACE_TURN_STEP_PREPARED_COMBAT_INVALID');
   }
   return preparedResult(input, consequence, true);
 }
@@ -136,6 +159,24 @@ function projectPreparedDomainState(state, effect) {
     delete next.phase7_parent_temporal;
     next.temporal_boundary_candidates = [];
   }
+  if (effect.consequence?.combat_kind === 'exchange') {
+    const combat = effect.consequence.combat;
+    next.combat_sessions = (next.combat_sessions ?? []).map((session) =>
+      session.combat_id === combat.session_after.combat_id
+        ? structuredClone(combat.session_after) : session);
+    next.body_state = structuredClone(
+      combat.working_state_after?.actor_states?.[
+        `player_character\0${next.actor_id}`]?.body_state ?? next.body_state);
+    next.npcs = (next.npcs ?? []).map((npc) => {
+      const body = combat.working_state_after?.actor_states?.[
+        `npc\0${npc.instance_id}`]?.body_state;
+      return body == null ? npc : { ...npc, machine_state: {
+        ...npc.machine_state, body_condition: {
+          ...npc.machine_state?.body_condition, health: body.health
+        }
+      } };
+    });
+  }
   return next;
 }
 
@@ -146,7 +187,8 @@ async function applyPreparedPhase3Route({
   const consequence = input?.consequence;
   const movement = consequence?.movement;
   const duration = Number(consequence?.duration_minutes);
-  if (consequence?.phase3_kind !== 'movement'
+  if (!['movement'].includes(consequence?.phase3_kind
+        ?? consequence?.phase8_kind)
       || !Number.isSafeInteger(duration) || duration <= 0
       || movement?.destination?.location_ref == null
       || input?.prepared_chain_context?.prior_effect_count !== 0) {

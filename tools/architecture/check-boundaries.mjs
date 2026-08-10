@@ -474,6 +474,7 @@ const baseApprovedDomainImports = new Set([
 ]);
 const approvedDomainImportsByModule = new Map([
   ['body-state', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])],
+  ['combat-health', new Set([...baseApprovedDomainImports, '@rus/contracts/combat-v1'])],
   ['movement-routes', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])]
 ]);
 const domainSourceByModule = new Map();
@@ -533,6 +534,7 @@ const temporalPureModules = new Map([
 ]);
 const temporalPureImports = new Set([
   '@rus/contracts/spatial-v3/registry',
+  '@rus/contracts/combat-v1',
   '@rus/kernel',
   '@rus/time-events-history'
 ]);
@@ -643,6 +645,7 @@ const turnFiles = (await walk(join(turnRoot, 'src'))).filter((file) => ['.js', '
 const turnFileSet = new Set(turnFiles.map((file) => resolve(file)));
 const turnGraph = new Map();
 const approvedTurnImports = new Set([
+  '@rus/contracts/combat-v1',
   '@rus/contracts/spatial-v3/ports',
   '@rus/contracts/spatial-v3/registry',
   '@rus/kernel',
@@ -655,7 +658,9 @@ const approvedTurnImports = new Set([
   '@rus/presentation',
     '@rus/narration',
     '@rus/materialization',
-    '@rus/pipeline-engine'
+    '@rus/pipeline-engine',
+    '@rus/combat-health',
+    '@rus/body-state'
 ]);
 for (const file of turnFiles) {
   const rel = relative(root, file).replaceAll('\\', '/');
@@ -703,7 +708,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',

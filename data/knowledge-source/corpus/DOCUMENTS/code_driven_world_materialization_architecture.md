@@ -105,8 +105,10 @@ path: `player_conversation_contribution_plan_v1` для реплики игро�
 `npc_decision_boundary_v1`. Revision 15 активирует autonomous NPC semantic
 path `npc_action_decision_request_v1` → `npc_step_plan_v1`: один субъективный
 план проходит общий actor-step, а activity, movement, items, time и persistence
-остаются code-owned. Combat resolution остаётся `proposed`; combat contribution
-допускает только handoff.
+остаются code-owned. Revision 16 / `spatial-v3-production-v6` активирует
+`npc_combat_decision_request_v1` → `npc_combat_intent_plan_v1`, persisted
+`combat_session_v1` и player `request_combat`; checks, harm/body, items, time,
+perception и atomic persistence остаются code-owned.
 
 ### D-011. Выбор или semantic plan LLM не является последствием
 

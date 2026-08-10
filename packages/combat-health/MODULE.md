@@ -6,9 +6,10 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 
 ## Владеет
 
-- combat request/result contracts
+- combat session, intent, technical-step and exchange proposal contracts
 - margin-to-quality and damage formulas
 - harm and injury packages
+- meaningful combat outcome/signal descriptors
 - combat-state validation
 
 ## Не делает
@@ -26,6 +27,13 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `buildHarmPackage`
 - `applyHarmPackage`
 - `validateCombatState`
+- `validateCombatSession`
+- `validateCombatIntent`
+- `buildCombatTechnicalStepProposal`
+- `buildCombatExchangeProposal`
+- `buildCombatOutcomeEvents`
+- `buildCombatDecisionSignalDescriptors`
+- `buildCombatStepHarmPackage`
 
 ## Контракты и инварианты
 
@@ -41,4 +49,4 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 
 ## Совместимость и тесты
 
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Revision 16 использует эти pure proposals через `@rus/turn`; SQL, RNG, body write и scenario ordering здесь отсутствуют. Unit/contract tests находятся в `test/domain.test.js` и `test/combat-foundation.test.js`.

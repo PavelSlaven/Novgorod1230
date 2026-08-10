@@ -133,6 +133,25 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
 }
 
 async function prepareEffectBody(input, committedState, bodyEffect) {
+  if (input.consequence?.combat_kind === 'exchange') {
+    const after = input.consequence.combat?.working_state_after
+      ?.actor_states?.[`player_character\0${committedState.actor_id}`]
+      ?.body_state;
+    if (after == null) {
+      throw new TypeError('Prepared combat body projection is required.');
+    }
+    return Object.freeze({
+      version: 1,
+      schema: 'turn_body_update',
+      owner: '@rus/body-state',
+      applied: input.consequence.combat.body_transitions.some(
+        ({ actor_ref: actor }) => actor.entity_kind === 'player_character'
+          && actor.entity_id === committedState.actor_id),
+      proposal: { profile_ref: 'combat_harm',
+        condition_transitions: [] },
+      state_after: structuredClone(after)
+    });
+  }
   if (input.effect_kind === 'semantic_activity'
       || Number(input.consequence?.duration_minutes) === 0) {
     return Object.freeze({

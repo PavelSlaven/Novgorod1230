@@ -15,6 +15,11 @@ const revision15Bindings = JSON.parse(await readFile(
     + 'phase-m3-content/turn-step-bindings.json',
   'utf8'
 ));
+const revision16Bindings = JSON.parse(await readFile(
+  'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
+    + 'phase-m4-content/turn-step-bindings.json',
+  'utf8'
+));
 const commandIds = turnStepBindings.domain_bindings.map(
   ({ command_id: commandId }) => commandId
 );
@@ -173,6 +178,35 @@ test('revision 15 keeps the exact fast path and maps a free rest phrase', () => 
     instrument_refs: [],
     content_summary: 'попросить пойти к Жданко'
   } }), true);
+});
+
+test('revision 16 keeps future Phase 8 bindings inactive before admission', () => {
+  const inactive = new Set([
+    'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
+    'lower_dvina_trace.accuse_zhdanko_at_storehouse'
+  ]);
+  const earlyCommands = revision16Bindings.domain_bindings
+    .filter(({ command_id: id }) => !inactive.has(id))
+    .map(({ command_id: commandId }) => ({
+      command_id: commandId,
+      matches: () => false,
+      ...handlers
+    }));
+  const bundle = { definition_revision: 16,
+    turn_step_bindings: revision16Bindings };
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: earlyCommands,
+    bundle,
+    targetRefs
+  });
+  assert.equal(bound.length, earlyCommands.length);
+  assert.equal(bound.every(({ semantic_binding: binding }) => binding), true);
+  assert.throws(() => bindLowerDvinaTraceTurnStepCommands({
+    commands: earlyCommands.filter(({ command_id: id }) =>
+      id !== 'lower_dvina_trace.rest_by_fire_and_dry_clothing'),
+    bundle,
+    targetRefs
+  }), { code: 'TRACE_TURN_STEP_BINDING_INVALID' });
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

@@ -38,6 +38,8 @@ export const digestInput = (plan) => { const { digest, ...value } = plan; return
 export const keyOf = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 export const validIdentity = (write) => write?.target_table === 'entity_placements'
   ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
+  : write?.target_table === 'party_combat_sessions'
+    ? write.record?.combat_id === write.id
   : write?.target_table === 'party_entity_controls' ? write.id === `${write.record?.entity_kind}:${write.record?.entity_id}`
   : write?.target_table === 'parties' ? write.record?.party_id === write.id
     : write?.target_table === 'party_positions'
@@ -94,6 +96,8 @@ export const validIdentity = (write) => write?.target_table === 'entity_placemen
                                   : write?.record?.id === write?.id;
 export function childParentKeys(write) {
   switch (write?.target_table) {
+    case 'party_combat_sessions':
+      return [`party_runtime.party_v3_change_sets:${write.record?.last_change_set_id}`];
     case 'party_activity_participant_bindings':
     case 'party_activity_resource_bindings':
     case 'party_timed_activity_attempts':

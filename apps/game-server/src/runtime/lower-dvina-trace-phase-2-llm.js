@@ -2,6 +2,8 @@ import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from
   './lower-dvina-trace-autonomous-llm.js';
+export { createLowerDvinaTraceNpcCombatModel } from
+  './lower-dvina-trace-combat-llm.js';
 
 export function createLowerDvinaTraceSemanticResolver({
   roleRunner

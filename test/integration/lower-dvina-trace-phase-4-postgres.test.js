@@ -464,6 +464,7 @@ function buildRuntime({
     turnStepModel,
     playerConversationModel,
     npcSemanticModel,
+    npcCombatModel: phase4CombatModel,
     semanticResolver: async ({ raw_text, action_set }) => ({
       option_id: semanticOption(raw_text, action_set)
     }),
@@ -498,6 +499,35 @@ function buildRuntime({
     traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool, worldPool: pool, release, runtimeCatalogPin
     }), traceTurnRuntime });
+}
+
+function phase4CombatModel(request) {
+  const target = request.operation_contract
+    .engageable_actor_refs.find(
+      ({ entity_kind: kind }) => kind === 'player_character'
+    );
+  assert.ok(target);
+  return {
+    schema: 'npc_combat_intent_plan_v1',
+    request_id: request.request_id,
+    boundary_id: request.boundary_id,
+    state_version: request.state_version,
+    combat_id: request.combat_id,
+    npc_ref: request.npc_ref,
+    decision: {},
+    operation: {
+      op: 'set_combat_intent',
+      intent_kind: 'engage',
+      target_refs: [target],
+      protected_refs: [],
+      scope_ref: null,
+      destination_ref: null,
+      force_limit: 'ordinary',
+      risk_posture: 'ordinary'
+    },
+    combat_statement: null,
+    reason: 'Ратша удерживает непосредственную угрозу перед собой.'
+  };
 }
 
 function semanticOption(rawText, actionSet) {
@@ -748,6 +778,7 @@ async function runCombatHandoffPath({ pool, release, runtimeCatalogPin }) {
   assert.deepEqual(after.player_response_boundary, {
     kind: 'combat',
     intent: 'transfer control to the combat owner',
+    combat_id: after.combat_sessions[0].combat_id,
     target_actor_refs: [{
       entity_kind: 'player_character',
       entity_id: before.actor_id

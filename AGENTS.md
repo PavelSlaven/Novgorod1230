@@ -139,7 +139,7 @@ npm run knowledge:query -- --query "<конкретная нормативная
 - LLM не пишет непосредственно в базу данных;
 - сохранённые экземпляры не материализуются повторно без явной migration или repair-процедуры.
 
-Для Lower Dvina Trace revision 14 активен conversation path, а revision 15 дополнительно активирует autonomous NPC path. Meaningful NPC response и автономное решение проходят через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1`, профильные semantic request/plan и общий code-owned execution/commit. Combat resolution остаётся `proposed` и не расширяет активную player semantic boundary; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback conversation или autonomous path.
+Для Lower Dvina Trace revision 14 активен conversation path, revision 15 активирует autonomous NPC path, а revision 16 / `spatial-v3-production-v6` — общий combat path. Meaningful NPC response, автономное и боевое решение проходят через общие `npc_decision_signal_v1` → `npc_decision_boundary_v1`, профильные semantic request/plan и общий code-owned execution/commit. Бой использует `request_combat`, persisted `combat_session_v1`, общие checks/body/items/time owners и не создаёт scenario-local resolver; bounded NPC selection допустим только для genuinely closed choices и явно pinned historical revisions, но не как fallback semantic path.
 
 ## 7. Тестирование
 

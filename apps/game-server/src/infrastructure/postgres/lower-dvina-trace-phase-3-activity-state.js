@@ -3,7 +3,8 @@ import { projectSharedSemanticConsequence } from
 
 export function activityHistoryEntry({ partyId, turnNumber, factual,
   inputDigest, changeSetId }) {
-  const phase3Kind = factual.consequence.phase3_kind;
+  const phase3Kind = routeMovement(factual) ? 'movement'
+    : factual.consequence.phase3_kind;
   const sharedConsequence = projectSharedSemanticConsequence(
     factual.consequence
   );
@@ -37,12 +38,19 @@ export function phase3RouteTimeUpdate(factual) {
   const route = factual.time_update?.prepared_effect_ledger?.slices?.find(
     ({ effect_kind: kind, owner_ref: owner }) =>
       kind === 'domain_command'
-      && owner === 'lower_dvina_trace.follow_path_to_fishing_camp');
+      && ['lower_dvina_trace.follow_path_to_fishing_camp',
+        'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse']
+        .includes(owner));
   return route?.time_update ?? factual.time_update;
 }
 
 export function phase3ActivityRef(factual) {
-  return factual.consequence.phase3_kind === 'movement'
+  return routeMovement(factual)
     ? factual.consequence.movement.activity_ref
     : factual.consequence.conversation.activity_ref;
+}
+
+export function routeMovement(factual) {
+  return factual?.consequence?.phase3_kind === 'movement'
+    || factual?.consequence?.phase8_kind === 'movement';
 }

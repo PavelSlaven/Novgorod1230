@@ -134,7 +134,9 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
         negotiation: n,
         turnNumber,
         changeSetId,
-        contracts
+        contracts,
+        rootTurnId,
+        workingRevision
       });
       attachPendingConversationActivity({ next,
         semanticExchange: n.semantic_exchange,

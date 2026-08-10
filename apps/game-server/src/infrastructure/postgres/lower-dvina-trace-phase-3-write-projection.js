@@ -7,7 +7,7 @@ import { appendConversation, appendKnowledge } from './lower-dvina-trace-phase-3
 import {
   appendPhase3MovementTraversal
 } from './lower-dvina-trace-phase-3-movement-writes.js';
-import { phase3ActivityRef } from './lower-dvina-trace-phase-3-state.js';
+import { phase3ActivityRef, routeMovement } from './lower-dvina-trace-phase-3-state.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 import {
   appendNpcSemanticConversationWrites,
@@ -52,7 +52,7 @@ export function phase3Writes(input) {
       updated_change_set_id: changeSetId
     })
   ];
-  if (factual.consequence.phase3_kind === 'movement') {
+  if (routeMovement(factual)) {
     updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: next.position.g4_id,
@@ -66,13 +66,21 @@ export function phase3Writes(input) {
     operation_kind: 'trace_phase_3_turn',
     idempotency_record_id: idemId
   })];
-  if (factual.consequence.phase3_kind === 'movement') {
+  if (routeMovement(factual)) {
     appendPhase3MovementTraversal({
       inserts, updates, appends, state, factual, partyId, turnNumber,
       changeSetId, idemId, phase3Contracts
     });
     appendKnowledge(inserts, state, partyId,
-      'trace_ld_v1_route_camp_to_wreck', []);
+      factual.consequence.movement.reverse_route_ref
+        ?? 'trace_ld_v1_route_camp_to_wreck',
+      [factual.consequence.movement.route_ref]);
+    for (const npcId of factual.consequence.movement.participants ?? []) {
+      const npc = next.npcs?.find(({ instance_id: id }) => id === npcId);
+      if (npc && npcId !== state.actor_id) updates.push(row('party_npcs', npcId,
+        { party_id: partyId, npc_id: npcId, anchor_id: npc.anchor_id,
+          machine_state: npc.machine_state, semantic_state: npc.semantic_state }));
+    }
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
   } else {

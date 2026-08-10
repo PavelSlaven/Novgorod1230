@@ -27,14 +27,11 @@ export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
 export function validateConversationDependencies({
   scenarioDefinitionRevision,
   playerConversationModel,
-  npcSemanticModel,
-  npcCombatModel
+  npcSemanticModel
 }) {
   if (![14, 15, 16].includes(scenarioDefinitionRevision)) return;
   if (typeof playerConversationModel !== 'function'
-      || typeof npcSemanticModel !== 'function'
-      || (scenarioDefinitionRevision === 16
-        && typeof npcCombatModel !== 'function')) {
+      || typeof npcSemanticModel !== 'function') {
     throw serverError(
       'TRACE_M2_CONVERSATION_DEPENDENCY_MISSING',
       'The active semantic revision requires its player and NPC models.',

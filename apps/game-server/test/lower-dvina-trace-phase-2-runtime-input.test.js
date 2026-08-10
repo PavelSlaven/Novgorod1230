@@ -12,6 +12,14 @@ test('revision 15 does not require the Phase 7 model on earlier turns', () => {
   }));
 });
 
+test('revision 16 requires the combat model only at a combat boundary', () => {
+  assert.doesNotThrow(() => validateConversationDependencies({
+    scenarioDefinitionRevision: 16,
+    playerConversationModel() {},
+    npcSemanticModel() {}
+  }));
+});
+
 test('Phase 7 stale retry is bounded to one fresh root-turn attempt',
   async () => {
     let attempts = 0;

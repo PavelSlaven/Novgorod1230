@@ -108,3 +108,13 @@ test('non-combat conversation outcome does not call the combat model', async () 
   });
   assert.equal(result, null);
 });
+
+test('combat handoff fails closed when its combat model is unavailable',
+  async () => {
+    await assert.rejects(initializeTracePhase4Combat({
+      state,
+      contracts,
+      semanticExchange,
+      playerInput: { request_id: 'turn-request-3' }
+    }), { code: 'TRACE_COMBAT_HANDOFF_DEPENDENCY_MISSING' });
+  });

@@ -9,10 +9,19 @@ import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import { createM2ConversationModels } from
   './lower-dvina-trace-m2-conversation-fixture.js';
+import { createTracePhase8Runtime } from
+  '../src/runtime/lower-dvina-trace-phase-8-runtime.js';
 
 const bundle = await loadScenarioBundle(16);
 const ROUTE_TEXT =
   'Идти к Жданко всем вместе. Ратшу держать между нами. Не входить тайком.';
+
+test('revision 16 does not construct Phase 8 before an escort commits', () => {
+  assert.equal(createTracePhase8Runtime({
+    state: { route_participant_commitments: [] },
+    bundle
+  }), null);
+});
 
 test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
   async () => {

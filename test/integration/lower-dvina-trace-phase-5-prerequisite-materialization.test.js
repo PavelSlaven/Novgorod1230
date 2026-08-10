@@ -279,12 +279,24 @@ test('revision 16 persists every NPC referenced by its initial held resources', 
     ({ target_table: targetTable }) => targetTable === table
   )?.records ?? [];
   const npcIds = new Set(batch('party_npcs').map(({ npc_id: id }) => id));
+  const onisim = result.immediate.npcs.find(
+    ({ participant_slot_ref: slot }) => slot === 'onisim_boatman'
+  );
+  const bandages = batch('party_items').filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_bandage_cloth'
+  );
   const holderIds = [
     ...batch('party_item_placements'),
     ...batch('party_containers')
   ].map(({ holder_npc_id: id }) => id).filter(Boolean);
 
   assert.equal(npcIds.size, 6);
+  assert.equal(bandages.length, 1);
+  assert.ok(onisim.machine_state.binding_item.reserved_instance_id);
+  assert.equal(
+    onisim.machine_state.binding_item.template_id,
+    'trace_ld_v1_item_ratsha_binding_rope'
+  );
   assert.ok(holderIds.length > 0);
   for (const holderId of holderIds) assert.equal(npcIds.has(holderId), true);
 });

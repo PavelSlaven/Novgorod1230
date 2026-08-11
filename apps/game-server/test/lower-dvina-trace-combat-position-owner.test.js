@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { applyTraceCombatPositionTransition } from
   '../src/runtime/lower-dvina-trace-combat-position-owner.js';
-import { executeTraceLocalTraversal } from
-  '../src/runtime/lower-dvina-trace-local-traversal.js';
+import { executeTraceCombatTraversal } from
+  '../src/runtime/lower-dvina-trace-combat-traversal-adapter.js';
 import { appendCombatTraversalWrites } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-writes.js';
 import { buildTracePhase4CombatMovementBindings } from
@@ -24,26 +24,18 @@ test('route combat movement consumes a completed traversal-owner result', () => 
   working_state: working };
   const result = applyTraceCombatPositionTransition(input, {
     session: { combat_id: 'combat-1' }, movementBindings: bindings,
-    executeTraversal: ({ proposal }) => ({ ...executeTraceLocalTraversal({
-      state: working,
+    executeTraversal: (request) => executeTraceCombatTraversal(request, {
+      state: working, session: { combat_id: 'combat-1' },
+      movementBindings: bindings,
       playerInput: { request_id: 'request-1', idempotency_key: 'idem-1' },
-      inputDigest: 'a'.repeat(64), namespace: 'combat-route-test',
-      route: bindings.route_bindings[1],
-      executionProfile: { entity_kind: 'npc_decision_execution_binding',
-        entity_id: 'ratsha-escape', version: 4 },
-      sourceEndpoint: { endpoint_id: 'shed-endpoint' },
-      destinationEndpoint: { endpoint_id: 'camp-endpoint' },
-      destinationLocationRef: 'camp', destinationAnchorId: 'camp-anchor',
-      accessPolicy: { policy_id: 'shed-access' },
-      capacityContract: { contract_id: 'shed-capacity' },
-      inventoryLoad: { total_mass_grams: 0, hands_used: 0,
-        load_category: 'light' }, participantGroup: ['ratsha-1'] })
-    , actor_ref: actorRef, route_binding: bindings.route_bindings[1] })
+      inputDigest: 'a'.repeat(64) })
   });
   assert.equal(result.movement_result.execution_mode,
     'requires_traversal_runtime_completion');
   assert.equal(result.movement_result.traversal.interval_result.result_kind,
     'segment_completed');
+  assert.deepEqual(result.movement_result.traversal.inventory_load, {
+    total_mass_grams: 350, hands_used: 1, load_category: null });
   assert.equal(result.working_state.npcs[0].location_profile_ref, 'camp');
   assert.equal(result.participant_status_updates[0].combat_status, 'left');
   assert.equal(result.signal_descriptors[0].source_event_ref.entity_id,
@@ -64,6 +56,10 @@ test('route combat movement consumes a completed traversal-owner result', () => 
   ]);
   assert.equal(appends.some(({ target_table: table }) =>
     table === 'party_traversal_interval_results'), true);
+  assert.deepEqual(appends.find(({ target_table: table }) =>
+    table === 'party_traversal_interval_results').record
+    .dynamic_snapshot.inventory_load,
+  { total_mass_grams: 350, hands_used: 1, load_category: null });
 });
 
 test('route combat movement cannot fall back to a direct position write', () => {
@@ -111,7 +107,14 @@ function state() {
       participant_slot_ref: 'ratsha_storehouse_helper',
       anchor_id: 'shed-anchor', location_profile_ref: 'shed',
       zone_ref: 'shed-approach', machine_state: { location_ref: 'shed',
-        spatial_zone_ref: 'shed-approach' } }] };
+        spatial_zone_ref: 'shed-approach' } }],
+    items: [{ item_id: 'ratsha-knife', template_id: 'ratsha-knife-template',
+      quantity: 1, inventory_profile: { mass_grams: 350,
+        external_hand_cost: 1, carry_form: 'compact', packing_slot_cost: 1,
+        packing_bundle_size: 1 },
+      placement: { holder_npc_id: 'ratsha-1',
+        physical_position: 'hands' } }], containers: [],
+    container_placements: [], container_profiles: [] };
 }
 
 function movementBindings() {
@@ -129,5 +132,18 @@ function movementBindings() {
       reverse_route_ref: 'camp-to-shed', duration_minutes: 12,
       movement_method: 'walk', version: 1,
       knowledge_state: 'known_after_forward_traversal',
-      terminal_position_outcome: 'camp' }] };
+      terminal_position_outcome: 'camp' }],
+    route_execution_bindings: [{ movement_ref: 'shed-to-camp',
+      route: { schema: 'rus.trace_movement_binding.v1',
+        route_id: 'shed-to-camp', reverse_route_ref: 'camp-to-shed',
+        duration_minutes: 12, movement_method: 'walk', version: 1,
+        knowledge_state: 'known_after_forward_traversal',
+        terminal_position_outcome: 'camp' }, execution_profile: {
+        entity_kind: 'npc_decision_execution_binding',
+        entity_id: 'ratsha-escape', version: 4 },
+      source_endpoint: { endpoint_id: 'shed-endpoint' },
+      destination_endpoint: { endpoint_id: 'camp-endpoint' },
+      destination_location_ref: 'camp', destination_anchor_id: 'camp-anchor',
+      access_policy: { policy_id: 'shed-access' },
+      capacity_contract: { contract_id: 'shed-capacity' } }] };
 }

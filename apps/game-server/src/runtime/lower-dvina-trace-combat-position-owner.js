@@ -80,7 +80,8 @@ export function applyTraceCombatPositionTransition({ step, intent,
         traversal_execution_ref: { entity_kind: 'route_plan_execution',
           entity_id: traversal.ids.execution_id },
         traversal_interval_ref: { entity_kind: 'traversal_interval_result',
-          entity_id: traversal.ids.interval_id }
+          entity_id: traversal.ids.interval_id },
+        inventory_load: structuredClone(traversal.inventory_load)
       }) }],
     signal_descriptors: [{ category: 'objective', significance: 'material',
       source_event_ref: { entity_kind: 'combat_event', entity_id: eventId },

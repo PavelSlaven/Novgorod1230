@@ -121,6 +121,8 @@ test('restart verifies route movement event traversal lineage', async () => {
     actor_ref: ref('npc', 'ratsha-1'), movement_ref: 'shed-to-camp',
     exact_elapsed: { mode: 'exact_minutes',
       exact_minutes: { numerator: '12', denominator: '1' } },
+    inventory_load: { total_mass_grams: 350, hands_used: 1,
+      load_category: null },
     traversal_execution_ref: ref('route_plan_execution', 'execution-1'),
     traversal_interval_ref: ref('traversal_interval_result', 'interval-1') };
   const history = { occurred_at: at, outcome_event_refs: [event.event_id],
@@ -145,7 +147,8 @@ test('restart verifies route movement event traversal lineage', async () => {
     updated_change_set_id: 'change-2', option_id: 'shed-to-camp',
     journey_owner_ref: event.actor_ref, created_change_set_id: 'change-2',
     step_ordinal: 0, step_kind: 'timed_traversal',
-    static_contract_snapshot: { base_minutes: 12 },
+    static_contract_snapshot: { base_minutes: 12, load_category: null },
+    dynamic_snapshot: { inventory_load: event.inventory_load },
     travel_status: 'closed', closed_result: 'completed',
     segment_progress_ppm: 1_000_000, travel_step_ordinal: 0,
     cumulative_actual_time_numerator: 12,
@@ -169,6 +172,10 @@ test('restart verifies route movement event traversal lineage', async () => {
     ...lineage, actual_time_numerator: 1 }), payload));
   await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
     ...lineage, cumulative_actual_time_numerator: 1 }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, dynamic_snapshot: { inventory_load: {
+      total_mass_grams: 0, hands_used: 0, load_category: 'light' } } }),
+  payload));
   await assert.rejects(assertCombatSessionRows(routePool({ ...eventRow,
     rule_ref: ref('traversal_interval_result', 'other-interval') }, lineage),
   payload));

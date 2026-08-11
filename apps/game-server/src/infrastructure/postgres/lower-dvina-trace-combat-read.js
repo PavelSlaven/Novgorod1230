@@ -110,7 +110,8 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
             r.actual_time_denominator,r.cumulative_time_before_numerator,
             r.cumulative_time_before_denominator,
             r.cumulative_time_after_numerator,
-            r.cumulative_time_after_denominator,r.result_change_set_id,
+            r.cumulative_time_after_denominator,r.dynamic_snapshot,
+            r.result_change_set_id,
             e.party_id,e.status AS execution_status,e.updated_change_set_id,
             p.option_id,p.journey_owner_ref,p.created_change_set_id,
             s.ordinal AS step_ordinal,s.step_kind,s.static_contract_snapshot,
@@ -167,6 +168,10 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
           !== String(exact.denominator)
         || String(row.static_contract_snapshot?.base_minutes)
           !== String(exact.numerator)
+        || canonicalDigest(row.dynamic_snapshot?.inventory_load)
+          !== canonicalDigest(event.inventory_load)
+        || row.static_contract_snapshot?.load_category
+          !== event.inventory_load?.load_category
         || Number(row.actual_progress_after_ppm) !== 1_000_000
         || row.execution_status !== 'completed'
         || row.travel_status !== 'closed'

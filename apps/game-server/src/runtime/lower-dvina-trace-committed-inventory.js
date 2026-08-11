@@ -11,7 +11,10 @@ import {
 
 export function buildCommittedInventoryInput(
   state,
-  { additionalItems = [], itemPlacementChanges = [] } = {}
+  { additionalItems = [], itemPlacementChanges = [],
+    actorId = state.actor_id, actorStrength =
+      state.player_profile.attributes.strength.value,
+    normalizeNpcHolder = false } = {}
 ) {
   const placementByItemId = new Map(
     itemPlacementChanges.map((placement) => [placement.item_id, placement])
@@ -29,21 +32,22 @@ export function buildCommittedInventoryInput(
   }
   return {
     party_id: state.party_id,
-    actor_id: state.actor_id,
+    actor_id: actorId,
     state_version: state.party_state.state_version,
     expected_state_version: state.party_state.state_version,
     current_g5_anchor_id: state.position.g5_anchor_id,
-    strength: state.player_profile.attributes.strength.value,
+    strength: actorStrength,
     items: items.map(projectRuntimeInventoryInstance),
     item_placements: items.map((item) => {
       const placement = placementByItemId.get(item.item_id)
         ?? item.placement;
       return { party_id: state.party_id, item_id: item.item_id,
-        ...structuredClone(placement) };
+        ...actorPlacement(placement, actorId, normalizeNpcHolder) };
     }),
     item_profiles: itemProfiles,
     containers: structuredClone(state.containers ?? []),
-    container_placements: structuredClone(state.container_placements ?? []),
+    container_placements: (state.container_placements ?? []).map(
+      (placement) => actorPlacement(placement, actorId, normalizeNpcHolder)),
     container_profiles: structuredClone(state.container_profiles ?? [])
   };
 }
@@ -144,6 +148,27 @@ export function getCommittedInventoryLoad(state, options) {
   return Object.freeze({ inventory, mass, hands, load });
 }
 
+export function getCommittedActorInventoryLoad(state, actorId) {
+  const npc = (state.npcs ?? []).find(({ instance_id: id }) => id === actorId);
+  if (!npc) throw inventoryError('ACTOR_INVENTORY_OWNER_MISSING');
+  const inventory = buildCommittedInventoryInput(state, { actorId,
+    actorStrength: null, normalizeNpcHolder: true });
+  const mass = calculateInventoryMass(inventory);
+  const hands = calculateHandsState(inventory);
+  const loadCategory = npc.machine_state?.load_category
+    ?? npc.inventory?.load_category ?? null;
+  if (!mass.pass || !hands.pass
+      || loadCategory != null
+        && !['light', 'moderate', 'heavy', 'overloaded']
+          .includes(loadCategory)) {
+    throw inventoryError('ACTOR_INVENTORY_LOAD_INVALID', {
+      actor_id: actorId, mass_errors: mass.errors,
+      hands_errors: hands.errors, load_category: loadCategory });
+  }
+  return Object.freeze({ total_mass_grams: mass.total_mass_grams,
+    hands_used: hands.hands_used, load_category: loadCategory });
+}
+
 function withRuntimeItemOverlay(state, runtimeItems, retiredItemRefs) {
   const byId = new Map((state.items ?? []).map((item) => [
     item?.item_id ?? item?.instance_id,
@@ -161,6 +186,19 @@ function withRuntimeItemOverlay(state, runtimeItems, retiredItemRefs) {
     });
   }
   return { ...state, items: [...byId.values()] };
+}
+
+function actorPlacement(value, actorId, normalizeNpcHolder) {
+  const next = structuredClone(value ?? {});
+  if (normalizeNpcHolder && next.holder_npc_id === actorId) {
+    next.holder_character_id = actorId;
+    delete next.holder_npc_id;
+  }
+  return next;
+}
+
+function inventoryError(code, details = null) {
+  return Object.assign(new Error(code), { code, details });
 }
 
 function inventoryIssue(code, category, details) {

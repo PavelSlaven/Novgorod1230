@@ -2,6 +2,8 @@ import { executeTraceLocalTraversal } from
   './lower-dvina-trace-local-traversal.js';
 import { traceCombatMovementBindings } from
   './lower-dvina-trace-combat-bindings.js';
+import { getCommittedActorInventoryLoad } from
+  './lower-dvina-trace-committed-inventory.js';
 
 export function executeTraceCombatTraversal({ proposal, step, intent,
   working_state: working }, context) {
@@ -14,6 +16,8 @@ export function executeTraceCombatTraversal({ proposal, step, intent,
     fail('TRACE_COMBAT_TRAVERSAL_BINDING_GAP');
   }
   const binding = bindings[0];
+  const inventoryLoad = getCommittedActorInventoryLoad(
+    working, intent.actor_ref.entity_id);
   const traversal = executeTraceLocalTraversal({ state: working,
     playerInput: context.playerInput, inputDigest: context.inputDigest,
     namespace: `trace-combat-${context.session.combat_id}-${step.proposal_id}`,
@@ -24,8 +28,7 @@ export function executeTraceCombatTraversal({ proposal, step, intent,
     destinationAnchorId: binding.destination_anchor_id,
     accessPolicy: binding.access_policy,
     capacityContract: binding.capacity_contract,
-    inventoryLoad: { total_mass_grams: 0, hands_used: 0,
-      load_category: 'light' },
+    inventoryLoad,
     participantGroup: [intent.actor_ref.entity_id] });
   return { ...traversal, actor_ref: structuredClone(intent.actor_ref),
     route_binding: structuredClone(binding.route) };

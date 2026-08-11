@@ -4,6 +4,10 @@ import {
   initializeCombatSession
 } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
+import { resolveTraceCombatSpatialAffordances } from
+  './lower-dvina-trace-combat-position-owner.js';
+import { restrictTraceCombatSpatialIntents } from
+  './lower-dvina-trace-combat-position-owner.js';
 
 export async function initializeTracePhase4Combat({
   state,
@@ -17,13 +21,15 @@ export async function initializeTracePhase4Combat({
     actor: contracts.actors.ratsha_storehouse_helper,
     participantBindings: [], semanticExchange, playerInput, npcCombatModel,
     revalidateStateVersion, combatLabel: 'ratsha',
+    movementBindings: contracts.combatMovementBindings,
     perceivedChangeSummary:
       'Ратша видит, что разговор перешёл к непосредственному боевому противостоянию.' });
 }
 
 export async function initializeTraceCombatHandoff({ state, binding, actor,
   participantBindings = [], semanticExchange, playerInput, npcCombatModel,
-  revalidateStateVersion, combatLabel, perceivedChangeSummary }) {
+  revalidateStateVersion, combatLabel, perceivedChangeSummary,
+  movementBindings }) {
   if (semanticExchange?.response_kind !== 'combat_handoff'
       || semanticExchange.combat_handoff?.kind !== 'combat') {
     return null;
@@ -75,7 +81,17 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
       perceived_change_summary: summary
     })),
     npc_contexts: participants.map(({ actor: subject,
-      binding: subjectBinding }) => ({
+      binding: subjectBinding }) => {
+      const operation = operationContract(subjectBinding,
+        subject.instance_id === actor.instance_id
+          ? [ref('player_character', state.actor_id),
+            ...participantBindings.map(({ actor: other }) =>
+              ref('npc', other.instance_id))]
+          : [ref('npc', actor.instance_id)],
+        subject.instance_id === actor.instance_id ? [] : [
+          ref('player_character', state.actor_id)], subject, state,
+        movementBindings);
+      return {
       npc_ref: ref('npc', subject.instance_id),
       state_version: String(state.party_state.state_version),
       current_intent: null,
@@ -95,24 +111,18 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
         visible_neutral_actors: [],
         recognized_weapons: [],
         known_positions: [],
-        known_exits: [],
+        known_exits: structuredClone(
+          operation.break_contact_destination_refs),
         visible_cover: [],
         perceived_hazards: [],
         recent_perceived_events: [],
         uncertainties: []
       },
       relevant_memory: [],
-      operation_contract: operationContract(subjectBinding,
-        subject.instance_id === actor.instance_id
-          ? [ref('player_character', state.actor_id),
-            ...participantBindings.map(({ actor: other }) =>
-              ref('npc', other.instance_id))]
-          : [ref('npc', actor.instance_id)],
-        subject.instance_id === actor.instance_id ? [] : [
-          ref('player_character', state.actor_id)]),
+      operation_contract: operation,
       validate_plan: validateNpcCombatPlanApplicability,
       semantic_model: npcCombatModel
-    }))
+    }; })
   });
   const initialized = await initializeCombatSession({
     session,
@@ -142,17 +152,19 @@ export async function initializeTraceCombatHandoff({ state, binding, actor,
   };
 }
 
-function operationContract(binding, opponents, protectable) {
+function operationContract(binding, opponents, protectable, actor, state,
+  movementBindings) {
   const base = structuredClone(binding.operation_contract);
-  return {
+  const spatial = resolveTraceCombatSpatialAffordances({
+    actorRef: ref('npc', actor.instance_id), state, movementBindings
+  });
+  return restrictTraceCombatSpatialIntents({
     ...base,
     engageable_actor_refs: opponents,
     controllable_actor_refs: opponents,
     protectable_refs: protectable,
-    holdable_scope_refs: [ref('location', binding.scope_location_ref)],
-    reachable_destination_refs: [ref('location', binding.scope_location_ref)],
-    break_contact_destination_refs: []
-  };
+    holdable_scope_refs: [ref('location', binding.scope_location_ref)]
+  }, spatial);
 }
 
 function projectNpcSubjectiveState(actor) {

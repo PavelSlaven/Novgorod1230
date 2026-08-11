@@ -51,6 +51,7 @@ export function createTracePhase8AccusationCommand({ contracts, inputDigest,
           participantBindings: companionBindings(contracts),
           semanticExchange: semantic, playerInput, npcCombatModel,
           revalidateStateVersion, combatLabel: 'zhdanko',
+          movementBindings: contracts.combatMovementBindings,
           perceivedChangeSummary:
             'Жданко видит, что обвинение перешло к непосредственному противостоянию.' });
       assertStrictJson(semantic, 'semantic_exchange');

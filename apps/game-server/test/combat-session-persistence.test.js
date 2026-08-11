@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createCombatSession } from '@rus/turn';
+import { canonicalDigest } from '@rus/materialization';
 import {
   appendCombatSessionWrite,
   hydrateCombatSession
@@ -75,4 +76,40 @@ test('restart current projection excludes a terminal combat session', async () =
   await assert.doesNotReject(assertCombatSessionRows(pool, {
     party_id: 'party-1', combat_sessions: [] }));
   assert.match(queryText, /status <> 'ended'/u);
+});
+
+test('restart verifies factual combat events backing decision signals', async () => {
+  const event = { event_id: 'combat-event:1:item',
+    event_kind: 'combat_item_transition_completed', combat_id: 'combat-1',
+    source_step_ref: ref('combat_technical_step', 'step-1') };
+  const history = { occurred_at: at, outcome_event_refs: [event.event_id],
+    outcome_events: [event], change_set_id: 'change-2' };
+  const eventRow = { event_id: event.event_id, event_kind: event.event_kind,
+    scheduled_at_whole_minutes: at.whole_minutes,
+    scheduled_at_subminute_numerator: at.subminute_numerator,
+    scheduled_at_subminute_denominator: at.subminute_denominator,
+    preconditions_digest: canonicalDigest(event), change_set_id: 'change-2' };
+  const payload = { party_id: 'party-1', combat_sessions: [],
+    combat_history: [history], npc_decision_signals: [{ signal: {
+      source_event_ref: ref('combat_event', event.event_id) } }] };
+  const pool = { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? [] : [eventRow] }) };
+  await assert.doesNotReject(assertCombatSessionRows(pool, payload));
+  const tampered = { ...eventRow, preconditions_digest: 'bad' };
+  const badPool = { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? [] : [tampered] }) };
+  await assert.rejects(assertCombatSessionRows(badPool, payload));
+  await assert.rejects(assertCombatSessionRows(pool, { ...payload,
+    npc_decision_signals: [{ signal: { source_event_ref:
+      ref('combat_event', 'missing-event') } }] }));
+  await assert.rejects(assertCombatSessionRows(pool, { ...payload,
+    combat_history: [{ ...history, outcome_event_refs: [],
+      outcome_events: [event] }] }));
+  const legacy = { ...history };
+  delete legacy.outcome_events;
+  await assert.doesNotReject(assertCombatSessionRows(pool, { ...payload,
+    combat_history: [legacy] }));
+  const missingPool = { query: async () => ({ rows: [] }) };
+  await assert.rejects(assertCombatSessionRows(missingPool, { ...payload,
+    combat_history: [legacy] }));
 });

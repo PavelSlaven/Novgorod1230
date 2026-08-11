@@ -6,7 +6,7 @@ Owner of route query/planning, approved movement method/time resolution, travers
 
 ## Владеет
 
-- Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation.
+- Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, выбор одного approved actor destination transition из фактической позиции и materialized destination, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation.
 
 ## Не владеет
 
@@ -14,7 +14,7 @@ Owner of route query/planning, approved movement method/time resolution, travers
 
 ## Public API и контракты
 
-- `.`: `TRAVEL_CONDITION_MULTIPLIERS`, `TRAVEL_LOAD_MULTIPLIERS`, `calculateTravelTime`, `assessRouteAvailability`, `buildTraversalRequest`, `validateTraversalResult`, planner and activation validator.
+- `.`: `TRAVEL_CONDITION_MULTIPLIERS`, `TRAVEL_LOAD_MULTIPLIERS`, `calculateTravelTime`, `assessRouteAvailability`, `buildTraversalRequest`, `validateTraversalResult`, `planApprovedActorDestinationTransition`, planner and activation validator.
 - `./spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator`; `./spatial-v3-planner`: planner/activation implementation.
 
 Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEndpoint`, `validateCapability` ports and returns a route plan/proposal or typed fail-closed result. Activation validator receives explicit preparation/current-state/capability/recheck ports and returns accepted/rejected activation validation. Inputs/outputs use pinned target DTO and never fabricate endpoint, capability, time factor or route fallback.

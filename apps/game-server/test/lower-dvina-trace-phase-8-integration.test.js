@@ -88,6 +88,17 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     assert.equal(runtime.npcCombatCount(), 4);
     const terminalSignals = runtime.state.last_turn.consequence.combat
       .signal_records;
+    const outcomeEvents = runtime.state.last_turn.consequence.combat
+      .outcome_events;
+    const disarmEvent = outcomeEvents.find(({ event_kind: kind }) =>
+      kind === 'combat_item_transition_completed');
+    const disarmSignal = terminalSignals.find(({ source_event_ref: source }) =>
+      source.entity_kind === 'combat_event'
+      && source.entity_id === disarmEvent?.event_id);
+    assert.ok(disarmSignal);
+    assert.equal(disarmEvent?.event_kind,
+      'combat_item_transition_completed');
+    assert.equal(disarmEvent?.item_ref.entity_id, axe.item_id);
     assert.equal(runtime.state.npc_decision_signals.length,
       signalCountBefore + terminalSignals.length);
     assert.equal(terminalSignals.every(({ signal_id: id }) =>
@@ -107,6 +118,134 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     assert.equal(runtime.rollCount(), rollCount);
     assert.equal(runtime.npcCombatCount(), 4);
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
+  });
+
+test('Ratsha reaches the factual road bag through the movement owner',
+  async () => {
+    const state = phase8CampState();
+    const ids = actorIds(state);
+    const bag = state.containers.find(
+      ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag');
+    bag.state = { ...bag.state, zone_ref: 'river_access' };
+    const requests = [];
+    const conversation = createM2ConversationModels({
+      ratshaResponseKind: 'combat_handoff'
+    });
+    const runtime = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState: state, rollValue: 0.99,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+        ]
+      }),
+      turnStepModel: (request) => phase8Plan(request, ids),
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      npcCombatModel: (request) => {
+        requests.push(structuredClone(request));
+        return combatPlan(request, ids, { ratsha: 'reach' });
+      } });
+    const startMinute = Number(runtime.state.clock.whole_minutes);
+    await openPhase8Combat(runtime, 'phase8-reach');
+    const ratshaRequest = requests.find(({ npc_ref: npc }) =>
+      npc.entity_id === ids.ratsha);
+    assert.deepEqual(ratshaRequest.operation_contract
+      .reachable_destination_refs, [
+      { entity_kind: 'container', entity_id: bag.container_id }
+    ]);
+
+    const response = { request_id: 'phase8-reach-combat',
+      idempotency_key: 'phase8-reach-combat',
+      raw_text: 'Помочь Еремею удержать Жданко.' };
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+    const ratsha = runtime.state.npcs.find(
+      ({ instance_id: id }) => id === ids.ratsha);
+    assert.equal(ratsha.location_profile_ref,
+      'trace_ld_v1_loc_zhdanko_storehouse');
+    assert.equal(ratsha.zone_ref, 'river_access');
+    assert.equal(ratsha.machine_state.spatial_zone_ref, 'river_access');
+    assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 22);
+    const movementEvent = runtime.state.last_turn.consequence.combat
+      .outcome_events.find(({ actor_ref: actor, event_kind: kind }) =>
+        kind === 'combat_position_transition_completed'
+        && actor?.entity_id === ids.ratsha);
+    assert.equal(movementEvent.destination_ref.entity_id, bag.container_id);
+    assert.equal(runtime.state.combat_history.at(-1).outcome_event_refs
+      .includes(movementEvent.event_id), true);
+    const commitCount = runtime.commitCount();
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+    assert.equal(runtime.commitCount(), commitCount);
+    assert.equal(runtime.state.npcs.find(
+      ({ instance_id: id }) => id === ids.ratsha).zone_ref, 'river_access');
+  });
+
+test('Zhdanko break_contact uses the approved local exit before leaving combat',
+  async () => {
+    const state = phase8CampState();
+    const ids = actorIds(state);
+    const requests = [];
+    const conversation = createM2ConversationModels({
+      ratshaResponseKind: 'combat_handoff'
+    });
+    const runtime = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState: state, rollValue: 0.99,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+        ]
+      }),
+      turnStepModel: (request) => phase8Plan(request, ids),
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      npcCombatModel: (request) => {
+        requests.push(structuredClone(request));
+        return combatPlan(request, ids, { zhdanko: 'break_contact',
+          companions: 'hold' });
+      } });
+    const startMinute = Number(runtime.state.clock.whole_minutes);
+    await openPhase8Combat(runtime, 'phase8-flight');
+    const zhdankoRequest = requests.find(({ npc_ref: npc }) =>
+      npc.entity_id === ids.zhdanko);
+    const storehouse = runtime.state.prepared_scenes.find(
+      ({ location_profile_ref: id }) =>
+        id === 'trace_ld_v1_loc_zhdanko_storehouse');
+    assert.deepEqual(zhdankoRequest.operation_contract
+      .break_contact_destination_refs, [{ entity_kind: 'location_anchor',
+      entity_id: storehouse.anchor.instance_id }]);
+
+    const response = { request_id: 'phase8-flight-combat',
+      idempotency_key: 'phase8-flight-combat',
+      raw_text: 'Попытаться удержать Жданко без лишнего вреда.' };
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+    const zhdanko = runtime.state.npcs.find(
+      ({ instance_id: id }) => id === ids.zhdanko);
+    assert.equal(zhdanko.anchor_id, storehouse.anchor.instance_id);
+    assert.equal(zhdanko.location_profile_ref, storehouse.location_profile_ref);
+    assert.equal(zhdanko.zone_ref, 'river_access');
+    assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 22);
+    const combat = runtime.state.last_turn.consequence.combat;
+    assert.equal(combat.session_after.participant_states.find(
+      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
+      .combat_status, 'left');
+    const movementEvent = combat.outcome_events.find(
+      ({ actor_ref: actor, event_kind: kind }) =>
+        kind === 'combat_position_transition_completed'
+        && actor?.entity_id === ids.zhdanko);
+    assert.equal(movementEvent.movement_ref,
+      'trace_ld_v1_local_transition_storehouse_to_river_access');
+    assert.equal(combat.session_after.status, 'ended');
+    const commitCount = runtime.commitCount();
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+    assert.equal(runtime.commitCount(), commitCount);
+    assert.equal(runtime.state.npcs.find(
+      ({ instance_id: id }) => id === ids.zhdanko).anchor_id,
+    storehouse.anchor.instance_id);
   });
 
 test('health zero persists one closed self signal without a combat LLM request',
@@ -251,7 +390,7 @@ function phase8Plan(request, ids, combatIntentKind = 'control') {
     reason: 'Передать действие утверждённому владельцу домена.' };
 }
 
-function combatPlan(request, ids) {
+function combatPlan(request, ids, choices = {}) {
   const postDisarm = request.decision_reasons.perceived_changes.some(
     (summary) => summary.includes('оруж'));
   let intentKind = 'hold', targetRefs = [], scopeRef = {
@@ -259,17 +398,30 @@ function combatPlan(request, ids) {
     entity_id: 'trace_ld_v1_loc_zhdanko_storehouse'
   }, forceLimit = 'avoid_harm';
   if (request.npc_ref.entity_id === ids.zhdanko) {
-    intentKind = postDisarm ? 'surrender' : 'engage';
+    intentKind = postDisarm ? 'surrender' : choices.zhdanko ?? 'engage';
     targetRefs = postDisarm ? [] : [{ entity_kind: 'player_character',
       entity_id: ids.player }];
     scopeRef = null;
     forceLimit = 'ordinary';
+    if (intentKind === 'break_contact') targetRefs = [];
   } else if ([ids.eremey, ids.fisher].includes(request.npc_ref.entity_id)) {
-    intentKind = 'control';
-    targetRefs = [{ entity_kind: 'npc', entity_id: ids.zhdanko }];
+    intentKind = choices.companions ?? 'control';
+    if (intentKind === 'control') {
+      targetRefs = [{ entity_kind: 'npc', entity_id: ids.zhdanko }];
+      scopeRef = null;
+      forceLimit = 'nonlethal_if_possible';
+    }
+  } else if (request.npc_ref.entity_id === ids.ratsha
+      && choices.ratsha === 'reach') {
+    intentKind = 'reach';
+    targetRefs = [];
     scopeRef = null;
-    forceLimit = 'nonlethal_if_possible';
+    forceLimit = 'avoid_harm';
   }
+  const destinationRef = intentKind === 'reach'
+    ? request.operation_contract.reachable_destination_refs[0]
+    : intentKind === 'break_contact'
+      ? request.operation_contract.break_contact_destination_refs[0] : null;
   const plan = { schema: 'npc_combat_intent_plan_v1',
     request_id: request.request_id, boundary_id: request.boundary_id,
     state_version: request.state_version, combat_id: request.combat_id,
@@ -279,13 +431,23 @@ function combatPlan(request, ids) {
       adaptation: 'literal' }, operation: {
       op: 'set_combat_intent', intent_kind: intentKind,
       target_refs: targetRefs, protected_refs: [], scope_ref: scopeRef,
-      destination_ref: null, force_limit: forceLimit,
+      destination_ref: destinationRef, force_limit: forceLimit,
       risk_posture: 'ordinary' }, combat_statement: null,
     reason: postDisarm ? 'Сопротивление более невозможно.'
       : 'Участник выбирает ближайшее допустимое действие.' };
   assert.deepEqual(validateNpcCombatPlanApplicability(plan, request),
     { pass: true, errors: [] });
   return plan;
+}
+
+async function openPhase8Combat(runtime, prefix) {
+  await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+    request_id: `${prefix}-route`, idempotency_key: `${prefix}-route`,
+    raw_text: ROUTE_TEXT } });
+  await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+    request_id: `${prefix}-accusation`,
+    idempotency_key: `${prefix}-accusation`,
+    raw_text: 'Обвинить Жданко и потребовать вернуть дорожную сумку.' } });
 }
 
 function ref(entityId) { return { entity_kind: 'npc', entity_id: entityId }; }

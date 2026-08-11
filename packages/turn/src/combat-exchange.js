@@ -124,17 +124,24 @@ export async function prepareCombatExchange(input = {}) {
     results.harms.push(...executed.harms);
     results.body.push(...executed.body);
     results.by_step.set(step.proposal_id, executed);
-    const item = ports.applyItemTransitions({ step, check_result: executed.check, harm: executed.harm, working_state: state });
+    const item = ports.applyItemTransitions({ step, intent,
+      check_result: executed.check, harm: executed.harm, working_state: state });
     validateOwnerResult(item, 'item');
+    validateOwnerEvents(item?.outcome_events, step, next);
     results.items.push(item ?? null);
-    const position = ports.applyPositionTransitions({ step, check_result: executed.check, harm: executed.harm, working_state: item?.working_state ?? state });
+    const position = ports.applyPositionTransitions({ step, intent,
+      check_result: executed.check, harm: executed.harm,
+      working_state: item?.working_state ?? state });
     validateOwnerResult(position, 'position');
+    validateOwnerEvents(position?.outcome_events, step, next);
     results.positions.push(position ?? null);
+    executed.item = item ?? null;
+    executed.position = position ?? null;
     applyParticipantStatusUpdates(next,
       item?.participant_status_updates ?? [], 'item', step);
     applyParticipantStatusUpdates(next,
       position?.participant_status_updates ?? [], 'position', step);
-    applyTerminalIntentStatus(next, intent, executed.check);
+    applyTerminalIntentStatus(next, intent, executed.check, position);
     state = structuredClone(position?.working_state ?? item?.working_state ?? state);
   }
 
@@ -154,9 +161,17 @@ export async function prepareCombatExchange(input = {}) {
     if (blocked) return [blocked];
     const result = results.by_step.get(step.proposal_id);
     if (!result) return [];
-    return buildCombatOutcomeEvents({ combat_id: next.combat_id, technical_step: step,
-      check_result: result.check ?? null, harm_package: result.harm ?? null });
+    return [
+      ...buildCombatOutcomeEvents({ combat_id: next.combat_id,
+        technical_step: step, check_result: result.check ?? null,
+        harm_package: result.harm ?? null }),
+      ...(result.item?.outcome_events ?? []),
+      ...(result.position?.outcome_events ?? [])
+    ];
   })];
+  if (new Set(events.map(({ event_id: id }) => id)).size !== events.length) {
+    throw combatError('TURN_COMBAT_OUTCOME_EVENT_INVALID');
+  }
   const meaningfulDescriptors = buildMeaningfulDescriptors({ results,
     blockedDescriptors, occurredAt: exchangeCompletedAt });
   next.exchange_ordinal += exchange ? 1 : 0;
@@ -332,6 +347,16 @@ function applyBodyTerminalStatuses(session, bodyTransitions) {
   }
 }
 function validateOwnerResult(value, owner) { if (value !== undefined && (value === null || typeof value !== 'object')) throw combatError(`TURN_COMBAT_${owner.toUpperCase()}_OWNER_INVALID`); }
+function validateOwnerEvents(events = [], step, session) {
+  if (!Array.isArray(events) || events.some((event) =>
+    typeof event?.event_id !== 'string' || event.event_id.length === 0
+    || typeof event.event_kind !== 'string' || event.event_kind.length === 0
+    || event.combat_id !== session.combat_id
+    || event.source_step_ref?.entity_kind !== 'combat_technical_step'
+    || event.source_step_ref.entity_id !== step.proposal_id)) {
+    throw combatError('TURN_COMBAT_DOMAIN_EVENT_INVALID');
+  }
+}
 function applyParticipantStatusUpdates(session, updates, owner, step) {
   if (!Array.isArray(updates)) throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
   for (const update of updates) {
@@ -359,7 +384,7 @@ function applyParticipantStatusUpdates(session, updates, owner, step) {
     }
   }
 }
-function applyTerminalIntentStatus(session, intent, check) {
+function applyTerminalIntentStatus(session, intent, check, position) {
   if (check?.outcome?.success === false) return;
   const participant = session.participant_states.find(({ actor_ref: actor }) =>
     actor.entity_kind === intent.actor_ref.entity_kind
@@ -374,6 +399,10 @@ function applyTerminalIntentStatus(session, intent, check) {
     } else {
       participant.combat_status = 'disengaging';
     }
+  } else if (intent.intent_kind === 'reach'
+      && position?.completed_intent === true) {
+    participant.current_intent = { ...participant.current_intent,
+      status: 'completed' };
   } else if (intent.intent_kind === 'cease_hostility') {
     participant.current_intent = null;
   }

@@ -30,11 +30,8 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
   const route = exact(bundle.movement_bindings.route_bindings, 'route_id', ids.route);
   const routeBodyEffect = routeEffect(bundle.body_environment_profiles?.effect_profiles,
     'trace_ld_v1_body_open_route_12m', ids.routeActivity, route.duration_minutes);
-  const reverseRoute = exact(
-    bundle.movement_bindings.route_bindings,
-    'route_id',
-    route.reverse_route_ref
-  );
+  const reverseRoute = exact(bundle.movement_bindings.route_bindings,
+    'route_id', route.reverse_route_ref);
   const sourceEndpoint = exact(
     bundle.location_topology_set.endpoints,
     'endpoint_id',
@@ -261,9 +258,12 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     reverseRoute: { ...structuredClone(reverseRoute),
       digest: canonicalDigest(reverseRoute) },
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
-    observation, confessionStatement, confessionEffect, threatEffect,
-    npcSocialCheckProfile,
+    observation, confessionStatement, confessionEffect, threatEffect, npcSocialCheckProfile,
     conversationBindings, conversationSignalMappings, combatBindings,
+    combatMovementBindings: {
+      route_bindings: [structuredClone(route), structuredClone(reverseRoute)], local_transition_bindings: [], actor_destination_bindings: [{
+        actor_ref: { entity_kind: 'npc', entity_id: actors.ratsha_storehouse_helper.instance_id },
+        intent_kind: 'break_contact', destination_ref: { entity_kind: 'location_anchor', entity_id: preparedCamp.anchor.instance_id }, movement_ref: reverseRoute.route_id }] },
     conversationTimeProfiles: structuredClone(
       bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
     ),

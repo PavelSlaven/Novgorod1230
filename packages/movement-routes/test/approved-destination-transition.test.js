@@ -15,9 +15,34 @@ test('plans one approved local actor transition to a factual resource', () => {
   assert.equal(result.pass, true);
   assert.equal(result.proposal.owner, '@rus/movement-routes');
   assert.equal(result.proposal.movement_kind, 'local_zone_transition');
+  assert.equal(result.proposal.execution_mode,
+    'immediate_position_transition');
   assert.equal(result.proposal.destination.entity_ref.entity_id, 'road-bag');
   assert.equal(result.proposal.exact_elapsed.exact_minutes.numerator, '5');
 });
+
+test('plans a pinned local access transition to a canonical resource zone',
+  () => {
+    const result = planApprovedActorDestinationTransition({
+      state_version: 4, expected_state_version: 4,
+      actor: { ...actor, participant_slot_ref: 'ratsha_helper' },
+      destination: { entity_ref: ref('container', 'road-bag'),
+        location_ref: 'storehouse', zone_ref: 'interior', anchor_id: null },
+      local_access_bindings: [{
+        schema: 'rus.trace_local_access_transition.v1',
+        transition_id: 'storehouse-interior-entry',
+        location_ref: 'storehouse', source_zone_candidates: ['yard'],
+        destination_zone_candidates: ['threshold', 'interior'],
+        admitted_actor_slot_refs: ['ratsha_helper'],
+        access_policy_ref: 'storehouse-access',
+        capacity_contract_ref: 'storehouse-capacity', duration_minutes: 2,
+        terminal_outcome: 'same_materialized_location_new_zone'
+      }]
+    });
+    assert.equal(result.pass, true);
+    assert.equal(result.proposal.movement_kind, 'local_access_transition');
+    assert.equal(result.proposal.destination.zone_ref, 'interior');
+  });
 
 test('plans one approved reverse route and fails closed without a route', () => {
   const destination = { entity_ref: ref('location', 'camp'),
@@ -30,6 +55,8 @@ test('plans one approved reverse route and fails closed without a route', () => 
   assert.equal(result.pass, true);
   assert.equal(result.proposal.movement_kind, 'route_traversal');
   assert.equal(result.proposal.movement_ref, 'storehouse-to-camp');
+  assert.equal(result.proposal.execution_mode,
+    'requires_traversal_runtime_completion');
   assert.equal(result.proposal.exact_elapsed.exact_minutes.numerator, '12');
   assert.equal(planApprovedActorDestinationTransition({
     state_version: 4, expected_state_version: 4, actor, destination,

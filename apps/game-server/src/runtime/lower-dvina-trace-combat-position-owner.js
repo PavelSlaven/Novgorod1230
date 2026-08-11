@@ -46,11 +46,13 @@ export function applyTraceCombatPositionTransition({ step, intent,
   if (intent.actor_ref.entity_kind !== 'npc') {
     fail('TRACE_COMBAT_NPC_MOVEMENT_REQUIRED');
   }
-  const next = structuredClone(working);
+  const movement = executePlannedMovement(planned.proposal, {
+    ...context, step, intent, workingState: working });
+  const next = structuredClone(movement.working_state);
   const npc = next.npcs?.find(
     ({ instance_id: id }) => id === intent.actor_ref.entity_id);
   if (!npc) fail('TRACE_COMBAT_MOVEMENT_ACTOR_MISSING');
-  const destination = planned.proposal.destination;
+  const destination = movement.destination;
   npc.anchor_id = destination.anchor_id ?? npc.anchor_id;
   npc.location_profile_ref = destination.location_ref;
   npc.zone_ref = destination.zone_ref;
@@ -59,7 +61,8 @@ export function applyTraceCombatPositionTransition({ step, intent,
     spatial_zone_ref: destination.zone_ref };
   const eventId = `combat-event:${context.session.combat_id}:step:${
     step.proposal_id}:movement:${planned.proposal.movement_ref}`;
-  return { working_state: next, movement_result: planned.proposal,
+  const traversal = movement.result.traversal;
+  return { working_state: next, movement_result: movement.result,
     completed_intent: intent.intent_kind === 'reach',
     participant_status_updates: intent.intent_kind === 'break_contact'
       ? [{ actor_ref: structuredClone(intent.actor_ref),
@@ -71,7 +74,55 @@ export function applyTraceCombatPositionTransition({ step, intent,
         entity_id: step.proposal_id },
       actor_ref: structuredClone(intent.actor_ref),
       destination_ref: structuredClone(intent.destination_ref),
-      movement_ref: planned.proposal.movement_ref }] };
+      movement_ref: planned.proposal.movement_ref,
+      exact_elapsed: structuredClone(planned.proposal.exact_elapsed),
+      ...(traversal == null ? {} : {
+        traversal_execution_ref: { entity_kind: 'route_plan_execution',
+          entity_id: traversal.ids.execution_id },
+        traversal_interval_ref: { entity_kind: 'traversal_interval_result',
+          entity_id: traversal.ids.interval_id }
+      }) }],
+    signal_descriptors: [{ category: 'objective', significance: 'material',
+      source_event_ref: { entity_kind: 'combat_event', entity_id: eventId },
+      subject_ref: structuredClone(intent.actor_ref), scope_refs: [
+        structuredClone(intent.destination_ref)], perception_required: false,
+      perceived_change_summary: intent.intent_kind === 'reach'
+        ? 'Персонаж достиг выбранного места или предмета; прежнее намерение завершено.'
+        : 'Персонаж завершил перемещение и покинул непосредственное столкновение.'
+    }] };
+}
+
+function executePlannedMovement(proposal, context) {
+  if (proposal.execution_mode === 'immediate_position_transition') {
+    return { working_state: context.workingState,
+      destination: proposal.destination, result: proposal };
+  }
+  if (proposal.execution_mode !== 'requires_traversal_runtime_completion'
+      || typeof context.executeTraversal !== 'function') {
+    fail('TRACE_COMBAT_TRAVERSAL_OWNER_REQUIRED');
+  }
+  const traversal = context.executeTraversal({ proposal,
+    step: context.step, intent: context.intent,
+    working_state: context.workingState });
+  if (traversal?.owner !== '@rus/movement-routes'
+      || !sameRef(traversal.actor_ref, context.intent.actor_ref)
+      || traversal.route_binding?.route_id !== proposal.movement_ref
+      || traversal.interval_result?.result_kind !== 'segment_completed'
+      || traversal.final_travel_state?.closed_result !== 'completed'
+      || traversal.source_endpoint?.location_ref !== proposal.source.location_ref
+      || traversal.source_endpoint?.g5_anchor_id !== proposal.source.anchor_id
+      || traversal.target_endpoint?.location_ref
+        !== proposal.destination.location_ref
+      || traversal.target_endpoint?.g5_anchor_id
+        !== proposal.destination.anchor_id
+      || traversal.interval_result.actual_time_numerator
+        !== proposal.exact_elapsed.exact_minutes.numerator
+      || traversal.interval_result.actual_time_denominator !== '1') {
+    fail('TRACE_COMBAT_TRAVERSAL_NOT_COMPLETED');
+  }
+  return { working_state: context.workingState,
+    destination: proposal.destination,
+    result: { ...proposal, traversal: structuredClone(traversal) } };
 }
 
 function applicablePlan({ actorRef, destinationRef, intentKind, state,
@@ -90,6 +141,8 @@ function applicablePlan({ actorRef, destinationRef, intentKind, state,
     actor, destination,
     local_transition_bindings:
       movementBindings?.local_transition_bindings ?? [],
+    local_access_bindings:
+      movementBindings?.local_access_bindings ?? [],
     route_bindings: movementBindings?.route_bindings ?? [],
     known_route_refs: [binding.movement_ref],
     allowed_movement_refs: [binding.movement_ref]
@@ -116,6 +169,7 @@ function actorSpatial(actorRef, state) {
     ({ location_profile_ref: id }) => id === state.position.location_ref)
     : null;
   return { actor_ref: structuredClone(actorRef), anchor_id: npc.anchor_id,
+    participant_slot_ref: npc.participant_slot_ref,
     location_ref: usePlayerPosition ? state.position.location_ref
       : machineLocation ?? npc.location_profile_ref,
     zone_ref: usePlayerPosition

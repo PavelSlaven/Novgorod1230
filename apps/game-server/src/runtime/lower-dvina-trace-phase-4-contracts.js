@@ -2,11 +2,10 @@ import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
 import { resolveRatshaNpcSocialCheckProfile } from './lower-dvina-trace-phase-4-social-check.js';
 import { resolveTracePhase4CombatBindings } from './lower-dvina-trace-phase-4-combat-contracts.js';
+import { buildTracePhase4CombatMovementBindings } from './lower-dvina-trace-combat-movement-contracts.js';
 export const TRACE_PHASE_4_IDS = Object.freeze({
-  routeOption: 'follow_known_route_to_drying_shed',
-  negotiationOption: 'offer_conditional_protection_and_seek_surrender',
-  routeActivity: 'trace_ld_v1_activity_route_to_drying_shed',
-  negotiationActivity: 'trace_ld_v1_activity_ratsha_negotiation',
+  routeOption: 'follow_known_route_to_drying_shed', negotiationOption: 'offer_conditional_protection_and_seek_surrender',
+  routeActivity: 'trace_ld_v1_activity_route_to_drying_shed', negotiationActivity: 'trace_ld_v1_activity_ratsha_negotiation',
   route: 'trace_ld_v1_route_camp_to_shed',
   check: 'trace_ld_v1_check_ratsha_surrender_attempt',
   camp: 'trace_ld_v1_loc_fishing_camp',
@@ -74,9 +73,9 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
       )]));
   const npcSocialCheckProfile =
     resolveRatshaNpcSocialCheckProfile(conversationBindings);
-  const npcExecutions =
-    bundle.npc_decision_schedule_policies.decision_execution_bindings
+  const npcExecutions = bundle.npc_decision_schedule_policies.decision_execution_bindings
       .filter((entry) => entry.policy_id === ids.ratshaPolicy);
+  const escapeExecution = exact(npcExecutions, 'execution_binding_id', 'trace_ld_v1_decision_execution_ratsha_continue_escape');
   const confessionStatement = exact(
     bundle.knowledge_lie_memory_rules.statement_templates,
     'statement_template_id',
@@ -260,13 +259,12 @@ export function resolveTracePhase4Contracts({ state, bundle }) {
     sourceEndpoint, destinationEndpoint, access, capacity, npcPolicy,
     observation, confessionStatement, confessionEffect, threatEffect, npcSocialCheckProfile,
     conversationBindings, conversationSignalMappings, combatBindings,
-    combatMovementBindings: {
-      route_bindings: [structuredClone(route), structuredClone(reverseRoute)], local_transition_bindings: [], actor_destination_bindings: [{
-        actor_ref: { entity_kind: 'npc', entity_id: actors.ratsha_storehouse_helper.instance_id },
-        intent_kind: 'break_contact', destination_ref: { entity_kind: 'location_anchor', entity_id: preparedCamp.anchor.instance_id }, movement_ref: reverseRoute.route_id }] },
-    conversationTimeProfiles: structuredClone(
-      bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []
-    ),
+    combatMovementBindings: buildTracePhase4CombatMovementBindings({ route,
+      reverseRoute, escapeExecution, executionVersion:
+        bundle.npc_decision_schedule_policies.revision, sourceEndpoint, destinationEndpoint, access,
+      capacity, campLocationRef: ids.camp, campAnchorId: preparedCamp.anchor.instance_id,
+      ratshaActorId: actors.ratsha_storehouse_helper.instance_id }),
+    conversationTimeProfiles: structuredClone(bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []),
     knifeTransition, promisePolicy: structuredClone(bundle.promise_policy),
     resourceArrivalBinding: structuredClone(resourceArrivalBinding),
     itemTemplates: structuredClone(itemTemplates),

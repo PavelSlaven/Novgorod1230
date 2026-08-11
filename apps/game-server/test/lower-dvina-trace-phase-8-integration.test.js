@@ -126,7 +126,7 @@ test('Ratsha reaches the factual road bag through the movement owner',
     const ids = actorIds(state);
     const bag = state.containers.find(
       ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag');
-    bag.state = { ...bag.state, zone_ref: 'river_access' };
+    assert.equal(bag.state.zone_ref, 'storehouse_interior');
     const requests = [];
     const conversation = createM2ConversationModels({
       ratshaResponseKind: 'combat_handoff'
@@ -139,12 +139,13 @@ test('Ratsha reaches the factual road bag through the movement owner',
           ...lowerDvinaTraceConversationTemporalEffectRegistrations()
         ]
       }),
-      turnStepModel: (request) => phase8Plan(request, ids),
+      turnStepModel: (request) => phase8Plan(request, ids, 'hold'),
       playerConversationModel: conversation.playerConversationModel,
       npcSemanticModel: conversation.npcSemanticModel,
       npcCombatModel: (request) => {
         requests.push(structuredClone(request));
-        return combatPlan(request, ids, { ratsha: 'reach' });
+        return combatPlan(request, ids, { ratsha: 'reach',
+          companions: 'hold' });
       } });
     const startMinute = Number(runtime.state.clock.whole_minutes);
     await openPhase8Combat(runtime, 'phase8-reach');
@@ -164,9 +165,10 @@ test('Ratsha reaches the factual road bag through the movement owner',
       ({ instance_id: id }) => id === ids.ratsha);
     assert.equal(ratsha.location_profile_ref,
       'trace_ld_v1_loc_zhdanko_storehouse');
-    assert.equal(ratsha.zone_ref, 'river_access');
-    assert.equal(ratsha.machine_state.spatial_zone_ref, 'river_access');
-    assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 22);
+    assert.equal(ratsha.zone_ref, 'storehouse_interior');
+    assert.equal(ratsha.machine_state.spatial_zone_ref,
+      'storehouse_interior');
+    assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
     const movementEvent = runtime.state.last_turn.consequence.combat
       .outcome_events.find(({ actor_ref: actor, event_kind: kind }) =>
         kind === 'combat_position_transition_completed'
@@ -174,12 +176,27 @@ test('Ratsha reaches the factual road bag through the movement owner',
     assert.equal(movementEvent.destination_ref.entity_id, bag.container_id);
     assert.equal(runtime.state.combat_history.at(-1).outcome_event_refs
       .includes(movementEvent.event_id), true);
+    const movementSignal = runtime.state.last_turn.consequence.combat
+      .signal_records.find(({ source_event_ref: source }) =>
+        source.entity_kind === 'combat_event'
+        && source.entity_id === movementEvent.event_id);
+    assert.equal(movementSignal?.subject_ref.entity_id, ids.ratsha);
+    assert.equal(movementSignal?.category, 'objective');
+    const ratshaRequests = requests.filter(({ npc_ref: npc }) =>
+      npc.entity_id === ids.ratsha);
+    assert.equal(ratshaRequests.length, 2);
+    assert.equal(ratshaRequests[1].decision_reasons.perceived_changes.some(
+      (summary) => summary.includes('достиг выбранного')), true);
+    assert.equal(runtime.state.combat_sessions[0].participant_states.find(
+      ({ actor_ref: actor }) => actor.entity_id === ids.ratsha)
+      .current_intent.intent_kind, 'hold');
     const commitCount = runtime.commitCount();
     await runtime.runtime.submitTurn({ partyId: runtime.partyId,
       input: response });
     assert.equal(runtime.commitCount(), commitCount);
     assert.equal(runtime.state.npcs.find(
-      ({ instance_id: id }) => id === ids.ratsha).zone_ref, 'river_access');
+      ({ instance_id: id }) => id === ids.ratsha).zone_ref,
+    'storehouse_interior');
   });
 
 test('Zhdanko break_contact uses the approved local exit before leaving combat',
@@ -368,12 +385,16 @@ function actorIds(state) {
 
 function phase8Plan(request, ids, combatIntentKind = 'control') {
   const combat = request.player_safe_state.combat_sessions?.length > 0;
+  const hold = combatIntentKind === 'hold';
   const operation = combat ? {
     op: 'request_combat', actor_ref: request.actor.actor_id,
-    intent_kind: combatIntentKind, target_refs: [ids.zhdanko], protected_refs: [],
-    scope_ref: null, destination_ref: null,
+    intent_kind: combatIntentKind,
+    target_refs: hold ? [] : [ids.zhdanko], protected_refs: [],
+    scope_ref: hold ? 'trace_ld_v1_loc_zhdanko_storehouse' : null,
+    destination_ref: null,
     force_limit: combatIntentKind === 'engage'
-      ? 'ordinary' : 'nonlethal_if_possible', risk_posture: 'ordinary'
+      ? 'ordinary' : hold ? 'avoid_harm' : 'nonlethal_if_possible',
+    risk_posture: 'ordinary'
   } : { op: 'emit_interaction', actor_ref: request.actor.actor_id,
     target_actor_refs: [ids.zhdanko], interaction_kind: 'request',
     content: 'предъявить обвинение и потребовать вернуть дорожную сумку',
@@ -393,6 +414,8 @@ function phase8Plan(request, ids, combatIntentKind = 'control') {
 function combatPlan(request, ids, choices = {}) {
   const postDisarm = request.decision_reasons.perceived_changes.some(
     (summary) => summary.includes('оруж'));
+  const postReach = request.decision_reasons.perceived_changes.some(
+    (summary) => summary.includes('достиг выбранного'));
   let intentKind = 'hold', targetRefs = [], scopeRef = {
     entity_kind: 'location',
     entity_id: 'trace_ld_v1_loc_zhdanko_storehouse'
@@ -412,7 +435,7 @@ function combatPlan(request, ids, choices = {}) {
       forceLimit = 'nonlethal_if_possible';
     }
   } else if (request.npc_ref.entity_id === ids.ratsha
-      && choices.ratsha === 'reach') {
+      && choices.ratsha === 'reach' && !postReach) {
     intentKind = 'reach';
     targetRefs = [];
     scopeRef = null;

@@ -19,6 +19,8 @@ Owner of route query/planning, approved movement method/time resolution, travers
 
 Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEndpoint`, `validateCapability` ports and returns a route plan/proposal or typed fail-closed result. Activation validator receives explicit preparation/current-state/capability/recheck ports and returns accepted/rejected activation validation. Inputs/outputs use pinned target DTO and never fabricate endpoint, capability, time factor or route fallback.
 
+Approved actor-destination proposals distinguish immediate local position transitions from `requires_traversal_runtime_completion` routes. A consumer may apply the former only after the pinned local access/capacity admission; a route changes position only after the existing traversal runtime returns a completed interval proof.
+
 ## Ошибки, зависимости и effects
 
 Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.

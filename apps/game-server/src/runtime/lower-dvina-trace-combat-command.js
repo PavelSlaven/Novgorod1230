@@ -1,19 +1,15 @@
 import { canonicalDigest } from '@rus/materialization';
-import {
-  activateCombatSessionForPlayerIntent,
-  buildCombatDecisionSignals,
-  buildCombatInitializationDecisionContexts,
-  combatIntentFromOperation,
-  initializeCombatSession,
-  orderCombatTechnicalSteps,
-  prepareCombatExchange,
-  resolveCombatExchangeTiming
-} from '@rus/turn';
+import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals,
+  buildCombatInitializationDecisionContexts, combatIntentFromOperation,
+  initializeCombatSession, orderCombatTechnicalSteps, prepareCombatExchange,
+  resolveCombatExchangeTiming } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from
   './lower-dvina-trace-combat-item-owner.js';
 import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from
   './lower-dvina-trace-combat-position-owner.js';
+import { executeTraceCombatTraversal } from
+  './lower-dvina-trace-combat-traversal-adapter.js';
 import { traceCombatBindingForActor, traceCombatMovementBindings,
   traceCombatOperationContractForNpc } from
   './lower-dvina-trace-combat-bindings.js';
@@ -81,7 +77,8 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
         idempotency_key: playerInput.idempotency_key,
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
-          rootTurnId, playerInput, session: active, movementBindings: null })
+          rootTurnId, playerInput, inputDigest, session: active,
+          movementBindings: null })
       });
       const exchange = prepared.prepared;
       return {
@@ -134,6 +131,8 @@ function exchangePorts(context) {
     applyPositionTransitions: (input) =>
       applyTraceCombatPositionTransition(input, {
         session: context.session,
+        executeTraversal: (request) =>
+          executeTraceCombatTraversal(request, context),
         movementBindings: ['reach', 'break_contact']
           .includes(input.intent?.intent_kind)
           ? traceCombatMovementBindings(context) : null

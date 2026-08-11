@@ -113,3 +113,71 @@ test('restart verifies factual combat events backing decision signals', async ()
   await assert.rejects(assertCombatSessionRows(missingPool, { ...payload,
     combat_history: [legacy] }));
 });
+
+test('restart verifies route movement event traversal lineage', async () => {
+  const event = { event_id: 'combat-event:1:movement',
+    event_kind: 'combat_position_transition_completed', combat_id: 'combat-1',
+    source_step_ref: ref('combat_technical_step', 'step-1'),
+    actor_ref: ref('npc', 'ratsha-1'), movement_ref: 'shed-to-camp',
+    exact_elapsed: { mode: 'exact_minutes',
+      exact_minutes: { numerator: '12', denominator: '1' } },
+    traversal_execution_ref: ref('route_plan_execution', 'execution-1'),
+    traversal_interval_ref: ref('traversal_interval_result', 'interval-1') };
+  const history = { occurred_at: at, outcome_event_refs: [event.event_id],
+    outcome_events: [event], change_set_id: 'change-2' };
+  const eventRow = { event_id: event.event_id, event_kind: event.event_kind,
+    scheduled_at_whole_minutes: at.whole_minutes,
+    scheduled_at_subminute_numerator: at.subminute_numerator,
+    scheduled_at_subminute_denominator: at.subminute_denominator,
+    rule_ref: event.traversal_interval_ref,
+    preconditions_digest: canonicalDigest(event), change_set_id: 'change-2' };
+  const lineage = { interval_id: 'interval-1',
+    route_plan_execution_id: 'execution-1', plan_step_ordinal: 0,
+    result_kind: 'segment_completed', planned_time_numerator: 12,
+    planned_time_denominator: 1,
+    actual_progress_after_ppm: 1_000_000, actual_time_numerator: 12,
+    actual_time_denominator: 1, cumulative_time_before_numerator: 0,
+    cumulative_time_before_denominator: 1,
+    cumulative_time_after_numerator: 12,
+    cumulative_time_after_denominator: 1,
+    result_change_set_id: 'change-2',
+    party_id: 'party-1', execution_status: 'completed',
+    updated_change_set_id: 'change-2', option_id: 'shed-to-camp',
+    journey_owner_ref: event.actor_ref, created_change_set_id: 'change-2',
+    step_ordinal: 0, step_kind: 'timed_traversal',
+    static_contract_snapshot: { base_minutes: 12 },
+    travel_status: 'closed', closed_result: 'completed',
+    segment_progress_ppm: 1_000_000, travel_step_ordinal: 0,
+    cumulative_actual_time_numerator: 12,
+    cumulative_actual_time_denominator: 1,
+    travel_change_set_id: 'change-2' };
+  const payload = { party_id: 'party-1', combat_sessions: [],
+    combat_history: [history] };
+  const pool = routePool(eventRow, lineage);
+  await assert.doesNotReject(assertCombatSessionRows(pool, payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, null),
+    payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, route_plan_execution_id: 'other-execution' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, option_id: 'other-route' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, party_id: 'foreign-party' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, journey_owner_ref: ref('npc', 'other-npc') }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, actual_time_numerator: 1 }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, cumulative_actual_time_numerator: 1 }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool({ ...eventRow,
+    rule_ref: ref('traversal_interval_result', 'other-interval') }, lineage),
+  payload));
+});
+
+function routePool(eventRow, lineage) {
+  return { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? []
+      : text.includes('party_traversal_interval_results')
+        ? lineage == null ? [] : [lineage]
+        : [eventRow] }) };
+}

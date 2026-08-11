@@ -233,6 +233,8 @@ function buildMeaningfulDescriptors({ results, blockedDescriptors,
   occurredAt }) {
   const raw = [...blockedDescriptors,
     ...results.items.flatMap((entry) => entry?.signal_descriptors ?? []),
+    ...results.positions.flatMap(
+      (entry) => entry?.signal_descriptors ?? []),
     ...results.body.flatMap((entry) => (entry?.threshold_crossings ?? [])
       .map((crossing) => ({ ...approvedBodySignal(crossing),
       source_event_ref: { entity_kind: 'body_threshold_crossing',

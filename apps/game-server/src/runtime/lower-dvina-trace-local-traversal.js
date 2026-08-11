@@ -14,6 +14,7 @@ export function executeTraceLocalTraversal({
   namespace,
   route,
   activity,
+  executionProfile = null,
   sourceEndpoint,
   destinationEndpoint,
   destinationLocationRef,
@@ -36,6 +37,29 @@ export function executeTraceLocalTraversal({
   const idemId = `idem:${state.party_id}:${canonicalDigest(
     playerInput.idempotency_key
   ).slice(0, 20)}`;
+  const executionPin = executionProfile == null ? {
+    dependency_role: 'activity_profile',
+    entity_ref: {
+      entity_kind: 'activity_profile',
+      entity_id: activity.profile_id
+    },
+    version_pin: {
+      pin_kind: 'authoring_version',
+      authoring_version: String(activity.version),
+      state_version: null
+    }
+  } : {
+    dependency_role: 'movement_execution_profile',
+    entity_ref: {
+      entity_kind: executionProfile.entity_kind,
+      entity_id: executionProfile.entity_id
+    },
+    version_pin: {
+      pin_kind: 'authoring_version',
+      authoring_version: String(executionProfile.version),
+      state_version: null
+    }
+  };
   const dependencyPins = seal({
     pins: [{
       dependency_role: 'route_binding',
@@ -48,18 +72,7 @@ export function executeTraceLocalTraversal({
         authoring_version: String(route.version),
         state_version: null
       }
-    }, {
-      dependency_role: 'activity_profile',
-      entity_ref: {
-        entity_kind: 'activity_profile',
-        entity_id: activity.profile_id
-      },
-      version_pin: {
-        pin_kind: 'authoring_version',
-        authoring_version: String(activity.version),
-        state_version: null
-      }
-    }]
+    }, executionPin]
   });
   const source = seal({
     endpoint_kind: 'scene_position',

@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { buildTraceInteriorEntryBinding } from
+  './lower-dvina-trace-combat-movement-contracts.js';
 
 const IDS = Object.freeze({
   routeCommand: 'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
@@ -48,6 +50,11 @@ export function resolveTracePhase8Contracts({ state, bundle,
     .map((slot) => exactActor(state, slot));
   const participant = participatingFisher(state);
   const binding = bundle.combat_semantic_bindings?.phase_8;
+  const interiorEntry = buildTraceInteriorEntryBinding({ access, capacity,
+    binding,
+    sourceZoneRef: scene?.anchor?.state?.zone_ref, localTransition,
+    durationMinutes: bundle.combat_semantic_bindings
+      ?.exchange_timing_profile?.duration_minutes, fail: gap });
   if (route.duration_minutes !== 12
       || reverseRoute.reverse_route_ref !== route.route_id
       || reverseRoute.terminal_position_outcome !== IDS.camp
@@ -80,6 +87,8 @@ export function resolveTracePhase8Contracts({ state, bundle,
     combatMovementBindings: { route_bindings: [structuredClone(route),
       structuredClone(reverseRoute)],
     local_transition_bindings: [structuredClone(localTransition)],
+    local_access_bindings: [interiorEntry],
+    route_execution_bindings: [],
     actor_destination_bindings: [{
       actor_ref: ref('npc', actor.instance_id), intent_kind: 'break_contact',
       destination_ref: ref('location_anchor', scene.anchor.instance_id),
@@ -91,7 +100,7 @@ export function resolveTracePhase8Contracts({ state, bundle,
     }, {
       actor_ref: ref('npc', companions[1].instance_id), intent_kind: 'reach',
       destination_ref: ref('container', roadBags[0].container_id),
-      movement_ref: localTransition.transition_id
+      movement_ref: interiorEntry.transition_id
     }] },
     conversationBindings: structuredClone(conversationBindings),
     conversationTimeProfiles: structuredClone(

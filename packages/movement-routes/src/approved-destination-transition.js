@@ -15,6 +15,8 @@ export function planApprovedActorDestinationTransition(input = {}) {
   const candidates = [
     ...localCandidates(input.local_transition_bindings, actor, destination,
       input.allowed_movement_refs),
+    ...localAccessCandidates(input.local_access_bindings, actor, destination,
+      input.allowed_movement_refs),
     ...routeCandidates(input.route_bindings, actor, destination,
       input.known_route_refs, input.allowed_movement_refs)
   ];
@@ -40,7 +42,29 @@ function localCandidates(bindings = [], actor, destination, allowed = []) {
     && positiveMinutes(binding.duration_minutes)
   ).map((binding) => proposal({ kind: 'local_zone_transition',
     movementRef: binding.transition_id, actor, destination,
-    durationMinutes: binding.duration_minutes }));
+    durationMinutes: binding.duration_minutes,
+    executionMode: 'immediate_position_transition' }));
+}
+
+function localAccessCandidates(bindings = [], actor, destination,
+  allowed = []) {
+  if (actor.location_ref !== destination.location_ref
+      || actor.zone_ref === destination.zone_ref) return [];
+  return bindings.filter((binding) =>
+    binding?.schema === 'rus.trace_local_access_transition.v1'
+    && binding.terminal_outcome === 'same_materialized_location_new_zone'
+    && binding.location_ref === actor.location_ref
+    && binding.source_zone_candidates?.includes(actor.zone_ref)
+    && binding.destination_zone_candidates?.includes(destination.zone_ref)
+    && binding.admitted_actor_slot_refs?.includes(actor.participant_slot_ref)
+    && allowedMovement(binding.transition_id, allowed)
+    && positiveMinutes(binding.duration_minutes)
+    && text(binding.access_policy_ref)
+    && text(binding.capacity_contract_ref)
+  ).map((binding) => proposal({ kind: 'local_access_transition',
+    movementRef: binding.transition_id, actor, destination,
+    durationMinutes: binding.duration_minutes,
+    executionMode: 'immediate_position_transition' }));
 }
 
 function routeCandidates(bindings = [], actor, destination, known = [],
@@ -62,14 +86,17 @@ function routeCandidates(bindings = [], actor, destination, known = [],
       && routeKnown;
   }).map((binding) => proposal({ kind: 'route_traversal',
     movementRef: binding.route_id, actor, destination,
-    durationMinutes: binding.duration_minutes }));
+    durationMinutes: binding.duration_minutes,
+    executionMode: 'requires_traversal_runtime_completion' }));
 }
 
-function proposal({ kind, movementRef, actor, destination, durationMinutes }) {
+function proposal({ kind, movementRef, actor, destination, durationMinutes,
+  executionMode }) {
   return {
     owner: '@rus/movement-routes',
     movement_kind: kind,
     movement_ref: movementRef,
+    execution_mode: executionMode,
     actor_ref: structuredClone(actor.actor_ref),
     source: spatialSnapshot(actor),
     destination: {

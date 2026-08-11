@@ -21,7 +21,7 @@ export function validateNpcCombatPlanApplicability(plan, request) {
         && contract.cease_hostility_available !== true)
       || (plan.combat_statement !== null
         && contract.combat_statement_available !== true)
-      || !combatStatementApplicable(plan.combat_statement, operation, contract)
+      || !combatStatementApplicable(plan.combat_statement, contract)
       || selectedRefs.some((selected) =>
         !allowedRefs.some((allowed) => sameRef(selected, allowed)))) {
     return rejected('NPC_COMBAT_OPERATION_NOT_APPLICABLE');
@@ -29,7 +29,7 @@ export function validateNpcCombatPlanApplicability(plan, request) {
   return { pass: true, errors: [] };
 }
 
-function combatStatementApplicable(statement, operation, contract) {
+function combatStatementApplicable(statement, contract) {
   if (statement === null) return true;
   const addressable = [
     ...(contract.engageable_actor_refs ?? []),
@@ -38,16 +38,7 @@ function combatStatementApplicable(statement, operation, contract) {
   ];
   if (statement.addressed_refs.some((selected) =>
     !addressable.some((allowed) => sameRef(selected, allowed)))) return false;
-  const compatibleIntents = {
-    surrender_demand: ['engage', 'control', 'hold'],
-    surrender_declaration: ['surrender'],
-    cease_hostility_declaration: ['cease_hostility'],
-    warning: ['engage', 'protect', 'hold', 'break_contact'],
-    command: ['engage', 'control', 'protect', 'hold'],
-    call_for_help: ['protect', 'hold', 'reach']
-  };
-  return compatibleIntents[statement.speech_act]
-    ?.includes(operation.intent_kind) === true;
+  return true;
 }
 
 function refsForIntent(contract, intentKind) {

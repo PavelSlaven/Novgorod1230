@@ -140,15 +140,16 @@ async function prepareEffectBody(input, committedState, bodyEffect) {
     if (after == null) {
       throw new TypeError('Prepared combat body projection is required.');
     }
+    const applied = input.consequence.combat.body_transitions.some(
+      ({ actor_ref: actor }) => actor.entity_kind === 'player_character'
+        && actor.entity_id === committedState.actor_id);
     return Object.freeze({
       version: 1,
       schema: 'turn_body_update',
       owner: '@rus/body-state',
-      applied: input.consequence.combat.body_transitions.some(
-        ({ actor_ref: actor }) => actor.entity_kind === 'player_character'
-          && actor.entity_id === committedState.actor_id),
-      proposal: { profile_ref: 'combat_harm',
-        condition_transitions: [] },
+      applied,
+      proposal: applied ? { profile_ref: 'combat_harm',
+        condition_transitions: [] } : null,
       state_after: structuredClone(after)
     });
   }

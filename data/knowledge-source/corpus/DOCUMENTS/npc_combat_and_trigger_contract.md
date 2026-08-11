@@ -1959,6 +1959,11 @@ reality_limited
 ```
 
 Statement должен быть коротким и совместимым с выбранным intent.
+Semantic compatibility statement с intent обеспечивает модель из переданного
+контекста. Runtime проверяет exact structure, `combat_statement_available` и
+то, что `addressed_refs` входят в разрешённые operation-contract refs. Общая
+скрытая таблица `speech_act → intent_kind` запрещена; такая mapping допустима
+только как явная versioned часть operation contract и normative vocabulary.
 
 ---
 
@@ -2140,6 +2145,8 @@ ORIGINAL_RESPONSE:
 - refs входят в operation contract;
 - force limit и risk posture разрешены;
 - optional statement structurally valid;
+- statement addressed refs входят в operation contract; дополнительная
+  `speech_act → intent_kind` policy не применяется без явного versioned mapping;
 - no unknown fields;
 - no direct outcome or state patch.
 

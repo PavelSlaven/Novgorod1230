@@ -70,7 +70,7 @@ test('NPC combat request and plan preserve request identity references', () => {
   }, { ...speakingRequest, operation_contract: {
     ...speakingRequest.operation_contract,
     allowed_intent_kinds: ['engage', 'surrender'], surrender_available: true
-  } }).pass, false);
+  } }).pass, true);
   assert.throws(() => buildNpcCombatIntentPlan({ ...plan, boundary_id: 'other' }, builtRequest));
   const trace = buildNpcSemanticDecisionTrace({ request: builtRequest, plan,
     root_turn_id: 'turn-1', working_revision: 2,

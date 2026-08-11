@@ -12,7 +12,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 
 - проверкой и построением детерминированных proposal из переданных sealed snapshots;
 - применением supplied approved profiles и versioned dependency pins;
-- schedule, perception, signal aggregation и semantic-decision traces в границах формальных контрактов.
+- schedule, perception, signal aggregation и semantic-decision traces в границах formal conversation/autonomous/combat contracts.
 
 ## Не владеет
 
@@ -31,6 +31,10 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/mode/same-time batch не более одной boundary. Новая identity включает mode (`autonomous|conversation`) либо combat context; persisted pre-cutover identity без mode принимается только для exact replay и не переписывается.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
 - Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots. Общий resource projector допускает контролируемый NPC ресурс либо физически доступный чужой ресурс с source-backed factual perception/`known_facts` exact resource ref; одной location/access записи, belief, hypothesis или uncertainty недостаточно. `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; production v5 uses conversation mode and Phase-7 autonomous mode.
+- Combat builders/validators — strict `npc_combat_decision_request_v1` /
+  `npc_combat_intent_plan_v1`, formal operation-contract applicability,
+  source-backed statement refs и shared signal/boundary aggregation. Пакет не
+  выбирает intent, не исполняет technical step и не применяет harm.
 - `selectApplicableNpcActivityExecution(input)` — выбирает ровно один
   applicable approved activity execution по semantic activity kind и реальным
   item/location refs; отсутствующая цель или неоднозначность дают typed reject.

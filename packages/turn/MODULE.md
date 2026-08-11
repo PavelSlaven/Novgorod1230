@@ -6,7 +6,7 @@
 
 ## Владеет
 
-- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate.
+- Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate.
 
 ## Не владеет
 
@@ -27,6 +27,11 @@
   сценарный exhaustive option set.
 - Перед каждым semantic step и финальным commit проверяется исходная committed state version. Step fragments преобразуются в один `party_turn_step_operation_batch_v1`/`turn_step_commit_envelope_v1` и входят в общий atomic workflow; частичный commit внутренних шагов запрещён.
 - Legacy bounded resolver остаётся public только для genuinely closed option sets и не является fallback свободного player input.
+- Combat API `createCombatSession` / `initializeCombatSession`, intent
+  installation, `prepareCombatExchange`, technical-step temporal ordering,
+  same-time precondition recheck и `buildCombatDecisionSignals` связывает
+  профильных checks/harm/body/items/movement/NPC owners. `@rus/turn` не
+  вычисляет их формулы и не сохраняет SQL самостоятельно.
 - `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на mode-specific boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC получает не более одной boundary/decision данного mode и same-time batch; listeners и witnesses без meaningful response boundary не становятся responders.
 - Общий NPC actor-step хранит `active_npc_actor_steps` как коллекцию:
   положительные действия нескольких NPC одного timestamp сначала все

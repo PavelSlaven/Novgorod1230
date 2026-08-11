@@ -53,7 +53,11 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
     change_set_id: changeSetId
   }];
   next = projectCombatDecisionState({ state: next,
-    decisionRecords: combat.decision_records, changeSetId,
+    decisionRecords: combat.decision_records,
+    signalRecords: combat.signal_records,
+    sameTimeBatchKey: `combat-batch:${committedSession.combat_id}:${
+      committedSession.exchange_ordinal}`,
+    changeSetId,
     rootTurnId: factual.mode_resolution.turn_id, workingRevision:
       factual.mode_resolution.decision_trace?.working_revision ?? 1 });
   next.last_turn = { request_id: factual.player_input.request_id,

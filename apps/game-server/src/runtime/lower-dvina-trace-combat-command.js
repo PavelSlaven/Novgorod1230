@@ -1,6 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
   activateCombatSessionForPlayerIntent,
+  buildCombatDecisionSignals,
   buildCombatInitializationDecisionContexts,
   combatIntentFromOperation,
   initializeCombatSession,
@@ -112,7 +113,6 @@ export function traceCombatPreconditionSatisfied(precondition, state) {
   return precondition?.kind === 'active_combat_player_response'
     && activeSession(state) != null;
 }
-
 export function traceCombatTargetRefs(state) {
   const session = (state?.combat_sessions ?? []).find(
     ({ status }) => status !== 'ended');
@@ -159,14 +159,14 @@ function resolveProfile(intent, context) {
     }
   };
 }
-
 async function resolvePostExchangeDecisions(input, context) {
-  if (input.session.status === 'ended') {
-    return { working_state: input.working_state, session_after: input.session,
-      decision_results: [], decision_records: [], signal_records: [] };
-  }
   const descriptors = (input.meaningful_descriptors ?? [])
     .filter(({ subject_ref: subject }) => subject?.entity_kind === 'npc');
+  const signalRecords = buildCombatDecisionSignals(descriptors);
+  if (input.session.status === 'ended') {
+    return { working_state: input.working_state, session_after: input.session,
+      decision_results: [], decision_records: [], signal_records: signalRecords };
+  }
   if (descriptors.length === 0) {
     return { working_state: input.working_state, decision_results: [] };
   }
@@ -179,7 +179,7 @@ async function resolvePostExchangeDecisions(input, context) {
         .includes(participant.combat_status));
   if (npcStates.length === 0) {
     return { working_state: input.working_state, session_after: input.session,
-      decision_results: [], decision_records: [], signal_records: [] };
+      decision_results: [], decision_records: [], signal_records: signalRecords };
   }
   if (typeof context.npcCombatModel !== 'function') {
     fail('TRACE_COMBAT_DECISION_DEPENDENCY_MISSING');
@@ -227,11 +227,10 @@ async function resolvePostExchangeDecisions(input, context) {
         orderedSignals: decisionContext.ordered_signals,
         proposal };
     }),
-    signal_records: contexts.flatMap((entry) => entry.ordered_signals) };
+    signal_records: signalRecords };
 }
-
-function activeSession(state) {
-  const open = (state?.combat_sessions ?? []).filter(({ status }) => status !== 'ended');
+function activeSession(state) { const open = (state?.combat_sessions ?? [])
+  .filter(({ status }) => status !== 'ended');
   return open.length === 1 && open[0].status === 'paused_for_player'
     && open[0].player_response_required === true ? open[0] : null;
 }
@@ -249,8 +248,8 @@ function materializeOperation(raw, session) {
     scope_ref: raw.scope_ref == null ? null : known(raw.scope_ref),
     destination_ref: raw.destination_ref == null ? null : known(raw.destination_ref) };
 }
-function applicablePlayerProfile(operation, profiles) {
-  return profiles.find((profile) => profile.intent_kind === operation.intent_kind
+function applicablePlayerProfile(operation, profiles) { return profiles.find(
+    (profile) => profile.intent_kind === operation.intent_kind
     && profile.status === 'approved'
     && profile.allowed_force_limits.includes(operation.force_limit)
     && profile.allowed_risk_postures.includes(operation.risk_posture)) ?? null;

@@ -74,21 +74,30 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     await runtime.runtime.submitTurn({ partyId: runtime.partyId,
       input: response });
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
-    assert.equal(runtime.state.combat_sessions[0].exchange_ordinal, 1);
-    assert.equal(runtime.state.combat_sessions[0].participant_states.find(
-      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
-      .combat_status, 'restrained');
+    assert.equal(runtime.state.combat_sessions.length, 0);
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .status, 'ended');
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .participant_states.find(({ actor_ref: actor }) =>
+        actor.entity_id === ids.zhdanko).combat_status, 'restrained');
     assert.ok(runtime.state.body_state.health < healthBefore);
     const axe = runtime.state.items.find(
       ({ template_id }) => template_id === 'trace_ld_v1_item_zhdanko_axe');
     assert.equal(axe.placement.holder_npc_id, ids.eremey);
     assert.equal(axe.ownership.controller_npc_id, ids.eremey);
-    assert.equal(runtime.npcCombatCount(), 5);
+    assert.equal(runtime.npcCombatCount(), 4);
+    const terminalSignals = runtime.state.last_turn.consequence.combat
+      .signal_records;
     assert.equal(runtime.state.npc_decision_signals.length,
-      signalCountBefore + 1);
-    assert.equal(runtime.state.combat_sessions[0].participant_states.find(
-      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
-      .current_intent.intent_kind, 'surrender');
+      signalCountBefore + terminalSignals.length);
+    assert.equal(terminalSignals.every(({ signal_id: id }) =>
+      runtime.state.consumed_npc_decision_signal_ids.includes(id)), true);
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .participant_states.find(({ actor_ref: actor }) =>
+        actor.entity_id === ids.zhdanko).current_intent, null);
+    assert.equal(runtime.state.combat_history.at(-1).outcome_event_refs.some(
+      (eventId) => eventId.endsWith(':ended')), true);
+    assert.equal(runtime.state.player_response_boundary, null);
     const commitCount = runtime.commitCount();
     const rollCount = runtime.rollCount();
 
@@ -96,8 +105,81 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
       input: response });
     assert.equal(runtime.commitCount(), commitCount);
     assert.equal(runtime.rollCount(), rollCount);
-    assert.equal(runtime.npcCombatCount(), 5);
+    assert.equal(runtime.npcCombatCount(), 4);
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
+  });
+
+test('health zero persists one closed self signal without a combat LLM request',
+  async () => {
+    const state = phase8CampState();
+    const ids = actorIds(state);
+    const zhdanko = state.npcs.find(
+      ({ instance_id: id }) => id === ids.zhdanko);
+    zhdanko.machine_state = { ...zhdanko.machine_state,
+      body_condition: { ...zhdanko.machine_state.body_condition, health: 5 } };
+    const conversation = createM2ConversationModels({
+      ratshaResponseKind: 'combat_handoff'
+    });
+    const runtime = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState: state, rollValue: 0.99,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [
+          ...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+        ]
+      }),
+      turnStepModel: (request) => phase8Plan(request, ids, 'engage'),
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      npcCombatModel: (request) => combatPlan(request, ids) });
+
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-zero-route', idempotency_key: 'phase8-zero-route',
+      raw_text: ROUTE_TEXT } });
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId, input: {
+      request_id: 'phase8-zero-accusation',
+      idempotency_key: 'phase8-zero-accusation',
+      raw_text: 'Обвинить Жданко и потребовать вернуть дорожную сумку.' } });
+    const combatCalls = runtime.npcCombatCount();
+    const signalIdsBefore = new Set((runtime.state.npc_decision_signals ?? [])
+      .map(({ signal }) => signal.signal_id));
+    const response = { request_id: 'phase8-zero-combat',
+      idempotency_key: 'phase8-zero-combat',
+      raw_text: 'Ударить Жданко, чтобы немедленно прекратить сопротивление.' };
+    const commitsBefore = runtime.commitCount();
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+
+    assert.equal(runtime.commitCount(), commitsBefore + 1);
+    assert.equal(runtime.npcCombatCount(), combatCalls);
+    assert.equal(runtime.state.combat_sessions.length, 0);
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .participant_states.find(({ actor_ref: actor }) =>
+        actor.entity_id === ids.zhdanko).combat_status, 'incapacitated');
+    assert.deepEqual(runtime.state.last_turn.consequence.combat
+      .decision_records, []);
+    const newSignals = runtime.state.npc_decision_signals.filter(
+      ({ signal }) => !signalIdsBefore.has(signal.signal_id));
+    const thresholdSignals = newSignals.filter(({ signal }) =>
+      signal.category === 'self'
+      && signal.subject_ref.entity_id === ids.zhdanko
+      && signal.source_event_ref.entity_kind === 'body_threshold_crossing');
+    assert.equal(thresholdSignals.length, 1);
+    assert.equal(runtime.state.consumed_npc_decision_signal_ids.includes(
+      thresholdSignals[0].signal.signal_id), true);
+    assert.equal(runtime.state.npc_decision_terminal_outcomes.some(
+      (outcome) => outcome.npc_ref.entity_id === ids.zhdanko
+        && outcome.signal_ids_to_consume.includes(
+          thresholdSignals[0].signal.signal_id)), true);
+    assert.equal(runtime.state.last_turn.consequence.combat.signal_records.some(
+      ({ signal_id: id }) => id === thresholdSignals[0].signal.signal_id), true);
+
+    await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+      input: response });
+    assert.equal(runtime.commitCount(), commitsBefore + 1);
+    assert.equal(runtime.npcCombatCount(), combatCalls);
+    assert.equal(runtime.state.npc_decision_signals.filter(({ signal }) =>
+      signal.signal_id === thresholdSignals[0].signal.signal_id).length, 1);
   });
 
 function phase8CampState() {
@@ -145,13 +227,14 @@ function actorIds(state) {
     fisher: bySlot.background_fisher_1 };
 }
 
-function phase8Plan(request, ids) {
+function phase8Plan(request, ids, combatIntentKind = 'control') {
   const combat = request.player_safe_state.combat_sessions?.length > 0;
   const operation = combat ? {
     op: 'request_combat', actor_ref: request.actor.actor_id,
-    intent_kind: 'control', target_refs: [ids.zhdanko], protected_refs: [],
+    intent_kind: combatIntentKind, target_refs: [ids.zhdanko], protected_refs: [],
     scope_ref: null, destination_ref: null,
-    force_limit: 'nonlethal_if_possible', risk_posture: 'ordinary'
+    force_limit: combatIntentKind === 'engage'
+      ? 'ordinary' : 'nonlethal_if_possible', risk_posture: 'ordinary'
   } : { op: 'emit_interaction', actor_ref: request.actor.actor_id,
     target_actor_refs: [ids.zhdanko], interaction_kind: 'request',
     content: 'предъявить обвинение и потребовать вернуть дорожную сумку',
@@ -190,7 +273,10 @@ function combatPlan(request, ids) {
   const plan = { schema: 'npc_combat_intent_plan_v1',
     request_id: request.request_id, boundary_id: request.boundary_id,
     state_version: request.state_version, combat_id: request.combat_id,
-    npc_ref: request.npc_ref, decision: {}, operation: {
+    npc_ref: request.npc_ref, decision: {
+      intent_summary: 'Resist the immediate attempt to restrain me.',
+      grounded_goal: 'Keep control of the weapon and current position.',
+      adaptation: 'literal' }, operation: {
       op: 'set_combat_intent', intent_kind: intentKind,
       target_refs: targetRefs, protected_refs: [], scope_ref: scopeRef,
       destination_ref: null, force_limit: forceLimit,

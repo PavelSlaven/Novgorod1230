@@ -21,11 +21,24 @@ export function validateNpcCombatPlanApplicability(plan, request) {
         && contract.cease_hostility_available !== true)
       || (plan.combat_statement !== null
         && contract.combat_statement_available !== true)
+      || !combatStatementApplicable(plan.combat_statement, contract)
       || selectedRefs.some((selected) =>
         !allowedRefs.some((allowed) => sameRef(selected, allowed)))) {
     return rejected('NPC_COMBAT_OPERATION_NOT_APPLICABLE');
   }
   return { pass: true, errors: [] };
+}
+
+function combatStatementApplicable(statement, contract) {
+  if (statement === null) return true;
+  const addressable = [
+    ...(contract.engageable_actor_refs ?? []),
+    ...(contract.controllable_actor_refs ?? []),
+    ...(contract.protectable_refs ?? [])
+  ];
+  if (statement.addressed_refs.some((selected) =>
+    !addressable.some((allowed) => sameRef(selected, allowed)))) return false;
+  return true;
 }
 
 function refsForIntent(contract, intentKind) {

@@ -10,6 +10,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - margin-to-quality and damage formulas
 - harm and injury packages
 - meaningful combat outcome/signal descriptors
+- versioned generic combat body-threshold signal mapping
 - combat-state validation
 
 ## Не делает
@@ -34,6 +35,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `buildCombatOutcomeEvents`
 - `buildCombatDecisionSignalDescriptors`
 - `buildCombatStepHarmPackage`
+- `combatBodyThresholdSignalProfile`
 
 ## Контракты и инварианты
 

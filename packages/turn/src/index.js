@@ -39,7 +39,8 @@ import {
   combatIntentFromPlan,
   installCombatIntent
 } from './combat-intent.js';
-import { buildCombatInitializationDecisionContexts } from './combat-decision-contexts.js';
+import { buildCombatDecisionSignals,
+  buildCombatInitializationDecisionContexts } from './combat-decision-contexts.js';
 import { activateCombatSessionForPlayerIntent, createCombatSession,
   initializeCombatSession } from './combat-session.js';
 
@@ -69,6 +70,7 @@ export {
   combatIntentFromOperation,
   activateCombatSessionForPlayerIntent,
   installCombatIntent,
+  buildCombatDecisionSignals,
   buildCombatInitializationDecisionContexts,
   initializeCombatSession,
   createCombatSession,

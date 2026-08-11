@@ -72,7 +72,8 @@
       ],
       "name": "@rus/body-state",
       "owns": [
-        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal` и `predictNearestBodyThreshold`"
+        "Владеет `health`/`satiety`/`energy`, conditions, body-state validation/modifiers, `calculateBodyTimeEffectProposal`, `predictNearestBodyThreshold`, direct-event body transition и edge-triggered threshold crossing между authoritative before/after states",
+        "Сохраняет supplied approved `decision_signal` descriptor на crossing; не вычисляет его category/significance и не создаёт NPC boundary"
       ],
       "path": "packages/body-state",
       "public_entry": "./src/index.js",
@@ -106,6 +107,7 @@
         "margin-to-quality and damage formulas",
         "harm and injury packages",
         "meaningful combat outcome/signal descriptors",
+        "versioned generic combat body-threshold signal mapping",
         "combat-state validation"
       ],
       "path": "packages/combat-health",
@@ -286,7 +288,7 @@
       "owns": [
         "проверкой и построением детерминированных proposal из переданных sealed snapshots",
         "применением supplied approved profiles и versioned dependency pins",
-        "schedule, perception, signal aggregation и semantic-decision traces в границах формальных контрактов"
+        "schedule, perception, signal aggregation и semantic-decision traces в границах formal conversation/autonomous/combat contracts"
       ],
       "path": "packages/npc-runtime",
       "public_entry": "./src/index.js",
@@ -443,7 +445,7 @@
       ],
       "name": "@rus/turn",
       "owns": [
-        "Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, combined logical write-plan composition и visible-package security gate"
+        "Владеет `PlayerTurnInput`/`TurnResult`, одной active player boundary `turn_step_request_v1` → `turn_step_plan_v1`, revision-14 player/NPC conversation contributions, NPC semantic boundary replay, internal step loop/working projection, одним structural repair, direct/domain execution registry, exact fast path precedence, stage plan, idempotency/lock orchestration, bounded handoff только для closed choices, temporal advance/carrier proposal engines, revision-16 persisted combat session/intent lifecycle и automatic same-time exchange orchestration, combined logical write-plan composition и visible-package security gate"
       ],
       "path": "packages/turn",
       "public_entry": "./src/index.js",

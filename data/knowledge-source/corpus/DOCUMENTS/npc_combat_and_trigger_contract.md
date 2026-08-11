@@ -1143,6 +1143,7 @@ ended
 ```text
 active
 disengaging
+restrained
 surrendered
 incapacitated
 left
@@ -1315,7 +1316,11 @@ Risk posture влияет только через approved combat execution prof
 - `break_contact` может иметь известный `destination_ref` либо использовать approved nearest-safe-exit policy;
 - `surrender` и `cease_hostility` не требуют target;
 - все refs обязаны присутствовать в input operation contract;
-- persistence всегда code-owned `until_decision_boundary`.
+- persistence всегда code-owned `until_decision_boundary`;
+- `status` использует общий lifecycle `active / completed / blocked /
+  invalidated / no_progress`; только `active` допускается к построению нового
+  technical step, остальные значения сохраняют причинное состояние intent для
+  следующего decision request.
 
 ### 18.2. Свободный текст не исполняется
 
@@ -1412,6 +1417,11 @@ completed
 и generic `objective` signal.
 
 Он не заменяет intent другим.
+
+Переход `blocked` или `invalidated` сначала создаёт factual
+`combat_step_blocked` либо `combat_intent_invalidated` в существующем combat
+event storage. `source_event_ref` decision signal ссылается на этот event, а не
+на неподтверждённый technical-step proposal или intent proposal.
 
 ### 20.4. Defensive reactions
 
@@ -1949,6 +1959,11 @@ reality_limited
 ```
 
 Statement должен быть коротким и совместимым с выбранным intent.
+Semantic compatibility statement с intent обеспечивает модель из переданного
+контекста. Runtime проверяет exact structure, `combat_statement_available` и
+то, что `addressed_refs` входят в разрешённые operation-contract refs. Общая
+скрытая таблица `speech_act → intent_kind` запрещена; такая mapping допустима
+только как явная versioned часть operation contract и normative vocabulary.
 
 ---
 
@@ -2130,6 +2145,8 @@ ORIGINAL_RESPONSE:
 - refs входят в operation contract;
 - force limit и risk posture разрешены;
 - optional statement structurally valid;
+- statement addressed refs входят в operation contract; дополнительная
+  `speech_act → intent_kind` policy не применяется без явного versioned mapping;
 - no unknown fields;
 - no direct outcome or state patch.
 

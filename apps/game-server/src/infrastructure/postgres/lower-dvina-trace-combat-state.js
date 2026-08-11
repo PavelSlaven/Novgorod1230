@@ -37,7 +37,11 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
       entity_id: changeSetId } };
   next.combat_sessions = (next.combat_sessions ?? []).map((session) =>
     session.combat_id === committedSession.combat_id
-      ? committedSession : session);
+      ? committedSession : session)
+    .filter(({ status }) => status !== 'ended');
+  next.player_response_boundary = committedSession.status === 'ended'
+    ? null
+    : { kind: 'combat', combat_id: committedSession.combat_id };
   next.combat_history = [...(next.combat_history ?? []), {
     combat_id: committedSession.combat_id,
     exchange_ordinal: committedSession.exchange_ordinal,
@@ -49,7 +53,11 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
     change_set_id: changeSetId
   }];
   next = projectCombatDecisionState({ state: next,
-    decisionRecords: combat.decision_records, changeSetId,
+    decisionRecords: combat.decision_records,
+    signalRecords: combat.signal_records,
+    sameTimeBatchKey: `combat-batch:${committedSession.combat_id}:${
+      committedSession.exchange_ordinal}`,
+    changeSetId,
     rootTurnId: factual.mode_resolution.turn_id, workingRevision:
       factual.mode_resolution.decision_trace?.working_revision ?? 1 });
   next.last_turn = { request_id: factual.player_input.request_id,

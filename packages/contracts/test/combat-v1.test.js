@@ -51,9 +51,18 @@ const request = {
 const plan = {
   schema: 'npc_combat_intent_plan_v1', request_id: request.request_id,
   boundary_id: request.boundary_id, state_version: '1', combat_id: 'combat-1',
-  npc_ref: ref('npc', 'npc-1'), decision: {},
+  npc_ref: ref('npc', 'npc-1'), decision: {
+    intent_summary: 'Demand that the opponent lower their weapon.',
+    grounded_goal: 'Stop the immediate attack without advancing.',
+    adaptation: 'literal'
+  },
   operation: { op: 'set_combat_intent', intent_kind: 'engage', target_refs: [ref('player_character', 'player-1')], protected_refs: [], scope_ref: null, destination_ref: null, force_limit: 'ordinary', risk_posture: 'ordinary' },
-  combat_statement: null, reason: 'Defend the gate.'
+  combat_statement: {
+    speech_act: 'surrender_demand',
+    addressed_refs: [ref('player_character', 'player-1')],
+    utterance_text: 'Lower your weapon.'
+  },
+  reason: 'Defend the gate.'
 };
 
 test('combat-v1 publishes exactly six strict DTO validators', () => {
@@ -69,6 +78,18 @@ test('combat-v1 publishes exactly six strict DTO validators', () => {
 test('combat-v1 rejects duplicate participant state and mismatched plan request', () => {
   assert.equal(validateCombatSession({ ...session, participant_states: [session.participant_states[0], session.participant_states[0]] }), false);
   assert.equal(validateNpcCombatIntentPlan({ ...plan, request_id: 'other-request' }, request), false);
+});
+
+test('combat exchange binds every technical step to its combat and ordinal', () => {
+  const exchange = { schema: 'combat_exchange_proposal_v1',
+    proposal_id: 'exchange-1', combat_id: 'combat-1', exchange_ordinal: 1,
+    technical_steps: [step], preconditions_digest: 'digest-1',
+    idempotency_key: 'exchange-key-1' };
+  assert.equal(validateCombatExchangeProposal(exchange), true);
+  assert.equal(validateCombatExchangeProposal({ ...exchange,
+    technical_steps: [{ ...step, combat_id: 'combat-2' }] }), false);
+  assert.equal(validateCombatExchangeProposal({ ...exchange,
+    technical_steps: [{ ...step, exchange_ordinal: 2 }] }), false);
 });
 
 test('combat intent accepts a player response boundary without weakening NPC refs', () => {
@@ -87,6 +108,30 @@ test('combat intent accepts a player response boundary without weakening NPC ref
   }), false);
 });
 
+test('combat intent lifecycle and NPC reassessment request accept contract statuses', () => {
+  for (const status of ['active', 'completed', 'blocked', 'invalidated',
+    'no_progress']) {
+    assert.equal(validateCombatIntent({ ...intent, status }), true);
+    assert.equal(validateNpcCombatDecisionRequest({
+      ...request,
+      current_intent: {
+        intent_kind: intent.intent_kind,
+        target_refs: intent.target_refs,
+        status
+      }
+    }), true);
+  }
+  assert.equal(validateCombatIntent({ ...intent, status: 'stale' }), false);
+  assert.equal(validateNpcCombatDecisionRequest({
+    ...request,
+    current_intent: {
+      intent_kind: intent.intent_kind,
+      target_refs: intent.target_refs,
+      status: 'stale'
+    }
+  }), false);
+});
+
 test('combat request rejects categories outside the generic signal vocabulary', () => {
   assert.equal(validateNpcCombatDecisionRequest({
     ...request,
@@ -95,4 +140,15 @@ test('combat request rejects categories outside the generic signal vocabulary', 
       categories: ['combat']
     }
   }), false);
+});
+
+test('combat plan rejects the superseded placeholder decision and string statement', () => {
+  assert.equal(validateNpcCombatIntentPlan({
+    ...plan,
+    decision: {}
+  }, request), false);
+  assert.equal(validateNpcCombatIntentPlan({
+    ...plan,
+    combat_statement: 'Lower your weapon.'
+  }, request), false);
 });

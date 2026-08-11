@@ -65,3 +65,14 @@ test('restart read verifies the committed current projection', async () => {
   await assert.rejects(assertCombatSessionRows(pool, {
     party_id: 'party-1', combat_sessions: [] }));
 });
+
+test('restart current projection excludes a terminal combat session', async () => {
+  let queryText = '';
+  const pool = { query: async (text) => {
+    queryText = text;
+    return { rows: [] };
+  } };
+  await assert.doesNotReject(assertCombatSessionRows(pool, {
+    party_id: 'party-1', combat_sessions: [] }));
+  assert.match(queryText, /status <> 'ended'/u);
+});

@@ -20,6 +20,8 @@ import {
 } from './lower-dvina-trace-turn-10-prepared-validation.js';
 import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
   './lower-dvina-trace-phase-8-prepared-validation.js';
+import { validTracePreparedCombatConsequence } from
+  '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
 
 const ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
@@ -158,13 +160,10 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
       || slice.effect_kind !== 'domain_command'
       || slice.operation_ref !== 'request_combat'
       || slice.step_index !== 1
-      || slice.consequence?.combat_kind !== 'exchange'
-      || slice.consequence.combat?.session_before?.combat_id
-        !== slice.consequence.combat?.session_after?.combat_id
-      || slice.consequence.combat.session_after.exchange_ordinal
-        !== slice.consequence.combat.session_before.exchange_ordinal + 1
+      || !validTracePreparedCombatConsequence(slice.consequence, {
+        playerResponseBoundary: trace?.player_response_boundary
+      })
       || trace?.applied !== true
-      || trace?.player_response_boundary !== true
       || trace?.approved_plan?.resolution !== 'domain_request'
       || operation?.op !== 'request_combat'
       || !samePreparedValue(envelope.consequence, factual?.consequence)

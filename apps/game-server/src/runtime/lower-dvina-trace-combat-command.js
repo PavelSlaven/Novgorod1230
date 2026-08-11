@@ -1,13 +1,14 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
   activateCombatSessionForPlayerIntent,
+  buildCombatDecisionSignals,
+  buildCombatInitializationDecisionContexts,
   combatIntentFromOperation,
   initializeCombatSession,
   orderCombatTechnicalSteps,
   prepareCombatExchange,
   resolveCombatExchangeTiming
 } from '@rus/turn';
-import { buildCombatInitializationDecisionContexts } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from
   './lower-dvina-trace-combat-item-owner.js';
@@ -75,9 +76,6 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
         occurred_at: retrievedState.clock,
         random_source: randomSource,
         idempotency_key: playerInput.idempotency_key,
-        body_threshold_profile: { thresholds: [75, 50, 25, 0].map(
-          (value) => ({ threshold_id: `health-${value}`,
-            metric: 'health', direction: 'decrease', value })) },
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
           rootTurnId, playerInput, session: active })
@@ -115,7 +113,6 @@ export function traceCombatPreconditionSatisfied(precondition, state) {
   return precondition?.kind === 'active_combat_player_response'
     && activeSession(state) != null;
 }
-
 export function traceCombatTargetRefs(state) {
   const session = (state?.combat_sessions ?? []).find(
     ({ status }) => status !== 'ended');
@@ -145,7 +142,8 @@ function resolveProfile(intent, context) {
   const records = intent.actor_ref.entity_kind === 'player_character'
     ? context.playerProfiles
     : bindingForActor(intent.actor_ref.entity_id, context)?.execution_profiles;
-  const profile = records?.find((entry) => entry.intent_kind === intent.intent_kind);
+  const profile = records?.find(
+    (entry) => entry.intent_kind === intent.intent_kind);
   if (!profile || profile.status !== 'approved') return { applicable: false };
   return {
     applicable: true,
@@ -156,14 +154,19 @@ function resolveProfile(intent, context) {
       attacker_id: intent.actor_ref.entity_id,
       target_id: intent.target_refs[0]?.entity_id ?? null,
       action: intent.intent_kind,
-      focus: { force_limit: intent.force_limit, risk_posture: intent.risk_posture }
+      focus: { force_limit: intent.force_limit,
+        risk_posture: intent.risk_posture }
     }
   };
 }
-
 async function resolvePostExchangeDecisions(input, context) {
   const descriptors = (input.meaningful_descriptors ?? [])
     .filter(({ subject_ref: subject }) => subject?.entity_kind === 'npc');
+  const signalRecords = buildCombatDecisionSignals(descriptors);
+  if (input.session.status === 'ended') {
+    return { working_state: input.working_state, session_after: input.session,
+      decision_results: [], decision_records: [], signal_records: signalRecords };
+  }
   if (descriptors.length === 0) {
     return { working_state: input.working_state, decision_results: [] };
   }
@@ -174,7 +177,11 @@ async function resolvePostExchangeDecisions(input, context) {
       && affected.has(participant.actor_ref.entity_id)
       && !['incapacitated', 'left', 'surrendered']
         .includes(participant.combat_status));
-  if (npcStates.length === 0 || typeof context.npcCombatModel !== 'function') {
+  if (npcStates.length === 0) {
+    return { working_state: input.working_state, session_after: input.session,
+      decision_results: [], decision_records: [], signal_records: signalRecords };
+  }
+  if (typeof context.npcCombatModel !== 'function') {
     fail('TRACE_COMBAT_DECISION_DEPENDENCY_MISSING');
   }
   const postExchangeContext = { ...context, state: input.working_state,
@@ -220,11 +227,10 @@ async function resolvePostExchangeDecisions(input, context) {
         orderedSignals: decisionContext.ordered_signals,
         proposal };
     }),
-    signal_records: contexts.flatMap((entry) => entry.ordered_signals) };
+    signal_records: signalRecords };
 }
-
-function activeSession(state) {
-  const open = (state?.combat_sessions ?? []).filter(({ status }) => status !== 'ended');
+function activeSession(state) { const open = (state?.combat_sessions ?? [])
+  .filter(({ status }) => status !== 'ended');
   return open.length === 1 && open[0].status === 'paused_for_player'
     && open[0].player_response_required === true ? open[0] : null;
 }
@@ -242,8 +248,8 @@ function materializeOperation(raw, session) {
     scope_ref: raw.scope_ref == null ? null : known(raw.scope_ref),
     destination_ref: raw.destination_ref == null ? null : known(raw.destination_ref) };
 }
-function applicablePlayerProfile(operation, profiles) {
-  return profiles.find((profile) => profile.intent_kind === operation.intent_kind
+function applicablePlayerProfile(operation, profiles) { return profiles.find(
+    (profile) => profile.intent_kind === operation.intent_kind
     && profile.status === 'approved'
     && profile.allowed_force_limits.includes(operation.force_limit)
     && profile.allowed_risk_postures.includes(operation.risk_posture)) ?? null;

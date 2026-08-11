@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  buildCombatDecisionSignals,
   buildCombatInitializationDecisionContexts,
   createCombatSession
 } from '@rus/turn';
@@ -34,7 +35,9 @@ test('combat decision trace survives the normalized restart read', () => {
     request_id: context.request.request_id,
     boundary_id: context.request.boundary_id,
     state_version: context.request.state_version, combat_id: 'combat-1',
-    npc_ref: npc, decision: {}, operation: { op: 'set_combat_intent',
+    npc_ref: npc, decision: { intent_summary: 'Stop the immediate threat.',
+      grounded_goal: 'Keep the opponent from advancing.',
+      adaptation: 'literal' }, operation: { op: 'set_combat_intent',
       intent_kind: 'surrender', target_refs: [], protected_refs: [],
       scope_ref: null, destination_ref: null, force_limit: 'avoid_harm',
       risk_posture: 'ordinary' }, combat_statement: null,
@@ -55,6 +58,31 @@ test('combat decision trace survives the normalized restart read', () => {
   assert.equal(payload.consumed_npc_decision_signal_ids.length, 1);
   assert.throws(() => assertDecisions({ ...payload,
     npc_semantic_decision_refs: [] }, [appends[0].record]));
+});
+
+test('terminal combat signal survives restart without a decision trace', () => {
+  const npc = ref('npc', 'zhdanko');
+  const [signal] = buildCombatDecisionSignals([{
+    occurred_at: at, category: 'self', significance: 'critical',
+    source_event_ref: ref('body_threshold_crossing', 'zhdanko:health-0'),
+    subject_ref: npc, perceived_change_summary:
+      'Жданко больше не способен продолжать сопротивление.'
+  }]);
+  const payload = projectCombatDecisionState({ state: {},
+    signalRecords: [signal], sameTimeBatchKey: 'combat-batch:combat-1:1',
+    decisionRecords: [], changeSetId: 'change-1', rootTurnId: 'turn-1',
+    workingRevision: 2 });
+  const read = assertDecisions(payload, []);
+  assert.deepEqual(read.traces, []);
+  assert.deepEqual(payload.consumed_npc_decision_signal_ids,
+    [signal.signal_id]);
+  assert.deepEqual(payload.npc_decision_terminal_outcomes, [{
+    npc_ref: npc, outcome: 'npc_unavailable',
+    same_time_batch_ref: ref('temporal_batch', 'combat-batch:combat-1:1'),
+    signal_ids_to_consume: [signal.signal_id]
+  }]);
+  assert.throws(() => assertDecisions({ ...payload,
+    npc_decision_terminal_outcomes: [] }, []));
 });
 
 function operationContract(player) {

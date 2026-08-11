@@ -1,5 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { validateCombatSession as sessionValid, validateCombatIntent as intentValid, validateCombatTechnicalStepProposal, validateCombatExchangeProposal } from '@rus/contracts/combat-v1';
+export { combatBodyThresholdSignalProfile } from
+  './body-threshold-signals.js';
 export const validateCombatSession=sessionValid;
 export const validateCombatIntent=intentValid;
 

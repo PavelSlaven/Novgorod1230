@@ -35,7 +35,8 @@ function buildCombatIntent(operation, input) {
 }
 
 export function installCombatIntent(session, intent) {
-  if (!validateCombatIntent(intent) || session?.combat_id !== intent.combat_id) throw Object.assign(new Error('invalid combat intent'), { code: 'TURN_COMBAT_INTENT_INVALID' });
+  if (!validateCombatIntent(intent) || intent.status !== 'active'
+      || session?.combat_id !== intent.combat_id) throw Object.assign(new Error('invalid combat intent'), { code: 'TURN_COMBAT_INTENT_INVALID' });
   const next = structuredClone(session);
   const participant = next.participant_states.find((entry) => entry.actor_ref.entity_kind === intent.actor_ref.entity_kind && entry.actor_ref.entity_id === intent.actor_ref.entity_id);
   if (!participant) throw Object.assign(new Error('combat actor unavailable'), { code: 'TURN_COMBAT_ACTOR_NOT_ACTIVE' });

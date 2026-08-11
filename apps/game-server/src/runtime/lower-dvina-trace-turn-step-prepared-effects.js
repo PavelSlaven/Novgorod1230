@@ -5,6 +5,8 @@ import { applyTracePhase7ScheduleState } from
   './lower-dvina-trace-phase-7-state-projection.js';
 import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
+import { validTracePreparedCombatConsequence } from
+  './lower-dvina-trace-combat-prepared-contract.js';
 
 const PHASE3_ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
@@ -86,14 +88,14 @@ function applyPreparedTurn10Conversation(input) {
 
 function applyPreparedCombatExchange(input) {
   const consequence = input?.consequence;
-  if (consequence?.combat_kind !== 'exchange'
-      || consequence.combat?.session_after?.status !== 'paused_for_player'
-      || consequence.combat.session_after.player_response_required !== true
-      || consequence.duration_minutes <= 0
+  const session = consequence?.combat?.session_after;
+  const pausedForPlayer = session?.status === 'paused_for_player'
+    && session.player_response_required === true;
+  if (!validTracePreparedCombatConsequence(consequence)
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_COMBAT_INVALID');
   }
-  return preparedResult(input, consequence, true);
+  return preparedResult(input, consequence, pausedForPlayer);
 }
 
 function preparedResult(input, consequence, playerResponseBoundary) {

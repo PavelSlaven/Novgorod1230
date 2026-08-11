@@ -31,7 +31,11 @@ test('NPC combat request and plan preserve request identity references', () => {
   const plan = buildNpcCombatIntentPlan({
     schema: 'npc_combat_intent_plan_v1', request_id: request.request_id,
     boundary_id: request.boundary_id, state_version: '2', combat_id: 'combat-1',
-    npc_ref: ref('npc', 'npc-1'), decision: {},
+    npc_ref: ref('npc', 'npc-1'), decision: {
+      intent_summary: 'Protect myself from the immediate threat.',
+      grounded_goal: 'Keep the opponent from advancing.',
+      adaptation: 'literal'
+    },
     operation: { op: 'set_combat_intent', intent_kind: 'engage', target_refs: [ref('player_character', 'player-1')], protected_refs: [], scope_ref: null, destination_ref: null, force_limit: 'ordinary', risk_posture: 'ordinary' },
     combat_statement: null, reason: 'Protect myself.'
   }, builtRequest);
@@ -48,6 +52,25 @@ test('NPC combat request and plan preserve request identity references', () => {
       target_refs: [ref('player_character', 'unknown')]
     }
   }, builtRequest).pass, false);
+  const speakingRequest = { ...structuredClone(builtRequest),
+    operation_contract: { ...structuredClone(builtRequest.operation_contract),
+      combat_statement_available: true } };
+  const statement = { speech_act: 'surrender_demand',
+    addressed_refs: [ref('player_character', 'player-1')],
+    utterance_text: 'Lower your weapon.' };
+  assert.equal(validateNpcCombatPlanApplicability({ ...plan,
+    combat_statement: statement }, speakingRequest).pass, true);
+  assert.equal(validateNpcCombatPlanApplicability({ ...plan,
+    combat_statement: { ...statement,
+      addressed_refs: [ref('player_character', 'unknown')] }
+  }, speakingRequest).pass, false);
+  assert.equal(validateNpcCombatPlanApplicability({ ...plan,
+    operation: { ...plan.operation, intent_kind: 'surrender',
+      target_refs: [] }, combat_statement: statement
+  }, { ...speakingRequest, operation_contract: {
+    ...speakingRequest.operation_contract,
+    allowed_intent_kinds: ['engage', 'surrender'], surrender_available: true
+  } }).pass, true);
   assert.throws(() => buildNpcCombatIntentPlan({ ...plan, boundary_id: 'other' }, builtRequest));
   const trace = buildNpcSemanticDecisionTrace({ request: builtRequest, plan,
     root_turn_id: 'turn-1', working_revision: 2,

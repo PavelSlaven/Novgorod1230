@@ -514,7 +514,9 @@ function phase4CombatModel(request) {
     state_version: request.state_version,
     combat_id: request.combat_id,
     npc_ref: request.npc_ref,
-    decision: {},
+    decision: { intent_summary: 'Defend against the immediate threat.',
+      grounded_goal: 'Keep the opponent at a distance.',
+      adaptation: 'literal' },
     operation: {
       op: 'set_combat_intent',
       intent_kind: 'engage',

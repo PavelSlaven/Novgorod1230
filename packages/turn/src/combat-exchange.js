@@ -10,16 +10,15 @@ import {
 import { applyBodyStateChange, detectBodyThresholdCrossings } from '@rus/body-state';
 import { executeCheck } from '@rus/checks-rng';
 import { deepFreeze } from '@rus/kernel';
-import {
-  addElapsedTime,
+import { addElapsedTime,
   compareGameTimestamp,
   compareRationalMinutes,
   isPositiveRationalMinutes,
   normalizeElapsedTime,
-  normalizeGameTimestamp
-} from '@rus/time-events-history';
-import { normalizeTemporalBoundaryCandidates } from
-  '@rus/time-events-history/temporal-boundaries';
+  normalizeGameTimestamp } from '@rus/time-events-history';
+import { normalizeTemporalBoundaryCandidates } from '@rus/time-events-history/temporal-boundaries';
+import { recordCombatBlockedStep, recordCombatInvalidIntent } from
+  './combat-blocked-events.js';
 
 export function resolveCombatExchangeTiming({ requested_at: requestedAt,
   timing_profile: profile } = {}) {
@@ -41,7 +40,6 @@ export function resolveCombatExchangeTiming({ requested_at: requestedAt,
     timing_profile_ref: profile.profile_id
   });
 }
-
 export function orderCombatTechnicalSteps({ session, proposals,
   requested_at: requestedAt = session?.started_at } = {}) {
   if (!validateCombatSession(session) || !Array.isArray(proposals)
@@ -63,7 +61,6 @@ export function orderCombatTechnicalSteps({ session, proposals,
   return deepFreeze(normalizeTemporalBoundaryCandidates(candidates)
     .map(({ boundary_id: id }) => byId.get(id)));
 }
-
 export async function executeCombatExchange(input = {}) {
   requireActiveSession(input.session);
   if (!input.ports?.loadCommittedExchange || !input.ports?.commitExchange) {
@@ -78,7 +75,6 @@ export async function executeCombatExchange(input = {}) {
   const prepared = await prepareCombatExchange(input);
   return deepFreeze({ status: 'committed', committed: await input.ports.commitExchange(prepared.prepared) });
 }
-
 export async function prepareCombatExchange(input = {}) {
   const { session, working_state, occurred_at, random_source, idempotency_key,
     ports, body_threshold_profile = combatBodyThresholdSignalProfile() } = input;
@@ -87,34 +83,39 @@ export async function prepareCombatExchange(input = {}) {
   requireBodyThresholdProfile(body_threshold_profile);
   let state = structuredClone(working_state);
   const next = structuredClone(session);
-  const blockedDescriptors = [];
-  const proposals = buildStepProposals(next, state, ports, blockedDescriptors);
   const exchangeStartedAt = normalizeGameTimestamp(occurred_at);
+  const blockedDescriptors = [], initialBlockedEvents = [],
+    blockedStepEvents = new Map();
+  const proposals = buildStepProposals(next, state, ports, blockedDescriptors,
+    initialBlockedEvents, exchangeStartedAt);
   const steps = validateStepOrder(ports.orderTechnicalSteps({
     session: next,
     proposals,
     requested_at: exchangeStartedAt
   }), proposals);
-  const technicalStepTimings = resolveTechnicalStepTimings({
+  const plannedStepTimings = resolveTechnicalStepTimings({
     session: next,
     steps,
     workingState: state,
     requestedAt: exchangeStartedAt,
     resolveTiming: ports.resolveCombatTiming
   });
-  const exactDuration = longestStepDuration(technicalStepTimings);
-  const exchangeCompletedAt = addElapsedTime(exchangeStartedAt, exactDuration);
+  const plannedDuration = longestStepDuration(plannedStepTimings);
+  const plannedCompletedAt = addElapsedTime(exchangeStartedAt, plannedDuration);
   const results = { checks: [], harms: [], body: [], items: [], positions: [], by_step: new Map() };
-
   for (const step of steps) {
     const intent = findIntent(next, step.intent_ref.entity_id);
     if (!currentStepApplicable(next, step, intent, state)) {
-      blockedDescriptors.push(blockedDescriptor(step, exchangeCompletedAt));
+      recordCombatBlockedStep({ session: next, step, intent,
+        occurredAt: plannedCompletedAt, descriptors: blockedDescriptors,
+        events: blockedStepEvents });
       continue;
     }
     const profile = ports.resolveExecutionProfile({ session: next, intent, working_state: state, step });
     if (!validProfile(profile) || profile.applicable === false) {
-      blockedDescriptors.push(blockedDescriptor(step, exchangeCompletedAt));
+      recordCombatBlockedStep({ session: next, step, intent,
+        occurredAt: plannedCompletedAt, descriptors: blockedDescriptors,
+        events: blockedStepEvents });
       continue;
     }
     const executed = executeStep({ step, intent, profile, state, random_source, body_threshold_profile });
@@ -137,22 +138,33 @@ export async function prepareCombatExchange(input = {}) {
     state = structuredClone(position?.working_state ?? item?.working_state ?? state);
   }
 
-  const exchange = steps.length === 0 ? null : buildCombatExchangeProposal({
+  const appliedAnyStep = results.by_step.size > 0;
+  const technicalStepTimings = plannedStepTimings.filter(({ technical_step_ref: ref }) =>
+    results.by_step.has(ref.entity_id));
+  const exactDuration = longestStepDuration(technicalStepTimings);
+  const exchangeCompletedAt = addElapsedTime(exchangeStartedAt, exactDuration);
+  for (const descriptor of blockedDescriptors) {
+    descriptor.occurred_at = exchangeCompletedAt;
+  }
+  const exchange = !appliedAnyStep ? null : buildCombatExchangeProposal({
     session: next, technical_steps: steps, preconditions_digest: 'combat-exchange'
   });
-  let events = exchange ? steps.flatMap((step) => {
+  let events = [...initialBlockedEvents, ...steps.flatMap((step) => {
+    const blocked = blockedStepEvents.get(step.proposal_id);
+    if (blocked) return [blocked];
     const result = results.by_step.get(step.proposal_id);
     if (!result) return [];
     return buildCombatOutcomeEvents({ combat_id: next.combat_id, technical_step: step,
       check_result: result.check ?? null, harm_package: result.harm ?? null });
-  }) : [];
+  })];
   const meaningfulDescriptors = buildMeaningfulDescriptors({ results,
     blockedDescriptors, occurredAt: exchangeCompletedAt });
   next.exchange_ordinal += exchange ? 1 : 0;
   next.state_version = String(Number(next.state_version) + 1);
   if (combatHasEnded(next)) {
     closeCombatSession(next);
-    events = [...events, combatEndedEvent(next, exchange)];
+    events = [...events, combatEndedEvent(next, exchange,
+      events.at(-1) ?? null)];
   } else {
     next.status = meaningfulDescriptors.length > 0
       ? 'paused_for_decisions' : 'paused_for_player';
@@ -220,14 +232,17 @@ function buildMeaningfulDescriptors({ results, blockedDescriptors,
         ?? 'Текущее намерение больше нельзя продолжать.' })) });
 }
 
-function buildStepProposals(session, state, ports, blocked) {
+function buildStepProposals(session, state, ports, blocked, blockedEvents,
+  occurredAt) {
   const proposals = [];
   for (const participant of session.participant_states) {
     const intent = participant.current_intent;
-    if (!intent || !['active', 'disengaging'].includes(participant.combat_status)) continue;
+    if (!intent || intent.status !== 'active'
+        || !['active', 'disengaging'].includes(participant.combat_status)) continue;
     const profile = ports.resolveExecutionProfile({ session, intent, working_state: state });
     if (!validProfile(profile) || profile.applicable === false) {
-      blocked.push(blockedDescriptorForIntent(intent));
+      recordCombatInvalidIntent({ session, intent, occurredAt,
+        descriptors: blocked, events: blockedEvents });
       continue;
     }
     proposals.push(buildCombatTechnicalStepProposal({ session, intent,
@@ -335,7 +350,13 @@ function applyParticipantStatusUpdates(session, updates, owner, step) {
       throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
     }
     participant.combat_status = update.combat_status;
-    if (update.clear_intent === true) participant.current_intent = null;
+    if (update.clear_intent === true) {
+      participant.current_intent = participant.current_intent
+        && ['active', 'disengaging', 'restrained'].includes(
+          update.combat_status)
+        ? { ...participant.current_intent, status: 'invalidated' }
+        : null;
+    }
   }
 }
 function applyTerminalIntentStatus(session, intent, check) {
@@ -378,8 +399,8 @@ function closeCombatSession(session) {
     participant.next_action_boundary_ref = null;
   }
 }
-function combatEndedEvent(session, exchange) {
-  if (!exchange?.proposal_id) {
+function combatEndedEvent(session, exchange, terminalCause) {
+  if (!exchange?.proposal_id && !terminalCause?.event_id) {
     throw combatError('TURN_COMBAT_TERMINAL_EXCHANGE_INVALID');
   }
   return deepFreeze({
@@ -387,12 +408,11 @@ function combatEndedEvent(session, exchange) {
       session.exchange_ordinal}:ended`,
     event_kind: 'combat_ended',
     combat_id: session.combat_id,
-    source_step_ref: { entity_kind: 'combat_exchange',
-      entity_id: exchange.proposal_id }
+    source_step_ref: exchange?.proposal_id
+      ? { entity_kind: 'combat_exchange', entity_id: exchange.proposal_id }
+      : { entity_kind: 'combat_event', entity_id: terminalCause.event_id }
   });
 }
-function blockedDescriptor(step, occurred_at) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_technical_step', entity_id: step.proposal_id }, subject_ref: step.actor_ref, occurred_at }; }
-function blockedDescriptorForIntent(intent) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_intent', entity_id: intent.intent_id }, subject_ref: intent.actor_ref, occurred_at: null }; }
 function resolveTechnicalStepTimings({ session, steps, workingState,
   requestedAt, resolveTiming }) {
   return deepFreeze(steps.map((step) => {

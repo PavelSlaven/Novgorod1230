@@ -80,6 +80,18 @@ test('combat-v1 rejects duplicate participant state and mismatched plan request'
   assert.equal(validateNpcCombatIntentPlan({ ...plan, request_id: 'other-request' }, request), false);
 });
 
+test('combat exchange binds every technical step to its combat and ordinal', () => {
+  const exchange = { schema: 'combat_exchange_proposal_v1',
+    proposal_id: 'exchange-1', combat_id: 'combat-1', exchange_ordinal: 1,
+    technical_steps: [step], preconditions_digest: 'digest-1',
+    idempotency_key: 'exchange-key-1' };
+  assert.equal(validateCombatExchangeProposal(exchange), true);
+  assert.equal(validateCombatExchangeProposal({ ...exchange,
+    technical_steps: [{ ...step, combat_id: 'combat-2' }] }), false);
+  assert.equal(validateCombatExchangeProposal({ ...exchange,
+    technical_steps: [{ ...step, exchange_ordinal: 2 }] }), false);
+});
+
 test('combat intent accepts a player response boundary without weakening NPC refs', () => {
   const playerIntent = {
     ...intent,
@@ -93,6 +105,30 @@ test('combat intent accepts a player response boundary without weakening NPC ref
   assert.equal(validateCombatIntent({
     ...playerIntent,
     created_from_boundary_ref: ref('conversation_boundary', 'boundary-1')
+  }), false);
+});
+
+test('combat intent lifecycle and NPC reassessment request accept contract statuses', () => {
+  for (const status of ['active', 'completed', 'blocked', 'invalidated',
+    'no_progress']) {
+    assert.equal(validateCombatIntent({ ...intent, status }), true);
+    assert.equal(validateNpcCombatDecisionRequest({
+      ...request,
+      current_intent: {
+        intent_kind: intent.intent_kind,
+        target_refs: intent.target_refs,
+        status
+      }
+    }), true);
+  }
+  assert.equal(validateCombatIntent({ ...intent, status: 'stale' }), false);
+  assert.equal(validateNpcCombatDecisionRequest({
+    ...request,
+    current_intent: {
+      intent_kind: intent.intent_kind,
+      target_refs: intent.target_refs,
+      status: 'stale'
+    }
   }), false);
 });
 

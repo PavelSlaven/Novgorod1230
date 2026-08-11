@@ -43,6 +43,10 @@
   lifecycle `started → completion candidate → completed` для автономного
   actor-step. Сценарный adapter передаёт только точную длительность, approved
   profile refs и уже рассчитанные domain proposals;
+- combat same-time recheck сохраняет неисполняемый intent как `invalidated`,
+  создаёт factual `combat_step_blocked`/`combat_intent_invalidated` через
+  существующий event storage и только затем выпускает generic `objective`
+  signal со ссылкой на этот factual event;
 - `advanceTemporalNpcDecisionBoundary` после полного paused same-time batch
   выводит batch identity (включая ordinal successive resolved batches на том же
   GameTimestamp), consumption и persisted replay input из factual state,

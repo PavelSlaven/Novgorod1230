@@ -5,6 +5,7 @@ import {
   createCombatSession,
   executeCombatExchange,
   initializeCombatSession,
+  installCombatIntent,
   orderCombatTechnicalSteps,
   prepareCombatExchange,
   resolveCombatExchangeTiming
@@ -95,6 +96,16 @@ test('common session initializer creates only the paused decision lifecycle DTO'
     participant_refs: [ref('npc', 'npc-1'), ref('player_character', 'player-1')] });
   assert.equal(created.status, 'paused_for_decisions');
   assert.equal(created.participant_states.every((entry) => entry.current_intent === null), true);
+});
+
+test('only an active combat intent can replace the participant current intent', () => {
+  const active = makeIntent(ref('npc', 'npc-1'),
+    ref('player_character', 'player-1'));
+  assert.equal(installCombatIntent(session(), active)
+    .participant_states[0].current_intent.status, 'active');
+  assert.throws(() => installCombatIntent(session(), {
+    ...active, status: 'invalidated'
+  }), ({ code }) => code === 'TURN_COMBAT_INTENT_INVALID');
 });
 
 test('combat initialization builds deterministic per-NPC contexts from one factual batch', () => {
@@ -199,6 +210,14 @@ test('blocked intent emits an objective boundary without choosing a replacement'
     assert.equal(observed.meaningful_descriptors[0].category, 'objective');
     assert.equal(result.prepared.session_after.participant_states[0]
       .current_intent.intent_id, intent.intent_id);
+    assert.equal(result.prepared.session_after.participant_states[0]
+      .current_intent.status, 'invalidated');
+    assert.equal(result.prepared.outcome_events[0].event_kind,
+      'combat_intent_invalidated');
+    assert.deepEqual(result.prepared.blocked_descriptors[0].source_event_ref, {
+      entity_kind: 'combat_event',
+      entity_id: result.prepared.outcome_events[0].event_id
+    });
   });
 
 for (const [intentKind, expectedStatus] of [
@@ -243,27 +262,34 @@ test('later same-time step is blocked after an earlier owner restrains its actor
   async () => {
     const first = ref('npc', 'npc-1');
     const second = ref('npc', 'npc-2');
+    const third = ref('npc', 'npc-3');
     const firstIntent = makeIntent(first, second, 'control');
     const secondIntent = makeIntent(second, first, 'engage');
+    const thirdIntent = makeIntent(third, first, 'engage');
     const simultaneous = {
       ...session(),
-      participant_refs: [first, second],
+      participant_refs: [first, second, third],
       participant_states: [
         { actor_ref: first, combat_status: 'active',
           current_intent: firstIntent, next_action_boundary_ref: null },
         { actor_ref: second, combat_status: 'active',
-          current_intent: secondIntent, next_action_boundary_ref: null }
+          current_intent: secondIntent, next_action_boundary_ref: null },
+        { actor_ref: third, combat_status: 'active',
+          current_intent: thirdIntent, next_action_boundary_ref: null }
       ]
     };
     let randomCalls = 0;
+    let observed;
     const result = await prepareCombatExchange({
       session: simultaneous, working_state: {}, occurred_at: at,
       idempotency_key: 'same-time-recheck',
       random_source: { next: () => { randomCalls += 1; return 0.99; } },
       ports: {
-        resolveCombatTiming: () => ({ occurred_at: at,
+        resolveCombatTiming: ({ technical_step: step }) => ({ occurred_at: at,
           exact_duration: { exact_minutes: {
-            numerator: '1', denominator: '1' } } }),
+            numerator: step.actor_ref.entity_id === 'npc-2' ? '5'
+              : step.actor_ref.entity_id === 'npc-3' ? '2' : '1',
+            denominator: '1' } } }),
         resolveExecutionProfile: () => ({
           preconditions_digest: 'same-time-recheck',
           check_request: { target_defense: 5, attribute_value: 20,
@@ -278,15 +304,33 @@ test('later same-time step is blocked after an earlier owner restrains its actor
             : [] }),
         applyPositionTransitions: ({ working_state }) => ({ working_state }),
         resolvePerceptionAndDecisionContexts: async ({ session: current,
-          working_state }) => ({ session_after: current, working_state,
-          signal_records: [] })
+          working_state, outcome_events, blocked_descriptors }) => {
+          observed = { current, outcome_events, blocked_descriptors };
+          return { session_after: current, working_state, signal_records: [] };
+        }
       }
     });
-    assert.equal(randomCalls, 1);
-    assert.equal(result.prepared.check_results.length, 1);
+    assert.equal(randomCalls, 2);
+    assert.equal(result.prepared.check_results.length, 2);
     assert.equal(result.prepared.blocked_descriptors.length, 1);
+    assert.equal(result.prepared.exact_duration.exact_minutes.numerator, '2');
+    assert.equal(result.prepared.technical_step_timings.length, 2);
     assert.equal(result.prepared.session_after.participant_states[1]
       .combat_status, 'restrained');
+    assert.equal(result.prepared.session_after.participant_states[1]
+      .current_intent.status, 'invalidated');
+    const blockedEvent = observed.outcome_events.find(
+      ({ event_kind: kind }) => kind === 'combat_step_blocked');
+    assert.ok(blockedEvent);
+    assert.deepEqual(observed.outcome_events.map(({ event_kind: kind }) => kind),
+      ['combat_step_attempted', 'combat_check_resolved',
+        'combat_step_blocked', 'combat_step_attempted',
+        'combat_check_resolved', 'combat_harm_proposed']);
+    assert.deepEqual(observed.blocked_descriptors[0].source_event_ref, {
+      entity_kind: 'combat_event', entity_id: blockedEvent.event_id
+    });
+    assert.equal(observed.blocked_descriptors[0].source_event_ref.entity_id,
+      result.prepared.blocked_descriptors[0].source_event_ref.entity_id);
   });
 
 test('combat body signal uses the approved threshold descriptor verbatim',

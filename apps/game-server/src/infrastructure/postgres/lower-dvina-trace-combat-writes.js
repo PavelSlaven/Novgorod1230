@@ -10,6 +10,8 @@ import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
 
 export function combatVisibleEnvelope({ partyId, factual, visibleContext,
   nextVersion, turnNumber, changeSetId, idemId }) {
+  const session = factual.consequence.combat.session_after;
+  const combatEnded = session.status === 'ended';
   const payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: visibleContext.visible_scene,
     perceived_changes: visibleContext.visible_changes,
@@ -17,11 +19,10 @@ export function combatVisibleEnvelope({ partyId, factual, visibleContext,
     visible_npcs: visibleContext.visible_npc,
     visible_objects: visibleContext.visible_objects,
     known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties,
-    hypotheses: [], player_safe_interruption: {
-      kind: 'combat_player_response_required',
-      combat_id: factual.consequence.combat.session_after.combat_id },
-    allowed_action_affordances: ['request_combat'] };
+    uncertainties: visibleContext.uncertainties, hypotheses: [],
+    player_safe_interruption: combatEnded ? null : {
+      kind: 'combat_player_response_required', combat_id: session.combat_id },
+    allowed_action_affordances: combatEnded ? [] : ['request_combat'] };
   const pins = [{ dependency_role: 'runtime_contract', entity_ref: {
     entity_kind: 'combat_contract', entity_id: 'combat_session_v1' },
   version_pin: { pin_kind: 'authoring_version', authoring_version: '1',
@@ -39,6 +40,7 @@ export function combatVisibleEnvelope({ partyId, factual, visibleContext,
 
 export function combatPendingScreen({ state, factual, visibleEnvelope,
   turnNumber, nextVersion }) {
+  const combatEnded = factual.consequence.combat.session_after.status === 'ended';
   const screen = { version: 1, schema: 'lower_dvina_trace_turn_screen',
     scenario_id: 'lower_dvina_trace_v1', party_id: state.party_id,
     turn_id: factual.mode_resolution.turn_id, turn_number: turnNumber,
@@ -50,7 +52,8 @@ export function combatPendingScreen({ state, factual, visibleEnvelope,
       narration_output_digest: null },
     visible_context: phase2VisibleContextFromPayload(
       visibleEnvelope.visible_payload),
-    main_prose: 'Боевая сцена сохранена; требуется следующее решение.' };
+    main_prose: combatEnded ? 'Боевая сцена завершена.'
+      : 'Боевая сцена сохранена; требуется следующее решение.' };
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
 }
@@ -155,8 +158,10 @@ function appendCombatEvents({ inserts, partyId, factual, changeSetId }) {
       scheduled_at_whole_minutes: at.whole_minutes,
       scheduled_at_subminute_numerator: at.subminute_numerator,
       scheduled_at_subminute_denominator: at.subminute_denominator,
-      rule_ref: { entity_kind: 'combat_exchange',
-        entity_id: factual.consequence.combat.exchange.proposal_id },
+      rule_ref: factual.consequence.combat.exchange?.proposal_id
+        ? { entity_kind: 'combat_exchange',
+          entity_id: factual.consequence.combat.exchange.proposal_id }
+        : structuredClone(event.source_step_ref),
       policy_ref: { entity_kind: 'combat_contract',
         entity_id: 'combat_exchange_proposal_v1' },
       preconditions_digest: canonicalDigest(event),

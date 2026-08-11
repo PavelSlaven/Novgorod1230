@@ -106,6 +106,7 @@
         "margin-to-quality and damage formulas",
         "harm and injury packages",
         "meaningful combat outcome/signal descriptors",
+        "versioned generic combat body-threshold signal mapping",
         "combat-state validation"
       ],
       "path": "packages/combat-health",

@@ -86,14 +86,18 @@ function applyPreparedTurn10Conversation(input) {
 
 function applyPreparedCombatExchange(input) {
   const consequence = input?.consequence;
+  const session = consequence?.combat?.session_after;
+  const pausedForPlayer = session?.status === 'paused_for_player'
+    && session.player_response_required === true;
+  const ended = session?.status === 'ended'
+    && session.player_response_required === false;
   if (consequence?.combat_kind !== 'exchange'
-      || consequence.combat?.session_after?.status !== 'paused_for_player'
-      || consequence.combat.session_after.player_response_required !== true
+      || (!pausedForPlayer && !ended)
       || consequence.duration_minutes <= 0
       || input?.prepared_chain_context?.prior_effect_count !== 0) {
     fail('TRACE_TURN_STEP_PREPARED_COMBAT_INVALID');
   }
-  return preparedResult(input, consequence, true);
+  return preparedResult(input, consequence, pausedForPlayer);
 }
 
 function preparedResult(input, consequence, playerResponseBoundary) {

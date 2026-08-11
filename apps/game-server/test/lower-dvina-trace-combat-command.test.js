@@ -91,3 +91,68 @@ test('post-exchange subjective projection reads body and equipment from working 
     assert.deepEqual(projected.available_equipment, [{
       entity_kind: 'item', entity_id: 'knife-1' }]);
   });
+
+test('incapacitated NPC does not require an LLM while other hostility continues',
+  async () => {
+    const firstNpc = { entity_kind: 'npc', entity_id: 'ratsha-1' };
+    const secondNpc = { entity_kind: 'npc', entity_id: 'ratsha-2' };
+    let current = createCombatSession({ combat_id: 'combat-party-2',
+      started_at: at, scope_ref: { entity_kind: 'location', entity_id: 'shed' },
+      participant_refs: [player, firstNpc, secondNpc] });
+    for (const npc of [firstNpc, secondNpc]) {
+      current = installCombatIntent(current, combatIntentFromPlan({
+        combat_id: current.combat_id, npc_ref: npc,
+        operation: { op: 'set_combat_intent', intent_kind: 'engage',
+          target_refs: [player], protected_refs: [], scope_ref: null,
+          destination_ref: null, force_limit: 'ordinary',
+          risk_posture: 'ordinary' }
+      }, { intent_id: `intent-${npc.entity_id}`,
+        created_from_boundary_ref: { entity_kind: 'npc_decision_boundary',
+          entity_id: `boundary-${npc.entity_id}` }, state_version: '1' }));
+    }
+    current = { ...structuredClone(current), status: 'paused_for_player',
+      player_response_required: true };
+    const state = { party_id: 'party-2', actor_id: 'mikula-1', clock: at,
+      party_state: { state_version: 3, turn_number: 1 },
+      body_state: { health: 100, energy: 80, satiety: 70,
+        active_conditions: [], body_parts: {}, prose: null },
+      npcs: [firstNpc, secondNpc].map((npc, index) => ({
+        instance_id: npc.entity_id,
+        participant_slot_ref: 'ratsha_storehouse_helper',
+        machine_state: { body_condition: { health: index === 0 ? 5 : 100 } }
+      })), combat_sessions: [current] };
+    const attack = { attribute_value: 20, skill_bonus: 0,
+      target_defense: 1, weapon_danger: 4, target_protection: 0,
+      target_vulnerability: 0 };
+    const bundle = { definition_revision: 16,
+      turn_step_bindings: { player_execution_profiles: [{
+        profile_id: 'player-engage', intent_kind: 'engage', status: 'approved',
+        allowed_force_limits: ['ordinary'],
+        allowed_risk_postures: ['ordinary'], check_request: attack
+      }] }, combat_semantic_bindings: { exchange_timing_profile: {
+        profile_id: 'combat-exchange-2m', status: 'approved',
+        duration_minutes: 2 }, phase_4: {
+        actor_slot: 'ratsha_storehouse_helper', scope_location_ref: 'shed',
+        operation_contract: {}, execution_profiles: [{
+          profile_id: 'ratsha-engage', intent_kind: 'engage',
+          status: 'approved', check_request: attack }] } } };
+    const command = createTraceCombatCommand({ state, bundle,
+      inputDigest: 'digest-2', randomSource: { next: () => 0.99 },
+      npcCombatModel: async () => assert.fail(
+        'incapacitated NPC must not receive a combat decision'),
+      revalidateStateVersion: async () => 3 });
+    const result = await command.consequence({ retrievedState: state,
+      rootTurnId: 'turn:party-2:2', playerInput: {
+        request_id: 'request-2', idempotency_key: 'idem-2' },
+      semanticPlan: { operations: [{ op: 'request_combat',
+        actor_ref: 'mikula-1', intent_kind: 'engage',
+        target_refs: ['ratsha-1'], protected_refs: [], scope_ref: null,
+        destination_ref: null, force_limit: 'ordinary',
+        risk_posture: 'ordinary' }] } });
+    assert.equal(result.combat.session_after.status, 'paused_for_player');
+    assert.equal(result.combat.session_after.participant_states.find(
+      ({ actor_ref: actor }) => actor.entity_id === 'ratsha-1')
+      .combat_status, 'incapacitated');
+    assert.equal(result.combat.check_results.length, 2);
+    assert.deepEqual(result.combat.decision_results, []);
+  });

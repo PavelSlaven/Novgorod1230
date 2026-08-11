@@ -1,5 +1,6 @@
 import {
   buildCombatExchangeProposal,
+  combatBodyThresholdSignalProfile,
   buildCombatDecisionSignalDescriptors,
   buildCombatOutcomeEvents,
   buildCombatStepHarmPackage,
@@ -80,9 +81,10 @@ export async function executeCombatExchange(input = {}) {
 
 export async function prepareCombatExchange(input = {}) {
   const { session, working_state, occurred_at, random_source, idempotency_key,
-    ports, body_threshold_profile = null } = input;
+    ports, body_threshold_profile = combatBodyThresholdSignalProfile() } = input;
   requireActiveSession(session);
   requirePorts(ports, random_source);
+  requireBodyThresholdProfile(body_threshold_profile);
   let state = structuredClone(working_state);
   const next = structuredClone(session);
   const blockedDescriptors = [];
@@ -106,12 +108,17 @@ export async function prepareCombatExchange(input = {}) {
 
   for (const step of steps) {
     const intent = findIntent(next, step.intent_ref.entity_id);
+    if (!currentStepApplicable(next, step, intent, state)) {
+      blockedDescriptors.push(blockedDescriptor(step, exchangeCompletedAt));
+      continue;
+    }
     const profile = ports.resolveExecutionProfile({ session: next, intent, working_state: state, step });
     if (!validProfile(profile) || profile.applicable === false) {
       blockedDescriptors.push(blockedDescriptor(step, exchangeCompletedAt));
       continue;
     }
     const executed = executeStep({ step, intent, profile, state, random_source, body_threshold_profile });
+    applyBodyTerminalStatuses(next, executed.body);
     results.checks.push(...executed.checks);
     results.harms.push(...executed.harms);
     results.body.push(...executed.body);
@@ -133,18 +140,24 @@ export async function prepareCombatExchange(input = {}) {
   const exchange = steps.length === 0 ? null : buildCombatExchangeProposal({
     session: next, technical_steps: steps, preconditions_digest: 'combat-exchange'
   });
-  const events = exchange ? steps.flatMap((step) => {
+  let events = exchange ? steps.flatMap((step) => {
     const result = results.by_step.get(step.proposal_id);
+    if (!result) return [];
     return buildCombatOutcomeEvents({ combat_id: next.combat_id, technical_step: step,
-      check_result: result?.check ?? null, harm_package: result?.harm ?? null });
+      check_result: result.check ?? null, harm_package: result.harm ?? null });
   }) : [];
   const meaningfulDescriptors = buildMeaningfulDescriptors({ results,
     blockedDescriptors, occurredAt: exchangeCompletedAt });
   next.exchange_ordinal += exchange ? 1 : 0;
   next.state_version = String(Number(next.state_version) + 1);
-  next.status = meaningfulDescriptors.length > 0
-    ? 'paused_for_decisions' : 'paused_for_player';
-  next.player_response_required = blockedDescriptors.length === 0;
+  if (combatHasEnded(next)) {
+    closeCombatSession(next);
+    events = [...events, combatEndedEvent(next, exchange)];
+  } else {
+    next.status = meaningfulDescriptors.length > 0
+      ? 'paused_for_decisions' : 'paused_for_player';
+    next.player_response_required = blockedDescriptors.length === 0;
+  }
   const perceived = await ports.resolvePerceptionAndDecisionContexts({
     session: deepFreeze(structuredClone(next)), working_state: state,
     outcome_events: events,
@@ -161,7 +174,11 @@ export async function prepareCombatExchange(input = {}) {
   if (!validateCombatSession(resolvedSession)
       || resolvedSession.combat_id !== next.combat_id
       || resolvedSession.exchange_ordinal !== next.exchange_ordinal
-      || resolvedSession.state_version !== next.state_version) {
+      || resolvedSession.state_version !== next.state_version
+      || (next.status === 'ended'
+        && (resolvedSession.status !== 'ended'
+          || resolvedSession.player_response_required !== false
+          || (perceived?.decision_results?.length ?? 0) !== 0))) {
     throw combatError('TURN_COMBAT_DECISION_OWNER_INVALID');
   }
   if (resolvedSession.status === 'paused_for_decisions') {
@@ -190,13 +207,10 @@ function buildMeaningfulDescriptors({ results, blockedDescriptors,
   const raw = [...blockedDescriptors,
     ...results.items.flatMap((entry) => entry?.signal_descriptors ?? []),
     ...results.body.flatMap((entry) => (entry?.threshold_crossings ?? [])
-      .map((crossing) => ({ category: 'self', significance:
-        crossing.value <= 25 ? 'critical' : 'material',
+      .map((crossing) => ({ ...approvedBodySignal(crossing),
       source_event_ref: { entity_kind: 'body_threshold_crossing',
         entity_id: `${entry.actor_ref.entity_id}:${crossing.threshold_id}` },
-      subject_ref: entry.actor_ref, scope_refs: [], perception_required: false,
-      perceived_change_summary:
-        'Участник ощущает существенное изменение своего физического состояния.' })))];
+      subject_ref: entry.actor_ref, scope_refs: [] })))];
   return buildCombatDecisionSignalDescriptors({ occurred_at: occurredAt,
     events: raw.map((entry) => ({ ...entry, occurred_at: undefined,
       subject_ref: entry.subject_ref ?? { entity_kind: 'npc',
@@ -244,9 +258,64 @@ function executeStep({ step, intent, profile, state, random_source, body_thresho
 
 function requireActiveSession(session) { if (!validateCombatSession(session) || session.status !== 'active') throw combatError('TURN_COMBAT_SESSION_INVALID'); }
 function requirePorts(ports, random) { for (const key of ['resolveCombatTiming','resolveExecutionProfile','orderTechnicalSteps','applyItemTransitions','applyPositionTransitions','resolvePerceptionAndDecisionContexts']) if (typeof ports?.[key] !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); if (typeof random?.next !== 'function') throw combatError('TURN_COMBAT_EXCHANGE_INPUT_INVALID'); }
+function requireBodyThresholdProfile(profile) {
+  if (profile === null) return;
+  if (profile?.status !== 'approved'
+      || typeof profile.profile_id !== 'string' || profile.profile_id.length === 0
+      || !Array.isArray(profile.thresholds)
+      || profile.thresholds.some(({ decision_signal: signal } = {}) =>
+        !validBodySignal(signal))) {
+    throw combatError('TURN_COMBAT_BODY_THRESHOLD_PROFILE_INVALID');
+  }
+}
+function validBodySignal(signal) {
+  return signal && ['self','others','environment','objective','communication']
+    .includes(signal.category)
+    && ['material','critical'].includes(signal.significance)
+    && typeof signal.perception_required === 'boolean'
+    && typeof signal.perceived_change_summary === 'string'
+    && signal.perceived_change_summary.length > 0;
+}
+function approvedBodySignal(crossing) {
+  if (!validBodySignal(crossing?.decision_signal)) {
+    throw combatError('TURN_COMBAT_BODY_SIGNAL_DESCRIPTOR_INVALID');
+  }
+  return structuredClone(crossing.decision_signal);
+}
 function validProfile(value) { return value && typeof value === 'object' && (value.applicable === false || typeof value.preconditions_digest === 'string'); }
 function validateStepOrder(steps, proposals) { if (!Array.isArray(steps) || steps.length !== proposals.length || new Set(steps.map((step) => step.proposal_id)).size !== proposals.length) throw combatError('TURN_COMBAT_TECHNICAL_ORDER_INVALID'); return steps; }
 function findIntent(session, intentId) { return session.participant_states.find((participant) => participant.current_intent?.intent_id === intentId)?.current_intent; }
+function currentStepApplicable(session, step, intent, workingState) {
+  if (!intent || intent.status !== 'active') return false;
+  const actor = session.participant_states.find((participant) =>
+    refKey(participant.actor_ref) === refKey(step.actor_ref));
+  if (!actor || !['active', 'disengaging'].includes(actor.combat_status)
+      || actor.current_intent?.intent_id !== intent.intent_id
+      || actorHasNoHealth(step.actor_ref, workingState)) return false;
+  if (!['engage', 'control'].includes(intent.intent_kind)) return true;
+  return intent.target_refs.every((target) => {
+    const participant = session.participant_states.find((candidate) =>
+      refKey(candidate.actor_ref) === refKey(target));
+    return participant
+      && ['active', 'disengaging'].includes(participant.combat_status);
+  });
+}
+function actorHasNoHealth(actor, workingState) {
+  const health = workingState.actor_states?.[
+    `${actor.entity_kind}\0${actor.entity_id}`]?.body_state?.health;
+  return Number.isFinite(Number(health)) && Number(health) <= 0;
+}
+function applyBodyTerminalStatuses(session, bodyTransitions) {
+  for (const transition of bodyTransitions) {
+    if (Number(transition.body_after?.health) > 0) continue;
+    const participant = session.participant_states.find(({ actor_ref: actor }) =>
+      refKey(actor) === refKey(transition.actor_ref));
+    if (!participant) throw combatError('TURN_COMBAT_BODY_TARGET_INVALID');
+    participant.combat_status = 'incapacitated';
+    participant.current_intent = null;
+    participant.next_action_boundary_ref = null;
+  }
+}
 function validateOwnerResult(value, owner) { if (value !== undefined && (value === null || typeof value !== 'object')) throw combatError(`TURN_COMBAT_${owner.toUpperCase()}_OWNER_INVALID`); }
 function applyParticipantStatusUpdates(session, updates, owner, step) {
   if (!Array.isArray(updates)) throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
@@ -287,6 +356,40 @@ function applyTerminalIntentStatus(session, intent, check) {
   } else if (intent.intent_kind === 'cease_hostility') {
     participant.current_intent = null;
   }
+}
+function combatHasEnded(session) {
+  const capable = session.participant_states.filter(({ combat_status: status }) =>
+    ['active', 'disengaging'].includes(status));
+  if (capable.length < 2) return true;
+  const capableRefs = new Set(capable.map(({ actor_ref: actor }) => refKey(actor)));
+  if (capable.some(({ combat_status: status, current_intent: intent }) =>
+    status === 'disengaging' || intent?.intent_kind === 'break_contact')) {
+    return false;
+  }
+  return !capable.some(({ current_intent: intent }) =>
+    ['engage', 'control'].includes(intent?.intent_kind)
+      && intent.target_refs.some((target) => capableRefs.has(refKey(target))));
+}
+function closeCombatSession(session) {
+  session.status = 'ended';
+  session.player_response_required = false;
+  for (const participant of session.participant_states) {
+    participant.current_intent = null;
+    participant.next_action_boundary_ref = null;
+  }
+}
+function combatEndedEvent(session, exchange) {
+  if (!exchange?.proposal_id) {
+    throw combatError('TURN_COMBAT_TERMINAL_EXCHANGE_INVALID');
+  }
+  return deepFreeze({
+    event_id: `combat-event:${session.combat_id}:exchange:${
+      session.exchange_ordinal}:ended`,
+    event_kind: 'combat_ended',
+    combat_id: session.combat_id,
+    source_step_ref: { entity_kind: 'combat_exchange',
+      entity_id: exchange.proposal_id }
+  });
 }
 function blockedDescriptor(step, occurred_at) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_technical_step', entity_id: step.proposal_id }, subject_ref: step.actor_ref, occurred_at }; }
 function blockedDescriptorForIntent(intent) { return { category: 'objective', significance: 'material', source_event_ref: { entity_kind: 'combat_intent', entity_id: intent.intent_id }, subject_ref: intent.actor_ref, occurred_at: null }; }

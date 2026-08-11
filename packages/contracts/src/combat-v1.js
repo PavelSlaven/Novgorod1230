@@ -35,12 +35,25 @@ export function validateNpcCombatIntentPlan(value, request = null) {
     && value.schema === 'npc_combat_intent_plan_v1'
     && id(value.request_id) && id(value.boundary_id) && pos(value.state_version)
     && id(value.combat_id) && ref(value.npc_ref, 'npc')
-    && exact(value.decision, []) && validCombatOperation(value.operation)
-    && (value.combat_statement === null || id(value.combat_statement)) && id(value.reason);
+    && validCombatDecision(value.decision) && validCombatOperation(value.operation)
+    && validCombatStatement(value.combat_statement) && id(value.reason);
   return valid && (request === null || (
     value.request_id === request.request_id && value.boundary_id === request.boundary_id
     && value.combat_id === request.combat_id && value.state_version === request.state_version
     && value.npc_ref.entity_id === request.npc_ref.entity_id));
+}
+
+function validCombatDecision(value) {
+  return exact(value, ['intent_summary','grounded_goal','adaptation'])
+    && id(value.intent_summary) && id(value.grounded_goal)
+    && ['literal', 'reality_limited'].includes(value.adaptation);
+}
+
+function validCombatStatement(value) {
+  return value === null || (
+    exact(value, ['speech_act','addressed_refs','utterance_text'])
+    && id(value.speech_act) && refs(value.addressed_refs)
+    && id(value.utterance_text));
 }
 
 function validDecisionReasons(value) {

@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildCombatStepHarmPackage, buildCombatTechnicalStepProposal,
-  buildCombatExchangeProposal, validateCombatIntent, validateCombatSession
+  buildCombatExchangeProposal, combatBodyThresholdSignalProfile,
+  validateCombatIntent, validateCombatSession
 } from '../src/index.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -26,3 +27,12 @@ test('hit may harm, but a high-danger miss has zero harm and no injury', () => {
   assert.equal(buildCombatStepHarmPackage({check_result:{outcome:{success:true,margin:1}},attack_request:request}).health_loss>0,true);
   assert.deepEqual(buildCombatStepHarmPackage({check_result:{outcome:{success:false,margin:-20}},attack_request:request}),{target_id:'p',quality:0,damage_score:0,health_loss:0,injury:null,focus:null});
 });
+test('generic combat body threshold mapping supplies explicit signal metadata',
+  () => {
+    const profile = combatBodyThresholdSignalProfile();
+    assert.equal(profile.status, 'approved');
+    assert.deepEqual(profile.thresholds.map(({ value, decision_signal: signal }) =>
+      [value, signal.significance]), [[75, 'material'], [50, 'material'],
+      [25, 'critical'], [0, 'critical']]);
+    assert.equal(Object.isFrozen(profile), true);
+  });

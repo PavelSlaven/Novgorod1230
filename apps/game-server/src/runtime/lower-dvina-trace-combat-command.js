@@ -1,13 +1,13 @@
 import { canonicalDigest } from '@rus/materialization';
 import {
   activateCombatSessionForPlayerIntent,
+  buildCombatInitializationDecisionContexts,
   combatIntentFromOperation,
   initializeCombatSession,
   orderCombatTechnicalSteps,
   prepareCombatExchange,
   resolveCombatExchangeTiming
 } from '@rus/turn';
-import { buildCombatInitializationDecisionContexts } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from
   './lower-dvina-trace-combat-item-owner.js';
@@ -75,9 +75,6 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
         occurred_at: retrievedState.clock,
         random_source: randomSource,
         idempotency_key: playerInput.idempotency_key,
-        body_threshold_profile: { thresholds: [75, 50, 25, 0].map(
-          (value) => ({ threshold_id: `health-${value}`,
-            metric: 'health', direction: 'decrease', value })) },
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
           rootTurnId, playerInput, session: active })
@@ -145,7 +142,8 @@ function resolveProfile(intent, context) {
   const records = intent.actor_ref.entity_kind === 'player_character'
     ? context.playerProfiles
     : bindingForActor(intent.actor_ref.entity_id, context)?.execution_profiles;
-  const profile = records?.find((entry) => entry.intent_kind === intent.intent_kind);
+  const profile = records?.find(
+    (entry) => entry.intent_kind === intent.intent_kind);
   if (!profile || profile.status !== 'approved') return { applicable: false };
   return {
     applicable: true,
@@ -156,12 +154,17 @@ function resolveProfile(intent, context) {
       attacker_id: intent.actor_ref.entity_id,
       target_id: intent.target_refs[0]?.entity_id ?? null,
       action: intent.intent_kind,
-      focus: { force_limit: intent.force_limit, risk_posture: intent.risk_posture }
+      focus: { force_limit: intent.force_limit,
+        risk_posture: intent.risk_posture }
     }
   };
 }
 
 async function resolvePostExchangeDecisions(input, context) {
+  if (input.session.status === 'ended') {
+    return { working_state: input.working_state, session_after: input.session,
+      decision_results: [], decision_records: [], signal_records: [] };
+  }
   const descriptors = (input.meaningful_descriptors ?? [])
     .filter(({ subject_ref: subject }) => subject?.entity_kind === 'npc');
   if (descriptors.length === 0) {
@@ -174,7 +177,11 @@ async function resolvePostExchangeDecisions(input, context) {
       && affected.has(participant.actor_ref.entity_id)
       && !['incapacitated', 'left', 'surrendered']
         .includes(participant.combat_status));
-  if (npcStates.length === 0 || typeof context.npcCombatModel !== 'function') {
+  if (npcStates.length === 0) {
+    return { working_state: input.working_state, session_after: input.session,
+      decision_results: [], decision_records: [], signal_records: [] };
+  }
+  if (typeof context.npcCombatModel !== 'function') {
     fail('TRACE_COMBAT_DECISION_DEPENDENCY_MISSING');
   }
   const postExchangeContext = { ...context, state: input.working_state,

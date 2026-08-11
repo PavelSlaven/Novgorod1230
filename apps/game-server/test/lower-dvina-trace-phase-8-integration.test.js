@@ -74,21 +74,26 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
     await runtime.runtime.submitTurn({ partyId: runtime.partyId,
       input: response });
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
-    assert.equal(runtime.state.combat_sessions[0].exchange_ordinal, 1);
-    assert.equal(runtime.state.combat_sessions[0].participant_states.find(
-      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
-      .combat_status, 'restrained');
+    assert.equal(runtime.state.combat_sessions.length, 0);
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .status, 'ended');
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .participant_states.find(({ actor_ref: actor }) =>
+        actor.entity_id === ids.zhdanko).combat_status, 'restrained');
     assert.ok(runtime.state.body_state.health < healthBefore);
     const axe = runtime.state.items.find(
       ({ template_id }) => template_id === 'trace_ld_v1_item_zhdanko_axe');
     assert.equal(axe.placement.holder_npc_id, ids.eremey);
     assert.equal(axe.ownership.controller_npc_id, ids.eremey);
-    assert.equal(runtime.npcCombatCount(), 5);
+    assert.equal(runtime.npcCombatCount(), 4);
     assert.equal(runtime.state.npc_decision_signals.length,
-      signalCountBefore + 1);
-    assert.equal(runtime.state.combat_sessions[0].participant_states.find(
-      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
-      .current_intent.intent_kind, 'surrender');
+      signalCountBefore);
+    assert.equal(runtime.state.last_turn.consequence.combat.session_after
+      .participant_states.find(({ actor_ref: actor }) =>
+        actor.entity_id === ids.zhdanko).current_intent, null);
+    assert.equal(runtime.state.combat_history.at(-1).outcome_event_refs.some(
+      (eventId) => eventId.endsWith(':ended')), true);
+    assert.equal(runtime.state.player_response_boundary, null);
     const commitCount = runtime.commitCount();
     const rollCount = runtime.rollCount();
 
@@ -96,7 +101,7 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
       input: response });
     assert.equal(runtime.commitCount(), commitCount);
     assert.equal(runtime.rollCount(), rollCount);
-    assert.equal(runtime.npcCombatCount(), 5);
+    assert.equal(runtime.npcCombatCount(), 4);
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
   });
 
@@ -190,7 +195,10 @@ function combatPlan(request, ids) {
   const plan = { schema: 'npc_combat_intent_plan_v1',
     request_id: request.request_id, boundary_id: request.boundary_id,
     state_version: request.state_version, combat_id: request.combat_id,
-    npc_ref: request.npc_ref, decision: {}, operation: {
+    npc_ref: request.npc_ref, decision: {
+      intent_summary: 'Resist the immediate attempt to restrain me.',
+      grounded_goal: 'Keep control of the weapon and current position.',
+      adaptation: 'literal' }, operation: {
       op: 'set_combat_intent', intent_kind: intentKind,
       target_refs: targetRefs, protected_refs: [], scope_ref: scopeRef,
       destination_ref: null, force_limit: forceLimit,

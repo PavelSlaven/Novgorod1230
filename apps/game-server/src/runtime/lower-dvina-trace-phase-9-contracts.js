@@ -50,14 +50,16 @@ export function resolveTracePhase9Contracts({ state, bundle,
     'contract_id', 'trace_ld_v1_capacity_zhdanko_storehouse');
   const campScene = (state.prepared_scenes ?? []).find(
     ({ location_profile_ref: id }) => id === IDS.camp);
-  const disposition = exact(profiles.temporary_disposition_contracts,
+  const historicalDisposition = exact(profiles.temporary_disposition_contracts,
     'contract_id', binding.temporary_disposition.contract_ref);
+  const disposition = binding.temporary_disposition.approved_contract;
   const statementEffect = exact(policies.statement_effect_contracts,
     'statement_effect_contract_id',
     binding.onisim_testimony.statement_effect_contract_ref);
   const testimonyTemplate = exact(bundle.knowledge_lie_memory_rules
     .statement_templates, 'statement_template_id',
   binding.onisim_testimony.statement_template_ref);
+  const authoredClaim = binding.onisim_testimony.authored_claim_contract;
   if (bag.template_id !== IDS.bag || packet.template_id !== IDS.packet
       || route.terminal_position_outcome !== IDS.camp
       || sourceEndpoint.location_profile_id !== IDS.storehouse
@@ -72,16 +74,36 @@ export function resolveTracePhase9Contracts({ state, bundle,
       || activities.inspect.no_check_required !== true
       || activities.disposition.temporary_disposition_contract_ref
         !== disposition.contract_id
-      || disposition.owner !== '@rus/turn'
+      || historicalDisposition.contract_id !== disposition.contract_id
+      || historicalDisposition.version !== disposition.version
+      || historicalDisposition.owner !== '@rus/turn'
+      || disposition.owner !== '@rus/social-law'
       || disposition.selection_contract?.selection_source
         !== 'raw_intent_to_closed_exact_option_id_per_dimension'
       || disposition.selection_contract?.selected_option_cardinality
         !== 'exactly_one_per_dimension'
+      || binding.owner_contracts?.disposition_applicability
+        !== '@rus/social-law'
+      || binding.owner_contracts?.disposition_selection !== '@rus/turn'
       || statementEffect.forbidden_write_targets?.includes('objective_truth')
         !== true
       || testimonyTemplate.speaker_ref !== IDS.onisimSlot
       || testimonyTemplate.statement_template_id
         !== statementEffect.statement_template_ref
+      || authoredClaim?.schema !== 'authored_statement_claim_contract_v1'
+      || authoredClaim.statement_template_ref
+        !== testimonyTemplate.statement_template_id
+      || authoredClaim.claim_id
+        !== testimonyTemplate.assertion?.assertion_id
+      || authoredClaim.claim?.claim_id !== authoredClaim.claim_id
+      || authoredClaim.claim?.source_knowledge_refs?.length !== 1
+      || authoredClaim.claim.source_knowledge_refs[0]?.entity_kind
+        !== 'knowledge_scope'
+      || authoredClaim.claim.source_knowledge_refs[0]?.entity_id
+        !== binding.onisim_testimony.knowledge_scope_ref
+      || typeof authoredClaim.utterance_text !== 'string'
+      || authoredClaim.utterance_text.trim() !== authoredClaim.utterance_text
+      || authoredClaim.utterance_text.length === 0
       || bundle.clue_evidence_graph_set?.clue_evidence_graph_set_id
         !== binding.evidence_resolution.graph_ref
       || conversationBindings == null

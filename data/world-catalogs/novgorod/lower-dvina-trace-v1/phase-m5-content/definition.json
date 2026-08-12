@@ -28,7 +28,7 @@
     "conversation_semantic_bindings":{"owner":"@rus/turn","schema":"rus.lower_dvina_trace_conversation_semantic_bindings.v1","id":"lower_dvina_trace_conversation_semantic_bindings_v1","revision":1,"digest":"835dc461c658a7149053046537c2f1341c3966acf384d0f3ba77758b13263557"},
     "autonomous_semantic_bindings":{"owner":"@rus/npc-runtime","schema":"rus.lower_dvina_trace_autonomous_semantic_bindings.v1","id":"lower_dvina_trace_autonomous_semantic_bindings_v1","revision":1,"digest":"b4c924f9f2f7f10ef9ca1597c316246a8ab17b47401afa297e88b5bfda788bcd"},
     "combat_semantic_bindings":{"owner":"@rus/turn","schema":"rus.lower_dvina_trace_combat_semantic_bindings.v1","id":"lower_dvina_trace_combat_semantic_bindings_v1","revision":1,"digest":"a78aafb310cbedef3333d66691a8b1a5abd101ce1c9182ecfc054a8b94209a0a"},
-    "phase_9_bindings":{"owner":"@rus/turn","schema":"rus.lower_dvina_trace_phase_9_bindings.v1","id":"lower_dvina_trace_phase_9_bindings_v1","revision":1,"digest":"66b31de05c3d80117006cf63ec9197b3b28fc80e98734448d45dae8bcaff9c31"}
+    "phase_9_bindings":{"owner":"@rus/turn","schema":"rus.lower_dvina_trace_phase_9_bindings.v1","id":"lower_dvina_trace_phase_9_bindings_v1","revision":1,"digest":"12ead552458a8a06a2f8fc3d79cf799ca8f2e93fd755e29af7424e0ef969d431"}
   },
   "required_unresolved_refs":[],
   "scope":["phase_0_immutable_definition","m1_player_semantic_step_admission","m2_npc_conversation_semantic_bindings","m3_autonomous_npc_semantic_bindings","phase_7_fire_rest_temporal_admission","canonical_turn_10_companion_conversation","m4_combat_semantic_bindings","phase_8_storehouse_combat","phase_9_property_evidence_temporary_disposition"],

@@ -14,11 +14,10 @@
 
 ## Public API
 
-`resolveTemporaryDispositionOptions` вычисляет закрытый набор допустимых
-вариантов только из committed state и утверждённого контракта;
-`commitTemporaryDispositionSelection` проверяет выбранные из raw intent ровно
-по одному option id на измерение. Оба шага принадлежат `@rus/turn`; social-law
-не выбирает решение игрока.
+`selectTemporaryDispositionOptions` проверяет выбранные из raw intent ровно
+по одному option id на измерение из закрытого набора, построенного domain
+owner. Applicability и typed temporary-disposition proposal принадлежат
+`@rus/social-law`; `@rus/turn` только оркестрирует semantic selection.
 
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.

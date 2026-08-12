@@ -161,9 +161,12 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
     turnStepModel: (request) => phase9Plan(request, ids),
     playerConversationModel: (request) => playerPlan(request, {}),
     npcSemanticModel: (request) => npcSpeechPlan(request, {
-      utteranceText: 'Жданко нанимал мою лодку и вёз этот свёрток.',
+      utteranceText: 'Перед столкновением я слышал голос Жданко. '
+        + 'Я помню удар шеста в борт и рывок за сумку. После крушения '
+        + 'Ратша вытащил меня из воды, связал и отнёс к сушильне.',
       dominantAct: 'inform', claims: [testimonyClaim()],
-      supportingOperations: [] }),
+      supportingOperations: [{ op: 'assert_authored_claim',
+        claim_id: 'trace_ld_v1_assertion_onisim_testimony' }] }),
     npcCombatModel: () => { throw new Error('combat must not restart'); },
     semanticResolver: async ({ action_set: actionSet }) => ({
       option_id: actionSet[0].option_id }),
@@ -325,7 +328,9 @@ function dispositionSelection() { return [
   'preserve_active_no_summary_killing_promise']; }
 function testimonyClaim() { return {
   claim_id: 'trace_ld_v1_assertion_onisim_testimony',
-  content_summary: 'Онисим сообщает о воспринятой речи и действиях Ратши.',
+  content_summary: 'Онисим сообщает, что перед столкновением слышал голос '
+    + 'Жданко, помнит удар шеста и рывок за сумку, а после крушения Ратша '
+    + 'вытащил его из воды, связал и отнёс к сушильне.',
   form: 'assertion', speaker_posture: 'believed_true',
   source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
     entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],

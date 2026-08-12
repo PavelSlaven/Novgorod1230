@@ -45,8 +45,8 @@ import { buildCombatDecisionSignals,
   buildCombatInitializationDecisionContexts } from './combat-decision-contexts.js';
 import { activateCombatSessionForPlayerIntent, createCombatSession,
   initializeCombatSession } from './combat-session.js';
-import { commitTemporaryDispositionSelection,
-  resolveTemporaryDispositionOptions, TemporaryDispositionError } from
+import { selectTemporaryDispositionOptions,
+  TemporaryDispositionSelectionError } from
   './temporary-disposition.js';
 
 export {
@@ -81,9 +81,8 @@ export {
   buildCombatInitializationDecisionContexts,
   initializeCombatSession,
   createCombatSession,
-  commitTemporaryDispositionSelection,
-  resolveTemporaryDispositionOptions,
-  TemporaryDispositionError,
+  selectTemporaryDispositionOptions,
+  TemporaryDispositionSelectionError,
   bindTurnStepPreparedConsequence
 };
 export {

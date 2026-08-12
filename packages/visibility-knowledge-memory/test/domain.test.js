@@ -363,22 +363,42 @@ test('statement evidence requires the authored assertion and source lineage',
       source_rule: 'speaker_committed_memory_only',
       write_targets: ['statement_record', 'speaker_memory_report'],
       forbidden_write_targets: ['objective_truth'] };
+    const authoredClaim = {
+      schema: 'authored_statement_claim_contract_v1',
+      statement_template_ref: 'onisim-testimony',
+      claim_id: 'onisim-assertion',
+      utterance_text: 'Я слышал приказ и видел действия Ратши.',
+      claim: { claim_id: 'onisim-assertion',
+        content_summary: 'Онисим слышал приказ и видел действия Ратши.',
+        form: 'assertion', speaker_posture: 'believed_true',
+        source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
+          entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],
+        mentioned_entity_refs: [] } };
     const base = { schema: 'conversation_statement_event_v1',
       statement_id: 'statement-1', speaker_ref: {
-        entity_kind: 'npc', entity_id: 'onisim-1' } };
+        entity_kind: 'npc', entity_id: 'onisim-1' },
+      utterance_text: authoredClaim.utterance_text };
     const ordinary = resolveAuthoredStatementEvidence({ statement: {
       ...base, claims: [] }, speaker, statement_template: template,
     statement_effect: effect,
+    authored_claim: authoredClaim,
     knowledge_scope_ref:
       'trace_ld_v1_knowledge_scope_hired_boatman_v1',
     evidence_ref: 'onisim-evidence' });
     assert.equal(ordinary.committed, false);
-    const testimony = resolveAuthoredStatementEvidence({ statement: {
-      ...base, claims: [{ claim_id: 'onisim-assertion', form: 'assertion',
-        speaker_posture: 'believed_true', source_knowledge_refs: [{
-          entity_kind: 'knowledge_scope',
-          entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }] }] },
+    const unrelatedUtterance = resolveAuthoredStatementEvidence({ statement: {
+      ...base, utterance_text: 'Жданко нанимал мою лодку.',
+      claims: [structuredClone(authoredClaim.claim)] },
     speaker, statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(unrelatedUtterance.committed, false);
+    const testimony = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [structuredClone(authoredClaim.claim)] },
+    speaker, statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
     knowledge_scope_ref:
       'trace_ld_v1_knowledge_scope_hired_boatman_v1',
     evidence_ref: 'onisim-evidence' });

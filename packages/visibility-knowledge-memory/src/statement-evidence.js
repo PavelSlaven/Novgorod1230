@@ -1,8 +1,9 @@
-import { deepFreeze } from '@rus/kernel';
+import { deepFreeze, stableStringify } from '@rus/kernel';
 
 export function resolveAuthoredStatementEvidence({ statement, speaker,
   statement_template: template, statement_effect: effect,
-  knowledge_scope_ref: knowledgeScopeRef, evidence_ref: evidenceRef } = {}) {
+  authored_claim: authoredClaim, knowledge_scope_ref: knowledgeScopeRef,
+  evidence_ref: evidenceRef } = {}) {
   const absent = (reason) => deepFreeze({ committed: false,
     evidence_ref: null, statement_ref: statementRef(statement),
     lineage_refs: [], reason });
@@ -33,12 +34,18 @@ export function resolveAuthoredStatementEvidence({ statement, speaker,
   const claims = statement.claims ?? [];
   const testimonyClaims = claims.filter((claim) =>
     claim.claim_id === assertionId
+    && claim.claim_id === authoredClaim?.claim_id
     && claim.form === 'assertion'
     && claim.speaker_posture === 'believed_true'
     && claim.source_knowledge_refs?.length === 1
     && claim.source_knowledge_refs[0]?.entity_kind === 'knowledge_scope'
-    && claim.source_knowledge_refs[0]?.entity_id === knowledgeScopeRef);
-  if (claims.length !== 1 || testimonyClaims.length !== 1) {
+    && claim.source_knowledge_refs[0]?.entity_id === knowledgeScopeRef
+    && sameValue(claim, authoredClaim?.claim)
+    && statement.utterance_text === authoredClaim?.utterance_text);
+  if (authoredClaim?.schema !== 'authored_statement_claim_contract_v1'
+      || authoredClaim.statement_template_ref
+        !== template.statement_template_id
+      || claims.length !== 1 || testimonyClaims.length !== 1) {
     return absent('statement_does_not_commit_authored_testimony');
   }
   return deepFreeze({ committed: true, evidence_ref: evidenceRef,
@@ -52,4 +59,7 @@ export function resolveAuthoredStatementEvidence({ statement, speaker,
 function statementRef(statement) {
   return typeof statement?.statement_id === 'string'
     ? `conversation_statement:${statement.statement_id}` : null;
+}
+function sameValue(left, right) {
+  return stableStringify(left) === stableStringify(right);
 }

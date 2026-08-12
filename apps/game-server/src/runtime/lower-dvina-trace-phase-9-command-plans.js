@@ -1,6 +1,7 @@
 import { planApprovedPropertyTransition } from '@rus/items-property';
-import { commitTemporaryDispositionSelection,
-  resolveTemporaryDispositionOptions } from '@rus/turn';
+import { buildTemporaryDispositionProposal,
+  resolveTemporaryDispositionOptions } from '@rus/social-law';
+import { selectTemporaryDispositionOptions } from '@rus/turn';
 import { resolveEvidenceConclusions } from '@rus/visibility-knowledge-memory';
 
 export function recoveryPlan(state, contracts) {
@@ -62,9 +63,11 @@ export function dispositionOptions(state, contracts) {
 }
 
 export function dispositionPlan(state, contracts, selectedOptionRefs) {
-  return commitTemporaryDispositionSelection({ contract: contracts.disposition,
-    option_set: state.phase9?.temporary_disposition_options,
+  const optionSet = state.phase9?.temporary_disposition_options;
+  const selection = selectTemporaryDispositionOptions({ option_set: optionSet,
     selected_option_refs: selectedOptionRefs });
+  return buildTemporaryDispositionProposal({ contract: contracts.disposition,
+    option_set: optionSet, selection });
 }
 
 function dispositionInput(state, contracts) {

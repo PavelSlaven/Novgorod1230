@@ -391,7 +391,8 @@
         "rights/restriction evaluation",
         "authority and social-risk contracts",
         "legal consequence packages",
-        "party-local commitment proposal from committed conversation facts"
+        "party-local commitment proposal from committed conversation facts",
+        "temporary custody/property/promise applicability и typed temporary"
       ],
       "path": "packages/social-law",
       "public_entry": "./src/index.js",

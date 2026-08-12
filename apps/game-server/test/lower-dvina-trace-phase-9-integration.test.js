@@ -60,9 +60,12 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
         testimonyCalls += 1;
         testimonyRequests.push(structuredClone(request));
         return npcSpeechPlan(request, {
-          utteranceText: 'Жданко нанимал мою лодку и вёз этот свёрток.',
+          utteranceText: 'Перед столкновением я слышал голос Жданко. '
+            + 'Я помню удар шеста в борт и рывок за сумку. После крушения '
+            + 'Ратша вытащил меня из воды, связал и отнёс к сушильне.',
           dominantAct: 'inform', claims: [testimonyClaim()],
-          supportingOperations: []
+          supportingOperations: [{ op: 'assert_authored_claim',
+            claim_id: 'trace_ld_v1_assertion_onisim_testimony' }]
         });
       },
       npcCombatModel: (request) => combatPlan(request, ids) });
@@ -123,6 +126,9 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     assert.equal(testimonyCalls, 1);
     assert.equal(JSON.stringify(testimonyRequests[0])
       .includes('document_contents'), false);
+    assert.equal(testimonyRequests[0].decision_scope.operation_contract
+      .assert_authored_claim.claim_id,
+    'trace_ld_v1_assertion_onisim_testimony');
     assert.equal(runtime.state.phase9.onisim_testimony.objective_truth_write,
       'forbidden');
     assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,
@@ -305,7 +311,9 @@ function dispositionSelection() { return [
   'preserve_active_no_summary_killing_promise']; }
 function testimonyClaim() { return {
   claim_id: 'trace_ld_v1_assertion_onisim_testimony',
-  content_summary: 'Онисим сообщает о воспринятой речи и действиях Ратши.',
+  content_summary: 'Онисим сообщает, что перед столкновением слышал голос '
+    + 'Жданко, помнит удар шеста и рывок за сумку, а после крушения Ратша '
+    + 'вытащил его из воды, связал и отнёс к сушильне.',
   form: 'assertion', speaker_posture: 'believed_true',
   source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
     entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],

@@ -35,7 +35,8 @@ export function projectLowerDvinaTracePlayerSafeState({
   const profile = committedState.player_profile ?? {};
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
-  const items = projectItems(committedState.items, { actorId, position });
+  const items = projectItems([...(committedState.items ?? []),
+    ...containerItems(committedState.containers)], { actorId, position });
   const base = compact({
     actor_id: actorId,
     position,
@@ -71,6 +72,10 @@ export function projectLowerDvinaTracePlayerSafeState({
       committedState.current_visible_context,
       { path: 'current_visible_context' }
     ),
+    case_evidence_ref: typeof committedState.phase9?.case_evidence_ref
+      === 'string' ? committedState.phase9.case_evidence_ref : undefined,
+    temporary_disposition_options: projectTemporaryDispositionOptions(
+      committedState.phase9?.temporary_disposition_options),
     combat_sessions: projectCombatSessions(committedState.combat_sessions)
   });
   const playerSafeState = applyLowerDvinaTraceWorkingProjection({
@@ -88,6 +93,42 @@ export function projectLowerDvinaTracePlayerSafeState({
     }),
     player_safe_state: playerSafeState
   });
+}
+
+function projectTemporaryDispositionOptions(value) {
+  if (value?.schema !== 'temporary_disposition_option_set_v1') return undefined;
+  return { schema: value.schema, contract_ref: value.contract_ref,
+    selection_source: value.selection_source,
+    custody_option_refs: structuredClone(
+      value.eligible_option_ids.custody),
+    property_option_refs: structuredClone(
+      value.eligible_option_ids.property),
+    promise_option_refs: structuredClone(
+      value.eligible_option_ids.promise) };
+}
+
+function containerItems(containers = []) {
+  return (containers ?? []).map((container) => ({
+    item_id: container.container_id,
+    template_id: container.template_id,
+    closure_state: container.closure_state,
+    placement: {
+      container_id: container.parent_container_id
+        ?? container.state?.parent_container_id,
+      holder_character_id: container.holder_character_id
+        ?? container.state?.holder_character_id,
+      holder_npc_id: container.holder_npc_id
+        ?? container.state?.holder_npc_id,
+      location_ref: container.location_ref ?? container.state?.location_ref,
+      anchor_id: container.anchor_id ?? container.state?.anchor_id,
+      zone_ref: container.zone_ref ?? container.state?.zone_ref
+    },
+    access_state: container.access_state,
+    visibility_state: container.visibility_state,
+    open_state: container.open_state ?? container.closure_state,
+    contents_state: container.contents_state,
+    visible: container.visibility_state !== 'concealed'
+  }));
 }
 
 function projectCombatSessions(sessions = []) {

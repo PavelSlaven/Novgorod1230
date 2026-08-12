@@ -33,6 +33,16 @@ export async function loadPhase2IdempotencyRecord({
           'trace_phase_4_turn',
           'trace_phase_5_treatment',
           'trace_phase_6_carry',
+          'trace_phase_7_fire_rest',
+          'trace_phase_8_accusation',
+          'trace_phase_9_bag_recovery',
+          'trace_phase_9_bag_opened',
+          'trace_phase_9_packet_recovered',
+          'trace_phase_9_return_to_camp',
+          'trace_phase_9_onisim_testimony',
+          'trace_phase_9_evidence_resolved',
+          'trace_phase_9_temporary_disposition',
+          'combat_exchange',
           'trace_turn_step'
         )
         AND idempotency_key=$2`,

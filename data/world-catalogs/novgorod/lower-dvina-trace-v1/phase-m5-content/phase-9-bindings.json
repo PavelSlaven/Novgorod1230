@@ -1,0 +1,317 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_9_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_9_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 17,
+  "owner_contracts": {
+    "property": "@rus/items-property",
+    "movement": "@rus/movement-routes",
+    "evidence": "@rus/visibility-knowledge-memory",
+    "conversation": "@rus/turn",
+    "disposition_applicability": "@rus/social-law",
+    "disposition_selection": "@rus/turn"
+  },
+  "property_recovery": {
+    "activity_profile_ref": "trace_ld_v1_activity_check_bag_and_seal",
+    "bag_template_ref": "trace_ld_v1_container_road_bag",
+    "packet_template_ref": "trace_ld_v1_item_sealed_packet",
+    "bag_recovery_transition_ref": "trace_ld_v1_property_road_bag_recovered_to_player_control",
+    "bag_open_transition_ref": "trace_ld_v1_property_road_bag_opened_for_access",
+    "packet_recovery_transition_refs": [
+      "trace_ld_v1_property_packet_recovered_to_player",
+      "trace_ld_v1_property_destroyed_packet_recovered_to_player"
+    ],
+    "recognition": {
+      "kind": "code_owned_observation",
+      "check_required": false,
+      "required_marks": [
+        "strap_state:cut",
+        "leather_patch_state:present"
+      ]
+    },
+    "document_contents_access": "forbidden"
+  },
+  "return_movement": {
+    "activity_profile_ref": "trace_ld_v1_activity_return_to_camp",
+    "route_ref": "trace_ld_v1_route_storehouse_to_camp_guarded_return",
+    "source_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "destination_location_ref": "trace_ld_v1_loc_fishing_camp"
+  },
+  "onisim_testimony": {
+    "signal_mapping": {
+      "mapping_id": "trace_ld_v1_phase9_onisim_testimony_signal_v1",
+      "phase": "phase_9",
+      "source_command_id": "lower_dvina_trace.ask_onisim_for_testimony",
+      "target_npc_ref": "onisim_boatman",
+      "perception_requirement": "perception_required",
+      "signal_descriptors": [
+        {
+          "category": "communication",
+          "significance": "material"
+        }
+      ],
+      "mechanics_refs": {
+        "activity_id": "trace_ld_v1_activity_onisim_testimony",
+        "check_id": null,
+        "statement_template_ids": [
+          "trace_ld_v1_statement_onisim_testimony"
+        ],
+        "knowledge_scope_id": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+        "promise_policy_id": null
+      }
+    },
+    "activity_profile": {
+      "profile_id": "trace_ld_v1_activity_onisim_testimony",
+      "schema": "rus.trace_activity_profile.v1",
+      "version": 1,
+      "owner": "@rus/turn",
+      "duration_minutes": 5,
+      "no_check_required": true,
+      "completion_boundary": "onisim_statement_committed",
+      "forbidden_write_targets": [
+        "objective_truth",
+        "document_content",
+        "completion_state"
+      ]
+    },
+    "target_slot_ref": "onisim_boatman",
+    "statement_template_ref": "trace_ld_v1_statement_onisim_testimony",
+    "authored_claim_contract": {
+      "schema": "authored_statement_claim_contract_v1",
+      "statement_template_ref": "trace_ld_v1_statement_onisim_testimony",
+      "claim_id": "trace_ld_v1_assertion_onisim_testimony",
+      "utterance_text": "Перед столкновением я слышал голос Жданко. Я помню удар шеста в борт и рывок за сумку. После крушения Ратша вытащил меня из воды, связал и отнёс к сушильне.",
+      "claim": {
+        "claim_id": "trace_ld_v1_assertion_onisim_testimony",
+        "content_summary": "Онисим сообщает, что перед столкновением слышал голос Жданко, помнит удар шеста и рывок за сумку, а после крушения Ратша вытащил его из воды, связал и отнёс к сушильне.",
+        "form": "assertion",
+        "speaker_posture": "believed_true",
+        "source_knowledge_refs": [
+          {
+            "entity_kind": "knowledge_scope",
+            "entity_id": "trace_ld_v1_knowledge_scope_hired_boatman_v1"
+          }
+        ],
+        "mentioned_entity_refs": []
+      }
+    },
+    "statement_effect_contract_ref": "trace_ld_v1_statement_effect_onisim_memory_report",
+    "evidence_ref": "trace_ld_v1_evidence_onisim_testimony",
+    "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+    "ordinary_witness_llm": "forbidden"
+  },
+  "evidence_resolution": {
+    "graph_ref": "trace_ld_v1_clue_evidence_graph_set",
+    "owner": "@rus/visibility-knowledge-memory",
+    "completion_evaluation": "forbidden"
+  },
+  "temporary_disposition": {
+    "activity_profile_ref": "trace_ld_v1_activity_temporary_decision",
+    "contract_ref": "trace_ld_v1_temporary_disposition_contract",
+    "promise_policy_ref": "trace_ld_v1_promise_no_summary_killing",
+    "approved_contract": {
+      "contract_id": "trace_ld_v1_temporary_disposition_contract",
+      "schema": "rus.trace_temporary_disposition_contract.v1",
+      "version": 2,
+      "owner": "@rus/social-law",
+      "supersedes_contract_ref": {
+        "contract_id": "trace_ld_v1_temporary_disposition_contract",
+        "version": 1
+      },
+      "selection_contract": {
+        "custody_cardinality": "exactly_one",
+        "property_cardinality": "exactly_one",
+        "promise_cardinality": "exactly_one",
+        "eligibility_source_state": "committed_world_state_only",
+        "selection_source": "raw_intent_to_closed_exact_option_id_per_dimension",
+        "eligible_option_cardinality": "one_or_more",
+        "selected_option_cardinality": "exactly_one_per_dimension",
+        "unknown_combination": "typed_temporary_disposition_not_admitted",
+        "multiple_selected_option_ids": "typed_temporary_disposition_conflict",
+        "dimension_conflict_prevalidation": "required_before_selection"
+      },
+      "custody_options": [
+        {
+          "option_id": "hold_ratsha_and_zhdanko_for_authorized_handover",
+          "required_committed_facts": [
+            "ratsha_surrender_without_further_harm_committed"
+          ],
+          "required_any_of_committed_facts": [
+            "zhdanko_submission_committed",
+            "zhdanko_disarmed_and_temporarily_restrained"
+          ],
+          "parties": [
+            "ratsha_storehouse_helper",
+            "zhdanko_storehouse_controller"
+          ],
+          "committed_fact_output": "temporary_custody_both_for_authorized_handover"
+        },
+        {
+          "option_id": "hold_ratsha_zhdanko_absent",
+          "required_committed_facts": [
+            "ratsha_surrender_without_further_harm_committed",
+            "zhdanko_fled"
+          ],
+          "parties": [
+            "ratsha_storehouse_helper"
+          ],
+          "committed_fact_output": "temporary_custody_ratsha_zhdanko_absent"
+        },
+        {
+          "option_id": "hold_zhdanko_ratsha_absent",
+          "required_any_of_committed_facts": [
+            "zhdanko_submission_committed",
+            "zhdanko_disarmed_and_temporarily_restrained"
+          ],
+          "required_committed_actor_predicates": [
+            "ratsha_storehouse_helper:outside_fishing_camp"
+          ],
+          "parties": [
+            "zhdanko_storehouse_controller"
+          ],
+          "committed_fact_output": "temporary_custody_zhdanko_ratsha_absent",
+          "ratsha_presence_effect": {
+            "physical_presence": "absent_from_fishing_camp",
+            "custody": "not_applicable_in_current_location",
+            "capacity_counting": "do_not_count_as_present_actor",
+            "npc_decision_status": "continues_from_committed_out_of_camp_state",
+            "promise_scope": "evaluate_current_promise_state_without_presence_inference",
+            "epilogue_projection": "visible_absence_only_if_observed_or_committed"
+          }
+        },
+        {
+          "option_id": "hold_zhdanko_ratsha_present_not_held",
+          "required_any_of_committed_facts": [
+            "zhdanko_submission_committed",
+            "zhdanko_disarmed_and_temporarily_restrained"
+          ],
+          "required_committed_actor_predicates": [
+            "ratsha_storehouse_helper:at_fishing_camp",
+            "ratsha_storehouse_helper:not_in_temporary_custody"
+          ],
+          "parties": [
+            "zhdanko_storehouse_controller"
+          ],
+          "committed_fact_output": "temporary_custody_zhdanko_ratsha_present_not_held",
+          "ratsha_presence_effect": {
+            "physical_presence": "present_at_fishing_camp",
+            "custody": "not_held",
+            "capacity_counting": "count_as_present_actor",
+            "npc_decision_status": "continues_from_committed_state",
+            "promise_scope": "evaluate_current_promise_state_without_absence_inference",
+            "epilogue_projection": "visible_present_not_held_only_if_observed"
+          }
+        },
+        {
+          "option_id": "preserve_open_case_without_custody",
+          "required_committed_facts": [
+            "zhdanko_fled"
+          ],
+          "required_committed_actor_predicates_any_of": [
+            "ratsha_storehouse_helper:outside_fishing_camp",
+            "ratsha_storehouse_helper:not_in_temporary_custody"
+          ],
+          "parties": [],
+          "committed_fact_output": "temporary_custody_none_case_preserved"
+        }
+      ],
+      "property_options": [
+        {
+          "option_id": "preserve_recovered_property_for_savva_handover",
+          "required_committed_facts": [
+            "sealed_packet_returned"
+          ],
+          "none_of_committed_facts": [
+            "packet_lost_or_destroyed"
+          ],
+          "owner_must_remain": "trace_ld_v1_external_owner_savva_tverdich",
+          "committed_fact_output": "temporary_property_preserved_for_authorized_handover"
+        },
+        {
+          "option_id": "record_property_unavailable_without_invention",
+          "required_committed_facts": [
+            "packet_lost_or_destroyed"
+          ],
+          "none_of_committed_facts": [
+            "sealed_packet_returned"
+          ],
+          "property_mutation": "forbidden",
+          "committed_fact_output": "temporary_property_unavailable_recorded"
+        },
+        {
+          "option_id": "leave_unresolved_property_state_unchanged",
+          "none_of_committed_facts": [
+            "sealed_packet_returned",
+            "destroyed_packet_state_observed",
+            "packet_lost_or_destroyed"
+          ],
+          "property_mutation": "forbidden",
+          "committed_fact_output": "temporary_property_state_unresolved"
+        }
+      ],
+      "promise_options": [
+        {
+          "option_id": "preserve_active_no_summary_killing_promise",
+          "required_committed_facts": [
+            "promise_current_active"
+          ],
+          "required_witness_slots": [
+            "eremey_fisher",
+            "trace_ld_v1_audience_slot_participating_fisher"
+          ],
+          "scope": "no_summary_killing_after_surrender_and_no_further_harm",
+          "committed_fact_output": "temporary_promise_obligation_preserved"
+        },
+        {
+          "option_id": "commit_scope_breach_for_active_promise",
+          "required_committed_facts": [
+            "promise_current_active"
+          ],
+          "scope": "temporary_disposition_allows_summary_killing_or_revenge_without_hearing",
+          "committed_fact_output": "temporary_promise_scope_breach_committed"
+        },
+        {
+          "option_id": "recognize_fulfilled_promise",
+          "required_committed_facts": [
+            "promise_current_fulfilled"
+          ],
+          "scope": "existing_fulfilled_promise_state_unchanged",
+          "committed_fact_output": "temporary_promise_fulfilled_state_recognized"
+        },
+        {
+          "option_id": "recognize_broken_promise",
+          "required_committed_facts": [
+            "promise_current_broken"
+          ],
+          "scope": "existing_broken_promise_state_unchanged",
+          "committed_fact_output": "temporary_promise_broken_state_recognized"
+        },
+        {
+          "option_id": "record_no_active_promise",
+          "none_of_committed_facts": [
+            "promise_current_active",
+            "promise_current_broken",
+            "promise_current_fulfilled"
+          ],
+          "committed_fact_output": "temporary_promise_not_active"
+        }
+      ],
+      "final_consequence_ref": "trace_ld_v1_consequence_temporary_disposition_committed",
+      "committed_fact_output": "temporary_disposition_outcome_committed",
+      "forbidden_semantics": [
+        "pardon",
+        "innocence",
+        "release_from_responsibility",
+        "final_legal_judgment",
+        "summary_punishment"
+      ]
+    },
+    "consequence_ref": "trace_ld_v1_consequence_temporary_disposition_committed",
+    "completion_write": "forbidden"
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

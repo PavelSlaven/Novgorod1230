@@ -4,21 +4,21 @@
 |---|---|---|
 | `@rus/actors` | identity, biography fields, social/skill bindings, actor state shape и actor invariants | тело, предметы, маршруты, время, persistence |
 | `@rus/body-state` | здоровье, сытость, бодрость, активные состояния, части тела, применение утверждённых изменений, edge-triggered threshold crossing и body-origin `self` signal descriptor | выбор причины изменения, combat intent, лечение как смысловое решение |
-| `@rus/items-property` | item identity/profile binding, containers, ownership, normalized inventory topology, mass/load/hands/access, stack signature и pure transfer plan | материализация предмета, цены мира, persistence, исторические template facts |
+| `@rus/items-property` | item identity/profile binding, containers, ownership, normalized inventory topology, mass/load/hands/access, stack signature и approved property/container transition proposals | материализация предмета, цены мира, persistence, исторические template facts |
 | `@rus/space-map` | G0–G5 types, position chain, graph node/edge shape, current position, scene anchors, structural graph validation | выбор маршрута, время пути, знания персонажа |
 | `@rus/movement-routes` | route availability, route knowledge envelope, GU/time cost, access requirements, traversal contracts | создание дорог, смысловой выбор курса, RNG implementation |
 | `@rus/time-events-history` | clock, duration, timers, delayed event records, historical phases, time-update requests | создание исторических событий и их смысловых последствий |
 | `@rus/checks-rng` | dice requests, `RandomSource`, characteristic bonus, check formula и result envelope | решение о необходимости проверки, narrative consequence |
 | `@rus/combat-health` | combat session/intent/step/exchange contracts, attack/defense requests, quality bands, harm packages, terminal combat evaluation | решение NPC атаковать, выбор цели/оружия, authoritative body write, persistence, narration |
-| `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages, party-local commitments from committed conversation facts | создание права региона, вынесение смыслового приговора, выбор NPC response или активация обязательства одной лишь репликой |
-| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package, factual conversation audience projection | prose generation, hidden-state mutation, DB reads, выбор responder или перенос private knowledge между NPC |
+| `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages, party-local commitments и typed temporary disposition proposals только из committed facts | создание права региона, окончательное дело/completion, выбор NPC response или активация обязательства одной лишь репликой |
+| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package, factual conversation audience projection и deterministic authored evidence resolution | prose generation, hidden-state mutation, DB reads, выбор responder, перенос private knowledge между NPC или legal consequence |
 | `@rus/runtime-catalog` | read-only active/historical domain pin loading, exact import reconstruction, world-pin compatibility и applicable item/container projection | authoring, import/activation writes, party persistence, materialization |
 
 ## Spatial v3 production ownership (P08)
 
 Historical P28 evidence did not itself activate production. The later
 `versioned production activation cutover` currently culminates in
-`spatial-v3-production-v6`; these owners form the sole production
+`spatial-v3-production-v7`; these owners form the sole production
 composition. Dual write, mixed reads and compatibility fallback remain
 forbidden.
 
@@ -41,8 +41,8 @@ or write a partial result.
 ## Temporal World v4 production ownership
 
 The completed `versioned production activation cutover` made these
-responsibilities authoritative in current release `spatial-v3-production-v6`.
-Production v5 is an explicit rollback source only.
+responsibilities authoritative in current release `spatial-v3-production-v7`.
+Production v6 is an explicit rollback source only.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|

@@ -44,11 +44,14 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       (execution) => admitResult(
         handler(execution), workingProjectionAuthority)
     ]));
-  const domain = {
+  const phase9ContainerOwner = committedState?.materialization_trace
+    ?.seed_context?.scenario_definition_revision === 17
+    && (committedState.phase9 != null
+      || committedState.last_turn?.consequence?.combat?.session_after
+        ?.status === 'ended');
+  const domain = phase9ContainerOwner ? {} : {
     request_container_access: (execution) => admitResult(
-      containerAccessHandler(execution),
-      workingProjectionAuthority
-    )
+      containerAccessHandler(execution), workingProjectionAuthority)
   };
   const preparedDomainEffect = typeof temporalAdvance === 'function'
       && typeof bodyEffect?.apply === 'function'

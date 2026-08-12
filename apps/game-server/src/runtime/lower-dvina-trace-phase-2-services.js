@@ -35,6 +35,13 @@ import { tracePhase8AccusationPreconditionSatisfied } from
 import { createTracePhase8TemporalAdvance,
   createTracePhase8VisibleProjector } from
   './lower-dvina-trace-phase-8-effects.js';
+import { createTracePhase9TemporalAdvance,
+  createTracePhase9VisibleProjector, createTracePhase9BodyEffect } from
+  './lower-dvina-trace-phase-9-effects.js';
+import { tracePhase9PreconditionSatisfied } from
+  './lower-dvina-trace-phase-9-commands.js';
+import { tracePhase9TestimonyPreconditionSatisfied } from
+  './lower-dvina-trace-phase-9-testimony-command.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   './lower-dvina-trace-turn-step-runtime-ports.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
@@ -59,7 +66,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
-    turn10Contracts, phase8Contracts
+    turn10Contracts, phase8Contracts, phase9Contracts
   } = context;
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
@@ -77,19 +84,23 @@ export function buildLowerDvinaTracePhase2Services(context) {
   }
   const workingProjectionAuthority =
     createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-  const temporalAdvance = createTracePhase8TemporalAdvance({ fallback:
-    createTracePhase7TemporalAdvance({
-    fallback: createTracePhase6TemporalAdvance({
-      fallback: createTracePhase5TemporalAdvance({
-      phase4Advance: createTracePhase4TemporalAdvance({
-        phase3Advance: createTracePhase3TemporalAdvance({
-          phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+  const temporalAdvance = createTracePhase9TemporalAdvance({ fallback:
+    createTracePhase8TemporalAdvance({ fallback:
+      createTracePhase7TemporalAdvance({
+        fallback: createTracePhase6TemporalAdvance({
+          fallback: createTracePhase5TemporalAdvance({
+            phase4Advance: createTracePhase4TemporalAdvance({
+              phase3Advance: createTracePhase3TemporalAdvance({
+                phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+              })
+            })
+          })
         })
       })
-      })
     })
-  }) });
-  const bodyEffect = createLowerDvinaTraceCompositeBodyEffect({
+  });
+  const bodyEffect = createTracePhase9BodyEffect({ fallback:
+    createLowerDvinaTraceCompositeBodyEffect({
     genericBodyEffect: turnStepGenericBodyEffect,
     fallback: createTracePhase7BodyEffect({
       fallback: createTracePhase6BodyEffect({
@@ -105,7 +116,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       }),
       contracts: phase7Contracts
     })
-  });
+  }) });
   const turnStepPorts = createLowerDvinaTraceTurnStepRuntimePorts({
     bodyEffect,
     bodyEventOwner: turnStepBodyEventOwner,
@@ -174,13 +185,20 @@ export function buildLowerDvinaTracePhase2Services(context) {
         || (phase8Contracts != null
           && tracePhase8AccusationPreconditionSatisfied(precondition,
             committedState, phase8Contracts))
+        || (phase9Contracts != null
+          && tracePhase9PreconditionSatisfied(precondition, committedState,
+            phase9Contracts))
+        || (phase9Contracts != null
+          && tracePhase9TestimonyPreconditionSatisfied(precondition,
+            committedState, phase9Contracts))
         || traceCombatPreconditionSatisfied(precondition, committedState);
     },
     randomSource,
     temporalAdvance,
     bodyEffect,
     visibleProjector: createLowerDvinaTraceTurnStepVisibleProjector({
-      fallback: createTracePhase8VisibleProjector({
+      fallback: createTracePhase9VisibleProjector({
+      contracts: phase9Contracts, fallback: createTracePhase8VisibleProjector({
       contracts: phase8Contracts, fallback: createTracePhase7VisibleProjector({ fallback: createTracePhase6VisibleProjector({ fallback: createTracePhase5VisibleProjector({
       phase4Projector: createTracePhase4VisibleProjector({
         phase3Projector: createTracePhase3VisibleProjector({
@@ -188,14 +206,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
           contracts: phase3Contracts
         })
       })
-    }) }) }) })
+    }) }) }) }) })
     }),
     partyStore: {
       commit(writePlan) {
         return repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
-          turn10Contracts, phase8Contracts,
+          turn10Contracts, phase8Contracts, phase9Contracts,
           turnStepApprovedOwners
         });
       }

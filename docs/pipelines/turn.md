@@ -14,6 +14,12 @@ production; historical revisions remain available only by explicit pin.
 path. Revision 16 / `spatial-v3-production-v6` activates `request_combat`,
 persisted combat sessions and NPC combat intents through the same common
 signal/boundary and atomic commit owners.
+Revision 17 / `spatial-v3-production-v7` activates the Phase 9 post-combat
+chain through the same semantic step loop and one atomic commit per checkpoint:
+factual property/container transitions, sealed-packet observation, return,
+subjective testimony, deterministic authored evidence resolution and a typed
+temporary disposition. It neither reads document contents nor writes scenario
+completion.
 
 ## Этапы
 
@@ -84,6 +90,12 @@ and visibility remain code-owned. Revision-16 combat turns the Phase-4 hostile
 handoff into a persisted `combat_session_v1`; Phase 8 player `request_combat`
 executes one common exchange while checks, harm/body, items, time, perception
 and writes remain code-owned.
+Revision-17 Phase 9 keeps that boundary: semantic plans select only the next
+admitted operation. `@rus/items-property` owns holder/controller/container and
+seal-preserving transitions; `@rus/visibility-knowledge-memory` resolves only
+authored conclusions from committed evidence; `@rus/social-law` proposes only
+the pinned temporary disposition. Narration sees only the committed safe
+projection.
 
 ## Temporal World v4 active sequence
 

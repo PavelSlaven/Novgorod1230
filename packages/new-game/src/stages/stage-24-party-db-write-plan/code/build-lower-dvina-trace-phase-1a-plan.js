@@ -10,7 +10,8 @@ import {
   buildPartyCatalogPinRecord
 } from './runtime-catalog-pins.js';
 import {
-  buildLowerDvinaTracePersistedProjection
+  buildLowerDvinaTracePersistedProjection,
+  normalizeExternalOwnerRef
 } from './lower-dvina-trace-persisted-projection.js';
 
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
@@ -275,12 +276,13 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     party_id: partyId,
     item_id: item.instance_id,
     anchor_id: item.anchor_id ?? null,
-    container_id: null,
+    container_id: item.container_id ?? null,
     holder_npc_id: item.holder_npc_id ?? null,
     holder_character_id: item.holder_character_id ?? null,
-    physical_position: item.physical_position,
+    physical_position: item.physical_position ?? null,
     equipment_slot_category_id: null
-  })), ['party_items', 'party_player_characters', 'party_npcs', 'party_g5_anchors'], sourceTrace);
+  })), ['party_items', 'party_containers', 'party_player_characters',
+    'party_npcs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_ownership', result.immediate.items.map((item) => ({
     party_id: partyId,
     ownership_id: `ownership_${item.instance_id}`,
@@ -289,7 +291,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     owner_npc_id: item.owner_npc_id ?? null,
     owner_character_id: item.owner_character_id ?? null,
     owner_party: false,
-    owner_external_ref: null,
+    owner_external_ref: normalizeExternalOwnerRef(item.owner_external_ref),
     controller_npc_id: item.controller_npc_id ?? null,
     controller_character_id: item.controller_character_id ?? null,
     claim_state: item.claim_state
@@ -406,7 +408,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -417,7 +419,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16].includes(
+  const phase7 = [15, 16, 17].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)

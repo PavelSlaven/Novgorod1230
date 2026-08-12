@@ -7,6 +7,8 @@ import { tracePhase7ActorStep } from
   './lower-dvina-trace-phase-7-schedule-execution.js';
 import { validTracePreparedCombatConsequence } from
   './lower-dvina-trace-combat-prepared-contract.js';
+import { TRACE_PHASE9_PREPARED_COMMANDS } from
+  './lower-dvina-trace-phase-9-prepared-commands.js';
 
 const PHASE3_ROUTE_COMMAND =
   'lower_dvina_trace.follow_path_to_fishing_camp';
@@ -35,7 +37,8 @@ export function createLowerDvinaTracePreparedDomainEffect({
         || (operation?.op === 'emit_interaction'
           && commandId === TURN10_COMPANION_COMMAND && priorCount === 1)
         || (operation?.op === 'request_combat'
-          && commandId === COMBAT_RESPONSE_COMMAND && priorCount === 0);
+          && commandId === COMBAT_RESPONSE_COMMAND && priorCount === 0)
+        || (TRACE_PHASE9_PREPARED_COMMANDS.has(commandId) && priorCount === 0);
     },
     currentState() {
       return structuredClone(currentState);
@@ -58,9 +61,22 @@ export function createLowerDvinaTracePreparedDomainEffect({
       if (input?.command_id === COMBAT_RESPONSE_COMMAND) {
         return applyPreparedCombatExchange(input);
       }
+      if (TRACE_PHASE9_PREPARED_COMMANDS.has(input?.command_id)) {
+        return applyPreparedPhase9(input);
+      }
       fail('TRACE_TURN_STEP_PREPARED_COMMAND_UNSUPPORTED');
     }
   });
+}
+
+function applyPreparedPhase9(input) {
+  const consequence = input?.consequence;
+  if (typeof consequence?.phase9_kind !== 'string'
+      || consequence.phase9 == null
+      || input?.prepared_chain_context?.prior_effect_count !== 0) {
+    fail('TRACE_TURN_STEP_PREPARED_PHASE9_INVALID');
+  }
+  return preparedResult(input, consequence, true);
 }
 
 function applyPreparedPhase7Rest(input) {

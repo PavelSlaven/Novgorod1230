@@ -1,4 +1,6 @@
 import { serverError } from '../errors.js';
+import { TRACE_PHASE9_TURN_STEP_EXPECTED } from
+  './lower-dvina-trace-phase-9-turn-step-bindings.js';
 
 const EXPECTED = Object.freeze({
   'lower_dvina_trace.inspect_wreck_in_detail': {
@@ -108,7 +110,8 @@ const EXPECTED = Object.freeze({
     operation: 'request_combat', kindField: 'intent_kind',
     kindsField: 'intent_kinds', kind: 'engage',
     targetKey: 'activeHostileNpc', targetSemantic: 'active_hostile_npc'
-  }
+  },
+  ...TRACE_PHASE9_TURN_STEP_EXPECTED
 });
 
 const REVISION_13_EXACT_TEXTS = Object.freeze({
@@ -129,7 +132,8 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
 });
 const STATE_GATED_COMMANDS = new Set([
   'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
-  'lower_dvina_trace.accuse_zhdanko_at_storehouse'
+  'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  ...Object.keys(EXPECTED).filter((id) => EXPECTED[id].minRevision === 17)
 ]);
 
 export function bindLowerDvinaTraceTurnStepCommands({
@@ -137,7 +141,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14, 15, 16].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(
     ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision
@@ -164,9 +168,13 @@ export function bindLowerDvinaTraceTurnStepCommands({
     const actorRef = targetRefs?.actor;
     const dynamicTargetAbsent = expected.operation === 'request_combat'
       && targetRef == null;
+    if (expected.closedSelection === true && targetRef == null) return command;
     if (!validRecord(record, expected)
+        || (expected.closedSelection === true
+          && !validClosedSelectionOptions(targetRef))
         || (Array.isArray(targetRef)
           ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
+          : expected.closedSelection === true ? false
           : !dynamicTargetAbsent
             && (typeof targetRef !== 'string' || targetRef.length === 0))
         || typeof actorRef !== 'string' || actorRef.length === 0) {
@@ -206,7 +214,6 @@ export function bindLowerDvinaTraceTurnStepCommands({
   }
   return bound;
 }
-
 function normalizeExactText(value) {
   return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
 }
@@ -235,11 +242,20 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   if (expected.operation === 'request_movement') {
     return operation.target_ref === targetRef;
   }
+  if (expected.operation === 'request_container_access') {
+    return operation.container_ref === targetRef;
+  }
+  if (expected.operation === 'request_item_use') {
+    return operation.item_ref === targetRef;
+  }
   if (expected.operation === 'request_combat') {
     const noTarget = ['hold', 'protect', 'reach', 'break_contact',
       'surrender', 'cease_hostility'].includes(operation.intent_kind);
     return noTarget || operation.target_refs?.length === 1
       && operation.target_refs[0] === targetRef;
+  }
+  if (expected.closedSelection === true) {
+    return matchesClosedSelection(operation.target_refs, targetRef);
   }
   const targetField = expected.operation === 'emit_interaction'
     ? 'target_actor_refs'
@@ -256,6 +272,21 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
       && operation.instrument_refs?.includes(evidenceRef) === true;
   }
   return true;
+}
+function validClosedSelectionOptions(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && ['custody', 'property', 'promise'].every((dimension) =>
+      Array.isArray(value[dimension]) && value[dimension].length > 0
+      && value[dimension].every((id) =>
+        typeof id === 'string' && id.length > 0)
+      && new Set(value[dimension]).size === value[dimension].length);
+}
+
+function matchesClosedSelection(selected, eligible) {
+  if (!Array.isArray(selected) || selected.length !== 3
+      || new Set(selected).size !== selected.length) return false;
+  return ['custody', 'property', 'promise'].every((dimension) =>
+    selected.filter((id) => eligible[dimension].includes(id)).length === 1);
 }
 
 function gap() {

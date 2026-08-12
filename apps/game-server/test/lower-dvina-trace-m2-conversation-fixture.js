@@ -359,7 +359,7 @@ export function conversationTemporalOwner(state, resolver) {
   });
 }
 
-function playerPlan(request, {
+export function playerPlan(request, {
   checkRequired = false,
   inputMode = 'verbatim',
   utteranceText = request.raw_text,
@@ -503,7 +503,7 @@ function ratshaPlan(request, responseKind, playerId) {
     : plan;
 }
 
-function npcSpeechPlan(request, {
+export function npcSpeechPlan(request, {
   utteranceText,
   dominantAct,
   interactionTags = [],
@@ -536,7 +536,7 @@ function npcSpeechPlan(request, {
     supporting_operations: supportingOperations,
     check: null,
     handoff: null,
-    reason: 'The response follows Ratsha or Eremey current subjective state.'
+    reason: 'The response follows the NPC subjective state.'
   };
 }
 

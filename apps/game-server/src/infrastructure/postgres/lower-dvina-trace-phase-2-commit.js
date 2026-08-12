@@ -28,6 +28,8 @@ import { commitLowerDvinaTracePhase7 } from './lower-dvina-trace-phase-7-commit.
 import { commitLowerDvinaTraceCombat } from './lower-dvina-trace-combat-commit.js';
 import { routeLowerDvinaTracePhase8Commit } from
   './lower-dvina-trace-phase-8-commit-router.js';
+import { commitLowerDvinaTracePhase9 } from
+  './lower-dvina-trace-phase-9-commit.js';
 import { mergePhase2Items } from './lower-dvina-trace-phase-2-commit-items.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
@@ -45,7 +47,7 @@ export async function commitLowerDvinaTracePhase2({
   inputDigest,
   contracts,
   phase3Contracts,
-  phase4Contracts, phase8Contracts,
+  phase4Contracts, phase8Contracts, phase9Contracts,
   phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
   loadState,
@@ -56,6 +58,9 @@ export async function commitLowerDvinaTracePhase2({
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
+  if (factual?.consequence?.phase9_kind) return commitLowerDvinaTracePhase9({
+    partyId, writePlan, inputDigest, phase9Contracts,
+    turnStepApprovedOwners, loadState, committer });
   if (factual?.consequence?.combat_kind) return commitLowerDvinaTraceCombat({
     partyId, writePlan, inputDigest, loadState, committer
   });

@@ -37,6 +37,9 @@ const bundle15 = await loadLowerDvinaTraceMaterializationBundle({
 const bundle16 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 16
 });
+const bundle17 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 17
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 function request(overrides = {}) {
@@ -299,6 +302,63 @@ test('revision 16 persists every NPC referenced by its initial held resources', 
   );
   assert.ok(holderIds.length > 0);
   for (const holderId of holderIds) assert.equal(npcIds.has(holderId), true);
+});
+
+test('revision 17 persists the sealed packet inside the road bag with Savva ownership', () => {
+  const pin = lowerDvinaTracePhase1ADomainPin(bundle17);
+  const creation = request({ scenario_definition_revision: 17,
+    scenario_manifest_digest: bundle17.manifest_digest,
+    scenario_bundle: bundle17, domain_catalog_pin: pin,
+    idempotency_key: 'trace-phase-17-prerequisite-idempotency' });
+  const result = materializeLowerDvinaTracePartyInstance(creation);
+  const zhdanko = result.immediate.npcs.find(
+    ({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller');
+  const bag = result.immediate.containers.find(
+    ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag');
+  const packet = result.immediate.items.find(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_sealed_packet');
+  assert.equal(packet.container_id, bag.instance_id);
+  assert.equal(packet.state.inherited_holder_npc_id, zhdanko.instance_id);
+  assert.equal(packet.owner_external_ref,
+    'trace_ld_v1_external_owner_savva_tverdich');
+  assert.equal(packet.state.seal_state, 'intact');
+  assert.equal(packet.state.document_contents_access, 'forbidden');
+  const plan = stage24Plan(result, creation, pin);
+  const item = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_items').records.find(
+    ({ template_id: id }) => id === 'trace_ld_v1_item_sealed_packet');
+  const placement = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_item_placements').records.find(
+    ({ item_id: id }) => id === item.item_id);
+  const placementBatch = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_item_placements');
+  const npcIds = new Set(plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npcs').records.map(
+    ({ npc_id: id }) => id));
+  const ownership = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_ownership').records.find(
+    ({ item_id: id }) => id === item.item_id);
+  assert.equal(placement.container_id, bag.instance_id);
+  assert.equal(placement.holder_npc_id, null);
+  assert.equal(placement.physical_position, null);
+  const persistedPacket = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_state_snapshots'
+  ).records[0].state_payload.persisted_projection.items.find(
+    ({ item_id: id }) => id === item.item_id
+  );
+  assert.equal(persistedPacket.placement.physical_position, null);
+  assert.equal(placementBatch.depends_on_batches.includes(
+    'batch-party_containers'), true);
+  for (const record of placementBatch.records) {
+    if (record.holder_npc_id != null) assert.equal(
+      npcIds.has(record.holder_npc_id), true);
+  }
+  assert.deepEqual(ownership.owner_external_ref, {
+    entity_kind: 'external_owner',
+    entity_id: 'trace_ld_v1_external_owner_savva_tverdich'
+  });
+  assert.equal(ownership.controller_npc_id, zhdanko.instance_id);
 });
 
 test('revision 11 Stage 24 persists the exact bandage identity once', () => {

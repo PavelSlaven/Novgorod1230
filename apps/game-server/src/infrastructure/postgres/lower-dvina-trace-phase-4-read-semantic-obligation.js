@@ -52,7 +52,10 @@ export function assertPhase4SemanticPromiseAndSurrender({
     transitions,
     surrender: activationHistory[0] ?? null
   });
-  if (promise.current_state === 'active') {
+  const wasActivated = ['active', 'fulfilled', 'broken'].includes(
+    promise.current_state
+  );
+  if (wasActivated) {
     if (activationHistory.length !== 1) fail();
     assertSemanticCommitment({
       payload,
@@ -80,15 +83,19 @@ function assertSemanticPromiseTransitions({ promise, transitions, surrender }) {
   const relevant = transitions.filter(
     ({ obligation_id: id }) => id === promise.obligation_id
   );
-  const expectedCount = promise.current_state === 'active'
+  const lifecycleCount = promise.current_state === 'active'
     ? 2
+    : ['fulfilled', 'broken'].includes(promise.current_state)
+      ? 3
     : promise.current_state === 'offered'
       ? 1
       : 0;
+  const expectedCount = lifecycleCount
+    + (promise.temporary_disposition_memory == null ? 0 : 1);
   const semantic =
     surrender?.consequence.negotiation.semantic_exchange_projection;
   if (relevant.length !== expectedCount
-      || (expectedCount > 0
+      || (lifecycleCount > 0
         && (relevant[0]?.from_state !== 'not_offered'
           || relevant[0]?.to_state !== 'offered'
           || relevant[0]?.transition_kind !== 'promise_offered'
@@ -104,7 +111,7 @@ function assertSemanticPromiseTransitions({ promise, transitions, surrender }) {
           ) !== canonicalDigest(promise.witness_actor_ids)
           || relevant[0]?.check_resolution_id != null
           || relevant[0]?.npc_decision_request_id != null))
-      || (expectedCount === 2
+      || (lifecycleCount === 2
         && (relevant[1]?.from_state !== 'offered'
           || relevant[1]?.to_state !== 'active'
           || relevant[1]?.transition_kind !== 'promise_activated'
@@ -120,7 +127,38 @@ function assertSemanticPromiseTransitions({ promise, transitions, surrender }) {
             `:${surrender.turn_number}`
           )
           || relevant[1]?.npc_decision_request_id
-            !== semantic?.request_id))) fail();
+            !== semantic?.request_id))
+      || (lifecycleCount === 3
+        && !validTerminalTransition(relevant[2], promise))
+      || (promise.temporary_disposition_memory != null
+        && !validDispositionMemory(relevant[lifecycleCount], promise))) fail();
+}
+
+function validTerminalTransition(transition, promise) {
+  const fulfilled = promise.current_state === 'fulfilled';
+  return transition?.from_state === 'active'
+    && transition.to_state === promise.current_state
+    && transition.transition_kind
+      === (fulfilled ? 'promise_fulfilled' : 'promise_broken')
+    && canonicalDigest(transition.causal_basis) === canonicalDigest({
+      committed_fact_ids: [fulfilled
+        ? 'promise_fulfillment_basis_committed'
+        : 'promise_breach_basis_committed'] })
+    && transition.check_resolution_id == null
+    && transition.npc_decision_request_id == null;
+}
+
+function validDispositionMemory(transition, promise) {
+  return transition?.transition_ordinal === Number(promise.state_version) - 2
+    && transition.from_state === promise.current_state
+    && transition.to_state === promise.current_state
+    && transition.transition_kind
+      === 'temporary_disposition_promise_memory_recorded'
+    && canonicalDigest(transition.causal_basis) === canonicalDigest({
+      committed_fact_ids: [promise.temporary_disposition_memory
+        .committed_fact_id] })
+    && transition.check_resolution_id == null
+    && transition.npc_decision_request_id == null;
 }
 
 function assertSemanticCommitment({ payload, promise, entry }) {

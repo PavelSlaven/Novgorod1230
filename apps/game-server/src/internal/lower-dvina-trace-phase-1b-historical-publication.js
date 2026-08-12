@@ -34,12 +34,16 @@ const HISTORICAL_PHASE_1A_V8_DIGEST =
   'fd4d6cbc5dfdef71b16e8277fdfbd9b88f03d5d0c8c40218a25b89e361858ea0';
 const HISTORICAL_PHASE_1A_V11_DIGEST =
   'f10a8e6938ebc7e3a2ece90e7fa147081173b75a44641d3d57f9c9ccd47d33f5';
-
+const HISTORICAL_PHASE_1A_V12_DIGEST =
+  'd54f93ce0e29c6b6cbecd95b1a00013cdc5ebb303e6498346588b8cd74976356';
 export async function loadHistoricalLowerDvinaTracePhase1BPublication({
   rootDir,
   phase1AManifestDigest
 }) {
   const shared = { rootDir, readJson, fail, freezeDeep };
+  if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V12_DIGEST) {
+    return loadHistoricalV11Publication({ rootDir });
+  }
   if (phase1AManifestDigest === HISTORICAL_PHASE_1A_V11_DIGEST) {
     return loadHistoricalV10Publication({ rootDir });
   }
@@ -103,8 +107,7 @@ export async function loadHistoricalLowerDvinaTracePhase1BPublication({
       'Historical Phase 1A/1B publication pins are stale.'
     );
   }
-  const manifest = manifestFile.value;
-  const binding = bindingFile.value;
+  const manifest = manifestFile.value, binding = bindingFile.value;
   const phase1A = phase1AFile.value;
   const definition = definitionFile.value;
   if (manifest.schema !== 'rus.lower_dvina_trace_phase_1b_manifest.v1'
@@ -146,9 +149,9 @@ export async function loadHistoricalLowerDvinaTracePhase1BPublication({
     }
   });
 }
-
 export function isHistoricalLowerDvinaTracePhase1AManifestDigest(value) {
-  return value === HISTORICAL_PHASE_1A_V11_DIGEST
+  return value === HISTORICAL_PHASE_1A_V12_DIGEST
+    || value === HISTORICAL_PHASE_1A_V11_DIGEST
     || value === HISTORICAL_PHASE_1A_V8_DIGEST
     || value === HISTORICAL_PHASE_1A_DIGEST
     || value === HISTORICAL_PHASE_1A_V2_DIGEST
@@ -158,7 +161,57 @@ export function isHistoricalLowerDvinaTracePhase1AManifestDigest(value) {
     || value === HISTORICAL_PHASE_1A_V6_DIGEST
     || value === HISTORICAL_PHASE_1A_V7_DIGEST;
 }
-
+async function loadHistoricalV11Publication({ rootDir }) {
+  const [manifestFile, bindingFile, phase1AFile, definitionFile] =
+    await Promise.all([
+      readJson(rootDir, `${ROOT}/phase-1b-v11/manifest.json`),
+      readJson(rootDir, `${ROOT}/phase-1b-v11/publication-binding.json`),
+      readJson(rootDir, `${ROOT}/phase-1a-v12/manifest.json`),
+      readJson(rootDir, `${ROOT}/phase-m4-content/definition.json`)
+    ]);
+  if (manifestFile.digest
+      !== '2848cac36bf1dfd772df8a9773a8a0fe4e787e4f0de202cc1721e124e5f0e5ed'
+    || bindingFile.digest
+      !== 'e9a2dc5a11328a2635e33adb719ffeeb85f03475baf8a114ed106b1792f11463'
+    || phase1AFile.digest !== HISTORICAL_PHASE_1A_V12_DIGEST
+    || definitionFile.digest
+      !== '3f07fe5cbadb3bc5f2f0519bf999c89a9e28b6bf9acc4b802dc3266e664d8f16') {
+    fail('TRACE_PHASE_1B_HISTORICAL_ROOT_MISMATCH',
+      'Historical revision 16 publication pins are stale.');
+  }
+  const manifest = manifestFile.value;
+  const binding = bindingFile.value;
+  const phase1A = phase1AFile.value;
+  const definition = definitionFile.value;
+  if (manifest.package_id !== 'lower_dvina_trace_phase_1b_v11'
+    || manifest.revision !== 11
+    || manifest.content_refs?.publication_binding?.digest !== bindingFile.digest
+    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v11'
+    || binding.revision !== 11
+    || binding.phase_1a_manifest_ref?.digest !== phase1AFile.digest
+    || binding.scenario_definition_ref?.digest !== definitionFile.digest
+    || binding.materializer_binding_id
+      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v12'
+    || phase1A.package_id !== 'lower_dvina_trace_phase_1a_v12'
+    || phase1A.scenario_definition_revision !== 16
+    || definition.revision !== 16) {
+    fail('TRACE_PHASE_1B_HISTORICAL_CONTENT_INVALID',
+      'Historical revision 16 publication content is inconsistent.');
+  }
+  return freezeDeep({
+    manifest,
+    manifest_digest: manifestFile.digest,
+    binding,
+    binding_digest: bindingFile.digest,
+    phase_1a_manifest: phase1A,
+    definition,
+    public_projection: {
+      scenario_id: binding.scenario_id,
+      public_metadata: structuredClone(binding.public_metadata),
+      opening_projection: structuredClone(binding.opening_projection)
+    }
+  });
+}
 async function loadHistoricalV10Publication({ rootDir }) {
   const [manifestFile, bindingFile, phase1AFile, definitionFile] =
     await Promise.all([

@@ -141,14 +141,12 @@ export async function resolveBoundTurnStepCommand({
                 committed_state: structuredClone(committedState)
               }))
             : committedState;
-        const availability = execution.prepared_chain_context
-          .prior_effect_count === 0
-          ? availabilityDecisions?.get(selectedCommand.option_id)
-          : await selectedCommand.availability(deepFreeze({
+        const availability = await selectedCommand.availability(deepFreeze({
               playerInput: structuredClone(stepPlayerInput),
               committed_state: structuredClone(consequenceState),
               retrievedState: structuredClone(consequenceState),
-              modeResolution: null
+              modeResolution: null,
+              action_set_evaluation: false
             }));
         assertValid('turn_availability_decision',
           validateAvailabilityDecision(availability));

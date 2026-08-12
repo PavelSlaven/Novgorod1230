@@ -14,6 +14,11 @@
 
 ## Public API
 
+`selectTemporaryDispositionOptions` проверяет выбранные из raw intent ровно
+по одному option id на измерение из закрытого набора, построенного domain
+owner. Applicability и typed temporary-disposition proposal принадлежат
+`@rus/social-law`; `@rus/turn` только оркестрирует semantic selection.
+
 - `.`: `runTurnWorkflow`, `createTurnWorkflowContext`, `TURN_WORKFLOW_STAGE_PLAN`, contract validators/constants, `createTurnAvailableActionSet`, `resolveTurnSemanticIntent`, exact/closed-choice resolver, `TURN_STEP_REQUEST_V1_SCHEMA`, `TURN_STEP_PLAN_V1_SCHEMA`, `validateTurnStepRequest`, `validateTurnStepPlan`, `requestTurnStepPlan`, `createTurnStepExecutionRegistry`, `runTurnStepLoop`, turn-step commit envelope и operation-batch validators.
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
@@ -128,6 +133,11 @@ of the common temporal owner to +30 from the updated working projection. В
 активирует persisted combat session, NPC combat intent boundary и общий
 exchange для Phase 4 hostile handoff и Phase 8 storehouse confrontation;
 historical bounded Phase 3/4 доступен только по явному revision pin.
+Revision 17 / `spatial-v3-production-v7` активирует Phase 9 как ordered
+prepared-domain checkpoints в том же semantic loop. Turn владеет admission,
+causal working-state recheck и atomic root commit, но делегирует property,
+evidence и temporary disposition их существующим domain owners и не создаёт
+completion либо отдельный legal/evidence executor.
 
 ## Тесты
 

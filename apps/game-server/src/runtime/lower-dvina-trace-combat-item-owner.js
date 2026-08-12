@@ -34,10 +34,11 @@ export function applyTraceCombatItemTransition({ step,
       accessibility: transition.writes.accessibility },
     items: working.items,
     item_profiles: inventoryProfiles(working.items),
-    containers: [],
+    containers: referencedContainers(working),
     item_placements: working.items.map((candidate) =>
       itemPlacement(candidate, context.state.party_id)),
-    container_placements: [],
+    container_placements: referencedContainerPlacements(working),
+    container_profiles: referencedContainerProfiles(working),
     ownership: working.items.map((candidate) =>
       itemOwnership(candidate, context.state.party_id)),
     actor_strengths: {} });
@@ -97,6 +98,19 @@ function inventoryProfiles(items) {
   }
   return [...byTemplate.values()];
 }
+function referencedContainerIds(working) { return new Set((working.items ?? [])
+  .map((item) => item.placement?.container_id).filter(Boolean)); }
+function referencedContainers(working) { const ids = referencedContainerIds(
+  working); return structuredClone((working.containers ?? []).filter(
+    ({ container_id: id }) => ids.has(id))); }
+function referencedContainerPlacements(working) { const ids =
+  referencedContainerIds(working); return structuredClone(
+    (working.container_placements ?? []).filter(
+      ({ container_id: id }) => ids.has(id))); }
+function referencedContainerProfiles(working) { return referencedContainers(
+  working).map((container) => ({
+    ...structuredClone(container.state?.inventory_profile_snapshot),
+    template_id: container.template_id })); }
 function applyItemProposal(item, proposal) { return { ...item,
   placement: { ...item.placement,
     holder_npc_id: proposal.placement.holder_npc_id ?? null,

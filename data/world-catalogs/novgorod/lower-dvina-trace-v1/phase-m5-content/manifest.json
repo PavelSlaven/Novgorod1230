@@ -1,0 +1,12 @@
+{
+  "schema":"rus.lower_dvina_trace_m5_content_manifest.v1","package_id":"lower_dvina_trace_m5_content_v1","revision":1,"scenario_id":"lower_dvina_trace_v1","scenario_definition_revision":17,"status":"approved","publication_status":"internal_only",
+  "superseded_package_ref":{"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m4-content/manifest.json","id":"lower_dvina_trace_m4_content_v1","revision":1,"schema":"rus.lower_dvina_trace_m4_content_manifest.v1","digest":"d9917f6a30ed94587f5914f6b488ded0aeb9ce9269cb5ec9d25e4fd8f9d6ff22"},
+  "superseded_definition_ref":{"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m4-content/definition.json","id":"lower_dvina_trace_v1","revision":16,"schema":"rus.trace_scenario_definition.v1","digest":"3f07fe5cbadb3bc5f2f0519bf999c89a9e28b6bf9acc4b802dc3266e664d8f16"},
+  "files":{"definition.json":"1c174985d5f194075671886f2e5459cfe777abd7c0ebd6520e59e3537d2c3625","phase-9-bindings.json":"822a4860363a23be10f4e466e232ebbf70a3eb79dd4533edb2480a37e59a4084","turn-step-bindings.json":"d48ceb6978433ed8b84061d3539d40c0a0ef039d67eaa5d41c471e8e9b4b3ef2"},
+  "content_refs":{
+    "definition":{"path":"definition.json","id":"lower_dvina_trace_v1","revision":17,"schema":"rus.trace_scenario_definition.v1","digest":"1c174985d5f194075671886f2e5459cfe777abd7c0ebd6520e59e3537d2c3625"},
+    "phase_9_bindings":{"path":"phase-9-bindings.json","id":"lower_dvina_trace_phase_9_bindings_v1","revision":1,"schema":"rus.lower_dvina_trace_phase_9_bindings.v1","digest":"822a4860363a23be10f4e466e232ebbf70a3eb79dd4533edb2480a37e59a4084"},
+    "turn_step_bindings":{"path":"turn-step-bindings.json","id":"lower_dvina_trace_turn_step_bindings_v4","revision":4,"schema":"rus.lower_dvina_trace_turn_step_bindings.v1","digest":"d48ceb6978433ed8b84061d3539d40c0a0ef039d67eaa5d41c471e8e9b4b3ef2"}
+  },
+  "content_digest_algorithm":"sha256_sorted_filename_colon_digest_lf_v1","content_digest":"b0e085c2699f249b54c1e815a67d16cd872da7d2bb7ab6b835b81e45a241e612","fallback_policy":"forbidden","normalization_policy":"forbidden","alias_policy":"forbidden"
+}

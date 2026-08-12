@@ -17,8 +17,10 @@ const IDS = Object.freeze({
 
 export function resolveTracePhase8Contracts({ state, bundle,
   conversationBindings }) {
-  if (bundle?.definition_revision !== 16
-      || bundle.definition?.revision !== 16) gap('TRACE_PHASE_8_REVISION_GAP');
+  if (![16, 17].includes(bundle?.definition_revision)
+      || bundle.definition?.revision !== bundle.definition_revision) {
+    gap('TRACE_PHASE_8_REVISION_GAP');
+  }
   const route = exact(bundle.movement_bindings?.route_bindings,
     'route_id', IDS.route);
   const reverseRoute = exact(bundle.movement_bindings?.route_bindings,

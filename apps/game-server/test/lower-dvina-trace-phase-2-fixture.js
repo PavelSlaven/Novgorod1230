@@ -32,6 +32,8 @@ import { nextPhase8AccusationState } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-8-state.js';
 import { nextCombatState } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
+import { nextPhase9State } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-9-state.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -155,6 +157,7 @@ export function fixture({
       },
       ownership: {
         owner_character_id: item.owner_character_id ?? null,
+        owner_external_ref: item.owner_external_ref ?? null,
         controller_character_id: item.controller_character_id ?? null,
         owner_npc_id: item.owner_npc_id ?? null,
         controller_npc_id: item.controller_npc_id ?? null,
@@ -224,6 +227,7 @@ export function fixture({
     async commitPhase2Turn(commitInput) {
       const { writePlan, inputDigest, phase3Contracts,
         phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts,
+        phase9Contracts,
         turn10Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
@@ -239,7 +243,10 @@ export function fixture({
       const nextVersion = state.party_state.state_version + 1;
       const turnNumber = state.party_state.turn_number + 1;
       const changeSetId = `change:${partyId}:${turnNumber}`;
-      if (factual.consequence.combat_kind != null) {
+      if (factual.consequence.phase9_kind != null) {
+        replaceState(state, nextPhase9State({ state, factual, nextVersion,
+          turnNumber, changeSetId, inputDigest, contracts: phase9Contracts }));
+      } else if (factual.consequence.combat_kind != null) {
         replaceState(state, nextCombatState({ state, factual, nextVersion,
           turnNumber, changeSetId, inputDigest }));
       } else if (factual.consequence.phase8_kind === 'accusation') {

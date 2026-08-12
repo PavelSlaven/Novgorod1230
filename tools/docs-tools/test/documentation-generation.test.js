@@ -31,7 +31,7 @@ test('agent instruction links resolve to repository files', async () => {
     }
   }
   await assert.rejects(stat(join(root, '.github/AGENTS.md')));
-  await assert.rejects(stat(join(root, '.codex/hooks.json')));
+  await assert.rejects(stat(join(root, '.codex/skills/README.md')));
   await assert.rejects(stat(join(root, '.codex/skills/graphify/SKILL.md')));
   await assert.rejects(stat(join(root, '.agents/skills/graphify/SKILL.md')));
 

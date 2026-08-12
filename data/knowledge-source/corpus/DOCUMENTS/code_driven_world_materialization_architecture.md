@@ -109,6 +109,12 @@ path `npc_action_decision_request_v1` → `npc_step_plan_v1`: один субъ�
 `npc_combat_decision_request_v1` → `npc_combat_intent_plan_v1`, persisted
 `combat_session_v1` и player `request_combat`; checks, harm/body, items, time,
 perception и atomic persistence остаются code-owned.
+Revision 17 / `spatial-v3-production-v7` добавляет Phase 9 без нового semantic
+контракта: player step и testimony используют уже активные turn/conversation
+contracts, property/container transitions исполняет `@rus/items-property`,
+authored evidence graph — `@rus/visibility-knowledge-memory`, а временное
+disposition — `@rus/social-law`. Содержимое запечатанного документа и scenario
+completion в эту фазу не материализуются.
 
 ### D-011. Выбор или semantic plan LLM не является последствием
 

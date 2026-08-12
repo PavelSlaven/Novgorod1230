@@ -4,8 +4,14 @@ export {
   PartyLocalCommitmentPlanningError,
   planPartyLocalCommitment
 } from './party-local-commitment.js';
-
-const SUPPORTED_PROMISE_OPERATIONS = new Set(['initialize', 'offer', 'activate']);
+export {
+  buildTemporaryDispositionProposal,
+  resolveTemporaryDispositionOptions,
+  TemporaryDispositionPlanningError
+} from './temporary-disposition.js';
+const SUPPORTED_PROMISE_OPERATIONS = new Set([
+  'initialize', 'offer', 'activate', 'fulfill', 'break'
+]);
 
 export class PromiseLifecyclePlanningError extends Error {
   constructor(code, message, details = {}) {
@@ -103,6 +109,84 @@ export function planPromiseLifecycle(input = {}) {
   });
 }
 
+export function planTemporaryDispositionPromiseOutcome(input = {}) {
+  const proposal = input.disposition_proposal;
+  const promise = input.current_promise;
+  if (!plainObject(proposal)
+      || proposal.schema !== 'temporary_disposition_proposal_v1'
+      || !Array.isArray(proposal.committed_fact_outputs)
+      || !plainObject(proposal.promise_memory)) {
+    fail('PROMISE_DISPOSITION_PROPOSAL_INVALID',
+      'Temporary disposition proposal is required.');
+  }
+  if (promise == null) {
+    if (proposal.promise_memory.option_id !== 'record_no_active_promise') {
+      fail('PROMISE_CURRENT_STATE_CONFLICT',
+        'Missing promise is admitted only by the authored no-promise option.');
+    }
+    return deepFreeze({ kind:'no_active_promise', transition:null,
+      recognized_current_state:null, basis_fact_id:null });
+  }
+  const state = text(promise.current_state);
+  const stateFact = text(promise.current_state_fact);
+  if (stateFact !== `promise_current_${state}`) {
+    fail('PROMISE_CURRENT_STATE_CONFLICT',
+      'Promise current-state fact does not match its state.');
+  }
+  if (['fulfilled', 'broken'].includes(state)) {
+    const expectedOption = state === 'fulfilled'
+      ? 'recognize_fulfilled_promise'
+      : 'recognize_broken_promise';
+    if (proposal.promise_memory.option_id !== expectedOption) {
+      fail('PROMISE_CURRENT_STATE_CONFLICT',
+        'Terminal promise requires its exact authored recognition option.');
+    }
+    return deepFreeze({ kind:'terminal_state_recognized', transition:null,
+      recognized_current_state:state, basis_fact_id:null });
+  }
+  if (['not_offered', 'offered'].includes(state)
+      && proposal.promise_memory.option_id === 'record_no_active_promise') {
+    return deepFreeze({ kind:'no_active_promise', transition:null,
+      recognized_current_state:state, basis_fact_id:null });
+  }
+  if (state !== 'active') {
+    fail('PROMISE_CURRENT_STATE_CONFLICT',
+      'Temporary disposition cannot transition this promise state.', {
+        current_state:state
+      });
+  }
+  const facts = new Set(proposal.committed_fact_outputs);
+  const projections = (input.policy?.lifecycle_input_projections ?? []).filter(
+    (candidate) => candidate?.required_current_state_fact === stateFact
+      && Array.isArray(candidate.source_committed_facts)
+      && candidate.source_committed_facts.every((fact) => facts.has(fact))
+      && text(candidate.projected_committed_fact));
+  if (projections.length !== 1) {
+    fail('PROMISE_DISPOSITION_BASIS_AMBIGUOUS',
+      'Disposition must produce one approved promise lifecycle basis.');
+  }
+  const basis = projections[0].projected_committed_fact;
+  const transition = (input.policy.transitions ?? []).find((candidate) =>
+    candidate?.from === 'active'
+      && Array.isArray(candidate.requires)
+      && sameValue(candidate.requires, [basis]));
+  if (transition == null || !['fulfilled', 'broken'].includes(transition.to)) {
+    fail('PROMISE_POLICY_INVALID',
+      'Disposition lifecycle transition is missing.');
+  }
+  const operation = transition.to === 'fulfilled' ? 'fulfill' : 'break';
+  return deepFreeze({ kind:'lifecycle_transition', basis_fact_id:basis,
+    recognized_current_state:null, transition:planPromiseLifecycle({
+      policy:input.policy, operation,
+      parties:structuredClone(input.policy.parties),
+      witness_slots:[...input.policy.witness_binding.required_witness_slots],
+      scope:structuredClone(input.policy.scope), current_state:{
+        state_slot:input.policy.history_and_current_state_contract
+          .current_state_slot, fact_id:stateFact
+      }, causal_basis:{ committed_fact_ids:[basis] }
+    }) });
+}
+
 function validatePromisePolicy(policy, operation) {
   if (!plainObject(policy)) fail('PROMISE_POLICY_INVALID', 'Promise policy must be a plain object.');
   if (policy.schema !== 'rus.trace_promise_policy.v1'
@@ -153,8 +237,13 @@ function validatePromisePolicy(policy, operation) {
       requires:[]
     };
   }
-  const from = operation === 'offer' ? policy.states[0] : policy.states[1];
-  const to = operation === 'offer' ? policy.states[1] : policy.states[2];
+  const statePair = operation === 'offer'
+    ? [policy.states[0], policy.states[1]]
+    : operation === 'activate'
+      ? [policy.states[1], policy.states[2]]
+      : operation === 'fulfill'
+        ? ['active', 'fulfilled'] : ['active', 'broken'];
+  const [from, to] = statePair;
   const matches = (policy.transitions ?? []).filter(
     (transition) => transition?.from === from && transition?.to === to
   );
@@ -177,7 +266,7 @@ function validatePromisePolicy(policy, operation) {
       || !text(policy.offer_timing.must_precede_check_ref))) {
     fail('PROMISE_POLICY_INVALID', 'Promise offer timing is incomplete.');
   }
-  if (operation === 'activate') {
+  if (['activate', 'fulfill', 'break'].includes(operation)) {
     const projections = (policy.lifecycle_input_projections ?? []).filter(
       (projectionInput) =>
         projectionInput?.required_current_state_fact === projection.expected_previous_fact

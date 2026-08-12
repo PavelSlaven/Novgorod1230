@@ -11,6 +11,8 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - physical access
 - normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans
 - immutable mechanics snapshots for template-less ordinary direct-action instances
+- approved property/container transitions that independently preserve owner,
+  holder/controller, access, seal and document-content boundaries
 
 ## Не делает
 
@@ -28,6 +30,9 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
 - `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
+- `planApprovedPropertyTransition` — strict revision-pinned proposal for
+  recovery, controlled container opening and sealed child extraction; ownership
+  and seal/document access change only when the approved transition says so
 - `planApprovedItemZoneTransition` и
   `planApprovedItemVisibilityTransition` — pure proposals для утверждённых
   перемещения предмета между зонами и изменения его видимости без смены

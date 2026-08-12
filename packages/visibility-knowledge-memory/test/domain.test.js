@@ -7,6 +7,8 @@ import {
   mergeFormalKnowledgeMemory,
   mergeKnowledgeFacts,
   mergeValidatedKnowledgeMemory,
+  resolveAuthoredStatementEvidence,
+  resolveEvidenceConclusions,
   stripHiddenForNarrator,
   validateMemoryFact,
   validateVisibleContext
@@ -242,3 +244,178 @@ test('knowledge owner builds a validated player-safe envelope and rejects hidden
   assert.equal(leaked.ok, false);
   assert.equal(leaked.error_code, 'hidden_information_leak');
 });
+
+const evidenceGraph = {
+  schema: 'rus.trace_clue_evidence_graph_set.v1',
+  clue_evidence_graph_set_id: 'graph-1',
+  revision: 1,
+  owner: '@rus/visibility-knowledge-memory',
+  fallback_policy: 'forbidden',
+  normalization_policy: 'forbidden',
+  alias_policy: 'forbidden',
+  evidence_records: [
+    { evidence_id: 'evidence:a' },
+    { evidence_id: 'evidence:b' },
+    { evidence_id: 'evidence:statement' }
+  ],
+  evidence_chains: [
+    {
+      chain_id: 'chain:physical',
+      independence_class: 'physical',
+      leaf_evidence_refs: ['evidence:a', 'evidence:b'],
+      inference_nodes: [
+        { node_ref: 'conclusion:a', operator: 'all_of',
+          input_refs: ['evidence:a'] },
+        { node_ref: 'conclusion:physical', operator: 'min_count', min_count: 2,
+          input_refs: ['conclusion:a', 'evidence:b'] }
+      ],
+      terminal_conclusion: 'conclusion:physical'
+    },
+    {
+      chain_id: 'chain:testimony',
+      independence_class: 'testimonial',
+      leaf_evidence_refs: ['evidence:statement'],
+      inference_nodes: [
+        { node_ref: 'conclusion:testimony', operator: 'all_of',
+          input_refs: ['evidence:statement'] }
+      ],
+      terminal_conclusion: 'conclusion:testimony'
+    }
+  ],
+  terminal_evidence_slots: [],
+  identity_binding_evidence_slots: [],
+  principal_inference_policy: {
+    conclusion: 'conclusion:principal',
+    minimum_independent_chain_count: 2,
+    cross_chain_inference: {
+      operator: 'approved_combinations',
+      requires_distinct_independence_classes: true,
+      input_chain_terminal_refs: [
+        { chain_ref: 'chain:physical',
+          terminal_conclusion: 'conclusion:physical',
+          independence_class: 'physical' },
+        { chain_ref: 'chain:testimony',
+          terminal_conclusion: 'conclusion:testimony',
+          independence_class: 'testimonial' }
+      ],
+      approved_combinations: [{
+        combination_id: 'combination:principal',
+        chain_refs: ['chain:physical', 'chain:testimony'],
+        outcome_kind: 'corroborated',
+        outcome_ref: 'conclusion:principal',
+        requires_disjoint_leaf_evidence: true
+      }]
+    }
+  }
+};
+
+test('evidence owner resolves only authored conclusions from committed evidence', () => {
+  const result = resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:statement', 'evidence:b', 'evidence:a']);
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(result.committed_evidence_refs,
+    ['evidence:a', 'evidence:b', 'evidence:statement']);
+  assert.deepEqual(result.supported_conclusion_refs, [
+    'conclusion:a', 'conclusion:physical', 'conclusion:principal',
+    'conclusion:testimony'
+  ]);
+  assert.deepEqual(result.applied_combination_ids, ['combination:principal']);
+  assert.equal(result.completion, undefined);
+});
+
+test('evidence owner treats absence as unknown and statements as evidence, not truth', () => {
+  const statementOnly = resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:statement']);
+  assert.equal(statementOnly.ok, true);
+  assert.deepEqual(statementOnly.supported_conclusion_refs,
+    ['conclusion:testimony']);
+  assert.equal(statementOnly.supported_conclusion_refs
+    .includes('conclusion:principal'), false);
+  assert.deepEqual(statementOnly.rejected_or_absent_refs, []);
+});
+
+test('evidence owner fails closed for unknown, duplicate and malformed inputs', () => {
+  assert.equal(resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:unknown']).ok, false);
+  assert.equal(resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:a', 'evidence:a']).ok, false);
+  assert.equal(resolveEvidenceConclusions({ ...evidenceGraph,
+    evidence_chains: [{ ...evidenceGraph.evidence_chains[0],
+      inference_nodes: [{ node_ref: 'conclusion:a', operator: 'not',
+        input_refs: ['evidence:a'] }] }] }, ['evidence:a']).ok, false);
+});
+
+test('statement evidence requires the authored assertion and source lineage',
+  () => {
+    const speaker = { instance_id: 'onisim-1',
+      participant_slot_ref: 'onisim_boatman',
+      knowledge_profile_snapshot: {
+        profile_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' } };
+    const template = { statement_template_id: 'onisim-testimony',
+      speaker_ref: 'onisim_boatman', truth_classification: 'truthful',
+      statement_ref: 'statement_template:onisim-testimony',
+      source_knowledge_refs: [
+        'knowledge_scope:trace_ld_v1_knowledge_scope_hired_boatman_v1#memory'],
+      source_perception_template_refs: ['heard-command'],
+      assertion: { assertion_id: 'onisim-assertion' },
+      application_status: 'template_only' };
+    const effect = { statement_template_ref: 'onisim-testimony',
+      source_rule: 'speaker_committed_memory_only',
+      write_targets: ['statement_record', 'speaker_memory_report'],
+      forbidden_write_targets: ['objective_truth'] };
+    const authoredClaim = {
+      schema: 'authored_statement_claim_contract_v1',
+      statement_template_ref: 'onisim-testimony',
+      claim_id: 'onisim-assertion',
+      utterance_text: 'Я слышал приказ и видел действия Ратши.',
+      claim: { claim_id: 'onisim-assertion',
+        content_summary: 'Онисим слышал приказ и видел действия Ратши.',
+        form: 'assertion', speaker_posture: 'believed_true',
+        source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
+          entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],
+        mentioned_entity_refs: [] } };
+    const base = { schema: 'conversation_statement_event_v1',
+      statement_id: 'statement-1', speaker_ref: {
+        entity_kind: 'npc', entity_id: 'onisim-1' },
+      utterance_text: authoredClaim.utterance_text };
+    const ordinary = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [] }, speaker, statement_template: template,
+    statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(ordinary.committed, false);
+    const equivalentUtterance = resolveAuthoredStatementEvidence({ statement: {
+      ...base, utterance_text: 'Я узнал голос Жданко, слышал удар по лодке '
+        + 'и помню, как Ратша спас меня после крушения.',
+      claims: [structuredClone(authoredClaim.claim)] },
+    speaker, statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(equivalentUtterance.committed, true);
+    const outsideKnowledge = structuredClone(authoredClaim.claim);
+    outsideKnowledge.source_knowledge_refs = [{ entity_kind: 'knowledge_scope',
+      entity_id: 'trace_ld_v1_knowledge_scope_hidden_zhdanko_truth' }];
+    const unsupported = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [outsideKnowledge] }, speaker,
+    statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(unsupported.committed, false);
+    const testimony = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [structuredClone(authoredClaim.claim)] },
+    speaker, statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(testimony.committed, true);
+    assert.equal(testimony.evidence_ref, 'onisim-evidence');
+    assert.equal(testimony.lineage_refs.includes(
+      'perception_template:heard-command'), true);
+  });

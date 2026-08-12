@@ -45,6 +45,9 @@ import { buildCombatDecisionSignals,
   buildCombatInitializationDecisionContexts } from './combat-decision-contexts.js';
 import { activateCombatSessionForPlayerIntent, createCombatSession,
   initializeCombatSession } from './combat-session.js';
+import { selectTemporaryDispositionOptions,
+  TemporaryDispositionSelectionError } from
+  './temporary-disposition.js';
 
 export {
   createTurnWorkflowContext,
@@ -78,6 +81,8 @@ export {
   buildCombatInitializationDecisionContexts,
   initializeCombatSession,
   createCombatSession,
+  selectTemporaryDispositionOptions,
+  TemporaryDispositionSelectionError,
   bindTurnStepPreparedConsequence
 };
 export {

@@ -155,7 +155,8 @@
         "ownership and holder relations",
         "physical access",
         "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans",
-        "immutable mechanics snapshots for template-less ordinary direct-action instances"
+        "immutable mechanics snapshots for template-less ordinary direct-action instances",
+        "approved property/container transitions that independently preserve owner,"
       ],
       "path": "packages/items-property",
       "public_entry": "./src/index.js",
@@ -390,7 +391,8 @@
         "rights/restriction evaluation",
         "authority and social-risk contracts",
         "legal consequence packages",
-        "party-local commitment proposal from committed conversation facts"
+        "party-local commitment proposal from committed conversation facts",
+        "temporary custody/property/promise applicability и typed temporary"
       ],
       "path": "packages/social-law",
       "public_entry": "./src/index.js",
@@ -459,7 +461,7 @@
       ],
       "name": "@rus/visibility-knowledge-memory",
       "owns": [
-        "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package и factual conversation audience projection"
+        "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package, factual conversation audience projection и deterministic resolution утверждённого evidence graph из committed facts/statements"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",

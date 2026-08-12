@@ -152,7 +152,7 @@ export function buildLowerDvinaTracePersistedProjection({
         container_id: item.container_id ?? null,
         holder_npc_id: item.holder_npc_id ?? null,
         holder_character_id: item.holder_character_id ?? null,
-        physical_position: item.physical_position,
+        physical_position: item.physical_position ?? null,
         equipment_slot_category_id: null
       },
       ownership: {

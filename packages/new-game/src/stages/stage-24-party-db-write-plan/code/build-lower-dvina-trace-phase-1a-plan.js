@@ -279,7 +279,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     container_id: item.container_id ?? null,
     holder_npc_id: item.holder_npc_id ?? null,
     holder_character_id: item.holder_character_id ?? null,
-    physical_position: item.physical_position,
+    physical_position: item.physical_position ?? null,
     equipment_slot_category_id: null
   })), ['party_items', 'party_containers', 'party_player_characters',
     'party_npcs', 'party_g5_anchors'], sourceTrace);

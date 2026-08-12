@@ -1,6 +1,6 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
-import { firstMismatchedProjectionPath, normalizedPartyAssets } from
+import { normalizedPartyAssets } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
@@ -387,19 +387,7 @@ function assertRoundTrip({
   if (expectedProjection?.schema !== 'rus.lower_dvina_trace_persisted_projection.v2'
     || payload.persisted_projection_digest !== expectedDigest
     || sha256(actualProjection) !== expectedDigest) {
-    const mismatchedSections = Object.keys(expectedProjection ?? {}).filter(
-      (key) => sha256(actualProjection?.[key]) !== sha256(expectedProjection[key])
-    );
-    const firstMismatch = firstMismatchedProjectionPath(
-      actualProjection, expectedProjection
-    );
-    const error = new Error(
-      'Committed Lower Dvina trace normalized projection differs from the approved snapshot.'
-      + (mismatchedSections.length > 0
-        ? ` Mismatched sections: ${mismatchedSections.join(', ')}.`
-        : '')
-      + (firstMismatch ? ` First mismatch: ${firstMismatch}.` : '')
-    );
+    const error = new Error('Committed Lower Dvina trace normalized projection differs from the approved snapshot.');
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
     throw error;
   }

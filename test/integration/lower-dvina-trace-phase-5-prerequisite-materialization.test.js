@@ -341,6 +341,13 @@ test('revision 17 persists the sealed packet inside the road bag with Savva owne
     ({ item_id: id }) => id === item.item_id);
   assert.equal(placement.container_id, bag.instance_id);
   assert.equal(placement.holder_npc_id, null);
+  assert.equal(placement.physical_position, null);
+  const persistedPacket = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_state_snapshots'
+  ).records[0].state_payload.persisted_projection.items.find(
+    ({ item_id: id }) => id === item.item_id
+  );
+  assert.equal(persistedPacket.placement.physical_position, null);
   assert.equal(placementBatch.depends_on_batches.includes(
     'batch-party_containers'), true);
   for (const record of placementBatch.records) {

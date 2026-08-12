@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
+import { integrateSpatialV3TemporalWriteFragments } from
+  '@rus/turn/spatial-v3-temporal-write-integration';
 import { serverError } from '../../errors.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
 import { assertPhase2CurrentStateVersion } from
@@ -47,7 +49,7 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
     verifyApproval: async (candidate) => ({ ok:
       candidate.party_id === partyId
       && candidate.operation_kind === 'combat_exchange' }) });
-  const built = await builder.build({
+  let buildInput = {
     plan_id: `p16:${partyId}:combat:${turnNumber}`, party_id: partyId,
     write_plan_kind: 'semantic_commit', operation_kind: 'combat_exchange',
     canonical_input_digest: digest(inputDigest),
@@ -81,7 +83,16 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
       state.party_state.clock_state_version,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest })]
-  });
+  };
+  for (const temporalResult of factual.consequence.combat
+    .temporal_advance_results ?? []) {
+    const integrated = integrateSpatialV3TemporalWriteFragments({
+      base_write_plan_input: buildInput, temporal_result: temporalResult });
+    if (!integrated.ok) fail('TRACE_COMBAT_TEMPORAL_WRITE_INVALID',
+      integrated.error);
+    buildInput = integrated.input;
+  }
+  const built = await builder.build(buildInput);
   if (!built.ok) fail('TRACE_COMBAT_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({ plan: built.plan,
     created_at_turn: turnNumber });
@@ -105,6 +116,22 @@ function expectedVersions({ partyId, state, factual }) {
     values.push(expected('party_actor_body_states',
       `player_character:${state.actor_id}`,
       state.party_state.body_state_version));
+  }
+  for (const position of factual.consequence.combat.position_transitions) {
+    const traversal = position?.movement_result?.traversal;
+    if (traversal?.started_new !== false) continue;
+    const prior = (state.active_combat_traversals ?? []).find(
+      (entry) => entry.traversal?.ids?.execution_id
+        === traversal.ids.execution_id)?.traversal;
+    const nextInterval = Number(
+      prior?.final_travel_state?.next_interval_ordinal);
+    if (!Number.isSafeInteger(nextInterval) || nextInterval <= 0) {
+      fail('TRACE_COMBAT_TRAVERSAL_REPLAY_GAP');
+    }
+    values.push(expected('party_route_plan_executions',
+      traversal.ids.execution_id, 2 + nextInterval));
+    values.push(expected('traveller_travel_states',
+      traversal.ids.travel_state_id, nextInterval));
   }
   return values;
 }

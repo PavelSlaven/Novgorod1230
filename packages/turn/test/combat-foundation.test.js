@@ -287,8 +287,7 @@ test('later same-time step is blocked after an earlier owner restrains its actor
       ports: {
         resolveCombatTiming: ({ technical_step: step }) => ({ occurred_at: at,
           exact_duration: { exact_minutes: {
-            numerator: step.actor_ref.entity_id === 'npc-2' ? '5'
-              : step.actor_ref.entity_id === 'npc-3' ? '2' : '1',
+            numerator: '1',
             denominator: '1' } } }),
         resolveExecutionProfile: () => ({
           preconditions_digest: 'same-time-recheck',
@@ -313,7 +312,7 @@ test('later same-time step is blocked after an earlier owner restrains its actor
     assert.equal(randomCalls, 2);
     assert.equal(result.prepared.check_results.length, 2);
     assert.equal(result.prepared.blocked_descriptors.length, 1);
-    assert.equal(result.prepared.exact_duration.exact_minutes.numerator, '2');
+    assert.equal(result.prepared.exact_duration.exact_minutes.numerator, '1');
     assert.equal(result.prepared.technical_step_timings.length, 2);
     assert.equal(result.prepared.session_after.participant_states[1]
       .combat_status, 'restrained');

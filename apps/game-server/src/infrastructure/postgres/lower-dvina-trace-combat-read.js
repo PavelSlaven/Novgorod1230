@@ -105,6 +105,8 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
   }
   const result = await partyPool.query(
     `SELECT r.id AS interval_id,r.route_plan_execution_id,r.plan_step_ordinal,
+            r.interval_ordinal,r.clock_commit_mode,
+            r.synchronized_time_slice_result_id,
             r.result_kind,r.planned_time_numerator,r.planned_time_denominator,
             r.actual_progress_after_ppm,r.actual_time_numerator,
             r.actual_time_denominator,r.cumulative_time_before_numerator,
@@ -133,9 +135,24 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
       ORDER BY r.id`, [partyId, intervalIds]);
   const byId = new Map(result.rows.map((row) => [row.interval_id, row]));
   if (byId.size !== routeEvents.length) throw phase2IntegrityError();
+  const expectedByInterval = new Map(routeEvents.map((entry) => [
+    entry.event.traversal_interval_ref.entity_id, entry]));
+  const latestByExecution = new Map();
+  for (const row of result.rows) {
+    const prior = latestByExecution.get(row.route_plan_execution_id);
+    if (!prior || Number(row.plan_step_ordinal) > Number(prior.plan_step_ordinal)
+        || Number(row.plan_step_ordinal) === Number(prior.plan_step_ordinal)
+          && Number(row.interval_ordinal) > Number(prior.interval_ordinal)) {
+      latestByExecution.set(row.route_plan_execution_id, row);
+    }
+  }
   for (const { event, history } of routeEvents) {
     const row = byId.get(event.traversal_interval_ref.entity_id);
     const exact = event.exact_elapsed?.exact_minutes;
+    const terminal = event.event_kind ===
+      'combat_position_transition_completed';
+    const stranded = event.event_kind ===
+      'combat_position_transition_interrupted';
     if (!row
         || row.party_id !== partyId
         || row.route_plan_execution_id
@@ -144,10 +161,10 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
         || canonicalDigest(row.journey_owner_ref)
           !== canonicalDigest(event.actor_ref)
         || row.result_change_set_id !== history.change_set_id
-        || row.updated_change_set_id !== history.change_set_id
-        || row.created_change_set_id !== history.change_set_id
-        || row.travel_change_set_id !== history.change_set_id
-        || row.result_kind !== 'segment_completed'
+        || Number(row.interval_ordinal) === 0
+          && row.created_change_set_id !== history.change_set_id
+        || row.result_kind !== (terminal
+          ? 'segment_completed' : stranded ? 'stranded' : 'paused_in_transit')
         || row.step_kind !== 'timed_traversal'
         || Number(row.plan_step_ordinal) !== Number(row.step_ordinal)
         || Number(row.travel_step_ordinal) !== Number(row.step_ordinal)
@@ -156,27 +173,39 @@ async function assertCombatTraversalLineage(partyPool, partyId, expected) {
         || String(row.planned_time_denominator) !== String(exact.denominator)
         || String(row.actual_time_numerator) !== String(exact.numerator)
         || String(row.actual_time_denominator) !== String(exact.denominator)
-        || String(row.cumulative_time_before_numerator) !== '0'
-        || String(row.cumulative_time_before_denominator) !== '1'
-        || String(row.cumulative_time_after_numerator)
-          !== String(exact.numerator)
-        || String(row.cumulative_time_after_denominator)
-          !== String(exact.denominator)
-        || String(row.cumulative_actual_time_numerator)
-          !== String(exact.numerator)
-        || String(row.cumulative_actual_time_denominator)
-          !== String(exact.denominator)
-        || String(row.static_contract_snapshot?.base_minutes)
-          !== String(exact.numerator)
+        || row.clock_commit_mode !== 'shared_root_transport_clock'
+        || typeof row.synchronized_time_slice_result_id !== 'string'
+        || Number(row.cumulative_time_after_numerator)
+          <= Number(row.cumulative_time_before_numerator)
+        || Number(row.static_contract_snapshot?.base_minutes)
+          < Number(row.cumulative_time_after_numerator)
         || canonicalDigest(row.dynamic_snapshot?.inventory_load)
           !== canonicalDigest(event.inventory_load)
         || row.static_contract_snapshot?.load_category
           !== event.inventory_load?.load_category
-        || Number(row.actual_progress_after_ppm) !== 1_000_000
-        || row.execution_status !== 'completed'
-        || row.travel_status !== 'closed'
-        || row.closed_result !== 'completed'
-        || Number(row.segment_progress_ppm) !== 1_000_000) {
+        || terminal && Number(row.actual_progress_after_ppm) !== 1_000_000
+        || !terminal && Number(row.actual_progress_after_ppm) >= 1_000_000) {
+      throw phase2IntegrityError();
+    }
+  }
+  for (const row of latestByExecution.values()) {
+    const terminal = row.result_kind === 'segment_completed';
+    const stranded = row.result_kind === 'stranded';
+    const latest = expectedByInterval.get(row.interval_id);
+    if (row.execution_status !== (terminal ? 'completed'
+      : stranded ? 'stranded_in_transit' : 'active')
+        || row.travel_status !== (terminal ? 'closed'
+          : stranded ? 'stranded_in_transit' : 'paused_in_transit')
+        || row.closed_result !== (terminal ? 'completed' : null)
+        || latest == null
+        || row.updated_change_set_id !== latest.history.change_set_id
+        || row.travel_change_set_id !== latest.history.change_set_id
+        || Number(row.segment_progress_ppm)
+          !== Number(row.actual_progress_after_ppm)
+        || String(row.cumulative_actual_time_numerator)
+          !== String(row.cumulative_time_after_numerator)
+        || String(row.cumulative_actual_time_denominator)
+          !== String(row.cumulative_time_after_denominator)) {
       throw phase2IntegrityError();
     }
   }

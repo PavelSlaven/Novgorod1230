@@ -21,6 +21,12 @@ Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEnd
 
 Approved actor-destination proposals distinguish immediate local position transitions from `requires_traversal_runtime_completion` routes. A consumer may apply the former only after the pinned local access/capacity admission; a route changes position only after the existing traversal runtime returns a completed interval proof.
 
+Когда traversal является time-bearing дочерним действием combat exchange,
+он принимает exact parent slice и возвращает `paused_in_transit` либо
+terminal proof. Такой interval использует `shared_root_transport_clock`, не
+создаёт собственного clock write и сохраняет progress для resume/restart;
+позиция меняется только после terminal proof.
+
 ## Ошибки, зависимости и effects
 
 Typed target failures include route/endpoint/capability/readiness/pin/state-version conflicts (for example `route_contract_missing`, `movement_capability_missing`, `route_plan_snapshot_missing`, `route_plan_execution_conflict`). Depends on `@rus/kernel`, `@rus/contracts`, `@rus/time-events-history`; no direct I/O, DB or state mutation. Duration is consumed by turn/time owner, not committed here.

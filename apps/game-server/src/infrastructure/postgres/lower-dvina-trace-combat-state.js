@@ -41,6 +41,14 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
     } };
   });
   next.items = structuredClone(combat.working_state_after?.items ?? next.items);
+  next.active_combat_traversals = structuredClone(
+    combat.working_state_after?.active_combat_traversals ?? []);
+  next.active_combat_step_progress = structuredClone(
+    combat.working_state_after?.active_combat_step_progress ?? []);
+  const processedBoundaryIds = new Set((combat.temporal_advance_results ?? [])
+    .flatMap((result) => result.trace?.processed_boundary_ids ?? []));
+  next.temporal_boundary_candidates = (next.temporal_boundary_candidates ?? [])
+    .filter(({ boundary_id: id }) => !processedBoundaryIds.has(id));
   const committedSession = { ...structuredClone(combat.session_after),
     last_change_set_ref: { entity_kind: 'party_change_set',
       entity_id: changeSetId } };

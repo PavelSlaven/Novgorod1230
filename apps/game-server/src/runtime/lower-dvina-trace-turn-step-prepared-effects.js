@@ -170,14 +170,27 @@ function projectPreparedDomainState(state, effect) {
       combat.working_state_after?.actor_states?.[
         `player_character\0${next.actor_id}`]?.body_state ?? next.body_state);
     next.npcs = (next.npcs ?? []).map((npc) => {
+      const workingNpc = combat.working_state_after?.npcs?.find(
+        ({ instance_id: id }) => id === npc.instance_id);
       const body = combat.working_state_after?.actor_states?.[
         `npc\0${npc.instance_id}`]?.body_state;
-      return body == null ? npc : { ...npc, machine_state: {
-        ...npc.machine_state, body_condition: {
+      if (body == null && workingNpc == null) return npc;
+      return { ...npc,
+        anchor_id: workingNpc?.anchor_id ?? npc.anchor_id,
+        location_profile_ref: workingNpc?.location_profile_ref
+          ?? npc.location_profile_ref,
+        zone_ref: workingNpc?.zone_ref ?? npc.zone_ref,
+        machine_state: { ...npc.machine_state,
+        ...structuredClone(workingNpc?.machine_state ?? {}),
+        ...(body == null ? {} : { body_condition: {
           ...npc.machine_state?.body_condition, health: body.health
-        }
+        } })
       } };
     });
+    next.active_combat_traversals = structuredClone(
+      combat.working_state_after?.active_combat_traversals ?? []);
+    next.active_combat_step_progress = structuredClone(
+      combat.working_state_after?.active_combat_step_progress ?? []);
   }
   return next;
 }

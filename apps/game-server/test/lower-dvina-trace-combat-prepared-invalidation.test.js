@@ -132,6 +132,56 @@ test('real prepared positive exchange passes runtime and commit gates',
     assert.doesNotThrow(() => validatePreparedEffectCommit(fixture));
   });
 
+test('positive route invalidation admits blocked and stranded owner proof',
+  async () => {
+    const fixture = preparedTraversalInvalidation();
+    const owner = createLowerDvinaTracePreparedDomainEffect({
+      committedState: fixture.state });
+    await assert.doesNotReject(() => owner.apply({
+      command_id: COMBAT_RESPONSE_COMMAND,
+      consequence: fixture.envelope.consequence,
+      prepared_chain_context: { prior_effect_count: 0 },
+      operation: { op: 'request_combat' }, availability: { available: true },
+      working_projection: {} }));
+    assert.doesNotThrow(() => validatePreparedEffectCommit(fixture));
+    const detached = structuredClone(fixture.envelope.consequence);
+    detached.combat.outcome_events = detached.combat.outcome_events.filter(
+      ({ event_kind: kind }) => kind
+        === 'combat_position_transition_interrupted');
+    detached.combat.blocked_descriptors = [];
+    assert.equal(validTracePreparedCombatConsequence(detached), false);
+  });
+
+function preparedTraversalInvalidation() {
+  const base = preparedCombat({ exchange: null, duration: 0,
+    status: 'paused_for_player', playerBoundary: true });
+  const combat = base.envelope.consequence.combat;
+  const blocked = combat.outcome_events[0];
+  const traversal = { terminal: false, stranded: true, clock_update: null,
+    ids: { interval_id: 'interval:stranded:1' }, interval_result: {
+      result_kind: 'stranded', clock_commit_mode:
+        'shared_root_transport_clock', actual_time_numerator: '1',
+      actual_time_denominator: '1' } };
+  const movement = { event_id: 'combat-event:movement:stranded',
+    event_kind: 'combat_position_transition_interrupted',
+    combat_id: combat.session_after.combat_id,
+    source_step_ref: { entity_kind: 'combat_technical_step',
+      entity_id: 'step:stranded' }, traversal_interval_ref: {
+      entity_kind: 'traversal_interval_result',
+      entity_id: traversal.ids.interval_id }, exact_elapsed: {
+      exact_minutes: { numerator: '1', denominator: '1' } } };
+  blocked.source_step_ref = structuredClone(movement.source_step_ref);
+  movement.actor_ref = structuredClone(blocked.actor_ref);
+  const consequence = { combat_kind: 'exchange', duration_minutes: 1,
+    combat: { ...combat, outcome_events: [blocked, movement],
+      position_transitions: [{ movement_result: { traversal } }],
+      temporal_advance_results: [{ processed_slice_refs: [{
+        entity_kind: 'time_slice_result', entity_id: 'slice:stranded' }] }],
+      working_state_after: { active_combat_step_progress: [],
+        active_combat_traversals: [] } } };
+  return preparedConsequence(consequence, true);
+}
+
 function preparedCombat({ exchange, duration, status, playerBoundary }) {
   const clockAfter = at(10 + duration);
   const participant = { entity_kind: 'npc', entity_id: 'npc-1' };

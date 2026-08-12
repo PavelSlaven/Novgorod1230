@@ -4,26 +4,27 @@ import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals,
   initializeCombatSession, orderCombatTechnicalSteps, prepareCombatExchange,
   resolveCombatExchangeTiming } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
-import { applyTraceCombatItemTransition } from
-  './lower-dvina-trace-combat-item-owner.js';
+import { applyTraceCombatItemTransition } from './lower-dvina-trace-combat-item-owner.js';
 import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from
   './lower-dvina-trace-combat-position-owner.js';
-import { executeTraceCombatTraversal } from
-  './lower-dvina-trace-combat-traversal-adapter.js';
+import { executeTraceCombatTraversal } from './lower-dvina-trace-combat-traversal-adapter.js';
 import { traceCombatBindingForActor, traceCombatMovementBindings,
   traceCombatOperationContractForNpc } from
   './lower-dvina-trace-combat-bindings.js';
 import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from
   './lower-dvina-trace-combat-subjective.js';
+import { projectTraceCombatWorkingState } from './lower-dvina-trace-combat-working-state.js';
+import { createTraceCombatTemporalSliceOwner } from
+  './lower-dvina-trace-combat-temporal.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest,
-  randomSource, npcCombatModel, revalidateStateVersion }) {
+  randomSource, npcCombatModel, revalidateStateVersion,
+  temporalAdvanceOwner = null }) {
   if (bundle?.definition_revision !== 16) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
   const bindings = bundle.combat_semantic_bindings;
   if (!Array.isArray(playerProfiles) || !bindings) fail('TRACE_COMBAT_BINDING_GAP');
-  return Object.freeze({
-    command_id: COMMAND_ID,
+  return Object.freeze({ command_id: COMMAND_ID,
     option_id: 'respond_in_active_combat',
     label: 'Ответить на непосредственную угрозу',
     target_id: null,
@@ -46,8 +47,8 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
           'relevant_events', 'recent_changes_log']
       }
     },
-    matches() { return false; },
-    availability({ committed_state: committed, retrievedState }) {
+    matches() { return false; }, availability({ committed_state: committed,
+      retrievedState }) {
       const current = activeSession(committed ?? retrievedState);
       return availability(current != null);
     },
@@ -71,14 +72,14 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
       const active = activateCombatSessionForPlayerIntent(session, intent);
       const prepared = await prepareCombatExchange({
         session: active,
-        working_state: combatWorkingState(retrievedState),
+        working_state: projectTraceCombatWorkingState(retrievedState),
         occurred_at: retrievedState.clock,
         random_source: randomSource,
         idempotency_key: playerInput.idempotency_key,
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
           rootTurnId, playerInput, inputDigest, session: active,
-          movementBindings: null })
+          movementBindings: null, temporalAdvanceOwner })
       });
       const exchange = prepared.prepared;
       return {
@@ -122,6 +123,10 @@ export function traceCombatTargetRefs(state) {
 }
 function exchangePorts(context) {
   return {
+    advanceTemporalSlice: createTraceCombatTemporalSliceOwner({
+      temporalAdvanceOwner: context.temporalAdvanceOwner,
+      partyId: context.state.party_id, rootTurnId: context.rootTurnId,
+      idempotencyKey: context.playerInput.idempotency_key }),
     resolveCombatTiming: (input) => resolveTraceCombatTiming(input, context),
     orderTechnicalSteps: (input) => orderCombatTechnicalSteps(input),
     resolveExecutionProfile: ({ intent, working_state: working }) =>
@@ -149,13 +154,17 @@ function resolveProfile(intent, context, working = context.state) {
   const profile = records?.find(
     (entry) => entry.intent_kind === intent.intent_kind);
   if (!profile || profile.status !== 'approved') return { applicable: false };
+  const positionPlan = ['reach', 'break_contact'].includes(intent.intent_kind)
+    ? resolveTraceCombatPositionPlan({ intent, workingState: working,
+      movementBindings: traceCombatMovementBindings(context) }) : null;
   if (['reach', 'break_contact'].includes(intent.intent_kind)
-      && resolveTraceCombatPositionPlan({ intent, workingState: working,
-        movementBindings: traceCombatMovementBindings(context) }) == null) {
+      && positionPlan == null) {
     return { applicable: false };
   }
   return {
     applicable: true,
+    position_plan: positionPlan == null
+      ? null : structuredClone(positionPlan.proposal),
     preconditions_digest: canonicalDigest({ profile_id: profile.profile_id,
       intent_kind: intent.intent_kind }),
     check_request: profile.check_request == null ? null : {
@@ -266,30 +275,22 @@ function availability(canAttempt) { return { version: 1,
   can_attempt: canAttempt, reasons: canAttempt ? [] : ['active_combat_missing'],
   check_requests: [] }; }
 function materializeOperation(raw, session) {
-  const byId = new Map(session.participant_refs.map((ref) => [ref.entity_id, ref]));
+  const byId = new Map(session.participant_refs.map((ref) => [ref.entity_id,
+    ref]));
   const known = (id) => byId.get(id) ?? (id === session.scope_ref.entity_id
     ? session.scope_ref : null);
   const refs = (values) => values.map((id) => known(id) ?? fail('TRACE_COMBAT_REF_UNKNOWN'));
   return { ...structuredClone(raw), actor_ref: known(raw.actor_ref),
     target_refs: refs(raw.target_refs), protected_refs: refs(raw.protected_refs),
     scope_ref: raw.scope_ref == null ? null : known(raw.scope_ref),
-    destination_ref: raw.destination_ref == null ? null : known(raw.destination_ref) };
+    destination_ref: raw.destination_ref == null ? null
+      : known(raw.destination_ref) };
 }
 function applicablePlayerProfile(operation, profiles) { return profiles.find(
     (profile) => profile.intent_kind === operation.intent_kind
     && profile.status === 'approved'
     && profile.allowed_force_limits.includes(operation.force_limit)
     && profile.allowed_risk_postures.includes(operation.risk_posture)) ?? null;
-}
-function combatWorkingState(state) {
-  const actor_states = {
-    [`player_character\0${state.actor_id}`]: { body_state: structuredClone(state.body_state) }
-  };
-  for (const npc of state.npcs ?? []) actor_states[`npc\0${npc.instance_id}`] = {
-    body_state: { health: Number(npc.machine_state?.body_condition?.health ?? 100),
-      energy: null, satiety: null, active_conditions: [], body_parts: {}, prose: null }
-  };
-  return { ...structuredClone(state), actor_states };
 }
 function intentForStep(session, step) { return session.participant_states.map(
     ({ current_intent: intent }) => intent).find(

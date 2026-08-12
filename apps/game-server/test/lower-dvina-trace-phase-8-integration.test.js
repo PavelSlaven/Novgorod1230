@@ -5,6 +5,8 @@ import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
+import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
+  '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
 import { createM2ConversationModels } from
@@ -36,7 +38,8 @@ test('Phase 8 reaches the storehouse, opens combat, and commits one exchange',
       temporalAdvanceOwner: createTemporalAdvanceOwner({
         effect_registrations: [
           ...npcTemporalEffectRegistrations(),
-          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()
         ]
       }),
       turnStepModel: (request) => phase8Plan(request, ids),
@@ -136,7 +139,8 @@ test('Ratsha reaches the factual road bag through the movement owner',
       temporalAdvanceOwner: createTemporalAdvanceOwner({
         effect_registrations: [
           ...npcTemporalEffectRegistrations(),
-          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()
         ]
       }),
       turnStepModel: (request) => phase8Plan(request, ids, 'hold'),
@@ -212,7 +216,8 @@ test('Zhdanko break_contact uses the approved local exit before leaving combat',
       temporalAdvanceOwner: createTemporalAdvanceOwner({
         effect_registrations: [
           ...npcTemporalEffectRegistrations(),
-          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()
         ]
       }),
       turnStepModel: (request) => phase8Plan(request, ids),
@@ -234,17 +239,40 @@ test('Zhdanko break_contact uses the approved local exit before leaving combat',
       .break_contact_destination_refs, [{ entity_kind: 'location_anchor',
       entity_id: storehouse.anchor.instance_id }]);
 
-    const response = { request_id: 'phase8-flight-combat',
-      idempotency_key: 'phase8-flight-combat',
+    const response = { request_id: 'phase8-flight-combat-1',
+      idempotency_key: 'phase8-flight-combat-1',
       raw_text: 'Попытаться удержать Жданко без лишнего вреда.' };
     await runtime.runtime.submitTurn({ partyId: runtime.partyId,
       input: response });
-    const zhdanko = runtime.state.npcs.find(
+    let zhdanko = runtime.state.npcs.find(
+      ({ instance_id: id }) => id === ids.zhdanko);
+    assert.equal(zhdanko.zone_ref, 'storehouse_yard');
+    assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 19);
+    assert.equal(runtime.state.active_combat_step_progress.find(
+      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
+      .elapsed_duration.exact_minutes.numerator, '2');
+    assert.equal(runtime.state.last_turn.consequence.combat.outcome_events.some(
+      ({ actor_ref: actor, event_kind: kind }) =>
+        kind === 'combat_position_transition_completed'
+        && actor?.entity_id === ids.zhdanko), false);
+
+    let finalResponse = response;
+    for (let ordinal = 2; ordinal <= 3; ordinal += 1) {
+      finalResponse = { ...response,
+        request_id: `phase8-flight-combat-${ordinal}`,
+        idempotency_key: `phase8-flight-combat-${ordinal}` };
+      await runtime.runtime.submitTurn({ partyId: runtime.partyId,
+        input: finalResponse });
+    }
+    zhdanko = runtime.state.npcs.find(
       ({ instance_id: id }) => id === ids.zhdanko);
     assert.equal(zhdanko.anchor_id, storehouse.anchor.instance_id);
     assert.equal(zhdanko.location_profile_ref, storehouse.location_profile_ref);
     assert.equal(zhdanko.zone_ref, 'river_access');
     assert.equal(Number(runtime.state.clock.whole_minutes), startMinute + 22);
+    assert.equal(runtime.state.active_combat_step_progress.some(
+      ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko), false);
+    assert.equal(runtime.state.active_combat_step_progress.length, 0);
     const combat = runtime.state.last_turn.consequence.combat;
     assert.equal(combat.session_after.participant_states.find(
       ({ actor_ref: actor }) => actor.entity_id === ids.zhdanko)
@@ -258,7 +286,7 @@ test('Zhdanko break_contact uses the approved local exit before leaving combat',
     assert.equal(combat.session_after.status, 'ended');
     const commitCount = runtime.commitCount();
     await runtime.runtime.submitTurn({ partyId: runtime.partyId,
-      input: response });
+      input: finalResponse });
     assert.equal(runtime.commitCount(), commitCount);
     assert.equal(runtime.state.npcs.find(
       ({ instance_id: id }) => id === ids.zhdanko).anchor_id,
@@ -281,7 +309,8 @@ test('health zero persists one closed self signal without a combat LLM request',
       temporalAdvanceOwner: createTemporalAdvanceOwner({
         effect_registrations: [
           ...npcTemporalEffectRegistrations(),
-          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()
         ]
       }),
       turnStepModel: (request) => phase8Plan(request, ids, 'engage'),

@@ -4,6 +4,24 @@ import { projectConversationTemporalAdvance } from
 export function createTracePhase8TemporalAdvance({ fallback }) {
   return async function advance(input) {
     const consequence = input.consequence;
+    if (consequence?.combat_kind === 'exchange'
+        && consequence.combat?.temporal_advance_results?.length > 0) {
+      const temporal = consequence.combat.temporal_advance_results.at(-1);
+      return { clock_before: structuredClone(input.clock_before),
+        clock_after: structuredClone(temporal.clock_after),
+        exact_elapsed: structuredClone(input.exact_elapsed),
+        nearest_boundary: temporal.trace?.processed_boundary_ids?.length > 0
+          ? { scheduled_at: structuredClone(temporal.clock_after),
+            boundary_ids: [...temporal.trace.processed_boundary_ids] }
+          : null,
+        boundary_trace: { owner:
+          '@rus/time-events-history/temporal-boundaries',
+        policy: 'split_before_earliest_boundary',
+        evaluated_candidate_count:
+          input.relevant_state.temporal_boundary_candidates?.length ?? 0,
+        processed_boundary_ids: [
+          ...(temporal.trace?.processed_boundary_ids ?? [])] } };
+    }
     if (consequence?.phase8_kind === 'movement') {
       const traversal = consequence.movement?.traversal;
       if (traversal?.interval_result?.clock_commit_mode

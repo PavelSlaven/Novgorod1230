@@ -21,7 +21,11 @@ test('route combat movement consumes a completed traversal-owner result', () => 
   const input = { step: { proposal_id: 'step-break-contact' }, intent: {
     actor_ref: actorRef, intent_kind: 'break_contact',
     destination_ref: destinationRef }, check_result: null,
-  working_state: working };
+  working_state: working, temporal_slice: { exact_duration: {
+    exact_minutes: { numerator: '12', denominator: '1' } },
+  step_duration: { exact_minutes: { numerator: '12', denominator: '1' } },
+  completion_due: true, clock_commit_mode: 'shared_root_transport_clock',
+  synchronized_time_slice_result_id: 'combat-slice:step-break-contact' } };
   const result = applyTraceCombatPositionTransition(input, {
     session: { combat_id: 'combat-1' }, movementBindings: bindings,
     executeTraversal: (request) => executeTraceCombatTraversal(request, {
@@ -61,6 +65,95 @@ test('route combat movement consumes a completed traversal-owner result', () => 
     .dynamic_snapshot.inventory_load,
   { total_mass_grams: 350, hands_used: 1, load_category: null });
 });
+
+test('route combat movement pauses at the parent temporal boundary and resumes',
+  () => {
+    const bindings = movementBindings();
+    const intent = { actor_ref: actorRef, intent_id: 'intent-escape',
+      intent_kind: 'break_contact', destination_ref: destinationRef };
+    const apply = (working, minutes, completionDue, stepId,
+      continuationAllowed = true) =>
+      applyTraceCombatPositionTransition({ step: { proposal_id: stepId },
+        intent, check_result: null, working_state: working,
+        temporal_slice: { exact_duration: { exact_minutes: {
+          numerator: String(minutes), denominator: '1' } },
+        step_duration: { exact_minutes: { numerator: String(minutes),
+          denominator: '1' } }, completion_due: completionDue,
+        continuation_allowed: continuationAllowed,
+        clock_commit_mode: 'shared_root_transport_clock',
+        synchronized_time_slice_result_id: `combat-slice:${stepId}` } }, {
+        session: { combat_id: 'combat-1' }, movementBindings: bindings,
+        executeTraversal: (request) => executeTraceCombatTraversal(request, {
+          state: working, session: { combat_id: 'combat-1' },
+          movementBindings: bindings,
+          playerInput: { request_id: `request-${stepId}`,
+            idempotency_key: `idem-${stepId}` },
+          inputDigest: stepId.padEnd(64, 'a').slice(0, 64) })
+      });
+    const initial = state();
+    const first = apply(initial, 2, false, 'step-route-0');
+    assert.equal(first.movement_result.traversal.interval_result.result_kind,
+      'paused_in_transit');
+    assert.equal(first.movement_result.traversal.interval_result
+      .clock_commit_mode, 'shared_root_transport_clock');
+    assert.equal(first.movement_result.traversal.clock_update, null);
+    assert.equal(first.working_state.npcs[0].location_profile_ref, 'shed');
+    assert.equal(first.working_state.active_combat_traversals.length, 1);
+    assert.deepEqual(first.participant_status_updates, []);
+    assert.deepEqual(first.signal_descriptors, []);
+    const firstWrites = { inserts: [], updates: [], appends: [] };
+    appendCombatTraversalWrites({ ...firstWrites, partyId: 'party-1',
+      state: initial, turnNumber: 2, changeSetId: 'change:partial:1',
+      idemId: 'idem:partial:1', factual: {
+        player_input: { request_id: 'request-partial-1' }, consequence: {
+          combat: { position_transitions: [first] } } } });
+    assert.equal(firstWrites.inserts.find(({ target_table: table }) =>
+      table === 'party_route_plan_executions').record.status, 'active');
+    assert.equal(firstWrites.appends.find(({ target_table: table }) =>
+      table === 'party_traversal_interval_results').record.clock_commit_mode,
+    'shared_root_transport_clock');
+    const second = apply(first.working_state, 10, true, 'step-route-1');
+    assert.equal(second.movement_result.traversal.interval_result.result_kind,
+      'segment_completed');
+    assert.equal(second.movement_result.traversal.interval_result
+      .interval_ordinal, 1);
+    assert.equal(second.working_state.npcs[0].location_profile_ref, 'camp');
+    assert.deepEqual(second.working_state.active_combat_traversals, []);
+    assert.equal(second.participant_status_updates[0].combat_status, 'left');
+    const secondWrites = { inserts: [], updates: [], appends: [] };
+    appendCombatTraversalWrites({ ...secondWrites, partyId: 'party-1',
+      state: first.working_state, turnNumber: 3,
+      changeSetId: 'change:partial:2', idemId: 'idem:partial:2', factual: {
+        player_input: { request_id: 'request-partial-2' }, consequence: {
+          combat: { position_transitions: [second] } } } });
+    assert.equal(secondWrites.inserts.some(({ target_table: table }) =>
+      table === 'party_route_plans'), false);
+    assert.equal(secondWrites.updates.find(({ target_table: table }) =>
+      table === 'party_route_plan_executions').record.status, 'completed');
+    assert.equal(secondWrites.appends.find(({ target_table: table }) =>
+      table === 'party_traversal_interval_results').record.interval_ordinal, 1);
+
+    const interrupted = apply(initial, 2, false, 'step-route-stranded', false);
+    assert.equal(interrupted.movement_result.traversal.interval_result
+      .result_kind, 'stranded');
+    assert.equal(interrupted.working_state.active_combat_traversals.length, 0);
+    assert.equal(interrupted.working_state.npcs[0].location_profile_ref,
+      'shed');
+    assert.equal(interrupted.outcome_events[0].event_kind,
+      'combat_position_transition_interrupted');
+    const interruptedWrites = { inserts: [], updates: [], appends: [] };
+    appendCombatTraversalWrites({ ...interruptedWrites, partyId: 'party-1',
+      state: initial, turnNumber: 2, changeSetId: 'change:stranded:1',
+      idemId: 'idem:stranded:1', factual: {
+        player_input: { request_id: 'request-stranded' }, consequence: {
+          combat: { position_transitions: [interrupted] } } } });
+    assert.equal(interruptedWrites.inserts.find(({ target_table: table }) =>
+      table === 'party_route_plan_executions').record.status,
+    'stranded_in_transit');
+    assert.equal(interruptedWrites.inserts.find(({ target_table: table }) =>
+      table === 'traveller_travel_states').record.status,
+    'stranded_in_transit');
+  });
 
 test('route combat movement cannot fall back to a direct position write', () => {
   assert.throws(() => applyTraceCombatPositionTransition({

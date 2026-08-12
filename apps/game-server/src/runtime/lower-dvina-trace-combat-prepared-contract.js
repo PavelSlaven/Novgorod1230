@@ -36,8 +36,12 @@ export function validTracePreparedCombatConsequence(consequence,
       && after.exchange_ordinal === before.exchange_ordinal + 1
       && terminalValid;
   }
-  if (consequence.duration_minutes !== 0
-      || after.exchange_ordinal !== before.exchange_ordinal) return false;
+  if (after.exchange_ordinal !== before.exchange_ordinal) return false;
+  if (consequence.duration_minutes > 0) {
+    return paused && validTraversalProgressSlice(combat,
+      consequence.duration_minutes);
+  }
+  if (consequence.duration_minutes !== 0) return false;
   const blockedEvents = outcomeEvents.filter(({ event_kind }) =>
     ['combat_step_blocked', 'combat_intent_invalidated'].includes(event_kind));
   const eventIds = new Set(blockedEvents.map(({ event_id }) => event_id));
@@ -65,4 +69,88 @@ export function validTracePreparedCombatConsequence(consequence,
         .includes(event.source_step_ref?.entity_kind))
     && descriptors.every(({ source_event_ref: source }) =>
       source?.entity_kind === 'combat_event' && eventIds.has(source.entity_id));
+}
+
+function validTraversalProgressSlice(combat, durationMinutes) {
+  if (!Number.isSafeInteger(durationMinutes)) return false;
+  const blockedEvents = combat.outcome_events.filter(({ event_kind: kind }) =>
+    ['combat_step_blocked', 'combat_intent_invalidated'].includes(kind));
+  const blockedEventIds = new Set(blockedEvents.map(({ event_id }) => event_id));
+  const descriptors = combat.blocked_descriptors ?? [];
+  const descriptorIds = new Set(descriptors.map(
+    ({ source_event_ref: source }) => source?.entity_id));
+  const movementEvents = combat.outcome_events.filter(({ event_kind: kind }) =>
+    ['combat_position_transition_progressed',
+      'combat_position_transition_interrupted'].includes(kind));
+  const progressEvents = movementEvents.filter(({ event_kind: kind }) =>
+    kind === 'combat_position_transition_progressed');
+  const interruptedEvents = movementEvents.filter(({ event_kind: kind }) =>
+    kind === 'combat_position_transition_interrupted');
+  const allowedEventKinds = new Set([
+    'combat_step_blocked', 'combat_intent_invalidated',
+    'combat_position_transition_progressed',
+    'combat_position_transition_interrupted'
+  ]);
+  const traversals = (combat.position_transitions ?? []).map(
+    (position) => position?.movement_result?.traversal).filter(Boolean);
+  const intervalIds = new Set(traversals.map(
+    (traversal) => traversal.ids?.interval_id));
+  return (combat.temporal_advance_results?.length ?? 0) > 0
+    && movementEvents.length > 0
+    && movementEvents.length === traversals.length
+    && (progressEvents.length === 0
+      || (combat.working_state_after?.active_combat_step_progress?.length
+        ?? 0) > 0)
+    && combat.outcome_events.every(({ event_kind: kind }) =>
+      allowedEventKinds.has(kind))
+    && blockedEventIds.size === blockedEvents.length
+    && descriptorIds.size === descriptors.length
+    && blockedEventIds.size === descriptorIds.size
+    && blockedEvents.every((event) => event.combat_id
+      === combat.session_after.combat_id
+      && event.intent_status === 'invalidated'
+      && ['combat_technical_step', 'combat_intent']
+        .includes(event.source_step_ref?.entity_kind))
+    && descriptors.every(({ source_event_ref: source }) =>
+      source?.entity_kind === 'combat_event'
+      && blockedEventIds.has(source.entity_id))
+    && interruptedEvents.every((event) => blockedEvents.some((blocked) =>
+      blocked.source_step_ref?.entity_id === event.source_step_ref?.entity_id
+      && blocked.actor_ref?.entity_kind === event.actor_ref?.entity_kind
+      && blocked.actor_ref?.entity_id === event.actor_ref?.entity_id))
+    && traversals.every((traversal) => traversal.terminal === false
+      && traversal.interval_result?.result_kind === (traversal.stranded === true
+        ? 'stranded' : 'paused_in_transit')
+      && traversal.interval_result.clock_commit_mode
+        === 'shared_root_transport_clock'
+      && traversal.clock_update === null
+      && traversal.interval_result.actual_time_numerator
+        === String(durationMinutes)
+      && traversal.interval_result.actual_time_denominator === '1'
+      && typeof traversal.ids?.interval_id === 'string')
+    && intervalIds.size === traversals.length
+    && movementEvents.every((event) => {
+      const traversal = traversals.find(({ ids }) => ids.interval_id
+        === event.traversal_interval_ref?.entity_id);
+      const interrupted = event.event_kind
+        === 'combat_position_transition_interrupted';
+      return traversal != null && traversal.stranded === interrupted
+      && event.combat_id === combat.session_after.combat_id
+      && event.source_step_ref?.entity_kind === 'combat_technical_step'
+      && event.traversal_interval_ref?.entity_kind
+        === 'traversal_interval_result'
+      && intervalIds.has(event.traversal_interval_ref.entity_id)
+      && event.exact_elapsed?.exact_minutes?.numerator
+        === String(durationMinutes)
+      && event.exact_elapsed.exact_minutes.denominator === '1';
+    })
+    && progressEvents.every((event) =>
+      event.combat_id === combat.session_after.combat_id
+      && event.source_step_ref?.entity_kind === 'combat_technical_step'
+      && event.traversal_interval_ref?.entity_kind
+        === 'traversal_interval_result'
+      && intervalIds.has(event.traversal_interval_ref.entity_id)
+      && event.exact_elapsed?.exact_minutes?.numerator
+        === String(durationMinutes)
+      && event.exact_elapsed.exact_minutes.denominator === '1');
 }

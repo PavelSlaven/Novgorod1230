@@ -5,7 +5,8 @@ import { row } from './first-playable/plan-shared.js';
 import { appendCombatSessionWrite } from './combat-session-persistence.js';
 import { appendNpcDecisionTraceWrites } from
   './npc-semantic-conversation-decision-writes.js';
-import { buildLocalTraversalWriteSet } from './local-traversal-write-set.js';
+import { appendCombatTraversalWrites } from
+  './lower-dvina-trace-combat-traversal-writes.js';
 import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
 
@@ -98,58 +99,7 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
     workingRevision: factual.mode_resolution.decision_trace?.working_revision ?? 2 });
   return { inserts, updates, appends, deletes: [] };
 }
-
-export function appendCombatTraversalWrites({ inserts, updates, appends,
-  partyId, state,
-  factual, turnNumber, changeSetId, idemId }) {
-  for (const position of factual.consequence.combat.position_transitions) {
-    const movement = position?.movement_result;
-    const traversal = movement?.traversal;
-    if (movement?.movement_kind !== 'route_traversal') continue;
-    const route = traversal?.route_binding;
-    const result = traversal?.interval_result;
-    if (movement.execution_mode !== 'requires_traversal_runtime_completion'
-        || traversal?.owner !== '@rus/movement-routes'
-        || traversal.actor_ref?.entity_id !== movement.actor_ref.entity_id
-        || route?.route_id !== movement.movement_ref
-        || result?.result_kind !== 'segment_completed'
-        || traversal.final_travel_state?.closed_result !== 'completed'
-        || result.actual_time_numerator
-          !== movement.exact_elapsed.exact_minutes.numerator
-        || result.actual_time_denominator !== '1') {
-      throw new Error('TRACE_COMBAT_TRAVERSAL_PROOF_INVALID');
-    }
-    const set = buildLocalTraversalWriteSet({ partyId, ids: {
-      planId: traversal.ids.plan_id,
-      executionId: traversal.ids.execution_id,
-      travelStateId: traversal.ids.travel_state_id,
-      intervalId: traversal.ids.interval_id
-    }, owner: traversal.actor_ref,
-    sourceEndpoint: traversal.source_endpoint,
-    targetEndpoint: traversal.target_endpoint,
-    route: { route_binding_ref: { entity_kind: 'movement_route_binding',
-      entity_id: route.route_id, version: route.version },
-    connection_profile_ref: null, duration_minutes: route.duration_minutes,
-    movement_method: route.movement_method,
-    load_category: traversal.inventory_load.load_category,
-    planning_algorithm_version: 'exact-local-binding@1',
-    outcome_composition_policy_version:
-      result.outcome_composition_policy_version },
-    dependencyPins: traversal.dependency_pins,
-    worldPin: state.world_identity,
-    planningRequestId: factual.player_input.request_id,
-    planningStateVersion: traversal.planning_state_version,
-    turnNumber, changeSetId, idempotencyRecordId: idemId,
-    dynamicSnapshot: result.dynamic_snapshot,
-    resultCode: result.result_code,
-    plannedTimeMinutes: Number(result.planned_time_numerator),
-    actualElapsedMinutes: Number(result.actual_time_numerator),
-    outcomeCompositionTraceDigest: result.outcome_composition_trace_digest });
-    inserts.push(...set.inserts);
-    updates.push(...set.updates);
-    appends.push(...set.appends);
-  }
-}
+export { appendCombatTraversalWrites };
 
 function appendCombatItemWrites({ updates, state, next, partyId }) {
   const before = new Map((state.items ?? []).map((item) => [item.item_id, item]));

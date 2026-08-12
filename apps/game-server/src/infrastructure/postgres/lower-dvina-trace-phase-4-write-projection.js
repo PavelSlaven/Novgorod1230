@@ -58,7 +58,7 @@ export function phase4Writes({ partyId, state, next, factual, visibleEnvelope,
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase4:${turnNumber}` });
   } else if (factual.consequence.phase4_kind === 'negotiation') {
-    if ([14, 15, 16].includes(scenarioRevision)) {
+    if ([14, 15, 16, 17].includes(scenarioRevision)) {
       appendSemanticNegotiation({
         inserts, updates, appends, partyId, state, next, factual,
         turnNumber, changeSetId, idemId, contracts, rootTurnId,

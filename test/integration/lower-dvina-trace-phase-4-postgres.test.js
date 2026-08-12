@@ -115,7 +115,18 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
     party_state: { state_version: 0 },
     position: internal.position,
     player_profile: internal.player.dossier,
-    items: internal.items
+    items: internal.items,
+    containers: internal.containers,
+    container_placements: internal.containers.map((container) => ({
+      party_id: party.party_id,
+      container_id: container.container_id,
+      anchor_id: container.anchor_id,
+      parent_container_id: container.parent_container_id,
+      holder_npc_id: container.holder_npc_id,
+      holder_character_id: container.holder_character_id,
+      physical_position: container.physical_position,
+      equipment_slot_category_id: container.equipment_slot_category_id
+    }))
   });
   assert.equal(initialInventory.mass.pass, true,
     JSON.stringify(initialInventory.mass.errors));

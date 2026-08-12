@@ -231,6 +231,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'trace_ld_v1_item_blue_wool_fragment',
     'trace_ld_v1_item_mikula_knife',
     'trace_ld_v1_item_ratsha_knife',
+    'trace_ld_v1_item_sealed_packet',
     'trace_ld_v1_item_zhdanko_axe'
   ]);
   assert.equal((await pool.query(

@@ -210,7 +210,12 @@ function phase9Plan(request, ids) {
 }
 
 async function seedPostCombatPhase9State(pool, partyId, ids) {
-  const state = await latestSnapshot(pool, partyId);
+  const state = await createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: createSpatialV3PostgresCombinedAtomicCommitter({ pool,
+      recheck: firstPlayableCommitRecheck,
+      now: () => new Date('2026-08-12T08:00:00.000Z') })
+  }).loadPhase2State(partyId);
   const bySlot = Object.fromEntries(state.npcs.map((npc) => [
     npc.participant_slot_ref, npc.instance_id]));
   Object.assign(ids, { player: state.actor_id,

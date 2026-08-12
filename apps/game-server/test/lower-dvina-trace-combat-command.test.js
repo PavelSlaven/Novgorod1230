@@ -5,8 +5,11 @@ import {
   createCombatSession,
   installCombatIntent
 } from '@rus/turn';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createTraceCombatCommand } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
+import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
+  '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
 import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
 
@@ -54,6 +57,7 @@ test('player combat response resolves one common two-minute exchange', async () 
           weapon_danger: 1, target_protection: 0, target_vulnerability: 0 } }] } } };
   const command = createTraceCombatCommand({ state, bundle,
     inputDigest: 'digest', randomSource: { next: () => 0.5 },
+    temporalAdvanceOwner: combatTemporalOwner(),
     npcCombatModel: async () => assert.fail('ordinary exchange needs no LLM'),
     revalidateStateVersion: async () => 7 });
   const result = await command.consequence({ retrievedState: state,
@@ -138,6 +142,7 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
           status: 'approved', check_request: attack }] } } };
     const command = createTraceCombatCommand({ state, bundle,
       inputDigest: 'digest-2', randomSource: { next: () => 0.99 },
+      temporalAdvanceOwner: combatTemporalOwner(),
       npcCombatModel: async () => assert.fail(
         'incapacitated NPC must not receive a combat decision'),
       revalidateStateVersion: async () => 3 });
@@ -156,3 +161,8 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
     assert.equal(result.combat.check_results.length, 2);
     assert.deepEqual(result.combat.decision_results, []);
   });
+
+function combatTemporalOwner() {
+  return createTemporalAdvanceOwner({ effect_registrations:
+    lowerDvinaTraceCombatTemporalEffectRegistrations() });
+}

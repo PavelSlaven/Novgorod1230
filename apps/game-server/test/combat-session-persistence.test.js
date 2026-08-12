@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createCombatSession } from '@rus/turn';
+import { canonicalDigest } from '@rus/materialization';
 import {
   appendCombatSessionWrite,
   hydrateCombatSession
@@ -76,3 +77,185 @@ test('restart current projection excludes a terminal combat session', async () =
     party_id: 'party-1', combat_sessions: [] }));
   assert.match(queryText, /status <> 'ended'/u);
 });
+
+test('restart verifies factual combat events backing decision signals', async () => {
+  const event = { event_id: 'combat-event:1:item',
+    event_kind: 'combat_item_transition_completed', combat_id: 'combat-1',
+    source_step_ref: ref('combat_technical_step', 'step-1') };
+  const history = { occurred_at: at, outcome_event_refs: [event.event_id],
+    outcome_events: [event], change_set_id: 'change-2' };
+  const eventRow = { event_id: event.event_id, event_kind: event.event_kind,
+    scheduled_at_whole_minutes: at.whole_minutes,
+    scheduled_at_subminute_numerator: at.subminute_numerator,
+    scheduled_at_subminute_denominator: at.subminute_denominator,
+    preconditions_digest: canonicalDigest(event), change_set_id: 'change-2' };
+  const payload = { party_id: 'party-1', combat_sessions: [],
+    combat_history: [history], npc_decision_signals: [{ signal: {
+      source_event_ref: ref('combat_event', event.event_id) } }] };
+  const pool = { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? [] : [eventRow] }) };
+  await assert.doesNotReject(assertCombatSessionRows(pool, payload));
+  const tampered = { ...eventRow, preconditions_digest: 'bad' };
+  const badPool = { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? [] : [tampered] }) };
+  await assert.rejects(assertCombatSessionRows(badPool, payload));
+  await assert.rejects(assertCombatSessionRows(pool, { ...payload,
+    npc_decision_signals: [{ signal: { source_event_ref:
+      ref('combat_event', 'missing-event') } }] }));
+  await assert.rejects(assertCombatSessionRows(pool, { ...payload,
+    combat_history: [{ ...history, outcome_event_refs: [],
+      outcome_events: [event] }] }));
+  const legacy = { ...history };
+  delete legacy.outcome_events;
+  await assert.doesNotReject(assertCombatSessionRows(pool, { ...payload,
+    combat_history: [legacy] }));
+  const missingPool = { query: async () => ({ rows: [] }) };
+  await assert.rejects(assertCombatSessionRows(missingPool, { ...payload,
+    combat_history: [legacy] }));
+});
+
+test('restart verifies route movement event traversal lineage', async () => {
+  const event = { event_id: 'combat-event:1:movement',
+    event_kind: 'combat_position_transition_completed', combat_id: 'combat-1',
+    source_step_ref: ref('combat_technical_step', 'step-1'),
+    actor_ref: ref('npc', 'ratsha-1'), movement_ref: 'shed-to-camp',
+    exact_elapsed: { mode: 'exact_minutes',
+      exact_minutes: { numerator: '12', denominator: '1' } },
+    inventory_load: { total_mass_grams: 350, hands_used: 1,
+      load_category: null },
+    traversal_execution_ref: ref('route_plan_execution', 'execution-1'),
+    traversal_interval_ref: ref('traversal_interval_result', 'interval-1') };
+  const history = { occurred_at: at, outcome_event_refs: [event.event_id],
+    outcome_events: [event], change_set_id: 'change-2' };
+  const eventRow = { event_id: event.event_id, event_kind: event.event_kind,
+    scheduled_at_whole_minutes: at.whole_minutes,
+    scheduled_at_subminute_numerator: at.subminute_numerator,
+    scheduled_at_subminute_denominator: at.subminute_denominator,
+    rule_ref: event.traversal_interval_ref,
+    preconditions_digest: canonicalDigest(event), change_set_id: 'change-2' };
+  const lineage = { interval_id: 'interval-1',
+    route_plan_execution_id: 'execution-1', plan_step_ordinal: 0,
+    interval_ordinal: 0, clock_commit_mode: 'shared_root_transport_clock',
+    synchronized_time_slice_result_id: 'combat-slice:1',
+    result_kind: 'segment_completed', planned_time_numerator: 12,
+    planned_time_denominator: 1,
+    actual_progress_after_ppm: 1_000_000, actual_time_numerator: 12,
+    actual_time_denominator: 1, cumulative_time_before_numerator: 0,
+    cumulative_time_before_denominator: 1,
+    cumulative_time_after_numerator: 12,
+    cumulative_time_after_denominator: 1,
+    result_change_set_id: 'change-2',
+    party_id: 'party-1', execution_status: 'completed',
+    updated_change_set_id: 'change-2', option_id: 'shed-to-camp',
+    journey_owner_ref: event.actor_ref, created_change_set_id: 'change-2',
+    step_ordinal: 0, step_kind: 'timed_traversal',
+    static_contract_snapshot: { base_minutes: 12, load_category: null },
+    dynamic_snapshot: { inventory_load: event.inventory_load },
+    travel_status: 'closed', closed_result: 'completed',
+    segment_progress_ppm: 1_000_000, travel_step_ordinal: 0,
+    cumulative_actual_time_numerator: 12,
+    cumulative_actual_time_denominator: 1,
+    travel_change_set_id: 'change-2' };
+  const payload = { party_id: 'party-1', combat_sessions: [],
+    combat_history: [history] };
+  const pool = routePool(eventRow, lineage);
+  await assert.doesNotReject(assertCombatSessionRows(pool, payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, null),
+    payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, route_plan_execution_id: 'other-execution' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, option_id: 'other-route' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, party_id: 'foreign-party' }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, journey_owner_ref: ref('npc', 'other-npc') }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, actual_time_numerator: 1 }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, cumulative_actual_time_numerator: 1 }), payload));
+  await assert.rejects(assertCombatSessionRows(routePool(eventRow, {
+    ...lineage, dynamic_snapshot: { inventory_load: {
+      total_mass_grams: 0, hands_used: 0, load_category: 'light' } } }),
+  payload));
+  await assert.rejects(assertCombatSessionRows(routePool({ ...eventRow,
+    rule_ref: ref('traversal_interval_result', 'other-interval') }, lineage),
+  payload));
+});
+
+test('restart verifies resumed route against the latest current projection',
+  async () => {
+    const firstAt = at;
+    const finalAt = { ...at, whole_minutes: '35' };
+    const actor = ref('npc', 'ratsha-1');
+    const movementEvent = (ordinal, kind, minutes) => ({
+      event_id: `combat-event:movement:${ordinal}`,
+      event_kind: kind, combat_id: 'combat-1',
+      source_step_ref: ref('combat_technical_step', `step-${ordinal}`),
+      actor_ref: actor, movement_ref: 'shed-to-camp',
+      exact_elapsed: { exact_minutes: {
+        numerator: String(minutes), denominator: '1' } },
+      inventory_load: { total_mass_grams: 350, hands_used: 1,
+        load_category: null },
+      traversal_execution_ref: ref('route_plan_execution', 'execution-1'),
+      traversal_interval_ref: ref('traversal_interval_result',
+        `interval-${ordinal}`) });
+    const firstEvent = movementEvent(0,
+      'combat_position_transition_progressed', 2);
+    const finalEvent = movementEvent(1,
+      'combat_position_transition_completed', 10);
+    const histories = [[firstEvent, firstAt, 'change-1'],
+      [finalEvent, finalAt, 'change-2']].map(([event, occurred_at,
+        change_set_id]) => ({ occurred_at, change_set_id,
+      outcome_event_refs: [event.event_id], outcome_events: [event] }));
+    const eventRows = histories.map((history) => {
+      const event = history.outcome_events[0];
+      return { event_id: event.event_id, event_kind: event.event_kind,
+        scheduled_at_whole_minutes: history.occurred_at.whole_minutes,
+        scheduled_at_subminute_numerator:
+          history.occurred_at.subminute_numerator,
+        scheduled_at_subminute_denominator:
+          history.occurred_at.subminute_denominator,
+        rule_ref: event.traversal_interval_ref,
+        preconditions_digest: canonicalDigest(event),
+        change_set_id: history.change_set_id };
+    });
+    const lineage = (event, ordinal, before, after, resultKind) => ({
+      interval_id: event.traversal_interval_ref.entity_id,
+      route_plan_execution_id: 'execution-1', plan_step_ordinal: 0,
+      interval_ordinal: ordinal, clock_commit_mode:
+        'shared_root_transport_clock',
+      synchronized_time_slice_result_id: `combat-slice:${ordinal}`,
+      result_kind: resultKind, planned_time_numerator: after - before,
+      planned_time_denominator: 1,
+      actual_progress_after_ppm: after / 12 * 1_000_000,
+      actual_time_numerator: after - before, actual_time_denominator: 1,
+      cumulative_time_before_numerator: before,
+      cumulative_time_before_denominator: 1,
+      cumulative_time_after_numerator: after,
+      cumulative_time_after_denominator: 1,
+      result_change_set_id: `change-${ordinal + 1}`, party_id: 'party-1',
+      execution_status: 'completed', updated_change_set_id: 'change-2',
+      option_id: 'shed-to-camp', journey_owner_ref: actor,
+      created_change_set_id: 'change-1', step_ordinal: 0,
+      step_kind: 'timed_traversal', static_contract_snapshot: {
+        base_minutes: 12, load_category: null },
+      dynamic_snapshot: { inventory_load: event.inventory_load },
+      travel_status: 'closed', closed_result: 'completed',
+      segment_progress_ppm: 1_000_000, travel_step_ordinal: 0,
+      cumulative_actual_time_numerator: 12,
+      cumulative_actual_time_denominator: 1,
+      travel_change_set_id: 'change-2' });
+    await assert.doesNotReject(assertCombatSessionRows(routePool(eventRows, [
+      lineage(firstEvent, 0, 0, 2, 'paused_in_transit'),
+      lineage(finalEvent, 1, 2, 12, 'segment_completed')]), {
+      party_id: 'party-1', combat_sessions: [], combat_history: histories }));
+  });
+
+function routePool(eventRow, lineage) {
+  return { query: async (text) => ({ rows:
+    text.includes('party_combat_sessions') ? []
+      : text.includes('party_traversal_interval_results')
+        ? lineage == null ? [] : Array.isArray(lineage) ? lineage : [lineage]
+        : Array.isArray(eventRow) ? eventRow : [eventRow] }) };
+}

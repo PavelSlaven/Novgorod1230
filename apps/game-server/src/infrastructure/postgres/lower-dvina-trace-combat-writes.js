@@ -5,6 +5,8 @@ import { row } from './first-playable/plan-shared.js';
 import { appendCombatSessionWrite } from './combat-session-persistence.js';
 import { appendNpcDecisionTraceWrites } from
   './npc-semantic-conversation-decision-writes.js';
+import { appendCombatTraversalWrites } from
+  './lower-dvina-trace-combat-traversal-writes.js';
 import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
 
@@ -88,6 +90,8 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
     session: combat.session_after, previousSession: previous, mode: 'update' });
   appendCombatChecks({ appends, partyId, factual, changeSetId });
   appendCombatEvents({ inserts, partyId, factual, changeSetId });
+  appendCombatTraversalWrites({ inserts, updates, appends, partyId, state, factual,
+    turnNumber, changeSetId, idemId });
   appendCombatBodyHistory({ appends, partyId, factual, changeSetId, idemId });
   appendNpcDecisionTraceWrites({ appends,
     decisionRecords: combat.decision_records ?? [], partyId, changeSetId,
@@ -95,6 +99,7 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
     workingRevision: factual.mode_resolution.decision_trace?.working_revision ?? 2 });
   return { inserts, updates, appends, deletes: [] };
 }
+export { appendCombatTraversalWrites };
 
 function appendCombatItemWrites({ updates, state, next, partyId }) {
   const before = new Map((state.items ?? []).map((item) => [item.item_id, item]));
@@ -158,7 +163,9 @@ function appendCombatEvents({ inserts, partyId, factual, changeSetId }) {
       scheduled_at_whole_minutes: at.whole_minutes,
       scheduled_at_subminute_numerator: at.subminute_numerator,
       scheduled_at_subminute_denominator: at.subminute_denominator,
-      rule_ref: factual.consequence.combat.exchange?.proposal_id
+      rule_ref: event.traversal_interval_ref != null
+        ? structuredClone(event.traversal_interval_ref)
+        : factual.consequence.combat.exchange?.proposal_id
         ? { entity_kind: 'combat_exchange',
           entity_id: factual.consequence.combat.exchange.proposal_id }
         : structuredClone(event.source_step_ref),

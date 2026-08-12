@@ -31,9 +31,11 @@ import {
 } from './turn-step-workflow-draft.js';
 import { bindTurnStepPreparedConsequence } from
   './turn-step-prepared-effects.js';
-import { executeCombatExchange, prepareCombatExchange,
-  orderCombatTechnicalSteps, resolveCombatExchangeTiming } from
+import { executeCombatExchange, prepareCombatExchange } from
   './combat-exchange.js';
+import { advanceCombatStepProgressForSlice,
+  combatTechnicalStepTemporalCandidates, orderCombatTechnicalSteps,
+  resolveCombatExchangeTiming } from './combat-temporal-steps.js';
 import {
   combatIntentFromOperation,
   combatIntentFromPlan,
@@ -64,8 +66,10 @@ export {
   mergeTurnStepDraftConsequence,
   executeCombatExchange,
   prepareCombatExchange,
+  combatTechnicalStepTemporalCandidates,
   orderCombatTechnicalSteps,
   resolveCombatExchangeTiming,
+  advanceCombatStepProgressForSlice,
   combatIntentFromPlan,
   combatIntentFromOperation,
   activateCombatSessionForPlayerIntent,

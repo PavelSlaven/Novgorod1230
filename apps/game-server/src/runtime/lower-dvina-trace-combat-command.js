@@ -1,30 +1,30 @@
 import { canonicalDigest } from '@rus/materialization';
-import {
-  activateCombatSessionForPlayerIntent,
-  buildCombatDecisionSignals,
-  buildCombatInitializationDecisionContexts,
-  combatIntentFromOperation,
-  initializeCombatSession,
-  orderCombatTechnicalSteps,
-  prepareCombatExchange,
-  resolveCombatExchangeTiming
-} from '@rus/turn';
+import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals,
+  buildCombatInitializationDecisionContexts, combatIntentFromOperation,
+  initializeCombatSession, orderCombatTechnicalSteps, prepareCombatExchange,
+  resolveCombatExchangeTiming } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
-import { applyTraceCombatItemTransition } from
-  './lower-dvina-trace-combat-item-owner.js';
-import {
-  projectTraceCombatSubjectiveState,
-  projectTracePerceivedCombatState
-} from './lower-dvina-trace-combat-subjective.js';
+import { applyTraceCombatItemTransition } from './lower-dvina-trace-combat-item-owner.js';
+import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from
+  './lower-dvina-trace-combat-position-owner.js';
+import { executeTraceCombatTraversal } from './lower-dvina-trace-combat-traversal-adapter.js';
+import { traceCombatBindingForActor, traceCombatMovementBindings,
+  traceCombatOperationContractForNpc } from
+  './lower-dvina-trace-combat-bindings.js';
+import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from
+  './lower-dvina-trace-combat-subjective.js';
+import { projectTraceCombatWorkingState } from './lower-dvina-trace-combat-working-state.js';
+import { createTraceCombatTemporalSliceOwner } from
+  './lower-dvina-trace-combat-temporal.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest,
-  randomSource, npcCombatModel, revalidateStateVersion }) {
+  randomSource, npcCombatModel, revalidateStateVersion,
+  temporalAdvanceOwner = null }) {
   if (bundle?.definition_revision !== 16) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
   const bindings = bundle.combat_semantic_bindings;
   if (!Array.isArray(playerProfiles) || !bindings) fail('TRACE_COMBAT_BINDING_GAP');
-  return Object.freeze({
-    command_id: COMMAND_ID,
+  return Object.freeze({ command_id: COMMAND_ID,
     option_id: 'respond_in_active_combat',
     label: 'Ответить на непосредственную угрозу',
     target_id: null,
@@ -47,8 +47,8 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
           'relevant_events', 'recent_changes_log']
       }
     },
-    matches() { return false; },
-    availability({ committed_state: committed, retrievedState }) {
+    matches() { return false; }, availability({ committed_state: committed,
+      retrievedState }) {
       const current = activeSession(committed ?? retrievedState);
       return availability(current != null);
     },
@@ -72,13 +72,14 @@ export function createTraceCombatCommand({ state, bundle, inputDigest,
       const active = activateCombatSessionForPlayerIntent(session, intent);
       const prepared = await prepareCombatExchange({
         session: active,
-        working_state: combatWorkingState(retrievedState),
+        working_state: projectTraceCombatWorkingState(retrievedState),
         occurred_at: retrievedState.clock,
         random_source: randomSource,
         idempotency_key: playerInput.idempotency_key,
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
-          rootTurnId, playerInput, session: active })
+          rootTurnId, playerInput, inputDigest, session: active,
+          movementBindings: null, temporalAdvanceOwner })
       });
       const exchange = prepared.prepared;
       return {
@@ -122,31 +123,48 @@ export function traceCombatTargetRefs(state) {
 }
 function exchangePorts(context) {
   return {
-    resolveCombatTiming: ({ requested_at: requestedAt }) =>
-      resolveCombatExchangeTiming({
-        requested_at: requestedAt,
-        timing_profile: context.bindings.exchange_timing_profile
-      }),
+    advanceTemporalSlice: createTraceCombatTemporalSliceOwner({
+      temporalAdvanceOwner: context.temporalAdvanceOwner,
+      partyId: context.state.party_id, rootTurnId: context.rootTurnId,
+      idempotencyKey: context.playerInput.idempotency_key }),
+    resolveCombatTiming: (input) => resolveTraceCombatTiming(input, context),
     orderTechnicalSteps: (input) => orderCombatTechnicalSteps(input),
-    resolveExecutionProfile: ({ intent }) => resolveProfile(intent, context),
+    resolveExecutionProfile: ({ intent, working_state: working }) =>
+      resolveProfile(intent, context, working),
     applyItemTransitions: (input) => applyTraceCombatItemTransition(input,
       context),
-    applyPositionTransitions: ({ working_state: working }) => ({
-      working_state: structuredClone(working), participant_status_updates: []
-    }),
+    applyPositionTransitions: (input) =>
+      applyTraceCombatPositionTransition(input, {
+        session: context.session,
+        executeTraversal: (request) =>
+          executeTraceCombatTraversal(request, context),
+        movementBindings: ['reach', 'break_contact']
+          .includes(input.intent?.intent_kind)
+          ? traceCombatMovementBindings(context) : null
+      }),
     resolvePerceptionAndDecisionContexts: (input) =>
       resolvePostExchangeDecisions(input, context)
   };
 }
-function resolveProfile(intent, context) {
+function resolveProfile(intent, context, working = context.state) {
   const records = intent.actor_ref.entity_kind === 'player_character'
     ? context.playerProfiles
-    : bindingForActor(intent.actor_ref.entity_id, context)?.execution_profiles;
+    : traceCombatBindingForActor(intent.actor_ref.entity_id, context)
+      ?.execution_profiles;
   const profile = records?.find(
     (entry) => entry.intent_kind === intent.intent_kind);
   if (!profile || profile.status !== 'approved') return { applicable: false };
+  const positionPlan = ['reach', 'break_contact'].includes(intent.intent_kind)
+    ? resolveTraceCombatPositionPlan({ intent, workingState: working,
+      movementBindings: traceCombatMovementBindings(context) }) : null;
+  if (['reach', 'break_contact'].includes(intent.intent_kind)
+      && positionPlan == null) {
+    return { applicable: false };
+  }
   return {
     applicable: true,
+    position_plan: positionPlan == null
+      ? null : structuredClone(positionPlan.proposal),
     preconditions_digest: canonicalDigest({ profile_id: profile.profile_id,
       intent_kind: intent.intent_kind }),
     check_request: profile.check_request == null ? null : {
@@ -158,6 +176,20 @@ function resolveProfile(intent, context) {
         risk_posture: intent.risk_posture }
     }
   };
+}
+function resolveTraceCombatTiming(input, context) {
+  const intent = intentForStep(context.session, input.technical_step);
+  const movement = resolveTraceCombatPositionPlan({ intent,
+    workingState: input.working_state,
+    movementBindings: ['reach', 'break_contact'].includes(intent?.intent_kind)
+      ? traceCombatMovementBindings(context) : null });
+  const timingProfile = movement == null
+    ? context.bindings.exchange_timing_profile
+    : { profile_id: movement.proposal.movement_ref, status: 'approved',
+      duration_minutes: Number(
+        movement.proposal.exact_elapsed.exact_minutes.numerator) };
+  return resolveCombatExchangeTiming({ requested_at: input.requested_at,
+    timing_profile: timingProfile });
 }
 async function resolvePostExchangeDecisions(input, context) {
   const descriptors = (input.meaningful_descriptors ?? [])
@@ -185,24 +217,28 @@ async function resolvePostExchangeDecisions(input, context) {
     fail('TRACE_COMBAT_DECISION_DEPENDENCY_MISSING');
   }
   const postExchangeContext = { ...context, state: input.working_state,
-    session: input.session };
+    session: input.session,
+    movementBindings: traceCombatMovementBindings(context) };
   const contexts = buildCombatInitializationDecisionContexts({
     session: input.session,
     signal_descriptors: descriptors,
-    npc_contexts: npcStates.map((participant) => ({
+    npc_contexts: npcStates.map((participant) => {
+      const operationContract = traceCombatOperationContractForNpc(
+        participant.actor_ref, postExchangeContext);
+      return {
       npc_ref: participant.actor_ref,
       state_version: String(input.working_state.party_state.state_version),
       current_intent: participant.current_intent,
       npc_subjective_state: projectTraceCombatSubjectiveState(
         participant.actor_ref, input.working_state),
       perceived_combat_state: projectTracePerceivedCombatState(input.session,
-        input.working_state, participant.actor_ref),
+        input.working_state, participant.actor_ref,
+        operationContract.break_contact_destination_refs),
       relevant_memory: [],
-      operation_contract: operationContractForNpc(participant.actor_ref,
-        postExchangeContext),
+      operation_contract: operationContract,
       validate_plan: validateNpcCombatPlanApplicability,
       semantic_model: context.npcCombatModel
-    })),
+    }; }),
     same_time_batch_ref: { entity_kind: 'temporal_batch',
       entity_id: `combat-batch:${input.session.combat_id}:${input.session.exchange_ordinal}` },
     party_id: input.working_state.party_id,
@@ -239,14 +275,16 @@ function availability(canAttempt) { return { version: 1,
   can_attempt: canAttempt, reasons: canAttempt ? [] : ['active_combat_missing'],
   check_requests: [] }; }
 function materializeOperation(raw, session) {
-  const byId = new Map(session.participant_refs.map((ref) => [ref.entity_id, ref]));
+  const byId = new Map(session.participant_refs.map((ref) => [ref.entity_id,
+    ref]));
   const known = (id) => byId.get(id) ?? (id === session.scope_ref.entity_id
     ? session.scope_ref : null);
   const refs = (values) => values.map((id) => known(id) ?? fail('TRACE_COMBAT_REF_UNKNOWN'));
   return { ...structuredClone(raw), actor_ref: known(raw.actor_ref),
     target_refs: refs(raw.target_refs), protected_refs: refs(raw.protected_refs),
     scope_ref: raw.scope_ref == null ? null : known(raw.scope_ref),
-    destination_ref: raw.destination_ref == null ? null : known(raw.destination_ref) };
+    destination_ref: raw.destination_ref == null ? null
+      : known(raw.destination_ref) };
 }
 function applicablePlayerProfile(operation, profiles) { return profiles.find(
     (profile) => profile.intent_kind === operation.intent_kind
@@ -254,45 +292,8 @@ function applicablePlayerProfile(operation, profiles) { return profiles.find(
     && profile.allowed_force_limits.includes(operation.force_limit)
     && profile.allowed_risk_postures.includes(operation.risk_posture)) ?? null;
 }
-function combatWorkingState(state) {
-  const actor_states = {
-    [`player_character\0${state.actor_id}`]: { body_state: structuredClone(state.body_state) }
-  };
-  for (const npc of state.npcs ?? []) actor_states[`npc\0${npc.instance_id}`] = {
-    body_state: { health: Number(npc.machine_state?.body_condition?.health ?? 100),
-      energy: null, satiety: null, active_conditions: [], body_parts: {}, prose: null }
-  };
-  return { ...structuredClone(state), actor_states };
-}
-function bindingForActor(actorId, context) {
-  const npc = context.state.npcs?.find(({ instance_id: id }) => id === actorId);
-  const slot = npc?.participant_slot_ref;
-  const phase8 = context.bindings.phase_8;
-  if (context.session?.scope_ref?.entity_id === phase8?.scope_location_ref) {
-    if (slot === phase8.actor_slot) return phase8;
-    return phase8.participant_roles?.[
-      /^background_fisher_[12]$/.test(slot) ? 'participating_fisher' : slot]
-      ?? null;
-  }
-  return slot === context.bindings.phase_4?.actor_slot
-    ? context.bindings.phase_4 : null;
-}
-function operationContractForNpc(actorRef, context) {
-  const binding = bindingForActor(actorRef.entity_id, context);
-  if (!binding) fail('TRACE_COMBAT_NPC_BINDING_GAP');
-  const primary = context.state.npcs?.find(({ participant_slot_ref: value }) =>
-    value === context.bindings.phase_8?.actor_slot);
-  const ally = binding !== context.bindings.phase_8;
-  const opponents = ally && primary ? [{ entity_kind: 'npc',
-    entity_id: primary.instance_id }] : context.state.actor_id == null ? [] : [{
-    entity_kind: 'player_character', entity_id: context.state.actor_id }];
-  const scope = binding.scope_location_ref
-    ?? context.bindings.phase_8?.scope_location_ref;
-  return { ...structuredClone(binding.operation_contract),
-    engageable_actor_refs: opponents, controllable_actor_refs: opponents,
-    protectable_refs: ally ? [{ entity_kind: 'player_character',
-      entity_id: context.state.actor_id }] : [], holdable_scope_refs: [
-      { entity_kind: 'location', entity_id: scope }],
-    reachable_destination_refs: [], break_contact_destination_refs: [] };
+function intentForStep(session, step) { return session.participant_states.map(
+    ({ current_intent: intent }) => intent).find(
+    (intent) => intent?.intent_id === step?.intent_ref?.entity_id) ?? null;
 }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

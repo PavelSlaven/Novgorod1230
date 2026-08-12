@@ -27,7 +27,8 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
   };
 }
 
-export function projectTracePerceivedCombatState(session, state, actorRef) {
+export function projectTracePerceivedCombatState(session, state, actorRef,
+  knownExits = []) {
   return {
     scope: session.scope_ref,
     visible_opponents: session.participant_refs.filter(
@@ -41,7 +42,7 @@ export function projectTracePerceivedCombatState(session, state, actorRef) {
       location_ref: actorPosition(ref, state)
     })).filter(({ actor_ref: ref, location_ref: location }) =>
       location != null && ref.entity_id !== actorRef.entity_id),
-    known_exits: [],
+    known_exits: structuredClone(knownExits),
     visible_cover: [],
     perceived_hazards: [],
     recent_perceived_events: [],

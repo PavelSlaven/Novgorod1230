@@ -231,7 +231,7 @@
       ],
       "name": "@rus/movement-routes",
       "owns": [
-        "Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation"
+        "Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, выбор одного approved actor destination transition из фактической позиции и materialized destination, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation"
       ],
       "path": "packages/movement-routes",
       "public_entry": "./src/index.js",

@@ -22,16 +22,33 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
     clock: structuredClone(next.clock) };
   next.body_state = structuredClone(playerBody);
   next.npcs = (next.npcs ?? []).map((npc) => {
+    const workingNpc = combat.working_state_after?.npcs?.find(
+      ({ instance_id: id }) => id === npc.instance_id);
     const body = combat.working_state_after?.actor_states?.[
       `npc\0${npc.instance_id}`]?.body_state;
-    return body == null ? npc : { ...npc, machine_state: {
-      ...npc.machine_state, body_condition: {
+    if (body == null && workingNpc == null) return npc;
+    return { ...npc,
+      anchor_id: workingNpc?.anchor_id ?? npc.anchor_id,
+      location_profile_ref: workingNpc?.location_profile_ref
+        ?? npc.location_profile_ref,
+      zone_ref: workingNpc?.zone_ref ?? npc.zone_ref,
+      machine_state: {
+      ...npc.machine_state, ...structuredClone(workingNpc?.machine_state ?? {}),
+      ...(body == null ? {} : { body_condition: {
         ...npc.machine_state?.body_condition, health: body.health,
         combat_conditions: structuredClone(body.active_conditions ?? [])
-      }
+      } })
     } };
   });
   next.items = structuredClone(combat.working_state_after?.items ?? next.items);
+  next.active_combat_traversals = structuredClone(
+    combat.working_state_after?.active_combat_traversals ?? []);
+  next.active_combat_step_progress = structuredClone(
+    combat.working_state_after?.active_combat_step_progress ?? []);
+  const processedBoundaryIds = new Set((combat.temporal_advance_results ?? [])
+    .flatMap((result) => result.trace?.processed_boundary_ids ?? []));
+  next.temporal_boundary_candidates = (next.temporal_boundary_candidates ?? [])
+    .filter(({ boundary_id: id }) => !processedBoundaryIds.has(id));
   const committedSession = { ...structuredClone(combat.session_after),
     last_change_set_ref: { entity_kind: 'party_change_set',
       entity_id: changeSetId } };
@@ -50,6 +67,7 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
     occurred_at: structuredClone(next.clock),
     exact_duration: structuredClone(combat.exact_duration),
     outcome_event_refs: combat.outcome_events.map(({ event_id: id }) => id),
+    outcome_events: structuredClone(combat.outcome_events),
     change_set_id: changeSetId
   }];
   next = projectCombatDecisionState({ state: next,

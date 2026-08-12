@@ -6,7 +6,7 @@ Owner of route query/planning, approved movement method/time resolution, travers
 
 ## Владеет
 
-- Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation.
+- Владеет legacy pure travel helpers, `createMovementPlanner`, `createRoutePlanActivationValidator`, выбор одного approved actor destination transition из фактической позиции и materialized destination, target traversal resolver/commit-validator adapters, route-plan static snapshot and capability/readiness validation.
 
 ## Не владеет
 
@@ -14,10 +14,18 @@ Owner of route query/planning, approved movement method/time resolution, travers
 
 ## Public API и контракты
 
-- `.`: `TRAVEL_CONDITION_MULTIPLIERS`, `TRAVEL_LOAD_MULTIPLIERS`, `calculateTravelTime`, `assessRouteAvailability`, `buildTraversalRequest`, `validateTraversalResult`, planner and activation validator.
+- `.`: `TRAVEL_CONDITION_MULTIPLIERS`, `TRAVEL_LOAD_MULTIPLIERS`, `calculateTravelTime`, `assessRouteAvailability`, `buildTraversalRequest`, `validateTraversalResult`, `planApprovedActorDestinationTransition`, planner and activation validator.
 - `./spatial-v3`: `createTraversalResolver`, `createTraversalCommitValidator`; `./spatial-v3-planner`: planner/activation implementation.
 
 Planner receives explicit `resolveKnowledgeTarget`, `loadTopology`, `snapshotEndpoint`, `validateCapability` ports and returns a route plan/proposal or typed fail-closed result. Activation validator receives explicit preparation/current-state/capability/recheck ports and returns accepted/rejected activation validation. Inputs/outputs use pinned target DTO and never fabricate endpoint, capability, time factor or route fallback.
+
+Approved actor-destination proposals distinguish immediate local position transitions from `requires_traversal_runtime_completion` routes. A consumer may apply the former only after the pinned local access/capacity admission; a route changes position only after the existing traversal runtime returns a completed interval proof.
+
+Когда traversal является time-bearing дочерним действием combat exchange,
+он принимает exact parent slice и возвращает `paused_in_transit` либо
+terminal proof. Такой interval использует `shared_root_transport_clock`, не
+создаёт собственного clock write и сохраняет progress для resume/restart;
+позиция меняется только после terminal proof.
 
 ## Ошибки, зависимости и effects
 

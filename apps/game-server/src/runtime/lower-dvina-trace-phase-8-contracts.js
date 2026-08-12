@@ -1,5 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../errors.js';
+import { buildTraceInteriorEntryBinding } from
+  './lower-dvina-trace-combat-movement-contracts.js';
 
 const IDS = Object.freeze({
   routeCommand: 'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
@@ -19,6 +21,12 @@ export function resolveTracePhase8Contracts({ state, bundle,
       || bundle.definition?.revision !== 16) gap('TRACE_PHASE_8_REVISION_GAP');
   const route = exact(bundle.movement_bindings?.route_bindings,
     'route_id', IDS.route);
+  const reverseRoute = exact(bundle.movement_bindings?.route_bindings,
+    'route_id', route.reverse_route_ref);
+  const localTransition = exact(
+    bundle.movement_bindings?.local_transition_bindings,
+    'transition_id',
+    'trace_ld_v1_local_transition_storehouse_to_river_access');
   const routeActivity = exact(
     bundle.activity_check_consequence_profiles?.activity_profiles,
     'profile_id', IDS.routeActivity);
@@ -35,12 +43,24 @@ export function resolveTracePhase8Contracts({ state, bundle,
     'endpoint_id', route.destination_endpoint);
   const scene = (state.prepared_scenes ?? []).find(
     ({ location_profile_ref: id }) => id === IDS.storehouse);
+  const roadBags = (state.containers ?? []).filter(
+    ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag');
   const actor = exactActor(state, 'zhdanko_storehouse_controller');
   const companions = ['eremey_fisher', 'ratsha_storehouse_helper']
     .map((slot) => exactActor(state, slot));
   const participant = participatingFisher(state);
   const binding = bundle.combat_semantic_bindings?.phase_8;
+  const interiorEntry = buildTraceInteriorEntryBinding({ access, capacity,
+    binding,
+    sourceZoneRef: scene?.anchor?.state?.zone_ref, localTransition,
+    durationMinutes: bundle.combat_semantic_bindings
+      ?.exchange_timing_profile?.duration_minutes, fail: gap });
   if (route.duration_minutes !== 12
+      || reverseRoute.reverse_route_ref !== route.route_id
+      || reverseRoute.terminal_position_outcome !== IDS.camp
+      || localTransition.location_ref !== IDS.storehouse
+      || localTransition.destination_zone_ref !== 'river_access'
+      || localTransition.duration_minutes !== 5
       || routeActivity.duration_minutes !== 12
       || accusationActivity.duration_minutes !== 5
       || sourceEndpoint.location_profile_id !== IDS.camp
@@ -48,6 +68,8 @@ export function resolveTracePhase8Contracts({ state, bundle,
       || access.location_ref !== IDS.storehouse
       || capacity.location_ref !== IDS.storehouse
       || !scene?.anchor?.instance_id || !scene.node?.instance_id
+      || roadBags.length !== 1
+      || roadBags[0].state?.location_ref !== IDS.storehouse
       || binding?.actor_slot !== actor.participant_slot_ref
       || binding.scope_location_ref !== IDS.storehouse
       || binding.conversation?.activity_profile_ref !== IDS.accusationActivity
@@ -62,14 +84,36 @@ export function resolveTracePhase8Contracts({ state, bundle,
     actors: { zhdanko: actor, eremey: companions[0], ratsha: companions[1],
       participatingFisher: participant },
     combatBindings: structuredClone(binding),
+    combatMovementBindings: { route_bindings: [structuredClone(route),
+      structuredClone(reverseRoute)],
+    local_transition_bindings: [structuredClone(localTransition)],
+    local_access_bindings: [interiorEntry],
+    route_execution_bindings: [],
+    actor_destination_bindings: [{
+      actor_ref: ref('npc', actor.instance_id), intent_kind: 'break_contact',
+      destination_ref: ref('location_anchor', scene.anchor.instance_id),
+      movement_ref: localTransition.transition_id,
+      destination: { entity_ref: ref('location_anchor',
+        scene.anchor.instance_id), location_ref: IDS.storehouse,
+      zone_ref: localTransition.destination_zone_ref,
+      anchor_id: scene.anchor.instance_id }
+    }, {
+      actor_ref: ref('npc', companions[1].instance_id), intent_kind: 'reach',
+      destination_ref: ref('container', roadBags[0].container_id),
+      movement_ref: interiorEntry.transition_id
+    }] },
     conversationBindings: structuredClone(conversationBindings),
     conversationTimeProfiles: structuredClone(
       bundle.turn_step_owner_profiles?.semantic_duration_profiles ?? []),
-    activityPins: [route, routeActivity, accusationActivity, access, capacity]
-      .map((record) => ({ id: record.route_id ?? record.profile_id
-        ?? record.policy_id ?? record.contract_id, version: record.version,
+    activityPins: [route, reverseRoute, localTransition, routeActivity,
+      accusationActivity, access, capacity]
+      .map((record) => ({ id: record.route_id ?? record.transition_id
+        ?? record.profile_id ?? record.policy_id ?? record.contract_id,
+      version: record.version,
       digest: canonicalDigest(record) })) });
 }
+
+function ref(entity_kind, entity_id) { return { entity_kind, entity_id }; }
 
 function participatingFisher(state) {
   const ids = new Set((state.route_participant_commitments ?? [])

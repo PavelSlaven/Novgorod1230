@@ -158,6 +158,7 @@ export function createTemporalAdvanceOwner({ source_registrations = [],
     registrations: source_registrations
   });
   const effects = new Map();
+  const runtimeEffectIds = new Set();
   for (const registration of effect_registrations) {
     if (typeof registration?.resolve !== 'function') {
       throw new TypeError('temporal effect registration requires resolve');
@@ -167,6 +168,11 @@ export function createTemporalAdvanceOwner({ source_registrations = [],
       throw new TypeError('temporal effect registration is ambiguous');
     }
     effects.set(identity, registration.resolve);
+    if (registration.runtime_resolution === true) {
+      runtimeEffectIds.add(identity);
+    } else if (registration.runtime_resolution !== undefined) {
+      throw new TypeError('temporal runtime effect policy must be boolean');
+    }
   }
   return Object.freeze({
     advance(input = {}) {
@@ -214,9 +220,24 @@ export function createTemporalAdvanceOwner({ source_registrations = [],
           if (effect == null) {
             throw new TypeError('temporal registered effect is missing');
           }
-          return resolveEffect(effects, effect, {
+          const fixed = resolveEffect(effects, effect, {
             kind: 'boundary', candidate, context, request: input.request
           });
+          if (!runtimeEffectIds.has(effectIdentity(effect.effect_ref))) {
+            return fixed;
+          }
+          if (typeof input.resolve_registered_effect !== 'function') {
+            throw new TypeError('temporal runtime effect resolver is missing');
+          }
+          const runtime = input.resolve_registered_effect(Object.freeze({
+            candidate: cloneFrozen(candidate), context,
+            effect_ref: cloneFrozen(effect.effect_ref),
+            descriptor: cloneFrozen(effect.input ?? {}) }));
+          if (runtime == null || typeof runtime !== 'object') {
+            throw new TypeError('temporal runtime effect result is missing');
+          }
+          return { ...runtime, proposals: [
+            ...(fixed.proposals ?? []), ...(runtime.proposals ?? [])] };
         },
         finalize({ clock_after: clockAfter }) {
           return {

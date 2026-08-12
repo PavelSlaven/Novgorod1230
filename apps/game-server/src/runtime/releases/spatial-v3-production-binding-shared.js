@@ -42,6 +42,8 @@ import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
+import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
+  '../lower-dvina-trace-combat-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-source.js';
 import { serverError } from '../../errors.js';
@@ -242,7 +244,8 @@ function createTraceTurnRuntime({
           ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
           ...npcTemporalEffectRegistrations(),
           ...lowerDvinaTracePhase7TemporalEffectRegistrations(),
-          ...lowerDvinaTraceConversationTemporalEffectRegistrations()
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()
         ]
     }),
     turnStepPackingCalculator: calculatePackingSlots,

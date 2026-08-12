@@ -1,4 +1,6 @@
 import { planApprovedActorItemTransition } from '@rus/items-property';
+import { traceCombatBindingForActor } from
+  './lower-dvina-trace-combat-bindings.js';
 
 export function applyTraceCombatItemTransition({ step,
   check_result: checkResult, working_state: working }, context) {
@@ -43,11 +45,19 @@ export function applyTraceCombatItemTransition({ step,
   const next = structuredClone(working);
   next.items = next.items.map((candidate) => candidate.item_id !== item.item_id
     ? candidate : applyItemProposal(candidate, plan.proposal));
+  const eventId = `combat-event:${context.session.combat_id}:step:${
+    step.proposal_id}:item:${item.item_id}`;
   return { working_state: next, transition_profile_ref:
     transition.transition_profile_id, applied: true,
+  outcome_events: [{ event_id: eventId,
+    event_kind: 'combat_item_transition_completed',
+    combat_id: context.session.combat_id,
+    source_step_ref: { entity_kind: 'combat_technical_step',
+      entity_id: step.proposal_id },
+    item_ref: { entity_kind: 'item', entity_id: item.item_id },
+    transition_profile_ref: transition.transition_profile_id }],
   signal_descriptors: [{ category: 'self', significance: 'material',
-    source_event_ref: { entity_kind: 'item_property_transition',
-      entity_id: transition.transition_profile_id },
+    source_event_ref: { entity_kind: 'combat_event', entity_id: eventId },
     subject_ref: intent.target_refs[0], scope_refs: [],
     perception_required: false,
     perceived_change_summary:
@@ -60,22 +70,10 @@ export function applyTraceCombatItemTransition({ step,
 function executionProfile(intent, context) {
   const records = intent.actor_ref.entity_kind === 'player_character'
     ? context.playerProfiles
-    : bindingForActor(intent.actor_ref.entity_id, context)?.execution_profiles;
+    : traceCombatBindingForActor(intent.actor_ref.entity_id, context)
+      ?.execution_profiles;
   return records?.find(({ intent_kind: kind }) => kind === intent.intent_kind)
     ?? null;
-}
-function bindingForActor(actorId, context) {
-  const slot = context.state.npcs?.find(
-    ({ instance_id: id }) => id === actorId)?.participant_slot_ref;
-  const phase8 = context.bindings.phase_8;
-  if (context.session?.scope_ref?.entity_id === phase8?.scope_location_ref) {
-    if (slot === phase8.actor_slot) return phase8;
-    return phase8.participant_roles?.[
-      /^background_fisher_[12]$/.test(slot) ? 'participating_fisher' : slot]
-      ?? null;
-  }
-  return slot === context.bindings.phase_4?.actor_slot
-    ? context.bindings.phase_4 : null;
 }
 function actorRefs(state) { return Object.fromEntries((state.npcs ?? []).map(
   (npc) => [npc.participant_slot_ref, npc.instance_id]).concat(
@@ -110,7 +108,8 @@ function applyItemProposal(item, proposal) { return { ...item,
       ...(item.state?.approved_transition_history ?? []),
       proposal.property_history] } }; }
 function unchanged(working) { return { working_state: structuredClone(working),
-  participant_status_updates: [], signal_descriptors: [], applied: false }; }
+  participant_status_updates: [], signal_descriptors: [], outcome_events: [],
+  applied: false }; }
 function fail(code, details = null) {
   throw Object.assign(new Error(code), { code, details });
 }

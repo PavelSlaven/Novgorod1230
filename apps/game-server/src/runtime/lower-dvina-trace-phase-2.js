@@ -157,7 +157,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
       const turn10Contracts = turn10?.contracts ?? null;
       const combatCommand = createTraceCombatCommand({
         state, bundle, inputDigest, randomSource: turnRandomSource,
-        npcCombatModel, revalidateStateVersion
+        npcCombatModel, revalidateStateVersion, temporalAdvanceOwner
       });
       const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),

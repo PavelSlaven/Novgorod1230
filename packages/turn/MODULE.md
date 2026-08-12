@@ -31,7 +31,14 @@
   installation, `prepareCombatExchange`, technical-step temporal ordering,
   same-time precondition recheck и `buildCombatDecisionSignals` связывает
   профильных checks/harm/body/items/movement/NPC owners. `@rus/turn` не
-  вычисляет их формулы и не сохраняет SQL самостоятельно.
+  вычисляет их формулы и не сохраняет SQL самостоятельно. Для неодинаковой
+  длительности steps общий temporal ordering выбирает ближайшую exact boundary,
+  сохраняет intent-bound progress остальных steps и повторно проверяет их на
+  следующем срезе. Completion каждого due step является обычным `activity`
+  candidate общего temporal batch: hazards/access и другие более ранние
+  resolution classes сначала меняют working projection, затем combat step
+  повторно проверяет preconditions и применяет domain effects в своей
+  канонической позиции. Только due steps получают terminal domain effects.
 - `requestPlayerConversationContribution`, `requestNpcSemanticDecision` и `runConversationExchange` исполняют ровно один active semantic contract на mode-specific boundary, запрещают combat resolution и повторный LLM-вызов для persisted trace. Один NPC получает не более одной boundary/decision данного mode и same-time batch; listeners и witnesses без meaningful response boundary не становятся responders.
 - Общий NPC actor-step хранит `active_npc_actor_steps` как коллекцию:
   положительные действия нескольких NPC одного timestamp сначала все
@@ -75,8 +82,10 @@
   cascade и его follow-up events, затем возвращает единый change set.
 - `createTemporalAdvanceOwner` связывает stable exact source/effect
   registrations один раз в composition root. Сценарный consumer передаёт
-  только candidates и declarative effect descriptors; callback execution,
-  same-time ordering и finalization остаются у общего owner.
+  candidates и declarative effect descriptors. Registration с явным
+  `runtime_resolution` может делегировать code-owned domain callback в точной
+  позиции уже отсортированного batch; fixed registration сначала валидирует
+  effect identity, а same-time ordering и finalization остаются у общего owner.
 - Один temporal slice может передать ordered `continuous_effects`: общий owner
   применяет их последовательно к evolving projection и объединяет proposals.
   Это позволяет положительному conversation segment завершать активную

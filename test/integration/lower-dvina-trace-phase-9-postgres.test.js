@@ -91,7 +91,7 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     });
     await first.submitTurn(party.party_id, turn(
       'phase-9-postgres-initial-inspection',
-      'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
+      'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
     ));
     await seedPostCombatPhase9State(pool, party.party_id, ids);
 

@@ -328,7 +328,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 5);
+    opened.party_id), 6);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -344,7 +344,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 5);
+    opened.party_id), 6);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -396,7 +396,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 4);
+    failureParty.party_id), 5);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions

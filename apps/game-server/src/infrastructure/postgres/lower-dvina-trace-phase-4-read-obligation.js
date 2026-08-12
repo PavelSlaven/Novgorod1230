@@ -55,6 +55,8 @@ function assertPromiseTransitions({ promise, transitions }) {
   );
   const lifecycleCount = promise.current_state === 'active'
     ? 2
+    : ['fulfilled', 'broken'].includes(promise.current_state)
+      ? 3
     : promise.current_state === 'offered'
       ? 1
       : 0;
@@ -89,8 +91,24 @@ function assertPromiseTransitions({ promise, transitions }) {
         ) !== canonicalDigest(promise.witness_actor_ids)
         || !relevant[1]?.check_resolution_id
         || !relevant[1]?.npc_decision_request_id))
+      || (lifecycleCount === 3
+        && !validTerminalTransition(relevant[2], promise))
       || (promise.temporary_disposition_memory != null
         && !validDispositionMemory(relevant[lifecycleCount], promise))) fail();
+}
+
+function validTerminalTransition(transition, promise) {
+  const fulfilled = promise.current_state === 'fulfilled';
+  return transition?.from_state === 'active'
+    && transition.to_state === promise.current_state
+    && transition.transition_kind
+      === (fulfilled ? 'promise_fulfilled' : 'promise_broken')
+    && canonicalDigest(transition.causal_basis) === canonicalDigest({
+      committed_fact_ids: [fulfilled
+        ? 'promise_fulfillment_basis_committed'
+        : 'promise_breach_basis_committed'] })
+    && transition.check_resolution_id == null
+    && transition.npc_decision_request_id == null;
 }
 
 function validDispositionMemory(transition, promise) {

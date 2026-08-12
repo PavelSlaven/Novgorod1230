@@ -31,6 +31,7 @@ async function assertTemporaryDisposition(pool, payload, packet) {
   const custody = payload.phase9.custody_state;
   const property = payload.phase9.property_handover_plan;
   const promiseMemory = payload.phase9.promise_memory;
+  const promiseOutcome = payload.phase9.promise_outcome;
   const held = (payload.npcs ?? []).filter(
     ({ machine_state: state }) => state?.temporary_custody === true);
   if (custody?.schema !== 'temporary_custody_state_v1'
@@ -39,6 +40,8 @@ async function assertTemporaryDisposition(pool, payload, packet) {
       || property.status !== 'temporary'
       || promiseMemory?.schema !== 'temporary_promise_memory_v1'
       || promiseMemory.status !== 'recorded'
+      || !['no_active_promise', 'terminal_state_recognized',
+        'lifecycle_transition'].includes(promiseOutcome?.kind)
       || canonicalDigest(held.map(({ participant_slot_ref: slot }) => slot)
         .sort()) !== canonicalDigest([...custody.party_slots].sort())
       || canonicalDigest(packet.state?.property_state
@@ -71,19 +74,35 @@ async function assertTemporaryDisposition(pool, payload, packet) {
          JOIN party_runtime.party_obligation_transitions t
            ON t.party_id=o.party_id AND t.obligation_id=o.obligation_id
         WHERE o.party_id=$1 AND o.obligation_id=$2
-        ORDER BY t.transition_ordinal DESC LIMIT 1`,
+          AND t.change_set_id=o.last_change_set_id
+        ORDER BY t.transition_ordinal DESC LIMIT 2`,
       [payload.party_id, promise?.obligation_id]);
-    const row = normalized.rows[0];
-    if (normalized.rowCount !== 1
-        || Number(row.state_version) !== Number(promise.state_version)
-        || row.last_change_set_id !== promise.last_change_set_id
-        || row.transition_ordinal !== Number(promise.state_version) - 2
-        || row.from_state !== promise.current_state
-        || row.to_state !== promise.current_state
-        || row.transition_kind
+    const memoryRow = normalized.rows[0];
+    const lifecycle = promiseOutcome.transition ?? null;
+    if (normalized.rowCount !== (lifecycle == null ? 1 : 2)
+        || Number(memoryRow.state_version) !== Number(promise.state_version)
+        || memoryRow.last_change_set_id !== promise.last_change_set_id
+        || memoryRow.transition_ordinal !== Number(promise.state_version) - 2
+        || memoryRow.from_state !== promise.current_state
+        || memoryRow.to_state !== promise.current_state
+        || memoryRow.transition_kind
           !== 'temporary_disposition_promise_memory_recorded'
-        || canonicalDigest(row.causal_basis) !== canonicalDigest({
+        || canonicalDigest(memoryRow.causal_basis) !== canonicalDigest({
           committed_fact_ids: [promiseMemory.committed_fact_id] })) fail();
+    if (lifecycle != null) {
+      const lifecycleRow = normalized.rows[1];
+      if (lifecycleRow.transition_ordinal
+          !== Number(promise.state_version) - 3
+          || lifecycleRow.from_state !== 'active'
+          || lifecycleRow.to_state !== promise.current_state
+          || lifecycleRow.transition_kind !== lifecycle.history_event.fact_id
+          || canonicalDigest(lifecycleRow.causal_basis)
+            !== canonicalDigest(lifecycle.causal_basis)
+          || promise.current_state_fact
+            !== lifecycle.current_state_projection.next_fact
+          || !(payload.phase9.committed_facts ?? []).includes(
+            promiseOutcome.basis_fact_id)) fail();
+    }
   }
 }
 

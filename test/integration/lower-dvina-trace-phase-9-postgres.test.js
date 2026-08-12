@@ -131,9 +131,10 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     assert.equal(snapshot.phase9.property_handover_plan.option_id,
       'preserve_recovered_property_for_savva_handover');
     assert.equal(snapshot.phase9.promise_memory.option_id,
-      'preserve_active_no_summary_killing_promise');
+      'record_no_active_promise');
     assert.equal(snapshot.promise_instances[0].temporary_disposition_memory
-      .option_id, 'preserve_active_no_summary_killing_promise');
+      .option_id, 'record_no_active_promise');
+    assert.equal(snapshot.promise_instances[0].current_state, 'not_offered');
     for (const slot of snapshot.phase9.custody_state.party_slots) {
       assert.equal(snapshot.npcs.find(({ participant_slot_ref: ref }) =>
         ref === slot).machine_state.temporary_custody, true);
@@ -165,6 +166,27 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     assert.equal(custodyRows.length, 2);
     assert.equal(custodyRows.every(({ machine_state: machine }) =>
       machine.temporary_custody === true), true);
+    const obligation = (await pool.query(
+      `SELECT current_state,current_state_fact,state_version::int
+         FROM party_runtime.party_obligations
+        WHERE party_id=$1`, [party.party_id])).rows[0];
+    assert.deepEqual(obligation, {
+      current_state: snapshot.promise_instances[0].current_state,
+      current_state_fact: snapshot.promise_instances[0].current_state_fact,
+      state_version: Number(snapshot.promise_instances[0].state_version) });
+    const promiseTransitions = (await pool.query(
+      `SELECT transition_ordinal,from_state,to_state,transition_kind,
+              causal_basis
+         FROM party_runtime.party_obligation_transitions
+        WHERE party_id=$1 ORDER BY transition_ordinal`,
+      [party.party_id])).rows;
+    assert.deepEqual(promiseTransitions.slice(-1).map((entry) => ({
+      ...entry, transition_ordinal: Number(entry.transition_ordinal) })), [{
+      transition_ordinal: Number(snapshot.promise_instances[0].state_version)
+        - 2, from_state: 'not_offered', to_state: 'not_offered',
+      transition_kind: 'temporary_disposition_promise_memory_recorded',
+      causal_basis: { committed_fact_ids: [
+        'temporary_promise_not_active'] } }]);
     assert.equal((await pool.query(
       `SELECT count(*)::int AS count
          FROM party_runtime.party_v3_change_sets
@@ -231,7 +253,7 @@ function phase9Plan(request, ids) {
     target_actor_refs: [ids.onisim], content: text, instrument_refs: [] };
   else if (text.includes('Сопоставить')) operation = activity(actor,
     ['trace_ld_v1_clue_evidence_graph_set']);
-  else operation = activity(actor, dispositionSelection());
+  else operation = activity(actor, dispositionSelection(request));
   return { schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
@@ -296,9 +318,6 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
   state.knowledge = [...(state.knowledge ?? []), {
     fact_id: 'ratsha_surrender_without_further_harm_committed',
     knowledge_state: 'known_from_committed_conversation_event',
-    evidence_refs: ['phase9-postgres-fixture'] }, {
-    fact_id: 'promise_current_active',
-    knowledge_state: 'known_from_committed_promise_state',
     evidence_refs: ['phase9-postgres-fixture'] }];
   await pool.query('BEGIN');
   try {
@@ -327,13 +346,6 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
         'ratsha_surrender_without_further_harm_committed',
         'known_from_committed_conversation_event',
         JSON.stringify(['phase9-postgres-fixture'])]);
-    await pool.query(
-      `INSERT INTO party_runtime.party_character_knowledge(
-         party_id,character_id,fact_id,knowledge_state,evidence)
-       VALUES($1,$2,$3,$4,$5::jsonb) ON CONFLICT DO NOTHING`,
-      [partyId, state.actor_id, 'promise_current_active',
-        'known_from_committed_promise_state',
-        JSON.stringify(['phase9-postgres-fixture'])]);
     await pool.query('COMMIT');
   } catch (error) {
     await pool.query('ROLLBACK');
@@ -344,10 +356,11 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
 function activity(actor, targetRefs) { return { op: 'request_activity',
   actor_ref: actor, activity_kind: 'other', target_refs: targetRefs,
   description: 'Выполнить утверждённый шаг расследования.' }; }
-function dispositionSelection() { return [
-  'hold_ratsha_and_zhdanko_for_authorized_handover',
-  'preserve_recovered_property_for_savva_handover',
-  'preserve_active_no_summary_killing_promise']; }
+function dispositionSelection(request) {
+  const value = request.player_safe_state.temporary_disposition_options;
+  return [value.custody_option_refs[0], value.property_option_refs[0],
+    value.promise_option_refs[0]];
+}
 function testimonyClaim() { return {
   claim_id: 'trace_ld_v1_assertion_onisim_testimony',
   content_summary: 'Онисим сообщает, что перед столкновением слышал голос '

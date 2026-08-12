@@ -34,6 +34,8 @@ export function assertLowerDvinaTraceM5Cutover(bundle, fail) {
     || phase9.temporary_disposition.approved_contract.version !== 2
     || phase9.temporary_disposition.approved_contract.contract_id
       !== phase9.temporary_disposition.contract_ref
+    || phase9.temporary_disposition.promise_policy_ref
+      !== bundle.promise_policy?.policy_id
     || phase9.temporary_disposition.approved_contract
       .supersedes_contract_ref?.version !== 1
     || authoredClaim?.schema !== 'authored_statement_claim_contract_v1'

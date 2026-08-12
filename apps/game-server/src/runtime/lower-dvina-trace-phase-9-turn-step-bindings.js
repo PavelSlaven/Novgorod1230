@@ -43,6 +43,8 @@ export const TRACE_PHASE9_TURN_STEP_EXPECTED = Object.freeze({
       'record_property_unavailable_without_invention',
       'leave_unresolved_property_state_unchanged',
       'preserve_active_no_summary_killing_promise',
-      'commit_scope_breach_for_active_promise', 'record_no_active_promise']
+      'commit_scope_breach_for_active_promise',
+      'recognize_fulfilled_promise', 'recognize_broken_promise',
+      'record_no_active_promise']
   }
 });

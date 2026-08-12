@@ -1,5 +1,6 @@
 import { planApprovedPropertyTransition } from '@rus/items-property';
 import { buildTemporaryDispositionProposal,
+  planTemporaryDispositionPromiseOutcome,
   resolveTemporaryDispositionOptions } from '@rus/social-law';
 import { selectTemporaryDispositionOptions } from '@rus/turn';
 import { resolveEvidenceConclusions } from '@rus/visibility-knowledge-memory';
@@ -66,8 +67,19 @@ export function dispositionPlan(state, contracts, selectedOptionRefs) {
   const optionSet = state.phase9?.temporary_disposition_options;
   const selection = selectTemporaryDispositionOptions({ option_set: optionSet,
     selected_option_refs: selectedOptionRefs });
-  return buildTemporaryDispositionProposal({ contract: contracts.disposition,
+  const proposal = buildTemporaryDispositionProposal({
+    contract: contracts.disposition,
     option_set: optionSet, selection });
+  const promiseOutcome = planTemporaryDispositionPromiseOutcome({
+    policy: contracts.promisePolicy, disposition_proposal: proposal,
+    current_promise: state.promise_instances?.[0] ?? null });
+  return { ...structuredClone(proposal),
+    promise_outcome: structuredClone(promiseOutcome),
+    committed_fact_outputs: [...new Set([
+      ...proposal.committed_fact_outputs,
+      promiseOutcome.basis_fact_id,
+      promiseOutcome.transition?.current_state_projection?.next_fact
+    ].filter(Boolean))] };
 }
 
 function dispositionInput(state, contracts) {
@@ -100,9 +112,7 @@ function dispositionInput(state, contracts) {
 export function returnAvailable(state, contracts) {
   return state.position?.location_ref === contracts.ids.storehouse
     && !(state.combat_sessions ?? []).some(({ status }) => status !== 'ended')
-    && state.player_response_boundary == null
-    && currentItem(state, contracts.packet.item_id)?.placement
-      ?.holder_character_id === state.actor_id;
+    && state.player_response_boundary == null;
 }
 export const atCamp = (state, contracts) =>
   state.position?.location_ref === contracts.ids.camp;

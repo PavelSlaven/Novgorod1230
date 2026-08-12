@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { buildLegalConsequencePackage, buildSocialRisk,
   buildTemporaryDispositionProposal, evaluateRights, planPromiseLifecycle,
+  planTemporaryDispositionPromiseOutcome,
   PromiseLifecyclePlanningError, resolveTemporaryDispositionOptions,
   validateSocialBinding } from '../src/index.js';
 
@@ -86,7 +87,7 @@ test('social-law owns temporary disposition applicability and typed proposal',
       committed_fact_id: 'temporary_promise_obligation_preserved' });
   });
 
-test('promise lifecycle planner produces only approved initialization, offer, and activation proposals', () => {
+test('promise lifecycle planner produces every approved policy transition', () => {
   const initialize = planPromiseLifecycle({ policy, operation:'initialize', parties, witness_slots, scope, current_state:null, causal_basis:{ committed_fact_ids:[] } });
   assert.deepEqual(initialize.current_state_projection, {
     state_slot:'trace_ld_v1_promise_no_summary_killing_current_state', expected_previous_fact:null,
@@ -109,7 +110,65 @@ test('promise lifecycle planner produces only approved initialization, offer, an
   assert.equal(activate.history_event.fact_id, 'promise_activated');
   assert.equal(activate.current_state_projection.next_fact, 'promise_current_active');
   assert.equal(Object.isFrozen(activate), true);
+  const fulfill = planPromiseLifecycle({ policy, operation:'fulfill', parties,
+    witness_slots, scope, current_state:{ state_slot:
+      'trace_ld_v1_promise_no_summary_killing_current_state',
+    fact_id:'promise_current_active' }, causal_basis:{
+      committed_fact_ids:['promise_fulfillment_basis_committed'] } });
+  assert.equal(fulfill.history_event.fact_id, 'promise_fulfilled');
+  assert.equal(fulfill.current_state_projection.next_fact,
+    'promise_current_fulfilled');
+  const broken = planPromiseLifecycle({ policy, operation:'break', parties,
+    witness_slots, scope, current_state:{ state_slot:
+      'trace_ld_v1_promise_no_summary_killing_current_state',
+    fact_id:'promise_current_active' }, causal_basis:{
+      committed_fact_ids:['promise_breach_basis_committed'] } });
+  assert.equal(broken.history_event.fact_id, 'promise_broken');
+  assert.equal(broken.current_state_projection.next_fact,
+    'promise_current_broken');
 });
+
+test('temporary disposition derives lifecycle basis and recognizes terminal promise',
+  () => {
+    const optionSet = resolveTemporaryDispositionOptions({
+      committed_fact_ids: [
+        'ratsha_surrender_without_further_harm_committed',
+        'zhdanko_submission_committed', 'sealed_packet_returned',
+        'promise_current_active'],
+      committed_actor_predicates: [], committed_witness_slots: witness_slots,
+      committed_property_owner_ref:
+        'trace_ld_v1_external_owner_savva_tverdich',
+      contract: dispositionContract });
+    const proposal = buildTemporaryDispositionProposal({
+      contract: dispositionContract, option_set: optionSet, selection: {
+        schema: 'temporary_disposition_selection_v1',
+        contract_ref: dispositionContract.contract_id,
+        contract_revision: dispositionContract.version,
+        selected_option_ids: {
+          custody: 'hold_ratsha_and_zhdanko_for_authorized_handover',
+          property: 'preserve_recovered_property_for_savva_handover',
+          promise: 'preserve_active_no_summary_killing_promise' } } });
+    const outcome = planTemporaryDispositionPromiseOutcome({ policy,
+      disposition_proposal: proposal, current_promise: {
+        current_state: 'active', current_state_fact: 'promise_current_active'
+      } });
+    assert.equal(outcome.basis_fact_id,
+      'promise_fulfillment_basis_committed');
+    assert.equal(outcome.transition.current_state_projection.next_fact,
+      'promise_current_fulfilled');
+
+    const terminalOptions = resolveTemporaryDispositionOptions({
+      committed_fact_ids: [
+        'ratsha_surrender_without_further_harm_committed',
+        'zhdanko_submission_committed', 'sealed_packet_returned',
+        'promise_current_broken'], committed_actor_predicates: [],
+      committed_witness_slots: witness_slots,
+      committed_property_owner_ref:
+        'trace_ld_v1_external_owner_savva_tverdich',
+      contract: dispositionContract });
+    assert.deepEqual(terminalOptions.eligible_option_ids.promise,
+      ['recognize_broken_promise']);
+  });
 
 test('promise lifecycle planner fails closed on policy, parties, witnesses, scope, state, and causal basis mismatches', () => {
   const input = {
@@ -135,8 +194,8 @@ test('promise lifecycle planner fails closed on policy, parties, witnesses, scop
     else candidate.causal_basis = value;
     assert.throws(() => planPromiseLifecycle(candidate), (error) => error instanceof PromiseLifecyclePlanningError && error.code === code);
   }
-  assert.throws(
-    () => planPromiseLifecycle({ ...input, operation:'fulfill' }),
-    (error) => error instanceof PromiseLifecyclePlanningError && error.code === 'PROMISE_OPERATION_NOT_ALLOWED'
-  );
+  assert.throws(() => planPromiseLifecycle({ ...input,
+    operation:'unsupported' }), (error) =>
+    error instanceof PromiseLifecyclePlanningError
+      && error.code === 'PROMISE_OPERATION_NOT_ALLOWED');
 });

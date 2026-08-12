@@ -24,6 +24,8 @@ const ROUTE_TEXT =
 test('Phase 9 recovers property, commits testimony and stops at temporary disposition',
   async () => {
     const state = phase8CampState(bundle);
+    Object.assign(state.promise_instances[0], { current_state: 'active',
+      current_state_fact: 'promise_current_active', state_version: 3 });
     state.knowledge = [...(state.knowledge ?? []),
       committedKnowledge('ratsha_surrender_without_further_harm_committed'),
       committedKnowledge('promise_current_active')];
@@ -176,8 +178,15 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       .temporary_disposition_memory.option_id,
     'preserve_active_no_summary_killing_promise');
     assert.equal(Object.hasOwn(runtime.state, 'completion_state'), false);
-    assert.deepEqual(runtime.state.promise_instances[0].current_state,
-      promiseBefore[0].current_state);
+    assert.equal(promiseBefore[0].current_state, 'active');
+    assert.equal(runtime.state.promise_instances[0].current_state,
+      'fulfilled');
+    assert.equal(runtime.state.promise_instances[0].current_state_fact,
+      'promise_current_fulfilled');
+    assert.equal(runtime.state.promise_instances[0].state_version,
+      Number(promiseBefore[0].state_version) + 2);
+    assert.equal(runtime.state.phase9.committed_facts.includes(
+      'promise_fulfillment_basis_committed'), true);
     assert.deepEqual(runtime.state.phase9.checkpoints.map(({ kind }) => kind),
       ['bag_recovery', 'bag_opened', 'packet_recovered', 'return_to_camp',
         'onisim_testimony', 'evidence_resolved', 'temporary_disposition']);
@@ -192,11 +201,15 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       .temporary_custody, true);
     assert.equal(runtime.state.promise_instances[0]
       .temporary_disposition_memory.status, 'recorded');
+    assert.equal(runtime.state.promise_instances[0].current_state,
+      'fulfilled');
   });
 
 test('Onisim silence remains an unknown evidence branch through restart',
   async () => {
     const state = phase8CampState(bundle);
+    Object.assign(state.promise_instances[0], { current_state: 'active',
+      current_state_fact: 'promise_current_active', state_version: 3 });
     state.phase9 = { status: 'active', checkpoints: [], committed_facts: [
       'ratsha_surrender_without_further_harm_committed',
       'zhdanko_submission_committed', 'sealed_packet_returned',
@@ -370,7 +383,7 @@ function plan(request, ids) {
     target_actor_refs: [ids.onisim], content: text, instrument_refs: [] };
   else if (text.includes('Сопоставить')) operation = activity(actor,
     ['trace_ld_v1_clue_evidence_graph_set']);
-  else operation = activity(actor, dispositionSelection());
+  else operation = activity(actor, dispositionSelection(request));
   return { schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
@@ -384,10 +397,27 @@ function plan(request, ids) {
 function activity(actor, targetRefs) { return { op: 'request_activity',
   actor_ref: actor, activity_kind: 'other', target_refs: targetRefs,
   description: 'Выполнить утверждённый шаг расследования.' }; }
-function dispositionSelection() { return [
-  'hold_ratsha_and_zhdanko_for_authorized_handover',
-  'preserve_recovered_property_for_savva_handover',
-  'preserve_active_no_summary_killing_promise']; }
+function dispositionSelection(request) {
+  const projected = request.player_safe_state.temporary_disposition_options;
+  const eligible = { custody: projected?.custody_option_refs,
+    property: projected?.property_option_refs,
+    promise: projected?.promise_option_refs };
+  const choose = (dimension, preferred) => preferred.find((id) =>
+    eligible[dimension]?.includes(id));
+  const selected = [choose('custody', [
+    'hold_ratsha_and_zhdanko_for_authorized_handover',
+    'hold_ratsha_zhdanko_absent', 'hold_zhdanko_ratsha_absent',
+    'hold_zhdanko_ratsha_present_not_held',
+    'preserve_open_case_without_custody']), choose('property', [
+    'preserve_recovered_property_for_savva_handover',
+    'record_property_unavailable_without_invention',
+    'leave_unresolved_property_state_unchanged']), choose('promise', [
+    'preserve_active_no_summary_killing_promise',
+    'recognize_fulfilled_promise', 'recognize_broken_promise',
+    'record_no_active_promise', 'commit_scope_breach_for_active_promise'])]
+    .filter(Boolean);
+  return selected;
+}
 function testimonyClaim() { return {
   claim_id: 'trace_ld_v1_assertion_onisim_testimony',
   content_summary: 'Онисим сообщает, что перед столкновением слышал голос '

@@ -138,16 +138,14 @@ function appendTemporaryDisposition({ updates, appends, partyId, state, next,
       state_version: promise.state_version,
       created_change_set_id: promise.created_change_set_id,
       last_change_set_id: changeSetId }));
-    const ordinal = Number(prior.state_version) - 1;
-    appends.push(row('party_obligation_transitions',
-      `${promise.obligation_id}:${ordinal}`, {
-        obligation_transition_id: `${promise.obligation_id}:${ordinal}`,
-        party_id: partyId, obligation_id: promise.obligation_id,
-        transition_ordinal: ordinal, from_state: prior.current_state,
-        to_state: promise.current_state,
-        transition_kind: 'temporary_disposition_promise_memory_recorded',
-        causal_basis: { committed_fact_ids: [
-          promise.temporary_disposition_memory.committed_fact_id] },
+    const lifecycle = next.phase9.promise_outcome?.transition ?? null;
+    const transitionRow = ({ ordinal, from, to, kind, causalBasis }) =>
+      row('party_obligation_transitions',
+        `${promise.obligation_id}:${ordinal}`, {
+          obligation_transition_id: `${promise.obligation_id}:${ordinal}`,
+          party_id: partyId, obligation_id: promise.obligation_id,
+          transition_ordinal: ordinal, from_state: from, to_state: to,
+          transition_kind: kind, causal_basis: causalBasis,
         witness_snapshot: promise.witness_actor_ids.map((id) => ({
           entity_kind: 'npc', entity_id: id })),
         activity_execution_id:
@@ -158,8 +156,21 @@ function appendTemporaryDisposition({ updates, appends, partyId, state, next,
         occurred_at_whole_minutes: factual.time_update.clock_after.whole_minutes,
         occurred_at_subminute_numerator:
           factual.time_update.clock_after.subminute_numerator,
-        occurred_at_subminute_denominator:
-          factual.time_update.clock_after.subminute_denominator }));
+          occurred_at_subminute_denominator:
+            factual.time_update.clock_after.subminute_denominator });
+    const firstOrdinal = Number(prior.state_version) - 1;
+    if (lifecycle != null) {
+      appends.push(transitionRow({ ordinal: firstOrdinal,
+        from: prior.current_state, to: promise.current_state,
+        kind: lifecycle.history_event.fact_id,
+        causalBasis: structuredClone(lifecycle.causal_basis) }));
+    }
+    const memoryOrdinal = firstOrdinal + (lifecycle == null ? 0 : 1);
+    appends.push(transitionRow({ ordinal: memoryOrdinal,
+      from: promise.current_state, to: promise.current_state,
+      kind: 'temporary_disposition_promise_memory_recorded',
+      causalBasis: { committed_fact_ids: [
+        promise.temporary_disposition_memory.committed_fact_id] } }));
   }
 }
 

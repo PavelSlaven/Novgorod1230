@@ -53,6 +53,7 @@ export function resolveTracePhase9Contracts({ state, bundle,
   const historicalDisposition = exact(profiles.temporary_disposition_contracts,
     'contract_id', binding.temporary_disposition.contract_ref);
   const disposition = binding.temporary_disposition.approved_contract;
+  const promisePolicy = bundle.promise_policy;
   const statementEffect = exact(policies.statement_effect_contracts,
     'statement_effect_contract_id',
     binding.onisim_testimony.statement_effect_contract_ref);
@@ -88,6 +89,9 @@ export function resolveTracePhase9Contracts({ state, bundle,
       || binding.owner_contracts?.disposition_applicability
         !== '@rus/social-law'
       || binding.owner_contracts?.disposition_selection !== '@rus/turn'
+      || binding.temporary_disposition.promise_policy_ref
+        !== promisePolicy?.policy_id
+      || promisePolicy?.owner !== '@rus/social-law'
       || statementEffect.forbidden_write_targets?.includes('objective_truth')
         !== true
       || testimonyTemplate.speaker_ref !== IDS.onisimSlot
@@ -117,7 +121,8 @@ export function resolveTracePhase9Contracts({ state, bundle,
     .map((profile) => ({ id: profile.profile_id, version: profile.version,
       digest: canonicalDigest(profile) }));
   const artifactPins = [bundle.artifact_pins.phase_9_bindings,
-    bundle.artifact_pins.turn_step_bindings].map((pin) => ({ id: pin.key,
+    bundle.artifact_pins.turn_step_bindings,
+    bundle.artifact_pins.promise_policy].map((pin) => ({ id: pin.key,
       revision: pin.revision, digest: `sha256:${pin.digest}`,
       canonical_digest: pin.canonical_digest }));
   return Object.freeze({ binding, bag: structuredClone(bag),
@@ -125,6 +130,7 @@ export function resolveTracePhase9Contracts({ state, bundle,
       ref: IDS.onisimSlot },
     activities, transitions, route: structuredClone(route),
     disposition: structuredClone(disposition),
+    promisePolicy: structuredClone(promisePolicy),
     evidenceGraph: structuredClone(bundle.clue_evidence_graph_set),
     sourceEndpoint, destinationEndpoint, access, capacity,
     campAnchor: campScene.anchor.instance_id,

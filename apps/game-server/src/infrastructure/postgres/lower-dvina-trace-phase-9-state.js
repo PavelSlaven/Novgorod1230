@@ -141,6 +141,7 @@ function applyTemporaryDisposition(next, proposal, changeSetId) {
   next.phase9.property_handover_plan = structuredClone(
     proposal.property_handover_plan);
   next.phase9.promise_memory = structuredClone(proposal.promise_memory);
+  next.phase9.promise_outcome = structuredClone(proposal.promise_outcome);
   const heldSlots = new Set(proposal.custody_state.party_slots);
   const custodySlots = new Set(['ratsha_storehouse_helper',
     'zhdanko_storehouse_controller']);
@@ -158,18 +159,32 @@ function applyTemporaryDisposition(next, proposal, changeSetId) {
   packet.state = { ...(packet.state ?? {}), property_state: {
     ...(packet.state?.property_state ?? {}), temporary_handover_plan:
       structuredClone(proposal.property_handover_plan) } };
-  const activePromise = (next.promise_instances ?? []).find(
-    ({ current_state: state }) => state === 'active')
-    ?? next.promise_instances?.[0];
-  if (proposal.promise_memory.option_id
-      !== 'record_no_active_promise' && activePromise == null) {
+  const promise = next.promise_instances?.[0] ?? null;
+  if (proposal.promise_outcome?.kind !== 'no_active_promise'
+      && promise == null) {
     fail('TRACE_PHASE_9_PROMISE_STATE_MISSING');
   }
-  if (activePromise != null) {
-    activePromise.temporary_disposition_memory = structuredClone(
+  if (promise != null) {
+    const transition = proposal.promise_outcome?.transition ?? null;
+    if (transition != null) {
+      const projection = transition.current_state_projection;
+      if (promise.current_state_fact !== projection.expected_previous_fact
+          || promise.current_state !== 'active') {
+        fail('TRACE_PHASE_9_PROMISE_STATE_CONFLICT');
+      }
+      promise.current_state_fact = projection.next_fact;
+      promise.current_state = projection.next_fact.replace(
+        'promise_current_', '');
+    } else if (proposal.promise_outcome?.kind === 'terminal_state_recognized'
+        && promise.current_state
+          !== proposal.promise_outcome.recognized_current_state) {
+      fail('TRACE_PHASE_9_PROMISE_STATE_CONFLICT');
+    }
+    promise.temporary_disposition_memory = structuredClone(
       proposal.promise_memory);
-    activePromise.state_version = Number(activePromise.state_version) + 1;
-    activePromise.last_change_set_id = changeSetId;
+    promise.state_version = Number(promise.state_version)
+      + (transition == null ? 1 : 2);
+    promise.last_change_set_id = changeSetId;
   }
 }
 

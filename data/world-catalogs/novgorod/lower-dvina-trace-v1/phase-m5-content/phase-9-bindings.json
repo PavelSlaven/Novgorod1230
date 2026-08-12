@@ -110,6 +110,7 @@
   "temporary_disposition": {
     "activity_profile_ref": "trace_ld_v1_activity_temporary_decision",
     "contract_ref": "trace_ld_v1_temporary_disposition_contract",
+    "promise_policy_ref": "trace_ld_v1_promise_no_summary_killing",
     "approved_contract": {
       "contract_id": "trace_ld_v1_temporary_disposition_contract",
       "schema": "rus.trace_temporary_disposition_contract.v1",
@@ -270,6 +271,22 @@
           ],
           "scope": "temporary_disposition_allows_summary_killing_or_revenge_without_hearing",
           "committed_fact_output": "temporary_promise_scope_breach_committed"
+        },
+        {
+          "option_id": "recognize_fulfilled_promise",
+          "required_committed_facts": [
+            "promise_current_fulfilled"
+          ],
+          "scope": "existing_fulfilled_promise_state_unchanged",
+          "committed_fact_output": "temporary_promise_fulfilled_state_recognized"
+        },
+        {
+          "option_id": "recognize_broken_promise",
+          "required_committed_facts": [
+            "promise_current_broken"
+          ],
+          "scope": "existing_broken_promise_state_unchanged",
+          "committed_fact_output": "temporary_promise_broken_state_recognized"
         },
         {
           "option_id": "record_no_active_promise",

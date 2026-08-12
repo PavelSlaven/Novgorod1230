@@ -266,7 +266,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 5);
+    opened.party_id), 6);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {

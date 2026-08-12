@@ -123,11 +123,12 @@ export function appendApprovedRatshaKnife({ updates, state, next, n, partyId,
       ratsha_storehouse_helper: contracts.actors.ratsha_storehouse_helper.instance_id,
       trace_ld_v1_audience_slot_participating_fisher: n.participating_fisher_id
     },
-    items: state.items, item_profiles: committedInventory.item_profiles,
-    item_placements: state.items.map((entry) => ({ party_id: partyId,
-      item_id: entry.item_id, holder_character_id: entry.placement.holder_character_id ?? null,
-      holder_npc_id: entry.placement.holder_npc_id ?? null,
-      physical_position: entry.placement.physical_position })),
+    items: committedInventory.items,
+    item_profiles: committedInventory.item_profiles,
+    item_placements: committedInventory.item_placements,
+    containers: committedInventory.containers,
+    container_placements: committedInventory.container_placements,
+    container_profiles: committedInventory.container_profiles,
     ownership: state.items.map((entry) => ({
       ...structuredClone(entry.ownership),
       item_id: entry.item_id

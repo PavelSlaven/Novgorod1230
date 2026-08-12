@@ -78,6 +78,11 @@ and configured slice/candidate/iteration limits fail closed with typed errors.
    technical steps run. Heterogeneous technical steps are scheduled by their
    approved exact completion time; the exchange stops at the earliest boundary,
    persists progress for later steps and rechecks them from the evolved state.
+   A due combat technical step is registered as a normal `activity` candidate
+   in that same cross-domain batch. The common resolution-class order therefore
+   applies hazards/access before the step and reactions after its factual
+   result; combat never drains an external batch and executes the step in a
+   separate post-batch loop.
    A route traversal inside that slice returns a shared-clock paused/terminal
    result and never commits a second clock update. Meaningful outcome events
    then aggregate into the next combat decision batch without reusing the

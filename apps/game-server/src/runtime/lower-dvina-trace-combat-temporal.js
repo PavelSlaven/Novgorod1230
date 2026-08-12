@@ -2,26 +2,30 @@ import { addElapsedTime, compareRationalMinutes, subtractGameTimestamp } from
   '@rus/time-events-history';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
-import { COMBAT_PROGRESS_EFFECT_REF } from
+import { combatTechnicalStepTemporalCandidates } from '@rus/turn';
+import { COMBAT_COMPLETION_EFFECT_REF, COMBAT_PROGRESS_EFFECT_REF } from
   './lower-dvina-trace-combat-temporal-effect-owner.js';
 
 const SOURCE = versioned('dynamic_recheck_policy',
   'lower-dvina-trace-pending-boundaries', '1');
-const PROGRESS = versioned('dynamic_recheck_policy',
-  'combat-step-progress', '1');
+const COMPLETIONS = versioned('dynamic_recheck_policy',
+  'combat-technical-step-completions', '1');
 
 export function createTraceCombatTemporalSliceOwner({ temporalAdvanceOwner,
   partyId, rootTurnId, idempotencyKey }) {
   return ({ working_state: working, requested_at: clockBefore,
-    exact_duration: planned, steps, step_timings: stepTimings }) => {
+    exact_duration: planned, session, steps,
+    step_timings: stepTimings, resolve_combat_step: resolveCombatStep }) => {
     const candidates = structuredClone(
       working.temporal_boundary_candidates ?? []);
     if (typeof temporalAdvanceOwner?.advance !== 'function') {
-      if (candidates.length === 0) return { working_state: working,
-        exact_duration: planned, temporal_advance_results: [] };
       fail('TRACE_COMBAT_TEMPORAL_OWNER_MISSING');
     }
     const limit = addElapsedTime(clockBefore, planned);
+    const completionCandidates = combatTechnicalStepTemporalCandidates({
+      session, steps, requested_at: clockBefore,
+      technical_step_timings: stepTimings,
+      scope_ref: ref('party', partyId) });
     const request = temporalRequest({ working, clockBefore, limit,
       candidates, partyId, rootTurnId, idempotencyKey });
     const advanced = temporalAdvanceOwner.advance({ request,
@@ -29,8 +33,31 @@ export function createTraceCombatTemporalSliceOwner({ temporalAdvanceOwner,
       temporal_resolution_policy_version: 'temporal-resolution-v1',
       safety_limits: { max_slices: 20, max_candidates: 100,
         max_iterations: 100 }, source_provider_ref: SOURCE,
-      source_candidates: candidates, registered_provider_ref: PROGRESS,
-      registered_effects: [], continuous_effect: {
+      source_candidates: candidates, registered_provider_ref: COMPLETIONS,
+      registered_effects: completionCandidates.map((candidate) => ({
+        candidate, effect_ref: COMBAT_COMPLETION_EFFECT_REF,
+        input: { technical_step_id: candidate.boundary_id } })),
+      resolve_registered_effect({ candidate, context, effect_ref: effectRef,
+        descriptor }) {
+        if (effectRef?.entity_ref?.entity_id
+            !== COMBAT_COMPLETION_EFFECT_REF.entity_ref.entity_id
+            || typeof resolveCombatStep !== 'function') {
+          fail('TRACE_COMBAT_TEMPORAL_COMPLETION_INVALID');
+        }
+        const resolved = resolveCombatStep({
+          technical_step_id: descriptor.technical_step_id,
+          working_state: context.projection,
+          exact_duration: context.slice_plan.planned_elapsed,
+          synchronized_time_slice_result_id: context.slice_plan.slice_id,
+          occurred_at: candidate.scheduled_at });
+        if (resolved?.working_state == null) {
+          fail('TRACE_COMBAT_TEMPORAL_COMPLETION_INVALID');
+        }
+        return { disposition: 'execute', proposals: [],
+          state_projection: resolved.working_state,
+          follow_up_candidates: [] };
+      },
+      continuous_effect: {
         effect_ref: COMBAT_PROGRESS_EFFECT_REF, input: {
           steps: structuredClone(steps),
           step_timings: structuredClone(stepTimings) } },
@@ -76,7 +103,7 @@ function temporalRequest({ working, clockBefore, limit, candidates, partyId,
     idempotency_context: { record_id: `idem:${identity}`,
       idempotency_key: `${idempotencyKey}:combat-slice`,
       change_set_id: `change:${identity}` },
-    provider_versions: [SOURCE, PROGRESS] };
+    provider_versions: [SOURCE, COMPLETIONS] };
 }
 function visibleEnvelope(request) {
   const payload = { schema: 'temporal_visible_package.v1',

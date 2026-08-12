@@ -3,14 +3,16 @@ import {
   combatBodyThresholdSignalProfile,
   buildCombatDecisionSignalDescriptors,
   buildCombatOutcomeEvents,
-  buildCombatStepHarmPackage,
   buildCombatTechnicalStepProposal,
   validateCombatSession
 } from '@rus/combat-health';
-import { applyBodyStateChange, detectBodyThresholdCrossings } from '@rus/body-state';
-import { executeCheck } from '@rus/checks-rng'; import { deepFreeze } from '@rus/kernel';
+import { deepFreeze } from '@rus/kernel';
 import { addElapsedTime, compareRationalMinutes, normalizeGameTimestamp } from '@rus/time-events-history';
 import { recordCombatBlockedStep, recordCombatInvalidIntent } from './combat-blocked-events.js';
+import { currentCombatStepApplicable, findCombatIntent,
+  resolveDueCombatStep, validCombatExecutionProfile,
+  validateCombatOwnerEvents, validateCombatOwnerResult } from
+  './combat-step-resolution.js';
 import { advanceCombatStepProgressForSlice, clearCombatStepProgress,
   earliestCombatStepDuration, orderedCombatStepTimings,
   resolveCombatStepTimings, retainCombatStepProgress,
@@ -61,6 +63,25 @@ export async function prepareCombatExchange(input = {}) {
     unorderedStepTimings);
   let sliceDuration = earliestCombatStepDuration(plannedStepTimings);
   let temporalAdvanceResults = [];
+  const results = { checks: [], harms: [], body: [], items: [], positions: [],
+    continuous_positions: [], by_step: new Map() };
+  const resolvedDueStepIds = new Set();
+  const resolveCombatStep = ({ technical_step_id: stepId,
+    working_state: working, exact_duration: elapsed,
+    synchronized_time_slice_result_id: sliceResultId,
+    occurred_at: completedAt }) => {
+    const step = steps.find(({ proposal_id: id }) => id === stepId);
+    if (!step || resolvedDueStepIds.has(stepId)) {
+      throw combatError('TURN_COMBAT_TEMPORAL_OWNER_INVALID');
+    }
+    resolvedDueStepIds.add(stepId);
+    return { working_state: resolveDueCombatStep({ step,
+      workingState: working, occurredAt: completedAt,
+      exactDuration: elapsed, synchronizedSliceResultId: sliceResultId,
+      session: next, timings: plannedStepTimings, ports, randomSource:
+      random_source, bodyThresholdProfile: body_threshold_profile,
+      blockedDescriptors, blockedStepEvents, results }) };
+  };
   const positivePlannedDuration = BigInt(
     sliceDuration.exact_minutes.numerator) > 0n;
   if (typeof ports.advanceTemporalSlice === 'function'
@@ -68,7 +89,8 @@ export async function prepareCombatExchange(input = {}) {
     const temporal = await ports.advanceTemporalSlice({ session: next,
       working_state: state, requested_at: exchangeStartedAt,
       exact_duration: sliceDuration, steps,
-      step_timings: plannedStepTimings });
+      step_timings: plannedStepTimings,
+      resolve_combat_step: resolveCombatStep });
     validateTemporalSlice(temporal, sliceDuration);
     sliceDuration = structuredClone(temporal.exact_duration);
     temporalAdvanceResults = structuredClone(
@@ -80,8 +102,6 @@ export async function prepareCombatExchange(input = {}) {
     compareRationalMinutes(duration.exact_minutes,
       sliceDuration.exact_minutes) === 0).map(
     ({ technical_step_ref: ref }) => ref.entity_id));
-  const results = { checks: [], harms: [], body: [], items: [], positions: [],
-    continuous_positions: [], by_step: new Map() };
   const synchronizedSliceResultId = temporalAdvanceResults.at(-1)
     ?.processed_slice_refs?.at(-1)?.entity_id
     ?? `combat-time-slice:${next.combat_id}:${next.exchange_ordinal}`;
@@ -98,60 +118,26 @@ export async function prepareCombatExchange(input = {}) {
   if (typeof ports.advanceTemporalSlice !== 'function') {
     state = advanceCombatStepProgressForSlice(state, steps,
       plannedStepTimings, sliceDuration);
+    for (const step of steps.filter(({ proposal_id: id }) =>
+      dueStepIds.has(id))) {
+      state = resolveCombatStep({ technical_step_id: step.proposal_id,
+        working_state: state, exact_duration: sliceDuration,
+        synchronized_time_slice_result_id: synchronizedSliceResultId,
+        occurred_at: plannedCompletedAt }).working_state;
+    }
+  } else if (!sameIds(resolvedDueStepIds, dueStepIds)) {
+    throw combatError('TURN_COMBAT_TEMPORAL_OWNER_INVALID');
   }
   const dueSteps = steps.filter((step) => dueStepIds.has(step.proposal_id));
-  for (const step of dueSteps) {
-    state = clearCombatStepProgress(state, step);
-    const intent = findIntent(next, step.intent_ref.entity_id);
-    if (!currentStepApplicable(next, step, intent, state)) {
-      recordCombatBlockedStep({ session: next, step, intent,
-        occurredAt: plannedCompletedAt, descriptors: blockedDescriptors,
-        events: blockedStepEvents });
-      continue;
-    }
-    const profile = ports.resolveExecutionProfile({ session: next, intent, working_state: state, step });
-    if (!validProfile(profile) || profile.applicable === false) {
-      recordCombatBlockedStep({ session: next, step, intent,
-        occurredAt: plannedCompletedAt, descriptors: blockedDescriptors,
-        events: blockedStepEvents });
-      continue;
-    }
-    const executed = executeStep({ step, intent, profile, state, random_source, body_threshold_profile });
-    applyBodyTerminalStatuses(next, executed.body);
-    results.checks.push(...executed.checks);
-    results.harms.push(...executed.harms);
-    results.body.push(...executed.body);
-    results.by_step.set(step.proposal_id, executed);
-    const item = ports.applyItemTransitions({ step, intent,
-      check_result: executed.check, harm: executed.harm, working_state: state });
-    validateOwnerResult(item, 'item');
-    validateOwnerEvents(item?.outcome_events, step, next);
-    results.items.push(item ?? null);
-    const position = ports.applyPositionTransitions({ step, intent,
-      check_result: executed.check, harm: executed.harm,
-      working_state: item?.working_state ?? state,
-      temporal_slice: temporalSlice(step) });
-    validateOwnerResult(position, 'position');
-    validateOwnerEvents(position?.outcome_events, step, next);
-    results.positions.push(position ?? null);
-    executed.item = item ?? null;
-    executed.position = position ?? null;
-    applyParticipantStatusUpdates(next,
-      item?.participant_status_updates ?? [], 'item', step);
-    applyParticipantStatusUpdates(next,
-      position?.participant_status_updates ?? [], 'position', step);
-    applyTerminalIntentStatus(next, intent, executed.check, position);
-    state = structuredClone(position?.working_state ?? item?.working_state ?? state);
-  }
   for (const step of pendingSteps) {
-    const intent = findIntent(session, step.intent_ref.entity_id);
+    const intent = findCombatIntent(session, step.intent_ref.entity_id);
     if (!intent || !['reach', 'break_contact'].includes(intent.intent_kind)) {
       continue;
     }
     const profile = ports.resolveExecutionProfile({ session: next, intent,
       working_state: state, step });
-    const applicable = currentStepApplicable(next, step, intent, state)
-      && validProfile(profile) && profile.applicable !== false;
+    const applicable = currentCombatStepApplicable(next, step, intent, state)
+      && validCombatExecutionProfile(profile) && profile.applicable !== false;
     if (!applicable) {
       state = clearCombatStepProgress(state, step);
       recordCombatBlockedStep({ session: next, step, intent,
@@ -164,15 +150,15 @@ export async function prepareCombatExchange(input = {}) {
         step.proposal_id),
       temporal_slice: { ...temporalSlice(step),
         continuation_allowed: applicable } });
-    validateOwnerResult(position, 'position');
-    validateOwnerEvents(position?.outcome_events, step, next);
+    validateCombatOwnerResult(position, 'position');
+    validateCombatOwnerEvents(position?.outcome_events, step, next);
     results.positions.push(position ?? null);
     results.continuous_positions.push({ step, position: position ?? null });
     state = structuredClone(position?.working_state ?? state);
   }
   state = retainCombatStepProgress(state, steps.filter((step) => {
-    const intent = findIntent(next, step.intent_ref.entity_id);
-    return currentStepApplicable(next, step, intent, state);
+    const intent = findCombatIntent(next, step.intent_ref.entity_id);
+    return currentCombatStepApplicable(next, step, intent, state);
   }));
 
   const appliedAnyStep = results.by_step.size > 0;
@@ -233,7 +219,7 @@ export async function prepareCombatExchange(input = {}) {
     exact_duration: exactDuration,
     technical_step_timings: technicalStepTimings
   });
-  validateOwnerResult(perceived, 'perception');
+  validateCombatOwnerResult(perceived, 'perception');
   const resolvedSession = perceived?.session_after == null
     ? next : structuredClone(perceived.session_after);
   if (!validateCombatSession(resolvedSession)
@@ -305,7 +291,7 @@ function buildStepProposals(session, state, ports, blocked, blockedEvents,
     if (!intent || intent.status !== 'active'
         || !['active', 'disengaging'].includes(participant.combat_status)) continue;
     const profile = ports.resolveExecutionProfile({ session, intent, working_state: state });
-    if (!validProfile(profile) || profile.applicable === false) {
+    if (!validCombatExecutionProfile(profile) || profile.applicable === false) {
       recordCombatInvalidIntent({ session, intent, occurredAt,
         descriptors: blocked, events: blockedEvents });
       continue;
@@ -317,26 +303,6 @@ function buildStepProposals(session, state, ports, blocked, blockedEvents,
     initialProfiles.set(proposal.proposal_id, structuredClone(profile));
   }
   return { proposals, initialProfiles };
-}
-
-function executeStep({ step, intent, profile, state, random_source, body_threshold_profile }) {
-  const check = step.check_request === null ? null : executeCheck({ ...step.check_request,
-    check_id: `combat-check:${step.proposal_id}`, difficulty: step.check_request.target_defense }, random_source);
-  const harm = step.step_kind === 'attack' && check
-    ? buildCombatStepHarmPackage({ check_result: check, attack_request: step.check_request }) : null;
-  const body = [];
-  if (harm?.health_loss > 0) {
-    const target = intent.target_refs[0];
-    const actor = state.actor_states?.[`${target.entity_kind}\0${target.entity_id}`];
-    if (actor?.body_state) {
-      const before = actor.body_state;
-      const after = applyBodyStateChange(before, { harm: { health: harm.health_loss } });
-      actor.body_state = after;
-      body.push({ actor_ref: target, body_before: before, body_after: after,
-        threshold_crossings: body_threshold_profile ? detectBodyThresholdCrossings({ before, after, thresholds: body_threshold_profile.thresholds }) : [] });
-    }
-  }
-  return { check, harm, checks: check ? [check] : [], harms: harm ? [harm] : [], body };
 }
 
 function requireActiveSession(session) { if (!validateCombatSession(session) || session.status !== 'active') throw combatError('TURN_COMBAT_SESSION_INVALID'); }
@@ -365,100 +331,9 @@ function approvedBodySignal(crossing) {
   }
   return structuredClone(crossing.decision_signal);
 }
-function validProfile(value) { return value && typeof value === 'object' && (value.applicable === false || typeof value.preconditions_digest === 'string'); }
 function validateStepOrder(steps, proposals) { if (!Array.isArray(steps) || steps.length !== proposals.length || new Set(steps.map((step) => step.proposal_id)).size !== proposals.length) throw combatError('TURN_COMBAT_TECHNICAL_ORDER_INVALID'); return steps; }
-function findIntent(session, intentId) { return session.participant_states.find((participant) => participant.current_intent?.intent_id === intentId)?.current_intent; }
-function currentStepApplicable(session, step, intent, workingState) {
-  if (!intent || intent.status !== 'active') return false;
-  const actor = session.participant_states.find((participant) =>
-    refKey(participant.actor_ref) === refKey(step.actor_ref));
-  if (!actor || !['active', 'disengaging'].includes(actor.combat_status)
-      || actor.current_intent?.intent_id !== intent.intent_id
-      || actorHasNoHealth(step.actor_ref, workingState)) return false;
-  if (!['engage', 'control'].includes(intent.intent_kind)) return true;
-  return intent.target_refs.every((target) => {
-    const participant = session.participant_states.find((candidate) =>
-      refKey(candidate.actor_ref) === refKey(target));
-    return participant
-      && ['active', 'disengaging'].includes(participant.combat_status);
-  });
-}
-function actorHasNoHealth(actor, workingState) {
-  const health = workingState.actor_states?.[
-    `${actor.entity_kind}\0${actor.entity_id}`]?.body_state?.health;
-  return Number.isFinite(Number(health)) && Number(health) <= 0;
-}
-function applyBodyTerminalStatuses(session, bodyTransitions) {
-  for (const transition of bodyTransitions) {
-    if (Number(transition.body_after?.health) > 0) continue;
-    const participant = session.participant_states.find(({ actor_ref: actor }) =>
-      refKey(actor) === refKey(transition.actor_ref));
-    if (!participant) throw combatError('TURN_COMBAT_BODY_TARGET_INVALID');
-    participant.combat_status = 'incapacitated';
-    participant.current_intent = null;
-    participant.next_action_boundary_ref = null;
-  }
-}
-function validateOwnerResult(value, owner) { if (value !== undefined && (value === null || typeof value !== 'object')) throw combatError(`TURN_COMBAT_${owner.toUpperCase()}_OWNER_INVALID`); }
-function validateOwnerEvents(events = [], step, session) {
-  if (!Array.isArray(events) || events.some((event) =>
-    typeof event?.event_id !== 'string' || event.event_id.length === 0
-    || typeof event.event_kind !== 'string' || event.event_kind.length === 0
-    || event.combat_id !== session.combat_id
-    || event.source_step_ref?.entity_kind !== 'combat_technical_step'
-    || event.source_step_ref.entity_id !== step.proposal_id)) {
-    throw combatError('TURN_COMBAT_DOMAIN_EVENT_INVALID');
-  }
-}
-function applyParticipantStatusUpdates(session, updates, owner, step) {
-  if (!Array.isArray(updates)) throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
-  for (const update of updates) {
-    const participant = session.participant_states.find(({ actor_ref: actor }) =>
-      actor.entity_kind === update?.actor_ref?.entity_kind
-      && actor.entity_id === update?.actor_ref?.entity_id);
-    if (!participant || !['active','disengaging','restrained','surrendered',
-      'incapacitated','left'].includes(update.combat_status)) {
-      throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
-    }
-    if (update.combat_status === 'left'
-        && (owner !== 'position'
-          || update.actor_ref.entity_kind !== step.actor_ref.entity_kind
-          || update.actor_ref.entity_id !== step.actor_ref.entity_id
-          || participant.current_intent?.intent_kind !== 'break_contact')) {
-      throw combatError('TURN_COMBAT_DOMAIN_OWNER_INVALID');
-    }
-    participant.combat_status = update.combat_status;
-    if (update.clear_intent === true) {
-      participant.current_intent = participant.current_intent
-        && ['active', 'disengaging', 'restrained'].includes(
-          update.combat_status)
-        ? { ...participant.current_intent, status: 'invalidated' }
-        : null;
-    }
-  }
-}
-function applyTerminalIntentStatus(session, intent, check, position) {
-  if (check?.outcome?.success === false) return;
-  const participant = session.participant_states.find(({ actor_ref: actor }) =>
-    actor.entity_kind === intent.actor_ref.entity_kind
-    && actor.entity_id === intent.actor_ref.entity_id);
-  if (!participant) throw combatError('TURN_COMBAT_ACTOR_NOT_ACTIVE');
-  if (intent.intent_kind === 'surrender') {
-    participant.combat_status = 'surrendered';
-    participant.current_intent = null;
-  } else if (intent.intent_kind === 'break_contact') {
-    if (participant.combat_status === 'left') {
-      participant.current_intent = null;
-    } else {
-      participant.combat_status = 'disengaging';
-    }
-  } else if (intent.intent_kind === 'reach'
-      && position?.completed_intent === true) {
-    participant.current_intent = { ...participant.current_intent,
-      status: 'completed' };
-  } else if (intent.intent_kind === 'cease_hostility') {
-    participant.current_intent = null;
-  }
+function sameIds(left, right) {
+  return left.size === right.size && [...left].every((id) => right.has(id));
 }
 function combatHasEnded(session) {
   const capable = session.participant_states.filter(({ combat_status: status }) =>

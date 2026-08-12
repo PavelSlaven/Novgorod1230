@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { addElapsedTime } from '@rus/time-events-history';
+import { orderCombatTechnicalSteps, prepareCombatExchange } from '@rus/turn';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { fixture, loadScenarioBundle } from
   './lower-dvina-trace-phase-2-fixture.js';
+import { projectTraceCombatWorkingState } from
+  '../src/runtime/lower-dvina-trace-combat-working-state.js';
+import { createTraceCombatTemporalSliceOwner } from
+  '../src/runtime/lower-dvina-trace-combat-temporal.js';
 import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
 
@@ -136,6 +141,115 @@ test('Phase 4 break_contact pauses at the earlier combat boundary exactly once',
       input: resumed });
     assert.equal(restarted.commitCount(), restartedCommits);
     assert.equal(Number(restarted.state.clock.whole_minutes), before + 3);
+  });
+
+test('same-time external and combat completions share canonical temporal order',
+  async () => {
+    const seed = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle });
+    const state = structuredClone(seed.state);
+    const ratsha = state.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'ratsha_storehouse_helper');
+    const shed = state.prepared_scenes.find(({ location_profile_ref: id }) =>
+      id === 'trace_ld_v1_loc_old_drying_shed');
+    const camp = state.prepared_scenes.find(({ location_profile_ref: id }) =>
+      id === 'trace_ld_v1_loc_fishing_camp');
+    const combatId = 'combat:phase4:same-time';
+    const ratshaRef = { entity_kind: 'npc', entity_id: ratsha.instance_id };
+    const playerRef = { entity_kind: 'player_character',
+      entity_id: state.actor_id };
+    const playerIntent = { schema: 'combat_intent_v1',
+      intent_id: 'intent:player:same-time-break-contact', combat_id: combatId,
+      actor_ref: playerRef, intent_kind: 'break_contact', target_refs: [],
+      protected_refs: [], scope_ref: null, destination_ref: {
+        entity_kind: 'location_anchor', entity_id: camp.anchor.instance_id },
+      force_limit: 'ordinary', risk_posture: 'ordinary',
+      persistence: 'until_decision_boundary',
+      created_from_boundary_ref: { entity_kind: 'player_combat_response_boundary',
+        entity_id: 'boundary:player:same-time-hold' },
+      state_version: '1', status: 'active' };
+    const session = { schema: 'combat_session_v1', combat_id: combatId,
+      state_version: '1', status: 'active',
+      started_at: structuredClone(state.clock), scope_ref: {
+        entity_kind: 'location', entity_id: shed.location_profile_ref },
+      participant_refs: [playerRef, ratshaRef], participant_states: [
+        { actor_ref: playerRef, combat_status: 'active',
+          current_intent: playerIntent, next_action_boundary_ref: null },
+        { actor_ref: ratshaRef, combat_status: 'active',
+          current_intent: null, next_action_boundary_ref: null }
+      ], exchange_ordinal: 0, last_exchange_ref: null,
+      player_response_required: false, last_change_set_ref: null };
+    const external = boundary(state, addElapsedTime(state.clock, {
+      exact_minutes: { numerator: '2', denominator: '1' } }));
+    external.boundary_id = 'boundary:combat-same-time-hazard';
+    external.idempotency_key = 'timer:combat-same-time-hazard:1';
+    external.resolution_class = 'physical_hazard_access';
+    const reaction = structuredClone(external);
+    reaction.boundary_id = 'boundary:combat-same-time-reaction';
+    reaction.idempotency_key = 'timer:combat-same-time-reaction:1';
+    reaction.resolution_class = 'reaction_decision';
+    reaction.rule_ref.entity_ref.entity_id = 'rule:combat-same-time-reaction';
+    reaction.policy_ref.entity_ref.entity_id =
+      'policy:combat-same-time-reaction';
+    state.temporal_boundary_candidates = [external, reaction];
+    let reactionObservedBlocked = false;
+    const temporalAdvanceOwner = createTemporalAdvanceOwner({
+      source_registrations: [{ rule_ref: external.rule_ref,
+        policy_ref: external.policy_ref,
+        resolve(_candidate, { projection }) {
+          const next = structuredClone(projection);
+          next.same_time_hazard_resolved = true;
+          return { disposition: 'execute', proposals: [],
+            state_projection: next, follow_up_candidates: [] };
+        } }, { rule_ref: reaction.rule_ref, policy_ref: reaction.policy_ref,
+        resolve(_candidate, { projection }) {
+          const current = projection.combat_sessions.find(
+            ({ combat_id: id }) => id === combatId).participant_states[0]
+            .current_intent;
+          assert.equal(current.status, 'invalidated');
+          reactionObservedBlocked = true;
+          return { disposition: 'execute', proposals: [],
+            state_projection: projection, follow_up_candidates: [] };
+        } }], effect_registrations:
+        lowerDvinaTraceCombatTemporalEffectRegistrations() });
+    const result = await prepareCombatExchange({ session,
+      working_state: { ...projectTraceCombatWorkingState(state),
+        combat_sessions: [structuredClone(session)],
+        temporal_boundary_candidates: [external, reaction] },
+      occurred_at: state.clock,
+      idempotency_key: 'phase4-combat-same-time',
+      random_source: { next: () => 0.5 }, ports: {
+        advanceTemporalSlice: createTraceCombatTemporalSliceOwner({
+          temporalAdvanceOwner, partyId: state.party_id,
+          rootTurnId: 'turn:phase4-combat-same-time',
+          idempotencyKey: 'phase4-combat-same-time' }),
+        resolveCombatTiming: () => ({ occurred_at: state.clock,
+          exact_duration: { exact_minutes: { numerator: '2',
+            denominator: '1' } }, timing_profile_ref: 'hold-2m' }),
+        orderTechnicalSteps: (input) => orderCombatTechnicalSteps(input),
+        resolveExecutionProfile: ({ working_state: working }) => ({
+          applicable: working.same_time_hazard_resolved !== true,
+          preconditions_digest: 'b'.repeat(64), check_request: null,
+          position_plan: { movement_ref: 'same-time-test-route' } }),
+        applyItemTransitions: ({ working_state: working }) => ({
+          working_state: working }),
+        applyPositionTransitions: ({ working_state: working }) => ({
+          working_state: working }),
+        resolvePerceptionAndDecisionContexts: async ({ session: current,
+          working_state: working }) => ({ session_after: current,
+          working_state: working, signal_records: [] })
+      } });
+    const combat = result.prepared;
+    const processed = combat.temporal_advance_results[0]
+      .trace.processed_boundary_ids;
+    assert.equal(processed.length, 3);
+    assert.equal(processed[0], external.boundary_id);
+    assert.match(processed[1], /^combat-step:/);
+    assert.equal(processed[2], reaction.boundary_id);
+    assert.equal(reactionObservedBlocked, true);
+    assert.equal(combat.outcome_events.some(({ event_kind: kind,
+      actor_ref: actor }) => kind === 'combat_step_blocked'
+        && actor.entity_id === state.actor_id), true);
   });
 
 function boundary(state, scheduledAt) {

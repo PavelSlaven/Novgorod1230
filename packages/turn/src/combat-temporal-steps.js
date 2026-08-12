@@ -28,21 +28,38 @@ export function orderCombatTechnicalSteps({ session, proposals,
       || proposals.some((proposal) => !proposal?.proposal_id)) {
     fail('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
   }
-  const participantOrder = new Map(session.participant_states.map(
-    ({ actor_ref: actor }, index) => [refKey(actor), index]));
   const actorKeys = proposals.map(({ actor_ref: actor }) => refKey(actor));
-  if (new Set(actorKeys).size !== actorKeys.length
-      || actorKeys.some((key) => !participantOrder.has(key))) {
+  if (new Set(actorKeys).size !== actorKeys.length) {
     fail('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
   }
   const byId = new Map(proposals.map((proposal) => [proposal.proposal_id,
     proposal]));
-  const timingById = timingMap(timings, proposals);
-  const candidates = proposals.map((proposal) => temporalCandidate(proposal,
-    session, participantOrder.get(refKey(proposal.actor_ref)), requestedAt,
-    timingById.get(proposal.proposal_id) ?? null));
+  const candidates = combatTechnicalStepTemporalCandidates({ session,
+    steps: proposals, requested_at: requestedAt,
+    technical_step_timings: timings });
   return deepFreeze(normalizeTemporalBoundaryCandidates(candidates)
     .map(({ boundary_id: id }) => byId.get(id)));
+}
+
+export function combatTechnicalStepTemporalCandidates({ session, steps,
+  requested_at: requestedAt = session?.started_at,
+  technical_step_timings: timings = null,
+  scope_ref: scopeRef = session?.scope_ref } = {}) {
+  if (!validSessionParticipants(session) || !Array.isArray(steps)
+      || steps.some((step) => !step?.proposal_id)) {
+    fail('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
+  }
+  const participantOrder = new Map(session.participant_states.map(
+    ({ actor_ref: actor }, index) => [refKey(actor), index]));
+  const actorKeys = steps.map(({ actor_ref: actor }) => refKey(actor));
+  if (new Set(actorKeys).size !== actorKeys.length
+      || actorKeys.some((key) => !participantOrder.has(key))) {
+    fail('TURN_COMBAT_TECHNICAL_ORDER_INVALID');
+  }
+  const timingById = timingMap(timings, steps);
+  return deepFreeze(steps.map((step) => temporalCandidate(step, session,
+    participantOrder.get(refKey(step.actor_ref)), requestedAt,
+    timingById.get(step.proposal_id) ?? null, scopeRef)));
 }
 
 export function resolveCombatStepTimings({ session, steps, workingState,
@@ -194,21 +211,24 @@ function timingMap(timings, proposals) {
   }
   return byId;
 }
-function temporalCandidate(proposal, session, ordinal, requestedAt, timing) {
+function temporalCandidate(proposal, session, ordinal, requestedAt, timing,
+  scopeRef = session.scope_ref) {
   const orderId = String(ordinal).padStart(8, '0');
   return { boundary_id: proposal.proposal_id,
-    boundary_kind: 'combat_technical_step',
+    boundary_kind: 'activity',
     scheduled_at: timing == null ? normalizeGameTimestamp(requestedAt)
       : addElapsedTime(requestedAt, timing.exact_duration),
-    source_ref: proposal.intent_ref, primary_subject_ref: proposal.actor_ref,
-    subject_refs: [proposal.actor_ref], scope_ref: session.scope_ref,
-    rule_ref: { entity_ref: { entity_kind: 'combat_participant_precedence',
+    source_ref: { entity_kind: 'party_timed_activity_execution',
+      entity_id: proposal.proposal_id },
+    primary_subject_ref: proposal.actor_ref,
+    subject_refs: [proposal.actor_ref], scope_ref: scopeRef,
+    rule_ref: { entity_ref: { entity_kind: 'action_contract',
       entity_id: `combat-order:${orderId}` }, authoring_version: '1' },
-    policy_ref: { entity_ref: { entity_kind: 'temporal_policy',
+    policy_ref: { entity_ref: { entity_kind: 'activity_contract',
       entity_id: 'combat-due-step-order-v1' }, authoring_version: '1' },
     preconditions_digest: proposal.preconditions_digest ?? proposal.proposal_id,
-    resolution_class: 'execution_outcome', interrupt_effect: 'interruptible',
-    visibility_policy_ref: { entity_ref: { entity_kind: 'visibility_policy',
+    resolution_class: 'execution_outcome', interrupt_effect: 'background',
+    visibility_policy_ref: { entity_ref: { entity_kind: 'visibility_modifier',
       entity_id: 'combat-step-v1' }, authoring_version: '1' },
     idempotency_key: proposal.idempotency_key ?? proposal.proposal_id,
     causal_parent_refs: [] };

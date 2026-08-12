@@ -1,3 +1,5 @@
+import { sha256 } from '@rus/kernel';
+
 export function normalizedPartyAssets({ items, containers, obligations,
   clock }) {
   return {
@@ -70,4 +72,35 @@ export function normalizedPartyAssets({ items, containers, obligations,
       updated_change_set_id: clock.updated_change_set_id
     }
   };
+}
+
+export function firstMismatchedProjectionPath(
+  actual, expected, path = 'persisted_projection'
+) {
+  if (sha256(actual) === sha256(expected)) return null;
+  if (Array.isArray(actual) && Array.isArray(expected)) {
+    if (actual.length !== expected.length) return `${path}.length`;
+    for (let index = 0; index < expected.length; index += 1) {
+      const mismatch = firstMismatchedProjectionPath(
+        actual[index], expected[index], `${path}[${index}]`
+      );
+      if (mismatch) return mismatch;
+    }
+    return path;
+  }
+  if (actual && expected && typeof actual === 'object'
+      && typeof expected === 'object') {
+    const keys = [...new Set([...Object.keys(actual), ...Object.keys(expected)])]
+      .sort();
+    for (const key of keys) {
+      if (!Object.hasOwn(actual, key) || !Object.hasOwn(expected, key)) {
+        return `${path}.${key}`;
+      }
+      const mismatch = firstMismatchedProjectionPath(
+        actual[key], expected[key], `${path}.${key}`
+      );
+      if (mismatch) return mismatch;
+    }
+  }
+  return path;
 }

@@ -1,6 +1,6 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
-import { normalizedPartyAssets } from
+import { firstMismatchedProjectionPath, normalizedPartyAssets } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
@@ -390,7 +390,9 @@ function assertRoundTrip({
     const mismatchedSections = Object.keys(expectedProjection ?? {}).filter(
       (key) => sha256(actualProjection?.[key]) !== sha256(expectedProjection[key])
     );
-    const firstMismatch = firstMismatchedPath(actualProjection, expectedProjection);
+    const firstMismatch = firstMismatchedProjectionPath(
+      actualProjection, expectedProjection
+    );
     const error = new Error(
       'Committed Lower Dvina trace normalized projection differs from the approved snapshot.'
       + (mismatchedSections.length > 0
@@ -401,35 +403,6 @@ function assertRoundTrip({
     error.code = 'LOWER_DVINA_TRACE_REHYDRATE_INCOMPLETE';
     throw error;
   }
-}
-
-function firstMismatchedPath(actual, expected, path = 'persisted_projection') {
-  if (sha256(actual) === sha256(expected)) return null;
-  if (Array.isArray(actual) && Array.isArray(expected)) {
-    if (actual.length !== expected.length) return `${path}.length`;
-    for (let index = 0; index < expected.length; index += 1) {
-      const mismatch = firstMismatchedPath(
-        actual[index], expected[index], `${path}[${index}]`
-      );
-      if (mismatch) return mismatch;
-    }
-    return path;
-  }
-  if (actual && expected && typeof actual === 'object'
-      && typeof expected === 'object') {
-    const keys = [...new Set([...Object.keys(actual), ...Object.keys(expected)])]
-      .sort();
-    for (const key of keys) {
-      if (!Object.hasOwn(actual, key) || !Object.hasOwn(expected, key)) {
-        return `${path}.${key}`;
-      }
-      const mismatch = firstMismatchedPath(
-        actual[key], expected[key], `${path}.${key}`
-      );
-      if (mismatch) return mismatch;
-    }
-  }
-  return path;
 }
 
 function buildActualPersistedProjection({

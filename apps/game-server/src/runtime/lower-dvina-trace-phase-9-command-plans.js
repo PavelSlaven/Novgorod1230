@@ -89,7 +89,8 @@ function dispositionInput(state, contracts) {
   return { committed_fact_ids: facts,
     committed_actor_predicates: [...new Set(actorPredicates)].sort(),
     committed_witness_slots: [...new Set(witnessSlots)].sort(),
-    committed_property_owner_ref: packet?.ownership?.owner_external_ref ?? null,
+    committed_property_owner_ref: externalOwnerId(
+      packet?.ownership?.owner_external_ref),
     contract: contracts.disposition };
 }
 
@@ -163,5 +164,8 @@ function currentContainer(state, id) {
 function currentItem(state, id) {
   return structuredClone((state.items ?? []).find(
     ({ item_id: ref }) => ref === id));
+}
+function externalOwnerId(value) {
+  return typeof value === 'string' ? value : value?.entity_id ?? null;
 }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

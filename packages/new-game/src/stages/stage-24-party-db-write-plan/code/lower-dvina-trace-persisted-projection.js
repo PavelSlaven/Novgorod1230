@@ -161,7 +161,8 @@ export function buildLowerDvinaTracePersistedProjection({
         owner_npc_id: item.owner_npc_id ?? null,
         owner_character_id: item.owner_character_id ?? null,
         owner_party: false,
-        owner_external_ref: item.owner_external_ref ?? null,
+        owner_external_ref: normalizeExternalOwnerRef(
+          item.owner_external_ref),
         controller_npc_id: item.controller_npc_id ?? null,
         controller_character_id: item.controller_character_id ?? null,
         claim_state: item.claim_state
@@ -219,4 +220,10 @@ export function buildLowerDvinaTracePersistedProjection({
       updated_change_set_id: changeSetId
     }
   };
+}
+
+export function normalizeExternalOwnerRef(value) {
+  return typeof value === 'string' && value.length > 0
+    ? { entity_kind: 'external_owner', entity_id: value }
+    : value ?? null;
 }

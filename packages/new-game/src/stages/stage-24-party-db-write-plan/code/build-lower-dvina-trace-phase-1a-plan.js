@@ -10,7 +10,8 @@ import {
   buildPartyCatalogPinRecord
 } from './runtime-catalog-pins.js';
 import {
-  buildLowerDvinaTracePersistedProjection
+  buildLowerDvinaTracePersistedProjection,
+  normalizeExternalOwnerRef
 } from './lower-dvina-trace-persisted-projection.js';
 
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
@@ -290,7 +291,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     owner_npc_id: item.owner_npc_id ?? null,
     owner_character_id: item.owner_character_id ?? null,
     owner_party: false,
-    owner_external_ref: item.owner_external_ref ?? null,
+    owner_external_ref: normalizeExternalOwnerRef(item.owner_external_ref),
     controller_npc_id: item.controller_npc_id ?? null,
     controller_character_id: item.controller_character_id ?? null,
     claim_state: item.claim_state

@@ -347,8 +347,10 @@ test('revision 17 persists the sealed packet inside the road bag with Savva owne
     if (record.holder_npc_id != null) assert.equal(
       npcIds.has(record.holder_npc_id), true);
   }
-  assert.equal(ownership.owner_external_ref,
-    'trace_ld_v1_external_owner_savva_tverdich');
+  assert.deepEqual(ownership.owner_external_ref, {
+    entity_kind: 'external_owner',
+    entity_id: 'trace_ld_v1_external_owner_savva_tverdich'
+  });
   assert.equal(ownership.controller_npc_id, zhdanko.instance_id);
 });
 

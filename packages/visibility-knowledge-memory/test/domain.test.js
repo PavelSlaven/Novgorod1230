@@ -386,15 +386,27 @@ test('statement evidence requires the authored assertion and source lineage',
       'trace_ld_v1_knowledge_scope_hired_boatman_v1',
     evidence_ref: 'onisim-evidence' });
     assert.equal(ordinary.committed, false);
-    const unrelatedUtterance = resolveAuthoredStatementEvidence({ statement: {
-      ...base, utterance_text: 'Жданко нанимал мою лодку.',
+    const equivalentUtterance = resolveAuthoredStatementEvidence({ statement: {
+      ...base, utterance_text: 'Я узнал голос Жданко, слышал удар по лодке '
+        + 'и помню, как Ратша спас меня после крушения.',
       claims: [structuredClone(authoredClaim.claim)] },
     speaker, statement_template: template, statement_effect: effect,
     authored_claim: authoredClaim,
     knowledge_scope_ref:
       'trace_ld_v1_knowledge_scope_hired_boatman_v1',
     evidence_ref: 'onisim-evidence' });
-    assert.equal(unrelatedUtterance.committed, false);
+    assert.equal(equivalentUtterance.committed, true);
+    const outsideKnowledge = structuredClone(authoredClaim.claim);
+    outsideKnowledge.source_knowledge_refs = [{ entity_kind: 'knowledge_scope',
+      entity_id: 'trace_ld_v1_knowledge_scope_hidden_zhdanko_truth' }];
+    const unsupported = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [outsideKnowledge] }, speaker,
+    statement_template: template, statement_effect: effect,
+    authored_claim: authoredClaim,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(unsupported.committed, false);
     const testimony = resolveAuthoredStatementEvidence({ statement: {
       ...base, claims: [structuredClone(authoredClaim.claim)] },
     speaker, statement_template: template, statement_effect: effect,

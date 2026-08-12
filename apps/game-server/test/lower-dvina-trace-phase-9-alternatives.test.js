@@ -38,11 +38,10 @@ test('Zhdanko fleeing with the bag still admits unresolved disposition',
 
     const create = (committedState) => runtime(committedState, ids, {
       npcSemanticModel: (request) => npcSpeechPlan(request, {
-        utteranceText: bundle.phase_9_bindings.onisim_testimony
-          .authored_claim_contract.utterance_text,
+        utteranceText: 'Я узнал голос Жданко и помню удар по лодке, а '
+          + 'Ратша после крушения спас меня и унёс к сушильне.',
         dominantAct: 'inform', claims: [testimonyClaim()],
-        supportingOperations: [{ op: 'assert_authored_claim',
-          claim_id: 'trace_ld_v1_assertion_onisim_testimony' }] }) });
+        supportingOperations: [] }) });
     let game = create(state);
     await submit(game, 'fled-return', 'Вернуться всей группой к Онисиму.');
     assert.equal(game.state.position.location_ref,

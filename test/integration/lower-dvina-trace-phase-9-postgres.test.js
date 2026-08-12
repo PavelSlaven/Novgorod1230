@@ -205,12 +205,11 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
     turnStepModel: (request) => phase9Plan(request, ids),
     playerConversationModel: (request) => playerPlan(request, {}),
     npcSemanticModel: (request) => npcSpeechPlan(request, {
-      utteranceText: 'Перед столкновением я слышал голос Жданко. '
-        + 'Я помню удар шеста в борт и рывок за сумку. После крушения '
-        + 'Ратша вытащил меня из воды, связал и отнёс к сушильне.',
+      utteranceText: 'Голос Жданко я узнал до столкновения, затем слышал '
+        + 'удар по лодке и рывок за сумку. После крушения Ратша спас меня, '
+        + 'связал и перенёс к сушильне.',
       dominantAct: 'inform', claims: [testimonyClaim()],
-      supportingOperations: [{ op: 'assert_authored_claim',
-        claim_id: 'trace_ld_v1_assertion_onisim_testimony' }] }),
+      supportingOperations: [] }),
     npcCombatModel: () => { throw new Error('combat must not restart'); },
     semanticResolver: async ({ action_set: actionSet }) => ({
       option_id: actionSet[0].option_id }),

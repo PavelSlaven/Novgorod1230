@@ -6,8 +6,6 @@ import { freezeResult, ref, sameTimeBatchKey } from
 import { resolveAuthoredStatementEvidence } from
   '@rus/visibility-knowledge-memory';
 
-const TESTIMONY_OPERATION = 'assert_authored_claim';
-
 export async function prepareTracePhase9PlayerPlan(input) {
   return prepareM2PlayerConversationPlan(contextFor(input));
 }
@@ -84,8 +82,7 @@ function contextFor({ state, contracts, playerInput, inputDigest,
       contracts.binding.onisim_testimony.knowledge_scope_ref)],
     combat_target_refs: [] },
     activityProfile: contracts.binding.onisim_testimony.activity_profile,
-    playerPlan, classifyNpcPlan: (plan) => classifyTestimonyPlan(plan,
-      contracts),
+    playerPlan, classifyNpcPlan: classifyTestimonyPlan,
     resolveNpcConversationContext({ target_actor: actor }) {
       return actor.instance_id === contracts.onisim.instance_id ? {
         npcOperationContract: testimonyOperationContract(contracts),
@@ -94,32 +91,21 @@ function contextFor({ state, contracts, playerInput, inputDigest,
         npcContributionReferencePolicy: { entity_refs: [], knowledge_refs: [
           ref('knowledge_scope', contracts.binding.onisim_testimony
             .knowledge_scope_ref)], combat_target_refs: [] },
-        classifyNpcPlan: (plan) => classifyTestimonyPlan(plan, contracts)
+        classifyNpcPlan: classifyTestimonyPlan
       } : null;
     } });
 }
 
-function classifyTestimonyPlan(plan, contracts) {
-  const operation = plan?.supporting_operations?.[0];
-  const speechOperationValid = plan?.contribution_kind !== 'speech'
-    ? (plan?.supporting_operations?.length ?? 0) === 0
-    : plan.supporting_operations?.length === 1
-      && operation?.op === TESTIMONY_OPERATION
-      && operation.claim_id === contracts.binding.onisim_testimony
-        .authored_claim_contract.claim_id
-      && Object.keys(operation).length === 2;
+function classifyTestimonyPlan(plan) {
   if (plan?.activity?.duration_class !== 'domain_owned'
       || !['speech', 'silence', 'leave_conversation']
         .includes(plan.contribution_kind)
-      || !speechOperationValid) fail();
+      || (plan?.supporting_operations?.length ?? 0) !== 0) fail();
   return plan.contribution_kind === 'speech'
     ? { kind: plan.contribution_kind, statementRef: null }
     : { kind: plan.contribution_kind };
 }
-function testimonyOperationContract(contracts) {
-  return { [TESTIMONY_OPERATION]: structuredClone(
-    contracts.binding.onisim_testimony.authored_claim_contract) };
-}
+function testimonyOperationContract() { return {}; }
 function fail() { throw Object.assign(new Error(
   'Onisim testimony must remain a subjective speech contribution.'),
 { code: 'TRACE_PHASE_9_ONISIM_PLAN_INVALID' }); }

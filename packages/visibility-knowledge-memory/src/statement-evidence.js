@@ -40,8 +40,7 @@ export function resolveAuthoredStatementEvidence({ statement, speaker,
     && claim.source_knowledge_refs?.length === 1
     && claim.source_knowledge_refs[0]?.entity_kind === 'knowledge_scope'
     && claim.source_knowledge_refs[0]?.entity_id === knowledgeScopeRef
-    && sameValue(claim, authoredClaim?.claim)
-    && statement.utterance_text === authoredClaim?.utterance_text);
+    && sameValue(claim, authoredClaim?.claim));
   if (authoredClaim?.schema !== 'authored_statement_claim_contract_v1'
       || authoredClaim.statement_template_ref
         !== template.statement_template_id

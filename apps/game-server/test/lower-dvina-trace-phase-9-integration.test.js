@@ -62,12 +62,11 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
         testimonyCalls += 1;
         testimonyRequests.push(structuredClone(request));
         return npcSpeechPlan(request, {
-          utteranceText: 'Перед столкновением я слышал голос Жданко. '
-            + 'Я помню удар шеста в борт и рывок за сумку. После крушения '
-            + 'Ратша вытащил меня из воды, связал и отнёс к сушильне.',
+          utteranceText: 'Голос Жданко я узнал ещё до столкновения. Потом '
+            + 'был удар шестом, кто-то рванул сумку, а Ратша уже после '
+            + 'крушения вытащил меня, связал и унёс к сушильне.',
           dominantAct: 'inform', claims: [testimonyClaim()],
-          supportingOperations: [{ op: 'assert_authored_claim',
-            claim_id: 'trace_ld_v1_assertion_onisim_testimony' }]
+          supportingOperations: []
         });
       },
       npcCombatModel: (request) => combatPlan(request, ids) });
@@ -128,9 +127,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     assert.equal(testimonyCalls, 1);
     assert.equal(JSON.stringify(testimonyRequests[0])
       .includes('document_contents'), false);
-    assert.equal(testimonyRequests[0].decision_scope.operation_contract
-      .assert_authored_claim.claim_id,
-    'trace_ld_v1_assertion_onisim_testimony');
+    assert.deepEqual(testimonyRequests[0].decision_scope.operation_contract,
+      {});
     assert.equal(runtime.state.phase9.onisim_testimony.objective_truth_write,
       'forbidden');
     assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,

@@ -96,23 +96,28 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     await seedPostCombatPhase9State(pool, party.party_id, ids);
 
     const checkpoints = [
-      ['bag', 'Забрать дорожную сумку у Жданко.'],
-      ['open', 'Открыть возвращённую дорожную сумку.'],
-      ['packet', 'Извлечь свёрток и осмотреть печать, не вскрывая документ.'],
-      ['return', 'Вернуться всей группой к Онисиму в рыбацкий стан.'],
-      ['testimony', 'Попросить Онисима рассказать, что он знает о Жданко и свёртке.'],
-      ['evidence', 'Сопоставить печать, показание Онисима и уже известные факты.'],
-      ['disposition', 'Временно удержать Ратшу и Жданко до передачи властям, '
+      ['bag', 'bag_recovery', 'Забрать дорожную сумку у Жданко.'],
+      ['open', 'bag_opened', 'Открыть возвращённую дорожную сумку.'],
+      ['packet', 'packet_recovered',
+        'Извлечь свёрток и осмотреть печать, не вскрывая документ.'],
+      ['return', 'return_to_camp',
+        'Вернуться всей группой к Онисиму в рыбацкий стан.'],
+      ['testimony', 'onisim_testimony',
+        'Попросить Онисима рассказать, что он знает о Жданко и свёртке.'],
+      ['evidence', 'evidence_resolved',
+        'Сопоставить печать, показание Онисима и уже известные факты.'],
+      ['disposition', 'temporary_disposition',
+        'Временно удержать Ратшу и Жданко до передачи властям, '
         + 'сохранить свёрток для Саввы и соблюсти обещание Ратше.']
     ];
-    for (const [suffix, rawText] of checkpoints) {
+    for (const [suffix, expectedKind, rawText] of checkpoints) {
       const input = turn(`phase-9-postgres-${suffix}`, rawText);
       const result = await factory().submitTurn(party.party_id, input);
       assert.deepEqual(await factory().submitTurn(party.party_id, input),
         result);
       const snapshot = await latestSnapshot(pool, party.party_id);
       assert.equal(snapshot.phase9.checkpoints.at(-1).kind,
-        result.consequence.phase9_kind);
+        expectedKind);
       assert.equal(snapshot.completion_state == null, true);
     }
 
@@ -285,10 +290,10 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
         state.position.g5_anchor_id]);
     for (const npc of state.npcs) await pool.query(
       `UPDATE party_runtime.party_npcs SET anchor_id=$3,
-          machine_state=$4::jsonb,semantic_state=$5::jsonb
+          machine_state=$4::jsonb
         WHERE party_id=$1 AND npc_id=$2`,
       [partyId, npc.instance_id, npc.anchor_id,
-        JSON.stringify(npc.machine_state), JSON.stringify(npc.semantic_state)]);
+        JSON.stringify(npc.machine_state)]);
     await pool.query(
       `INSERT INTO party_runtime.party_character_knowledge(
          party_id,character_id,fact_id,knowledge_state,evidence)

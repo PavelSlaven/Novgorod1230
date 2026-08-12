@@ -4,9 +4,10 @@ import { projectSemanticConversationSnapshot } from
   './lower-dvina-trace-conversation-state.js';
 import { applyConversationTemporalNpcWrites } from
   './lower-dvina-trace-conversation-temporal.js';
+import { phase9ActivityRef } from './lower-dvina-trace-phase-9-writes.js';
 
 export function nextPhase9State({ state, factual, nextVersion, turnNumber,
-  changeSetId, inputDigest }) {
+  changeSetId, inputDigest, contracts }) {
   const phase9 = factual.consequence.phase9;
   const kind = factual.consequence.phase9_kind;
   let next = structuredClone(state);
@@ -16,6 +17,8 @@ export function nextPhase9State({ state, factual, nextVersion, turnNumber,
         proposed: factual.body_update.state_after });
   const bodyChanged = canonicalDigest(nextBody) !== canonicalDigest(
     state.body_state);
+  delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = { ...next.party_state, state_version: nextVersion,
     session_state_version: state.party_state.session_state_version + 1,
@@ -41,19 +44,24 @@ export function nextPhase9State({ state, factual, nextVersion, turnNumber,
       evidence_refs: [changeSetId] }];
     known.add(factId);
   }
+  next.knowledge = [...(next.knowledge ?? [])].sort(
+    (left, right) => left.fact_id.localeCompare(right.fact_id));
   if (kind === 'temporary_disposition') {
     next.phase9.status = 'temporary_disposition_committed';
   }
-  next.activity_history = [...(next.activity_history ?? []), {
-    activity_execution_id:
-      `activity:${state.party_id}:trace-phase9:${turnNumber}:${kind}`,
-    activity_snapshot: { phase9_kind: kind },
-    option_id: factual.mode_resolution.option_id,
-    request_id: factual.player_input.request_id, input_digest: inputDigest,
-    change_set_id: changeSetId,
-    duration_minutes: factual.consequence.duration_minutes,
-    started_at: structuredClone(factual.time_update.clock_before),
-    ended_at: structuredClone(next.clock), execution_result: { kind } }];
+  if (factual.consequence.duration_minutes > 0) {
+    next.activity_history = [...(next.activity_history ?? []), {
+      activity_execution_id:
+        `activity:${state.party_id}:trace-phase9:${turnNumber}:${kind}`,
+      activity_snapshot: { activity_ref: phase9ActivityRef(kind, contracts),
+        phase_kind: kind },
+      option_id: factual.mode_resolution.option_id,
+      request_id: factual.player_input.request_id, input_digest: inputDigest,
+      change_set_id: changeSetId,
+      duration_minutes: factual.consequence.duration_minutes,
+      started_at: structuredClone(factual.time_update.clock_before),
+      ended_at: structuredClone(next.clock), execution_result: { kind } }];
+  }
   next.last_turn = { request_id: factual.player_input.request_id,
     idempotency_key: factual.player_input.idempotency_key,
     input_digest: inputDigest, raw_text: factual.player_input.raw_text,

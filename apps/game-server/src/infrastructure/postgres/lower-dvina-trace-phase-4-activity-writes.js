@@ -159,7 +159,8 @@ export function appendPhase4ActivityExecution({
     reason_code: completed
       ? reachesPlayerBoundary
         ? 'player_response_boundary_reached'
-        : 'phase_4_activity_completed'
+        : factual.consequence.phase9_kind == null
+          ? 'phase_4_activity_completed' : 'phase_9_activity_completed'
       : 'temporal_boundary_interruption',
     progress_before: resumed ? {
       elapsed_minutes: cumulativeBefore,
@@ -171,6 +172,7 @@ export function appendPhase4ActivityExecution({
     body_effect_refs: [],
     participant_attendance: [],
     rule_and_policy_pins: {},
-    trace: {}
+    trace: factual.consequence.phase9_kind == null
+      ? {} : { kind: factual.consequence.phase9_kind }
   }));
 }

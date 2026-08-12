@@ -77,6 +77,8 @@ function packetCommand(contracts, inputDigest) {
         seal_observation: { seal_state: seal,
           document_contents_state:
             result.proposal.next.state.document_contents_state,
+          document_contents_access:
+            result.proposal.next.state.document_contents_access,
           objective_content_write: 'forbidden' },
         committed_facts: seal === 'intact'
           ? ['sealed_packet_returned', 'seal_intact',

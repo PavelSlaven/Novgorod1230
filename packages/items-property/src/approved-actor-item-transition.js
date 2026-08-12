@@ -199,9 +199,13 @@ function withController(ownership, actorId) {
 }
 function findPlacement(values, itemId) { return list(values).find((value) => value?.item_id === itemId) ?? null; }
 function normalizeActorPlacements(input) {
+  const transitionActors = new Set([
+    input.source?.actor_id,
+    input.destination?.actor_id
+  ].filter(Boolean));
   const normalize = (value) => {
     const placement = structuredClone(value);
-    if (placement?.holder_npc_id != null) {
+    if (transitionActors.has(placement?.holder_npc_id)) {
       placement.holder_character_id = placement.holder_npc_id;
       delete placement.holder_npc_id;
     }

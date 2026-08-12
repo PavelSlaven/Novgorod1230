@@ -32,7 +32,7 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
   const idemId = `idem:${partyId}:${canonicalDigest(
     factual.player_input.idempotency_key).slice(0, 20)}`;
   let next = nextPhase9State({ state, factual, nextVersion, turnNumber,
-    changeSetId, inputDigest });
+    changeSetId, inputDigest, contracts: phase9Contracts });
   const envelope = phase9VisibleEnvelope({ partyId, factual,
     visibleContext: visible, nextVersion, turnNumber, changeSetId, idemId });
   next.last_turn.visible_package = { package_id: envelope.package_id,
@@ -51,10 +51,20 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
     async (candidate) => ({ ok: candidate.party_id === partyId
       && candidate.operation_kind === `trace_phase_9_${kind}` }) });
   const semantic = factual.consequence.phase9.semantic_exchange;
+  const updatedTables = new Set(writes.updates.map(
+    ({ target_table: table }) => table));
+  const updatedContainer = writes.updates.find(
+    ({ target_table: table }) => table === 'party_containers');
   const expectedVersions = [expected('parties', partyId,
     state.party_state.state_version), expected('party_server_sessions',
     partyId, state.party_state.session_state_version),
   expected('party_clocks', partyId, state.party_state.clock_state_version),
+  ...(updatedTables.has('party_actor_body_states')
+    ? [expected('party_actor_body_states',
+      `player_character:${state.actor_id}`,
+      state.party_state.body_state_version)] : []),
+  ...(updatedContainer == null ? [] : [expected('party_containers',
+    updatedContainer.id, containerVersion(state, updatedContainer.id))]),
   ...(semantic == null ? []
     : expectedSemanticConversationSession(state, semantic))];
   const built = await builder.build({
@@ -80,8 +90,18 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
       `activity:${partyId}:trace-phase9:${turnNumber}:${kind}`],
     g4_keys: [], physical_keys: Object.values(writes).flat()
       .map((write) => `party_runtime.${write.target_table}:${write.id}`) },
-    commit_rechecks: [sealedCheck('state', { party_id: partyId,
+    commit_rechecks: [sealedCheck('physical', { party_id: partyId,
+      location_ref: state.position.location_ref,
+      g5_anchor_id: state.position.g5_anchor_id }),
+    sealedCheck('state', { party_id: partyId,
       expected_party_state_version: state.party_state.state_version }),
+    sealedCheck('pin', { dependency_pins: phase9Contracts.pins }),
+    sealedCheck('endpoint', { destination_ref:
+      factual.consequence.phase9.movement?.destination?.location_ref
+        ?? null }),
+    sealedCheck('route', { route_binding_ref:
+      factual.consequence.phase9.movement?.route_ref ?? null }),
+    sealedCheck('capacity', { party_id: partyId }),
     sealedCheck('time', { expected_clock_state_version:
       state.party_state.clock_state_version,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),
@@ -97,5 +117,13 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
 const target = (plan, name) => plan.write_targets.find(
   ({ target: id }) => id === name)?.value;
 const digest = (value) => `sha256:${String(value).replace('sha256:', '')}`;
+function containerVersion(state, containerId) {
+  const version = state.containers.find(
+    ({ container_id: id }) => id === containerId)?.state_version;
+  if (!Number.isInteger(version) || version < 0) {
+    fail('TRACE_PHASE_9_CONTAINER_VERSION_MISSING');
+  }
+  return version;
+}
 function fail(code, details = null) { throw serverError(code,
   'Phase 9 commit failed closed.', { status: 409, details }); }

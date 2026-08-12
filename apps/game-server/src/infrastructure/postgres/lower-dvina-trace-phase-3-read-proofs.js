@@ -1,6 +1,9 @@
 import { canonicalDigest } from '@rus/materialization';
 
 export function phase3ActivityReadProof(payload, rows) {
+  const phase3History = (payload.activity_history ?? []).filter(
+    ({ activity_execution_id: id }) => id.startsWith(
+      `activity:${payload.party_id}:trace-phase3:`));
   const latestRows = [...new Map(rows.map((entry) => [entry.id, entry]))
     .values()];
   const actual = latestRows.map((entry) => ({
@@ -12,7 +15,7 @@ export function phase3ActivityReadProof(payload, rows) {
     ended_at: timestampFromColumns(entry, 'last_processed_at'),
     execution_result: entry.trace
   }));
-  const expected = (payload.activity_history ?? [])
+  const expected = phase3History
     .filter((entry) => entry.activity_snapshot.consequence !== 'movement')
     .map((entry) => ({
       activity_execution_id: entry.activity_execution_id,
@@ -23,7 +26,7 @@ export function phase3ActivityReadProof(payload, rows) {
       ended_at: entry.ended_at,
       execution_result: entry.execution_result
     }));
-  const expectedById = new Map((payload.activity_history ?? []).map(
+  const expectedById = new Map(phase3History.map(
     (entry) => [entry.activity_execution_id, entry]
   ));
   const elapsedByExecution = new Map();
@@ -64,7 +67,9 @@ export function phase3NpcReadProof(payload, rows) {
 
 export function expectedPhase3Traversals(payload) {
   return (payload.activity_history ?? [])
-    .filter((entry) => entry.activity_snapshot.consequence === 'movement')
+    .filter((entry) => entry.activity_snapshot.consequence === 'movement'
+      && entry.execution_result?.traversal?.ids?.plan_id?.startsWith(
+        `route-plan:${payload.party_id}:trace-phase3:`))
     .map((entry) => {
       const traversal = entry.execution_result.traversal;
       return {

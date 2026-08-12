@@ -23,8 +23,8 @@ export function phase9VisibleEnvelope({ partyId, factual, visibleContext,
     known_context: visibleContext.known_context,
     uncertainties: visibleContext.uncertainties, hypotheses: [],
     player_safe_interruption: null, allowed_action_affordances: [] };
-  const pins = [{ dependency_role: 'runtime_contract', entity_ref: {
-    entity_kind: 'scenario_revision', entity_id: 'lower_dvina_trace_v17' },
+  const pins = [{ dependency_role: 'source_authoring', entity_ref: {
+    entity_kind: 'source_record', entity_id: 'lower_dvina_trace_v17' },
   version_pin: { pin_kind: 'authoring_version', authoring_version: '17',
     state_version: null } }];
   return { package_id: `visible:${partyId}:trace-phase9:${turnNumber}`,
@@ -73,8 +73,10 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber,
     idempotency_record_id: idemId })];
   appendBody(updates, appends, { partyId, state, next, changeSetId, idemId,
     turnNumber });
-  appendActivity({ inserts, updates, appends, partyId, state, next, factual,
-    turnNumber, changeSetId, idemId, contracts });
+  if (factual.consequence.duration_minutes > 0) {
+    appendActivity({ inserts, updates, appends, partyId, state, next, factual,
+      turnNumber, changeSetId, idemId, contracts });
+  }
   if (['bag_recovery', 'bag_opened'].includes(kind)) {
     const bag = next.containers.find(({ container_id: id }) =>
       id === phase9.property_transition.subject_id);
@@ -101,13 +103,7 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber,
 function appendActivity({ inserts, updates, appends, partyId, state, next,
   factual, turnNumber, changeSetId, idemId, contracts }) {
   const kind = factual.consequence.phase9_kind;
-  const activityRef = kind === 'return_to_camp'
-    ? contracts.activities.return.profile_id
-    : kind === 'onisim_testimony'
-      ? contracts.binding.onisim_testimony.activity_profile.profile_id
-      : kind === 'temporary_disposition'
-        ? contracts.activities.disposition.profile_id
-        : contracts.activities.inspect.profile_id;
+  const activityRef = phase9ActivityRef(kind, contracts);
   appendPhase4ActivityExecution({ inserts, updates, appends, partyId, state,
     factual, next, root: { activity_ref: activityRef,
       duration_minutes: factual.consequence.duration_minutes },
@@ -115,6 +111,16 @@ function appendActivity({ inserts, updates, appends, partyId, state, next,
     seriesOrdinal: 0,
     activitySeriesId: `series:${partyId}:trace-phase9:${turnNumber}`,
     attemptOrdinal: 0, turnNumber, changeSetId, idemId });
+}
+
+export function phase9ActivityRef(kind, contracts) {
+  return kind === 'return_to_camp'
+    ? contracts.activities.return.profile_id
+    : kind === 'onisim_testimony'
+      ? contracts.binding.onisim_testimony.activity_profile.profile_id
+      : kind === 'temporary_disposition'
+        ? contracts.activities.disposition.profile_id
+        : contracts.activities.inspect.profile_id;
 }
 
 function appendPacket({ updates, partyId, next, phase9 }) {
@@ -132,9 +138,17 @@ function appendPacket({ updates, partyId, next, phase9 }) {
     physical_position: item.placement.physical_position ?? null,
     equipment_slot_category_id: null, attached_item_id: null }),
   row('party_ownership', item.ownership.ownership_id ?? item.item_id, {
-    ...structuredClone(item.ownership), party_id: partyId,
+    party_id: partyId,
     ownership_id: item.ownership.ownership_id ?? item.item_id,
-    item_id: item.item_id }));
+    item_id: item.item_id, container_id: null,
+    owner_npc_id: item.ownership.owner_npc_id ?? null,
+    owner_character_id: item.ownership.owner_character_id ?? null,
+    owner_party: item.ownership.owner_party === true,
+    owner_external_ref: item.ownership.owner_external_ref ?? null,
+    controller_npc_id: item.ownership.controller_npc_id ?? null,
+    controller_character_id:
+      item.ownership.controller_character_id ?? null,
+    claim_state: item.ownership.claim_state }));
 }
 
 function appendMovement(input) {
@@ -152,7 +166,7 @@ function appendMovement(input) {
     const npc = next.npcs.find(({ instance_id: id }) => id === npcId);
     if (npc) updates.push(row('party_npcs', npcId, { party_id: partyId,
       npc_id: npcId, anchor_id: npc.anchor_id,
-      machine_state: npc.machine_state, semantic_state: npc.semantic_state }));
+      machine_state: npc.machine_state }));
   }
 }
 

@@ -33,8 +33,16 @@ export const TRACE_PHASE9_TURN_STEP_EXPECTED = Object.freeze({
   'lower_dvina_trace.commit_temporary_disposition': {
     minRevision: 17, operation: 'request_activity',
     kindField: 'activity_kind', kindsField: 'activity_kinds', kind: 'other',
-    targetKeys: ['ratsha', 'zhdanko', 'sealedPacket'], targetSemantics: [
-      'ratsha_storehouse_helper', 'zhdanko_storehouse_controller',
-      'sealed_packet']
+    targetKey: 'temporaryDispositionOptions', closedSelection: true,
+    targetSemantics: [
+      'hold_ratsha_and_zhdanko_for_authorized_handover',
+      'hold_ratsha_zhdanko_absent', 'hold_zhdanko_ratsha_absent',
+      'hold_zhdanko_ratsha_present_not_held',
+      'preserve_open_case_without_custody',
+      'preserve_recovered_property_for_savva_handover',
+      'record_property_unavailable_without_invention',
+      'leave_unresolved_property_state_unchanged',
+      'preserve_active_no_summary_killing_promise',
+      'commit_scope_breach_for_active_promise', 'record_no_active_promise']
   }
 });

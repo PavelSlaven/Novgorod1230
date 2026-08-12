@@ -1,6 +1,7 @@
 import { planApprovedPropertyTransition } from '@rus/items-property';
+import { commitTemporaryDispositionSelection,
+  resolveTemporaryDispositionOptions } from '@rus/turn';
 import { resolveEvidenceConclusions } from '@rus/visibility-knowledge-memory';
-import { planTemporaryDisposition } from '@rus/social-law';
 
 export function recoveryPlan(state, contracts) {
   const facts = new Set(committedFacts(state));
@@ -55,7 +56,18 @@ export function resolveEvidence(state, graph) {
     .filter((id) => admitted.has(id)).sort());
 }
 
-export function dispositionPlan(state, contracts) {
+export function dispositionOptions(state, contracts) {
+  return resolveTemporaryDispositionOptions(dispositionInput(state,
+    contracts));
+}
+
+export function dispositionPlan(state, contracts, selectedOptionRefs) {
+  return commitTemporaryDispositionSelection({ contract: contracts.disposition,
+    option_set: state.phase9?.temporary_disposition_options,
+    selected_option_refs: selectedOptionRefs });
+}
+
+function dispositionInput(state, contracts) {
   const facts = dispositionFacts(state, contracts.disposition);
   const actorPredicates = (state.npcs ?? []).flatMap((actor) => {
     const slot = actor.participant_slot_ref;
@@ -74,11 +86,11 @@ export function dispositionPlan(state, contracts) {
     role === 'escort')) witnessSlots.push(
     'trace_ld_v1_audience_slot_participating_fisher');
   const packet = currentItem(state, contracts.packet.item_id);
-  return planTemporaryDisposition({ committed_fact_ids: facts,
+  return { committed_fact_ids: facts,
     committed_actor_predicates: [...new Set(actorPredicates)].sort(),
     committed_witness_slots: [...new Set(witnessSlots)].sort(),
     committed_property_owner_ref: packet?.ownership?.owner_external_ref ?? null,
-    contract: contracts.disposition });
+    contract: contracts.disposition };
 }
 
 export function returnAvailable(state, contracts) {
@@ -125,10 +137,16 @@ function dispositionFacts(state, contract) {
   return [...factual].filter((id) => required.has(id)).sort();
 }
 function terminalZhdankoStatus(state, contracts) {
-  return state.last_turn?.consequence?.combat?.session_after?.participant_states
+  const combatStatus = state.last_turn?.consequence?.combat?.session_after
+    ?.participant_states
     ?.find(({ actor_ref: actor }) => actor.entity_id
       === actorRefs(state, contracts).zhdanko_storehouse_controller)
     ?.combat_status ?? null;
+  if (combatStatus != null) return combatStatus;
+  return (state.npcs ?? []).some((npc) =>
+    npc.participant_slot_ref === 'zhdanko_storehouse_controller'
+    && npc.machine_state?.surrender_state
+      === 'surrendered_without_further_attack') ? 'surrendered' : null;
 }
 function actorRefs(state, contracts) {
   const zhdanko = (state.npcs ?? []).find(({ participant_slot_ref: slot }) =>

@@ -24,6 +24,9 @@ const ROUTE_TEXT =
 test('Phase 9 recovers property, commits testimony and stops at temporary disposition',
   async () => {
     const state = phase8CampState(bundle);
+    state.knowledge = [...(state.knowledge ?? []),
+      committedKnowledge('ratsha_surrender_without_further_harm_committed'),
+      committedKnowledge('promise_current_active')];
     const ids = { ...actorIds(state), bag: state.containers.find(
       ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag'
     ).container_id, packet: state.items.find(
@@ -58,7 +61,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
         testimonyRequests.push(structuredClone(request));
         return npcSpeechPlan(request, {
           utteranceText: 'Жданко нанимал мою лодку и вёз этот свёрток.',
-          dominantAct: 'inform', claims: [], supportingOperations: []
+          dominantAct: 'inform', claims: [testimonyClaim()],
+          supportingOperations: []
         });
       },
       npcCombatModel: (request) => combatPlan(request, ids) });
@@ -121,6 +125,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       .includes('document_contents'), false);
     assert.equal(runtime.state.phase9.onisim_testimony.objective_truth_write,
       'forbidden');
+    assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,
+      true);
     await assertReplay(runtime, 'p9-testimony',
       'Попросить Онисима рассказать, что он знает о Жданко и свёртке.');
     assert.equal(testimonyCalls, 1);
@@ -136,7 +142,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     runtime = createRuntime(runtime.state);
     const promiseBefore = structuredClone(runtime.state.promise_instances);
     await submit(runtime, 'p9-disposition',
-      'Принять временное решение о людях и возвращённом имуществе.');
+      'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
+        + 'свёрток для Саввы и соблюсти обещание Ратше.');
     assert.equal(runtime.state.phase9.status,
       'temporary_disposition_committed');
     assert.equal(runtime.state.phase9.temporary_disposition.legal_effect,
@@ -148,7 +155,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
         'onisim_testimony', 'evidence_resolved', 'temporary_disposition']);
 
     await assertReplay(runtime, 'p9-disposition',
-      'Принять временное решение о людях и возвращённом имуществе.');
+      'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
+        + 'свёрток для Саввы и соблюсти обещание Ратше.');
     assert.equal(testimonyCalls, 1);
   });
 
@@ -166,6 +174,48 @@ test('Phase 9 does not recover a road bag carried away by Zhdanko', () => {
   assert.equal(result.errors[0].code,
     'APPROVED_PROPERTY_TRANSITION_FACT_MISSING');
 });
+
+test('peaceful Zhdanko surrender admits Phase 9 recovery after restart',
+  async () => {
+    const state = phase8CampState(bundle);
+    const ids = { ...actorIds(state), bag: state.containers.find(
+      ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag'
+    ).container_id };
+    const conversation = createM2ConversationModels({
+      ratshaResponseKind: 'surrender' });
+    const createRuntime = (committedState) => fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()] }),
+      turnStepModel: (request) => request.root_player_action === ROUTE_TEXT
+          || request.root_player_action.includes('Обвинить Жданко')
+        ? phase8Plan(request, ids) : plan(request, ids),
+      playerConversationModel: conversation.playerConversationModel,
+      npcSemanticModel: conversation.npcSemanticModel,
+      npcCombatModel: () => { throw new Error('combat must not start'); } });
+    let runtime = createRuntime(state);
+    await submit(runtime, 'peaceful-route', ROUTE_TEXT);
+    await submit(runtime, 'peaceful-surrender',
+      'Обвинить Жданко и потребовать вернуть дорожную сумку.');
+    assert.equal((runtime.state.combat_sessions ?? []).length, 0);
+    assert.equal(runtime.state.npcs.find(({ instance_id: id }) =>
+      id === ids.zhdanko).machine_state.surrender_state,
+    'surrendered_without_further_attack');
+
+    runtime = createRuntime(structuredClone(runtime.state));
+    await submit(runtime, 'peaceful-bag',
+      'Забрать дорожную сумку у Жданко.');
+    assert.equal(runtime.state.last_turn.consequence.phase9_kind,
+      'bag_recovery');
+    assert.equal(runtime.state.phase9.committed_facts.includes(
+      'road_bag_recovery_after_zhdanko_submission_admitted'), true);
+    const restarted = createRuntime(structuredClone(runtime.state));
+    assert.equal(restarted.state.containers.find(({ container_id: id }) =>
+      id === ids.bag).state.controller_character_id,
+    restarted.state.actor_id);
+  });
 
 test('Phase 9 preserves an authored destroyed packet branch without intact seal',
   () => {
@@ -235,8 +285,7 @@ function plan(request, ids) {
     target_actor_refs: [ids.onisim], content: text, instrument_refs: [] };
   else if (text.includes('Сопоставить')) operation = activity(actor,
     ['trace_ld_v1_clue_evidence_graph_set']);
-  else operation = activity(actor, [ids.ratsha, ids.zhdanko,
-    ids.packet]);
+  else operation = activity(actor, dispositionSelection());
   return { schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
@@ -250,3 +299,17 @@ function plan(request, ids) {
 function activity(actor, targetRefs) { return { op: 'request_activity',
   actor_ref: actor, activity_kind: 'other', target_refs: targetRefs,
   description: 'Выполнить утверждённый шаг расследования.' }; }
+function dispositionSelection() { return [
+  'hold_ratsha_and_zhdanko_for_authorized_handover',
+  'preserve_recovered_property_for_savva_handover',
+  'preserve_active_no_summary_killing_promise']; }
+function testimonyClaim() { return {
+  claim_id: 'trace_ld_v1_assertion_onisim_testimony',
+  content_summary: 'Онисим сообщает о воспринятой речи и действиях Ратши.',
+  form: 'assertion', speaker_posture: 'believed_true',
+  source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
+    entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],
+  mentioned_entity_refs: [] }; }
+function committedKnowledge(factId) { return { fact_id: factId,
+  knowledge_state: 'known_from_committed_scenario_event',
+  evidence_refs: [`event:${factId}`] }; }

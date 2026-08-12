@@ -74,6 +74,8 @@ export function projectLowerDvinaTracePlayerSafeState({
     ),
     case_evidence_ref: typeof committedState.phase9?.case_evidence_ref
       === 'string' ? committedState.phase9.case_evidence_ref : undefined,
+    temporary_disposition_options: projectTemporaryDispositionOptions(
+      committedState.phase9?.temporary_disposition_options),
     combat_sessions: projectCombatSessions(committedState.combat_sessions)
   });
   const playerSafeState = applyLowerDvinaTraceWorkingProjection({
@@ -91,6 +93,18 @@ export function projectLowerDvinaTracePlayerSafeState({
     }),
     player_safe_state: playerSafeState
   });
+}
+
+function projectTemporaryDispositionOptions(value) {
+  if (value?.schema !== 'temporary_disposition_option_set_v1') return undefined;
+  return { schema: value.schema, contract_ref: value.contract_ref,
+    selection_source: value.selection_source,
+    custody_option_refs: structuredClone(
+      value.eligible_option_ids.custody),
+    property_option_refs: structuredClone(
+      value.eligible_option_ids.property),
+    promise_option_refs: structuredClone(
+      value.eligible_option_ids.promise) };
 }
 
 function containerItems(containers = []) {

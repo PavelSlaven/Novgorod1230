@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { buildLegalConsequencePackage, buildSocialRisk, evaluateRights, planPromiseLifecycle, planTemporaryDisposition, PromiseLifecyclePlanningError, TemporaryDispositionPlanningError, validateSocialBinding } from '../src/index.js';
+import { buildLegalConsequencePackage, buildSocialRisk, evaluateRights, planPromiseLifecycle, PromiseLifecyclePlanningError, validateSocialBinding } from '../src/index.js';
 
 const policy = JSON.parse(readFileSync(resolve(import.meta.dirname, '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/promise-policy.json'), 'utf8'));
 const parties = { promisor_slot:'player_clerk', beneficiary_slot:'ratsha_storehouse_helper' };
@@ -76,76 +76,4 @@ test('promise lifecycle planner fails closed on policy, parties, witnesses, scop
     () => planPromiseLifecycle({ ...input, operation:'fulfill' }),
     (error) => error instanceof PromiseLifecyclePlanningError && error.code === 'PROMISE_OPERATION_NOT_ALLOWED'
   );
-});
-
-const temporaryDispositionContract = {
-  schema: 'rus.trace_temporary_disposition_contract.v1',
-  contract_id: 'trace_ld_v1_temporary_disposition_contract',
-  version: 1, owner: '@rus/turn',
-  selection_contract: { eligibility_source_state: 'committed_world_state_only',
-    selected_option_cardinality: 'exactly_one_per_dimension' },
-  phase9_selection_contract: { policy: 'first_eligible_in_authored_order',
-    forbidden_option_ids: ['breach_promise'] },
-  custody_options: [{ option_id: 'hold_both',
-    required_committed_facts: ['both_surrendered'],
-    committed_fact_output: 'custody_both' }, { option_id: 'hold_one',
-    required_committed_facts: ['one_surrendered'],
-    committed_fact_output: 'custody_one' }],
-  property_options: [{ option_id: 'preserve_packet',
-    required_committed_facts: ['packet_returned'],
-    owner_must_remain: 'savva', committed_fact_output: 'packet_preserved' }],
-  promise_options: [{ option_id: 'preserve_promise',
-    required_committed_facts: ['promise_active'],
-    required_witness_slots: ['eremey'],
-    committed_fact_output: 'promise_preserved' }, {
-    option_id: 'breach_promise', required_committed_facts: ['promise_active'],
-    committed_fact_output: 'promise_breached' }],
-  final_consequence_ref: 'temporary_disposition_committed',
-  committed_fact_output: 'temporary_disposition_outcome_committed',
-  forbidden_semantics: ['pardon', 'completion']
-};
-
-test('temporary disposition is deterministic, fully committed, and limited to all temporary effects', () => {
-  const input = {
-    committed_fact_ids: ['both_surrendered', 'packet_returned',
-      'promise_active'], committed_actor_predicates: [],
-    committed_witness_slots: ['eremey'],
-    committed_property_owner_ref: 'savva',
-    contract: temporaryDispositionContract
-  };
-  const result = planTemporaryDisposition(input);
-  assert.deepEqual(result.selected_option_ids, {
-    custody: 'hold_both', property: 'preserve_packet',
-    promise: 'preserve_promise'
-  });
-  assert.deepEqual(result.committed_fact_outputs, [
-    'temporary_disposition_outcome_committed', 'custody_both',
-    'packet_preserved', 'promise_preserved']);
-  assert.equal(result.legal_effect, 'temporary_disposition_only');
-  assert.equal(result.completion, 'forbidden');
-  assert.equal(Object.isFrozen(result), true);
-  assert.deepEqual(planTemporaryDisposition(structuredClone(input)), result);
-});
-
-test('temporary disposition fails closed for missing facts, owner, witnesses and forbidden choices', () => {
-  const input = {
-    committed_fact_ids: ['both_surrendered', 'packet_returned',
-      'promise_active'], committed_actor_predicates: [],
-    committed_witness_slots: ['eremey'],
-    committed_property_owner_ref: 'savva',
-    contract: temporaryDispositionContract
-  };
-  const cases = [
-    { committed_fact_ids: ['packet_returned', 'promise_active'] },
-    { committed_property_owner_ref: 'thief' },
-    { committed_witness_slots: [] },
-    { contract: { ...temporaryDispositionContract,
-      phase9_selection_contract: {
-        ...temporaryDispositionContract.phase9_selection_contract,
-        forbidden_option_ids: ['preserve_promise', 'breach_promise'] } } }
-  ];
-  for (const override of cases) {
-    assert.throws(() => planTemporaryDisposition({ ...input, ...override }),
-      (error) => error instanceof TemporaryDispositionPlanningError);
-  }
 });

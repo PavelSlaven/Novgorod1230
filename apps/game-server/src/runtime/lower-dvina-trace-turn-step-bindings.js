@@ -168,9 +168,13 @@ export function bindLowerDvinaTraceTurnStepCommands({
     const actorRef = targetRefs?.actor;
     const dynamicTargetAbsent = expected.operation === 'request_combat'
       && targetRef == null;
+    if (expected.closedSelection === true && targetRef == null) return command;
     if (!validRecord(record, expected)
+        || (expected.closedSelection === true
+          && !validClosedSelectionOptions(targetRef))
         || (Array.isArray(targetRef)
           ? targetRef.some((ref) => typeof ref !== 'string' || ref.length === 0)
+          : expected.closedSelection === true ? false
           : !dynamicTargetAbsent
             && (typeof targetRef !== 'string' || targetRef.length === 0))
         || typeof actorRef !== 'string' || actorRef.length === 0) {
@@ -210,7 +214,6 @@ export function bindLowerDvinaTraceTurnStepCommands({
   }
   return bound;
 }
-
 function normalizeExactText(value) {
   return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
 }
@@ -251,6 +254,9 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
     return noTarget || operation.target_refs?.length === 1
       && operation.target_refs[0] === targetRef;
   }
+  if (expected.closedSelection === true) {
+    return matchesClosedSelection(operation.target_refs, targetRef);
+  }
   const targetField = expected.operation === 'emit_interaction'
     ? 'target_actor_refs'
     : 'target_refs';
@@ -266,6 +272,21 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
       && operation.instrument_refs?.includes(evidenceRef) === true;
   }
   return true;
+}
+function validClosedSelectionOptions(value) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && ['custody', 'property', 'promise'].every((dimension) =>
+      Array.isArray(value[dimension]) && value[dimension].length > 0
+      && value[dimension].every((id) =>
+        typeof id === 'string' && id.length > 0)
+      && new Set(value[dimension]).size === value[dimension].length);
+}
+
+function matchesClosedSelection(selected, eligible) {
+  if (!Array.isArray(selected) || selected.length !== 3
+      || new Set(selected).size !== selected.length) return false;
+  return ['custody', 'property', 'promise'].every((dimension) =>
+    selected.filter((id) => eligible[dimension].includes(id)).length === 1);
 }
 
 function gap() {

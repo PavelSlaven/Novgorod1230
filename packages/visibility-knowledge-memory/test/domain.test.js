@@ -7,6 +7,7 @@ import {
   mergeFormalKnowledgeMemory,
   mergeKnowledgeFacts,
   mergeValidatedKnowledgeMemory,
+  resolveAuthoredStatementEvidence,
   resolveEvidenceConclusions,
   stripHiddenForNarrator,
   validateMemoryFact,
@@ -343,3 +344,46 @@ test('evidence owner fails closed for unknown, duplicate and malformed inputs', 
       inference_nodes: [{ node_ref: 'conclusion:a', operator: 'not',
         input_refs: ['evidence:a'] }] }] }, ['evidence:a']).ok, false);
 });
+
+test('statement evidence requires the authored assertion and source lineage',
+  () => {
+    const speaker = { instance_id: 'onisim-1',
+      participant_slot_ref: 'onisim_boatman',
+      knowledge_profile_snapshot: {
+        profile_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' } };
+    const template = { statement_template_id: 'onisim-testimony',
+      speaker_ref: 'onisim_boatman', truth_classification: 'truthful',
+      statement_ref: 'statement_template:onisim-testimony',
+      source_knowledge_refs: [
+        'knowledge_scope:trace_ld_v1_knowledge_scope_hired_boatman_v1#memory'],
+      source_perception_template_refs: ['heard-command'],
+      assertion: { assertion_id: 'onisim-assertion' },
+      application_status: 'template_only' };
+    const effect = { statement_template_ref: 'onisim-testimony',
+      source_rule: 'speaker_committed_memory_only',
+      write_targets: ['statement_record', 'speaker_memory_report'],
+      forbidden_write_targets: ['objective_truth'] };
+    const base = { schema: 'conversation_statement_event_v1',
+      statement_id: 'statement-1', speaker_ref: {
+        entity_kind: 'npc', entity_id: 'onisim-1' } };
+    const ordinary = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [] }, speaker, statement_template: template,
+    statement_effect: effect,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(ordinary.committed, false);
+    const testimony = resolveAuthoredStatementEvidence({ statement: {
+      ...base, claims: [{ claim_id: 'onisim-assertion', form: 'assertion',
+        speaker_posture: 'believed_true', source_knowledge_refs: [{
+          entity_kind: 'knowledge_scope',
+          entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }] }] },
+    speaker, statement_template: template, statement_effect: effect,
+    knowledge_scope_ref:
+      'trace_ld_v1_knowledge_scope_hired_boatman_v1',
+    evidence_ref: 'onisim-evidence' });
+    assert.equal(testimony.committed, true);
+    assert.equal(testimony.evidence_ref, 'onisim-evidence');
+    assert.equal(testimony.lineage_refs.includes(
+      'perception_template:heard-command'), true);
+  });

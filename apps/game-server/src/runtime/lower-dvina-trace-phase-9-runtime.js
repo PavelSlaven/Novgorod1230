@@ -22,13 +22,20 @@ export function createTracePhase9Runtime({ state, bundle,
       onisim: contracts.onisim.instance_id,
       ratsha: actor(state, 'ratsha_storehouse_helper'),
       zhdanko: actor(state, 'zhdanko_storehouse_controller'),
+      temporaryDispositionOptions: structuredClone(
+        state.phase9?.temporary_disposition_options?.eligible_option_ids
+          ?? null),
       caseEvidence: 'trace_ld_v1_clue_evidence_graph_set' } });
 }
 
 function phase8Terminal(state) {
   return (state.player_response_boundary == null
     && !(state.combat_sessions ?? []).some(({ status }) => status !== 'ended')
-    && state.last_turn?.consequence?.combat?.session_after?.status === 'ended')
+    && (state.last_turn?.consequence?.combat?.session_after?.status === 'ended'
+      || (state.npcs ?? []).some((npc) =>
+        npc.participant_slot_ref === 'zhdanko_storehouse_controller'
+        && npc.machine_state?.surrender_state
+          === 'surrendered_without_further_attack')))
       || state.phase9 != null;
 }
 function actor(state, slot) {

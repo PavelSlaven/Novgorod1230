@@ -11,7 +11,6 @@ Social role and occupation references, rights, restrictions, authority and legal
 - authority and social-risk contracts
 - legal consequence packages
 - party-local commitment proposal from committed conversation facts
-- temporary custody/property/promise disposition from a closed authored contract
 
 ## Не делает
 
@@ -28,7 +27,6 @@ Social role and occupation references, rights, restrictions, authority and legal
 - `buildLegalConsequencePackage`
 - `planPromiseLifecycle`
 - `planPartyLocalCommitment`
-- `planTemporaryDisposition`
 
 ## Контракты и инварианты
 

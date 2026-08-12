@@ -280,7 +280,8 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     holder_character_id: item.holder_character_id ?? null,
     physical_position: item.physical_position,
     equipment_slot_category_id: null
-  })), ['party_items', 'party_player_characters', 'party_npcs', 'party_g5_anchors'], sourceTrace);
+  })), ['party_items', 'party_containers', 'party_player_characters',
+    'party_npcs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_ownership', result.immediate.items.map((item) => ({
     party_id: partyId,
     ownership_id: `ownership_${item.instance_id}`,
@@ -406,7 +407,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -417,7 +418,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16].includes(
+  const phase7 = [15, 16, 17].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)

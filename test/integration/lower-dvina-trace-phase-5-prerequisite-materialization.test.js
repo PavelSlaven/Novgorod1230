@@ -331,11 +331,22 @@ test('revision 17 persists the sealed packet inside the road bag with Savva owne
   const placement = plan.write_batches.find(
     ({ target_table: table }) => table === 'party_item_placements').records.find(
     ({ item_id: id }) => id === item.item_id);
+  const placementBatch = plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_item_placements');
+  const npcIds = new Set(plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npcs').records.map(
+    ({ npc_id: id }) => id));
   const ownership = plan.write_batches.find(
     ({ target_table: table }) => table === 'party_ownership').records.find(
     ({ item_id: id }) => id === item.item_id);
   assert.equal(placement.container_id, bag.instance_id);
   assert.equal(placement.holder_npc_id, null);
+  assert.equal(placementBatch.depends_on_batches.includes(
+    'batch-party_containers'), true);
+  for (const record of placementBatch.records) {
+    if (record.holder_npc_id != null) assert.equal(
+      npcIds.has(record.holder_npc_id), true);
+  }
   assert.equal(ownership.owner_external_ref,
     'trace_ld_v1_external_owner_savva_tverdich');
   assert.equal(ownership.controller_npc_id, zhdanko.instance_id);

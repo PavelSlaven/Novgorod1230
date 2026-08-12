@@ -4,7 +4,8 @@ import { executeTraceLocalTraversal } from
   './lower-dvina-trace-local-traversal.js';
 import { available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
-import { atCamp, dispositionPlan, hasTestimony, openPlan, packetPlan,
+import { atCamp, dispositionOptions, dispositionPlan, hasTestimony, openPlan,
+  packetPlan,
   presentParticipantIds, recoveryPlan, resolveEvidence, returnAvailable } from
   './lower-dvina-trace-phase-9-command-plans.js';
 
@@ -130,7 +131,8 @@ function evidenceCommand(contracts, inputDigest) {
       const result = resolveEvidence(state, contracts.evidenceGraph);
       if (!result.ok) fail(result.error_code);
       return consequence(inputDigest, 'evidence_resolved', 0, {
-        evidence_resolution: result });
+        evidence_resolution: result,
+        temporary_disposition_options: dispositionOptions(state, contracts) });
     } });
 }
 
@@ -141,9 +143,12 @@ function dispositionCommand(contracts, inputDigest) {
     subsystems: ['social_status', 'time_progression'],
     can: (state) => atCamp(state, contracts)
       && state.phase9?.evidence_resolution?.ok === true
+      && state.phase9?.temporary_disposition_options?.schema
+        === 'temporary_disposition_option_set_v1'
       && state.phase9?.temporary_disposition == null,
-    resolve: (state) => {
-      const proposal = dispositionPlan(state, contracts);
+    resolve: (state, _playerInput, semanticPlan) => {
+      const selected = semanticPlan?.operations?.[0]?.target_refs ?? [];
+      const proposal = dispositionPlan(state, contracts, selected);
       return consequence(inputDigest, 'temporary_disposition', 5,
         { temporary_disposition: proposal,
           committed_facts: proposal.committed_fact_outputs });
@@ -160,9 +165,9 @@ function command({ id, option, approved, primary, subsystems, can, resolve }) {
       const ok = can(committed ?? retrievedState);
       return available(ok, [], ok ? [] : [`phase9_${option}_unavailable`]);
     },
-    consequence({ retrievedState: state, playerInput }) {
+    consequence({ retrievedState: state, playerInput, semanticPlan }) {
       if (!can(state)) fail(`TRACE_PHASE_9_${option.toUpperCase()}_BLOCKED`);
-      return resolve(state, playerInput);
+      return resolve(state, playerInput, semanticPlan);
     }, writeTargets: phase3WriteTargets });
 }
 

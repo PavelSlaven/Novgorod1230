@@ -66,7 +66,9 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
       password: 'local_only', database: 'phase9', max: 8 });
     await installSchemas(pool);
     await installWorldLineage(pool);
-    const bundle = await loadLowerDvinaTraceMaterializationBundle();
+    const bundle = await loadLowerDvinaTraceMaterializationBundle({
+      scenarioDefinitionRevision: 17
+    });
     assert.equal(bundle.definition_revision, 17);
     const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
     const runtimeCatalogPin = Object.freeze({ ...sourcePin,
@@ -96,7 +98,8 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
       ['return', 'Вернуться всей группой к Онисиму в рыбацкий стан.'],
       ['testimony', 'Попросить Онисима рассказать, что он знает о Жданко и свёртке.'],
       ['evidence', 'Сопоставить печать, показание Онисима и уже известные факты.'],
-      ['disposition', 'Временно решить вопрос со свёртком, Жданко и обещанием Ратше.']
+      ['disposition', 'Временно удержать Ратшу и Жданко до передачи властям, '
+        + 'сохранить свёрток для Саввы и соблюсти обещание Ратше.']
     ];
     for (const [suffix, rawText] of checkpoints) {
       const input = turn(`phase-9-postgres-${suffix}`, rawText);
@@ -150,7 +153,8 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
     playerConversationModel: (request) => playerPlan(request, {}),
     npcSemanticModel: (request) => npcSpeechPlan(request, {
       utteranceText: 'Жданко нанимал мою лодку и вёз этот свёрток.',
-      dominantAct: 'inform', claims: [], supportingOperations: [] }),
+      dominantAct: 'inform', claims: [testimonyClaim()],
+      supportingOperations: [] }),
     npcCombatModel: () => { throw new Error('combat must not restart'); },
     semanticResolver: async ({ action_set: actionSet }) => ({
       option_id: actionSet[0].option_id }),
@@ -193,7 +197,7 @@ function phase9Plan(request, ids) {
     target_actor_refs: [ids.onisim], content: text, instrument_refs: [] };
   else if (text.includes('Сопоставить')) operation = activity(actor,
     ['trace_ld_v1_clue_evidence_graph_set']);
-  else operation = activity(actor, [ids.ratsha, ids.zhdanko, ids.packet]);
+  else operation = activity(actor, dispositionSelection());
   return { schema: 'turn_step_plan_v1', request_id: request.request_id,
     committed_state_version: request.committed_state_version,
     working_revision: request.working_revision, step_index: request.step_index,
@@ -246,11 +250,16 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
     { npc_ref: npcRef(ids.eremey), role: 'guide' },
     { npc_ref: npcRef(ids.ratsha), role: 'witness' },
     { npc_ref: npcRef(ids.fisher), role: 'escort' }];
-  state.phase9 = { status: 'active', checkpoints: [], committed_facts: [
-    'zhdanko_disarmed_and_temporarily_restrained'] };
+  const zhdanko = state.npcs.find(({ instance_id: id }) => id === ids.zhdanko);
+  zhdanko.machine_state = { ...zhdanko.machine_state,
+    surrender_state: 'surrendered_without_further_attack' };
+  delete state.phase9;
   state.knowledge = [...(state.knowledge ?? []), {
-    fact_id: 'zhdanko_disarmed_and_temporarily_restrained',
-    knowledge_state: 'known_from_committed_combat_event',
+    fact_id: 'ratsha_surrender_without_further_harm_committed',
+    knowledge_state: 'known_from_committed_conversation_event',
+    evidence_refs: ['phase9-postgres-fixture'] }, {
+    fact_id: 'promise_current_active',
+    knowledge_state: 'known_from_committed_promise_state',
     evidence_refs: ['phase9-postgres-fixture'] }];
   await pool.query('BEGIN');
   try {
@@ -276,8 +285,15 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
          party_id,character_id,fact_id,knowledge_state,evidence)
        VALUES($1,$2,$3,$4,$5::jsonb) ON CONFLICT DO NOTHING`,
       [partyId, state.actor_id,
-        'zhdanko_disarmed_and_temporarily_restrained',
-        'known_from_committed_combat_event',
+        'ratsha_surrender_without_further_harm_committed',
+        'known_from_committed_conversation_event',
+        JSON.stringify(['phase9-postgres-fixture'])]);
+    await pool.query(
+      `INSERT INTO party_runtime.party_character_knowledge(
+         party_id,character_id,fact_id,knowledge_state,evidence)
+       VALUES($1,$2,$3,$4,$5::jsonb) ON CONFLICT DO NOTHING`,
+      [partyId, state.actor_id, 'promise_current_active',
+        'known_from_committed_promise_state',
         JSON.stringify(['phase9-postgres-fixture'])]);
     await pool.query('COMMIT');
   } catch (error) {
@@ -289,6 +305,17 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
 function activity(actor, targetRefs) { return { op: 'request_activity',
   actor_ref: actor, activity_kind: 'other', target_refs: targetRefs,
   description: 'Выполнить утверждённый шаг расследования.' }; }
+function dispositionSelection() { return [
+  'hold_ratsha_and_zhdanko_for_authorized_handover',
+  'preserve_recovered_property_for_savva_handover',
+  'preserve_active_no_summary_killing_promise']; }
+function testimonyClaim() { return {
+  claim_id: 'trace_ld_v1_assertion_onisim_testimony',
+  content_summary: 'Онисим сообщает о воспринятой речи и действиях Ратши.',
+  form: 'assertion', speaker_posture: 'believed_true',
+  source_knowledge_refs: [{ entity_kind: 'knowledge_scope',
+    entity_id: 'trace_ld_v1_knowledge_scope_hired_boatman_v1' }],
+  mentioned_entity_refs: [] }; }
 function npcRef(id) { return { entity_kind: 'npc', entity_id: id }; }
 function turn(id, rawText) { return { request_id: id, idempotency_key: id,
   raw_text: rawText }; }

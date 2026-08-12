@@ -47,10 +47,6 @@
     "activity_profile_ref": "trace_ld_v1_activity_temporary_decision",
     "contract_ref": "trace_ld_v1_temporary_disposition_contract",
     "consequence_ref": "trace_ld_v1_consequence_temporary_disposition_committed",
-    "selection_contract": {
-      "policy": "first_eligible_in_authored_order",
-      "forbidden_option_ids": ["commit_scope_breach_for_active_promise"]
-    },
     "completion_write": "forbidden"
   },
   "fallback_policy": "forbidden",

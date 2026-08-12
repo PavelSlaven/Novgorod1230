@@ -52,11 +52,12 @@ export function resolveTracePhase9Contracts({ state, bundle,
     ({ location_profile_ref: id }) => id === IDS.camp);
   const disposition = exact(profiles.temporary_disposition_contracts,
     'contract_id', binding.temporary_disposition.contract_ref);
-  const dispositionSelection = binding.temporary_disposition
-    .selection_contract;
   const statementEffect = exact(policies.statement_effect_contracts,
     'statement_effect_contract_id',
     binding.onisim_testimony.statement_effect_contract_ref);
+  const testimonyTemplate = exact(bundle.knowledge_lie_memory_rules
+    .statement_templates, 'statement_template_id',
+  binding.onisim_testimony.statement_template_ref);
   if (bag.template_id !== IDS.bag || packet.template_id !== IDS.packet
       || route.terminal_position_outcome !== IDS.camp
       || sourceEndpoint.location_profile_id !== IDS.storehouse
@@ -72,14 +73,15 @@ export function resolveTracePhase9Contracts({ state, bundle,
       || activities.disposition.temporary_disposition_contract_ref
         !== disposition.contract_id
       || disposition.owner !== '@rus/turn'
-      || dispositionSelection?.policy
-        !== 'first_eligible_in_authored_order'
-      || JSON.stringify(dispositionSelection.forbidden_option_ids)
-        !== JSON.stringify(['commit_scope_breach_for_active_promise'])
-      || !disposition.promise_options.some(({ option_id: id }) =>
-        dispositionSelection.forbidden_option_ids.includes(id))
+      || disposition.selection_contract?.selection_source
+        !== 'raw_intent_to_closed_exact_option_id_per_dimension'
+      || disposition.selection_contract?.selected_option_cardinality
+        !== 'exactly_one_per_dimension'
       || statementEffect.forbidden_write_targets?.includes('objective_truth')
         !== true
+      || testimonyTemplate.speaker_ref !== IDS.onisimSlot
+      || testimonyTemplate.statement_template_id
+        !== statementEffect.statement_template_ref
       || bundle.clue_evidence_graph_set?.clue_evidence_graph_set_id
         !== binding.evidence_resolution.graph_ref
       || conversationBindings == null
@@ -97,14 +99,14 @@ export function resolveTracePhase9Contracts({ state, bundle,
     packet: structuredClone(packet), onisim: { ...structuredClone(onisim),
       ref: IDS.onisimSlot },
     activities, transitions, route: structuredClone(route),
-    disposition: { ...structuredClone(disposition),
-      phase9_selection_contract: structuredClone(dispositionSelection) },
+    disposition: structuredClone(disposition),
     evidenceGraph: structuredClone(bundle.clue_evidence_graph_set),
     sourceEndpoint, destinationEndpoint, access, capacity,
     campAnchor: campScene.anchor.instance_id,
     campNode: campScene.node.instance_id,
     conversationBindings: structuredClone(conversationBindings),
     statementEffect: structuredClone(statementEffect),
+    testimonyTemplate: structuredClone(testimonyTemplate),
     ids: IDS,
     activityPins, bindingPin: artifactPins[0],
     pins: [...artifactPins, ...activityPins],

@@ -3,6 +3,8 @@ import { createM2ConversationContext, executeM2ConversationExchange,
   './lower-dvina-trace-m2-conversation-exchange.js';
 import { freezeResult, ref, sameTimeBatchKey } from
   './lower-dvina-trace-m2-conversation-shared.js';
+import { resolveAuthoredStatementEvidence } from
+  '@rus/visibility-knowledge-memory';
 
 export async function prepareTracePhase9PlayerPlan(input) {
   return prepareM2PlayerConversationPlan(contextFor(input));
@@ -11,6 +13,15 @@ export async function prepareTracePhase9PlayerPlan(input) {
 export async function resolveTracePhase9Testimony(input) {
   const result = await executeM2ConversationExchange(contextFor(input));
   const outcome = result.npcOutcome;
+  const statement = result.statements.find((candidate) =>
+    candidate.speaker_ref?.entity_id === input.contracts.onisim.instance_id);
+  const testimony = resolveAuthoredStatementEvidence({ statement,
+    speaker: input.contracts.onisim,
+    statement_template: input.contracts.testimonyTemplate,
+    statement_effect: input.contracts.statementEffect,
+    knowledge_scope_ref:
+      input.contracts.binding.onisim_testimony.knowledge_scope_ref,
+    evidence_ref: input.contracts.binding.onisim_testimony.evidence_ref });
   return freezeResult({ input_digest: input.inputDigest,
     exchange: result.exchange,
     same_time_batch_ref: ref('temporal_batch',
@@ -38,11 +49,11 @@ export async function resolveTracePhase9Testimony(input) {
     consumed_signal_ids: structuredClone(result.consumedSignalIds),
     terminal_npc_outcomes: structuredClone(result.terminalNpcOutcomes),
     response_kind: outcome?.kind ?? null,
-    testimony_committed: outcome?.kind === 'speech',
-    evidence_ref: outcome?.kind === 'speech'
-      ? input.contracts.binding.onisim_testimony.evidence_ref : null,
-    statement_template_ref:
-      input.contracts.binding.onisim_testimony.statement_template_ref,
+    testimony_committed: testimony.committed,
+    evidence_ref: testimony.evidence_ref,
+    evidence_lineage_refs: structuredClone(testimony.lineage_refs),
+    statement_template_ref: testimony.committed
+      ? input.contracts.binding.onisim_testimony.statement_template_ref : null,
     objective_truth_writes: [] });
 }
 

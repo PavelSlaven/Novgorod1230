@@ -110,11 +110,15 @@ function applyKind(next, state, kind, phase9, factual, changeSetId) {
     next.phase9.onisim_testimony = { response_kind: semantic.response_kind,
       testimony_committed: semantic.testimony_committed,
       statement_refs: semantic.statements.map(({ statement_id: id }) => id),
+      evidence_lineage_refs: structuredClone(
+        semantic.evidence_lineage_refs),
       objective_truth_write: 'forbidden' };
     next.phase9.case_evidence_ref = phase9.case_evidence_ref;
   } else if (kind === 'evidence_resolved') {
     next.phase9.evidence_resolution = structuredClone(
       phase9.evidence_resolution);
+    next.phase9.temporary_disposition_options = structuredClone(
+      phase9.temporary_disposition_options);
   } else if (kind === 'temporary_disposition') {
     next.phase9.temporary_disposition = structuredClone(
       phase9.temporary_disposition);
@@ -135,7 +139,9 @@ function safeConsequence(consequence) {
       response_kind: copy.phase9.semantic_exchange.response_kind,
       testimony_committed: copy.phase9.semantic_exchange.testimony_committed,
       statement_refs: copy.phase9.semantic_exchange.statements
-        .map(({ statement_id: id }) => id), objective_truth_writes: [] };
+        .map(({ statement_id: id }) => id), evidence_lineage_refs:
+        structuredClone(copy.phase9.semantic_exchange.evidence_lineage_refs),
+      objective_truth_writes: [] };
   }
   return copy;
 }

@@ -47,8 +47,10 @@ export function createTracePhase9VisibleProjector({ fallback, contracts }) {
         label: 'Свёрток Саввы' }]],
       return_to_camp: ['Группа вернулась к Онисиму в рыбацкий стан.',
         ['guarded_return_completed'], []],
-      onisim_testimony: ['Показание Онисима сохранено как его слова.',
-        ['onisim_statement_committed'], []],
+      onisim_testimony: [phase9.semantic_exchange.testimony_committed
+        ? 'Показание Онисима сохранено как его слова.'
+        : 'Ответ Онисима сохранён как речь; показанием он не признан.',
+      ['onisim_statement_committed'], []],
       evidence_resolved: ['Собранные доказательства сопоставлены.',
         ['evidence_resolution_committed'], []],
       temporary_disposition: [

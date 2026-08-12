@@ -31,13 +31,14 @@ const WORKING_KEYS = new Set([
   'npcs', 'interactions', 'routes', 'available_routes', 'route_history',
   'route_knowledge', 'knowledge', 'visible_context',
   'visible_context_package', 'current_visible_context', 'combat_sessions',
-  'case_evidence_ref'
+  'case_evidence_ref', 'temporary_disposition_options'
 ]);
 const INVALID = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID';
 const COMMITTED_REF_FIELDS = new Set([
   'inventory', 'items', 'visible_npcs', 'scene_npcs', 'npcs',
   'interactions', 'routes', 'available_routes', 'route_history',
-  'route_knowledge', 'knowledge', 'combat_sessions', 'case_evidence_ref'
+  'route_knowledge', 'knowledge', 'combat_sessions', 'case_evidence_ref',
+  'temporary_disposition_options'
 ]);
 const VISIBLE_CONTEXT_FIELDS = new Set([
   'visible_context', 'visible_context_package', 'current_visible_context'
@@ -182,6 +183,10 @@ function projectWorkingField(key, value, context) {
     return projected;
   }
   if (key === 'combat_sessions') {
+    assertJson(value);
+    return freezeJson(value);
+  }
+  if (key === 'temporary_disposition_options') {
     assertJson(value);
     return freezeJson(value);
   }

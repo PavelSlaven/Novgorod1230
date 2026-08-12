@@ -108,6 +108,8 @@ export const atCamp = (state, contracts) =>
   state.position?.location_ref === contracts.ids.camp;
 export const hasTestimony = (state) => committedFacts(state)
   .includes('trace_ld_v1_evidence_onisim_testimony');
+export const testimonyStageResolved = (state) =>
+  state.phase9?.onisim_testimony != null;
 export function presentParticipantIds(state) {
   return [state.actor_id, ...(state.npcs ?? []).filter((npc) =>
     npc.location_profile_ref === state.position.location_ref

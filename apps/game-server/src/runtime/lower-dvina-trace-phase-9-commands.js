@@ -4,9 +4,10 @@ import { executeTraceLocalTraversal } from
   './lower-dvina-trace-local-traversal.js';
 import { available, mode, phase3WriteTargets } from
   './lower-dvina-trace-phase-3-command-shared.js';
-import { atCamp, dispositionOptions, dispositionPlan, hasTestimony, openPlan,
+import { atCamp, dispositionOptions, dispositionPlan, openPlan,
   packetPlan,
-  presentParticipantIds, recoveryPlan, resolveEvidence, returnAvailable } from
+  presentParticipantIds, recoveryPlan, resolveEvidence, returnAvailable,
+  testimonyStageResolved } from
   './lower-dvina-trace-phase-9-command-plans.js';
 
 const COMMAND = Object.freeze({
@@ -128,7 +129,8 @@ function evidenceCommand(contracts, inputDigest) {
   return command({ id: COMMAND.evidence, option: 'resolve_case_evidence',
     approved: contracts.activityPins[0],
     primary: 'knowledge_history', subsystems: ['knowledge_memory'],
-    can: (state) => atCamp(state, contracts) && hasTestimony(state),
+    can: (state) => atCamp(state, contracts)
+      && testimonyStageResolved(state),
     resolve: (state) => {
       const result = resolveEvidence(state, contracts.evidenceGraph);
       if (!result.ok) fail(result.error_code);

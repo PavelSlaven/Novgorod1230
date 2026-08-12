@@ -65,6 +65,9 @@ export async function commitLowerDvinaTracePhase9({ partyId, writePlan,
       state.party_state.body_state_version)] : []),
   ...(updatedContainer == null ? [] : [expected('party_containers',
     updatedContainer.id, containerVersion(state, updatedContainer.id))]),
+  ...(updatedTables.has('party_obligations')
+    ? [expected('party_obligations', state.promise_instances[0].obligation_id,
+      Number(state.promise_instances[0].state_version))] : []),
   ...(semantic == null ? []
     : expectedSemanticConversationSession(state, semantic))];
   const built = await builder.build({

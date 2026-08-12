@@ -126,6 +126,18 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
       'temporary_disposition_committed');
     assert.equal(snapshot.phase9.temporary_disposition.legal_effect,
       'temporary_disposition_only');
+    assert.deepEqual(snapshot.phase9.custody_state.party_slots,
+      ['ratsha_storehouse_helper', 'zhdanko_storehouse_controller']);
+    assert.equal(snapshot.phase9.property_handover_plan.option_id,
+      'preserve_recovered_property_for_savva_handover');
+    assert.equal(snapshot.phase9.promise_memory.option_id,
+      'preserve_active_no_summary_killing_promise');
+    assert.equal(snapshot.promise_instances[0].temporary_disposition_memory
+      .option_id, 'preserve_active_no_summary_killing_promise');
+    for (const slot of snapshot.phase9.custody_state.party_slots) {
+      assert.equal(snapshot.npcs.find(({ participant_slot_ref: ref }) =>
+        ref === slot).machine_state.temporary_custody, true);
+    }
     assert.equal(snapshot.phase9.seal_observation.document_contents_access,
       'forbidden');
     const packet = snapshot.items.find(
@@ -143,6 +155,16 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     assert.equal(normalized.holder_character_id, snapshot.actor_id);
     assert.equal(normalized.container_id, null);
     assert.equal(normalized.state.seal_state, 'intact');
+    assert.equal(normalized.state.property_state.temporary_handover_plan
+      .option_id, 'preserve_recovered_property_for_savva_handover');
+    const custodyRows = (await pool.query(
+      `SELECT machine_state
+         FROM party_runtime.party_npcs
+        WHERE party_id=$1 AND npc_id = ANY($2::text[])`,
+      [party.party_id, [ids.ratsha, ids.zhdanko]])).rows;
+    assert.equal(custodyRows.length, 2);
+    assert.equal(custodyRows.every(({ machine_state: machine }) =>
+      machine.temporary_custody === true), true);
     assert.equal((await pool.query(
       `SELECT count(*)::int AS count
          FROM party_runtime.party_v3_change_sets

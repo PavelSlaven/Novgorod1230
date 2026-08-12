@@ -31,8 +31,11 @@ export function assertLowerDvinaTraceM5Cutover(bundle, fail) {
     || phase9?.owner_contracts?.disposition_selection !== '@rus/turn'
     || phase9?.temporary_disposition?.approved_contract?.owner
       !== '@rus/social-law'
+    || phase9.temporary_disposition.approved_contract.version !== 2
     || phase9.temporary_disposition.approved_contract.contract_id
       !== phase9.temporary_disposition.contract_ref
+    || phase9.temporary_disposition.approved_contract
+      .supersedes_contract_ref?.version !== 1
     || authoredClaim?.schema !== 'authored_statement_claim_contract_v1'
     || authoredClaim.statement_template_ref
       !== phase9?.onisim_testimony?.statement_template_ref

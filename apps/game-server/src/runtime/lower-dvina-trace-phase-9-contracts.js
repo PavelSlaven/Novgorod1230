@@ -74,8 +74,11 @@ export function resolveTracePhase9Contracts({ state, bundle,
       || activities.inspect.no_check_required !== true
       || activities.disposition.temporary_disposition_contract_ref
         !== disposition.contract_id
-      || historicalDisposition.contract_id !== disposition.contract_id
-      || historicalDisposition.version !== disposition.version
+      || disposition.supersedes_contract_ref?.contract_id
+        !== historicalDisposition.contract_id
+      || disposition.supersedes_contract_ref?.version
+        !== historicalDisposition.version
+      || disposition.version !== historicalDisposition.version + 1
       || historicalDisposition.owner !== '@rus/turn'
       || disposition.owner !== '@rus/social-law'
       || disposition.selection_contract?.selection_source

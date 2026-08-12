@@ -112,8 +112,9 @@ function classifyTestimonyPlan(plan, contracts) {
       || !['speech', 'silence', 'leave_conversation']
         .includes(plan.contribution_kind)
       || !speechOperationValid) fail();
-  return { kind: plan.contribution_kind,
-    statementRef: plan.contribution_kind === 'speech' ? null : undefined };
+  return plan.contribution_kind === 'speech'
+    ? { kind: plan.contribution_kind, statementRef: null }
+    : { kind: plan.contribution_kind };
 }
 function testimonyOperationContract(contracts) {
   return { [TESTIMONY_OPERATION]: structuredClone(

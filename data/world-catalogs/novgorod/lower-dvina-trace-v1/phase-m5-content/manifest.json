@@ -2,11 +2,11 @@
   "schema":"rus.lower_dvina_trace_m5_content_manifest.v1","package_id":"lower_dvina_trace_m5_content_v1","revision":1,"scenario_id":"lower_dvina_trace_v1","scenario_definition_revision":17,"status":"approved","publication_status":"internal_only",
   "superseded_package_ref":{"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m4-content/manifest.json","id":"lower_dvina_trace_m4_content_v1","revision":1,"schema":"rus.lower_dvina_trace_m4_content_manifest.v1","digest":"d9917f6a30ed94587f5914f6b488ded0aeb9ce9269cb5ec9d25e4fd8f9d6ff22"},
   "superseded_definition_ref":{"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m4-content/definition.json","id":"lower_dvina_trace_v1","revision":16,"schema":"rus.trace_scenario_definition.v1","digest":"3f07fe5cbadb3bc5f2f0519bf999c89a9e28b6bf9acc4b802dc3266e664d8f16"},
-  "files":{"definition.json":"6f5e288990276e51ef922d33c6d85f9b270220beb4076c721f2057ac195c6c15","phase-9-bindings.json":"12ead552458a8a06a2f8fc3d79cf799ca8f2e93fd755e29af7424e0ef969d431","turn-step-bindings.json":"9e61ffa1fac06ac24030f80475aec8d48a8c277f9f07be9ca08104922d13c699"},
+  "files":{"definition.json":"4f30e7e44cf520f337f499232bf94cf10ac0fde023b70796817eb583af2cfd42","phase-9-bindings.json":"75d5e465e901d91d57f1526e175c976fde8e2e98a8dbd3809851a919cba2941a","turn-step-bindings.json":"9e61ffa1fac06ac24030f80475aec8d48a8c277f9f07be9ca08104922d13c699"},
   "content_refs":{
-    "definition":{"path":"definition.json","id":"lower_dvina_trace_v1","revision":17,"schema":"rus.trace_scenario_definition.v1","digest":"6f5e288990276e51ef922d33c6d85f9b270220beb4076c721f2057ac195c6c15"},
-    "phase_9_bindings":{"path":"phase-9-bindings.json","id":"lower_dvina_trace_phase_9_bindings_v1","revision":1,"schema":"rus.lower_dvina_trace_phase_9_bindings.v1","digest":"12ead552458a8a06a2f8fc3d79cf799ca8f2e93fd755e29af7424e0ef969d431"},
+    "definition":{"path":"definition.json","id":"lower_dvina_trace_v1","revision":17,"schema":"rus.trace_scenario_definition.v1","digest":"4f30e7e44cf520f337f499232bf94cf10ac0fde023b70796817eb583af2cfd42"},
+    "phase_9_bindings":{"path":"phase-9-bindings.json","id":"lower_dvina_trace_phase_9_bindings_v1","revision":1,"schema":"rus.lower_dvina_trace_phase_9_bindings.v1","digest":"75d5e465e901d91d57f1526e175c976fde8e2e98a8dbd3809851a919cba2941a"},
     "turn_step_bindings":{"path":"turn-step-bindings.json","id":"lower_dvina_trace_turn_step_bindings_v4","revision":4,"schema":"rus.lower_dvina_trace_turn_step_bindings.v1","digest":"9e61ffa1fac06ac24030f80475aec8d48a8c277f9f07be9ca08104922d13c699"}
   },
-  "content_digest_algorithm":"sha256_sorted_filename_colon_digest_lf_v1","content_digest":"c2a2e155dcd46c1638c40aa25f318a57fcca66f6f967f428de4baf7d6d6160e2","fallback_policy":"forbidden","normalization_policy":"forbidden","alias_policy":"forbidden"
+  "content_digest_algorithm":"sha256_sorted_filename_colon_digest_lf_v1","content_digest":"7f30d7568f13ea7c48020734ad7ea401f62bb4a1c4eed601e9280f1999ef5ab3","fallback_policy":"forbidden","normalization_policy":"forbidden","alias_policy":"forbidden"
 }

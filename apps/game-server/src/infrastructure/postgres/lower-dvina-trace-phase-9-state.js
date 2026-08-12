@@ -128,10 +128,48 @@ function applyKind(next, state, kind, phase9, factual, changeSetId) {
     next.phase9.temporary_disposition_options = structuredClone(
       phase9.temporary_disposition_options);
   } else if (kind === 'temporary_disposition') {
-    next.phase9.temporary_disposition = structuredClone(
-      phase9.temporary_disposition);
+    applyTemporaryDisposition(next, phase9.temporary_disposition,
+      changeSetId);
   } else {
     fail('TRACE_PHASE_9_STATE_KIND_INVALID');
+  }
+}
+
+function applyTemporaryDisposition(next, proposal, changeSetId) {
+  next.phase9.temporary_disposition = structuredClone(proposal);
+  next.phase9.custody_state = structuredClone(proposal.custody_state);
+  next.phase9.property_handover_plan = structuredClone(
+    proposal.property_handover_plan);
+  next.phase9.promise_memory = structuredClone(proposal.promise_memory);
+  const heldSlots = new Set(proposal.custody_state.party_slots);
+  const custodySlots = new Set(['ratsha_storehouse_helper',
+    'zhdanko_storehouse_controller']);
+  next.npcs = (next.npcs ?? []).map((npc) => {
+    if (!custodySlots.has(npc.participant_slot_ref)) return npc;
+    const held = heldSlots.has(npc.participant_slot_ref);
+    return { ...npc, machine_state: { ...(npc.machine_state ?? {}),
+      temporary_custody: held,
+      temporary_custody_state: held
+        ? structuredClone(proposal.custody_state) : null } };
+  });
+  const packet = (next.items ?? []).find(({ template_id: id }) =>
+    id === 'trace_ld_v1_item_sealed_packet');
+  if (packet == null) fail('TRACE_PHASE_9_STATE_ENTITY_MISSING');
+  packet.state = { ...(packet.state ?? {}), property_state: {
+    ...(packet.state?.property_state ?? {}), temporary_handover_plan:
+      structuredClone(proposal.property_handover_plan) } };
+  const activePromise = (next.promise_instances ?? []).find(
+    ({ current_state: state }) => state === 'active')
+    ?? next.promise_instances?.[0];
+  if (proposal.promise_memory.option_id
+      !== 'record_no_active_promise' && activePromise == null) {
+    fail('TRACE_PHASE_9_PROMISE_STATE_MISSING');
+  }
+  if (activePromise != null) {
+    activePromise.temporary_disposition_memory = structuredClone(
+      proposal.promise_memory);
+    activePromise.state_version = Number(activePromise.state_version) + 1;
+    activePromise.last_change_set_id = changeSetId;
   }
 }
 

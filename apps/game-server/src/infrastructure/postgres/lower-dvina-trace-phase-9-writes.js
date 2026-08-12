@@ -96,8 +96,71 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber,
     partyId, state, next, factual, turnNumber, changeSetId, idemId, contracts });
   if (kind === 'onisim_testimony') appendConversation({ inserts, updates,
     appends, partyId, state, next, factual, changeSetId, idemId });
+  if (kind === 'temporary_disposition') appendTemporaryDisposition({ updates,
+    appends, partyId, state, next, factual, turnNumber, changeSetId, idemId,
+    contracts });
   appendKnowledge({ inserts, partyId, state, next, changeSetId });
   return { inserts, updates, appends, deletes: [] };
+}
+
+function appendTemporaryDisposition({ updates, appends, partyId, state, next,
+  factual, turnNumber, changeSetId, idemId, contracts }) {
+  const heldSlots = new Set(next.phase9.custody_state.party_slots);
+  for (const npc of (next.npcs ?? []).filter(({ participant_slot_ref: slot }) =>
+    heldSlots.has(slot))) {
+    updates.push(row('party_npcs', npc.instance_id, { party_id: partyId,
+      npc_id: npc.instance_id, anchor_id: npc.anchor_id,
+      machine_state: structuredClone(npc.machine_state) }));
+  }
+  const packet = next.items.find(({ item_id: id }) =>
+    id === contracts.packet.item_id);
+  if (packet == null) throw new Error('TRACE_PHASE_9_PACKET_MISSING');
+  updates.push(row('party_items', packet.item_id, { party_id: partyId,
+    item_id: packet.item_id, quantity: packet.quantity,
+    condition_state: packet.condition_state, legal_status: packet.legal_status,
+    state: structuredClone(packet.state) }));
+  const prior = state.promise_instances?.[0];
+  const promise = next.promise_instances?.[0];
+  if (prior != null && promise != null) {
+    updates.push(row('party_obligations', promise.obligation_id, {
+      obligation_id: promise.obligation_id, party_id: partyId,
+      policy_ref: structuredClone(promise.policy_ref),
+      policy_version: promise.policy_version,
+      promisor_ref: { entity_kind: 'player_character',
+        entity_id: promise.promisor_actor_id },
+      beneficiary_ref: { entity_kind: 'npc',
+        entity_id: promise.beneficiary_actor_id },
+      witness_refs: promise.witness_actor_ids.map((id) => ({
+        entity_kind: 'npc', entity_id: id })),
+      scope_snapshot: structuredClone(promise.scope_snapshot),
+      current_state: promise.current_state,
+      current_state_fact: promise.current_state_fact,
+      state_version: promise.state_version,
+      created_change_set_id: promise.created_change_set_id,
+      last_change_set_id: changeSetId }));
+    const ordinal = Number(prior.state_version) - 1;
+    appends.push(row('party_obligation_transitions',
+      `${promise.obligation_id}:${ordinal}`, {
+        obligation_transition_id: `${promise.obligation_id}:${ordinal}`,
+        party_id: partyId, obligation_id: promise.obligation_id,
+        transition_ordinal: ordinal, from_state: prior.current_state,
+        to_state: promise.current_state,
+        transition_kind: 'temporary_disposition_promise_memory_recorded',
+        causal_basis: { committed_fact_ids: [
+          promise.temporary_disposition_memory.committed_fact_id] },
+        witness_snapshot: promise.witness_actor_ids.map((id) => ({
+          entity_kind: 'npc', entity_id: id })),
+        activity_execution_id:
+          `activity:${partyId}:trace-phase9:${turnNumber}:temporary_disposition`,
+        check_resolution_id: null, npc_decision_request_id: null,
+        change_set_id: changeSetId, idempotency_record_id: idemId,
+        occurred_at_turn: turnNumber,
+        occurred_at_whole_minutes: factual.time_update.clock_after.whole_minutes,
+        occurred_at_subminute_numerator:
+          factual.time_update.clock_after.subminute_numerator,
+        occurred_at_subminute_denominator:
+          factual.time_update.clock_after.subminute_denominator }));
+  }
 }
 
 function appendActivity({ inserts, updates, appends, partyId, state, next,

@@ -4,7 +4,7 @@ const DIMENSIONS = Object.freeze(['custody', 'property', 'promise']);
 const CONTRACT_KEYS = Object.freeze(['committed_fact_output', 'contract_id',
   'custody_options', 'final_consequence_ref', 'forbidden_semantics', 'owner',
   'promise_options', 'property_options', 'schema', 'selection_contract',
-  'version']);
+  'supersedes_contract_ref', 'version']);
 
 export class TemporaryDispositionPlanningError extends Error {
   constructor(code, message, details = {}) {
@@ -70,7 +70,32 @@ export function buildTemporaryDispositionProposal({ contract, option_set:
     committed_fact_outputs: [contract.committed_fact_output,
       ...DIMENSIONS.map((dimension) =>
         selectedOptions[dimension].committed_fact_output)].filter(Boolean),
+    custody_state: custodyState(selectedOptions.custody),
+    property_handover_plan: propertyPlan(selectedOptions.property),
+    promise_memory: promiseMemory(selectedOptions.promise),
     legal_effect: 'temporary_disposition_only', completion: 'forbidden' });
+}
+
+function custodyState(option) {
+  return { schema: 'temporary_custody_state_v1',
+    option_id: option.option_id, status: 'temporary',
+    party_slots: [...(option.parties ?? [])],
+    committed_fact_id: option.committed_fact_output };
+}
+
+function propertyPlan(option) {
+  return { schema: 'temporary_property_handover_plan_v1',
+    option_id: option.option_id, status: 'temporary',
+    owner_must_remain: option.owner_must_remain ?? null,
+    property_mutation: option.property_mutation ?? null,
+    committed_fact_id: option.committed_fact_output };
+}
+
+function promiseMemory(option) {
+  return { schema: 'temporary_promise_memory_v1',
+    option_id: option.option_id, status: 'recorded',
+    scope: option.scope ?? null,
+    committed_fact_id: option.committed_fact_output };
 }
 
 function validateInput(input) {
@@ -90,6 +115,11 @@ function validateContract(contract) {
       || contract.schema !== 'rus.trace_temporary_disposition_contract.v1'
       || contract.owner !== '@rus/social-law' || !stableId(contract.contract_id)
       || !Number.isSafeInteger(contract.version) || contract.version < 1
+      || !plain(contract.supersedes_contract_ref)
+      || JSON.stringify(Object.keys(contract.supersedes_contract_ref).sort())
+        !== JSON.stringify(['contract_id', 'version'])
+      || contract.supersedes_contract_ref?.contract_id !== contract.contract_id
+      || contract.supersedes_contract_ref?.version !== contract.version - 1
       || contract.selection_contract?.eligibility_source_state
         !== 'committed_world_state_only'
       || contract.selection_contract?.selection_source

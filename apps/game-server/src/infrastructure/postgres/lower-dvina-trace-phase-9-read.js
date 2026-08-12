@@ -22,6 +22,69 @@ export async function assertPhase9NormalizedRows(pool, payload) {
         || payload.phase9.temporary_disposition?.completion !== 'forbidden')) {
     fail();
   }
+  if (payload.phase9.status === 'temporary_disposition_committed') {
+    await assertTemporaryDisposition(pool, payload, packet);
+  }
+}
+
+async function assertTemporaryDisposition(pool, payload, packet) {
+  const custody = payload.phase9.custody_state;
+  const property = payload.phase9.property_handover_plan;
+  const promiseMemory = payload.phase9.promise_memory;
+  const held = (payload.npcs ?? []).filter(
+    ({ machine_state: state }) => state?.temporary_custody === true);
+  if (custody?.schema !== 'temporary_custody_state_v1'
+      || custody.status !== 'temporary'
+      || property?.schema !== 'temporary_property_handover_plan_v1'
+      || property.status !== 'temporary'
+      || promiseMemory?.schema !== 'temporary_promise_memory_v1'
+      || promiseMemory.status !== 'recorded'
+      || canonicalDigest(held.map(({ participant_slot_ref: slot }) => slot)
+        .sort()) !== canonicalDigest([...custody.party_slots].sort())
+      || canonicalDigest(packet.state?.property_state
+        ?.temporary_handover_plan) !== canonicalDigest(property)
+      || ((payload.promise_instances ?? []).length > 0
+        && !payload.promise_instances.some((promise) => canonicalDigest(
+          promise.temporary_disposition_memory)
+          === canonicalDigest(promiseMemory)))) fail();
+  const ids = held.map(({ instance_id: id }) => id).sort();
+  const result = await pool.query(
+    `SELECT npc_id,machine_state
+       FROM party_runtime.party_npcs
+      WHERE party_id=$1 AND npc_id = ANY($2::text[])
+      ORDER BY npc_id`, [payload.party_id, ids]);
+  if (result.rowCount !== ids.length
+      || result.rows.some((row, index) => row.npc_id !== ids[index]
+        || canonicalDigest(row.machine_state)
+          !== canonicalDigest(held.find(
+            ({ instance_id: id }) => id === row.npc_id)?.machine_state))) {
+    fail();
+  }
+  if ((payload.promise_instances ?? []).length > 0) {
+    const promise = payload.promise_instances.find((entry) => canonicalDigest(
+      entry.temporary_disposition_memory) === canonicalDigest(promiseMemory));
+    const normalized = await pool.query(
+      `SELECT o.state_version::text,o.last_change_set_id,
+              t.transition_ordinal,t.from_state,t.to_state,
+              t.transition_kind,t.causal_basis
+         FROM party_runtime.party_obligations o
+         JOIN party_runtime.party_obligation_transitions t
+           ON t.party_id=o.party_id AND t.obligation_id=o.obligation_id
+        WHERE o.party_id=$1 AND o.obligation_id=$2
+        ORDER BY t.transition_ordinal DESC LIMIT 1`,
+      [payload.party_id, promise?.obligation_id]);
+    const row = normalized.rows[0];
+    if (normalized.rowCount !== 1
+        || Number(row.state_version) !== Number(promise.state_version)
+        || row.last_change_set_id !== promise.last_change_set_id
+        || row.transition_ordinal !== Number(promise.state_version) - 2
+        || row.from_state !== promise.current_state
+        || row.to_state !== promise.current_state
+        || row.transition_kind
+          !== 'temporary_disposition_promise_memory_recorded'
+        || canonicalDigest(row.causal_basis) !== canonicalDigest({
+          committed_fact_ids: [promiseMemory.committed_fact_id] })) fail();
+  }
 }
 
 async function assertBag(pool, partyId, expected) {

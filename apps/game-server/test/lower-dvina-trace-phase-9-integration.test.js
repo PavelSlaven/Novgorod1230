@@ -154,8 +154,30 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       'temporary_disposition_committed');
     assert.equal(runtime.state.phase9.temporary_disposition.legal_effect,
       'temporary_disposition_only');
+    assert.deepEqual(runtime.state.phase9.custody_state, {
+      schema: 'temporary_custody_state_v1',
+      option_id: 'hold_ratsha_and_zhdanko_for_authorized_handover',
+      status: 'temporary',
+      party_slots: ['ratsha_storehouse_helper',
+        'zhdanko_storehouse_controller'],
+      committed_fact_id:
+        'temporary_custody_both_for_authorized_handover' });
+    for (const slot of runtime.state.phase9.custody_state.party_slots) {
+      assert.equal(runtime.state.npcs.find(({ participant_slot_ref: ref }) =>
+        ref === slot).machine_state.temporary_custody, true);
+    }
+    assert.equal(runtime.state.phase9.property_handover_plan.status,
+      'temporary');
+    assert.equal(runtime.state.items.find(({ item_id: id }) =>
+      id === ids.packet).state.property_state.temporary_handover_plan
+      .option_id, 'preserve_recovered_property_for_savva_handover');
+    assert.equal(runtime.state.phase9.promise_memory.status, 'recorded');
+    assert.equal(runtime.state.promise_instances[0]
+      .temporary_disposition_memory.option_id,
+    'preserve_active_no_summary_killing_promise');
     assert.equal(Object.hasOwn(runtime.state, 'completion_state'), false);
-    assert.deepEqual(runtime.state.promise_instances, promiseBefore);
+    assert.deepEqual(runtime.state.promise_instances[0].current_state,
+      promiseBefore[0].current_state);
     assert.deepEqual(runtime.state.phase9.checkpoints.map(({ kind }) => kind),
       ['bag_recovery', 'bag_opened', 'packet_recovered', 'return_to_camp',
         'onisim_testimony', 'evidence_resolved', 'temporary_disposition']);
@@ -164,6 +186,63 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
         + 'свёрток для Саввы и соблюсти обещание Ратше.');
     assert.equal(testimonyCalls, 1);
+    runtime = createRuntime(structuredClone(runtime.state));
+    assert.equal(runtime.state.npcs.find(({ participant_slot_ref: slot }) =>
+      slot === 'zhdanko_storehouse_controller').machine_state
+      .temporary_custody, true);
+    assert.equal(runtime.state.promise_instances[0]
+      .temporary_disposition_memory.status, 'recorded');
+  });
+
+test('Onisim silence remains an unknown evidence branch through restart',
+  async () => {
+    const state = phase8CampState(bundle);
+    state.phase9 = { status: 'active', checkpoints: [], committed_facts: [
+      'ratsha_surrender_without_further_harm_committed',
+      'zhdanko_submission_committed', 'sealed_packet_returned',
+      'promise_current_active'] };
+    const ids = { ...actorIds(state), packet: state.items.find(
+      ({ template_id: id }) => id === 'trace_ld_v1_item_sealed_packet'
+    ).item_id };
+    const createRuntime = (committedState) => fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle, committedState,
+      temporalAdvanceOwner: createTemporalAdvanceOwner({
+        effect_registrations: [...npcTemporalEffectRegistrations(),
+          ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+          ...lowerDvinaTraceCombatTemporalEffectRegistrations()] }),
+      turnStepModel: (request) => plan(request, ids),
+      playerConversationModel: (request) => playerPlan(request, {}),
+      npcSemanticModel: (request) => onisimNonSpeechPlan(request, 'silence'),
+      npcCombatModel: () => { throw new Error('combat must not start'); } });
+    let runtime = createRuntime(state);
+    await submit(runtime, 'silence-testimony',
+      'Попросить Онисима рассказать, что он знает о Жданко и свёртке.');
+    assert.equal(runtime.state.phase9.onisim_testimony.response_kind,
+      'silence');
+    assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,
+      false);
+    assert.equal(runtime.state.phase9.committed_facts.includes(
+      'trace_ld_v1_evidence_onisim_testimony'), false);
+
+    runtime = createRuntime(structuredClone(runtime.state));
+    await submit(runtime, 'silence-evidence',
+      'Сопоставить все подтверждённые доказательства.');
+    assert.equal(runtime.state.phase9.evidence_resolution.ok, true);
+    assert.equal(runtime.state.phase9.evidence_resolution
+      .admitted_evidence_refs?.includes(
+        'trace_ld_v1_evidence_onisim_testimony') ?? false, false);
+
+    runtime = createRuntime(structuredClone(runtime.state));
+    await submit(runtime, 'silence-disposition',
+      'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
+        + 'свёрток для Саввы и соблюсти обещание Ратше.');
+    assert.equal(runtime.state.phase9.status,
+      'temporary_disposition_committed');
+    runtime = createRuntime(structuredClone(runtime.state));
+    assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,
+      false);
+    assert.equal(runtime.state.phase9.temporary_disposition.legal_effect,
+      'temporary_disposition_only');
   });
 
 test('Phase 9 does not recover a road bag carried away by Zhdanko', () => {
@@ -321,3 +400,17 @@ function testimonyClaim() { return {
 function committedKnowledge(factId) { return { fact_id: factId,
   knowledge_state: 'known_from_committed_scenario_event',
   evidence_refs: [`event:${factId}`] }; }
+function onisimNonSpeechPlan(request, responseKind) {
+  return { schema: 'conversation_contribution_plan_v1',
+    request_id: request.request_id, boundary_id: request.boundary_id,
+    conversation_id: request.conversation_id, exchange_id: request.exchange_id,
+    state_version: request.state_version, speaker_ref: request.npc_ref,
+    contribution_kind: responseKind, primary_addressee_ref: null,
+    intended_addressee_refs: [], affected_actor_refs: [], speech: null,
+    interpretation: { intent: 'Не давать показаний.',
+      grounded_contribution: 'Промолчать.', adaptation: 'literal' },
+    resolution: 'automatic', activity: {
+      duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations: [], check: null, handoff: null,
+    reason: 'Онисим вправе не отвечать.' };
+}

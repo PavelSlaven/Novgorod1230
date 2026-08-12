@@ -31,6 +31,9 @@ test('social-law evaluates only supplied rights and packages risk for approval',
 
 test('social-law owns temporary disposition applicability and typed proposal',
   () => {
+    assert.equal(dispositionContract.version, 2);
+    assert.deepEqual(dispositionContract.supersedes_contract_ref, {
+      contract_id: dispositionContract.contract_id, version: 1 });
     const optionSet = resolveTemporaryDispositionOptions({
       committed_fact_ids: [
         'ratsha_surrender_without_further_harm_committed',
@@ -59,6 +62,28 @@ test('social-law owns temporary disposition applicability and typed proposal',
     assert.equal(proposal.legal_effect, 'temporary_disposition_only');
     assert.deepEqual(proposal.selected_option_ids,
       selection.selected_option_ids);
+    assert.deepEqual(proposal.custody_state, {
+      schema: 'temporary_custody_state_v1',
+      option_id: 'hold_ratsha_and_zhdanko_for_authorized_handover',
+      status: 'temporary',
+      party_slots: ['ratsha_storehouse_helper',
+        'zhdanko_storehouse_controller'],
+      committed_fact_id:
+        'temporary_custody_both_for_authorized_handover' });
+    assert.deepEqual(proposal.property_handover_plan, {
+      schema: 'temporary_property_handover_plan_v1',
+      option_id: 'preserve_recovered_property_for_savva_handover',
+      status: 'temporary',
+      owner_must_remain: 'trace_ld_v1_external_owner_savva_tverdich',
+      property_mutation: null,
+      committed_fact_id:
+        'temporary_property_preserved_for_authorized_handover' });
+    assert.deepEqual(proposal.promise_memory, {
+      schema: 'temporary_promise_memory_v1',
+      option_id: 'preserve_active_no_summary_killing_promise',
+      status: 'recorded',
+      scope: 'no_summary_killing_after_surrender_and_no_further_harm',
+      committed_fact_id: 'temporary_promise_obligation_preserved' });
   });
 
 test('promise lifecycle planner produces only approved initialization, offer, and activation proposals', () => {

@@ -4,6 +4,7 @@ import {
   assertJson,
   freezeJson,
   projectionError,
+  text,
   textArray
 } from './lower-dvina-trace-player-safe-json.js';
 import {
@@ -29,13 +30,14 @@ const WORKING_KEYS = new Set([
   'clock_weather_light', 'inventory', 'items', 'visible_npcs', 'scene_npcs',
   'npcs', 'interactions', 'routes', 'available_routes', 'route_history',
   'route_knowledge', 'knowledge', 'visible_context',
-  'visible_context_package', 'current_visible_context', 'combat_sessions'
+  'visible_context_package', 'current_visible_context', 'combat_sessions',
+  'case_evidence_ref'
 ]);
 const INVALID = 'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID';
 const COMMITTED_REF_FIELDS = new Set([
   'inventory', 'items', 'visible_npcs', 'scene_npcs', 'npcs',
   'interactions', 'routes', 'available_routes', 'route_history',
-  'route_knowledge', 'knowledge', 'combat_sessions'
+  'route_knowledge', 'knowledge', 'combat_sessions', 'case_evidence_ref'
 ]);
 const VISIBLE_CONTEXT_FIELDS = new Set([
   'visible_context', 'visible_context_package', 'current_visible_context'
@@ -171,6 +173,14 @@ function projectWorkingField(key, value, context) {
     return projectRouteKnowledge(value, { strict: true });
   }
   if (key === 'knowledge') return projectKnowledge(value, { strict: true });
+  if (key === 'case_evidence_ref') {
+    const projected = text(value);
+    if (projected === undefined) {
+      throw projectionError(INVALID,
+        'working_projection.case_evidence_ref must be a text ref.');
+    }
+    return projected;
+  }
   if (key === 'combat_sessions') {
     assertJson(value);
     return freezeJson(value);

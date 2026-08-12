@@ -4,6 +4,10 @@ export {
   PartyLocalCommitmentPlanningError,
   planPartyLocalCommitment
 } from './party-local-commitment.js';
+export {
+  TemporaryDispositionPlanningError,
+  planTemporaryDisposition
+} from './temporary-disposition.js';
 
 const SUPPORTED_PROMISE_OPERATIONS = new Set(['initialize', 'offer', 'activate']);
 

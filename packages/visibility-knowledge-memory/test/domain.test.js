@@ -7,6 +7,7 @@ import {
   mergeFormalKnowledgeMemory,
   mergeKnowledgeFacts,
   mergeValidatedKnowledgeMemory,
+  resolveEvidenceConclusions,
   stripHiddenForNarrator,
   validateMemoryFact,
   validateVisibleContext
@@ -241,4 +242,104 @@ test('knowledge owner builds a validated player-safe envelope and rejects hidden
   });
   assert.equal(leaked.ok, false);
   assert.equal(leaked.error_code, 'hidden_information_leak');
+});
+
+const evidenceGraph = {
+  schema: 'rus.trace_clue_evidence_graph_set.v1',
+  clue_evidence_graph_set_id: 'graph-1',
+  revision: 1,
+  owner: '@rus/visibility-knowledge-memory',
+  fallback_policy: 'forbidden',
+  normalization_policy: 'forbidden',
+  alias_policy: 'forbidden',
+  evidence_records: [
+    { evidence_id: 'evidence:a' },
+    { evidence_id: 'evidence:b' },
+    { evidence_id: 'evidence:statement' }
+  ],
+  evidence_chains: [
+    {
+      chain_id: 'chain:physical',
+      independence_class: 'physical',
+      leaf_evidence_refs: ['evidence:a', 'evidence:b'],
+      inference_nodes: [
+        { node_ref: 'conclusion:a', operator: 'all_of',
+          input_refs: ['evidence:a'] },
+        { node_ref: 'conclusion:physical', operator: 'min_count', min_count: 2,
+          input_refs: ['conclusion:a', 'evidence:b'] }
+      ],
+      terminal_conclusion: 'conclusion:physical'
+    },
+    {
+      chain_id: 'chain:testimony',
+      independence_class: 'testimonial',
+      leaf_evidence_refs: ['evidence:statement'],
+      inference_nodes: [
+        { node_ref: 'conclusion:testimony', operator: 'all_of',
+          input_refs: ['evidence:statement'] }
+      ],
+      terminal_conclusion: 'conclusion:testimony'
+    }
+  ],
+  terminal_evidence_slots: [],
+  identity_binding_evidence_slots: [],
+  principal_inference_policy: {
+    conclusion: 'conclusion:principal',
+    minimum_independent_chain_count: 2,
+    cross_chain_inference: {
+      operator: 'approved_combinations',
+      requires_distinct_independence_classes: true,
+      input_chain_terminal_refs: [
+        { chain_ref: 'chain:physical',
+          terminal_conclusion: 'conclusion:physical',
+          independence_class: 'physical' },
+        { chain_ref: 'chain:testimony',
+          terminal_conclusion: 'conclusion:testimony',
+          independence_class: 'testimonial' }
+      ],
+      approved_combinations: [{
+        combination_id: 'combination:principal',
+        chain_refs: ['chain:physical', 'chain:testimony'],
+        outcome_kind: 'corroborated',
+        outcome_ref: 'conclusion:principal',
+        requires_disjoint_leaf_evidence: true
+      }]
+    }
+  }
+};
+
+test('evidence owner resolves only authored conclusions from committed evidence', () => {
+  const result = resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:statement', 'evidence:b', 'evidence:a']);
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.deepEqual(result.committed_evidence_refs,
+    ['evidence:a', 'evidence:b', 'evidence:statement']);
+  assert.deepEqual(result.supported_conclusion_refs, [
+    'conclusion:a', 'conclusion:physical', 'conclusion:principal',
+    'conclusion:testimony'
+  ]);
+  assert.deepEqual(result.applied_combination_ids, ['combination:principal']);
+  assert.equal(result.completion, undefined);
+});
+
+test('evidence owner treats absence as unknown and statements as evidence, not truth', () => {
+  const statementOnly = resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:statement']);
+  assert.equal(statementOnly.ok, true);
+  assert.deepEqual(statementOnly.supported_conclusion_refs,
+    ['conclusion:testimony']);
+  assert.equal(statementOnly.supported_conclusion_refs
+    .includes('conclusion:principal'), false);
+  assert.deepEqual(statementOnly.rejected_or_absent_refs, []);
+});
+
+test('evidence owner fails closed for unknown, duplicate and malformed inputs', () => {
+  assert.equal(resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:unknown']).ok, false);
+  assert.equal(resolveEvidenceConclusions(evidenceGraph,
+    ['evidence:a', 'evidence:a']).ok, false);
+  assert.equal(resolveEvidenceConclusions({ ...evidenceGraph,
+    evidence_chains: [{ ...evidenceGraph.evidence_chains[0],
+      inference_nodes: [{ node_ref: 'conclusion:a', operator: 'not',
+        input_refs: ['evidence:a'] }] }] }, ['evidence:a']).ok, false);
 });

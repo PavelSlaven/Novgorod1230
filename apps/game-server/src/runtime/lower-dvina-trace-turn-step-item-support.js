@@ -62,6 +62,24 @@ export function initializeRuntimeState(committedState) {
       source_refs: [...resolved.snapshot.provenance.source_refs]
     });
   }
+  for (const container of committedState.containers ?? []) {
+    const containerId = text(container?.container_id ?? container?.instance_id);
+    if (!containerId) {
+      fail('TRACE_TURN_STEP_COMMITTED_CONTAINER_INVALID');
+    }
+    state.materializedItems.set(containerId, {
+      ...structuredClone(container), item_id: containerId,
+      instance_id: containerId,
+      placement: { holder_character_id: container.holder_character_id
+        ?? container.state?.holder_character_id ?? null,
+      holder_npc_id: container.holder_npc_id
+        ?? container.state?.holder_npc_id ?? null,
+      anchor_id: container.anchor_id ?? container.state?.anchor_id ?? null,
+      location_ref: container.location_ref
+        ?? container.state?.location_ref ?? null,
+      zone_ref: container.zone_ref ?? container.state?.zone_ref ?? null }
+    });
+  }
   for (const entity of state.entities.values()) {
     entity.source_refs.filter((ref) => state.entities.has(ref))
       .forEach((ref) => state.consumableSources.add(ref));

@@ -7,7 +7,8 @@ export function appendPhase4ActivityExecution({
   activitySeriesId, attemptOrdinal, turnNumber, changeSetId, idemId
 }) {
   const semantic = factual.consequence.negotiation?.semantic_exchange
-    ?? factual.consequence.accusation?.semantic_exchange ?? null;
+    ?? factual.consequence.accusation?.semantic_exchange
+    ?? factual.consequence.phase9?.semantic_exchange ?? null;
   const budget = semantic?.exchange?.time_budget ?? null;
   const resumedNpc = semantic?.resumed_npc_execution != null;
   const resumedPlayer = semantic?.resumed_player_execution != null;
@@ -74,10 +75,13 @@ export function appendPhase4ActivityExecution({
   const progress = completed ? {} : currentContext;
   (resumed ? updates : inserts).push(row('party_timed_activity_executions', id, {
     id, series_ordinal: seriesOrdinal,
-    activity_snapshot: factual.consequence.phase8_kind == null
-      ? { activity_ref: root.activity_ref, phase4_kind: 'negotiation' }
-      : { activity_ref: root.activity_ref,
-        phase_kind: factual.consequence.phase8_kind },
+    activity_snapshot: factual.consequence.phase9_kind != null
+      ? { activity_ref: root.activity_ref,
+        phase_kind: factual.consequence.phase9_kind }
+      : factual.consequence.phase8_kind == null
+        ? { activity_ref: root.activity_ref, phase4_kind: 'negotiation' }
+        : { activity_ref: root.activity_ref,
+          phase_kind: factual.consequence.phase8_kind },
     original_total_minutes: duration,
     cumulative_elapsed_numerator: actual,
     cumulative_elapsed_denominator: 1,
@@ -117,7 +121,8 @@ export function appendPhase4ActivityExecution({
     terminal_reason_code: completed
       ? reachesPlayerBoundary
         ? 'player_response_boundary_reached'
-        : 'phase_4_activity_completed'
+        : factual.consequence.phase9_kind == null
+          ? 'phase_4_activity_completed' : 'phase_9_activity_completed'
       : null
   }));
   appends.push(row('party_timed_activity_attempts', `${id}:${attemptOrdinal}`, {

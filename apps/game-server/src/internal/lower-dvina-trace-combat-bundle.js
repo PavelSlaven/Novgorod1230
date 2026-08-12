@@ -3,8 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { canonicalDigest } from '@rus/materialization';
 import {
-  TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
-  TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST
+  TRACE_PHASE_1B_REVISION16_DEFINITION_DIGEST,
+  TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST
 } from './lower-dvina-trace-phase-1b-identities.js';
 
 const SCENARIO_ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
@@ -143,7 +143,7 @@ function revision16PinChecks(input) {
     content_refs: refs.every(([key, loaded, path, id, revision]) =>
       exactContentRef(content.content_refs?.[key], loaded, path, id, revision)),
     definition: definition.value?.schema === 'rus.trace_scenario_definition.v1'
-      && definition.digest === TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST
+      && definition.digest === TRACE_PHASE_1B_REVISION16_DEFINITION_DIGEST
       && definition.value.scenario_id === 'lower_dvina_trace_v1'
       && definition.value.revision === 16
       && definition.value.supersedes_definition_ref?.digest
@@ -154,7 +154,7 @@ function revision16PinChecks(input) {
       && resolved?.autonomous_semantic_bindings?.digest === autonomous.digest
       && resolved?.movement_bindings?.digest === movement.digest,
     phase1a: phase1a.value?.package_id === 'lower_dvina_trace_phase_1a_v12'
-      && phase1a.digest === TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST
+      && phase1a.digest === TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST
       && phase1a.value.revision === 12
       && phase1a.value.scenario_definition_revision === 16
       && phase1a.value.status === 'approved'

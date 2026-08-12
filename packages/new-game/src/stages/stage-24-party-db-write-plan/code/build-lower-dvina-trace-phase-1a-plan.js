@@ -275,7 +275,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     party_id: partyId,
     item_id: item.instance_id,
     anchor_id: item.anchor_id ?? null,
-    container_id: null,
+    container_id: item.container_id ?? null,
     holder_npc_id: item.holder_npc_id ?? null,
     holder_character_id: item.holder_character_id ?? null,
     physical_position: item.physical_position,
@@ -289,7 +289,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     owner_npc_id: item.owner_npc_id ?? null,
     owner_character_id: item.owner_character_id ?? null,
     owner_party: false,
-    owner_external_ref: null,
+    owner_external_ref: item.owner_external_ref ?? null,
     controller_npc_id: item.controller_npc_id ?? null,
     controller_character_id: item.controller_character_id ?? null,
     claim_state: item.claim_state

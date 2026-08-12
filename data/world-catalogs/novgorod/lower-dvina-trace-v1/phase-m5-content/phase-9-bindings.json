@@ -1,0 +1,59 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_9_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_9_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 17,
+  "owner_contracts": {
+    "property": "@rus/items-property",
+    "movement": "@rus/movement-routes",
+    "evidence": "@rus/visibility-knowledge-memory",
+    "conversation": "@rus/turn",
+    "disposition": "@rus/turn"
+  },
+  "property_recovery": {
+    "activity_profile_ref": "trace_ld_v1_activity_check_bag_and_seal",
+    "bag_template_ref": "trace_ld_v1_container_road_bag",
+    "packet_template_ref": "trace_ld_v1_item_sealed_packet",
+    "bag_recovery_transition_ref": "trace_ld_v1_property_road_bag_recovered_to_player_control",
+    "bag_open_transition_ref": "trace_ld_v1_property_road_bag_opened_for_access",
+    "packet_recovery_transition_refs": ["trace_ld_v1_property_packet_recovered_to_player", "trace_ld_v1_property_destroyed_packet_recovered_to_player"],
+    "recognition": {"kind": "code_owned_observation", "check_required": false, "required_marks": ["strap_state:cut", "leather_patch_state:present"]},
+    "document_contents_access": "forbidden"
+  },
+  "return_movement": {
+    "activity_profile_ref": "trace_ld_v1_activity_return_to_camp",
+    "route_ref": "trace_ld_v1_route_storehouse_to_camp_guarded_return",
+    "source_location_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "destination_location_ref": "trace_ld_v1_loc_fishing_camp"
+  },
+  "onisim_testimony": {
+    "signal_mapping": {"mapping_id":"trace_ld_v1_phase9_onisim_testimony_signal_v1","phase":"phase_9","source_command_id":"lower_dvina_trace.ask_onisim_for_testimony","target_npc_ref":"onisim_boatman","perception_requirement":"perception_required","signal_descriptors":[{"category":"communication","significance":"material"}],"mechanics_refs":{"activity_id":"trace_ld_v1_activity_onisim_testimony","check_id":null,"statement_template_ids":["trace_ld_v1_statement_onisim_testimony"],"knowledge_scope_id":"trace_ld_v1_knowledge_scope_hired_boatman_v1","promise_policy_id":null}},
+    "activity_profile": {"profile_id": "trace_ld_v1_activity_onisim_testimony", "schema": "rus.trace_activity_profile.v1", "version": 1, "owner": "@rus/turn", "duration_minutes": 5, "no_check_required": true, "completion_boundary": "onisim_statement_committed", "forbidden_write_targets": ["objective_truth", "document_content", "completion_state"]},
+    "target_slot_ref": "onisim_boatman",
+    "statement_template_ref": "trace_ld_v1_statement_onisim_testimony",
+    "statement_effect_contract_ref": "trace_ld_v1_statement_effect_onisim_memory_report",
+    "evidence_ref": "trace_ld_v1_evidence_onisim_testimony",
+    "knowledge_scope_ref": "trace_ld_v1_knowledge_scope_hired_boatman_v1",
+    "ordinary_witness_llm": "forbidden"
+  },
+  "evidence_resolution": {
+    "graph_ref": "trace_ld_v1_clue_evidence_graph_set",
+    "owner": "@rus/visibility-knowledge-memory",
+    "completion_evaluation": "forbidden"
+  },
+  "temporary_disposition": {
+    "activity_profile_ref": "trace_ld_v1_activity_temporary_decision",
+    "contract_ref": "trace_ld_v1_temporary_disposition_contract",
+    "consequence_ref": "trace_ld_v1_consequence_temporary_disposition_committed",
+    "selection_contract": {
+      "policy": "first_eligible_in_authored_order",
+      "forbidden_option_ids": ["commit_scope_breach_for_active_promise"]
+    },
+    "completion_write": "forbidden"
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

@@ -72,7 +72,9 @@ function assertTraversalProof({
   const result = traversal?.interval_result;
   const final = traversal?.final_travel_state;
   const namespace = route.route_id === 'trace_ld_v1_route_camp_to_storehouse'
-    ? 'trace-phase8-route' : 'trace-phase3';
+    ? 'trace-phase8-route'
+    : route.route_id === 'trace_ld_v1_route_storehouse_to_camp_guarded_return'
+      ? 'trace-phase9-return' : 'trace-phase3';
   if (ids.planId !== `route-plan:${partyId}:${namespace}:${turnNumber}`
       || result?.route_plan_execution_id !== ids.executionId
       || final?.id !== ids.travelStateId

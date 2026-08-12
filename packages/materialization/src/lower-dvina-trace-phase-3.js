@@ -179,7 +179,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const placement = binding?.npc_placement;
   const bag = binding?.container_placement;
   const weapon = binding?.weapon_placement ?? null;
-  const weaponRequired = input.scenario_definition_revision === 16;
+  const weaponRequired = [16, 17].includes(input.scenario_definition_revision);
   const location = locationSelections.find(
     ({ slot_key: key }) => key === spatial?.location_profile_ref
   );
@@ -316,7 +316,70 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   };
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
-  return { scene, npc, container, weapon: weaponItem };
+  const packet = input.scenario_definition_revision === 17
+    ? materializeHiddenPacket({ input, bundle, runId, container, npc,
+      roadBagResource })
+    : null;
+  if (packet) container.state.inventory_profile_snapshot = structuredClone(
+    bundle.materialization_bindings.initial_autonomous_materialization
+      .packet_placement.parent_container_inventory_profile);
+  return { scene, npc, container, weapon: weaponItem, packet };
+}
+
+function materializeHiddenPacket({ input, bundle, runId, container, npc,
+  roadBagResource }) {
+  const packet = bundle.materialization_bindings
+    .initial_autonomous_materialization?.packet_placement;
+  const template = requiredById(bundle.item_container_set.item_templates,
+    'item_template_id', packet?.item_template_ref);
+  if (packet?.parent_container_ref !== 'trace_ld_v1_container_road_bag'
+    || packet.owner_ref !== 'trace_ld_v1_external_owner_savva_tverdich'
+    || packet.holder_ref_rule !== 'inherit_parent_holder'
+    || packet.controller_ref_rule !== 'inherit_parent_controller'
+    || packet.seal_state !== 'intact'
+    || packet.document_contents_state !== 'sealed'
+    || packet.document_contents_access !== 'forbidden'
+    || packet.location_ref_rule !== 'inherit_parent_location'
+    || packet.zone_ref_rule !== 'inherit_parent_zone'
+    || packet.inventory_profile?.item_template_id !== packet.item_template_ref
+    || packet.inventory_profile?.mass_grams !== 100
+    || packet.inventory_profile?.carry_form !== 'compact'
+    || packet.inventory_profile?.external_hand_cost !== 0
+    || packet.inventory_profile?.status !== 'approved'
+    || packet.parent_container_inventory_profile?.container_template_id
+      !== packet.parent_container_ref
+    || packet.parent_container_inventory_profile?.mass_grams !== 300
+    || packet.parent_container_inventory_profile?.inventory_role
+      !== 'primary_container'
+    || template.status !== 'approved') {
+    fail('TRACE_PHASE9_HIDDEN_PACKET_BINDING_INVALID',
+      'Revision 17 requires the exact sealed packet placement overlay.');
+  }
+  return {
+    instance_id: deterministicInstanceId(input.party_id, runId, 'item',
+      template.item_template_id, 0),
+    template_id: template.item_template_id,
+    profile_id: packet.inventory_profile.id,
+    category_id: template.semantic_category,
+    quantity: 1,
+    condition_state: 'sealed_intact',
+    legal_status: template.property_state_template.legal_status,
+    claim_state: 'entrusted',
+    owner_external_ref: packet.owner_ref,
+    controller_npc_id: npc.instance_id,
+    container_id: container.instance_id,
+    state: {
+      physical_parent_container_id: container.instance_id,
+      inherited_holder_npc_id: npc.instance_id,
+      location_ref: roadBagResource.opening_location_ref,
+      zone_ref: roadBagResource.opening_zone_ref,
+      seal_state: packet.seal_state,
+      document_contents_state: packet.document_contents_state,
+      document_contents_access: packet.document_contents_access,
+      inventory_profile_snapshot: structuredClone(packet.inventory_profile),
+      property_state_template: structuredClone(template.property_state_template)
+    }
+  };
 }
 
 function materializeStorehouseWeapon({ input, bundle, runId, weapon, npc }) {

@@ -128,6 +128,11 @@ of the common temporal owner to +30 from the updated working projection. В
 активирует persisted combat session, NPC combat intent boundary и общий
 exchange для Phase 4 hostile handoff и Phase 8 storehouse confrontation;
 historical bounded Phase 3/4 доступен только по явному revision pin.
+Revision 17 / `spatial-v3-production-v7` активирует Phase 9 как ordered
+prepared-domain checkpoints в том же semantic loop. Turn владеет admission,
+causal working-state recheck и atomic root commit, но делегирует property,
+evidence и temporary disposition их существующим domain owners и не создаёт
+completion либо отдельный legal/evidence executor.
 
 ## Тесты
 

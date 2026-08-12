@@ -22,15 +22,14 @@ import { PHASE8_PREPARED_COMMANDS, validatePreparedPhase8 } from
   './lower-dvina-trace-phase-8-prepared-validation.js';
 import { validTracePreparedCombatConsequence } from
   '../../runtime/lower-dvina-trace-combat-prepared-contract.js';
+import { PHASE9_PREPARED_COMMANDS, validatePreparedPhase9 } from
+  './lower-dvina-trace-phase-9-prepared-validation.js';
 
-const ROUTE_COMMAND =
-  'lower_dvina_trace.follow_path_to_fishing_camp';
-const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat';
-const DEFERRED_DOMAIN_OPERATIONS = new Set([
+const ROUTE_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
+const COMBAT_COMMAND = 'lower_dvina_trace.respond_in_active_combat'; const DEFERRED_DOMAIN_OPERATIONS = new Set([
   'request_discovery', 'request_container_access', 'request_movement',
   'request_item_use', 'request_activity', 'emit_interaction', 'request_combat'
 ]);
-
 export function validatePreparedEffectCommit({
   batch,
   envelope,
@@ -61,6 +60,10 @@ export function validatePreparedEffectCommit({
   if (ledger.slices.length === 1
       && PHASE8_PREPARED_COMMANDS.has(ledger.slices[0].owner_ref)) {
     return validatePreparedPhase8({ ledger, envelope, factual, state, batch });
+  }
+  if (ledger.slices.length === 1
+      && PHASE9_PREPARED_COMMANDS.has(ledger.slices[0].owner_ref)) {
+    return validatePreparedPhase9({ ledger, envelope, factual, state, batch });
   }
   const [route, direct] = slices;
   const [routeTrace, directTrace] = traces ?? [];
@@ -147,7 +150,6 @@ export function validatePreparedEffectCommit({
   });
   return { prepared: true, routeSlice: route, directSlice: direct };
 }
-
 function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   const slice = ledger.slices[0];
   const trace = envelope?.loop_trace?.step_traces?.[0];

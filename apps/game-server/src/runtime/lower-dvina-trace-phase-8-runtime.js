@@ -5,7 +5,7 @@ import { createTracePhase8Commands } from './lower-dvina-trace-phase-8.js';
 export function createTracePhase8Runtime({ state, bundle, phase3Contracts,
   inputDigest, playerConversationModel, npcSemanticModel, npcCombatModel,
   temporalAdvanceOwner, revalidateStateVersion }) {
-  if (bundle.definition_revision !== 16
+  if (![16, 17].includes(bundle.definition_revision)
       || !hasEscortCommitment(state)) return null;
   const contracts = resolveTracePhase8Contracts({ state, bundle,
     conversationBindings: phase3Contracts?.conversationBindings });

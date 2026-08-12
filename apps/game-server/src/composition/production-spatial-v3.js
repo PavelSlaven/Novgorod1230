@@ -18,7 +18,7 @@ import {
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v6';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v7';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
@@ -49,7 +49,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v5',
+  rollback_source_release_id: 'spatial-v3-production-v6',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:

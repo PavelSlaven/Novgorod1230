@@ -367,8 +367,8 @@ test('health zero persists one closed self signal without a combat LLM request',
       signal.signal_id === thresholdSignals[0].signal.signal_id).length, 1);
   });
 
-function phase8CampState() {
-  const seed = fixture({ scenarioBundle: bundle, materializationBundle: bundle });
+export function phase8CampState(scenarioBundle = bundle) {
+  const seed = fixture({ scenarioBundle, materializationBundle: scenarioBundle });
   const state = structuredClone(seed.state);
   const camp = state.prepared_scenes.find(
     ({ location_profile_ref }) =>
@@ -378,7 +378,8 @@ function phase8CampState() {
     location_ref: camp.location_profile_ref, zone_ref: 'fire_side' };
   const ids = actorIds(state);
   for (const npc of state.npcs) {
-    if ([ids.eremey, ids.ratsha, ids.fisher].includes(npc.instance_id)) {
+    if ([ids.eremey, ids.ratsha, ids.fisher, ids.onisim]
+      .includes(npc.instance_id)) {
       npc.anchor_id = camp.anchor.instance_id;
       npc.location_profile_ref = camp.location_profile_ref;
       npc.zone_ref = 'fire_side';
@@ -401,7 +402,7 @@ function phase8CampState() {
   return state;
 }
 
-function actorIds(state) {
+export function actorIds(state) {
   const bySlot = Object.fromEntries(state.npcs.map((npc) => [
     npc.participant_slot_ref, npc.instance_id
   ]));
@@ -409,10 +410,11 @@ function actorIds(state) {
     zhdanko: bySlot.zhdanko_storehouse_controller,
     eremey: bySlot.eremey_fisher,
     ratsha: bySlot.ratsha_storehouse_helper,
+    onisim: bySlot.onisim_boatman,
     fisher: bySlot.background_fisher_1 };
 }
 
-function phase8Plan(request, ids, combatIntentKind = 'control') {
+export function phase8Plan(request, ids, combatIntentKind = 'control') {
   const combat = request.player_safe_state.combat_sessions?.length > 0;
   const hold = combatIntentKind === 'hold';
   const operation = combat ? {
@@ -440,7 +442,7 @@ function phase8Plan(request, ids, combatIntentKind = 'control') {
     reason: 'Передать действие утверждённому владельцу домена.' };
 }
 
-function combatPlan(request, ids, choices = {}) {
+export function combatPlan(request, ids, choices = {}) {
   const postDisarm = request.decision_reasons.perceived_changes.some(
     (summary) => summary.includes('оруж'));
   const postReach = request.decision_reasons.perceived_changes.some(

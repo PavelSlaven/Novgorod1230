@@ -1,4 +1,6 @@
 import { serverError } from '../errors.js';
+import { TRACE_PHASE9_TURN_STEP_EXPECTED } from
+  './lower-dvina-trace-phase-9-turn-step-bindings.js';
 
 const EXPECTED = Object.freeze({
   'lower_dvina_trace.inspect_wreck_in_detail': {
@@ -108,7 +110,8 @@ const EXPECTED = Object.freeze({
     operation: 'request_combat', kindField: 'intent_kind',
     kindsField: 'intent_kinds', kind: 'engage',
     targetKey: 'activeHostileNpc', targetSemantic: 'active_hostile_npc'
-  }
+  },
+  ...TRACE_PHASE9_TURN_STEP_EXPECTED
 });
 
 const REVISION_13_EXACT_TEXTS = Object.freeze({
@@ -129,7 +132,8 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
 });
 const STATE_GATED_COMMANDS = new Set([
   'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
-  'lower_dvina_trace.accuse_zhdanko_at_storehouse'
+  'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  ...Object.keys(EXPECTED).filter((id) => EXPECTED[id].minRevision === 17)
 ]);
 
 export function bindLowerDvinaTraceTurnStepCommands({
@@ -137,7 +141,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14, 15, 16].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(
     ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision
@@ -234,6 +238,12 @@ function matchesOperation({ operation, expected, allowedKinds, actorRef,
   }
   if (expected.operation === 'request_movement') {
     return operation.target_ref === targetRef;
+  }
+  if (expected.operation === 'request_container_access') {
+    return operation.container_ref === targetRef;
+  }
+  if (expected.operation === 'request_item_use') {
+    return operation.item_ref === targetRef;
   }
   if (expected.operation === 'request_combat') {
     const noTarget = ['hold', 'protect', 'reach', 'break_contact',

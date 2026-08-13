@@ -30,6 +30,8 @@ import { routeLowerDvinaTracePhase8Commit } from
   './lower-dvina-trace-phase-8-commit-router.js';
 import { commitLowerDvinaTracePhase9 } from
   './lower-dvina-trace-phase-9-commit.js';
+import { commitLowerDvinaTracePhase10 } from
+  './lower-dvina-trace-phase-10-commit.js';
 import { mergePhase2Items } from './lower-dvina-trace-phase-2-commit-items.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
@@ -47,7 +49,7 @@ export async function commitLowerDvinaTracePhase2({
   inputDigest,
   contracts,
   phase3Contracts,
-  phase4Contracts, phase8Contracts, phase9Contracts,
+  phase4Contracts, phase8Contracts, phase9Contracts, phase10Contracts,
   phase5Contracts, phase6Contracts, phase7Contracts, turn10Contracts,
   turnStepApprovedOwners,
   loadState,
@@ -58,9 +60,18 @@ export async function commitLowerDvinaTracePhase2({
   });
   if (routed.handled) return routed.result;
   const factual = routed.factual;
-  if (factual?.consequence?.phase9_kind) return commitLowerDvinaTracePhase9({
-    partyId, writePlan, inputDigest, phase9Contracts,
-    turnStepApprovedOwners, loadState, committer });
+  if (factual?.consequence?.phase9_kind) {
+    const committed = await commitLowerDvinaTracePhase9({
+      partyId, writePlan, inputDigest, phase9Contracts,
+      turnStepApprovedOwners, loadState, committer });
+    if (factual.consequence.phase9_kind !== 'temporary_disposition') {
+      return committed;
+    }
+    if (phase10Contracts == null) return committed;
+    return commitLowerDvinaTracePhase10({ partyId, phase10Contracts,
+      loadState, committer, presentationIdempotencyKey:
+        factual.player_input.idempotency_key });
+  }
   if (factual?.consequence?.combat_kind) return commitLowerDvinaTraceCombat({
     partyId, writePlan, inputDigest, loadState, committer
   });

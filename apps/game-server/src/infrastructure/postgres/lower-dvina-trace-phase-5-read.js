@@ -285,7 +285,7 @@ export async function assertPhase5NormalizedRows(pool, payload, head) {
   if (visible.rowCount !== 1 || envelope.presentation_status !== 'pending'
       || envelope.committed_state_version
         !== String(payload.party_state.state_version)
-      || envelope.change_set_id !== payload.last_turn.change_set_id
+      || envelope.change_set_id !== payload.last_turn.visible_package.change_set_id
       || envelope.package_digest
         !== computeSpatialV3CanonicalDigest(envelope.visible_payload)
       || envelope.package_digest

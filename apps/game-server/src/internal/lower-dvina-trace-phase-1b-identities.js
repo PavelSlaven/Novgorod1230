@@ -6,14 +6,22 @@ export const TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST =
   'd54f93ce0e29c6b6cbecd95b1a00013cdc5ebb303e6498346588b8cd74976356';
 export const TRACE_PHASE_1B_REVISION16_DEFINITION_DIGEST =
   '3f07fe5cbadb3bc5f2f0519bf999c89a9e28b6bf9acc4b802dc3266e664d8f16';
-export const TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST =
+export const TRACE_PHASE_1B_REVISION17_MANIFEST_DIGEST =
   '0b4b61a58bbcc8b3416b97c7c122cc196d297af177b2b3f367bd428254c6fc5a';
-export const TRACE_PHASE_1B_APPROVED_BINDING_DIGEST =
+export const TRACE_PHASE_1B_REVISION17_BINDING_DIGEST =
   'ec403abd39216478c62c2a88783986a970c43db47c595b7daeb72cd4037e8d6d';
-export const TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST =
+export const TRACE_PHASE_1B_REVISION17_PHASE_1A_MANIFEST_DIGEST =
   'e987f824bda795ccb6fab214b02e7ca164eaafe128df3b544b8c90597056310f';
-export const TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST =
+export const TRACE_PHASE_1B_REVISION17_DEFINITION_DIGEST =
   '1c174985d5f194075671886f2e5459cfe777abd7c0ebd6520e59e3537d2c3625';
+export const TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST =
+  'd3b937c44b1403d8facef8ed74d990aa52eea7f93d04cf40750dd0a4b92f1632';
+export const TRACE_PHASE_1B_APPROVED_BINDING_DIGEST =
+  'c7cdd633d173efb757b7ed441e4d4cfc54afbad118d199c2dccd8a3da6529975';
+export const TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST =
+  '4b1e3a1df4c58947f7b1acd7aa37c274ca68447fb2f503e743dc4a26ed958972';
+export const TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST =
+  '624a0a35179f6a72f035bd7c7fbaa3426260a38d720c00838d10654d0356bc41';
 export const TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION =
   'code_materializer_v2';
 export const TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID =
@@ -157,17 +165,29 @@ export const TRACE_PHASE_1B_SESSION_IDENTITIES = Object.freeze([
   }),
   Object.freeze({
     publication_manifest_digest:
-      TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST,
+      TRACE_PHASE_1B_REVISION17_MANIFEST_DIGEST,
     publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v12',
     publication_binding_revision: 12,
     publication_binding_digest:
-      TRACE_PHASE_1B_APPROVED_BINDING_DIGEST,
+      TRACE_PHASE_1B_REVISION17_BINDING_DIGEST,
     phase_1a_manifest_digest:
-      TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
+      TRACE_PHASE_1B_REVISION17_PHASE_1A_MANIFEST_DIGEST,
     scenario_definition_revision: 17,
     scenario_definition_digest:
-      TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
+      TRACE_PHASE_1B_REVISION17_DEFINITION_DIGEST,
     materializer_binding_id:
       'lower_dvina_trace_phase_1a_materialization_bindings_v13'
+  }),
+  Object.freeze({
+    publication_manifest_digest: TRACE_PHASE_1B_APPROVED_MANIFEST_DIGEST,
+    publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v13',
+    publication_binding_revision: 13,
+    publication_binding_digest: TRACE_PHASE_1B_APPROVED_BINDING_DIGEST,
+    phase_1a_manifest_digest:
+      TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
+    scenario_definition_revision: 18,
+    scenario_definition_digest: TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
+    materializer_binding_id:
+      'lower_dvina_trace_phase_1a_materialization_bindings_v14'
   })
 ]);

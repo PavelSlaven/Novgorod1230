@@ -115,15 +115,16 @@ async function loadEnvelope(pool, turnId, visibleContext) {
       WHERE turn_id=$1`,
     [turnId]
   );
-  const envelope = result.rows[0];
-  if (result.rowCount !== 1
-      || envelope.package_digest
-        !== computeSpatialV3CanonicalDigest(envelope.visible_payload)
-      || canonicalDigest(visibleContextFromPayload(envelope.visible_payload))
-        !== canonicalDigest(visibleContext)) {
+  const expectedContextDigest = canonicalDigest(visibleContext);
+  const matches = result.rows.filter((candidate) =>
+    candidate.package_digest
+      === computeSpatialV3CanonicalDigest(candidate.visible_payload)
+    && canonicalDigest(visibleContextFromPayload(candidate.visible_payload))
+      === expectedContextDigest);
+  if (matches.length !== 1) {
     throw presentationError();
   }
-  return envelope;
+  return matches[0];
 }
 
 function sealNarration({ envelope, flow }) {

@@ -6,7 +6,7 @@ import {
 } from './lower-dvina-trace-turn-step-owner-profiles.js';
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
-  if (![15, 16, 17].includes(bundle.definition_revision)
+  if (![15, 16, 17, 18].includes(bundle.definition_revision)
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }

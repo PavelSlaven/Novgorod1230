@@ -96,7 +96,7 @@ function assertCurrentEffect(history, payload) {
       || !sameBodyMetrics(payload.body_state,
         envelope.body_update.state_after)
       || expected.change_set_id
-        !== payload.last_turn.visible_package?.change_set_id
+        !== bodyChangeSetId(payload)
       || expected.idempotency_record_id
         !== payload.last_turn.turn_step_idempotency_record_id
       || expected.occurred_at_whole_minutes
@@ -122,7 +122,13 @@ function assertNormalizedBody(payload, row) {
   if (envelope?.body_update?.applied === true
       && (!sameBodyMetrics(body, envelope.body_update.state_after)
         || row.body_updated_change_set_id
-          !== payload.last_turn.visible_package?.change_set_id)) invalid();
+          !== bodyChangeSetId(payload))) invalid();
+}
+
+function bodyChangeSetId(payload) {
+  return payload.completion?.status === 'committed'
+    ? payload.last_turn.change_set_id
+    : payload.last_turn.visible_package?.change_set_id;
 }
 
 function sameBodyMetrics(left, right) {

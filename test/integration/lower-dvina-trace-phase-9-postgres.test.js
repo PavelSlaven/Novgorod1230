@@ -40,7 +40,7 @@ const world = Object.freeze({
   manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
 });
 
-test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
+test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically',
   async (t) => {
     if (docker(['version']).status !== 0) {
       t.skip('Docker is required for isolated Phase 9 PostgreSQL integration');
@@ -67,9 +67,9 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
     await installSchemas(pool);
     await installWorldLineage(pool);
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
-      scenarioDefinitionRevision: 17
+      scenarioDefinitionRevision: 18
     });
-    assert.equal(bundle.definition_revision, 17);
+    assert.equal(bundle.definition_revision, 18);
     const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
     const runtimeCatalogPin = Object.freeze({ ...sourcePin,
       compatible_world_revision_id: world.revision,
@@ -111,6 +111,7 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
         + 'сохранить свёрток для Саввы и соблюсти обещание Ратше.']
     ];
     for (const [suffix, expectedKind, rawText] of checkpoints) {
+      const before = await latestSnapshot(pool, party.party_id);
       const input = turn(`phase-9-postgres-${suffix}`, rawText);
       const result = await factory().submitTurn(party.party_id, input);
       assert.deepEqual(await factory().submitTurn(party.party_id, input),
@@ -118,12 +119,31 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
       const snapshot = await latestSnapshot(pool, party.party_id);
       assert.equal(snapshot.phase9.checkpoints.at(-1).kind,
         expectedKind);
-      assert.equal(snapshot.completion_state == null, true);
+      if (expectedKind === 'temporary_disposition') {
+        assert.equal(snapshot.completion.status, 'committed');
+        assert.equal(snapshot.completion.source_commit_version,
+          Number(before.party_state.state_version) + 1);
+        assert.equal(Number(snapshot.party_state.state_version),
+          Number(before.party_state.state_version) + 2);
+        assert.equal(Number(snapshot.party_state.turn_number),
+          Number(before.party_state.turn_number) + 1);
+        assert.equal(Number(snapshot.clock.whole_minutes),
+          Number(before.clock.whole_minutes) + 5);
+      } else assert.equal(snapshot.completion == null, true);
     }
 
     const snapshot = await latestSnapshot(pool, party.party_id);
     assert.equal(snapshot.phase9.status,
       'temporary_disposition_committed');
+    assert.equal(snapshot.completion.status, 'committed');
+    assert.equal(snapshot.completion.outcome.schema,
+      'rus.trace_composite_completion_outcome.v1');
+    assert.equal(snapshot.completion.outcome.primary_completion_state,
+      'trace_ld_v1_completion_partial');
+    assert.equal(snapshot.completion.outcome.ordered_dimension_outcomes.some(
+      ({ value_id: value }) => value === 'unresolved'), true);
+    assert.equal(snapshot.completion.change_set_id,
+      snapshot.last_turn.visible_package.change_set_id);
     assert.equal(snapshot.phase9.temporary_disposition.legal_effect,
       'temporary_disposition_only');
     assert.deepEqual(snapshot.phase9.custody_state.party_slots,
@@ -192,6 +212,30 @@ test('Phase 9 PostgreSQL path persists, restarts and replays every checkpoint',
          FROM party_runtime.party_v3_change_sets
         WHERE party_id=$1 AND operation_kind LIKE 'trace_phase_9_%'`,
       [party.party_id])).rows[0].count, checkpoints.length);
+    assert.equal((await pool.query(
+      `SELECT count(*)::int AS count
+         FROM party_runtime.party_v3_change_sets
+        WHERE party_id=$1 AND operation_kind='trace_phase_10_completion'`,
+      [party.party_id])).rows[0].count, 1);
+    const completionProjection = (await pool.query(
+      `SELECT visible.visible_payload,visible.presentation_status,
+              narration.status AS narration_status
+         FROM party_runtime.party_visible_packages visible
+         JOIN party_runtime.party_narration_jobs narration
+           ON narration.party_id=visible.party_id
+          AND narration.package_id=visible.package_id
+        WHERE visible.party_id=$1 AND visible.change_set_id=$2`,
+      [party.party_id, snapshot.completion.change_set_id])).rows[0];
+    assert.equal(completionProjection.presentation_status, 'pending');
+    assert.equal(completionProjection.narration_status, 'delivered');
+    const serializedProjection = JSON.stringify(
+      completionProjection.visible_payload);
+    assert.match(serializedProjection,
+      /мир и его жители продолжают существовать/u);
+    for (const forbidden of ['hidden_truth', 'culprit', 'motive',
+      'document_contents', 'relevant_hidden_state']) {
+      assert.equal(serializedProjection.includes(forbidden), false, forbidden);
+    }
     await factory().getPartyScreen(party.party_id);
   });
 

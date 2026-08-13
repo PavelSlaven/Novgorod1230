@@ -207,7 +207,6 @@ function validatePostTurnSession({ partyId, session, screen, identity }) {
       || screen.opening_screen_digest
         !== identity.opening_screen_digest
       || screen.screen_digest !== currentScreenDigest(screen)
-      || anchor?.committed_state_version !== turnNumber
       || anchor?.package_id
         !== session.current_projection_package_id
       || anchor?.package_digest

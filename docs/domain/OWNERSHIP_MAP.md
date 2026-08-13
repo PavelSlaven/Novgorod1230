@@ -11,14 +11,14 @@
 | `@rus/checks-rng` | dice requests, `RandomSource`, characteristic bonus, check formula и result envelope | решение о необходимости проверки, narrative consequence |
 | `@rus/combat-health` | combat session/intent/step/exchange contracts, attack/defense requests, quality bands, harm packages, terminal combat evaluation | решение NPC атаковать, выбор цели/оружия, authoritative body write, persistence, narration |
 | `@rus/social-law` | role/occupation references, supplied rights/restrictions, authority, legal/social risk packages, party-local commitments и typed temporary disposition proposals только из committed facts | создание права региона, окончательное дело/completion, выбор NPC response или активация обязательства одной лишь репликой |
-| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package, factual conversation audience projection и deterministic authored evidence resolution | prose generation, hidden-state mutation, DB reads, выбор responder, перенос private knowledge между NPC или legal consequence |
+| `@rus/visibility-knowledge-memory` | visible projection, hidden boundary, knowledge map, memory facts, leak detection, safe narrator package, factual conversation audience projection, deterministic authored evidence resolution и typed composite completion из committed producers | prose generation, hidden-state mutation, DB reads, выбор responder, перенос private knowledge между NPC или legal consequence |
 | `@rus/runtime-catalog` | read-only active/historical domain pin loading, exact import reconstruction, world-pin compatibility и applicable item/container projection | authoring, import/activation writes, party persistence, materialization |
 
 ## Spatial v3 production ownership (P08)
 
 Historical P28 evidence did not itself activate production. The later
 `versioned production activation cutover` currently culminates in
-`spatial-v3-production-v7`; these owners form the sole production
+`spatial-v3-production-v8`; these owners form the sole production
 composition. Dual write, mixed reads and compatibility fallback remain
 forbidden.
 
@@ -41,8 +41,8 @@ or write a partial result.
 ## Temporal World v4 production ownership
 
 The completed `versioned production activation cutover` made these
-responsibilities authoritative in current release `spatial-v3-production-v7`.
-Production v6 is an explicit rollback source only.
+responsibilities authoritative in current release `spatial-v3-production-v8`.
+Production v7 is an explicit rollback source only.
 
 | Owner | Exact target responsibility | Explicit boundary |
 |---|---|---|

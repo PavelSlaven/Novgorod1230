@@ -8,9 +8,9 @@ import { phase6TargetedAdmissionEvidence } from
   './first-playable/recheck-phase6-admission.js';
 import { assertPhase2CurrentStateVersion } from
   './lower-dvina-trace-phase-2-commit-admission.js';
+import { expectedChangedConditions } from './lower-dvina-trace-phase-3-commit-support.js';
 import { nextPhase6State } from './lower-dvina-trace-phase-6-state.js';
-import { validatePhase6TemporalFragments } from
-  './lower-dvina-trace-phase-6-temporal-fragments.js';
+import { validatePhase6TemporalFragments } from './lower-dvina-trace-phase-6-temporal-fragments.js';
 import {
   phase6PendingScreen,
   phase6VisibleEnvelope,
@@ -20,9 +20,8 @@ import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
 } from './lower-dvina-trace-turn-step-persistence.js';
-import {
-  bindLowerDvinaTraceFactualTurnStepIdempotency
-} from './lower-dvina-trace-turn-step-idempotency.js';
+import { bindLowerDvinaTraceFactualTurnStepIdempotency } from
+  './lower-dvina-trace-turn-step-idempotency.js';
 
 export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
   inputDigest, phase6Contracts, loadState, committer }) {
@@ -225,6 +224,8 @@ function expectedVersions({ state, factual }) {
     values.push(expected('party_actor_body_states',
       `player_character:${state.actor_id}`,
       state.party_state.body_state_version));
+    values.push(...expectedChangedConditions(state,
+      factual.body_update.state_after));
   }
   if (state.phase6_carry_execution != null) {
     values.push(expected('party_timed_activity_executions',

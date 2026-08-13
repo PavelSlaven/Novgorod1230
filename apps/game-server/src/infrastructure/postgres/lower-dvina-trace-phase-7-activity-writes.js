@@ -164,9 +164,9 @@ function activityExecution({ id, profileRef, totalMinutes, ownerRef, state,
     next_boundary_at_whole_minutes: null,
     next_boundary_at_subminute_numerator: null,
     next_boundary_at_subminute_denominator: null,
-    progress: null,
+    progress: {},
     preconditions_digest: canonicalDigest(context),
-    terminal_reason_code: 'completed'
+    terminal_reason_code: 'phase_7_fire_rest_completed'
   };
 }
 

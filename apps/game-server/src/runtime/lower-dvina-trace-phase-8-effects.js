@@ -54,10 +54,7 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
       visible_scene: 'Группа пришла во двор клети Жданко.',
       visible_changes: ['trace_ld_v1_route_camp_to_storehouse_committed'],
       sensory_details: ['Клеть и двор видны с конца известной тропы.'],
-      visible_npc: Object.values(contracts.actors).map((npc) => ({
-        npc_id: npc.instance_id,
-        label: npc.semantic_profile?.identity?.canonical_name
-          ?? npc.participant_slot_ref })),
+      visible_npc: visibleNpcSummaries(contracts),
       visible_objects: [], known_context: [
         'Обратный путь к рыбацкому стану теперь известен.'],
       uncertainties: [], allowed_tensions: ['armed_confrontation'],
@@ -70,10 +67,7 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
           : 'Разговор прерван непосредственной угрозой; требуется решение.',
         visible_changes: combat == null ? ['accusation_delivered']
           : ['combat_session_opened'], sensory_details: [],
-        visible_npc: Object.values(contracts.actors).map((npc) => ({
-          npc_id: npc.instance_id,
-          label: npc.semantic_profile?.identity?.canonical_name
-            ?? npc.participant_slot_ref })),
+        visible_npc: visibleNpcSummaries(contracts),
         visible_objects: [], known_context: [], uncertainties: [],
         allowed_tensions: ['armed_confrontation'],
         do_not_imply: ['npc_decision_request', 'npc_combat_intent_plan',
@@ -81,5 +75,14 @@ export function createTracePhase8VisibleProjector({ fallback, contracts }) {
     }
     return fallback.project(input);
   } });
+}
+function visibleNpcSummaries(contracts) {
+  return Object.values(contracts.actors).map((npc) => ({
+    entity_ref: { entity_kind: 'npc', entity_id: npc.instance_id },
+    display_label: npc.semantic_profile?.identity?.canonical_name
+      ?? npc.participant_slot_ref,
+    recognition: npc.semantic_profile?.identity?.canonical_name
+      ? 'known' : 'recognized'
+  }));
 }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

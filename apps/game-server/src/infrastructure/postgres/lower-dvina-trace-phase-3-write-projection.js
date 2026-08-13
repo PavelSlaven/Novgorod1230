@@ -77,9 +77,15 @@ export function phase3Writes(input) {
       [factual.consequence.movement.route_ref]);
     for (const npcId of factual.consequence.movement.participants ?? []) {
       const npc = next.npcs?.find(({ instance_id: id }) => id === npcId);
+      const before = state.npcs?.find(({ instance_id: id }) => id === npcId);
       if (npc && npcId !== state.actor_id) updates.push(row('party_npcs', npcId,
         { party_id: partyId, npc_id: npcId, anchor_id: npc.anchor_id,
-          machine_state: npc.machine_state, semantic_state: npc.semantic_state }));
+          machine_state: npc.machine_state ?? before?.machine_state,
+          semantic_state: {
+            ...(before?.semantic_state ?? {}),
+            participant_slot_ref: before?.participant_slot_ref,
+            ...(npc.semantic_state ?? {})
+          } }));
     }
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });

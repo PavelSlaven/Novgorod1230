@@ -200,7 +200,9 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     plan: built.plan,
     created_at_turn: turnNumber
   });
-  if (!committed.ok) fail('TRACE_PHASE_7_COMMIT_FAILED', committed.error);
+  if (!committed.ok) {
+    fail('TRACE_PHASE_7_COMMIT_FAILED', committed.error);
+  }
   return {
     ...committed,
     state_version: nextVersion,

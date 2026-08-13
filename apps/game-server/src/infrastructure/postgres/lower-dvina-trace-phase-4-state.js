@@ -28,6 +28,7 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts, rootTurnId, workingRevision }) {
   let next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   next.activity_history = (next.activity_history ?? []).map((entry) => ({
     ...entry,
     execution_result: entry.execution_result?.semantic_exchange == null

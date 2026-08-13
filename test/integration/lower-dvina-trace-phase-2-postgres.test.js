@@ -253,10 +253,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     containsObjectKey(firstSnapshot, 'hidden_truth'),
     false
   );
-  assert.equal(
-    result.time_update.boundary_trace.owner,
-    '@rus/time-events-history/temporal-boundaries'
-  );
+  assert.equal('boundary_trace' in result.time_update, false);
 
   const restarted = runtimeFactory();
   const restored = await restarted.getPartyScreen(opened.party_id);

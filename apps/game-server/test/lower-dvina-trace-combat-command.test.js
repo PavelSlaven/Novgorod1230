@@ -6,7 +6,7 @@ import {
   installCombatIntent
 } from '@rus/turn';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
-import { createTraceCombatCommand } from
+import { createTraceCombatCommand, traceCombatTargetRefs } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
 import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
@@ -17,6 +17,20 @@ const at = { whole_minutes: '620', subminute_numerator: '0',
   subminute_denominator: '1' };
 const player = { entity_kind: 'player_character', entity_id: 'mikula-1' };
 const ratsha = { entity_kind: 'npc', entity_id: 'ratsha-1' };
+
+test('combat target projection selects the active hostile intent', () => {
+  const ally = { entity_kind: 'npc', entity_id: 'ally-1' };
+  const hostile = { entity_kind: 'npc', entity_id: 'hostile-1' };
+  assert.equal(traceCombatTargetRefs({ combat_sessions: [{
+    status: 'paused_for_player', scope_ref: { entity_id: 'shed' },
+    participant_refs: [player, ally, hostile], participant_states: [{
+      actor_ref: ally, combat_status: 'active', current_intent: {
+        intent_kind: 'control' }
+    }, { actor_ref: hostile, combat_status: 'active', current_intent: {
+      intent_kind: 'engage' }
+    }]
+  }] }).activeHostileNpc, 'hostile-1');
+});
 
 test('player combat response resolves one common two-minute exchange', async () => {
   let session = createCombatSession({ combat_id: 'combat-party-1-ratsha',
@@ -83,7 +97,7 @@ test('post-exchange subjective projection reads body and equipment from working 
       npcs: [{ instance_id: 'ratsha-1',
         participant_slot_ref: 'ratsha_storehouse_helper',
         machine_state: { body_condition: { health: 100 } } }],
-      actor_states: { 'npc\0ratsha-1': { body_state: { health: 63 } } },
+      actor_states: { 'npc:ratsha-1': { body_state: { health: 63 } } },
       items: [{ item_id: 'knife-1', placement: {
         holder_npc_id: 'ratsha-1' }, ownership: {
         controller_npc_id: 'ratsha-1' } }, { item_id: 'axe-1', placement: {

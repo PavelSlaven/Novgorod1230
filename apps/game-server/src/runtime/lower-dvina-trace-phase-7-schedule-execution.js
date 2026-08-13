@@ -54,9 +54,10 @@ export async function executeTracePhase7SchedulePlan({
   }
   const execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
-    request: actorStepRequest(autonomous.request, contracts, state),
+    request: actorStepRequest(
+      autonomous.request, contracts, state, autonomous.proposal.plan),
     workingProjection: checkWorkingProjection(
-      temporal.projection, state, contracts),
+      temporal.projection, state, contracts, autonomous.proposal.plan),
     preparedChainContext: null,
     registry: actorStepRuntime.registry,
     ports: actorStepRuntime.ports
@@ -76,10 +77,12 @@ export async function executeTracePhase7SchedulePlan({
   });
 }
 
-function actorStepRequest(request, contracts, state) {
+function actorStepRequest(request, contracts, state, plan) {
   const npc = liveNpc(state, contracts.zhdanko);
   const context = contracts.genericCheckContext ?? {};
-  const body = authoritativeNpcCheckBody(npc);
+  const body = plan.resolution === 'generic_check'
+    ? authoritativeNpcCheckBody(npc)
+    : {};
   return {
     ...structuredClone(request),
     step_index: request.decision_index,
@@ -92,7 +95,10 @@ function actorStepRequest(request, contracts, state) {
   };
 }
 
-function checkWorkingProjection(projection, state, contracts) {
+function checkWorkingProjection(projection, state, contracts, plan) {
+  if (plan.resolution !== 'generic_check') {
+    return structuredClone(projection);
+  }
   const npc = liveNpc(state, contracts.zhdanko);
   return {
     ...structuredClone(projection),

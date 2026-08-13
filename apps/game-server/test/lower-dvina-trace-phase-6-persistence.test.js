@@ -109,6 +109,14 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
     commandIdempotencyKey: 'phase6-idem'
   });
   const factual = factualTurn(state, intent);
+  factual.body_update.state_after.active_conditions[0] = {
+    ...factual.body_update.state_after.active_conditions[0],
+    condition_outcome: 'persists',
+    condition_profile_ref: {
+      state: 'shoulder_bruise',
+      source_body_profile_ref: { id: 'phase6-test-body-profile' }
+    }
+  };
   const committed = await buildLowerDvinaTracePhase6Commit({
     partyId: state.party_id,
     factual,
@@ -127,6 +135,11 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   assert.equal(rows(plan, 'party_traversal_interval_results').length, 1);
   assert.equal(rows(plan, 'party_timed_activity_attempts').length, 1);
   assert.equal(rows(plan, 'party_body_temporal_history').length, 1);
+  assert.equal(rows(plan, 'party_actor_active_conditions').length, 1);
+  assert.ok(plan.expected_state_versions.some((entry) =>
+    entry.target_table === 'party_actor_active_conditions'
+      && entry.id === 'player_character:mikula:bruise'
+      && entry.state_version === 1));
   assert.equal(rows(plan, 'party_body_temporal_history')[0].record
     .occurred_at_whole_minutes, '110');
   assert.equal(rows(plan, 'party_activity_resource_bindings').length, 2);

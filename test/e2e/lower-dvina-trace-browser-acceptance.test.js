@@ -1,0 +1,174 @@
+import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+import test from 'node:test';
+
+import { chromium } from 'playwright-core';
+
+import { startLowerDvinaProductionAcceptanceEnv } from
+  '../helpers/lower-dvina-production-acceptance-env.js';
+import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
+  '../helpers/lower-dvina-phase-11-llm.js';
+
+const CHROME_PATH = [
+  process.env.RUS_CHROMIUM_PATH,
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+  '/usr/bin/chromium',
+  '/usr/bin/chromium-browser',
+  '/usr/bin/google-chrome'
+].find((candidate) => candidate && existsSync(candidate));
+
+test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
+  timeout: 360_000,
+  skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
+}, async (context) => {
+  const environment = await startLowerDvinaProductionAcceptanceEnv({
+    llmRespond: createCanonicalPhase11LlmResponder()
+  });
+  context.after(() => environment.close());
+  const browser = await chromium.launch({ executablePath: CHROME_PATH,
+    headless: true, args: ['--no-sandbox', '--no-proxy-server'] });
+  context.after(() => browser.close());
+  const page = await browser.newPage();
+  page.setDefaultTimeout(120_000);
+  const rawResponses = [];
+  const turnByText = new Map(PHASE11_CANONICAL_TURNS.map(
+    ([id, text]) => [text, id]));
+  await page.route('**/api/**', async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (!url.pathname.startsWith('/api/v1/')) {
+      await route.continue();
+      return;
+    }
+    let outgoing = request.postData();
+    if (request.method() === 'POST' && /\/turns$/u.test(url.pathname)
+        && outgoing) {
+      const parsed = JSON.parse(outgoing);
+      const label = turnByText.get(parsed.raw_text);
+      Object.assign(parsed, environment.requestIdentity(
+        decodeURIComponent(url.pathname.split('/')[4]), label));
+      outgoing = JSON.stringify(parsed);
+    }
+    const response = await route.fetch(outgoing === null
+      ? { timeout: 120_000 }
+      : { postData: outgoing, timeout: 120_000 });
+    const body = await response.body();
+    rawResponses.push(body.toString('utf8'));
+    await route.fulfill({ response, body });
+  });
+  await page.goto(environment.baseUrl);
+  await page.waitForSelector('[data-scenarios-toggle]');
+  await page.click('[data-scenarios-toggle]');
+  await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+  await page.waitForSelector('[data-turn-form]');
+  assertPublicText(await page.textContent('body'));
+  const partyId = rawResponses.map(parseJson).find(
+    (value) => value?.data?.screen?.scenario_id === 'lower_dvina_trace_v1')
+    ?.data?.party_id;
+  assert.ok(partyId);
+  const hiddenTruth = await actualHiddenTruthValues(
+    environment.partyPool, partyId);
+  assertValuesAbsent([...rawResponses, await page.textContent('body')],
+    [hiddenTruth.culpritRef], 'pre-disclosure public HTTP/DOM');
+
+  for (const [id, text] of PHASE11_CANONICAL_TURNS) {
+    await submitThroughBrowser(page, text, rawResponses);
+    if (id === 'rest') {
+      const calls = environment.llm.requests.length;
+      await environment.restartRoot();
+      await page.goto(environment.baseUrl);
+      await page.waitForSelector('[data-turn-form]');
+      assert.equal(environment.llm.requests.length, calls);
+    }
+  }
+  await submitThroughBrowser(page, PHASE11_CANONICAL_TURNS.at(-1)[1],
+    rawResponses);
+  const domText = await page.textContent('body');
+  assertPublicText(domText);
+  assert.equal(domText.includes('роль Жданко доказана'), false);
+  assert.equal(rawResponses.at(-1).includes(
+    'роль Жданко остаётся неустановленным'), true);
+  assert.equal(await page.locator('.error').count(), 0, domText);
+  const snapshot = (await environment.partyPool.query(
+    `SELECT state_payload FROM party_runtime.party_state_snapshots
+      ORDER BY state_version DESC LIMIT 1`
+  )).rows[0].state_payload;
+  assert.equal(snapshot.completion.status, 'committed');
+  assert.equal(snapshot.completion.outcome.primary_completion_state,
+    'trace_ld_v1_completion_full');
+  const causalIds = await internalCausalIds(environment.partyPool, partyId);
+  const publicSurfaces = [...rawResponses, domText];
+  assertValuesAbsent(publicSurfaces,
+    [...hiddenTruth.alwaysForbidden, ...causalIds],
+    'public HTTP/DOM');
+  rawResponses.forEach((value, index) =>
+    assertPublicText(value, `HTTP response ${index}`, HTTP_FORBIDDEN));
+  for (const request of environment.llm.requests) {
+    assertPublicText(JSON.stringify(request.input),
+      `LLM ${request.body?.model}`, LLM_FORBIDDEN);
+    assertValuesAbsent([JSON.stringify(request.input)],
+      hiddenTruth.alwaysForbidden,
+      `LLM ${request.body?.model}`);
+  }
+});
+
+async function submitThroughBrowser(page, rawText, rawResponses) {
+  await page.fill('[data-turn-form] textarea[name="raw_text"]', rawText);
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('[data-turn-form]', { state: 'detached' });
+  await page.waitForSelector('[data-turn-form], .error');
+  assert.equal(await page.locator('.error').count(), 0,
+    `${await page.textContent('body')}\n${rawResponses.at(-1)}`);
+}
+
+const HTTP_FORBIDDEN = ['hidden_truth', 'private_motives',
+  'npc_semantic_decision_inputs', 'npc_semantic_decision_traces',
+  'decision_signal_records', 'document_contents'];
+const LLM_FORBIDDEN = ['private_motives', 'document_contents',
+  'actual_truth_hidden_from_character'];
+
+function assertPublicText(value, surface = 'public surface',
+  forbiddenValues = HTTP_FORBIDDEN) {
+  for (const forbidden of forbiddenValues) {
+    assert.equal(String(value).includes(forbidden), false,
+      `${surface}: ${forbidden}: ${String(value).slice(0, 1_000)}`);
+  }
+}
+
+async function actualHiddenTruthValues(pool, partyId) {
+  const state = (await pool.query(
+    `SELECT state_payload FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 ORDER BY state_version ASC LIMIT 1`, [partyId]
+  )).rows[0]?.state_payload;
+  assert.ok(state?.hidden_truth?.motive?.motive_id,
+    'acceptance must derive forbidden values from committed hidden truth');
+  assert.ok(state.hidden_truth.sequence?.hidden_sequence_candidate_id);
+  assert.ok(state.hidden_truth.culprit_ref);
+  return { culpritRef: state.hidden_truth.culprit_ref,
+    alwaysForbidden: [state.hidden_truth.motive.motive_id,
+    state.hidden_truth.sequence.hidden_sequence_candidate_id,
+    state.hidden_truth.digest].filter((value) => String(value).length >= 8) };
+}
+
+async function internalCausalIds(pool, partyId) {
+  const rows = (await pool.query(
+    `SELECT request_id, boundary_id
+       FROM party_runtime.party_npc_decision_traces WHERE party_id=$1`,
+    [partyId]
+  )).rows;
+  assert.ok(rows.length > 0);
+  return rows.flatMap(({ request_id: requestId, boundary_id: boundaryId }) =>
+    [requestId, boundaryId]).filter(Boolean);
+}
+
+function assertValuesAbsent(surfaces, values, label) {
+  for (const value of new Set(values)) {
+    assert.equal(surfaces.some((surface) => String(surface).includes(value)),
+      false, `${label} leaked committed hidden/causal value ${value}`);
+  }
+}
+
+function parseJson(value) {
+  try { return JSON.parse(value); } catch { return null; }
+}

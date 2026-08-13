@@ -1,6 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
 import { serverError } from '../../errors.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
+import { expectedSemanticConversationSession } from
+  './lower-dvina-trace-phase-3-commit-support.js';
 
 export function expectedVersions({ partyId, state, factual }) {
   const values = [
@@ -32,6 +34,12 @@ export function expectedVersions({ partyId, state, factual }) {
     }
     values.push(expected('party_containers', bag.container_id,
       bag.state_version));
+  }
+  if (factual.consequence.turn10_kind === 'companion_request') {
+    values.push(...expectedSemanticConversationSession(
+      state,
+      factual.consequence.conversation?.semantic_exchange
+    ));
   }
   return values;
 }

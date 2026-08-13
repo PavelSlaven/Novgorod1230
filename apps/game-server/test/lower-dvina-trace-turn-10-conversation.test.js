@@ -135,6 +135,8 @@ test('canonical Turn 10 runs real rest and companion conversation in one semanti
   assert.equal(runtimeFixture.state.route_activity_admissions.length, 3);
   assert.ok(runtimeFixture.state.route_knowledge.includes(
     contracts.binding.route_ref));
+  assert.deepEqual(runtimeFixture.state.knowledge.map(({ fact_id: id }) => id),
+    runtimeFixture.state.knowledge.map(({ fact_id: id }) => id).sort());
   const serialized = JSON.stringify(runtimeFixture.state);
   assert.equal(serialized.includes('companions_assigned'), false);
   assert.equal(serialized.includes('known_path_to_klet'), false);

@@ -77,8 +77,15 @@ export async function commitLowerDvinaTraceCombat({ partyId, writePlan,
     execution_keys: [factual.consequence.combat.exchange?.proposal_id]
       .filter(Boolean), g4_keys: [], physical_keys: Object.values(writes).flat()
       .map((write) => `party_runtime.${write.target_table}:${write.id}`) },
-    commit_rechecks: [sealedCheck('state', { party_id: partyId,
+    commit_rechecks: [sealedCheck('physical', { party_id: partyId,
+      location_ref: state.position.location_ref,
+      g5_anchor_id: state.position.g5_anchor_id }),
+    sealedCheck('state', { party_id: partyId,
       expected_party_state_version: state.party_state.state_version }),
+    sealedCheck('pin', { dependency_pins: visibleEnvelope.dependency_pins }),
+    sealedCheck('endpoint', { destination_ref: null }),
+    sealedCheck('route', { route_binding_ref: null }),
+    sealedCheck('capacity', { party_id: partyId }),
     sealedCheck('time', { expected_clock_state_version:
       state.party_state.clock_state_version,
     exact_elapsed_minutes: factual.consequence.duration_minutes }),

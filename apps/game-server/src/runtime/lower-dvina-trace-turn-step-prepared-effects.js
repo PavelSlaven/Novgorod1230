@@ -184,12 +184,12 @@ function projectPreparedDomainState(state, effect) {
         ? structuredClone(combat.session_after) : session);
     next.body_state = structuredClone(
       combat.working_state_after?.actor_states?.[
-        `player_character\0${next.actor_id}`]?.body_state ?? next.body_state);
+        `player_character:${next.actor_id}`]?.body_state ?? next.body_state);
     next.npcs = (next.npcs ?? []).map((npc) => {
       const workingNpc = combat.working_state_after?.npcs?.find(
         ({ instance_id: id }) => id === npc.instance_id);
       const body = combat.working_state_after?.actor_states?.[
-        `npc\0${npc.instance_id}`]?.body_state;
+        `npc:${npc.instance_id}`]?.body_state;
       if (body == null && workingNpc == null) return npc;
       return { ...npc,
         anchor_id: workingNpc?.anchor_id ?? npc.anchor_id,

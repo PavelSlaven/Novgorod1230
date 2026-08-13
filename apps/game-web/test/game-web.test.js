@@ -24,6 +24,13 @@ function firstScreen() {
 
 test('public screen contract accepts versioned read models and rejects hidden fields', () => {
   assert.equal(validatePublicScreen(firstScreen()).schema, 'first_game_screen');
+  assert.equal(validatePublicScreen({
+    ...firstScreen(),
+    schema: 'lower_dvina_trace_turn_screen',
+    turn_id: 'turn:trace:1',
+    turn_number: 1,
+    input_panel: { input_contract: 'intent_not_fact' }
+  }).schema, 'lower_dvina_trace_turn_screen');
   assert.equal(validatePublicScreen({ ...firstScreen(), panels: { route: { player_label: 'Дорога' } } }).schema, 'first_game_screen');
   assert.throws(() => validatePublicScreen({ ...firstScreen(), hidden_state: {} }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
   assert.throws(() => validatePublicScreen({ ...firstScreen(), panels: { route: { factual_route: 'internal' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });

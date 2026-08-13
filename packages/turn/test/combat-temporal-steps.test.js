@@ -71,7 +71,7 @@ test('a due effect invalidates pending movement before its owner persists it',
       return { working_state };
     };
     const actor_states = Object.fromEntries([escaping, attacker, third].map(
-      (actor) => [`npc\0${actor.entity_id}`, { body_state: { health:
+      (actor) => [`npc:${actor.entity_id}`, { body_state: { health:
         actor.entity_id === 'escape' ? 1 : 100, active_conditions: [],
       body_parts: {} } }]));
     const result = await prepareCombatExchange({ session,

@@ -86,7 +86,10 @@ export async function resolveTracePhase4ConversationExchange({
       combat_target_refs: [ref('player_character', state.actor_id)]
     },
     offerStage: effectiveOfferStage, checkRequest: effectiveCheckRequest,
-    classifyNpcPlan: classifyRatshaPlan,
+    classifyNpcPlan: (plan) => classifyRatshaPlan(plan, {
+      confessionAssertionId:
+        contracts.confessionStatement.assertion.assertion_id
+    }),
     playerPlan
   });
   const effectivePlayerPlan = pendingExecution !== null ? null
@@ -121,6 +124,8 @@ function resultProjection(result, context, state, offerStage, checkRequest,
   inputDigest) {
   const surrender = result.npcOutcome?.kind === 'surrender'
     ? buildSurrenderProjection(result, context) : null;
+  const confession = surrender !== null
+    ? confessionProjection(result, context) : null;
   const handoff = structuredClone(result.exchange.handoff);
   return freezeResult({
     input_digest: inputDigest,
@@ -160,6 +165,7 @@ function resultProjection(result, context, state, offerStage, checkRequest,
     offer_stage: structuredClone(offerStage),
     check_request: structuredClone(checkRequest),
     surrender: surrender?.surrender ?? null,
+    confession,
     commitment: surrender?.commitment ?? null,
     knife_transition_eligibility: surrender?.knifeTransitionEligibility ?? null,
     lie: result.npcOutcome?.kind === 'lie'
@@ -176,4 +182,44 @@ function resultProjection(result, context, state, offerStage, checkRequest,
     response_kind: result.npcOutcome?.kind ?? null,
     objective_truth_writes: []
   });
+}
+
+function confessionProjection(result, context) {
+  const authored = context.contracts.confessionStatement;
+  if (result.npcOutcome?.confessionClaimId
+      !== authored.assertion.assertion_id) {
+    return null;
+  }
+  const statementRef = result.npcOutcome.statementRef;
+  const statement = result.statements.find(({ statement_id: statementId }) =>
+    statementRef?.entity_kind === 'conversation_statement'
+      && statementRef.entity_id === statementId);
+  const audience = result.audiences.find(({ statement_ref: ref }) =>
+    ref.entity_kind === 'conversation_statement'
+      && ref.entity_id === statement?.statement_id);
+  const requiredAudienceIds = [
+    context.contracts.actors.eremey_fisher.instance_id,
+    context.contracts.actors.participating_fisher.instance_id
+  ];
+  const listenerIds = new Set((audience?.actual_listener_refs ?? [])
+    .map(({ entity_id: entityId }) => entityId));
+  if (!statement
+      || statement.dominant_act !== 'confess'
+      || !statement.claims.some(({ claim_id: claimId }) =>
+        claimId === authored.assertion.assertion_id)
+      || !requiredAudienceIds.every((actorId) => listenerIds.has(actorId))) {
+    fail('TRACE_M2_RATSHA_CONFESSION_UNBACKED',
+      'Ratsha confession requires the exact committed claim and audience.');
+  }
+  return {
+    statement_ref: authored.statement_template_id,
+    source_statement_ref: structuredClone(statementRef),
+    assertion: structuredClone(authored.assertion),
+    content_scope: authored.assertion.content_scope,
+    effect_contract_ref:
+      context.contracts.confessionEffect.statement_effect_contract_id,
+    required_audience_ids: requiredAudienceIds,
+    truth_projection: 'forbidden',
+    requires_independent_confirmation: true
+  };
 }

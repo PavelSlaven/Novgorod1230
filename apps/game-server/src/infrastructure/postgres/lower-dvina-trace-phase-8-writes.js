@@ -23,13 +23,12 @@ export function phase8VisibleEnvelope({ partyId, factual, visibleContext,
     known_context: visibleContext.known_context,
     uncertainties: visibleContext.uncertainties, hypotheses: [],
     player_safe_interruption: factual.consequence.accusation
-      .combat_initialization == null ? null : { kind:
-        'combat_player_response_required', combat_id: factual.consequence
-          .accusation.combat_initialization.session.combat_id },
+      .combat_initialization == null ? null : 'Требуется решение в бою.',
     allowed_action_affordances: factual.consequence.accusation
-      .combat_initialization == null ? [] : ['request_combat'] };
-  const pins = [{ dependency_role: 'runtime_contract', entity_ref: {
-    entity_kind: 'scenario_revision', entity_id: 'lower_dvina_trace_v16' },
+      .combat_initialization == null ? [] : [{ action_id: 'request_combat',
+        label: 'Действовать в бою', command_kind: 'request_combat' }] };
+  const pins = [{ dependency_role: 'source_authoring', entity_ref: {
+    entity_kind: 'source_record', entity_id: 'lower_dvina_trace_v16' },
   version_pin: { pin_kind: 'authoring_version', authoring_version: '16',
     state_version: null } }];
   return { package_id: `visible:${partyId}:trace-phase8:${turnNumber}`,

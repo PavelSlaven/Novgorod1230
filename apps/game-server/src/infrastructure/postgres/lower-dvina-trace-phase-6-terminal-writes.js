@@ -51,6 +51,25 @@ export function appendPlayerBodyEffect({ updates, appends, partyId, state,
       satiety: next.body_state.satiety,
       updated_change_set_id: changeSetId
     }));
+  const beforeConditions = new Map(
+    (state.body_state.active_conditions ?? []).map((condition) =>
+      [condition.storage_condition_id, condition]
+    )
+  );
+  for (const condition of next.body_state.active_conditions ?? []) {
+    if (!condition.condition_outcome
+        || !beforeConditions.has(condition.storage_condition_id)) continue;
+    updates.push(row('party_actor_active_conditions',
+      `player_character:${state.actor_id}:${condition.storage_condition_id}`, {
+        party_id: partyId,
+        actor_kind: 'player_character',
+        actor_id: state.actor_id,
+        condition_id: condition.storage_condition_id,
+        condition_profile_ref: structuredClone(condition.condition_profile_ref),
+        status: 'active',
+        terminal_change_set_id: null
+      }));
+  }
   appends.push(row('party_body_temporal_history',
     `body-history:${intent.execution_id}:${state.actor_id}`, {
       history_id: `body-history:${intent.execution_id}:${state.actor_id}`,

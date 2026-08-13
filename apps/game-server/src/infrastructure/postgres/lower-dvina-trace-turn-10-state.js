@@ -113,7 +113,8 @@ function applyGuideKnowledge(projected, semantic, commitments) {
     fact_id: guide.route_ref,
     knowledge_state: 'known_from_committed_source',
     evidence_refs: statementRef ? [statementRef] : []
-  }], (entry) => entry.fact_id, 'TRACE_TURN10_KNOWLEDGE_CONFLICT');
+  }], (entry) => entry.fact_id, 'TRACE_TURN10_KNOWLEDGE_CONFLICT')
+    .sort((left, right) => left.fact_id.localeCompare(right.fact_id));
 }
 
 function validateOutcome(entry, outcome, contracts) {

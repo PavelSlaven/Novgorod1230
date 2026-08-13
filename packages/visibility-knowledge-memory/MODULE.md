@@ -33,5 +33,10 @@ status are owned by the game-server transaction. This package creates and
 validates the player-safe candidate from candidate post-change facts before the
 combined commit; narration and the final screen consume only the persisted
 package after commit. It neither activates target nor dual-writes before the
-versioned production activation cutover. `test/domain.test.js` covers
-allow-list, leak stripping/detection, safe-package and memory contracts.
+versioned production activation cutover. Revision 17 /
+`spatial-v3-production-v7` activates deterministic authored evidence
+resolution; current revision 18 / production v8 additionally activates
+provenance-validated composite completion and player-safe projection. Phase 11
+acceptance adds no new domain contract. `test/domain.test.js` covers allow-list,
+leak stripping/detection, safe-package, evidence, completion and memory
+contracts.

@@ -136,6 +136,7 @@ catch-up boundary, not as continuous simulation of every distant entity.
 
 This describes the active production temporal lifecycle after the completed
 `versioned production activation cutover`. Composition, authoritative reads and
-writes follow the sole production path; `spatial-v3-production-v6` keeps Phase 7
-autonomous decisions and revision-16 combat on common owners without a second
-scheduler or scenario-local combat state machine.
+writes follow the sole production path. Current `spatial-v3-production-v8`
+inherits Phase 7 autonomous decisions and revision-16 combat on common owners
+without a second scheduler or scenario-local combat state machine; production
+v7 is the explicit rollback source.

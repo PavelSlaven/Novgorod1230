@@ -53,6 +53,36 @@ test('builds full completion from exact committed producers only', () => {
   assert.equal(value(destroyedResult.outcome, 'seal_state'), 'damaged');
 });
 
+test('keeps objective evidence conclusions hidden without visible lineage',
+  () => {
+    const result = buildTracePhase10Completion({ state: phase9State(),
+      contracts });
+
+    assert.equal(result.outcome.primary_completion_state,
+      'trace_ld_v1_completion_full');
+    assert.equal(visibleValue(result.terminalProjection,
+      'principal_resolution'), 'unresolved');
+    assert.equal(visibleValue(result.terminalProjection,
+      'wreck_cause_resolution'), 'unresolved');
+    assert.equal(visibleValue(result.terminalProjection,
+      'ratsha_participation_resolution'), 'unresolved');
+    assert.deepEqual(result.terminalProjection.visible_proved_conclusions,
+      []);
+    assert.deepEqual(result.terminalProjection.visible_committed_facts.filter(
+      (fact) => fact.startsWith('conclusion:')), []);
+
+    const disclosedState = phase9State();
+    disclosedState.knowledge = [{ fact_id: 'conclusion:principal_zhdanko',
+      knowledge_state: 'known_from_committed_phase9_fact',
+      evidence_refs: ['change:visible-conclusion'] }];
+    const disclosed = buildTracePhase10Completion({ state: disclosedState,
+      contracts });
+    assert.equal(visibleValue(disclosed.terminalProjection,
+      'principal_resolution'), 'zhdanko_established');
+    assert.deepEqual(disclosed.terminalProjection.visible_proved_conclusions,
+      ['conclusion:principal_zhdanko']);
+  });
+
 test('commits one zero-time follow-up and exact retry is a no-op', async () => {
   let current = phase9State(), commitCalls = 0, capturedPlan = null;
   const loadState = async () => structuredClone(current);
@@ -190,5 +220,10 @@ function phase9State() {
 
 function value(outcome, dimension) {
   return outcome.ordered_dimension_outcomes.find(
+    ({ dimension_id: id }) => id === dimension).value_id;
+}
+
+function visibleValue(projection, dimension) {
+  return projection.visible_completion_dimensions.find(
     ({ dimension_id: id }) => id === dimension).value_id;
 }

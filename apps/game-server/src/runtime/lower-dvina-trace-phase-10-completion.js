@@ -3,6 +3,7 @@ import {
   resolveCompositeCompletionOutcome
 } from '@rus/visibility-knowledge-memory';
 import { serverError } from '../errors.js';
+import { projectKnowledge } from './lower-dvina-trace-player-safe-world.js';
 
 const COMPLETION_FACTS = new Set([
   'onisim_found_alive', 'sealed_packet_returned', 'seal_intact',
@@ -147,7 +148,14 @@ function collectVisibleFacts(state, committedInputs) {
   const visible = new Set((state.phase9.committed_facts ?? []).filter(
     (fact) => COMPLETION_FACTS.has(fact)
       || fact.startsWith('trace_ld_v1_evidence_')));
+  const visibleKnowledge = new Set((projectKnowledge(state.knowledge) ?? [])
+    .map((record) => typeof record === 'string' ? record : record.fact_id)
+    .filter(Boolean));
   for (const input of committedInputs) {
+    if (input.input_class === 'committed_evidence_resolution_outcome') {
+      if (visibleKnowledge.has(input.fact_id)) visible.add(input.fact_id);
+      continue;
+    }
     if (input.input_class !== 'committed_objective_fact'
         || ['sealed_packet_returned', 'seal_intact',
           'onisim_found_alive'].includes(input.fact_id)) {

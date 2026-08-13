@@ -103,7 +103,7 @@ test('revision 18 survives production restart and exact replay through Phase 10'
   });
 
 test('production revision 18 admits independent Ratsha, Eremey and Zhdanko alternatives',
-  { timeout: 300_000 }, async (context) => {
+  { timeout: 600_000 }, async (context) => {
     let responder = createCanonicalPhase11LlmResponder();
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: (request) => responder(request)

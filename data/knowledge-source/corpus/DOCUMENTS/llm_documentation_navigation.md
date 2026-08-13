@@ -61,12 +61,16 @@ processes его необходимо читать полностью вмест
 exact-head evidence не активировало production; последующий release
 `spatial-v3-production-v1` прошёл собственную candidate-bound validation.
 
-### Active и proposed semantic LLM contracts
+### Active semantic LLM contracts
 
 - free player action → `turn_step_llm_contract.md` (`active`, Lower Dvina Trace revision 13+);
 - autonomous NPC outside conversation → `npc_autonomous_decision_contract.md` (`active`, Phase 7 / `spatial-v3-production-v5`);
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
 - combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).
+
+Current Lower Dvina Trace revision 18 / `spatial-v3-production-v8` наследует
+все четыре границы без нового semantic mode. Phase 11 только проверяет их через
+full-stack acceptance и не создаёт revision 19 или новый LLM contract.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует
@@ -159,7 +163,7 @@ Historical bounded Phase 3/4 доступен исключительно по я
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
-| `llm_agent_prompt_templates.md` | Active player planner/repair и revision-14 conversation roles. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении turn-step/conversation LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
+| `llm_agent_prompt_templates.md` | Active player planner/repair, conversation, autonomous и combat roles. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении player/NPC semantic LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
 
 ## 4. Как выбирать нужный документ по задаче
 

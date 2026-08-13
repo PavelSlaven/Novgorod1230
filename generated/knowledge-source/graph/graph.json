@@ -972,7 +972,7 @@
       "source_location": {
         "file": "combat_system.md",
         "line_start": 1,
-        "line_end": 1167
+        "line_end": 1174
       }
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1097
+        "line_end": 1098
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 321
+        "line_end": 325
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2369
+        "line_end": 2371
       }
     },
     {

@@ -28,9 +28,10 @@ Malformed legacy body values return validation errors or range/type errors. Targ
 Current `temporal-world-v1.1` / `4.4.0-target.1` behavior (with immutable
 `temporal-world-v1` / `4.3.0-target.1` baseline) is active in
 `spatial-v3-production-v1`. Historical P28 evidence did not activate it; the
-later `versioned production activation cutover` did. Current revision 16 /
-`spatial-v3-production-v6` retains that owner and additionally activates
+later `versioned production activation cutover` did. Revision 16 /
+`spatial-v3-production-v6` retained that owner and additionally activated
 direct-harm body transitions, edge-triggered threshold descriptors and their
-one-writer handoff to the common combat/NPC signal pipeline; production v5 is
-the explicit rollback source. `test/domain.test.js` covers base body API and
+one-writer handoff to the common combat/NPC signal pipeline. Current revision
+18 / `spatial-v3-production-v8` inherits that behavior; production v7 is the
+explicit rollback source. `test/domain.test.js` covers base body API and
 Temporal proposal/threshold hard-block behavior.

@@ -83,16 +83,19 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 ## Activation и тесты
 
-В active `spatial-v3-production-v6` revision-14 conversation, Phase-7 autonomous
-и revision-16 combat contracts применяются через единый orchestration/write path. Phase 7 фиксирует
+Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
+Phase-7 autonomous и combat contracts в одном orchestration/write path.
+Current revision 18 / `spatial-v3-production-v8` наследует эту boundary без
+нового NPC semantic mode. Phase 7 фиксирует
 fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
 точные actor-step operations из зарегистрированных domain handlers
 (`operation_contract` публикует exact executable combinations owners —
 не narrative whitelist и не cartesian kinds×targets), применяется на
 том же timestamp; activity Жданко может продолжаться после +30, пока
 общий temporal owner завершает rest Микулы; temporal/persistence/
-visibility остаются code-owned. Production v4 является explicit migration/rollback source, но не
-runtime path; partial activation, dual write и in-turn fallback запрещены.
+visibility остаются code-owned. Production v7 является explicit rollback
+source; v4–v6 доступны только по historical revision pins, не как current
+runtime fallback. Partial activation, dual write и in-turn fallback запрещены.
 Combat decision request/plan получает один общий snapshot exchange, использует
 тот же five-category signal protocol и не исполняет checks/harm/items сам.
 Tests покрывают exact schedule/perception, five-category signals, one

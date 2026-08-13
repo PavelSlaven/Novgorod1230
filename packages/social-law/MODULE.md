@@ -47,4 +47,9 @@ Social role and occupation references, rights, restrictions, authority and legal
 
 ## Совместимость и тесты
 
-Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+Модуль сохраняет подтверждённые чистые формулы legacy там, где они
+существовали, но не импортирует legacy runtime. Revision 17 /
+`spatial-v3-production-v7` активировала Phase 9 promise lifecycle и typed
+temporary disposition из committed facts; current revision 18 / production v8
+наследует этот owner без нового legal engine. Unit/contract tests находятся в
+`test/domain.test.js`.

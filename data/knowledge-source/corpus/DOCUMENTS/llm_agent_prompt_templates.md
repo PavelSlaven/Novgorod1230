@@ -22,11 +22,12 @@ knowledge принадлежат коду. Канонические role/payload
 active `npc_conversation_mode_contract.md`, разделы 5.6–5.7; этот общий файл не
 создаёт второй расходящийся conversation prompt.
 
-Lower Dvina Trace revision 14 передаёт NPC responder пустые списки допустимых
-attribute/skill refs, поэтому его contribution обязан использовать
-`resolution = automatic` и `check = null`. Общая conversation schema допускает
-NPC `check_required` только в профиле, где code-owned check owner явно
-зарегистрировал непустой scope; prompt не может расширить этот scope.
+Lower Dvina Trace revision 14 передаёт большинству NPC responder пустой check
+scope, поэтому их contribution обязан использовать `resolution = automatic`
+и `check = null`. Phase 4 Ратша получает exact approved attribute/skill/check
+refs для лжи и торга; только этот зарегистрированный scope допускает
+`check_required`, а бросок и factual result остаются у code-owned check owner.
+Prompt не может расширить переданные refs.
 
 Lower Dvina Trace revision 15 передаёт autonomous decider только субъективные
 knowledge, perception, memory, goals, relationships, body state, доступные

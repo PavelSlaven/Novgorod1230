@@ -82,7 +82,9 @@ autonomous boundary Жданко. Request получает не scenario option 
 Выбранный plan применяется к working projection на том же timestamp +25;
 после этого общий temporal owner продолжает интервал до +30 уже с начатым
 действием. Temporal execution, persistence и player-safe visibility остаются
-code-owned. Combat resolution не активируется и остаётся `proposed`.
+code-owned. Этот autonomous mode не разрешает combat: отдельный combat contract
+был активирован позднее revision 16 / `spatial-v3-production-v6` и наследуется
+current revision 18 / production v8.
 
 ## 4. Архитектурные владельцы
 

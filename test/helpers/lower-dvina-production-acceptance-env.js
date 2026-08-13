@@ -279,10 +279,14 @@ function initializeAcceptanceDatabases(container) {
 }
 
 async function waitForPostgres(name, user, database) {
-  for (let attempt = 0; attempt < 60; attempt += 1) {
+  for (let attempt = 0; attempt < 120; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 250));
-    if (docker(['exec', name, 'pg_isready', '-U', user, '-d', database])
-      .status === 0) return;
+    const logs = docker(['logs', name]);
+    const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
+      'PostgreSQL init process complete; ready for start up.');
+    if (initialized && docker(
+      ['exec', name, 'pg_isready', '-U', user, '-d', database]
+    ).status === 0) return;
   }
   throw new Error(`${name} did not become ready.`);
 }

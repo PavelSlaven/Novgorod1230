@@ -116,7 +116,7 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 ## Target / activation
 
 Temporal v4 surfaces use current `temporal-world-v1.1` /
-`4.5.0-target.1` and immutable accepted base `temporal-world-v1` /
+`4.4.0-target.1` and immutable accepted base `temporal-world-v1` /
 `4.3.0-target.1`. Accepted historical P28 evidence не активировало runtime;
 последующий `versioned production activation cutover` release
 `spatial-v3-production-v1` сделал v3 sole production composition. `turn` не

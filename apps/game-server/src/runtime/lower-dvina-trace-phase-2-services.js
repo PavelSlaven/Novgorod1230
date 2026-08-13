@@ -66,7 +66,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
-    turn10Contracts, phase8Contracts, phase9Contracts
+    turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
@@ -214,6 +214,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
+          phase10Contracts,
           turnStepApprovedOwners
         });
       }

@@ -29,7 +29,7 @@ export function validateConversationDependencies({
   playerConversationModel,
   npcSemanticModel
 }) {
-  if (![14, 15, 16, 17].includes(scenarioDefinitionRevision)) return;
+  if (![14, 15, 16, 17, 18].includes(scenarioDefinitionRevision)) return;
   if (typeof playerConversationModel !== 'function'
       || typeof npcSemanticModel !== 'function') {
     throw serverError(

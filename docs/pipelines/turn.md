@@ -20,6 +20,13 @@ factual property/container transitions, sealed-packet observation, return,
 subjective testimony, deterministic authored evidence resolution and a typed
 temporary disposition. It neither reads document contents nor writes scenario
 completion.
+Revision 18 / `spatial-v3-production-v8` adds no semantic player/NPC path.
+After the Phase 9 temporary disposition is committed, a separate idempotent
+zero-time P16 follow-up reloads that committed state, derives only
+`full|partial|case_open` from pinned committed producers, commits the minimal
+completion snapshot and persisted player-safe epilogue package, and only then
+invokes the ordinary `surface: turn` narration stage. Narration failure cannot
+roll back either factual commit; retry reuses both commits.
 
 ## Этапы
 
@@ -96,6 +103,11 @@ seal-preserving transitions; `@rus/visibility-knowledge-memory` resolves only
 authored conclusions from committed evidence; `@rus/social-law` proposes only
 the pinned temporary disposition. Narration sees only the committed safe
 projection.
+Revision-18 Phase 10 is code-only: `@rus/visibility-knowledge-memory` owns the
+pure completion/projection rules, `@rus/turn` owns the post-commit workflow,
+and PostgreSQL owns the second atomic P16 persistence boundary. It performs no
+LLM, RNG, check, clock or body operation and never exposes raw objective or
+hidden state to narration.
 
 ## Temporal World v4 active sequence
 

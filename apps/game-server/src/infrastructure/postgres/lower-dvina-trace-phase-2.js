@@ -32,6 +32,8 @@ import { assertTurnStepNormalizedRows } from
   './lower-dvina-trace-turn-step-read.js';
 import { assertCombatSessionRows } from './lower-dvina-trace-combat-read.js';
 import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js';
+import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
+import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -45,7 +47,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   const phase1A = createLowerDvinaTracePhase1ARepository({
     query: partyPool.query.bind(partyPool)
   });
-
   async function loadPhase2State(
     partyId,
     { presentationIdempotencyKey = null } = {}
@@ -126,6 +127,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       await assertTurnStepNormalizedRows(partyPool, payload, row);
       await assertCombatSessionRows(partyPool, payload);
       await assertPhase9NormalizedRows(partyPool, payload);
+      await assertPhase10NormalizedRows(partyPool, payload, row);
     } else {
       await assertPhase2NormalizedRows(partyPool, payload, row);
     }
@@ -271,6 +273,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     loadPhase2Replay,
     replayPhase2Turn,
     commitPhase2Turn,
+    commitPhase10FollowUp: (input) => commitLowerDvinaTracePhase10({ ...input,
+      loadState: loadPhase2State, committer }),
     loadPhase2VisibleContext,
     persistPhase2Screen
   });

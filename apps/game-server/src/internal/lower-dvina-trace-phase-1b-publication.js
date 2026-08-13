@@ -8,21 +8,19 @@ import {
   TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
   TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST,
   TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
-  TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST
+  TRACE_PHASE_1B_REVISION16_PHASE_1A_MANIFEST_DIGEST,
+  TRACE_PHASE_1B_REVISION17_PHASE_1A_MANIFEST_DIGEST
 } from './lower-dvina-trace-phase-1b-identities.js';
-import {
-  isHistoricalLowerDvinaTracePhase1AManifestDigest,
-  loadHistoricalLowerDvinaTracePhase1BPublication
-} from './lower-dvina-trace-phase-1b-historical-publication.js';
-import {
-  assertLowerDvinaTracePhase1BWorldLineage
-} from './lower-dvina-trace-phase-1b-world-lineage.js';
+import { isHistoricalLowerDvinaTracePhase1AManifestDigest,
+  loadHistoricalLowerDvinaTracePhase1BPublication } from
+  './lower-dvina-trace-phase-1b-historical-publication.js';
+import { assertLowerDvinaTracePhase1BWorldLineage } from
+  './lower-dvina-trace-phase-1b-world-lineage.js';
+import { loadLowerDvinaTraceRevision17Publication } from './lower-dvina-trace-phase-1b-revision17-publication.js';
 export * from './lower-dvina-trace-phase-1b-identities.js';
-
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
-const MANIFEST_PATH = `${ROOT}/phase-1b-v12/manifest.json`;
-const BINDING_PATH = `${ROOT}/phase-1b-v12/publication-binding.json`;
-
+const MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`,
+  BINDING_PATH = `${ROOT}/phase-1b-v13/publication-binding.json`;
 export async function loadLowerDvinaTracePhase1BPublication({
   rootDir = process.cwd(),
   phase1AManifestDigest = null
@@ -36,6 +34,11 @@ export async function loadLowerDvinaTracePhase1BPublication({
       rootDir,
       phase1AManifestDigest
     });
+  }
+  if (phase1AManifestDigest
+      === TRACE_PHASE_1B_REVISION17_PHASE_1A_MANIFEST_DIGEST) {
+    return loadLowerDvinaTraceRevision17Publication({ rootDir,
+      phase1AManifestDigest });
   }
   if (phase1AManifestDigest != null
     && phase1AManifestDigest
@@ -54,8 +57,8 @@ export async function loadLowerDvinaTracePhase1BPublication({
   }
   const manifest = manifestFile.value;
   if (manifest?.schema !== 'rus.lower_dvina_trace_phase_1b_manifest.v1'
-    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v12'
-    || manifest.revision !== 12
+    || manifest.package_id !== 'lower_dvina_trace_phase_1b_v13'
+    || manifest.revision !== 13
     || manifest.status !== 'approved'
     || manifest.scenario_id !== 'lower_dvina_trace_v1'
     || manifest.publication_status !== 'public'
@@ -74,8 +77,8 @@ export async function loadLowerDvinaTracePhase1BPublication({
   }
   assertExactRef(manifest.content_refs?.publication_binding, bindingFile, {
     path: BINDING_PATH,
-    id: 'lower_dvina_trace_phase_1b_publication_v12',
-    revision: 12,
+    id: 'lower_dvina_trace_phase_1b_publication_v13',
+    revision: 13,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
   const binding = bindingFile.value;
@@ -85,9 +88,9 @@ export async function loadLowerDvinaTracePhase1BPublication({
     manifest.superseded_package_ref?.path
   );
   assertExactRef(manifest.superseded_package_ref, supersededManifest, {
-    path: `${ROOT}/phase-1b-v11/manifest.json`,
-    id: 'lower_dvina_trace_phase_1b_v11',
-    revision: 11,
+    path: `${ROOT}/phase-1b-v12/manifest.json`,
+    id: 'lower_dvina_trace_phase_1b_v12',
+    revision: 12,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1'
   }, 'package_id');
   const supersededBinding = await readJson(
@@ -95,12 +98,11 @@ export async function loadLowerDvinaTracePhase1BPublication({
     binding.superseded_binding_ref?.path
   );
   assertExactRef(binding.superseded_binding_ref, supersededBinding, {
-    path: `${ROOT}/phase-1b-v11/publication-binding.json`,
-    id: 'lower_dvina_trace_phase_1b_publication_v11',
-    revision: 11,
+    path: `${ROOT}/phase-1b-v12/publication-binding.json`,
+    id: 'lower_dvina_trace_phase_1b_publication_v12',
+    revision: 12,
     schema: 'rus.lower_dvina_trace_publication_binding.v1'
   });
-
   const phase1A = await readJson(
     rootDir,
     binding.phase_1a_manifest_ref.path
@@ -112,13 +114,13 @@ export async function loadLowerDvinaTracePhase1BPublication({
     );
   }
   assertExactRef(binding.phase_1a_manifest_ref, phase1A, {
-    path: `${ROOT}/phase-1a-v13/manifest.json`,
-    id: 'lower_dvina_trace_phase_1a_v13',
-    revision: 13,
+    path: `${ROOT}/phase-1a-v14/manifest.json`,
+    id: 'lower_dvina_trace_phase_1a_v14',
+    revision: 14,
     schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
   }, 'package_id');
   if (phase1A.value.scenario_id !== binding.scenario_id
-    || phase1A.value.scenario_definition_revision !== 17
+    || phase1A.value.scenario_definition_revision !== 18
     || phase1A.value.content_refs?.materialization_bindings?.id
       !== binding.materializer_binding_id) {
     fail(
@@ -134,14 +136,13 @@ export async function loadLowerDvinaTracePhase1BPublication({
     phase1A.value.superseded_package_ref,
     supersededPhase1A,
     {
-    path: `${ROOT}/phase-1a-v12/manifest.json`,
-    id: 'lower_dvina_trace_phase_1a_v12',
-    revision: 12,
+    path: `${ROOT}/phase-1a-v13/manifest.json`,
+    id: 'lower_dvina_trace_phase_1a_v13',
+    revision: 13,
       schema: 'rus.lower_dvina_trace_phase_1a_manifest.v1'
     },
     'package_id'
   );
-
   const definition = await readJson(
     rootDir,
     binding.scenario_definition_ref.path
@@ -153,15 +154,15 @@ export async function loadLowerDvinaTracePhase1BPublication({
     );
   }
   assertExactRef(binding.scenario_definition_ref, definition, {
-    path: `${ROOT}/phase-m5-content/definition.json`,
+    path: `${ROOT}/phase-m6-content/definition.json`,
     id: 'lower_dvina_trace_v1',
-    revision: 17,
+    revision: 18,
     schema: 'rus.trace_scenario_definition.v1'
   }, 'scenario_id');
   if (definition.value.required_unresolved_refs?.length !== 0) {
     fail(
       'TRACE_PHASE_1B_DEFINITION_INCOMPLETE',
-      'Only the complete scenario definition revision 17 can be published.'
+      'Only the complete scenario definition revision 18 can be published.'
     );
   }
 
@@ -191,8 +192,8 @@ function assertBinding(binding) {
   const projection = binding?.opening_projection;
   const identity = binding?.execution_identity;
   if (binding?.schema !== 'rus.lower_dvina_trace_publication_binding.v1'
-    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v12'
-    || binding.revision !== 12
+    || binding.binding_id !== 'lower_dvina_trace_phase_1b_publication_v13'
+    || binding.revision !== 13
     || binding.status !== 'approved'
     || binding.scenario_id !== 'lower_dvina_trace_v1'
     || binding.publication_availability !== 'public'
@@ -201,7 +202,7 @@ function assertBinding(binding) {
     || !text(metadata?.description)
     || metadata.available !== true
     || binding.materializer_binding_id
-      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v13'
+      !== 'lower_dvina_trace_phase_1a_materialization_bindings_v14'
     || projection?.projection_id
       !== 'lower_dvina_trace_phase_1b_opening_projection_v12'
     || projection.schema !== 'first_game_screen'

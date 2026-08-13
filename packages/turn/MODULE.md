@@ -138,6 +138,12 @@ prepared-domain checkpoints в том же semantic loop. Turn владеет ad
 causal working-state recheck и atomic root commit, но делегирует property,
 evidence и temporary disposition их существующим domain owners и не создаёт
 completion либо отдельный legal/evidence executor.
+Revision 18 / `spatial-v3-production-v8` добавляет deterministic post-commit
+Phase 10: после успешного Phase 9 commit orchestration перечитывает committed
+state, вызывает pure completion/projection owner, сохраняет отдельный zero-time
+P16 change set и лишь затем запускает обычную narration stage. Retry/restart
+использует stable identity `party + source Phase 9 state version`; turn не
+вызывает semantic LLM, RNG/check и не владеет completion formula.
 
 ## Тесты
 

@@ -1,0 +1,78 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v14",
+  "revision": 14,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 18,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v13/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v13",
+    "revision": 13,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "763f3d05ac36e3ba65501ce021bf9122a7e01aeac809a0f3ef86fcac138ea7eb"
+  },
+  "reused_immutable_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v12/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v12",
+    "revision": 12,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "4ae4a62a611f3db4600400dd7d19dfbe725bb346bc598c6c23d57b6bd81a870c"
+  },
+  "binding_resolution_policy": "reuse_exact_superseded_initial_materialization_bindings_with_phase9_packet_overlay_or_fail_closed",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "binding_overrides": {
+    "phase_9_routing": {
+      "phase_9_binding_ref": "lower_dvina_trace_phase_9_bindings_v1",
+      "turn_step_binding_set_ref": "lower_dvina_trace_turn_step_bindings_v4",
+      "evidence_owner": "@rus/visibility-knowledge-memory",
+      "completion_evaluation": "forbidden"
+    }
+  },
+  "initial_autonomous_materialization_overlay": {
+    "packet_placement": {
+      "item_template_ref": "trace_ld_v1_item_sealed_packet",
+      "parent_container_ref": "trace_ld_v1_container_road_bag",
+      "owner_ref": "trace_ld_v1_external_owner_savva_tverdich",
+      "holder_ref_rule": "inherit_parent_holder",
+      "controller_ref_rule": "inherit_parent_controller",
+      "seal_state": "intact",
+      "document_contents_state": "sealed",
+      "document_contents_access": "forbidden",
+      "location_ref_rule": "inherit_parent_location",
+      "zone_ref_rule": "inherit_parent_zone",
+      "inventory_profile": {
+        "id": "trace_ld_v1_inventory_profile_sealed_packet_v1",
+        "item_template_id": "trace_ld_v1_item_sealed_packet",
+        "mass_grams": 100,
+        "carry_form": "compact",
+        "external_hand_cost": 0,
+        "status": "approved"
+      },
+      "parent_container_inventory_profile": {
+        "id": "inventory_container_tpl_nov_small_soft_bag_v1",
+        "container_template_id": "trace_ld_v1_container_road_bag",
+        "mass_grams": 300,
+        "carry_form": "regular",
+        "external_hand_cost": 1,
+        "inventory_role": "primary_container",
+        "status": "approved"
+      }
+    }
+  },
+  "sealed_selection_inventory_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v12/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v12",
+    "digest": "4ae4a62a611f3db4600400dd7d19dfbe725bb346bc598c6c23d57b6bd81a870c"
+  },
+  "excludes": [
+    "materialization_override",
+    "runtime_handler",
+    "persistence",
+    "party_instance",
+    "api",
+    "ui",
+    "completion"
+  ]
+}

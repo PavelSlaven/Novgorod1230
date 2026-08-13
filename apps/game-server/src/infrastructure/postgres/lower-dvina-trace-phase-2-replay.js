@@ -78,13 +78,18 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   const result = await partyPool.query(
     `SELECT session.screen,session.turn_number,
             visible.package_id,visible.package_digest,
-            visible.dependency_pins
+            visible.dependency_pins,
+            source.dependency_pins AS source_dependency_pins
        FROM party_runtime.party_server_sessions session
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=session.party_id
         AND visible.change_set_id=$2
+       JOIN party_runtime.party_visible_packages source
+         ON source.party_id=session.party_id
+        AND source.change_set_id=$3
       WHERE session.party_id=$1`,
-    [partyId, idempotency.result_change_set_id]
+    [partyId, state.last_turn.visible_package.change_set_id,
+      idempotency.result_change_set_id]
   );
   const row = result.rows[0];
   if (result.rowCount !== 1
@@ -95,7 +100,8 @@ export async function loadCurrentOrHistoricalPhase2Replay({
   assertPhase2ReplayRecord({
     record: idempotency,
     payload: state,
-    visibleDependencyPins: row.dependency_pins
+    visibleDependencyPins: state.completion?.status === 'committed'
+      ? row.source_dependency_pins : row.dependency_pins
   });
   await assertCommittedTurnStepChecks({
     partyPool,
@@ -127,20 +133,29 @@ export async function loadHistoricalPhase2Replay({
             visible.package_id,visible.turn_id,
             visible.package_digest,visible.visible_payload,
             visible.dependency_pins,
+            source.dependency_pins AS source_dependency_pins,
             narration.status AS narration_status,
             narration.narration_output,
             narration.output_digest
        FROM party_runtime.party_state_snapshots snapshot
        JOIN party_runtime.party_visible_packages visible
          ON visible.party_id=snapshot.party_id
-        AND visible.change_set_id=$2
+        AND visible.change_set_id=snapshot.state_payload #>>
+          '{last_turn,visible_package,change_set_id}'
+       JOIN party_runtime.party_visible_packages source
+         ON source.party_id=snapshot.party_id
+        AND source.change_set_id=$2
        JOIN party_runtime.party_narration_jobs narration
          ON narration.party_id=visible.party_id
         AND narration.package_id=visible.package_id
       WHERE snapshot.party_id=$1
-        AND snapshot.state_payload #>>
-          '{last_turn,visible_package,change_set_id}'=$2`,
-    [partyId, record.result_change_set_id]
+        AND snapshot.state_payload #>> '{last_turn,idempotency_key}'=$3
+        AND (snapshot.state_payload #>>
+          '{last_turn,visible_package,change_set_id}'=$2
+          OR snapshot.state_payload #>> '{completion,status}'='committed')
+      ORDER BY snapshot.state_version DESC
+      LIMIT 1`,
+    [partyId, record.result_change_set_id, idempotencyKey]
   );
   const row = persisted.rows[0];
   const payload = row?.state_payload;
@@ -162,7 +177,8 @@ export async function loadHistoricalPhase2Replay({
   assertPhase2ReplayRecord({
     record,
     payload,
-    visibleDependencyPins: row.dependency_pins
+    visibleDependencyPins: payload.completion?.status === 'committed'
+      ? row.source_dependency_pins : row.dependency_pins
   });
   if (payload.last_turn?.turn_step_commit != null) {
     await assertCommittedTurnStepChecks({
@@ -194,6 +210,7 @@ export function assertPhase2ReplayRecord({
 }) {
   const command = record?.semantic_command_snapshot;
   const turnStep = payload?.last_turn?.turn_step_commit != null;
+  const completion = payload?.completion?.status === 'committed';
   if (payload?.last_turn?.request_id !== record?.request_id
       || command?.input_digest !== payload?.last_turn?.input_digest
       || command?.selected_option_id !== payload?.last_turn?.option_id
@@ -201,8 +218,13 @@ export function assertPhase2ReplayRecord({
         !== payload?.last_turn?.action_set_digest
       || (turnStep && (
         payload.last_turn.turn_step_idempotency_record_id !== record.id
-        || payload.last_turn.visible_package?.change_set_id
-          !== record.result_change_set_id
+        || (!completion && payload.last_turn.visible_package?.change_set_id
+          !== record.result_change_set_id)
+        || (completion && (
+          payload.completion.change_set_id
+            !== payload.last_turn.visible_package?.change_set_id
+          || payload.completion.source_commit_version + 1
+            !== payload.party_state.state_version))
         || !validLowerDvinaTraceTurnStepReplayEvidence({
           record, payload, visibleDependencyPins
         })))) {

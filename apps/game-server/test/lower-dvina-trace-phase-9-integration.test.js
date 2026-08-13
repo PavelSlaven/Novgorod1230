@@ -16,12 +16,14 @@ import { resolveTracePhase9Contracts } from
   '../src/runtime/lower-dvina-trace-phase-9-contracts.js';
 import { packetPlan, recoveryPlan } from
   '../src/runtime/lower-dvina-trace-phase-9-command-plans.js';
+import { addCanonicalPhase10Evidence, assertCanonicalPhase10 } from
+  './lower-dvina-trace-phase-10-integration-assertions.js';
 
-const bundle = await loadScenarioBundle(17);
+const bundle = await loadScenarioBundle(18);
 const ROUTE_TEXT =
   'Идти к Жданко всем вместе. Ратшу держать между нами. Не входить тайком.';
 
-test('Phase 9 recovers property, commits testimony and stops at temporary disposition',
+test('Phase 9 commits first, then Phase 10 completes and presents a safe epilogue',
   async () => {
     const state = phase8CampState(bundle);
     Object.assign(state.promise_instances[0], { current_state: 'active',
@@ -29,6 +31,7 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     state.knowledge = [...(state.knowledge ?? []),
       committedKnowledge('ratsha_surrender_without_further_harm_committed'),
       committedKnowledge('promise_current_active')];
+    addCanonicalPhase10Evidence(state);
     const ids = { ...actorIds(state), bag: state.containers.find(
       ({ template_id: id }) => id === 'trace_ld_v1_container_road_bag'
     ).container_id, packet: state.items.find(
@@ -147,9 +150,22 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     assert.deepEqual(runtime.state.phase9.evidence_resolution, firstEvidence);
     runtime = createRuntime(runtime.state);
     const promiseBefore = structuredClone(runtime.state.promise_instances);
-    await submit(runtime, 'p9-disposition',
-      'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
-        + 'свёрток для Саввы и соблюсти обещание Ратше.');
+    const versionBefore = runtime.state.party_state.state_version;
+    const turnBefore = runtime.state.party_state.turn_number;
+    const clockBefore = structuredClone(runtime.state.clock);
+    const commitsBefore = runtime.commitCount();
+    const turnStepsBefore = runtime.turnStepCount();
+    const dispositionText = 'Временно удержать Ратшу и Жданко до передачи '
+      + 'властям, сохранить свёрток для Саввы и соблюсти обещание Ратше.';
+    runtime.setNarrationFails(true);
+    await assert.rejects(
+      () => submit(runtime, 'p9-disposition', dispositionText),
+      /narration_flow_result invalid/u);
+    assert.equal(runtime.state.completion.status, 'committed');
+    assert.equal(runtime.commitCount(), commitsBefore + 2);
+    runtime.setNarrationFails(false);
+    const dispositionResult = await submit(runtime, 'p9-disposition',
+      dispositionText);
     assert.equal(runtime.state.phase9.status,
       'temporary_disposition_committed');
     assert.equal(runtime.state.phase9.temporary_disposition.legal_effect,
@@ -175,7 +191,8 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
     assert.equal(runtime.state.promise_instances[0]
       .temporary_disposition_memory.option_id,
     'preserve_active_no_summary_killing_promise');
-    assert.equal(Object.hasOwn(runtime.state, 'completion_state'), false);
+    assertCanonicalPhase10({ runtime, result: dispositionResult,
+      versionBefore, turnBefore, clockBefore, commitsBefore, turnStepsBefore });
     assert.equal(promiseBefore[0].current_state, 'active');
     assert.equal(runtime.state.promise_instances[0].current_state,
       'fulfilled');
@@ -189,9 +206,7 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       ['bag_recovery', 'bag_opened', 'packet_recovered', 'return_to_camp',
         'onisim_testimony', 'evidence_resolved', 'temporary_disposition']);
 
-    await assertReplay(runtime, 'p9-disposition',
-      'Временно удержать Ратшу и Жданко до передачи властям, сохранить '
-        + 'свёрток для Саввы и соблюсти обещание Ратше.');
+    await assertReplay(runtime, 'p9-disposition', dispositionText);
     assert.equal(testimonyCalls, 1);
     runtime = createRuntime(structuredClone(runtime.state));
     assert.equal(runtime.state.npcs.find(({ participant_slot_ref: slot }) =>
@@ -201,6 +216,7 @@ test('Phase 9 recovers property, commits testimony and stops at temporary dispos
       .temporary_disposition_memory.status, 'recorded');
     assert.equal(runtime.state.promise_instances[0].current_state,
       'fulfilled');
+    assert.equal(runtime.state.completion.status, 'committed');
   });
 
 test('Onisim silence remains an unknown evidence branch through restart',
@@ -249,11 +265,15 @@ test('Onisim silence remains an unknown evidence branch through restart',
         + 'свёрток для Саввы и соблюсти обещание Ратше.');
     assert.equal(runtime.state.phase9.status,
       'temporary_disposition_committed');
+    assert.equal(runtime.state.completion.status, 'committed');
+    assert.notEqual(runtime.state.completion.outcome.primary_completion_state,
+      'trace_ld_v1_completion_full');
     runtime = createRuntime(structuredClone(runtime.state));
     assert.equal(runtime.state.phase9.onisim_testimony.testimony_committed,
       false);
     assert.equal(runtime.state.phase9.temporary_disposition.legal_effect,
       'temporary_disposition_only');
+    assert.equal(runtime.state.completion.status, 'committed');
   });
 
 test('Phase 9 does not recover a road bag carried away by Zhdanko', () => {

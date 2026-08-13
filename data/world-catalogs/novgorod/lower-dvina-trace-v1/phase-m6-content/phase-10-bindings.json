@@ -1,0 +1,44 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_10_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_10_bindings_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 18,
+  "owner": "@rus/visibility-knowledge-memory",
+  "presentation_owner": "@rus/presentation",
+  "narration_owner": "@rus/narration",
+  "follow_up_trigger": "temporary_disposition_committed",
+  "execution_policy": "deterministic_post_commit",
+  "semantic_llm_calls": "forbidden",
+  "rng_calls": "forbidden",
+  "check_calls": "forbidden",
+  "completion_rules_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/completion-rules.json",
+    "id": "trace_ld_v1_completion_rules",
+    "revision": 1,
+    "schema": "rus.trace_completion_rules.v1",
+    "digest": "497e6ed12d4393f890e47e38e61a52a2f103a6ad0546793ec587b329364fc614"
+  },
+  "epilogue_rules_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-0d/epilogue-rules.json",
+    "id": "trace_ld_v1_epilogue_rules",
+    "revision": 1,
+    "schema": "rus.trace_epilogue_rules.v1",
+    "digest": "959f42e52147d9e19f5ac945e336b0280090f2d7025e79c01159f341a2ed36c3"
+  },
+  "persistence": {
+    "kind": "deterministic_follow_up",
+    "source_commit": "phase_9_temporary_disposition",
+    "idempotency": "party_and_source_commit_version",
+    "snapshot_fields": [
+      "status",
+      "outcome",
+      "source_commit_version",
+      "change_set_id"
+    ]
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

@@ -77,11 +77,14 @@ active: «Отдых у огня» advances 30 minutes, creates Жданко's b
 and applies one actor-step from the operations actually registered in the
 runtime at the same timestamp, then resumes the common temporal owner to +30
 from the updated working projection. Persistence and visibility remain
-code-owned. Combat active для revision 16 и наследуется revision 17. Phase 9
+code-owned. Combat active для revision 16 и наследуется revisions 17–18. Phase 9
 не вводит новый LLM contract: свободные действия идут через active turn-step
 contract, а показание Онисима — через active conversation contract.
 Property/evidence/temporary-disposition consequences остаются code-owned;
-содержимое документа и completion недоступны этому path.
+содержимое документа недоступно этому path. Revision 18 Phase 10 не вводит
+LLM contract: completion и player-safe epilogue детерминированно строятся из
+уже committed Phase 9 producers, сохраняются отдельным zero-time commit и
+только затем передаются обычной narration stage.
 Historical bounded Phase 3/4 доступен исключительно по явному revision pin и
 не является production fallback.
 

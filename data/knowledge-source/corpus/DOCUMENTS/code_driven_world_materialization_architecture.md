@@ -115,6 +115,13 @@ contracts, property/container transitions исполняет `@rus/items-propert
 authored evidence graph — `@rus/visibility-knowledge-memory`, а временное
 disposition — `@rus/social-law`. Содержимое запечатанного документа и scenario
 completion в эту фазу не материализуются.
+Revision 18 / `spatial-v3-production-v8` добавляет deterministic Phase 10 без
+нового semantic контракта: после отдельного commit Phase 9 pure evaluator
+`@rus/visibility-knowledge-memory` читает только committed producers и
+возвращает `full|partial|case_open` с точной provenance. Результат и отдельный
+player-safe epilogue package сохраняются вторым zero-time P16 commit; narration
+идёт после него и не может откатить factual state. LLM, RNG, check, clock/body
+write, содержимое запечатанного документа и hidden truth запрещены.
 
 ### D-011. Выбор или semantic plan LLM не является последствием
 

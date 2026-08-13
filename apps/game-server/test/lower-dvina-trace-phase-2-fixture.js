@@ -34,6 +34,12 @@ import { nextCombatState } from
   '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
 import { nextPhase9State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-9-state.js';
+import { buildTracePhase10Completion } from
+  '../src/runtime/lower-dvina-trace-phase-10-completion.js';
+import { nextPhase10State, phase10VisibleEnvelope } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
+import { phase2VisibleContextFromPayload } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -214,6 +220,7 @@ export function fixture({
   let playerConversationCount = 0;
   let npcSemanticCount = 0;
   let npcCombatCount = 0;
+  let shouldFailNarration = narrationFails;
   const npcCombatInputs = [];
   const bundleRequests = [];
   const repository = {
@@ -224,10 +231,35 @@ export function fixture({
     async loadPhase2Replay({ idempotencyKey }) {
       return structuredClone(replays.get(idempotencyKey) ?? null);
     },
+    async replayPhase2Turn({ replay, narrator }) {
+      if (replay.public_result != null) return structuredClone(
+        replay.public_result);
+      const visibleContext = committedVisible?.visible_payload
+        ? phase2VisibleContextFromPayload(committedVisible.visible_payload)
+        : structuredClone(committedVisible);
+      const narration = await narrator.run({ version: 1,
+        schema: 'narration_request', request_id: replay.factual
+          .mode_resolution.turn_id, surface: 'turn',
+        visible_context: visibleContext, context: {
+          player_input: structuredClone(replay.factual.player_input),
+          mode_resolution: structuredClone(replay.factual.mode_resolution) },
+        style_policy: { preserve_uncertainty: true,
+          no_new_world_facts: true }, max_repairs: 1 });
+      if (narration?.status !== 'approved' || narration.pass !== true) {
+        throw new Error('narration_flow_result invalid');
+      }
+      const publicResult = { party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        completion: structuredClone(state.completion ?? null), narration };
+      const stored = replays.get(replay.factual.player_input.idempotency_key);
+      if (stored) stored.public_result = structuredClone(publicResult);
+      return publicResult;
+    },
     async commitPhase2Turn(commitInput) {
       const { writePlan, inputDigest, phase3Contracts,
         phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts,
-        phase9Contracts,
+        phase9Contracts, phase10Contracts,
         turn10Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
@@ -359,21 +391,35 @@ export function fixture({
         state.party_state.clock_state_version += 1;
         state.party_state.body_state_version += 1;
       }
-      const commit = {
+      let completionCommit = null;
+      if (factual.consequence.phase9_kind === 'temporary_disposition'
+          && phase10Contracts != null) {
+        completionCommit = applyPhase10(phase10Contracts);
+      }
+      const commit = completionCommit ?? {
         committed: true,
         state_version: state.party_state.state_version,
+        package_id: committedVisible.package_id ?? null,
+        package_digest: committedVisible.package_digest
+          ?? committedVisible.canonical_digest ?? null,
         visible_package_digest: committedVisible.canonical_digest ?? null
       };
       replays.set(factual.player_input.idempotency_key, {
         input_digest: inputDigest,
         factual,
+        state: structuredClone(state),
         public_result: null
       });
       return commit;
     },
+    async commitPhase10FollowUp({ phase10Contracts }) {
+      return applyPhase10(phase10Contracts, true);
+    },
     async loadPhase2VisibleContext() {
       events.push('read_committed_visible');
-      return structuredClone(committedVisible);
+      return committedVisible?.visible_payload
+        ? phase2VisibleContextFromPayload(committedVisible.visible_payload)
+        : structuredClone(committedVisible);
     },
     async persistPhase2Screen({ inputDigest, result }) {
       events.push('persist_screen');
@@ -398,7 +444,8 @@ export function fixture({
         negotiation:
           result.checkpoint.stages.consequence.negotiation ?? null,
         treatment: result.checkpoint.stages.consequence.treatment ?? null,
-        carry: result.checkpoint.stages.consequence.carry ?? null
+        carry: result.checkpoint.stages.consequence.carry ?? null,
+        completion: structuredClone(state.completion ?? null)
       };
       const replay = [...replays.values()].find(
         (entry) => entry.input_digest === inputDigest
@@ -407,6 +454,37 @@ export function fixture({
       return publicResult;
     }
   };
+  function applyPhase10(phase10Contracts, replayed = false) {
+    if (state.completion?.status === 'committed') return {
+      ok: true, replayed: true,
+      state_version: state.party_state.state_version,
+      turn_number: state.party_state.turn_number,
+      package_id: state.last_turn.visible_package.package_id,
+      package_digest: state.last_turn.visible_package.package_digest,
+      completion: structuredClone(state.completion)
+    };
+    const sourceVersion = state.party_state.state_version;
+    const nextVersion = sourceVersion + 1;
+    const changeSetId = `change:${partyId}:trace-phase10:${sourceVersion}`;
+    const idemId = `idem:${partyId}:trace-phase10:${sourceVersion}`;
+    const { outcome, terminalProjection } = buildTracePhase10Completion({
+      state, contracts: phase10Contracts
+    });
+    const envelope = phase10VisibleEnvelope({ partyId, state, nextVersion,
+      changeSetId, idemId, contracts: phase10Contracts,
+      terminalProjection });
+    replaceState(state, nextPhase10State({ state, outcome, envelope,
+      changeSetId }));
+    committedVisible = structuredClone(envelope);
+    commitCount += 1;
+    events.push('commit_phase10');
+    for (const replay of replays.values()) replay.state = structuredClone(state);
+    return { ok: true, replayed, state_version: nextVersion,
+      turn_number: state.party_state.turn_number,
+      package_id: envelope.package_id,
+      package_digest: envelope.package_digest,
+      completion: structuredClone(state.completion) };
+  }
   const runtime = createLowerDvinaTracePhase2Runtime({
     repository,
     bundleLoader: async (request) => {
@@ -478,7 +556,7 @@ export function fixture({
     narrator: {
       async run(input) {
         narratorInput = structuredClone(input);
-        if (narrationFails) {
+        if (shouldFailNarration) {
           return {
             version: 1,
             schema: 'narration_flow_result',
@@ -514,6 +592,7 @@ export function fixture({
     rollCount: () => rollCount,
     runtime,
     semanticInput: () => semanticInput,
+    setNarrationFails(value) { shouldFailNarration = value === true; },
     timeUpdateCount: () => timeUpdateCount,
     turnStepCount: () => turnStepCount,
     turnStepInput: () => turnStepInput,

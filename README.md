@@ -10,6 +10,17 @@
 
 Проект находится в активной разработке и пока не является законченной игрой.
 
+## Документация Lower Dvina Trace
+
+- [Текущее состояние сценария](docs/plans/lower-dvina-trace-reference.md) —
+  production revision, игровая рамка, владельцы, replay и acceptance.
+- [Карта реализации](docs/plans/lower-dvina-trace-implementation-plan.md) —
+  реализованные фазы, cutover revisions, persistence и основные проверки.
+- [Исторический gap audit](docs/plans/lower-dvina-trace-gap-audit.md) и
+  [завершённая дорожная карта](docs/plans/lower-dvina-trace-phased-roadmap.md)
+  сохраняются как объяснение исходных разрывов и порядка работ, но не описывают
+  текущее production-состояние.
+
 ## Статус spatial v3 / Temporal World v4
 
 Базовая Spatial v3 authoring-компиляция P12 утверждена: canonical manifest

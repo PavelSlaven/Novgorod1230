@@ -11,6 +11,8 @@ export function nextPhase8AccusationState({ state, factual, nextVersion,
   const accusation = factual.consequence.accusation;
   const semantic = accusation.semantic_exchange;
   let next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = { ...next.party_state, state_version: nextVersion,
     session_state_version: state.party_state.session_state_version + 1,

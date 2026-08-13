@@ -24,10 +24,14 @@ export function validateApiEnvelope(value) {
 
 export function validatePublicScreen(screen) {
   if (!plain(screen) || screen.version !== 1) throw webError('SCREEN_INVALID', 'Versioned screen is required.');
-  if (!['first_game_screen', 'turn_screen'].includes(screen.schema)) throw webError('SCREEN_SCHEMA_UNSUPPORTED', 'Unsupported screen schema.');
+  if (!['first_game_screen', 'turn_screen',
+    'lower_dvina_trace_turn_screen'].includes(screen.schema)) {
+    throw webError('SCREEN_SCHEMA_UNSUPPORTED', 'Unsupported screen schema.');
+  }
   if (screen.screen_status !== 'ready') throw webError('SCREEN_NOT_READY', 'Screen must be ready.');
   if (!text(screen.party_id)) throw webError('SCREEN_PARTY_ID_REQUIRED', 'party_id is required.');
-  if (screen.schema === 'turn_screen') {
+  if (['turn_screen', 'lower_dvina_trace_turn_screen']
+    .includes(screen.schema)) {
     if (!text(screen.turn_id) || !Number.isInteger(Number(screen.turn_number))) throw webError('TURN_SCREEN_ID_INVALID', 'turn_id and turn_number are required.');
     if (screen.input_panel?.input_contract !== 'intent_not_fact') throw webError('INPUT_CONTRACT_INVALID', 'Turn input must use intent_not_fact.');
   }
@@ -48,7 +52,9 @@ function walk(value, path, leaks) {
   for (const [key, child] of Object.entries(value)) {
     const normalized = normalizeKey(key);
     const panelRoute = path.endsWith('.panels') && normalized === 'route';
-    if (!panelRoute && forbidden(normalized)) leaks.push(`${path}.${key}`);
+    if (!panelRoute && forbidden(normalized)) {
+      leaks.push(`${path}.${key}`);
+    }
     walk(child, `${path}.${key}`, leaks);
   }
 }

@@ -14,6 +14,7 @@ export function nextState({
   let next = structuredClone(state);
   const routeTime = phase3RouteTimeUpdate(factual);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   next.activity_history = (next.activity_history ?? []).map((entry) => ({
     ...entry,
     execution_result: entry.execution_result?.semantic_exchange == null

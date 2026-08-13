@@ -117,7 +117,7 @@ function executeStep({ step, intent, profile, state, randomSource,
   if (harm?.health_loss > 0) {
     const target = intent.target_refs[0];
     const actor = state.actor_states?.[
-      `${target.entity_kind}\0${target.entity_id}`];
+      `${target.entity_kind}:${target.entity_id}`];
     if (actor?.body_state) {
       const before = actor.body_state;
       const after = applyBodyStateChange(before,
@@ -135,7 +135,7 @@ function executeStep({ step, intent, profile, state, randomSource,
 
 function actorHasNoHealth(actor, workingState) {
   const health = workingState.actor_states?.[
-    `${actor.entity_kind}\0${actor.entity_id}`]?.body_state?.health;
+    `${actor.entity_kind}:${actor.entity_id}`]?.body_state?.health;
   return Number.isFinite(Number(health)) && Number(health) <= 0;
 }
 

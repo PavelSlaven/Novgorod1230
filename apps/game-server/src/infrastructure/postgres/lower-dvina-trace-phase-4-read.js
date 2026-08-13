@@ -216,7 +216,7 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
     assertPhase4StatementRows({
       partyId,
       payload,
-      negotiationHistory: [],
+      negotiationHistory,
       interactions: interactions.rows,
       summaries: summaries.rows
     });
@@ -251,9 +251,8 @@ export async function assertPhase4NormalizedRows(pool, payload, head) {
   if (visible.rowCount !== 1 || envelope.presentation_status !== 'pending'
       || envelope.committed_state_version !== String(payload.party_state.state_version)
       || envelope.change_set_id
-        !== (payload.completion?.status === 'committed'
-          ? payload.last_turn.visible_package.change_set_id
-          : payload.last_turn.change_set_id)
+        !== (payload.last_turn.visible_package.change_set_id
+          ?? payload.last_turn.change_set_id)
       || envelope.package_digest !== computeSpatialV3CanonicalDigest(envelope.visible_payload)
       || envelope.package_digest !== payload.last_turn.visible_package.package_digest
       || !['committed_presentation_pending', 'ready'].includes(screenStatus)

@@ -121,7 +121,18 @@ export function createFirstPlayablePublicRuntime({
             session
           });
         }
-        return traceTurnRuntime.submitTurn({ partyId, input, session });
+        const requestId = String(
+          input?.request_id ?? `turn:${idFactory()}`
+        );
+        return traceTurnRuntime.submitTurn({
+          partyId,
+          input: {
+            ...input,
+            request_id: requestId,
+            idempotency_key: String(input?.idempotency_key ?? requestId)
+          },
+          session
+        });
       }
       return submitFirstPlayableTurn({
         partyId,

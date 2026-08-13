@@ -5,20 +5,15 @@ import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals,
   resolveCombatExchangeTiming } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from './lower-dvina-trace-combat-item-owner.js';
-import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from
-  './lower-dvina-trace-combat-position-owner.js';
+import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from './lower-dvina-trace-combat-position-owner.js';
 import { executeTraceCombatTraversal } from './lower-dvina-trace-combat-traversal-adapter.js';
-import { traceCombatBindingForActor, traceCombatMovementBindings,
-  traceCombatOperationContractForNpc } from
-  './lower-dvina-trace-combat-bindings.js';
-import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from
-  './lower-dvina-trace-combat-subjective.js';
+import { traceCombatBindingForActor, traceCombatMovementBindings, traceCombatOperationContractForNpc } from './lower-dvina-trace-combat-bindings.js';
+import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from './lower-dvina-trace-combat-subjective.js';
 import { projectTraceCombatWorkingState } from './lower-dvina-trace-combat-working-state.js';
-import { createTraceCombatTemporalSliceOwner } from
-  './lower-dvina-trace-combat-temporal.js';
+import { createTraceCombatTemporalSliceOwner } from './lower-dvina-trace-combat-temporal.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
-export function createTraceCombatCommand({ state, bundle, inputDigest,
-  randomSource, npcCombatModel, revalidateStateVersion,
+export function createTraceCombatCommand({ state, bundle, inputDigest, randomSource,
+  npcCombatModel, revalidateStateVersion,
   temporalAdvanceOwner = null }) {
   if (![16, 17, 18].includes(bundle?.definition_revision)) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
@@ -115,10 +110,15 @@ export function traceCombatPreconditionSatisfied(precondition, state) {
     && activeSession(state) != null;
 }
 export function traceCombatTargetRefs(state) {
-  const session = (state?.combat_sessions ?? []).find(
-    ({ status }) => status !== 'ended');
-  return { activeHostileNpc: session?.participant_refs?.find(
-    ({ entity_kind: kind }) => kind === 'npc')?.entity_id ?? null,
+  const session = (state?.combat_sessions ?? [])
+    .find(({ status }) => status !== 'ended');
+  const hostile = session?.participant_states?.find(({ actor_ref: actor,
+    combat_status: status, current_intent: intent }) =>
+    actor.entity_kind === 'npc' && status === 'active'
+      && intent?.intent_kind === 'engage')?.actor_ref
+    ?? session?.participant_refs?.find(({ entity_kind }) =>
+      entity_kind === 'npc');
+  return { activeHostileNpc: hostile?.entity_id ?? null,
   combatScope: session?.scope_ref?.entity_id ?? null };
 }
 function exchangePorts(context) {

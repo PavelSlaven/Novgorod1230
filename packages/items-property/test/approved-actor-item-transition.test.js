@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { calculatePackingSlots } from '@rus/world-catalog-workflow';
 import { planApprovedActorItemTransition } from '../src/index.js';
 
-test('unrelated NPC containers keep their authoritative placement', () => {
+test('NPC transition keeps a holder container without an invented position', () => {
   const profiles = {
     knife: { mass_grams: 300, carry_form: 'compact',
       external_hand_cost: 1, packing_slot_cost: 1, packing_bundle_size: 1 },
@@ -24,7 +24,7 @@ test('unrelated NPC containers keep their authoritative placement', () => {
       physical_position: 'worn_quick' },
     { item_id: 'packet-1', container_id: 'bag-1' }],
     container_placements: [{ container_id: 'bag-1',
-      holder_npc_id: 'unrelated-npc' }],
+      holder_npc_id: 'destination' }],
     ownership: [{ item_id: 'knife-1', owner_npc_id: 'source',
       controller_npc_id: 'source' }],
     source: { actor_id: 'source', actor_kind: 'npc',

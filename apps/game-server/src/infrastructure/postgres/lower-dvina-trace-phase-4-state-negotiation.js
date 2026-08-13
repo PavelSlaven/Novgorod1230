@@ -21,6 +21,8 @@ import { applyConversationTemporalNpcWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { projectCombatDecisionState } from
   './lower-dvina-trace-combat-decision-state.js';
+import { projectPhase4Confession } from
+  './lower-dvina-trace-phase-4-confession-state.js';
 
 export function projectPhase4SemanticNegotiation({
   next, state, negotiation, turnNumber, changeSetId, contracts,
@@ -126,6 +128,8 @@ export function projectPhase4SemanticNegotiation({
       contracts,
       turnNumber
     });
+    projectPhase4Confession({ state: next, confession: semantic.confession,
+      contracts, turnNumber });
   } else if (['lie', 'bargain', 'speech'].includes(responseKind)) {
     const statement = npcStatements.find(({ statement_id: statementId }) =>
       finalOutcome?.contribution_ref?.entity_kind === 'conversation_statement'

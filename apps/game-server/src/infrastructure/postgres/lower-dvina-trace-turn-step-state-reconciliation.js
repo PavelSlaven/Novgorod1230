@@ -10,7 +10,8 @@ const DELEGATED_FACTUAL_FIELDS = Object.freeze([
 ]);
 
 /** Validates a semantic commit that has no generic mechanics batch. */
-export function validateNoBatchFactualCommit({ writePlan, factual, state }) {
+export function validateNoBatchFactualCommit({ writePlan, factual, state,
+  preparedEffect = null }) {
   if (writePlan?.turn_step_commit == null) return;
   const commit = writePlan.turn_step_commit;
   const selectedOption = commit.mode_resolution?.decision_trace
@@ -36,6 +37,7 @@ export function validateNoBatchFactualCommit({ writePlan, factual, state }) {
       !same(commit[field], factual[field]))) {
       noBatchFail('delegated domain envelope differs from its factual target');
     }
+    if (preparedEffect?.combatSlice != null) return;
     validateStateAwareTransition({ commit: factual, state });
     return;
   }

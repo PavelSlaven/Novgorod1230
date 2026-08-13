@@ -66,7 +66,9 @@ export function classifyEremeyPlan(plan, {
   return { kind: 'route_disclosure', statementRef: null };
 }
 
-export function classifyRatshaPlan(plan) {
+export function classifyRatshaPlan(plan, {
+  confessionAssertionId = null
+} = {}) {
   requireDomainOwned(plan);
   if (plan.contribution_kind === 'combat_handoff') {
     if (plan.handoff?.kind !== 'combat') {
@@ -98,7 +100,15 @@ export function classifyRatshaPlan(plan) {
         plan.speech.dominant_act
       )
       && plan.speech.interaction_tags.includes('surrender')) {
-    return { kind: 'surrender', statementRef: null };
+    const confessionClaim = confessionAssertionId === null ? null
+      : plan.speech.claims.find(({ claim_id: claimId, speaker_posture: posture }) =>
+        claimId === confessionAssertionId && posture === 'believed_true')
+        ?? null;
+    return {
+      kind: 'surrender',
+      statementRef: null,
+      confessionClaimId: confessionClaim?.claim_id ?? null
+    };
   }
   if (operation?.op === BARGAIN_OPERATION
       && checkRequired

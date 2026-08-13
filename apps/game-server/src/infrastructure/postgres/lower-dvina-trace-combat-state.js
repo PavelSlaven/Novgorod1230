@@ -6,8 +6,10 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest }) {
   const combat = factual.consequence.combat;
   let next = structuredClone(state);
+  delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   const playerBody = combat.working_state_after?.actor_states?.[
-    `player_character\0${state.actor_id}`]?.body_state;
+    `player_character:${state.actor_id}`]?.body_state;
   if (!playerBody) fail('TRACE_COMBAT_PLAYER_BODY_GAP');
   const bodyChanged = canonicalDigest(playerBody)
     !== canonicalDigest(state.body_state);
@@ -20,12 +22,12 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
   next.clock = structuredClone(factual.time_update.clock_after);
   next.clock_weather_light = { ...structuredClone(next.clock_weather_light),
     clock: structuredClone(next.clock) };
-  next.body_state = structuredClone(playerBody);
+  next.body_state = committedPlayerBody(playerBody, state.body_state);
   next.npcs = (next.npcs ?? []).map((npc) => {
     const workingNpc = combat.working_state_after?.npcs?.find(
       ({ instance_id: id }) => id === npc.instance_id);
     const body = combat.working_state_after?.actor_states?.[
-      `npc\0${npc.instance_id}`]?.body_state;
+      `npc:${npc.instance_id}`]?.body_state;
     if (body == null && workingNpc == null) return npc;
     return { ...npc,
       anchor_id: workingNpc?.anchor_id ?? npc.anchor_id,
@@ -52,6 +54,23 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
   const committedSession = { ...structuredClone(combat.session_after),
     last_change_set_ref: { entity_kind: 'party_change_set',
       entity_id: changeSetId } };
+  const zhdankoId = next.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'zhdanko_storehouse_controller')?.instance_id;
+  const zhdankoLeft = committedSession.participant_states.some(
+    ({ actor_ref: actor, combat_status: status }) =>
+      actor.entity_id === zhdankoId && status === 'left');
+  if (zhdankoLeft && !(next.knowledge ?? []).some(
+    ({ fact_id: id }) => id === 'zhdanko_fled')) {
+    next.knowledge = [...(next.knowledge ?? []), {
+      fact_id: 'zhdanko_fled',
+      knowledge_state: 'known_from_committed_combat_transition',
+      evidence_refs: combat.outcome_events.filter(
+        ({ actor_ref: actor, event_kind: kind }) =>
+          actor?.entity_id === zhdankoId
+          && kind === 'combat_position_transition_completed')
+        .map(({ event_id: id }) => id)
+    }];
+  }
   next.combat_sessions = (next.combat_sessions ?? []).map((session) =>
     session.combat_id === committedSession.combat_id
       ? committedSession : session)
@@ -92,3 +111,11 @@ export function nextCombatState({ state, factual, nextVersion, turnNumber,
 }
 
 function fail(code) { throw Object.assign(new Error(code), { code }); }
+
+function committedPlayerBody(playerBody, priorBody) {
+  const priorConditions = new Map((priorBody.active_conditions ?? []).map(
+    (condition) => [condition.id, condition]));
+  return { ...structuredClone(playerBody), active_conditions:
+    (playerBody.active_conditions ?? []).map((condition) =>
+      structuredClone(priorConditions.get(condition.id) ?? condition)) };
+}

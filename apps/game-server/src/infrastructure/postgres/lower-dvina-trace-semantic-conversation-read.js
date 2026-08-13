@@ -37,14 +37,14 @@ export async function assertLowerDvinaTraceSemanticConversationRows(
   const [contributions, sessions, statements, decisions, messages,
     supportingPerceptions] = await Promise.all([
     pool.query(
-      `SELECT contribution_id,conversation_id,exchange_id,
-              party_state_version::text,
-              session_state_version::text,contribution_index::text,
-              contribution_schema,contribution_payload,change_set_id,
-              idempotency_key,canonical_digest
-         FROM party_runtime.party_conversation_contributions
-        WHERE party_id=$1
-        ORDER BY party_state_version,contribution_index,conversation_id`,
+      `SELECT c.contribution_id,c.conversation_id,c.exchange_id,
+              c.party_state_version::text,
+              c.session_state_version::text,c.contribution_index::text,
+              c.contribution_schema,c.contribution_payload,c.change_set_id,
+              c.idempotency_key,c.canonical_digest
+         FROM party_runtime.party_conversation_contributions c
+        WHERE c.party_id=$1
+        ORDER BY c.party_state_version,c.contribution_index,c.conversation_id`,
       [partyId]
     ),
     pool.query(

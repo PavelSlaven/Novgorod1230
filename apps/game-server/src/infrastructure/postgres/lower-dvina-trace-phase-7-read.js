@@ -7,6 +7,8 @@ import { tracePhase7WaitingTerminalCandidateId } from
 import { npcScheduleDecisionTransitionId } from '@rus/npc-runtime';
 import { semanticSignalsMatchDecisionBoundary } from
   './lower-dvina-trace-semantic-decision-shapes.js';
+import { assertPhase7BodyHistory } from
+  './lower-dvina-trace-phase-7-read-body.js';
 
 export async function assertPhase7NormalizedRows(pool, payload) {
   const phase7 = payload.phase7_fire_rest;
@@ -79,15 +81,18 @@ export async function assertPhase7NormalizedRows(pool, payload) {
     ]);
 
   assertActivity(payload, activity, attempts, decision);
-  assertNpcAndContainer(phase7, zhdanko, bag, npc, container);
+  assertNpcAndContainer(payload, phase7, zhdanko, bag, npc, container);
   assertConditions(payload, conditions);
-  assertBodyHistory(payload, bodyHistory);
+  assertPhase7BodyHistory(payload, bodyHistory);
 }
 
 function assertActivity(payload, activity, attempts, decision) {
   const phase7 = payload.phase7_fire_rest;
   const execution = activity.rows[0];
   const attempt = attempts.rows[0];
+  const completedAt = (payload.body_effect_history ?? []).find(
+    ({ effect_ref: effectRef }) => effectRef === phase7.body_effect_ref
+  )?.occurred_at;
   if (activity.rowCount !== 1 || attempts.rowCount !== 1
       || execution.id !== phase7.activity_execution_id
       || execution.status !== 'completed'
@@ -122,9 +127,9 @@ function assertActivity(payload, activity, attempts, decision) {
       || attempt.body_effect_refs?.length !== 1
       || attempt.body_effect_refs[0] !== phase7.body_effect_ref
       || String(execution.last_processed_at_whole_minutes)
-        !== String(payload.clock.whole_minutes)
+        !== String(completedAt?.whole_minutes)
       || String(attempt.ended_at_whole_minutes)
-        !== String(payload.clock.whole_minutes)) fail();
+        !== String(completedAt?.whole_minutes)) fail();
 }
 
 function validPersistedCausality(
@@ -239,9 +244,11 @@ function ref(entityKind, entityId) {
   return { entity_kind: entityKind, entity_id: entityId };
 }
 
-function assertNpcAndContainer(phase7, zhdanko, bag, npc, container) {
+function assertNpcAndContainer(payload, phase7, zhdanko, bag, npc, container) {
   const npcRow = npc.rows[0];
   const bagRow = container.rows[0];
+  const bagChangedAfterPhase7 = (payload.phase9?.checkpoints ?? []).some(
+    ({ kind }) => ['bag_recovery', 'bag_opened'].includes(kind));
   if (npc.rowCount !== 1 || container.rowCount !== 1
       || npcRow.npc_id !== zhdanko.instance_id
       || npcRow.anchor_id !== zhdanko.anchor_id
@@ -251,12 +258,22 @@ function assertNpcAndContainer(phase7, zhdanko, bag, npc, container) {
         !== canonicalDigest(phase7.schedule_result)
       || bagRow.container_id !== bag.container_id
       || bagRow.template_id !== bag.template_id
-      || bagRow.holder_npc_id !== bag.holder_npc_id
-      || bagRow.closure_state !== bag.closure_state
-      || canonicalDigest(bagRow.state) !== canonicalDigest(bag.state)
-      || Number(bagRow.state_version) !== bag.state_version
-      || (phase7.schedule_option_id === 'move_bag'
-        && bagRow.updated_change_set_id !== phase7.change_set_id)) fail();
+      || (bagChangedAfterPhase7
+        ? !hasPhase7BagTransition(bagRow.state, phase7)
+        : bagRow.holder_npc_id !== bag.holder_npc_id
+          || bagRow.closure_state !== bag.closure_state
+          || canonicalDigest(bagRow.state) !== canonicalDigest(bag.state)
+          || Number(bagRow.state_version) !== bag.state_version
+          || (phase7.schedule_option_id === 'move_bag'
+            && bagRow.updated_change_set_id !== phase7.change_set_id))) fail();
+}
+
+function hasPhase7BagTransition(state, phase7) {
+  if (phase7.schedule_option_id !== 'move_bag') return true;
+  return (state?.approved_transition_history ?? []).some((transition) =>
+    transition.change_set_id === phase7.change_set_id
+      && transition.transition_profile_id
+        === 'trace_ld_v1_property_bag_to_river_access');
 }
 
 function assertConditions(payload, result) {
@@ -274,24 +291,4 @@ function assertConditions(payload, result) {
   }
 }
 
-function assertBodyHistory(payload, result) {
-  const phase7 = payload.phase7_fire_rest;
-  const row = result.rows[0];
-  const proposal = payload.last_turn?.body_update?.proposal;
-  if (result.rowCount !== 1 || !proposal
-      || row.subject_kind !== 'player_character'
-      || row.subject_id !== payload.actor_id
-      || row.change_set_id !== phase7.change_set_id
-      || canonicalDigest(row.effect_ref) !== canonicalDigest({
-        entity_kind: 'body_effect',
-        entity_id: phase7.body_effect_ref,
-        activity_attempt_id: phase7.activity_execution_id,
-        condition_transitions: proposal.condition_transitions ?? []
-      })
-      || canonicalDigest({
-        whole_minutes: row.occurred_at_whole_minutes,
-        subminute_numerator: row.occurred_at_subminute_numerator,
-        subminute_denominator: row.occurred_at_subminute_denominator
-      }) !== canonicalDigest(payload.clock)) fail();
-}
 function fail() { throw phase2IntegrityError(); }

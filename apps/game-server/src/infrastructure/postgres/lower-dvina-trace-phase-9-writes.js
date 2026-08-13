@@ -11,7 +11,6 @@ import { appendNpcSemanticConversationWrites,
   './npc-semantic-conversation-writes.js';
 import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
   './lower-dvina-trace-phase-2-projection.js';
-
 export function phase9VisibleEnvelope({ partyId, factual, visibleContext,
   nextVersion, turnNumber, changeSetId, idemId }) {
   const payload = { schema: 'temporal_visible_package.v1',
@@ -105,9 +104,11 @@ export function phase9Writes({ partyId, state, next, factual, turnNumber,
 
 function appendTemporaryDisposition({ updates, appends, partyId, state, next,
   factual, turnNumber, changeSetId, idemId, contracts }) {
-  const heldSlots = new Set(next.phase9.custody_state.party_slots);
-  for (const npc of (next.npcs ?? []).filter(({ participant_slot_ref: slot }) =>
-    heldSlots.has(slot))) {
+  const priorNpcs = new Map((state.npcs ?? []).map((npc) => [npc.instance_id, npc]));
+  for (const npc of (next.npcs ?? []).filter((candidate) =>
+    ['ratsha_storehouse_helper', 'zhdanko_storehouse_controller'].includes(candidate.participant_slot_ref)
+      && canonicalDigest(priorNpcs.get(candidate.instance_id)?.machine_state)
+        !== canonicalDigest(candidate.machine_state))) {
     updates.push(row('party_npcs', npc.instance_id, { party_id: partyId,
       npc_id: npc.instance_id, anchor_id: npc.anchor_id,
       machine_state: structuredClone(npc.machine_state) }));

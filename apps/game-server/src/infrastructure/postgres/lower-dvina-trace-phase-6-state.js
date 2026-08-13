@@ -7,6 +7,7 @@ export function nextPhase6State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest }) {
   const next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   const carry = factual.consequence.carry;
   const intent = carry.intent;
   const terminal = intent.execution_after.status === 'completed';

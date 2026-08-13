@@ -22,11 +22,13 @@ export function combatVisibleEnvelope({ partyId, factual, visibleContext,
     visible_objects: visibleContext.visible_objects,
     known_context: visibleContext.known_context,
     uncertainties: visibleContext.uncertainties, hypotheses: [],
-    player_safe_interruption: combatEnded ? null : {
-      kind: 'combat_player_response_required', combat_id: session.combat_id },
-    allowed_action_affordances: combatEnded ? [] : ['request_combat'] };
-  const pins = [{ dependency_role: 'runtime_contract', entity_ref: {
-    entity_kind: 'combat_contract', entity_id: 'combat_session_v1' },
+    player_safe_interruption: combatEnded ? null :
+      'Требуется решение в бою.',
+    allowed_action_affordances: combatEnded ? [] : [{
+      action_id: 'request_combat', label: 'Действовать в бою',
+      command_kind: 'request_combat' }] };
+  const pins = [{ dependency_role: 'source_authoring', entity_ref: {
+    entity_kind: 'source_record', entity_id: 'combat_session_v1' },
   version_pin: { pin_kind: 'authoring_version', authoring_version: '1',
     state_version: null } }];
   return { package_id: `visible:${partyId}:combat:${turnNumber}`,
@@ -88,6 +90,7 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
     ({ combat_id: id }) => id === combat.session_after.combat_id);
   appendCombatSessionWrite({ inserts, updates, partyId, changeSetId,
     session: combat.session_after, previousSession: previous, mode: 'update' });
+  appendCombatKnowledge({ inserts, partyId, state, next, changeSetId });
   appendCombatChecks({ appends, partyId, factual, changeSetId });
   appendCombatEvents({ inserts, partyId, factual, changeSetId });
   appendCombatTraversalWrites({ inserts, updates, appends, partyId, state, factual,
@@ -98,6 +101,20 @@ export function combatWrites({ partyId, state, next, factual, turnNumber,
     rootTurnId: factual.mode_resolution.turn_id,
     workingRevision: factual.mode_resolution.decision_trace?.working_revision ?? 2 });
   return { inserts, updates, appends, deletes: [] };
+}
+
+function appendCombatKnowledge({ inserts, partyId, state, next,
+  changeSetId }) {
+  const prior = new Set((state.knowledge ?? []).map(({ fact_id: id }) => id));
+  for (const fact of (next.knowledge ?? []).filter(
+    ({ fact_id: id }) => !prior.has(id))) {
+    inserts.push(row('party_character_knowledge',
+      `${state.actor_id}:${fact.fact_id}`, { party_id: partyId,
+        character_id: state.actor_id, fact_id: fact.fact_id,
+        knowledge_state: fact.knowledge_state,
+        evidence: fact.evidence_refs?.length > 0
+          ? fact.evidence_refs : [changeSetId] }));
+  }
 }
 export { appendCombatTraversalWrites };
 

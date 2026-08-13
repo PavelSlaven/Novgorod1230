@@ -1,14 +1,10 @@
 import { canonicalDigest } from '@rus/materialization';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
-import {
-  appendApprovedRatshaKnife,
-  appendPromiseTransition
-} from './lower-dvina-trace-phase-4-property-writes.js';
-import {
-  phase2ScreenDigest,
-  phase2VisibleContextFromPayload
-} from './lower-dvina-trace-phase-2-projection.js';
+import { appendApprovedRatshaKnife, appendPromiseTransition } from
+  './lower-dvina-trace-phase-4-property-writes.js';
+import { phase2ScreenDigest, phase2VisibleContextFromPayload } from
+  './lower-dvina-trace-phase-2-projection.js';
 import {
   appendHostileSemantics,
   appendM2SurrenderObserverPerceptions,
@@ -24,6 +20,7 @@ import {
 } from './npc-semantic-conversation-writes.js';
 import { validPersistedOfferStage } from './lower-dvina-trace-phase-4-write-projection-shared.js';
 import { appendPhase4CombatInitialization } from './lower-dvina-trace-phase-4-combat-writes.js';
+import { appendSemanticConfession } from './lower-dvina-trace-phase-4-surrender-semantics.js';
 export function appendSemanticNegotiation({
   inserts,
   updates,
@@ -170,6 +167,9 @@ export function appendSemanticNegotiation({
       idemId,
       contracts
     });
+    appendSemanticConfession({ inserts, appends, state, factual, partyId,
+      turnNumber, changeSetId, contracts, activityId: negotiationActivityId,
+      semantic });
   }
 }
 function appendConversationPersistence({ inserts, updates, appends, partyId,

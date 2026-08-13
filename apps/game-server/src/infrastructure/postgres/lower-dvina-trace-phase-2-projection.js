@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { publicCheckProjection, publicTimeProjection,
+  stripPublicInternals } from './lower-dvina-trace-public-projection-filter.js';
 import { createTurnScreenReadModel } from '@rus/presentation';
 
 const SPEECH_RESPONSE_KINDS = new Set([
@@ -18,14 +20,14 @@ const NON_SPEECH_RESPONSE_KINDS = new Set([
 
 export function phase2PublicResult({ payload, screen }) {
   const consequence = payload.last_turn.consequence;
-  return {
+  return stripPublicInternals({
     party_id: payload.party_id,
     turn_number: payload.party_state.turn_number,
     state_version: payload.party_state.state_version,
     option_id: payload.last_turn.option_id,
     screen,
-    check: payload.last_turn.check_result,
-    time_update: payload.last_turn.time_update,
+    check: publicCheckProjection(payload.last_turn.check_result),
+    time_update: publicTimeProjection(payload.last_turn.time_update),
     body_update: payload.last_turn.body_update,
     observations: consequence.observations ?? [],
     evidence: consequence.evidence_relations ?? [],
@@ -36,7 +38,7 @@ export function phase2PublicResult({ payload, screen }) {
         ?? semanticNegotiationCandidate(consequence.negotiation),
       payload
     })
-  };
+  });
 }
 
 function semanticNegotiationCandidate(negotiation) {
@@ -155,8 +157,14 @@ function publicConversationProjection({ conversation, payload }) {
     semantic_exchange_projection: _semanticProjection,
     ...publicConversation
   } = conversation;
+  const projectedConversation = structuredClone(publicConversation);
+  if (projectedConversation.check_result != null) {
+    projectedConversation.check_result = publicCheckProjection(
+      projectedConversation.check_result
+    );
+  }
   return {
-    ...structuredClone(publicConversation),
+    ...projectedConversation,
     semantic_exchange: {
       response_kind: responseKind,
       npc_utterance: npcUtterance,

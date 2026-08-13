@@ -3,7 +3,7 @@ export function projectTraceCombatSubjectiveState(actorRef, state) {
     ({ instance_id: id }) => id === actorRef.entity_id
   );
   const body = state.actor_states?.[
-    `${actorRef.entity_kind}\0${actorRef.entity_id}`]?.body_state
+    `${actorRef.entity_kind}:${actorRef.entity_id}`]?.body_state
     ?? npc?.machine_state?.body_condition ?? {};
   return {
     identity: { name_or_label:

@@ -7,6 +7,7 @@ export function nextPhase5State({ state, factual, nextVersion, turnNumber,
   inputDigest, changeSetId, contracts }) {
   const next = structuredClone(state);
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   const treatment = factual.consequence.treatment;
   next.schema = 'rus.lower_dvina_trace_turn_snapshot.v2';
   next.party_state = {

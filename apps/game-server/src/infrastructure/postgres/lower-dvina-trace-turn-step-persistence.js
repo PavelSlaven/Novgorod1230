@@ -53,7 +53,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   const targets = (writePlan?.write_targets ?? []).filter(
     ({ target }) => target === TURN_STEP_OPERATION_BATCH_TARGET);
   if (targets.length === 0) {
-    validatePreparedEffectCommit({
+    const preparedEffect = validatePreparedEffectCommit({
       batch: null,
       envelope: writePlan?.turn_step_commit,
       factual,
@@ -61,7 +61,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       phase3Contracts,
       turnStepApprovedOwners
     });
-    validateNoBatchFactualCommit({ writePlan, factual, state });
+    validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect });
     return emptyTurnStepPersistence(committedSnapshot);
   }
   if (targets.length !== 1) fail('TRACE_TURN_STEP_OPERATION_BATCH_INVALID', {

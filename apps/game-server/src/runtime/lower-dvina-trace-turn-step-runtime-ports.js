@@ -138,7 +138,7 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
 async function prepareEffectBody(input, committedState, bodyEffect) {
   if (input.consequence?.combat_kind === 'exchange') {
     const after = input.consequence.combat?.working_state_after
-      ?.actor_states?.[`player_character\0${committedState.actor_id}`]
+      ?.actor_states?.[`player_character:${committedState.actor_id}`]
       ?.body_state;
     if (after == null) {
       throw new TypeError('Prepared combat body projection is required.');

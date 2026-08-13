@@ -214,7 +214,8 @@ function normalizeActorPlacements(input) {
   return {
     ...input,
     item_placements: list(input.item_placements).map(normalize),
-    container_placements: list(input.container_placements).map(normalize)
+    container_placements: list(input.container_placements).map(
+      (value) => structuredClone(value))
   };
 }
 function failed(code, category, details) { return failedFrom(issue(code, category, details)); }

@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "node apps/game-server/src/server.js",
-    "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:browser-e2e && npm run architecture:check",
+    "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:acceptance && npm run test:browser-e2e && npm run architecture:check",
     "test:modules": "node --test test/modules/*.test.js",
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",
     "test:stage26": "node --test test/modules/stage26-*.test.js",
@@ -69,6 +69,7 @@
     "test:apps": "node --test apps/game-server/test/*.test.js apps/game-web/test/*.test.js",
     "test:tools": "node --test tools/*/test/*.test.js test/spatial-v3/p04-catalog-sync.test.js",
     "test:integration": "node --test test/integration/*.test.js",
+    "test:acceptance": "node --test --test-concurrency=1 test/acceptance/*.test.js",
     "test:browser-e2e": "node --test test/e2e/*.test.js",
     "docs:generate": "node tools/docs-tools/src/cli.js generate --root .",
     "docs:check": "node tools/docs-tools/src/cli.js check --root . && node tools/spatial-v3/check-production-activation-boundary.mjs",

@@ -154,6 +154,9 @@ export async function createSpatialV3ProductionBindings(
         committer,
         release,
         runtimeCatalogPin,
+        ...(typeof config.idFactory === 'function'
+          ? { idFactory: config.idFactory }
+          : {}),
         traceStartAdapter:
           createLowerDvinaTracePhase1BProductionAdapter({
             partyPool: ports.partyPool,

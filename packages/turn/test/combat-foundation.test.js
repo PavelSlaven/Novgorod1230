@@ -340,7 +340,7 @@ test('combat body signal uses the approved threshold descriptor verbatim',
     await prepareCombatExchange({
       session: session(intent),
       working_state: { actor_states: {
-        'player_character\u0000player-1': { body_state: {
+        'player_character:player-1': { body_state: {
           health: 100, satiety: 100, energy: 100 } }
       } },
       occurred_at: at, idempotency_key: 'approved-body-signal',
@@ -401,9 +401,9 @@ test('zero health incapacitates the target before its later same-time step',
     let randomCalls = 0;
     const result = await prepareCombatExchange({
       session: active, working_state: { actor_states: {
-        'npc\0npc-1': { body_state: {
+        'npc:npc-1': { body_state: {
           health: 5, satiety: 100, energy: 100 } },
-        'player_character\0player-1': { body_state: {
+        'player_character:player-1': { body_state: {
           health: 100, satiety: 100, energy: 100 } }
       } }, occurred_at: at, idempotency_key: 'incapacitation',
       random_source: { next: () => { randomCalls += 1; return 0.99; } },

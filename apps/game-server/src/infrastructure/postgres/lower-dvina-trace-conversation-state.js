@@ -202,6 +202,7 @@ export function projectSemanticConversationSnapshot({
     'TRACE_M2_NPC_TERMINAL_OUTCOME_CONFLICT'
   );
   delete next.npc_semantic_decision_traces;
+  delete next.npc_semantic_decision_inputs;
   if (traces.length > 0) {
     next.npc_semantic_decision_refs = mergeAppendOnly(
       next.npc_semantic_decision_refs,

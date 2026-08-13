@@ -66,12 +66,14 @@ export function appendSurrenderSemantics({
       turnNumber,
       changeSetId,
       contracts,
-      activityId
+      activityId,
+      confession: negotiation.confession,
+      decisionTrace: negotiation.npc_decision.trace
     });
   }
 }
 
-function appendConfession({
+export function appendConfession({
   appends,
   state,
   factual,
@@ -79,9 +81,10 @@ function appendConfession({
   turnNumber,
   changeSetId,
   contracts,
-  activityId
+  activityId,
+  confession,
+  decisionTrace
 }) {
-  const confession = factual.consequence.negotiation.confession;
   const interactionId =
     `interaction:${partyId}:trace-phase4:${turnNumber}:confession`;
   const audienceIds = [
@@ -117,8 +120,7 @@ function appendConfession({
       statement_ref: confession.statement_ref,
       assertion: confession.assertion,
       audience_ids: audienceIds,
-      decision_trace:
-        factual.consequence.negotiation.npc_decision.trace
+      decision_trace: decisionTrace
     })
   }));
   for (const [scope, kind, id] of [
@@ -146,6 +148,22 @@ function appendConfession({
       }
     ));
   }
+}
+
+export function appendSemanticConfession({ inserts, appends, state, factual,
+  partyId, turnNumber, changeSetId, contracts, activityId, semantic }) {
+  if (semantic.confession === null) return;
+  appendConfession({ appends, state, factual, partyId, turnNumber,
+    changeSetId, contracts, activityId, confession: semantic.confession,
+    decisionTrace: {
+      request_id: semantic.decision_request?.request_id
+        ?? semantic.resumed_npc_execution?.decision_trace_ref?.entity_id,
+      source_statement_ref: semantic.confession.source_statement_ref
+    } });
+  insertKnowledge(inserts, state, partyId, {
+    fact_id: 'trace_ld_v1_evidence_ratsha_confession',
+    evidence: [semantic.confession.source_statement_ref.entity_id]
+  });
 }
 
 function insertKnowledge(inserts, state, partyId, { fact_id, evidence }) {

@@ -1,4 +1,8 @@
 import { webError } from '../shared/errors.js';
+import {
+  validActiveInterlocutor,
+  validCurrentTask
+} from '../shared/scene-affordances.js';
 
 const FORBIDDEN_KEYS = new Set([
   'hidden', 'hidden_state', 'private_motives', 'private_knowledge',
@@ -35,8 +39,28 @@ export function validatePublicScreen(screen) {
     if (!text(screen.turn_id) || !Number.isInteger(Number(screen.turn_number))) throw webError('TURN_SCREEN_ID_INVALID', 'turn_id and turn_number are required.');
     if (screen.input_panel?.input_contract !== 'intent_not_fact') throw webError('INPUT_CONTRACT_INVALID', 'Turn input must use intent_not_fact.');
   }
+  validateSceneAffordances(screen);
   assertNoHiddenFields(screen);
   return screen;
+}
+
+function validateSceneAffordances(screen) {
+  const journal = screen.panels?.journal?.data;
+  if (plain(journal) && Object.hasOwn(journal, 'current_task')
+      && !validCurrentTask(journal.current_task)) {
+    throw webError(
+      'CURRENT_TASK_INVALID',
+      'Journal current_task must be a non-empty string.'
+    );
+  }
+  const people = screen.panels?.people?.data;
+  if (plain(people) && Object.hasOwn(people, 'active_interlocutor')
+      && !validActiveInterlocutor(people.active_interlocutor)) {
+    throw webError(
+      'ACTIVE_INTERLOCUTOR_INVALID',
+      'People active_interlocutor must use the exact player-safe shape.'
+    );
+  }
 }
 
 export function assertNoHiddenFields(value, path = '$') {

@@ -1,6 +1,10 @@
 import { deepFreeze } from '@rus/kernel';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { INVENTORY_PANEL_SCHEMA, PANEL_KINDS, PANEL_SCHEMA, PRESENTATION_VERSION } from './contracts.js';
+import {
+  assertJournalPanelAffordances,
+  assertPeoplePanelAffordances
+} from './scene-affordance-validation.js';
 
 export function createPanel(kind, data = {}, options = {}) {
   if (!PANEL_KINDS.includes(kind)) throw new TypeError(`Unsupported panel kind: ${kind}`);
@@ -45,10 +49,16 @@ export function createInventoryPanelContract(input = {}) {
     warnings: Array.isArray(input.warnings) ? input.warnings.map((warning) => ({ message: String(warning?.player_message ?? '').trim() })).filter((warning) => warning.message) : []
   });
 }
-export function createPeoplePanel(data, options) { return createPanel('people', data, options); }
+export function createPeoplePanel(data = {}, options) {
+  assertPeoplePanelAffordances(data);
+  return createPanel('people', data, options);
+}
 export function createRoutePanel(data, options) { return createPanel('route', data, options); }
 export function createMapPanel(data, options) { return createPanel('map', data, options); }
-export function createJournalPanel(data, options) { return createPanel('journal', data, options); }
+export function createJournalPanel(data = {}, options) {
+  assertJournalPanelAffordances(data);
+  return createPanel('journal', data, options);
+}
 export function createDiagnosticPanel(data, options) { return createPanel('diagnostic', data, options); }
 
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }

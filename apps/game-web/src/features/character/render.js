@@ -1,6 +1,11 @@
-import { escapeHtml } from '../../shared/escape-html.js';
+import { renderEmpty, renderRows } from '../panel-helpers.js';
 export function renderCharacterPanel(screen) {
   const panel = screen.panels?.character;
-  if (!panel?.visible) return '';
-  return `<section class="panel panel-character"><h2>Персонаж</h2><pre>${escapeHtml(JSON.stringify(panel.data ?? {}, null, 2))}</pre></section>`;
+  if (!panel?.visible) return renderEmpty();
+  const data = panel.data ?? {};
+  return renderRows([
+    ['Имя', data.name], ['Роль', data.role], ['Здоровье', data.health],
+    ['Бодрость', data.energy], ['Сытость', data.satiety],
+    ['Состояние', data.status]
+  ]) || renderEmpty();
 }

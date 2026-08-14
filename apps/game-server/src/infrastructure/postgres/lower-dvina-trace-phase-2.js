@@ -7,8 +7,11 @@ import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.
 import { assertPhase2NormalizedRows, phase2IntegrityError,
   validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
-import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest,
-  phase2VisibleContextFromPayload } from './lower-dvina-trace-phase-2-projection.js';
+import { buildPhase2ReadyScreen, phase2PublicResult,
+  phase2ScreenDigest, phase2VisibleContextFromPayload } from
+  './lower-dvina-trace-phase-2-projection.js';
+import { projectLowerDvinaTraceScreenPanels } from
+  './lower-dvina-trace-screen-panels.js';
 import { phase2InitialCurrentVisibleContext,
   requirePhase2CurrentVisibleContext, withPhase2CurrentVisibleContext,
   withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
@@ -247,25 +250,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     const narrationOutputDigest =
       narration.presentation?.output_digest
       ?? canonicalDigest(narration.approved_output);
-    const screen = {
-      ...structuredClone(result.screen),
-      schema: 'lower_dvina_trace_turn_screen',
-      screen_status: 'ready',
-      current_projection_anchor: {
-        committed_state_version: anchor.state_version,
-        package_id: anchor.package_id,
-        package_digest: anchor.package_digest,
-        narration_output_digest: narrationOutputDigest
-      }
-    };
-    screen.screen_digest = phase2ScreenDigest(screen);
-    const updated = await partyPool.query(
-      `UPDATE party_runtime.party_server_sessions
-          SET screen=$2::jsonb,updated_at=now()
-        WHERE party_id=$1 AND last_turn_id=$3`,
-      [partyId, json(screen), result.turn_id]
-    );
-    if (updated.rowCount !== 1) throw phase2IntegrityError();
     const payload = (await partyPool.query(
       `SELECT state_payload
          FROM party_runtime.party_state_snapshots
@@ -275,6 +259,28 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (payload?.last_turn?.input_digest !== inputDigest) {
       throw phase2IntegrityError();
     }
+    const screen = projectLowerDvinaTraceScreenPanels({
+      payload,
+      screen: {
+        ...structuredClone(result.screen),
+        schema: 'lower_dvina_trace_turn_screen',
+        screen_status: 'ready',
+        current_projection_anchor: {
+          committed_state_version: anchor.state_version,
+          package_id: anchor.package_id,
+          package_digest: anchor.package_digest,
+          narration_output_digest: narrationOutputDigest
+        }
+      }
+    });
+    screen.screen_digest = phase2ScreenDigest(screen);
+    const updated = await partyPool.query(
+      `UPDATE party_runtime.party_server_sessions
+          SET screen=$2::jsonb,updated_at=now()
+        WHERE party_id=$1 AND last_turn_id=$3`,
+      [partyId, json(screen), result.turn_id]
+    );
+    if (updated.rowCount !== 1) throw phase2IntegrityError();
     return phase2PublicResult({ payload, screen });
   }
 

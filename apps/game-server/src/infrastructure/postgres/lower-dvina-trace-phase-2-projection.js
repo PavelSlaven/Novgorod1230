@@ -2,6 +2,8 @@ import { canonicalDigest } from '@rus/materialization';
 import { publicCheckProjection, publicTimeProjection,
   stripPublicInternals } from './lower-dvina-trace-public-projection-filter.js';
 import { createTurnScreenReadModel } from '@rus/presentation';
+import { projectLowerDvinaTraceScreenPanels } from
+  './lower-dvina-trace-screen-panels.js';
 
 const SPEECH_RESPONSE_KINDS = new Set([
   'route_disclosure',
@@ -206,35 +208,38 @@ export function buildPhase2ReadyScreen({
   narration,
   narrationOutputDigest
 }) {
-  const screen = {
-    ...createTurnScreenReadModel({
-      partyId: payload.party_id,
-      turnId,
-      turnNumber: payload.party_state.turn_number,
-      visibleContext,
-      narration,
-      actions: [],
-      panels: {}
-    }),
-    scenario_id: 'lower_dvina_trace_v1',
-    screen_kind: 'trace_turn',
-    delivery_state: {
-      ready: true,
-      generated_at: payload.last_turn.received_at
-    },
-    opening_screen_digest:
-      payload.opening_identity.opening_screen_digest,
-    schema: 'lower_dvina_trace_turn_screen',
-    screen_status: 'ready',
-    current_projection_anchor: {
-      committed_state_version:
-        payload.party_state.state_version,
-      package_id: payload.last_turn.visible_package.package_id,
-      package_digest:
-        payload.last_turn.visible_package.package_digest,
-      narration_output_digest: narrationOutputDigest
+  const screen = projectLowerDvinaTraceScreenPanels({
+    payload,
+    screen: {
+      ...createTurnScreenReadModel({
+        partyId: payload.party_id,
+        turnId,
+        turnNumber: payload.party_state.turn_number,
+        visibleContext,
+        narration,
+        actions: [],
+        panels: {}
+      }),
+      scenario_id: 'lower_dvina_trace_v1',
+      screen_kind: 'trace_turn',
+      delivery_state: {
+        ready: true,
+        generated_at: payload.last_turn.received_at
+      },
+      opening_screen_digest:
+        payload.opening_identity.opening_screen_digest,
+      schema: 'lower_dvina_trace_turn_screen',
+      screen_status: 'ready',
+      current_projection_anchor: {
+        committed_state_version:
+          payload.party_state.state_version,
+        package_id: payload.last_turn.visible_package.package_id,
+        package_digest:
+          payload.last_turn.visible_package.package_digest,
+        narration_output_digest: narrationOutputDigest
+      }
     }
-  };
+  });
   screen.screen_digest = phase2ScreenDigest(screen);
   return screen;
 }

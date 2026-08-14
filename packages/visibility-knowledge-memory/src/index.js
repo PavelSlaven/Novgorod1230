@@ -9,6 +9,8 @@ export {
   projectConversationNonverbalAudience,
   projectConversationReceivedClaims
 } from './conversation-audience.js';
+export { projectActiveConversationInterlocutor } from
+  './active-conversation-interlocutor.js';
 export { resolveEvidenceConclusions } from './evidence-resolution.js';
 export { resolveAuthoredStatementEvidence } from './statement-evidence.js';
 export {

@@ -5,6 +5,8 @@ import {
   npcSpeechPlan,
   playerPlan
 } from '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
+import { createLowerDvinaTraceTurnStepTestModel } from
+  '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 
 const ROUTE_TEXT =
   'Идти к Жданко всем вместе. Ратшу держать между нами. Не входить тайком.';
@@ -47,6 +49,7 @@ export function createCanonicalPhase11LlmResponder({
   onisimResponse = 'speech'
 } = {}) {
   const conversation = createM2ConversationModels({ ratshaResponseKind });
+  const generalLookModel = createLowerDvinaTraceTurnStepTestModel();
   const combatConversation = createM2ConversationModels({
     ratshaResponseKind: 'combat_handoff'
   });
@@ -56,6 +59,10 @@ export function createCanonicalPhase11LlmResponder({
     if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
       .includes(model)) {
       const request = input.request ?? input;
+      if (String(request.root_player_action).trim().toLowerCase()
+        .replace(/[.!?]+$/u, '') === 'осмотреться') {
+        return generalLookModel(request);
+      }
       const plan = planTurnStep(request, turn10Actors);
       if (turn10Actors == null
           && request.root_player_action?.startsWith('Отдохнуть у огня')) {

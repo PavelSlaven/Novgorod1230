@@ -8,6 +8,7 @@ const EXPECTED = Object.freeze({
     kindField: 'discovery_kind',
     kindsField: 'discovery_kinds',
     kind: 'inspect',
+    runtimeKinds: ['inspect', 'search'],
     targetKey: 'wreck',
     targetSemantic: 'wreck_shore'
   },
@@ -196,7 +197,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
           expected,
           allowedKinds: expected.operation === 'request_activity'
             ? [expected.kind]
-            : record[expected.kindsField],
+            : expected.runtimeKinds ?? record[expected.kindsField],
           actorRef,
           targetRef,
           evidenceRef: targetRefs?.evidence

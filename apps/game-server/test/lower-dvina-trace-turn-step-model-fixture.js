@@ -13,8 +13,15 @@ export function createLowerDvinaTraceTurnStepTestModel({
   }
   return (request) => {
     onCall(request);
+    if (generalLook(request)) return directPlan(request);
     return domainPlan(request, operationFor(request));
   };
+}
+
+function generalLook(request) {
+  const text = String(request?.root_player_action ?? '')
+    .trim().toLowerCase().replace(/[.!?]+$/u, '');
+  return new Set(['осмотреться', 'осматриваюсь вокруг']).has(text);
 }
 
 function operationFor(request) {
@@ -119,6 +126,30 @@ function domainPlan(request, operation) {
     clarification: null,
     reason_code: 'delegate_existing_lower_dvina_owner',
     reason: 'Действие передаётся существующему владельцу механики.'
+  };
+}
+
+function directPlan(request) {
+  return {
+    schema: 'turn_step_plan_v1',
+    request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    step_index: request.step_index,
+    interpretation: {
+      player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent,
+      adaptation: 'literal'
+    },
+    resolution: 'direct',
+    goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [],
+    check: null,
+    continuation: null,
+    clarification: null,
+    reason_code: 'review_visible_surroundings',
+    reason: 'Общий обзор использует уже видимую сцену.'
   };
 }
 

@@ -163,6 +163,20 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(result.time_update.clock_after.whole_minutes, '333075');
   assert.equal(result.clue.template_id,
     'trace_ld_v1_item_blue_wool_fragment');
+  assert.equal(result.observations.some(
+    ({ fact_id: id }) => id === 'visible:road_bag_missing'), false);
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_character_knowledge
+      WHERE party_id=$1 AND fact_id=$2`,
+    [opened.party_id, 'visible:road_bag_missing']
+  )).rows[0].count, 0);
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_visible_packages
+      WHERE party_id=$1 AND visible_payload::text LIKE $2`,
+    [opened.party_id, '%visible:road_bag_missing%']
+  )).rows[0].count, 0);
   assert.deepEqual(result.clue.placement, {
     holder_character_id: result.clue.property_state.holder_ref,
     physical_position: 'hands'
@@ -382,14 +396,25 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.deepEqual(failure.observations.map(({ fact_id: id }) => id), [
     'visible:wreck_present',
     'trace_ld_v1_evidence_onisim_barefoot_tracks',
-    'trace_ld_v1_evidence_boot_track',
-    'visible:road_bag_missing'
+    'trace_ld_v1_evidence_boot_track'
   ]);
   assert.deepEqual(failure.evidence.map(({ evidence_id: id }) => id), [
     'trace_ld_v1_evidence_onisim_barefoot_tracks',
     'trace_ld_v1_evidence_boot_track'
   ]);
   assert.equal(failure.clue, null);
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_character_knowledge
+      WHERE party_id=$1 AND fact_id=$2`,
+    [failureParty.party_id, 'visible:road_bag_missing']
+  )).rows[0].count, 0);
+  assert.equal((await pool.query(
+    `SELECT count(*)::int AS count
+       FROM party_runtime.party_visible_packages
+      WHERE party_id=$1 AND visible_payload::text LIKE $2`,
+    [failureParty.party_id, '%visible:road_bag_missing%']
+  )).rows[0].count, 0);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
@@ -547,6 +572,17 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(retrySemanticCalls, 2);
   assert.equal(retryRolls, 2);
 
+  await assertGeneralLookUsesOpeningScene({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
+  await assertGeneralLookAfterInspection({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
+
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
@@ -560,6 +596,191 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     pendingPresentation: true
   });
 });
+
+async function assertGeneralLookAfterInspection({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const narrationRequests = [];
+  let randomDraws = 0;
+  const runtime = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    randomValue: 0.99,
+    randomDrawObserver: () => { randomDraws += 1; },
+    narrationService: {
+      async run(request) {
+        narrationRequests.push(structuredClone(request));
+        return approvedNarration(request.request_id);
+      }
+    }
+  });
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-look-after-inspection-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-look-after-inspection-ack'
+  });
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-look-after-inspection-discovery',
+    idempotency_key: 'phase-2-look-after-inspection-discovery',
+    raw_text: 'Осмотреть место крушения подробно.'
+  });
+  assert.equal(narrationRequests[0].visible_context.visible_scene,
+    'Осмотр места крушения завершён.');
+  const beforeLook = {
+    checks: await count(pool, 'party_runtime.party_check_resolutions',
+      opened.party_id),
+    knowledge: await count(pool, 'party_runtime.party_character_knowledge',
+      opened.party_id),
+    items: await count(pool, 'party_runtime.party_items', opened.party_id),
+    randomDraws
+  };
+  const looked = await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-look-after-inspection',
+    idempotency_key: 'phase-2-look-after-inspection',
+    raw_text: 'Осмотреться'
+  });
+  const lookContext = narrationRequests[1].visible_context;
+  assert.equal(looked.check, null);
+  assert.equal(lookContext.visible_scene,
+    'берег крушения');
+  assert.notEqual(lookContext.visible_scene,
+    narrationRequests[0].visible_context.visible_scene);
+  assert.deepEqual([...lookContext.sensory_details].sort(),
+    [...opened.screen.visible_context.environment.facts].sort());
+  assert.equal(JSON.stringify(lookContext).includes(
+    'visible:road_bag_missing'), false);
+  assert.equal(randomDraws, beforeLook.randomDraws);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), beforeLook.checks);
+  assert.equal(await count(pool, 'party_runtime.party_character_knowledge',
+    opened.party_id), beforeLook.knowledge);
+  assert.equal(await count(pool, 'party_runtime.party_items', opened.party_id),
+    beforeLook.items);
+
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-look-after-movement-move',
+    idempotency_key: 'phase-2-look-after-movement-move',
+    raw_text: 'Дойти до рыбацкого стана.'
+  });
+  assert.equal(narrationRequests[2].visible_context.visible_scene,
+    'Микула пришёл в рыбацкий стан.');
+  const beforeCampLook = {
+    checks: await count(pool, 'party_runtime.party_check_resolutions',
+      opened.party_id),
+    knowledge: await count(pool, 'party_runtime.party_character_knowledge',
+      opened.party_id),
+    items: await count(pool, 'party_runtime.party_items', opened.party_id),
+    randomDraws
+  };
+  const campLooked = await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-look-after-movement',
+    idempotency_key: 'phase-2-look-after-movement',
+    raw_text: 'Осмотреться'
+  });
+  const campLookContext = narrationRequests[3].visible_context;
+  assert.equal(campLooked.check, null);
+  assert.equal(campLookContext.visible_scene, 'рыбацкий стан');
+  assert.notEqual(campLookContext.visible_scene,
+    opened.screen.visible_context.place);
+  assert.notEqual(campLookContext.visible_scene,
+    narrationRequests[2].visible_context.visible_scene);
+  assert.deepEqual([...campLookContext.sensory_details].sort(), [
+    'dry_bank_near_working_water',
+    'local_fishing_work_site'
+  ]);
+  assert.equal(randomDraws, beforeCampLook.randomDraws);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), beforeCampLook.checks);
+  assert.equal(await count(pool, 'party_runtime.party_character_knowledge',
+    opened.party_id), beforeCampLook.knowledge);
+  assert.equal(await count(pool, 'party_runtime.party_items', opened.party_id),
+    beforeCampLook.items);
+}
+
+async function assertGeneralLookUsesOpeningScene({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  let narrationRequest = null;
+  let randomDraws = 0;
+  const runtime = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    randomDrawObserver: () => { randomDraws += 1; },
+    narrationService: {
+      async run(request) {
+        narrationRequest = structuredClone(request);
+        return approvedNarration(request.request_id);
+      }
+    }
+  });
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-general-look-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-general-look-ack'
+  });
+  const itemCountBefore = await count(
+    pool,
+    'party_runtime.party_items',
+    opened.party_id
+  );
+  const result = await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-general-look',
+    idempotency_key: 'phase-2-general-look',
+    raw_text: 'Осмотреться'
+  });
+  assert.equal(result.turn_number, 1);
+  assert.equal(result.check, null);
+  assert.equal(result.time_update.clock_after.whole_minutes, '333061');
+  assert.equal(randomDraws, 0);
+  assert.equal(narrationRequest.visible_context.visible_scene,
+    opened.screen.visible_context.place);
+  assert.notEqual(narrationRequest.visible_context.visible_scene,
+    opened.screen.main_prose);
+  assert.notEqual(narrationRequest.visible_context.visible_scene,
+    'Заявленное действие завершено.');
+  assert.deepEqual(
+    [...narrationRequest.visible_context.sensory_details].sort(),
+    [...opened.screen.visible_context.environment.facts].sort()
+  );
+  const playerSafe = JSON.stringify(narrationRequest);
+  assert.equal(playerSafe.includes('visible:road_bag_missing'), false);
+  assert.equal(playerSafe.includes('trace_ld_v1_item_blue_wool_fragment'),
+    false);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), 0);
+  assert.equal(await count(pool, 'party_runtime.party_character_knowledge',
+    opened.party_id), 0);
+  assert.equal(await count(pool, 'party_runtime.party_items', opened.party_id),
+    itemCountBefore);
+  const persisted = (await pool.query(
+    `SELECT visible_payload
+       FROM party_runtime.party_visible_packages
+      WHERE party_id=$1
+      ORDER BY committed_state_version::bigint DESC
+      LIMIT 1`,
+    [opened.party_id]
+  )).rows[0].visible_payload;
+  assert.equal(persisted.perceived_scene,
+    opened.screen.visible_context.place);
+  assert.deepEqual([...persisted.sensory_details].sort(),
+    [...opened.screen.visible_context.environment.facts].sort());
+  assert.equal((await pool.query(
+    `SELECT state_payload ? 'current_visible_context' AS leaked
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version=1`,
+    [opened.party_id]
+  )).rows[0].leaked, false);
+}
 
 function buildRuntime({
   pool,

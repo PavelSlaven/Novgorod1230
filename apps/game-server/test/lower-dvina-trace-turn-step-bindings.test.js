@@ -77,6 +77,10 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
     op: 'request_discovery', actor_ref: 'player',
     discovery_kind: 'inspect', target_refs: [targetRefs.wreck], query: 'осмотр'
   });
+  assertMatches(bound, 'lower_dvina_trace.inspect_wreck_in_detail', {
+    op: 'request_discovery', actor_ref: 'player',
+    discovery_kind: 'search', target_refs: [targetRefs.wreck], query: 'поиск'
+  });
   assertMatches(bound, 'lower_dvina_trace.follow_path_to_fishing_camp', {
     op: 'request_movement', actor_ref: 'player', movement_kind: 'local',
     target_ref: targetRefs.fishingCamp
@@ -114,6 +118,10 @@ test('revision 13 bindings preserve mechanics and map all approved domains', () 
     });
   const inspection = bound.find(({ command_id: id }) =>
     id === 'lower_dvina_trace.inspect_wreck_in_detail');
+  assert.equal(inspection.semantic_binding.matches({ operation: {
+    op: 'request_discovery', actor_ref: 'player',
+    discovery_kind: 'look', target_refs: [targetRefs.wreck], query: 'обзор'
+  } }), false, 'a general look cannot trigger detailed wreck inspection');
   assert.equal(inspection.semantic_binding.matches({ operation: {
     op: 'request_discovery', actor_ref: targetRefs.eremey,
     discovery_kind: 'inspect', target_refs: [targetRefs.wreck], query: 'осмотр'

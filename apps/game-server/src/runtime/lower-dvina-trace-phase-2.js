@@ -20,8 +20,7 @@ import { resolveTracePhase10Contracts } from './lower-dvina-trace-phase-10-compl
 import { completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
 import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js';
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js'; import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
-import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js';
-import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js'; import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
+import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js'; import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js'; import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, requiredTraceTurnText, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
 import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
@@ -267,6 +266,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         npcAutonomousModel,
         npcCombatModel,
         playerSafeStateProjector,
+        locationProfiles: bundle.location_topology_set.location_profiles,
         turnStepBodyEventOwner:
           turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner,
         turnStepSemanticActivityOwner:

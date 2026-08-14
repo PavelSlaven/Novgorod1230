@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { calculatePackingSlots } from '@rus/items-property';
 import { validateCommittedInventoryState } from
   '../../runtime/lower-dvina-trace-committed-inventory.js';
@@ -21,4 +22,22 @@ export function validateFinalTurnStepInventory(snapshot) {
       ...(error?.details ?? {})
     });
   }
+}
+
+export function requiresFinalTurnStepInventoryValidation({
+  state,
+  committedSnapshot,
+  batch
+}) {
+  if (batch.operations.some(({ target }) => target === 'party_items')) {
+    return true;
+  }
+  const fields = [
+    'actor_id', 'player_profile', 'position', 'items', 'containers',
+    'container_placements', 'container_profiles', 'container_compatibility'
+  ];
+  return fields.some((field) => !isDeepStrictEqual(
+    state[field],
+    committedSnapshot[field]
+  ));
 }

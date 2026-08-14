@@ -4,20 +4,15 @@ import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/interna
 import { serverError } from '../../errors.js';
 import { json } from '../../runtime/first-playable/shared.js';
 import { commitLowerDvinaTracePhase2 } from './lower-dvina-trace-phase-2-commit.js';
-import {
-  assertPhase2NormalizedRows,
-  phase2IntegrityError
-} from './lower-dvina-trace-phase-2-read.js';
+import { assertPhase2NormalizedRows, phase2IntegrityError,
+  validPhase2Snapshot } from './lower-dvina-trace-phase-2-read.js';
 import { loadInitialTracePhase2State } from './lower-dvina-trace-phase-2-initial-state.js';
-import {
-  buildPhase2ReadyScreen,
-  phase2PublicResult,
-  phase2ScreenDigest,
-  phase2VisibleContextFromPayload
-} from './lower-dvina-trace-phase-2-projection.js';
-import {
-  loadCurrentOrHistoricalPhase2Replay
-} from './lower-dvina-trace-phase-2-replay.js';
+import { buildPhase2ReadyScreen, phase2PublicResult, phase2ScreenDigest,
+  phase2VisibleContextFromPayload } from './lower-dvina-trace-phase-2-projection.js';
+import { phase2InitialCurrentVisibleContext,
+  requirePhase2CurrentVisibleContext, withPhase2CurrentVisibleContext,
+  withoutPhase2CurrentVisibleContext } from './lower-dvina-trace-phase-2-current-visible.js';
+import { loadCurrentOrHistoricalPhase2Replay } from './lower-dvina-trace-phase-2-replay.js';
 import { loadTracePhase2TemporalSourceProof } from './lower-dvina-trace-phase-2-temporal-state.js';
 import { assertPhase2PresentationAdmission } from './lower-dvina-trace-phase-2-presentation-admission.js';
 import {
@@ -95,16 +90,23 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (Number(row.party_state_version) === 0) {
       const temporalSourceProof =
         await loadTracePhase2TemporalSourceProof(partyPool, partyId);
-      return loadInitialTracePhase2State({
+      const initial = await loadInitialTracePhase2State({
         partyId,
         row,
         phase1A,
         partyPool,
         temporalSourceProof
       });
+      return withPhase2CurrentVisibleContext(
+        initial,
+        phase2InitialCurrentVisibleContext({
+          screen: row.screen,
+          openingScreenDigest: row.stage26_result.opening_screen_digest
+        })
+      );
     }
     const payload = row.state_payload;
-    if (!validSnapshot(payload, row, partyId)) {
+    if (!validPhase2Snapshot(payload, row, partyId)) {
       throw phase2IntegrityError();
     }
     assertPhase2PresentationAdmission({
@@ -209,9 +211,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   async function commitPhase2Turn(input) {
     return commitLowerDvinaTracePhase2({
       ...input,
-      loadState: loadPhase2State,
+      loadState: loadCommittablePhase2State,
       committer
     });
+  }
+
+  async function loadCommittablePhase2State(...args) {
+    return withoutPhase2CurrentVisibleContext(
+      await loadPhase2State(...args)
+    );
   }
 
   async function loadPhase2VisibleContext({ commit }) {
@@ -227,7 +235,9 @@ export function createLowerDvinaTracePhase2PostgresRepository({
           !== computeSpatialV3CanonicalDigest(payload)) {
       throw phase2IntegrityError();
     }
-    return phase2VisibleContextFromPayload(payload);
+    return requirePhase2CurrentVisibleContext(
+      phase2VisibleContextFromPayload(payload)
+    );
   }
 
   async function persistPhase2Screen({ partyId, inputDigest, result }) {
@@ -274,26 +284,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     replayPhase2Turn,
     commitPhase2Turn,
     commitPhase10FollowUp: (input) => commitLowerDvinaTracePhase10({ ...input,
-      loadState: loadPhase2State, committer }),
+      loadState: loadCommittablePhase2State, committer }),
     loadPhase2VisibleContext,
     persistPhase2Screen
   });
-}
-
-function validSnapshot(payload, row, partyId) {
-  return [
-    'rus.lower_dvina_trace_phase_2_snapshot.v1',
-    'rus.lower_dvina_trace_turn_snapshot.v2'
-  ].includes(payload?.schema)
-    && row.state_digest === canonicalDigest(payload)
-    && payload.party_id === partyId
-    && payload.party_state.state_version
-      === Number(row.party_state_version)
-    && payload.party_state.turn_number === Number(row.turn_number)
-    && payload.party_state.session_state_version
-      === Number(row.session_state_version)
-    && payload.party_state.body_state_version
-      === Number(row.body_state_version)
-    && payload.party_state.clock_state_version
-      === Number(row.clock_state_version);
 }

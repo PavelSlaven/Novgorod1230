@@ -1,9 +1,56 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
+import { canonicalDigest } from '@rus/materialization';
 import { detectHiddenLeaks } from '@rus/visibility-knowledge-memory';
 import { phase2PublicResult } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { phase2InitialCurrentVisibleContext } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-current-visible.js';
+
+test('validated opening projection supplies the initial current scene', () => {
+  const screen = {
+    version: 1,
+    schema: 'first_game_screen',
+    screen_status: 'ready',
+    party_id: 'party-1',
+    main_prose: 'Литературная стартовая проза не становится фактом.',
+    visible_context: {
+      place: 'берег крушения',
+      calendar: 'утро',
+      environment: {
+        profile_id: 'environment-1',
+        facts: ['cold', 'wet', 'exposed']
+      }
+    }
+  };
+  const current = phase2InitialCurrentVisibleContext({
+    screen,
+    openingScreenDigest: canonicalDigest(screen)
+  });
+  assert.deepEqual(current, {
+    version: 1,
+    schema: 'visible_context_package',
+    visible_scene: 'берег крушения',
+    visible_changes: [],
+    sensory_details: ['cold', 'wet', 'exposed'],
+    visible_npc: [],
+    visible_objects: [],
+    known_context: ['берег крушения', 'утро'],
+    uncertainties: [],
+    allowed_tensions: [],
+    do_not_imply: []
+  });
+  assert.throws(() => phase2InitialCurrentVisibleContext({
+    screen,
+    openingScreenDigest: canonicalDigest({ ...screen, party_id: 'other' })
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+  const unsafeScreen = { ...screen, private_knowledge: ['must-not-pass'] };
+  assert.throws(() => phase2InitialCurrentVisibleContext({
+    screen: unsafeScreen,
+    openingScreenDigest: canonicalDigest(unsafeScreen)
+  }), { code: 'TRACE_PHASE_2_SESSION_READ_INVALID' });
+});
 
 test('public Phase 2 check omits private RNG audit', () => {
   const payload = {

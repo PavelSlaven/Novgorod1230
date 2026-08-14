@@ -11,6 +11,8 @@ import { createSeededRandomSource } from '@rus/checks-rng';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../src/runtime/lower-dvina-trace-phase-2.js';
+import { commitGeneric } from
+  './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
 import {
   loadLowerDvinaTraceMaterializationBundle,
   resolveLowerDvinaTraceStartTimestamp
@@ -40,6 +42,8 @@ import { nextPhase10State, phase10VisibleEnvelope } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
 import { phase2VisibleContextFromPayload } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { fixturePhase2VisibleState } from
+  './lower-dvina-trace-phase-2-fixture-current-visible.js';
 
 export const bundle = await loadLowerDvinaTraceMaterializationBundle();
 export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
@@ -117,21 +121,7 @@ export function fixture({
       ...instance.immediate.spatial.position,
       location_ref: 'trace_ld_v1_loc_wreck_shore'
     },
-    clock: instance.immediate.timestamp,
-    clock_weather_light: {
-      clock: instance.immediate.timestamp,
-      weather: {},
-      light: {}
-    },
-    environment_snapshot: instance.immediate.environment_snapshot,
-    world_identity: {
-      world_revision_id:
-        materializationBundle.location_topology_set.spatial_source_ref
-          .world_revision_id,
-      world_catalog_digest:
-        materializationBundle.location_topology_set.spatial_source_ref
-          .world_revision_catalog_digest
-    },
+    ...fixturePhase2VisibleState(instance, materializationBundle),
     materialization_trace: structuredClone(instance.trace),
     prepared_scenes:
       structuredClone(instance.immediate.prepared_scenes ?? []),
@@ -266,8 +256,16 @@ export function fixture({
       lastCommitInput = commitInput;
       lastWritePlan = structuredClone(writePlan);
       const factual = writePlan.write_targets.find(
-        ({ target }) => target === 'party_state'
-      ).value;
+        ({ target }) => target === 'party_state')?.value;
+      if (factual == null) {
+        const generic = await commitGeneric({ commitInput, state });
+        committedVisible = generic.visible;
+        replaceState(state, generic.snapshot);
+        replays.set(generic.idempotencyKey, {
+          input_digest: inputDigest, factual: generic.factual,
+          state: structuredClone(state), public_result: null });
+        return generic.committed;
+      }
       committedVisible = writePlan.write_targets.find(
         ({ target }) => target === 'party_visible_context_package'
       ).value;

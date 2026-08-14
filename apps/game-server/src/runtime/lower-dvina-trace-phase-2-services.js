@@ -53,12 +53,14 @@ import {
   createLowerDvinaTraceTurnStepVisibleProjector
 } from
   './lower-dvina-trace-turn-step-generic-owners.js';
+import { withLowerDvinaTraceCurrentScene } from
+  './lower-dvina-trace-turn-step-current-scene.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
     state, contracts, registry, repository, semanticResolver,
-    turnStepModel, playerSafeStateProjector,
+    turnStepModel, playerSafeStateProjector, locationProfiles,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryResultPolicy, turnStepApprovedOwners,
@@ -84,6 +86,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
   }
   const workingProjectionAuthority =
     createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const projectCurrentScene = (committedState) =>
+    withLowerDvinaTraceCurrentScene({ committedState, locationProfiles });
   const temporalAdvance = createTracePhase9TemporalAdvance({ fallback:
     createTracePhase8TemporalAdvance({ fallback:
       createTracePhase7TemporalAdvance({
@@ -131,20 +135,26 @@ export function buildLowerDvinaTracePhase2Services(context) {
     workingProjectionAuthority
   });
   const turnStepPlayerSafeStateProjector = playerSafeStateProjector
-    ? (input) => playerSafeStateProjector({
-        ...input,
-        working_projection_authority: workingProjectionAuthority
-      })
+    ? (input) => {
+        const committedState = structuredClone(input.committed_state);
+        delete committedState.current_visible_context;
+        return playerSafeStateProjector({
+          ...input,
+          committed_state: committedState,
+          working_projection_authority: workingProjectionAuthority
+        });
+      }
     : null;
   return {
     commandRegistry: registry,
     stateReader: {
       async read(request) {
-        return request.revalidation === true
-          ? repository.loadPhase2State(partyId, {
+        const committedState = request.revalidation === true
+          ? await repository.loadPhase2State(partyId, {
               presentationIdempotencyKey: idempotencyKey
             })
           : structuredClone(state);
+        return projectCurrentScene(committedState);
       }
     },
     semanticResolver,

@@ -187,6 +187,34 @@ test('generic composition preserves domain body and handles direct visible',
     });
     assert.equal(projected.visible_scene, 'Заявленное действие завершено.');
     assert.deepEqual(projected.visible_changes, ['turn_step_x']);
+
+    const scene = await visible.project({
+      mode_resolution: { decision_trace: { step_traces: [{
+        approved_plan: {
+          resolution: 'direct', operations: [], check: null
+        }
+      }] } },
+      retrieved_state: { current_visible_context: {
+        version: 1,
+        schema: 'visible_context_package',
+        visible_scene: 'Уже видимый берег.',
+        visible_changes: [],
+        sensory_details: ['cold', 'wet'],
+        visible_npc: [],
+        visible_objects: [],
+        known_context: ['берег'],
+        uncertainties: [],
+        allowed_tensions: [],
+        do_not_imply: []
+      } },
+      consequence: { visible_seed: { completed_steps: [],
+        clarification: null, turn_step_y: { kind: 'semantic_activity' } } },
+      body_update: { state_after: body({ health: 95 }) }
+    });
+    assert.equal(scene.visible_scene, 'Уже видимый берег.');
+    assert.deepEqual(scene.sensory_details, ['cold', 'wet']);
+    assert.deepEqual(scene.visible_changes, ['turn_step_y']);
+    assert.equal(scene.known_context.includes('health:95'), true);
   });
 
 test('missing or tampered owner profiles fail closed', async () => {

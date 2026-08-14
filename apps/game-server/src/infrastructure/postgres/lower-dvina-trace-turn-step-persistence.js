@@ -1,14 +1,11 @@
-import {
-  requireTurnStepOperationBatch,
-  TURN_STEP_OPERATION_BATCH_TARGET
-} from '@rus/turn';
+import { requireTurnStepOperationBatch,
+  TURN_STEP_OPERATION_BATCH_TARGET } from '@rus/turn';
 import { row } from './first-playable/plan-shared.js';
 import {
   appendTurnStepSemanticActivityWrites,
   requireTurnStepSemanticActivityTimeline
 } from './lower-dvina-trace-turn-step-activity-writes.js';
-import { prepareTurnStepBodyHistory } from
-  './lower-dvina-trace-turn-step-body-history.js';
+import { prepareTurnStepBodyHistory } from './lower-dvina-trace-turn-step-body-history.js';
 import {
   requireActivityOwnerBinding,
   requireFactualCommit,
@@ -17,8 +14,7 @@ import {
   validateMechanicsProvenance
 } from './lower-dvina-trace-turn-step-commit-validation.js';
 import { validateNoBatchFactualCommit } from './lower-dvina-trace-turn-step-state-reconciliation.js';
-import { applyItemOperation } from
-  './lower-dvina-trace-turn-step-item-operations.js';
+import { applyItemOperation } from './lower-dvina-trace-turn-step-item-operations.js';
 import {
   itemRecord,
   mergeKnowledge,
@@ -34,12 +30,12 @@ import {
   mergeLowerDvinaTraceTurnStepWrites
 } from './lower-dvina-trace-turn-step-persistence-support.js';
 import { appendAuthoredTurnStepWrites } from './lower-dvina-trace-turn-step-authored-writes.js';
-import { validateFinalTurnStepInventory } from
+import { requiresFinalTurnStepInventoryValidation,
+  validateFinalTurnStepInventory } from
   './lower-dvina-trace-turn-step-final-inventory.js';
 import { validateTurnStepBatchPlanBindings } from
   './lower-dvina-trace-turn-step-plan-binding.js';
 import { validatePreparedEffectCommit } from './lower-dvina-trace-turn-step-prepared-effect-validation.js';
-
 export { mergeLowerDvinaTraceTurnStepWrites };
 /** Expands one logical M1 batch into the existing atomic P16 write layout. */
 export function prepareLowerDvinaTraceTurnStepPersistence({
@@ -164,7 +160,11 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       ...(next.turn_step_body_history ?? []), context.bodyHistory.snapshot
     ];
   }
-  validateFinalTurnStepInventory(next);
+  if (requiresFinalTurnStepInventoryValidation({
+    state, committedSnapshot, batch
+  })) {
+    validateFinalTurnStepInventory(next);
+  }
   const writes = buildWrites({
     partyId, state, next, commit, changeSetId, idemId, entities,
     authoredItems, context

@@ -28,7 +28,8 @@ const executablePath = [
 
 function createRecordedRoot(records) {
   let partyNumber = 0;
-  let failFirstAcknowledgement = true;
+  let nowTick = 0;
+  const acknowledgementAttempts = new Map();
   const root = createGameCompositionRoot({
     newGameWorkflow: {
       run: async (input) => {
@@ -59,7 +60,9 @@ function createRecordedRoot(records) {
           }
         : null
     },
-    now: () => '2026-07-12T12:30:00.000Z'
+    now: () => new Date(
+      Date.parse('2026-07-12T12:30:00.000Z') + nowTick++ * 1_000
+    ).toISOString()
   });
   return Object.freeze({
     health: () => root.health(),
@@ -70,10 +73,17 @@ function createRecordedRoot(records) {
     },
     async acknowledgeOpening(partyId, input) {
       records.acknowledgements.push({ partyId, input: structuredClone(input) });
-      if (failFirstAcknowledgement) {
-        failFirstAcknowledgement = false;
+      const attempt = (acknowledgementAttempts.get(partyId) ?? 0) + 1;
+      acknowledgementAttempts.set(partyId, attempt);
+      if (partyId === 'party-e2e-1' && attempt <= 2) {
         throw Object.assign(new Error('Temporary acknowledgement failure.'), {
           code: 'ACK_TEMPORARILY_UNAVAILABLE', status: 503
+        });
+      }
+      if (partyId === 'party-e2e-2' && attempt === 1) {
+        await root.acknowledgeOpening(partyId, input);
+        throw Object.assign(new Error('Acknowledgement response was lost.'), {
+          code: 'ACK_RESPONSE_LOST', status: 503
         });
       }
       return root.acknowledgeOpening(partyId, input);
@@ -252,10 +262,30 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.waitForSelector('[data-retry-opening-ack]');
   assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);
   assert.deepEqual(records.newGames[0], { start_text: 'Начать в Новгороде' });
-  const failedAckId = records.acknowledgements[0].input.client_ack_id;
+  const firstPendingAck = await page.evaluate(() => JSON.parse(
+    localStorage.getItem('rus.pending_opening_ack') ?? 'null'
+  ));
+  assert.deepEqual(records.acknowledgements[0].input, {
+    client_ack_id: firstPendingAck.client_ack_id,
+    acknowledged_at: firstPendingAck.acknowledged_at
+  });
+  assert.equal(firstPendingAck.party_id, 'party-e2e-1');
+
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-retry-opening-ack]');
+  assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);
+  assert.deepEqual(records.acknowledgements[1].input,
+    records.acknowledgements[0].input,
+    'reload retry must preserve the entire acknowledgement');
   await page.click('[data-retry-opening-ack]');
   await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
-  assert.equal(records.acknowledgements[1].input.client_ack_id, failedAckId);
+  assert.deepEqual(records.acknowledgements[2].input,
+    records.acknowledgements[0].input);
+  assert.equal(await page.evaluate(() => localStorage.getItem(
+    'rus.pending_opening_ack'
+  )), null);
   assert.equal(await page.locator('script:not([src])').count(), 0);
 
   await page.click('[data-overlay-open="character"]');
@@ -266,22 +296,27 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.locator('[data-overlay-panel]').count(), 0);
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('data-overlay-open')), 'character');
 
-  await page.click('[data-action-id="look"]');
-  await page.waitForSelector('[data-screen-schema="turn_screen"]');
-  assert.deepEqual(records.turns[0].input, { selected_action_option_id: 'look' });
-  assert.equal(await page.locator('[data-action-id]').count(), 0);
-
   await page.fill('[data-turn-form] textarea', 'Осматриваюсь');
   await page.click('[data-turn-form] button[type="submit"]');
   await page.waitForSelector('[data-screen-schema="turn_screen"]');
-  assert.deepEqual(records.turns[1].input, { raw_text: 'Осматриваюсь' });
+  assert.deepEqual(records.turns[0].input, { raw_text: 'Осматриваюсь' });
+  assert.equal(await page.locator('[data-action-id]').count(), 0);
   const body = await page.textContent('body');
   assert.match(body, /свежие следы/u);
   assert.doesNotMatch(body, /Скрытый страж|guard-secret/u);
 
   await page.click('[data-return-start]');
   await page.waitForSelector('[data-continue-party]');
+  await page.evaluate(() => localStorage.setItem(
+    'rus.pending_opening_ack',
+    JSON.stringify({
+      party_id: 'party-other',
+      client_ack_id: 'web:party-other:stale',
+      acknowledged_at: '2026-08-14T12:00:00.000Z'
+    })
+  ));
   const readsBeforeReload = records.screenReads.length;
+  const acknowledgementsBeforeReload = records.acknowledgements.length;
   await page.reload();
   await page.waitForSelector('[data-continue-party]');
   assert.equal(records.screenReads.length, readsBeforeReload,
@@ -289,6 +324,11 @@ test('browser preserves production API semantics through the Lovable UI', {
   await page.click('[data-continue-party]');
   await page.waitForSelector('[data-screen-schema="turn_screen"]');
   assert.equal(records.screenReads.at(-1), 'party-e2e-1');
+  assert.equal(records.acknowledgements.length, acknowledgementsBeforeReload,
+    'an acknowledged party without matching pending data must not ack again');
+  assert.equal(await page.evaluate(() => localStorage.getItem(
+    'rus.pending_opening_ack'
+  )), null, 'mismatched pending data must be discarded');
 
   await page.click('[data-return-start]');
   await page.click('[data-start-new-game]');
@@ -298,9 +338,35 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), 'party-e2e-1');
   await page.click('[data-dismiss-error]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+  await page.waitForSelector('[data-retry-opening-ack]');
+  const responseLossAck = records.acknowledgements.at(-1).input;
+  const responseLossPending = await page.evaluate(() => JSON.parse(
+    localStorage.getItem('rus.pending_opening_ack') ?? 'null'
+  ));
+  assert.deepEqual(responseLossAck, {
+    client_ack_id: responseLossPending.client_ack_id,
+    acknowledged_at: responseLossPending.acknowledged_at
+  });
+  assert.equal(responseLossPending.party_id, 'party-e2e-2');
+
+  await page.reload();
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
   await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  const secondPartyAcks = records.acknowledgements
+    .filter(({ partyId }) => partyId === 'party-e2e-2');
+  assert.equal(secondPartyAcks.length, 2);
+  assert.deepEqual(secondPartyAcks[1].input, secondPartyAcks[0].input,
+    'response-loss retry must replay the exact committed acknowledgement');
   assert.deepEqual(records.newGames.at(-1), { scenario_id: 'lower_dvina_trace_v1' });
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), 'party-e2e-2');
+  assert.equal(await page.evaluate(() => localStorage.getItem(
+    'rus.pending_opening_ack'
+  )), null);
+
+  await page.click('[data-action-id="look"]');
+  await page.waitForSelector('[data-screen-schema="turn_screen"]');
+  assert.deepEqual(records.turns[1].input, { selected_action_option_id: 'look' });
 
   const themeBefore = await page.getAttribute('html', 'data-theme');
   await page.click('[data-theme-toggle]');
@@ -320,11 +386,22 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.inputValue('[data-turn-form] textarea'),
     'Проверка утечки', 'failed turn must keep the player draft');
 
-  await page.evaluate(() => localStorage.setItem('rus.party_id', 'party-missing'));
+  await page.evaluate(() => {
+    localStorage.setItem('rus.party_id', 'party-missing');
+    localStorage.setItem('rus.pending_opening_ack', JSON.stringify({
+      party_id: 'party-missing',
+      client_ack_id: 'web:party-missing:pending',
+      acknowledged_at: '2026-08-14T12:00:00.000Z'
+    }));
+  });
   await page.reload();
   await page.waitForSelector('[data-continue-party]');
   await page.click('[data-continue-party]');
   await page.waitForSelector('.error-toast');
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), null);
+  assert.equal(await page.evaluate(() => localStorage.getItem(
+    'rus.pending_opening_ack'
+  )), null);
+  assert.equal(await page.evaluate(() => localStorage.getItem('rus.theme')), themeAfter);
   assert.equal(await page.locator('[data-continue-party]').count(), 0);
 });

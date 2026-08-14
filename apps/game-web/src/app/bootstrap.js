@@ -1,6 +1,12 @@
 import { createApiClient } from '../api/client.js';
 import { createUiStore } from './store.js';
 import { renderAppState } from './router.js';
+import {
+  removeMatchingPendingOpeningAck,
+  removeStoredPendingOpeningAck,
+  storedPendingOpeningAck,
+  storePendingOpeningAck
+} from './pending-opening-ack.js';
 
 const PARTY_STORAGE_KEY = 'rus.party_id';
 const THEME_STORAGE_KEY = 'rus.theme';
@@ -111,12 +117,19 @@ export function bootstrapGameWeb({
     try {
       store.setLoading();
       const result = await api.startNewGame(input);
+      const pendingAck = {
+        party_id: result.party_id,
+        client_ack_id: `web:${result.party_id}:${Date.now()}`,
+        acknowledged_at: new Date().toISOString()
+      };
+      storePendingOpeningAck(partyStorage, pendingAck);
       partyStorage?.setItem?.(PARTY_STORAGE_KEY, result.party_id);
       store.setRememberedPartyId(result.party_id);
       store.clearDraft('new_game');
-      const clientAckId = `web:${result.party_id}:${Date.now()}`;
       store.setScreen(result.screen, {
-        openingStatus: 'pending', clientAckId
+        openingStatus: 'pending',
+        clientAckId: pendingAck.client_ack_id,
+        acknowledgedAt: pendingAck.acknowledged_at
       });
       await acknowledgeOpening();
     } catch (error) {
@@ -130,17 +143,26 @@ export function bootstrapGameWeb({
 
   async function acknowledgeOpening() {
     const state = store.getState();
-    if (!state.partyId || !state.opening.clientAckId) return;
+    if (!state.partyId || !state.opening.clientAckId
+      || !state.opening.acknowledgedAt) return;
+    const pendingAck = {
+      party_id: state.partyId,
+      client_ack_id: state.opening.clientAckId,
+      acknowledged_at: state.opening.acknowledgedAt
+    };
     try {
       if (state.opening.status === 'failed') {
         store.setScreen(state.screen, {
           openingStatus: 'pending',
-          clientAckId: state.opening.clientAckId
+          clientAckId: pendingAck.client_ack_id,
+          acknowledgedAt: pendingAck.acknowledged_at
         });
       }
       await api.acknowledgeOpening(state.partyId, {
-        client_ack_id: state.opening.clientAckId
+        client_ack_id: pendingAck.client_ack_id,
+        acknowledged_at: pendingAck.acknowledged_at
       });
+      removeMatchingPendingOpeningAck(partyStorage, pendingAck);
       store.setOpeningAcknowledged();
     } catch (error) {
       store.setOpeningFailed(error);
@@ -153,10 +175,21 @@ export function bootstrapGameWeb({
     try {
       store.setLoading();
       const result = await api.getPartyScreen(partyId);
-      store.setScreen(result.screen, { openingStatus: 'acknowledged' });
+      const pendingAck = storedPendingOpeningAck(partyStorage, partyId);
+      if (pendingAck) {
+        store.setScreen(result.screen, {
+          openingStatus: 'pending',
+          clientAckId: pendingAck.client_ack_id,
+          acknowledgedAt: pendingAck.acknowledged_at
+        });
+        await acknowledgeOpening();
+      } else {
+        store.setScreen(result.screen, { openingStatus: 'acknowledged' });
+      }
     } catch (error) {
       if (error?.httpStatus === 404 || error?.code === 'PARTY_NOT_FOUND') {
         partyStorage?.removeItem?.(PARTY_STORAGE_KEY);
+        removeStoredPendingOpeningAck(partyStorage);
         store.setRememberedPartyId(null);
       }
       store.setError(error);

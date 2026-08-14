@@ -14,7 +14,7 @@ export function createUiStore(initial = {}) {
     theme: theme(initial.theme),
     newGameDraft: '',
     turnDraft: '',
-    opening: freeze({ status: 'idle', clientAckId: null })
+    opening: freeze({ status: 'idle', clientAckId: null, acknowledgedAt: null })
   });
   const listeners = new Set();
   const publish = () => listeners.forEach((listener) => listener(state));
@@ -31,7 +31,10 @@ export function createUiStore(initial = {}) {
       });
       publish();
     },
-    setScreen(screen, { openingStatus = 'acknowledged', clientAckId = null } = {}) {
+    setScreen(screen, {
+      openingStatus = 'acknowledged', clientAckId = null,
+      acknowledgedAt = null
+    } = {}) {
       const validated = validatePublicScreen(screen);
       state = freeze({
         ...state,
@@ -41,7 +44,7 @@ export function createUiStore(initial = {}) {
         partyId: validated.party_id,
         error: null,
         activeOverlay: null,
-        opening: freeze({ status: openingStatus, clientAckId })
+        opening: freeze({ status: openingStatus, clientAckId, acknowledgedAt })
       });
       publish();
     },
@@ -55,7 +58,7 @@ export function createUiStore(initial = {}) {
         partyId: null,
         error: null,
         activeOverlay: null,
-        opening: freeze({ status: 'idle', clientAckId: null })
+        opening: freeze({ status: 'idle', clientAckId: null, acknowledgedAt: null })
       });
       publish();
     },
@@ -84,7 +87,9 @@ export function createUiStore(initial = {}) {
         ...state,
         status: 'ready',
         error: null,
-        opening: freeze({ ...state.opening, status: 'acknowledged' })
+        opening: freeze({
+          status: 'acknowledged', clientAckId: null, acknowledgedAt: null
+        })
       });
       publish();
     },
@@ -118,7 +123,7 @@ export function createUiStore(initial = {}) {
         ...state,
         status: 'idle', view: 'landing', screen: null, partyId: null,
         error: null, activeOverlay: null,
-        opening: freeze({ status: 'idle', clientAckId: null })
+        opening: freeze({ status: 'idle', clientAckId: null, acknowledgedAt: null })
       });
       publish();
     }

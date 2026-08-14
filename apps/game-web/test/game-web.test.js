@@ -129,6 +129,28 @@ test('UI store keeps screen read model instead of duplicating party state', () =
   assert.equal('worldState' in state, false);
 });
 
+test('UI store keeps one exact pending opening identity and clears it after acknowledgement', () => {
+  const store = createUiStore();
+  store.setScreen(firstScreen(), {
+    openingStatus: 'pending',
+    clientAckId: 'web:party-1:stable',
+    acknowledgedAt: '2026-08-14T12:00:00.000Z'
+  });
+  assert.deepEqual(store.getState().opening, {
+    status: 'pending',
+    clientAckId: 'web:party-1:stable',
+    acknowledgedAt: '2026-08-14T12:00:00.000Z'
+  });
+
+  store.setOpeningAcknowledged();
+  assert.deepEqual(store.getState().opening, {
+    status: 'acknowledged',
+    clientAckId: null,
+    acknowledgedAt: null
+  });
+  assert.equal('partyState' in store.getState(), false);
+});
+
 test('feature rendering escapes prose and keeps action as intent', () => {
   const html = renderScreen(firstScreen());
   assert.doesNotMatch(html, /<script>/u);

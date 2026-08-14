@@ -136,10 +136,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     const loadedPayload = structuredClone(payload);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    const currentVisibleContext = await loadPhase2VisibleContext({
-      commit: loadedPayload.last_turn?.visible_package
-    });
-    return withPhase2CurrentVisibleContext({
+    return {
       ...loadedPayload,
       world_identity: {
         world_revision_id: row.world_revision_id,
@@ -148,7 +145,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       temporal_boundary_candidates:
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof)
-    }, currentVisibleContext);
+    };
   }
 
   async function loadPhase2Replay({ partyId, idempotencyKey }) {

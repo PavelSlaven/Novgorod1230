@@ -118,7 +118,7 @@ function addFolds(model, strokes) {
     const ratio = (index + 1) / (count + 1);
     const x = left + (right - left) * ratio;
     const drift = (deterministicUnit(
-      model.identity.seed, 4300 + index
+      model.identity.seeds.clothing, 4300 + index
     ) - .5) * 18;
     strokes.push(line('fold', quadraticPoints(
       [x, 556 + index % 2 * 18],
@@ -137,6 +137,7 @@ function addHeadContour(model, geometry, visibility, strokes) {
   const head = geometry.head;
   if (visibility.crownOwner === 'head') {
     strokes.push(line('outer_silhouette', head.crown, model.ink.primary, {
+      part: 'head',
       salt: 4350, width: 2.75, roughness: 2.1, double: true
     }));
   }
@@ -149,14 +150,17 @@ function addHeadContour(model, geometry, visibility, strokes) {
   const rightSide = slicePoints(head.rightSide, rightStart, rightEnd);
   for (const [index, points] of [leftSide, rightSide].entries()) {
     strokes.push(line('outer_silhouette', points, model.ink.primary, {
+      part: 'head',
       salt: 4360 + index, width: 2.6, roughness: 1.9, double: true
     }));
   }
   if (visibility.jawOwner === 'head') {
     strokes.push(line('outer_silhouette', head.leftJaw, model.ink.primary, {
+      part: 'head',
       salt: 4370, width: 2.55, roughness: 1.8, double: true
     }));
     strokes.push(line('outer_silhouette', head.rightJaw, model.ink.primary, {
+      part: 'head',
       salt: 4371, width: 2.55, roughness: 1.8, double: true
     }));
   } else {
@@ -164,7 +168,13 @@ function addHeadContour(model, geometry, visibility, strokes) {
       'outer_silhouette',
       geometry.beard.outer,
       model.ink.primary,
-      { salt: 4380, width: 2.7, roughness: 2.4, double: true }
+      {
+        part: 'beard',
+        salt: 4380,
+        width: 2.7,
+        roughness: 2.4,
+        double: true
+      }
     ));
   }
 }
@@ -177,6 +187,7 @@ function addHairAndHeadwear(model, geometry, visibility, strokes) {
     if (geometry.headwear.kind !== 'headscarf') {
       for (const [index, points] of outer.entries()) {
         strokes.push(line('outer_silhouette', points, model.ink.primary, {
+          part: 'hair',
           salt: 4400 + index, width: 2.65, roughness: 2.2, double: true
         }));
       }
@@ -188,6 +199,7 @@ function addHairAndHeadwear(model, geometry, visibility, strokes) {
   if (geometry.headwear.present) {
     for (const [index, points] of geometry.headwear.outer.entries()) {
       strokes.push(line('outer_silhouette', points, model.ink.primary, {
+        part: 'headwear',
         salt: 4440 + index, width: 2.8, roughness: 2.5, double: true
       }));
     }

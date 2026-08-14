@@ -11,7 +11,7 @@ export function buildHatches(model, geometry, visibility) {
       hatches.push(line(
         'hair_hatch',
         points,
-        hairStrokeColor(model, index, 4500),
+        hairStrokeColor(model, index, 4500, 'hair'),
         {
           salt: 4500 + index,
           width: index % 4 ? 1.15 : 1.6,
@@ -22,6 +22,8 @@ export function buildHatches(model, geometry, visibility) {
     }
     if (visibility.details.braid) {
       addBraidInk(model, geometry.hair.braid, hatches);
+    } else if (visibility.details.braidTail) {
+      addBraidTailInk(model, geometry.hair.braid, hatches);
     }
   }
   if (geometry.beard.present) addBeardHatches(model, geometry, hatches);
@@ -55,7 +57,35 @@ function addBraidInk(model, braid, hatches) {
     hatches.push(line(
       'braid_link',
       points,
-      hairStrokeColor(model, index, 4560),
+      hairStrokeColor(model, index, 4560, 'hair'),
+      {
+        salt: 4560 + index,
+        width: index % 2 ? 1.45 : 1.7,
+        alpha: .72,
+        roughness: .9,
+        double: index % 2 === 0
+      }
+    ));
+  }
+  for (const [index, points] of braid.ties.entries()) {
+    hatches.push(line('braid_tie', points, model.hair.deep, {
+      salt: 4572 + index,
+      width: 1.55,
+      alpha: .78,
+      roughness: .75,
+      double: true
+    }));
+  }
+}
+
+function addBraidTailInk(model, braid, hatches) {
+  const firstVisible = Math.ceil(braid.links.length / 2);
+  for (const [offset, points] of braid.links.slice(firstVisible).entries()) {
+    const index = firstVisible + offset;
+    hatches.push(line(
+      'braid_link',
+      points,
+      hairStrokeColor(model, index, 4560, 'hair'),
       {
         salt: 4560 + index,
         width: index % 2 ? 1.45 : 1.7,
@@ -116,7 +146,7 @@ function addBeardHatches(model, geometry, hatches) {
         [x + (index % 2 ? 9 : -8), (startY + endY) / 2],
         [x * .72, endY], 10
       )),
-      hairStrokeColor(model, index, 4540),
+      hairStrokeColor(model, index, 4540, 'beard'),
       {
         salt: 4540 + index,
         width: 1.1,
@@ -127,8 +157,8 @@ function addBeardHatches(model, geometry, hatches) {
   }
 }
 
-function hairStrokeColor(model, index, salt) {
-  const gray = deterministicUnit(model.identity.seed, salt + index)
+function hairStrokeColor(model, index, salt, part) {
+  const gray = deterministicUnit(model.identity.seeds[part], salt + index)
     < model.hair.grayMix * 1.8;
   return gray
     ? model.hair.gray

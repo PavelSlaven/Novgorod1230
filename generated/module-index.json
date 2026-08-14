@@ -43,7 +43,8 @@
         "browser bootstrap и обработкой пользовательских намерений",
         "отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer",
         "скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`",
-        "внутренними детерминированными вариантами рисунка, включая отдельную процедурную конструкцию косы для `hair.style: \"braided\"`"
+        "внутренними детерминированными вариантами рисунка, включая отдельную процедурную конструкцию косы для `hair.style: \"braided\"`",
+        "`Portrait Drawing Contract v1`: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии, scoped seed каждой части и общий handmade ink-pass"
       ],
       "path": "apps/game-web",
       "public_entry": "./src/index.js",

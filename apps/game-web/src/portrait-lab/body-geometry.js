@@ -48,7 +48,11 @@ export function buildBodyGeometry(model) {
       rightBottom, 16
     )
   );
-  const torsoPatch = [...leftOutline, ...rightOutline];
+  const torsoPatch = [
+    ...leftOutline,
+    ...rightOutline,
+    [ribcage.cx, 786]
+  ];
   return Object.freeze({
     torsoPatch,
     leftOutline,
@@ -72,23 +76,35 @@ export function buildHeadwearGeometry(model, head) {
   const width = head.width;
   const height = head.height;
   if (kind === 'linen_cap') {
-    const left = [-width * .49, -height * .21];
-    const right = [width * .5, -height * .22];
+    const left = [-width * .49, -height * .1];
+    const right = [width * .5, -height * .11];
     const outer = joinPointSets(
       cubicPoints(
         left,
-        [-width * .42, -height * .54],
-        [-width * .12, -height * .62],
+        [-width * .55, -height * .32],
+        [-width * .46, -height * .56],
         [3, -height * .59], 12
       ),
       cubicPoints(
         [3, -height * .59],
-        [width * .23, -height * .6],
-        [width * .45, -height * .48],
+        [width * .48, -height * .58],
+        [width * .56, -height * .34],
         right, 12
       )
     );
-    const inner = quadraticPoints(left, [6, -height * .3], right, 14);
+    const innerLeft = [-width * .42, -height * .35];
+    const innerRight = [width * .43, -height * .35];
+    const inner = joinPointSets(
+      quadraticPoints(
+        left, [-width * .5, -height * .27], innerLeft, 6
+      ),
+      quadraticPoints(
+        innerLeft, [6, -height * .46], innerRight, 10
+      ),
+      quadraticPoints(
+        innerRight, [width * .5, -height * .27], right, 6
+      )
+    );
     return headwear(
       model, kind,
       [[...outer, ...[...inner].reverse()]],
@@ -97,17 +113,26 @@ export function buildHeadwearGeometry(model, head) {
     );
   }
   if (kind === 'fur_hat') {
+    const left = [-width * .47, -height * .1];
+    const right = [width * .48, -height * .1];
     const outer = [
-      [-width * .47, -height * .24],
-      [-width * .34, -height * .66],
-      [-width * .08, -height * .76],
-      [width * .36, -height * .63],
-      [width * .48, -height * .24]
+      left,
+      [-width * .55, -height * .3],
+      [-width * .48, -height * .56],
+      [-width * .2, -height * .72],
+      [width * .25, -height * .72],
+      [width * .5, -height * .55],
+      [width * .56, -height * .3],
+      right
     ];
     const inner = [
-      [-width * .49, -height * .29],
-      [0, -height * .22],
-      [width * .49, -height * .29]
+      left,
+      [-width * .48, -height * .27],
+      [-width * .42, -height * .35],
+      [0, -height * .43],
+      [width * .42, -height * .35],
+      [width * .49, -height * .27],
+      right
     ];
     return headwear(
       model, kind,
@@ -118,19 +143,23 @@ export function buildHeadwearGeometry(model, head) {
   }
   const outer = [
     [-width * .51, height * .32],
+    [-width * .515, height * .06],
     [-width * .52, -height * .2],
-    [-width * .38, -height * .56],
+    [-width * .46, -height * .56],
     [0, -height * .64],
-    [width * .43, -height * .53],
+    [width * .48, -height * .53],
     [width * .53, -height * .18],
+    [width * .495, height * .08],
     [width * .46, height * .34]
   ];
   const inner = [
-    [-width * .29, height * .2],
-    [-width * .31, -height * .16],
-    [0, -height * .34],
-    [width * .31, -height * .16],
-    [width * .29, height * .2]
+    [-width * .42, height * .2],
+    [-width * .5, -height * .08],
+    [-width * .49, -height * .28],
+    [0, -height * .43],
+    [width * .49, -height * .28],
+    [width * .5, -height * .08],
+    [width * .42, height * .2]
   ];
   return headwear(
     model, kind,

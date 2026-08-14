@@ -57,6 +57,7 @@ function addEyesAndBrows(model, patches, strokes) {
       salt: eye.salt + 18, width: 1.7, roughness: .35, double: true
     }));
     addEyeLids(model, eye, strokes);
+    addLashes(model, eye, strokes);
     addBrow(model, eye, strokes);
   }
 }
@@ -131,6 +132,23 @@ function addEyeLids(model, eye, strokes) {
   }
 }
 
+function addLashes(model, eye, strokes) {
+  if (!model.sex.lash) return;
+  const outerX = eye.x + eye.side * eye.halfWidth * .86;
+  for (let index = 0; index < 2; index += 1) {
+    const start = [
+      outerX - eye.side * index * 3,
+      eye.y - eye.height * (.4 - index * .08)
+    ];
+    strokes.push(line('lash', pointsToWorld(model, [
+      start,
+      [start[0] + eye.side * (5 - index), start[1] - 4 + index]
+    ]), model.hair.deep, {
+      salt: eye.salt + 34 + index, width: .9, alpha: .72, roughness: .3
+    }));
+  }
+}
+
 function addBrow(model, eye, strokes) {
   const width = model.head.width;
   const height = model.head.height;
@@ -146,7 +164,7 @@ function addBrow(model, eye, strokes) {
   );
   const middle = [
     (inner.x + outer.x) / 2,
-    Math.min(inner.y, outer.y) - 5 - eye.variant % 2 * 2
+    Math.min(inner.y, outer.y) - model.sex.browArch - eye.variant % 2 * 2
   ];
   strokes.push(line('brow', pointsToWorld(model, quadraticPoints(
     [outer.x, outer.y], middle, [inner.x, inner.y], 11
@@ -165,7 +183,8 @@ function addNose(model, strokes) {
   const top = -height * .035;
   const middle = height * .105;
   const bottom = height * (.205 + model.age.sag * .01);
-  const noseWidth = width * (.092 + (model.age.category === 'old' ? .008 : 0));
+  const noseWidth = width * (.092 + (model.age.category === 'old' ? .008 : 0))
+    * model.sex.noseScale;
   const variant = model.identity.variants.nose;
   for (const [index, points] of noseLines(variant, {
     axis, top, middle, bottom, noseWidth
@@ -184,7 +203,7 @@ function addMouth(model, patches, strokes) {
   const width = model.head.width;
   const height = model.head.height;
   const variant = model.identity.variants.mouth;
-  const halfWidth = width * (.135 + variant * .009);
+  const halfWidth = width * (.135 + variant * .009) * model.sex.mouthScale;
   const left = projectFacePoint(model, -halfWidth, height * .315);
   const right = projectFacePoint(model, halfWidth, height * .315);
   const centerX = model.head.faceAxisX + model.identity.asymmetry.mouth;
@@ -194,12 +213,15 @@ function addMouth(model, patches, strokes) {
   const centerY = height * .315 + model.expression.mouthCurve * 11;
   const open = Math.max(model.expression.mouthOpen, variant === 2 ? .15 : 0);
   if (open > .12) {
-    const openHeight = 8 + open * 23;
+    const openHeight = 8 + open * 14;
+    const openCenterY = centerY + (
+      model.expression.emotion === 'surprised' ? height * .04 : 0
+    );
     const shape = model.expression.emotion === 'surprised'
-      ? ellipsePoints(centerX, centerY + 4, 13 + open * 4, openHeight, 25)
+      ? ellipsePoints(centerX, openCenterY, 13 + open * 4, openHeight, 25)
       : joinPointSets(
-        quadraticPoints(leftCorner, [centerX, centerY - openHeight * .48], rightCorner, 11),
-        quadraticPoints(rightCorner, [centerX, centerY + openHeight], leftCorner, 11)
+        quadraticPoints(leftCorner, [centerX, openCenterY - openHeight * .48], rightCorner, 11),
+        quadraticPoints(rightCorner, [centerX, openCenterY + openHeight], leftCorner, 11)
       );
     patches.push(patch('mouth', pointsToWorld(model, shape), '#593c37', {
       alpha: .58, salt: 3300 + variant, roughness: 1.3
@@ -215,7 +237,7 @@ function addMouth(model, patches, strokes) {
     salt: 3330 + variant, width: variant === 4 ? 2.2 : 1.7,
     roughness: 1, double: variant === 0 || variant === 4
   }));
-  if (variant === 1 || variant === 3) {
+  if (model.sex.lipDefinition || variant === 1 || variant === 3) {
     strokes.push(line('lower_lip', pointsToWorld(model, quadraticPoints(
       [leftCorner[0] + 6, leftCorner[1] + 6],
       [centerX, centerY + 10],

@@ -12,7 +12,7 @@ function drawPatches(context, model, patches) {
     if (!entry.points?.length) continue;
     fillHandmadePatch(context, entry.points, {
       fill: entry.fill,
-      seed: model.identity.seed,
+      seed: entry.seed,
       salt: entry.salt,
       roughness: entry.roughness,
       alpha: entry.alpha
@@ -30,7 +30,7 @@ function drawInkPass(context, model, scene, { monochrome }) {
     if (!entry.points || entry.points.length < 2) continue;
     strokeHandmade(context, entry.points, {
       color: monochrome ? monochromeInk(model, entry) : entry.color,
-      seed: model.identity.seed,
+      seed: entry.seed,
       salt: entry.salt,
       roughness: entry.roughness,
       width: entry.width,

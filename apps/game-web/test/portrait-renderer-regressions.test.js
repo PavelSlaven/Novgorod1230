@@ -36,7 +36,8 @@ test('visibility removes occluded colour regions and ear marks', () => {
     hair: { length: 'long', style: 'braided' },
     clothing: { headwear: 'headscarf' }
   }));
-  assert.equal(hasStroke(braidedScarf, 'braid_link'), false);
+  assert.equal(hasStroke(braidedScarf, 'braid_lead'), false);
+  assert.equal(hasStroke(braidedScarf, 'braid_link'), true);
 
   const longHair = scene(spec({ hair: { length: 'long' } }));
   assert.equal(hasStroke(longHair, 'ear_mark'), false);

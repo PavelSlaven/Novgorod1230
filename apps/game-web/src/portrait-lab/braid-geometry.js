@@ -35,9 +35,9 @@ export function buildBraidGeometry(model, width, height) {
     ));
   });
   const lead = pointsToWorld(model, quadraticPoints(
-    [side * width * .24, -height * .23],
-    [side * width * .5, -height * .13],
-    [side * width * .47, startY - height * .052],
+    [side * width * .42, -height * .35],
+    [side * width * .6, -height * .24],
+    [side * width * .5, startY - height * .052],
     9
   ));
   const endY = startY + (linkCount - 1) * step + height * .065;

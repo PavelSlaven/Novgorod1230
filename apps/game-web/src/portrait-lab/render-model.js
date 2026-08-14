@@ -1,4 +1,7 @@
 import { assertPortraitSpecV1 } from './contract.js';
+import { buildPortraitIdentity } from './portrait-randomness.js';
+
+export { deterministicUnit } from './portrait-randomness.js';
 
 const SKIN = Object.freeze({
   pale: '#d9bca9', light: '#c9977d', warm: '#ad725b', brown: '#79503f'
@@ -45,27 +48,26 @@ export function buildRenderModel(spec) {
   const build = BUILDS[spec.person.build];
   const face = FACES[spec.person.face_shape];
   const age = AGES[spec.person.age];
-  const seed = hashSpec(spec);
-  const asymmetry = createAsymmetry(seed);
-  const variants = createVariants(seed);
+  const identity = buildPortraitIdentity(spec);
+  const { asymmetry, variants } = identity;
   const feminine = spec.person.sex === 'female';
   const bodyTurn = spec.pose.body === 'three_quarter' ? .16 : 0;
   const headTurn = spec.pose.head === 'slightly_turned' ? .14 : 0;
   const turn = bodyTurn + headTurn;
   const expression = expressionModel(spec.expression.emotion, spec.expression.intensity);
   const centerX = 384 + bodyTurn * 80;
-  const shoulder = build.shoulder + (feminine ? -18 : 12);
-  const headWidth = face.width * build.face * (feminine ? .95 : 1.03);
+  const shoulder = build.shoulder + (feminine ? -36 : 12);
+  const headWidth = face.width * build.face * (feminine ? .92 : 1.04);
   const headHeight = face.height * (feminine ? .98 : 1);
   const poseTilt = spec.pose.head === 'tilted' ? -.075 : 0;
-  const shoulderY = feminine ? 495 : 484;
+  const shoulderY = feminine ? 500 : 484;
   const farScale = 1 - turn * 1.18;
   const nearScale = 1 + turn * .18;
   const faceAxisX = turn * headWidth * .28;
 
   return Object.freeze({
     spec,
-    identity: Object.freeze({ seed, asymmetry, variants }),
+    identity,
     width: 768,
     height: 768,
     background: Object.freeze(BACKGROUNDS[spec.background]),
@@ -89,14 +91,14 @@ export function buildRenderModel(spec) {
       cy: 310 + age.sag * 5,
       width: headWidth,
       height: headHeight,
-      jaw: clamp(face.jaw + build.jaw + (feminine ? -.035 : .025), .61, .94),
+      jaw: clamp(face.jaw + build.jaw + (feminine ? -.06 : .03), .61, .94),
       chin: face.chin,
       turn,
       faceAxisX,
       farScale,
       nearScale,
       rotation: poseTilt + expression.headTilt,
-      neckWidth: build.neck + (feminine ? -8 : 5)
+      neckWidth: build.neck + (feminine ? -12 : 5)
     }),
     skin: colorRamp(SKIN[spec.person.skin_tone]),
     hair: Object.freeze({
@@ -115,8 +117,12 @@ export function buildRenderModel(spec) {
     age: Object.freeze({ ...age, category: spec.person.age }),
     sex: Object.freeze({
       feminine,
-      browWeight: feminine ? 3.8 : 6.2,
+      browWeight: feminine ? 3.2 : 6.2,
+      browArch: feminine ? 9 : 4,
       lash: feminine ? 1 : 0,
+      mouthScale: feminine ? .92 : 1.02,
+      lipDefinition: feminine ? 1 : 0,
+      noseScale: feminine ? .92 : 1.03,
       shoulderSlope: feminine ? 22 : 12
     }),
     expression,
@@ -201,62 +207,6 @@ export function projectFacePoint(model, x, y) {
   return Object.freeze({
     x: model.head.faceAxisX + x * scale,
     y: y + x * model.head.turn * .035
-  });
-}
-
-export function deterministicUnit(seed, salt = 0) {
-  let value = (seed ^ Math.imul(Number(salt) + 1, 0x9e3779b1)) >>> 0;
-  value ^= value >>> 16;
-  value = Math.imul(value, 0x7feb352d);
-  value ^= value >>> 15;
-  value = Math.imul(value, 0x846ca68b);
-  value ^= value >>> 16;
-  return (value >>> 0) / 4294967295;
-}
-
-function hashSpec(spec) {
-  const source = stableStringify(spec);
-  let hash = 2166136261;
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function stableStringify(value) {
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${stableStringify(value[key])}`).join(',')}}`;
-  }
-  return JSON.stringify(value);
-}
-
-function createAsymmetry(seed) {
-  const centered = (salt) => deterministicUnit(seed, salt) * 2 - 1;
-  return Object.freeze({
-    eyeOpen: centered(1),
-    eyeHeight: centered(2) * 5.5,
-    brow: centered(3) * 5.8,
-    mouth: centered(4) * 6.5,
-    faceLeft: centered(5) * .065,
-    faceRight: centered(6) * .065,
-    hair: Object.freeze(Array.from({ length: 7 }, (_, index) => centered(20 + index) * 10)),
-    beard: Object.freeze(Array.from({ length: 7 }, (_, index) => centered(40 + index) * 9))
-  });
-}
-
-function createVariants(seed) {
-  const choice = (salt, count) => Math.floor(deterministicUnit(seed, salt) * count) % count;
-  const leftEye = choice(61, 5);
-  return Object.freeze({
-    leftEye,
-    rightEye: (leftEye + 1 + choice(62, 3)) % 5,
-    nose: choice(63, 7),
-    mouth: choice(64, 5),
-    contour: choice(65, 4),
-    hair: choice(66, 4),
-    detail: choice(67, 5)
   });
 }
 

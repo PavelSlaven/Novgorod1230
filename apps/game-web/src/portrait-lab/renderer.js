@@ -22,3 +22,8 @@ export function renderPortrait(canvas, spec, { fills = true } = {}) {
 
 export { buildRenderModel } from './render-model.js';
 export { buildPortraitScene } from './portrait-scene.js';
+export {
+  PORTRAIT_DRAWING_CONTRACT_V1,
+  assertPortraitDrawingContract,
+  validatePortraitDrawingContract
+} from './drawing-contract.js';

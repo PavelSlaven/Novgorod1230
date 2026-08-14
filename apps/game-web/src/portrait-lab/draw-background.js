@@ -8,7 +8,7 @@ export function drawBackground(context, model) {
 }
 
 function drawPaperFibers(context, model) {
-  const { seed } = model.identity;
+  const seed = model.identity.seeds.background;
   context.save();
   context.strokeStyle = rgba(model.background.fiber, .075);
   context.fillStyle = rgba(model.background.fiber, .055);

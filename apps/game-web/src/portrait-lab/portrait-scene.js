@@ -1,5 +1,9 @@
 import { ellipsePoints } from './handmade.js';
 import { buildFaceScene } from './face-scene.js';
+import {
+  PORTRAIT_DRAWING_CONTRACT_V1,
+  assertPortraitDrawingContract
+} from './drawing-contract.js';
 import { pointsToWorld } from './geometry-utils.js';
 import { buildPortraitGeometry } from './portrait-geometry.js';
 import { buildHatches, buildScratches } from './portrait-hatches.js';
@@ -14,26 +18,37 @@ export function buildPortraitScene(model) {
   const geometry = buildPortraitGeometry(model);
   const visibility = resolveVisibility(model, geometry);
   const face = buildFaceScene(model, visibility);
-  const strokes = [
+  const strokes = withPartSeeds([
     ...buildVisibleStrokes(model, geometry, visibility),
     ...face.strokes
-  ];
-  const hatches = [
+  ], model);
+  const hatches = withPartSeeds([
     ...buildHatches(model, geometry, visibility),
     ...face.hatches
-  ];
-  const patches = [
+  ], model);
+  const patches = withPartSeeds([
     ...buildPatches(model, geometry, visibility),
     ...face.patches
-  ];
-  return Object.freeze({
+  ], model);
+  const scratches = withPartSeeds(buildScratches(model), model);
+  const scene = Object.freeze({
+    contract: PORTRAIT_DRAWING_CONTRACT_V1.schema,
     geometry,
     visibility,
     patches: Object.freeze(patches),
     strokes: Object.freeze(strokes),
     hatches: Object.freeze(hatches),
-    scratches: Object.freeze(buildScratches(model))
+    scratches: Object.freeze(scratches)
   });
+  assertPortraitDrawingContract(model, scene);
+  return scene;
+}
+
+function withPartSeeds(entries, model) {
+  return entries.map((entry) => Object.freeze({
+    ...entry,
+    seed: model.identity.seeds[entry.part]
+  }));
 }
 
 function resolveVisibility(model, geometry) {
@@ -48,14 +63,16 @@ function resolveVisibility(model, geometry) {
     ['medium', 'long'].includes(model.spec.hair.length)
       || model.spec.hair.style === 'braided'
   );
+  const torsoOwner = model.clothing.outer === 'none'
+    ? 'tunic'
+    : model.clothing.outer;
   return Object.freeze({
     crownOwner,
     jawOwner,
     neckVisible: neckStartY < geometry.body.collarY - 3,
     neckStartY,
-    lowerGarmentBoundary: model.clothing.outer === 'none'
-      ? 'tunic'
-      : model.clothing.outer,
+    torsoOwner,
+    lowerGarmentBoundary: torsoOwner,
     patches: Object.freeze({
       tunic: model.clothing.outer === 'none',
       outerGarment: model.clothing.outer !== 'none',
@@ -69,7 +86,9 @@ function resolveVisibility(model, geometry) {
       earMarks: geometry.headwear.kind !== 'headscarf'
         && !hairCoversEars,
       braid: geometry.hair.braid.present
-        && geometry.headwear.kind !== 'headscarf'
+        && geometry.headwear.kind !== 'headscarf',
+      braidTail: geometry.hair.braid.present
+        && geometry.headwear.kind === 'headscarf'
     }),
     hidden: Object.freeze({
       headCrown: crownOwner !== 'head',
@@ -176,11 +195,21 @@ function garmentPatches(model, geometry) {
     })];
   }
   if (model.clothing.outer === 'cloak') {
+    const collar = [center - 20, 468];
+    const shoulder = [
+      model.body.shoulderLeft - 8,
+      model.body.shoulderLeftY + 48
+    ];
     return [patch('cloak', [
-      [center - 20, 468],
-      [model.body.shoulderLeft - 8, model.body.shoulderLeftY + 48],
+      collar,
+      [
+        (collar[0] + shoulder[0]) / 2,
+        (collar[1] + shoulder[1]) / 2
+      ],
+      shoulder,
       [model.body.waistLeft - 14, 782],
-      [center - 62, 782]
+      [center - 62, 782],
+      [(center - 62 + collar[0]) / 2, (782 + collar[1]) / 2]
     ], model.clothing.secondary.base, {
       alpha: .15, salt: 4120, roughness: 7
     })];

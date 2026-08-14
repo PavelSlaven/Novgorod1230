@@ -129,8 +129,9 @@ function buildHairGeometry(model, head) {
   const jitter = model.identity.asymmetry.hair;
   const recede = model.age.category === 'old' ? .095
     : model.age.category === 'middle_aged' ? .045 : 0;
-  const leftEdge = [-width * .47, -height * .2];
-  const rightEdge = [width * .48, -height * .22];
+  const hairlineY = -height * (.35 + recede * .75);
+  const leftEdge = [-width * .52, -height * .2];
+  const rightEdge = [width * .53, -height * .22];
   const top = [jitter[4], -height * (.54 - recede * .15)];
   const crown = joinPointSets(
     cubicPoints(leftEdge, [-width * .44, -height * .45], [-width * .2, -height * .57], top, 13),
@@ -139,18 +140,21 @@ function buildHairGeometry(model, head) {
   const hairline = Array.from({ length: 11 }, (_, index) => {
     const ratio = index / 10;
     return [
-      -width * .43 + ratio * width * .86,
-      -height * (.235 - recede) + jitter[index % 7] * .7
-        + (index % 2 ? 7 : -2) + Math.abs(ratio - .5) * 9
+      -width * .36 + ratio * width * .72,
+      hairlineY + jitter[index % 7] * .5
+        + (index % 2 ? 4 : -2) + Math.abs(ratio - .5) * 7
     ];
   });
+  const crownWash = crown.filter((point) => (
+    point[1] <= hairlineY - height * .015
+  ));
   const crownPatch = pointsToWorld(model, [
-    ...crown,
+    ...crownWash,
     ...[...hairline].reverse()
   ]);
   const patches = [crownPatch];
   const outer = [pointsToWorld(model, crown)];
-  const crownStrokeGuides = crownStrands(model, width, height);
+  const crownStrokeGuides = crownStrands(model, width, height, hairlineY);
   const sideStrokeGuides = [];
 
   if (model.spec.hair.length !== 'short'
@@ -200,7 +204,7 @@ function buildHairGeometry(model, head) {
   });
 }
 
-function crownStrands(model, width, height) {
+function crownStrands(model, width, height, hairlineY) {
   const braided = model.spec.hair.style === 'braided';
   const count = model.spec.hair.style === 'straight' ? 8 : braided ? 7 : 12;
   const wavy = ['wavy', 'loose'].includes(model.spec.hair.style);
@@ -217,7 +221,7 @@ function crownStrands(model, width, height) {
     return pointsToWorld(model, quadraticPoints(
       [x * .72, -height * (.47 + index % 3 * .015)],
       [x + bend, -height * .34],
-      [endX, -height * .23 + Math.abs(ratio - .5) * 9], 11
+      [endX, hairlineY + Math.abs(ratio - .5) * 7], 11
     ));
   });
 }

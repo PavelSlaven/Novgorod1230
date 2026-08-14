@@ -572,6 +572,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(retrySemanticCalls, 2);
   assert.equal(retryRolls, 2);
 
+  await assertGeneralLookUsesOpeningScene({
+    pool,
+    release,
+    runtimeCatalogPin
+  });
+
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
@@ -585,6 +591,86 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     pendingPresentation: true
   });
 });
+
+async function assertGeneralLookUsesOpeningScene({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  let narrationRequest = null;
+  let randomDraws = 0;
+  const runtime = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    randomDrawObserver: () => { randomDraws += 1; },
+    narrationService: {
+      async run(request) {
+        narrationRequest = structuredClone(request);
+        return approvedNarration(request.request_id);
+      }
+    }
+  });
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-general-look-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-general-look-ack'
+  });
+  const itemCountBefore = await count(
+    pool,
+    'party_runtime.party_items',
+    opened.party_id
+  );
+  const result = await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-general-look',
+    idempotency_key: 'phase-2-general-look',
+    raw_text: 'Осмотреться'
+  });
+  assert.equal(result.turn_number, 1);
+  assert.equal(result.check, null);
+  assert.equal(result.time_update.clock_after.whole_minutes, '333061');
+  assert.equal(randomDraws, 0);
+  assert.equal(narrationRequest.visible_context.visible_scene,
+    opened.screen.visible_context.place);
+  assert.notEqual(narrationRequest.visible_context.visible_scene,
+    opened.screen.main_prose);
+  assert.notEqual(narrationRequest.visible_context.visible_scene,
+    'Заявленное действие завершено.');
+  assert.deepEqual(
+    [...narrationRequest.visible_context.sensory_details].sort(),
+    [...opened.screen.visible_context.environment.facts].sort()
+  );
+  const playerSafe = JSON.stringify(narrationRequest);
+  assert.equal(playerSafe.includes('visible:road_bag_missing'), false);
+  assert.equal(playerSafe.includes('trace_ld_v1_item_blue_wool_fragment'),
+    false);
+  assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
+    opened.party_id), 0);
+  assert.equal(await count(pool, 'party_runtime.party_character_knowledge',
+    opened.party_id), 0);
+  assert.equal(await count(pool, 'party_runtime.party_items', opened.party_id),
+    itemCountBefore);
+  const persisted = (await pool.query(
+    `SELECT visible_payload
+       FROM party_runtime.party_visible_packages
+      WHERE party_id=$1
+      ORDER BY committed_state_version::bigint DESC
+      LIMIT 1`,
+    [opened.party_id]
+  )).rows[0].visible_payload;
+  assert.equal(persisted.perceived_scene,
+    opened.screen.visible_context.place);
+  assert.deepEqual([...persisted.sensory_details].sort(),
+    [...opened.screen.visible_context.environment.facts].sort());
+  assert.equal((await pool.query(
+    `SELECT state_payload ? 'current_visible_context' AS leaked
+       FROM party_runtime.party_state_snapshots
+      WHERE party_id=$1 AND state_version=1`,
+    [opened.party_id]
+  )).rows[0].leaked, false);
+}
 
 function buildRuntime({
   pool,

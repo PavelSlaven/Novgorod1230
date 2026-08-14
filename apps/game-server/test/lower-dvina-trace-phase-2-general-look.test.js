@@ -53,8 +53,18 @@ test('revision 13 general look stays a generic player-safe turn',
           before.items.map(({ template_id: id }) => id).sort()
         );
         assert.equal(result.check, undefined);
+        const narratorInput = f.narratorInput();
+        assert.match(narratorInput.visible_context.visible_scene, /\S/);
+        assert.notEqual(
+          narratorInput.visible_context.visible_scene,
+          'Заявленное действие завершено.'
+        );
+        assert.deepEqual(
+          [...narratorInput.visible_context.sensory_details].sort(),
+          [...before.environment_snapshot.facts].sort()
+        );
         const playerSafe = JSON.stringify({ result,
-          narrator: f.narratorInput() });
+          narrator: narratorInput });
         assert.equal(playerSafe.includes('visible:road_bag_missing'), false);
         assert.equal(playerSafe.includes(
           'trace_ld_v1_item_blue_wool_fragment'), false);

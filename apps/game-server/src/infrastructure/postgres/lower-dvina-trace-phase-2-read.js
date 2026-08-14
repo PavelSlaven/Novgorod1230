@@ -275,3 +275,21 @@ export function phase2IntegrityError() {
     { status: 409 }
   );
 }
+
+export function validPhase2Snapshot(payload, row, partyId) {
+  return [
+    'rus.lower_dvina_trace_phase_2_snapshot.v1',
+    'rus.lower_dvina_trace_turn_snapshot.v2'
+  ].includes(payload?.schema)
+    && row.state_digest === canonicalDigest(payload)
+    && payload.party_id === partyId
+    && payload.party_state.state_version
+      === Number(row.party_state_version)
+    && payload.party_state.turn_number === Number(row.turn_number)
+    && payload.party_state.session_state_version
+      === Number(row.session_state_version)
+    && payload.party_state.body_state_version
+      === Number(row.body_state_version)
+    && payload.party_state.clock_state_version
+      === Number(row.clock_state_version);
+}

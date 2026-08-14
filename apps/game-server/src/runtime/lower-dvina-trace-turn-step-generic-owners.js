@@ -18,6 +18,8 @@ import {
   semanticBodyContext,
   validBodyPart
 } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { projectCurrentSceneForNoOperationDirect } from
+  './lower-dvina-trace-turn-step-current-scene.js';
 
 export const GENERIC_BODY_EFFECT_REF =
   'trace_ld_v1_turn_step_generic_body_effect_v1';
@@ -260,6 +262,12 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const directSeeds = Object.entries(consequence.visible_seed)
         .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
       const body = input.body_update?.state_after ?? {};
+      const currentScene = projectCurrentSceneForNoOperationDirect({
+        input,
+        directSeedKeys: directSeeds.map(([key]) => key),
+        body
+      });
+      if (currentScene != null) return currentScene;
       return deepFreeze({
         version: 1,
         schema: 'visible_context_package',

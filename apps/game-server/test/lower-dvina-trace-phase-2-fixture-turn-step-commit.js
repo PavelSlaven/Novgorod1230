@@ -3,9 +3,11 @@ import { commitLowerDvinaTracePhase2 } from
 
 export async function commitGeneric({ commitInput, state }) {
   let plan = null;
+  const committableState = structuredClone(state);
+  delete committableState.current_visible_context;
   const committed = await commitLowerDvinaTracePhase2({
     ...commitInput,
-    loadState: async () => structuredClone(state),
+    loadState: async () => structuredClone(committableState),
     committer: {
       async commit(input) {
         plan = input.plan;

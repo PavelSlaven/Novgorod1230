@@ -13,7 +13,8 @@ Browser-клиент, который получает только versioned pub
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
 - отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer;
-- скрытой portrait geometry/armature, scene-level visibility/occlusion и единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`.
+- скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
+- внутренними детерминированными вариантами рисунка, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`.
 
 ## Не делает
 

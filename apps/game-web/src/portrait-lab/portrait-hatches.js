@@ -20,6 +20,9 @@ export function buildHatches(model, geometry, visibility) {
         }
       ));
     }
+    if (visibility.details.braid) {
+      addBraidInk(model, geometry.hair.braid, hatches);
+    }
   }
   if (geometry.beard.present) addBeardHatches(model, geometry, hatches);
   if (model.clothing.outer === 'sheepskin') {
@@ -38,6 +41,39 @@ export function buildHatches(model, geometry, visibility) {
     }
   }
   return hatches;
+}
+
+function addBraidInk(model, braid, hatches) {
+  hatches.push(line('braid_lead', braid.lead, model.hair.deep, {
+    salt: 4558,
+    width: 1.65,
+    alpha: .72,
+    roughness: .85,
+    double: true
+  }));
+  for (const [index, points] of braid.links.entries()) {
+    hatches.push(line(
+      'braid_link',
+      points,
+      hairStrokeColor(model, index, 4560),
+      {
+        salt: 4560 + index,
+        width: index % 2 ? 1.45 : 1.7,
+        alpha: .72,
+        roughness: .9,
+        double: index % 2 === 0
+      }
+    ));
+  }
+  for (const [index, points] of braid.ties.entries()) {
+    hatches.push(line('braid_tie', points, model.hair.deep, {
+      salt: 4572 + index,
+      width: 1.55,
+      alpha: .78,
+      roughness: .75,
+      double: true
+    }));
+  }
 }
 
 function visibleHairStrands(geometry, visibility) {

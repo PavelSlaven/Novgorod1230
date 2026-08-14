@@ -7,6 +7,7 @@ import {
   buildBodyGeometry,
   buildHeadwearGeometry
 } from './body-geometry.js';
+import { buildBraidGeometry } from './braid-geometry.js';
 import { pointsToWorld, toWorld } from './geometry-utils.js';
 
 export { pointsToWorld, toWorld } from './geometry-utils.js';
@@ -109,6 +110,7 @@ function buildHeadGeometry(model) {
 }
 
 function buildHairGeometry(model, head) {
+  const braid = buildBraidGeometry(model, head.width, head.height);
   if (model.spec.hair.length === 'bald') {
     const empty = Object.freeze([]);
     return Object.freeze({
@@ -118,7 +120,8 @@ function buildHairGeometry(model, head) {
       hairline: empty,
       strands: empty,
       crownStrands: empty,
-      sideStrands: empty
+      sideStrands: empty,
+      braid
     });
   }
   const width = head.width;
@@ -150,7 +153,8 @@ function buildHairGeometry(model, head) {
   const crownStrokeGuides = crownStrands(model, width, height);
   const sideStrokeGuides = [];
 
-  if (model.spec.hair.length !== 'short') {
+  if (model.spec.hair.length !== 'short'
+      && model.spec.hair.style !== 'braided') {
     const long = model.spec.hair.length === 'long';
     const bottom = height * (long ? .79 : .5);
     const leftOuter = cubicPoints(
@@ -191,21 +195,29 @@ function buildHairGeometry(model, head) {
     hairline: pointsToWorld(model, hairline),
     strands: Object.freeze([...crownStrokeGuides, ...sideStrokeGuides]),
     crownStrands: Object.freeze(crownStrokeGuides),
-    sideStrands: Object.freeze(sideStrokeGuides)
+    sideStrands: Object.freeze(sideStrokeGuides),
+    braid
   });
 }
 
 function crownStrands(model, width, height) {
-  const count = model.spec.hair.style === 'straight' ? 8 : 12;
+  const braided = model.spec.hair.style === 'braided';
+  const count = model.spec.hair.style === 'straight' ? 8 : braided ? 7 : 12;
   const wavy = ['wavy', 'loose'].includes(model.spec.hair.style);
+  const braidSide = model.identity.variants.hair % 2 ? 1 : -1;
   return Array.from({ length: count }, (_, index) => {
     const ratio = index / Math.max(1, count - 1);
     const x = -width * .4 + ratio * width * .8;
-    const bend = wavy ? (index % 2 ? 16 : -14) : 0;
+    const bend = braided
+      ? braidSide * width * (.12 + ratio * .09)
+      : wavy ? (index % 2 ? 16 : -14) : 0;
+    const endX = braided
+      ? x * .35 + braidSide * width * .24
+      : x;
     return pointsToWorld(model, quadraticPoints(
       [x * .72, -height * (.47 + index % 3 * .015)],
       [x + bend, -height * .34],
-      [x, -height * .23 + Math.abs(ratio - .5) * 9], 11
+      [endX, -height * .23 + Math.abs(ratio - .5) * 9], 11
     ));
   });
 }

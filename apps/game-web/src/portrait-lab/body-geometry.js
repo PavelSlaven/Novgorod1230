@@ -141,7 +141,7 @@ export function buildHeadwearGeometry(model, head) {
   return headwear(
     model, kind,
     [[...outer, ...[...inner].reverse()], tail],
-    [outer],
+    [outer, [...tail, tail[0]]],
     [inner]
   );
 }

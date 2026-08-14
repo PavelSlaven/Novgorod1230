@@ -8,7 +8,7 @@ import { pointsToWorld, toWorld } from './geometry-utils.js';
 import { projectFacePoint } from './render-model.js';
 import { line, patch } from './scene-primitives.js';
 
-export function buildFaceScene(model) {
+export function buildFaceScene(model, visibility) {
   const patches = [];
   const strokes = [];
   const hatches = [];
@@ -16,7 +16,7 @@ export function buildFaceScene(model) {
   addNose(model, strokes);
   addMouth(model, patches, strokes);
   addAgeAndExpression(model, strokes, hatches);
-  addEarMarks(model, strokes);
+  if (visibility.details.earMarks) addEarMarks(model, strokes);
   return Object.freeze({ patches, strokes, hatches });
 }
 

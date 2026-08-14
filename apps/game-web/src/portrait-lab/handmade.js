@@ -97,13 +97,9 @@ function wobble(points, { seed, salt, amplitude, closed }) {
       + .29 * Math.sin(t * Math.PI * 4 + phaseB)
       + .13 * Math.sin(t * Math.PI * 6 + phaseC)
     );
-    const endpointTaper = closed ? 1 : Math.sin(t * Math.PI);
-    const micro = (deterministicUnit(seed, salt + 1000 + index) * 2 - 1)
-      * amplitude * .3 * endpointTaper;
-    const displaced = offset + micro;
     return [
-      point[0] - dy / length * displaced,
-      point[1] + dx / length * displaced
+      point[0] - dy / length * offset,
+      point[1] + dx / length * offset
     ];
   });
 }

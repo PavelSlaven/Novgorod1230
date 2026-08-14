@@ -36,7 +36,10 @@ export function renderLandscape(screen) {
     ...[...facts].sort().map((fact) => `landscape--${fact}`)
   ].filter(Boolean).join(' ');
   const label = scalar(context.location_label ?? context.place);
-  return `<section class="scene-viewport landscape${modifiers ? ` ${modifiers}` : ''}" data-landscape aria-label="Условный вид места действия"><div class="landscape-sky" aria-hidden="true"></div><div class="landscape-horizon" aria-hidden="true"></div><div class="landscape-ground" aria-hidden="true"></div><div class="landscape-weather" aria-hidden="true"></div><div class="scene-grain" aria-hidden="true"></div>${label ? `<p class="landscape-caption">${escapeHtml(label)}</p>` : ''}</section>`;
+  const semanticLayers = facts.size > 0 || weather !== null || dayPart !== null
+    ? '<div class="landscape-sky" aria-hidden="true"></div><div class="landscape-horizon" aria-hidden="true"></div><div class="landscape-ground" aria-hidden="true"></div><div class="landscape-weather" aria-hidden="true"></div>'
+    : '';
+  return `<section class="scene-viewport landscape${modifiers ? ` ${modifiers}` : ''}" data-landscape aria-label="Условный вид места действия">${semanticLayers}<div class="scene-grain" aria-hidden="true"></div>${label ? `<p class="landscape-caption">${escapeHtml(label)}</p>` : ''}</section>`;
 }
 
 function controlledValue(candidates, vocabulary) {

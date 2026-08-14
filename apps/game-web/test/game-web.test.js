@@ -296,17 +296,37 @@ test('landscape is deterministic and varies only by closed public inputs', () =>
     'landscape--wet', 'landscape--cold', 'landscape--exposed',
     'landscape--weather-rain', 'landscape--day-dusk'
   ]) assert.match(first, new RegExp(modifier, 'u'));
+  for (const layer of [
+    'landscape-sky', 'landscape-horizon', 'landscape-ground',
+    'landscape-weather'
+  ]) assert.match(first, new RegExp(layer, 'u'));
   assert.doesNotMatch(first, /profile_id|unknown-fact|timestamp/u);
+});
 
-  const neutral = renderLandscape({
+test('landscape without supported cues stays abstract and deterministic', () => {
+  const emptyScreen = { ...firstScreen(), visible_context: {} };
+  const empty = renderLandscape(emptyScreen);
+  assert.equal(empty, renderLandscape(structuredClone(emptyScreen)));
+  assert.doesNotMatch(empty,
+    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+
+  const unsupportedScreen = {
     ...firstScreen(),
     visible_context: {
-      location_label: 'Ночь у реки под снегом',
+      location_label: '<Стан>',
       environment: { profile_id: 'night-rain', facts: ['very_cold'] },
       weather_label: 'Сильный дождь', day_part_label: 'Поздняя ночь'
     }
-  });
-  assert.doesNotMatch(neutral, /landscape--weather-|landscape--day-|landscape--cold/u);
+  };
+  const unsupported = renderLandscape(unsupportedScreen);
+  assert.equal(unsupported,
+    renderLandscape(structuredClone(unsupportedScreen)));
+  assert.match(unsupported, /&lt;Стан&gt;/u);
+  assert.doesNotMatch(unsupported, /<Стан>/u);
+  assert.doesNotMatch(unsupported,
+    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+  assert.doesNotMatch(unsupported,
+    /night-rain|very_cold|Сильный дождь|Поздняя ночь/u);
 });
 
 test('conversation portrait uses only the canonical interlocutor field', () => {

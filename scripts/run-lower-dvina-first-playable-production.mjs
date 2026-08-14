@@ -1,39 +1,25 @@
 #!/usr/bin/env node
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFile, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { isAbsolute, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import pg from 'pg';
 
 import {
-  SPATIAL_V3_TARGET_MIGRATIONS
-} from '../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
-import {
-  applyFirstPlayableV2ActivationBundle,
-  buildFirstPlayableV2ActivationBundle
-} from '../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
-import {
-  applyLowerDvinaBoundaryV3ActivationBundle,
-  buildLowerDvinaBoundaryV3ActivationBundle,
   LOWER_DVINA_BOUNDARY_V3_RELEASE
 } from '../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
 import {
   PARTY_RUNTIME_CATALOG_MIGRATION,
-  WORLD_RUNTIME_CATALOG_MIGRATION,
-  runPartyRuntimeCatalogMigration,
-  runWorldRuntimeCatalogMigration
+  WORLD_RUNTIME_CATALOG_MIGRATION
 } from '../tools/runtime-catalog-activation/src/forward-migrations.js';
 import {
   evaluateFirstPlayableProductionPreflight
 } from '../tools/runtime-catalog-activation/src/production-preflight.js';
 import {
-  buildLowerDvinaV2ImportSql
-} from '../tools/spatial-v3/lower-dvina-v2-importer.mjs';
-import {
-  buildLowerDvinaBoundaryV1ImportSql
-} from '../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
+  applyFreshLowerDvinaProductionSetup
+} from './lower-dvina-first-playable-production-setup.mjs';
 
 const { values, positionals } = parseArgs({
   allowPositionals: true,
@@ -124,82 +110,11 @@ try {
         'Rehearsal accepts only explicitly named disposable databases'
       );
     }
-    const promoted = spawnSync(
-      process.execPath,
-      ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'],
-      {
-        cwd: repositoryRoot,
-        encoding: 'utf8',
-        timeout: 240_000,
-        env: { ...process.env, PR17_TEST_DATABASE_URL: worldUrl }
-      }
-    );
-    if (promoted.status !== 0) {
-      fail(
-        'PRODUCTION_STAGE3C_IMPORT_FAILED',
-        promoted.stderr.trim() || 'Stage 3C import failed'
-      );
-    }
-    const promotionResult = JSON.parse(promoted.stdout);
-    if (promotionResult.pass !== true
-        || promotionResult.applied !== true
-        || promotionResult.activation_performed !== false) {
-      fail(
-        'PRODUCTION_STAGE3C_EVIDENCE_INVALID',
-        'Stage 3C did not produce the exact approved promoted state'
-      );
-    }
-    for (const file of ['18.sql', '19.sql', '20.sql']) {
-      await worldPool.query(await readFile(
-        resolve(repositoryRoot, 'infra/world-base/schema', file),
-        'utf8'
-      ));
-    }
-    await worldPool.query(await buildLowerDvinaV2ImportSql());
-    for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) {
-      await partyPool.query(sql);
-    }
-    const worldMigration =
-      await runWorldRuntimeCatalogMigration(worldPool);
-    const partyMigration =
-      await runPartyRuntimeCatalogMigration(partyPool);
-    const parentBundle = await buildFirstPlayableV2ActivationBundle({
-      worldPool,
-      partyPool,
-      repositoryRoot,
+    const setup = await applyFreshLowerDvinaProductionSetup({
+      worldPool, partyPool, worldUrl, repositoryRoot,
       gitCommitSha: gitState.head,
-      authorizationRef: required(
-        values['authorization-ref'],
-        'authorization reference'
-      )
-    });
-    const parentActivation = await applyFirstPlayableV2ActivationBundle({
-      worldPool,
-      partyPool,
-      bundle: parentBundle
-    });
-    await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
-      root: repositoryRoot
-    }));
-    const bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
-      worldPool,
-      partyPool,
-      repositoryRoot,
-      gitCommitSha: gitState.head,
-      authorizationRef: required(
-        values['authorization-ref'],
-        'authorization reference'
-      )
-    });
-    const activation = await applyLowerDvinaBoundaryV3ActivationBundle({
-      worldPool,
-      partyPool,
-      bundle
-    });
-    const readback = await readActivationReadback({
-      worldPool,
-      partyPool,
-      bundle
+      authorizationRef: required(values['authorization-ref'],
+        'authorization reference')
     });
     await emit({
       schema: 'rus.lower_dvina_production_activation_result.v1',
@@ -211,19 +126,7 @@ try {
         world_database: expectedWorldDatabase,
         party_database: expectedPartyDatabase
       },
-      promotion: {
-        decision: promotionResult.decision,
-        target_revision_id: promotionResult.target_revision_id,
-        candidate_digest: promotionResult.candidate_digest
-      },
-      migrations: {
-        world: worldMigration,
-        party: partyMigration
-      },
-      bundle_digest: bundle.bundle_digest,
-      parent_v2_activation: parentActivation,
-      activation,
-      readback
+      ...setup
     });
   }
 } finally {
@@ -318,39 +221,6 @@ async function databaseInventory(pool) {
     database: row.database,
     principal: row.principal,
     user_table_count: Number(row.user_table_count)
-  };
-}
-
-async function readActivationReadback({
-  worldPool,
-  partyPool,
-  bundle
-}) {
-  const active = (await worldPool.query(
-    `SELECT
-       event_id,catalog_scope,catalog_revision_id,catalog_digest,
-       runtime_contract_digest,compatible_world_revision_id,
-       compatible_world_catalog_digest,
-       compatible_world_pin_manifest_digest
-     FROM world_base.runtime_catalog_activation_events
-     WHERE request_digest=$1`,
-    [bundle.activation_request.activation_request_digest]
-  )).rows[0];
-  const partyCount = Number((await partyPool.query(
-    'SELECT count(*)::int AS count FROM party_runtime.parties'
-  )).rows[0].count);
-  if (!active || partyCount !== 0) {
-    fail(
-      'PRODUCTION_ACTIVATION_READBACK_FAILED',
-      'Exact active event or empty first-launch party state was not observed'
-    );
-  }
-  return {
-    active_event: active,
-    party_count_before_smoke: partyCount,
-    release_status: 'active',
-    production_activation: true,
-    runtime_selectable_in_canonical_production: true
   };
 }
 

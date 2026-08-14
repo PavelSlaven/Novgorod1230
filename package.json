@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "start": "node apps/game-server/src/server.js",
+    "play:local": "node tools/local-play/play-local.mjs",
+    "play:local:install-shortcut": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/local-play/install-desktop-shortcut.ps1",
     "test": "npm run test:modules && npm run test:domain && npm run test:apps && npm run test:tools && npm run test:shadow && npm run test:cutover && npm run docs:check && npm run test:integration && npm run test:acceptance && npm run test:browser-e2e && npm run architecture:check",
     "test:modules": "node --test test/modules/*.test.js",
     "test:legacy": "cd legacy && node --test --test-concurrency=1 test/*.test.js",

@@ -105,21 +105,32 @@ fallback.
 LLM выбирает закрытые варианты либо возвращает строгий player `turn_step_plan_v1`; факты, производные механики и запись остаются code-owned.
 ```
 
-## Быстрый запуск
+## Локально поиграть
 
-Требуется Node.js 22+.
+Нужны Node.js 22+, Docker Desktop и ключ DeepSeek. Для однокликового запуска
+положите raw-токен одной строкой без пробелов в файл
+`Documents\NOVGOROD API\API KEY DEEPSEEK DVINA.env`, затем один раз создайте
+ярлык:
 
-```bash
+```powershell
+npm run play:local:install-shortcut
+```
+
+Двойной клик по ярлыку `Новгород 1230 — играть` при необходимости запускает
+Docker Desktop, выполняет `npm ci` при отсутствии `node_modules`, поднимает
+Local Play и открывает <http://127.0.0.1:3000>. Консоль остаётся открытой для
+логов и остановки через Ctrl+C.
+
+Обычный запуск из PowerShell остаётся доступен:
+
+```powershell
 npm ci
-npm test
-npm start
+$env:DEEPSEEK_API_KEY="..."
+npm run play:local
 ```
 
-CLI-запуск:
-
-```bash
-npm run start:cli
-```
+После сообщения о готовности откройте <http://127.0.0.1:3000>. Повторный
+запуск использует тот же сохранённый мир и партии из выделенного Docker volume.
 
 ## Основная документация
 

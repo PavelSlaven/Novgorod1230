@@ -132,16 +132,10 @@ export function buildHeadwearGeometry(model, head) {
     [width * .31, -height * .16],
     [width * .29, height * .2]
   ];
-  const tail = [
-    [width * .44, height * .24],
-    [width * .64, height * .49],
-    [width * .52, height * .76],
-    [width * .39, height * .4]
-  ];
   return headwear(
     model, kind,
-    [[...outer, ...[...inner].reverse()], tail],
-    [outer, [...tail, tail[0]]],
+    [[...outer, ...[...inner].reverse()]],
+    [outer],
     [inner]
   );
 }

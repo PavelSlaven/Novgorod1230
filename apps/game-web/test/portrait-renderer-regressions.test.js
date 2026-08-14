@@ -75,6 +75,27 @@ test('braided hair has its own visible procedural construction', () => {
   );
 });
 
+test('long loose hair has attached open sides without a detached loop', () => {
+  const loose = scene(spec({
+    hair: { length: 'long', style: 'loose', facial_hair: 'none' },
+    clothing: { headwear: 'none' }
+  }));
+  const [crown, leftSide, rightSide] = loose.geometry.hair.outer;
+  assert.equal(loose.geometry.hair.outer.length, 3);
+  assert.deepEqual(leftSide[0], crown[0]);
+  assert.deepEqual(rightSide[0], crown.at(-1));
+  assert.notDeepEqual(leftSide[0], leftSide.at(-1));
+  assert.notDeepEqual(rightSide[0], rightSide.at(-1));
+});
+
+test('headscarf omits the detached angular tail loop', () => {
+  const scarf = scene(spec({
+    hair: { length: 'long', style: 'loose', facial_hair: 'none' },
+    clothing: { headwear: 'headscarf' }
+  }));
+  assert.equal(scarf.geometry.headwear.outer.length, 1);
+});
+
 function spec(overrides = {}) {
   const value = structuredClone(SAMPLE_PORTRAIT_SPEC);
   for (const [group, fields] of Object.entries(overrides)) {

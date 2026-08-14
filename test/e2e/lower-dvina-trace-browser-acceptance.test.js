@@ -58,8 +58,9 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
     await route.fulfill({ response, body });
   });
   await page.goto(environment.baseUrl);
-  await page.waitForSelector('[data-scenarios-toggle]');
-  await page.click('[data-scenarios-toggle]');
+  await page.waitForSelector('[data-start-new-game]');
+  await page.click('[data-start-new-game]');
+  await page.waitForSelector('[data-new-game-form]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
   assertPublicText(await page.textContent('body'));
@@ -78,6 +79,8 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
       const calls = environment.llm.requests.length;
       await environment.restartRoot();
       await page.goto(environment.baseUrl);
+      await page.waitForSelector('[data-continue-party]');
+      await page.click('[data-continue-party]');
       await page.waitForSelector('[data-turn-form]');
       assert.equal(environment.llm.requests.length, calls);
     }
@@ -115,9 +118,14 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
 
 async function submitThroughBrowser(page, rawText, rawResponses) {
   await page.fill('[data-turn-form] textarea[name="raw_text"]', rawText);
+  const response = page.waitForResponse((candidate) =>
+    candidate.request().method() === 'POST'
+      && /\/api\/v1\/parties\/[^/]+\/turns$/u.test(
+        new URL(candidate.url()).pathname));
   await page.click('[data-turn-form] button[type="submit"]');
-  await page.waitForSelector('[data-turn-form]', { state: 'detached' });
-  await page.waitForSelector('[data-turn-form], .error');
+  await response;
+  await page.waitForSelector(
+    '[data-turn-form] textarea:not([disabled]), .error');
   assert.equal(await page.locator('.error').count(), 0,
     `${await page.textContent('body')}\n${rawResponses.at(-1)}`);
 }

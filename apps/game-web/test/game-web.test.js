@@ -17,8 +17,25 @@ function firstScreen() {
     screen_status: 'ready',
     party_id: 'party-1',
     main_prose: '<script>bad()</script>Дорога уходит к реке.',
+    visible_context: {
+      location_label: 'Берег Двины',
+      calendar: 'Позднее лето',
+      ignored_internal_shape: { value: 'не показывать' }
+    },
     action_panel: { suggested_actions: [{ option_id: 'go', label: 'Идти' }] },
-    panels: {}
+    panels: {
+      character: {
+        visible: true,
+        data: { name: 'Иван', role: 'Лодочник', health: 9 }
+      },
+      map: {
+        visible: true,
+        data: {
+          scene_map: { nodes: [{ label: 'Берег', certainty: 'known' }], links: [] },
+          world_signals: [{ approximate_area: 'у ворот', approximate_direction: 'впереди' }]
+        }
+      }
+    }
   };
 }
 
@@ -120,17 +137,104 @@ test('feature rendering escapes prose and keeps action as intent', () => {
   assert.match(html, /data-action-id="go"/u);
 });
 
-test('landing keeps baseline new game and renders a scenario launch button', () => {
+test('landing always renders the Lovable-style shell and Continue only for remembered party', () => {
   const store = createUiStore();
+  let html = renderAppState(store.getState());
+  assert.match(html, /Хроника/u);
+  assert.match(html, /Русь, лета 6738/u);
+  assert.match(html, /data-start-new-game/u);
+  assert.match(html, /data-theme-toggle/u);
+  assert.doesNotMatch(html, /data-continue-party/u);
+
+  store.setRememberedPartyId('party-remembered');
+  html = renderAppState(store.getState());
+  assert.match(html, /data-continue-party/u);
+  assert.doesNotMatch(html, /data-screen-schema/u);
+});
+
+test('new-game view keeps free text and scenario inputs as separate branches', () => {
+  const store = createUiStore({ rememberedPartyId: 'party-old' });
   store.setScenarios([{
     scenario_id: 'lower_dvina_late_summer_open_water_v1',
     title: 'Нижняя Двина: позднее лето',
     description: 'Первый тестовый сценарий.',
     available: true
   }]);
+  store.showNewGame();
   const html = renderAppState(store.getState());
   assert.match(html, /data-new-game-form/u);
-  assert.match(html, /data-scenarios-toggle aria-expanded="false">Сценарии</u);
-  assert.match(html, /data-scenarios-panel hidden/u);
+  assert.match(html, /textarea id="start-text" name="start_text" required/u);
   assert.match(html, /data-scenario-id="lower_dvina_late_summer_open_water_v1"/u);
+  assert.doesNotMatch(html, /name="scenario_id"|name="player_name"|Пусто тоже можно/u);
+  assert.equal(store.getState().rememberedPartyId, 'party-old');
+});
+
+test('game shell has factual context, neutral viewport, independent input and no fake geography', () => {
+  const screen = { ...firstScreen(), action_panel: { suggested_actions: [] } };
+  const html = renderScreen(screen, { openingStatus: 'acknowledged' });
+  assert.match(html, /data-screen-schema="first_game_screen"/u);
+  assert.match(html, /scene-viewport/u);
+  assert.match(html, /Берег Двины/u);
+  assert.match(html, /Позднее лето/u);
+  assert.match(html, /data-turn-form/u);
+  assert.doesNotMatch(html, /data-action-id/u);
+  assert.doesNotMatch(html, /не показывать|река|лес|лодка|layout_x|\bx=|\by=/u);
+});
+
+test('opening blocks intent until acknowledgement and exposes retry only on failure', () => {
+  const pending = renderScreen(firstScreen(), { openingStatus: 'pending' });
+  assert.match(pending, /Подтверждаем вступление/u);
+  assert.match(pending, /textarea[^>]+disabled/u);
+  const failed = renderScreen(firstScreen(), {
+    openingStatus: 'failed', error: { message: 'Сбой подтверждения' }
+  });
+  assert.match(failed, /data-retry-opening-ack/u);
+  assert.match(failed, /Сбой подтверждения/u);
+});
+
+test('overlays render allowlisted player-safe fields without JSON dumps or map geometry', () => {
+  const character = renderScreen(firstScreen(), {
+    openingStatus: 'acknowledged', activeOverlay: 'character'
+  });
+  assert.match(character, /role="dialog"/u);
+  assert.match(character, /Иван/u);
+  assert.match(character, /Лодочник/u);
+  assert.doesNotMatch(character, /<pre>|ignored_internal_shape/u);
+
+  const map = renderScreen(firstScreen(), {
+    openingStatus: 'acknowledged', activeOverlay: 'map'
+  });
+  assert.match(map, /Берег/u);
+  assert.match(map, /у ворот/u);
+  assert.match(map, /впереди/u);
+  assert.doesNotMatch(map, /from_token|to_token|layout|coordinate/u);
+});
+
+test('API-provided labels, context, prose and panel values stay escaped', () => {
+  const screen = {
+    ...firstScreen(),
+    visible_context: { location_label: '<img src=x onerror=bad()>' },
+    action_panel: { suggested_actions: [{ option_id: '" autofocus', label: '<b>Идти</b>' }] },
+    panels: {
+      character: { visible: true, data: { name: '<script>panel()</script>' } }
+    }
+  };
+  const html = renderScreen(screen, {
+    openingStatus: 'acknowledged', activeOverlay: 'character'
+  });
+  assert.doesNotMatch(html, /<script>|<img|<b>/u);
+  assert.match(html, /&lt;script&gt;panel\(\)&lt;\/script&gt;/u);
+  assert.match(html, /data-action-id="&quot; autofocus"/u);
+});
+
+test('theme and overlay are UI-only state and clear does not erase remembered party', () => {
+  const store = createUiStore({ rememberedPartyId: 'party-1', theme: 'dark' });
+  store.setScreen(firstScreen());
+  store.openOverlay('character');
+  assert.equal(store.getState().theme, 'dark');
+  assert.equal(store.getState().activeOverlay, 'character');
+  assert.equal('partyState' in store.getState(), false);
+  store.clear();
+  assert.equal(store.getState().view, 'landing');
+  assert.equal(store.getState().rememberedPartyId, 'party-1');
 });

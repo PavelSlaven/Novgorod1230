@@ -1,6 +1,14 @@
-import { escapeHtml } from '../../shared/escape-html.js';
+import { labelOf, listItem, renderEmpty, renderItems } from '../panel-helpers.js';
 export function renderPeoplePanel(screen) {
   const panel = screen.panels?.people;
-  if (!panel?.visible) return '';
-  return `<section class="panel panel-people"><h2>Люди</h2><pre>${escapeHtml(JSON.stringify(panel.data ?? {}, null, 2))}</pre></section>`;
+  if (!panel?.visible) return renderEmpty();
+  const data = panel.data ?? {};
+  const people = data.people ?? data.visible_npcs ?? data.npcs ?? [];
+  return renderItems(people, {
+    empty: 'Рядом никого не видно.',
+    item: (person) => listItem(
+      labelOf(person),
+      labelOf(person, ['role', 'activity', 'status', 'state', 'mood'])
+    )
+  });
 }

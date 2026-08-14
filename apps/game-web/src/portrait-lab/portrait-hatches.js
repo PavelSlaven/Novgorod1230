@@ -1,0 +1,100 @@
+import { quadraticPoints } from './handmade.js';
+import { pointsToWorld } from './geometry-utils.js';
+import { deterministicUnit } from './render-model.js';
+import { line } from './scene-primitives.js';
+
+export function buildHatches(model, geometry, visibility) {
+  const hatches = [];
+  if (geometry.hair.present) {
+    const visibleHair = visibleHairStrands(geometry, visibility);
+    for (const [index, points] of visibleHair.entries()) {
+      hatches.push(line(
+        'hair_hatch',
+        points,
+        hairStrokeColor(model, index, 4500),
+        {
+          salt: 4500 + index,
+          width: index % 4 ? 1.15 : 1.6,
+          alpha: .54,
+          roughness: .85
+        }
+      ));
+    }
+  }
+  if (geometry.beard.present) addBeardHatches(model, geometry, hatches);
+  if (model.clothing.outer === 'sheepskin') {
+    for (let index = 0; index < 8; index += 1) {
+      const side = index % 2 ? 1 : -1;
+      const y = 558 + Math.floor(index / 2) * 42;
+      hatches.push(line('garment_hatch', [
+        [model.body.centerX + side * 27, y],
+        [model.body.centerX + side * 38, y + 12]
+      ], model.ink.soft, {
+        salt: 4580 + index,
+        width: 1.2,
+        alpha: .48,
+        roughness: .7
+      }));
+    }
+  }
+  return hatches;
+}
+
+function visibleHairStrands(geometry, visibility) {
+  if (visibility.crownOwner !== 'headwear') return geometry.hair.strands;
+  if (geometry.headwear.kind === 'headscarf') return [];
+  return geometry.hair.sideStrands;
+}
+
+export function buildScratches(model) {
+  const scratches = [];
+  for (let index = 0; index < 9; index += 1) {
+    const x = model.body.centerX - 105 + index * 27;
+    const y = 520 + index % 3 * 61;
+    scratches.push(line('finishing_scratch', [
+      [x - 4, y],
+      [x + 5 + index % 2 * 3, y + 2]
+    ], model.ink.faded, {
+      salt: 4620 + index,
+      width: .7,
+      alpha: .2,
+      roughness: .45
+    }));
+  }
+  return scratches;
+}
+
+function addBeardHatches(model, geometry, hatches) {
+  const count = geometry.beard.full ? 15 : 9;
+  for (let index = 0; index < count; index += 1) {
+    const ratio = (index + .5) / count;
+    const x = -model.head.width * .31 + ratio * model.head.width * .62;
+    const edge = Math.abs(ratio - .5) * 2;
+    const startY = model.head.height * (.34 + edge * .04);
+    const endY = model.head.height
+      * (geometry.beard.full ? .62 : .47) - edge * 30;
+    hatches.push(line(
+      'beard_hatch',
+      pointsToWorld(model, quadraticPoints(
+        [x, startY],
+        [x + (index % 2 ? 9 : -8), (startY + endY) / 2],
+        [x * .72, endY], 10
+      )),
+      hairStrokeColor(model, index, 4540),
+      {
+        salt: 4540 + index,
+        width: 1.1,
+        alpha: .5,
+        roughness: .8
+      }
+    ));
+  }
+}
+
+function hairStrokeColor(model, index, salt) {
+  const gray = deterministicUnit(model.identity.seed, salt + index)
+    < model.hair.grayMix * 1.8;
+  return gray
+    ? model.hair.gray
+    : index % 3 ? model.hair.deep : model.hair.light;
+}

@@ -22,6 +22,7 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
   return Object.freeze({
     health: () => request('/api/v1/health'),
     listScenarios: () => request('/api/v1/scenarios'),
+    normalizePortraitSpec: (input) => request('/api/v1/portrait-spec', post(input)),
     startNewGame: (input) => request('/api/v1/new-games', post(input)),
     getPartyScreen: (partyId) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/screen`),
     acknowledgeOpening: (partyId, input) => request(`/api/v1/parties/${encodeURIComponent(partyId)}/opening-ack`, post(input)),

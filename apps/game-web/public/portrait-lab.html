@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portrait Lab — Русь XIII век</title>
+  <link rel="stylesheet" href="/portrait-lab.css">
+</head>
+<body>
+  <main class="portrait-lab" data-portrait-lab-root>
+    <header class="lab-header">
+      <div>
+        <p class="eyebrow">Экспериментальный инструмент</p>
+        <h1>Portrait Lab</h1>
+        <p class="subtitle">Процедурные персонажи мира Руси XIII века</p>
+      </div>
+      <a href="/" class="game-link">К игре</a>
+    </header>
+
+    <section class="workspace">
+      <div class="portrait-stage">
+        <div class="canvas-frame">
+          <canvas width="768" height="768" data-portrait-canvas aria-label="Нарисованный портрет"></canvas>
+        </div>
+        <div class="stage-footer">
+          <p data-portrait-status aria-live="polite"></p>
+          <button type="button" class="quiet-button" data-portrait-download>Скачать PNG</button>
+        </div>
+      </div>
+
+      <div class="controls">
+        <form data-portrait-form>
+          <label for="portrait-input">Описание или portrait_spec_v1 JSON</label>
+          <textarea id="portrait-input" data-portrait-input spellcheck="true"></textarea>
+          <p class="hint">Текст преобразуется на сервере. JSON проверяется и рисуется локально.</p>
+          <p class="lab-error" data-portrait-error role="alert" hidden></p>
+          <button type="submit" class="primary-button" data-portrait-submit>Нарисовать</button>
+        </form>
+
+        <section class="json-panel" aria-labelledby="json-title">
+          <h2 id="json-title">Использованный JSON</h2>
+          <pre data-portrait-json></pre>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/src/portrait-lab/main.js"></script>
+</body>
+</html>

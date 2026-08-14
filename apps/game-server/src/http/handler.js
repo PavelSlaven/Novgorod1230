@@ -7,8 +7,15 @@ import {
   validateTurnRequest
 } from './contracts.js';
 import { readJsonBody, sendJson, sendText } from './json.js';
+import { validatePortraitSpecRequest } from '../portrait-lab/request.js';
 
-export function createHttpHandler({ root, staticAssets, maxBodyBytes, developerMode = false } = {}) {
+export function createHttpHandler({
+  root,
+  staticAssets,
+  portraitNormalizer = null,
+  maxBodyBytes,
+  developerMode = false
+} = {}) {
   if (!root) throw new TypeError('composition root is required.');
   return async function handle(request, response) {
     const requestId = String(request.headers['x-request-id'] ?? randomUUID());
@@ -16,7 +23,9 @@ export function createHttpHandler({ root, staticAssets, maxBodyBytes, developerM
       const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
       const route = matchApiRoute(request.method, url.pathname);
       if (route) {
-        const data = await executeRoute(route, { request, root, maxBodyBytes });
+        const data = await executeRoute(route, {
+          request, root, portraitNormalizer, maxBodyBytes
+        });
         return sendJson(response, route.status ?? 200, successEnvelope(data, { requestId }));
       }
       if (request.method === 'GET') {
@@ -34,6 +43,7 @@ export function createHttpHandler({ root, staticAssets, maxBodyBytes, developerM
 export function matchApiRoute(method, pathname) {
   if (method === 'GET' && pathname === '/api/v1/health') return { id: 'health', status: 200 };
   if (method === 'GET' && pathname === '/api/v1/scenarios') return { id: 'scenarios', status: 200 };
+  if (method === 'POST' && pathname === '/api/v1/portrait-spec') return { id: 'portrait_spec', status: 200 };
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
   if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
@@ -49,6 +59,15 @@ async function executeRoute(route, context) {
   if (route.id === 'scenarios') return context.root.listScenarios();
   if (route.id === 'party_screen') return context.root.getPartyScreen(route.partyId);
   const body = await readJsonBody(context.request, { maxBytes: context.maxBodyBytes });
+  if (route.id === 'portrait_spec') {
+    if (typeof context.portraitNormalizer?.normalize !== 'function') {
+      throw Object.assign(new Error('Portrait normalizer is unavailable.'), {
+        code: 'PORTRAIT_NORMALIZER_UNAVAILABLE', status: 503
+      });
+    }
+    const input = validatePortraitSpecRequest(body);
+    return { spec: await context.portraitNormalizer.normalize(input.text) };
+  }
   if (route.id === 'new_game') return context.root.startNewGame(validateNewGameRequest(body));
   if (route.id === 'opening_ack') return context.root.acknowledgeOpening(route.partyId, validateOpeningAckRequest(body));
   if (route.id === 'turn') return context.root.submitTurn(route.partyId, validateTurnRequest(body));

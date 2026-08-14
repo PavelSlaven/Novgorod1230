@@ -6,6 +6,7 @@
     ".": "./src/index.js",
     "./combat-v1": "./src/combat-v1.js",
     "./json": "./src/json.js",
+    "./portrait-spec-v1": "./src/portrait-spec-v1.js",
     "./stage": "./src/stage.js",
     "./approval": "./src/approval.js",
     "./digests": "./src/digests.js",

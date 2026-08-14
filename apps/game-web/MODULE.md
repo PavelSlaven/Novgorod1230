@@ -12,6 +12,8 @@ Browser-клиент, который получает только versioned pub
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
+- отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer;
+- скрытой portrait geometry/armature, scene-level visibility/occlusion и единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`.
 
 ## Не делает
 
@@ -29,6 +31,8 @@ Browser-клиент, который получает только versioned pub
 - `createUiStore`
 - `renderScreen`
 - `bootstrapGameWeb`
+
+Portrait Lab остаётся отдельным browser-инструментом и не добавляет портреты в игровые read models или NPC runtime.
 
 ## Инварианты
 

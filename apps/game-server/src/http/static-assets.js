@@ -9,14 +9,17 @@ const MIME = Object.freeze({
   '.svg': 'image/svg+xml'
 });
 
-export function createStaticAssetResolver({ webRoot } = {}) {
+export function createStaticAssetResolver({ webRoot, contractsRoot = null } = {}) {
   const root = resolve(webRoot);
+  const sharedRoot = contractsRoot ? resolve(contractsRoot) : null;
   return Object.freeze({
     async read(pathname) {
-      const relative = routeToFile(pathname);
-      if (!relative) return null;
-      const target = resolve(root, relative);
-      if (target !== root && !target.startsWith(`${root}${sep}`)) return null;
+      const route = routeToFile(pathname);
+      if (!route) return null;
+      const selectedRoot = route.shared ? sharedRoot : root;
+      if (!selectedRoot) return null;
+      const target = resolve(selectedRoot, route.relative);
+      if (target !== selectedRoot && !target.startsWith(`${selectedRoot}${sep}`)) return null;
       const body = await readFile(target).catch(() => null);
       if (body == null) return null;
       return Object.freeze({ body, contentType: MIME[extname(target)] ?? 'application/octet-stream' });
@@ -25,8 +28,19 @@ export function createStaticAssetResolver({ webRoot } = {}) {
 }
 
 function routeToFile(pathname) {
-  if (pathname === '/') return 'public/index.html';
-  if (pathname === '/styles.css') return 'public/styles.css';
-  if (pathname.startsWith('/src/')) return pathname.slice(1);
+  if (pathname === '/') return { relative: 'public/index.html', shared: false };
+  if (pathname === '/portrait-lab' || pathname === '/portrait-lab/') {
+    return { relative: 'public/portrait-lab.html', shared: false };
+  }
+  if (pathname === '/styles.css') return { relative: 'public/styles.css', shared: false };
+  if (pathname === '/portrait-lab.css') {
+    return { relative: 'public/portrait-lab.css', shared: false };
+  }
+  if (pathname.startsWith('/src/')) {
+    return { relative: pathname.slice(1), shared: false };
+  }
+  if (pathname === '/packages/contracts/src/portrait-spec-v1.js') {
+    return { relative: 'portrait-spec-v1.js', shared: true };
+  }
   return null;
 }

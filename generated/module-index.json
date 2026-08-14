@@ -23,7 +23,8 @@
       ],
       "name": "@rus/game-server",
       "owns": [
-        "Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`"
+        "Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`",
+        "Экспериментально владеет `POST /api/v1/portrait-spec` и server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`"
       ],
       "path": "apps/game-server",
       "public_entry": "./src/index.js",
@@ -39,7 +40,9 @@
         "UI-only store",
         "маршрутизацией FirstGameScreen/TurnScreen",
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
-        "browser bootstrap и обработкой пользовательских намерений"
+        "browser bootstrap и обработкой пользовательских намерений",
+        "отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer",
+        "скрытой portrait geometry/armature, scene-level visibility/occlusion и единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`"
       ],
       "path": "apps/game-web",
       "public_entry": "./src/index.js",
@@ -200,7 +203,8 @@
         "role descriptors и tier-конфигурацией",
         "разрешением model/thinking/token/JSON-mode параметров",
         "единым вызовом chat-completion transport",
-        "scoped client adapter для composition root"
+        "scoped client adapter для composition root",
+        "отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью"
       ],
       "path": "packages/llm-runtime",
       "public_entry": "./src/index.js",

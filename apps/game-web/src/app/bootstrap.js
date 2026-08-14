@@ -38,6 +38,7 @@ export function bootstrapGameWeb({
     const FormElement = root.ownerDocument.defaultView.HTMLFormElement;
     if (!(form instanceof FormElement)) return;
     event.preventDefault();
+    if (flowNavigationBlocked(store.getState())) return;
     if (form.matches('[data-new-game-form]')) {
       const raw = String(new root.ownerDocument.defaultView.FormData(form)
         .get('start_text') ?? '');
@@ -81,11 +82,23 @@ export function bootstrapGameWeb({
 
   root.addEventListener('click', async (event) => {
     const target = event.target;
-    if (target.closest?.('[data-start-new-game]')) return store.showNewGame();
-    if (target.closest?.('[data-return-start]')) return store.showLanding();
+    const startButton = target.closest?.('[data-start-new-game]');
+    if (startButton) {
+      if (startButton.disabled || flowNavigationBlocked(store.getState())) return;
+      return store.showNewGame();
+    }
+    const returnButton = target.closest?.('[data-return-start]');
+    if (returnButton) {
+      if (returnButton.disabled || flowNavigationBlocked(store.getState())) return;
+      return store.showLanding();
+    }
     if (target.closest?.('[data-theme-toggle]')) return toggleTheme();
     if (target.closest?.('[data-dismiss-error]')) return store.clearError();
-    if (target.closest?.('[data-continue-party]')) return continueParty();
+    const continueButton = target.closest?.('[data-continue-party]');
+    if (continueButton) {
+      if (continueButton.disabled || flowNavigationBlocked(store.getState())) return;
+      return continueParty();
+    }
     if (target.closest?.('[data-retry-opening-ack]')) return acknowledgeOpening();
 
     const overlayButton = target.closest?.('[data-overlay-open]');
@@ -101,12 +114,14 @@ export function bootstrapGameWeb({
       return;
     }
     const scenarioButton = target.closest?.('[data-scenario-id]');
-    if (scenarioButton && !scenarioButton.disabled) {
+    if (scenarioButton && !scenarioButton.disabled
+      && !flowNavigationBlocked(store.getState())) {
       await startParty({ scenario_id: scenarioButton.dataset.scenarioId });
       return;
     }
     const actionButton = target.closest?.('[data-action-id]');
-    if (actionButton && !actionButton.disabled) {
+    if (actionButton && !actionButton.disabled
+      && !flowNavigationBlocked(store.getState())) {
       await submitTurn({
         selected_action_option_id: actionButton.dataset.actionId
       });
@@ -251,6 +266,9 @@ function preferredTheme() {
   } catch {
     return 'light';
   }
+}
+function flowNavigationBlocked(state) {
+  return state.status === 'loading' || state.opening?.status === 'pending';
 }
 function availableLocalStorage() {
   try { return globalThis.localStorage; }

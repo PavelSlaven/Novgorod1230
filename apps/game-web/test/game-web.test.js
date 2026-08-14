@@ -214,6 +214,31 @@ test('opening blocks intent until acknowledgement and exposes retry only on fail
   assert.match(failed, /Сбой подтверждения/u);
 });
 
+test('flow navigation is disabled only while a request or opening acknowledgement is pending', () => {
+  const landing = createUiStore({ rememberedPartyId: 'party-1' });
+  landing.setLoading();
+  let html = renderAppState(landing.getState());
+  assert.match(html, /data-start-new-game disabled/u);
+  assert.match(html, /data-continue-party disabled/u);
+
+  const newGame = createUiStore();
+  newGame.showNewGame();
+  newGame.setLoading();
+  html = renderAppState(newGame.getState());
+  assert.match(html, /data-return-start disabled/u);
+
+  const game = createUiStore();
+  game.setScreen(firstScreen());
+  game.setLoading();
+  html = renderAppState(game.getState());
+  assert.match(html, /data-return-start disabled/u);
+
+  const pending = renderScreen(firstScreen(), { openingStatus: 'pending' });
+  assert.match(pending, /data-return-start disabled/u);
+  const failed = renderScreen(firstScreen(), { openingStatus: 'failed' });
+  assert.doesNotMatch(failed, /data-return-start disabled/u);
+});
+
 test('overlays render allowlisted player-safe fields without JSON dumps or map geometry', () => {
   const character = renderScreen(firstScreen(), {
     openingStatus: 'acknowledged', activeOverlay: 'character'
@@ -230,6 +255,63 @@ test('overlays render allowlisted player-safe fields without JSON dumps or map g
   assert.match(map, /у ворот/u);
   assert.match(map, /впереди/u);
   assert.doesNotMatch(map, /from_token|to_token|layout|coordinate/u);
+});
+
+test('inventory and route overlays preserve the complete canonical player-safe details', () => {
+  const inventory = renderScreen({
+    ...firstScreen(),
+    panels: {
+      inventory: {
+        visible: true,
+        data: {
+          summary: {
+            load_category: 'light', total_mass_grams: 1200,
+            at_limit: true, hands_used: 1, hands_total: 2, hands_free: 1
+          },
+          zones: {
+            hands: [{ label: 'Нож', condition: 'sound', access: 'immediate' }],
+            worn_quick: [], equipped: [], quick_containers: [],
+            primary_container: {
+              label: 'Сумка', condition: 'worn', access: 'restricted',
+              closure_state: 'closed'
+            },
+            external_load: []
+          },
+          warnings: [{ message: 'Груз слишком тяжёл.' }]
+        }
+      }
+    }
+  }, { openingStatus: 'acknowledged', activeOverlay: 'inventory' });
+  for (const detail of [
+    'Лёгкая', '1200', 'На пределе нагрузки', 'Рук всего',
+    'Состояние: исправно', 'Доступ: сразу доступно',
+    'Состояние: изношено', 'Доступ: ограничен', 'Закрытие: закрыто',
+    'Груз слишком тяжёл.'
+  ]) assert.match(inventory, new RegExp(detail, 'u'), detail);
+
+  const route = renderScreen({
+    ...firstScreen(),
+    panels: {
+      route: {
+        visible: true,
+        data: {
+          movement: {
+            options: [{
+              label: 'К воротам', knowledge_state: 'known', readiness: 'ready',
+              observed_conditions: ['ворота открыты']
+            }, {
+              label: 'Слух о дороге', knowledge_state: 'uncertain',
+              readiness: 'temporarily_blocked', observed_conditions: []
+            }]
+          }
+        }
+      }
+    }
+  }, { openingStatus: 'acknowledged', activeOverlay: 'route' });
+  for (const detail of [
+    'Знание: известно', 'Готовность: можно идти', 'Условия: ворота открыты',
+    'Знание: сведения неточны', 'Готовность: временно недоступно'
+  ]) assert.match(route, new RegExp(detail, 'u'), detail);
 });
 
 test('API-provided labels, context, prose and panel values stay escaped', () => {

@@ -90,6 +90,9 @@ function createRecordedRoot(records) {
     },
     async submitTurn(partyId, input) {
       records.turns.push({ partyId, input: structuredClone(input) });
+      if (input.raw_text === 'Медленный ход') {
+        await records.slowTurn.promise;
+      }
       return root.submitTurn(partyId, input);
     },
     async getPartyScreen(partyId) {
@@ -223,7 +226,8 @@ test('browser preserves production API semantics through the Lovable UI', {
   skip: !executablePath && 'Chromium executable not found.', timeout: 120_000
 }, async (t) => {
   const records = {
-    newGames: [], acknowledgements: [], turns: [], screenReads: []
+    newGames: [], acknowledgements: [], turns: [], screenReads: [],
+    slowTurn: Promise.withResolvers()
   };
   const here = dirname(fileURLToPath(import.meta.url));
   const webRoot = resolve(here, '../../apps/game-web');
@@ -234,6 +238,7 @@ test('browser preserves production API semantics through the Lovable UI', {
   });
   const address = await listen(server, { host: '127.0.0.1', port: 0 });
   t.after(() => server.close());
+  t.after(() => records.slowTurn.resolve());
   const browser = await chromium.launch({
     executablePath,
     headless: true,
@@ -376,6 +381,21 @@ test('browser preserves production API semantics through the Lovable UI', {
 
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+
+  await page.fill('[data-turn-form] textarea', 'Медленный ход');
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('[data-return-start]:disabled', { timeout: 5_000 });
+  const slowTurnCount = records.turns.length;
+  await page.evaluate(() => document.querySelector('[data-turn-form]')?.requestSubmit());
+  assert.equal(records.turns.length, slowTurnCount,
+    'a deferred turn must ignore repeated form submission');
+  await page.evaluate(() => document.querySelector('[data-return-start]')?.click());
+  assert.equal(await page.locator('[data-screen-schema="turn_screen"]').count(), 1);
+  assert.equal(await page.locator('[data-start-new-game]').count(), 0,
+    'a deferred turn must not allow switching to another game flow');
+  records.slowTurn.resolve();
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  assert.equal(await page.locator('[data-return-start]:not([disabled])').count(), 1);
 
   await page.fill('[data-turn-form] textarea', 'Проверка утечки');
   await page.click('[data-turn-form] button[type="submit"]');

@@ -34,6 +34,11 @@ export function scalar(value) {
   return null;
 }
 
+export function stateLabel(value, labels = {}) {
+  const key = scalar(value);
+  return key == null ? null : labels[key] ?? key;
+}
+
 export function listItem(primary, secondary = null) {
   const title = scalar(primary);
   if (!title) return '';

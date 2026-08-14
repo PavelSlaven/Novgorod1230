@@ -2,8 +2,6 @@ import { createHash } from 'node:crypto';
 import { explainJsonObjectParse } from '@rus/contracts/json';
 import { resolveLlmExecutionConfig } from './provider-config.js';
 
-const REQUEST_TIMEOUT_MS = 30000;
-
 export async function executeRoleLlmCall({
   scope,
   roleId = null,
@@ -96,7 +94,7 @@ export function createScopedChatCompletionClient({
 async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   const startedAt = Date.now();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(new Error('DeepSeek request timeout')), REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), config.requestTimeoutMs);
   const configHash = hashConfig(config);
   let responseData = null;
   let callError = null;
@@ -167,9 +165,14 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       configHash
     }, telemetry);
   } catch (error) {
+    const timedOut = controller.signal.aborted;
     callError = {
-      code: error?.name === 'AbortError' ? 'timeout' : 'transport_error',
-      message: String(error?.message ?? error ?? 'Unknown transport error'),
+      code: timedOut || error?.name === 'AbortError'
+        ? 'timeout'
+        : 'transport_error',
+      message: timedOut
+        ? `DeepSeek request timed out after ${config.requestTimeoutMs} ms.`
+        : String(error?.message ?? error ?? 'Unknown transport error'),
       retryable: true
     };
     return buildResult({
@@ -226,6 +229,7 @@ function buildResult(base, telemetry) {
     tokenUsage: result.usage ?? null,
     configHash: result.config_hash,
     outputContractMode: result.output_contract_mode,
+    requestTimeoutMs: base.config.requestTimeoutMs,
     maxTokens: base.config.maxTokens,
     temperature: base.config.temperature ?? null
   });
@@ -240,6 +244,7 @@ function hashConfig(config) {
     tier_id: config.tier_id ?? null,
     provider: config.provider,
     base_url: sanitizeBaseUrl(config.baseUrl),
+    request_timeout_ms: config.requestTimeoutMs,
     model: config.model,
     thinking: config.thinking ?? null,
     reasoning_effort: config.reasoningEffort ?? null,

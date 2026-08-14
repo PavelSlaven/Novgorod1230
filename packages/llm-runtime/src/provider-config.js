@@ -20,6 +20,7 @@ export {
 
 const DEFAULT_DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
+const DEFAULT_DEEPSEEK_REQUEST_TIMEOUT_MS = 120_000;
 
 export const LLM_SCOPES = Object.freeze({
   LEGACY_WORLD: 'legacy_world',
@@ -233,7 +234,10 @@ const LEGACY_WORLD_ROLE_DEFAULTS = Object.freeze({
     'LEGACY_NARRATOR_DOSSIER',
     'narration_output'
   ),
-  [LegacyWorldRoles.NARRATOR_AUDIT]: legacyAuditRole('LEGACY_NARRATOR_AUDIT'),
+  [LegacyWorldRoles.NARRATOR_AUDIT]: {
+    ...legacyAuditRole('LEGACY_NARRATOR_AUDIT'),
+    maxTokens: 2000
+  },
   [LegacyWorldRoles.NARRATOR_DOSSIER_REPAIR]: legacyRepairRole(
     'LEGACY_NARRATOR_DOSSIER_REPAIR',
     'narration_output'
@@ -311,6 +315,8 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     provider: shared.enabled ? shared.provider : 'deepseek',
     apiKey: shared.enabled ? shared.apiKey : null,
     baseUrl: shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL),
+    requestTimeoutMs: readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS)
+      ?? DEFAULT_DEEPSEEK_REQUEST_TIMEOUT_MS,
     api: scopeDefaults.api,
     model: readRoleModel(defaults, env, shared.model),
     thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,

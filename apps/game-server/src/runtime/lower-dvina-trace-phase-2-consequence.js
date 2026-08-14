@@ -5,6 +5,13 @@ import {
 } from './lower-dvina-trace-phase-2-contracts.js';
 import { materializeBlueWoolPickup } from './lower-dvina-trace-phase-2-pickup.js';
 
+const ROAD_BAG_MISSING = 'visible:road_bag_missing';
+const ROAD_BAG_KNOWLEDGE_SOURCES = new Set([
+  'trace_ld_v1_statement_eremey_disclosure',
+  'trace_ld_v1_statement_ratsha_confession',
+  'trace_ld_v1_evidence_bag_at_zhdanko'
+]);
+
 export function resolveInspectionConsequence({
   retrievedState,
   checks,
@@ -23,6 +30,8 @@ export function resolveInspectionConsequence({
     );
   }
   const success = checkResult.outcome.success === true;
+  const roadBagKnown = (retrievedState.knowledge ?? []).some((record) =>
+    ROAD_BAG_KNOWLEDGE_SOURCES.has(record.fact_id));
   const evidenceRefs = [
     ...contracts.check.precheck_automatic_observation_refs.filter((ref) =>
       contracts.evidenceGraph.evidence_records.some(
@@ -36,7 +45,7 @@ export function resolveInspectionConsequence({
     ...contracts.check.precheck_automatic_observation_refs,
     ...(success ? contracts.check.success_observation_refs : []),
     ...evidenceRefs
-  ])];
+  ])].filter((ref) => ref !== ROAD_BAG_MISSING || roadBagKnown);
   const knownFacts = new Set(
     (retrievedState.knowledge ?? []).map(({ fact_id: factId }) => factId)
   );

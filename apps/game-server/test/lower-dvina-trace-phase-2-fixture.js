@@ -11,6 +11,8 @@ import { createSeededRandomSource } from '@rus/checks-rng';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../src/runtime/lower-dvina-trace-phase-2.js';
+import { commitGeneric } from
+  './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
 import {
   loadLowerDvinaTraceMaterializationBundle,
   resolveLowerDvinaTraceStartTimestamp
@@ -266,8 +268,16 @@ export function fixture({
       lastCommitInput = commitInput;
       lastWritePlan = structuredClone(writePlan);
       const factual = writePlan.write_targets.find(
-        ({ target }) => target === 'party_state'
-      ).value;
+        ({ target }) => target === 'party_state')?.value;
+      if (factual == null) {
+        const generic = await commitGeneric({ commitInput, state });
+        committedVisible = generic.visible;
+        replaceState(state, generic.snapshot);
+        replays.set(generic.idempotencyKey, {
+          input_digest: inputDigest, factual: generic.factual,
+          state: structuredClone(state), public_result: null });
+        return generic.committed;
+      }
       committedVisible = writePlan.write_targets.find(
         ({ target }) => target === 'party_visible_context_package'
       ).value;

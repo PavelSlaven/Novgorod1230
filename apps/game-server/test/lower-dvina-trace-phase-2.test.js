@@ -240,6 +240,65 @@ test('revision 9 failed inspection commits time and body but no blue-wool item',
   );
 });
 
+test('wreck inspection does not reveal a missing road bag without prior knowledge',
+  async (t) => {
+    for (const current of [{ name: 'success', rollValue: 0.99 },
+      { name: 'failure', rollValue: 0 }]) {
+      await t.test(current.name, async () => {
+        const f = fixture({ rollValue: current.rollValue });
+        const result = await f.runtime.submitTurn({
+          partyId: f.partyId,
+          input: {
+            request_id: `phase2-road-bag-${current.name}`,
+            idempotency_key: `phase2-road-bag-${current.name}`,
+            raw_text: 'Осмотреть место крушения подробно.'
+          }
+        });
+        const persisted = {
+          state: f.state,
+          write_plan: f.lastWritePlan(),
+          public_result: result,
+          narrator_input: f.narratorInput()
+        };
+        assert.equal(
+          JSON.stringify(persisted).includes('visible:road_bag_missing'),
+          false
+        );
+      });
+    }
+  });
+
+test('authored prior bag knowledge admits the missing-road-bag observation',
+  async (t) => {
+    for (const factId of [
+      'trace_ld_v1_statement_eremey_disclosure',
+      'trace_ld_v1_statement_ratsha_confession',
+      'trace_ld_v1_evidence_bag_at_zhdanko'
+    ]) {
+      await t.test(factId, async () => {
+        const f = fixture({ rollValue: 0 });
+        f.state.knowledge.push({
+          fact_id: factId,
+          knowledge_state: 'known_from_committed_source',
+          evidence_refs: []
+        });
+        const result = await f.runtime.submitTurn({
+          partyId: f.partyId,
+          input: {
+            request_id: `phase2-road-bag-known-${factId}`,
+            idempotency_key: `phase2-road-bag-known-${factId}`,
+            raw_text: 'Осмотреть место крушения подробно.'
+          }
+        });
+        assert.equal(result.observations.some(
+          ({ fact_id: observed }) => observed === 'visible:road_bag_missing'),
+        true);
+        assert.equal(JSON.stringify(f.narratorInput()).includes(
+          'visible:road_bag_missing'), true);
+      });
+    }
+  });
+
 test('free paraphrase resolves through a player-safe closed set to the same exact option', async () => {
   const f = fixture();
   const result = await f.runtime.submitTurn({

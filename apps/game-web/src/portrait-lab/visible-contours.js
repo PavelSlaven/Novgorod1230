@@ -1,6 +1,5 @@
 import { quadraticPoints } from './handmade.js';
 import { pointsToWorld } from './geometry-utils.js';
-import { deterministicUnit } from './render-model.js';
 import {
   line,
   slicePoints,
@@ -18,16 +17,28 @@ export function buildVisibleStrokes(model, geometry, visibility) {
 
 function addBodyContour(model, geometry, visibility, strokes) {
   const body = geometry.body;
-  strokes.push(line('body_silhouette', body.leftOutline, model.ink.primary, {
-    salt: 4200, width: 2.8, roughness: 2.4, double: true
-  }));
-  strokes.push(line('body_silhouette', body.rightOutline, model.ink.primary, {
-    salt: 4201, width: 2.8, roughness: 2.4, double: true
-  }));
+  const clothing = geometry.clothing;
+  for (const [index, points] of [
+    clothing.silhouette.left,
+    clothing.silhouette.right
+  ].entries()) {
+    strokes.push(line(
+      'garment_silhouette',
+      points,
+      model.ink.primary,
+      {
+        salt: 4200 + index,
+        width: 2.8,
+        roughness: 2.4,
+        double: true,
+        owner: clothing.owner
+      }
+    ));
+  }
   if (visibility.neckVisible) {
     for (const [index, guide] of [body.neckLeft, body.neckRight].entries()) {
       const visible = verticalSlice(
-        guide, visibility.neckStartY, body.collarY
+        guide, visibility.neckStartY, visibility.neckEndY
       );
       if (visible.length > 1) {
         strokes.push(line('neck', visible, model.ink.soft, {
@@ -39,96 +50,74 @@ function addBodyContour(model, geometry, visibility, strokes) {
       }
     }
   }
-  const collar = quadraticPoints(
-    body.collarLeft,
-    [
-      model.body.centerX,
-      body.collarY + (model.clothing.base === 'wool_tunic' ? 38 : 28)
-    ],
-    body.collarRight,
-    18
-  );
-  const collarParts = geometry.beard.present
-      && geometry.beard.bottomY > body.collarY - 8
-    ? [slicePoints(collar, 0, .27), slicePoints(collar, .73, 1)]
-    : [collar];
-  for (const [index, points] of collarParts.entries()) {
-    strokes.push(line('collar', points, model.ink.primary, {
-      salt: 4230 + index,
-      width: model.clothing.base === 'embroidered_tunic' ? 2.8 : 2,
-      roughness: 1.15,
-      double: true
-    }));
-  }
-  addGarmentBoundaries(model, geometry, strokes);
-  addFolds(model, strokes);
+  addNeckline(model, geometry, visibility, strokes);
+  addClothingConstruction(model, clothing, strokes);
 }
 
-function addGarmentBoundaries(model, geometry, strokes) {
-  const center = model.body.centerX;
-  if (model.clothing.outer === 'caftan') {
-    strokes.push(line('outer_garment', quadraticPoints(
-      geometry.body.collarLeft,
-      [center - 42, 530],
-      [center + 4, 782], 20
-    ), model.ink.primary, {
-      salt: 4260, width: 2.25, roughness: 1.5, double: true
-    }));
-    strokes.push(line('outer_garment', quadraticPoints(
-      geometry.body.collarRight,
-      [center + 34, 520],
-      [center - 18, 555], 11
-    ), model.ink.soft, {
-      salt: 4261, width: 1.45, alpha: .64, roughness: 1.2
-    }));
-    return;
-  }
-  if (model.clothing.outer === 'cloak') {
-    strokes.push(line('outer_garment', quadraticPoints(
-      [center - 20, 468],
-      [center - 86, 570],
-      [model.body.waistLeft - 14, 782], 21
-    ), model.ink.primary, {
-      salt: 4270, width: 2.35, roughness: 1.7, double: true
-    }));
-    return;
-  }
-  if (model.clothing.outer === 'sheepskin') {
-    for (const side of [-1, 1]) {
-      strokes.push(line('outer_garment', quadraticPoints(
-        [center + side * 37, 519],
-        [center + side * 27, 650],
-        [center + side * 23, 782], 18
-      ), model.ink.primary, {
-        salt: 4280 + side, width: 2, roughness: 1.6
+function addNeckline(model, geometry, visibility, strokes) {
+  let salt = 4230;
+  for (const boundary of geometry.clothing.neckline) {
+    const parts = visibility.hidden.necklineCenter
+      ? boundary.id === 'neckline_slit'
+        ? []
+        : [
+            slicePoints(boundary.points, 0, .28),
+            slicePoints(boundary.points, .72, 1)
+          ]
+      : [boundary.points];
+    for (const points of parts) {
+      strokes.push(line('neckline', points, model.ink.primary, {
+        salt,
+        width: 2,
+        roughness: 1.15,
+        double: true,
+        boundaryId: boundary.id
       }));
+      salt += 1;
     }
   }
 }
 
-function addFolds(model, strokes) {
-  const count = model.spec.person.build === 'stocky' ? 5 : 4;
-  const left = model.clothing.outer === 'none'
-    ? model.body.waistLeft
-    : model.body.centerX - model.head.neckWidth * .7;
-  const right = model.clothing.outer === 'none'
-    ? model.body.waistRight
-    : model.body.centerX + model.head.neckWidth * .7;
-  for (let index = 0; index < count; index += 1) {
-    const ratio = (index + 1) / (count + 1);
-    const x = left + (right - left) * ratio;
-    const drift = (deterministicUnit(
-      model.identity.seeds.clothing, 4300 + index
-    ) - .5) * 18;
-    strokes.push(line('fold', quadraticPoints(
-      [x, 556 + index % 2 * 18],
-      [x + drift, 648],
-      [x + drift * .35, 735 + index % 3 * 12], 16
-    ), model.ink.faded, {
+function addClothingConstruction(model, clothing, strokes) {
+  for (const [index, entry] of [
+    ...clothing.seams,
+    ...clothing.outerBoundaries
+  ].entries()) {
+    strokes.push(line('garment_boundary', entry.points, model.ink.primary, {
+      salt: 4260 + index,
+      width: 2.05,
+      alpha: .86,
+      roughness: 1.4,
+      double: true,
+      boundaryId: entry.id
+    }));
+  }
+  for (const [index, entry] of clothing.folds.entries()) {
+    strokes.push(line('fold', entry.points, model.ink.faded, {
       salt: 4310 + index,
-      width: 1.05,
-      alpha: .32,
-      roughness: .9
+      width: entry.style.width,
+      alpha: entry.style.alpha,
+      roughness: entry.style.roughness,
+      origin: entry.origin
+    }));
+  }
+  for (const [index, entry] of clothing.trim.entries()) {
+    strokes.push(line('garment_trim', entry.points, model.clothing.secondary.deep, {
+      salt: 4325 + index,
+      width: entry.kind === 'edge_band' ? 1.45 : 1.1,
+      alpha: .72,
+      roughness: .7,
+      boundaryId: entry.boundaryId,
+      trimKind: entry.kind
+    }));
+  }
+  for (const [index, entry] of clothing.texture.entries()) {
+    strokes.push(line('garment_texture', entry.points, model.ink.soft, {
+      salt: 4340 + index,
+      width: Math.max(.75, entry.style.width * .72),
+      alpha: entry.style.alpha * .8,
+      roughness: entry.style.roughness,
+      boundaryId: entry.boundaryId
     }));
   }
 }

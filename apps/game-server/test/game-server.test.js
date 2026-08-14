@@ -85,8 +85,9 @@ function portraitSpec() {
     eyes: { color: 'gray', gaze: 'viewer' },
     expression: { emotion: 'angry', intensity: 'medium' },
     clothing: {
-      base: 'linen_tunic', outer: 'caftan', main_color: 'dark_blue',
-      secondary_color: 'undyed_linen', headwear: 'none'
+      neckline: 'high_closed', sleeve: 'narrow', outer: 'wrap',
+      fabric: 'wool', trim: 'braid', main_color: 'dark_blue',
+      secondary_color: 'madder_red', headwear: 'none'
     },
     pose: { body: 'three_quarter', head: 'slightly_turned' },
     background: 'neutral'
@@ -314,7 +315,16 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   assert.deepEqual(await valid.normalize('  Пожилая женщина  '), portraitSpec());
   assert.equal(calls[0].scope, 'portrait_lab');
   assert.equal(calls[0].role_id, 'portrait_spec_normalizer');
-  assert.match(calls[0].messages[0].content, /JSON Schema/u);
+  const systemPrompt = calls[0].messages[0].content;
+  assert.match(systemPrompt, /JSON Schema/u);
+  assert.match(systemPrompt, /slit_round, narrow, none, light_linen, none/u);
+  assert.match(systemPrompt, /high_closed, narrow, wrap, wool, braid/u);
+  assert.match(systemPrompt, /round, wide, shoulder_drape, wool, none/u);
+  assert.match(
+    systemPrompt,
+    /high_closed, narrow, sleeveless_overlayer, furred, fur_edge/u
+  );
+  assert.doesNotMatch(systemPrompt, /"(?:caftan|cloak|sheepskin)"/u);
   assert.equal(calls[0].messages[1].content, 'Пожилая женщина');
 
   const invalid = createPortraitSpecNormalizer({
@@ -322,6 +332,16 @@ test('portrait normalizer validates DeepSeek output and fails closed', async () 
   });
   await assert.rejects(
     () => invalid.normalize('Портрет'),
+    { code: 'PORTRAIT_SPEC_PROVIDER_INVALID', status: 502 }
+  );
+
+  const legacyOutput = portraitSpec();
+  legacyOutput.clothing.base = 'linen_tunic';
+  const legacy = createPortraitSpecNormalizer({
+    roleRunner: { run: async () => ({ output: legacyOutput }) }
+  });
+  await assert.rejects(
+    () => legacy.normalize('Старая форма одежды'),
     { code: 'PORTRAIT_SPEC_PROVIDER_INVALID', status: 502 }
   );
 });

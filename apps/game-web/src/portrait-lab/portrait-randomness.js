@@ -53,7 +53,9 @@ function createPartSeeds(spec) {
     body: scoped('body', bodyIdentity),
     clothing: scoped('clothing', {
       ...bodyIdentity,
-      clothing: pick(spec.clothing, ['base', 'outer'])
+      clothing: pick(spec.clothing, [
+        'neckline', 'sleeve', 'outer', 'fabric', 'trim'
+      ])
     }),
     headwear: scoped('headwear', {
       ...headIdentity,

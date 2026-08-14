@@ -17,8 +17,9 @@ export const SAMPLE_PORTRAIT_SPEC = Object.freeze({
   eyes: Object.freeze({ color: 'gray', gaze: 'viewer' }),
   expression: Object.freeze({ emotion: 'suspicious', intensity: 'medium' }),
   clothing: Object.freeze({
-    base: 'linen_tunic', outer: 'caftan', main_color: 'dark_blue',
-    secondary_color: 'undyed_linen', headwear: 'none'
+    neckline: 'high_closed', sleeve: 'narrow', outer: 'wrap',
+    fabric: 'wool', trim: 'braid', main_color: 'dark_blue',
+    secondary_color: 'madder_red', headwear: 'none'
   }),
   pose: Object.freeze({ body: 'three_quarter', head: 'slightly_turned' }),
   background: 'neutral'

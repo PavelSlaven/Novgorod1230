@@ -56,9 +56,10 @@ export function buildRenderModel(spec) {
   const turn = bodyTurn + headTurn;
   const expression = expressionModel(spec.expression.emotion, spec.expression.intensity);
   const centerX = 384 + bodyTurn * 80;
-  const shoulder = build.shoulder + (feminine ? -36 : 12);
-  const headWidth = face.width * build.face * (feminine ? .92 : 1.04);
-  const headHeight = face.height * (feminine ? .98 : 1);
+  const shoulder = build.shoulder * (feminine ? .78 : 1)
+    + (feminine ? 0 : 12);
+  const headWidth = face.width * build.face * (feminine ? .9 : 1.04);
+  const headHeight = face.height * (feminine ? .94 : 1);
   const poseTilt = spec.pose.head === 'tilted' ? -.075 : 0;
   const shoulderY = feminine ? 500 : 484;
   const farScale = 1 - turn * 1.18;
@@ -91,14 +92,14 @@ export function buildRenderModel(spec) {
       cy: 310 + age.sag * 5,
       width: headWidth,
       height: headHeight,
-      jaw: clamp(face.jaw + build.jaw + (feminine ? -.06 : .03), .61, .94),
+      jaw: clamp(face.jaw + build.jaw + (feminine ? -.09 : .03), .61, .94),
       chin: face.chin,
       turn,
       faceAxisX,
       farScale,
       nearScale,
       rotation: poseTilt + expression.headTilt,
-      neckWidth: build.neck + (feminine ? -12 : 5)
+      neckWidth: feminine ? build.neck * .72 : build.neck + 5
     }),
     skin: colorRamp(SKIN[spec.person.skin_tone]),
     hair: Object.freeze({
@@ -117,12 +118,13 @@ export function buildRenderModel(spec) {
     age: Object.freeze({ ...age, category: spec.person.age }),
     sex: Object.freeze({
       feminine,
-      browWeight: feminine ? 3.2 : 6.2,
-      browArch: feminine ? 9 : 4,
-      lash: feminine ? 1 : 0,
-      mouthScale: feminine ? .92 : 1.02,
+      browWeight: feminine ? 2.8 : 6.2,
+      browArch: feminine ? 12 : 4,
+      eyeScale: feminine ? 1.22 : 1,
+      lash: feminine ? 1.2 : 0,
+      mouthScale: feminine ? 1.08 : 1.02,
       lipDefinition: feminine ? 1 : 0,
-      noseScale: feminine ? .92 : 1.03,
+      noseScale: feminine ? .84 : 1.03,
       shoulderSlope: feminine ? 22 : 12
     }),
     expression,
@@ -147,8 +149,11 @@ export function buildRenderModel(spec) {
     clothing: Object.freeze({
       main: colorRamp(CLOTH[spec.clothing.main_color], .2),
       secondary: colorRamp(CLOTH[spec.clothing.secondary_color], .2),
-      base: spec.clothing.base,
+      neckline: spec.clothing.neckline,
+      sleeve: spec.clothing.sleeve,
       outer: spec.clothing.outer,
+      fabric: spec.clothing.fabric,
+      trim: spec.clothing.trim,
       headwear: spec.clothing.headwear
     })
   });

@@ -8,6 +8,7 @@ import {
   buildHeadwearGeometry
 } from './body-geometry.js';
 import { buildBraidGeometry } from './braid-geometry.js';
+import { buildClothingGeometry } from './clothing-geometry.js';
 import { pointsToWorld, toWorld } from './geometry-utils.js';
 
 export { pointsToWorld, toWorld } from './geometry-utils.js';
@@ -17,8 +18,11 @@ export function buildPortraitGeometry(model) {
   const hair = buildHairGeometry(model, head);
   const beard = buildBeardGeometry(model, head);
   const body = buildBodyGeometry(model);
+  const clothing = buildClothingGeometry(model, body);
   const headwear = buildHeadwearGeometry(model, head);
-  return Object.freeze({ head, hair, beard, body, headwear });
+  return Object.freeze({
+    head, hair, beard, body, clothing, headwear
+  });
 }
 
 function buildHeadGeometry(model) {
@@ -231,7 +235,7 @@ function sideHairStrands(model, width, height, bottom) {
     const side = index % 2 ? 1 : -1;
     const lane = Math.floor(index / 2);
     return pointsToWorld(model, quadraticPoints(
-      [side * width * (.37 + lane * .025), -height * .12 + lane * 12],
+      [side * width * (.41 + lane * .025), -height * .12 + lane * 12],
       [side * width * (.48 + lane * .02), bottom * .42],
       [side * width * (.31 + lane * .02), bottom - lane * 13], 15
     ));

@@ -20,8 +20,9 @@ function validSpec() {
     eyes: { color: 'gray', gaze: 'viewer' },
     expression: { emotion: 'suspicious', intensity: 'medium' },
     clothing: {
-      base: 'linen_tunic', outer: 'caftan', main_color: 'dark_blue',
-      secondary_color: 'undyed_linen', headwear: 'none'
+      neckline: 'high_closed', sleeve: 'narrow', outer: 'wrap',
+      fabric: 'wool', trim: 'braid', main_color: 'dark_blue',
+      secondary_color: 'madder_red', headwear: 'none'
     },
     pose: { body: 'three_quarter', head: 'slightly_turned' },
     background: 'neutral'
@@ -48,6 +49,18 @@ test('portrait_spec_v1 rejects unknown enum values and fields', () => {
     code: 'additional_property',
     message: 'hair.secret_style is not allowed.'
   });
+
+  const legacyClothing = validSpec();
+  legacyClothing.clothing.base = 'linen_tunic';
+  assert.ok(validatePortraitSpecV1(legacyClothing).some((error) => (
+    error.path === 'clothing.base' && error.code === 'additional_property'
+  )));
+
+  const legacyOuter = validSpec();
+  legacyOuter.clothing.outer = 'caftan';
+  assert.ok(validatePortraitSpecV1(legacyOuter).some((error) => (
+    error.path === 'clothing.outer' && error.code === 'enum'
+  )));
 });
 
 test('portrait_spec_v1 reports missing and non-object branches without throwing', () => {

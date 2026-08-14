@@ -1,5 +1,6 @@
 import { validateContractPaths } from './drawing-contract-paths.js';
 import { validateContractRegions } from './drawing-contract-regions.js';
+import { validateClothingContract } from './drawing-contract-clothing.js';
 
 export const PORTRAIT_DRAWING_CONTRACT_V1 = Object.freeze({
   schema: 'portrait_drawing_contract_v1',
@@ -34,7 +35,7 @@ export const PORTRAIT_DRAWING_CONTRACT_V1 = Object.freeze({
   contourOwners: Object.freeze({
     crown: Object.freeze(['head', 'hair', 'headwear']),
     jaw: Object.freeze(['head', 'beard']),
-    torso: Object.freeze(['tunic', 'caftan', 'cloak', 'sheepskin'])
+    torso: Object.freeze(['base_garment', 'outer_garment'])
   }),
   limits: Object.freeze({
     canvasMargin: 96,
@@ -43,7 +44,13 @@ export const PORTRAIT_DRAWING_CONTRACT_V1 = Object.freeze({
     hairAnchor: 18,
     braidAnchor: 40,
     headwearAnchor: 24,
-    featureGap: 9
+    featureGap: 9,
+    clothingAnchor: 24,
+    clothingRegionMargin: 40,
+    trimAttachment: 14,
+    foldOrigin: 22,
+    underlayerWidth: .4,
+    underlayerHeight: .45
   }),
   style: Object.freeze({
     fillsBeforeInk: true,
@@ -59,6 +66,7 @@ export function validatePortraitDrawingContract(model, scene) {
   const { limits } = PORTRAIT_DRAWING_CONTRACT_V1;
   validateContractRegions(model, scene, limits, issues);
   validateContractPaths(model, scene, limits, issues);
+  validateClothingContract(model, scene, limits, issues);
   validateOwnership(model, scene, issues);
   validateStyleMetadata(model, scene, issues);
   return Object.freeze(issues.map((issue) => Object.freeze(issue)));
@@ -122,23 +130,7 @@ function validateOwnership(model, scene, issues) {
     ));
   }
 
-  validateTorsoOwnership(scene, visibility, issues);
   validateHiddenGeometry(scene, ink, issues);
-}
-
-function validateTorsoOwnership(scene, visibility, issues) {
-  const torsoRoles = ['tunic', 'caftan', 'cloak', 'sheepskin'];
-  const visibleTorso = scene.patches.filter(
-    (entry) => torsoRoles.includes(entry.role)
-  );
-  if (visibleTorso.length !== 1
-      || visibleTorso[0].role !== visibility.torsoOwner) {
-    issues.push(issue(
-      'CONTOUR_OWNER_CONFLICT',
-      'clothing',
-      'Exactly one colour patch may own the visible torso.'
-    ));
-  }
 }
 
 function validateHiddenGeometry(scene, ink, issues) {

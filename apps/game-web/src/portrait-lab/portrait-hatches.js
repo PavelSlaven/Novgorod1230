@@ -27,21 +27,6 @@ export function buildHatches(model, geometry, visibility) {
     }
   }
   if (geometry.beard.present) addBeardHatches(model, geometry, hatches);
-  if (model.clothing.outer === 'sheepskin') {
-    for (let index = 0; index < 8; index += 1) {
-      const side = index % 2 ? 1 : -1;
-      const y = 558 + Math.floor(index / 2) * 42;
-      hatches.push(line('garment_hatch', [
-        [model.body.centerX + side * 27, y],
-        [model.body.centerX + side * 38, y + 12]
-      ], model.ink.soft, {
-        salt: 4580 + index,
-        width: 1.2,
-        alpha: .48,
-        roughness: .7
-      }));
-    }
-  }
   return hatches;
 }
 

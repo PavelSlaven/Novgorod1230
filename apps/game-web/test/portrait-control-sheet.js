@@ -5,45 +5,87 @@ export const PORTRAIT_CONTROL_SHEET_SIZE = 24;
 
 const CONTROL_OVERRIDES = Object.freeze([
   Object.freeze({
-    'hair.length': 'long',
-    'hair.style': 'loose',
-    'hair.facial_hair': 'none',
-    'clothing.outer': 'none',
+    'person.build': 'stocky',
+    'pose.body': 'frontal',
+    'clothing.neckline': 'slit_round',
+    'clothing.sleeve': 'narrow',
+    'clothing.outer': 'wrap',
+    'clothing.fabric': 'wool',
+    'clothing.trim': 'edge_band',
     'clothing.headwear': 'none'
   }),
   Object.freeze({
+    'person.build': 'slim',
+    'pose.body': 'three_quarter',
     'hair.length': 'long',
     'hair.style': 'braided',
     'hair.facial_hair': 'none',
+    'clothing.neckline': 'round',
+    'clothing.sleeve': 'narrow',
+    'clothing.outer': 'front_open',
+    'clothing.fabric': 'coarse_wool',
+    'clothing.trim': 'braid',
     'clothing.headwear': 'none'
   }),
   Object.freeze({
-    'hair.length': 'long',
-    'hair.style': 'braided',
-    'clothing.headwear': 'headscarf'
+    'person.sex': 'female',
+    'hair.facial_hair': 'none',
+    'clothing.neckline': 'round',
+    'clothing.sleeve': 'wide',
+    'clothing.outer': 'shoulder_drape',
+    'clothing.fabric': 'wool',
+    'clothing.trim': 'none',
+    'clothing.headwear': 'none'
   }),
   Object.freeze({
-    'hair.length': 'long',
-    'hair.style': 'loose',
-    'clothing.headwear': 'linen_cap'
+    'clothing.neckline': 'v_slit',
+    'clothing.sleeve': 'wide',
+    'clothing.outer': 'sleeveless_overlayer',
+    'clothing.fabric': 'furred',
+    'clothing.trim': 'fur_edge',
+    'clothing.headwear': 'none'
   }),
   Object.freeze({
     'person.sex': 'male',
     'hair.facial_hair': 'full_beard',
-    'pose.body': 'three_quarter',
-    'pose.head': 'slightly_turned',
+    'clothing.neckline': 'high_closed',
+    'clothing.sleeve': 'narrow',
+    'clothing.outer': 'wrap',
+    'clothing.fabric': 'wool',
+    'clothing.trim': 'edge_band',
     'clothing.headwear': 'none'
   }),
   Object.freeze({
-    'person.age': 'old',
-    'expression.emotion': 'surprised',
-    'clothing.outer': 'cloak',
+    'hair.length': 'long',
+    'hair.style': 'loose',
+    'hair.facial_hair': 'none',
+    'clothing.outer': 'shoulder_drape',
+    'clothing.fabric': 'wool',
+    'clothing.trim': 'none',
+    'clothing.headwear': 'none'
+  }),
+  Object.freeze({
+    'person.sex': 'female',
+    'hair.facial_hair': 'none',
+    'clothing.sleeve': 'wide',
+    'clothing.outer': 'front_open',
+    'clothing.fabric': 'coarse_wool',
+    'clothing.trim': 'braid',
+    'clothing.headwear': 'headscarf'
+  }),
+  Object.freeze({
+    'hair.facial_hair': 'none',
+    'clothing.neckline': 'slit_round',
+    'clothing.sleeve': 'narrow',
+    'clothing.outer': 'none',
+    'clothing.fabric': 'light_linen',
+    'clothing.trim': 'none',
+    'clothing.main_color': 'undyed_linen',
     'clothing.headwear': 'none'
   }),
   Object.freeze({
     'person.sex': 'male',
-    'hair.facial_hair': 'moustache',
-    'clothing.headwear': 'none'
+    'hair.facial_hair': 'moustache'
   })
 ]);
 

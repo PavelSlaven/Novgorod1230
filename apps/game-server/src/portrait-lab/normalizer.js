@@ -20,8 +20,9 @@ const EXAMPLE = Object.freeze({
   eyes: { color: 'gray', gaze: 'viewer' },
   expression: { emotion: 'suspicious', intensity: 'medium' },
   clothing: {
-    base: 'linen_tunic', outer: 'caftan', main_color: 'dark_blue',
-    secondary_color: 'undyed_linen', headwear: 'none'
+    neckline: 'high_closed', sleeve: 'narrow', outer: 'wrap',
+    fabric: 'wool', trim: 'braid', main_color: 'dark_blue',
+    secondary_color: 'madder_red', headwear: 'none'
   },
   pose: { body: 'three_quarter', head: 'slightly_turned' },
   background: 'neutral'
@@ -35,6 +36,11 @@ export const PORTRAIT_SPEC_SYSTEM_PROMPT = [
   'Сохрани явно заданные возраст, внешность, эмоцию, взгляд и одежду.',
   'Ориентируйся на визуально правдоподобного персонажа Руси XIII века.',
   'Не добавляй биографию, окружающую сцену, современные или фантазийные предметы.',
+  'Названия одежды переводи в геометрические категории, а не возвращай как enum.',
+  'Простая некрашеная льняная рубаха: slit_round, narrow, none, light_linen, none, undyed_linen.',
+  'Тёмно-синий шерстяной кафтан с красной тесьмой: high_closed, narrow, wrap, wool, braid, dark_blue, madder_red.',
+  'Простая одежда с шерстяной накидкой: round, wide, shoulder_drape, wool, none.',
+  'Тяжёлая овчина с меховым краем: high_closed, narrow, sleeveless_overlayer, furred, fur_edge, brown.',
   '',
   'JSON Schema:',
   JSON.stringify(PORTRAIT_SPEC_V1_JSON_SCHEMA, null, 2),

@@ -7,8 +7,8 @@ export function buildBodyGeometry(model) {
   const neckHalf = model.head.neckWidth * .58;
   const collarY = 486 + model.body.turn * 10;
   const neckTopY = model.head.cy + model.head.height * .43;
-  const neckLeft = [model.head.cx - neckHalf, neckTopY];
-  const neckRight = [model.head.cx + neckHalf, neckTopY];
+  const neckLeftAnchor = [model.head.cx - neckHalf, neckTopY];
+  const neckRightAnchor = [model.head.cx + neckHalf, neckTopY];
   const collarLeft = [model.body.centerX - neckHalf * 1.22, collarY];
   const collarRight = [
     model.body.centerX + neckHalf * 1.22,
@@ -18,14 +18,21 @@ export function buildBodyGeometry(model) {
   const rightShoulder = [shoulders.right.x, shoulders.right.y + 38];
   const leftBottom = [ribcage.cx - ribcage.radiusX * .92, 786];
   const rightBottom = [ribcage.cx + ribcage.radiusX * .92, 786];
+  const leftLower = cubicPoints(
+    leftBottom,
+    [leftBottom[0] - 10, 690],
+    [leftShoulder[0] - 12, 586],
+    leftShoulder, 16
+  );
+  const rightLower = cubicPoints(
+    rightShoulder,
+    [rightShoulder[0] + 12, 590],
+    [rightBottom[0] + 10, 690],
+    rightBottom, 16
+  );
   const leftOutline = joinPointSets(
     [[leftBottom[0], leftBottom[1]]],
-    cubicPoints(
-      leftBottom,
-      [leftBottom[0] - 10, 690],
-      [leftShoulder[0] - 12, 586],
-      leftShoulder, 16
-    ),
+    leftLower,
     cubicPoints(
       leftShoulder,
       [leftShoulder[0] + 58, leftShoulder[1] - 42],
@@ -41,29 +48,61 @@ export function buildBodyGeometry(model) {
       [rightShoulder[0] - 58, rightShoulder[1] - 42],
       rightShoulder, 16
     ),
-    cubicPoints(
-      rightShoulder,
-      [rightShoulder[0] + 12, 590],
-      [rightBottom[0] + 10, 690],
-      rightBottom, 16
-    )
+    rightLower
   );
   const torsoPatch = [
     ...leftOutline,
     ...rightOutline,
     [ribcage.cx, 786]
   ];
+  const leftFromShoulder = [...leftLower].reverse();
+  const underarmLeft = pointAtHeight(leftFromShoulder, .18);
+  const underarmRight = pointAtHeight(rightLower, .18);
+  const chestLeft = pointAtHeight(leftFromShoulder, .34);
+  const chestRight = pointAtHeight(rightLower, .34);
+  const anchors = Object.freeze({
+    neckLeft: neckLeftAnchor,
+    neckRight: neckRightAnchor,
+    collarLeft,
+    collarRight,
+    shoulderLeft: leftShoulder,
+    shoulderRight: rightShoulder,
+    underarmLeft,
+    underarmRight,
+    chestLeft,
+    chestCenter: [
+      (chestLeft[0] + chestRight[0]) / 2,
+      (chestLeft[1] + chestRight[1]) / 2
+    ],
+    chestRight,
+    waistLeft: leftBottom,
+    waistRight: rightBottom
+  });
   return Object.freeze({
+    anchors,
     torsoPatch,
     leftOutline,
     rightOutline,
     collarY,
     collarLeft,
     collarRight,
-    neckPatch: [neckLeft, collarLeft, collarRight, neckRight],
-    neckLeft: [neckLeft, collarLeft],
-    neckRight: [neckRight, collarRight]
+    neckPatch: [
+      neckLeftAnchor, collarLeft, collarRight, neckRightAnchor
+    ],
+    neckLeft: [neckLeftAnchor, collarLeft],
+    neckRight: [neckRightAnchor, collarRight]
   });
+}
+
+function pointAtHeight(points, ratio) {
+  const targetY = points[0][1]
+    + (points.at(-1)[1] - points[0][1]) * ratio;
+  const index = points.findIndex((point) => point[1] >= targetY);
+  if (index <= 0) return [...points[0]];
+  const start = points[index - 1];
+  const end = points[index];
+  const amount = (targetY - start[1]) / (end[1] - start[1] || 1);
+  return [start[0] + (end[0] - start[0]) * amount, targetY];
 }
 
 export function buildHeadwearGeometry(model, head) {

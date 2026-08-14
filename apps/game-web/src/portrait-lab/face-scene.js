@@ -1,13 +1,8 @@
-import {
-  ellipsePoints,
-  joinPointSets,
-  quadraticPoints
-} from './handmade.js';
+import { ellipsePoints, joinPointSets, quadraticPoints } from './handmade.js';
 import { noseLines } from './face-variants.js';
 import { pointsToWorld, toWorld } from './geometry-utils.js';
 import { projectFacePoint } from './render-model.js';
 import { line, patch } from './scene-primitives.js';
-
 export function buildFaceScene(model, visibility) {
   const patches = [];
   const strokes = [];
@@ -19,7 +14,6 @@ export function buildFaceScene(model, visibility) {
   if (visibility.details.earMarks) addEarMarks(model, strokes);
   return Object.freeze({ patches, strokes, hatches });
 }
-
 function addEyesAndBrows(model, patches, strokes) {
   const width = model.head.width;
   const height = model.head.height;
@@ -61,17 +55,15 @@ function addEyesAndBrows(model, patches, strokes) {
     addBrow(model, eye, strokes);
   }
 }
-
 function eyeLayout(model, side, localX, localY, openness, variant, salt) {
   const center = projectFacePoint(model, localX, localY);
   const sideScale = side < 0 ? model.head.farScale : model.head.nearScale;
   return {
     side, variant, salt, x: center.x, y: center.y,
-    halfWidth: model.head.width * .086 * sideScale,
-    height: Math.max(4.2, 15 * openness * sideScale)
+    halfWidth: model.head.width * .086 * sideScale * model.sex.eyeScale,
+    height: Math.max(4.2, 15 * openness * sideScale * model.sex.eyeScale)
   };
 }
-
 function eyeContour(eye) {
   const left = [eye.x - eye.halfWidth, eye.y];
   const right = [eye.x + eye.halfWidth, eye.y + (eye.variant === 3 ? 2 : 0)];
@@ -107,7 +99,6 @@ function eyeContour(eye) {
   );
   return { closed: true, points, strokes: [[...points, points[0]]] };
 }
-
 function addEyeLids(model, eye, strokes) {
   const lidY = eye.y - eye.height * (1.5 + model.age.eyeBag * .05);
   strokes.push(line('eyelid', pointsToWorld(model, quadraticPoints(
@@ -131,7 +122,6 @@ function addEyeLids(model, eye, strokes) {
     }));
   }
 }
-
 function addLashes(model, eye, strokes) {
   if (!model.sex.lash) return;
   const outerX = eye.x + eye.side * eye.halfWidth * .86;
@@ -142,13 +132,13 @@ function addLashes(model, eye, strokes) {
     ];
     strokes.push(line('lash', pointsToWorld(model, [
       start,
-      [start[0] + eye.side * (5 - index), start[1] - 4 + index]
+      [start[0] + eye.side * (7.5 - index) * model.sex.lash,
+        start[1] - (5.5 - index) * model.sex.lash]
     ]), model.hair.deep, {
-      salt: eye.salt + 34 + index, width: .9, alpha: .72, roughness: .3
+      salt: eye.salt + 34 + index, width: 1.05, alpha: .8, roughness: .3
     }));
   }
 }
-
 function addBrow(model, eye, strokes) {
   const width = model.head.width;
   const height = model.head.height;
@@ -175,7 +165,6 @@ function addBrow(model, eye, strokes) {
     double: true
   }));
 }
-
 function addNose(model, strokes) {
   const height = model.head.height;
   const width = model.head.width;
@@ -198,7 +187,6 @@ function addNose(model, strokes) {
     }));
   }
 }
-
 function addMouth(model, patches, strokes) {
   const width = model.head.width;
   const height = model.head.height;
@@ -231,23 +219,36 @@ function addMouth(model, patches, strokes) {
     }));
     return;
   }
-  strokes.push(line('mouth', pointsToWorld(model, quadraticPoints(
-    leftCorner, [centerX, centerY], rightCorner, 13
-  )), model.ink.primary, {
-    salt: 3330 + variant, width: variant === 4 ? 2.2 : 1.7,
+  if (model.sex.feminine) {
+    patches.push(patch('lower_lip', pointsToWorld(model, ellipsePoints(
+      centerX, centerY + 5, halfWidth * .72, 8, 17
+    )), '#a86861', {
+      alpha: .32, salt: 3320 + variant, roughness: .8
+    }));
+  }
+  const closedMouth = model.sex.feminine ? joinPointSets(
+    quadraticPoints(leftCorner, [centerX - halfWidth * .28, centerY - 4],
+      [centerX, centerY + 1], 7),
+    quadraticPoints([centerX, centerY + 1],
+      [centerX + halfWidth * .28, centerY - 4], rightCorner, 7)
+  ) : quadraticPoints(leftCorner, [centerX, centerY], rightCorner, 13);
+  strokes.push(line('mouth', pointsToWorld(model, closedMouth),
+    model.sex.feminine ? '#754942' : model.ink.primary, {
+    salt: 3330 + variant,
+    width: model.sex.feminine ? 2.05 : variant === 4 ? 2.2 : 1.7,
     roughness: 1, double: variant === 0 || variant === 4
   }));
   if (model.sex.lipDefinition || variant === 1 || variant === 3) {
     strokes.push(line('lower_lip', pointsToWorld(model, quadraticPoints(
-      [leftCorner[0] + 6, leftCorner[1] + 6],
-      [centerX, centerY + 10],
-      [rightCorner[0] - 7, rightCorner[1] + 5], 10
+      [leftCorner[0] + 6, leftCorner[1] + 6 + model.sex.lipDefinition],
+      [centerX, centerY + 10 + model.sex.lipDefinition * 2],
+      [rightCorner[0] - 7, rightCorner[1] + 5 + model.sex.lipDefinition], 10
     )), '#83564f', {
-      salt: 3340 + variant, width: 1.2, alpha: .58, roughness: .65
+      salt: 3340 + variant, width: 1.1 + model.sex.lipDefinition * .45,
+      alpha: .5 + model.sex.lipDefinition * .28, roughness: .65
     }));
   }
 }
-
 function addAgeAndExpression(model, strokes, hatches) {
   const width = model.head.width;
   const height = model.head.height;

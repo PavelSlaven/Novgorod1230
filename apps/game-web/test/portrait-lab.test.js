@@ -189,10 +189,12 @@ test('scene visibility gives each occluded contour one visible owner', () => {
     false
   );
   assert.equal(
-    scarfScene.strokes.filter((entry) => entry.role === 'body_silhouette').length,
+    scarfScene.strokes.filter(
+      (entry) => entry.role === 'garment_silhouette'
+    ).length,
     2
   );
-  assert.equal(scarfScene.visibility.hidden.tunicUnderOuter, true);
+  assert.equal(scarfScene.visibility.hidden.baseGarmentUnderOuter, true);
 
   for (const headwear of ['linen_cap', 'fur_hat']) {
     const coveredHairSpec = variant('clothing', 'headwear', headwear);
@@ -269,7 +271,8 @@ test('ink-only mode remains a complete deterministic drawing without fill region
     ...scene.scratches
   ].map((entry) => entry.role));
   for (const required of [
-    'body_silhouette', 'outer_silhouette', 'eye', 'nose', 'mouth', 'collar'
+    'garment_silhouette', 'neckline', 'garment_boundary', 'fold',
+    'garment_trim', 'eye', 'nose', 'mouth'
   ]) {
     assert.equal(roles.has(required), true, `missing ink role: ${required}`);
   }

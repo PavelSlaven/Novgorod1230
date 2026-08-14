@@ -22,7 +22,9 @@ test('unrelated fields preserve face geometry and face-part seeds', () => {
   const baseline = portrait(SAMPLE_PORTRAIT_SPEC);
   for (const changedSpec of [
     changed('clothing', 'main_color', 'forest_green'),
-    changed(null, 'background', 'cool')
+    changed(null, 'background', 'cool'),
+    changed('clothing', 'outer', 'front_open'),
+    changed('clothing', 'fabric', 'furred')
   ]) {
     const changedPortrait = portrait(changedSpec);
     assert.notEqual(changedPortrait.model.identity.seed, baseline.model.identity.seed);
@@ -42,24 +44,77 @@ test('unrelated fields preserve face geometry and face-part seeds', () => {
   }
 });
 
+test('clothing categories produce distinct construction geometry', () => {
+  assertUniqueGeometry('neckline', 'neckline');
+  assertUniqueGeometry('sleeve', 'silhouette');
+  assertUniqueGeometry('outer', 'construction');
+  assertUniqueGeometry('fabric', 'fabric');
+
+  const details = PORTRAIT_SPEC_V1_ENUMS.clothing.trim.map((trim) => {
+    const geometry = portrait(changed('clothing', 'trim', trim))
+      .scene.geometry.clothing;
+    return geometry.trim.map((entry) => ({
+      kind: entry.kind,
+      boundaryId: entry.boundaryId,
+      points: entry.points
+    }));
+  });
+  assert.equal(details[0].length, 0);
+  assert.equal(new Set(details.map(JSON.stringify)).size, details.length);
+
+  const round = portrait(changed('clothing', 'neckline', 'round')).scene;
+  const high = portrait(changed('clothing', 'neckline', 'high_closed')).scene;
+  assert.ok(high.visibility.neckEndY < round.visibility.neckEndY);
+});
+
+test('clothing colours change appearance without changing construction', () => {
+  const baseline = portrait(SAMPLE_PORTRAIT_SPEC);
+  for (const changedSpec of [
+    changed('clothing', 'main_color', 'forest_green'),
+    changed('clothing', 'secondary_color', 'ochre')
+  ]) {
+    const recolored = portrait(changedSpec);
+    assert.deepEqual(
+      recolored.scene.geometry.clothing,
+      baseline.scene.geometry.clothing
+    );
+    assert.equal(
+      recolored.model.identity.seeds.clothing,
+      baseline.model.identity.seeds.clothing
+    );
+    assert.deepEqual(
+      clothingInk(recolored.scene).map(withoutColor),
+      clothingInk(baseline.scene).map(withoutColor)
+    );
+    assert.notDeepEqual(
+      clothingAppearance(recolored.scene),
+      clothingAppearance(baseline.scene)
+    );
+  }
+});
+
 test('female portraits keep readable sex cues with every other field fixed', () => {
   const female = portrait(sexVariant('female'));
   const male = portrait(sexVariant('male'));
   const ratio = (left, right) => left / right;
 
-  assert.ok(ratio(female.model.head.width, male.model.head.width) < .9);
+  assert.ok(ratio(female.model.head.width, male.model.head.width) < .88);
   assert.ok(ratio(
     jawSpan(female.scene), jawSpan(male.scene)
-  ) < .82);
+  ) < .78);
   assert.ok(ratio(
     shoulderSpan(female.model), shoulderSpan(male.model)
-  ) < .84);
+  ) < .78);
   assert.ok(ratio(
     female.model.head.neckWidth, male.model.head.neckWidth
-  ) < .8);
+  ) < .7);
   assert.ok(
-    browArch(female.scene) > browArch(male.scene) + 3,
+    browArch(female.scene) > browArch(male.scene) + 5,
     'female brow must have a visibly softer arch'
+  );
+  assert.ok(
+    relativeEyeWidth(female) > relativeEyeWidth(male) * 1.1,
+    'female eyes must remain visibly distinct without a hairstyle cue'
   );
   assert.equal(
     female.scene.strokes.filter((entry) => entry.role === 'lash').length,
@@ -67,6 +122,14 @@ test('female portraits keep readable sex cues with every other field fixed', () 
   );
   assert.equal(
     male.scene.strokes.filter((entry) => entry.role === 'lash').length,
+    0
+  );
+  assert.equal(
+    female.scene.patches.filter((entry) => entry.role === 'lower_lip').length,
+    1
+  );
+  assert.equal(
+    male.scene.patches.filter((entry) => entry.role === 'lower_lip').length,
     0
   );
 });
@@ -342,6 +405,88 @@ test('drawing contract enforces contour ownership and scoped style metadata', ()
   );
 });
 
+test('drawing contract enforces clothing attachment, ownership and visibility', () => {
+  const baseline = portrait(SAMPLE_PORTRAIT_SPEC);
+
+  const detached = structuredClone(baseline.scene);
+  detached.geometry.clothing.seams.push({
+    id: 'detached_test_seam',
+    points: [[80, 80], [100, 80]]
+  });
+  assertContractIssue(baseline.model, detached, 'CLOTHING_ANCHOR_INVALID');
+
+  const escaped = structuredClone(baseline.scene);
+  escaped.geometry.clothing.texture.push({
+    boundaryId: null,
+    points: [[900, 500], [910, 500]],
+    style: {}
+  });
+  assertContractIssue(baseline.model, escaped, 'CLOTHING_REGION_VIOLATION');
+
+  const detachedTrim = structuredClone(baseline.scene);
+  for (const point of detachedTrim.geometry.clothing.trim[0].points) {
+    point[0] += 80;
+  }
+  assertContractIssue(baseline.model, detachedTrim, 'TRIM_ATTACHMENT_INVALID');
+
+  const detachedFold = structuredClone(baseline.scene);
+  detachedFold.geometry.clothing.folds[0].points[0][0] += 80;
+  assertContractIssue(baseline.model, detachedFold, 'FOLD_ORIGIN_INVALID');
+
+  const missingSilhouette = structuredClone(baseline.scene);
+  const silhouetteIndex = missingSilhouette.strokes.findIndex(
+    (entry) => entry.role === 'garment_silhouette'
+  );
+  missingSilhouette.strokes.splice(silhouetteIndex, 1);
+  assertContractIssue(
+    baseline.model, missingSilhouette, 'CLOTHING_OWNER_CONFLICT'
+  );
+
+  const leakedBase = structuredClone(baseline.scene);
+  leakedBase.patches.push({
+    ...leakedBase.patches.find((entry) => entry.role === 'garment_wash'),
+    layer: 'base'
+  });
+  assertContractIssue(baseline.model, leakedBase, 'HIDDEN_GARMENT_VISIBLE');
+
+  const bearded = portrait(combined({
+    'hair.facial_hair': 'full_beard',
+    'clothing.neckline': 'high_closed'
+  }));
+  assert.equal(bearded.scene.visibility.hidden.necklineCenter, true);
+  const leakedNeckline = structuredClone(bearded.scene);
+  leakedNeckline.strokes.push({
+    ...leakedNeckline.strokes.find(
+      (entry) => entry.role === 'garment_silhouette'
+    ),
+    role: 'neckline',
+    points: leakedNeckline.geometry.clothing.neckline[0].points
+  });
+  assertContractIssue(
+    bearded.model, leakedNeckline, 'HIDDEN_GARMENT_VISIBLE'
+  );
+});
+
+test('one clothing renderer covers pose, build and sex variants', () => {
+  const variants = [
+    ...PORTRAIT_SPEC_V1_ENUMS.clothing.outer.flatMap((outer) => [
+      combined({ 'clothing.outer': outer, 'pose.body': 'frontal' }),
+      combined({ 'clothing.outer': outer, 'pose.body': 'three_quarter' })
+    ]),
+    ...PORTRAIT_SPEC_V1_ENUMS.person.build.map((build) => (
+      combined({ 'person.build': build })
+    )),
+    combined({ 'person.sex': 'male' }),
+    combined({
+      'person.sex': 'female',
+      'hair.facial_hair': 'none'
+    })
+  ];
+  for (const [index, spec] of variants.entries()) {
+    assert.doesNotThrow(() => portrait(spec), `clothing variant ${index}`);
+  }
+});
+
 test('pairwise specs and known triples satisfy universal drawing invariants', () => {
   const pairwise = buildPairwisePortraitSpecs(
     SAMPLE_PORTRAIT_SPEC,
@@ -351,26 +496,56 @@ test('pairwise specs and known triples satisfy universal drawing invariants', ()
     uncoveredPortraitPairs(pairwise, PORTRAIT_SPEC_V1_ENUMS),
     []
   );
-  assert.ok(pairwise.length < 200, `pairwise cases: ${pairwise.length}`);
+  assert.ok(pairwise.length < 500, `pairwise cases: ${pairwise.length}`);
 
-  const knownTriples = [
+  const knownInteractions = [
     combined({
-      'hair.length': 'long',
-      'hair.style': 'braided',
-      'clothing.headwear': 'headscarf'
+      'person.build': 'stocky',
+      'pose.body': 'frontal',
+      'clothing.outer': 'wrap',
+      'clothing.fabric': 'wool',
+      'clothing.trim': 'edge_band'
+    }),
+    combined({
+      'person.build': 'slim',
+      'pose.body': 'three_quarter',
+      'clothing.outer': 'front_open',
+      'clothing.fabric': 'coarse_wool',
+      'clothing.trim': 'braid'
+    }),
+    combined({
+      'person.sex': 'female',
+      'hair.facial_hair': 'none',
+      'clothing.outer': 'shoulder_drape',
+      'clothing.fabric': 'wool',
+      'clothing.sleeve': 'wide'
+    }),
+    combined({
+      'clothing.outer': 'sleeveless_overlayer',
+      'clothing.fabric': 'furred',
+      'clothing.trim': 'fur_edge'
     }),
     combined({
       'hair.facial_hair': 'full_beard',
-      'pose.body': 'three_quarter',
-      'pose.head': 'slightly_turned'
+      'clothing.neckline': 'high_closed',
+      'clothing.outer': 'wrap'
     }),
     combined({
-      'person.age': 'old',
-      'expression.emotion': 'surprised',
-      'clothing.outer': 'cloak'
+      'hair.length': 'long',
+      'hair.style': 'loose',
+      'clothing.outer': 'shoulder_drape',
+      'clothing.headwear': 'none'
+    }),
+    combined({
+      'person.sex': 'female',
+      'hair.facial_hair': 'none',
+      'clothing.headwear': 'headscarf',
+      'clothing.outer': 'front_open',
+      'clothing.sleeve': 'wide'
     })
   ];
-  for (const [index, spec] of [...pairwise, ...knownTriples].entries()) {
+  assert.equal(knownInteractions.length, 7);
+  for (const [index, spec] of [...pairwise, ...knownInteractions].entries()) {
     assert.doesNotThrow(() => portrait(spec), `contract case ${index}`);
   }
 });
@@ -425,7 +600,7 @@ test('visual control sheet is fixed at 24 contract-valid portraits', () => {
   assert.ok(controlSheet.some((spec) => (
     spec.hair.length === 'long'
       && spec.hair.style === 'braided'
-      && spec.clothing.headwear === 'headscarf'
+      && spec.clothing.headwear === 'none'
   )));
 });
 
@@ -456,7 +631,7 @@ function sexVariant(sex) {
     'person.age': 'adult',
     'person.build': 'average',
     'person.face_shape': 'oval',
-    'hair.length': 'short',
+    'hair.length': 'bald',
     'hair.style': 'straight',
     'hair.facial_hair': 'none',
     'clothing.outer': 'none',
@@ -484,10 +659,73 @@ function browArch(scene) {
   return endpointsY - Math.min(...points.map((point) => point[1]));
 }
 
+function relativeEyeWidth({ model, scene }) {
+  const points = scene.strokes.find((entry) => entry.role === 'eye').points;
+  const xs = points.map((point) => point[0]);
+  return (Math.max(...xs) - Math.min(...xs)) / model.head.width;
+}
+
 function faceInk(scene) {
   const parts = new Set(['head', 'face', 'eyes', 'nose', 'mouth']);
   return [...scene.strokes, ...scene.hatches]
     .filter((entry) => parts.has(entry.part));
+}
+
+function clothingInk(scene) {
+  return [...scene.strokes, ...scene.hatches, ...scene.scratches]
+    .filter((entry) => entry.part === 'clothing');
+}
+
+function clothingAppearance(scene) {
+  return [
+    ...scene.patches.filter((entry) => entry.part === 'clothing'),
+    ...clothingInk(scene)
+  ].map((entry) => ({
+    role: entry.role,
+    color: entry.color,
+    fill: entry.fill
+  }));
+}
+
+function withoutColor({ color, ...entry }) {
+  return entry;
+}
+
+function clothingGeometry(field, value, projection) {
+  const geometry = portrait(changed('clothing', field, value))
+    .scene.geometry.clothing;
+  if (projection === 'neckline') {
+    return { neckline: geometry.neckline, opening: geometry.neckOpening };
+  }
+  if (projection === 'silhouette') return geometry.silhouette;
+  if (projection === 'construction') {
+    return {
+      seams: geometry.seams,
+      outerBoundaries: geometry.outerBoundaries,
+      patches: geometry.patches
+    };
+  }
+  return {
+    silhouette: geometry.silhouette,
+    folds: geometry.folds,
+    texture: geometry.texture
+  };
+}
+
+function assertUniqueGeometry(field, projection) {
+  const values = PORTRAIT_SPEC_V1_ENUMS.clothing[field];
+  const signatures = values.map((value) => JSON.stringify(
+    clothingGeometry(field, value, projection)
+  ));
+  assert.equal(new Set(signatures).size, values.length, field);
+}
+
+function assertContractIssue(model, scene, code) {
+  assert.ok(
+    validatePortraitDrawingContract(model, scene)
+      .some((issue) => issue.code === code),
+    code
+  );
 }
 
 function pathsEqual(left, right) {

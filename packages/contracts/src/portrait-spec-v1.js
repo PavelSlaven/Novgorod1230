@@ -26,8 +26,14 @@ export const PORTRAIT_SPEC_V1_ENUMS = deepFreeze({
     intensity: ['low', 'medium', 'high']
   },
   clothing: {
-    base: ['linen_tunic', 'wool_tunic', 'embroidered_tunic'],
-    outer: ['none', 'caftan', 'cloak', 'sheepskin'],
+    neckline: ['round', 'slit_round', 'v_slit', 'high_closed'],
+    sleeve: ['narrow', 'wide'],
+    outer: [
+      'none', 'wrap', 'front_open', 'shoulder_drape',
+      'sleeveless_overlayer'
+    ],
+    fabric: ['light_linen', 'wool', 'coarse_wool', 'furred'],
+    trim: ['none', 'edge_band', 'braid', 'fur_edge'],
     main_color: [
       'undyed_linen', 'dark_blue', 'forest_green', 'madder_red',
       'ochre', 'brown', 'charcoal'

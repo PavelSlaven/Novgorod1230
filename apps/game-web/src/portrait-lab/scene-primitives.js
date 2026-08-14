@@ -4,16 +4,15 @@ export const PORTRAIT_PARTS = Object.freeze([
 ]);
 
 const ROLE_PART = Object.freeze({
-  body_silhouette: 'body',
   neck: 'body',
-  collar: 'clothing',
-  outer_garment: 'clothing',
+  garment_silhouette: 'clothing',
+  neckline: 'clothing',
+  garment_boundary: 'clothing',
   fold: 'clothing',
-  garment_hatch: 'clothing',
-  tunic: 'clothing',
-  caftan: 'clothing',
-  cloak: 'clothing',
-  sheepskin: 'clothing',
+  garment_trim: 'clothing',
+  garment_texture: 'clothing',
+  garment_wash: 'clothing',
+  garment_underlayer: 'clothing',
   eye_white: 'eyes',
   eye: 'eyes',
   iris: 'eyes',

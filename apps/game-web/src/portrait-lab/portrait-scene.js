@@ -8,7 +8,6 @@ import { pointsToWorld } from './geometry-utils.js';
 import { buildPortraitGeometry } from './portrait-geometry.js';
 import { buildHatches, buildScratches } from './portrait-hatches.js';
 import {
-  insetPatch,
   patch,
   verticalSlice
 } from './scene-primitives.js';
@@ -59,23 +58,22 @@ function resolveVisibility(model, geometry) {
   const neckStartY = geometry.beard.present
     ? Math.max(geometry.head.chin[1], geometry.beard.bottomY + 2)
     : geometry.head.chin[1] - 2;
+  const neckEndY = geometry.clothing.neckOpening.y;
   const hairCoversEars = geometry.hair.present && (
     ['medium', 'long'].includes(model.spec.hair.length)
       || model.spec.hair.style === 'braided'
   );
-  const torsoOwner = model.clothing.outer === 'none'
-    ? 'tunic'
-    : model.clothing.outer;
+  const torsoOwner = geometry.clothing.owner;
   return Object.freeze({
     crownOwner,
     jawOwner,
-    neckVisible: neckStartY < geometry.body.collarY - 3,
+    neckVisible: neckStartY < neckEndY - 3,
     neckStartY,
+    neckEndY,
     torsoOwner,
     lowerGarmentBoundary: torsoOwner,
     patches: Object.freeze({
-      tunic: model.clothing.outer === 'none',
-      outerGarment: model.clothing.outer !== 'none',
+      garment: true,
       hairCrown: geometry.hair.present && crownOwner === 'hair',
       hairSides: geometry.hair.present
         && geometry.headwear.kind !== 'headscarf',
@@ -94,7 +92,9 @@ function resolveVisibility(model, geometry) {
       headCrown: crownOwner !== 'head',
       jaw: jawOwner !== 'head',
       neckBehindCollar: true,
-      tunicUnderOuter: model.clothing.outer !== 'none',
+      baseGarmentUnderOuter: model.clothing.outer !== 'none',
+      necklineCenter: geometry.beard.present
+        && geometry.beard.bottomY > neckEndY - 8,
       earMarks: geometry.headwear.kind === 'headscarf'
         || hairCoversEars
     })
@@ -102,30 +102,17 @@ function resolveVisibility(model, geometry) {
 }
 
 function buildPatches(model, geometry, visibility) {
-  const patches = [];
-  if (visibility.patches.tunic) {
-    patches.push(patch(
-      'tunic',
-      insetPatch(
-        geometry.body.torsoPatch,
-        model.body.centerX,
-        650,
-        .985
-      ),
-      model.clothing.main.base,
-      { alpha: .16, salt: 4002, roughness: 6 }
-    ));
-  }
+  const patches = clothingPatches(model, geometry.clothing);
   if (visibility.neckVisible) {
     const left = verticalSlice(
       geometry.body.neckLeft,
       visibility.neckStartY,
-      geometry.body.collarY
+      visibility.neckEndY
     );
     const right = verticalSlice(
       geometry.body.neckRight,
       visibility.neckStartY,
-      geometry.body.collarY
+      visibility.neckEndY
     );
     patches.push(patch('neck', [
       left[0], left[1], right[1], right[0]
@@ -165,9 +152,6 @@ function buildPatches(model, geometry, visibility) {
       { alpha: .24, salt: 4060 + index, roughness: 5 }
     ));
   }
-  if (visibility.patches.outerGarment) {
-    patches.push(...garmentPatches(model, geometry));
-  }
   const cheek = pointsToWorld(model, ellipsePoints(
     model.head.width * .23 + model.head.faceAxisX,
     model.head.height * .13,
@@ -183,40 +167,20 @@ function buildPatches(model, geometry, visibility) {
   return patches;
 }
 
-function garmentPatches(model, geometry) {
-  const body = geometry.body;
-  const center = model.body.centerX;
-  if (model.clothing.outer === 'none') return [];
-  if (model.clothing.outer === 'caftan') {
-    return [patch('caftan', insetPatch(
-      body.torsoPatch, center, 650, .975
-    ), model.clothing.secondary.base, {
-      alpha: .11, salt: 4100, roughness: 6
-    })];
-  }
-  if (model.clothing.outer === 'cloak') {
-    const collar = [center - 20, 468];
-    const shoulder = [
-      model.body.shoulderLeft - 8,
-      model.body.shoulderLeftY + 48
-    ];
-    return [patch('cloak', [
-      collar,
-      [
-        (collar[0] + shoulder[0]) / 2,
-        (collar[1] + shoulder[1]) / 2
-      ],
-      shoulder,
-      [model.body.waistLeft - 14, 782],
-      [center - 62, 782],
-      [(center - 62 + collar[0]) / 2, (782 + collar[1]) / 2]
-    ], model.clothing.secondary.base, {
-      alpha: .15, salt: 4120, roughness: 7
-    })];
-  }
-  return [patch('sheepskin', insetPatch(
-    body.torsoPatch, center, 650, .97
-  ), model.clothing.secondary.base, {
-    alpha: .105, salt: 4140, roughness: 7
-  })];
+function clothingPatches(model, clothing) {
+  return clothing.patches.map((entry, index) => patch(
+    entry.layer === 'base' && model.clothing.outer !== 'none'
+      ? 'garment_underlayer'
+      : 'garment_wash',
+    entry.points,
+    model.clothing[entry.tone].base,
+    {
+      alpha: entry.tone === 'main' ? .14 : .105,
+      salt: 4002 + index,
+      roughness: model.clothing.fabric === 'furred' ? 7 : 5.5,
+      owner: clothing.owner,
+      layer: entry.layer,
+      tone: entry.tone
+    }
+  ));
 }

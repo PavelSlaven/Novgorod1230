@@ -315,6 +315,7 @@ test('landscape without supported cues stays abstract and deterministic', () => 
     visible_context: {
       location_label: '<Стан>',
       environment: { profile_id: 'night-rain', facts: ['very_cold'] },
+      sensory_details: ['very wet', 'cold wind'],
       weather_label: 'Сильный дождь', day_part_label: 'Поздняя ночь'
     }
   };
@@ -327,6 +328,28 @@ test('landscape without supported cues stays abstract and deterministic', () => 
     /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
   assert.doesNotMatch(unsupported,
     /night-rain|very_cold|Сильный дождь|Поздняя ночь/u);
+});
+
+test('landscape preserves exact Phase 2 environment sensory details', () => {
+  const screen = {
+    ...firstScreen(),
+    visible_context: {
+      visible_scene: 'Осмотр места крушения завершён.',
+      sensory_details: [
+        'wet', 'cold', 'exposed',
+        'visible:road_bag_missing', 'trace_ld_v1_item_blue_wool_fragment'
+      ]
+    }
+  };
+  const first = renderLandscape(screen);
+  assert.equal(first, renderLandscape(structuredClone(screen)));
+  for (const modifier of [
+    'landscape--cold', 'landscape--wet', 'landscape--exposed'
+  ]) assert.match(first, new RegExp(modifier, 'u'));
+  assert.doesNotMatch(first,
+    /road_bag_missing|blue_wool_fragment/u);
+  assert.equal(screen.visible_context.environment, undefined,
+    'rendering must not add environment knowledge to the public screen');
 });
 
 test('conversation portrait uses only the canonical interlocutor field', () => {

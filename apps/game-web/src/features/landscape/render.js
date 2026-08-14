@@ -20,10 +20,13 @@ const ENVIRONMENT_FACTS = new Set(['cold', 'wet', 'exposed']);
 
 export function renderLandscape(screen) {
   const context = screen.visible_context ?? {};
-  const facts = new Set(Array.isArray(context.environment?.facts)
-    ? context.environment.facts.filter((value) =>
-        typeof value === 'string' && ENVIRONMENT_FACTS.has(value))
-    : []);
+  const facts = new Set([
+    ...(Array.isArray(context.environment?.facts)
+      ? context.environment.facts : []),
+    ...(Array.isArray(context.sensory_details)
+      ? context.sensory_details : [])
+  ].filter((value) =>
+    typeof value === 'string' && ENVIRONMENT_FACTS.has(value)));
   const weather = controlledValue(
     [context.weather, context.weather_label], WEATHER
   );

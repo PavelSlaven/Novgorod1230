@@ -17,6 +17,7 @@ const CHROME_PATH = [
   '/usr/bin/chromium-browser',
   '/usr/bin/google-chrome'
 ].find((candidate) => candidate && existsSync(candidate));
+const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
 test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
   timeout: 360_000,
@@ -34,6 +35,7 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
   const rawResponses = [];
   const turnByText = new Map(PHASE11_CANONICAL_TURNS.map(
     ([id, text]) => [text, id]));
+  turnByText.set(PHASE2_GENERAL_LOOK[1], PHASE2_GENERAL_LOOK[0]);
   await page.route('**/api/**', async (route) => {
     const request = route.request();
     const url = new URL(request.url());
@@ -67,18 +69,66 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
   const openingLandscapeClass = await page.getAttribute(
     '[data-landscape]', 'class'
   );
-  for (const modifier of [
-    'landscape--cold', 'landscape--wet', 'landscape--exposed'
-  ]) assert.match(openingLandscapeClass, new RegExp(modifier, 'u'));
+  assertLandscapeModifiers(openingLandscapeClass);
   assertPublicText(await page.textContent('body'));
-  const partyId = rawResponses.map(parseJson).find(
+  let partyId = rawResponses.map(parseJson).find(
     (value) => value?.data?.screen?.scenario_id === 'lower_dvina_trace_v1')
     ?.data?.party_id;
   assert.ok(partyId);
-  const hiddenTruth = await actualHiddenTruthValues(
+  let hiddenTruth = await actualHiddenTruthValues(
     environment.partyPool, partyId);
   assertValuesAbsent([...rawResponses, await page.textContent('body')],
     [hiddenTruth.culpritRef], 'pre-disclosure public HTTP/DOM');
+
+  await submitThroughBrowser(page, PHASE2_GENERAL_LOOK[1], rawResponses);
+  const phase2Screen = [...rawResponses].reverse().map(parseJson).find(
+    (value) => value?.data?.screen?.turn_id
+  )?.data?.screen;
+  assert.ok(phase2Screen);
+  assert.deepEqual(
+    phase2Screen.visible_context.sensory_details.filter((detail) =>
+      ['cold', 'wet', 'exposed'].includes(detail)).sort(),
+    ['cold', 'exposed', 'wet']
+  );
+  assert.equal(phase2Screen.visible_context.environment, undefined,
+    'the turn must not create new environment state or knowledge');
+  const phase2Landscape = await page.locator('[data-landscape]').evaluate(
+    (element) => element.outerHTML
+  );
+  assertLandscapeModifiers(phase2Landscape);
+  assert.doesNotMatch(phase2Landscape,
+    /road_bag_missing|blue_wool_fragment/u);
+  assertValuesAbsent([JSON.stringify(phase2Screen), phase2Landscape],
+    [hiddenTruth.culpritRef, ...hiddenTruth.alwaysForbidden],
+    'post-turn landscape/public screen');
+  const phase2Calls = environment.llm.requests.length;
+  await page.goto(environment.baseUrl);
+  await page.waitForSelector('[data-continue-party]');
+  await page.click('[data-continue-party]');
+  await page.waitForSelector('[data-turn-form]');
+  const reloadedPhase2Landscape = await page.locator(
+    '[data-landscape]'
+  ).evaluate((element) => element.outerHTML);
+  assert.equal(reloadedPhase2Landscape, phase2Landscape,
+    'reload must reproduce the same deterministic landscape');
+  assert.equal(environment.llm.requests.length, phase2Calls,
+    'reloading the Phase 2 screen must not invoke an LLM');
+
+  const continuityPartyId = partyId;
+  await page.click('[data-return-start]');
+  await page.waitForSelector('[data-start-new-game]');
+  await page.click('[data-start-new-game]');
+  await page.waitForSelector('[data-new-game-form]');
+  await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
+  await page.waitForSelector('[data-turn-form]');
+  partyId = [...rawResponses].reverse().map(parseJson).find(
+    (value) => value?.data?.party_id
+      && value.data.party_id !== continuityPartyId
+  )?.data?.party_id;
+  assert.ok(partyId);
+  hiddenTruth = await actualHiddenTruthValues(environment.partyPool, partyId);
+  assertValuesAbsent([...rawResponses, await page.textContent('body')],
+    [hiddenTruth.culpritRef], 'canonical pre-disclosure public HTTP/DOM');
 
   for (const [id, text] of PHASE11_CANONICAL_TURNS) {
     await submitThroughBrowser(page, text, rawResponses);
@@ -205,6 +255,12 @@ function assertValuesAbsent(surfaces, values, label) {
     assert.equal(surfaces.some((surface) => String(surface).includes(value)),
       false, `${label} leaked committed hidden/causal value ${value}`);
   }
+}
+
+function assertLandscapeModifiers(value) {
+  for (const modifier of [
+    'landscape--cold', 'landscape--wet', 'landscape--exposed'
+  ]) assert.match(value, new RegExp(modifier, 'u'));
 }
 
 function parseJson(value) {

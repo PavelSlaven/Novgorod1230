@@ -63,6 +63,13 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
   await page.waitForSelector('[data-new-game-form]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-turn-form]');
+  await page.waitForSelector('[data-landscape]');
+  const openingLandscapeClass = await page.getAttribute(
+    '[data-landscape]', 'class'
+  );
+  for (const modifier of [
+    'landscape--cold', 'landscape--wet', 'landscape--exposed'
+  ]) assert.match(openingLandscapeClass, new RegExp(modifier, 'u'));
   assertPublicText(await page.textContent('body'));
   const partyId = rawResponses.map(parseJson).find(
     (value) => value?.data?.screen?.scenario_id === 'lower_dvina_trace_v1')
@@ -75,6 +82,29 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
 
   for (const [id, text] of PHASE11_CANONICAL_TURNS) {
     await submitThroughBrowser(page, text, rawResponses);
+    if (id === 'clue') {
+      await page.waitForSelector('[data-conversation-portrait]');
+      assert.match(await page.textContent('[data-conversation-portrait]'),
+        /Еремей/u);
+      const portrait = await page.locator(
+        '[data-conversation-portrait]'
+      ).evaluate((element) => element.outerHTML);
+      const calls = environment.llm.requests.length;
+      await page.goto(environment.baseUrl);
+      await page.waitForSelector('[data-continue-party]');
+      await page.click('[data-continue-party]');
+      await page.waitForSelector('[data-turn-form]');
+      assert.equal(await page.locator(
+        '[data-conversation-portrait]'
+      ).evaluate((element) => element.outerHTML), portrait);
+      assert.equal(environment.llm.requests.length, calls,
+        'reloading the conversation screen must not invoke an LLM');
+    }
+    if (id === 'route') {
+      assert.equal(await page.locator(
+        '[data-conversation-portrait]'
+      ).count(), 0, 'moving away must remove the old interlocutor portrait');
+    }
     if (id === 'rest') {
       const calls = environment.llm.requests.length;
       await environment.restartRoot();

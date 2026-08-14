@@ -9,6 +9,13 @@ import {
   validateApiEnvelope,
   validatePublicScreen
 } from '../src/index.js';
+import { renderConversationPortrait } from
+  '../src/features/conversation-portrait/render.js';
+import { renderCurrentTask } from
+  '../src/features/current-task/render.js';
+import { renderLandscape } from '../src/features/landscape/render.js';
+import { renderMapPanel, renderSceneMinimap } from
+  '../src/features/map/render.js';
 
 function firstScreen() {
   return {
@@ -55,6 +62,49 @@ test('public screen contract accepts versioned read models and rejects hidden fi
     assert.throws(() => validatePublicScreen({ ...firstScreen(), wrapper: { [leak]: { secret: 'never public' } } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' }, leak);
   }
   assert.throws(() => assertNoHiddenFields({ nested: { private_motives: [] } }), { code: 'PUBLIC_PAYLOAD_HIDDEN_LEAK' });
+});
+
+test('public screen validates exact optional scene affordances', () => {
+  const valid = {
+    ...firstScreen(),
+    panels: {
+      journal: {
+        visible: true, data: { current_task: '<b>Найти проводника</b>' }
+      },
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            display_label: 'Еремей', role_label: 'рыбак'
+          }
+        }
+      }
+    }
+  };
+  assert.doesNotThrow(() => validatePublicScreen(valid));
+  assert.throws(() => validatePublicScreen({
+    ...valid,
+    panels: {
+      ...valid.panels,
+      journal: { visible: true, data: { current_task: '   ' } }
+    }
+  }), { code: 'CURRENT_TASK_INVALID' });
+  assert.throws(() => validatePublicScreen({
+    ...valid,
+    panels: {
+      ...valid.panels,
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            ...valid.panels.people.data.active_interlocutor,
+            physical_description: 'не должен пройти контракт'
+          }
+        }
+      }
+    }
+  }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
 });
 
 test('API client uses /api/v1 and validates success envelopes', async () => {
@@ -201,6 +251,149 @@ test('game shell has factual context, neutral viewport, independent input and no
   assert.match(html, /data-turn-form/u);
   assert.doesNotMatch(html, /data-action-id/u);
   assert.doesNotMatch(html, /не показывать|река|лес|лодка|layout_x|\bx=|\by=/u);
+});
+
+test('current task is explicit, visible-panel-only and escaped without fallbacks', () => {
+  const screen = {
+    ...firstScreen(),
+    objective: 'Не использовать как задачу',
+    panels: {
+      journal: {
+        visible: true,
+        data: { current_task: '<img src=x onerror=task()>' }
+      }
+    }
+  };
+  const task = renderCurrentTask(screen);
+  assert.match(task, /data-current-task/u);
+  assert.match(task, /&lt;img src=x onerror=task\(\)&gt;/u);
+  assert.doesNotMatch(task, /<img/u);
+  assert.equal(renderCurrentTask({
+    ...screen,
+    panels: { journal: { visible: false, data: { current_task: 'Скрыто' } } }
+  }), '');
+  assert.equal(renderCurrentTask({ ...screen, panels: {} }), '');
+});
+
+test('landscape is deterministic and varies only by closed public inputs', () => {
+  const screen = {
+    ...firstScreen(),
+    visible_context: {
+      location_label: 'Берег Двины',
+      environment: {
+        profile_id: 'must-not-control-layout',
+        facts: ['wet', 'cold', 'exposed', 'unknown-fact']
+      },
+      weather_label: 'Дождь',
+      day_part: 'dusk',
+      timestamp: '1230-01-01T00:00:00Z'
+    }
+  };
+  const first = renderLandscape(screen);
+  const second = renderLandscape(structuredClone(screen));
+  assert.equal(first, second);
+  for (const modifier of [
+    'landscape--wet', 'landscape--cold', 'landscape--exposed',
+    'landscape--weather-rain', 'landscape--day-dusk'
+  ]) assert.match(first, new RegExp(modifier, 'u'));
+  assert.doesNotMatch(first, /profile_id|unknown-fact|timestamp/u);
+
+  const neutral = renderLandscape({
+    ...firstScreen(),
+    visible_context: {
+      location_label: 'Ночь у реки под снегом',
+      environment: { profile_id: 'night-rain', facts: ['very_cold'] },
+      weather_label: 'Сильный дождь', day_part_label: 'Поздняя ночь'
+    }
+  });
+  assert.doesNotMatch(neutral, /landscape--weather-|landscape--day-|landscape--cold/u);
+});
+
+test('conversation portrait uses only the canonical interlocutor field', () => {
+  const screen = {
+    ...firstScreen(),
+    panels: {
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            display_label: '<b>Еремей</b>', role_label: 'рыбак'
+          },
+          nearby_people: [{ display_label: 'Ратша' }]
+        }
+      }
+    }
+  };
+  const portrait = renderConversationPortrait(screen);
+  assert.match(portrait, /data-conversation-portrait/u);
+  assert.match(portrait, /&lt;b&gt;Еремей&lt;\/b&gt;/u);
+  assert.match(portrait, /рыбак/u);
+  assert.doesNotMatch(portrait, /Ратша|<b>/u);
+  assert.equal(renderConversationPortrait({
+    ...screen,
+    panels: {
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            ...screen.panels.people.data.active_interlocutor,
+            eye_color: 'blue'
+          }
+        }
+      }
+    }
+  }), '');
+});
+
+test('minimap uses only sorted public nodes and links and keeps text facts', () => {
+  const nodes = [{
+    token: 'camp', label: 'Стан', certainty: 'known', layout_order: 2
+  }, {
+    token: 'shore', label: 'Берег', certainty: 'known', layout_order: 1
+  }, {
+    token: 'shed', label: '<b>Сушильня</b>', certainty: 'uncertain',
+    layout_order: 3
+  }, {
+    token: 'yard', label: 'Двор', certainty: 'known', layout_order: 4
+  }];
+  const links = [{ from_token: 'camp', to_token: 'shed' },
+    { from_token: 'shore', to_token: 'camp' },
+    { from_token: 'missing', to_token: 'shore' }];
+  const first = renderSceneMinimap({ nodes, links });
+  const shuffled = renderSceneMinimap({
+    nodes: [nodes[2], nodes[0], nodes[3], nodes[1]],
+    links: [links[2], links[1], links[0]]
+  });
+  assert.equal(first, shuffled);
+  assert.equal((first.match(/data-map-node=/gu) ?? []).length, 4);
+  assert.equal((first.match(/data-map-link=/gu) ?? []).length, 2);
+  assert.match(first, /Расположение условно/u);
+  assert.match(first, /&lt;b&gt;Сушильня&lt;\/b&gt;/u);
+  assert.doesNotMatch(first, /missing/u);
+
+  const map = renderMapPanel({
+    panels: {
+      map: {
+        visible: true,
+        data: {
+          scene_map: { nodes, links },
+          world_signals: [{
+            approximate_area: 'у ворот', approximate_direction: 'впереди'
+          }]
+        }
+      }
+    }
+  });
+  for (const detail of ['Стан', 'known', 'uncertain', 'у ворот', 'впереди']) {
+    assert.match(map, new RegExp(detail, 'u'), detail);
+  }
+  assert.doesNotMatch(renderMapPanel({ panels: { map: {
+    visible: false, data: { scene_map: { nodes, links } }
+  } } }), /<svg/u);
+  assert.doesNotMatch(renderMapPanel({ panels: { map: {
+    visible: true, data: {}
+  } } }), /<svg/u);
 });
 
 test('opening blocks intent until acknowledgement and exposes retry only on failure', () => {

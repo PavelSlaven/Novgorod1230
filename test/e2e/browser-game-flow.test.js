@@ -111,7 +111,10 @@ function stage26Fixture(partyId) {
     main_prose: 'Перед тобой открывается дорога к Новгороду.',
     visible_context: {
       location_label: 'Дорога у Новгорода',
-      calendar: 'Лето 6738'
+      calendar: 'Лето 6738',
+      environment: { facts: ['cold', 'wet', 'exposed'] },
+      weather: 'clear',
+      day_part: 'day'
     },
     action_panel: {
       suggested_actions: [{ option_id: 'look', label: 'Осмотреться' }]
@@ -125,11 +128,26 @@ function stage26Fixture(partyId) {
       map: {
         visible: true,
         data: {
-          scene_map: {
-            nodes: [{ token: 'gate', label: 'Городские ворота', certainty: 'known' }],
-            links: []
-          },
+          scene_map: { nodes: [{
+            token: 'road', label: 'Дорога', certainty: 'known', layout_order: 1
+          }, {
+            token: 'gate', label: 'Городские ворота', certainty: 'known',
+            layout_order: 2
+          }], links: [{ from_token: 'road', to_token: 'gate' }] },
           world_signals: [{ approximate_area: 'у ворот', approximate_direction: 'впереди' }]
+        }
+      },
+      journal: {
+        visible: true,
+        data: { current_task: 'Добраться до городских ворот' }
+      },
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            entity_ref: { entity_kind: 'npc', entity_id: 'npc-guide' },
+            display_label: 'Проводник', role_label: 'местный человек'
+          }
         }
       }
     },
@@ -204,7 +222,11 @@ function turnFixture(input) {
       turn_id: `turn-${input.turn_number}`,
       turn_number: input.turn_number,
       main_prose: 'Ты замечаешь свежие следы на дороге.',
-      visible_context: { location_label: 'У городских ворот' },
+      visible_context: {
+        location_label: 'У городских ворот',
+        environment: { facts: ['exposed'] },
+        weather_label: 'Облачно', day_part_label: 'День'
+      },
       input_panel: { input_contract: 'intent_not_fact' },
       action_panel: { suggested_actions: [] },
       panels: leaking
@@ -217,7 +239,22 @@ function turnFixture(input) {
               }
             }
           }
-        : panels
+        : {
+            ...panels,
+            journal: {
+              visible: true,
+              data: { current_task: 'Осмотреть следы у ворот' }
+            },
+            people: {
+              visible: true,
+              data: {
+                active_interlocutor: {
+                  entity_ref: { entity_kind: 'npc', entity_id: 'npc-guard' },
+                  display_label: 'Страж ворот'
+                }
+              }
+            }
+          }
     }
   };
 }
@@ -292,6 +329,12 @@ test('browser preserves production API semantics through the Lovable UI', {
     'rus.pending_opening_ack'
   )), null);
   assert.equal(await page.locator('script:not([src])').count(), 0);
+  assert.match(await page.textContent('[data-current-task]'),
+    /Добраться до городских ворот/u);
+  assert.match(await page.getAttribute('[data-landscape]', 'class'),
+    /landscape--weather-clear/u);
+  assert.match(await page.textContent('[data-conversation-portrait]'),
+    /Проводник|местный человек/u);
 
   await page.click('[data-overlay-open="character"]');
   await page.waitForSelector('[data-overlay-panel]');
@@ -301,6 +344,14 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.locator('[data-overlay-panel]').count(), 0);
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('data-overlay-open')), 'character');
 
+  await page.click('[data-overlay-open="map"]');
+  await page.waitForSelector('[data-scene-minimap]');
+  assert.equal(await page.locator('[data-map-node]').count(), 2);
+  assert.equal(await page.locator('[data-map-link]').count(), 1);
+  assert.match(await page.textContent('[data-overlay-panel]'),
+    /Расположение условно|Городские ворота|у ворот/u);
+  await page.keyboard.press('Escape');
+
   await page.fill('[data-turn-form] textarea', 'Осматриваюсь');
   await page.click('[data-turn-form] button[type="submit"]');
   await page.waitForSelector('[data-screen-schema="turn_screen"]');
@@ -309,6 +360,13 @@ test('browser preserves production API semantics through the Lovable UI', {
   const body = await page.textContent('body');
   assert.match(body, /свежие следы/u);
   assert.doesNotMatch(body, /Скрытый страж|guard-secret/u);
+  assert.match(await page.textContent('[data-current-task]'),
+    /Осмотреть следы у ворот/u);
+  assert.match(await page.textContent('[data-conversation-portrait]'),
+    /Страж ворот/u);
+  const turnLandscape = await page.locator('[data-landscape]').evaluate(
+    (element) => element.outerHTML
+  );
 
   await page.click('[data-return-start]');
   await page.waitForSelector('[data-continue-party]');
@@ -328,6 +386,11 @@ test('browser preserves production API semantics through the Lovable UI', {
     'reload must remain on landing without loading the remembered party');
   await page.click('[data-continue-party]');
   await page.waitForSelector('[data-screen-schema="turn_screen"]');
+  assert.equal(await page.locator('[data-landscape]').evaluate(
+    (element) => element.outerHTML
+  ), turnLandscape, 'reload must reproduce the same deterministic landscape');
+  assert.match(await page.textContent('[data-conversation-portrait]'),
+    /Страж ворот/u);
   assert.equal(records.screenReads.at(-1), 'party-e2e-1');
   assert.equal(records.acknowledgements.length, acknowledgementsBeforeReload,
     'an acknowledged party without matching pending data must not ack again');
@@ -381,6 +444,8 @@ test('browser preserves production API semantics through the Lovable UI', {
 
   await page.setViewportSize({ width: 390, height: 844 });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  assert.equal(await page.locator('[data-landscape]').isVisible(), true);
+  assert.equal(await page.locator('[data-conversation-portrait]').isVisible(), true);
 
   await page.fill('[data-turn-form] textarea', 'Медленный ход');
   await page.click('[data-turn-form] button[type="submit"]');

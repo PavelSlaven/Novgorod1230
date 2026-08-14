@@ -7,6 +7,10 @@ import { renderRoutesPanel } from '../features/routes/render.js';
 import { renderMapPanel } from '../features/map/render.js';
 import { renderJournalPanel } from '../features/journal/render.js';
 import { renderDiagnostics } from '../features/diagnostics/render.js';
+import { renderConversationPortrait } from
+  '../features/conversation-portrait/render.js';
+import { renderCurrentTask } from '../features/current-task/render.js';
+import { renderLandscape } from '../features/landscape/render.js';
 import { escapeHtml } from '../shared/escape-html.js';
 
 const PANEL_META = Object.freeze([
@@ -21,7 +25,7 @@ export function renderScreen(screen, options = {}) {
   const disabled = options.loading === true || !openingReady;
   const navigationDisabled = options.loading === true
     || options.openingStatus === 'pending';
-  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
+  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
 }
 
 export function renderAppState(state) {
@@ -84,9 +88,7 @@ function renderPanelNavigation(screen, { developerMode = false } = {}) {
 }
 
 function renderSceneViewport(screen) {
-  const context = screen.visible_context ?? {};
-  const label = scalar(context.location_label ?? context.place);
-  return `<section class="scene-viewport" aria-label="Место действия"><div class="scene-grain" aria-hidden="true"></div><p>${label ? escapeHtml(label) : 'Зримый образ сцены пока не создан'}</p></section>`;
+  return `<div class="scene-viewport-shell">${renderLandscape(screen)}${renderConversationPortrait(screen)}</div>`;
 }
 
 function renderOpeningState({ openingStatus, error } = {}) {

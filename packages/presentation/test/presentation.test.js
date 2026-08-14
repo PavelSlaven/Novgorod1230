@@ -5,6 +5,8 @@ import {
   createCharacterPanel,
   createDiagnosticPanel,
   createFirstGameScreenReadModel,
+  createJournalPanel,
+  createPeoplePanel,
   createTurnScreenReadModel,
   validateTurnScreen
 } from '../src/index.js';
@@ -78,6 +80,70 @@ test('diagnostic panel is suppressed outside developer mode', () => {
   const panel = createDiagnosticPanel({ request_id: 'req-1' });
   assert.equal(panel.visible, false);
   assert.deepEqual(panel.data, {});
+});
+
+test('scene affordance panels accept only exact player-safe fields', () => {
+  const journal = createJournalPanel({ current_task: 'Добраться до стана' });
+  assert.equal(journal.data.current_task, 'Добраться до стана');
+  assert.throws(() => createJournalPanel({ current_task: '   ' }), {
+    code: 'PRESENTATION_CURRENT_TASK_INVALID'
+  });
+
+  const people = createPeoplePanel({
+    active_interlocutor: {
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+      display_label: 'Еремей',
+      role_label: 'рыбак'
+    }
+  });
+  assert.deepEqual(people.data.active_interlocutor, {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: 'Еремей',
+    role_label: 'рыбак'
+  });
+  for (const active_interlocutor of [{
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: ''
+  }, {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: 'Еремей',
+    physical_description: 'скрытая характеристика'
+  }, {
+    entity_ref: {
+      entity_kind: 'npc', entity_id: 'npc-eremey', profile_id: 'internal'
+    },
+    display_label: 'Еремей'
+  }]) {
+    assert.throws(() => createPeoplePanel({ active_interlocutor }), {
+      code: 'PRESENTATION_ACTIVE_INTERLOCUTOR_INVALID'
+    });
+  }
+});
+
+test('turn validation rejects malformed optional scene affordances', () => {
+  const screen = createTurnScreenReadModel({
+    partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
+    visibleContext: visibleContext(), narration: narration()
+  });
+  assert.equal(validateTurnScreen({
+    ...screen,
+    panels: { journal: { visible: true, data: { current_task: '' } } }
+  }).ok, false);
+  assert.equal(validateTurnScreen({
+    ...screen,
+    panels: {
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+            display_label: 'Еремей',
+            age: 40
+          }
+        }
+      }
+    }
+  }).ok, false);
 });
 
 test('adapts approved Stage 26 result into versioned FirstGameScreen', () => {

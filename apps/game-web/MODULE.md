@@ -12,6 +12,12 @@ Browser-клиент, который получает только versioned pub
 - маршрутизацией FirstGameScreen/TurnScreen;
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
+- существующим `renderLandscape(screen)` как единственным владельцем game
+  landscape: он строит закрытую player-safe render model, детерминированную
+  terrain geometry и гидратирует Canvas 2D после замены корневого DOM;
+- процедурной композицией landscape + active interlocutor в существующем
+  `renderSceneViewport`; при явном valid `portrait_spec_v1` используется
+  renderer Portrait Lab с прозрачным background, иначе сохраняется SVG fallback;
 - отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer;
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
 - внутренними детерминированными вариантами рисунка, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
@@ -37,6 +43,11 @@ Browser-клиент, который получает только versioned pub
 
 Portrait Lab остаётся отдельным browser-инструментом и не добавляет портреты в игровые read models или NPC runtime.
 
+Текущий persisted/player-safe NPC state не содержит достаточного appearance
+source. Поэтому game-web не выводит внешность из имени, роли или prose и не
+создаёт portrait spec: optional `portrait_spec_v1` поддержан только как exact
+player-safe input, а production projection без него использует fallback.
+
 ## Portrait Drawing Contract v1
 
 - `Drawing Part` — самостоятельная часть портрета с собственными `Anchor` и `Allowed Region`;
@@ -52,6 +63,14 @@ Portrait Lab остаётся отдельным browser-инструменто�
 - только app router заменяет корневой DOM;
 - feature renderers являются чистыми функциями;
 - пользовательский текст отправляется как intent, а не как факт мира.
+- landscape использует только canonical `env.*` transition profile и
+  `spatial.g3.*` category из закрытых allowlist; отсутствующее/неизвестное
+  значение остаётся neutral, а label, prose и node ID не анализируются;
+- weather/day/facts меняют только sky, palette и atmosphere: terrain, water,
+  route, vegetation и buildings зависят только от exact place semantics и
+  optional уже player-safe stable location ref;
+- `cold`, `wet` и `exposed` остаются presentation modifiers и не создают снег,
+  дождь, воду или новый landscape type;
 - смена поля Portrait Specification не изменяет геометрию части, для которой это поле не является значимым;
 - `main_color` и `secondary_color` меняют только appearance metadata одежды; silhouette, neckline, seams, folds, trim locations и clothing seed остаются идентичными;
 - любая сцена Portrait Lab проходит универсальные геометрические инварианты; pairwise-набор покрывает каждую пару enum-значений, а фиксированный Control Sheet из 24 портретов служит только визуальным smoke-check.

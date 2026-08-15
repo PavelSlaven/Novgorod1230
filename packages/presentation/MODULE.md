@@ -8,6 +8,7 @@
 
 - `FirstGameScreen` и `TurnScreen` version 1;
 - Character, Inventory, People, Route, Map, Journal и Diagnostic panels;
+- optional exact `portrait_spec_v1` внутри player-safe active interlocutor;
 - visible-only validation и leak rejection;
 - compatibility `createPublicViewModel`;
 - first-screen delivery attempt, acknowledgement и Stage 27 intent handoff.
@@ -44,3 +45,5 @@ write beliefs, or alter the P08 fail-closed port boundary.
 - FirstGameScreen принимает только успешный Stage 26 result;
 - UI input contract всегда `intent_not_fact`;
 - diagnostic panel разрешён только при явном developer mode и также не содержит hidden state.
+- active interlocutor appearance, если передан, проходит общий строгий
+  `portrait_spec_v1` validator; свободные appearance-поля запрещены.

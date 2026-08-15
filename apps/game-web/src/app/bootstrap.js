@@ -1,6 +1,7 @@
 import { createApiClient } from '../api/client.js';
 import { createUiStore } from './store.js';
 import { renderAppState } from './router.js';
+import { hydrateSceneCanvases } from './scene-canvas-hydration.js';
 import {
   removeMatchingPendingOpeningAck,
   removeStoredPendingOpeningAck,
@@ -26,6 +27,7 @@ export function bootstrapGameWeb({
     const state = store.getState();
     root.ownerDocument.documentElement.dataset.theme = state.theme;
     root.innerHTML = renderAppState(state);
+    if (state.screen) hydrateSceneCanvases(root, state.screen);
   };
   store.subscribe(render);
   render();

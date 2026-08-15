@@ -146,6 +146,22 @@ test('renderer keeps an ink-first canvas without vector gradients', () => {
   assert.ok(operationNames.filter((name) => name === 'lineTo').length > 500);
 });
 
+test('transparent portrait mode omits only the paper background', () => {
+  const defaultCanvas = recordingCanvas();
+  const transparentCanvas = recordingCanvas();
+  renderPortrait(defaultCanvas, SAMPLE_PORTRAIT_SPEC);
+  renderPortrait(transparentCanvas, SAMPLE_PORTRAIT_SPEC, {
+    background: false
+  });
+  assert.equal(defaultCanvas.operations.some(([name]) => name === 'fillRect'), true);
+  assert.equal(
+    transparentCanvas.operations.some(([name]) => name === 'fillRect'),
+    false
+  );
+  assert.ok(transparentCanvas.operations.filter(([name]) => name === 'stroke')
+    .length > 90);
+});
+
 test('scene visibility gives each occluded contour one visible owner', () => {
   const hairModel = buildRenderModel(SAMPLE_PORTRAIT_SPEC);
   const hairScene = buildPortraitScene(hairModel);

@@ -16,6 +16,8 @@ import {
   createSpatialV3PlayerProjection,
   createSpatialV3ProjectionPanels
 } from '@rus/presentation/spatial-v3-projection';
+import { SAMPLE_PORTRAIT_SPEC } from
+  '../../apps/game-web/src/portrait-lab/sample.js';
 
 const executablePath = [
   process.env.RUS_CHROMIUM_PATH,
@@ -112,7 +114,11 @@ function stage26Fixture(partyId) {
     visible_context: {
       location_label: 'Дорога у Новгорода',
       calendar: 'Лето 6738',
-      environment: { facts: ['cold', 'wet', 'exposed'] },
+      environment: {
+        profile_id: 'env.land_path',
+        node_category: 'spatial.g3.route_site',
+        facts: ['cold', 'wet', 'exposed']
+      },
       weather: 'clear',
       day_part: 'day'
     },
@@ -146,7 +152,8 @@ function stage26Fixture(partyId) {
         data: {
           active_interlocutor: {
             entity_ref: { entity_kind: 'npc', entity_id: 'npc-guide' },
-            display_label: 'Проводник', role_label: 'местный человек'
+            display_label: 'Проводник', role_label: 'местный человек',
+            portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
           }
         }
       }
@@ -174,6 +181,7 @@ function stage26Fixture(partyId) {
 
 function turnFixture(input) {
   const leaking = input.raw_text === 'Проверка утечки';
+  const conversationEnded = input.raw_text === 'Закончить разговор';
   const targetProjection = createSpatialV3PlayerProjection({
     journey_execution: {
       status: 'suspended_at_scene',
@@ -225,7 +233,7 @@ function turnFixture(input) {
       visible_context: {
         location_label: 'У городских ворот',
         environment: { facts: ['exposed'] },
-        weather_label: 'Облачно', day_part_label: 'День'
+        weather: 'Облачно', day_part: 'День'
       },
       input_panel: { input_contract: 'intent_not_fact' },
       action_panel: { suggested_actions: [] },
@@ -245,15 +253,16 @@ function turnFixture(input) {
               visible: true,
               data: { current_task: 'Осмотреть следы у ворот' }
             },
-            people: {
+            ...(conversationEnded ? {} : { people: {
               visible: true,
               data: {
                 active_interlocutor: {
                   entity_ref: { entity_kind: 'npc', entity_id: 'npc-guard' },
-                  display_label: 'Страж ворот'
+                  display_label: 'Страж ворот',
+                  portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
                 }
               }
-            }
+            } })
           }
     }
   };
@@ -268,9 +277,10 @@ test('browser preserves production API semantics through the Lovable UI', {
   };
   const here = dirname(fileURLToPath(import.meta.url));
   const webRoot = resolve(here, '../../apps/game-web');
+  const contractsRoot = resolve(here, '../../packages/contracts/src');
   const server = createGameHttpServer({
     root: createRecordedRoot(records),
-    staticAssets: createStaticAssetResolver({ webRoot }),
+    staticAssets: createStaticAssetResolver({ webRoot, contractsRoot }),
     developerMode: true
   });
   const address = await listen(server, { host: '127.0.0.1', port: 0 });
@@ -333,8 +343,20 @@ test('browser preserves production API semantics through the Lovable UI', {
     /Добраться до городских ворот/u);
   assert.match(await page.getAttribute('[data-landscape]', 'class'),
     /landscape--weather-clear/u);
+  assert.equal(await page.locator('[data-landscape-canvas]').count(), 1);
+  assert.ok(await page.locator('[data-landscape-canvas]').evaluate(
+    (canvas) => canvas.toDataURL().length > 1_000
+  ));
   assert.match(await page.textContent('[data-conversation-portrait]'),
     /Проводник|местный человек/u);
+  assert.equal(await page.locator(
+    '[data-conversation-portrait-canvas]'
+  ).count(), 1);
+  assert.equal(await page.locator(
+    '[data-conversation-portrait-canvas]'
+  ).evaluate((canvas) => canvas.getContext('2d')
+    .getImageData(0, 0, 1, 1).data[3]), 0,
+  'procedural portrait background must remain transparent');
 
   await page.click('[data-overlay-open="character"]');
   await page.waitForSelector('[data-overlay-panel]');
@@ -446,6 +468,12 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   assert.equal(await page.locator('[data-landscape]').isVisible(), true);
   assert.equal(await page.locator('[data-conversation-portrait]').isVisible(), true);
+
+  await page.fill('[data-turn-form] textarea', 'Закончить разговор');
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+  assert.equal(await page.locator('[data-conversation-portrait]').count(), 0);
+  assert.equal(await page.locator('[data-landscape-canvas]').isVisible(), true);
 
   await page.fill('[data-turn-form] textarea', 'Медленный ход');
   await page.click('[data-turn-form] button[type="submit"]');

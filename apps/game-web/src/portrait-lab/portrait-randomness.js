@@ -1,5 +1,12 @@
+import {
+  deterministicUnit,
+  hashDeterministicValue
+} from '../shared/deterministic-random.js';
+
+export { deterministicUnit } from '../shared/deterministic-random.js';
+
 export function buildPortraitIdentity(spec) {
-  const seed = hashValue(spec);
+  const seed = hashDeterministicValue(spec);
   const seeds = createPartSeeds(spec);
   return Object.freeze({
     seed,
@@ -7,16 +14,6 @@ export function buildPortraitIdentity(spec) {
     asymmetry: createAsymmetry(seeds),
     variants: createVariants(seeds)
   });
-}
-
-export function deterministicUnit(seed, salt = 0) {
-  let value = (seed ^ Math.imul(Number(salt) + 1, 0x9e3779b1)) >>> 0;
-  value ^= value >>> 16;
-  value = Math.imul(value, 0x7feb352d);
-  value ^= value >>> 15;
-  value = Math.imul(value, 0x846ca68b);
-  value ^= value >>> 16;
-  return (value >>> 0) / 4294967295;
 }
 
 function createPartSeeds(spec) {
@@ -28,7 +25,7 @@ function createPartSeeds(spec) {
     person: pick(spec.person, ['sex', 'build']),
     bodyPose: spec.pose.body
   };
-  const scoped = (part, value) => hashValue({ part, value });
+  const scoped = (part, value) => hashDeterministicValue({ part, value });
   return Object.freeze({
     head: scoped('head', headIdentity),
     face: scoped('face', headIdentity),
@@ -106,26 +103,6 @@ function createVariants(seeds) {
     hair: choice('hair', 66, 4),
     detail: choice('finishing', 67, 5)
   });
-}
-
-function hashValue(value) {
-  const source = stableStringify(value);
-  let hash = 2166136261;
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function stableStringify(value) {
-  if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value).sort().map(
-      (key) => `${JSON.stringify(key)}:${stableStringify(value[key])}`
-    ).join(',')}}`;
-  }
-  return JSON.stringify(value);
 }
 
 function pick(value, fields) {

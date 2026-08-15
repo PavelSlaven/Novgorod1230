@@ -19,7 +19,7 @@ test('validated opening projection supplies the initial current scene', () => {
       place: 'берег крушения',
       calendar: 'утро',
       environment: {
-        profile_id: 'environment-1',
+        profile_id: 'trace_ld_v1_env_cold_wet_shore',
         facts: ['cold', 'wet', 'exposed']
       }
     }

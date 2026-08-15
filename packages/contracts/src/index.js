@@ -1,4 +1,14 @@
-export { explainJsonObjectParse } from './json.js';
+import { explainJsonObjectParse } from './json.js';
+import {
+  assertPortraitSpecV1,
+  validatePortraitSpecV1
+} from './portrait-spec-v1.js';
+
+export {
+  assertPortraitSpecV1,
+  explainJsonObjectParse,
+  validatePortraitSpecV1
+};
 export { STAGE_STATUS, assertStageDefinition } from './stage.js';
 export { createApproval, verifyApproval } from './approval.js';
 export {

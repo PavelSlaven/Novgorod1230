@@ -120,6 +120,44 @@ test('scene affordance panels accept only exact player-safe fields', () => {
   }
 });
 
+test('people panel admits only an exact optional portrait specification', () => {
+  const portrait_spec_v1 = {
+    schema: 'portrait_spec_v1',
+    person: {
+      sex: 'female', age: 'adult', build: 'average',
+      skin_tone: 'light', face_shape: 'oval'
+    },
+    hair: {
+      color: 'dark_brown', length: 'long', style: 'braided',
+      facial_hair: 'none'
+    },
+    eyes: { color: 'gray', gaze: 'viewer' },
+    expression: { emotion: 'calm', intensity: 'medium' },
+    clothing: {
+      neckline: 'slit_round', sleeve: 'narrow', outer: 'none',
+      fabric: 'light_linen', trim: 'none', main_color: 'undyed_linen',
+      secondary_color: 'madder_red', headwear: 'none'
+    },
+    pose: { body: 'frontal', head: 'straight' },
+    background: 'neutral'
+  };
+  const active_interlocutor = {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+    display_label: 'Мирослава',
+    portrait_spec_v1
+  };
+  assert.deepEqual(
+    createPeoplePanel({ active_interlocutor }).data.active_interlocutor,
+    active_interlocutor
+  );
+  assert.throws(() => createPeoplePanel({
+    active_interlocutor: {
+      ...active_interlocutor,
+      portrait_spec_v1: { ...portrait_spec_v1, generated_from_role: true }
+    }
+  }), { code: 'PRESENTATION_ACTIVE_INTERLOCUTOR_INVALID' });
+});
+
 test('turn validation rejects malformed optional scene affordances', () => {
   const screen = createTurnScreenReadModel({
     partyId: 'party-1', turnId: 'turn-1', turnNumber: 1,
@@ -144,6 +182,36 @@ test('turn validation rejects malformed optional scene affordances', () => {
       }
     }
   }).ok, false);
+  for (const invalid of [{
+    environment: { profile_id: 'forest_edge' }
+  }, {
+    environment: { node_category: 'village_edge' }
+  }, {
+    environment: { facts: ['snowy'] }
+  }, {
+    weather: 'storm'
+  }, {
+    day_part: 'sunset'
+  }, {
+    location_ref: 'unapproved-internal-id'
+  }]) {
+    assert.equal(validateTurnScreen({
+      ...screen,
+      visible_context: visibleContext(invalid)
+    }).ok, false);
+  }
+  assert.equal(validateTurnScreen({
+    ...screen,
+    visible_context: visibleContext({
+      environment: {
+        profile_id: 'env.wetland',
+        node_category: 'spatial.g3.natural_feature',
+        facts: ['wet']
+      },
+      weather: 'Туман',
+      day_part: 'рассвет'
+    })
+  }).ok, true);
 });
 
 test('adapts approved Stage 26 result into versioned FirstGameScreen', () => {

@@ -5,7 +5,10 @@ import {
   PRESENTATION_VERSION,
   TURN_SCREEN_SCHEMA
 } from './contracts.js';
-import { sceneAffordancePanelErrors } from
+import {
+  sceneAffordanceContextErrors,
+  sceneAffordancePanelErrors
+} from
   './scene-affordance-validation.js';
 
 export function createFirstGameScreenReadModel({ stage26Result, generatedAt = new Date().toISOString() } = {}) {
@@ -80,6 +83,7 @@ export function validateFirstGameScreen(value) {
   if (value.version !== 1 || value.schema !== FIRST_GAME_SCREEN_SCHEMA) errors.push(`expected ${FIRST_GAME_SCREEN_SCHEMA} version 1`);
   if (value.screen_status !== 'ready') errors.push('screen_status must be ready');
   if (!text(value.party_id)) errors.push('party_id is required');
+  errors.push(...sceneAffordanceContextErrors(value.visible_context ?? {}));
   errors.push(...sceneAffordancePanelErrors(value.panels));
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
   return result(errors);
@@ -94,6 +98,7 @@ export function validateTurnScreen(value) {
   if (!text(value.main_prose)) errors.push('main_prose is required');
   if (!plain(value.visible_context)) errors.push('visible_context is required');
   if (value.input_panel?.input_contract !== 'intent_not_fact') errors.push('input contract must be intent_not_fact');
+  errors.push(...sceneAffordanceContextErrors(value.visible_context));
   errors.push(...sceneAffordancePanelErrors(value.panels));
   if (detectHiddenLeaks(value).length) errors.push('screen contains hidden data');
   return result(errors);

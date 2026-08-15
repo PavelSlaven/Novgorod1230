@@ -3,7 +3,10 @@ import { drawPortraitScene } from './draw-scene.js';
 import { buildPortraitScene } from './portrait-scene.js';
 import { buildRenderModel } from './render-model.js';
 
-export function renderPortrait(canvas, spec, { fills = true } = {}) {
+export function renderPortrait(canvas, spec, {
+  fills = true,
+  background = true
+} = {}) {
   assertPortraitSpecV1(spec);
   const context = canvas?.getContext?.('2d');
   if (!context) throw new TypeError('Canvas 2D context is required.');
@@ -15,7 +18,7 @@ export function renderPortrait(canvas, spec, { fills = true } = {}) {
   context.save();
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.scale(scaleX, scaleY);
-  drawPortraitScene(context, model, scene, { fills });
+  drawPortraitScene(context, model, scene, { fills, background });
   context.restore();
   return model;
 }

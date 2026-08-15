@@ -10,6 +10,7 @@
 - разрешением model/thinking/token/JSON-mode параметров;
 - единым вызовом chat-completion transport;
 - scoped client adapter для composition root.
+- отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
 ## Не делает
 
@@ -21,6 +22,8 @@
 ## Публичный API
 
 `executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game. Combat adds `NPC_COMBAT_DECIDER` and its repair role, both constrained to `npc_combat_intent_plan_v1`.
+
+Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 
 ## Контракты
 

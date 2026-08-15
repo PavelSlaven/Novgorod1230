@@ -24,7 +24,8 @@ const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
 export const LLM_SCOPES = Object.freeze({
   LEGACY_WORLD: 'legacy_world',
   TURN_RUNTIME: 'turn_runtime',
-  NEW_GAME: 'new_game'
+  NEW_GAME: 'new_game',
+  PORTRAIT_LAB: 'portrait_lab'
 });
 
 export const OutputContractModes = Object.freeze({
@@ -51,6 +52,10 @@ export const TurnRuntimeRoles = Object.freeze({
   NPC_AUTONOMOUS_DECIDER_REPAIR:
     'npc_autonomous_decider_format_repair',
   ...CombatTurnRuntimeRoles
+});
+
+export const PortraitLabRoles = Object.freeze({
+  SPEC_NORMALIZER: 'portrait_spec_normalizer'
 });
 
 export const LegacyWorldRoles = Object.freeze({
@@ -97,6 +102,27 @@ export const LegacyWorldRoles = Object.freeze({
 });
 
 const NEW_GAME_TIER_DEFAULTS = newGameTierDefaults(OutputContractModes);
+
+const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
+  [PortraitLabRoles.SPEC_NORMALIZER]: {
+    envPrefix: 'PORTRAIT_SPEC_NORMALIZER',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
+    responseFormat: 'json_object',
+    maxTokens: 1600,
+    temperature: 0,
+    topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'portrait_spec_v1',
+    parseJson: true,
+    targetInputTokens: 4000,
+    comfortableInputTokens: 8000,
+    hardInputLimitTokens: 16000,
+    reserveOutputTokens: 1600,
+    reserveRepairTokens: 0
+  }
+});
 
 const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.INTENT_ROUTER]: {
@@ -258,7 +284,8 @@ const LEGACY_WORLD_ROLE_DEFAULTS = Object.freeze({
 const SCOPE_DEFAULTS = Object.freeze({
   [LLM_SCOPES.LEGACY_WORLD]: { api: 'chat.completions' },
   [LLM_SCOPES.TURN_RUNTIME]: { api: 'chat.completions' },
-  [LLM_SCOPES.NEW_GAME]: { api: 'chat.completions' }
+  [LLM_SCOPES.NEW_GAME]: { api: 'chat.completions' },
+  [LLM_SCOPES.PORTRAIT_LAB]: { api: 'chat.completions' }
 });
 
 const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP']);
@@ -301,6 +328,9 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
   } else if (scopeKey === LLM_SCOPES.NEW_GAME) {
     defaults = NEW_GAME_TIER_DEFAULTS[String(tierId ?? '').trim()];
     if (!defaults) return disabledResolution('unknown_tier', scopeKey, roleId, tierId);
+  } else if (scopeKey === LLM_SCOPES.PORTRAIT_LAB) {
+    defaults = PORTRAIT_ROLE_DEFAULTS[String(roleId ?? '').trim()];
+    if (!defaults) return disabledResolution('unknown_role', scopeKey, roleId, tierId);
   }
 
   const config = {

@@ -10,4 +10,5 @@ export { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from './adapt
 export { createGameHttpServer, listen } from './http/server.js';
 export { createHttpHandler, matchApiRoute } from './http/handler.js';
 export { createStaticAssetResolver } from './http/static-assets.js';
+export { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
 export { readServerConfig, assertModularStartupConfig } from './config.js';

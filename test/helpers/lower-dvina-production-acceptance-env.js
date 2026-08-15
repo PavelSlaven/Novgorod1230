@@ -94,7 +94,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     server = createGameHttpServer({
       root,
       staticAssets: createStaticAssetResolver({
-        webRoot: resolve(repositoryRoot, 'apps/game-web')
+        webRoot: resolve(repositoryRoot, 'apps/game-web'),
+        contractsRoot: resolve(repositoryRoot, 'packages/contracts/src')
       }),
       maxBodyBytes: 1024 * 1024,
       developerMode: true
@@ -136,7 +137,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
         server = createGameHttpServer({
           root,
           staticAssets: createStaticAssetResolver({
-            webRoot: resolve(repositoryRoot, 'apps/game-web')
+            webRoot: resolve(repositoryRoot, 'apps/game-web'),
+            contractsRoot: resolve(repositoryRoot, 'packages/contracts/src')
           }),
           maxBodyBytes: 1024 * 1024,
           developerMode: true

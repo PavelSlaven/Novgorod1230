@@ -171,6 +171,12 @@ textarea {
   background: var(--paper-muted);
   box-shadow: inset 0 0 5rem rgba(62, 44, 27, .08);
 }
+.landscape canvas[data-landscape-canvas] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
 .landscape-sky, .landscape-horizon, .landscape-ground,
 .landscape-weather { position: absolute; inset-inline: 0; }
 .landscape-sky {
@@ -268,6 +274,34 @@ textarea {
   box-shadow: 0 .75rem 2rem var(--shadow);
 }
 .conversation-portrait svg { width: 3.2rem; height: 3.2rem; flex: 0 0 auto; }
+.conversation-portrait--procedural {
+  right: 0;
+  bottom: 0;
+  display: block;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+.conversation-portrait--procedural canvas {
+  display: block;
+  width: clamp(13rem, 31vw, 22rem);
+  height: auto;
+  filter: drop-shadow(0 .8rem 1rem rgba(30, 24, 19, .28));
+}
+.conversation-portrait--procedural div {
+  position: absolute;
+  right: 1rem;
+  bottom: .75rem;
+  min-width: 7rem;
+  padding: .45rem .65rem;
+  border: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--paper-raised) 84%, transparent);
+  box-shadow: 0 .4rem 1rem var(--shadow);
+  text-align: right;
+}
 .portrait-medallion { fill: var(--paper-muted); stroke: var(--brass); stroke-width: 1.5; }
 .portrait-head, .portrait-shoulders { fill: var(--ink-muted); }
 .conversation-portrait div { display: grid; min-width: 0; gap: .2rem; }
@@ -336,6 +370,9 @@ textarea {
   .scene-viewport { margin-inline: -.5rem; border-inline: 0; }
   .conversation-portrait { top: .35rem; right: .35rem; bottom: auto; max-width: calc(100% - .7rem); }
   .conversation-portrait svg { width: 2.65rem; height: 2.65rem; }
+  .conversation-portrait--procedural { top: auto; right: 0; bottom: 0; }
+  .conversation-portrait--procedural canvas { width: clamp(9rem, 42vw, 14rem); }
+  .conversation-portrait--procedural div { right: .4rem; bottom: .3rem; }
   .landscape-caption { bottom: .35rem; }
   .reader-column { margin-top: 2rem; padding-inline: .5rem; }
   .current-task { grid-template-columns: 1fr; gap: .25rem; }

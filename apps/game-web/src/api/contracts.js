@@ -1,7 +1,8 @@
 import { webError } from '../shared/errors.js';
 import {
   validActiveInterlocutor,
-  validCurrentTask
+  validCurrentTask,
+  validLandscapeContext
 } from '../shared/scene-affordances.js';
 
 const FORBIDDEN_KEYS = new Set([
@@ -45,6 +46,12 @@ export function validatePublicScreen(screen) {
 }
 
 function validateSceneAffordances(screen) {
+  if (!validLandscapeContext(screen.visible_context ?? {})) {
+    throw webError(
+      'LANDSCAPE_AFFORDANCE_INVALID',
+      'Landscape inputs must use exact player-safe vocabularies.'
+    );
+  }
   const journal = screen.panels?.journal?.data;
   if (plain(journal) && Object.hasOwn(journal, 'current_task')
       && !validCurrentTask(journal.current_task)) {

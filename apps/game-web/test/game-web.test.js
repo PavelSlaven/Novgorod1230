@@ -14,6 +14,7 @@ import { renderConversationPortrait } from
 import { renderCurrentTask } from
   '../src/features/current-task/render.js';
 import { renderLandscape } from '../src/features/landscape/render.js';
+import { SAMPLE_PORTRAIT_SPEC } from '../src/portrait-lab/sample.js';
 import { renderMapPanel, renderSceneMinimap } from
   '../src/features/map/render.js';
 
@@ -281,10 +282,10 @@ test('landscape is deterministic and varies only by closed public inputs', () =>
     visible_context: {
       location_label: 'Берег Двины',
       environment: {
-        profile_id: 'must-not-control-layout',
+        profile_id: 'env.local_variable',
         facts: ['wet', 'cold', 'exposed', 'unknown-fact']
       },
-      weather_label: 'Дождь',
+      weather: 'Дождь',
       day_part: 'dusk',
       timestamp: '1230-01-01T00:00:00Z'
     }
@@ -296,11 +297,38 @@ test('landscape is deterministic and varies only by closed public inputs', () =>
     'landscape--wet', 'landscape--cold', 'landscape--exposed',
     'landscape--weather-rain', 'landscape--day-dusk'
   ]) assert.match(first, new RegExp(modifier, 'u'));
-  for (const layer of [
-    'landscape-sky', 'landscape-horizon', 'landscape-ground',
-    'landscape-weather'
-  ]) assert.match(first, new RegExp(layer, 'u'));
+  assert.match(first, /data-landscape-canvas/u);
   assert.doesNotMatch(first, /profile_id|unknown-fact|timestamp/u);
+});
+
+test('public screen rejects unapproved landscape semantic inputs', () => {
+  const withContext = (visible_context) => ({ ...firstScreen(), visible_context });
+  assert.doesNotThrow(() => validatePublicScreen(withContext({
+    environment: {
+      profile_id: 'env.land_path',
+      node_category: 'spatial.g3.route_site',
+      facts: ['cold', 'wet', 'exposed']
+    },
+    weather: 'Дождь',
+    day_part: 'сумерки'
+  })));
+  for (const visible_context of [{
+    environment: { profile_id: 'forest_edge' }
+  }, {
+    environment: { node_category: 'village_edge' }
+  }, {
+    environment: { facts: ['snowy'] }
+  }, {
+    weather: 'storm'
+  }, {
+    day_part: 'sunset'
+  }, {
+    location_ref: 'unapproved-internal-id'
+  }]) {
+    assert.throws(() => validatePublicScreen(withContext(visible_context)), {
+      code: 'LANDSCAPE_AFFORDANCE_INVALID'
+    });
+  }
 });
 
 test('landscape without supported cues stays abstract and deterministic', () => {
@@ -387,6 +415,34 @@ test('conversation portrait uses only the canonical interlocutor field', () => {
       }
     }
   }), '');
+});
+
+test('conversation portrait uses an explicit valid spec and rejects malformed appearance', () => {
+  const active = {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: 'Еремей',
+    portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
+  };
+  const screen = {
+    ...firstScreen(),
+    panels: { people: { visible: true, data: { active_interlocutor: active } } }
+  };
+  assert.doesNotThrow(() => validatePublicScreen(screen));
+  const portrait = renderConversationPortrait(screen);
+  assert.match(portrait, /data-conversation-portrait-canvas/u);
+  assert.doesNotMatch(portrait, /<svg/u);
+  assert.throws(() => validatePublicScreen({
+    ...screen,
+    panels: { people: { visible: true, data: {
+      active_interlocutor: {
+        ...active,
+        portrait_spec_v1: {
+          ...SAMPLE_PORTRAIT_SPEC,
+          inferred_from_name: true
+        }
+      }
+    } } }
+  }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
 });
 
 test('minimap uses only sorted public nodes and links and keeps text facts', () => {

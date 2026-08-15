@@ -136,6 +136,12 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
       await page.waitForSelector('[data-conversation-portrait]');
       assert.match(await page.textContent('[data-conversation-portrait]'),
         /Еремей/u);
+      assert.equal(await page.locator(
+        '[data-conversation-portrait] svg'
+      ).count(), 1, 'persisted NPC appearance is absent, so SVG fallback stays');
+      assert.equal(await page.locator(
+        '[data-conversation-portrait-canvas]'
+      ).count(), 0);
       const portrait = await page.locator(
         '[data-conversation-portrait]'
       ).evaluate((element) => element.outerHTML);

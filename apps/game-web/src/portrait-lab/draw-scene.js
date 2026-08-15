@@ -1,8 +1,11 @@
 import { drawBackground } from './draw-background.js';
 import { fillHandmadePatch, strokeHandmade } from './handmade.js';
 
-export function drawPortraitScene(context, model, scene, { fills = true } = {}) {
-  drawBackground(context, model);
+export function drawPortraitScene(context, model, scene, {
+  fills = true,
+  background = true
+} = {}) {
+  if (background) drawBackground(context, model);
   if (fills) drawPatches(context, model, scene.patches);
   drawInkPass(context, model, scene, { monochrome: !fills });
 }

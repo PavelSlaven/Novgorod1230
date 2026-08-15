@@ -1,0 +1,11 @@
+[
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1",
+    "region_id": "region_novgorod_land",
+    "demographic_option_id": null,
+    "minimum_age": null,
+    "maximum_age": null,
+    "weight": 1,
+    "status": "approved"
+  }
+]

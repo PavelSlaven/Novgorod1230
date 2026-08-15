@@ -2,6 +2,7 @@ import {
   canonicalDigest,
   MaterializationError
 } from '@rus/materialization';
+import { materializeInitialActorEquipment } from '@rus/new-game';
 import {
   materializeLowerDvinaTracePartyInstance
 } from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
@@ -79,12 +80,15 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     rootDir,
     scenarioDefinitionRevision: request.scenario_definition_revision
   });
-  const materialization = materializeLowerDvinaTracePartyInstance({
+  const authoredMaterialization = materializeLowerDvinaTracePartyInstance({
     ...request,
     domain_catalog_pin: domainCatalogPin,
     scenario_bundle: bundle,
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
   });
+  const materialization = materializeInitialActorEquipment(
+    authoredMaterialization
+  );
   const semantic = validateLowerDvinaTracePlayerDossier(materialization, bundle);
   const sealedSelectionClosure = {
     version: 1,

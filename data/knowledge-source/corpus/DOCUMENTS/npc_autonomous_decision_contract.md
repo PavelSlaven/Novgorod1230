@@ -84,7 +84,7 @@ autonomous boundary Жданко. Request получает не scenario option 
 действием. Temporal execution, persistence и player-safe visibility остаются
 code-owned. Этот autonomous mode не разрешает combat: отдельный combat contract
 был активирован позднее revision 16 / `spatial-v3-production-v6` и наследуется
-current revision 18 / production v8.
+current revision 19 / production v9.
 
 ## 4. Архитектурные владельцы
 

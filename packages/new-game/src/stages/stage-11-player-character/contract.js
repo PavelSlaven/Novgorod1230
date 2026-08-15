@@ -2,6 +2,10 @@ import { STAGE11_GAME_PROFILE_SCHEMA, STAGE11_INPUT_SCHEMA, STAGE11_OUTPUT_SCHEM
 import { firstText, isPlainObject } from './shared.js';
 
 export function buildStage11PlayerCharacterInput(context, options = {}) {
+  const policy = withPinnedPlayerAppearance(
+    context,
+    options.character_generation_policy ?? options.policy ?? {}
+  );
   return {
     version: 1,
     schema: STAGE11_INPUT_SCHEMA,
@@ -13,7 +17,32 @@ export function buildStage11PlayerCharacterInput(context, options = {}) {
     start_place_audit: options.start_place_audit ?? context.requireStageOutput(10, 'start place audit'),
     npc_candidate_set: options.npc_candidate_set ?? context.requireStageOutput(7, 'NPC candidate set'),
     item_profile_candidate_set: options.item_profile_candidate_set ?? context.requireStageOutput(8, 'item profile candidate set'),
-    character_generation_policy: normalizeCharacterGenerationPolicy(options.character_generation_policy ?? options.policy ?? {})
+    character_generation_policy: normalizeCharacterGenerationPolicy(policy)
+  };
+}
+
+function withPinnedPlayerAppearance(context, policy) {
+  if (Object.hasOwn(policy, 'actor_base_appearance')) return policy;
+  const snapshot = context.requireStageOutput(7, 'NPC candidate set')
+    ?.actor_profile_snapshot;
+  const demographic = snapshot?.demographic_profiles;
+  const appearance = snapshot?.appearance_profiles;
+  if (snapshot?.schema !== 'approved_actor_profile_snapshot'
+      || demographic?.length !== 1 || appearance?.length !== 1) {
+    return policy;
+  }
+  return {
+    ...policy,
+    actor_base_appearance: {
+      world_revision_id: snapshot.world_revision_id,
+      source_catalog_digest: snapshot.source_catalog_digest,
+      actor_profile_catalog_digest: snapshot.catalog_digest,
+      profile_id: `player:${demographic[0].id}:${appearance[0].id}`,
+      approved_entries: [
+        ...structuredClone(demographic[0].entries ?? []),
+        ...structuredClone(appearance[0].entries ?? [])
+      ]
+    }
   };
 }
 
@@ -37,6 +66,9 @@ export function normalizeCharacterGenerationPolicy(policy = {}) {
     allow_abstract_background_relations: policy.allow_abstract_background_relations ?? true,
     temporary_source_trace_refs_allowed: policy.temporary_source_trace_refs_allowed ?? true,
     repair_required_for_missing_critical_item_profile: policy.repair_required_for_missing_critical_item_profile ?? true,
+    ...(Object.hasOwn(policy, 'actor_base_appearance') && policy.actor_base_appearance !== null
+      ? { actor_base_appearance: structuredClone(policy.actor_base_appearance) }
+      : {}),
     ...(Object.hasOwn(policy, 'trace_player_profile_policy') && policy.trace_player_profile_policy !== null
       ? { trace_player_profile_policy: policy.trace_player_profile_policy }
       : {})
@@ -71,6 +103,9 @@ export function shapePlayerCharacterGameProfile(dossier = {}, audit = {}, option
       source_trace: structuredClone(dossier.source_trace ?? [])
     },
     identity: structuredClone(dossier.identity ?? {}),
+    ...(dossier.appearance_contract_version ? {
+      appearance_contract_version: dossier.appearance_contract_version
+    } : {}),
     social_status: structuredClone(dossier.social_status ?? {}),
     origin: structuredClone(dossier.origin ?? {}),
     body: structuredClone(dossier.body ?? {}),

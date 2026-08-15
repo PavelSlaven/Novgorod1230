@@ -12,6 +12,8 @@ export function buildStage7LoadInput(requestId = 'req_fixture', overrides = {}) 
     regional_context_package: overrides.regional_context_package ?? null,
     start_candidate_set: overrides.start_candidate_set ?? null,
     candidate_place_template_set: overrides.candidate_place_template_set ?? null,
+    world_revision_id: overrides.world_revision_id ?? null,
+    approved_actor_profile_snapshot: overrides.approved_actor_profile_snapshot ?? null,
     npc_candidate_policy: {
       require_sources: true,
       ...(overrides.npc_candidate_policy ?? {})

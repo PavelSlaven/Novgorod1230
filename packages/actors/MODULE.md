@@ -7,6 +7,7 @@ Player and NPC entity contracts, identity, biography, social and skill bindings.
 ## Владеет
 
 - actor identity and kind
+- canonical `actor_base_appearance_v1`: `identity.sex_category`, `identity.age_category` and physical `identity.appearance`
 - biography fields
 - social and skill references
 - actor state shape and invariants
@@ -21,13 +22,15 @@ Player and NPC entity contracts, identity, biography, social and skill bindings.
 
 - `ACTOR_KINDS`
 - `validateActor`
+- `validateActorBaseAppearance`
+- `completeActorBaseAppearance`
 - `normalizeActor`
 - `projectActorIdentity`
 - `projectActorState`
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
+Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. `validateActor(..., { requireCompleteAppearance: true })` обязателен для нового actor; прежний режим остаётся для historical actors. Внешность не содержит одежду, головной убор, `portrait_*`, sex или age; `body` также не дублирует sex, age, build, hair, eyes или clothing. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` либо выбрасываются только для неверно подключённого технического порта.
 
 ## Зависимости
 

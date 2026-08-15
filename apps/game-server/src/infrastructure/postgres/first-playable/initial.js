@@ -131,7 +131,8 @@ export async function insertInitialParty(tx, { state, screen, release, runtimeCa
       $7::jsonb,$8::jsonb,$9,1,$10,$10)`,
     [partyId, state.player.id, json(ref('role', state.player.role_id)),
       json(ref('occupation', state.player.occupation_id)), json(state.player.skills),
-      json({ name_id: state.player.name_id, display_name: state.player.name }),
+      json({ name_id: state.player.name_id, display_name: state.player.name,
+        name_provenance: 'first_playable_catalog' }),
       json(state.player.language_profile),
       json(state.player.knowledge_profile),
       state.player.profile_candidate_set_digest, changeSet]

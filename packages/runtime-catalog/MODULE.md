@@ -3,7 +3,7 @@
 ## Назначение
 
 Read-only загрузка и exact verification активного или исторически pinned
-item/container runtime catalog.
+item/container runtime catalog и exact world-pinned actor component profiles.
 
 ## Владеет
 
@@ -25,6 +25,7 @@ item/container runtime catalog.
 - `createRuntimeCatalogLoader({ worldBaseReader, supportedRuntimeContractDigests })`;
 - `loadActivePin({ catalogScope })`;
 - `loadApprovedItemCatalog({ pin })`;
+- `loadApprovedActorProfileCatalog({ worldPin, regionId, effectiveDate })`;
 - `assertCompatibleWorldPin({ domainPin, worldPin })`;
 - `selectApplicableItemCatalog({ verifiedCatalog, regionId, effectiveDate })`.
 - `loadCommonCatalogLookupRecords({ rootDir })` — cached read-only lookup loader.
@@ -37,6 +38,10 @@ item/container runtime catalog.
 `loadApprovedItemCatalog` возвращает полный immutable verified bundle только
 после record/table/assertion/target/import digest checks. Partial result
 запрещён.
+
+`loadApprovedActorProfileCatalog` отдельно проверяет exact approved world pin
+и читает только применимые normalized demographic/appearance entries и их
+approved category options; item catalog не является источником actor profiles.
 
 Materialization trace хранит `catalog_digest` exact domain pin. Digest
 применимой immutable projection хранится отдельно как `catalog_bundle_digest`;

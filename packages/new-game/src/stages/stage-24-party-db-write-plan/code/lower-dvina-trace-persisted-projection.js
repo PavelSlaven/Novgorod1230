@@ -30,7 +30,7 @@ export function buildLowerDvinaTracePersistedProjection({
         source: 'approved_scenario_profile'
       },
       skill_profile_snapshot: structuredClone(player.dossier.skills),
-      name_profile_snapshot: structuredClone(player.dossier.identity),
+      name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
       language_profile_snapshot: {},
       knowledge_profile_snapshot: structuredClone(player.dossier.knowledge),
       profile_candidate_set_digest: result.trace.choices
@@ -128,7 +128,7 @@ export function buildLowerDvinaTracePersistedProjection({
         role_ref: structuredClone(npc.role_ref),
         occupation_ref: structuredClone(npc.occupation_ref),
         skill_profile_snapshot: {},
-        name_profile_snapshot: structuredClone(npc.identity_state),
+        name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
         language_profile_snapshot: {},
         knowledge_profile_snapshot: structuredClone(npc.knowledge_profile_snapshot),
         profile_candidate_set_digest: npc.profile_candidate_set_digest,
@@ -153,7 +153,7 @@ export function buildLowerDvinaTracePersistedProjection({
         holder_npc_id: item.holder_npc_id ?? null,
         holder_character_id: item.holder_character_id ?? null,
         physical_position: item.physical_position ?? null,
-        equipment_slot_category_id: null
+        equipment_slot_category_id: item.equipment_slot_category_id ?? null
       },
       ownership: {
         ownership_id: `ownership_${item.instance_id}`,
@@ -176,8 +176,9 @@ export function buildLowerDvinaTracePersistedProjection({
       parent_container_id: null,
       holder_npc_id: container.holder_npc_id ?? null,
       holder_character_id: null,
-      physical_position: null,
-      equipment_slot_category_id: null,
+      physical_position: container.physical_position ?? null,
+      equipment_slot_category_id:
+        container.equipment_slot_category_id ?? null,
       condition_state: container.state?.physical_condition?.overall ?? null,
       closure_state: container.closure_state,
       state: {
@@ -185,7 +186,19 @@ export function buildLowerDvinaTracePersistedProjection({
         owner_external_ref: container.owner_external_ref,
         controller_npc_id: container.controller_npc_id
       },
-      state_version: 1
+      state_version: 1,
+      ...(container.claim_state == null ? {} : { ownership: {
+        ownership_id: `ownership_${container.instance_id}`,
+        container_id: container.instance_id,
+        owner_npc_id: null,
+        owner_character_id: null,
+        owner_party: false,
+        owner_external_ref: normalizeExternalOwnerRef(
+          container.owner_external_ref),
+        controller_npc_id: container.controller_npc_id ?? null,
+        controller_character_id: null,
+        claim_state: container.claim_state
+      } })
     })).sort((left, right) => left.container_id.localeCompare(right.container_id)),
     obligations: (result.immediate.promise_instances ?? []).map((promise) => ({
       obligation_id: promise.instance_id,
@@ -226,4 +239,12 @@ export function normalizeExternalOwnerRef(value) {
   return typeof value === 'string' && value.length > 0
     ? { entity_kind: 'external_owner', entity_id: value }
     : value ?? null;
+}
+
+export function projectNameProfileSnapshot(identity = {}) {
+  const snapshot = {};
+  for (const key of ['canonical_name', 'display_name', 'name', 'name_id', 'name_candidate_id', 'name_policy', 'name_provenance']) {
+    if (Object.hasOwn(identity, key)) snapshot[key] = structuredClone(identity[key]);
+  }
+  return snapshot;
 }

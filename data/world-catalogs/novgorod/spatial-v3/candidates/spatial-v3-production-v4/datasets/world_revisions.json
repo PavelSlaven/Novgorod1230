@@ -1,0 +1,11 @@
+[
+  {
+    "id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "title": "Novgorod Spatial-v3 production v4 canonical actor appearance successor",
+    "effective_from": "1230-01-01",
+    "effective_to": "1250-12-31",
+    "catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79",
+    "status": "approved"
+  }
+]

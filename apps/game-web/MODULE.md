@@ -18,11 +18,11 @@ Browser-клиент, который получает только versioned pub
 - процедурной композицией landscape + active interlocutor в существующем
   `renderSceneViewport`; при явном valid `portrait_spec_v1` используется
   renderer Portrait Lab с прозрачным background, иначе сохраняется SVG fallback;
-- отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer;
+- отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и Canvas 2D renderer без portrait-specific RNG/hash;
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
-- внутренними детерминированными вариантами рисунка, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
+- semantic geometry branches, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
 - единым внутренним владельцем процедурной одежды `buildClothingGeometry(model, bodyGeometry)`: neckline, anchored arm/sleeve boundaries (либо armholes для sleeveless overlayer), outer construction, fabric-driven folds/texture и trim строятся от общих body anchors, а `body.torsoPatch` остаётся только envelope;
-- `Portrait Drawing Contract v1`: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии, scoped seed каждой части и общий handmade ink-pass.
+- `Portrait Drawing Contract v1`: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии и общий handmade ink-pass.
 
 ## Не делает
 
@@ -41,12 +41,10 @@ Browser-клиент, который получает только versioned pub
 - `renderScreen`
 - `bootstrapGameWeb`
 
-Portrait Lab остаётся отдельным browser-инструментом и не добавляет портреты в игровые read models или NPC runtime.
-
-Текущий persisted/player-safe NPC state не содержит достаточного appearance
-source. Поэтому game-web не выводит внешность из имени, роли или prose и не
-создаёт portrait spec: optional `portrait_spec_v1` поддержан только как exact
-player-safe input, а production projection без него использует fallback.
+Portrait Lab остаётся отдельным browser-инструментом и не участвует в
+production actor/interlocutor path. Game-web принимает только готовый
+player-safe `portrait_spec_v1` из server response, не выводит внешность из
+имени, роли или prose и сохраняет прежний fallback для historical parties.
 
 ## Portrait Drawing Contract v1
 
@@ -72,5 +70,5 @@ player-safe input, а production projection без него использует
 - `cold`, `wet` и `exposed` остаются presentation modifiers и не создают снег,
   дождь, воду или новый landscape type;
 - смена поля Portrait Specification не изменяет геометрию части, для которой это поле не является значимым;
-- `main_color` и `secondary_color` меняют только appearance metadata одежды; silhouette, neckline, seams, folds, trim locations и clothing seed остаются идентичными;
+- `main_color` и `secondary_color` меняют только appearance metadata одежды; silhouette, neckline, seams, folds и trim locations остаются идентичными;
 - любая сцена Portrait Lab проходит универсальные геометрические инварианты; pairwise-набор покрывает каждую пару enum-значений, а фиксированный Control Sheet из 24 портретов служит только визуальным smoke-check.

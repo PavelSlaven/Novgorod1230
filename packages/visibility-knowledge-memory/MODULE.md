@@ -7,6 +7,8 @@ Pure player-safety projection boundary: validates and constructs narrator-safe v
 ## Владеет
 
 - Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package, factual conversation audience projection и deterministic resolution утверждённого evidence graph из committed facts/statements.
+- Владеет чистой player-safe проекцией `portrait_spec_v1` из canonical actor
+  identity, sanitized visible equipped items и presentation-only state.
 
 ## Не владеет
 
@@ -19,6 +21,12 @@ provenance-validated committed inputs; `projectPlayerSafeCompletionOutcome`
 раскрывает terminal dimension values только через visible committed facts.
 
 `VISIBLE_PACKAGE_KEYS`, `detectHiddenLeaks`, `stripHiddenForNarrator`, `validateVisibleContext`, `mergeKnowledgeFacts`, `validateMemoryFact`, `buildSafeNarratorPackage`, `buildPlayerSafeVisiblePackageEnvelope`, `projectConversationAudience`, `resolveEvidenceConclusions`, `resolveAuthoredStatementEvidence`. Conversation audience строится только из фактических per-listener perception results: actual listener/witness получает received knowledge независимо от наличия response boundary. Statement evidence появляется только из committed statement с exact authored structured claim и source knowledge/perception lineage; wording остаётся решением conversation responder и не обязано дословно совпадать с authored template. Ordinary или несвязанная speech остаётся statement, но не становится evidence. Evidence resolver принимает exact authored graph и committed evidence refs, не превращает отсутствие в отрицание и не назначает legal consequence. Projection не назначает responder и не раскрывает private knowledge другого NPC. Inputs are plain closed data; visible context requires version `1`, schema `visible_context_package`, `visible_scene` and only allowed keys. Outputs are frozen sanitized package, validation `{ ok, errors }`, leak paths or merged facts. The Temporal caller supplies the persisted `visible_package_persistence_envelope` only after factual commit; this module never reads an uncommitted state snapshot as presentation truth.
+
+`projectActorPortraitSpecV1({ identity, visible_equipment, presentation })`
+принимает только committed, server-sanitized data, разрешает ровно один visible
+base/outer/headwear item на slot и завершает `assertPortraitSpecV1`. Для
+historical/incomplete/ambiguous state возвращается `null`; projection не делает
+draw, не исправляет и не сохраняет state.
 
 ## Ошибки, зависимости и effects
 
@@ -35,8 +43,10 @@ combined commit; narration and the final screen consume only the persisted
 package after commit. It neither activates target nor dual-writes before the
 versioned production activation cutover. Revision 17 /
 `spatial-v3-production-v7` activates deterministic authored evidence
-resolution; current revision 18 / production v8 additionally activates
-provenance-validated composite completion and player-safe projection. Phase 11
-acceptance adds no new domain contract. `test/domain.test.js` covers allow-list,
+resolution; historical revision 18 / production v8 additionally activates
+provenance-validated composite completion and player-safe projection. Current
+revision 19 / production v9 inherits that path and adds the pure, non-persisted
+`portrait_spec_v1` projection from sanitized actor facts and visible equipped
+items. `test/domain.test.js` covers allow-list,
 leak stripping/detection, safe-package, evidence, completion and memory
 contracts.

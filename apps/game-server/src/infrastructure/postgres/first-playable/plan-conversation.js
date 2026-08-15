@@ -20,7 +20,8 @@ export function conversationWrites(input, buildTimedActivityRows) {
         skill_profile_snapshot: {},
         name_profile_snapshot: {
           name_id: state.npc.name_id,
-          display_name: state.npc.name
+          display_name: state.npc.name,
+          name_provenance: 'first_playable_catalog'
         },
         language_profile_snapshot: state.npc.language_profile,
         knowledge_profile_snapshot: state.npc.knowledge_profile,

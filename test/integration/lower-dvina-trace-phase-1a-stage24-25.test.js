@@ -4,6 +4,7 @@ import {
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
+import { materializeInitialActorEquipment } from '@rus/new-game';
 import {
   materializeLowerDvinaTracePartyInstance
 } from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
@@ -214,7 +215,8 @@ test('Stage 24 fails closed for missing, forged or world-incompatible domain pin
 });
 
 function createMaterialization() {
-  return materializeLowerDvinaTracePartyInstance({
+  return materializeInitialActorEquipment(
+    materializeLowerDvinaTracePartyInstance({
     party_id: 'trace-stage24-party',
     scenario_id: 'lower_dvina_trace_v1',
     scenario_definition_revision: 7,
@@ -230,8 +232,9 @@ function createMaterialization() {
     occurrence: 0,
     existing_party_state: { baseline_exists: false },
     scenario_bundle: bundle,
-    resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
-  });
+      resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
+    })
+  );
 }
 
 function partyContext(materialization) {

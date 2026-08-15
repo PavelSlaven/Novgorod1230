@@ -57,9 +57,9 @@ const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
 );
 const world = Object.freeze({
-  revision: 'novgorod_spatial_v3_production_v3_candidate_001',
-  digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
-  manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
+  revision: 'novgorod_spatial_v3_production_v4_candidate_001',
+  digest: 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
+  manifest: '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
 });
 
 test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tampering', async (t) => {
@@ -1228,7 +1228,8 @@ async function installWorldLineage(pool) {
     (id,parent_revision_id,catalog_digest,status) VALUES
     ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),
     ('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),
-    ('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')`);
+    ('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),
+    ('novgorod_spatial_v3_production_v4_candidate_001','novgorod_spatial_v3_production_v3_candidate_001','acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')`);
 }
 
 async function count(pool, table, partyId) {

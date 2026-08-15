@@ -58,14 +58,17 @@ export async function insertBoatAndInventory(tx, { state, changeSet, runId, land
       `INSERT INTO party_runtime.party_items
        (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
         condition_state,legal_status,state)
-       VALUES ($1,$2,$3,$4,'first_playable',$5,$6,'serviceable','owned','{}'::jsonb)`,
+       VALUES ($1,$2,$3,$4,'first_playable',$5,$6,'serviceable','owned',$7::jsonb)`,
       [
         partyId,
         id,
         runId,
         allocation.template_id,
         allocation.category_id,
-        allocation.resolved_quantity.quantity
+        allocation.resolved_quantity.quantity,
+        json(allocation.visual_profile_snapshot == null ? {} : {
+          visual_profile_snapshot: allocation.visual_profile_snapshot
+        })
       ]
     );
     await tx.query(
@@ -74,6 +77,22 @@ export async function insertBoatAndInventory(tx, { state, changeSet, runId, land
         occupies_capacity_units,state_version,updated_change_set_id)
        VALUES ($1,'item',$2,'attached_to_entity',$3::jsonb,1,1,$4)`,
       [partyId, id, json(playerRef), changeSet]
+    );
+    const physicalPosition = allocation.physical_position ?? 'external';
+    await tx.query(
+      `INSERT INTO party_runtime.party_item_placements
+       (party_id,item_id,holder_character_id,physical_position,
+        equipment_slot_category_id)
+       VALUES ($1,$2,$3,$4,$5)`,
+      [partyId, id, state.player.id, physicalPosition,
+        allocation.equipment_slot_category_id ?? null]
+    );
+    await tx.query(
+      `INSERT INTO party_runtime.party_ownership
+       (party_id,ownership_id,item_id,owner_character_id,
+        controller_character_id,claim_state)
+       VALUES ($1,$2,$3,$4,$4,'established')`,
+      [partyId, `ownership:${id}`, id, state.player.id]
     );
     await tx.query(
       `INSERT INTO party_runtime.party_entity_controls

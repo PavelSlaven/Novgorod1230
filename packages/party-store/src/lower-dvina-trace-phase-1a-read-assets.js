@@ -31,21 +31,7 @@ export function normalizedPartyAssets({ items, containers, obligations,
         claim_state: item.claim_state
       }
     })),
-    containers: containers.map((container) => ({
-      container_id: container.container_id,
-      run_id: container.run_id,
-      template_id: container.template_id,
-      anchor_id: container.anchor_id,
-      parent_container_id: container.parent_container_id,
-      holder_npc_id: container.holder_npc_id,
-      holder_character_id: container.holder_character_id,
-      physical_position: container.physical_position,
-      equipment_slot_category_id: container.equipment_slot_category_id,
-      condition_state: container.condition_state,
-      closure_state: container.closure_state,
-      state: container.state,
-      state_version: Number(container.state_version)
-    })),
+    containers: containers.map(normalizedContainer),
     obligations: obligations.map((obligation) => ({
       obligation_id: obligation.obligation_id,
       policy_ref: obligation.policy_ref,
@@ -68,6 +54,35 @@ export function normalizedPartyAssets({ items, containers, obligations,
       clock_owner_id: clock.clock_owner_id,
       state_version: Number(clock.state_version),
       updated_change_set_id: clock.updated_change_set_id
+    }
+  };
+}
+
+export function normalizedContainer(container) {
+  return {
+    container_id: container.container_id,
+    run_id: container.run_id,
+    template_id: container.template_id,
+    anchor_id: container.anchor_id,
+    parent_container_id: container.parent_container_id,
+    holder_npc_id: container.holder_npc_id,
+    holder_character_id: container.holder_character_id,
+    physical_position: container.physical_position,
+    equipment_slot_category_id: container.equipment_slot_category_id,
+    condition_state: container.condition_state,
+    closure_state: container.closure_state,
+    state: container.state,
+    state_version: Number(container.state_version),
+    ownership: container.ownership_id == null ? null : {
+      ownership_id: container.ownership_id,
+      container_id: container.container_id,
+      owner_npc_id: container.owner_npc_id,
+      owner_character_id: container.owner_character_id,
+      owner_party: container.owner_party,
+      owner_external_ref: container.owner_external_ref,
+      controller_npc_id: container.controller_npc_id,
+      controller_character_id: container.controller_character_id,
+      claim_state: container.claim_state
     }
   };
 }

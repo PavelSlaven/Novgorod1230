@@ -200,13 +200,3 @@ function actorPlacement(value, actorId, normalizeNpcHolder) {
 function inventoryError(code, details = null) {
   return Object.assign(new Error(code), { code, details });
 }
-
-function inventoryIssue(code, category, details) {
-  return Object.freeze({
-    code,
-    category,
-    retryable: false,
-    message: code,
-    details: Object.freeze(structuredClone(details))
-  });
-}

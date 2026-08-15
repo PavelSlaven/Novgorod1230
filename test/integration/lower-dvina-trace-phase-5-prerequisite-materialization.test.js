@@ -249,6 +249,8 @@ test('revision 15 materializes and persists the approved Zhdanko storehouse road
   assert.equal(result.immediate.npcs.length, 6);
   assert.ok(zhdanko);
   assert.equal(bag.holder_npc_id, zhdanko.instance_id);
+  assert.equal('physical_position' in bag, false);
+  assert.equal('claim_state' in bag, false);
   assert.deepEqual(bag.state.exact_content_item_refs, [
     'trace_ld_v1_item_sealed_packet',
     'trace_ld_v1_item_wet_cloak',
@@ -265,6 +267,11 @@ test('revision 15 materializes and persists the approved Zhdanko storehouse road
     holder_npc_id: zhdanko.instance_id,
     closure_state: 'tied'
   }]);
+  const ownershipRows = plan.write_batches.find(
+    ({ target_table }) => target_table === 'party_ownership'
+  ).records;
+  assert.equal(ownershipRows.some(({ container_id }) =>
+    container_id === bag.instance_id), false);
 });
 
 test('revision 16 persists every NPC referenced by its initial held resources', () => {

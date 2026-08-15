@@ -222,7 +222,7 @@ async function startNewGame({
   }
   const player = scenario
     ? resolvePlayerProfile(requestId)
-    : baselinePlayer(input.player_name);
+    : baselinePlayer(input.player_name, requestId);
   const state = initialState({
     partyId,
     requestId,

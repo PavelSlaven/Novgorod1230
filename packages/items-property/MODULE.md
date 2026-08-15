@@ -29,7 +29,10 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 - `resolveLoadCategory`
 - `buildRecognitionRequest`
 - `validatePropertyRelation`
-- `planApprovedActorItemTransition` — pure proposal for an already approved actor-to-actor item transition
+- `ACTOR_ITEM_PHYSICAL_POSITIONS` — единый closed set placement для общего
+  actor-item/container planner и party placement constraints
+- `planApprovedActorItemTransition` — pure proposal for an already approved
+  actor-to-actor item or container transition
 - `planApprovedPropertyTransition` — strict revision-pinned proposal for
   recovery, controlled container opening and sealed child extraction; ownership
   and seal/document access change only when the approved transition says so
@@ -46,7 +49,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 ## Контракты и инварианты
 
-Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Runtime snapshot допустим только без `template_id`, с полным exact profile и provenance `ordinary_direct_action_result`; authored instance всегда использует template/profile path. Одновременное наличие обоих источников запрещено. Выходы, которые предназначены для handoff, замораживаются. Нарушения структуры возвращаются как `{ ok, errors }` или `{ pass, errors }` либо выбрасываются фабрикой строгого snapshot до его передачи runtime-владельцу.
+Входы являются plain-object/array значениями. Функции нормализации не придумывают отсутствующие ID, имена, предметы, причины или последствия. Approved actor transition сохраняет item/container ID и owner, меняет только holder/controller/placement и валидирует equipment slot для `equipped`. Тип предмета и согласие holder не являются специальным transition gate; реакция NPC относится к NPC runtime, а legal owner не меняется от физического изъятия. Load admission использует только силу действующего actor: при actor-keyed input отсутствие его значения является gap и никогда не компенсируется силой player/другого holder. Runtime snapshot допустим только без `template_id`, с полным exact profile и provenance `ordinary_direct_action_result`; authored instance всегда использует template/profile path. Одновременное наличие обоих источников запрещено. Выходы, которые предназначены для handoff, замораживаются.
 
 ## Зависимости
 

@@ -6,6 +6,23 @@
 
 LLM не создаёт NPC и не дополняет отсутствующие категории. Для key NPC допускается только формальный override разрешённых полей через bounded change-set gate; базовая психология, знания, снаряжение, расписание и отношения остаются ссылочно обусловленными профилями. Повышение уровня NPC детерминированно заполняет только отсутствующие поля и не меняет сохранённые значения.
 
+### Каноническая базовая внешность NPC
+
+Каждый новый NPC всех уровней получает один actor-level контракт
+`actor_base_appearance_v1`: `identity.sex_category`,
+`identity.age_category`, `identity.appearance.{build,skin_tone,face_shape}`,
+`identity.appearance.hair.{color,length,style,facial_hair}` и
+`identity.appearance.eyes.color`. `appearance` не содержит sex, age, clothing,
+headwear или `portrait_*`; `body` не дублирует sex/age/clothing.
+
+Stage 7 передаёт exact world-pinned closed demographic/appearance sets. Stage
+15 сохраняет authored values и только для отсутствующих facets делает
+детерминированный weighted draw из approved/applicable entries, после прежнего
+materialization prefix и в стабильном порядке slot/instance keys. Пустой
+required set является typed data gap. Runtime LLM не выбирает внешность NPC.
+Одежда создаётся Stage 16 как отдельные реальные item instances с holder,
+controller, equipment slot и immutable visual snapshot; в identity одежды нет.
+
 Temporal runtime NPC регулирует active target-норматив
 `temporal_world_and_interruptible_activities.md`. Расписание хранит exact
 `GameTimestamp` boundaries и approved profile pins; perception вычисляется
@@ -87,7 +104,7 @@ NPC должен быть не просто функцией сцены, а че
  	Как долго примерно остаётся доступен и что может убрать его из внимания — смена времени, завершение дела, приказ, опасность, шум, уход толпы или вмешательство игрока.  
 
 
-Фоновому NPC не обязательно давать имя и скрытую биографию: дополнительные данные создаются только тогда, когда NPC вступает во взаимодействие, влияет на сцену или должен оставить последствия в памяти мира.
+Фоновому NPC не обязательно давать имя и скрытую биографию: дополнительные данные создаются только тогда, когда NPC вступает во взаимодействие, влияет на сцену или должен оставить последствия в памяти мира. Полный базовый appearance contract при создании NPC не считается дополнительной биографической глубиной и обязателен также для фонового уровня.
 
 ## 3. Сценический NPC
 

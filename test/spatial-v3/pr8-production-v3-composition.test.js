@@ -262,7 +262,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v6 root is sole owner with production-v5 rollback identity', async () => {
+test('production-v9 root is sole owner with production-v8 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -289,7 +289,7 @@ test('production-v6 root is sole owner with production-v5 rollback identity', as
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v5'
+    'spatial-v3-production-v8'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -606,7 +606,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 019', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 020', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -636,7 +636,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 8);
+  assert.equal(result.newly_applied, 9);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

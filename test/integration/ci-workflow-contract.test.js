@@ -33,12 +33,19 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
     'information_schema.role_table_grants',
     'name: Execute Stage 3B-1 supplemental PostgreSQL integration',
     'npm run world-db:import:stage3b1:integration',
+    'name: Execute character appearance runtime-catalog PostgreSQL integration',
+    'npm run character-appearance:test-world-v4-postgres',
     'name: Validate canonical knowledge corpus',
     'npm run knowledge:check-corpus',
     'name: Generate deterministic documentation and knowledge artifacts',
     'npm run docs:generate',
+    'name: Generate deterministic character appearance publication chain',
+    'npm run character-appearance:generate',
     'name: Verify generated files are reproducible',
     'git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/',
+    'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/',
     'git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md',
     'name: Build and verify Repository Graph for current HEAD',
     'npm run repo-intel:build',
@@ -59,11 +66,11 @@ test('GitHub Actions clean-clone workflow keeps all required gates in order', as
   }
 });
 
-test('world_base PostgreSQL gate tracks the 199-table schema and grants every table read-only', async () => {
+test('world_base PostgreSQL gate tracks the 201-table schema and grants every table read-only', async () => {
   const workflow = await readFile(resolve(process.cwd(), '.github/workflows/test.yml'), 'utf8');
 
   assert.doesNotMatch(workflow, /test "\$table_count" -eq 62/u);
-  assert.match(workflow, /test "\$table_count" -eq 199/u);
+  assert.match(workflow, /test "\$table_count" -eq 201/u);
   assert.doesNotMatch(workflow, /test "\$select_grants" -eq 62/u);
   assert.match(workflow, /test "\$select_grants" -eq "\$table_count"/u);
   assert.match(workflow, /test "\$write_grants" -eq 0/u);

@@ -3,6 +3,14 @@ import { buildStage12CodePrecheck } from './precheck.js';
 import { concern, isPlainObject } from './shared.js';
 
 export function buildStage12PlayerCharacterAuditInput(context, options = {}) {
+  const stage7 = options.npc_candidate_set
+    ?? context.requireStageOutput(7, 'NPC candidate set');
+  const auditPolicy = {
+    ...(options.audit_policy ?? options.policy ?? {}),
+    ...(stage7?.actor_profile_snapshot ? {
+      require_actor_base_appearance: true
+    } : {})
+  };
   const input = {
     version: 1,
     schema: STAGE12_INPUT_SCHEMA,
@@ -12,10 +20,10 @@ export function buildStage12PlayerCharacterAuditInput(context, options = {}) {
     regional_context_package: options.regional_context_package ?? context.requireStageOutput(4, 'regional context package'),
     selected_start_node: options.selected_start_node ?? context.requireStageOutput(9, 'selected start node'),
     start_place_audit: options.start_place_audit ?? context.requireStageOutput(10, 'start place audit'),
-    npc_candidate_set: options.npc_candidate_set ?? context.requireStageOutput(7, 'NPC candidate set'),
+    npc_candidate_set: stage7,
     item_profile_candidate_set: options.item_profile_candidate_set ?? context.requireStageOutput(8, 'item profile candidate set'),
     player_character_dossier: options.player_character_dossier ?? context.requireStageOutput(11, 'player character dossier'),
-    audit_policy: normalizeStage12AuditPolicy(options.audit_policy ?? options.policy ?? {})
+    audit_policy: normalizeStage12AuditPolicy(auditPolicy)
   };
   input.code_precheck = buildStage12CodePrecheck(input);
   return input;
@@ -39,6 +47,10 @@ export function normalizeStage12AuditPolicy(policy = {}) {
     require_skill_basis: policy.require_skill_basis ?? true,
     require_sources: policy.require_sources ?? true,
     reject_downstream_entities: policy.reject_downstream_entities ?? true,
+    ...(Object.hasOwn(policy, 'require_actor_base_appearance') ? {
+      require_actor_base_appearance:
+        policy.require_actor_base_appearance === true
+    } : {}),
     ...(Object.hasOwn(policy, 'trace_player_profile_policy') && policy.trace_player_profile_policy !== null
       ? { trace_player_profile_policy: policy.trace_player_profile_policy }
       : {})

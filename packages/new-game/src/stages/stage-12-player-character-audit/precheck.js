@@ -1,6 +1,7 @@
 import { STAGE11_DOSSIER_SCHEMA, STAGE12_CODE_PRECHECK_SCHEMA } from './constants.js';
 import { concern, collectInventoryItems, collectItemProfileIds, collectNpcCandidateIds, collectOccupationIds, collectPropertyRuleIds, collectRefs, collectRelationObjects, collectSkillObjects, collectSocialRoleIds, extractNumericNamedValues, findForbiddenDossierFields, firstText, hasAny, hasNullOccupationReason, inRange, isPlainObject, nonEmptyArray, text } from './shared.js';
 import { validateTracePlayerProfilePolicy } from '../stage-11-player-character/trace-policy.js';
+import { validateActorBaseAppearance } from '@rus/actors';
 
 export function buildStage12CodePrecheck(input = {}) {
   const checks = {
@@ -20,6 +21,32 @@ export function buildStage12CodePrecheck(input = {}) {
   };
   const concerns = [];
   const dossier = input.player_character_dossier;
+
+  const requireActorAppearance =
+    input.audit_policy?.require_actor_base_appearance === true;
+  if (requireActorAppearance
+      && dossier?.appearance_contract_version !== 'actor_base_appearance_v1') {
+    checks.actor_base_appearance_valid = false;
+    concerns.push(concern('PLAYER_AUDIT_APPEARANCE_INVALID',
+      'New player requires actor_base_appearance_v1.', {
+        field: 'player_character_dossier.appearance_contract_version',
+        severity: 'hard_block'
+      }));
+  }
+  if (dossier?.appearance_contract_version === 'actor_base_appearance_v1'
+      || requireActorAppearance) {
+    if (!Object.hasOwn(checks, 'actor_base_appearance_valid')) {
+      checks.actor_base_appearance_valid = true;
+    }
+    const actorAppearance = validateActorBaseAppearance(dossier.identity, {
+      requireComplete: true,
+      body: dossier.body
+    });
+    if (!actorAppearance.ok) {
+      checks.actor_base_appearance_valid = false;
+      for (const message of actorAppearance.errors) concerns.push(concern('PLAYER_AUDIT_APPEARANCE_INVALID', message, { field: 'player_character_dossier.identity', severity: 'hard_block' }));
+    }
+  }
 
   if (!isPlainObject(dossier) || dossier.schema !== STAGE11_DOSSIER_SCHEMA || dossier.version !== 1) {
     checks.schema_valid = false;

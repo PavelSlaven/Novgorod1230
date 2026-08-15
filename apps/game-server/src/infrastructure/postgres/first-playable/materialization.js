@@ -1,99 +1,6 @@
-import { serverError } from '../../../errors.js';
 import {
-  NPC_PROFILE_SET, choose, hash, json, ref, resolveNpcProfile
+  hash, json, ref
 } from '../../../runtime/first-playable/shared.js';
-
-export async function ensureLandingMaterialized(tx, { state, changeSet }) {
-  const partyId = state.party_id;
-  const npcId = `npc:${partyId}:fisher`;
-  const runId = `run:${partyId}:baseline`;
-  const landingPosition = `position:${partyId}:landing`;
-  const exists = await tx.query(
-    'SELECT 1 FROM party_runtime.party_npcs WHERE party_id=$1 AND npc_id=$2',
-    [partyId, npcId]
-  );
-  if (exists.rows.length > 0) return;
-  await tx.query(
-    `INSERT INTO party_runtime.party_npcs
-     (party_id,npc_id,run_id,profile_set_id,profile_level,identity_state,
-      machine_state,semantic_state)
-     VALUES ($1,$2,$3,'scene_fisher','background',
-       '{"identity":"not_yet_enriched"}'::jsonb,
-       '{"activity":"net_work"}'::jsonb,
-       '{"reason_for_presence":"late_summer_seasonal_net_work"}'::jsonb)`,
-    [partyId, npcId, runId]
-  );
-  const netAllocation =
-    state.npc.equipment_profile.initial_item_allocations[0];
-  const netId = `item:${partyId}:${netAllocation.slot_id}`;
-  await tx.query(
-    `INSERT INTO party_runtime.party_items
-     (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
-      condition_state,legal_status,state)
-     VALUES ($1,$2,$3,$4,'first_playable',
-       $5,$6,'serviceable','owned','{}'::jsonb)`,
-    [
-      partyId,
-      netId,
-      runId,
-      netAllocation.template_id,
-      netAllocation.category_id,
-      netAllocation.resolved_quantity.quantity
-    ]
-  );
-  await tx.query(
-    `INSERT INTO party_runtime.entity_placements
-     (party_id,entity_kind,entity_id,placement_kind,position_node_id,
-      occupies_capacity_units,state_version,updated_change_set_id)
-     VALUES ($1,'item',$2,'scene_position',$3,1,1,$4)`,
-    [partyId, netId, landingPosition, changeSet]
-  );
-  const npcRef = ref('npc', npcId);
-  await tx.query(
-    `INSERT INTO party_runtime.party_entity_controls
-     (party_id,entity_kind,entity_id,owner_ref,holder_ref,controller_ref,
-      access_profile_ref,capacity_units,state_version,updated_change_set_id)
-     VALUES ($1,'item',$2,$3::jsonb,$3::jsonb,$3::jsonb,$4::jsonb,1,1,$5)`,
-    [partyId, netId, json(npcRef), json(ref('access_profile', 'owner_direct')), changeSet]
-  );
-  const basketAllocation =
-    state.npc.equipment_profile.initial_container_allocations[0];
-  const basketId = `container:${partyId}:${basketAllocation.slot_id}`;
-  await tx.query(
-    `INSERT INTO party_runtime.party_containers
-     (party_id,container_id,run_id,template_id,holder_npc_id,
-      physical_position,condition_state,closure_state,state)
-     VALUES ($1,$2,$3,$4,$5,
-       NULL,'serviceable','open','{}'::jsonb)`,
-    [partyId, basketId, runId, basketAllocation.template_id, npcId]
-  );
-  await tx.query(
-    `INSERT INTO party_runtime.entity_placements
-     (party_id,entity_kind,entity_id,placement_kind,position_node_id,
-      occupies_capacity_units,state_version,updated_change_set_id)
-     VALUES ($1,'container',$2,'scene_position',$3,1,1,$4)`,
-    [partyId, basketId, landingPosition, changeSet]
-  );
-  await tx.query(
-    `INSERT INTO party_runtime.party_entity_controls
-     (party_id,entity_kind,entity_id,owner_ref,holder_ref,controller_ref,
-      access_profile_ref,capacity_units,state_version,updated_change_set_id)
-     VALUES ($1,'container',$2,$3::jsonb,$3::jsonb,$3::jsonb,$4::jsonb,1,1,$5)`,
-    [partyId, basketId, json(npcRef),
-      json(ref('access_profile', 'owner_direct')), changeSet]
-  );
-  await tx.query(
-    `INSERT INTO party_runtime.party_resource_nodes
-     (resource_node_id,party_id,source_resource_ref,position_node_id,
-      quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
-      access_policy_ref,state_version,created_change_set_id,updated_change_set_id)
-     VALUES ($1,$2,$3::jsonb,$4,100000,1,$5::jsonb,$6::jsonb,$7::jsonb,1,$8,$8)`,
-    [`resource:${partyId}:surface-water`, partyId, json(ref('resource', 'surface_water')),
-      landingPosition, json(ref('quantity_unit', 'millilitre')),
-      json(ref('quality', 'untested_surface_water')),
-      json(ref('access_policy', 'shoreline_direct_access_v1')), changeSet]
-  );
-}
 
 export async function persistConversation(tx, { state, changeSet, turnNumber, command }) {
   const partyId = state.party_id;
@@ -110,7 +17,8 @@ export async function persistConversation(tx, { state, changeSet, turnNumber, co
      ON CONFLICT (party_id,actor_kind,actor_id) DO NOTHING`,
     [partyId, state.npc.id, json(ref('role', state.npc.role_id)),
       json(ref('occupation', state.npc.occupation_id)),
-      json({ name_id: state.npc.name_id, display_name: state.npc.name }),
+      json({ name_id: state.npc.name_id, display_name: state.npc.name,
+        name_provenance: 'first_playable_catalog' }),
       json(state.npc.language_profile),
       json(state.npc.knowledge_profile),
       state.npc.profile_candidate_set_digest, changeSet]

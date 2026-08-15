@@ -1,0 +1,480 @@
+{
+  "schema": "rus.trace_player_profile.v1",
+  "profile_id": "lower_dvina_trace_player_profile_mikula_v1",
+  "revision": 2,
+  "approval": {
+    "kind": "project_decision",
+    "id": "lower_dvina_trace_phase_0a_profile_approval_v1",
+    "basis": "approved project decision after fail-closed data-gap review"
+  },
+  "role": {
+    "id": "nov_role_merchant_clerk",
+    "display_name": "младший приказчик",
+    "applicability": "usable_with_caution"
+  },
+  "occupation_id": "nov_occ_merchant_clerk",
+  "name_candidates": [
+    {
+      "id": "nov_name_mikula_v1",
+      "display_name": "Микула"
+    }
+  ],
+  "attributes": {
+    "strength": {
+      "value": 9,
+      "bonus": -1
+    },
+    "dexterity": {
+      "value": 11,
+      "bonus": 0
+    },
+    "endurance": {
+      "value": 10,
+      "bonus": 0
+    },
+    "reason": {
+      "value": 14,
+      "bonus": 2
+    },
+    "attention": {
+      "value": 13,
+      "bonus": 1
+    },
+    "influence": {
+      "value": 12,
+      "bonus": 1
+    }
+  },
+  "skills": {
+    "athletics": {
+      "level": "familiar",
+      "display": "знаком",
+      "bonus": 1,
+      "basis": "Микула вырос в семье кожевника, участвовал в обычной физической работе, переноске сырья и товара, погрузке и хозяйственных поручениях. Он физически дееспособен, но не проходил военной или специальной атлетической подготовки."
+    },
+    "stealth": {
+      "level": "no_experience",
+      "display": "нет опыта",
+      "bonus": 0,
+      "absence_basis": "В биографии Микулы нет занятий, связанных со скрытым проникновением, слежкой, разведкой, охотой, преступным промыслом или военной скрытностью."
+    },
+    "melee": {
+      "level": "no_experience",
+      "display": "нет опыта",
+      "bonus": 0,
+      "absence_basis": "Микула не проходил военной службы, дружинной подготовки или систематического обучения бою с оружием. Возможность защищаться подручным предметом не является основанием для навыка ближнего боя."
+    },
+    "ranged_combat": {
+      "level": "no_experience",
+      "display": "нет опыта",
+      "bonus": 0,
+      "absence_basis": "Микула не служил воином, не был профессиональным охотником и не обучался регулярному применению лука, метательного оружия или других средств дальнего боя."
+    },
+    "craft": {
+      "level": "familiar",
+      "display": "знаком",
+      "bonus": 1,
+      "basis": "Микула — сын разорившегося кожевника и знаком с ремеслом отца, но не утверждён как самостоятельный мастер."
+    },
+    "household": {
+      "level": "familiar",
+      "display": "знаком",
+      "bonus": 1,
+      "basis": "Сын кожевника выполнял хозяйственные поручения семьи и работу, связанную с товаром и сырьём."
+    },
+    "survival": {
+      "level": "familiar",
+      "display": "знаком",
+      "bonus": 1,
+      "basis": "Торговые поездки и хозяйственные поручения дали Микуле базовый опыт дороги: оценка погоды, устройство простого привала, поддержание огня, сохранение одежды и припасов, выбор относительно безопасного места для остановки. Он не является охотником, проводником или специалистом по длительному выживанию вне поселений."
+    },
+    "riding": {
+      "level": "familiar",
+      "display": "знаком",
+      "bonus": 1,
+      "basis": "Микула сопровождал старших людей в торговых поездках, знаком с обычным дорожным бытом, перемещением с обозом и базовым обращением с верховым или вьючным животным. Он не является профессиональным всадником, конюхом, воином или гонцом."
+    },
+    "healing": {
+      "level": "no_experience",
+      "display": "нет опыта",
+      "bonus": 0,
+      "absence_basis": "Микула не обучался у лекаря, знахаря или монастырского целителя, не занимался регулярным уходом за ранеными и не имеет подтверждённого опыта лечения травм. Обычные бытовые действия не считаются профессиональным или устойчивым навыком лечения."
+    },
+    "observation": {
+      "level": "skilled",
+      "display": "умелый",
+      "bonus": 2,
+      "basis": "Микула считал товар и различал владельческие знаки при поручениях старших."
+    },
+    "communication": {
+      "level": "skilled",
+      "display": "умелый",
+      "bonus": 2,
+      "basis": "Микула сопровождал старших на торгах и участвовал в торговом общении по поручению."
+    },
+    "custom_and_law": {
+      "level": "skilled",
+      "display": "умелый",
+      "bonus": 2,
+      "basis": "Микула различал владельческие знаки, переписывал простые записи и знаком с торговым обычаем поручений."
+    }
+  },
+  "identity": {
+    "sex_category": "male",
+    "age_category": "young_adult"
+  },
+  "actor_base_appearance_profile": {
+    "schema": "rus.actor_base_appearance_candidate_set.v1",
+    "profile_id": "lower_dvina_trace_player_mikula_appearance_v1",
+    "region_id": "gn_nov_g1_xp017_yp026",
+    "period": {
+      "start_year": 1200,
+      "end_year": 1250
+    },
+    "approved_entries": [
+      {
+        "entry_id": "nov_1200_1250_sex_category_male",
+        "facet": "sex_category",
+        "option_value": "male",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_sex_category_female",
+        "facet": "sex_category",
+        "option_value": "female",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_age_category_young_adult",
+        "facet": "age_category",
+        "option_value": "young_adult",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_age_category_adult",
+        "facet": "age_category",
+        "option_value": "adult",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_age_category_middle_aged",
+        "facet": "age_category",
+        "option_value": "middle_aged",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_age_category_old",
+        "facet": "age_category",
+        "option_value": "old",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_build_slim",
+        "facet": "build",
+        "option_value": "slim",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_build_average",
+        "facet": "build",
+        "option_value": "average",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_build_stocky",
+        "facet": "build",
+        "option_value": "stocky",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_skin_tone_pale",
+        "facet": "skin_tone",
+        "option_value": "pale",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_skin_tone_light",
+        "facet": "skin_tone",
+        "option_value": "light",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_skin_tone_warm",
+        "facet": "skin_tone",
+        "option_value": "warm",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_skin_tone_brown",
+        "facet": "skin_tone",
+        "option_value": "brown",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_face_shape_oval",
+        "facet": "face_shape",
+        "option_value": "oval",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_face_shape_round",
+        "facet": "face_shape",
+        "option_value": "round",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_face_shape_broad",
+        "facet": "face_shape",
+        "option_value": "broad",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_face_shape_angular",
+        "facet": "face_shape",
+        "option_value": "angular",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_face_shape_long",
+        "facet": "face_shape",
+        "option_value": "long",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_blond",
+        "facet": "hair_color",
+        "option_value": "blond",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_light_brown",
+        "facet": "hair_color",
+        "option_value": "light_brown",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_dark_brown",
+        "facet": "hair_color",
+        "option_value": "dark_brown",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_black",
+        "facet": "hair_color",
+        "option_value": "black",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_auburn",
+        "facet": "hair_color",
+        "option_value": "auburn",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_gray",
+        "facet": "hair_color",
+        "option_value": "gray",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_color_white",
+        "facet": "hair_color",
+        "option_value": "white",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_length_bald",
+        "facet": "hair_length",
+        "option_value": "bald",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_length_short",
+        "facet": "hair_length",
+        "option_value": "short",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_length_medium",
+        "facet": "hair_length",
+        "option_value": "medium",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_length_long",
+        "facet": "hair_length",
+        "option_value": "long",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_style_straight",
+        "facet": "hair_style",
+        "option_value": "straight",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_style_wavy",
+        "facet": "hair_style",
+        "option_value": "wavy",
+        "weight": 1,
+        "applicability": {
+          "appearance.hair.length": [
+            "short",
+            "medium",
+            "long"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_style_loose",
+        "facet": "hair_style",
+        "option_value": "loose",
+        "weight": 1,
+        "applicability": {
+          "appearance.hair.length": [
+            "medium",
+            "long"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_hair_style_braided",
+        "facet": "hair_style",
+        "option_value": "braided",
+        "weight": 1,
+        "applicability": {
+          "appearance.hair.length": [
+            "long"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_facial_hair_none",
+        "facet": "facial_hair",
+        "option_value": "none",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_facial_hair_moustache",
+        "facet": "facial_hair",
+        "option_value": "moustache",
+        "weight": 1,
+        "applicability": {
+          "sex_category": [
+            "male"
+          ],
+          "age_category": [
+            "adult",
+            "middle_aged",
+            "old"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_facial_hair_short_beard",
+        "facet": "facial_hair",
+        "option_value": "short_beard",
+        "weight": 1,
+        "applicability": {
+          "sex_category": [
+            "male"
+          ],
+          "age_category": [
+            "adult",
+            "middle_aged",
+            "old"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_facial_hair_full_beard",
+        "facet": "facial_hair",
+        "option_value": "full_beard",
+        "weight": 1,
+        "applicability": {
+          "sex_category": [
+            "male"
+          ],
+          "age_category": [
+            "adult",
+            "middle_aged",
+            "old"
+          ]
+        },
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_eye_color_blue",
+        "facet": "eye_color",
+        "option_value": "blue",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_eye_color_gray",
+        "facet": "eye_color",
+        "option_value": "gray",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_eye_color_green",
+        "facet": "eye_color",
+        "option_value": "green",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_eye_color_brown",
+        "facet": "eye_color",
+        "option_value": "brown",
+        "weight": 1,
+        "status": "approved"
+      },
+      {
+        "entry_id": "nov_1200_1250_eye_color_dark",
+        "facet": "eye_color",
+        "option_value": "dark",
+        "weight": 1,
+        "status": "approved"
+      }
+    ],
+    "fallback_policy": "forbidden"
+  }
+}

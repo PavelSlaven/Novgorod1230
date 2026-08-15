@@ -144,6 +144,9 @@ state, вызывает pure completion/projection owner, сохраняет о�
 P16 change set и лишь затем запускает обычную narration stage. Retry/restart
 использует stable identity `party + source Phase 9 state version`; turn не
 вызывает semantic LLM, RNG/check и не владеет completion formula.
+Revision 19 / `spatial-v3-production-v9` наследует этот orchestration без
+нового semantic mode; actor appearance materialization остаётся code-owned, а
+портрет строится только как read-time player-safe projection.
 
 ## Тесты
 

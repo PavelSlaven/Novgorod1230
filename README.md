@@ -40,14 +40,14 @@ Exact-head P28 release evidence принят в merged PR #19: обязател�
 hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
 само не выполняло production write и не меняло composition. Последующая цепочка
 `versioned production activation cutover` доведена до current release
-`spatial-v3-production-v8`: composition, authoritative reads/writes, target
+`spatial-v3-production-v9`: composition, authoritative reads/writes, target
 migration path, runtime pins и rollback release identity переключаются одной
 версией. Spatial v3/Temporal World v4 остаются sole production owner.
 Startup принимает только завершённую cutover stage `13`; release фиксирует
 approved Spatial world revision/manifest, `temporal-world-v1.1`, exact
 dependency pins и существующий `rus.runtime_catalog_pin.v2` lifecycle.
-Production v7 сохранён только как explicit rollback source; partial
-activation, dual write, authoritative mixed read и v8→v7 runtime fallback
+Production v8 сохранён только как explicit rollback source; partial
+activation, dual write, authoritative mixed read и v9→v8 runtime fallback
 запрещены.
 
 Lower Dvina Trace revision 13 активировал одну player semantic boundary:
@@ -62,8 +62,9 @@ Revision 16 / production v6 активирует persisted combat session, seman
 combat intent и общий automatic exchange. Revision 17 / production v7
 добавляет Phase 9 property/evidence/temporary-disposition path, а revision 18 /
 production v8 — deterministic Phase 10 completion и player-safe epilogue.
-Phase 11 подтверждает этот exact production path через Chromium, HTTP и
-PostgreSQL без revision 19. Время, RNG, mechanics, persistence и player-safe
+Phase 11 подтверждает этот immutable v8 path. Revision 19 / production v9
+добавляет canonical actor appearance, реальные equipped garment instances и
+read-time `portrait_spec_v1`. Время, RNG, mechanics, persistence и player-safe
 visibility остаются code-owned; bounded selection сохраняется только для
 genuinely closed choices и явно pinned historical revisions, не как semantic
 fallback.

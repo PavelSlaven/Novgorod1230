@@ -165,15 +165,6 @@ function validateHiddenGeometry(scene, ink, issues) {
 
 function validateStyleMetadata(model, scene, issues) {
   const ink = [...scene.strokes, ...scene.hatches, ...scene.scratches];
-  for (const entry of [...ink, ...scene.patches]) {
-    if (entry.seed !== model.identity.seeds[entry.part]) {
-      issues.push(issue(
-        'PART_SEED_MISMATCH',
-        entry.part,
-        `${entry.role} must use the scoped seed of its drawing part.`
-      ));
-    }
-  }
   for (const colorPatch of scene.patches) {
     if (ink.some((entry) => pathsEqual(entry.points, colorPatch.points))) {
       issues.push(issue(

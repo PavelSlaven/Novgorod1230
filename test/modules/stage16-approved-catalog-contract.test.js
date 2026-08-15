@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { materializeApprovedItems } from '../../packages/materialization/src/stage-helpers.js';
+import { materializeItemPlacement } from '@rus/materialization';
 import { runStage16ItemPlacementBlock } from '@rus/new-game/stages/stage-16/compat';
 import { makeStage16Audit, makeStage16Draft, makeStage16Input } from '../fixtures/stage13-16-fixtures.mjs';
 
@@ -70,3 +71,80 @@ test('Stage 16 input gate rejects missing approved catalog blocks before a custo
     (error) => error.lifecycle?.concerns?.some((concern) => concern.code === 'ITEM_PLACEMENT_REQUIRED_BLOCK_MISSING')
   );
 });
+
+test('Stage 16 resolves approved equipment candidates to NPC and player actor holders', () => {
+  const npc = materializeItemPlacement(equipmentPlacementInput({
+    target_npc_candidate_ids: ['npc-candidate-1']
+  })).item_instances[0];
+  assert.equal(npc.placement.holder_npc_instance_id, 'npc-instance-1');
+  assert.equal(npc.property_state.owner_model, 'npc');
+  assert.equal(npc.property_state.controller_id, 'npc-instance-1');
+
+  const player = materializeItemPlacement(equipmentPlacementInput({
+    target_player_character: true,
+    target_npc_candidate_ids: []
+  })).item_instances[0];
+  assert.equal(player.placement.holder_player_character_id, 'player-1');
+  assert.equal(player.property_state.owner_model, 'player');
+  assert.equal(player.property_state.controller_id, 'player-1');
+});
+
+test('Stage 16 hard-blocks an approved equipment candidate whose NPC target was not materialized', () => {
+  const input = equipmentPlacementInput({
+    target_npc_candidate_ids: ['missing-npc-candidate']
+  });
+  assert.throws(() => materializeItemPlacement(input), (error) =>
+    error.code === 'EQUIPMENT_TARGET_ACTOR_UNRESOLVED');
+});
+
+function equipmentPlacementInput(target) {
+  const item = candidate({
+    required: false,
+    placement: undefined,
+    property_state: {
+      owner_model: 'pending_actor_binding',
+      holder_model: 'pending_actor_binding',
+      controller_model: 'pending_actor_binding',
+      legal_or_social_status: 'established'
+    },
+    visual_profile_snapshot: {
+      schema: 'item_visual_profile_snapshot_v1', version: 1,
+      equipment_slot: 'outer_garment', garment_kind: 'outer_garment'
+    }
+  });
+  const equipment = {
+    equipment_candidate_id: 'equipment-1',
+    item_profile_candidate_id: item.item_profile_candidate_id,
+    item_template_id: item.item_template_id,
+    equipment_slot_category_id: 'outer_garment',
+    status: 'approved', required: true, world_revision_id: 'revision-1',
+    ...target
+  };
+  return {
+    request_id: 'stage16-equipment-test',
+    selected_start_node: { selected_node_chain: { g4_node_id: 'g4' } },
+    player_character: { character_id: 'player-1' },
+    g5_scene_graph: {
+      item_materialization_slots: [],
+      materialization_run: {
+        run_id: 'run-1',
+        seed_context: { party_id: 'party-1', g4_id: 'g4', world_revision_id: 'revision-1' }
+      }
+    },
+    initial_npc_placement: {
+      npc_candidate_instance_map: [{
+        npc_candidate_id: 'npc-candidate-1', npc_instance_id: 'npc-instance-1'
+      }]
+    },
+    item_profile_candidate_set: {
+      world_revision_id: 'revision-1', catalog_digest: 'a'.repeat(64),
+      item_profile_candidates: [item], container_profile_candidates: [],
+      property_rule_candidates: [], quantity_requirements: [requirement()],
+      equipment_candidates: [equipment], empty_allowed: false
+    },
+    eligible_item_profile_candidates: [item],
+    eligible_container_profile_candidates: [],
+    eligible_property_rule_candidates: [],
+    eligible_g5_item_anchors: [], eligible_g5_container_anchors: []
+  };
+}

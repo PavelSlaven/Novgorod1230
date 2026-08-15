@@ -85,6 +85,10 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
   const db = getRetrieverQueryable(deps);
   const regional = input.regional_context_package ?? {};
   const npcContext = regional.npc_context ?? {};
+  const actorProfiles = resolveActorProfileSnapshot(input, frame);
+  if (actorProfiles.concerns.length > 0) {
+    return blockedOutput({ requestId, frame, concerns: actorProfiles.concerns, evidence });
+  }
 
   const [roles, occupations, archetypes, namePools, keySeeds, regionArchetypeLinks] = await Promise.all([
     loadRoles({ db, regional, regionId: frame.region_id, statuses, policy }),
@@ -103,7 +107,8 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
     retrieved_npc_archetype_count: archetypes.length,
     retrieved_name_pool_count: namePools.length,
     retrieved_key_npc_seed_count: keySeeds.length,
-    retrieved_region_npc_archetype_link_count: regionArchetypeLinks.length
+    retrieved_region_npc_archetype_link_count: regionArchetypeLinks.length,
+    actor_profile_snapshot_digest: actorProfiles.snapshot?.catalog_digest ?? null
   });
 
   const missingConcerns = [];
@@ -307,7 +312,8 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
           keySeed: null,
           policy,
           hardConstraints,
-          frame
+          frame,
+          actorProfiles
         });
 
         if (baseCandidate.score.value < 30) {
@@ -353,7 +359,8 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
               keySeed,
               policy,
               hardConstraints,
-              frame
+              frame,
+              actorProfiles
             });
             if (policy.require_name_pool_for_named_npc && compatibleNamePools.length === 0) {
               pushRejected(rejected, maxRejected, buildRejected({
@@ -384,6 +391,13 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
     version: 1,
     schema: 'npc_candidate_set',
     request_id: requestId,
+    ...(actorProfiles.snapshot ? {
+      world_revision_id: actorProfiles.snapshot.world_revision_id,
+      actor_profile_catalog_digest: actorProfiles.snapshot.catalog_digest,
+      actor_profile_snapshot: structuredClone(actorProfiles.snapshot),
+      appearance_contract_version: 'actor_base_appearance_v1',
+      require_complete_actor_appearance: true
+    } : {}),
     selection_status: selectedCandidates.length > 0 ? 'ready' : 'empty',
     frame,
     summary: {
@@ -410,7 +424,13 @@ export async function retrieveNpcCandidates(input = {}, deps = {}) {
         'npc_archetype_id',
         'social_role_id',
         'occupation_id',
-        'candidate_place_template_link_ids'
+        'candidate_place_template_link_ids',
+        ...(actorProfiles.snapshot ? [
+          'actor_profile_snapshot',
+          'demographic_profile_entries',
+          'appearance_profile_entries',
+          'equipment_profile_refs'
+        ] : [])
       ],
       must_not_create_yet: [
         'npc_id',
@@ -511,6 +531,7 @@ export function validateNpcCandidateSet(output = {}, { policy = DEFAULT_POLICY }
     if (policy.require_sources && (!Array.isArray(candidate?.source_trace) || candidate.source_trace.length === 0)) {
       concerns.push(concern('NPC_CANDIDATE_SOURCE_MISSING', `${candidate?.npc_candidate_id ?? 'candidate'} has empty source_trace.`));
     }
+    concerns.push(...validateActorProfileCandidate(candidate, output));
   }
 
   if (!output?.audit?.evidence || output.audit.evidence.length === 0) {
@@ -889,7 +910,7 @@ function getCompatibleKeySeeds({ keySeeds, role, occupation, archetype, placeCom
   });
 }
 
-function buildCandidate({ index, role, occupation, archetype, profileLevel, placeCompatibility, namePools, timeAndSeason, keySeed, policy, hardConstraints, frame }) {
+function buildCandidate({ index, role, occupation, archetype, profileLevel, placeCompatibility, namePools, timeAndSeason, keySeed, policy, hardConstraints, frame, actorProfiles }) {
   const sourceTrace = buildCandidateSourceTrace({ role, occupation, archetype, namePools, keySeed });
   const warnings = [
     ...timeAndSeason.clock_warnings,
@@ -902,6 +923,7 @@ function buildCandidate({ index, role, occupation, archetype, profileLevel, plac
   const gameFunctions = inferGameFunctions({ role, occupation, archetype, profileLevel, keySeed });
   const score = scoreCandidate({ role, occupation, archetype, placeCompatibility, namePools, timeAndSeason, warnings, keySeed, hardConstraints });
 
+  const actorProfileBinding = buildActorProfileBinding(actorProfiles, role, occupation);
   return {
     npc_candidate_id: `npc_cand_${String(index).padStart(3, '0')}_${slug(archetype.id)}_${slug(role.id)}_${slug(occupation?.id ?? 'no_occupation')}${keySeed ? `_${slug(keySeed.id)}` : ''}`,
     candidate_status: score.value >= 50 ? 'allowed' : 'weak',
@@ -949,8 +971,103 @@ function buildCandidate({ index, role, occupation, archetype, profileLevel, plac
       'Candidate does not materialize a concrete NPC.'
     ],
     warnings,
-    source_trace: sourceTrace
+    source_trace: sourceTrace,
+    ...(actorProfileBinding ?? {})
   };
+}
+
+function resolveActorProfileSnapshot(input, frame) {
+  const snapshot = input.approved_actor_profile_snapshot ?? null;
+  const required = input.npc_candidate_policy?.require_actor_base_appearance === true;
+  if (snapshot == null) {
+    return {
+      snapshot: null,
+      demographic: null,
+      appearance: null,
+      concerns: required
+        ? [concern('NPC_ACTOR_PROFILE_SNAPSHOT_REQUIRED',
+          'The activated actor_base_appearance_v1 contract requires an approved actor profile snapshot.')]
+        : []
+    };
+  }
+  const concerns = [];
+  if (snapshot.version !== 1 || snapshot.schema !== 'approved_actor_profile_snapshot') {
+    concerns.push(concern('NPC_ACTOR_PROFILE_SNAPSHOT_INVALID', 'approved_actor_profile_snapshot must use version 1.'));
+  }
+  if (snapshot.world_revision_id !== input.world_revision_id) {
+    concerns.push(concern('NPC_ACTOR_PROFILE_REVISION_MISMATCH', 'Actor profile snapshot must preserve world_revision_id.'));
+  }
+  if (snapshot.region_id !== frame.region_id) {
+    concerns.push(concern('NPC_ACTOR_PROFILE_REGION_MISMATCH', 'Actor profile snapshot must match historical_frame region.'));
+  }
+  if (!/^[a-f0-9]{64}$/u.test(String(snapshot.catalog_digest ?? ''))) {
+    concerns.push(concern('NPC_ACTOR_PROFILE_SNAPSHOT_INVALID', 'Actor profile snapshot requires a SHA-256 catalog digest.'));
+  }
+  const demographic = snapshot.demographic_profiles ?? [];
+  const appearance = snapshot.appearance_profiles ?? [];
+  if (demographic.length === 0 && appearance.length === 0) {
+    if (required) {
+      concerns.push(concern('NPC_ACTOR_PROFILE_SNAPSHOT_REQUIRED',
+        'The activated actor_base_appearance_v1 contract has no approved demographic or appearance profile.'));
+    }
+    return { snapshot: null, demographic: null, appearance: null, concerns };
+  }
+  if (demographic.length !== 1 || appearance.length !== 1) {
+    concerns.push(concern('NPC_ACTOR_PROFILE_SET_AMBIGUOUS', 'A revision with canonical actor appearance must resolve exactly one demographic and one appearance profile.'));
+    return { snapshot, demographic: null, appearance: null, concerns };
+  }
+  const entries = [...(demographic[0].entries ?? []), ...(appearance[0].entries ?? [])];
+  const facets = new Set(entries.filter((entry) => entry.status === 'approved').map((entry) => entry.facet));
+  const requiredFacets = ['sex_category', 'age_category', 'build', 'skin_tone', 'face_shape', 'hair_color', 'hair_length', 'hair_style', 'facial_hair', 'eye_color'];
+  for (const facet of requiredFacets) {
+    if (!facets.has(facet)) concerns.push(concern('NPC_ACTOR_PROFILE_REQUIRED_FACET_EMPTY', `Actor profile has no approved ${facet} candidates.`));
+  }
+  return { snapshot, demographic: demographic[0], appearance: appearance[0], concerns };
+}
+
+function buildActorProfileBinding(actorProfiles, role, occupation) {
+  if (!actorProfiles?.snapshot || !actorProfiles.demographic || !actorProfiles.appearance) return null;
+  const equipment = (actorProfiles.snapshot.equipment_profiles ?? []).filter((profile) =>
+    (profile.social_role_id == null || [role.id, role.slug].includes(profile.social_role_id))
+    && (profile.occupation_id == null || (occupation && [occupation.id, occupation.slug].includes(profile.occupation_id)))
+  ).sort((left, right) => String(left.id).localeCompare(String(right.id)));
+  const actorProfileSnapshot = {
+    schema: 'actor_profile_candidate_snapshot_v1',
+    world_revision_id: actorProfiles.snapshot.world_revision_id,
+    source_catalog_digest: actorProfiles.snapshot.source_catalog_digest,
+    catalog_digest: actorProfiles.snapshot.catalog_digest,
+    demographic_profile_ref: { id: actorProfiles.demographic.id },
+    appearance_profile_ref: { id: actorProfiles.appearance.id },
+    equipment_profile_refs: equipment.map((profile) => ({ id: profile.id }))
+  };
+  return {
+    appearance_contract_version: 'actor_base_appearance_v1',
+    require_complete_actor_appearance: true,
+    demographic_profile_id: actorProfiles.demographic.id,
+    appearance_profile_id: actorProfiles.appearance.id,
+    demographic_profile_entries: structuredClone(actorProfiles.demographic.entries),
+    appearance_profile_entries: structuredClone(actorProfiles.appearance.entries),
+    equipment_profile_refs: actorProfileSnapshot.equipment_profile_refs,
+    ...(equipment.length === 1 ? { equipment_profile_ref: { id: equipment[0].id } } : {}),
+    actor_profile_snapshot: actorProfileSnapshot
+  };
+}
+
+function validateActorProfileCandidate(candidate, output) {
+  if (candidate?.require_complete_actor_appearance !== true) return [];
+  const concerns = [];
+  const snapshot = candidate.actor_profile_snapshot;
+  if (candidate.appearance_contract_version !== 'actor_base_appearance_v1' || snapshot?.schema !== 'actor_profile_candidate_snapshot_v1') {
+    concerns.push(concern('NPC_ACTOR_PROFILE_SNAPSHOT_INVALID', `${candidate.npc_candidate_id} lacks the canonical actor profile snapshot.`));
+  }
+  if (snapshot?.world_revision_id !== output.world_revision_id || snapshot?.catalog_digest !== output.actor_profile_catalog_digest) {
+    concerns.push(concern('NPC_ACTOR_PROFILE_REVISION_MISMATCH', `${candidate.npc_candidate_id} actor profile pins do not match the Stage 7 output.`));
+  }
+  const entries = [...(candidate.demographic_profile_entries ?? []), ...(candidate.appearance_profile_entries ?? [])];
+  const required = new Set(['sex_category', 'age_category', 'build', 'skin_tone', 'face_shape', 'hair_color', 'hair_length', 'hair_style', 'facial_hair', 'eye_color']);
+  for (const entry of entries) if (entry?.status === 'approved') required.delete(entry.facet);
+  if (required.size > 0) concerns.push(concern('NPC_ACTOR_PROFILE_REQUIRED_FACET_EMPTY', `${candidate.npc_candidate_id} has empty actor facets: ${[...required].sort().join(', ')}.`));
+  return concerns;
 }
 
 function scoreCandidate({ occupation, archetype, placeCompatibility, namePools, timeAndSeason, warnings, keySeed, hardConstraints }) {

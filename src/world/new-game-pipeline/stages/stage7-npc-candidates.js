@@ -1,5 +1,8 @@
 import { assertGatePassed, createGateResult } from '../gate.js';
 import { retrieveNpcCandidates, validateNpcCandidateSet } from '../retrievers/npc-candidates.js';
+import {
+  buildStage7NpcCandidatesInput as buildModularStage7NpcCandidatesInput
+} from '@rus/new-game/stages/stage-7/compat';
 
 export async function runStage7NpcCandidates(context, input = {}, deps = {}) {
   const stageInput = {
@@ -9,6 +12,9 @@ export async function runStage7NpcCandidates(context, input = {}, deps = {}) {
     regional_context_package: input.regional_context_package ?? context.getStageOutput(4) ?? null,
     start_candidate_set: input.start_candidate_set ?? context.getStageOutput(5) ?? null,
     candidate_place_template_set: input.candidate_place_template_set ?? context.getStageOutput(6) ?? null,
+    world_revision_id: input.world_revision_id ?? null,
+    approved_actor_profile_snapshot:
+      input.approved_actor_profile_snapshot ?? null,
     npc_candidate_policy: input.npc_candidate_policy ?? {}
   };
   const output = await retrieveNpcCandidates(stageInput, deps);
@@ -51,14 +57,18 @@ export function buildStage7NpcCandidatesInput(context, {
   regionalContextPackage = null,
   startCandidateSet = null,
   candidatePlaceTemplateSet = null,
+  worldRevisionId = null,
+  approvedActorProfileSnapshot = null,
   npcCandidatePolicy = {}
 } = {}) {
-  return {
-    normalized_request: normalizedRequest ?? context.getStageOutput(2) ?? null,
-    historical_frame: historicalFrame ?? context.getStageOutput(3) ?? null,
-    regional_context_package: regionalContextPackage ?? context.getStageOutput(4) ?? null,
-    start_candidate_set: startCandidateSet ?? context.getStageOutput(5) ?? null,
-    candidate_place_template_set: candidatePlaceTemplateSet ?? context.getStageOutput(6) ?? null,
-    npc_candidate_policy: npcCandidatePolicy
-  };
+  return buildModularStage7NpcCandidatesInput(context, {
+    normalizedRequest,
+    historicalFrame,
+    regionalContextPackage,
+    startCandidateSet,
+    candidatePlaceTemplateSet,
+    worldRevisionId,
+    approvedActorProfileSnapshot,
+    npcCandidatePolicy
+  });
 }

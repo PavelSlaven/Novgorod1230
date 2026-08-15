@@ -18,7 +18,7 @@ const rollbackContainerName =
 const conflictContainerName =
   `lower-dvina-party-018-conflict-${process.pid}`;
 
-test('018 replaces mode-split identity with one trace per NPC and batch',
+test('016 enforces one semantic trace per NPC and same-time batch',
   async (t) => {
     if (docker(['version']).status !== 0) {
       t.skip('Docker is required for the isolated PostgreSQL migration gate.');
@@ -55,30 +55,54 @@ test('018 replaces mode-split identity with one trace per NPC and batch',
     ]).stdout.match(/:(\d+)\s*$/u)?.[1]);
     pool = new pg.Pool({ host: '127.0.0.1', port,
       user: 'conflict', password: 'conflict_local', database: 'conflict' });
+    for (const migration of SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 16)) {
+      await pool.query(migration);
+    }
     await pool.query(`
-      CREATE SCHEMA party_runtime;
-      CREATE TABLE party_runtime.party_npc_decision_traces (
-        party_id text NOT NULL,
-        npc_id text NOT NULL,
-        decision_mode text NOT NULL,
-        boundary_id text,
-        same_time_batch_ref jsonb
-      );
-      CREATE UNIQUE INDEX party_npc_decision_traces_batch_npc_mode_key
-        ON party_runtime.party_npc_decision_traces (
-          party_id,npc_id,decision_mode,
-          (same_time_batch_ref ->> 'entity_id')
-        ) WHERE boundary_id IS NOT NULL;
-      INSERT INTO party_runtime.party_npc_decision_traces VALUES
-        ('party','npc','conversation','conversation-boundary',
-          '{"entity_kind":"temporal_batch","entity_id":"batch"}');
+      INSERT INTO party_runtime.parties
+        (party_id,schema_version,world_revision_id,world_catalog_digest,
+         materializer_version,rng_version,command_catalog_digest,
+         profile_bundle_digest)
+      VALUES ('party',3,'world','catalog','materializer','rng','commands',
+        'profiles');
+      INSERT INTO party_runtime.party_v3_change_sets
+        (id,party_id,operation_kind,expected_state_version_set_digest,
+         expected_state_version_set,committed_state_version_set_digest,
+         write_plan_digest,created_at_turn,committed_at_turn)
+      VALUES ('change','party','semantic','expected','[]','committed','plan',
+        0,0);
+      INSERT INTO party_runtime.party_npc_decision_traces
+        (request_id,party_id,npc_id,state_version,option_id,command_token,
+         options_digest,status,validated_at_whole_minutes,
+         validated_at_subminute_numerator,validated_at_subminute_denominator,
+         idempotency_key,change_set_id,trace_digest,boundary_id,decision_mode,
+         root_turn_id,working_revision,signal_refs,decision_categories,
+         aggregate_significance,same_time_batch_ref,semantic_request,
+         boundary_snapshot,signal_records,semantic_plan,
+         canonical_input_digest,semantic_trace_schema)
+      VALUES
+        ('conversation-request','party','npc',1,NULL,NULL,NULL,'committed',
+         0,0,1,'conversation-key','change','trace',
+         'conversation-boundary','conversation','root-turn',0,'[]','["self"]',
+         'material','{"entity_kind":"temporal_batch","entity_id":"batch"}',
+         '{}','{}','[]','{}','input','npc_semantic_decision_trace_v1');
     `);
-
-    await pool.query(SPATIAL_V3_TARGET_MIGRATIONS.at(-1));
     await assert.rejects(pool.query(`
-      INSERT INTO party_runtime.party_npc_decision_traces VALUES
-        ('party','npc','combat','duplicate-cross-mode-boundary',
-          '{"entity_kind":"temporal_batch","entity_id":"batch"}')
+      INSERT INTO party_runtime.party_npc_decision_traces
+        (request_id,party_id,npc_id,state_version,option_id,command_token,
+         options_digest,status,validated_at_whole_minutes,
+         validated_at_subminute_numerator,validated_at_subminute_denominator,
+         idempotency_key,change_set_id,trace_digest,boundary_id,decision_mode,
+         root_turn_id,working_revision,signal_refs,decision_categories,
+         aggregate_significance,same_time_batch_ref,semantic_request,
+         boundary_snapshot,signal_records,semantic_plan,
+         canonical_input_digest,semantic_trace_schema)
+      VALUES
+        ('combat-request','party','npc',1,NULL,NULL,NULL,'committed',0,0,1,
+         'combat-key','change','trace-2','duplicate-cross-mode-boundary',
+         'combat','root-turn',0,'[]','["self"]','critical',
+         '{"entity_kind":"temporal_batch","entity_id":"batch"}',
+         '{}','{}','[]','{}','input-2','npc_semantic_decision_trace_v1')
     `), /duplicate key value violates unique constraint/u);
     const readback = await pool.query(`
       SELECT count(*)::integer AS trace_count,

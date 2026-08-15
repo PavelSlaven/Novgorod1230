@@ -117,16 +117,16 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18].includes(bundle.definition_revision)
+      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10,11,12,13,14,15,16,17,18].includes(bundle.definition_revision)
+      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11,12,13,14,15,16,17,18].includes(bundle.definition_revision)
+      const phase5Contracts = [11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12,13,14,15,16,17,18].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
+      const phase6Contracts = [12,13,14,15,16,17,18,19].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
             profiles: bundle.turn_step_owner_profiles,
@@ -135,7 +135,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         : null;
       const turnRandomSource = randomSourceFactory({ party_id: partyId,
         request_id: requestId, idempotency_key: idempotencyKey });
-      const phase7Contracts = [15,16,17,18].includes(bundle.definition_revision)
+      const phase7Contracts = [15,16,17,18,19].includes(bundle.definition_revision)
         ? resolveTracePhase7Contracts({ state, bundle }) : null;
       const revalidateStateVersion = createStateVersionRevalidator({ repository, partyId, idempotencyKey });
       const phase8 = createTracePhase8Runtime({ state, bundle,
@@ -146,7 +146,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
           phase3Contracts?.conversationBindings,
         inputDigest, playerConversationModel, npcSemanticModel,
         temporalAdvanceOwner, revalidateStateVersion }), phase9Contracts=phase9?.contracts??null;
-      const phase10Contracts = bundle.definition_revision === 18 ? resolveTracePhase10Contracts({ bundle }) : null;
+      const phase10Contracts = [18, 19].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,

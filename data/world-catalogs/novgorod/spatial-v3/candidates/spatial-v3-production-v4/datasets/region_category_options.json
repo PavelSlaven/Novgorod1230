@@ -1,0 +1,506 @@
+[
+  {
+    "id": "nov_1200_1250_sex_category_male",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.sex_category.male",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_sex_category_female",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.sex_category.female",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_age_category_young_adult",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.age_category.young_adult",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_age_category_adult",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.age_category.adult",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_age_category_middle_aged",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.age_category.middle_aged",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_age_category_old",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.age_category.old",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_build_slim",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.build.slim",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_build_average",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.build.average",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_build_stocky",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.build.stocky",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_skin_tone_pale",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.skin_tone.pale",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_skin_tone_light",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.skin_tone.light",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_skin_tone_warm",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.skin_tone.warm",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_skin_tone_brown",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.skin_tone.brown",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_face_shape_oval",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.face_shape.oval",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_face_shape_round",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.face_shape.round",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_face_shape_broad",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.face_shape.broad",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_face_shape_angular",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.face_shape.angular",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_face_shape_long",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.face_shape.long",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_blond",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.blond",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_light_brown",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.light_brown",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_dark_brown",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.dark_brown",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_black",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.black",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_auburn",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.auburn",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_gray",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.gray",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_color_white",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_color.white",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_length_bald",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_length.bald",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_length_short",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_length.short",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_length_medium",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_length.medium",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_length_long",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_length.long",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_style_straight",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_style.straight",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_style_wavy",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_style.wavy",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "short",
+        "medium",
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_style_loose",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_style.loose",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "medium",
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_hair_style_braided",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.hair_style.braided",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_facial_hair_none",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.facial_hair.none",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_facial_hair_moustache",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.facial_hair.moustache",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_facial_hair_short_beard",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.facial_hair.short_beard",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_facial_hair_full_beard",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.facial_hair.full_beard",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_eye_color_blue",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.eye_color.blue",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_eye_color_gray",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.eye_color.gray",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_eye_color_green",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.eye_color.green",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_eye_color_brown",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.eye_color.brown",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "nov_1200_1250_eye_color_dark",
+    "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "region_id": "region_novgorod_land",
+    "category_id": "actor.eye_color.dark",
+    "valid_from": "1200-01-01",
+    "valid_to": "1250-12-31",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  }
+]

@@ -97,6 +97,12 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     || visible_package_envelope?.package_digest !== computeSpatialV3CanonicalDigest(visible_package_envelope?.visible_payload)
   )) return fail('visible_package_persistence_gap', party_id, { reason: visibleErrors[0]?.message ?? 'semantic commit requires one matching pending visible package' });
   if (write_plan_kind === 'blocked_audit' && visible_package_envelope != null) return fail('visible_package_persistence_gap', party_id, { reason: 'blocked audit forbids a visible package' });
+  if (containsKey(approved_write_sets, 'portrait_spec_v1')
+      || containsKey(visible_package_envelope, 'portrait_spec_v1')) {
+    return fail('generated_schema_mismatch', party_id, {
+      reason: 'portrait_spec_v1 is a read projection and cannot enter P16'
+    });
+  }
   const verified = await verifyApproval(clone({
     party_id,
     operation_kind,
@@ -266,4 +272,11 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     ...write_set
   };
   return freeze({ ok: true, plan: { ...plan, digest: computeSpatialV3CanonicalDigest(plan) } });
+}
+
+function containsKey(value, key, seen = new WeakSet()) {
+  if (!value || typeof value !== 'object' || seen.has(value)) return false;
+  seen.add(value);
+  if (Object.hasOwn(value, key)) return true;
+  return Object.values(value).some((child) => containsKey(child, key, seen));
 }

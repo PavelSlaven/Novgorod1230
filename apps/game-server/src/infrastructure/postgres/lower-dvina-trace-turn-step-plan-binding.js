@@ -16,7 +16,21 @@ const DIRECT = new Set([
 export function validateTurnStepBatchPlanBindings({ batch, factual, state }) {
   const slots = expectedSlots(factual?.loop_trace?.step_traces ?? []);
   const aliases = new Map();
-  const materializedItems = structuredClone(state.items ?? []);
+  const materializedItems = [
+    ...structuredClone(state.items ?? []),
+    ...(state.containers ?? []).map((container) => ({
+      ...structuredClone(container), item_id: container.container_id,
+      placement: {
+        anchor_id: container.anchor_id ?? null,
+        container_id: container.parent_container_id ?? null,
+        holder_npc_id: container.holder_npc_id ?? null,
+        holder_character_id: container.holder_character_id ?? null,
+        physical_position: container.physical_position ?? null,
+        equipment_slot_category_id:
+          container.equipment_slot_category_id ?? null
+      }
+    }))
+  ];
   let cursor = 0;
   for (const fragment of batch.operations) {
     const candidate = fragment.target === 'party_events'
@@ -166,7 +180,7 @@ function placementMatches(actual, expected, aliases, state) {
   }
   if (expected.relation === 'worn_by') {
     return actual.holder_character_id === target
-      && actual.physical_position === 'worn';
+      && ['worn', 'equipped'].includes(actual.physical_position);
   }
   if (expected.relation === 'inside') return actual.container_id === target;
   if (expected.relation === 'attached_to') {

@@ -4,6 +4,13 @@
 
 Инвентарь NPC материализует код вместе с NPC либо отдельным детерминированным expansion run из утверждённых equipment/item profiles. Метки не являются свободным текстовым способом создать категорию: их значения берутся из зарегистрированных категорий и policies. Вещь и связи owner/holder/controller/container сохраняются как party instances/relations и не пересоздаются повествованием.
 
+Одежда NPC подчиняется той же модели: каждый garment является отдельным item
+instance с immutable visual snapshot и placement `worn|equipped` на exact
+equipment slot. Identity/body NPC не содержат clothing. Передача вещи сохраняет
+её item ID и owner, меняя holder/controller; снятая одежда перестаёт участвовать
+в player-safe portrait projection, а оставшиеся equipped garments продолжают
+участвовать. Hidden inventory и private state в эту projection не входят.
+
 Инвентарь NPC — это предметы, которые NPC физически несёт при себе или прямо контролирует в текущей сцене. Личное имущество NPC, лежащее в другом месте, не считается его текущим инвентарём.
 
 Короткая формула:

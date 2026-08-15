@@ -98,7 +98,10 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
   const worldFiles = (await readdir(new URL('../../infra/world-base/schema/', import.meta.url)))
     .filter((file) => file.endsWith('.sql'))
     .sort();
-  for (const file of worldFiles) {
+  const appearanceSchemaIndex = worldFiles.findIndex((file) =>
+    file.startsWith('21.'));
+  assert.equal(appearanceSchemaIndex, 20);
+  for (const file of worldFiles.slice(0, appearanceSchemaIndex)) {
     await pool.query(await readFile(
       new URL(`../../infra/world-base/schema/${file}`, import.meta.url),
       'utf8'
@@ -160,6 +163,12 @@ test('runtime catalog forward migrations are exact, additive, immutable and idem
     'already_applied',
     'restoring the exact security state must restore target idempotency'
   );
+  for (const file of worldFiles.slice(appearanceSchemaIndex)) {
+    await pool.query(await readFile(
+      new URL(`../../infra/world-base/schema/${file}`, import.meta.url),
+      'utf8'
+    ));
+  }
   assert.equal((await pool.query(
     `SELECT
        (SELECT count(*)::int FROM world_base.schema_migrations)

@@ -7,6 +7,9 @@ Production composition root and the only physical PostgreSQL transaction owner. 
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
+- После чтения committed screen/state владеет server-side adapter, который
+  фильтрует active interlocutor identity/equipment и добавляет неперсистентный
+  `portrait_spec_v1` к public response.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
 
 ## Не владеет
@@ -23,6 +26,20 @@ Production composition root and the only physical PostgreSQL transaction owner. 
   `createTemporalPresentationPostgresStore` remain server-owned adapters; they
   accept only validated sealed plans/explicit pool transactions and are not
   domain decision APIs.
+- An admitted player `move_entity` for an existing actor-held item or container
+  is rebound
+  to that same common proposal before commit. The server derives source and
+  destination from committed state, persists the normalized holder/controller
+  placement through the existing turn-step P16 commit, rechecks the exact
+  source item/container placement and ownership under the transaction, and
+  reloads portraits from the resulting equipment state; no scenario-local
+  take/equip command or parallel transition committer owns this mechanic.
+- First-playable landing activation is persisted only through the active P16
+  write plan. For catalog v2 it writes the resolved canonical NPC identity,
+  every approved NPC item/container allocation, normalized actor placement and
+  ownership/controller rows, and immutable garment visual snapshots. The
+  historical v1 resolver and its pre-appearance item identifiers remain
+  available for already pinned parties.
 
 For target `first_entry`, the combined committer accepts the already-defined
 Spatial-v3 core G5/baseline/G6/position rows and the root journey-location
@@ -42,6 +59,8 @@ replay never permits switching the request to a scenario-ID branch.
 Trace publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
+Runtime release `spatial-v3-production-v9` активирует revision 19 appearance и
+equipment-driven portrait path; v8 остаётся rollback source.
 
 ## Ошибки, зависимости и effects
 

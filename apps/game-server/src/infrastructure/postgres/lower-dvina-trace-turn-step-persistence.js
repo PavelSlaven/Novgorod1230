@@ -1,5 +1,4 @@
-import { requireTurnStepOperationBatch,
-  TURN_STEP_OPERATION_BATCH_TARGET } from '@rus/turn';
+import { requireTurnStepOperationBatch, TURN_STEP_OPERATION_BATCH_TARGET } from '@rus/turn';
 import { row } from './first-playable/plan-shared.js';
 import {
   appendTurnStepSemanticActivityWrites,
@@ -7,28 +6,20 @@ import {
 } from './lower-dvina-trace-turn-step-activity-writes.js';
 import { prepareTurnStepBodyHistory } from './lower-dvina-trace-turn-step-body-history.js';
 import {
-  requireActivityOwnerBinding,
-  requireFactualCommit,
+  requireActivityOwnerBinding, requireFactualCommit,
   validateBodyComponentOrder,
   validateBodyEventCommit,
   validateMechanicsProvenance
 } from './lower-dvina-trace-turn-step-commit-validation.js';
 import { validateNoBatchFactualCommit } from './lower-dvina-trace-turn-step-state-reconciliation.js';
 import { applyItemOperation } from './lower-dvina-trace-turn-step-item-operations.js';
-import {
-  itemRecord,
-  mergeKnowledge,
-  physicalPlacement,
-  runtimeEntities
-} from './lower-dvina-trace-turn-step-item-state.js';
+import { itemRecord, mergeKnowledge, physicalPlacement, runtimeEntities } from
+  './lower-dvina-trace-turn-step-item-state.js';
 import { validateFragment } from
   './lower-dvina-trace-turn-step-operation-validation.js';
-import {
-  attachTurnStepCommit,
-  emptyTurnStepPersistence,
-  fail,
-  mergeLowerDvinaTraceTurnStepWrites
-} from './lower-dvina-trace-turn-step-persistence-support.js';
+import { attachTurnStepCommit, emptyTurnStepPersistence, fail,
+  mergeLowerDvinaTraceTurnStepWrites } from
+  './lower-dvina-trace-turn-step-persistence-support.js';
 import { appendAuthoredTurnStepWrites } from './lower-dvina-trace-turn-step-authored-writes.js';
 import { requiresFinalTurnStepInventoryValidation,
   validateFinalTurnStepInventory } from
@@ -36,16 +27,16 @@ import { requiresFinalTurnStepInventoryValidation,
 import { validateTurnStepBatchPlanBindings } from
   './lower-dvina-trace-turn-step-plan-binding.js';
 import { validatePreparedEffectCommit } from './lower-dvina-trace-turn-step-prepared-effect-validation.js';
+import { authoredTurnStepContainers, projectPersistedTurnStepContainers } from
+  './lower-dvina-trace-turn-step-container-persistence.js';
 export { mergeLowerDvinaTraceTurnStepWrites };
-/** Expands one logical M1 batch into the existing atomic P16 write layout. */
 export function prepareLowerDvinaTraceTurnStepPersistence({
   partyId, writePlan, state, snapshot, factual, changeSetId, idemId,
   phase3Contracts = null,
   turnStepApprovedOwners = null
 }) {
-  const committedSnapshot = attachTurnStepCommit({
-    snapshot, envelope: writePlan?.turn_step_commit, idemId
-  });
+  const committedSnapshot = attachTurnStepCommit({ snapshot,
+    envelope: writePlan?.turn_step_commit, idemId });
   const targets = (writePlan?.write_targets ?? []).filter(
     ({ target }) => target === TURN_STEP_OPERATION_BATCH_TARGET);
   if (targets.length === 0) {
@@ -82,7 +73,6 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     phase3Contracts,
     turnStepApprovedOwners
   });
-
   const next = structuredClone(committedSnapshot);
   const authoredItems = (next.items ?? []).filter((item) =>
     item?.template_id != null
@@ -90,16 +80,19 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     && item?.state?.runtime_instance_mechanics_snapshot == null);
   const authoredItemRefs = new Set(authoredItems.map((item) =>
     item.item_id ?? item.instance_id));
+  const authoredContainers = authoredTurnStepContainers(next.containers);
+  const authoredContainerRefs = new Set(authoredContainers.map((container) =>
+    container.item_id));
   const entities = runtimeEntities(next.items ?? []);
   const context = {
     creates: new Set(), touched: new Set(), placements: new Set(),
+    ownerships: new Set(),
     retired: new Set(), operationIds: new Set(), activityIds: new Set(),
     knowledgeInserts: [], activityHistory: [],
     activityOwnerBindings: new Map(), semanticDuration: 0,
     bodyHistory: null, activityResolutions: new Map(),
     authoredStateTouched: new Set()
   };
-
   // Every envelope and owner binding is checked before the first mutation.
   if (writePlan.turn_step_commit != null) {
     validateTurnStepBatchPlanBindings({ batch, factual: commit, state });
@@ -138,10 +131,13 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
         entities,
         authoredItems,
         authoredItemRefs,
+        authoredContainers,
+        authoredContainerRefs,
         authoredStateTouched: context.authoredStateTouched,
         creates: context.creates,
         touched: context.touched,
         placements: context.placements,
+        ownerships: context.ownerships,
         retired: context.retired,
         state,
         changeSetId,
@@ -149,7 +145,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       });
     }
   }
-  projectSnapshot({ next, authoredItems, entities, context, batch,
+  projectSnapshot({ next, authoredItems, authoredContainers, entities,
+    context, batch,
     writePlan, idemId });
   context.bodyHistory = preparedEffect.prepared ? null
     : prepareTurnStepBodyHistory({
@@ -167,7 +164,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   }
   const writes = buildWrites({
     partyId, state, next, commit, changeSetId, idemId, entities,
-    authoredItems, context
+    authoredItems, authoredContainers, context
   });
   return {
     batch,
@@ -228,7 +225,8 @@ function prevalidateFragment({ fragment, index, batch, commit, state, context })
 }
 
 function projectSnapshot({
-  next, authoredItems, entities, context, batch, writePlan, idemId
+  next, authoredItems, authoredContainers, entities, context, batch,
+  writePlan, idemId
 }) {
   next.items = [
     ...authoredItems.map((item) => structuredClone(item)),
@@ -238,6 +236,7 @@ function projectSnapshot({
       .map(({ db_state: _dbState, lifecycle_status: _status,
         created_in_batch: _created, ...item }) => structuredClone(item))
   ].sort((left, right) => left.item_id.localeCompare(right.item_id));
+  projectPersistedTurnStepContainers(next, authoredContainers);
   next.knowledge = mergeKnowledge(next.knowledge, context.knowledgeInserts);
   next.turn_step_activity_history = [
     ...(next.turn_step_activity_history ?? []), ...context.activityHistory
@@ -253,7 +252,7 @@ function projectSnapshot({
 
 function buildWrites({
   partyId, state, next, commit, changeSetId, idemId, entities, authoredItems,
-  context
+  authoredContainers, context
 }) {
   const writes = { inserts: [], updates: [], appends: [], deletes: [] };
   if (context.bodyHistory != null) {
@@ -280,10 +279,11 @@ function buildWrites({
     }
   }
   appendAuthoredTurnStepWrites({
-    writes, authoredItems,
+    writes, authoredItems, authoredContainers,
     authoredStateTouched: context.authoredStateTouched,
     placements: context.placements,
-    partyId
+    ownerships: context.ownerships,
+    partyId, changeSetId
   });
   for (const knowledge of context.knowledgeInserts) {
     writes.inserts.push(row('party_character_knowledge',

@@ -49,10 +49,11 @@ export function physicalPlacement(value) {
   return {
     anchor_id: value.anchor_id ?? null,
     container_id: value.container_id ?? null,
-    holder_npc_id: null,
+    holder_npc_id: value.holder_npc_id ?? null,
     holder_character_id: value.holder_character_id ?? null,
     physical_position: value.physical_position ?? null,
-    equipment_slot_category_id: null,
+    equipment_slot_category_id:
+      value.equipment_slot_category_id ?? null,
     attached_item_id: value.attached_item_id ?? null
   };
 }

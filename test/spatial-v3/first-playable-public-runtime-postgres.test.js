@@ -4,6 +4,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import pg from 'pg';
+import { validateActorBaseAppearance } from '@rus/actors';
 
 import {
   createFirstPlayablePublicRuntime
@@ -121,6 +122,108 @@ test('local first playable persists exact state, enrichment and ownership across
     request_id: 'move'
   });
   assert.doesNotThrow(() => assertNoHiddenFields(moved));
+  const landingRepositoryState = await runtimeState(pool, started.party_id);
+  assert.equal(landingRepositoryState.landing_materialized, true);
+  assert.equal(validateActorBaseAppearance(
+    landingRepositoryState.npc.identity).ok, true);
+  const landingNpc = (await pool.query(
+    `SELECT identity_state
+       FROM party_runtime.party_npcs
+      WHERE party_id=$1 AND npc_id=$2`,
+    [started.party_id, `npc:${started.party_id}:fisher`]
+  )).rows[0];
+  assert.equal(validateActorBaseAppearance(landingNpc.identity_state).ok, true);
+  assert.equal(landingNpc.identity_state.appearance_contract_version,
+    'actor_base_appearance_v1');
+  const landingItems = (await pool.query(
+    `SELECT i.item_id,i.state,p.holder_npc_id,p.physical_position,
+            p.equipment_slot_category_id,o.owner_npc_id,o.controller_npc_id
+       FROM party_runtime.party_items i
+       JOIN party_runtime.party_item_placements p
+         ON p.party_id=i.party_id AND p.item_id=i.item_id
+       JOIN party_runtime.party_ownership o
+         ON o.party_id=i.party_id AND o.item_id=i.item_id
+      WHERE i.party_id=$1
+        AND i.item_id = ANY($2::text[])
+      ORDER BY i.item_id`,
+    [started.party_id, [
+      `item:${started.party_id}:fisher:fishing-net`,
+      `item:${started.party_id}:fisher:linen-shirt`,
+      `item:${started.party_id}:fisher:wool-outer-garment`
+    ]]
+  )).rows;
+  assert.deepEqual(landingItems.map((item) => ({
+    item_id: item.item_id,
+    holder_npc_id: item.holder_npc_id,
+    physical_position: item.physical_position,
+    equipment_slot_category_id: item.equipment_slot_category_id,
+    owner_npc_id: item.owner_npc_id,
+    controller_npc_id: item.controller_npc_id,
+    visual_slot: item.state.visual_profile_snapshot?.equipment_slot ?? null
+  })), [
+    {
+      item_id: `item:${started.party_id}:fisher:fishing-net`,
+      holder_npc_id: `npc:${started.party_id}:fisher`,
+      physical_position: 'hands',
+      equipment_slot_category_id: null,
+      owner_npc_id: `npc:${started.party_id}:fisher`,
+      controller_npc_id: `npc:${started.party_id}:fisher`,
+      visual_slot: null
+    },
+    {
+      item_id: `item:${started.party_id}:fisher:linen-shirt`,
+      holder_npc_id: `npc:${started.party_id}:fisher`,
+      physical_position: 'equipped',
+      equipment_slot_category_id: 'base_garment',
+      owner_npc_id: `npc:${started.party_id}:fisher`,
+      controller_npc_id: `npc:${started.party_id}:fisher`,
+      visual_slot: 'base_garment'
+    },
+    {
+      item_id: `item:${started.party_id}:fisher:wool-outer-garment`,
+      holder_npc_id: `npc:${started.party_id}:fisher`,
+      physical_position: 'equipped',
+      equipment_slot_category_id: 'outer_garment',
+      owner_npc_id: `npc:${started.party_id}:fisher`,
+      controller_npc_id: `npc:${started.party_id}:fisher`,
+      visual_slot: 'outer_garment'
+    }
+  ]);
+  const landingBasket = (await pool.query(
+    `SELECT c.holder_npc_id,c.physical_position,o.owner_npc_id,
+            o.controller_npc_id,e.placement_kind,e.host_entity_ref
+       FROM party_runtime.party_containers c
+       JOIN party_runtime.party_ownership o
+         ON o.party_id=c.party_id AND o.container_id=c.container_id
+       JOIN party_runtime.entity_placements e
+         ON e.party_id=c.party_id AND e.entity_kind='container'
+        AND e.entity_id=c.container_id
+      WHERE c.party_id=$1 AND c.container_id=$2`,
+    [started.party_id,
+      `container:${started.party_id}:fisher-basket`]
+  )).rows[0];
+  assert.deepEqual(landingBasket, {
+    holder_npc_id: `npc:${started.party_id}:fisher`,
+    physical_position: 'external',
+    owner_npc_id: `npc:${started.party_id}:fisher`,
+    controller_npc_id: `npc:${started.party_id}:fisher`,
+    placement_kind: 'attached_to_entity',
+    host_entity_ref: {
+      version: 1,
+      entity_kind: 'npc',
+      entity_id: `npc:${started.party_id}:fisher`
+    }
+  });
+  const landingRestart = createFirstPlayablePublicRuntime({
+    partyPool: pool,
+    committer,
+    release,
+    runtimeCatalogPin: pin
+  });
+  const landingScreen = await landingRestart.getPartyScreen(started.party_id);
+  assert.equal(landingScreen.turn_number, 2);
+  assert.equal(landingScreen.screen.visible_context.place,
+    'посадочная кромка');
   const talked = await runtime.submitTurn(started.party_id, {
     selected_action_option_id: 'action:talk',
     request_id: 'talk'
@@ -479,3 +582,14 @@ test('local first playable persists exact state, enrichment and ownership across
     minutes: 5
   });
 });
+
+async function runtimeState(pool, partyId) {
+  return (await pool.query(
+    `SELECT s.state_payload
+       FROM party_runtime.parties p
+       JOIN party_runtime.party_state_snapshots s
+         ON s.party_id=p.party_id AND s.state_version=p.state_version
+      WHERE p.party_id=$1`,
+    [partyId]
+  )).rows[0].state_payload;
+}

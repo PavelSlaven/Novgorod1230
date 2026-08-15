@@ -153,3 +153,75 @@ test('moving away removes a stale active interlocutor panel', () => {
   });
   assert.equal(moved.panels.people, undefined);
 });
+
+test('active interlocutor gets a non-persisted portrait from sanitized committed equipment', () => {
+  const state = payload();
+  state.npcs[0].identity_state = {
+    canonical_name: 'Еремей', sex_category: 'male', age_category: 'adult',
+    appearance: { build: 'average', skin_tone: 'light', face_shape: 'oval', hair: { color: 'dark_brown', length: 'short', style: 'straight', facial_hair: 'none' }, eyes: { color: 'gray' } },
+    private_profile_id: 'must-not-leak'
+  };
+  state.items = [{
+    item_id: 'eremey-shirt',
+    placement: { holder_npc_id: 'npc-eremey', physical_position: 'equipped', equipment_slot_category_id: 'base_garment' },
+    state: { visual_profile_snapshot: { schema: 'item_visual_profile_snapshot_v1', version: 1, equipment_slot: 'base_garment', neckline: 'slit_round', sleeve_form: 'narrow', outer_form: 'none', visible_fabric: 'light_linen', trim: 'none', main_visible_color: 'undyed_linen', secondary_visible_color: null, headwear_kind: 'none' }, hidden_inventory: 'must-not-leak' }
+  }];
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: state,
+    screen: { panels: {}, visible_context: visibleContext() }
+  });
+  const interlocutor = projected.panels.people.data.active_interlocutor;
+  assert.equal(interlocutor.portrait_spec_v1.person.age, 'adult');
+  assert.equal(interlocutor.portrait_spec_v1.clothing.main_color, 'undyed_linen');
+  assert.doesNotMatch(JSON.stringify(interlocutor), /private_profile_id|hidden_inventory/);
+  assert.equal(Object.hasOwn(state, 'portrait_spec_v1'), false);
+  assert.equal(Object.hasOwn(state.npcs[0], 'portrait_spec_v1'), false);
+});
+
+for (const concealedState of ['hidden', 'concealed']) {
+  test(`nested ${concealedState} equipment is excluded from portrait`, () => {
+    const state = payload();
+    state.npcs[0].identity_state = {
+      canonical_name: 'Еремей', sex_category: 'male', age_category: 'adult',
+      appearance: { build: 'average', skin_tone: 'light',
+        face_shape: 'oval', hair: { color: 'dark_brown', length: 'short',
+          style: 'straight', facial_hair: 'none' },
+        eyes: { color: 'gray' } }
+    };
+    state.items = [portraitGarment({
+      itemId: 'eremey-shirt', slot: 'base_garment', color: 'undyed_linen'
+    }), portraitGarment({
+      itemId: 'eremey-hidden-caftan', slot: 'outer_garment',
+      color: 'dark_red', visibilityState: concealedState
+    })];
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: state,
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    const portrait = projected.panels.people.data.active_interlocutor
+      .portrait_spec_v1;
+    assert.equal(portrait.clothing.main_color, 'undyed_linen');
+    assert.equal(portrait.clothing.outer, 'none');
+    assert.doesNotMatch(JSON.stringify(portrait), /dark_red/);
+  });
+}
+
+function portraitGarment({ itemId, slot, color, visibilityState }) {
+  return {
+    item_id: itemId,
+    placement: { holder_npc_id: 'npc-eremey',
+      physical_position: 'equipped', equipment_slot_category_id: slot },
+    state: {
+      ...(visibilityState == null
+        ? {} : { visibility_state: { state: visibilityState } }),
+      visual_profile_snapshot: {
+        schema: 'item_visual_profile_snapshot_v1', version: 1,
+        equipment_slot: slot, neckline: 'slit_round', sleeve_form: 'narrow',
+        outer_form: slot === 'outer_garment' ? 'wrap' : 'none',
+        visible_fabric: slot === 'outer_garment' ? 'wool' : 'light_linen',
+        trim: 'none', main_visible_color: color,
+        secondary_visible_color: null, headwear_kind: 'none'
+      }
+    }
+  };
+}

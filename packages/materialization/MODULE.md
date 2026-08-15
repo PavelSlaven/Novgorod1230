@@ -8,18 +8,24 @@
 
 - versioned `mulberry32_v1` RandomSource и seed derivation;
 - выбором из approved candidates и materialization trace;
+- детерминированным completion `actor_base_appearance_v1` из approved
+  demographic/appearance profile entries;
 - проекцией G5 из approved profile/layout/slot rules и NPC/items из нормализованных eligible candidates;
+- code-only item placement primitive, который Stage 16 использует для
+  equipment candidate → NPC/player instance resolution;
 - signed command tokens и проверкой bounded decisions.
 
 ## Не делает
 
 - не создаёт категории, templates, profiles, rules или исторические факты;
 - не читает базы и не выполняет commit;
+- не подмешивает equipment в scenario party result: этот handoff завершает
+  общий Stage 16;
 - не вызывает LLM.
 
 ## Публичный API
 
-`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, RNG/digest helpers и bounded decision functions.
+`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers и bounded decision functions.
 
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 
@@ -41,6 +47,13 @@ Apps, DB drivers, provider SDK, UI, legacy и смысловые workflow packag
 trace; `Math.random` запрещён. Для runtime-catalog materialization
 `trace.catalog_digest` сохраняет exact domain pin, а
 `trace.catalog_bundle_digest` — digest конкретной immutable projection.
+Explicit authored appearance сохраняется без draw; только отсутствующие поля
+выбираются из approved/applicable entries, отсортированных по stable ID. Эти
+draws идут после прежнего deterministic prefix, а пустой required facet
+возвращает typed data gap. Applicability authored dependent-полей заранее
+ограничивает prerequisite draws: например, authored `braided` требует
+совместимую длину волос, а facial hair — совместимые sex/age. Противоречивый
+authored набор отклоняется до первого RNG draw.
 
 ## Ошибки
 

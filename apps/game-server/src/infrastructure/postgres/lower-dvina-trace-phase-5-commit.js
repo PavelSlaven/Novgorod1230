@@ -179,7 +179,10 @@ function commitRechecks({ partyId, state, factual, phase5Contracts,
         phase5Contracts.actors.eremey_fisher.instance_id,
       expected_controller_npc_id:
         phase5Contracts.actors.eremey_fisher.instance_id,
-      expected_condition_state: 'clean_serviceable'
+      expected_condition_state: 'clean_serviceable',
+      expected_physical_position: bandage.placement.physical_position,
+      expected_equipment_slot_category_id:
+        bandage.placement.equipment_slot_category_id
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest }),
     sealedCheck('activity', {

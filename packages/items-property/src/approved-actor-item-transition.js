@@ -7,7 +7,11 @@ import {
   validateInventoryTopology
 } from './inventory.js';
 
-const PHYSICAL_POSITIONS = new Set(['hands', 'worn', 'worn_quick', 'equipped', 'external', 'external_load']);
+export const ACTOR_ITEM_PHYSICAL_POSITIONS = Object.freeze([
+  'hands', 'worn', 'worn_quick', 'equipped', 'external', 'external_load'
+]);
+
+const PHYSICAL_POSITIONS = new Set(ACTOR_ITEM_PHYSICAL_POSITIONS);
 
 /**
  * Plans a transition which has already been admitted by the caller. This is a
@@ -31,41 +35,54 @@ export function planApprovedActorItemTransition(input = {}) {
   const normalizedInput = normalizeActorPlacements(input);
   const topology = validateInventoryTopology(normalizedInput);
   if (!topology.pass) return failedFrom(topology.errors[0]);
-  const item = list(input.items).find((value) => value?.item_id === itemId);
-  const placement = findPlacement(normalizedInput.item_placements, itemId);
+  const target = actorTarget(normalizedInput, itemId);
+  const item = target?.instance;
+  const placement = target?.placement;
   if (!item || !placement) return failed('INVENTORY_TARGET_NOT_FOUND', 'topology', { item_id: itemId });
   const exactPolicy = validateExactPolicyState({
     transition, input, item, source, destination
   });
   if (exactPolicy) return failedFrom(exactPolicy);
-  if (placement.holder_character_id !== source.actor_id || placement.physical_position !== source.physical_position) return failed('APPROVED_TRANSITION_SOURCE_PLACEMENT_MISMATCH', 'topology', { item_id: itemId });
+  if (placement.holder_character_id !== source.actor_id
+      || placement.physical_position !== source.physical_position
+      || placementEquipmentSlot(placement)
+        !== normalizeEquipmentSlot(source.equipment_slot_category_id,
+          source.physical_position)) return failed('APPROVED_TRANSITION_SOURCE_PLACEMENT_MISMATCH', 'topology', { item_id: itemId });
 
-  const ownership = list(input.ownership).find((value) => value?.item_id === itemId);
+  const ownership = list(input.ownership).find((value) =>
+    value?.[target.key] === itemId);
   if (!ownership || controllerId(ownership) !== source.controller_actor_id) return failed('APPROVED_TRANSITION_SOURCE_OWNERSHIP_MISMATCH', 'property', { item_id: itemId });
   if (transition.requires?.owner_ref != null
       && ownerId(ownership) !== input.resolved_actor_refs?.[transition.requires.owner_ref]) {
     return failed('APPROVED_TRANSITION_SOURCE_OWNER_MISMATCH', 'property', { item_id: itemId });
   }
-  const access = resolveInventoryAccess({ ...normalizedInput, actor_id: source.actor_id, item_id: itemId });
+  const access = target.kind === 'item'
+    ? resolveInventoryAccess({ ...normalizedInput,
+        actor_id: source.actor_id, item_id: itemId })
+    : containerAccess(placement, source.actor_id);
   if (!access.pass || access.access?.tier !== source.accessibility) return failed('APPROVED_TRANSITION_SOURCE_ACCESS_MISMATCH', 'access', { item_id: itemId, accessibility: source.accessibility });
 
   const nextPlacement = {
     party_id: input.party_id,
-    item_id: itemId,
+    [target.key]: itemId,
     ...(destination.actor_kind === 'npc'
       ? { holder_npc_id: destination.actor_id }
       : { holder_character_id: destination.actor_id }),
-    physical_position: destination.physical_position
+    physical_position: destination.physical_position,
+    ...(destination.equipment_slot_category_id == null ? {} : { equipment_slot_category_id: destination.equipment_slot_category_id })
   };
   const normalizedNextPlacement = {
     party_id: input.party_id,
-    item_id: itemId,
+    [target.key]: itemId,
     holder_character_id: destination.actor_id,
-    physical_position: destination.physical_position
+    physical_position: destination.physical_position,
+    ...(destination.equipment_slot_category_id == null ? {} : { equipment_slot_category_id: destination.equipment_slot_category_id })
   };
   const next = {
     ...normalizedInput,
-    item_placements: list(normalizedInput.item_placements).map((value) => value?.item_id === itemId ? normalizedNextPlacement : structuredClone(value))
+    [target.placementField]: list(normalizedInput[target.placementField])
+      .map((value) => value?.[target.key] === itemId
+        ? normalizedNextPlacement : structuredClone(value))
   };
   const afterTopology = validateInventoryTopology(next);
   if (!afterTopology.pass) return failedFrom(afterTopology.errors[0]);
@@ -74,15 +91,15 @@ export function planApprovedActorItemTransition(input = {}) {
   const destinationInventory = validateActorInventory(next, destination.actor_id);
   if (!destinationInventory.pass) return failedFrom(destinationInventory.error);
 
-  const ownershipProposal = withController(ownership, destination.controller_actor_id);
+  const ownershipProposal = withController(ownership, destination.controller_actor_id, destination.actor_kind);
   return deepFreeze({
     pass: true,
     proposal: deepFreeze({
-      placement: deepFreeze({ instance_kind: 'item', ...nextPlacement }),
-      ownership: deepFreeze({ item_id: itemId, owner_change: 'forbidden', previous: deepFreeze(structuredClone(ownership)), next: deepFreeze(ownershipProposal) }),
-      accessibility: deepFreeze({ item_id: itemId, actor_id: destination.actor_id, value: destination.accessibility }),
+      placement: deepFreeze({ instance_kind: target.kind, ...nextPlacement }),
+      ownership: deepFreeze({ [target.key]: itemId, owner_change: 'forbidden', previous: deepFreeze(structuredClone(ownership)), next: deepFreeze(ownershipProposal) }),
+      accessibility: deepFreeze({ [target.key]: itemId, actor_id: destination.actor_id, value: destination.accessibility }),
       item_state: deepFreeze({
-        item_id: itemId,
+        [target.key]: itemId,
         ...(destination.condition_state != null
           ? { condition_state: destination.condition_state }
           : {}),
@@ -90,7 +107,8 @@ export function planApprovedActorItemTransition(input = {}) {
           ? { use_state: destination.use_state }
           : {})
       }),
-      property_history: deepFreeze({ item_id: itemId, transition_profile_id: transition.transition_profile_id, approved_facts: deepFreeze([...list(input.approved_facts)]), source: deepFreeze(structuredClone(source)), destination: deepFreeze(structuredClone(destination)), owner_change: 'forbidden' })
+      property_history: deepFreeze({ [target.key]: itemId,
+        transition_profile_id: transition.transition_profile_id, approved_facts: deepFreeze([...list(input.approved_facts)]), source: deepFreeze(structuredClone(source)), destination: deepFreeze(structuredClone(destination)), owner_change: 'forbidden' })
     }),
     derived_after: deepFreeze({ source: sourceInventory.derived, destination: destinationInventory.derived }),
     errors: []
@@ -109,6 +127,9 @@ function validateExactPolicyState({
       || source.actor_id !== refs[required.holder_ref]
       || source.controller_actor_id !== refs[required.controller_ref]
       || source.physical_position !== required.physical_position
+      || normalizeEquipmentSlot(source.equipment_slot_category_id,
+        source.physical_position) !== normalizeEquipmentSlot(
+          required.equipment_slot_category_id, required.physical_position)
       || source.accessibility !== required.accessibility
       || (required.condition_state != null
         && (source.condition_state !== required.condition_state
@@ -119,6 +140,9 @@ function validateExactPolicyState({
       || destination.actor_id !== refs[writes.holder_ref]
       || destination.controller_actor_id !== refs[writes.controller_ref]
       || destination.physical_position !== writes.physical_position
+      || normalizeEquipmentSlot(destination.equipment_slot_category_id,
+        destination.physical_position) !== normalizeEquipmentSlot(
+          writes.equipment_slot_category_id, writes.physical_position)
       || destination.accessibility !== writes.accessibility
       || (writes.condition_state != null
         && destination.condition_state !== writes.condition_state)
@@ -139,13 +163,19 @@ function exactState(value) {
   const controllerActorId = text(value?.controller_actor_id);
   const position = text(value?.physical_position);
   const accessibility = text(value?.accessibility);
+  const equipmentSlotCategoryId = normalizeEquipmentSlot(value?.equipment_slot_category_id ?? value?.equipment_slot_id, position);
   if (!actorId || !['character', 'npc'].includes(actorKind) || !controllerActorId
-    || !PHYSICAL_POSITIONS.has(position) || !accessibility) return null;
+    || !PHYSICAL_POSITIONS.has(position) || !accessibility
+    || (position === 'equipped' && !equipmentSlotCategoryId)
+    || (position !== 'equipped' && equipmentSlotCategoryId !== null)) return null;
   const exact = {
     actor_id: actorId,
     actor_kind: actorKind,
     controller_actor_id: controllerActorId,
     physical_position: position,
+    ...(equipmentSlotCategoryId == null
+      ? {}
+      : { equipment_slot_category_id: equipmentSlotCategoryId }),
     accessibility
   };
   if (value?.condition_state != null) {
@@ -169,7 +199,9 @@ function validateActorInventory(input, actorId) {
   const mass = calculateInventoryMass(scoped);
   const hands = calculateHandsState(scoped);
   if (!mass.pass || !hands.pass) return { pass: false, error: mass.errors[0] ?? hands.errors[0] };
-  const strength = input.actor_strengths?.[actorId] ?? input.strength;
+  const strength = input.actor_strengths != null
+    ? input.actor_strengths[actorId]
+    : actorId === input.actor_id ? input.strength : null;
   if (strength == null) {
     return {
       pass: true,
@@ -191,11 +223,17 @@ function validateActorInventory(input, actorId) {
 }
 function controllerId(value) { return text(value?.controller_actor_id ?? value?.controller_character_id ?? value?.controller_npc_id); }
 function ownerId(value) { return text(value?.owner_actor_id ?? value?.owner_character_id ?? value?.owner_npc_id); }
-function withController(ownership, actorId) {
+function withController(ownership, actorId, actorKind) {
   const next = structuredClone(ownership);
-  const field = next.controller_npc_id != null ? 'controller_npc_id' : next.controller_character_id != null ? 'controller_character_id' : 'controller_actor_id';
-  next[field] = actorId;
+  delete next.controller_actor_id;
+  next.controller_npc_id = actorKind === 'npc' ? actorId : null;
+  next.controller_character_id = actorKind === 'character' ? actorId : null;
   return next;
+}
+function placementEquipmentSlot(value) { return normalizeEquipmentSlot(value?.equipment_slot_category_id ?? value?.equipment_slot_id, value?.physical_position); }
+function normalizeEquipmentSlot(value, physicalPosition) {
+  const slot = text(value);
+  return physicalPosition === 'equipped' ? slot || null : slot ? slot : null;
 }
 function findPlacement(values, itemId) { return list(values).find((value) => value?.item_id === itemId) ?? null; }
 function normalizeActorPlacements(input) {
@@ -205,7 +243,8 @@ function normalizeActorPlacements(input) {
   ].filter(Boolean));
   const normalize = (value) => {
     const placement = structuredClone(value);
-    if (transitionActors.has(placement?.holder_npc_id)) {
+    if (transitionActors.has(placement?.holder_npc_id)
+        && placement.physical_position != null) {
       placement.holder_character_id = placement.holder_npc_id;
       delete placement.holder_npc_id;
     }
@@ -215,8 +254,29 @@ function normalizeActorPlacements(input) {
     ...input,
     item_placements: list(input.item_placements).map(normalize),
     container_placements: list(input.container_placements).map(
-      (value) => structuredClone(value))
+      normalize)
   };
+}
+function actorTarget(input, instanceId) {
+  const item = list(input.items).find((value) => value?.item_id === instanceId);
+  if (item) return { kind: 'item', key: 'item_id',
+    placementField: 'item_placements', instance: item,
+    placement: findPlacement(input.item_placements, instanceId) };
+  const container = list(input.containers).find((value) =>
+    value?.container_id === instanceId);
+  return container ? { kind: 'container', key: 'container_id',
+    placementField: 'container_placements', instance: container,
+    placement: list(input.container_placements).find((value) =>
+      value?.container_id === instanceId) ?? null } : null;
+}
+function containerAccess(placement, actorId) {
+  if (placement?.holder_character_id !== actorId) {
+    return deepFreeze({ pass: true, access: { tier: 'unavailable' },
+      errors: [] });
+  }
+  return deepFreeze({ pass: true, access: {
+    tier: placement.physical_position === 'hands' ? 'immediate' : 'quick'
+  }, errors: [] });
 }
 function failed(code, category, details) { return failedFrom(issue(code, category, details)); }
 function failedFrom(error) { return deepFreeze({ pass: false, errors: [error] }); }

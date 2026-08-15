@@ -1,6 +1,6 @@
 import { computeStage24ArtifactDigest } from '@rus/contracts';
 
-const PINNED_STAGES = new Set([8, 13, 14, 16, 24, 25]);
+const PINNED_STAGES = new Set([7, 8, 13, 14, 16, 24, 25]);
 const PIN_FIELDS = Object.freeze([
   'catalog_scope',
   'catalog_revision_id',
@@ -66,6 +66,14 @@ function validContext(context) {
     && context.verified_catalog?.schema === 'rus.verified_item_catalog.v2'
     && context.verified_catalog.verified === true
     && samePin(context.verified_catalog.pin, context.pin)
+    && (context.actor_profile_catalog == null
+      || (context.actor_profile_catalog.schema
+          === 'rus.verified_actor_profile_catalog.v1'
+        && context.actor_profile_catalog.verified === true
+        && context.actor_profile_catalog.world_pin?.world_revision_id
+          === context.world_pin.world_revision_id
+        && context.actor_profile_catalog.world_pin?.world_catalog_digest
+          === context.world_pin.world_catalog_digest))
     && (context.applicable_catalog == null
       || (context.applicable_catalog.schema === 'rus.verified_item_catalog.v2'
         && context.applicable_catalog.verified === true
@@ -75,6 +83,14 @@ function validContext(context) {
 function assertStagePin(stageId, input, context) {
   const pin = context.pin;
   const worldRevisionId = pin.compatible_world_revision_id;
+  if (stageId === 7) {
+    assertFields([
+      ['world_revision_id', input?.world_revision_id, worldRevisionId],
+      ['approved_actor_profile_snapshot.world_revision_id', input?.approved_actor_profile_snapshot?.world_revision_id, worldRevisionId],
+      ['approved_actor_profile_snapshot.source_catalog_digest', input?.approved_actor_profile_snapshot?.source_catalog_digest, context.world_pin.world_catalog_digest]
+    ], stageId);
+    return;
+  }
   if (stageId === 8) {
     assertFields([
       ['world_revision_id', input?.world_revision_id, worldRevisionId],

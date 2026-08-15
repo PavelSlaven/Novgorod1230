@@ -2,9 +2,9 @@
 
 - **Статус:** production-active reference
 - **Сценарий:** `lower_dvina_trace_v1`
-- **Последняя revision:** `18`
-- **Текущий release:** `spatial-v3-production-v8`
-- **Граница:** состояние после завершения Phase 11
+- **Последняя revision:** `19`
+- **Текущий release:** `spatial-v3-production-v9`
+- **Граница:** canonical actor appearance и equipment-driven portraits
 
 Этот документ отвечает на вопрос «что сейчас существует». Он не является
 roadmap, target-контрактом будущей механики или заменой профильных нормативов.
@@ -14,9 +14,9 @@ roadmap, target-контрактом будущей механики или за
 Lower Dvina Trace — завершённый первый production vertical slice. Phase 0–10
 реализуют authored data, materialization и игровое прохождение; Phase 11
 подтверждает весь путь через Chromium, HTTP, production composition и
-PostgreSQL. Phase 11 закрыта merged PR
-[#61](https://github.com/PavelSlaven/Novgorod1230/pull/61) и не создаёт
-scenario revision 19.
+PostgreSQL. Phase 11 закрыла immutable revision 18/v8 path; revision
+19/v9 добавляет canonical appearance и equipment-driven portraits, не
+переписывая этот historical release.
 
 Отдельный исторический boatman scenario
 `lower_dvina_late_summer_open_water_v1` сохраняет собственные immutable pins,
@@ -78,7 +78,8 @@ objective completion или скрытый факт. Bounded `option_id` исп�
 | Combat session, intents, technical exchange и harm proposals | `@rus/combat-health` вместе с общей orchestration `@rus/turn` |
 | Тело и threshold transitions | `@rus/body-state` |
 | Предметы, контейнеры, holder/controller/owner и property transitions | `@rus/items-property` |
-| Видимость, знания, evidence и deterministic completion evaluation | `@rus/visibility-knowledge-memory` |
+| Canonical identity и базовая внешность actor | `@rus/actors` |
+| Видимость, знания, evidence, completion и read-time `portrait_spec_v1` | `@rus/visibility-knowledge-memory` |
 | Обязательства и applicability typed temporary disposition | `@rus/social-law` |
 | Проверки и детерминированный injected RNG | `@rus/checks-rng` |
 | P16 write plan, optimistic versions и PostgreSQL commit/readback | существующий party persistence path |
@@ -99,6 +100,7 @@ completion engines.
 | revision 17 / `spatial-v3-production-v7` | Phase 9: имущество, evidence и temporary disposition. |
 | revision 18 / `spatial-v3-production-v8` | Phase 10: deterministic completion и epilogue. |
 | Phase 11 | Full-stack acceptance без новой revision или release. |
+| revision 19 / `spatial-v3-production-v9` | Canonical actor appearance, item-owned garment semantics и equipment-driven portraits. |
 
 Revisions до 13 сохраняют authored/materialization и ранние runtime cutovers;
 их фактическая карта приведена в
@@ -114,8 +116,8 @@ Revisions до 13 сохраняют authored/materialization и ранние ru
   pins; runtime не подменяет их текущими.
 - Автоматической миграции старых незавершённых партий между scenario revisions
   нет.
-- Revision 18 остаётся текущей после Phase 11; acceptance не материализует
-  revision 19.
+- Revision 19 текущая только для новых party; revision 18 parties не
+  получают appearance backfill и сохраняют portrait fallback.
 
 ## Player-safe boundary
 
@@ -142,7 +144,7 @@ Full-stack доказательство находится в:
 - restart и exact replay без повторных provider calls/effects;
 - отсутствие hidden/causal утечек через HTTP, DOM и narration;
 - отдельный historical boatman regression;
-- реальный Chromium → `/api/v1` → `spatial-v3-production-v8` → PostgreSQL path.
+- реальный Chromium → `/api/v1` → `spatial-v3-production-v9` → PostgreSQL path.
 
 Исторические причины и исходные gaps сохранены в
 [gap audit](lower-dvina-trace-gap-audit.md) и

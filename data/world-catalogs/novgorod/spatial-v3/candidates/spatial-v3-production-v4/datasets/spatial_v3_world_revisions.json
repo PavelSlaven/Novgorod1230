@@ -1,0 +1,10 @@
+[
+  {
+    "id": "novgorod_spatial_v3_production_v4_candidate_001",
+    "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+    "catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79",
+    "status": "approved",
+    "provenance_ref": "prov_character_appearance_v1",
+    "deprecated_at": null
+  }
+]

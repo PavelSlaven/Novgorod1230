@@ -3,7 +3,7 @@ import { deterministicInstanceId } from './core.js';
 export function buildLowerDvinaTracePhase5InitialBandage({
   input, bundle, runId, phase3Prepared, requiredById, fail
 }) {
-  if (![11, 12, 13, 14, 15, 16, 17, 18].includes(
+  if (![11, 12, 13, 14, 15, 16, 17, 18, 19].includes(
     input.scenario_definition_revision
   )) return null;
   const binding = bundle.materialization_bindings.phase_5_initial_state_binding

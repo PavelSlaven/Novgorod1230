@@ -1,4 +1,9 @@
-import { CONTENT_DIGEST, SCENARIO_ID } from './shared.js';
+import {
+  CONTENT_DIGEST,
+  CURRENT_FIRST_PLAYABLE_CATALOG_VERSION,
+  SCENARIO_ID,
+  resolveBaselinePlayerAppearance
+} from './shared.js';
 
 export function scenarioCatalog(tracePublication) {
   const publicProjection = tracePublication?.public_projection;
@@ -32,7 +37,8 @@ export function scenarioCatalog(tracePublication) {
   };
 }
 
-export function baselinePlayer(playerName) {
+export function baselinePlayer(playerName, requestId) {
+  const appearanceProfile = resolveBaselinePlayerAppearance(requestId);
   return {
     name_id: 'player_supplied_name',
     name: String(playerName ?? '').trim() || 'Путник',
@@ -55,10 +61,14 @@ export function baselinePlayer(playerName) {
     },
     equipment_profile: {
       profile_id: 'baseline_empty_equipment',
-      clothing_template_refs: [],
+      initial_item_allocations: [],
+      initial_container_allocations: [],
       owned_item_template_refs: [],
       owned_container_template_refs: []
     },
-    candidate_set_digest: CONTENT_DIGEST
+    candidate_set_digest: CONTENT_DIGEST,
+    catalog_version: CURRENT_FIRST_PLAYABLE_CATALOG_VERSION,
+    appearance_profile_id: appearanceProfile.appearance_profile_id,
+    identity: structuredClone(appearanceProfile.identity)
   };
 }

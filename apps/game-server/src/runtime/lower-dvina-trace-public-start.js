@@ -40,10 +40,11 @@ export async function startLowerDvinaTrace({
         ?? null
   });
   const binding = publication.binding;
+  const expectedWorld = committedBeforeStart?.request_identity ?? release;
   if (binding.world_compatibility.production_world_revision_id
-      !== release.world_revision_id
+      !== expectedWorld.world_revision_id
     || binding.world_compatibility.production_world_catalog_digest
-      !== release.world_catalog_digest) {
+      !== expectedWorld.world_catalog_digest) {
     throw serverError(
       'TRACE_PHASE_1B_WORLD_TUPLE_MISMATCH',
       'Published trace scenario is incompatible with the active world tuple.',
@@ -57,8 +58,8 @@ export async function startLowerDvinaTrace({
       binding.scenario_definition_ref.revision,
     scenario_manifest_digest:
       binding.phase_1a_manifest_ref.digest,
-    world_revision_id: release.world_revision_id,
-    world_catalog_digest: release.world_catalog_digest,
+    world_revision_id: expectedWorld.world_revision_id,
+    world_catalog_digest: expectedWorld.world_catalog_digest,
     materializer_version:
       binding.execution_identity.materializer_version,
     rng_algorithm_id:

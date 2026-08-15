@@ -12,6 +12,20 @@ environment context и approved profile pins. `@rus/time-events-history`
 активировало production; отдельный `versioned production activation cutover`
 завершён release `spatial-v3-production-v1`, и v3 является единственным owner.
 
+## Actor identity и базовая внешность
+
+Sex и age являются actor identity, а не body state. Для каждого нового player
+или NPC используется полный `actor_base_appearance_v1`: build, skin tone, face
+shape, hair color/length/style/facial hair и eye color. Внешность записывается
+один раз при создании actor в существующий player profile/NPC identity state и
+не меняется при повторном чтении. Historical actor без полного контракта не
+получает автоматический backfill.
+
+Body хранит текущую механику здоровья, травм и состояний и не дублирует sex,
+age, appearance build или clothing. Одежда не является параметром actor: это equipped/worn item
+instance, поэтому снятие, передача и надевание меняют placement предмета, а не
+identity или body.
+
 ## Физические характеристики
 
 d20 + бонус характеристики + бонус навыка/опыта + модификатор состояния + обстоятельства >= сложность

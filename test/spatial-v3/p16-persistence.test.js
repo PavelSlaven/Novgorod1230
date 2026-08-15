@@ -170,6 +170,15 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
     }]
   }), { verifyApproval: approval });
   assert.equal(forgedPresentationWrite.error.code, 'visible_package_persistence_gap');
+  const portraitProjection = input();
+  portraitProjection.approved_write_sets[0].appends[0].record.audit = {
+    nested: { portrait_spec_v1: { schema: 'portrait_spec_v1' } }
+  };
+  const forbiddenPortrait = await buildCombinedWritePlan(
+    portraitProjection,
+    { verifyApproval: approval }
+  );
+  assert.equal(forbiddenPortrait.error.code, 'generated_schema_mismatch');
 });
 
 test('P16 admits one exact non-versioned party position update without a fabricated state version', async () => {

@@ -1,4 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
+import { projectActorPortraitSpecV1 } from './actor-portrait-spec-v1.js';
+
+export { projectActorPortraitSpecV1 };
 
 /**
  * Projects one active conversation counterpart from committed, already
@@ -48,6 +51,12 @@ export function projectActiveConversationInterlocutor({
     display_label: npc.identity_state.display_name.trim()
   };
   if (nonEmptyText(npc.role_label)) output.role_label = npc.role_label.trim();
+  const portrait = projectActorPortraitSpecV1({
+    identity: npc.identity_state,
+    visible_equipment: npc.visible_equipment,
+    presentation: npc.presentation
+  });
+  if (portrait !== null) output.portrait_spec_v1 = portrait;
   return deepFreeze(output);
 }
 

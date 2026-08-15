@@ -1,0 +1,11 @@
+[
+  {
+    "id": "prov_character_appearance_v1",
+    "title": "Canonical character appearance and equipment-driven portrait authoring",
+    "source_type": "project_note",
+    "summary": "Approved bounded actor components and item-owned visible garment semantics.",
+    "reliability_level": "project_canonical",
+    "status": "approved",
+    "confidence": "high"
+  }
+]

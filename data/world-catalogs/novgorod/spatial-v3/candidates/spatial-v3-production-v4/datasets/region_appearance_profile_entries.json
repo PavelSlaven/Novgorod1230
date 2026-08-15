@@ -1,0 +1,368 @@
+[
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_slim",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "build",
+    "option_id": "nov_1200_1250_build_slim",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_average",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "build",
+    "option_id": "nov_1200_1250_build_average",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_build_stocky",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "build",
+    "option_id": "nov_1200_1250_build_stocky",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_pale",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "skin_tone",
+    "option_id": "nov_1200_1250_skin_tone_pale",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_light",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "skin_tone",
+    "option_id": "nov_1200_1250_skin_tone_light",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_warm",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "skin_tone",
+    "option_id": "nov_1200_1250_skin_tone_warm",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_skin_tone_brown",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "skin_tone",
+    "option_id": "nov_1200_1250_skin_tone_brown",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_oval",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "face_shape",
+    "option_id": "nov_1200_1250_face_shape_oval",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_round",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "face_shape",
+    "option_id": "nov_1200_1250_face_shape_round",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_broad",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "face_shape",
+    "option_id": "nov_1200_1250_face_shape_broad",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_angular",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "face_shape",
+    "option_id": "nov_1200_1250_face_shape_angular",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_face_shape_long",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "face_shape",
+    "option_id": "nov_1200_1250_face_shape_long",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_blond",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_blond",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_light_brown",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_light_brown",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_dark_brown",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_dark_brown",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_black",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_black",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_auburn",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_auburn",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_gray",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_gray",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_color_white",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_color",
+    "option_id": "nov_1200_1250_hair_color_white",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_bald",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_length",
+    "option_id": "nov_1200_1250_hair_length_bald",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_short",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_length",
+    "option_id": "nov_1200_1250_hair_length_short",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_medium",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_length",
+    "option_id": "nov_1200_1250_hair_length_medium",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_length_long",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_length",
+    "option_id": "nov_1200_1250_hair_length_long",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_style_straight",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_style",
+    "option_id": "nov_1200_1250_hair_style_straight",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_style_wavy",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_style",
+    "option_id": "nov_1200_1250_hair_style_wavy",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "short",
+        "medium",
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_style_loose",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_style",
+    "option_id": "nov_1200_1250_hair_style_loose",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "medium",
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_hair_style_braided",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "hair_style",
+    "option_id": "nov_1200_1250_hair_style_braided",
+    "weight": 1,
+    "applicability": {
+      "appearance.hair.length": [
+        "long"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_facial_hair_none",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "facial_hair",
+    "option_id": "nov_1200_1250_facial_hair_none",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_facial_hair_moustache",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "facial_hair",
+    "option_id": "nov_1200_1250_facial_hair_moustache",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_facial_hair_short_beard",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "facial_hair",
+    "option_id": "nov_1200_1250_facial_hair_short_beard",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_facial_hair_full_beard",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "facial_hair",
+    "option_id": "nov_1200_1250_facial_hair_full_beard",
+    "weight": 1,
+    "applicability": {
+      "sex_category": [
+        "male"
+      ],
+      "age_category": [
+        "adult",
+        "middle_aged",
+        "old"
+      ]
+    },
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_blue",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "eye_color",
+    "option_id": "nov_1200_1250_eye_color_blue",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_gray",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "eye_color",
+    "option_id": "nov_1200_1250_eye_color_gray",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_green",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "eye_color",
+    "option_id": "nov_1200_1250_eye_color_green",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_brown",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "eye_color",
+    "option_id": "nov_1200_1250_eye_color_brown",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_appearance_profile_v1:nov_1200_1250_eye_color_dark",
+    "appearance_profile_id": "novgorod_1200_1250_appearance_profile_v1",
+    "facet": "eye_color",
+    "option_id": "nov_1200_1250_eye_color_dark",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  }
+]

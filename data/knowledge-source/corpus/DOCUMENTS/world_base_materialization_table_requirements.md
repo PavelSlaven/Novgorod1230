@@ -1,7 +1,7 @@
 # Требования к таблицам каталогов и материализации
 
 **Статус:** active technical normative по назначению и наполнению базы
-**Версия:** 1.0.0
+**Версия:** 1.1.0
 **Область:** назначение, наполнение, связи и порядок готовности данных `world_base` и party materialization
 
 ## Production/target routing
@@ -123,10 +123,12 @@ Generic registry для доменов, не имеющих собственно
 | Таблица | Уровень и назначение | Обязательные связи |
 |---|---|---|
 | `region_npc_archetypes` | Региональный NPC template без имени и биографии | region, role, occupation, legal/mobility refs |
-| `region_demographic_profiles` | Profile допустимых age/sex/household/health/build choices | region и normalized category options |
+| `region_demographic_profiles` | Profile допустимых demographic choices | region; legacy single option nullable для entry-based profile |
+| `region_demographic_profile_entries` | Нормализованные sex/age choices | profile, facet, approved regional option, weight, applicability, status |
 | `region_name_pools` | Региональный/культурный pool для периода | region, period, sources |
 | `region_name_pool_entries` | Конкретные разрешённые формы имён и weights | name pool |
-| `region_appearance_profiles` | Choice sets внешности | region и appearance categories |
+| `region_appearance_profiles` | Choice sets базовой внешности | region; legacy single option nullable для entry-based profile |
+| `region_appearance_profile_entries` | Нормализованные appearance facets | profile, facet, approved regional option, weight, applicability, status |
 | `region_clothing_profiles` | Согласованные garment slots и ограничения | region, item templates/categories |
 | `region_equipment_profiles` | Equipment set | region, role/occupation applicability |
 | `region_equipment_profile_entries` | Required/optional equipment choices | equipment profile, item template/category |
@@ -138,6 +140,17 @@ Generic registry для доменов, не имеющих собственно
 | `region_npc_profile_sets` | Profile: одна совместимая композиция компонентов | archetype и все component profiles |
 
 Для всех plural choices создаются нормализованные entry/binding tables. Fallback schedule может ссылаться только на явно перечисленные place/route/activity варианты.
+
+Applicability demographic/appearance entry хранит ограничения sex, age и
+hair-length в данных, не в materializer code. Required actor vocabulary:
+sex/age, build, skin tone, face shape, hair color/length/style/facial hair и
+eye color. Все начальные weights явны; отсутствие required approved option
+блокирует materialization.
+
+`item_template_category_bindings` поддерживает необходимые visual kinds:
+garment kind, equipment slot, neckline, sleeve form, outer form, visible
+fabric, trim, main/secondary visible color и headwear kind. Эти bindings
+принадлежат item template/profile, не actor.
 
 ## 6. G4, buildings и G5 templates
 
@@ -211,6 +224,13 @@ Party schema хранится в `party_runtime`, логически изоли�
 - `party_server_sessions` как нормализованная техническая проекция HTTP/game-server состояния с FK на v2 party; она не является source of truth мира.
 
 Один committed baseline materialization допускается на `(party_id, g4_id)`. Repeat-entry читает его; repair использует отдельное поколение и историю.
+
+Canonical appearance нового NPC хранится атомарно в существующем
+`party_npcs.identity_state`, player — в существующем profile/dossier JSON.
+Отдельная party appearance table запрещена. Name profile snapshot содержит
+только name/provenance. Одежда хранится только как `party_items` + placements +
+ownership, а immutable `item_visual_profile_snapshot_v1` находится в state
+конкретного item. `portrait_spec_v1` не сохраняется ни в одной party table.
 
 Старая JSONB `game_sessions` не входит в production DDL v2, не создаётся migrations и не читается runtime. Backup/rollback старого формата выполняется только внешним migration tooling.
 

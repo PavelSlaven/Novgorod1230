@@ -19,6 +19,10 @@ import {
   buildFirstPlayableV2ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
+  applyCharacterAppearanceV4ActivationBundle,
+  buildCharacterAppearanceV4ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/character-appearance-v4-activation.js';
+import {
   applyLowerDvinaBoundaryV3ActivationBundle,
   buildLowerDvinaBoundaryV3ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
@@ -30,6 +34,8 @@ import { buildLowerDvinaBoundaryV1ImportSql } from
   '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
 import { buildLowerDvinaV2ImportSql } from
   '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
+import { buildCharacterAppearanceV1ImportSql } from
+  '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 
@@ -245,11 +251,31 @@ async function installActivatedRuntimeCatalog({
     partyPool,
     bundle: v3Bundle
   });
+  await worldPool.query(await readFile(
+    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
+    'utf8'
+  ));
+  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
+    root: repositoryRoot
+  }));
+  const v4Bundle = await buildCharacterAppearanceV4ActivationBundle({
+    worldPool,
+    partyPool,
+    repositoryRoot,
+    gitCommitSha: commitSha,
+    authorizationRef: 'Character appearance isolated production acceptance'
+  });
+  await applyCharacterAppearanceV4ActivationBundle({
+    worldPool,
+    partyPool,
+    bundle: v4Bundle
+  });
   return Object.freeze({
     pinManifestDigest:
-      v3Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
+      v4Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
     v2Bundle,
-    v3Bundle
+    v3Bundle,
+    v4Bundle
   });
 }
 

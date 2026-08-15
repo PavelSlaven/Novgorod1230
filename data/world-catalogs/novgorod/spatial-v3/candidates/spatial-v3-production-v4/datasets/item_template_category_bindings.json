@@ -1,0 +1,222 @@
+[
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:garment_kind",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.garment_kind.base_garment",
+    "binding_kind": "garment_kind",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:equipment_slot",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.equipment_slot.base_garment",
+    "binding_kind": "equipment_slot",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:neckline",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.neckline.slit_round",
+    "binding_kind": "neckline",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:sleeve_form",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.sleeve_form.narrow",
+    "binding_kind": "sleeve_form",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:outer_form",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.outer_form.none",
+    "binding_kind": "outer_form",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:visible_fabric",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.visible_fabric.light_linen",
+    "binding_kind": "visible_fabric",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:trim",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.trim.none",
+    "binding_kind": "trim",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:main_visible_color",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.main_visible_color.undyed_linen",
+    "binding_kind": "main_visible_color",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:secondary_visible_color",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.secondary_visible_color.undyed_linen",
+    "binding_kind": "secondary_visible_color",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_linen_shirt_v1:headwear_kind",
+    "item_template_id": "item_tpl_nov_linen_shirt_v1",
+    "category_id": "garment.headwear_kind.none",
+    "binding_kind": "headwear_kind",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:garment_kind",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.garment_kind.outer_garment",
+    "binding_kind": "garment_kind",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:equipment_slot",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.equipment_slot.outer_garment",
+    "binding_kind": "equipment_slot",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:neckline",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.neckline.high_closed",
+    "binding_kind": "neckline",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:sleeve_form",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.sleeve_form.narrow",
+    "binding_kind": "sleeve_form",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:outer_form",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.outer_form.front_open",
+    "binding_kind": "outer_form",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:visible_fabric",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.visible_fabric.wool",
+    "binding_kind": "visible_fabric",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:trim",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.trim.none",
+    "binding_kind": "trim",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:main_visible_color",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.main_visible_color.brown",
+    "binding_kind": "main_visible_color",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:secondary_visible_color",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.secondary_visible_color.brown",
+    "binding_kind": "secondary_visible_color",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  },
+  {
+    "id": "item_tpl_nov_wool_outer_garment_v1:headwear_kind",
+    "item_template_id": "item_tpl_nov_wool_outer_garment_v1",
+    "category_id": "garment.headwear_kind.none",
+    "binding_kind": "headwear_kind",
+    "packing_slot_cost": null,
+    "packing_bundle_size": null,
+    "exclusivity_group": null,
+    "requires_regional_permission": false,
+    "status": "approved"
+  }
+]

@@ -6,6 +6,84 @@ import {
 } from '@rus/items-property';
 
 const ALL_SEASONS = Object.freeze(['spring', 'summer', 'autumn', 'winter']);
+const ACTOR_APPEARANCE_FACETS = Object.freeze([
+  'sex_category', 'age_category', 'build', 'skin_tone', 'face_shape',
+  'hair_color', 'hair_length', 'hair_style', 'facial_hair', 'eye_color'
+]);
+
+export function buildApprovedActorProfileSnapshot({ records_by_table: records = {}, world_revision_id: worldRevisionId, region_id: regionId, catalog_digest: sourceCatalogDigest } = {}) {
+  requireApprovedRevision(records.world_revisions, worldRevisionId, sourceCatalogDigest);
+  if (!regionId) fail('RUNTIME_ACTOR_PROFILE_REGION_MISSING');
+
+  const categories = approvedMap(records.universal_categories);
+  const options = new Map(approvedForRevision(records.region_category_options, worldRevisionId)
+    .filter((option) => option.region_id === regionId)
+    .map((option) => [option.id, option]));
+  const demographicProfiles = buildActorComponentProfiles({
+    profiles: records.region_demographic_profiles,
+    entries: records.region_demographic_profile_entries,
+    profileKey: 'demographic_profile_id',
+    regionId,
+    options,
+    categories
+  });
+  const appearanceProfiles = buildActorComponentProfiles({
+    profiles: records.region_appearance_profiles,
+    entries: records.region_appearance_profile_entries,
+    profileKey: 'appearance_profile_id',
+    regionId,
+    options,
+    categories
+  });
+  const equipmentEntries = groupBy(approvedOrStatusless(records.region_equipment_profile_entries), 'equipment_profile_id');
+  const equipmentProfiles = approved(records.region_equipment_profiles)
+    .filter((profile) => profile.region_id === regionId)
+    .map((profile) => ({
+      id: profile.id,
+      region_id: profile.region_id,
+      social_role_id: profile.social_role_id ?? null,
+      occupation_id: profile.occupation_id ?? null,
+      entries: (equipmentEntries.get(profile.id) ?? []).sort(byId).map((entry) => ({
+        entry_id: entry.id,
+        item_template_id: entry.item_template_id ?? null,
+        item_category_id: entry.item_category_id ?? null,
+        equipment_slot_category_id: entry.slot_key,
+        required: entry.required === true,
+        weight: entry.weight
+      }))
+    }))
+    .filter((profile) => profile.entries.length > 0)
+    .sort(byId);
+
+  const core = {
+    version: 1,
+    schema: 'approved_actor_profile_snapshot',
+    ...(actorAppearanceContractActive(
+      demographicProfiles,
+      appearanceProfiles
+    ) ? {
+        appearance_contract_version: 'actor_base_appearance_v1'
+      } : {}),
+    world_revision_id: worldRevisionId,
+    region_id: regionId,
+    source_catalog_digest: sourceCatalogDigest,
+    demographic_profiles: demographicProfiles,
+    appearance_profiles: appearanceProfiles,
+    equipment_profiles: equipmentProfiles
+  };
+  return deepFreeze({ ...core, catalog_digest: digestValue(core) });
+}
+
+function actorAppearanceContractActive(demographicProfiles, appearanceProfiles) {
+  if (demographicProfiles.length !== 1 || appearanceProfiles.length !== 1) {
+    return false;
+  }
+  const facets = new Set([
+    ...demographicProfiles[0].entries,
+    ...appearanceProfiles[0].entries
+  ].map(({ facet }) => facet));
+  return ACTOR_APPEARANCE_FACETS.every((facet) => facets.has(facet));
+}
 
 export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {}, world_revision_id: worldRevisionId, catalog_digest: sourceCatalogDigest } = {}) {
   requireApprovedRevision(records.world_revisions, worldRevisionId, sourceCatalogDigest);
@@ -22,6 +100,7 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
   ), 'container_template_id');
   const quantityProfiles = indexBy(approvedForRevision(records.item_template_quantity_profiles, worldRevisionId), 'item_template_id');
   const itemBindings = groupBy(approved(records.item_template_category_bindings), 'item_template_id');
+  const categories = approvedMap(records.universal_categories);
   const containerBindings = groupBy(approved(records.container_template_facet_bindings), 'container_template_id');
   const itemSourceBindings = groupBy(approvedForRevision(records.item_template_source_bindings, worldRevisionId), 'item_template_id');
   const containerSourceBindings = groupBy(approvedForRevision(records.container_template_source_bindings, worldRevisionId), 'container_template_id');
@@ -72,6 +151,7 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
     const constructions = bindings.filter((binding) => binding.binding_kind === 'manufacturing_technique').map((binding) => binding.category_id).sort();
     const condition = singleCategory(bindings, 'condition', template.id);
     const sizeBinding = singleBinding(bindings, 'size_band', template.id);
+    const visualProfileSnapshot = buildVisualProfileSnapshot(bindings, template, categories);
     const candidateId = `runtime_${entry.id}`;
     quantityRequirements.push(quantityRequirement(quantity, candidateId));
     return {
@@ -91,6 +171,9 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
       access_state: { access: 'context_policy', policy: structuredClone(property.access_model) },
       risk_state: { legal_risk: 'context_dependent', social_risk: 'context_dependent' },
       physical_state: { mass_grams_per_unit: positiveNumber(quantity.mass_grams_per_unit, 'RUNTIME_QUANTITY_UNIT_MASS_INVALID', quantity.id), external_hand_cost: inventory.external_hand_cost, carry_form: inventory.carry_form, condition, size_band: sizeBinding.category_id, material_category_id: materials[0], approved_material_category_ids: materials, approved_construction_category_ids: constructions },
+      ...(visualProfileSnapshot == null ? {} : {
+        visual_profile_snapshot: visualProfileSnapshot
+      }),
       packing_slot_cost: sizeBinding.packing_slot_cost,
       packing_bundle_size: sizeBinding.packing_bundle_size,
       variant_selection: { mode: 'deterministic_from_approved_bindings', selected_material_category_id: materials[0], candidate_material_category_ids: materials },
@@ -165,7 +248,7 @@ export function buildApprovedItemCatalogSnapshot({ records_by_table: records = {
     const profile = approvedEquipmentProfiles.get(entry.equipment_profile_id);
     if (!profile) fail('RUNTIME_EQUIPMENT_PROFILE_NOT_APPROVED', entry.id);
     if (entry.item_template_id && !itemTemplates.has(entry.item_template_id)) fail('RUNTIME_EQUIPMENT_ITEM_NOT_APPROVED', entry.id);
-    return { equipment_candidate_id: entry.id, equipment_profile_id: profile.id, item_template_id: entry.item_template_id ?? null, item_category_id: entry.item_category_id ?? null, required: entry.required, weight: entry.weight, world_revision_id: worldRevisionId, region_id: profile.region_id, valid_from_year: 1200, valid_to_year: 1250, allowed_seasons: [...ALL_SEASONS], status: 'approved' };
+    return { equipment_candidate_id: entry.id, equipment_profile_id: profile.id, item_template_id: entry.item_template_id ?? null, item_category_id: entry.item_category_id ?? null, equipment_slot_category_id: entry.slot_key, social_role_id: profile.social_role_id ?? null, occupation_id: profile.occupation_id ?? null, required: entry.required, weight: entry.weight, world_revision_id: worldRevisionId, region_id: profile.region_id, valid_from_year: 1200, valid_to_year: 1250, allowed_seasons: [...ALL_SEASONS], status: 'approved' };
   }).sort(byRuntimeId);
   const core = { version: 1, schema: 'approved_item_catalog_snapshot', world_revision_id: worldRevisionId, source_catalog_digest: sourceCatalogDigest, item_profile_candidates: itemCandidates, container_profile_candidates: containerCandidates, equipment_candidates: equipmentCandidates, quantity_requirements: quantityRequirements.sort(byRuntimeId), property_rule_candidates: propertyCandidates };
   return deepFreeze({ ...core, catalog_digest: digestValue(core) });
@@ -232,6 +315,72 @@ function referencedTemplates(slots, field, records, project) { const ids = [...n
 function requiredAnchorSlot(anchorSlotByTemplate, resourceSlot) { const value = anchorSlotByTemplate.get(resourceSlot.g5_anchor_template_id); if (!value) fail('RUNTIME_RESOURCE_ANCHOR_SLOT_UNRESOLVED', resourceSlot.id); return value; }
 function singleCategory(bindings, kind, owner, key = 'binding_kind') { const values = bindings.filter((record) => record[key] === kind).map((record) => record.category_id).sort(); if (!values.length) fail('RUNTIME_CATEGORY_BINDING_MISSING', `${owner}:${kind}`); return values[0]; }
 function singleBinding(bindings, kind, owner, key = 'binding_kind') { const values = bindings.filter((record) => record[key] === kind).sort(byId); if (values.length !== 1) fail('RUNTIME_CATEGORY_BINDING_AMBIGUOUS', `${owner}:${kind}`); return values[0]; }
+function buildVisualProfileSnapshot(bindings, template, categories) {
+  const garment = bindings.filter((record) => record.binding_kind === 'garment_kind');
+  if (garment.length === 0) return null;
+  const required = ['garment_kind', 'equipment_slot', 'neckline', 'sleeve_form', 'visible_fabric', 'main_visible_color'];
+  const value = (kind, optional = false) => {
+    const matches = bindings.filter((record) => record.binding_kind === kind).sort(byId);
+    if (matches.length === 0 && optional) return null;
+    if (matches.length !== 1) fail('RUNTIME_CATEGORY_BINDING_AMBIGUOUS', `${template.id}:${kind}`);
+    const category = categories.get(matches[0].category_id);
+    if (!category) fail('RUNTIME_VISUAL_CATEGORY_NOT_APPROVED', matches[0].category_id);
+    const prefix = `garment.${kind}.`;
+    const stableCode = String(category.stable_code ?? '');
+    if (!stableCode.startsWith(prefix) || stableCode.length === prefix.length) {
+      fail('RUNTIME_VISUAL_CATEGORY_VALUE_INVALID', `${template.id}:${kind}:${category.id}`);
+    }
+    return stableCode.slice(prefix.length);
+  };
+  for (const kind of required) value(kind);
+  return {
+    schema: 'item_visual_profile_snapshot_v1',
+    version: 1,
+    item_template_id: template.id,
+    world_revision_id: template.world_revision_id,
+    garment_kind: value('garment_kind'),
+    equipment_slot: value('equipment_slot'),
+    neckline: value('neckline'),
+    sleeve_form: value('sleeve_form'),
+    outer_form: value('outer_form', true) ?? 'none',
+    visible_fabric: value('visible_fabric'),
+    trim: value('trim', true) ?? 'none',
+    main_visible_color: value('main_visible_color'),
+    secondary_visible_color: value('secondary_visible_color', true),
+    headwear_kind: value('headwear_kind', true) ?? 'none'
+  };
+}
+function buildActorComponentProfiles({ profiles = [], entries = [], profileKey, regionId, options, categories }) {
+  const grouped = groupBy(approved(entries), profileKey);
+  return approved(profiles)
+    .filter((profile) => profile.region_id === regionId && (grouped.get(profile.id) ?? []).length > 0)
+    .map((profile) => ({
+      id: profile.id,
+      region_id: profile.region_id,
+      entries: (grouped.get(profile.id) ?? []).sort(byId).map((entry) => {
+        if (!ACTOR_APPEARANCE_FACETS.includes(entry.facet)) fail('RUNTIME_ACTOR_PROFILE_FACET_INVALID', entry.id);
+        const option = options.get(entry.option_id);
+        if (!option) fail('RUNTIME_ACTOR_PROFILE_OPTION_NOT_APPROVED', entry.id);
+        const category = categories.get(option.category_id);
+        if (!category) fail('RUNTIME_ACTOR_PROFILE_CATEGORY_NOT_APPROVED', entry.id);
+        const prefix = `actor.${entry.facet}.`;
+        const stableCode = String(category.stable_code ?? '');
+        if (category.facet !== entry.facet || !stableCode.startsWith(prefix) || stableCode.length === prefix.length) {
+          fail('RUNTIME_ACTOR_PROFILE_OPTION_INVALID', entry.id);
+        }
+        return {
+          entry_id: entry.id,
+          facet: entry.facet,
+          option_id: option.id,
+          option_value: stableCode.slice(prefix.length),
+          weight: entry.weight,
+          applicability: structuredClone(entry.applicability ?? option.applicability ?? {}),
+          status: 'approved'
+        };
+      })
+    }))
+    .sort(byId);
+}
 function approved(values = []) { return values.filter((record) => record.status === 'approved'); }
 function approvedForRevision(values = [], worldRevisionId) { return approved(values).filter((record) => record.world_revision_id === worldRevisionId); }
 function approvedOrStatusless(values = []) { return values.filter((record) => record.status == null || record.status === 'approved'); }

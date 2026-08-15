@@ -475,7 +475,12 @@ const baseApprovedDomainImports = new Set([
 const approvedDomainImportsByModule = new Map([
   ['body-state', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])],
   ['combat-health', new Set([...baseApprovedDomainImports, '@rus/contracts/combat-v1'])],
-  ['movement-routes', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])]
+  ['movement-routes', new Set([...baseApprovedDomainImports, '@rus/time-events-history'])],
+  ['visibility-knowledge-memory', new Set([
+    ...baseApprovedDomainImports,
+    '@rus/actors',
+    '@rus/contracts/portrait-spec-v1'
+  ])]
 ]);
 const domainSourceByModule = new Map();
 for (const moduleName of domainModuleNames) {
@@ -708,7 +713,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',

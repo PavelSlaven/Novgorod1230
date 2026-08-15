@@ -1,5 +1,5 @@
 import { joinPointSets, quadraticPoints } from './handmade.js';
-import { deterministicUnit } from './portrait-randomness.js';
+import { fixedPatternUnit } from './semantic-portrait-geometry.js';
 const FABRIC = Object.freeze({
   light_linen: Object.freeze({ folds: 5, width: .9, alpha: .34, roughness: .72, texture: 2 }),
   wool: Object.freeze({ folds: 3, width: 1.18, alpha: .38, roughness: .88, texture: 0 }),
@@ -101,7 +101,7 @@ function buildFolds(model, geometry, profile) {
     const origin = origins[index % origins.length];
     const candidates = geometry.tensionRegions[origin];
     const selected = Math.floor(
-      deterministicUnit(model.identity.seeds.clothing, 5100 + index)
+      fixedPatternUnit(5100 + index)
         * candidates.length
     ) % candidates.length;
     const start = candidates[selected];
@@ -112,7 +112,7 @@ function buildFolds(model, geometry, profile) {
       .88
     );
     const drift = (
-      deterministicUnit(model.identity.seeds.clothing, 5120 + index) - .5
+      fixedPatternUnit(5120 + index) - .5
     ) * (model.clothing.fabric === 'light_linen' ? 22 : 14);
     const end = [
       lerp(waist.waistLeft[0], waist.waistRight[0], ratio) + drift * .35,
@@ -177,10 +177,7 @@ function buildTrim(model, geometry) {
     const ratio = (lane + 1) / (laneCount + 1);
     const { point, normal } = pathFrame(source.points, ratio);
     const length = (kind === 'braid' ? 5.5 : 6.5) * (
-      .88 + deterministicUnit(
-        model.identity.seeds.clothing,
-        5180 + index
-      ) * .24
+      .88 + fixedPatternUnit(5180 + index) * .24
     );
     const tangent = [-normal[1], normal[0]];
     const points = kind === 'braid'
@@ -211,10 +208,7 @@ function buildTexture(model, geometry, profile) {
         source.points,
         (index + 1) / (profile.texture + 1)
       );
-      const length = 5 + deterministicUnit(
-        model.identity.seeds.clothing,
-        5220 + index
-      ) * 4;
+      const length = 5 + fixedPatternUnit(5220 + index) * 4;
       return Object.freeze({
         boundaryId: source.id,
         points: [add(point, normal, -2), add(point, normal, length)],

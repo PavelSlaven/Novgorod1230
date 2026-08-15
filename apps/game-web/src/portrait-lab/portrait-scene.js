@@ -17,19 +17,19 @@ export function buildPortraitScene(model) {
   const geometry = buildPortraitGeometry(model);
   const visibility = resolveVisibility(model, geometry);
   const face = buildFaceScene(model, visibility);
-  const strokes = withPartSeeds([
+  const strokes = freezeEntries([
     ...buildVisibleStrokes(model, geometry, visibility),
     ...face.strokes
-  ], model);
-  const hatches = withPartSeeds([
+  ]);
+  const hatches = freezeEntries([
     ...buildHatches(model, geometry, visibility),
     ...face.hatches
-  ], model);
-  const patches = withPartSeeds([
+  ]);
+  const patches = freezeEntries([
     ...buildPatches(model, geometry, visibility),
     ...face.patches
-  ], model);
-  const scratches = withPartSeeds(buildScratches(model), model);
+  ]);
+  const scratches = freezeEntries(buildScratches(model));
   const scene = Object.freeze({
     contract: PORTRAIT_DRAWING_CONTRACT_V1.schema,
     geometry,
@@ -43,11 +43,8 @@ export function buildPortraitScene(model) {
   return scene;
 }
 
-function withPartSeeds(entries, model) {
-  return entries.map((entry) => Object.freeze({
-    ...entry,
-    seed: model.identity.seeds[entry.part]
-  }));
+function freezeEntries(entries) {
+  return entries.map((entry) => Object.freeze({ ...entry }));
 }
 
 function resolveVisibility(model, geometry) {

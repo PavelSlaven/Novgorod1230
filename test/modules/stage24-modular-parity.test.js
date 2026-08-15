@@ -54,6 +54,17 @@ test('Stage 24 code builder emits version-pinned party_runtime_v2 batches', () =
   assert.ok(![...targets].some((target) => ['party_state', 'party_minilocations', 'party_scene_anchors'].includes(target)));
 });
 
+test('Stage 24 never persists the read-only portrait projection', () => {
+  const f = makeStage24Fixture();
+  const input = structuredClone(f.input);
+  input.approved_pipeline_outputs.visible_context_package.portrait_spec_v1 = {};
+
+  assert.throws(
+    () => modular.buildPartyRuntimeV2WritePlan(input),
+    (error) => error.code === 'WRITE_PLAN_PORTRAIT_PROJECTION_FORBIDDEN'
+  );
+});
+
 test('Stage 24 persists every validated Stage 3/9 bounded decision with full request/options/result trace', () => {
   const f = makeStage24Fixture();
   const input = structuredClone(f.input);

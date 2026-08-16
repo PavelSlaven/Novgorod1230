@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  createTurnCommandRegistry,
   createTurnStepExecutionRegistry,
   runTurnWorkflow
 } from '../src/index.js';
+import { isOrdinaryDiscoveryInScope } from '../src/turn-step-admission.js';
 import {
   createServices,
   input,
@@ -63,3 +65,392 @@ test('registered generic domain handler precedes scenario command bindings',
     assert.equal(genericCalls, 1);
     assert.equal(scenarioCalls, 0);
   });
+
+test('ordinary discovery resolver runs only after existing discovery owners',
+  async () => {
+    let ordinaryCalls = 0;
+    let bindingCalls = 0;
+    const { services } = createServices([], {
+      command: {
+        matches: () => false,
+        semantic_binding: {
+          binding_id: 'authored-discovery',
+          operation: 'request_discovery',
+          matches() {
+            bindingCalls += 1;
+            return true;
+          }
+        }
+      },
+      playerSafeStateProjector: () => discoveryProjection(),
+      turnStepOrdinaryDiscoveryResolver: async () => {
+        ordinaryCalls += 1;
+        throw new Error('ordinary resolver must not preempt authored discovery');
+      },
+      turnStepModel: discoveryPlan
+    });
+
+    const result = await runTurnWorkflow(input(), services);
+
+    assert.equal(result.status, 'resolved');
+    assert.equal(bindingCalls, 1);
+    assert.equal(ordinaryCalls, 0);
+  });
+
+test('registered discovery owner preempts the ordinary resolver', async () => {
+  let currentDiscoveryCalls = 0;
+  let ordinaryCalls = 0;
+  const { services } = createServices([], {
+    command: {
+      matches: () => false,
+      semantic_binding: {
+        binding_id: 'authored-discovery-fallback',
+        operation: 'request_discovery',
+        matches: () => true
+      }
+    },
+    playerSafeStateProjector: () => discoveryProjection(),
+    turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+      domain: {
+        request_discovery: async ({ working_projection: value }) => {
+          currentDiscoveryCalls += 1;
+          return {
+            working_projection: value,
+            write_fragments: [{
+              target: 'party_hidden_state',
+              value: { exact_discovery_resolution: true }
+            }],
+            player_response_boundary: true
+          };
+        }
+      }
+    }),
+    turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+    turnStepModel: discoveryPlan
+  });
+
+  await runTurnWorkflow(input(), services);
+
+  assert.equal(currentDiscoveryCalls, 1);
+  assert.equal(ordinaryCalls, 0);
+});
+
+test('unresolved in-scope inspect and search reach the ordinary seam without query matching',
+  async () => {
+    const requests = [];
+    const { services } = createServices([], {
+      command: {
+        matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding()
+      },
+      playerSafeStateProjector: () => discoveryProjection({
+        discovery_available: true,
+        container_resolution_available: false
+      }),
+      turnStepOrdinaryDiscoveryResolver: async (request) => {
+        requests.push(request);
+        return {
+          working_projection: {
+            ...request.working_projection,
+            ordinary_detail_resolved: true
+          },
+          summary: 'ordinary detail resolved',
+          write_fragments: [{
+            target: 'party_hidden_state',
+            value: { ordinary_detail_resolved: true }
+          }],
+          player_response_boundary: true
+        };
+      },
+      turnStepModel: (request) => discoveryPlan(request,
+        'разглядеть неприметную вещь у старой пристани', 'inspect')
+    });
+
+    const result = await runTurnWorkflow(input(), services);
+
+    assert.equal(result.status, 'partial');
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].schema,
+      'turn_step_ordinary_discovery_request_v1');
+    assert.equal(requests[0].operation.query,
+      'разглядеть неприметную вещь у старой пристани');
+    assert.equal(Object.isFrozen(requests[0]), true);
+    assert.equal(Object.isFrozen(requests[0].operation), true);
+    assert.equal(Object.isFrozen(requests[0].working_projection), true);
+    assert.throws(() => { requests[0].operation.query = 'подмена'; },
+      TypeError);
+    assert.throws(() => {
+      requests[0].working_projection.position.location_ref = 'подмена';
+    }, TypeError);
+
+    const search = createServices([], {
+      command: {
+        matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding()
+      },
+      playerSafeStateProjector: () => discoveryProjection({
+        discovery_available: true,
+        container_resolution_available: false
+      }),
+      turnStepOrdinaryDiscoveryResolver: async (request) => {
+        requests.push(request);
+        return ordinaryResult(request);
+      },
+      turnStepModel: (request) => discoveryPlan(request,
+        'отыскать то, чего раньше никто не называл', 'search')
+    }).services;
+    await runTurnWorkflow(input(), search);
+    assert.equal(requests.length, 2);
+    assert.equal(requests[1].operation.discovery_kind, 'search');
+  });
+
+test('ordinary resolver is not called outside enabled physical discovery scope',
+  async () => {
+    let ordinaryCalls = 0;
+    const passThrough = createServices([], {
+      command: {
+        matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding()
+      },
+      playerSafeStateProjector: () => discoveryProjection(),
+      turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+      turnStepExecutionRegistry: createTurnStepExecutionRegistry({
+        applySemanticActivity: async ({ working_projection: value }) => ({
+          working_projection: value,
+          write_fragments: [{
+            target: 'party_hidden_state', value: { passed_through: true }
+          }],
+          player_response_boundary: false
+        })
+      }),
+      turnStepModel: async (request) => turnStepPlan(request)
+    }).services;
+    const passThroughResult = await runTurnWorkflow(
+      { ...input(), raw_text: 'иду дальше' }, passThrough
+    );
+    assert.equal(passThroughResult.status, 'resolved');
+    assert.equal(ordinaryCalls, 0);
+
+    for (const ordinaryResolution of [undefined, {
+      discovery_available: false, container_resolution_available: false
+    }, {
+      discovery_available: true, container_resolution_available: true
+    }]) {
+      const disabledCapability = createServices([], {
+        command: {
+          matches: () => false,
+          semantic_binding: unmatchedDiscoveryBinding()
+        },
+        playerSafeStateProjector: () => discoveryProjection(ordinaryResolution),
+        turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+        turnStepModel: discoveryPlan
+      }).services;
+      await assert.rejects(() => runTurnWorkflow(input(), disabledCapability), {
+        code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+      });
+    }
+    assert.equal(ordinaryCalls, 0);
+
+    const outsideVisibleScope = createServices([], {
+      command: { matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding() },
+      playerSafeStateProjector: () => discoveryProjection({
+        discovery_available: true,
+        container_resolution_available: false
+      }),
+      turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+      turnStepModel: (request) => {
+        const plan = discoveryPlan(request);
+        plan.operations[0].target_refs = ['not-visible'];
+        return plan;
+      }
+    }).services;
+    await assert.rejects(() => runTurnWorkflow(input(), outsideVisibleScope), {
+      code: 'TURN_STEP_PLAN_INVALID'
+    });
+    assert.equal(ordinaryCalls, 0);
+
+    const missingPort = createServices([], {
+      command: { matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding() },
+      playerSafeStateProjector: () => discoveryProjection({
+        discovery_available: true,
+        container_resolution_available: false
+      }),
+      turnStepModel: discoveryPlan
+    }).services;
+    await assert.rejects(() => runTurnWorkflow(input(), missingPort), {
+      code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+    });
+  });
+
+test('listen and remember never reach ordinary resolver, even when enabled',
+  async () => {
+    let ordinaryCalls = 0;
+    for (const discoveryKind of ['listen', 'remember']) {
+      const { services } = createServices([], {
+        command: { matches: () => false,
+          semantic_binding: unmatchedDiscoveryBinding() },
+        playerSafeStateProjector: () => discoveryProjection({
+          discovery_available: true,
+          container_resolution_available: false
+        }),
+        turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+        turnStepModel: (request) => discoveryPlan(request,
+          `unseen ${discoveryKind} request`, discoveryKind)
+      });
+      await assert.rejects(() => runTurnWorkflow(input(), services), {
+        code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+      });
+    }
+    assert.equal(ordinaryCalls, 0);
+  });
+
+test('ambiguous authored discovery remains fail-closed before ordinary seam',
+  async () => {
+    let ordinaryCalls = 0;
+    const { services } = createServices([], {
+      command: { matches: () => false,
+        semantic_binding: unmatchedDiscoveryBinding() },
+      playerSafeStateProjector: () => discoveryProjection({
+        discovery_available: true,
+        container_resolution_available: false
+      }),
+      turnStepOrdinaryDiscoveryResolver: async () => { ordinaryCalls += 1; },
+      turnStepModel: discoveryPlan
+    });
+    const command = services.commandRegistry.get('inspect_cart');
+    services.commandRegistry = createTurnCommandRegistry([
+      {
+        ...command,
+        semantic_binding: {
+          binding_id: 'authored-discovery-a',
+          operation: 'request_discovery', matches: () => true
+        }
+      },
+      {
+        ...command,
+        command_id: 'inspect_cart_duplicate',
+        option_id: 'inspect_cart_duplicate',
+        semantic_binding: {
+          binding_id: 'authored-discovery-b',
+          operation: 'request_discovery', matches: () => true
+        }
+      }
+    ]);
+    await assert.rejects(() => runTurnWorkflow(input(), services), {
+      code: 'TURN_STEP_DOMAIN_BINDING_AMBIGUOUS'
+    });
+    assert.equal(ordinaryCalls, 0);
+  });
+
+test('ordinary capability gate accepts only an exact own marker without getters',
+  () => {
+    const operation = {
+      op: 'request_discovery', discovery_kind: 'inspect',
+      target_refs: ['place-gate'], query: 'необычная формулировка'
+    };
+    const enabled = discoveryProjection({
+      discovery_available: true, container_resolution_available: false
+    }).player_safe_state;
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation, playerSafeState: enabled
+    }), true);
+    for (const marker of [
+      { discovery_available: true },
+      { discovery_available: true, container_resolution_available: false,
+        unexpected: true }
+    ]) {
+      assert.equal(isOrdinaryDiscoveryInScope({
+        operation, playerSafeState: discoveryProjection(marker).player_safe_state
+      }), false);
+    }
+    const inherited = Object.create({ ordinary_resolution: {
+      discovery_available: true, container_resolution_available: false
+    } });
+    inherited.position = { location_ref: 'place-gate' };
+    inherited.visible_entities = [{ entity_ref: 'place-gate' }];
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation, playerSafeState: inherited
+    }), false);
+
+    let reads = 0;
+    const topAccessor = discoveryProjection().player_safe_state;
+    Object.defineProperty(topAccessor, 'ordinary_resolution', {
+      enumerable: true,
+      get() { reads += 1; return enabled.ordinary_resolution; }
+    });
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation, playerSafeState: topAccessor
+    }), false);
+    const nestedAccessor = {};
+    Object.defineProperty(nestedAccessor, 'discovery_available', {
+      enumerable: true,
+      get() { reads += 1; return true; }
+    });
+    Object.defineProperty(nestedAccessor, 'container_resolution_available', {
+      enumerable: true, value: false
+    });
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation,
+      playerSafeState: discoveryProjection(nestedAccessor).player_safe_state
+    }), false);
+    assert.equal(reads, 0);
+    assert.equal(isOrdinaryDiscoveryInScope({
+      operation: { ...operation, target_refs: ['place-gate', 'another-visible'] },
+      playerSafeState: enabled
+    }), false);
+  });
+
+function unmatchedDiscoveryBinding() {
+  return {
+    binding_id: 'unmatched-authored-discovery',
+    operation: 'request_discovery',
+    matches: () => false
+  };
+}
+
+function discoveryProjection(ordinaryResolution = undefined) {
+  return {
+    actor: { actor_ref: 'party-1' },
+    player_safe_state: {
+      position: { location_ref: 'place-gate' },
+      visible_entities: [{ entity_ref: 'place-gate' }],
+      ...(ordinaryResolution === undefined ? {} : {
+        ordinary_resolution: ordinaryResolution
+      })
+    }
+  };
+}
+
+function discoveryPlan(request, query = 'осмотреть неизвестную деталь',
+  discoveryKind = 'inspect') {
+  return turnStepPlan(request, {
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{
+      op: 'request_discovery',
+      actor_ref: 'party-1',
+      discovery_kind: discoveryKind,
+      target_refs: ['place-gate'],
+      query
+    }],
+    continuation: null
+  });
+}
+
+function ordinaryResult(request) {
+  return {
+    working_projection: {
+      ...request.working_projection,
+      ordinary_detail_resolved: true
+    },
+    summary: 'ordinary detail resolved',
+    write_fragments: [{
+      target: 'party_hidden_state',
+      value: { ordinary_detail_resolved: true }
+    }],
+    player_response_boundary: true
+  };
+}

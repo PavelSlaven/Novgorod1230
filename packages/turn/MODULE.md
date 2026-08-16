@@ -149,6 +149,27 @@ Revision 19 / `spatial-v3-production-v9` наследует этот orchestrati
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
 
+O1 активирует internal ordinary branch только внутри существующего
+`request_discovery`; нового public op и scenario-local resolver нет. После
+authored/committed discovery, exact persisted ordinary resolution и остальных
+code-first short circuits `@rus/turn` допускает ordinary model call лишь при
+meaningful engagement. Candidate-free Stage A использует только committed
+objective context; Stage B имеет `evidence_weight = 0`, а code-owned builder
+создаёт identity/classification/policy fields. Normalized discovery query
+(NFKC, trim, collapse whitespace, ru-RU lowercase) поставляет только
+`candidate_hint` и уточняет `coverage_ref`; unknown paraphrase получает
+отдельное coverage, поэтому no-reroll действует лишь для exact deterministic
+normalization. Turn принимает positive только после independent
+supporting-basis/property/placement admission `@rus/items-property`, собирает
+один ordinary P16 plan после revalidation и передаёт его persistence owner;
+model call никогда не находится внутри physical transaction. Player-safe
+working projection получает только capability marker и approved concrete
+result, narration начинается лишь после commit. Exact positive/negative
+resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
+exact deterministic identity.
+O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
+context-bound weapons/value/currency или natural finite sources.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

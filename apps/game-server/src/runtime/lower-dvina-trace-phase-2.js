@@ -39,6 +39,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, ordinaryDiscoveryEnablementMarker = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -274,6 +275,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         turnStepGenericCheckContextOwner:
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
+        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, ordinaryDiscoveryEnablementMarker,
         turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
         turnStepApprovedOwners: genericOwners,
         turnStepPackingCalculator,
@@ -294,5 +296,4 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
       };
       return executeTraceTurnWithAutonomousRetry(executeAttempt);
     }
-  });
-}
+  }); }

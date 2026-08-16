@@ -650,6 +650,7 @@ const turnFiles = (await walk(join(turnRoot, 'src'))).filter((file) => ['.js', '
 const turnFileSet = new Set(turnFiles.map((file) => resolve(file)));
 const turnGraph = new Map();
 const approvedTurnImports = new Set([
+  '@rus/contracts/ordinary-materialization-v1',
   '@rus/contracts/combat-v1',
   '@rus/contracts/spatial-v3/ports',
   '@rus/contracts/spatial-v3/registry',
@@ -713,7 +714,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',

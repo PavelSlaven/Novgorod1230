@@ -26,6 +26,8 @@ export {
   computeOrdinaryIdentityBudget,
   createOrdinaryAggregate,
   createOrdinaryCandidateKey,
+  createOrdinaryCategoryKey,
+  createOrdinaryContextVersion,
   createOrdinaryCoverageKey,
   createOrdinaryResolutionRef,
   createPreparedGroupRef,

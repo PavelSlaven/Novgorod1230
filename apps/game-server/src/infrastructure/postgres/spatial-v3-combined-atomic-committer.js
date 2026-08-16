@@ -15,6 +15,9 @@ import {
 import {
   applySealedLifecycleInsert
 } from './spatial-v3-lifecycle-insert.js';
+import {
+  applyOrdinaryMaterializationAtomicWritePlanInTransaction
+} from './ordinary-materialization-phase-6-commit.js';
 
 export { validateSpatialV3CombinedWritePlan };
 
@@ -82,7 +85,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 
-export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, now = () => new Date() } = {}) {
+export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, now = () => new Date() } = {}) {
   return Object.freeze({ async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck } = {}) {
     if (!validateSpatialV3CombinedWritePlan(plan)) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' }) });
     if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' }) });
@@ -166,6 +169,27 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           );
         }
       }
+      if (plan.operation_kind === 'first_entry' && ordinaryFirstEntryProvisioner != null) {
+        const binding = plan.commit_rechecks.find((check) => check.kind === 'physical');
+        await ordinaryFirstEntryProvisioner.provision({ transaction: tx,
+          partyId: plan.party_id, firstEntryBinding: structuredClone(binding) });
+      }
+      if (plan.ordinary_materialization_atomic_write_plan != null) {
+        try {
+          await applyOrdinaryMaterializationAtomicWritePlanInTransaction({
+            client: tx,
+            input: plan.ordinary_materialization_atomic_write_plan,
+            partyStateVersionAfter: plan.ordinary_materialization_atomic_write_plan
+              .expected_versions.party_state_version + 1,
+            requireEnablementPin: true
+          });
+        } catch (cause) {
+          if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE') {
+            cause.spatialCode = 'state_version_conflict';
+          }
+          throw cause;
+        }
+      }
       const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
         const expectedStateVersion =
@@ -199,11 +223,11 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
 }
 
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
-export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, now } = {}) {
+export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, now } = {}) {
   if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
   return createSpatialV3CombinedAtomicCommitter({
     now,
-    recheck,
+    recheck, ordinaryFirstEntryProvisioner,
     withTransaction: async (work) => {
       const client = await pool.connect();
       try { await client.query('BEGIN'); const result = await work(client); if (!result?.ok) { await client.query('ROLLBACK'); return result; } await client.query('COMMIT'); return result; }

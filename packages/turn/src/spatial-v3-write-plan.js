@@ -72,7 +72,8 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     visible_package_envelope,
     approved_write_sets,
     lock_context,
-    commit_rechecks
+    commit_rechecks,
+    ordinary_materialization_atomic_write_plan = null
   } = input;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
@@ -109,7 +110,8 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     canonical_input_digest,
     validation_report,
     visible_package_envelope,
-    approved_write_sets
+    approved_write_sets,
+    ordinary_materialization_atomic_write_plan
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -268,6 +270,8 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     g4_keys: [...lock_context.g4_keys].sort(),
     physical_keys: [...physicalKeys].sort(),
     commit_rechecks: clone(commit_rechecks).sort((a, b) => a.kind.localeCompare(b.kind) || a.digest.localeCompare(b.digest)),
+    ordinary_materialization_atomic_write_plan: ordinary_materialization_atomic_write_plan == null
+      ? null : clone(ordinary_materialization_atomic_write_plan),
     write_set_digest,
     ...write_set
   };

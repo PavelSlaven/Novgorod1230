@@ -29,6 +29,8 @@ import { completeTurn10Phase7Factual } from
   './lower-dvina-trace-turn-10-phase7.js';
 import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
+import { applyOrdinaryMaterializationProjection, ordinaryPhysicalKeys,
+  ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
@@ -52,6 +54,9 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     factual.player_input.idempotency_key
   ).slice(0, 20)}`;
   assertPhase7OwnerResult({ factual, state, phase7Contracts, changeSetId });
+  let ordinaryPlan;
+  try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
+  catch { fail('TRACE_PHASE_7_ORDINARY_PLAN_INVALID'); }
   let next = nextPhase7State({
     state,
     factual,
@@ -61,6 +66,9 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     inputDigest,
     turn10Contracts
   });
+  const ordinaryVisibleContext = applyOrdinaryMaterializationProjection({
+    next, visibleContext, ordinaryPlan
+  });
   const visibleEnvelope = phase7VisibleEnvelope({
     partyId,
     nextVersion,
@@ -68,7 +76,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     changeSetId,
     idemId,
     factual,
-    visibleContext,
+    visibleContext: ordinaryVisibleContext,
     phase7Contracts
   });
   next.last_turn.visible_package = {
@@ -163,7 +171,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
         ),
         `party_runtime.party_npcs:${
           factual.consequence.phase7.autonomous.request.npc_ref}`,
-        ...scheduleItemKeys(state, factual)
+        ...scheduleItemKeys(state, factual),
+        ...ordinaryPhysicalKeys(ordinaryPlan)
       ])]
     },
     commit_rechecks: commitRechecks({
@@ -172,7 +181,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
       factual,
       phase7Contracts,
       inputDigest
-    })
+    }),
+    ordinary_materialization_atomic_write_plan: ordinaryPlan
   };
   const firstIntegrated = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: baseInput,
@@ -213,12 +223,17 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
 }
 
 export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
-  state, inputDigest, visibleContext, phase7Contracts }) {
+  state, inputDigest, visibleContext, phase7Contracts,
+  ordinaryMaterializationAtomicWritePlan = null }) {
   const writePlan = {
     base_state_version: state.party_state.state_version,
     write_targets: [{ target: 'party_state', value: factual }, {
       target: 'party_visible_context_package', value: visibleContext
-    }]
+    }],
+    ...(ordinaryMaterializationAtomicWritePlan == null ? {} : {
+      ordinary_materialization_atomic_write_plan:
+        ordinaryMaterializationAtomicWritePlan
+    })
   };
   let captured = null;
   await commitLowerDvinaTracePhase7({

@@ -41,6 +41,7 @@ export async function executeTurnStepActorStep({
   const writes = [];
   const consequences = [];
   const preparedEffects = [];
+  const ordinaryPlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -108,7 +109,7 @@ export async function executeTurnStepActorStep({
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects
+        summaries, writes, consequences, preparedEffects, ordinaryPlans
       }));
   }
 
@@ -131,7 +132,7 @@ export async function executeTurnStepActorStep({
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects
+        summaries, writes, consequences, preparedEffects, ordinaryPlans
       }));
   }
   if (plan.resolution !== 'domain_request') {
@@ -161,7 +162,7 @@ export async function executeTurnStepActorStep({
       ({ projection, boundary, progress, goalResult, continuation } =
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
-          summaries, writes, consequences, preparedEffects
+          summaries, writes, consequences, preparedEffects, ordinaryPlans
         }));
     }
   }
@@ -178,6 +179,7 @@ export async function executeTurnStepActorStep({
     writeFragments: writes,
     consequenceFragments: consequences,
     preparedEffects,
+    ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     preparedChainContext: chainContext
   };
 }

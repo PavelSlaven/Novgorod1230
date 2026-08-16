@@ -11,8 +11,11 @@ import {
 } from './runtime-catalog-pins.js';
 import {
   buildLowerDvinaTracePersistedProjection,
-  normalizeExternalOwnerRef
+  normalizeExternalOwnerRef,
+  projectNameProfileSnapshot
 } from './lower-dvina-trace-persisted-projection.js';
+import { assertRevision19CharacterState } from
+  './lower-dvina-trace-revision19-write-boundary.js';
 
 export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   assertInput(input);
@@ -183,8 +186,9 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     parent_container_id: null,
     holder_npc_id: container.holder_npc_id ?? null,
     holder_character_id: null,
-    physical_position: null,
-    equipment_slot_category_id: null,
+    physical_position: container.physical_position ?? null,
+    equipment_slot_category_id:
+      container.equipment_slot_category_id ?? null,
     condition_state: container.state?.physical_condition?.overall ?? null,
     closure_state: container.closure_state,
     state: {
@@ -211,7 +215,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     role_ref: { id: player.dossier.social_status.social_role_id, source: 'approved_scenario_profile' },
     occupation_ref: { id: player.dossier.social_status.occupation_id, source: 'approved_scenario_profile' },
     skill_profile_snapshot: player.dossier.skills,
-    name_profile_snapshot: player.dossier.identity,
+    name_profile_snapshot: projectNameProfileSnapshot(player.dossier.identity),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: player.dossier.knowledge,
     profile_candidate_set_digest: result.trace.choices.find((choice) => choice.choice_key === 'player_profile').candidate_set_digest,
@@ -225,7 +229,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     role_ref: npc.role_ref,
     occupation_ref: npc.occupation_ref,
     skill_profile_snapshot: {},
-    name_profile_snapshot: npc.identity_state,
+    name_profile_snapshot: projectNameProfileSnapshot(npc.identity_state),
     language_profile_snapshot: {},
     knowledge_profile_snapshot: npc.knowledge_profile_snapshot,
     profile_candidate_set_digest: npc.profile_candidate_set_digest,
@@ -280,22 +284,40 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     holder_npc_id: item.holder_npc_id ?? null,
     holder_character_id: item.holder_character_id ?? null,
     physical_position: item.physical_position ?? null,
-    equipment_slot_category_id: null
+    equipment_slot_category_id: item.equipment_slot_category_id ?? null
   })), ['party_items', 'party_containers', 'party_player_characters',
     'party_npcs', 'party_g5_anchors'], sourceTrace);
-  addBatch(batches, 'party_ownership', result.immediate.items.map((item) => ({
-    party_id: partyId,
-    ownership_id: `ownership_${item.instance_id}`,
-    item_id: item.instance_id,
-    container_id: null,
-    owner_npc_id: item.owner_npc_id ?? null,
-    owner_character_id: item.owner_character_id ?? null,
-    owner_party: false,
-    owner_external_ref: normalizeExternalOwnerRef(item.owner_external_ref),
-    controller_npc_id: item.controller_npc_id ?? null,
-    controller_character_id: item.controller_character_id ?? null,
-    claim_state: item.claim_state
-  })), ['party_items', 'party_player_characters', 'party_npcs'], sourceTrace);
+  addBatch(batches, 'party_ownership', [
+    ...result.immediate.items.map((item) => ({
+      party_id: partyId,
+      ownership_id: `ownership_${item.instance_id}`,
+      item_id: item.instance_id,
+      container_id: null,
+      owner_npc_id: item.owner_npc_id ?? null,
+      owner_character_id: item.owner_character_id ?? null,
+      owner_party: false,
+      owner_external_ref: normalizeExternalOwnerRef(item.owner_external_ref),
+      controller_npc_id: item.controller_npc_id ?? null,
+      controller_character_id: item.controller_character_id ?? null,
+      claim_state: item.claim_state
+    })),
+    ...preparedContainers.filter((container) =>
+      container.claim_state != null).map((container) => ({
+      party_id: partyId,
+      ownership_id: `ownership_${container.instance_id}`,
+      item_id: null,
+      container_id: container.instance_id,
+      owner_npc_id: null,
+      owner_character_id: null,
+      owner_party: false,
+      owner_external_ref: normalizeExternalOwnerRef(
+        container.owner_external_ref),
+      controller_npc_id: container.controller_npc_id ?? null,
+      controller_character_id: null,
+      claim_state: container.claim_state
+    }))
+  ], ['party_items', 'party_containers', 'party_player_characters',
+    'party_npcs'], sourceTrace);
   addBatch(batches, 'party_obligations', (result.immediate.promise_instances ?? []).map(
     (promise) => ({
       obligation_id: promise.instance_id,
@@ -408,7 +430,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -419,7 +441,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18].includes(
+  const phase7 = [15, 16, 17, 18, 19].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)
@@ -447,5 +469,8 @@ function assertInput(input) {
     const error = new Error('Lower Dvina trace Phase 1A requires one validated materialization result bound to the party.');
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
+  }
+  if (result.request_identity.scenario_definition_revision === 19) {
+    assertRevision19CharacterState(result);
   }
 }

@@ -32,6 +32,11 @@ import {
   buildLowerDvinaTraceSealedSelections
 } from './lower-dvina-trace-sealed-selections.js';
 import { buildLowerDvinaTracePhase5InitialBandage } from './lower-dvina-trace-phase-5-initial-item.js';
+import {
+  materializeRevision19ActorAppearances
+} from './lower-dvina-trace-appearance.js';
+import { buildLowerDvinaTracePlayerDossier } from
+  './lower-dvina-trace-player-dossier.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -175,7 +180,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18].includes(revision)
+  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19].includes(revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -184,10 +189,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10,11,12,13,14,15,16,17,18].includes(revision)
+  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19].includes(revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
-  const phase7Prepared = [15,16,17,18].includes(revision)
+  const phase7Prepared = [15,16,17,18,19].includes(revision)
     ? materializeLowerDvinaTracePreparedStorehouse({
       input, bundle, runId, participantSelections, locationSelections
     })
@@ -257,7 +262,45 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   }));
   assertLowerDvinaTraceTimestamp(timestamp);
 
-  const dossier = buildPlayerDossier({
+  const materializedNpcs = phase3Prepared
+    ? [
+      ...phase3Prepared.npcs,
+      ...(phase4Prepared ? phase4Prepared.npcs : []),
+      ...(phase7Prepared ? [phase7Prepared.npc] : [])
+    ]
+    : [];
+  const revision19Actors = revision === 19
+    ? materializeRevision19ActorAppearances({
+      bundle, playerId, name, random, choices, npcs: materializedNpcs
+    })
+    : null;
+  const revision19EquipmentHandoff = revision19Actors
+    ? {
+      party_id: input.party_id,
+      world_revision_id: input.world_revision_id,
+      request_id: input.idempotency_key,
+      run_id: runId,
+      g4_id: wreck.selected.g4_node_ref.id,
+      actor_candidate_instance_map: [{
+        actor_candidate_id: 'player_clerk',
+        actor_kind: 'player_character',
+        actor_instance_id: playerId
+      }, ...materializedNpcs.map((npc) => ({
+        actor_candidate_id: npc.participant_slot_ref,
+        actor_kind: 'npc',
+        actor_instance_id: npc.instance_id
+      }))],
+      initial_equipment_candidates:
+        bundle.item_container_set.initial_equipment_candidates,
+      item_templates: bundle.item_container_set.item_templates,
+      item_inventory_profiles:
+        bundle.item_container_set.item_inventory_profiles,
+      item_visual_profiles:
+        bundle.item_container_set.item_visual_profiles,
+      catalog_digest: bundle.artifact_pins.item_container_set.digest
+    } : null;
+
+  const dossier = buildLowerDvinaTracePlayerDossier({
     input,
     playerId,
     name,
@@ -268,7 +311,8 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     knifeInventoryProfile,
     wreck,
     projection: bundle.materialization_bindings.player_dossier_projection,
-    sourceDigest: bundle.artifact_pins.player_profile.digest
+    sourceDigest: bundle.artifact_pins.player_profile.digest,
+    actorIdentity: revision19Actors?.playerIdentity
   });
   const policyPins = Object.values(bundle.artifact_pins)
     .map((pin) => structuredClone(pin))
@@ -404,6 +448,9 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
     hidden_truth: hiddenTruth,
+    ...(revision19EquipmentHandoff ? {
+      initial_actor_equipment_handoff: revision19EquipmentHandoff
+    } : {}),
     sealed_selections: sealedSelections,
     policy_profile_pins: policyPins,
     validation_report: validationReport,
@@ -475,56 +522,6 @@ function selectLocations(set, random, choices) {
     })),
     record_digest: canonicalDigest(location)
   }));
-}
-
-function buildPlayerDossier({ input, playerId, name, profile, policy, body, knifeTemplate, knifeInventoryProfile, wreck, projection, sourceDigest }) {
-  const itemProjection = projection.inventory_item_projections[knifeTemplate.item_template_id];
-  return {
-    schema: 'player_character_dossier',
-    version: 1,
-    request_id: input.idempotency_key,
-    generation_status: 'generated',
-    identity: { character_id: playerId, name: name.display_name, name_candidate_id: name.id },
-    social_status: { social_role_id: profile.role.id, occupation_id: profile.occupation_id, display_name: profile.role.display_name },
-    origin: { current_region_id: wreck.location.region_ref, year: projection.historical_year, biography_basis: profile.approval.basis },
-    body: { health: body.values.health, satiety: body.values.satiety, vigor: body.values.energy, active_states: body.conditions.map((state) => ({ state, cause: body.profile_id })) },
-    attributes: structuredClone(profile.attributes),
-    skills: structuredClone(profile.skills),
-    knowledge: structuredClone(projection.knowledge),
-    goals: structuredClone(projection.goals),
-    inventory: {
-      items: [{
-        item_profile_candidate_id: knifeTemplate.item_template_id,
-        owner: knifeTemplate.weapon_contract.owner_ref,
-        holder: knifeTemplate.weapon_contract.holder_ref,
-        access: knifeTemplate.weapon_contract.accessibility,
-        carry_location: itemProjection.physical_position,
-        weight: { grams: knifeInventoryProfile.mass_grams, source_profile_id: knifeInventoryProfile.id },
-        condition: itemProjection.condition_state,
-        risk: structuredClone(itemProjection.risk),
-        use: itemProjection.use
-      }],
-      total_weight: { grams: knifeInventoryProfile.mass_grams },
-      load_category: knifeInventoryProfile.carry_form,
-      occupied_hands: knifeInventoryProfile.external_hand_cost
-    },
-    property_and_access: structuredClone(projection.property_and_access),
-    relations: structuredClone(projection.relations),
-    start_place_connection: structuredClone(projection.start_place_connection),
-    selected_candidate_refs: {
-      social_role_id: profile.role.id,
-      occupation_id: profile.occupation_id,
-      name_candidate_id: name.id,
-      trace_definition_ref: {
-        id: 'lower_dvina_trace_v1',
-        revision: 1,
-        digest: input.scenario_bundle.artifact_pins.player_profile_definition.digest
-      },
-      trace_player_profile_ref: structuredClone(policy.profile_ref)
-    },
-    source_trace: [{ source_id: profile.profile_id, digest: sourceDigest }],
-    audit_self_check: structuredClone(projection.audit_self_check)
-  };
 }
 
 function choose({ key, setRef, candidates, idOf, random, choices }) {

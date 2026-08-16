@@ -40,6 +40,15 @@ test('runtime catalog boundary uses active state only for a new party and histor
       calls.push(`catalog:${actual.catalog_revision_id}`);
       return Object.freeze({ schema: 'verified', records_by_table: {} });
     },
+    async loadApprovedActorProfileCatalog({ worldPin: actual }) {
+      assert.deepEqual(actual, worldPin);
+      calls.push('actor-profiles');
+      return Object.freeze({
+        schema: 'rus.verified_actor_profile_catalog.v1',
+        verified: true,
+        world_pin: worldPin
+      });
+    },
     selectApplicableItemCatalog({ verifiedCatalog }) {
       assert.equal(
         verifiedCatalog.records_by_table.inventory_archetypes[0]
@@ -89,6 +98,7 @@ test('runtime catalog boundary uses active state only for a new party and histor
     'compatible',
     'catalog:catalog-v2',
     'lookups',
+    'actor-profiles',
     'projection'
   ]);
 

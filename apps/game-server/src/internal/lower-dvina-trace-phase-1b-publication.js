@@ -17,6 +17,9 @@ import { isHistoricalLowerDvinaTracePhase1AManifestDigest,
 import { assertLowerDvinaTracePhase1BWorldLineage } from
   './lower-dvina-trace-phase-1b-world-lineage.js';
 import { loadLowerDvinaTraceRevision17Publication } from './lower-dvina-trace-phase-1b-revision17-publication.js';
+import { loadLowerDvinaTraceCharacterAppearancePublication,
+  TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST } from
+  './lower-dvina-trace-character-appearance-publication.js';
 export * from './lower-dvina-trace-phase-1b-identities.js';
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 const MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`,
@@ -25,6 +28,11 @@ export async function loadLowerDvinaTracePhase1BPublication({
   rootDir = process.cwd(),
   phase1AManifestDigest = null
 } = {}) {
+  if (phase1AManifestDigest == null
+      || phase1AManifestDigest === TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST) {
+    return loadLowerDvinaTraceCharacterAppearancePublication(
+      { rootDir, phase1AManifestDigest });
+  }
   if (isHistoricalLowerDvinaTracePhase1AManifestDigest(
     phase1AManifestDigest
   ) || phase1AManifestDigest
@@ -165,7 +173,6 @@ export async function loadLowerDvinaTracePhase1BPublication({
       'Only the complete scenario definition revision 18 can be published.'
     );
   }
-
   await assertLowerDvinaTracePhase1BWorldLineage({
     rootDir,
     compatibility: binding.world_compatibility,
@@ -186,7 +193,6 @@ export async function loadLowerDvinaTracePhase1BPublication({
     public_projection: publicProjection
   });
 }
-
 function assertBinding(binding) {
   const metadata = binding?.public_metadata;
   const projection = binding?.opening_projection;
@@ -242,7 +248,6 @@ function assertBinding(binding) {
     );
   }
 }
-
 function assertExactRef(ref, loaded, expected, idField = 'binding_id') {
   if (ref?.path !== expected.path
     || ref.id !== expected.id
@@ -258,7 +263,6 @@ function assertExactRef(ref, loaded, expected, idField = 'binding_id') {
     );
   }
 }
-
 async function readJson(rootDir, relativePath) {
   if (!text(relativePath)) {
     fail(
@@ -281,15 +285,10 @@ async function readJson(rootDir, relativePath) {
     digest: createHash('sha256').update(raw).digest('hex')
   };
 }
-
-function text(value) {
-  return String(value ?? '').trim();
-}
-
+function text(value) { return String(value ?? '').trim(); }
 function fail(code, message, details = {}) {
   throw Object.assign(new Error(message), { code, status: 409, details });
 }
-
 function freezeDeep(value) {
   if (!value || typeof value !== 'object' || Object.isFrozen(value)) {
     return value;

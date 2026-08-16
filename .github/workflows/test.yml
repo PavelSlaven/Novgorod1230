@@ -119,7 +119,7 @@ jobs:
           psql --dbname world_base_ci --set ON_ERROR_STOP=1 -f infra/world-base/schema.sql
 
           table_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'world_base' AND table_type = 'BASE TABLE'")
-          test "$table_count" -eq 199
+          test "$table_count" -eq 201
 
           role_count=$(psql --dbname world_base_ci --tuples-only --no-align --command "SELECT count(*) FROM pg_roles WHERE rolname = 'world_reader' AND NOT rolsuper AND NOT rolcreatedb AND NOT rolcreaterole")
           test "$role_count" -eq 1
@@ -140,6 +140,10 @@ jobs:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/world_base_ci
         run: npm run world-db:import:stage3b1:integration
 
+      - name: Execute character appearance runtime-catalog PostgreSQL integration
+        if: steps.profile.outputs.profile == 'full'
+        run: npm run character-appearance:test-world-v4-postgres
+
       - name: Validate canonical knowledge corpus
         if: steps.profile.outputs.profile == 'full'
         run: npm run knowledge:check-corpus
@@ -153,11 +157,15 @@ jobs:
           cat "$RUNNER_TEMP/docs-generate.log"
           exit "$status"
 
+      - name: Generate deterministic character appearance publication chain
+        if: steps.profile.outputs.profile == 'full'
+        run: npm run character-appearance:generate
+
       - name: Verify generated files are reproducible
         if: steps.profile.outputs.profile == 'full'
         run: |
-          git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md
-          uncommitted=$(git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md)
+          git diff --exit-code -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/
+          uncommitted=$(git status --porcelain --untracked-files=all -- MODULE_INDEX.md generated/ infra/world-base/SCHEMA_REFERENCE.md data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/ data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/)
           if [ -n "$uncommitted" ]; then
             printf '%s\n' "$uncommitted"
             exit 1

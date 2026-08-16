@@ -1,6 +1,7 @@
 import { STAGE11_INPUT_SCHEMA, STAGE11_OUTPUT_SCHEMA } from './constants.js';
 import { concern, collectArrayLike, collectCandidateIdSet, collectInventoryItems, collectItemProfileIds, collectNpcCandidateIds, collectOccupationIds, collectRelationObjects, collectSkillObjects, collectSocialRoleIds, emptyArray, extractNumericNamedValues, firstText, hasAny, hasAnyNested, hasAnyNestedText, hasAnyText, hasConsequenceOfInaction, hasImmediateNeed, hasMilitaryOrHunterBasis, hasNullOccupationReason, hasPropertyInventoryConfusion, hasStartPlaceReason, inRange, isCombatSkill, isPlainObject, nonEmptyArray, text } from './shared.js';
 import { validateTracePlayerProfilePolicy } from './trace-policy.js';
+import { validateActorBaseAppearance } from '@rus/actors';
 
 export function validateStage11PlayerCharacterInput(input = {}) {
   const concerns = [];
@@ -112,6 +113,13 @@ export function validateStage11PlayerCharacterOutput(output = {}, input = {}) {
   concerns.push(...validateSourceTrace(output, input));
   concerns.push(...validateAuditSelfCheck(output));
   concerns.push(...validateTracePlayerProfilePolicy(output, input.character_generation_policy));
+  if (output.appearance_contract_version === 'actor_base_appearance_v1' || input.character_generation_policy?.actor_base_appearance != null) {
+    const actorAppearance = validateActorBaseAppearance(output.identity, {
+      requireComplete: true,
+      body: output.body
+    });
+    for (const message of actorAppearance.errors) concerns.push(concern('PLAYER_CHARACTER_APPEARANCE_INVALID', message, { field: 'identity' }));
+  }
 
   if (output.generation_status === 'requires_repair' && (output.repair_request == null && emptyArray(output.audit_self_check?.concerns))) {
     concerns.push(concern('PLAYER_CHARACTER_REPAIR_REASON_MISSING', 'requires_repair output must explain repair_request or audit_self_check.concerns.', { field: 'generation_status' }));

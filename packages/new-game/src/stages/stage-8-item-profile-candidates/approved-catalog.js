@@ -44,6 +44,10 @@ export async function retrieveApprovedItemProfileCandidates(input = {}) {
     output[field] = eligible.slice(0, policy.target_profiles_max).map((record) => structuredClone(record));
     rejected.push(...source.filter((record) => !eligible.includes(record)).map((record) => ({ domain, candidate_id: candidateId(record), reason_code: rejectionCode(record, input.world_revision_id, frame) })));
   }
+  output.equipment_candidates = bindEquipmentTargets(
+    output.equipment_candidates,
+    input.npc_candidate_set?.npc_candidates ?? []
+  );
   const dataGaps = policy.required_candidate_domains.flatMap((domain) => {
     const field = DOMAIN_FIELDS[domain];
     return output[field].length === 0 ? [{ code: 'REQUIRED_APPROVED_CANDIDATE_SET_EMPTY', severity: 'hard_block', domain, field, world_revision_id: input.world_revision_id, region_id: frame.region_id, year: frame.year, season: frame.season }] : [];
@@ -111,5 +115,26 @@ function rejectionCode(record, revisionId, frame) { if (record?.status !== 'appr
 function normalizeFrame(value = {}) { return Object.freeze({ region_id: value.region?.region_id ?? value.region_id ?? null, year: value.year?.value ?? value.year ?? null, season: value.calendar?.season ?? value.season ?? null }); }
 function yearValue(value) { if (Number.isInteger(value)) return value; if (typeof value === 'string' && /^\d{4}/u.test(value)) return Number(value.slice(0, 4)); return null; }
 function candidateId(value) { return value?.item_profile_candidate_id ?? value?.container_profile_candidate_id ?? value?.equipment_candidate_id ?? value?.quantity_requirement_id ?? value?.property_rule_candidate_id ?? value?.id ?? null; }
+function bindEquipmentTargets(equipmentCandidates, npcCandidates) {
+  return equipmentCandidates.map((equipment) => {
+    const explicit = equipment.target_npc_candidate_ids
+      ?? (equipment.target_npc_candidate_id ? [equipment.target_npc_candidate_id] : null);
+    const targetNpcCandidateIds = explicit ?? npcCandidates.filter((candidate) => {
+      const roleId = candidate.social_role?.social_role_id ?? candidate.social_role_id;
+      const occupationId = candidate.occupation?.occupation_id ?? candidate.occupation_id ?? null;
+      const profileId = candidate.equipment_profile_ref?.id ?? candidate.equipment_profile_id ?? null;
+      if (profileId != null) return profileId === equipment.equipment_profile_id;
+      return (equipment.social_role_id == null || equipment.social_role_id === roleId)
+        && (equipment.occupation_id == null || equipment.occupation_id === occupationId);
+    }).map((candidate) => candidate.npc_candidate_id).filter(Boolean).sort();
+    return {
+      ...equipment,
+      target_npc_candidate_ids: [...new Set(targetNpcCandidateIds)].sort(),
+      target_actor_slot_key: equipment.target_actor_slot_key
+        ?? equipment.equipment_slot_category_id
+        ?? null
+    };
+  });
+}
 function concern(code, field, message) { return Object.freeze({ code, severity: 'hard_block', field, message }); }
 function audit(concerns) { return Object.freeze({ pass: concerns.length === 0, concerns: Object.freeze(concerns), evidence: Object.freeze([{ kind: 'stage8_approved_catalog_contract' }]) }); }

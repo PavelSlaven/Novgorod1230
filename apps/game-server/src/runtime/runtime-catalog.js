@@ -158,6 +158,14 @@ async function buildContext({
     await loader.loadApprovedItemCatalog({ pin }),
     await commonCatalogLookupLoader()
   );
+  const actorProfileCatalog = regionId && effectiveDate
+    && typeof loader.loadApprovedActorProfileCatalog === 'function'
+    ? await loader.loadApprovedActorProfileCatalog({
+      worldPin,
+      regionId,
+      effectiveDate
+    })
+    : null;
   const applicableCatalog = regionId && effectiveDate
     ? projection({
       verifiedCatalog,
@@ -174,6 +182,7 @@ async function buildContext({
       region_id: regionId ?? null,
       effective_date: effectiveDate ?? null
     },
+    actor_profile_catalog: actorProfileCatalog,
     verified_catalog: verifiedCatalog,
     applicable_catalog: applicableCatalog
   });

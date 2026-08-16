@@ -6,7 +6,7 @@ export function buildBraidGeometry(model, width, height) {
       || model.spec.hair.length === 'bald') {
     return emptyBraid();
   }
-  const side = model.identity.variants.hair % 2 ? 1 : -1;
+  const side = model.semantic_geometry.features.hair % 2 ? 1 : -1;
   const linkCount = model.spec.hair.length === 'long' ? 8
     : model.spec.hair.length === 'medium' ? 6 : 4;
   const step = height * .078;

@@ -9,6 +9,7 @@
     "./production-v2-migration-source": "./src/production-v2-migration-source.js"
   },
   "dependencies": {
+    "@rus/actors": "0.13.0",
     "@rus/checks-rng": "0.13.0",
     "@rus/contracts": "0.9.0",
     "@rus/knowledge-source": "0.23.0",

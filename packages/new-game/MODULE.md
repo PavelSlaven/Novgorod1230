@@ -24,7 +24,16 @@
 
 ## Контракты
 
-Каждый stage принимает точный input contract. Stages 13, 15, 16 и 24 выполняются кодом; LLM используется только в явно разрешённых ролях.
+Каждый stage принимает точный input contract. Для активированного
+`actor_base_appearance_v1` Stage 7 требует pinned actor profile snapshot и
+возвращает typed hard block при его отсутствии; historical revisions сохраняют
+нестрогий контракт. Stage 8 связывает equipment candidate с target NPC slot,
+Stage 11 сохраняет разрешённый player intent и передаёт пропуски общему
+code-owned appearance completion, Stages 12/15/24 требуют полный контракт для
+новых actors, а Stage 16 разрешает target NPC/player и создаёт одежду как
+реальные item instances. Stages
+13, 15, 16 и 24 выполняются кодом; LLM используется только в явно разрешённых
+ролях.
 
 ## Допустимые зависимости
 

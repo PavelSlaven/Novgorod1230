@@ -54,6 +54,6 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 Модуль сохраняет подтверждённые чистые формулы legacy там, где они
 существовали, но не импортирует legacy runtime. Revision 16 /
 `spatial-v3-production-v6` активировала эти pure proposals через `@rus/turn`;
-current revision 18 / production v8 наследует тот же combat owner. SQL, RNG,
+current revision 19 / production v9 наследует тот же combat owner. SQL, RNG,
 body write и scenario ordering здесь отсутствуют. Unit/contract tests
 находятся в `test/domain.test.js` и `test/combat-foundation.test.js`.

@@ -1,0 +1,71 @@
+{
+  "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m7_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 19,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m6-content/manifest.json",
+    "id": "lower_dvina_trace_m6_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m6_content_manifest.v1",
+    "digest": "96577542e8822de50755a96f0a5c86064851455321d17c8d3930da781e66fbdf"
+  },
+  "superseded_definition_ref": {
+    "id": "lower_dvina_trace_v1",
+    "revision": 18,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m6-content/definition.json",
+    "digest": "624a0a35179f6a72f035bd7c7fbaa3426260a38d720c00838d10654d0356bc41"
+  },
+  "files": {
+    "definition.json": "a2bc08aa214da499777517bfb724c9fe7e64b887fad14c65458a517ba9c228f4",
+    "item-container-set-overlay.json": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e",
+    "participant-profile-set.json": "0ad494487653a186902148496c30cf3042a7c8f73ae105e86273441ac4132c6f",
+    "player-profile-set.json": "3a298831198c2a696e76abfea0b06318b01edcd6029a4b3721a9ab23911df08e",
+    "player-profile.json": "b585079009f552fa0a582dfbc0578754a90e47a0dda430a5dc05326c8ce20109"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 19,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "a2bc08aa214da499777517bfb724c9fe7e64b887fad14c65458a517ba9c228f4"
+    },
+    "player_profile": {
+      "path": "player-profile.json",
+      "id": "lower_dvina_trace_player_profile_mikula_v1",
+      "revision": 2,
+      "schema": "rus.trace_player_profile.v1",
+      "digest": "b585079009f552fa0a582dfbc0578754a90e47a0dda430a5dc05326c8ce20109"
+    },
+    "player_profile_set": {
+      "path": "player-profile-set.json",
+      "id": "lower_dvina_trace_player_profile_set_v2",
+      "revision": 2,
+      "schema": "rus.trace_player_profile_set.v1",
+      "digest": "3a298831198c2a696e76abfea0b06318b01edcd6029a4b3721a9ab23911df08e"
+    },
+    "participant_profile_set": {
+      "path": "participant-profile-set.json",
+      "id": "trace_ld_v1_participant_profile_set",
+      "revision": 2,
+      "schema": "rus.trace_participant_profile_set.v1",
+      "digest": "0ad494487653a186902148496c30cf3042a7c8f73ae105e86273441ac4132c6f"
+    },
+    "item_container_set": {
+      "path": "item-container-set-overlay.json",
+      "id": "trace_ld_v1_item_container_set",
+      "revision": 5,
+      "schema": "rus.trace_item_container_set_overlay.v1",
+      "digest": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e"
+    }
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "7e7de4ca6a6b83a9b0c276b687fff271cf26e4343c75411357d87e2c7d1d2c20",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

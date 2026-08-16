@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
+import {
+  authoredItemPlacementSourceProof,
+  createRuntimeInstanceMechanicsSnapshot
+} from '@rus/items-property';
 import { prepareLowerDvinaTraceTurnStepPersistence } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-persistence.js';
 
@@ -249,6 +252,59 @@ test('M1 final inventory validation rejects active child of retired host', () =>
     direct('retire_entity', 'op-retire-host', {
       entity_ref: 'runtime-item:host', reason: 'разрушен'
     })]), { code: 'INVENTORY_ITEM_NOT_FOUND' });
+});
+
+test('M1 persists one authored container actor transition for restart', () => {
+  const state = baseState();
+  const profile = { mass_grams: 600, external_hand_cost: 1,
+    carry_form: 'regular', packing_slot_cost: 2, packing_bundle_size: 1,
+    capacity: 8, inventory_role: 'quick_container',
+    closure_state: 'closed' };
+  const container = {
+    container_id: 'ratsha-bag', run_id: 'run-1',
+    template_id: 'bag-template', holder_npc_id: 'ratsha',
+    physical_position: 'worn_quick', condition_state: 'serviceable',
+    closure_state: 'closed', state_version: 2,
+    ownership: { ownership_id: 'ownership:ratsha-bag',
+      container_id: 'ratsha-bag', owner_npc_id: 'ratsha',
+      controller_npc_id: 'ratsha', claim_state: 'owned' },
+    state: { inventory_profile_snapshot: profile }
+  };
+  state.npcs = [{ instance_id: 'ratsha' }];
+  state.containers = [container];
+  state.container_placements = [{ party_id: 'p',
+    container_id: container.container_id, holder_npc_id: 'ratsha',
+    physical_position: 'worn_quick' }];
+  state.container_profiles = [{ template_id: container.template_id,
+    ...profile }];
+  const source = { ...container, item_id: container.container_id,
+    instance_id: container.container_id, instance_kind: 'container',
+    placement: { holder_character_id: null, holder_npc_id: 'ratsha',
+      physical_position: 'worn_quick', equipment_slot_category_id: null,
+      anchor_id: null, container_id: null, location_ref: null,
+      zone_ref: null } };
+  const operation = direct('move_entity', 'move-container', {
+    entity_ref: container.container_id,
+    placement: { holder_character_id: 'actor-1',
+      physical_position: 'hands' },
+    authored_source: authoredItemPlacementSourceProof(source),
+    actor_transition: {
+      schema: 'rus.approved_actor_item_transition.v1', version: 1
+    }
+  });
+  operation.target = 'party_containers';
+  const result = prepare([operation], factual(), state);
+  const restarted = result.snapshot.containers.find(
+    ({ container_id: containerId }) => containerId === container.container_id);
+  assert.equal(restarted.container_id, container.container_id);
+  assert.equal(restarted.holder_character_id, 'actor-1');
+  assert.equal(restarted.physical_position, 'hands');
+  assert.equal(restarted.ownership.owner_npc_id, 'ratsha');
+  assert.equal(restarted.ownership.controller_character_id, 'actor-1');
+  assert.equal(result.writes.updates.some(({ target_table: table }) =>
+    table === 'party_containers'), true);
+  assert.equal(result.writes.updates.some(({ target_table: table }) =>
+    table === 'party_ownership'), true);
 });
 
 function prepare(operations, commit = factual(), state = baseState()) {

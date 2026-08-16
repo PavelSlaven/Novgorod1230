@@ -6,6 +6,8 @@ import { TABLES } from './spatial-v3-write-layout.js';
 import {
   bindLowerDvinaTraceTurnStepIdempotency
 } from './lower-dvina-trace-turn-step-idempotency.js';
+import { buildActorInstanceRechecks } from
+  './lower-dvina-trace-turn-step-actor-rechecks.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
@@ -68,7 +70,7 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       )
     },
     commit_rechecks: commitRechecks({
-      partyId, state, envelope, inputDigest
+      partyId, state, envelope, inputDigest, writes
     })
   });
   if (!built.ok) {
@@ -97,6 +99,13 @@ function currentVersion(state, write) {
   }[write.target_table];
   if (Number.isSafeInteger(known) && known >= 0) return known;
   const item = (state.items ?? []).find(({ item_id: id }) => id === write.id);
+  const container = (state.containers ?? []).find(
+    ({ container_id: id }) => id === write.id);
+  if (write.target_table === 'party_containers'
+      && Number.isSafeInteger(container?.state_version)
+      && container.state_version >= 0) {
+    return container.state_version;
+  }
   const itemVersion = write.target_table === 'party_item_placements'
     ? item?.placement?.state_version ?? item?.placement_state_version
     : item?.state_version;
@@ -113,7 +122,7 @@ function currentVersion(state, write) {
   );
 }
 
-function commitRechecks({ partyId, state, envelope, inputDigest }) {
+function commitRechecks({ partyId, state, envelope, inputDigest, writes }) {
   return [
     sealedCheck('physical', {
       party_id: partyId,
@@ -134,7 +143,8 @@ function commitRechecks({ partyId, state, envelope, inputDigest }) {
     sealedCheck('time', {
       expected_clock_state_version: state.party_state.clock_state_version
     }),
-    sealedCheck('change_set', { canonical_input_digest: inputDigest })
+    sealedCheck('change_set', { canonical_input_digest: inputDigest }),
+    ...buildActorInstanceRechecks(state, writes)
   ];
 }
 

@@ -17,5 +17,5 @@ export { buildG4ItemContainerCoverageReport, resolveG4MaterializationBinding } f
 export { compileItemContainerG4Projection } from './item-container-g4-projection.js';
 export { compileV5CanonicalCatalog } from './v5-canonical-catalog.js';
 export { applyPr17ItemContainerCandidateBundle, validatePr17ItemContainerCandidateBundle } from './pr17-candidate-bundle.js';
-export { buildApprovedItemCatalogSnapshot, buildAllowedG5TemplateSet } from './runtime-catalog-loaders.js';
+export { buildApprovedActorProfileSnapshot, buildApprovedItemCatalogSnapshot, buildAllowedG5TemplateSet } from './runtime-catalog-loaders.js';
 export { CommonCatalogLookupError, INVENTORY_ARCHETYPE_LOOKUP_PATH, loadCommonCatalogLookupRecords } from '@rus/runtime-catalog/common-lookups';

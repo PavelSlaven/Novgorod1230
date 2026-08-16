@@ -1,5 +1,6 @@
 import { drawBackground } from './draw-background.js';
 import { fillHandmadePatch, strokeHandmade } from './handmade.js';
+import { fixedDrawingStyleKey } from './semantic-portrait-geometry.js';
 
 export function drawPortraitScene(context, model, scene, {
   fills = true,
@@ -15,7 +16,7 @@ function drawPatches(context, model, patches) {
     if (!entry.points?.length) continue;
     fillHandmadePatch(context, entry.points, {
       fill: entry.fill,
-      seed: entry.seed,
+      seed: fixedDrawingStyleKey(entry.part),
       salt: entry.salt,
       roughness: entry.roughness,
       alpha: entry.alpha
@@ -33,7 +34,7 @@ function drawInkPass(context, model, scene, { monochrome }) {
     if (!entry.points || entry.points.length < 2) continue;
     strokeHandmade(context, entry.points, {
       color: monochrome ? monochromeInk(model, entry) : entry.color,
-      seed: entry.seed,
+      seed: fixedDrawingStyleKey(entry.part),
       salt: entry.salt,
       roughness: entry.roughness,
       width: entry.width,

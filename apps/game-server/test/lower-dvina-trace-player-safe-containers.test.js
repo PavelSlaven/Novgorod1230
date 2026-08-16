@@ -38,3 +38,30 @@ test('nested containers inherit the factual parent closure boundary',
     assert.equal(opened.player_safe_state.items[1].placement.container_id,
       'outer-bag');
   });
+
+test('actor-held containers preserve nested concealment at the player-safe boundary',
+  async () => {
+    const bundle = await loadScenarioBundle(17);
+    const committedState = fixture({ scenarioBundle: bundle,
+      materializationBundle: bundle }).state;
+    committedState.items = [];
+    committedState.npcs = [{
+      instance_id: 'visible-npc', visible: true,
+      identity_state: { canonical_name: 'Видимый NPC' }
+    }];
+    committedState.containers = [{
+      container_id: 'concealed-bag', template_id: 'bag-template',
+      holder_npc_id: 'visible-npc', physical_position: 'worn_quick',
+      state: { visibility_state: 'concealed', access_state: 'private' }
+    }];
+    committedState.container_placements = [{
+      container_id: 'concealed-bag', holder_npc_id: 'visible-npc',
+      physical_position: 'worn_quick'
+    }];
+
+    const projected = projectLowerDvinaTracePlayerSafeState({
+      committed_state: committedState, actor_id: committedState.actor_id
+    });
+    assert.equal(projected.player_safe_state.items.some(({ item_id: itemId }) =>
+      itemId === 'concealed-bag'), false);
+  });

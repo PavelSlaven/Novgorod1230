@@ -1,0 +1,20 @@
+{
+  "schema": "rus.game_scenario.v1",
+  "scenario_id": "lower_dvina_late_summer_open_water_v1",
+  "version": 2,
+  "status": "approved",
+  "title": "Нижняя Двина: позднее лето",
+  "description": "Лодочник начинает на защищённой высокой площадке у открытой воды.",
+  "season_mode": "late_summer_open_water",
+  "content_catalog_ref": "lower_dvina_first_playable_content_v2@2",
+  "player_profile_set_ref": "player_boatman",
+  "start_canonical_g5_ref": "cg5v3__gn_nov_g4_xp017_yp026_r2_sheltered_landing_terrace_high_platform@2",
+  "required_local_capability": "local_scene",
+  "optional_capabilities": [
+    "boundary_crossing"
+  ],
+  "runtime_input": {
+    "kind": "scenario_id_only"
+  },
+  "scenario_action_policy": null
+}

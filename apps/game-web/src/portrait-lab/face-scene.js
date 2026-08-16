@@ -17,12 +17,12 @@ export function buildFaceScene(model, visibility) {
 function addEyesAndBrows(model, patches, strokes) {
   const width = model.head.width;
   const height = model.head.height;
-  const asymmetry = model.identity.asymmetry;
+  const asymmetry = model.semantic_geometry.asymmetry;
   const eyes = [
     eyeLayout(model, -1, -width * .205, -height * .075 + asymmetry.eyeHeight,
-      model.eyes.leftOpen, model.identity.variants.leftEye, 3000),
+      model.eyes.leftOpen, model.semantic_geometry.features.leftEye, 3000),
     eyeLayout(model, 1, width * .205, -height * .075 - asymmetry.eyeHeight * .55,
-      model.eyes.rightOpen, model.identity.variants.rightEye, 3050)
+      model.eyes.rightOpen, model.semantic_geometry.features.rightEye, 3050)
   ];
   for (const eye of eyes) {
     const contour = eyeContour(eye);
@@ -145,12 +145,12 @@ function addBrow(model, eye, strokes) {
   const inner = projectFacePoint(
     model, eye.side * width * .075,
     -height * .205 + model.expression.browInner
-      + model.identity.asymmetry.brow * eye.side
+      + model.semantic_geometry.asymmetry.brow * eye.side
   );
   const outer = projectFacePoint(
     model, eye.side * width * .34,
     -height * .205 + model.expression.browOuter
-      - model.identity.asymmetry.brow * eye.side
+      - model.semantic_geometry.asymmetry.brow * eye.side
   );
   const middle = [
     (inner.x + outer.x) / 2,
@@ -174,7 +174,7 @@ function addNose(model, strokes) {
   const bottom = height * (.205 + model.age.sag * .01);
   const noseWidth = width * (.092 + (model.age.category === 'old' ? .008 : 0))
     * model.sex.noseScale;
-  const variant = model.identity.variants.nose;
+  const variant = model.semantic_geometry.features.nose;
   for (const [index, points] of noseLines(variant, {
     axis, top, middle, bottom, noseWidth
   }).entries()) {
@@ -190,14 +190,14 @@ function addNose(model, strokes) {
 function addMouth(model, patches, strokes) {
   const width = model.head.width;
   const height = model.head.height;
-  const variant = model.identity.variants.mouth;
+  const variant = model.semantic_geometry.features.mouth;
   const halfWidth = width * (.135 + variant * .009) * model.sex.mouthScale;
   const left = projectFacePoint(model, -halfWidth, height * .315);
   const right = projectFacePoint(model, halfWidth, height * .315);
-  const centerX = model.head.faceAxisX + model.identity.asymmetry.mouth;
+  const centerX = model.head.faceAxisX + model.semantic_geometry.asymmetry.mouth;
   const lift = model.expression.mouthCurve * 10;
   const leftCorner = [left.x, left.y - lift];
-  const rightCorner = [right.x, right.y - lift + model.identity.asymmetry.mouth];
+  const rightCorner = [right.x, right.y - lift + model.semantic_geometry.asymmetry.mouth];
   const centerY = height * .315 + model.expression.mouthCurve * 11;
   const open = Math.max(model.expression.mouthOpen, variant === 2 ? .15 : 0);
   if (open > .12) {

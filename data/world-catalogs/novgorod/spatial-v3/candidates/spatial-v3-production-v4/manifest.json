@@ -1,0 +1,122 @@
+{
+  "schema_version": "rus.spatial-v3.world-base-authoring-bundle.v2",
+  "bundle_id": "novgorod-spatial-v3-production-v4-candidate-001",
+  "release_id": "spatial-v3-production-v4",
+  "world_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
+  "parent_revision_id": "novgorod_spatial_v3_production_v3_candidate_001",
+  "parent_manifest_path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json",
+  "parent_manifest_sha256": "593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea",
+  "status": "approved",
+  "release_status": "validated_candidate_not_active",
+  "production_activation": false,
+  "canonical_head_changed": false,
+  "operator_db_touched": false,
+  "runtime_selectable_in_canonical_production": false,
+  "boundary_crossing_capability": "ready_for_runtime_acceptance",
+  "actor_appearance_capability": "ready_for_runtime_acceptance",
+  "delete_policy": "forbid",
+  "compiler_version": "character-appearance-v1-compiler@1",
+  "approved_authoring_content_digest": "4cbcad35dd0ceb440407af8168bd9aef3895a1d26f01f4153929e418eed82efa",
+  "catalog_digest": "acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79",
+  "datasets": [
+    {
+      "table": "source_records",
+      "file": "datasets/source_records.json",
+      "sha256": "2074e1d90a6c0c812745ef85d78081e98d0c21914e20e74618b8099b4acc8d2e",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "universal_categories",
+      "file": "datasets/universal_categories.json",
+      "sha256": "a48cc78b57789967622776863999fa475703766a11edfcd39d3fdf52fff81006",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "region_category_options",
+      "file": "datasets/region_category_options.json",
+      "sha256": "777eab954536900c981bc84f5f496a0e7a5ffcd6ad5a34abc9c166433753862d",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "world_revisions",
+        "universal_categories"
+      ]
+    },
+    {
+      "table": "region_demographic_profiles",
+      "file": "datasets/region_demographic_profiles.json",
+      "sha256": "9a7fffa8f4e00db21363b2b67c227ca81b460f5803322e32da0a0709bf21c0cd",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_category_options"
+      ]
+    },
+    {
+      "table": "region_demographic_profile_entries",
+      "file": "datasets/region_demographic_profile_entries.json",
+      "sha256": "a5c5a1e24d24222eda9a77bdc0659533b2cd7aea82db9a36fa34b2e82170e5af",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_demographic_profiles",
+        "region_category_options"
+      ]
+    },
+    {
+      "table": "region_appearance_profiles",
+      "file": "datasets/region_appearance_profiles.json",
+      "sha256": "b1d2f8a5129de7f2a7e71cc3f3d4dc33e702eaf301398b6b8df059e302ac5cd1",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_category_options"
+      ]
+    },
+    {
+      "table": "region_appearance_profile_entries",
+      "file": "datasets/region_appearance_profile_entries.json",
+      "sha256": "61230c341f418e386f9213b93cf1f7d43c0bf3751a7aab62300cfadec7fa66b5",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "region_appearance_profiles",
+        "region_category_options"
+      ]
+    },
+    {
+      "table": "item_template_category_bindings",
+      "file": "datasets/item_template_category_bindings.json",
+      "sha256": "f9815441c4bc745556213408912ba7f20091b4f2bdfa5569931cb4773819c684",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "universal_categories"
+      ]
+    },
+    {
+      "table": "world_revisions",
+      "file": "datasets/world_revisions.json",
+      "sha256": "20d275eaf4e5fc3a5c5571a80ca532129d9a0bff9195cf47a825adddd597d052",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": []
+    },
+    {
+      "table": "spatial_v3_world_revisions",
+      "file": "datasets/spatial_v3_world_revisions.json",
+      "sha256": "a9068d1bbff7fec31ab2e399cb95fed0ce5ed2f0621697d9d3e9780ee847663d",
+      "status": "approved",
+      "delete_policy": "forbid",
+      "depends_on": [
+        "world_revisions",
+        "source_records"
+      ]
+    }
+  ],
+  "canonical_output_digest": "7c3f1d53c77f81c78ab676afbb21ebd0cc95dc94cbf605bcde2218f75486a126"
+}

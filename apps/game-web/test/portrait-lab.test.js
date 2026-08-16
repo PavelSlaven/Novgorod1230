@@ -108,7 +108,7 @@ test('render model exposes visible branches for core portrait traits', () => {
   assert.notEqual(frontal.body.centerX, turned.body.centerX);
 });
 
-test('render identity is canonical and the hidden armature projects a turned face', () => {
+test('semantic geometry is canonical and the hidden armature projects a turned face', () => {
   const reordered = {
     background: SAMPLE_PORTRAIT_SPEC.background,
     pose: structuredClone(SAMPLE_PORTRAIT_SPEC.pose),
@@ -121,8 +121,17 @@ test('render identity is canonical and the hidden armature projects a turned fac
   };
   const original = buildRenderModel(SAMPLE_PORTRAIT_SPEC);
   const canonical = buildRenderModel(reordered);
-  assert.equal(original.identity.seed, canonical.identity.seed);
-  assert.deepEqual(original.identity.variants, canonical.identity.variants);
+  assert.deepEqual(original.semantic_geometry, canonical.semantic_geometry);
+  assert.notEqual(
+    buildRenderModel(variant('person', 'face_shape', 'angular'))
+      .semantic_geometry.features.nose,
+    original.semantic_geometry.features.nose
+  );
+  assert.notEqual(
+    buildRenderModel(variant('hair', 'style', 'braided'))
+      .semantic_geometry.features.hair,
+    original.semantic_geometry.features.hair
+  );
 
   const turnedSpec = variant('pose', 'body', 'three_quarter');
   turnedSpec.pose.head = 'slightly_turned';

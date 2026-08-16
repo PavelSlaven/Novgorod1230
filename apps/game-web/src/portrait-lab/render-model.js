@@ -1,7 +1,7 @@
 import { assertPortraitSpecV1 } from './contract.js';
-import { buildPortraitIdentity } from './portrait-randomness.js';
+import { buildSemanticPortraitGeometry } from './semantic-portrait-geometry.js';
 
-export { deterministicUnit } from './portrait-randomness.js';
+export { fixedPatternUnit } from './semantic-portrait-geometry.js';
 
 const SKIN = Object.freeze({
   pale: '#d9bca9', light: '#c9977d', warm: '#ad725b', brown: '#79503f'
@@ -48,8 +48,8 @@ export function buildRenderModel(spec) {
   const build = BUILDS[spec.person.build];
   const face = FACES[spec.person.face_shape];
   const age = AGES[spec.person.age];
-  const identity = buildPortraitIdentity(spec);
-  const { asymmetry, variants } = identity;
+  const semanticGeometry = buildSemanticPortraitGeometry(spec);
+  const { asymmetry } = semanticGeometry;
   const feminine = spec.person.sex === 'female';
   const bodyTurn = spec.pose.body === 'three_quarter' ? .16 : 0;
   const headTurn = spec.pose.head === 'slightly_turned' ? .14 : 0;
@@ -68,7 +68,7 @@ export function buildRenderModel(spec) {
 
   return Object.freeze({
     spec,
-    identity,
+    semantic_geometry: semanticGeometry,
     width: 768,
     height: 768,
     background: Object.freeze(BACKGROUNDS[spec.background]),

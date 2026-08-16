@@ -25,6 +25,9 @@ export function buildStage15NpcPlacementCodePrecheck(draft, input) {
     source_trace_present: !codes.has('NPC_PLACEMENT_SOURCE_MISSING'),
     audit_self_check_evidence_present: !codes.has('NPC_PLACEMENT_EMPTY_AUDIT_EVIDENCE')
   };
+  if ((input?.npc_candidate_set?.npc_candidates ?? []).some((candidate) => candidate?.require_complete_actor_appearance === true)) {
+    checks.actor_base_appearance_valid = !hasAny(codes, ['NPC_PLACEMENT_ACTOR_APPEARANCE_INCOMPLETE', 'NPC_PLACEMENT_ACTOR_APPEARANCE_AUTHORED_VALUE_CHANGED']);
+  }
   return {
     version: 1,
     schema: STAGE15_PRECHECK_SCHEMA,

@@ -1,6 +1,6 @@
 import { quadraticPoints } from './handmade.js';
 import { pointsToWorld } from './geometry-utils.js';
-import { deterministicUnit } from './render-model.js';
+import { fixedPatternUnit } from './render-model.js';
 import { line } from './scene-primitives.js';
 
 export function buildHatches(model, geometry, visibility) {
@@ -143,7 +143,7 @@ function addBeardHatches(model, geometry, hatches) {
 }
 
 function hairStrokeColor(model, index, salt, part) {
-  const gray = deterministicUnit(model.identity.seeds[part], salt + index)
+  const gray = fixedPatternUnit(salt + index)
     < model.hair.grayMix * 1.8;
   return gray
     ? model.hair.gray

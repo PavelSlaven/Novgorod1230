@@ -9,6 +9,7 @@
     "./spatial-v3-materialization": "./src/spatial-v3.js"
   },
   "dependencies": {
+    "@rus/actors": "0.13.0",
     "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }

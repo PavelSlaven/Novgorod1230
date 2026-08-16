@@ -35,8 +35,15 @@ export function projectLowerDvinaTracePlayerSafeState({
   const profile = committedState.player_profile ?? {};
   const clockWeatherLight = committedState.clock_weather_light ?? {};
   const position = projectPosition(committedState.position);
+  const npcs = projectNpcs(committedState.npcs, { position });
+  const visibleNpcIds = new Set((npcs ?? []).flatMap((npc) => [
+    npc.instance_id, npc.npc_id
+  ]).filter(Boolean));
   const items = projectItems([...(committedState.items ?? []),
-    ...containerItems(committedState.containers)], { actorId, position });
+    ...containerItems(committedState.containers,
+      committedState.container_placements)], {
+    actorId, position, visibleNpcIds
+  });
   const base = compact({
     actor_id: actorId,
     position,
@@ -56,7 +63,7 @@ export function projectLowerDvinaTracePlayerSafeState({
     scene_npcs: projectNpcs(committedState.scene_npcs, {
       position, explicitlyVisible: true
     }),
-    npcs: projectNpcs(committedState.npcs, { position }),
+    npcs,
     interactions: projectInteractions(committedState.interactions),
     routes: projectRoutes(committedState.routes),
     available_routes: projectRoutes(committedState.available_routes),
@@ -107,28 +114,44 @@ function projectTemporaryDispositionOptions(value) {
       value.eligible_option_ids.promise) };
 }
 
-function containerItems(containers = []) {
-  return (containers ?? []).map((container) => ({
+function containerItems(containers = [], placements = []) {
+  const placementById = new Map((placements ?? []).map((placement) => [
+    placement.container_id, placement
+  ]));
+  return (containers ?? []).map((container) => {
+    const placement = placementById.get(container.container_id) ?? container;
+    return ({
     item_id: container.container_id,
     template_id: container.template_id,
     closure_state: container.closure_state,
     placement: {
-      container_id: container.parent_container_id
+      container_id: placement.parent_container_id
+        ?? container.parent_container_id
         ?? container.state?.parent_container_id,
-      holder_character_id: container.holder_character_id
+      holder_character_id: placement.holder_character_id
+        ?? container.holder_character_id
         ?? container.state?.holder_character_id,
-      holder_npc_id: container.holder_npc_id
+      holder_npc_id: placement.holder_npc_id ?? container.holder_npc_id
         ?? container.state?.holder_npc_id,
-      location_ref: container.location_ref ?? container.state?.location_ref,
-      anchor_id: container.anchor_id ?? container.state?.anchor_id,
+      physical_position: placement.physical_position
+        ?? container.physical_position,
+      equipment_slot_category_id: placement.equipment_slot_category_id
+        ?? container.equipment_slot_category_id,
+      location_ref: placement.location_ref ?? container.location_ref
+        ?? container.state?.location_ref,
+      anchor_id: placement.anchor_id ?? container.anchor_id
+        ?? container.state?.anchor_id,
       zone_ref: container.zone_ref ?? container.state?.zone_ref
     },
-    access_state: container.access_state,
-    visibility_state: container.visibility_state,
+    access_state: container.access_state ?? container.state?.access_state,
+    visibility_state: container.visibility_state
+      ?? container.state?.visibility_state,
     open_state: container.open_state ?? container.closure_state,
     contents_state: container.contents_state,
-    visible: container.visibility_state !== 'concealed'
-  }));
+    visible: container.visible,
+    is_visible: container.is_visible
+  });
+  });
 }
 
 function projectCombatSessions(sessions = []) {

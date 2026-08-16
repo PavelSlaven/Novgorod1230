@@ -28,13 +28,13 @@ export function buildPortraitGeometry(model) {
 function buildHeadGeometry(model) {
   const width = model.head.width;
   const height = model.head.height;
-  const asymmetry = model.identity.asymmetry;
+  const asymmetry = model.semantic_geometry.asymmetry;
   const left = width * (.49 + asymmetry.faceLeft);
   const right = width * (.5 + asymmetry.faceRight);
   const leftJawX = left * model.head.jaw;
   const rightJawX = right * model.head.jaw;
   const oldSag = model.age.sag * 9;
-  const top = [(model.identity.variants.contour - 1.5) * 7, -height * .505];
+  const top = [(model.semantic_geometry.features.contour - 1.5) * 7, -height * .505];
   const leftTemple = [-left, -height * .1];
   const rightTemple = [right, -height * .11];
   const leftJawPoint = [-leftJawX, height * .38 + oldSag];
@@ -130,7 +130,7 @@ function buildHairGeometry(model, head) {
   }
   const width = head.width;
   const height = head.height;
-  const jitter = model.identity.asymmetry.hair;
+  const jitter = model.semantic_geometry.asymmetry.hair;
   const recede = model.age.category === 'old' ? .095
     : model.age.category === 'middle_aged' ? .045 : 0;
   const hairlineY = -height * (.35 + recede * .75);
@@ -212,7 +212,7 @@ function crownStrands(model, width, height, hairlineY) {
   const braided = model.spec.hair.style === 'braided';
   const count = model.spec.hair.style === 'straight' ? 8 : braided ? 7 : 12;
   const wavy = ['wavy', 'loose'].includes(model.spec.hair.style);
-  const braidSide = model.identity.variants.hair % 2 ? 1 : -1;
+  const braidSide = model.semantic_geometry.features.hair % 2 ? 1 : -1;
   return Array.from({ length: count }, (_, index) => {
     const ratio = index / Math.max(1, count - 1);
     const x = -width * .4 + ratio * width * .8;
@@ -250,7 +250,7 @@ function buildBeardGeometry(model, head) {
   const full = style === 'full_beard';
   const width = head.width;
   const height = head.height;
-  const beard = model.identity.asymmetry.beard;
+  const beard = model.semantic_geometry.asymmetry.beard;
   const left = head.local.leftBeardStart;
   const right = head.local.rightBeardStart;
   const bottomY = height * (full ? .67 : .5) + beard[3];

@@ -68,9 +68,10 @@ exact-head evidence не активировало production; последующ
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
 - combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).
 
-Current Lower Dvina Trace revision 18 / `spatial-v3-production-v8` наследует
-все четыре границы без нового semantic mode. Phase 11 только проверяет их через
-full-stack acceptance и не создаёт revision 19 или новый LLM contract.
+Current Lower Dvina Trace revision 19 / `spatial-v3-production-v9` наследует
+все четыре границы без нового semantic mode. Revision 19 добавляет только
+code-owned appearance/equipment materialization и read-time player-safe portrait
+projection; новый LLM contract не создаётся.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует

@@ -32,6 +32,6 @@ later `versioned production activation cutover` did. Revision 16 /
 `spatial-v3-production-v6` retained that owner and additionally activated
 direct-harm body transitions, edge-triggered threshold descriptors and their
 one-writer handoff to the common combat/NPC signal pipeline. Current revision
-18 / `spatial-v3-production-v8` inherits that behavior; production v7 is the
+19 / `spatial-v3-production-v9` inherits that behavior; production v8 is the
 explicit rollback source. `test/domain.test.js` covers base body API and
 Temporal proposal/threshold hard-block behavior.

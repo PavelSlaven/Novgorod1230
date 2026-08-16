@@ -25,6 +25,7 @@ export function initialState({
     party_id: partyId,
     request_id: requestId,
     creation_identity: structuredClone(creationIdentity),
+    first_playable_catalog_version: player.catalog_version ?? 1,
     scenario_id: scenario ? SCENARIO_ID : null,
     player: {
       id: `actor:${partyId}:player`,
@@ -38,6 +39,7 @@ export function initialState({
       knowledge_profile: structuredClone(player.knowledge_profile),
       body_profile_id: player.body_profile.profile_id,
       equipment_profile: structuredClone(player.equipment_profile),
+      identity: player.identity == null ? null : structuredClone(player.identity),
       profile_candidate_set_digest: player.candidate_set_digest,
       health: player.body_profile.metrics.health,
       energy: player.body_profile.metrics.energy,

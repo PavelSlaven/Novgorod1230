@@ -30,6 +30,7 @@ Read-only runtime слой содержит:
 - исторические anchors/events/figures и provenance;
 - universal categories и специализированные справочники;
 - региональные разрешения, templates и component profiles;
+- normalized demographic/appearance profile entries и garment category bindings;
 - G4→G5 layout/materialization profiles;
 - NPC/item/container/property rules;
 - bounded decision commands и policies;
@@ -51,6 +52,13 @@ Read-only runtime слой содержит:
 - public-screen read models и delivery state.
 
 Party database может обслуживать несколько партий, но каждая доменная запись изолирована `party_id`; внутренние ссылки защищены FK. Ссылки в отдельную `world_base` проверяются по ID, revision и digest на commit gate.
+
+Canonical actor appearance сохраняется в существующем player profile/NPC
+identity JSON, не в отдельной таблице. Garments являются реальными item
+instances; holder/controller/equipment slot находятся в placement/ownership, а
+exact visual semantics — в immutable item-owned snapshot. Migration `020`
+расширяет constraints будущих NPC/player equipment placements без изменения
+historical rows.
 
 ## 2. Графовые уровни
 
@@ -167,6 +175,13 @@ Materializer сначала проверяет committed baseline для `(party
 - Visible projection содержит только доступное через position, visibility, light, access и knowledge.
 - Narrator получает только approved visible context и не добавляет факты.
 
+Active-interlocutor adapter после committed-state visibility filtering передаёт
+только sanitized actor facts и visible equipment semantics. Чистая проекция
+строит и валидирует `portrait_spec_v1` непосредственно для response; raw profile
+IDs, trace, hidden inventory и private state исключены. Projection не
+сохраняется, не кэшируется как mutable state и возвращает `null` для historical
+incomplete либо ambiguous slot input.
+
 ## 9. Запрещённые смешения
 
 Запрещено:
@@ -178,6 +193,7 @@ Materializer сначала проверяет committed baseline для `(party
 - создавать новый G3/G4 при неизвестном направлении движения;
 - рематериализовать G5 после reload/repeat-entry;
 - позволять LLM сформировать SQL или party write plan.
+- сохранять `portrait_spec_v1` или выводить одежду из actor identity/prose;
 
 ## 10. Runtime activation boundary
 

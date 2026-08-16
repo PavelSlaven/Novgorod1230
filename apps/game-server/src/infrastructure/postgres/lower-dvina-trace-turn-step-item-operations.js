@@ -11,12 +11,14 @@ import {
   requireMechanics,
   text
 } from './lower-dvina-trace-turn-step-persistence-support.js';
-import { requireAuthoredSourceProof } from
-  './lower-dvina-trace-turn-step-authored-writes.js';
+import { applyAuthoredItemOperation } from
+  './lower-dvina-trace-turn-step-authored-item-operation.js';
 
 export function applyItemOperation({
-  operation, entities, authoredItems, authoredItemRefs, authoredStateTouched,
-  creates, touched, placements, retired, state, changeSetId, knowledgeInserts
+  operation, entities, authoredItems, authoredItemRefs, authoredContainers,
+  authoredContainerRefs, authoredStateTouched,
+  creates, touched, placements, ownerships, retired, state, changeSetId,
+  knowledgeInserts
 }) {
   const { operation_kind: kind, payload } = operation;
   if (kind === 'create_entity') {
@@ -81,29 +83,12 @@ export function applyItemOperation({
     return;
   }
   const authoredRef = payload.entity_ref ?? payload.container_ref;
-  if (authoredItemRefs.has(authoredRef)) {
-    const authored = authoredItems.find((item) =>
-      (item.item_id ?? item.instance_id) === authoredRef);
-    if (kind === 'move_entity') {
-      requireAuthoredSourceProof(authored, payload.authored_source);
-      authored.placement = normalizePlacement(payload.placement, state,
-        entities);
-      placements.add(authoredRef);
-      return;
-    }
-    if (kind === 'request_container_access') {
-      authored.state = {
-        ...(authored.state ?? {}),
-        ...(payload.state_patch ?? {})
-      };
-      Object.assign(authored, payload.state_patch ?? {});
-      authoredStateTouched.add(authoredRef);
-      return;
-    }
-    fail('TRACE_TURN_STEP_MIXED_ITEM_SOURCE', {
-      entity_ref: authoredRef
-    });
-  }
+  if (applyAuthoredItemOperation({
+    operation, authoredItems, authoredItemRefs, authoredContainers,
+    authoredContainerRefs, authoredStateTouched,
+    placements, ownerships, state,
+    normalizePlacement: (value) => normalizePlacement(value, state, entities)
+  })) return;
   const entity = requireMutableRuntimeEntity(
     entities, authoredRef, retired);
   touched.add(entity.item_id);
@@ -200,7 +185,8 @@ function normalizePlacement(value, state, entities) {
   validatePlacementShape(placement);
   if (placement.holder_character_id) {
     if (placement.holder_character_id !== state.actor_id
-        || !['hands', 'worn'].includes(placement.physical_position)) {
+        || !['hands', 'worn', 'worn_quick', 'equipped', 'external',
+          'external_load'].includes(placement.physical_position)) {
       unresolvedPlacement(placement);
     }
     return placement;

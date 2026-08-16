@@ -1,7 +1,7 @@
 # Lower Dvina Trace: implementation map
 
 - **Статус:** implemented / maintenance reference
-- **Текущая граница:** revision 18 / `spatial-v3-production-v8`, Phase 11 complete
+- **Текущая граница:** revision 19 / `spatial-v3-production-v9`, canonical appearance
 
 Этот документ отвечает на вопрос «каким существующим механизмом реализована
 каждая часть». Он не поручает будущему агенту повторять фазы и не заменяет
@@ -26,6 +26,7 @@
 | 9 | Возврат имущества, показания, evidence resolution и temporary disposition. | revision 17 / v7 | items-property, movement, conversation, visibility/knowledge/evidence, social-law, turn | container/property/evidence/obligation/disposition projection | PR [#58](https://github.com/PavelSlaven/Novgorod1230/pull/58) |
 | 10 | Code-owned `full|partial|case_open` completion и factual epilogue package. | revision 18 / v8 | visibility-knowledge-memory evaluator, turn commit, narration after commit | completion/provenance/visible projection; retry-safe zero-time turn | PR [#59](https://github.com/PavelSlaven/Novgorod1230/pull/59), boundary fix [#60](https://github.com/PavelSlaven/Novgorod1230/pull/60) |
 | 11 | Full-stack canonical и alternative acceptance. | без новой revision/release | production web/server composition и тестовый harness | реальный PostgreSQL restart/readback/replay | PR [#61](https://github.com/PavelSlaven/Novgorod1230/pull/61) |
+| Appearance | Единый actor appearance contract, real equipped garments и read-time portrait projection. | revision 19 / v9 | actors, materialization, items-property, visibility, contracts | identity/item snapshots; `portrait_spec_v1` не сохраняется | current change |
 
 Номера revisions показывают immutable scenario lineage, а releases — semantic
 production cutovers. Historical партия продолжает использовать свои pins даже
@@ -90,9 +91,9 @@ refs, персонажи, profiles и причинные условия оста
 vertical slice.
 
 Новый сценарий должен переиспользовать общих владельцев, но не обязан копировать
-Lower Dvina progression. Phase 11 не открывает автоматически Phase 12,
-revision 19 или `spatial-v3-production-v9`; следующий продуктовый этап требует
-отдельного решения.
+Lower Dvina progression. Revision 19 / `spatial-v3-production-v9`
+расширяет тот же vertical slice canonical appearance без нового semantic
+mode или orchestration owner.
 
 ## Исторические документы
 

@@ -33,6 +33,26 @@ Packing slots, масса и руки независимы. Масса берё�
 owner/controller или contents; это делает содержимое physically unavailable. Outward —
 только вдохновение отделения quick/primary load, не исторический источник.
 
+### Garment semantics и actor transition
+
+Garment semantics задаются normalized `item_template_category_bindings`, а не
+полями actor: garment kind, equipment slot, neckline, sleeve form, outer form,
+visible fabric, trim, main/secondary visible color и headwear kind. При создании
+authored item exact pinned semantics фиксируется в immutable
+`item_visual_profile_snapshot_v1` внутри state экземпляра.
+
+Approved actor-item transition сохраняет один item instance и ownership.
+Передача меняет holder/controller и physical placement; последующий equip
+задаёт `physical_position=equipped` и exact equipment slot. Это правило
+одинаково для NPC→player, player→NPC и actor-local equip/unequip. Clothing не
+дублируется в identity/body, а read projection учитывает только фактически
+visible `worn|equipped` items.
+
+Физическое изъятие actor-held предмета не меняет legal owner и не требует
+отдельного правила по типу предмета либо специального consent gate для одежды,
+оружия, сумки или инструмента. Возможная реакция NPC является отдельным
+последствием NPC runtime, а не запретом общего item transition.
+
 Предметы и имущество являются частью состояния мира и описывают материальную среду сцены: быт, уровень достатка, социальный статус, власть, ремесленную деятельность, опасности, обязательства, доступные действия и возможные последствия.
 
 ### 1. Уровни предметной среды

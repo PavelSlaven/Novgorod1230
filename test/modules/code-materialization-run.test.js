@@ -4,7 +4,7 @@ import { runStage13G5MaterializationBlock } from '@rus/new-game/stages/stage-13/
 import { runStage15NpcPlacementBlock } from '@rus/new-game/stages/stage-15/compat';
 import { runStage16ItemPlacementBlock } from '@rus/new-game/stages/stage-16/compat';
 import { makeStage13Input, makeStage15Audit, makeStage15Input, makeStage16Audit, makeStage16Input } from '../fixtures/stage13-16-fixtures.mjs';
-import { canonicalDigest } from '@rus/materialization';
+import { canonicalDigest, materializeNpcPlacement } from '@rus/materialization';
 
 test('Stages 13, 15 and 16 use the built-in code materializers in one deterministic run', async () => {
   const stage13 = await runStage13G5MaterializationBlock({ input: makeStage13Input() });
@@ -124,6 +124,40 @@ test('Stage 15 and 16 built-ins cannot consume raw candidates rejected by code e
   stage16Input.item_profile_candidate_set.item_profile_candidates = [{ item_profile_candidate_id:'disabled-item',item_profile_id:'p',status:'approved',required:true,materialization_allowed:false,slot_rule_id:'slot',quantity:1,condition_state:'intact',legal_status:'unowned',causal_basis:{causal_basis_type:'place_function'},placement:{g5_anchor_id:anchor.anchor_id,parent_g4_node_id:'g4'},physical_state:{weight:1,size_band:'small',condition:'intact'},visibility_state:{visibility:'visible'},access_state:{access:'free'},property_state:{owner_model:'none',holder_model:'place',controller_model:'none'},risk_state:{},source_trace:[{source_id:'x'}] }];
   const stage16 = await runStage16ItemPlacementBlock({ input: stage16Input, audit: async () => makeStage16Audit() });
   assert.equal(stage16.draft.item_instances.length, 0);
+});
+
+test('Stage 15 rejects a new NPC when the activated actor appearance contract was not bound to the candidate', async () => {
+  const stage13 = await runStage13G5MaterializationBlock({ input: makeStage13Input() });
+  const input = makeStage15Input();
+  input.g5_scene_graph = stage13.output;
+  input.npc_candidate_set.require_complete_actor_appearance = true;
+  input.npc_candidate_set.appearance_contract_version = 'actor_base_appearance_v1';
+  const anchor = stage13.output.g5_anchors[0];
+  input.eligible_g5_anchors = [anchor];
+  input.eligible_npc_candidates = [{
+    npc_candidate_id: 'npc-without-appearance',
+    status: 'approved',
+    required: true,
+    slot_rule_id: 'npc-without-appearance-slot',
+    npc_profile_set_id: 'npc-profile-set-1',
+    profile_level: 'background',
+    social_role_id: 'role-1',
+    npc_archetype_id: 'archetype-1',
+    placement: {
+      g5_anchor_id: anchor.anchor_id,
+      g5_minilocation_id: anchor.minilocation_id,
+      parent_g4_node_id: 'g4',
+      presence_reason: 'Approved place-function rule.'
+    },
+    identity_state: { name_status: 'unknown', identity_known_to_player: false },
+    visibility_state: { visible_to_player: true, hidden_from_player: false },
+    machine_state: { attention_and_witness_state: {} },
+    knowledge_scope: { known_facts_now: [], rumors_now: [], mistaken_beliefs: [] },
+    source_trace: [{ source_id: 'npc-without-appearance' }]
+  }];
+
+  assert.throws(() => materializeNpcPlacement(input), (error) =>
+    error.code === 'ACTOR_APPEARANCE_PROFILE_REQUIRED');
 });
 
 test('incomplete legacy Stage 7/8 candidates hard-block instead of receiving invented semantics', async () => {

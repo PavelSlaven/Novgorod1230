@@ -29,7 +29,7 @@ import { createLowerDvinaTraceTurnStepTestModel } from
   '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
-const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v3_candidate_001', digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea' });
+const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v4_candidate_001', digest: 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79', manifest: '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb' });
 
 test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks and rollback', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker is required for isolated Phase 6 PostgreSQL integration');
@@ -516,6 +516,10 @@ function assertCarrierAdmission(terminal, checkpoint, released) {
   const byActor = new Map(history.carrier_inventory_snapshots.map(
     (entry) => [entry.actor_id, entry]
   ));
+  const eremeyGarments = checkpoint.items.filter((item) =>
+    item.placement?.holder_npc_id === eremey.instance_id
+      && item.placement?.physical_position === 'equipped');
+  assert.equal(eremeyGarments.length, 2);
   assert.deepEqual([...byActor.keys()].sort(), [checkpoint.actor_id,
     eremey.instance_id, ratsha.instance_id,
     participating.instance_id].sort());
@@ -537,8 +541,9 @@ function assertCarrierAdmission(terminal, checkpoint, released) {
     hands_used_with_activity: byActor.get(eremey.instance_id)
       .hands_used_with_activity
   }, {
-    item_ids: [released.rope.item_id, released.vessel.item_id].sort(),
-    mass: 1300,
+    item_ids: [released.rope.item_id, released.vessel.item_id,
+      ...eremeyGarments.map(({ item_id: id }) => id)].sort(),
+    mass: 2950,
     strength: null,
     load: null,
     at_limit: null,
@@ -650,5 +655,5 @@ async function boundaryStatus(pool, partyId) {
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
-async function installWorldLineage(pool) { await pool.query('CREATE SCHEMA IF NOT EXISTS world_base'); await pool.query('CREATE TABLE world_base.spatial_v3_world_revisions (id text PRIMARY KEY,parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),catalog_digest text NOT NULL,status text NOT NULL)'); await pool.query("INSERT INTO world_base.spatial_v3_world_revisions (id,parent_revision_id,catalog_digest,status) VALUES ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')"); }
+async function installWorldLineage(pool) { await pool.query('CREATE SCHEMA IF NOT EXISTS world_base'); await pool.query('CREATE TABLE world_base.spatial_v3_world_revisions (id text PRIMARY KEY,parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),catalog_digest text NOT NULL,status text NOT NULL)'); await pool.query("INSERT INTO world_base.spatial_v3_world_revisions (id,parent_revision_id,catalog_digest,status) VALUES ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),('novgorod_spatial_v3_production_v4_candidate_001','novgorod_spatial_v3_production_v3_candidate_001','acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')"); }
 async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', user, '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }

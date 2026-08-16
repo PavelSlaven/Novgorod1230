@@ -11,6 +11,36 @@ Exact mechanics имеют ровно два допустимых источни
 
 Из выбранного источника code-owned inventory owner рассчитывает total mass, load category, hands used/free, packing usage, capacity compatibility, access steps и производные ограничения. LLM не возвращает и не переопределяет эти derived values. Owner, holder, container, equipment slot, access, quantity, condition и legal status фиксируются раздельно, а каждое изменение проходит invariant и commit gates.
 
+### Одежда как снаряжение и источник видимой семантики
+
+У actor нет отдельного clothing state. Каждая начальная или полученная одежда —
+реальный `party_items` instance с нормализованными placement, holder,
+controller, owner и equipment slot. Перенос сохраняет item ID и owner; equip
+меняет только placement/controller. `equipped` и equipment slot одинаково
+допустимы для player и NPC holder после party migration `020`; historical rows
+не переписываются.
+
+Authored garment при materialization получает immutable
+`item_visual_profile_snapshot_v1` из exact pinned item visual profile,
+на который ссылается equipment candidate. Inline visual snapshot внутри
+candidate запрещён; template и equipment slot профиля обязаны совпадать с
+материализуемым item:
+garment kind, equipment slot, neckline, sleeve form, outer form, visible
+fabric, trim, main/secondary visible color и headwear kind. Snapshot принадлежит
+item и нужен для replay/read projection; он не копируется в actor identity.
+
+Игровое перемещение уже существующей actor-held вещи использует общий
+`@rus/items-property` transition из generic `move_entity`, а не сценарную
+команду. Код повторно выводит source/destination из committed state, сохраняет
+тот же item ID и owner и меняет только holder/controller/placement. Проверка
+нагрузки использует силу только действующего actor; сила игрока не может быть
+fallback для NPC и наоборот.
+
+Этот физический transition одинаков для одежды, оружия, сумок, инструментов и
+прочих реальных item instances и не требует отдельного consent gate по типу
+предмета. Legal owner от изъятия не меняется; реакцию NPC и социальные либо
+правовые последствия определяют соответствующие runtime owners отдельно.
+
 Инвентарь — это предметы, которые персонаж физически несёт при себе и может использовать в текущей сцене.
 
 Имущество, которое принадлежит персонажу, но находится дома, у родни, в лодке, на складе, у другого человека или в другом месте, не считается инвентарём.

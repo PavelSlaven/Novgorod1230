@@ -1,4 +1,5 @@
 import { STAGE15_DRAFT_SCHEMA, STAGE15_PLACEMENT_STATUSES, STAGE15_PROFILE_LEVELS } from '@rus/contracts';
+import { ACTOR_BASE_APPEARANCE_PATHS, validateActorBaseAppearance } from '@rus/actors';
 import { DEFAULT_STAGE15_NPC_PLACEMENT_POLICY, FORBIDDEN_OUTPUT_KEYS } from '../policy/constants.js';
 import { buildStage15AnchorIndex, buildStage15CandidateIndex } from '../references/indexes.js';
 import { anchorAccess, anchorSupportsNpc, anchorVisibility, asArray, candidateAllowsProfile, candidateMatchesSeason, candidateMatchesSelectedPlace, candidateMatchesTime, compareCandidateRef, concern, dedupeConcerns, hasKeySeed, hasText, isObject, nonEmptyArray, normalizeProfileLevel, selectedG4NodeId, selectedPlaceTemplateId } from '../shared/utils.js';
@@ -155,6 +156,25 @@ export function validateNpcIdentity(concerns, npc, candidateRecord, profileLevel
   if (profileLevel === 'background' && !named && policy.allow_unnamed_background_npc !== true) {
     concerns.push(concern('NPC_PLACEMENT_NAME_POOL_MISSING', 'Unnamed background NPC is not permitted by policy.', { field: `${path}.identity` }));
   }
+  if (candidateRecord.require_complete_actor_appearance === true) {
+    if (npc.appearance_contract_version !== 'actor_base_appearance_v1') {
+      concerns.push(concern('NPC_PLACEMENT_ACTOR_APPEARANCE_INCOMPLETE', 'New NPC requires actor_base_appearance_v1.', { field: `${path}.appearance_contract_version` }));
+    }
+    const validation = validateActorBaseAppearance(identity, { requireComplete: true });
+    for (const message of validation.errors) {
+      concerns.push(concern('NPC_PLACEMENT_ACTOR_APPEARANCE_INCOMPLETE', message, { field: `${path}.identity` }));
+    }
+    for (const appearancePath of ACTOR_BASE_APPEARANCE_PATHS) {
+      const authored = readPath(candidateRecord.identity_state, appearancePath);
+      if (authored != null && readPath(identity, appearancePath) !== authored) {
+        concerns.push(concern('NPC_PLACEMENT_ACTOR_APPEARANCE_AUTHORED_VALUE_CHANGED', `Authored ${appearancePath} must be preserved.`, { field: `${path}.identity.${appearancePath}` }));
+      }
+    }
+  }
+}
+
+function readPath(value, path) {
+  return path.split('.').reduce((current, key) => current?.[key], value);
 }
 
 export function validateNpcDepth(concerns, npc, profileLevel, candidateRecord, path) {

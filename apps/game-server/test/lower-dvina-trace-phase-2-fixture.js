@@ -7,6 +7,7 @@ import {
   MATERIALIZER_VERSION,
   RNG_VERSION
 } from '@rus/materialization';
+import { materializeInitialActorEquipment } from '@rus/new-game';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import {
   createLowerDvinaTracePhase2Runtime
@@ -53,7 +54,8 @@ export const loadScenarioBundle = (scenarioDefinitionRevision) =>
   loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision });
 
 function phase1AInstance(partyId, scenarioBundle = bundle) {
-  return materializeLowerDvinaTracePartyInstance({
+  return materializeInitialActorEquipment(
+    materializeLowerDvinaTracePartyInstance({
     party_id: partyId,
     scenario_id: 'lower_dvina_trace_v1',
     scenario_definition_revision: scenarioBundle.definition_revision,
@@ -72,8 +74,9 @@ function phase1AInstance(partyId, scenarioBundle = bundle) {
     occurrence: 0,
     existing_party_state: { baseline_exists: false },
     scenario_bundle: scenarioBundle,
-    resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
-  });
+      resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
+    })
+  );
 }
 
 export function fixture({

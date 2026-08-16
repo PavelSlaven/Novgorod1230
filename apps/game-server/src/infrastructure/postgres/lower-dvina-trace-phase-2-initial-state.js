@@ -61,8 +61,10 @@ export async function loadInitialTracePhase2State({
     historical_events: [],
     items: initial.items.map((item) => ({
       item_id: item.item_id,
+      run_id: item.run_id,
       template_id: item.template_id,
       profile_id: item.profile_id,
+      category_id: item.category_id,
       quantity: item.quantity,
       condition_state: item.condition_state,
       legal_status: item.legal_status,

@@ -35,9 +35,9 @@ const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
 );
 const world = Object.freeze({
-  revision: 'novgorod_spatial_v3_production_v3_candidate_001',
-  digest: '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
-  manifest: '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
+  revision: 'novgorod_spatial_v3_production_v4_candidate_001',
+  digest: 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
+  manifest: '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
 });
 
 test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically',
@@ -462,7 +462,10 @@ async function installWorldLineage(pool) {
      'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),
     ('novgorod_spatial_v3_production_v3_candidate_001',
      'novgorod_spatial_v3_production_v2_candidate_001',
-     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')`);
+     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),
+    ('novgorod_spatial_v3_production_v4_candidate_001',
+     'novgorod_spatial_v3_production_v3_candidate_001',
+     'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')`);
 }
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 30; attempt += 1) {

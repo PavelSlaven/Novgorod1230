@@ -270,6 +270,10 @@ test('inventory foundation: an applied bandage may be worn without an equipment 
     condition_state: 'applied_bandage',
     use_state: 'bound_to_injured_leg'
   });
+  assert.equal(Object.hasOwn(planned.proposal.property_history.source,
+    'equipment_slot_category_id'), false);
+  assert.equal(Object.hasOwn(planned.proposal.property_history.destination,
+    'equipment_slot_category_id'), false);
   assert.equal(validateInventoryTopology({
     ...input,
     actor_id: 'onisim',

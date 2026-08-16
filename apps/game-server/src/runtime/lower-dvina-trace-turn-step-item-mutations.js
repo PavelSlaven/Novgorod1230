@@ -1,6 +1,4 @@
 import {
-  admitAuthoredItemPlacementTransition,
-  authoredItemPlacementSourceProof,
   createRuntimeInstanceMechanicsSnapshot
 } from '@rus/items-property';
 import {
@@ -20,13 +18,12 @@ import {
   applyInventoryTransition,
   factRef,
   matchesItem,
-  normalizePlacement,
-  persistedPlacement,
   requireAvailableTempRef,
   requireProjectedItem,
   requireRuntimeEntity,
   reserveTempRef
 } from './lower-dvina-trace-turn-step-item-support.js';
+import { moveEntity } from './lower-dvina-trace-turn-step-item-move.js';
 
 export function createMutationOperationHandlers(state, options = {}) {
   return Object.freeze({
@@ -35,95 +32,6 @@ export function createMutationOperationHandlers(state, options = {}) {
       changeEntityFacts(execution, state, options),
     set_entity_mechanics: (execution) => setEntityMechanics(execution, state),
     retire_entity: (execution) => retireEntity(execution, state)
-  });
-}
-
-function moveEntity(execution, state, options) {
-  const { operation, working_projection: projection } = execution;
-  requireProjection(projection);
-  const refs = collectCurrentRefs(execution);
-  requireRef(operation.entity_ref, refs, 'entity_ref');
-  requireRef(operation.placement.target_ref, refs, 'placement.target_ref');
-  const current = requireProjectedItem(projection, operation.entity_ref);
-  const runtime = state.entities.get(actualRef(operation.entity_ref, state));
-  const authored = state.authoredItems.get(operation.entity_ref);
-  let owned = runtime;
-  if (!owned && authored) {
-    const mechanics = typeof options.resolveItemMechanics === 'function'
-      ? options.resolveItemMechanics(operation.entity_ref) : null;
-    if (!mechanics) {
-      fail('TRACE_TURN_STEP_AUTHORED_MECHANICS_DATA_GAP', {
-        entity_ref: operation.entity_ref
-      });
-    }
-    owned = {
-      instance_id: operation.entity_ref,
-      mechanics,
-      authored: true
-    };
-  }
-  if (!owned) {
-    fail('TRACE_TURN_STEP_RUNTIME_ENTITY_REQUIRED', {
-      entity_ref: operation.entity_ref
-    });
-  }
-  const placement = normalizePlacement({
-    placement: operation.placement,
-    projection,
-    state,
-    entityRef: operation.entity_ref,
-    incomingMechanics: owned.mechanics,
-    resolveItemMechanics: options.resolveItemMechanics
-  });
-  if (owned.authored) {
-    const admission = admitAuthoredItemPlacementTransition({
-      item: authored,
-      placement
-    });
-    if (!admission.pass) {
-      fail(admission.errors[0]?.code
-        ?? 'ITEM_AUTHORED_PLACEMENT_TRANSITION_INVALID',
-      admission.errors[0]?.details ?? {});
-    }
-  }
-  let next = structuredClone(projection);
-  next.items = next.items.map((item) => matchesItem(item, operation.entity_ref)
-    ? { ...item, placement }
-    : item);
-  next = applyInventoryTransition({
-    projection: next,
-    actor: execution.request.actor,
-    beforePlacement: current.placement,
-    afterPlacement: placement,
-    beforeMechanics: owned.mechanics,
-    afterMechanics: owned.mechanics,
-    itemRef: operation.entity_ref,
-    state
-  });
-  if (owned.authored) {
-    state.authoredItems.set(operation.entity_ref, {
-      ...authored,
-      placement: structuredClone(placement)
-    });
-    state.materializedItems.set(operation.entity_ref, {
-      ...state.materializedItems.get(operation.entity_ref),
-      placement: structuredClone(placement)
-    });
-  }
-  const identity = nextOperationIdentity(execution, state);
-  return applied({
-    projection: next,
-    summary: `moved:${operation.entity_ref}`,
-    fragment: directFragment(identity, 'party_items', {
-      entity_ref: owned.instance_id,
-      placement: persistedPlacement(placement, state),
-      ...(owned.authored ? {
-        authored_source: authoredItemPlacementSourceProof(authored)
-      } : {})
-    }),
-    consequence: visibleConsequence(identity, {
-      change: 'moved', entity_ref: owned.instance_id
-    })
   });
 }
 

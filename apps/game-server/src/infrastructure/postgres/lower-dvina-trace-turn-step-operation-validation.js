@@ -38,7 +38,8 @@ export function validateFragment(fragment, batch, index) {
         || value.duration_minutes < 0) invalid(index, 'semantic activity');
     return;
   }
-  if (!['party_items', 'party_state'].includes(fragment.target)) {
+  if (!['party_items', 'party_containers', 'party_state']
+    .includes(fragment.target)) {
     invalid(index, 'write target');
   }
   exact(value, [
@@ -60,7 +61,7 @@ export function validateFragment(fragment, batch, index) {
     return;
   }
   if (!ITEM_KINDS.has(value.operation_kind)) {
-    invalid(index, 'party_items operation kind');
+    invalid(index, 'item/container operation kind');
   }
   validateItemPayload(value.operation_kind, value.payload, index);
 }
@@ -76,16 +77,27 @@ export function validatePlacementShape(value, index = null) {
     return;
   }
   const fields = [
-    'holder_character_id', 'location_ref', 'container_id', 'attached_item_id'
+    'holder_character_id', 'holder_npc_id', 'location_ref', 'container_id',
+    'attached_item_id'
   ].filter((key) => value[key] != null);
-  const allowed = new Set([...fields, 'physical_position']);
+  const allowed = new Set([
+    ...fields, 'physical_position', 'equipment_slot_category_id'
+  ]);
+  const actorHolder = ['holder_character_id', 'holder_npc_id']
+    .includes(fields[0]);
   if (fields.length !== 1
       || Object.keys(value).some((key) => !allowed.has(key))
       || fields.some((key) => !text(value[key]))
-      || (fields[0] === 'holder_character_id'
-        && !['hands', 'worn'].includes(value.physical_position))
-      || (fields[0] !== 'holder_character_id'
-        && value.physical_position != null)) invalid(index, 'placement');
+      || (actorHolder
+        && !['hands', 'worn', 'worn_quick', 'equipped', 'external',
+          'external_load'].includes(value.physical_position))
+      || (actorHolder && value.physical_position === 'equipped')
+        !== Boolean(text(value.equipment_slot_category_id))
+      || (!actorHolder
+        && (value.physical_position != null
+          || value.equipment_slot_category_id != null))) {
+    invalid(index, 'placement');
+  }
 }
 
 function validateItemPayload(kind, payload, index) {
@@ -96,7 +108,11 @@ function validateItemPayload(kind, payload, index) {
     ],
     move_entity: payload.authored_source == null
       ? ['entity_ref', 'placement']
-      : ['entity_ref', 'placement', 'authored_source'],
+      : payload.actor_transition == null
+        ? ['entity_ref', 'placement', 'authored_source']
+        : [
+            'entity_ref', 'placement', 'authored_source', 'actor_transition'
+          ],
     change_entity_facts: ['entity_ref', 'remove_fact_refs', 'add_facts'],
     set_entity_mechanics: [
       'entity_ref', 'reason', 'runtime_instance_mechanics_snapshot'
@@ -135,6 +151,15 @@ function validateItemPayload(kind, payload, index) {
             && !text(payload.authored_source.profile_id)
           || !text(payload.authored_source.source_digest)) {
         invalid(index, 'authored source proof');
+      }
+    }
+    if (payload.actor_transition != null) {
+      exact(payload.actor_transition, ['schema', 'version'], index);
+      if (payload.authored_source == null
+          || payload.actor_transition.schema
+            !== 'rus.approved_actor_item_transition.v1'
+          || payload.actor_transition.version !== 1) {
+        invalid(index, 'actor item transition');
       }
     }
   }

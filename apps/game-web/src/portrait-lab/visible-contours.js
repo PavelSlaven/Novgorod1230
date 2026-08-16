@@ -205,7 +205,7 @@ function addFacialHair(model, geometry, strokes) {
   if (style === 'none') return;
   const height = model.head.height;
   const width = model.head.width;
-  const axis = model.head.faceAxisX + model.identity.asymmetry.mouth * .3;
+  const axis = model.head.faceAxisX + model.semantic_geometry.asymmetry.mouth * .3;
   const y = height * .265;
   for (const side of [-1, 1]) {
     const moustache = quadraticPoints(

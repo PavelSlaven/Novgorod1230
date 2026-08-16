@@ -38,12 +38,15 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.m3,
     revisions.m4,
     revisions.m5,
-    revisions.m6
+    revisions.m6,
+    revisions.m7
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
         ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m6
+        ? definitionRevision === revisions.m7
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v15'
+        : definitionRevision === revisions.m6
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v14'
         : definitionRevision === revisions.m5
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v13'
@@ -140,6 +143,23 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m7) {
+    const manifest = bundle.phase_1a_manifest;
+    const bindings = bundle.materialization_bindings;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v15'
+      || manifest.revision !== 15
+      || manifest.scenario_definition_revision !== 19
+      || bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v15'
+      || bindings.revision !== 15
+      || bindings.actor_appearance_materialization?.runtime_llm !== 'forbidden'
+      || bindings.initial_equipment_materialization?.owner
+        !== '@rus/new-game:stage-16-item-placement'
+      || bindings.initial_equipment_materialization?.outfit_materializer
+        !== 'forbidden') {
+      fail('TRACE_M7_PHASE_1A_CUTOVER_INVALID', 'Revision 19 requires the exact actor appearance Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m6) return assertLowerDvinaTraceM6Cutover(bundle, fail);
   if (definitionRevision === revisions.m5) return assertLowerDvinaTraceM5Cutover(bundle, fail);
   if (definitionRevision === revisions.m4) return assertLowerDvinaTraceM4Cutover(bundle, fail);

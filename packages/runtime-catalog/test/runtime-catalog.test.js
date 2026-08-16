@@ -295,9 +295,82 @@ test('public loader boundary exposes only immutable read operations', () => {
 
   assert.deepEqual(
     Object.keys(loader).sort(),
-    ['loadActivePin', 'loadApprovedItemCatalog']
+    [
+      'loadActivePin',
+      'loadApprovedActorProfileCatalog',
+      'loadApprovedItemCatalog'
+    ]
   );
   assert.equal(Object.isFrozen(loader), true);
+});
+
+test('actor profiles are read from the exact approved world pin, separately from the item catalog', async () => {
+  const worldPin = {
+    world_revision_id: 'world-v4',
+    world_catalog_digest: digest('e')
+  };
+  const rows = {
+    world_revisions: [{
+      id: worldPin.world_revision_id,
+      catalog_digest: worldPin.world_catalog_digest,
+      status: 'approved'
+    }],
+    region_category_options: [{
+      id: 'option-build',
+      world_revision_id: worldPin.world_revision_id,
+      region_id: 'novgorod',
+      category_id: 'build-average',
+      status: 'approved'
+    }],
+    region_demographic_profiles: [{
+      id: 'demographics', region_id: 'novgorod', status: 'approved'
+    }],
+    region_demographic_profile_entries: [{
+      id: 'demographics:adult', demographic_profile_id: 'demographics',
+      facet: 'age_category', option_id: 'option-adult', status: 'approved'
+    }],
+    region_appearance_profiles: [{
+      id: 'appearance', region_id: 'novgorod', status: 'approved'
+    }],
+    region_appearance_profile_entries: [{
+      id: 'appearance:build', appearance_profile_id: 'appearance',
+      facet: 'build', option_id: 'option-build', status: 'approved'
+    }],
+    universal_categories: [{
+      id: 'build-average', stable_code: 'actor.build.average',
+      facet: 'build', status: 'approved'
+    }]
+  };
+  const calls = [];
+  const loader = createRuntimeCatalogLoader({
+    worldBaseReader: {
+      async read(sql, params) {
+        calls.push({ sql, params });
+        const table = /FROM world_base\.([a-z_]+)/u.exec(sql)?.[1];
+        assert.ok(table && rows[table], `unexpected actor profile query: ${sql}`);
+        return { rows: structuredClone(rows[table]) };
+      }
+    },
+    supportedRuntimeContractDigests: [digest('d')]
+  });
+
+  const catalog = await loader.loadApprovedActorProfileCatalog({
+    worldPin,
+    regionId: 'novgorod',
+    effectiveDate: '1230-06-01'
+  });
+
+  assert.equal(catalog.schema, 'rus.verified_actor_profile_catalog.v1');
+  assert.deepEqual(catalog.world_pin, worldPin);
+  assert.equal(catalog.records_by_table.region_appearance_profile_entries.length, 1);
+  assert.equal(Object.isFrozen(catalog.records_by_table), true);
+  assert.deepEqual(calls[0].params, [worldPin.world_revision_id, worldPin.world_catalog_digest]);
+  assert.equal(calls.slice(1).every(({ sql, params }) => {
+    const expected = sql.includes('$3')
+      ? [worldPin.world_revision_id, 'novgorod', '1230-06-01']
+      : [worldPin.world_revision_id, 'novgorod'];
+    return JSON.stringify(params) === JSON.stringify(expected);
+  }), true);
 });
 
 test('active pin uses static reads and returns the exact immutable approved tuple', async () => {

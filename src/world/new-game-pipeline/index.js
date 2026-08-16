@@ -1689,6 +1689,11 @@ async function commitProvidedStageOutput(context, stageId, slug, output, { evide
       regionalContextPackage: pipelineOptions.regionalContextPackage,
       startCandidateSet: pipelineOptions.startCandidateSet,
       candidatePlaceTemplateSet: pipelineOptions.candidatePlaceTemplateSet,
+      worldRevisionId: pipelineOptions.worldRevisionId
+        ?? pipelineOptions.world_revision_id,
+      approvedActorProfileSnapshot:
+        pipelineOptions.approvedActorProfileSnapshot
+        ?? pipelineOptions.approved_actor_profile_snapshot,
       npcCandidatePolicy: pipelineOptions.npcCandidatePolicy ?? pipelineOptions.policies?.npc_candidate_policy ?? {}
     });
   }
@@ -2189,4 +2194,3 @@ function requireWorldBaseReferenceSnapshot(options = {}) {
   if (!value) throw new Error('Stage 24 requires worldBaseReferenceSnapshot.');
   return structuredClone(value);
 }
-

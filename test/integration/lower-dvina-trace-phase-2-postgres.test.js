@@ -5,6 +5,10 @@ import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
+import { projectActorPortraitSpecV1 } from '@rus/visibility-knowledge-memory';
+import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
   createFirstPlayablePublicRuntime
 } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
@@ -46,9 +50,9 @@ const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
 );
 const world = Object.freeze({
-  revision: 'novgorod_spatial_v3_production_v3_candidate_001',
+  revision: 'novgorod_spatial_v3_production_v4_candidate_001',
   digest:
-    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
+    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
 });
 
 test('Phase 2 free-text inspection commits atomically, restarts and rejects tamper', async (t) => {
@@ -92,7 +96,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     compatible_world_revision_id: world.revision,
     compatible_world_catalog_digest: world.digest,
     compatible_world_pin_manifest_digest:
-      '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
+      '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
   });
   const release = Object.freeze({
     release_id: 'phase-2-postgres-release',
@@ -208,12 +212,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   );
   assert.deepEqual(
     persistedCluePlacement.state.pickup_transition.inventory_before,
-    { total_mass_grams: 400, hands_used: 0, hands_free: 2,
+    { total_mass_grams: 2050, hands_used: 0, hands_free: 2,
       load_category: 'light' }
   );
   assert.deepEqual(
     persistedCluePlacement.state.pickup_transition.inventory_after,
-    { total_mass_grams: 410, hands_used: 0, hands_free: 2,
+    { total_mass_grams: 2060, hands_used: 0, hands_free: 2,
       load_category: 'light' }
   );
   const persistedOwnership = (await pool.query(
@@ -242,10 +246,24 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     [opened.party_id]
   )).rows.map(({ template_id: id }) => id), [
     'trace_ld_v1_item_bandage_cloth',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
+    'trace_ld_v1_item_base_shirt',
     'trace_ld_v1_item_blue_wool_fragment',
     'trace_ld_v1_item_mikula_knife',
+    'trace_ld_v1_item_ratsha_caftan',
     'trace_ld_v1_item_ratsha_knife',
     'trace_ld_v1_item_sealed_packet',
+    'trace_ld_v1_item_working_outer_garment',
+    'trace_ld_v1_item_working_outer_garment',
+    'trace_ld_v1_item_working_outer_garment',
+    'trace_ld_v1_item_working_outer_garment',
+    'trace_ld_v1_item_working_outer_garment',
+    'trace_ld_v1_item_working_outer_garment',
     'trace_ld_v1_item_zhdanko_axe'
   ]);
   assert.equal((await pool.query(
@@ -277,7 +295,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 6);
+    opened.party_id), 20);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -339,7 +357,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 6);
+    opened.party_id), 20);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -355,7 +373,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 6);
+    opened.party_id), 20);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -418,7 +436,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 5);
+    failureParty.party_id), 19);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions
@@ -583,6 +601,15 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     runtimeCatalogPin
   });
 
+  await t.test(
+    'real Ratsha caftan survives common transition, commit, reload and portrait projection',
+    () => assertRatshaCaftanTransitionPersists({
+      pool,
+      release,
+      runtimeCatalogPin
+    })
+  );
+
   await assertConcurrentStaleCommitBlocked({
     pool,
     release,
@@ -596,6 +623,177 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     pendingPresentation: true
   });
 });
+
+async function assertRatshaCaftanTransitionPersists({
+  pool,
+  release,
+  runtimeCatalogPin
+}) {
+  const runtimeOptions = { pool, release, runtimeCatalogPin };
+  const actorMoveRuntimeOptions = {
+    ...runtimeOptions, turnStepModel: actorItemMoveTestModel
+  };
+  const runtime = buildRuntime(runtimeOptions);
+  const opened = await runtime.startNewGame({
+    scenario_id: 'lower_dvina_trace_v1',
+    request_id: 'phase-2-ratsha-caftan-transition-party'
+  });
+  await runtime.acknowledgeOpening(opened.party_id, {
+    client_ack_id: 'phase-2-ratsha-caftan-transition-ack'
+  });
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-ratsha-caftan-transition-baseline',
+    idempotency_key: 'phase-2-ratsha-caftan-transition-baseline',
+    raw_text: 'Осмотреть место крушения подробно.'
+  });
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-ratsha-caftan-reach-camp',
+    idempotency_key: 'phase-2-ratsha-caftan-reach-camp',
+    raw_text: 'Дойти до рыбацкого стана.'
+  });
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-ratsha-caftan-show-clue',
+    idempotency_key: 'phase-2-ratsha-caftan-show-clue',
+    raw_text: 'Показать Еремею синюю шерсть.'
+  });
+  await runtime.submitTurn(opened.party_id, {
+    request_id: 'phase-2-ratsha-caftan-reach-drying-shed',
+    idempotency_key: 'phase-2-ratsha-caftan-reach-drying-shed',
+    raw_text: 'Пойти к старой сушильне.'
+  });
+  const repository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: createSpatialV3PostgresCombinedAtomicCommitter({
+      pool,
+      recheck: firstPlayableCommitRecheck,
+      now: () => new Date('2026-07-30T08:00:00.000Z')
+    })
+  });
+  const initial = await repository.loadPhase2State(opened.party_id);
+  const ratsha = initial.npcs.find(({ participant_slot_ref: slot }) =>
+    slot === 'ratsha_storehouse_helper');
+  const caftan = initial.items.find(({ template_id: templateId }) =>
+    templateId === 'trace_ld_v1_item_ratsha_caftan');
+  assert.ok(ratsha);
+  assert.ok(caftan);
+  const originalItemId = caftan.item_id;
+
+  await buildRuntime(actorMoveRuntimeOptions).submitTurn(opened.party_id, {
+    request_id: 'ratsha-caftan-to-player-hands',
+    idempotency_key: 'ratsha-caftan-to-player-hands',
+    raw_text: 'Снять кафтан Ратши и взять его в руки.'
+  });
+
+  const afterTransfer = await repository.loadPhase2State(opened.party_id);
+  const transferredCaftan = afterTransfer.items.find(({ item_id: itemId }) =>
+    itemId === originalItemId);
+  assert.equal(transferredCaftan.placement.holder_character_id,
+    afterTransfer.actor_id);
+  assert.equal(transferredCaftan.ownership.owner_npc_id, ratsha.instance_id);
+  assert.equal(transferredCaftan.ownership.controller_character_id,
+    afterTransfer.actor_id);
+  const ratshaAfterTransfer = projectActorPortraitSpecV1({
+    identity: ratsha.identity_state,
+    visible_equipment: visibleActorEquipment(
+      afterTransfer.items, ratsha.instance_id, 'npc')
+  });
+  assert.equal(ratshaAfterTransfer.clothing.outer, 'none');
+
+  const playerOuter = afterTransfer.items.find((item) =>
+    item.item_id !== originalItemId
+      && item.placement.holder_character_id === afterTransfer.actor_id
+      && item.placement.physical_position === 'equipped'
+      && item.placement.equipment_slot_category_id === 'outer_garment');
+  assert.ok(playerOuter);
+  await buildRuntime(actorMoveRuntimeOptions).submitTurn(opened.party_id, {
+    request_id: 'player-outer-to-hands',
+    idempotency_key: 'player-outer-to-hands',
+    raw_text: 'Снять свою верхнюю одежду и держать её в руках.'
+  });
+  const beforeEquip = await repository.loadPhase2State(opened.party_id);
+  const caftanInHands = beforeEquip.items.find(({ item_id: itemId }) =>
+    itemId === originalItemId);
+  assert.equal(caftanInHands.placement.physical_position, 'hands');
+  await buildRuntime(actorMoveRuntimeOptions).submitTurn(opened.party_id, {
+    request_id: 'player-equips-ratsha-caftan',
+    idempotency_key: 'player-equips-ratsha-caftan',
+    raw_text: 'Надеть кафтан Ратши как верхнюю одежду.'
+  });
+
+  const restartedRepository = createLowerDvinaTracePhase2PostgresRepository({
+    partyPool: pool,
+    committer: createSpatialV3PostgresCombinedAtomicCommitter({
+      pool,
+      recheck: firstPlayableCommitRecheck,
+      now: () => new Date('2026-07-30T08:00:00.000Z')
+    })
+  });
+  const afterRestart = await restartedRepository.loadPhase2State(
+    opened.party_id
+  );
+  const equippedCaftan = afterRestart.items.find(({ item_id: itemId }) =>
+    itemId === originalItemId);
+  assert.equal(equippedCaftan.item_id, originalItemId);
+  assert.equal(equippedCaftan.placement.holder_character_id,
+    afterRestart.actor_id);
+  assert.equal(equippedCaftan.placement.equipment_slot_category_id,
+    'outer_garment');
+  assert.equal(equippedCaftan.ownership.owner_npc_id, ratsha.instance_id);
+  const playerPortrait = projectActorPortraitSpecV1({
+    identity: afterRestart.player_profile.identity,
+    visible_equipment: visibleActorEquipment(
+      afterRestart.items, afterRestart.actor_id, 'character')
+  });
+  assert.equal(playerPortrait.clothing.outer, 'front_open');
+  assert.equal(playerPortrait.clothing.main_color, 'dark_blue');
+}
+
+function actorItemMoveTestModel(request) {
+  const action = request.root_player_action.toLowerCase();
+  const items = request.player_safe_state.items ?? [];
+  const actorId = items.find((item) =>
+    item.placement?.holder_character_id)?.placement.holder_character_id;
+  assert.ok(actorId, 'player holder ref is present in request data');
+  const target = action.includes('свою верхнюю')
+    ? items.find((item) =>
+        item.template_id === 'trace_ld_v1_item_working_outer_garment'
+        && item.placement?.holder_character_id === actorId
+        && item.placement?.physical_position === 'equipped')
+    : items.find((item) =>
+        item.template_id === 'trace_ld_v1_item_ratsha_caftan');
+  assert.ok(target, `actor item move target is visible: ${action}`);
+  const worn = action.includes('надеть');
+  return {
+    schema: 'turn_step_plan_v1',
+    request_id: request.request_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    step_index: request.step_index,
+    interpretation: {
+      player_goal: request.root_player_action,
+      grounded_attempt: request.remaining_intent,
+      adaptation: 'literal'
+    },
+    resolution: 'direct',
+    goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+    operations: [{
+      op: 'move_entity', entity_ref: target.item_id,
+      placement: {
+        relation: worn ? 'worn_by' : 'held_by', target_ref: actorId
+      }
+    }],
+    check: null, continuation: null, clarification: null,
+    reason_code: 'approved_item_move',
+    reason: 'Обычное перемещение видимого предмета.'
+  };
+}
+
+function visibleActorEquipment(items, actorId, kind) {
+  const holder = kind === 'npc' ? 'holder_npc_id' : 'holder_character_id';
+  return items.filter((item) => item.placement[holder] === actorId
+    && ['worn', 'equipped'].includes(item.placement.physical_position));
+}
 
 async function assertGeneralLookAfterInspection({
   pool,
@@ -789,6 +987,7 @@ function buildRuntime({
   semanticObserver = () => {},
   randomDrawObserver = () => {},
   randomValue = null,
+  turnStepModel: suppliedTurnStepModel = null,
   repositoryDecorator = (value) => value,
   narrationService = {
     async run(request) {
@@ -809,9 +1008,10 @@ function buildRuntime({
   );
   const { playerConversationModel, npcSemanticModel } =
     createM2ConversationModels();
-  const turnStepModel = createLowerDvinaTraceTurnStepTestModel({
-    onCall: semanticObserver
-  });
+  const turnStepModel = suppliedTurnStepModel
+    ?? createLowerDvinaTraceTurnStepTestModel({
+      onCall: semanticObserver
+    });
   const traceTurnRuntime = createLowerDvinaTracePhase2Runtime({
     repository,
     turnStepModel,
@@ -850,6 +1050,10 @@ function buildRuntime({
             }
       };
     },
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations:
+        lowerDvinaTraceConversationTemporalEffectRegistrations()
+    }),
     decisionSecret: 'phase-2-postgres-secret',
     now: () => '2026-07-30T08:00:00.000Z'
   });
@@ -1159,7 +1363,10 @@ async function installWorldLineage(pool) {
         'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),
        ('novgorod_spatial_v3_production_v3_candidate_001',
         'novgorod_spatial_v3_production_v2_candidate_001',
-        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved')`
+        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),
+       ('novgorod_spatial_v3_production_v4_candidate_001',
+        'novgorod_spatial_v3_production_v3_candidate_001',
+        'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')`
   );
 }
 

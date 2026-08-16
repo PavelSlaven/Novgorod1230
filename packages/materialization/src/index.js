@@ -9,10 +9,14 @@ import { resolveInstanceReferences, resolvePlayerStartPosition } from './referen
 import { validateDomainMaterialization } from './domain-validation.js';
 import { assertConnectedG5Graph, assertG5TemplateBundle, chooseApprovedCount, indexApproved } from './stage-helpers.js';
 import { approvedWeight, assertApplicableRecord, assertMaterializationInput, chooseCount, compareRule, partitionInstances, weightedCandidate } from './world-validation.js';
+import { materializeNpcInstanceAppearances } from
+  './actor-base-appearance.js';
 
 export { canonicalDigest, createRandomSource, deriveSeed, MATERIALIZER_VERSION, MaterializationError, RNG_VERSION } from './core.js';
+export { materializeActorBaseAppearance } from './actor-base-appearance.js';
 export {
-  LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST
+  LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST
 } from './lower-dvina-trace-contract.js';
 export { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
 export { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';
@@ -98,6 +102,7 @@ export function materializeWorldInstances(input) {
   }
 
   if (gaps.length > 0) throw new MaterializationError('MATERIALIZATION_BLOCKED_BY_GAPS', 'Required catalog candidates are missing.', { gaps });
+  materializeNpcInstanceAppearances({ instances, random, choices });
   const domain = resolveInstanceReferences(partitionInstances(instances));
   const playerStartPosition = resolvePlayerStartPosition(domain, input.g4_id, input.catalog_bundle.player_start_anchor_slot_key);
   const validationReport = validateDomainMaterialization(domain, playerStartPosition.g5_anchor_id);
@@ -319,7 +324,13 @@ export function materializeG5Scene(input) {
   });
 }
 
-export { materializeItemPlacement, materializeNpcPlacement } from './placement-materializers.js';
+export {
+  materializeItemPlacement,
+  materializeNpcPlacement
+} from './placement-materializers.js';
+export {
+  materializeApprovedActorEquipment
+} from './approved-actor-equipment.js';
 
 function g5TemplateMatchesScope(template, scope = {}, selectedG4TypeId) {
   if (!selectedG4TypeId || template?.g4_type_id !== selectedG4TypeId || !scope.world_revision_id || !scope.region_id || !Number.isInteger(scope.year) || typeof scope.season !== 'string' || !scope.season) return false;

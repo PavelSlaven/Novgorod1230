@@ -25,6 +25,14 @@ read-only; all writes still pass through the game-server combined committer.
 
 Inputs are approved, idempotency-bound logical write plans plus explicit injected transaction/repository ports. A P23 semantic mutation additionally requires a caller-supplied, contract-valid `visible_package_persistence_envelope`; party-store never invents that projection. Outputs are committed-result semantics or typed failure; target ports fail closed when unavailable and never invoke v2 fallback. Unknown/v1 targets are rejected rather than mapped semantically.
 
+Party migration `020` расширяет constraints будущих item/container placements:
+actor physical positions, `equipped` и `equipment_slot_category_id` допустимы
+для player и NPC holder. Historical NPC-container rows без physical position
+сохраняются как есть, но новый либо изменяемый actor-held container обязан иметь
+позицию. Canonical
+appearance остаётся внутри существующих player profile/NPC identity JSON;
+отдельной appearance table и persisted `portrait_spec_v1` нет.
+
 ## Ошибки, зависимости и effects
 
 Missing/miswired transaction port and infrastructure failures propagate as typed port/transaction errors; Stage 25 target mapping rejects unsafe targets. Dependencies are `@rus/kernel`, `@rus/contracts`, `@rus/turn`; package has no DB driver and performs persistence only through its injected transaction boundary. The sole physical PostgreSQL transaction owner is `@rus/game-server`.

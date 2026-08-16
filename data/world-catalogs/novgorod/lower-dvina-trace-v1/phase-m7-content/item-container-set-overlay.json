@@ -1,0 +1,475 @@
+{
+  "schema": "rus.trace_item_container_set_overlay.v1",
+  "set_id": "trace_ld_v1_item_container_set",
+  "revision": 5,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "supersedes_ref": {
+    "id": "trace_ld_v1_item_container_set",
+    "revision": 4,
+    "schema": "rus.trace_item_container_set_overlay.v1",
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-6-content/item-container-set-overlay.json",
+    "digest": "37880f82402fdb4cf70316e6849e17f22b9729b2642ae02e4aaf6c3b8dd67440"
+  },
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden",
+  "item_template_additions": [
+    {
+      "item_template_id": "trace_ld_v1_item_base_shirt",
+      "semantic_category": "linen_shirt",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_linen_base_garment_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_base_shirt"
+      },
+      "causal_basis": "Approved ordinary linen base garment for the initial actor equipment profile.",
+      "status": "approved"
+    },
+    {
+      "item_template_id": "trace_ld_v1_item_working_outer_garment",
+      "semantic_category": "wool_outer_garment",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_wool_outer_garment_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_working_outer_garment"
+      },
+      "causal_basis": "Approved ordinary wool outer garment for the initial actor equipment profile.",
+      "status": "approved"
+    }
+  ],
+  "item_template_overrides": [
+    {
+      "item_template_id": "trace_ld_v1_item_ratsha_caftan",
+      "base_catalog_ref": {
+        "template_id": "item_tpl_nov_wool_outer_garment_v1",
+        "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_caftan"
+      }
+    }
+  ],
+  "item_inventory_profiles": [
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_base_shirt",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "mass_grams": 350,
+      "carry_form": "regular",
+      "external_hand_cost": 0,
+      "status": "approved"
+    },
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "mass_grams": 1300,
+      "carry_form": "regular",
+      "external_hand_cost": 0,
+      "status": "approved"
+    },
+    {
+      "inventory_profile_id": "trace_ld_v1_inventory_profile_ratsha_caftan",
+      "item_template_ref": "trace_ld_v1_item_ratsha_caftan",
+      "mass_grams": 1500,
+      "carry_form": "regular",
+      "external_hand_cost": 0,
+      "status": "approved"
+    }
+  ],
+  "item_visual_profiles": [
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_base_shirt",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "base_garment",
+        "equipment_slot": "base_garment",
+        "neckline": "slit_round",
+        "sleeve_form": "narrow",
+        "outer_form": "none",
+        "visible_fabric": "light_linen",
+        "trim": "none",
+        "main_visible_color": "undyed_linen",
+        "secondary_visible_color": "undyed_linen",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_player_clerk_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "brown",
+        "secondary_visible_color": "brown",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_onisim_boatman_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "charcoal",
+        "secondary_visible_color": "charcoal",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_eremey_fisher_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "ochre",
+        "secondary_visible_color": "ochre",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_ratsha_storehouse_helper_outer",
+      "item_template_ref": "trace_ld_v1_item_ratsha_caftan",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "edge_band",
+        "main_visible_color": "dark_blue",
+        "secondary_visible_color": "dark_blue",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_zhdanko_storehouse_controller_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "forest_green",
+        "secondary_visible_color": "forest_green",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_background_fisher_1_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "brown",
+        "secondary_visible_color": "brown",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    },
+    {
+      "visual_profile_id": "trace_ld_v1_visual_profile_background_fisher_2_outer",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "visual_profile_snapshot": {
+        "schema": "item_visual_profile_snapshot_v1",
+        "version": 1,
+        "garment_kind": "outer_garment",
+        "equipment_slot": "outer_garment",
+        "neckline": "high_closed",
+        "sleeve_form": "narrow",
+        "outer_form": "front_open",
+        "visible_fabric": "wool",
+        "trim": "none",
+        "main_visible_color": "charcoal",
+        "secondary_visible_color": "charcoal",
+        "headwear_kind": "none"
+      },
+      "status": "approved"
+    }
+  ],
+  "initial_equipment_candidates": [
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_player_clerk_base",
+      "target_actor_slot_ref": "player_clerk",
+      "instance_key": "player_clerk_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "player_clerk",
+      "holder_ref": "player_clerk",
+      "controller_ref": "player_clerk",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_player_clerk_outer",
+      "target_actor_slot_ref": "player_clerk",
+      "instance_key": "player_clerk_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_player_clerk_outer",
+      "owner_ref": "player_clerk",
+      "holder_ref": "player_clerk",
+      "controller_ref": "player_clerk",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_onisim_boatman_base",
+      "target_actor_slot_ref": "onisim_boatman",
+      "instance_key": "onisim_boatman_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "onisim_boatman",
+      "holder_ref": "onisim_boatman",
+      "controller_ref": "onisim_boatman",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_onisim_boatman_outer",
+      "target_actor_slot_ref": "onisim_boatman",
+      "instance_key": "onisim_boatman_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_onisim_boatman_outer",
+      "owner_ref": "onisim_boatman",
+      "holder_ref": "onisim_boatman",
+      "controller_ref": "onisim_boatman",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_eremey_fisher_base",
+      "target_actor_slot_ref": "eremey_fisher",
+      "instance_key": "eremey_fisher_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "eremey_fisher",
+      "holder_ref": "eremey_fisher",
+      "controller_ref": "eremey_fisher",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_eremey_fisher_outer",
+      "target_actor_slot_ref": "eremey_fisher",
+      "instance_key": "eremey_fisher_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_eremey_fisher_outer",
+      "owner_ref": "eremey_fisher",
+      "holder_ref": "eremey_fisher",
+      "controller_ref": "eremey_fisher",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_ratsha_storehouse_helper_base",
+      "target_actor_slot_ref": "ratsha_storehouse_helper",
+      "instance_key": "ratsha_storehouse_helper_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "ratsha_storehouse_helper",
+      "holder_ref": "ratsha_storehouse_helper",
+      "controller_ref": "ratsha_storehouse_helper",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_ratsha_storehouse_helper_outer",
+      "target_actor_slot_ref": "ratsha_storehouse_helper",
+      "instance_key": "ratsha_storehouse_helper_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_ratsha_caftan",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_ratsha_caftan",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_ratsha_storehouse_helper_outer",
+      "owner_ref": "ratsha_storehouse_helper",
+      "holder_ref": "ratsha_storehouse_helper",
+      "controller_ref": "ratsha_storehouse_helper",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_zhdanko_storehouse_controller_base",
+      "target_actor_slot_ref": "zhdanko_storehouse_controller",
+      "instance_key": "zhdanko_storehouse_controller_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "zhdanko_storehouse_controller",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_zhdanko_storehouse_controller_outer",
+      "target_actor_slot_ref": "zhdanko_storehouse_controller",
+      "instance_key": "zhdanko_storehouse_controller_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_zhdanko_storehouse_controller_outer",
+      "owner_ref": "zhdanko_storehouse_controller",
+      "holder_ref": "zhdanko_storehouse_controller",
+      "controller_ref": "zhdanko_storehouse_controller",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_background_fisher_1_base",
+      "target_actor_slot_ref": "background_fisher_1",
+      "instance_key": "background_fisher_1_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "background_fisher_1",
+      "holder_ref": "background_fisher_1",
+      "controller_ref": "background_fisher_1",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_background_fisher_1_outer",
+      "target_actor_slot_ref": "background_fisher_1",
+      "instance_key": "background_fisher_1_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_background_fisher_1_outer",
+      "owner_ref": "background_fisher_1",
+      "holder_ref": "background_fisher_1",
+      "controller_ref": "background_fisher_1",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_background_fisher_2_base",
+      "target_actor_slot_ref": "background_fisher_2",
+      "instance_key": "background_fisher_2_base_garment",
+      "item_template_ref": "trace_ld_v1_item_base_shirt",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_base_shirt",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_base_shirt",
+      "owner_ref": "background_fisher_2",
+      "holder_ref": "background_fisher_2",
+      "controller_ref": "background_fisher_2",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "base_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    },
+    {
+      "equipment_candidate_id": "trace_ld_v1_initial_garment_background_fisher_2_outer",
+      "target_actor_slot_ref": "background_fisher_2",
+      "instance_key": "background_fisher_2_outer_garment",
+      "item_template_ref": "trace_ld_v1_item_working_outer_garment",
+      "inventory_profile_ref": "trace_ld_v1_inventory_profile_working_outer_garment",
+      "visual_profile_ref": "trace_ld_v1_visual_profile_background_fisher_2_outer",
+      "owner_ref": "background_fisher_2",
+      "holder_ref": "background_fisher_2",
+      "controller_ref": "background_fisher_2",
+      "physical_position": "equipped",
+      "equipment_slot_category_id": "outer_garment",
+      "condition_state": "serviceable",
+      "legal_status": "owned",
+      "claim_state": "established",
+      "status": "approved"
+    }
+  ],
+  "excludes": [
+    "runtime_handler",
+    "persistence",
+    "party_instance",
+    "api",
+    "ui"
+  ]
+}

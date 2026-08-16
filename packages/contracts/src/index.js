@@ -1,12 +1,16 @@
 import { explainJsonObjectParse } from './json.js';
 import {
   assertPortraitSpecV1,
+  PORTRAIT_SPEC_V1_ENUMS,
+  PORTRAIT_SPEC_V1_JSON_SCHEMA,
   validatePortraitSpecV1
 } from './portrait-spec-v1.js';
 
 export {
   assertPortraitSpecV1,
   explainJsonObjectParse,
+  PORTRAIT_SPEC_V1_ENUMS,
+  PORTRAIT_SPEC_V1_JSON_SCHEMA,
   validatePortraitSpecV1
 };
 export { STAGE_STATUS, assertStageDefinition } from './stage.js';

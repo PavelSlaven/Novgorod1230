@@ -1,6 +1,6 @@
 import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
-import { normalizedPartyAssets } from
+import { normalizedContainer, normalizedPartyAssets } from
   './lower-dvina-trace-phase-1a-read-assets.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
@@ -79,12 +79,17 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         [partyId]
       )).rows;
       const containers = (await query(
-        `SELECT container_id,run_id,template_id,anchor_id,
-                parent_container_id,holder_npc_id,holder_character_id,
-                physical_position,equipment_slot_category_id,
-                condition_state,closure_state,state,state_version
-           FROM party_runtime.party_containers
-          WHERE party_id=$1 ORDER BY container_id`,
+        `SELECT c.container_id,c.run_id,c.template_id,c.anchor_id,
+                c.parent_container_id,c.holder_npc_id,c.holder_character_id,
+                c.physical_position,c.equipment_slot_category_id,
+                c.condition_state,c.closure_state,c.state,c.state_version,
+                o.ownership_id,o.owner_npc_id,o.owner_character_id,
+                o.owner_party,o.owner_external_ref,o.controller_npc_id,
+                o.controller_character_id,o.claim_state
+           FROM party_runtime.party_containers c
+           LEFT JOIN party_runtime.party_ownership o
+             ON o.party_id=c.party_id AND o.container_id=c.container_id
+          WHERE c.party_id=$1 ORDER BY c.container_id`,
         [partyId]
       )).rows;
       const conditions = (await query(
@@ -156,8 +161,10 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
       });
       const normalizedItems = items.map((item) => ({
         item_id: item.item_id,
+        run_id: item.run_id,
         template_id: item.template_id,
         profile_id: item.profile_id,
+        category_id: item.category_id,
         quantity: item.quantity,
         condition_state: item.condition_state,
         legal_status: item.legal_status,
@@ -181,21 +188,7 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           claim_state: item.claim_state
         }
       }));
-      const normalizedContainers = containers.map((container) => ({
-        container_id: container.container_id,
-        run_id: container.run_id,
-        template_id: container.template_id,
-        anchor_id: container.anchor_id,
-        parent_container_id: container.parent_container_id,
-        holder_npc_id: container.holder_npc_id,
-        holder_character_id: container.holder_character_id,
-        physical_position: container.physical_position,
-        equipment_slot_category_id: container.equipment_slot_category_id,
-        condition_state: container.condition_state,
-        closure_state: container.closure_state,
-        state: container.state,
-        state_version: Number(container.state_version)
-      }));
+      const normalizedContainers = containers.map(normalizedContainer);
       const normalizedObligations = obligations.map((obligation) => {
         const sealed = (payload.immediate.promise_instances ?? []).find(
           ({ instance_id: id }) => id === obligation.obligation_id

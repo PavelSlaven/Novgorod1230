@@ -22,9 +22,9 @@ import {
 
 const release = Object.freeze({
   release_id: 'phase-1b-test-release',
-  world_revision_id: 'novgorod_spatial_v3_production_v3_candidate_001',
+  world_revision_id: 'novgorod_spatial_v3_production_v4_candidate_001',
   world_catalog_digest:
-    '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e'
+    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
 });
 const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'
@@ -75,18 +75,18 @@ test('trace dispatch commits before its safe screen', async () => {
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 18);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 19);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.stage26_result.publication_binding_id,
-    'lower_dvina_trace_phase_1b_publication_v13');
-  assert.equal(session.stage26_result.publication_binding_revision, 13);
-  assert.equal(session.stage26_result.scenario_definition_revision, 18);
+    'lower_dvina_trace_phase_1b_publication_v14');
+  assert.equal(session.stage26_result.publication_binding_revision, 14);
+  assert.equal(session.stage26_result.scenario_definition_revision, 19);
   assert.equal(session.stage26_result.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v14');
+    'lower_dvina_trace_phase_1a_materialization_bindings_v15');
   const serialized = JSON.stringify(started);
   for (const forbidden of [
     'hidden_truth',
@@ -245,23 +245,23 @@ test('historical Phase 1A commits recover through their pinned publications', as
     await t.test(`v${revision + 1}`, async () => {
       const requestId = `historical-phase-1a-v${revision + 1}-orphan`;
       const partyId = `party:${hash(requestId).slice(0, 24)}`;
-      const historicalPublication = await loadLowerDvinaTracePhase1BPublication({
+      const pub = await loadLowerDvinaTracePhase1BPublication({
         phase1AManifestDigest: historical.phase_1a_manifest_digest
       });
+      const binding = pub.binding;
+      const world = binding.world_compatibility;
       const f = fixture({
         committedRequest: {
           party_id: partyId,
           scenario_id: 'lower_dvina_trace_v1',
           scenario_definition_revision: historical.scenario_definition_revision,
           scenario_manifest_digest: historical.phase_1a_manifest_digest,
-          world_revision_id: release.world_revision_id,
-          world_catalog_digest: release.world_catalog_digest,
-          world_compatibility: structuredClone(
-            historicalPublication.binding.world_compatibility
-          ),
+          world_revision_id: world.production_world_revision_id,
+          world_catalog_digest: world.production_world_catalog_digest,
+          world_compatibility: structuredClone(world),
           materializer_version: TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
           rng_algorithm_id: TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID,
-          seed_context: historicalPublication.binding.execution_identity.seed_context,
+          seed_context: binding.execution_identity.seed_context,
           idempotency_key: `new-game:lower_dvina_trace_v1:${hash(requestId)}`,
           trigger: 'new_game',
           occurrence: 0,

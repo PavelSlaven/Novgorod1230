@@ -16,6 +16,18 @@ import {
   computeTablesDigest,
   computeTargetCatalogDigest
 } from './ledger-digests.js';
+import { loadApprovedActorProfileCatalog } from
+  './actor-profile-catalog.js';
+import {
+  deepFreeze,
+  fail,
+  isDigest,
+  isIsoDate,
+  rowsFrom,
+  RuntimeCatalogError
+} from './shared.js';
+
+export { loadApprovedActorProfileCatalog, RuntimeCatalogError };
 
 export const RUNTIME_CATALOG_SCOPE = 'item_container_materialization_v2';
 
@@ -65,15 +77,6 @@ FROM world_base.graph_nodes
 WHERE id = ANY($1::text[])
 ORDER BY id`;
 
-export class RuntimeCatalogError extends Error {
-  constructor(code, message, details = {}) {
-    super(message);
-    this.name = 'RuntimeCatalogError';
-    this.code = code;
-    this.details = deepFreeze(structuredClone(details));
-  }
-}
-
 export function createRuntimeCatalogLoader({
   worldBaseReader,
   supportedRuntimeContractDigests
@@ -98,7 +101,12 @@ export function createRuntimeCatalogLoader({
       ...input,
       worldBaseReader,
       supportedRuntimeContractDigests: supported
-    })
+    }),
+    loadApprovedActorProfileCatalog: (input) =>
+      loadApprovedActorProfileCatalog({
+        ...input,
+        worldBaseReader
+      })
   });
 }
 
@@ -725,31 +733,11 @@ function appliesTo(record, regionId, effectiveDate) {
   return true;
 }
 
-function isDigest(value) {
-  return typeof value === 'string' && /^(?:sha256:)?[a-f0-9]{64}$/iu.test(value);
-}
-
-function isIsoDate(value) {
-  return typeof value === 'string'
-    && /^\d{4}-\d{2}-\d{2}$/u.test(value)
-    && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
-}
-
 function singleRow(result, code, message) {
   if (!result || !Array.isArray(result.rows) || result.rows.length !== 1) {
     fail(code, message, { row_count: Array.isArray(result?.rows) ? result.rows.length : null });
   }
   return result.rows[0];
-}
-
-function rowsFrom(result) {
-  if (!result || !Array.isArray(result.rows)) {
-    fail(
-      'RUNTIME_CATALOG_IMPORT_AUDIT_INVALID',
-      'World-base reader returned an invalid row set.'
-    );
-  }
-  return result.rows;
 }
 
 function assertEqualFields(left, right, code, message) {
@@ -758,14 +746,4 @@ function assertEqualFields(left, right, code, message) {
       fail(code, message, { field, expected, actual: left[field] ?? null });
     }
   }
-}
-
-function fail(code, message, details) {
-  throw new RuntimeCatalogError(code, message, details);
-}
-
-function deepFreeze(value) {
-  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
-  for (const item of Object.values(value)) deepFreeze(item);
-  return Object.freeze(value);
 }

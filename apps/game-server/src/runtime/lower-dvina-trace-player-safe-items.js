@@ -9,6 +9,7 @@ import {
   textArray
 } from './lower-dvina-trace-player-safe-json.js';
 import {
+  ACTOR_ITEM_PHYSICAL_POSITIONS,
   runtimeItemContentsAreOpen as contentsAreOpen,
   runtimeItemRecordIsConcealed as recordIsClosed,
   runtimeItemStateValues as stateValues
@@ -62,7 +63,7 @@ export function playerSafeItemIds(items) {
     .filter((itemId) => typeof itemId === 'string' && itemId.length > 0));
 }
 
-export function projectItems(records, { actorId, position,
+export function projectItems(records, { actorId, position, visibleNpcIds,
   strict = false } = {}) {
   if (!Array.isArray(records)) return undefined;
   const byId = new Map(records.filter(plain).map((item) => [
@@ -71,7 +72,8 @@ export function projectItems(records, { actorId, position,
   if (strict) assertNoPlacementCycles(records, byId);
   return records.filter((item) => strict
     ? itemIsStructurallyVisible(item, byId, new Set())
-    : itemIsPlayerSafe(item, actorId, position, byId, new Set()))
+    : itemIsPlayerSafe(item, actorId, position, byId, new Set(),
+      visibleNpcIds))
     .map((item) => projectItem(item, strict));
 }
 
@@ -124,7 +126,8 @@ function projectWeight(value, strict) {
   return compact({ grams: finite(value.grams) });
 }
 
-function itemIsPlayerSafe(item, actorId, position, byId, ancestors) {
+function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
+  visibleNpcIds) {
   if (!plain(item) || recordIsClosed(item)) return false;
   const itemId = item.item_id ?? item.instance_id;
   if (typeof itemId === 'string' && ancestors.has(itemId)) return false;
@@ -135,7 +138,8 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors) {
     if (!plain(container) || !contentsAreOpen(container)) return false;
     const nextAncestors = new Set(ancestors);
     if (typeof itemId === 'string') nextAncestors.add(itemId);
-    return itemIsPlayerSafe(container, actorId, position, byId, nextAncestors);
+    return itemIsPlayerSafe(container, actorId, position, byId, nextAncestors,
+      visibleNpcIds);
   }
   const attachedItemId = placement.attached_item_id ?? item.attached_item_id;
   if (attachedItemId != null) {
@@ -143,12 +147,19 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors) {
     if (!plain(host)) return false;
     const nextAncestors = new Set(ancestors);
     if (typeof itemId === 'string') nextAncestors.add(itemId);
-    return itemIsPlayerSafe(host, actorId, position, byId, nextAncestors);
+    return itemIsPlayerSafe(host, actorId, position, byId, nextAncestors,
+      visibleNpcIds);
   }
   const holder = placement.holder_character_id
     ?? placement.owner_character_id ?? item.holder_character_id
     ?? item.owner_character_id;
   if (holder === actorId) return true;
+  const npcHolder = placement.holder_npc_id ?? item.holder_npc_id;
+  if (visibleNpcIds?.has(npcHolder)
+      && ACTOR_ITEM_PHYSICAL_POSITIONS.includes(
+        placement.physical_position)) {
+    return true;
+  }
   const location = placement.location_ref ?? item.location_ref;
   const anchor = placement.g5_anchor_id ?? placement.anchor_id
     ?? item.g5_anchor_id ?? item.anchor_id;
@@ -158,7 +169,8 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors) {
       .includes(anchor);
   }
   return item.visible === true || item.is_visible === true
-    || stateValues(item.visibility_state).some((state) =>
+    || stateValues(item.visibility_state, item.state?.visibility_state)
+      .some((state) =>
       ['visible', 'scene'].includes(state));
 }
 
@@ -188,7 +200,8 @@ function projectItem(item, strict) {
 function projectPlacement(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
-    'holder_character_id', 'owner_character_id', 'physical_position',
+    'holder_character_id', 'holder_npc_id', 'owner_character_id',
+    'physical_position', 'equipment_slot_category_id',
     'container_id', 'attached_item_id', 'location_ref', 'g5_node_id',
     'g5_anchor_id', 'anchor_id', 'zone_ref'
   ]);

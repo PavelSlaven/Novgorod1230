@@ -1,3 +1,4 @@
+import { canonicalDigest } from '@rus/materialization';
 import {
   recheckTracePhase3LocationCapacity
 } from './recheck-location-capacity.js';
@@ -56,6 +57,9 @@ export async function firstPlayableCommitRecheck({
   }
   if (check.kind === 'item') {
     return recheckExactItem({ transaction, partyId, check });
+  }
+  if (check.kind === 'container') {
+    return recheckExactContainer({ transaction, partyId, check });
   }
   if (check.kind === 'physical'
       && check.physical_model === 'trace_phase6_targeted_admission') {
@@ -144,14 +148,29 @@ export async function firstPlayableCommitRecheck({
 }
 
 async function recheckExactItem({ transaction, partyId, check }) {
-  if (!nonEmpty(check.item_id)
-      || !nonEmpty(check.expected_holder_npc_id)
-      || !nonEmpty(check.expected_controller_npc_id)
-      || !nonEmpty(check.expected_condition_state)) {
+  const holder = exactActorExpectation(
+    'holder',
+    check.expected_holder_npc_id,
+    check.expected_holder_character_id
+  );
+  const controller = exactActorExpectation(
+    'controller',
+    check.expected_controller_npc_id,
+    check.expected_controller_character_id
+  );
+  const exactNullableCondition = Object.hasOwn(check, 'expected_ownership')
+    && check.expected_condition_state === null;
+  if (!nonEmpty(check.item_id) || holder == null || controller == null
+      || (!nonEmpty(check.expected_condition_state) && !exactNullableCondition)
+      || !nonEmpty(check.expected_physical_position)) {
     return resultOf(false, 'generated_schema_mismatch');
   }
   const result = await transaction.query(
-    `SELECT i.condition_state,p.holder_npc_id,o.controller_npc_id
+    `SELECT i.condition_state,p.holder_npc_id,p.holder_character_id,
+            p.physical_position,p.equipment_slot_category_id,
+            o.owner_npc_id,o.owner_character_id,o.owner_party,
+            o.owner_external_ref,o.controller_npc_id,
+            o.controller_character_id,o.claim_state
        FROM party_runtime.party_items i
        JOIN party_runtime.party_item_placements p
          ON p.party_id=i.party_id AND p.item_id=i.item_id
@@ -165,9 +184,78 @@ async function recheckExactItem({ transaction, partyId, check }) {
   return resultOf(
     result.rowCount === 1
     && actual.condition_state === check.expected_condition_state
-    && actual.holder_npc_id === check.expected_holder_npc_id
-    && actual.controller_npc_id === check.expected_controller_npc_id
+    && actual[holder.column] === holder.value
+    && actual[controller.column] === controller.value
+    && actual.physical_position === check.expected_physical_position
+    && (!Object.hasOwn(check, 'expected_equipment_slot_category_id')
+      || actual.equipment_slot_category_id
+        === check.expected_equipment_slot_category_id)
+    && expectedOwnershipMatches(actual, check)
   );
+}
+
+async function recheckExactContainer({ transaction, partyId, check }) {
+  const holder = exactActorExpectation('holder',
+    check.expected_holder_npc_id, check.expected_holder_character_id);
+  const controller = exactActorExpectation('controller',
+    check.expected_controller_npc_id,
+    check.expected_controller_character_id);
+  if (!nonEmpty(check.container_id) || holder == null || controller == null
+      || !nonEmpty(check.expected_physical_position)
+      || !Object.hasOwn(check, 'expected_ownership')) {
+    return resultOf(false, 'generated_schema_mismatch');
+  }
+  const result = await transaction.query(
+    `SELECT c.condition_state,c.closure_state,c.holder_npc_id,
+            c.holder_character_id,c.physical_position,
+            c.equipment_slot_category_id,o.owner_npc_id,
+            o.owner_character_id,o.owner_party,o.owner_external_ref,
+            o.controller_npc_id,o.controller_character_id,o.claim_state
+       FROM party_runtime.party_containers c
+       JOIN party_runtime.party_ownership o
+         ON o.party_id=c.party_id AND o.container_id=c.container_id
+      WHERE c.party_id=$1 AND c.container_id=$2
+      FOR UPDATE OF c,o`,
+    [partyId, check.container_id]
+  );
+  const actual = result.rows[0];
+  return resultOf(result.rowCount === 1
+    && actual.condition_state === check.expected_condition_state
+    && actual.closure_state === check.expected_closure_state
+    && actual[holder.column] === holder.value
+    && actual[controller.column] === controller.value
+    && actual.physical_position === check.expected_physical_position
+    && actual.equipment_slot_category_id
+      === check.expected_equipment_slot_category_id
+    && expectedOwnershipMatches(actual, check));
+}
+
+function expectedOwnershipMatches(actual, check) {
+  if (!Object.hasOwn(check, 'expected_ownership')) return true;
+  return canonicalDigest(ownershipState(actual))
+    === canonicalDigest(check.expected_ownership);
+}
+
+function ownershipState(value) {
+  return {
+    owner_npc_id: value?.owner_npc_id ?? null,
+    owner_character_id: value?.owner_character_id ?? null,
+    owner_party: value?.owner_party === true,
+    owner_external_ref: structuredClone(value?.owner_external_ref ?? null),
+    controller_npc_id: value?.controller_npc_id ?? null,
+    controller_character_id: value?.controller_character_id ?? null,
+    claim_state: value?.claim_state ?? null
+  };
+}
+
+function exactActorExpectation(prefix, npcId, characterId) {
+  const values = [
+    [`${prefix}_npc_id`, npcId],
+    [`${prefix}_character_id`, characterId]
+  ];
+  const populated = values.filter(([, value]) => nonEmpty(value));
+  if (populated.length !== 1) return null;
+  return { column: populated[0][0], value: populated[0][1] };
 }
 
 async function recheckExactActivity({ transaction, check }) {

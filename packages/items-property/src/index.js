@@ -5,7 +5,10 @@ import { planApprovedItemVisibilityTransition } from
 import { planApplicableApprovedItemTransition } from
   './applicable-approved-item-transition.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
-export { planApprovedActorItemTransition } from './approved-actor-item-transition.js';
+export {
+  ACTOR_ITEM_PHYSICAL_POSITIONS,
+  planApprovedActorItemTransition
+} from './approved-actor-item-transition.js';
 export { planApprovedPropertyTransition } from './approved-property-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
 export {

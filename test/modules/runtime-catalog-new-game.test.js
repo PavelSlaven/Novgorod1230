@@ -29,6 +29,14 @@ const runtimeCatalogContext = Object.freeze({
     world_revision_id: pin.compatible_world_revision_id,
     world_catalog_digest: pin.compatible_world_catalog_digest
   }),
+  actor_profile_catalog: Object.freeze({
+    schema: 'rus.verified_actor_profile_catalog.v1',
+    verified: true,
+    world_pin: Object.freeze({
+      world_revision_id: pin.compatible_world_revision_id,
+      world_catalog_digest: pin.compatible_world_catalog_digest
+    })
+  }),
   selection: Object.freeze({
     region_id: 'region-novgorod',
     effective_date: '1230-06-01'
@@ -47,7 +55,7 @@ const runtimeCatalogContext = Object.freeze({
 const projectionDigest = '1'.repeat(64);
 
 test('new-game runtime catalog binding passes one exact immutable context through all catalog stages', () => {
-  for (const stageId of [8, 13, 14, 16, 24, 25]) {
+  for (const stageId of [7, 8, 13, 14, 16, 24, 25]) {
     const bound = bindRuntimeCatalogStageInput({
       stage: { id: stageId },
       input: stageInput(stageId),
@@ -125,6 +133,15 @@ function stageInput(stageId) {
     catalog_digest: pin.catalog_digest,
     catalog_bundle_digest: projectionDigest
   };
+  if (stageId === 7) {
+    return {
+      world_revision_id: pin.compatible_world_revision_id,
+      approved_actor_profile_snapshot: {
+        world_revision_id: pin.compatible_world_revision_id,
+        source_catalog_digest: pin.compatible_world_catalog_digest
+      }
+    };
+  }
   if (stageId === 8) {
     return {
       world_revision_id: pin.compatible_world_revision_id,

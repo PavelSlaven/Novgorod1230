@@ -12,6 +12,10 @@ import {
   requireRefs,
   text
 } from './lower-dvina-trace-turn-step-runtime-common.js';
+import {
+  hydrateAuthoredContainers,
+  projectCurrentCommittedContainers
+} from './lower-dvina-trace-turn-step-authored-containers.js';
 
 export function initializeRuntimeState(committedState) {
   const state = {
@@ -24,12 +28,15 @@ export function initializeRuntimeState(committedState) {
     operationOrdinals: new Map(),
     activityOrdinals: new Map(),
     materializedItems: new Map(),
-    authoredItems: new Map()
+    authoredItems: new Map(),
+    authoredContainers: new Map(),
+    committedState: null
   };
   if (committedState == null) return state;
   if (!plain(committedState)) {
     fail('TRACE_TURN_STEP_COMMITTED_RUNTIME_STATE_INVALID');
   }
+  state.committedState = structuredClone(committedState);
   for (const item of committedState.items ?? []) {
     const itemId = text(item?.item_id ?? item?.instance_id);
     if (itemId && !runtimeItemIsTerminal(item)) {
@@ -62,24 +69,7 @@ export function initializeRuntimeState(committedState) {
       source_refs: [...resolved.snapshot.provenance.source_refs]
     });
   }
-  for (const container of committedState.containers ?? []) {
-    const containerId = text(container?.container_id ?? container?.instance_id);
-    if (!containerId) {
-      fail('TRACE_TURN_STEP_COMMITTED_CONTAINER_INVALID');
-    }
-    state.materializedItems.set(containerId, {
-      ...structuredClone(container), item_id: containerId,
-      instance_id: containerId,
-      placement: { holder_character_id: container.holder_character_id
-        ?? container.state?.holder_character_id ?? null,
-      holder_npc_id: container.holder_npc_id
-        ?? container.state?.holder_npc_id ?? null,
-      anchor_id: container.anchor_id ?? container.state?.anchor_id ?? null,
-      location_ref: container.location_ref
-        ?? container.state?.location_ref ?? null,
-      zone_ref: container.zone_ref ?? container.state?.zone_ref ?? null }
-    });
-  }
+  hydrateAuthoredContainers(committedState, state);
   for (const entity of state.entities.values()) {
     entity.source_refs.filter((ref) => state.entities.has(ref))
       .forEach((ref) => state.consumableSources.add(ref));
@@ -195,11 +185,23 @@ export function applyInventoryTransition({ projection, actor,
 
 export function persistedPlacement(placement, state) {
   const output = structuredClone(placement);
-  for (const key of ['holder_character_id', 'location_ref', 'container_id',
+  for (const key of ['holder_character_id', 'holder_npc_id', 'location_ref', 'container_id',
     'attached_item_id']) {
     if (output[key]) output[key] = actualRef(output[key], state);
   }
   return output;
+}
+
+export function currentCommittedItemState(state) {
+  if (!state.committedState) return null;
+  return {
+    ...structuredClone(state.committedState),
+    items: (state.committedState.items ?? []).map((item) => {
+      const itemId = item.item_id ?? item.instance_id;
+      return structuredClone(state.materializedItems.get(itemId) ?? item);
+    }),
+    ...projectCurrentCommittedContainers(state)
+  };
 }
 
 export function requireProjectedItem(projection, ref) {

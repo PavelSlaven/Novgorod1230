@@ -1,0 +1,56 @@
+[
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_sex_category_male",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "sex_category",
+    "option_id": "nov_1200_1250_sex_category_male",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_sex_category_female",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "sex_category",
+    "option_id": "nov_1200_1250_sex_category_female",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_young_adult",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "age_category",
+    "option_id": "nov_1200_1250_age_category_young_adult",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_adult",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "age_category",
+    "option_id": "nov_1200_1250_age_category_adult",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_middle_aged",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "age_category",
+    "option_id": "nov_1200_1250_age_category_middle_aged",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  },
+  {
+    "id": "novgorod_1200_1250_demographic_profile_v1:nov_1200_1250_age_category_old",
+    "demographic_profile_id": "novgorod_1200_1250_demographic_profile_v1",
+    "facet": "age_category",
+    "option_id": "nov_1200_1250_age_category_old",
+    "weight": 1,
+    "applicability": {},
+    "status": "approved"
+  }
+]

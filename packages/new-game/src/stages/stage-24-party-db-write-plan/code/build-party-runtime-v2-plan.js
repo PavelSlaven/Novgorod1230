@@ -1,6 +1,13 @@
 import { sha256 } from '@rus/kernel';
 import { STAGE24_PLAN_SCHEMA } from '../policy/constants.js';
-import { approvedPlayerPlacement } from './player-placement.js';
+import {
+  approvedContainerPlacement,
+  buildItemPlacementRecord
+} from './player-placement.js';
+import {
+  assertNewActorAppearance,
+  assertNoPortraitSpec
+} from './actor-write-boundary.js';
 import {
   assertMaterializationRuntimeCatalogPins,
   assertPartyRuntimeCatalogPins,
@@ -15,6 +22,7 @@ export function buildPartyRuntimeV2WritePlan(input) {
   assertPartyRuntimeCatalogPins(context);
 
   const outputs = input.approved_pipeline_outputs ?? {};
+  assertNoPortraitSpec(outputs);
   const g5 = outputs.g5_scene_graph ?? {};
   const npcPlacement = outputs.initial_npc_placement ?? {};
   const itemPlacement = outputs.initial_item_placement ?? {};
@@ -85,22 +93,35 @@ export function buildPartyRuntimeV2WritePlan(input) {
   }], ['party_g5_anchors'], sourceTrace);
   const player = outputs.player_character ?? {};
   const playerId = requiredText(player.player_character_id ?? player.character_id, 'player_character.character_id');
+  const npcInstances = npcPlacement.npc_instances ?? npcPlacement.npcs ?? [];
+  const requireActorAppearance = player.appearance_contract_version
+    === 'actor_base_appearance_v1'
+    || npcInstances.some((npc) =>
+      npc.appearance_contract_version === 'actor_base_appearance_v1');
+  assertNewActorAppearance(player.identity, player.appearance_contract_version,
+    'player_character', player.body, requireActorAppearance);
   addBatch(batches, 'party_player_characters', [{ party_id: partyId, character_id: playerId, profile: player }], ['parties'], sourceTrace);
   const knowledgeRecords = outputs.character_knowledge_write_projection?.records ?? outputs.character_knowledge_map?.facts ?? [];
   addBatch(batches, 'party_character_knowledge', knowledgeRecords.map((fact, index) => ({ party_id: partyId, character_id: playerId, fact_id: requiredText(fact.fact_id ?? fact.knowledge_id, `knowledge[${index}].fact_id`), knowledge_state: requiredText(fact.knowledge_state ?? fact.state, `knowledge[${index}].knowledge_state`), evidence: requiredArray(fact.evidence, `knowledge[${index}].evidence`) })), ['party_player_characters'], sourceTrace);
-  addBatch(batches, 'party_npcs', (npcPlacement.npc_instances ?? npcPlacement.npcs ?? []).map((npc, index) => ({
+  addBatch(batches, 'party_npcs', npcInstances.map((npc, index) => {
+    assertNewActorAppearance(npc.identity, npc.appearance_contract_version,
+      `npc[${index}]`, npc.body, requireActorAppearance);
+    return ({
     party_id: partyId, npc_id: npc.npc_instance_id ?? npc.npc_id, run_id: runId,
     profile_set_id: requiredText(npc.profile_set_id, `npc[${index}].profile_set_id`), profile_level: requiredText(npc.profile_level, `npc[${index}].profile_level`),
     anchor_id: requiredText(npc.placement?.g5_anchor_id, `npc[${index}].placement.g5_anchor_id`), identity_state: requiredObject(npc.identity, `npc[${index}].identity`), machine_state: requiredObject(npc.machine_state ?? npc.interaction_state, `npc[${index}].machine_state`),
     semantic_state: { presence_reason: requiredText(npc.placement?.presence_reason, `npc[${index}].presence_reason`), access_state: requiredObject(npc.access_state ?? npc.placement?.access_state ?? {}, `npc[${index}].access_state`), visibility_state: requiredObject(npc.visibility_state, `npc[${index}].visibility_state`), causal_basis: requiredObject(npc.causal_basis ?? { causal_basis_type: 'approved_npc_profile', causal_basis_id: npc.npc_candidate_id }, `npc[${index}].causal_basis`), source_trace: requiredArray(npc.source_trace, `npc[${index}].source_trace`) }
-  })), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
+  }); }), ['party_materialization_runs', 'party_g5_anchors'], sourceTrace);
   addBatch(batches, 'party_npc_traits', (npcPlacement.npc_instances ?? []).flatMap((npc) => (npc.traits ?? []).map((trait, index) => ({ party_id: partyId, npc_id: npc.npc_instance_id, trait_domain: requiredText(trait.trait_domain, `npc_trait[${index}].trait_domain`), category_id: requiredText(trait.category_id, `npc_trait[${index}].category_id`), source_profile_id: requiredText(trait.source_profile_id, `npc_trait[${index}].source_profile_id`) }))), ['party_npcs'], sourceTrace);
   addBatch(batches, 'party_npc_relations', (npcPlacement.npc_relations ?? []).map((relation, index) => ({ party_id: partyId, from_npc_id: requiredText(relation.from_npc_id, `npc_relation[${index}].from_npc_id`), to_npc_id: requiredText(relation.to_npc_id, `npc_relation[${index}].to_npc_id`), relation_category_id: requiredText(relation.relation_category_id, `npc_relation[${index}].relation_category_id`), state: requiredObject(relation.state, `npc_relation[${index}].state`) })), ['party_npcs'], sourceTrace);
   addBatch(batches, 'party_npc_knowledge', (npcPlacement.npc_instances ?? []).flatMap((npc) => (npc.knowledge_records ?? []).map((fact, index) => ({ party_id: partyId, npc_id: npc.npc_instance_id, fact_id: requiredText(fact.fact_id, `npc_knowledge[${index}].fact_id`), knowledge_state: requiredText(fact.knowledge_state, `npc_knowledge[${index}].knowledge_state`) }))), ['party_npcs'], sourceTrace);
   addBatch(batches, 'party_npc_schedules', (npcPlacement.npc_schedule_state ?? []).map((schedule, index) => ({ party_id: partyId, npc_id: requiredText(schedule.npc_instance_id, `npc_schedule[${index}].npc_instance_id`), time_band: requiredText(schedule.time_band, `npc_schedule[${index}].time_band`), schedule_profile_id: requiredText(schedule.schedule_profile_id, `npc_schedule[${index}].schedule_profile_id`), g5_node_id: schedule.g5_node_id ?? schedule.g5_minilocation_id ?? null })), ['party_npcs', 'party_g5_nodes'], sourceTrace);
   const orderedContainers = orderContainersForPersistence(itemPlacement.container_instances ?? itemPlacement.containers ?? []);
   addBatch(batches, 'party_containers', orderedContainers.map((container, index) => {
-    const playerPlacement = approvedPlayerPlacement(container.placement, `container[${index}]`);
+    const playerPlacement = approvedContainerPlacement(
+      container.placement,
+      `container[${index}]`
+    );
     return {
     party_id: partyId, container_id: container.container_instance_id ?? container.container_id, run_id: runId,
     template_id: requiredText(container.container_template_id, `container[${index}].container_template_id`), anchor_id: container.placement?.g5_anchor_id ?? null,
@@ -159,7 +180,7 @@ function normalizeKnowledgeProjection(projection = {}) {
 }
 
 function resourceSemanticState(value, path) {
-  return { ...requiredObject(value.physical_state, `${path}.physical_state`), causal_basis: requiredObject(value.causal_basis, `${path}.causal_basis`), property_state: requiredObject(value.property_state, `${path}.property_state`), access_state: requiredObject(value.access_state, `${path}.access_state`), visibility_state: requiredObject(value.visibility_state, `${path}.visibility_state`), risk_state: requiredObject(value.risk_state, `${path}.risk_state`) };
+  return { ...requiredObject(value.physical_state, `${path}.physical_state`), causal_basis: requiredObject(value.causal_basis, `${path}.causal_basis`), property_state: requiredObject(value.property_state, `${path}.property_state`), access_state: requiredObject(value.access_state, `${path}.access_state`), visibility_state: requiredObject(value.visibility_state, `${path}.visibility_state`), risk_state: requiredObject(value.risk_state, `${path}.risk_state`), ...(value.visual_profile_snapshot ? { visual_profile_snapshot: structuredClone(value.visual_profile_snapshot) } : {}) };
 }
 
 function collectCreatedRefs(g5, npcPlacement, itemPlacement) {
@@ -188,21 +209,6 @@ function addDecisionBatches(batches, partyId, decisionTraces, sourceTrace) {
   addBatch(batches, 'party_decision_requests', traces.map(({ request, validation_report: validationReport }) => ({ party_id: partyId, request_id: request.request_id, policy_id: request.policy_id, policy_version: request.policy_version, actor_id: request.actor_id, state_version: request.state_version, issued_at: request.issued_at, expires_at: request.expires_at, options_digest: request.options_digest, idempotency_key: `decision:${partyId}:${request.request_id}`, status: 'resolved', input_digest: sha256(request), validation_report: validationReport })), ['parties'], sourceTrace);
   addBatch(batches, 'party_decision_options', traces.flatMap(({ request }) => request.options.map((option) => ({ party_id: partyId, request_id: request.request_id, option_id: option.option_id, command_id: option.command_id, command_token_digest: sha256(option.command_token), ordinal: option.ordinal, metadata: { actor_id: option.actor_id, target_id: option.target_id, preconditions: option.preconditions, expected_cost: option.expected_cost, known_risks: option.known_risks, reason_visible_to_actor: option.reason_visible_to_actor, state_version: option.state_version, metadata: option.metadata } }))), ['party_decision_requests'], sourceTrace);
   addBatch(batches, 'party_decision_results', traces.map(({ request, result }) => ({ party_id: partyId, request_id: request.request_id, option_id: result.option_id, state_version: result.state_version, response_digest: result.response_digest })), ['party_decision_options'], sourceTrace);
-}
-
-function buildItemPlacementRecord(partyId, item) {
-  const placement = item.placement ?? {};
-  const record = { party_id: partyId, item_id: item.item_instance_id ?? item.item_id, anchor_id: null, container_id: null, holder_npc_id: null, holder_character_id: null };
-  const targets = ['g5_anchor_id', 'container_instance_id', 'holder_npc_instance_id', 'holder_player_character_id'].filter((key) => placement[key]);
-  if (targets.length !== 1) throw stage24BuildError('WRITE_PLAN_ITEM_PLACEMENT_INVALID', `Item ${record.item_id} must have exactly one approved placement target.`);
-  if (placement.container_instance_id) record.container_id = placement.container_instance_id;
-  else if (placement.holder_npc_instance_id) record.holder_npc_id = placement.holder_npc_instance_id;
-  else if (placement.holder_player_character_id) {
-    record.holder_character_id = placement.holder_player_character_id;
-    Object.assign(record, approvedPlayerPlacement(placement, `item ${record.item_id}`));
-  }
-  else record.anchor_id = placement.g5_anchor_id;
-  return record;
 }
 
 function orderContainersForPersistence(containers) {

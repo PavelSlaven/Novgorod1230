@@ -7,8 +7,7 @@ import {
   resolveBoundaryResume
 } from './boundary-paused-execution.js';
 import {
-  LOCAL_RISK_PROFILE, NPC_PROFILE_SET, choose, hash, resolveEquipmentProfile,
-  resolveNpcProfile
+  LOCAL_RISK_PROFILE, hash, resolveNpcProfile
 } from './shared.js';
 
 export function applyCommand(state, command, context) {
@@ -52,18 +51,10 @@ export function applyCommand(state, command, context) {
     if (next.location === 'landing_edge' && !next.landing_materialized) {
       next.landing_materialized = true;
       const npcId = `npc:${next.party_id}:fisher`;
-      next.npc = {
-        id: npcId,
-        name: null,
-        enriched: false,
-        equipment_profile: resolveEquipmentProfile(
-          choose(
-            NPC_PROFILE_SET.equipment_profile_candidates,
-            `${npcId}:npc:equipment`
-          ),
-          `${npcId}:npc:equipment`
-        )
-      };
+      const resolved = resolveNpcProfile(npcId, {
+        catalogVersion: next.first_playable_catalog_version ?? 1
+      });
+      next.npc = { ...resolved, id: npcId, name: null, name_id: null, enriched: false };
     }
     prose = traversal.success
       ? (next.location === 'landing_edge'
@@ -75,7 +66,9 @@ export function applyCommand(state, command, context) {
   } else if (verb === 'talk') {
     elapsed = context.activityProfile.fixed_duration_minutes;
     if (!next.npc.enriched) {
-      Object.assign(next.npc, resolveNpcProfile(next.npc.id), {
+      Object.assign(next.npc, resolveNpcProfile(next.npc.id, {
+        catalogVersion: next.first_playable_catalog_version ?? 1
+      }), {
         enriched: true
       });
     }

@@ -1,7 +1,7 @@
 # Архитектура кодовой материализации мира
 
 **Статус:** canonical normative; active; высший норматив по материализации и разделению ответственности кода/LLM
-**Версия:** 1.0.0
+**Версия:** 1.1.0
 **Область:** граница ответственности редакторских данных, кода, LLM, `world_base` и party state
 
 ## Production/target routing
@@ -281,11 +281,34 @@ G4 rule → regional archetype/profile set
 
 Экземпляр хранит машинные параметры, profile/source refs, причину присутствия, права доступа, route/resource basis и уровень `background|scene|key`. Художественное описание не заменяет данные.
 
+Новый actor независимо от уровня получает полный `actor_base_appearance_v1` в
+существующем identity state. Explicit authored values сохраняются без draw;
+их applicability заранее ограничивает deterministic prerequisite choices
+(например, authored hair style/facial hair ограничивает hair length/sex/age),
+а противоречие отклоняется до RNG. Только
+отсутствующие facets выбираются из approved/applicable normalized
+profile entries, отсортированных по stable ID. Appearance draws выполняются
+после прежних materialization choices, а NPC обрабатываются в стабильном
+порядке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM
+не выбирает внешность NPC. Historical actors не дополняются автоматически.
+
 Повышение профиля использует отдельный deterministic expansion seed, заполняет только отсутствующие поля и не меняет ранее выбранные значения.
 
 ## 9. Предметы, контейнеры и имущество
 
 Предмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.
+
+Одежда материализуется тем же item owner, а не отдельным outfit materializer.
+Каждый garment имеет реальный item ID, owner/holder/controller, placement и
+equipment slot. Exact pinned garment semantics сохраняется в item-owned
+immutable visual snapshot; clothing state на actor запрещён.
+
+`portrait_spec_v1` строится только на чтении из committed canonical identity и
+server-sanitized visible equipped items. Это player-safe presentation
+projection: она не входит в party rows, snapshots, write plans или mutable
+cache, не вызывает LLM/RNG и возвращает `null` для incomplete historical или
+ambiguous equipment state. Renderer использует поля spec напрямую и не
+выбирает внешность hash/RNG.
 
 Содержимое контейнера материализуется один раз при создании контейнера либо при первом причинном раскрытии заранее предусмотренного slot. Заявка игрока не создаёт новый slot.
 
@@ -323,13 +346,13 @@ state_version
 - Stage 9 выбирает стартовый узел через bounded protocol.
 - Stage 13 кодом создаёт G5 structure и общий run context.
 - Stage 14 кодом проверяет G5.
-- Stage 15 кодом создаёт NPC.
-- Stage 16 кодом создаёт items/containers/property.
+- Stage 15 кодом создаёт NPC, canonical appearance и candidate→instance mapping.
+- Stage 16 кодом создаёт items/containers/property, включая реальные initial garments.
 - Stage 19 кодом собирает hidden state из уже утверждённых экземпляров.
 - Stage 24 кодом строит фиксированный party write plan.
 - Stage 25 атомарно фиксирует результат.
 
-Stage 24 не подставляет run/seed/profile/quantity/condition/legal status. Он принимает эти значения только из approved outputs/trace, формирует `insert_only` batches для полного нормализованного набора relations и переводит party в `active` внутри того же плана. Stage 25 квалифицирует физические targets схемой `party_runtime` и исполняет их production SQL adapter.
+Stage 24 не подставляет run/seed/profile/quantity/condition/legal status. Он принимает эти значения только из approved outputs/trace, повторно требует полный appearance contract для новых actors, рекурсивно отклоняет `portrait_spec_v1`, формирует `insert_only` batches для полного нормализованного набора relations и переводит party в `active` внутри того же плана. Stage 25 квалифицирует физические targets схемой `party_runtime` и исполняет их production SQL adapter.
 
 Production-роли `G5SceneMaterializer`, `InitialNpcPlacer`, `InitialItemPlacer` и LLM write-plan builder запрещены.
 

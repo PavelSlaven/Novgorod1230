@@ -46,6 +46,16 @@ export function materializeApprovedItems(candidates, { input, partyId, runId, an
       const equipmentCandidate = candidate.equipment_candidate_id ? equipmentCandidates.get(candidate.equipment_candidate_id) : null;
       if (candidate.equipment_candidate_id && (!equipmentCandidate || equipmentCandidate.status !== 'approved' || equipmentCandidate.world_revision_id !== input.item_profile_candidate_set.world_revision_id)) throw new MaterializationError('EQUIPMENT_CANDIDATE_NOT_APPROVED', `${kind} ${candidateId} references unavailable equipment candidate.`);
       const totalMass = candidate.quantity * quantityRequirement.mass_grams_per_unit;
+      const itemState = {
+        ...(candidate.inventory_profile_snapshot ? {
+          inventory_profile_snapshot:
+            structuredClone(candidate.inventory_profile_snapshot)
+        } : {}),
+        ...(candidate.visual_profile_snapshot ? {
+          visual_profile_snapshot:
+            structuredClone(candidate.visual_profile_snapshot)
+        } : {})
+      };
       return {
         [`${kind}_instance_id`]: deterministicInstanceId(partyId, runId, kind, candidate.slot_rule_id, ordinal),
         [`${kind}_profile_candidate_id`]: candidateId,
@@ -65,6 +75,10 @@ export function materializeApprovedItems(candidates, { input, partyId, runId, an
         placement: { ...structuredClone(candidate.placement), ...structuredClone(candidate.causal_basis) },
         property_state: structuredClone(candidate.property_state), visibility_state: structuredClone(candidate.visibility_state), access_state: structuredClone(candidate.access_state), risk_state: structuredClone(candidate.risk_state),
         physical_state: { ...structuredClone(candidate.physical_state), total_mass_grams: totalMass, weight: totalMass / 1000 },
+        ...(candidate.visual_profile_snapshot ? {
+          visual_profile_snapshot: structuredClone(candidate.visual_profile_snapshot)
+        } : {}),
+        ...(Object.keys(itemState).length > 0 ? { state: itemState } : {}),
         ...(candidate.equipment_candidate_id ? { equipment_candidate_id: candidate.equipment_candidate_id } : {}),
         ...(kind === 'container' ? { content_state: structuredClone(candidate.content_state) } : {}),
         hidden_state_projection: structuredClone(candidate.hidden_state_projection ?? null), source_trace: structuredClone(candidate.source_trace)

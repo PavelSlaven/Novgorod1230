@@ -19,7 +19,7 @@ const CHROME_PATH = [
 ].find((candidate) => candidate && existsSync(candidate));
 const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
-test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
+test('Chromium completes revision 19 through production-v9 and PostgreSQL', {
   timeout: 360_000,
   skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
 }, async (context) => {
@@ -138,10 +138,10 @@ test('Chromium completes revision 18 through production-v8 and PostgreSQL', {
         /Еремей/u);
       assert.equal(await page.locator(
         '[data-conversation-portrait] svg'
-      ).count(), 1, 'persisted NPC appearance is absent, so SVG fallback stays');
+      ).count(), 0, 'complete persisted appearance must not use SVG fallback');
       assert.equal(await page.locator(
         '[data-conversation-portrait-canvas]'
-      ).count(), 0);
+      ).count(), 1, 'visible committed appearance must render procedurally');
       const portrait = await page.locator(
         '[data-conversation-portrait]'
       ).evaluate((element) => element.outerHTML);

@@ -1,4 +1,4 @@
-# Temporal advance pipeline (production v8)
+# Temporal advance pipeline (production v9)
 
 `temporal-world-v1.1` / `4.4.0-target.1` is the current active-norm target
 pipeline; accepted `temporal-world-v1` / `4.3.0-target.1` remains an immutable
@@ -6,7 +6,7 @@ historical contract snapshot.
 Accepted historical P28 evidence changed no production composition. The later
 `versioned production activation cutover` completed as
 `spatial-v3-production-v1`; this pipeline is now the sole production path.
-`spatial-v3-production-v8` inherits the Phase 7 autonomous NPC path and
+`spatial-v3-production-v9` inherits the Phase 7 autonomous NPC path and
 revision-16 combat on the same turn/temporal ownership boundary. Revision 17
 adds no second clock or scheduler: Phase 9 movement and conversation continue
 to use this same temporal owner. Revision 18 Phase 10 is a separate zero-time
@@ -136,7 +136,7 @@ catch-up boundary, not as continuous simulation of every distant entity.
 
 This describes the active production temporal lifecycle after the completed
 `versioned production activation cutover`. Composition, authoritative reads and
-writes follow the sole production path. Current `spatial-v3-production-v8`
+writes follow the sole production path. Current `spatial-v3-production-v9`
 inherits Phase 7 autonomous decisions and revision-16 combat on common owners
 without a second scheduler or scenario-local combat state machine; production
-v7 is the explicit rollback source.
+v8 is the explicit rollback source.

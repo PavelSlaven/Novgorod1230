@@ -1,9 +1,9 @@
 <!-- GENERATED FILE. Sources: infra/world-base/schema.sql, infra/world-base/schema/*.sql and infra/world-base/field-descriptions.js. Run `npm run world-db:schema-doc`; do not edit manually. -->
 # Справочник схемы `world_base`
 
-- Исполняемый источник: `infra/world-base/schema.sql` и 20 упорядоченных SQL-частей.
-- SHA-256 развёрнутого DDL: `324167311f594261f7f457604d646c97b56381bc1ce3c6db44ca73930528ab0f`.
-- Таблиц: 199.
+- Исполняемый источник: `infra/world-base/schema.sql` и 21 упорядоченных SQL-частей.
+- SHA-256 развёрнутого DDL: `c2ccdc3bafe02ce8b04331376c72a463418cee337022c8899600827c4197cead`.
+- Таблиц: 201.
 - Описания берутся только из утверждённого `infra/world-base/field-descriptions.js`; отсутствие описания не заполняется эвристикой.
 
 ## Граф (каноническая карта)
@@ -4160,6 +4160,7 @@ G4-specific правила контейнеров, содержимого и д�
 - `UNIQUE (item_template_id, category_id, binding_kind)`
 - `UNIQUE INDEX item_template_one_active_primary_function (item_template_id) WHERE binding_kind = 'primary_function' AND status = 'approved'`
 - `UNIQUE INDEX item_template_one_active_size_band (item_template_id) WHERE binding_kind = 'size_band' AND status = 'approved'`
+- `UNIQUE INDEX item_template_one_active_visual_binding (item_template_id, binding_kind) WHERE binding_kind IN ( 'garment_kind','equipment_slot','neckline','sleeve_form','outer_form', 'visible_fabric','trim','main_visible_color','secondary_visible_color', 'headwear_kind' ) AND status = 'approved'`
 
 ### `world_base.item_template_inventory_profiles`
 
@@ -5525,3 +5526,39 @@ Digests, counts и dependency order таблиц одного импорта.
 - `PRIMARY KEY (risk_profile_id, risk_profile_version, hazard_class_id)`
 - `UNIQUE (risk_profile_id, risk_profile_version, canonical_ordinal)`
 - `FOREIGN KEY (risk_profile_id, risk_profile_version) REFERENCES world_base.spatial_v3_traversal_risk_profiles(id,version) ON DELETE CASCADE`
+
+### `world_base.region_demographic_profile_entries`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `demographic_profile_id` | `TEXT` | нет | — | `world_base.region_demographic_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ('sex_category','age_category'))` | Описание отсутствует. |
+| `option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(applicability) = 'object')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (demographic_profile_id, facet, option_id)`
+
+### `world_base.region_appearance_profile_entries`
+
+Описание назначения отсутствует.
+
+| Поле | Тип | NULL | Default | FK | Constraints | Описание |
+|---|---|---:|---|---|---|---|
+| `id` | `TEXT` | нет | — | — | `NOT NULL`<br>`PRIMARY KEY` | Уникальный идентификатор записи (TEXT, первичный ключ). |
+| `appearance_profile_id` | `TEXT` | нет | — | `world_base.region_appearance_profiles(id) ON DELETE CASCADE` | `NOT NULL` | Описание отсутствует. |
+| `facet` | `TEXT` | нет | — | — | `NOT NULL`<br>`CHECK (facet IN ( 'build','skin_tone','face_shape','hair_color','hair_length', 'hair_style','facial_hair','eye_color' ))` | Описание отсутствует. |
+| `option_id` | `TEXT` | нет | — | `world_base.region_category_options(id) ON DELETE RESTRICT` | `NOT NULL` | Описание отсутствует. |
+| `weight` | `INTEGER` | нет | `1` | — | `NOT NULL`<br>`CHECK (weight > 0)` | Описание отсутствует. |
+| `applicability` | `JSONB` | нет | `'{}'::jsonb` | — | `NOT NULL`<br>`CHECK (jsonb_typeof(applicability) = 'object')` | Описание отсутствует. |
+| `status` | `TEXT` | нет | `'draft'` | — | `NOT NULL`<br>`CHECK (status IN ('draft','approved','deprecated'))` | Статус утверждения записи. Допустимо: draft, usable_with_caution, approved, needs_review, conflict, rejected. |
+
+**Ограничения таблицы:**
+
+- `UNIQUE (appearance_profile_id, facet, option_id)`

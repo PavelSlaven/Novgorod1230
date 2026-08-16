@@ -1,7 +1,5 @@
-import { canonicalDigest } from '@rus/materialization';
-import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
-import { serverError } from '../errors.js';
-import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { canonicalDigest } from '@rus/materialization'; import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
+import { serverError } from '../errors.js'; import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
@@ -22,8 +20,7 @@ import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js'; import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js'; import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js'; import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, requiredTraceTurnText, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
-import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
+import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js'; import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
   turnStepModel = null,
@@ -39,7 +36,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
-  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, ordinaryDiscoveryEnablementMarker = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -276,6 +273,9 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
         turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, ordinaryDiscoveryEnablementMarker,
+        admitAmbientOrdinaryPortion: typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
+          ? createTurnStepAmbientOrdinaryPortionAdmission({ committedState: state }) : null,
+        requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
         turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
         turnStepApprovedOwners: genericOwners,
         turnStepPackingCalculator,

@@ -92,3 +92,119 @@ test('Stage B rejects positive plans without compatible basis or budget and defe
   assert.equal(output.pending_items_property_admission.admission_evidence
     .runtime_item_mechanics_policy_ref, 'mechanics');
 });
+
+test('a code-owned authority gate records the negative resolution without invoking Stage B', async () => {
+  let calls = 0;
+  const output = await resolveOrdinaryMaterializationPresence(input(async () => {
+    calls += 1;
+    return materialize();
+  }, { codeOwnedResolution: 'authority_required' }));
+  assert.equal(calls, 0);
+  assert.equal(output.status, 'authority_required');
+  assert.equal(output.working_projection.ordinary_aggregate.presence_resolutions[0].resolution,
+    'authority_required');
+});
+
+test('O2a context-bound presence requires the exact approved permission set and committed basis', async () => {
+  const contextCandidate = { semantic_type: 'ordinary_weapon', coverage_kind: 'visible_surface',
+    coverage_ref: 'weapon-rack', policy_version: 'presence', functional_bucket: 'arms',
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
+  const contextRequest = request();
+  contextRequest.policy_refs = { ...contextRequest.policy_refs,
+    allowed_admission_classes: ['weapon_or_armament'],
+    context_bound_permission_refs: ['armament-profile', 'weapon-source'],
+    allowed_supporting_bases: [{ basis_ref: 'basis-arms', basis_state: 'committed' }] };
+  Object.assign(contextCandidate, {
+    candidate_key: createOrdinaryCandidateKey({ scope_ref, ...contextCandidate }),
+    coverage_key: createOrdinaryCoverageKey({ scope_ref, coverage_kind: contextCandidate.coverage_kind,
+      coverage_ref: contextCandidate.coverage_ref, policy_version: contextCandidate.policy_version }),
+    category_key: createOrdinaryCategoryKey({ scope_ref, functional_bucket: 'arms',
+      admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+      policy_version: 'presence' }),
+    context_version: createOrdinaryContextVersion({ scope_ref,
+      context_refs: contextRequest.context_refs, ordinary_presence_policy_ref: 'presence',
+      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest() })
+  });
+  contextRequest.candidate_query = { candidate_key: contextCandidate.candidate_key,
+    candidate_hint: 'оружие', coverage_key: contextCandidate.coverage_key, evidence_weight: 0 };
+  const contextEnvelope = { schema: 'ordinary_materialization_presence_envelope_v1',
+    request: contextRequest, identity: contextCandidate, ordinary_state_version: 1,
+    property_placement_context: propertyPlacementContext(),
+    property_placement_context_digest: propertyPlacementDigest() };
+  const contextBasis = [{ basis_ref: 'basis-arms', state: 'committed', scope_ref,
+    prepared_seed_provenance: null, policy: { functional_buckets: ['arms'],
+      allowed_admission_classes: ['weapon_or_armament'],
+      permission_refs: ['armament-profile', 'weapon-source'] },
+    basis_kind: 'personal_possession' }];
+  const output = await resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+    workingProjection: projection(), basisCatalog: contextBasis,
+    ordinaryMaterializationModel: async () => ({ ...negative('materialize'),
+      entities: [entity({ semantic_descriptor: { semantic_type: 'ordinary_weapon',
+        name: 'неописанный предмет', facts: [] }, admission_class: 'weapon_or_armament',
+      availability_class: 'context_bound', functional_bucket: 'arms',
+      supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'personal_possession',
+        basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) });
+  assert.equal(output.status, 'pending_items_property_admission');
+  assert.deepEqual(output.pending_items_property_admission.admission_evidence.permission_refs,
+    ['armament-profile', 'weapon-source']);
+  const missingPermissionBasis = [{ ...contextBasis[0], policy: {
+    ...contextBasis[0].policy, permission_refs: ['armament-profile'] } }];
+  assert.equal((await resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+    workingProjection: projection(), basisCatalog: missingPermissionBasis,
+    ordinaryMaterializationModel: async () => negative() })).status, 'authority_required');
+
+  for (const semantic_descriptor of [
+    { semantic_type: 'swapped_weapon_type', name: 'совершенно свободное имя', facts: [] },
+    { semantic_type: 'ordinary_weapon', name: 'совершенно свободное имя', facts: ['evidence'] }
+  ]) await assert.rejects(() => resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+    workingProjection: projection(), basisCatalog: contextBasis,
+    ordinaryMaterializationModel: async () => ({ ...negative('materialize'),
+      entities: [entity({ semantic_descriptor, admission_class: 'weapon_or_armament',
+        availability_class: 'context_bound', functional_bucket: 'arms',
+        supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'personal_possession',
+          basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) }),
+  { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' });
+});
+
+test('O2a rejects model attempts to smuggle hidden, historical, or significant truth through a valid armament envelope', async () => {
+  const contextCandidate = { semantic_type: 'ordinary_weapon', coverage_kind: 'visible_surface',
+    coverage_ref: 'weapon-rack', policy_version: 'presence', functional_bucket: 'arms',
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
+  const contextRequest = request();
+  contextRequest.policy_refs = { ...contextRequest.policy_refs,
+    allowed_admission_classes: ['weapon_or_armament'],
+    context_bound_permission_refs: ['armament-profile', 'weapon-source'],
+    allowed_supporting_bases: [{ basis_ref: 'basis-arms', basis_state: 'committed' }] };
+  Object.assign(contextCandidate, {
+    candidate_key: createOrdinaryCandidateKey({ scope_ref, ...contextCandidate }),
+    coverage_key: createOrdinaryCoverageKey({ scope_ref, coverage_kind: contextCandidate.coverage_kind,
+      coverage_ref: contextCandidate.coverage_ref, policy_version: contextCandidate.policy_version }),
+    category_key: createOrdinaryCategoryKey({ scope_ref, functional_bucket: 'arms',
+      admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+      policy_version: 'presence' }),
+    context_version: createOrdinaryContextVersion({ scope_ref,
+      context_refs: contextRequest.context_refs, ordinary_presence_policy_ref: 'presence',
+      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest() })
+  });
+  contextRequest.candidate_query = { candidate_key: contextCandidate.candidate_key,
+    candidate_hint: 'оружие', coverage_key: contextCandidate.coverage_key, evidence_weight: 0 };
+  const contextEnvelope = { schema: 'ordinary_materialization_presence_envelope_v1',
+    request: contextRequest, identity: contextCandidate, ordinary_state_version: 1,
+    property_placement_context: propertyPlacementContext(),
+    property_placement_context_digest: propertyPlacementDigest() };
+  const contextBasis = [{ basis_ref: 'basis-arms', state: 'committed', scope_ref,
+    prepared_seed_provenance: null, policy: { functional_buckets: ['arms'],
+      allowed_admission_classes: ['weapon_or_armament'],
+      permission_refs: ['armament-profile', 'weapon-source'] }, basis_kind: 'personal_possession' }];
+  for (const fact of ['hidden', 'historical', 'significant', 'evidence']) {
+    await assert.rejects(() => resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+      workingProjection: projection(), basisCatalog: contextBasis,
+      ordinaryMaterializationModel: async () => ({ ...negative('materialize'),
+        entities: [entity({ semantic_descriptor: { semantic_type: 'ordinary_weapon',
+          name: 'прикладное оружие', facts: [fact] }, admission_class: 'weapon_or_armament',
+          availability_class: 'context_bound', functional_bucket: 'arms',
+          supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'personal_possession',
+            basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) }),
+    { code: 'TURN_ORDINARY_PRESENCE_PLAN_REJECTED' }, fact);
+  }
+});

@@ -20,6 +20,8 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   genericCheckContextOwner = null,
   ordinaryDiscoveryResolver = null,
   ordinaryResultPolicy = null,
+  admitAmbientOrdinaryPortion = null,
+  requireAmbientOrdinaryAdmission = false,
   resolveItemMechanics = null,
   semanticActivityOwner = null,
   temporalAdvance = null,
@@ -34,6 +36,8 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   const handlers = {
     ...createItemOperationHandlers(state, {
       ordinaryResultPolicy,
+      ambientOrdinaryPortionAdmission: admitAmbientOrdinaryPortion,
+      requireAmbientOrdinaryAdmission,
       resolveItemMechanics
     }),
     apply_body_event: (execution) =>

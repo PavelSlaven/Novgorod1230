@@ -119,9 +119,11 @@ export async function createSpatialV3ProductionCompositionRoot({
     const worldBase = createSpatialV3WorldBaseReader({
       query: (sql, params) => pools.worldPool.query(sql, params)
     });
+    const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: config.rootDir ?? process.cwd() });
     const bindingContext = Object.freeze({
       env,
       config,
+      ordinaryMaterializationProfile: ordinaryProfile,
       ports: Object.freeze({
         partyPool: pools.partyPool,
         worldPool: pools.worldPool,
@@ -138,7 +140,6 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: config.rootDir ?? process.cwd() });
     const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: ordinaryProfile }), now });
     const target = targetRootFactory({
       ...bindings.targetCompositionPorts,

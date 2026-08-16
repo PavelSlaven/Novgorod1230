@@ -23,6 +23,8 @@ export const lockOrder = (plan) => [
   ...[...new Set(plan.execution_keys ?? [])].sort().map((key) => `03:execution:${key}`),
   ...[...new Set(plan.g4_keys ?? [])].sort().map((key) => `04:g4:${key}`),
   ...[...new Set(plan.physical_keys)].sort().map((key) => `05:physical:${key}`),
+  ...(plan.ordinary_materialization_atomic_write_plan?.finite_resource_transition == null
+    ? [] : [`05:resource:${plan.party_id}:${plan.ordinary_materialization_atomic_write_plan.finite_resource_transition.source_resource_node_id}`]),
   `06:change-set:${plan.change_set_id}`,
   `06:idempotency:${plan.party_id}:${plan.operation_kind}:${plan.idempotency_key}`
 ];
@@ -200,6 +202,8 @@ function validOrdinaryMaterializationExtension(plan) {
         version.target_table === 'parties' && version.id === plan.party_id
           && version.state_version === sealed.expected_versions.party_state_version)
       && plan.physical_keys.includes(
-        `party_runtime.party_ordinary_materialization_aggregates:${sealed.party_id}:${sealed.scope_ref.entity_kind}:${sealed.scope_ref.entity_id}`);
+        `party_runtime.party_ordinary_materialization_aggregates:${sealed.party_id}:${sealed.scope_ref.entity_kind}:${sealed.scope_ref.entity_id}`)
+      && (sealed.finite_resource_transition == null || plan.physical_keys.includes(
+        `party_runtime.party_resource_nodes:${sealed.party_id}:${sealed.finite_resource_transition.source_resource_node_id}`));
   } catch { return false; }
 }

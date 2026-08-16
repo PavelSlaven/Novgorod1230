@@ -1,7 +1,7 @@
 {
-  "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v1",
-  "profile_id": "lower_dvina_trace_o1_first_entry_profile_v1",
-  "revision": 1,
+  "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v2",
+  "profile_id": "lower_dvina_trace_o2a_first_entry_profile_v1",
+  "revision": 2,
   "status": "approved",
   "scenario_id": "lower_dvina_trace_v1",
   "scenario_definition_revision": 19,
@@ -63,6 +63,33 @@
     },
     "causal_ref": "trace_ld_v1_o1_first_entry_basis",
     "source_refs": []
+  },
+  "o2a_ambient": {
+    "status": "approved",
+    "scope_binding": {
+      "position_ref": "trace_ld_v1_loc_wreck_shore",
+      "g6_ref": "trace_ld_v1_g6_wreck_shore"
+    },
+    "context_pin_ref": "trace_ld_v1_o2a_wreck_shore_ambient_v1",
+    "source_ref": "trace_ld_v1_o2a_wreck_shore_sand",
+    "environment_ref": "trace_ld_v1_loc_wreck_shore",
+    "source_class": "shore_sand",
+    "property_basis_ref": "trace_ld_v1_o2a_wreck_shore_public_ground",
+    "portion_profile": {
+      "profile_ref": "trace_ld_v1_o2a_wreck_shore_sand_portion",
+      "semantic_type": "material_portion",
+      "display_name": "горсть мокрого песка",
+      "material_class": "ordinary",
+      "quantity_unit": "handful",
+      "min_quantity": 1,
+      "max_quantity": 1,
+      "min_mass_grams": 1,
+      "max_mass_grams": 1000,
+      "external_hand_cost": 1,
+      "carry_form": "compact",
+      "packing_slot_cost": 1
+    },
+    "destination": { "kind": "holder" }
   },
   "fallback_policy": "forbidden"
 }

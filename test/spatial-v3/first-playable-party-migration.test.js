@@ -57,13 +57,17 @@ const ordinaryEnablementSql = readFileSync(
   new URL('../../schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 023 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 23);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-13), [sql,
+const finiteResourceTransitionsSql = readFileSync(
+  new URL('../../schemas/party-db/024_party_runtime_finite_resource_transitions.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 024 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 24);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-14), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
-    ordinaryCommitSql, ordinaryEnablementSql]);
+    ordinaryCommitSql, ordinaryEnablementSql, finiteResourceTransitionsSql]);
 });
 
 test('019 keeps combat sessions in the target migration transaction', () => {

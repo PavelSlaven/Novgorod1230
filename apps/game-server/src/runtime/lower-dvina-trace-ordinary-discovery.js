@@ -17,6 +17,17 @@ import {
 import {
   createOrdinaryMaterializationAtomicWritePlan
 } from '../infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
+import {
+  constrainedNaturalResourceFiniteInitialization,
+  constrainedNaturalResourceFiniteTransition,
+  resolveConstrainedNaturalResourcePolicy
+} from './constrained-natural-resource-policy.js';
+import { resolveContextBoundOrdinaryPolicy } from './context-bound-ordinary-policy.js';
+import { snapshotOrdinaryMaterializationEnablement } from
+  './ordinary-materialization-enablement-snapshot.js';
+import { admissionBases, basisDigest, bindCommittedSourceIdentity, candidateForDiscovery,
+  currentG6, ordinaryNoop, ordinaryState, presenceTransition, preparedBasis,
+  validExecution } from './lower-dvina-trace-ordinary-discovery-internal.js';
 
 // The resolver deliberately has no player text in its model inputs.  The
 // operation merely selects the already installed G6 enablement scope.
@@ -30,13 +41,37 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   return async function resolve(request) {
     const scopeRef = currentG6(request?.committed_state, request?.operation);
     if (scopeRef == null) return ordinaryNoop(request);
-    const enabled = await loadEnablement({ partyId, scopeRef });
+    const enabled = snapshotOrdinaryMaterializationEnablement(await loadEnablement({ partyId, scopeRef }));
     if (enabled == null) return ordinaryNoop(request);
     const execution = enabled.execution_context;
     if (!validExecution(execution) || execution.candidate_context.target_ref
       !== request.operation.target_refs[0]) return ordinaryNoop(request);
     const rootId = request.request?.root_turn_id;
     if (typeof rootId !== 'string' || !rootId) return ordinaryNoop(request);
+    let candidate = candidateForDiscovery({
+      candidateContext: execution.candidate_context,
+      query: request.operation.query
+    });
+    const contextBound = resolveContextBoundOrdinaryPolicy({
+      objective_context: enabled.objective_context, execution_context: execution,
+      candidate_context: candidate, scope_ref: scopeRef,
+      property_placement_context: enabled.property_placement_context
+    });
+    const constrainedResource = contextBound.profile === null
+      || requiresFiniteResourceOwner(contextBound.profile)
+      ? resolveConstrainedNaturalResourcePolicy({
+        objective_context: enabled.objective_context, execution_context: execution,
+        candidate_context: candidate, scope_ref: scopeRef,
+        property_placement_context: enabled.property_placement_context
+      }) : { resolution: null, profile: null };
+    // This gate is deliberately before Stage A as well: an unapproved source
+    // is not a reason to ask a model to seed, estimate, or discover geology.
+    if (contextBound.resolution !== null || constrainedResource.resolution !== null) return ordinaryNoop(request);
+    candidate = bindCommittedSourceIdentity(candidate,
+      contextBound.profile?.source_basis_ref
+        ?? constrainedResource.profile?.source_basis_ref
+        ?? null);
+    if (candidate == null) return ordinaryNoop(request);
     const objective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:seed` };
     const initial = createOrdinaryMaterializationWorkingProjection({
@@ -64,16 +99,19 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       newBases = seed.prepared_background_groups.map(preparedBasis);
       projection = seed.working_projection;
     }
-    const candidate = candidateForDiscovery({
-      candidateContext: execution.candidate_context,
-      query: request.operation.query
-    });
+    const initialAmountChoices = constrainedResource.profile?.finite_source.lifecycle_state
+      === 'uninitialized' ? constrainedResource.profile.finite_source.approved_initial_amounts
+        .map(({ selection_ref }) => ({ schema: 'finite_source_initial_amount_choice_v1', selection_ref }))
+      : null;
     const envelope = buildOrdinaryMaterializationPresenceRequest({
       objective_context: { ...enabled.objective_context,
         request_id: `${rootId}:ordinary:presence`,
         ordinary_state_version: projection.ordinary_aggregate.state_version,
         ordinary_state: ordinaryState(projection.ordinary_aggregate),
-        property_placement_context: enabled.property_placement_context },
+        property_placement_context: enabled.property_placement_context,
+        ...(initialAmountChoices == null ? {} : { policy_refs: {
+          ...enabled.objective_context.policy_refs,
+          finite_source_initial_amount_choices: initialAmountChoices } }) },
       candidate_context: candidate
     });
     const bases = [
@@ -82,7 +120,8 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     ];
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       ordinaryMaterializationModel, workingProjection: projection,
-      basisCatalog: admissionBases(bases) });
+      basisCatalog: admissionBases(bases),
+      codeOwnedResolution: constrainedResource.resolution });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
     let transition = presenceTransition({ envelope, presence, aggregate:
       projection.ordinary_aggregate });
@@ -98,20 +137,22 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
-      const sources = [envelope.identity.candidate_key, envelope.identity.coverage_key,
+      const sourceCandidates = [envelope.identity.candidate_key, envelope.identity.coverage_key,
         proposed.supporting_basis_ref, ...proposed.causal_basis.basis_refs,
         proposed.property_basis_ref, proposed.placement_proposal.position_ref,
+        ...envelope.request.policy_refs.context_bound_permission_refs,
         execution.mechanics_policy.policy_ref, property.evidence.property_source_ref,
         property.evidence.property_catalog_version_ref,
         property.evidence.placement_catalog_version_ref,
         property.evidence.placement_context_ref,
         property.evidence.property_placement_context_digest,
         ...(property.evidence.unowned_cause_ref === null ? [] : [property.evidence.unowned_cause_ref])]
-        .filter(Boolean).sort();
-      const admitted = admitOrdinaryWorldMaterialization({ handoff:
-        presence.pending_items_property_admission, admission_context: {
+        .filter(Boolean);
+      const sources = [...new Set(sourceCandidates)].sort();
+      const admissionContext = structuredClone({
           schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
           supporting_bases: bases, property_placement_input: propertyInput,
+          approved_permission_refs: envelope.request.policy_refs.context_bound_permission_refs,
           mechanics_policy: execution.mechanics_policy, causal_identity: {
             request_id: envelope.request.request_id,
             candidate_key: envelope.identity.candidate_key,
@@ -120,7 +161,14 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
             causal_ref: execution.causal_ref,
             source_refs: sources
           }
-        } });
+        });
+      const pendingAdmission = contextBound.profile == null
+        ? presence.pending_items_property_admission
+        : { ...structuredClone(presence.pending_items_property_admission), admission_evidence: {
+          ...structuredClone(presence.pending_items_property_admission.admission_evidence),
+          condition_state: contextBound.profile.condition_state } };
+      const admitted = admitOrdinaryWorldMaterialization({ handoff:
+        pendingAdmission, admission_context: admissionContext });
       if (!admitted.pass) return ordinaryNoop(request);
       const identityKey = `ordinary_identity_${canonicalDigest({
         candidate_key: envelope.identity.candidate_key,
@@ -142,12 +190,27 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         envelope.identity.admission_class, supporting_basis_ref:
       proposal.supporting_basis_ref, causal_basis_refs:
         presence.pending_items_property_admission.proposed_item.causal_basis.basis_refs,
+      causal_basis_kind: proposal.causal_basis_kind,
+      condition_state: proposal.condition_state ?? null,
+      permission_refs: envelope.request.policy_refs.context_bound_permission_refs,
       property_basis_ref: proposal.property_basis_ref, position_ref:
         proposal.placement.position_ref, mechanics_policy_ref:
         proposal.runtime_item_mechanics_policy_ref, item_proposal: proposal,
       mechanics_snapshot: admitted.runtime_instance_mechanics_snapshot };
     }
     if (transition == null || next == null) return ordinaryNoop(request);
+    const finiteInitialization = item == null || constrainedResource.profile == null
+      || constrainedResource.profile.finite_source.lifecycle_state !== 'uninitialized' ? null
+      : constrainedNaturalResourceFiniteInitialization({ profile: constrainedResource.profile,
+        item, request_identity: envelope.request.request_id, selection_ref:
+          presence.pending_items_property_admission?.proposed_item
+            .finite_source_initial_amount_choice?.selection_ref });
+    const finiteResourceTransition = finiteInitialization?.finite_resource_transition
+      ?? (item == null || constrainedResource.profile == null ? null
+      : constrainedNaturalResourceFiniteTransition({ profile: constrainedResource.profile,
+        item, request_identity: envelope.request.request_id }));
+    if (item != null && constrainedResource.profile != null
+        && finiteResourceTransition == null) return ordinaryNoop(request);
     const allTransitions = [...transitions, transition];
     const expected = enabled.version_pins;
     const plan = createOrdinaryMaterializationAtomicWritePlan({ party_id: partyId,
@@ -164,7 +227,10 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       enablement_pin: { objective_digest: enabled.objective_digest, enabled: true },
       resolution: item == null ? presence.status : 'materialize',
       transitions: structuredClone(allTransitions), next_aggregate: structuredClone(next),
-      item: structuredClone(item) });
+      item: structuredClone(item), ...(finiteResourceTransition == null ? {} : {
+        finite_resource_transition: finiteResourceTransition,
+        ...(finiteInitialization == null ? {} : {
+          finite_resource_initialization: finiteInitialization.finite_resource_initialization }) }) });
     return Object.freeze({ working_projection: request.working_projection,
       write_fragments: [], summary: 'ordinary discovery resolved',
       player_response_boundary: true,
@@ -172,73 +238,8 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
   };
 }
 
-function ordinaryNoop(request) { return Object.freeze({
-  working_projection: structuredClone(request?.working_projection ?? {}),
-  write_fragments: [], summary: 'ordinary discovery unavailable',
-  player_response_boundary: true
-}); }
-function currentG6(state, operation) {
-  const id = state?.position?.g6_id ?? state?.position?.g6_ref;
-  if (typeof id === 'string' && id.length) return { entity_kind: 'g6', entity_id: id };
-  return null;
+function requiresFiniteResourceOwner(profile) {
+  return profile?.schema === 'rus.items.context_bound_ordinary_profile.v2'
+    && profile.version === 2 && profile.profile_kind === 'specialized_stock'
+    && profile.condition_state === 'damaged' && profile.basis_kind === 'remnant';
 }
-function ordinaryState(a) { return { seeded: a.seeded, density_band: a.density_band,
-  remaining_identity_budget: a.remaining_identity_budget,
-  background_groups: a.background_groups.map(({ group_ref }) => group_ref),
-  presence_resolutions: a.presence_resolutions.map(({ resolution_ref }) => resolution_ref),
-  closed_observation_scopes: a.coverage_closures.map(({ coverage_key }) => coverage_key) }; }
-function validExecution(v) { return v != null && typeof v === 'object'
-  && Array.isArray(v.supporting_bases) && v.candidate_context != null
-  && v.identity_budget != null && v.mechanics_policy != null
-  && typeof v.causal_ref === 'string' && Array.isArray(v.source_refs)
-  && typeof v.candidate_context.target_ref === 'string'; }
-function preparedBasis(group) { return { basis_ref: group.group_ref,
-  state: 'prepared_seed', scope_ref: structuredClone(group.scope_ref),
-  prepared_seed_provenance: structuredClone(group.prepared_seed_provenance),
-  functional_buckets: [group.functional_bucket],
-  allowed_admission_classes: structuredClone(group.allowed_admission_classes) }; }
-
-function admissionBases(bases) {
-  return bases.map((basis) => ({ ...structuredClone(basis), policy: {
-    functional_buckets: structuredClone(basis.functional_buckets),
-    allowed_admission_classes: structuredClone(basis.allowed_admission_classes),
-    permission_refs: []
-  } }));
-}
-
-// Stage A is deliberately independent of the player action.  Stage B may use
-// only a normalized discovery phrase to distinguish closed coverage records;
-// it cannot change the authored category, admission class, or placement.
-function candidateForDiscovery({ candidateContext, query }) {
-  const { target_ref: targetRef, ...candidate } = candidateContext;
-  const normalizedQuery = normalizeDiscoveryQuery(query);
-  if (targetRef == null || normalizedQuery == null) return candidate;
-  return {
-    ...candidate,
-    candidate_hint: normalizedQuery,
-    coverage_ref: `${candidate.coverage_ref}:${normalizedQuery}`
-  };
-}
-
-function normalizeDiscoveryQuery(value) {
-  if (typeof value !== 'string') return null;
-  const normalized = value.normalize('NFKC').trim().replace(/\s+/gu, ' ')
-    .toLocaleLowerCase('ru-RU');
-  return normalized.length === 0 ? null : normalized;
-}
-function presenceTransition({ envelope, presence, aggregate, identityKey = null }) {
-  if (!['materialize', 'absent', 'no_change', 'authority_required'].includes(presence.status)) return null;
-  const { identity } = envelope;
-  return { kind: 'resolve_presence', request_identity: envelope.request.request_id,
-    expected_state_version: aggregate.state_version, resolution_ref:
-    createOrdinaryResolutionRef({ scope_ref: envelope.request.scope_ref,
-      candidate_key: identity.candidate_key, coverage_key: identity.coverage_key,
-      context_version: identity.context_version, request_identity: envelope.request.request_id,
-      policy_version: identity.policy_version }), candidate_key: identity.candidate_key,
-    coverage_key: identity.coverage_key, category_key: identity.category_key,
-    context_version: identity.context_version, resolution: presence.status,
-    ...(identityKey == null ? {} : { identity_key: identityKey }) };
-}
-function basisDigest(supporting_bases) { return canonicalDigest({
-  domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases
-}); }

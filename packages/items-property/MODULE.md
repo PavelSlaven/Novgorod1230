@@ -53,6 +53,10 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
   `occupied_site_default` → `genuinely_unowned` (только с explicit cause) и
   один наиболее узкий существующий `scene_position`; ambiguity является data gap
 - `resolveInventoryMechanicsProfile` — выбирает ровно один источник механики: authored template profile либо template-less runtime snapshot
+- `createAmbientOrdinaryPortionAdmission` — O2a-only admission finite ordinary
+  portion из SHA-pinned committed ambient context; выбирает только authored
+  source/profile/destination и создаёт v1 mechanics snapshot; abundant ambient
+  source не уменьшается (decrement принадлежит отдельному finite resource owner)
 
 ## Контракты и инварианты
 

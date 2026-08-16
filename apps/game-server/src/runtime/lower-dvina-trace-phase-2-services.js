@@ -65,6 +65,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     ordinaryDiscoveryEnablementMarker,
+    admitAmbientOrdinaryPortion,
+    requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
@@ -132,6 +134,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
       ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
+    admitAmbientOrdinaryPortion,
+    requireAmbientOrdinaryAdmission,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
       packingCalculator: turnStepPackingCalculator
     }),

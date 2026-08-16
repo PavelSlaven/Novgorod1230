@@ -4,6 +4,7 @@ import {
   collectCurrentRefs,
   deterministicRef,
   directFragment,
+  fail,
   nextOperationIdentity,
   requireProjection,
   requireRef,
@@ -35,22 +36,66 @@ export function createItemOperationHandlers(state, options = {}) {
 }
 
 function createEntity(execution, state, options) {
+  if (execution.operation?.origin?.kind === 'ambient_ordinary'
+      && (typeof options.ambientOrdinaryPortionAdmission === 'function'
+        || options.requireAmbientOrdinaryAdmission === true)) {
+    return createAmbientEntity(execution, state, options);
+  }
+  return createEntityFromAdmission(execution, state, options);
+}
+
+function createAmbientEntity(execution, state, options) {
+  if (typeof options.ambientOrdinaryPortionAdmission !== 'function') {
+    failAmbientAdmission();
+  }
+  const { operation, working_projection: projection } = execution;
+  requireProjection(projection);
+  const operationIdentity = nextOperationIdentity(execution, state);
+  const request = ambientRequest(operation, projection, operationIdentity);
+  return options.ambientOrdinaryPortionAdmission({
+    operation_identity: {
+      root_turn_id: operationIdentity.root_turn_id,
+      step_index: operationIdentity.step_index,
+      operation_ref: operationIdentity.operation_id
+    },
+    request
+  }).then((admission) => {
+    if (!admission?.pass) fail(admission?.errors?.[0]?.code
+      ?? 'TRACE_TURN_STEP_AMBIENT_SOURCE_INVALID');
+    return createEntityFromAdmission(execution, state, options, {
+      semantic_type: admission.proposal.semantic_descriptor.semantic_type,
+      name: admission.proposal.semantic_descriptor.name,
+      mechanics: admission.runtime_instance_mechanics_snapshot.mechanics,
+      snapshot: admission.runtime_instance_mechanics_snapshot,
+      operationIdentity
+    });
+  });
+}
+
+function createEntityFromAdmission(execution, state, options, ambient = null) {
   const { operation, working_projection: projection } = execution;
   const rootTurnId = execution.request.root_turn_id;
   requireProjection(projection);
   const refs = collectCurrentRefs(execution);
   requireAvailableTempRef(operation.temp_ref, refs, state, rootTurnId);
-  const admitted = admitOrdinaryEntity(operation,
+  const effectiveOperation = ambient == null ? operation : {
+    ...operation,
+    semantic_type: ambient.semantic_type,
+    name: ambient.name,
+    mechanics: ambient.mechanics
+  };
+  const admitted = admitOrdinaryEntity(effectiveOperation,
     options.ordinaryResultPolicy);
   requireOrigin(operation.origin, projection, state, refs);
   requireRefs(operation.origin.source_refs, refs, 'origin.source_refs');
   requireRef(operation.placement.target_ref, refs, 'placement.target_ref');
-  const operationIdentity = nextOperationIdentity(execution, state);
+  const operationIdentity = ambient?.operationIdentity
+    ?? nextOperationIdentity(execution, state);
   const instanceId = deterministicRef('runtime-item', {
     root_turn_id: operationIdentity.root_turn_id,
     temp_ref: operation.temp_ref
   });
-  const snapshot = createRuntimeInstanceMechanicsSnapshot({
+  const snapshot = ambient?.snapshot ?? createRuntimeInstanceMechanicsSnapshot({
     schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
     version: 1,
     provenance: {
@@ -162,5 +207,29 @@ function createEntity(execution, state, options) {
     consequence: visibleConsequence(operationIdentity, {
       change: 'created', entity_ref: instanceId, name: admitted.name
     })
+  });
+}
+
+function ambientRequest(operation, projection, identity) {
+  const source = projection.position?.location_ref;
+  const destination = operation.placement?.relation === 'held_by'
+    ? operation.placement.target_ref : null;
+  if (!source || !destination) failAmbientAdmission();
+  return {
+    // The pin/source/profile/destination values are selected only by the
+    // committed loader.  These two physical measurements are rechecked
+    // against that closed profile by @rus/items-property.
+    context_pin_ref: 'committed',
+    source_ref: 'committed',
+    portion_profile_ref: 'committed',
+    quantity: structuredClone(operation.mechanics?.quantity),
+    mass_grams: operation.mechanics?.mass_grams,
+    destination_ref: destination
+  };
+}
+
+function failAmbientAdmission() {
+  throw Object.assign(new Error('TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED'), {
+    code: 'TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED'
   });
 }

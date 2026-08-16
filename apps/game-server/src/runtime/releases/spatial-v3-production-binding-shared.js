@@ -25,6 +25,8 @@ import {
   createLowerDvinaTraceTurnStepModel
 } from '../lower-dvina-trace-phase-2-llm.js';
 import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
+import { createLowerDvinaTraceO2aAmbientPort } from
+  '../lower-dvina-trace-o2a-ambient-port.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../lower-dvina-trace-ordinary-discovery.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
@@ -118,10 +120,12 @@ export async function createSpatialV3ProductionBindings(
     ports,
     release,
     env = process.env,
-    config = {}
+    config = {},
+    ordinaryMaterializationProfile = null
   } = {},
   {
     createNpcRuntimePorts,
+    createPhase2RuntimeFactory = createLowerDvinaTracePhase2Runtime,
     technicalCommandBoundary = 'production-v2'
   } = {}
 ) {
@@ -174,6 +178,8 @@ export async function createSpatialV3ProductionBindings(
           committer,
           env,
           config,
+          ordinaryMaterializationProfile,
+          createPhase2RuntimeFactory,
           createNpcRuntimePorts
         })
       });
@@ -199,6 +205,8 @@ function createTraceTurnRuntime({
   committer,
   env,
   config,
+  ordinaryMaterializationProfile,
+  createPhase2RuntimeFactory,
   createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -226,7 +234,7 @@ function createTraceTurnRuntime({
   const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
     pool: partyPool
   });
-  return createLowerDvinaTracePhase2Runtime({
+  return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
       committer
@@ -242,6 +250,15 @@ function createTraceTurnRuntime({
       }),
     ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
       (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
+    createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
+      createLowerDvinaTraceO2aAmbientPort({
+        profile: ordinaryMaterializationProfile,
+        committedState
+      }),
+    requireTurnStepAmbientOrdinaryAdmission:
+      ordinaryMaterializationProfile?.schema
+        === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
+        && ordinaryMaterializationProfile?.o2a_ambient?.status === 'approved',
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,

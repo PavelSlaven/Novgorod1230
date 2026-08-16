@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createOrdinaryAggregate, canonicalDigest } from '@rus/materialization';
+import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { projectLowerDvinaTracePlayerSafeState } from
@@ -41,8 +42,9 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
     candidate_context: { target_ref: 'shore', semantic_type: 'spoon', candidate_hint: 'ложка',
       functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common',
       coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence' },
-    mechanics_policy: { policy_ref: 'mechanics', mechanics: { mass_grams: 30, external_hand_cost: 0,
-      carry_form: 'small', packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null } },
+    mechanics_policy: { policy_ref: 'mechanics', max_mass_grams: 1000,
+      allowed_external_hand_costs: [0, 1, 2], allowed_carry_forms: ['compact', 'regular', 'small'],
+      max_packing_slot_cost: 10, max_quantity: 10 },
     causal_ref: 'cause', source_refs: [] } }; }
 
 function request(query) { return { request: { root_turn_id: 'turn:party:1' },
@@ -140,6 +142,127 @@ test('a pre-commit resolver result is not visible or durable and can be modelled
   assert.equal(Object.hasOwn(beforeCommit.working_projection, 'items'), false);
   await resolver(request('найти ложку'));
   assert.equal(modelCalls, 4, 'uncommitted state is not reused after a restart');
+});
+
+test('Phase 5 keeps weapons disabled even when a model tries to materialize one', async () => {
+  let modelCalls = 0;
+  const contextEnabled = enabled();
+  contextEnabled.objective_context.policy_refs = {
+    ...contextEnabled.objective_context.policy_refs,
+    allowed_admission_classes: ['weapon_or_armament'],
+    context_bound_permission_refs: ['armament-profile', 'weapon-source']
+  };
+  contextEnabled.execution_context.supporting_bases = [{ basis_ref: 'basis-arms',
+    state: 'committed', scope_ref: structuredClone(scope_ref), prepared_seed_provenance: null,
+    functional_buckets: ['arms'], allowed_admission_classes: ['weapon_or_armament'],
+    permission_refs: ['armament-profile', 'weapon-source'] }];
+  contextEnabled.objective_context.policy_refs.allowed_supporting_bases = [{
+    basis_ref: 'basis-arms', basis_state: 'committed'
+  }];
+  contextEnabled.version_pins.supporting_basis_catalog_digest = canonicalDigest({
+    domain: 'ordinary_supporting_basis_catalog_v1',
+    supporting_bases: contextEnabled.execution_context.supporting_bases
+  });
+  contextEnabled.execution_context.candidate_context = {
+    target_ref: 'shore', semantic_type: 'ordinary_weapon', candidate_hint: null,
+    functional_bucket: 'arms', admission_class: 'weapon_or_armament',
+    availability_class: 'context_bound', coverage_kind: 'visible_surface',
+    coverage_ref: 'weapon-rack', policy_version: 'presence'
+  };
+  contextEnabled.property_placement_context = {
+    schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
+    scope_ref: structuredClone(scope_ref), item_kind: 'man_made',
+    property_catalog_version_ref: 'property-v2', placement_catalog_version_ref: 'placement-v2',
+    explicit_item_source_refs: [], personal_possession_refs: ['warrior-a'],
+    communal_public_service_refs: ['armory-service'], container_property_refs: ['rack-a'],
+    occupied_site_refs: ['warrior-household'], unowned_cause_refs: [],
+    placement_context_refs: ['scene'], property_catalog: [
+      { property_basis_ref: 'site-property', state: 'committed', scope_ref: structuredClone(scope_ref), basis_class: 'occupied_site_default', source_ref: 'warrior-household', unowned_cause_ref: null, unowned_cause_kind: null },
+      { property_basis_ref: 'container-property', state: 'committed', scope_ref: structuredClone(scope_ref), basis_class: 'container_property', source_ref: 'rack-a', unowned_cause_ref: null, unowned_cause_kind: null },
+      { property_basis_ref: 'service-property', state: 'committed', scope_ref: structuredClone(scope_ref), basis_class: 'communal_public_service', source_ref: 'armory-service', unowned_cause_ref: null, unowned_cause_kind: null },
+      { property_basis_ref: 'property', state: 'committed', scope_ref: structuredClone(scope_ref), basis_class: 'personal_possession', source_ref: 'warrior-a', unowned_cause_ref: null, unowned_cause_kind: null }
+    ], placement_catalog: [{ position_ref: 'bench', state: 'committed',
+      scope_ref: structuredClone(scope_ref), position_kind: 'scene_position', g6_ref: 'shore',
+      containment_depth: 1, placement_context_ref: 'scene' }]
+  };
+  contextEnabled.version_pins.property_placement_context_digest =
+    ordinaryWorldPropertyPlacementContextDigest({ ...contextEnabled.property_placement_context,
+      supporting_basis_ref: 'context-digest', causal_basis_refs: ['context-digest'],
+      requested_position_ref: 'context-digest' });
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'input', loadEnablement: async () => contextEnabled,
+    ordinaryMaterializationModel: async (modelRequest) => {
+      modelCalls += 1;
+      if (modelRequest.mode === 'seed_scope') return {
+        schema: 'ordinary_materialization_plan_v1', request_id: modelRequest.request_id,
+        resolution: 'seeded', density_band_proposal: 'ordinary', background_groups: [],
+        entities: [], presence_resolutions: [], reason_code: 'seed'
+      };
+      return { schema: 'ordinary_materialization_plan_v1', request_id: modelRequest.request_id,
+        resolution: 'materialize', density_band_proposal: null, background_groups: [],
+        presence_resolutions: [], reason_code: 'supported', entities: [{
+          semantic_descriptor: { semantic_type: 'ordinary_weapon',
+            name: 'свободное eval-имя', facts: [] }, authority_class: 'ordinary',
+          admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+          functional_bucket: 'arms', presence_expectation: 'routine',
+          supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'armament',
+            basis_refs: ['basis-arms'] }, property_basis_ref: 'property',
+          placement_proposal: { scope_ref: 'shore', position_ref: 'bench' },
+          mechanics_proposal: { mass_grams: 300, external_hand_cost: 1,
+            carry_form: 'regular', packing_slot_cost: 1,
+            quantity: { value: 1, unit: 'item' }, container: null }
+        }] };
+    } });
+  const result = await resolver(request('меч'));
+  assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+  assert.equal(modelCalls, 0, 'unapproved class never reaches either Stage A or Stage B');
+});
+
+test('unseeded constrained source gaps never invoke a model or emit an ordinary write', async () => {
+  function constrained(source) {
+    const value = enabled();
+    value.objective_context.context_refs.environment_refs = ['environment:bank'];
+    value.objective_context.policy_refs = { ...value.objective_context.policy_refs,
+      allowed_admission_classes: ['specialized_or_valuable'],
+      context_bound_permission_refs: ['permission:region', 'permission:resource'],
+      allowed_supporting_bases: [{ basis_ref: 'node:resource', basis_state: 'committed' }] };
+    value.execution_context.supporting_bases = [{ basis_ref: 'node:resource', state: 'committed',
+      scope_ref: structuredClone(scope_ref), functional_buckets: ['other_ordinary'],
+      allowed_admission_classes: ['specialized_or_valuable'],
+      permission_refs: ['permission:region', 'permission:resource'] }];
+    value.execution_context.candidate_context = { target_ref: 'shore', semantic_type: 'unseen_raw',
+      candidate_hint: null, functional_bucket: 'other_ordinary',
+      admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+      coverage_kind: 'visible_surface', coverage_ref: 'bank', policy_version: 'presence' };
+    const finite_source = { source_resource_node_id: 'node:resource', state_version: 4,
+      lifecycle_state: 'active', quantity: { numerator: 2, denominator: 1, unit: 'item' },
+      quantity_unit_ref: { kind: 'unit', id: 'item' }, position_ref: 'bench',
+      property_basis_ref: 'property' };
+    value.execution_context.constrained_natural_resource_profile = {
+      schema: 'rus.items.constrained_natural_resource_profile.v1', version: 1,
+      profile_ref: 'profile:unseen', state: 'committed', scope_ref: structuredClone(scope_ref),
+      environment_ref: 'environment:bank', semantic_type: 'unseen_raw',
+      functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
+      regional_permission_ref: 'permission:region', resource_permission_ref: 'permission:resource',
+      source_basis_ref: 'node:resource', finite_source };
+    value.execution_context.committed_finite_source = source;
+    return value;
+  }
+  for (const source of [null,
+    { source_resource_node_id: 'node:resource', state_version: 5, lifecycle_state: 'active',
+      quantity: { numerator: 2, denominator: 1, unit: 'item' }, quantity_unit_ref: { kind: 'unit', id: 'item' },
+      position_ref: 'bench', property_basis_ref: 'property' },
+    { source_resource_node_id: 'node:resource', state_version: 4, lifecycle_state: 'depleted',
+      quantity: { numerator: 0, denominator: 1, unit: 'item' }, quantity_unit_ref: { kind: 'unit', id: 'item' },
+      position_ref: 'bench', property_basis_ref: 'property' }]) {
+    let modelCalls = 0;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party', inputDigest: 'input',
+      loadEnablement: async () => constrained(source), ordinaryMaterializationModel: async () => {
+        modelCalls += 1; return {}; } });
+    const result = await resolver(request('копаю и ищу'));
+    assert.equal(modelCalls, 0);
+    assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+  }
 });
 
 test('visible target without a committed G6 never calls the ordinary model', async () => {

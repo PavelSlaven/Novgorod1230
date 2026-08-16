@@ -38,6 +38,7 @@ export function applyOrdinaryMaterializationProjection({
       placement: { location_ref: item.item_proposal.scope_ref.entity_id },
       state: {
         semantic_category: item.item_proposal.semantic_descriptor.semantic_type,
+        condition_state: item.condition_state,
         property_state: { property_basis_ref: item.property_basis_ref,
           property_placement_evidence: structuredClone(
             item.item_proposal.property_placement_evidence) },

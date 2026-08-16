@@ -6,6 +6,7 @@ import {
   createPreparedGroupRef, MaterializationError, validateOrdinaryBackgroundGroup,
   validateSupportingBasisAdmission
 } from '../src/index.js';
+import { O2A_SUPPORTING_BASIS_KINDS } from '../src/ordinary-materialization-foundation.js';
 
 const scope = { entity_kind: 'g6', entity_id: 'scope-a' };
 const request = {
@@ -16,7 +17,7 @@ const request = {
 const policy = { version: 'density-v1', mappings: [{ scope_kind: 'g6', function_ref: 'function-a', bands: { sparse: 1, ordinary: 3, dense: 5 } }] };
 const bases = [
   { basis_ref: 'basis-a', state: 'committed', policy: { functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'], permission_refs: [] } },
-  { basis_ref: 'prepared-a', state: 'prepared_seed', scope_ref: scope, prepared_seed_provenance: { seed_request_id: 'other-seed', mode: 'seed_scope', candidate_query: null }, policy: { functional_buckets: ['other_ordinary'], allowed_admission_classes: ['other_restricted'], permission_refs: ['permission-a'] } }
+  { basis_ref: 'prepared-a', state: 'prepared_seed', scope_ref: scope, prepared_seed_provenance: { seed_request_id: 'other-seed', mode: 'seed_scope', candidate_query: null }, basis_kind: 'stored_supply', policy: { functional_buckets: ['other_ordinary'], allowed_admission_classes: ['other_restricted'], permission_refs: ['permission-a'] } }
 ];
 const commonGroup = { descriptor: 'abstract-layer', functional_bucket: 'household', availability_class: 'common', allowed_admission_classes: ['common_mundane'], causal_basis: { basis_kind: 'source-kind', basis_refs: ['basis-a'] }, property_basis_ref: 'property-a', permission_refs: [], disclosure_policy_ref: 'disclosure-a' };
 const transition = (kind, request_identity, extra = {}) => ({ kind, request_identity, expected_state_version: extra.expected_state_version ?? 0, ...(kind === 'seed' ? { background_groups: [] } : {}), ...extra });
@@ -33,13 +34,70 @@ test('closed admission consistency requires context permissions and an exact sup
   const common = { supporting_basis_ref: 'basis-a', functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common' };
   assert.equal(validateSupportingBasisAdmission({ request, candidate: common, basis_catalog: bases }).supporting_basis_ref, 'basis-a');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...common, availability_class: 'context_bound', permission_refs: ['permission-a'] }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
-  const restricted = { supporting_basis_ref: 'prepared-a', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', permission_refs: ['permission-a'] };
+  const restricted = { supporting_basis_ref: 'prepared-a', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', permission_refs: ['permission-a'], basis_kind: 'stored_supply' };
   assert.equal(validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: bases }).basis_state, 'prepared_seed');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, permission_refs: [] }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: common, basis_catalog: [{ ...bases[0], policy: { ...bases[0].policy, unapproved_policy_field: true } }] }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, supporting_basis_ref: 'basis-a' }, supporting_basis_ref: 'prepared-a', basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_REF_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: [{ ...bases[1], prepared_seed_provenance: { seed_request_id: 'x', mode: 'seed_scope', candidate_query: 'candidate' } }] }), (error) => error.code === 'ORDINARY_PREPARED_SEED_PROVENANCE_INVALID');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: [{ ...bases[1], scope_ref: { entity_kind: 'g6', entity_id: 'other' } }] }), (error) => error.code === 'ORDINARY_PREPARED_SEED_SCOPE_MISMATCH');
+});
+
+test('O2a opens only closed context-bound classes with the exact approved permission set', () => {
+  const o2Request = { ...request, policy_refs: { ...request.policy_refs,
+    allowed_admission_classes: ['specialized_or_valuable', 'weapon_or_armament',
+      'currency_or_precious', 'document_like', 'other_restricted', 'container_capable'],
+    context_bound_permission_refs: ['approved-profile', 'approved-source'] } };
+  for (const admission_class of ['specialized_or_valuable', 'weapon_or_armament',
+    'currency_or_precious', 'document_like', 'other_restricted']) {
+    const candidate = { supporting_basis_ref: 'basis-a', functional_bucket: 'household',
+      admission_class, availability_class: 'context_bound',
+      permission_refs: ['approved-profile', 'approved-source'], basis_kind: 'stored_supply' };
+    const catalog = [{ ...bases[0], policy: { functional_buckets: ['household'],
+      allowed_admission_classes: [admission_class],
+      permission_refs: ['approved-profile', 'approved-source'] }, basis_kind: 'stored_supply' }];
+    assert.equal(validateSupportingBasisAdmission({ request: o2Request, candidate,
+      basis_catalog: catalog }).admission_class, admission_class);
+    assert.throws(() => validateSupportingBasisAdmission({ request: o2Request,
+      candidate: { ...candidate, permission_refs: ['approved-profile'] },
+      basis_catalog: catalog }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
+  }
+  assert.throws(() => validateSupportingBasisAdmission({ request: o2Request,
+    candidate: { supporting_basis_ref: 'basis-a', functional_bucket: 'household',
+      admission_class: 'container_capable', availability_class: 'context_bound',
+      permission_refs: ['approved-profile', 'approved-source'], basis_kind: 'stored_supply' }, basis_catalog: [{ ...bases[0], basis_kind: 'stored_supply',
+      policy: { functional_buckets: ['household'], allowed_admission_classes: ['container_capable'],
+        permission_refs: ['approved-profile', 'approved-source'] } }] }),
+  (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
+});
+
+test('O2a context-bound basis kinds are closed and remain independent from permissions', () => {
+  const requestWithPermission = { ...request, policy_refs: { ...request.policy_refs,
+    allowed_admission_classes: ['specialized_or_valuable'],
+    context_bound_permission_refs: ['approved-profile'],
+    allowed_supporting_bases: O2A_SUPPORTING_BASIS_KINDS.map((basis_ref) => ({ basis_ref,
+      basis_state: 'committed' })) } };
+  const catalog = O2A_SUPPORTING_BASIS_KINDS.map((basis_kind) => ({ basis_ref: basis_kind,
+    state: 'committed', basis_kind, policy: { functional_buckets: ['household'],
+      allowed_admission_classes: ['specialized_or_valuable'],
+      permission_refs: ['approved-profile'] } }));
+  for (const basis_kind of O2A_SUPPORTING_BASIS_KINDS) {
+    assert.equal(validateSupportingBasisAdmission({ request: requestWithPermission,
+      candidate: { supporting_basis_ref: basis_kind, functional_bucket: 'household',
+        admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+        permission_refs: ['approved-profile'], basis_kind }, basis_catalog: catalog }).basis_kind,
+    basis_kind);
+  }
+  assert.throws(() => validateSupportingBasisAdmission({ request: requestWithPermission,
+    candidate: { supporting_basis_ref: 'personal_possession', functional_bucket: 'household',
+      admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+      permission_refs: ['approved-profile'], basis_kind: 'invented_kind' }, basis_catalog: catalog }),
+  (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_KIND_MISMATCH');
+  assert.throws(() => validateSupportingBasisAdmission({ request: requestWithPermission,
+    candidate: { supporting_basis_ref: 'personal_possession', functional_bucket: 'household',
+      admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+      permission_refs: [], basis_kind: 'personal_possession' }, basis_catalog: catalog }),
+  (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
 });
 
 test('prepared groups only originate in candidate-free seed and validate causal, permission, disclosure policy', () => {
@@ -79,6 +137,9 @@ test('same candidate/coverage cannot reroll in one context but can resolve under
 test('keys are domain-separated, structured, stable, and ignore free-text phrasing', () => {
   const key = (semantic_type, ignored_name, ignored_phrase) => createOrdinaryCandidateKey({ scope_ref: scope, semantic_type, functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a', ignored_name, ignored_phrase });
   assert.equal(key('unseen_semantic_type', 'name-one', 'phrase-one'), key('unseen_semantic_type', 'name-two', 'phrase-two'));
+  const sourceA = createOrdinaryCandidateKey({ scope_ref: scope, semantic_type: 'unseen_semantic_type', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a', source_ref: 'finite-source-a' });
+  const sourceB = createOrdinaryCandidateKey({ scope_ref: scope, semantic_type: 'unseen_semantic_type', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a', source_ref: 'finite-source-b' });
+  assert.notEqual(sourceA, sourceB);
   const coverage = createOrdinaryCoverageKey({ scope_ref: scope, coverage_kind: 'unseen-coverage', coverage_ref: 'coverage-ref', policy_version: 'policy-a' });
   assert.notEqual(key('unseen_semantic_type'), coverage);
   assert.notEqual(createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('unseen_semantic_type'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-a' }), createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('unseen_semantic_type'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-b' }));

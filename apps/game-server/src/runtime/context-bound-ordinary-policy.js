@@ -1,0 +1,135 @@
+const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
+  'profile_kind', 'semantic_type', 'functional_bucket', 'admission_class',
+  'permission_refs', 'source_basis_ref', 'property_basis_ref',
+  'runtime_item_mechanics_policy_ref', 'mechanics_capability_ref'];
+const PROFILE_V2 = [...PROFILE, 'condition_state', 'basis_kind'];
+
+// This is a closed authority envelope, not a vocabulary of item names.  The
+// candidate identity is committed before Stage B; the model can only name the
+// already admitted type/class inside this envelope.
+export function resolveContextBoundOrdinaryPolicy(input = {}) {
+  const copied = copyData(input);
+  if (copied === null) return blocked();
+  const outer = record(copied, ['objective_context', 'execution_context',
+    'candidate_context', 'scope_ref', 'property_placement_context']);
+  if (!outer) return blocked();
+  const { objective_context: objective, execution_context: execution,
+    candidate_context: candidate, scope_ref: scopeRef,
+    property_placement_context: propertyContext } = outer;
+  if (!plain(candidate) || candidate.admission_class === 'common_mundane') return pass(null);
+  if (candidate.admission_class === 'currency_or_precious') return blocked();
+  if (!['weapon_or_armament', 'specialized_or_valuable',
+    'document_like', 'other_restricted'].includes(candidate.admission_class)) {
+    return blocked();
+  }
+  const raw = execution?.context_bound_ordinary_profile;
+  // A specialized finite natural source has its own Phase 5 authority owner.
+  // All other specialized or weapon candidates require this exact envelope.
+  if (raw == null && candidate.admission_class === 'specialized_or_valuable') return pass(null);
+  const profile = record(raw, PROFILE_V2) ?? record(raw, PROFILE);
+  if (!profile || !validProfile(profile, objective, execution, candidate, scopeRef,
+      propertyContext)) return blocked();
+  return pass(profile.version === 1 ? { ...profile, condition_state: 'serviceable',
+    basis_kind: execution.supporting_bases[0].basis_kind ?? null } : profile);
+}
+
+function validProfile(profile, objective, execution, candidate, scopeRef, propertyContext) {
+  const weapon = candidate.admission_class === 'weapon_or_armament';
+  const permissions = refs(profile.permission_refs);
+  const condition = profile.version === 1 ? 'serviceable' : profile.condition_state;
+  return ((profile.schema === 'rus.items.context_bound_ordinary_profile.v1' && profile.version === 1)
+      || (profile.schema === 'rus.items.context_bound_ordinary_profile.v2' && profile.version === 2
+        && ['serviceable','damaged'].includes(condition)
+        && (condition !== 'damaged' || (profile.basis_kind === 'remnant'
+          && profile.profile_kind === 'specialized_stock'))))
+    && profile.state === 'committed'
+    && text(profile.profile_ref) && scope(profile.scope_ref, scopeRef)
+    && profile.profile_kind === (weapon ? 'armament' : 'specialized_stock')
+    && profile.semantic_type === candidate.semantic_type
+    && profile.functional_bucket === candidate.functional_bucket
+    && profile.admission_class === candidate.admission_class
+    && permissions !== null && permissions.includes(profile.profile_ref)
+    && same(permissions, refs(objective?.policy_refs?.context_bound_permission_refs))
+    && text(profile.source_basis_ref) && text(profile.property_basis_ref)
+    && profile.property_basis_ref === objective?.context_refs?.property_context_ref
+    && profile.runtime_item_mechanics_policy_ref === objective?.policy_refs?.runtime_item_mechanics_policy_ref
+    && text(profile.mechanics_capability_ref)
+    && exactBasis(execution?.supporting_bases, profile, scopeRef)
+    && mechanics(execution?.mechanics_policy, profile, weapon)
+    && exactProperty(propertyContext, profile.property_basis_ref, scopeRef);
+}
+
+function exactBasis(bases, profile, scopeRef) {
+  if (!Array.isArray(bases) || bases.length !== 1) return false;
+  const basis = bases[0];
+  return plain(basis) && basis.basis_ref === profile.source_basis_ref
+    && basis.state === 'committed' && scope(basis.scope_ref, scopeRef)
+    && same(refs(basis.functional_buckets), [profile.functional_bucket])
+    && same(refs(basis.allowed_admission_classes), [profile.admission_class])
+    && same(refs(basis.permission_refs), refs(profile.permission_refs))
+    && (profile.version === 1 || basis.basis_kind === profile.basis_kind);
+}
+
+function mechanics(value, profile, weapon) {
+  return plain(value) && value.policy_ref === profile.runtime_item_mechanics_policy_ref
+    && (!weapon || profile.mechanics_capability_ref === `combat:${profile.runtime_item_mechanics_policy_ref}`);
+}
+
+function exactProperty(context, propertyBasisRef, scopeRef) {
+  return plain(context) && scope(context.scope_ref, scopeRef)
+    && Array.isArray(context.property_catalog)
+    && context.property_catalog.some((entry) => plain(entry)
+      && entry.state === 'committed' && entry.property_basis_ref === propertyBasisRef
+      && scope(entry.scope_ref, scopeRef));
+}
+
+function refs(value) { return Array.isArray(value) && value.length > 0
+  && value.every(text) && new Set(value).size === value.length ? [...value].sort() : null; }
+function same(left, right) { return left !== null && right !== null
+  && left.length === right.length && left.every((value, index) => value === right[index]); }
+function scope(left, right) { return plain(left) && plain(right)
+  && left.entity_kind === right.entity_kind && left.entity_id === right.entity_id
+  && text(left.entity_kind) && text(left.entity_id); }
+function record(value, keys) { return plain(value) && Object.keys(value).length === keys.length
+  && keys.every((key) => Object.hasOwn(value, key)) ? value : null; }
+function plain(value) { return value != null && typeof value === 'object' && !Array.isArray(value)
+  && Object.getPrototypeOf(value) === Object.prototype; }
+function text(value) { return typeof value === 'string' && value.length > 0 && value.trim() === value; }
+function pass(profile) { return deepFreeze({ resolution: null,
+  profile: profile == null ? null : structuredClone(profile) }); }
+function blocked() { return deepFreeze({ resolution: 'authority_required', profile: null }); }
+function deepFreeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+  for (const entry of Object.values(value)) deepFreeze(entry);
+  Object.freeze(value);
+} return value; }
+
+// This public policy boundary accepts data only.  Reading descriptors rather
+// than values first prevents accessors from becoming an authority side channel.
+function copyData(value) {
+  const seen = new WeakSet();
+  function visit(entry) {
+    if (entry === null || typeof entry === 'string' || typeof entry === 'boolean') return entry;
+    if (typeof entry === 'number') return Number.isFinite(entry) ? entry : null;
+    if (!entry || typeof entry !== 'object' || Object.getOwnPropertySymbols(entry).length) return null;
+    const array = Array.isArray(entry);
+    if ((array && Object.getPrototypeOf(entry) !== Array.prototype)
+        || (!array && Object.getPrototypeOf(entry) !== Object.prototype) || seen.has(entry)) return null;
+    seen.add(entry);
+    const names = Object.getOwnPropertyNames(entry);
+    if (array && (names.length !== entry.length + 1 || !names.includes('length'))) return null;
+    const out = array ? [] : {};
+    for (const name of names) {
+      if (array && name === 'length') continue;
+      const descriptor = Object.getOwnPropertyDescriptor(entry, name);
+      if (!descriptor || descriptor.enumerable !== true || !Object.hasOwn(descriptor, 'value')) return null;
+      const child = visit(descriptor.value);
+      if (child === null && descriptor.value !== null) return null;
+      if (array) {
+        if (name !== String(out.length)) return null;
+        out.push(child);
+      } else out[name] = child;
+    }
+    return out;
+  }
+  return visit(value);
+}

@@ -177,6 +177,16 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
+O2a добавляет только server-injected ambient admission port для exact
+SHA-pinned authored first-entry context: direct `ambient_ordinary` получает
+finite exact portion и продолжается тем же combined P16 item commit без
+decrement abundant ambient source. Finite resource node использует отдельный
+owner-native transition в ordinary P16. Для
+активного O2a profile отсутствие порта при drift — hard denial ambient
+`create_entity`; legacy composition без profile сохраняет прежний direct path.
+O2b/A1/F1/S1/N1, containers, currency, significant/hidden facts
+и non-authored constrained/armament sources остаются disabled.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

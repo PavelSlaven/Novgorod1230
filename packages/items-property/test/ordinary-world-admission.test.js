@@ -26,7 +26,7 @@ function handoff(overrides = {}) {
     admission_evidence: {
       authority_class: 'ordinary', admission_class: 'common_mundane',
       availability_class: 'common', functional_bucket: 'household',
-      supporting_basis_ref: 'basis-a', property_basis_ref: 'property-a',
+      supporting_basis_ref: 'basis-a', property_basis_ref: 'property-a', permission_refs: [],
       runtime_item_mechanics_policy_ref: 'mechanics-a',
       property_placement_context_digest: 'ed45c0d860a48fa798a6a02005daa4e9d4f7e428d93fa6241ee5bc1f71142482',
       property_catalog_version_ref: 'property-catalog-v1',
@@ -56,9 +56,11 @@ function context(overrides = {}) {
   };
   return {
     schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
+    approved_permission_refs: [],
     supporting_bases: [{ basis_ref: 'basis-a', state: 'prepared_seed',
       scope_ref: structuredClone(scopeRef), functional_buckets: ['household'],
       allowed_admission_classes: ['common_mundane'],
+      permission_refs: [],
       prepared_seed_provenance: { seed_request_id: 'seed-a', mode: 'seed_scope',
         candidate_query: null } }],
     property_placement_input,
@@ -96,6 +98,15 @@ test('O1 admits an arbitrary common name through independent evidence and create
   assert.equal(Object.isFrozen(result), true);
   assert.equal(Object.isFrozen(result.proposal), true);
   assert.equal(Object.isFrozen(result.runtime_instance_mechanics_snapshot), true);
+});
+
+test('O1 admits the committed legacy six-field supporting basis as an empty permission set', () => {
+  const admissionContext = context();
+  const legacyBasis = structuredClone(admissionContext.supporting_bases[0]);
+  delete legacyBasis.permission_refs;
+  admissionContext.supporting_bases = [legacyBasis];
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: handoff(),
+    admission_context: admissionContext }).pass, true);
 });
 
 test('O1 admits a work-group common tool, but rejects a bucket without its basis', () => {
@@ -158,6 +169,73 @@ test('O1 hard-blocks template-less containers, currency and malformed descriptor
   assert.equal(reads, 0);
 });
 
+test('O2a admits a context-bound ordinary weapon only with committed basis and exact permission evidence', () => {
+  const pending = handoff();
+  pending.admission_evidence = { ...pending.admission_evidence,
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+    functional_bucket: 'arms', permission_refs: ['armament-profile-a'],
+    causal_basis_kind: 'personal_possession' };
+  pending.proposed_item = { ...pending.proposed_item, admission_class: 'weapon_or_armament',
+    availability_class: 'context_bound', functional_bucket: 'arms',
+    causal_basis: { basis_kind: 'personal_possession', basis_refs: ['basis-a'] } };
+  const base = context();
+  const admissionContext = { ...base,
+    approved_permission_refs: ['armament-profile-a'],
+    supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
+      prepared_seed_provenance: null, functional_buckets: ['arms'],
+      allowed_admission_classes: ['weapon_or_armament'],
+      permission_refs: ['armament-profile-a'], basis_kind: 'personal_possession' }],
+    causal_identity: { ...base.causal_identity, source_refs: [...base.causal_identity.source_refs,
+      'armament-profile-a'].sort() } };
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: admissionContext }).pass, true);
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: { ...admissionContext, supporting_bases: [{
+      ...admissionContext.supporting_bases[0], state: 'prepared_seed',
+      prepared_seed_provenance: { seed_request_id: 'seed-a', mode: 'seed_scope', candidate_query: null }
+    }] } }).pass, false);
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: { ...pending,
+    admission_evidence: { ...pending.admission_evidence, permission_refs: [] } },
+    admission_context: admissionContext }).pass, false);
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: { ...admissionContext, supporting_bases: [{
+      ...admissionContext.supporting_bases[0], permission_refs: []
+    }] } }).pass, false);
+});
+
+test('O2a seals one causal basis kind across evidence, entity, and every catalog basis', () => {
+  const kinds = ['personal_possession','stored_supply','communal_or_service','waste_or_scrap',
+    'remnant','finite_source','ambient_source','local_natural_feature'];
+  for (const kind of kinds) {
+    const pending = handoff();
+    pending.admission_evidence = { ...pending.admission_evidence,
+      admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+      functional_bucket: 'arms', permission_refs: ['armament-profile-a'], causal_basis_kind: kind };
+    pending.proposed_item = { ...pending.proposed_item, admission_class: 'weapon_or_armament',
+      availability_class: 'context_bound', functional_bucket: 'arms',
+      causal_basis: { basis_kind: kind, basis_refs: ['basis-a'] } };
+    const base = context();
+    const admission_context = { ...base, approved_permission_refs: ['armament-profile-a'],
+      supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
+        prepared_seed_provenance: null, functional_buckets: ['arms'],
+        allowed_admission_classes: ['weapon_or_armament'],
+        permission_refs: ['armament-profile-a'], basis_kind: kind }],
+      causal_identity: { ...base.causal_identity, source_refs: [...base.causal_identity.source_refs,
+        'armament-profile-a'].sort() } };
+    assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending, admission_context }).pass,
+      true);
+    const mismatch = structuredClone(admission_context);
+    mismatch.supporting_bases[0].basis_kind = kind === 'finite_source'
+      ? 'personal_possession' : 'finite_source';
+    assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+      admission_context: mismatch }).pass, false);
+    assert.equal(admitOrdinaryWorldMaterialization({ handoff: { ...pending,
+      admission_evidence: { ...pending.admission_evidence,
+        causal_basis_kind: mismatch.supporting_bases[0].basis_kind } },
+    admission_context }).pass, false);
+  }
+});
+
 test('O1 rejects restricted closed classes regardless of a common-looking descriptor', () => {
   for (const [admission_class, semantic_type, name] of [
     ['weapon_or_armament', 'ordinary_tool', 'простая деревянная ложка'],
@@ -194,7 +272,7 @@ test('O1 pins policy and exact causal identity/source set, including every causa
       causal_basis_refs: ['basis-a', 'basis-b'] },
     supporting_bases: [...context().supporting_bases, { basis_ref: 'basis-b',
       state: 'committed', scope_ref: structuredClone(scopeRef),
-      prepared_seed_provenance: null, functional_buckets: ['household'],
+      prepared_seed_provenance: null, functional_buckets: ['household'], permission_refs: [],
       allowed_admission_classes: ['common_mundane'] }],
     causal_identity: { ...context().causal_identity, source_refs: ['basis-a',
       'basis-b', 'bench-a', 'candidate-a', 'coverage-a', 'ed45c0d860a48fa798a6a02005daa4e9d4f7e428d93fa6241ee5bc1f71142482', 'household-a',

@@ -181,7 +181,8 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             input: plan.ordinary_materialization_atomic_write_plan,
             partyStateVersionAfter: plan.ordinary_materialization_atomic_write_plan
               .expected_versions.party_state_version + 1,
-            requireEnablementPin: true
+            requireEnablementPin: true,
+            p16ChangeSetId: plan.change_set_id
           });
         } catch (cause) {
           if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE') {

@@ -143,7 +143,7 @@ function valid({ historicalBundle: historical, loaded: l, paths }) {
     && exactRef(manifest.content_refs?.participant_profile_set, l.participant_profile_set, 'participant-profile-set.json', 'trace_ld_v1_participant_profile_set', 2)
     && exactRef(manifest.content_refs?.ordinary_materialization_profile,
       l.ordinary_materialization_profile, 'ordinary-materialization-profile.json',
-      'lower_dvina_trace_o1_first_entry_profile_v1', 1)
+      'lower_dvina_trace_o2a_first_entry_profile_v1', 2)
     && exactRef(manifest.content_refs?.item_container_set, l.item_container_set, 'item-container-set-overlay.json', 'trace_ld_v1_item_container_set', 5)
     && l.definition.value?.revision === 19
     && l.definition.value.supersedes_definition_ref?.digest === historical.artifact_pins.definition.digest
@@ -152,7 +152,7 @@ function valid({ historicalBundle: historical, loaded: l, paths }) {
     && l.participant_profile_set.value?.revision === 2
     && l.item_container_set.value?.revision === 5
     && l.ordinary_materialization_profile.value?.schema
-      === 'rus.lower_dvina_trace_ordinary_materialization_profile.v1'
+      === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
     && l.item_container_set.value.supersedes_ref?.digest === historical.artifact_pins.item_container_set.digest
     && phase1a?.package_id === 'lower_dvina_trace_phase_1a_v15'
     && phase1a.scenario_definition_revision === 19

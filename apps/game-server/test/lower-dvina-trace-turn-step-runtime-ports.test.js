@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { runTurnStepLoop } from '@rus/turn';
+import { createAmbientOrdinaryPortionAdmission } from
+  '@rus/items-property/ambient-ordinary-portion';
+import { ambientContextPort } from './ambient-ordinary-portion-fixture.js';
 import {
   createLowerDvinaTraceTurnStepRuntimePorts,
   resolveLowerDvinaTraceTurnStepCheckContext
@@ -60,6 +63,22 @@ test('create_entity returns a deterministic self-contained ordinary item draft',
     assert.equal(first.working_projection.knowledge[1].fact_id, 'new_fact_1');
     assert.equal(JSON.stringify(first).includes('must-not-reach-model'), false);
   });
+
+test('legacy ambient direct action remains available without an O2a admission port', async () => {
+  const ports = createLowerDvinaTraceTurnStepRuntimePorts({
+    ordinaryResultPolicy: testOrdinaryPolicy(),
+    workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
+  });
+  const result = await ports.executionRegistry.direct(createSand())(execution(createSand()));
+  assert.equal(result.write_fragments[0].target, 'party_items');
+});
+
+test('an active O2a profile fails closed when its binding has drifted', () => {
+  const ports = createPorts({ requireAmbientOrdinaryAdmission: true,
+    admitAmbientOrdinaryPortion: null });
+  assert.throws(() => ports.executionRegistry.direct(createSand())(
+    execution(createSand())), { code: 'TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED' });
+});
 
 test('the second internal step sees and mutates the first working projection',
   async () => {
@@ -123,6 +142,9 @@ test('direct projections require the same submit-scoped authority', async () => 
   const authority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
     ordinaryResultPolicy: testOrdinaryPolicy(),
+    admitAmbientOrdinaryPortion: createAmbientOrdinaryPortionAdmission({
+      loadCommittedContext: async () => ambientContextPort()
+    }),
     workingProjectionAuthority: authority
   });
   const created = await ports.executionRegistry.direct(createSand())(
@@ -480,6 +502,8 @@ function createPorts(options = {}) {
       options.genericCheckContextOwner ?? projectedCheckOwner(),
     ordinaryResultPolicy:
       options.ordinaryResultPolicy ?? testOrdinaryPolicy(),
+    admitAmbientOrdinaryPortion:
+      options.admitAmbientOrdinaryPortion ?? null,
     workingProjectionAuthority:
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
   });

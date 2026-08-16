@@ -27,6 +27,10 @@ export function turnStepDraftPreparedEffectLedger(draft) {
   return value == null ? null : requireTurnStepPreparedEffectLedger(value);
 }
 
+export function turnStepDraftOrdinaryAtomicWritePlan(draft) {
+  return draft?.loop_result?.ordinary_materialization_atomic_write_plan ?? null;
+}
+
 export function turnStepDraftPreparedDomainSlice(draft) {
   return turnStepDraftPreparedDomainSlices(draft)[0] ?? null;
 }

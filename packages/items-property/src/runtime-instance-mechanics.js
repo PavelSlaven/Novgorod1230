@@ -88,6 +88,7 @@ function validProvenance(value) {
     && validRefs(value.source_refs);
 }
 
+
 function validMechanics(value) {
   return exactObject(value, MECHANICS_FIELDS)
     && Number.isSafeInteger(value.mass_grams)
@@ -167,6 +168,7 @@ function exactText(value) {
     ? value
     : '';
 }
+
 
 function fail(code, details = {}) {
   throw Object.assign(new TypeError(code), {

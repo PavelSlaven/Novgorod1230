@@ -24,6 +24,11 @@ import {
   createLowerDvinaTraceSemanticResolver,
   createLowerDvinaTraceTurnStepModel
 } from '../lower-dvina-trace-phase-2-llm.js';
+import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../lower-dvina-trace-ordinary-discovery.js';
+import { createPostgresOrdinaryMaterializationEnablementRepository } from
+  '../../infrastructure/postgres/ordinary-materialization-enablement.js';
 import {
   createProductionLlmRoleRunner
 } from '../../infrastructure/provider/deepseek.js';
@@ -218,6 +223,9 @@ function createTraceTurnRuntime({
   });
   const narrationService =
     createLowerDvinaTraceNarrationService({ roleRunner });
+  const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: partyPool
+  });
   return createLowerDvinaTracePhase2Runtime({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
@@ -227,6 +235,13 @@ function createTraceTurnRuntime({
       createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel:
       createLowerDvinaTraceTurnStepModel({ roleRunner }),
+    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+      createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
+        loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel: createOrdinaryMaterializationModel({ roleRunner })
+      }),
+    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
+      (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,

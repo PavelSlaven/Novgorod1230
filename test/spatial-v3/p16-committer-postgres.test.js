@@ -4,6 +4,16 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import pg from 'pg';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import {
+  applyOrdinaryAggregateTransition,
+  canonicalDigest,
+  createOrdinaryAggregate,
+  validateOrdinaryBackgroundGroup
+} from '@rus/materialization';
+import {
+  ordinaryWorldPropertyPlacementContextDigest,
+  resolveOrdinaryWorldPropertyPlacement
+} from '@rus/items-property';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import {
   createSpatialV3CombinedAtomicCommitter,
@@ -12,11 +22,97 @@ import {
 import {
   recheckSpatialV3PostgresFirstEntry
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-first-entry-recheck.js';
+import {
+  applyOrdinaryMaterializationProjection,
+  ordinaryPhysicalKeys
+} from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js';
+import {
+  createOrdinaryMaterializationAtomicWritePlan
+} from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
+import {
+  createOrdinaryMaterializationFirstEntryProvisioner
+} from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from '../../apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js';
+import {
+  createPostgresOrdinaryMaterializationEnablementRepository
+} from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
+import {
+  createLowerDvinaTraceOrdinaryDiscoveryResolver
+} from '../../apps/game-server/src/runtime/lower-dvina-trace-ordinary-discovery.js';
 
 const docker = (args, input) => spawnSync('docker', args, { input, encoding: 'utf8', timeout: 45_000 });
 const name = `p16-node-${process.pid}`;
 const hex = 'a'.repeat(64);
 const later = new Date('2030-01-01T00:00:00.000Z');
+const ordinaryScope = Object.freeze({ entity_kind: 'g6', entity_id: 'p16-ordinary-scope' });
+
+function ordinaryPropertyPlacementContext() {
+  return {
+    scope_ref: { ...ordinaryScope }, item_kind: 'man_made',
+    property_catalog_version_ref: 'property-catalog-v1',
+    placement_catalog_version_ref: 'placement-catalog-v1',
+    personal_communal_refs: [], occupied_site_refs: ['occupied-source'],
+    unowned_cause_refs: [], placement_context_refs: ['placement-context'],
+    property_catalog: [{ property_basis_ref: 'property', state: 'committed', scope_ref: { ...ordinaryScope }, basis_class: 'occupied_site_default', source_ref: 'occupied-source', unowned_cause_ref: null }],
+    placement_catalog: [{ position_ref: 'position', state: 'committed', scope_ref: { ...ordinaryScope }, position_kind: 'scene_position', g6_ref: ordinaryScope.entity_id, containment_depth: 1, placement_context_ref: 'placement-context' }]
+  };
+}
+
+function ordinaryPropertyPlacementDigest(context = ordinaryPropertyPlacementContext()) {
+  return ordinaryWorldPropertyPlacementContextDigest({
+    ...context, supporting_basis_ref: 'digest-only', causal_basis_refs: ['digest-only'],
+    requested_position_ref: 'digest-only'
+  });
+}
+
+function ordinarySeedGroup() {
+  return validateOrdinaryBackgroundGroup({
+    request: { schema: 'ordinary_materialization_request_v1', request_id: 'p16-seed', mode: 'seed_scope', scope_ref: { ...ordinaryScope }, candidate_query: null, context_refs: { function_refs: [], property_context_ref: 'property-a' }, policy_refs: { context_bound_permission_refs: [], allowed_admission_classes: ['common_mundane'], allowed_supporting_bases: [{ basis_ref: 'basis-a', basis_state: 'committed' }] } },
+    group: { descriptor: 'ordinary household layer', functional_bucket: 'household', availability_class: 'common', allowed_admission_classes: ['common_mundane'], causal_basis: { basis_kind: 'household_use', basis_refs: ['basis-a'] }, property_basis_ref: 'property-a', permission_refs: [], disclosure_policy_ref: 'disclosure-a' },
+    basis_catalog: [{ basis_ref: 'basis-a', state: 'committed', policy: { functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'], permission_refs: [] } }],
+    allowed_disclosure_policy_refs: ['disclosure-a']
+  });
+}
+
+function makeSeededOrdinaryState() {
+  const group = ordinarySeedGroup();
+  const aggregate = applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref: ordinaryScope, resolution_record_cap: 8 }),
+    transition: { kind: 'seed', request_identity: 'p16-seed', expected_state_version: 0, density_band: 'ordinary', identity_budget: 3, background_groups: [group] }
+  });
+  const basis = { basis_ref: group.group_ref, state: 'committed', scope_ref: { ...ordinaryScope }, prepared_seed_provenance: null, functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'] };
+  return { aggregate, basis, context: ordinaryPropertyPlacementContext() };
+}
+
+function makeOrdinaryPlan({ aggregate, basis, context, partyStateVersion, requestIdentity,
+  enablementObjectiveDigest = null }) {
+  const transition = { kind: 'resolve_presence', request_identity: requestIdentity, expected_state_version: aggregate.state_version, resolution_ref: `resolution-${requestIdentity}`, candidate_key: `candidate-${requestIdentity}`, coverage_key: `coverage-${requestIdentity}`, category_key: `category-${requestIdentity}`, context_version: 'ordinary_context_a', resolution: 'materialize', identity_key: `identity-${requestIdentity}` };
+  const nextAggregate = applyOrdinaryAggregateTransition({ aggregate, transition });
+  const evidence = structuredClone(resolveOrdinaryWorldPropertyPlacement({
+    ...context, supporting_basis_ref: basis.basis_ref, causal_basis_refs: [basis.basis_ref], requested_position_ref: 'position'
+  }).evidence);
+  const mechanicsPolicyRef = `mechanics-${requestIdentity}`;
+  const sourceRefs = [`candidate-${requestIdentity}`, `coverage-${requestIdentity}`, basis.basis_ref, 'property', 'position', mechanicsPolicyRef, evidence.property_source_ref, evidence.property_catalog_version_ref, evidence.placement_catalog_version_ref, evidence.placement_context_ref, evidence.property_placement_context_digest].sort();
+  const item = {
+    item_id: `ordinary_item_${canonicalDigest({ party_id: 'p', scope_ref: ordinaryScope, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version }).slice(0, 24)}`,
+    candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version,
+    functional_bucket: 'household', admission_class: 'common_mundane', supporting_basis_ref: basis.basis_ref, causal_basis_refs: [basis.basis_ref], property_basis_ref: 'property', position_ref: 'position', mechanics_policy_ref: mechanicsPolicyRef,
+    item_proposal: { schema: 'ordinary_world_item_proposal_v1', request_id: requestIdentity, scope_ref: { ...ordinaryScope }, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version, semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon', facts: ['ordinary'] }, supporting_basis_ref: basis.basis_ref, property_basis_ref: 'property', property_placement_evidence: evidence, placement: { scope_ref: ordinaryScope.entity_id, position_ref: 'position' }, runtime_item_mechanics_policy_ref: mechanicsPolicyRef },
+    mechanics_snapshot: { schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2, provenance: { source_kind: 'ordinary_world_materialization', causal_ref: `cause-${requestIdentity}`, request_id: requestIdentity, candidate_key: transition.candidate_key, coverage_key: transition.coverage_key, context_version: transition.context_version, policy_ref: mechanicsPolicyRef, source_refs: sourceRefs }, mechanics: { mass_grams: 80, external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null } }
+  };
+  return createOrdinaryMaterializationAtomicWritePlan(JSON.parse(JSON.stringify({
+    party_id: 'p', scope_ref: ordinaryScope, request_identity: requestIdentity,
+    input_digest: `input-${requestIdentity}`,
+    transition_digest: nextAggregate.committed_request_fingerprints.at(-1).transition_digest,
+    expected_versions: { party_state_version: partyStateVersion, ordinary_state_version: aggregate.state_version, catalog_version: 1, property_version: 1, placement_version: 1, supporting_basis_catalog_version: 0, supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [basis] }), property_placement_context_digest: ordinaryPropertyPlacementDigest(context) },
+    expected_supporting_basis_catalog: [basis], new_prepared_bases: [], next_supporting_basis_catalog: [basis], next_supporting_basis_catalog_version: 0, next_supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [basis] }),
+    expected_property_placement_context: context,
+    ...(enablementObjectiveDigest == null ? {} : {
+      enablement_pin: { objective_digest: enablementObjectiveDigest, enabled: true }
+    }),
+    resolution: 'materialize', transitions: [transition], next_aggregate: nextAggregate, item
+  })));
+}
 function firstEntryPhysicalRecheck(overrides = {}) {
   const value = {
     kind: 'physical',
@@ -52,7 +148,9 @@ async function makePlan({
   ownerKeys = [],
   executionKeys = [],
   g4Keys = [],
-  commitRechecks = null
+  commitRechecks = null,
+  ordinaryMaterializationAtomicWritePlan = null,
+  visibleObjects = []
 }) {
   const visiblePayload = {
     schema: 'temporal_visible_package.v1',
@@ -60,7 +158,7 @@ async function makePlan({
     perceived_changes: ['Состояние сохранено.'],
     sensory_details: [],
     visible_npcs: [],
-    visible_objects: [],
+    visible_objects: visibleObjects,
     known_context: [],
     uncertainties: [],
     hypotheses: [],
@@ -101,7 +199,8 @@ async function makePlan({
     },
     lock_context: { owner_keys: ownerKeys, execution_keys: executionKeys, g4_keys: g4Keys, physical_keys: [`party_runtime.party_v3_change_sets:${changeSetId}`, ...physicalKeys] },
     commit_rechecks: commitRechecks ?? ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].map((kind) => ({ kind, digest: `sha256:${hex}` })),
-    approved_write_sets: [{ inserts, updates, appends }]
+    approved_write_sets: [{ inserts, updates, appends }],
+    ordinary_materialization_atomic_write_plan: ordinaryMaterializationAtomicWritePlan
   }, { verifyApproval: async () => ({ ok: true }) });
   assert.equal(built.ok, true, JSON.stringify(built));
   return built.plan;
@@ -131,6 +230,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   if (docker(['version']).status !== 0) return t.skip('Docker required');
   let client;
   let pool;
+  const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
   t.after(async () => {
     if (pool) await pool.end();
     if (client) await client.end();
@@ -147,7 +247,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)?.[1]);
   client = new pg.Client({ host: '127.0.0.1', port, user: 'p16', password: 'p16', database: 'p16' });
   await client.connect();
-  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql', '009_party_runtime_pr8_reaction_knowledge.sql', '010_party_runtime_pr8_reaction_options.sql', '011_party_runtime_first_playable.sql', '012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql', '015_party_runtime_turn_step_items.sql', '016_party_runtime_npc_semantic_conversation.sql', '017_party_runtime_conversation_transcript.sql', '018_party_runtime_phase7_container_state.sql', '019_party_runtime_combat_sessions.sql', '020_party_runtime_actor_equipment.sql', '021_party_runtime_ordinary_materialization.sql', '022_party_runtime_ordinary_materialization_commit.sql', '023_party_runtime_ordinary_materialization_enablement.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await client.query("INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES ('p',3,'w','d','m','r','c','b'); INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,state_version,updated_change_set_id) VALUES ('p',0,0,1,'party',1,'old');");
   await client.query(
     `INSERT INTO party_runtime.preparation_snapshots
@@ -198,6 +298,175 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_narration_jobs WHERE package_id='visible-cs' AND status='pending'")).rows[0].count, '1');
   assert.equal((await client.query("SELECT state_version FROM party_runtime.party_clocks WHERE party_id='p' ")).rows[0].state_version, '2');
   assert.deepEqual(locks, [...locks].sort(), 'lock phases are globally sorted');
+
+  const seededOrdinary = makeSeededOrdinaryState();
+  const ordinaryBasisDigest = canonicalDigest({
+    domain: 'ordinary_supporting_basis_catalog_v1',
+    supporting_bases: [seededOrdinary.basis]
+  });
+  await client.query(
+    `INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+       (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+     VALUES ('p',$1,$2,$3,$4::jsonb)`,
+    [ordinaryScope.entity_kind, ordinaryScope.entity_id,
+      seededOrdinary.aggregate.state_version, JSON.stringify(seededOrdinary.aggregate)]
+  );
+  await client.query(
+    `INSERT INTO party_runtime.party_ordinary_materialization_contexts
+       (party_id,scope_kind,scope_id,catalog_version,property_version,placement_version,
+        supporting_basis_catalog_version,supporting_basis_catalog_digest,
+        property_placement_context_digest,property_placement_base_snapshot)
+     VALUES ('p',$1,$2,1,1,1,0,$3,$4,$5::jsonb)`,
+    [ordinaryScope.entity_kind, ordinaryScope.entity_id, ordinaryBasisDigest,
+      ordinaryPropertyPlacementDigest(seededOrdinary.context), JSON.stringify(seededOrdinary.context)]
+  );
+  await client.query(
+    `INSERT INTO party_runtime.party_ordinary_materialization_basis_catalog
+       (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
+     VALUES ('p',$1,$2,$3,NULL,$4::jsonb)`,
+    [ordinaryScope.entity_kind, ordinaryScope.entity_id, seededOrdinary.basis.basis_ref,
+      JSON.stringify(seededOrdinary.basis)]
+  );
+  const ordinaryEnablementObjective = { scope_ref: { ...ordinaryScope } };
+  const ordinaryEnablementDigest = canonicalDigest(ordinaryEnablementObjective);
+  await client.query(
+    `INSERT INTO party_runtime.party_ordinary_materialization_enablements
+       (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
+     VALUES ('p',$1,$2,$3::jsonb,$4,true)`,
+    [ordinaryScope.entity_kind, ordinaryScope.entity_id,
+      JSON.stringify(ordinaryEnablementObjective), ordinaryEnablementDigest]
+  );
+  const partyBeforeOrdinary = Number((await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version);
+  const ordinaryEnablementStale = makeOrdinaryPlan({
+    ...seededOrdinary, partyStateVersion: partyBeforeOrdinary,
+    requestIdentity: 'p16-ordinary-enablement-stale',
+    enablementObjectiveDigest: ordinaryEnablementDigest
+  });
+  const staleProjection = applyOrdinaryMaterializationProjection({
+    next: { items: [] }, visibleContext: { visible_objects: [] },
+    ordinaryPlan: ordinaryEnablementStale
+  });
+  const staleEnablementCommit = await makePlan({
+    planId: 'p16-ordinary-enablement-stale-plan', idempotencyId: 'p16-ordinary-enablement-stale-idem',
+    idempotencyKey: 'p16-ordinary-enablement-stale-key', changeSetId: 'p16-ordinary-enablement-stale-cs',
+    expectedStateVersions: [{ target_table: 'parties', id: 'p', state_version: partyBeforeOrdinary }],
+    updates: [{ target_table: 'parties', id: 'p', record: { party_id: 'p', profile_bundle_digest: 'b' } }],
+    physicalKeys: ['party_runtime.parties:p', ...ordinaryPhysicalKeys(ordinaryEnablementStale)],
+    ordinaryMaterializationAtomicWritePlan: ordinaryEnablementStale,
+    visibleObjects: staleProjection.visible_objects
+  });
+  await client.query(`UPDATE party_runtime.party_ordinary_materialization_enablements
+    SET enabled=false WHERE party_id='p' AND scope_kind=$1 AND scope_id=$2`,
+  [ordinaryScope.entity_kind, ordinaryScope.entity_id]);
+  const staleEnablementResult = await committer.commit({ plan: staleEnablementCommit });
+  assert.equal(staleEnablementResult.ok, false);
+  assert.equal(staleEnablementResult.error.code, 'state_version_conflict');
+  assert.match(staleEnablementResult.error.diagnostics.reason,
+    /ORDINARY_PHASE6_ENABLEMENT_STALE/u);
+  assert.equal((await client.query(
+    "SELECT count(*) FROM party_runtime.party_ordinary_materialization_commits WHERE party_id='p' AND request_identity='p16-ordinary-enablement-stale'"
+  )).rows[0].count, '0');
+  assert.equal((await client.query(
+    'SELECT count(*) FROM party_runtime.party_ordinary_materialization_items WHERE party_id=$1 AND item_id=$2',
+    ['p', ordinaryEnablementStale.item.item_id]
+  )).rows[0].count, '0');
+  assert.equal((await client.query(
+    "SELECT count(*) FROM party_runtime.party_visible_packages WHERE package_id='visible-p16-ordinary-enablement-stale-cs'"
+  )).rows[0].count, '0');
+  assert.equal(Number((await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version), partyBeforeOrdinary);
+  await client.query(`UPDATE party_runtime.party_ordinary_materialization_enablements
+    SET enabled=true WHERE party_id='p' AND scope_kind=$1 AND scope_id=$2`,
+  [ordinaryScope.entity_kind, ordinaryScope.entity_id]);
+
+  const ordinaryPositive = makeOrdinaryPlan({
+    ...seededOrdinary, partyStateVersion: partyBeforeOrdinary,
+    requestIdentity: 'p16-ordinary-positive',
+    enablementObjectiveDigest: ordinaryEnablementDigest
+  });
+  const ordinaryProjection = applyOrdinaryMaterializationProjection({
+    next: { items: [] },
+    visibleContext: { visible_objects: [] },
+    ordinaryPlan: ordinaryPositive
+  });
+  const ordinaryCommit = await makePlan({
+    planId: 'p16-ordinary-positive-plan', idempotencyId: 'p16-ordinary-positive-idem',
+    idempotencyKey: 'p16-ordinary-positive-key', changeSetId: 'p16-ordinary-positive-cs',
+    expectedStateVersions: [{ target_table: 'parties', id: 'p', state_version: partyBeforeOrdinary }],
+    updates: [{ target_table: 'parties', id: 'p', record: { party_id: 'p', profile_bundle_digest: 'b' } }],
+    physicalKeys: ['party_runtime.parties:p', ...ordinaryPhysicalKeys(ordinaryPositive)],
+    ordinaryMaterializationAtomicWritePlan: ordinaryPositive,
+    visibleObjects: ordinaryProjection.visible_objects
+  });
+  assert.equal((await committer.commit({ plan: ordinaryCommit })).ok, true);
+  assert.deepEqual((await client.query(
+    `SELECT item_id,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version
+       FROM party_runtime.party_ordinary_materialization_commits
+      WHERE party_id='p' AND request_identity='p16-ordinary-positive'`
+  )).rows[0], {
+    item_id: ordinaryPositive.item.item_id,
+    from_party_state_version: String(partyBeforeOrdinary),
+    to_party_state_version: String(partyBeforeOrdinary + 1),
+    from_ordinary_state_version: '1', to_ordinary_state_version: '2'
+  });
+  assert.deepEqual((await client.query(
+    `SELECT item_id,request_identity,supporting_basis_ref FROM party_runtime.party_ordinary_materialization_items
+      WHERE party_id='p' AND item_id=$1`, [ordinaryPositive.item.item_id]
+  )).rows[0], {
+    item_id: ordinaryPositive.item.item_id,
+    request_identity: 'p16-ordinary-positive',
+    supporting_basis_ref: seededOrdinary.basis.basis_ref
+  });
+  assert.equal((await client.query(
+    `SELECT count(*) FROM party_runtime.party_ordinary_materialization_item_basis_refs
+      WHERE party_id='p' AND item_id=$1 AND basis_ref=$2`,
+    [ordinaryPositive.item.item_id, seededOrdinary.basis.basis_ref]
+  )).rows[0].count, '1');
+  assert.deepEqual((await client.query(
+    "SELECT visible_payload->'visible_objects' AS objects FROM party_runtime.party_visible_packages WHERE package_id='visible-p16-ordinary-positive-cs'"
+  )).rows[0].objects, ordinaryProjection.visible_objects);
+  assert.equal(Number((await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version), partyBeforeOrdinary + 1, 'ordinary P16 commit bumps the party exactly once');
+
+  const ordinaryRollback = makeOrdinaryPlan({
+    aggregate: ordinaryPositive.next_aggregate, basis: seededOrdinary.basis,
+    context: seededOrdinary.context, partyStateVersion: partyBeforeOrdinary + 1,
+    requestIdentity: 'p16-ordinary-rollback',
+    enablementObjectiveDigest: ordinaryEnablementDigest
+  });
+  const rollbackProjection = applyOrdinaryMaterializationProjection({
+    next: { items: [] }, visibleContext: { visible_objects: [] }, ordinaryPlan: ordinaryRollback
+  });
+  const ordinaryRollbackCommit = await makePlan({
+    planId: 'p16-ordinary-rollback-plan', idempotencyId: 'p16-ordinary-rollback-idem',
+    idempotencyKey: 'p16-ordinary-rollback-key', changeSetId: 'p16-ordinary-rollback-cs',
+    expectedStateVersions: [{ target_table: 'parties', id: 'p', state_version: partyBeforeOrdinary + 1 }],
+    updates: [{ target_table: 'parties', id: 'p', record: { party_id: 'p', profile_bundle_digest: 'b' } }],
+    physicalKeys: ['party_runtime.parties:p', ...ordinaryPhysicalKeys(ordinaryRollback)],
+    ordinaryMaterializationAtomicWritePlan: ordinaryRollback,
+    visibleObjects: rollbackProjection.visible_objects
+  });
+  failSettle = true;
+  assert.equal((await committer.commit({ plan: ordinaryRollbackCommit })).ok, false);
+  failSettle = false;
+  assert.equal((await client.query(
+    "SELECT count(*) FROM party_runtime.party_ordinary_materialization_commits WHERE party_id='p' AND request_identity='p16-ordinary-rollback'"
+  )).rows[0].count, '0');
+  assert.equal((await client.query(
+    'SELECT count(*) FROM party_runtime.party_ordinary_materialization_items WHERE party_id=$1 AND item_id=$2',
+    ['p', ordinaryRollback.item.item_id]
+  )).rows[0].count, '0');
+  assert.equal((await client.query(
+    "SELECT count(*) FROM party_runtime.party_visible_packages WHERE package_id='visible-p16-ordinary-rollback-cs'"
+  )).rows[0].count, '0');
+  assert.equal(Number((await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version), partyBeforeOrdinary + 1, 'late failure rolls back the ordinary party bump');
+
   rechecks = 0;
   assert.equal((await committer.commit({ plan: first })).replay, true);
   assert.equal(rechecks, 0, 'committed replay resolves before recheck');
@@ -550,8 +819,17 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const firstEntryConcurrentCommitter = createSpatialV3PostgresCombinedAtomicCommitter({
     pool,
     now: () => later,
-    recheck: fullRecheck
+    recheck: fullRecheck,
+    ordinaryFirstEntryProvisioner:
+      createOrdinaryMaterializationFirstEntryProvisioner({
+        profile: ordinaryProfile
+      })
   });
+  const partyBeforeFirstEntry = (await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version;
+  assert.equal((await client.query(`SELECT count(*) FROM party_runtime.party_ordinary_materialization_enablements
+    WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new'`)).rows[0].count, '0');
   const concurrentFirstEntryResults = await Promise.all([
     firstEntryConcurrentCommitter.commit({ plan: firstEntry }),
     firstEntryConcurrentCommitter.commit({ plan: firstEntryB })
@@ -589,6 +867,54 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_scene_baselines WHERE id='baseline-new'")).rows[0].count, '1');
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.party_g6_instances WHERE id='g6-new'")).rows[0].count, '1');
   assert.equal((await client.query("SELECT count(*) FROM party_runtime.scene_position_nodes WHERE id='position-new'")).rows[0].count, '1');
+  const ordinaryProvisioned = await client.query(`SELECT
+      (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_aggregates
+       WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new') AS aggregates,
+      (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_contexts
+       WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new') AS contexts,
+      (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_enablements
+       WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new' AND enabled) AS enablements,
+      (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_basis_catalog
+       WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new') AS bases,
+      (SELECT state_version FROM party_runtime.parties WHERE party_id='p') AS party_state_version`);
+  assert.deepEqual(ordinaryProvisioned.rows[0], {
+    aggregates: 1, contexts: 1, enablements: 1, bases: 1,
+    party_state_version: partyBeforeFirstEntry
+  }, 'first-entry O1 provisioning is atomic and does not add a party bump');
+  const enablements = createPostgresOrdinaryMaterializationEnablementRepository({ pool });
+  const loadedEnablement = await enablements.load({ partyId: 'p',
+    scopeRef: { entity_kind: 'g6', entity_id: 'g6-new' } });
+  assert.ok(loadedEnablement, 'the exact newly entered G6 exposes the O1 marker');
+  assert.equal(await enablements.load({ partyId: 'p',
+    scopeRef: { entity_kind: 'g6', entity_id: 'g6-old' } }), null,
+  'other G6 scopes remain unavailable');
+  const calls = [];
+  const ordinaryResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'p', inputDigest: 'first-entry-o1',
+    loadEnablement: (value) => enablements.load(value),
+    ordinaryMaterializationModel: async (request) => {
+      calls.push(request);
+      if (request.mode === 'seed_scope') return {
+        schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
+        resolution: 'seeded', density_band_proposal: 'ordinary',
+        background_groups: [], entities: [], presence_resolutions: [], reason_code: 'seed'
+      };
+      return {
+        schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
+        resolution: 'absent', density_band_proposal: null, background_groups: [],
+        entities: [], presence_resolutions: [{
+          candidate_key: request.candidate_query.candidate_key,
+          coverage_key: request.candidate_query.coverage_key, resolution: 'absent'
+        }], reason_code: 'absent'
+      };
+    }
+  });
+  const ordinaryAvailable = await ordinaryResolver({ request: { root_turn_id: 'first-entry-o1' },
+    committed_state: { position: { g6_id: 'g6-new' } },
+    operation: { target_refs: ['g6-new'], query: ' найти вещь ' }, working_projection: {} });
+  assert.ok(ordinaryAvailable.ordinary_materialization_atomic_write_plan,
+    'the production resolver can use only the provisioned exact scope');
+  assert.equal(calls.length, 2);
   assert.deepEqual(
     (await client.query("SELECT claim_status,state_version,terminal_change_set_id FROM party_runtime.preparation_claims WHERE id='preparation-claim-first-entry'")).rows[0],
     {

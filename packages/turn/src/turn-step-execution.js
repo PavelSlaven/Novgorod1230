@@ -18,7 +18,8 @@ export function collectTurnStepExecutionResult({
   summaries,
   writes,
   consequences,
-  preparedEffects
+  preparedEffects,
+  ordinaryPlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -56,6 +57,14 @@ export function collectTurnStepExecutionResult({
       working_projection_after:
         structuredClone(applied.working_projection)
     });
+  }
+  if (applied.ordinary_materialization_atomic_write_plan != null) {
+    if (!Array.isArray(ordinaryPlans) || ordinaryPlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one ordinary atomic plan.');
+    }
+    ordinaryPlans.push(structuredClone(
+      applied.ordinary_materialization_atomic_write_plan));
   }
   return {
     projection: structuredClone(applied.working_projection),

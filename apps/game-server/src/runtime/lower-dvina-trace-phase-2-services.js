@@ -63,7 +63,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepModel, playerSafeStateProjector, locationProfiles,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
-    turnStepOrdinaryResultPolicy, turnStepApprovedOwners,
+    turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
+    ordinaryDiscoveryEnablementMarker,
+    turnStepOrdinaryResultPolicy,
+    turnStepApprovedOwners,
     turnStepPackingCalculator,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     decisionSecret, phase3Contracts,
@@ -126,6 +129,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEventOwner: turnStepBodyEventOwner,
     committedState: state,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
+    ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
       packingCalculator: turnStepPackingCalculator
@@ -135,14 +140,26 @@ export function buildLowerDvinaTracePhase2Services(context) {
     workingProjectionAuthority
   });
   const turnStepPlayerSafeStateProjector = playerSafeStateProjector
-    ? (input) => {
+    ? async (input) => {
         const committedState = structuredClone(input.committed_state);
         delete committedState.current_visible_context;
-        return playerSafeStateProjector({
+        const projected = await playerSafeStateProjector({
           ...input,
           committed_state: committedState,
           working_projection_authority: workingProjectionAuthority
         });
+        if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
+            || typeof turnStepPorts.ordinaryDiscoveryResolver !== 'function') return projected;
+        const scopeId = committedState.position?.g6_id ?? committedState.position?.g6_ref
+          ?? committedState.position?.location_ref;
+        if (typeof scopeId !== 'string' || !scopeId) return projected;
+        const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
+          scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
+        return enabled === true ? { ...projected, player_safe_state: {
+          ...projected.player_safe_state,
+          ordinary_resolution: { discovery_available: true,
+            container_resolution_available: false }
+        } } : projected;
       }
     : null;
   return {
@@ -163,6 +180,10 @@ export function buildLowerDvinaTracePhase2Services(context) {
       playerSafeStateProjector: turnStepPlayerSafeStateProjector
     } : {}),
     turnStepExecutionRegistry: turnStepPorts.executionRegistry,
+    ...(turnStepPorts.ordinaryDiscoveryResolver ? {
+      turnStepOrdinaryDiscoveryResolver:
+        turnStepPorts.ordinaryDiscoveryResolver
+    } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {
       turnStepPreparedDomainEffect: turnStepPorts.preparedDomainEffect,

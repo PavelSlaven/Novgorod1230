@@ -16,7 +16,7 @@ const request = {
 const policy = { version: 'density-v1', mappings: [{ scope_kind: 'g6', function_ref: 'function-a', bands: { sparse: 1, ordinary: 3, dense: 5 } }] };
 const bases = [
   { basis_ref: 'basis-a', state: 'committed', policy: { functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'], permission_refs: [] } },
-  { basis_ref: 'prepared-a', state: 'prepared_seed', prepared_seed_provenance: { seed_request_id: 'other-seed', mode: 'seed_scope', candidate_query: null }, policy: { functional_buckets: ['other_ordinary'], allowed_admission_classes: ['other_restricted'], permission_refs: ['permission-a'] } }
+  { basis_ref: 'prepared-a', state: 'prepared_seed', scope_ref: scope, prepared_seed_provenance: { seed_request_id: 'other-seed', mode: 'seed_scope', candidate_query: null }, policy: { functional_buckets: ['other_ordinary'], allowed_admission_classes: ['other_restricted'], permission_refs: ['permission-a'] } }
 ];
 const commonGroup = { descriptor: 'abstract-layer', functional_bucket: 'household', availability_class: 'common', allowed_admission_classes: ['common_mundane'], causal_basis: { basis_kind: 'source-kind', basis_refs: ['basis-a'] }, property_basis_ref: 'property-a', permission_refs: [], disclosure_policy_ref: 'disclosure-a' };
 const transition = (kind, request_identity, extra = {}) => ({ kind, request_identity, expected_state_version: extra.expected_state_version ?? 0, ...(kind === 'seed' ? { background_groups: [] } : {}), ...extra });
@@ -39,6 +39,7 @@ test('closed admission consistency requires context permissions and an exact sup
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: common, basis_catalog: [{ ...bases[0], policy: { ...bases[0].policy, unapproved_policy_field: true } }] }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, supporting_basis_ref: 'basis-a' }, supporting_basis_ref: 'prepared-a', basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_REF_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: [{ ...bases[1], prepared_seed_provenance: { seed_request_id: 'x', mode: 'seed_scope', candidate_query: 'candidate' } }] }), (error) => error.code === 'ORDINARY_PREPARED_SEED_PROVENANCE_INVALID');
+  assert.throws(() => validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: [{ ...bases[1], scope_ref: { entity_kind: 'g6', entity_id: 'other' } }] }), (error) => error.code === 'ORDINARY_PREPARED_SEED_SCOPE_MISMATCH');
 });
 
 test('prepared groups only originate in candidate-free seed and validate causal, permission, disclosure policy', () => {

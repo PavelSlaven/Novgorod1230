@@ -18,6 +18,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
   genericCheckContextOwner = null,
+  ordinaryDiscoveryResolver = null,
   ordinaryResultPolicy = null,
   resolveItemMechanics = null,
   semanticActivityOwner = null,
@@ -105,7 +106,10 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
               input.prepared_chain_context.current_body_state)
           }
         },
-        genericCheckContextOwner)
+        genericCheckContextOwner),
+    ...(typeof ordinaryDiscoveryResolver === 'function' ? {
+      ordinaryDiscoveryResolver
+    } : {})
   });
 }
 

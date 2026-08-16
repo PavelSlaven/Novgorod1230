@@ -25,7 +25,8 @@ export function createOrdinaryMaterializationWorkingProjection(input = {}) {
  */
 export function refreshOrdinaryMaterializationWorkingProjection(input = {}) {
   const { working_projection, ordinary_transition } = assertExactInput(input, ['working_projection', 'ordinary_transition'], 'ORDINARY_WORKING_PROJECTION_REFRESH_INPUT_INVALID');
-  const current = assertWorkingProjection(working_projection);
+  const current = assertAndNormalizeOrdinaryMaterializationWorkingProjection(
+    working_projection);
   const nextAggregate = applyOrdinaryAggregateTransition({
     aggregate: current.ordinary_aggregate,
     transition: ordinary_transition
@@ -44,7 +45,7 @@ function assertExactInput(value, keys, code) {
   return values;
 }
 
-function assertWorkingProjection(value) {
+export function assertAndNormalizeOrdinaryMaterializationWorkingProjection(value) {
   const fields = plainDataRecord(value);
   if (!fields || Object.keys(fields).length !== 2
     || fields.schema !== SCHEMA
@@ -54,13 +55,16 @@ function assertWorkingProjection(value) {
       'Ordinary working projection must have the exact internal shape.'
     );
   }
-  assertAndNormalizeOrdinaryAggregate(fields.ordinary_aggregate);
-  return fields;
+  return deepFreeze({
+    schema: SCHEMA,
+    ordinary_aggregate: assertAndNormalizeOrdinaryAggregate(
+      fields.ordinary_aggregate)
+  });
 }
 
 function plainDataRecord(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)
-    || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null)
+    || Object.getPrototypeOf(value) !== Object.prototype
     || Object.getOwnPropertySymbols(value).length !== 0) return null;
   const names = Object.getOwnPropertyNames(value);
   const fields = {};

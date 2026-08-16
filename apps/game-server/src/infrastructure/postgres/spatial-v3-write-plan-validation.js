@@ -14,6 +14,8 @@ import {
   stable,
   validIdentity
 } from './spatial-v3-write-layout.js';
+import { createOrdinaryMaterializationAtomicWritePlan } from
+  './ordinary-materialization-phase-6-commit.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -112,6 +114,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
     appends: plan.appends,
     deletes: plan.deletes
   }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
+  if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -182,4 +185,21 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       && item.id === write.id
       && Number.isInteger(item.state_version)
       && item.state_version >= 0));
+}
+
+function validOrdinaryMaterializationExtension(plan) {
+  const ordinary = plan.ordinary_materialization_atomic_write_plan;
+  if (ordinary == null) return true;
+  try {
+    const sealed = createOrdinaryMaterializationAtomicWritePlan(ordinary);
+    const party = plan.updates?.find((write) => write.target_table === 'parties'
+      && write.id === plan.party_id);
+    return sealed.party_id === plan.party_id
+      && party?.record?.party_id === plan.party_id
+      && plan.expected_state_versions.some((version) =>
+        version.target_table === 'parties' && version.id === plan.party_id
+          && version.state_version === sealed.expected_versions.party_state_version)
+      && plan.physical_keys.includes(
+        `party_runtime.party_ordinary_materialization_aggregates:${sealed.party_id}:${sealed.scope_ref.entity_kind}:${sealed.scope_ref.entity_id}`);
+  } catch { return false; }
 }

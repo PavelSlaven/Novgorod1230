@@ -8,10 +8,11 @@ import {
 } from './lower-dvina-trace-turn-step-idempotency.js';
 import { buildActorInstanceRechecks } from
   './lower-dvina-trace-turn-step-actor-rechecks.js';
+import { ordinaryPhysicalKeys } from './lower-dvina-trace-ordinary-p16.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-  turnNumber, changeSetId, idemId
+  turnNumber, changeSetId, idemId, ordinaryPlan = null
 }) {
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
@@ -65,10 +66,11 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       owner_keys: [`actor:${state.actor_id}`],
       execution_keys: [],
       g4_keys: [],
-      physical_keys: Object.values(writes).flat().map(
+      physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
-      )
+      ), ...ordinaryPhysicalKeys(ordinaryPlan)]
     },
+    ordinary_materialization_atomic_write_plan: ordinaryPlan,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

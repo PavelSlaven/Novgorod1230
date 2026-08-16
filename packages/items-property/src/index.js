@@ -17,7 +17,10 @@ export {
 } from './runtime-instance-mechanics.js';
 export {
   admitOrdinaryRuntimeFact,
-  admitOrdinaryRuntimeResult
+  admitOrdinaryRuntimeResult,
+  admitOrdinaryWorldMaterialization,
+  resolveOrdinaryWorldPropertyPlacement,
+  ordinaryWorldPropertyPlacementContextDigest
 } from './ordinary-runtime-result.js';
 export {
   applyRuntimeInventoryTransition,

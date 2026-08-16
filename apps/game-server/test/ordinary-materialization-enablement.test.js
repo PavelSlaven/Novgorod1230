@@ -1,0 +1,45 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { canonicalDigest, createOrdinaryAggregate } from '@rus/materialization';
+import { createPostgresOrdinaryMaterializationEnablementRepository } from
+  '../src/infrastructure/postgres/ordinary-materialization-enablement.js';
+
+const scope = { entity_kind: 'g6', entity_id: 'scope-a' };
+const objective = {
+  request_id: 'ordinary-enable-a', scope_ref: scope,
+  context_refs: { period_ref: 'period', region_ref: 'region', function_refs: [], environment_refs: [], occupation_household_refs: [], economic_context_ref: 'economy', occupancy_state_ref: 'occupied', material_culture_refs: [], property_context_ref: 'property' },
+  policy_refs: { authority_policy_ref: 'authority', density_policy_ref: 'density', ordinary_presence_policy_ref: 'presence', runtime_item_mechanics_policy_ref: 'mechanics', allowed_admission_classes: ['common_mundane'], context_bound_permission_refs: [], allowed_supporting_bases: [] },
+  technical_limits: { max_new_entities: 1, max_new_background_groups: 1, max_resolution_records: 1 }
+};
+const property = { scope_ref: scope, item_kind: 'man_made', property_catalog_version_ref: 'property-v1', placement_catalog_version_ref: 'placement-v1', personal_communal_refs: [], occupied_site_refs: [], unowned_cause_refs: [], placement_context_refs: [], property_catalog: [], placement_catalog: [] };
+
+test('enabled scope is reconstructed only from committed 021/022/023 rows', async () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 1 });
+  const repository = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: { query: async () => ({ rowCount: 1, rows: [{ enabled: true,
+      objective_snapshot: objective, objective_digest: canonicalDigest(objective),
+      aggregate_payload: aggregate, ordinary_state_version: 0,
+      property_placement_base_snapshot: property,
+      property_placement_context_digest: 'placement-digest' }] }) }
+  });
+  const loaded = await repository.load({ partyId: 'party-a', scopeRef: scope });
+  assert.equal(loaded.objective_context.ordinary_state.seeded, false);
+  assert.deepEqual(loaded.objective_context.ordinary_state.background_groups, []);
+  assert.equal(loaded.property_placement_context.item_kind, 'man_made');
+});
+
+test('missing or tampered enablement fails closed', async () => {
+  const disabled = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: { query: async () => ({ rowCount: 0, rows: [] }) }
+  });
+  assert.equal(await disabled.load({ partyId: 'party-a', scopeRef: scope }), null);
+  const invalid = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: { query: async () => ({ rowCount: 1, rows: [{ enabled: true,
+      objective_snapshot: objective, objective_digest: 'tampered',
+      aggregate_payload: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 1 }),
+      ordinary_state_version: 0, property_placement_base_snapshot: property,
+      property_placement_context_digest: 'placement-digest' }] }) }
+  });
+  await assert.rejects(() => invalid.load({ partyId: 'party-a', scopeRef: scope }),
+    { code: 'ORDINARY_ENABLEMENT_INVALID' });
+});

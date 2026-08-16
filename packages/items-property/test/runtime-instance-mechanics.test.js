@@ -203,3 +203,25 @@ test('authored instances still resolve and calculate exclusively by template pro
   assert.equal(calculateInventoryMass(state).total_mass_grams, 600);
   assert.equal(calculateHandsState(state).hands_used, 1);
 });
+
+test('generic mechanics APIs reject v2 ordinary-world snapshots', () => {
+  const v2 = {
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
+    provenance: { source_kind: 'ordinary_world_materialization',
+      causal_ref: 'ordinary:1', request_id: 'request:1', candidate_key: 'candidate:1',
+      coverage_key: 'coverage:1', context_version: 'context:1', policy_ref: 'policy:1',
+      source_refs: ['basis:1'] },
+    mechanics: { mass_grams: 1, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null }
+  };
+  assert.throws(() => createRuntimeInstanceMechanicsSnapshot(v2),
+  { code: 'ITEM_RUNTIME_MECHANICS_SNAPSHOT_INVALID' });
+  assert.equal(resolveInventoryMechanicsProfile({ instance: {
+    item_id: 'future-o1', runtime_instance_mechanics_snapshot: v2
+  }, profiles: {} }).pass, false);
+});
+
+test('v1 mechanics snapshots retain null-prototype input compatibility', () => {
+  const source = Object.assign(Object.create(null), snapshot());
+  assert.equal(createRuntimeInstanceMechanicsSnapshot(source).version, 1);
+});

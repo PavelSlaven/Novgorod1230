@@ -50,6 +50,28 @@ domain write.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
+Active O1 Phase 6 composition accepts only the closed
+`ordinary_materialization_atomic_write_plan_v1` DTO after the sanitized model
+call outside a physical transaction and Phase 4 admission. The existing
+`request_discovery` route reaches it only after meaningful-engagement and
+code-first known-result gates; Stage A is candidate-free and Stage B has
+`evidence_weight = 0`, with identity/classification/policy fields built by
+code. Normalized discovery query supplies only `candidate_hint` and an adjusted
+`coverage_ref`; unknown paraphrases retain distinct coverage, so no-reroll is
+limited to exact deterministic normalization. Its server-owned
+PostgreSQL committer locks the party, aggregate and trusted context pins, then
+atomically writes migrations 021–023 state: O1 enablement/objective, aggregate,
+prepared/committed scoped supporting-basis catalog, positive or negative exact
+resolution/idempotency, optional private-v2 item with immutable
+mechanics/property/placement and normalized basis links, aggregate CAS, catalog
+pin and party version. Stale proposals are rejected rather than silently
+rebased; reload/retry cannot reroll a committed exact deterministic identity. The player-safe
+response exposes only the O1 discovery capability marker and approved visible
+result, and narration runs only after factual commit. O1 has no new HTTP/public
+operation and does not activate O2/A1/F1/S1/N1, template-less runtime
+containers, context-bound weapons/value/currency or natural finite sources;
+negative resolutions contain no item and every failure rolls back.
+
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility
 policy: the server verifies party/request identity, the `start_text` branch

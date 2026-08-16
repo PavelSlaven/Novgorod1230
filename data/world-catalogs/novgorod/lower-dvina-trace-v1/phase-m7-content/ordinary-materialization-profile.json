@@ -1,0 +1,68 @@
+{
+  "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v1",
+  "profile_id": "lower_dvina_trace_o1_first_entry_profile_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 19,
+  "catalog_version": 1,
+  "property_version": 1,
+  "placement_version": 1,
+  "technical_limits": {
+    "max_new_entities": 1,
+    "max_new_background_groups": 1,
+    "max_resolution_records": 4
+  },
+  "context_refs": {
+    "period_ref": "trace_ld_v1_late_summer_1230",
+    "region_ref": "trace_ld_v1_lower_dvina_reach",
+    "function_refs": [],
+    "environment_refs": [],
+    "occupation_household_refs": [],
+    "economic_context_ref": "trace_ld_v1_river_route_household_economy",
+    "occupancy_state_ref": "trace_ld_v1_occupied_scene",
+    "material_culture_refs": [],
+    "property_context_ref": "trace_ld_v1_o1_property_basis"
+  },
+  "policy_refs": {
+    "authority_policy_ref": "trace_ld_v1_o1_authority_policy",
+    "density_policy_ref": "trace_ld_v1_o1_density_policy",
+    "ordinary_presence_policy_ref": "trace_ld_v1_o1_presence_policy",
+    "runtime_item_mechanics_policy_ref": "trace_ld_v1_o1_mechanics_policy",
+    "allowed_admission_classes": ["common_mundane"],
+    "context_bound_permission_refs": []
+  },
+  "execution": {
+    "allowed_disclosure_policy_refs": ["trace_ld_v1_o1_disclosure_policy"],
+    "identity_budget": {
+      "policy_version": "trace_ld_v1_o1_density_policy",
+      "density_band": "ordinary",
+      "identity_budget": 1,
+      "source": "policy"
+    },
+    "candidate_context": {
+      "semantic_type": "household_tool",
+      "candidate_hint": null,
+      "functional_bucket": "household",
+      "admission_class": "common_mundane",
+      "availability_class": "common",
+      "coverage_kind": "visible_surface",
+      "coverage_ref": "trace_ld_v1_o1_visible_surface",
+      "policy_version": "trace_ld_v1_o1_presence_policy"
+    },
+    "mechanics_policy": {
+      "policy_ref": "trace_ld_v1_o1_mechanics_policy",
+      "mechanics": {
+        "mass_grams": 100,
+        "external_hand_cost": 0,
+        "carry_form": "compact",
+        "packing_slot_cost": 1,
+        "quantity": { "value": 1, "unit": "item" },
+        "container": null
+      }
+    },
+    "causal_ref": "trace_ld_v1_o1_first_entry_basis",
+    "source_refs": []
+  },
+  "fallback_policy": "forbidden"
+}

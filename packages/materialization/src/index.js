@@ -26,6 +26,8 @@ export {
   computeOrdinaryIdentityBudget,
   createOrdinaryAggregate,
   createOrdinaryCandidateKey,
+  createOrdinaryCategoryKey,
+  createOrdinaryContextVersion,
   createOrdinaryCoverageKey,
   createOrdinaryResolutionRef,
   createPreparedGroupRef,
@@ -33,6 +35,7 @@ export {
   validateSupportingBasisAdmission
 } from './ordinary-materialization-foundation.js';
 export {
+  assertAndNormalizeOrdinaryMaterializationWorkingProjection,
   createOrdinaryMaterializationWorkingProjection,
   refreshOrdinaryMaterializationWorkingProjection
 } from './ordinary-materialization-working-projection.js';

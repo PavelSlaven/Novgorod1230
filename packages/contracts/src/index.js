@@ -5,13 +5,34 @@ import {
   PORTRAIT_SPEC_V1_JSON_SCHEMA,
   validatePortraitSpecV1
 } from './portrait-spec-v1.js';
+import {
+  assertOrdinaryMaterializationPlanV1,
+  assertOrdinaryMaterializationRequestV1,
+  ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA,
+  ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA,
+  ORDINARY_MATERIALIZATION_V1_ENUMS,
+  validateOrdinaryMaterializationPlanV1,
+  validateOrdinaryMaterializationRequestV1
+} from './ordinary-materialization-v1.js';
+import { buildVisibleContextAuditApproval, validateVisibleContextAuditApproval } from './approvals/visible-context.js';
+import { buildNarratorProseAuditApproval, validateNarratorProseAuditApproval } from './approvals/narrator-prose.js';
+import { buildStage25PartyCommitApproval, validateStage25PartyCommitApproval } from './approvals/party-commit.js';
+import { buildStage26ScreenApproval } from './approvals/first-screen.js';
+import { validateStage26ResultForDelivery, validateStage26ToStage27HandoffContract } from './handoffs/stage26.js';
 
 export {
   assertPortraitSpecV1,
   explainJsonObjectParse,
   PORTRAIT_SPEC_V1_ENUMS,
   PORTRAIT_SPEC_V1_JSON_SCHEMA,
-  validatePortraitSpecV1
+  validatePortraitSpecV1,
+  assertOrdinaryMaterializationPlanV1,
+  assertOrdinaryMaterializationRequestV1,
+  ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA,
+  ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA,
+  ORDINARY_MATERIALIZATION_V1_ENUMS,
+  validateOrdinaryMaterializationPlanV1,
+  validateOrdinaryMaterializationRequestV1
 };
 export { STAGE_STATUS, assertStageDefinition } from './stage.js';
 export { createApproval, verifyApproval } from './approval.js';
@@ -29,6 +50,8 @@ export {
   FIRST_SCREEN_DELIVERY_ACK_SCHEMA,
   FIRST_SCREEN_DELIVERY_ATTEMPT_SCHEMA,
   NARRATOR_PROSE_AUDIT_APPROVAL_SCHEMA,
+  ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA,
+  ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA,
   PARTY_PUBLIC_STATE_SCHEMA,
   PLAYER_FIRST_TURN_INPUT_SCHEMA,
   STAGE25_PARTY_COMMIT_APPROVAL_SCHEMA,
@@ -37,11 +60,13 @@ export {
   STAGE27_FIRST_TURN_INPUT_SCHEMA,
   VISIBLE_CONTEXT_AUDIT_APPROVAL_SCHEMA
 } from './schema-names.js';
-export { buildVisibleContextAuditApproval, validateVisibleContextAuditApproval } from './approvals/visible-context.js';
-export { buildNarratorProseAuditApproval, validateNarratorProseAuditApproval } from './approvals/narrator-prose.js';
-export { buildStage25PartyCommitApproval, validateStage25PartyCommitApproval } from './approvals/party-commit.js';
-export { buildStage26ScreenApproval } from './approvals/first-screen.js';
-export { validateStage26ResultForDelivery, validateStage26ToStage27HandoffContract } from './handoffs/stage26.js';
+export {
+  buildVisibleContextAuditApproval, validateVisibleContextAuditApproval,
+  buildNarratorProseAuditApproval, validateNarratorProseAuditApproval,
+  buildStage25PartyCommitApproval, validateStage25PartyCommitApproval,
+  buildStage26ScreenApproval, validateStage26ResultForDelivery,
+  validateStage26ToStage27HandoffContract
+};
 export {
   PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA,
   STAGE24_APPROVAL_SCHEMA,

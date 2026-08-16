@@ -276,6 +276,16 @@
       "source": "packages/contracts/src/g5-placement-boundary.js"
     },
     {
+      "constant": "ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA",
+      "schema": "ordinary_materialization_plan_v1",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
+      "constant": "ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA",
+      "schema": "ordinary_materialization_request_v1",
+      "source": "packages/contracts/src/schema-names.js"
+    },
+    {
       "constant": "STAGE25_IDEMPOTENCY_SCHEMA",
       "schema": "party_commit_idempotency_result",
       "source": "packages/new-game/src/stages/stage-25-party-commit/policy/constants.js"
@@ -975,6 +985,12 @@
       "bytes": 3516,
       "path": "schemas/party-db/020_party_runtime_actor_equipment.sql",
       "sha256": "885e37576265633867b8100d841b74f21e5e2fb4495adf34fb0d1a47f400d741",
+      "type": "sql"
+    },
+    {
+      "bytes": 679,
+      "path": "schemas/party-db/021_party_runtime_ordinary_materialization.sql",
+      "sha256": "1ca6fc28b89d475d64766fb7e70c6a2013aaf062717ded1543bbb7a467e9ec2e",
       "type": "sql"
     },
     {

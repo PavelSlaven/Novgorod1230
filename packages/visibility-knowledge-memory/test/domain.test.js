@@ -14,6 +14,75 @@ import {
   validateVisibleContext
 } from '../src/index.js';
 import {
+  createDisabledOrdinaryResolutionCapability,
+  projectPlayerSafeOrdinaryResolutionCapability
+} from '../src/ordinary-resolution-capability.js';
+
+test('ordinary resolution marker is an immutable false-only allowlist projection', () => {
+  const marker = createDisabledOrdinaryResolutionCapability();
+  assert.deepEqual(marker, {
+    ordinary_resolution: {
+      discovery_available: false,
+      container_resolution_available: false
+    }
+  });
+  assert.ok(Object.isFrozen(marker));
+  assert.ok(Object.isFrozen(marker.ordinary_resolution));
+  const adversarial = {
+    ordinary_resolution: {
+      discovery_available: false,
+      container_resolution_available: false,
+      identity_budget: 99,
+      background_groups: ['hidden'],
+      supporting_basis_allowlist: ['basis'],
+      context_bound_permissions: ['permission'],
+      objective_concealed_contents: ['contents'],
+      negative_ledger: ['absent'],
+      property_economic_evidence: ['value'],
+      aggregate_history: ['history'],
+      candidate_name: 'secret spoon'
+    }
+  };
+  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(adversarial),
+    /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability({
+    ordinary_resolution: {
+      discovery_available: true,
+      container_resolution_available: false
+    }
+  }), /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  let reads = 0;
+  const topAccessor = {};
+  Object.defineProperty(topAccessor, 'ordinary_resolution', {
+    enumerable: true,
+    get() { reads += 1; throw new Error('must not run'); }
+  });
+  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(topAccessor),
+    /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  const nestedAccessor = { ordinary_resolution: {} };
+  Object.defineProperty(nestedAccessor.ordinary_resolution, 'discovery_available', {
+    enumerable: true,
+    get() { reads += 1; throw new Error('must not run'); }
+  });
+  Object.defineProperty(nestedAccessor.ordinary_resolution, 'container_resolution_available', {
+    enumerable: true,
+    value: false
+  });
+  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(nestedAccessor),
+    /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  assert.equal(reads, 0);
+  const inheritedMarker = Object.assign(Object.create({ inherited: true }), marker);
+  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(inheritedMarker),
+    /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  const safe = projectPlayerSafeOrdinaryResolutionCapability(marker);
+  assert.notStrictEqual(safe, marker);
+  assert.deepEqual(safe, marker);
+  assert.deepEqual(Object.keys(safe.ordinary_resolution), [
+    'discovery_available', 'container_resolution_available'
+  ]);
+  assert.equal(projectPlayerSafeOrdinaryResolutionCapability(), undefined);
+});
+import {
   computeSpatialV3CanonicalDigest,
   validateSpatialV3Contract
 } from '@rus/contracts/spatial-v3/registry';

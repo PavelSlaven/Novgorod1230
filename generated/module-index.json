@@ -316,6 +316,7 @@
       "dependencies": [
         "@rus/contracts",
         "@rus/kernel",
+        "@rus/materialization",
         "@rus/turn"
       ],
       "name": "@rus/party-store",

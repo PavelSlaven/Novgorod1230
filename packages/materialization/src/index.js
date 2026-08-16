@@ -20,6 +20,22 @@ export {
 } from './lower-dvina-trace-contract.js';
 export { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
 export { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';
+export {
+  applyOrdinaryAggregateTransition,
+  assertAndNormalizeOrdinaryAggregate,
+  computeOrdinaryIdentityBudget,
+  createOrdinaryAggregate,
+  createOrdinaryCandidateKey,
+  createOrdinaryCoverageKey,
+  createOrdinaryResolutionRef,
+  createPreparedGroupRef,
+  validateOrdinaryBackgroundGroup,
+  validateSupportingBasisAdmission
+} from './ordinary-materialization-foundation.js';
+export {
+  createOrdinaryMaterializationWorkingProjection,
+  refreshOrdinaryMaterializationWorkingProjection
+} from './ordinary-materialization-working-projection.js';
 
 export function materializeWorldInstances(input) {
   assertMaterializationInput(input);

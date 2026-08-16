@@ -9,3 +9,5 @@ export const FIRST_SCREEN_DELIVERY_ACK_SCHEMA = 'first_screen_delivery_ack';
 export const FIRST_SCREEN_DELIVERY_ACK_RESULT_SCHEMA = 'first_screen_delivery_ack_result';
 export const STAGE27_FIRST_TURN_INPUT_SCHEMA = 'first_turn_pipeline_input';
 export const PLAYER_FIRST_TURN_INPUT_SCHEMA = 'player_first_turn_input';
+export const ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA = 'ordinary_materialization_request_v1';
+export const ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA = 'ordinary_materialization_plan_v1';

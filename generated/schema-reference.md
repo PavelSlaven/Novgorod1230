@@ -62,6 +62,8 @@ Release: `0.23.0-migration.24`
 | `narrator_start_input` | `STAGE22_INPUT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |
 | `narrator_starting_prose` | `STAGE22_OUTPUT_SCHEMA` | `packages/contracts/src/narrator-boundary.js` |
 | `npc_placement_input` | `STAGE15_INPUT_SCHEMA` | `packages/contracts/src/g5-placement-boundary.js` |
+| `ordinary_materialization_plan_v1` | `ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA` | `packages/contracts/src/schema-names.js` |
+| `ordinary_materialization_request_v1` | `ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA` | `packages/contracts/src/schema-names.js` |
 | `party_commit_idempotency_result` | `STAGE25_IDEMPOTENCY_SCHEMA` | `packages/new-game/src/stages/stage-25-party-commit/policy/constants.js` |
 | `party_database_schema_snapshot` | `PARTY_DB_SCHEMA_SNAPSHOT_SCHEMA` | `packages/contracts/src/stage24-boundary.js` |
 | `party_db_write_plan` | `STAGE24_PLAN_SCHEMA` | `packages/contracts/src/stage24-boundary.js` |
@@ -194,6 +196,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/018_party_runtime_phase7_container_state.sql` | sql | 444 | `ed6e61b2a1a7d9d0f882ba4904f48ff61426d5e0037571f8af35ff449848053f` |
 | `schemas/party-db/019_party_runtime_combat_sessions.sql` | sql | 2833 | `d816eeab68afc3bb5bb8486b5d8d9c03f5861756c58de91807de020f27c682a7` |
 | `schemas/party-db/020_party_runtime_actor_equipment.sql` | sql | 3516 | `885e37576265633867b8100d841b74f21e5e2fb4495adf34fb0d1a47f400d741` |
+| `schemas/party-db/021_party_runtime_ordinary_materialization.sql` | sql | 679 | `1ca6fc28b89d475d64766fb7e70c6a2013aaf062717ded1543bbb7a467e9ec2e` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

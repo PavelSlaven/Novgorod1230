@@ -44,11 +44,14 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.m9
     ,revisions.m10
     ,revisions.m11
+    ,revisions.m12
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
         ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m11
+        ? definitionRevision === revisions.m12
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
+        : definitionRevision === revisions.m11
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v19'
         : definitionRevision === revisions.m10
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v18'
@@ -155,6 +158,28 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m12) {
+    const manifest=bundle.phase_1a_manifest,bindings=bundle.materialization_bindings;
+    const pin=bundle.artifact_pins?.npc_semantic_profile;
+    const n1=bindings?.npc_semantic_remainder;
+    if(manifest?.package_id!=='lower_dvina_trace_phase_1a_v20'
+      ||manifest.revision!==20||manifest.scenario_definition_revision!==24
+      ||manifest.base_definition_ref?.digest!==bundle.m12_content_manifest_digest
+      ||bindings?.binding_set_id!=='lower_dvina_trace_phase_1a_materialization_bindings_v20'
+      ||bindings.revision!==20||bindings.scenario_definition_revision!==24
+      ||n1?.profile_ref?.digest!==pin?.digest
+      ||n1.profile_ref.id!==bundle.npc_semantic_profile?.profile_id
+      ||n1.profile_ref.revision!==pin?.revision||n1.profile_ref.schema!==pin?.schema
+      ||n1.decision_owner!=='@rus/turn'
+      ||n1.subjective_projection_owner!=='@rus/npc-runtime'
+      ||n1.ordinary_owner!=='@rus/materialization'
+      ||n1.persistence_owner!=='P16_combined_atomic_committer'
+      ||n1.fallback_policy!=='forbidden') {
+      fail('TRACE_M12_PHASE_1A_CUTOVER_INVALID',
+        'Revision 24 requires the exact N1 Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m11) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

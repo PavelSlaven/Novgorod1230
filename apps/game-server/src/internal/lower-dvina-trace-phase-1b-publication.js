@@ -1,6 +1,4 @@
-import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { createHash } from 'node:crypto'; import { readFile } from 'node:fs/promises'; import { resolve } from 'node:path';
 import {
   TRACE_PHASE_1B_APPROVED_BINDING_DIGEST,
   TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST,
@@ -20,9 +18,11 @@ import { loadLowerDvinaTraceRevision19Publication, TRACE_REVISION19_PHASE_1A_MAN
 import { loadLowerDvinaTraceActionProductionPublication, TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-action-production-publication.js';
 import { loadLowerDvinaTraceLocalFirePublication, TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-local-fire-publication.js';
 import { loadLowerDvinaTraceSpatialSemanticPublication, TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-spatial-semantic-publication.js';
+import { loadLowerDvinaTraceNpcSemanticPublication, TRACE_NPC_SEMANTIC_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-npc-semantic-publication.js';
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1', MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`, BINDING_PATH = `${ROOT}/phase-1b-v13/publication-binding.json`;
 export async function loadLowerDvinaTracePhase1BPublication({ rootDir = process.cwd(), phase1AManifestDigest = null } = {}) {
-  if (phase1AManifestDigest == null || phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceSpatialSemanticPublication({ rootDir, phase1AManifestDigest });
+  if (phase1AManifestDigest == null || phase1AManifestDigest === TRACE_NPC_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceNpcSemanticPublication({ rootDir, phase1AManifestDigest });
+  if (phase1AManifestDigest === TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceSpatialSemanticPublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest === TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceLocalFirePublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest === TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceActionProductionPublication({ rootDir, phase1AManifestDigest });
   if (phase1AManifestDigest

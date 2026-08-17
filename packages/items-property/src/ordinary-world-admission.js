@@ -84,7 +84,13 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   if (!causal || !text(causal.causal_ref) || causal.request_id !== pending.request_id || causal.candidate_key !== pending.candidate_key || causal.coverage_key !== pending.coverage_key || causal.context_version !== pending.context_version || !sameRefs(causal.source_refs, expectedRefs)) return failed('ITEM_ORDINARY_WORLD_PROVENANCE_INVALID');
   const snapshot = v2Snapshot({ causal_ref: causal.causal_ref, request_id: pending.request_id, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, policy_ref: policy.policy_ref, source_refs: expectedRefs, mechanics });
   const condition = evidence.condition_state;
-  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema: condition === undefined ? 'ordinary_world_item_proposal_v2' : 'ordinary_world_item_proposal_v3', request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, causal_basis_kind: evidence.causal_basis_kind ?? null, ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
+  const exactBasisKind = contextBound ? evidence.causal_basis_kind : undefined;
+  const proposalSchema = condition !== undefined
+    ? 'ordinary_world_item_proposal_v3'
+    : exactBasisKind === undefined
+      ? 'ordinary_world_item_proposal_v1'
+      : 'ordinary_world_item_proposal_v2';
+  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema: proposalSchema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...(exactBasisKind === undefined ? {} : { causal_basis_kind: exactBasisKind }), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
 }
 
 

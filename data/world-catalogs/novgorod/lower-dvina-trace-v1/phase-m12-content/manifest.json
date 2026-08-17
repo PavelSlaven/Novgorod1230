@@ -1,0 +1,36 @@
+{
+  "schema": "rus.lower_dvina_trace_m12_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m12_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 24,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/manifest.json",
+    "id": "lower_dvina_trace_m11_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m11_content_manifest.v1",
+    "digest": "d2851d72dd338e6b45747e481f8211c719a369a5364bbd7f598e4e7d98acd837"
+  },
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 23,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "4336cdced9e93f7de53d6e3864b2848e010eff8057a59a1644e84fc5eef5ed54"
+  },
+  "files": {
+    "definition.json": "996a3106bfccc2f1b2ae131fd1b723cd9e10abcf9ef97b8733f2b31199941065",
+    "npc-semantic-profile.json": "cbaea7a2b59e6c46dadb66ac8369d4653b525c9e1827039bf640082a17eed887"
+  },
+  "content_refs": {
+    "definition": {"path":"definition.json","id":"lower_dvina_trace_v1","revision":24,"schema":"rus.trace_scenario_definition.v1","digest":"996a3106bfccc2f1b2ae131fd1b723cd9e10abcf9ef97b8733f2b31199941065"},
+    "npc_semantic_profile": {"path":"npc-semantic-profile.json","id":"lower_dvina_trace_n1_zhdanko_o1_profile_v1","revision":1,"schema":"rus.lower_dvina_trace_n1_npc_semantic_profile.v1","digest":"cbaea7a2b59e6c46dadb66ac8369d4653b525c9e1827039bf640082a17eed887"}
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "4f02ed03b10b7d86ac07ffdd42b2984c50c2b230b940a70661e23e17dd95e1d1",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

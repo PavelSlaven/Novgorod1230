@@ -299,6 +299,7 @@
     {
       "dependencies": [
         "@rus/contracts",
+        "@rus/items-property",
         "@rus/kernel",
         "@rus/time-events-history"
       ],

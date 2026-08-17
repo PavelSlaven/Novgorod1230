@@ -1,0 +1,28 @@
+{
+  "schema": "rus.lower_dvina_trace_n1_npc_semantic_profile.v1",
+  "profile_id": "lower_dvina_trace_n1_zhdanko_o1_profile_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_definition_revision": 24,
+  "boundary": {
+    "phase_ref": "trace_phase_7_autonomous_boundary",
+    "participant_slot_ref": "zhdanko_storehouse_controller",
+    "npc_profile_set_ref": "trace_ld_v1_zhdanko_storehouse_controller_v1",
+    "location_profile_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "zone_ref": "storehouse_yard",
+    "required_status": "active"
+  },
+  "discovery": {
+    "operation": "request_discovery",
+    "discovery_kind": "look",
+    "target_ref": "trace_ld_v1_loc_zhdanko_storehouse",
+    "access_policy_ref": "trace_ld_v1_access_zhdanko_storehouse"
+  },
+  "ordinary_scope": {
+    "entity_kind": "g6",
+    "entity_id": "trace_ld_v1_loc_zhdanko_storehouse",
+    "position_ref": "trace_ld_v1_loc_zhdanko_storehouse"
+  },
+  "disabled_owner_kinds": ["o2a", "o2b", "a1", "f1", "s1"],
+  "fallback_policy": "forbidden"
+}

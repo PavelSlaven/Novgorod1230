@@ -218,13 +218,20 @@ authored ignition basis. Start/add возвращают sealed local-fire extens
 вычисляет fuel consumption, timestamp или ID и не создаёт scheduler/process
 store. Water/extinguish не входят в current closed operation profile.
 
-Active revision 23 / M11 / Phase 1A v19 / Phase 1B v18 /
+Historical revision 23 / M11 / Phase 1A v19 / Phase 1B v18 /
 `spatial-v3-production-v12` добавляет S1 без новой public operation: exact
 `request_discovery/look` достигает remainder только после external, registered,
 authored, O1, A1 и F1 owners и только при exact player-safe marker текущей
 position. Turn передаёт immutable envelope в spatial/materialization owner и
 thread-ит sealed `spatial_semantic_atomic_write_plan` в тот же P16; он не
 выбирает topology, capacity, IDs, movement или hazard mechanics.
+
+Active revision 24 / M12 / Phase 1A v20 / Phase 1B v19 /
+`spatial-v3-production-v13` добавляет узкий N1 handoff на существующей Phase 7
+NPC boundary. Authored operations сохраняют приоритет; только genuinely open
+actor-scoped `request_discovery/look` может получить O1 extension. Turn seals
+request/plan/operation/objective и передаёт ordinary plan в тот же P16, не
+создавая отдельный NPC executor, transaction или semantic fallback.
 
 ## Тесты
 

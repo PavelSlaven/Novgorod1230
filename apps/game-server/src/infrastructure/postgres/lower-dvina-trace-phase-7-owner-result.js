@@ -9,6 +9,8 @@ import { validTracePhase7ActorStepCheck } from
   './lower-dvina-trace-phase-7-check-result.js';
 import { tracePhase7ActorStep } from
   '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
+import { validPhase7NpcSemanticHandoff } from
+  './lower-dvina-trace-phase-7-npc-handoff.js';
 
 export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
   changeSetId }) {
@@ -44,6 +46,7 @@ export function assertPhase7OwnerResult({ factual, state, phase7Contracts,
         phase7.actor_step_check)
       || !validTracePhase7ActorStepCheck(phase7, phase7Contracts, factual,
         state)
+      || !validPhase7NpcSemanticHandoff(factual, state, phase7Contracts)
       || temporal.result.combined_change_set.change_set_id !== changeSetId
       || scheduleTemporal.result.combined_change_set.change_set_id
         !== changeSetId

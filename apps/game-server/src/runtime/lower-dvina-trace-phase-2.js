@@ -23,20 +23,15 @@ import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, req
 import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js'; import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
-  turnStepModel = null,
-  playerConversationModel = null,
-  npcSemanticModel = null,
-  npcAutonomousModel = null,
-  npcCombatModel = null,
+  turnStepModel = null, playerConversationModel = null,
+  npcSemanticModel = null, npcAutonomousModel = null, npcCombatModel = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
-  narrator,
-  randomSourceFactory,
-  decisionSecret,
+  narrator, randomSourceFactory, decisionSecret,
   npcDecisionSelector = null,
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
-  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProducedResolver = null, actionProductionProfile = null, createTurnStepWorldProcessResolver = null, localFireProfile = null, createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProducedResolver = null, actionProductionProfile = null, createTurnStepWorldProcessResolver = null, localFireProfile = null, createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null, createNpcSemanticRemainderOwner = null, npcSemanticProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -115,16 +110,16 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
+      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
+      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
+      const phase5Contracts = [11,12,13,14,15,16,17,18,19,20,21,22,23,24].includes(bundle.definition_revision)
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
+      const phase6Contracts = [12,13,14,15,16,17,18,19,20,21,22,23,24].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
             profiles: bundle.turn_step_owner_profiles,
@@ -133,8 +128,12 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         : null;
       const turnRandomSource = randomSourceFactory({ party_id: partyId,
         request_id: requestId, idempotency_key: idempotencyKey });
-      const phase7Contracts = [15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
-        ? resolveTracePhase7Contracts({ state, bundle }) : null;
+      const phase7Contracts = [15,16,17,18,19,20,21,22,23,24].includes(bundle.definition_revision)
+        ? resolveTracePhase7Contracts({ state, bundle, npcSemanticAuthority:npcSemanticProfile }) : null;
+      const npcSemanticRemainderOwner = bundle.definition_revision === 24
+        && npcSemanticProfile?.profile?.status === 'approved'
+        && typeof createNpcSemanticRemainderOwner === 'function'
+        ? createNpcSemanticRemainderOwner({partyId,inputDigest}) : null;
       const revalidateStateVersion = createStateVersionRevalidator({ repository, partyId, idempotencyKey });
       const phase8 = createTracePhase8Runtime({ state, bundle,
         phase3Contracts, inputDigest, playerConversationModel,
@@ -144,7 +143,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
           phase3Contracts?.conversationBindings,
         inputDigest, playerConversationModel, npcSemanticModel,
         temporalAdvanceOwner, revalidateStateVersion }), phase9Contracts=phase9?.contracts??null;
-      const phase10Contracts = [18, 19, 20, 21, 22, 23].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+      const phase10Contracts = [18, 19, 20, 21, 22, 23, 24].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,
@@ -205,7 +204,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
           genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
           randomSource: turnRandomSource,
           temporalAdvanceOwner,
-          revalidateStateVersion
+          revalidateStateVersion,
+          npcSemanticRemainderOwner
         })] : []),
         ...(turn10 ? [turn10.command] : []),
         ...(phase8?.commands ?? []), ...(phase9?.commands ?? []),
@@ -272,7 +272,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         turnStepGenericCheckContextOwner:
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
-        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProducedResolver: [21,22,23].includes(bundle.definition_revision) ? createTurnStepActionProducedResolver : null, actionProductionProfile: [21,22,23].includes(bundle.definition_revision) ? actionProductionProfile : null, createTurnStepWorldProcessResolver: [22,23].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22,23].includes(bundle.definition_revision) ? localFireProfile : null, createTurnStepSpatialSemanticResolver: bundle.definition_revision === 23 ? createTurnStepSpatialSemanticResolver : null, spatialSemanticProfile: bundle.definition_revision === 23 ? spatialSemanticProfile : null,
+        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProducedResolver: [21,22,23,24].includes(bundle.definition_revision) ? createTurnStepActionProducedResolver : null, actionProductionProfile: [21,22,23,24].includes(bundle.definition_revision) ? actionProductionProfile : null, createTurnStepWorldProcessResolver: [22,23,24].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22,23,24].includes(bundle.definition_revision) ? localFireProfile : null, createTurnStepSpatialSemanticResolver: [23,24].includes(bundle.definition_revision) ? createTurnStepSpatialSemanticResolver : null, spatialSemanticProfile: [23,24].includes(bundle.definition_revision) ? spatialSemanticProfile : null,
         admitAmbientOrdinaryPortion: typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
           ? createTurnStepAmbientOrdinaryPortionAdmission({ committedState: state }) : null,
         requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,

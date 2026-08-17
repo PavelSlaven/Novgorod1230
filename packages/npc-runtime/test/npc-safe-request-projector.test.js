@@ -8,6 +8,8 @@ import {
   buildNpcActionDecisionRequestFromSnapshots,
   validateNpcActionDecisionRequest
 } from '../src/semantic-decision-contracts.js';
+import { projectNpcSafeResourceSnapshots } from
+  '../src/npc-safe-request-projector.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 const occurredAt = {
@@ -331,6 +333,60 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
   }
 });
 
+test('NPC-safe projector uses item-owner concealment states for controlled resources', () => {
+  const concealed = [
+    ['controlled-search', { state: { visibility_state:
+      'concealed_requires_search' } }],
+    ['controlled-undiscovered', { state: { visibility_state:
+      'hidden_until_discovered' } }],
+    ['controlled-private', { visibility_state: 'private' }],
+    ['controlled-nested', { visibility: { state: 'private' } }]
+  ].map(([item_id, extra]) => ({
+    item_id,
+    placement: { holder_npc_id: 'speaker' },
+    state: {
+      location_ref: 'yard', zone_ref: 'gate', access_state: 'accessible',
+      ...(extra.state ?? {})
+    },
+    ...Object.fromEntries(Object.entries(extra).filter(([key]) => key !== 'state'))
+  }));
+  const projected = projectNpcSafeResourceSnapshots({
+    npc_snapshot: {
+      instance_id: 'speaker',
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    resource_snapshots: concealed,
+    perception_snapshot: { visible_objects: [], uncertainties: [] },
+    knowledge_snapshot: { known_facts: [], beliefs: [], hypotheses: [] }
+  });
+  assert.deepEqual(projected, []);
+});
+
+test('NPC-safe projector admits a controlled hidden resource only with source-backed evidence', () => {
+  const resource = {
+    item_id: 'controlled-search',
+    placement: { holder_npc_id: 'speaker' },
+    state: {
+      location_ref: 'yard', zone_ref: 'gate', access_state: 'accessible',
+      visibility_state: 'concealed_requires_search'
+    }
+  };
+  const input = {
+    npc_snapshot: {
+      instance_id: 'speaker',
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    resource_snapshots: [resource],
+    perception_snapshot: { visible_objects: [{
+      object_ref: 'controlled-search',
+      source_perception_ref: 'perception:search:1'
+    }] },
+    knowledge_snapshot: { known_facts: [], beliefs: [], hypotheses: [] }
+  };
+  assert.deepEqual(projectNpcSafeResourceSnapshots(input).map(
+    ({ resource_ref: resourceRef }) => resourceRef), ['controlled-search']);
+});
+
 test('NPC-safe projector prefers authored perceived change summaries', () => {
   const signal = buildNpcDecisionSignal({
     occurred_at: occurredAt,
@@ -386,4 +442,21 @@ test('NPC-safe projector prefers authored perceived change summaries', () => {
   assert.equal(validateNpcActionDecisionRequest(request), true);
   assert.equal(request.decision_reasons.perceived_changes[0],
     'wait-profile: waiting→decision_required; ratsha_presence_or_return:expected_return_boundary_crossed');
+});
+
+test('NPC-safe projector rejects hostile snapshot descriptors before reads', () => {
+  let reads=0;
+  const input={};
+  Object.defineProperty(input,'npc_snapshot',{enumerable:true,get(){
+    reads+=1;return {instance_id:'forged'};
+  }});
+  assert.throws(()=>buildNpcActionDecisionRequestFromSnapshots(input),
+    /detached strict JSON data/u);
+  assert.equal(reads,0);
+  const cycle={};cycle.self=cycle;
+  assert.throws(()=>buildNpcActionDecisionRequestFromSnapshots(cycle),
+    /detached strict JSON data/u);
+  const alias={};const shared={};alias.left=shared;alias.right=shared;
+  assert.throws(()=>buildNpcActionDecisionRequestFromSnapshots(alias),
+    /detached strict JSON data/u);
 });

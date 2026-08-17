@@ -19,6 +19,7 @@ export function phase7Command({
   model,
   continuationTargetRefs = [],
   genericCheckContextOwner = null,
+  npcSemanticRemainderOwner = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -49,6 +50,7 @@ export function phase7Command({
     },
     genericCheckContextOwner,
     randomSource,
+    npcSemanticRemainderOwner,
     temporalAdvanceOwner,
     revalidateStateVersion
   });
@@ -124,6 +126,7 @@ export function phase7CommittedState() {
       participant_slot_ref: 'zhdanko_storehouse_controller',
       instance_id: 'zhdanko-1',
       profile_id: 'trace_ld_v1_npc_zhdanko',
+      profile_set_id: 'trace_ld_v1_participant_profile_set',
       profile_level: 'key',
       anchor_id: 'storehouse-anchor',
       location_profile_ref: 'trace_ld_v1_loc_storehouse',

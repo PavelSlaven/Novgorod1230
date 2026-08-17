@@ -57,6 +57,13 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   let ordinaryPlan;
   try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
   catch { fail('TRACE_PHASE_7_ORDINARY_PLAN_INVALID'); }
+  const handoff=factual.consequence.npc_actor_step_handoff??null;
+  if((handoff==null)!==(ordinaryPlan==null)
+      || (handoff!=null&&canonicalDigest(
+        handoff.ordinary_materialization_atomic_write_plan)
+        !==canonicalDigest(ordinaryPlan))) {
+    fail('TRACE_PHASE_7_NPC_HANDOFF_INVALID');
+  }
   let next = nextPhase7State({
     state,
     factual,
@@ -67,7 +74,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     turn10Contracts
   });
   const ordinaryVisibleContext = applyOrdinaryMaterializationProjection({
-    next, visibleContext, ordinaryPlan
+    next, visibleContext, ordinaryPlan, disclose: handoff == null
   });
   const visibleEnvelope = phase7VisibleEnvelope({
     partyId,

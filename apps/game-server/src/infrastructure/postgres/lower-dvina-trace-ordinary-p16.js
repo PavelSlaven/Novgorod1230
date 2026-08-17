@@ -41,7 +41,7 @@ export function ordinaryPhysicalKeys(plan) {
 }
 
 export function applyOrdinaryMaterializationProjection({
-  next, visibleContext, ordinaryPlan
+  next, visibleContext, ordinaryPlan, disclose = true
 }) {
   if (ordinaryPlan?.schema === 'ordinary_container_contents_atomic_write_plan_v2') {
     const patch = ordinaryPlan.container_transition.state_patch;
@@ -89,7 +89,7 @@ export function applyOrdinaryMaterializationProjection({
       item_id: item.item_id,
       template_id: null,
       name: item.item_proposal.semantic_descriptor.name,
-      visible: true,
+      visible: disclose,
       placement: { location_ref: item.item_proposal.scope_ref.entity_id },
       state: {
         semantic_category: item.item_proposal.semantic_descriptor.semantic_type,
@@ -105,7 +105,7 @@ export function applyOrdinaryMaterializationProjection({
   const object = { entity_ref: { entity_kind: 'item', entity_id: item.item_id },
     display_label: item.item_proposal.semantic_descriptor.name,
     recognition: 'recognized', visible_status: 'замечен' };
-  return { ...structuredClone(visibleContext), visible_objects: [
+  return disclose ? { ...structuredClone(visibleContext), visible_objects: [
     ...(visibleContext.visible_objects ?? []), object
-  ] };
+  ] } : structuredClone(visibleContext);
 }

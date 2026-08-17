@@ -6,14 +6,14 @@ import { startLowerDvinaProductionAcceptanceEnv } from
 import { createCanonicalPhase11LlmResponder, PHASE11_CANONICAL_TURNS } from
   '../helpers/lower-dvina-phase-11-llm.js';
 
-test('revision 23 survives production restart and exact replay through Phase 10',
+test('revision 24 survives production restart and exact replay through Phase 10',
   { timeout: 300_000 }, async (context) => {
     const environment = await startLowerDvinaProductionAcceptanceEnv({
       llmRespond: createCanonicalPhase11LlmResponder()
     });
     context.after(() => environment.close());
     assert.equal(environment.root.health().release_id,
-      'spatial-v3-production-v12');
+      'spatial-v3-production-v13');
     const started = await post(environment, '/api/v1/new-games', {
       scenario_id: 'lower_dvina_trace_v1',
       request_id: 'phase11-new-game'
@@ -31,7 +31,7 @@ test('revision 23 survives production restart and exact replay through Phase 10'
         WHERE party_id = $1 ORDER BY state_version DESC LIMIT 1`,
       [partyId]
     )).rows[0]?.revision;
-    assert.equal(revision, '23');
+    assert.equal(revision, '24');
 
     let restResult;
     for (const [turnId, rawText] of PHASE11_CANONICAL_TURNS) {
@@ -102,7 +102,7 @@ test('revision 23 survives production restart and exact replay through Phase 10'
     assert.equal(boatmanTurn.screen.screen_status, 'ready');
   });
 
-test('production revision 23 admits independent Ratsha, Eremey and Zhdanko alternatives',
+test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alternatives',
   { timeout: 600_000 }, async (context) => {
     let responder = createCanonicalPhase11LlmResponder();
     const environment = await startLowerDvinaProductionAcceptanceEnv({

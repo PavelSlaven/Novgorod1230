@@ -87,7 +87,7 @@ export function assertModularStartupConfig(config) {
       !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v12 spatial-v3 runtime binding may be selected.',
+      'Only the production-v13 spatial-v3 runtime binding may be selected.',
       { status: 500 }
     );
   }

@@ -10,6 +10,8 @@ import { turnFailure } from '../errors.js';
 import {
   buildTurnStepCommitEnvelope
 } from '../turn-step-commit-envelope.js';
+import { npcActorStepAtomicExtensions } from
+  '../npc-actor-step-handoff.js';
 
 export async function buildPersistencePlanStage(input) {
   const draft = getTurnStepWorkflowDraft(input.modeResolution);
@@ -26,6 +28,10 @@ export async function buildPersistencePlanStage(input) {
     ? mergeTurnStepDraftWriteTargets(draftTargets, commandTargets)
     : commandTargets;
   const transition = input.consequence?.position_transition ?? null;
+  const actorStepExtensions = npcActorStepAtomicExtensions(
+    input.consequence?.npc_actor_step_handoff ?? null);
+  const ordinaryPlan = exactExtension(input,
+    actorStepExtensions, 'ordinary_materialization_atomic_write_plan');
   const expectsPositionWrite = input.modeResolution?.resolution_plan?.expected_writes?.includes('party_current_position') === true;
   if (expectsPositionWrite && (!transition?.from_g4_id || !transition?.to_g4_id)) throw Object.assign(new Error('party_current_position requires explicit from/to G4.'), { code: 'TURN_G4_TRANSITION_REQUIRED' });
   const plan = {
@@ -36,9 +42,9 @@ export async function buildPersistencePlanStage(input) {
       ...input,
       draft
     }) } : {}),
-    ...(input.ordinary_materialization_atomic_write_plan == null ? {} : {
+    ...(ordinaryPlan == null ? {} : {
       ordinary_materialization_atomic_write_plan: structuredClone(
-        input.ordinary_materialization_atomic_write_plan)
+        ordinaryPlan)
     }),
     ...(input.action_production_atomic_write_plan == null ? {} : {
       action_production_atomic_write_plan: structuredClone(
@@ -56,6 +62,17 @@ export async function buildPersistencePlanStage(input) {
   };
   assertValid('party_turn_write_plan', validateTurnWritePlan(plan));
   return sealTurnWritePlan(plan);
+}
+
+function exactExtension(input, handoff, key) {
+  const direct = input[key] ?? null;
+  const nested = handoff[key] ?? null;
+  if (direct != null && nested != null
+      && JSON.stringify(direct) !== JSON.stringify(nested)) {
+    throw turnFailure('TURN_STEP_WRITE_TARGET_CONFLICT',
+      'Actor-step and root atomic extensions must agree exactly.', { key });
+  }
+  return direct ?? nested;
 }
 
 function rejectReservedBatchOwnership(commandTargets) {

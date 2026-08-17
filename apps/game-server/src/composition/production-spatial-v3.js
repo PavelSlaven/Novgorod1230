@@ -1,5 +1,4 @@
-import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
-import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition'; import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
 import { createSpatialSemanticFirstEntryProvisioner } from '../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
@@ -21,11 +20,11 @@ import {
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v12';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v13';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.10.0-spatial-semantic.1',
+  contract_version: '4.11.0-npc-semantic.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
@@ -52,7 +51,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v11',
+  rollback_source_release_id: 'spatial-v3-production-v12',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
@@ -127,6 +126,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
       spatialSemanticProfile:profiles.spatialSemanticProfile,
+      npcSemanticProfile:profiles.npcSemanticProfile,
       ports: Object.freeze({
         partyPool: pools.partyPool,
         worldPool: pools.worldPool,
@@ -143,7 +143,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile }), spatialSemanticFirstEntryProvisioner: createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profiles.spatialSemanticProfile }), now });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile, npcSemanticProfile:profiles.npcSemanticProfile }), spatialSemanticFirstEntryProvisioner: createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profiles.spatialSemanticProfile }), now });
     const target = targetRootFactory({
       ...bindings.targetCompositionPorts,
       committer

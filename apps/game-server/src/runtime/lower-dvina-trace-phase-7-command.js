@@ -12,6 +12,8 @@ import { resolveTracePhase7ScheduleTemporalAdvance } from
   './lower-dvina-trace-phase-7-schedule-temporal.js';
 import { resolveTracePhase7RestTemporalAdvance } from
   './lower-dvina-trace-phase-7-temporal.js';
+import { tracePhase7StateIsActionable } from
+  './lower-dvina-trace-phase-7-applicability.js';
 
 const PRECONDITION = 'phase7_fire_rest_admission';
 
@@ -29,7 +31,8 @@ export function createTracePhase7FireRestCommand({
   genericCheckContextOwner,
   randomSource,
   temporalAdvanceOwner,
-  revalidateStateVersion
+  revalidateStateVersion,
+  npcSemanticRemainderOwner = null
 }) {
   return Object.freeze({
     command_id: 'lower_dvina_trace.rest_by_fire_and_dry_clothing',
@@ -107,7 +110,8 @@ export function createTracePhase7FireRestCommand({
         async resolveDecision({ temporal, signal_batch: signalBatch }) {
           actorStepRuntime = createTracePhase7ActorStepRuntime({
             state, contracts, temporal, semanticActivityScheduleOwner,
-            genericCheckContextOwner, randomSource
+            genericCheckContextOwner, randomSource,
+            npcSemanticRemainderOwner
           });
           const autonomous = await resolveTracePhase7AutonomousDecision({
             state,
@@ -178,6 +182,9 @@ export function createTracePhase7FireRestCommand({
           schedule_temporal: scheduleTemporal,
           schedule_execution: scheduleExecution
         },
+        ...(flow.actor_step.npc_actor_step_handoff == null ? {} : {
+          npc_actor_step_handoff: flow.actor_step.npc_actor_step_handoff
+        }),
         visible_seed: {},
         hidden_update: {},
         state_changes: [],
@@ -238,20 +245,7 @@ function continuationTargetsMatch(continuation, requiredRefs) {
 }
 
 function admitted(state, contracts) {
-  const carry = state?.phase6_carry_execution;
-  const atCamp = state?.position?.location_ref === contracts.campLocationRef;
-  const onisim = (state?.npcs ?? []).find(
-    ({ participant_slot_ref: slot }) => slot === 'onisim_boatman'
-  );
-  const alreadyCompleted = state?.phase7_fire_rest?.status === 'completed'
-    || (state?.body_effect_history ?? []).some(
-      ({ effect_ref: ref }) => ref === contracts.bodyEffect.effect_profile_id
-    );
-  return carry?.status === 'completed'
-    && atCamp
-    && onisim?.machine_state?.spatial_zone_ref === 'fire_rest_area'
-    && contracts.zhdanko?.machine_state?.status !== 'incapacitated'
-    && !alreadyCompleted;
+  return tracePhase7StateIsActionable(state, contracts);
 }
 
 function available(ok) {

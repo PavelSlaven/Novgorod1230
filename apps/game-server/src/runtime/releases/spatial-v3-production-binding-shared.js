@@ -86,7 +86,8 @@ export async function createSpatialV3ProductionBindings(
     ordinaryContainerContentsProfile = null,
     actionProductionProfile = null,
     localFireProfile = null,
-    spatialSemanticProfile = null
+    spatialSemanticProfile = null,
+    npcSemanticProfile = null
   } = {},
   {
     createNpcRuntimePorts,
@@ -148,6 +149,7 @@ export async function createSpatialV3ProductionBindings(
           actionProductionProfile,
           localFireProfile,
           spatialSemanticProfile,
+          npcSemanticProfile,
           createPhase2RuntimeFactory,
           createNpcRuntimePorts
         })

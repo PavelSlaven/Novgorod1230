@@ -13,7 +13,8 @@ import { provisionInitialOrdinaryContainer } from
 
 export function createOrdinaryMaterializationFirstEntryProvisioner({
   profile,
-  ordinaryContainerContentsProfile = null
+  ordinaryContainerContentsProfile = null,
+  npcSemanticProfile = null
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -45,6 +46,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
           FOR UPDATE OF e,a,c`, [partyId, scope.entity_kind, scope.entity_id]);
       if (existing.rowCount === 1) {
         if (!sameExisting(existing.rows[0], rows)) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
+        await provisionNpcOrdinaryScope({transaction,partyId,profile,
+          loadedProfile:npcSemanticProfile});
         await provisionInitialOrdinaryContainer({transaction,partyId,
           firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
         return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
@@ -69,6 +72,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
         VALUES ($1,$2,$3,$4::jsonb,$5,TRUE)`, [partyId, scope.entity_kind, scope.entity_id,
         JSON.stringify(rows.objective), rows.objective_digest]);
+      await provisionNpcOrdinaryScope({transaction,partyId,profile,
+        loadedProfile:npcSemanticProfile});
       await provisionInitialOrdinaryContainer({transaction,partyId,
         firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
       return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
@@ -76,7 +81,57 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
   });
 }
 
-function buildRows({ profile, scope, positionRef }) {
+async function provisionNpcOrdinaryScope({transaction,partyId,profile,
+  loadedProfile}) {
+  const n1=loadedProfile?.profile;
+  if(n1==null)return;
+  const scope=structuredClone(n1.ordinary_scope);
+  if(scope?.entity_kind!=='g6'||!text(scope.entity_id)
+      ||!text(scope.position_ref))throw code('N1_ORDINARY_SCOPE_INVALID');
+  const rows=buildRows({profile,partyId,scope:{entity_kind:'g6',
+    entity_id:scope.entity_id},positionRef:scope.position_ref,
+    normalizeMechanicsPolicy:true});
+  const existing=await transaction.query(
+    `SELECT e.objective_snapshot,e.objective_digest,e.enabled,
+            a.aggregate_payload,a.state_version,c.catalog_version,
+            c.property_version,c.placement_version,
+            c.supporting_basis_catalog_version,c.supporting_basis_catalog_digest,
+            c.property_placement_context_digest,c.property_placement_base_snapshot,
+            COALESCE((SELECT jsonb_agg(b.basis_snapshot ORDER BY b.basis_ref)
+              FROM party_runtime.party_ordinary_materialization_basis_catalog b
+             WHERE b.party_id=e.party_id AND b.scope_kind=e.scope_kind
+               AND b.scope_id=e.scope_id),'[]'::jsonb) AS bases
+       FROM party_runtime.party_ordinary_materialization_enablements e
+       JOIN party_runtime.party_ordinary_materialization_aggregates a
+         ON a.party_id=e.party_id AND a.scope_kind=e.scope_kind AND a.scope_id=e.scope_id
+       JOIN party_runtime.party_ordinary_materialization_contexts c
+         ON c.party_id=e.party_id AND c.scope_kind=e.scope_kind AND c.scope_id=e.scope_id
+      WHERE e.party_id=$1 AND e.scope_kind='g6' AND e.scope_id=$2
+      FOR UPDATE OF e,a,c`,[partyId,scope.entity_id]);
+  if(existing.rowCount===1){if(!sameExisting(existing.rows[0],rows))
+    throw code('N1_ORDINARY_SCOPE_CONFLICT');return;}
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+    (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+    VALUES ($1,'g6',$2,0,$3::jsonb)`,[partyId,scope.entity_id,JSON.stringify(rows.aggregate)]);
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_contexts
+    (party_id,scope_kind,scope_id,catalog_version,property_version,placement_version,
+     supporting_basis_catalog_version,supporting_basis_catalog_digest,
+     property_placement_context_digest,property_placement_base_snapshot)
+    VALUES ($1,'g6',$2,$3,$4,$5,0,$6,$7,$8::jsonb)`,[partyId,scope.entity_id,
+    profile.catalog_version,profile.property_version,profile.placement_version,
+    rows.basis_digest,rows.property_digest,JSON.stringify(rows.property_placement_context)]);
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_basis_catalog
+    (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
+    VALUES ($1,'g6',$2,$3,NULL,$4::jsonb)`,[partyId,scope.entity_id,
+    rows.basis.basis_ref,JSON.stringify(rows.basis)]);
+  await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_enablements
+    (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
+    VALUES ($1,'g6',$2,$3::jsonb,$4,TRUE)`,[partyId,scope.entity_id,
+    JSON.stringify(rows.objective),rows.objective_digest]);
+}
+
+function buildRows({ profile, scope, positionRef,
+  normalizeMechanicsPolicy=false }) {
   const basisRef = `${profile.profile_id}:basis`;
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
@@ -98,7 +153,10 @@ function buildRows({ profile, scope, positionRef }) {
   const objective = { request_id: `${profile.profile_id}:${scope.entity_id}`,
     scope_ref: scope, context_refs: structuredClone(profile.context_refs), policy_refs: policyRefs,
     technical_limits: structuredClone(profile.technical_limits), execution_context: {
-      ...structuredClone(profile.execution), supporting_bases: [basis],
+      ...structuredClone(profile.execution),
+      ...(normalizeMechanicsPolicy?{mechanics_policy:
+        singletonMechanicsPolicy(profile.execution.mechanics_policy)}:{}),
+      supporting_bases: [basis],
       candidate_context: { ...structuredClone(profile.execution.candidate_context),
         target_ref: scope.entity_id }, source_refs: [basisRef, propertyBasisRef,
         positionRef, placementContextRef].sort() } };
@@ -119,6 +177,21 @@ function buildRows({ profile, scope, positionRef }) {
     causal_basis_refs: ['phase6_context_digest_only'],
     requested_position_ref: 'phase6_context_digest_only' }), objective,
   objective_digest: canonicalDigest(objective) };
+}
+
+function singletonMechanicsPolicy(value) {
+  const mechanics=value?.mechanics,quantity=mechanics?.quantity;
+  if(!text(value?.policy_ref)||!Number.isSafeInteger(mechanics?.mass_grams)
+      ||![0,1,2].includes(mechanics?.external_hand_cost)
+      ||!text(mechanics?.carry_form)
+      ||!Number.isSafeInteger(mechanics?.packing_slot_cost)
+      ||!Number.isSafeInteger(quantity?.value)||quantity?.unit!=='item') {
+    throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_INVALID');
+  }
+  return {policy_ref:value.policy_ref,max_mass_grams:mechanics.mass_grams,
+    allowed_external_hand_costs:[mechanics.external_hand_cost],
+    allowed_carry_forms:[mechanics.carry_form],
+    max_packing_slot_cost:mechanics.packing_slot_cost,max_quantity:quantity.value};
 }
 
 function sameExisting(row, expected) {

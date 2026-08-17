@@ -1,22 +1,18 @@
 import { buildNpcActionDecisionRequest } from
   './semantic-decision-request-contract.js';
+import { runtimeItemRecordIsConcealed } from
+  '@rus/items-property/runtime-item-visibility';
 
-export function buildNpcActionDecisionRequestFromSnapshots({
-  request_identity,
-  boundary,
-  npc_snapshot,
-  current_activity_snapshot,
-  historical_context_snapshot = null,
-  body_snapshot = null,
-  mood_snapshot = null,
-  relationship_snapshots = [],
-  resource_snapshots = [],
-  perception_snapshot = null,
-  knowledge_snapshot = null,
-  memory_snapshot = null,
-  resolved_signals,
-  operation_contract
-} = {}) {
+export function buildNpcActionDecisionRequestFromSnapshots(rawInput = {}) {
+  const input = strictSnapshot(rawInput);
+  if (input == null) throw new TypeError(
+    'NPC request snapshots must be detached strict JSON data');
+  const { request_identity, boundary, npc_snapshot,
+    current_activity_snapshot, historical_context_snapshot = null,
+    body_snapshot = null, mood_snapshot = null, relationship_snapshots = [],
+    resource_snapshots = [], perception_snapshot = null,
+    knowledge_snapshot = null, memory_snapshot = null, resolved_signals,
+    operation_contract } = input;
   const machineState = npc_snapshot?.machine_state ?? {};
   const identityState = npc_snapshot?.identity_state ?? {};
   const socialRole = npc_snapshot?.social_role ?? {};
@@ -106,7 +102,7 @@ export function buildNpcActionDecisionRequestFromSnapshots({
         can_continue_automatically:
           current_activity_snapshot?.can_continue_automatically
       },
-      available_resources: projectNpcSafeResourceSnapshots({
+      available_resources: projectNpcSafeResourceSnapshotData({
         npc_snapshot,
         resource_snapshots,
         perception_snapshot,
@@ -147,12 +143,16 @@ export function buildNpcActionDecisionRequestFromSnapshots({
   });
 }
 
-export function projectNpcSafeResourceSnapshots({
-  npc_snapshot,
-  resource_snapshots = [],
-  perception_snapshot = null,
-  knowledge_snapshot = null
-} = {}) {
+export function projectNpcSafeResourceSnapshots(rawInput = {}) {
+  const input = strictSnapshot(rawInput);
+  if (input == null) throw new TypeError(
+    'NPC resource snapshots must be detached strict JSON data');
+  return projectNpcSafeResourceSnapshotData(input);
+}
+
+function projectNpcSafeResourceSnapshotData({ npc_snapshot,
+  resource_snapshots = [], perception_snapshot = null,
+  knowledge_snapshot = null }) {
   const npcId = npc_snapshot?.instance_id;
   const machineState = npc_snapshot?.machine_state ?? {};
   const npcLocation = machineState.location_ref
@@ -176,19 +176,19 @@ export function projectNpcSafeResourceSnapshots({
       || (zone !== null && zone === npcZone);
     const accessible = ['accessible', 'available', 'open', 'immediate', 'quick']
       .includes(access);
-    const blocked = ['blocked', 'inaccessible', 'unavailable', 'sealed']
-      .includes(access);
-    const hidden = ['hidden', 'concealed', 'unknown']
-      .includes(visibility);
+    const blocked = runtimeItemRecordIsConcealed({ access_state: access });
+    const hidden = runtimeItemRecordIsConcealed(resource,
+      { includeAccess: false });
     const resourceRef = resource?.resource_ref ?? resource?.container_id
       ?? resource?.item_id;
-    const subjectivelyKnown = controlled || hasSubjectiveResourceEvidence({
+    const subjectivelyKnown = hasSubjectiveResourceEvidence({
       resourceRef,
       perceptionSnapshot: perception_snapshot,
       knowledgeSnapshot: knowledge_snapshot
     });
-    if ((!controlled && (!colocated || !accessible || hidden
-      || !subjectivelyKnown)) || blocked) {
+    if (blocked || (controlled
+      ? hidden && !subjectivelyKnown
+      : !colocated || !accessible || hidden || !subjectivelyKnown)) {
       return [];
     }
     return [{
@@ -203,6 +203,35 @@ export function projectNpcSafeResourceSnapshots({
   }).filter(({ resource_ref: resourceRef }) =>
     typeof resourceRef === 'string' && resourceRef.length > 0);
 }
+
+function strictSnapshot(input) {
+  const seen = new Set();
+  function copy(value) {
+    if (value === null || typeof value === 'string'
+        || typeof value === 'boolean') return value;
+    if (typeof value === 'number') return Number.isFinite(value) ? value : BAD;
+    if (typeof value !== 'object' || seen.has(value)
+        || Object.getOwnPropertySymbols(value).length > 0) return BAD;
+    const array = Array.isArray(value);
+    if (Object.getPrototypeOf(value) !== (array ? Array.prototype
+      : Object.prototype)) return BAD;
+    seen.add(value);
+    const output = array ? [] : {};
+    for (const key of Object.getOwnPropertyNames(value)) {
+      if (array && key === 'length') continue;
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (descriptor?.enumerable !== true
+          || !Object.hasOwn(descriptor, 'value')) return BAD;
+      const child = copy(descriptor.value);
+      if (child === BAD) return BAD;
+      output[key] = child;
+    }
+    return output;
+  }
+  const copied = copy(input);
+  return copied === BAD ? null : copied;
+}
+const BAD = Symbol('bad');
 
 function hasSubjectiveResourceEvidence({
   resourceRef,

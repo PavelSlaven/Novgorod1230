@@ -22,7 +22,8 @@ export const TURN_STEP_DOMAIN_OPERATIONS = Object.freeze([
   'request_item_use',
   'request_activity',
   'emit_interaction',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 
 const DIRECT_OPS = new Set(TURN_STEP_DIRECT_OPERATIONS);
@@ -43,6 +44,7 @@ export async function executeTurnStepActorStep({
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
+  const localFirePlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -111,7 +113,7 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans
+        actionProducedPlans, localFirePlans
       }));
   }
 
@@ -135,7 +137,7 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans
+        actionProducedPlans, localFirePlans
       }));
   }
   if (plan.resolution !== 'domain_request') {
@@ -166,7 +168,7 @@ export async function executeTurnStepActorStep({
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
           summaries, writes, consequences, preparedEffects, ordinaryPlans,
-          actionProducedPlans
+          actionProducedPlans, localFirePlans
         }));
     }
   }
@@ -185,6 +187,7 @@ export async function executeTurnStepActorStep({
     preparedEffects,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
+    local_fire_atomic_write_plan: localFirePlans[0] ?? null,
     preparedChainContext: chainContext
   };
 }

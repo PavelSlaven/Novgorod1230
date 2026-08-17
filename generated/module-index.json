@@ -512,11 +512,12 @@
       "owns": [
         "bounded deterministic advancement supplied remote process aggregate до supplied activation timestamp",
         "coarse process boundaries, termination и next boundary",
-        "разделением factual и player-visible proposal output"
+        "разделением factual и player-visible proposal output",
+        "детерминированным F1 `start|add_fuel|due_boundary` для exact ordered whole fuel units"
       ],
       "path": "packages/world-processes",
       "public_entry": "./src/index.js",
-      "purpose": "`@rus/world-processes` — active-norm Temporal World v4 owner pure remote catch-up и propagation proposals. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил этот owner в sole production v3 composition.",
+      "purpose": "`@rus/world-processes` — active-norm Temporal World v4 owner pure remote catch-up, propagation proposals и pure local exact process transitions. Historical P28 evidence не активировало runtime; последующий `versioned production activation cutover` release `spatial-v3-production-v1` включил этот owner в sole production v3 composition.",
       "version": "0.1.0"
     }
   ],

@@ -24,6 +24,8 @@ import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { applyActionProductionProjection } from
   './lower-dvina-trace-action-production-projection.js';
+import { createLocalFireAtomicWritePlan } from
+  './local-fire-atomic-write-plan.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -65,6 +67,18 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_ACTION_PRODUCTION_PLAN_INVALID',
       'Action-production atomic plan failed its sealed contract.',
       { status: 409 });
+  }
+  let localFirePlan = null;
+  try {
+    if (writePlan.local_fire_atomic_write_plan != null) {
+      localFirePlan = createLocalFireAtomicWritePlan(
+        writePlan.local_fire_atomic_write_plan);
+      if (localFirePlan.party_id !== partyId
+          || localFirePlan.change_set_id !== changeSetId) throw new Error();
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
+      'Local-fire atomic plan failed its sealed contract.', { status: 409 });
   }
   const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
     ...envelope, visible_context: applyOrdinaryMaterializationProjection({
@@ -114,7 +128,8 @@ export async function commitLowerDvinaTraceTurnStep({
   );
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlan
+    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlan,
+    localFirePlan
   });
   const committed = await committer.commit({
     plan: built.plan,

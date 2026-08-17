@@ -12,18 +12,29 @@ import { ordinaryPhysicalKeys } from './lower-dvina-trace-ordinary-p16.js';
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
+import { createLocalFireAtomicWritePlan, localFirePhysicalKeys } from
+  './local-fire-atomic-write-plan.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlan = null
+  actionProductionPlan = null, localFirePlan = null
 }) {
   const actionPlan = actionProductionPlan == null ? null
     : createActionProducedAtomicWritePlan(actionProductionPlan);
+  const firePlan = localFirePlan == null ? null
+    : createLocalFireAtomicWritePlan(localFirePlan);
   if (actionPlan != null && actionPlan.actor_ref !== state.actor_id) {
     throw serverError(
       'TRACE_TURN_STEP_ACTION_PRODUCTION_ACTOR_MISMATCH',
       'The action-production plan is not bound to the committed actor.',
+      { status: 409 }
+    );
+  }
+  if (firePlan != null && firePlan.actor_ref !== state.actor_id) {
+    throw serverError(
+      'TRACE_TURN_STEP_LOCAL_FIRE_ACTOR_MISMATCH',
+      'The local-fire plan is not bound to the committed actor.',
       { status: 409 }
     );
   }
@@ -82,10 +93,12 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
-      ...actionProducedPhysicalKeys(actionPlan)]
+      ...actionProducedPhysicalKeys(actionPlan),
+      ...localFirePhysicalKeys(firePlan)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     action_production_atomic_write_plan: actionPlan,
+    local_fire_atomic_write_plan: firePlan,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

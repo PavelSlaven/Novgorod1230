@@ -20,6 +20,8 @@ import {
 } from './ordinary-materialization-phase-6-commit.js';
 import { applyActionProducedAtomicWritePlanInTransaction } from
   './action-produced-persistence.js';
+import { applyLocalFireP16Extension,
+  assertLocalFireFuelMutationBound } from './local-fire-p16-extension.js';
 
 export { validateSpatialV3CombinedWritePlan };
 
@@ -176,6 +178,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         await ordinaryFirstEntryProvisioner.provision({ transaction: tx,
           partyId: plan.party_id, firstEntryBinding: structuredClone(binding) });
       }
+      await assertLocalFireFuelMutationBound(tx, plan);
       if (plan.ordinary_materialization_atomic_write_plan != null) {
         try {
           await applyOrdinaryMaterializationAtomicWritePlanInTransaction({
@@ -221,6 +224,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           throw cause;
         }
       }
+      await applyLocalFireP16Extension(tx, plan);
       const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
         const expectedStateVersion =

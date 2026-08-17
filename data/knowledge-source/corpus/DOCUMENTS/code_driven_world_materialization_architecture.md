@@ -181,6 +181,10 @@ O1 активирует common ordinary discovery через существую�
 
 O2b активируется только внутренней веткой существующего `request_container_access` для уже committed, доступного, template-backed container с exact profile/policy/context pins. Порядок закрыт: access и authoritative classification → authoritative result без ordinary/model call либо explicit `ordinary_unresolved` → candidate-free Stage A из committed template/mechanics/property/owner-controller/site/economic/permission/basis/prior-resolution state → code-owned admission и mechanics validation → reveal. Root action, remaining intent, desired item/query/use и narration не входят в Stage A, поэтому разные player phrasings при одном committed context дают byte-identical request. Ordinary concealed child не является hidden authority: разрешены только `ordinary/common_mundane/common/concealed`, а clue/evidence, authentic document, hidden crime/history, secret cache, currency, significant/hidden truth, новый container и armament запрещены структурными closed fields, не keyword/NLP-фильтром. Код проверяет каждый entity, exact mass/mechanics/property/placement, packing/capacity и approved `max_new_entities` в диапазоне `1..8` до state mutation; revision 20 profile ограничен 2. Container использует тот же ordinary aggregate с `scope_ref.entity_kind=container`; model выполняется вне SQL transaction, а один combined P16 атомарно фиксирует ledger transition, children, container open/reveal и persisted player-safe package. Failure ничего не раскрывает; reload/reopen exact committed coverage не вызывает model и не reroll-ит contents. Template-less containers и F1/S1/N1 остаются disabled; O2b не активирует отдельный A1 profile.
 
+Указанное в предыдущем O2b-профиле отключение F1 относится к revision 20:
+O2b сам по себе не является F1 authority. Независимая exact F1 activation
+появляется только в revision 22 и описана ниже.
+
 A1 revision 21 — отдельный atomic profile существующего `request_item_use`, а
 не ветка ordinary presence. Exact registered/external/authored owner сохраняет
 приоритет; semantic remainder вызывается только при нуле binding matches и
@@ -193,6 +197,21 @@ identity/mechanics, а combined P16 под повторными DB locks/recheck
 не активирует independent outputs, writing, token-like или weapon-capable
 results. Никакой A1 result не получает currency, objective truth, canonical
 weapon/historical identity или pre-existing-world authority.
+
+F1 revision 22 — отдельный SHA-pinned local-process profile существующего
+`request_world_process`. New-game materialization создаёт authored ignition
+basis и конкретные approved whole non-stacked `ordinary_solid_fuel_unit`
+entities; generic regional fuel categories не являются candidate authority.
+Start/add проходят exact turn admission и pure `@rus/world-processes` resolver.
+`@rus/time-events-history` выбирает due boundary в общем earliest/same-time
+порядке; due детерминированно retire-ит ровно первый ordered fuel unit и либо
+назначает следующий exact boundary, либо завершает process. Process, bindings,
+item retirement, ledger и один party state bump сохраняются тем же combined
+P16; bound fuel нельзя отдельно переместить/retire, а retry/reload не
+reroll-ит transition. Actor leave/death не прекращает локальный process.
+Player-safe projection раскрывает только visible approved refs и active
+process refs. Revision 22 не активирует extinguish/water, потому что exact
+finite-water authority отсутствует; semantic или noun fallback запрещён.
 
 ### 4.5. Party database
 

@@ -12,15 +12,11 @@ import {
   validateAvailabilityDecision,
   validateConsequencePackage
 } from './validators.js';
-import {
-  isActionProducedSemanticRemainderInScope
-} from './turn-step-action-produced-remainder.js';
-import { initialWorkingProjectionFrom } from
-  './turn-step-player-safe-projection.js';
+import { isActionProducedSemanticRemainderInScope } from './turn-step-action-produced-remainder.js';
+import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
+import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
 
-export { isActionProducedSemanticRemainderInScope } from
-  './turn-step-action-produced-remainder.js';
-
+export { isActionProducedSemanticRemainderInScope } from './turn-step-action-produced-remainder.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -28,13 +24,13 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'request_item_use',
   'request_activity',
   'emit_interaction',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
 }
-
 const DIRECT_STEP_OPERATIONS = new Set([
   'create_entity',
   'move_entity',
@@ -43,7 +39,6 @@ const DIRECT_STEP_OPERATIONS = new Set([
   'retire_entity',
   'apply_body_event'
 ]);
-
 export async function resolveBoundTurnStepCommand({
   registry,
   semanticBindings,
@@ -165,6 +160,10 @@ export async function resolveBoundTurnStepCommand({
           }));
         }
       }
+      const worldProcess = matches.length === 0
+        ? resolveWorldProcessRemainder({ operation, execution, projected,
+          committedState, services }) : null;
+      if (worldProcess != null) return worldProcess;
       if (matches.length !== 1) {
         throw turnCommandError(
           matches.length === 0

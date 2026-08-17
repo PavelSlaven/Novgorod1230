@@ -212,12 +212,12 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   );
   assert.deepEqual(
     persistedCluePlacement.state.pickup_transition.inventory_before,
-    { total_mass_grams: 2050, hands_used: 0, hands_free: 2,
+    { total_mass_grams: 2230, hands_used: 0, hands_free: 2,
       load_category: 'light' }
   );
   assert.deepEqual(
     persistedCluePlacement.state.pickup_transition.inventory_after,
-    { total_mass_grams: 2060, hands_used: 0, hands_free: 2,
+    { total_mass_grams: 2240, hands_used: 0, hands_free: 2,
       load_category: 'light' }
   );
   const persistedOwnership = (await pool.query(
@@ -254,10 +254,13 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     'trace_ld_v1_item_base_shirt',
     'trace_ld_v1_item_base_shirt',
     'trace_ld_v1_item_blue_wool_fragment',
+    'trace_ld_v1_item_dry_kindling_bundle',
+    'trace_ld_v1_item_firesteel_set',
     'trace_ld_v1_item_mikula_knife',
     'trace_ld_v1_item_ratsha_caftan',
     'trace_ld_v1_item_ratsha_knife',
     'trace_ld_v1_item_sealed_packet',
+    'trace_ld_v1_item_split_fuel_billet',
     'trace_ld_v1_item_working_outer_garment',
     'trace_ld_v1_item_working_outer_garment',
     'trace_ld_v1_item_working_outer_garment',
@@ -295,7 +298,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 20);
+    opened.party_id), 23);
 
   await assertResealedSnapshotTamper(pool, restarted, opened.party_id,
     (snapshot) => {
@@ -357,7 +360,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 20);
+    opened.party_id), 23);
   const attempts = (await pool.query(
     `SELECT effect_ref->>'activity_attempt_id' AS activity_attempt_id
        FROM party_runtime.party_body_temporal_history
@@ -373,7 +376,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     opened.party_id), 2);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    opened.party_id), 20);
+    opened.party_id), 23);
 
   let failureRolls = 0;
   const failureRuntime = buildRuntime({
@@ -436,7 +439,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     failureParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_items',
-    failureParty.party_id), 19);
+    failureParty.party_id), 22);
   assert.equal((await pool.query(
     `SELECT consequence_policy_ref->>'entity_id' AS consequence_ref
        FROM party_runtime.party_check_resolutions

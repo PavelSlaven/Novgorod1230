@@ -103,6 +103,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
+  const localFirePlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   const seen = new Set();
@@ -203,6 +204,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'Only one action-production atomic plan is allowed per turn.');
       actionProducedPlans.push(execution.action_production_atomic_write_plan);
     }
+    if (execution.local_fire_atomic_write_plan != null) {
+      if (localFirePlans.length !== 0) throw turnFailure(
+        'TURN_STEP_LOCAL_FIRE_PLAN_DUPLICATE',
+        'Only one local-fire atomic plan is allowed per turn.');
+      localFirePlans.push(execution.local_fire_atomic_write_plan);
+    }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
       throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
@@ -287,6 +294,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
+    local_fire_atomic_write_plan: localFirePlans[0] ?? null,
     clarification
   });
 }

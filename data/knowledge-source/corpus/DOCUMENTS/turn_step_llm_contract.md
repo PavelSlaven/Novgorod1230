@@ -852,7 +852,30 @@ P16 сохраняет causal pins и физический transition атома
 
 Activity, exact duration, interruption и temporal effects принадлежат общему temporal owner.
 
-### 12.6. `emit_interaction`
+### 12.6. `request_world_process`
+
+```json
+{
+  "op": "request_world_process",
+  "actor_ref": "actor_mikula",
+  "process_action": "start | affect",
+  "process_ref": "active_process_ref_or_null",
+  "process_kind": "fire",
+  "source_refs": ["approved_concrete_fuel_ref"],
+  "target_refs": ["approved_ignition_basis_ref"],
+  "description": "какое именно воздействие на локальный процесс пытается выполнить персонаж"
+}
+```
+
+Этот request только передаёт намерение существующему владельцу world process.
+LLM не задаёт timestamp, duration, interval, process id, fuel mass или числовую
+скорость. В active Lower Dvina Trace revision 22 start требует exact authored
+ignition basis в `target_refs`, а affect/add-fuel использует пустой
+`target_refs`; оба пути принимают только видимые concrete whole fuel units из
+SHA-pinned F1 authority. Due boundary разрешает без LLM общий temporal owner.
+Extinguish/water в текущем F1 profile не активированы и fail closed.
+
+### 12.7. `emit_interaction`
 
 ```json
 {
@@ -1302,6 +1325,7 @@ Module doc публикует contract и владельца:
 - `request_movement`;
 - `request_item_use`;
 - `request_activity`;
+- `request_world_process`;
 - `emit_interaction`.
 
 Не придумывай другие операции.

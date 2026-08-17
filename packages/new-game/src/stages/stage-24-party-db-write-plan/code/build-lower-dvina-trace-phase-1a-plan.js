@@ -322,6 +322,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     result.action_production_authority == null
       ? [] : [structuredClone(result.action_production_authority)],
     ['parties', 'party_player_characters'], sourceTrace);
+  addBatch(batches, 'party_local_fire_authorities',
+    result.local_fire_authority == null
+      ? [] : [structuredClone(result.local_fire_authority)],
+    ['parties', 'party_items'], sourceTrace);
   addBatch(batches, 'party_obligations', (result.immediate.promise_instances ?? []).map(
     (promise) => ({
       obligation_id: promise.instance_id,
@@ -373,6 +377,9 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     ...(result.action_production_authority == null ? {} : {
       action_production_authority:
         structuredClone(result.action_production_authority)
+    }),
+    ...(result.local_fire_authority == null ? {} : {
+      local_fire_authority: structuredClone(result.local_fire_authority)
     }),
     sealed_selections: result.sealed_selections,
     policy_profile_pins: result.policy_profile_pins,
@@ -438,9 +445,8 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].includes(
-    result.request_identity.scenario_definition_revision
-  )) {
+  const revision = result.request_identity.scenario_definition_revision;
+  if (!Number.isSafeInteger(revision) || revision < 8 || revision > 22) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;
@@ -449,9 +455,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21].includes(
-    result.request_identity.scenario_definition_revision
-  );
+  const phase7 = revision >= 15;
   if (!Array.isArray(preparedScenes)
     || preparedScenes.length !== (phase7 ? 3 : phase4 ? 2 : 1)
     || !Array.isArray(preparedNpcs)
@@ -478,7 +482,7 @@ function assertInput(input) {
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
   }
-  if ([19, 20, 21].includes(result.request_identity.scenario_definition_revision)) {
+  if (result.request_identity.scenario_definition_revision >= 19) {
     assertRevision19CharacterState(result);
   }
 }

@@ -266,7 +266,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v10 root is sole owner with production-v9 rollback identity', async () => {
+test('production-v11 root is sole owner with production-v10 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -293,7 +293,7 @@ test('production-v10 root is sole owner with production-v9 rollback identity', a
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v9'
+    'spatial-v3-production-v10'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -351,6 +351,8 @@ test('production-v10 root is sole owner with production-v9 rollback identity', a
     .status, 'approved');
   assert.equal(setup.receivedBindingContext().actionProductionProfile.profile
     .profile_id, 'lower_dvina_trace_a1_personal_tool_profile_v1');
+  assert.equal(setup.receivedBindingContext().localFireProfile.profile
+    .profile_id, 'lower_dvina_trace_f1_local_exact_fire_profile_v1');
   assert.equal(typeof setup.received().committer.commit, 'function');
   assert.equal((await root.getPartyScreen()).owner, 'v5');
   await root.close();
@@ -616,7 +618,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 026', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 027', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -646,7 +648,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 15);
+  assert.equal(result.newly_applied, 16);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),

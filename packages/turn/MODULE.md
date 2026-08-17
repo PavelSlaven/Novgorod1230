@@ -194,8 +194,8 @@ clue/evidence, authentic document, hidden history, secret cache, currency,
 significant/hidden truth, новый container и armament запрещены. Lower Dvina
 revision 20 / M8 / Phase 1A v16 / Phase 1B v15 связывает ровно один player
 pouch с max batch 2; revision 19 остаётся immutable historical path.
-Template-less containers и F1/S1/N1 остаются disabled; O2b сам по себе не
-активирует A1.
+Template-less containers и S1/N1 остаются disabled; O2b сам по себе не
+активирует F1 или A1.
 
 Active revision 21 / M9 / Phase 1A v17 / Phase 1B v16 /
 `spatial-v3-production-v10` добавляет узкий A1 remainder после exact
@@ -208,6 +208,15 @@ preserve/no-result plan; sealed owner-native transition входит в optional
 extension того же combined P16 и переживает reload/replay. Current profile не
 активирует independent outputs, writing, token-like или weapon-capable
 results, не отвечает на pre-existing presence и не является O1/O2 fallback.
+
+Active revision 22 / M10 / Phase 1A v18 / Phase 1B v17 /
+`spatial-v3-production-v11` добавляет `request_world_process`. После
+registered/external/authored priority dormant remainder вызывает F1 owner
+только при exact player-safe marker, approved visible whole fuel refs и
+authored ignition basis. Start/add возвращают sealed local-fire extension того
+же P16; due приходит через существующий temporal write integration. Turn не
+вычисляет fuel consumption, timestamp или ID и не создаёт scheduler/process
+store. Water/extinguish не входят в current closed operation profile.
 
 ## Тесты
 

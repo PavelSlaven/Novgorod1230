@@ -69,14 +69,29 @@ const actionProductionSql = readFileSync(
   new URL('../../schemas/party-db/026_party_runtime_action_production.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 026 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 26);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-16), [sql,
+const localExactFireSql = readFileSync(
+  new URL('../../schemas/party-db/027_party_runtime_local_exact_fire.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 027 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, finiteResourceTransitionsSql,
-    existingContainerOrdinaryContentsSql, actionProductionSql]);
+    existingContainerOrdinaryContentsSql, actionProductionSql,
+    localExactFireSql]);
+});
+
+test('027 adds exact local fire authority, process, fuel binding and ledger', () => {
+  assert.match(localExactFireSql, /party_local_fire_authorities/u);
+  assert.match(localExactFireSql, /party_local_world_processes/u);
+  assert.match(localExactFireSql,
+    /party_local_world_process_fuel_bindings/u);
+  assert.match(localExactFireSql, /party_local_world_process_commits/u);
+  assert.match(localExactFireSql,
+    /party_local_world_process_fuel_active_unique/u);
 });
 
 test('026 adds an A1 ledger without weakening O2a finite evidence', () => {

@@ -21,6 +21,8 @@ import { actionProducedPhysicalKeys,
   './action-produced-atomic-write-plan.js';
 import { validActionProducedOuterCausalBinding } from
   './action-produced-causal-binding.js';
+import { validLocalFireExtension } from
+  './local-fire-write-plan-validation.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -131,6 +133,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
         !== plan.expected_state_versions_digest) return false;
   if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!validActionProductionExtension(plan)) return false;
+  if (!validLocalFireExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -206,14 +209,31 @@ export function validateSpatialV3CombinedWritePlan(plan) {
 function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   const action = plan.action_production_atomic_write_plan;
-  if (ordinary == null && action == null) return writeSet;
+  const localFire = plan.local_fire_atomic_write_plan;
+  const fireTemporal = plan.local_fire_temporal_evidence;
+  if (ordinary == null && action == null && localFire == null) return writeSet;
+  if (localFire == null) {
+    if (action == null) return { write_set: writeSet,
+      ordinary_materialization_atomic_write_plan: ordinary };
+    return { write_set: writeSet,
+      ...(ordinary == null ? {} : {
+        ordinary_materialization_atomic_write_plan: ordinary
+      }), action_production_atomic_write_plan: action };
+  }
   if (action == null) return { write_set: writeSet,
-    ordinary_materialization_atomic_write_plan: ordinary };
+    ...(ordinary == null ? {} : {
+      ordinary_materialization_atomic_write_plan: ordinary }),
+    local_fire_atomic_write_plan: localFire,
+    ...(fireTemporal == null ? {} : {
+      local_fire_temporal_evidence: fireTemporal }) };
   return { write_set: writeSet,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
-    action_production_atomic_write_plan: action };
+    action_production_atomic_write_plan: action,
+    local_fire_atomic_write_plan: localFire,
+    ...(fireTemporal == null ? {} : {
+      local_fire_temporal_evidence: fireTemporal }) };
 }
 
 function validOrdinaryMaterializationExtension(plan) {

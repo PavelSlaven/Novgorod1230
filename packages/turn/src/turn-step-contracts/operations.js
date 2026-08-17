@@ -62,9 +62,34 @@ function validateOperation(operation, path, errors, trace) {
     request_item_use: validateItemUse,
     request_activity: validateRequestedActivity,
     emit_interaction: validateInteraction,
-    request_combat: validateCombatRequest
+    request_combat: validateCombatRequest,
+    request_world_process: validateWorldProcess
   };
   validators[operation.op]?.(operation, path, errors, trace);
+}
+
+function validateWorldProcess(value, path, errors, trace) {
+  if (!strict(value, path, [
+    'op', 'actor_ref', 'process_action', 'process_ref', 'process_kind',
+    'source_refs', 'target_refs', 'description'
+  ], errors)) return;
+  constant(value.op, 'request_world_process', `${path}.op`, errors);
+  knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
+  enumValue(value.process_action, ['start', 'affect'],
+    `${path}.process_action`, errors);
+  if (value.process_action === 'start') {
+    constant(value.process_ref, null, `${path}.process_ref`, errors);
+  } else {
+    knownRef(value.process_ref, `${path}.process_ref`, errors, trace);
+  }
+  constant(value.process_kind, 'fire', `${path}.process_kind`, errors);
+  refs(value.source_refs, `${path}.source_refs`, errors, trace, { min: 1 });
+  refs(value.target_refs, `${path}.target_refs`, errors, trace,
+    value.process_action === 'start' ? { min: 1 } : { allowEmpty: true });
+  if (value.process_action === 'affect' && Array.isArray(value.target_refs)) {
+    constant(value.target_refs.length, 0, `${path}.target_refs.length`, errors);
+  }
+  requiredText(value.description, `${path}.description`, errors);
 }
 
 function validateCreateEntity(value, path, errors, trace) {

@@ -15,6 +15,8 @@ import {
   childParentIdentities,
   validIdentity
 } from './spatial-v3-write-plan-policy.js';
+import { validLocalFireTemporalEvidence }
+  from './spatial-v3-local-fire-temporal-evidence.js';
 
 const clone = (value) => structuredClone(value);
 const INVALID_INPUT = Symbol('invalid combined write plan input');
@@ -64,9 +66,15 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const ordinaryMaterializationPlan = snapshotOrdinaryPlan(rawInput);
   const actionProductionPlan = snapshotExtensionPlan(rawInput,
     'action_production_atomic_write_plan');
+  const localFirePlan = snapshotExtensionPlan(rawInput,
+    'local_fire_atomic_write_plan');
+  const localFireTemporalEvidence = snapshotExtensionPlan(rawInput,
+    'local_fire_temporal_evidence');
   const verifyApproval = ownData(options, 'verifyApproval');
   if (ordinaryMaterializationPlan === INVALID_INPUT
-      || actionProductionPlan === INVALID_INPUT) {
+      || actionProductionPlan === INVALID_INPUT
+      || localFirePlan === INVALID_INPUT
+      || localFireTemporalEvidence === INVALID_INPUT) {
     return fail('generated_schema_mismatch', null,
       { reason: 'extension atomic plans must be strict JSON data' });
   }
@@ -88,7 +96,18 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const ordinary_materialization_atomic_write_plan =
     ordinaryMaterializationPlan;
   const action_production_atomic_write_plan = actionProductionPlan;
+  const local_fire_atomic_write_plan = localFirePlan;
+  const local_fire_temporal_evidence = localFireTemporalEvidence;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
+  const localFireDue = local_fire_atomic_write_plan?.transition_proposal
+    ?.action === 'due_boundary';
+  if (localFireDue !== (local_fire_temporal_evidence != null)
+      || localFireDue && !validLocalFireTemporalEvidence({
+        evidence: local_fire_temporal_evidence, canonical_input_digest,
+        local_fire_atomic_write_plan, party_id })) {
+    return fail('generated_schema_mismatch', party_id,
+      { reason: 'local-fire due boundary requires exact common temporal evidence' });
+  }
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
   if (operation_kind === 'first_entry') {
@@ -125,7 +144,10 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     visible_package_envelope,
     approved_write_sets,
     ordinary_materialization_atomic_write_plan,
-    action_production_atomic_write_plan
+    action_production_atomic_write_plan,
+    local_fire_atomic_write_plan,
+    ...(local_fire_temporal_evidence == null ? {} : {
+      local_fire_temporal_evidence })
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -254,7 +276,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
   const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
     write_set, ordinary_materialization_atomic_write_plan,
-    action_production_atomic_write_plan
+    action_production_atomic_write_plan, local_fire_atomic_write_plan,
+    local_fire_temporal_evidence
   }));
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
@@ -293,6 +316,12 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       action_production_atomic_write_plan:
         clone(action_production_atomic_write_plan)
     }),
+    ...(local_fire_atomic_write_plan == null ? {} : {
+      local_fire_atomic_write_plan: clone(local_fire_atomic_write_plan)
+    }),
+    ...(local_fire_temporal_evidence == null ? {} : {
+      local_fire_temporal_evidence: clone(local_fire_temporal_evidence)
+    }),
     write_set_digest,
     ...write_set
   };
@@ -327,18 +356,40 @@ function snapshotExtensionPlan(input, field) {
 
 function extensionDigestInput({ write_set,
   ordinary_materialization_atomic_write_plan: ordinary,
-  action_production_atomic_write_plan: action }) {
-  if (ordinary == null && action == null) return write_set;
+  action_production_atomic_write_plan: action,
+  local_fire_atomic_write_plan: localFire,
+  local_fire_temporal_evidence: fireTemporal }) {
+  if (ordinary == null && action == null && localFire == null) return write_set;
+  if (localFire == null) {
+    if (action == null) {
+      return { write_set,
+        ordinary_materialization_atomic_write_plan: ordinary };
+    }
+    return {
+      write_set,
+      ...(ordinary == null ? {} : {
+        ordinary_materialization_atomic_write_plan: ordinary
+      }),
+      action_production_atomic_write_plan: action
+    };
+  }
   if (action == null) {
     return { write_set,
-      ordinary_materialization_atomic_write_plan: ordinary };
+      ...(ordinary == null ? {} : {
+        ordinary_materialization_atomic_write_plan: ordinary }),
+      local_fire_atomic_write_plan: localFire,
+      ...(fireTemporal == null ? {} : {
+        local_fire_temporal_evidence: fireTemporal }) };
   }
   return {
     write_set,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
-    action_production_atomic_write_plan: action
+    action_production_atomic_write_plan: action,
+    local_fire_atomic_write_plan: localFire,
+    ...(fireTemporal == null ? {} : {
+      local_fire_temporal_evidence: fireTemporal })
   };
 }
 

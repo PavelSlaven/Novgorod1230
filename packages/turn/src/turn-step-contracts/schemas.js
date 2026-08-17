@@ -256,8 +256,32 @@ const planDefinitions = {
     },
     content: textSchema,
     instrument_refs: { type: 'array', uniqueItems: true, items: refSchema }
-  })
+  }),
+  request_world_process: { oneOf: [
+    worldProcessSchema('start', { type: 'null' }, 1),
+    worldProcessSchema('affect', refSchema, 0)
+  ] }
 };
+
+function worldProcessSchema(action, processRef, targetMinimum) {
+  return strictObject([
+    'op', 'actor_ref', 'process_action', 'process_ref', 'process_kind',
+    'source_refs', 'target_refs', 'description'
+  ], {
+    op: { const: 'request_world_process' }, actor_ref: refSchema,
+    process_action: { const: action }, process_ref: processRef,
+    process_kind: { const: 'fire' },
+    source_refs: {
+      type: 'array', minItems: 1, uniqueItems: true, items: refSchema
+    },
+    target_refs: {
+      type: 'array', minItems: targetMinimum,
+      ...(action === 'affect' ? { maxItems: 0 } : {}),
+      uniqueItems: true, items: refSchema
+    },
+    description: textSchema
+  });
+}
 
 planDefinitions.direct_operation = {
   oneOf: [
@@ -268,7 +292,8 @@ planDefinitions.direct_operation = {
 planDefinitions.domain_operation = {
   oneOf: [
     'request_discovery', 'request_container_access', 'request_movement',
-    'request_item_use', 'request_activity', 'emit_interaction'
+    'request_item_use', 'request_activity', 'emit_interaction',
+    'request_world_process'
   ].map((name) => ({ $ref: `#/$defs/${name}` }))
 };
 planDefinitions.operation = {

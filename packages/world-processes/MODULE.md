@@ -3,7 +3,7 @@
 ## Назначение
 
 `@rus/world-processes` — active-norm Temporal World v4 owner pure remote
-catch-up и propagation proposals. Historical P28 evidence не активировало
+catch-up, propagation proposals и pure local exact process transitions. Historical P28 evidence не активировало
 runtime; последующий `versioned production activation cutover` release
 `spatial-v3-production-v1` включил этот owner в sole production v3
 composition.
@@ -13,6 +13,7 @@ composition.
 - bounded deterministic advancement supplied remote process aggregate до supplied activation timestamp;
 - coarse process boundaries, termination и next boundary;
 - разделением factual и player-visible proposal output.
+- детерминированным F1 `start|add_fuel|due_boundary` для exact ordered whole fuel units.
 
 ## Не владеет
 
@@ -22,6 +23,7 @@ composition.
 
 - `createWorldProcessEngine(configuration)` — создаёт frozen engine из approved sealed process profiles и explicit safety limits.
 - `engine.catchUp(request)` — принимает formal `remote_catch_up_request`, возвращает formal frozen `remote_catch_up_result` с aggregate state, `proposed_change_set`, applied processes и deferred work refs.
+- `./local-exact-fire`: `resolveLocalExactFire(request)` принимает closed F1 request и возвращает frozen sealed transition proposal; remote `catchUp` contract не изменяется.
 
 ## Формальные контракты
 
@@ -45,3 +47,9 @@ partial fallback или reinterpretation committed history through v2. Tests:
 deterministic retry/state version/termination, immutable blocked aggregate and
 player-visible handoff, all registered process kinds, pending/corrupt
 lifecycle, full pins и explicit optional path pinning.
+
+Lower Dvina revision 22 активирует отдельный SHA-pinned F1 profile через
+`spatial-v3-production-v11`. Start/add идут после exact turn admission, due
+поставляет общий temporal owner; один combined P16 сохраняет process, ordered
+fuel bindings и retirement. Extinguish/water не активированы без отдельной
+finite-water authority.

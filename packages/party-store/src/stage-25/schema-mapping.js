@@ -14,7 +14,7 @@ const PARTY_RUNTIME_V2_TARGETS = new Set([
   'party_materialization_run_catalog_pins', 'party_v3_change_sets', 'party_actor_profile_bindings',
   'party_actor_body_states', 'party_actor_active_conditions', 'party_clocks',
   'party_obligations', 'party_obligation_transitions',
-  'party_action_production_authorities'
+  'party_action_production_authorities', 'party_local_fire_authorities'
 ]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
@@ -183,7 +183,8 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     'party_catalog_pins', 'party_materialization_run_catalog_pins', 'party_v3_change_sets',
     'party_actor_profile_bindings', 'party_actor_body_states',
     'party_actor_active_conditions', 'party_clocks', 'party_obligations',
-    'party_obligation_transitions', 'party_action_production_authorities'
+    'party_obligation_transitions', 'party_action_production_authorities',
+    'party_local_fire_authorities'
   ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 

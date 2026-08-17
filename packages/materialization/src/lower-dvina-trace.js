@@ -41,6 +41,7 @@ import { actionProductionMechanicsProfiles,
   actionProductionMechanicsSnapshot,
   buildActionProductionAuthority } from
   './lower-dvina-trace-action-production.js';
+import { materializeLocalFireActivation as fire } from './lower-dvina-trace-local-fire.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -184,7 +185,8 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21].includes(revision)
+const a1=revision>=21;
+  const phase3Prepared=revision>=8
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -193,10 +195,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21].includes(revision)
+  const phase4Prepared = revision >= 10
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
-  const phase7Prepared = [15,16,17,18,19,20,21].includes(revision)
+  const phase7Prepared = revision >= 15
     ? materializeLowerDvinaTracePreparedStorehouse({
       input, bundle, runId, participantSelections, locationSelections
     })
@@ -273,12 +275,12 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       ...(phase7Prepared ? [phase7Prepared.npc] : [])
     ]
     : [];
-  const revision19Actors = [19, 20, 21].includes(revision)
+  const r19Actors = revision >= 19
     ? materializeRevision19ActorAppearances({
       bundle, playerId, name, random, choices, npcs: materializedNpcs
     })
     : null;
-  const revision19EquipmentHandoff = revision19Actors
+  const r19Equipment = r19Actors
     ? {
       party_id: input.party_id,
       world_revision_id: input.world_revision_id,
@@ -302,7 +304,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       item_visual_profiles:
         bundle.item_container_set.item_visual_profiles,
       catalog_digest: bundle.artifact_pins.item_container_set.digest,
-      ...(revision === 21 ? {
+      ...(a1 ? {
         action_production_mechanics_profiles:
           actionProductionMechanicsProfiles(bundle.action_production_profile)
       } : {})
@@ -320,7 +322,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     wreck,
     projection: bundle.materialization_bindings.player_dossier_projection,
     sourceDigest: bundle.artifact_pins.player_profile.digest,
-    actorIdentity: revision19Actors?.playerIdentity
+    actorIdentity: r19Actors?.playerIdentity
   });
   const policyPins = Object.values(bundle.artifact_pins)
     .map((pin) => structuredClone(pin))
@@ -331,6 +333,8 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     sequence: structuredClone(sequence),
     digest: canonicalDigest({ culprit, motive, sequence })
   };
+  const f1=revision===22?fire(input.party_id,playerId,anchorId,runId,
+    bundle.local_fire_profile,deterministicInstanceId):null;
   const immediate = {
     player: { instance_id: playerId, dossier },
     spatial: {
@@ -380,7 +384,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         weapon_contract: structuredClone(knifeTemplate.weapon_contract),
         inventory_profile_snapshot: structuredClone(knifeInventoryProfile),
         source_digest: bundle.artifact_pins.item_inventory_profiles.digest,
-        ...(revision === 21 ? {
+        ...(a1 ? {
           action_production_mechanics_snapshot:
             actionProductionMechanicsSnapshot(
               bundle.action_production_profile, knifeTemplate.item_template_id)
@@ -406,7 +410,8 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       }
     }]:[]),...(phase7Prepared?.weapon?[phase7Prepared.weapon]:[]),
     ...(phase7Prepared?.packet?[phase7Prepared.packet]:[]),
-    ...(phase5Bandage ? [phase5Bandage] : [])],
+    ...(phase5Bandage ? [phase5Bandage] : []),
+    ...(f1?.items ?? [])],
     containers: phase7Prepared ? [phase7Prepared.container] : [],
     timestamp,
     environment_snapshot: structuredClone(environment),
@@ -461,15 +466,16 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
     hidden_truth: hiddenTruth,
-    ...(revision === 21 ? {
+    ...(a1 ? {
       action_production_authority: buildActionProductionAuthority({
         partyId: input.party_id,
         actorRef: playerId,
         profile: bundle.action_production_profile
       })
     } : {}),
-    ...(revision19EquipmentHandoff ? {
-      initial_actor_equipment_handoff: revision19EquipmentHandoff
+    ...(f1 ? { local_fire_authority:f1.authority } : {}),
+    ...(r19Equipment ? {
+      initial_actor_equipment_handoff: r19Equipment
     } : {}),
     sealed_selections: sealedSelections,
     policy_profile_pins: policyPins,

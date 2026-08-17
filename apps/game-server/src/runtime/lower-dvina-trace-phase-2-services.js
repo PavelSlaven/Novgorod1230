@@ -70,6 +70,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ordinaryDiscoveryEnablementMarker,
     createTurnStepActionProducedResolver,
     actionProductionProfile,
+    createTurnStepWorldProcessResolver,
+    localFireProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -154,6 +156,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     createLowerDvinaTraceTurnStepPlayerSafeProjector({
       actionProductionProfile,
       createTurnStepActionProducedResolver,
+      localFireProfile,
+      createTurnStepWorldProcessResolver,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
@@ -185,6 +189,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(typeof createTurnStepActionProducedResolver === 'function'
         && actionProductionProfile?.profile?.status === 'approved' ? {
       turnStepActionProducedResolver: createTurnStepActionProducedResolver({
+        partyId, requestId, inputDigest
+      })
+    } : {}),
+    ...(typeof createTurnStepWorldProcessResolver === 'function'
+        && localFireProfile?.profile?.status === 'approved' ? {
+      turnStepWorldProcessResolver: createTurnStepWorldProcessResolver({
         partyId, requestId, inputDigest
       })
     } : {}),

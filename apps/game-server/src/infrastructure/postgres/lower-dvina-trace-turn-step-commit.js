@@ -26,6 +26,8 @@ import { applyActionProductionProjection } from
   './lower-dvina-trace-action-production-projection.js';
 import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
+import { createSpatialSemanticAtomicWritePlan } from
+  './spatial-semantic-atomic-write-plan.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -80,6 +82,18 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
       'Local-fire atomic plan failed its contract.',{status:409});
   }
+  let spatialSemanticPlan = null;
+  try {
+    if (writePlan.spatial_semantic_atomic_write_plan != null) {
+      spatialSemanticPlan = createSpatialSemanticAtomicWritePlan(
+        writePlan.spatial_semantic_atomic_write_plan);
+      if (spatialSemanticPlan.party_id !== partyId
+          || spatialSemanticPlan.change_set_id !== changeSetId) throw new Error();
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_SPATIAL_SEMANTIC_PLAN_INVALID',
+      'Spatial semantic atomic plan failed its sealed contract.', { status: 409 });
+  }
   const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
     ...envelope, visible_context: applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
@@ -132,7 +146,7 @@ export async function commitLowerDvinaTraceTurnStep({
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
     turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlans
+    localFirePlans, spatialSemanticPlan
   });
   const committed = await committer.commit({
     plan: built.plan,

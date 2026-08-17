@@ -1,5 +1,4 @@
-import { canonicalDigest } from '@rus/materialization';
-import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { canonicalDigest } from '@rus/materialization'; import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../../errors.js';
 import { json } from '../../runtime/first-playable/shared.js';
@@ -32,6 +31,7 @@ import { assertCombatSessionRows } from './lower-dvina-trace-combat-read.js';
 import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js';
 import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
 import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
+import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -107,8 +107,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
           openingScreenDigest: row.stage26_result.opening_screen_digest
         })
       );
-      return { ...visible, local_fire_runtime:structuredClone(
-        temporalSourceProof.local_fire_runtime) };
+      return withSpatialSemanticCommittedState(partyPool, partyId, { ...visible,
+        local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) });
     }
     const payload = row.state_payload;
     if (!validPhase2Snapshot(payload, row, partyId)) {
@@ -141,7 +141,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     const loadedPayload = structuredClone(payload);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    return {
+    return withSpatialSemanticCommittedState(partyPool, partyId, {
       ...loadedPayload,
       world_identity: {
         world_revision_id: row.world_revision_id,
@@ -151,7 +151,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof),
       local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-    };
+    });
   }
   async function loadPhase2Replay({ partyId, idempotencyKey }) {
     return loadCurrentOrHistoricalPhase2Replay({

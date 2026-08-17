@@ -13,14 +13,17 @@ import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { localFirePhysicalKeys } from './local-fire-atomic-write-plan.js';
+import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } from './spatial-semantic-atomic-write-plan.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = [], localFirePlans = []
+  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
+  const semanticPlan = spatialSemanticPlan == null ? null
+    : createSpatialSemanticAtomicWritePlan(spatialSemanticPlan);
   if (actionPlans.some((plan) => plan.actor_ref !== state.actor_id)) {
     throw serverError(
       'TRACE_TURN_STEP_ACTION_PRODUCTION_ACTOR_MISMATCH',
@@ -84,11 +87,13 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
       ...actionPlans.flatMap(actionProducedPhysicalKeys),
-      ...localFirePlans.flatMap(localFirePhysicalKeys)]
+      ...localFirePlans.flatMap(localFirePhysicalKeys),
+      ...spatialSemanticPhysicalKeys(semanticPlan)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     action_production_atomic_write_plans: actionPlans,
     local_fire_atomic_write_plans: localFirePlans,
+    spatial_semantic_atomic_write_plan: semanticPlan,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

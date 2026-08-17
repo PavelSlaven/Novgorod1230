@@ -1,0 +1,35 @@
+{
+  "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
+  "profile_id": "lower_dvina_trace_s1_spatial_semantic_profile_v1",
+  "revision": 1,
+  "status": "approved",
+  "scenario_definition_revision": 23,
+  "policy_ref": "lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1",
+  "policy_version": 1,
+  "property_ref": "lower_dvina_trace:s1:shore_property_context_v1",
+  "function_ref": "lower_dvina_trace:s1:descriptive_only_v1",
+  "environment_ref": "lower_dvina_trace:s1:late_summer_open_water_v1",
+  "envelopes": [
+    {
+      "envelope_ref": "lower_dvina_trace:s1:wreck_shore:ordinary_structure",
+      "kind": "ordinary_structure",
+      "template_id": "trace_ld_v1_tpl_wreck_shore",
+      "position_kind": "scene_position",
+      "scope_kind": "current_position_local_reference",
+      "mechanics_class": "descriptive_only",
+      "capacity_total": 1
+    },
+    {
+      "envelope_ref": "lower_dvina_trace:s1:wreck_shore:local_natural_feature",
+      "kind": "local_natural_feature",
+      "template_id": "trace_ld_v1_tpl_wreck_shore",
+      "position_kind": "scene_position",
+      "scope_kind": "current_position_local_reference",
+      "mechanics_class": "descriptive_only",
+      "capacity_total": 1
+    }
+  ],
+  "movement_hazard_policy": "none_only",
+  "water_fire_coupling": "disabled",
+  "fallback_policy": "forbidden"
+}

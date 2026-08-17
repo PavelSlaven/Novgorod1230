@@ -33,7 +33,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
-  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProductionOwner = null, actionProductionProfile = null, createTurnStepWorldProcessResolver = null, localFireProfile = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProductionOwner = null, actionProductionProfile = null, createTurnStepWorldProcessResolver = null, localFireProfile = null, createTurnStepSpatialSemanticResolver = null, spatialSemanticProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -112,16 +112,16 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19,20,21,22].includes(bundle.definition_revision)
+      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19,20,21,22].includes(bundle.definition_revision)
+      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11,12,13,14,15,16,17,18,19,20,21,22].includes(bundle.definition_revision)
+      const phase5Contracts = [11,12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12,13,14,15,16,17,18,19,20,21,22].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
+      const phase6Contracts = [12,13,14,15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
             profiles: bundle.turn_step_owner_profiles,
@@ -130,7 +130,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         : null;
       const turnRandomSource = randomSourceFactory({ party_id: partyId,
         request_id: requestId, idempotency_key: idempotencyKey });
-      const phase7Contracts = [15,16,17,18,19,20,21,22].includes(bundle.definition_revision)
+      const phase7Contracts = [15,16,17,18,19,20,21,22,23].includes(bundle.definition_revision)
         ? resolveTracePhase7Contracts({ state, bundle }) : null;
       const revalidateStateVersion = createStateVersionRevalidator({ repository, partyId, idempotencyKey });
       const phase8 = createTracePhase8Runtime({ state, bundle,
@@ -141,7 +141,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
           phase3Contracts?.conversationBindings,
         inputDigest, playerConversationModel, npcSemanticModel,
         temporalAdvanceOwner, revalidateStateVersion }), phase9Contracts=phase9?.contracts??null;
-      const phase10Contracts = [18, 19, 20, 21, 22].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+      const phase10Contracts = [18, 19, 20, 21, 22, 23].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,
@@ -201,8 +201,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
           semanticActivityScheduleOwner:
             genericOwners?.semanticActivityScheduleOwner,
           genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-          localFireProfile: bundle.definition_revision === 22 ? localFireProfile : null,
-          worldProcessResolver: bundle.definition_revision === 22 && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved' ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest }) : null, projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
+          localFireProfile: [22,23].includes(bundle.definition_revision) ? localFireProfile : null,
+          worldProcessResolver: [22,23].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved' ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest }) : null, projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
           randomSource: turnRandomSource,
           temporalAdvanceOwner,
           revalidateStateVersion
@@ -272,7 +272,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         turnStepGenericCheckContextOwner:
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
-        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProductionOwner: [21,22].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21,22].includes(bundle.definition_revision) ? actionProductionProfile : null, createTurnStepWorldProcessResolver: bundle.definition_revision === 22 ? createTurnStepWorldProcessResolver : null, localFireProfile: bundle.definition_revision === 22 ? localFireProfile : null,
+        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProductionOwner: [21,22,23].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21,22,23].includes(bundle.definition_revision) ? actionProductionProfile : null, createTurnStepWorldProcessResolver: [22,23].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22,23].includes(bundle.definition_revision) ? localFireProfile : null,
+        createTurnStepSpatialSemanticResolver, spatialSemanticProfile,
         admitAmbientOrdinaryPortion: typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
           ? createTurnStepAmbientOrdinaryPortionAdmission({ committedState: state }) : null,
         requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
@@ -293,7 +294,6 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         inputDigest,
         result
       });
-      };
-      return executeTraceTurnWithAutonomousRetry(executeAttempt);
+      }; return executeTraceTurnWithAutonomousRetry(executeAttempt);
     }
   }); }

@@ -7,6 +7,8 @@ import { projectLowerDvinaTraceO2aCapabilities,
   './lower-dvina-trace-o2a-player-safe.js';
 import { projectLowerDvinaTraceF1Capability } from
   './releases/lower-dvina-trace-f1-production.js';
+import { projectLowerDvinaTraceS1Capability } from
+  './releases/lower-dvina-trace-s1-production.js';
 
 export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   admitAmbientOrdinaryPortion,
@@ -14,6 +16,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   createTurnStepActionProductionOwner,
   localFireProfile,
   createTurnStepWorldProcessResolver,
+  createTurnStepSpatialSemanticResolver,
   ordinaryDiscoveryEnablementMarker,
   ordinaryDiscoveryResolver,
   partyId,
@@ -44,25 +47,29 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       loadedProfile: localFireProfile,
       resolverAvailable: typeof createTurnStepWorldProcessResolver === 'function'
     });
+    const spatialState = projectLowerDvinaTraceS1Capability({
+      playerSafeState, committedState,
+      resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function'
+    });
     const base = { ...projected,
       initial_working_projection: initialWorkingProjection };
     if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
         || typeof ordinaryDiscoveryResolver !== 'function') {
-      return { ...base, player_safe_state: playerSafeState };
+      return { ...base, player_safe_state: spatialState };
     }
     const scopeId = committedState.position?.g6_id
       ?? committedState.position?.g6_ref
       ?? committedState.position?.location_ref;
     if (typeof scopeId !== 'string' || !scopeId) {
-      return { ...base, player_safe_state: playerSafeState };
+      return { ...base, player_safe_state: spatialState };
     }
     const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
       scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
     if (enabled !== true && enabled?.discovery_available !== true) {
-      return { ...base, player_safe_state: playerSafeState };
+      return { ...base, player_safe_state: spatialState };
     }
     const withSources = projectLowerDvinaTraceO2aDiscoverySources({
-      projected:{...base,player_safe_state:playerSafeState},
+      projected:{...base,player_safe_state:spatialState},
       sources:enabled === true ? [] : enabled.sources });
     const capability = projectPlayerSafeOrdinaryResolutionCapability({
       ordinary_resolution:{discovery_available:true,

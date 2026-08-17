@@ -73,14 +73,23 @@ const actionProductionSql = readFileSync(
   new URL('../../schemas/party-db/027_party_runtime_action_production.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 027 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
+const spatialSemanticSql = readFileSync(
+  new URL('../../schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql', import.meta.url),
+  'utf8'
+);
+const localFireSql = readFileSync(
+  new URL('../../schemas/party-db/028_party_runtime_local_exact_fire.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 029 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 29);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-19), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
-    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql]);
+    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql, localFireSql,
+    spatialSemanticSql]);
 });
 
 test('027 adds only A1 item versioning without parallel authority or ledger',

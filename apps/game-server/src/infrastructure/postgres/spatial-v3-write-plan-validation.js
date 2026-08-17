@@ -21,6 +21,8 @@ import { actionProducedPhysicalKeys,
   './action-produced-atomic-write-plan.js';
 import { validLocalFireExtension } from
   './local-fire-write-plan-validation.js';
+import { validSpatialSemanticExtension } from
+  './spatial-semantic-write-plan-validation.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -133,6 +135,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
   if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!validActionProductionExtension(plan)) return false;
   if (!validLocalFireExtension(plan)) return false;
+  if (!validSpatialSemanticExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -209,15 +212,21 @@ function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   const actions = plan.action_production_atomic_write_plans ?? [];
   const localFire=plan.local_fire_atomic_write_plans??[];
-  if (ordinary == null && actions.length === 0 && localFire.length===0) return writeSet;
+  const spatialSemantic = plan.spatial_semantic_atomic_write_plan;
+  if (ordinary == null && actions.length === 0 && localFire.length===0
+      && spatialSemantic == null) return writeSet;
   if (actions.length === 0 && localFire.length===0) return { write_set: writeSet,
-    ordinary_materialization_atomic_write_plan: ordinary };
+    ordinary_materialization_atomic_write_plan: ordinary,
+    ...(spatialSemantic == null ? {} : {
+      spatial_semantic_atomic_write_plan: spatialSemantic }) };
   return { write_set: writeSet,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
     ...(actions.length===0?{}:{action_production_atomic_write_plans:actions}),
-    ...(localFire.length===0?{}:{local_fire_atomic_write_plans:localFire}) };
+    ...(localFire.length===0?{}:{local_fire_atomic_write_plans:localFire}),
+    ...(spatialSemantic == null ? {} : {
+      spatial_semantic_atomic_write_plan: spatialSemantic }) };
 }
 
 function validOrdinaryMaterializationExtension(plan) {

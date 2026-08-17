@@ -12,6 +12,9 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
+  './lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceSpatialSemanticModel } from '../lower-dvina-trace-s1-llm.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../lower-dvina-trace-world-process-llm.js';
 import { createOrdinaryMaterializationModel } from
@@ -81,6 +84,9 @@ export function createTraceTurnRuntime({
     : createLowerDvinaTraceF1ProductionResolverFactory({ pool: partyPool,
       loadedProfile: localFireProfile,
       worldProcessStepModel:createLowerDvinaTraceWorldProcessStepModel({roleRunner}) });
+  const spatialSemanticResolverFactory =
+    createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
+      spatialSemanticModel: createLowerDvinaTraceSpatialSemanticModel({ roleRunner }) });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -111,6 +117,7 @@ export function createTraceTurnRuntime({
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
     localFireProfile,
+    createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

@@ -12,7 +12,7 @@ import { classifyTraceActionProducedWeapons, resolveTraceCombatWeaponDanger } fr
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest, randomSource,
   npcCombatModel, actionProducedWeaponClassifier = null, revalidateStateVersion, temporalAdvanceOwner = null }) {
-  if (![16, 17, 18, 19, 20, 21, 22].includes(bundle?.definition_revision)) return null;
+  if (![16, 17, 18, 19, 20, 21, 22, 23].includes(bundle?.definition_revision)) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
   const bindings = bundle.combat_semantic_bindings;
   if (!Array.isArray(playerProfiles) || !bindings) fail('TRACE_COMBAT_BINDING_GAP');

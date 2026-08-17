@@ -1,13 +1,8 @@
 import { deepFreeze } from '@rus/kernel';
-import {
-  createTurnStepExecutionRegistry,
-  requireTurnStepExecutionRegistry,
-  runTurnStepLoop
-} from './turn-step-loop.js';
+import { createTurnStepExecutionRegistry, requireTurnStepExecutionRegistry, runTurnStepLoop } from './turn-step-loop.js';
 import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
-import { assertValid, validateAvailabilityDecision,
-  validateConsequencePackage } from './validators.js';
-import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
+import { assertValid, validateAvailabilityDecision, validateConsequencePackage } from './validators.js';
+import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js'; import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } from './turn-step-spatial-semantic-remainder.js';
 import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
 export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
@@ -128,6 +123,15 @@ export async function resolveBoundTurnStepCommand({
         const worldProcess = resolveWorldProcessRemainder({ operation,
           execution, projected, committedState, services });
         if (worldProcess !== null) return worldProcess;
+      }
+      if (matches.length === 0) {
+        const spatialResolver = services.turnStepSpatialSemanticResolver;
+        if (typeof spatialResolver === 'function'
+            && isSpatialSemanticRemainderInScope({ operation,
+              playerSafeState: execution.request.player_safe_state })) {
+          return resolveSpatialSemanticRemainder({ resolver: spatialResolver,
+            execution, actor: projected.actor, committedState });
+        }
       }
       if (matches.length === 0) {
         const actionProductionOwner =
@@ -428,11 +432,9 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
-
 function plain(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
-
 export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
   if (!['inspect', 'search'].includes(operation?.discovery_kind)
       || !Array.isArray(operation.target_refs)
@@ -444,7 +446,6 @@ export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
   }
   return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
 }
-
 function ordinaryDiscoveryAvailable(playerSafeState) {
   const resolution = ownDataProperty(playerSafeState, 'ordinary_resolution');
   const marker = ownPlainDataRecord(resolution, [
@@ -453,7 +454,6 @@ function ordinaryDiscoveryAvailable(playerSafeState) {
   return marker?.discovery_available === true
     && marker.container_resolution_available === false;
 }
-
 function exactVisibleScope(...projections) {
   const refs = new Set();
   for (const projection of projections) {
@@ -493,7 +493,6 @@ function ownDataProperty(value, key) {
   return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
     ? descriptor.value : undefined;
 }
-
 function turnCommandError(code, message) {
   return Object.assign(new Error(message), { code });
 }

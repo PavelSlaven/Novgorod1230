@@ -25,6 +25,16 @@ import {
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
+const revision22Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 22
+});
+const revision22DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
+  revision22Bundle
+);
+const activeBundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 23
+});
+const activeDomainCatalogPin = lowerDvinaTracePhase1ADomainPin(activeBundle);
 
 function request(overrides = {}) {
   return {
@@ -47,6 +57,71 @@ function request(overrides = {}) {
     ...overrides
   };
 }
+
+test('revision 23 materialization contract admits the S1 artifact and prior owners', () => {
+  assert.deepEqual(activeBundle.local_fire_profile, revision22Bundle.local_fire_profile);
+  assert.deepEqual(
+    activeBundle.materialization_bindings.action_production_materialization,
+    revision22Bundle.materialization_bindings.action_production_materialization
+  );
+  assert.deepEqual(
+    activeBundle.materialization_bindings.local_fire_materialization,
+    revision22Bundle.materialization_bindings.local_fire_materialization
+  );
+  const prior = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-22-party',
+    scenario_definition_revision: 22,
+    scenario_manifest_digest: revision22Bundle.manifest_digest,
+    world_revision_id:
+      revision22Bundle.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest:
+      revision22Bundle.location_topology_set.spatial_source_ref
+        .world_revision_catalog_digest,
+    domain_catalog_pin: revision22DomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-22-idempotency',
+    scenario_bundle: revision22Bundle
+  }));
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-23-party',
+    scenario_definition_revision: 23,
+    scenario_manifest_digest: activeBundle.manifest_digest,
+    world_revision_id:
+      activeBundle.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest:
+      activeBundle.location_topology_set.spatial_source_ref
+        .world_revision_catalog_digest,
+    domain_catalog_pin: activeDomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-23-idempotency',
+    scenario_bundle: activeBundle
+  }));
+
+  assert.equal(result.sealed_selections.length, 24);
+  assert.ok(result.sealed_selections.some(
+    ({ selection_kind: kind }) => kind === 'interaction_persistence_mappings'
+  ));
+  assert.equal(result.immediate.prepared_scenes.length, 3);
+  assert.equal(result.immediate.containers.length, 1);
+  for (const owner of ['local_fire_authority', 'action_production_authority']) {
+    assert.equal(Object.hasOwn(result, owner), Object.hasOwn(prior, owner));
+  }
+  assert.equal(
+    result.immediate.items.filter(({ state }) => state.local_fire_fuel
+      || state.local_fire_ignition_basis).length,
+    prior.immediate.items.filter(({ state }) => state.local_fire_fuel
+      || state.local_fire_ignition_basis).length
+  );
+  const materializedNpcIds = new Set(result.immediate.npcs.map(
+    ({ instance_id: instanceId }) => instanceId
+  ));
+  assert.deepEqual(
+    result.immediate.items
+      .filter(({ holder_npc_id: holderNpcId }) => (
+        holderNpcId && !materializedNpcIds.has(holderNpcId)
+      ))
+      .map(({ template_id: templateId }) => templateId),
+    []
+  );
+});
 
 test('canonical seed deterministically resolves the complete internal Phase 1A instance', () => {
   const originalRandom = Math.random;

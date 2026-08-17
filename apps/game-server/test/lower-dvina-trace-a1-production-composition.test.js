@@ -4,14 +4,25 @@ import { loadLowerDvinaTraceA1Profile } from
   '../src/internal/lower-dvina-trace-a1-profile.js';
 import { loadLowerDvinaTraceLocalFireProfile } from
   '../src/internal/lower-dvina-trace-local-fire-profile.js';
+import { loadLowerDvinaTraceSpatialSemanticProfile } from
+  '../src/internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { projectLowerDvinaTraceA1Capability } from
   '../src/runtime/lower-dvina-trace-a1-player-safe.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
 import { projectLowerDvinaTraceF1Capability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
+import { projectLowerDvinaTraceS1Capability } from
+  '../src/runtime/releases/lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
+  '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+
+test('S1 profile loads revision 23 bundle', async () => {
+  const loaded = await loadLowerDvinaTraceSpatialSemanticProfile();
+  assert.equal(loaded.profile.scenario_definition_revision, 23);
+});
 
 test('production-v10 threads the exact A1 profile and resolver into Phase 2',
   async () => {
@@ -114,8 +125,174 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
     assert.equal(hidden.local_world_process,undefined);
   });
 
+test('S1 player-safe projection exposes only current committed local refs',
+  async () => {
+    const committedState = { position: { position_id: 'position:shore' },
+      spatial_semantic: [
+        { status: 'committed', envelope_ref: 'envelope:shore', capacity_total: 2,
+          consumed_count: 1, envelope: { position_ref: 'position:shore' },
+          resolutions: [{ local_ref: 's1-local:shore', position_ref: 'position:shore',
+            semantics: { name: 'Коряга', description: 'Сырая коряга у воды.',
+              kind: 'local_natural_feature' } }] },
+        { status: 'committed', envelope_ref: 'envelope:far', capacity_total: 1,
+          consumed_count: 1, envelope: { position_ref: 'position:far' },
+          resolutions: [{ local_ref: 's1-local:far', position_ref: 'position:far',
+            semantics: { name: 'Пень', description: 'Пень далеко.',
+              kind: 'ordinary_structure' } }] }
+      ] };
+    const projected = projectLowerDvinaTraceS1Capability({
+      playerSafeState: { visible_objects: [{ entity_ref: 'existing' }] },
+      committedState, resolverAvailable: true });
+    assert.deepEqual(projected.visible_objects, [{ entity_ref: 'existing' }, {
+      entity_ref: 's1-local:shore', display_label: 'Коряга',
+      description: 'Сырая коряга у воды.', kind: 'local_natural_feature' }]);
+    assert.deepEqual(projected.spatial_semantic, { semantic_grounding_available: true,
+      envelope_ref: 'envelope:shore', position_ref: 'position:shore' });
+    const away = projectLowerDvinaTraceS1Capability({
+      playerSafeState: { visible_objects: [] }, committedState: {
+        ...committedState, position: { position_id: 'position:far' }
+      }, resolverAvailable: true });
+    assert.deepEqual(away.visible_objects, [{ entity_ref: 's1-local:far',
+      display_label: 'Пень', description: 'Пень далеко.', kind: 'ordinary_structure' }]);
+    const returned = projectLowerDvinaTraceS1Capability({
+      playerSafeState: { visible_objects: [] }, committedState, resolverAvailable: true });
+    assert.equal(returned.visible_objects[0].entity_ref, 's1-local:shore');
+  });
+
+test('production binding installs S1 resolver without profile gating',
+  async () => {
+    const loadedProfile = { profile: { status: 'approved' } };
+    const active = await capturedTraceRuntime(null, null, loadedProfile);
+    assert.equal(typeof active.createTurnStepSpatialSemanticResolver, 'function');
+    const absent = await capturedTraceRuntime(null, null, null);
+    assert.equal(typeof absent.createTurnStepSpatialSemanticResolver, 'function');
+  });
+
+test('S1 production boundary rejects hostile envelopes before getters or storage',
+  async () => {
+    let connections = 0; let modelCalls = 0; let reads = 0;
+    const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
+      pool: { query: async () => { connections += 1;
+        throw new Error('storage must not be reached'); } },
+      spatialSemanticModel: async () => { modelCalls += 1; } })({
+        partyId: 'party:test' });
+    const topLevel = {};
+    Object.defineProperty(topLevel, 'request', { enumerable: true,
+      get() { reads += 1; return {}; } });
+    const nested = { request: {} };
+    Object.defineProperty(nested.request, 'player_safe_state', {
+      enumerable: true, get() { reads += 1; return {}; } });
+    for (const hostile of [topLevel, nested]) {
+      await assert.rejects(() => resolver(hostile),
+        { code: 'TRACE_S1_INPUT_INVALID' });
+    }
+    assert.equal(reads, 0);
+    assert.equal(connections, 0);
+  assert.equal(modelCalls, 0);
+});
+
+test('S1 resolver models one open result, then replays only visible current resolution', async () => {
+  let modelCalls = 0;
+  const envelope = s1Envelope();
+  const pool = { query: async (sql) => {
+    if (sql.includes('party_spatial_semantic_resolutions')) {
+      return { rowCount: 0, rows: [] };
+    }
+    if (sql.includes('party_spatial_semantic_envelopes')) return { rowCount: 1,
+      rows: [{ envelope, capacity_total: 1, consumed_count: 0,
+        state_version: 1, status: 'committed' }] };
+    assert.fail(`unexpected S1 query: ${sql}`);
+  } };
+  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+    spatialSemanticModel: async ({ request_id }) => {
+      modelCalls += 1;
+      return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
+        name: 'Незнакомый выступ', description: 'Сырым камнем выдается у воды.' };
+    } })({ partyId: 'party:s1' });
+  const planned = await resolver(s1Request());
+  assert.equal(modelCalls, 1);
+  assert.deepEqual(planned.spatial_semantic_atomic_write_plan.causal_identity, {
+    request_id: 'request:s1', root_turn_id: 'turn:s1',
+    action_ref: 's1:turn:s1:1', step_index: 1, actor_ref: 'actor:s1'
+  });
+  assert.equal('operation_digest' in planned.spatial_semantic_atomic_write_plan.causal_identity,
+    false);
+  const afterCrash = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
+    spatialSemanticModel: async ({ request_id }) => {
+      modelCalls += 1;
+      return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
+        name: 'Другой выступ', description: 'Ничего не было сохранено.' };
+    } })({ partyId: 'party:s1' });
+  await afterCrash(s1Request());
+  assert.equal(modelCalls, 2);
+  assert.equal(envelope.consumed_count, 0);
+
+  const committed = { request_id: 'request:s1', local_ref: 's1-local:request:s1',
+    envelope_ref: 'envelope:s1', position_ref: 'position:s1', root_turn_id: 'turn:s1',
+    step_index: 1, semantics: { kind: 'local_natural_feature', name: 'Выступ',
+      description: 'Камень у воды.', mechanics_class: 'descriptive_only' } };
+  const replay = createLowerDvinaTraceS1ProductionResolverFactory({ pool: {
+    query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
+      ? { rowCount: 1, rows: [committed] }
+      : assert.fail(`unexpected replay write/read: ${sql}`)
+  }, spatialSemanticModel: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
+  const replayed = await replay(s1Request({ target: committed.local_ref,
+    visible: [s1Visible(committed.local_ref)] }));
+  assert.equal(replayed.spatial_semantic_atomic_write_plan, undefined);
+  assert.equal(modelCalls, 2);
+  await assert.rejects(() => replay(s1Request({ target: committed.local_ref,
+    visible: [s1Visible(committed.local_ref)], position: 'position:other' })),
+  { code: 'TRACE_S1_SCOPE_INVALID' });
+  await assert.rejects(() => replay(s1Request({ target: committed.local_ref,
+    visible: [s1Visible('s1-local:forged')] })), { code: 'TRACE_S1_SCOPE_INVALID' });
+});
+
+test('S1 visible local refs reject unsupported mechanics after committed scope check', async () => {
+  const committed = { request_id: 'request:s1', local_ref: 's1-local:request:s1',
+    envelope_ref: 'envelope:s1', position_ref: 'position:s1', root_turn_id: 'turn:s1',
+    step_index: 1, semantics: { kind: 'local_natural_feature', name: 'Выступ',
+      description: 'Камень у воды.', mechanics_class: 'descriptive_only' } };
+  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool: {
+    query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
+      ? { rowCount: 1, rows: [committed] }
+      : assert.fail(`unexpected S1 query: ${sql}`)
+  }, spatialSemanticModel: async () => assert.fail('model must not run')
+  })({ partyId: 'party:s1' });
+  const use = (overrides = {}) => s1Request({ target: committed.local_ref,
+    visible: [s1Visible(committed.local_ref)], operation: {
+      op: 'request_item_use', actor_ref: 'actor:s1', item_ref: committed.local_ref,
+      use_kind: 'operate', target_refs: [] }, ...overrides });
+  await assert.rejects(() => resolver(use()),
+    { code: 'TRACE_S1_MECHANICS_UNSUPPORTED' });
+  await assert.rejects(() => resolver(use({ position: 'position:other' })),
+    { code: 'TRACE_S1_SCOPE_INVALID' });
+  await assert.rejects(() => resolver(use({ visible: [s1Visible('s1-local:forged')] })),
+    { code: 'TRACE_S1_SCOPE_INVALID' });
+});
+
+test('S1 player-safe projection rejects hostile committed snapshots without reads',
+  async () => {
+    const base = { visible_objects: [{ entity_ref: 'visible' }] };
+    let reads = 0;
+    const getter = {};
+    Object.defineProperty(getter, 'spatial_semantic', { enumerable: true,
+      get() { reads += 1; return []; } });
+    const withSymbol = { position: null, [Symbol('hidden')]: true };
+    const custom = Object.create(null); custom.position = null;
+    const cycle = {}; cycle.self = cycle;
+    const shared = {}; const alias = { first: shared, second: shared };
+    for (const committedState of [getter, withSymbol, custom, cycle, alias]) {
+      const projected = projectLowerDvinaTraceS1Capability({
+        playerSafeState: base, committedState,
+        resolverAvailable: true });
+      assert.deepEqual(projected, base);
+      assert.equal(projected.spatial_semantic, undefined);
+    }
+    assert.equal(reads, 0);
+  });
+
 async function capturedTraceRuntime(actionProductionProfile,
-  localFireProfile = null) {
+  localFireProfile = null, spatialSemanticProfile = null) {
   let captured = null;
   const release = {
     release_id: 'spatial-v3-production-v10',
@@ -142,7 +319,8 @@ async function capturedTraceRuntime(actionProductionProfile,
     ports: { worldPool, partyPool }, release,
     config: { traceTurnDecisionSecret: 'test-secret' },
     actionProductionProfile,
-    localFireProfile
+    localFireProfile,
+    spatialSemanticProfile
   }, {
     createNpcRuntimePorts: () => ({}),
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; }
@@ -152,4 +330,30 @@ async function capturedTraceRuntime(actionProductionProfile,
     committer: { commit: async () => ({ ok: true }) }
   });
   return captured;
+}
+
+function s1Envelope() {
+  return { envelope_ref: 'envelope:s1', kind: 'local_natural_feature',
+    scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
+    baseline_ref: 'baseline:s1', g5_ref: 'g5:s1', g6_ref: 'g6:s1',
+    position_ref: 'position:s1', template_ref: 'template:s1', property_ref: 'property:s1',
+    function_ref: 'function:s1', environment_ref: 'environment:s1', profile_ref: 'profile:s1',
+    profile_version: 1, policy_ref: 'policy:s1', policy_version: 1,
+    baseline_state_version: 0, g5_state_version: 0, g6_state_version: 0,
+    position_state_version: 0, capacity_total: 1, consumed_count: 0, state_version: 1 };
+}
+function s1Visible(entity_ref) {
+  return { entity_ref, display_label: 'Выступ', description: 'Камень у воды.',
+    kind: 'local_natural_feature' };
+}
+function s1Request({ target = 'position:s1', visible = [], position = 'position:s1',
+  operation = undefined } = {}) {
+  return { schema: 'turn_step_spatial_semantic_remainder_request_v1',
+    operation: operation ?? { op: 'request_discovery', discovery_kind: 'look',
+      actor_ref: 'actor:s1', target_refs: [target] }, request: { request_id: 'request:s1', root_turn_id: 'turn:s1',
+      step_index: 1, committed_state_version: 4, player_safe_state: {
+        spatial_semantic: { semantic_grounding_available: true,
+          envelope_ref: 'envelope:s1', position_ref: 'position:s1' }, visible_objects: visible } },
+    actor: { actor_id: 'actor:s1' }, working_projection: {},
+    committed_state: { party_state: { turn_number: 4 }, position: { position_id: position } } };
 }

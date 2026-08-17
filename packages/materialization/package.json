@@ -5,6 +5,7 @@
   "exports": {
     ".": "./src/index.js",
     "./internal/lower-dvina-trace-phase-1a": "./src/lower-dvina-trace.js",
+    "./internal/lower-dvina-trace-s1": "./src/lower-dvina-trace-spatial-semantic.js",
     "./spatial-v3": "./src/spatial-v3-ports.js",
     "./spatial-v3-materialization": "./src/spatial-v3.js"
   },

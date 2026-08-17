@@ -182,7 +182,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].includes(revision)
+  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -191,10 +191,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21,22].includes(revision)
+  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21,22,23].includes(revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
-  const phase7Prepared = [15,16,17,18,19,20,21,22].includes(revision)
+  const phase7Prepared = [15,16,17,18,19,20,21,22,23].includes(revision)
     ? materializeLowerDvinaTracePreparedStorehouse({
       input, bundle, runId, participantSelections, locationSelections
     })
@@ -271,7 +271,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       ...(phase7Prepared ? [phase7Prepared.npc] : [])
     ]
     : [];
-  const revision19Actors = [19, 20, 21, 22].includes(revision)
+  const revision19Actors = [19, 20, 21, 22, 23].includes(revision)
     ? materializeRevision19ActorAppearances({
       bundle, playerId, name, random, choices, npcs: materializedNpcs
     })
@@ -325,7 +325,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     sequence: structuredClone(sequence),
     digest: canonicalDigest({ culprit, motive, sequence })
   };
-  const localFire=revision===22?materializeLocalFireActivation(
+  const localFire=[22,23].includes(revision)?materializeLocalFireActivation(
     input.party_id,playerId,anchorId,runId,bundle.local_fire_profile,
     deterministicInstanceId):null;
   const immediate = {

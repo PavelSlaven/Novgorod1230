@@ -1036,6 +1036,12 @@
       "type": "sql"
     },
     {
+      "bytes": 2524,
+      "path": "schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql",
+      "sha256": "eb35eef215c986db50abbd290ba95f2b8f6e44dbdbe49f7355347838acb82e89",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

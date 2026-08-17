@@ -4,6 +4,11 @@
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
+S1 local descriptive detail uses the existing P16 transaction: the server
+revalidates code-owned finite capacity and committed current-position scope,
+then persists the admitted ordinary name/description without creating a second
+transaction, topology owner or mechanics path.
+
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.

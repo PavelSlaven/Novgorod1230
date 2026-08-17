@@ -22,9 +22,9 @@ import { applyActionProducedAtomicWritePlanInTransaction } from
   './action-produced-persistence.js';
 import { applyLocalFireP16Extension, assertLocalFireFuelMutationBound } from
   './local-fire-p16-extension.js';
-
+import { applySpatialSemanticAtomicWritePlanInTransaction } from
+  './spatial-semantic-persistence.js';
 export { validateSpatialV3CombinedWritePlan };
-
 function serializePlanValue(value) {
   return Array.isArray(value) ? JSON.stringify(value) : value;
 }
@@ -219,6 +219,25 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         }
       }
       await applyLocalFireP16Extension(tx,plan);
+      if (plan.spatial_semantic_atomic_write_plan != null) {
+        try {
+          await applySpatialSemanticAtomicWritePlanInTransaction({ client: tx,
+            input: plan.spatial_semantic_atomic_write_plan,
+            partyStateVersionAfter: plan.spatial_semantic_atomic_write_plan
+              .base_party_state_version + 1,
+            p16ChangeSetId: plan.change_set_id });
+        } catch (cause) {
+          if (['SPATIAL_SEMANTIC_PARTY_STALE',
+            'SPATIAL_SEMANTIC_AUTHORITY_STALE',
+            'SPATIAL_SEMANTIC_SCOPE_STALE',
+            'SPATIAL_SEMANTIC_CAPACITY_EXHAUSTED'].includes(cause?.code)) {
+            cause.spatialCode = 'state_version_conflict';
+          } else if (cause?.code === 'SPATIAL_SEMANTIC_IDEMPOTENCY_CONFLICT') {
+            cause.spatialCode = 'idempotency_conflict';
+          }
+          throw cause;
+        }
+      }
       const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
         const expectedStateVersion =
@@ -257,7 +276,6 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
     }
   } });
 }
-
 function ordinaryOwnedVersionDelta(plan, write) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   return write.target_table === 'party_containers'

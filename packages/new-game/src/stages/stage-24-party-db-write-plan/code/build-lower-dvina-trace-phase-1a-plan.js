@@ -430,7 +430,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -441,7 +441,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22].includes(
+  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)
@@ -470,7 +470,7 @@ function assertInput(input) {
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
   }
-  if ([19, 20, 21, 22].includes(result.request_identity.scenario_definition_revision)) {
+  if ([19, 20, 21, 22, 23].includes(result.request_identity.scenario_definition_revision)) {
     assertRevision19CharacterState(result);
   }
 }

@@ -36,7 +36,7 @@ The project documents define how the LLM should generate, interpret, and update 
 | `formulas.md` | Central formula reference; does not override the profile documents. |
 | `universal_category_classification_policy.md` | Proposed universal-category policy. It is not active and does not itself grant regional or runtime availability. |
 | `universal_category_classification_references.md` | Proposed reference appendix for external classification schemes; it is not historical evidence. |
-| `semantic_world_actions_materialization_and_processes_contract.md` | Proposed umbrella target for independent O1/O2/A1/F1/S1/N1 profiles. It is not active; production behavior remains defined by active contracts and code until a profile-specific cutover. |
+| `semantic_world_actions_materialization_and_processes_contract.md` | Proposed umbrella target for independent O1/O2/A1/F1/S1/N1 profiles. The umbrella is not activated wholesale; production behavior is defined by each profile-specific cutover (including active Lower Dvina O1/O2/A1 scopes) and code. |
 
 ## Knowledge graph
 

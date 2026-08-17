@@ -9,11 +9,24 @@ import {
 import { buildActorInstanceRechecks } from
   './lower-dvina-trace-turn-step-actor-rechecks.js';
 import { ordinaryPhysicalKeys } from './lower-dvina-trace-ordinary-p16.js';
+import { actionProducedPhysicalKeys,
+  createActionProducedAtomicWritePlan } from
+  './action-produced-atomic-write-plan.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-  turnNumber, changeSetId, idemId, ordinaryPlan = null
+  turnNumber, changeSetId, idemId, ordinaryPlan = null,
+  actionProductionPlan = null
 }) {
+  const actionPlan = actionProductionPlan == null ? null
+    : createActionProducedAtomicWritePlan(actionProductionPlan);
+  if (actionPlan != null && actionPlan.actor_ref !== state.actor_id) {
+    throw serverError(
+      'TRACE_TURN_STEP_ACTION_PRODUCTION_ACTOR_MISMATCH',
+      'The action-production plan is not bound to the committed actor.',
+      { status: 409 }
+    );
+  }
   const canonicalInputDigest = normalizeDigest(inputDigest);
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
@@ -68,9 +81,11 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       g4_keys: [],
       physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
-      ), ...ordinaryPhysicalKeys(ordinaryPlan)]
+      ), ...ordinaryPhysicalKeys(ordinaryPlan),
+      ...actionProducedPhysicalKeys(actionPlan)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
+    action_production_atomic_write_plan: actionPlan,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

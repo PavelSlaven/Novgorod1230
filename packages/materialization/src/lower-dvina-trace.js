@@ -37,6 +37,10 @@ import {
 } from './lower-dvina-trace-appearance.js';
 import { buildLowerDvinaTracePlayerDossier } from
   './lower-dvina-trace-player-dossier.js';
+import { actionProductionMechanicsProfiles,
+  actionProductionMechanicsSnapshot,
+  buildActionProductionAuthority } from
+  './lower-dvina-trace-action-production.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -180,7 +184,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20].includes(revision)
+  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21].includes(revision)
     ? materializeLowerDvinaTracePreparedCamp({
       input,
       bundle,
@@ -189,10 +193,10 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       locationSelections
     })
     : null;
-  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20].includes(revision)
+  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21].includes(revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
-  const phase7Prepared = [15,16,17,18,19,20].includes(revision)
+  const phase7Prepared = [15,16,17,18,19,20,21].includes(revision)
     ? materializeLowerDvinaTracePreparedStorehouse({
       input, bundle, runId, participantSelections, locationSelections
     })
@@ -269,7 +273,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       ...(phase7Prepared ? [phase7Prepared.npc] : [])
     ]
     : [];
-  const revision19Actors = [19, 20].includes(revision)
+  const revision19Actors = [19, 20, 21].includes(revision)
     ? materializeRevision19ActorAppearances({
       bundle, playerId, name, random, choices, npcs: materializedNpcs
     })
@@ -297,7 +301,11 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         bundle.item_container_set.item_inventory_profiles,
       item_visual_profiles:
         bundle.item_container_set.item_visual_profiles,
-      catalog_digest: bundle.artifact_pins.item_container_set.digest
+      catalog_digest: bundle.artifact_pins.item_container_set.digest,
+      ...(revision === 21 ? {
+        action_production_mechanics_profiles:
+          actionProductionMechanicsProfiles(bundle.action_production_profile)
+      } : {})
     } : null;
 
   const dossier = buildLowerDvinaTracePlayerDossier({
@@ -371,7 +379,12 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         causal_basis: knifeTemplate.causal_basis,
         weapon_contract: structuredClone(knifeTemplate.weapon_contract),
         inventory_profile_snapshot: structuredClone(knifeInventoryProfile),
-        source_digest: bundle.artifact_pins.item_inventory_profiles.digest
+        source_digest: bundle.artifact_pins.item_inventory_profiles.digest,
+        ...(revision === 21 ? {
+          action_production_mechanics_snapshot:
+            actionProductionMechanicsSnapshot(
+              bundle.action_production_profile, knifeTemplate.item_template_id)
+        } : {})
       }
     }, ...(phase4Prepared ? [{
       instance_id: deterministicInstanceId(input.party_id, runId, 'item', ratshaKnifeTemplate.item_template_id, 0),
@@ -448,6 +461,13 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
     hidden_truth: hiddenTruth,
+    ...(revision === 21 ? {
+      action_production_authority: buildActionProductionAuthority({
+        partyId: input.party_id,
+        actorRef: playerId,
+        profile: bundle.action_production_profile
+      })
+    } : {}),
     ...(revision19EquipmentHandoff ? {
       initial_actor_equipment_handoff: revision19EquipmentHandoff
     } : {}),

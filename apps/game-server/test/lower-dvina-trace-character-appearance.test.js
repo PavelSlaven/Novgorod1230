@@ -24,6 +24,9 @@ const bundle = await loadLowerDvinaTraceMaterializationBundle({
 const revision20 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 20
 });
+const revision21 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 21
+});
 
 test('revision 20 adds only the authored ordinary pouch and keeps revision 19 immutable', () => {
   assert.equal(bundle.definition_revision,19);
@@ -42,7 +45,7 @@ test('revision 20 adds only the authored ordinary pouch and keeps revision 19 im
       id === 'trace_ld_v1_container_road_bag'),true);
 });
 
-test('revision 20 materialization requires the exact M8 artifacts and revision 21 stays closed', () => {
+test('revision 21 activates exact A1 authority and persisted source/tool mechanics', () => {
   const exact = materializeAuthored(
     'party:revision20-materialization', revision20, 20
   );
@@ -52,6 +55,7 @@ test('revision 20 materialization requires the exact M8 artifacts and revision 2
     ({ key }) => key === 'initial_ordinary_container'), true);
   assert.equal(exact.policy_profile_pins.some(
     ({ key }) => key === 'ordinary_container_contents_profile'), true);
+  assert.equal(roadBagProfile(exact).capacity, 4);
 
   const missingProfilePin = structuredClone(revision20);
   delete missingProfilePin.artifact_pins.ordinary_container_contents_profile;
@@ -59,10 +63,29 @@ test('revision 20 materialization requires the exact M8 artifacts and revision 2
     'party:revision20-missing-profile', missingProfilePin, 20
   ), { code: 'TRACE_SCENARIO_ARTIFACT_INVALID' });
 
-  assert.throws(() => materializeAuthored(
-    'party:revision21-unsupported', revision20, 21
-  ), { code: 'TRACE_SCENARIO_REVISION_UNSUPPORTED' });
+  const authored = materializeAuthored(
+    'party:revision21-action-production', revision21, 21);
+  assert.equal(roadBagProfile(authored).capacity, 4);
+  assert.equal(authored.action_production_authority.profile_ref,
+    'lower_dvina_trace_a1_personal_tool_profile_v1');
+  const knife = authored.immediate.items.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_item_mikula_knife');
+  assert.deepEqual(knife.state.action_production_mechanics_snapshot.mechanics,
+    revision21.action_production_profile.tool_profiles[0].mechanics);
+  const completed = materializeInitialActorEquipment(authored);
+  const garment = completed.immediate.items.find(({ template_id: id,
+    holder_character_id: holder }) =>
+    id === 'trace_ld_v1_item_working_outer_garment'
+      && holder === completed.immediate.player.instance_id);
+  assert.deepEqual(garment.state.action_production_mechanics_snapshot.mechanics,
+    revision21.action_production_profile.source_profiles[0].mechanics);
 });
+
+function roadBagProfile(result) {
+  return result.immediate.containers.find(({ template_id: id }) =>
+    id === 'trace_ld_v1_container_road_bag')
+    .state.inventory_profile_snapshot;
+}
 
 test('revision 19 creates six complete NPC identities and real equipped garments deterministically', () => {
   const first = materialize('party:appearance-contract');

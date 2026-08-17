@@ -606,7 +606,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 026', async () => {
+test('restart extends the exact immutable catalog ledger through migration 027', async () => {
   const statements = [];
   const migration = {
     migration_id:

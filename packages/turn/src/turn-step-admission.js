@@ -12,6 +12,14 @@ import {
   validateAvailabilityDecision,
   validateConsequencePackage
 } from './validators.js';
+import {
+  isActionProducedSemanticRemainderInScope
+} from './turn-step-action-produced-remainder.js';
+import { initialWorkingProjectionFrom } from
+  './turn-step-player-safe-projection.js';
+
+export { isActionProducedSemanticRemainderInScope } from
+  './turn-step-action-produced-remainder.js';
 
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
@@ -70,6 +78,7 @@ export async function resolveBoundTurnStepCommand({
   ));
   const selectedCommands = [];
   let firstProjection = structuredClone(projected.player_safe_state);
+  const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
   if (externalRegistry != null) {
     requireTurnStepExecutionRegistry(externalRegistry);
@@ -121,6 +130,35 @@ export async function resolveBoundTurnStepCommand({
             request: structuredClone(execution.request),
             actor: structuredClone(projected.actor),
             working_projection: structuredClone(execution.working_projection),
+            committed_state: structuredClone(committedState),
+            prepared_chain_context:
+              structuredClone(execution.prepared_chain_context)
+          }));
+        }
+      }
+      if (matches.length === 0) {
+        const actionProducedResolver =
+          services.turnStepActionProducedResolver;
+        if (typeof actionProducedResolver === 'function'
+            && isActionProducedSemanticRemainderInScope({
+              operation,
+              playerSafeState: execution.request.player_safe_state,
+              remainingIntent: execution.request.remaining_intent
+            })) {
+          const checked = execution.check_result != null;
+          return actionProducedResolver(deepFreeze({
+            schema: checked
+              ? 'turn_step_action_produced_remainder_request_v2'
+              : 'turn_step_action_produced_remainder_request_v1',
+            operation: structuredClone(operation),
+            plan: structuredClone(execution.plan),
+            request: structuredClone(execution.request),
+            actor: structuredClone(projected.actor),
+            working_projection:
+              structuredClone(execution.working_projection),
+            ...(checked ? {
+              check_result: structuredClone(execution.check_result)
+            } : {}),
             committed_state: structuredClone(committedState),
             prepared_chain_context:
               structuredClone(execution.prepared_chain_context)
@@ -244,7 +282,7 @@ export async function resolveBoundTurnStepCommand({
     committedStateVersion: actionSet.state_version,
     rootPlayerAction: playerInput.raw_text,
     actor: structuredClone(projected.actor),
-    initialWorkingProjection: firstProjection,
+    initialWorkingProjection,
     maxInternalSteps: 8
   }, {
     turnStepModel: services.turnStepModel,

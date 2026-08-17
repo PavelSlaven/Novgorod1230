@@ -8,6 +8,14 @@ import { ambientOrdinaryCommittedContextDigest, createAmbientOrdinaryPortionAdmi
 import { classifyExistingContainerContents } from './container-ordinary-eligibility.js';
 import { buildExistingContainerOrdinarySeedRequest } from './container-ordinary-request.js';
 import { validateOrdinaryContainerContentsMechanics } from './ordinary-container-contents-mechanics.js';
+import { createActionProducedOutputAuthority,
+  deriveActionProducedPropertyCompatibilityBasis,
+  deriveActionProducedOutputProperty,
+  validateActionProducedOutputAuthority } from
+  './action-produced-output-authority.js';
+import { ACTION_PRODUCED_OUTPUT_CLASSES,
+  validateActionProducedOutputClass } from
+  './action-produced-output-class.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
@@ -155,14 +163,20 @@ export function validatePropertyRelation(relation = {}) {
 
 export {
   ambientOrdinaryCommittedContextDigest,
+  ACTION_PRODUCED_OUTPUT_CLASSES,
   buildExistingContainerOrdinarySeedRequest,
   classifyExistingContainerContents,
+  createActionProducedOutputAuthority,
+  deriveActionProducedPropertyCompatibilityBasis,
+  deriveActionProducedOutputProperty,
   validateOrdinaryContainerContentsMechanics,
   createAmbientOrdinaryPortionAdmission,
   normalizeItem,
   planApplicableApprovedItemTransition,
   planApprovedItemVisibilityTransition,
   planApprovedItemZoneTransition,
+  validateActionProducedOutputAuthority,
+  validateActionProducedOutputClass,
   validateItem
 };
 

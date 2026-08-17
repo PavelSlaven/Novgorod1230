@@ -30,6 +30,22 @@ export function buildCommittedInventoryInput(
     profileTemplateIds.add(item.template_id);
     itemProfiles.push({ ...structuredClone(profile), template_id: item.template_id });
   }
+  const containerProfiles = structuredClone(state.container_profiles ?? []);
+  const containerProfileTemplateIds = new Set(
+    profileEntries(containerProfiles).map(({ template_id: id }) => id)
+  );
+  for (const container of state.containers ?? []) {
+    const profile = container.state?.inventory_profile_snapshot
+      ?? container.state?.ordinary_contents_context
+        ?.container_inventory_profile;
+    if (!profile || containerProfileTemplateIds.has(container.template_id)) {
+      continue;
+    }
+    containerProfileTemplateIds.add(container.template_id);
+    addProfile(containerProfiles, container.template_id, {
+      ...structuredClone(profile), template_id: container.template_id
+    });
+  }
   return {
     party_id: state.party_id,
     actor_id: actorId,
@@ -48,7 +64,7 @@ export function buildCommittedInventoryInput(
     containers: structuredClone(state.containers ?? []),
     container_placements: (state.container_placements ?? []).map(
       (placement) => actorPlacement(placement, actorId, normalizeNpcHolder)),
-    container_profiles: structuredClone(state.container_profiles ?? [])
+    container_profiles: containerProfiles
   };
 }
 
@@ -96,12 +112,12 @@ export function createCommittedItemMechanicsResolver(
 
 export function validateCommittedInventoryState(
   state,
-  { packingCalculator = null } = {}
+  { packingCalculator = null, skipContainerUsage = false } = {}
 ) {
   const input = buildCommittedInventoryInput(state);
   const topology = validateInventoryTopology(input);
   const errors = [...topology.errors];
-  for (const container of input.containers) {
+  for (const container of skipContainerUsage ? [] : input.containers) {
     const usage = calculateContainerUsage({
       ...input,
       container_id: container.container_id,
@@ -195,6 +211,17 @@ function actorPlacement(value, actorId, normalizeNpcHolder) {
     delete next.holder_npc_id;
   }
   return next;
+}
+
+function profileEntries(value) {
+  return Array.isArray(value) ? value : Object.entries(value ?? {}).map(
+    ([template_id, profile]) => ({ ...profile, template_id })
+  );
+}
+
+function addProfile(collection, templateId, profile) {
+  if (Array.isArray(collection)) collection.push(profile);
+  else collection[templateId] = profile;
 }
 
 function inventoryError(code, details = null) {

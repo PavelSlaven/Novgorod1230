@@ -18,6 +18,8 @@ import {
 import {
   applyOrdinaryMaterializationAtomicWritePlanInTransaction
 } from './ordinary-materialization-phase-6-commit.js';
+import { applyActionProducedAtomicWritePlanInTransaction } from
+  './action-produced-persistence.js';
 
 export { validateSpatialV3CombinedWritePlan };
 
@@ -186,6 +188,30 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
               || cause?.code === 'ORDINARY_CONTAINER_BATCH_CONTAINER_STALE'
               || cause?.code === 'ORDINARY_CONTAINER_BATCH_CAPACITY_STALE') {
             cause.spatialCode = 'state_version_conflict';
+          }
+          throw cause;
+        }
+      }
+      if (plan.action_production_atomic_write_plan != null) {
+        try {
+          await applyActionProducedAtomicWritePlanInTransaction({
+            client: tx,
+            input: plan.action_production_atomic_write_plan,
+            partyStateVersionAfter:
+              plan.action_production_atomic_write_plan
+                .base_party_state_version + 1,
+            p16ChangeSetId: plan.change_set_id
+          });
+        } catch (cause) {
+          if (['ACTION_PRODUCED_SOURCE_STALE',
+            'ACTION_PRODUCED_TOOL_STALE',
+            'ACTION_PRODUCED_RESOURCE_STALE',
+            'ACTION_PRODUCED_AUTHORITY_STALE',
+            'ACTION_PRODUCED_DESTINATION_STALE'].includes(cause?.code)) {
+            cause.spatialCode = 'state_version_conflict';
+          } else if (cause?.code === 'ACTION_PRODUCED_IDEMPOTENCY_CONFLICT'
+              || cause?.code === 'ACTION_PRODUCED_OUTPUT_COLLISION') {
+            cause.spatialCode = 'idempotency_conflict';
           }
           throw cause;
         }

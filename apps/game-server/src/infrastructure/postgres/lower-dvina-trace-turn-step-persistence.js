@@ -160,7 +160,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   if (requiresFinalTurnStepInventoryValidation({
     state, committedSnapshot, batch
   })) {
-    validateFinalTurnStepInventory(next);
+    validateFinalTurnStepInventory(next, committedSnapshot);
   }
   const writes = buildWrites({
     partyId, state, next, commit, changeSetId, idemId, entities,

@@ -31,6 +31,10 @@ export function turnStepDraftOrdinaryAtomicWritePlan(draft) {
   return draft?.loop_result?.ordinary_materialization_atomic_write_plan ?? null;
 }
 
+export function turnStepDraftActionProductionAtomicWritePlan(draft) {
+  return draft?.loop_result?.action_production_atomic_write_plan ?? null;
+}
+
 export function turnStepDraftPreparedDomainSlice(draft) {
   return turnStepDraftPreparedDomainSlices(draft)[0] ?? null;
 }

@@ -14,7 +14,11 @@ import {
 export async function resolveConsequenceStage({ playerInput, modeResolution, retrievedState, availability, checks, commandRegistry }) {
   const draft = getTurnStepWorkflowDraft(modeResolution);
   if (draft && draft.selected_command_id == null) {
-    const output = buildTurnStepDraftConsequence(draft);
+    let output = buildTurnStepDraftConsequence(draft);
+    const ledger = turnStepDraftPreparedEffectLedger(draft);
+    if (ledger != null) {
+      output = bindTurnStepPreparedConsequence(output, ledger);
+    }
     assertValid('turn_consequence_package', validateConsequencePackage(output));
     return freezeOutput(output);
   }

@@ -62,10 +62,13 @@ function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
 export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const input = rawInput;
   const ordinaryMaterializationPlan = snapshotOrdinaryPlan(rawInput);
+  const actionProductionPlan = snapshotExtensionPlan(rawInput,
+    'action_production_atomic_write_plan');
   const verifyApproval = ownData(options, 'verifyApproval');
-  if (ordinaryMaterializationPlan === INVALID_INPUT) {
+  if (ordinaryMaterializationPlan === INVALID_INPUT
+      || actionProductionPlan === INVALID_INPUT) {
     return fail('generated_schema_mismatch', null,
-      { reason: 'ordinary atomic plan must be strict JSON data' });
+      { reason: 'extension atomic plans must be strict JSON data' });
   }
   const {
     plan_id,
@@ -84,6 +87,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   } = input;
   const ordinary_materialization_atomic_write_plan =
     ordinaryMaterializationPlan;
+  const action_production_atomic_write_plan = actionProductionPlan;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
@@ -120,7 +124,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     validation_report,
     visible_package_envelope,
     approved_write_sets,
-    ordinary_materialization_atomic_write_plan
+    ordinary_materialization_atomic_write_plan,
+    action_production_atomic_write_plan
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -247,11 +252,10 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update or delete requires one expected version' });
   if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
-  const write_set_digest = computeSpatialV3CanonicalDigest(
-    ordinary_materialization_atomic_write_plan == null ? write_set : {
-      write_set,
-      ordinary_materialization_atomic_write_plan
-    });
+  const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
+    write_set, ordinary_materialization_atomic_write_plan,
+    action_production_atomic_write_plan
+  }));
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
     plan_id,
@@ -285,6 +289,10 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     commit_rechecks: clone(commit_rechecks).sort((a, b) => a.kind.localeCompare(b.kind) || a.digest.localeCompare(b.digest)),
     ordinary_materialization_atomic_write_plan: ordinary_materialization_atomic_write_plan == null
       ? null : clone(ordinary_materialization_atomic_write_plan),
+    ...(action_production_atomic_write_plan == null ? {} : {
+      action_production_atomic_write_plan:
+        clone(action_production_atomic_write_plan)
+    }),
     write_set_digest,
     ...write_set
   };
@@ -299,9 +307,13 @@ function ownData(value, key) {
 }
 
 function snapshotOrdinaryPlan(input) {
-  if (!input || typeof input !== 'object') return null;
-  const descriptor = Object.getOwnPropertyDescriptor(input,
+  return snapshotExtensionPlan(input,
     'ordinary_materialization_atomic_write_plan');
+}
+
+function snapshotExtensionPlan(input, field) {
+  if (!input || typeof input !== 'object') return null;
+  const descriptor = Object.getOwnPropertyDescriptor(input, field);
   if (descriptor == null || (Object.hasOwn(descriptor, 'value')
       && descriptor.value === undefined)) return null;
   if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')
@@ -311,6 +323,23 @@ function snapshotOrdinaryPlan(input) {
   const snapshot = snapshotJsonData(descriptor.value);
   return snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot)
     ? snapshot : INVALID_INPUT;
+}
+
+function extensionDigestInput({ write_set,
+  ordinary_materialization_atomic_write_plan: ordinary,
+  action_production_atomic_write_plan: action }) {
+  if (ordinary == null && action == null) return write_set;
+  if (action == null) {
+    return { write_set,
+      ordinary_materialization_atomic_write_plan: ordinary };
+  }
+  return {
+    write_set,
+    ...(ordinary == null ? {} : {
+      ordinary_materialization_atomic_write_plan: ordinary
+    }),
+    action_production_atomic_write_plan: action
+  };
 }
 
 function snapshotJsonData(value) {

@@ -69,14 +69,30 @@ const existingContainerOrdinarySql = readFileSync(
   new URL('../../schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 026 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 26);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-16), [sql,
+const actionProductionSql = readFileSync(
+  new URL('../../schemas/party-db/027_party_runtime_action_production.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 027 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
-    finiteResourceSql, existingContainerOrdinarySql]);
+    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql]);
+});
+
+test('027 adds an A1 ledger without weakening O2a finite evidence', () => {
+  assert.match(actionProductionSql,
+    /party_action_production_authorities/u);
+  assert.match(actionProductionSql, /party_action_production_commits/u);
+  assert.match(actionProductionSql,
+    /party_action_production_resource_transitions/u);
+  assert.match(actionProductionSql,
+    /ALTER TABLE party_runtime\.party_items[\s\S]*state_version/u);
+  assert.doesNotMatch(actionProductionSql,
+    /ALTER TABLE party_runtime\.party_resource_node_decrements/u);
 });
 
 test('024 admits only the separate closed O1 v2 runtime snapshot', () => {

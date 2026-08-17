@@ -3,7 +3,7 @@ import { isAbsolute, resolve } from 'node:path';
 import { serverError } from '../errors.js';
 
 export const SPATIAL_V3_PRODUCTION_BINDINGS_MODULE =
-  'builtin:spatial-v3-production-v9';
+  'builtin:spatial-v3-production-v10';
 
 export function resolveSpatialV3ProductionBindingsModule(config, env) {
   const selected = config.spatialV3BindingsModule
@@ -12,7 +12,7 @@ export function resolveSpatialV3ProductionBindingsModule(config, env) {
   if (selected !== SPATIAL_V3_PRODUCTION_BINDINGS_MODULE) {
     throw serverError(
       'RUNTIME_BINDINGS_MODULE_INACTIVE',
-      'Only the production-v9 spatial-v3 runtime binding may be selected.'
+      'Only the production-v10 spatial-v3 runtime binding may be selected.'
     );
   }
   return selected;
@@ -31,7 +31,7 @@ export async function loadSpatialV3RuntimeBindings(
   }
   const specifier = reference === SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
     ? new URL(
-        './releases/spatial-v3-production-v9-bindings.js',
+        './releases/spatial-v3-production-v10-bindings.js',
         import.meta.url
       ).href
     : reference.startsWith('.') || isAbsolute(reference)

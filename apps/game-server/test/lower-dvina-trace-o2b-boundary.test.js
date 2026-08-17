@@ -59,6 +59,26 @@ test('installed O2b resolver does not gate a restarted non-container inspection'
   }), inspectResult);
 });
 
+test('revision 21 Phase 9 keeps authored container access ahead of O2b', () => {
+  const ports = createLowerDvinaTraceTurnStepRuntimePorts({
+    committedState: {
+      actor_id: 'actor', items: [], phase9: { status: 'bag_recovered' },
+      materialization_trace: {
+        seed_context: { scenario_definition_revision: 21 }
+      }
+    },
+    ordinaryContainerContentsResolver: async () => {
+      throw new Error('authored Phase 9 must keep priority');
+    },
+    workingProjectionAuthority:
+      createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
+  });
+
+  assert.equal(ports.executionRegistry.domain({
+    op: 'request_container_access'
+  }), null);
+});
+
 test('installed O2b resolver rejects a hostile committed container context pre-model', () => {
   let reads = 0;
   let resolverCalls = 0;

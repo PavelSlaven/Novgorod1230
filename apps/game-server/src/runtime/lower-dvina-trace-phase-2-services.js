@@ -1,6 +1,4 @@
 import { serverError } from '../errors.js';
-import { projectPlayerSafeOrdinaryResolutionCapability } from
-  '@rus/visibility-knowledge-memory/ordinary-resolution-capability';
 import { tracePhase2PreconditionSatisfied } from './lower-dvina-trace-phase-2-command.js';
 import { createTracePhase2BodyEffect, createTracePhase2VisibleProjector } from './lower-dvina-trace-phase-2-effects.js';
 import { createTracePhase2TemporalAdvance } from './lower-dvina-trace-phase-2-temporal.js';
@@ -57,9 +55,8 @@ import {
   './lower-dvina-trace-turn-step-generic-owners.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
-import { projectLowerDvinaTraceO2aCapabilities,
-  projectLowerDvinaTraceO2aDiscoverySources } from
-  './lower-dvina-trace-o2a-player-safe.js';
+import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
+  './lower-dvina-trace-phase-2-player-safe.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
@@ -71,6 +68,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
     createTurnStepOrdinaryContainerContentsResolver,
     ordinaryDiscoveryEnablementMarker,
+    createTurnStepActionProducedResolver,
+    actionProductionProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -151,36 +150,17 @@ export function buildLowerDvinaTracePhase2Services(context) {
     temporalAdvance,
     workingProjectionAuthority
   });
-  const turnStepPlayerSafeStateProjector = playerSafeStateProjector
-    ? async (input) => {
-        const committedState = structuredClone(input.committed_state);
-        delete committedState.current_visible_context;
-        let projected = await playerSafeStateProjector({
-          ...input,
-          committed_state: committedState,
-          working_projection_authority: workingProjectionAuthority
-        });
-        projected = projectLowerDvinaTraceO2aCapabilities({ projected,
-          admission: admitAmbientOrdinaryPortion });
-        if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
-            || typeof turnStepPorts.ordinaryDiscoveryResolver !== 'function') return projected;
-        const scopeId = committedState.position?.g6_id ?? committedState.position?.g6_ref
-          ?? committedState.position?.location_ref;
-        if (typeof scopeId !== 'string' || !scopeId) return projected;
-        const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
-          scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
-        if (enabled !== true && enabled?.discovery_available !== true) return projected;
-        projected = projectLowerDvinaTraceO2aDiscoverySources({ projected,
-          sources: enabled === true ? [] : enabled.sources });
-        const capability = projectPlayerSafeOrdinaryResolutionCapability({
-          ordinary_resolution: { discovery_available: true,
-            container_resolution_available: false }
-        });
-        return { ...projected, player_safe_state: {
-          ...projected.player_safe_state, ...capability
-        } };
-      }
-    : null;
+  const turnStepPlayerSafeStateProjector =
+    createLowerDvinaTraceTurnStepPlayerSafeProjector({
+      admitAmbientOrdinaryPortion,
+      actionProductionProfile,
+      createTurnStepActionProducedResolver,
+      ordinaryDiscoveryEnablementMarker,
+      ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
+      partyId,
+      playerSafeStateProjector,
+      workingProjectionAuthority
+    });
   return {
     commandRegistry: registry,
     stateReader: {
@@ -202,6 +182,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(turnStepPorts.ordinaryDiscoveryResolver ? {
       turnStepOrdinaryDiscoveryResolver:
         turnStepPorts.ordinaryDiscoveryResolver
+    } : {}),
+    ...(typeof createTurnStepActionProducedResolver === 'function'
+        && actionProductionProfile?.profile?.status === 'approved' ? {
+      turnStepActionProducedResolver: createTurnStepActionProducedResolver({
+        partyId, requestId, inputDigest
+      })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

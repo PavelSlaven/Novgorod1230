@@ -40,12 +40,15 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.m5,
     revisions.m6,
     revisions.m7,
-    revisions.m8
+    revisions.m8,
+    revisions.m9
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
         ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m8
+        ? definitionRevision === revisions.m9
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v17'
+        : definitionRevision === revisions.m8
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v16'
         : definitionRevision === revisions.m7
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v15'
@@ -146,6 +149,31 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m9) {
+    const manifest = bundle.phase_1a_manifest;
+    const bindings = bundle.materialization_bindings;
+    const profilePin = bundle.artifact_pins?.action_production_profile;
+    const a1 = bindings?.action_production_materialization;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v17'
+      || manifest.revision !== 17
+      || manifest.scenario_definition_revision !== 21
+      || manifest.base_definition_ref?.digest
+        !== bundle.m9_content_manifest_digest
+      || bindings?.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v17'
+      || bindings.revision !== 17
+      || bindings.scenario_definition_revision !== 21
+      || a1?.profile_ref?.digest !== profilePin?.digest
+      || a1.profile_ref.id !== bundle.action_production_profile?.profile_id
+      || a1.profile_ref.revision !== profilePin?.revision
+      || a1.profile_ref.schema !== profilePin?.schema
+      || a1.authority_provisioning !== 'atomic_new_game_stage_25'
+      || a1.fallback_policy !== 'forbidden') {
+      fail('TRACE_M9_PHASE_1A_CUTOVER_INVALID',
+        'Revision 21 requires the exact A1 Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m8) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

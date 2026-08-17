@@ -441,6 +441,38 @@ test('committed capacity overlay releases an item retired in the same submit', (
   }).used_slots, 0);
 });
 
+test('committed inventory restores authored and O2b container profiles from persisted state', () => {
+  const state = {
+    party_id: 'party', actor_id: 'mikula',
+    party_state: { state_version: 2 },
+    position: { g5_anchor_id: 'shore-anchor' },
+    player_profile: { attributes: { strength: { value: 9 } } },
+    items: [], container_placements: [], containers: [{
+      container_id: 'road-bag', template_id: 'road-bag-template',
+      state: { inventory_profile_snapshot: {
+        mass_grams: 300, external_hand_cost: 1, carry_form: 'regular',
+        capacity: 4
+      } }
+    }, {
+      container_id: 'pouch', template_id: 'small-pouch-template',
+      state: { ordinary_contents_context: { container_inventory_profile: {
+        template_id: 'small-pouch-template', mass_grams: 300,
+        external_hand_cost: 0, carry_form: 'regular',
+        packing_slot_cost: 3, capacity: 4
+      } } }
+    }]
+  };
+
+  assert.deepEqual(buildCommittedInventoryInput(state).container_profiles, [{
+    mass_grams: 300, external_hand_cost: 1, carry_form: 'regular',
+    capacity: 4, template_id: 'road-bag-template'
+  }, {
+    template_id: 'small-pouch-template', mass_grams: 300,
+    external_hand_cost: 0, carry_form: 'regular',
+    packing_slot_cost: 3, capacity: 4
+  }]);
+});
+
 function execution(operation, workingProjection = projection()) {
   return {
     request: {

@@ -20,6 +20,10 @@ import {
   buildLowerDvinaTracePendingScreen
 } from './lower-dvina-trace-turn-presentation.js';
 import { applyOrdinaryMaterializationProjection, ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
+import { createActionProducedAtomicWritePlan } from
+  './action-produced-atomic-write-plan.js';
+import { applyActionProductionProjection } from
+  './lower-dvina-trace-action-production-projection.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -49,6 +53,19 @@ export async function commitLowerDvinaTraceTurnStep({
   try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
   catch { throw serverError('TRACE_TURN_STEP_ORDINARY_PLAN_INVALID',
     'Ordinary atomic plan failed its sealed contract.', { status: 409 }); }
+  let actionProductionPlan = null;
+  try {
+    if (writePlan.action_production_atomic_write_plan != null) {
+      actionProductionPlan = createActionProducedAtomicWritePlan(
+        writePlan.action_production_atomic_write_plan);
+      if (actionProductionPlan.party_id !== partyId
+          || actionProductionPlan.change_set_id !== changeSetId) throw new Error();
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_ACTION_PRODUCTION_PLAN_INVALID',
+      'Action-production atomic plan failed its sealed contract.',
+      { status: 409 });
+  }
   const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
     ...envelope, visible_context: applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
@@ -74,6 +91,8 @@ export async function commitLowerDvinaTraceTurnStep({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
     changeSetId, idemId
   });
+  applyActionProductionProjection({ next: turnStep.snapshot,
+    plan: actionProductionPlan });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state,
     turnId: envelope.root_turn_id,
@@ -95,7 +114,7 @@ export async function commitLowerDvinaTraceTurnStep({
   );
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId, ordinaryPlan
+    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlan
   });
   const committed = await committer.commit({
     plan: built.plan,

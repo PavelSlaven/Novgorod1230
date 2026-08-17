@@ -318,6 +318,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     }))
   ], ['party_items', 'party_containers', 'party_player_characters',
     'party_npcs'], sourceTrace);
+  addBatch(batches, 'party_action_production_authorities',
+    result.action_production_authority == null
+      ? [] : [structuredClone(result.action_production_authority)],
+    ['parties', 'party_player_characters'], sourceTrace);
   addBatch(batches, 'party_obligations', (result.immediate.promise_instances ?? []).map(
     (promise) => ({
       obligation_id: promise.instance_id,
@@ -366,6 +370,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     request_identity: result.request_identity,
     immediate: result.immediate,
     hidden_truth: result.hidden_truth,
+    ...(result.action_production_authority == null ? {} : {
+      action_production_authority:
+        structuredClone(result.action_production_authority)
+    }),
     sealed_selections: result.sealed_selections,
     policy_profile_pins: result.policy_profile_pins,
     materialization_trace: result.trace,
@@ -430,7 +438,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -441,7 +449,7 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18, 19, 20].includes(
+  const phase7 = [15, 16, 17, 18, 19, 20, 21].includes(
     result.request_identity.scenario_definition_revision
   );
   if (!Array.isArray(preparedScenes)
@@ -470,7 +478,7 @@ function assertInput(input) {
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
   }
-  if ([19, 20].includes(result.request_identity.scenario_definition_revision)) {
+  if ([19, 20, 21].includes(result.request_identity.scenario_definition_revision)) {
     assertRevision19CharacterState(result);
   }
 }

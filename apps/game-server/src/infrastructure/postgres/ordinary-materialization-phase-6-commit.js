@@ -10,6 +10,7 @@ import {
   freezePhase6Data,
   normalizeSupportingBases,
   normalizePropertyPlacementBase,
+  ownData,
   safeVersion,
   sameText,
   sameTextList,
@@ -34,6 +35,7 @@ export { OrdinaryMaterializationCommitError };
 
 /** Closed JSON DTO: callbacks, model output and database handles are forbidden. */
 export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
+  if (ownData(value, 'schema') === 'ordinary_container_contents_atomic_write_plan_v2') return createOrdinaryContainerContentsAtomicWritePlan(value);
   value = clonePhase6Data(value);
   if (Object.hasOwn(value, 'schema') || Object.hasOwn(value, 'write_plan_digest')) {
     exact(value, phase6Keys(value, true));
@@ -159,6 +161,9 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
 } = {}) {
   if (!client?.query) fail('ORDINARY_PHASE6_TRANSACTION_REQUIRED');
   const plan = createOrdinaryMaterializationAtomicWritePlan(input);
+  if (plan.schema === 'ordinary_container_contents_atomic_write_plan_v2') {
+    return applyOrdinaryContainerContentsAtomicWritePlanInTransaction({client,input:plan,partyStateVersionAfter,updatePartyState,p16ChangeSetId});
+  }
   if (requireEnablementPin === true && plan.enablement_pin == null) {
     fail('ORDINARY_PHASE6_ENABLEMENT_PIN_REQUIRED');
   }
@@ -196,7 +201,7 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
       plan.finite_resource_transition, plan.item, p16ChangeSetId,
       plan.finite_resource_initialization ?? null);
   }
-  await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_commits (party_id,scope_kind,scope_id,request_identity,input_digest,transition_digest,write_plan_digest,resolution,transition_count,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version,item_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.request_identity,plan.input_digest,plan.transition_digest,plan.write_plan_digest,plan.resolution,plan.transitions.length,current.party_state_version,nextPartyStateVersion,current.ordinary_state_version,current.ordinary_state_version+plan.transitions.length,plan.item?.item_id??null]);
+  await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_commits (party_id,scope_kind,scope_id,request_identity,input_digest,transition_digest,write_plan_digest,resolution,transition_count,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version,item_id,plan_schema,item_count) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.request_identity,plan.input_digest,plan.transition_digest,plan.write_plan_digest,plan.resolution,plan.transitions.length,current.party_state_version,nextPartyStateVersion,current.ordinary_state_version,current.ordinary_state_version+plan.transitions.length,plan.item?.item_id??null,plan.schema,plan.item==null?0:1]);
     if (canonicalDigest(current.supporting_bases) !== canonicalDigest(plan.expected_supporting_basis_catalog)) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
     if (canonicalDigest(current.property_placement_context)
         !== canonicalDigest(plan.expected_property_placement_context)) fail('ORDINARY_PHASE6_PROPOSAL_STALE');

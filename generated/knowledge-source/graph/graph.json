@@ -1056,7 +1056,7 @@
       "source_location": {
         "file": "interface_ux.md",
         "line_start": 1,
-        "line_end": 1211
+        "line_end": 1223
       }
     },
     {
@@ -1080,7 +1080,7 @@
       "source_location": {
         "file": "llm_agent_prompt_templates.md",
         "line_start": 1,
-        "line_end": 1098
+        "line_end": 1107
       }
     },
     {
@@ -1092,7 +1092,7 @@
       "source_location": {
         "file": "llm_documentation_navigation.md",
         "line_start": 1,
-        "line_end": 329
+        "line_end": 333
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2371
+        "line_end": 2372
       }
     },
     {
@@ -1260,7 +1260,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1391
+        "line_end": 1406
       }
     },
     {
@@ -1272,7 +1272,7 @@
       "source_location": {
         "file": "world_base_materialization_table_requirements.md",
         "line_start": 1,
-        "line_end": 364
+        "line_end": 378
       }
     },
     {

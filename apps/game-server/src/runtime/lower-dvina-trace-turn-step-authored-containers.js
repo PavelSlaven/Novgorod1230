@@ -15,6 +15,19 @@ export function hydrateAuthoredContainers(committedState, state) {
     const authored = {
       ...structuredClone(container), item_id: containerId,
       instance_id: containerId, instance_kind: 'container',
+      ...(container.state?.ordinary_contents_context == null ? {} : {
+        commit_state: 'committed',
+        mechanics_profile_ref:
+          container.state.ordinary_contents_context.mechanics_profile_ref,
+        ordinary_contents_context: structuredClone(
+          container.state.ordinary_contents_context),
+        contents_state: container.state.contents_state
+          ?? container.contents_state ?? 'contents_hidden',
+        access_state: container.state.access_state
+          ?? container.access_state,
+        visibility_state: container.state.visibility_state
+          ?? container.visibility_state
+      }),
       placement: {
         holder_character_id: placement.holder_character_id
           ?? container.holder_character_id

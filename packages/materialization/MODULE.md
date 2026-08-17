@@ -37,6 +37,15 @@ container eligibility, contents semantics, mechanics, reveal или persistence.
 
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 
+S1 `internal/lower-dvina-trace-s1` принимает только уже committed finite
+reservation и выбирает лишь closed `descriptor_ref`. Он не создаёт topology,
+movement, hazards, water/fire effects либо persistence writes. Exact envelope
+несёт baseline/G5/G6/position state versions и SHA-pinned
+profile/policy/template/property/function/environment refs; deterministic
+identity зависит от party + committed reservation/envelope, а не от wording или
+request id. Fully-authored descriptor возвращает sealed `model_calls=0` result;
+остальной bounded proposal не может добавить description, IDs или authority.
+
 ## Контракты
 
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.

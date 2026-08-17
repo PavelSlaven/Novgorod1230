@@ -333,7 +333,7 @@ const a1=revision>=21;
     sequence: structuredClone(sequence),
     digest: canonicalDigest({ culprit, motive, sequence })
   };
-  const f1=revision===22?fire(input.party_id,playerId,anchorId,runId,
+  const f1=revision>=22?fire(input.party_id,playerId,anchorId,runId,
     bundle.local_fire_profile,deterministicInstanceId):null;
   const immediate = {
     player: { instance_id: playerId, dossier },

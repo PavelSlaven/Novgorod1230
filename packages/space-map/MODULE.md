@@ -20,6 +20,9 @@ cutover` release `spatial-v3-production-v1` сделал v3 sole production owne
 - route traversal decisions
 - map knowledge visibility
 - database queries or layout rendering
+- S1 semantic classification, reservation or persistence; revision 23 S1
+  может только сослаться на уже committed exact G5/G6/position и не меняет
+  topology/edges/routes/baseline этого owner
 
 ## Public API
 

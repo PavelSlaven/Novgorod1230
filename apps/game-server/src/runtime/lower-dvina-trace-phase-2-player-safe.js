@@ -2,12 +2,16 @@ import { projectLowerDvinaTraceA1Capability } from
   './lower-dvina-trace-a1-player-safe.js';
 import { projectLowerDvinaTraceF1Capability } from
   './releases/lower-dvina-trace-f1-production.js';
+import { projectLowerDvinaTraceS1Capability } from
+  './releases/lower-dvina-trace-s1-production.js';
 
 export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   actionProductionProfile,
   createTurnStepActionProducedResolver,
   localFireProfile,
   createTurnStepWorldProcessResolver,
+  spatialSemanticProfile,
+  createTurnStepSpatialSemanticResolver,
   ordinaryDiscoveryEnablementMarker,
   ordinaryDiscoveryResolver,
   partyId,
@@ -30,11 +34,14 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       resolverAvailable:
         typeof createTurnStepActionProducedResolver === 'function'
     });
-    const playerSafeState = projectLowerDvinaTraceF1Capability({
+    const fireState = projectLowerDvinaTraceF1Capability({
       playerSafeState: actionState, committedState,
       loadedProfile: localFireProfile,
       resolverAvailable: typeof createTurnStepWorldProcessResolver === 'function'
     });
+    const playerSafeState = projectLowerDvinaTraceS1Capability({
+      playerSafeState: fireState, committedState, loadedProfile: spatialSemanticProfile,
+      resolverAvailable: typeof createTurnStepSpatialSemanticResolver === 'function' });
     const base = { ...projected,
       initial_working_projection: initialWorkingProjection };
     if (typeof ordinaryDiscoveryEnablementMarker !== 'function'

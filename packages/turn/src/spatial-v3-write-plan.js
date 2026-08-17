@@ -68,12 +68,15 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     'action_production_atomic_write_plan');
   const localFirePlan = snapshotExtensionPlan(rawInput,
     'local_fire_atomic_write_plan');
+  const spatialSemanticPlan = snapshotExtensionPlan(rawInput,
+    'spatial_semantic_atomic_write_plan');
   const localFireTemporalEvidence = snapshotExtensionPlan(rawInput,
     'local_fire_temporal_evidence');
   const verifyApproval = ownData(options, 'verifyApproval');
   if (ordinaryMaterializationPlan === INVALID_INPUT
       || actionProductionPlan === INVALID_INPUT
       || localFirePlan === INVALID_INPUT
+      || spatialSemanticPlan === INVALID_INPUT
       || localFireTemporalEvidence === INVALID_INPUT) {
     return fail('generated_schema_mismatch', null,
       { reason: 'extension atomic plans must be strict JSON data' });
@@ -97,6 +100,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     ordinaryMaterializationPlan;
   const action_production_atomic_write_plan = actionProductionPlan;
   const local_fire_atomic_write_plan = localFirePlan;
+  const spatial_semantic_atomic_write_plan = spatialSemanticPlan;
   const local_fire_temporal_evidence = localFireTemporalEvidence;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const localFireDue = local_fire_atomic_write_plan?.transition_proposal
@@ -146,6 +150,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     ordinary_materialization_atomic_write_plan,
     action_production_atomic_write_plan,
     local_fire_atomic_write_plan,
+    spatial_semantic_atomic_write_plan,
     ...(local_fire_temporal_evidence == null ? {} : {
       local_fire_temporal_evidence })
   }));
@@ -277,6 +282,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
     write_set, ordinary_materialization_atomic_write_plan,
     action_production_atomic_write_plan, local_fire_atomic_write_plan,
+    spatial_semantic_atomic_write_plan,
     local_fire_temporal_evidence
   }));
   const plan = {
@@ -319,6 +325,9 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     ...(local_fire_atomic_write_plan == null ? {} : {
       local_fire_atomic_write_plan: clone(local_fire_atomic_write_plan)
     }),
+    ...(spatial_semantic_atomic_write_plan == null ? {} : {
+      spatial_semantic_atomic_write_plan: clone(spatial_semantic_atomic_write_plan)
+    }),
     ...(local_fire_temporal_evidence == null ? {} : {
       local_fire_temporal_evidence: clone(local_fire_temporal_evidence)
     }),
@@ -358,39 +367,17 @@ function extensionDigestInput({ write_set,
   ordinary_materialization_atomic_write_plan: ordinary,
   action_production_atomic_write_plan: action,
   local_fire_atomic_write_plan: localFire,
-  local_fire_temporal_evidence: fireTemporal }) {
-  if (ordinary == null && action == null && localFire == null) return write_set;
-  if (localFire == null) {
-    if (action == null) {
-      return { write_set,
-        ordinary_materialization_atomic_write_plan: ordinary };
-    }
-    return {
-      write_set,
-      ...(ordinary == null ? {} : {
-        ordinary_materialization_atomic_write_plan: ordinary
-      }),
-      action_production_atomic_write_plan: action
-    };
-  }
-  if (action == null) {
-    return { write_set,
-      ...(ordinary == null ? {} : {
-        ordinary_materialization_atomic_write_plan: ordinary }),
-      local_fire_atomic_write_plan: localFire,
-      ...(fireTemporal == null ? {} : {
-        local_fire_temporal_evidence: fireTemporal }) };
-  }
-  return {
-    write_set,
-    ...(ordinary == null ? {} : {
-      ordinary_materialization_atomic_write_plan: ordinary
-    }),
-    action_production_atomic_write_plan: action,
-    local_fire_atomic_write_plan: localFire,
-    ...(fireTemporal == null ? {} : {
-      local_fire_temporal_evidence: fireTemporal })
+  local_fire_temporal_evidence: fireTemporal,
+  spatial_semantic_atomic_write_plan: spatialSemantic }) {
+  const extensions = {
+    ...(ordinary == null ? {} : { ordinary_materialization_atomic_write_plan: ordinary }),
+    ...(action == null ? {} : { action_production_atomic_write_plan: action }),
+    ...(localFire == null ? {} : { local_fire_atomic_write_plan: localFire }),
+    ...(fireTemporal == null ? {} : { local_fire_temporal_evidence: fireTemporal }),
+    ...(spatialSemantic == null ? {} : { spatial_semantic_atomic_write_plan: spatialSemantic })
   };
+  if (Object.keys(extensions).length === 0) return write_set;
+  return { write_set, ...extensions };
 }
 
 function snapshotJsonData(value) {

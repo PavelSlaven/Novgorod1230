@@ -97,6 +97,7 @@ export function createLowerDvinaTraceTurnStepModel({
   };
 }
 
+
 /** Server-only O1 role: its request is built from committed enablement data. */
 export { createOrdinaryMaterializationModel } from './ordinary-materialization-llm.js';
 
@@ -281,13 +282,13 @@ async function runNarrationRole(roleRunner, roleId, instruction, request) {
   return response.output;
 }
 
-function requireRoleRunner(roleRunner) {
+export function requireRoleRunner(roleRunner) {
   if (typeof roleRunner?.run !== 'function') {
     throw dependencyError('Configured LLM role runner is required.');
   }
 }
 
-function dependencyError(message) {
+export function dependencyError(message) {
   return serverError(
     'TRACE_PHASE_2_DEPENDENCY_MISSING',
     message,

@@ -209,7 +209,7 @@ extension того же combined P16 и переживает reload/replay. Curr
 активирует independent outputs, writing, token-like или weapon-capable
 results, не отвечает на pre-existing presence и не является O1/O2 fallback.
 
-Active revision 22 / M10 / Phase 1A v18 / Phase 1B v17 /
+Historical revision 22 / M10 / Phase 1A v18 / Phase 1B v17 /
 `spatial-v3-production-v11` добавляет `request_world_process`. После
 registered/external/authored priority dormant remainder вызывает F1 owner
 только при exact player-safe marker, approved visible whole fuel refs и
@@ -217,6 +217,14 @@ authored ignition basis. Start/add возвращают sealed local-fire extens
 же P16; due приходит через существующий temporal write integration. Turn не
 вычисляет fuel consumption, timestamp или ID и не создаёт scheduler/process
 store. Water/extinguish не входят в current closed operation profile.
+
+Active revision 23 / M11 / Phase 1A v19 / Phase 1B v18 /
+`spatial-v3-production-v12` добавляет S1 без новой public operation: exact
+`request_discovery/look` достигает remainder только после external, registered,
+authored, O1, A1 и F1 owners и только при exact player-safe marker текущей
+position. Turn передаёт immutable envelope в spatial/materialization owner и
+thread-ит sealed `spatial_semantic_atomic_write_plan` в тот же P16; он не
+выбирает topology, capacity, IDs, movement или hazard mechanics.
 
 ## Тесты
 

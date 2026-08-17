@@ -7,7 +7,7 @@ import {
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 22
+      || bundle.definition_revision < 15 || bundle.definition_revision > 23
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }

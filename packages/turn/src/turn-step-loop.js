@@ -104,6 +104,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const ordinaryPlans = [];
   const actionProducedPlans = [];
   const localFirePlans = [];
+  const spatialSemanticPlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   const seen = new Set();
@@ -210,6 +211,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'Only one local-fire atomic plan is allowed per turn.');
       localFirePlans.push(execution.local_fire_atomic_write_plan);
     }
+    if (execution.spatial_semantic_atomic_write_plan != null) {
+      if (spatialSemanticPlans.length !== 0) throw turnFailure(
+        'TURN_STEP_SPATIAL_SEMANTIC_PLAN_DUPLICATE',
+        'Only one spatial semantic atomic plan is allowed per turn.');
+      spatialSemanticPlans.push(execution.spatial_semantic_atomic_write_plan);
+    }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
       throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
@@ -295,6 +302,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
     local_fire_atomic_write_plan: localFirePlans[0] ?? null,
+    spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
     clarification
   });
 }

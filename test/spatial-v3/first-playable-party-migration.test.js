@@ -73,15 +73,26 @@ const localExactFireSql = readFileSync(
   new URL('../../schemas/party-db/027_party_runtime_local_exact_fire.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 027 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
+const spatialSemanticSql = readFileSync(
+  new URL('../../schemas/party-db/028_party_runtime_spatial_semantic_remainder.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 028 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 28);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-18), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, finiteResourceTransitionsSql,
     existingContainerOrdinaryContentsSql, actionProductionSql,
-    localExactFireSql]);
+    localExactFireSql, spatialSemanticSql]);
+});
+
+test('028 adds finite S1 envelope, reservation and immutable resolution rows', () => {
+  assert.match(spatialSemanticSql, /party_spatial_semantic_envelopes/u);
+  assert.match(spatialSemanticSql, /party_spatial_semantic_reservations/u);
+  assert.match(spatialSemanticSql, /party_spatial_semantic_resolutions/u);
+  assert.match(spatialSemanticSql, /UNIQUE \(party_id,structural_identity\)/u);
 });
 
 test('027 adds exact local fire authority, process, fuel binding and ledger', () => {

@@ -23,6 +23,8 @@ import { validActionProducedOuterCausalBinding } from
   './action-produced-causal-binding.js';
 import { validLocalFireExtension } from
   './local-fire-write-plan-validation.js';
+import { validSpatialSemanticExtension } from
+  './spatial-semantic-write-plan-validation.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -134,6 +136,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
   if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!validActionProductionExtension(plan)) return false;
   if (!validLocalFireExtension(plan)) return false;
+  if (!validSpatialSemanticExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -211,7 +214,14 @@ function extensionDigestInput(plan, writeSet) {
   const action = plan.action_production_atomic_write_plan;
   const localFire = plan.local_fire_atomic_write_plan;
   const fireTemporal = plan.local_fire_temporal_evidence;
-  if (ordinary == null && action == null && localFire == null) return writeSet;
+  const spatial = plan.spatial_semantic_atomic_write_plan;
+  if (ordinary == null && action == null && localFire == null && spatial == null) return writeSet;
+  if (spatial != null) return { write_set: writeSet,
+    ...(ordinary == null ? {} : { ordinary_materialization_atomic_write_plan: ordinary }),
+    ...(action == null ? {} : { action_production_atomic_write_plan: action }),
+    ...(localFire == null ? {} : { local_fire_atomic_write_plan: localFire }),
+    ...(fireTemporal == null ? {} : { local_fire_temporal_evidence: fireTemporal }),
+    spatial_semantic_atomic_write_plan: spatial };
   if (localFire == null) {
     if (action == null) return { write_set: writeSet,
       ordinary_materialization_atomic_write_plan: ordinary };

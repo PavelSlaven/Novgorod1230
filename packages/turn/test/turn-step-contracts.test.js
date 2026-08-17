@@ -126,6 +126,40 @@ test('schemas are deeply frozen and expose strict v1 top-level contracts', () =>
   assert.equal(TURN_STEP_PLAN_V1_SCHEMA.$defs.clarification.additionalProperties, false);
 });
 
+test('structured-output schema represents exact start and affect fire branches',
+  async () => {
+    const branches = TURN_STEP_PLAN_V1_SCHEMA.$defs.request_world_process.oneOf;
+    assert.equal(branches.length, 2);
+    const start = branches.find(({ properties }) =>
+      properties.process_action.const === 'start');
+    const affect = branches.find(({ properties }) =>
+      properties.process_action.const === 'affect');
+    assert.equal(start.additionalProperties, false);
+    assert.equal(start.properties.process_ref.type, 'null');
+    assert.equal(start.properties.target_refs.minItems, 1);
+    assert.equal(affect.additionalProperties, false);
+    assert.equal(affect.properties.process_ref.minLength, 1);
+    assert.equal(affect.properties.target_refs.minItems, 0);
+    assert.equal(affect.properties.target_refs.maxItems, 0);
+
+    const source = request();
+    source.player_safe_state.visible_entities.push(
+      { entity_ref: 'fuel_1', kind: 'item' },
+      { entity_ref: 'fire_1', kind: 'local_world_process' }
+    );
+    const structured = plan({ operations: [{
+      op: 'request_world_process', actor_ref: 'actor_mikula',
+      process_action: 'affect', process_ref: 'fire_1', process_kind: 'fire',
+      source_refs: ['fuel_1'], target_refs: [], description: 'Добавить топливо.'
+    }], continuation: null });
+    const sealed = await requestTurnStepPlan({ request: source,
+      turnStepModel: async () => structured });
+    assert.deepEqual(sealed.operations[0].target_refs, []);
+    structured.operations[0].target_refs = ['fuel_1'];
+    assert.equal(validateTurnStepPlan(structured, { request: source }).ok,
+      false);
+  });
+
 test('request validation accepts JSON projections and enforces strict step lineage', () => {
   assert.deepEqual(validateTurnStepRequest(request()), { ok: true, errors: [] });
   const second = request({

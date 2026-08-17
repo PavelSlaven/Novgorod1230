@@ -66,6 +66,78 @@ test('registered generic domain handler precedes scenario command bindings',
     assert.equal(scenarioCalls, 0);
   });
 
+test('unbound world-process request reaches only the active exact owner seam',
+  async () => {
+    let calls = 0;
+    const { services } = createServices([], {
+      command: { matches: () => false, semantic_binding: {
+        binding_id:'unmatched-fire',operation:'request_world_process',
+        matches:()=>false } },
+      playerSafeStateProjector: async () => ({actor:{actor_ref:'party-1'},
+        player_safe_state:{visible_entities:[{entity_ref:'fuel-1'},
+          {entity_ref:'ignition-1'}],local_world_process:{
+          semantic_grounding_available:true}}}),
+      turnStepWorldProcessResolver: async (request) => {
+        calls += 1;
+        assert.equal(Object.isFrozen(request),true);
+        assert.equal(request.schema,'turn_step_world_process_request_v1');
+        return {working_projection:request.working_projection,
+          write_fragments:[{target:'party_hidden_state',value:{fire:true}}],
+          local_fire_atomic_write_plan:{sealed:true},
+          player_response_boundary:true};
+      },
+      turnStepModel: async (request) => turnStepPlan(request,{
+        resolution:'domain_request',goal_result:'pending',
+        activity:{owner:'domain',duration_class:null,effort:null},operations:[{
+          op:'request_world_process',actor_ref:'party-1',
+          process_action:'start',process_ref:null,process_kind:'fire',
+          source_refs:['fuel-1'],target_refs:['ignition-1'],
+          description:'разжечь местный огонь'}]})
+    });
+    const result=await runTurnWorkflow({...input(),raw_text:'Разжигаю огонь.'},
+      services);
+    assert.equal(result.status,'partial');
+    assert.equal(calls,1);
+  });
+
+test('world-process affect with no target refs reaches resolver and seals plan',
+  async () => {
+    let resolvedOperation = null;
+    const sealedPlan = { schema:'local_fire_atomic_write_plan_v1',
+      write_plan_digest:'sha256:sealed-affect' };
+    const { services } = createServices([], {
+      command: { matches: () => false, semantic_binding: {
+        binding_id:'unmatched-fire-affect',operation:'request_world_process',
+        matches:()=>false } },
+      playerSafeStateProjector: async () => ({actor:{actor_ref:'party-1'},
+        player_safe_state:{visible_entities:[{entity_ref:'fuel-2'},
+          {entity_ref:'process-1'}],local_world_process:{
+          semantic_grounding_available:true}}}),
+      turnStepWorldProcessResolver: async (request) => {
+        resolvedOperation = structuredClone(request.operation);
+        return {working_projection:request.working_projection,
+          write_fragments:[{target:'party_hidden_state',
+            value:{local_fire_fuel_added:true}}],
+          local_fire_atomic_write_plan:sealedPlan,
+          player_response_boundary:true};
+      },
+      turnStepModel: async (request) => turnStepPlan(request,{
+        resolution:'domain_request',goal_result:'pending',
+        activity:{owner:'domain',duration_class:null,effort:null},operations:[{
+          op:'request_world_process',actor_ref:'party-1',
+          process_action:'affect',process_ref:'process-1',process_kind:'fire',
+          source_refs:['fuel-2'],target_refs:[],
+          description:'добавить подготовленное топливо'}]})
+    });
+    const result=await runTurnWorkflow({...input(),raw_text:'Подкладываю топливо.'},
+      services);
+    assert.equal(result.status,'partial');
+    assert.deepEqual(resolvedOperation?.target_refs,[]);
+    assert.equal(result.checkpoint.stages.persistence_plan
+      .local_fire_atomic_write_plan.write_plan_digest,
+    sealedPlan.write_plan_digest);
+  });
+
 test('ordinary discovery resolver runs only after existing discovery owners',
   async () => {
     let ordinaryCalls = 0;

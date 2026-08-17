@@ -100,13 +100,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         partyPool,
         temporalSourceProof
       });
-      return withPhase2CurrentVisibleContext(
+      const visible = withPhase2CurrentVisibleContext(
         initial,
         phase2InitialCurrentVisibleContext({
           screen: row.screen,
           openingScreenDigest: row.stage26_result.opening_screen_digest
         })
       );
+      return { ...visible, local_fire_runtime:structuredClone(
+        temporalSourceProof.local_fire_runtime) };
     }
     const payload = row.state_payload;
     if (!validPhase2Snapshot(payload, row, partyId)) {
@@ -147,10 +149,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       },
       temporal_boundary_candidates:
         structuredClone(temporalSourceProof.candidates),
-      temporal_source_proof: structuredClone(temporalSourceProof)
+      temporal_source_proof: structuredClone(temporalSourceProof),
+      local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
     };
   }
-
   async function loadPhase2Replay({ partyId, idempotencyKey }) {
     return loadCurrentOrHistoricalPhase2Replay({
       partyPool, partyId, idempotencyKey, loadState: loadPhase2State

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "type": "module",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./src/index.js",
+    "./local-exact-fire": "./src/local-exact-fire.js"
   },
   "dependencies": {
     "@rus/contracts": "0.9.0",

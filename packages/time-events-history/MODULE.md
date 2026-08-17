@@ -43,6 +43,11 @@ time advance не создаётся. Детерминированная физ�
 тот же semantic activity owner без RNG; checked A1 использует ровно один RNG и
 то же единственное activity/time application.
 
+Lower Dvina revision 22 F1 регистрирует exact `next_boundary_at` candidate в
+существующем temporal-resolution owner. Earliest/same-time ordering остаётся
+общим; boundary resolver передаёт уже выбранный exact timestamp pure F1 owner
+и не создаёт scenario scheduler, clock или второй transaction.
+
 ## Тесты
 
 `test/exact-time.test.js`, `calendar.test.js`, `temporal-boundaries.test.js`, `historical-phases.test.js`, `domain.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary и legacy-compatible pure helpers.

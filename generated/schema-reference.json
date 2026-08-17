@@ -1030,6 +1030,12 @@
       "type": "sql"
     },
     {
+      "bytes": 7665,
+      "path": "schemas/party-db/027_party_runtime_local_exact_fire.sql",
+      "sha256": "9a7f5052be00d32623e7abbfe5627fbbbd65398cc0a0f540e2d56313089dafc7",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

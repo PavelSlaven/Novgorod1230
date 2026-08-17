@@ -20,7 +20,8 @@ export function collectTurnStepExecutionResult({
   consequences,
   preparedEffects,
   ordinaryPlans,
-  actionProducedPlans
+  actionProducedPlans,
+  localFirePlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -75,6 +76,13 @@ export function collectTurnStepExecutionResult({
     }
     actionProducedPlans.push(structuredClone(
       applied.action_production_atomic_write_plan));
+  }
+  if (applied.local_fire_atomic_write_plan != null) {
+    if (!Array.isArray(localFirePlans) || localFirePlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one local-fire atomic plan.');
+    }
+    localFirePlans.push(structuredClone(applied.local_fire_atomic_write_plan));
   }
   return {
     projection: structuredClone(applied.working_projection),

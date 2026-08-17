@@ -27,5 +27,6 @@ export const DIRECT_OPS = new Set([
 ]);
 export const DOMAIN_OPS = new Set([
   'request_discovery', 'request_container_access', 'request_movement',
-  'request_item_use', 'request_activity', 'emit_interaction', 'request_combat'
+  'request_item_use', 'request_activity', 'emit_interaction', 'request_combat',
+  'request_world_process'
 ]);

@@ -16,7 +16,7 @@ export function resolveTracePhase10Contracts({ bundle }) {
   const binding = bundle?.phase_10_bindings;
   const completionRules = bundle?.completion_rules;
   const epilogueRules = bundle?.epilogue_rules;
-  if (![18, 19, 20, 21].includes(bundle?.definition_revision)
+  if (![18, 19, 20, 21, 22].includes(bundle?.definition_revision)
       || binding?.schema !== 'rus.lower_dvina_trace_phase_10_bindings.v1'
       || binding.scenario_definition_revision !== 18
       || binding.owner !== '@rus/visibility-knowledge-memory'

@@ -27,6 +27,27 @@ const revision20 = await loadLowerDvinaTraceMaterializationBundle({
 const revision21 = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 21
 });
+const revision22 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 22
+});
+
+test('revision 22 provisions exact authored whole fuel units and ignition authority', () => {
+  const authored = materializeAuthored('party:revision22-fire', revision22, 22);
+  assert.equal(authored.request_identity.scenario_definition_revision, 22);
+  assert.equal(authored.local_fire_authority.context_ref,
+    'lower_dvina_trace:f1:local_exact_fire');
+  const fuels = authored.immediate.items.filter((item) =>
+    item.state.local_fire_fuel?.fuel_class === 'ordinary_solid_fuel_unit');
+  assert.equal(fuels.length, 2);
+  assert.deepEqual(authored.local_fire_authority.approved_fuel_item_ids,
+    fuels.map(({ instance_id: id }) => id));
+  assert.equal(fuels.every((item) => item.quantity === 1
+    && item.state.local_fire_fuel.whole_unit === true), true);
+  const ignition = authored.immediate.items.find(({ instance_id: id }) =>
+    id === authored.local_fire_authority.ignition_basis_item_id);
+  assert.equal(ignition.state.local_fire_ignition_basis.ignition_kind,
+    'authored_manual');
+});
 
 test('revision 20 adds only the authored ordinary pouch and keeps revision 19 immutable', () => {
   assert.equal(bundle.definition_revision,19);

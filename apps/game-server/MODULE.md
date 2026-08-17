@@ -177,6 +177,15 @@ revision 21 добавляет SHA-pinned open physical A1 M9/v17/v16 profile. R
 revision 19 остаются immutable historical compatibility paths, v9 — rollback
 source.
 
+Runtime release `spatial-v3-production-v11` сохраняет все inherited paths и
+делает revision 22 / M10 / Phase 1A v18 / Phase 1B v17 sole current
+publication. Он materialize-ит exact authored ignition basis и два concrete
+whole fuel units, сохраняет F1 authority, композирует production resolver и
+регистрирует due boundary у существующего temporal owner. Start/add/due входят
+в тот же combined P16; bound fuel mutation, stale pins, duplicate transition и
+late failure откатываются атомарно. Player-safe marker содержит только visible
+approved refs. Water/extinguish остаются fail-closed disabled.
+
 ## Ошибки, зависимости и effects
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.

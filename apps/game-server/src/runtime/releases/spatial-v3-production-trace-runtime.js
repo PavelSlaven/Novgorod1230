@@ -12,6 +12,10 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
+  './lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceSpatialSemanticModel } from
+  '../lower-dvina-trace-s1-llm.js';
 import { createOrdinaryMaterializationModel } from
   '../ordinary-materialization-llm.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
@@ -45,7 +49,7 @@ import { serverError } from '../../errors.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
-  ordinaryContainerContentsProfile, actionProductionProfile, localFireProfile,
+  ordinaryContainerContentsProfile, actionProductionProfile, localFireProfile, spatialSemanticProfile,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -77,6 +81,10 @@ export function createTraceTurnRuntime({
   const localFireResolverFactory = localFireProfile == null ? null
     : createLowerDvinaTraceF1ProductionResolverFactory({ pool: partyPool,
       loadedProfile: localFireProfile });
+  const spatialSemanticResolverFactory = spatialSemanticProfile == null ? null
+    : createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
+      loadedProfile: spatialSemanticProfile,
+      spatialSemanticModel: createLowerDvinaTraceSpatialSemanticModel({ roleRunner }) });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -97,6 +105,8 @@ export function createTraceTurnRuntime({
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
     localFireProfile,
+    createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
+    spatialSemanticProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

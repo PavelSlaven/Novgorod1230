@@ -1,8 +1,8 @@
 import { serverError } from '../errors.js';
 
 export function resolveTracePhase6Contracts({ bundle }) {
-  if (![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(bundle.definition_revision)
-      || ![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(bundle.definition?.revision)) {
+  if (![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(bundle.definition_revision)
+      || ![12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(bundle.definition?.revision)) {
     gap('TRACE_PHASE_6_REVISION_MISMATCH');
   }
   const route = exact(bundle.movement_bindings?.route_bindings, 'route_id', 'trace_ld_v1_route_shed_to_camp_carry_onisim');

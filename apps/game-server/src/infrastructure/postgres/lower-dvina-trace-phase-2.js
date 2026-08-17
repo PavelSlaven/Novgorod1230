@@ -1,5 +1,4 @@
-import { canonicalDigest } from '@rus/materialization';
-import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { canonicalDigest } from '@rus/materialization'; import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { createLowerDvinaTracePhase1ARepository } from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
 import { serverError } from '../../errors.js';
 import { json } from '../../runtime/first-playable/shared.js';
@@ -32,6 +31,7 @@ import { assertCombatSessionRows } from './lower-dvina-trace-combat-read.js';
 import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js';
 import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
 import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
+import { loadSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
   committer
@@ -91,8 +91,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       );
     }
     if (Number(row.party_state_version) === 0) {
-      const temporalSourceProof =
-        await loadTracePhase2TemporalSourceProof(partyPool, partyId);
+      const [temporalSourceProof, spatialSemantic] = await Promise.all([
+        loadTracePhase2TemporalSourceProof(partyPool, partyId),
+        loadSpatialSemanticCommittedState(partyPool, partyId)
+      ]);
       const initial = await loadInitialTracePhase2State({
         partyId,
         row,
@@ -108,7 +110,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         })
       );
       return { ...visible, local_fire_runtime:structuredClone(
-        temporalSourceProof.local_fire_runtime) };
+        temporalSourceProof.local_fire_runtime), spatial_semantic: spatialSemantic };
     }
     const payload = row.state_payload;
     if (!validPhase2Snapshot(payload, row, partyId)) {
@@ -119,8 +121,10 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       payload,
       presentationIdempotencyKey
     });
-    const temporalSourceProof =
-      await loadTracePhase2TemporalSourceProof(partyPool, partyId);
+    const [temporalSourceProof, spatialSemantic] = await Promise.all([
+      loadTracePhase2TemporalSourceProof(partyPool, partyId),
+      loadSpatialSemanticCommittedState(partyPool, partyId)
+    ]);
     let semanticDecisionTraces = [], semanticDecisionInputs = [];
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
       ({
@@ -151,6 +155,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof),
       local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
+      ,spatial_semantic: spatialSemantic
     };
   }
   async function loadPhase2Replay({ partyId, idempotencyKey }) {
@@ -158,7 +163,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       partyPool, partyId, idempotencyKey, loadState: loadPhase2State
     });
   }
-
   async function replayPhase2Turn({ partyId, replay, narrator }) {
     if (replay.screen?.screen_status !== 'committed_presentation_pending') {
       return replay.public_result;
@@ -212,7 +216,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       }
     });
   }
-
   async function commitPhase2Turn(input) {
     return commitLowerDvinaTracePhase2({
       ...input,
@@ -220,13 +223,11 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       committer
     });
   }
-
   async function loadCommittablePhase2State(...args) {
     return withoutPhase2CurrentVisibleContext(
       await loadPhase2State(...args)
     );
   }
-
   async function loadPhase2VisibleContext({ commit }) {
     const result = await partyPool.query(
       `SELECT visible_payload,package_digest,committed_state_version
@@ -244,7 +245,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       phase2VisibleContextFromPayload(payload)
     );
   }
-
   async function persistPhase2Screen({ partyId, inputDigest, result }) {
     const anchor = result.commit;
     const narration =

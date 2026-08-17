@@ -1,0 +1,44 @@
+{
+  "schema": "rus.lower_dvina_trace_m11_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m11_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 23,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/manifest.json",
+    "id": "lower_dvina_trace_m10_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m10_content_manifest.v1",
+    "digest": "0748131b6a6c85172735944651f9f9e5b244f7d6a55318b01d7a4da71c6c4091"
+  },
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 22,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "0ac57def8064c6e637cd34b9ce522bf6a9d9f32ea241cb6b10f822b561c122a2"
+  },
+  "files": {
+    "definition.json": "4336cdced9e93f7de53d6e3864b2848e010eff8057a59a1644e84fc5eef5ed54",
+    "local-fire-profile.json": "ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5",
+    "spatial-semantic-profile.json": "dd29b10de589d6244621172191a6860e1a93c63f42665c67faae24ec724cb202"
+  },
+  "content_refs": {
+    "definition": {"path":"definition.json","id":"lower_dvina_trace_v1","revision":23,"schema":"rus.trace_scenario_definition.v1","digest":"4336cdced9e93f7de53d6e3864b2848e010eff8057a59a1644e84fc5eef5ed54"},
+    "local_fire_profile": {"path":"local-fire-profile.json","id":"lower_dvina_trace_f1_local_exact_fire_profile_v1","revision":1,"schema":"rus.lower_dvina_trace_local_fire_profile.v1","digest":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"},
+    "spatial_semantic_profile": {
+      "path": "spatial-semantic-profile.json",
+      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
+      "digest": "dd29b10de589d6244621172191a6860e1a93c63f42665c67faae24ec724cb202"
+    }
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "98d28aec13543e4c97e993cc5ce8fa3fe2f025f383851f11e84f6f0b49c61551",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

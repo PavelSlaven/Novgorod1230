@@ -213,6 +213,19 @@ Player-safe projection раскрывает только visible approved refs �
 process refs. Revision 22 не активирует extinguish/water, потому что exact
 finite-water authority отсутствует; semantic или noun fallback запрещён.
 
+S1 revision 23 — SHA-pinned finite profile для одной ordinary structural detail
+и одной descriptive-only local natural feature. First-entry P16 под общими
+scope locks provision-ит только code-built envelope из profile, baseline/G5/G6
+и current position; runtime не принимает raw envelope. После authored/external,
+O1, A1 и F1 priority остаток использует только existing `request_discovery`
+`look` c одним current visible position. Model выбирает исключительно closed
+`descriptor_ref` вне transaction; authored descriptor даёт zero model calls.
+Durable reservation до model блокирует конкурирующий slot; crash-retry
+переиспользует ту же deterministic identity, а rejected model/admission или
+откаченный P16 освобождает reservation и восстанавливает capacity. P16 атомарно
+consumes reservation и сохраняет sealed resolution без отдельного party bump.
+S1 не создаёт topology, movement, hazards, water или F1 coupling.
+
 ### 4.5. Party database
 
 Хранит G5, NPC, предметы, контейнеры, ownership, relations, schedules, knowledge, decisions, change sets, autonomous updates, traces, visible read models и изменяемое состояние партии.

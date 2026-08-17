@@ -24,6 +24,7 @@ import {
   getTurnStepWorkflowDraft,
   turnStepDraftActionProductionAtomicWritePlan,
   turnStepDraftLocalFireAtomicWritePlan,
+  turnStepDraftSpatialSemanticAtomicWritePlan,
   turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
   turnStepDraftPreparedEffectLedger
@@ -145,6 +146,9 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
           getTurnStepWorkflowDraft(state.modeResolution)),
       local_fire_atomic_write_plan: turnStepDraftLocalFireAtomicWritePlan(
         getTurnStepWorkflowDraft(state.modeResolution)),
+      spatial_semantic_atomic_write_plan:
+        turnStepDraftSpatialSemanticAtomicWritePlan(
+          getTurnStepWorkflowDraft(state.modeResolution)),
       commandRegistry: services.commandRegistry
     }), context)),
     stage(14, 'commit', async (state) => {

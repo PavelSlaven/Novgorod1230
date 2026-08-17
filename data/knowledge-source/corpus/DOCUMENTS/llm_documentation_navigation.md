@@ -70,7 +70,7 @@ exact-head evidence не активировало production; последующ
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
 - combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).
 
-Current Lower Dvina Trace revision 22 / `spatial-v3-production-v11` наследует
+Historical Lower Dvina Trace revision 22 / `spatial-v3-production-v11` наследует
 все четыре границы. Revision 20 / M8 / Phase 1A v16 / Phase 1B v15 добавила
 SHA-pinned O2b existing-container contents для одного authored player pouch;
 revision 21 / M9 / Phase 1A v17 / Phase 1B v16 активирует узкий SHA-pinned A1
@@ -82,6 +82,12 @@ candidate-free container веткой; A1 сохраняет exact handler prior
 использует существующие generic-check/activity owners плюс общий P16. F1
 переиспользует pure `@rus/world-processes`, общий temporal boundary owner и тот
 же P16; water/extinguish остаются disabled без exact finite-water authority.
+
+Revision 23 / M11 / Phase 1A v19 / Phase 1B v18 / `spatial-v3-production-v12`
+добавляет только S1 closed spatial-semantic remainder: one reserved ordinary
+structure and one reserved local natural feature, descriptive-only and with no
+movement/hazard/water authority. It follows O1→A1→F1 priority and persists its
+exact descriptor resolution in the same combined P16.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует

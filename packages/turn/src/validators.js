@@ -97,11 +97,20 @@ export function validateTurnWritePlan(value) {
   const errors = [];
   if (!plain(value)) return fail('turn write plan must be an object');
   if (value.schema !== 'party_turn_write_plan' || value.version !== 2 || value.sealed_by !== 'turn_code_planner_v2') errors.push('write plan must be sealed party_turn_write_plan v2');
-  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','turn_step_commit','first_entry_materialization','destination_position','ordinary_materialization_atomic_write_plan','action_production_atomic_write_plan','local_fire_atomic_write_plan']);
+  const allowedKeys = new Set(['version','schema','sealed_by','party_id','turn_id','base_state_version','write_targets','command_trace','turn_step_commit','first_entry_materialization','destination_position','ordinary_materialization_atomic_write_plan','action_production_atomic_write_plan','local_fire_atomic_write_plan','spatial_semantic_atomic_write_plan']);
   for (const key of Object.keys(value)) if (!allowedKeys.has(key)) errors.push(`write plan field is forbidden: ${key}`);
   requiredText(errors, value.party_id, 'party_id');
   requiredText(errors, value.turn_id, 'turn_id');
-  if (!Array.isArray(value.write_targets) || value.write_targets.length === 0) errors.push('write_targets must be non-empty array');
+  const spatialSemanticExtensionOnly = value.turn_step_commit != null
+    && value.spatial_semantic_atomic_write_plan != null
+    && value.ordinary_materialization_atomic_write_plan == null
+    && value.action_production_atomic_write_plan == null
+    && value.local_fire_atomic_write_plan == null;
+  if (!Array.isArray(value.write_targets)
+      || (value.write_targets.length === 0
+        && !spatialSemanticExtensionOnly)) {
+    errors.push('write_targets must be non-empty or bind one atomic extension');
+  }
   for (const target of Array.isArray(value.write_targets) ? value.write_targets : []) {
     if (!plain(target)) errors.push('write target must be an object');
     else {

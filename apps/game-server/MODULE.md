@@ -117,14 +117,26 @@ revision 21 добавляет узкий SHA-pinned A1 M9/v17/v16 profile. Revi
 revision 19 остаются immutable historical compatibility paths, v9 — rollback
 source.
 
-Runtime release `spatial-v3-production-v11` сохраняет все inherited paths и
-делает revision 22 / M10 / Phase 1A v18 / Phase 1B v17 sole current
-publication. Он materialize-ит exact authored ignition basis и два concrete
+Historical runtime release `spatial-v3-production-v11` сохраняет все inherited
+paths и делала revision 22 / M10 / Phase 1A v18 / Phase 1B v17 текущей
+publication своего release. Она materialize-ит exact authored ignition basis и два concrete
 whole fuel units, сохраняет F1 authority, композирует production resolver и
 регистрирует due boundary у существующего temporal owner. Start/add/due входят
 в тот же combined P16; bound fuel mutation, stale pins, duplicate transition и
 late failure откатываются атомарно. Player-safe marker содержит только visible
 approved refs. Water/extinguish остаются fail-closed disabled.
+
+Runtime release `spatial-v3-production-v12` делает revision 23 / M11 /
+Phase 1A v19 / Phase 1B v18 sole current publication. First-entry common P16
+provision-ит exact SHA-pinned S1 envelopes текущего G5/G6/position. Последующий
+`request_discovery/look` резервирует одну finite capacity вне model transaction,
+а общий combined P16 re-lock-ит scope и атомарно сохраняет party-scoped
+structural semantic resolution, consume reservation, player-safe result и один
+party bump. Crash-retry reuse-ит ту же reservation; rejected model/admission и
+rolled-back P16 явно освобождают её без player-safe reservation ref. Authored
+descriptor не вызывает model; bounded provider видит
+только closed descriptor catalog. Baseline/topology/movement/hazard/F1/water не
+изменяются, reload/revisit не reroll-ит committed resolution.
 
 ## Ошибки, зависимости и effects
 

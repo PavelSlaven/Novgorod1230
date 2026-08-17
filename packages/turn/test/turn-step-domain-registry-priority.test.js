@@ -6,6 +6,8 @@ import {
   runTurnWorkflow
 } from '../src/index.js';
 import { isOrdinaryDiscoveryInScope } from '../src/turn-step-admission.js';
+import { isSpatialSemanticRemainderInScope } from
+  '../src/turn-step-spatial-semantic-remainder.js';
 import {
   createServices,
   input,
@@ -168,6 +170,45 @@ test('ordinary discovery resolver runs only after existing discovery owners',
     assert.equal(bindingCalls, 1);
     assert.equal(ordinaryCalls, 0);
   });
+
+test('S1 look remainder runs through the final discovery seam', async () => {
+  const marker = spatialMarker();
+  let spatialCalls = 0;
+  const remainder = createServices([], {
+    command: { matches: () => false,
+      semantic_binding: unmatchedDiscoveryBinding() },
+    playerSafeStateProjector: () => discoveryProjection(undefined, marker),
+    turnStepSpatialSemanticResolver: async (request) => {
+      spatialCalls += 1;
+      assert.equal(Object.isFrozen(request), true);
+      return ordinaryResult(request);
+    },
+    turnStepModel: (request) => discoveryPlan(request, 'осматриваю место', 'look')
+  }).services;
+  await runTurnWorkflow(input(), remainder);
+  assert.equal(spatialCalls, 1);
+});
+
+test('S1 scope marker is exact and getter-safe', () => {
+  const operation = { op: 'request_discovery', actor_ref: 'party-1',
+    discovery_kind: 'look', target_refs: ['place-gate'], query: 'осмотреть' };
+  const playerSafeState = discoveryProjection(undefined,
+    spatialMarker()).player_safe_state;
+  assert.equal(isSpatialSemanticRemainderInScope({ operation,
+    playerSafeState }), true);
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: {
+    ...operation, discovery_kind: 'inspect' }, playerSafeState }), false);
+  assert.equal(isSpatialSemanticRemainderInScope({ operation,
+    playerSafeState: discoveryProjection(undefined, {
+      ...spatialMarker(), extra: true }).player_safe_state }), false);
+  let reads = 0;
+  const hostile = { ...playerSafeState };
+  Object.defineProperty(hostile, 'spatial_semantic', { enumerable: true,
+    get() { reads += 1; return spatialMarker(); } });
+  assert.equal(isSpatialSemanticRemainderInScope({ operation,
+    playerSafeState: hostile }), false);
+  assert.equal(reads, 0);
+});
 
 test('registered discovery owner preempts the ordinary resolver', async () => {
   let currentDiscoveryCalls = 0;
@@ -482,7 +523,8 @@ function unmatchedDiscoveryBinding() {
   };
 }
 
-function discoveryProjection(ordinaryResolution = undefined) {
+function discoveryProjection(ordinaryResolution = undefined,
+  spatialSemantic = undefined) {
   return {
     actor: { actor_ref: 'party-1' },
     player_safe_state: {
@@ -490,9 +532,19 @@ function discoveryProjection(ordinaryResolution = undefined) {
       visible_entities: [{ entity_ref: 'place-gate' }],
       ...(ordinaryResolution === undefined ? {} : {
         ordinary_resolution: ordinaryResolution
+      }),
+      ...(spatialSemantic === undefined ? {} : {
+        spatial_semantic: spatialSemantic
       })
     }
   };
+}
+
+function spatialMarker() {
+  return { semantic_grounding_available: true,
+    envelope_ref: 'envelope:shore', position_ref: 'place-gate',
+    kind: 'ordinary_structure', profile_ref: 'profile:s1',
+    profile_version: 1, policy_ref: 'policy:s1', policy_version: 1 };
 }
 
 function discoveryPlan(request, query = 'осмотреть неизвестную деталь',

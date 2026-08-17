@@ -60,7 +60,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       (execution) => admitResult(
         handler(execution), workingProjectionAuthority)
     ]));
-  const phase9ContainerOwner = [17, 18, 19, 20, 21, 22].includes(safeCommittedState
+  const phase9ContainerOwner = [17, 18, 19, 20, 21, 22, 23].includes(safeCommittedState
     ?.materialization_trace?.seed_context?.scenario_definition_revision)
     && (safeCommittedState.phase9 != null
       || safeCommittedState.last_turn?.consequence?.combat?.session_after

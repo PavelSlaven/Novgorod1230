@@ -4,19 +4,22 @@ import { loadLowerDvinaTraceO2bProfile } from './lower-dvina-trace-o2b-profile.j
 import { loadLowerDvinaTraceA1Profile } from './lower-dvina-trace-a1-profile.js';
 import { loadLowerDvinaTraceLocalFireProfile } from
   './lower-dvina-trace-local-fire-profile.js';
+import { loadLowerDvinaTraceSpatialSemanticProfile } from
+  './lower-dvina-trace-spatial-semantic-profile.js';
 
 export async function loadLowerDvinaTraceProductionMaterializationProfiles({
   rootDir = process.cwd()
 } = {}) {
   const [ordinaryMaterializationProfile,ordinaryContainerContentsProfile,
-    actionProductionProfile, localFireProfile] =
+    actionProductionProfile, localFireProfile, spatialSemanticProfile] =
     await Promise.all([
       loadLowerDvinaTraceOrdinaryMaterializationProfile({rootDir}),
       loadLowerDvinaTraceO2bProfile({rootDir}),
       loadLowerDvinaTraceA1Profile({rootDir}),
-      loadLowerDvinaTraceLocalFireProfile({rootDir})
+      loadLowerDvinaTraceLocalFireProfile({rootDir}),
+      loadLowerDvinaTraceSpatialSemanticProfile({rootDir})
     ]);
   return Object.freeze({ordinaryMaterializationProfile,
     ordinaryContainerContentsProfile, actionProductionProfile,
-    localFireProfile});
+    localFireProfile, spatialSemanticProfile});
 }

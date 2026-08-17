@@ -25,6 +25,10 @@ import {
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle();
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
+const activeBundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 23
+});
+const activeDomainCatalogPin = lowerDvinaTracePhase1ADomainPin(activeBundle);
 
 function request(overrides = {}) {
   return {
@@ -47,6 +51,42 @@ function request(overrides = {}) {
     ...overrides
   };
 }
+
+test('revision 23 inherits the exact sealed inventory and prior materialized owners', () => {
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-23-party',
+    scenario_definition_revision: 23,
+    scenario_manifest_digest: activeBundle.manifest_digest,
+    world_revision_id:
+      activeBundle.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest:
+      activeBundle.location_topology_set.spatial_source_ref
+        .world_revision_catalog_digest,
+    domain_catalog_pin: activeDomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-23-idempotency',
+    scenario_bundle: activeBundle
+  }));
+
+  assert.equal(result.sealed_selections.length, 24);
+  assert.ok(result.sealed_selections.some(
+    ({ selection_kind: kind }) => kind === 'interaction_persistence_mappings'
+  ));
+  assert.equal(result.immediate.prepared_scenes.length, 3);
+  assert.equal(result.immediate.containers.length, 1);
+  assert.ok(result.local_fire_authority);
+  assert.ok(result.action_production_authority);
+  const materializedNpcIds = new Set(result.immediate.npcs.map(
+    ({ instance_id: instanceId }) => instanceId
+  ));
+  assert.deepEqual(
+    result.immediate.items
+      .filter(({ holder_npc_id: holderNpcId }) => (
+        holderNpcId && !materializedNpcIds.has(holderNpcId)
+      ))
+      .map(({ template_id: templateId }) => templateId),
+    []
+  );
+});
 
 test('canonical seed deterministically resolves the complete internal Phase 1A instance', () => {
   const originalRandom = Math.random;

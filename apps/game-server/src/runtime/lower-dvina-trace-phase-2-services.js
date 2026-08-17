@@ -72,6 +72,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     actionProductionProfile,
     createTurnStepWorldProcessResolver,
     localFireProfile,
+    createTurnStepSpatialSemanticResolver,
+    spatialSemanticProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -158,6 +160,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       createTurnStepActionProducedResolver,
       localFireProfile,
       createTurnStepWorldProcessResolver,
+      createTurnStepSpatialSemanticResolver,
+      spatialSemanticProfile,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
@@ -197,6 +201,11 @@ export function buildLowerDvinaTracePhase2Services(context) {
       turnStepWorldProcessResolver: createTurnStepWorldProcessResolver({
         partyId, requestId, inputDigest
       })
+    } : {}),
+    ...(typeof createTurnStepSpatialSemanticResolver === 'function'
+        && spatialSemanticProfile?.profile?.status === 'approved' ? {
+      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({
+        partyId, requestId, inputDigest })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

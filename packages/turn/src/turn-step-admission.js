@@ -1,20 +1,11 @@
 import { deepFreeze } from '@rus/kernel';
-import {
-  createTurnStepExecutionRegistry,
-  requireTurnStepExecutionRegistry,
-  runTurnStepLoop
-} from './turn-step-loop.js';
-import {
-  TURN_STEP_OPERATION_BATCH_TARGET
-} from './turn-step-operation-batch.js';
-import {
-  assertValid,
-  validateAvailabilityDecision,
-  validateConsequencePackage
-} from './validators.js';
+import { createTurnStepExecutionRegistry, requireTurnStepExecutionRegistry, runTurnStepLoop } from './turn-step-loop.js';
+import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
+import { assertValid, validateAvailabilityDecision, validateConsequencePackage } from './validators.js';
 import { isActionProducedSemanticRemainderInScope } from './turn-step-action-produced-remainder.js';
 import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
+import { isSpatialSemanticRemainderInScope } from './turn-step-spatial-semantic-remainder.js';
 
 export { isActionProducedSemanticRemainderInScope } from './turn-step-action-produced-remainder.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
@@ -164,6 +155,24 @@ export async function resolveBoundTurnStepCommand({
         ? resolveWorldProcessRemainder({ operation, execution, projected,
           committedState, services }) : null;
       if (worldProcess != null) return worldProcess;
+      if (matches.length === 0) {
+        const spatialResolver = services.turnStepSpatialSemanticResolver;
+        if (typeof spatialResolver === 'function'
+            && isSpatialSemanticRemainderInScope({
+              operation,
+              playerSafeState: execution.request.player_safe_state
+            })) {
+          return spatialResolver(deepFreeze({
+            schema: 'turn_step_spatial_semantic_remainder_request_v1',
+            operation: structuredClone(operation),
+            plan: structuredClone(execution.plan),
+            request: structuredClone(execution.request),
+            actor: structuredClone(projected.actor),
+            working_projection: structuredClone(execution.working_projection),
+            committed_state: structuredClone(committedState)
+          }));
+        }
+      }
       if (matches.length !== 1) {
         throw turnCommandError(
           matches.length === 0
@@ -420,15 +429,12 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
     }
   };
 }
-
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
-
 function plain(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
-
 export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
   if (!['inspect', 'search'].includes(operation?.discovery_kind)
       || !Array.isArray(operation.target_refs)
@@ -440,7 +446,6 @@ export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
   }
   return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
 }
-
 function ordinaryDiscoveryAvailable(playerSafeState) {
   const resolution = ownDataProperty(playerSafeState, 'ordinary_resolution');
   const marker = ownPlainDataRecord(resolution, [
@@ -449,7 +454,6 @@ function ordinaryDiscoveryAvailable(playerSafeState) {
   return marker?.discovery_available === true
     && marker.container_resolution_available === false;
 }
-
 function exactVisibleScope(...projections) {
   const refs = new Set();
   for (const projection of projections) {
@@ -463,11 +467,9 @@ function exactVisibleScope(...projections) {
   }
   return refs;
 }
-
 function addRef(refs, value) {
   if (typeof value === 'string' && value.length > 0) refs.add(value);
 }
-
 function ownPlainDataRecord(value, keys) {
   if (value == null || typeof value !== 'object' || Array.isArray(value)
       || (Object.getPrototypeOf(value) !== Object.prototype
@@ -485,14 +487,12 @@ function ownPlainDataRecord(value, keys) {
   }
   return output;
 }
-
 function ownDataProperty(value, key) {
   if (value == null || typeof value !== 'object') return undefined;
   const descriptor = Object.getOwnPropertyDescriptor(value, key);
   return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
     ? descriptor.value : undefined;
 }
-
 function turnCommandError(code, message) {
   return Object.assign(new Error(message), { code });
 }

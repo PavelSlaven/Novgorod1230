@@ -1,6 +1,5 @@
-import {
-  computeSpatialV3CanonicalDigest
-} from '@rus/contracts/spatial-v3/registry';
+import { computeSpatialV3CanonicalDigest } from
+  '@rus/contracts/spatial-v3/registry';
 import {
   TABLES,
   error,
@@ -22,9 +21,10 @@ import { applyActionProducedAtomicWritePlanInTransaction } from
   './action-produced-persistence.js';
 import { applyLocalFireP16Extension,
   assertLocalFireFuelMutationBound } from './local-fire-p16-extension.js';
-
+import { applySpatialSemanticAtomicWritePlanInTransaction } from
+  './spatial-semantic-persistence.js';
+import { withSpatialSemanticReservationFailureRelease } from './spatial-semantic-p16-reservation-lifecycle.js';
 export { validateSpatialV3CombinedWritePlan };
-
 function serializePlanValue(value) {
   return Array.isArray(value) ? JSON.stringify(value) : value;
 }
@@ -89,7 +89,7 @@ async function apply(tx, write, mode, expectedStateVersion = null, sealedPlan = 
   await tx.query(`INSERT INTO ${table} (${columns.map(quote).join(', ')}) VALUES (${values.map((_, index) => `$${index + 1}`).join(', ')})`, values);
 }
 
-export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, now = () => new Date() } = {}) {
+export function createSpatialV3CombinedAtomicCommitter({ withTransaction, recheck, ordinaryFirstEntryProvisioner = null, spatialSemanticFirstEntryProvisioner = null, now = () => new Date() } = {}) {
   return Object.freeze({ async commit({ plan, created_at_turn = 0, recheck: commitRecheck = recheck } = {}) {
     if (!validateSpatialV3CombinedWritePlan(plan)) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan?.party_id, { reason: 'untrusted or non-whitelisted combined write plan' }) });
     if (!Number.isSafeInteger(created_at_turn) || created_at_turn < 0) return Object.freeze({ ok: false, error: error('generated_schema_mismatch', plan.party_id, { reason: 'commit turn must be one non-negative safe integer' }) });
@@ -225,6 +225,24 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         }
       }
       await applyLocalFireP16Extension(tx, plan);
+      if (plan.spatial_semantic_atomic_write_plan != null) {
+        try {
+          await applySpatialSemanticAtomicWritePlanInTransaction({ client: tx,
+            input: plan.spatial_semantic_atomic_write_plan,
+            partyStateVersionAfter: plan.spatial_semantic_atomic_write_plan
+              .base_party_state_version + 1,
+            p16ChangeSetId: plan.change_set_id });
+        } catch (cause) {
+          if (['SPATIAL_SEMANTIC_AUTHORITY_STALE',
+            'SPATIAL_SEMANTIC_RESERVATION_STALE',
+            'SPATIAL_SEMANTIC_SCOPE_STALE'].includes(cause?.code)) {
+            cause.spatialCode = 'state_version_conflict';
+          } else if (cause?.code === 'SPATIAL_SEMANTIC_IDEMPOTENCY_CONFLICT') {
+            cause.spatialCode = 'idempotency_conflict';
+          }
+          throw cause;
+        }
+      }
       const lifecycleFinalizers = [];
       for (const { mode, write } of orderWrites(plan)) {
         const expectedStateVersion =
@@ -249,6 +267,14 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       for (const finalizeLifecycle of lifecycleFinalizers) {
         await finalizeLifecycle();
       }
+      if (plan.operation_kind === 'first_entry'
+          && spatialSemanticFirstEntryProvisioner != null) {
+        const binding = plan.commit_rechecks.find((check) =>
+          check.kind === 'physical');
+        await spatialSemanticFirstEntryProvisioner.provision({ transaction: tx,
+          partyId: plan.party_id, firstEntryBinding: structuredClone(binding),
+          changeSetId: plan.change_set_id });
+      }
       const settled = await tx.query(`UPDATE party_runtime.party_command_idempotency SET status='committed',result_change_set_id=$1,lease_token=NULL,lease_expires_at=NULL,finalized_at_turn=$2,state_version=state_version+1 WHERE party_id=$3 AND operation_kind=$4 AND idempotency_key=$5 AND status='leased'`, [plan.change_set_id, created_at_turn, plan.party_id, plan.operation_kind, plan.idempotency_key]); if (settled.rowCount !== 1) throw Object.assign(new Error('idempotency settle failed'), { spatialCode: 'idempotency_conflict' });
       return Object.freeze({ ok: true, replay: false, change_set_id: plan.change_set_id, lock_keys: Object.freeze(locks) });
     }); } catch (cause) {
@@ -256,13 +282,12 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
     }
   } });
 }
-
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */
-export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, now } = {}) {
+export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, ordinaryFirstEntryProvisioner, spatialSemanticFirstEntryProvisioner, now } = {}) {
   if (!pool?.connect) throw new TypeError('P16 PostgreSQL committer requires a pg pool');
-  return createSpatialV3CombinedAtomicCommitter({
+  const committer = createSpatialV3CombinedAtomicCommitter({
     now,
-    recheck, ordinaryFirstEntryProvisioner,
+    recheck, ordinaryFirstEntryProvisioner, spatialSemanticFirstEntryProvisioner,
     withTransaction: async (work) => {
       const client = await pool.connect();
       try { await client.query('BEGIN'); const result = await work(client); if (!result?.ok) { await client.query('ROLLBACK'); return result; } await client.query('COMMIT'); return result; }
@@ -270,4 +295,5 @@ export function createSpatialV3PostgresCombinedAtomicCommitter({ pool, recheck, 
       finally { client.release(); }
     }
   });
+  return withSpatialSemanticReservationFailureRelease({ committer, pool });
 }

@@ -960,7 +960,7 @@
       "source_location": {
         "file": "code_driven_world_materialization_architecture.md",
         "line_start": 1,
-        "line_end": 431
+        "line_end": 444
       }
     },
     {
@@ -1068,7 +1068,7 @@
       "source_location": {
         "file": "items_and_property.txt",
         "line_start": 1,
-        "line_end": 403
+        "line_end": 417
       }
     },
     {
@@ -1140,7 +1140,7 @@
       "source_location": {
         "file": "npc_autonomous_decision_contract.md",
         "line_start": 1,
-        "line_end": 2372
+        "line_end": 2373
       }
     },
     {
@@ -1260,7 +1260,7 @@
       "source_location": {
         "file": "turn_step_llm_contract.md",
         "line_start": 1,
-        "line_end": 1406
+        "line_end": 1421
       }
     },
     {

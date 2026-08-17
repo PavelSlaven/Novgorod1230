@@ -823,6 +823,21 @@ LLM не перечисляет contents до их появления в player-
 
 Профильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.
 
+В active Lower Dvina Trace revision 21 отсутствие exact recipe больше не
+является автоматическим отказом только внутри SHA-pinned A1 profile. Приоритет
+не меняется: registered/external handler, затем единственный authored binding,
+и лишь при нуле совпадений — A1 remainder. Активный scope принимает только
+видимую committed рабочую верхнюю одежду как source и принадлежащий actor нож
+Микулы как единственный tool. Он требует уже выполненные общим owner
+`generic_check` dexterity/standard и semantic activity short/light; resolver
+получает их exact result/evidence и не вызывает RNG либо clock повторно. До
+qualitative model call код перечитывает authority, ownership, placement и
+полный authored mechanics snapshot. Current profile допускает только
+`preserve_source | no_useful_result` и `ordinary_mundane`; model не задаёт
+массу, расход, identity, placement, время, roll или authority. Один combined
+P16 сохраняет causal pins и физический transition атомарно. Этот A1 route не
+отвечает на вопросы о pre-existing presence и не является fallback O1/O2.
+
 ### 12.5. `request_activity`
 
 ```json

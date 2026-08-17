@@ -51,9 +51,9 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
 });
 
 test('production-v6 trace runtime wires canonical packing and semantic NPC models', async () => {
-  const [sharedSource, releaseSource] = await Promise.all([
+  const [traceRuntimeSource, releaseSource] = await Promise.all([
     readFile(new URL(
-      '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js',
+      '../../apps/game-server/src/runtime/releases/spatial-v3-production-trace-runtime.js',
       import.meta.url
     ), 'utf8'),
     readFile(new URL(
@@ -61,11 +61,11 @@ test('production-v6 trace runtime wires canonical packing and semantic NPC model
       import.meta.url
     ), 'utf8')
   ]);
-  assert.match(sharedSource,
+  assert.match(traceRuntimeSource,
     /turnStepPackingCalculator:\s*calculatePackingSlots/u);
-  assert.match(sharedSource, /from '@rus\/items-property'/u);
+  assert.match(traceRuntimeSource, /from '@rus\/items-property'/u);
   assert.match(
-    sharedSource,
+    traceRuntimeSource,
     /\.\.\.createNpcRuntimePorts\(\{ roleRunner \}\)/u
   );
   assert.match(
@@ -187,6 +187,7 @@ function fixture() {
     close: async () => { closed += 1; }
   };
   let received;
+  let receivedBindingContext;
   const targetRootFactory = (ports) => {
     received = ports;
     return {
@@ -198,7 +199,9 @@ function fixture() {
       getPartyScreen: async () => ({ ok: true })
     };
   };
-  const bindingsFactory = async ({ release }) => {
+  const bindingsFactory = async (bindingContext) => {
+    receivedBindingContext = bindingContext;
+    const { release } = bindingContext;
     assert.equal(release.release_id, SPATIAL_V3_PRODUCTION_RELEASE_ID);
     return {
       targetCompositionPorts: { port_marker: 'v5-only' },
@@ -219,6 +222,7 @@ function fixture() {
     targetRootFactory,
     bindingsFactory,
     received: () => received,
+    receivedBindingContext: () => receivedBindingContext,
     closed: () => closed
   };
 }
@@ -262,7 +266,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v9 root is sole owner with production-v8 rollback identity', async () => {
+test('production-v10 root is sole owner with production-v9 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -289,7 +293,7 @@ test('production-v9 root is sole owner with production-v8 rollback identity', as
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v8'
+    'spatial-v3-production-v9'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -341,6 +345,12 @@ test('production-v9 root is sole owner with production-v8 rollback identity', as
   assert.equal(health.release_id, SPATIAL_V3_PRODUCTION_RELEASE_ID);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.composition_id, 'builtin:production-spatial-v3');
   assert.equal(setup.received().port_marker, 'v5-only');
+  assert.equal(setup.receivedBindingContext().actionProductionProfile.schema,
+    'rus.lower_dvina_trace_a1_loaded_profile.v1');
+  assert.equal(setup.receivedBindingContext().actionProductionProfile.profile
+    .status, 'approved');
+  assert.equal(setup.receivedBindingContext().actionProductionProfile.profile
+    .profile_id, 'lower_dvina_trace_a1_personal_tool_profile_v1');
   assert.equal(typeof setup.received().committer.commit, 'function');
   assert.equal((await root.getPartyScreen()).owner, 'v5');
   await root.close();
@@ -606,7 +616,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 025', async () => {
+test('restart extends the exact immutable catalog ledger with migrations 012 through 026', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -636,7 +646,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 14);
+  assert.equal(result.newly_applied, 15);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -665,7 +675,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     );
   }
   assert.equal(statements.filter((sql) =>
-    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,2);
+    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,3);
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

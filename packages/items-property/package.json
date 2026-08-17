@@ -4,6 +4,11 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./action-produced-output-class": "./src/action-produced-output-class.js",
+    "./action-produced-output-authority": "./src/action-produced-output-authority.js",
+    "./action-produced-output-semantics": "./src/action-produced-output-semantics.js",
+    "./action-produced-result": "./src/action-produced-result.js",
+    "./action-produced-transition": "./src/action-produced-transition.js",
     "./ambient-ordinary-portion": "./src/ambient-ordinary-portion.js",
     "./finite-resource-transition": "./src/finite-resource-transition.js"
   },

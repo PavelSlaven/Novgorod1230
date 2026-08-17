@@ -1,7 +1,12 @@
 import { deepFreeze } from '@rus/kernel';
 import { validateCombatSession as sessionValid, validateCombatIntent as intentValid, validateCombatTechnicalStepProposal, validateCombatExchangeProposal } from '@rus/contracts/combat-v1';
-export { combatBodyThresholdSignalProfile } from
+import { combatBodyThresholdSignalProfile } from
   './body-threshold-signals.js';
+import { combatActionProducedWeaponProfile,
+  resolveActionProducedCombatWeaponClass } from
+  './action-produced-weapon-mechanics.js';
+export { combatBodyThresholdSignalProfile, combatActionProducedWeaponProfile,
+  resolveActionProducedCombatWeaponClass };
 export const validateCombatSession=sessionValid;
 export const validateCombatIntent=intentValid;
 

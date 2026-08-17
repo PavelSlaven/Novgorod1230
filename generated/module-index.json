@@ -119,6 +119,7 @@
         "harm and injury packages",
         "meaningful combat outcome/signal descriptors",
         "versioned generic combat body-threshold signal mapping",
+        "versioned closed mapping from admitted A1 improvised-weapon classes to",
         "combat-state validation"
       ],
       "path": "packages/combat-health",

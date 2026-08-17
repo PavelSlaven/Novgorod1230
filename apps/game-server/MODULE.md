@@ -92,6 +92,16 @@ partial batch leaks; reload/reopen uses committed coverage with zero model
 calls. Narration consumes only the persisted post-reveal package and cannot add
 items. No new HTTP operation, contents store or transaction owner is added.
 
+Active revision 21 A1 is limited to the authored garment-plus-owned-knife
+profile and `preserve_source|no_useful_result`. It reuses the one generic
+check and one semantic activity/time resolution already produced by the turn
+owners. The same combined P16 write set contains the full turn snapshot,
+append-only check resolution, clock/activity writes and the A1 plan; its digest
+and change-set identity therefore bind the physical transition to the exact
+roll/outcome and duration/effort evidence without a second RNG, clock or A1
+execution ledger. Any evidence mutation invalidates the sealed combined plan
+before transaction work.
+
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility
 policy: the server verifies party/request identity, the `start_text` branch
@@ -101,10 +111,11 @@ replay never permits switching the request to a scenario-ID branch.
 Trace publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
-Runtime release `spatial-v3-production-v9` сохраняет revision 19 appearance и
-equipment-driven portrait path; active publication revision 20 добавляет
-SHA-pinned O2b M8/v16/v15 content без нового semantic mode. Revision 19
-остаётся historical compatibility path, v8 — rollback source.
+Runtime release `spatial-v3-production-v10` сохраняет revision 19 appearance,
+equipment-driven portrait path и revision 20 O2b content; active publication
+revision 21 добавляет узкий SHA-pinned A1 M9/v17/v16 profile. Revision 20/v9 и
+revision 19 остаются immutable historical compatibility paths, v9 — rollback
+source.
 
 ## Ошибки, зависимости и effects
 

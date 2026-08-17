@@ -19,14 +19,14 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from
 import { loadLowerDvinaTraceRevision17Publication } from './lower-dvina-trace-phase-1b-revision17-publication.js';
 import { loadLowerDvinaTraceCharacterAppearancePublication, TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-character-appearance-publication.js';
 import { loadLowerDvinaTraceRevision19Publication, TRACE_REVISION19_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-revision19-publication.js'; export * from './lower-dvina-trace-phase-1b-identities.js';
-const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1', MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`,
-  BINDING_PATH = `${ROOT}/phase-1b-v13/publication-binding.json`;
+import { loadLowerDvinaTraceActionProductionPublication, TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST } from './lower-dvina-trace-action-production-publication.js';
+const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1', MANIFEST_PATH = `${ROOT}/phase-1b-v13/manifest.json`, BINDING_PATH = `${ROOT}/phase-1b-v13/publication-binding.json`;
 export async function loadLowerDvinaTracePhase1BPublication({
-  rootDir = process.cwd(),
-  phase1AManifestDigest = null
+  rootDir = process.cwd(), phase1AManifestDigest = null
 } = {}) {
-  if (phase1AManifestDigest == null
-      || phase1AManifestDigest === TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST) {
+  if (phase1AManifestDigest == null || phase1AManifestDigest === TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST) return loadLowerDvinaTraceActionProductionPublication({ rootDir, phase1AManifestDigest });
+  if (phase1AManifestDigest
+      === TRACE_CHARACTER_APPEARANCE_PHASE_1A_MANIFEST_DIGEST) {
     return loadLowerDvinaTraceCharacterAppearancePublication(
       { rootDir, phase1AManifestDigest });
   }

@@ -14,6 +14,8 @@ import { SPATIAL_V3_TARGET_MIGRATIONS } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 import { PARTY_RUNTIME_CATALOG_MIGRATION } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { buildCommittedInventoryInput } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-committed-inventory.js';
 
 const docker = (args) => spawnSync('docker', args,
   {encoding:'utf8',timeout:60_000});
@@ -109,6 +111,17 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.equal(container.closure_state,'closed');
     assert.equal(container.state.ordinary_contents_context.profile_digest,
       loadedProfile.artifact_digest);
+    const reloadedInventory = buildCommittedInventoryInput({
+      party_id: partyId, actor_id: `pc:${partyId}`,
+      party_state: { state_version: 1 },
+      position: { g5_anchor_id: 'position-new-active' },
+      player_profile: { attributes: { strength: { value: 9 } } },
+      items: [], containers: [{ container_id: pouchRef, ...container }],
+      container_placements: []
+    });
+    assert.equal(reloadedInventory.container_profiles[0].capacity, 4);
+    assert.equal(reloadedInventory.container_profiles[0].template_id,
+      container.template_id);
 
     const replay=await committer.commit({plan});
     assert.deepEqual(replay,{ok:true,replay:true,

@@ -191,10 +191,23 @@ ordinary plan в тот же atomic P16 до open/reveal. Failure не оста�
 child и не раскрывает contents; reload/reopen exact coverage не вызывает model
 и не reroll-ит. Ordinary concealed child не получает hidden authority:
 clue/evidence, authentic document, hidden history, secret cache, currency,
-significant/hidden truth, новый container и armament запрещены. Active Lower
-Dvina revision 20 / M8 / Phase 1A v16 / Phase 1B v15 связывает ровно один
-player pouch с max batch 2; revision 19 остаётся immutable historical path.
-Template-less containers и A1/F1/S1/N1 остаются disabled.
+significant/hidden truth, новый container и armament запрещены. Lower Dvina
+revision 20 / M8 / Phase 1A v16 / Phase 1B v15 связывает ровно один player
+pouch с max batch 2; revision 19 остаётся immutable historical path.
+Template-less containers и F1/S1/N1 остаются disabled; O2b сам по себе не
+активирует A1.
+
+Active revision 21 / M9 / Phase 1A v17 / Phase 1B v16 /
+`spatial-v3-production-v10` добавляет узкий A1 remainder после exact
+registered/external/authored priority. Только при нуле authored matches,
+active marker и exact source garment + owned knife tool registry вызывает
+injected resolver. Resolver получает уже выполненные общим actor-step
+`generic_check` и semantic activity evidence; второй RNG, clock, executor или
+process kind не создаётся. Model вне transaction возвращает qualitative
+preserve/no-result plan; sealed owner-native transition входит в optional A1
+extension того же combined P16 и переживает reload/replay. Current profile не
+активирует independent outputs, writing, token-like или weapon-capable
+results, не отвечает на pre-existing presence и не является O1/O2 fallback.
 
 ## Тесты
 

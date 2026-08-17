@@ -20,7 +20,11 @@ const MECHANICS_FIELDS = [
 ];
 const QUANTITY_FIELDS = ['value', 'unit'];
 const ORIGIN_KINDS = new Set([
-  'direct_partition', 'ambient_ordinary', 'crafted'
+  'direct_partition', 'ambient_ordinary', 'crafted',
+  'existing_container_ordinary'
+]);
+const SOURCE_KINDS = new Set([
+  'ordinary_direct_action_result', 'ordinary_world_materialization'
 ]);
 const CARRY_FORMS = new Set(['compact', 'regular', 'long', 'bulky']);
 
@@ -114,7 +118,7 @@ function validOrdinaryWorldProvenance(value) {
 
 function validProvenance(value) {
   return exactObject(value, PROVENANCE_FIELDS)
-    && value.source_kind === 'ordinary_direct_action_result'
+    && SOURCE_KINDS.has(value.source_kind)
     && exactText(value.root_turn_id)
     && Number.isInteger(value.step_index)
     && value.step_index >= 1

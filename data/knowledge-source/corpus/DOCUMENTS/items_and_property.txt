@@ -5,9 +5,9 @@
 Для runtime действуют два несмешиваемых класса materialization.
 
 1. Authored, significant, hidden и informational предметы, контейнеры и имущественные связи материализует код из активных category/template/profile/rule записей. Требуются causal basis, допустимый slot, quantity policy и раздельные owner/holder/controller/access/visibility/condition/legal-status relations. Selection использует versioned deterministic RNG и сохраняется в trace; повторный осмотр не запускает материализацию заново. Пустой required candidate set блокирует операцию и создаёт data gap.
-2. Ordinary direct action result может возникнуть только через валидированный player `turn_step_plan_v1` как `direct_partition`, `ambient_ordinary` или `crafted`. Он обязан иметь доступные source refs, незапрещённую ordinary semantics, явные primitive mechanics и placement. Код проверяет admission и inventory invariants и сохраняет immutable `rus.items.runtime_instance_mechanics_snapshot.v1` для конкретного экземпляра.
+2. Ordinary runtime materialization не становится authored fallback. Direct action result может возникнуть только через валидированный player `turn_step_plan_v1` как `direct_partition`, `ambient_ordinary` или `crafted`; внутренние O1/O2b branches используют только собственные versioned requests и code-owned admission. Каждый путь обязан иметь допустимые committed source/context refs, ordinary semantics, exact mechanics/property/placement и отдельную persisted identity.
 
-Второй класс не заполняет пустой authored candidate set и не разрешает создавать NPC, места, оружие, деньги, письма, улики, чужие/ценные/уникальные/скрытые предметы или container contents. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.
+Второй класс не заполняет пустой authored candidate set и не разрешает direct action создавать NPC, места, оружие, деньги, письма, улики, чужие/ценные/уникальные/скрытые предметы или container contents. Активный O2b — отдельная узкая ветка existing committed container, а не это исключение. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.
 
 ### Packing slots v1
 
@@ -62,7 +62,7 @@ visible `worn|equipped` items.
 Предметные категории должны вытекать из функции места, его богатства, текущего состояния, людей, которые там живут или работают, и ситуации в сцене. 
 Бытовое пространство содержит вещи для жизни, рабочее — вещи для производства, служебное — вещи для порядка и контроля, торговое — вещи для обмена, хранения и перевозки. 
 Конкретный набор предметов не задаётся универсальным списком, а выводится из назначения локации, эпохи, экономики, владельцев и текущих обстоятельств.
-На уровне активной локации создаются уже конкретные вещи, которые причинно доступны текущей сцене. Если игрок находится в комнате, содержимое комнаты и доступных контейнеров должно быть определено до того, как он их откроет.
+На уровне активной локации создаются уже конкретные вещи, которые причинно доступны текущей сцене. Authoritative contents определяются code-owned profile заранее; разрешённый ordinary remainder existing container может быть lazy-resolved непосредственно перед первым reveal, но никогда после того, как player-facing state уже показал содержимое.
 
 ### 2. Главное правило материализации
 

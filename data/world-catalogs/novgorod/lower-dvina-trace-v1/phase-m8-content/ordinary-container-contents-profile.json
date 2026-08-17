@@ -1,0 +1,82 @@
+{
+  "schema": "rus.lower_dvina_trace_o2b_existing_container_profile.v2",
+  "profile_id": "lower_dvina_trace_o2b_existing_container_profile_v2",
+  "revision": 2,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 20,
+  "policy": {
+    "policy_ref": "trace_ld_v1_o2b_existing_container_policy_v2",
+    "required_context_schema": "rus.items.existing_container_ordinary_context.v1",
+    "ordinary_policy_schema": "rus.items.existing_container_ordinary_policy.v2",
+    "max_new_entities_cap": 2,
+    "allowed_authority_classes": ["ordinary"],
+    "allowed_admission_classes": ["common_mundane"],
+    "allowed_availability_classes": ["common"],
+    "allowed_disclosure_states": ["concealed"]
+  },
+  "container_bindings": [
+    {
+      "binding_id": "trace_ld_v1_player_small_pouch_o2b_v1",
+      "container_ref": "trace_ld_v1_container_player_small_pouch",
+      "template_id": "container_tpl_nov_small_soft_bag_v1",
+      "mechanics_profile_ref": "inventory_container_tpl_nov_small_soft_bag_v1",
+      "mechanics_profile_digest": "7bf970a1a5868c5a6733620fb1879887215ff47e35f11a53c5d28bb308970a41",
+      "context_digest": "19169a687fb43ac04d73e76b3139d0f8d2dabeb889c94781eeb38ae7043eb661",
+      "ordinary_policy_digest": "d560c797c0750224be327588534f19de5b613cc2994fc99df139c2c6ff48e915",
+      "status": "approved"
+    }
+  ],
+  "provisioning": {
+    "container_ref": "trace_ld_v1_container_player_small_pouch",
+    "template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_form_small_soft_bag_v1",
+    "mechanics_profile_ref": "inventory_container_tpl_nov_small_soft_bag_v1",
+    "owner_controller_ref": "first_entry_player_character",
+    "property_ref": "property:trace_ld_v1_player_small_pouch",
+    "site_function_ref": "personal_road_kit",
+    "economic_context_ref": "lower_dvina_1230_common_household",
+    "context_bound_permission_refs": [],
+    "ordinary_policy": {
+      "schema": "rus.items.existing_container_ordinary_policy.v2",
+      "version": 2,
+      "unresolved_ordinary_contents": true,
+      "technical_limits": {
+        "schema": "rus.items.existing_container_ordinary_limits.v1",
+        "version": 1,
+        "max_new_entities": 2
+      }
+    },
+    "authoritative_status": "absent",
+    "container_inventory_profile": {
+      "template_id": "container_tpl_nov_small_soft_bag_v1",
+      "capacity": 4,
+      "packing_slot_cost": 3,
+      "carry_form": "regular",
+      "mass_grams": 300
+    },
+    "container_compatibility": [],
+    "mechanics_policy": {
+      "policy_ref": "trace_ld_v1_o2b_small_pouch_mechanics_v1",
+      "min_mass_grams": 1,
+      "max_mass_grams": 1000,
+      "max_external_hand_cost": 0,
+      "max_packing_slot_cost": 1,
+      "allowed_carry_forms": ["compact"]
+    },
+    "objective_context_refs": {
+      "period_ref": "period:1230",
+      "region_ref": "gn_nov_g1_xp017_yp026",
+      "function_refs": ["personal_road_kit"],
+      "environment_refs": ["lower_dvina_wreck_shore"],
+      "occupation_household_refs": ["nov_occ_merchant_clerk"],
+      "economic_context_ref": "lower_dvina_1230_common_household",
+      "occupancy_state_ref": "player_possessed",
+      "material_culture_refs": ["novgorod_1200_1250_common"],
+      "property_context_ref": "property:trace_ld_v1_player_small_pouch"
+    },
+    "identity_budget": 2,
+    "resolution_record_cap": 4
+  },
+  "fallback_policy": "forbidden"
+}

@@ -96,6 +96,26 @@ significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
 
+Active O2b keeps the same public `request_container_access`. Production startup
+loads and SHA-validates revision 20 M8 / Phase 1A v16 / Phase 1B v15 plus one
+exact existing-container profile; revision 19 publication/loading remains an
+immutable historical recovery path. First-entry P16 provisions the approved
+template-backed player pouch, ownership and its container-scoped ordinary
+aggregate/context/basis/enablement inside the existing transaction without an
+extra party bump. Only an exact persisted container/profile/property/owner/
+placement/mechanics match installs the resolver; drift, missing profile,
+template-less container or non-bound container fails closed before model.
+Authoritative contents bypass resolver/model. Candidate-free model execution is
+outside SQL, and the server validates the complete ordinary batch, individual
+mass/mechanics, exact parent placement and packing/capacity before constructing
+one `ordinary_container_contents_atomic_write_plan_v2`. The existing combined
+P16 transaction atomically persists ledger transition, children through
+`party_items` plus mechanics/property/placement, container open/reveal and
+player-safe visible package. Precommit/failed children remain concealed and no
+partial batch leaks; reload/reopen uses committed coverage with zero model
+calls. Narration consumes only the persisted post-reveal package and cannot add
+items. No new HTTP operation, contents store or transaction owner is added.
+
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility
 policy: the server verifies party/request identity, the `start_text` branch
@@ -105,8 +125,10 @@ replay never permits switching the request to a scenario-ID branch.
 Trace publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
-Runtime release `spatial-v3-production-v9` активирует revision 19 appearance и
-equipment-driven portrait path; v8 остаётся rollback source.
+Runtime release `spatial-v3-production-v9` сохраняет revision 19 appearance и
+equipment-driven portrait path; active publication revision 20 добавляет
+SHA-pinned O2b M8/v16/v15 content без нового semantic mode. Revision 19
+остаётся historical compatibility path, v8 — rollback source.
 
 ## Ошибки, зависимости и effects
 

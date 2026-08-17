@@ -8,9 +8,12 @@ import {
 import {
   assertOrdinaryMaterializationRequestV1
 } from '@rus/contracts/ordinary-materialization-v1';
+import { provisionInitialOrdinaryContainer } from
+  './ordinary-container-first-entry-provisioning.js';
 
 export function createOrdinaryMaterializationFirstEntryProvisioner({
-  profile
+  profile,
+  ordinaryContainerContentsProfile = null
 } = {}) {
   if (profile == null || typeof profile !== 'object') {
     throw new TypeError('ordinary first-entry provisioning requires a versioned profile');
@@ -42,6 +45,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
           FOR UPDATE OF e,a,c`, [partyId, scope.entity_kind, scope.entity_id]);
       if (existing.rowCount === 1) {
         if (!sameExisting(existing.rows[0], rows)) throw code('ORDINARY_FIRST_ENTRY_PROVISIONING_CONFLICT');
+        await provisionInitialOrdinaryContainer({transaction,partyId,
+          firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
         return Object.freeze({ provisioned: false, scope_ref: Object.freeze(scope) });
       }
       await transaction.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
@@ -68,6 +73,8 @@ export function createOrdinaryMaterializationFirstEntryProvisioner({
         JSON.stringify(rows.objective), rows.objective_digest]);
       await insertFiniteSource({ transaction, partyId, changeSetId,
         source: rows.finite_source });
+      await provisionInitialOrdinaryContainer({transaction,partyId,
+        firstEntryBinding,loadedProfile:ordinaryContainerContentsProfile});
       return Object.freeze({ provisioned: true, scope_ref: Object.freeze(scope) });
     }
   });

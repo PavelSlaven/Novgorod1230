@@ -110,12 +110,20 @@ export function firstEntryEvidenceMatches(check, evidence) {
 }
 export function validateSpatialV3CombinedWritePlan(plan) {
   if (!plan || plan.schema !== 'spatial_v3.combined_write_plan.v2' || !stable(plan.party_id) || !stable(plan.operation_kind) || !stable(plan.canonical_input_digest) || !stable(plan.digest) || computeSpatialV3CanonicalDigest(digestInput(plan)) !== plan.digest) return false;
-  if (computeSpatialV3CanonicalDigest({
+  const writeSet = {
     inserts: plan.inserts,
     updates: plan.updates,
     appends: plan.appends,
     deletes: plan.deletes
-  }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
+  };
+  if (computeSpatialV3CanonicalDigest(
+    plan.ordinary_materialization_atomic_write_plan == null ? writeSet : {
+      write_set:writeSet,
+      ordinary_materialization_atomic_write_plan:
+        plan.ordinary_materialization_atomic_write_plan
+    }) !== plan.write_set_digest
+      || computeSpatialV3CanonicalDigest(plan.expected_state_versions)
+        !== plan.expected_state_versions_digest) return false;
   if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
@@ -203,6 +211,13 @@ function validOrdinaryMaterializationExtension(plan) {
           && version.state_version === sealed.expected_versions.party_state_version)
       && plan.physical_keys.includes(
         `party_runtime.party_ordinary_materialization_aggregates:${sealed.party_id}:${sealed.scope_ref.entity_kind}:${sealed.scope_ref.entity_id}`)
+      && (sealed.schema !== 'ordinary_container_contents_atomic_write_plan_v2'
+        || plan.physical_keys.includes(
+          `party_runtime.party_containers:${sealed.scope_ref.entity_id}`)
+        && sealed.items.every((item) =>
+          plan.physical_keys.includes(`party_runtime.party_items:${item.item_id}`)
+          && plan.physical_keys.includes(
+            `party_runtime.party_item_placements:${item.item_id}`)))
       && (sealed.finite_resource_transition == null || plan.physical_keys.includes(
         `party_runtime.party_resource_nodes:${sealed.party_id}:${sealed.finite_resource_transition.source_resource_node_id}`));
   } catch { return false; }

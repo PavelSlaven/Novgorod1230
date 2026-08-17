@@ -656,7 +656,9 @@ test('restart extends the exact immutable catalog ledger through migration 024',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_combat_sessions',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_aggregates',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commits',
-    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_enablements'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_enablements',
+    'approved_initial_amounts jsonb',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,
@@ -664,6 +666,8 @@ test('restart extends the exact immutable catalog ledger through migration 024',
       marker
     );
   }
+  assert.equal(statements.filter((sql) =>
+    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,2);
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

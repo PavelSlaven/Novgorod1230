@@ -22,6 +22,8 @@ import {
 } from '../lower-dvina-trace-phase-2-llm.js';
 import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
 import { createLowerDvinaTraceO2aAmbientPort } from '../lower-dvina-trace-o2a-ambient-port.js';
+import { createLowerDvinaTraceO2bProductionResolverFactory } from
+  './lower-dvina-trace-o2b-production.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
@@ -118,7 +120,8 @@ export async function createSpatialV3ProductionBindings(
     release,
     env = process.env,
     config = {},
-    ordinaryMaterializationProfile = null
+    ordinaryMaterializationProfile = null,
+    ordinaryContainerContentsProfile = null
   } = {},
   {
     createNpcRuntimePorts,
@@ -182,6 +185,7 @@ export async function createSpatialV3ProductionBindings(
           createNpcRuntimePorts,
           ordinaryStageBApproval,
           ordinaryMaterializationProfile,
+          ordinaryContainerContentsProfile,
           createPhase2RuntimeFactory
         })
       });
@@ -210,6 +214,7 @@ function createTraceTurnRuntime({
   createNpcRuntimePorts,
   ordinaryStageBApproval,
   ordinaryMaterializationProfile,
+  ordinaryContainerContentsProfile,
   createPhase2RuntimeFactory
 }) {
   const decisionSecret = String(
@@ -237,9 +242,12 @@ function createTraceTurnRuntime({
   });
   const narrationService =
     createLowerDvinaTraceNarrationService({ roleRunner });
-  const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
-    pool: partyPool
-  });
+  const ordinaryEnablements =
+    createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});
+  const ordinaryContainerResolverFactory =
+    createLowerDvinaTraceO2bProductionResolverFactory({pool:partyPool,
+      loadedProfile:ordinaryContainerContentsProfile,
+      ordinaryMaterializationModel:createOrdinaryMaterializationModel({roleRunner})});
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
@@ -254,6 +262,8 @@ function createTraceTurnRuntime({
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel
       }),
+    createTurnStepOrdinaryContainerContentsResolver:
+      ordinaryContainerResolverFactory,
     ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) => {
       const enabled = await ordinaryEnablements.load({ partyId, scopeRef });
       if (enabled == null) return null;

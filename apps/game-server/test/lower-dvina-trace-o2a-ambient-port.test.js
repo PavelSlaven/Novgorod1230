@@ -14,6 +14,8 @@ import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
+import { loadLowerDvinaTraceO2bProfile } from
+  '../src/internal/lower-dvina-trace-o2b-profile.js';
 
 const ownerProfiles = JSON.parse(await readFile(new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
@@ -199,7 +201,21 @@ test('production composition threads the active O2a strict admission policy', as
   assert.equal(legacy.requireTurnStepAmbientOrdinaryAdmission, false);
 });
 
-async function capturedTraceRuntime(ordinaryMaterializationProfile) {
+test('production composition exposes O2b only for an exact loaded binding',
+  async () => {
+    const legacyRuntime = await capturedTraceRuntime(null,null);
+    assert.equal(legacyRuntime.createTurnStepOrdinaryContainerContentsResolver({
+      partyId:'party',inputDigest:'input'}),null);
+    const profile = await loadLowerDvinaTraceO2bProfile();
+    assert.equal(profile.profile.scenario_definition_revision,20);
+    assert.equal(profile.profile.container_bindings.length,1);
+    const active = await capturedTraceRuntime(null,profile);
+    assert.equal(typeof active.createTurnStepOrdinaryContainerContentsResolver({
+      partyId:'party',inputDigest:'input'}),'function');
+  });
+
+async function capturedTraceRuntime(ordinaryMaterializationProfile,
+  ordinaryContainerContentsProfile = null) {
   let captured = null;
   const release = {
     release_id: 'test-release',
@@ -229,7 +245,7 @@ async function capturedTraceRuntime(ordinaryMaterializationProfile) {
   const bindings = await createSpatialV3ProductionBindings({
     ports: { worldPool, partyPool }, release,
     config: { traceTurnDecisionSecret: 'test-secret' },
-    ordinaryMaterializationProfile
+    ordinaryMaterializationProfile,ordinaryContainerContentsProfile
   }, {
     createNpcRuntimePorts: () => ({}),
     createPhase2RuntimeFactory: (input) => {

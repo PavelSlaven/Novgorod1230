@@ -5,6 +5,7 @@ import {
 } from '@rus/time-events-history';
 import {
   createTurnStepExecutionRegistry,
+  createNpcActorStepHandoff,
   executeTurnStepActorStep
 } from '@rus/turn';
 import { npcActorSteps } from '@rus/turn/temporal-advance';
@@ -17,10 +18,12 @@ export function createTracePhase7ActorStepRuntime({
   temporal,
   semanticActivityScheduleOwner,
   genericCheckContextOwner,
-  randomSource
+  randomSource,
+  npcSemanticRemainderOwner = null
 }) {
   const domainExecution = createTracePhase7DomainExecution({
-    state, contracts, temporal, semanticActivityScheduleOwner
+    state, contracts, temporal, semanticActivityScheduleOwner,
+    npcSemanticRemainderOwner
   });
   const registry = createTurnStepExecutionRegistry({
     domain: domainExecution.handlers,
@@ -66,6 +69,13 @@ export async function executeTracePhase7SchedulePlan({
   if (result == null) {
     fail('TRACE_PHASE_7_ACTOR_STEP_RESULT_INVALID');
   }
+  const handoff = execution.ordinary_materialization_atomic_write_plan == null
+    ? null : createNpcActorStepHandoff({
+      request: autonomous.request,
+      plan: autonomous.proposal.plan,
+      execution,
+      objective_pin: result.npc_objective_pin
+    });
   return Object.freeze({
     started_at: structuredClone(temporal.result.clock_after),
     working_projection: structuredClone(execution.workingProjection),
@@ -73,7 +83,8 @@ export async function executeTracePhase7SchedulePlan({
     check: execution.checkResult == null ? null : {
       request: structuredClone(execution.checkRequest),
       result: structuredClone(execution.checkResult)
-    }
+    },
+    npc_actor_step_handoff: handoff
   });
 }
 
@@ -97,7 +108,7 @@ function actorStepRequest(request, contracts, state, plan) {
 
 function checkWorkingProjection(projection, state, contracts, plan) {
   if (plan.resolution !== 'generic_check') {
-    return structuredClone(projection);
+    return structuredClone(projection ?? {});
   }
   const npc = liveNpc(state, contracts.zhdanko);
   return {

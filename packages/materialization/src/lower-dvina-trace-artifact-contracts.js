@@ -77,6 +77,9 @@ export const M11_REQUIRED_ARTIFACTS = Object.freeze([
   ...M10_REQUIRED_ARTIFACTS,
   'spatial_semantic_profile'
 ]);
+export const M12_REQUIRED_ARTIFACTS = Object.freeze([
+  ...M11_REQUIRED_ARTIFACTS,'npc_semantic_profile'
+]);
 
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
@@ -313,4 +316,12 @@ export const M11_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   spatial_semantic_profile: [
     'rus.lower_dvina_trace_spatial_semantic_profile.v1', 1
   ]
+});
+export const M12_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M11_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest:['rus.lower_dvina_trace_phase_1a_manifest.v1',20],
+  materialization_bindings:[
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',20],
+  definition:['rus.trace_scenario_definition.v1',24],
+  npc_semantic_profile:['rus.lower_dvina_trace_n1_npc_semantic_profile.v1',1]
 });

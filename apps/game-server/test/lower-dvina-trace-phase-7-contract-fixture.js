@@ -191,6 +191,23 @@ export function phase7ItemPlan(request) {
   };
 }
 
+export function phase7DiscoveryPlan(request) {
+  return {
+    schema:'npc_step_plan_v1',request_id:request.request_id,
+    root_turn_id:request.root_turn_id,boundary_id:request.boundary_id,
+    committed_state_version:request.committed_state_version,
+    working_revision:request.working_revision,
+    decision_index:request.decision_index,npc_ref:request.npc_ref,
+    interpretation:{npc_goal:'осмотреть место',grounded_attempt:'осмотреться',
+      adaptation:'literal'},resolution:'domain_request',goal_result:'pending',
+    activity:{owner:'domain',duration_class:null,effort:null},operations:[{
+      op:'request_discovery',actor_ref:request.npc_ref,discovery_kind:'look',
+      target_refs:['trace_ld_v1_loc_zhdanko_storehouse'],query:'что обычного здесь заметно'
+    }],check:null,reason_code:'observe_local_place',
+    reason:'Ожидание оставляет время осмотреть ближайшее место.'
+  };
+}
+
 export function phase7AutonomousPlan(request, option) {
   const move = option === 'move_bag';
   return {

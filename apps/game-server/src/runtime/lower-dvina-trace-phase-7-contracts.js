@@ -4,10 +4,16 @@ import {
   admitTurnStepOwnerProfiles,
   expandActivityProfiles
 } from './lower-dvina-trace-turn-step-owner-profiles.js';
+import { validateLowerDvinaTraceN1LoadedProfile,
+  validateLowerDvinaTraceN1Profile } from
+  './releases/lower-dvina-trace-n1-production.js';
+import { tracePhase7StateIsActionable } from
+  './lower-dvina-trace-phase-7-applicability.js';
 
-export function resolveTracePhase7Contracts({ state, bundle }) {
+export function resolveTracePhase7Contracts({ state, bundle,
+  npcSemanticAuthority = null }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 23
+      || bundle.definition_revision < 15 || bundle.definition_revision > 24
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
@@ -65,6 +71,17 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const genericCheckContext = autonomous.generic_check_context_profile;
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
+  const npcSemanticProfile = bundle.definition_revision === 24
+    ? bundle.npc_semantic_profile : null;
+  const n1ProfileValid = bundle.definition_revision !== 24
+    || validateLowerDvinaTraceN1Profile(npcSemanticProfile);
+  const n1AuthorityValid = bundle.definition_revision === 24
+    && validateLowerDvinaTraceN1LoadedProfile(npcSemanticAuthority)
+    && canonicalDigest(npcSemanticAuthority.profile)
+      === canonicalDigest(npcSemanticProfile);
+  const n1RequiredNow = bundle.definition_revision === 24
+    && tracePhase7StateIsActionable(state, {campLocationRef:
+      'trace_ld_v1_loc_fishing_camp',bodyEffect,zhdanko});
   if (autonomous.schema
         !== 'rus.lower_dvina_trace_autonomous_semantic_bindings.v1'
       || autonomous.decision_mode !== 'autonomous'
@@ -86,6 +103,10 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       || canonicalDigest(autonomous.known_route_refs)
         !== canonicalDigest([localTransition.transition_id])
       || !validGenericCheckContext(genericCheckContext)
+      || !n1ProfileValid
+      || (bundle.definition_revision === 24
+        && (npcSemanticAuthority !== null || n1RequiredNow)
+        && !n1AuthorityValid)
       || restActivity.duration_minutes !== 30
       || restActivity.time_profile_ref !== 'trace_ld_v1_time_30m'
       || bodyEffect.activity_ref !== restActivity.profile_id
@@ -121,6 +142,8 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     semanticActivityProfiles: structuredClone(semanticActivityProfiles),
     genericCheckModifierPolicy,
     genericCheckContext: structuredClone(genericCheckContext),
+    npcSemanticProfile: structuredClone(npcSemanticProfile),
+    npcSemanticAuthority: structuredClone(npcSemanticAuthority),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start

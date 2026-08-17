@@ -84,9 +84,15 @@ autonomous boundary Жданко. Request получает не scenario option 
 действием. Temporal execution, persistence и player-safe visibility остаются
 code-owned. Этот autonomous mode не разрешает combat: отдельный combat contract
 был активирован позднее revision 16 / `spatial-v3-production-v6` и наследуется
-active revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /
-production v9 сохраняется как historical recovery path; A1 cutover не меняет
-этот autonomous NPC owner.
+active revision 24 / M12 / Phase 1A v20 / Phase 1B v19 /
+`spatial-v3-production-v13`. Revision 24 добавляет только узкий N1 remainder:
+после authored/registered операций genuinely open `request_discovery/look`
+Жданко может использовать actor-scoped O1 owner. Sealed handoff связывает
+subjective-only decision trace, exact objective/profile/location/access pins и
+ordinary atomic plan с тем же combined P16; commit повторно проверяет objective.
+NPC O2a/O2b/A1/F1/S1 остаются отключены. Revision 23 и прежние публикации
+сохраняются как historical recovery paths; N1 cutover не меняет temporal,
+check, body, item или combat owners.
 
 ## 4. Архитектурные владельцы
 

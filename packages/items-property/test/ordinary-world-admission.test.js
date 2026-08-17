@@ -84,6 +84,8 @@ test('O1 admits an arbitrary common name through independent evidence and create
   const result = admitOrdinaryWorldMaterialization({ handoff: input,
     admission_context: context() });
   assert.equal(result.pass, true);
+  assert.equal(result.proposal.schema, 'ordinary_world_item_proposal_v1');
+  assert.equal(Object.hasOwn(result.proposal, 'causal_basis_kind'), false);
   assert.equal(result.proposal.semantic_descriptor.name, 'не внесённый в каталог ковш');
   assert.deepEqual(result.runtime_instance_mechanics_snapshot, {
     schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,

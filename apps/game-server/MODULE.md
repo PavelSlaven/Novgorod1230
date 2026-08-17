@@ -138,6 +138,14 @@ descriptor не вызывает model; bounded provider видит
 только closed descriptor catalog. Baseline/topology/movement/hazard/F1/water не
 изменяются, reload/revisit не reroll-ит committed resolution.
 
+Runtime release `spatial-v3-production-v13` делает revision 24 / M12 /
+Phase 1A v20 / Phase 1B v19 sole current publication. Он SHA-pin-ит N1 profile
+для существующего Жданко Phase 7 и provision-ит actor-scoped O1 authority в
+first-entry P16. NPC semantic request остаётся subjective-only; objective
+profile/location/status/access перечитываются перед model и под блокировкой в
+общем P16. Активен только `request_discovery/look`; NPC O2/A1/F1/S1 остаются
+typed-disabled. Revision 23 остаётся immutable historical recovery path.
+
 ## Ошибки, зависимости и effects
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.

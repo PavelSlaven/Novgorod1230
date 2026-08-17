@@ -6,8 +6,9 @@ import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
   './lower-dvina-trace-phase-7-owner-proposals.js';
 import { resolveTracePhase7SemanticActivity } from './lower-dvina-trace-phase-7-semantic-activity.js';
 export function createTracePhase7DomainExecution({ state, contracts,
-  temporal, semanticActivityScheduleOwner }) {
-  const capabilities = ownerCapabilities(contracts);
+  temporal, semanticActivityScheduleOwner, npcSemanticRemainderOwner = null }) {
+  const remainder = npcSemanticRemainderOwner?.capability({state,contracts}) ?? null;
+  const capabilities = ownerCapabilities(contracts, remainder);
   return Object.freeze({
     semantic_activity_handler: async (execution) => {
       const semantic = await resolveTracePhase7SemanticActivity({
@@ -22,12 +23,15 @@ export function createTracePhase7DomainExecution({ state, contracts,
       request_item_use: (execution) => executeItem({ execution, state,
         contracts, temporal, capabilities }),
       request_movement: (execution) => executeMovement({ execution, state,
-        contracts, temporal, capabilities })
+        contracts, temporal, capabilities }),
+      ...(remainder == null ? {} : { request_discovery: (execution) =>
+        executeDiscovery({ execution, state, contracts, temporal,
+          capabilities, npcSemanticRemainderOwner }) })
     },
     operation_contract: capabilities.operation_contract
   });
 }
-function ownerCapabilities(contracts) {
+function ownerCapabilities(contracts, remainder) {
   const activityAllowed = exactActivityAllowed(contracts);
   const itemAllowed = exactItemAllowed(contracts);
   const movement = contracts.localTransition == null ? null : Object.freeze({
@@ -51,12 +55,31 @@ function ownerCapabilities(contracts) {
     }
   };
   if (movement != null) operationContract.request_movement = movement;
+  if (remainder != null) {
+    operationContract.request_discovery = remainder.operation_contract;
+  }
   return Object.freeze({
     activity_allowed: activityAllowed,
     item_allowed: itemAllowed,
     movement,
     operation_contract: Object.freeze(operationContract)
   });
+}
+
+async function executeDiscovery({ execution, state, contracts, temporal,
+  capabilities, npcSemanticRemainderOwner }) {
+  const operation = execution.operation;
+  if (operation.actor_ref !== contracts.zhdanko.instance_id
+      || !matchesAllowed(
+        capabilities.operation_contract.request_discovery?.allowed ?? [],
+        operation)) fail('TRACE_PHASE_7_DISCOVERY_NOT_APPLICABLE');
+  const resolved = await npcSemanticRemainderOwner.resolve({
+    execution, state, contracts
+  });
+  return started({ execution, temporal, profile: null, movement: null,
+    property: null,
+    ordinary: resolved.ordinary_materialization_atomic_write_plan,
+    objectivePin: resolved.objective_pin });
 }
 
 function exactActivityAllowed(contracts) {
@@ -185,12 +208,17 @@ function matchesAllowed(allowed, operation) {
         && entry.use_kind === operation.use_kind
         && sameSet(entry.target_refs, operation.target_refs);
     }
+    if (operation.op === 'request_discovery') {
+      return entry.actor_ref === operation.actor_ref
+        && entry.discovery_kind === operation.discovery_kind
+        && sameSet(entry.target_refs, operation.target_refs);
+    }
     return false;
   });
 }
 
 function started({ execution, temporal, profile, movement, property,
-  minutes = null, npcRef = null }) {
+  minutes = null, npcRef = null, ordinary = null, objectivePin = null }) {
   const ownDuration = minutes == null
     ? profileMinutes(profile) ?? remainingMinutes(temporal) : Number(minutes);
   // ponytail: allow planned duration past remaining Mikula rest; temporal owner
@@ -198,7 +226,7 @@ function started({ execution, temporal, profile, movement, property,
   if (!Number.isSafeInteger(ownDuration) || ownDuration < 1) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
-  return startNpcActorStep({
+  const result = startNpcActorStep({
     execution,
     started_at: temporal.result.clock_after,
     actor_ref: npcRef ?? execution.operation.actor_ref,
@@ -209,6 +237,14 @@ function started({ execution, temporal, profile, movement, property,
     movement_proposal: movement,
     property_proposal: property
   });
+  return Object.freeze({ ...structuredClone(result),
+    ...(ordinary == null ? {} : {
+      ordinary_materialization_atomic_write_plan: structuredClone(ordinary),
+      consequence_fragment: {
+        ...structuredClone(result.consequence_fragment),
+        npc_objective_pin: structuredClone(objectivePin)
+      }
+    }) });
 }
 
 function remainingMinutes(temporal) {

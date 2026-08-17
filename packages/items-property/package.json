@@ -10,7 +10,8 @@
     "./action-produced-result": "./src/action-produced-result.js",
     "./action-produced-transition": "./src/action-produced-transition.js",
     "./ambient-ordinary-portion": "./src/ambient-ordinary-portion.js",
-    "./finite-resource-transition": "./src/finite-resource-transition.js"
+    "./finite-resource-transition": "./src/finite-resource-transition.js",
+    "./runtime-item-visibility": "./src/runtime-item-visibility.js"
   },
   "dependencies": {
     "@rus/kernel": "0.9.0"

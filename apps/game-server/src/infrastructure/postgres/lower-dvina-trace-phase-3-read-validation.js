@@ -185,8 +185,8 @@ export function assertPhase3ReadRows({ payload, semanticRevision, results }) {
               physical_position: actualClue.physical_position
             })
           || !phase3ClueOwnershipMatches(expectedClue, actualClue)
-          || canonicalDigest(expectedClue.state)
-            !== canonicalDigest(actualClue.state)))) {
+           || canonicalDigest(expectedClue.state)
+             !== canonicalDigest(actualClue.state)))) {
     throw phase2IntegrityError();
   }
 }

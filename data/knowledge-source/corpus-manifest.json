@@ -215,8 +215,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "9fa51262485b4ab2440d68d6f31dfe8ad4e8d2757223187ff387f84b0efe5497",
-      "bytes": 100365,
+      "sha256": "3552f369b8bf27caecc9497a2293f84c67fe542525c4139c1114253e7c67e0d4",
+      "bytes": 100944,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -287,8 +287,8 @@
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
       "canonical_path": "corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md",
       "file_name": "semantic_world_actions_materialization_and_processes_contract.md",
-      "sha256": "7a7d31cdb55a1179244a8bfb1a70471869e1668af36ea53a12bbac3d8a2024c4",
-      "bytes": 182684,
+      "sha256": "b30ea6bf458c07494c02940e75fc448b5b9b6eebef770131f8be77e38413db54",
+      "bytes": 183081,
       "status": "proposed",
       "provenance_mode": "native"
     },
@@ -362,8 +362,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "64a2a52adfd10dddd1d5072d591bea94b8a6e2857429bc6f38e413ed9475acc7",
-      "bytes": 75022,
+      "sha256": "4104ea092d77acd468f8b6b78b6b20a6a37960ae187a1c72d702aef00ff548df",
+      "bytes": 75351,
       "status": "active",
       "provenance_mode": "native"
     },

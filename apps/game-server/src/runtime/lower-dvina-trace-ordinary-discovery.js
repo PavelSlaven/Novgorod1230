@@ -190,7 +190,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         envelope.identity.admission_class, supporting_basis_ref:
       proposal.supporting_basis_ref, causal_basis_refs:
         presence.pending_items_property_admission.proposed_item.causal_basis.basis_refs,
-      causal_basis_kind: proposal.causal_basis_kind,
+      causal_basis_kind: proposal.causal_basis_kind ?? null,
       condition_state: proposal.condition_state ?? null,
       permission_refs: envelope.request.policy_refs.context_bound_permission_refs,
       property_basis_ref: proposal.property_basis_ref, position_ref:

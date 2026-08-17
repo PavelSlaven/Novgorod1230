@@ -46,6 +46,7 @@ export function expectedVersions({ partyId, state, factual }) {
 
 export function commitRechecks({ partyId, state, factual, phase7Contracts,
   inputDigest }) {
+  const handoff=factual.consequence.npc_actor_step_handoff??null;
   return [
     sealedCheck('physical', {
       party_id: partyId,
@@ -86,6 +87,15 @@ export function commitRechecks({ partyId, state, factual, phase7Contracts,
       exact_elapsed_minutes: 30
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest })
+    ,...(handoff==null?[]:[sealedCheck('npc_objective',{
+      party_id:partyId,
+      ...structuredClone(handoff.objective_pin),
+      operation_digest:handoff.operation_digest,
+      operation:structuredClone(
+        factual.consequence.phase7.schedule_execution.semantic_operation),
+      request_identity:structuredClone(handoff.request_identity),
+      authority:structuredClone(phase7Contracts.npcSemanticAuthority)
+    })])
   ];
 }
 

@@ -79,6 +79,15 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
   orderedSignals, operationContract, rootTurnId, waitingTransition,
   perceivedChanges }) {
   const npc = contracts.zhdanko;
+  const {
+    body_state: _bodyState,
+    mood: _mood,
+    relationships: _relationships,
+    perception_snapshot: _perceptionSnapshot,
+    knowledge_snapshot: _knowledgeSnapshot,
+    memory_snapshot: _memorySnapshot,
+    ...npcDecisionSnapshot
+  } = npc;
   const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
     .filter(({ npc_ref: npcRef }) => npcRef?.entity_id === npc.instance_id)
@@ -96,7 +105,7 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
     },
     boundary,
     npc_snapshot: {
-      ...npc,
+      ...npcDecisionSnapshot,
       attributes: structuredClone(
         contracts.genericCheckContext?.attributes ?? []),
       skills: structuredClone(contracts.genericCheckContext?.skills ?? []),

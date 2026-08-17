@@ -266,7 +266,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v12 root is sole owner with production-v11 rollback identity', async () => {
+test('production-v13 root is sole owner with production-v12 rollback identity', async () => {
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -293,7 +293,7 @@ test('production-v12 root is sole owner with production-v11 rollback identity', 
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v11'
+    'spatial-v3-production-v12'
   );
   assert.equal(
     health.rollback_source_release_id,

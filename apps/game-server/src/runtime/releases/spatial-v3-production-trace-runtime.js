@@ -14,6 +14,8 @@ import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   './lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceN1ProductionOwnerFactory } from
+  './lower-dvina-trace-n1-production.js';
 import { createLowerDvinaTraceSpatialSemanticModel } from
   '../lower-dvina-trace-s1-llm.js';
 import { createOrdinaryMaterializationModel } from
@@ -49,7 +51,7 @@ import { serverError } from '../../errors.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
-  ordinaryContainerContentsProfile, actionProductionProfile, localFireProfile, spatialSemanticProfile,
+  ordinaryContainerContentsProfile, actionProductionProfile, localFireProfile, spatialSemanticProfile, npcSemanticProfile,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -62,9 +64,12 @@ export function createTraceTurnRuntime({
         { status: 503 });
     }
   });
-  const roleRunner = createProductionLlmRoleRunner({
+  const roleRunner = config.roleRunner ?? createProductionLlmRoleRunner({
     env, telemetry: config.telemetry ?? null
   });
+  if (typeof roleRunner?.run !== 'function') {
+    throw new TypeError('Production trace runtime requires one LLM role runner.');
+  }
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryEnablements =
     createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});
@@ -85,6 +90,12 @@ export function createTraceTurnRuntime({
     : createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool,
       loadedProfile: spatialSemanticProfile,
       spatialSemanticModel: createLowerDvinaTraceSpatialSemanticModel({ roleRunner }) });
+  const npcSemanticRemainderOwnerFactory = npcSemanticProfile == null ? null
+    : createLowerDvinaTraceN1ProductionOwnerFactory({
+      loadedProfile:npcSemanticProfile,
+      loadEnablement:(input)=>ordinaryEnablements.load(input),
+      ordinaryMaterializationModel:createOrdinaryMaterializationModel({roleRunner})
+    });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -107,6 +118,8 @@ export function createTraceTurnRuntime({
     localFireProfile,
     createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
     spatialSemanticProfile,
+    createNpcSemanticRemainderOwner:npcSemanticRemainderOwnerFactory,
+    npcSemanticProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

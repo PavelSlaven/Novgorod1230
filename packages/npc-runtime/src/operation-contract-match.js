@@ -33,6 +33,12 @@ function matchesCapabilityContract(operation, contract) {
       && (!Array.isArray(contract.target_refs)
         || contract.target_refs.includes(operation.target_ref));
   }
+  if (operation.op === 'request_discovery') {
+    return (!Array.isArray(contract.discovery_kinds)
+        || contract.discovery_kinds.includes(operation.discovery_kind))
+      && (!Array.isArray(contract.target_refs)
+        || sameIdSet(contract.target_refs, operation.target_refs));
+  }
   return true;
 }
 
@@ -45,6 +51,11 @@ function operationMatchesAllowedEntry(operation, entry) {
     return entry.item_ref === operation.item_ref
       && entry.use_kind === operation.use_kind
       && sameIdSet(entry.target_refs, operation.target_refs);
+  }
+  if (operation.op === 'request_discovery') {
+    return entry.actor_ref === operation.actor_ref
+      && entry.discovery_kind === operation.discovery_kind
+      && sameIdSet(entry.target_refs,operation.target_refs);
   }
   return true;
 }

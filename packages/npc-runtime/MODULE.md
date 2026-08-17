@@ -102,3 +102,10 @@ Combat decision request/plan получает один общий snapshot excha
 Tests покрывают exact schedule/perception, five-category signals, one
 NPC/mode/batch aggregation, autonomous/conversation/combat semantic contracts,
 replay и historical bounded choices.
+
+Revision 24 / `spatial-v3-production-v13` переиспользует ту же autonomous
+boundary для узкого N1. Projector принимает только descriptor-safe subjective
+perception/knowledge/goals и доступные NPC resources; hidden ledgers, unseen
+contents и player-private state не входят в request. Exact authored operations
+остаются первыми, а открытый выбор может делегировать только actor-scoped O1
+`request_discovery/look`. O2/A1/F1/S1 для NPC не активированы.

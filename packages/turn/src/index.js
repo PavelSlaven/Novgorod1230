@@ -29,6 +29,8 @@ import {
   requireTurnStepPreparedEffectLedger
 } from './turn-step-prepared-effects.js';
 import { executeTurnStepActorStep } from './turn-step-actor-step.js';
+import { createNpcActorStepHandoff, validateNpcActorStepHandoff,
+  npcActorStepAtomicExtensions } from './npc-actor-step-handoff.js';
 import {
   buildTurnStepPreparedDomainConsequence,
   mergeTurnStepDraftConsequence
@@ -87,7 +89,10 @@ export {
   createCombatSession,
   selectTemporaryDispositionOptions,
   TemporaryDispositionSelectionError,
-  bindTurnStepPreparedConsequence
+  bindTurnStepPreparedConsequence,
+  createNpcActorStepHandoff,
+  validateNpcActorStepHandoff,
+  npcActorStepAtomicExtensions
 };
 export {
   TURN_PRIMARY_MODES,

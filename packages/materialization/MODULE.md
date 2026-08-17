@@ -75,6 +75,10 @@ Ordinary aggregate transition также детерминирован, CAS-bound
 `resolution_record_cap`; повторный candidate/coverage/context или identity
 отклоняется вместо reroll. `concealed` либо container access не меняют authority
 и не являются фактом этого ledger.
+Revision 24 N1 не создаёт отдельный materialization owner: actor-scoped NPC
+discovery использует тот же O1 aggregate/ledger и sealed combined P16. Его
+profile лишь ограничивает существующего NPC, objective/access и G6 scope;
+semantic wording не создаёт candidate, basis, item identity или authority.
 
 ## Ошибки
 

@@ -1,11 +1,10 @@
-import { canonicalDigest } from '@rus/materialization';
-import {
+import { canonicalDigest } from '@rus/materialization'; import {
   recheckTracePhase3LocationCapacity
 } from './recheck-location-capacity.js';
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 import { recheckPhase6TargetedAdmission } from
   './recheck-phase6-admission.js';
-
+import { recheckNpcObjective } from './recheck-npc-objective.js';
 export async function firstPlayableCommitRecheck({
   transaction,
   party_id: partyId,
@@ -64,6 +63,9 @@ export async function firstPlayableCommitRecheck({
   if (check.kind === 'physical'
       && check.physical_model === 'trace_phase6_targeted_admission') {
     return recheckPhase6TargetedAdmission({ transaction, partyId, check });
+  }
+  if (check.kind === 'npc_objective') {
+    return recheckNpcObjective({transaction,partyId,check,plan});
   }
   if (check.kind === 'activity') {
     return recheckExactActivity({ transaction, check });

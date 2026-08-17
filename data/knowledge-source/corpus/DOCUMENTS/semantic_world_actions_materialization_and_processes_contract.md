@@ -3777,6 +3777,8 @@ F1 requires:
 
 S1/N1 require their own owner-specific contract/test acceptance and do not enter production merely because O1 ledger exists.
 
+Lower Dvina revision 24 активирует только узкий N1 профиль существующего Жданко Phase 7: authored actor operations имеют приоритет, а genuinely open `request_discovery/look` использует actor-scoped O1 с subjective-only request, objective recheck и общим P16. NPC O2a/O2b/A1/F1/S1 остаются отключены.
+
 ## 54.7. Mixed semantics rule
 
 Запрещено внутри одного active profile:

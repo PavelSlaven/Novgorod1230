@@ -32,6 +32,22 @@ import { fixture as phase2Fixture } from
   '../../apps/game-server/test/lower-dvina-trace-phase-2-fixture.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a-bundle.js';
+import { phase7CommittedState } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-7-runtime-fixture.js';
+import { phase7DiscoveryPlan } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-7-contract-fixture.js';
+import { createLowerDvinaTraceN1ProductionOwnerFactory } from
+  '../../apps/game-server/src/runtime/releases/lower-dvina-trace-n1-production.js';
+import { createPostgresOrdinaryMaterializationEnablementRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
+import { firstPlayableCommitRecheck } from
+  '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-ordinary-materialization-profile.js';
+import { loadLowerDvinaTraceNpcSemanticProfile } from
+  '../../apps/game-server/src/internal/lower-dvina-trace-npc-semantic-profile.js';
 
 const docker = (args) => spawnSync('docker', args,
   {encoding:'utf8',timeout:60_000});
@@ -51,7 +67,7 @@ const pin = Object.freeze({
   compatible_world_pin_manifest_digest:hex
 });
 
-test('production root provisions inherited O2b and active rev23 S1 in first-entry P16',
+test('production root provisions inherited O2b/S1 and active rev24 N1 in first-entry P16',
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     let pool;
@@ -93,8 +109,10 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
     let committer=null;
     let loadedProfile=null;
     let loadedSpatialSemanticProfile=null;
+    let loadedNpcSemanticProfile=null;
     let phase2Ports=null;
     let phase2Runtime=null;
+    let lastNpcCheck=null;
     const phase2States=new Map();
     const phase2Replays=new Map();
     const root=await createSpatialV3ProductionCompositionRoot({
@@ -106,6 +124,7 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
       bindingsFactory:async (context)=>{
         loadedProfile=context.ordinaryContainerContentsProfile;
         loadedSpatialSemanticProfile=context.spatialSemanticProfile;
+        loadedNpcSemanticProfile=context.npcSemanticProfile;
         const productionBindings = await createSpatialV3ProductionBindings(
           context, {
           technicalCommandBoundary: 'production-root-pg-test',
@@ -123,10 +142,12 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
           }
         });
         return Object.freeze({ ...productionBindings,
-          commitRecheck: async ({ check }) => ({ ok: true,
-            ...(check.kind === 'physical' ? { first_entry_binding:
+          commitRecheck: async (input) => input.check.kind==='npc_objective'
+            ? (lastNpcCheck=structuredClone(input.check),
+              firstPlayableCommitRecheck(input)) : ({ ok: true,
+            ...(input.check.kind === 'physical' ? { first_entry_binding:
               Object.fromEntries(bindingFields.map(
-                (field) => [field, check[field]])) } : {}) }) });
+                (field) => [field, input.check[field]])) } : {}) }) });
       },
       targetRootFactory:(ports)=>{ committer=ports.committer;
         return createSpatialV3ProductionComposition(ports); }
@@ -136,6 +157,9 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
     assert.equal(loadedSpatialSemanticProfile.profile
       .scenario_definition_revision,23);
     assert.equal(loadedSpatialSemanticProfile.profile.envelopes.length,2);
+    assert.equal(loadedNpcSemanticProfile.profile.scenario_definition_revision,24);
+    assert.equal(loadedNpcSemanticProfile.profile.boundary.participant_slot_ref,
+      'zhdanko_storehouse_controller');
     assert.equal(typeof committer?.commit,'function');
 
     const partyId='party-root-active';
@@ -146,8 +170,8 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
     assert.equal(result.replay,false);
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
-      contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:2,all_enablements:2,change_sets:1,idempotency:1,
+      contexts:1,bases:1,enablements:1,all_aggregates:3,all_contexts:3,
+      all_bases:3,all_enablements:3,change_sets:1,idempotency:1,
       s1_envelopes:2,s1_reservations:0,s1_resolutions:0,
       s1_available_capacity:2
     });
@@ -177,13 +201,21 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
       change_set_id:'first-entry-active-cs'});
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
-      contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:2,all_enablements:2,change_sets:1,idempotency:1,
+      contexts:1,bases:1,enablements:1,all_aggregates:3,all_contexts:3,
+      all_bases:3,all_enablements:3,change_sets:1,idempotency:1,
       s1_envelopes:2,s1_reservations:0,s1_resolutions:0,
       s1_available_capacity:2
     });
     await runProductionS1Turn({ pool, phase2Runtime,
       loadedSpatialSemanticProfile, phase2Ports, phase2States, partyId });
+
+    const n1Party='party-root-n1';
+    await seedFirstEntry(pool,n1Party,'n1');
+    assert.equal((await committer.commit({plan:await firstEntryPlan(
+      n1Party,'n1')})).ok,true);
+    await runProductionN1Turn({pool,committer,phase2Ports,loadedNpcSemanticProfile,
+      partyId:n1Party,getNpcCheck:()=>lastNpcCheck});
+    await runActualProductionRootN1Turn({pool,worldPool,committer});
 
     const outsideParty='party-root-outside-s1';
     await seedFirstEntry(pool,outsideParty,'outside-s1');
@@ -192,8 +224,8 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
     assert.equal(outside.ok,true,JSON.stringify(outside));
     assert.deepEqual(await provisionedState(pool,outsideParty),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
-      contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:2,all_enablements:2,change_sets:1,idempotency:1,
+      contexts:1,bases:1,enablements:1,all_aggregates:3,all_contexts:3,
+      all_bases:3,all_enablements:3,change_sets:1,idempotency:1,
       s1_envelopes:0,s1_reservations:0,s1_resolutions:0,
       s1_available_capacity:0
     });
@@ -215,11 +247,30 @@ test('production root provisions inherited O2b and active rev23 S1 in first-entr
   });
 
 function fakeWorldPool() {
-  const query=async (sql)=>{
-    if (/spatial_v3_world_revisions/u.test(sql)) return {rows:[{
-      id:SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
-      catalog_digest:SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
-      status:'approved'}]};
+  const worldRevisions=[{
+    id:'novgorod_spatial_v3_target_contract_approval_001',
+    parent_revision_id:null,
+    catalog_digest:'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e',
+    status:'approved'},
+  {id:'novgorod_spatial_v3_production_v2_candidate_001',
+    parent_revision_id:'novgorod_spatial_v3_target_contract_approval_001',
+    catalog_digest:'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255',
+    status:'approved'},
+  {id:'novgorod_spatial_v3_production_v3_candidate_001',
+    parent_revision_id:'novgorod_spatial_v3_production_v2_candidate_001',
+    catalog_digest:'1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
+    status:'approved'},
+  {id:SPATIAL_V3_PRODUCTION_RELEASE.world_revision_id,
+    parent_revision_id:'novgorod_spatial_v3_production_v3_candidate_001',
+    catalog_digest:SPATIAL_V3_PRODUCTION_RELEASE.world_catalog_digest,
+    status:'approved'}];
+  const query=async (sql,params=[])=>{
+    if (/spatial_v3_world_revisions/u.test(sql)) {
+      const ids=Array.isArray(params[0])?params[0]:params[0]?[params[0]]:
+        worldRevisions.map(({id})=>id);
+      const requested=new Set(ids);
+      return {rows:worldRevisions.filter(({id})=>requested.has(id))};
+    }
     if (/runtime_catalog_activation_events/u.test(sql)) return {rows:[{
       event_id:pin.activation_event_id,...pin}]};
     return {rows:[{database_name:'world-root-test',user_name:'ordinary',ok:1}]};
@@ -339,10 +390,10 @@ function createProductionS1Phase2Runtime({ ports, pool, getCommitter,
         loadState: (partyId) => repository.loadPhase2State(partyId),
         committer: getCommitter() });
     },
-    async persistPhase2Screen({ inputDigest, result }) {
-      const partyId = result.checkpoint.stages.persistence_plan.party_id;
+    async persistPhase2Screen({ partyId, inputDigest, result }) {
       const idempotencyKey = result.checkpoint.stages.persistence_plan
-        .turn_step_commit.player_input.idempotency_key;
+        .turn_step_commit?.player_input?.idempotency_key
+        ?? (partyId.endsWith('-n1')?'production-root-n1':'production-root-s1');
       const publicResult = { party_id: partyId,
         state_version: result.commit.state_version,
         turn_number: result.commit.turn_number,
@@ -357,6 +408,394 @@ function createProductionS1Phase2Runtime({ ports, pool, getCommitter,
     turnStepModel: productionS1TurnStepModel,
     narrator: { run: async ({ request_id: requestId }) =>
       approvedNarration(requestId) } });
+}
+
+async function runProductionN1Turn({pool,committer,phase2Ports,
+  loadedNpcSemanticProfile,partyId,getNpcCheck}) {
+  assert.equal(typeof phase2Ports.createNpcSemanticRemainderOwner,'function');
+  const modelCalls={npc:0,ordinary:0};
+  const ordinaryModel=async(request)=>{modelCalls.ordinary+=1;
+    if(request.mode==='seed_scope')return {schema:'ordinary_materialization_plan_v1',
+      request_id:request.request_id,resolution:'seeded',
+      density_band_proposal:'ordinary',background_groups:[],entities:[],
+      presence_resolutions:[],reason_code:'seed'};
+    return {schema:'ordinary_materialization_plan_v1',request_id:request.request_id,
+      resolution:'absent',density_band_proposal:null,background_groups:[],entities:[],
+      presence_resolutions:[{candidate_key:request.candidate_query.candidate_key,
+        coverage_key:request.candidate_query.coverage_key,resolution:'absent'}],
+      reason_code:'absent'};};
+  const enablements=createPostgresOrdinaryMaterializationEnablementRepository({pool});
+  const n1Factory=createLowerDvinaTraceN1ProductionOwnerFactory({
+    loadedProfile:loadedNpcSemanticProfile,
+    loadEnablement:(input)=>enablements.load(input),
+    ordinaryMaterializationModel:ordinaryModel});
+  const revision24=await loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision:24});
+  const base=phase2Fixture({scenarioBundle:revision24,
+    materializationBundle:revision24}).state;
+  const phase7=phase7CommittedState();
+  const state={...structuredClone(base),...phase7,npcs:structuredClone(base.npcs)};
+  state.party_id=partyId;state.actor_id=`pc:${partyId}`;
+  state.party_state={state_version:1,session_state_version:1,
+    clock_state_version:1,body_state_version:1,turn_number:0};
+  state.materialization_trace=structuredClone(base.materialization_trace);
+  const zhdanko=state.npcs.find((npc)=>
+    npc.participant_slot_ref==='zhdanko_storehouse_controller');
+  const phase7Zhdanko=phase7.npcs.find((npc)=>
+    npc.participant_slot_ref==='zhdanko_storehouse_controller');
+  const zhdankoProfileId=zhdanko.profile_id;
+  Object.assign(zhdanko,structuredClone(phase7Zhdanko),{
+    instance_id:zhdanko.instance_id,
+    profile_id:zhdankoProfileId,anchor_id:null});
+  delete zhdanko.profile_set_id;
+  const onisim=state.npcs.find((npc)=>npc.participant_slot_ref==='onisim_boatman');
+  const phase7Onisim=phase7.npcs.find((npc)=>
+    npc.participant_slot_ref==='onisim_boatman');
+  Object.assign(onisim,structuredClone(phase7Onisim),{instance_id:onisim.instance_id});
+  zhdanko.location_profile_ref='trace_ld_v1_loc_zhdanko_storehouse';
+  zhdanko.machine_state.location_ref='trace_ld_v1_loc_zhdanko_storehouse';
+  zhdanko.machine_state.spatial_zone_ref='storehouse_yard';
+  zhdanko.machine_state.status='active';
+  state.containers=[];
+  await seedPhase7Owners(pool,partyId,state,zhdanko);
+  const states=new Map([[partyId,state]]),replays=new Map();
+  const runtimePorts={...phase2Ports,
+    createNpcSemanticRemainderOwner:n1Factory,
+    npcAutonomousModel:async(request)=>{modelCalls.npc+=1;
+      return phase7DiscoveryPlan(request);}};
+  const input={request_id:'production-root-n1',idempotency_key:'production-root-n1',
+    raw_text:'Отдохнуть у огня полчаса и подсушить одежду'};
+  let injectDrift=true,lastNpcPlan=null;
+  const staleCommitter={async commit(value){lastNpcPlan=structuredClone(value.plan);
+    if(injectDrift){injectDrift=false;
+    await pool.query(`UPDATE party_runtime.party_npcs SET machine_state=
+      jsonb_set(machine_state,'{status}','"idle"') WHERE party_id=$1
+      AND npc_id=$2`,[partyId,zhdanko.instance_id]);}return committer.commit(value);}};
+  const staleRuntime=createProductionS1Phase2Runtime({ports:runtimePorts,pool,
+    getCommitter:()=>staleCommitter,phase2States:states,phase2Replays:replays});
+  await assert.rejects(()=>staleRuntime.submitTurn({partyId,input}),
+    {code:'TRACE_PHASE_7_COMMIT_FAILED'});
+  assert.deepEqual((await pool.query(`SELECT state_version,
+    (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_commits
+      WHERE party_id=$1) AS commits FROM party_runtime.parties WHERE party_id=$1`,
+  [partyId])).rows[0],{state_version:'1',commits:0});
+  await pool.query(`UPDATE party_runtime.party_npcs SET machine_state=
+    jsonb_set(machine_state,'{status}','"active"') WHERE party_id=$1
+    AND npc_id=$2`,[partyId,zhdanko.instance_id]);
+  for(const mutate of [
+    (check)=>{check.objective_digest='0'.repeat(64);},
+    (check)=>{check.profile_digest='0'.repeat(64);
+      check.objective_digest=npcObjectiveDigest(check);},
+    (check)=>{check.access_policy_ref='forged-access';
+      check.objective_digest=npcObjectiveDigest(check);},
+    (check)=>{check.scope_ref.position_ref='forged-position';
+      check.objective_digest=npcObjectiveDigest(check);},
+    (check)=>{check.operation.target_refs=['forged-target'];
+      check.operation_digest=computeSpatialV3CanonicalDigest(check.operation)
+        .replace('sha256:','');},
+    ...['request_id','root_turn_id','boundary_id','committed_state_version',
+      'decision_index','npc_ref'].map((field)=>(check)=>{
+        check.request_identity[field]=typeof check.request_identity[field]
+          ==='number'?check.request_identity[field]+1:`forged-${field}`;}),
+    (check)=>{check.authority.profile.discovery.access_policy_ref='forged-access';
+      check.authority.profile_canonical_digest=computeSpatialV3CanonicalDigest(
+        check.authority.profile).replace('sha256:','');
+      check.authority.artifact_digest=check.authority.profile_canonical_digest;
+      check.authority.publication_identity.profile_digest=
+        check.authority.artifact_digest;
+      check.authority.publication_identity.profile_canonical_digest=
+        check.authority.profile_canonical_digest;
+      check.profile_digest=check.authority.artifact_digest;
+      check.profile_canonical_digest=check.authority.profile_canonical_digest;
+      check.access_policy_ref='forged-access';
+      check.objective_digest=npcObjectiveDigest(check);}
+  ]) { const drifted=structuredClone(getNpcCheck());mutate(drifted);
+    drifted.digest=sealedCheckDigest(drifted);
+    const rejected=await firstPlayableCommitRecheck({transaction:pool,
+      party_id:partyId,check:drifted,plan:lastNpcPlan});
+    assert.equal(rejected.ok,false); }
+  assert.deepEqual((await pool.query(`SELECT state_version,
+    (SELECT count(*)::int FROM party_runtime.party_npc_decision_traces
+      WHERE party_id=$1) AS decisions,
+    (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_commits
+      WHERE party_id=$1) AS outcomes FROM party_runtime.parties WHERE party_id=$1`,
+  [partyId])).rows[0],{state_version:'1',decisions:0,outcomes:0});
+  const preflight=await firstPlayableCommitRecheck({transaction:pool,party_id:partyId,
+    check:getNpcCheck(),plan:lastNpcPlan});
+  assert.equal(preflight.ok,true,JSON.stringify({preflight,check:getNpcCheck()}));
+  const runtime=createProductionS1Phase2Runtime({ports:runtimePorts,pool,
+    getCommitter:()=>committer,phase2States:states,phase2Replays:replays});
+  const committed=await runtime.submitTurn({partyId,input});
+  assert.equal(committed.state_version,2);assert.deepEqual(modelCalls,{npc:2,ordinary:4});
+  const durable=(await pool.query(`SELECT
+      (SELECT count(*)::int FROM party_runtime.party_npc_decision_traces
+        WHERE party_id=$1) AS decisions,
+      (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_commits
+        WHERE party_id=$1) AS ordinary_commits,
+      (SELECT state_version FROM party_runtime.parties WHERE party_id=$1)
+        AS state_version`,[partyId])).rows[0];
+  assert.deepEqual(durable,{decisions:1,ordinary_commits:1,state_version:'2'});
+  assert.deepEqual(await runtime.submitTurn({partyId,input}),committed);
+  assert.deepEqual(modelCalls,{npc:2,ordinary:4});
+}
+
+async function runActualProductionRootN1Turn({pool,worldPool,committer}) {
+  await pool.query(`INSERT INTO party_runtime.party_catalog_pins
+    (party_id,catalog_scope,catalog_revision_id,catalog_digest,import_id,
+     import_audit_digest,record_registry_digest,runtime_contract_digest,
+     compatible_world_revision_id,compatible_world_catalog_digest,
+     compatible_world_pin_manifest_digest,activation_event_id)
+    SELECT p.party_id,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11
+    FROM party_runtime.parties p
+    ON CONFLICT (party_id,catalog_scope) DO NOTHING`,[pin.catalog_scope,
+    pin.catalog_revision_id,pin.catalog_digest,pin.import_id,
+    pin.import_audit_digest,pin.record_registry_digest,
+    pin.runtime_contract_digest,pin.compatible_world_revision_id,
+    pin.compatible_world_catalog_digest,pin.compatible_world_pin_manifest_digest,
+    pin.activation_event_id]);
+  const partyRef={value:null};
+  const staleCalls={npc:0,ordinary:0,narration:0};
+  const staleRoot=await actualProductionRoot({pool,worldPool,roleRunner:
+    n1RoleRunner({pool,partyRef,calls:staleCalls,driftNpc:true})});
+  let opening;
+  try { opening=await staleRoot.startNewGame({scenario_id:'lower_dvina_trace_v1',
+    request_id:'production-root-n1-actual-new-game'}); }
+  catch(error) { assert.fail(JSON.stringify(error.details)); }
+  const partyId=opening.party_id;partyRef.value=partyId;
+  await staleRoot.acknowledgeOpening(partyId,{client_ack_id:'n1-actual-ack'});
+  await staleRoot.submitTurn(partyId,{request_id:'n1-actual-setup-turn',
+    idempotency_key:'n1-actual-setup-turn',
+    raw_text:'Осмотреть место крушения подробно.'});
+  const current=(await pool.query(`SELECT p.state_version,s.state_payload
+    FROM party_runtime.parties p JOIN party_runtime.party_state_snapshots s
+      ON s.party_id=p.party_id AND s.state_version=p.state_version
+    WHERE p.party_id=$1`,[partyId])).rows[0];
+  const state=structuredClone(current.state_payload),phase7=phase7CommittedState();
+  const [ordinaryProfile,npcProfile]=await Promise.all([
+    loadLowerDvinaTraceOrdinaryMaterializationProfile(),
+    loadLowerDvinaTraceNpcSemanticProfile()]);
+  const provisioner=createOrdinaryMaterializationFirstEntryProvisioner({
+    profile:ordinaryProfile,npcSemanticProfile:npcProfile});
+  const tx=await pool.connect();
+  try { await tx.query('BEGIN');await provisioner.provision({transaction:tx,
+    partyId,firstEntryBinding:{g6_instance_id:state.position.location_ref,
+      position_id:state.position.location_ref}});await tx.query('COMMIT'); }
+  catch(error) { await tx.query('ROLLBACK');throw error; }
+  finally { tx.release(); }
+  const n1Enablement=(await pool.query(`SELECT objective_snapshot
+    FROM party_runtime.party_ordinary_materialization_enablements
+    WHERE party_id=$1 AND scope_kind='g6' AND scope_id=$2`,[partyId,
+    npcProfile.profile.ordinary_scope.entity_id])).rows[0]?.objective_snapshot;
+  assert.deepEqual(n1Enablement.execution_context.mechanics_policy,{
+    policy_ref:'trace_ld_v1_o1_mechanics_policy',max_mass_grams:100,
+    allowed_external_hand_costs:[0],allowed_carry_forms:['compact'],
+    max_packing_slot_cost:1,max_quantity:1});
+  const zhdanko=state.npcs.find((npc)=>
+    npc.participant_slot_ref==='zhdanko_storehouse_controller');
+  assert.equal(zhdanko.machine_state.spatial_zone_ref,'storehouse_yard');
+  assert.equal(zhdanko.machine_state.status,'active');
+  assert.equal(zhdanko.location_profile_ref,
+    'trace_ld_v1_loc_zhdanko_storehouse');
+  assert.equal(zhdanko.profile_set_id??zhdanko.profile_id,
+    'trace_ld_v1_zhdanko_storehouse_controller_v1');
+  const onisim=state.npcs.find((npc)=>npc.participant_slot_ref==='onisim_boatman');
+  const phase7Onisim=phase7.npcs.find((npc)=>
+    npc.participant_slot_ref==='onisim_boatman');
+  const onisimAnchorId=onisim.anchor_id;
+  Object.assign(onisim,structuredClone(phase7Onisim),{
+    instance_id:onisim.instance_id,profile_set_id:onisim.profile_set_id,
+    anchor_id:onisimAnchorId});
+  state.phase6_carry_execution={status:'completed'};
+  state.position={...state.position,location_ref:phase7.position.location_ref,
+    zone_ref:phase7.position.zone_ref};
+  const persistedBody=(await pool.query(`SELECT state_version,updated_change_set_id
+    FROM party_runtime.party_actor_body_states WHERE party_id=$1
+      AND actor_kind='player_character' AND actor_id=$2`,[partyId,
+    state.actor_id])).rows[0];
+  state.party_state.body_state_version=Number(persistedBody.state_version);
+  state.body_state=structuredClone(phase7.body_state);
+  await pool.query(`UPDATE party_runtime.party_actor_body_states SET
+    health=$3,energy=$4,satiety=$5 WHERE party_id=$1
+      AND actor_kind='player_character' AND actor_id=$2`,[partyId,state.actor_id,
+    state.body_state.health,state.body_state.energy,state.body_state.satiety]);
+  await pool.query(`DELETE FROM party_runtime.party_actor_active_conditions
+    WHERE party_id=$1 AND actor_kind='player_character' AND actor_id=$2`,
+  [partyId,state.actor_id]);
+  for(const condition of state.body_state.active_conditions)await pool.query(
+    `INSERT INTO party_runtime.party_actor_active_conditions
+      (party_id,actor_kind,actor_id,condition_id,condition_profile_ref,status,
+       state_version,created_change_set_id)
+     VALUES ($1,'player_character',$2,$3,$4::jsonb,'active',$5,$6)`,[partyId,
+      state.actor_id,condition.storage_condition_id,
+      JSON.stringify(condition.condition_profile_ref),condition.state_version,
+      persistedBody.updated_change_set_id]);
+  state.phase7_fire_rest=null;
+  state.npc_decision_signals=[];
+  state.consumed_npc_decision_signal_ids=[];
+  state.npc_semantic_decision_refs=[];
+  await pool.query(`UPDATE party_runtime.party_npcs SET
+    machine_state=$3::jsonb,semantic_state=jsonb_set(semantic_state,
+      '{participant_slot_ref}',to_jsonb($4::text),true)
+    WHERE party_id=$1 AND npc_id=$2`,[partyId,onisim.instance_id,
+    JSON.stringify(onisim.machine_state),onisim.participant_slot_ref]);
+  await pool.query(`UPDATE party_runtime.party_state_snapshots
+    SET state_payload=$3::jsonb,state_digest=$4
+    WHERE party_id=$1 AND state_version=$2`,[partyId,current.state_version,
+    JSON.stringify(state),computeSpatialV3CanonicalDigest(state)
+      .replace('sha256:','')]);
+  staleCalls.npc=0;staleCalls.ordinary=0;staleCalls.narration=0;
+  const input={request_id:'production-root-n1-actual',
+    idempotency_key:'production-root-n1-actual',
+    raw_text:'Отдохнуть у огня полчаса и подсушить одежду'};
+  try { await staleRoot.submitTurn(partyId,input);
+    assert.fail('stale N1 commit unexpectedly succeeded'); }
+  catch(error) { assert.equal(error.code,'TRACE_PHASE_7_COMMIT_FAILED',
+    JSON.stringify({code:error.code,details:error.details,calls:staleCalls})); }
+  assert.deepEqual((await pool.query(`SELECT state_version,
+    (SELECT count(*)::int FROM party_runtime.party_npc_decision_traces
+      WHERE party_id=$1) AS decisions,
+    (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_commits
+      WHERE party_id=$1) AS outcomes FROM party_runtime.parties WHERE party_id=$1`,
+  [partyId])).rows[0],{state_version:'1',decisions:0,outcomes:0});
+  await pool.query(`UPDATE party_runtime.party_npcs SET machine_state=
+    jsonb_set(machine_state,'{status}','"active"') WHERE party_id=$1
+    AND npc_id=$2`,[partyId,zhdanko.instance_id]);
+  const successCalls={npc:0,ordinary:0,narration:0};
+  const activeRoot=await actualProductionRoot({pool,worldPool,roleRunner:
+    n1RoleRunner({pool,partyRef,calls:successCalls})});
+  const committed=await activeRoot.submitTurn(partyId,input);
+  assert.equal(committed.state_version,2);
+  const persisted=(await pool.query(`SELECT i.item_id,i.item_proposal,
+      s.state_payload,v.visible_payload
+    FROM party_runtime.party_ordinary_materialization_items i
+    JOIN party_runtime.party_state_snapshots s ON s.party_id=i.party_id
+      AND s.state_version=2
+    JOIN party_runtime.party_visible_packages v ON v.party_id=i.party_id
+      AND v.committed_state_version=2
+    WHERE i.party_id=$1`,[partyId])).rows[0];
+  assert.equal(persisted.item_proposal.semantic_descriptor.name,
+    'небольшая деревянная мерка');
+  assert.equal(persisted.item_proposal.schema,'ordinary_world_item_proposal_v1');
+  assert.equal(Object.hasOwn(persisted.item_proposal,'causal_basis_kind'),false);
+  const remoteItem=(persisted.state_payload.items??[]).find(
+    ({item_id:itemId})=>itemId===persisted.item_id);
+  assert.equal(remoteItem?.visible,false);
+  assert.equal((persisted.visible_payload.visible_objects??[]).some(
+    ({entity_ref:ref})=>ref?.entity_id===persisted.item_id),false);
+  assert.equal(JSON.stringify(committed).includes(persisted.item_id),false);
+  const replayCalls={npc:0,ordinary:0,narration:0};
+  const restarted=await actualProductionRoot({pool,worldPool,roleRunner:{
+    async run(){replayCalls.npc+=1;throw new Error('replay rerolled');}}});
+  assert.deepEqual(await restarted.submitTurn(partyId,input),committed);
+  assert.deepEqual(replayCalls,{npc:0,ordinary:0,narration:0});
+}
+
+async function actualProductionRoot({pool,worldPool,roleRunner}) {
+  return createSpatialV3ProductionCompositionRoot({
+    config:{runtimeCatalogPinManifestDigest:hex,
+      traceTurnDecisionSecret:'production-root-n1-actual',roleRunner},
+    pools:{partyPool:pool,worldPool,async close(){}}
+  });
+}
+
+function n1RoleRunner({pool,partyRef,calls,driftNpc=false}) {
+  let driftPending=driftNpc;
+  return {async run({role_id:roleId,messages}) {
+    const request=JSON.parse(messages.at(-1).content);
+    if(roleId==='npc_autonomous_decider') {
+      calls.npc+=1;
+      if(driftPending){driftPending=false;await pool.query(
+        `UPDATE party_runtime.party_npcs SET machine_state=
+          jsonb_set(machine_state,'{status}','"idle"') WHERE party_id=$1
+          AND npc_id=$2`,[partyRef.value,request.npc_ref]);}
+      const output=phase7DiscoveryPlan(request);
+      calls.lastNpc={request,output};return {output};
+    }
+    if(roleId==='ordinary_materialization'
+        ||roleId==='ordinary_materialization_repair') {
+      calls.ordinary+=1;const modelRequest=request.request??request;
+      const output=n1OrdinaryPositive(modelRequest);
+      calls.lastOrdinary={request,output};return {output};
+    }
+    if(roleId==='legacy.narrator.dossier') {
+      calls.narration+=1;return {output:approvedNarration(request.request_id)
+        .approved_output};
+    }
+    if(roleId==='legacy.narrator.audit') {
+      calls.narration+=1;return {output:approvedNarration(
+        request.request?.request_id??'n1-audit').final_audit};
+    }
+    throw new Error(`Unexpected production N1 role ${roleId}`);
+  }};
+}
+
+function n1OrdinaryPositive(request) {
+  if(request.mode==='seed_scope') return {
+    schema:'ordinary_materialization_plan_v1',request_id:request.request_id,
+    resolution:'seeded',density_band_proposal:'ordinary',background_groups:[],
+    entities:[],presence_resolutions:[],reason_code:'seed'};
+  const basis=request.policy_refs.allowed_supporting_bases[0].basis_ref;
+  return {schema:'ordinary_materialization_plan_v1',request_id:request.request_id,
+    resolution:'materialize',density_band_proposal:null,background_groups:[],
+    presence_resolutions:[],reason_code:'ordinary_local_detail',entities:[{
+      semantic_descriptor:{semantic_type:'household_tool',
+        name:'небольшая деревянная мерка',facts:[]},authority_class:'ordinary',
+      admission_class:'common_mundane',availability_class:'common',
+      functional_bucket:'household',presence_expectation:'routine',
+      supporting_basis_ref:basis,causal_basis:{basis_kind:'household_use',
+        basis_refs:[basis]},property_basis_ref:'trace_ld_v1_o1_property_basis',
+      placement_proposal:{scope_ref:request.scope_ref.entity_id,
+        position_ref:'trace_ld_v1_loc_zhdanko_storehouse'},
+      mechanics_proposal:{mass_grams:100,external_hand_cost:0,
+        carry_form:'compact',packing_slot_cost:1,
+        quantity:{value:1,unit:'item'},container:null}
+    }]};
+}
+
+function npcObjectiveDigest(check) {
+  const pin=structuredClone(check);
+  for(const key of ['kind','digest','party_id','operation_digest','operation',
+    'authority','objective_digest']) delete pin[key];
+  return computeSpatialV3CanonicalDigest(pin).replace('sha256:','');
+}
+
+function sealedCheckDigest(check) {
+  const payload=structuredClone(check);delete payload.digest;
+  return computeSpatialV3CanonicalDigest(payload);
+}
+
+async function seedPhase7Owners(pool,partyId,state,npc) {
+  const changeSet=`first-entry-${partyId.replace('party-root-','')}-cs`;
+  await pool.query(`INSERT INTO party_runtime.party_server_sessions
+    (party_id,request_id,stage26_result,delivery_ack_result,screen,turn_number,
+     last_turn_id,state_version,updated_change_set_id)
+    VALUES ($1,'n1-session','{}','{}','{}',0,NULL,1,$2)`,[partyId,changeSet]);
+  await pool.query(`INSERT INTO party_runtime.party_clocks
+    (party_id,whole_minutes,subminute_numerator,subminute_denominator,
+     clock_owner_kind,state_version,updated_change_set_id)
+    VALUES ($1,100,0,1,'party',1,$2)`,[partyId,changeSet]);
+  await pool.query(`INSERT INTO party_runtime.party_actor_body_states
+    (party_id,actor_kind,actor_id,body_profile_ref,health,energy,satiety,
+     state_version,updated_change_set_id)
+    VALUES ($1,'player_character',$2,'{}',70,30,40,1,$3)`,
+  [partyId,state.actor_id,changeSet]);
+  for(const condition of state.body_state.active_conditions)await pool.query(
+    `INSERT INTO party_runtime.party_actor_active_conditions
+      (party_id,actor_kind,actor_id,condition_id,condition_profile_ref,status,
+       state_version,created_change_set_id)
+     VALUES ($1,'player_character',$2,$3,$4::jsonb,'active',1,$5)`,
+    [partyId,state.actor_id,condition.storage_condition_id??condition.id,
+      JSON.stringify({entity_kind:'condition_profile',entity_id:condition.id}),
+      changeSet]);
+  await pool.query(`INSERT INTO party_runtime.party_npcs
+    (party_id,npc_id,run_id,profile_set_id,profile_level,anchor_id,
+     identity_state,machine_state,semantic_state)
+    VALUES ($1,$2,$3,$4,'key',NULL,$5::jsonb,$6::jsonb,$7::jsonb)`,[
+    partyId,npc.instance_id,`run:${partyId.replace('party-root-','')}`,
+    npc.profile_set_id??npc.profile_id,JSON.stringify(npc.identity_state),
+    JSON.stringify(npc.machine_state),JSON.stringify({
+      participant_slot_ref:npc.participant_slot_ref,
+      location_profile_ref:npc.location_profile_ref})]);
 }
 
 function productionS1TurnStepModel(request) {

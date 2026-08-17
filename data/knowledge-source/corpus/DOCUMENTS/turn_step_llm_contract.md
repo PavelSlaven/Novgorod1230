@@ -1346,7 +1346,7 @@ Module doc публикует contract и владельца:
 
 Не определяй route, exact time, numeric body deltas, load category, hands, container contents, NPC decision, combat result или domain-owned check outcome.
 
-Не создавай и не интерпретируй NPC triggers, signals или boundaries. NPC semantic protocols не входят в active player planner; `emit_interaction` только делегирует попытку зарегистрированному owner.
+Не создавай и не интерпретируй NPC triggers, signals или boundaries. NPC semantic protocols не входят в active player planner; `emit_interaction` только делегирует попытку зарегистрированному owner. В revision 24 отдельная существующая autonomous NPC boundary может получить actor-scoped `request_discovery/look` через `npc_action_decision_request_v1` → `npc_step_plan_v1`; это не расширяет player planner и не передаёт модели objective/hidden authority.
 
 Верни соответствующий domain request.
 

@@ -446,7 +446,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 
 function phase3PreparedInputs(result) {
   const revision = result.request_identity.scenario_definition_revision;
-  if (!Number.isSafeInteger(revision) || revision < 8 || revision > 23) {
+  if (!Number.isSafeInteger(revision) || revision < 8 || revision > 24) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
   }
   const preparedScenes = result.immediate.prepared_scenes;

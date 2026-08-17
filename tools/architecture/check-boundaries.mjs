@@ -542,6 +542,7 @@ const temporalPureModules = new Map([
 const temporalPureImports = new Set([
   '@rus/contracts/spatial-v3/registry',
   '@rus/contracts/combat-v1',
+  '@rus/items-property/runtime-item-visibility',
   '@rus/kernel',
   '@rus/time-events-history'
 ]);

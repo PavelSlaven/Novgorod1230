@@ -16,6 +16,18 @@ projector формирует player-safe factual package до commit, package с
 Narration, layout и browser payload не могут добавить temporal fact,
 consequence, schedule, route или hidden candidate.
 
+Active O2b сохраняет ту же projection boundary для existing containers.
+Visible template-backed container может показываться до открытия, но concrete
+ordinary children со state `concealed` отсутствуют в player-safe package до
+успешного combined P16. Concealed ordinary — не hidden authority: он не несёт
+clue/evidence, authentic document, hidden history или secret-cache truth.
+После атомарного container-ledger/items/open commit UI и narrator получают
+только persisted approved children; failed/rolled-back batch не раскрывается.
+Reload/reopen показывает exact committed contents без model/reroll. UI и
+narrator не дополняют контейнер предметами, не пересчитывают mass/packing и не
+показывают server ledger/profile diagnostics. Template-less containers O2b не
+поддерживаются.
+
 ## 1. Player-safe movement and knowledge projection
 
 Игрок получает intent-oriented movement options, а не скрытые IDs, все factual routes или candidate diagnostics. Каждая видимая опция сообщает только допустимую player-safe цель/направление, наблюдаемые условия, безопасно объяснённую readiness и последствия, которые персонаж может воспринять или знать.

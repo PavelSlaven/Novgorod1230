@@ -61,13 +61,31 @@ const finiteResourceTransitionsSql = readFileSync(
   new URL('../../schemas/party-db/024_party_runtime_finite_resource_transitions.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 024 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 24);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-14), [sql,
+const existingContainerOrdinaryContentsSql = readFileSync(
+  new URL('../../schemas/party-db/025_party_runtime_existing_container_ordinary_contents.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 025 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 25);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-15), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
-    ordinaryCommitSql, ordinaryEnablementSql, finiteResourceTransitionsSql]);
+    ordinaryCommitSql, ordinaryEnablementSql, finiteResourceTransitionsSql,
+    existingContainerOrdinaryContentsSql]);
+});
+
+test('025 extends the same ordinary ledger without creating a contents store', () => {
+  assert.match(existingContainerOrdinaryContentsSql,
+    /scope_kind IN \('g6','container'\)/u);
+  assert.match(existingContainerOrdinaryContentsSql,
+    /party_ordinary_materialization_commit_items/u);
+  assert.match(existingContainerOrdinaryContentsSql,
+    /ordinary_existing_container_item_proposal_v1/u);
+  assert.match(existingContainerOrdinaryContentsSql,
+    /position_ref IS NULL AND container_id IS NOT NULL/u);
+  assert.doesNotMatch(existingContainerOrdinaryContentsSql,
+    /CREATE TABLE IF NOT EXISTS party_runtime\.(?:container_contents|ordinary_container_contents)/u);
 });
 
 test('019 keeps combat sessions in the target migration transaction', () => {

@@ -27,6 +27,14 @@
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers и bounded decision functions.
 
+Ordinary foundation API (`createOrdinaryAggregate`,
+`assertAndNormalizeOrdinaryAggregate`, transition/key/context helpers и working
+projection) остаётся одним generic exact-scope ledger для O1 и O2b. O2b не
+создаёт отдельное contents storage: aggregate получает
+`scope_ref.entity_kind=container`, хранит deterministic seed/resolution/coverage
+history и тем самым закрывает exact reload/reopen без reroll. Module не решает
+container eligibility, contents semantics, mechanics, reveal или persistence.
+
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 
 ## Контракты
@@ -54,6 +62,10 @@ draws идут после прежнего deterministic prefix, а пустой
 ограничивает prerequisite draws: например, authored `braided` требует
 совместимую длину волос, а facial hair — совместимые sex/age. Противоречивый
 authored набор отклоняется до первого RNG draw.
+Ordinary aggregate transition также детерминирован, CAS-bound и bounded
+`resolution_record_cap`; повторный candidate/coverage/context или identity
+отклоняется вместо reroll. `concealed` либо container access не меняют authority
+и не являются фактом этого ledger.
 
 ## Ошибки
 

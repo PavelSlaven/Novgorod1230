@@ -6,6 +6,15 @@
 
 G5, NPC, authored/significant/hidden items, containers, inventories и штатные последствия материализует код. Player step plan может предложить ordinary direct action result только в трёх разрешённых origin classes; code-owned admission проверяет его и сохраняет exact runtime mechanics snapshot. Если старый шаблон ниже поручает LLM materialization вне этой границы, такая инструкция не применяется.
 
+O2b не расширяет player planner: planner возвращает только существующий
+`request_container_access` и не называет contents. Отдельный internal Stage A
+получает candidate-free committed container context без root action, desired
+item/query/use и narration; authoritative contents обходят его без model call.
+Narrator получает только persisted post-reveal visible package и не может
+добавить или заменить container children. Ordinary `concealed` не даёт hidden
+authority и не разрешает clue/evidence, authentic document, hidden history или
+secret cache.
+
 Temporal World v4 дополнительно запрещает LLM-проектор безопасности. Видимый
 factual package формирует код, сохраняет его атомарно со state change и только
 после commit передаёт narrator. LLM не создаёт даты, schedules, temporal

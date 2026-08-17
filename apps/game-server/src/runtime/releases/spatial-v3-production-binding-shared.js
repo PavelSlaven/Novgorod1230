@@ -27,6 +27,8 @@ import {
 import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
   '../lower-dvina-trace-o2a-ambient-port.js';
+import { createLowerDvinaTraceO2bProductionResolverFactory } from
+  './lower-dvina-trace-o2b-production.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../lower-dvina-trace-ordinary-discovery.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
@@ -121,7 +123,8 @@ export async function createSpatialV3ProductionBindings(
     release,
     env = process.env,
     config = {},
-    ordinaryMaterializationProfile = null
+    ordinaryMaterializationProfile = null,
+    ordinaryContainerContentsProfile = null
   } = {},
   {
     createNpcRuntimePorts,
@@ -179,6 +182,7 @@ export async function createSpatialV3ProductionBindings(
           env,
           config,
           ordinaryMaterializationProfile,
+          ordinaryContainerContentsProfile,
           createPhase2RuntimeFactory,
           createNpcRuntimePorts
         })
@@ -206,6 +210,7 @@ function createTraceTurnRuntime({
   env,
   config,
   ordinaryMaterializationProfile,
+  ordinaryContainerContentsProfile,
   createPhase2RuntimeFactory,
   createNpcRuntimePorts
 }) {
@@ -231,9 +236,12 @@ function createTraceTurnRuntime({
   });
   const narrationService =
     createLowerDvinaTraceNarrationService({ roleRunner });
-  const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
-    pool: partyPool
-  });
+  const ordinaryEnablements =
+    createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});
+  const ordinaryContainerResolverFactory =
+    createLowerDvinaTraceO2bProductionResolverFactory({pool:partyPool,
+      loadedProfile:ordinaryContainerContentsProfile,
+      ordinaryMaterializationModel:createOrdinaryMaterializationModel({roleRunner})});
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
@@ -248,6 +256,8 @@ function createTraceTurnRuntime({
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel: createOrdinaryMaterializationModel({ roleRunner })
       }),
+    createTurnStepOrdinaryContainerContentsResolver:
+      ordinaryContainerResolverFactory,
     ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
       (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>

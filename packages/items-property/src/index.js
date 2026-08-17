@@ -5,6 +5,9 @@ import { planApprovedItemVisibilityTransition } from
 import { planApplicableApprovedItemTransition } from
   './applicable-approved-item-transition.js';
 import { ambientOrdinaryCommittedContextDigest, createAmbientOrdinaryPortionAdmission } from './ambient-ordinary-portion.js';
+import { classifyExistingContainerContents } from './container-ordinary-eligibility.js';
+import { buildExistingContainerOrdinarySeedRequest } from './container-ordinary-request.js';
+import { validateOrdinaryContainerContentsMechanics } from './ordinary-container-contents-mechanics.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
@@ -151,6 +154,9 @@ export function validatePropertyRelation(relation = {}) {
 
 export {
   ambientOrdinaryCommittedContextDigest,
+  buildExistingContainerOrdinarySeedRequest,
+  classifyExistingContainerContents,
+  validateOrdinaryContainerContentsMechanics,
   createAmbientOrdinaryPortionAdmission,
   normalizeItem,
   planApplicableApprovedItemTransition,

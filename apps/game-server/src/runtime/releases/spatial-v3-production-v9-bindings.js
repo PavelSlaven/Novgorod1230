@@ -12,7 +12,7 @@ export {
   firstPlayableCommitRecheck
 } from './spatial-v3-production-binding-shared.js';
 
-/** Exact production-v9 binding for canonical actor appearance revision 19. */
+/** Exact production-v9 binding for canonical O2b scenario revision 20. */
 export function createSpatialV3RuntimeBindings(context = {}) {
   if (context.release?.release_id !== 'spatial-v3-production-v9'
       || context.release?.npc_conversation_capability

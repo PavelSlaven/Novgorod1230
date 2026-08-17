@@ -185,7 +185,11 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             p16ChangeSetId: plan.change_set_id
           });
         } catch (cause) {
-          if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE') {
+          if (cause?.code === 'ORDINARY_PHASE6_ENABLEMENT_STALE'
+              || cause?.code === 'ORDINARY_PHASE6_PROPOSAL_STALE'
+              || cause?.code === 'ORDINARY_PHASE6_ORDINARY_STATE_STALE'
+              || cause?.code === 'ORDINARY_CONTAINER_BATCH_CONTAINER_STALE'
+              || cause?.code === 'ORDINARY_CONTAINER_BATCH_CAPACITY_STALE') {
             cause.spatialCode = 'state_version_conflict';
           }
           throw cause;

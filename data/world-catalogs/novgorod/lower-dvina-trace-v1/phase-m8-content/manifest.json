@@ -1,0 +1,62 @@
+{
+  "schema": "rus.lower_dvina_trace_m8_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m8_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 20,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/manifest.json",
+    "id": "lower_dvina_trace_m7_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
+    "digest": "c328941b9041e1571ccc8c16fbb869dd01e0e5bca4afa4288a84a31337f6f0d5"
+  },
+  "superseded_definition_ref": {
+    "id": "lower_dvina_trace_v1",
+    "revision": 19,
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/definition.json",
+    "digest": "a2bc08aa214da499777517bfb724c9fe7e64b887fad14c65458a517ba9c228f4"
+  },
+  "files": {
+    "definition.json": "d0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262",
+    "initial-ordinary-container.json": "1053d5dc00e8f718ab25524cb8d064a5715878b16fd0118ab917a343e192feaa",
+    "ordinary-container-contents-profile.json": "4a889554f786ca1b0f2b9606bc9fbe1ec8b255efdd618727ad704465220e636d"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json",
+      "id": "lower_dvina_trace_v1",
+      "revision": 20,
+      "schema": "rus.trace_scenario_definition.v1",
+      "digest": "d0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262"
+    },
+    "initial_ordinary_container": {
+      "path": "initial-ordinary-container.json",
+      "id": "trace_ld_v1_container_player_small_pouch",
+      "revision": 1,
+      "schema": "rus.trace_initial_ordinary_container.v1",
+      "digest": "1053d5dc00e8f718ab25524cb8d064a5715878b16fd0118ab917a343e192feaa"
+    },
+    "ordinary_container_contents_profile": {
+      "path": "ordinary-container-contents-profile.json",
+      "id": "lower_dvina_trace_o2b_existing_container_profile_v2",
+      "revision": 2,
+      "schema": "rus.lower_dvina_trace_o2b_existing_container_profile.v2",
+      "digest": "4a889554f786ca1b0f2b9606bc9fbe1ec8b255efdd618727ad704465220e636d"
+    },
+    "inherited_m7_content": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content/manifest.json",
+      "id": "lower_dvina_trace_m7_content_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
+      "digest": "c328941b9041e1571ccc8c16fbb869dd01e0e5bca4afa4288a84a31337f6f0d5"
+    }
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "15be51685128393a13dec393576fcc4013601cce7b86e08915d48b7337a44d86",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

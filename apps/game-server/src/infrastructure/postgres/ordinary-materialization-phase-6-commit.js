@@ -11,6 +11,7 @@ import {
   freezePhase6Data,
   normalizeSupportingBases,
   normalizePropertyPlacementBase,
+  ownData,
   propertyPlacementBaseDigest,
   propertyPlacementEvidenceMatches,
   safeVersion,
@@ -21,11 +22,14 @@ import {
   version
 } from './ordinary-materialization-phase-6-commit-internal.js';
 import { applyFiniteResourceInitializationInTransaction, applyFiniteResourceTransitionInTransaction, validateFiniteResourceTransition } from './ordinary-materialization-finite-resource-persistence.js';
+import { createOrdinaryContainerContentsAtomicWritePlan } from './ordinary-materialization-container-batch-plan.js';
+import { applyOrdinaryContainerContentsAtomicWritePlanInTransaction } from './ordinary-materialization-container-batch-persistence.js';
 
 const RESOLUTIONS = new Set(['materialize', 'absent', 'no_change', 'authority_required']);
 export { OrdinaryMaterializationCommitError };
 
 export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
+  if (ownData(value, 'schema') === 'ordinary_container_contents_atomic_write_plan_v2') return createOrdinaryContainerContentsAtomicWritePlan(value);
   value = clonePhase6Data(value);
   if (Object.hasOwn(value, 'schema') || Object.hasOwn(value, 'write_plan_digest')) {
     exact(value, phase6Keys(value, true));
@@ -110,6 +114,9 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
 } = {}) {
   if (!client?.query) fail('ORDINARY_PHASE6_TRANSACTION_REQUIRED');
   const plan = createOrdinaryMaterializationAtomicWritePlan(input);
+  if (plan.schema === 'ordinary_container_contents_atomic_write_plan_v2') {
+    return applyOrdinaryContainerContentsAtomicWritePlanInTransaction({client,input:plan,partyStateVersionAfter,updatePartyState,p16ChangeSetId});
+  }
   if (requireEnablementPin === true && plan.enablement_pin == null) {
     fail('ORDINARY_PHASE6_ENABLEMENT_PIN_REQUIRED');
   }
@@ -138,12 +145,12 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
     if (plan.finite_resource_initialization != null) await applyFiniteResourceInitializationInTransaction(client, plan.party_id, plan.finite_resource_initialization, p16ChangeSetId);
     await applyFiniteResourceTransitionInTransaction(client, plan.party_id, plan.finite_resource_transition, plan.item, p16ChangeSetId, plan.finite_resource_initialization ?? null);
   }
-  await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_commits (party_id,scope_kind,scope_id,request_identity,input_digest,transition_digest,write_plan_digest,resolution,transition_count,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version,item_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.request_identity,plan.input_digest,plan.transition_digest,plan.write_plan_digest,plan.resolution,plan.transitions.length,current.party_state_version,nextPartyStateVersion,current.ordinary_state_version,current.ordinary_state_version+plan.transitions.length,plan.item?.item_id??null]);
+  await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_commits (party_id,scope_kind,scope_id,request_identity,input_digest,transition_digest,write_plan_digest,resolution,transition_count,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version,item_id,plan_schema,item_count) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.request_identity,plan.input_digest,plan.transition_digest,plan.write_plan_digest,plan.resolution,plan.transitions.length,current.party_state_version,nextPartyStateVersion,current.ordinary_state_version,current.ordinary_state_version+plan.transitions.length,plan.item?.item_id??null,plan.schema,plan.item==null?0:1]);
     if (canonicalDigest(current.supporting_bases) !== canonicalDigest(plan.expected_supporting_basis_catalog)) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
     if (canonicalDigest(current.property_placement_context)
         !== canonicalDigest(plan.expected_property_placement_context)) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
     for(const basis of plan.new_prepared_bases) await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_basis_catalog (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot) VALUES ($1,$2,$3,$4,$5,$6::jsonb)`,[plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,basis.basis_ref,plan.request_identity,JSON.stringify(basis)]);
-    if (plan.item) { const evidence=plan.item.item_proposal.property_placement_evidence; await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_items (party_id,item_id,request_identity,scope_kind,scope_id,candidate_key,coverage_key,context_version,functional_bucket,admission_class,supporting_basis_ref,causal_basis_refs,property_basis_ref,position_ref,property_placement_context_digest,property_catalog_version_ref,placement_catalog_version_ref,property_placement_evidence,mechanics_policy_ref,item_proposal,mechanics_snapshot) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12::jsonb,$13,$14,$15,$16,$17,$18::jsonb,$19,$20::jsonb,$21::jsonb)`, [plan.party_id,plan.item.item_id,plan.request_identity,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.item.candidate_key,plan.item.coverage_key,plan.item.context_version,plan.item.functional_bucket,plan.item.admission_class,plan.item.supporting_basis_ref,JSON.stringify(plan.item.causal_basis_refs),plan.item.property_basis_ref,plan.item.position_ref,evidence.property_placement_context_digest,evidence.property_catalog_version_ref,evidence.placement_catalog_version_ref,JSON.stringify(evidence),plan.item.mechanics_policy_ref,JSON.stringify(plan.item.item_proposal),JSON.stringify(plan.item.mechanics_snapshot)]); }
+    if (plan.item) { const evidence=plan.item.item_proposal.property_placement_evidence; await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_items (party_id,item_id,request_identity,resolution_request_identity,scope_kind,scope_id,candidate_key,coverage_key,context_version,functional_bucket,admission_class,supporting_basis_ref,causal_basis_refs,property_basis_ref,position_ref,property_placement_context_digest,property_catalog_version_ref,placement_catalog_version_ref,property_placement_evidence,mechanics_policy_ref,item_proposal,mechanics_snapshot) VALUES ($1,$2,$3,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12::jsonb,$13,$14,$15,$16,$17,$18::jsonb,$19,$20::jsonb,$21::jsonb)`, [plan.party_id,plan.item.item_id,plan.request_identity,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.item.candidate_key,plan.item.coverage_key,plan.item.context_version,plan.item.functional_bucket,plan.item.admission_class,plan.item.supporting_basis_ref,JSON.stringify(plan.item.causal_basis_refs),plan.item.property_basis_ref,plan.item.position_ref,evidence.property_placement_context_digest,evidence.property_catalog_version_ref,evidence.placement_catalog_version_ref,JSON.stringify(evidence),plan.item.mechanics_policy_ref,JSON.stringify(plan.item.item_proposal),JSON.stringify(plan.item.mechanics_snapshot)]); }
     if (plan.item) for (const basis_ref of [...new Set([plan.item.supporting_basis_ref,...plan.item.causal_basis_refs])].sort()) await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_item_basis_refs (party_id,item_id,scope_kind,scope_id,basis_ref) VALUES ($1,$2,$3,$4,$5)`, [plan.party_id,plan.item.item_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,basis_ref]);
     const context=await client.query(`UPDATE party_runtime.party_ordinary_materialization_contexts SET supporting_basis_catalog_version=$4,supporting_basis_catalog_digest=$5 WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3 AND supporting_basis_catalog_version=$6 AND supporting_basis_catalog_digest=$7`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.next_supporting_basis_catalog_version,plan.next_supporting_basis_catalog_digest,plan.expected_versions.supporting_basis_catalog_version,plan.expected_versions.supporting_basis_catalog_digest]); if (context.rowCount!==1) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
     const aggregate=await client.query(`UPDATE party_runtime.party_ordinary_materialization_aggregates SET state_version=$4,aggregate_payload=$5::jsonb WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3 AND state_version=$6`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.next_aggregate.state_version,JSON.stringify(plan.next_aggregate),current.ordinary_state_version]); if (aggregate.rowCount!==1) fail('ORDINARY_PHASE6_ORDINARY_STATE_STALE');

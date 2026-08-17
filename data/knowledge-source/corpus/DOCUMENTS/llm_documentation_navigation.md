@@ -70,10 +70,14 @@ exact-head evidence не активировало production; последующ
 - conversation → `npc_conversation_mode_contract.md` (`active` for Lower Dvina Trace revision 14);
 - combat resolution → `npc_combat_and_trigger_contract.md` (`active`, revision 16 / `spatial-v3-production-v6`).
 
-Current Lower Dvina Trace revision 19 / `spatial-v3-production-v9` наследует
-все четыре границы без нового semantic mode. Revision 19 добавляет только
+Current Lower Dvina Trace revision 20 / `spatial-v3-production-v9` наследует
+все четыре границы без нового semantic mode. Revision 19 добавила только
 code-owned appearance/equipment materialization и read-time player-safe portrait
-projection; новый LLM contract не создаётся.
+projection. Revision 20 / M8 / Phase 1A v16 / Phase 1B v15 добавляет
+SHA-pinned O2b existing-container contents для одного authored player pouch;
+revision 19 остаётся immutable historical recovery path. Новый player/NPC LLM
+contract не создаётся: O2b остаётся внутренней candidate-free веткой
+существующего `request_container_access`.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует
@@ -179,7 +183,7 @@ Historical bounded Phase 3/4 доступен исключительно по я
 | Рассчитать проверку, состояние тела, штраф или навык | `character_parameters.txt` | `formulas.md`, релевантный документ системы действия |
 | Изменить время, сон, отдых, ожидание, расписание или отложенное последствие | `temporal_world_and_interruptible_activities.md` | `time_system.txt`, `character_parameters.txt`, `historical_events_and_figures.txt` |
 | Переместить персонажа, построить маршрут, вернуть назад, заблудиться | `movement_locations_regions.txt` | `time_system.txt`, `world_regions.txt`, `world_generation_and_turns.txt` |
-| Создать предмет сцены, проверить имущество, контейнер, доступ или кражу | `items_and_property.txt` | `character_inventory_equipment.txt`, `npc_inventory_item_marks.txt` |
+| Создать предмет сцены, проверить имущество, existing-container contents, доступ или кражу | `items_and_property.txt` | `turn_step_llm_contract.md` §12.2, `character_inventory_equipment.txt`, `npc_inventory_item_marks.txt`, `interface_ux.md` |
 | Проверить, что персонаж несёт, где предмет лежит, сколько весит и доступен ли он | `character_inventory_equipment.txt` | `items_and_property.txt`, `character_parameters.txt`, `weapons_and_armor.txt` |
 | Работать с вещами NPC, метками, узнаваемостью и реакцией владельца | `npc_inventory_item_marks.txt` | `items_and_property.txt`, `npc_generation_profiles.txt`, `interface_ux.md` |
 | Создать NPC, повысить профиль, сохранить отношения или память | `npc_generation_profiles.txt` | `character_parameters.txt`, `items_and_property.txt`, `interface_ux.md` |

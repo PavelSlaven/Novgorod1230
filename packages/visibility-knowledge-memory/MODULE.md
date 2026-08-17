@@ -44,9 +44,10 @@ package after commit. It neither activates target nor dual-writes before the
 versioned production activation cutover. Revision 17 /
 `spatial-v3-production-v7` activates deterministic authored evidence
 resolution; historical revision 18 / production v8 additionally activates
-provenance-validated composite completion and player-safe projection. Current
-revision 19 / production v9 inherits that path and adds the pure, non-persisted
-`portrait_spec_v1` projection from sanitized actor facts and visible equipped
-items. `test/domain.test.js` covers allow-list,
+provenance-validated composite completion and player-safe projection. Revision
+19 / production v9 adds the pure, non-persisted `portrait_spec_v1` projection
+from sanitized actor facts and visible equipped items and remains a historical
+recovery path. Active revision 20 / M8 / Phase 1A v16 / Phase 1B v15 inherits
+the same visibility owner boundary unchanged. `test/domain.test.js` covers allow-list,
 leak stripping/detection, safe-package, evidence, completion and memory
 contracts.

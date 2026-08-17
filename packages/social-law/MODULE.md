@@ -51,6 +51,8 @@ Social role and occupation references, rights, restrictions, authority and legal
 существовали, но не импортирует legacy runtime. Revision 17 /
 `spatial-v3-production-v7` активировала Phase 9 promise lifecycle и typed
 temporary disposition из committed facts; historical revision 18 / production v8
-и revision 19 / production v9 наследуют этот owner без нового legal engine.
+и revision 19 / production v9 сохраняются как recovery paths. Active revision
+20 / M8 / Phase 1A v16 / Phase 1B v15 наследует тот же owner без нового legal
+engine.
 Unit/contract tests находятся в
 `test/domain.test.js`.

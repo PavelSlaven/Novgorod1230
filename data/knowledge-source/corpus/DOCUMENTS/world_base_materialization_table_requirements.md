@@ -232,6 +232,20 @@ Canonical appearance нового NPC хранится атомарно в су�
 ownership, а immutable `item_visual_profile_snapshot_v1` находится в state
 конкретного item. `portrait_spec_v1` не сохраняется ни в одной party table.
 
+Active O2b existing-container contents не создаёт вторую таблицу semantic
+contents. First-entry P16 provision-ит authored template-backed container вместе
+с общим ordinary ledger без дополнительной транзакции или party bump:
+aggregate/context/basis/enablement rows с
+`scope_kind='container'`, а approved concrete children сохраняются обычными
+`party_items` с exact mechanics/property/placement и ссылкой на parent
+container. Exact profile/policy/template/mechanics/property/owner/placement
+pins обязательны; authoritative contents имеют приоритет. При доступе transition
+того же container ledger, children, open/reveal, visible package и единственный
+party version bump входят в один combined P16 transaction. Template-less
+container, partial batch и
+отдельный contents store запрещены. Reload/reopen читает committed aggregate и
+children без model/reroll.
+
 Старая JSONB `game_sessions` не входит в production DDL v2, не создаётся migrations и не читается runtime. Backup/rollback старого формата выполняется только внешним migration tooling.
 
 ## 11. Seed/import contract

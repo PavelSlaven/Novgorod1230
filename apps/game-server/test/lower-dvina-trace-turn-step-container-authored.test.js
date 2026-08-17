@@ -129,7 +129,8 @@ test('committed access survives restart and only then reveals authored contents'
     const committed = committedProjectionState();
     const before = projectLowerDvinaTracePlayerSafeState({
       committed_state: committed, actor_id: 'actor'
-    });
+});
+
     assert.equal(before.player_safe_state.items.some(
       ({ item_id: ref }) => ref === 'sword'), false);
 
@@ -160,6 +161,19 @@ test('committed access survives restart and only then reveals authored contents'
       true);
   });
 
+test('O2b resolver receives a candidate-free stable seed before ordinary child reveal', async () => {
+  const requests = [], items = [chest({ commit_state: 'committed', mechanics_profile_ref: 'chest-mechanics', ordinary_contents_context: ordinaryContext() })];
+  const run = (rootPlayerAction) => { const ports = runtimePorts(items, { ordinaryContainerContentsResolver: async ({ stage_a_request }) => { requests.push(stage_a_request); const child = ordinaryChild(); return { pass: true, materialized_items: [child], ordinary_materialization_atomic_write_plan: { schema: 'ordinary_container_contents_atomic_write_plan_v2', write_plan_digest: 'sealed-test-plan', scope_ref: { entity_kind: 'container', entity_id: 'chest' }, items: [{ item_id: child.item_id }] }, errors: [] }; } }); return runTurnStepLoop({ requestId: 'request', rootTurnId: 'turn', committedStateVersion: 1, rootPlayerAction, actor: actor(), initialWorkingProjection: initialProjection(items), maxInternalSteps: 8 }, { executionRegistry: ports.executionRegistry, resolveCheckContext: ports.resolveCheckContext, turnStepModel: async (request) => domainPlan(request, openOperation(), null), projectPlayerSafeState: async ({ working_projection: projection }) => projection, revalidateCommittedState: async () => true }); };
+  const first = await run('открываю сундук и беру меч');
+  assert.equal(first.working_projection.items.some(({ item_id }) => item_id === 'ordinary-child'), true);
+  await run('открываю сундук и беру золото');
+  assert.equal(requests.length, 2); assert.deepEqual(requests[0], requests[1]);
+  assert.equal(requests[0].schema,
+    'rus.items.existing_container_ordinary_seed_request.v2');
+  assert.equal(requests[0].technical_limits.max_new_entities,4);
+  assert.equal(requests[0].candidate_query, null); assert.equal(JSON.stringify(requests[0]).includes('меч'), false);
+});
+
 async function runScenario({ items, model, randomSource = null }) {
   const ports = runtimePorts(items);
   return runTurnStepLoop({
@@ -178,9 +192,10 @@ async function runScenario({ items, model, randomSource = null }) {
   });
 }
 
-function runtimePorts(items, { mechanics = swordMechanics() } = {}) {
+function runtimePorts(items, { mechanics = swordMechanics(), ordinaryContainerContentsResolver = null } = {}) {
   return createLowerDvinaTraceTurnStepRuntimePorts({
     committedState: { actor_id: 'actor', items },
+    ordinaryContainerContentsResolver,
     resolveItemMechanics(ref) {
       return ref === 'sword' ? mechanics : null;
     },
@@ -219,6 +234,19 @@ function runtimePorts(items, { mechanics = swordMechanics() } = {}) {
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()
   });
 }
+
+function ordinaryContext() { return { container_ref: 'chest', template_id: 'chest-template',
+  mechanics_profile_ref: 'chest-mechanics', owner_controller_ref: 'owner:actor',
+  property_ref: 'property:owner', site_function_ref: 'site:store',
+  economic_context_ref: 'economy:household', context_bound_permission_refs: [],
+  ordinary_policy: { schema: 'rus.items.existing_container_ordinary_policy.v2', version: 2,
+    unresolved_ordinary_contents: true, technical_limits: { schema:
+      'rus.items.existing_container_ordinary_limits.v1', version: 1,
+      max_new_entities: 4 } }, authoritative_status: 'authoritative_absent' }; }
+function ordinaryChild() { return { item_id: 'ordinary-child', semantic_type: 'material_portion',
+  authority: 'ordinary', disclosure: 'concealed', admission_class: 'common_mundane',
+  is_container: false, evidence: false, authentic_document: false, hidden_history: false,
+  secret_cache: false, placement: { container_id: 'chest' } }; }
 
 function initialProjection(items) {
   return {

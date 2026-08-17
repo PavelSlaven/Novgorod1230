@@ -17,6 +17,7 @@ import {
 } from './spatial-v3-write-plan-policy.js';
 
 const clone = (value) => structuredClone(value);
+const INVALID_INPUT = Symbol('invalid combined write plan input');
 const stable = (value) => typeof value === 'string' && value.trim().length > 0;
 const sha256Hex = (value) => typeof value === 'string' && /^[0-9a-f]{64}$/u.test(value);
 const pin = (party_id) => ({ dependency_role: 'planning_context_dependency', entity_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, version_pin: { pin_kind: 'party_state_version', state_version: 1 } });
@@ -58,7 +59,14 @@ function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
 }
 
 /** Builds no domain decision: its verifier attests pre-approved input and it only seals the three physical write sets. */
-export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}) {
+export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
+  const input = rawInput;
+  const ordinaryMaterializationPlan = snapshotOrdinaryPlan(rawInput);
+  const verifyApproval = ownData(options, 'verifyApproval');
+  if (ordinaryMaterializationPlan === INVALID_INPUT) {
+    return fail('generated_schema_mismatch', null,
+      { reason: 'ordinary atomic plan must be strict JSON data' });
+  }
   const {
     plan_id,
     party_id,
@@ -72,9 +80,10 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     visible_package_envelope,
     approved_write_sets,
     lock_context,
-    commit_rechecks,
-    ordinary_materialization_atomic_write_plan = null
+    commit_rechecks
   } = input;
+  const ordinary_materialization_atomic_write_plan =
+    ordinaryMaterializationPlan;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
@@ -238,7 +247,11 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
   if (expected_state_versions.length !== mutableKeys.size || expected_state_versions.some((expected) => !stable(expected?.target_table) || !stable(expected?.id) || !Number.isInteger(expected.state_version) || expected.state_version < 0 || !mutableKeys.has(`${expected.target_schema ?? 'party_runtime'}.${expected.target_table}:${expected.id}`))) return fail('state_version_conflict', party_id, { reason: 'every mutable update or delete requires one expected version' });
   if (write_plan_kind === 'blocked_audit' && (sets.inserts.length || sets.updates.length || sets.deletes.length || sets.appends.some((write) => !['party_v3_change_sets', 'party_command_idempotency', 'party_route_plan_execution_events'].includes(write.target_table)))) return fail('generated_schema_mismatch', party_id, { reason: 'blocked audit may append audit rows only' });
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
-  const write_set_digest = computeSpatialV3CanonicalDigest(write_set);
+  const write_set_digest = computeSpatialV3CanonicalDigest(
+    ordinary_materialization_atomic_write_plan == null ? write_set : {
+      write_set,
+      ordinary_materialization_atomic_write_plan
+    });
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
     plan_id,
@@ -276,6 +289,59 @@ export async function buildCombinedWritePlan(input = {}, { verifyApproval } = {}
     ...write_set
   };
   return freeze({ ok: true, plan: { ...plan, digest: computeSpatialV3CanonicalDigest(plan) } });
+}
+
+function ownData(value, key) {
+  if (!value || typeof value !== 'object') return undefined;
+  const descriptor = Object.getOwnPropertyDescriptor(value, key);
+  return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
+    ? descriptor.value : undefined;
+}
+
+function snapshotOrdinaryPlan(input) {
+  if (!input || typeof input !== 'object') return null;
+  const descriptor = Object.getOwnPropertyDescriptor(input,
+    'ordinary_materialization_atomic_write_plan');
+  if (descriptor == null || (Object.hasOwn(descriptor, 'value')
+      && descriptor.value === undefined)) return null;
+  if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')
+      || descriptor.value === null) {
+    return descriptor?.value === null ? null : INVALID_INPUT;
+  }
+  const snapshot = snapshotJsonData(descriptor.value);
+  return snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot)
+    ? snapshot : INVALID_INPUT;
+}
+
+function snapshotJsonData(value) {
+  const seen = new WeakSet();
+  function visit(input) {
+    if (input === null || typeof input === 'string'
+        || typeof input === 'boolean') return input;
+    if (typeof input === 'number') return Number.isFinite(input)
+      ? input : INVALID_INPUT;
+    if (!input || typeof input !== 'object' || seen.has(input)
+        || Object.getOwnPropertySymbols(input).length > 0) return INVALID_INPUT;
+    const array = Array.isArray(input);
+    if (Object.getPrototypeOf(input)
+        !== (array ? Array.prototype : Object.prototype)) return INVALID_INPUT;
+    const names = Object.getOwnPropertyNames(input);
+    if (array && (names.length !== input.length + 1
+        || !names.includes('length'))) return INVALID_INPUT;
+    seen.add(input);
+    const output = array ? [] : {};
+    for (const key of names) {
+      if (array && key === 'length') continue;
+      const descriptor = Object.getOwnPropertyDescriptor(input, key);
+      if (!descriptor?.enumerable || !Object.hasOwn(descriptor, 'value')
+          || (array && key !== String(output.length))) return INVALID_INPUT;
+      const child = visit(descriptor.value);
+      if (child === INVALID_INPUT) return INVALID_INPUT;
+      if (array) output.push(child); else output[key] = child;
+    }
+    return output;
+  }
+  return visit(value);
 }
 
 function containsKey(value, key, seen = new WeakSet()) {

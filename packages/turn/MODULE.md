@@ -176,8 +176,25 @@ decrement abundant ambient source. Finite resource node использует о�
 owner-native transition в ordinary P16. Для
 активного O2a profile отсутствие порта при drift — hard denial ambient
 `create_entity`; legacy composition без profile сохраняет прежний direct path.
-O2b/A1/F1/S1/N1, containers, currency, significant/hidden facts
-и non-authored constrained/armament sources остаются disabled.
+
+O2b активирует только внутреннюю ветку существующего
+`request_container_access` для already committed, accessible, template-backed
+container с exact profile/policy/context pins. Authoritative contents имеют
+абсолютный приоритет и дают ноль ordinary resolver/model calls. Только route
+`ordinary_unresolved` получает candidate-free Stage A, построенный из
+committed container/template/mechanics/owner-controller/property/site/economic/
+permission/basis/capacity/prior-resolution data; root action, remaining intent,
+desired item/query/use и narration исключены. Handler принимает весь validated
+batch во временную проекцию concealed, проверяет exact mechanics/mass,
+packing/capacity и approved limit `1..8`, затем включает container-scoped
+ordinary plan в тот же atomic P16 до open/reveal. Failure не оставляет partial
+child и не раскрывает contents; reload/reopen exact coverage не вызывает model
+и не reroll-ит. Ordinary concealed child не получает hidden authority:
+clue/evidence, authentic document, hidden history, secret cache, currency,
+significant/hidden truth, новый container и armament запрещены. Active Lower
+Dvina revision 20 / M8 / Phase 1A v16 / Phase 1B v15 связывает ровно один
+player pouch с max batch 2; revision 19 остаётся immutable historical path.
+Template-less containers и A1/F1/S1/N1 остаются disabled.
 
 ## Тесты
 

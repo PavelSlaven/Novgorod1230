@@ -38,7 +38,7 @@ export function phase3SemanticCommitContext({
   const semanticExchange = isConversation
     ? factual.consequence.conversation?.semantic_exchange
     : null;
-  if (![14, 15, 16, 17, 18, 19].includes(scenarioRevision)) {
+  if (![14, 15, 16, 17, 18, 19, 20].includes(scenarioRevision)) {
     if (semanticExchange != null) {
       fail('TRACE_M2_PHASE_3_SEMANTIC_REVISION_INVALID');
     }

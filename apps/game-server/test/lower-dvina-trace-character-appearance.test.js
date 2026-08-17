@@ -21,6 +21,48 @@ import {
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 19
 });
+const revision20 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 20
+});
+
+test('revision 20 adds only the authored ordinary pouch and keeps revision 19 immutable', () => {
+  assert.equal(bundle.definition_revision,19);
+  assert.equal(Object.hasOwn(bundle,'initial_ordinary_container'),false);
+  assert.equal(revision20.definition_revision,20);
+  assert.equal(revision20.phase_1a_manifest.package_id,
+    'lower_dvina_trace_phase_1a_v16');
+  assert.equal(revision20.initial_ordinary_container.container_id,
+    'trace_ld_v1_container_player_small_pouch');
+  assert.equal(revision20.initial_ordinary_container.template_ref.template_id,
+    'container_tpl_nov_small_soft_bag_v1');
+  assert.equal(revision20.ordinary_container_contents_profile
+    .container_bindings.length,1);
+  assert.equal(revision20.item_container_set.container_templates.some(
+    ({container_template_id:id}) =>
+      id === 'trace_ld_v1_container_road_bag'),true);
+});
+
+test('revision 20 materialization requires the exact M8 artifacts and revision 21 stays closed', () => {
+  const exact = materializeAuthored(
+    'party:revision20-materialization', revision20, 20
+  );
+  assert.equal(exact.request_identity.scenario_definition_revision, 20);
+  assert.ok(exact.initial_actor_equipment_handoff);
+  assert.equal(exact.policy_profile_pins.some(
+    ({ key }) => key === 'initial_ordinary_container'), true);
+  assert.equal(exact.policy_profile_pins.some(
+    ({ key }) => key === 'ordinary_container_contents_profile'), true);
+
+  const missingProfilePin = structuredClone(revision20);
+  delete missingProfilePin.artifact_pins.ordinary_container_contents_profile;
+  assert.throws(() => materializeAuthored(
+    'party:revision20-missing-profile', missingProfilePin, 20
+  ), { code: 'TRACE_SCENARIO_ARTIFACT_INVALID' });
+
+  assert.throws(() => materializeAuthored(
+    'party:revision21-unsupported', revision20, 21
+  ), { code: 'TRACE_SCENARIO_REVISION_UNSUPPORTED' });
+});
 
 test('revision 19 creates six complete NPC identities and real equipped garments deterministically', () => {
   const first = materialize('party:appearance-contract');
@@ -114,16 +156,17 @@ function materialize(partyId) {
   return materializeInitialActorEquipment(authored);
 }
 
-function materializeAuthored(partyId) {
-  const spatial = bundle.location_topology_set.spatial_source_ref;
+function materializeAuthored(partyId, scenarioBundle = bundle,
+  scenarioDefinitionRevision = 19) {
+  const spatial = scenarioBundle.location_topology_set.spatial_source_ref;
   const authored = materializeLowerDvinaTracePartyInstance({
     party_id: partyId,
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 19,
-    scenario_manifest_digest: bundle.manifest_digest,
+    scenario_definition_revision: scenarioDefinitionRevision,
+    scenario_manifest_digest: scenarioBundle.manifest_digest,
     world_revision_id: spatial.world_revision_id,
     world_catalog_digest: spatial.world_revision_catalog_digest,
-    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(bundle),
+    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(scenarioBundle),
     materializer_version: MATERIALIZER_VERSION,
     rng_algorithm_id: RNG_VERSION,
     seed_context: LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
@@ -131,7 +174,7 @@ function materializeAuthored(partyId) {
     trigger: 'new_game',
     occurrence: 0,
     existing_party_state: { baseline_exists: false },
-    scenario_bundle: bundle,
+    scenario_bundle: scenarioBundle,
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
   });
   return authored;

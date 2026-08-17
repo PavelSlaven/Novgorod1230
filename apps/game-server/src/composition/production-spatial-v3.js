@@ -1,7 +1,7 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
-import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from '../internal/lower-dvina-trace-ordinary-materialization-profile.js';
+import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -116,14 +116,14 @@ export async function createSpatialV3ProductionCompositionRoot({
       party_database:
         await probePostgresPool(pools.partyPool, 'party_runtime')
     };
-    const worldBase = createSpatialV3WorldBaseReader({
-      query: (sql, params) => pools.worldPool.query(sql, params)
-    });
-    const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: config.rootDir ?? process.cwd() });
+    const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
+    const profiles = await loadLowerDvinaTraceProductionMaterializationProfiles({
+      rootDir:config.rootDir ?? process.cwd()});
     const bindingContext = Object.freeze({
       env,
       config,
-      ordinaryMaterializationProfile: ordinaryProfile,
+      ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
+      ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       ports: Object.freeze({
         partyPool: pools.partyPool,
         worldPool: pools.worldPool,
@@ -140,7 +140,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: ordinaryProfile }), now });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile }), now });
     const target = targetRootFactory({
       ...bindings.targetCompositionPorts,
       committer

@@ -757,7 +757,7 @@ LLM не придумывает значимый скрытый результа
 
 Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Только normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) передаёт `candidate_hint` и уточняет `coverage_ref`; он не меняет allowlist или permissions. Неизвестная paraphrase получает отдельное coverage: no-reroll действует только для exact deterministic normalization, без universal/magical equivalence. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot. `absent`, `no_change` и `authority_required` — persisted first-class resolutions, а не повод подобрать похожий полезный предмет. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
 
-O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned.
+O1 сам не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned. Независимо активированный O2b ниже не расширяет O1 discovery.
 
 ### 12.2. `request_container_access`
 
@@ -773,11 +773,26 @@ O1 не активирует O2, A1, F1, S1, N1, template-less runtime container
 Владелец контейнера:
 
 - проверяет замок, доступ и состояние;
-- применяет точную механику открытия;
-- при необходимости выполняет утверждённую проверку;
-- раскрывает уже материализованное hidden contents;
-- либо впервые материализует contents по утверждённому code-owned профилю;
-- сохраняет конкретное содержимое, чтобы оно не определялось повторно.
+- сначала классифицирует уже committed authoritative contents;
+- при authoritative результате не вызывает ordinary resolver/model;
+- только для existing template-backed container с exact explicit O2b profile,
+  policy и `ordinary_contents_context` может разрешить `ordinary_unresolved`;
+- строит candidate-free Stage A только из committed template/mechanics,
+  owner-controller/property, site/economic context, permissions, bases,
+  capacity и prior resolutions;
+- до state mutation проверяет exact mechanics, individual mass,
+  packing/capacity и approved batch limit `1..8`;
+- materialize-ит approved ordinary children concealed до reveal, затем применяет
+  точную механику открытия и при необходимости утверждённую проверку;
+- сохраняет container-scoped ordinary ledger, concrete children и reveal одним
+  combined P16, чтобы reload/reopen не вызывал model и не reroll-ил contents.
+
+Root action, remaining intent, desired item/query/use и narration не входят в
+O2b Stage A. Разные формулировки игрока при одном committed container context
+дают byte-identical seed. Ordinary `concealed` не означает hidden authority:
+O2b не создаёт clues/evidence, authentic documents, hidden history, secret
+caches, currency, significant/hidden truth, новый container или armament.
+Template-less container и отсутствующий/drifted profile/policy fail closed.
 
 LLM не перечисляет contents до их появления в player-safe working projection.
 

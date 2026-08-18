@@ -72,13 +72,10 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
         property_placement_context:
           structuredClone(enabled.property_placement_context)
       };
-      const contextBound = execution.constrained_natural_resource_profile != null
+      const contextBound = resolveContextBoundOrdinaryPolicy(policyInput);
+      const constrained = execution.constrained_natural_resource_profile == null
         ? { resolution: null, profile: null }
-        : resolveContextBoundOrdinaryPolicy(policyInput);
-      const constrained = contextBound.profile == null
-        || execution.constrained_natural_resource_profile != null
-        ? resolveConstrainedNaturalResourcePolicy(policyInput)
-        : { resolution: null, profile: null };
+        : resolveConstrainedNaturalResourcePolicy(policyInput);
       const codeOwnedResolution = contextBound.resolution
         ?? constrained.resolution ?? null;
       const genericFinite = resolveFiniteSourceAuthority({

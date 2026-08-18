@@ -67,8 +67,10 @@ export function exactAdmittedItem({ item, scope, request_identity }) {
       || !sameText(proposal.runtime_item_mechanics_policy_ref, item.mechanics_policy_ref)
       || !semanticDescriptor(proposal.semantic_descriptor)) return false;
   const placement = exactOrNull(proposal.placement, ['scope_ref','position_ref']);
+  const runtimePlacement = exactOrNull(item.runtime_placement, ['anchor_id']);
   const evidence = exactOrNull(proposal.property_placement_evidence, ['schema','version','scope_ref','property_placement_context_digest','property_catalog_version_ref','placement_catalog_version_ref','property_basis_ref','property_basis_class','property_source_ref','unowned_cause_ref','placement_context_ref','placement']);
   if (!placement || placement.scope_ref !== scope.entity_id || placement.position_ref !== item.position_ref
+      || !runtimePlacement || !sameText(runtimePlacement.anchor_id)
       || !evidence || evidence.schema !== 'rus.items.ordinary_world_property_placement_evidence.v2'
       || evidence.version !== 2 || !sameScope(evidence.scope_ref, scope)
       || evidence.property_basis_ref !== item.property_basis_ref

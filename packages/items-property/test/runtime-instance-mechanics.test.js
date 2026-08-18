@@ -5,6 +5,7 @@ import {
   calculateContainerUsage,
   calculateHandsState,
   calculateInventoryMass,
+  createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
   resolveInventoryMechanicsProfile
 } from '../src/index.js';
@@ -204,7 +205,7 @@ test('authored instances still resolve and calculate exclusively by template pro
   assert.equal(calculateHandsState(state).hands_used, 1);
 });
 
-test('generic mechanics APIs reject v2 ordinary-world snapshots', () => {
+test('direct-action constructor stays v1-only while inventory resolves exact O1 v2', () => {
   const v2 = {
     schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
     provenance: { source_kind: 'ordinary_world_materialization',
@@ -216,9 +217,21 @@ test('generic mechanics APIs reject v2 ordinary-world snapshots', () => {
   };
   assert.throws(() => createRuntimeInstanceMechanicsSnapshot(v2),
   { code: 'ITEM_RUNTIME_MECHANICS_SNAPSHOT_INVALID' });
-  assert.equal(resolveInventoryMechanicsProfile({ instance: {
+  const created = createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(v2);
+  assert.deepEqual(created, v2);
+  const resolved = resolveInventoryMechanicsProfile({ instance: {
     item_id: 'future-o1', runtime_instance_mechanics_snapshot: v2
-  }, profiles: {} }).pass, false);
+  }, profiles: {} });
+  assert.equal(resolved.pass, true);
+  assert.equal(resolved.source, 'ordinary_world_materialization_snapshot');
+  assert.deepEqual(resolved.profile, { ...v2.mechanics,
+    packing_bundle_size: 1 });
+  assert.equal(Object.isFrozen(resolved.snapshot), true);
+
+  assert.throws(() => createOrdinaryWorldRuntimeInstanceMechanicsSnapshot({
+    ...v2, provenance: { ...v2.provenance,
+      source_kind: 'ordinary_direct_action_result' }
+  }), { code: 'ITEM_ORDINARY_WORLD_RUNTIME_MECHANICS_SNAPSHOT_INVALID' });
 });
 
 test('v1 mechanics snapshots retain null-prototype input compatibility', () => {

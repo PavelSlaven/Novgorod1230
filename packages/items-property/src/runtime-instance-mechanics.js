@@ -1,12 +1,18 @@
 import { deepFreeze } from '@rus/kernel';
 
 const SNAPSHOT_SCHEMA = 'rus.items.runtime_instance_mechanics_snapshot.v1';
+const ORDINARY_WORLD_SNAPSHOT_SCHEMA =
+  'rus.items.runtime_instance_mechanics_snapshot.v2';
 const SNAPSHOT_FIELDS = [
   'schema', 'version', 'provenance', 'mechanics'
 ];
 const PROVENANCE_FIELDS = [
   'source_kind', 'root_turn_id', 'step_index', 'operation_ref',
   'origin_kind', 'source_refs'
+];
+const ORDINARY_WORLD_PROVENANCE_FIELDS = [
+  'source_kind', 'causal_ref', 'request_id', 'candidate_key', 'coverage_key',
+  'context_version', 'policy_ref', 'source_refs'
 ];
 const MECHANICS_FIELDS = [
   'mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost',
@@ -25,6 +31,18 @@ export function createRuntimeInstanceMechanicsSnapshot(value) {
       || !validProvenance(value.provenance)
       || !validMechanics(value.mechanics)) {
     fail('ITEM_RUNTIME_MECHANICS_SNAPSHOT_INVALID');
+  }
+  return deepFreeze(structuredClone(value));
+}
+
+/** Validates the committed O1 snapshot without widening direct-action v1. */
+export function createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(value) {
+  if (!exactObject(value, SNAPSHOT_FIELDS)
+      || value.schema !== ORDINARY_WORLD_SNAPSHOT_SCHEMA
+      || value.version !== 2
+      || !validOrdinaryWorldProvenance(value.provenance)
+      || !validOrdinaryWorldMechanics(value.mechanics)) {
+    fail('ITEM_ORDINARY_WORLD_RUNTIME_MECHANICS_SNAPSHOT_INVALID');
   }
   return deepFreeze(structuredClone(value));
 }
@@ -59,10 +77,16 @@ export function resolveInventoryMechanicsProfile({ instance, profiles } = {}) {
       'runtime_instance_snapshot');
   }
   let snapshot;
+  let source;
   try {
-    snapshot = createRuntimeInstanceMechanicsSnapshot(
-      instance.runtime_instance_mechanics_snapshot
-    );
+    const value = instance.runtime_instance_mechanics_snapshot;
+    if (value?.schema === ORDINARY_WORLD_SNAPSHOT_SCHEMA) {
+      snapshot = createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(value);
+      source = 'ordinary_world_materialization_snapshot';
+    } else {
+      snapshot = createRuntimeInstanceMechanicsSnapshot(value);
+      source = 'runtime_instance_snapshot';
+    }
   } catch (error) {
     return failed(
       error?.code ?? 'ITEM_RUNTIME_MECHANICS_SNAPSHOT_INVALID',
@@ -70,10 +94,22 @@ export function resolveInventoryMechanicsProfile({ instance, profiles } = {}) {
       'runtime_instance_snapshot'
     );
   }
-  return resolved('runtime_instance_snapshot', {
+  return resolved(source, {
     ...snapshot.mechanics,
     packing_bundle_size: 1
   }, snapshot);
+}
+
+function validOrdinaryWorldProvenance(value) {
+  return exactObject(value, ORDINARY_WORLD_PROVENANCE_FIELDS)
+    && value.source_kind === 'ordinary_world_materialization'
+    && exactText(value.causal_ref)
+    && exactText(value.request_id)
+    && exactText(value.candidate_key)
+    && exactText(value.coverage_key)
+    && exactText(value.context_version)
+    && exactText(value.policy_ref)
+    && validCanonicalRefs(value.source_refs);
 }
 
 function validProvenance(value) {
@@ -101,6 +137,15 @@ function validMechanics(value) {
     && value.container === null;
 }
 
+function validOrdinaryWorldMechanics(value) {
+  return validMechanics(value)
+    && value.mass_grams >= 1
+    && value.quantity != null
+    && Number.isSafeInteger(value.quantity.value)
+    && value.quantity.value >= 1
+    && value.quantity.unit === 'item';
+}
+
 function validQuantity(value) {
   return value === null
     || exactObject(value, QUANTITY_FIELDS)
@@ -115,6 +160,12 @@ function validRefs(value) {
     && value.length > 0
     && value.every((entry) => Boolean(exactText(entry)))
     && new Set(value).size === value.length;
+}
+
+function validCanonicalRefs(value) {
+  return validRefs(value)
+    && value.every((entry, index) => index === 0
+      || value[index - 1].localeCompare(entry) < 0);
 }
 
 function resolved(source, profile, snapshot) {

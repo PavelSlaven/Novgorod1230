@@ -12,6 +12,7 @@ export {
 export { planApprovedPropertyTransition } from './approved-property-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
 export {
+  createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
   resolveInventoryMechanicsProfile
 } from './runtime-instance-mechanics.js';

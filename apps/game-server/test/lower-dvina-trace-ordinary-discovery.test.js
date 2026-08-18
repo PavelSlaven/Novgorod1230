@@ -59,7 +59,8 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
     causal_ref: 'cause', source_refs: [] } }; }
 
 function request(query) { return { request: { root_turn_id: 'turn:party:1' },
-  committed_state: { position: { g6_id: 'shore' } }, operation: { target_refs: ['shore'], query },
+  committed_state: { position: { g6_id: 'shore',
+    g5_anchor_id: 'shore-anchor' } }, operation: { target_refs: ['shore'], query },
   working_projection: {} }; }
 function group() { return { descriptor: 'ordinary layer', functional_bucket: 'other_ordinary',
   availability_class: 'common', allowed_admission_classes: ['common_mundane'],
@@ -100,8 +101,10 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
   let committed = null;
+  let committedBases = null;
   let modelCalls = 0;
   let cutoverCalls = 0;
+  let reloadedPreparedBasis = null;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'input',
     verifyStageBCutover: async () => { cutoverCalls += 1;
@@ -110,6 +113,8 @@ test('committed exact identity survives reload and only normalized wording reuse
       const value = enabled();
       if (committed === null) return value;
       const aggregate = structuredClone(committed);
+      value.execution_context.supporting_bases =
+        structuredClone(committedBases);
       value.ordinary_aggregate = aggregate;
       value.objective_context.ordinary_state = {
         seeded: aggregate.seeded, density_band: aggregate.density_band,
@@ -119,7 +124,12 @@ test('committed exact identity survives reload and only normalized wording reuse
         closed_observation_scopes: aggregate.closed_observation_scopes.map(({ coverage_key }) => coverage_key)
       };
       value.version_pins = { ...value.version_pins, party_state_version: 1,
-        ordinary_state_version: aggregate.state_version };
+        ordinary_state_version: aggregate.state_version,
+        supporting_basis_catalog_version: 2,
+        supporting_basis_catalog_digest: canonicalDigest({
+          domain: 'ordinary_supporting_basis_catalog_v1',
+          supporting_bases: committedBases
+        }) };
       return value;
     },
     ordinaryMaterializationModel: async (modelRequest) => {
@@ -127,6 +137,8 @@ test('committed exact identity survives reload and only normalized wording reuse
       if (modelRequest.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
         request_id: modelRequest.request_id, resolution: 'seeded', density_band_proposal: 'ordinary',
         background_groups: [group()], entities: [], presence_resolutions: [], reason_code: 'seed' };
+      reloadedPreparedBasis = modelRequest.policy_refs.allowed_supporting_bases
+        .find(({ basis_state: state }) => state === 'prepared_seed') ?? null;
       return { schema: 'ordinary_materialization_plan_v1', request_id: modelRequest.request_id,
         resolution: 'absent', density_band_proposal: null, background_groups: [], entities: [],
         presence_resolutions: [{ candidate_key: modelRequest.candidate_query.candidate_key,
@@ -135,6 +147,8 @@ test('committed exact identity survives reload and only normalized wording reuse
   });
   const first = await resolver(request('найти ложку'));
   committed = first.ordinary_materialization_atomic_write_plan.next_aggregate;
+  committedBases = first.ordinary_materialization_atomic_write_plan
+    .next_supporting_basis_catalog;
   assert.equal(modelCalls, 2);
   assert.equal(cutoverCalls, 1);
   await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
@@ -145,6 +159,10 @@ test('committed exact identity survives reload and only normalized wording reuse
   assert.equal(modelCalls, 3,
     'a semantically different normalized query receives a new candidate identity');
   assert.equal(cutoverCalls, 2);
+  assert.equal(reloadedPreparedBasis?.basis_ref,
+    first.ordinary_materialization_atomic_write_plan
+      .new_prepared_bases[0].basis_ref,
+  'the persisted prepared basis remains admitted after reload');
 });
 
 test('a pre-commit resolver result is not visible or durable and can be modelled after restart', async () => {
@@ -194,6 +212,7 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
 
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {
+    let preparedBasisRef = null;
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
       partyId: 'party', inputDigest: 'positive-o1',
       loadEnablement: async () => enabled(), verifyStageBCutover,
@@ -204,6 +223,10 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
           density_band_proposal: 'ordinary', background_groups: [group()],
           entities: [], presence_resolutions: [], reason_code: 'seed'
         };
+        preparedBasisRef = modelRequest.policy_refs.allowed_supporting_bases
+          .find(({ basis_state: state }) => state === 'prepared_seed')?.basis_ref;
+        assert.ok(preparedBasisRef,
+          'Stage B must allow the validated basis prepared by Stage A');
         return { schema: 'ordinary_materialization_plan_v1',
           request_id: modelRequest.request_id, resolution: 'materialize',
           density_band_proposal: null, background_groups: [],
@@ -211,9 +234,10 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
             semantic_type: 'cordage', name: 'простая верёвка', facts: [] },
           authority_class: 'ordinary', admission_class: 'common_mundane',
           availability_class: 'common', functional_bucket: 'other_ordinary',
-          presence_expectation: 'routine', supporting_basis_ref: 'basis',
+          presence_expectation: 'routine',
+          supporting_basis_ref: preparedBasisRef,
           causal_basis: { basis_kind: 'ordinary_presence',
-            basis_refs: ['basis'] }, property_basis_ref: 'property',
+            basis_refs: [preparedBasisRef] }, property_basis_ref: 'property',
           placement_proposal: { scope_ref: 'shore', position_ref: 'bench' },
           mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
             carry_form: 'compact', packing_slot_cost: 1,
@@ -224,6 +248,9 @@ test('production-shaped bounded mechanics admits one positive ordinary item',
     const result = await resolver(request('найти простую верёвку'));
     const plan = result.ordinary_materialization_atomic_write_plan;
     assert.equal(plan.resolution, 'materialize');
+    assert.equal(plan.item.supporting_basis_ref, plan.new_prepared_bases[0].basis_ref);
+    assert.deepEqual(plan.item.runtime_placement,
+      { anchor_id: 'shore-anchor' });
     assert.equal(plan.item.item_proposal.semantic_descriptor.name,
       'простая верёвка');
     assert.deepEqual(plan.item.mechanics_snapshot.mechanics, {
@@ -257,18 +284,30 @@ test('visible target without a committed G6 never calls the ordinary model', asy
 
 test('projects a committed ordinary item without its materialization internals', () => {
   const committedState = {
-    actor_id: 'mikula', player_profile: {}, position: { location_ref: 'shed' },
+    party_id: 'party', actor_id: 'mikula', player_profile: {},
+    position: { location_ref: 'shed', g5_anchor_id: 'shed-anchor' },
     items: [], visible_context: { visible_objects: [] },
     ordinary_materialization: { remaining_identity_budget: 0,
       background_groups: ['group-private'], supporting_basis_catalog: ['basis-private'],
       negative_presence_record: 'negative-presence' }
   };
-  const ordinaryPlan = { item: { item_id: 'ordinary-spoon',
+  const ordinaryPlan = { party_id: 'party', item: { item_id: 'ordinary-spoon',
     property_basis_ref: 'basis-private', supporting_basis_ref: 'basis-private',
+    runtime_placement: { anchor_id: 'shed-anchor' },
     item_proposal: { scope_ref: { entity_kind: 'g6', entity_id: 'shed' },
       semantic_descriptor: { semantic_type: 'household_tool', name: 'wooden spoon' },
-      placement: { scope_ref: 'shed', position_ref: 'bench' } },
-    mechanics_snapshot: { provenance: { permission_ref: 'permission-private' } } } };
+      placement: { scope_ref: 'shed', position_ref: 'bench' },
+      property_placement_evidence: { permission_ref: 'permission-private' } },
+    mechanics_snapshot: {
+      schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
+      provenance: { source_kind: 'ordinary_world_materialization',
+        causal_ref: 'cause', request_id: 'request', candidate_key: 'candidate',
+        coverage_key: 'coverage', context_version: 'context',
+        policy_ref: 'policy', source_refs: ['basis-private'] },
+      mechanics: { mass_grams: 80, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null }
+    } } };
   committedState.visible_context = applyOrdinaryMaterializationProjection({
     next: committedState, visibleContext: committedState.visible_context, ordinaryPlan
   });
@@ -277,7 +316,9 @@ test('projects a committed ordinary item without its materialization internals',
     committed_state: committedState, actor_id: 'mikula' });
   assert.deepEqual(result.player_safe_state.items, [{
     item_id: 'ordinary-spoon', name: 'wooden spoon',
-    placement: { location_ref: 'shed' },
+    quantity: 1, condition_state: 'ordinary_runtime_instance',
+    legal_status: 'ordinary_world_property_bound',
+    placement: { anchor_id: 'shed-anchor' },
     state: { semantic_category: 'household_tool' }
   }]);
   const playerSafe = JSON.stringify(result.player_safe_state);

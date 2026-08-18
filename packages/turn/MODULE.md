@@ -179,9 +179,10 @@ context-bound weapons/value/currency или natural finite sources.
 
 Active O2a добавляет только authored wreck-shore ambient capability. Player-safe
 state раскрывает code-owned portion-profile ref и safe public label; semantic
-plan ссылается на ref, а owner выбирает committed source/profile по identity и
-semantic type, не по exact model wording, после чего назначает profile-owned
-name. Сам `ambient_ordinary` не является O2a marker: legacy direct actions без
+plan ссылается на ref, а owner выбирает committed source/profile по exact
+capability identity, после чего назначает profile-owned semantic type и name.
+Model-owned type и wording не являются admission gate. Сам `ambient_ordinary`
+не является O2a marker: legacy direct actions без
 этого capability сохраняют прежний path. Drifted binding не публикует capability,
 а forged ref не проходит current-ref validation. Общие context-bound/property и
 finite initialization/decrement contracts остаются dormant до отдельного

@@ -80,9 +80,10 @@ response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. Active O2a is limited to the authored wreck-shore abundant sand
 capability: the player-safe projection exposes its code-owned profile ref and
-safe label, while the owner assigns that label after semantic grounding and
-rechecks bounded mechanics. The `ambient_ordinary` enum alone never selects
-O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
+safe label, while the owner assigns the profile-owned semantic type and label
+after capability grounding and rechecks bounded mechanics. Model-owned type and
+wording are descriptive inputs, not admission selectors. The `ambient_ordinary`
+enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Context-bound precious/remnant and natural finite-source
 owners, migration 025 conservation, bounded initialization and decrement are
 dormant infrastructure until a later immutable authored profile provisions them;

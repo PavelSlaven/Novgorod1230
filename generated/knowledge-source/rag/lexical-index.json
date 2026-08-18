@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "d4999d9f2e98c03b2bbb2d2f81baa3cf97c6b98c9ad5369878bc82c6070091d5",
+  "corpus_hash": "174639eac089ae784bec7d7cfa97bd0332c5e318ef7f4438dbf517b574d93b35",
   "chunk_count": 2519,
   "chunks": [
     {
@@ -837,8 +837,8 @@
       "section": "4.4. LLM",
       "line_start": 172,
       "line_end": 183,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation уже O1 discovery и включает только один authored abundant ambient source берега. Его безопасная capability проецируется игроку как code-owned profile ref и public label; direct semantic plan ссылается на этот ref, а owner выбирает committed source/profile по identity и semantic type и затем назначает profile-owned name. Exact model wording не является admission gate, а обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. Общие context-bound property, bounded finite initialization и decrement contracts пока dormant: без отдельного authored production provisioning precious/remnant/natural finite instances не считаются активными.",
-      "char_count": 904
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation уже O1 discovery и включает только один authored abundant ambient source берега. Его безопасная capability проецируется игроку как code-owned profile ref и public label; direct semantic plan ссылается на этот ref, а owner выбирает committed source/profile по exact capability identity и затем назначает profile-owned semantic type и name. Model-owned semantic type и wording остаются описательными и не являются admission gate, а обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. Общие context-bound property, bounded finite initialization и decrement contracts пока dormant: без отдельного authored production provisioning precious/remnant/natural finite instances не считаются активными.",
+      "char_count": 962
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.5. Party database:0",

@@ -2,7 +2,7 @@ import { ORDINARY_MATERIALIZATION_V1_ENUMS } from '@rus/contracts';
 import { isDeepStrictEqual } from 'node:util';
 import { canonicalDigest } from './core.js';
 import {
-  aggregateValid, allowedBases, assertAvailabilityAdmission, assertPreparedSeedProvenance,
+  aggregateValid, allowedBases, assertAvailabilityAdmission, assertJsonData, assertPreparedSeedProvenance,
   basisIndex, contextVersion, copy, enumOf, enums, error, exactScope, frozen,
   groupKey, id, nonnegative, normalizeAggregateTransition, object, policyCovers, positive,
   preparedGroupValid, refs
@@ -26,6 +26,7 @@ export function computeOrdinaryIdentityBudget({ density_band, authored_identity_
 
 export function validateSupportingBasisAdmission({ request, candidate, basis_catalog, supporting_basis_ref }) {
   object(candidate, 'ORDINARY_CANDIDATE_INVALID', 'candidate'); const candidateRef = candidate.supporting_basis_ref;
+  if (Object.hasOwn(candidate, 'permission_refs')) throw error('ORDINARY_CANDIDATE_PERMISSION_INPUT_FORBIDDEN', 'Candidate permission refs are code-owned and must not be supplied by the semantic plan.');
   if (candidateRef !== undefined && supporting_basis_ref !== undefined && candidateRef !== supporting_basis_ref) throw error('ORDINARY_SUPPORTING_BASIS_REF_MISMATCH', 'Candidate and explicit supporting basis refs must match.');
   const ref = candidateRef ?? supporting_basis_ref; id(ref, 'ORDINARY_SUPPORTING_BASIS_NOT_ALLOWLISTED', 'supporting_basis_ref'); const declared = allowedBases(request).get(ref);
   if (!declared) throw error('ORDINARY_SUPPORTING_BASIS_NOT_ALLOWLISTED', 'Supporting basis is not allowlisted for this request.', { supporting_basis_ref: ref });
@@ -34,9 +35,9 @@ export function validateSupportingBasisAdmission({ request, candidate, basis_cat
   if (basis.state === 'prepared_seed') assertPreparedSeedProvenance(basis);
   enumOf(candidate.functional_bucket, BUCKET, 'ORDINARY_CANDIDATE_BUCKET_INVALID', 'candidate.functional_bucket'); enumOf(candidate.admission_class, ADMISSION, 'ORDINARY_CANDIDATE_ADMISSION_CLASS_INVALID', 'candidate.admission_class');
   if (!request?.policy_refs?.allowed_admission_classes?.includes(candidate.admission_class)) throw error('ORDINARY_CANDIDATE_ADMISSION_NOT_ALLOWED', 'Candidate admission class is not allowed by request policy.', { admission_class: candidate.admission_class });
-  const permissions = candidate.permission_refs ?? [];
+  policyCovers(basis.policy, candidate.functional_bucket, [candidate.admission_class], [], 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
+  const permissions = [...basis.policy.permission_refs].sort();
   assertAvailabilityAdmission({ availability_class: candidate.availability_class, admission_classes: [candidate.admission_class], permission_refs: permissions, request, policy: basis.policy, code: 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH' });
-  policyCovers(basis.policy, candidate.functional_bucket, [candidate.admission_class], permissions, 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   return frozen({ supporting_basis_ref: ref, basis_state: basis.state, functional_bucket: candidate.functional_bucket, admission_class: candidate.admission_class, permission_refs: copy(permissions) });
 }
 
@@ -56,7 +57,7 @@ export function validateOrdinaryBackgroundGroup({ request, group, basis_catalog,
 }
 
 export function createPreparedGroupRef({ scope_ref, group }) { exactScope(scope_ref); object(group, 'ORDINARY_STABLE_REF_INVALID', 'group'); return `ordinary_group_${canonicalDigest({ domain: 'ordinary_prepared_group_v1', scope_ref, group: groupKey(group) }).slice(0, 24)}`; }
-export function createOrdinaryCandidateKey({ scope_ref, semantic_type, functional_bucket, admission_class, availability_class, policy_version }) { exactScope(scope_ref); id(semantic_type, 'ORDINARY_CANDIDATE_KEY_INVALID', 'semantic_type'); enumOf(functional_bucket, BUCKET, 'ORDINARY_CANDIDATE_KEY_INVALID', 'functional_bucket'); enumOf(admission_class, ADMISSION, 'ORDINARY_CANDIDATE_KEY_INVALID', 'admission_class'); enumOf(availability_class, AVAILABILITY, 'ORDINARY_CANDIDATE_KEY_INVALID', 'availability_class'); id(policy_version, 'ORDINARY_CANDIDATE_KEY_INVALID', 'policy_version'); return `ordinary_candidate_${canonicalDigest({ domain: 'ordinary_candidate_v1', scope_ref, semantic_type, functional_bucket, admission_class, availability_class, policy_version }).slice(0, 24)}`; }
+export function createOrdinaryCandidateKey(input) { assertJsonData(input, 'ORDINARY_CANDIDATE_KEY_INVALID', 'candidate key input'); object(input, 'ORDINARY_CANDIDATE_KEY_INVALID', 'candidate key input'); const keys = ['scope_ref', 'normalized_candidate_ref', 'normalizer_version', 'functional_bucket', 'admission_class', 'availability_class', 'policy_version']; if (Object.keys(input).length !== keys.length || keys.some((key) => !Object.hasOwn(input, key))) throw error('ORDINARY_CANDIDATE_KEY_INVALID', 'Candidate key input must contain only code-owned normalized identity fields.'); const { scope_ref, normalized_candidate_ref, normalizer_version, functional_bucket, admission_class, availability_class, policy_version } = input; exactScope(scope_ref); id(normalized_candidate_ref, 'ORDINARY_CANDIDATE_KEY_INVALID', 'normalized_candidate_ref'); id(normalizer_version, 'ORDINARY_CANDIDATE_KEY_INVALID', 'normalizer_version'); enumOf(functional_bucket, BUCKET, 'ORDINARY_CANDIDATE_KEY_INVALID', 'functional_bucket'); enumOf(admission_class, ADMISSION, 'ORDINARY_CANDIDATE_KEY_INVALID', 'admission_class'); enumOf(availability_class, AVAILABILITY, 'ORDINARY_CANDIDATE_KEY_INVALID', 'availability_class'); id(policy_version, 'ORDINARY_CANDIDATE_KEY_INVALID', 'policy_version'); return `ordinary_candidate_${canonicalDigest({ domain: 'ordinary_candidate_v1', scope_ref, normalized_candidate_ref, normalizer_version, functional_bucket, admission_class, availability_class, policy_version }).slice(0, 24)}`; }
 export function createOrdinaryCoverageKey({ scope_ref, coverage_kind, coverage_ref, policy_version }) { exactScope(scope_ref); id(coverage_kind, 'ORDINARY_COVERAGE_KEY_INVALID', 'coverage_kind'); id(coverage_ref, 'ORDINARY_COVERAGE_KEY_INVALID', 'coverage_ref'); id(policy_version, 'ORDINARY_COVERAGE_KEY_INVALID', 'policy_version'); return `ordinary_coverage_${canonicalDigest({ domain: 'ordinary_coverage_v1', scope_ref, coverage_kind, coverage_ref, policy_version }).slice(0, 24)}`; }
 export function createOrdinaryResolutionRef({ scope_ref, candidate_key, coverage_key, context_version, request_identity, policy_version = null }) { exactScope(scope_ref); id(candidate_key, 'ORDINARY_RESOLUTION_KEY_INVALID', 'candidate_key'); id(coverage_key, 'ORDINARY_RESOLUTION_KEY_INVALID', 'coverage_key'); contextVersion(context_version); id(request_identity, 'ORDINARY_RESOLUTION_KEY_INVALID', 'request_identity'); if (policy_version !== null) id(policy_version, 'ORDINARY_RESOLUTION_KEY_INVALID', 'policy_version'); return `ordinary_resolution_${canonicalDigest({ domain: 'ordinary_resolution_v1', scope_ref, candidate_key, coverage_key, context_version, request_identity, policy_version }).slice(0, 24)}`; }
 

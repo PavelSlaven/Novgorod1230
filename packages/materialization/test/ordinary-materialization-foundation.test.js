@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import {
   applyOrdinaryAggregateTransition, computeOrdinaryIdentityBudget, createOrdinaryAggregate,
   createOrdinaryCandidateKey, createOrdinaryCoverageKey, createOrdinaryResolutionRef,
@@ -32,10 +33,23 @@ test('density reads function refs from explicit DTO context, not scope, and resp
 test('closed admission consistency requires context permissions and an exact supporting policy', () => {
   const common = { supporting_basis_ref: 'basis-a', functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common' };
   assert.equal(validateSupportingBasisAdmission({ request, candidate: common, basis_catalog: bases }).supporting_basis_ref, 'basis-a');
-  assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...common, availability_class: 'context_bound', permission_refs: ['permission-a'] }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
-  const restricted = { supporting_basis_ref: 'prepared-a', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', permission_refs: ['permission-a'] };
-  assert.equal(validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: bases }).basis_state, 'prepared_seed');
-  assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, permission_refs: [] }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
+  assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...common, availability_class: 'context_bound' }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
+  const restricted = {
+    semantic_descriptor: { semantic_type: 'model-wording', name: 'model name', facts: [] },
+    authority_class: 'ordinary', admission_class: 'other_restricted',
+    availability_class: 'context_bound', functional_bucket: 'other_ordinary',
+    presence_expectation: 'plausible', supporting_basis_ref: 'prepared-a',
+    causal_basis: { basis_kind: 'prepared', basis_refs: ['prepared-a'] },
+    property_basis_ref: 'property-a',
+    placement_proposal: { scope_ref: 'scope-a', position_ref: 'position-a' },
+    mechanics_proposal: { mass_grams: 1, external_hand_cost: 0, carry_form: 'held', packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null }
+  };
+  assert.deepEqual(validateOrdinaryMaterializationPlanV1({ schema: 'ordinary_materialization_plan_v1', request_id: 'request-a', resolution: 'materialize', density_band_proposal: null, background_groups: [], entities: [restricted], presence_resolutions: [], reason_code: 'test' }), []);
+  assert.equal(Object.hasOwn(restricted, 'permission_refs'), false);
+  const admitted = validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: bases });
+  assert.equal(admitted.basis_state, 'prepared_seed'); assert.deepEqual(admitted.permission_refs, ['permission-a']);
+  assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, permission_refs: ['permission-a'] }, basis_catalog: bases }), (error) => error.code === 'ORDINARY_CANDIDATE_PERMISSION_INPUT_FORBIDDEN');
+  assert.throws(() => validateSupportingBasisAdmission({ request: { ...request, policy_refs: { ...request.policy_refs, context_bound_permission_refs: [] } }, candidate: restricted, basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: common, basis_catalog: [{ ...bases[0], policy: { ...bases[0].policy, unapproved_policy_field: true } }] }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_POLICY_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: { ...restricted, supporting_basis_ref: 'basis-a' }, supporting_basis_ref: 'prepared-a', basis_catalog: bases }), (error) => error.code === 'ORDINARY_SUPPORTING_BASIS_REF_MISMATCH');
   assert.throws(() => validateSupportingBasisAdmission({ request, candidate: restricted, basis_catalog: [{ ...bases[1], prepared_seed_provenance: { seed_request_id: 'x', mode: 'seed_scope', candidate_query: 'candidate' } }] }), (error) => error.code === 'ORDINARY_PREPARED_SEED_PROVENANCE_INVALID');
@@ -78,12 +92,16 @@ test('same candidate/coverage cannot reroll in one context but can resolve under
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: changed, transition: transition('close_coverage', 'close-conflict', { expected_state_version: 3, coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-b', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_COVERAGE_CLOSURE_CONTRADICTION');
 });
 
-test('keys are domain-separated, structured, stable, and ignore free-text phrasing', () => {
-  const key = (semantic_type, ignored_name, ignored_phrase) => createOrdinaryCandidateKey({ scope_ref: scope, semantic_type, functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a', ignored_name, ignored_phrase });
-  assert.equal(key('unseen_semantic_type', 'name-one', 'phrase-one'), key('unseen_semantic_type', 'name-two', 'phrase-two'));
+test('keys use only code-owned normalized identity and reject model text', () => {
+  const key = (normalized_candidate_ref) => createOrdinaryCandidateKey({ scope_ref: scope, normalized_candidate_ref, normalizer_version: 'ordinary-normalizer-v1', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a' });
+  assert.equal(key('normalized-rope'), key('normalized-rope'));
+  assert.notEqual(key('normalized-rope'), key('normalized-cordage'));
+  assert.throws(() => createOrdinaryCandidateKey({ scope_ref: scope, semantic_type: 'rope', normalizer_version: 'ordinary-normalizer-v1', functional_bucket: 'other_ordinary', admission_class: 'other_restricted', availability_class: 'context_bound', policy_version: 'policy-a' }), (error) => error.code === 'ORDINARY_CANDIDATE_KEY_INVALID');
+  let reads = 0; const hostile = {}; Object.defineProperty(hostile, 'scope_ref', { enumerable: true, get() { reads += 1; return scope; } });
+  assert.throws(() => createOrdinaryCandidateKey(hostile), (error) => error.code === 'ORDINARY_CANDIDATE_KEY_INVALID'); assert.equal(reads, 0);
   const coverage = createOrdinaryCoverageKey({ scope_ref: scope, coverage_kind: 'unseen-coverage', coverage_ref: 'coverage-ref', policy_version: 'policy-a' });
-  assert.notEqual(key('unseen_semantic_type'), coverage);
-  assert.notEqual(createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('unseen_semantic_type'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-a' }), createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('unseen_semantic_type'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-b' }));
+  assert.notEqual(key('normalized-rope'), coverage);
+  assert.notEqual(createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('normalized-rope'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-a' }), createOrdinaryResolutionRef({ scope_ref: scope, candidate_key: key('normalized-rope'), coverage_key: coverage, context_version: 'ctx-a', request_identity: 'request-b' }));
   assert.equal(createPreparedGroupRef({ scope_ref: scope, group: commonGroup }), createPreparedGroupRef({ scope_ref: scope, group: commonGroup }));
 });
 

@@ -14,8 +14,7 @@
 - code-only item placement primitive, который Stage 16 использует для
   equipment candidate → NPC/player instance resolution;
 - pure ordinary foundation helpers: density/budget policy, supporting-basis and
-  prepared-group validation, stable refs, minimal aggregate transitions and
-  server-only working-projection plumbing;
+  prepared-group validation, stable refs and minimal aggregate transitions;
 - signed command tokens и проверкой bounded decisions.
 
 ## Не делает
@@ -28,11 +27,13 @@
 
 ## Публичный API
 
-`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers, minimal aggregate reducer/normalizer and working-projection helpers).
+`materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
-валидирует code-owned inputs и возвращает immutable logical state/projection.
+валидирует code-owned inputs и возвращает immutable logical state/result.
+Применение результата reducer к общей working projection принадлежит только
+`@rus/turn`; отдельного materialization projection type/API нет.
 
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 

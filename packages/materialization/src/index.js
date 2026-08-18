@@ -32,10 +32,6 @@ export {
   validateOrdinaryBackgroundGroup,
   validateSupportingBasisAdmission
 } from './ordinary-materialization-foundation.js';
-export {
-  createOrdinaryMaterializationWorkingProjection,
-  refreshOrdinaryMaterializationWorkingProjection
-} from './ordinary-materialization-working-projection.js';
 
 export function materializeWorldInstances(input) {
   assertMaterializationInput(input);

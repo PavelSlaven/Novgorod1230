@@ -125,6 +125,13 @@ test('ordinary materialization plan rejects an unsupported positive proposal', (
   assert.ok(validateOrdinaryMaterializationPlanV1(finalId).some((error) => error.path === 'entities[0].final_entity_id' && error.code === 'additional_property'));
   assert.ok(validateOrdinaryMaterializationPlanV1(finalId).some((error) => error.path === 'entities[0].row_id' && error.code === 'additional_property'));
 
+  const permissions = materializePlan();
+  permissions.entities[0].permission_refs = ['permission-a'];
+  assert.ok(validateOrdinaryMaterializationPlanV1(permissions).some((error) => (
+    error.path === 'entities[0].permission_refs'
+      && error.code === 'additional_property'
+  )));
+
   const capacity = materializePlan();
   capacity.identity_budget = 999;
   assert.ok(validateOrdinaryMaterializationPlanV1(capacity).some((error) => error.path === 'identity_budget' && error.code === 'additional_property'));

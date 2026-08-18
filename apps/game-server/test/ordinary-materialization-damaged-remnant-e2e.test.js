@@ -378,9 +378,15 @@ test("damaged remnant rejects wrong basis, model condition and hidden facts", as
     if (options.basis_kind || options.admission_class) {
       const out = await resolver(request());
       assert.equal(calls, 0);
+      const plan = out.ordinary_materialization_atomic_write_plan;
+      assert.equal(plan.resolution, "absent");
+      assert.deepEqual(
+        plan.transitions.map(({ kind }) => kind),
+        ["seed", "resolve_presence"],
+      );
       assert.equal(
-        Object.hasOwn(out, "ordinary_materialization_atomic_write_plan"),
-        false,
+        plan.next_aggregate.presence_resolutions.at(-1).resolution,
+        "absent",
       );
     } else
       await assert.rejects(

@@ -44,7 +44,6 @@ function validProfile(profile, objective, candidate, scopeRef, bases, committedS
     && text(profile.profile_ref) && scope(profile.scope_ref, scopeRef)
     && text(profile.environment_ref) && Array.isArray(objective.context_refs?.environment_refs)
     && objective.context_refs.environment_refs.includes(profile.environment_ref)
-    && profile.semantic_type === candidate.semantic_type
     && text(profile.public_name)
     && profile.functional_bucket === candidate.functional_bucket
     && profile.admission_class === candidate.admission_class

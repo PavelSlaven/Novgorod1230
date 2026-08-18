@@ -174,8 +174,9 @@ function buildContextBoundCapability({ profile, partyId, scope, positionRef }) {
     source_basis_ref: sourceBasisRef, public_name: value.public_name,
     finite_source: finiteSource };
   const capability = { capability_ref: value.capability_ref,
+    source_ref: sourceBasisRef,
     public_name: value.public_name,
-    candidate_context: { target_ref: value.capability_ref,
+    candidate_context: { target_ref: sourceBasisRef,
       candidate_ref_namespace: `${value.capability_ref}:candidate`,
       normalizer_version: 'trace_ld_v1_o2a_candidate_normalizer_v1',
       semantic_type: value.semantic_type, candidate_hint: null,

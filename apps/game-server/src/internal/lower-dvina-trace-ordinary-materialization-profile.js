@@ -7,9 +7,9 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  '6ec1362aae927cfd33d6c8b479950eb41587fb08d20ff89d7eb4efb6ec2e907c';
+  'd4502298cd0daf13cea86d917fdc0c6201a3cbda3e19a652d6c3f3025dbf1777';
 const MANIFEST_DIGEST =
-  '5ef175c86ff9c2d9f6fb3e07a2eb923c44df6dfbec1ad930a61babf016259712';
+  '9023c9392d1d536ed4c7a5df3987b3d477cd3b63f9915fae157617a4a0b36923';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()

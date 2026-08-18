@@ -79,12 +79,15 @@ test('a committed decrement refreshes mutable finite state without invalidating 
     'absent');
 });
 
-test('missing permissions, cross-scope profile, missing source, and a model-like class swap fail closed', () => {
+test('semantic variant stays free while authority and class drift fail closed', () => {
+  const variant = fixture();
+  variant.candidate_context.semantic_type = 'unlisted_reasonable_variant';
+  assert.equal(resolveConstrainedNaturalResourcePolicy(variant).resolution, null);
   for (const change of [
     (value) => { value.objective_context.policy_refs.context_bound_permission_refs = ['permission:unseen-class']; },
     (value) => { value.execution_context.constrained_natural_resource_profile.scope_ref = { entity_kind: 'g6', entity_id: 'other' }; },
     (value) => { value.execution_context.constrained_natural_resource_profile.finite_source = null; },
-    (value) => { value.candidate_context.semantic_type = 'forged-model-class'; }
+    (value) => { value.candidate_context.functional_bucket = 'forged-bucket'; }
   ]) {
     const value = fixture(); change(value);
     assert.deepEqual(resolveConstrainedNaturalResourcePolicy(value),

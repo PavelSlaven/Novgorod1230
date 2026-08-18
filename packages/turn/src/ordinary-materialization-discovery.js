@@ -157,8 +157,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           proposed }) };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
-      const authorityProfile = enabled.ordinary_authority?.context_bound_profile
-        ?? enabled.ordinary_authority?.constrained_resource_profile ?? null;
+      const authorityProfile = enabled.ordinary_authority?.context_bound_profile ?? null;
       const baseHandoff = { ...structuredClone(
         presence.pending_items_property_admission), admission_evidence: {
         ...structuredClone(presence.pending_items_property_admission.admission_evidence),
@@ -168,17 +167,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
           property.evidence.property_catalog_version_ref,
         placement_catalog_version_ref:
           property.evidence.placement_catalog_version_ref } };
-      const pendingHandoff = authorityProfile == null ? baseHandoff
-        : { ...baseHandoff,
-          proposed_item: { ...structuredClone(proposed),
-            semantic_descriptor: {
-              ...structuredClone(proposed.semantic_descriptor),
-              name: authorityProfile.public_name
-            } },
-          admission_evidence: {
+      const pendingHandoff = authorityProfile?.condition_state == null ? baseHandoff
+        : { ...baseHandoff, admission_evidence: {
             ...baseHandoff.admission_evidence,
-            ...(authorityProfile.condition_state == null ? {}
-              : { condition_state: authorityProfile.condition_state })
+            condition_state: authorityProfile.condition_state
           } };
       authorizedPresence = { ...structuredClone(presence),
         pending_items_property_admission: pendingHandoff };

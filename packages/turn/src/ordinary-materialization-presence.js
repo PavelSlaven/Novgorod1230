@@ -59,8 +59,7 @@ function positive(input, plan, projection, bases) {
       || entity.admission_class === 'container_capable'
       || entity.functional_bucket !== identity.functional_bucket
       || (identity.availability_class === 'context_bound'
-        && (entity.semantic_descriptor.semantic_type !== identity.semantic_type
-          || entity.semantic_descriptor.facts.length !== 0))
+        && entity.semantic_descriptor.facts.length !== 0)
       || permission_refs === null) reject('ORDINARY_PRESENCE_ENTITY_INVALID');
   if (!propertyOK(input) || entity.property_basis_ref !== request.context_refs.property_context_ref) reject('ORDINARY_PRESENCE_PROPERTY_INVALID');
   if (entity.placement_proposal.scope_ref !== request.scope_ref.entity_id || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref) && v.position_ref === entity.placement_proposal.position_ref)) reject('ORDINARY_PRESENCE_PLACEMENT_INVALID');

@@ -258,8 +258,9 @@ function createTraceTurnRuntime({
       const enabled = await ordinaryEnablements.load({ partyId, scopeRef });
       if (enabled == null) return null;
       const capabilities = enabled.execution_context?.context_bound_capabilities ?? [];
-      return Object.freeze({ discovery_available: true, capabilities: Object.freeze(
-        capabilities.map((entry) => Object.freeze({ capability_ref: entry.capability_ref,
+      return Object.freeze({ discovery_available: true, sources: Object.freeze(
+        capabilities.map((entry) => Object.freeze({
+          source_ref: entry.candidate_context.target_ref,
           public_name: entry.public_name }))) });
     },
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>

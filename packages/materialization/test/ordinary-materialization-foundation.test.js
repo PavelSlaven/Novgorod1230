@@ -54,15 +54,18 @@ test('prepared groups only originate in candidate-free seed and validate causal,
 test('aggregate has logical CAS, idempotent last request replay, and bounded records', () => {
   const initial = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 2 });
   assert.deepEqual([initial.state_version, initial.last_committed_request_identity], [0, null]);
-  const seeded = applyOrdinaryAggregateTransition({ aggregate: initial, transition: transition('seed', 'request-seed', { density_band: 'ordinary', identity_budget: 2 }) });
+  assert.deepEqual(Object.keys(initial), ['schema', 'scope_ref', 'state_version', 'last_committed_request_identity', 'last_committed_transition_kind', 'seeded', 'density_band', 'identity_budget', 'remaining_identity_budget', 'background_groups', 'presence_resolutions', 'closed_observation_scopes', 'resolution_record_cap']);
+  const seedTransition = transition('seed', 'request-seed', { density_band: 'ordinary', identity_budget: 2 });
+  const seeded = applyOrdinaryAggregateTransition({ aggregate: initial, transition: seedTransition });
   assert.deepEqual([seeded.state_version, seeded.last_committed_request_identity], [1, 'request-seed']);
+  assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: seeded, transition: seedTransition }), seeded);
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('seed', 'request-seed', { density_band: 'ordinary', identity_budget: 99 }) }), (error) => error.code === 'ORDINARY_COMMITTED_REQUEST_IDENTITY_COLLISION');
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('resolve_presence', 'request-stale', { resolution_ref: 'r0', candidate_key: 'c0', coverage_key: 'v0', category_key: 'k0', context_version: 'ctx-a', resolution: 'absent', expected_state_version: 0 }) }), (error) => error.code === 'ORDINARY_AGGREGATE_STATE_STALE');
   const positive = transition('resolve_presence', 'request-present', { expected_state_version: 1, resolution_ref: 'r1', candidate_key: 'c1', coverage_key: 'v1', category_key: 'k1', context_version: 'ctx-a', resolution: 'materialize', identity_key: 'i1' });
   const admitted = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: positive }); assert.equal(admitted.remaining_identity_budget, 1); assert.equal(admitted.state_version, 2);
   assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: admitted, transition: positive }), admitted);
   const closed = applyOrdinaryAggregateTransition({ aggregate: admitted, transition: transition('close_coverage', 'request-close', { expected_state_version: 2, coverage_key: 'v2', category_key: 'k2', context_version: 'ctx-a', resolution: 'absent' }) });
-  assert.equal(closed.presence_resolutions.length + closed.coverage_closures.length, 2);
+  assert.equal(closed.presence_resolutions.length + closed.closed_observation_scopes.length, 2);
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: closed, transition: transition('close_coverage', 'request-cap', { expected_state_version: 3, coverage_key: 'v3', category_key: 'k3', context_version: 'ctx-a', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_RESOLUTION_RECORD_CAP_EXCEEDED');
 });
 
@@ -88,15 +91,15 @@ test('malformed persisted aggregate fails typed before native collection operati
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: { ...createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 1 }), presence_resolutions: null }, transition: transition('seed', 'seed', { density_band: 'sparse', identity_budget: 1 }) }), (error) => error instanceof MaterializationError && error.code === 'ORDINARY_AGGREGATE_INVALID');
 });
 
-test('an earlier committed request replays after intervening commits, but identity mutation is rejected before CAS', () => {
-  const seed = transition('seed', 'seed-history', { density_band: 'ordinary', identity_budget: 2 });
-  const seeded = applyOrdinaryAggregateTransition({ aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 3 }), transition: seed });
-  const absent = transition('resolve_presence', 'request-history-a', { expected_state_version: 1, resolution_ref: 'resolution-history-a', candidate_key: 'candidate-history-a', coverage_key: 'coverage-history-a', category_key: 'category-history-a', context_version: 'context-history-a', resolution: 'absent' });
+test('only the last committed request is idempotent; older retries use ordinary CAS', () => {
+  const seeded = applyOrdinaryAggregateTransition({ aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 3 }), transition: transition('seed', 'seed-a', { density_band: 'ordinary', identity_budget: 2 }) });
+  const absent = transition('resolve_presence', 'request-a', { expected_state_version: 1, resolution_ref: 'resolution-a', candidate_key: 'candidate-a', coverage_key: 'coverage-a', category_key: 'category-a', context_version: 'context-a', resolution: 'absent' });
   const afterAbsent = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: absent });
-  const afterClosure = applyOrdinaryAggregateTransition({ aggregate: afterAbsent, transition: transition('close_coverage', 'request-history-b', { expected_state_version: 2, coverage_key: 'coverage-history-b', category_key: 'category-history-b', context_version: 'context-history-a', resolution: 'no_change' }) });
-  assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: afterClosure, transition: absent }), afterClosure);
-  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: afterClosure, transition: { ...absent, resolution: 'authority_required' } }), (error) => error.code === 'ORDINARY_COMMITTED_REQUEST_IDENTITY_COLLISION');
-  assert.equal(afterClosure.committed_request_fingerprints.length, 3);
+  const closure = transition('close_coverage', 'request-b', { expected_state_version: 2, coverage_key: 'coverage-b', category_key: 'category-b', context_version: 'context-a', resolution: 'no_change' });
+  const afterClosure = applyOrdinaryAggregateTransition({ aggregate: afterAbsent, transition: closure });
+  assert.strictEqual(applyOrdinaryAggregateTransition({ aggregate: afterClosure, transition: closure }), afterClosure);
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: afterClosure, transition: absent }), (error) => error.code === 'ORDINARY_AGGREGATE_STATE_STALE');
+  assert.equal(Object.hasOwn(afterClosure, 'committed_request_fingerprints'), false);
 });
 
 test('NUL-bearing candidate tuples do not collide in aggregate validation or poison later transitions', () => {
@@ -107,17 +110,25 @@ test('NUL-bearing candidate tuples do not collide in aggregate validation or poi
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: second, transition: transition('resolve_presence', 'nul-cap', { expected_state_version: 3, resolution_ref: 'nul-resolution-c', candidate_key: 'different', coverage_key: 'different', category_key: 'category-nul', context_version: 'context-nul', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_RESOLUTION_RECORD_CAP_EXCEEDED');
 });
 
-test('aggregate reload rejects forged history, unknown records, duplicate identities, and corrupted unseeded state', () => {
+test('aggregate reload rejects unknown records, duplicate identities, and corrupted unseeded state', () => {
   const seeded = applyOrdinaryAggregateTransition({ aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 3 }), transition: transition('seed', 'seed-forgery', { density_band: 'ordinary', identity_budget: 2 }) });
   const first = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: transition('resolve_presence', 'forgery-a', { expected_state_version: 1, resolution_ref: 'forgery-r-a', candidate_key: 'forgery-c-a', coverage_key: 'forgery-v-a', category_key: 'forgery-k-a', context_version: 'forgery-context', resolution: 'materialize', identity_key: 'forgery-i-a' }) });
   const second = applyOrdinaryAggregateTransition({ aggregate: first, transition: transition('resolve_presence', 'forgery-b', { expected_state_version: 2, resolution_ref: 'forgery-r-b', candidate_key: 'forgery-c-b', coverage_key: 'forgery-v-b', category_key: 'forgery-k-b', context_version: 'forgery-context', resolution: 'materialize', identity_key: 'forgery-i-b' }) });
-  const badDigest = structuredClone(second); badDigest.committed_request_fingerprints[1].transition_digest = '0'.repeat(64);
-  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: badDigest, transition: transition('close_coverage', 'unused-a', { expected_state_version: 3, coverage_key: 'unused-v', category_key: 'unused-k', context_version: 'unused', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_AGGREGATE_INVALID');
   const duplicateIdentity = structuredClone(second); duplicateIdentity.presence_resolutions[1].identity_key = 'forgery-i-a';
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: duplicateIdentity, transition: transition('close_coverage', 'unused-b', { expected_state_version: 3, coverage_key: 'unused-v', category_key: 'unused-k', context_version: 'unused', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_AGGREGATE_INVALID');
   const unknownRecord = structuredClone(second); unknownRecord.presence_resolutions[0].unexpected = true;
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: unknownRecord, transition: transition('close_coverage', 'unused-c', { expected_state_version: 3, coverage_key: 'unused-v', category_key: 'unused-k', context_version: 'unused', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_AGGREGATE_INVALID');
   assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: { ...createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 1 }), density_band: 'sparse' }, transition: transition('seed', 'unused-d', { density_band: 'sparse', identity_budget: 1 }) }), (error) => error.code === 'ORDINARY_AGGREGATE_INVALID');
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: { ...seeded, state_version: 100 }, transition: transition('close_coverage', 'forged-version', { expected_state_version: 100, coverage_key: 'forged-v', category_key: 'forged-k', context_version: 'forged-context', resolution: 'absent' }) }), (error) => error.code === 'ORDINARY_AGGREGATE_INVALID');
+});
+
+test('immediate replay is bound to the last transition kind', () => {
+  const seeded = applyOrdinaryAggregateTransition({ aggregate: createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 4 }), transition: transition('seed', 'seed-kind', { density_band: 'ordinary', identity_budget: 2 }) });
+  const firstClosure = transition('close_coverage', 'reused-request', { expected_state_version: 1, coverage_key: 'coverage-old', category_key: 'category-old', context_version: 'context-old', resolution: 'absent' });
+  const closed = applyOrdinaryAggregateTransition({ aggregate: seeded, transition: firstClosure });
+  const resolved = applyOrdinaryAggregateTransition({ aggregate: closed, transition: transition('resolve_presence', 'other-request', { expected_state_version: 2, resolution_ref: 'resolution-new', candidate_key: 'candidate-new', coverage_key: 'coverage-new', category_key: 'category-new', context_version: 'context-new', resolution: 'absent' }) });
+  const reused = applyOrdinaryAggregateTransition({ aggregate: resolved, transition: transition('resolve_presence', 'reused-request', { expected_state_version: 3, resolution_ref: 'resolution-reused', candidate_key: 'candidate-reused', coverage_key: 'coverage-reused', category_key: 'category-reused', context_version: 'context-reused', resolution: 'absent' }) });
+  assert.throws(() => applyOrdinaryAggregateTransition({ aggregate: reused, transition: { ...firstClosure, expected_state_version: 3 } }), (error) => error.code === 'ORDINARY_COMMITTED_REQUEST_IDENTITY_COLLISION');
 });
 
 test('seed accepts only validated prepared groups and remains reload-valid for the next transition', () => {

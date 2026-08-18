@@ -12,11 +12,12 @@ import {
 import { validateOrdinaryMaterializationRequestV1 } from '@rus/contracts';
 
 const fixture = (id) => ORDINARY_MATERIALIZATION_EVAL_FIXTURES.find((entry) => entry.id === id);
-const validPlan = (entry, overrides = {}) => ({
-  schema: 'ordinary_materialization_plan_v1', request_id: entry.objective_context.request_id,
-  resolution: 'seeded', density_band_proposal: 'sparse', background_groups: [], entities: [],
-  presence_resolutions: [], reason_code: 'eval-fixture', ...overrides
-});
+const validPlan = (entry, overrides = {}) => {
+  const targeted = entry.objective_context.request_mode !== 'seed_scope';
+  const resolution = overrides.resolution ?? (targeted ? 'no_change' : 'seeded');
+  const presence = targeted && resolution !== 'materialize' ? [{ candidate_key: entry.objective_context.candidate_query.candidate_key, coverage_key: entry.objective_context.candidate_query.coverage_key, resolution }] : [];
+  return { schema: 'ordinary_materialization_plan_v1', request_id: entry.objective_context.request_id, resolution, density_band_proposal: targeted ? null : 'sparse', background_groups: [], entities: [], presence_resolutions: presence, reason_code: 'eval-fixture', ...overrides };
+};
 
 test('eval corpus is complete, stable, immutable, and uses unique fixture ids', () => {
   const required = ['poor_hut', 'rich_hut', 'household_context', 'work_context', 'sword_prompt', 'silver_money_prompt', 'document_prompt', 'anachronism_probe', 'stage_a_candidate_leakage', 'over_enumeration', 'property_inheritance', 'identity_budget_pressure'];
@@ -24,6 +25,11 @@ test('eval corpus is complete, stable, immutable, and uses unique fixture ids', 
   for (const tag of required) assert.ok(tags.has(tag), `missing ${tag}`);
   assert.equal(new Set(ORDINARY_MATERIALIZATION_EVAL_FIXTURES.map((entry) => entry.id)).size, ORDINARY_MATERIALIZATION_EVAL_FIXTURES.length);
   for (const entry of ORDINARY_MATERIALIZATION_EVAL_FIXTURES) { assert.equal(validateOrdinaryMaterializationEvalFixture(entry).length, 0); assert.ok(Object.isFrozen(entry)); assert.ok(Object.isFrozen(entry.objective_context)); }
+  for (const entry of ORDINARY_MATERIALIZATION_EVAL_FIXTURES.filter((item) => item.id !== 'identity-budget-pressure-v1')) {
+    assert.deepEqual(entry.objective_context.ordinary_state, { seeded: false, density_band: null, remaining_identity_budget: 0, background_groups: [], presence_resolutions: [], closed_observation_scopes: [] });
+  }
+  assert.deepEqual(fixture('identity-budget-pressure-v1').objective_context.ordinary_state, { seeded: true, density_band: 'ordinary', remaining_identity_budget: 9, background_groups: [], presence_resolutions: [], closed_observation_scopes: [] });
+  assert.equal(fixture('identity-budget-pressure-v1').objective_context.request_mode, 'resolve_presence');
   assert.throws(() => { ORDINARY_MATERIALIZATION_EVAL_FIXTURES[0].id = 'mutated'; }, TypeError);
 });
 
@@ -61,6 +67,7 @@ test('harness reports malformed fixtures, malformed output, leakage, enumeration
   const propertyMismatch = evaluateOrdinaryMaterializationEvalFixture({ fixture: property, stage_a_plan: validPlan(property, { resolution: 'materialize', entities: [{ ...entities[0], property_basis_ref: 'wrong-property' }] }) });
   assert.ok(propertyMismatch.diagnostics.some((item) => item.code === 'STAGE_A_PROPERTY_EXPECTATION_MISMATCH'));
   const budget = fixture('identity-budget-pressure-v1');
+  const budgetRequest = buildOrdinaryMaterializationStageARequest(budget); assert.equal(budgetRequest.mode, 'resolve_presence'); assert.equal(budgetRequest.candidate_query.evidence_weight, 0);
   const budgetReport = evaluateOrdinaryMaterializationEvalFixture({ fixture: budget, stage_a_plan: validPlan(budget, { resolution: 'materialize', entities: Array.from({ length: 9 }, (_, index) => ({ ...structuredClone(entities[0]), semantic_descriptor: { semantic_type: `budget-${index}`, name: `budget-${index}`, facts: [] } })) }) });
   assert.ok(budgetReport.diagnostics.some((item) => item.code === 'STAGE_A_IDENTITY_BUDGET_FILL_PRESSURE'));
   const invalid = evaluateOrdinaryMaterializationEvalFixture({ fixture: sword, stage_a_plan: { malformed: true } });
@@ -76,7 +83,7 @@ test('supplied Stage A request must exactly equal the fixture objective request'
     (value) => { value.scope_ref.entity_id = 'other'; },
     (value) => { value.context_refs.period_ref = 'other'; },
     (value) => { value.policy_refs.density_policy_ref = 'other'; },
-    (value) => { value.ordinary_state.remaining_identity_budget = 0; },
+    (value) => { value.ordinary_state.seeded = true; value.ordinary_state.density_band = 'sparse'; value.ordinary_state.remaining_identity_budget = 1; },
     (value) => { value.technical_limits.max_new_entities = 1; }
   ]) {
     const changed = structuredClone(request); mutate(changed);

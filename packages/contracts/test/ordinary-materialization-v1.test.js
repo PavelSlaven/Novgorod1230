@@ -72,6 +72,15 @@ test('ordinary materialization DTO schemas are strict and accept valid seed and 
   assert.equal(rootContracts.ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA, schemaNames.ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA);
   assert.equal(ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA.additionalProperties, false);
   assert.equal(ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA.additionalProperties, false);
+  assert.deepEqual(ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA.properties.entities.items.properties.authority_class, { const: 'ordinary' });
+  assert.equal(ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA.allOf[0].then.properties.candidate_query.type, 'null');
+  assert.equal(ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA.allOf[0].else.properties.candidate_query.type, 'object');
+  assert.equal(ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA.properties.ordinary_state.allOf[0].then.properties.remaining_identity_budget.const, 0);
+  assert.equal(ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA.allOf[0].then.properties.entities.minItems, 1);
+  const stringPattern = new RegExp(ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA.properties.request_id.pattern, 'u');
+  assert.equal(stringPattern.test('request-a'), true);
+  assert.equal(stringPattern.test(' request-a'), false);
+  assert.equal(stringPattern.test('request-a '), false);
   assert.deepEqual(validateOrdinaryMaterializationRequestV1(seedRequest()), []);
   assert.deepEqual(validateOrdinaryMaterializationRequestV1(targetedRequest()), []);
   assert.deepEqual(validateOrdinaryMaterializationPlanV1({ ...materializePlan(), resolution: 'seeded', entities: [] }, seedRequest()), []);
@@ -86,6 +95,23 @@ test('ordinary materialization DTO rejects unknown properties and enum values', 
 test('ordinary materialization request rejects a Stage A candidate and malformed targeted evidence', () => {
   assert.ok(validateOrdinaryMaterializationRequestV1({ ...seedRequest(), candidate_query: targetedRequest().candidate_query }).some((error) => error.path === 'candidate_query' && error.code === 'const'));
   assert.ok(validateOrdinaryMaterializationRequestV1({ ...targetedRequest(), candidate_query: { ...targetedRequest().candidate_query, evidence_weight: 1 } }).some((error) => error.path === 'candidate_query.evidence_weight' && error.code === 'const'));
+});
+
+test('ordinary materialization request rejects impossible unseeded and seeded state combinations', () => {
+  for (const mutate of [
+    (state) => { state.density_band = 'ordinary'; },
+    (state) => { state.remaining_identity_budget = 1; },
+    (state) => { state.background_groups = ['group-a']; },
+    (state) => { state.presence_resolutions = ['resolution-a']; },
+    (state) => { state.closed_observation_scopes = ['coverage-a']; }
+  ]) {
+    const request = seedRequest(); mutate(request.ordinary_state);
+    assert.ok(validateOrdinaryMaterializationRequestV1(request).some((error) => error.path.startsWith('ordinary_state.')));
+  }
+  const seeded = seedRequest(); seeded.ordinary_state.seeded = true;
+  assert.ok(validateOrdinaryMaterializationRequestV1(seeded).some((error) => error.path === 'ordinary_state.density_band'));
+  seeded.ordinary_state.density_band = 'ordinary';
+  assert.deepEqual(validateOrdinaryMaterializationRequestV1(seeded), []);
 });
 
 test('ordinary materialization plan rejects an unsupported positive proposal', () => {

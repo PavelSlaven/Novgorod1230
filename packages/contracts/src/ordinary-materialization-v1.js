@@ -109,6 +109,15 @@ function validateOrdinaryState(value, errors) {
   nullableEnum(value.density_band, ORDINARY_MATERIALIZATION_V1_ENUMS.density_band, `${path}.density_band`, errors);
   nonnegativeInteger(value.remaining_identity_budget, `${path}.remaining_identity_budget`, errors);
   for (const key of ['background_groups', 'presence_resolutions', 'closed_observation_scopes']) arrayOfStrings(value[key], `${path}.${key}`, errors);
+  if (value.seeded === false) {
+    if (value.density_band !== null) issue(errors, `${path}.density_band`, 'const', `${path}.density_band must be null while unseeded.`);
+    if (value.remaining_identity_budget !== 0) issue(errors, `${path}.remaining_identity_budget`, 'const', `${path}.remaining_identity_budget must equal 0 while unseeded.`);
+    for (const key of ['background_groups', 'presence_resolutions', 'closed_observation_scopes']) {
+      if (Array.isArray(value[key]) && value[key].length !== 0) issue(errors, `${path}.${key}`, 'max_items', `${path}.${key} must be empty while unseeded.`);
+    }
+  } else if (value.seeded === true && value.density_band === null) {
+    issue(errors, `${path}.density_band`, 'enum', `${path}.density_band must be set while seeded.`);
+  }
 }
 
 function validateCandidateQuery(value, errors) {

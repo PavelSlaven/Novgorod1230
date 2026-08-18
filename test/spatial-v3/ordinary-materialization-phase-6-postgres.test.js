@@ -83,7 +83,7 @@ function plan({ aggregate, party_state_version, request_identity,
   expected_supporting_basis_catalog, supporting_basis_catalog_version,
   expected_property_placement_context = propertyPlacementContext(),
   resolution = 'materialize', token = request_identity, scope = scope_ref,
-  party_id = 'party-a' }) {
+  party_id = 'party-a', seal = true }) {
   const seedTransition = !aggregate.seeded ? {
     kind: 'seed', request_identity: `seed-${token}`, expected_state_version: aggregate.state_version,
     density_band: 'ordinary', identity_budget: 4, background_groups: [preparedGroup(`seed-${token}`)]
@@ -138,7 +138,7 @@ function plan({ aggregate, party_state_version, request_identity,
     expected_property_placement_context,
     resolution, transitions: seedTransition ? [seedTransition, transition] : [transition], next_aggregate, item
   };
-  return createOrdinaryMaterializationAtomicWritePlan(value);
+  return seal ? createOrdinaryMaterializationAtomicWritePlan(value) : value;
 }
 
 function admittedItem({ request_identity, candidate_key, coverage_key, context_version, supporting_basis_ref, token = candidate_key, scope = scope_ref, propertyPlacement = propertyPlacementContext() }) {
@@ -609,7 +609,8 @@ async function assertFiniteSourceP16Integration(pool) {
   }, sourceBasis = { basis_ref: 'finite-source-node', state: 'committed',
     scope_ref: { ...finiteScope }, prepared_seed_provenance: null,
     functional_buckets: ['household'],
-    allowed_admission_classes: ['common_mundane'] }, initialAmountBounds = {
+    allowed_admission_classes: ['common_mundane'],
+    permission_refs: [], basis_kind: 'finite_source' }, initialAmountBounds = {
       minimum: { numerator: 1, denominator: 1, unit: 'item' },
       maximum: { numerator: 10, denominator: 1, unit: 'item' }
     };
@@ -673,12 +674,22 @@ async function assertFiniteSourceP16Integration(pool) {
     VALUES ($1,$2,$3,$4,NULL,$5::jsonb)`, [partyId, finiteScope.entity_kind,
     finiteScope.entity_id, sourceBasis.basis_ref, JSON.stringify(sourceBasis)]);
   await insertFiniteResource(pool, partyId, 'finite-source-node', initialAmountBounds);
-  const first = finitePlan({ partyId, scope: finiteScope, aggregate,
+  const firstOptions = { partyId, scope: finiteScope, aggregate,
     partyStateVersion: 0, sourceStateVersion: 2,
     before: { numerator: 3, denominator: 1, unit: 'item' },
     decrement: { numerator: 1, denominator: 1, unit: 'item' },
     requestIdentity: 'finite-first', sourceResourceNodeId: 'finite-source-node',
-    initialize: true, sourceBasis, placement });
+    initialize: true, sourceBasis, placement };
+  const bypass = finitePlanInput(firstOptions);
+  delete bypass.item.causal_basis_kind;
+  bypass.item.item_proposal.schema = 'ordinary_world_item_proposal_v1';
+  delete bypass.item.item_proposal.causal_basis_kind;
+  bypass.finite_resource_initialization = null;
+  bypass.finite_resource_transition = null;
+  assert.throws(() => createOrdinaryMaterializationAtomicWritePlan(bypass),
+    /ORDINARY_PHASE6_POSITIVE_ITEM_INVALID/u,
+    'a common item cannot erase its finite basis and conservation effect');
+  const first = finitePlan(firstOptions);
   await commitFiniteInP16(pool, first, 'finite-change-1', 0);
   const firstRows = await pool.query(`SELECT r.state_version,r.quantity_numerator,
     r.quantity_denominator,r.lifecycle_state,r.initialization_identity,
@@ -1016,14 +1027,17 @@ function finitePlan(options) {
 function finitePlanInput({ partyId, scope, aggregate, partyStateVersion,
   sourceStateVersion, before, decrement, requestIdentity, sourceResourceNodeId,
   initialize = false, sourceBasis, placement }) {
-  const base = plan({ aggregate, party_state_version: partyStateVersion,
+  const raw = plan({ aggregate, party_state_version: partyStateVersion,
     request_identity: requestIdentity, expected_supporting_basis_catalog: [sourceBasis],
     supporting_basis_catalog_version: 1,
-    expected_property_placement_context: placement, scope, party_id: partyId });
-  const { schema, write_plan_digest, ...raw } = structuredClone(base);
+    expected_property_placement_context: placement, scope, party_id: partyId,
+    seal: false });
   const originalRef = raw.item.supporting_basis_ref;
   raw.item.supporting_basis_ref = sourceBasis.basis_ref;
   raw.item.causal_basis_refs = [sourceBasis.basis_ref];
+  raw.item.causal_basis_kind = 'finite_source';
+  raw.item.item_proposal.schema = 'ordinary_world_item_proposal_v2';
+  raw.item.item_proposal.causal_basis_kind = 'finite_source';
   raw.item.item_proposal.scope_ref = structuredClone(scope);
   raw.item.item_proposal.supporting_basis_ref = sourceBasis.basis_ref;
   raw.item.item_proposal.placement.scope_ref = scope.entity_id;

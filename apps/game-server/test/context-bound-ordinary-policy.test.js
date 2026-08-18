@@ -46,7 +46,7 @@ test('approved armament is a closed profile envelope, not a noun rule', () => {
     { ...candidate_context, semantic_type: 'unseen_weapon' },
     { ...candidate_context, functional_bucket: 'work' },
     { ...candidate_context, admission_class: 'specialized_or_valuable' }
-  ]) assert.equal(resolve({ candidate_context: alteredCandidate }).resolution, 'authority_required');
+  ]) assert.equal(resolve({ candidate_context: alteredCandidate }).resolution, 'absent');
 });
 
 test('ordinary work context is not a specialized-stock authority envelope', () => {
@@ -59,13 +59,13 @@ test('ordinary work context is not a specialized-stock authority envelope', () =
       admission_class: 'specialized_or_valuable'
     }
   } });
-  assert.equal(value.resolution, 'authority_required');
+  assert.equal(value.resolution, 'absent');
 });
 
 test('currency identity stays blocked while an approved precious material source is admitted', () => {
   const currency = { semantic_type: 'authentic_coin', functional_bucket: 'stock',
     admission_class: 'currency_or_precious', availability_class: 'context_bound' };
-  assert.equal(resolve({ candidate_context: currency }).resolution, 'authority_required');
+  assert.equal(resolve({ candidate_context: currency }).resolution, 'absent');
   const candidate = { ...currency, semantic_type: 'precious_material_fragment' };
   const base = execution();
   const profile = { ...base.context_bound_ordinary_profile,
@@ -108,7 +108,7 @@ test('document-like and other restricted gates require exact non-authentic stock
     assert.equal(approved.profile.profile_kind, 'specialized_stock');
     assert.equal(resolve({ candidate_context: candidate, execution_context: {
       ...base, supporting_bases, context_bound_ordinary_profile: null
-    } }).resolution, 'authority_required');
+    } }).resolution, 'absent');
   }
 });
 
@@ -132,7 +132,7 @@ test('damaged ordinary armament remnant is reachable only from its approved remn
     const value = structuredClone({ ...base, supporting_bases,
       context_bound_ordinary_profile: profile }); change(value);
     assert.equal(resolve({ candidate_context: candidate, execution_context: value }).resolution,
-      'authority_required');
+      'absent');
   }
 });
 

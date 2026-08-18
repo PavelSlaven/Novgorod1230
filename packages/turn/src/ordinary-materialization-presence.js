@@ -6,10 +6,12 @@ import { assertOrdinaryMaterializationRequestV1,
 import { applyOrdinaryAggregateTransition, createOrdinaryCandidateKey, createOrdinaryCategoryKey, createOrdinaryContextVersion, createOrdinaryCoverageKey, createOrdinaryResolutionRef, validateSupportingBasisAdmission } from '@rus/materialization';
 import { turnFailure } from './errors.js';
 import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOrdinaryWorkingProjection } from './turn-step-ordinary-working-projection.js';
+const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
+  'currency_or_precious','document_like','other_restricted']);
 
 export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
-  const early = preflight(input, projection, basisCatalog); if (early) return early;
+  const early = preflight(input, projection, basisCatalog, codeOwnedResolution); if (early) return early;
   if (codeOwnedResolution !== null) {
     if (!['absent', 'no_change', 'authority_required'].includes(codeOwnedResolution)) {
       fail('TURN_ORDINARY_PRESENCE_CODE_OWNED_RESOLUTION_INVALID');
@@ -26,17 +28,24 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
   if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = validateOrdinaryMaterializationPlanV1(raw, request); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
   const plan = freeze(raw);
   if (plan.resolution !== 'materialize') return negative(input, plan, projection, repaired);
+  if (input.identity.admission_class === 'common_mundane'
+      && plan.entities.length === 1
+      && RESTRICTED.has(plan.entities[0]?.admission_class)) {
+    return negative(input, { resolution: 'absent' }, projection, repaired);
+  }
   const pending = positive(input, plan, projection, basisCatalog);
   return deepFreeze({ status: 'pending_items_property_admission', decision: decision(request, plan, repaired), pending_items_property_admission: pending, working_projection: projection });
 }
 
-function preflight(input, projection, bases) {
+function preflight(input, projection, bases, codeOwnedResolution) {
   const { request, identity } = input, aggregate = projection.ordinary_materialization_aggregate;
   const known = aggregate.presence_resolutions.find((r) => r.candidate_key === identity.candidate_key && r.coverage_key === identity.coverage_key && r.context_version === identity.context_version) ?? aggregate.closed_observation_scopes.find((r) => r.coverage_key === identity.coverage_key && r.category_key === identity.category_key && r.context_version === identity.context_version);
   if (known) return deepFreeze({ status: 'already_resolved', decision: null, pending_items_property_admission: null, known_resolution: known, working_projection: projection });
   if (!fresh(input, aggregate)) return outcome('no_change', projection, 'aggregate_not_current');
   if (request.ordinary_state.closed_observation_scopes.includes(identity.coverage_key)) return outcome('no_change', projection, 'observation_closed');
-  if (aggregate.remaining_identity_budget < 1 || aggregate.presence_resolutions.length + aggregate.closed_observation_scopes.length >= aggregate.resolution_record_cap) return outcome('no_change', projection, 'budget_or_cap_exhausted');
+  if (aggregate.presence_resolutions.length + aggregate.closed_observation_scopes.length >= aggregate.resolution_record_cap) return outcome('no_change', projection, 'budget_or_cap_exhausted');
+  if (codeOwnedResolution !== null) return null;
+  if (aggregate.remaining_identity_budget < 1) return outcome('no_change', projection, 'budget_or_cap_exhausted');
   if (!propertyOK(input) || !input.property_placement_context.placement_catalog.some((v) => placementOK(v, request.scope_ref))) return outcome('no_change', projection, 'committed_property_or_placement_missing');
   if (!compatible(input, bases)) return outcome('authority_required', projection, 'supporting_basis_missing');
   return null;

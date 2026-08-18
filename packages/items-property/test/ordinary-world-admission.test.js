@@ -166,6 +166,24 @@ test('O1 admits a work-group common tool, but rejects a bucket without its basis
   false);
 });
 
+test('common finite source preserves its causal kind for mandatory conservation', () => {
+  const pending = handoff();
+  pending.admission_evidence = { ...pending.admission_evidence,
+    causal_basis_kind: 'finite_source' };
+  pending.proposed_item = { ...pending.proposed_item,
+    causal_basis: { basis_kind: 'finite_source', basis_refs: ['basis-a'] } };
+  const base = context();
+  const admissionContext = { ...base, supporting_bases: [{
+    ...base.supporting_bases[0], state: 'committed',
+    prepared_seed_provenance: null, basis_kind: 'finite_source'
+  }] };
+  const result = admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: admissionContext });
+  assert.equal(result.pass, true);
+  assert.equal(result.proposal.schema, 'ordinary_world_item_proposal_v2');
+  assert.equal(result.proposal.causal_basis_kind, 'finite_source');
+});
+
 test('O1 rejects restricted admission, unsupported evidence, property, placement, mechanics and provenance', () => {
   const cases = [
     [handoff({ admission_evidence: { authority_class: 'ordinary', admission_class: 'weapon_or_armament', availability_class: 'common', functional_bucket: 'household', supporting_basis_ref: 'basis-a', property_basis_ref: 'property-a', runtime_item_mechanics_policy_ref: 'mechanics-a' } }), context()],

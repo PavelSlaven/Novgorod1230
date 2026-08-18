@@ -299,6 +299,54 @@ function verifiedModel(run) {
   return port;
 }
 
+function commonFiniteEnabled() {
+  const value = enabled({ finite: source({ lifecycle_state: 'active',
+    state_version: 4, numerator: 2 }) });
+  const basis = value.execution_context.supporting_bases[0];
+  basis.allowed_admission_classes = ['common_mundane'];
+  basis.permission_refs = [];
+  value.objective_context.policy_refs.allowed_admission_classes = [
+    'common_mundane'];
+  value.objective_context.policy_refs.context_bound_permission_refs = [];
+  value.execution_context.candidate_context = {
+    ...value.execution_context.candidate_context,
+    semantic_type: 'ordinary_object_candidate', admission_class: 'common_mundane',
+    availability_class: 'common' };
+  delete value.execution_context.constrained_natural_resource_profile;
+  value.execution_context.finite_source_authority = {
+    schema: 'rus.items.finite_source_authority.v1', version: 1,
+    state: 'committed', source_basis_ref: source_ref,
+    finite_source: sourceAuthority() };
+  value.version_pins.supporting_basis_catalog_digest = canonicalDigest({
+    domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [basis] });
+  return JSON.parse(JSON.stringify(value));
+}
+
+test('common finite source keeps its causal kind and owner-native decrement',
+  async () => {
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'common-finite',
+      loadEnablement: async () => commonFiniteEnabled(),
+      ordinaryMaterializationModel: verifiedModel(async (modelRequest) => {
+        if (modelRequest.mode === 'seed_scope') return seedPlan(modelRequest);
+        const plan = materializePlan(modelRequest, null);
+        plan.entities[0].semantic_descriptor = { semantic_type: 'firewood_piece',
+          name: 'обычная щепка из конечного запаса', facts: [] };
+        plan.entities[0].admission_class = 'common_mundane';
+        plan.entities[0].availability_class = 'common';
+        return plan;
+      })
+    });
+    const plan = (await resolver(request('turn:common-finite')))
+      .ordinary_materialization_atomic_write_plan;
+    assert.equal(plan.item.admission_class, 'common_mundane');
+    assert.equal(plan.item.causal_basis_kind, 'finite_source');
+    assert.deepEqual(plan.finite_resource_transition.before_quantity,
+      { numerator: 2, denominator: 1, unit: 'item' });
+    assert.deepEqual(plan.finite_resource_transition.after_quantity,
+      { numerator: 1, denominator: 1, unit: 'item' });
+  });
+
 test("uninitialized generic finite source seals one bounded estimate, initialization, and decrement", async () => {
   let current = enabled(),
     calls = 0;

@@ -46,7 +46,25 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
-    if (!enabled.ordinary_aggregate.seeded) {
+    if (!enabled.ordinary_aggregate.seeded
+        && enabled.code_owned_resolution != null) {
+      const budget = computeOrdinaryIdentityBudget({ density_band: 'sparse',
+        scope: enabled.ordinary_aggregate.scope_ref,
+        function_refs: enabled.objective_context.context_refs.function_refs,
+        request: null, policy: execution.density_policy,
+        hard_technical_max:
+          enabled.objective_context.technical_limits.max_new_entities });
+      const transition = { kind: 'seed',
+        request_identity: objective.request_id,
+        expected_state_version:
+          projection.ordinary_materialization_aggregate.state_version,
+        density_band: 'sparse', identity_budget: budget.identity_budget,
+        background_groups: [] };
+      transitions.push(transition);
+      projection = Object.freeze({ ordinary_materialization_aggregate:
+        applyOrdinaryAggregateTransition({ aggregate:
+          projection.ordinary_materialization_aggregate, transition }) });
+    } else if (!enabled.ordinary_aggregate.seeded) {
       const seed = await resolveOrdinaryMaterializationSeedScope({
         request: buildSeedRequest({ objective_context: objective }),
         ordinaryMaterializationModel: modelBudget.invoke,
@@ -71,8 +89,10 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       newBases = seed.prepared_background_groups.map(preparedBasis);
       projection = seed.working_projection;
     }
-    const bases = [...structuredClone(execution.supporting_bases),
-      ...structuredClone(newBases)];
+    const bases = [...structuredClone(enabled.expected_supporting_bases
+        ?? execution.supporting_bases),
+      ...structuredClone(newBases)].sort((left, right) =>
+      left.basis_ref.localeCompare(right.basis_ref));
     if (modelBudget.hasRemaining() === false) {
       return resolvedPlan({ request, enabled, partyId, scopeRef,
         inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
@@ -124,31 +144,44 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ?? null;
     if (presence.status === 'pending_items_property_admission') {
       const proposed = presence.pending_items_property_admission.proposed_item;
+      if (proposed.property_basis_ref
+          !== envelope.request.context_refs.property_context_ref) {
+        return ordinaryNoop(request);
+      }
       const propertyInput = { ...enabled.property_placement_context,
         supporting_basis_ref: proposed.supporting_basis_ref,
         causal_basis_refs: structuredClone(proposed.causal_basis.basis_refs),
-        requested_position_ref: proposed.placement_proposal.position_ref };
+        requested_position_ref: proposed.placement_proposal.position_ref,
+        property_catalog: propertyCatalogForItem({
+          catalog: enabled.property_placement_context.property_catalog,
+          proposed }) };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
       const authorityProfile = enabled.ordinary_authority?.context_bound_profile
         ?? enabled.ordinary_authority?.constrained_resource_profile ?? null;
-      const pendingHandoff = authorityProfile == null
-        ? presence.pending_items_property_admission
-        : { ...structuredClone(presence.pending_items_property_admission),
+      const baseHandoff = { ...structuredClone(
+        presence.pending_items_property_admission), admission_evidence: {
+        ...structuredClone(presence.pending_items_property_admission.admission_evidence),
+        property_placement_context_digest:
+          property.evidence.property_placement_context_digest,
+        property_catalog_version_ref:
+          property.evidence.property_catalog_version_ref,
+        placement_catalog_version_ref:
+          property.evidence.placement_catalog_version_ref } };
+      const pendingHandoff = authorityProfile == null ? baseHandoff
+        : { ...baseHandoff,
           proposed_item: { ...structuredClone(proposed),
             semantic_descriptor: {
               ...structuredClone(proposed.semantic_descriptor),
               name: authorityProfile.public_name
             } },
           admission_evidence: {
-            ...structuredClone(
-              presence.pending_items_property_admission.admission_evidence),
+            ...baseHandoff.admission_evidence,
             ...(authorityProfile.condition_state == null ? {}
               : { condition_state: authorityProfile.condition_state })
           } };
-      authorizedPresence = authorityProfile == null ? presence
-        : { ...structuredClone(presence),
-          pending_items_property_admission: pendingHandoff };
+      authorizedPresence = { ...structuredClone(presence),
+        pending_items_property_admission: pendingHandoff };
       const admissionInput = { handoff: pendingHandoff, admission_context: {
           schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
           supporting_bases: bases, property_placement_input: propertyInput,
@@ -160,7 +193,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             coverage_key: envelope.identity.coverage_key,
             context_version: envelope.identity.context_version,
             causal_ref: execution.causal_ref,
-            source_refs: sourceRefs({ envelope, proposed, execution, property })
+            source_refs: sourceRefs({ envelope, proposed, execution, property,
+              permissionRefs: pendingHandoff.admission_evidence.permission_refs })
           }
         } };
       const admitted = admitOrdinaryWorldMaterialization(
@@ -189,7 +223,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const finiteResourceEffects = item == null ? null
       : resolveFiniteResourceEffects({ enabled, item, envelope,
         presence: authorizedPresence });
-    if (enabled.ordinary_authority?.constrained_resource_profile != null
+    if (item?.causal_basis_kind === 'finite_source'
         && finiteResourceEffects == null) return ordinaryNoop(request);
     return resolvedPlan({ request, enabled, partyId, scopeRef,
       inputDigest, sealAtomicWritePlan,
@@ -213,6 +247,13 @@ function semanticModelCallBudget(model) {
     }
   });
 }
+function propertyCatalogForItem({ catalog, proposed }) {
+  if (catalog[0]?.unowned_cause_kind === undefined) {
+    return structuredClone(catalog);
+  }
+  return structuredClone(catalog.filter((entry) =>
+    entry.property_basis_ref === proposed.property_basis_ref));
+}
 
 function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   sealAtomicWritePlan, transitions, newBases, bases, next, requestIdentity,
@@ -224,7 +265,8 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
     transition_digest: canonicalDigest(transitions.at(-1)),
     expected_versions: structuredClone(expected),
     expected_supporting_basis_catalog:
-      structuredClone(enabled.execution_context.supporting_bases),
+      structuredClone(enabled.expected_supporting_bases
+        ?? enabled.execution_context.supporting_bases),
     new_prepared_bases: structuredClone(newBases),
     next_supporting_basis_catalog: structuredClone(bases),
     next_supporting_basis_catalog_version:
@@ -295,9 +337,12 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   supporting_basis_ref: proposal.supporting_basis_ref,
   causal_basis_refs:
     presence.pending_items_property_admission.proposed_item.causal_basis.basis_refs,
-  ...(envelope.identity.availability_class === 'context_bound' ? {
+  ...(proposal.causal_basis_kind == null ? {} : {
     causal_basis_kind: proposal.causal_basis_kind,
-    condition_state: proposal.condition_state ?? null,
+    ...(envelope.identity.availability_class === 'context_bound'
+      ? { condition_state: proposal.condition_state ?? null } : {})
+  }),
+  ...(envelope.identity.availability_class === 'context_bound' ? {
     permission_refs: structuredClone(
       envelope.request.policy_refs.context_bound_permission_refs)
   } : {}),
@@ -308,12 +353,12 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   item_proposal: proposal,
   mechanics_snapshot: admitted.runtime_instance_mechanics_snapshot };
 }
-function sourceRefs({ envelope, proposed, execution, property }) {
+function sourceRefs({ envelope, proposed, execution, property, permissionRefs }) {
   return [...new Set([envelope.identity.candidate_key,
     envelope.identity.coverage_key,
     proposed.supporting_basis_ref, ...proposed.causal_basis.basis_refs,
     proposed.property_basis_ref, proposed.placement_proposal.position_ref,
-    ...envelope.request.policy_refs.context_bound_permission_refs,
+    ...permissionRefs,
     execution.mechanics_policy.policy_ref, property.evidence.property_source_ref,
     property.evidence.property_catalog_version_ref,
     property.evidence.placement_catalog_version_ref,

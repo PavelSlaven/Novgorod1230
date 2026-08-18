@@ -1,12 +1,8 @@
-import {
-  loadActiveRuntimeCatalogPin
-} from '../../infrastructure/postgres/spatial-v3-production-readiness.js';
-import {
-  createFirstPlayablePublicRuntime
-} from '../first-playable-public-runtime.js';
-import {
-  firstPlayableCommitRecheck
-} from '../../infrastructure/postgres/first-playable/recheck.js';
+import { loadActiveRuntimeCatalogPin } from
+  '../../infrastructure/postgres/spatial-v3-production-readiness.js';
+import { createFirstPlayablePublicRuntime } from '../first-playable-public-runtime.js';
+import { firstPlayableCommitRecheck } from
+  '../../infrastructure/postgres/first-playable/recheck.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../infrastructure/postgres/lower-dvina-trace-phase-1b.js';
@@ -258,8 +254,14 @@ function createTraceTurnRuntime({
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel
       }),
-    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
-      (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
+    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) => {
+      const enabled = await ordinaryEnablements.load({ partyId, scopeRef });
+      if (enabled == null) return null;
+      const capabilities = enabled.execution_context?.context_bound_capabilities ?? [];
+      return Object.freeze({ discovery_available: true, capabilities: Object.freeze(
+        capabilities.map((entry) => Object.freeze({ capability_ref: entry.capability_ref,
+          public_name: entry.public_name }))) });
+    },
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile,

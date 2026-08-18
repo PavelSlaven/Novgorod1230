@@ -102,7 +102,11 @@ function normalizeEnablement(row, scopeRef) {
 }
 
 function constrainedSourceId(snapshot) {
-  const profile = snapshot?.execution_context?.constrained_natural_resource_profile;
+  const execution = snapshot?.execution_context;
+  const profile = execution?.finite_source_authority
+    ?? execution?.constrained_natural_resource_profile
+    ?? execution?.context_bound_capabilities?.[0]
+      ?.constrained_natural_resource_profile;
   const id = profile?.finite_source?.source_resource_node_id;
   return typeof id === 'string' && id.length > 0 && id.trim() === id ? id : null;
 }

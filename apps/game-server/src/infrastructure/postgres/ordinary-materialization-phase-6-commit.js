@@ -10,8 +10,6 @@ import {
   freezePhase6Data,
   normalizeSupportingBases,
   normalizePropertyPlacementBase,
-  propertyPlacementBaseDigest,
-  propertyPlacementEvidenceMatches,
   safeVersion,
   sameText,
   sameTextList,
@@ -19,6 +17,8 @@ import {
   validTransitionShape,
   version
 } from './ordinary-materialization-phase-6-commit-internal.js';
+import { propertyPlacementBaseDigest, propertyPlacementEvidenceMatches } from
+  './ordinary-materialization-property-evidence.js';
 import { insertOrdinaryMaterializedRuntimeItem } from
   './ordinary-materialization-runtime-item.js';
 import { applyFiniteResourceInitializationInTransaction,
@@ -127,8 +127,11 @@ function exactMaterializedItem(value) {
     'mechanics_policy_ref','item_proposal','mechanics_snapshot'];
   const contextBound = [...legacy.slice(0, 8), 'causal_basis_kind',
     'condition_state','permission_refs', ...legacy.slice(8)];
+  const finiteCommon = [...legacy.slice(0, 8), 'causal_basis_kind',
+    ...legacy.slice(8)];
   const keys = value != null && Object.hasOwn(value, 'permission_refs')
-    ? contextBound : legacy;
+    ? contextBound : value != null && Object.hasOwn(value, 'causal_basis_kind')
+      ? finiteCommon : legacy;
   return exact(value, keys);
 }
 

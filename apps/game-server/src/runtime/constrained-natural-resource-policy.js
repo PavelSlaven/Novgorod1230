@@ -1,4 +1,6 @@
-import { resolveFiniteSourceInitialAmount } from '@rus/items-property/finite-resource-transition';
+export { finiteSourceTransition as constrainedNaturalResourceFiniteTransition,
+  finiteSourceInitialization as constrainedNaturalResourceFiniteInitialization }
+  from './finite-source-effects.js';
 
 const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
   'environment_ref', 'semantic_type', 'functional_bucket', 'admission_class',
@@ -20,78 +22,15 @@ export function resolveConstrainedNaturalResourcePolicy({ objective_context,
   if (!plain(candidate) || candidate.admission_class === 'common_mundane') return pass(null);
   if (!['specialized_or_valuable','weapon_or_armament']
     .includes(candidate.admission_class)
-      || candidate.availability_class !== 'context_bound') return blocked();
+      || candidate.availability_class !== 'context_bound') return blocked('absent');
   const objective = objective_context;
   const profile = record(execution_context?.constrained_natural_resource_profile,
     PROFILE);
   if (!objective || !profile || !validProfile(profile, objective, candidate, scope_ref,
       execution_context?.supporting_bases, execution_context?.committed_finite_source,
-      property_placement_context)) return blocked();
+      property_placement_context)) return blocked('absent');
   return pass({ ...profile,
     finite_source: structuredClone(execution_context.committed_finite_source) });
-}
-
-export function constrainedNaturalResourceFiniteTransition({ profile, item,
-  request_identity } = {}) {
-  const p = record(profile, PROFILE), source = p && sourceRecord(p.finite_source);
-  const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
-  if (!p || !source || !text(request_identity) || !Array.isArray(item?.causal_basis_refs)
-      || !item.causal_basis_refs.includes(source.source_resource_node_id)
-      || item.position_ref == null || item.property_basis_ref == null
-      || !integer(quantity?.value) || quantity.value < 1 || quantity.unit !== source.quantity.unit) {
-    return null;
-  }
-  const before = source.quantity;
-  if (before.denominator !== 1 || before.numerator < quantity.value) return null;
-  const after = before.numerator - quantity.value;
-  return deepFreeze({ source_resource_node_id: source.source_resource_node_id,
-    expected_state_version: source.state_version,
-    causal_transition_identity: request_identity,
-    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    before_quantity: structuredClone(before),
-    decrement_quantity: { numerator: quantity.value, denominator: 1, unit: quantity.unit },
-    after_quantity: { numerator: after, denominator: 1, unit: quantity.unit },
-    next_state_version: source.state_version + 1,
-    lifecycle_state_after: after === 0 ? 'depleted' : 'active' });
-}
-
-// The model estimates a rational amount inside code-owned persisted bounds;
-// the runtime validates that estimate before the P16 plan exists.
-export function constrainedNaturalResourceFiniteInitialization({ profile, item,
-  request_identity, estimated_amount } = {}) {
-  const p = record(profile, PROFILE), source = p && sourceRecord(p.finite_source);
-  if (!p || !source || source.lifecycle_state !== 'uninitialized'
-      || !rational(estimated_amount) || !Array.isArray(item?.causal_basis_refs)
-      || !item.causal_basis_refs.includes(source.source_resource_node_id)) return null;
-  let initialized;
-  try {
-    initialized = resolveFiniteSourceInitialAmount({
-      initialization_identity: request_identity, committed_amount: null,
-      approved_bounds: structuredClone(source.initial_amount_bounds),
-      estimated_amount: structuredClone(estimated_amount)
-    });
-  } catch { return null; }
-  const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
-  if (!integer(quantity?.value) || quantity.value < 1 || quantity.unit !== initialized.amount.unit
-      || initialized.amount.denominator !== 1 || initialized.amount.numerator < quantity.value) return null;
-  const after = initialized.amount.numerator - quantity.value;
-  const transition = { source_resource_node_id: source.source_resource_node_id,
-    expected_state_version: source.state_version + 1,
-    causal_transition_identity: request_identity,
-    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    before_quantity: structuredClone(initialized.amount),
-    decrement_quantity: { numerator: quantity.value, denominator: 1, unit: quantity.unit },
-    after_quantity: { numerator: after, denominator: 1, unit: quantity.unit },
-    next_state_version: source.state_version + 2,
-    lifecycle_state_after: after === 0 ? 'depleted' : 'active' };
-  return deepFreeze({ finite_resource_initialization: {
-    source_resource_node_id: source.source_resource_node_id,
-    expected_state_version: source.state_version,
-    initialization_identity: request_identity,
-    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    estimated_amount: structuredClone(initialized.amount),
-    approved_bounds: structuredClone(source.initial_amount_bounds)
-  }, finite_resource_transition: transition });
 }
 
 function validProfile(profile, objective, candidate, scopeRef, bases, committedSource, propertyContext) {
@@ -193,4 +132,4 @@ function deepFreeze(value) { if (value && typeof value === 'object' && !Object.i
 } return value; }
 function pass(profile) { return deepFreeze({ resolution: null,
   profile: profile == null ? null : structuredClone(profile) }); }
-function blocked() { return deepFreeze({ resolution: 'authority_required', profile: null }); }
+function blocked(resolution) { return deepFreeze({ resolution, profile: null }); }

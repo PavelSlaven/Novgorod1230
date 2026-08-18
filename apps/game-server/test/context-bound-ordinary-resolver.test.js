@@ -144,9 +144,10 @@ test('context-bound profile owns the persisted public name against model authent
   }
 });
 
-test('unseen armament, ordinary yard and currency stop before either model stage', async () => {
+test('unseen armament, ordinary yard and currency persist code-owned absence without model calls', async () => {
   for (const input of [enabled({ semantic_type: 'unseen_weapon' }), enabled({ withProfile: false }),
-    enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]) {
+    enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]
+    .map((value) => JSON.parse(JSON.stringify(value)))) {
     let calls = 0;
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
       inputDigest: 'input', loadEnablement: async () => input,
@@ -155,7 +156,13 @@ test('unseen armament, ordinary yard and currency stop before either model stage
       }) });
     const result = await resolver(request());
     assert.equal(calls, 0);
-    assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
+    const plan = result.ordinary_materialization_atomic_write_plan;
+    assert.ok(plan, JSON.stringify(result));
+    assert.equal(plan.resolution, 'absent');
+    assert.deepEqual(plan.transitions.map(({ kind }) => kind),
+      ['seed', 'resolve_presence']);
+    assert.equal(plan.next_aggregate.presence_resolutions.at(-1).resolution,
+      'absent');
   }
 });
 

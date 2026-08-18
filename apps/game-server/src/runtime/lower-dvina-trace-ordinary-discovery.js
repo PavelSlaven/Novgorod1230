@@ -5,10 +5,11 @@ import {
 } from './ordinary-materialization-seed-request.js';
 import { createOrdinaryMaterializationAtomicWritePlan } from
   '../infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
-import { constrainedNaturalResourceFiniteInitialization,
-  constrainedNaturalResourceFiniteTransition,
-  resolveConstrainedNaturalResourcePolicy } from
+import { resolveConstrainedNaturalResourcePolicy } from
   './constrained-natural-resource-policy.js';
+import { finiteSourceInitialization, finiteSourceTransition,
+  resolveFiniteSourceAuthority } from
+  './finite-source-effects.js';
 import { resolveContextBoundOrdinaryPolicy } from
   './context-bound-ordinary-policy.js';
 import { bindCommittedSourceIdentity } from
@@ -36,16 +37,15 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
     buildPresenceRequest: buildOrdinaryMaterializationPresenceRequest,
     sealAtomicWritePlan: createOrdinaryMaterializationAtomicWritePlan,
     resolveFiniteResourceEffects({ enabled, item, envelope, presence }) {
-      const profile = enabled.ordinary_authority
-        ?.constrained_resource_profile ?? null;
+      const profile = enabled.ordinary_authority?.finite_source_profile ?? null;
       if (profile == null) return null;
       if (profile.finite_source.lifecycle_state === 'uninitialized') {
-        return constrainedNaturalResourceFiniteInitialization({ profile, item,
+        return finiteSourceInitialization({ profile, item,
           request_identity: envelope.request.request_id,
           estimated_amount: presence.pending_items_property_admission
             ?.proposed_item?.finite_source_initial_amount_estimate?.amount });
       }
-      const transition = constrainedNaturalResourceFiniteTransition({ profile,
+      const transition = finiteSourceTransition({ profile,
         item, request_identity: envelope.request.request_id });
       return transition == null ? null
         : { finite_resource_transition: transition };
@@ -57,49 +57,84 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
       const enabled = snapshotOrdinaryMaterializationEnablement(
         await loadEnablement({ partyId, scopeRef }));
       if (enabled == null) return null;
-      const execution = enabled?.execution_context;
-      if (!validExecution(execution)
-          || execution.candidate_context.target_ref
-            !== request?.operation?.target_refs?.[0]) return null;
+      const selected = selectDiscoveryContext({
+        execution: enabled?.execution_context,
+        objective: enabled?.objective_context,
+        targetRef: request?.operation?.target_refs?.[0]
+      });
+      const execution = selected?.execution;
+      if (!validExecution(execution)) return null;
       const policyInput = {
-        objective_context: structuredClone(enabled.objective_context),
+        objective_context: structuredClone(selected.objective),
         execution_context: structuredClone(execution),
         candidate_context: structuredClone(execution.candidate_context),
         scope_ref: structuredClone(scopeRef),
         property_placement_context:
           structuredClone(enabled.property_placement_context)
       };
-      const contextBound = resolveContextBoundOrdinaryPolicy(policyInput);
+      const contextBound = execution.constrained_natural_resource_profile != null
+        ? { resolution: null, profile: null }
+        : resolveContextBoundOrdinaryPolicy(policyInput);
       const constrained = contextBound.profile == null
-        || requiresFiniteResourceOwner(contextBound.profile)
+        || execution.constrained_natural_resource_profile != null
         ? resolveConstrainedNaturalResourcePolicy(policyInput)
         : { resolution: null, profile: null };
       const codeOwnedResolution = contextBound.resolution
         ?? constrained.resolution ?? null;
-      if (codeOwnedResolution !== null && !enabled.ordinary_aggregate.seeded) {
-        return null;
-      }
+      const genericFinite = resolveFiniteSourceAuthority({
+        authority: execution.finite_source_authority,
+        committed_source: execution.committed_finite_source
+      });
+      const finiteProfile = constrained.profile ?? genericFinite;
       const sourceRef = contextBound.profile?.source_basis_ref
         ?? constrained.profile?.source_basis_ref ?? null;
-      const candidate = bindCommittedSourceIdentity(
-        execution.candidate_context, sourceRef);
+      const candidate = codeOwnedResolution == null
+        ? bindCommittedSourceIdentity(execution.candidate_context, sourceRef)
+        : execution.candidate_context;
       if (candidate == null) return null;
-      const estimatePolicy = finiteEstimatePolicy(constrained.profile);
+      const estimatePolicy = finiteEstimatePolicy(finiteProfile);
       const objectiveContext = estimatePolicy == null
-        ? enabled.objective_context
-        : { ...enabled.objective_context, policy_refs: {
-          ...enabled.objective_context.policy_refs,
+        ? selected.objective
+        : { ...selected.objective, policy_refs: {
+          ...selected.objective.policy_refs,
           finite_source_initial_amount_estimate_policy: estimatePolicy
         } };
       return { ...enabled, party_id: partyId, scope_ref: scopeRef,
+        expected_supporting_bases:
+          structuredClone(enabled.execution_context.supporting_bases),
         objective_context: objectiveContext,
         execution_context: { ...execution, candidate_context: candidate },
         ordinary_authority: {
           context_bound_profile: contextBound.profile,
-          constrained_resource_profile: constrained.profile
+          constrained_resource_profile: constrained.profile,
+          finite_source_profile: finiteProfile
         }, code_owned_resolution: codeOwnedResolution };
     }
   });
+}
+function selectDiscoveryContext({ execution, objective, targetRef }) {
+  if (!validExecution(execution) || typeof targetRef !== 'string') return null;
+  if (execution.candidate_context.target_ref === targetRef) {
+    const basisRefs = new Set(execution.supporting_bases.map(({ basis_ref }) =>
+      basis_ref));
+    return { execution, objective: { ...objective, policy_refs: {
+      ...objective.policy_refs,
+      allowed_supporting_bases: objective.policy_refs.allowed_supporting_bases
+        .filter(({ basis_ref }) => basisRefs.has(basis_ref)) } } };
+  }
+  const matches = (execution.context_bound_capabilities ?? []).filter(
+    ({ capability_ref }) => capability_ref === targetRef);
+  if (matches.length !== 1) return null;
+  const selected = matches[0];
+  return { execution: { ...execution,
+    candidate_context: selected.candidate_context,
+    supporting_bases: selected.supporting_bases,
+    context_bound_ordinary_profile:
+      selected.context_bound_ordinary_profile,
+    constrained_natural_resource_profile:
+      selected.constrained_natural_resource_profile },
+  objective: { ...objective, context_refs: selected.context_refs,
+    policy_refs: selected.policy_refs } };
 }
 
 function currentG6(state) {
@@ -127,14 +162,6 @@ function validExecution(value) {
         && value.candidate_context.availability_class === 'common'
       : value.candidate_context.availability_class === 'context_bound')
     && validMechanicsPolicy(value.mechanics_policy);
-}
-function requiresFiniteResourceOwner(profile) {
-  return profile?.schema === 'rus.items.context_bound_ordinary_profile.v2'
-    && profile.version === 2
-    && (profile.basis_kind === 'finite_source'
-      || (['specialized_stock', 'armament'].includes(profile.profile_kind)
-        && profile.condition_state === 'damaged'
-        && profile.basis_kind === 'remnant'));
 }
 function finiteEstimatePolicy(profile) {
   const source = profile?.finite_source;

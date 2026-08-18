@@ -7,9 +7,9 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  '233ccdb72c5275bc5af93b9f64adc296e8f8d893aa39b198a50b0a3abb991687';
+  '6ec1362aae927cfd33d6c8b479950eb41587fb08d20ff89d7eb4efb6ec2e907c';
 const MANIFEST_DIGEST =
-  'e02b835a2841d925a4df36e82a96f010fced66c8a6cae653e950cee397c8acea';
+  '62b224f98483f3807a9217504a8e1413bd9e9e61d974f366267d4cb565e5a0f1';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
@@ -47,7 +47,8 @@ function valid(manifest, profile, digest, manifestDigest) {
     && exactKeys(profile, ['schema','profile_id','revision','status','scenario_id',
       'scenario_definition_revision','catalog_version','property_version','placement_version',
       'technical_limits','context_refs','policy_refs','execution',
-      'stage_b_classification_eval','o2a_ambient','fallback_policy'])
+      'stage_b_classification_eval','o2a_ambient','o2a_context_bound',
+      'fallback_policy'])
     && profile.catalog_version === 1 && profile.property_version === 1
     && profile.placement_version === 1 && profile.fallback_policy === 'forbidden'
     && exactKeys(profile.technical_limits, ['max_new_entities','max_new_background_groups','max_resolution_records'])
@@ -60,8 +61,10 @@ function valid(manifest, profile, digest, manifestDigest) {
     && exactKeys(profile.policy_refs, ['authority_policy_ref','density_policy_ref',
       'ordinary_presence_policy_ref','runtime_item_mechanics_policy_ref',
       'allowed_admission_classes','context_bound_permission_refs'])
-    && profile.policy_refs.allowed_admission_classes?.length === 1
-    && profile.policy_refs.allowed_admission_classes[0] === 'common_mundane'
+    && JSON.stringify(profile.policy_refs.allowed_admission_classes)
+      === '["common_mundane","specialized_or_valuable","weapon_or_armament","currency_or_precious","document_like","other_restricted"]'
+    && JSON.stringify(profile.policy_refs.context_bound_permission_refs)
+      === '["trace_ld_v1_o2a_first_entry_region_permission","trace_ld_v1_o2a_prepared_clay_permission"]'
     && exactKeys(profile.execution, ['allowed_disclosure_policy_refs','density_policy',
       'candidate_context','mechanics_policy','causal_ref','source_refs'])
     && exactKeys(profile.execution.density_policy, ['version','mappings'])
@@ -97,7 +100,47 @@ function valid(manifest, profile, digest, manifestDigest) {
       profile.policy_refs.runtime_item_mechanics_policy_ref)
     && validateLowerDvinaTraceOrdinaryStageBEval(
       profile.stage_b_classification_eval)
-    && validO2aAmbient(profile.o2a_ambient);
+    && validO2aAmbient(profile.o2a_ambient)
+    && validO2aContextBound(profile.o2a_context_bound, profile);
+}
+function validO2aContextBound(value, profile) {
+  const classes = ['weapon_or_armament','currency_or_precious',
+    'document_like','other_restricted'];
+  const c = value?.capability;
+  return exactKeys(value, ['status','negative_admission_classes','capability'])
+    && value.status === 'approved'
+    && JSON.stringify(value.negative_admission_classes) === JSON.stringify(classes)
+    && exactKeys(c, ['capability_ref','profile_ref','semantic_type','public_name',
+      'functional_bucket','admission_class','profile_kind','condition_state',
+      'basis_kind','source_basis_ref','property_basis_ref','environment_ref',
+      'regional_permission_ref','resource_permission_ref',
+      'mechanics_capability_ref','initial_quantity','quantity_unit_ref',
+      'initial_amount_bounds'])
+    && ['capability_ref','profile_ref','semantic_type','public_name',
+      'functional_bucket','source_basis_ref','property_basis_ref','environment_ref',
+      'regional_permission_ref','resource_permission_ref','mechanics_capability_ref']
+      .every((key) => text(c[key]))
+    && c.admission_class === 'specialized_or_valuable'
+    && c.profile_kind === 'specialized_stock'
+    && c.condition_state === 'serviceable' && c.basis_kind === 'finite_source'
+    && c.initial_quantity === 2
+    && exactKeys(c.quantity_unit_ref, ['kind','id'])
+    && c.quantity_unit_ref.kind === 'unit' && c.quantity_unit_ref.id === 'item'
+    && validBounds(c.initial_amount_bounds, 'item')
+    && profile.context_refs.environment_refs.includes(c.environment_ref)
+    && profile.policy_refs.context_bound_permission_refs.includes(
+      c.regional_permission_ref)
+    && profile.policy_refs.context_bound_permission_refs.includes(
+      c.resource_permission_ref);
+}
+function validBounds(value, unit) {
+  return exactKeys(value, ['minimum','maximum'])
+    && [value.minimum,value.maximum].every((entry) =>
+      exactKeys(entry, ['numerator','denominator','unit'])
+        && positive(entry.numerator) && positive(entry.denominator)
+        && entry.unit === unit)
+    && BigInt(value.minimum.numerator) * BigInt(value.maximum.denominator)
+      <= BigInt(value.maximum.numerator) * BigInt(value.minimum.denominator);
 }
 function validO2aAmbient(value) {
   return exactKeys(value, ['status','scope_binding','context_pin_ref','source_ref',

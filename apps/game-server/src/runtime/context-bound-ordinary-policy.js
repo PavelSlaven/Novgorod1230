@@ -8,10 +8,10 @@ const PROFILE_V2 = [...PROFILE, 'condition_state', 'basis_kind'];
 // candidate identity and safe public name are committed before Stage B.
 export function resolveContextBoundOrdinaryPolicy(input = {}) {
   const copied = copyData(input);
-  if (copied === null) return blocked();
+  if (copied === null) return blocked('authority_required');
   const outer = record(copied, ['objective_context', 'execution_context',
     'candidate_context', 'scope_ref', 'property_placement_context']);
-  if (!outer) return blocked();
+  if (!outer) return blocked('authority_required');
   const { objective_context: objective, execution_context: execution,
     candidate_context: candidate, scope_ref: scopeRef,
     property_placement_context: propertyContext } = outer;
@@ -19,15 +19,16 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
   if (!['weapon_or_armament', 'specialized_or_valuable',
     'currency_or_precious', 'document_like', 'other_restricted']
     .includes(candidate.admission_class)) {
-    return blocked();
+    return blocked('absent');
   }
   const raw = execution?.context_bound_ordinary_profile;
   // A specialized finite natural source has its own Phase 5 authority owner.
   // All other specialized or weapon candidates require this exact envelope.
   if (raw == null && candidate.admission_class === 'specialized_or_valuable') return pass(null);
+  if (raw == null) return blocked('absent');
   const profile = record(raw, PROFILE_V2) ?? record(raw, PROFILE);
   if (!profile || !validProfile(profile, objective, execution, candidate, scopeRef,
-      propertyContext)) return blocked();
+      propertyContext)) return blocked('absent');
   return pass(profile.version === 1 ? { ...profile, condition_state: 'serviceable',
     basis_kind: execution.supporting_bases[0].basis_kind ?? null } : profile);
 }
@@ -100,7 +101,7 @@ function plain(value) { return value != null && typeof value === 'object' && !Ar
 function text(value) { return typeof value === 'string' && value.length > 0 && value.trim() === value; }
 function pass(profile) { return deepFreeze({ resolution: null,
   profile: profile == null ? null : structuredClone(profile) }); }
-function blocked() { return deepFreeze({ resolution: 'authority_required', profile: null }); }
+function blocked(resolution) { return deepFreeze({ resolution, profile: null }); }
 function deepFreeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) {
   for (const entry of Object.values(value)) deepFreeze(entry);
   Object.freeze(value);

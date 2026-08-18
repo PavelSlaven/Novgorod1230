@@ -70,11 +70,11 @@ test('the exact approved first-entry binding exposes only its authored ambient p
 
 test('O2a ambient admission is absent for a drifted binding', async () => {
   const profile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: process.cwd() });
-  assert.deepEqual(profile.policy_refs.context_bound_permission_refs, []);
-  assert.equal(Object.hasOwn(profile.execution,
-    'context_bound_ordinary_profile'), false);
-  assert.equal(Object.hasOwn(profile.execution,
-    'constrained_natural_resource_profile'), false);
+  assert.deepEqual(profile.policy_refs.context_bound_permission_refs, [
+    'trace_ld_v1_o2a_first_entry_region_permission',
+    'trace_ld_v1_o2a_prepared_clay_permission'
+  ]);
+  assert.equal(profile.o2a_context_bound.status, 'approved');
   assert.equal(createLowerDvinaTraceO2aAmbientPort({ profile, committedState: {
     actor_id: 'mikula', position: { g6_id: 'other', location_ref: 'trace_ld_v1_loc_wreck_shore' }
   } }), null);

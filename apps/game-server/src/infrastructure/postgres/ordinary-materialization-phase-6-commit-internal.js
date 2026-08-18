@@ -1,8 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
-import {
-  ordinaryWorldPropertyPlacementContextDigest,
-  resolveOrdinaryWorldPropertyPlacement
-} from '@rus/items-property';
+import { propertyPlacementBaseDigest } from
+  './ordinary-materialization-property-evidence.js';
 
 const MAX = Number.MAX_SAFE_INTEGER;
 
@@ -179,13 +177,20 @@ export function basisCoversItem(bases, item) {
   if (!permissions || !sameTextList(permissions, [...permissions].sort())) {
     return false;
   }
-  const contextBound = item.admission_class !== 'common_mundane';
+  const contextBound = item.admission_class !== 'common_mundane',
+    finiteSource = item.causal_basis_kind === 'finite_source';
+  const itemBasisRefs = new Set([item.supporting_basis_ref,
+    ...item.causal_basis_refs]);
+  const finiteBasis = bases.some((basis) => itemBasisRefs.has(basis.basis_ref)
+    && basis.basis_kind === 'finite_source');
+  if (finiteBasis !== finiteSource) return false;
   return [item.supporting_basis_ref, ...item.causal_basis_refs].every((ref) =>
     bases.some((basis) => basis.basis_ref === ref
       && basis.functional_buckets.includes(item.functional_bucket)
       && basis.allowed_admission_classes.includes(item.admission_class)
       && sameTextList(basis.permission_refs ?? [], permissions)
-      && (!contextBound || basis.basis_kind === item.causal_basis_kind)));
+      && (!(contextBound || finiteSource)
+        || basis.basis_kind === item.causal_basis_kind)));
 }
 
 export function normalizePropertyPlacementBase(value, scope) {
@@ -209,27 +214,6 @@ export function normalizePropertyPlacementBase(value, scope) {
   const digest = propertyPlacementBaseDigest(base);
   if (!sameText(digest)) fail('ORDINARY_PHASE6_PROPERTY_PLACEMENT_CONTEXT_INVALID');
   return base;
-}
-
-export function propertyPlacementBaseDigest(base) {
-  return ordinaryWorldPropertyPlacementContextDigest({
-    ...base,
-    supporting_basis_ref: 'phase6_context_digest_only',
-    causal_basis_refs: ['phase6_context_digest_only'],
-    requested_position_ref: 'phase6_context_digest_only'
-  });
-}
-
-export function propertyPlacementEvidenceMatches({ base, item }) {
-  const result = resolveOrdinaryWorldPropertyPlacement({
-    ...base,
-    supporting_basis_ref: item.supporting_basis_ref,
-    causal_basis_refs: item.causal_basis_refs,
-    requested_position_ref: item.position_ref
-  });
-  return result.pass === true
-    && canonicalDigest(result.evidence)
-      === canonicalDigest(item.item_proposal.property_placement_evidence);
 }
 
 export function sameText(value, expected = undefined) {
@@ -280,12 +264,10 @@ function plain(value) {
   return value != null && typeof value === 'object' && !Array.isArray(value)
     && Object.getPrototypeOf(value) === Object.prototype;
 }
-
 function sameScope(value, expected) {
   const scope = exactOrNull(value, ['entity_kind','entity_id']);
   return scope?.entity_kind === expected.entity_kind && scope.entity_id === expected.entity_id;
 }
-
 function samePlacementEvidence(value, scope, positionRef) {
   const placement = exactOrNull(value, ['scope_ref','position_ref']);
   return !!placement && placement.scope_ref === scope.entity_id && placement.position_ref === positionRef;

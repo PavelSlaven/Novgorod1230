@@ -3,15 +3,17 @@ import { resolveFiniteSourceInitialAmount } from '@rus/items-property/finite-res
 const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
   'environment_ref', 'semantic_type', 'functional_bucket', 'admission_class',
   'regional_permission_ref', 'resource_permission_ref', 'source_basis_ref',
-  'finite_source'];
+  'public_name', 'finite_source'];
+const SOURCE_AUTHORITY = ['source_resource_node_id', 'quantity_unit_ref',
+  'position_ref', 'property_basis_ref', 'initial_amount_bounds'];
 const SOURCE = ['source_resource_node_id', 'state_version', 'lifecycle_state',
   'quantity', 'quantity_unit_ref', 'position_ref', 'property_basis_ref'];
 const UNINITIALIZED_SOURCE = [...SOURCE, 'initial_amount_bounds'];
 const QUANTITY = ['numerator', 'denominator', 'unit'];
 
 // This is an admission policy, not a geology resolver.  A caller gets a
-// positive constrained resource only from a fully committed, finite source
-// profile.  Player wording is intentionally not an input.
+// positive constrained resource only from immutable authored source pins plus
+// the current committed finite row. Player wording is intentionally not an input.
 export function resolveConstrainedNaturalResourcePolicy({ objective_context,
   execution_context, candidate_context, scope_ref, property_placement_context } = {}) {
   const candidate = candidate_context;
@@ -25,7 +27,8 @@ export function resolveConstrainedNaturalResourcePolicy({ objective_context,
   if (!objective || !profile || !validProfile(profile, objective, candidate, scope_ref,
       execution_context?.supporting_bases, execution_context?.committed_finite_source,
       property_placement_context)) return blocked();
-  return pass(profile);
+  return pass({ ...profile,
+    finite_source: structuredClone(execution_context.committed_finite_source) });
 }
 
 export function constrainedNaturalResourceFiniteTransition({ profile, item,
@@ -95,7 +98,7 @@ function validProfile(profile, objective, candidate, scopeRef, bases, committedS
   const permissions = ordered([profile.regional_permission_ref,
     profile.resource_permission_ref]);
   const policy = objective.policy_refs;
-  const source = sourceRecord(profile.finite_source);
+  const source = sourceAuthorityRecord(profile.finite_source);
   const committed = sourceRecord(committedSource);
   const okay = profile.schema === 'rus.items.constrained_natural_resource_profile.v1'
     && profile.version === 1 && profile.state === 'committed'
@@ -103,6 +106,7 @@ function validProfile(profile, objective, candidate, scopeRef, bases, committedS
     && text(profile.environment_ref) && Array.isArray(objective.context_refs?.environment_refs)
     && objective.context_refs.environment_refs.includes(profile.environment_ref)
     && profile.semantic_type === candidate.semantic_type
+    && text(profile.public_name)
     && profile.functional_bucket === candidate.functional_bucket
     && profile.admission_class === candidate.admission_class
     && text(profile.regional_permission_ref) && text(profile.resource_permission_ref)
@@ -111,12 +115,14 @@ function validProfile(profile, objective, candidate, scopeRef, bases, committedS
     && same(permissions, ordered(policy.context_bound_permission_refs))
     && text(profile.source_basis_ref) && source
     && source.source_resource_node_id === profile.source_basis_ref
-    && integer(source.state_version) && source.state_version >= 1
-    && rational(source.quantity) && plain(source.quantity_unit_ref)
-    && ((source.lifecycle_state === 'active' && source.quantity.numerator > 0)
-      || (source.lifecycle_state === 'uninitialized' && source.quantity.numerator === 0
-        && validBounds(source.initial_amount_bounds, source.quantity.unit)))
-    && committed && sameSource(source, committed)
+    && plain(source.quantity_unit_ref) && text(source.quantity_unit_ref.id)
+    && validBounds(source.initial_amount_bounds, source.quantity_unit_ref.id)
+    && committed && integer(committed.state_version) && committed.state_version >= 1
+    && rational(committed.quantity)
+    && ((committed.lifecycle_state === 'active' && committed.quantity.numerator > 0)
+      || (committed.lifecycle_state === 'uninitialized'
+        && committed.quantity.numerator === 0))
+    && sameSourceAuthority(source, committed)
     && placementPropertyPins(source, propertyContext, scopeRef)
     && Array.isArray(bases) && bases.length === 1
     && basisCovers(bases[0], profile, permissions, scopeRef);
@@ -133,14 +139,18 @@ function basisCovers(basis, profile, permissions, scopeRef) {
     && basis.allowed_admission_classes[0] === profile.admission_class
     && same(ordered(basis.permission_refs), permissions);
 }
-function sameSource(left, right) { return left.source_resource_node_id === right.source_resource_node_id
-  && left.state_version === right.state_version && left.lifecycle_state === right.lifecycle_state
-  && left.position_ref === right.position_ref && left.property_basis_ref === right.property_basis_ref
-  && left.quantity.numerator === right.quantity.numerator
-  && left.quantity.denominator === right.quantity.denominator && left.quantity.unit === right.quantity.unit
-  && JSON.stringify(left.quantity_unit_ref) === JSON.stringify(right.quantity_unit_ref)
-  && JSON.stringify(left.initial_amount_bounds ?? null)
-    === JSON.stringify(right.initial_amount_bounds ?? null); }
+function sameSourceAuthority(authority, committed) {
+  return authority.source_resource_node_id === committed.source_resource_node_id
+    && authority.position_ref === committed.position_ref
+    && authority.property_basis_ref === committed.property_basis_ref
+    && committed.quantity.unit === authority.quantity_unit_ref.id
+    && JSON.stringify(authority.quantity_unit_ref)
+      === JSON.stringify(committed.quantity_unit_ref)
+    && (committed.lifecycle_state !== 'uninitialized'
+      || JSON.stringify(authority.initial_amount_bounds)
+        === JSON.stringify(committed.initial_amount_bounds));
+}
+function sourceAuthorityRecord(value) { return record(value, SOURCE_AUTHORITY); }
 function sourceRecord(value) {
   const keys = value?.lifecycle_state === 'uninitialized' ? UNINITIALIZED_SOURCE : SOURCE;
   return record(value, keys);

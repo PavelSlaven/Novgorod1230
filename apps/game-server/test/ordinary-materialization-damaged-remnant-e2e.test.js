@@ -128,6 +128,7 @@ function enabled({
     property_basis_ref: "property:remnant",
     runtime_item_mechanics_policy_ref: "mechanics",
     mechanics_capability_ref: armament ? "combat:mechanics" : "stock:mechanics",
+    public_name: armament ? "обычный повреждённый наконечник" : "обычный обломок инструмента",
     condition_state: "damaged",
     basis_kind,
   };
@@ -144,7 +145,17 @@ function enabled({
     regional_permission_ref: permissions[0],
     resource_permission_ref: permissions[1],
     source_basis_ref: source_ref,
-    finite_source: structuredClone(source),
+    public_name: armament ? "обычный повреждённый наконечник" : "обычный обломок инструмента",
+    finite_source: {
+      source_resource_node_id: source_ref,
+      quantity_unit_ref: structuredClone(source.quantity_unit_ref),
+      position_ref: source.position_ref,
+      property_basis_ref: source.property_basis_ref,
+      initial_amount_bounds: {
+        minimum: { numerator: 1, denominator: 1, unit: "item" },
+        maximum: { numerator: 8, denominator: 1, unit: "item" },
+      },
+    },
   };
   const aggregate = createOrdinaryAggregate({
     scope_ref,

@@ -70,7 +70,7 @@ only verifies the receipt against the profile digest and exact
 provider/model/config identity, without additional eval calls.
 Its server-owned
 PostgreSQL committer locks the party, aggregate and trusted context pins, then
-atomically writes migrations 021–023 state: O1 enablement/objective, aggregate,
+atomically writes migrations 021–025 state: O1/O2a enablement/objective, aggregate,
 prepared/committed scoped supporting-basis catalog, positive or negative exact
 resolution/idempotency, optional private-v2 item with immutable
 mechanics/property/placement and normalized basis links, aggregate CAS, catalog
@@ -78,9 +78,13 @@ pin and party version. Stale proposals are rejected rather than silently
 rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
 response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
-operation and does not activate O2/A1/F1/S1/N1, template-less runtime
-containers, context-bound weapons/value/currency or natural finite sources;
-negative resolutions contain no item and every failure rolls back.
+operation. O2a admits only exact profile/basis/permission-bound context resources:
+ambient portions, bounded finite sources, approved precious physical material and
+non-unique damaged remnants; currency identity, significant/hidden facts,
+template-less containers and O2b/A1/F1/S1/N1 remain disabled. Finite initialization
+accepts one semantic estimate inside persisted code-owned bounds, then P16 owns the
+exact quantity and all later decrements. Negative resolutions contain no item and
+every failure rolls back.
 
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility

@@ -17,9 +17,9 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
     candidate_context: candidate, scope_ref: scopeRef,
     property_placement_context: propertyContext } = outer;
   if (!plain(candidate) || candidate.admission_class === 'common_mundane') return pass(null);
-  if (candidate.admission_class === 'currency_or_precious') return blocked();
   if (!['weapon_or_armament', 'specialized_or_valuable',
-    'document_like', 'other_restricted'].includes(candidate.admission_class)) {
+    'currency_or_precious', 'document_like', 'other_restricted']
+    .includes(candidate.admission_class)) {
     return blocked();
   }
   const raw = execution?.context_bound_ordinary_profile;
@@ -35,16 +35,19 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
 
 function validProfile(profile, objective, execution, candidate, scopeRef, propertyContext) {
   const weapon = candidate.admission_class === 'weapon_or_armament';
+  const expectedProfileKind = weapon ? 'armament'
+    : candidate.admission_class === 'currency_or_precious'
+      ? 'precious_material' : 'specialized_stock';
   const permissions = refs(profile.permission_refs);
   const condition = profile.version === 1 ? 'serviceable' : profile.condition_state;
   return ((profile.schema === 'rus.items.context_bound_ordinary_profile.v1' && profile.version === 1)
       || (profile.schema === 'rus.items.context_bound_ordinary_profile.v2' && profile.version === 2
         && ['serviceable','damaged'].includes(condition)
         && (condition !== 'damaged' || (profile.basis_kind === 'remnant'
-          && profile.profile_kind === 'specialized_stock'))))
+          && ['specialized_stock','armament'].includes(profile.profile_kind)))))
     && profile.state === 'committed'
     && text(profile.profile_ref) && scope(profile.scope_ref, scopeRef)
-    && profile.profile_kind === (weapon ? 'armament' : 'specialized_stock')
+    && profile.profile_kind === expectedProfileKind
     && profile.semantic_type === candidate.semantic_type
     && profile.functional_bucket === candidate.functional_bucket
     && profile.admission_class === candidate.admission_class

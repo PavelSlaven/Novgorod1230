@@ -37,7 +37,7 @@ ALTER TABLE party_runtime.party_ordinary_materialization_items
   );
 ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS lifecycle_state text;
 ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS retired_by_causal_identity text;
-ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS approved_initial_amounts jsonb;
+ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS initial_amount_bounds jsonb;
 ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS initialization_identity text;
 ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS initial_amount_evidence jsonb;
 ALTER TABLE party_runtime.party_resource_nodes ADD COLUMN IF NOT EXISTS property_basis_ref text;
@@ -45,7 +45,7 @@ UPDATE party_runtime.party_resource_nodes SET lifecycle_state=CASE WHEN quantity
 ALTER TABLE party_runtime.party_resource_nodes ALTER COLUMN lifecycle_state SET NOT NULL;
 ALTER TABLE party_runtime.party_resource_nodes ALTER COLUMN lifecycle_state SET DEFAULT 'active';
 ALTER TABLE party_runtime.party_resource_nodes DROP CONSTRAINT IF EXISTS party_resource_nodes_lifecycle_quantity_check;
-ALTER TABLE party_runtime.party_resource_nodes ADD CONSTRAINT party_resource_nodes_lifecycle_quantity_check CHECK ((lifecycle_state='active' AND quantity_numerator>0) OR (lifecycle_state='depleted' AND quantity_numerator=0) OR (lifecycle_state='uninitialized' AND quantity_numerator=0 AND property_basis_ref IS NOT NULL AND approved_initial_amounts IS NOT NULL AND jsonb_typeof(approved_initial_amounts)='array' AND jsonb_array_length(approved_initial_amounts)>0 AND initialization_identity IS NULL AND initial_amount_evidence IS NULL));
+ALTER TABLE party_runtime.party_resource_nodes ADD CONSTRAINT party_resource_nodes_lifecycle_quantity_check CHECK ((lifecycle_state='active' AND quantity_numerator>0) OR (lifecycle_state='depleted' AND quantity_numerator=0) OR (lifecycle_state='uninitialized' AND quantity_numerator=0 AND property_basis_ref IS NOT NULL AND initial_amount_bounds IS NOT NULL AND jsonb_typeof(initial_amount_bounds)='object' AND initial_amount_bounds ?& ARRAY['minimum','maximum'] AND initial_amount_bounds - ARRAY['minimum','maximum'] = '{}'::jsonb AND initialization_identity IS NULL AND initial_amount_evidence IS NULL));
 ALTER TABLE party_runtime.party_resource_nodes DROP CONSTRAINT IF EXISTS party_resource_nodes_state_version_safe_check;
 ALTER TABLE party_runtime.party_resource_nodes ADD CONSTRAINT party_resource_nodes_state_version_safe_check CHECK (state_version >= 1 AND state_version <= 9007199254740991);
 ALTER TABLE party_runtime.party_resource_nodes DROP CONSTRAINT IF EXISTS party_resource_nodes_party_id_updated_change_set_id_fkey;

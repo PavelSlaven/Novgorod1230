@@ -79,7 +79,7 @@ test('current publication pins the exact v14 -> Phase 1A v15 -> revision 19 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v14');
   assert.equal(publication.manifest.revision, 14);
   assert.equal(publication.manifest_digest,
-    '5577f8859d8d237e4d5aa47b221891eb606650c0a6ec560def87faf71a041563');
+    '2b16e1f8528ca1451242827c528472a3c6a2c724992c9ecc383263ada08b4db6');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v13/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v13',
@@ -91,14 +91,14 @@ test('current publication pins the exact v14 -> Phase 1A v15 -> revision 19 chai
     'lower_dvina_trace_phase_1b_publication_v14');
   assert.equal(publication.binding.revision, 14);
   assert.equal(publication.binding_digest,
-    '72bff195c6866aaeeb6b40ea14be7c3184ef6a30bfb20053c6e1f382a3b58cba');
+    '864e03910318b4b188e166c01308759ff5e7f7eb810f7028fd90cbeb6dbe7d94');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     'c7cdd633d173efb757b7ed441e4d4cfc54afbad118d199c2dccd8a3da6529975');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v15');
   assert.equal(publication.phase_1a_manifest.revision, 15);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '73592e633d24b11320973b250b76e87aacfeb4e68db64b81acca7dee76f421b3');
+    'c4ffcc9db6c8fbd10bfd604ffd4dfe4443d9babc21cde7646cc80d44d4df5704');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     '4b1e3a1df4c58947f7b1acd7aa37c274ca68447fb2f503e743dc4a26ed958972');
   assert.equal(publication.definition.revision, 19);

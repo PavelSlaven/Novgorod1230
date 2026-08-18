@@ -7,9 +7,9 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  '0a0332ec4306db02dda1cea660bd5921a6bf046d3c3edcb9f1226dbe1ca4c1cf';
+  '233ccdb72c5275bc5af93b9f64adc296e8f8d893aa39b198a50b0a3abb991687';
 const MANIFEST_DIGEST =
-  '475c0c248ada37b72e7b746b042904f863510b7c007097fa15a71a03d8e73176';
+  'e02b835a2841d925a4df36e82a96f010fced66c8a6cae653e950cee397c8acea';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
@@ -39,15 +39,15 @@ function valid(manifest, profile, digest, manifestDigest) {
     && ref?.path === PROFILE_FILE && ref?.digest === digest
     && ref?.schema === profile?.schema && ref?.id === profile?.profile_id
     && ref?.revision === profile?.revision
-    && profile?.schema === 'rus.lower_dvina_trace_ordinary_materialization_profile.v1'
-    && profile?.profile_id === 'lower_dvina_trace_o1_first_entry_profile_v1'
-    && profile?.revision === 1 && profile?.status === 'approved'
+    && profile?.schema === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
+    && profile?.profile_id === 'lower_dvina_trace_o2a_first_entry_profile_v1'
+    && profile?.revision === 2 && profile?.status === 'approved'
     && profile?.scenario_id === 'lower_dvina_trace_v1'
     && profile?.scenario_definition_revision === 19
     && exactKeys(profile, ['schema','profile_id','revision','status','scenario_id',
       'scenario_definition_revision','catalog_version','property_version','placement_version',
       'technical_limits','context_refs','policy_refs','execution',
-      'stage_b_classification_eval','fallback_policy'])
+      'stage_b_classification_eval','o2a_ambient','fallback_policy'])
     && profile.catalog_version === 1 && profile.property_version === 1
     && profile.placement_version === 1 && profile.fallback_policy === 'forbidden'
     && exactKeys(profile.technical_limits, ['max_new_entities','max_new_background_groups','max_resolution_records'])
@@ -96,8 +96,47 @@ function valid(manifest, profile, digest, manifestDigest) {
     && validMechanicsPolicy(profile.execution.mechanics_policy,
       profile.policy_refs.runtime_item_mechanics_policy_ref)
     && validateLowerDvinaTraceOrdinaryStageBEval(
-      profile.stage_b_classification_eval);
+      profile.stage_b_classification_eval)
+    && validO2aAmbient(profile.o2a_ambient);
 }
+function validO2aAmbient(value) {
+  return exactKeys(value, ['status','scope_binding','context_pin_ref','source_ref',
+    'environment_ref','source_class','property_basis_ref','portion_profile','destination'])
+    && value.status === 'approved'
+    && exactKeys(value.scope_binding, ['position_ref','g6_ref'])
+    && text(value.scope_binding.position_ref) && text(value.scope_binding.g6_ref)
+    && text(value.context_pin_ref) && text(value.source_ref)
+    && text(value.environment_ref) && text(value.source_class)
+    && text(value.property_basis_ref)
+    && exactKeys(value.portion_profile, ['profile_ref','semantic_type','display_name',
+      'material_class','quantity_unit','min_quantity','max_quantity','min_mass_grams',
+      'max_mass_grams','external_hand_cost','carry_form','packing_slot_cost'])
+    && value.portion_profile.material_class === 'ordinary'
+    && text(value.portion_profile.profile_ref)
+    && text(value.portion_profile.semantic_type)
+    && text(value.portion_profile.display_name)
+    && text(value.portion_profile.quantity_unit)
+    && positive(value.portion_profile.min_quantity)
+    && positive(value.portion_profile.max_quantity)
+    && value.portion_profile.min_quantity <= value.portion_profile.max_quantity
+    && integer(value.portion_profile.min_mass_grams)
+    && integer(value.portion_profile.max_mass_grams)
+    && value.portion_profile.min_mass_grams >= 1
+    && value.portion_profile.min_mass_grams <= value.portion_profile.max_mass_grams
+    && [0, 1, 2].includes(value.portion_profile.external_hand_cost)
+    && ['compact','regular','long','bulky'].includes(value.portion_profile.carry_form)
+    && integer(value.portion_profile.packing_slot_cost)
+    && value.portion_profile.packing_slot_cost >= 0
+    && exactKeys(value.destination, ['kind'])
+    && value.destination.kind === 'holder';
+}
+function text(value) {
+  return typeof value === 'string' && value.length > 0 && value.trim() === value;
+}
+function positive(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+function integer(value) { return Number.isSafeInteger(value); }
 function validMechanicsPolicy(value, policyRef) {
   return exactKeys(value, ['policy_ref','max_mass_grams',
     'allowed_external_hand_costs','allowed_carry_forms',

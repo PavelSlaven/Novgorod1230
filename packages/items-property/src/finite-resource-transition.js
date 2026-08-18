@@ -27,23 +27,26 @@ export function planFiniteResourceDecrement(value = {}) {
   });
 }
 
-/** One-shot bounded initialization.  The semantic boundary may select only a
- * committed alternative; it can never submit a free numeric estimate. */
+/** One-shot bounded initialization. The semantic boundary supplies one
+ * numeric estimate; code owns the exact unit and inclusive finite bounds. */
 export function resolveFiniteSourceInitialAmount(value = {}) {
   const input = clone(value);
-  exact(input, ['initialization_identity', 'committed_amount', 'approved_alternatives', 'selected_amount']);
+  exact(input, ['initialization_identity', 'committed_amount', 'approved_bounds', 'estimated_amount']);
   text(input.initialization_identity);
   if (input.committed_amount !== null) {
     const amount = rational(input.committed_amount);
-    if (input.selected_amount !== null || input.approved_alternatives.length !== 0) fail();
+    if (input.estimated_amount !== null || input.approved_bounds !== null) fail();
     return deepFreeze({ status:'already_committed', initialization_identity:input.initialization_identity, amount });
   }
-  if (!Array.isArray(input.approved_alternatives) || input.approved_alternatives.length < 1) fail();
-  const alternatives=input.approved_alternatives.map(rational);
-  const selected=rational(input.selected_amount);
-  if (new Set(alternatives.map(key)).size !== alternatives.length
-      || !alternatives.some((entry)=>key(entry)===key(selected))) fail();
-  return deepFreeze({ status:'initialized', initialization_identity:input.initialization_identity, amount:selected });
+  exact(input.approved_bounds, ['minimum', 'maximum']);
+  const minimum = rational(input.approved_bounds.minimum);
+  const maximum = rational(input.approved_bounds.maximum);
+  const estimated = rational(input.estimated_amount);
+  if (minimum.unit !== maximum.unit || estimated.unit !== minimum.unit
+      || compare(minimum, maximum) > 0 || compare(estimated, minimum) < 0
+      || compare(estimated, maximum) > 0) fail();
+  return deepFreeze({ status:'initialized',
+    initialization_identity:input.initialization_identity, amount:estimated });
 }
 
 function rational(value) {
@@ -65,7 +68,6 @@ function subtract(left, right) {
 }
 function compare(left, right) { const delta = BigInt(left.numerator) * BigInt(right.denominator) - BigInt(right.numerator) * BigInt(left.denominator); return delta === 0n ? 0 : delta < 0n ? -1 : 1; }
 function isZero(value) { return value.numerator === 0; }
-function key(value) { return `${value.numerator}/${value.denominator}:${value.unit}`; }
 function gcd(a, b) { while (b) [a, b] = [b, a % b]; return a || 1; }
 function text(value) { if (typeof value !== 'string' || value.trim() !== value || !value) fail(); }
 function exact(value, keys) { if (!value || typeof value !== 'object' || Array.isArray(value) || Object.getPrototypeOf(value) !== Object.prototype || Object.keys(value).length !== keys.length || keys.some((key) => !Object.hasOwn(value, key))) fail(); }

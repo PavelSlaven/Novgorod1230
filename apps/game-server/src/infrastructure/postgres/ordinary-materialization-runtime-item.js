@@ -14,6 +14,8 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
   }
   const state = {
     lifecycle_status: 'active',
+    ...(item.condition_state == null ? {}
+      : { condition_state: item.condition_state }),
     runtime_instance_mechanics_snapshot: structuredClone(snapshot),
     ordinary_metadata: {
       semantic_type: semanticType,

@@ -177,15 +177,17 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
-O2a добавляет только server-injected ambient admission port для exact
-SHA-pinned authored first-entry context: direct `ambient_ordinary` получает
-finite exact portion и продолжается тем же combined P16 item commit без
-decrement abundant ambient source. Finite resource node использует отдельный
-owner-native transition в ordinary P16. Для
-активного O2a profile отсутствие порта при drift — hard denial ambient
-`create_entity`; legacy composition без profile сохраняет прежний direct path.
-O2b/A1/F1/S1/N1, containers, currency, significant/hidden facts
-и non-authored constrained/armament sources остаются disabled.
+O2a добавляет server-injected ambient port и exact SHA-pinned context-bound
+authority к тому же candidate-free Stage A/Stage B потоку. `ambient_ordinary`
+получает finite exact portion без decrement abundant source; finite source
+при неизвестном количестве допускает одну bounded estimate, после чего
+owner-native transition и ordinary P16 фиксируют quantity/decrement. Exact
+precious physical source не получает currency identity, а approved damaged
+non-unique armament remnant не получает model-owned combat mechanics. Для
+активного O2a profile отсутствие порта или drift является hard denial;
+legacy composition без profile сохраняет прежний direct path. O2b/A1/F1/S1/N1,
+containers, authentic currency, significant/hidden facts и non-authored
+constrained/armament sources остаются disabled.
 
 ## Тесты
 

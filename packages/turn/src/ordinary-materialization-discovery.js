@@ -16,13 +16,17 @@ import { resolveOrdinaryMaterializationSeedScope } from
 /** Common O1 owner; callers supply only committed context/profile adapters. */
 export function createOrdinaryMaterializationDiscoveryOwner({
   loadDiscoveryContext, ordinaryMaterializationModel, verifyStageBCutover,
-  inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan
+  inputDigest, buildSeedRequest, buildPresenceRequest, sealAtomicWritePlan,
+  resolveFiniteResourceEffects = () => null
 } = {}) {
   const ports = { loadDiscoveryContext, ordinaryMaterializationModel,
     verifyStageBCutover, buildSeedRequest, buildPresenceRequest,
     sealAtomicWritePlan };
   if (Object.values(ports).some((port) => typeof port !== 'function')) {
     throw new TypeError('ordinary discovery owner requires all ports');
+  }
+  if (typeof resolveFiniteResourceEffects !== 'function') {
+    throw new TypeError('ordinary finite-resource effect owner must be a function');
   }
   return async function resolve(request) {
     const enabled = await loadDiscoveryContext(request);
@@ -103,7 +107,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       basisCatalog: admissionBases(bases), beforeModel: () =>
         verifyStageBCutover({
           eval_contract: execution.stage_b_classification_eval
-        }) });
+        }), codeOwnedResolution: enabled.code_owned_resolution ?? null });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
     if (presence.status === 'no_change' && presence.decision === null) {
       if (transitions.length === 0) return ordinaryNoop(request);
@@ -125,10 +129,21 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         requested_position_ref: proposed.placement_proposal.position_ref };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
-      const admissionInput = { handoff:
-        presence.pending_items_property_admission, admission_context: {
+      const authorityProfile = enabled.ordinary_authority?.context_bound_profile
+        ?? null;
+      const pendingHandoff = authorityProfile == null
+        ? presence.pending_items_property_admission
+        : { ...structuredClone(presence.pending_items_property_admission),
+          admission_evidence: {
+            ...structuredClone(
+              presence.pending_items_property_admission.admission_evidence),
+            condition_state: authorityProfile.condition_state
+          } };
+      const admissionInput = { handoff: pendingHandoff, admission_context: {
           schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
           supporting_bases: bases, property_placement_input: propertyInput,
+          approved_permission_refs:
+            structuredClone(envelope.request.policy_refs.context_bound_permission_refs),
           mechanics_policy: execution.mechanics_policy, causal_identity: {
             request_id: envelope.request.request_id,
             candidate_key: envelope.identity.candidate_key,
@@ -160,11 +175,16 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, transition });
     }
     if (transition == null || next == null) return ordinaryNoop(request);
+    const finiteResourceEffects = item == null ? null
+      : resolveFiniteResourceEffects({ enabled, item, envelope, presence });
+    if (enabled.ordinary_authority?.constrained_resource_profile != null
+        && finiteResourceEffects == null) return ordinaryNoop(request);
     return resolvedPlan({ request, enabled, partyId, scopeRef,
       inputDigest, sealAtomicWritePlan,
       transitions: [...transitions, transition], newBases, bases, next,
       requestIdentity: envelope.request.request_id,
-      resolution: item == null ? presence.status : 'materialize', item });
+      resolution: item == null ? presence.status : 'materialize', item,
+      finiteResourceEffects });
   };
 }
 
@@ -184,7 +204,7 @@ function semanticModelCallBudget(model) {
 
 function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   sealAtomicWritePlan, transitions, newBases, bases, next, requestIdentity,
-  resolution, item = null }) {
+  resolution, item = null, finiteResourceEffects = null }) {
   const expected = enabled.version_pins;
   const plan = sealAtomicWritePlan({ party_id: partyId,
     scope_ref: structuredClone(scopeRef), request_identity: requestIdentity,
@@ -202,7 +222,9 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
       structuredClone(enabled.property_placement_context),
     enablement_pin: { objective_digest: enabled.objective_digest,
       enabled: true }, resolution, transitions: structuredClone(transitions),
-    next_aggregate: structuredClone(next), item: structuredClone(item) });
+    next_aggregate: structuredClone(next), item: structuredClone(item),
+    ...(finiteResourceEffects == null ? {}
+      : structuredClone(finiteResourceEffects)) });
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
     player_response_boundary: true,
@@ -261,6 +283,12 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   supporting_basis_ref: proposal.supporting_basis_ref,
   causal_basis_refs:
     presence.pending_items_property_admission.proposed_item.causal_basis.basis_refs,
+  ...(envelope.identity.availability_class === 'context_bound' ? {
+    causal_basis_kind: proposal.causal_basis_kind,
+    condition_state: proposal.condition_state ?? null,
+    permission_refs: structuredClone(
+      envelope.request.policy_refs.context_bound_permission_refs)
+  } : {}),
   property_basis_ref: proposal.property_basis_ref,
   position_ref: proposal.placement.position_ref,
   runtime_placement: { anchor_id: runtimeAnchorId },
@@ -273,6 +301,7 @@ function sourceRefs({ envelope, proposed, execution, property }) {
     envelope.identity.coverage_key,
     proposed.supporting_basis_ref, ...proposed.causal_basis.basis_refs,
     proposed.property_basis_ref, proposed.placement_proposal.position_ref,
+    ...envelope.request.policy_refs.context_bound_permission_refs,
     execution.mechanics_policy.policy_ref, property.evidence.property_source_ref,
     property.evidence.property_catalog_version_ref,
     property.evidence.placement_catalog_version_ref,
@@ -333,6 +362,7 @@ function admissionBases(bases) { return bases.map((basis) => ({
   ...structuredClone(basis), policy: {
     functional_buckets: structuredClone(basis.functional_buckets),
     allowed_admission_classes:
-      structuredClone(basis.allowed_admission_classes), permission_refs: [] } })); }
+      structuredClone(basis.allowed_admission_classes),
+    permission_refs: structuredClone(basis.permission_refs ?? []) } })); }
 function basisDigest(supporting_bases) { return canonicalDigest({
   domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases }); }

@@ -61,10 +61,26 @@ test('ordinary work context is not a specialized-stock authority envelope', () =
   assert.equal(value.resolution, 'authority_required');
 });
 
-test('authentic currency remains blocked regardless of a forged profile', () => {
-  const candidate = { semantic_type: 'authentic_coin', functional_bucket: 'stock',
+test('currency identity stays blocked while an approved precious material source is admitted', () => {
+  const currency = { semantic_type: 'authentic_coin', functional_bucket: 'stock',
     admission_class: 'currency_or_precious', availability_class: 'context_bound' };
-  assert.equal(resolve({ candidate_context: candidate }).resolution, 'authority_required');
+  assert.equal(resolve({ candidate_context: currency }).resolution, 'authority_required');
+  const candidate = { ...currency, semantic_type: 'precious_material_fragment' };
+  const base = execution();
+  const profile = { ...base.context_bound_ordinary_profile,
+    schema: 'rus.items.context_bound_ordinary_profile.v2', version: 2,
+    profile_kind: 'precious_material', semantic_type: candidate.semantic_type,
+    functional_bucket: 'stock', admission_class: 'currency_or_precious',
+    condition_state: 'serviceable', basis_kind: 'finite_source' };
+  const supporting_bases = [{ ...base.supporting_bases[0],
+    functional_buckets: ['stock'],
+    allowed_admission_classes: ['currency_or_precious'],
+    basis_kind: 'finite_source' }];
+  const approved = resolve({ candidate_context: candidate, execution_context: {
+    ...base, supporting_bases, context_bound_ordinary_profile: profile
+  } });
+  assert.equal(approved.resolution, null);
+  assert.equal(approved.profile.profile_kind, 'precious_material');
 });
 
 test('document-like and other restricted gates require exact non-authentic stock profiles', () => {
@@ -95,23 +111,22 @@ test('document-like and other restricted gates require exact non-authentic stock
   }
 });
 
-test('damaged condition is server-owned and requires a remnant specialized-stock profile', () => {
-  const candidate = { semantic_type: 'ordinary_remnant', functional_bucket: 'stock',
-    admission_class: 'specialized_or_valuable', availability_class: 'context_bound' };
+test('damaged ordinary armament remnant is reachable only from its approved remnant profile', () => {
+  const candidate = { semantic_type: 'damaged_armament_remnant', functional_bucket: 'arms',
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
   const base = execution();
   const profile = { ...base.context_bound_ordinary_profile,
     schema: 'rus.items.context_bound_ordinary_profile.v2', version: 2,
-    profile_kind: 'specialized_stock', semantic_type: 'ordinary_remnant',
-    functional_bucket: 'stock', admission_class: 'specialized_or_valuable',
+    profile_kind: 'armament', semantic_type: candidate.semantic_type,
+    functional_bucket: 'arms', admission_class: 'weapon_or_armament',
     condition_state: 'damaged', basis_kind: 'remnant' };
-  const supporting_bases = [{ ...base.supporting_bases[0], functional_buckets: ['stock'],
-    allowed_admission_classes: ['specialized_or_valuable'], basis_kind: 'remnant' }];
+  const supporting_bases = [{ ...base.supporting_bases[0], basis_kind: 'remnant' }];
   const result = resolve({ candidate_context: candidate, execution_context: {
     ...base, supporting_bases, context_bound_ordinary_profile: profile } });
   assert.equal(result.profile.condition_state, 'damaged');
   for (const change of [
     (value) => { value.context_bound_ordinary_profile.basis_kind = 'finite_source'; },
-    (value) => { value.context_bound_ordinary_profile.profile_kind = 'armament'; }
+    (value) => { value.context_bound_ordinary_profile.profile_kind = 'specialized_stock'; }
   ]) {
     const value = structuredClone({ ...base, supporting_bases,
       context_bound_ordinary_profile: profile }); change(value);

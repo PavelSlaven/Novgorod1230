@@ -14,10 +14,13 @@ test('finite source transition rejects stale, overspend, depleted and getters', 
   const getter=input(); Object.defineProperty(getter,'source',{enumerable:true,get(){ throw Error('must not read'); }});
   assert.throws(()=>planFiniteResourceDecrement(getter),{code:'FINITE_RESOURCE_TRANSITION_INVALID'});
 });
-test('initial amount is selected once from committed bounded alternatives', () => {
-  const value={initialization_identity:'source:init',committed_amount:null,approved_alternatives:[{numerator:1,denominator:1,unit:'litre'},{numerator:2,denominator:1,unit:'litre'}],selected_amount:{numerator:2,denominator:1,unit:'litre'}};
+test('initial amount accepts one semantic estimate inside code-owned bounds', () => {
+  const value={initialization_identity:'source:init',committed_amount:null,
+    approved_bounds:{minimum:{numerator:1,denominator:1,unit:'litre'},maximum:{numerator:10,denominator:1,unit:'litre'}},
+    estimated_amount:{numerator:7,denominator:1,unit:'litre'}};
   assert.equal(resolveFiniteSourceInitialAmount(value).status,'initialized');
-  value.selected_amount={numerator:3,denominator:1,unit:'litre'};
+  assert.equal(resolveFiniteSourceInitialAmount(value).amount.numerator,7);
+  value.estimated_amount={numerator:11,denominator:1,unit:'litre'};
   assert.throws(()=>resolveFiniteSourceInitialAmount(value),{code:'FINITE_RESOURCE_TRANSITION_INVALID'});
-  assert.equal(resolveFiniteSourceInitialAmount({initialization_identity:'source:init',committed_amount:{numerator:2,denominator:1,unit:'litre'},approved_alternatives:[],selected_amount:null}).status,'already_committed');
+  assert.equal(resolveFiniteSourceInitialAmount({initialization_identity:'source:init',committed_amount:{numerator:2,denominator:1,unit:'litre'},approved_bounds:null,estimated_amount:null}).status,'already_committed');
 });

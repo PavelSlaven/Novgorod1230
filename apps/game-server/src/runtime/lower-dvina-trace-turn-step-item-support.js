@@ -52,7 +52,8 @@ export function initializeRuntimeState(committedState) {
       instance: item,
       profiles: {}
     });
-    if (!resolved.pass || resolved.source !== 'runtime_instance_snapshot') {
+    if (!resolved.pass || !['runtime_instance_snapshot',
+      'ordinary_world_materialization_snapshot'].includes(resolved.source)) {
       fail('TRACE_TURN_STEP_COMMITTED_RUNTIME_MECHANICS_INVALID', {
         entity_ref: itemId,
         error_code: resolved.errors[0]?.code ?? null
@@ -65,7 +66,8 @@ export function initializeRuntimeState(committedState) {
       semantic_type: text(item.category_id
         ?? item.state?.ordinary_metadata?.semantic_type) || null,
       name: text(item.name ?? item.state?.ordinary_metadata?.name) || null,
-      origin_kind: resolved.snapshot.provenance.origin_kind,
+      origin_kind: resolved.snapshot.provenance.origin_kind
+        ?? resolved.snapshot.provenance.source_kind,
       source_refs: [...resolved.snapshot.provenance.source_refs]
     });
   }

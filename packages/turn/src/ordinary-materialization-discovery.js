@@ -30,6 +30,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
     const rootId = request.request.root_turn_id;
+    const runtimeAnchorId = request.committed_state?.position?.g5_anchor_id;
+    if (typeof runtimeAnchorId !== 'string' || runtimeAnchorId.length === 0
+        || runtimeAnchorId.trim() !== runtimeAnchorId) {
+      return ordinaryNoop(request);
+    }
     const objective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:seed` };
     let projection = Object.freeze({ ordinary_materialization_aggregate:
@@ -59,8 +64,18 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       newBases = seed.prepared_background_groups.map(preparedBasis);
       projection = seed.working_projection;
     }
+    const bases = [...structuredClone(execution.supporting_bases),
+      ...structuredClone(newBases)];
     const presenceObjective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:presence`,
+      policy_refs: presencePolicyRefs({
+        policyRefs: enabled.objective_context.policy_refs,
+        bases,
+        aggregate: projection.ordinary_materialization_aggregate,
+        currentSeedRequestId: newBases.length === 0
+          ? null : objective.request_id,
+        currentPreparedRefs: new Set(newBases.map(({ basis_ref: ref }) => ref))
+      }),
       ordinary_state_version:
         projection.ordinary_materialization_aggregate.state_version,
       ordinary_state: ordinaryState(
@@ -72,8 +87,6 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     if (candidateContext == null) return ordinaryNoop(request);
     const envelope = buildPresenceRequest({ objective_context: presenceObjective,
       candidate_context: candidateContext });
-    const bases = [...structuredClone(execution.supporting_bases),
-      ...structuredClone(newBases)];
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       ordinaryMaterializationModel, workingProjection: projection,
       basisCatalog: admissionBases(bases), beforeModel: () =>
@@ -130,7 +143,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, identityKey });
       next = applyOrdinaryAggregateTransition({ aggregate:
         projection.ordinary_materialization_aggregate, transition });
-      item = admittedItem({ partyId, scopeRef, envelope, presence, admitted });
+      item = admittedItem({ partyId, scopeRef, envelope, presence, admitted,
+        runtimeAnchorId });
     }
     if (transition != null && next?.state_version ===
         projection.ordinary_materialization_aggregate.state_version) {
@@ -203,7 +217,8 @@ function presenceTransition({ envelope, presence, aggregate,
     resolution: presence.status,
     ...(identityKey == null ? {} : { identity_key: identityKey }) };
 }
-function admittedItem({ partyId, scopeRef, envelope, presence, admitted }) {
+function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
+  runtimeAnchorId }) {
   const proposal = admitted.proposal;
   return { item_id: `ordinary_item_${canonicalDigest({ party_id: partyId,
     scope_ref: scopeRef, candidate_key: envelope.identity.candidate_key,
@@ -219,6 +234,7 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted }) {
     presence.pending_items_property_admission.proposed_item.causal_basis.basis_refs,
   property_basis_ref: proposal.property_basis_ref,
   position_ref: proposal.placement.position_ref,
+  runtime_placement: { anchor_id: runtimeAnchorId },
   mechanics_policy_ref: proposal.runtime_item_mechanics_policy_ref,
   item_proposal: proposal,
   mechanics_snapshot: admitted.runtime_instance_mechanics_snapshot };
@@ -253,6 +269,37 @@ function preparedBasis(group) { return { basis_ref: group.group_ref,
   prepared_seed_provenance: structuredClone(group.prepared_seed_provenance),
   functional_buckets: [group.functional_bucket],
   allowed_admission_classes: structuredClone(group.allowed_admission_classes) }; }
+function presencePolicyRefs({ policyRefs, bases, aggregate,
+  currentSeedRequestId, currentPreparedRefs }) {
+  const allowed = new Map(policyRefs.allowed_supporting_bases.map((entry) =>
+    [entry.basis_ref, structuredClone(entry)]));
+  for (const basis of bases) {
+    if (basis.state !== 'prepared_seed') continue;
+    const group = aggregate.background_groups.find(({ group_ref: ref }) =>
+      ref === basis.basis_ref);
+    const current = currentPreparedRefs.has(basis.basis_ref);
+    if (!group || canonicalDigest({
+      scope_ref: basis.scope_ref,
+      prepared_seed_provenance: basis.prepared_seed_provenance,
+      functional_buckets: basis.functional_buckets,
+      allowed_admission_classes: basis.allowed_admission_classes
+    }) !== canonicalDigest({
+      scope_ref: group.scope_ref,
+      prepared_seed_provenance: group.prepared_seed_provenance,
+      functional_buckets: [group.functional_bucket],
+      allowed_admission_classes: group.allowed_admission_classes
+    }) || current && basis.prepared_seed_provenance.seed_request_id
+        !== currentSeedRequestId) {
+      throw new TypeError('prepared supporting basis is not bound to aggregate');
+    }
+    allowed.set(basis.basis_ref, {
+      basis_ref: basis.basis_ref, basis_state: 'prepared_seed'
+    });
+  }
+  return { ...structuredClone(policyRefs),
+    allowed_supporting_bases: [...allowed.values()].sort((left, right) =>
+      left.basis_ref.localeCompare(right.basis_ref)) };
+}
 function admissionBases(bases) { return bases.map((basis) => ({
   ...structuredClone(basis), policy: {
     functional_buckets: structuredClone(basis.functional_buckets),

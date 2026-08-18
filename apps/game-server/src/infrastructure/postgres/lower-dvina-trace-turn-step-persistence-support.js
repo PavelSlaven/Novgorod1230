@@ -1,5 +1,8 @@
 import { canonicalDigest } from '@rus/materialization';
-import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
+import {
+  createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
+  createRuntimeInstanceMechanicsSnapshot
+} from '@rus/items-property';
 import { serverError } from '../../errors.js';
 
 export function attachTurnStepCommit({ snapshot, envelope, idemId }) {
@@ -33,6 +36,19 @@ export function mergeLowerDvinaTraceTurnStepWrites(base, extra) {
 export function requireMechanics(value) {
   try {
     return structuredClone(createRuntimeInstanceMechanicsSnapshot(value));
+  } catch (cause) {
+    fail('TRACE_TURN_STEP_RUNTIME_MECHANICS_INVALID', {
+      cause: cause?.code ?? cause?.message
+    });
+  }
+}
+
+export function requireCommittedMechanics(value) {
+  try {
+    return structuredClone(value?.schema ===
+      'rus.items.runtime_instance_mechanics_snapshot.v2'
+      ? createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(value)
+      : createRuntimeInstanceMechanicsSnapshot(value));
   } catch (cause) {
     fail('TRACE_TURN_STEP_RUNTIME_MECHANICS_INVALID', {
       cause: cause?.code ?? cause?.message

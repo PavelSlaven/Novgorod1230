@@ -1,4 +1,4 @@
-import { fail, requireMechanics } from
+import { fail, requireCommittedMechanics } from
   './lower-dvina-trace-turn-step-persistence-support.js';
 
 export function runtimeEntities(items) {
@@ -13,7 +13,7 @@ export function runtimeEntities(items) {
         || item.category_id != null || snapshot == null) {
       fail('TRACE_TURN_STEP_MIXED_ITEM_SOURCE', { entity_ref: item.item_id });
     }
-    const mechanics = requireMechanics(snapshot);
+    const mechanics = requireCommittedMechanics(snapshot);
     const dbState = structuredClone(item.state ?? {});
     dbState.lifecycle_status ??= 'active';
     dbState.runtime_instance_mechanics_snapshot = mechanics;
@@ -22,7 +22,8 @@ export function runtimeEntities(items) {
       item.state?.semantic_category ?? 'ordinary_runtime';
     dbState.ordinary_metadata.name ??= item.name ?? item.item_id;
     dbState.ordinary_metadata.origin ??= {
-      kind: mechanics.provenance.origin_kind,
+      kind: mechanics.provenance.origin_kind
+        ?? mechanics.provenance.source_kind,
       source_refs: mechanics.provenance.source_refs
     };
     dbState.ordinary_metadata.semantic_facts ??=

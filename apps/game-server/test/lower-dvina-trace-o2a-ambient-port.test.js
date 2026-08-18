@@ -17,6 +17,8 @@ test('the exact approved first-entry binding exposes only its authored ambient p
   const result = await port({ operation_identity: { root_turn_id: 'turn', step_index: 1,
     operation_ref: 'create_entity' }, request: { context_pin_ref: 'committed',
     source_ref: 'committed', portion_profile_ref: 'committed',
+    semantic_type: 'material_portion', semantic_name: 'горсть мокрого песка',
+    source_identity_refs: ['trace_ld_v1_g6_wreck_shore'],
     quantity: { value: 1, unit: 'handful' }, mass_grams: 300,
     destination_ref: 'mikula' } });
   assert.equal(result.pass, true);

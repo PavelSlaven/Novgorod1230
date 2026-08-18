@@ -55,11 +55,14 @@ test('constrained profile gets its finite source from the same committed reposit
     profile_ref: 'profile', state: 'committed', scope_ref: scope, environment_ref: 'environment',
     semantic_type: 'unseen', functional_bucket: 'other_ordinary',
     admission_class: 'specialized_or_valuable', regional_permission_ref: 'region',
-    resource_permission_ref: 'resource', source_basis_ref: 'node', finite_source: {
-      source_resource_node_id: 'node', state_version: 4, lifecycle_state: 'active',
-      quantity: { numerator: 2, denominator: 1, unit: 'item' },
+    resource_permission_ref: 'resource', source_basis_ref: 'node',
+    public_name: 'обычный кусок материала', finite_source: {
+      source_resource_node_id: 'node',
       quantity_unit_ref: { kind: 'unit', id: 'item' }, position_ref: 'position',
-      property_basis_ref: 'property' } };
+      property_basis_ref: 'property', initial_amount_bounds: {
+        minimum: { numerator: 1, denominator: 1, unit: 'item' },
+        maximum: { numerator: 8, denominator: 1, unit: 'item' }
+      } } };
   const snapshot = { ...objective, context_refs: { ...objective.context_refs,
     environment_refs: ['environment'] }, policy_refs: { ...objective.policy_refs,
     allowed_admission_classes: ['specialized_or_valuable'],
@@ -82,6 +85,10 @@ test('constrained profile gets its finite source from the same committed reposit
   });
   const loaded = await repository.load({ partyId: 'party-a', scopeRef: scope });
   assert.equal(calls, 2);
-  assert.deepEqual(loaded.execution_context.committed_finite_source,
-    profile.finite_source);
+  assert.deepEqual(loaded.execution_context.committed_finite_source, {
+    source_resource_node_id: 'node', state_version: 4, lifecycle_state: 'active',
+    quantity: { numerator: 2, denominator: 1, unit: 'item' },
+    quantity_unit_ref: { kind: 'unit', id: 'item' }, position_ref: 'position',
+    property_basis_ref: 'property'
+  });
 });

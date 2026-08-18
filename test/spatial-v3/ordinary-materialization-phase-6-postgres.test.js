@@ -20,6 +20,10 @@ import {
   createPostgresOrdinaryMaterializationAtomicCommitter,
   createPostgresOrdinaryMaterializationPhase6Factory
 } from '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js';
+import { createPostgresOrdinaryMaterializationEnablementRepository } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-enablement.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-ordinary-discovery.js';
 
 const docker = (args, input) => spawnSync('docker', args, {
   input,
@@ -408,6 +412,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
     'ordinary helper must not independently double-bump party state');
   assert.equal(Number(p16After.rows[0].commits), Number(p16Before.commits) + 1);
   await assertFiniteSourceP16Integration(pool);
+  await assertFiniteResolverReloadLifecycle(pool);
   await assertContextBoundO2aV2V3Integration(pool);
   await removePartyAnchor(pool, 'party-a');
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id='party-a'`);
@@ -767,6 +772,223 @@ async function assertFiniteSourceP16Integration(pool) {
     WHERE party_id=$1`, [partyId]);
   await removePartyAnchor(pool, partyId);
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
+}
+
+async function assertFiniteResolverReloadLifecycle(pool) {
+  const partyId = 'party-finite-reload';
+  const scope = { entity_kind: 'g6', entity_id: 'finite-reload-scope' };
+  const sourceRef = 'finite-reload-node';
+  const permissions = ['finite-reload-profile', 'finite-reload-source'];
+  const bounds = { minimum: { numerator: 1, denominator: 1, unit: 'item' },
+    maximum: { numerator: 8, denominator: 1, unit: 'item' } };
+  await pool.query(`INSERT INTO party_runtime.parties
+    (party_id,schema_version,world_revision_id,world_catalog_digest,
+     materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
+    VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`, [partyId]);
+  await insertPartyAnchor(pool, partyId);
+  await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
+    (id,party_id,operation_kind,expected_state_version_set_digest,
+     expected_state_version_set,committed_state_version_set_digest,
+     write_plan_digest,created_at_turn,committed_at_turn)
+    VALUES ('finite-reload-fixture',$1,'fixture',$2,'[]'::jsonb,$2,$2,0,0)`,
+  [partyId, 'e'.repeat(64)]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ('finite-reload-g5',$1,'canonical','finite-reload-g4',$2::jsonb,
+      'active',0,'finite-reload-fixture','finite-reload-fixture')`,
+  [partyId, JSON.stringify({ entity_id: 'finite-reload-g5' })]);
+  await pool.query(`INSERT INTO party_runtime.party_scene_baselines
+    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+     materialization_trace_id,materializer_version,catalog_digest,status,
+     state_version,created_change_set_id,updated_change_set_id)
+    VALUES ('finite-reload-baseline',$1,'g5_site','finite-reload-g5',
+      'canonical_template',$2::jsonb,'trace','materializer','catalog','active',0,
+      'finite-reload-fixture','finite-reload-fixture')`,
+  [partyId, JSON.stringify({ entity_id: 'finite-reload-scene' })]);
+  await pool.query(`INSERT INTO party_runtime.party_g6_instances
+    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+     host_kind,host_id,physical_class_id,primary_scene_role_id,vertical_context_id,
+     overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,
+     acoustic_uniformity,status,state_version,created_change_set_id,updated_change_set_id)
+    VALUES ('finite-reload-g6',$1,'finite-reload-baseline',$2::jsonb,'main',
+      'g5_site','finite-reload-g5','interior','room','ground','open','default_clear',
+      'near','uniform','active',0,'finite-reload-fixture','finite-reload-fixture')`,
+  [partyId, JSON.stringify({ entity_id: 'finite-reload-scene' })]);
+  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ('position-reload',$1,'finite-reload-g6','ground','source',0,4,'open',
+      'active',0,'finite-reload-fixture','finite-reload-fixture')`, [partyId]);
+  const aggregate = seedFiniteAggregate(scope);
+  const basis = { basis_ref: sourceRef, state: 'committed', scope_ref: { ...scope },
+    prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
+    allowed_admission_classes: ['specialized_or_valuable'],
+    permission_refs: [...permissions], basis_kind: 'finite_source' };
+  const placement = finiteResolverPropertyContext(scope, sourceRef);
+  const objective = finiteResolverObjective(scope, sourceRef, permissions, bounds);
+  const placementDigest = ordinaryWorldPropertyPlacementContextDigest({ ...placement,
+    supporting_basis_ref: 'ordinary_enablement_context_digest',
+    causal_basis_refs: ['ordinary_enablement_context_digest'],
+    requested_position_ref: 'ordinary_enablement_context_digest' });
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
+    (party_id,scope_kind,scope_id,state_version,aggregate_payload)
+    VALUES ($1,$2,$3,$4,$5::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, aggregate.state_version,
+    JSON.stringify(aggregate)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_contexts
+    (party_id,scope_kind,scope_id,catalog_version,property_version,placement_version,
+     supporting_basis_catalog_version,supporting_basis_catalog_digest,
+     property_placement_context_digest,property_placement_base_snapshot)
+    VALUES ($1,$2,$3,1,1,1,1,$4,$5,$6::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, basisDigest([basis]), placementDigest,
+    JSON.stringify(placement)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_basis_catalog
+    (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
+    VALUES ($1,$2,$3,$4,NULL,$5::jsonb)`,
+  [partyId, scope.entity_kind, scope.entity_id, sourceRef, JSON.stringify(basis)]);
+  await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_enablements
+    (party_id,scope_kind,scope_id,objective_snapshot,objective_digest,enabled)
+    VALUES ($1,$2,$3,$4::jsonb,$5,true)`,
+  [partyId, scope.entity_kind, scope.entity_id, JSON.stringify(objective),
+    canonicalDigest(objective)]);
+  await pool.query(`INSERT INTO party_runtime.party_resource_nodes
+    (resource_node_id,party_id,source_resource_ref,position_node_id,
+     quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
+     access_policy_ref,state_version,created_change_set_id,updated_change_set_id,
+     lifecycle_state,initial_amount_bounds,initialization_identity,
+     initial_amount_evidence,property_basis_ref)
+    VALUES ($1,$2,$3::jsonb,'position-reload',2,1,$4::jsonb,$3::jsonb,$3::jsonb,
+      8,'finite-reload-fixture','finite-reload-fixture','active',NULL,
+      'finite-reload-provision',NULL,'property-reload')`,
+  [sourceRef, partyId, JSON.stringify({ ref: sourceRef }),
+    JSON.stringify({ kind: 'unit', id: 'item' })]);
+  const repository = createPostgresOrdinaryMaterializationEnablementRepository({ pool });
+  let modelCalls = 0;
+  const model = async (request) => {
+    modelCalls += 1;
+    assert.equal(request.mode, 'resolve_presence');
+    return finiteResolverModelPlan(request, sourceRef);
+  };
+  model.verifyStageBCutover = async () => true;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId,
+    inputDigest: 'finite-reload-input', loadEnablement: (input) => repository.load(input),
+    ordinaryMaterializationModel: model });
+  const firstResult = await resolver(finiteResolverRequest('turn:finite:1',
+    'взять первую порцию'));
+  const first = firstResult.ordinary_materialization_atomic_write_plan;
+  assert.equal(first.item.item_proposal.semantic_descriptor.name,
+    'обычная речная глина');
+  assert.deepEqual(first.finite_resource_transition.before_quantity,
+    { numerator: 2, denominator: 1, unit: 'item' });
+  assert.equal(first.finite_resource_transition.expected_state_version, 8);
+  await commitFiniteInP16(pool, first, 'finite-reload-change-1', 0);
+  const secondResult = await resolver(finiteResolverRequest('turn:finite:2',
+    'взять оставшуюся порцию'));
+  const second = secondResult.ordinary_materialization_atomic_write_plan;
+  assert.equal(second.item.item_proposal.semantic_descriptor.name,
+    'обычная речная глина');
+  assert.deepEqual(second.finite_resource_transition.before_quantity,
+    { numerator: 1, denominator: 1, unit: 'item' });
+  assert.equal(second.finite_resource_transition.expected_state_version, 9);
+  assert.equal(second.finite_resource_transition.lifecycle_state_after, 'depleted');
+  await commitFiniteInP16(pool, second, 'finite-reload-change-2', 1);
+  assert.equal(modelCalls, 2, 'each fresh discovery performs one Stage B call');
+  const persistedNames = await pool.query(`SELECT state->'ordinary_metadata'->>'name' AS name
+    FROM party_runtime.party_items WHERE party_id=$1 ORDER BY item_id`, [partyId]);
+  assert.deepEqual(persistedNames.rows, [
+    { name: 'обычная речная глина' }, { name: 'обычная речная глина' }
+  ]);
+  const exhausted = await pool.query(`SELECT state_version,lifecycle_state,
+    quantity_numerator FROM party_runtime.party_resource_nodes
+    WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceRef]);
+  assert.deepEqual(exhausted.rows[0], { state_version: '10',
+    lifecycle_state: 'depleted', quantity_numerator: '0' });
+  await pool.query(`DELETE FROM party_runtime.party_resource_node_decrements
+    WHERE party_id=$1`, [partyId]);
+  await removePartyAnchor(pool, partyId);
+  await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
+}
+
+function finiteResolverObjective(scope, sourceRef, permissions, bounds) {
+  return { request_id: 'finite-reload-enablement', scope_ref: { ...scope },
+    context_refs: { period_ref: 'period', region_ref: 'region', function_refs: [],
+      environment_refs: ['environment-reload'], occupation_household_refs: [],
+      economic_context_ref: 'economy', occupancy_state_ref: 'occupied',
+      material_culture_refs: [], property_context_ref: 'property-reload' },
+    policy_refs: { authority_policy_ref: 'authority', density_policy_ref: 'density',
+      ordinary_presence_policy_ref: 'presence',
+      runtime_item_mechanics_policy_ref: 'mechanics-reload',
+      allowed_admission_classes: ['specialized_or_valuable'],
+      context_bound_permission_refs: [...permissions],
+      allowed_supporting_bases: [{ basis_ref: sourceRef, basis_state: 'committed' }] },
+    technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
+      max_resolution_records: 8 }, execution_context: {
+      allowed_disclosure_policy_refs: [], density_policy: { version: 'density',
+        mappings: [{ scope_kind: 'g6', function_ref: null,
+          bands: { sparse: 0, ordinary: 1, dense: 1 } }] },
+      candidate_context: { target_ref: scope.entity_id,
+        candidate_ref_namespace: 'finite-reload-candidate',
+        normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'river_clay',
+        candidate_hint: null, functional_bucket: 'other_ordinary',
+        admission_class: 'specialized_or_valuable', availability_class: 'context_bound',
+        coverage_kind: 'visible_surface', coverage_ref: 'finite-reload-surface',
+        policy_version: 'presence' }, stage_b_classification_eval: {},
+      mechanics_policy: { policy_ref: 'mechanics-reload', max_mass_grams: 1000,
+        allowed_external_hand_costs: [0, 1, 2],
+        allowed_carry_forms: ['compact', 'regular'], max_packing_slot_cost: 10,
+        max_quantity: 10 }, causal_ref: 'finite-reload-cause', source_refs: [sourceRef],
+      constrained_natural_resource_profile: {
+        schema: 'rus.items.constrained_natural_resource_profile.v1', version: 1,
+        profile_ref: permissions[0], state: 'committed', scope_ref: { ...scope },
+        environment_ref: 'environment-reload', semantic_type: 'river_clay',
+        functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
+        regional_permission_ref: permissions[0], resource_permission_ref: permissions[1],
+        source_basis_ref: sourceRef, public_name: 'обычная речная глина',
+        finite_source: { source_resource_node_id: sourceRef,
+          quantity_unit_ref: { kind: 'unit', id: 'item' },
+          position_ref: 'position-reload', property_basis_ref: 'property-reload',
+          initial_amount_bounds: structuredClone(bounds) } } } };
+}
+
+function finiteResolverPropertyContext(scope, sourceRef) {
+  return { schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
+    scope_ref: { ...scope }, item_kind: 'natural_resource_portion',
+    property_catalog_version_ref: 'property-reload-v1',
+    placement_catalog_version_ref: 'placement-reload-v1',
+    explicit_item_source_refs: [sourceRef], personal_possession_refs: [],
+    communal_public_service_refs: [], container_property_refs: [], occupied_site_refs: [],
+    unowned_cause_refs: [], placement_context_refs: ['placement-reload'],
+    property_catalog: [{ property_basis_ref: 'property-reload', state: 'committed',
+      scope_ref: { ...scope }, basis_class: 'explicit_source_item', source_ref: sourceRef,
+      unowned_cause_ref: null, unowned_cause_kind: null }],
+    placement_catalog: [{ position_ref: 'position-reload', state: 'committed',
+      scope_ref: { ...scope }, position_kind: 'scene_position', g6_ref: scope.entity_id,
+      containment_depth: 0, placement_context_ref: 'placement-reload' }] };
+}
+
+function finiteResolverRequest(rootTurnId, query) {
+  return { request: { root_turn_id: rootTurnId }, committed_state: { position: {
+    g6_id: 'finite-reload-scope', g5_anchor_id: 'ordinary-anchor' } },
+  operation: { target_refs: ['finite-reload-scope'], query }, working_projection: {} };
+}
+
+function finiteResolverModelPlan(request, sourceRef) {
+  return { schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
+    resolution: 'materialize', density_band_proposal: null, background_groups: [],
+    presence_resolutions: [], reason_code: 'committed-finite-source', entities: [{
+      semantic_descriptor: { semantic_type: 'river_clay',
+        name: 'подлинная княжеская монета из глины', facts: [] },
+      authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
+      availability_class: 'context_bound', functional_bucket: 'other_ordinary',
+      presence_expectation: 'routine', supporting_basis_ref: sourceRef,
+      causal_basis: { basis_kind: 'finite_source', basis_refs: [sourceRef] },
+      property_basis_ref: 'property-reload', placement_proposal: {
+        scope_ref: 'finite-reload-scope', position_ref: 'position-reload' },
+      mechanics_proposal: { mass_grams: 300, external_hand_cost: 1,
+        carry_form: 'regular', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null } }] };
 }
 
 function seedFiniteAggregate(scope) {

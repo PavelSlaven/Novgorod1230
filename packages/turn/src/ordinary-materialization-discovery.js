@@ -119,6 +119,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     let transition = presenceTransition({ envelope, presence, aggregate:
       projection.ordinary_materialization_aggregate });
     let item = null;
+    let authorizedPresence = presence;
     let next = presence.working_projection?.ordinary_materialization_aggregate
       ?? null;
     if (presence.status === 'pending_items_property_admission') {
@@ -130,15 +131,24 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
       const authorityProfile = enabled.ordinary_authority?.context_bound_profile
-        ?? null;
+        ?? enabled.ordinary_authority?.constrained_resource_profile ?? null;
       const pendingHandoff = authorityProfile == null
         ? presence.pending_items_property_admission
         : { ...structuredClone(presence.pending_items_property_admission),
+          proposed_item: { ...structuredClone(proposed),
+            semantic_descriptor: {
+              ...structuredClone(proposed.semantic_descriptor),
+              name: authorityProfile.public_name
+            } },
           admission_evidence: {
             ...structuredClone(
               presence.pending_items_property_admission.admission_evidence),
-            condition_state: authorityProfile.condition_state
+            ...(authorityProfile.condition_state == null ? {}
+              : { condition_state: authorityProfile.condition_state })
           } };
+      authorizedPresence = authorityProfile == null ? presence
+        : { ...structuredClone(presence),
+          pending_items_property_admission: pendingHandoff };
       const admissionInput = { handoff: pendingHandoff, admission_context: {
           schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
           supporting_bases: bases, property_placement_input: propertyInput,
@@ -166,7 +176,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, identityKey });
       next = applyOrdinaryAggregateTransition({ aggregate:
         projection.ordinary_materialization_aggregate, transition });
-      item = admittedItem({ partyId, scopeRef, envelope, presence, admitted,
+      item = admittedItem({ partyId, scopeRef, envelope,
+        presence: authorizedPresence, admitted,
         runtimeAnchorId });
     }
     if (transition != null && next?.state_version ===
@@ -176,7 +187,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     }
     if (transition == null || next == null) return ordinaryNoop(request);
     const finiteResourceEffects = item == null ? null
-      : resolveFiniteResourceEffects({ enabled, item, envelope, presence });
+      : resolveFiniteResourceEffects({ enabled, item, envelope,
+        presence: authorizedPresence });
     if (enabled.ordinary_authority?.constrained_resource_profile != null
         && finiteResourceEffects == null) return ordinaryNoop(request);
     return resolvedPlan({ request, enabled, partyId, scopeRef,

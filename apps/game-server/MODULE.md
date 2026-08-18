@@ -83,7 +83,9 @@ ambient portions, bounded finite sources, approved precious physical material an
 non-unique damaged remnants; currency identity, significant/hidden facts,
 template-less containers and O2b/A1/F1/S1/N1 remain disabled. Finite initialization
 accepts one semantic estimate inside persisted code-owned bounds, then P16 owns the
-exact quantity and all later decrements. Negative resolutions contain no item and
+exact quantity and all later decrements; reload combines immutable profile pins with
+the current resource row. Context-bound visible names are profile-owned, not copied
+from Stage B. Negative resolutions contain no item and
 every failure rolls back.
 
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B

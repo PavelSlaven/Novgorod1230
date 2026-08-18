@@ -30,6 +30,19 @@ function source({
   return result;
 }
 
+function sourceAuthority() {
+  return {
+    source_resource_node_id: source_ref,
+    quantity_unit_ref: { kind: "unit", id: "item" },
+    position_ref: "position:bank",
+    property_basis_ref: "property:river-clay",
+    initial_amount_bounds: {
+      minimum: { numerator: 1, denominator: 1, unit: "item" },
+      maximum: { numerator: 10, denominator: 1, unit: "item" },
+    },
+  };
+}
+
 function ordinaryState(aggregate) {
   return {
     seeded: aggregate.seeded,
@@ -142,7 +155,8 @@ function enabled({ finite = source(), aggregate = null } = {}) {
     regional_permission_ref: permissions[0],
     resource_permission_ref: permissions[1],
     source_basis_ref: source_ref,
-    finite_source: structuredClone(finite),
+    public_name: "обычный кусок речной глины",
+    finite_source: sourceAuthority(),
   };
   const propertyDigest = ordinaryWorldPropertyPlacementContextDigest({
     ...property_placement_context,

@@ -1,12 +1,11 @@
 const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
   'profile_kind', 'semantic_type', 'functional_bucket', 'admission_class',
   'permission_refs', 'source_basis_ref', 'property_basis_ref',
-  'runtime_item_mechanics_policy_ref', 'mechanics_capability_ref'];
+  'runtime_item_mechanics_policy_ref', 'mechanics_capability_ref', 'public_name'];
 const PROFILE_V2 = [...PROFILE, 'condition_state', 'basis_kind'];
 
-// This is a closed authority envelope, not a vocabulary of item names.  The
-// candidate identity is committed before Stage B; the model can only name the
-// already admitted type/class inside this envelope.
+// This is a closed authority envelope, not a vocabulary of request words.  The
+// candidate identity and safe public name are committed before Stage B.
 export function resolveContextBoundOrdinaryPolicy(input = {}) {
   const copied = copyData(input);
   if (copied === null) return blocked();
@@ -49,6 +48,7 @@ function validProfile(profile, objective, execution, candidate, scopeRef, proper
     && text(profile.profile_ref) && scope(profile.scope_ref, scopeRef)
     && profile.profile_kind === expectedProfileKind
     && profile.semantic_type === candidate.semantic_type
+    && text(profile.public_name)
     && profile.functional_bucket === candidate.functional_bucket
     && profile.admission_class === candidate.admission_class
     && permissions !== null && permissions.includes(profile.profile_ref)

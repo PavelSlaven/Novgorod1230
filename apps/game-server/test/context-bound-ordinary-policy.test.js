@@ -26,7 +26,8 @@ function execution(overrides = {}) { return {
     admission_class: 'weapon_or_armament', permission_refs: permissions,
     source_basis_ref: 'armament:source-a', property_basis_ref: 'property:warrior-a',
     runtime_item_mechanics_policy_ref: 'mechanics:armament-a',
-    mechanics_capability_ref: 'combat:mechanics:armament-a'
+    mechanics_capability_ref: 'combat:mechanics:armament-a',
+    public_name: 'обычный наконечник копья'
   },
   ...overrides
 }; }

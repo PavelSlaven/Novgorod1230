@@ -70,11 +70,18 @@ function validRequestedPortion(value, quantity) { return ['committed', value.con
   && validQuantity(quantity) && positiveMass(value.mass_grams) && exactText(value.destination_ref); }
 function validRequest(value, quantity) { return exactText(value.context_pin_ref) && exactText(value.source_ref) && exactText(value.portion_profile_ref) && exactText(value.semantic_type) && exactText(value.semantic_name) && refs(value.source_identity_refs) && validQuantity(quantity) && positiveMass(value.mass_grams) && exactText(value.destination_ref); }
 function selectCommittedRequest(request, context) {
+  const explicitProfileRefs = context.finite_portion_profiles
+    .map((profile) => profile.profile_ref)
+    .filter((profileRef) => request.source_identity_refs.includes(profileRef));
+  if (explicitProfileRefs.length > 1) return null;
+  const explicitProfileRef = explicitProfileRefs[0] ?? null;
   let candidates = context.ambient_sources.flatMap((source) =>
     context.finite_portion_profiles.filter((profile) =>
       source.finite_portion_profile_refs.includes(profile.profile_ref)
       && profile.source_class === source.source_class
-      && profile.semantic_type === request.semantic_type)
+      && (explicitProfileRef === null
+        ? profile.semantic_type === request.semantic_type
+        : profile.profile_ref === explicitProfileRef))
       .map((profile) => ({ source, profile })));
   if (request.source_ref !== 'committed') candidates = candidates.filter(
     ({ source }) => source.source_ref === request.source_ref);

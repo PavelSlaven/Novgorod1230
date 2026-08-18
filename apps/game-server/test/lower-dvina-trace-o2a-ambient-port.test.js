@@ -125,7 +125,7 @@ test('the visible O2a capability grounds wording and assigns its safe name', asy
   });
   const ref = admission.capabilities[0].portion_profile_ref;
   const operation = { op: 'create_entity', temp_ref: 'sand',
-    semantic_type: 'material_portion', name: 'песок с берега',
+    semantic_type: 'wet_sand_portion', name: 'песок с берега',
     origin: { kind: 'ambient_ordinary', source_refs: [ref] }, facts: [],
     mechanics: { mass_grams: 300, external_hand_cost: 1,
       carry_form: 'compact', packing_slot_cost: 1,
@@ -146,6 +146,8 @@ test('the visible O2a capability grounds wording and assigns its safe name', asy
       visible_status: 'available' }] } } });
   assert.equal(result.write_fragments[0].value.payload.name,
     'горсть мокрого песка');
+  assert.equal(result.write_fragments[0].value.payload.semantic_type,
+    'material_portion');
 });
 
 test('production composition threads the active O2a strict admission policy', async () => {

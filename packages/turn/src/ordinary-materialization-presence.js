@@ -4,7 +4,7 @@ import { applyOrdinaryAggregateTransition, canonicalDigest, createOrdinaryCandid
 import { turnFailure } from './errors.js';
 import { applyOrdinaryAggregateToTurnWorkingProjection, assertAndNormalizeTurnOrdinaryWorkingProjection } from './turn-step-ordinary-working-projection.js';
 
-export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel } = {}) {
+export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
   const early = preflight(input, projection, basisCatalog); if (early) return early;
   if (beforeModel != null) {
@@ -14,7 +14,7 @@ export async function resolveOrdinaryMaterializationPresence({ envelope, ordinar
   if (typeof ordinaryMaterializationModel !== 'function') fail('TURN_ORDINARY_PRESENCE_MODEL_MISSING');
   const request = freeze(input.request); let raw = await invoke(ordinaryMaterializationModel, request, { repair: null }, false);
   let errors = validateOrdinaryMaterializationPlanV1(raw, request), repaired = false;
-  if (errors.length) { raw = await invoke(ordinaryMaterializationModel, request, { repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = validateOrdinaryMaterializationPlanV1(raw, request); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
+  if (errors.length) { if (typeof repairAvailable !== 'function' || !repairAvailable()) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response is invalid and no structural repair budget remains.', { repair_attempted: false, validation_errors: errors }); raw = await invoke(ordinaryMaterializationModel, request, { repair: { schema: 'ordinary_materialization_repair_context_v1', original_output: null, validation_errors: errors } }, true); errors = validateOrdinaryMaterializationPlanV1(raw, request); repaired = true; if (errors.length) throw turnFailure('TURN_ORDINARY_PRESENCE_PLAN_INVALID', 'Ordinary presence response and its repair are invalid.', { validation_errors: errors }); }
   const plan = freeze(raw);
   if (plan.resolution !== 'materialize') return negative(input, plan, projection, repaired);
   const pending = positive(input, plan, projection, basisCatalog);

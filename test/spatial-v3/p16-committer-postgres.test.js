@@ -1156,6 +1156,57 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.equal(reloadModelCalls, 0);
   assert.equal(replayedOrdinary.ordinary_materialization_atomic_write_plan,
     undefined);
+  let saturatedAggregate = structuredClone(afterReload.ordinary_aggregate);
+  saturatedAggregate.identity_budget = 4;
+  saturatedAggregate.remaining_identity_budget = 3;
+  for (let ordinal = 2; ordinal <= 4; ordinal += 1) {
+    saturatedAggregate = applyOrdinaryAggregateTransition({
+      aggregate: saturatedAggregate, transition: {
+        kind: 'resolve_presence',
+        request_identity: `cap-presence-${ordinal}`,
+        expected_state_version: saturatedAggregate.state_version,
+        resolution_ref: `cap-resolution-${ordinal}`,
+        candidate_key: `cap-candidate-${ordinal}`,
+        coverage_key: `cap-coverage-${ordinal}`,
+        category_key: `cap-category-${ordinal}`,
+        context_version: `cap-context-${ordinal}`,
+        resolution: 'no_change'
+      }
+    });
+  }
+  await client.query(`UPDATE party_runtime.party_ordinary_materialization_aggregates
+    SET state_version=$4,aggregate_payload=$5::jsonb
+    WHERE party_id=$1 AND scope_kind=$2 AND scope_id=$3`,
+  ['p', 'g6', 'g6-new', saturatedAggregate.state_version,
+    JSON.stringify(saturatedAggregate)]);
+  let capModelCalls = 0;
+  const cappedResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'p', inputDigest: 'first-entry-o1-cap',
+    loadEnablement: (value) => enablements.load(value),
+    verifyStageBCutover: async () => {
+      throw new Error('full cap must preflight before cutover');
+    },
+    ordinaryMaterializationModel: async () => {
+      capModelCalls += 1;
+      throw new Error('full cap must not invoke the model');
+    }
+  });
+  const capped = await cappedResolver({
+    request: { root_turn_id: 'first-entry-o1-cap' },
+    committed_state: { position: { g6_id: 'g6-new',
+      g5_anchor_id: 'ordinary-anchor' } },
+    operation: { target_refs: ['g6-new'], query: 'найти другую вещь' },
+    working_projection: {}
+  });
+  assert.equal(capModelCalls, 0);
+  assert.equal(capped.ordinary_materialization_atomic_write_plan, undefined);
+  const cappedReadback = (await client.query(`SELECT aggregate_payload
+    FROM party_runtime.party_ordinary_materialization_aggregates
+    WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new'`))
+    .rows[0].aggregate_payload;
+  assert.equal(cappedReadback.presence_resolutions.length, 4);
+  assert.equal(cappedReadback.state_version, 5,
+  'a new capped query adds no granular resolution record');
   assert.deepEqual(
     (await client.query("SELECT claim_status,state_version,terminal_change_set_id FROM party_runtime.preparation_claims WHERE id='preparation-claim-first-entry'")).rows[0],
     {

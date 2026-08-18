@@ -19,7 +19,8 @@ import {
  */
 export async function resolveOrdinaryMaterializationSeedScope({
   request, ordinaryMaterializationModel, workingProjection, basisCatalog,
-  allowedDisclosurePolicyRefs, resolveIdentityBudget
+  allowedDisclosurePolicyRefs, resolveIdentityBudget,
+  repairAvailable = () => true
 } = {}) {
   assertSeedRequest(request);
   if (typeof ordinaryMaterializationModel !== 'function') {
@@ -34,6 +35,12 @@ export async function resolveOrdinaryMaterializationSeedScope({
   let errors = validateOrdinaryMaterializationPlanV1(rawPlan, safeRequest);
   let repaired = false;
   if (errors.length !== 0) {
+    if (typeof repairAvailable !== 'function' || !repairAvailable()) {
+      throw turnFailure('TURN_ORDINARY_SEED_PLAN_INVALID',
+        'Ordinary seed response is invalid and no structural repair budget remains.',
+        { request_id: safeRequest.request_id, repair_attempted: false,
+          validation_errors: errors });
+    }
     rawPlan = await invokeModel(ordinaryMaterializationModel, safeRequest, {
       repair: { schema: 'ordinary_materialization_repair_context_v1',
         original_output: safeModelOutput(rawPlan), validation_errors: errors }

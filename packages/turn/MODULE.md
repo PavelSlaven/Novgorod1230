@@ -161,17 +161,19 @@ classification/coverage/policy fields. Normalized discovery query (NFKC,
 trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
 code-owned candidate identity и передаётся model только как `candidate_hint`;
 это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity. Turn принимает positive только после independent
+другой normalized query получает другую identity. Один discovery имеет общий
+лимит двух semantic calls; structural repair расходует оставшийся call, а
+Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
 supporting-basis/property/placement admission `@rus/items-property`, собирает
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
 working projection получает только capability marker и approved concrete
 result, narration начинается лишь после commit. Exact positive/negative
 resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
-code-owned identity. Active cutover дополнительно запускает adversarial Stage B
-classification eval sensitive и misleading-common probes через тот же exact
-production provider/model/config identity; любой sensitive `materialize`
-блокирует targeted O1 resolution.
+code-owned identity. Active cutover локально проверяет versioned approval
+receipt ранее выполненного adversarial Stage B classification eval, связанный
+с profile digest и exact production provider/model/config identity; gameplay
+не запускает probes. Любой sensitive `materialize` блокирует активацию.
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 

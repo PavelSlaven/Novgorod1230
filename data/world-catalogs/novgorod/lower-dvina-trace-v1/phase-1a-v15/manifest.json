@@ -19,7 +19,7 @@
     "id": "lower_dvina_trace_m7_content_v1",
     "revision": 1,
     "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
-    "digest": "e02b835a2841d925a4df36e82a96f010fced66c8a6cae653e950cee397c8acea"
+    "digest": "62b224f98483f3807a9217504a8e1413bd9e9e61d974f366267d4cb565e5a0f1"
   },
   "content_refs": {
     "materialization_bindings": {

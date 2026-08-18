@@ -177,16 +177,17 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
-Active O2a добавляет только authored wreck-shore ambient capability. Player-safe
-state раскрывает code-owned portion-profile ref и safe public label; semantic
+Active O2a добавляет authored wreck-shore ambient capability и first-entry
+context-bound finite capability подготовленной глины. Player-safe state раскрывает
+только code-owned profile refs и safe public labels; semantic
 plan ссылается на ref, а owner выбирает committed source/profile по exact
 capability identity, после чего назначает profile-owned semantic type и name.
 Model-owned type и wording не являются admission gate. Сам `ambient_ordinary`
 не является O2a marker: legacy direct actions без
 этого capability сохраняют прежний path. Drifted binding не публикует capability,
-а forged ref не проходит current-ref validation. Общие context-bound/property и
-finite initialization/decrement contracts остаются dormant до отдельного
-authored provisioning; precious material и damaged remnant в этой revision не
+а forged ref не проходит current-ref validation. Generic finite effect связан с
+любым admitted `finite_source`, а constrained policy добавляет только resource
+permissions. Не provisioned precious material и damaged remnant в этой revision не
 объявлены active. O2b/A1/F1/S1/N1, containers, authentic currency и
 significant/hidden facts остаются disabled.
 

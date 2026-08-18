@@ -78,16 +78,16 @@ pin and party version. Stale proposals are rejected rather than silently
 rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
 response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
-operation. Active O2a is limited to the authored wreck-shore abundant sand
-capability: the player-safe projection exposes its code-owned profile ref and
-safe label, while the owner assigns the profile-owned semantic type and label
-after capability grounding and rechecks bounded mechanics. Model-owned type and
+operation. Active O2a includes the authored wreck-shore abundant sand and one
+first-entry context-bound finite prepared-clay capability. Player-safe state
+exposes only code-owned refs and safe labels, while the owner assigns profile-owned
+semantic type/name and rechecks mechanics, property, permission and source. Model-owned type and
 wording are descriptive inputs, not admission selectors. The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
-their legacy admission. Context-bound precious/remnant and natural finite-source
-owners, migration 025 conservation, bounded initialization and decrement are
-dormant infrastructure until a later immutable authored profile provisions them;
-they are not active production claims in this revision. Currency identity,
+their legacy admission. Migration 025 conservation and bounded initialization/decrement
+are active for every admitted `finite_source`; constrained policy adds resource
+permissions but does not own conservation. Unprovisioned precious/remnant profiles
+remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.

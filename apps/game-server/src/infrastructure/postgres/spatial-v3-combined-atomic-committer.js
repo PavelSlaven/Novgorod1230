@@ -169,11 +169,6 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           );
         }
       }
-      if (plan.operation_kind === 'first_entry' && ordinaryFirstEntryProvisioner != null) {
-        const binding = plan.commit_rechecks.find((check) => check.kind === 'physical');
-        await ordinaryFirstEntryProvisioner.provision({ transaction: tx,
-          partyId: plan.party_id, firstEntryBinding: structuredClone(binding) });
-      }
       if (plan.ordinary_materialization_atomic_write_plan != null) {
         try {
           await applyOrdinaryMaterializationAtomicWritePlanInTransaction({
@@ -211,6 +206,12 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
         if (finalizeLifecycle) {
           lifecycleFinalizers.push(finalizeLifecycle);
         }
+      }
+      if (plan.operation_kind === 'first_entry' && ordinaryFirstEntryProvisioner != null) {
+        const binding = plan.commit_rechecks.find((check) => check.kind === 'physical');
+        await ordinaryFirstEntryProvisioner.provision({ transaction: tx,
+          partyId: plan.party_id, firstEntryBinding: structuredClone(binding),
+          changeSetId: plan.change_set_id });
       }
       for (const finalizeLifecycle of lifecycleFinalizers) {
         await finalizeLifecycle();

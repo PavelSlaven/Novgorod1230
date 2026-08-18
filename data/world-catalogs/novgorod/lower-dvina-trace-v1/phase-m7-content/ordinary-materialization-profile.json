@@ -17,7 +17,7 @@
     "period_ref": "trace_ld_v1_late_summer_1230",
     "region_ref": "trace_ld_v1_lower_dvina_reach",
     "function_refs": [],
-    "environment_refs": [],
+    "environment_refs": ["trace_ld_v1_o2a_first_entry_work_stock"],
     "occupation_household_refs": [],
     "economic_context_ref": "trace_ld_v1_river_route_household_economy",
     "occupancy_state_ref": "trace_ld_v1_occupied_scene",
@@ -29,8 +29,8 @@
     "density_policy_ref": "trace_ld_v1_o1_density_policy",
     "ordinary_presence_policy_ref": "trace_ld_v1_o1_presence_policy",
     "runtime_item_mechanics_policy_ref": "trace_ld_v1_o1_mechanics_policy",
-    "allowed_admission_classes": ["common_mundane"],
-    "context_bound_permission_refs": []
+    "allowed_admission_classes": ["common_mundane", "specialized_or_valuable", "weapon_or_armament", "currency_or_precious", "document_like", "other_restricted"],
+    "context_bound_permission_refs": ["trace_ld_v1_o2a_first_entry_region_permission", "trace_ld_v1_o2a_prepared_clay_permission"]
   },
   "execution": {
     "allowed_disclosure_policy_refs": ["trace_ld_v1_o1_disclosure_policy"],
@@ -106,6 +106,33 @@
       "packing_slot_cost": 1
     },
     "destination": { "kind": "holder" }
+  },
+  "o2a_context_bound": {
+    "status": "approved",
+    "negative_admission_classes": ["weapon_or_armament", "currency_or_precious", "document_like", "other_restricted"],
+    "capability": {
+      "capability_ref": "trace_ld_v1_o2a_prepared_clay_capability",
+      "profile_ref": "trace_ld_v1_o2a_prepared_clay_profile",
+      "semantic_type": "prepared_clay_portion",
+      "public_name": "обычная порция подготовленной глины",
+      "functional_bucket": "other_ordinary",
+      "admission_class": "specialized_or_valuable",
+      "profile_kind": "specialized_stock",
+      "condition_state": "serviceable",
+      "basis_kind": "finite_source",
+      "source_basis_ref": "trace_ld_v1_o2a_prepared_clay_stock",
+      "property_basis_ref": "trace_ld_v1_o2a_prepared_clay_property",
+      "environment_ref": "trace_ld_v1_o2a_first_entry_work_stock",
+      "regional_permission_ref": "trace_ld_v1_o2a_first_entry_region_permission",
+      "resource_permission_ref": "trace_ld_v1_o2a_prepared_clay_permission",
+      "mechanics_capability_ref": "trace_ld_v1_o2a_prepared_clay_mechanics",
+      "initial_quantity": 2,
+      "quantity_unit_ref": { "kind": "unit", "id": "item" },
+      "initial_amount_bounds": {
+        "minimum": { "numerator": 2, "denominator": 1, "unit": "item" },
+        "maximum": { "numerator": 2, "denominator": 1, "unit": "item" }
+      }
+    }
   },
   "fallback_policy": "forbidden"
 }

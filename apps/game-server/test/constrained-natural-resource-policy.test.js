@@ -76,7 +76,7 @@ test('a committed decrement refreshes mutable finite state without invalidating 
   const drifted = fixture();
   drifted.execution_context.committed_finite_source.position_ref = 'position:other';
   assert.equal(resolveConstrainedNaturalResourcePolicy(drifted).resolution,
-    'authority_required');
+    'absent');
 });
 
 test('missing permissions, cross-scope profile, missing source, and a model-like class swap fail closed', () => {
@@ -88,7 +88,7 @@ test('missing permissions, cross-scope profile, missing source, and a model-like
   ]) {
     const value = fixture(); change(value);
     assert.deepEqual(resolveConstrainedNaturalResourcePolicy(value),
-      { resolution: 'authority_required', profile: null });
+      { resolution: 'absent', profile: null });
   }
 });
 
@@ -97,7 +97,7 @@ test('player digging wording is not a policy input and never creates a source', 
   value.execution_context.constrained_natural_resource_profile = undefined;
   value.player_query = 'копаю землю и ищу дорогой материал';
   assert.equal(resolveConstrainedNaturalResourcePolicy(value).resolution,
-    'authority_required');
+    'absent');
 });
 
 test('a one-time source accepts one bounded semantic estimate before its first decrement', () => {

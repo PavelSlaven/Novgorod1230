@@ -57,7 +57,8 @@ import {
   './lower-dvina-trace-turn-step-generic-owners.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
-import { projectLowerDvinaTraceO2aCapabilities } from
+import { projectLowerDvinaTraceO2aCapabilities,
+  projectLowerDvinaTraceO2aDiscoveryCapabilities } from
   './lower-dvina-trace-o2a-player-safe.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
@@ -165,7 +166,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
         if (typeof scopeId !== 'string' || !scopeId) return projected;
         const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
           scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
-        if (enabled !== true) return projected;
+        if (enabled !== true && enabled?.discovery_available !== true) return projected;
+        projected = projectLowerDvinaTraceO2aDiscoveryCapabilities({ projected,
+          capabilities: enabled === true ? [] : enabled.capabilities });
         const capability = projectPlayerSafeOrdinaryResolutionCapability({
           ordinary_resolution: { discovery_available: true,
             container_resolution_available: false }

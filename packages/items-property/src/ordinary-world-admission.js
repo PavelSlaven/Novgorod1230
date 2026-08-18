@@ -34,10 +34,12 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   const causalBasis = item && record(item.causal_basis, ['basis_kind','basis_refs']);
   if (!validPending(pending, evidence, item, position, causalBasis)) return failed('ITEM_ORDINARY_WORLD_ADMISSION_INVALID');
   const contextBound = CONTEXT_BOUND.has(evidence.admission_class);
+  const finiteSource = causalBasis.basis_kind === 'finite_source';
   const approvedPermissions = refs(context.approved_permission_refs);
   if (!approvedPermissions || evidence.authority_class !== 'ordinary' || evidence.admission_class === 'container_capable' || (!contextBound && (evidence.admission_class !== 'common_mundane' || evidence.availability_class !== 'common' || !O1_BUCKETS.has(item.functional_bucket))) || (contextBound && (evidence.availability_class !== 'context_bound' || !sameRefs(evidence.permission_refs, approvedPermissions)))) return failed('ITEM_ORDINARY_WORLD_RESTRICTED');
   const bases = Array.isArray(context.supporting_bases) ? context.supporting_bases.map(normalizeBasis) : null;
-  const invalidContextBasis = contextBound && (!bases || evidence.causal_basis_kind !== causalBasis.basis_kind
+  const invalidContextBasis = (contextBound || finiteSource)
+    && (!bases || evidence.causal_basis_kind !== causalBasis.basis_kind
     || !O2A_BASIS.has(causalBasis.basis_kind)
     || bases.some((basis) => [item.supporting_basis_ref, ...causalBasis.basis_refs].includes(basis.basis_ref)
       && (basis.state !== 'committed' || basis.basis_kind !== causalBasis.basis_kind)));
@@ -85,10 +87,10 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   if (!causal || !text(causal.causal_ref) || causal.request_id !== pending.request_id || causal.candidate_key !== pending.candidate_key || causal.coverage_key !== pending.coverage_key || causal.context_version !== pending.context_version || !sameRefs(causal.source_refs, expectedRefs)) return failed('ITEM_ORDINARY_WORLD_PROVENANCE_INVALID');
   const snapshot = v2Snapshot({ causal_ref: causal.causal_ref, request_id: pending.request_id, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, policy_ref: policy.policy_ref, source_refs: expectedRefs, mechanics });
   const condition = evidence.condition_state;
-  const schema = !contextBound ? 'ordinary_world_item_proposal_v1'
+  const schema = !contextBound && !finiteSource ? 'ordinary_world_item_proposal_v1'
     : condition === undefined ? 'ordinary_world_item_proposal_v2'
       : 'ordinary_world_item_proposal_v3';
-  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...(contextBound ? { causal_basis_kind: evidence.causal_basis_kind } : {}), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
+  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...((contextBound || finiteSource) ? { causal_basis_kind: evidence.causal_basis_kind } : {}), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
 }
 
 

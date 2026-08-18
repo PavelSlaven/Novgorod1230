@@ -23,6 +23,7 @@ import { insertOrdinaryMaterializedRuntimeItem } from
   './ordinary-materialization-runtime-item.js';
 import { applyFiniteResourceInitializationInTransaction,
   applyFiniteResourceTransitionInTransaction,
+  validateFiniteResourceInitializationBounds,
   validateFiniteResourceTransition } from
   './ordinary-materialization-finite-resource-persistence.js';
 
@@ -92,6 +93,9 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   const finite = value.finite_resource_transition == null ? null
     : validateFiniteResourceTransition(value.finite_resource_transition,
       value.item, value.request_identity, exact);
+  if (value.item?.causal_basis_kind === 'finite_source' && finite == null) {
+    fail('ORDINARY_PHASE6_FINITE_SOURCE_INVALID');
+  }
   const initialization = value.finite_resource_initialization == null ? null
     : validateFiniteResourceInitialization(value.finite_resource_initialization,
       finite, value.request_identity);
@@ -144,6 +148,7 @@ function validateFiniteResourceInitialization(value, transition,
         !== canonicalDigest(transition.before_quantity)) {
     fail('ORDINARY_PHASE6_FINITE_SOURCE_INITIALIZATION_INVALID');
   }
+  validateFiniteResourceInitializationBounds(initialization);
   return initialization;
 }
 

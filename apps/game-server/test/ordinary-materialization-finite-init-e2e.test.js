@@ -3,6 +3,7 @@ import test from "node:test";
 import { canonicalDigest, createOrdinaryAggregate } from "@rus/materialization";
 import { ordinaryWorldPropertyPlacementContextDigest } from "@rus/items-property";
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from "../src/runtime/lower-dvina-trace-ordinary-discovery.js";
+import { createOrdinaryMaterializationAtomicWritePlan } from "../src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js";
 
 const scope_ref = { entity_kind: "g6", entity_id: "river-bank" };
 const source_ref = "resource-node:river-clay";
@@ -354,6 +355,22 @@ test("uninitialized generic finite source seals one bounded estimate, initializa
   assert.equal(plan.finite_resource_transition.expected_state_version, 9);
   assert.equal(plan.finite_resource_transition.next_state_version, 10);
   assert.equal(plan.item.causal_basis_kind, "finite_source");
+
+  const forged = structuredClone(plan);
+  delete forged.schema;
+  delete forged.write_plan_digest;
+  forged.finite_resource_initialization.estimated_amount = {
+    numerator: 11, denominator: 1, unit: "item",
+  };
+  forged.finite_resource_transition.before_quantity = {
+    numerator: 11, denominator: 1, unit: "item",
+  };
+  forged.finite_resource_transition.after_quantity = {
+    numerator: 10, denominator: 1, unit: "item",
+  };
+  assert.throws(() => createOrdinaryMaterializationAtomicWritePlan(forged), {
+    code: "ORDINARY_PHASE6_FINITE_SOURCE_INITIALIZATION_INVALID",
+  });
 
   current = enabled({
     finite: source({

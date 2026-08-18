@@ -131,9 +131,10 @@ function validExecution(value) {
 function requiresFiniteResourceOwner(profile) {
   return profile?.schema === 'rus.items.context_bound_ordinary_profile.v2'
     && profile.version === 2
-    && ['specialized_stock', 'armament'].includes(profile.profile_kind)
-    && profile.condition_state === 'damaged'
-    && profile.basis_kind === 'remnant';
+    && (profile.basis_kind === 'finite_source'
+      || (['specialized_stock', 'armament'].includes(profile.profile_kind)
+        && profile.condition_state === 'damaged'
+        && profile.basis_kind === 'remnant'));
 }
 function finiteEstimatePolicy(profile) {
   const source = profile?.finite_source;

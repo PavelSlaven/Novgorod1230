@@ -10,7 +10,9 @@ const SOURCE = ['source_ref', 'state', 'basis_kind', 'scope_ref', 'environment_r
 const PROFILE = ['profile_ref', 'state', 'source_class', 'semantic_type', 'display_name', 'material_class', 'quantity_unit', 'min_quantity', 'max_quantity', 'min_mass_grams', 'max_mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost'];
 const PROPERTY = ['property_basis_ref', 'state', 'scope_ref', 'environment_ref'];
 const DESTINATION = ['destination_ref', 'state', 'kind', 'target_ref', 'scope_ref'];
-const REQUEST = ['context_pin_ref', 'source_ref', 'portion_profile_ref', 'quantity', 'mass_grams', 'destination_ref'];
+const REQUEST = ['context_pin_ref', 'source_ref', 'portion_profile_ref',
+  'semantic_type', 'semantic_name', 'source_identity_refs', 'quantity', 'mass_grams',
+  'destination_ref'];
 const QUANTITY = ['value', 'unit'];
 
 /**
@@ -63,16 +65,30 @@ function validOperation(value) { return exactText(value.root_turn_id) && Number.
 function validRequestedPortion(value, quantity) { return ['committed', value.context_pin_ref]
   .includes(value.context_pin_ref) && ['committed', value.source_ref].includes(value.source_ref)
   && ['committed', value.portion_profile_ref].includes(value.portion_profile_ref)
+  && exactText(value.semantic_type) && exactText(value.semantic_name)
+  && refs(value.source_identity_refs)
   && validQuantity(quantity) && positiveMass(value.mass_grams) && exactText(value.destination_ref); }
-function validRequest(value, quantity) { return exactText(value.context_pin_ref) && exactText(value.source_ref) && exactText(value.portion_profile_ref) && validQuantity(quantity) && positiveMass(value.mass_grams) && exactText(value.destination_ref); }
+function validRequest(value, quantity) { return exactText(value.context_pin_ref) && exactText(value.source_ref) && exactText(value.portion_profile_ref) && exactText(value.semantic_type) && exactText(value.semantic_name) && refs(value.source_identity_refs) && validQuantity(quantity) && positiveMass(value.mass_grams) && exactText(value.destination_ref); }
 function selectCommittedRequest(request, context) {
-  const source = request.source_ref === 'committed'
-    ? one(context.ambient_sources, (value) => sameScope(value.scope_ref, context.scope_ref))
-    : { source_ref: request.source_ref };
-  const profile = source && request.portion_profile_ref === 'committed'
-    ? one(context.finite_portion_profiles, (value) => source.finite_portion_profile_refs?.includes(value.profile_ref))
-    : { profile_ref: request.portion_profile_ref };
-  if (!source || !profile) return null;
+  let candidates = context.ambient_sources.flatMap((source) =>
+    context.finite_portion_profiles.filter((profile) =>
+      source.finite_portion_profile_refs.includes(profile.profile_ref)
+      && profile.source_class === source.source_class
+      && profile.semantic_type === request.semantic_type
+      && profile.display_name === request.semantic_name)
+      .map((profile) => ({ source, profile })));
+  if (request.source_ref !== 'committed') candidates = candidates.filter(
+    ({ source }) => source.source_ref === request.source_ref);
+  if (request.portion_profile_ref !== 'committed') candidates = candidates.filter(
+    ({ profile }) => profile.profile_ref === request.portion_profile_ref);
+  const sourceBound = candidates.filter(({ source }) =>
+    request.source_identity_refs.some((ref) => [source.source_ref,
+      source.scope_ref.entity_id, source.environment_ref,
+      source.property_basis_ref].includes(ref)));
+  if (sourceBound.length === 0) return null;
+  candidates = sourceBound;
+  if (candidates.length !== 1) return null;
+  const [{ source, profile }] = candidates;
   return { ...request,
     context_pin_ref: request.context_pin_ref === 'committed' ? context.context_pin_ref : request.context_pin_ref,
     source_ref: source.source_ref, portion_profile_ref: profile.profile_ref };

@@ -57,6 +57,8 @@ import {
   './lower-dvina-trace-turn-step-generic-owners.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
+import { projectLowerDvinaTraceO2aCapabilities } from
+  './lower-dvina-trace-o2a-player-safe.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
@@ -149,11 +151,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ? async (input) => {
         const committedState = structuredClone(input.committed_state);
         delete committedState.current_visible_context;
-        const projected = await playerSafeStateProjector({
+        let projected = await playerSafeStateProjector({
           ...input,
           committed_state: committedState,
           working_projection_authority: workingProjectionAuthority
         });
+        projected = projectLowerDvinaTraceO2aCapabilities({ projected,
+          admission: admitAmbientOrdinaryPortion });
         if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
             || typeof turnStepPorts.ordinaryDiscoveryResolver !== 'function') return projected;
         const scopeId = committedState.position?.g6_id ?? committedState.position?.g6_ref

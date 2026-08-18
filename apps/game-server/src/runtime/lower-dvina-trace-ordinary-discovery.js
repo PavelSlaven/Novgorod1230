@@ -120,10 +120,11 @@ function selectDiscoveryContext({ execution, objective, targetRef }) {
         .filter(({ basis_ref }) => basisRefs.has(basis_ref)) } } };
   }
   const matches = (execution.context_bound_capabilities ?? []).filter(
-    ({ capability_ref }) => capability_ref === targetRef);
+    ({ source_ref }) => source_ref === targetRef);
   if (matches.length !== 1) return null;
   const selected = matches[0];
-  return { execution: { ...execution,
+  const { context_bound_capabilities: _, ...baseExecution } = execution;
+  return { execution: { ...baseExecution,
     candidate_context: selected.candidate_context,
     supporting_bases: selected.supporting_bases,
     context_bound_ordinary_profile:

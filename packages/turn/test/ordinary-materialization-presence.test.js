@@ -164,13 +164,21 @@ test('O2a context-bound presence requires the exact approved permission set and 
     workingProjection: projection(), basisCatalog: missingPermissionBasis,
     ordinaryMaterializationModel: async () => negative() })).status, 'authority_required');
 
-  for (const semantic_descriptor of [
-    { semantic_type: 'swapped_weapon_type', name: 'совершенно свободное имя', facts: [] },
-    { semantic_type: 'ordinary_weapon', name: 'совершенно свободное имя', facts: ['evidence'] }
-  ]) await assert.rejects(() => resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+  const variant = await resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
     workingProjection: projection(), basisCatalog: contextBasis,
     ordinaryMaterializationModel: async () => ({ ...negative('materialize'),
-      entities: [entity({ semantic_descriptor, admission_class: 'weapon_or_armament',
+      entities: [entity({ semantic_descriptor: { semantic_type: 'swapped_weapon_type',
+        name: 'совершенно свободное имя', facts: [] }, admission_class: 'weapon_or_armament',
+      availability_class: 'context_bound', functional_bucket: 'arms',
+      supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'personal_possession',
+        basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) });
+  assert.equal(variant.status, 'pending_items_property_admission');
+  await assert.rejects(() => resolveOrdinaryMaterializationPresence({ envelope: contextEnvelope,
+    workingProjection: projection(), basisCatalog: contextBasis,
+    ordinaryMaterializationModel: async () => ({ ...negative('materialize'),
+      entities: [entity({ semantic_descriptor: { semantic_type: 'ordinary_weapon',
+        name: 'совершенно свободное имя', facts: ['evidence'] },
+        admission_class: 'weapon_or_armament',
         availability_class: 'context_bound', functional_bucket: 'arms',
         supporting_basis_ref: 'basis-arms', causal_basis: { basis_kind: 'personal_possession',
           basis_refs: ['basis-arms'] } })], presence_resolutions: [] }) }),

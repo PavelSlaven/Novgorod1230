@@ -42,8 +42,10 @@ test('approved armament is a closed profile envelope, not a noun rule', () => {
   assert.equal(result.resolution, null);
   assert.equal(result.profile.semantic_type, 'ordinary_spear');
   assert.equal(Object.isFrozen(result), true);
+  assert.equal(resolve({ candidate_context: {
+    ...candidate_context, semantic_type: 'unlisted_spearhead_variant'
+  } }).resolution, null);
   for (const alteredCandidate of [
-    { ...candidate_context, semantic_type: 'unseen_weapon' },
     { ...candidate_context, functional_bucket: 'work' },
     { ...candidate_context, admission_class: 'specialized_or_valuable' }
   ]) assert.equal(resolve({ candidate_context: alteredCandidate }).resolution, 'absent');

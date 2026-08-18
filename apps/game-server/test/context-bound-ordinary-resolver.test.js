@@ -77,14 +77,15 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
 function request() { return { request: { root_turn_id: 'turn:party:1' },
   committed_state: { position: { g6_id: 'shore', g5_anchor_id: 'anchor:shore' } },
   operation: { target_refs: ['shore'], query: 'свободная формулировка' }, working_projection: {} }; }
-function model(request, publicName = 'обычный наконечник копья') {
+function model(request, publicName = 'обычный наконечник копья',
+  semanticType = 'ordinary_spear') {
   if (request.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
     request_id: request.request_id, resolution: 'seeded', density_band_proposal: 'ordinary',
     background_groups: [], entities: [], presence_resolutions: [], reason_code: 'seed' };
   return { schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
     resolution: 'materialize', density_band_proposal: null, background_groups: [],
     presence_resolutions: [], reason_code: 'approved', entities: [{
-      semantic_descriptor: { semantic_type: 'ordinary_spear', name: publicName, facts: [] },
+      semantic_descriptor: { semantic_type: semanticType, name: publicName, facts: [] },
       authority_class: 'ordinary', admission_class: 'weapon_or_armament',
       availability_class: 'context_bound', functional_bucket: 'arms', presence_expectation: 'routine',
       supporting_basis_ref: 'armament:source', causal_basis: { basis_kind: 'personal_possession',
@@ -123,29 +124,24 @@ test('approved armament profile reaches the same bounded presence and P16 plan',
   assert.deepEqual(result.ordinary_materialization_atomic_write_plan.item.permission_refs, permissions);
 });
 
-test('context-bound profile owns the persisted public name against model authenticity claims', async () => {
-  for (const forgedName of [
-    'подлинная новгородская монета князя',
-    'подлинная княжеская грамота с исторической печатью',
-    'единственный знаменитый наконечник из летописи'
-  ]) {
-    let calls = 0;
-    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
-      inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
-      ordinaryMaterializationModel: verifiedModel(async (input) => {
-        calls += 1;
-        return model(input, forgedName);
-      }) });
-    const result = await resolver(request());
-    const plan = result.ordinary_materialization_atomic_write_plan;
-    assert.ok(plan, JSON.stringify({ calls, result }));
-    assert.equal(plan.item.item_proposal.semantic_descriptor.name,
-      'обычный наконечник копья');
-  }
+test('approved class admits an unlisted ordinary semantic variant', async () => {
+  let calls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
+    ordinaryMaterializationModel: verifiedModel(async (input) => {
+      calls += 1;
+      return model(input, 'обычный втульчатый наконечник', 'socketed_spearhead_variant');
+    }) });
+  const result = await resolver(request());
+  const descriptor = result.ordinary_materialization_atomic_write_plan
+    ?.item.item_proposal.semantic_descriptor;
+  assert.equal(calls, 2);
+  assert.deepEqual(descriptor, { semantic_type: 'socketed_spearhead_variant',
+    name: 'обычный втульчатый наконечник', facts: [] });
 });
 
-test('unseen armament, ordinary yard and currency persist code-owned absence without model calls', async () => {
-  for (const input of [enabled({ semantic_type: 'unseen_weapon' }), enabled({ withProfile: false }),
+test('missing authority and restricted class persist code-owned absence without model calls', async () => {
+  for (const input of [enabled({ withProfile: false }),
     enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]
     .map((value) => JSON.parse(JSON.stringify(value)))) {
     let calls = 0;

@@ -976,6 +976,9 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const [finiteCapability] = loadedEnablement.execution_context
     .context_bound_capabilities;
   const finiteBasis = finiteCapability.supporting_bases[0];
+  assert.equal(finiteCapability.source_ref, finiteBasis.basis_ref);
+  assert.equal(finiteCapability.candidate_context.target_ref,
+    finiteCapability.source_ref);
   let finiteCalls = 0;
   const finiteResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'p', inputDigest: 'first-entry-o2a-finite',
@@ -992,8 +995,8 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
         request_id: request.request_id, resolution: 'materialize',
         density_band_proposal: null, background_groups: [],
         presence_resolutions: [], reason_code: 'finite-present', entities: [{
-          semantic_descriptor: { semantic_type: 'prepared_clay_portion',
-            name: 'модельное имя не является authority', facts: [] },
+          semantic_descriptor: { semantic_type: 'hand_formed_clay_blank',
+            name: 'небольшая заготовка из глины', facts: [] },
           authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
           availability_class: 'context_bound', functional_bucket: 'other_ordinary',
           presence_expectation: 'routine', supporting_basis_ref: finiteBasis.basis_ref,
@@ -1011,14 +1014,15 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     request: { root_turn_id: 'first-entry-o2a-finite' },
     committed_state: { position: { g6_id: 'g6-new',
       g5_anchor_id: 'ordinary-anchor' } },
-    operation: { target_refs: [finiteCapability.capability_ref],
+    operation: { target_refs: [finiteCapability.source_ref],
       query: 'взять порцию подготовленной глины' }, working_projection: {} });
   const finitePlan = finiteAvailable.ordinary_materialization_atomic_write_plan;
   assert.ok(finitePlan, JSON.stringify(finiteAvailable));
-  assert.equal(finiteCalls, 2);
+  assert.equal(finiteCalls, 2, JSON.stringify(finiteAvailable));
   assert.equal(finitePlan.item.admission_class, 'specialized_or_valuable');
-  assert.equal(finitePlan.item.item_proposal.semantic_descriptor.name,
-    finiteCapability.public_name);
+  assert.deepEqual(finitePlan.item.item_proposal.semantic_descriptor, {
+    semantic_type: 'hand_formed_clay_blank',
+    name: 'небольшая заготовка из глины', facts: [] });
   assert.deepEqual(finitePlan.finite_resource_transition.before_quantity,
     { numerator: 2, denominator: 1, unit: 'item' });
   assert.deepEqual(finitePlan.finite_resource_transition.after_quantity,

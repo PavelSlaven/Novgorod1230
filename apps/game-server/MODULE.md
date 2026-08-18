@@ -79,10 +79,11 @@ rebased; reload/retry cannot reroll a committed code-owned identity. The player-
 response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. Active O2a includes the authored wreck-shore abundant sand and one
-first-entry context-bound finite prepared-clay capability. Player-safe state
-exposes only code-owned refs and safe labels, while the owner assigns profile-owned
-semantic type/name and rechecks mechanics, property, permission and source. Model-owned type and
-wording are descriptive inputs, not admission selectors. The `ambient_ordinary`
+first-entry context-bound finite prepared-clay stock. Player-safe state exposes
+that committed stock as an ordinary source and only the boolean discovery marker;
+it exposes no unresolved result, permission or capacity. Stage B may choose an
+unlisted ordinary semantic type/name inside the approved class, while the owner
+rechecks mechanics, property, permission and source. The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Migration 025 conservation and bounded initialization/decrement
 are active for every admitted `finite_source`; constrained policy adds resource

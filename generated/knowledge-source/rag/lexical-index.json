@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "692739e7b231b2562dc2774b65086d990c844e6f196f0b21a5ec27a6fc5c3797",
+  "corpus_hash": "fd82b1ddd01737359f8097d045f3415c5a08981079960869e312c3a194f2ef48",
   "chunk_count": 2519,
   "chunks": [
     {
@@ -837,8 +837,8 @@
       "section": "4.4. LLM",
       "line_start": 172,
       "line_end": 183,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Безопасные capability проецируются игроку как code-owned profile refs и public labels; owner выбирает committed source/profile по exact capability identity и назначает profile-owned semantic type/name. Model-owned wording не является admission gate, а обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; constrained policy только добавляет региональные/resource permissions. Restricted weapon/currency/document/other запрос без exact authored capability сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.",
-      "char_count": 1207
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source без expected result, permission и capacity. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; constrained policy только добавляет региональные/resource permissions. Restricted weapon/currency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.",
+      "char_count": 1262
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.5. Party database:0",
@@ -2583,8 +2583,8 @@
       "section": "2. Главное правило материализации",
       "line_start": 67,
       "line_end": 80,
-      "text": "## items_and_property.txt — 2. Главное правило материализации\npons/value/currency, natural finite sources, O2, A1, F1, S1 или N1; `ordinary` не означает `unowned`, а topology и `party_scene_baseline` не меняются.\n\nActive O2a в текущей revision включает authored abundant ambient source берега и first-entry context-bound finite stock подготовленной глины. Player-safe code-owned capability ref выбирает source/profile; model wording не является admission password, а persisted type/name после grounding всегда profile-owned. Сам `ambient_ordinary` не является O2a marker, поэтому существующие direct-action clay/wood/bark/grass/stone/shell/root/worm остаются совместимыми. First-entry provision-ит exact finite basis, permissions, property/placement и resource row. Любой admitted `finite_source`, включая `common_mundane`, обязан пройти generic initialization/decrement; constrained policy добавляет resource permissions, но не владеет conservation. Restricted weapon/currency/document/other без exact authored capability сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.",
-      "char_count": 1111
+      "text": "## items_and_property.txt — 2. Главное правило материализации\npons/value/currency, natural finite sources, O2, A1, F1, S1 или N1; `ordinary` не означает `unowned`, а topology и `party_scene_baseline` не меняются.\n\nActive O2a в текущей revision включает authored abundant ambient source берега и first-entry context-bound finite stock подготовленной глины. Context-bound marker раскрывает только `discovery_available`, а committed stock проецируется как обычный source без expected result, permission или capacity. Stage B свободно выбирает unlisted ordinary semantic type/name внутри approved class; source/property/permission/mechanics остаются code-owned, facts запрещены. Сам `ambient_ordinary` не является O2a marker, поэтому существующие direct-action clay/wood/bark/grass/stone/shell/root/worm остаются совместимыми. First-entry provision-ит exact finite basis, permissions, property/placement и resource row. Любой admitted `finite_source`, включая `common_mundane`, обязан пройти generic initialization/decrement; constrained policy добавляет resource permissions, но не владеет conservation. Restricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.",
+      "char_count": 1254
     },
     {
       "id": "items_and_property.txt:3. Обязательные параметры значимого предмета:0",

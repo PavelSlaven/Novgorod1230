@@ -5,7 +5,8 @@ import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from
   '../src/internal/lower-dvina-trace-ordinary-materialization-profile.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
   '../src/runtime/lower-dvina-trace-o2a-ambient-port.js';
-import { projectLowerDvinaTraceO2aCapabilities } from
+import { projectLowerDvinaTraceO2aCapabilities,
+  projectLowerDvinaTraceO2aDiscoverySources } from
   '../src/runtime/lower-dvina-trace-o2a-player-safe.js';
 import { createLowerDvinaTraceTurnStepRuntimePorts } from
   '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
@@ -78,6 +79,23 @@ test('O2a ambient admission is absent for a drifted binding', async () => {
   assert.equal(createLowerDvinaTraceO2aAmbientPort({ profile, committedState: {
     actor_id: 'mikula', position: { g6_id: 'other', location_ref: 'trace_ld_v1_loc_wreck_shore' }
   } }), null);
+});
+
+test('player-safe discovery exposes committed source, not expected result capability', () => {
+  const projected = projectLowerDvinaTraceO2aDiscoverySources({
+    sources: [{ source_ref: 'source:clay', public_name: 'запас подготовленной глины',
+      capability_ref: 'hidden-capability', permission_refs: ['hidden-permission'] }],
+    projected: { player_safe_state: { visible_context: { visible_objects: [] } } }
+  });
+  assert.deepEqual(projected.player_safe_state.visible_context.visible_objects, [{
+    entity_ref: { entity_kind: 'ordinary_resource_source', entity_id: 'source:clay' },
+    display_label: 'запас подготовленной глины',
+    recognition: 'code_owned_committed_source', visible_status: 'known'
+  }]);
+  const serialized = JSON.stringify(projected);
+  assert.equal(serialized.includes('ordinary_discovery_capability'), false);
+  assert.equal(serialized.includes('hidden-capability'), false);
+  assert.equal(serialized.includes('hidden-permission'), false);
 });
 
 test('the O2a owner intercepts only its explicit capability ref', async () => {

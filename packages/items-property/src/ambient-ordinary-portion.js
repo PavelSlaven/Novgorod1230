@@ -74,8 +74,7 @@ function selectCommittedRequest(request, context) {
     context.finite_portion_profiles.filter((profile) =>
       source.finite_portion_profile_refs.includes(profile.profile_ref)
       && profile.source_class === source.source_class
-      && profile.semantic_type === request.semantic_type
-      && profile.display_name === request.semantic_name)
+      && profile.semantic_type === request.semantic_type)
       .map((profile) => ({ source, profile })));
   if (request.source_ref !== 'committed') candidates = candidates.filter(
     ({ source }) => source.source_ref === request.source_ref);
@@ -84,7 +83,8 @@ function selectCommittedRequest(request, context) {
   const sourceBound = candidates.filter(({ source }) =>
     request.source_identity_refs.some((ref) => [source.source_ref,
       source.scope_ref.entity_id, source.environment_ref,
-      source.property_basis_ref].includes(ref)));
+      source.property_basis_ref, ...source.finite_portion_profile_refs]
+      .includes(ref)));
   if (sourceBound.length === 0) return null;
   candidates = sourceBound;
   if (candidates.length !== 1) return null;

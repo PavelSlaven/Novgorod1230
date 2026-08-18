@@ -36,9 +36,12 @@ export function createItemOperationHandlers(state, options = {}) {
 }
 
 function createEntity(execution, state, options) {
+  const ambientOwner = options.ambientOrdinaryPortionAdmission;
+  const ownerSelected = typeof ambientOwner === 'function'
+    && (typeof ambientOwner.supports !== 'function'
+      || ambientOwner.supports(execution.operation) === true);
   if (execution.operation?.origin?.kind === 'ambient_ordinary'
-      && (typeof options.ambientOrdinaryPortionAdmission === 'function'
-        || options.requireAmbientOrdinaryAdmission === true)) {
+      && (ownerSelected || options.requireAmbientOrdinaryAdmission === true)) {
     return createAmbientEntity(execution, state, options);
   }
   return createEntityFromAdmission(execution, state, options);
@@ -86,7 +89,7 @@ function createEntityFromAdmission(execution, state, options, ambient = null) {
   };
   const admitted = admitOrdinaryEntity(effectiveOperation,
     options.ordinaryResultPolicy);
-  requireOrigin(operation.origin, projection, state, refs);
+  if (ambient == null) requireOrigin(operation.origin, projection, state, refs);
   requireRefs(operation.origin.source_refs, refs, 'origin.source_refs');
   requireRef(operation.placement.target_ref, refs, 'placement.target_ref');
   const operationIdentity = ambient?.operationIdentity

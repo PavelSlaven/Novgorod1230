@@ -265,10 +265,7 @@ function createTraceTurnRuntime({
         profile: ordinaryMaterializationProfile,
         committedState
       }),
-    requireTurnStepAmbientOrdinaryAdmission:
-      ordinaryMaterializationProfile?.schema
-        === 'rus.lower_dvina_trace_ordinary_materialization_profile.v2'
-        && ordinaryMaterializationProfile?.o2a_ambient?.status === 'approved',
+    requireTurnStepAmbientOrdinaryAdmission: false,
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,

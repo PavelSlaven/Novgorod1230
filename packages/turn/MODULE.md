@@ -177,21 +177,17 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
-O2a добавляет server-injected ambient port и exact SHA-pinned context-bound
-authority к тому же candidate-free Stage A/Stage B потоку. `ambient_ordinary`
-связывает exact semantic type/name с одним code-owned profile среди committed
-sources и получает finite portion без decrement abundant source; finite source
-при неизвестном количестве допускает одну bounded estimate, после чего
-owner-native transition и ordinary P16 фиксируют quantity/decrement. Exact
-precious physical source не получает currency identity, а approved damaged
-non-unique armament remnant не получает model-owned combat mechanics. Mutable
-finite state всегда загружается из committed row, любой `finite_source`
-материализуется только вместе с decrement, context-bound property использует v2,
-а public name берётся из authority profile. Для
-активного O2a profile отсутствие порта или drift является hard denial;
-legacy composition без profile сохраняет прежний direct path. O2b/A1/F1/S1/N1,
-containers, authentic currency, significant/hidden facts и non-authored
-constrained/armament sources остаются disabled.
+Active O2a добавляет только authored wreck-shore ambient capability. Player-safe
+state раскрывает code-owned portion-profile ref и safe public label; semantic
+plan ссылается на ref, а owner выбирает committed source/profile по identity и
+semantic type, не по exact model wording, после чего назначает profile-owned
+name. Сам `ambient_ordinary` не является O2a marker: legacy direct actions без
+этого capability сохраняют прежний path. Drifted binding не публикует capability,
+а forged ref не проходит current-ref validation. Общие context-bound/property и
+finite initialization/decrement contracts остаются dormant до отдельного
+authored provisioning; precious material и damaged remnant в этой revision не
+объявлены active. O2b/A1/F1/S1/N1, containers, authentic currency и
+significant/hidden facts остаются disabled.
 
 ## Тесты
 

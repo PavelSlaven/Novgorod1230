@@ -61,7 +61,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 ## Зависимости
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+Разрешены `@rus/kernel` и узкий contract digest из `@rus/contracts/ordinary-materialization-v1`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
 
 ## Ошибки
 

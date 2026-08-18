@@ -8,6 +8,7 @@
     "./finite-resource-transition": "./src/finite-resource-transition.js"
   },
   "dependencies": {
+    "@rus/contracts": "0.9.0",
     "@rus/kernel": "0.9.0"
   }
 }

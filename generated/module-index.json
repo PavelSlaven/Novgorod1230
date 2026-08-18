@@ -158,6 +158,7 @@
     },
     {
       "dependencies": [
+        "@rus/contracts",
         "@rus/kernel"
       ],
       "name": "@rus/items-property",

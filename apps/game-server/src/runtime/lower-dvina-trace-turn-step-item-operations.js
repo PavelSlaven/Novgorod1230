@@ -52,6 +52,9 @@ function createAmbientEntity(execution, state, options) {
     failAmbientAdmission();
   }
   const { operation, working_projection: projection } = execution;
+  if (!Array.isArray(operation.facts) || operation.facts.length !== 0) {
+    failAmbientAdmission();
+  }
   requireProjection(projection);
   const operationIdentity = nextOperationIdentity(execution, state);
   const request = ambientRequest(operation, projection, operationIdentity);
@@ -87,8 +90,9 @@ function createEntityFromAdmission(execution, state, options, ambient = null) {
     name: ambient.name,
     mechanics: ambient.mechanics
   };
-  const admitted = admitOrdinaryEntity(effectiveOperation,
-    options.ordinaryResultPolicy);
+  const admitted = ambient == null
+    ? admitOrdinaryEntity(effectiveOperation, options.ordinaryResultPolicy)
+    : { semantic_type: ambient.semantic_type, name: ambient.name };
   if (ambient == null) requireOrigin(operation.origin, projection, state, refs);
   requireRefs(operation.origin.source_refs, refs, 'origin.source_refs');
   requireRef(operation.placement.target_ref, refs, 'placement.target_ref');

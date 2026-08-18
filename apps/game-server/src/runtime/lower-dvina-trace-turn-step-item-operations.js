@@ -222,6 +222,11 @@ function ambientRequest(operation, projection, identity) {
     context_pin_ref: 'committed',
     source_ref: 'committed',
     portion_profile_ref: 'committed',
+    semantic_type: operation.semantic_type,
+    semantic_name: operation.name,
+    source_identity_refs: [...new Set([
+      ...structuredClone(operation.origin?.source_refs), source
+    ])].sort(),
     quantity: structuredClone(operation.mechanics?.quantity),
     mass_grams: operation.mechanics?.mass_grams,
     destination_ref: destination

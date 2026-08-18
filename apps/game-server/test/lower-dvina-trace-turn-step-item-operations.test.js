@@ -33,6 +33,33 @@ test('scenario item factory requires injected approved ordinary policy', () => {
   });
 });
 
+test('ambient adapter preserves semantic intent for code-owned source selection', async () => {
+  let received;
+  const snapshot = createRuntimeInstanceMechanicsSnapshot({
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+    provenance: { source_kind: 'ordinary_direct_action_result',
+      root_turn_id: 'turn:party:1', step_index: 1,
+      operation_ref: 'turn:party:1:operation:1', origin_kind: 'ambient_ordinary',
+      source_refs: ['ambient:shore'] },
+    mechanics: createSand().mechanics
+  });
+  const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
+    ordinaryResultPolicy,
+    ambientOrdinaryPortionAdmission: async (input) => {
+      received = input.request;
+      return { pass: true, proposal: { semantic_descriptor: {
+        semantic_type: 'material_portion', name: 'горсть мокрого песка' } },
+      runtime_instance_mechanics_snapshot: snapshot };
+    }
+  });
+  await handlers.create_entity(execution(createSand()));
+  assert.equal(received.semantic_type, 'material_portion');
+  assert.equal(received.semantic_name, 'горсть мокрого песка');
+  assert.deepEqual(received.source_identity_refs, ['shore']);
+  assert.equal(received.source_ref, 'committed');
+  assert.equal(received.portion_profile_ref, 'committed');
+});
+
 test('inside uses a visible open container and code-owned capacity', () => {
   const options = {
     ordinaryResultPolicy,

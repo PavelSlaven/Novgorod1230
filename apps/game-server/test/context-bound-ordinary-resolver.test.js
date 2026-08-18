@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest, createOrdinaryAggregate } from '@rus/materialization';
+import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { resolveContextBoundOrdinaryPolicy } from
@@ -8,12 +9,16 @@ import { resolveContextBoundOrdinaryPolicy } from
 
 const scope_ref = { entity_kind: 'g6', entity_id: 'shore' };
 const permissions = ['armament:profile', 'armament:source'];
-const property = { scope_ref, item_kind: 'man_made',
+const property = { schema: 'rus.items.ordinary_world_property_placement_context.v2',
+  version: 2, scope_ref, item_kind: 'man_made',
   property_catalog_version_ref: 'property-v1', placement_catalog_version_ref: 'placement-v1',
-  personal_communal_refs: [], occupied_site_refs: ['warrior-house'], unowned_cause_refs: [],
+  explicit_item_source_refs: [], personal_possession_refs: [],
+  communal_public_service_refs: [], container_property_refs: [],
+  occupied_site_refs: ['warrior-house'], unowned_cause_refs: [],
   placement_context_refs: ['scene'], property_catalog: [{ property_basis_ref: 'property',
     state: 'committed', scope_ref, basis_class: 'occupied_site_default',
-    source_ref: 'warrior-house', unowned_cause_ref: null }], placement_catalog: [{
+    source_ref: 'warrior-house', unowned_cause_ref: null,
+    unowned_cause_kind: null }], placement_catalog: [{
     position_ref: 'bench', state: 'committed', scope_ref, position_kind: 'scene_position',
     g6_ref: 'shore', containment_depth: 1, placement_context_ref: 'scene' }] };
 
@@ -63,8 +68,10 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
     version_pins: { party_state_version: 0, ordinary_state_version: 0, catalog_version: 1,
       property_version: 1, placement_version: 1, supporting_basis_catalog_version: 1,
       supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1',
-        supporting_bases }), property_placement_context_digest: canonicalDigest({
-        domain: 'rus.items.ordinary_world_property_placement_context.v1', ...property }) },
+        supporting_bases }), property_placement_context_digest:
+        ordinaryWorldPropertyPlacementContextDigest({ ...property,
+          supporting_basis_ref: 'armament:source',
+          causal_basis_refs: ['armament:source'], requested_position_ref: 'bench' }) },
     execution_context };
 }
 function request() { return { request: { root_turn_id: 'turn:party:1' },

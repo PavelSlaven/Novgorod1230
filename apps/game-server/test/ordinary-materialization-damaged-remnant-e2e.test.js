@@ -4,6 +4,7 @@ import { canonicalDigest, createOrdinaryAggregate } from "@rus/materialization";
 import { ordinaryWorldPropertyPlacementContextDigest } from "@rus/items-property";
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from "../src/runtime/lower-dvina-trace-ordinary-discovery.js";
 import { applyOrdinaryMaterializationProjection } from "../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js";
+import { createOrdinaryMaterializationAtomicWritePlan } from "../src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js";
 
 const scope_ref = { entity_kind: "g6", entity_id: "ruin" },
   source_ref = "remnant:tool",
@@ -22,6 +23,7 @@ function finite() {
 function enabled({
   basis_kind = "remnant",
   admission_class = "specialized_or_valuable",
+  condition_state = "damaged",
 } = {}) {
   const armament = admission_class === "weapon_or_armament",
     semantic_type = armament ? "damaged_weapon_remnant" : "damaged_remnant_tool",
@@ -129,7 +131,7 @@ function enabled({
     runtime_item_mechanics_policy_ref: "mechanics",
     mechanics_capability_ref: armament ? "combat:mechanics" : "stock:mechanics",
     public_name: armament ? "обычный повреждённый наконечник" : "обычный обломок инструмента",
-    condition_state: "damaged",
+    condition_state,
     basis_kind,
   };
   const constrained_natural_resource_profile = {
@@ -232,7 +234,7 @@ function request() {
   };
 }
 function model(r, { condition = false, facts = [],
-  admission_class = "specialized_or_valuable" } = {}) {
+  admission_class = "specialized_or_valuable", basis_kind = "remnant" } = {}) {
   if (r.mode === "seed_scope")
     return {
       schema: "ordinary_materialization_plan_v1",
@@ -266,7 +268,7 @@ function model(r, { condition = false, facts = [],
         functional_bucket: admission_class === "weapon_or_armament" ? "arms" : "stock",
         presence_expectation: "routine",
         supporting_basis_ref: source_ref,
-        causal_basis: { basis_kind: "remnant", basis_refs: [source_ref] },
+        causal_basis: { basis_kind, basis_refs: [source_ref] },
         property_basis_ref: "property:remnant",
         placement_proposal: { scope_ref: "ruin", position_ref: "ruin-floor" },
         mechanics_proposal: {
@@ -336,6 +338,26 @@ test("approved damaged armament remnant reaches the same finite owner without co
   assert.equal(plan.item.item_proposal.schema, "ordinary_world_item_proposal_v3");
   assert.equal(plan.finite_resource_transition.source_resource_node_id, source_ref);
   assert.equal(Object.hasOwn(plan.item.mechanics_snapshot.mechanics, "damage"), false);
+});
+test("serviceable finite-source materialization requires the owner-native decrement", async () => {
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: "party",
+    inputDigest: "input",
+    loadEnablement: async () => enabled({
+      basis_kind: "finite_source",
+      condition_state: "serviceable",
+    }),
+    ordinaryMaterializationModel: verifiedModel(async (r) => model(r, {
+      basis_kind: "finite_source",
+    })),
+  });
+  const plan = (await resolver(request())).ordinary_materialization_atomic_write_plan;
+  assert.equal(plan.item.causal_basis_kind, "finite_source");
+  assert.equal(plan.finite_resource_transition.source_resource_node_id, source_ref);
+  const { schema, write_plan_digest, finite_resource_transition, ...withoutFinite } = plan;
+  assert.throws(() => createOrdinaryMaterializationAtomicWritePlan(withoutFinite), {
+    code: "ORDINARY_PHASE6_FINITE_SOURCE_INVALID",
+  });
 });
 test("damaged remnant rejects wrong basis, model condition and hidden facts", async () => {
   for (const [options, modelOptions] of [

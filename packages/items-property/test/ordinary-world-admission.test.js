@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { admitOrdinaryWorldMaterialization } from '../src/index.js';
+import { admitOrdinaryWorldMaterialization,
+  resolveOrdinaryWorldPropertyPlacement } from '../src/index.js';
 
 const scopeRef = { entity_kind: 'g6', entity_id: 'scope-a' };
 
@@ -75,6 +76,39 @@ function context(overrides = {}) {
         'ed45c0d860a48fa798a6a02005daa4e9d4f7e428d93fa6241ee5bc1f71142482', 'household-a', 'mechanics-a', 'placement-a', 'placement-catalog-v1', 'property-a', 'property-catalog-v1'] },
     ...overrides
   };
+}
+
+function requireO2aPropertyV2(pending, admissionContext) {
+  const legacy = admissionContext.property_placement_input;
+  const property_placement_input = {
+    schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
+    scope_ref: structuredClone(legacy.scope_ref),
+    property_catalog_version_ref: legacy.property_catalog_version_ref,
+    placement_catalog_version_ref: legacy.placement_catalog_version_ref,
+    item_kind: legacy.item_kind,
+    supporting_basis_ref: legacy.supporting_basis_ref,
+    causal_basis_refs: structuredClone(legacy.causal_basis_refs),
+    requested_position_ref: legacy.requested_position_ref,
+    explicit_item_source_refs: [], personal_possession_refs: [],
+    communal_public_service_refs: [], container_property_refs: [],
+    occupied_site_refs: structuredClone(legacy.occupied_site_refs),
+    unowned_cause_refs: structuredClone(legacy.unowned_cause_refs),
+    placement_context_refs: structuredClone(legacy.placement_context_refs),
+    property_catalog: legacy.property_catalog.map((entry) => ({
+      ...structuredClone(entry), unowned_cause_kind: null,
+    })),
+    placement_catalog: structuredClone(legacy.placement_catalog),
+  };
+  const resolved = resolveOrdinaryWorldPropertyPlacement(property_placement_input);
+  assert.equal(resolved.pass, true);
+  const oldDigest = pending.admission_evidence.property_placement_context_digest;
+  pending.admission_evidence.property_placement_context_digest =
+    resolved.evidence.property_placement_context_digest;
+  return { ...admissionContext, property_placement_input,
+    causal_identity: { ...admissionContext.causal_identity,
+      source_refs: admissionContext.causal_identity.source_refs
+        .map((ref) => ref === oldDigest
+          ? resolved.evidence.property_placement_context_digest : ref).sort() } };
 }
 
 test('O1 admits an arbitrary common name through independent evidence and creates immutable v2 mechanics', () => {
@@ -188,18 +222,22 @@ test('O2a admits a context-bound ordinary weapon only with committed basis and e
     causal_identity: { ...base.causal_identity, source_refs: [...base.causal_identity.source_refs,
       'armament-profile-a'].sort() } };
   assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
-    admission_context: admissionContext }).pass, true);
+    admission_context: admissionContext }).pass, false,
+  'context-bound O2a must not accept the legacy property context v1');
+  const admissionContextV2 = requireO2aPropertyV2(pending, admissionContext);
   assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
-    admission_context: { ...admissionContext, supporting_bases: [{
-      ...admissionContext.supporting_bases[0], state: 'prepared_seed',
+    admission_context: admissionContextV2 }).pass, true);
+  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: { ...admissionContextV2, supporting_bases: [{
+      ...admissionContextV2.supporting_bases[0], state: 'prepared_seed',
       prepared_seed_provenance: { seed_request_id: 'seed-a', mode: 'seed_scope', candidate_query: null }
     }] } }).pass, false);
   assert.equal(admitOrdinaryWorldMaterialization({ handoff: { ...pending,
     admission_evidence: { ...pending.admission_evidence, permission_refs: [] } },
-    admission_context: admissionContext }).pass, false);
+    admission_context: admissionContextV2 }).pass, false);
   assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
-    admission_context: { ...admissionContext, supporting_bases: [{
-      ...admissionContext.supporting_bases[0], permission_refs: []
+    admission_context: { ...admissionContextV2, supporting_bases: [{
+      ...admissionContextV2.supporting_bases[0], permission_refs: []
     }] } }).pass, false);
 });
 
@@ -215,13 +253,14 @@ test('O2a seals one causal basis kind across evidence, entity, and every catalog
       availability_class: 'context_bound', functional_bucket: 'arms',
       causal_basis: { basis_kind: kind, basis_refs: ['basis-a'] } };
     const base = context();
-    const admission_context = { ...base, approved_permission_refs: ['armament-profile-a'],
+    let admission_context = { ...base, approved_permission_refs: ['armament-profile-a'],
       supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
         prepared_seed_provenance: null, functional_buckets: ['arms'],
         allowed_admission_classes: ['weapon_or_armament'],
         permission_refs: ['armament-profile-a'], basis_kind: kind }],
       causal_identity: { ...base.causal_identity, source_refs: [...base.causal_identity.source_refs,
         'armament-profile-a'].sort() } };
+    admission_context = requireO2aPropertyV2(pending, admission_context);
     assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending, admission_context }).pass,
       true);
     const mismatch = structuredClone(admission_context);

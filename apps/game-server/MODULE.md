@@ -79,11 +79,11 @@ rebased; reload/retry cannot reroll a committed code-owned identity. The player-
 response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. O2a admits only exact profile/basis/permission-bound context resources:
-ambient portions, bounded finite sources, approved precious physical material and
+semantic-bound ambient portions, conserved finite sources, approved precious physical material and
 non-unique damaged remnants; currency identity, significant/hidden facts,
 template-less containers and O2b/A1/F1/S1/N1 remain disabled. Finite initialization
-accepts one semantic estimate inside persisted code-owned bounds, then P16 owns the
-exact quantity and all later decrements; reload combines immutable profile pins with
+accepts one semantic estimate inside persisted code-owned bounds, and P16 rechecks
+the bound before owning the exact quantity and all later decrements; reload combines immutable profile pins with
 the current resource row. Context-bound visible names are profile-owned, not copied
 from Stage B. Negative resolutions contain no item and
 every failure rolls back.

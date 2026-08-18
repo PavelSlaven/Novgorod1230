@@ -179,13 +179,15 @@ context-bound weapons/value/currency или natural finite sources.
 
 O2a добавляет server-injected ambient port и exact SHA-pinned context-bound
 authority к тому же candidate-free Stage A/Stage B потоку. `ambient_ordinary`
-получает finite exact portion без decrement abundant source; finite source
+связывает exact semantic type/name с одним code-owned profile среди committed
+sources и получает finite portion без decrement abundant source; finite source
 при неизвестном количестве допускает одну bounded estimate, после чего
 owner-native transition и ordinary P16 фиксируют quantity/decrement. Exact
 precious physical source не получает currency identity, а approved damaged
 non-unique armament remnant не получает model-owned combat mechanics. Mutable
-finite state всегда загружается из committed row, а context-bound public name
-берётся из authority profile. Для
+finite state всегда загружается из committed row, любой `finite_source`
+материализуется только вместе с decrement, context-bound property использует v2,
+а public name берётся из authority profile. Для
 активного O2a profile отсутствие порта или drift является hard denial;
 legacy composition без profile сохраняет прежний direct path. O2b/A1/F1/S1/N1,
 containers, authentic currency, significant/hidden facts и non-authored

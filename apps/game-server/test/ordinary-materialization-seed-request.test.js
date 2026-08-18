@@ -65,11 +65,7 @@ test('ordinary Stage A builder rejects non-data values, aliases, symbols and exo
 test('ordinary Stage B builder deterministically owns candidate and coverage identity', () => {
   const objective_context = { ...objective(), ordinary_state_version: 0,
     property_placement_context: propertyPlacementContext() };
-  const input = { objective_context, candidate_context: {
-    semantic_type: 'spoon', candidate_hint: 'простая ложка', functional_bucket: 'household',
-    admission_class: 'common_mundane', availability_class: 'common',
-    coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence'
-  } };
+  const input = { objective_context, candidate_context: candidateContext() };
   const first = buildOrdinaryMaterializationPresenceRequest(input);
   const second = buildOrdinaryMaterializationPresenceRequest(input);
   assert.deepEqual(first, second);
@@ -88,8 +84,13 @@ test('ordinary Stage B builder rejects a property-basis getter without invoking 
     enumerable: true, get() { reads += 1; return 'property'; }
   });
   assert.throws(() => buildOrdinaryMaterializationPresenceRequest({ objective_context,
-    candidate_context: { semantic_type: 'spoon', candidate_hint: 'ложка', functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common', coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence' } }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
+    candidate_context: candidateContext() }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
   assert.equal(reads, 0);
 });
 
 function propertyPlacementContext() { const scope_ref = { entity_kind: 'g6', entity_id: 'scope' }; return { scope_ref, item_kind: 'man_made', property_catalog_version_ref: 'property-v1', placement_catalog_version_ref: 'placement-v1', personal_communal_refs: [], occupied_site_refs: ['house'], unowned_cause_refs: [], placement_context_refs: ['scene'], property_catalog: [{ property_basis_ref: 'property', state: 'committed', scope_ref: { ...scope_ref }, basis_class: 'occupied_site_default', source_ref: 'house', unowned_cause_ref: null }], placement_catalog: [{ position_ref: 'bench', state: 'committed', scope_ref: { ...scope_ref }, position_kind: 'scene_position', g6_ref: 'scope', containment_depth: 1, placement_context_ref: 'scene' }] }; }
+function candidateContext() { return { normalized_candidate_ref: 'spoon',
+  normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'spoon',
+  candidate_hint: 'простая ложка', functional_bucket: 'household',
+  admission_class: 'common_mundane', availability_class: 'common',
+  coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence' }; }

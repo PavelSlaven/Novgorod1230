@@ -103,7 +103,7 @@ function makeOrdinaryPlan({ aggregate, basis, context, partyStateVersion, reques
   return createOrdinaryMaterializationAtomicWritePlan(JSON.parse(JSON.stringify({
     party_id: 'p', scope_ref: ordinaryScope, request_identity: requestIdentity,
     input_digest: `input-${requestIdentity}`,
-    transition_digest: nextAggregate.committed_request_fingerprints.at(-1).transition_digest,
+    transition_digest: canonicalDigest(transition),
     expected_versions: { party_state_version: partyStateVersion, ordinary_state_version: aggregate.state_version, catalog_version: 1, property_version: 1, placement_version: 1, supporting_basis_catalog_version: 0, supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [basis] }), property_placement_context_digest: ordinaryPropertyPlacementDigest(context) },
     expected_supporting_basis_catalog: [basis], new_prepared_bases: [], next_supporting_basis_catalog: [basis], next_supporting_basis_catalog_version: 0, next_supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [basis] }),
     expected_property_placement_context: context,
@@ -892,6 +892,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const ordinaryResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'p', inputDigest: 'first-entry-o1',
     loadEnablement: (value) => enablements.load(value),
+    verifyStageBCutover: async () => ({ pass: true }),
     ordinaryMaterializationModel: async (request) => {
       calls.push(request);
       if (request.mode === 'seed_scope') return {

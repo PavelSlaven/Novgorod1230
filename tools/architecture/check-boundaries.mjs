@@ -656,6 +656,7 @@ const approvedTurnImports = new Set([
   '@rus/contracts/spatial-v3/registry',
   '@rus/kernel',
   '@rus/checks-rng',
+  '@rus/items-property',
   '@rus/time-events-history',
   '@rus/time-events-history/legacy',
     '@rus/time-events-history/temporal-boundaries',
@@ -723,7 +724,9 @@ for (const appSpec of [
       '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
       '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
-      '@rus/visibility-knowledge-memory', '@rus/world-base',
+      '@rus/visibility-knowledge-memory',
+      '@rus/visibility-knowledge-memory/ordinary-resolution-capability',
+      '@rus/world-base',
       '@rus/npc-runtime', 'pg'
     ])
   },

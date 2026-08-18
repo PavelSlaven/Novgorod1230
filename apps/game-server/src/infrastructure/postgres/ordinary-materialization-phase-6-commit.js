@@ -39,8 +39,23 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   const scope = exact(value.scope_ref, ['entity_kind','entity_id']), pins = exact(value.expected_versions, ['party_state_version','ordinary_state_version','catalog_version','property_version','placement_version','supporting_basis_catalog_version','supporting_basis_catalog_digest','property_placement_context_digest']);
   text(value.party_id); text(scope.entity_kind); text(scope.entity_id); text(value.request_identity); text(value.input_digest); text(value.transition_digest); text(pins.supporting_basis_catalog_digest); text(pins.property_placement_context_digest); Object.entries(pins).filter(([key])=>!key.endsWith('_digest')).forEach(([,entry])=>version(entry));
   if (!RESOLUTIONS.has(value.resolution)) fail('ORDINARY_PHASE6_PLAN_INVALID');
-  const aggregate = assertAndNormalizeOrdinaryAggregate(value.next_aggregate), history = aggregate.committed_request_fingerprints.at(-1), resolution = aggregate.presence_resolutions.at(-1);
-  if (!Array.isArray(value.transitions) || ![1,2].includes(value.transitions.length) || value.transitions.some((transition)=>!validTransitionShape(transition)) || value.transitions.at(-1).kind !== 'resolve_presence' || value.transitions.at(-1).request_identity !== value.request_identity || (value.transitions.length===2 && value.transitions[0].kind!=='seed') || aggregate.scope_ref.entity_kind !== scope.entity_kind || aggregate.scope_ref.entity_id !== scope.entity_id || aggregate.state_version !== pins.ordinary_state_version + value.transitions.length || !history || history.request_identity !== value.request_identity || history.transition_digest !== value.transition_digest || !resolution || resolution.request_identity !== value.request_identity || resolution.resolution !== value.resolution) fail('ORDINARY_PHASE6_TRANSITION_INVALID');
+  const aggregate = assertAndNormalizeOrdinaryAggregate(value.next_aggregate), resolution = aggregate.presence_resolutions.at(-1), lastTransition = value.transitions?.at(-1);
+  const transitionFailures = [
+    [!Array.isArray(value.transitions) || ![1,2].includes(value.transitions.length), 'count'],
+    [value.transitions?.some((transition)=>!validTransitionShape(transition)), 'shape'],
+    [lastTransition?.kind !== 'resolve_presence', 'last_kind'],
+    [lastTransition?.request_identity !== value.request_identity, 'request'],
+    [value.transitions?.length===2 && value.transitions[0].kind!=='seed', 'seed_order'],
+    [aggregate.scope_ref.entity_kind !== scope.entity_kind || aggregate.scope_ref.entity_id !== scope.entity_id, 'scope'],
+    [aggregate.state_version !== pins.ordinary_state_version + value.transitions.length, 'state_version'],
+    [aggregate.last_committed_request_identity !== value.request_identity, 'aggregate_request'],
+    [aggregate.last_committed_transition_kind !== 'resolve_presence', 'aggregate_kind'],
+    [lastTransition == null || canonicalDigest(lastTransition) !== value.transition_digest, 'digest'],
+    [!resolution || resolution.request_identity !== value.request_identity, 'resolution_request'],
+    [resolution?.resolution !== value.resolution, 'resolution_kind']
+  ].filter(([failed])=>failed).map(([,name])=>name);
+  if (transitionFailures.length) fail('ORDINARY_PHASE6_TRANSITION_INVALID',
+    `ORDINARY_PHASE6_TRANSITION_INVALID:${transitionFailures.join(',')}`);
   const expectedBases = normalizeSupportingBases(value.expected_supporting_basis_catalog, scope, aggregate, false);
   const newBases = normalizeSupportingBases(value.new_prepared_bases, scope, aggregate, true);
   const bases = normalizeSupportingBases(value.next_supporting_basis_catalog, scope, aggregate, false);
@@ -64,7 +79,7 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   if (value.resolution === 'materialize') {
     const item = exact(value.item, ['item_id','candidate_key','coverage_key','context_version','functional_bucket','admission_class','supporting_basis_ref','causal_basis_refs','property_basis_ref','position_ref','mechanics_policy_ref','item_proposal','mechanics_snapshot']);
     for (const key of ['item_id','candidate_key','coverage_key','context_version','functional_bucket','admission_class','supporting_basis_ref','property_basis_ref','position_ref','mechanics_policy_ref']) text(item[key]);
-    if (!sameTextList(item.causal_basis_refs,[...item.causal_basis_refs].sort()) || !exactAdmittedItem({ item, scope, request_identity:value.request_identity }) || !basisCoversItem(bases,item) || !propertyPlacementEvidenceMatches({ base:propertyPlacement, item }) || !resolution.identity_key || !aggregate.admitted_identity_keys.includes(resolution.identity_key) || item.item_id !== `ordinary_item_${canonicalDigest({party_id:value.party_id,scope_ref:scope,candidate_key:item.candidate_key,coverage_key:item.coverage_key,context_version:item.context_version}).slice(0,24)}`) fail('ORDINARY_PHASE6_POSITIVE_ITEM_INVALID');
+    if (!sameTextList(item.causal_basis_refs,[...item.causal_basis_refs].sort()) || !exactAdmittedItem({ item, scope, request_identity:value.request_identity }) || !basisCoversItem(bases,item) || !propertyPlacementEvidenceMatches({ base:propertyPlacement, item }) || !resolution.identity_key || item.item_id !== `ordinary_item_${canonicalDigest({party_id:value.party_id,scope_ref:scope,candidate_key:item.candidate_key,coverage_key:item.coverage_key,context_version:item.context_version}).slice(0,24)}`) fail('ORDINARY_PHASE6_POSITIVE_ITEM_INVALID');
   } else if (value.item !== null || resolution.identity_key !== undefined) fail('ORDINARY_PHASE6_NEGATIVE_ITEM_FORBIDDEN');
   const plan = { schema:'ordinary_materialization_atomic_write_plan_v1', party_id:value.party_id, scope_ref:scope, request_identity:value.request_identity, input_digest:value.input_digest, transition_digest:value.transition_digest, expected_versions:pins, expected_supporting_basis_catalog:expectedBases, new_prepared_bases:newBases, next_supporting_basis_catalog:bases, next_supporting_basis_catalog_version:nextBasisVersion, next_supporting_basis_catalog_digest:nextBasisDigest, expected_property_placement_context:propertyPlacement, ...(enablementPin == null ? {} : { enablement_pin: enablementPin }), resolution:value.resolution, transitions:value.transitions, next_aggregate:aggregate, item:value.item };
   return freezePhase6Data({ ...plan, write_plan_digest:canonicalDigest(plan) });

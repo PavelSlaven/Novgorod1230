@@ -22,10 +22,10 @@
   "files": {
     "definition.json": "a2bc08aa214da499777517bfb724c9fe7e64b887fad14c65458a517ba9c228f4",
     "item-container-set-overlay.json": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e",
+    "ordinary-materialization-profile.json": "4116ad5974d80426b1e9a6b1cee23a7f5be42052a7feaa3f5e0a41c4c98e190a",
     "participant-profile-set.json": "0ad494487653a186902148496c30cf3042a7c8f73ae105e86273441ac4132c6f",
     "player-profile-set.json": "3a298831198c2a696e76abfea0b06318b01edcd6029a4b3721a9ab23911df08e",
-    "player-profile.json": "b585079009f552fa0a582dfbc0578754a90e47a0dda430a5dc05326c8ce20109",
-    "ordinary-materialization-profile.json": "91e065e27e6b35525aebb721bcd003efd23a5c5f03296eaa1d4b5066dd2d25d6"
+    "player-profile.json": "b585079009f552fa0a582dfbc0578754a90e47a0dda430a5dc05326c8ce20109"
   },
   "content_refs": {
     "definition": {
@@ -68,11 +68,11 @@
       "id": "lower_dvina_trace_o1_first_entry_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v1",
-      "digest": "91e065e27e6b35525aebb721bcd003efd23a5c5f03296eaa1d4b5066dd2d25d6"
+      "digest": "4116ad5974d80426b1e9a6b1cee23a7f5be42052a7feaa3f5e0a41c4c98e190a"
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "454aa4cec4d4e6db8ffe1c868c04456e1c00e383a159e3b2199b6f2339a15e22",
+  "content_digest": "aeae146a72029f3f8f782709903abdf418f8937978a16b051ad9bda7c26e918d",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

@@ -113,7 +113,7 @@ function plan({ aggregate, party_state_version, request_identity,
   return createOrdinaryMaterializationAtomicWritePlan({
     party_id: 'party-a', scope_ref, request_identity,
     input_digest: `input-${token}`,
-    transition_digest: next_aggregate.committed_request_fingerprints.at(-1).transition_digest,
+    transition_digest: canonicalDigest(transition),
     expected_versions: {
       party_state_version,
       ordinary_state_version: aggregate.state_version,
@@ -260,7 +260,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal((await pool.query(`SELECT count(*)::int AS count
     FROM party_runtime.party_ordinary_materialization_item_basis_refs
     WHERE party_id='party-a' AND item_id=$1`, [positive.item.item_id])).rows[0].count, 1);
-  assert.equal(positive.next_aggregate.committed_request_fingerprints.at(-1).transition_digest, positive.transition_digest);
+  assert.equal(canonicalDigest(positive.transitions.at(-1)), positive.transition_digest);
   assert.deepEqual(await bounded(committer.commit(positive)), { status: 'committed', replay: true, state_version: 2 });
   const { schema: ignoredSchema, write_plan_digest: ignoredDigest, ...mutatedInput } = positive;
   await assert.rejects(

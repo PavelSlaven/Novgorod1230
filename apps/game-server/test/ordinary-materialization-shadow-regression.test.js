@@ -7,7 +7,7 @@ import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from '../sr
 
 const profiles = JSON.parse(await readFile(new URL('../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json', import.meta.url)));
 
-test('production composition keeps direct ordinary results and discovery shadow-only', async () => {
+test('runtime ports without an installed O1 owner keep discovery unavailable', async () => {
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({
     ordinaryResultPolicy: profiles.ordinary_result_policy,
     workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()

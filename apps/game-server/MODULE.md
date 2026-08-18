@@ -56,16 +56,20 @@ call outside a physical transaction and Phase 4 admission. The existing
 `request_discovery` route reaches it only after meaningful-engagement and
 code-first known-result gates; Stage A is candidate-free and Stage B has
 `evidence_weight = 0`, with identity/classification/policy fields built by
-code. Normalized discovery query supplies only `candidate_hint` and an adjusted
-`coverage_ref`; unknown paraphrases retain distinct coverage, so no-reroll is
-limited to exact deterministic normalization. Its server-owned
+code. Stage A concrete entities are forbidden; its density band is converted
+to numeric budget by a versioned code-owned policy. Normalized discovery query
+supplies only `candidate_hint` and cannot alter candidate or coverage identity.
+The exact M7 profile and adversarial Stage B eval are mandatory cutover pins;
+the active production role must run every probe on one exact
+provider/model/config identity before targeted O1 resolution is admitted.
+Its server-owned
 PostgreSQL committer locks the party, aggregate and trusted context pins, then
 atomically writes migrations 021–023 state: O1 enablement/objective, aggregate,
 prepared/committed scoped supporting-basis catalog, positive or negative exact
 resolution/idempotency, optional private-v2 item with immutable
 mechanics/property/placement and normalized basis links, aggregate CAS, catalog
 pin and party version. Stale proposals are rejected rather than silently
-rebased; reload/retry cannot reroll a committed exact deterministic identity. The player-safe
+rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
 response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation and does not activate O2/A1/F1/S1/N1, template-less runtime

@@ -8,12 +8,11 @@ import {
   createOrdinaryCategoryKey,
   createOrdinaryContextVersion,
   createOrdinaryCoverageKey,
-  createOrdinaryMaterializationWorkingProjection,
-  refreshOrdinaryMaterializationWorkingProjection
+  applyOrdinaryAggregateTransition
 } from '@rus/materialization';
 
 const scope_ref = { entity_kind: 'g6', entity_id: 'scope-a' };
-const candidate = { semantic_type: 'spoon', coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence',
+const candidate = { normalized_candidate_ref: 'spoon', normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'spoon', coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence',
   functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common' };
 
 function request() {
@@ -26,18 +25,22 @@ function request() {
     technical_limits: { max_new_entities: 1, max_new_background_groups: 1, max_resolution_records: 4 } };
 }
 Object.assign(candidate, {
-  candidate_key: createOrdinaryCandidateKey({ scope_ref, ...candidate }),
+  candidate_key: createOrdinaryCandidateKey({ scope_ref,
+    normalized_candidate_ref: candidate.normalized_candidate_ref,
+    normalizer_version: candidate.normalizer_version,
+    functional_bucket: candidate.functional_bucket,
+    admission_class: candidate.admission_class,
+    availability_class: candidate.availability_class,
+    policy_version: candidate.policy_version }),
   coverage_key: createOrdinaryCoverageKey({ scope_ref, coverage_kind: candidate.coverage_kind, coverage_ref: candidate.coverage_ref, policy_version: candidate.policy_version }),
   category_key: createOrdinaryCategoryKey({ scope_ref, functional_bucket: candidate.functional_bucket, admission_class: candidate.admission_class, availability_class: candidate.availability_class, policy_version: candidate.policy_version }),
   context_version: createOrdinaryContextVersion({ scope_ref, context_refs: request().context_refs, ordinary_presence_policy_ref: 'presence', property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest() })
 });
 function projection(identity_budget = 1) {
-  const initial = createOrdinaryMaterializationWorkingProjection({
-    ordinary_aggregate: createOrdinaryAggregate({ scope_ref, resolution_record_cap: 4 })
-  });
-  return refreshOrdinaryMaterializationWorkingProjection({ working_projection: initial,
-    ordinary_transition: { kind: 'seed', request_identity: 'seed', expected_state_version: 0,
-      density_band: 'ordinary', identity_budget, background_groups: [] } });
+  return { ordinary_materialization_aggregate: applyOrdinaryAggregateTransition({
+    aggregate: createOrdinaryAggregate({ scope_ref, resolution_record_cap: 4 }),
+    transition: { kind: 'seed', request_identity: 'seed', expected_state_version: 0,
+      density_band: 'ordinary', identity_budget, background_groups: [] } }) };
 }
 const basisCatalog = [{ basis_ref: 'basis-a', state: 'prepared_seed', scope_ref,
   prepared_seed_provenance: { seed_request_id: 'seed', mode: 'seed_scope', candidate_query: null },
@@ -57,7 +60,7 @@ test('Stage B sends only targeted candidate wording with zero evidence and recor
     return negative();
   }));
   assert.equal(output.status, 'absent');
-  assert.equal(output.working_projection.ordinary_aggregate.presence_resolutions.length, 1);
+  assert.equal(output.working_projection.ordinary_materialization_aggregate.presence_resolutions.length, 1);
   assert.equal(output.pending_items_property_admission, null);
 });
 
@@ -84,7 +87,7 @@ test('Stage B rejects positive plans without compatible basis or budget and defe
   assert.equal(calls, 0);
   const output = await resolveOrdinaryMaterializationPresence(input(async () => materialize()));
   assert.equal(output.status, 'pending_items_property_admission');
-  assert.equal(output.working_projection.ordinary_aggregate.presence_resolutions.length, 0);
+  assert.equal(output.working_projection.ordinary_materialization_aggregate.presence_resolutions.length, 0);
   assert.equal(output.pending_items_property_admission.status, 'pending_items_property_admission');
   assert.equal(output.pending_items_property_admission.admission_evidence
     .runtime_item_mechanics_policy_ref, 'mechanics');

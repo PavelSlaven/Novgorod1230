@@ -25,6 +25,14 @@ const objective = { request_id: 'enablement', scope_ref, context_refs: {
   runtime_item_mechanics_policy_ref: 'mechanics', allowed_admission_classes: ['common_mundane'],
   context_bound_permission_refs: [], allowed_supporting_bases: [{ basis_ref: 'basis', basis_state: 'committed' }] }, technical_limits: {
   max_new_entities: 1, max_new_background_groups: 1, max_resolution_records: 4 } };
+const stageBEval = { schema: 'rus.ordinary_materialization_stage_b_eval.v1',
+  version: 1, model_contract_ref: 'ordinary_materialization_plan_v1',
+  model_identity_policy: 'single_exact_provider_model_config_role',
+  cases: ['anachronism', 'evidence-clue', 'letter-document',
+    'misleading-common-name', 'significant-hidden', 'silver-currency',
+    'sword-weapon'].map((id) => ({ id, query: id, risk_class: id,
+      allowed_resolutions: ['absent', 'authority_required'] })) };
+const verifyStageBCutover = async () => ({ pass: true });
 
 function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_ref: structuredClone(scope_ref), resolution_record_cap: 4 }); return { objective_context: { ...structuredClone(objective), scope_ref: structuredClone(scope_ref),
   ordinary_state: { seeded: false, density_band: null, remaining_identity_budget: 0,
@@ -37,12 +45,15 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
     property_placement_context_digest: canonicalDigest({ domain: 'rus.items.ordinary_world_property_placement_context.v1', ...property }) },
   execution_context: { supporting_bases: [{ basis_ref: 'basis', state: 'committed', scope_ref: structuredClone(scope_ref), prepared_seed_provenance: null,
     functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'] }], allowed_disclosure_policy_refs: ['disclosure'],
-    identity_budget: { policy_version: 'density', density_band: 'ordinary', identity_budget: 1, source: 'policy' },
-    candidate_context: { target_ref: 'shore', semantic_type: 'spoon', candidate_hint: 'ложка',
+    density_policy: { version: 'density', mappings: [{ scope_kind: 'g6',
+      function_ref: null, bands: { sparse: 0, ordinary: 1, dense: 1 } }] },
+    candidate_context: { target_ref: 'shore', normalized_candidate_ref: 'spoon',
+      normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'spoon', candidate_hint: 'ложка',
       functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common',
       coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence' },
     mechanics_policy: { policy_ref: 'mechanics', mechanics: { mass_grams: 30, external_hand_cost: 0,
       carry_form: 'small', packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null } },
+    stage_b_classification_eval: structuredClone(stageBEval),
     causal_ref: 'cause', source_refs: [] } }; }
 
 function request(query) { return { request: { root_turn_id: 'turn:party:1' },
@@ -53,9 +64,10 @@ function group() { return { descriptor: 'utensils', functional_bucket: 'househol
   causal_basis: { basis_kind: 'household_use', basis_refs: ['basis'] }, property_basis_ref: 'property',
   permission_refs: [], disclosure_policy_ref: 'disclosure' }; }
 
-test('unseeded ordinary discovery keeps Stage A candidate-free and binds Stage B coverage to normalized query', async () => {
+test('unseeded ordinary discovery keeps Stage A candidate-free and candidate identity code-owned', async () => {
   const calls = [];
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party', inputDigest: 'input',
+    verifyStageBCutover,
     loadEnablement: async () => enabled(), ordinaryMaterializationModel: async (modelRequest) => {
       calls.push(modelRequest);
       if (modelRequest.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
@@ -78,14 +90,17 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and binds Stage B
     first.ordinary_materialization_atomic_write_plan.transitions[0].background_groups[0].group_ref);
   calls.length = 0;
   await resolver(request('найти верёвку'));
-  assert.notEqual(calls[1].candidate_query.coverage_key, firstCoverageKey);
+  assert.equal(calls[1].candidate_query.coverage_key, firstCoverageKey);
 });
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
   let committed = null;
   let modelCalls = 0;
+  let cutoverCalls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'input',
+    verifyStageBCutover: async () => { cutoverCalls += 1;
+      return { pass: true }; },
     loadEnablement: async () => {
       const value = enabled();
       if (committed === null) return value;
@@ -96,7 +111,7 @@ test('committed exact identity survives reload and only normalized wording reuse
         remaining_identity_budget: aggregate.remaining_identity_budget,
         background_groups: aggregate.background_groups.map(({ group_ref }) => group_ref),
         presence_resolutions: aggregate.presence_resolutions.map(({ resolution_ref }) => resolution_ref),
-        closed_observation_scopes: aggregate.coverage_closures.map(({ coverage_key }) => coverage_key)
+        closed_observation_scopes: aggregate.closed_observation_scopes.map(({ coverage_key }) => coverage_key)
       };
       value.version_pins = { ...value.version_pins, party_state_version: 1,
         ordinary_state_version: aggregate.state_version };
@@ -116,15 +131,19 @@ test('committed exact identity survives reload and only normalized wording reuse
   const first = await resolver(request('найти ложку'));
   committed = first.ordinary_materialization_atomic_write_plan.next_aggregate;
   assert.equal(modelCalls, 2);
+  assert.equal(cutoverCalls, 1);
   await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
   assert.equal(modelCalls, 2, 'case/whitespace normalization maps to the committed identity');
+  assert.equal(cutoverCalls, 1,
+    'cold reload short-circuits before the live Stage B cutover probes');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
-  assert.equal(modelCalls, 3, 'an unknown paraphrase is a new coverage, not magical equivalence');
+  assert.equal(modelCalls, 2, 'wording cannot create a new code-owned candidate or coverage');
 });
 
 test('a pre-commit resolver result is not visible or durable and can be modelled after restart', async () => {
   let modelCalls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party', inputDigest: 'input',
+    verifyStageBCutover,
     loadEnablement: async () => enabled(), ordinaryMaterializationModel: async (modelRequest) => {
       modelCalls += 1;
       if (modelRequest.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
@@ -142,11 +161,36 @@ test('a pre-commit resolver result is not visible or durable and can be modelled
   assert.equal(modelCalls, 4, 'uncommitted state is not reused after a restart');
 });
 
+test('Stage A sparse density is mapped by code to a zero persisted identity budget', async () => {
+  let modelCalls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'party', inputDigest: 'input', loadEnablement: async () => enabled(),
+    verifyStageBCutover,
+    ordinaryMaterializationModel: async (modelRequest) => {
+      modelCalls += 1;
+      assert.equal(modelRequest.mode, 'seed_scope');
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: modelRequest.request_id, resolution: 'seeded',
+        density_band_proposal: 'sparse', background_groups: [], entities: [],
+        presence_resolutions: [], reason_code: 'sparse' };
+    }
+  });
+  const result = await resolver(request('найти ложку'));
+  assert.equal(modelCalls, 1, 'zero budget prevents a Stage B model call');
+  assert.equal(result.ordinary_materialization_atomic_write_plan
+    .next_aggregate.density_band, 'sparse');
+  assert.equal(result.ordinary_materialization_atomic_write_plan
+    .next_aggregate.identity_budget, 0);
+  assert.equal(result.ordinary_materialization_atomic_write_plan
+    .next_aggregate.remaining_identity_budget, 0);
+});
+
 test('visible target without a committed G6 never calls the ordinary model', async () => {
   let modelCalls = 0;
   let enablementCalls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'input',
+    verifyStageBCutover,
     loadEnablement: async () => { enablementCalls += 1; return enabled(); },
     ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
   });

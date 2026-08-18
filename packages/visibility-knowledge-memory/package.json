@@ -2,7 +2,10 @@
   "name": "@rus/visibility-knowledge-memory",
   "version": "0.13.0",
   "type": "module",
-  "exports": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./ordinary-resolution-capability": "./src/ordinary-resolution-capability.js"
+  },
   "dependencies": {
     "@rus/actors": "0.13.0",
     "@rus/contracts": "0.9.0",

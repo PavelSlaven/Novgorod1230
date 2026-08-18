@@ -59,7 +59,7 @@ function normalizeEnablement(row, scopeRef) {
     remaining_identity_budget: aggregate.remaining_identity_budget,
     background_groups: aggregate.background_groups.map(({ group_ref }) => group_ref),
     presence_resolutions: aggregate.presence_resolutions.map(({ resolution_ref }) => resolution_ref),
-    closed_observation_scopes: aggregate.coverage_closures.map(({ coverage_key }) => coverage_key)
+    closed_observation_scopes: aggregate.closed_observation_scopes.map(({ coverage_key }) => coverage_key)
   };
   try {
     assertOrdinaryMaterializationRequestV1({ schema: 'ordinary_materialization_request_v1',

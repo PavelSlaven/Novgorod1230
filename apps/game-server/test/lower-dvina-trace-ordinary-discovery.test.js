@@ -41,25 +41,27 @@ function enabled() { const ordinary_aggregate = createOrdinaryAggregate({ scope_
   property_placement_context: JSON.parse(JSON.stringify(property)), version_pins: { party_state_version: 0,
     ordinary_state_version: 0, catalog_version: 1, property_version: 1, placement_version: 1,
     supporting_basis_catalog_version: 1,
-    supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [{ basis_ref: 'basis', state: 'committed', scope_ref, prepared_seed_provenance: null, functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'] }] }),
+    supporting_basis_catalog_digest: canonicalDigest({ domain: 'ordinary_supporting_basis_catalog_v1', supporting_bases: [{ basis_ref: 'basis', state: 'committed', scope_ref, prepared_seed_provenance: null, functional_buckets: ['other_ordinary'], allowed_admission_classes: ['common_mundane'] }] }),
     property_placement_context_digest: canonicalDigest({ domain: 'rus.items.ordinary_world_property_placement_context.v1', ...property }) },
   execution_context: { supporting_bases: [{ basis_ref: 'basis', state: 'committed', scope_ref: structuredClone(scope_ref), prepared_seed_provenance: null,
-    functional_buckets: ['household'], allowed_admission_classes: ['common_mundane'] }], allowed_disclosure_policy_refs: ['disclosure'],
+    functional_buckets: ['other_ordinary'], allowed_admission_classes: ['common_mundane'] }], allowed_disclosure_policy_refs: ['disclosure'],
     density_policy: { version: 'density', mappings: [{ scope_kind: 'g6',
       function_ref: null, bands: { sparse: 0, ordinary: 1, dense: 1 } }] },
-    candidate_context: { target_ref: 'shore', normalized_candidate_ref: 'spoon',
-      normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'spoon', candidate_hint: 'ложка',
-      functional_bucket: 'household', admission_class: 'common_mundane', availability_class: 'common',
+    candidate_context: { target_ref: 'shore', candidate_ref_namespace: 'ordinary-query',
+      normalizer_version: 'ordinary-normalizer-v1', semantic_type: 'ordinary_object_candidate', candidate_hint: null,
+      functional_bucket: 'other_ordinary', admission_class: 'common_mundane', availability_class: 'common',
       coverage_kind: 'visible_surface', coverage_ref: 'bench', policy_version: 'presence' },
-    mechanics_policy: { policy_ref: 'mechanics', mechanics: { mass_grams: 30, external_hand_cost: 0,
-      carry_form: 'small', packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null } },
+    mechanics_policy: { policy_ref: 'mechanics', max_mass_grams: 20000,
+      allowed_external_hand_costs: [0, 1, 2],
+      allowed_carry_forms: ['compact', 'regular', 'long', 'bulky'],
+      max_packing_slot_cost: 16, max_quantity: 1 },
     stage_b_classification_eval: structuredClone(stageBEval),
     causal_ref: 'cause', source_refs: [] } }; }
 
 function request(query) { return { request: { root_turn_id: 'turn:party:1' },
   committed_state: { position: { g6_id: 'shore' } }, operation: { target_refs: ['shore'], query },
   working_projection: {} }; }
-function group() { return { descriptor: 'utensils', functional_bucket: 'household',
+function group() { return { descriptor: 'ordinary layer', functional_bucket: 'other_ordinary',
   availability_class: 'common', allowed_admission_classes: ['common_mundane'],
   causal_basis: { basis_kind: 'household_use', basis_refs: ['basis'] }, property_basis_ref: 'property',
   permission_refs: [], disclosure_policy_ref: 'disclosure' }; }
@@ -91,6 +93,9 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
   calls.length = 0;
   await resolver(request('найти верёвку'));
   assert.equal(calls[1].candidate_query.coverage_key, firstCoverageKey);
+  assert.notEqual(calls[1].candidate_query.candidate_key,
+    first.ordinary_materialization_atomic_write_plan.transitions[1].candidate_key,
+    'different normalized queries receive different code-owned identities');
 });
 
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
@@ -137,7 +142,9 @@ test('committed exact identity survives reload and only normalized wording reuse
   assert.equal(cutoverCalls, 1,
     'cold reload short-circuits before the live Stage B cutover probes');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
-  assert.equal(modelCalls, 2, 'wording cannot create a new code-owned candidate or coverage');
+  assert.equal(modelCalls, 3,
+    'a semantically different normalized query receives a new candidate identity');
+  assert.equal(cutoverCalls, 2);
 });
 
 test('a pre-commit resolver result is not visible or durable and can be modelled after restart', async () => {
@@ -184,6 +191,47 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
   assert.equal(result.ordinary_materialization_atomic_write_plan
     .next_aggregate.remaining_identity_budget, 0);
 });
+
+test('production-shaped bounded mechanics admits one positive ordinary item',
+  async () => {
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'positive-o1',
+      loadEnablement: async () => enabled(), verifyStageBCutover,
+      ordinaryMaterializationModel: async (modelRequest) => {
+        if (modelRequest.mode === 'seed_scope') return {
+          schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'seeded',
+          density_band_proposal: 'ordinary', background_groups: [group()],
+          entities: [], presence_resolutions: [], reason_code: 'seed'
+        };
+        return { schema: 'ordinary_materialization_plan_v1',
+          request_id: modelRequest.request_id, resolution: 'materialize',
+          density_band_proposal: null, background_groups: [],
+          entities: [{ semantic_descriptor: {
+            semantic_type: 'cordage', name: 'простая верёвка', facts: [] },
+          authority_class: 'ordinary', admission_class: 'common_mundane',
+          availability_class: 'common', functional_bucket: 'other_ordinary',
+          presence_expectation: 'routine', supporting_basis_ref: 'basis',
+          causal_basis: { basis_kind: 'ordinary_presence',
+            basis_refs: ['basis'] }, property_basis_ref: 'property',
+          placement_proposal: { scope_ref: 'shore', position_ref: 'bench' },
+          mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
+            carry_form: 'compact', packing_slot_cost: 1,
+            quantity: { value: 1, unit: 'item' }, container: null } }],
+          presence_resolutions: [], reason_code: 'ordinary_present' };
+      }
+    });
+    const result = await resolver(request('найти простую верёвку'));
+    const plan = result.ordinary_materialization_atomic_write_plan;
+    assert.equal(plan.resolution, 'materialize');
+    assert.equal(plan.item.item_proposal.semantic_descriptor.name,
+      'простая верёвка');
+    assert.deepEqual(plan.item.mechanics_snapshot.mechanics, {
+      mass_grams: 350, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
+      container: null
+    });
+  });
 
 test('visible target without a committed G6 never calls the ordinary model', async () => {
   let modelCalls = 0;

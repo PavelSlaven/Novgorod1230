@@ -157,9 +157,11 @@ meaningful engagement. Candidate-free Stage A использует только 
 objective context, запрещает concrete entities и принимает от model только
 density band; numeric budget выводится versioned code policy. Stage B имеет
 `evidence_weight = 0`, а code-owned builder создаёт normalized
-identity/classification/coverage/policy fields. Normalized discovery query
-(NFKC, trim, collapse whitespace, ru-RU lowercase) поставляет только
-`candidate_hint` и не меняет code-owned identity/coverage. Turn принимает positive только после independent
+classification/coverage/policy fields. Normalized discovery query (NFKC,
+trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
+code-owned candidate identity и передаётся model только как `candidate_hint`;
+это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
+другой normalized query получает другую identity. Turn принимает positive только после independent
 supporting-basis/property/placement admission `@rus/items-property`, собирает
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe

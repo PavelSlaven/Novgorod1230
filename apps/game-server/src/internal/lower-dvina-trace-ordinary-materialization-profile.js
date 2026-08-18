@@ -7,9 +7,9 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 const PROFILE_DIGEST =
-  '4116ad5974d80426b1e9a6b1cee23a7f5be42052a7feaa3f5e0a41c4c98e190a';
+  '0a0332ec4306db02dda1cea660bd5921a6bf046d3c3edcb9f1226dbe1ca4c1cf';
 const MANIFEST_DIGEST =
-  'b894775f8e68be7ffa149f936fc29f2a96f08e1b5989e477949631e528c7bcf5';
+  '475c0c248ada37b72e7b746b042904f863510b7c007097fa15a71a03d8e73176';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
@@ -73,15 +73,41 @@ function valid(manifest, profile, digest, manifestDigest) {
     && profile.execution.density_policy.mappings[0].bands.sparse === 0
     && profile.execution.density_policy.mappings[0].bands.ordinary === 1
     && profile.execution.density_policy.mappings[0].bands.dense === 1
-    && typeof profile.execution.candidate_context?.normalized_candidate_ref === 'string'
-    && typeof profile.execution.candidate_context?.normalizer_version === 'string'
-    && profile.execution.candidate_context?.functional_bucket === 'household'
+    && exactKeys(profile.execution.candidate_context,
+      ['candidate_ref_namespace','normalizer_version','semantic_type',
+        'candidate_hint','functional_bucket','admission_class',
+        'availability_class','coverage_kind','coverage_ref','policy_version'])
+    && profile.execution.candidate_context?.candidate_ref_namespace
+      === 'trace_ld_v1_o1_query_candidate'
+    && profile.execution.candidate_context?.normalizer_version
+      === 'trace_ld_v1_o1_candidate_normalizer_v1'
+    && profile.execution.candidate_context?.semantic_type
+      === 'ordinary_object_candidate'
+    && profile.execution.candidate_context?.candidate_hint === null
+    && profile.execution.candidate_context?.functional_bucket === 'other_ordinary'
     && profile.execution.candidate_context?.admission_class === 'common_mundane'
     && profile.execution.candidate_context?.availability_class === 'common'
-    && profile.execution.mechanics_policy?.policy_ref
-    && profile.execution.mechanics_policy?.mechanics?.container === null
+    && profile.execution.candidate_context?.coverage_kind === 'visible_surface'
+    && profile.execution.candidate_context?.coverage_ref
+      === 'trace_ld_v1_o1_visible_surface'
+    && profile.execution.candidate_context?.policy_version
+      === profile.policy_refs.ordinary_presence_policy_ref
+    && validMechanicsPolicy(profile.execution.mechanics_policy,
+      profile.policy_refs.runtime_item_mechanics_policy_ref)
     && validateLowerDvinaTraceOrdinaryStageBEval(
       profile.stage_b_classification_eval);
+}
+function validMechanicsPolicy(value, policyRef) {
+  return exactKeys(value, ['policy_ref','max_mass_grams',
+    'allowed_external_hand_costs','allowed_carry_forms',
+    'max_packing_slot_cost','max_quantity'])
+    && value.policy_ref === policyRef
+    && value.max_mass_grams === 20000
+    && JSON.stringify(value.allowed_external_hand_costs) === '[0,1,2]'
+    && JSON.stringify(value.allowed_carry_forms)
+      === '["compact","regular","long","bulky"]'
+    && value.max_packing_slot_cost === 16
+    && value.max_quantity === 1;
 }
 function exactKeys(value, keys) {
   return value != null && typeof value === 'object' && !Array.isArray(value)

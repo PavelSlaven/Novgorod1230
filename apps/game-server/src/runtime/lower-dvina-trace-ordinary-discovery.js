@@ -53,5 +53,18 @@ function validExecution(value) {
     && value.stage_b_classification_eval != null
     && typeof value.causal_ref === 'string'
     && Array.isArray(value.source_refs)
-    && typeof value.candidate_context.target_ref === 'string';
+    && typeof value.candidate_context.target_ref === 'string'
+    && typeof value.candidate_context.candidate_ref_namespace === 'string'
+    && value.candidate_context.semantic_type === 'ordinary_object_candidate'
+    && value.candidate_context.functional_bucket === 'other_ordinary'
+    && validMechanicsPolicy(value.mechanics_policy);
+}
+function validMechanicsPolicy(value) {
+  return value != null && typeof value === 'object'
+    && typeof value.policy_ref === 'string'
+    && Number.isSafeInteger(value.max_mass_grams)
+    && Array.isArray(value.allowed_external_hand_costs)
+    && Array.isArray(value.allowed_carry_forms)
+    && Number.isSafeInteger(value.max_packing_slot_cost)
+    && Number.isSafeInteger(value.max_quantity);
 }

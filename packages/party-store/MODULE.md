@@ -33,11 +33,13 @@ O1 uses the existing `./ordinary-materialization` closed aggregate only after
 physical transaction. Its logical plan carries candidate-free Stage A seed,
 prepared/committed supporting basis, or a targeted Stage B resolution with
 `evidence_weight = 0` and code-owned identity/classification/policy fields;
-normalized discovery query supplies only `candidate_hint` and an adjusted
-`candidate_hint`; phrasing never changes the code-owned candidate or coverage. Positive plans additionally
+normalized discovery query and exact target derive the code-owned candidate
+identity; the query remains only a `candidate_hint`, not a noun/recipe gate or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution; a different query has a different identity. Positive plans additionally
 carry admitted immutable mechanics/property/placement. The handoff preserves
 CAS/idempotency for exact positive and negative resolutions, so retry/reload
-does not reroll exact deterministically normalized identity. This package neither exposes player capability/visibility nor
+does not reroll an exact deterministically normalized identity. This package neither exposes player capability/visibility nor
 creates a public ordinary operation; O2/A1/F1/S1/N1, template-less containers,
 context-bound weapons/value/currency and natural finite sources are outside it.
 

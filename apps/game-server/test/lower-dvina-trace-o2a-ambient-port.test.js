@@ -111,8 +111,10 @@ test('the O2a owner intercepts only its explicit capability ref', async () => {
 });
 
 test('the visible O2a capability grounds wording and assigns its safe name', async () => {
-  const profile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({
-    rootDir: process.cwd() });
+  const profile = structuredClone(await loadLowerDvinaTraceOrdinaryMaterializationProfile({
+    rootDir: process.cwd() }));
+  profile.o2a_ambient.portion_profile.semantic_type = 'river_silt_portion';
+  profile.o2a_ambient.portion_profile.display_name = 'пригоршня речного ила';
   const admission = createLowerDvinaTraceO2aAmbientPort({ profile,
     committedState: { actor_id: 'mikula', position: {
       g6_id: 'trace_ld_v1_g6_wreck_shore',
@@ -131,23 +133,28 @@ test('the visible O2a capability grounds wording and assigns its safe name', asy
       carry_form: 'compact', packing_slot_cost: 1,
       quantity: { value: 1, unit: 'handful' }, container: null },
     placement: { relation: 'held_by', target_ref: 'mikula' } };
-  const result = await ports.executionRegistry.direct(operation)({ plan: {},
+  const execute = (candidate) => ports.executionRegistry.direct(candidate)({ plan: {},
     request: { root_turn_id: 'turn', step_index: 1,
       actor: { actor_id: 'mikula', attributes: { strength: { value: 9 } },
-        skills: {}, body: { body_parts: {} } } }, operation, check_result: null,
+        skills: {}, body: { body_parts: {} } } }, operation: candidate,
+    check_result: null,
     working_projection: { actor_id: 'mikula', position: {
       location_ref: 'trace_ld_v1_loc_wreck_shore' }, destination_refs: [],
       inventory: { items: [], total_weight: { grams: 0 },
         load_category: 'light', occupied_hands: 0 }, items: [], knowledge: [],
       visible_context: { visible_objects: [{ entity_ref: {
         entity_kind: 'ambient_ordinary_capability', entity_id: ref },
-      display_label: 'горсть мокрого песка',
+      display_label: 'пригоршня речного ила',
       recognition: 'code_owned_source_capability',
       visible_status: 'available' }] } } });
+  assert.throws(() => execute({ ...operation, temp_ref: 'silt-fact',
+    facts: [{ temp_ref: 'silt-fact-1', text: 'значимое утверждение' }] }),
+  (error) => error.code === 'TRACE_TURN_STEP_AMBIENT_ADMISSION_REQUIRED');
+  const result = await execute(operation);
   assert.equal(result.write_fragments[0].value.payload.name,
-    'горсть мокрого песка');
+    'пригоршня речного ила');
   assert.equal(result.write_fragments[0].value.payload.semantic_type,
-    'material_portion');
+    'river_silt_portion');
 });
 
 test('production composition threads the active O2a strict admission policy', async () => {

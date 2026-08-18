@@ -147,8 +147,9 @@ test('direct projections require the same submit-scoped authority', async () => 
     }),
     workingProjectionAuthority: authority
   });
-  const created = await ports.executionRegistry.direct(createSand())(
-    execution(createSand(), initial)
+  const sand = { ...createSand(), facts: [] };
+  const created = await ports.executionRegistry.direct(sand)(
+    execution(sand, initial)
   );
 
   const admitted = projectLowerDvinaTracePlayerSafeState({

@@ -9,7 +9,7 @@ const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
   '6ec1362aae927cfd33d6c8b479950eb41587fb08d20ff89d7eb4efb6ec2e907c';
 const MANIFEST_DIGEST =
-  '62b224f98483f3807a9217504a8e1413bd9e9e61d974f366267d4cb565e5a0f1';
+  '5ef175c86ff9c2d9f6fb3e07a2eb923c44df6dfbec1ad930a61babf016259712';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()

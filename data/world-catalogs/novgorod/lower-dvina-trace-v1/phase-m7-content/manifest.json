@@ -72,7 +72,7 @@
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "ea989d04530d3cbfb534b4df19e82590717395698e2eecc8ff9e44c8997843f3",
+  "content_digest": "f5aba66a7dfd37cdd95db3c499c750850ccfcf5404bc237f5336aad075fd26e3",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

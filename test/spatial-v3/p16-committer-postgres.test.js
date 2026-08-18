@@ -889,6 +889,8 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
     scopeRef: { entity_kind: 'g6', entity_id: 'g6-old' } }), null,
   'other G6 scopes remain unavailable');
   const calls = [];
+  const provisionedBasis = loadedEnablement.execution_context.supporting_bases[0];
+  const provisionedProperty = loadedEnablement.property_placement_context;
   const ordinaryResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'p', inputDigest: 'first-entry-o1',
     loadEnablement: (value) => enablements.load(value),
@@ -902,11 +904,22 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
       };
       return {
         schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
-        resolution: 'absent', density_band_proposal: null, background_groups: [],
-        entities: [], presence_resolutions: [{
-          candidate_key: request.candidate_query.candidate_key,
-          coverage_key: request.candidate_query.coverage_key, resolution: 'absent'
-        }], reason_code: 'absent'
+        resolution: 'materialize', density_band_proposal: null,
+        background_groups: [], entities: [{ semantic_descriptor: {
+          semantic_type: 'cordage', name: 'простая верёвка', facts: [] },
+        authority_class: 'ordinary', admission_class: 'common_mundane',
+        availability_class: 'common', functional_bucket: 'other_ordinary',
+        presence_expectation: 'routine',
+        supporting_basis_ref: provisionedBasis.basis_ref,
+        causal_basis: { basis_kind: 'ordinary_presence',
+          basis_refs: [provisionedBasis.basis_ref] },
+        property_basis_ref: ordinaryProfile.context_refs.property_context_ref,
+        placement_proposal: { scope_ref: 'g6-new',
+          position_ref: provisionedProperty.placement_catalog[0].position_ref },
+        mechanics_proposal: { mass_grams: 350, external_hand_cost: 0,
+          carry_form: 'compact', packing_slot_cost: 1,
+          quantity: { value: 1, unit: 'item' }, container: null } }],
+        presence_resolutions: [], reason_code: 'ordinary_present'
       };
     }
   });
@@ -916,6 +929,66 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   assert.ok(ordinaryAvailable.ordinary_materialization_atomic_write_plan,
     'the production resolver can use only the provisioned exact scope');
   assert.equal(calls.length, 2);
+  const productionOrdinaryPlan =
+    ordinaryAvailable.ordinary_materialization_atomic_write_plan;
+  const productionOrdinaryProjection = applyOrdinaryMaterializationProjection({
+    next: { items: [] }, visibleContext: { visible_objects: [] },
+    ordinaryPlan: productionOrdinaryPlan
+  });
+  const partyBeforeProductionOrdinary = Number((await client.query(
+    "SELECT state_version FROM party_runtime.parties WHERE party_id='p'"
+  )).rows[0].state_version);
+  const productionOrdinaryCommit = await makePlan({
+    planId: 'production-o1-positive-plan',
+    idempotencyId: 'production-o1-positive-idem',
+    idempotencyKey: 'production-o1-positive-key',
+    changeSetId: 'production-o1-positive-cs',
+    expectedStateVersions: [{ target_table: 'parties', id: 'p',
+      state_version: partyBeforeProductionOrdinary }],
+    updates: [{ target_table: 'parties', id: 'p', record: { party_id: 'p',
+      profile_bundle_digest: 'b' } }],
+    physicalKeys: ['party_runtime.parties:p',
+      ...ordinaryPhysicalKeys(productionOrdinaryPlan)],
+    ordinaryMaterializationAtomicWritePlan: productionOrdinaryPlan,
+    visibleObjects: productionOrdinaryProjection.visible_objects
+  });
+  assert.equal((await firstEntryConcurrentCommitter.commit({
+    plan: productionOrdinaryCommit })).ok, true);
+  assert.deepEqual((await client.query(`SELECT
+      item_proposal->'semantic_descriptor'->>'name' AS name,
+      mechanics_snapshot->'mechanics' AS mechanics
+    FROM party_runtime.party_ordinary_materialization_items
+    WHERE party_id='p' AND item_id=$1`,
+  [productionOrdinaryPlan.item.item_id])).rows[0], {
+    name: 'простая верёвка',
+    mechanics: productionOrdinaryPlan.item.mechanics_snapshot.mechanics
+  });
+  assert.deepEqual((await client.query(
+    "SELECT visible_payload->'visible_objects' AS objects FROM party_runtime.party_visible_packages WHERE package_id='visible-production-o1-positive-cs'"
+  )).rows[0].objects, productionOrdinaryProjection.visible_objects);
+  const afterReload = await enablements.load({ partyId: 'p',
+    scopeRef: { entity_kind: 'g6', entity_id: 'g6-new' } });
+  assert.equal(afterReload.ordinary_aggregate.presence_resolutions.length, 1);
+  let reloadModelCalls = 0;
+  const reloadResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'p', inputDigest: 'first-entry-o1-reload',
+    loadEnablement: (value) => enablements.load(value),
+    verifyStageBCutover: async () => {
+      throw new Error('committed identity must preflight before cutover');
+    },
+    ordinaryMaterializationModel: async () => {
+      reloadModelCalls += 1;
+      throw new Error('committed identity must not reroll');
+    }
+  });
+  const replayedOrdinary = await reloadResolver({
+    request: { root_turn_id: 'first-entry-o1-reload' },
+    committed_state: { position: { g6_id: 'g6-new' } },
+    operation: { target_refs: ['g6-new'], query: '  НАЙТИ   ВЕЩЬ  ' },
+    working_projection: {} });
+  assert.equal(reloadModelCalls, 0);
+  assert.equal(replayedOrdinary.ordinary_materialization_atomic_write_plan,
+    undefined);
   assert.deepEqual(
     (await client.query("SELECT claim_status,state_version,terminal_change_set_id FROM party_runtime.preparation_claims WHERE id='preparation-claim-first-entry'")).rows[0],
     {

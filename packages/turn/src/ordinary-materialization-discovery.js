@@ -66,10 +66,12 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       ordinary_state: ordinaryState(
         projection.ordinary_materialization_aggregate),
       property_placement_context: enabled.property_placement_context };
+    const candidateContext = candidateForDiscovery({
+      candidateContext: execution.candidate_context,
+      query: request.operation.query });
+    if (candidateContext == null) return ordinaryNoop(request);
     const envelope = buildPresenceRequest({ objective_context: presenceObjective,
-      candidate_context: candidateForDiscovery({
-        candidateContext: execution.candidate_context,
-        query: request.operation.query }) });
+      candidate_context: candidateContext });
     const bases = [...structuredClone(execution.supporting_bases),
       ...structuredClone(newBases)];
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
@@ -98,11 +100,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       const proposed = presence.pending_items_property_admission.proposed_item;
       const propertyInput = { ...enabled.property_placement_context,
         supporting_basis_ref: proposed.supporting_basis_ref,
-        causal_basis_refs: proposed.causal_basis.basis_refs,
+        causal_basis_refs: structuredClone(proposed.causal_basis.basis_refs),
         requested_position_ref: proposed.placement_proposal.position_ref };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
-      const admitted = admitOrdinaryWorldMaterialization({ handoff:
+      const admissionInput = { handoff:
         presence.pending_items_property_admission, admission_context: {
           schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
           supporting_bases: bases, property_placement_input: propertyInput,
@@ -114,7 +116,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             causal_ref: execution.causal_ref,
             source_refs: sourceRefs({ envelope, proposed, execution, property })
           }
-        } });
+        } };
+      const admitted = admitOrdinaryWorldMaterialization(
+        structuredClone(admissionInput));
       if (!admitted.pass) return ordinaryNoop(request);
       const identityKey = `ordinary_identity_${canonicalDigest({
         candidate_key: envelope.identity.candidate_key,
@@ -163,10 +167,16 @@ export function createOrdinaryMaterializationDiscoveryOwner({
 }
 
 function candidateForDiscovery({ candidateContext, query }) {
-  const { target_ref: _targetRef, ...candidate } = candidateContext;
+  const { target_ref: targetRef, candidate_ref_namespace: namespace,
+    ...candidate } = candidateContext;
   const normalized = normalizeDiscoveryQuery(query);
-  return normalized == null ? candidate : { ...candidate,
-    candidate_hint: normalized };
+  if (normalized == null || typeof targetRef !== 'string' || !targetRef
+      || typeof namespace !== 'string' || !namespace) return null;
+  return { ...candidate, normalized_candidate_ref:
+    `${namespace}:${canonicalDigest({
+      domain: 'rus.ordinary.discovery.query_candidate.v1',
+      target_ref: targetRef, normalized_query: normalized
+    }).slice(0, 32)}`, candidate_hint: normalized };
 }
 function normalizeDiscoveryQuery(value) {
   if (typeof value !== 'string') return null;
@@ -214,7 +224,8 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted }) {
   mechanics_snapshot: admitted.runtime_instance_mechanics_snapshot };
 }
 function sourceRefs({ envelope, proposed, execution, property }) {
-  return [envelope.identity.candidate_key, envelope.identity.coverage_key,
+  return [...new Set([envelope.identity.candidate_key,
+    envelope.identity.coverage_key,
     proposed.supporting_basis_ref, ...proposed.causal_basis.basis_refs,
     proposed.property_basis_ref, proposed.placement_proposal.position_ref,
     execution.mechanics_policy.policy_ref, property.evidence.property_source_ref,
@@ -223,7 +234,7 @@ function sourceRefs({ envelope, proposed, execution, property }) {
     property.evidence.placement_context_ref,
     property.evidence.property_placement_context_digest,
     ...(property.evidence.unowned_cause_ref == null ? []
-      : [property.evidence.unowned_cause_ref])].filter(Boolean).sort();
+      : [property.evidence.unowned_cause_ref])].filter(Boolean))].sort();
 }
 function ordinaryNoop(request) { return Object.freeze({
   working_projection: structuredClone(request?.working_projection ?? {}),

@@ -43,11 +43,11 @@
       }]
     },
     "candidate_context": {
-      "normalized_candidate_ref": "trace_ld_v1_o1_household_tool",
+      "candidate_ref_namespace": "trace_ld_v1_o1_query_candidate",
       "normalizer_version": "trace_ld_v1_o1_candidate_normalizer_v1",
-      "semantic_type": "household_tool",
+      "semantic_type": "ordinary_object_candidate",
       "candidate_hint": null,
-      "functional_bucket": "household",
+      "functional_bucket": "other_ordinary",
       "admission_class": "common_mundane",
       "availability_class": "common",
       "coverage_kind": "visible_surface",
@@ -56,14 +56,11 @@
     },
     "mechanics_policy": {
       "policy_ref": "trace_ld_v1_o1_mechanics_policy",
-      "mechanics": {
-        "mass_grams": 100,
-        "external_hand_cost": 0,
-        "carry_form": "compact",
-        "packing_slot_cost": 1,
-        "quantity": { "value": 1, "unit": "item" },
-        "container": null
-      }
+      "max_mass_grams": 20000,
+      "allowed_external_hand_costs": [0, 1, 2],
+      "allowed_carry_forms": ["compact", "regular", "long", "bulky"],
+      "max_packing_slot_cost": 16,
+      "max_quantity": 1
     },
     "causal_ref": "trace_ld_v1_o1_first_entry_basis",
     "source_refs": []

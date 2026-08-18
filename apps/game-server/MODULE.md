@@ -58,7 +58,10 @@ code-first known-result gates; Stage A is candidate-free and Stage B has
 `evidence_weight = 0`, with identity/classification/policy fields built by
 code. Stage A concrete entities are forbidden; its density band is converted
 to numeric budget by a versioned code-owned policy. Normalized discovery query
-supplies only `candidate_hint` and cannot alter candidate or coverage identity.
+and exact target derive the code-owned candidate identity; the query reaches
+the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution, while a different query has a different identity.
 The exact M7 profile and adversarial Stage B eval are mandatory cutover pins;
 the active production role must run every probe on one exact
 provider/model/config identity before targeted O1 resolution is admitted.

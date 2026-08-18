@@ -74,7 +74,7 @@ function buildRows({ profile, scope, positionRef }) {
   const propertyBasisRef = profile.context_refs?.property_context_ref;
   const placementContextRef = `${profile.profile_id}:placement`;
   const basis = { basis_ref: basisRef, state: 'committed', scope_ref: scope,
-    prepared_seed_provenance: null, functional_buckets: ['household'],
+    prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
     allowed_admission_classes: ['common_mundane'] };
   const policyRefs = { ...profile.policy_refs,
     allowed_supporting_bases: [{ basis_ref: basisRef, basis_state: 'committed' }] };

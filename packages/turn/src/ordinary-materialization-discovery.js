@@ -27,6 +27,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
   return async function resolve(request) {
     const enabled = await loadDiscoveryContext(request);
     if (enabled == null) return ordinaryNoop(request);
+    const modelBudget = semanticModelCallBudget(ordinaryMaterializationModel);
     const { party_id: partyId, scope_ref: scopeRef } = enabled;
     const execution = enabled.execution_context;
     const rootId = request.request.root_turn_id;
@@ -44,7 +45,9 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     if (!enabled.ordinary_aggregate.seeded) {
       const seed = await resolveOrdinaryMaterializationSeedScope({
         request: buildSeedRequest({ objective_context: objective }),
-        ordinaryMaterializationModel, workingProjection: projection,
+        ordinaryMaterializationModel: modelBudget.invoke,
+        repairAvailable: modelBudget.hasRemaining,
+        workingProjection: projection,
         basisCatalog: admissionBases(execution.supporting_bases),
         allowedDisclosurePolicyRefs: execution.allowed_disclosure_policy_refs,
         resolveIdentityBudget: async ({ density_band, hard_technical_max }) =>
@@ -66,6 +69,12 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     }
     const bases = [...structuredClone(execution.supporting_bases),
       ...structuredClone(newBases)];
+    if (modelBudget.hasRemaining() === false) {
+      return resolvedPlan({ request, enabled, partyId, scopeRef,
+        inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+        next: projection.ordinary_materialization_aggregate,
+        requestIdentity: objective.request_id, resolution: 'no_change' });
+    }
     const presenceObjective = { ...enabled.objective_context,
       request_id: `${rootId}:ordinary:presence`,
       policy_refs: presencePolicyRefs({
@@ -88,22 +97,21 @@ export function createOrdinaryMaterializationDiscoveryOwner({
     const envelope = buildPresenceRequest({ objective_context: presenceObjective,
       candidate_context: candidateContext });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
-      ordinaryMaterializationModel, workingProjection: projection,
+      ordinaryMaterializationModel: modelBudget.invoke,
+      repairAvailable: modelBudget.hasRemaining,
+      workingProjection: projection,
       basisCatalog: admissionBases(bases), beforeModel: () =>
         verifyStageBCutover({
-          eval_contract: execution.stage_b_classification_eval,
-          requests: execution.stage_b_classification_eval.cases.map((probe) => ({
-            id: probe.id,
-            request: buildPresenceRequest({
-              objective_context: presenceObjective,
-              candidate_context: candidateForDiscovery({
-                candidateContext: execution.candidate_context,
-                query: probe.query
-              })
-            }).request
-          }))
+          eval_contract: execution.stage_b_classification_eval
         }) });
     if (presence.status === 'already_resolved') return ordinaryNoop(request);
+    if (presence.status === 'no_change' && presence.decision === null) {
+      if (transitions.length === 0) return ordinaryNoop(request);
+      return resolvedPlan({ request, enabled, partyId, scopeRef,
+        inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
+        next: projection.ordinary_materialization_aggregate,
+        requestIdentity: objective.request_id, resolution: 'no_change' });
+    }
     let transition = presenceTransition({ envelope, presence, aggregate:
       projection.ordinary_materialization_aggregate });
     let item = null;
@@ -152,32 +160,53 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, transition });
     }
     if (transition == null || next == null) return ordinaryNoop(request);
-    const expected = enabled.version_pins;
-    const plan = sealAtomicWritePlan({ party_id: partyId,
-      scope_ref: structuredClone(scopeRef),
-      request_identity: envelope.request.request_id,
-      input_digest: canonicalDigest({ inputDigest,
-        request_id: envelope.request.request_id }),
-      transition_digest: canonicalDigest(transition),
-      expected_versions: structuredClone(expected),
-      expected_supporting_basis_catalog:
-        structuredClone(execution.supporting_bases),
-      new_prepared_bases: structuredClone(newBases),
-      next_supporting_basis_catalog: structuredClone(bases),
-      next_supporting_basis_catalog_version:
-        expected.supporting_basis_catalog_version + (newBases.length ? 1 : 0),
-      next_supporting_basis_catalog_digest: basisDigest(bases),
-      expected_property_placement_context:
-        structuredClone(enabled.property_placement_context),
-      enablement_pin: { objective_digest: enabled.objective_digest,
-        enabled: true }, resolution: item == null ? presence.status : 'materialize',
-      transitions: structuredClone([...transitions, transition]),
-      next_aggregate: structuredClone(next), item: structuredClone(item) });
-    return Object.freeze({ working_projection: request.working_projection,
-      write_fragments: [], summary: 'ordinary discovery resolved',
-      player_response_boundary: true,
-      ordinary_materialization_atomic_write_plan: plan });
+    return resolvedPlan({ request, enabled, partyId, scopeRef,
+      inputDigest, sealAtomicWritePlan,
+      transitions: [...transitions, transition], newBases, bases, next,
+      requestIdentity: envelope.request.request_id,
+      resolution: item == null ? presence.status : 'materialize', item });
   };
+}
+
+function semanticModelCallBudget(model) {
+  let remaining = 2;
+  return Object.freeze({
+    hasRemaining: () => remaining > 0,
+    invoke: async (request, context) => {
+      if (remaining < 1) {
+        throw new Error('ordinary materialization semantic-call budget exhausted');
+      }
+      remaining -= 1;
+      return model(request, context);
+    }
+  });
+}
+
+function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
+  sealAtomicWritePlan, transitions, newBases, bases, next, requestIdentity,
+  resolution, item = null }) {
+  const expected = enabled.version_pins;
+  const plan = sealAtomicWritePlan({ party_id: partyId,
+    scope_ref: structuredClone(scopeRef), request_identity: requestIdentity,
+    input_digest: canonicalDigest({ inputDigest, request_id: requestIdentity }),
+    transition_digest: canonicalDigest(transitions.at(-1)),
+    expected_versions: structuredClone(expected),
+    expected_supporting_basis_catalog:
+      structuredClone(enabled.execution_context.supporting_bases),
+    new_prepared_bases: structuredClone(newBases),
+    next_supporting_basis_catalog: structuredClone(bases),
+    next_supporting_basis_catalog_version:
+      expected.supporting_basis_catalog_version + (newBases.length ? 1 : 0),
+    next_supporting_basis_catalog_digest: basisDigest(bases),
+    expected_property_placement_context:
+      structuredClone(enabled.property_placement_context),
+    enablement_pin: { objective_digest: enabled.objective_digest,
+      enabled: true }, resolution, transitions: structuredClone(transitions),
+    next_aggregate: structuredClone(next), item: structuredClone(item) });
+  return Object.freeze({ working_projection: request.working_projection,
+    write_fragments: [], summary: 'ordinary discovery resolved',
+    player_response_boundary: true,
+    ordinary_materialization_atomic_write_plan: plan });
 }
 
 function candidateForDiscovery({ candidateContext, query }) {

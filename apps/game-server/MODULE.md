@@ -62,9 +62,12 @@ and exact target derive the code-owned candidate identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the
 persisted resolution, while a different query has a different identity.
-The exact M7 profile and adversarial Stage B eval are mandatory cutover pins;
-the active production role must run every probe on one exact
-provider/model/config identity before targeted O1 resolution is admitted.
+One discovery has a shared two-call semantic budget; structural repair consumes
+the remaining call, and a repaired Stage A can finish as a seed-only commit.
+The exact M7 profile and versioned adversarial Stage B approval receipt are
+mandatory cutover pins. The probes run before profile activation; gameplay
+only verifies the receipt against the profile digest and exact
+provider/model/config identity, without additional eval calls.
 Its server-owned
 PostgreSQL committer locks the party, aggregate and trusted context pins, then
 atomically writes migrations 021–023 state: O1 enablement/objective, aggregate,

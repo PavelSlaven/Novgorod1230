@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createOrdinaryAggregate, canonicalDigest } from '@rus/materialization';
+import { applyOrdinaryAggregateTransition, createOrdinaryAggregate,
+  canonicalDigest } from '@rus/materialization';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { projectLowerDvinaTracePlayerSafeState } from
@@ -99,6 +100,33 @@ test('unseeded ordinary discovery keeps Stage A candidate-free and candidate ide
     'different normalized queries receive different code-owned identities');
 });
 
+test('unseeded structural repair shares the two-call Stage A plus Stage B budget',
+  async () => {
+    let modelCalls = 0;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'repair-budget', verifyStageBCutover,
+      loadEnablement: async () => enabled(),
+      ordinaryMaterializationModel: async (modelRequest, context) => {
+        modelCalls += 1;
+        if (modelCalls === 1) return {};
+        if (modelRequest.mode === 'seed_scope' && context.repair != null) {
+          return { schema: 'ordinary_materialization_plan_v1',
+            request_id: modelRequest.request_id, resolution: 'seeded',
+            density_band_proposal: 'ordinary', background_groups: [group()],
+            entities: [], presence_resolutions: [], reason_code: 'seed_repaired' };
+        }
+        return {};
+      }
+    });
+    const result = await resolver(request('найти ложку'));
+    assert.equal(modelCalls, 2,
+      'Stage A repair consumes the remaining semantic-call budget');
+    assert.deepEqual(result.ordinary_materialization_atomic_write_plan
+      .transitions.map(({ kind }) => kind), ['seed']);
+    assert.equal(result.ordinary_materialization_atomic_write_plan.resolution,
+      'no_change');
+  });
+
 test('committed exact identity survives reload and only normalized wording reuses it', async () => {
   let committed = null;
   let committedBases = null;
@@ -107,7 +135,8 @@ test('committed exact identity survives reload and only normalized wording reuse
   let reloadedPreparedBasis = null;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: 'party', inputDigest: 'input',
-    verifyStageBCutover: async () => { cutoverCalls += 1;
+    verifyStageBCutover: async (input) => { cutoverCalls += 1;
+      assert.deepEqual(Object.keys(input), ['eval_contract']);
       return { pass: true }; },
     loadEnablement: async () => {
       const value = enabled();
@@ -154,7 +183,7 @@ test('committed exact identity survives reload and only normalized wording reuse
   await resolver({ ...request('  НАЙТИ   ложку  '), request: { root_turn_id: 'turn:party:2' } });
   assert.equal(modelCalls, 2, 'case/whitespace normalization maps to the committed identity');
   assert.equal(cutoverCalls, 1,
-    'cold reload short-circuits before the live Stage B cutover probes');
+    'known resolution short-circuits before the local receipt check');
   await resolver({ ...request('отыскать ложку'), request: { root_turn_id: 'turn:party:3' } });
   assert.equal(modelCalls, 3,
     'a semantically different normalized query receives a new candidate identity');
@@ -208,7 +237,51 @@ test('Stage A sparse density is mapped by code to a zero persisted identity budg
     .next_aggregate.identity_budget, 0);
   assert.equal(result.ordinary_materialization_atomic_write_plan
     .next_aggregate.remaining_identity_budget, 0);
+  assert.deepEqual(result.ordinary_materialization_atomic_write_plan
+    .transitions.map(({ kind }) => kind), ['seed']);
+  assert.equal(result.ordinary_materialization_atomic_write_plan
+    .next_aggregate.presence_resolutions.length, 0,
+  'transient zero-budget no_change does not fabricate a granular record');
 });
+
+test('full resolution cap returns no_change without a write or granular record',
+  async () => {
+    let aggregate = createOrdinaryAggregate({ scope_ref,
+      resolution_record_cap: 1 });
+    aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
+      kind: 'seed', request_identity: 'seed', expected_state_version: 0,
+      density_band: 'ordinary', identity_budget: 1, background_groups: []
+    } });
+    aggregate = applyOrdinaryAggregateTransition({ aggregate, transition: {
+      kind: 'resolve_presence', request_identity: 'presence-one',
+      expected_state_version: 1, resolution_ref: 'resolution-one',
+      candidate_key: 'candidate-one', coverage_key: 'coverage-one',
+      category_key: 'category-one', context_version: 'context-one',
+      resolution: 'absent'
+    } });
+    let modelCalls = 0;
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+      partyId: 'party', inputDigest: 'cap', verifyStageBCutover,
+      loadEnablement: async () => {
+        const value = enabled();
+        value.ordinary_aggregate = structuredClone(aggregate);
+        value.objective_context.ordinary_state = {
+          seeded: true, density_band: 'ordinary', remaining_identity_budget: 1,
+          background_groups: [], presence_resolutions: ['resolution-one'],
+          closed_observation_scopes: []
+        };
+        value.version_pins.ordinary_state_version = 2;
+        return value;
+      },
+      ordinaryMaterializationModel: async () => { modelCalls += 1; return {}; }
+    });
+    const result = await resolver(request('найти другую вещь'));
+    assert.equal(modelCalls, 0);
+    assert.equal(Object.hasOwn(result,
+      'ordinary_materialization_atomic_write_plan'), false);
+    assert.equal(aggregate.presence_resolutions.length, 1);
+    assert.equal(aggregate.state_version, 2);
+  });
 
 test('production-shaped bounded mechanics admits one positive ordinary item',
   async () => {

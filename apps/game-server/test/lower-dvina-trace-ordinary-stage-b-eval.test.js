@@ -7,8 +7,11 @@ import {
 } from '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { createOrdinaryMaterializationModel } from
   '../src/runtime/ordinary-materialization-llm.js';
+import { loadLowerDvinaTraceOrdinaryStageBApproval } from
+  '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { buildOrdinaryMaterializationPresenceRequest } from
   '../src/runtime/ordinary-materialization-seed-request.js';
+import { describeRoleLlmCall } from '@rus/llm-runtime';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -33,6 +36,12 @@ test('active O1 cutover pins the complete adversarial Stage B corpus', async () 
   assert.deepEqual(evaluateLowerDvinaTraceOrdinaryStageBModelOutputs({
     eval_contract: contract, outputs
   }), { pass: true, failed_case_ids: [] });
+  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+  assert.deepEqual(approval.model_identity, describeRoleLlmCall({
+    scope: 'turn_runtime', roleId: 'ordinary_materialization',
+    env: { DEEPSEEK_API_KEY: 'identity-only' },
+    overrides: { temperature: 0, maxTokens: 6000 }
+  }));
 });
 
 test('Stage B eval catches sensitive materialization hidden behind common fields', async () => {
@@ -66,35 +75,37 @@ test('Stage B eval boundary rejects accessors without reading them', async () =>
   assert.equal(reads, 0);
 });
 
-test('production O1 model runs the full eval on one exact model configuration',
+test('production O1 model verifies the activation receipt without live probes',
   async () => {
     const contract = await evalContract();
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
     const calls = [];
-    const roleRunner = { async run(input) {
+    const roleRunner = { describe() { return modelIdentity(); }, async run(input) {
       calls.push(input);
       const request = JSON.parse(input.messages[1].content);
-      const probe = contract.cases.find(({ query }) =>
-        query === request.candidate_query.candidate_hint);
       return { output: absentPlan(request), provider_record: modelIdentity() };
     } };
-    const model = createOrdinaryMaterializationModel({ roleRunner });
-    const requests = contract.cases.map((probe) => ({ id: probe.id,
-      request: presenceRequest(probe.query, probe.id) }));
+    const model = createOrdinaryMaterializationModel({ roleRunner,
+      stageBApprovalReceipt: approval });
     const receipt = await model.verifyStageBCutover({
-      eval_contract: contract, requests });
+      eval_contract: contract });
     assert.equal(receipt.schema,
-      'rus.ordinary_materialization_stage_b_eval_receipt.v1');
-    assert.equal(receipt.model_identity.config_hash, 'config-hash');
-    assert.equal(calls.length, contract.cases.length);
-    await model.verifyStageBCutover({ eval_contract: contract, requests });
-    assert.equal(calls.length, contract.cases.length,
-      'an exact receipt reuses the evaluated model/config identity');
-    await assert.rejects(model(requests[0].request, { repair: {
-      original_output: null, validation_errors: ['forged'] } }), {
-      code: 'TRACE_ORDINARY_MODEL_REPAIR_DISABLED'
+      'rus.ordinary_materialization_stage_b_approval_receipt.v1');
+    assert.equal(receipt.model_identity.config_hash, modelIdentity().config_hash);
+    assert.equal(calls.length, 0, 'gameplay cutover performs no eval calls');
+    const request = presenceRequest('ложка');
+    await model(request, { repair: null });
+    await model(request, { repair: { schema:
+      'ordinary_materialization_repair_context_v1', original_output: null,
+    validation_errors: [{ path: 'resolution', keyword: 'enum' }] } });
+    assert.equal(calls.length, 2, 'one normal call and one structural repair');
+    assert.match(calls[1].messages[0].content, /single structural repair/u);
+    await assert.rejects(model(request, { repair: { schema:
+      'ordinary_materialization_repair_context_v1', original_output: null,
+    validation_errors: [{ path: 'resolution', keyword: 'enum' }] } }), {
+      code: 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID'
     });
-    assert.equal(calls.length, contract.cases.length,
-      'production O1 never invokes an unevaluated repair role');
+    assert.equal(calls.length, 2, 'a repeated direct repair never reaches the LLM');
   });
 
 test('production O1 response boundary rejects accessors without reading them',
@@ -108,7 +119,8 @@ test('production O1 response boundary rejects accessors without reading them',
       get() { providerReads += 1; return modelIdentity(); } });
     const model = createOrdinaryMaterializationModel({ roleRunner: {
       async run() { return hostile; }
-    } });
+    }, stageBApprovalReceipt:
+      await loadLowerDvinaTraceOrdinaryStageBApproval() });
     await assert.rejects(model(presenceRequest('ложка'), { repair: null }), {
       code: 'TRACE_ORDINARY_MODEL_RESPONSE_INVALID'
     });
@@ -116,24 +128,16 @@ test('production O1 response boundary rejects accessors without reading them',
     assert.equal(providerReads, 0);
   });
 
-test('production O1 cutover rejects one sensitive materialization', async () => {
+test('production O1 cutover rejects a jointly forged activation receipt', async () => {
   const contract = await evalContract();
-  const roleRunner = { async run(input) {
-    const request = JSON.parse(input.messages[1].content);
-    const output = absentPlan(request);
-    if (request.candidate_query.candidate_hint === contract.cases[0].query) {
-      output.resolution = 'materialize';
-      output.entities = [{ authority_class: 'ordinary' }];
-      output.presence_resolutions = [];
-    }
-    return { output, provider_record: modelIdentity() };
-  } };
-  const model = createOrdinaryMaterializationModel({ roleRunner });
-  await assert.rejects(model.verifyStageBCutover({ eval_contract: contract,
-    requests: contract.cases.map((probe) => ({ id: probe.id,
-      request: presenceRequest(probe.query, probe.id) })) }), {
-    code: 'TRACE_ORDINARY_STAGE_B_EVAL_FAILED'
-  });
+  const approval = structuredClone(
+    await loadLowerDvinaTraceOrdinaryStageBApproval());
+  approval.eval_contract_digest = 'forged';
+  const model = createOrdinaryMaterializationModel({ roleRunner: {
+    async run() { throw new Error('must not run'); }
+  }, stageBApprovalReceipt: approval });
+  await assert.rejects(model.verifyStageBCutover({ eval_contract: contract }), {
+    code: 'TRACE_ORDINARY_STAGE_B_EVAL_INPUT_INVALID' });
 });
 
 function presenceRequest(query) {
@@ -181,6 +185,6 @@ function absentPlan(request) { return {
     coverage_key: request.candidate_query.coverage_key,
     resolution: 'absent' }], reason_code: 'eval_absent' };
 }
-function modelIdentity() { return { provider: 'deepseek', model: 'model',
+function modelIdentity() { return { provider: 'deepseek', model: 'deepseek-v4-flash',
   scope: 'turn_runtime', role_id: 'ordinary_materialization',
-  config_hash: 'config-hash' }; }
+  config_hash: 'af6b22db5449f13e' }; }

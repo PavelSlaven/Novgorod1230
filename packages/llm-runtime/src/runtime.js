@@ -4,6 +4,17 @@ import { resolveLlmExecutionConfig } from './provider-config.js';
 
 const REQUEST_TIMEOUT_MS = 30000;
 
+export function describeRoleLlmCall({ scope, roleId = null, tierId = null,
+  env = process.env, overrides = null } = {}) {
+  const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env,
+    overrides });
+  if (!resolution.enabled) return null;
+  const config = resolution.config;
+  return Object.freeze({ provider: config.provider, model: config.model,
+    scope: config.scope, role_id: config.role_id,
+    config_hash: hashConfig(config) });
+}
+
 export async function executeRoleLlmCall({
   scope,
   roleId = null,

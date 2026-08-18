@@ -54,7 +54,7 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   }
   const propertyInput = propertyInputOf(context.property_placement_input);
   if (!propertyInput || !sameScope(propertyInput.scope_ref, pending.scope_ref)
-      || propertyInput.item_kind !== 'man_made'
+      || !['man_made','natural_resource_portion'].includes(propertyInput.item_kind)
       || propertyInput.supporting_basis_ref !== item.supporting_basis_ref
       || !sameRefs(propertyInput.causal_basis_refs, causalBasis.basis_refs)
       || propertyInput.requested_position_ref !== position.position_ref) return failed('ITEM_ORDINARY_WORLD_PROPERTY_INVALID');
@@ -84,18 +84,26 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   if (!causal || !text(causal.causal_ref) || causal.request_id !== pending.request_id || causal.candidate_key !== pending.candidate_key || causal.coverage_key !== pending.coverage_key || causal.context_version !== pending.context_version || !sameRefs(causal.source_refs, expectedRefs)) return failed('ITEM_ORDINARY_WORLD_PROVENANCE_INVALID');
   const snapshot = v2Snapshot({ causal_ref: causal.causal_ref, request_id: pending.request_id, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, policy_ref: policy.policy_ref, source_refs: expectedRefs, mechanics });
   const condition = evidence.condition_state;
-  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema: condition === undefined ? 'ordinary_world_item_proposal_v2' : 'ordinary_world_item_proposal_v3', request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, causal_basis_kind: evidence.causal_basis_kind ?? null, ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
+  const schema = !contextBound ? 'ordinary_world_item_proposal_v1'
+    : condition === undefined ? 'ordinary_world_item_proposal_v2'
+      : 'ordinary_world_item_proposal_v3';
+  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...(contextBound ? { causal_basis_kind: evidence.causal_basis_kind } : {}), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
 }
 
 
 function validPending(p,e,item,pos,causal) { return p.schema === 'ordinary_pending_items_property_admission_v1' && p.status === 'pending_items_property_admission' && p.stage === 'presence_resolution' && [p.request_id,p.candidate_key,p.coverage_key,p.context_version].every(text) && scope(p.scope_ref) && e && refs(e.permission_refs) && item && pos && pos.scope_ref === scopeId(p.scope_ref) && text(pos.position_ref) && causal && text(causal.basis_kind) && refs(causal.basis_refs)?.length > 0 && descriptor(item.semantic_descriptor) && e.authority_class === item.authority_class && e.admission_class === item.admission_class && e.availability_class === item.availability_class && e.functional_bucket === item.functional_bucket && e.supporting_basis_ref === item.supporting_basis_ref && e.property_basis_ref === item.property_basis_ref && (e.causal_basis_kind === undefined || e.causal_basis_kind === causal.basis_kind) && text(e.runtime_item_mechanics_policy_ref); }
-function ordinaryItem(value) { const keys = Object.hasOwn(value ?? {}, 'finite_source_initial_amount_choice')
-  ? [...ITEM, 'finite_source_initial_amount_choice'] : ITEM;
+function ordinaryItem(value) { const keys = Object.hasOwn(value ?? {}, 'finite_source_initial_amount_estimate')
+  ? [...ITEM, 'finite_source_initial_amount_estimate'] : ITEM;
   const item = record(value, keys);
-  if (item == null || !Object.hasOwn(item, 'finite_source_initial_amount_choice')) return item;
-  const choice = record(item.finite_source_initial_amount_choice, ['schema', 'selection_ref']);
-  return choice?.schema === 'finite_source_initial_amount_choice_v1' && text(choice.selection_ref)
-    ? item : null;
+  if (item == null || !Object.hasOwn(item, 'finite_source_initial_amount_estimate')) return item;
+  const estimate = record(item.finite_source_initial_amount_estimate,
+    ['schema', 'amount']);
+  const amount = estimate && record(estimate.amount,
+    ['numerator','denominator','unit']);
+  return estimate?.schema === 'finite_source_initial_amount_estimate_v1'
+    && amount && Number.isSafeInteger(amount.numerator) && amount.numerator > 0
+    && Number.isSafeInteger(amount.denominator) && amount.denominator > 0
+    && text(amount.unit) ? item : null;
 }
 function validBasis(b,s) { return b && text(b.basis_ref) && ['committed','prepared_seed'].includes(b.state) && sameScope(b.scope_ref,s) && refs(b.functional_buckets) && refs(b.allowed_admission_classes) && refs(b.permission_refs) && (b.state === 'committed' ? b.prepared_seed_provenance === null : prepared(b.prepared_seed_provenance)); }
 function prepared(value) { const p = record(value, ['seed_request_id','mode','candidate_query']); return p && text(p.seed_request_id) && p.mode === 'seed_scope' && p.candidate_query === null; }

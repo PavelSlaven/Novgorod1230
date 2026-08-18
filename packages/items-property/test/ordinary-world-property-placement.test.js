@@ -55,11 +55,13 @@ test('O1 property precedence is explicit, personal/communal, occupied default, t
   assert.equal(resolveOrdinaryWorldPropertyPlacement(input({ property_catalog: [{ property_basis_ref: 'unowned', state: 'committed', scope_ref, basis_class: 'genuinely_unowned', source_ref: 'abandoned-source', unowned_cause_ref: null }] })).pass, false);
 });
 
-test('O1 fails closed for ambiguous rank, non-man-made scope, and invalid positions', () => {
+test('O1 fails closed for ambiguous rank, unknown item kind, and invalid positions', () => {
   const sameRank = input({ property_catalog: [
     input().property_catalog[2], { property_basis_ref: 'other-spoon-owner', state: 'committed', scope_ref, basis_class: 'explicit_source_item', source_ref: 'spoon-source-1', unowned_cause_ref: null }
   ] });
   assert.equal(resolveOrdinaryWorldPropertyPlacement(sameRank).pass, false);
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(input({
+    item_kind: 'natural_resource_portion' })).pass, true);
   assert.equal(resolveOrdinaryWorldPropertyPlacement(input({ item_kind: 'natural' })).pass, false);
   for (const placement_catalog of [
     [],

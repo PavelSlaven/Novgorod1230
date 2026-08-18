@@ -27,7 +27,7 @@ const docker = (args, input) => spawnSync('docker', args, {
   timeout: 60_000
 });
 const container = `ordinary-phase6-${process.pid}`;
-const migrations = ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql', '009_party_runtime_pr8_reaction_knowledge.sql', '010_party_runtime_pr8_reaction_options.sql', '011_party_runtime_first_playable.sql', '012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql', '015_party_runtime_turn_step_items.sql', '016_party_runtime_npc_semantic_conversation.sql', '017_party_runtime_conversation_transcript.sql', '018_party_runtime_phase7_container_state.sql', '019_party_runtime_combat_sessions.sql', '020_party_runtime_actor_equipment.sql', '021_party_runtime_ordinary_materialization.sql', '022_party_runtime_ordinary_materialization_commit.sql', '023_party_runtime_ordinary_materialization_enablement.sql', '024_party_runtime_finite_resource_transitions.sql'];
+const migrations = ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql', '009_party_runtime_pr8_reaction_knowledge.sql', '010_party_runtime_pr8_reaction_options.sql', '011_party_runtime_first_playable.sql', '012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql', '015_party_runtime_turn_step_items.sql', '016_party_runtime_npc_semantic_conversation.sql', '017_party_runtime_conversation_transcript.sql', '018_party_runtime_phase7_container_state.sql', '019_party_runtime_combat_sessions.sql', '020_party_runtime_actor_equipment.sql', '021_party_runtime_ordinary_materialization.sql', '022_party_runtime_ordinary_materialization_commit.sql', '023_party_runtime_ordinary_materialization_enablement.sql', '024_party_runtime_ordinary_world_items.sql', '025_party_runtime_finite_resource_transitions.sql'];
 const scope_ref = Object.freeze({ entity_kind: 'g6', entity_id: 'scope-a' });
 
 function propertyPlacementContext() {
@@ -141,7 +141,7 @@ function admittedItem({ request_identity, candidate_key, coverage_key, context_v
   const property_basis_ref = 'property', position_ref = 'position', mechanics_policy_ref = `mechanics-${token}`;
   const evidence = structuredClone(resolveOrdinaryWorldPropertyPlacement({...propertyPlacement,supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],requested_position_ref:position_ref}).evidence);
   const source_refs = [candidate_key,coverage_key,supporting_basis_ref,property_basis_ref,position_ref,mechanics_policy_ref,evidence.property_source_ref,evidence.property_catalog_version_ref,evidence.placement_catalog_version_ref,evidence.placement_context_ref,evidence.property_placement_context_digest].sort();
-  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,mechanics_policy_ref,
+  return {candidate_key,coverage_key,context_version,functional_bucket:'household',admission_class:'common_mundane',supporting_basis_ref,causal_basis_refs:[supporting_basis_ref],property_basis_ref,position_ref,runtime_placement:{anchor_id:'ordinary-anchor'},mechanics_policy_ref,
     item_proposal:{schema:'ordinary_world_item_proposal_v1',request_id:request_identity,scope_ref:{...scope},candidate_key,coverage_key,context_version,semantic_descriptor:{semantic_type:'household_tool',name:'wooden spoon',facts:['ordinary']},supporting_basis_ref,property_basis_ref,property_placement_evidence:evidence,placement:{scope_ref:scope.entity_id,position_ref},runtime_item_mechanics_policy_ref:mechanics_policy_ref},
     mechanics_snapshot:{schema:'rus.items.runtime_instance_mechanics_snapshot.v2',version:2,provenance:{source_kind:'ordinary_world_materialization',causal_ref:`cause-${token}`,request_id:request_identity,candidate_key,coverage_key,context_version,policy_ref:mechanics_policy_ref,source_refs},mechanics:{mass_grams:80,external_hand_cost:0,carry_form:'compact',packing_slot_cost:1,quantity:{value:1,unit:'item'},container:null}}};
 }
@@ -178,10 +178,11 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.ok(Number.isSafeInteger(port));
   pool = new Pool({ host: '127.0.0.1', port, user: 'ordinary', password: 'ordinary', database: 'ordinary', max: 6, connectionTimeoutMillis: 5_000 });
   for (const file of migrations) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
-  await pool.query(await readFile('schemas/party-db/024_party_runtime_finite_resource_transitions.sql', 'utf8'));
+  await pool.query(await readFile('schemas/party-db/025_party_runtime_finite_resource_transitions.sql', 'utf8'));
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ('party-a',2,'world','catalog','materializer','rng','commands','profiles')`);
+  await insertPartyAnchor(pool, 'party-a');
   await assert.rejects(() => pool.query(`UPDATE party_runtime.parties SET state_version=9007199254740992 WHERE party_id='party-a'`));
   const initial = createOrdinaryAggregate({ scope_ref, resolution_record_cap: 8 });
   const emptyBasisCatalog = [];
@@ -408,6 +409,7 @@ test('Phase 6 ordinary PostgreSQL committer is atomic, exact, replay-safe and st
   assert.equal(Number(p16After.rows[0].commits), Number(p16Before.commits) + 1);
   await assertFiniteSourceP16Integration(pool);
   await assertContextBoundO2aV2V3Integration(pool);
+  await removePartyAnchor(pool, 'party-a');
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id='party-a'`);
   for (const table of ['party_ordinary_materialization_aggregates',
     'party_ordinary_materialization_contexts',
@@ -447,6 +449,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,
      rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`, [partyId]);
+  await insertPartyAnchor(pool, partyId);
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)
     VALUES ($1,$2,$3,$4,$5::jsonb)`, [partyId, scope.entity_kind, scope.entity_id,
@@ -530,15 +533,16 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     context_version: transition.context_version, functional_bucket: 'arms',
     admission_class: 'weapon_or_armament', supporting_basis_ref: supportingBasis.basis_ref,
     causal_basis_refs: [supportingBasis.basis_ref], causal_basis_kind: 'personal_possession',
-    permission_refs: ['armament-profile-a'], property_basis_ref: 'o2a-property',
-    position_ref: 'o2a-position', mechanics_policy_ref: 'o2a-mechanics',
+    condition_state: null, permission_refs: ['armament-profile-a'],
+    property_basis_ref: 'o2a-property', position_ref: 'o2a-position',
+    runtime_placement: { anchor_id: 'ordinary-anchor' },
+    mechanics_policy_ref: 'o2a-mechanics',
     item_proposal: admission.proposal,
     mechanics_snapshot: admission.runtime_instance_mechanics_snapshot
   };
   const rawPlan = {
     party_id: partyId, scope_ref: scope, request_identity: requestIdentity,
-    input_digest: 'o2a-input', transition_digest:
-      nextAggregate.committed_request_fingerprints.at(-1).transition_digest,
+    input_digest: 'o2a-input', transition_digest: canonicalDigest(transition),
     expected_versions: { party_state_version: 0,
       ordinary_state_version: aggregate.state_version, catalog_version: 1,
       property_version: 1, placement_version: 1, supporting_basis_catalog_version: 1,
@@ -590,6 +594,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
   assert.equal(persisted.rows[0].item_proposal.causal_basis_kind, 'personal_possession');
   assert.equal(persisted.rows[0].property_placement_evidence.schema,
     'rus.items.ordinary_world_property_placement_evidence.v3');
+  await removePartyAnchor(pool, partyId);
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
 }
 
@@ -599,13 +604,15 @@ async function assertFiniteSourceP16Integration(pool) {
   }, sourceBasis = { basis_ref: 'finite-source-node', state: 'committed',
     scope_ref: { ...finiteScope }, prepared_seed_provenance: null,
     functional_buckets: ['household'],
-    allowed_admission_classes: ['common_mundane'] }, amounts = [{
-      selection_ref: 'amount:three', amount: { numerator: 3, denominator: 1, unit: 'item' }
-    }];
+    allowed_admission_classes: ['common_mundane'] }, initialAmountBounds = {
+      minimum: { numerator: 1, denominator: 1, unit: 'item' },
+      maximum: { numerator: 10, denominator: 1, unit: 'item' }
+    };
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest)
     VALUES ($1,2,'world','catalog','materializer','rng','commands','profiles')`,
   [partyId]);
+  await insertPartyAnchor(pool, partyId);
   await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
     (id,party_id,operation_kind,expected_state_version_set_digest,
      expected_state_version_set,committed_state_version_set_digest,
@@ -660,16 +667,17 @@ async function assertFiniteSourceP16Integration(pool) {
     (party_id,scope_kind,scope_id,basis_ref,origin_request_identity,basis_snapshot)
     VALUES ($1,$2,$3,$4,NULL,$5::jsonb)`, [partyId, finiteScope.entity_kind,
     finiteScope.entity_id, sourceBasis.basis_ref, JSON.stringify(sourceBasis)]);
-  await insertFiniteResource(pool, partyId, 'finite-source-node', amounts);
+  await insertFiniteResource(pool, partyId, 'finite-source-node', initialAmountBounds);
   const first = finitePlan({ partyId, scope: finiteScope, aggregate,
-    partyStateVersion: 0, sourceStateVersion: 2, before: amounts[0].amount,
+    partyStateVersion: 0, sourceStateVersion: 2,
+    before: { numerator: 3, denominator: 1, unit: 'item' },
     decrement: { numerator: 1, denominator: 1, unit: 'item' },
     requestIdentity: 'finite-first', sourceResourceNodeId: 'finite-source-node',
     initialize: true, sourceBasis, placement });
   await commitFiniteInP16(pool, first, 'finite-change-1', 0);
   const firstRows = await pool.query(`SELECT r.state_version,r.quantity_numerator,
     r.quantity_denominator,r.lifecycle_state,r.initialization_identity,
-    r.approved_initial_amounts,r.updated_change_set_id,d.causal_transition_identity,
+    r.initial_amount_bounds,r.updated_change_set_id,d.causal_transition_identity,
     d.result_item_id,d.before_numerator,d.decrement_numerator,d.after_numerator,
     d.lifecycle_state_after,d.result_item_mechanics_digest,
     d.result_item_property_placement_digest,d.p16_change_set_id
@@ -680,7 +688,7 @@ async function assertFiniteSourceP16Integration(pool) {
   assert.deepEqual(firstRows.rows[0], {
     state_version: '3', quantity_numerator: '2', quantity_denominator: '1',
     lifecycle_state: 'active', initialization_identity: 'finite-first',
-    approved_initial_amounts: null, updated_change_set_id: 'finite-change-1',
+    initial_amount_bounds: null, updated_change_set_id: 'finite-change-1',
     causal_transition_identity: 'finite-first', result_item_id: first.item.item_id,
     before_numerator: '3', decrement_numerator: '1', after_numerator: '2',
     lifecycle_state_after: 'active',
@@ -757,6 +765,7 @@ async function assertFiniteSourceP16Integration(pool) {
     updated_change_set_id: 'finite-change-3' });
   await pool.query(`DELETE FROM party_runtime.party_resource_node_decrements
     WHERE party_id=$1`, [partyId]);
+  await removePartyAnchor(pool, partyId);
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
 }
 
@@ -823,23 +832,59 @@ function finitePlanInput({ partyId, scope, aggregate, partyStateVersion,
     expected_state_version: sourceStateVersion - 1,
     initialization_identity: requestIdentity,
     quantity_unit_ref: structuredClone(transition.quantity_unit_ref),
-    selection_ref: 'amount:three',
-    selected_amount: structuredClone(before)
+    estimated_amount: structuredClone(before),
+    approved_bounds: {
+      minimum: { numerator: 1, denominator: 1, unit: before.unit },
+      maximum: { numerator: 10, denominator: 1, unit: before.unit }
+    }
   };
   return raw;
 }
 
-async function insertFiniteResource(pool, partyId, id, amounts) {
+async function insertFiniteResource(pool, partyId, id, initialAmountBounds) {
   await pool.query(`INSERT INTO party_runtime.party_resource_nodes
     (resource_node_id,party_id,source_resource_ref,position_node_id,
      quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
      access_policy_ref,state_version,created_change_set_id,updated_change_set_id,
-     lifecycle_state,approved_initial_amounts,initialization_identity,
+     lifecycle_state,initial_amount_bounds,initialization_identity,
      initial_amount_evidence,property_basis_ref)
     VALUES ($1,$2,$3::jsonb,'position',0,1,$4::jsonb,$3::jsonb,
       $3::jsonb,1,'finite-fixture','finite-fixture','uninitialized',$5::jsonb,
       NULL,NULL,'property')`, [id, partyId, JSON.stringify({ ref: id }),
-    JSON.stringify({ kind: 'unit', id: 'item' }), JSON.stringify(amounts)]);
+    JSON.stringify({ kind: 'unit', id: 'item' }),
+    JSON.stringify(initialAmountBounds)]);
+}
+
+async function insertPartyAnchor(pool, partyId) {
+  await pool.query(`INSERT INTO party_runtime.party_materialization_runs
+      (party_id,run_id,g4_id,run_kind,seed_digest,input_digest,catalog_digest,
+       materializer_version,rng_version,result_digest,idempotency_key,status)
+    VALUES ($1,'ordinary-run','ordinary-g4','baseline','seed','input','catalog',
+      'materializer','rng','result','ordinary-run-key','committed')`, [partyId]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_nodes
+      (party_id,g5_node_id,run_id,parent_g4_id,template_id,slot_key)
+    VALUES ($1,'ordinary-node','ordinary-run','ordinary-g4','node-template','main')`,
+  [partyId]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_anchors
+      (party_id,anchor_id,g5_node_id,template_id,slot_key,item_capacity)
+    VALUES ($1,'ordinary-anchor','ordinary-node','anchor-template','main',16)`,
+  [partyId]);
+  await pool.query(`INSERT INTO party_runtime.party_positions
+      (party_id,g4_id,g5_node_id,g5_anchor_id)
+    VALUES ($1,'ordinary-g4','ordinary-node','ordinary-anchor')`, [partyId]);
+}
+
+async function removePartyAnchor(pool, partyId) {
+  await pool.query(`DELETE FROM party_runtime.party_item_placements
+    WHERE party_id=$1`, [partyId]);
+  await pool.query(`DELETE FROM party_runtime.party_positions
+    WHERE party_id=$1`, [partyId]);
+  await pool.query(`DELETE FROM party_runtime.party_g5_anchors
+    WHERE party_id=$1`, [partyId]);
+  await pool.query(`DELETE FROM party_runtime.party_g5_nodes
+    WHERE party_id=$1`, [partyId]);
+  await pool.query(`DELETE FROM party_runtime.party_materialization_runs
+    WHERE party_id=$1`, [partyId]);
 }
 
 async function commitFiniteInP16(pool, plan, changeSetId, partyVersion,

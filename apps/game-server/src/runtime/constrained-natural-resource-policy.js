@@ -6,7 +6,7 @@ const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
   'finite_source'];
 const SOURCE = ['source_resource_node_id', 'state_version', 'lifecycle_state',
   'quantity', 'quantity_unit_ref', 'position_ref', 'property_basis_ref'];
-const UNINITIALIZED_SOURCE = [...SOURCE, 'approved_initial_amounts'];
+const UNINITIALIZED_SOURCE = [...SOURCE, 'initial_amount_bounds'];
 const QUANTITY = ['numerator', 'denominator', 'unit'];
 
 // This is an admission policy, not a geology resolver.  A caller gets a
@@ -16,7 +16,8 @@ export function resolveConstrainedNaturalResourcePolicy({ objective_context,
   execution_context, candidate_context, scope_ref, property_placement_context } = {}) {
   const candidate = candidate_context;
   if (!plain(candidate) || candidate.admission_class === 'common_mundane') return pass(null);
-  if (candidate.admission_class !== 'specialized_or_valuable'
+  if (!['specialized_or_valuable','weapon_or_armament']
+    .includes(candidate.admission_class)
       || candidate.availability_class !== 'context_bound') return blocked();
   const objective = objective_context;
   const profile = record(execution_context?.constrained_natural_resource_profile,
@@ -51,24 +52,20 @@ export function constrainedNaturalResourceFiniteTransition({ profile, item,
     lifecycle_state_after: after === 0 ? 'depleted' : 'active' });
 }
 
-// `selection_ref` is deliberately opaque to the model.  The runtime maps it
-// to one exact persisted rational amount before the P16 plan exists.
+// The model estimates a rational amount inside code-owned persisted bounds;
+// the runtime validates that estimate before the P16 plan exists.
 export function constrainedNaturalResourceFiniteInitialization({ profile, item,
-  request_identity, selection_ref } = {}) {
+  request_identity, estimated_amount } = {}) {
   const p = record(profile, PROFILE), source = p && sourceRecord(p.finite_source);
   if (!p || !source || source.lifecycle_state !== 'uninitialized'
-      || !text(selection_ref) || !Array.isArray(item?.causal_basis_refs)
+      || !rational(estimated_amount) || !Array.isArray(item?.causal_basis_refs)
       || !item.causal_basis_refs.includes(source.source_resource_node_id)) return null;
-  const selected = source.approved_initial_amounts.find((entry) =>
-    entry.selection_ref === selection_ref);
-  if (selected == null) return null;
   let initialized;
   try {
     initialized = resolveFiniteSourceInitialAmount({
       initialization_identity: request_identity, committed_amount: null,
-      approved_alternatives: source.approved_initial_amounts.map((entry) =>
-        structuredClone(entry.amount)),
-      selected_amount: structuredClone(selected.amount)
+      approved_bounds: structuredClone(source.initial_amount_bounds),
+      estimated_amount: structuredClone(estimated_amount)
     });
   } catch { return null; }
   const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
@@ -89,7 +86,8 @@ export function constrainedNaturalResourceFiniteInitialization({ profile, item,
     expected_state_version: source.state_version,
     initialization_identity: request_identity,
     quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    selection_ref, selected_amount: structuredClone(initialized.amount)
+    estimated_amount: structuredClone(initialized.amount),
+    approved_bounds: structuredClone(source.initial_amount_bounds)
   }, finite_resource_transition: transition });
 }
 
@@ -117,7 +115,7 @@ function validProfile(profile, objective, candidate, scopeRef, bases, committedS
     && rational(source.quantity) && plain(source.quantity_unit_ref)
     && ((source.lifecycle_state === 'active' && source.quantity.numerator > 0)
       || (source.lifecycle_state === 'uninitialized' && source.quantity.numerator === 0
-        && approvedAmounts(source.approved_initial_amounts, source.quantity.unit)))
+        && validBounds(source.initial_amount_bounds, source.quantity.unit)))
     && committed && sameSource(source, committed)
     && placementPropertyPins(source, propertyContext, scopeRef)
     && Array.isArray(bases) && bases.length === 1
@@ -132,7 +130,7 @@ function basisCovers(basis, profile, permissions, scopeRef) {
     && basis.functional_buckets[0] === profile.functional_bucket
     && Array.isArray(basis.allowed_admission_classes)
     && basis.allowed_admission_classes.length === 1
-    && basis.allowed_admission_classes[0] === 'specialized_or_valuable'
+    && basis.allowed_admission_classes[0] === profile.admission_class
     && same(ordered(basis.permission_refs), permissions);
 }
 function sameSource(left, right) { return left.source_resource_node_id === right.source_resource_node_id
@@ -141,18 +139,19 @@ function sameSource(left, right) { return left.source_resource_node_id === right
   && left.quantity.numerator === right.quantity.numerator
   && left.quantity.denominator === right.quantity.denominator && left.quantity.unit === right.quantity.unit
   && JSON.stringify(left.quantity_unit_ref) === JSON.stringify(right.quantity_unit_ref)
-  && JSON.stringify(left.approved_initial_amounts ?? null)
-    === JSON.stringify(right.approved_initial_amounts ?? null); }
+  && JSON.stringify(left.initial_amount_bounds ?? null)
+    === JSON.stringify(right.initial_amount_bounds ?? null); }
 function sourceRecord(value) {
   const keys = value?.lifecycle_state === 'uninitialized' ? UNINITIALIZED_SOURCE : SOURCE;
   return record(value, keys);
 }
-function approvedAmounts(value, unit) {
-  return Array.isArray(value) && value.length > 0 && value.every((entry) =>
-    record(entry, ['selection_ref', 'amount']) && text(entry.selection_ref)
-      && rational(entry.amount) && entry.amount.numerator > 0 && entry.amount.unit === unit)
-    && new Set(value.map((entry) => entry.selection_ref)).size === value.length
-    && new Set(value.map((entry) => JSON.stringify(entry.amount))).size === value.length;
+function validBounds(value, unit) {
+  const bounds = record(value, ['minimum','maximum']);
+  return !!bounds && rational(bounds.minimum) && rational(bounds.maximum)
+    && bounds.minimum.numerator > 0 && bounds.maximum.numerator > 0
+    && bounds.minimum.unit === unit && bounds.maximum.unit === unit
+    && BigInt(bounds.minimum.numerator) * BigInt(bounds.maximum.denominator)
+      <= BigInt(bounds.maximum.numerator) * BigInt(bounds.minimum.denominator);
 }
 function placementPropertyPins(source, context, scopeRef) { return plain(context)
   && scope(context.scope_ref, scopeRef) && Array.isArray(context.placement_catalog)

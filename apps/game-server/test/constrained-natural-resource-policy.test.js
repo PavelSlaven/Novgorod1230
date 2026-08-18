@@ -70,14 +70,14 @@ test('player digging wording is not a policy input and never creates a source', 
     'authority_required');
 });
 
-test('a one-time source maps only an opaque approved selection to its first decrement', () => {
+test('a one-time source accepts one bounded semantic estimate before its first decrement', () => {
   const value = fixture();
   const source = { ...value.execution_context.constrained_natural_resource_profile.finite_source,
     lifecycle_state: 'uninitialized', quantity: { numerator: 0, denominator: 1, unit: 'item' },
-    approved_initial_amounts: [
-      { selection_ref: 'initial:two', amount: { numerator: 2, denominator: 1, unit: 'item' } },
-      { selection_ref: 'initial:three', amount: { numerator: 3, denominator: 1, unit: 'item' } }
-    ] };
+    initial_amount_bounds: {
+      minimum: { numerator: 2, denominator: 1, unit: 'item' },
+      maximum: { numerator: 8, denominator: 1, unit: 'item' }
+    } };
   value.execution_context.constrained_natural_resource_profile.finite_source = source;
   value.execution_context.committed_finite_source = structuredClone(source);
   const profile = resolveConstrainedNaturalResourcePolicy(value).profile;
@@ -86,10 +86,12 @@ test('a one-time source maps only an opaque approved selection to its first decr
     causal_basis_refs: ['node:unseen'], mechanics_snapshot: {
       mechanics: { quantity: { value: 1, unit: 'item' } } } };
   const first = constrainedNaturalResourceFiniteInitialization({ profile, item,
-    request_identity: 'turn:1:ordinary:presence', selection_ref: 'initial:three' });
-  assert.equal(first.finite_resource_initialization.selected_amount.numerator, 3);
+    request_identity: 'turn:1:ordinary:presence',
+    estimated_amount: { numerator: 7, denominator: 1, unit: 'item' } });
+  assert.equal(first.finite_resource_initialization.estimated_amount.numerator, 7);
   assert.equal(first.finite_resource_transition.expected_state_version, 5);
-  assert.equal(first.finite_resource_transition.after_quantity.numerator, 2);
+  assert.equal(first.finite_resource_transition.after_quantity.numerator, 6);
   assert.equal(constrainedNaturalResourceFiniteInitialization({ profile, item,
-    request_identity: 'turn:1:ordinary:presence', selection_ref: 'forged' }), null);
+    request_identity: 'turn:1:ordinary:presence',
+    estimated_amount: { numerator: 9, denominator: 1, unit: 'item' } }), null);
 });

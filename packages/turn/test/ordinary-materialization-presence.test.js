@@ -101,21 +101,31 @@ test('a code-owned authority gate records the negative resolution without invoki
   }, { codeOwnedResolution: 'authority_required' }));
   assert.equal(calls, 0);
   assert.equal(output.status, 'authority_required');
-  assert.equal(output.working_projection.ordinary_aggregate.presence_resolutions[0].resolution,
+  assert.equal(output.working_projection.ordinary_materialization_aggregate
+    .presence_resolutions[0].resolution,
     'authority_required');
 });
 
 test('O2a context-bound presence requires the exact approved permission set and committed basis', async () => {
   const contextCandidate = { semantic_type: 'ordinary_weapon', coverage_kind: 'visible_surface',
     coverage_ref: 'weapon-rack', policy_version: 'presence', functional_bucket: 'arms',
-    admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+    normalized_candidate_ref: 'weapon-rack:ordinary-weapon',
+    normalizer_version: 'ordinary-normalizer-v1', source_ref: 'weapon-source' };
   const contextRequest = request();
   contextRequest.policy_refs = { ...contextRequest.policy_refs,
     allowed_admission_classes: ['weapon_or_armament'],
     context_bound_permission_refs: ['armament-profile', 'weapon-source'],
     allowed_supporting_bases: [{ basis_ref: 'basis-arms', basis_state: 'committed' }] };
   Object.assign(contextCandidate, {
-    candidate_key: createOrdinaryCandidateKey({ scope_ref, ...contextCandidate }),
+    candidate_key: createOrdinaryCandidateKey({ scope_ref,
+      normalized_candidate_ref: contextCandidate.normalized_candidate_ref,
+      normalizer_version: contextCandidate.normalizer_version,
+      functional_bucket: contextCandidate.functional_bucket,
+      admission_class: contextCandidate.admission_class,
+      availability_class: contextCandidate.availability_class,
+      policy_version: contextCandidate.policy_version,
+      source_ref: contextCandidate.source_ref }),
     coverage_key: createOrdinaryCoverageKey({ scope_ref, coverage_kind: contextCandidate.coverage_kind,
       coverage_ref: contextCandidate.coverage_ref, policy_version: contextCandidate.policy_version }),
     category_key: createOrdinaryCategoryKey({ scope_ref, functional_bucket: 'arms',
@@ -123,7 +133,8 @@ test('O2a context-bound presence requires the exact approved permission set and 
       policy_version: 'presence' }),
     context_version: createOrdinaryContextVersion({ scope_ref,
       context_refs: contextRequest.context_refs, ordinary_presence_policy_ref: 'presence',
-      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest() })
+      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest(),
+      source_ref: contextCandidate.source_ref })
   });
   contextRequest.candidate_query = { candidate_key: contextCandidate.candidate_key,
     candidate_hint: 'оружие', coverage_key: contextCandidate.coverage_key, evidence_weight: 0 };
@@ -169,14 +180,23 @@ test('O2a context-bound presence requires the exact approved permission set and 
 test('O2a rejects model attempts to smuggle hidden, historical, or significant truth through a valid armament envelope', async () => {
   const contextCandidate = { semantic_type: 'ordinary_weapon', coverage_kind: 'visible_surface',
     coverage_ref: 'weapon-rack', policy_version: 'presence', functional_bucket: 'arms',
-    admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
+    admission_class: 'weapon_or_armament', availability_class: 'context_bound',
+    normalized_candidate_ref: 'weapon-rack:ordinary-weapon',
+    normalizer_version: 'ordinary-normalizer-v1', source_ref: 'weapon-source' };
   const contextRequest = request();
   contextRequest.policy_refs = { ...contextRequest.policy_refs,
     allowed_admission_classes: ['weapon_or_armament'],
     context_bound_permission_refs: ['armament-profile', 'weapon-source'],
     allowed_supporting_bases: [{ basis_ref: 'basis-arms', basis_state: 'committed' }] };
   Object.assign(contextCandidate, {
-    candidate_key: createOrdinaryCandidateKey({ scope_ref, ...contextCandidate }),
+    candidate_key: createOrdinaryCandidateKey({ scope_ref,
+      normalized_candidate_ref: contextCandidate.normalized_candidate_ref,
+      normalizer_version: contextCandidate.normalizer_version,
+      functional_bucket: contextCandidate.functional_bucket,
+      admission_class: contextCandidate.admission_class,
+      availability_class: contextCandidate.availability_class,
+      policy_version: contextCandidate.policy_version,
+      source_ref: contextCandidate.source_ref }),
     coverage_key: createOrdinaryCoverageKey({ scope_ref, coverage_kind: contextCandidate.coverage_kind,
       coverage_ref: contextCandidate.coverage_ref, policy_version: contextCandidate.policy_version }),
     category_key: createOrdinaryCategoryKey({ scope_ref, functional_bucket: 'arms',
@@ -184,7 +204,8 @@ test('O2a rejects model attempts to smuggle hidden, historical, or significant t
       policy_version: 'presence' }),
     context_version: createOrdinaryContextVersion({ scope_ref,
       context_refs: contextRequest.context_refs, ordinary_presence_policy_ref: 'presence',
-      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest() })
+      property_basis_ref: 'property', property_placement_context_digest: propertyPlacementDigest(),
+      source_ref: contextCandidate.source_ref })
   });
   contextRequest.candidate_query = { candidate_key: contextCandidate.candidate_key,
     candidate_hint: 'оружие', coverage_key: contextCandidate.coverage_key, evidence_weight: 0 };

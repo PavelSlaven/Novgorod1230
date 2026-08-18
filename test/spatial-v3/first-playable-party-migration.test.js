@@ -61,13 +61,18 @@ const ordinaryWorldItemsSql = readFileSync(
   new URL('../../schemas/party-db/024_party_runtime_ordinary_world_items.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 024 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 24);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-14), [sql,
+const finiteResourceSql = readFileSync(
+  new URL('../../schemas/party-db/025_party_runtime_finite_resource_transitions.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 025 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 25);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-15), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
-    ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql]);
+    ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
+    finiteResourceSql]);
 });
 
 test('024 admits only the separate closed O1 v2 runtime snapshot', () => {

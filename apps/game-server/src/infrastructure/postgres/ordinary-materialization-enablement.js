@@ -31,7 +31,7 @@ export function createPostgresOrdinaryMaterializationEnablementRepository({ pool
       if (sourceId !== null) {
         const source = await pool.query(`SELECT resource_node_id,state_version,lifecycle_state,
             quantity_numerator,quantity_denominator,quantity_unit_ref,position_node_id,
-            property_basis_ref,approved_initial_amounts
+            property_basis_ref,initial_amount_bounds
           FROM party_runtime.party_resource_nodes
           WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceId]);
         row.committed_finite_source = source.rowCount === 1
@@ -120,21 +120,26 @@ function normalizeFiniteSource(value) {
     quantity_unit_ref: structuredClone(value.quantity_unit_ref),
     position_ref: value.position_node_id, property_basis_ref: value.property_basis_ref };
   if (value.lifecycle_state !== 'uninitialized') return base;
-  const alternatives = normalizeInitialAmounts(value.approved_initial_amounts, base.quantity.unit);
-  return alternatives == null ? null : { ...base, approved_initial_amounts: alternatives };
+  const bounds = normalizeInitialAmountBounds(value.initial_amount_bounds,
+    base.quantity.unit);
+  return bounds == null ? null : { ...base, initial_amount_bounds: bounds };
 }
 
-function normalizeInitialAmounts(value, unit) {
-  if (!Array.isArray(value) || value.length === 0) return null;
-  const result = value.map((entry) => plain(entry) && text(entry.selection_ref)
-    && plain(entry.amount) && integer(entry.amount.numerator) && entry.amount.numerator > 0
-    && integer(entry.amount.denominator) && entry.amount.denominator >= 1
-    && entry.amount.unit === unit
-    ? { selection_ref: entry.selection_ref, amount: {
-      numerator: Number(entry.amount.numerator), denominator: Number(entry.amount.denominator), unit } }
-    : null);
-  return result.includes(null) || new Set(result.map((entry) => entry.selection_ref)).size !== result.length
-    ? null : result;
+function normalizeInitialAmountBounds(value, unit) {
+  if (!exact(value, ['minimum','maximum'])) return null;
+  const minimum = normalizeRational(value.minimum, unit);
+  const maximum = normalizeRational(value.maximum, unit);
+  if (!minimum || !maximum
+      || BigInt(minimum.numerator) * BigInt(maximum.denominator)
+        > BigInt(maximum.numerator) * BigInt(minimum.denominator)) return null;
+  return { minimum, maximum };
+}
+function normalizeRational(value, unit) {
+  return exact(value, ['numerator','denominator','unit'])
+    && integer(value.numerator) && Number(value.numerator) > 0
+    && integer(value.denominator) && Number(value.denominator) >= 1
+    && value.unit === unit ? { numerator: Number(value.numerator),
+      denominator: Number(value.denominator), unit } : null;
 }
 
 function plain(value) { return value != null && typeof value === 'object' && !Array.isArray(value); }

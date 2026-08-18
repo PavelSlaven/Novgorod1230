@@ -36,11 +36,15 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
       remaining_identity_budget: 0, background_groups: [], presence_resolutions: [],
       closed_observation_scopes: [] } };
   const execution_context = { supporting_bases, allowed_disclosure_policy_refs: ['disclosure'],
-    identity_budget: { policy_version: 'density', density_band: 'ordinary', identity_budget: 1,
-      source: 'policy' }, candidate_context: { target_ref: 'shore', semantic_type,
-      candidate_hint: null, functional_bucket: 'arms', admission_class,
+    density_policy: { version: 'density', mappings: [{ scope_kind: 'g6',
+      function_ref: null, bands: { sparse: 0, ordinary: 1, dense: 1 } }] },
+    candidate_context: { target_ref: 'shore', semantic_type,
+      candidate_ref_namespace: 'test-context-bound',
+      normalizer_version: 'ordinary-normalizer-v1', candidate_hint: null,
+      functional_bucket: 'arms', admission_class,
       availability_class: 'context_bound', coverage_kind: 'visible_surface',
       coverage_ref: 'armament-rack', policy_version: 'presence' },
+    stage_b_classification_eval: {},
     mechanics_policy: { policy_ref: 'mechanics', max_mass_grams: 1000,
       allowed_external_hand_costs: [0, 1, 2], allowed_carry_forms: ['compact', 'regular'],
       max_packing_slot_cost: 10, max_quantity: 10 }, causal_ref: 'cause', source_refs: [] };
@@ -63,7 +67,7 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
     execution_context };
 }
 function request() { return { request: { root_turn_id: 'turn:party:1' },
-  committed_state: { position: { g6_id: 'shore' } },
+  committed_state: { position: { g6_id: 'shore', g5_anchor_id: 'anchor:shore' } },
   operation: { target_refs: ['shore'], query: 'свободная формулировка' }, working_projection: {} }; }
 function model(request) {
   if (request.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
@@ -82,6 +86,11 @@ function model(request) {
         packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null }
     }] };
 }
+function verifiedModel(run) {
+  const port = async (...args) => run(...args);
+  port.verifyStageBCutover = async () => true;
+  return port;
+}
 
 test('approved armament profile reaches the same bounded presence and P16 plan', async () => {
   const fixture = enabled();
@@ -95,7 +104,9 @@ test('approved armament profile reaches the same bounded presence and P16 plan',
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
-    ordinaryMaterializationModel: async (input) => { calls += 1; return model(input); } });
+    ordinaryMaterializationModel: verifiedModel(async (input) => {
+      calls += 1; return model(input);
+    }) });
   const result = await resolver(request());
   assert.equal(calls, 2);
   assert.equal(result.ordinary_materialization_atomic_write_plan.resolution, 'materialize');
@@ -110,7 +121,9 @@ test('unseen armament, ordinary yard and currency stop before either model stage
     let calls = 0;
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
       inputDigest: 'input', loadEnablement: async () => input,
-      ordinaryMaterializationModel: async () => { calls += 1; return {}; } });
+      ordinaryMaterializationModel: verifiedModel(async () => {
+        calls += 1; return {};
+      }) });
     const result = await resolver(request());
     assert.equal(calls, 0);
     assert.equal(Object.hasOwn(result, 'ordinary_materialization_atomic_write_plan'), false);
@@ -124,7 +137,9 @@ test('hostile armament profile is rejected without getter execution or model cal
   });
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => value,
-    ordinaryMaterializationModel: async () => { calls += 1; return {}; } });
+    ordinaryMaterializationModel: verifiedModel(async () => {
+      calls += 1; return {};
+    }) });
   const result = await resolver(request());
   assert.equal(reads, 0);
   assert.equal(calls, 0);
@@ -153,7 +168,9 @@ test('entire loaded enablement is snapshotted before any getter can run', async 
     install(value, () => { reads += 1; });
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
       inputDigest: 'input', loadEnablement: async () => value,
-      ordinaryMaterializationModel: async () => { calls += 1; return {}; } });
+      ordinaryMaterializationModel: verifiedModel(async () => {
+        calls += 1; return {};
+      }) });
     const result = await resolver(request());
     assert.equal(reads, 0);
     assert.equal(calls, 0);

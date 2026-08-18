@@ -4,6 +4,7 @@ export { ordinaryWorldPropertyPlacementContextDigest } from '@rus/contracts/ordi
 
 const INPUT = ['scope_ref','property_catalog_version_ref','placement_catalog_version_ref','item_kind','supporting_basis_ref','causal_basis_refs','requested_position_ref','personal_communal_refs','occupied_site_refs','unowned_cause_refs','placement_context_refs','property_catalog','placement_catalog'];
 const INPUT_V2 = ['schema','version','scope_ref','property_catalog_version_ref','placement_catalog_version_ref','item_kind','supporting_basis_ref','causal_basis_refs','requested_position_ref','explicit_item_source_refs','personal_possession_refs','communal_public_service_refs','container_property_refs','occupied_site_refs','unowned_cause_refs','placement_context_refs','property_catalog','placement_catalog'];
+const ITEM_KINDS = new Set(['man_made', 'natural_resource_portion']);
 const PROPERTY = ['property_basis_ref','state','scope_ref','basis_class','source_ref','unowned_cause_ref'];
 const PROPERTY_V2 = ['property_basis_ref','state','scope_ref','basis_class','source_ref','unowned_cause_ref','unowned_cause_kind'];
 const PLACEMENT = ['position_ref','state','scope_ref','position_kind','g6_ref','containment_depth','placement_context_ref'];
@@ -17,7 +18,7 @@ export function resolveOrdinaryWorldPropertyPlacement(input = {}) {
   const value = copied && record(copied, INPUT);
   if (!value && copied && record(copied, INPUT_V2)) return resolveV2(copied);
   const scopeRef = value && scope(value.scope_ref);
-  if (!value || !scopeRef || scopeRef.entity_kind !== 'g6' || value.item_kind !== 'man_made' || !text(value.property_catalog_version_ref) || !text(value.placement_catalog_version_ref) || !text(value.supporting_basis_ref) || !text(value.requested_position_ref)) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
+  if (!value || !scopeRef || scopeRef.entity_kind !== 'g6' || !ITEM_KINDS.has(value.item_kind) || !text(value.property_catalog_version_ref) || !text(value.placement_catalog_version_ref) || !text(value.supporting_basis_ref) || !text(value.requested_position_ref)) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
   const causal = refs(value.causal_basis_refs, false), personal = refs(value.personal_communal_refs, true), occupied = refs(value.occupied_site_refs, true), unowned = refs(value.unowned_cause_refs, true), placementContexts = refs(value.placement_context_refs, false), properties = arrayOf(value.property_catalog, PROPERTY), placements = arrayOf(value.placement_catalog, PLACEMENT);
   if (!causal || !personal || !occupied || !unowned || !placementContexts || !properties || !placements) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
   const property = propertyChoice(properties, scopeRef, { explicit:new Set([value.supporting_basis_ref,...causal]), personal:new Set(personal), occupied:new Set(occupied), unowned:new Set(unowned) });
@@ -28,7 +29,7 @@ export function resolveOrdinaryWorldPropertyPlacement(input = {}) {
 }
 function resolveV2(value) {
   const scopeRef=scope(value.scope_ref);
-  if (!scopeRef || value.schema!=='rus.items.ordinary_world_property_placement_context.v2' || value.version!==2 || scopeRef.entity_kind!=='g6' || value.item_kind!=='man_made' || !text(value.property_catalog_version_ref) || !text(value.placement_catalog_version_ref) || !text(value.supporting_basis_ref) || !text(value.requested_position_ref)) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
+  if (!scopeRef || value.schema!=='rus.items.ordinary_world_property_placement_context.v2' || value.version!==2 || scopeRef.entity_kind!=='g6' || !ITEM_KINDS.has(value.item_kind) || !text(value.property_catalog_version_ref) || !text(value.placement_catalog_version_ref) || !text(value.supporting_basis_ref) || !text(value.requested_position_ref)) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
   const causal=refs(value.causal_basis_refs,false), explicit=refs(value.explicit_item_source_refs,true), personal=refs(value.personal_possession_refs,true), communal=refs(value.communal_public_service_refs,true), container=refs(value.container_property_refs,true), occupied=refs(value.occupied_site_refs,true), unowned=refs(value.unowned_cause_refs,true), placementContexts=refs(value.placement_context_refs,false), properties=arrayOf(value.property_catalog,PROPERTY_V2), placements=arrayOf(value.placement_catalog,PLACEMENT);
   if (!causal || !explicit || !personal || !communal || !container || !occupied || !unowned || !placementContexts || !properties || !placements) return failed('ITEM_ORDINARY_WORLD_PROPERTY_PLACEMENT_INVALID');
   const property=propertyChoiceV2(properties,scopeRef,{explicit:new Set(explicit),personal:new Set(personal),communal:new Set(communal),container:new Set(container),occupied:new Set(occupied),unowned:new Set(unowned)});

@@ -5,10 +5,22 @@ import {
 import {
   createOrdinaryCandidateKey,
   createOrdinaryCategoryKey,
-  canonicalDigest,
   createOrdinaryContextVersion,
   createOrdinaryCoverageKey
 } from '@rus/materialization';
+import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
+
+const PROPERTY_CONTEXT_V1 = ['scope_ref', 'item_kind',
+  'property_catalog_version_ref', 'placement_catalog_version_ref',
+  'personal_communal_refs', 'occupied_site_refs', 'unowned_cause_refs',
+  'placement_context_refs', 'property_catalog', 'placement_catalog'];
+const PROPERTY_CONTEXT_V2 = ['schema', 'version', 'scope_ref', 'item_kind',
+  'property_catalog_version_ref', 'placement_catalog_version_ref',
+  'explicit_item_source_refs', 'personal_possession_refs',
+  'communal_public_service_refs', 'container_property_refs',
+  'occupied_site_refs', 'unowned_cause_refs', 'placement_context_refs',
+  'property_catalog', 'placement_catalog'];
+const PROPERTY_ITEM_KINDS = new Set(['man_made', 'natural_resource_portion']);
 
 /**
  * Builds the candidate-free Stage A request from one committed server snapshot.
@@ -51,35 +63,30 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     'ordinary_state', 'technical_limits', 'ordinary_state_version',
     'property_placement_context'
   ], 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
-  const candidate = exactRecord(outer.candidate_context, [
-    'normalized_candidate_ref', 'normalizer_version', 'semantic_type',
-    'candidate_hint', 'functional_bucket', 'admission_class',
-    'availability_class', 'coverage_kind', 'coverage_ref', 'policy_version'
-  ], 'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID');
+  const candidateKeys = ['normalized_candidate_ref', 'normalizer_version',
+    'semantic_type', 'candidate_hint', 'functional_bucket', 'admission_class',
+    'availability_class', 'coverage_kind', 'coverage_ref', 'policy_version'];
+  const candidate = exactRecord(outer.candidate_context,
+    Object.hasOwn(outer.candidate_context ?? {}, 'source_ref')
+      ? [...candidateKeys, 'source_ref'] : candidateKeys,
+    'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID');
   const contextRefs = copyJson(context.context_refs,
     'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
   const scopeRef = copyJson(context.scope_ref,
     'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
   const policyRefs = copyJson(context.policy_refs,
     'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
-  const propertyPlacementContext = exactRecord(copyJson(
+  const propertyPlacementContext = propertyContext(copyJson(
     context.property_placement_context,
-    'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID'), [
-    'scope_ref', 'item_kind', 'property_catalog_version_ref',
-    'placement_catalog_version_ref', 'personal_communal_refs', 'occupied_site_refs',
-    'unowned_cause_refs', 'placement_context_refs', 'property_catalog',
-    'placement_catalog'
-  ], 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
+    'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID'));
   if (JSON.stringify(propertyPlacementContext.scope_ref) !== JSON.stringify(scopeRef)
-      || propertyPlacementContext.item_kind !== 'man_made') {
+      || !PROPERTY_ITEM_KINDS.has(propertyPlacementContext.item_kind)) {
     throw Object.assign(new TypeError('Property placement context must be pinned to the G6 scope.'), {
       code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID'
     });
   }
-  const propertyPlacementContextDigest = canonicalDigest({
-    domain: 'rus.items.ordinary_world_property_placement_context.v1',
-    ...propertyPlacementContext
-  });
+  const propertyPlacementContextDigest = propertyContextDigest(
+    propertyPlacementContext);
   if (candidate.policy_version !== policyRefs.ordinary_presence_policy_ref) {
     throw Object.assign(new TypeError('Presence policy version must be pinned by the objective.'), {
       code: 'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID'
@@ -95,7 +102,9 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
       functional_bucket: candidate.functional_bucket,
       admission_class: candidate.admission_class,
       availability_class: candidate.availability_class,
-      policy_version: candidate.policy_version });
+      policy_version: candidate.policy_version,
+      ...(candidate.source_ref == null ? {} : {
+        source_ref: candidate.source_ref }) });
     coverage_key = createOrdinaryCoverageKey({ scope_ref: scopeRef,
       coverage_kind: candidate.coverage_kind, coverage_ref: candidate.coverage_ref,
       policy_version: candidate.policy_version });
@@ -126,7 +135,9 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     context_refs: contextRefs,
     ordinary_presence_policy_ref: policyRefs.ordinary_presence_policy_ref,
     property_basis_ref: contextRefs.property_context_ref,
-    property_placement_context_digest: propertyPlacementContextDigest });
+    property_placement_context_digest: propertyPlacementContextDigest,
+    ...(candidate.source_ref == null ? {} : {
+      source_ref: candidate.source_ref }) });
   const identity = copyJson({ candidate_key, coverage_key, category_key, context_version,
     normalized_candidate_ref: candidate.normalized_candidate_ref,
     normalizer_version: candidate.normalizer_version,
@@ -134,7 +145,9 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     coverage_ref: candidate.coverage_ref, policy_version: candidate.policy_version,
     functional_bucket: candidate.functional_bucket,
     admission_class: candidate.admission_class,
-    availability_class: candidate.availability_class
+    availability_class: candidate.availability_class,
+    ...(candidate.source_ref == null ? {} : {
+      source_ref: candidate.source_ref })
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   return freezeJson(copyJson({
     schema: 'ordinary_materialization_presence_envelope_v1', request, identity,
@@ -142,6 +155,37 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     property_placement_context: propertyPlacementContext,
     property_placement_context_digest: propertyPlacementContextDigest
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID'));
+}
+
+function propertyContext(value) {
+  const names = Object.getOwnPropertyNames(value);
+  if (names.length === PROPERTY_CONTEXT_V1.length
+      && PROPERTY_CONTEXT_V1.every((key) => names.includes(key))) {
+    return exactRecord(value, PROPERTY_CONTEXT_V1,
+      'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
+  }
+  const result = exactRecord(value, PROPERTY_CONTEXT_V2,
+    'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
+  if (result.schema !== 'rus.items.ordinary_world_property_placement_context.v2'
+      || result.version !== 2) {
+    throw Object.assign(new TypeError('Property placement context version is invalid.'), {
+      code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID'
+    });
+  }
+  return result;
+}
+
+function propertyContextDigest(value) {
+  const digest = ordinaryWorldPropertyPlacementContextDigest({ ...value,
+    supporting_basis_ref: 'ordinary_presence_context_digest',
+    causal_basis_refs: ['ordinary_presence_context_digest'],
+    requested_position_ref: 'ordinary_presence_context_digest' });
+  if (typeof digest !== 'string') {
+    throw Object.assign(new TypeError('Property placement context digest is invalid.'), {
+      code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID'
+    });
+  }
+  return digest;
 }
 
 function exactRecord(value, keys, code) {

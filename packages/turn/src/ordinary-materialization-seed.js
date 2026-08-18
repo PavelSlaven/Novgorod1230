@@ -4,13 +4,14 @@ import {
   validateOrdinaryMaterializationPlanV1
 } from '@rus/contracts/ordinary-materialization-v1';
 import {
-  assertAndNormalizeOrdinaryMaterializationWorkingProjection,
-  canonicalDigest,
-  refreshOrdinaryMaterializationWorkingProjection,
-  validateOrdinaryBackgroundGroup,
-  validateSupportingBasisAdmission
+  applyOrdinaryAggregateTransition,
+  validateOrdinaryBackgroundGroup
 } from '@rus/materialization';
 import { turnFailure } from './errors.js';
+import {
+  applyOrdinaryAggregateToTurnWorkingProjection,
+  assertAndNormalizeTurnOrdinaryWorkingProjection
+} from './turn-step-ordinary-working-projection.js';
 
 /**
  * Runs the independent, candidate-free Stage A seed. It intentionally returns
@@ -66,16 +67,20 @@ export async function resolveOrdinaryMaterializationSeedScope({
   const transition = deepFreeze({
     kind: 'seed', request_identity: safeRequest.request_id,
     expected_state_version:
-      normalizedWorkingProjection.ordinary_aggregate.state_version,
+      normalizedWorkingProjection.ordinary_materialization_aggregate.state_version,
     density_band: plan.density_band_proposal,
     identity_budget: identityBudgetResolution.identity_budget,
     background_groups: seedPlan.preparedGroups
   });
   let nextWorkingProjection;
   try {
-    nextWorkingProjection = refreshOrdinaryMaterializationWorkingProjection({
-      working_projection: normalizedWorkingProjection,
-      ordinary_transition: transition
+    const nextAggregate = applyOrdinaryAggregateTransition({
+      aggregate: normalizedWorkingProjection.ordinary_materialization_aggregate,
+      transition
+    });
+    nextWorkingProjection = applyOrdinaryAggregateToTurnWorkingProjection({
+      working_projection: withoutOrdinaryAggregate(normalizedWorkingProjection),
+      ordinary_aggregate: nextAggregate
     });
   } catch (error) {
     throw turnFailure('TURN_ORDINARY_SEED_TRANSITION_INVALID',
@@ -120,9 +125,9 @@ function validateSeedPlan({ request, plan, basisCatalog,
     return { kind: 'no_change', preparedGroups: [] };
   }
   if (plan.resolution !== 'seeded' || plan.density_band_proposal === null
-      || plan.presence_resolutions.length !== 0) {
+      || plan.presence_resolutions.length !== 0 || plan.entities.length !== 0) {
     reject('ORDINARY_SEED_OUTCOME_INVALID',
-      'Stage A requires seeded outcome, density, and no presence resolution.');
+      'Stage A requires density and may prepare groups, never concrete entities.');
   }
   if (plan.background_groups.length > request.technical_limits.max_new_background_groups
       || plan.entities.length > request.technical_limits.max_new_entities) {
@@ -138,46 +143,8 @@ function validateSeedPlan({ request, plan, basisCatalog,
       reject('ORDINARY_SEED_GROUP_INVALID', causeMessage(error));
     }
   });
-  const pendingItemsPropertyAdmission = plan.entities.map((entity) => {
-    if (entity.authority_class !== 'ordinary'
-        || entity.admission_class !== 'common_mundane'
-        || entity.availability_class !== 'common') {
-      reject('ORDINARY_SEED_ENTITY_RESTRICTED',
-        'Stage A permits only salient common ordinary entities.');
-    }
-    if (entity.property_basis_ref !== request.context_refs.property_context_ref) {
-      reject('ORDINARY_SEED_ENTITY_PROPERTY_INVALID',
-        'Stage A entity property basis must equal the committed request context.');
-    }
-    try {
-      validateSupportingBasisAdmission({ request, candidate: {
-        supporting_basis_ref: entity.supporting_basis_ref,
-        functional_bucket: entity.functional_bucket,
-        admission_class: entity.admission_class,
-        availability_class: entity.availability_class,
-        permission_refs: []
-      }, basis_catalog: basisCatalog });
-    } catch (error) {
-      reject('ORDINARY_SEED_ENTITY_BASIS_INVALID', causeMessage(error));
-    }
-    for (const basisRef of entity.causal_basis.basis_refs) {
-      try {
-        validateSupportingBasisAdmission({ request, candidate: {
-          supporting_basis_ref: basisRef,
-          functional_bucket: entity.functional_bucket,
-          admission_class: entity.admission_class,
-          availability_class: entity.availability_class,
-          permission_refs: []
-        }, basis_catalog: basisCatalog });
-      } catch (error) {
-        reject('ORDINARY_SEED_ENTITY_CAUSAL_BASIS_INVALID',
-          causeMessage(error));
-      }
-    }
-    return pendingItemsPropertyAdmissionHandoff(request, entity);
-  });
   return { kind: 'seeded', preparedGroups: immutable(preparedGroups),
-    pendingItemsPropertyAdmission: immutable(pendingItemsPropertyAdmission) };
+    pendingItemsPropertyAdmission: immutable([]) };
 }
 
 function decisionMetadata(request, plan, repaired) {
@@ -185,29 +152,6 @@ function decisionMetadata(request, plan, repaired) {
     schema: 'ordinary_seed_scope_decision_v1', request_id: request.request_id,
     scope_ref: immutable(request.scope_ref), resolution: plan.resolution,
     density_band: plan.density_band_proposal, repaired
-  });
-}
-
-function pendingItemsPropertyAdmissionHandoff(request, entity) {
-  const evidence = {
-    authority_class: entity.authority_class,
-    admission_class: entity.admission_class,
-    availability_class: entity.availability_class,
-    functional_bucket: entity.functional_bucket,
-    supporting_basis_ref: entity.supporting_basis_ref,
-    causal_basis: entity.causal_basis,
-    property_basis_ref: entity.property_basis_ref
-  };
-  return deepFreeze({
-    schema: 'ordinary_pending_items_property_admission_v1',
-    status: 'pending_items_property_admission',
-    seed_request_id: request.request_id,
-    scope_ref: immutable(request.scope_ref),
-    ...immutable(evidence),
-    proposal_ref: `ordinary_pending_${canonicalDigest({
-      domain: 'ordinary_pending_items_property_admission_v1',
-      seed_request_id: request.request_id, scope_ref: request.scope_ref, evidence
-    }).slice(0, 24)}`
   });
 }
 
@@ -245,7 +189,7 @@ async function resolveBudget(resolver, request, plan) {
 function assertMatchingWorkingScope(request, workingProjection) {
   let normalized;
   try {
-    normalized = assertAndNormalizeOrdinaryMaterializationWorkingProjection(
+    normalized = assertAndNormalizeTurnOrdinaryWorkingProjection(
       workingProjection);
   } catch (error) {
     throw turnFailure('TURN_ORDINARY_SEED_WORKING_PROJECTION_INVALID',
@@ -253,8 +197,8 @@ function assertMatchingWorkingScope(request, workingProjection) {
         cause: causeMessage(error)
       });
   }
-  if (normalized.ordinary_aggregate.scope_ref.entity_kind !== request.scope_ref.entity_kind
-      || normalized.ordinary_aggregate.scope_ref.entity_id !== request.scope_ref.entity_id) {
+  if (normalized.ordinary_materialization_aggregate.scope_ref.entity_kind !== request.scope_ref.entity_kind
+      || normalized.ordinary_materialization_aggregate.scope_ref.entity_id !== request.scope_ref.entity_id) {
     throw turnFailure('TURN_ORDINARY_SEED_SCOPE_MISMATCH',
       'Ordinary seed request and working aggregate scopes must match exactly.');
   }
@@ -285,6 +229,10 @@ function reject(code, message) {
 }
 
 function immutable(value) { return deepFreeze(structuredClone(value)); }
+function withoutOrdinaryAggregate(value) {
+  const { ordinary_materialization_aggregate: _aggregate, ...workingProjection } = value;
+  return workingProjection;
+}
 // Contract validation is descriptor-safe. Never inspect an invalid model value
 // again for repair, since accessors/proxies are untrusted model output.
 function safeModelOutput(_value) { return null; }

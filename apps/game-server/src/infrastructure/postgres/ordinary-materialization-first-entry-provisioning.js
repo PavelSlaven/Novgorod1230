@@ -92,6 +92,8 @@ function buildRows({ profile, scope, positionRef }) {
     scope_ref: scope, context_refs: structuredClone(profile.context_refs), policy_refs: policyRefs,
     technical_limits: structuredClone(profile.technical_limits), execution_context: {
       ...structuredClone(profile.execution), supporting_bases: [basis],
+      stage_b_classification_eval:
+        structuredClone(profile.stage_b_classification_eval),
       candidate_context: { ...structuredClone(profile.execution.candidate_context),
         target_ref: scope.entity_id }, source_refs: [basisRef, propertyBasisRef,
         positionRef, placementContextRef].sort() } };

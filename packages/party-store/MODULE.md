@@ -34,7 +34,7 @@ physical transaction. Its logical plan carries candidate-free Stage A seed,
 prepared/committed supporting basis, or a targeted Stage B resolution with
 `evidence_weight = 0` and code-owned identity/classification/policy fields;
 normalized discovery query supplies only `candidate_hint` and an adjusted
-`coverage_ref`, so unknown paraphrases retain distinct coverage. Positive plans additionally
+`candidate_hint`; phrasing never changes the code-owned candidate or coverage. Positive plans additionally
 carry admitted immutable mechanics/property/placement. The handoff preserves
 CAS/idempotency for exact positive and negative resolutions, so retry/reload
 does not reroll exact deterministically normalized identity. This package neither exposes player capability/visibility nor

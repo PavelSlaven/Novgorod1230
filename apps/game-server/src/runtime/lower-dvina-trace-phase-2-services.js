@@ -1,4 +1,6 @@
 import { serverError } from '../errors.js';
+import { projectPlayerSafeOrdinaryResolutionCapability } from
+  '@rus/visibility-knowledge-memory/ordinary-resolution-capability';
 import { tracePhase2PreconditionSatisfied } from './lower-dvina-trace-phase-2-command.js';
 import { createTracePhase2BodyEffect, createTracePhase2VisibleProjector } from './lower-dvina-trace-phase-2-effects.js';
 import { createTracePhase2TemporalAdvance } from './lower-dvina-trace-phase-2-temporal.js';
@@ -155,11 +157,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
         if (typeof scopeId !== 'string' || !scopeId) return projected;
         const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
           scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
-        return enabled === true ? { ...projected, player_safe_state: {
-          ...projected.player_safe_state,
+        if (enabled !== true) return projected;
+        const capability = projectPlayerSafeOrdinaryResolutionCapability({
           ordinary_resolution: { discovery_available: true,
             container_resolution_available: false }
-        } } : projected;
+        });
+        return { ...projected, player_safe_state: {
+          ...projected.player_safe_state, ...capability
+        } };
       }
     : null;
   return {

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createOrdinaryAggregate,
-  createOrdinaryMaterializationWorkingProjection } from '@rus/materialization';
+import { createOrdinaryAggregate } from '@rus/materialization';
 import { resolveOrdinaryMaterializationSeedScope } from '../src/index.js';
 
 const request = Object.freeze({
@@ -34,11 +33,11 @@ const catalog = [{ basis_ref: 'basis-a', state: 'committed', policy: {
 } }];
 
 function projection() {
-  return createOrdinaryMaterializationWorkingProjection({
-    ordinary_aggregate: createOrdinaryAggregate({
+  return {
+    ordinary_materialization_aggregate: createOrdinaryAggregate({
       scope_ref: request.scope_ref, resolution_record_cap: 4
     })
-  });
+  };
 }
 
 function group() {
@@ -76,8 +75,8 @@ test('Stage A invokes one injected model, prepares stable candidate-free refs, a
   assert.equal(output.decision.repaired, false);
   assert.equal(output.decision.resolution, 'seeded');
   assert.deepEqual(output.pending_items_property_admission, []);
-  assert.equal(output.working_projection.ordinary_aggregate.seeded, true);
-  assert.equal(output.working_projection.ordinary_aggregate.identity_budget, 2);
+  assert.equal(output.working_projection.ordinary_materialization_aggregate.seeded, true);
+  assert.equal(output.working_projection.ordinary_materialization_aggregate.identity_budget, 2);
   assert.deepEqual(output.identity_budget_resolution, {
     policy_version: 'density', density_band: 'ordinary', identity_budget: 2,
     source: 'policy'
@@ -116,7 +115,7 @@ test('Stage A never reads an invalid model accessor while preparing repair', asy
   assert.equal(reads, 0);
 });
 
-test('Stage A rejects an unknown basis, restricted class, and technical group limit', async () => {
+test('Stage A rejects every concrete entity and enforces the background-group limit', async () => {
   const unknownBasis = plan({ background_groups: [], entities: [{
     semantic_descriptor: { semantic_type: 'spoon', name: 'spoon', facts: [] },
     authority_class: 'ordinary', admission_class: 'common_mundane',
@@ -130,7 +129,7 @@ test('Stage A rejects an unknown basis, restricted class, and technical group li
     basisCatalog: []
   })),
     (error) => error.code === 'TURN_ORDINARY_SEED_PLAN_REJECTED'
-      && error.details.code === 'ORDINARY_SEED_ENTITY_BASIS_INVALID');
+      && error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
   const restricted = structuredClone(unknownBasis);
   restricted.entities[0].admission_class = 'container_capable';
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => restricted, {
@@ -138,7 +137,7 @@ test('Stage A rejects an unknown basis, restricted class, and technical group li
       allowed_admission_classes: ['common_mundane', 'container_capable'] } }
   })),
     (error) => error.code === 'TURN_ORDINARY_SEED_PLAN_REJECTED'
-      && error.details.code === 'ORDINARY_SEED_ENTITY_RESTRICTED');
+      && error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => plan({
     background_groups: [group(), group(), group()]
   }))), (error) => error.code === 'TURN_ORDINARY_SEED_PLAN_REJECTED'
@@ -149,10 +148,10 @@ test('Stage A rejects an unknown basis, restricted class, and technical group li
       structuredClone(unknownBasis.entities[0])
     ]
   }))), (error) => error.code === 'TURN_ORDINARY_SEED_PLAN_REJECTED'
-    && error.details.code === 'ORDINARY_SEED_LIMIT_EXCEEDED');
+    && error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
 });
 
-test('Stage A keeps validated common entities only as pending server-side proposals', async () => {
+test('Stage A cannot create a pending concrete item even when its fields look valid', async () => {
   const entity = {
     semantic_descriptor: { semantic_type: 'spoon', name: 'spoon', facts: [] },
     authority_class: 'ordinary', admission_class: 'common_mundane',
@@ -162,20 +161,10 @@ test('Stage A keeps validated common entities only as pending server-side propos
     property_basis_ref: 'property', placement_proposal: { scope_ref: 'scope-a', position_ref: 'pos' },
     mechanics_proposal: { mass_grams: 1, external_hand_cost: 0, carry_form: 'small', packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null }
   };
-  const output = await resolveOrdinaryMaterializationSeedScope(input(async () =>
+  await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () =>
     plan({ background_groups: [], entities: [entity] })
-  ));
-  assert.equal(output.pending_items_property_admission.length, 1);
-  const handoff = output.pending_items_property_admission[0];
-  assert.equal(handoff.status, 'pending_items_property_admission');
-  assert.equal(handoff.supporting_basis_ref, 'basis-a');
-  for (const field of ['semantic_descriptor', 'name', 'facts', 'placement_proposal',
-    'mechanics_proposal', 'quantity', 'container']) {
-    assert.equal(JSON.stringify(handoff).includes(field), false);
-  }
-  assert.equal(output.working_projection.ordinary_aggregate.remaining_identity_budget, 2);
-  assert.equal(Object.hasOwn(output, 'plan'), false);
-  assert.equal(Object.hasOwn(output, 'request'), false);
+  )), (error) => error.code === 'TURN_ORDINARY_SEED_PLAN_REJECTED'
+    && error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
 });
 
 test('Stage A no_change leaves the aggregate untouched and budget input excludes plan content', async () => {
@@ -187,7 +176,7 @@ test('Stage A no_change leaves the aggregate untouched and budget input excludes
     policy_version: 'density', density_band: 'ordinary', identity_budget: 2, source: 'policy'
   }; } }));
   assert.equal(unchanged.status, 'no_change');
-  assert.equal(unchanged.working_projection.ordinary_aggregate.state_version, 0);
+  assert.equal(unchanged.working_projection.ordinary_materialization_aggregate.state_version, 0);
   assert.equal(budgetCalls, 0);
   let budgetInput;
   await resolveOrdinaryMaterializationSeedScope(input(async () => plan({
@@ -214,18 +203,18 @@ test('Stage A valid no_change needs no budget resolver and calls the model once'
 });
 
 test('Stage A rejects a mismatched working aggregate scope', async () => {
-  const mismatch = createOrdinaryMaterializationWorkingProjection({
-    ordinary_aggregate: createOrdinaryAggregate({
+  const mismatch = {
+    ordinary_materialization_aggregate: createOrdinaryAggregate({
       scope_ref: { entity_kind: 'g6', entity_id: 'other-scope' },
       resolution_record_cap: 4
     })
-  });
+  };
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => plan(), {
     workingProjection: mismatch
   })), { code: 'TURN_ORDINARY_SEED_SCOPE_MISMATCH' });
 });
 
-test('Stage A validates every pending entity causal basis and property context', async () => {
+test('Stage A rejects concrete entities before their semantic fields can become authority', async () => {
   const base = {
     semantic_descriptor: { semantic_type: 'spoon', name: 'spoon', facts: [] }, authority_class: 'ordinary',
     admission_class: 'common_mundane', availability_class: 'common', functional_bucket: 'household',
@@ -236,10 +225,10 @@ test('Stage A validates every pending entity causal basis and property context',
   };
   const unknown = structuredClone(base); unknown.causal_basis.basis_refs = ['unknown'];
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => plan({ background_groups: [], entities: [unknown] }))),
-    (error) => error.details.code === 'ORDINARY_SEED_ENTITY_CAUSAL_BASIS_INVALID');
+    (error) => error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
   const property = structuredClone(base); property.property_basis_ref = 'other';
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => plan({ background_groups: [], entities: [property] }))),
-    (error) => error.details.code === 'ORDINARY_SEED_ENTITY_PROPERTY_INVALID');
+    (error) => error.details.code === 'ORDINARY_SEED_OUTCOME_INVALID');
 });
 
 test('Stage A rejects malformed, stale, and oversized budget resolutions without getters', async () => {
@@ -261,8 +250,8 @@ test('Stage A rejects malformed, stale, and oversized budget resolutions without
 test('Stage A working projection boundary rejects getters before any direct property read', async () => {
   const hostile = {};
   let reads = 0;
-  Object.defineProperty(hostile, 'ordinary_aggregate', { enumerable: true,
-    get() { reads += 1; return projection().ordinary_aggregate; } });
+  Object.defineProperty(hostile, 'ordinary_materialization_aggregate', { enumerable: true,
+    get() { reads += 1; return projection().ordinary_materialization_aggregate; } });
   await assert.rejects(() => resolveOrdinaryMaterializationSeedScope(input(async () => plan(), {
     workingProjection: hostile
   })), { code: 'TURN_ORDINARY_SEED_WORKING_PROJECTION_INVALID' });

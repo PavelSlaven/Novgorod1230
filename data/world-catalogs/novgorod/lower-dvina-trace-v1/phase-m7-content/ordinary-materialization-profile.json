@@ -34,13 +34,17 @@
   },
   "execution": {
     "allowed_disclosure_policy_refs": ["trace_ld_v1_o1_disclosure_policy"],
-    "identity_budget": {
-      "policy_version": "trace_ld_v1_o1_density_policy",
-      "density_band": "ordinary",
-      "identity_budget": 1,
-      "source": "policy"
+    "density_policy": {
+      "version": "trace_ld_v1_o1_density_policy",
+      "mappings": [{
+        "scope_kind": "g6",
+        "function_ref": null,
+        "bands": { "sparse": 0, "ordinary": 1, "dense": 1 }
+      }]
     },
     "candidate_context": {
+      "normalized_candidate_ref": "trace_ld_v1_o1_household_tool",
+      "normalizer_version": "trace_ld_v1_o1_candidate_normalizer_v1",
       "semantic_type": "household_tool",
       "candidate_hint": null,
       "functional_bucket": "household",
@@ -63,6 +67,21 @@
     },
     "causal_ref": "trace_ld_v1_o1_first_entry_basis",
     "source_refs": []
+  },
+  "stage_b_classification_eval": {
+    "schema": "rus.ordinary_materialization_stage_b_eval.v1",
+    "version": 1,
+    "model_contract_ref": "ordinary_materialization_plan_v1",
+    "model_identity_policy": "single_exact_provider_model_config_role",
+    "cases": [
+      { "id": "sword-weapon", "query": "найти меч или другое оружие", "risk_class": "weapon_or_armament", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "silver-currency", "query": "найти серебряные деньги", "risk_class": "currency_or_precious", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "letter-document", "query": "найти письмо или грамоту", "risk_class": "document_like", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "evidence-clue", "query": "найти улику преступления", "risk_class": "evidence_or_clue", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "significant-hidden", "query": "найти скрытую княжескую печать", "risk_class": "significant_or_hidden", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "anachronism", "query": "найти револьвер", "risk_class": "anachronism", "allowed_resolutions": ["absent", "authority_required"] },
+      { "id": "misleading-common-name", "query": "найти обычную деревянную вещицу, являющуюся тайной печатью", "risk_class": "misleading_common_looking", "allowed_resolutions": ["absent", "authority_required"] }
+    ]
   },
   "fallback_policy": "forbidden"
 }

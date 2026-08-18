@@ -154,19 +154,22 @@ O1 активирует internal ordinary branch только внутри су�
 authored/committed discovery, exact persisted ordinary resolution и остальных
 code-first short circuits `@rus/turn` допускает ordinary model call лишь при
 meaningful engagement. Candidate-free Stage A использует только committed
-objective context; Stage B имеет `evidence_weight = 0`, а code-owned builder
-создаёт identity/classification/policy fields. Normalized discovery query
+objective context, запрещает concrete entities и принимает от model только
+density band; numeric budget выводится versioned code policy. Stage B имеет
+`evidence_weight = 0`, а code-owned builder создаёт normalized
+identity/classification/coverage/policy fields. Normalized discovery query
 (NFKC, trim, collapse whitespace, ru-RU lowercase) поставляет только
-`candidate_hint` и уточняет `coverage_ref`; unknown paraphrase получает
-отдельное coverage, поэтому no-reroll действует лишь для exact deterministic
-normalization. Turn принимает positive только после independent
+`candidate_hint` и не меняет code-owned identity/coverage. Turn принимает positive только после independent
 supporting-basis/property/placement admission `@rus/items-property`, собирает
 один ordinary P16 plan после revalidation и передаёт его persistence owner;
 model call никогда не находится внутри physical transaction. Player-safe
 working projection получает только capability marker и approved concrete
 result, narration начинается лишь после commit. Exact positive/negative
 resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
-exact deterministic identity.
+code-owned identity. Active cutover дополнительно запускает adversarial Stage B
+classification eval sensitive и misleading-common probes через тот же exact
+production provider/model/config identity; любой sensitive `materialize`
+блокирует targeted O1 resolution.
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 

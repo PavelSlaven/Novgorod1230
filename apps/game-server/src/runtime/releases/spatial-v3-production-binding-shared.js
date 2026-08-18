@@ -221,6 +221,9 @@ function createTraceTurnRuntime({
     env,
     telemetry: config.telemetry ?? null
   });
+  const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
+    roleRunner
+  });
   const narrationService =
     createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
@@ -238,7 +241,7 @@ function createTraceTurnRuntime({
     createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
-        ordinaryMaterializationModel: createOrdinaryMaterializationModel({ roleRunner })
+        ordinaryMaterializationModel
       }),
     ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
       (await ordinaryEnablements.load({ partyId, scopeRef })) != null,

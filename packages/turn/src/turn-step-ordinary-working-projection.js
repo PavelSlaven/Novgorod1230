@@ -18,6 +18,21 @@ export function applyOrdinaryAggregateToTurnWorkingProjection(input = {}) {
   });
 }
 
+export function assertAndNormalizeTurnOrdinaryWorkingProjection(value) {
+  const boundary = snapshotJson(value);
+  if (!plain(boundary)
+      || !Object.hasOwn(boundary, 'ordinary_materialization_aggregate')) {
+    throw turnFailure('TURN_ORDINARY_WORKING_PROJECTION_INPUT_INVALID',
+      'Turn working projection must contain its ordinary aggregate.');
+  }
+  const ordinaryAggregate = assertAndNormalizeOrdinaryAggregate(
+    boundary.ordinary_materialization_aggregate);
+  return deepFreeze({
+    ...boundary,
+    ordinary_materialization_aggregate: ordinaryAggregate
+  });
+}
+
 function snapshotJson(root) {
   const seen = new Set();
   function visit(value) {

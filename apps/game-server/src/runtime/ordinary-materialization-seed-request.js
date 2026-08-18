@@ -52,7 +52,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     'property_placement_context'
   ], 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID');
   const candidate = exactRecord(outer.candidate_context, [
-    'semantic_type', 'candidate_hint', 'functional_bucket', 'admission_class',
+    'normalized_candidate_ref', 'normalizer_version', 'semantic_type',
+    'candidate_hint', 'functional_bucket', 'admission_class',
     'availability_class', 'coverage_kind', 'coverage_ref', 'policy_version'
   ], 'ORDINARY_PRESENCE_REQUEST_CANDIDATE_INVALID');
   const contextRefs = copyJson(context.context_refs,
@@ -89,7 +90,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
   let category_key;
   try {
     candidate_key = createOrdinaryCandidateKey({ scope_ref: scopeRef,
-      semantic_type: candidate.semantic_type,
+      normalized_candidate_ref: candidate.normalized_candidate_ref,
+      normalizer_version: candidate.normalizer_version,
       functional_bucket: candidate.functional_bucket,
       admission_class: candidate.admission_class,
       availability_class: candidate.availability_class,
@@ -126,6 +128,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     property_basis_ref: contextRefs.property_context_ref,
     property_placement_context_digest: propertyPlacementContextDigest });
   const identity = copyJson({ candidate_key, coverage_key, category_key, context_version,
+    normalized_candidate_ref: candidate.normalized_candidate_ref,
+    normalizer_version: candidate.normalizer_version,
     semantic_type: candidate.semantic_type, coverage_kind: candidate.coverage_kind,
     coverage_ref: candidate.coverage_ref, policy_version: candidate.policy_version,
     functional_bucket: candidate.functional_bucket,

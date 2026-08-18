@@ -9,6 +9,9 @@ Pure player-safety projection boundary: validates and constructs narrator-safe v
 - Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package, factual conversation audience projection и deterministic resolution утверждённого evidence graph из committed facts/statements.
 - Владеет чистой player-safe проекцией `portrait_spec_v1` из canonical actor
   identity, sanitized visible equipped items и presentation-only state.
+- Владеет единственной allow-list проекцией `ordinary_resolution` capability:
+  активный O1 может раскрыть только два boolean поля без budget, bases,
+  permissions, negative ledger или candidate identity.
 
 ## Не владеет
 
@@ -27,6 +30,10 @@ provenance-validated committed inputs; `projectPlayerSafeCompletionOutcome`
 base/outer/headwear item на slot и завершает `assertPortraitSpecV1`. Для
 historical/incomplete/ambiguous state возвращается `null`; projection не делает
 draw, не исправляет и не сохраняет state.
+
+`projectPlayerSafeOrdinaryResolutionCapability` доступен через узкий subpath
+`@rus/visibility-knowledge-memory/ordinary-resolution-capability`, принимает
+только exact own-data marker и возвращает detached frozen allow-list.
 
 ## Ошибки, зависимости и effects
 

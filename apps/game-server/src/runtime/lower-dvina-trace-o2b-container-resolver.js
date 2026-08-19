@@ -38,7 +38,7 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
     const binding = bindings.find((value) => value.container_ref
       === seed?.container_ref && value.template_id === seed?.template_id
       && value.mechanics_profile_ref === seed?.mechanics_profile_ref);
-    if (!binding || !operationIdentity(operation)) {
+    if (!binding || !operationIdentity(operation, seed.container_ref)) {
       return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_PROFILE_DRIFT');
     }
     const loaded = descriptorSafeJsonSnapshot(await loadCommittedContainer({ party_id:partyId,
@@ -271,9 +271,13 @@ function versions(v) { return ['party_state_version','ordinary_state_version',
   Number.isSafeInteger(v[key]) && v[key] >= 0)
   && Number.isSafeInteger(v.container?.state_version)
   && v.container.state_version >= 0; }
-function operationIdentity(v) { return exact(v,['root_turn_id','step_index',
-  'operation_ref']) && text(v.root_turn_id) && Number.isSafeInteger(v.step_index)
-  && v.step_index >= 1 && v.step_index <= 8 && text(v.operation_ref); }
+function operationIdentity(v, containerRef) { return exact(v,['root_turn_id',
+  'step_index','operation_ref','resolution_mode']) && text(v.root_turn_id)
+  && Number.isSafeInteger(v.step_index) && v.step_index >= 1 && v.step_index <= 8
+  && (v.resolution_mode === 'reveal'
+    && v.operation_ref === `request_container_access:${containerRef}`
+    || v.resolution_mode === 'concealed'
+      && v.operation_ref === `move_entity:${containerRef}`); }
 function success(items,plan) { return Object.freeze({pass:true,
   materialized_items:structuredClone(items),
   ordinary_materialization_atomic_write_plan:plan,errors:[]}); }

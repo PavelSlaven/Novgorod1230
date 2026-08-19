@@ -110,9 +110,11 @@ outside SQL, and the server validates the complete ordinary batch, individual
 mass/mechanics, exact parent placement and packing/capacity before constructing
 one `ordinary_container_contents_atomic_write_plan_v2`. The existing combined
 P16 transaction atomically persists ledger transition, children through
-`party_items` plus mechanics/property/placement, container open/reveal and
-player-safe visible package. Precommit/failed children remain concealed and no
-partial batch leaks; reload/reopen uses committed coverage with zero model
+`party_items` plus mechanics/property/placement and the container transition.
+Mechanics-sensitive moves resolve unresolved contents concealed before exact
+mass/packing calculation without opening the container; later access reveals
+the committed safe name/type without reroll. Precommit/failed children remain
+concealed and no partial batch leaks; reload/reopen uses committed coverage with zero model
 calls. Narration consumes only the persisted post-reveal package and cannot add
 items. No new HTTP operation, contents store or transaction owner is added.
 

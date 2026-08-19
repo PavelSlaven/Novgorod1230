@@ -215,7 +215,7 @@ test('inside capacity includes runtime items created earlier in the same submit'
   });
 });
 
-test('attached topology rejects cycles and remote prepared destinations', () => {
+test('attached topology rejects cycles and remote prepared destinations', async () => {
   const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
     ordinaryResultPolicy
   });
@@ -228,12 +228,12 @@ test('attached topology rejects cycles and remote prepared destinations', () => 
   const second = handlers.create_entity(execution(attachedOperation,
     first.working_projection));
   const move = handlers.move_entity;
-  assert.throws(() => move(execution({
+  await assert.rejects(() => move(execution({
     op: 'move_entity',
     entity_ref: 'new_entity_1',
     placement: { relation: 'attached_to', target_ref: 'new_entity_2' }
   }, second.working_projection)), { code: 'ITEM_RUNTIME_PLACEMENT_CYCLE' });
-  assert.throws(() => move(execution({
+  await assert.rejects(() => move(execution({
     op: 'move_entity',
     entity_ref: 'new_entity_1',
     placement: { relation: 'located_at', target_ref: 'camp' }

@@ -112,11 +112,13 @@ export async function applyOrdinaryContainerContentsAtomicWritePlanInTransaction
     plan.next_supporting_basis_catalog_digest]);
   if (contextUpdate.rowCount !== 1) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
   const container = await client.query(`UPDATE party_runtime.party_containers
-    SET state=state || $4::jsonb,closure_state='open',
+    SET state=state || $4::jsonb,
+        closure_state=CASE WHEN $6 THEN 'open' ELSE closure_state END,
         state_version=state_version+1,updated_change_set_id=$5
     WHERE party_id=$1 AND container_id=$2 AND state_version=$3`,
   [plan.party_id,plan.scope_ref.entity_id,current.container_state_version,
-    JSON.stringify(plan.container_transition.state_patch),p16ChangeSetId]);
+    JSON.stringify(plan.container_transition.state_patch),p16ChangeSetId,
+    plan.container_transition.access_kind !== 'resolve_concealed']);
   if (container.rowCount !== 1) fail('ORDINARY_CONTAINER_BATCH_CONTAINER_STALE');
   if (updatePartyState) {
     const party = await client.query(`UPDATE party_runtime.parties

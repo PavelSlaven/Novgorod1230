@@ -12,6 +12,10 @@ export function hydrateAuthoredContainers(committedState, state) {
     const containerId = text(container?.container_id ?? container?.instance_id);
     if (!containerId) fail('TRACE_TURN_STEP_COMMITTED_CONTAINER_INVALID');
     const placement = placementById.get(containerId) ?? container;
+    const accessState = container.state?.access_state
+      ?? container.access_state;
+    const visibilityState = container.state?.visibility_state
+      ?? container.visibility_state;
     const authored = {
       ...structuredClone(container), item_id: containerId,
       instance_id: containerId, instance_kind: 'container',
@@ -23,10 +27,10 @@ export function hydrateAuthoredContainers(committedState, state) {
           container.state.ordinary_contents_context),
         contents_state: container.state.contents_state
           ?? container.contents_state ?? 'contents_hidden',
-        access_state: container.state.access_state
-          ?? container.access_state,
-        visibility_state: container.state.visibility_state
-          ?? container.visibility_state
+        ...(accessState === undefined ? {} : { access_state: accessState }),
+        ...(visibilityState === undefined ? {} : {
+          visibility_state: visibilityState
+        })
       }),
       placement: {
         holder_character_id: placement.holder_character_id

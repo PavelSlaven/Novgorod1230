@@ -38,6 +38,15 @@ test('O2b seals a zero-item coverage closure without a materialize row', () => {
   assert.equal(batchInput({masses:[10,20],maxNewEntities:2}).items.length,2);
 });
 
+test('O2b seals concealed resolution without opening or revealing contents', () => {
+  const sealed = batchInput({ masses:[80], reveal:false });
+  assert.deepEqual(sealed.container_transition, {
+    access_kind:'resolve_concealed',
+    state_patch:{contents_state:'resolved_concealed'},
+    revealed_refs:[]
+  });
+});
+
 test('O2b fails closed on profile gap, packing overflow and sealed drift', () => {
   assert.throws(() => batchInput({ masses:[80], includeProfile:false }),
     { code:'ITEM_INVENTORY_PROFILE_NOT_FOUND' });
@@ -71,7 +80,7 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
   includeProfile = true, aggregate = createOrdinaryAggregate({scope_ref:scope,
     resolution_record_cap:32}), partyStateVersion = 0,
   containerStateVersion = 1, requestIdentity = 'o2b-batch',
-  party = partyId } = {}) {
+  party = partyId, reveal = true } = {}) {
   const items = [];
   const transitions = [];
   let next = aggregate;
@@ -144,9 +153,11 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
       expected_remaining_slots:expectedRemaining,
       expected_total_mass_grams:profile.mass_grams
         + masses.reduce((sum, mass) => sum + mass, 0)},
-    container_transition:{access_kind:'open_and_view',state_patch:{
+    container_transition:reveal ? {access_kind:'open_and_view',state_patch:{
       open_state:'open',contents_state:'known',access_state:{access:'open'}},
-      revealed_refs:items.map(({item_id}) => item_id).sort()} };
+      revealed_refs:items.map(({item_id}) => item_id).sort()} : {
+      access_kind:'resolve_concealed',
+      state_patch:{contents_state:'resolved_concealed'},revealed_refs:[]} };
   return createOrdinaryContainerContentsAtomicWritePlan(
     JSON.parse(JSON.stringify(value)));
 }

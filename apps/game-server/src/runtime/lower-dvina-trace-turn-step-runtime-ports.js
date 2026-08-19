@@ -49,6 +49,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       ordinaryResultPolicy,
       ambientOrdinaryPortionAdmission: admitAmbientOrdinaryPortion,
       requireAmbientOrdinaryAdmission,
+      ordinaryContainerContentsResolver,
       resolveItemMechanics
     }),
     apply_body_event: (execution) =>

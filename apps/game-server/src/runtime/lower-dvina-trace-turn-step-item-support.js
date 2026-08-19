@@ -95,13 +95,11 @@ export function initializeRuntimeState(committedState) {
   }
   return state;
 }
-
 export function admitOrdinaryEntity(operation, policy) {
   const result = admitOrdinaryRuntimeResult({ operation, policy });
   if (!result.pass) failAdmission(result);
   return result.admission;
 }
-
 export function admitOrdinaryText(value, entity, policy) {
   const result = admitOrdinaryRuntimeFact({
     semantic_type: entity?.semantic_type,
@@ -111,7 +109,6 @@ export function admitOrdinaryText(value, entity, policy) {
   });
   if (!result.pass) failAdmission(result);
 }
-
 export function requireOrigin(origin, projection, state, refs) {
   if (origin.kind === 'ambient_ordinary') {
     const current = projection.position?.location_ref;
@@ -126,7 +123,6 @@ export function requireOrigin(origin, projection, state, refs) {
   }
   requireRefs(origin.source_refs, refs, 'origin.source_refs');
 }
-
 export function normalizePlacement({ placement, projection, state, entityRef,
   incomingMechanics, resolveItemMechanics }) {
   const result = normalizeRuntimeItemPlacement({
@@ -149,19 +145,13 @@ export function normalizePlacement({ placement, projection, state, entityRef,
   if (!result.pass) failIssue(result.errors[0]);
   return result.placement;
 }
-
 export function applyInventoryTransition({ projection, actor,
   beforePlacement, afterPlacement, beforeMechanics, afterMechanics,
   itemRef, state }) {
-  const runtimeItems = (projection.items ?? []).map((item) => {
-    const ref = text(item.item_id ?? item.instance_id);
-    const actual = actualRef(ref, state);
-    return {
-      item_ref: ref,
-      placement: structuredClone(item.placement ?? {}),
-      mechanics: state.entities.get(actual)?.mechanics ?? null
-    };
-  });
+  const runtimeItems = runtimeRecords(projection, state).map((record) => ({
+    item_ref:record.visible_ref,placement:record.placement,
+    mechanics:record.runtime?.mechanics ?? null
+  }));
   if (!runtimeItems.some(({ item_ref: ref }) => ref === itemRef)) {
     runtimeItems.push({
       item_ref: itemRef,
@@ -183,7 +173,6 @@ export function applyInventoryTransition({ projection, actor,
   if (!result.pass) failIssue(result.errors[0]);
   return { ...projection, inventory: result.inventory };
 }
-
 export function persistedPlacement(placement, state) {
   const output = structuredClone(placement);
   for (const key of ['holder_character_id', 'holder_npc_id', 'location_ref', 'container_id',
@@ -192,7 +181,6 @@ export function persistedPlacement(placement, state) {
   }
   return output;
 }
-
 export function currentCommittedItemState(state) {
   if (!state.committedState) return null;
   return {
@@ -204,14 +192,12 @@ export function currentCommittedItemState(state) {
     ...projectCurrentCommittedContainers(state)
   };
 }
-
 export function requireProjectedItem(projection, ref) {
   const item = (projection.items ?? []).find((candidate) =>
     matchesItem(candidate, ref));
   if (!item) fail('TRACE_TURN_STEP_ENTITY_NOT_MUTABLE', { entity_ref: ref });
   return item;
 }
-
 export function requireRuntimeEntity(ref, state) {
   const record = state.entities.get(actualRef(ref, state));
   if (!record) {
@@ -219,7 +205,6 @@ export function requireRuntimeEntity(ref, state) {
   }
   return record;
 }
-
 export function ordinaryContainerRuntimeEntity(child, planItem) {
   const itemId = text(child?.item_id);
   if (!itemId || planItem?.item_id !== itemId || !plain(
@@ -234,19 +219,17 @@ export function ordinaryContainerRuntimeEntity(child, planItem) {
   }
   return { instance_id:itemId, mechanics:structuredClone(resolved.snapshot.mechanics),
     snapshot:structuredClone(resolved.snapshot),
-    semantic_type:text(child.semantic_type) || null, name:null,
+    semantic_type:text(child.semantic_type) || null,
+    name:text(child.name) || null,
     origin_kind:resolved.snapshot.provenance.origin_kind,
     source_refs:[...resolved.snapshot.provenance.source_refs] };
 }
-
 export function matchesItem(item, ref) {
   return item?.item_id === ref || item?.instance_id === ref;
 }
-
 export function actualRef(ref, state) {
   return state.aliases.get(ref) ?? ref;
 }
-
 export function requireAvailableTempRef(ref, refs, state, rootTurnId) {
   if (state.reservedRefs.has(reservedKey(rootTurnId, ref))) {
     fail('TRACE_TURN_STEP_TEMP_REF_RETIRED_OR_RESERVED', { temp_ref: ref });
@@ -282,18 +265,35 @@ function reservedKey(rootTurnId, ref) {
 }
 
 function runtimeItemOverlay(projection, state) {
-  return (projection.items ?? []).flatMap((item) => {
-    const visibleRef = text(item?.item_id ?? item?.instance_id);
-    const itemId = actualRef(visibleRef, state);
-    const runtime = state.entities.get(itemId);
-    if (!visibleRef || !runtime?.snapshot) return [];
+  return runtimeRecords(projection,state).flatMap((record) => {
+    if (!record.runtime?.snapshot) return [];
     return [{
-      item_id: itemId,
-      instance_id: itemId,
+      item_id: record.item_id,
+      instance_id: record.item_id,
       template_id: null,
-      runtime_instance_mechanics_snapshot: structuredClone(runtime.snapshot),
-      placement: persistedPlacement(item.placement ?? {}, state),
+      runtime_instance_mechanics_snapshot:
+        structuredClone(record.runtime.snapshot),
+      placement: persistedPlacement(record.placement, state),
       state: { lifecycle_status: 'active' }
     }];
   });
+}
+
+function runtimeRecords(projection,state) {
+  const records=new Map();
+  for (const item of projection.items ?? []) {
+    const visibleRef=text(item?.item_id ?? item?.instance_id);
+    const itemId=actualRef(visibleRef,state);
+    if (!visibleRef) continue;
+    records.set(itemId,{visible_ref:visibleRef,item_id:itemId,
+      placement:structuredClone(item.placement ?? {}),
+      runtime:state.entities.get(itemId)});
+  }
+  for (const [itemId,item] of state.materializedItems) {
+    if (records.has(itemId) || !state.entities.has(itemId)) continue;
+    records.set(itemId,{visible_ref:itemId,item_id:itemId,
+      placement:structuredClone(item.placement ?? {}),
+      runtime:state.entities.get(itemId)});
+  }
+  return [...records.values()];
 }

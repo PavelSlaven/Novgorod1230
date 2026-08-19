@@ -7,18 +7,27 @@ export function validLowerDvinaTraceO2bPhysicalAttestation(
   const placement = container.placement;
   const ownership = container.ownership;
   const state = container.state;
-  return plain(placement) && plain(ownership) && plain(state)
-    && text(placement.holder_character_id)
+  const actor = container.actor_id;
+  const actorPosition = container.actor_position_ref;
+  const actorHeld = plain(placement) && text(actor)
+    && placement.holder_character_id === actor
     && placement.anchor_id == null && placement.container_id == null
     && placement.holder_npc_id == null
-    && ACTOR_ITEM_PHYSICAL_POSITIONS.includes(placement.physical_position)
-    && ownership.owner_character_id === placement.holder_character_id
-    && ownership.controller_character_id === placement.holder_character_id
+    && ACTOR_ITEM_PHYSICAL_POSITIONS.includes(placement.physical_position);
+  const actorReachable = plain(placement) && text(actorPosition)
+    && placement.anchor_id === actorPosition
+    && placement.container_id == null && placement.holder_npc_id == null
+    && placement.holder_character_id == null
+    && placement.physical_position == null;
+  return plain(placement) && plain(ownership) && plain(state)
+    && (actorHeld || actorReachable)
+    && ownership.owner_character_id === actor
+    && ownership.controller_character_id === actor
     && ownership.owner_npc_id == null && ownership.controller_npc_id == null
     && ownership.owner_party === false
     && ownership.claim_state === initial.first_entry_placement.claim_state
-    && state.owner_character_id === placement.holder_character_id
-    && state.controller_character_id === placement.holder_character_id
+    && state.owner_character_id === actor
+    && state.controller_character_id === actor
     && text(state.first_entry_position_ref)
     && state.semantic_category === initial.container_state.semantic_category;
 }

@@ -5,6 +5,7 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
   return async function load({ party_id: partyId, container_ref: containerRef }) {
     if (!text(partyId) || !text(containerRef)) return null;
     const core = await pool.query(`SELECT p.state_version AS party_state_version,
+        pc.character_id AS actor_id,pos.g5_anchor_id AS actor_position_ref,
         x.container_id,x.template_id,x.state_version AS container_state_version,
         x.closure_state,x.state AS container_state,x.anchor_id,
         x.parent_container_id,x.holder_npc_id,x.holder_character_id,
@@ -18,6 +19,12 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
         e.objective_snapshot,e.objective_digest,e.enabled
       FROM party_runtime.parties p
       JOIN party_runtime.party_containers x ON x.party_id=p.party_id
+      LEFT JOIN party_runtime.party_ownership o
+        ON o.party_id=x.party_id AND o.container_id=x.container_id
+      LEFT JOIN party_runtime.party_player_characters pc
+        ON pc.party_id=p.party_id
+        AND pc.character_id=o.owner_character_id
+      LEFT JOIN party_runtime.party_positions pos ON pos.party_id=p.party_id
       JOIN party_runtime.party_ordinary_materialization_aggregates a
         ON a.party_id=p.party_id AND a.scope_kind='container'
         AND a.scope_id=x.container_id
@@ -27,8 +34,6 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
       JOIN party_runtime.party_ordinary_materialization_enablements e
         ON e.party_id=a.party_id AND e.scope_kind=a.scope_kind
         AND e.scope_id=a.scope_id
-      LEFT JOIN party_runtime.party_ownership o
-        ON o.party_id=x.party_id AND o.container_id=x.container_id
       WHERE p.party_id=$1 AND x.container_id=$2`, [partyId, containerRef]);
     if (core.rowCount !== 1) return null;
     const [bases, capacity] = await Promise.all([
@@ -50,7 +55,9 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
     const capacitySnapshot = capacity.rows.map(capacityRow);
     const context = row.container_state?.ordinary_contents_context;
     return clone({ party_state_version:Number(row.party_state_version),
-      container:{ container_id:row.container_id,template_id:row.template_id,
+      container:{ actor_id:row.actor_id,
+        actor_position_ref:row.actor_position_ref,
+        container_id:row.container_id,template_id:row.template_id,
         state_version:Number(row.container_state_version),
         closure_state:row.closure_state,state:row.container_state,
         ownership:{ownership_id:row.ownership_id,

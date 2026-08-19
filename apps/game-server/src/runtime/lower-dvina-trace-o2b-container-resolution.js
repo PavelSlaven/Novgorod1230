@@ -92,9 +92,12 @@ export function buildO2bContainerResolution({ committed, raw,
       expected_used_slots:mechanics.used_slots,
       expected_remaining_slots:mechanics.remaining_slots,
       expected_total_mass_grams:mechanics.total_mass_grams},
-    container_transition:{access_kind:'open_and_view', state_patch:{
-      open_state:'open', contents_state:'known', access_state:{access:'open'}},
-    revealed_refs:items.map(({item_id}) => item_id).sort()}
+    container_transition:operation.resolution_mode === 'reveal'
+      ? {access_kind:'open_and_view', state_patch:{open_state:'open',
+        contents_state:'known',access_state:{access:'open'}},
+      revealed_refs:items.map(({item_id}) => item_id).sort()}
+      : {access_kind:'resolve_concealed',state_patch:{
+        contents_state:'resolved_concealed'},revealed_refs:[]}
   });
   return Object.freeze({ pass:true,
     materialized_items:structuredClone(items.map(playerHiddenChild)),
@@ -219,6 +222,7 @@ function mechanicsAllowed(value, policy) {
 }
 function playerHiddenChild(item) { return {item_id:item.item_id,
   semantic_type:item.item_proposal.semantic_descriptor.semantic_type,
+  name:item.item_proposal.semantic_descriptor.name,
   authority:'ordinary',disclosure:'concealed',admission_class:'common_mundane',
   is_container:false,evidence:false,authentic_document:false,
   hidden_history:false,secret_cache:false,

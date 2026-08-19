@@ -77,7 +77,7 @@ function revision21Checks(historical, loaded, paths) {
       === historical.m8_content_manifest_digest,
     files: exact(manifest.files, files),
     content_digest: manifest.content_digest
-      === '29f0bdd9f39d548c2c0be8b109c749bdcd6ba9c8b7482637179205fdb559c21b',
+      === '9557533b5f5676c575bf51f7fe36c06a7e380ab34f05c269b94526b96687b13a',
     definition_ref: exactRef(manifest.content_refs?.definition,
       loaded.definition, 'definition.json', 'lower_dvina_trace_v1', 21),
     profile_ref: exactRef(manifest.content_refs?.action_production_profile,
@@ -124,7 +124,7 @@ function validProfile(value) {
     && value.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
     && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
     && value.revision === 1 && value.status === 'approved'
-    && value.policy_version === 1 && value.max_new_entities === 1
+    && value.policy_version === 1 && value.max_new_entities === 4
     && same(value.allowed_access_states, ['immediate', 'quick'])
     && same(value.allowed_identity_modes,
       ['preserve_source', 'independent_outputs', 'no_useful_result'])
@@ -136,7 +136,7 @@ function validProfile(value) {
     && same(value.allowed_output_classes, ['ordinary_mundane',
       'weapon_capable', 'money_like_token', 'written_carrier'])
     && value.source_policy
-      === 'one_visible_accessible_non_container_item'
+      === 'one_to_many_visible_accessible_non_container_items'
     && value.tool_policy
       === 'zero_to_many_visible_accessible_non_container_items'
     && value.execution_policy

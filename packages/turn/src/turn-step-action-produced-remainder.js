@@ -18,11 +18,16 @@ export function isActionProductionOwnerInScope({
   if (targetRefs == null) return false;
   const marker = ownPlainDataRecord(
     ownDataProperty(playerSafeState, 'action_production'),
-    ['semantic_grounding_available', 'allowed_identity_modes',
+    ['semantic_grounding_available', 'max_new_entities',
+      'allowed_identity_modes',
       'allowed_origins', 'allowed_result_classes', 'allowed_output_classes',
       'weapon_qualitative_classes']
   );
-  if (marker?.semantic_grounding_available !== true) return false;
+  if (marker?.semantic_grounding_available !== true
+      || !Number.isSafeInteger(marker.max_new_entities)
+      || marker.max_new_entities < 1 || marker.max_new_entities > 8) {
+    return false;
+  }
   const visibleObjects = exactVisibleRefs(playerSafeState, 'visible_objects', {
     requireItemKind: true
   });

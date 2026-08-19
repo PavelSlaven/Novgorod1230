@@ -21,21 +21,21 @@
     "digest": "d0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262"
   },
   "files": {
-    "action-production-profile.json": "0971830bf262a28b5e0e73a5907cf2c1c9963f6ce0a529a9fa54de710a4e8523",
-    "definition.json": "74a7c41a20c2f823cc44cf9f20332a197f94503fd7857e254fc953991817c240"
+    "action-production-profile.json": "89e8aa61c5579393a88a952e2e494ba726897888fa65dc81206fd975e6a59957",
+    "definition.json": "b2762bd059622fabb38986720c9ecf1d5e8f28974d00cf2c1e5471396a528a44"
   },
   "content_refs": {
     "definition": {
       "path": "definition.json", "id": "lower_dvina_trace_v1",
       "revision": 21, "schema": "rus.trace_scenario_definition.v1",
-      "digest": "74a7c41a20c2f823cc44cf9f20332a197f94503fd7857e254fc953991817c240"
+      "digest": "b2762bd059622fabb38986720c9ecf1d5e8f28974d00cf2c1e5471396a528a44"
     },
     "action_production_profile": {
       "path": "action-production-profile.json",
       "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_action_production_profile.v1",
-      "digest": "0971830bf262a28b5e0e73a5907cf2c1c9963f6ce0a529a9fa54de710a4e8523"
+      "digest": "89e8aa61c5579393a88a952e2e494ba726897888fa65dc81206fd975e6a59957"
     },
     "inherited_m8_content": {
       "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/manifest.json",
@@ -45,7 +45,7 @@
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "29f0bdd9f39d548c2c0be8b109c749bdcd6ba9c8b7482637179205fdb559c21b",
+  "content_digest": "9557533b5f5676c575bf51f7fe36c06a7e380ab34f05c269b94526b96687b13a",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

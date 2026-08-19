@@ -473,6 +473,7 @@ function servicesFor({ bindingMatches = () => false, resolver = () =>
 function actionProjection(marker = undefined, extra = {}) {
   const resolvedMarker = marker === undefined ? {
     semantic_grounding_available: true,
+    max_new_entities: 4,
     allowed_identity_modes: [
       'preserve_source', 'independent_outputs', 'no_useful_result'
     ],
@@ -525,6 +526,7 @@ function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
     target_refs: targetRefs,
     ...(useKind !== 'other' ? {} : { action_production:
       actionProduction ?? {
+        source_refs: [itemRef], tool_refs: targetRefs, output_count: 0,
         identity_mode: 'preserve_source', origin: null,
         result_class: 'partial_transformation',
         result_descriptor: { display_name: null,

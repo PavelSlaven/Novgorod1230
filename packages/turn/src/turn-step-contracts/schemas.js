@@ -240,9 +240,13 @@ const planDefinitions = {
     ] }] }
   }),
   action_production: strictObject([
-    'identity_mode', 'origin', 'result_class', 'result_descriptor',
-    'output_class'
+    'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
+    'result_class', 'result_descriptor', 'output_class'
   ], {
+    source_refs: { type: 'array', minItems: 1, uniqueItems: true,
+      items: refSchema },
+    tool_refs: { type: 'array', uniqueItems: true, items: refSchema },
+    output_count: { type: 'integer', minimum: 0, maximum: 8 },
     identity_mode: { enum: [
       'preserve_source', 'independent_outputs', 'no_useful_result'
     ] },

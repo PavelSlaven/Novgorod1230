@@ -36,6 +36,7 @@ test('A1 capability marker requires the exact profile and installed resolver',
     const active = projectLowerDvinaTraceA1Capability({ playerSafeState,
       loadedProfile, resolverAvailable: true });
     assert.equal(active.action_production.semantic_grounding_available, true);
+    assert.equal(active.action_production.max_new_entities, 4);
     assert.deepEqual(active.action_production.allowed_identity_modes,
       loadedProfile.profile.allowed_identity_modes);
     assert.deepEqual(active.action_production.allowed_origins,

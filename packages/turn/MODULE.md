@@ -198,10 +198,12 @@ Active A1 revision 21 не добавляет semantic fallback: sole
 `turn_step_plan_v1` помещает qualitative `action_production` внутрь
 `request_item_use`, а code-owned action-production owner лишь проверяет
 committed items и строит mechanics/P16 plan без LLM. После exact/authored
-priority разрешены один видимый held non-container source и ноль или несколько
-видимых held/controller-controlled tools независимо от legal owner. Общие
+priority разрешены один или несколько видимых held non-container material
+sources и ноль или несколько видимых held/controller-controlled tools
+независимо от legal owner. Общие
 generic-check/activity owners выполняются один раз. Profile допускает
-preserve, finite independent output и no-result; partial/nonworking/waste,
+preserve, до четырёх finite independent outputs и no-result;
+partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 не задаёт mechanics, расход, identity, property, placement, roll, time,
 currency/official status или combat numbers.

@@ -16,6 +16,7 @@ export function projectLowerDvinaTraceA1Capability({
     ...playerSafeState,
     action_production: {
       semantic_grounding_available: true,
+      max_new_entities: profile.max_new_entities,
       allowed_identity_modes: structuredClone(profile.allowed_identity_modes),
       allowed_origins: structuredClone(profile.allowed_origins),
       allowed_result_classes: structuredClone(profile.allowed_result_classes),

@@ -74,7 +74,7 @@
     "action_production_profile": {
       "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
-      "digest": "0971830bf262a28b5e0e73a5907cf2c1c9963f6ce0a529a9fa54de710a4e8523"
+      "digest": "89e8aa61c5579393a88a952e2e494ba726897888fa65dc81206fd975e6a59957"
     }
   },
   "resolved_policy_refs": {

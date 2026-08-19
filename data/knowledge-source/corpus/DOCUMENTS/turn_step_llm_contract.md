@@ -819,6 +819,9 @@ LLM не перечисляет contents до их появления в player-
   "use_kind": "consume | apply | operate | equip | unequip | other",
   "target_refs": [],
   "action_production": {
+    "source_refs": ["item_1"],
+    "tool_refs": [],
+    "output_count": 0,
     "identity_mode": "preserve_source | independent_outputs | no_useful_result",
     "origin": "direct_partition | crafted | null",
     "result_class": "ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result",
@@ -841,14 +844,18 @@ LLM не перечисляет contents до их появления в player-
 registered/external handler, затем authored binding, и лишь при нуле совпадений
 — code-owned A1 owner. Это не второй semantic fallback: qualitative
 `action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не
-вызывает LLM. Активный scope принимает один видимый actor-held non-container
-source и ноль или несколько видимых actor-held/controller-controlled
-non-container tools; legal owner может быть другим. Общий turn plan выбирает
+вызывает LLM. Активный scope принимает один или несколько видимых actor-held
+non-container material sources и ноль или несколько видимых
+actor-held/controller-controlled non-container tools; `source_refs` и
+`tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает
 generic check и semantic activity, а существующие RNG/time owners исполняют их
-один раз. Profile допускает preserve, finite independent output, no-result,
+один раз. Profile допускает preserve, до четырёх finite independent outputs,
+no-result,
 partial/nonworking/waste, writing, non-authoritative token-like и closed
 weapon-capable outcomes. Model не задаёт массу, расход, mechanics, identity,
 property, placement, время, roll, currency/official status или combat numbers.
+Exact source/output mechanics выводится из реально списанных allocations;
+нецелимая дискретная механика возвращает typed gap.
 Один combined P16 сохраняет causal pins, conservation и physical transition
 атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 

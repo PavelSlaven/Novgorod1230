@@ -240,6 +240,8 @@ test('sole turn plan boundary admits qualitative action production', () => {
       item_ref: 'item:pole', use_kind: 'other',
       target_refs: ['item:knife', 'item:stone'],
       action_production: {
+        source_refs: ['item:pole'],
+        tool_refs: ['item:knife', 'item:stone'], output_count: 0,
         identity_mode: 'preserve_source', origin: null,
         result_class: 'partial_transformation',
         result_descriptor: {
@@ -261,6 +263,19 @@ test('sole turn plan boundary admits qualitative action production', () => {
   action.operations[0].action_production.result_descriptor
     .weapon_qualitative_class = 'forged_weapon_class';
   assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
+
+  const partition = structuredClone(action);
+  partition.operations[0].action_production.result_descriptor
+    .weapon_qualitative_class = 'improvised_puncture_light';
+  partition.operations[0].action_production = {
+    ...partition.operations[0].action_production,
+    source_refs: ['item:pole', 'item:stone'], tool_refs: ['item:knife'],
+    output_count: 2, identity_mode: 'independent_outputs',
+    origin: 'crafted'
+  };
+  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
+  partition.operations[0].action_production.tool_refs = ['item:stone'];
+  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);
 });
 
 test('relational validation fails closed on echoes, mixed resolutions and malformed checks', () => {

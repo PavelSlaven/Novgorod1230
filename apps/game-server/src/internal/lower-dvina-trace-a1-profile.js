@@ -6,7 +6,7 @@ import { validLowerDvinaTraceActionProductionProfile } from
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content';
 const MANIFEST_DIGEST =
-  '9546d3174918896b63bbd6823b6c33fc3e53985aa0ee71ad45dd7de78c3eb1c9';
+  '71ee4b062dfe17ebcb3647ffe65d0d9afd58bca3d8762fb3a9a51cb7962c049b';
 
 export async function loadLowerDvinaTraceA1Profile({
   rootDir = process.cwd()

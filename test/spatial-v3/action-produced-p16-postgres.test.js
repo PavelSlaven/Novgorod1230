@@ -531,8 +531,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .after_item.state.action_production.inscription_text,
     'Жду у переправы.');
 
-    const token = await factory({ partyId: 'party-a1',
-      requestId: 'production-token' })(productionEnvelope({
+    await assert.rejects(factory({ partyId: 'party-a1',
+      requestId: 'production-token-gap' })(productionEnvelope({
       itemRef: 'production-board', targetRefs: [],
       remainingIntent: 'Отделяю от доски простой счётный жетон.',
       actionProduction: actionProduction({
@@ -542,12 +542,56 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           display_name: 'деревянный счётный жетон',
           physical_description: 'от доски отделён маленький деревянный кружок'
         })
+      }) })), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
+
+    const multi = await factory({ partyId: 'party-a1',
+      requestId: 'production-multi' })(productionEnvelope({
+      itemRef: 'production-material-a',
+      targetRefs: ['production-material-b', 'production-knife'],
+      remainingIntent: 'Соединяю два материала и делаю две одинаковые детали.',
+      actionProduction: actionProduction({
+        source_refs: ['production-material-a', 'production-material-b'],
+        tool_refs: ['production-knife'], output_count: 2,
+        identity_mode: 'independent_outputs', origin: 'crafted',
+        result_class: 'ordinary_physical_result',
+        result_descriptor: descriptor({ display_name: 'составная деталь',
+          physical_description: 'две одинаковые детали из обоих материалов'
+        })
       }) }));
-    assert.equal(token.action_production_atomic_write_plan.result_items.length,
-      1);
-    const tokenCombined = await combinedPlan(
-      token.action_production_atomic_write_plan, 'production-token', 5);
-    assert.equal((await committer.commit({ plan: tokenCombined })).ok, true);
+    const multiPlan = multi.action_production_atomic_write_plan;
+    assert.equal(multiPlan.source_updates.length, 2);
+    assert.equal(multiPlan.result_items.length, 2);
+    assert.deepEqual(multiPlan.result_items.map((item) =>
+      item.mechanics_snapshot.mechanics), [1, 2].map(() => ({
+      mass_grams: 150, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
+      container: null
+    })));
+    const multiCombined = await combinedPlan(
+      multiPlan, 'production-multi', 5);
+    assert.equal((await committer.commit({ plan: multiCombined })).ok, true);
+    assert.deepEqual(await committer.commit({ plan: multiCombined }), {
+      ok: true, replay: true,
+      change_set_id: 'change:party-a1:turn-step:5'
+    });
+    assert.deepEqual((await pool.query(`SELECT
+      (SELECT quantity_numerator::int FROM party_runtime.party_resource_nodes
+       WHERE party_id='party-a1' AND resource_node_id='resource-material-a') AS a,
+      (SELECT quantity_numerator::int FROM party_runtime.party_resource_nodes
+       WHERE party_id='party-a1' AND resource_node_id='resource-material-b') AS b,
+      (SELECT state->'runtime_instance_mechanics_snapshot'->'mechanics'
+        ->>'mass_grams' FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-material-a') AS a_mass,
+      (SELECT state->'runtime_instance_mechanics_snapshot'->'mechanics'
+        ->>'mass_grams' FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-material-b') AS b_mass,
+      (SELECT sum((state->'runtime_instance_mechanics_snapshot'->'mechanics'
+        ->>'mass_grams')::int)::int FROM party_runtime.party_items
+       WHERE party_id='party-a1'
+         AND state->'action_production'->'causal_identity'->>'request_id'
+           ='production-multi') AS output_mass`))
+      .rows[0], { a: 1, b: 1, a_mass: '200', b_mass: '100',
+        output_mass: 300 });
 
     const production = await factory({ partyId: 'party-a1',
       requestId: 'production-request' })(productionEnvelope({
@@ -936,9 +980,12 @@ function productionEnvelope({ itemRef = 'production-garment',
       difficulty_id: 'standard' }, interpretation: {
       player_goal: remainingIntent, grounded_attempt: remainingIntent,
       adaptation: 'literal' } };
+  const action = { source_refs: [itemRef], tool_refs: [...targetRefs],
+    output_count: qualitative.identity_mode === 'independent_outputs' ? 1 : 0,
+    ...qualitative };
   return { operation: { op: 'request_item_use', actor_ref: 'pc',
       item_ref: itemRef, use_kind: 'other', target_refs: targetRefs,
-      action_production: qualitative }, plan,
+      action_production: action }, plan,
     request: { root_turn_id: 'turn-production', step_index: 1,
       committed_state_version: stateVersion, remaining_intent: remainingIntent },
     actor: { actor_id: 'pc' }, working_projection: {},
@@ -980,8 +1027,13 @@ async function provisionProductionScope(pool) {
     ['production-stone', inventoryProfile('production-stone', 300, 1,
       'compact', 1), 'hands', null],
     ['production-board', inventoryProfile('production-board', 800, 1,
-      'regular', 2, { value: 2, unit: 'piece' }), 'hands', null]
+      'regular', 2, { value: 2, unit: 'piece' }), 'hands', null],
+    ['production-material-a', inventoryProfile('production-material-a',
+      400, 0, 'compact', 2, { value: 2, unit: 'piece' }), 'hands', null],
+    ['production-material-b', inventoryProfile('production-material-b',
+      200, 0, 'compact', 2, { value: 2, unit: 'piece' }), 'hands', null]
   ]) {
+    const material = itemId.startsWith('production-material-');
     await pool.query(`INSERT INTO party_runtime.party_items
       (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
        condition_state,legal_status,state,state_version)
@@ -989,10 +1041,11 @@ async function provisionProductionScope(pool) {
         'owned',$4::jsonb,1)`, [itemId, itemProfile.template_id,
       itemProfile.inventory_profile_id, JSON.stringify({ lifecycle_status:
         'active', inventory_profile_snapshot: itemProfile,
-        ...(itemId !== 'production-board' ? {} : {
+        ...(itemId !== 'production-board' && !material ? {} : {
           resource_position_node_id: 'position-a1', property_state: {
-            source_ref: itemId,
-            resource_property_basis_ref: `property:${itemId}` }
+            ...(material ? {} : { source_ref: itemId }),
+            resource_property_basis_ref: material
+              ? 'property:production-materials' : `property:${itemId}` }
         }) })]);
     await pool.query(`INSERT INTO party_runtime.party_item_placements
       (party_id,item_id,holder_character_id,physical_position,
@@ -1015,6 +1068,19 @@ async function provisionProductionScope(pool) {
       'active','property:production-board')`, [JSON.stringify({
     entity_kind: 'party_item', entity_id: 'production-board' }),
   JSON.stringify({ entity_id: 'piece' })]);
+  for (const suffix of ['a', 'b']) {
+    await pool.query(`INSERT INTO party_runtime.party_resource_nodes
+      (resource_node_id,party_id,source_resource_ref,position_node_id,
+       quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
+       access_policy_ref,state_version,created_change_set_id,
+       updated_change_set_id,lifecycle_state,property_basis_ref)
+      VALUES ($1,'party-a1',$2::jsonb,'position-a1',2,1,$3::jsonb,
+        '{}'::jsonb,'{}'::jsonb,1,'fixture-a1','fixture-a1','active',
+        'property:production-materials')`, [`resource-material-${suffix}`,
+      JSON.stringify({ entity_kind: 'party_item',
+        entity_id: `production-material-${suffix}` }),
+      JSON.stringify({ entity_id: 'piece' })]);
+  }
 }
 
 function inventoryProfile(id, mass, hand, carry, packing,

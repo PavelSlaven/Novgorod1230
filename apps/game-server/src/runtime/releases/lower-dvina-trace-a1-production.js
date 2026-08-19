@@ -1,8 +1,8 @@
 import { resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
-import { createActionProducedOutputIdentity,
-  createActionProducedTransitionPlanner } from
+import { createActionProducedTransitionPlanner,
+  resolveActionProducedAllocationMechanics } from
   '@rus/items-property/action-produced-transition';
 import { requireActionProducedResultPlan,
   requireActionProducedResultRequest,
@@ -49,8 +49,19 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       root_turn_id: rootTurnId, step_index: stepIndex,
       approved_plan: envelope.plan
     });
-    const sourceRefs = [operation.item_ref];
-    const toolRefs = operation.target_refs;
+    const qualitative = operation.action_production;
+    const sourceRefs = qualitative.source_refs;
+    const toolRefs = qualitative.tool_refs;
+    if (!refs(sourceRefs, false) || !refs(toolRefs, true)
+        || sourceRefs[0] !== operation.item_ref
+        || sourceRefs.some((ref) => toolRefs.includes(ref))
+        || !sameRefSet([...sourceRefs.slice(1), ...toolRefs],
+          operation.target_refs)
+        || !Number.isSafeInteger(qualitative.output_count)
+        || qualitative.output_count < 0
+        || qualitative.output_count > profile.max_new_entities) {
+      fail('TRACE_A1_SCOPE_INVALID');
+    }
     const loaded = await loadActionProducedCommittedContext(pool, {
       party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
       action_ref: actionRef, step_index: stepIndex,
@@ -62,7 +73,6 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     for (const pin of loaded.row_pins) {
       mechanics.set(pin.item_id, committedMechanics(pin.item));
     }
-    const qualitative = operation.action_production;
     const request = requireActionProducedResultRequest({
       schema: 'action_produced_result_request_v1', request_id: requestId,
       root_turn_id: rootTurnId, action_ref: actionRef,
@@ -95,9 +105,18 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     });
     if (admission.pass !== true) fail('TRACE_A1_ADMISSION_DENIED');
     const planner = createActionProducedTransitionPlanner({
-      resolveMechanics: (mechanicsRequest) => ownerResolution({
-        mechanicsRequest, mechanics
-      })
+      resolveMechanics: (mechanicsRequest) => {
+        if ([...mechanicsRequest.source_inputs,
+          ...mechanicsRequest.tool_inputs].some(({ entity_ref: ref }) =>
+          mechanics.get(ref) == null)) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
+        return resolveActionProducedAllocationMechanics({
+          mechanics_request: mechanicsRequest,
+          source_mechanics: mechanicsRequest.source_inputs.map(
+            ({ entity_ref: ref }) => ({ source_ref: ref,
+              mechanics: mechanics.get(ref) })),
+          output_count: qualitative.output_count
+        });
+      }
     });
     const proposal = planner({
       handoff: admission.handoff,
@@ -123,59 +142,6 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       action_production_atomic_write_plan: atomicPlan,
       player_response_boundary: true
     });
-  };
-}
-
-function ownerResolution({ mechanicsRequest, mechanics }) {
-  const source = mechanicsRequest.source_inputs[0];
-  const sourceMechanics = mechanics.get(source.entity_ref);
-  if (sourceMechanics == null
-      || mechanicsRequest.tool_inputs.some(({ entity_ref: ref }) =>
-        mechanics.get(ref) == null)) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
-  const mode = mechanicsRequest.identity_mode;
-  const noResult = mode === 'no_useful_result';
-  const independent = mode === 'independent_outputs';
-  const sourceRefs = mechanicsRequest.source_inputs.map(
-    ({ entity_ref: ref }) => ref);
-  const mechanicsSnapshot = (mechanicsValue, operationRef) => ({
-    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
-    provenance: {
-      source_kind: 'ordinary_direct_action_result',
-      root_turn_id: mechanicsRequest.causal_identity.root_turn_id,
-      step_index: mechanicsRequest.causal_identity.step_index,
-      operation_ref: operationRef,
-      origin_kind: mechanicsRequest.origin ?? 'crafted',
-      source_refs: sourceRefs
-    }, mechanics: structuredClone(mechanicsValue)
-  });
-  const finite = source.finite_resource;
-  if (independent && finite == null) {
-    fail('TRACE_A1_FINITE_SOURCE_REQUIRED');
-  }
-  const decrement = independent ? { numerator: 1, denominator: 1,
-    unit: finite.quantity.unit } : null;
-  const outputRef = independent ? createActionProducedOutputIdentity({
-    root_turn_id: mechanicsRequest.causal_identity.root_turn_id,
-    action_ref: mechanicsRequest.causal_identity.action_ref, ordinal: 1
-  }) : null;
-  const outputMechanics = independent ? {
-    ...structuredClone(sourceMechanics),
-    quantity: { value: 1, unit: finite.quantity.unit }
-  } : null;
-  return {
-    schema: 'rus.items.action_produced_owner_resolution.v1',
-    identity_mode: mode,
-    source_effects: [{ source_ref: source.entity_ref,
-      requested_decrement: structuredClone(decrement),
-      mechanics_snapshot_after: noResult || independent ? null
-        : mechanicsSnapshot(sourceMechanics,
-          mechanicsRequest.causal_identity.action_ref) }],
-    outputs: independent ? [{ ordinal: 1,
-      property_source_ref: source.entity_ref,
-      mechanics_snapshot: mechanicsSnapshot(outputMechanics, outputRef),
-      material_allocations: [{ source_ref: source.entity_ref,
-        quantity: structuredClone(decrement) }] }] : [],
-    known_waste: []
   };
 }
 
@@ -231,4 +197,9 @@ function validExecutionEvidence(envelope) {
 }
 function text(value) { return typeof value === 'string'
   && value.trim() === value && value.length > 0; }
+function refs(value, allowEmpty) { return Array.isArray(value)
+  && (allowEmpty || value.length > 0) && value.every(text)
+  && new Set(value).size === value.length; }
+function sameRefSet(left, right) { return Array.isArray(right)
+  && left.length === right.length && left.every((ref) => right.includes(ref)); }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

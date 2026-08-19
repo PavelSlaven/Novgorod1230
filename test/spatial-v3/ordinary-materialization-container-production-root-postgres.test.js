@@ -98,7 +98,7 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:2,all_enablements:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,change_sets:1,idempotency:1
     });
     const container=(await pool.query(`SELECT template_id,holder_character_id,
         physical_position,closure_state,state
@@ -116,7 +116,7 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:2,all_enablements:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,change_sets:1,idempotency:1
     });
 
     const rollbackParty='party-root-rollback';

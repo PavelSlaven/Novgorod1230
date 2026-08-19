@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { Pool } from 'pg';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import {
-  applyOrdinaryAggregateTransition,
   createOrdinaryAggregate
 } from '@rus/materialization';
 import { buildCombinedWritePlan } from
@@ -36,6 +34,12 @@ import { createOrdinaryMaterializationFirstEntryProvisioner } from
 import { buildExistingContainerOrdinarySeedRequest } from '@rus/items-property';
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-state.js';
+import { createLowerDvinaTraceTurnStepRuntimePorts } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
+import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-working.js';
+import { ordinaryContainerRuntimeItemState } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-materialization-container-batch-item.js';
 
 const docker = (args) => spawnSync('docker', args,
   { encoding:'utf8',timeout:60_000 });
@@ -68,8 +72,6 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     const files=(await import('../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js'))
       .SPATIAL_V3_TARGET_MIGRATIONS;
     for (const sql of files) await pool.query(sql);
-    await pool.query(await readFile(
-      'schemas/party-db/025_party_runtime_existing_container_ordinary_contents.sql','utf8'));
     const plan=batchInput({masses:[80,120]});
     await provision(pool,plan);
 
@@ -118,7 +120,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     [plan.request_identity]);
     assert.deepEqual(rows.rows[0],{plan_schema:plan.schema,item_count:2,
       max_new_entities:plan.technical_limits.max_new_entities,
-      transition_count:3,state_version:'1',closure_state:'open',
+      transition_count:4,state_version:'1',closure_state:'open',
       container_version:'2',runtime_items:2,placements:2});
     await assert.rejects(() => pool.query(`UPDATE
       party_runtime.party_ordinary_materialization_commits
@@ -157,7 +159,8 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     const staleContainer=await combined.commit({plan:
       await makeCombinedPlan(staleContainerBatch,'stale-container')});
     assert.equal(staleContainer.ok,false);
-    assert.equal(staleContainer.error.code,'state_version_conflict');
+    assert.equal(staleContainer.error.code,'state_version_conflict',
+      JSON.stringify(staleContainer));
     await assertEmptyCombinedFailure(pool);
 
     await resetParty(pool);
@@ -186,7 +189,8 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     await resetParty(pool);
     const combinedBatch=batchInput({masses:[80,120]});
     await provision(pool,combinedBatch);
-    const combinedPlan=await makeCombinedPlan(combinedBatch,'success');
+    const combinedPlan=await makeCombinedPlan(combinedBatch,'success',{
+      moveItem:combinedBatch.items[0]});
     const combinedResult=await combined.commit({plan:combinedPlan});
     assert.equal(combinedResult.ok,true,JSON.stringify(combinedResult));
     assert.equal(combinedResult.replay,false);
@@ -202,6 +206,19 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
         ON x.party_id=p.party_id WHERE p.party_id='party-o2b'`)).rows[0],
     {state_version:'1',closure_state:'open',container_version:'2',
       item_count:2,visible_count:1});
+    const moved=(await pool.query(`SELECT p.container_id,
+        p.holder_character_id,p.physical_position,i.state
+      FROM party_runtime.party_items i
+      JOIN party_runtime.party_item_placements p
+        ON p.party_id=i.party_id AND p.item_id=i.item_id
+      WHERE i.party_id='party-o2b' AND i.item_id=$1`,
+    [combinedBatch.items[0].item_id])).rows[0];
+    assert.equal(moved.container_id,null);
+    assert.equal(moved.holder_character_id,'pc');
+    assert.equal(moved.physical_position,'hands');
+    assert.equal(moved.state.ordinary_metadata.operation_history.at(-1).result,
+      'moved');
+    assert.equal(moved.state.created_change_set_id,'o2b-success-cs');
     assert.deepEqual(await combined.commit({plan:combinedPlan}),{
       ok:true,replay:true,change_set_id:'o2b-success-cs'});
     assert.equal((await pool.query(`SELECT count(*)::int AS n FROM
@@ -245,17 +262,20 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     assert.equal(modelCalls,1);
 
     const activeParty='party-o2b-revision20';
-    await provisionFirstEntryParty(pool,activeParty);
+    await provisionFirstEntryParty(pool,activeParty,{
+      g6Id:'g6:revision20',positionId:'position:revision20'});
     const profiles=await loadLowerDvinaTraceProductionMaterializationProfiles();
     const provisioner=createOrdinaryMaterializationFirstEntryProvisioner({
       profile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:
         profiles.ordinaryContainerContentsProfile});
     await inTransaction(pool,async(transaction)=>provisioner.provision({
-      transaction,partyId:activeParty,firstEntryBinding:{
+      transaction,partyId:activeParty,changeSetId:`first-entry:${activeParty}`,
+      firstEntryBinding:{
         g6_instance_id:'g6:revision20',position_id:'position:revision20'}}));
     const replayProvision=await inTransaction(pool,async(transaction)=>
       provisioner.provision({transaction,partyId:activeParty,
+        changeSetId:`first-entry:${activeParty}`,
         firstEntryBinding:{g6_instance_id:'g6:revision20',
           position_id:'position:revision20'}}));
     assert.equal(replayProvision.provisioned,false);
@@ -268,11 +288,12 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     assert.equal(activeCommitted.container.placement.holder_character_id,
       'pc:revision20');
     assert.equal(activeCommitted.capacity_snapshot.length,0);
+    const activeState={actor_id:'pc:revision20',position:{},items:[],
+      containers:[activeCommitted.container],container_placements:[{
+        ...activeCommitted.container.placement,container_id:activeRef,
+        parent_container_id:activeCommitted.container.placement.container_id}]};
     const beforeAccess=projectLowerDvinaTracePlayerSafeState({
-      committed_state:{actor_id:'pc:revision20',position:{},items:[],
-        containers:[activeCommitted.container],container_placements:[{
-          ...activeCommitted.container.placement,container_id:activeRef,
-          parent_container_id:activeCommitted.container.placement.container_id}]},
+      committed_state:activeState,
       actor_id:'pc:revision20'}).player_safe_state;
     assert.equal(beforeAccess.items.some(({item_id:id})=>id===activeRef),true);
     assert.equal(beforeAccess.items.some((item)=>item.placement?.container_id
@@ -324,11 +345,23 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
           carry_form:'compact',packing_slot_cost:1,
           quantity:{value:1,unit:'item'},container:null}};
         return modelPlan(request,[ordinary]); }});
-    const activeResolution=await activeResolver({stage_a_request:activeSeed,
-      operation_identity:{root_turn_id:'turn-revision20',step_index:1,
-        operation_ref:`request_container_access:${activeRef}`}});
-    assert.equal(activeResolution.pass,true,
-      JSON.stringify(activeResolution.errors));
+    const projectionAuthority=
+      createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+    const runtime=createLowerDvinaTraceTurnStepRuntimePorts({
+      committedState:activeState,
+      ordinaryContainerContentsResolver:activeResolver,
+      workingProjectionAuthority:projectionAuthority});
+    const accessOperation={op:'request_container_access',
+      actor_ref:'pc:revision20',container_ref:activeRef,
+      access_kind:'open_and_view'};
+    const activeResolution=await runtime.executionRegistry
+      .domain(accessOperation)({plan:{},request:{root_turn_id:'turn-revision20',
+        step_index:1,actor:{actor_id:'pc:revision20'}},
+      operation:accessOperation,
+      working_projection:projectionAuthority.admit(beforeAccess),
+      check_result:null});
+    assert.equal(activeResolution.working_projection.items.some((item)=>
+      item.placement?.container_id===activeRef),true);
     assert.equal(activeModelCalls,1);
     const activePlan=await makeCombinedPlan(
       activeResolution.ordinary_materialization_atomic_write_plan,
@@ -349,10 +382,12 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
       .ordinary_materialization_atomic_write_plan,null);
 
     const rollbackParty='party-o2b-revision20-rollback';
-    await provisionFirstEntryParty(pool,rollbackParty);
+    await provisionFirstEntryParty(pool,rollbackParty,{
+      g6Id:'g6:rollback',positionId:'position:rollback'});
     const rollbackClient=await pool.connect();
     try { await rollbackClient.query('BEGIN');
       await provisioner.provision({transaction:rollbackClient,partyId:rollbackParty,
+        changeSetId:`first-entry:${rollbackParty}`,
         firstEntryBinding:{g6_instance_id:'g6:rollback',
           position_id:'position:rollback'}});
       await rollbackClient.query('ROLLBACK');
@@ -382,7 +417,7 @@ function combinedCommitter(pool) {
 }
 
 async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
-  partyId='party-o2b'}={}) {
+  partyId='party-o2b',moveItem=null}={}) {
   const changeSetId=`o2b-${suffix}-cs`;
   const visiblePayload={schema:'temporal_visible_package.v1',
     perceived_scene:'Содержимое контейнера открыто.',
@@ -400,8 +435,22 @@ async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
   const expected=[{target_table:'parties',id:partyId,state_version:0},
     ...(missingClock?[{target_table:'party_clocks',id:partyId,
       state_version:1}]:[])];
+  const movedState=moveItem == null ? null
+    : ordinaryContainerRuntimeItemState(moveItem,changeSetId);
+  if (movedState != null) movedState.ordinary_metadata.operation_history.push({
+    operation_id:'same-turn-move',root_turn_id:'turn-same-turn-move',
+    step_index:2,operation_kind:'move_entity',result:'moved'});
   const updates=[{target_table:'parties',id:partyId,record:{
     party_id:partyId,profile_bundle_digest:'profiles'}},
+    ...(moveItem==null?[]:[{target_table:'party_items',id:moveItem.item_id,
+      record:{party_id:partyId,item_id:moveItem.item_id,quantity:1,
+        condition_state:moveItem.condition_state,
+        legal_status:'ordinary_container_content',state:movedState}},
+    {target_table:'party_item_placements',id:moveItem.item_id,record:{
+      party_id:partyId,item_id:moveItem.item_id,anchor_id:null,
+      container_id:null,holder_npc_id:null,holder_character_id:'pc',
+      physical_position:'hands',equipment_slot_category_id:null,
+      attached_item_id:null}}]),
     ...(missingClock?[{target_table:'party_clocks',id:partyId,record:{
       party_id:partyId,whole_minutes:0,subminute_numerator:0,
       subminute_denominator:1,clock_owner_kind:'party',clock_owner_id:null,
@@ -425,6 +474,8 @@ async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
     lock_context:{owner_keys:[],execution_keys:[],g4_keys:[],physical_keys:[
       `party_runtime.party_v3_change_sets:${changeSetId}`,
       `party_runtime.parties:${partyId}`,
+      ...(moveItem==null?[]:[`party_runtime.party_items:${moveItem.item_id}`,
+        `party_runtime.party_item_placements:${moveItem.item_id}`]),
       ...(missingClock?[`party_runtime.party_clocks:${partyId}`]:[]),
       ...ordinaryPhysicalKeys(ordinaryPlan)]},
     commit_rechecks:['physical','state','pin','endpoint','route','capacity',
@@ -498,7 +549,7 @@ async function resetParty(pool) {
   }
 }
 
-async function provisionFirstEntryParty(pool,id) {
+async function provisionFirstEntryParty(pool,id,{g6Id,positionId}) {
   await pool.query(`INSERT INTO party_runtime.parties
     (party_id,schema_version,world_revision_id,world_catalog_digest,
      materializer_version,rng_version,command_catalog_digest,
@@ -512,6 +563,41 @@ async function provisionFirstEntryParty(pool,id) {
   [id,`run:${id}`]);
   await pool.query(`INSERT INTO party_runtime.party_player_characters
     (party_id,character_id,profile) VALUES ($1,'pc:revision20','{}')`,[id]);
+  await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
+    (id,party_id,operation_kind,expected_state_version_set_digest,
+     expected_state_version_set,committed_state_version_set_digest,
+     write_plan_digest,created_at_turn,committed_at_turn)
+    VALUES ($2,$1,'first_entry','fixture','[]'::jsonb,'fixture','fixture',0,0)`,
+  [id,`first-entry:${id}`]);
+  await pool.query(`INSERT INTO party_runtime.party_g5_sites
+    (id,party_id,origin,parent_g4_id,canonical_g5_ref,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($2,$1,'canonical','g4',$3::jsonb,'active',0,$4,$4)`,
+  [id,`g5:${id}`,JSON.stringify({entity_id:`g5:${id}`}),`first-entry:${id}`]);
+  await pool.query(`INSERT INTO party_runtime.party_scene_baselines
+    (id,party_id,host_kind,host_id,source_kind,scene_template_ref,
+     materialization_trace_id,materializer_version,catalog_digest,status,
+     state_version,created_change_set_id,updated_change_set_id)
+    VALUES ($2,$1,'g5_site',$3,'canonical_template',$4::jsonb,'trace',
+      'materializer','catalog','active',0,$5,$5)`,
+  [id,`baseline:${id}`,`g5:${id}`,
+    JSON.stringify({entity_id:`scene:${id}`}),`first-entry:${id}`]);
+  await pool.query(`INSERT INTO party_runtime.party_g6_instances
+    (id,party_id,scene_baseline_id,source_scene_template_ref,scene_slot_key,
+     host_kind,host_id,physical_class_id,primary_scene_role_id,
+     vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,
+     default_visibility_distance_band,acoustic_uniformity,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($2,$1,$3,$4::jsonb,'slot','g5_site',$5,'interior','room',
+      'ground','open','default_clear','near','uniform','active',0,$6,$6)`,
+  [id,g6Id,`baseline:${id}`,JSON.stringify({entity_id:`scene:${id}`}),
+    `g5:${id}`,`first-entry:${id}`]);
+  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ($2,$1,$3,'ground','source',0,4,'open','active',0,$4,$4)`,
+  [id,positionId,g6Id,`first-entry:${id}`]);
 }
 
 async function inTransaction(pool,work) { const client=await pool.connect();
@@ -542,13 +628,11 @@ async function provision(pool, plan) {
       'rus.items.existing_container_ordinary_policy.v2',version:2,
       unresolved_ordinary_contents:true,
       technical_limits:plan.technical_limits}}})]);
-  const initial=applyOrdinaryAggregateTransition({aggregate:
-    createOrdinaryAggregate({scope_ref:plan.scope_ref,resolution_record_cap:32}),
-    transition:{kind:'seed',request_identity:'seed:chest',expected_state_version:0,
-      density_band:'ordinary',identity_budget:16,background_groups:[]}});
+  const initial=createOrdinaryAggregate({scope_ref:plan.scope_ref,
+    resolution_record_cap:32});
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)
-    VALUES ('party-o2b','container','chest',1,$1::jsonb)`,[JSON.stringify(initial)]);
+    VALUES ('party-o2b','container','chest',0,$1::jsonb)`,[JSON.stringify(initial)]);
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_contexts
     (party_id,scope_kind,scope_id,catalog_version,property_version,
      placement_version,supporting_basis_catalog_version,

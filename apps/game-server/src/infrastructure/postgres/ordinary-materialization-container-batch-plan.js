@@ -138,20 +138,38 @@ function validateTransitions(value, aggregate, pins) {
   const seedCount = value.transitions.filter(({ kind }) => kind === 'seed').length;
   const materialize = value.transitions.filter(({ kind, resolution }) =>
     kind === 'resolve_presence' && resolution === 'materialize');
-  if (seedCount > 1 || (seedCount === 1 && value.transitions[0].kind !== 'seed')
+  if (seedCount !== 1 || value.transitions[0].kind !== 'seed'
       || value.transitions.some(({ kind }) =>
         !['seed','resolve_presence','close_coverage'].includes(kind))
       || materialize.length !== value.items.length) {
     fail('ORDINARY_CONTAINER_BATCH_TRANSITION_INVALID');
   }
-  const histories = aggregate.committed_request_fingerprints.slice(
-    -value.transitions.length);
-  if (histories.length !== value.transitions.length
-      || histories.some((history, index) =>
-        history.request_identity !== value.transitions[index].request_identity)) {
+  const seed = value.transitions[0];
+  const records = aggregate.presence_resolutions;
+  const closure = aggregate.closed_observation_scopes;
+  if (pins.ordinary_state_version !== 0
+      || aggregate.last_committed_request_identity !== value.request_identity
+      || aggregate.last_committed_transition_kind !== 'close_coverage'
+      || aggregate.density_band !== seed.density_band
+      || aggregate.identity_budget !== seed.identity_budget
+      || records.length !== materialize.length
+      || records.some((record,index) => canonicalDigest(record)
+        !== canonicalDigest(presenceRecord(materialize[index])))
+      || closure.length !== 1
+      || canonicalDigest(closure[0]) !== canonicalDigest(
+        closureRecord(value.transitions.at(-1)))) {
     fail('ORDINARY_CONTAINER_BATCH_TRANSITION_INVALID');
   }
 }
+
+function presenceRecord(value) { return { resolution_ref:value.resolution_ref,
+  request_identity:value.request_identity,candidate_key:value.candidate_key,
+  coverage_key:value.coverage_key,category_key:value.category_key,
+  context_version:value.context_version,resolution:value.resolution,
+  identity_key:value.identity_key }; }
+function closureRecord(value) { return { request_identity:value.request_identity,
+  coverage_key:value.coverage_key,category_key:value.category_key,
+  context_version:value.context_version,resolution:value.resolution }; }
 
 function validateContainerPin(value, scope, pins) {
   const pin = exact(value, ['container_id','state_version','template_id',

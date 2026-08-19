@@ -9,6 +9,8 @@ import { loadLowerDvinaTraceO2bProfile } from
   '../src/internal/lower-dvina-trace-o2b-profile.js';
 import { createLowerDvinaTraceO2bContainerResolver } from
   '../src/runtime/lower-dvina-trace-o2b-container-resolver.js';
+import { validLowerDvinaTraceO2bPhysicalAttestation } from
+  '../src/runtime/lower-dvina-trace-o2b-physical-attestation.js';
 import { activeProfile, committedFixture, containerRef, modelPlan,
   operationIdentity, partyId, seedRequest } from
   './lower-dvina-trace-o2b-production-fixture.js';
@@ -39,6 +41,23 @@ test('authored revision 20 O2b profile is SHA-pinned, active and drift fails sta
     await assert.rejects(loadLowerDvinaTraceO2bProfile({rootDir:root}),
       {code:'TRACE_O2B_PROFILE_INVALID'});
   } finally { await rm(root,{recursive:true,force:true}); }
+});
+
+test('active O2b attestation follows current valid actor placement', async () => {
+  const loaded = await loadLowerDvinaTraceO2bProfile();
+  const actor = 'pc:actor';
+  const container = { placement:{ anchor_id:null, container_id:null,
+    holder_npc_id:null, holder_character_id:actor,
+    physical_position:'hands', equipment_slot_category_id:null },
+  ownership:{ owner_character_id:actor, controller_character_id:actor,
+    owner_npc_id:null, controller_npc_id:null, owner_party:false,
+    claim_state:loaded.initial_container.first_entry_placement.claim_state },
+  state:{ owner_character_id:actor, controller_character_id:actor,
+    first_entry_position_ref:'position:entry', semantic_category:
+      loaded.initial_container.container_state.semantic_category } };
+  assert.equal(validLowerDvinaTraceO2bPhysicalAttestation(container,loaded),true);
+  container.placement.anchor_id = 'remote-anchor';
+  assert.equal(validLowerDvinaTraceO2bPhysicalAttestation(container,loaded),false);
 });
 
 test('active O2b pins drift before model and Stage A is phrase-independent', async () => {

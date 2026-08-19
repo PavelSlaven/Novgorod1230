@@ -1,9 +1,6 @@
-import {
-  applyRuntimeContainerAccess,
-  buildExistingContainerOrdinarySeedRequest,
-  classifyExistingContainerContents,
-  planRuntimeContainerAccess
-} from '@rus/items-property';
+import { applyRuntimeContainerAccess, buildExistingContainerOrdinarySeedRequest,
+  classifyExistingContainerContents, planRuntimeContainerAccess } from
+  '@rus/items-property';
 import {
   applied,
   collectCurrentRefs,
@@ -14,7 +11,7 @@ import {
   requireRef,
   visibleConsequence
 } from './lower-dvina-trace-turn-step-runtime-common.js';
-
+import { ordinaryContainerRuntimeEntity } from './lower-dvina-trace-turn-step-item-support.js';
 const SAFE_ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
   'name', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
@@ -22,11 +19,8 @@ const SAFE_ITEM_KEYS = new Set([
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'visible', 'is_visible'
 ]);
-
-export function createContainerAccessHandler(state, options = {}) {
-  return (execution) => requestContainerAccess(execution, state, options);
-}
-
+export function createContainerAccessHandler(state, options = {}) { return (execution) =>
+  requestContainerAccess(execution, state, options); }
 export function snapshotO2bCommittedContainerInput(value) {
   if (value == null) return null;
   const snapshot = shallowDescriptorSnapshot(value); if (snapshot == null) return null;
@@ -170,10 +164,16 @@ async function resolveOrdinaryContents({ canonical, plan, state, options,
     children.push(normalized);
   }
   const ids = new Set(children.map(({ item_id: id }) => id));
-  if (ids.size !== children.length || children.some(({ item_id: id }) => state.materializedItems.has(id))) {
+  if (ids.size !== children.length || children.some(({ item_id: id }) =>
+    state.materializedItems.has(id) || state.entities.has(id))) {
     fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_CHILD_COLLISION');
   }
-  for (const child of children) state.materializedItems.set(child.item_id, child);
+  const runtimeChildren = children.map((child) => ordinaryContainerRuntimeEntity(child,
+    ordinaryPlan.items.find(({ item_id }) => item_id === child.item_id)));
+  for (let index = 0; index < children.length; index += 1) {
+    state.materializedItems.set(children[index].item_id, children[index]);
+    state.entities.set(children[index].item_id, runtimeChildren[index]);
+  }
   return ordinaryPlan;
 }
 
@@ -218,11 +218,11 @@ function sameContext(context, canonical) {
     && context?.template_id === canonical.template_id
     && context?.mechanics_profile_ref === canonical.mechanics_profile_ref;
 }
-function exact(value, keys) { return value != null && typeof value === 'object'
-  && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype
-  && Object.getOwnPropertySymbols(value).length === 0
-  && Object.getOwnPropertyNames(value).length === keys.length
-  && keys.every((key) => Object.hasOwn(value, key)); }
+function exact(value, keys) { return value != null && typeof value === 'object' &&
+  !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype &&
+  Object.getOwnPropertySymbols(value).length === 0 &&
+  Object.getOwnPropertyNames(value).length === keys.length &&
+  keys.every((key) => Object.hasOwn(value, key)); }
 function descriptorSnapshot(value) {
   const seen = new WeakSet();
   function copy(input) {

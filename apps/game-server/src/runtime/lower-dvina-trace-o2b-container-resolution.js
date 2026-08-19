@@ -14,14 +14,14 @@ import { createOrdinaryContainerContentsAtomicWritePlan } from
 import { basisDigest } from
   '../infrastructure/postgres/ordinary-materialization-phase-6-commit-internal.js';
 
-export function buildO2bContainerResolution({ committed, raw, seeded,
+export function buildO2bContainerResolution({ committed, raw,
   operation, partyId, inputDigest }) {
   let aggregate = committed.aggregate;
   const transitions = [];
   const density = raw.resolution === 'no_change' ? 'sparse'
-    : seeded.decision.density_band;
+    : raw.density_band_proposal;
   const budget = raw.resolution === 'no_change' ? 0
-    : seeded.identity_budget_resolution.identity_budget;
+    : committed.objective.identity_budget.identity_budget;
   const seedTransition = { kind:'seed', request_identity:
     committed.modelRequest.request_id, expected_state_version:
     aggregate.state_version, density_band:density, identity_budget:budget,
@@ -118,7 +118,8 @@ function buildItem({ entity, index, committed, aggregate, operation, partyId }) 
   const scope = {entity_kind:'container',entity_id:context.container_ref};
   const policy = objective.policy_refs.ordinary_presence_policy_ref;
   const candidate_key = createOrdinaryCandidateKey({scope_ref:scope,
-    semantic_type:entity.semantic_descriptor.semantic_type,
+    normalized_candidate_ref:`${context.container_ref}:ordinary-slot:${index}`,
+    normalizer_version:'existing-container-ordinary-slot-v1',
     functional_bucket:entity.functional_bucket,
     admission_class:entity.admission_class,
     availability_class:entity.availability_class, policy_version:policy});

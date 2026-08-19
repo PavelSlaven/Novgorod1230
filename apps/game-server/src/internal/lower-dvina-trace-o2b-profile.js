@@ -8,7 +8,7 @@ const FILE = 'ordinary-container-contents-profile.json';
 const CONTAINER_FILE = 'initial-ordinary-container.json';
 const MANIFEST_FILE = 'manifest.json';
 const MANIFEST_DIGEST =
-  '08c63f9dbee00e16ff1e219a51c6c7952de32dc44420c9fd4f6240d14be92d5a';
+  '3b2ec8edf55c2db80290a63c1d96946cd8f82d251d481259f4f337704780706b';
 
 export async function loadLowerDvinaTraceO2bProfile({
   rootDir = process.cwd()

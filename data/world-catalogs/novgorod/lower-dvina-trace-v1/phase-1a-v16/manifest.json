@@ -12,14 +12,14 @@
     "id": "lower_dvina_trace_phase_1a_v15",
     "revision": 15,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "618f9d747b7bff7a9b3038264ae1226b48523531c3268a0bd46e431a1d53b29a"
+    "digest": "5b54d6037ad8e969f22c0051dd617af8c6fac8ac81d4035ba1fd7d126af3220e"
   },
   "base_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/manifest.json",
     "id": "lower_dvina_trace_m8_content_v1",
     "revision": 1,
     "schema": "rus.lower_dvina_trace_m8_content_manifest.v1",
-    "digest": "08c63f9dbee00e16ff1e219a51c6c7952de32dc44420c9fd4f6240d14be92d5a"
+    "digest": "3b2ec8edf55c2db80290a63c1d96946cd8f82d251d481259f4f337704780706b"
   },
   "content_refs": {
     "materialization_bindings": {

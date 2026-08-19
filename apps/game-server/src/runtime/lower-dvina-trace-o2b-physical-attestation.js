@@ -11,8 +11,7 @@ export function validLowerDvinaTraceO2bPhysicalAttestation(
     && text(placement.holder_character_id)
     && placement.anchor_id == null && placement.container_id == null
     && placement.holder_npc_id == null
-    && placement.physical_position
-      === initial.first_entry_placement.physical_position
+    && ACTOR_ITEM_PHYSICAL_POSITIONS.includes(placement.physical_position)
     && ownership.owner_character_id === placement.holder_character_id
     && ownership.controller_character_id === placement.holder_character_id
     && ownership.owner_npc_id == null && ownership.controller_npc_id == null
@@ -34,3 +33,4 @@ function plain(value) {
     && !Array.isArray(value)
     && Object.getPrototypeOf(value) === Object.prototype;
 }
+import { ACTOR_ITEM_PHYSICAL_POSITIONS } from '@rus/items-property';

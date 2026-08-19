@@ -10,6 +10,8 @@ import {
 import {
   createOrdinaryContainerContentsAtomicWritePlan
 } from './ordinary-materialization-container-batch-plan.js';
+import { ordinaryContainerRuntimeItemState } from
+  './ordinary-materialization-container-batch-item.js';
 
 export async function applyOrdinaryContainerContentsAtomicWritePlanInTransaction({
   client, input, partyStateVersionAfter = null, updatePartyState = false,
@@ -252,16 +254,7 @@ async function insertItem(client, plan, item, ordinal, changeSetId) {
       VALUES ($1,$2,'container',$3,$4)`, [plan.party_id,item.item_id,
       item.container_id,ref]);
   }
-  const descriptor = item.item_proposal.semantic_descriptor;
-  const state = { lifecycle_status:'active',
-    runtime_instance_mechanics_snapshot:item.runtime_mechanics_snapshot,
-    ordinary_metadata:{ semantic_type:descriptor.semantic_type,
-      name:descriptor.name,origin:{ kind:'ordinary_container_contents',
-        source_refs:item.mechanics_snapshot.provenance.source_refs },
-      semantic_facts:descriptor.facts,operation_history:[] },
-    property_state:{ property_basis_ref:item.property_basis_ref,
-      property_placement_evidence:evidence },
-    created_change_set_id:changeSetId };
+  const state = ordinaryContainerRuntimeItemState(item, changeSetId);
   await client.query(`INSERT INTO party_runtime.party_items
     (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
      condition_state,legal_status,state)

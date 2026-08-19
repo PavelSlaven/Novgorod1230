@@ -79,28 +79,28 @@ test('current publication pins the exact v15 -> Phase 1A v16 -> revision 20 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v15');
   assert.equal(publication.manifest.revision, 15);
   assert.equal(publication.manifest_digest,
-    '27572f1f031fe9089b628e4dcd99cb66402496c5c3d2a0f0d296aef05f2f9aec');
+    'a7306762a8f57e9f43bb30dc0d8a9b48780aa9e69adcb26a66029b4064f868b4');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v14/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v14',
     revision: 14,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1',
-    digest: 'fafe6354ec530a8d8ba84e62b8921462e171d1d3692c0f4310398149426be1ad'
+    digest: '27572f1f031fe9089b628e4dcd99cb66402496c5c3d2a0f0d296aef05f2f9aec'
   });
   assert.equal(publication.binding.binding_id,
     'lower_dvina_trace_phase_1b_publication_v15');
   assert.equal(publication.binding.revision, 15);
   assert.equal(publication.binding_digest,
-    'dbc1bebf2fe6b812af6eec8085dd74d43668e179214fa74a27f6aa04e1de5c84');
+    'bb90c9ce8750641a258f84d8b7a7c0cdb417460da45f263b158d1ae0862f0c8c');
   assert.equal(publication.binding.superseded_binding_ref.digest,
-    '41aa36260f7465f41832886202b08e29c5fec55544a0315275cf537dad5f2310');
+    'dbc1bebf2fe6b812af6eec8085dd74d43668e179214fa74a27f6aa04e1de5c84');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v16');
   assert.equal(publication.phase_1a_manifest.revision, 16);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '5b54d6037ad8e969f22c0051dd617af8c6fac8ac81d4035ba1fd7d126af3220e');
+    'c4422cc17fc110bd486222377c0a262878077e9af9aef3da3977cfaed925cccd');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
-    '618f9d747b7bff7a9b3038264ae1226b48523531c3268a0bd46e431a1d53b29a');
+    '5b54d6037ad8e969f22c0051dd617af8c6fac8ac81d4035ba1fd7d126af3220e');
   assert.equal(publication.definition.revision, 20);
   assert.equal(publication.binding.scenario_definition_ref.digest,
     'd0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262');

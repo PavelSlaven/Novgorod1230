@@ -1018,9 +1018,9 @@
       "type": "sql"
     },
     {
-      "bytes": 18109,
-      "path": "schemas/party-db/025_party_runtime_existing_container_ordinary_contents.sql",
-      "sha256": "84b04659c8b9ad2143a41f9ea9e845f03ad3e27913aa986f60adf06fe4b91100",
+      "bytes": 18261,
+      "path": "schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql",
+      "sha256": "0a992319808bb09c8633ec322a464b142b2c0e0eca6e93d0618486c9db14c99d",
       "type": "sql"
     },
     {

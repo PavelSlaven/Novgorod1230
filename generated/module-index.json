@@ -167,7 +167,7 @@
         "ownership and holder relations",
         "physical access",
         "normalized inventory topology, mass/load, hands, access, packing usage, stack signatures and pure transfer plans",
-        "immutable mechanics snapshots for template-less ordinary direct-action instances",
+        "immutable mechanics snapshots for template-less ordinary direct-action and",
         "approved property/container transitions that independently preserve owner,"
       ],
       "path": "packages/items-property",

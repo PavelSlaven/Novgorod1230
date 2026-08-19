@@ -101,6 +101,36 @@ function verifiedModel(run) {
   return port;
 }
 
+function sensitiveEnabled({ admissionClass, profileKind, semanticType, publicName }) {
+  const value = enabled({ admission_class: admissionClass, semantic_type: semanticType });
+  value.execution_context.candidate_context.functional_bucket = 'stock';
+  value.execution_context.context_bound_ordinary_profile = {
+    ...value.execution_context.context_bound_ordinary_profile,
+    schema: 'rus.items.context_bound_ordinary_profile.v2', version: 2,
+    profile_kind: profileKind, semantic_type: semanticType, public_name: publicName,
+    functional_bucket: 'stock', admission_class: admissionClass,
+    condition_state: 'serviceable', basis_kind: 'stored_supply'
+  };
+  value.execution_context.supporting_bases[0] = {
+    ...value.execution_context.supporting_bases[0], functional_buckets: ['stock'],
+    basis_kind: 'stored_supply'
+  };
+  value.version_pins.supporting_basis_catalog_digest = canonicalDigest({
+    domain: 'ordinary_supporting_basis_catalog_v1',
+    supporting_bases: value.execution_context.supporting_bases
+  });
+  return value;
+}
+
+function sensitiveModel(input, { admissionClass, semanticType, name }) {
+  const plan = model(input, name, semanticType);
+  if (input.mode === 'seed_scope') return plan;
+  plan.entities[0].admission_class = admissionClass;
+  plan.entities[0].functional_bucket = 'stock';
+  plan.entities[0].causal_basis.basis_kind = 'stored_supply';
+  return plan;
+}
+
 test('approved armament profile reaches the same bounded presence and P16 plan', async () => {
   const fixture = enabled();
   const policy = resolveContextBoundOrdinaryPolicy(JSON.parse(JSON.stringify({ objective_context: fixture.objective_context,
@@ -138,6 +168,46 @@ test('approved class admits an unlisted ordinary semantic variant', async () => 
   assert.equal(calls, 2);
   assert.deepEqual(descriptor, { semantic_type: 'socketed_spearhead_variant',
     name: 'обычный втульчатый наконечник', facts: [] });
+});
+
+test('authority-sensitive wording cannot become persisted currency or document identity', async () => {
+  for (const fixture of [{
+    admissionClass: 'currency_or_precious', profileKind: 'precious_material',
+    semanticType: 'precious_material_fragment', publicName: 'серебряная заготовка',
+    hostileType: 'authentic_coin', hostileName: 'подлинная княжеская монета',
+    ordinaryType: 'silver_fragment_variant', ordinaryName: 'кусочек серебра'
+  }, {
+    admissionClass: 'document_like', profileKind: 'specialized_stock',
+    semanticType: 'blank_writing_substrate', publicName: 'чистый лист',
+    hostileType: 'authentic_signed_charter', hostileName: 'подлинная княжеская грамота',
+    ordinaryType: 'blank_paper_variant', ordinaryName: 'чистая бумажная заготовка'
+  }]) {
+    const value = sensitiveEnabled(fixture);
+    const policy = resolveContextBoundOrdinaryPolicy(JSON.parse(JSON.stringify({
+      objective_context: value.objective_context,
+      execution_context: value.execution_context,
+      candidate_context: value.execution_context.candidate_context,
+      scope_ref, property_placement_context: value.property_placement_context
+    })));
+    assert.equal(policy.resolution, null, JSON.stringify(policy));
+    for (const [semanticType, name] of [[fixture.hostileType, fixture.hostileName],
+      [fixture.ordinaryType, fixture.ordinaryName]]) {
+      let calls = 0;
+      const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+        inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(value)),
+        ordinaryMaterializationModel: verifiedModel(async (input) => {
+          calls += 1;
+          return sensitiveModel(input, { admissionClass: fixture.admissionClass,
+            semanticType, name });
+        }) });
+      const result = await resolver(request());
+      assert.equal(calls, 2, JSON.stringify(result));
+      const descriptor = result.ordinary_materialization_atomic_write_plan
+        ?.item?.item_proposal?.semantic_descriptor;
+      assert.deepEqual(descriptor, { semantic_type: fixture.semanticType,
+        name: fixture.publicName, facts: [] }, JSON.stringify(result));
+    }
+  }
 });
 
 test('selected finite capability consumes its own committed source row', async () => {

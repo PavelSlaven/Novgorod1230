@@ -187,7 +187,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
             causal_ref: execution.causal_ref,
             source_refs: sourceRefs({ envelope, proposed, execution, property,
               permissionRefs: pendingHandoff.admission_evidence.permission_refs })
-          }
+          }, ...semanticIdentityProfile(authorityProfile)
         } };
       const admitted = admitOrdinaryWorldMaterialization(
         structuredClone(admissionInput));
@@ -245,6 +245,16 @@ function propertyCatalogForItem({ catalog, proposed }) {
   }
   return structuredClone(catalog.filter((entry) =>
     entry.property_basis_ref === proposed.property_basis_ref));
+}
+
+function semanticIdentityProfile(profile) {
+  if (!['currency_or_precious','document_like','other_restricted']
+    .includes(profile?.admission_class)) return {};
+  return { semantic_identity_profile: {
+    schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
+    profile_ref: profile.profile_ref, admission_class: profile.admission_class,
+    semantic_type: profile.semantic_type, public_name: profile.public_name
+  } };
 }
 
 function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,

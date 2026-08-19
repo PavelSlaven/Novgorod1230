@@ -331,6 +331,34 @@ test('missing authority and restricted class persist code-owned absence without 
   }
 });
 
+test('specialized candidate without either authority persists absence and never rerolls', async () => {
+  const current = enabled({ admission_class: 'specialized_or_valuable',
+    semantic_type: 'prepared_stock', withProfile: false });
+  let calls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(current)),
+    ordinaryMaterializationModel: verifiedModel(async (input) => {
+      calls += 1;
+      const plan = model(input, 'valuable stock', 'prepared_stock');
+      if (input.mode !== 'seed_scope') {
+        plan.entities[0].admission_class = 'specialized_or_valuable';
+      }
+      return plan;
+    }) });
+  const first = await resolver(request());
+  assert.equal(calls, 0, JSON.stringify(first));
+  const plan = first.ordinary_materialization_atomic_write_plan;
+  assert.equal(plan.resolution, 'absent');
+  assert.deepEqual(plan.transitions.map(({ kind }) => kind),
+    ['seed', 'resolve_presence']);
+
+  current.ordinary_aggregate = structuredClone(plan.next_aggregate);
+  current.version_pins.ordinary_state_version = plan.next_aggregate.state_version;
+  const retry = await resolver({ ...request(), request: { root_turn_id: 'turn:party:2' } });
+  assert.equal(calls, 0);
+  assert.equal(Object.hasOwn(retry, 'ordinary_materialization_atomic_write_plan'), false);
+});
+
 test('hostile armament profile is rejected without getter execution or model call', async () => {
   const value = JSON.parse(JSON.stringify(enabled())); let reads = 0; let calls = 0;
   Object.defineProperty(value.execution_context.context_bound_ordinary_profile, 'semantic_type', {

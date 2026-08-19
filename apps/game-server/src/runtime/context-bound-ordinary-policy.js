@@ -23,7 +23,10 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
   const raw = execution?.context_bound_ordinary_profile;
   // A specialized finite natural source has its own Phase 5 authority owner.
   // All other specialized or weapon candidates require this exact envelope.
-  if (raw == null && candidate.admission_class === 'specialized_or_valuable') return pass(null);
+  if (raw == null && candidate.admission_class === 'specialized_or_valuable') {
+    return execution?.constrained_natural_resource_profile == null
+      ? blocked('absent') : pass(null);
+  }
   if (raw == null) return blocked('absent');
   const profile = record(raw, PROFILE_V2) ?? record(raw, PROFILE);
   if (!profile || !validProfile(profile, objective, execution, candidate, scopeRef,

@@ -6,7 +6,8 @@ const O1_BUCKETS = new Set(['household','work','storage','stock',
   'other_ordinary']);
 const CONTEXT_BOUND = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
-const AUTHORITY_SENSITIVE = CONTEXT_BOUND;
+const AUTHORITY_SENSITIVE = new Set(['currency_or_precious','document_like',
+  'other_restricted']);
 const CARRY_FORMS = new Set(['compact','regular','long','bulky']);
 
 const HANDOFF = ['schema','status','stage','request_id','scope_ref','candidate_key','coverage_key','context_version','admission_evidence','proposed_item'];
@@ -41,7 +42,7 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   const finiteSource = causalBasis.basis_kind === 'finite_source';
   const approvedPermissions = refs(context.approved_permission_refs);
   if (!approvedPermissions || evidence.authority_class !== 'ordinary' || evidence.admission_class === 'container_capable' || (!contextBound && (evidence.admission_class !== 'common_mundane' || evidence.availability_class !== 'common' || !O1_BUCKETS.has(item.functional_bucket))) || (contextBound && (evidence.availability_class !== 'context_bound' || !sameRefs(evidence.permission_refs, approvedPermissions)))) return failed('ITEM_ORDINARY_WORLD_RESTRICTED');
-  const semanticIdentity = authoritySensitiveIdentity(
+  const semanticIdentity = profileIdentity(
     context.semantic_identity_profile, evidence.admission_class,
     approvedPermissions);
   if (AUTHORITY_SENSITIVE.has(evidence.admission_class)
@@ -122,8 +123,7 @@ function prepared(value) { const p = record(value, ['seed_request_id','mode','ca
 function normalizeBasis(value) { const basis = record(value, BASIS); if (basis) return basis; const withKind = record(value, [...BASIS,'basis_kind']); if (withKind && O2A_BASIS.has(withKind.basis_kind)) return withKind; const legacy = record(value, LEGACY_BASIS); return legacy ? { ...legacy, permission_refs: [] } : null; }
 function propertyInputOf(value, requireV2) { const v2=record(value,PROPERTY_INPUT_V2); if(v2?.schema==='rus.items.ordinary_world_property_placement_context.v2'&&v2.version===2)return v2;if(requireV2)return null;return record(value,PROPERTY_INPUT_V1); }
 function covers(bases, ref, item, scopeRef, permissionRefs) { return bases.some((b) => b && b.basis_ref === ref && validBasis(b,scopeRef) && b.functional_buckets.includes(item.functional_bucket) && b.allowed_admission_classes.includes(item.admission_class) && sameRefs(b.permission_refs, permissionRefs)); }
-function authoritySensitiveIdentity(value, admissionClass, approvedPermissions) {
-  if (!AUTHORITY_SENSITIVE.has(admissionClass)) return null;
+function profileIdentity(value, admissionClass, approvedPermissions) {
   const profile = record(value, ['schema','version','profile_ref','admission_class',
     'semantic_type','public_name']);
   return profile?.schema === 'rus.items.ordinary_world_semantic_identity_profile.v1'

@@ -229,15 +229,12 @@ test('O2a admits a context-bound ordinary weapon only with committed basis and e
     causal_basis_kind: 'personal_possession' };
   pending.proposed_item = { ...pending.proposed_item, admission_class: 'weapon_or_armament',
     availability_class: 'context_bound', functional_bucket: 'arms',
+    semantic_descriptor: { semantic_type: 'socketed_spearhead_variant',
+      name: 'обычный втульчатый наконечник', facts: [] },
     causal_basis: { basis_kind: 'personal_possession', basis_refs: ['basis-a'] } };
   const base = context();
   const admissionContext = { ...base,
     approved_permission_refs: ['armament-profile-a'],
-    semantic_identity_profile: {
-      schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
-      profile_ref: 'armament-profile-a', admission_class: 'weapon_or_armament',
-      semantic_type: 'ordinary_weapon', public_name: 'обычное оружие'
-    },
     supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
       prepared_seed_provenance: null, functional_buckets: ['arms'],
       allowed_admission_classes: ['weapon_or_armament'],
@@ -248,8 +245,11 @@ test('O2a admits a context-bound ordinary weapon only with committed basis and e
     admission_context: admissionContext }).pass, false,
   'context-bound O2a must not accept the legacy property context v1');
   const admissionContextV2 = requireO2aPropertyV2(pending, admissionContext);
-  assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
-    admission_context: admissionContextV2 }).pass, true);
+  const accepted = admitOrdinaryWorldMaterialization({ handoff: pending,
+    admission_context: admissionContextV2 });
+  assert.equal(accepted.pass, true);
+  assert.deepEqual(accepted.proposal.semantic_descriptor,
+    pending.proposed_item.semantic_descriptor);
   assert.equal(admitOrdinaryWorldMaterialization({ handoff: pending,
     admission_context: { ...admissionContextV2, supporting_bases: [{
       ...admissionContextV2.supporting_bases[0], state: 'prepared_seed',

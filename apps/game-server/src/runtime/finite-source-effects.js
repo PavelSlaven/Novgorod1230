@@ -1,9 +1,8 @@
-import { resolveFiniteSourceInitialAmount } from
+import { planFiniteResourceDecrement, resolveFiniteSourceInitialAmount } from
   '@rus/items-property/finite-resource-transition';
 
-// Generic finite-source effect owner. Context-bound and constrained policies
-// decide whether a source is admissible; conservation depends only on the
-// exact committed finite source and the admitted item's causal basis.
+// Runtime adapter: policy proves source applicability; @rus/items-property
+// remains the sole owner of finite decrement arithmetic.
 export function finiteSourceTransition({ profile, item,
   request_identity } = {}) {
   const source = finiteSource(profile);
@@ -14,20 +13,7 @@ export function finiteSourceTransition({ profile, item,
       || item.position_ref == null || item.property_basis_ref == null
       || !integer(quantity?.value) || quantity.value < 1
       || quantity.unit !== source.quantity.unit) return null;
-  const before = source.quantity;
-  if (source.lifecycle_state !== 'active' || before.denominator !== 1
-      || before.numerator < quantity.value) return null;
-  const after = before.numerator - quantity.value;
-  return deepFreeze({ source_resource_node_id: source.source_resource_node_id,
-    expected_state_version: source.state_version,
-    causal_transition_identity: request_identity,
-    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    before_quantity: structuredClone(before),
-    decrement_quantity: { numerator: quantity.value, denominator: 1,
-      unit: quantity.unit },
-    after_quantity: { numerator: after, denominator: 1, unit: quantity.unit },
-    next_state_version: source.state_version + 1,
-    lifecycle_state_after: after === 0 ? 'depleted' : 'active' });
+  return finiteDecrement({ source, request_identity, quantity });
 }
 
 export function finiteSourceInitialization({ profile, item,
@@ -48,20 +34,11 @@ export function finiteSourceInitialization({ profile, item,
   } catch { return null; }
   const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
   if (!integer(quantity?.value) || quantity.value < 1
-      || quantity.unit !== initialized.amount.unit
-      || initialized.amount.denominator !== 1
-      || initialized.amount.numerator < quantity.value) return null;
-  const after = initialized.amount.numerator - quantity.value;
-  const transition = { source_resource_node_id: source.source_resource_node_id,
-    expected_state_version: source.state_version + 1,
-    causal_transition_identity: request_identity,
-    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
-    before_quantity: structuredClone(initialized.amount),
-    decrement_quantity: { numerator: quantity.value, denominator: 1,
-      unit: quantity.unit },
-    after_quantity: { numerator: after, denominator: 1,
-      unit: quantity.unit }, next_state_version: source.state_version + 2,
-    lifecycle_state_after: after === 0 ? 'depleted' : 'active' };
+      || quantity.unit !== initialized.amount.unit) return null;
+  const transition = finiteDecrement({ source: { ...source,
+    state_version: source.state_version + 1, lifecycle_state: 'active',
+    quantity: initialized.amount }, request_identity, quantity });
+  if (transition == null) return null;
   return deepFreeze({ finite_resource_initialization: {
     source_resource_node_id: source.source_resource_node_id,
     expected_state_version: source.state_version,
@@ -70,6 +47,25 @@ export function finiteSourceInitialization({ profile, item,
     estimated_amount: structuredClone(initialized.amount),
     approved_bounds: structuredClone(source.initial_amount_bounds)
   }, finite_resource_transition: transition });
+}
+
+function finiteDecrement({ source, request_identity, quantity }) {
+  let planned;
+  try {
+    planned = planFiniteResourceDecrement({
+      source_resource_node_id: source.source_resource_node_id,
+      expected_state_version: source.state_version,
+      causal_transition_identity: request_identity,
+      source: { state_version: source.state_version,
+        lifecycle_state: source.lifecycle_state,
+        quantity: structuredClone(source.quantity) },
+      requested_decrement: { numerator: quantity.value, denominator: 1,
+        unit: quantity.unit }
+    });
+  } catch { return null; }
+  const { schema: _schema, ...transition } = planned;
+  return deepFreeze({ ...transition,
+    quantity_unit_ref: structuredClone(source.quantity_unit_ref) });
 }
 
 export function resolveFiniteSourceAuthority({ authority,

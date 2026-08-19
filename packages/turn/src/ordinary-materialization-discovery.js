@@ -221,8 +221,11 @@ function semanticModelCallBudget(model) {
   });
 }
 function semanticIdentityProfile(profile) {
-  if (!['specialized_or_valuable','weapon_or_armament','currency_or_precious',
-    'document_like','other_restricted'].includes(profile?.admission_class)) return {};
+  const sensitive = ['currency_or_precious','document_like','other_restricted']
+    .includes(profile?.admission_class);
+  const constrained = profile?.schema
+    === 'rus.items.constrained_natural_resource_profile.v1';
+  if (!sensitive && !constrained) return {};
   return { semantic_identity_profile: {
     schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
     profile_ref: profile.permission_refs?.[0]

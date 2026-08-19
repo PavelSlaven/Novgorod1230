@@ -320,7 +320,7 @@ test("damaged remnant binds server condition, finite decrement, v3 proposal and 
   });
   assert.equal(next.items[0].state.condition_state, "damaged");
 });
-test("approved damaged armament remnant reaches the same finite owner without combat claims", async () => {
+test("damaged armament remnant stays absent until a combat mechanics owner exists", async () => {
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: "party",
@@ -332,12 +332,10 @@ test("approved damaged armament remnant reaches the same finite owner without co
     }),
   });
   const plan = (await resolver(request())).ordinary_materialization_atomic_write_plan;
-  assert.equal(calls, 2);
-  assert.equal(plan.item.admission_class, "weapon_or_armament");
-  assert.equal(plan.item.condition_state, "damaged");
-  assert.equal(plan.item.item_proposal.schema, "ordinary_world_item_proposal_v3");
-  assert.equal(plan.finite_resource_transition.source_resource_node_id, source_ref);
-  assert.equal(Object.hasOwn(plan.item.mechanics_snapshot.mechanics, "damage"), false);
+  assert.equal(calls, 1);
+  assert.equal(plan.resolution, "absent");
+  assert.equal(plan.item, null);
+  assert.equal(Object.hasOwn(plan, "finite_resource_transition"), false);
 });
 test("serviceable finite-source materialization requires the owner-native decrement", async () => {
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
@@ -377,7 +375,7 @@ test("damaged remnant rejects wrong basis, model condition and hidden facts", as
     });
     if (options.basis_kind || options.admission_class) {
       const out = await resolver(request());
-      assert.equal(calls, 0);
+      assert.equal(calls, 1);
       const plan = out.ordinary_materialization_atomic_write_plan;
       assert.equal(plan.resolution, "absent");
       assert.deepEqual(

@@ -20,9 +20,10 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
     .includes(candidate.admission_class)) {
     return blocked('absent');
   }
+  if (candidate.admission_class === 'weapon_or_armament') return blocked('absent');
   const raw = execution?.context_bound_ordinary_profile;
   // A specialized finite natural source has its own Phase 5 authority owner.
-  // All other specialized or weapon candidates require this exact envelope.
+  // Every other context-bound class requires this exact envelope.
   if (raw == null && candidate.admission_class === 'specialized_or_valuable') {
     return execution?.constrained_natural_resource_profile == null
       ? blocked('absent') : pass(null);
@@ -36,10 +37,8 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
 }
 
 function validProfile(profile, objective, execution, candidate, scopeRef, propertyContext) {
-  const weapon = candidate.admission_class === 'weapon_or_armament';
-  const expectedProfileKind = weapon ? 'armament'
-    : candidate.admission_class === 'currency_or_precious'
-      ? 'precious_material' : 'specialized_stock';
+  const expectedProfileKind = candidate.admission_class === 'currency_or_precious'
+    ? 'precious_material' : 'specialized_stock';
   const permissions = refs(profile.permission_refs);
   const condition = profile.version === 1 ? 'serviceable' : profile.condition_state;
   return ((profile.schema === 'rus.items.context_bound_ordinary_profile.v1' && profile.version === 1)
@@ -60,7 +59,7 @@ function validProfile(profile, objective, execution, candidate, scopeRef, proper
     && profile.runtime_item_mechanics_policy_ref === objective?.policy_refs?.runtime_item_mechanics_policy_ref
     && text(profile.mechanics_capability_ref)
     && exactBasis(execution?.supporting_bases, profile, scopeRef)
-    && mechanics(execution?.mechanics_policy, profile, weapon)
+    && mechanics(execution?.mechanics_policy, profile)
     && exactProperty(propertyContext, profile.property_basis_ref, scopeRef);
 }
 
@@ -75,9 +74,8 @@ function exactBasis(bases, profile, scopeRef) {
     && (profile.version === 1 || basis.basis_kind === profile.basis_kind);
 }
 
-function mechanics(value, profile, weapon) {
-  return plain(value) && value.policy_ref === profile.runtime_item_mechanics_policy_ref
-    && (!weapon || profile.mechanics_capability_ref === `combat:${profile.runtime_item_mechanics_policy_ref}`);
+function mechanics(value, profile) {
+  return plain(value) && value.policy_ref === profile.runtime_item_mechanics_policy_ref;
 }
 
 function exactProperty(context, propertyBasisRef, scopeRef) {

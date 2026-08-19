@@ -37,14 +37,14 @@ function resolve(overrides = {}) { return resolveContextBoundOrdinaryPolicy(JSON
   property_placement_context
 }))); }
 
-test('approved armament is a closed profile envelope, not a noun rule', () => {
+test('armament remains absent without a code-owned combat mechanics owner', () => {
   const result = resolve();
-  assert.equal(result.resolution, null);
-  assert.equal(result.profile.semantic_type, 'ordinary_spear');
+  assert.equal(result.resolution, 'absent');
+  assert.equal(result.profile, null);
   assert.equal(Object.isFrozen(result), true);
   assert.equal(resolve({ candidate_context: {
     ...candidate_context, semantic_type: 'unlisted_spearhead_variant'
-  } }).resolution, null);
+  } }).resolution, 'absent');
   for (const alteredCandidate of [
     { ...candidate_context, functional_bucket: 'work' },
     { ...candidate_context, admission_class: 'specialized_or_valuable' }
@@ -114,7 +114,7 @@ test('document-like and other restricted gates require exact non-authentic stock
   }
 });
 
-test('damaged ordinary armament remnant is reachable only from its approved remnant profile', () => {
+test('damaged armament remnant also remains absent without a combat owner', () => {
   const candidate = { semantic_type: 'damaged_armament_remnant', functional_bucket: 'arms',
     admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
   const base = execution();
@@ -126,7 +126,8 @@ test('damaged ordinary armament remnant is reachable only from its approved remn
   const supporting_bases = [{ ...base.supporting_bases[0], basis_kind: 'remnant' }];
   const result = resolve({ candidate_context: candidate, execution_context: {
     ...base, supporting_bases, context_bound_ordinary_profile: profile } });
-  assert.equal(result.profile.condition_state, 'damaged');
+  assert.equal(result.resolution, 'absent');
+  assert.equal(result.profile, null);
   for (const change of [
     (value) => { value.context_bound_ordinary_profile.basis_kind = 'finite_source'; },
     (value) => { value.context_bound_ordinary_profile.profile_kind = 'specialized_stock'; }

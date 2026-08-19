@@ -6,7 +6,12 @@ import { initializeRuntimeState } from '../src/runtime/lower-dvina-trace-turn-st
 
 const op = { op: 'request_container_access', actor_ref: 'actor', container_ref: 'chest', access_kind: 'open_and_view' };
 function context(overrides = {}) { return { container_ref: 'chest', template_id: 'chest-template', mechanics_profile_ref: 'mechanics', owner_controller_ref: 'owner', property_ref: 'property', site_function_ref: 'site', economic_context_ref: 'economy', context_bound_permission_refs: [], ordinary_policy: { schema: 'rus.items.existing_container_ordinary_policy.v2', version: 2, unresolved_ordinary_contents: true, technical_limits: { schema: 'rus.items.existing_container_ordinary_limits.v1', version: 1, max_new_entities: 4 } }, authoritative_status: 'absent', ...overrides }; }
-function child(id = 'ordinary') { return { item_id: id, semantic_type: 'material_portion', authority: 'ordinary', disclosure: 'concealed', admission_class: 'common_mundane', is_container: false, evidence: false, authentic_document: false, hidden_history: false, secret_cache: false, placement: { container_id: 'chest' } }; }
+function child(id = 'ordinary') { return { item_id: id,
+  semantic_type: 'material_portion',name:'ordinary item',authority: 'ordinary',
+  disclosure: 'concealed', admission_class: 'common_mundane',
+  is_container: false, evidence: false, authentic_document: false,
+  hidden_history: false, secret_cache: false,
+  placement: { container_id: 'chest' } }; }
 function setup(resolver, ctx = context(), extra = []) { const chest = { item_id: 'chest', template_id: 'chest-template', mechanics_profile_ref: 'mechanics', commit_state: 'committed', visible: true, open_state: 'closed', contents_state: 'contents_hidden', placement: { location_ref: 'shore' }, ordinary_contents_context: ctx }; const items = [chest, ...extra]; const ports = createLowerDvinaTraceTurnStepRuntimePorts({ committedState: { actor_id: 'actor', items }, ordinaryContainerContentsResolver: resolver, workingProjectionAuthority: createLowerDvinaTracePlayerSafeWorkingProjectionAuthority() }); return { ports, projection: { actor_id: 'actor', position: { location_ref: 'shore' }, items: [chest], inventory: { items: [], total_weight: { grams: 0 }, load_category: 'light', occupied_hands: 0 }, knowledge: [] } }; }
 async function open(fixture) { return fixture.ports.executionRegistry.domain(op)({ plan: {}, request: { root_turn_id: 'turn', step_index: 1, actor: { actor_id: 'actor' } }, operation: op, working_projection: fixture.projection, check_result: null }); }
 const good = (items) => ({ pass: true, materialized_items: items,
@@ -14,6 +19,9 @@ const good = (items) => ({ pass: true, materialized_items: items,
     schema: 'ordinary_container_contents_atomic_write_plan_v2',
     write_plan_digest: 'sealed-test-plan',
     scope_ref: { entity_kind: 'container', entity_id: 'chest' },
+    container_transition:{access_kind:'open_and_view',state_patch:{
+      open_state:'open',contents_state:'known',access_state:{access:'open'}},
+    revealed_refs:items.map(({item_id}) => item_id).sort()},
     items: items.map(({ item_id }) => runtimeItem(item_id))
   }, errors: [] });
 function runtimeItem(item_id) { return { item_id,

@@ -108,8 +108,10 @@ export function seedRequest() {
     ordinary_policy:context.ordinary_policy},prior_resolutions:[]});
 }
 
-export function operationIdentity() { return {root_turn_id:'turn-o2b-fixture',
-  step_index:1,operation_ref:`request_container_access:${containerRef}`}; }
+export function operationIdentity(resolutionMode = 'reveal') { return {
+  root_turn_id:'turn-o2b-fixture',step_index:1,resolution_mode:resolutionMode,
+  operation_ref:resolutionMode === 'reveal'
+    ? `request_container_access:${containerRef}` : `move_entity:${containerRef}`}; }
 
 export function modelPlan(request, entities = [entity()]) {
   return {schema:'ordinary_materialization_plan_v1',request_id:request.request_id,

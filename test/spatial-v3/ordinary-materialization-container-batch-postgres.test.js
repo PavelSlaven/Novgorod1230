@@ -289,6 +289,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
       'pc:revision20');
     assert.equal(activeCommitted.capacity_snapshot.length,0);
     const activeState={actor_id:'pc:revision20',position:{},items:[],
+      player_profile:runtimePlayerProfile(),
       containers:[activeCommitted.container],container_placements:[{
         ...activeCommitted.container.placement,container_id:activeRef,
         parent_container_id:activeCommitted.container.placement.container_id}]};
@@ -322,7 +323,8 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
       },ordinaryMaterializationModel:async()=>{ driftModelCalls+=1; }});
     const drifted=await driftResolver({stage_a_request:activeSeed,
       operation_identity:{root_turn_id:'turn-revision20-drift',step_index:1,
-        operation_ref:`request_container_access:${activeRef}`}});
+        operation_ref:`request_container_access:${activeRef}`,
+        resolution_mode:'reveal'}});
     assert.equal(drifted.pass,false);
     assert.equal(driftModelCalls,0);
     let activeModelCalls=0;
@@ -332,19 +334,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
       loadCommittedContainer:activeLoader,
       ordinaryMaterializationModel:async(request)=>{
         activeModelCalls+=1;
-        const basis=request.policy_refs.allowed_supporting_bases[0].basis_ref;
-        const ordinary={semantic_descriptor:{semantic_type:
-          'household_supply_wooden_spoon',name:'wooden spoon',facts:[]},
-        authority_class:'ordinary',admission_class:'common_mundane',
-        availability_class:'common',functional_bucket:'household',
-        presence_expectation:'routine',supporting_basis_ref:basis,
-        causal_basis:{basis_kind:'household_use',basis_refs:[basis]},
-        property_basis_ref:activeContext.property_ref,
-        placement_proposal:{scope_ref:activeRef,position_ref:activeRef},
-        mechanics_proposal:{mass_grams:80,external_hand_cost:0,
-          carry_form:'compact',packing_slot_cost:1,
-          quantity:{value:1,unit:'item'},container:null}};
-        return modelPlan(request,[ordinary]); }});
+        return modelPlan(request,[activeOrdinary(request,activeContext)]); }});
     const projectionAuthority=
       createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
     const runtime=createLowerDvinaTraceTurnStepRuntimePorts({
@@ -356,7 +346,7 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
       access_kind:'open_and_view'};
     const activeResolution=await runtime.executionRegistry
       .domain(accessOperation)({plan:{},request:{root_turn_id:'turn-revision20',
-        step_index:1,actor:{actor_id:'pc:revision20'}},
+        step_index:1,actor:runtimeActor()},
       operation:accessOperation,
       working_projection:projectionAuthority.admit(beforeAccess),
       check_result:null});
@@ -378,8 +368,94 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
         throw Error('active revision 20 reopen must not reroll'); }});
     assert.equal((await activeReopened({stage_a_request:activeSeed,
       operation_identity:{root_turn_id:'turn-revision20',step_index:1,
-        operation_ref:`request_container_access:${activeRef}`}}))
+        operation_ref:`request_container_access:${activeRef}`,
+        resolution_mode:'reveal'}}))
       .ordinary_materialization_atomic_write_plan,null);
+
+    const concealedParty='party-o2b-concealed';
+    await provisionFirstEntryParty(pool,concealedParty,{
+      g6Id:'g6:concealed',positionId:'position:concealed'});
+    await inTransaction(pool,async(transaction)=>provisioner.provision({
+      transaction,partyId:concealedParty,
+      changeSetId:`first-entry:${concealedParty}`,firstEntryBinding:{
+        g6_instance_id:'g6:concealed',position_id:'position:concealed'}}));
+    const concealedLoader=createPostgresOrdinaryContainerContentsLoader({pool});
+    const concealedCommitted=await concealedLoader({party_id:concealedParty,
+      container_ref:activeRef});
+    const concealedContext=concealedCommitted.container.state
+      .ordinary_contents_context;
+    const concealedSeed=buildExistingContainerOrdinarySeedRequest({
+      container_context:seedContext(concealedContext),prior_resolutions:[]});
+    let concealedModelCalls=0;
+    const concealedResolver=createLowerDvinaTraceO2bContainerResolver({
+      partyId:concealedParty,inputDigest:'revision20-concealed',
+      loadedProfile:profiles.ordinaryContainerContentsProfile,
+      loadCommittedContainer:concealedLoader,
+      ordinaryMaterializationModel:async(request)=>{
+        concealedModelCalls+=1;
+        return modelPlan(request,[activeOrdinary(request,concealedContext)]);
+      }});
+    const concealedResolution=await concealedResolver({
+      stage_a_request:concealedSeed,
+      operation_identity:{root_turn_id:'turn-concealed',step_index:1,
+        operation_ref:`move_entity:${activeRef}`,
+        resolution_mode:'concealed'}});
+    const concealedPlan=concealedResolution
+      .ordinary_materialization_atomic_write_plan;
+    assert.equal(concealedPlan.container_transition.access_kind,
+      'resolve_concealed');
+    const movedContainer={party_id:concealedParty,container_id:activeRef,
+      condition_state:null,closure_state:'closed',state:{
+        ...concealedCommitted.container.state,
+        ...concealedPlan.container_transition.state_patch},anchor_id:null,
+      parent_container_id:null,holder_npc_id:null,
+      holder_character_id:'pc:revision20',physical_position:'hands',
+      equipment_slot_category_id:null,
+      state_version:concealedCommitted.container.state_version,
+      updated_change_set_id:'o2b-concealed-cs'};
+    const concealedCommit=await combined.commit({plan:await makeCombinedPlan(
+      concealedPlan,'concealed',{partyId:concealedParty,
+        moveContainer:movedContainer})});
+    assert.equal(concealedCommit.ok,true,JSON.stringify(concealedCommit));
+    const concealedReload=await concealedLoader({party_id:concealedParty,
+      container_ref:activeRef});
+    assert.equal(concealedReload.container.closure_state,'closed');
+    assert.equal(concealedReload.container.state_version,3);
+    assert.equal(concealedReload.container.placement.physical_position,'hands');
+    assert.equal(concealedReload.container.state.contents_state,
+      'resolved_concealed');
+    assert.equal(concealedReload.capacity_snapshot.length,1);
+    const concealedItems=concealedReload.capacity_snapshot.map((item)=>({
+      ...item,name:item.state.ordinary_metadata.name,
+      semantic_type:item.state.ordinary_metadata.semantic_type,
+      runtime_instance_mechanics_snapshot:
+        item.state.runtime_instance_mechanics_snapshot}));
+    const concealedState={actor_id:'pc:revision20',position:{},
+      player_profile:runtimePlayerProfile(),
+      items:concealedItems,containers:[concealedReload.container],
+      container_placements:[{...concealedReload.container.placement,
+        container_id:activeRef,parent_container_id:
+          concealedReload.container.placement.container_id}]};
+    const concealedBefore=projectLowerDvinaTracePlayerSafeState({
+      committed_state:concealedState,
+      actor_id:'pc:revision20'}).player_safe_state;
+    assert.equal(concealedBefore.items.some(({name})=>name==='wooden spoon'),
+      false);
+    const reopenedRuntime=createLowerDvinaTraceTurnStepRuntimePorts({
+      committedState:concealedState,
+      ordinaryContainerContentsResolver:async()=>{
+        throw Error('resolved concealed contents must not reroll');
+      },workingProjectionAuthority:projectionAuthority});
+    const reopenedResult=await reopenedRuntime.executionRegistry
+      .domain(accessOperation)({plan:{},request:{root_turn_id:'turn-reopen',
+        step_index:1,actor:runtimeActor()},
+      operation:accessOperation,
+      working_projection:projectionAuthority.admit(concealedBefore),
+      check_result:null});
+    const visibleChild=reopenedResult.working_projection.items.find(
+      ({name})=>name==='wooden spoon');
+    assert.equal(visibleChild.semantic_type,'household_supply_wooden_spoon');
+    assert.equal(concealedModelCalls,1);
 
     const rollbackParty='party-o2b-revision20-rollback';
     await provisionFirstEntryParty(pool,rollbackParty,{
@@ -417,12 +493,14 @@ function combinedCommitter(pool) {
 }
 
 async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
-  partyId='party-o2b',moveItem=null}={}) {
+  partyId='party-o2b',moveItem=null,moveContainer=null}={}) {
   const changeSetId=`o2b-${suffix}-cs`;
+  const revealed=new Set(ordinaryPlan.container_transition.revealed_refs);
   const visiblePayload={schema:'temporal_visible_package.v1',
     perceived_scene:'Содержимое контейнера открыто.',
     perceived_changes:['Содержимое зафиксировано.'],sensory_details:[],
-    visible_npcs:[],visible_objects:ordinaryPlan.items.map((item)=>({
+    visible_npcs:[],visible_objects:ordinaryPlan.items
+      .filter(({item_id:id})=>revealed.has(id)).map((item)=>({
       entity_ref:{entity_kind:'item',entity_id:item.item_id},
       display_label:item.item_proposal.semantic_descriptor.name,
       recognition:'recognized',visible_status:'замечен'})),known_context:[],
@@ -433,6 +511,8 @@ async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
     pin_kind:'authoring_version',authoring_version:'test-v1',
     state_version:null}}];
   const expected=[{target_table:'parties',id:partyId,state_version:0},
+    ...(moveContainer==null?[]:[{target_table:'party_containers',
+      id:moveContainer.container_id,state_version:moveContainer.state_version}]),
     ...(missingClock?[{target_table:'party_clocks',id:partyId,
       state_version:1}]:[])];
   const movedState=moveItem == null ? null
@@ -451,6 +531,8 @@ async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
       container_id:null,holder_npc_id:null,holder_character_id:'pc',
       physical_position:'hands',equipment_slot_category_id:null,
       attached_item_id:null}}]),
+    ...(moveContainer==null?[]:[{target_table:'party_containers',
+      id:moveContainer.container_id,record:moveContainer}]),
     ...(missingClock?[{target_table:'party_clocks',id:partyId,record:{
       party_id:partyId,whole_minutes:0,subminute_numerator:0,
       subminute_denominator:1,clock_owner_kind:'party',clock_owner_id:null,
@@ -474,6 +556,8 @@ async function makeCombinedPlan(ordinaryPlan,suffix,{missingClock=false,
     lock_context:{owner_keys:[],execution_keys:[],g4_keys:[],physical_keys:[
       `party_runtime.party_v3_change_sets:${changeSetId}`,
       `party_runtime.parties:${partyId}`,
+      ...(moveContainer==null?[]:[
+        `party_runtime.party_containers:${moveContainer.container_id}`]),
       ...(moveItem==null?[]:[`party_runtime.party_items:${moveItem.item_id}`,
         `party_runtime.party_item_placements:${moveItem.item_id}`]),
       ...(missingClock?[`party_runtime.party_clocks:${partyId}`]:[]),
@@ -605,6 +689,38 @@ async function inTransaction(pool,work) { const client=await pool.connect();
     await client.query('COMMIT'); return result;
   } catch(error) { await client.query('ROLLBACK').catch(()=>{}); throw error; }
   finally { client.release(); } }
+
+function seedContext(context) { return {
+  container_ref:context.container_ref,template_id:context.template_id,
+  mechanics_profile_ref:context.mechanics_profile_ref,
+  owner_controller_ref:context.owner_controller_ref,
+  property_ref:context.property_ref,
+  site_function_ref:context.site_function_ref,
+  economic_context_ref:context.economic_context_ref,
+  context_bound_permission_refs:context.context_bound_permission_refs,
+  ordinary_policy:context.ordinary_policy}; }
+
+function activeOrdinary(request,context) {
+  const basis=request.policy_refs.allowed_supporting_bases[0].basis_ref;
+  return {semantic_descriptor:{semantic_type:
+    'household_supply_wooden_spoon',name:'wooden spoon',facts:[]},
+  authority_class:'ordinary',admission_class:'common_mundane',
+  availability_class:'common',functional_bucket:'household',
+  presence_expectation:'routine',supporting_basis_ref:basis,
+  causal_basis:{basis_kind:'household_use',basis_refs:[basis]},
+  property_basis_ref:context.property_ref,
+  placement_proposal:{scope_ref:context.container_ref,
+    position_ref:context.container_ref},mechanics_proposal:{mass_grams:80,
+    external_hand_cost:0,carry_form:'compact',packing_slot_cost:1,
+    quantity:{value:1,unit:'item'},container:null}};
+}
+
+function runtimePlayerProfile() { return {
+  attributes:{strength:{value:12}},inventory:{items:[],
+    total_weight:{grams:0},load_category:'light',occupied_hands:0}}; }
+
+function runtimeActor() { return {actor_id:'pc:revision20',
+  attributes:{strength:{value:12}}}; }
 
 async function provision(pool, plan) {
   await pool.query(`INSERT INTO party_runtime.parties

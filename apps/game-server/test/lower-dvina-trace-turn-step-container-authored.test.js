@@ -59,7 +59,7 @@ test('authored move uses committed mechanics and rejects overload', async () => 
     op: 'move_entity', entity_ref: 'sword',
     placement: { relation: 'held_by', target_ref: 'actor' }
   };
-  assert.throws(() => ports.executionRegistry.direct(operation)(
+  await assert.rejects(() => ports.executionRegistry.direct(operation)(
     execution(operation, projection)
   ), { code: 'ITEM_RUNTIME_INVENTORY_LOAD_INVALID' });
 });
@@ -162,18 +162,27 @@ test('committed access survives restart and only then reveals authored contents'
   });
 
 test('O2b reveal registers sealed mechanics for a same-turn move', async () => {
-  const requests = [], items = [chest({ commit_state: 'committed', mechanics_profile_ref: 'chest-mechanics', ordinary_contents_context: ordinaryContext() })];
-  const run = (rootPlayerAction) => { const ports = runtimePorts(items, { ordinaryContainerContentsResolver: async ({ stage_a_request }) => { requests.push(stage_a_request); const child = ordinaryChild(); return { pass: true, materialized_items: [child], ordinary_materialization_atomic_write_plan: { schema: 'ordinary_container_contents_atomic_write_plan_v2', write_plan_digest: 'sealed-test-plan', scope_ref: { entity_kind: 'container', entity_id: 'chest' }, items: [ordinaryPlanItem(child.item_id)] }, errors: [] }; } }); return runTurnStepLoop({ requestId: 'request', rootTurnId: 'turn', committedStateVersion: 1, rootPlayerAction, actor: actor(), initialWorkingProjection: initialProjection(items), maxInternalSteps: 8 }, { executionRegistry: ports.executionRegistry, resolveCheckContext: ports.resolveCheckContext, turnStepModel: async (request) => request.step_index === 1
+  const requests = [],turnRequests=[], items = [chest({ commit_state: 'committed', mechanics_profile_ref: 'chest-mechanics', ordinary_contents_context: ordinaryContext() })];
+  const run = (rootPlayerAction) => { const ports = runtimePorts(items, { ordinaryContainerContentsResolver: async ({ stage_a_request }) => { requests.push(stage_a_request); const child = ordinaryChild(); return { pass: true, materialized_items: [child], ordinary_materialization_atomic_write_plan: { schema: 'ordinary_container_contents_atomic_write_plan_v2', write_plan_digest: 'sealed-test-plan', scope_ref: { entity_kind: 'container', entity_id: 'chest' }, container_transition:{access_kind:'open_and_view',state_patch:{open_state:'open',contents_state:'known',access_state:{access:'open'}},revealed_refs:[child.item_id]}, items: [ordinaryPlanItem(child.item_id)] }, errors: [] }; } }); return runTurnStepLoop({ requestId: 'request', rootTurnId: 'turn', committedStateVersion: 1, rootPlayerAction, actor: actor(), initialWorkingProjection: initialProjection(items), maxInternalSteps: 8 }, { executionRegistry: ports.executionRegistry, resolveCheckContext: ports.resolveCheckContext, turnStepModel: async (request) => { turnRequests.push(structuredClone(request)); return request.step_index === 1
     ? domainPlan(request, openOperation(), { remaining_intent:
       'взять обнаруженный предмет', depends_on_refs: ['chest'] })
-    : directPlan(request, [{ op: 'move_entity', entity_ref:'ordinary-child',
-      placement:{ relation:'held_by', target_ref:'actor' } }]), projectPlayerSafeState: async ({ working_projection: projection }) => projection, revalidateCommittedState: async () => true }); };
+    : directPlan(request, [{ op: 'move_entity', entity_ref:
+      request.player_safe_state.items.find(({name}) => name === 'кусок трута')
+        ?.item_id,
+      placement:{ relation:'held_by', target_ref:'actor' } }]); }, projectPlayerSafeState: async ({ working_projection: projection }) => projection, revalidateCommittedState: async () => true }); };
   const first = await run('открываю сундук и беру меч');
   assert.deepEqual(first.working_projection.items.find(({ item_id }) =>
     item_id === 'ordinary-child').placement,
   { holder_character_id:'actor', physical_position:'hands' });
   assert.equal(first.working_projection.inventory.items.includes(
     'ordinary-child'), true);
+  assert.equal(turnRequests[0].player_safe_state.items.some(({item_id}) =>
+    item_id === 'ordinary-child'),false);
+  const revealed=turnRequests[1].player_safe_state.items.find(({item_id}) =>
+    item_id === 'ordinary-child');
+  assert.equal(revealed.name,'кусок трута');
+  assert.equal(revealed.semantic_type,'fire_tinder');
+  assert.equal(requests.length,1);
   await run('открываю сундук и беру золото');
   assert.equal(requests.length, 2); assert.deepEqual(requests[0], requests[1]);
   assert.equal(requests[0].schema,
@@ -181,6 +190,55 @@ test('O2b reveal registers sealed mechanics for a same-turn move', async () => {
   assert.equal(requests[0].technical_limits.max_new_entities,4);
   assert.equal(requests[0].candidate_query, null); assert.equal(JSON.stringify(requests[0]).includes('меч'), false);
 });
+
+test('moving closed unresolved container resolves concealed child before mass',
+  async () => {
+    let calls = 0;
+    let forgedReveal = true;
+    const container = chest({commit_state:'committed',
+      mechanics_profile_ref:'chest-mechanics',
+      ordinary_contents_context:ordinaryContext(),placement:{location_ref:'shore'}});
+    const ports = runtimePorts([container], {
+      ordinaryContainerContentsResolver:async () => {
+        calls += 1; const children=[ordinaryChild(),ordinaryChild(
+          'ordinary-child-2','fire_starter','береста')];
+        return {pass:true,materialized_items:children,errors:[],
+          ordinary_materialization_atomic_write_plan:{schema:
+            'ordinary_container_contents_atomic_write_plan_v2',
+          write_plan_digest:'sealed-test-plan',scope_ref:{entity_kind:
+            'container',entity_id:'chest'},container_transition:forgedReveal
+              ? {access_kind:'open_and_view',state_patch:{open_state:'open',
+                contents_state:'known',access_state:{access:'open'}},
+                revealed_refs:children.map(({item_id})=>item_id)}
+              : {access_kind:'resolve_concealed',state_patch:{contents_state:
+                'resolved_concealed'},revealed_refs:[]},
+          items:[ordinaryPlanItem(children[0].item_id),
+            ordinaryPlanItem(children[1].item_id,120)]}};
+      }
+    });
+    const operation={op:'move_entity',entity_ref:'chest',placement:{
+      relation:'held_by',target_ref:'actor'}};
+    await assert.rejects(ports.executionRegistry.direct(operation)(execution(
+      operation,initialProjection([container]))),{
+      code:'TRACE_TURN_STEP_CONTAINER_ORDINARY_RESOLUTION_INVALID'});
+    forgedReveal=false;
+    const moved=await ports.executionRegistry.direct(operation)(execution(
+      operation,initialProjection([container])));
+    assert.equal(calls,2);
+    assert.equal(moved.ordinary_materialization_atomic_write_plan
+      .container_transition.access_kind,'resolve_concealed');
+    assert.equal(moved.working_projection.items.some(({item_id}) =>
+      item_id === 'ordinary-child'),false);
+    assert.equal(moved.working_projection.inventory.total_weight.grams,700);
+    const drop={op:'move_entity',entity_ref:'chest',placement:{
+      relation:'located_at',target_ref:'shore'}};
+    const dropped=await ports.executionRegistry.direct(drop)(execution(
+      drop,moved.working_projection));
+    assert.equal(calls,2);
+    assert.equal(dropped.ordinary_materialization_atomic_write_plan,
+      undefined);
+    assert.equal(dropped.working_projection.inventory.total_weight.grams,0);
+  });
 
 async function runScenario({ items, model, randomSource = null }) {
   const ports = runtimePorts(items);
@@ -201,11 +259,19 @@ async function runScenario({ items, model, randomSource = null }) {
 }
 
 function runtimePorts(items, { mechanics = swordMechanics(), ordinaryContainerContentsResolver = null } = {}) {
+  const containers=items.filter((item) => item.contents_state != null)
+    .map((item) => ({...structuredClone(item),container_id:item.item_id,
+      state:{...(item.state ?? {}),contents_state:item.contents_state,
+        ...(item.ordinary_contents_context == null ? {} : {
+          ordinary_contents_context:structuredClone(
+            item.ordinary_contents_context)})}}));
   return createLowerDvinaTraceTurnStepRuntimePorts({
-    committedState: { actor_id: 'actor', items },
+    committedState: { actor_id: 'actor',
+      items:items.filter((item) => item.contents_state == null),containers },
     ordinaryContainerContentsResolver,
     resolveItemMechanics(ref) {
-      return ref === 'sword' ? mechanics : null;
+      return ref === 'sword' ? mechanics
+        : ref === 'chest' ? chestMechanics() : null;
     },
     semanticActivityOwner: {
       resolve({ activity }) {
@@ -251,18 +317,19 @@ function ordinaryContext() { return { container_ref: 'chest', template_id: 'ches
     unresolved_ordinary_contents: true, technical_limits: { schema:
       'rus.items.existing_container_ordinary_limits.v1', version: 1,
       max_new_entities: 4 } }, authoritative_status: 'absent' }; }
-function ordinaryChild() { return { item_id: 'ordinary-child', semantic_type: 'material_portion',
+function ordinaryChild(item_id='ordinary-child',semantic_type='fire_tinder',
+  name='кусок трута') { return { item_id, semantic_type,name,
   authority: 'ordinary', disclosure: 'concealed', admission_class: 'common_mundane',
   is_container: false, evidence: false, authentic_document: false, hidden_history: false,
   secret_cache: false, placement: { container_id: 'chest' } }; }
-function ordinaryPlanItem(item_id) { return { item_id,
+function ordinaryPlanItem(item_id,mass_grams=80) { return { item_id,
   runtime_mechanics_snapshot:{ schema:
     'rus.items.runtime_instance_mechanics_snapshot.v1', version:1,
   provenance:{ source_kind:'ordinary_world_materialization',
     root_turn_id:'turn', step_index:1,
     operation_ref:'request_container_access:chest',
     origin_kind:'existing_container_ordinary', source_refs:['basis:stored'] },
-  mechanics:{ mass_grams:80, external_hand_cost:0, carry_form:'compact',
+  mechanics:{ mass_grams, external_hand_cost:0, carry_form:'compact',
     packing_slot_cost:1, quantity:{ value:1, unit:'item' },
     container:null } } }; }
 
@@ -300,6 +367,10 @@ function swordMechanics() {
     container: null
   };
 }
+
+function chestMechanics() { return {mass_grams:500,external_hand_cost:1,
+  carry_form:'regular',packing_slot_cost:1,quantity:null,
+  container:{capacity:4}}; }
 
 function actor() {
   return {

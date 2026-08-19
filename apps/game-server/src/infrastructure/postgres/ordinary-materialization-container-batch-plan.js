@@ -235,6 +235,15 @@ function validateMechanics(value, items, container, pins) {
 
 function validateContainerTransition(value, container, items) {
   const transition = exact(value, ['access_kind','state_patch','revealed_refs']);
+  if (transition.access_kind === 'resolve_concealed') {
+    const patch = exact(transition.state_patch, ['contents_state']);
+    if (patch.contents_state !== 'resolved_concealed'
+        || transition.revealed_refs.length !== 0
+        || container.container_id.length === 0) {
+      fail('ORDINARY_CONTAINER_BATCH_REVEAL_INVALID');
+    }
+    return;
+  }
   const patch = exact(transition.state_patch,
     ['open_state','contents_state','access_state']);
   if (!['open','open_and_view'].includes(transition.access_kind)

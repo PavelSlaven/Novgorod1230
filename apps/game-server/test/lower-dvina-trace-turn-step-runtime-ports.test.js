@@ -178,7 +178,7 @@ test('entity operations reject stale refs and unsupported projection relations',
   async () => {
     const ports = createPorts();
     const move = ports.executionRegistry.direct({ op: 'move_entity' });
-    assert.throws(() => move(execution({
+    await assert.rejects(() => move(execution({
       op: 'move_entity',
       entity_ref: 'hidden-item',
       placement: { relation: 'held_by', target_ref: 'mikula' }
@@ -187,7 +187,7 @@ test('entity operations reject stale refs and unsupported projection relations',
     const created = await ports.executionRegistry.direct(createSand())(
       execution(createSand())
     );
-    assert.throws(() => move(execution({
+    await assert.rejects(() => move(execution({
       op: 'move_entity',
       entity_ref: 'new_entity_1',
       placement: { relation: 'inside', target_ref: 'new_entity_1' }

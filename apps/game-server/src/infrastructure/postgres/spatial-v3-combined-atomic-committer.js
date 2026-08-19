@@ -198,6 +198,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             ? plan.expected_state_versions.find((item) =>
                 item.target_table === write.target_table
                 && item.id === write.id).state_version
+              + ordinaryOwnedVersionDelta(plan, write)
             : null;
         const finalizeLifecycle = await apply(
           tx,
@@ -226,6 +227,13 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       return Object.freeze({ ok: false, error: error(cause.spatialCode ?? 'generated_schema_mismatch', plan.party_id, { reason: cause.message }) });
     }
   } });
+}
+
+function ordinaryOwnedVersionDelta(plan, write) {
+  const ordinary = plan.ordinary_materialization_atomic_write_plan;
+  return write.target_table === 'party_containers'
+    && ordinary?.schema === 'ordinary_container_contents_atomic_write_plan_v2'
+    && write.id === ordinary.scope_ref.entity_id ? 1 : 0;
 }
 
 /** P16 owns the PostgreSQL transaction boundary for every target-v3 writer. */

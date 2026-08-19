@@ -46,7 +46,9 @@ test('authored revision 20 O2b profile is SHA-pinned, active and drift fails sta
 test('active O2b attestation follows current valid actor placement', async () => {
   const loaded = await loadLowerDvinaTraceO2bProfile();
   const actor = 'pc:actor';
-  const container = { placement:{ anchor_id:null, container_id:null,
+  const anchor = 'anchor:current';
+  const container = { actor_id:actor,actor_position_ref:anchor,
+    placement:{ anchor_id:null, container_id:null,
     holder_npc_id:null, holder_character_id:actor,
     physical_position:'hands', equipment_slot_category_id:null },
   ownership:{ owner_character_id:actor, controller_character_id:actor,
@@ -56,7 +58,11 @@ test('active O2b attestation follows current valid actor placement', async () =>
     first_entry_position_ref:'position:entry', semantic_category:
       loaded.initial_container.container_state.semantic_category } };
   assert.equal(validLowerDvinaTraceO2bPhysicalAttestation(container,loaded),true);
-  container.placement.anchor_id = 'remote-anchor';
+  container.placement = {anchor_id:anchor,container_id:null,holder_npc_id:null,
+    holder_character_id:null,physical_position:null,
+    equipment_slot_category_id:null};
+  assert.equal(validLowerDvinaTraceO2bPhysicalAttestation(container,loaded),true);
+  container.placement.anchor_id = 'anchor:remote';
   assert.equal(validLowerDvinaTraceO2bPhysicalAttestation(container,loaded),false);
 });
 
@@ -124,8 +130,9 @@ test('P16 projection hides precommit child and publishes only safe committed vie
   async () => {
     const result = await resolver({model:async (request) => modelPlan(request)})(call());
     const child = result.materialized_items[0];
-    const next = {containers:[{container_id:containerRef,state:{}}],items:[{
-      item_id:containerRef,state:{},visible:true}]};
+    const next = {containers:[{container_id:containerRef,state_version:3,
+      state:{}}],items:[{item_id:containerRef,state_version:3,state:{},
+      visible:true}]};
     const before = {visible_objects:[]};
     assert.equal(before.visible_objects.some((entry) =>
       entry.entity_ref?.entity_id === child.item_id),false);
@@ -136,6 +143,8 @@ test('P16 projection hides precommit child and publishes only safe committed vie
     assert.equal(persisted.visible,true);
     assert.equal(persisted.disclosure,undefined);
     assert.deepEqual(persisted.placement,{container_id:containerRef});
+    assert.equal(next.containers[0].state_version,4);
+    assert.equal(next.items[0].state_version,4);
     assert.equal(after.visible_objects.length,1);
     assert.equal(after.visible_objects[0].entity_ref.entity_id,child.item_id);
     assert.equal(Object.hasOwn(after.visible_objects[0],'item_proposal'),false);

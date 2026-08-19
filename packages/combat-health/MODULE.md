@@ -11,6 +11,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - harm and injury packages
 - meaningful combat outcome/signal descriptors
 - versioned generic combat body-threshold signal mapping
+- closed ordinary-armament mechanics capability and reload-safe danger snapshot
 - combat-state validation
 
 ## Не делает
@@ -36,6 +37,8 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `buildCombatDecisionSignalDescriptors`
 - `buildCombatStepHarmPackage`
 - `combatBodyThresholdSignalProfile`
+- `resolveOrdinaryArmamentMechanics`
+- `ordinaryArmamentWeaponDanger`
 
 ## Контракты и инварианты
 
@@ -43,7 +46,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 
 ## Зависимости
 
-Разрешён только `@rus/kernel`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
+Разрешены только `@rus/kernel` и профильные контракты `@rus/contracts`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.
 
 ## Ошибки
 

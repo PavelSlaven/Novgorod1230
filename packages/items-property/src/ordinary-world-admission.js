@@ -6,8 +6,7 @@ const O1_BUCKETS = new Set(['household','work','storage','stock',
   'other_ordinary']);
 const CONTEXT_BOUND = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
-const AUTHORITY_SENSITIVE = new Set(['currency_or_precious','document_like',
-  'other_restricted']);
+const AUTHORITY_SENSITIVE = CONTEXT_BOUND;
 const CARRY_FORMS = new Set(['compact','regular','long','bulky']);
 
 const HANDOFF = ['schema','status','stage','request_id','scope_ref','candidate_key','coverage_key','context_version','admission_evidence','proposed_item'];

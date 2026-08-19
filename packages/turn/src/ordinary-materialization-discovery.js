@@ -134,13 +134,11 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       const propertyInput = { ...enabled.property_placement_context,
         supporting_basis_ref: proposed.supporting_basis_ref,
         causal_basis_refs: structuredClone(proposed.causal_basis.basis_refs),
-        requested_position_ref: proposed.placement_proposal.position_ref,
-        property_catalog: propertyCatalogForItem({
-          catalog: enabled.property_placement_context.property_catalog,
-          proposed }) };
+        requested_position_ref: proposed.placement_proposal.position_ref };
       const property = resolveOrdinaryWorldPropertyPlacement(propertyInput);
       if (!property.pass) return ordinaryNoop(request);
-      const authorityProfile = enabled.ordinary_authority?.context_bound_profile ?? null;
+      const authorityProfile = enabled.ordinary_authority?.context_bound_profile
+        ?? enabled.ordinary_authority?.constrained_resource_profile ?? null;
       const baseHandoff = { ...structuredClone(
         presence.pending_items_property_admission), admission_evidence: {
         ...structuredClone(presence.pending_items_property_admission.admission_evidence),
@@ -187,7 +185,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         projection.ordinary_materialization_aggregate, transition });
       item = admittedItem({ partyId, scopeRef, envelope,
         presence: authorizedPresence, admitted,
-        runtimeAnchorId });
+        runtimeAnchorId, authorityProfile });
     }
     if (transition != null && next?.state_version ===
         projection.ordinary_materialization_aggregate.state_version) {
@@ -222,20 +220,14 @@ function semanticModelCallBudget(model) {
     }
   });
 }
-function propertyCatalogForItem({ catalog, proposed }) {
-  if (catalog[0]?.unowned_cause_kind === undefined) {
-    return structuredClone(catalog);
-  }
-  return structuredClone(catalog.filter((entry) =>
-    entry.property_basis_ref === proposed.property_basis_ref));
-}
-
 function semanticIdentityProfile(profile) {
-  if (!['currency_or_precious','document_like','other_restricted']
-    .includes(profile?.admission_class)) return {};
+  if (!['specialized_or_valuable','weapon_or_armament','currency_or_precious',
+    'document_like','other_restricted'].includes(profile?.admission_class)) return {};
   return { semantic_identity_profile: {
     schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
-    profile_ref: profile.profile_ref, admission_class: profile.admission_class,
+    profile_ref: profile.permission_refs?.[0]
+      ?? profile.regional_permission_ref ?? profile.profile_ref,
+    admission_class: profile.admission_class,
     semantic_type: profile.semantic_type, public_name: profile.public_name
   } };
 }
@@ -308,7 +300,7 @@ function presenceTransition({ envelope, presence, aggregate,
     ...(identityKey == null ? {} : { identity_key: identityKey }) };
 }
 function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
-  runtimeAnchorId }) {
+  runtimeAnchorId, authorityProfile }) {
   const proposal = admitted.proposal;
   return { item_id: `ordinary_item_${canonicalDigest({ party_id: partyId,
     scope_ref: scopeRef, candidate_key: envelope.identity.candidate_key,
@@ -335,6 +327,9 @@ function admittedItem({ partyId, scopeRef, envelope, presence, admitted,
   position_ref: proposal.placement.position_ref,
   runtime_placement: { anchor_id: runtimeAnchorId },
   mechanics_policy_ref: proposal.runtime_item_mechanics_policy_ref,
+  ...(authorityProfile?.weapon_mechanics_snapshot == null ? {}
+    : { weapon_mechanics_snapshot:
+      structuredClone(authorityProfile.weapon_mechanics_snapshot) }),
   item_proposal: proposal,
   mechanics_snapshot: admitted.runtime_instance_mechanics_snapshot };
 }

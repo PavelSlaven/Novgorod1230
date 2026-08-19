@@ -1,8 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
-import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals,
-  buildCombatInitializationDecisionContexts, combatIntentFromOperation,
-  initializeCombatSession, orderCombatTechnicalSteps, prepareCombatExchange,
-  resolveCombatExchangeTiming } from '@rus/turn';
+import { activateCombatSessionForPlayerIntent, buildCombatDecisionSignals, buildCombatInitializationDecisionContexts, combatIntentFromOperation, initializeCombatSession, orderCombatTechnicalSteps, prepareCombatExchange, resolveCombatExchangeTiming } from '@rus/turn';
 import { validateNpcCombatPlanApplicability } from '@rus/npc-runtime';
 import { applyTraceCombatItemTransition } from './lower-dvina-trace-combat-item-owner.js';
 import { applyTraceCombatPositionTransition, resolveTraceCombatPositionPlan } from './lower-dvina-trace-combat-position-owner.js';
@@ -11,10 +8,10 @@ import { traceCombatBindingForActor, traceCombatMovementBindings, traceCombatOpe
 import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from './lower-dvina-trace-combat-subjective.js';
 import { projectTraceCombatWorkingState } from './lower-dvina-trace-combat-working-state.js';
 import { createTraceCombatTemporalSliceOwner } from './lower-dvina-trace-combat-temporal.js';
+import { resolveTraceOrdinaryWeaponDanger } from './lower-dvina-trace-combat-ordinary-weapon.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest, randomSource,
-  npcCombatModel, revalidateStateVersion,
-  temporalAdvanceOwner = null }) {
+  npcCombatModel, revalidateStateVersion, temporalAdvanceOwner = null }) {
   if (![16, 17, 18, 19].includes(bundle?.definition_revision)) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
   const bindings = bundle.combat_semantic_bindings;
@@ -47,8 +44,7 @@ export function createTraceCombatCommand({ state, bundle, inputDigest, randomSou
       const current = activeSession(committed ?? retrievedState);
       return availability(current != null);
     },
-    async consequence({ retrievedState, semanticPlan, rootTurnId,
-      playerInput }) {
+    async consequence({ retrievedState, semanticPlan, rootTurnId, playerInput }) {
       const session = activeSession(retrievedState);
       const raw = semanticPlan?.operations?.[0];
       if (!session || raw?.op !== 'request_combat') fail('TRACE_COMBAT_REQUEST_INVALID');
@@ -110,8 +106,7 @@ export function traceCombatPreconditionSatisfied(precondition, state) {
     && activeSession(state) != null;
 }
 export function traceCombatTargetRefs(state) {
-  const session = (state?.combat_sessions ?? [])
-    .find(({ status }) => status !== 'ended');
+  const session = (state?.combat_sessions ?? []).find(({ status }) => status !== 'ended');
   const hostile = session?.participant_states?.find(({ actor_ref: actor,
     combat_status: status, current_intent: intent }) =>
     actor.entity_kind === 'npc' && status === 'active'
@@ -161,6 +156,10 @@ function resolveProfile(intent, context, working = context.state) {
       && positionPlan == null) {
     return { applicable: false };
   }
+  const weaponDanger = intent.intent_kind === 'engage'
+    ? resolveTraceOrdinaryWeaponDanger(working?.items, intent.actor_ref)
+    : undefined;
+  if (weaponDanger === null) return { applicable: false };
   return {
     applicable: true,
     position_plan: positionPlan == null
@@ -169,6 +168,7 @@ function resolveProfile(intent, context, working = context.state) {
       intent_kind: intent.intent_kind }),
     check_request: profile.check_request == null ? null : {
       ...structuredClone(profile.check_request),
+      ...(weaponDanger === undefined ? {} : { weapon_danger: weaponDanger }),
       attacker_id: intent.actor_ref.entity_id,
       target_id: intent.target_refs[0]?.entity_id ?? null,
       action: intent.intent_kind,

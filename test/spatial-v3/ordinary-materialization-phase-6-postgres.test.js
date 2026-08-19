@@ -14,6 +14,8 @@ import {
   ordinaryWorldPropertyPlacementContextDigest,
   resolveOrdinaryWorldPropertyPlacement
 } from '@rus/items-property';
+import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+  resolveOrdinaryArmamentMechanics } from '@rus/combat-health';
 import {
   createOrdinaryMaterializationAtomicWritePlan,
   applyOrdinaryMaterializationAtomicWritePlanInTransaction,
@@ -499,6 +501,7 @@ async function assertContextBoundO2aV2V3Integration(pool) {
         functional_bucket: 'arms', supporting_basis_ref: supportingBasis.basis_ref,
         property_basis_ref: 'o2a-property', permission_refs: ['armament-profile-a'],
         causal_basis_kind: 'personal_possession',
+        condition_state: 'serviceable',
         runtime_item_mechanics_policy_ref: 'o2a-mechanics',
         property_placement_context_digest: propertyEvidence.property_placement_context_digest,
         property_catalog_version_ref: propertyEvidence.property_catalog_version_ref,
@@ -518,6 +521,11 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     admission_context: {
       schema: 'rus.items.ordinary_world_admission_context.v3', version: 3,
       approved_permission_refs: ['armament-profile-a'], supporting_bases: [supportingBasis],
+      semantic_identity_profile: {
+        schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
+        profile_ref: 'armament-profile-a', admission_class: 'weapon_or_armament',
+        semantic_type: 'service_knife', public_name: 'служебный нож'
+      },
       property_placement_input: propertyInput,
       mechanics_policy: { policy_ref: 'o2a-mechanics', max_mass_grams: 1000,
         allowed_external_hand_costs: [0, 1, 2],
@@ -538,10 +546,14 @@ async function assertContextBoundO2aV2V3Integration(pool) {
     context_version: transition.context_version, functional_bucket: 'arms',
     admission_class: 'weapon_or_armament', supporting_basis_ref: supportingBasis.basis_ref,
     causal_basis_refs: [supportingBasis.basis_ref], causal_basis_kind: 'personal_possession',
-    condition_state: null, permission_refs: ['armament-profile-a'],
+    condition_state: 'serviceable', permission_refs: ['armament-profile-a'],
     property_basis_ref: 'o2a-property', position_ref: 'o2a-position',
     runtime_placement: { anchor_id: 'ordinary-anchor' },
     mechanics_policy_ref: 'o2a-mechanics',
+    weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
+      mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+      condition_state: 'serviceable'
+    }),
     item_proposal: admission.proposal,
     mechanics_snapshot: admission.runtime_instance_mechanics_snapshot
   };
@@ -595,10 +607,16 @@ async function assertContextBoundO2aV2V3Integration(pool) {
   assert.deepEqual(persisted.rows[0].item_proposal, item.item_proposal);
   assert.deepEqual(persisted.rows[0].property_placement_evidence,
     item.item_proposal.property_placement_evidence);
-  assert.equal(persisted.rows[0].item_proposal.schema, 'ordinary_world_item_proposal_v2');
+  assert.equal(persisted.rows[0].item_proposal.schema, 'ordinary_world_item_proposal_v3');
   assert.equal(persisted.rows[0].item_proposal.causal_basis_kind, 'personal_possession');
+  assert.equal(persisted.rows[0].item_proposal.condition_state, 'serviceable');
   assert.equal(persisted.rows[0].property_placement_evidence.schema,
     'rus.items.ordinary_world_property_placement_evidence.v3');
+  const runtimeItem = await pool.query(`SELECT state
+    FROM party_runtime.party_items WHERE party_id=$1 AND item_id=$2`,
+  [partyId, item.item_id]);
+  assert.deepEqual(runtimeItem.rows[0].state.weapon_mechanics_snapshot,
+    item.weapon_mechanics_snapshot);
   await removePartyAnchor(pool, partyId);
   await pool.query(`DELETE FROM party_runtime.parties WHERE party_id=$1`, [partyId]);
 }

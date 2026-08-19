@@ -233,6 +233,11 @@ test('O2a admits a context-bound ordinary weapon only with committed basis and e
   const base = context();
   const admissionContext = { ...base,
     approved_permission_refs: ['armament-profile-a'],
+    semantic_identity_profile: {
+      schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
+      profile_ref: 'armament-profile-a', admission_class: 'weapon_or_armament',
+      semantic_type: 'ordinary_weapon', public_name: 'обычное оружие'
+    },
     supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
       prepared_seed_provenance: null, functional_buckets: ['arms'],
       allowed_admission_classes: ['weapon_or_armament'],
@@ -272,6 +277,11 @@ test('O2a seals one causal basis kind across evidence, entity, and every catalog
       causal_basis: { basis_kind: kind, basis_refs: ['basis-a'] } };
     const base = context();
     let admission_context = { ...base, approved_permission_refs: ['armament-profile-a'],
+      semantic_identity_profile: {
+        schema: 'rus.items.ordinary_world_semantic_identity_profile.v1', version: 1,
+        profile_ref: 'armament-profile-a', admission_class: 'weapon_or_armament',
+        semantic_type: 'ordinary_weapon', public_name: 'обычное оружие'
+      },
       supporting_bases: [{ ...base.supporting_bases[0], state: 'committed',
         prepared_seed_provenance: null, functional_buckets: ['arms'],
         allowed_admission_classes: ['weapon_or_armament'],

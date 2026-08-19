@@ -4,6 +4,7 @@
       "dependencies": [
         "@rus/actors",
         "@rus/checks-rng",
+        "@rus/combat-health",
         "@rus/contracts",
         "@rus/items-property",
         "@rus/knowledge-source",
@@ -119,6 +120,7 @@
         "harm and injury packages",
         "meaningful combat outcome/signal descriptors",
         "versioned generic combat body-threshold signal mapping",
+        "closed ordinary-armament mechanics capability and reload-safe danger snapshot",
         "combat-state validation"
       ],
       "path": "packages/combat-health",

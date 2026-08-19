@@ -1,4 +1,5 @@
 import { canonicalDigest } from '@rus/materialization';
+import { ordinaryArmamentWeaponDanger } from '@rus/combat-health';
 import { propertyPlacementBaseDigest } from
   './ordinary-materialization-property-evidence.js';
 
@@ -76,7 +77,12 @@ export function exactAdmittedItem({ item, scope, request_identity }) {
           : item.causal_basis_kind != null || item.condition_state != null)
       || !sameText(proposal.property_basis_ref, item.property_basis_ref)
       || !sameText(proposal.runtime_item_mechanics_policy_ref, item.mechanics_policy_ref)
-      || !semanticDescriptor(proposal.semantic_descriptor)) return false;
+      || !semanticDescriptor(proposal.semantic_descriptor)
+      || (item.admission_class === 'weapon_or_armament'
+        ? ordinaryArmamentWeaponDanger(item.weapon_mechanics_snapshot) == null
+          || item.weapon_mechanics_snapshot.condition_state
+            !== item.condition_state
+        : item.weapon_mechanics_snapshot != null)) return false;
   const placement = exactOrNull(proposal.placement, ['scope_ref','position_ref']);
   const runtimePlacement = exactOrNull(item.runtime_placement, ['anchor_id']);
   const evidence = exactOrNull(proposal.property_placement_evidence, ['schema','version','scope_ref','property_placement_context_digest','property_catalog_version_ref','placement_catalog_version_ref','property_basis_ref','property_basis_class','property_source_ref','unowned_cause_ref','placement_context_ref','placement'])

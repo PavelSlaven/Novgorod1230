@@ -179,14 +179,17 @@ context-bound weapons/value/currency или natural finite sources.
 
 Active O2a добавляет authored wreck-shore ambient capability и first-entry
 context-bound finite stock подготовленной глины. Player-safe state показывает
-этот committed stock как обычный source, а unresolved remainder — только через
-boolean `discovery_available`, без expected result, permission и capacity.
+committed stock как обычный source только при отдельном approved disclosure
+state; concealed capabilities остаются server-only. Unresolved remainder
+проецируется только через boolean `discovery_available`, без expected result,
+permission и capacity.
 Stage B может выбрать unlisted ordinary semantic type/name внутри approved class;
 source/property/permission/mechanics и пустой facts остаются code-owned gates. Сам `ambient_ordinary`
 не является O2a marker: legacy direct actions без
 этого capability сохраняют прежний path. Drifted binding не публикует capability,
 а forged ref не проходит current-ref validation. Generic finite effect связан с
-любым admitted `finite_source`, а constrained policy добавляет только resource
+current row выбранного admitted `finite_source`; несколько sources не делят
+mutable quantity. Constrained policy добавляет только resource
 permissions. Не provisioned precious material и damaged remnant в этой revision не
 объявлены active. O2b/A1/F1/S1/N1, containers, authentic currency и
 significant/hidden facts остаются disabled.

@@ -30,7 +30,8 @@ export function projectLowerDvinaTraceO2aDiscoverySources({ projected,
   const entries = Array.isArray(sources)
     ? sources.filter((value) => value != null
       && typeof value.source_ref === 'string'
-      && typeof value.public_name === 'string') : [];
+      && typeof value.public_name === 'string'
+      && value.disclosure_state === 'visible') : [];
   const visible = projected?.player_safe_state?.visible_context;
   const existing = Array.isArray(visible?.visible_objects)
     ? visible.visible_objects.filter((entry) =>

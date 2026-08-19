@@ -115,6 +115,7 @@
       "profile_ref": "trace_ld_v1_o2a_prepared_clay_profile",
       "semantic_type": "prepared_clay_portion",
       "public_name": "запас подготовленной глины",
+      "disclosure_state": "visible",
       "functional_bucket": "other_ordinary",
       "admission_class": "specialized_or_valuable",
       "profile_kind": "specialized_stock",

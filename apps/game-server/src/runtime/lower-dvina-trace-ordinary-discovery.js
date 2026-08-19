@@ -114,7 +114,8 @@ function selectDiscoveryContext({ execution, objective, targetRef }) {
   if (execution.candidate_context.target_ref === targetRef) {
     const basisRefs = new Set(execution.supporting_bases.map(({ basis_ref }) =>
       basis_ref));
-    return { execution, objective: { ...objective, policy_refs: {
+    return { execution: bindCommittedFiniteSource(execution),
+      objective: { ...objective, policy_refs: {
       ...objective.policy_refs,
       allowed_supporting_bases: objective.policy_refs.allowed_supporting_bases
         .filter(({ basis_ref }) => basisRefs.has(basis_ref)) } } };
@@ -124,15 +125,33 @@ function selectDiscoveryContext({ execution, objective, targetRef }) {
   if (matches.length !== 1) return null;
   const selected = matches[0];
   const { context_bound_capabilities: _, ...baseExecution } = execution;
-  return { execution: { ...baseExecution,
+  return { execution: bindCommittedFiniteSource({ ...baseExecution,
     candidate_context: selected.candidate_context,
     supporting_bases: selected.supporting_bases,
     context_bound_ordinary_profile:
       selected.context_bound_ordinary_profile,
     constrained_natural_resource_profile:
-      selected.constrained_natural_resource_profile },
+      selected.constrained_natural_resource_profile,
+    finite_source_authority: selected.finite_source_authority ?? null }),
   objective: { ...objective, context_refs: selected.context_refs,
     policy_refs: selected.policy_refs } };
+}
+
+function bindCommittedFiniteSource(execution) {
+  const authority = execution.finite_source_authority
+    ?? execution.constrained_natural_resource_profile
+    ?? execution.context_bound_ordinary_profile;
+  const sourceId = authority?.finite_source?.source_resource_node_id;
+  if (typeof sourceId !== 'string') return execution;
+  const sources = Array.isArray(execution.committed_finite_sources)
+    ? execution.committed_finite_sources
+    : execution.committed_finite_source == null
+      ? [] : [execution.committed_finite_source];
+  const matches = sources.filter(
+    ({ source_resource_node_id: id }) => id === sourceId);
+  const { committed_finite_sources: _, ...selected } = execution;
+  return { ...selected, committed_finite_source:
+    matches.length === 1 ? structuredClone(matches[0]) : null };
 }
 
 function currentG6(state) {

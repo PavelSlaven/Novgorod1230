@@ -27,15 +27,19 @@ export function createPostgresOrdinaryMaterializationEnablementRepository({ pool
         [partyId, scopeRef?.entity_kind, scopeRef?.entity_id]);
       if (result.rowCount !== 1 || result.rows[0].enabled !== true) return null;
       const row = result.rows[0];
-      const sourceId = constrainedSourceId(row.objective_snapshot);
-      if (sourceId !== null) {
+      const sourceIds = constrainedSourceIds(row.objective_snapshot);
+      if (sourceIds.length > 0) {
         const source = await pool.query(`SELECT resource_node_id,state_version,lifecycle_state,
             quantity_numerator,quantity_denominator,quantity_unit_ref,position_node_id,
             property_basis_ref,initial_amount_bounds
           FROM party_runtime.party_resource_nodes
-          WHERE party_id=$1 AND resource_node_id=$2`, [partyId, sourceId]);
-        row.committed_finite_source = source.rowCount === 1
-          ? normalizeFiniteSource(source.rows[0]) : null;
+          WHERE party_id=$1 AND resource_node_id=ANY($2::text[])
+          ORDER BY resource_node_id`, [partyId, sourceIds]);
+        row.committed_finite_sources = source.rows
+          .map(normalizeFiniteSource).filter(Boolean);
+        row.committed_finite_source = sourceIds.length === 1
+          ? row.committed_finite_sources.find(({ source_resource_node_id: id }) =>
+            id === sourceIds[0]) ?? null : null;
       }
       return normalizeEnablement(row, scopeRef);
     }
@@ -90,6 +94,11 @@ function normalizeEnablement(row, scopeRef) {
     supporting_basis_catalog_digest: row.supporting_basis_catalog_digest ?? canonicalDigest(row.supporting_bases ?? []),
     property_placement_context_digest: row.property_placement_context_digest
   };
+  const committedFiniteSource = row.committed_finite_source
+    ?? executionContext?.committed_finite_source ?? null;
+  const committedFiniteSources = row.committed_finite_sources
+    ?? executionContext?.committed_finite_sources
+    ?? (committedFiniteSource == null ? [] : [committedFiniteSource]);
   return Object.freeze({ objective_digest: row.objective_digest,
     objective_context: Object.freeze({ ...objective, ordinary_state }),
     ordinary_aggregate: aggregate, ordinary_state_version: aggregate.state_version,
@@ -97,18 +106,23 @@ function normalizeEnablement(row, scopeRef) {
     property_placement_context_digest: row.property_placement_context_digest,
     version_pins: Object.freeze(version_pins), execution_context: executionContext == null ? null :
       Object.freeze({ ...structuredClone(executionContext), supporting_bases:
-        structuredClone(row.supporting_bases ?? []), committed_finite_source:
-        row.committed_finite_source == null ? null : structuredClone(row.committed_finite_source) }) });
+        structuredClone(row.supporting_bases ?? []), committed_finite_sources:
+        structuredClone(committedFiniteSources), committed_finite_source:
+        committedFiniteSource == null ? null : structuredClone(committedFiniteSource) }) });
 }
 
-function constrainedSourceId(snapshot) {
+function constrainedSourceIds(snapshot) {
   const execution = snapshot?.execution_context;
-  const profile = execution?.finite_source_authority
-    ?? execution?.constrained_natural_resource_profile
-    ?? execution?.context_bound_capabilities?.[0]
-      ?.constrained_natural_resource_profile;
-  const id = profile?.finite_source?.source_resource_node_id;
-  return typeof id === 'string' && id.length > 0 && id.trim() === id ? id : null;
+  const profiles = [execution?.finite_source_authority,
+    execution?.constrained_natural_resource_profile,
+    execution?.context_bound_ordinary_profile,
+    ...(execution?.context_bound_capabilities ?? []).flatMap((capability) => [
+      capability?.finite_source_authority,
+      capability?.constrained_natural_resource_profile,
+      capability?.context_bound_ordinary_profile
+    ])];
+  return [...new Set(profiles.map((profile) =>
+    profile?.finite_source?.source_resource_node_id).filter(text))].sort();
 }
 function normalizeFiniteSource(value) {
   if (!plain(value) || !text(value.resource_node_id) || !safe(value.state_version)

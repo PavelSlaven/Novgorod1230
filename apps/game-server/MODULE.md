@@ -80,13 +80,16 @@ response exposes only the O1 discovery capability marker and approved visible
 result, and narration runs only after factual commit. O1 has no new HTTP/public
 operation. Active O2a includes the authored wreck-shore abundant sand and one
 first-entry context-bound finite prepared-clay stock. Player-safe state exposes
-that committed stock as an ordinary source and only the boolean discovery marker;
-it exposes no unresolved result, permission or capacity. Stage B may choose an
+that committed stock as an ordinary source only when its separate approved
+disclosure state is visible; concealed capabilities remain server-only. The
+discovery marker is boolean and exposes no unresolved result, permission or
+capacity. Stage B may choose an
 unlisted ordinary semantic type/name inside the approved class, while the owner
 rechecks mechanics, property, permission and source. The `ambient_ordinary`
 enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
 their legacy admission. Migration 025 conservation and bounded initialization/decrement
-are active for every admitted `finite_source`; constrained policy adds resource
+are active for every admitted `finite_source`; each selected source reloads its
+own committed row, while constrained policy adds resource
 permissions but does not own conservation. Unprovisioned precious/remnant profiles
 remain fail-closed. Currency identity,
 significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain

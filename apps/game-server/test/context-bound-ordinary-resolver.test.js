@@ -140,6 +140,105 @@ test('approved class admits an unlisted ordinary semantic variant', async () => 
     name: 'обычный втульчатый наконечник', facts: [] });
 });
 
+test('selected finite capability consumes its own committed source row', async () => {
+  const value = enabled({ admission_class: 'specialized_or_valuable',
+    semantic_type: 'prepared_stock', withProfile: false });
+  const capability = (suffix) => {
+    const source = `source-${suffix}`;
+    const propertyRef = `property-${suffix}`;
+    const permissions = [`region-${suffix}`, `resource-${suffix}`];
+    const basis = { basis_ref: source, state: 'committed', scope_ref,
+      prepared_seed_provenance: null, functional_buckets: ['other_ordinary'],
+      allowed_admission_classes: ['specialized_or_valuable'],
+      permission_refs: permissions, basis_kind: 'finite_source' };
+    return { source_ref: source, candidate_context: { target_ref: source,
+      semantic_type: 'prepared_stock', candidate_ref_namespace: `candidate-${suffix}`,
+      normalizer_version: 'ordinary-normalizer-v1', candidate_hint: null,
+      functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
+      availability_class: 'context_bound', coverage_kind: 'finite_source',
+      coverage_ref: source, policy_version: 'presence' }, supporting_bases: [basis],
+    context_bound_ordinary_profile: null,
+    constrained_natural_resource_profile: {
+      schema: 'rus.items.constrained_natural_resource_profile.v1', version: 1,
+      profile_ref: `profile-${suffix}`, state: 'committed', scope_ref,
+      environment_ref: `environment-${suffix}`, semantic_type: 'prepared_stock',
+      functional_bucket: 'other_ordinary', admission_class: 'specialized_or_valuable',
+      regional_permission_ref: permissions[0], resource_permission_ref: permissions[1],
+      source_basis_ref: source, public_name: `stock-${suffix}`, finite_source: {
+        source_resource_node_id: source, quantity_unit_ref: { kind: 'unit', id: 'item' },
+        position_ref: 'bench', property_basis_ref: propertyRef,
+        initial_amount_bounds: { minimum: { numerator: 1, denominator: 1, unit: 'item' },
+          maximum: { numerator: 8, denominator: 1, unit: 'item' } }
+      } }, context_refs: { ...value.objective_context.context_refs,
+      environment_refs: [`environment-${suffix}`], property_context_ref: propertyRef },
+    policy_refs: { ...value.objective_context.policy_refs,
+      allowed_admission_classes: ['specialized_or_valuable'],
+      context_bound_permission_refs: permissions,
+      allowed_supporting_bases: [{ basis_ref: source, basis_state: 'committed' }] } };
+  };
+  value.execution_context.context_bound_capabilities = [capability('a'), capability('b')];
+  value.execution_context.supporting_bases = value.execution_context
+    .context_bound_capabilities.flatMap(({ supporting_bases: bases }) => bases);
+  value.version_pins.supporting_basis_catalog_digest = canonicalDigest({
+    domain: 'ordinary_supporting_basis_catalog_v1',
+    supporting_bases: value.execution_context.supporting_bases
+  });
+  const committed = (suffix, stateVersion, quantity) => ({
+    source_resource_node_id: `source-${suffix}`, state_version: stateVersion,
+    lifecycle_state: 'active', quantity: { numerator: quantity, denominator: 1,
+      unit: 'item' }, quantity_unit_ref: { kind: 'unit', id: 'item' },
+    position_ref: 'bench', property_basis_ref: `property-${suffix}`
+  });
+  value.execution_context.committed_finite_source = committed('a', 4, 2);
+  value.execution_context.committed_finite_sources = [committed('a', 4, 2),
+    committed('b', 5, 3)];
+  value.property_placement_context.explicit_item_source_refs = [
+    'source-a', 'source-b'];
+  for (const suffix of ['a', 'b']) {
+    value.property_placement_context.property_catalog.push({ property_basis_ref:
+      `property-${suffix}`, state: 'committed', scope_ref, basis_class: 'explicit_source_item',
+    source_ref: `source-${suffix}`, unowned_cause_ref: null, unowned_cause_kind: null });
+  }
+  value.version_pins.property_placement_context_digest =
+    ordinaryWorldPropertyPlacementContextDigest({
+      ...value.property_placement_context, supporting_basis_ref: 'source-b',
+      causal_basis_refs: ['source-b'], requested_position_ref: 'bench'
+    });
+  let calls = 0;
+  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+    inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(value)),
+    ordinaryMaterializationModel: verifiedModel(async (input) => {
+      calls += 1;
+      if (input.mode === 'seed_scope') return { schema: 'ordinary_materialization_plan_v1',
+        request_id: input.request_id, resolution: 'seeded', density_band_proposal: 'ordinary',
+        background_groups: [], entities: [], presence_resolutions: [], reason_code: 'seed' };
+      return { schema: 'ordinary_materialization_plan_v1', request_id: input.request_id,
+        resolution: 'materialize', density_band_proposal: null, background_groups: [],
+        presence_resolutions: [], reason_code: 'present', entities: [{ semantic_descriptor: {
+          semantic_type: 'clay_blank', name: 'заготовка', facts: [] },
+        authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
+        availability_class: 'context_bound', functional_bucket: 'other_ordinary',
+        presence_expectation: 'routine', supporting_basis_ref: 'source-b',
+        causal_basis: { basis_kind: 'finite_source', basis_refs: ['source-b'] },
+        property_basis_ref: 'property-b', placement_proposal: { scope_ref: 'shore',
+          position_ref: 'bench' }, mechanics_proposal: { mass_grams: 300,
+          external_hand_cost: 1, carry_form: 'regular', packing_slot_cost: 1,
+          quantity: { value: 1, unit: 'item' }, container: null } }] };
+    }) });
+  const result = await resolver({ ...request(), operation: {
+    target_refs: ['source-b'], query: 'взять вторую порцию' } });
+  const transition = result.ordinary_materialization_atomic_write_plan
+    ?.finite_resource_transition;
+  assert.equal(calls, 2, JSON.stringify(result));
+  assert.ok(transition, JSON.stringify(result));
+  assert.equal(transition.source_resource_node_id, 'source-b');
+  assert.equal(transition.expected_state_version, 5);
+  assert.deepEqual(transition.before_quantity,
+    { numerator: 3, denominator: 1, unit: 'item' });
+  assert.deepEqual(transition.after_quantity,
+    { numerator: 2, denominator: 1, unit: 'item' });
+});
+
 test('missing authority and restricted class persist code-owned absence without model calls', async () => {
   for (const input of [enabled({ withProfile: false }),
     enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]

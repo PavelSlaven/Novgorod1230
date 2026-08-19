@@ -9,10 +9,10 @@ const base = () => ({ container: { container_ref: 'chest', commit_state: 'commit
     unresolved_ordinary_contents: true, technical_limits: { schema:
       'rus.items.existing_container_ordinary_limits.v1', version: 1,
       max_new_entities: 4 } },
-  authoritative_contents: { status: 'authoritative_absent' } });
+  authoritative_contents: { status: 'absent' } });
 
 test('authoritative contents have absolute priority over ordinary unresolved contents', () => {
-  const input = base(); input.authoritative_contents = { status: 'authoritative_present' };
+  const input = base(); input.authoritative_contents = { status: 'present' };
   assert.equal(classifyExistingContainerContents(input).route, 'authoritative');
   input.ordinary_policy = null;
   assert.equal(classifyExistingContainerContents(input).route, 'authoritative');

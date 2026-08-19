@@ -25,10 +25,10 @@ export function classifyExistingContainerContents(input = {}) {
     return denied('ITEM_CONTAINER_ORDINARY_MECHANICS_GAP');
   }
   if (a.pass !== true) return denied('ITEM_CONTAINER_ORDINARY_ACCESS_DENIED');
-  if (h.status === 'authoritative_present') {
+  if (h.status === 'present') {
     return result('authoritative', c.container_ref);
   }
-  if (h.status !== 'authoritative_absent') {
+  if (h.status !== 'absent') {
     return denied('ITEM_CONTAINER_AUTHORITATIVE_CLASSIFICATION_INVALID');
   }
   const p = record(policy, POLICY);

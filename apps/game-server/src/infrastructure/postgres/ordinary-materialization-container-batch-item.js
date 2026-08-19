@@ -56,7 +56,9 @@ export function validateOrdinaryContainerBatchItem({
       || resolution.coverage_key !== item.coverage_key
       || resolution.category_key !== item.category_key
       || resolution.context_version !== item.context_version
-      || !aggregate.admitted_identity_keys.includes(resolution.identity_key)
+      || resolution.identity_key !== `ordinary_identity_${canonicalDigest({
+        candidate_key:item.candidate_key,coverage_key:item.coverage_key,
+        context_version:item.context_version }).slice(0,24)}`
       || item.item_id !== `ordinary_item_${canonicalDigest({
         party_id:plan.party_id,scope_ref:plan.scope_ref,
         candidate_key:item.candidate_key,coverage_key:item.coverage_key,
@@ -74,6 +76,22 @@ export function validateOrdinaryContainerBatchItem({
   validateProposal(item, plan.scope_ref, container);
   validateSnapshots(item);
   return item;
+}
+
+export function ordinaryContainerRuntimeItemState(item, changeSetId = null) {
+  const descriptor = item.item_proposal.semantic_descriptor;
+  return {
+    lifecycle_status:'active',
+    runtime_instance_mechanics_snapshot:item.runtime_mechanics_snapshot,
+    ordinary_metadata:{ semantic_type:descriptor.semantic_type,
+      name:descriptor.name,origin:{ kind:'ordinary_container_contents',
+        source_refs:item.mechanics_snapshot.provenance.source_refs },
+      semantic_facts:descriptor.facts,operation_history:[] },
+    property_state:{ property_basis_ref:item.property_basis_ref,
+      property_placement_evidence:
+        item.item_proposal.property_placement_evidence },
+    ...(changeSetId == null ? {} : { created_change_set_id:changeSetId })
+  };
 }
 
 function validateSnapshots(item) {

@@ -50,7 +50,7 @@ test('O2b fails closed on profile gap, packing overflow and sealed drift', () =>
   delete excessiveTransitions.schema;
   delete excessiveTransitions.write_plan_digest;
   excessiveTransitions.transitions.splice(2,0,
-    structuredClone(excessiveTransitions.transitions[0]));
+    structuredClone(excessiveTransitions.transitions[1]));
   assert.throws(() => createOrdinaryContainerContentsAtomicWritePlan(
     excessiveTransitions),{code:'ORDINARY_CONTAINER_BATCH_LIMIT_INVALID'});
   const sealed = batchInput({ masses:[80] });
@@ -68,11 +68,18 @@ test('O2b fails closed on profile gap, packing overflow and sealed drift', () =>
 });
 
 export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
-  includeProfile = true, aggregate = seededAggregate(), partyStateVersion = 0,
-  containerStateVersion = 1, requestIdentity = 'o2b-batch' } = {}) {
+  includeProfile = true, aggregate = createOrdinaryAggregate({scope_ref:scope,
+    resolution_record_cap:32}), partyStateVersion = 0,
+  containerStateVersion = 1, requestIdentity = 'o2b-batch',
+  party = partyId } = {}) {
   const items = [];
   const transitions = [];
   let next = aggregate;
+  const seed = {kind:'seed',request_identity:`${requestIdentity}:seed`,
+    expected_state_version:next.state_version,density_band:'ordinary',
+    identity_budget:16,background_groups:[]};
+  next = applyOrdinaryAggregateTransition({aggregate:next,transition:seed});
+  transitions.push(seed);
   for (let index = 0; index < masses.length; index += 1) {
     const childRequest = `${requestIdentity}:item:${index}`;
     const transition = { kind:'resolve_presence',
@@ -80,10 +87,13 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
       resolution_ref:`resolution:${index}`,candidate_key:`candidate:${index}`,
       coverage_key:`coverage:${index}`,category_key:'household',
       context_version:'container-context-v1',resolution:'materialize',
-      identity_key:`identity:${index}` };
+      identity_key:`ordinary_identity_${canonicalDigest({
+        candidate_key:`candidate:${index}`,coverage_key:`coverage:${index}`,
+        context_version:'container-context-v1'}).slice(0,24)}` };
     next = applyOrdinaryAggregateTransition({ aggregate:next, transition });
     transitions.push(transition);
-    items.push(child({ index, mass:masses[index], requestIdentity:childRequest }));
+    items.push(child({ index, mass:masses[index], requestIdentity:childRequest,
+      party }));
   }
   const closure = { kind:'close_coverage',request_identity:requestIdentity,
     expected_state_version:next.state_version,
@@ -92,10 +102,10 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
   next = applyOrdinaryAggregateTransition({ aggregate:next, transition:closure });
   transitions.push(closure);
   const capacitySnapshot = [];
-  const inventoryInput = { party_id:partyId,items:[],item_placements:[],
+  const inventoryInput = { party_id:party,items:[],item_placements:[],
     item_profiles:[],containers:[{container_id:'chest',
       template_id:'chest-template'}],container_placements:[{
-        party_id:partyId,container_id:'chest',anchor_id:'anchor'}],
+        party_id:party,container_id:'chest',anchor_id:'anchor'}],
     container_profiles:includeProfile ? [{...profile,capacity}] : [],
     container_compatibility:[],capacity_snapshot:capacitySnapshot };
   const expectedUsed = masses.length;
@@ -107,7 +117,7 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
   const ordinaryPolicy = {schema:
     'rus.items.existing_container_ordinary_policy.v2',version:2,
     unresolved_ordinary_contents:true,technical_limits:technicalLimits};
-  const value = { party_id:partyId,scope_ref:scope,
+  const value = { party_id:party,scope_ref:scope,
     request_identity:requestIdentity,input_digest:`input:${requestIdentity}`,
     transition_digest:canonicalDigest(transitions),expected_versions:{
       party_state_version:partyStateVersion,
@@ -141,16 +151,7 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
     JSON.parse(JSON.stringify(value)));
 }
 
-function seededAggregate() {
-  return applyOrdinaryAggregateTransition({
-    aggregate:createOrdinaryAggregate({scope_ref:scope,resolution_record_cap:32}),
-    transition:{kind:'seed',request_identity:'seed:chest',
-      expected_state_version:0,density_band:'ordinary',identity_budget:16,
-      background_groups:[]}
-  });
-}
-
-function child({ index, mass, requestIdentity }) {
+function child({ index, mass, requestIdentity, party }) {
   const candidate = `candidate:${index}`, coverage = `coverage:${index}`;
   const mechanics = {mass_grams:mass,external_hand_cost:0,
     carry_form:'compact',packing_slot_cost:1,
@@ -194,7 +195,7 @@ function child({ index, mass, requestIdentity }) {
         root_turn_id:'turn-o2b',step_index:1,operation_ref:requestIdentity,
         origin_kind:'existing_container_ordinary',source_refs:sourceRefs},
       mechanics} };
-  item.item_id = `ordinary_item_${canonicalDigest({party_id:partyId,
+  item.item_id = `ordinary_item_${canonicalDigest({party_id:party,
     scope_ref:scope,candidate_key:candidate,coverage_key:coverage,
     context_version:'container-context-v1'}).slice(0,24)}`;
   return item;

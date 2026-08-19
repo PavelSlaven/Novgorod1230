@@ -1,9 +1,9 @@
 import {
   assertAndNormalizeOrdinaryAggregate, canonicalDigest,
-  createOrdinaryContextVersion, createOrdinaryCoverageKey,
-  createOrdinaryMaterializationWorkingProjection
+  createOrdinaryContextVersion, createOrdinaryCoverageKey
 } from '@rus/materialization';
-import { resolveOrdinaryMaterializationSeedScope } from '@rus/turn';
+import { validateOrdinaryMaterializationPlanV1 } from
+  '@rus/contracts/ordinary-materialization-v1';
 import { basisDigest } from
   '../infrastructure/postgres/ordinary-materialization-phase-6-commit-internal.js';
 import { validLowerDvinaTraceO2bLoadedProfile } from
@@ -48,38 +48,37 @@ export function createLowerDvinaTraceO2bContainerResolver({ partyId,
       return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_COMMITTED_DRIFT');
     }
     if (committed.replay) return success([], null);
-    let captured = null;
-    const model = async (request, context) => {
-      const value = await ordinaryMaterializationModel(request, context);
-      captured = value;
-      return value;
-    };
-    let seeded;
+    let rawValue;
     try {
-      seeded = await resolveOrdinaryMaterializationSeedScope({
-        request:committed.modelRequest, ordinaryMaterializationModel:model,
-        workingProjection:createOrdinaryMaterializationWorkingProjection({
-          ordinary_aggregate:committed.aggregate }),
-        basisCatalog:committed.admissionBases,
-        allowedDisclosurePolicyRefs:
-          committed.objective.allowed_disclosure_policy_refs,
-        resolveIdentityBudget:async ({ density_band: density }) => {
-          if (density !== committed.objective.identity_budget.density_band) {
-            throw coded('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
-          }
-          return committed.objective.identity_budget;
-        }
-      });
+      rawValue = await ordinaryMaterializationModel(committed.modelRequest,
+        {repair:null});
+      let errors = validateOrdinaryMaterializationPlanV1(rawValue,
+        committed.modelRequest);
+      if (errors.length !== 0) {
+        rawValue = await ordinaryMaterializationModel(committed.modelRequest, {
+          repair:{schema:'ordinary_materialization_repair_context_v1',
+            original_output:null,validation_errors:errors}
+        });
+        errors = validateOrdinaryMaterializationPlanV1(rawValue,
+          committed.modelRequest);
+        if (errors.length !== 0) throw coded(
+          'TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
+      }
     } catch { return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID'); }
-    const raw = descriptorSafeJsonSnapshot(captured);
-    if (raw == null || !Array.isArray(raw.entities)
+    const raw = descriptorSafeJsonSnapshot(rawValue);
+    const noChange = raw?.resolution === 'no_change';
+    if (raw == null || !['seeded','no_change'].includes(raw.resolution)
         || raw.background_groups?.length !== 0
-        || seeded.prepared_background_groups.length !== 0
-        || seeded.pending_items_property_admission.length
-          !== raw.entities.length) {
+        || raw.presence_resolutions?.length !== 0
+        || raw.entities.length > committed.modelRequest.technical_limits
+          .max_new_entities
+        || (noChange ? raw.entities.length !== 0
+          || raw.density_band_proposal !== null
+          : raw.density_band_proposal
+            !== committed.objective.identity_budget.density_band)) {
       return denied('TRACE_TURN_STEP_CONTAINER_ORDINARY_MODEL_INVALID');
     }
-    try { return buildO2bContainerResolution({ committed, raw, seeded, operation,
+    try { return buildO2bContainerResolution({ committed, raw, operation,
       partyId, inputDigest }); }
     catch (error) { return denied(error?.code
       ?? 'TRACE_TURN_STEP_CONTAINER_ORDINARY_RESOLUTION_INVALID'); }
@@ -117,7 +116,7 @@ function committedInput(value, seed, binding, loadedProfile) {
       || aggregate.scope_ref.entity_id !== seed.container_ref
       || aggregate.state_version !== value.ordinary_state_version) return null;
   const identity = coverageIdentity(scope, objective, context);
-  if (aggregate.coverage_closures.some((entry) => entry.coverage_key
+  if (aggregate.closed_observation_scopes.some((entry) => entry.coverage_key
     === identity.coverage_key && entry.category_key === identity.category_key
     && entry.context_version === identity.context_version)) {
     return { replay:true };

@@ -11,7 +11,7 @@
     "id": "lower_dvina_trace_m7_content_v1",
     "revision": 1,
     "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
-    "digest": "c328941b9041e1571ccc8c16fbb869dd01e0e5bca4afa4288a84a31337f6f0d5"
+    "digest": "8c78bb702ae1a6a0dbee3402c768c6434e769c0be2e3e075d1845e107b377883"
   },
   "superseded_definition_ref": {
     "id": "lower_dvina_trace_v1",
@@ -51,7 +51,7 @@
       "id": "lower_dvina_trace_m7_content_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_m7_content_manifest.v1",
-      "digest": "c328941b9041e1571ccc8c16fbb869dd01e0e5bca4afa4288a84a31337f6f0d5"
+      "digest": "8c78bb702ae1a6a0dbee3402c768c6434e769c0be2e3e075d1845e107b377883"
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",

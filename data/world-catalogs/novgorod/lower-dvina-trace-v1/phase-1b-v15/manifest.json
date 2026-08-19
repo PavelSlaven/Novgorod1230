@@ -10,7 +10,7 @@
     "id": "lower_dvina_trace_phase_1b_v14",
     "revision": 14,
     "schema": "rus.lower_dvina_trace_phase_1b_manifest.v1",
-    "digest": "fafe6354ec530a8d8ba84e62b8921462e171d1d3692c0f4310398149426be1ad"
+    "digest": "27572f1f031fe9089b628e4dcd99cb66402496c5c3d2a0f0d296aef05f2f9aec"
   },
   "content_refs": {
     "publication_binding": {
@@ -18,7 +18,7 @@
       "id": "lower_dvina_trace_phase_1b_publication_v15",
       "revision": 15,
       "schema": "rus.lower_dvina_trace_publication_binding.v1",
-      "digest": "bb0cbe34c301dce35e55f84d83d5c2c4ef98d693dc80de3e486f6a48241d17a9"
+      "digest": "bb90c9ce8750641a258f84d8b7a7c0cdb417460da45f263b158d1ae0862f0c8c"
     }
   },
   "fallback_policy": "forbidden"

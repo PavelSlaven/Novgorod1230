@@ -161,11 +161,19 @@ test('committed access survives restart and only then reveals authored contents'
       true);
   });
 
-test('O2b resolver receives a candidate-free stable seed before ordinary child reveal', async () => {
+test('O2b reveal registers sealed mechanics for a same-turn move', async () => {
   const requests = [], items = [chest({ commit_state: 'committed', mechanics_profile_ref: 'chest-mechanics', ordinary_contents_context: ordinaryContext() })];
-  const run = (rootPlayerAction) => { const ports = runtimePorts(items, { ordinaryContainerContentsResolver: async ({ stage_a_request }) => { requests.push(stage_a_request); const child = ordinaryChild(); return { pass: true, materialized_items: [child], ordinary_materialization_atomic_write_plan: { schema: 'ordinary_container_contents_atomic_write_plan_v2', write_plan_digest: 'sealed-test-plan', scope_ref: { entity_kind: 'container', entity_id: 'chest' }, items: [{ item_id: child.item_id }] }, errors: [] }; } }); return runTurnStepLoop({ requestId: 'request', rootTurnId: 'turn', committedStateVersion: 1, rootPlayerAction, actor: actor(), initialWorkingProjection: initialProjection(items), maxInternalSteps: 8 }, { executionRegistry: ports.executionRegistry, resolveCheckContext: ports.resolveCheckContext, turnStepModel: async (request) => domainPlan(request, openOperation(), null), projectPlayerSafeState: async ({ working_projection: projection }) => projection, revalidateCommittedState: async () => true }); };
+  const run = (rootPlayerAction) => { const ports = runtimePorts(items, { ordinaryContainerContentsResolver: async ({ stage_a_request }) => { requests.push(stage_a_request); const child = ordinaryChild(); return { pass: true, materialized_items: [child], ordinary_materialization_atomic_write_plan: { schema: 'ordinary_container_contents_atomic_write_plan_v2', write_plan_digest: 'sealed-test-plan', scope_ref: { entity_kind: 'container', entity_id: 'chest' }, items: [ordinaryPlanItem(child.item_id)] }, errors: [] }; } }); return runTurnStepLoop({ requestId: 'request', rootTurnId: 'turn', committedStateVersion: 1, rootPlayerAction, actor: actor(), initialWorkingProjection: initialProjection(items), maxInternalSteps: 8 }, { executionRegistry: ports.executionRegistry, resolveCheckContext: ports.resolveCheckContext, turnStepModel: async (request) => request.step_index === 1
+    ? domainPlan(request, openOperation(), { remaining_intent:
+      'взять обнаруженный предмет', depends_on_refs: ['chest'] })
+    : directPlan(request, [{ op: 'move_entity', entity_ref:'ordinary-child',
+      placement:{ relation:'held_by', target_ref:'actor' } }]), projectPlayerSafeState: async ({ working_projection: projection }) => projection, revalidateCommittedState: async () => true }); };
   const first = await run('открываю сундук и беру меч');
-  assert.equal(first.working_projection.items.some(({ item_id }) => item_id === 'ordinary-child'), true);
+  assert.deepEqual(first.working_projection.items.find(({ item_id }) =>
+    item_id === 'ordinary-child').placement,
+  { holder_character_id:'actor', physical_position:'hands' });
+  assert.equal(first.working_projection.inventory.items.includes(
+    'ordinary-child'), true);
   await run('открываю сундук и беру золото');
   assert.equal(requests.length, 2); assert.deepEqual(requests[0], requests[1]);
   assert.equal(requests[0].schema,
@@ -242,11 +250,21 @@ function ordinaryContext() { return { container_ref: 'chest', template_id: 'ches
   ordinary_policy: { schema: 'rus.items.existing_container_ordinary_policy.v2', version: 2,
     unresolved_ordinary_contents: true, technical_limits: { schema:
       'rus.items.existing_container_ordinary_limits.v1', version: 1,
-      max_new_entities: 4 } }, authoritative_status: 'authoritative_absent' }; }
+      max_new_entities: 4 } }, authoritative_status: 'absent' }; }
 function ordinaryChild() { return { item_id: 'ordinary-child', semantic_type: 'material_portion',
   authority: 'ordinary', disclosure: 'concealed', admission_class: 'common_mundane',
   is_container: false, evidence: false, authentic_document: false, hidden_history: false,
   secret_cache: false, placement: { container_id: 'chest' } }; }
+function ordinaryPlanItem(item_id) { return { item_id,
+  runtime_mechanics_snapshot:{ schema:
+    'rus.items.runtime_instance_mechanics_snapshot.v1', version:1,
+  provenance:{ source_kind:'ordinary_world_materialization',
+    root_turn_id:'turn', step_index:1,
+    operation_ref:'request_container_access:chest',
+    origin_kind:'existing_container_ordinary', source_refs:['basis:stored'] },
+  mechanics:{ mass_grams:80, external_hand_cost:0, carry_form:'compact',
+    packing_slot_cost:1, quantity:{ value:1, unit:'item' },
+    container:null } } }; }
 
 function initialProjection(items) {
   return {

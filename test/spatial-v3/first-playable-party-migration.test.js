@@ -65,14 +65,18 @@ const finiteResourceSql = readFileSync(
   new URL('../../schemas/party-db/025_party_runtime_finite_resource_transitions.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 025 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 25);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-15), [sql,
+const existingContainerOrdinarySql = readFileSync(
+  new URL('../../schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 026 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 26);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-16), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
-    finiteResourceSql]);
+    finiteResourceSql, existingContainerOrdinarySql]);
 });
 
 test('024 admits only the separate closed O1 v2 runtime snapshot', () => {

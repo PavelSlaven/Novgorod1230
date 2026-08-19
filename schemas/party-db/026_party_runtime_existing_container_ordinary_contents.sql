@@ -263,6 +263,9 @@ ALTER TABLE party_runtime.party_items
       AND (
         party_runtime.runtime_instance_mechanics_snapshot_valid(
           state->'runtime_instance_mechanics_snapshot')
+        OR party_runtime
+          .ordinary_world_runtime_instance_mechanics_snapshot_valid(
+            state->'runtime_instance_mechanics_snapshot')
         OR (
           legal_status='ordinary_container_content'
           AND party_runtime.ordinary_container_runtime_mechanics_snapshot_valid(

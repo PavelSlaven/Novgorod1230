@@ -16,7 +16,6 @@ import {
   hydrateAuthoredContainers,
   projectCurrentCommittedContainers
 } from './lower-dvina-trace-turn-step-authored-containers.js';
-
 export function initializeRuntimeState(committedState) {
   const state = {
     aliases: new Map(),
@@ -219,6 +218,25 @@ export function requireRuntimeEntity(ref, state) {
     fail('TRACE_TURN_STEP_RUNTIME_ENTITY_REQUIRED', { entity_ref: ref });
   }
   return record;
+}
+
+export function ordinaryContainerRuntimeEntity(child, planItem) {
+  const itemId = text(child?.item_id);
+  if (!itemId || planItem?.item_id !== itemId || !plain(
+    planItem.runtime_mechanics_snapshot)) {
+    fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_CHILD_MECHANICS_INVALID');
+  }
+  const resolved = resolveInventoryMechanicsProfile({ instance: {template_id:null,
+    runtime_instance_mechanics_snapshot:planItem.runtime_mechanics_snapshot}, profiles:{} });
+  if (!resolved.pass || resolved.source !== 'runtime_instance_snapshot'
+      || resolved.snapshot?.provenance?.origin_kind !== 'existing_container_ordinary') {
+    fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_CHILD_MECHANICS_INVALID');
+  }
+  return { instance_id:itemId, mechanics:structuredClone(resolved.snapshot.mechanics),
+    snapshot:structuredClone(resolved.snapshot),
+    semantic_type:text(child.semantic_type) || null, name:null,
+    origin_kind:resolved.snapshot.provenance.origin_kind,
+    source_refs:[...resolved.snapshot.provenance.source_refs] };
 }
 
 export function matchesItem(item, ref) {

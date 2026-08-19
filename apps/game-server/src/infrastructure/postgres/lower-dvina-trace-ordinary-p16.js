@@ -3,6 +3,8 @@ import {
 } from './ordinary-materialization-phase-6-commit.js';
 import { buildOrdinaryMaterializedRuntimeItem } from
   './ordinary-materialization-runtime-item.js';
+import { ordinaryContainerRuntimeItemState } from
+  './ordinary-materialization-container-batch-item.js';
 
 export function ordinaryPlanFromWritePlan(writePlan, partyId) {
   const raw = writePlan?.ordinary_materialization_atomic_write_plan;
@@ -19,15 +21,25 @@ export function ordinaryPhysicalKeys(plan) {
   const materializationItemIds = batch
     ? plan.items.map(({item_id}) => item_id)
     : [plan.item?.item_id ?? plan.request_identity];
-  const runtimeItemIds = batch ? materializationItemIds : [];
+  const ledgerItemIds = materializationItemIds.length === 0
+    ? [plan.request_identity] : materializationItemIds;
   return [
     `party_runtime.party_ordinary_materialization_aggregates:${scope}`,
     `party_runtime.party_ordinary_materialization_contexts:${scope}`,
     `party_runtime.party_ordinary_materialization_enablements:${scope}`,
     `party_runtime.party_ordinary_materialization_commits:${plan.party_id}:${plan.request_identity}`,
     `party_runtime.party_ordinary_materialization_basis_catalog:${scope}`,
-    `party_runtime.party_ordinary_materialization_items:${plan.party_id}:${plan.item?.item_id ?? plan.request_identity}`,
-    `party_runtime.party_ordinary_materialization_item_basis_refs:${plan.party_id}:${plan.item?.item_id ?? plan.request_identity}`,
+    ...ledgerItemIds.flatMap((itemId) => [
+      `party_runtime.party_ordinary_materialization_items:${plan.party_id}:${itemId}`,
+      `party_runtime.party_ordinary_materialization_item_basis_refs:${plan.party_id}:${itemId}`
+    ]),
+    ...(batch ? [
+      `party_runtime.party_containers:${plan.scope_ref.entity_id}`,
+      ...materializationItemIds.flatMap((itemId) => [
+        `party_runtime.party_items:${itemId}`,
+        `party_runtime.party_item_placements:${itemId}`
+      ])
+    ] : []),
     ...(plan.item == null ? [] : [
       `party_runtime.party_positions:${plan.party_id}`,
       `party_runtime.party_items:${plan.item.item_id}`,
@@ -37,7 +49,7 @@ export function ordinaryPhysicalKeys(plan) {
 }
 
 export function applyOrdinaryMaterializationProjection({
-  next, visibleContext, ordinaryPlan
+  next, visibleContext, ordinaryPlan, changeSetId = null
 }) {
   if (ordinaryPlan?.schema === 'ordinary_container_contents_atomic_write_plan_v2') {
     const patch = ordinaryPlan.container_transition.state_patch;
@@ -59,13 +71,8 @@ export function applyOrdinaryMaterializationProjection({
         placement:{container_id:item.container_id},
         runtime_instance_mechanics_snapshot:
           structuredClone(item.runtime_mechanics_snapshot),
-        state:{ lifecycle_status:'active',
-          runtime_instance_mechanics_snapshot:
-            structuredClone(item.runtime_mechanics_snapshot),
-          semantic_category:item.item_proposal.semantic_descriptor.semantic_type,
-          property_state:{ property_basis_ref:item.property_basis_ref,
-            property_placement_evidence:structuredClone(
-              item.item_proposal.property_placement_evidence) } }
+        state:structuredClone(ordinaryContainerRuntimeItemState(
+          item, changeSetId))
       }];
     }
     const known = new Set((visibleContext.visible_objects ?? [])

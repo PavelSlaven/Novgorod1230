@@ -131,30 +131,30 @@ function sensitiveModel(input, { admissionClass, semanticType, name }) {
   return plan;
 }
 
-test('approved armament profile reaches the same bounded presence and P16 plan', async () => {
+test('armament profile stays absent until a code-owned combat owner exists', async () => {
   const fixture = enabled();
   const policy = resolveContextBoundOrdinaryPolicy(JSON.parse(JSON.stringify({ objective_context: fixture.objective_context,
     execution_context: fixture.execution_context,
     candidate_context: fixture.execution_context.candidate_context,
     scope_ref, property_placement_context: fixture.property_placement_context })));
-  assert.equal(policy.resolution, null);
-  assert.equal(policy.profile.condition_state, 'serviceable');
-  assert.equal(policy.profile.basis_kind, 'personal_possession');
+  assert.equal(policy.resolution, 'absent');
+  assert.equal(policy.profile, null);
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
     ordinaryMaterializationModel: verifiedModel(async (input) => {
-      calls += 1; return model(input);
+      calls += 1;
+      assert.equal(input.mode, 'seed_scope');
+      assert.equal(input.candidate_query, null);
+      return model(input);
     }) });
   const result = await resolver(request());
-  assert.equal(calls, 2);
-  assert.equal(result.ordinary_materialization_atomic_write_plan.resolution, 'materialize');
-  assert.equal(result.ordinary_materialization_atomic_write_plan.item.admission_class,
-    'weapon_or_armament');
-  assert.deepEqual(result.ordinary_materialization_atomic_write_plan.item.permission_refs, permissions);
+  assert.equal(calls, 1);
+  assert.equal(result.ordinary_materialization_atomic_write_plan.resolution, 'absent');
+  assert.equal(result.ordinary_materialization_atomic_write_plan.item, null);
 });
 
-test('approved class admits an unlisted ordinary semantic variant', async () => {
+test('unlisted armament wording cannot bypass the missing combat owner', async () => {
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
@@ -163,11 +163,10 @@ test('approved class admits an unlisted ordinary semantic variant', async () => 
       return model(input, 'обычный втульчатый наконечник', 'socketed_spearhead_variant');
     }) });
   const result = await resolver(request());
-  const descriptor = result.ordinary_materialization_atomic_write_plan
-    ?.item.item_proposal.semantic_descriptor;
-  assert.equal(calls, 2);
-  assert.deepEqual(descriptor, { semantic_type: 'socketed_spearhead_variant',
-    name: 'обычный втульчатый наконечник', facts: [] });
+  const plan = result.ordinary_materialization_atomic_write_plan;
+  assert.equal(calls, 1);
+  assert.equal(plan.resolution, 'absent');
+  assert.equal(plan.item, null);
 });
 
 test('authority-sensitive wording cannot become persisted currency or document identity', async () => {
@@ -309,18 +308,21 @@ test('selected finite capability consumes its own committed source row', async (
     { numerator: 2, denominator: 1, unit: 'item' });
 });
 
-test('missing authority and restricted class persist code-owned absence without model calls', async () => {
+test('missing authority persists absence after candidate-free Stage A without Stage B', async () => {
   for (const input of [enabled({ withProfile: false }),
     enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]
     .map((value) => JSON.parse(JSON.stringify(value)))) {
     let calls = 0;
     const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
       inputDigest: 'input', loadEnablement: async () => input,
-      ordinaryMaterializationModel: verifiedModel(async () => {
-        calls += 1; return {};
+      ordinaryMaterializationModel: verifiedModel(async (modelRequest) => {
+        calls += 1;
+        assert.equal(modelRequest.mode, 'seed_scope');
+        assert.equal(modelRequest.candidate_query, null);
+        return model(modelRequest);
       }) });
     const result = await resolver(request());
-    assert.equal(calls, 0);
+    assert.equal(calls, 1);
     const plan = result.ordinary_materialization_atomic_write_plan;
     assert.ok(plan, JSON.stringify(result));
     assert.equal(plan.resolution, 'absent');
@@ -337,8 +339,12 @@ test('specialized candidate without either authority persists absence and never 
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(current)),
-    ordinaryMaterializationModel: verifiedModel(async (input) => {
+    ordinaryMaterializationModel: verifiedModel(async (input, context) => {
       calls += 1;
+      assert.equal(input.mode, 'seed_scope');
+      assert.equal(input.candidate_query, null);
+      if (calls === 1) return {};
+      assert.ok(context.repair);
       const plan = model(input, 'valuable stock', 'prepared_stock');
       if (input.mode !== 'seed_scope') {
         plan.entities[0].admission_class = 'specialized_or_valuable';
@@ -346,16 +352,18 @@ test('specialized candidate without either authority persists absence and never 
       return plan;
     }) });
   const first = await resolver(request());
-  assert.equal(calls, 0, JSON.stringify(first));
+  assert.equal(calls, 2, JSON.stringify(first));
   const plan = first.ordinary_materialization_atomic_write_plan;
   assert.equal(plan.resolution, 'absent');
+  assert.equal(plan.next_aggregate.density_band, 'ordinary');
+  assert.equal(plan.next_aggregate.identity_budget, 1);
   assert.deepEqual(plan.transitions.map(({ kind }) => kind),
     ['seed', 'resolve_presence']);
 
   current.ordinary_aggregate = structuredClone(plan.next_aggregate);
   current.version_pins.ordinary_state_version = plan.next_aggregate.state_version;
   const retry = await resolver({ ...request(), request: { root_turn_id: 'turn:party:2' } });
-  assert.equal(calls, 0);
+  assert.equal(calls, 2);
   assert.equal(Object.hasOwn(retry, 'ordinary_materialization_atomic_write_plan'), false);
 });
 

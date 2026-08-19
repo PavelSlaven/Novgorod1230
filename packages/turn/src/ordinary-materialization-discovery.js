@@ -46,25 +46,7 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       structuredClone(enabled.ordinary_aggregate) });
     const transitions = [];
     let newBases = [];
-    if (!enabled.ordinary_aggregate.seeded
-        && enabled.code_owned_resolution != null) {
-      const budget = computeOrdinaryIdentityBudget({ density_band: 'sparse',
-        scope: enabled.ordinary_aggregate.scope_ref,
-        function_refs: enabled.objective_context.context_refs.function_refs,
-        request: null, policy: execution.density_policy,
-        hard_technical_max:
-          enabled.objective_context.technical_limits.max_new_entities });
-      const transition = { kind: 'seed',
-        request_identity: objective.request_id,
-        expected_state_version:
-          projection.ordinary_materialization_aggregate.state_version,
-        density_band: 'sparse', identity_budget: budget.identity_budget,
-        background_groups: [] };
-      transitions.push(transition);
-      projection = Object.freeze({ ordinary_materialization_aggregate:
-        applyOrdinaryAggregateTransition({ aggregate:
-          projection.ordinary_materialization_aggregate, transition }) });
-    } else if (!enabled.ordinary_aggregate.seeded) {
+    if (!enabled.ordinary_aggregate.seeded) {
       const seed = await resolveOrdinaryMaterializationSeedScope({
         request: buildSeedRequest({ objective_context: objective }),
         ordinaryMaterializationModel: modelBudget.invoke,
@@ -93,7 +75,8 @@ export function createOrdinaryMaterializationDiscoveryOwner({
         ?? execution.supporting_bases),
       ...structuredClone(newBases)].sort((left, right) =>
       left.basis_ref.localeCompare(right.basis_ref));
-    if (modelBudget.hasRemaining() === false) {
+    if (modelBudget.hasRemaining() === false
+        && enabled.code_owned_resolution == null) {
       return resolvedPlan({ request, enabled, partyId, scopeRef,
         inputDigest, sealAtomicWritePlan, transitions, newBases, bases,
         next: projection.ordinary_materialization_aggregate,

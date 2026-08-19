@@ -155,23 +155,26 @@ test('approved armament materializes with code-owned combat mechanics', async ()
   assert.equal(item.weapon_mechanics_snapshot.combat_usable, true);
 });
 
-test('armament identity and combat capability stay profile-owned', async () => {
-  let calls = 0;
-  const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
-    inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
-    ordinaryMaterializationModel: verifiedModel(async (input) => {
-      calls += 1;
-      return model(input, 'обычный втульчатый наконечник', 'socketed_spearhead_variant');
-    }) });
-  const result = await resolver(request());
-  const plan = result.ordinary_materialization_atomic_write_plan;
-  assert.equal(calls, 2);
-  assert.equal(plan.item.item_proposal.semantic_descriptor.semantic_type,
-    'ordinary_spear');
-  assert.equal(plan.item.weapon_mechanics_snapshot.weapon_danger, 1);
+test('context-bound variants stay free', async () => {
+  const specialized = sensitiveEnabled({ admissionClass: 'specialized_or_valuable',
+    profileKind: 'specialized_stock', semanticType: 'tool_class', publicName: 'tool' });
+  for (const [value, run, type, name, danger] of [[enabled(),
+    (input) => model(input, 'spearhead', 'spearhead_variant'),
+    'spearhead_variant', 'spearhead', 1],
+  [specialized, (input) => sensitiveModel(input, { admissionClass: 'specialized_or_valuable',
+    semanticType: 'socket_tool_variant', name: 'socket tool' }),
+  'socket_tool_variant', 'socket tool', null]]) {
+    const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
+      inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(value)),
+      ordinaryMaterializationModel: verifiedModel(run) });
+    const plan = (await resolver(request())).ordinary_materialization_atomic_write_plan;
+    assert.deepEqual(plan.item.item_proposal.semantic_descriptor,
+      { semantic_type: type, name, facts: [] });
+    assert.equal(plan.item.weapon_mechanics_snapshot?.weapon_danger ?? null, danger);
+  }
 });
 
-test('authority-sensitive wording cannot become persisted currency or document identity', async () => {
+test('authority-sensitive wording cannot become persisted sensitive identity', async () => {
   for (const fixture of [{
     admissionClass: 'currency_or_precious', profileKind: 'precious_material',
     semanticType: 'precious_material_fragment', publicName: 'серебряная заготовка',
@@ -182,6 +185,11 @@ test('authority-sensitive wording cannot become persisted currency or document i
     semanticType: 'blank_writing_substrate', publicName: 'чистый лист',
     hostileType: 'authentic_signed_charter', hostileName: 'подлинная княжеская грамота',
     ordinaryType: 'blank_paper_variant', ordinaryName: 'чистая бумажная заготовка'
+  }, {
+    admissionClass: 'other_restricted', profileKind: 'specialized_stock',
+    semanticType: 'restricted_blank', publicName: 'безымянная заготовка',
+    hostileType: 'historical_relic', hostileName: 'подлинная реликвия',
+    ordinaryType: 'restricted_variant', ordinaryName: 'обычная заготовка'
   }]) {
     const value = sensitiveEnabled(fixture);
     const policy = resolveContextBoundOrdinaryPolicy(JSON.parse(JSON.stringify({
@@ -308,6 +316,9 @@ test('selected finite capability consumes its own committed source row', async (
     { numerator: 3, denominator: 1, unit: 'item' });
   assert.deepEqual(transition.after_quantity,
     { numerator: 2, denominator: 1, unit: 'item' });
+  assert.deepEqual(result.ordinary_materialization_atomic_write_plan.item
+    .item_proposal.semantic_descriptor,
+  { semantic_type: 'prepared_stock', name: 'stock-b', facts: [] });
 });
 
 test('missing authority persists absence after candidate-free Stage A without Stage B', async () => {

@@ -79,6 +79,24 @@ test('a committed decrement refreshes mutable finite state without invalidating 
     'absent');
 });
 
+test('finite transition delegates fractional remainder arithmetic to the item owner', () => {
+  const value = fixture();
+  value.execution_context.committed_finite_source.quantity = {
+    numerator: 3, denominator: 2, unit: 'item'
+  };
+  const profile = resolveConstrainedNaturalResourcePolicy(value).profile;
+  const transition = constrainedNaturalResourceFiniteTransition({ profile,
+    request_identity: 'turn:fractional:ordinary:presence', item: {
+      position_ref: 'position:bank', property_basis_ref: 'property:bank',
+      causal_basis_refs: ['node:unseen'], mechanics_snapshot: {
+        mechanics: { quantity: { value: 1, unit: 'item' } }
+      }
+    } });
+  assert.deepEqual(transition.after_quantity,
+    { numerator: 1, denominator: 2, unit: 'item' });
+  assert.equal(transition.lifecycle_state_after, 'active');
+});
+
 test('semantic variant stays free while authority and class drift fail closed', () => {
   const variant = fixture();
   variant.candidate_context.semantic_type = 'unlisted_reasonable_variant';
@@ -119,10 +137,12 @@ test('a one-time source accepts one bounded semantic estimate before its first d
       mechanics: { quantity: { value: 1, unit: 'item' } } } };
   const first = constrainedNaturalResourceFiniteInitialization({ profile, item,
     request_identity: 'turn:1:ordinary:presence',
-    estimated_amount: { numerator: 7, denominator: 1, unit: 'item' } });
-  assert.equal(first.finite_resource_initialization.estimated_amount.numerator, 7);
+    estimated_amount: { numerator: 7, denominator: 2, unit: 'item' } });
+  assert.deepEqual(first.finite_resource_initialization.estimated_amount,
+    { numerator: 7, denominator: 2, unit: 'item' });
   assert.equal(first.finite_resource_transition.expected_state_version, 5);
-  assert.equal(first.finite_resource_transition.after_quantity.numerator, 6);
+  assert.deepEqual(first.finite_resource_transition.after_quantity,
+    { numerator: 5, denominator: 2, unit: 'item' });
   assert.equal(constrainedNaturalResourceFiniteInitialization({ profile, item,
     request_identity: 'turn:1:ordinary:presence',
     estimated_amount: { numerator: 9, denominator: 1, unit: 'item' } }), null);

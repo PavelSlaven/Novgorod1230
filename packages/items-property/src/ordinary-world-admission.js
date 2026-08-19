@@ -6,10 +6,13 @@ const O1_BUCKETS = new Set(['household','work','storage','stock',
   'other_ordinary']);
 const CONTEXT_BOUND = new Set(['specialized_or_valuable','weapon_or_armament',
   'currency_or_precious','document_like','other_restricted']);
+const AUTHORITY_SENSITIVE = new Set(['currency_or_precious','document_like',
+  'other_restricted']);
 const CARRY_FORMS = new Set(['compact','regular','long','bulky']);
 
 const HANDOFF = ['schema','status','stage','request_id','scope_ref','candidate_key','coverage_key','context_version','admission_evidence','proposed_item'];
 const CONTEXT = ['schema','version','supporting_bases','property_placement_input','approved_permission_refs','mechanics_policy','causal_identity'];
+const SENSITIVE_CONTEXT = [...CONTEXT, 'semantic_identity_profile'];
 const EVIDENCE = ['authority_class','admission_class','availability_class','functional_bucket','supporting_basis_ref','property_basis_ref','permission_refs','causal_basis_kind','runtime_item_mechanics_policy_ref','property_placement_context_digest','property_catalog_version_ref','placement_catalog_version_ref'];
 const CONDITION_EVIDENCE = [...EVIDENCE, 'condition_state'];
 const LEGACY_EVIDENCE = EVIDENCE.filter((key) => key !== 'causal_basis_kind');
@@ -25,7 +28,9 @@ const PROPERTY_INPUT_V2 = ['schema','version','scope_ref','property_catalog_vers
 
 export function admitOrdinaryWorldMaterialization(input = {}) {
   const copied = copyBoundary(input), args = record(copied, ['handoff','admission_context']);
-  const pending = args && record(args.handoff, HANDOFF), context = args && record(args.admission_context, CONTEXT);
+  const pending = args && record(args.handoff, HANDOFF), context = args
+    && (record(args.admission_context, SENSITIVE_CONTEXT)
+      ?? record(args.admission_context, CONTEXT));
   if (!pending || !context || context.schema !== 'rus.items.ordinary_world_admission_context.v3' || context.version !== 3) return failed('ITEM_ORDINARY_WORLD_ADMISSION_INVALID');
   const evidence = record(pending.admission_evidence, CONDITION_EVIDENCE)
     ?? record(pending.admission_evidence, EVIDENCE)
@@ -37,6 +42,11 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   const finiteSource = causalBasis.basis_kind === 'finite_source';
   const approvedPermissions = refs(context.approved_permission_refs);
   if (!approvedPermissions || evidence.authority_class !== 'ordinary' || evidence.admission_class === 'container_capable' || (!contextBound && (evidence.admission_class !== 'common_mundane' || evidence.availability_class !== 'common' || !O1_BUCKETS.has(item.functional_bucket))) || (contextBound && (evidence.availability_class !== 'context_bound' || !sameRefs(evidence.permission_refs, approvedPermissions)))) return failed('ITEM_ORDINARY_WORLD_RESTRICTED');
+  const semanticIdentity = authoritySensitiveIdentity(
+    context.semantic_identity_profile, evidence.admission_class,
+    approvedPermissions);
+  if (AUTHORITY_SENSITIVE.has(evidence.admission_class)
+      && semanticIdentity == null) return failed('ITEM_ORDINARY_WORLD_RESTRICTED');
   const bases = Array.isArray(context.supporting_bases) ? context.supporting_bases.map(normalizeBasis) : null;
   const invalidContextBasis = (contextBound || finiteSource)
     && (!bases || evidence.causal_basis_kind !== causalBasis.basis_kind
@@ -90,7 +100,7 @@ export function admitOrdinaryWorldMaterialization(input = {}) {
   const schema = !contextBound && !finiteSource ? 'ordinary_world_item_proposal_v1'
     : condition === undefined ? 'ordinary_world_item_proposal_v2'
       : 'ordinary_world_item_proposal_v3';
-  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...((contextBound || finiteSource) ? { causal_basis_kind: evidence.causal_basis_kind } : {}), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
+  return deepFreeze({ pass: true, errors: [], proposal: deepFreeze({ schema, request_id: pending.request_id, scope_ref: pending.scope_ref, candidate_key: pending.candidate_key, coverage_key: pending.coverage_key, context_version: pending.context_version, semantic_descriptor: semanticIdentity ?? descriptor(item.semantic_descriptor), supporting_basis_ref: item.supporting_basis_ref, ...((contextBound || finiteSource) ? { causal_basis_kind: evidence.causal_basis_kind } : {}), ...(condition === undefined ? {} : { condition_state: condition }), property_basis_ref: item.property_basis_ref, property_placement_evidence: propertyPlacement, placement: position, runtime_item_mechanics_policy_ref: policy.policy_ref }), runtime_instance_mechanics_snapshot: snapshot });
 }
 
 
@@ -113,6 +123,17 @@ function prepared(value) { const p = record(value, ['seed_request_id','mode','ca
 function normalizeBasis(value) { const basis = record(value, BASIS); if (basis) return basis; const withKind = record(value, [...BASIS,'basis_kind']); if (withKind && O2A_BASIS.has(withKind.basis_kind)) return withKind; const legacy = record(value, LEGACY_BASIS); return legacy ? { ...legacy, permission_refs: [] } : null; }
 function propertyInputOf(value, requireV2) { const v2=record(value,PROPERTY_INPUT_V2); if(v2?.schema==='rus.items.ordinary_world_property_placement_context.v2'&&v2.version===2)return v2;if(requireV2)return null;return record(value,PROPERTY_INPUT_V1); }
 function covers(bases, ref, item, scopeRef, permissionRefs) { return bases.some((b) => b && b.basis_ref === ref && validBasis(b,scopeRef) && b.functional_buckets.includes(item.functional_bucket) && b.allowed_admission_classes.includes(item.admission_class) && sameRefs(b.permission_refs, permissionRefs)); }
+function authoritySensitiveIdentity(value, admissionClass, approvedPermissions) {
+  if (!AUTHORITY_SENSITIVE.has(admissionClass)) return null;
+  const profile = record(value, ['schema','version','profile_ref','admission_class',
+    'semantic_type','public_name']);
+  return profile?.schema === 'rus.items.ordinary_world_semantic_identity_profile.v1'
+    && profile.version === 1 && profile.admission_class === admissionClass
+    && approvedPermissions.includes(profile.profile_ref)
+    && text(profile.semantic_type) && text(profile.public_name)
+    ? { semantic_type: profile.semantic_type, name: profile.public_name, facts: [] }
+    : null;
+}
 function descriptor(value) { const v = record(value, ['semantic_type','name','facts']), facts = v && refs(v.facts); return v && text(v.semantic_type) && text(v.name) && facts ? { semantic_type:v.semantic_type, name:v.name, facts } : null; }
 function mechanicsOf(value,p) { const v=record(value,MECHANICS),q=v&&record(v.quantity,['value','unit']); if (!(text(p.policy_ref)&&Number.isSafeInteger(p.max_mass_grams)&&p.max_mass_grams>=1&&p.max_mass_grams<=1000000&&numberRefs(p.allowed_external_hand_costs)&&refs(p.allowed_carry_forms)&&Number.isSafeInteger(p.max_packing_slot_cost)&&p.max_packing_slot_cost>=0&&p.max_packing_slot_cost<=1000&&Number.isSafeInteger(p.max_quantity)&&p.max_quantity>=1&&p.max_quantity<=1000&&v&&Number.isSafeInteger(v.mass_grams)&&v.mass_grams>=1&&v.mass_grams<=p.max_mass_grams&&v.mass_grams<=1000000&&[0,1,2].includes(v.external_hand_cost)&&p.allowed_external_hand_costs.includes(v.external_hand_cost)&&CARRY_FORMS.has(v.carry_form)&&p.allowed_carry_forms.includes(v.carry_form)&&Number.isSafeInteger(v.packing_slot_cost)&&v.packing_slot_cost>=0&&v.packing_slot_cost<=p.max_packing_slot_cost&&v.packing_slot_cost<=1000&&q&&Number.isSafeInteger(q.value)&&q.value>=1&&q.value<=p.max_quantity&&q.value<=1000&&q.unit==='item'&&v.container===null)) return null; return {mass_grams:v.mass_grams,external_hand_cost:v.external_hand_cost,carry_form:v.carry_form,packing_slot_cost:v.packing_slot_cost,quantity:{value:q.value,unit:q.unit},container:null}; }
 function v2Snapshot({causal_ref,request_id,candidate_key,coverage_key,context_version,policy_ref,source_refs,mechanics}) { return deepFreeze({schema:'rus.items.runtime_instance_mechanics_snapshot.v2',version:2,provenance:{source_kind:'ordinary_world_materialization',causal_ref,request_id,candidate_key,coverage_key,context_version,policy_ref,source_refs},mechanics}); }

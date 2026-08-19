@@ -39,6 +39,8 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `combatBodyThresholdSignalProfile`
 - `resolveOrdinaryArmamentMechanics`
 - `ordinaryArmamentWeaponDanger`
+- `combatActionProducedWeaponProfile`
+- `resolveActionProducedCombatWeaponClass`
 
 ## Контракты и инварианты
 
@@ -61,3 +63,8 @@ active revision 20 / M8 наследует тот же combat owner, а revision
 production v9 сохраняется как historical recovery path. SQL, RNG,
 body write и scenario ordering здесь отсутствуют. Unit/contract tests
 находятся в `test/domain.test.js` и `test/combat-foundation.test.js`.
+
+Revision 21 A1 не пишет damage либо canonical weapon identity. Persisted
+`weapon_capable` item несёт одну закрытую qualitative class; только этот модуль
+сверяет exact versioned catalog pin и переводит class в `weapon_danger` для
+существующей combat formula. Damaged/unknown/ambiguous held items fail-closed.

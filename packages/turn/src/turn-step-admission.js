@@ -13,12 +13,12 @@ import {
   validateConsequencePackage
 } from './validators.js';
 import {
-  isActionProducedSemanticRemainderInScope
+  isActionProductionOwnerInScope
 } from './turn-step-action-produced-remainder.js';
 import { initialWorkingProjectionFrom } from
   './turn-step-player-safe-projection.js';
 
-export { isActionProducedSemanticRemainderInScope } from
+export { isActionProductionOwnerInScope } from
   './turn-step-action-produced-remainder.js';
 
 const DOMAIN_STEP_OPERATIONS = new Set([
@@ -137,16 +137,16 @@ export async function resolveBoundTurnStepCommand({
         }
       }
       if (matches.length === 0) {
-        const actionProducedResolver =
-          services.turnStepActionProducedResolver;
-        if (typeof actionProducedResolver === 'function'
-            && isActionProducedSemanticRemainderInScope({
+        const actionProductionOwner =
+          services.turnStepActionProductionOwner;
+        if (typeof actionProductionOwner === 'function'
+            && isActionProductionOwnerInScope({
               operation,
               playerSafeState: execution.request.player_safe_state,
               remainingIntent: execution.request.remaining_intent
             })) {
           const checked = execution.check_result != null;
-          return actionProducedResolver(deepFreeze({
+          return actionProductionOwner(deepFreeze({
             schema: checked
               ? 'turn_step_action_produced_remainder_request_v2'
               : 'turn_step_action_produced_remainder_request_v1',

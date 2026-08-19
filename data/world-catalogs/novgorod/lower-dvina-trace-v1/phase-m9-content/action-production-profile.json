@@ -1,6 +1,6 @@
 {
   "schema": "rus.lower_dvina_trace_action_production_profile.v1",
-  "profile_id": "lower_dvina_trace_a1_personal_tool_profile_v1",
+  "profile_id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
   "revision": 1,
   "status": "approved",
   "context_ref": "lower_dvina_trace:a1:personal_tool_transform",
@@ -8,48 +8,14 @@
   "policy_version": 1,
   "max_new_entities": 1,
   "allowed_access_states": ["immediate", "quick"],
-  "allowed_identity_modes": ["preserve_source", "no_useful_result"],
-  "allowed_origins": [],
-  "allowed_result_classes": ["partial_transformation", "no_useful_result"],
-  "allowed_output_classes": ["ordinary_mundane"],
-  "source_profiles": [
-    {
-      "template_id": "trace_ld_v1_item_working_outer_garment",
-      "inventory_profile_id": "trace_ld_v1_inventory_profile_working_outer_garment",
-      "mechanics": {
-        "mass_grams": 1300,
-        "external_hand_cost": 0,
-        "carry_form": "regular",
-        "packing_slot_cost": 1,
-        "quantity": {"value": 1, "unit": "item"},
-        "container": null
-      }
-    }
-  ],
-  "tool_profiles": [
-    {
-      "template_id": "trace_ld_v1_item_mikula_knife",
-      "inventory_profile_id": "inventory_item_tpl_nov_utility_knife_v1",
-      "mechanics": {
-        "mass_grams": 400,
-        "external_hand_cost": 0,
-        "carry_form": "compact",
-        "packing_slot_cost": 1,
-        "quantity": {"value": 1, "unit": "item"},
-        "container": null
-      }
-    }
-  ],
-  "tool_policy": "exactly_one",
-  "required_execution": {
-    "resolution": "generic_check",
-    "attribute_ref": "dexterity",
-    "skill_ref": null,
-    "difficulty_id": "standard",
-    "duration_class": "short",
-    "effort": "light"
-  },
-  "model_authority": "qualitative_only",
+  "allowed_identity_modes": ["preserve_source", "independent_outputs", "no_useful_result"],
+  "allowed_origins": ["direct_partition", "crafted"],
+  "allowed_result_classes": ["ordinary_physical_result", "partial_transformation", "nonworking_construction", "waste", "written_carrier", "no_useful_result"],
+  "allowed_output_classes": ["ordinary_mundane", "weapon_capable", "money_like_token", "written_carrier"],
+  "source_policy": "one_visible_accessible_non_container_item",
+  "tool_policy": "zero_to_many_visible_accessible_non_container_items",
+  "execution_policy": "existing_turn_step_generic_check_and_semantic_activity",
+  "model_authority": "primary_turn_step_plan_qualitative_only",
   "mechanics_owner": "@rus/items-property",
   "persistence_owner": "P16_combined_atomic_committer",
   "fallback_policy": "forbidden"

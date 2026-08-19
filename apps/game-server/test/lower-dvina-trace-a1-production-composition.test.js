@@ -14,12 +14,12 @@ test('production-v10 threads the exact A1 profile and resolver into Phase 2',
     const loadedProfile = await loadLowerDvinaTraceA1Profile();
     const active = await capturedTraceRuntime(loadedProfile);
     assert.equal(active.actionProductionProfile, loadedProfile);
-    assert.equal(typeof active.createTurnStepActionProducedResolver,
+    assert.equal(typeof active.createTurnStepActionProductionOwner,
       'function');
 
     const absent = await capturedTraceRuntime(null);
     assert.equal(absent.actionProductionProfile, null);
-    assert.equal(absent.createTurnStepActionProducedResolver, null);
+    assert.equal(absent.createTurnStepActionProductionOwner, null);
   });
 
 test('A1 capability marker requires the exact profile and installed resolver',
@@ -30,17 +30,19 @@ test('A1 capability marker requires the exact profile and installed resolver',
     const sceneObject = { entity_ref: { entity_kind: 'item',
       entity_id: 'item:visible-scene-object' } };
     const playerSafeState = { visible_objects: [bag, sceneObject], items: [
-      { item_id: 'item:garment',
-        template_id: loadedProfile.profile.source_profiles[0].template_id },
+      { item_id: 'item:visible-scene-object', template_id: 'unlisted-stick' },
       { item_id: 'item:hidden-unrelated', template_id: 'unrelated-template' }
     ] };
     const active = projectLowerDvinaTraceA1Capability({ playerSafeState,
       loadedProfile, resolverAvailable: true });
-    assert.deepEqual(active.action_production,
-      { semantic_grounding_available: true });
-    assert.deepEqual(active.visible_objects, [bag, sceneObject, {
-      entity_ref: { entity_kind: 'item', entity_id: 'item:garment' }
-    }]);
+    assert.equal(active.action_production.semantic_grounding_available, true);
+    assert.deepEqual(active.action_production.allowed_identity_modes,
+      loadedProfile.profile.allowed_identity_modes);
+    assert.deepEqual(active.action_production.allowed_origins,
+      loadedProfile.profile.allowed_origins);
+    assert.deepEqual(active.action_production.allowed_output_classes,
+      loadedProfile.profile.allowed_output_classes);
+    assert.deepEqual(active.visible_objects, [bag, sceneObject]);
     assert.equal(active.visible_objects.some(({ entity_ref: ref }) =>
       ref.entity_id === 'item:hidden-unrelated'), false);
 
@@ -49,13 +51,12 @@ test('A1 capability marker requires the exact profile and installed resolver',
         entity_ref: { entity_kind: 'item', entity_id: 'item:garment' }
       }], items: [
         { item_id: 'item:garment', template_id: null },
-        { item_id: 'item:knife',
-          template_id: loadedProfile.profile.tool_profiles[0].template_id }
+        { item_id: 'item:knife', template_id: 'any-visible-tool' }
       ] }, loadedProfile, resolverAvailable: true
     });
     assert.deepEqual(afterPreserve.visible_objects, [bag, {
       entity_ref: { entity_kind: 'item', entity_id: 'item:garment' }
-    }, { entity_ref: { entity_kind: 'item', entity_id: 'item:knife' } }]);
+    }]);
 
     assert.equal(projectLowerDvinaTraceA1Capability({ playerSafeState,
       loadedProfile: null, resolverAvailable: true }), playerSafeState);
@@ -66,12 +67,9 @@ test('A1 capability marker requires the exact profile and installed resolver',
     drifted.profile.status = 'draft';
     assert.equal(projectLowerDvinaTraceA1Capability({ playerSafeState,
       loadedProfile: drifted, resolverAvailable: true }), playerSafeState);
-    let modelCalls = 0;
     assert.throws(() => createLowerDvinaTraceA1ProductionResolverFactory({
-      pool: { query: async () => ({ rows: [] }) }, loadedProfile: drifted,
-      actionProducedModel: async () => { modelCalls += 1; }
+      pool: { query: async () => ({ rows: [] }) }, loadedProfile: drifted
     }), /Exact loaded A1 profile is required/u);
-    assert.equal(modelCalls, 0);
   });
 
 async function capturedTraceRuntime(actionProductionProfile) {

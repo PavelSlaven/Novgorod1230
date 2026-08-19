@@ -102,6 +102,19 @@ test('written carrier is qualitative and preserves its physical identity', () =>
     { request: writingRequest }).ok, true);
 });
 
+test('weapon-capable A1 result carries only one closed qualitative class',
+  () => {
+    const weaponRequest = request({ output_class: 'weapon_capable' });
+    const weaponPlan = plan({ output_class: 'weapon_capable',
+      result_descriptor: { ...plan().result_descriptor,
+        weapon_qualitative_class: 'improvised_puncture_light' } });
+    assert.equal(validateActionProducedResultPlan(weaponPlan,
+      { request: weaponRequest }).ok, true);
+    weaponPlan.result_descriptor.weapon_qualitative_class = 'forged_class';
+    assert.equal(validateActionProducedResultPlan(weaponPlan,
+      { request: weaponRequest }).ok, false);
+  });
+
 test('request, context, profile and causal identity pins echo exactly', () => {
   for (const drift of [
     { root_turn_id: 'turn:party-1:other' },

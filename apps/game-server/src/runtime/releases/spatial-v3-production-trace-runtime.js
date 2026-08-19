@@ -6,8 +6,6 @@ import { createLowerDvinaTraceNarrationService,
   createLowerDvinaTraceSemanticResolver,
   createLowerDvinaTraceTurnStepModel } from
   '../lower-dvina-trace-phase-2-llm.js';
-import { createLowerDvinaTraceActionProducedModel } from
-  '../lower-dvina-trace-action-produced-llm.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createOrdinaryMaterializationModel } from
@@ -70,9 +68,7 @@ export function createTraceTurnRuntime({
       ordinaryMaterializationModel });
   const actionProductionResolverFactory = actionProductionProfile == null
     ? null : createLowerDvinaTraceA1ProductionResolverFactory({ pool: partyPool,
-      loadedProfile: actionProductionProfile,
-      actionProducedModel:
-        createLowerDvinaTraceActionProducedModel({ roleRunner }) });
+      loadedProfile: actionProductionProfile });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -97,7 +93,7 @@ export function createTraceTurnRuntime({
           public_name:entry.public_name,
           disclosure_state:entry.disclosure_state }))) });
     },
-    createTurnStepActionProducedResolver: actionProductionResolverFactory,
+    createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({

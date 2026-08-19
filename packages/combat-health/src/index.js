@@ -20,7 +20,7 @@ export function combatQualityFromMargin(margin) {
   return 1;
 }
 
-export function combatHealthLossFromDamageScore(score) {
+function combatHealthLossFromDamageScore(score) {
   const value = Number(score);
   if (!Number.isFinite(value) || value <= 1) return 0;
   if (value <= 3) return 5;
@@ -29,7 +29,7 @@ export function combatHealthLossFromDamageScore(score) {
   return 45;
 }
 
-export function combatInjuryProfileFromDamageScore(score) {
+function combatInjuryProfileFromDamageScore(score) {
   const value = Number(score);
   if (!Number.isFinite(value) || value <= 1) return null;
   if (value <= 3) return deepFreeze({ severity:1, bleeding:0, label:'лёгкая рана' });
@@ -37,6 +37,8 @@ export function combatInjuryProfileFromDamageScore(score) {
   if (value <= 7) return deepFreeze({ severity:3, bleeding:2, label:'тяжёлая рана' });
   return deepFreeze({ severity:4, bleeding:3, label:'критическая рана' });
 }
+export { combatHealthLossFromDamageScore,
+  combatInjuryProfileFromDamageScore };
 
 export function buildAttackRequest(input = {}) {
   return deepFreeze({

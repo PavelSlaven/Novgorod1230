@@ -2,6 +2,8 @@ import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
+import { actionProducedText as text } from
+  './action-produced-persistence-boundary.js';
 import { lockAndVerifyActionProducedContext } from
   './action-produced-persistence-context.js';
 
@@ -76,7 +78,8 @@ async function lockAndVerifyPins(client, plan) {
        FOR UPDATE OF i,p,o`, [plan.party_id, pin.item_id]);
     if (selected.rows.length !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
     const normalized = normalizedRows(selected.rows[0]);
-    if (!ownedByActor(normalized.ownership, plan.actor_ref)
+    if (!accessibleByActor(normalized.placement, normalized.ownership,
+      plan.actor_ref)
         || digest(normalized.item) !== pin.item_digest
         || digest(normalized.placement) !== pin.placement_digest
         || digest(normalized.ownership) !== pin.ownership_digest) {
@@ -100,13 +103,16 @@ async function lockAndVerifyPins(client, plan) {
   }
 }
 
-function ownedByActor(ownership, actorRef) {
-  return ownership.owner_character_id === actorRef
-    && ownership.owner_npc_id === null
-    && ownership.owner_party === false
-    && ownership.claim_state === 'owned'
+function accessibleByActor(placement, ownership, actorRef) {
+  const owners = Number(text(ownership.owner_character_id))
+    + Number(text(ownership.owner_npc_id))
+    + Number(ownership.owner_party === true);
+  return placement.holder_character_id === actorRef
+    && placement.holder_npc_id === null
     && ownership.controller_character_id === actorRef
-    && ownership.controller_npc_id === null;
+    && ownership.controller_npc_id === null
+    && owners === 1 && typeof ownership.owner_party === 'boolean'
+    && text(ownership.claim_state);
 }
 
 async function rejectOutputCollisions(client, plan) {

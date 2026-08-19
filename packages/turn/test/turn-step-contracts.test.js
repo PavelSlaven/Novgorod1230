@@ -227,6 +227,42 @@ test('plan validation admits an exact player combat intent request', () => {
     code === 'combat_intent_shape'), true);
 });
 
+test('sole turn plan boundary admits qualitative action production', () => {
+  const source = request();
+  source.player_safe_state.visible_objects = [
+    { entity_ref: { entity_kind: 'item', entity_id: 'item:pole' } },
+    { entity_ref: { entity_kind: 'item', entity_id: 'item:knife' } },
+    { entity_ref: { entity_kind: 'item', entity_id: 'item:stone' } }
+  ];
+  const action = plan({
+    operations: [{
+      op: 'request_item_use', actor_ref: 'actor_mikula',
+      item_ref: 'item:pole', use_kind: 'other',
+      target_refs: ['item:knife', 'item:stone'],
+      action_production: {
+        identity_mode: 'preserve_source', origin: null,
+        result_class: 'partial_transformation',
+        result_descriptor: {
+          display_name: 'заострённая жердь',
+          physical_description: 'конец жерди физически заострён',
+          qualitative_facts: ['на конце видны свежие срезы'],
+          inscription_text: null,
+          weapon_qualitative_class: 'improvised_puncture_light'
+        },
+        output_class: 'weapon_capable'
+      }
+    }],
+    continuation: null
+  });
+  assert.deepEqual(validateTurnStepPlan(action, { request: source }), {
+    ok: true, errors: []
+  });
+
+  action.operations[0].action_production.result_descriptor
+    .weapon_qualitative_class = 'forged_weapon_class';
+  assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
+});
+
 test('relational validation fails closed on echoes, mixed resolutions and malformed checks', () => {
   const mixed = directPlan({
     request_id: 'wrong-request',

@@ -73,8 +73,9 @@ exact-head evidence не активировало production; последующ
 Current Lower Dvina Trace revision 21 / `spatial-v3-production-v10` наследует
 все четыре границы. Revision 20 / M8 / Phase 1A v16 / Phase 1B v15 добавила
 SHA-pinned O2b existing-container contents для одного authored player pouch;
-revision 21 / M9 / Phase 1A v17 / Phase 1B v16 активирует узкий SHA-pinned A1
-personal-tool transform внутри существующего `request_item_use`. Revision 20
+revision 21 / M9 / Phase 1A v17 / Phase 1B v16 активирует SHA-pinned A1
+open physical transform внутри существующего `request_item_use`. Qualitative
+result уже находится в sole `turn_step_plan_v1`; второго semantic call нет. Revision 20
 остаётся immutable historical recovery path. O2b остаётся внутренней
 candidate-free container веткой; A1 сохраняет exact handler priority и
 использует существующие generic-check/activity owners плюс общий P16.

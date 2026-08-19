@@ -125,6 +125,22 @@ test('combat owner reads a reloaded ordinary armament snapshot', () => {
   }], player), null);
 });
 
+test('combat owner classifies one reloaded A1 weapon without A1 damage claims',
+  () => {
+    const item = { item_id: 'a1-spear',
+      placement: { holder_character_id: 'mikula-1' }, state: {
+        condition_state: 'serviceable', action_production: {
+          output_class: 'weapon_capable',
+          weapon_qualitative_class: 'improvised_puncture_light'
+        } } };
+    assert.equal(resolveTraceOrdinaryWeaponDanger([item], player), 1);
+    assert.equal(resolveTraceOrdinaryWeaponDanger([{ ...item, state: {
+      ...item.state, condition_state: 'damaged' } }], player), null);
+    assert.equal(resolveTraceOrdinaryWeaponDanger([{ ...item, state: {
+      ...item.state, action_production: { output_class: 'weapon_capable',
+        weapon_qualitative_class: 'forged_class' } } }], player), null);
+  });
+
 test('post-exchange subjective projection reads body and equipment from working state',
   () => {
     const state = {

@@ -118,10 +118,15 @@ concealed and no partial batch leaks; reload/reopen uses committed coverage with
 calls. Narration consumes only the persisted post-reveal package and cannot add
 items. No new HTTP operation, contents store or transaction owner is added.
 
-Active revision 21 A1 is limited to the authored garment-plus-owned-knife
-profile and `preserve_source|no_useful_result`. It reuses the one generic
-check and one semantic activity/time resolution already produced by the turn
-owners. The same combined P16 write set contains the full turn snapshot,
+Active revision 21 A1 accepts one visible actor-held non-container source and
+zero or more visible actor-held/controller-controlled non-container tools;
+legal ownership need not belong to the actor. Qualitative outcome is part of
+the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
+profile admits preserve, finite independent output and no-result, including
+partial/nonworking/waste, physical writing, non-authoritative token-like and
+closed qualitative weapon-capable outcomes. Item mechanics, conservation,
+identity and placement remain code-owned. It reuses one generic check and one
+semantic activity/time resolution already produced by turn owners. The same combined P16 write set contains the full turn snapshot,
 append-only check resolution, clock/activity writes and the A1 plan; its digest
 and change-set identity therefore bind the physical transition to the exact
 roll/outcome and duration/effort evidence without a second RNG, clock or A1
@@ -139,7 +144,7 @@ identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
 Runtime release `spatial-v3-production-v10` сохраняет revision 19 appearance,
 equipment-driven portrait path и revision 20 O2b content; active publication
-revision 21 добавляет узкий SHA-pinned A1 M9/v17/v16 profile. Revision 20/v9 и
+revision 21 добавляет SHA-pinned open physical A1 M9/v17/v16 profile. Revision 20/v9 и
 revision 19 остаются immutable historical compatibility paths, v9 — rollback
 source.
 

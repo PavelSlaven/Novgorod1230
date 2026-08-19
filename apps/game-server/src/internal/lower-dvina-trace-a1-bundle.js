@@ -77,12 +77,12 @@ function revision21Checks(historical, loaded, paths) {
       === historical.m8_content_manifest_digest,
     files: exact(manifest.files, files),
     content_digest: manifest.content_digest
-      === '1d1a5aeebc264d6d24b770269344222b13615685b98bc9eaf3461b3b6c44118f',
+      === '29f0bdd9f39d548c2c0be8b109c749bdcd6ba9c8b7482637179205fdb559c21b',
     definition_ref: exactRef(manifest.content_refs?.definition,
       loaded.definition, 'definition.json', 'lower_dvina_trace_v1', 21),
     profile_ref: exactRef(manifest.content_refs?.action_production_profile,
       loaded.action_production_profile, 'action-production-profile.json',
-      'lower_dvina_trace_a1_personal_tool_profile_v1', 1, 'profile_id'),
+      'lower_dvina_trace_a1_open_physical_action_profile_v1', 1, 'profile_id'),
     definition_revision: loaded.definition.value?.revision === 21,
     superseded_definition:
       loaded.definition.value.supersedes_definition_ref?.digest
@@ -118,43 +118,34 @@ function validProfile(value) {
   return exact(value, ['schema', 'profile_id', 'revision', 'status',
     'context_ref', 'policy_ref', 'policy_version', 'max_new_entities',
     'allowed_access_states', 'allowed_identity_modes', 'allowed_origins',
-    'allowed_result_classes', 'allowed_output_classes', 'source_profiles',
-    'tool_profiles', 'tool_policy', 'required_execution', 'model_authority',
+    'allowed_result_classes', 'allowed_output_classes', 'source_policy',
+    'tool_policy', 'execution_policy', 'model_authority',
     'mechanics_owner', 'persistence_owner', 'fallback_policy'])
     && value.schema === 'rus.lower_dvina_trace_action_production_profile.v1'
-    && value.profile_id === 'lower_dvina_trace_a1_personal_tool_profile_v1'
+    && value.profile_id === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
     && value.revision === 1 && value.status === 'approved'
     && value.policy_version === 1 && value.max_new_entities === 1
     && same(value.allowed_access_states, ['immediate', 'quick'])
     && same(value.allowed_identity_modes,
-      ['preserve_source', 'no_useful_result'])
-    && same(value.allowed_origins, [])
+      ['preserve_source', 'independent_outputs', 'no_useful_result'])
+    && same(value.allowed_origins, ['direct_partition', 'crafted'])
     && same(value.allowed_result_classes,
-      ['partial_transformation', 'no_useful_result'])
-    && same(value.allowed_output_classes, ['ordinary_mundane'])
-    && value.tool_policy === 'exactly_one'
-    && value.model_authority === 'qualitative_only'
+      ['ordinary_physical_result', 'partial_transformation',
+        'nonworking_construction', 'waste', 'written_carrier',
+        'no_useful_result'])
+    && same(value.allowed_output_classes, ['ordinary_mundane',
+      'weapon_capable', 'money_like_token', 'written_carrier'])
+    && value.source_policy
+      === 'one_visible_accessible_non_container_item'
+    && value.tool_policy
+      === 'zero_to_many_visible_accessible_non_container_items'
+    && value.execution_policy
+      === 'existing_turn_step_generic_check_and_semantic_activity'
+    && value.model_authority === 'primary_turn_step_plan_qualitative_only'
     && value.mechanics_owner === '@rus/items-property'
     && value.persistence_owner === 'P16_combined_atomic_committer'
     && value.fallback_policy === 'forbidden'
-    && Array.isArray(value.source_profiles)
-    && value.source_profiles.length === 1
-    && exact(value.source_profiles[0],
-      ['template_id', 'inventory_profile_id', 'mechanics'])
-    && exact(value.source_profiles[0].mechanics, ['mass_grams',
-      'external_hand_cost', 'carry_form', 'packing_slot_cost', 'quantity',
-      'container'])
-    && Array.isArray(value.tool_profiles) && value.tool_profiles.length === 1
-    && exact(value.tool_profiles[0],
-      ['template_id', 'inventory_profile_id', 'mechanics'])
-    && exact(value.tool_profiles[0].mechanics, ['mass_grams',
-      'external_hand_cost', 'carry_form', 'packing_slot_cost', 'quantity',
-      'container'])
-    && exact(value.required_execution, {
-      resolution: 'generic_check', attribute_ref: 'dexterity',
-      skill_ref: null, difficulty_id: 'standard', duration_class: 'short',
-      effort: 'light'
-    });
+    ;
 }
 
 async function read(rootDir, path) {

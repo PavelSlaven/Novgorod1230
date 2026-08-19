@@ -42,6 +42,11 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
       causal_identity: structuredClone(proposal.causal_identity),
       result_class: proposal.result_class,
       output_class: proposal.qualitative_result.output_class,
+      ...(proposal.qualitative_result?.result_descriptor
+        ?.weapon_qualitative_class == null ? {} : {
+          weapon_qualitative_class: proposal.qualitative_result
+            .result_descriptor.weapon_qualitative_class
+        }),
       physical_facts: structuredClone(result.physical_facts),
       inscription_text: result.inscription_text,
       source_ref: result.source_ref,

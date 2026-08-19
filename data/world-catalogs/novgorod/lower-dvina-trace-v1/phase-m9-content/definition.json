@@ -72,9 +72,9 @@
       "digest": "4a889554f786ca1b0f2b9606bc9fbe1ec8b255efdd618727ad704465220e636d"
     },
     "action_production_profile": {
-      "id": "lower_dvina_trace_a1_personal_tool_profile_v1",
+      "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
-      "digest": "dc241c535aa3cb5d3329e4bca43d77eb6826855f4ab8d64ba1bba1050dd37802"
+      "digest": "0971830bf262a28b5e0e73a5907cf2c1c9963f6ce0a529a9fa54de710a4e8523"
     }
   },
   "resolved_policy_refs": {
@@ -212,7 +212,7 @@
     "phase_10_deterministic_completion_and_player_safe_epilogue",
     "canonical_actor_appearance_and_equipment_driven_portraits",
     "o2b_existing_container_ordinary_contents",
-    "a1_action_produced_semantic_remainder"
+    "a1_action_produced_physical_owner"
   ],
   "concrete_party_selections": {
     "player_name": null,

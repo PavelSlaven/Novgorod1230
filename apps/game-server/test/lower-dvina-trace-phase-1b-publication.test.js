@@ -79,31 +79,31 @@ test('current publication pins the exact v16 -> Phase 1A v17 -> revision 21 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v16');
   assert.equal(publication.manifest.revision, 16);
   assert.equal(publication.manifest_digest,
-    'd2ab3e7f8c39a7d8e46337e561e50fb0f76cd998b790bdb7794a23e36dd443da');
+    '2d29a67c739df83938c917af5d6aeae144a23726cb625204ccf2ad24f9e61a08');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v15/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v15',
     revision: 15,
     schema: 'rus.lower_dvina_trace_phase_1b_manifest.v1',
-    digest: '3e0079c0ec8b1751d9481686b8f5f8993fb912dcd90b66ad58dbd8d788786a0c'
+    digest: 'a7306762a8f57e9f43bb30dc0d8a9b48780aa9e69adcb26a66029b4064f868b4'
   });
   assert.equal(publication.binding.binding_id,
     'lower_dvina_trace_phase_1b_publication_v16');
   assert.equal(publication.binding.revision, 16);
   assert.equal(publication.binding_digest,
-    '45066b65fb366f40015849bc7558b0d8458fdc7326c6b9554af8ad3223441b91');
+    'd8239ffe73f8f940cdf55a30f193a7b11f48140b91889375be8a92d08b047268');
   assert.equal(publication.binding.superseded_binding_ref.digest,
-    'bb0cbe34c301dce35e55f84d83d5c2c4ef98d693dc80de3e486f6a48241d17a9');
+    'bb90c9ce8750641a258f84d8b7a7c0cdb417460da45f263b158d1ae0862f0c8c');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v17');
   assert.equal(publication.phase_1a_manifest.revision, 17);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '451df069f0dbe99970c2317292a6cb9cbd330e8f0a0b8def5f58814ec4859376');
+    'e22a36d9dc0f35eaee5c73274eb6888ee87af8f4c7f4f89162f7557fa223e3b5');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
-    '5ba69c2b7d31b98b313e9cc364367d1438bc25afb636b97e578c75e5f803225f');
+    'c4422cc17fc110bd486222377c0a262878077e9af9aef3da3977cfaed925cccd');
   assert.equal(publication.definition.revision, 21);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    '1be1b36ef4d718e1178ef3377a2e86f2ea91ca407dab6f5918e75bdb36c7e5af');
+    '74a7c41a20c2f823cc44cf9f20332a197f94503fd7857e254fc953991817c240');
   assert.equal(
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v17'

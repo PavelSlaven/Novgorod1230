@@ -20,6 +20,10 @@ const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
   'inscription_text'
 ];
+const WEAPON_CLASSES = new Set([
+  'improvised_puncture_light', 'improvised_impact_light',
+  'improvised_cutting_light', 'improvised_two_hand_heavy'
+]);
 
 export function validateActionProducedProposalResults(proposal, sourcePins) {
   if (!validQualitative(proposal.qualitative_result, proposal)) {
@@ -54,7 +58,7 @@ function validQualitative(value, proposal) {
   const descriptor = value?.result_descriptor;
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
-    && exact(descriptor, DESCRIPTOR_KEYS)
+    && exact(descriptor, descriptorKeys(descriptor))
     && (descriptor.display_name === null || text(descriptor.display_name))
     && (descriptor.physical_description === null
       || text(descriptor.physical_description))
@@ -64,8 +68,15 @@ function validQualitative(value, proposal) {
       === descriptor.qualitative_facts.length
     && (descriptor.inscription_text === null
       || text(descriptor.inscription_text))
+    && (value.output_class === 'weapon_capable')
+      === WEAPON_CLASSES.has(descriptor.weapon_qualitative_class)
     && validateActionProducedOutputClass(value.output_class,
       proposal.result_class, proposal.identity_mode);
+}
+
+function descriptorKeys(value) {
+  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
+    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
 }
 
 function validatePropertyBasis(result, selectedPin, sourcePins) {

@@ -141,11 +141,15 @@ function validTechnical(value) {
 function validQualitative(value) {
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
-    && exact(value.result_descriptor, DESCRIPTOR_KEYS)
+    && exact(value.result_descriptor, descriptorKeys(value.result_descriptor))
     && nullableText(value.result_descriptor.display_name)
     && nullableText(value.result_descriptor.physical_description)
     && textArray(value.result_descriptor.qualitative_facts)
     && nullableText(value.result_descriptor.inscription_text);
+}
+function descriptorKeys(value) {
+  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
+    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
 }
 function validResult(value) {
   const keys = value?.identity_kind === 'independent_output'

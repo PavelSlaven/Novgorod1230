@@ -9,7 +9,7 @@ import { projectLowerDvinaTraceO2aCapabilities,
 export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
   admitAmbientOrdinaryPortion,
   actionProductionProfile,
-  createTurnStepActionProducedResolver,
+  createTurnStepActionProductionOwner,
   ordinaryDiscoveryEnablementMarker,
   ordinaryDiscoveryResolver,
   partyId,
@@ -32,7 +32,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
       playerSafeState: initialWorkingProjection,
       loadedProfile: actionProductionProfile,
       resolverAvailable:
-        typeof createTurnStepActionProducedResolver === 'function'
+        typeof createTurnStepActionProductionOwner === 'function'
     });
     const base = { ...projected,
       initial_working_projection: initialWorkingProjection };

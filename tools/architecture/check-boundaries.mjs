@@ -725,7 +725,7 @@ for (const appSpec of [
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
       '@rus/new-game/stages/stage-24',
       '@rus/new-game/stages/stage-24/internal/lower-dvina-trace-phase-1a', '@rus/new-game/stages/stage-25', '@rus/narration',
-      '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
+      '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/action-produced-result', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
       '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
       '@rus/visibility-knowledge-memory',

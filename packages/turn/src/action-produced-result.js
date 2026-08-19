@@ -23,6 +23,10 @@ const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
   'inscription_text'
 ];
+const WEAPON_CLASSES = new Set([
+  'improvised_puncture_light', 'improvised_impact_light',
+  'improvised_cutting_light', 'improvised_two_hand_heavy'
+]);
 const IDENTITY_MODES = new Set([
   'preserve_source', 'independent_outputs', 'no_useful_result'
 ]);
@@ -147,7 +151,7 @@ function descriptor(value, errors) {
     errors.push('plan.result_descriptor must be an object');
     return;
   }
-  exact(value, DESCRIPTOR_KEYS, 'plan.result_descriptor', errors);
+  exact(value, descriptorKeys(value), 'plan.result_descriptor', errors);
   nullableText(value.display_name,
     'plan.result_descriptor.display_name', errors);
   nullableText(value.physical_description,
@@ -156,6 +160,8 @@ function descriptor(value, errors) {
     'plan.result_descriptor.qualitative_facts', errors, true);
   nullableText(value.inscription_text,
     'plan.result_descriptor.inscription_text', errors);
+  nullableMember(value.weapon_qualitative_class ?? null, WEAPON_CLASSES,
+    'plan.result_descriptor.weapon_qualitative_class', errors);
 }
 
 function validateCausalShape(value, errors) {
@@ -203,6 +209,15 @@ function validateCausalShape(value, errors) {
       && value.identity_mode !== 'independent_outputs') {
     errors.push('money_like_token must be a new non-authoritative output');
   }
+  const weaponClass = descriptorValue.weapon_qualitative_class ?? null;
+  if ((value.output_class === 'weapon_capable') !== (weaponClass !== null)) {
+    errors.push('weapon_capable requires one closed combat class');
+  }
+}
+
+function descriptorKeys(value) {
+  return Object.hasOwn(value, 'weapon_qualitative_class')
+    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
 }
 
 function validateEcho(plan, request, errors) {

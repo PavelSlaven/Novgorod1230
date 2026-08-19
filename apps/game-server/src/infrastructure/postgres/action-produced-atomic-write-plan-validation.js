@@ -95,7 +95,8 @@ export function validateActionProducedAtomicProposal(value, load) {
       fail('ACTION_PRODUCED_SOURCE_PIN_MISMATCH');
     }
     validateFinite(transition.finite_resource_transition,
-      pin.finite_resource_row, value.causal_identity, transition.entity_ref);
+      pin.finite_resource_row, value.causal_identity, transition.entity_ref,
+      value.identity_mode === 'independent_outputs');
     if (transition.after.mechanics_snapshot !== null) {
       createRuntimeInstanceMechanicsSnapshot(
         transition.after.mechanics_snapshot);
@@ -139,9 +140,9 @@ function requireExactCoverage(values, pins) {
   }
 }
 
-function validateFinite(value, row, causal, itemId) {
+function validateFinite(value, row, causal, itemId, required) {
   if (value === null) {
-    if (row !== null) fail('ACTION_PRODUCED_RESOURCE_PIN_MISMATCH');
+    if (required) fail('ACTION_PRODUCED_RESOURCE_PIN_MISMATCH');
     return;
   }
   const keys = [

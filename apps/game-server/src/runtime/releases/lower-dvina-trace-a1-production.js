@@ -1,6 +1,8 @@
+import { resolveInventoryMechanicsProfile } from '@rus/items-property';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
-import { createActionProducedTransitionPlanner } from
+import { createActionProducedOutputIdentity,
+  createActionProducedTransitionPlanner } from
   '@rus/items-property/action-produced-transition';
 import { requireActionProducedResultPlan,
   requireActionProducedResultRequest,
@@ -10,17 +12,20 @@ import { createActionProducedAtomicWritePlan } from
   '../../infrastructure/postgres/action-produced-atomic-write-plan.js';
 import { loadActionProducedCommittedContext } from
   '../../infrastructure/postgres/action-produced-committed-context-loader.js';
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
+import { INVALID_ACTION_PRODUCED_DATA,
+  snapshotActionProducedPersistenceData as snapshot } from
+  '../../infrastructure/postgres/action-produced-persistence-boundary.js';
 
 export function createLowerDvinaTraceA1ProductionResolverFactory({
-  pool, loadedProfile, actionProducedModel
+  pool, loadedProfile
 } = {}) {
   const profile = validateLoadedProfile(loadedProfile);
-  if (!pool?.query || typeof actionProducedModel !== 'function') {
+  if (!pool?.query) {
     throw new TypeError('A1 production resolver dependencies are required.');
   }
-  return ({ partyId, requestId }) => async function resolveA1(envelope) {
+  return ({ partyId, requestId }) => async function resolveA1(rawEnvelope) {
+    const envelope = snapshot(rawEnvelope);
+    if (envelope === INVALID_ACTION_PRODUCED_DATA) fail('TRACE_A1_SCOPE_INVALID');
     const operation = envelope.operation;
     const actorRef = envelope.actor?.actor_id;
     const stepIndex = envelope.request?.step_index;
@@ -29,41 +34,35 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     const turnNumber = Number(envelope.committed_state?.party_state?.turn_number)
       + 1;
     if (operation?.actor_ref !== actorRef || !text(actorRef)
-        || !text(operation.item_ref) || operation.target_refs?.length !== 1
+        || !text(operation.item_ref) || !Array.isArray(operation.target_refs)
+        || operation.target_refs.some((ref) => !text(ref))
+        || new Set(operation.target_refs).size !== operation.target_refs.length
+        || operation.target_refs.includes(operation.item_ref)
+        || operation.action_production == null
         || !Number.isSafeInteger(stepIndex) || !text(rootTurnId)
         || !Number.isSafeInteger(stateVersion)
         || !Number.isSafeInteger(turnNumber)
-        || !validExecutionEvidence(envelope, profile)) {
+        || !validExecutionEvidence(envelope)) {
       fail('TRACE_A1_SCOPE_INVALID');
     }
-    const toolRef = operation.target_refs[0];
     const actionRef = createActionProducedTraceActionRef({
       root_turn_id: rootTurnId, step_index: stepIndex,
       approved_plan: envelope.plan
     });
+    const sourceRefs = [operation.item_ref];
+    const toolRefs = operation.target_refs;
     const loaded = await loadActionProducedCommittedContext(pool, {
       party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
       action_ref: actionRef, step_index: stepIndex,
       context_ref: profile.context_ref,
       expected_party_state_version: stateVersion,
-      source_refs: [operation.item_ref], tool_refs: [toolRef]
+      source_refs: sourceRefs, tool_refs: toolRefs
     });
-    const sourceRow = loaded.row_pins.find(({ role }) => role === 'source');
-    const toolRow = loaded.row_pins.find(({ role }) => role === 'tool');
-    const sourceProfile = profile.source_profiles.find(({ template_id: id }) =>
-      id === sourceRow?.item?.template_id);
-    const toolProfile = profile.tool_profiles.find(({ template_id: id }) =>
-      id === toolRow?.item?.template_id);
-    if (sourceProfile == null
-        || sourceRow.item.profile_id !== sourceProfile.inventory_profile_id
-        || toolProfile == null
-        || toolRow.item.profile_id !== toolProfile.inventory_profile_id
-        || sourceRow.entity_snapshot.finite_resource !== null
-        || toolRow.entity_snapshot.finite_resource !== null
-        || !committedMechanicsMatch(sourceRow.item.state, sourceProfile)
-        || !committedMechanicsMatch(toolRow.item.state, toolProfile)) {
-      fail('TRACE_A1_SOURCE_PROFILE_DENIED');
+    const mechanics = new Map();
+    for (const pin of loaded.row_pins) {
+      mechanics.set(pin.item_id, committedMechanics(pin.item));
     }
+    const qualitative = operation.action_production;
     const request = requireActionProducedResultRequest({
       schema: 'action_produced_result_request_v1', request_id: requestId,
       root_turn_id: rootTurnId, action_ref: actionRef,
@@ -71,17 +70,22 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       context_ref: profile.context_ref, profile_ref: profile.profile_id,
       profile_version: String(profile.revision),
       causal_mode: 'action_produced', actor_ref: actorRef,
-      source_refs: [operation.item_ref], tool_refs: [toolRef],
-      intended_transformation: envelope.request.remaining_intent,
-      output_class: 'ordinary_mundane'
+      source_refs: sourceRefs, tool_refs: toolRefs,
+      intended_transformation: envelope.plan.interpretation.grounded_attempt,
+      output_class: qualitative.output_class
     });
-    const semantic = requireActionProducedResultPlan(
-      await actionProducedModel(request), { request });
+    const semantic = requireActionProducedResultPlan({
+      ...structuredClone(request), schema: 'action_produced_result_plan_v1',
+      identity_mode: qualitative.identity_mode, origin: qualitative.origin,
+      result_class: qualitative.result_class,
+      result_descriptor: structuredClone(qualitative.result_descriptor)
+    }, { request });
     if (!profile.allowed_identity_modes.includes(semantic.identity_mode)
         || !profile.allowed_result_classes.includes(semantic.result_class)
         || semantic.origin !== null
-        || semantic.output_class !== (semantic.identity_mode
-          === 'no_useful_result' ? null : 'ordinary_mundane')) {
+          && !profile.allowed_origins.includes(semantic.origin)
+        || semantic.output_class !== null
+          && !profile.allowed_output_classes.includes(semantic.output_class)) {
       fail('TRACE_A1_SEMANTIC_PROFILE_DENIED');
     }
     const admission = admitActionProducedResult({
@@ -92,7 +96,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     if (admission.pass !== true) fail('TRACE_A1_ADMISSION_DENIED');
     const planner = createActionProducedTransitionPlanner({
       resolveMechanics: (mechanicsRequest) => ownerResolution({
-        mechanicsRequest, mechanics: sourceProfile.mechanics
+        mechanicsRequest, mechanics
       })
     });
     const proposal = planner({
@@ -123,27 +127,84 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
 }
 
 function ownerResolution({ mechanicsRequest, mechanics }) {
-  const noResult = mechanicsRequest.identity_mode === 'no_useful_result';
   const source = mechanicsRequest.source_inputs[0];
+  const sourceMechanics = mechanics.get(source.entity_ref);
+  if (sourceMechanics == null
+      || mechanicsRequest.tool_inputs.some(({ entity_ref: ref }) =>
+        mechanics.get(ref) == null)) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
+  const mode = mechanicsRequest.identity_mode;
+  const noResult = mode === 'no_useful_result';
+  const independent = mode === 'independent_outputs';
+  const sourceRefs = mechanicsRequest.source_inputs.map(
+    ({ entity_ref: ref }) => ref);
+  const mechanicsSnapshot = (mechanicsValue, operationRef) => ({
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+    provenance: {
+      source_kind: 'ordinary_direct_action_result',
+      root_turn_id: mechanicsRequest.causal_identity.root_turn_id,
+      step_index: mechanicsRequest.causal_identity.step_index,
+      operation_ref: operationRef,
+      origin_kind: mechanicsRequest.origin ?? 'crafted',
+      source_refs: sourceRefs
+    }, mechanics: structuredClone(mechanicsValue)
+  });
+  const finite = source.finite_resource;
+  if (independent && finite == null) {
+    fail('TRACE_A1_FINITE_SOURCE_REQUIRED');
+  }
+  const decrement = independent ? { numerator: 1, denominator: 1,
+    unit: finite.quantity.unit } : null;
+  const outputRef = independent ? createActionProducedOutputIdentity({
+    root_turn_id: mechanicsRequest.causal_identity.root_turn_id,
+    action_ref: mechanicsRequest.causal_identity.action_ref, ordinal: 1
+  }) : null;
+  const outputMechanics = independent ? {
+    ...structuredClone(sourceMechanics),
+    quantity: { value: 1, unit: finite.quantity.unit }
+  } : null;
   return {
     schema: 'rus.items.action_produced_owner_resolution.v1',
-    identity_mode: mechanicsRequest.identity_mode,
+    identity_mode: mode,
     source_effects: [{ source_ref: source.entity_ref,
-      requested_decrement: null,
-      mechanics_snapshot_after: noResult ? null : {
-        schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
-        provenance: {
-          source_kind: 'ordinary_direct_action_result',
-          root_turn_id: mechanicsRequest.causal_identity.root_turn_id,
-          step_index: mechanicsRequest.causal_identity.step_index,
-          operation_ref: mechanicsRequest.causal_identity.action_ref,
-          origin_kind: 'crafted',
-          source_refs: mechanicsRequest.source_inputs.map(
-            ({ entity_ref: ref }) => ref)
-        }, mechanics: structuredClone(mechanics)
-      } }],
-    outputs: [], known_waste: []
+      requested_decrement: structuredClone(decrement),
+      mechanics_snapshot_after: noResult || independent ? null
+        : mechanicsSnapshot(sourceMechanics,
+          mechanicsRequest.causal_identity.action_ref) }],
+    outputs: independent ? [{ ordinal: 1,
+      property_source_ref: source.entity_ref,
+      mechanics_snapshot: mechanicsSnapshot(outputMechanics, outputRef),
+      material_allocations: [{ source_ref: source.entity_ref,
+        quantity: structuredClone(decrement) }] }] : [],
+    known_waste: []
   };
+}
+
+function committedMechanics(item) {
+  const state = item?.state;
+  const templateId = item?.template_id;
+  const instance = templateId == null
+    ? { template_id: null, runtime_instance_mechanics_snapshot:
+      state?.runtime_instance_mechanics_snapshot }
+    : { template_id: templateId };
+  const profiles = templateId == null ? [] : [{
+    ...structuredClone(state?.inventory_profile_snapshot),
+    template_id: templateId
+  }];
+  const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
+  if (!resolved.pass || resolved.profile.container !== null) {
+    fail('TRACE_A1_ITEM_MECHANICS_INVALID');
+  }
+  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity, container } = resolved.profile;
+  if (!Number.isSafeInteger(mass_grams) || mass_grams < 0
+      || ![0, 1, 2].includes(external_hand_cost)
+      || !['compact', 'regular', 'long', 'bulky'].includes(carry_form)
+      || !Number.isSafeInteger(packing_slot_cost) || packing_slot_cost < 0
+      || quantity !== null && (!Number.isFinite(quantity?.value)
+        || quantity.value <= 0 || !text(quantity.unit))
+      || container !== null) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
+  return { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity: structuredClone(quantity), container };
 }
 
 function validateLoadedProfile(value) {
@@ -156,40 +217,17 @@ function validateLoadedProfile(value) {
   }
   return profile;
 }
-function validExecutionEvidence(envelope, profile) {
-  const required = profile.required_execution;
+
+function validExecutionEvidence(envelope) {
   const plan = envelope.plan;
-  const check = plan?.check;
-  const activity = plan?.activity;
   const result = envelope.check_result;
-  return plan?.resolution === required.resolution
-    && check?.attribute_ref === required.attribute_ref
-    && check.skill_ref === required.skill_ref
-    && check.difficulty_id === required.difficulty_id
-    && activity?.owner === 'semantic'
-    && activity.duration_class === required.duration_class
-    && activity.effort === required.effort
+  return plan?.resolution === 'generic_check'
+    && plan.check != null && plan.activity?.owner === 'semantic'
     && result != null
     && result.check_id === `${envelope.request.root_turn_id}:step:${
       envelope.request.step_index}`
     && Number.isSafeInteger(result.roll)
     && typeof result.outcome?.band === 'string';
-}
-function committedMechanicsMatch(state, profile) {
-  const inventory = state?.inventory_profile_snapshot;
-  const snapshot = state?.action_production_mechanics_snapshot;
-  if (inventory?.inventory_profile_id !== profile.inventory_profile_id
-      && inventory?.id !== profile.inventory_profile_id) return false;
-  return snapshot?.schema
-      === 'rus.items.action_production_committed_mechanics_snapshot.v1'
-    && snapshot.profile_ref === 'lower_dvina_trace_a1_personal_tool_profile_v1'
-    && snapshot.profile_version === '1'
-    && snapshot.template_id === profile.template_id
-    && snapshot.inventory_profile_id === profile.inventory_profile_id
-    && digest(snapshot.mechanics) === digest(profile.mechanics)
-    && inventory.mass_grams === profile.mechanics.mass_grams
-    && inventory.external_hand_cost === profile.mechanics.external_hand_cost
-    && inventory.carry_form === profile.mechanics.carry_form;
 }
 function text(value) { return typeof value === 'string'
   && value.trim() === value && value.length > 0; }

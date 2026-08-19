@@ -187,9 +187,10 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
     const controlledButBorrowed = dbRow();
     controlledButBorrowed.owner_character_id = 'actor:other';
     controlledButBorrowed.claim_state = 'entrusted';
-    await assert.rejects(loadActionProducedCommittedContext(
-      loaderClient([controlledButBorrowed]), loadInput()),
-    { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+    const borrowed = await loadActionProducedCommittedContext(
+      loaderClient([controlledButBorrowed]), loadInput());
+    assert.equal(borrowed.row_pins[0].ownership.owner_character_id,
+      'actor:other');
 
     const mismatchedResourceClient = loaderClient([dbRow()], [{
       resource_node_id: 'resource:pole', source_resource_ref: {
@@ -482,6 +483,7 @@ function fixture() {
   };
   const mechanicsStateRef = digest({
     runtime_instance_mechanics_snapshot: null,
+    inventory_profile_snapshot: null,
     template_id: item.template_id, profile_id: item.profile_id,
     category_id: item.category_id, quantity: item.quantity
   });

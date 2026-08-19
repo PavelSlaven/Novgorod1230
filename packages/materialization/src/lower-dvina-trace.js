@@ -37,9 +37,7 @@ import {
 } from './lower-dvina-trace-appearance.js';
 import { buildLowerDvinaTracePlayerDossier } from
   './lower-dvina-trace-player-dossier.js';
-import { actionProductionMechanicsProfiles,
-  actionProductionMechanicsSnapshot,
-  buildActionProductionAuthority } from
+import { buildActionProductionAuthority } from
   './lower-dvina-trace-action-production.js';
 
 export {
@@ -301,11 +299,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         bundle.item_container_set.item_inventory_profiles,
       item_visual_profiles:
         bundle.item_container_set.item_visual_profiles,
-      catalog_digest: bundle.artifact_pins.item_container_set.digest,
-      ...(revision === 21 ? {
-        action_production_mechanics_profiles:
-          actionProductionMechanicsProfiles(bundle.action_production_profile)
-      } : {})
+      catalog_digest: bundle.artifact_pins.item_container_set.digest
     } : null;
 
   const dossier = buildLowerDvinaTracePlayerDossier({
@@ -379,12 +373,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
         causal_basis: knifeTemplate.causal_basis,
         weapon_contract: structuredClone(knifeTemplate.weapon_contract),
         inventory_profile_snapshot: structuredClone(knifeInventoryProfile),
-        source_digest: bundle.artifact_pins.item_inventory_profiles.digest,
-        ...(revision === 21 ? {
-          action_production_mechanics_snapshot:
-            actionProductionMechanicsSnapshot(
-              bundle.action_production_profile, knifeTemplate.item_template_id)
-        } : {})
+        source_digest: bundle.artifact_pins.item_inventory_profiles.digest
       }
     }, ...(phase4Prepared ? [{
       instance_id: deterministicInstanceId(input.party_id, runId, 'item', ratshaKnifeTemplate.item_template_id, 0),

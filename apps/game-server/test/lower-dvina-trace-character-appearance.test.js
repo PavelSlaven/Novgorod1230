@@ -45,7 +45,7 @@ test('revision 20 adds only the authored ordinary pouch and keeps revision 19 im
       id === 'trace_ld_v1_container_road_bag'),true);
 });
 
-test('revision 21 activates exact A1 authority and persisted source/tool mechanics', () => {
+test('revision 21 activates open A1 authority over ordinary item mechanics', () => {
   const exact = materializeAuthored(
     'party:revision20-materialization', revision20, 20
   );
@@ -67,18 +67,20 @@ test('revision 21 activates exact A1 authority and persisted source/tool mechani
     'party:revision21-action-production', revision21, 21);
   assert.equal(roadBagProfile(authored).capacity, 4);
   assert.equal(authored.action_production_authority.profile_ref,
-    'lower_dvina_trace_a1_personal_tool_profile_v1');
+    'lower_dvina_trace_a1_open_physical_action_profile_v1');
   const knife = authored.immediate.items.find(({ template_id: id }) =>
     id === 'trace_ld_v1_item_mikula_knife');
-  assert.deepEqual(knife.state.action_production_mechanics_snapshot.mechanics,
-    revision21.action_production_profile.tool_profiles[0].mechanics);
+  assert.equal(Object.hasOwn(knife.state,
+    'action_production_mechanics_snapshot'), false);
+  assert.ok(knife.state.inventory_profile_snapshot);
   const completed = materializeInitialActorEquipment(authored);
   const garment = completed.immediate.items.find(({ template_id: id,
     holder_character_id: holder }) =>
     id === 'trace_ld_v1_item_working_outer_garment'
       && holder === completed.immediate.player.instance_id);
-  assert.deepEqual(garment.state.action_production_mechanics_snapshot.mechanics,
-    revision21.action_production_profile.source_profiles[0].mechanics);
+  assert.equal(Object.hasOwn(garment.state,
+    'action_production_mechanics_snapshot'), false);
+  assert.ok(garment.state.inventory_profile_snapshot);
 });
 
 function roadBagProfile(result) {

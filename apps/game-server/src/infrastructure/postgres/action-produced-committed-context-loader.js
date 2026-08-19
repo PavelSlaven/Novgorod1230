@@ -154,10 +154,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite }) {
       || Number(row.state_version) < 1
       || row.holder_character_id !== actorRef
       || row.holder_npc_id !== null
-      || row.owner_character_id !== actorRef
-      || row.owner_npc_id !== null
-      || row.owner_party !== false
-      || row.claim_state !== 'owned'
+      || !validOwnership(row)
       || row.controller_character_id !== actorRef
       || row.controller_npc_id !== null
       || row.state?.lifecycle_status != null
@@ -202,6 +199,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite }) {
   const mechanicsRef = digest({
     runtime_instance_mechanics_snapshot:
       item.state?.runtime_instance_mechanics_snapshot ?? null,
+    inventory_profile_snapshot:
+      item.state?.inventory_profile_snapshot ?? null,
     template_id: item.template_id, profile_id: item.profile_id,
     category_id: item.category_id, quantity: item.quantity
   });
@@ -231,6 +230,13 @@ function rowPin({ row, role, actorRef, contextVersion, finite }) {
     },
     finite_resource_row: finite?.persisted_row ?? null
   };
+}
+
+function validOwnership(row) {
+  const owners = Number(text(row.owner_character_id))
+    + Number(text(row.owner_npc_id)) + Number(row.owner_party === true);
+  return owners === 1 && typeof row.owner_party === 'boolean'
+    && text(row.claim_state);
 }
 
 function bindResources(rows, sourceRefs) {

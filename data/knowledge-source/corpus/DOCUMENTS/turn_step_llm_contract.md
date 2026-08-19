@@ -817,26 +817,40 @@ LLM не перечисляет contents до их появления в player-
   "actor_ref": "actor_mikula",
   "item_ref": "item_1",
   "use_kind": "consume | apply | operate | equip | unequip | other",
-  "target_refs": []
+  "target_refs": [],
+  "action_production": {
+    "identity_mode": "preserve_source | independent_outputs | no_useful_result",
+    "origin": "direct_partition | crafted | null",
+    "result_class": "ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result",
+    "result_descriptor": {
+      "display_name": null,
+      "physical_description": "видимый физический результат",
+      "qualitative_facts": [],
+      "inscription_text": null,
+      "weapon_qualitative_class": null
+    },
+    "output_class": "ordinary_mundane | weapon_capable | money_like_token | written_carrier | null"
+  }
 }
 ```
 
 Профильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.
 
-В active Lower Dvina Trace revision 21 отсутствие exact recipe больше не
-является автоматическим отказом только внутри SHA-pinned A1 profile. Приоритет
-не меняется: registered/external handler, затем единственный authored binding,
-и лишь при нуле совпадений — A1 remainder. Активный scope принимает только
-видимую committed рабочую верхнюю одежду как source и принадлежащий actor нож
-Микулы как единственный tool. Он требует уже выполненные общим owner
-`generic_check` dexterity/standard и semantic activity short/light; resolver
-получает их exact result/evidence и не вызывает RNG либо clock повторно. До
-qualitative model call код перечитывает authority, ownership, placement и
-полный authored mechanics snapshot. Current profile допускает только
-`preserve_source | no_useful_result` и `ordinary_mundane`; model не задаёт
-массу, расход, identity, placement, время, roll или authority. Один combined
-P16 сохраняет causal pins и физический transition атомарно. Этот A1 route не
-отвечает на вопросы о pre-existing presence и не является fallback O1/O2.
+В active Lower Dvina Trace revision 21 отсутствие exact recipe не является
+автоматическим отказом внутри SHA-pinned A1 profile. Приоритет не меняется:
+registered/external handler, затем authored binding, и лишь при нуле совпадений
+— code-owned A1 owner. Это не второй semantic fallback: qualitative
+`action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не
+вызывает LLM. Активный scope принимает один видимый actor-held non-container
+source и ноль или несколько видимых actor-held/controller-controlled
+non-container tools; legal owner может быть другим. Общий turn plan выбирает
+generic check и semantic activity, а существующие RNG/time owners исполняют их
+один раз. Profile допускает preserve, finite independent output, no-result,
+partial/nonworking/waste, writing, non-authoritative token-like и closed
+weapon-capable outcomes. Model не задаёт массу, расход, mechanics, identity,
+property, placement, время, roll, currency/official status или combat numbers.
+Один combined P16 сохраняет causal pins, conservation и physical transition
+атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 
 ### 12.5. `request_activity`
 

@@ -104,6 +104,11 @@ function deriveSourceUpdates(proposal, sourcePins) {
         causal_identity: structuredClone(proposal.causal_identity),
         result_class: proposal.result_class,
         output_class: proposal.qualitative_result.output_class,
+        ...(proposal.qualitative_result.result_descriptor
+          .weapon_qualitative_class == null ? {} : {
+            weapon_qualitative_class: proposal.qualitative_result
+              .result_descriptor.weapon_qualitative_class
+          }),
         physical_facts: structuredClone(preservedResult.physical_facts),
         inscription_text: preservedResult.inscription_text
       } })

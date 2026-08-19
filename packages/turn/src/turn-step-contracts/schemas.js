@@ -224,7 +224,43 @@ const planDefinitions = {
     target_ref: refSchema,
     movement_kind: { enum: ['local', 'route', 'long_course'] }
   }),
-  request_item_use: strictObject([
+  action_production_descriptor: strictObject([
+    'display_name', 'physical_description', 'qualitative_facts',
+    'inscription_text', 'weapon_qualitative_class'
+  ], {
+    display_name: { anyOf: [{ type: 'null' }, textSchema] },
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
+    weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [
+      'improvised_puncture_light', 'improvised_impact_light',
+      'improvised_cutting_light', 'improvised_two_hand_heavy'
+    ] }] }
+  }),
+  action_production: strictObject([
+    'identity_mode', 'origin', 'result_class', 'result_descriptor',
+    'output_class'
+  ], {
+    identity_mode: { enum: [
+      'preserve_source', 'independent_outputs', 'no_useful_result'
+    ] },
+    origin: { anyOf: [{ type: 'null' }, {
+      enum: ['direct_partition', 'crafted']
+    }] },
+    result_class: { enum: [
+      'ordinary_physical_result', 'partial_transformation',
+      'nonworking_construction', 'waste', 'written_carrier',
+      'no_useful_result'
+    ] },
+    result_descriptor: { $ref: '#/$defs/action_production_descriptor' },
+    output_class: { anyOf: [{ type: 'null' }, { enum: [
+      'ordinary_mundane', 'weapon_capable', 'money_like_token',
+      'written_carrier'
+    ] }] }
+  }),
+  request_item_use_legacy: strictObject([
     'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'
   ], {
     op: { const: 'request_item_use' },
@@ -233,6 +269,21 @@ const planDefinitions = {
     use_kind: { enum: ['consume', 'apply', 'operate', 'equip', 'unequip', 'other'] },
     target_refs: { type: 'array', uniqueItems: true, items: refSchema }
   }),
+  request_item_use_action_production: strictObject([
+    'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs',
+    'action_production'
+  ], {
+    op: { const: 'request_item_use' }, actor_ref: refSchema,
+    item_ref: refSchema, use_kind: { const: 'other' },
+    target_refs: { type: 'array', uniqueItems: true, items: refSchema },
+    action_production: { $ref: '#/$defs/action_production' }
+  }),
+  request_item_use: {
+    oneOf: [
+      { $ref: '#/$defs/request_item_use_legacy' },
+      { $ref: '#/$defs/request_item_use_action_production' }
+    ]
+  },
   request_activity: strictObject([
     'op', 'actor_ref', 'activity_kind', 'target_refs', 'description'
   ], {

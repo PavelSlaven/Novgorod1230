@@ -14,7 +14,6 @@ export function materializeApprovedActorEquipment({
   item_templates: itemTemplates,
   item_inventory_profiles: itemInventoryProfiles,
   item_visual_profiles: itemVisualProfiles,
-  action_production_mechanics_profiles: actionProductionMechanicsProfiles = [],
   catalog_digest: catalogDigest
 }) {
   const actorByCandidate = actorCandidateMap(actorCandidateInstanceMap);
@@ -131,8 +130,7 @@ export function materializeApprovedActorEquipment({
     eligible_g5_item_anchors: [], eligible_g5_container_anchors: []
   });
   return deepFreeze({
-    item_instances: draft.item_instances.map((item) =>
-      projectActorEquipmentInstance(item, actionProductionMechanicsProfiles)),
+    item_instances: draft.item_instances.map(projectActorEquipmentInstance),
     materialization_run: structuredClone(draft.materialization_run)
   });
 }
@@ -254,7 +252,7 @@ function actorCandidateMap(values) {
   return map;
 }
 
-function projectActorEquipmentInstance(item, actionProductionProfiles) {
+function projectActorEquipmentInstance(item) {
   const property = item.property_state ?? {};
   const placement = item.placement ?? {};
   return {
@@ -279,38 +277,9 @@ function projectActorEquipmentInstance(item, actionProductionProfiles) {
     equipment_slot_category_id: placement.equipment_slot_category_id,
     state: {
       ...structuredClone(item.state ?? {}),
-      source_equipment_candidate_ref: item.equipment_candidate_id,
-      ...actionProductionMechanicsState(item, actionProductionProfiles)
+      source_equipment_candidate_ref: item.equipment_candidate_id
     }
   };
-}
-
-function actionProductionMechanicsState(item, profiles) {
-  const matches = profiles.filter(({ template_id: id }) =>
-    id === item.item_template_id);
-  if (matches.length === 0) return {};
-  const profile = matches.length === 1 ? matches[0] : null;
-  if (profile == null
-      || profile.inventory_profile_id !== item.item_profile_id
-      || profile.profile_version !== '1'
-      || typeof profile.profile_ref !== 'string'
-      || profile.profile_ref.length === 0
-      || profile.mechanics == null
-      || typeof profile.mechanics !== 'object'
-      || Array.isArray(profile.mechanics)) {
-    throw new MaterializationError(
-      'INITIAL_ACTOR_EQUIPMENT_ACTION_PRODUCTION_MECHANICS_INVALID',
-      'Initial A1 mechanics must resolve from one exact authored profile.'
-    );
-  }
-  return { action_production_mechanics_snapshot: {
-    schema: 'rus.items.action_production_committed_mechanics_snapshot.v1',
-    profile_ref: profile.profile_ref,
-    profile_version: profile.profile_version,
-    template_id: profile.template_id,
-    inventory_profile_id: profile.inventory_profile_id,
-    mechanics: structuredClone(profile.mechanics)
-  } };
 }
 
 function exactApprovedRecord(values, key, id) {

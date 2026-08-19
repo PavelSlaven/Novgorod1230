@@ -45,6 +45,10 @@ const RESULT_CLASSES = new Set([
   'nonworking_construction', 'waste', 'written_carrier',
   'no_useful_result'
 ]);
+const WEAPON_CLASSES = new Set([
+  'improvised_puncture_light', 'improvised_impact_light',
+  'improvised_cutting_light', 'improvised_two_hand_heavy'
+]);
 const ROLES = new Set(['source', 'tool']);
 
 export function admitActionProducedResult(value) {
@@ -182,6 +186,9 @@ function validateProposal(value) {
       || !validDescriptor(value.result_descriptor)
       || !validateActionProducedOutputClass(value.output_class,
         value.result_class, value.identity_mode)
+      || (value.output_class === 'weapon_capable')
+        !== WEAPON_CLASSES.has(
+          value.result_descriptor?.weapon_qualitative_class)
       || !validCausalShape(value)) {
     return 'ITEM_ACTION_PRODUCED_PROPOSAL_INVALID';
   }
@@ -189,11 +196,16 @@ function validateProposal(value) {
 }
 
 function validDescriptor(value) {
-  return exact(value, DESCRIPTOR_KEYS)
+  return exact(value, descriptorKeys(value))
     && nullableText(value.display_name)
     && nullableText(value.physical_description)
     && textArray(value.qualitative_facts, true)
     && nullableText(value.inscription_text);
+}
+
+function descriptorKeys(value) {
+  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
+    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
 }
 
 function validCausalShape(value) {

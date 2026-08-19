@@ -136,10 +136,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite) {
         && item.state.lifecycle_status !== 'active'
       || placement.holder_character_id !== actorRef
       || placement.holder_npc_id !== null
-      || ownership.owner_character_id !== actorRef
-      || ownership.owner_npc_id !== null
-      || ownership.owner_party !== false
-      || ownership.claim_state !== 'owned'
+      || !validOwnership(ownership)
       || ownership.controller_character_id !== actorRef
       || ownership.controller_npc_id !== null) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
@@ -153,6 +150,8 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite) {
     mechanics_state_ref: digest({
       runtime_instance_mechanics_snapshot:
         item.state?.runtime_instance_mechanics_snapshot ?? null,
+      inventory_profile_snapshot:
+        item.state?.inventory_profile_snapshot ?? null,
       template_id: item.template_id, profile_id: item.profile_id,
       category_id: item.category_id, quantity: item.quantity
     }),
@@ -165,6 +164,13 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite) {
     placement_state_ref: pin.placement_digest,
     finite_resource: finite
   };
+}
+
+function validOwnership(value) {
+  const owners = Number(text(value.owner_character_id))
+    + Number(text(value.owner_npc_id)) + Number(value.owner_party === true);
+  return owners === 1 && typeof value.owner_party === 'boolean'
+    && text(value.claim_state);
 }
 
 function finiteSnapshot(row, itemId, role, seenResources) {

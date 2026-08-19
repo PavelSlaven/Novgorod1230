@@ -36,7 +36,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
-  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProducedResolver = null, actionProductionProfile = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProductionOwner = null, actionProductionProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -272,7 +272,7 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
         turnStepGenericCheckContextOwner:
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
-        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProducedResolver: bundle.definition_revision === 21 ? createTurnStepActionProducedResolver : null, actionProductionProfile: bundle.definition_revision === 21 ? actionProductionProfile : null,
+        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProductionOwner: bundle.definition_revision === 21 ? createTurnStepActionProductionOwner : null, actionProductionProfile: bundle.definition_revision === 21 ? actionProductionProfile : null,
         admitAmbientOrdinaryPortion: typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
           ? createTurnStepAmbientOrdinaryPortionAdmission({ committedState: state }) : null,
         requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,

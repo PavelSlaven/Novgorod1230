@@ -37,7 +37,7 @@ release `spatial-v3-production-v1` сделал v3 sole production owner. Мод
 остаётся pure domain owner и не делает writes.
 
 Lower Dvina revision 21 A1 использует существующую semantic activity и её
-prepared temporal/body handoff. A1 resolver только проверяет exact authored
+prepared temporal/body handoff. A1 owner проверяет уже admitted общим turn plan
 duration/effort evidence; отдельный crafting clock, process kind либо второй
 time advance не создаётся.
 

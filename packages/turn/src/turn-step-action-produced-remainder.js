@@ -1,9 +1,13 @@
-export function isActionProducedSemanticRemainderInScope({
+export function isActionProductionOwnerInScope({
   operation, playerSafeState, remainingIntent
 }) {
-  const itemUse = ownPlainDataRecord(operation, [
+  const operationKeys = [
     'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'
-  ]);
+  ];
+  if (ownDataProperty(operation, 'action_production') !== undefined) {
+    operationKeys.push('action_production');
+  }
+  const itemUse = ownPlainDataRecord(operation, operationKeys);
   if (itemUse == null || itemUse.op !== 'request_item_use'
       || itemUse.use_kind !== 'other'
       || !canonicalText(itemUse.item_ref)
@@ -14,7 +18,9 @@ export function isActionProducedSemanticRemainderInScope({
   if (targetRefs == null) return false;
   const marker = ownPlainDataRecord(
     ownDataProperty(playerSafeState, 'action_production'),
-    ['semantic_grounding_available']
+    ['semantic_grounding_available', 'allowed_identity_modes',
+      'allowed_origins', 'allowed_result_classes', 'allowed_output_classes',
+      'weapon_qualitative_classes']
   );
   if (marker?.semantic_grounding_available !== true) return false;
   const visibleObjects = exactVisibleRefs(playerSafeState, 'visible_objects', {

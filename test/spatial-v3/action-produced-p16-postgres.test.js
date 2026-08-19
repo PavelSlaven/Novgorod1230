@@ -407,7 +407,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       sources: ['board', 'scrap'], tools: ['axe'],
       mode: 'independent_outputs', outputCount: 1, decrement: 1,
       propertySource: 'board', allocationSources: ['board', 'scrap']
-    }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+    }), { code: 'ITEM_ACTION_PRODUCED_TRANSITION_INVALID' });
     assert.deepEqual((await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
        WHERE party_id='party-a1') AS party_version,
@@ -440,39 +440,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
 
     await provisionProductionScope(pool);
     const loadedProfile = await loadLowerDvinaTraceA1Profile();
-    let modelCalls = 0;
     const factory = createLowerDvinaTraceA1ProductionResolverFactory({
-      pool, loadedProfile,
-      actionProducedModel: async (request) => {
-        modelCalls += 1;
-        if (request.intended_transformation.includes('невозможный')) {
-          return { ...structuredClone(request),
-            schema: 'action_produced_result_plan_v1',
-            identity_mode: 'no_useful_result', origin: null,
-            output_class: null, result_class: 'no_useful_result',
-            result_descriptor: { display_name: null,
-              physical_description: null, qualitative_facts: [],
-              inscription_text: null } };
-        }
-        if (request.intended_transformation.includes('официальную монету')) {
-          return { ...structuredClone(request),
-            schema: 'action_produced_result_plan_v1',
-            identity_mode: 'preserve_source', origin: null,
-            result_class: 'partial_transformation',
-            result_descriptor: { display_name: null,
-              physical_description: 'На ткани вырезан круг.',
-              qualitative_facts: [], inscription_text: null },
-            official_currency: true };
-        }
-        return { ...structuredClone(request),
-          schema: 'action_produced_result_plan_v1',
-          identity_mode: 'preserve_source', origin: null,
-          result_class: 'partial_transformation',
-          result_descriptor: { display_name: null,
-            physical_description: 'Край ткани аккуратно подрезан.',
-            qualitative_facts: ['на краю виден свежий ровный срез'],
-            inscription_text: null } };
-      }
+      pool, loadedProfile
     });
     const resolveProduction = factory({ partyId: 'party-a1',
       requestId: 'production-request' });
@@ -483,15 +452,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .rows[0].state;
     const driftedStates = [
       (() => { const state = structuredClone(productionState);
-        delete state.action_production_mechanics_snapshot; return state; })(),
+        delete state.inventory_profile_snapshot; return state; })(),
       (() => { const state = structuredClone(productionState);
-        state.action_production_mechanics_snapshot.mechanics
-          .packing_slot_cost = 2; return state; })(),
+        state.inventory_profile_snapshot.mass_grams = -1; return state; })(),
       (() => { const state = structuredClone(productionState);
-        state.action_production_mechanics_snapshot.mechanics.quantity.value = 2;
-        return state; })(),
-      (() => { const state = structuredClone(productionState);
-        state.action_production_mechanics_snapshot.mechanics.container = {
+        state.inventory_profile_snapshot.container = {
           capacity: 1 }; return state; })()
     ];
     for (const state of driftedStates) {
@@ -499,26 +464,27 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         WHERE party_id='party-a1' AND item_id='production-garment'`,
       [JSON.stringify(state)]);
       await assert.rejects(resolveProduction(productionEnvelope()), {
-        code: 'TRACE_A1_SOURCE_PROFILE_DENIED'
+        code: 'TRACE_A1_ITEM_MECHANICS_INVALID'
       });
-      assert.equal(modelCalls, 0);
     }
     await pool.query(`UPDATE party_runtime.party_items SET state=$1::jsonb
       WHERE party_id='party-a1' AND item_id='production-garment'`,
     [JSON.stringify(productionState)]);
 
-    for (const itemId of ['production-garment', 'production-knife']) {
-      await pool.query(`UPDATE party_runtime.party_ownership
-        SET owner_character_id=NULL,owner_party=true,claim_state='entrusted'
-        WHERE party_id='party-a1' AND item_id=$1`, [itemId]);
-      await assert.rejects(resolveProduction(productionEnvelope()), {
-        code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
-      });
-      assert.equal(modelCalls, 0);
-      await pool.query(`UPDATE party_runtime.party_ownership
-        SET owner_character_id='pc',owner_party=false,claim_state='owned'
-        WHERE party_id='party-a1' AND item_id=$1`, [itemId]);
-    }
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET owner_character_id=NULL,owner_party=true,claim_state='entrusted'
+      WHERE party_id='party-a1' AND item_id='production-knife'`);
+    assert.equal((await resolveProduction(productionEnvelope()))
+      .action_production_atomic_write_plan.tool_pins.length, 1);
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET controller_character_id=NULL
+      WHERE party_id='party-a1' AND item_id='production-knife'`);
+    await assert.rejects(resolveProduction(productionEnvelope()), {
+      code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
+    });
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET controller_character_id='pc'
+      WHERE party_id='party-a1' AND item_id='production-knife'`);
 
     const wrongCheck = productionEnvelope();
     wrongCheck.check_result = null;
@@ -526,50 +492,80 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       code: 'TRACE_A1_SCOPE_INVALID'
     });
     const wrongActivity = productionEnvelope();
-    wrongActivity.plan.activity.duration_class = 'brief';
+    wrongActivity.plan.activity.owner = 'domain';
     await assert.rejects(resolveProduction(wrongActivity), {
       code: 'TRACE_A1_SCOPE_INVALID'
     });
-    assert.equal(modelCalls, 0);
 
-    const impossibleEnvelope = productionEnvelope();
-    impossibleEnvelope.request.remaining_intent =
-      'Собираю невозможный для эпохи работающий механизм.';
+    const impossibleEnvelope = productionEnvelope({ targetRefs: [],
+      remainingIntent: 'Собираю невозможный работающий механизм.',
+      actionProduction: actionProduction({
+        result_class: 'nonworking_construction',
+        result_descriptor: descriptor({
+          display_name: 'неработающая конструкция',
+          physical_description: 'детали соединены, но механизм не работает',
+          qualitative_facts: ['конструкция физически собрана']
+        })
+      }) });
     const impossible = await factory({ partyId: 'party-a1',
       requestId: 'production-impossible' })(impossibleEnvelope);
     assert.equal(impossible.action_production_atomic_write_plan.identity_mode,
-      'no_useful_result');
-    assert.deepEqual(impossible.action_production_atomic_write_plan
-      .source_updates, []);
+      'preserve_source');
+    assert.equal(impossible.action_production_atomic_write_plan
+      .source_updates.length, 1);
     assert.deepEqual(impossible.action_production_atomic_write_plan
       .result_items, []);
-    assert.equal(modelCalls, 1);
 
-    const authorityEnvelope = productionEnvelope();
-    authorityEnvelope.request.remaining_intent =
-      'Вырезаю официальную монету из ткани.';
-    await assert.rejects(factory({ partyId: 'party-a1',
-      requestId: 'production-authority' })(authorityEnvelope), {
-      code: 'TURN_ACTION_PRODUCED_PLAN_INVALID'
-    });
-    assert.equal(modelCalls, 2);
-    assert.equal((await pool.query(`SELECT count(*)::int AS count FROM
-      party_runtime.party_action_production_commits
-      WHERE request_id IN ('production-impossible','production-authority')`))
-      .rows[0].count, 0);
+    const writing = await factory({ partyId: 'party-a1',
+      requestId: 'production-writing' })(productionEnvelope({
+      targetRefs: ['production-knife', 'production-stone'],
+      remainingIntent: 'Оставляю на ткани короткую надпись.',
+      actionProduction: actionProduction({ result_class: 'written_carrier',
+        output_class: 'written_carrier', result_descriptor: descriptor({
+          display_name: 'ткань с надписью',
+          physical_description: 'на ткани оставлена видимая надпись',
+          qualitative_facts: ['носитель имеет рукописную надпись'],
+          inscription_text: 'Жду у переправы.'
+        }) }) }));
+    assert.equal(writing.action_production_atomic_write_plan.source_updates[0]
+      .after_item.state.action_production.inscription_text,
+    'Жду у переправы.');
 
-    const production = await resolveProduction(productionEnvelope());
-    assert.equal(modelCalls, 3);
-    assert.deepEqual(production.action_production_atomic_write_plan
-      .source_updates[0].after_item.state.runtime_instance_mechanics_snapshot
-      .mechanics, loadedProfile.profile.source_profiles[0].mechanics);
+    const token = await factory({ partyId: 'party-a1',
+      requestId: 'production-token' })(productionEnvelope({
+      itemRef: 'production-board', targetRefs: [],
+      remainingIntent: 'Отделяю от доски простой счётный жетон.',
+      actionProduction: actionProduction({
+        identity_mode: 'independent_outputs', origin: 'direct_partition',
+        result_class: 'ordinary_physical_result',
+        output_class: 'money_like_token', result_descriptor: descriptor({
+          display_name: 'деревянный счётный жетон',
+          physical_description: 'от доски отделён маленький деревянный кружок'
+        })
+      }) }));
+    assert.equal(token.action_production_atomic_write_plan.result_items.length,
+      1);
+    const tokenCombined = await combinedPlan(
+      token.action_production_atomic_write_plan, 'production-token', 5);
+    assert.equal((await committer.commit({ plan: tokenCombined })).ok, true);
+
+    const production = await factory({ partyId: 'party-a1',
+      requestId: 'production-request' })(productionEnvelope({
+      stateVersion: 6, turnNumber: 5,
+      actionProduction: actionProduction({ output_class: 'weapon_capable',
+        result_descriptor: descriptor({
+          display_name: 'тканевая праща',
+          physical_description: 'край ткани свит в гибкую ударную петлю',
+          qualitative_facts: ['петля пригодна для импровизированного удара'],
+          weapon_qualitative_class: 'improvised_impact_light'
+        }) }) }));
     const productionCombined = await combinedPlan(
-      production.action_production_atomic_write_plan, 'production', 5);
+      production.action_production_atomic_write_plan, 'production', 6);
     assert.equal((await committer.commit({ plan: productionCombined })).ok,
       true);
     assert.deepEqual(await committer.commit({ plan: productionCombined }), {
       ok: true, replay: true,
-      change_set_id: 'change:party-a1:turn-step:5'
+      change_set_id: 'change:party-a1:turn-step:6'
     });
     const productionRows = (await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
@@ -581,13 +577,15 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       (SELECT state_version::int FROM party_runtime.party_items
        WHERE party_id='party-a1' AND item_id='production-knife') AS tool_version`))
       .rows[0];
-    assert.deepEqual(productionRows, { party_version: 6, commits: 1,
+    assert.deepEqual(productionRows, { party_version: 7, commits: 1,
       source: { schema: 'rus.items.action_production_item_state.v1',
         causal_identity: production.action_production_atomic_write_plan
           .causal_identity,
         result_class: 'partial_transformation',
-        output_class: 'ordinary_mundane',
-        physical_facts: ['на краю виден свежий ровный срез'],
+        output_class: 'weapon_capable',
+        weapon_qualitative_class: 'improvised_impact_light',
+        physical_facts: [
+          'петля пригодна для импровизированного удара'],
         inscription_text: null }, tool_version: 1 });
   });
 
@@ -914,19 +912,37 @@ function authorityFixture(authorityStateVersion = 1) {
     status: 'committed' };
 }
 
-function productionEnvelope() {
+function descriptor(overrides = {}) {
+  return { display_name: null,
+    physical_description: 'Край предмета физически обработан.',
+    qualitative_facts: [], inscription_text: null,
+    weapon_qualitative_class: null, ...overrides };
+}
+
+function actionProduction(overrides = {}) {
+  return { identity_mode: 'preserve_source', origin: null,
+    result_class: 'partial_transformation',
+    result_descriptor: descriptor(), output_class: 'ordinary_mundane',
+    ...overrides };
+}
+
+function productionEnvelope({ itemRef = 'production-garment',
+  targetRefs = ['production-knife'], actionProduction: qualitative =
+    actionProduction(), stateVersion = 5, turnNumber = 4,
+  remainingIntent = 'Физически изменяю доступный предмет.' } = {}) {
   const plan = { resolution: 'generic_check',
     activity: { owner: 'semantic', duration_class: 'short', effort: 'light' },
     check: { attribute_ref: 'dexterity', skill_ref: null,
-      difficulty_id: 'standard' } };
+      difficulty_id: 'standard' }, interpretation: {
+      player_goal: remainingIntent, grounded_attempt: remainingIntent,
+      adaptation: 'literal' } };
   return { operation: { op: 'request_item_use', actor_ref: 'pc',
-      item_ref: 'production-garment', use_kind: 'other',
-      target_refs: ['production-knife'] }, plan,
+      item_ref: itemRef, use_kind: 'other', target_refs: targetRefs,
+      action_production: qualitative }, plan,
     request: { root_turn_id: 'turn-production', step_index: 1,
-      committed_state_version: 5,
-      remaining_intent: 'Подрезаю край одежды своим ножом.' },
+      committed_state_version: stateVersion, remaining_intent: remainingIntent },
     actor: { actor_id: 'pc' }, working_projection: {},
-    committed_state: { party_state: { turn_number: 4 } },
+    committed_state: { party_state: { turn_number: turnNumber } },
     check_result: { check_id: 'turn-production:step:1', roll: 12,
       outcome: { band: 'success' } } };
 }
@@ -957,28 +973,27 @@ async function provisionProductionScope(pool) {
     JSON.stringify(authority.allowed_result_classes), 1, 'committed',
     digest(authority)]);
   for (const [itemId, itemProfile, physicalPosition, equipmentSlot] of [
-    ['production-garment', profile.source_profiles[0], 'equipped',
-      'outer_garment'],
-    ['production-knife', profile.tool_profiles[0], 'worn_quick', null]
+    ['production-garment', inventoryProfile('production-garment', 900, 0,
+      'regular', 2), 'equipped', 'outer_garment'],
+    ['production-knife', inventoryProfile('production-knife', 250, 1,
+      'compact', 1), 'worn_quick', null],
+    ['production-stone', inventoryProfile('production-stone', 300, 1,
+      'compact', 1), 'hands', null],
+    ['production-board', inventoryProfile('production-board', 800, 1,
+      'regular', 2, { value: 2, unit: 'piece' }), 'hands', null]
   ]) {
-    const inventory = { inventory_profile_id: itemProfile.inventory_profile_id,
-      mass_grams: itemProfile.mechanics.mass_grams,
-      external_hand_cost: itemProfile.mechanics.external_hand_cost,
-      carry_form: itemProfile.mechanics.carry_form };
-    const mechanics = { schema:
-        'rus.items.action_production_committed_mechanics_snapshot.v1',
-      profile_ref: profile.profile_id, profile_version: '1',
-      template_id: itemProfile.template_id,
-      inventory_profile_id: itemProfile.inventory_profile_id,
-      mechanics: itemProfile.mechanics };
     await pool.query(`INSERT INTO party_runtime.party_items
       (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
        condition_state,legal_status,state,state_version)
       VALUES ('party-a1',$1,'run-a1',$2,$3,'ordinary',1,'serviceable',
         'owned',$4::jsonb,1)`, [itemId, itemProfile.template_id,
       itemProfile.inventory_profile_id, JSON.stringify({ lifecycle_status:
-        'active', inventory_profile_snapshot: inventory,
-        action_production_mechanics_snapshot: mechanics })]);
+        'active', inventory_profile_snapshot: itemProfile,
+        ...(itemId !== 'production-board' ? {} : {
+          resource_position_node_id: 'position-a1', property_state: {
+            source_ref: itemId,
+            resource_property_basis_ref: `property:${itemId}` }
+        }) })]);
     await pool.query(`INSERT INTO party_runtime.party_item_placements
       (party_id,item_id,holder_character_id,physical_position,
        equipment_slot_category_id)
@@ -990,4 +1005,22 @@ async function provisionProductionScope(pool) {
       VALUES ('party-a1',$1,$2,'pc',false,'pc','owned')`,
     [`ownership:${itemId}`, itemId]);
   }
+  await pool.query(`INSERT INTO party_runtime.party_resource_nodes
+    (resource_node_id,party_id,source_resource_ref,position_node_id,
+     quantity_numerator,quantity_denominator,quantity_unit_ref,quality_ref,
+     access_policy_ref,state_version,created_change_set_id,
+     updated_change_set_id,lifecycle_state,property_basis_ref)
+    VALUES ('resource-production-board','party-a1',$1::jsonb,'position-a1',
+      2,1,$2::jsonb,'{}'::jsonb,'{}'::jsonb,1,'fixture-a1','fixture-a1',
+      'active','property:production-board')`, [JSON.stringify({
+    entity_kind: 'party_item', entity_id: 'production-board' }),
+  JSON.stringify({ entity_id: 'piece' })]);
+}
+
+function inventoryProfile(id, mass, hand, carry, packing,
+  quantity = { value: 1, unit: 'item' }) {
+  return { inventory_profile_id: `inventory:${id}`,
+    template_id: `template:${id}`, mass_grams: mass,
+    external_hand_cost: hand, carry_form: carry,
+    packing_slot_cost: packing, quantity, container: null };
 }

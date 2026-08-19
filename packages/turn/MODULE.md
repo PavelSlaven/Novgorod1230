@@ -191,8 +191,20 @@ source/property/permission/mechanics и пустой facts остаются code
 current row выбранного admitted `finite_source`; несколько sources не делят
 mutable quantity. Constrained policy добавляет только resource
 permissions. Не provisioned precious material и damaged remnant в этой revision не
-объявлены active. O2b/A1/F1/S1/N1, containers, authentic currency и
+объявлены active. O2b/F1/S1/N1, containers, authentic currency и
 significant/hidden facts остаются disabled.
+
+Active A1 revision 21 не добавляет semantic fallback: sole
+`turn_step_plan_v1` помещает qualitative `action_production` внутрь
+`request_item_use`, а code-owned action-production owner лишь проверяет
+committed items и строит mechanics/P16 plan без LLM. После exact/authored
+priority разрешены один видимый held non-container source и ноль или несколько
+видимых held/controller-controlled tools независимо от legal owner. Общие
+generic-check/activity owners выполняются один раз. Profile допускает
+preserve, finite independent output и no-result; partial/nonworking/waste,
+writing, non-authoritative token-like и closed weapon-capable outcomes. Model
+не задаёт mechanics, расход, identity, property, placement, roll, time,
+currency/official status или combat numbers.
 
 ## Тесты
 

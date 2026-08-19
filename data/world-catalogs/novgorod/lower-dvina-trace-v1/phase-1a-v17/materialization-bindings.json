@@ -21,10 +21,10 @@
     "persistence_owner": "P16_combined_atomic_committer",
     "profile_ref": {
       "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/action-production-profile.json",
-      "id": "lower_dvina_trace_a1_personal_tool_profile_v1",
+      "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_action_production_profile.v1",
-      "digest": "df9ece3b89dbab8f33688a34ef076ab8a25dbb565cd831003999f72204ead8b6"
+      "digest": "0971830bf262a28b5e0e73a5907cf2c1c9963f6ce0a529a9fa54de710a4e8523"
     },
     "authority_provisioning": "atomic_new_game_stage_25",
     "fallback_policy": "forbidden"

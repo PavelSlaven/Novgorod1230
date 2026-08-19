@@ -60,6 +60,9 @@ const DESCRIPTOR_KEYS = ['display_name', 'physical_description',
 const RESULT_CLASSES = new Set(['ordinary_physical_result',
   'partial_transformation', 'nonworking_construction', 'waste',
   'written_carrier', 'no_useful_result']);
+const WEAPON_CLASSES = new Set(['improvised_puncture_light',
+  'improvised_impact_light', 'improvised_cutting_light',
+  'improvised_two_hand_heavy']);
 export function createActionProducedTransitionPlanner(options) {
   const resolveMechanics = exactActionProducedFunctionOption(
     options, 'resolveMechanics');
@@ -174,7 +177,6 @@ function plan(rawInput, resolveMechanics) {
     qualitative_result: structuredClone(handoff.qualitative_result)
   });
 }
-
 function validateHandoff(value) {
   if (!exact(value, HANDOFF_KEYS)
       || value.schema !== 'rus.items.action_produced_pending_handoff.v1'
@@ -194,27 +196,31 @@ function validateHandoff(value) {
       || !validateActionProducedOutputClass(
         value.qualitative_result?.output_class,
         value.result_class, value.identity_mode)
+      || (value.qualitative_result?.output_class === 'weapon_capable')
+        !== WEAPON_CLASSES.has(value.qualitative_result?.result_descriptor
+          ?.weapon_qualitative_class)
       || !validQualitativeResult(value.qualitative_result)) fail();
   return value;
 }
-
 function validQualitativeResult(value) {
   if (!exact(value, QUALITATIVE_KEYS)
       || !text(value.intended_transformation)
-      || !exact(value.result_descriptor, DESCRIPTOR_KEYS)) return false;
+      || !exact(value.result_descriptor,
+        descriptorKeys(value.result_descriptor))) return false;
   const descriptor = value.result_descriptor;
   return nullableText(descriptor.display_name)
     && nullableText(descriptor.physical_description)
     && refs(descriptor.qualitative_facts, true) != null
     && nullableText(descriptor.inscription_text);
 }
-
+function descriptorKeys(value) { return value != null
+  && Object.hasOwn(value, 'weapon_qualitative_class')
+  ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS; }
 function validatePin(value) {
   return exact(value, PIN_KEYS) && PIN_KEYS.every((key) =>
     ['holder_ref', 'controller_ref'].includes(key)
       ? nullableText(value[key]) : text(value[key]));
 }
-
 function validatePolicy(value, handoff) {
   if (!exact(value, POLICY_KEYS)
       || value.schema !== 'rus.items.action_produced_technical_policy.v1'
@@ -239,21 +245,22 @@ function validateSourceEffects(values, sources, handoff) {
     if (source.finite_resource === null) {
       if (effect.requested_decrement !== null) fail();
     } else {
-      if (effect.requested_decrement === null) fail();
-      rational(effect.requested_decrement, false);
-      finiteTransition = planFiniteResourceDecrement({
-        source_resource_node_id:
-          source.finite_resource.source_resource_node_id,
-        expected_state_version: source.finite_resource.state_version,
-        causal_transition_identity:
-          `${handoff.action_ref}:source:${source.entity_ref}`,
-        source: {
-          state_version: source.finite_resource.state_version,
-          lifecycle_state: source.finite_resource.lifecycle_state,
-          quantity: source.finite_resource.quantity
-        },
-        requested_decrement: effect.requested_decrement
-      });
+      if (effect.requested_decrement !== null) {
+        rational(effect.requested_decrement, false);
+        finiteTransition = planFiniteResourceDecrement({
+          source_resource_node_id:
+            source.finite_resource.source_resource_node_id,
+          expected_state_version: source.finite_resource.state_version,
+          causal_transition_identity:
+            `${handoff.action_ref}:source:${source.entity_ref}`,
+          source: {
+            state_version: source.finite_resource.state_version,
+            lifecycle_state: source.finite_resource.lifecycle_state,
+            quantity: source.finite_resource.quantity
+          },
+          requested_decrement: effect.requested_decrement
+        });
+      }
     }
     const mechanicsSnapshot = effect.mechanics_snapshot_after === null
       ? null : mechanics(effect.mechanics_snapshot_after, handoff,
@@ -266,7 +273,6 @@ function validateSourceEffects(values, sources, handoff) {
       finiteTransition, mechanicsSnapshot };
   });
 }
-
 function validateOutputs(values, effects, handoff, policy, committedRefs) {
   if (!Array.isArray(values) || values.length > policy.max_new_entities) fail();
   const sources = new Map(effects.map((entry) => [
@@ -294,7 +300,6 @@ function validateOutputs(values, effects, handoff, policy, committedRefs) {
     };
   });
 }
-
 function validateWaste(values, effects) {
   if (!Array.isArray(values)) fail();
   const sources = new Map(effects.map((entry) => [
@@ -311,7 +316,6 @@ function validateWaste(values, effects) {
     return { source_ref: value.source_ref, quantity };
   });
 }
-
 function allocationsFor(values, sources) {
   if (!Array.isArray(values)) fail();
   const seen = new Set();
@@ -324,7 +328,6 @@ function allocationsFor(values, sources) {
     return { source_ref: value.source_ref, quantity };
   });
 }
-
 function validateConservation(effects, outputs, waste) {
   for (const source of effects) {
     if (source.finiteTransition === null) continue;
@@ -340,7 +343,6 @@ function validateConservation(effects, outputs, waste) {
     if (compare(total, source.finiteTransition.decrement_quantity) > 0) fail();
   }
 }
-
 function validateIdentityShape(handoff, effects, outputs) {
   if (handoff.identity_mode === 'preserve_source') {
     if (effects.length !== 1 || outputs.length !== 0
@@ -355,7 +357,6 @@ function validateIdentityShape(handoff, effects, outputs) {
   }
   if (outputs.length !== 0) fail();
 }
-
 function mechanics(value, handoff, operationRef) {
   const snapshot = createRuntimeInstanceMechanicsSnapshot(value);
   const provenance = snapshot.provenance;
@@ -369,7 +370,6 @@ function mechanics(value, handoff, operationRef) {
         handoff.source_pins.map(({ entity_ref: ref }) => ref))) fail();
   return snapshot;
 }
-
 function preservedResult(handoff, effect) {
   const source = effect.source;
   return deepFreeze({

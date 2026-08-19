@@ -5,7 +5,7 @@ import {
   createTurnStepExecutionRegistry,
   runTurnWorkflow
 } from '../src/index.js';
-import { isActionProducedSemanticRemainderInScope } from
+import { isActionProductionOwnerInScope } from
   '../src/turn-step-admission.js';
 import {
   createServices,
@@ -13,7 +13,7 @@ import {
   turnStepPlan
 } from './turn-workflow-fixture.js';
 
-test('A1 semantic remainder runs only after external and authored owners',
+test('A1 action-production owner runs only after external and authored owners',
   async () => {
     let externalCalls = 0;
     let authoredCalls = 0;
@@ -57,7 +57,7 @@ test('A1 semantic remainder runs only after external and authored owners',
     assert.equal(remainderCalls, 0);
   });
 
-test('ambiguous authored bindings fail before A1 semantic remainder',
+test('ambiguous authored bindings fail before A1 action-production owner',
   async () => {
     let remainderCalls = 0;
     const services = servicesFor({
@@ -81,7 +81,7 @@ test('ambiguous authored bindings fail before A1 semantic remainder',
     assert.equal(remainderCalls, 0);
   });
 
-test('unregistered reasonable wordings reach A1 semantic grounding',
+test('unregistered reasonable wordings reach the A1 physical owner',
   async () => {
     const wordings = [
       'Снимаю ножом тонкую стружку с жерди.',
@@ -139,7 +139,7 @@ test('exact registered recipe handler remains code-first with no model call',
     assert.equal(boundedModelCalls, 0);
   });
 
-test('A1 semantic remainder receives a deeply immutable detached envelope',
+test('A1 action-production owner receives a deeply immutable detached envelope',
   async () => {
     let received = null;
     const projection = actionProjection();
@@ -290,7 +290,7 @@ test('A1 reuses generic check RNG and prepared semantic activity time owners',
       { random: 1, resolver: 1, activity: 1, time: 1, body: 1 });
   });
 
-test('A1 semantic check cannot provide rolls, difficulty numbers or duration',
+test('A1 qualitative plan cannot provide rolls, difficulty numbers or duration',
   async () => {
     let resolverCalls = 0;
     let randomCalls = 0;
@@ -362,18 +362,18 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
   () => {
     const operation = itemUseOperation();
     const enabled = actionProjection().player_safe_state;
-    assert.equal(isActionProducedSemanticRemainderInScope({
+    assert.equal(isActionProductionOwnerInScope({
       operation, playerSafeState: enabled,
       remainingIntent: 'заострить жердь'
     }), true);
-    assert.equal(isActionProducedSemanticRemainderInScope({
+    assert.equal(isActionProductionOwnerInScope({
       operation: { ...operation, target_refs: [] },
       playerSafeState: enabled, remainingIntent: 'заострить жердь'
     }), true);
     for (const marker of [null,
       { semantic_grounding_available: false },
       { semantic_grounding_available: true, extra: true }]) {
-      assert.equal(isActionProducedSemanticRemainderInScope({
+      assert.equal(isActionProductionOwnerInScope({
         operation,
         playerSafeState: actionProjection(marker).player_safe_state,
         remainingIntent: 'заострить жердь'
@@ -404,7 +404,7 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
         semantic_grounding_available: true
       } }), { visible_objects: enabled.visible_objects })
     ]) {
-      assert.equal(isActionProducedSemanticRemainderInScope({
+      assert.equal(isActionProductionOwnerInScope({
         operation, playerSafeState, remainingIntent: 'заострить жердь'
       }), false);
     }
@@ -418,15 +418,15 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
         return 'item:pole';
       }
     });
-    assert.equal(isActionProducedSemanticRemainderInScope({
+    assert.equal(isActionProductionOwnerInScope({
       operation: hostileOperation, playerSafeState: enabled,
       remainingIntent: 'заострить жердь'
     }), false);
     assert.equal(reads, 0);
-    assert.equal(isActionProducedSemanticRemainderInScope({
+    assert.equal(isActionProductionOwnerInScope({
       operation, playerSafeState: enabled, remainingIntent: ''
     }), false);
-    assert.equal(isActionProducedSemanticRemainderInScope({
+    assert.equal(isActionProductionOwnerInScope({
       operation: { ...operation, target_refs: ['item:knife', 'item:knife'] },
       playerSafeState: enabled, remainingIntent: 'заострить жердь'
     }), false);
@@ -458,7 +458,7 @@ function servicesFor({ bindingMatches = () => false, resolver = () =>
       turnStepExecutionRegistry: executionRegistry
     }),
     ...(resolver == null ? {} : {
-      turnStepActionProducedResolver: resolver
+      turnStepActionProductionOwner: resolver
     }),
     turnStepModel: (request) => turnStepPlan(request, {
       resolution: 'domain_request',
@@ -471,8 +471,26 @@ function servicesFor({ bindingMatches = () => false, resolver = () =>
 }
 
 function actionProjection(marker = undefined, extra = {}) {
-  const resolvedMarker = marker === undefined
-    ? { semantic_grounding_available: true } : marker;
+  const resolvedMarker = marker === undefined ? {
+    semantic_grounding_available: true,
+    allowed_identity_modes: [
+      'preserve_source', 'independent_outputs', 'no_useful_result'
+    ],
+    allowed_origins: ['direct_partition', 'crafted'],
+    allowed_result_classes: [
+      'ordinary_physical_result', 'partial_transformation',
+      'nonworking_construction', 'waste', 'written_carrier',
+      'no_useful_result'
+    ],
+    allowed_output_classes: [
+      'ordinary_mundane', 'weapon_capable', 'money_like_token',
+      'written_carrier'
+    ],
+    weapon_qualitative_classes: [
+      'improvised_puncture_light', 'improvised_impact_light',
+      'improvised_cutting_light', 'improvised_two_hand_heavy'
+    ]
+  } : marker;
   return {
     actor: { actor_ref: 'party-1' },
     player_safe_state: {
@@ -498,13 +516,23 @@ function visibleObject(entityId) {
 }
 
 function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
-  targetRefs = ['item:knife'] } = {}) {
+  targetRefs = ['item:knife'], actionProduction = undefined } = {}) {
   return {
     op: 'request_item_use',
     actor_ref: 'party-1',
     item_ref: itemRef,
     use_kind: useKind,
-    target_refs: targetRefs
+    target_refs: targetRefs,
+    ...(useKind !== 'other' ? {} : { action_production:
+      actionProduction ?? {
+        identity_mode: 'preserve_source', origin: null,
+        result_class: 'partial_transformation',
+        result_descriptor: { display_name: null,
+          physical_description: 'Жердь физически обработана.',
+          qualitative_facts: ['на конце жерди видны свежие срезы'],
+          inscription_text: null, weapon_qualitative_class: null },
+        output_class: 'ordinary_mundane'
+      } })
   };
 }
 

@@ -4,7 +4,6 @@ export { createLowerDvinaTraceNpcAutonomousModel } from
   './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from
   './lower-dvina-trace-combat-llm.js';
-
 export function createLowerDvinaTraceSemanticResolver({
   roleRunner
 } = {}) {
@@ -33,7 +32,6 @@ export function createLowerDvinaTraceSemanticResolver({
     return response.output;
   };
 }
-
 export function createLowerDvinaTraceTurnStepModel({
   roleRunner
 } = {}) {
@@ -76,6 +74,10 @@ export function createLowerDvinaTraceTurnStepModel({
           'Delegate movement, containers, discovery, items, activities, NPC',
           'interaction, combat, body calculations, and other domain mechanics',
           'through the allowed domain requests instead of resolving them.',
+          'When player_safe_state.action_production is present and no registered owner handles a physical item transformation, use request_item_use kind other with its exact action_production object.',
+          'Choose only listed result/output/weapon classes; item_ref is the source and target_refs are zero or more visible tools.',
+          'Describe only physical facts: no hidden truth, authenticity, currency, official status, canonical weapon identity, quantities, damage, or mechanics.',
+          'Adapt impossible goals to a realistic partial, waste, or nonworking result when a physical attempt can still occur; otherwise use no_useful_result.',
           repairing
             ? 'Repair only the listed structural errors; preserve the echoed request identity and do not reinterpret unrelated fields.'
             : 'Plan only the next executable semantic step and preserve any remaining intent.'

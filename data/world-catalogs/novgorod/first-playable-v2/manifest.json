@@ -80,12 +80,12 @@
   "source_evidence": [
     {
       "path": "data/novgorod-region/novgorod_social_roles_v1_enriched.tsv",
-      "sha256": "1d33a4a06f2dd442d2383e903366e4c715b64016d4ba230fe09e344cbac5f96a",
+      "sha256": "8bece789c58e930cace79ccb8aa7e7e4baeffb7e1e9a29d1e01be6cb84c72cea",
       "source_id": "source:first_playable:approved_roles"
     },
     {
       "path": "data/novgorod-region/novgorod_occupations_v1_enriched.tsv",
-      "sha256": "f5bfb95a7e03364a1dff6fc9b4c76b089630c2e0d475fd99329733dd52f763eb",
+      "sha256": "a81d1d1626be6ae97c930032ea70b0cc93a0146adccf5508b066494b50e816c6",
       "source_id": "source:first_playable:approved_occupations"
     },
     {

@@ -5,6 +5,7 @@ import { ordinaryWorldPropertyPlacementContextDigest } from "@rus/items-property
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from "../src/runtime/lower-dvina-trace-ordinary-discovery.js";
 import { applyOrdinaryMaterializationProjection } from "../src/infrastructure/postgres/lower-dvina-trace-ordinary-p16.js";
 import { createOrdinaryMaterializationAtomicWritePlan } from "../src/infrastructure/postgres/ordinary-materialization-phase-6-commit.js";
+import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY } from "@rus/combat-health";
 
 const scope_ref = { entity_kind: "g6", entity_id: "ruin" },
   source_ref = "remnant:tool",
@@ -129,7 +130,7 @@ function enabled({
     source_basis_ref: source_ref,
     property_basis_ref: "property:remnant",
     runtime_item_mechanics_policy_ref: "mechanics",
-    mechanics_capability_ref: armament ? "combat:mechanics" : "stock:mechanics",
+    mechanics_capability_ref: armament ? ORDINARY_ARMAMENT_MECHANICS_CAPABILITY : "stock:mechanics",
     public_name: armament ? "обычный повреждённый наконечник" : "обычный обломок инструмента",
     condition_state,
     basis_kind,
@@ -320,7 +321,7 @@ test("damaged remnant binds server condition, finite decrement, v3 proposal and 
   });
   assert.equal(next.items[0].state.condition_state, "damaged");
 });
-test("damaged armament remnant stays absent until a combat mechanics owner exists", async () => {
+test("damaged armament remnant persists a non-usable combat mechanics snapshot", async () => {
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
     partyId: "party",
@@ -332,10 +333,19 @@ test("damaged armament remnant stays absent until a combat mechanics owner exist
     }),
   });
   const plan = (await resolver(request())).ordinary_materialization_atomic_write_plan;
-  assert.equal(calls, 1);
-  assert.equal(plan.resolution, "absent");
-  assert.equal(plan.item, null);
-  assert.equal(Object.hasOwn(plan, "finite_resource_transition"), false);
+  assert.equal(calls, 2);
+  assert.equal(plan.resolution, "materialize");
+  assert.equal(plan.item.weapon_mechanics_snapshot.combat_usable, false);
+  assert.equal(plan.item.weapon_mechanics_snapshot.weapon_danger, 0);
+  assert.ok(plan.finite_resource_transition);
+  const { schema, write_plan_digest, ...forged } = structuredClone(plan);
+  forged.item.weapon_mechanics_snapshot = {
+    ...forged.item.weapon_mechanics_snapshot,
+    condition_state: "serviceable", combat_usable: true, weapon_danger: 1,
+  };
+  assert.throws(() => createOrdinaryMaterializationAtomicWritePlan(forged), {
+    code: "ORDINARY_PHASE6_POSITIVE_ITEM_INVALID",
+  });
 });
 test("serviceable finite-source materialization requires the owner-native decrement", async () => {
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({

@@ -1,3 +1,5 @@
+import { resolveOrdinaryArmamentMechanics } from '@rus/combat-health';
+
 const PROFILE = ['schema', 'version', 'profile_ref', 'state', 'scope_ref',
   'profile_kind', 'semantic_type', 'functional_bucket', 'admission_class',
   'permission_refs', 'source_basis_ref', 'property_basis_ref',
@@ -20,7 +22,6 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
     .includes(candidate.admission_class)) {
     return blocked('absent');
   }
-  if (candidate.admission_class === 'weapon_or_armament') return blocked('absent');
   const raw = execution?.context_bound_ordinary_profile;
   // A specialized finite natural source has its own Phase 5 authority owner.
   // Every other context-bound class requires this exact envelope.
@@ -32,13 +33,23 @@ export function resolveContextBoundOrdinaryPolicy(input = {}) {
   const profile = record(raw, PROFILE_V2) ?? record(raw, PROFILE);
   if (!profile || !validProfile(profile, objective, execution, candidate, scopeRef,
       propertyContext)) return blocked('absent');
-  return pass(profile.version === 1 ? { ...profile, condition_state: 'serviceable',
-    basis_kind: execution.supporting_bases[0].basis_kind ?? null } : profile);
+  const normalized = profile.version === 1
+    ? { ...profile, condition_state: 'serviceable',
+      basis_kind: execution.supporting_bases[0].basis_kind ?? null }
+    : profile;
+  if (candidate.admission_class !== 'weapon_or_armament') return pass(normalized);
+  const weaponMechanics = resolveOrdinaryArmamentMechanics({
+    mechanics_capability_ref: normalized.mechanics_capability_ref,
+    condition_state: normalized.condition_state
+  });
+  return weaponMechanics == null ? blocked('absent')
+    : pass({ ...normalized, weapon_mechanics_snapshot: weaponMechanics });
 }
 
 function validProfile(profile, objective, execution, candidate, scopeRef, propertyContext) {
   const expectedProfileKind = candidate.admission_class === 'currency_or_precious'
-    ? 'precious_material' : 'specialized_stock';
+    ? 'precious_material' : candidate.admission_class === 'weapon_or_armament'
+      ? 'armament' : 'specialized_stock';
   const permissions = refs(profile.permission_refs);
   const condition = profile.version === 1 ? 'serviceable' : profile.condition_state;
   return ((profile.schema === 'rus.items.context_bound_ordinary_profile.v1' && profile.version === 1)

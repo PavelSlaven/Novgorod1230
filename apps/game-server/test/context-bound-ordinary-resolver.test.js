@@ -6,6 +6,7 @@ import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
 import { resolveContextBoundOrdinaryPolicy } from
   '../src/runtime/context-bound-ordinary-policy.js';
+import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY } from '@rus/combat-health';
 
 const scope_ref = { entity_kind: 'g6', entity_id: 'shore' };
 const permissions = ['armament:profile', 'armament:source'];
@@ -59,7 +60,8 @@ function enabled({ admission_class = 'weapon_or_armament', semantic_type = 'ordi
     profile_kind: 'armament', semantic_type: 'ordinary_spear', functional_bucket: 'arms',
     admission_class: 'weapon_or_armament', permission_refs: permissions,
     source_basis_ref: 'armament:source', property_basis_ref: 'property',
-    runtime_item_mechanics_policy_ref: 'mechanics', mechanics_capability_ref: 'combat:mechanics',
+    runtime_item_mechanics_policy_ref: 'mechanics',
+    mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
     public_name: 'обычный наконечник копья'
   };
   return { objective_context, objective_digest: canonicalDigest(objective_context),
@@ -131,30 +133,29 @@ function sensitiveModel(input, { admissionClass, semanticType, name }) {
   return plan;
 }
 
-test('armament profile stays absent until a code-owned combat owner exists', async () => {
+test('approved armament materializes with code-owned combat mechanics', async () => {
   const fixture = enabled();
   const policy = resolveContextBoundOrdinaryPolicy(JSON.parse(JSON.stringify({ objective_context: fixture.objective_context,
     execution_context: fixture.execution_context,
     candidate_context: fixture.execution_context.candidate_context,
     scope_ref, property_placement_context: fixture.property_placement_context })));
-  assert.equal(policy.resolution, 'absent');
-  assert.equal(policy.profile, null);
+  assert.equal(policy.resolution, null);
+  assert.equal(policy.profile.weapon_mechanics_snapshot.weapon_danger, 1);
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
     ordinaryMaterializationModel: verifiedModel(async (input) => {
       calls += 1;
-      assert.equal(input.mode, 'seed_scope');
-      assert.equal(input.candidate_query, null);
       return model(input);
     }) });
   const result = await resolver(request());
-  assert.equal(calls, 1);
-  assert.equal(result.ordinary_materialization_atomic_write_plan.resolution, 'absent');
-  assert.equal(result.ordinary_materialization_atomic_write_plan.item, null);
+  assert.equal(calls, 2);
+  const item = result.ordinary_materialization_atomic_write_plan.item;
+  assert.equal(item.weapon_mechanics_snapshot.weapon_danger, 1);
+  assert.equal(item.weapon_mechanics_snapshot.combat_usable, true);
 });
 
-test('unlisted armament wording cannot bypass the missing combat owner', async () => {
+test('armament identity and combat capability stay profile-owned', async () => {
   let calls = 0;
   const resolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId: 'party',
     inputDigest: 'input', loadEnablement: async () => JSON.parse(JSON.stringify(enabled())),
@@ -164,9 +165,10 @@ test('unlisted armament wording cannot bypass the missing combat owner', async (
     }) });
   const result = await resolver(request());
   const plan = result.ordinary_materialization_atomic_write_plan;
-  assert.equal(calls, 1);
-  assert.equal(plan.resolution, 'absent');
-  assert.equal(plan.item, null);
+  assert.equal(calls, 2);
+  assert.equal(plan.item.item_proposal.semantic_descriptor.semantic_type,
+    'ordinary_spear');
+  assert.equal(plan.item.weapon_mechanics_snapshot.weapon_danger, 1);
 });
 
 test('authority-sensitive wording cannot become persisted currency or document identity', async () => {

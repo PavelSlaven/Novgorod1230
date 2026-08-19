@@ -1,6 +1,7 @@
 import {
   createOrdinaryWorldRuntimeInstanceMechanicsSnapshot
 } from '@rus/items-property';
+import { ordinaryArmamentWeaponDanger } from '@rus/combat-health';
 
 export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
   const snapshot = createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(
@@ -12,11 +13,17 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
     .every(exactText)) {
     throw code('ORDINARY_RUNTIME_ITEM_PROJECTION_INVALID');
   }
+  const weaponMechanics = item.weapon_mechanics_snapshot == null ? null
+    : ordinaryArmamentWeaponDanger(item.weapon_mechanics_snapshot) == null
+      || item.weapon_mechanics_snapshot.condition_state !== item.condition_state
+      ? invalid() : structuredClone(item.weapon_mechanics_snapshot);
   const state = {
     lifecycle_status: 'active',
     ...(item.condition_state == null ? {}
       : { condition_state: item.condition_state }),
     runtime_instance_mechanics_snapshot: structuredClone(snapshot),
+    ...(weaponMechanics == null ? {}
+      : { weapon_mechanics_snapshot: weaponMechanics }),
     ordinary_metadata: {
       semantic_type: semanticType,
       name,
@@ -55,6 +62,8 @@ export function buildOrdinaryMaterializedRuntimeItem({ partyId, item }) {
       visible: true,
       placement: structuredClone(placement),
       runtime_instance_mechanics_snapshot: structuredClone(snapshot),
+      ...(weaponMechanics == null ? {}
+        : { weapon_mechanics_snapshot: structuredClone(weaponMechanics) }),
       state: structuredClone(state)
     }),
     item_record: Object.freeze({
@@ -112,3 +121,4 @@ function exactText(value) {
 function code(value) { return Object.assign(new TypeError(value), {
   code: value
 }); }
+function invalid() { throw code('ORDINARY_RUNTIME_ITEM_PROJECTION_INVALID'); }

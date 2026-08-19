@@ -88,7 +88,7 @@ function v2Input(overrides = {}) {
     schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
     scope_ref: structuredClone(scope_ref), property_catalog_version_ref: 'property-catalog-v2',
     placement_catalog_version_ref: 'placement-catalog-v2', item_kind: 'man_made',
-    supporting_basis_ref: 'basis-a', causal_basis_refs: ['basis-a'],
+    supporting_basis_ref: 'item-source', causal_basis_refs: ['item-source'],
     requested_position_ref: 'kitchen-table', explicit_item_source_refs: ['item-source'],
     personal_possession_refs: ['person-a'], communal_public_service_refs: ['service-a'],
     container_property_refs: ['container-a'], occupied_site_refs: ['household-a'],
@@ -124,6 +124,19 @@ test('O2a v2 applies every property tier in code-owned order', () => {
     [tiers.slice(0, 2), 'container'], [tiers.slice(0, 1), 'site']
   ]) assert.equal(resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: catalog }))
     .evidence.property_basis_ref, expected);
+});
+
+test('O2a v2 ignores a lower authored property ref and derives precedence from the source', () => {
+  const result = resolveOrdinaryWorldPropertyPlacement(v2Input({
+    supporting_basis_ref: 'item-source', causal_basis_refs: ['item-source'],
+    property_catalog: [
+      v2Property('site', 'occupied_site_default', 'household-a'),
+      v2Property('personal', 'personal_possession', 'person-a'),
+      v2Property('explicit', 'explicit_source_item', 'item-source')
+    ]
+  }));
+  assert.equal(result.pass, true);
+  assert.equal(result.evidence.property_basis_ref, 'explicit');
 });
 
 test('O2a v2 only reports property evidence and never transfers legal ownership', () => {

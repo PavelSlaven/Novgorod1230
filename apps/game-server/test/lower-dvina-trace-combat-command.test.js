@@ -8,10 +8,14 @@ import {
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createTraceCombatCommand, traceCombatTargetRefs } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
+import { resolveTraceOrdinaryWeaponDanger } from
+  '../src/runtime/lower-dvina-trace-combat-ordinary-weapon.js';
 import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
 import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
+import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+  resolveOrdinaryArmamentMechanics } from '@rus/combat-health';
 
 const at = { whole_minutes: '620', subminute_numerator: '0',
   subminute_denominator: '1' };
@@ -53,7 +57,11 @@ test('player combat response resolves one common two-minute exchange', async () 
     npcs: [{ instance_id: 'ratsha-1',
       participant_slot_ref: 'ratsha_storehouse_helper',
       machine_state: { body_condition: { health: 100 } } }],
-    combat_sessions: [session] };
+    items: [{ item_id: 'ordinary-spear', placement: {
+      holder_character_id: 'mikula-1' }, state: {
+      weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
+        mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+        condition_state: 'serviceable' }) } }], combat_sessions: [session] };
   const bundle = { definition_revision: 16,
     turn_step_bindings: { player_execution_profiles: [{
       profile_id: 'player-control', intent_kind: 'control', status: 'approved',
@@ -86,9 +94,35 @@ test('player combat response resolves one common two-minute exchange', async () 
   assert.equal(result.combat.session_after.exchange_ordinal, 1);
   assert.equal(result.combat.session_after.status, 'paused_for_player');
   assert.equal(result.combat.check_results.length, 2);
+  assert.equal(result.combat.exchange.technical_steps.find(({ actor_ref }) =>
+    actor_ref.entity_id === 'mikula-1').check_request.weapon_danger, 0);
   assert.equal(result.combat.technical_step_timings.length, 2);
   assert.equal(result.combat.technical_step_timings.every(({ exact_duration }) =>
     exact_duration.exact_minutes.numerator === '2'), true);
+});
+
+test('combat owner reads a reloaded ordinary armament snapshot', () => {
+  const snapshot = resolveOrdinaryArmamentMechanics({
+    mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+    condition_state: 'serviceable'
+  });
+  assert.equal(resolveTraceOrdinaryWeaponDanger([{
+    item_id: 'ordinary-spear', placement: { holder_character_id: 'mikula-1' },
+    state: { condition_state: 'serviceable',
+      weapon_mechanics_snapshot: structuredClone(snapshot) }
+  }], player), 1);
+  assert.equal(resolveTraceOrdinaryWeaponDanger([{
+    item_id: 'broken-spear', placement: { holder_character_id: 'mikula-1' },
+    state: { condition_state: 'damaged',
+      weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
+      mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+      condition_state: 'damaged' }) }
+  }], player), null);
+  assert.equal(resolveTraceOrdinaryWeaponDanger([{
+    item_id: 'forged-spear', placement: { holder_character_id: 'mikula-1' },
+    state: { condition_state: 'damaged',
+      weapon_mechanics_snapshot: structuredClone(snapshot) }
+  }], player), null);
 });
 
 test('post-exchange subjective projection reads body and equipment from working state',
@@ -134,11 +168,15 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
       party_state: { state_version: 3, turn_number: 1 },
       body_state: { health: 100, energy: 80, satiety: 70,
         active_conditions: [], body_parts: {}, prose: null },
-      npcs: [firstNpc, secondNpc].map((npc, index) => ({
-        instance_id: npc.entity_id,
-        participant_slot_ref: 'ratsha_storehouse_helper',
-        machine_state: { body_condition: { health: index === 0 ? 5 : 100 } }
-      })), combat_sessions: [current] };
+    npcs: [firstNpc, secondNpc].map((npc, index) => ({
+      instance_id: npc.entity_id,
+      participant_slot_ref: 'ratsha_storehouse_helper',
+      machine_state: { body_condition: { health: index === 0 ? 5 : 100 } }
+      })), items: [{ item_id: 'ordinary-spear', placement: {
+      holder_character_id: 'mikula-1' }, state: { condition_state: 'serviceable',
+        weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
+          mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+          condition_state: 'serviceable' }) } }], combat_sessions: [current] };
     const attack = { attribute_value: 20, skill_bonus: 0,
       target_defense: 1, weapon_danger: 4, target_protection: 0,
       target_vulnerability: 0 };
@@ -173,6 +211,8 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
       ({ actor_ref: actor }) => actor.entity_id === 'ratsha-1')
       .combat_status, 'incapacitated');
     assert.equal(result.combat.check_results.length, 2);
+    assert.equal(result.combat.exchange.technical_steps.find(({ actor_ref }) =>
+      actor_ref.entity_id === 'mikula-1').check_request.weapon_danger, 1);
     assert.deepEqual(result.combat.decision_results, []);
   });
 

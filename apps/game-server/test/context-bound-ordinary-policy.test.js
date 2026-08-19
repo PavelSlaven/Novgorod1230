@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { resolveContextBoundOrdinaryPolicy } from
   '../src/runtime/context-bound-ordinary-policy.js';
+import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY } from '@rus/combat-health';
 
 const scope_ref = { entity_kind: 'g6', entity_id: 'yard-a' };
 const permissions = ['armament:profile-a', 'armament:source-a'];
@@ -26,7 +27,7 @@ function execution(overrides = {}) { return {
     admission_class: 'weapon_or_armament', permission_refs: permissions,
     source_basis_ref: 'armament:source-a', property_basis_ref: 'property:warrior-a',
     runtime_item_mechanics_policy_ref: 'mechanics:armament-a',
-    mechanics_capability_ref: 'combat:mechanics:armament-a',
+    mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
     public_name: 'обычный наконечник копья'
   },
   ...overrides
@@ -37,14 +38,16 @@ function resolve(overrides = {}) { return resolveContextBoundOrdinaryPolicy(JSON
   property_placement_context
 }))); }
 
-test('armament remains absent without a code-owned combat mechanics owner', () => {
+test('armament requires and receives code-owned combat mechanics', () => {
   const result = resolve();
-  assert.equal(result.resolution, 'absent');
-  assert.equal(result.profile, null);
+  assert.equal(result.resolution, null);
+  assert.equal(result.profile.weapon_mechanics_snapshot.weapon_danger, 1);
   assert.equal(Object.isFrozen(result), true);
-  assert.equal(resolve({ candidate_context: {
-    ...candidate_context, semantic_type: 'unlisted_spearhead_variant'
-  } }).resolution, 'absent');
+  assert.equal(resolve({ execution_context: { ...execution(),
+    context_bound_ordinary_profile: {
+      ...execution().context_bound_ordinary_profile,
+      mechanics_capability_ref: 'combat:forged'
+    } } }).resolution, 'absent');
   for (const alteredCandidate of [
     { ...candidate_context, functional_bucket: 'work' },
     { ...candidate_context, admission_class: 'specialized_or_valuable' }
@@ -114,7 +117,7 @@ test('document-like and other restricted gates require exact non-authentic stock
   }
 });
 
-test('damaged armament remnant also remains absent without a combat owner', () => {
+test('damaged armament remnant keeps a non-usable combat snapshot', () => {
   const candidate = { semantic_type: 'damaged_armament_remnant', functional_bucket: 'arms',
     admission_class: 'weapon_or_armament', availability_class: 'context_bound' };
   const base = execution();
@@ -126,8 +129,9 @@ test('damaged armament remnant also remains absent without a combat owner', () =
   const supporting_bases = [{ ...base.supporting_bases[0], basis_kind: 'remnant' }];
   const result = resolve({ candidate_context: candidate, execution_context: {
     ...base, supporting_bases, context_bound_ordinary_profile: profile } });
-  assert.equal(result.resolution, 'absent');
-  assert.equal(result.profile, null);
+  assert.equal(result.resolution, null);
+  assert.equal(result.profile.weapon_mechanics_snapshot.combat_usable, false);
+  assert.equal(result.profile.weapon_mechanics_snapshot.weapon_danger, 0);
   for (const change of [
     (value) => { value.context_bound_ordinary_profile.basis_kind = 'finite_source'; },
     (value) => { value.context_bound_ordinary_profile.profile_kind = 'specialized_stock'; }

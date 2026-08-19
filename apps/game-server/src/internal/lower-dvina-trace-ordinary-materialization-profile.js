@@ -7,9 +7,9 @@ import { validateLowerDvinaTraceOrdinaryStageBEval } from
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m7-content';
 const PROFILE_FILE = 'ordinary-materialization-profile.json';
 export const LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST =
-  'd4502298cd0daf13cea86d917fdc0c6201a3cbda3e19a652d6c3f3025dbf1777';
+  '56e310ce0b127e25c11ba942c0d2483c0119022431d9835746a47cca27fbcf42';
 const MANIFEST_DIGEST =
-  '9023c9392d1d536ed4c7a5df3987b3d477cd3b63f9915fae157617a4a0b36923';
+  '8c78bb702ae1a6a0dbee3402c768c6434e769c0be2e3e075d1845e107b377883';
 
 export async function loadLowerDvinaTraceOrdinaryMaterializationProfile({
   rootDir = process.cwd()
@@ -111,6 +111,7 @@ function validO2aContextBound(value, profile) {
     && value.status === 'approved'
     && JSON.stringify(value.negative_admission_classes) === JSON.stringify(classes)
     && exactKeys(c, ['capability_ref','profile_ref','semantic_type','public_name',
+      'disclosure_state',
       'functional_bucket','admission_class','profile_kind','condition_state',
       'basis_kind','source_basis_ref','property_basis_ref','environment_ref',
       'regional_permission_ref','resource_permission_ref',
@@ -120,6 +121,7 @@ function validO2aContextBound(value, profile) {
       'functional_bucket','source_basis_ref','property_basis_ref','environment_ref',
       'regional_permission_ref','resource_permission_ref','mechanics_capability_ref']
       .every((key) => text(c[key]))
+    && c.disclosure_state === 'visible'
     && c.admission_class === 'specialized_or_valuable'
     && c.profile_kind === 'specialized_stock'
     && c.condition_state === 'serviceable' && c.basis_kind === 'finite_source'

@@ -92,3 +92,39 @@ test('constrained profile gets its finite source from the same committed reposit
     property_basis_ref: 'property'
   });
 });
+
+test('each context-bound capability gets its own committed finite source', async () => {
+  const aggregate = createOrdinaryAggregate({ scope_ref: scope, resolution_record_cap: 1 });
+  const finiteProfile = (id) => ({ finite_source: {
+    source_resource_node_id: id, quantity_unit_ref: { kind: 'unit', id: 'item' },
+    position_ref: `position-${id}`, property_basis_ref: `property-${id}`,
+    initial_amount_bounds: { minimum: { numerator: 1, denominator: 1, unit: 'item' },
+      maximum: { numerator: 8, denominator: 1, unit: 'item' } }
+  } });
+  const snapshot = { ...objective, execution_context: {
+    context_bound_capabilities: ['node-a', 'node-b'].map((id) => ({
+      constrained_natural_resource_profile: finiteProfile(id)
+    }))
+  } };
+  const repository = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: { query: async (sql) => {
+      if (sql.includes('party_ordinary_materialization_enablements')) {
+        return { rowCount: 1, rows: [{ enabled: true,
+          objective_snapshot: snapshot, objective_digest: canonicalDigest(snapshot),
+          aggregate_payload: aggregate, ordinary_state_version: 0,
+          property_placement_base_snapshot: property,
+          property_placement_context_digest: propertyDigest }] };
+      }
+      return { rowCount: 2, rows: ['node-a', 'node-b'].map((id, index) => ({
+        resource_node_id: id, state_version: 4 + index, lifecycle_state: 'active',
+        quantity_numerator: 2 + index, quantity_denominator: 1,
+        quantity_unit_ref: { kind: 'unit', id: 'item' },
+        position_node_id: `position-${id}`, property_basis_ref: `property-${id}`
+      })) };
+    } }
+  });
+  const loaded = await repository.load({ partyId: 'party-a', scopeRef: scope });
+  assert.deepEqual(loaded.execution_context.committed_finite_sources.map((source) => [
+    source.source_resource_node_id, source.quantity.numerator
+  ]), [['node-a', 2], ['node-b', 3]]);
+});

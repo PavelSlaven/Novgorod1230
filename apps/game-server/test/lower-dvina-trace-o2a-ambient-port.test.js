@@ -84,7 +84,11 @@ test('O2a ambient admission is absent for a drifted binding', async () => {
 test('player-safe discovery exposes committed source, not expected result capability', () => {
   const projected = projectLowerDvinaTraceO2aDiscoverySources({
     sources: [{ source_ref: 'source:clay', public_name: 'запас подготовленной глины',
-      capability_ref: 'hidden-capability', permission_refs: ['hidden-permission'] }],
+      disclosure_state: 'visible', capability_ref: 'hidden-capability',
+      permission_refs: ['hidden-permission'] },
+    { source_ref: 'source:hidden-stock', public_name: 'скрытый запас',
+      disclosure_state: 'concealed', capability_ref: 'hidden-stock-capability',
+      permission_refs: ['hidden-stock-permission'] }],
     projected: { player_safe_state: { visible_context: { visible_objects: [] } } }
   });
   assert.deepEqual(projected.player_safe_state.visible_context.visible_objects, [{
@@ -96,6 +100,8 @@ test('player-safe discovery exposes committed source, not expected result capabi
   assert.equal(serialized.includes('ordinary_discovery_capability'), false);
   assert.equal(serialized.includes('hidden-capability'), false);
   assert.equal(serialized.includes('hidden-permission'), false);
+  assert.equal(serialized.includes('source:hidden-stock'), false);
+  assert.equal(serialized.includes('скрытый запас'), false);
 });
 
 test('the O2a owner intercepts only its explicit capability ref', async () => {

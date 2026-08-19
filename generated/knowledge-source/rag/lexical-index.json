@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "fd82b1ddd01737359f8097d045f3415c5a08981079960869e312c3a194f2ef48",
+  "corpus_hash": "a7c22b8348baf729b9bfb5fac4f5de4c36549a27d199550de9058a65de73df8b",
   "chunk_count": 2519,
   "chunks": [
     {
@@ -837,8 +837,8 @@
       "section": "4.4. LLM",
       "line_start": 172,
       "line_end": 183,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source без expected result, permission и capacity. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; constrained policy только добавляет региональные/resource permissions. Restricted weapon/currency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.",
-      "char_count": 1262
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source только при отдельном approved disclosure state, а concealed capability остаётся server-only. Expected result, permission и capacity не раскрываются. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; mutable state загружается по выбранному source ref, поэтому несколько stocks не делят quantity. Constrained policy только добавляет региональные/resource permissions. Restricted weapon/currency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.",
+      "char_count": 1463
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.5. Party database:0",

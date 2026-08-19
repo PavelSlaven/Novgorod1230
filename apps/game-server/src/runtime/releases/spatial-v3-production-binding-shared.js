@@ -261,7 +261,7 @@ function createTraceTurnRuntime({
       return Object.freeze({ discovery_available: true, sources: Object.freeze(
         capabilities.map((entry) => Object.freeze({
           source_ref: entry.candidate_context.target_ref,
-          public_name: entry.public_name }))) });
+          public_name: entry.public_name, disclosure_state: entry.disclosure_state }))) });
     },
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({

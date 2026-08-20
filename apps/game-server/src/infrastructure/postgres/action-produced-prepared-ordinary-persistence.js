@@ -1,5 +1,4 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
+import { isDeepStrictEqual } from 'node:util';
 import { failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
 
@@ -16,15 +15,13 @@ export async function lockAndVerifyPreparedActionProducedPin(client, plan,
      WHERE i.party_id=$1 AND i.item_id=$2 FOR UPDATE OF i,p`,
   [plan.party_id, pin.item_id]);
   const committed = await client.query(
-    `SELECT c.write_plan_digest
+    `SELECT x.item_id
      FROM party_runtime.party_ordinary_materialization_commits c
      JOIN party_runtime.party_ordinary_materialization_commit_items x
        ON x.party_id=c.party_id AND x.request_identity=c.request_identity
      WHERE c.party_id=$1 AND c.request_identity=$2 AND x.item_id=$3`,
   [plan.party_id, pin.prepared_ordinary.request_identity, pin.item_id]);
-  if (selected.rows.length !== 1 || committed.rows.length !== 1
-      || committed.rows[0].write_plan_digest
-        !== pin.prepared_ordinary.write_plan_digest) stale(pin);
+  if (selected.rows.length !== 1 || committed.rows.length !== 1) stale(pin);
   const row = selected.rows[0];
   const item = { item_id: row.item_id, run_id: row.run_id,
     template_id: row.template_id, profile_id: row.profile_id,
@@ -37,8 +34,8 @@ export async function lockAndVerifyPreparedActionProducedPin(client, plan,
     physical_position: row.physical_position,
     equipment_slot_category_id: row.equipment_slot_category_id,
     attached_item_id: row.attached_item_id };
-  if (digest(item) !== pin.item_digest
-      || digest(placement) !== pin.placement_digest) stale(pin);
+  if (!isDeepStrictEqual(item, pin.item)
+      || !isDeepStrictEqual(placement, pin.placement)) stale(pin);
 }
 
 function stale(pin) {

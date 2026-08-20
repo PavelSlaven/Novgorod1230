@@ -197,13 +197,15 @@ significant/hidden facts остаются disabled.
 Active A1 revision 21 не добавляет semantic fallback: sole
 `turn_step_plan_v1` помещает qualitative `action_production` внутрь
 `request_item_use`, а code-owned action-production owner лишь проверяет
-committed items либо sealed revealed ordinary overlay текущего root turn и
+committed items либо validated revealed ordinary overlay текущего root turn и
 строит mechanics/P16 plan без LLM. После exact/authored priority разрешены
 один или несколько доступных non-container material sources и ноль или
 несколько доступных controller-controlled tools на текущем placement
 либо в уже раскрытом открытом доступном контейнере независимо от legal owner.
-Sealed source changes и новые outputs сразу обновляют общую working projection,
-поэтому pending intent может использовать результат в следующем internal step.
+Validated source changes и новые outputs сразу обновляют общую working
+projection, поэтому pending intent может использовать результат в следующем
+internal step. Несколько причинных A1 steps одного root turn выполняются
+последовательно над этой projection и входят в один combined P16 commit.
 При неопределённом исходе общие
 generic-check/activity owners выполняются один раз; детерминированное действие
 использует `domain_request` без обязательного RNG/time. Profile допускает
@@ -216,8 +218,9 @@ currency/official status или combat numbers. Independent output требуе�
 fact. Для partial independent output sole plan задаёт только grounded
 `material_extent = minor|half|major`; full partition использует `whole`, а
 preserve/no-result — `null`. Числовую долю и exact mechanics выводит item owner.
-Persisted non-authoritative physical facts входят в следующую player-safe
-working/reload projection.
+Persisted non-authoritative physical facts накапливаются в общей ordinary
+semantic-facts projection и входят в следующую player-safe working/reload
+projection.
 
 ## Тесты
 

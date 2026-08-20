@@ -118,13 +118,13 @@ concealed and no partial batch leaks; reload/reopen uses committed coverage with
 calls. Narration consumes only the persisted post-reveal package and cannot add
 items. No new HTTP operation, contents store or transaction owner is added.
 
-Active revision 21 A1 accepts one or more committed or sealed same-root
+Active revision 21 A1 accepts one or more committed or validated same-root
 revealed non-container material sources and zero or more accessible actor-controlled
 non-container tools through explicit disjoint source/tool refs; current-anchor
 placement or an already revealed open actor-accessible container is sufficient,
 and legal ownership need not belong to the actor. Qualitative outcome is part of
 the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
-sealed result is projected into the same root turn before pending continuation.
+validated result is projected into the same root turn before pending continuation.
 profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
@@ -137,15 +137,16 @@ hand/packing/carry is code-derived. Safe named result descriptors persist in
 ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
 closed qualitative weapon-capable outcomes. Visible non-authoritative physical
-facts also survive same-root continuation and reload. Item mechanics, conservation,
+facts accumulate across repeated transformations and survive same-root
+continuation and reload. Multiple causal A1 steps run in order over the shared
+working projection and commit in one combined P16. Item mechanics, conservation,
 identity and placement remain code-owned. Uncertain actions reuse one generic
 check and semantic activity/time resolution from turn owners; deterministic
 actions use `domain_request` without mandatory RNG/time. The same combined P16 write set contains the full turn snapshot,
-append-only check resolution, clock/activity writes and the A1 plan; its digest
-and change-set identity therefore bind the physical transition to the exact
-roll/outcome and duration/effort evidence without a second RNG, clock or A1
-execution ledger. Any evidence mutation invalidates the sealed combined plan
-before transaction work.
+append-only check resolution, clock/activity writes and the ordered A1 plans.
+The existing transaction, state-version checks and idempotency owner bind the
+physical transitions to the same root commit without a second RNG, clock, A1
+execution ledger or A1-specific plan hashes.
 
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility

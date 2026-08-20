@@ -5,7 +5,7 @@ import { resolveActionProducedAllocationMechanics } from
 import { validateActionProducedOwnerMechanics } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-mass-conservation.js';
 
-test('P16 replays partial allocation mechanics instead of trusting resealed grams',
+test('P16 replays partial allocation mechanics instead of trusting forged grams',
   () => {
     const source = sourcePin();
     const causal = { request_id: 'request', root_turn_id: 'turn',

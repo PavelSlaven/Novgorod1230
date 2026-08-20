@@ -1,5 +1,4 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
+import { isDeepStrictEqual } from 'node:util';
 import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { actionProducedText as text } from
@@ -87,13 +86,16 @@ async function lockAndVerifyPins(client, plan) {
     }
     const accessContainer = containerId == null ? null
       : containers.get(containerId);
-    if (!accessibleByActor(normalized.placement, normalized.ownership,
-      accessContainer, plan.actor_ref,
-      plan.output_destination_pin?.anchor_id ?? null, pin.role)
-        || digest(normalized.item) !== pin.item_digest
-        || digest(normalized.placement) !== pin.placement_digest
-        || digest(normalized.ownership) !== pin.ownership_digest
-        || digest(accessContainer) !== digest(pin.access_container ?? null)) {
+    if (pin.prepared_action == null
+          && !accessibleByActor(normalized.placement, normalized.ownership,
+            accessContainer, plan.actor_ref,
+            plan.output_destination_pin?.anchor_id ?? null, pin.role)
+        || !isDeepStrictEqual(normalized.item, pin.item)
+        || !isDeepStrictEqual(normalized.placement, pin.placement)
+        || !isDeepStrictEqual(normalized.ownership, pin.ownership)
+        || pin.prepared_action == null
+          && !isDeepStrictEqual(accessContainer,
+            pin.access_container ?? null)) {
       fail(pin.role === 'tool'
         ? 'ACTION_PRODUCED_TOOL_STALE' : 'ACTION_PRODUCED_SOURCE_STALE');
     }
@@ -106,8 +108,8 @@ async function lockAndVerifyPins(client, plan) {
          WHERE party_id=$1 AND resource_node_id=$2 FOR UPDATE`,
       [plan.party_id, pin.finite_resource_row.resource_node_id]);
       if (resource.rows.length !== 1
-          || digest(normalizedResource(resource.rows[0]))
-            !== digest(pin.finite_resource_row)) {
+          || !isDeepStrictEqual(normalizedResource(resource.rows[0]),
+            pin.finite_resource_row)) {
         fail('ACTION_PRODUCED_RESOURCE_STALE');
       }
     }

@@ -17,12 +17,8 @@ import {
 import { createOrdinaryMaterializationAtomicWritePlan } from
   './ordinary-materialization-phase-6-commit.js';
 import { actionProducedPhysicalKeys,
-  createActionProducedAtomicWritePlan } from
+  validActionProductionExtension } from
   './action-produced-atomic-write-plan.js';
-import { validLowerDvinaTraceActionProductionPlanProfile } from
-  '../../internal/lower-dvina-trace-a1-bundle.js';
-import { validActionProducedOuterCausalBinding } from
-  './action-produced-causal-binding.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -32,7 +28,8 @@ export const lockOrder = (plan) => [
   ...[...new Set(plan.physical_keys)].sort().map((key) => `05:physical:${key}`),
   ...(plan.ordinary_materialization_atomic_write_plan?.finite_resource_transition == null
     ? [] : [`05:resource:${plan.party_id}:${plan.ordinary_materialization_atomic_write_plan.finite_resource_transition.source_resource_node_id}`]),
-  ...(plan.action_production_atomic_write_plan?.source_pins ?? [])
+  ...(plan.action_production_atomic_write_plans ?? []).flatMap((action) =>
+    action.source_pins ?? [])
     .filter(({ finite_resource_row: row }) => row != null)
     .map(({ finite_resource_row: row }) =>
       `05:resource:${plan.party_id}:${row.resource_node_id}`),
@@ -207,15 +204,15 @@ export function validateSpatialV3CombinedWritePlan(plan) {
 
 function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
-  const action = plan.action_production_atomic_write_plan;
-  if (ordinary == null && action == null) return writeSet;
-  if (action == null) return { write_set: writeSet,
+  const actions = plan.action_production_atomic_write_plans ?? [];
+  if (ordinary == null && actions.length === 0) return writeSet;
+  if (actions.length === 0) return { write_set: writeSet,
     ordinary_materialization_atomic_write_plan: ordinary };
   return { write_set: writeSet,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
-    action_production_atomic_write_plan: action };
+    action_production_atomic_write_plans: actions };
 }
 
 function validOrdinaryMaterializationExtension(plan) {
@@ -241,33 +238,5 @@ function validOrdinaryMaterializationExtension(plan) {
             `party_runtime.party_item_placements:${item.item_id}`)))
       && (sealed.finite_resource_transition == null || plan.physical_keys.includes(
         `party_runtime.party_resource_nodes:${sealed.party_id}:${sealed.finite_resource_transition.source_resource_node_id}`));
-  } catch { return false; }
-}
-
-function validActionProductionExtension(plan) {
-  const action = plan.action_production_atomic_write_plan;
-  if (action == null) return true;
-  try {
-    const sealed = createActionProducedAtomicWritePlan(action);
-    const prepared = [...sealed.source_pins, ...sealed.tool_pins]
-      .filter((pin) => pin.prepared_ordinary != null);
-    const ordinary = plan.ordinary_materialization_atomic_write_plan;
-    const party = plan.updates?.find((write) =>
-      write.target_table === 'parties' && write.id === plan.party_id);
-    return sealed.party_id === plan.party_id
-      && sealed.change_set_id === plan.change_set_id
-      && validLowerDvinaTraceActionProductionPlanProfile(sealed)
-      && validActionProducedOuterCausalBinding(plan, sealed)
-      && party?.record?.party_id === plan.party_id
-      && plan.expected_state_versions.some((version) =>
-        version.target_table === 'parties' && version.id === plan.party_id
-          && version.state_version === sealed.base_party_state_version)
-      && prepared.every((pin) => ordinary != null
-        && pin.prepared_ordinary.request_identity
-          === ordinary.request_identity
-        && pin.prepared_ordinary.write_plan_digest
-          === ordinary.write_plan_digest)
-      && actionProducedPhysicalKeys(sealed).every((key) =>
-        plan.physical_keys.includes(key));
   } catch { return false; }
 }

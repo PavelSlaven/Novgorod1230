@@ -12,9 +12,6 @@ const CONTEXT_KEYS = [
 const ENTITY_KEYS = [
   'entity_ref', 'state_version', 'lifecycle_state', 'access_state',
   'accessible_actor_ref', 'holder_ref', 'controller_ref', 'role_membership',
-  'mechanics_state_ref', 'property_state_ref', 'ownership_state_ref',
-  'ownership_basis_ref', 'property_basis_ref',
-  'placement_state_ref'
 ];
 const PROFILE_KEYS = [
   'schema', 'profile_ref', 'profile_version', 'status', 'context_ref',
@@ -141,11 +138,7 @@ function validateContext(value) {
         || entity.accessible_actor_ref !== value.actor_ref
         || !nullableText(entity.holder_ref)
         || !nullableText(entity.controller_ref)
-        || !enumArray(entity.role_membership, ROLES, false)
-        || !text(entity.mechanics_state_ref)
-        || !text(entity.property_state_ref)
-        || !text(entity.ownership_state_ref)
-        || !text(entity.placement_state_ref)) {
+        || !enumArray(entity.role_membership, ROLES, false)) {
       return 'ITEM_ACTION_PRODUCED_CONTEXT_INVALID';
     }
     refs.add(entity.entity_ref);
@@ -258,13 +251,7 @@ function bindEntities(refs, role, byRef, context, profile) {
       state_version: entity.state_version,
       access_state: entity.access_state,
       holder_ref: entity.holder_ref,
-      controller_ref: entity.controller_ref,
-      mechanics_state_ref: entity.mechanics_state_ref,
-      property_state_ref: entity.property_state_ref,
-      ownership_state_ref: entity.ownership_state_ref,
-      ownership_basis_ref: entity.ownership_basis_ref,
-      property_basis_ref: entity.property_basis_ref,
-      placement_state_ref: entity.placement_state_ref
+      controller_ref: entity.controller_ref
     });
   }
   return { pass: true, pins };

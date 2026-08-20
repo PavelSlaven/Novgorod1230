@@ -97,7 +97,8 @@ export function createTurnStepExecutionInput({
   projection,
   checkResult,
   preparedChainContext,
-  preparedOrdinaryPlan = null
+  preparedOrdinaryPlan = null,
+  preparedActionProductionPlans = []
 }) {
   return deepFreeze({
     plan: structuredClone(plan),
@@ -109,7 +110,9 @@ export function createTurnStepExecutionInput({
       : structuredClone(preparedChainContext),
     prepared_ordinary_materialization_atomic_write_plan:
       preparedOrdinaryPlan == null ? null
-        : structuredClone(preparedOrdinaryPlan)
+        : structuredClone(preparedOrdinaryPlan),
+    prepared_action_production_atomic_write_plans:
+      structuredClone(preparedActionProductionPlans)
   });
 }
 

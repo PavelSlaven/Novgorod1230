@@ -2,25 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
-import { sha256 } from '@rus/kernel';
 
 function entity(entity_ref, role_membership) {
-  const ownership = ownershipFor(entity_ref);
   return { entity_ref, state_version: '7', lifecycle_state: 'active',
     access_state: 'immediate', accessible_actor_ref: 'actor:mikula',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
-    role_membership, mechanics_state_ref: `mechanics:${entity_ref}:7`,
-    property_state_ref: `property:${entity_ref}:7`,
-    ownership_state_ref: `sha256:${sha256(ownership)}`,
-    ownership_basis_ref: ownershipBasisRef(ownership),
-    property_basis_ref: `sha256:${sha256(null)}`,
-    placement_state_ref: `placement:${entity_ref}:7` };
-}
-function ownershipFor(entityRef) {
-  return { ownership_id: `ownership:${entityRef}`,
-    owner_npc_id: null, owner_character_id: 'actor:mikula',
-    owner_party: false, controller_npc_id: null,
-    controller_character_id: 'actor:mikula', claim_state: 'owned' };
+    role_membership };
 }
 function context() {
   return { schema: 'rus.items.action_produced_committed_context.v1',
@@ -127,12 +114,6 @@ test('independent, impossible no-result and writing remain qualitative', () => {
   assert.equal('mechanics' in denied, false);
   assert.equal('working_mechanism' in denied, false);
 });
-
-function ownershipBasisRef(value) {
-  const { ownership_id: ignored, ...basis } = value;
-  void ignored;
-  return `sha256:${sha256(basis)}`;
-}
 
 test('physical weapon-like and token-like labels cannot assert authority', () => {
   for (const display_name of ['заострённая жердь', 'похожий на монету жетон']) {

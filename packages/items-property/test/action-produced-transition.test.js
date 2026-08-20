@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
-import { createActionProducedTransitionPlanner } from
+import { createActionProducedOutputIdentity,
+  createActionProducedTransitionPlanner } from
   '@rus/items-property/action-produced-transition';
-import { sha256 } from '@rus/kernel';
 test('preserved physical source keeps identity and receives owner mechanics',
   () => {
     const planner = createActionProducedTransitionPlanner({
@@ -27,8 +27,6 @@ test('preserved physical source keeps identity and receives owner mechanics',
     assert.equal(proposal.results[0].identity_kind, 'preserved_source');
     assert.equal(proposal.source_transitions[0].before.state_version, '7');
     assert.equal(proposal.source_transitions[0].after.state_version, '8');
-    assert.equal(proposal.source_transitions[0].after.property_state_ref,
-      'property:item:pole:7');
     assert.equal(proposal.tool_state_pins[0].before.state_version, '7');
     assert.deepEqual(proposal.tool_state_pins[0].after,
       proposal.tool_state_pins[0].before);
@@ -236,8 +234,6 @@ test('no useful result keeps source and tool state without creating identity',
     assert.deepEqual(proposal.known_waste, []);
     assert.deepEqual(proposal.source_transitions[0].after, { state_version: '7',
       mechanics_snapshot: null,
-      property_state_ref: 'property:item:pole:7',
-      placement_state_ref: 'placement:item:pole:7',
       holder_ref: 'actor:mikula',
       controller_ref: 'actor:mikula'
     });
@@ -468,8 +464,7 @@ committedEntityRefs = ['item:pole', 'item:knife'], maxNewEntities = 4 } = {}) {
 function outputDestinationFixture() {
   return { schema: 'rus.items.action_produced_output_destination.v1',
     placement_kind: 'anchor', target_ref: 'output-anchor',
-    holder_ref: null, controller_ref: 'actor:mikula',
-    placement_state_ref: 'placement:output-anchor:7'
+    holder_ref: null, controller_ref: 'actor:mikula'
   };
 }
 
@@ -545,15 +540,10 @@ function phaseOneInput(overrides = {}) {
 }
 
 function phaseOneEntity(entityRef, roles) {
-  const ownership = ownershipFor(entityRef);
   return { entity_ref: entityRef, state_version: '7', lifecycle_state: 'active',
     access_state: 'immediate', accessible_actor_ref: 'actor:mikula',
-    holder_ref: 'actor:mikula', controller_ref: 'actor:mikula', role_membership: roles,
-    mechanics_state_ref: `mechanics:${entityRef}:7`, property_state_ref: `property:${entityRef}:7`,
-    ownership_state_ref: `sha256:${sha256(ownership)}`,
-    ownership_basis_ref: ownershipBasisRef(ownership),
-    property_basis_ref: `sha256:${sha256(null)}`,
-    placement_state_ref: `placement:${entityRef}:7` };
+    holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
+    role_membership: roles };
 }
 
 function entitySnapshot(entityRef, { role, finiteResource = null } = {}) {
@@ -561,11 +551,7 @@ function entitySnapshot(entityRef, { role, finiteResource = null } = {}) {
   return { schema: 'rus.items.action_produced_committed_entity_snapshot.v1', commit_state: 'committed',
     role, entity_ref: entityRef, state_version: '7', lifecycle_state: 'active',
     access_state: 'immediate', holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
-    mechanics_state_ref: `mechanics:${entityRef}:7`, property_state_ref: `property:${entityRef}:7`,
-    ownership_state_ref: `sha256:${sha256(ownership)}`,
-    ownership_basis_ref: ownershipBasisRef(ownership),
-    property_basis_ref: `sha256:${sha256(null)}`,
-    ownership_snapshot: ownership, placement_state_ref: `placement:${entityRef}:7`,
+    ownership_snapshot: ownership,
     finite_resource: finiteResource };
 }
 
@@ -573,12 +559,6 @@ function ownershipFor(entityRef) {
   return { ownership_id: `ownership:${entityRef}`, owner_npc_id: null,
     owner_character_id: 'actor:mikula', owner_party: false, controller_npc_id: null,
     controller_character_id: 'actor:mikula', claim_state: 'owned' };
-}
-
-function ownershipBasisRef(value) {
-  const { ownership_id: ignored, ...basis } = value;
-  void ignored;
-  return `sha256:${sha256(basis)}`;
 }
 
 function mechanicsResolution({ identityMode, sourceEffects,
@@ -654,10 +634,9 @@ function partitionScenario({
 }
 
 function deterministicOutputRef(ordinal) {
-  return `a1_result_${sha256({
-    domain: 'rus.items.action_produced_output_identity.v1',
+  return createActionProducedOutputIdentity({
     root_turn_id: 'turn:party-1:1',
     action_ref: 'action:turn-1:step-1',
     ordinal
-  }).slice(0, 32)}`;
+  });
 }

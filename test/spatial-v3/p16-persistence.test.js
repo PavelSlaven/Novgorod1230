@@ -208,13 +208,13 @@ test('P16 builder snapshots outer ordinary plan input without executing accessor
 
   const legacy=await buildCombinedWritePlan(input({
     ordinary_materialization_atomic_write_plan:null,
-    action_production_atomic_write_plan:null}),{verifyApproval:approval});
+    action_production_atomic_write_plans:[]}),{verifyApproval:approval});
   assert.equal(legacy.ok,true);
   assert.equal(legacy.plan.write_set_digest,computeSpatialV3CanonicalDigest({
     inserts:legacy.plan.inserts,updates:legacy.plan.updates,
     appends:legacy.plan.appends,deletes:legacy.plan.deletes}));
   assert.equal(Object.hasOwn(legacy.plan,
-    'action_production_atomic_write_plan'),false);
+    'action_production_atomic_write_plans'),false);
   const ordinary=batchInput({masses:[80]});
   const sealed=await buildCombinedWritePlan(input({
     ordinary_materialization_atomic_write_plan:ordinary}),
@@ -234,8 +234,8 @@ test('P16 builder snapshots outer ordinary plan input without executing accessor
 
   let actionReads=0,actionApprovals=0;
   const actionAccessor=input();
-  Object.defineProperty(actionAccessor,'action_production_atomic_write_plan',{
-    enumerable:true,get(){actionReads+=1;return {};}});
+  Object.defineProperty(actionAccessor,'action_production_atomic_write_plans',{
+    enumerable:true,get(){actionReads+=1;return [{}];}});
   const actionRejected=await buildCombinedWritePlan(actionAccessor,{
     verifyApproval:async()=>{actionApprovals+=1;return {ok:true};}});
   assert.equal(actionRejected.error.code,'generated_schema_mismatch');

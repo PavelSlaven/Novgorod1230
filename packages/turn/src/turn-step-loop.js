@@ -185,6 +185,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       workingProjection,
       preparedChainContext,
       preparedOrdinaryPlan: ordinaryPlans[0] ?? null,
+      preparedActionProductionPlans: actionProducedPlans,
       registry,
       ports
     });
@@ -199,9 +200,6 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);
     }
     if (execution.action_production_atomic_write_plan != null) {
-      if (actionProducedPlans.length !== 0) throw turnFailure(
-        'TURN_STEP_ACTION_PRODUCTION_PLAN_DUPLICATE',
-        'Only one action-production atomic plan is allowed per turn.');
       actionProducedPlans.push(execution.action_production_atomic_write_plan);
     }
     preparedChainContext = execution.preparedChainContext;
@@ -287,7 +285,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     consequence_fragments: consequenceFragments,
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
-    action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
+    action_production_atomic_write_plans: actionProducedPlans,
     clarification
   });
 }

@@ -62,11 +62,11 @@ function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
 export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const input = rawInput;
   const ordinaryMaterializationPlan = snapshotOrdinaryPlan(rawInput);
-  const actionProductionPlan = snapshotExtensionPlan(rawInput,
-    'action_production_atomic_write_plan');
+  const actionProductionPlans = snapshotExtensionPlans(rawInput,
+    'action_production_atomic_write_plans');
   const verifyApproval = ownData(options, 'verifyApproval');
   if (ordinaryMaterializationPlan === INVALID_INPUT
-      || actionProductionPlan === INVALID_INPUT) {
+      || actionProductionPlans === INVALID_INPUT) {
     return fail('generated_schema_mismatch', null,
       { reason: 'extension atomic plans must be strict JSON data' });
   }
@@ -87,7 +87,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   } = input;
   const ordinary_materialization_atomic_write_plan =
     ordinaryMaterializationPlan;
-  const action_production_atomic_write_plan = actionProductionPlan;
+  const action_production_atomic_write_plans = actionProductionPlans;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
@@ -125,7 +125,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     visible_package_envelope,
     approved_write_sets,
     ordinary_materialization_atomic_write_plan,
-    action_production_atomic_write_plan
+    action_production_atomic_write_plans
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -254,7 +254,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
   const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
     write_set, ordinary_materialization_atomic_write_plan,
-    action_production_atomic_write_plan
+    action_production_atomic_write_plans
   }));
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
@@ -289,9 +289,9 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     commit_rechecks: clone(commit_rechecks).sort((a, b) => a.kind.localeCompare(b.kind) || a.digest.localeCompare(b.digest)),
     ordinary_materialization_atomic_write_plan: ordinary_materialization_atomic_write_plan == null
       ? null : clone(ordinary_materialization_atomic_write_plan),
-    ...(action_production_atomic_write_plan == null ? {} : {
-      action_production_atomic_write_plan:
-        clone(action_production_atomic_write_plan)
+    ...(action_production_atomic_write_plans.length === 0 ? {} : {
+      action_production_atomic_write_plans:
+        clone(action_production_atomic_write_plans)
     }),
     write_set_digest,
     ...write_set
@@ -311,6 +311,21 @@ function snapshotOrdinaryPlan(input) {
     'ordinary_materialization_atomic_write_plan');
 }
 
+function snapshotExtensionPlans(input, field) {
+  if (!input || typeof input !== 'object') return [];
+  const descriptor = Object.getOwnPropertyDescriptor(input, field);
+  if (descriptor == null || Object.hasOwn(descriptor, 'value')
+      && descriptor.value === undefined) return [];
+  if (!descriptor.enumerable || !Object.hasOwn(descriptor, 'value')) {
+    return INVALID_INPUT;
+  }
+  const snapshot = snapshotJsonData(descriptor.value);
+  return Array.isArray(snapshot)
+    && snapshot.every((entry) => entry != null
+      && typeof entry === 'object' && !Array.isArray(entry))
+    ? snapshot : INVALID_INPUT;
+}
+
 function snapshotExtensionPlan(input, field) {
   if (!input || typeof input !== 'object') return null;
   const descriptor = Object.getOwnPropertyDescriptor(input, field);
@@ -327,9 +342,9 @@ function snapshotExtensionPlan(input, field) {
 
 function extensionDigestInput({ write_set,
   ordinary_materialization_atomic_write_plan: ordinary,
-  action_production_atomic_write_plan: action }) {
-  if (ordinary == null && action == null) return write_set;
-  if (action == null) {
+  action_production_atomic_write_plans: actions }) {
+  if (ordinary == null && actions.length === 0) return write_set;
+  if (actions.length === 0) {
     return { write_set,
       ordinary_materialization_atomic_write_plan: ordinary };
   }
@@ -338,7 +353,7 @@ function extensionDigestInput({ write_set,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
-    action_production_atomic_write_plan: action
+    action_production_atomic_write_plans: actions
   };
 }
 

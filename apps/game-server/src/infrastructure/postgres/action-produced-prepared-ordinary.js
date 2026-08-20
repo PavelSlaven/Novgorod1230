@@ -1,5 +1,7 @@
 import { createOrdinaryMaterializationAtomicWritePlan } from
   './ordinary-materialization-phase-6-commit.js';
+import { createActionProducedAtomicWritePlan } from
+  './action-produced-atomic-write-plan.js';
 import { ordinaryContainerRuntimeItemState } from
   './ordinary-materialization-container-batch-item.js';
 import { failActionProducedPersistence as fail } from
@@ -35,13 +37,113 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
       preparedOrdinary: {
         schema: 'action_production_prepared_ordinary_pin_v1',
         request_identity: plan.request_identity,
-        write_plan_digest: plan.write_plan_digest,
         root_turn_id: provenance.root_turn_id,
         step_index: provenance.step_index
       }
     });
   }
   return byId;
+}
+
+export function actionProducedPreparedActionRows(input) {
+  const values = input.prepared_action_plans ?? [];
+  if (!Array.isArray(values)) fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  const rows = new Map();
+  const retired = new Set();
+  let priorStep = 0;
+  for (const value of values) {
+    let plan;
+    try { plan = createActionProducedAtomicWritePlan(value); }
+    catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+    const causal = plan.transition_proposal.causal_identity;
+    if (plan.party_id !== input.party_id
+        || plan.base_party_state_version
+          !== input.expected_party_state_version
+        || plan.change_set_id !== input.change_set_id
+        || causal.root_turn_id !== input.root_turn_id
+        || causal.step_index <= priorStep
+        || causal.step_index >= input.step_index) {
+      fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+    }
+    priorStep = causal.step_index;
+    for (const update of plan.source_updates) {
+      const pin = plan.source_pins.find(({ item_id: id }) =>
+        id === update.item_id);
+      if (pin == null) fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+      if (update.after_item.state?.lifecycle_status === 'retired') {
+        rows.delete(update.item_id);
+        retired.add(update.item_id);
+        continue;
+      }
+      retired.delete(update.item_id);
+      rows.set(update.item_id, preparedActionRow({
+        item: update.after_item,
+        placement: pin.placement,
+        ownership: pin.ownership,
+        finiteResourceRow: afterResourceRow(pin.finite_resource_row,
+          update.finite_resource_transition),
+        causal
+      }));
+    }
+    for (const result of plan.result_items) {
+      retired.delete(result.item_id);
+      rows.set(result.item_id, preparedActionRow({
+        item: { item_id: result.item_id, ...result.item_row },
+        placement: result.placement_row,
+        ownership: result.ownership_row,
+        finiteResourceRow: null,
+        causal
+      }));
+    }
+  }
+  return { rows, retired };
+}
+
+export function actionProducedDestinationAfterPreparedActions(pin, values) {
+  if (pin == null) return null;
+  const used = new Set(pin.used_item_ids);
+  for (const raw of values ?? []) {
+    let plan;
+    try { plan = createActionProducedAtomicWritePlan(raw); }
+    catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+    for (const update of plan.source_updates) {
+      if (update.after_item.state?.lifecycle_status === 'retired') {
+        used.delete(update.item_id);
+      }
+    }
+    for (const result of plan.result_items) {
+      if (result.placement_row.anchor_id === pin.anchor_id) {
+        used.add(result.item_id);
+      }
+    }
+  }
+  if (used.size > pin.item_capacity) {
+    fail('ACTION_PRODUCED_DESTINATION_INVALID');
+  }
+  return { ...pin, used_item_ids: [...used].sort() };
+}
+
+function preparedActionRow({ item, placement, ownership,
+  finiteResourceRow, causal }) {
+  return {
+    row: { ...structuredClone(item), ...structuredClone(placement),
+      ...structuredClone(ownership) },
+    finiteResourceRow: structuredClone(finiteResourceRow),
+    preparedAction: {
+      schema: 'action_production_prepared_action_pin_v1',
+      root_turn_id: causal.root_turn_id,
+      step_index: causal.step_index
+    }
+  };
+}
+
+function afterResourceRow(row, transition) {
+  if (transition == null) return row;
+  return { ...row,
+    quantity_numerator: transition.after_quantity.numerator,
+    quantity_denominator: transition.after_quantity.denominator,
+    lifecycle_state: transition.lifecycle_state_after,
+    state_version: transition.next_state_version };
 }
 
 function preparedRow(item, input) {

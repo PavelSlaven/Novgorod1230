@@ -1,7 +1,3 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
-import { deriveActionProducedPropertyCompatibilityBasis } from
-  '@rus/items-property';
 import {
   INVALID_ACTION_PRODUCED_DATA,
   actionProducedText as text,
@@ -15,6 +11,9 @@ import { loadActionProducedOutputDestination } from
 import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
 import { actionProducedPreparedOrdinaryRows } from
+  './action-produced-prepared-ordinary.js';
+import { actionProducedDestinationAfterPreparedActions,
+  actionProducedPreparedActionRows } from
   './action-produced-prepared-ordinary.js';
 import { bindActionProducedResourcePins } from
   './action-produced-resource-pins.js';
@@ -31,7 +30,7 @@ const INPUT_KEYS = [
   'admission_profile', 'technical_policy'
 ];
 const PREPARED_INPUT_KEYS = [...INPUT_KEYS, 'prepared_ordinary_plan',
-  'change_set_id'];
+  'prepared_action_plans', 'change_set_id'];
 
 export async function loadActionProducedCommittedContext(client, rawInput) {
   const input = snapshot(rawInput);
@@ -48,7 +47,10 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
       || !validProfiles(input)
       || typeof client?.query !== 'function'
       || Object.hasOwn(input, 'prepared_ordinary_plan')
-        && !text(input.change_set_id)) fail('ACTION_PRODUCED_LOAD_INVALID');
+        && (!text(input.change_set_id)
+          || !Array.isArray(input.prepared_action_plans))) {
+    fail('ACTION_PRODUCED_LOAD_INVALID');
+  }
 
   const party = await client.query(
     `SELECT state_version FROM party_runtime.parties
@@ -58,10 +60,18 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
         !== input.expected_party_state_version) {
     fail('ACTION_PRODUCED_PARTY_STALE');
   }
-  const outputDestinationPin = await loadActionProducedOutputDestination(
-    client, input);
+  const outputDestinationPin = actionProducedDestinationAfterPreparedActions(
+    await loadActionProducedOutputDestination(client, input),
+    input.prepared_action_plans ?? []);
 
   const requested = [...input.source_refs, ...input.tool_refs];
+  const preparedActions = actionProducedPreparedActionRows(input);
+  if (requested.some((itemId) => preparedActions.retired.has(itemId))) {
+    fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
+  }
+  const prepared = actionProducedPreparedOrdinaryRows(input, requested);
+  const databaseRefs = requested.filter((itemId) =>
+    !preparedActions.rows.has(itemId) && !prepared.has(itemId));
   const rows = await client.query(
     `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
        i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
@@ -75,9 +85,10 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
      JOIN party_runtime.party_ownership o
        ON o.party_id=i.party_id AND o.item_id=i.item_id
      WHERE i.party_id=$1 AND i.item_id=ANY($2::text[])
-     ORDER BY i.item_id`, [input.party_id, requested]);
-  const prepared = actionProducedPreparedOrdinaryRows(input, requested);
-  if (rows.rows.length + prepared.size !== requested.length) {
+     ORDER BY i.item_id`, [input.party_id, databaseRefs]);
+  if (rows.rows.length + prepared.size + [...preparedActions.rows.keys()]
+    .filter((itemId) => requested.includes(itemId)).length
+      !== requested.length) {
     fail('ACTION_PRODUCED_ITEM_GAP');
   }
 
@@ -89,15 +100,24 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
      WHERE party_id=$1
        AND source_resource_ref->>'entity_kind'='party_item'
        AND source_resource_ref->>'entity_id'=ANY($2::text[])
-     ORDER BY resource_node_id`, [input.party_id, input.source_refs]);
+     ORDER BY resource_node_id`, [input.party_id, databaseRefs.filter(
+      (itemId) => input.source_refs.includes(itemId))]);
   const resources = bindActionProducedResourcePins(resourceRows.rows,
     input.source_refs);
+  for (const [itemId, future] of preparedActions.rows) {
+    if (!input.source_refs.includes(itemId)
+        || future.finiteResourceRow == null) continue;
+    const bound = bindActionProducedResourcePins(
+      [future.finiteResourceRow], [itemId]);
+    resources.set(itemId, bound.get(itemId));
+  }
   const byId = new Map(rows.rows.map((row) => [row.item_id, row]));
   const accessContainers = await loadActionProducedAccessContainers(client,
     input.party_id, rows.rows.map(({ container_id: id }) => id));
   const contextVersion = contextVersionFrom(input);
   const rowPins = requested.map((itemId) => {
-    const future = prepared.get(itemId);
+    const futureAction = preparedActions.rows.get(itemId);
+    const future = futureAction ?? prepared.get(itemId);
     return rowPin({
     row: future?.row ?? byId.get(itemId),
     role: input.source_refs.includes(itemId) ? 'source' : 'tool',
@@ -107,7 +127,8 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     accessAnchorId: outputDestinationPin?.anchor_id ?? null,
     accessContainer: future == null
       ? accessContainers.get(byId.get(itemId)?.container_id) ?? null : null,
-    preparedOrdinary: future?.preparedOrdinary ?? null
+    preparedOrdinary: future?.preparedOrdinary ?? null,
+    preparedAction: future?.preparedAction ?? null
   });
   });
   const entities = rowPins.map(({ role, entity_snapshot: entity }) => ({
@@ -118,13 +139,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     accessible_actor_ref: input.actor_ref,
     holder_ref: entity.holder_ref,
     controller_ref: entity.controller_ref,
-    role_membership: [role],
-    mechanics_state_ref: entity.mechanics_state_ref,
-    property_state_ref: entity.property_state_ref,
-    ownership_state_ref: entity.ownership_state_ref,
-    ownership_basis_ref: entity.ownership_basis_ref,
-    property_basis_ref: entity.property_basis_ref,
-    placement_state_ref: entity.placement_state_ref
+    role_membership: [role]
   }));
   const sourceSnapshots = input.source_refs.map((ref) =>
     structuredClone(rowPins.find(({ item_id: id }) =>
@@ -159,11 +174,11 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
 }
 
 function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
-  accessContainer = null, preparedOrdinary = null }) {
+  accessContainer = null, preparedOrdinary = null, preparedAction = null }) {
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
-      || preparedOrdinary === null
+      || preparedOrdinary === null && preparedAction === null
         && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
           accessAnchorId)
       || row.holder_npc_id !== null
@@ -178,7 +193,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
           !== row.state?.property_state?.resource_property_basis_ref)) {
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
-  const access = preparedOrdinary === null
+  const access = preparedOrdinary === null && preparedAction === null
     ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId)
     : 'quick';
   const holderRef = row.holder_character_id === actorRef ? actorRef : null;
@@ -211,24 +226,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     controller_character_id: row.controller_character_id,
     claim_state: row.claim_state
   };
-  const mechanicsRef = digest({
-    runtime_instance_mechanics_snapshot:
-      item.state?.runtime_instance_mechanics_snapshot ?? null,
-    inventory_profile_snapshot:
-      item.state?.inventory_profile_snapshot ?? null,
-    template_id: item.template_id, profile_id: item.profile_id,
-    category_id: item.category_id, quantity: item.quantity
-  });
-  const propertyRef = digest({
-    property_state: item.state?.property_state ?? null, ownership
-  });
-  const placementRef = digest(placement);
-  const propertyBasis = deriveActionProducedPropertyCompatibilityBasis(
-    ownership, item.state?.property_state ?? null);
   return {
     role, item_id: row.item_id, item, placement, ownership,
-    item_digest: digest(item), placement_digest: placementRef,
-    ownership_digest: digest(ownership),
     entity_snapshot: {
       schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
       commit_state: 'committed', role, entity_ref: row.item_id,
@@ -236,12 +235,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
       lifecycle_state: 'active', access_state: access,
       holder_ref: holderRef,
       controller_ref: actionProducedControllerRef(row),
-      mechanics_state_ref: mechanicsRef,
-      property_state_ref: propertyRef,
-      ownership_state_ref: digest(ownership),
-      ...propertyBasis,
       ownership_snapshot: structuredClone(ownership),
-      placement_state_ref: placementRef,
       finite_resource: finite?.snapshot ?? null
     },
     finite_resource_row: finite?.persisted_row ?? null,
@@ -250,6 +244,9 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     }),
     ...(preparedOrdinary === null ? {} : {
       prepared_ordinary: preparedOrdinary
+    }),
+    ...(preparedAction === null ? {} : {
+      prepared_action: preparedAction
     })
   };
 }

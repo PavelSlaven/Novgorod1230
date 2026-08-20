@@ -14,7 +14,6 @@ import {
   runtimeItemRecordIsConcealed as recordIsClosed,
   runtimeItemStateValues as stateValues
 } from '@rus/items-property';
-
 const INVENTORY_KEYS = new Set([
   'items', 'total_weight', 'load_category', 'occupied_hands'
 ]);
@@ -36,7 +35,6 @@ const PROPERTY_STATE_KEYS = new Set([
 const USE_STATE_KEYS = new Set([
   'id', 'state', 'status', 'kind', 'remaining', 'uses_remaining'
 ]);
-
 export function projectInventory(value, { strict = false,
   allowedItemIds = null } = {}) {
   if (!plain(value)) return undefined;
@@ -58,7 +56,6 @@ export function projectInventory(value, { strict = false,
     occupied_hands: finite(value.occupied_hands)
   });
 }
-
 export function playerSafeItemIds(items) {
   return new Set((items ?? []).map((item) => item?.item_id)
     .filter((itemId) => typeof itemId === 'string' && itemId.length > 0));
@@ -174,7 +171,6 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
       .some((state) =>
       ['visible', 'scene'].includes(state));
 }
-
 function projectItem(item, strict) {
   if (strict) assertAllowedKeys(item, ITEM_KEYS, 'items[]', invalidCode());
   return compact({
@@ -201,7 +197,11 @@ function projectItem(item, strict) {
 }
 
 function projectPhysicalFacts(item, strict) {
-  return textArray(item.physical_facts ?? item.state?.action_production?.physical_facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
+  const values = item.state?.ordinary_metadata?.semantic_facts;
+  const facts = item.physical_facts ?? values?.map?.((fact) =>
+    typeof fact === 'string' ? fact : fact?.text);
+  const projected = textArray(facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
+  return projected?.length ? projected : undefined;
 }
 
 function projectPlacement(value, strict) {

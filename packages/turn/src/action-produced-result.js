@@ -1,4 +1,4 @@
-import { deepFreeze, sha256 } from '@rus/kernel';
+import { deepFreeze } from '@rus/kernel';
 
 // Revision 21 uses this exact contract through the optional A1 remainder;
 // broader result modes remain closed unless an active profile admits them.
@@ -84,10 +84,7 @@ export function createActionProducedTraceActionRef({ root_turn_id,
     throw Object.assign(new TypeError('TURN_ACTION_PRODUCED_IDENTITY_INVALID'),
       { code: 'TURN_ACTION_PRODUCED_IDENTITY_INVALID' });
   }
-  return `turn_step_action:${sha256({
-    schema: 'action_production_trace_action_identity_v1',
-    root_turn_id, step_index, approved_plan
-  }).slice(0, 32)}`;
+  return `turn-step-action:${root_turn_id}:step:${step_index}`;
 }
 
 function validateRequestSnapshot(value) {

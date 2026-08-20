@@ -7,7 +7,7 @@ import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
 import { projectLowerDvinaTracePlayerSafeState } from
   '../src/runtime/lower-dvina-trace-player-safe-state.js';
 
-test('sealed A1 output is usable by the next internal step', async () => {
+test('validated A1 output is usable by the next internal step', async () => {
   const actor = { actor_id: 'mikula', attributes: {
     strength: { value: 9, bonus: -1 } }, skills: {}, body: {} };
   const projection = {
@@ -43,7 +43,8 @@ test('sealed A1 output is usable by the next internal step', async () => {
             ordinary_metadata: { semantic_type: 'ordinary_mundane',
               name: 'деревянный клин', origin: {
                 kind: 'action_produced', source_refs: ['board'] },
-              semantic_facts: ['имеет заострённый конец'],
+              semantic_facts: [{ fact_id: 'a1-wedge:fact:1',
+                text: 'имеет заострённый конец', operation_id: 'a1-wedge' }],
               operation_history: [] },
             action_production: {
               schema: 'rus.items.action_production_item_state.v1',
@@ -52,7 +53,6 @@ test('sealed A1 output is usable by the next internal step', async () => {
                 step_index: 1 },
               result_class: 'partial_transformation',
               output_class: 'ordinary_mundane',
-              physical_facts: ['имеет заострённый конец'],
               inscription_text: null, source_ref: 'board',
               material_allocations: [{ source_ref: 'board', quantity: {
                 numerator: 200, denominator: 1, unit: 'gram' } }]
@@ -132,12 +132,16 @@ test('preserved A1 source exposes its physical change now and after reload', () 
     inventory: { items: [], total_weight: { grams: 0 },
       load_category: 'light', occupied_hands: 0 } };
   const afterState = structuredClone(committed.items[0].state);
+  afterState.ordinary_metadata.semantic_facts = [{
+    fact_id: 'sharpen-pole:fact:1', text: 'один конец жерди заострён',
+    operation_id: 'sharpen-pole'
+  }];
   afterState.action_production = {
     schema: 'rus.items.action_production_item_state.v1',
     causal_identity: { request_id: 'sharpen-pole',
       root_turn_id: 'turn:sharpen', action_ref: 'sharpen-pole', step_index: 1 },
     result_class: 'partial_transformation', output_class: 'ordinary_mundane',
-    physical_facts: ['один конец жерди заострён'], inscription_text: null
+    inscription_text: null
   };
   const authority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
   const ports = createLowerDvinaTraceTurnStepRuntimePorts({ committedState: committed,
@@ -168,14 +172,16 @@ function preparedState(snapshot) {
     ordinary_metadata: { semantic_type: 'ordinary_mundane',
       name: 'деревянный клин', origin: {
         kind: 'action_produced', source_refs: ['board'] },
-      semantic_facts: ['имеет заострённый конец'], operation_history: [] },
+      semantic_facts: [{ fact_id: 'a1-wedge:fact:1',
+        text: 'имеет заострённый конец', operation_id: 'a1-wedge' }],
+      operation_history: [] },
     action_production: {
       schema: 'rus.items.action_production_item_state.v1',
       causal_identity: { request_id: 'request',
         root_turn_id: 'turn:party:1', action_ref: 'a1-wedge', step_index: 1 },
       result_class: 'partial_transformation',
       output_class: 'ordinary_mundane',
-      physical_facts: ['имеет заострённый конец'], inscription_text: null,
+      inscription_text: null,
       source_ref: 'board', material_allocations: [{ source_ref: 'board',
         quantity: { numerator: 200, denominator: 1, unit: 'gram' } }]
     }

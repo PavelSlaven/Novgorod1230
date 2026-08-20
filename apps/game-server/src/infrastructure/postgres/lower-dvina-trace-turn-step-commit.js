@@ -53,14 +53,15 @@ export async function commitLowerDvinaTraceTurnStep({
   try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
   catch { throw serverError('TRACE_TURN_STEP_ORDINARY_PLAN_INVALID',
     'Ordinary atomic plan failed its sealed contract.', { status: 409 }); }
-  let actionProductionPlan = null;
+  let actionProductionPlans = [];
   try {
-    if (writePlan.action_production_atomic_write_plan != null) {
-      actionProductionPlan = createActionProducedAtomicWritePlan(
-        writePlan.action_production_atomic_write_plan);
-      if (actionProductionPlan.party_id !== partyId
-          || actionProductionPlan.change_set_id !== changeSetId) throw new Error();
+    if (!Array.isArray(writePlan.action_production_atomic_write_plans ?? [])) {
+      throw new Error();
     }
+    actionProductionPlans = (writePlan.action_production_atomic_write_plans
+      ?? []).map(createActionProducedAtomicWritePlan);
+    if (actionProductionPlans.some((plan) => plan.party_id !== partyId
+      || plan.change_set_id !== changeSetId)) throw new Error();
   } catch {
     throw serverError('TRACE_TURN_STEP_ACTION_PRODUCTION_PLAN_INVALID',
       'Action-production atomic plan failed its sealed contract.',
@@ -80,8 +81,9 @@ export async function commitLowerDvinaTraceTurnStep({
   });
   applyOrdinaryMaterializationProjection({ next:base.snapshot,
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
-  applyActionProductionProjection({ next: base.snapshot,
-    plan: actionProductionPlan });
+  for (const plan of actionProductionPlans) {
+    applyActionProductionProjection({ next: base.snapshot, plan });
+  }
   const factual = {
     player_input: envelope.player_input,
     mode_resolution: envelope.mode_resolution,
@@ -114,7 +116,7 @@ export async function commitLowerDvinaTraceTurnStep({
   );
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlan
+    turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans
   });
   const committed = await committer.commit({
     plan: built.plan,

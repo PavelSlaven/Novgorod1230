@@ -35,9 +35,7 @@ const HANDOFF_KEYS = [
 ];
 const PIN_KEYS = [
   'entity_ref', 'state_version', 'access_state', 'holder_ref',
-  'controller_ref', 'mechanics_state_ref', 'property_state_ref',
-  'ownership_state_ref', 'ownership_basis_ref', 'property_basis_ref',
-  'placement_state_ref'
+  'controller_ref'
 ];
 const POLICY_KEYS = ['schema', 'version', 'status', 'policy_ref', 'profile_ref', 'profile_version', 'max_new_entities'];
 const RESOLUTION_KEYS = ['schema', 'identity_mode', 'source_effects', 'outputs', 'known_waste'];
@@ -60,6 +58,10 @@ export function createActionProducedTransitionPlanner(options) {
 }
 export { resolveActionProducedAllocationMechanics } from
   './action-produced-allocation-mechanics.js';
+export { createActionProducedOutputIdentity } from
+  './action-produced-output-identity.js';
+export { validateActionProducedOutputPropertyBasis } from
+  './action-produced-transition-entities.js';
 function plan(rawInput, resolveMechanics) {
   const input = snapshotActionProducedBoundary(rawInput);
   if (input == null || !exact(input, INPUT_KEYS)
@@ -117,8 +119,6 @@ function plan(rawInput, resolveMechanics) {
     after: {
       state_version: afterStateVersion,
       mechanics_snapshot: mechanicsSnapshot,
-      property_state_ref: source.property_state_ref,
-      placement_state_ref: source.placement_state_ref,
       holder_ref: source.holder_ref,
       controller_ref: source.controller_ref
     },
@@ -140,7 +140,6 @@ function plan(rawInput, resolveMechanics) {
   return deepFreeze({
     schema: 'rus.items.action_produced_transition_proposal.v1',
     version: 1,
-    status: 'sealed',
     causal_identity: {
       request_id: handoff.request_id,
       root_turn_id: handoff.root_turn_id,
@@ -395,8 +394,6 @@ function preservedResult(handoff, effect) {
     identity_kind: 'preserved_source',
     source_ref: source.entity_ref,
     mechanics_snapshot: structuredClone(effect.mechanicsSnapshot),
-    property_state_ref: source.property_state_ref,
-    placement_state_ref: source.placement_state_ref,
     holder_ref: source.holder_ref,
     controller_ref: source.controller_ref,
     physical_facts:
@@ -420,8 +417,6 @@ function producedResult(handoff, output, sources, destination) {
     identity_kind: 'independent_output',
     source_ref: output.property_source_ref,
     mechanics_snapshot: structuredClone(output.mechanics_snapshot),
-    property_state_ref: outputProperty.property_state_ref,
-    placement_state_ref: destination.placement_state_ref,
     holder_ref: destination.holder_ref,
     controller_ref: destination.controller_ref,
     physical_facts:
@@ -438,9 +433,6 @@ function producedResult(handoff, output, sources, destination) {
 function statePin(value) {
   return deepFreeze({
     state_version: value.state_version,
-    mechanics_state_ref: value.mechanics_state_ref,
-    property_state_ref: value.property_state_ref,
-    placement_state_ref: value.placement_state_ref,
     holder_ref: value.holder_ref,
     controller_ref: value.controller_ref
   });
@@ -449,9 +441,6 @@ function sanitizedEntity(value) {
   return {
     entity_ref: value.entity_ref,
     state_version: value.state_version,
-    mechanics_state_ref: value.mechanics_state_ref,
-    property_state_ref: value.property_state_ref,
-    placement_state_ref: value.placement_state_ref,
     holder_ref: value.holder_ref,
     controller_ref: value.controller_ref,
     finite_resource: structuredClone(value.finite_resource)
@@ -470,8 +459,6 @@ function outputRef(handoff, ordinal) {
     ordinal
   });
 }
-export { createActionProducedOutputIdentity } from
-  './action-produced-output-identity.js';
 function sameRefs(left, right) {
   return left.length === right.length
     && left.every((value, index) => value === right[index]);

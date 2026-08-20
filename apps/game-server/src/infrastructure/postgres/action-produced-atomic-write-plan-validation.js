@@ -1,8 +1,9 @@
+import { isDeepStrictEqual } from 'node:util';
 import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
 import { planFiniteResourceDecrement } from
   '@rus/items-property/finite-resource-transition';
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
+import { createActionProducedOutputIdentity } from
+  '@rus/items-property/action-produced-transition';
 import {
   actionProducedText as text,
   exactActionProducedRecord as exact,
@@ -15,7 +16,7 @@ import { actionProducedConsumedMass,
   './action-produced-mass-conservation.js';
 
 const PROPOSAL_KEYS = [
-  'schema', 'version', 'status', 'causal_identity', 'context_pin',
+  'schema', 'version', 'causal_identity', 'context_pin',
   'technical_policy_pin', 'identity_mode', 'origin', 'result_class',
   'source_transitions', 'tool_state_pins', 'results', 'known_waste',
   'qualitative_result'
@@ -32,7 +33,7 @@ const SOURCE_TRANSITION_KEYS = [
 export function validateActionProducedAtomicProposal(value, load) {
   if (!exact(value, PROPOSAL_KEYS)
       || value.schema !== 'rus.items.action_produced_transition_proposal.v1'
-      || value.version !== 1 || value.status !== 'sealed'
+      || value.version !== 1
       || !exact(value.causal_identity, CAUSAL_KEYS)
       || !exact(value.context_pin, CONTEXT_KEYS)
       || !exact(value.technical_policy_pin, TECHNICAL_KEYS)
@@ -79,11 +80,7 @@ export function validateActionProducedAtomicProposal(value, load) {
     }
     const pin = sourcePins.find(({ item_id }) =>
       item_id === transition.entity_ref);
-    if (!pin || digest(transition.before) !== digest(statePin(pin))
-        || transition.after.property_state_ref
-          !== pin.entity_snapshot.property_state_ref
-        || transition.after.placement_state_ref
-          !== pin.entity_snapshot.placement_state_ref
+    if (!pin || !isDeepStrictEqual(transition.before, statePin(pin))
         || transition.after.holder_ref !== pin.entity_snapshot.holder_ref
         || transition.after.controller_ref
           !== pin.entity_snapshot.controller_ref) {
@@ -111,8 +108,8 @@ export function validateActionProducedAtomicProposal(value, load) {
   }
   for (const tool of value.tool_state_pins) {
     const pin = toolPins.find(({ item_id }) => item_id === tool.entity_ref);
-    if (!pin || digest(tool.before) !== digest(statePin(pin))
-        || digest(tool.after) !== digest(tool.before)) {
+    if (!pin || !isDeepStrictEqual(tool.before, statePin(pin))
+        || !isDeepStrictEqual(tool.after, tool.before)) {
       fail('ACTION_PRODUCED_TOOL_PIN_MISMATCH');
     }
   }
@@ -123,8 +120,8 @@ export function validateActionProducedAtomicProposal(value, load) {
         || value.results[0].identity_kind !== 'preserved_source'
         || value.results[0].entity_ref
           !== value.source_transitions[0].entity_ref
-        || digest(value.results[0].mechanics_snapshot)
-          !== digest(value.source_transitions[0].after.mechanics_snapshot))
+        || !isDeepStrictEqual(value.results[0].mechanics_snapshot,
+          value.source_transitions[0].after.mechanics_snapshot))
       || value.identity_mode === 'independent_outputs'
         && (value.results.length < 1
           || value.results.length > value.technical_policy_pin.max_new_entities
@@ -189,7 +186,7 @@ function validateFinite(value, row, causal, itemId, required) {
       requested_decrement: value.decrement_quantity
     });
   } catch { fail('ACTION_PRODUCED_RESOURCE_PIN_MISMATCH'); }
-  if (digest(expected) !== digest(value)) {
+  if (!isDeepStrictEqual(expected, value)) {
     fail('ACTION_PRODUCED_RESOURCE_PIN_MISMATCH');
   }
 }
@@ -213,13 +210,11 @@ function validateIndependentConservation(proposal, sourcePins) {
   const totals = new Map();
   for (let index = 0; index < proposal.results.length; index += 1) {
     const result = proposal.results[index];
-    const identityDigest = digest({
-      domain: 'rus.items.action_produced_output_identity.v1',
+    const expectedId = createActionProducedOutputIdentity({
       root_turn_id: proposal.causal_identity.root_turn_id,
-      action_ref: proposal.causal_identity.action_ref, ordinal: index + 1
+      action_ref: proposal.causal_identity.action_ref,
+      ordinal: index + 1
     });
-    const expectedId = `a1_result_${identityDigest.slice(
-      'sha256:'.length, 'sha256:'.length + 32)}`;
     if (result.entity_ref !== expectedId || seenResults.has(result.entity_ref)
         || !Array.isArray(result.material_allocations)
         || result.material_allocations.length === 0) {
@@ -265,9 +260,6 @@ function validateIndependentConservation(proposal, sourcePins) {
 function statePin(pin) {
   const value = pin.entity_snapshot;
   return { state_version: value.state_version,
-    mechanics_state_ref: value.mechanics_state_ref,
-    property_state_ref: value.property_state_ref,
-    placement_state_ref: value.placement_state_ref,
     holder_ref: value.holder_ref, controller_ref: value.controller_ref };
 }
 function rational(value, allowZero) {

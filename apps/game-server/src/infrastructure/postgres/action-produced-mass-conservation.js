@@ -88,9 +88,6 @@ function mechanicsRequest(proposal, sourcePins) {
     result_class: proposal.result_class,
     source_inputs: sourcePins.map(({ entity_snapshot: value }) => ({
       entity_ref: value.entity_ref, state_version: value.state_version,
-      mechanics_state_ref: value.mechanics_state_ref,
-      property_state_ref: value.property_state_ref,
-      placement_state_ref: value.placement_state_ref,
       holder_ref: value.holder_ref, controller_ref: value.controller_ref,
       finite_resource: structuredClone(value.finite_resource)
     })),

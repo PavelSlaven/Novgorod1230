@@ -4,7 +4,6 @@ import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
-import { deriveActionProducedOutputProperty } from '@rus/items-property';
 import { actionProducedPhysicalKeys, createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
 import { actionProducedTraceActionRef } from
@@ -28,7 +27,7 @@ import { applyActionProductionProjection } from
 import { projectItems } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-items.js';
 
-test('A1 write plan is sealed, detached and rejects hostile boundaries unread', () => {
+test('A1 write plan is validated, detached and rejects hostile boundaries unread', () => {
   const request = fixture();
   const plan = createActionProducedAtomicWritePlan(request);
   assert.equal(plan.schema, 'action_production_atomic_write_plan_v1');
@@ -36,28 +35,21 @@ test('A1 write plan is sealed, detached and rejects hostile boundaries unread', 
   assert.equal(plan.source_updates[0].item_id, 'item:pole');
   assert.equal(plan.result_items.length, 0);
   request.transition_proposal.result_class = 'forged';
-  assert.equal(plan.result_class, 'ordinary_physical_result');
+  assert.equal(plan.transition_proposal.result_class,
+    'ordinary_physical_result');
   assert.deepEqual(createActionProducedAtomicWritePlan(plan), plan);
   const recomposed = structuredClone(plan);
   recomposed.source_updates[0].after_item.state.action_production
     .result_class = 'waste';
-  recomposed.write_plan_digest = digest(Object.fromEntries(
-    Object.entries(recomposed).filter(([key]) => key !== 'write_plan_digest')));
   assert.throws(() => createActionProducedAtomicWritePlan(recomposed),
     { code: 'ACTION_PRODUCED_PLAN_INVALID' });
   const forgedActor = structuredClone(plan);
   forgedActor.actor_ref = 'actor:other';
-  forgedActor.write_plan_digest = digest(Object.fromEntries(
-    Object.entries(forgedActor)
-      .filter(([key]) => key !== 'write_plan_digest')));
   assert.throws(() => createActionProducedAtomicWritePlan(forgedActor),
     { code: 'ACTION_PRODUCED_PLAN_INVALID' });
   const forgedOutputAuthority = structuredClone(plan);
   forgedOutputAuthority.transition_proposal.results[0].output_authority.mode =
     'new_non_authoritative';
-  forgedOutputAuthority.write_plan_digest = digest(Object.fromEntries(
-    Object.entries(forgedOutputAuthority)
-      .filter(([key]) => key !== 'write_plan_digest')));
   assert.throws(() => createActionProducedAtomicWritePlan(
     forgedOutputAuthority), { code: 'ACTION_PRODUCED_RESULT_INVALID' });
 
@@ -105,8 +97,8 @@ test('common trace P16 binds A1 to exact check and activity-time evidence',
     const differentActivity = await buildCausalCombinedPlan({ actionPlan,
       approvedPlan, roll: 12, band: 'success', durationMinutes: 10 });
 
-    assert.equal(first.action_production_atomic_write_plan.write_plan_digest,
-      differentRoll.action_production_atomic_write_plan.write_plan_digest);
+    assert.deepEqual(first.action_production_atomic_write_plans,
+      differentRoll.action_production_atomic_write_plans);
     assert.notEqual(first.write_set_digest, differentRoll.write_set_digest);
     assert.notEqual(first.write_set_digest, differentActivity.write_set_digest);
     assert.equal(validateSpatialV3CombinedWritePlan(first), true);
@@ -160,10 +152,10 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
     const changed = await loadActionProducedCommittedContext(
       loaderClient([changedRow]), loadInput());
     assert.equal(changed.source_snapshots[0].access_state, 'quick');
-    assert.notEqual(changed.source_snapshots[0].property_state_ref,
-      loaded.source_snapshots[0].property_state_ref);
-    assert.notEqual(changed.source_snapshots[0].placement_state_ref,
-      loaded.source_snapshots[0].placement_state_ref);
+    assert.notDeepEqual(changed.row_pins[0].item.state,
+      loaded.row_pins[0].item.state);
+    assert.notDeepEqual(changed.row_pins[0].placement,
+      loaded.row_pins[0].placement);
 
     const groundedRow = dbRow();
     groundedRow.anchor_id = 'anchor:workbench';
@@ -238,7 +230,7 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
     assert.equal(reads, 0); assert.equal(calls, 0);
   });
 
-test('A1 loader accepts only one sealed same-root ordinary overlay', async () => {
+test('A1 loader accepts only one validated same-root ordinary overlay', async () => {
   const ordinary = batchInput({ masses: [800], party: 'party-1',
     partyStateVersion: 7, ownerControllerRef: 'actor:mikula',
     rootTurnId: 'turn-8', stepIndex: 1 });
@@ -246,16 +238,14 @@ test('A1 loader accepts only one sealed same-root ordinary overlay', async () =>
   const loaded = await loadActionProducedCommittedContext(loaderClient([]), {
     ...loadInput(), step_index: 2, source_refs: [itemId],
     prepared_ordinary_plan: ordinary,
+    prepared_action_plans: [],
     change_set_id: 'change-8'
   });
   assert.equal(loaded.source_snapshots[0].entity_ref, itemId);
   assert.equal(loaded.source_snapshots[0].access_state, 'quick');
-  assert.equal(loaded.row_pins[0].prepared_ordinary.write_plan_digest,
-    ordinary.write_plan_digest);
   assert.deepEqual(loaded.row_pins[0].prepared_ordinary, {
     schema: 'action_production_prepared_ordinary_pin_v1',
     request_identity: ordinary.request_identity,
-    write_plan_digest: ordinary.write_plan_digest,
     root_turn_id: 'turn-8', step_index: 1
   });
   assert.throws(() => validateActionProducedRowPins(loaded.row_pins, 'source',
@@ -274,7 +264,8 @@ test('A1 loader accepts only one sealed same-root ordinary overlay', async () =>
   await assert.rejects(loadActionProducedCommittedContext(loaderClient([]), {
     ...loadInput(), step_index: 2,
     source_refs: [concealed.items[0].item_id],
-    prepared_ordinary_plan: concealed, change_set_id: 'change-8'
+    prepared_ordinary_plan: concealed, prepared_action_plans: [],
+    change_set_id: 'change-8'
   }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
   const wrongRoot = batchInput({ masses: [800], party: 'party-1',
     partyStateVersion: 7, ownerControllerRef: 'actor:mikula',
@@ -282,11 +273,12 @@ test('A1 loader accepts only one sealed same-root ordinary overlay', async () =>
   await assert.rejects(loadActionProducedCommittedContext(loaderClient([]), {
     ...loadInput(), step_index: 2,
     source_refs: [wrongRoot.items[0].item_id],
-    prepared_ordinary_plan: wrongRoot, change_set_id: 'change-8'
+    prepared_ordinary_plan: wrongRoot, prepared_action_plans: [],
+    change_set_id: 'change-8'
   }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
 });
 
-test('sealed proposal requires exact one-to-one source and tool coverage', () => {
+test('validated proposal requires exact one-to-one source and tool coverage', () => {
   const sourceRequest = fixture();
   const sourceLoad = structuredClone(sourceRequest.committed_load);
   const sourceProposal = structuredClone(sourceRequest.transition_proposal);
@@ -309,9 +301,6 @@ test('sealed proposal requires exact one-to-one source and tool coverage', () =>
   const toolProposal = structuredClone(toolRequest.transition_proposal);
   const toolPin = (itemId) => ({ role: 'tool', item_id: itemId,
     entity_snapshot: { entity_ref: itemId, state_version: '7',
-      mechanics_state_ref: `mechanics:${itemId}`,
-      property_state_ref: `property:${itemId}`,
-      placement_state_ref: `placement:${itemId}`,
       holder_ref: 'actor:mikula', controller_ref: 'actor:mikula' } });
   const firstTool = toolPin('item:tool-a');
   toolLoad.row_pins.push(firstTool, toolPin('item:tool-b'));
@@ -333,8 +322,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
     used_item_ids: [] };
   const destinationPin = {
     schema: 'action_production_output_destination_pin_v1',
-    destination_kind: 'party_current_anchor', ...destinationValue,
-    destination_digest: digest(destinationValue)
+    destination_kind: 'party_current_anchor', ...destinationValue
   };
   const sourceOwnership = { ownership_id: 'ownership:source',
     owner_npc_id: null, owner_character_id: 'actor:mikula',
@@ -346,12 +334,8 @@ test('independent A1 output cannot inherit currency or official state', () => {
       official_seal: true } }
   }, ownership: sourceOwnership, entity_snapshot: {
     controller_ref: 'actor:mikula', ownership_snapshot: sourceOwnership } }];
-  const outputProperty = deriveActionProducedOutputProperty(
-    sourceOwnership, 'result:token', 'actor:mikula');
   const result = { entity_ref: 'result:token', source_ref: 'item:coin-source',
     holder_ref: null, controller_ref: 'actor:mikula',
-    placement_state_ref: digest(placement),
-    property_state_ref: outputProperty.property_state_ref,
     mechanics_snapshot: {},
     physical_facts: ['имеет сходство с жетоном'], inscription_text: null,
     output_authority: {
@@ -382,16 +366,14 @@ test('independent A1 output cannot inherit currency or official state', () => {
   assert.deepEqual(item.item_row.state.ordinary_metadata, {
     semantic_type: 'money_like_token', name: 'деревянный счётный жетон',
     origin: { kind: 'action_produced', source_refs: ['item:coin-source'] },
-    semantic_facts: ['имеет сходство с жетоном'], operation_history: []
+    semantic_facts: [{ fact_id: 'action:token:fact:1',
+      text: 'имеет сходство с жетоном', operation_id: 'action:token' }],
+    operation_history: []
   });
   assert.equal(item.ownership_row.owner_character_id, 'actor:mikula');
-  assert.equal(result.property_state_ref, digest({
-    property_state: item.item_row.state.property_state,
-    ownership: item.ownership_row
-  }));
   assert.deepEqual(Object.keys(item).sort(), [
     'item_id', 'item_row', 'material_allocations', 'mechanics_snapshot',
-    'ownership_row', 'placement_evidence', 'placement_row', 'source_ref'
+    'ownership_row', 'placement_row', 'source_ref'
   ]);
   assert.equal('currency' in item.item_row.state.action_production, false);
   assert.equal('official_seal' in item.item_row.state.action_production, false);
@@ -422,7 +404,7 @@ test('written A1 state persists inscription without truth or knowledge', () => {
   assert.equal('objective_truth' in state, false);
   assert.equal('knowledge' in state, false);
   assert.deepEqual(Object.keys(state).sort(), [
-    'causal_identity', 'inscription_text', 'output_class', 'physical_facts',
+    'causal_identity', 'inscription_text', 'output_class',
     'result_class', 'schema'
   ]);
 });
@@ -452,9 +434,6 @@ function loaderClient(itemRows, resourceRows = [], accessAnchorId = null,
 
 function stateFromEntity(value) {
   return { state_version: value.state_version,
-    mechanics_state_ref: value.mechanics_state_ref,
-    property_state_ref: value.property_state_ref,
-    placement_state_ref: value.placement_state_ref,
     holder_ref: value.holder_ref, controller_ref: value.controller_ref };
 }
 
@@ -535,7 +514,7 @@ async function buildCausalCombinedPlan({ actionPlan, approvedPlan, roll,
     lock_context: { owner_keys: ['actor:actor:mikula'], execution_keys: [],
       g4_keys: [], physical_keys: [...physicalKeys,
         ...actionProducedPhysicalKeys(actionPlan)] },
-    action_production_atomic_write_plan: actionPlan,
+    action_production_atomic_write_plans: [actionPlan],
     commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route',
       'capacity', 'time', 'change_set'].map((kind) => ({ kind,
       digest: `sha256:${'b'.repeat(64)}` }))
@@ -562,34 +541,18 @@ function fixture() {
     controller_npc_id: null, controller_character_id: 'actor:mikula',
     claim_state: 'owned'
   };
-  const mechanicsStateRef = digest({
-    runtime_instance_mechanics_snapshot: null,
-    inventory_profile_snapshot: null,
-    template_id: item.template_id, profile_id: item.profile_id,
-    category_id: item.category_id, quantity: item.quantity
-  });
-  const propertyStateRef = digest({ property_state: null, ownership });
-  const { ownership_id: ignoredOwnershipId, ...ownershipBasis } = ownership;
-  void ignoredOwnershipId;
-  const placementStateRef = digest(placement);
   const entity = {
     schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state: 'committed', role: 'source', entity_ref: 'item:pole',
     state_version: '7', lifecycle_state: 'active',
     access_state: 'immediate', holder_ref: 'actor:mikula',
     controller_ref: 'actor:mikula',
-    mechanics_state_ref: mechanicsStateRef,
-    property_state_ref: propertyStateRef,
-    ownership_state_ref: digest(ownership),
-    ownership_basis_ref: digest(ownershipBasis),
-    property_basis_ref: digest(null),
     ownership_snapshot: structuredClone(ownership),
-    placement_state_ref: placementStateRef, finite_resource: null
+    finite_resource: null
   };
   const rowPin = {
     role: 'source', item_id: 'item:pole', item, placement, ownership,
-    item_digest: digest(item), placement_digest: digest(placement),
-    ownership_digest: digest(ownership), entity_snapshot: entity,
+    entity_snapshot: entity,
     finite_resource_row: null
   };
   return {
@@ -611,19 +574,12 @@ function fixture() {
         entities: [{ entity_ref: 'item:pole', state_version: '7',
           lifecycle_state: 'active', access_state: 'immediate',
           accessible_actor_ref: 'actor:mikula', holder_ref: 'actor:mikula',
-          controller_ref: 'actor:mikula', role_membership: ['source'],
-          mechanics_state_ref: entity.mechanics_state_ref,
-          property_state_ref: entity.property_state_ref,
-          ownership_state_ref: entity.ownership_state_ref,
-          ownership_basis_ref: entity.ownership_basis_ref,
-          property_basis_ref: entity.property_basis_ref,
-          placement_state_ref: entity.placement_state_ref }]
+          controller_ref: 'actor:mikula', role_membership: ['source'] }]
       },
       source_snapshots: [structuredClone(entity)], tool_snapshots: [],
       row_pins: [rowPin]
     },
-    transition_proposal: proposal({ mechanicsStateRef, propertyStateRef,
-      placementStateRef })
+    transition_proposal: proposal()
   };
 }
 
@@ -657,19 +613,15 @@ function technicalPolicy() {
     max_new_entities: row.max_new_entities };
 }
 
-function proposal({ mechanicsStateRef = 'mechanics:item:pole:7',
-  propertyStateRef = 'property:item:pole:7',
-  placementStateRef = 'placement:item:pole:7' } = {}) {
+function proposal() {
   const mechanics = mechanicsSnapshot();
   const before = {
-    state_version: '7', mechanics_state_ref: mechanicsStateRef,
-    property_state_ref: propertyStateRef,
-    placement_state_ref: placementStateRef,
+    state_version: '7',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula'
   };
   return {
     schema: 'rus.items.action_produced_transition_proposal.v1', version: 1,
-    status: 'sealed', causal_identity: {
+    causal_identity: {
       request_id: 'request-1', root_turn_id: 'turn-8',
       action_ref: 'action-1', step_index: 1
     },
@@ -685,15 +637,11 @@ function proposal({ mechanicsStateRef = 'mechanics:item:pole:7',
     result_class: 'ordinary_physical_result',
     source_transitions: [{ entity_ref: 'item:pole', before,
       after: { state_version: '8', mechanics_snapshot: structuredClone(mechanics),
-        property_state_ref: before.property_state_ref,
-        placement_state_ref: before.placement_state_ref,
         holder_ref: before.holder_ref, controller_ref: before.controller_ref },
       finite_resource_transition: null }],
     tool_state_pins: [],
     results: [{ entity_ref: 'item:pole', identity_kind: 'preserved_source',
       source_ref: 'item:pole', mechanics_snapshot: mechanics,
-      property_state_ref: before.property_state_ref,
-      placement_state_ref: before.placement_state_ref,
       holder_ref: before.holder_ref, controller_ref: before.controller_ref,
       physical_facts: ['sharpened'], inscription_text: null,
       output_authority: {

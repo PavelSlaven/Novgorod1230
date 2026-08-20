@@ -1,5 +1,4 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
+import { isDeepStrictEqual } from 'node:util';
 import { actionProducedDestinationFits } from
   './action-produced-atomic-write-plan-pins.js';
 
@@ -29,7 +28,11 @@ async function lockDestination(client, plan) {
     item_capacity: Number(selected.rows[0].item_capacity),
     used_item_ids: used.rows.map(({ item_id: itemId }) => itemId)
   } : null;
-  if (value == null || digest(value) !== pin.destination_digest
+  if (value == null || !isDeepStrictEqual(value, {
+    anchor_id: pin.anchor_id,
+    item_capacity: pin.item_capacity,
+    used_item_ids: pin.used_item_ids
+  })
       || !actionProducedDestinationFits(pin, plan.source_updates,
         plan.result_items)) fail('ACTION_PRODUCED_DESTINATION_STALE');
 }

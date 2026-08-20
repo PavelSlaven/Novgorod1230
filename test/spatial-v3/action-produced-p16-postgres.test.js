@@ -101,8 +101,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       'ordinary_mundane');
     assert.deepEqual(row.state.runtime_instance_mechanics_snapshot,
       preserve.transition_proposal.results[0].mechanics_snapshot);
-    assert.deepEqual(row.state.action_production.physical_facts,
-      preserve.transition_proposal.results[0].physical_facts);
+    assert.deepEqual(row.state.ordinary_metadata.semantic_facts.map(
+      ({ text }) => text), ['physically transformed']);
 
     const partition = await actionPlan(pool, {
       partyVersion: 2, changeSetId: 'change-partition', requestId: 'partition',
@@ -114,19 +114,14 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       physical_position: null, equipment_slot_category_id: null,
       attached_item_id: null };
     assert.equal(partition.transition_proposal.results.every((result) =>
-      result.holder_ref === null
-        && result.controller_ref === 'pc'
-        && result.placement_state_ref === digest(outputPlacement)), true);
-    assert.equal(partition.result_items.every((result) =>
-      digest(result.placement_row) === digest(outputPlacement)), true);
+      result.holder_ref === null && result.controller_ref === 'pc'), true);
+    for (const result of partition.result_items) {
+      assert.deepEqual(result.placement_row, outputPlacement);
+    }
     const mismatchedPlacement = structuredClone(partition);
-    mismatchedPlacement.transition_proposal.results[0]
-      .placement_state_ref = partition.source_pins[0].placement_digest;
-    mismatchedPlacement.write_plan_digest = digest(Object.fromEntries(
-      Object.entries(mismatchedPlacement)
-        .filter(([key]) => key !== 'write_plan_digest')));
+    mismatchedPlacement.output_destination_pin.anchor_id = 'other-anchor';
     assert.throws(() => createActionProducedAtomicWritePlan(
-      mismatchedPlacement), { code: 'ACTION_PRODUCED_DESTINATION_INVALID' });
+      mismatchedPlacement), { code: 'ACTION_PRODUCED_PLAN_INVALID' });
     const partitionCombined = await combinedPlan(partition, 'partition', 2);
     await pool.query(`UPDATE party_runtime.party_g5_anchors
       SET item_capacity=1 WHERE party_id='party-a1'
@@ -192,8 +187,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       WHERE i.party_id='party-a1' AND i.item_id LIKE 'a1_result_%'
       ORDER BY i.item_id`)).rows;
     for (const row of persistedOutputProperties) {
-      const sealed = partition.transition_proposal.results.find(
-        ({ entity_ref: entityRef }) => entityRef === row.item_id);
+      const resultItem = partition.result_items.find(
+        ({ item_id: itemId }) => itemId === row.item_id);
       const ownership = { ownership_id: row.ownership_id,
         owner_npc_id: row.owner_npc_id,
         owner_character_id: row.owner_character_id,
@@ -203,9 +198,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         claim_state: row.claim_state };
       assert.equal(row.legal_status,
         'action_produced_non_authoritative');
-      assert.equal(sealed.property_state_ref, digest({
-        property_state: row.state.property_state ?? null, ownership
-      }));
+      assert.deepEqual(resultItem.ownership_row, ownership);
       assert.equal(row.state.action_production.output_class,
         'ordinary_mundane');
     }
@@ -435,7 +428,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       requestId: 'production-request',
       applyWorkingProjection: ({ working_projection: projection,
         action_production_atomic_write_plan: plan }) => {
-        appliedA1.push(plan.causal_identity.request_id);
+        appliedA1.push(plan.transition_proposal.causal_identity.request_id);
         return { ...structuredClone(projection), prepared_a1: true };
       } });
 
@@ -522,8 +515,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       }) });
     const impossible = await productionOwner('production-impossible')(
       impossibleEnvelope);
-    assert.equal(impossible.action_production_atomic_write_plan.identity_mode,
-      'preserve_source');
+    assert.equal(impossible.action_production_atomic_write_plan
+      .transition_proposal.identity_mode, 'preserve_source');
     assert.equal(impossible.action_production_atomic_write_plan
       .source_updates.length, 1);
     assert.deepEqual(impossible.action_production_atomic_write_plan
@@ -618,14 +611,16 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         AND state->'action_production'->'causal_identity'->>'request_id'
           ='production-multi'
       ORDER BY item_id LIMIT 1`)).rows[0];
-    assert.deepEqual(persistedOutput.ordinary_metadata, {
-      semantic_type: 'ordinary_mundane', name: 'составная деталь',
-      origin: { kind: 'action_produced', source_refs: [
-        'production-material-a', 'production-material-b'] },
-      semantic_facts: [
-        'две одинаковые детали из обоих материалов'],
-      operation_history: []
-    });
+    assert.equal(persistedOutput.ordinary_metadata.semantic_type,
+      'ordinary_mundane');
+    assert.equal(persistedOutput.ordinary_metadata.name, 'составная деталь');
+    assert.deepEqual(persistedOutput.ordinary_metadata.origin, {
+      kind: 'action_produced', source_refs: [
+        'production-material-a', 'production-material-b'] });
+    assert.deepEqual(persistedOutput.ordinary_metadata.semantic_facts.map(
+      ({ text }) => text), [
+      'две одинаковые детали из обоих материалов']);
+    assert.deepEqual(persistedOutput.ordinary_metadata.operation_history, []);
 
     const production = await productionOwner('production-request')(
       productionEnvelope({
@@ -656,12 +651,10 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.deepEqual(productionRows, { party_version: 7,
       source: { schema: 'rus.items.action_production_item_state.v1',
         causal_identity: production.action_production_atomic_write_plan
-          .causal_identity,
+          .transition_proposal.causal_identity,
         result_class: 'partial_transformation',
         output_class: 'weapon_capable',
         weapon_qualitative_class: 'improvised_impact_light',
-        physical_facts: [
-          'петля пригодна для импровизированного удара'],
         inscription_text: null }, tool_version: 1 });
 
     const ordinary = batchInput({ party: 'party-a1', partyStateVersion: 7,
@@ -748,7 +741,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       }) }));
     const wholeCombined = await combinedPlan(
       whole.action_production_atomic_write_plan, 'production-whole', 9);
-    assert.equal((await committer.commit({ plan: wholeCombined })).ok, true);
+    const wholeCommit = await committer.commit({ plan: wholeCombined });
+    assert.equal(wholeCommit.ok, true, JSON.stringify(wholeCommit));
     assert.deepEqual((await pool.query(`SELECT
       (SELECT condition_state FROM party_runtime.party_items
        WHERE party_id='party-a1' AND item_id='production-whole-board')
@@ -848,6 +842,60 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         .item.state.runtime_instance_mechanics_snapshot.mechanics.mass_grams,
       600);
     } finally { partialReload.release(); }
+
+    const sequentialFirst = await actionPlan(pool, {
+      partyVersion: 11, changeSetId: 'change-sequential',
+      requestId: 'sequential-a1', actionRef: 'action-sequential-1',
+      rootTurnId: 'turn-sequential', stepIndex: 1,
+      sources: ['production-partial-board'], tools: ['production-knife'],
+      mode: 'preserve_source',
+      physicalDescription: 'один конец доски заострён',
+      qualitativeFacts: ['на конце появилась острая грань']
+    });
+    const sequentialSecond = await actionPlan(pool, {
+      partyVersion: 11, changeSetId: 'change-sequential',
+      requestId: 'sequential-a1', actionRef: 'action-sequential-2',
+      rootTurnId: 'turn-sequential', stepIndex: 2,
+      sources: ['production-partial-board'], tools: ['production-knife'],
+      mode: 'preserve_source', preparedActions: [sequentialFirst],
+      physicalDescription: 'рядом вырезана неглубокая зарубка',
+      qualitativeFacts: ['зарубка видна на поверхности']
+    });
+    const sequentialCombined = await combinedPlan(
+      [sequentialFirst, sequentialSecond], 'sequential-a1', 11);
+    assert.equal((await committer.commit({ plan: sequentialCombined })).ok,
+      true);
+    assert.deepEqual(await committer.commit({ plan: sequentialCombined }), {
+      ok: true, replay: true, change_set_id: 'change-sequential'
+    });
+    const sequentialState = (await pool.query(`SELECT state,state_version
+      FROM party_runtime.party_items
+      WHERE party_id='party-a1' AND item_id='production-partial-board'`))
+      .rows[0];
+    assert.equal(sequentialState.state_version, '4');
+    assert.deepEqual(sequentialState.state.ordinary_metadata.semantic_facts
+      .map(({ text }) => text), [
+      'один конец доски заострён', 'на конце появилась острая грань',
+      'рядом вырезана неглубокая зарубка',
+      'зарубка видна на поверхности'
+    ]);
+    const sequentialReload = await pool.connect();
+    try {
+      const loaded = await loadActionProducedCommittedContext(
+        sequentialReload, {
+          party_id: 'party-a1', actor_ref: 'pc',
+          root_turn_id: 'turn-after-sequential',
+          action_ref: 'action-after-sequential', step_index: 1,
+          context_ref: A1.context_ref, expected_party_state_version: 12,
+          source_refs: ['production-partial-board'],
+          tool_refs: ['production-knife'], admission_profile:
+            admissionProfile(12), technical_policy: technicalPolicy()
+        });
+      assert.deepEqual(loaded.source_snapshots[0].entity_ref,
+        'production-partial-board');
+      assert.equal(loaded.row_pins[0].item.state.ordinary_metadata
+        .semantic_facts.length, 4);
+    } finally { sequentialReload.release(); }
   });
 
 async function actionPlan(pool, config) {
@@ -864,8 +912,10 @@ async function actionPlan(pool, config) {
       source_refs: config.sources, tool_refs: config.tools,
       admission_profile: admissionProfile(config.partyVersion),
       technical_policy: technicalPolicy(),
-      ...(config.preparedOrdinary == null ? {} : {
-        prepared_ordinary_plan: config.preparedOrdinary,
+      ...(config.preparedOrdinary == null
+          && config.preparedActions == null ? {} : {
+        prepared_ordinary_plan: config.preparedOrdinary ?? null,
+        prepared_action_plans: config.preparedActions ?? [],
         change_set_id: config.changeSetId
       })
     });
@@ -891,9 +941,11 @@ async function actionPlan(pool, config) {
       result_descriptor: config.mode === 'no_useful_result'
         ? { display_name: null, physical_description: null,
           qualitative_facts: [], inscription_text: null }
-        : { display_name: 'ordinary result',
-          physical_description: 'physically transformed',
-          qualitative_facts: ['physically transformed'],
+        : { display_name: config.displayName ?? 'ordinary result',
+          physical_description: config.physicalDescription
+            ?? 'physically transformed',
+          qualitative_facts: config.qualitativeFacts
+            ?? ['physically transformed'],
           inscription_text: null }
     };
     const admitted = admitActionProducedResult({
@@ -951,8 +1003,11 @@ function exactMechanics(value) {
     quantity: structuredClone(quantity), container };
 }
 
-async function combinedPlan(action, suffix, partyVersion,
+async function combinedPlan(actionInput, suffix, partyVersion,
   { missingClock = false, ordinaryPlan = null, followUpMove = false } = {}) {
+  const actions = Array.isArray(actionInput) ? actionInput : [actionInput];
+  const action = actions.at(-1);
+  const causal = action.transition_proposal.causal_identity;
   const changeSetId = action.change_set_id;
   const payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: 'Изменение зафиксировано.', perceived_changes: [],
@@ -986,14 +1041,15 @@ async function combinedPlan(action, suffix, partyVersion,
       anchor_id: null, container_id: null, holder_npc_id: null,
       holder_character_id: 'pc', physical_position: 'hands',
       equipment_slot_category_id: null, attached_item_id: null } }])];
-  const idem = action.causal_identity.request_id;
+  const idem = causal.request_id;
   const causalInputDigest = digest({
     schema: 'action_production_p16_causal_input_v1',
-    request_id: action.causal_identity.request_id,
-    root_turn_id: action.causal_identity.root_turn_id,
-    action_ref: action.causal_identity.action_ref,
-    step_index: action.causal_identity.step_index,
-    actor_ref: action.actor_ref, context_ref: action.context_pin.context_ref
+    request_id: causal.request_id,
+    root_turn_id: causal.root_turn_id,
+    action_ref: causal.action_ref,
+    step_index: causal.step_index,
+    actor_ref: action.actor_ref,
+    context_ref: action.transition_proposal.context_pin.context_ref
   });
   const built = await buildCombinedWritePlan({ plan_id: `plan-${suffix}`,
     party_id: 'party-a1', write_plan_kind: 'semantic_commit',
@@ -1004,7 +1060,7 @@ async function combinedPlan(action, suffix, partyVersion,
     idempotency: { id: idem, key: `key-${suffix}` },
     change_set: { id: changeSetId },
     visible_package_envelope: { package_id: `visible-${suffix}`,
-      party_id: 'party-a1', turn_id: action.causal_identity.root_turn_id,
+      party_id: 'party-a1', turn_id: causal.root_turn_id,
       committed_state_version: String(partyVersion + 1),
       change_set_id: changeSetId, package_digest: digest(payload),
       visible_payload: payload, presentation_status: 'pending',
@@ -1019,13 +1075,13 @@ async function combinedPlan(action, suffix, partyVersion,
         operation_kind: 'action_production', idempotency_record_id: idem }
     }] }],
     lock_context: { owner_keys: ['actor:pc'], execution_keys: [],
-      g4_keys: [], physical_keys: [
+      g4_keys: [], physical_keys: [...new Set([
         `party_runtime.party_v3_change_sets:${changeSetId}`,
         'party_runtime.parties:party-a1',
         ...(missingClock ? ['party_runtime.party_clocks:party-a1'] : []),
-        ...actionProducedPhysicalKeys(action),
+        ...actions.flatMap(actionProducedPhysicalKeys),
         ...(ordinaryPlan == null ? [] : ordinaryPhysicalKeys(ordinaryPlan))
-      ] }, action_production_atomic_write_plan: action,
+      ])] }, action_production_atomic_write_plans: actions,
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     commit_rechecks: ['physical', 'state', 'pin', 'endpoint', 'route',
       'capacity', 'time', 'change_set'].map((kind) => ({ kind,
@@ -1253,6 +1309,7 @@ function actionProduction(overrides = {}) {
 function productionEnvelope({ itemRef = 'production-garment',
   targetRefs = ['production-knife'], actionProduction: qualitative =
     actionProduction(), stateVersion = 5, turnNumber = 4,
+  rootTurnId = `turn-production:${turnNumber}`,
   remainingIntent = 'Физически изменяю доступный предмет.',
   checked = true } = {}) {
   const plan = { resolution: checked ? 'generic_check' : 'domain_request',
@@ -1269,11 +1326,11 @@ function productionEnvelope({ itemRef = 'production-garment',
   return { operation: { op: 'request_item_use', actor_ref: 'pc',
       item_ref: itemRef, use_kind: 'other', target_refs: targetRefs,
       action_production: action }, plan,
-    request: { root_turn_id: 'turn-production', step_index: 1,
+    request: { root_turn_id: rootTurnId, step_index: 1,
       committed_state_version: stateVersion, remaining_intent: remainingIntent },
     actor: { actor_id: 'pc' }, working_projection: {},
     committed_state: { party_state: { turn_number: turnNumber } },
-    check_result: checked ? { check_id: 'turn-production:step:1', roll: 12,
+    check_result: checked ? { check_id: `${rootTurnId}:step:1`, roll: 12,
       outcome: { band: 'success' } } : null };
 }
 

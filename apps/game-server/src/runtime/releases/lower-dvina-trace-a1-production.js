@@ -77,6 +77,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       technical_policy: technicalPolicy(profile),
       prepared_ordinary_plan: envelope
         .prepared_ordinary_materialization_atomic_write_plan ?? null,
+      prepared_action_plans: envelope
+        .prepared_action_production_atomic_write_plans ?? [],
       change_set_id: changeSetId
     });
     const mechanics = new Map();

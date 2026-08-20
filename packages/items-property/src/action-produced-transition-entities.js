@@ -1,19 +1,14 @@
-import { sha256 } from '@rus/kernel';
 import { actionProducedRational } from
   './action-produced-transition-rational.js';
 
 const PIN_KEYS = [
   'entity_ref', 'state_version', 'access_state', 'holder_ref',
-  'controller_ref', 'mechanics_state_ref', 'property_state_ref',
-  'ownership_state_ref', 'ownership_basis_ref', 'property_basis_ref',
-  'placement_state_ref'
+  'controller_ref'
 ];
 const SNAPSHOT_KEYS = [
   'schema', 'commit_state', 'role', 'entity_ref', 'state_version',
   'lifecycle_state', 'access_state', 'holder_ref', 'controller_ref',
-  'mechanics_state_ref', 'property_state_ref', 'ownership_state_ref',
-  'ownership_basis_ref', 'property_basis_ref', 'ownership_snapshot',
-  'placement_state_ref', 'finite_resource'
+  'ownership_snapshot', 'finite_resource'
 ];
 const FINITE_KEYS = [
   'schema', 'commit_state', 'source_resource_node_id', 'state_version',
@@ -21,7 +16,6 @@ const FINITE_KEYS = [
 ];
 const OUTPUT_DESTINATION_KEYS = [
   'schema', 'placement_kind', 'target_ref', 'holder_ref', 'controller_ref',
-  'placement_state_ref'
 ];
 const OWNERSHIP_KEYS = [
   'ownership_id', 'owner_npc_id', 'owner_character_id', 'owner_party',
@@ -40,9 +34,7 @@ export function validateActionProducedEntitySnapshots(values, role, pins) {
     for (const key of PIN_KEYS) {
       if (value[key] !== pin[key]) fail();
     }
-    if (!validOwnership(value.ownership_snapshot)
-        || value.ownership_state_ref
-          !== `sha256:${sha256(value.ownership_snapshot)}`) fail();
+    if (!validOwnership(value.ownership_snapshot)) fail();
     if (value.finite_resource !== null) validateFinite(value.finite_resource);
     return value;
   });
@@ -77,8 +69,7 @@ export function validateActionProducedOutputDestination(value, mode,
       || value.schema !== 'rus.items.action_produced_output_destination.v1'
       || value.placement_kind !== 'anchor'
       || !text(value.target_ref) || value.holder_ref !== null
-      || value.controller_ref !== actorRef
-      || !text(value.placement_state_ref)) fail();
+      || value.controller_ref !== actorRef) fail();
   return value;
 }
 
@@ -89,11 +80,18 @@ export function validateActionProducedOutputPropertyBasis(propertySourceRef,
     sourceRef === propertySourceRef)) fail();
   for (const { source_ref: sourceRef } of allocations) {
     const contributor = sources.get(sourceRef)?.source;
-    if (!contributor
-        || contributor.ownership_basis_ref !== selected.ownership_basis_ref) {
+    if (!contributor || !sameOwnershipBasis(
+      contributor.ownership_snapshot, selected.ownership_snapshot)) {
       fail();
     }
   }
+}
+
+function sameOwnershipBasis(left, right) {
+  return left?.owner_npc_id === right?.owner_npc_id
+    && left?.owner_character_id === right?.owner_character_id
+    && left?.owner_party === right?.owner_party
+    && left?.claim_state === right?.claim_state;
 }
 
 function validateFinite(value) {

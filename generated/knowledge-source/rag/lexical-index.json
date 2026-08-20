@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "43cadabbc0f8ea01c80a7b8f3cfaa141b670b8a3111c2c671895d37902152d36",
-  "chunk_count": 2525,
+  "corpus_hash": "9a56cb41b894469c54ee38fd1b3eb42281b7c00fc84e0003646974f28fc44dc9",
+  "chunk_count": 2526,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -818,7 +818,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
       "line_start": 172,
-      "line_end": 185,
+      "line_end": 187,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\n### 4.4. LLM\n\nДопустим для closed bounded decisions, активного player `turn_step_plan_v1`, разрешённой конкретизации key entity, аудита, персонажа игрока и прозы из persisted visible context.\n\nPlayer step planner получает только player-safe working projection и возвращает следующий шаг по строгой schema. Один structural repair получает исходный request и перечень schema violations, но не новое состояние мира. Код владеет admission, exact fast path, checks, domain routing, working projection, derived mechanics, commit-time revalidation и записью.\n\nLLM не создаёт runtime G5/NPC, authored/significant/hidden items, container contents или party-state patch. Узкий ordinary result из D-011/D-014 становится экземпляром только после code-owned validation и сохранения exact runtime mechanics snapshot. O2b semantic model может конкретизировать только ordinary remainder уже committed container внутри отдельного candidate-free code-owned request; это не player plan и не источник authority. Visible factual projection формирует код; narrator читает её только после commit.",
       "char_count": 1137
     },
@@ -827,7 +827,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
       "line_start": 172,
-      "line_end": 185,
+      "line_end": 187,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nfree code-owned request; это не player plan и не источник authority. Visible factual projection формирует код; narrator читает её только после commit.\n\nO1 активирует только common ordinary discovery через существующий `request_discovery`: meaningful gate и code-first short circuit предшествуют model call. Candidate-free Stage A строится из committed objective context, запрещает concrete entities и предлагает только density band; versioned code-owned policy переводит `sparse|ordinary|dense` в persisted numeric identity budget. Targeted Stage B имеет `evidence_weight = 0`, а code-owned builder создаёт normalized identity/classification/coverage/policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`; это не noun/recipe gate и не authority. Exact normalized retry использует persisted resolution без reroll, другой normalized query получает другую identity. Один discovery имеет общий лимит двух semantic calls: structural repair расходует оставшийся call; Stage A repair, исчерпавший лимит, приводит к seed-only commit без Stage B. SHA-pinned cutover profile содержит обязательный adversarial Stage B classification eval для weapon, currency, document, evidence, significant/hidden, anachronism и misleading common-looking probes; probes выполняются до profile activation и выпускают versioned approval receipt, связанный с profile digest и exact production provider/model/config identity. Игровой ход только локально проверяет receipt и не повторяет eval calls. Положительный common mundane non-container `man_made` item допускается лишь с independently committed/prepared supporting basis, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Preflight `no_change` при исчерпанном budget/cap не создаёт granular resolution; новый Stage A при этом сохраняется отдельным seed-only P16 plan. Model call выполняется вне physical transaction, после чего один P16 commit атомарно фиксирует seed/basis, positive либо negative resolution, item/mechanics/property/placement (при positive), versions и idempotency. Player-safe `ordinary_resolution` capability проецирует только `@rus/visibility-knowledge-memory`; player и narrator видят лишь committed safe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.",
       "char_count": 2574
     },
@@ -836,7 +836,7 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
       "line_start": 172,
-      "line_end": 185,
+      "line_end": 187,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nsafe projection. O1 не включает O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources.\n\nТекущая O2a activation поверх O1 discovery включает authored abundant ambient source берега и authored first-entry context-bound finite stock подготовленной глины. Context-bound marker сообщает только `discovery_available`; committed stock виден как обычный source только при отдельном approved disclosure state, а concealed capability остаётся server-only. Expected result, permission и capacity не раскрываются. Stage B свободно конкретизирует unlisted ordinary semantic type/name внутри approved class, но не может менять source/property/permission/mechanics или добавлять facts. Обычный `ambient_ordinary` без capability продолжает legacy direct-action contract. First-entry атомарно provision-ит finite basis, permission/property/placement pins и resource row. Conservation является generic owner-native правилом любого admitted `finite_source`, независимо от `common_mundane` или constrained admission; mutable state загружается по выбранному source ref, поэтому несколько stocks не делят quantity. Constrained policy только добавляет региональные/resource permissions. Restricted weapon/currency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.",
       "char_count": 1463
     },
@@ -845,16 +845,25 @@
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.4. LLM",
       "line_start": 172,
-      "line_end": 185,
+      "line_end": 187,
       "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nrency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 использует sole player boundary `turn_step_request_v1 → turn_step_plan_v1`: qualitative physical result вложен в `request_item_use`, после чего code-owned owner не вызывает LLM. Один или несколько committed либо sealed same-root revealed non-container material sources и ноль или несколько доступных actor-controlled tools на текущем placement явно разделены и могут иметь другого legal owner. Profile не содержит template/recipe whitelist и допускает preserve, до четырёх independent outputs, no-result, partial/nonworking/waste, writing, non-authoritative token-like и closed weapon-capable outcomes. Generic check/activity применяется только при неопределённом исходе; детерминированное действие использует `domain_request`. Code перечитывает committed mechanics/property/placement/ownership либо exact same-root ordinary overlay, выводит source/output mechanics из реально списанных allocations, уменьшает finite source и атомарно retire-ит полностью разделённый единичный source. Partial independent output получает из sole plan только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement и сохраняет source с остаточной mechanics. Full partition использует `whole`. Известная масса полного partition сохраняется с детерминированным остатком; output hand/packing/carry выводятся code-owned и не наследуют форму source. Новый independent output требует safe непустое display name; nullable physical description не сохраняется как `null` fact. Non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible physical facts входят в same-root и reload player-safe projection. Всё фиксируется в одном combined P16. Model не задаёт numbers, canonical identity, currency/official status, truth или combat mechanics; weapon class получает формальные числа только в `@rus/combat-health`.",
       "char_count": 2136
+    },
+    {
+      "id": "code_driven_world_materialization_architecture.md:4.4. LLM:4",
+      "file": "code_driven_world_materialization_architecture.md",
+      "section": "4.4. LLM",
+      "line_start": 172,
+      "line_end": 187,
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nmbers, canonical identity, currency/official status, truth или combat mechanics; weapon class получает формальные числа только в `@rus/combat-health`.\n\nПовторные A1 preserve transitions накапливают non-authoritative physical facts в общей ordinary metadata. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes для этого не создаются.",
+      "char_count": 560
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.5. Party database:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "4.5. Party database",
-      "line_start": 186,
-      "line_end": 189,
+      "line_start": 188,
+      "line_end": 191,
       "text": "## code_driven_world_materialization_architecture.md — 4.5. Party database\n### 4.5. Party database\n\nХранит G5, NPC, предметы, контейнеры, ownership, relations, schedules, knowledge, decisions, change sets, autonomous updates, traces, visible read models и изменяемое состояние партии.",
       "char_count": 284
     },
@@ -862,8 +871,8 @@
       "id": "code_driven_world_materialization_architecture.md:5. Контракт materializer v2:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "5. Контракт materializer v2",
-      "line_start": 190,
-      "line_end": 238,
+      "line_start": 192,
+      "line_end": 240,
       "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\n## 5. Контракт materializer v2\n\nОбязательный вход:\n\n```text\nparty_id\nworld_revision_id\nhistorical_frame\ng1_id\ng4_id\ncatalog_bundle (immutable catalog snapshot)\ncatalog_digest (exact domain catalog pin)\ncatalog_bundle_digest (canonical digest применимой immutable projection)\nmaterializer_version\nrng_algorithm_id\nseed_context\nexisting_party_state\ntrigger\n```\n\n`catalog_digest` и `catalog_bundle_digest` являются разными идентичностями.\nПервый связывает materialization run с approved domain revision/import и\npersisted party pin. Второй доказывает неизменность уже проверенной применимой\nprojection. Подмена одного digest другим запрещена. Legacy input без\n`catalog_bundle_digest` допускается только внутри прежнего compatibility\nконтракта и проверяет `catalog_digest` непосредственно против bundle.\n\nОбязательный результат:\n\n```text\nmaterialization_status\ng5_nodes\ng5_edges\ng5_anchors\nnpc_instances\nitem_instances\ncontainer_instances\nownership_relations\nknowledge_records\nschedule_records\nmaterialization_trace\nvalidation_report\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.",
       "char_count": 1256
     },
@@ -871,8 +880,8 @@
       "id": "code_driven_world_materialization_architecture.md:5. Контракт materializer v2:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "5. Контракт materializer v2",
-      "line_start": 190,
-      "line_end": 238,
+      "line_start": 192,
+      "line_end": 240,
       "text": "## code_driven_world_materialization_architecture.md — 5. Контракт materializer v2\nreport\nproposed_write_set\n```\n\nMaterializer является чистым относительно persistence. Он не выполняет запись и не читает скрытое глобальное состояние.\n\nКаталог ссылается на будущие экземпляры только через утверждённые `slot_key`: `g5_node_slot_key`, `anchor_slot_key`, `from_anchor_slot_key`, `to_anchor_slot_key` и аналогичные domain-specific ссылки. Instance ID не хранится в authoring catalog: materializer разрешает однозначные slot-ссылки после deterministic selection, блокирует отсутствующие и неоднозначные ссылки и только затем формирует `player_start_position` и schema-qualified `proposed_write_set`.",
       "char_count": 694
     },
@@ -880,8 +889,8 @@
       "id": "code_driven_world_materialization_architecture.md:6. Детерминизм и identity:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "6. Детерминизм и identity",
-      "line_start": 239,
-      "line_end": 255,
+      "line_start": 241,
+      "line_end": 257,
       "text": "## code_driven_world_materialization_architecture.md — 6. Детерминизм и identity\n## 6. Детерминизм и identity\n\nSeed material включает party ID, world revision, G4, trigger, materializer/RNG versions и occurrence. Итоговый seed — SHA-256 canonical JSON. Алгоритм v2 использует `mulberry32_v1` через явный `RandomSource`.\n\nДля каждого выбора сохраняются:\n\n```text\nchoice_key\ncandidate_digest\nselected_id\nrng_counter\nselected_weight\nrejection_summary\n```\n\nInstance ID детерминированно выводится из party, run, domain, slot key и ordinal. Изменение candidate set меняет digest и требует нового осознанного запуска, а не молчаливой замены.",
       "char_count": 634
     },
@@ -889,8 +898,8 @@
       "id": "code_driven_world_materialization_architecture.md:7. Материализация G5:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "7. Материализация G5",
-      "line_start": 256,
-      "line_end": 274,
+      "line_start": 258,
+      "line_end": 276,
       "text": "## code_driven_world_materialization_architecture.md — 7. Материализация G5\n## 7. Материализация G5\n\nПорядок:\n\n1. Проверить отсутствие сохранённого baseline G5.\n2. Загрузить применимый G4 profile и binding.\n3. Загрузить layout, G5 templates и slot rules.\n4. Проверить период, сезон, время, погоду, доступ и состояние G4.\n5. Создать обязательные nodes и допустимые optional nodes.\n6. Создать edges и проверить связность, входы и выходы.\n7. Создать anchors и slots.\n8. Материализовать NPC и предметный слой.\n9. Проверить capacity, access, visibility, ownership и causal basis.\n10. Сформировать trace и единый write set.\n\nRuntime-вход Stage 13 обязан содержать отдельные approved profile, layout, node/anchor/edge templates и slot rules с нормализованными ссылками. Capacity, access, visibility, parent slot и start anchor не выводятся из «типового» значения и не имеют fallback.\n\nИнварианты: принадлежность одному G4, отсутствие G6, существование обязательных входов/выходов, физическая связность, отсутствие anchor без slot, совместимость NPC/items со slot и отсутствие доступа в закрытую зону без разрешённого прохода.",
       "char_count": 1118
     },
@@ -898,8 +907,8 @@
       "id": "code_driven_world_materialization_architecture.md:8. Материализация NPC:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "8. Материализация NPC",
-      "line_start": 275,
-      "line_end": 302,
+      "line_start": 277,
+      "line_end": 304,
       "text": "## code_driven_world_materialization_architecture.md — 8. Материализация NPC\n## 8. Материализация NPC\n\nИсточники NPC образуют обязательную цепочку:\n\n```text\nG4 rule → regional archetype/profile set\n→ social role/occupation/legal status\n→ demographic/name/appearance\n→ clothing/equipment\n→ knowledge/behavior\n→ activity/schedule/relationship\n```\n\nЭкземпляр хранит машинные параметры, profile/source refs, причину присутствия, права доступа, route/resource basis и уровень `background|scene|key`. Художественное описание не заменяет данные.\n\nНовый actor независимо от уровня получает полный `actor_base_appearance_v1` в\nсуществующем identity state. Explicit authored values сохраняются без draw;\nих applicability заранее ограничивает deterministic prerequisite choices\n(например, authored hair style/facial hair ограничивает hair length/sex/age),\nа противоречие отклоняется до RNG. Только\nотсутствующие facets выбираются из approved/applicable normalized\nprofile entries, отсортированных по stable ID. Appearance draws выполняются\nпосле прежних materialization choices, а NPC обрабатываются в стабильном\nпорядке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM\nне выбирает внешность NPC. Historical actors не дополняются автоматически.",
       "char_count": 1256
     },
@@ -907,8 +916,8 @@
       "id": "code_driven_world_materialization_architecture.md:8. Материализация NPC:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "8. Материализация NPC",
-      "line_start": 275,
-      "line_end": 302,
+      "line_start": 277,
+      "line_end": 304,
       "text": "## code_driven_world_materialization_architecture.md — 8. Материализация NPC\nдке slot/instance keys. Пустой required facet — typed data gap. Runtime LLM\nне выбирает внешность NPC. Historical actors не дополняются автоматически.\n\nПовышение профиля использует отдельный deterministic expansion seed, заполняет только отсутствующие поля и не меняет ранее выбранные значения.",
       "char_count": 371
     },
@@ -916,8 +925,8 @@
       "id": "code_driven_world_materialization_architecture.md:9. Предметы, контейнеры и имущество:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "9. Предметы, контейнеры и имущество",
-      "line_start": 303,
-      "line_end": 320,
+      "line_start": 305,
+      "line_end": 322,
       "text": "## code_driven_world_materialization_architecture.md — 9. Предметы, контейнеры и имущество\n## 9. Предметы, контейнеры и имущество\n\nПредмет создаётся только при наличии категории, template/profile, materialization rule, causal basis, допустимого slot, количества и ownership/holder policy. Location, holder, owner, controller, access, visibility, condition, quantity, legal status и container relation хранятся раздельно.\n\nОдежда материализуется тем же item owner, а не отдельным outfit materializer.\nКаждый garment имеет реальный item ID, owner/holder/controller, placement и\nequipment slot. Exact pinned garment semantics сохраняется в item-owned\nimmutable visual snapshot; clothing state на actor запрещён.\n\n`portrait_spec_v1` строится только на чтении из committed canonical identity и\nserver-sanitized visible equipped items. Это player-safe presentation\nprojection: она не входит в party rows, snapshots, write plans или mutable\ncache, не вызывает LLM/RNG и возвращает `null` для incomplete historical или\nambiguous equipment state. Renderer использует поля spec напрямую и не\nвыбирает внешность hash/RNG.\n\nСодержимое контейнера материализуется один раз при создании контейнера либо при первом причинном раскрытии заранее предусмотренного slot. Заявка игрока не создаёт новый slot.",
       "char_count": 1286
     },
@@ -925,8 +934,8 @@
       "id": "code_driven_world_materialization_architecture.md:10. Bounded decision protocol:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "10. Bounded decision protocol",
-      "line_start": 321,
-      "line_end": 341,
+      "line_start": 323,
+      "line_end": 343,
       "text": "## code_driven_world_materialization_architecture.md — 10. Bounded decision protocol\n## 10. Bounded decision protocol\n\nКод сначала исключает невозможные варианты. Каждый option содержит:\n\n```text\noption_id\ncommand_token\ncommand_id\nactor_id\ntarget_id\npreconditions\nexpected_cost\nknown_risks\nreason_visible_to_actor\nstate_version\n```\n\nДопустимый ответ содержит только `request_id`, один известный `option_id` и точный token. Token связан с request, actor, option, command, policy version, state version и options digest.\n\nНедопустимы неизвестный token, несколько вариантов, свободный текст, SQL, patch, новый план, утверждение результата и ответ на устаревшую версию состояния.",
       "char_count": 675
     },
@@ -934,8 +943,8 @@
       "id": "code_driven_world_materialization_architecture.md:11. Автономные обновления, NPC boundaries и базовый ход:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "11. Автономные обновления, NPC boundaries и базовый ход",
-      "line_start": 342,
-      "line_end": 349,
+      "line_start": 344,
+      "line_end": 351,
       "text": "## code_driven_world_materialization_architecture.md — 11. Автономные обновления, NPC boundaries и базовый ход\n## 11. Автономные обновления, NPC boundaries и базовый ход\n\nКаждое code-only обновление имеет правило, входное состояние, change set, trace, idempotency key и commit gate. Active revision-15 conversation и autonomous paths сводят фактические причины к ровно пяти категориям `self`, `others`, `environment`, `objective`, `communication` и двум уровням `material`, `critical`. Все новые сигналы одного NPC в одном fully resolved same-time batch образуют не более одной boundary и одного LLM-вызова; продолжение намерения и простое восприятие без meaningful response boundary модель не вызывают. Закрытый bounded request остаётся допустим только для genuinely closed domain choice и historical revision, явно выбранной pin.\n\nПервый успешный вход в нематериализованный G4 включает G5 materialization в ту же атомарную транзакцию, что и перемещение. Ошибка либо пустой candidate set отменяют весь переход.\n\nПроверка отсутствующего baseline сериализуется transaction-scoped advisory lock по `(party_id,g4_id)`: блокировка берётся до чтения baseline и защищает также случай, когда строки baseline ещё нет.",
       "char_count": 1209
     },
@@ -943,8 +952,8 @@
       "id": "code_driven_world_materialization_architecture.md:12. New-game pipeline:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "12. New-game pipeline",
-      "line_start": 350,
-      "line_end": 364,
+      "line_start": 352,
+      "line_end": 366,
       "text": "## code_driven_world_materialization_architecture.md — 12. New-game pipeline\n## 12. New-game pipeline\n\n- Stage 9 выбирает стартовый узел через bounded protocol.\n- Stage 13 кодом создаёт G5 structure и общий run context.\n- Stage 14 кодом проверяет G5.\n- Stage 15 кодом создаёт NPC, canonical appearance и candidate→instance mapping.\n- Stage 16 кодом создаёт items/containers/property, включая реальные initial garments.\n- Stage 19 кодом собирает hidden state из уже утверждённых экземпляров.\n- Stage 24 кодом строит фиксированный party write plan.\n- Stage 25 атомарно фиксирует результат.\n\nStage 24 не подставляет run/seed/profile/quantity/condition/legal status. Он принимает эти значения только из approved outputs/trace, повторно требует полный appearance contract для новых actors, рекурсивно отклоняет `portrait_spec_v1`, формирует `insert_only` batches для полного нормализованного набора relations и переводит party в `active` внутри того же плана. Stage 25 квалифицирует физические targets схемой `party_runtime` и исполняет их production SQL adapter.\n\nProduction-роли `G5SceneMaterializer`, `InitialNpcPlacer`, `InitialItemPlacer` и LLM write-plan builder запрещены.",
       "char_count": 1174
     },
@@ -952,8 +961,8 @@
       "id": "code_driven_world_materialization_architecture.md:13. Проверки и условие повышения:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "13. Проверки и условие повышения",
-      "line_start": 365,
-      "line_end": 381,
+      "line_start": 367,
+      "line_end": 383,
       "text": "## code_driven_world_materialization_architecture.md — 13. Проверки и условие повышения\n## 13. Проверки и условие повышения\n\nОбязательны unit/property/integration tests детерминизма, filters, graph connectivity, capacity, ownership, repeat-entry, no-rematerialization, decision tokens, invalid LLM responses, autonomous updates, rollback, full new-game и first-entry turn.\n\nДокумент может стать `active` только когда:\n\n```text\nвсе противоречащие active-нормативы исправлены;\nDDL, contracts и JSON Schema обновлены;\nproduction Stage 13–16, 19 и 24 переведены на код;\nparty write path сохраняет trace и version pins;\nlegacy party v1 не попадает в runtime v2;\ngenerated artifacts актуальны;\nполный test suite и PostgreSQL integration проходят;\nотдельный агент-критик вернул PASS.\n```",
       "char_count": 780
     },
@@ -961,8 +970,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:0",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 382,
-      "line_end": 433,
+      "line_start": 384,
+      "line_end": 435,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n## 14. Domain-scoped runtime catalog activation\n\nПолный world pin партии и pin предметно-контейнерного каталога являются\nразными identities.\n\n```text\nfull world pin\n= parties.world_revision_id + parties.world_catalog_digest\n\ndomain pin\n= item_container_materialization_v2 catalog revision\n+ catalog digest\n+ exact successful import\n+ runtime contract\n+ compatible world tuple\n```\n\nDomain revision не является полной world revision и не может выбираться общим\nworld-pin selector. Parent tuple фиксирует точный operator snapshot, относительно\nкоторого собран overlay. Compatible world tuple фиксирует полный world pin, с\nкоторым overlay разрешён runtime; равенство этих tuple не предполагается.\n\nActive domain pin читается ровно один раз при создании новой партии, до\nкомпозиции Stage 8. Один immutable pin проходит через Stage 8, 13, 14, 16, 24 и\n25. Stage 24 включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.",
       "char_count": 1108
     },
@@ -970,8 +979,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:1",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 382,
-      "line_end": 433,
+      "line_start": 384,
+      "line_end": 435,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n включает party pin и run pin в тот же logical write plan, что и\nmaterialization rows, а Stage 25 записывает и проверяет их в одной party\ntransaction.\n\nReload, turn и повторный вход читают только persisted party pin и exact\nhistorical import snapshots. Active pointer повторно не читается. Смена active\ncatalog не меняет существующие партии и не запускает автоматическую\nрематериализацию или backfill. Отсутствующий party domain pin является typed\nhard block.\n\nRuntime восстанавливает каталог только по exact import membership. Membership\nразличает:\n\n- `insert` — строка принадлежит overlay и была создана import;\n- `assert_existing` — точная каноническая строка уже существовала в parent\n  snapshot и была проверена без записи.\n\nScoped dependency assertion является утверждённым входом только одного\nmaterialization scope. Она хранит точный canonical base-row snapshot и не\nсоздаёт G4, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.",
       "char_count": 1135
     },
@@ -979,8 +988,8 @@
       "id": "code_driven_world_materialization_architecture.md:14. Domain-scoped runtime catalog activation:2",
       "file": "code_driven_world_materialization_architecture.md",
       "section": "14. Domain-scoped runtime catalog activation",
-      "line_start": 382,
-      "line_end": 433,
+      "line_start": 384,
+      "line_end": 435,
       "text": "## code_driven_world_materialization_architecture.md — 14. Domain-scoped runtime catalog activation\n, не меняет его canonical status, историческую или пространственную\nсемантику. Изменение base row после утверждения блокирует использование\nassertion.\n\nДо materialization runtime обязан fail-closed проверить compatible world tuple,\nexact import и runtime contract. Domain pin, import provenance, activation event\nи их digests сохраняются в party state и run trace. Неполный pin, несовместимый\ntuple, отсутствующее membership или несовпавший digest запрещают запуск\nmaterialization.",
       "char_count": 581
     },

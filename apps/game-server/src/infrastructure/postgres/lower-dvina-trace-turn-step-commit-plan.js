@@ -16,11 +16,11 @@ import { actionProducedPhysicalKeys,
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlan = null
+  actionProductionPlans = []
 }) {
-  const actionPlan = actionProductionPlan == null ? null
-    : createActionProducedAtomicWritePlan(actionProductionPlan);
-  if (actionPlan != null && actionPlan.actor_ref !== state.actor_id) {
+  const actionPlans = actionProductionPlans.map((plan) =>
+    createActionProducedAtomicWritePlan(plan));
+  if (actionPlans.some((plan) => plan.actor_ref !== state.actor_id)) {
     throw serverError(
       'TRACE_TURN_STEP_ACTION_PRODUCTION_ACTOR_MISMATCH',
       'The action-production plan is not bound to the committed actor.',
@@ -82,10 +82,10 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
-      ...actionProducedPhysicalKeys(actionPlan)]
+      ...actionPlans.flatMap(actionProducedPhysicalKeys)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
-    action_production_atomic_write_plan: actionPlan,
+    action_production_atomic_write_plans: actionPlans,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

@@ -1,7 +1,4 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
-import { deriveActionProducedPropertyCompatibilityBasis } from
-  '@rus/items-property';
+import { isDeepStrictEqual } from 'node:util';
 import { actionProducedAccessState,
   actionProducedControllerPermitted,
   actionProducedControllerRef,
@@ -15,18 +12,16 @@ import {
 } from './action-produced-persistence-boundary.js';
 
 const ROW_PIN_KEYS = [
-  'role', 'item_id', 'item', 'placement', 'ownership', 'item_digest',
-  'placement_digest', 'ownership_digest', 'entity_snapshot',
+  'role', 'item_id', 'item', 'placement', 'ownership', 'entity_snapshot',
   'finite_resource_row'
 ];
 const PREPARED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_ordinary'];
+const PREPARED_ACTION_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_action'];
 const CONTAINED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'access_container'];
 const ENTITY_KEYS = [
   'schema', 'commit_state', 'role', 'entity_ref', 'state_version',
   'lifecycle_state', 'access_state', 'holder_ref', 'controller_ref',
-  'mechanics_state_ref', 'property_state_ref', 'ownership_state_ref',
-  'ownership_basis_ref', 'property_basis_ref', 'ownership_snapshot',
-  'placement_state_ref', 'finite_resource'
+  'ownership_snapshot', 'finite_resource'
 ];
 const RESOURCE_ROW_KEYS = [
   'resource_node_id', 'source_resource_ref', 'quantity_numerator',
@@ -36,9 +31,7 @@ const RESOURCE_ROW_KEYS = [
 export function validateActionProducedDestinationPin(pin) {
   if (pin === null) return null;
   const keys = ['schema', 'destination_kind', 'anchor_id', 'item_capacity',
-    'used_item_ids', 'destination_digest'];
-  const value = { anchor_id: pin?.anchor_id,
-    item_capacity: pin?.item_capacity, used_item_ids: pin?.used_item_ids };
+    'used_item_ids'];
   if (!exact(pin, keys)
       || pin.schema !== 'action_production_output_destination_pin_v1'
       || pin.destination_kind !== 'party_current_anchor'
@@ -46,8 +39,7 @@ export function validateActionProducedDestinationPin(pin) {
       || pin.item_capacity < 0 || !Array.isArray(pin.used_item_ids)
       || pin.used_item_ids.some((itemId) => !text(itemId))
       || new Set(pin.used_item_ids).size !== pin.used_item_ids.length
-      || pin.used_item_ids.length > pin.item_capacity
-      || digest(value) !== pin.destination_digest) {
+      || pin.used_item_ids.length > pin.item_capacity) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   return pin;
@@ -84,8 +76,7 @@ export function actionProducedOwnerOutputDestination(destinationPin,
   return {
     schema: 'rus.items.action_produced_output_destination.v1',
     placement_kind: 'anchor', target_ref: placement.anchor_id,
-    holder_ref: null, controller_ref: actorRef,
-    placement_state_ref: digest(placement)
+    holder_ref: null, controller_ref: actorRef
   };
 }
 
@@ -96,19 +87,22 @@ export function validateActionProducedRowPins(pins, role, actorRef,
   for (const pin of pins) {
     const prepared = Object.hasOwn(pin, 'prepared_ordinary')
       ? pin.prepared_ordinary : null;
+    const preparedAction = Object.hasOwn(pin, 'prepared_action')
+      ? pin.prepared_action : null;
     const accessContainer = Object.hasOwn(pin, 'access_container')
       ? pin.access_container : null;
     const exactPin = prepared !== null ? exact(pin, PREPARED_ROW_PIN_KEYS)
+      : preparedAction !== null
+        ? exact(pin, PREPARED_ACTION_ROW_PIN_KEYS)
       : accessContainer !== null ? exact(pin, CONTAINED_ROW_PIN_KEYS)
         : exact(pin, ROW_PIN_KEYS);
     if (!exactPin
         || prepared !== null && (!exact(prepared,
-          ['schema', 'request_identity', 'write_plan_digest', 'root_turn_id',
+          ['schema', 'request_identity', 'root_turn_id',
             'step_index'])
           || prepared.schema
             !== 'action_production_prepared_ordinary_pin_v1'
           || !text(prepared.request_identity)
-          || !text(prepared.write_plan_digest)
           || prepared.root_turn_id !== causalIdentity.root_turn_id
           || !Number.isSafeInteger(prepared.step_index)
           || prepared.step_index < 1
@@ -117,12 +111,17 @@ export function validateActionProducedRowPins(pins, role, actorRef,
             ?.root_turn_id !== prepared.root_turn_id
           || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
             ?.step_index !== prepared.step_index)
+        || preparedAction !== null && (!exact(preparedAction,
+          ['schema', 'root_turn_id', 'step_index'])
+          || preparedAction.schema
+            !== 'action_production_prepared_action_pin_v1'
+          || preparedAction.root_turn_id !== causalIdentity.root_turn_id
+          || !Number.isSafeInteger(preparedAction.step_index)
+          || preparedAction.step_index < 1
+          || preparedAction.step_index >= causalIdentity.step_index)
         || pin.role !== role
         || !text(pin.item_id) || seenItems.has(pin.item_id)
         || pin.item?.item_id !== pin.item_id
-        || digest(pin.item) !== pin.item_digest
-        || digest(pin.placement) !== pin.placement_digest
-        || digest(pin.ownership) !== pin.ownership_digest
         || accessContainer !== null
           && (!validActionProducedAccessContainer(accessContainer, actorRef,
             accessAnchorId)
@@ -141,7 +140,7 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       role, seenResources);
     const expected = expectedEntity(pin, role, actorRef, contextVersion,
       finite, accessAnchorId, accessContainer);
-    if (digest(pin.entity_snapshot) !== digest(expected)) {
+    if (!isDeepStrictEqual(pin.entity_snapshot, expected)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
   }
@@ -150,14 +149,13 @@ export function validateActionProducedRowPins(pins, role, actorRef,
 function expectedEntity(pin, role, actorRef, contextVersion, finite,
   accessAnchorId, accessContainer) {
   const { item, placement, ownership } = pin;
-  const prepared = pin.prepared_ordinary != null;
+  const prepared = pin.prepared_ordinary != null
+    || pin.prepared_action != null;
   const accessState = prepared ? 'quick'
     : actionProducedAccessState(placement, accessContainer, actorRef,
       accessAnchorId);
   const holderRef = placement.holder_character_id === actorRef
     ? actorRef : null;
-  const propertyBasis = deriveActionProducedPropertyCompatibilityBasis(
-    ownership, item.state?.property_state ?? null);
   if (!exact(pin.entity_snapshot, ENTITY_KEYS)
       || !Number.isSafeInteger(item.state_version) || item.state_version < 1
       || item.state?.lifecycle_status != null
@@ -175,21 +173,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
     state_version: contextVersion, lifecycle_state: 'active',
     access_state: accessState, holder_ref: holderRef,
     controller_ref: actionProducedControllerRef(ownership),
-    mechanics_state_ref: digest({
-      runtime_instance_mechanics_snapshot:
-        item.state?.runtime_instance_mechanics_snapshot ?? null,
-      inventory_profile_snapshot:
-        item.state?.inventory_profile_snapshot ?? null,
-      template_id: item.template_id, profile_id: item.profile_id,
-      category_id: item.category_id, quantity: item.quantity
-    }),
-    property_state_ref: digest({
-      property_state: item.state?.property_state ?? null, ownership
-    }),
-    ownership_state_ref: digest(ownership),
-    ...propertyBasis,
     ownership_snapshot: structuredClone(ownership),
-    placement_state_ref: pin.placement_digest,
     finite_resource: finite
   };
 }

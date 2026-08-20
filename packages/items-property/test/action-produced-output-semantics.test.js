@@ -178,8 +178,6 @@ function proposal(overrides = {}) {
   const result = {
     entity_ref: entityRef, identity_kind: identityKind,
     source_ref: 'item:pole', mechanics_snapshot: { schema: 'mechanics.v1' },
-    property_state_ref: 'property:item:pole:7',
-    placement_state_ref: 'placement:item:pole:7',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
     physical_facts: ['физически обработан'],
     inscription_text: inscriptionText,
@@ -200,7 +198,7 @@ function proposal(overrides = {}) {
   };
   return {
     schema: 'rus.items.action_produced_transition_proposal.v1', version: 1,
-    status: 'sealed', causal_identity: { request_id: 'request:a1',
+    causal_identity: { request_id: 'request:a1',
       root_turn_id: 'turn:a1', action_ref: 'action:a1', step_index: 1 },
     context_pin: { context_ref: 'context:a1', context_state_version: '7',
       profile_ref: 'profile:a1', profile_version: '1' },

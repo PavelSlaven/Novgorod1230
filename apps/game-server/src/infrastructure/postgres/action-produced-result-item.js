@@ -5,6 +5,8 @@ import {
 } from './action-produced-atomic-write-plan-pins.js';
 import { deriveActionProducedOutputProperty,
   validateActionProducedOutputAuthority } from '@rus/items-property';
+import { mergeActionProducedPhysicalFacts } from
+  '@rus/items-property';
 import { failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
 
@@ -20,7 +22,6 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     actorRef);
   if (result.holder_ref !== expected.holder_ref
       || result.controller_ref !== expected.controller_ref
-      || result.placement_state_ref !== expected.placement_state_ref
       || placement.anchor_id !== expected.target_ref) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
@@ -30,9 +31,14 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
   }
   const outputProperty = deriveActionProducedOutputProperty(
     source.entity_snapshot.ownership_snapshot, result.entity_ref, actorRef);
-  if (result.property_state_ref !== outputProperty.property_state_ref) {
-    fail('ACTION_PRODUCED_RESULT_PROPERTY_INVALID');
-  }
+  const semanticFacts = mergeActionProducedPhysicalFacts({
+    entity_ref: result.entity_ref,
+    action_ref: proposal.causal_identity.action_ref,
+    existing: [],
+    physical_description: proposal.qualitative_result.result_descriptor
+      .physical_description,
+    physical_facts: result.physical_facts
+  });
   const state = {
     lifecycle_status: 'active',
     runtime_instance_mechanics_snapshot: result.mechanics_snapshot,
@@ -43,11 +49,7 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
         source_refs: result.material_allocations.length === 0
           ? [result.source_ref] : [...new Set(result.material_allocations.map(
             ({ source_ref: sourceRef }) => sourceRef))] },
-      semantic_facts: [
-        ...(proposal.qualitative_result.result_descriptor
-          .physical_description === null ? [] : [proposal.qualitative_result
-          .result_descriptor.physical_description]),
-        ...result.physical_facts],
+      semantic_facts: structuredClone(semanticFacts),
       operation_history: []
     },
     semantic_category: proposal.qualitative_result.output_class,
@@ -62,7 +64,6 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
           weapon_qualitative_class: proposal.qualitative_result
             .result_descriptor.weapon_qualitative_class
         }),
-      physical_facts: structuredClone(result.physical_facts),
       inscription_text: result.inscription_text,
       source_ref: result.source_ref,
       material_allocations: structuredClone(result.material_allocations)
@@ -78,12 +79,6 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
       state, state_version: 1
     },
     placement_row: placement,
-    placement_evidence: {
-      schema: 'action_production_output_placement_evidence_v1',
-      holder_ref: result.holder_ref, controller_ref: result.controller_ref,
-      placement_state_ref: result.placement_state_ref,
-      destination_digest: destination.destination_digest
-    },
     ownership_row: structuredClone(outputProperty.ownership),
     mechanics_snapshot: structuredClone(result.mechanics_snapshot),
     material_allocations: structuredClone(result.material_allocations)

@@ -115,26 +115,27 @@ export function validLowerDvinaTraceActionProductionProfile(value) {
 }
 
 export function validLowerDvinaTraceActionProductionPlanProfile(value) {
-  return value?.context_pin?.context_ref
+  const proposal = value?.transition_proposal;
+  return proposal?.context_pin?.context_ref
       === 'lower_dvina_trace:a1:personal_tool_transform'
-    && value.context_pin.profile_ref
+    && proposal.context_pin.profile_ref
       === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
-    && value.context_pin.profile_version === '1'
-    && value.transition_proposal?.technical_policy_pin?.policy_ref
+    && proposal.context_pin.profile_version === '1'
+    && proposal.technical_policy_pin?.policy_ref
       === 'lower_dvina_trace:a1:personal_tool_policy_v1'
-    && value.transition_proposal.technical_policy_pin.version === 1
-    && value.transition_proposal.technical_policy_pin.max_new_entities === 4
+    && proposal.technical_policy_pin.version === 1
+    && proposal.technical_policy_pin.max_new_entities === 4
     && ['preserve_source', 'independent_outputs', 'no_useful_result']
-      .includes(value.identity_mode)
-    && (value.origin === null
-      || ['direct_partition', 'crafted'].includes(value.origin))
+      .includes(proposal.identity_mode)
+    && (proposal.origin === null
+      || ['direct_partition', 'crafted'].includes(proposal.origin))
     && ['ordinary_physical_result', 'partial_transformation',
       'nonworking_construction', 'waste', 'written_carrier',
-      'no_useful_result'].includes(value.result_class)
-    && (value.transition_proposal.qualitative_result.output_class === null
+      'no_useful_result'].includes(proposal.result_class)
+    && (proposal.qualitative_result.output_class === null
       || ['ordinary_mundane', 'weapon_capable', 'money_like_token',
         'written_carrier'].includes(
-        value.transition_proposal.qualitative_result.output_class));
+        proposal.qualitative_result.output_class));
 }
 
 function validProfile(value) {

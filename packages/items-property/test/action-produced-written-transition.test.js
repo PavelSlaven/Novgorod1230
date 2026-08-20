@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { deepFreeze, sha256 } from '@rus/kernel';
+import { deepFreeze } from '@rus/kernel';
 import { createActionProducedTransitionPlanner } from
   '@rus/items-property/action-produced-transition';
 
 test('written transition preserves carrier and only adds physical inscription',
   () => {
     const ownership = ownershipFor('item:bark');
-    const pin = pinFor('item:bark', ownership);
-    const toolPin = pinFor('item:charcoal', ownershipFor('item:charcoal'));
+    const pin = pinFor('item:bark');
+    const toolPin = pinFor('item:charcoal');
     const handoff = deepFreeze({
       schema: 'rus.items.action_produced_pending_handoff.v1',
       status: 'pending_code_owned_mechanics', request_id: 'request:a1',
@@ -56,40 +56,24 @@ test('written transition preserves carrier and only adds physical inscription',
     assert.equal('knowledge' in proposal.results[0], false);
   });
 
-function pinFor(entityRef, ownership) {
+function pinFor(entityRef) {
   return { entity_ref: entityRef, state_version: '7',
     access_state: 'immediate', holder_ref: 'actor:mikula',
-    controller_ref: 'actor:mikula',
-    mechanics_state_ref: `mechanics:${entityRef}:7`,
-    property_state_ref: `property:${entityRef}:7`,
-    ownership_state_ref: `sha256:${sha256(ownership)}`,
-    ownership_basis_ref: ownershipBasisRef(ownership),
-    property_basis_ref: `sha256:${sha256(null)}`,
-    placement_state_ref: `placement:${entityRef}:7` };
+    controller_ref: 'actor:mikula' };
 }
 function snapshotFor(entityRef, role, ownership) {
   return { schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
     commit_state: 'committed', role, entity_ref: entityRef,
     state_version: '7', lifecycle_state: 'active', access_state: 'immediate',
     holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
-    mechanics_state_ref: `mechanics:${entityRef}:7`,
-    property_state_ref: `property:${entityRef}:7`,
-    ownership_state_ref: `sha256:${sha256(ownership)}`,
-    ownership_basis_ref: ownershipBasisRef(ownership),
-    property_basis_ref: `sha256:${sha256(null)}`,
     ownership_snapshot: ownership,
-    placement_state_ref: `placement:${entityRef}:7`, finite_resource: null };
+    finite_resource: null };
 }
 function ownershipFor(entityRef) {
   return { ownership_id: `ownership:${entityRef}`, owner_npc_id: null,
     owner_character_id: 'actor:mikula', owner_party: false,
     controller_npc_id: null, controller_character_id: 'actor:mikula',
     claim_state: 'owned' };
-}
-function ownershipBasisRef(value) {
-  const { ownership_id: ignored, ...basis } = value;
-  void ignored;
-  return `sha256:${sha256(basis)}`;
 }
 function mechanicsSnapshot() {
   return { schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',

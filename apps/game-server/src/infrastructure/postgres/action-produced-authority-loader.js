@@ -1,5 +1,3 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
 import { actionProducedText as text,
   failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
@@ -34,8 +32,7 @@ export async function loadActionProducedOutputDestination(client, input) {
   const value = { anchor_id: selected.rows[0].anchor_id,
     item_capacity: itemCapacity, used_item_ids: usedItemIds };
   return { schema: 'action_production_output_destination_pin_v1',
-    destination_kind: 'party_current_anchor', ...value,
-    destination_digest: digest(value) };
+    destination_kind: 'party_current_anchor', ...value };
 }
 
 function refs(values) {

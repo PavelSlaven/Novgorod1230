@@ -2,6 +2,8 @@ import { createRuntimeInstanceMechanicsSnapshot,
   deriveActionProducedOutputProperty,
   validateActionProducedOutputAuthority,
   validateActionProducedOutputClass } from '@rus/items-property';
+import { validateActionProducedOutputPropertyBasis } from
+  '@rus/items-property/action-produced-transition';
 import {
   actionProducedText as text,
   exactActionProducedRecord as exact,
@@ -10,8 +12,8 @@ import {
 
 const RESULT_KEYS = [
   'entity_ref', 'identity_kind', 'source_ref', 'mechanics_snapshot',
-  'property_state_ref', 'placement_state_ref', 'holder_ref',
-  'controller_ref', 'physical_facts', 'inscription_text', 'output_authority'
+  'holder_ref', 'controller_ref', 'physical_facts', 'inscription_text',
+  'output_authority'
 ];
 const QUALITATIVE_KEYS = [
   'intended_transformation', 'material_extent', 'result_descriptor',
@@ -38,14 +40,12 @@ export function validateActionProducedProposalResults(proposal, sourcePins) {
           result.identity_kind)) fail('ACTION_PRODUCED_RESULT_INVALID');
     const sourcePin = sourcePins.find(({ item_id: itemId }) =>
       itemId === result.source_ref);
-    const expectedPropertyRef = result.identity_kind === 'preserved_source'
-      ? sourcePin?.entity_snapshot.property_state_ref
-      : sourcePin == null ? null : deriveActionProducedOutputProperty(
-        sourcePin.entity_snapshot.ownership_snapshot, result.entity_ref,
-        result.controller_ref)
-        .property_state_ref;
-    if (result.property_state_ref !== expectedPropertyRef
-        || result.inscription_text
+    if (result.identity_kind === 'independent_output') {
+      deriveActionProducedOutputProperty(
+        sourcePin?.entity_snapshot.ownership_snapshot, result.entity_ref,
+        result.controller_ref);
+    }
+    if (result.inscription_text
           !== proposal.qualitative_result.result_descriptor.inscription_text) {
       fail('ACTION_PRODUCED_RESULT_INVALID');
     }
@@ -94,13 +94,11 @@ function validatePropertyBasis(result, selectedPin, sourcePins) {
         ref === selectedPin.item_id)) {
     fail('ACTION_PRODUCED_RESULT_INVALID');
   }
-  for (const allocation of result.material_allocations) {
-    const contributor = sourcePins.find(({ item_id: id }) =>
-      id === allocation?.source_ref);
-    if (!contributor
-        || contributor.entity_snapshot.ownership_basis_ref
-          !== selectedPin.entity_snapshot.ownership_basis_ref) {
-      fail('ACTION_PRODUCED_RESULT_INVALID');
-    }
-  }
+  const sources = new Map(sourcePins.map((pin) => [pin.item_id, {
+    source: pin.entity_snapshot
+  }]));
+  try {
+    validateActionProducedOutputPropertyBasis(result.source_ref,
+      result.material_allocations, sources);
+  } catch { fail('ACTION_PRODUCED_RESULT_INVALID'); }
 }

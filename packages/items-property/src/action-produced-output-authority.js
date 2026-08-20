@@ -1,4 +1,4 @@
-import { deepFreeze, sha256 } from '@rus/kernel';
+import { deepFreeze } from '@rus/kernel';
 import { snapshotActionProducedBoundary as snapshot } from
   './action-produced-transition-boundary.js';
 
@@ -75,31 +75,7 @@ export function deriveActionProducedOutputProperty(ownershipValue,
   const propertyState = null;
   return deepFreeze({
     property_state: propertyState,
-    ownership,
-    property_state_ref: `sha256:${sha256({
-      property_state: propertyState, ownership
-    })}`
-  });
-}
-
-export function deriveActionProducedPropertyCompatibilityBasis(
-  ownershipValue, propertyStateValue) {
-  const input = snapshot({ ownership: ownershipValue,
-    property_state: propertyStateValue });
-  if (!exact(input, ['ownership', 'property_state'])) fail();
-  const { ownership, property_state: propertyState } = input;
-  if (!exact(ownership, OWNERSHIP_KEYS) || !text(ownership.ownership_id)
-      || !nullableText(ownership.owner_npc_id)
-      || !nullableText(ownership.owner_character_id)
-      || typeof ownership.owner_party !== 'boolean'
-      || !nullableText(ownership.controller_npc_id)
-      || !nullableText(ownership.controller_character_id)
-      || !text(ownership.claim_state)) fail();
-  const normalizedOwnership = { ...ownership };
-  delete normalizedOwnership.ownership_id;
-  return deepFreeze({
-    ownership_basis_ref: `sha256:${sha256(normalizedOwnership)}`,
-    property_basis_ref: `sha256:${sha256(propertyState)}`
+    ownership
   });
 }
 

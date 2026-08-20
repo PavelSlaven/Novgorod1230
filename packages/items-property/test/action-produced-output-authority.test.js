@@ -1,8 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { sha256 } from '@rus/kernel';
 import { createActionProducedOutputAuthority,
-  deriveActionProducedPropertyCompatibilityBasis,
   deriveActionProducedOutputProperty,
   validateActionProducedOutputAuthority } from
   '@rus/items-property/action-produced-output-authority';
@@ -21,9 +19,6 @@ test('new output authority and property are exact code-owned pins', () => {
   assert.equal(output.property_state, null);
   assert.equal(output.ownership.ownership_id,
     'ownership:result:unseen-token');
-  assert.equal(output.property_state_ref, `sha256:${sha256({
-    property_state: output.property_state, ownership: output.ownership
-  })}`);
   assert.equal(Object.isFrozen(output.ownership), true);
 });
 
@@ -49,20 +44,15 @@ test('authority and ownership boundaries reject drift without getter reads',
       get() { reads += 1; return 'owned'; } });
     assert.throws(() => deriveActionProducedOutputProperty(hostileOwnership,
       'result:x'), { code: 'ITEM_ACTION_PRODUCED_OUTPUT_AUTHORITY_INVALID' });
-    assert.throws(() => deriveActionProducedPropertyCompatibilityBasis(
-      hostileOwnership, null), {
-      code: 'ITEM_ACTION_PRODUCED_OUTPUT_AUTHORITY_INVALID'
-    });
     assert.equal(reads, 0);
   });
 
 test('output property source must contribute and match every contributor',
   () => {
-    const ownerA = deriveActionProducedPropertyCompatibilityBasis(
-      ownership('ownership:a'), null);
-    const ownerB = deriveActionProducedPropertyCompatibilityBasis({
+    const ownerA = { ownership_snapshot: ownership('ownership:a') };
+    const ownerB = { ownership_snapshot: {
       ...ownership('ownership:b'), owner_character_id: 'actor:other'
-    }, null);
+    } };
     const sources = new Map([
       ['source:a', { source: ownerA }],
       ['source:b', { source: ownerB }]
@@ -73,9 +63,8 @@ test('output property source must contribute and match every contributor',
       [{ source_ref: 'source:a' }, { source_ref: 'source:b' }], sources),
     TypeError);
 
-    sources.set('source:b', { source:
-      deriveActionProducedPropertyCompatibilityBasis(
-        ownership('ownership:b'), null) });
+    sources.set('source:b', { source: {
+      ownership_snapshot: ownership('ownership:b') } });
     assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
       'source:a', [{ source_ref: 'source:a' }, { source_ref: 'source:b' }],
       sources));

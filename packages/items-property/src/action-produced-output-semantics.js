@@ -8,7 +8,7 @@ import { validateActionProducedOutputClass } from
 
 const INPUT_KEYS = ['transition_proposal'];
 const PROPOSAL_KEYS = [
-  'schema', 'version', 'status', 'causal_identity', 'context_pin',
+  'schema', 'version', 'causal_identity', 'context_pin',
   'technical_policy_pin', 'identity_mode', 'origin', 'result_class',
   'source_transitions', 'tool_state_pins', 'results', 'known_waste',
   'qualitative_result'
@@ -28,8 +28,8 @@ const DESCRIPTOR_KEYS = [
 ];
 const RESULT_KEYS = [
   'entity_ref', 'identity_kind', 'source_ref', 'mechanics_snapshot',
-  'property_state_ref', 'placement_state_ref', 'holder_ref',
-  'controller_ref', 'physical_facts', 'inscription_text', 'output_authority'
+  'holder_ref', 'controller_ref', 'physical_facts', 'inscription_text',
+  'output_authority'
 ];
 const RESULT_CLASSES = new Set([
   'ordinary_physical_result', 'partial_transformation',
@@ -60,6 +60,46 @@ export function admitActionProducedOutputSemantics(value) {
     },
     errors: []
   });
+}
+
+export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
+  action_ref: actionRef, existing = [], physical_description: description,
+  physical_facts: facts }) {
+  if (!text(entityRef) || !text(actionRef) || !Array.isArray(existing)
+      || !Array.isArray(facts) || !facts.every(text)
+      || !(description === null || text(description))) failFacts();
+  const output = [];
+  const ids = new Set();
+  const texts = new Set();
+  for (const [index, value] of existing.entries()) {
+    const fact = typeof value === 'string'
+      ? { fact_id: `${entityRef}:fact:${index + 1}`, text: value,
+          operation_id: null }
+      : value;
+    if (!text(fact?.fact_id) || !text(fact?.text)
+        || !(fact.operation_id === null || text(fact.operation_id))
+        || ids.has(fact.fact_id)) failFacts();
+    ids.add(fact.fact_id);
+    texts.add(fact.text);
+    output.push(structuredClone(fact));
+  }
+  const added = [...(description === null ? [] : [description]), ...facts];
+  for (const [index, factText] of added.entries()) {
+    if (texts.has(factText)) continue;
+    let factId = `${actionRef}:fact:${index + 1}`;
+    if (ids.has(factId)) factId = `${factId}:${output.length + 1}`;
+    ids.add(factId);
+    texts.add(factText);
+    output.push({ fact_id: factId, text: factText, operation_id: actionRef });
+  }
+  return deepFreeze(output);
+}
+
+export function actionProducedPhysicalFactTexts(values) {
+  if (!Array.isArray(values)) return [];
+  const result = values.map((value) => typeof value === 'string'
+    ? value : value?.text).filter(text);
+  return [...new Set(result)];
 }
 
 function semantics(proposal, outputClass) {
@@ -93,7 +133,7 @@ function semantics(proposal, outputClass) {
 function validProposal(value) {
   if (!exact(value, PROPOSAL_KEYS)
       || value.schema !== 'rus.items.action_produced_transition_proposal.v1'
-      || value.version !== 1 || value.status !== 'sealed'
+      || value.version !== 1
       || !validCausal(value.causal_identity)
       || !validContext(value.context_pin)
       || !validTechnical(value.technical_policy_pin)
@@ -163,7 +203,6 @@ function validResult(value) {
   return exact(value, keys) && text(value.entity_ref)
     && ['preserved_source', 'independent_output'].includes(value.identity_kind)
     && text(value.source_ref) && record(value.mechanics_snapshot)
-    && text(value.property_state_ref) && text(value.placement_state_ref)
     && nullableText(value.holder_ref) && nullableText(value.controller_ref)
     && textArray(value.physical_facts)
     && nullableText(value.inscription_text)
@@ -208,4 +247,8 @@ function failed(suffix) {
   const code = `ITEM_ACTION_PRODUCED_OUTPUT_${suffix}`;
   return deepFreeze({ pass: false, handoff: null, errors: [{ code,
     category: 'data_gap', retryable: false, message: code, details: {} }] });
+}
+function failFacts() {
+  throw Object.assign(new TypeError('ITEM_ACTION_PRODUCED_FACTS_INVALID'),
+    { code: 'ITEM_ACTION_PRODUCED_FACTS_INVALID' });
 }

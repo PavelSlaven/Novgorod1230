@@ -192,14 +192,14 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
           throw cause;
         }
       }
-      if (plan.action_production_atomic_write_plan != null) {
+      for (const actionPlan of plan.action_production_atomic_write_plans
+        ?? []) {
         try {
           await applyActionProducedAtomicWritePlanInTransaction({
             client: tx,
-            input: plan.action_production_atomic_write_plan,
+            input: actionPlan,
             partyStateVersionAfter:
-              plan.action_production_atomic_write_plan
-                .base_party_state_version + 1,
+              actionPlan.base_party_state_version + 1,
             p16ChangeSetId: plan.change_set_id
           });
         } catch (cause) {

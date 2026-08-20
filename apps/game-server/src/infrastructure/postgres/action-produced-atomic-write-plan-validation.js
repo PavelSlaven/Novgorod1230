@@ -10,6 +10,8 @@ import {
 } from './action-produced-persistence-boundary.js';
 import { validateActionProducedProposalResults } from
   './action-produced-atomic-write-plan-result-validation.js';
+import { validateActionProducedMassConservation } from
+  './action-produced-mass-conservation.js';
 
 const PROPOSAL_KEYS = [
   'schema', 'version', 'status', 'causal_identity', 'context_pin',
@@ -86,8 +88,12 @@ export function validateActionProducedAtomicProposal(value, load) {
           !== pin.entity_snapshot.controller_ref) {
       fail('ACTION_PRODUCED_SOURCE_PIN_MISMATCH');
     }
+    const retireSource = value.identity_mode === 'independent_outputs'
+      && transition.finite_resource_transition === null
+      && pin.finite_resource_row === null
+      && transition.after.mechanics_snapshot === null;
     const changed = transition.finite_resource_transition !== null
-      || transition.after.mechanics_snapshot !== null;
+      || transition.after.mechanics_snapshot !== null || retireSource;
     const expectedAfterVersion = changed
       ? String(Number(transition.before.state_version) + 1)
       : transition.before.state_version;
@@ -96,7 +102,7 @@ export function validateActionProducedAtomicProposal(value, load) {
     }
     validateFinite(transition.finite_resource_transition,
       pin.finite_resource_row, value.causal_identity, transition.entity_ref,
-      value.identity_mode === 'independent_outputs');
+      false);
     if (transition.after.mechanics_snapshot !== null) {
       createRuntimeInstanceMechanicsSnapshot(
         transition.after.mechanics_snapshot);
@@ -121,13 +127,18 @@ export function validateActionProducedAtomicProposal(value, load) {
       || value.identity_mode === 'independent_outputs'
         && (value.results.length < 1
           || value.results.length > value.technical_policy_pin.max_new_entities
-          || value.source_transitions.some((transition) =>
-            transition.finite_resource_transition === null)
+          || value.source_transitions.some((transition) => {
+            const pin = sourcePins.find(({ item_id: itemId }) =>
+              itemId === transition.entity_ref);
+            return transition.finite_resource_transition === null
+              && !(pin?.finite_resource_row === null
+                && transition.after.mechanics_snapshot === null);
+          })
           || value.results.some(({ identity_kind }) =>
             identity_kind !== 'independent_output'))
       || value.identity_mode === 'no_useful_result'
         && value.results.length !== 0) fail('ACTION_PRODUCED_RESULT_INVALID');
-  validateIndependentConservation(value);
+  validateIndependentConservation(value, sourcePins);
   return value;
 }
 
@@ -180,10 +191,13 @@ function validateFinite(value, row, causal, itemId, required) {
   }
 }
 
-function validateIndependentConservation(proposal) {
+function validateIndependentConservation(proposal, sourcePins) {
   if (proposal.identity_mode !== 'independent_outputs') return;
   const transitions = new Map(proposal.source_transitions.map((entry) => [
-    entry.entity_ref, entry.finite_resource_transition
+    entry.entity_ref, entry.finite_resource_transition ?? {
+      decrement_quantity: { numerator: 1, denominator: 1,
+        unit: 'whole_item' }
+    }
   ]));
   const seenResults = new Set();
   const totals = new Map();
@@ -235,6 +249,7 @@ function validateIndependentConservation(proposal) {
       fail('ACTION_PRODUCED_RESULT_INVALID');
     }
   }
+  validateActionProducedMassConservation(proposal, sourcePins);
 }
 
 function statePin(pin) {

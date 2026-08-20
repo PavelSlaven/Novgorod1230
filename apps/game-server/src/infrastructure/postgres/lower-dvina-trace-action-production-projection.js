@@ -26,6 +26,8 @@ export function applyActionProductionProjection({ next, plan }) {
     }
     next.items.push({
       item_id: result.item_id,
+      name: result.item_row.state.ordinary_metadata.name,
+      semantic_type: result.item_row.state.ordinary_metadata.semantic_type,
       ...structuredClone(result.item_row),
       placement: structuredClone(result.placement_row),
       ownership: structuredClone(result.ownership_row),

@@ -80,7 +80,8 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
   includeProfile = true, aggregate = createOrdinaryAggregate({scope_ref:scope,
     resolution_record_cap:32}), partyStateVersion = 0,
   containerStateVersion = 1, requestIdentity = 'o2b-batch',
-  party = partyId, reveal = true } = {}) {
+  party = partyId, reveal = true, ownerControllerRef = 'owner:actor',
+  rootTurnId = 'turn-o2b', stepIndex = 1 } = {}) {
   const items = [];
   const transitions = [];
   let next = aggregate;
@@ -102,7 +103,7 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
     next = applyOrdinaryAggregateTransition({ aggregate:next, transition });
     transitions.push(transition);
     items.push(child({ index, mass:masses[index], requestIdentity:childRequest,
-      party }));
+      party, ownerControllerRef, rootTurnId, stepIndex }));
   }
   const closure = { kind:'close_coverage',request_identity:requestIdentity,
     expected_state_version:next.state_version,
@@ -162,7 +163,8 @@ export function batchInput({ masses = [80], capacity = 4, maxNewEntities = 4,
     JSON.parse(JSON.stringify(value)));
 }
 
-function child({ index, mass, requestIdentity, party }) {
+function child({ index, mass, requestIdentity, party, ownerControllerRef,
+  rootTurnId, stepIndex }) {
   const candidate = `candidate:${index}`, coverage = `coverage:${index}`;
   const mechanics = {mass_grams:mass,external_hand_cost:0,
     carry_form:'compact',packing_slot_cost:1,
@@ -173,7 +175,7 @@ function child({ index, mass, requestIdentity, party }) {
     'rus.items.ordinary_existing_container_property_placement_evidence.v1',
     version:1,scope_ref:scope,container_id:'chest',
     property_basis_ref:'container-property',property_context_ref:'chest-property',
-    owner_controller_ref:'owner:actor',
+    owner_controller_ref:ownerControllerRef,
     property_placement_context_digest:'property-context-digest',
     property_catalog_version_ref:'property-catalog-v1',
     placement_catalog_version_ref:'placement-catalog-v1'};
@@ -203,7 +205,7 @@ function child({ index, mass, requestIdentity, party }) {
     runtime_mechanics_snapshot:{schema:
       'rus.items.runtime_instance_mechanics_snapshot.v1',version:1,
       provenance:{source_kind:'ordinary_world_materialization',
-        root_turn_id:'turn-o2b',step_index:1,operation_ref:requestIdentity,
+        root_turn_id:rootTurnId,step_index:stepIndex,operation_ref:requestIdentity,
         origin_kind:'existing_container_ordinary',source_refs:sourceRefs},
       mechanics} };
   item.item_id = `ordinary_item_${canonicalDigest({party_id:party,

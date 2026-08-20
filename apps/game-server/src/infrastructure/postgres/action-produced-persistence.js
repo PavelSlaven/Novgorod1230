@@ -6,6 +6,8 @@ import { actionProducedText as text } from
   './action-produced-persistence-boundary.js';
 import { lockAndVerifyActionProducedContext } from
   './action-produced-persistence-context.js';
+import { lockAndVerifyPreparedActionProducedPin } from
+  './action-produced-prepared-ordinary-persistence.js';
 
 export async function applyActionProducedAtomicWritePlanInTransaction({
   client, input, p16ChangeSetId, partyStateVersionAfter
@@ -15,29 +17,13 @@ export async function applyActionProducedAtomicWritePlanInTransaction({
       || partyStateVersionAfter !== plan.base_party_state_version + 1) {
     fail('ACTION_PRODUCED_P16_BINDING_INVALID');
   }
-  const existing = await client.query(
-    `SELECT write_plan_digest,p16_change_set_id
-     FROM party_runtime.party_action_production_commits
-     WHERE party_id=$1 AND request_id=$2 FOR UPDATE`,
-  [plan.party_id, plan.causal_identity.request_id]);
-  if (existing.rows.length) {
-    if (existing.rows.length !== 1
-        || existing.rows[0].write_plan_digest
-          !== hex(plan.write_plan_digest)
-        || existing.rows[0].p16_change_set_id !== p16ChangeSetId) {
-      fail('ACTION_PRODUCED_IDEMPOTENCY_CONFLICT');
-    }
-    return Object.freeze({ replay: true });
-  }
 
   await lockAndVerifyActionProducedContext(client, plan);
   await lockAndVerifyPins(client, plan);
   await rejectOutputCollisions(client, plan);
-  await insertCommit(client, plan, partyStateVersionAfter);
   for (const update of plan.source_updates) {
     if (update.finite_resource_transition != null) {
-      await applyResourceTransition(client, plan, update,
-        p16ChangeSetId);
+      await applyResourceTransition(client, plan, update, p16ChangeSetId);
     }
     const changed = await client.query(
       `UPDATE party_runtime.party_items
@@ -62,6 +48,10 @@ export async function applyActionProducedAtomicWritePlanInTransaction({
 async function lockAndVerifyPins(client, plan) {
   const pins = [...plan.source_pins, ...plan.tool_pins];
   for (const pin of pins) {
+    if (pin.prepared_ordinary != null) {
+      await lockAndVerifyPreparedActionProducedPin(client, plan, pin);
+      continue;
+    }
     const selected = await client.query(
       `SELECT i.item_id,i.run_id,i.template_id,i.profile_id,i.category_id,
          i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
@@ -125,38 +115,8 @@ async function rejectOutputCollisions(client, plan) {
   if (collision.rows.length !== 0) fail('ACTION_PRODUCED_OUTPUT_COLLISION');
 }
 
-async function insertCommit(client, plan, nextPartyVersion) {
-  await client.query(
-    `INSERT INTO party_runtime.party_action_production_commits
-      (party_id,request_id,actor_ref,context_ref,profile_ref,profile_version,
-       policy_ref,policy_version,max_new_entities,root_turn_id,action_ref,
-       authority_state_version,authority_digest,step_index,identity_mode,
-       origin,result_class,sealed_proposal,source_pin_evidence,tool_pin_evidence,
-       result_set_evidence,write_plan_digest,from_party_state_version,
-       to_party_state_version,p16_change_set_id)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,
-       $18::jsonb,$19::jsonb,$20::jsonb,$21::jsonb,$22,$23,$24,$25)`,
-  [plan.party_id, plan.causal_identity.request_id,
-    plan.actor_ref, plan.context_pin.context_ref,
-    plan.context_pin.profile_ref, plan.context_pin.profile_version,
-    plan.transition_proposal.technical_policy_pin.policy_ref,
-    plan.transition_proposal.technical_policy_pin.version,
-    plan.transition_proposal.technical_policy_pin.max_new_entities,
-    plan.causal_identity.root_turn_id, plan.causal_identity.action_ref,
-    plan.authority_pin.persisted_row.authority_state_version,
-    plan.authority_pin.authority_digest, plan.causal_identity.step_index,
-    plan.identity_mode, plan.origin, plan.result_class,
-    JSON.stringify(plan.transition_proposal), JSON.stringify(plan.source_pins),
-    JSON.stringify(plan.tool_pins), JSON.stringify(plan.result_set_evidence),
-    hex(plan.write_plan_digest), plan.base_party_state_version,
-    nextPartyVersion, plan.change_set_id]);
-}
-
 async function applyResourceTransition(client, plan, update, changeSetId) {
   const transition = update.finite_resource_transition;
-  const pin = plan.source_pins.find(({ item_id }) =>
-    item_id === update.item_id);
-  const unitRef = pin.finite_resource_row.quantity_unit_ref;
   const changed = await client.query(
     `UPDATE party_runtime.party_resource_nodes
      SET quantity_numerator=$1,quantity_denominator=$2,lifecycle_state=$3,
@@ -169,24 +129,6 @@ async function applyResourceTransition(client, plan, update, changeSetId) {
     changeSetId, plan.party_id, transition.source_resource_node_id,
     transition.expected_state_version]);
   if (changed.rowCount !== 1) fail('ACTION_PRODUCED_RESOURCE_STALE');
-  await client.query(
-    `INSERT INTO party_runtime.party_action_production_resource_transitions
-      (party_id,request_id,resource_node_id,source_item_id,
-       expected_state_version,quantity_unit_ref,before_numerator,
-       before_denominator,decrement_numerator,decrement_denominator,
-       after_numerator,after_denominator,lifecycle_state_after,
-       p16_change_set_id)
-     VALUES ($1,$2,$3,$4,$5,$6::jsonb,$7,$8,$9,$10,$11,$12,$13,$14)`,
-  [plan.party_id, plan.causal_identity.request_id,
-    transition.source_resource_node_id, update.item_id,
-    transition.expected_state_version, JSON.stringify(unitRef),
-    transition.before_quantity.numerator,
-    transition.before_quantity.denominator,
-    transition.decrement_quantity.numerator,
-    transition.decrement_quantity.denominator,
-    transition.after_quantity.numerator,
-    transition.after_quantity.denominator,
-    transition.lifecycle_state_after, changeSetId]);
 }
 
 async function insertResult(client, partyId, result) {
@@ -264,7 +206,6 @@ function normalizedResource(row) {
     property_basis_ref: row.property_basis_ref
   };
 }
-function hex(value) { return value.replace('sha256:', ''); }
 function fail(code) {
   throw Object.assign(new Error(code), { code });
 }

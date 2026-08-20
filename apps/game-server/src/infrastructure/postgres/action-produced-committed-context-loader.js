@@ -15,15 +15,22 @@ import { loadActionProducedAuthority as loadAuthority,
   './action-produced-authority-loader.js';
 import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
+import { actionProducedPreparedOrdinaryRows } from
+  './action-produced-prepared-ordinary.js';
+import { bindActionProducedResourcePins } from
+  './action-produced-resource-pins.js';
 
 const INPUT_KEYS = [
   'party_id', 'actor_ref', 'root_turn_id', 'action_ref', 'step_index',
   'context_ref', 'expected_party_state_version', 'source_refs', 'tool_refs'
 ];
+const PREPARED_INPUT_KEYS = [...INPUT_KEYS, 'prepared_ordinary_plan',
+  'change_set_id'];
 
 export async function loadActionProducedCommittedContext(client, rawInput) {
   const input = snapshot(rawInput);
-  if (input === INVALID_ACTION_PRODUCED_DATA || !exact(input, INPUT_KEYS)
+  if (input === INVALID_ACTION_PRODUCED_DATA
+      || !(exact(input, INPUT_KEYS) || exact(input, PREPARED_INPUT_KEYS))
       || ![input.party_id, input.actor_ref, input.root_turn_id,
         input.action_ref, input.context_ref].every(text)
       || !Number.isSafeInteger(input.step_index) || input.step_index < 1
@@ -32,7 +39,9 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
       || input.expected_party_state_version < 0
       || !refs(input.source_refs, false) || !refs(input.tool_refs, true)
       || input.source_refs.some((ref) => input.tool_refs.includes(ref))
-      || typeof client?.query !== 'function') fail('ACTION_PRODUCED_LOAD_INVALID');
+      || typeof client?.query !== 'function'
+      || Object.hasOwn(input, 'prepared_ordinary_plan')
+        && !text(input.change_set_id)) fail('ACTION_PRODUCED_LOAD_INVALID');
 
   const party = await client.query(
     `SELECT state_version FROM party_runtime.parties
@@ -60,7 +69,10 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
        ON o.party_id=i.party_id AND o.item_id=i.item_id
      WHERE i.party_id=$1 AND i.item_id=ANY($2::text[])
      ORDER BY i.item_id`, [input.party_id, requested]);
-  if (rows.rows.length !== requested.length) fail('ACTION_PRODUCED_ITEM_GAP');
+  const prepared = actionProducedPreparedOrdinaryRows(input, requested);
+  if (rows.rows.length + prepared.size !== requested.length) {
+    fail('ACTION_PRODUCED_ITEM_GAP');
+  }
 
   const resourceRows = await client.query(
     `SELECT resource_node_id,source_resource_ref,quantity_numerator,
@@ -71,16 +83,21 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
        AND source_resource_ref->>'entity_kind'='party_item'
        AND source_resource_ref->>'entity_id'=ANY($2::text[])
      ORDER BY resource_node_id`, [input.party_id, input.source_refs]);
-  const resources = bindResources(resourceRows.rows, input.source_refs);
+  const resources = bindActionProducedResourcePins(resourceRows.rows,
+    input.source_refs);
   const byId = new Map(rows.rows.map((row) => [row.item_id, row]));
-  const contextVersion = String(input.expected_party_state_version);
-  const rowPins = requested.map((itemId) => rowPin({
-    row: byId.get(itemId),
+  const contextVersion = contextVersionFrom(input);
+  const rowPins = requested.map((itemId) => {
+    const future = prepared.get(itemId);
+    return rowPin({
+    row: future?.row ?? byId.get(itemId),
     role: input.source_refs.includes(itemId) ? 'source' : 'tool',
     actorRef: input.actor_ref,
     contextVersion,
-    finite: resources.get(itemId) ?? null
-  }));
+    finite: resources.get(itemId) ?? null,
+    preparedOrdinary: future?.preparedOrdinary ?? null
+  });
+  });
   const entities = rowPins.map(({ role, entity_snapshot: entity }) => ({
     entity_ref: entity.entity_ref,
     state_version: entity.state_version,
@@ -148,11 +165,12 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   });
 }
 
-function rowPin({ row, role, actorRef, contextVersion, finite }) {
+function rowPin({ row, role, actorRef, contextVersion, finite,
+  preparedOrdinary = null }) {
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
-      || row.holder_character_id !== actorRef
+      || preparedOrdinary === null && row.holder_character_id !== actorRef
       || row.holder_npc_id !== null
       || !validOwnership(row)
       || row.controller_character_id !== actorRef
@@ -166,7 +184,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite }) {
           !== row.state?.property_state?.resource_property_basis_ref)) {
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
-  const access = accessState(row.physical_position);
+  const access = preparedOrdinary === null
+    ? accessState(row.physical_position) : 'quick';
   const item = {
     item_id: row.item_id,
     run_id: row.run_id,
@@ -228,8 +247,15 @@ function rowPin({ row, role, actorRef, contextVersion, finite }) {
       placement_state_ref: placementRef,
       finite_resource: finite?.snapshot ?? null
     },
-    finite_resource_row: finite?.persisted_row ?? null
+    finite_resource_row: finite?.persisted_row ?? null,
+    ...(preparedOrdinary === null ? {} : {
+      prepared_ordinary: preparedOrdinary
+    })
   };
+}
+
+function contextVersionFrom(input) {
+  return String(input.expected_party_state_version);
 }
 
 function validOwnership(row) {
@@ -237,49 +263,6 @@ function validOwnership(row) {
     + Number(text(row.owner_npc_id)) + Number(row.owner_party === true);
   return owners === 1 && typeof row.owner_party === 'boolean'
     && text(row.claim_state);
-}
-
-function bindResources(rows, sourceRefs) {
-  const output = new Map();
-  for (const row of rows) {
-    const itemId = row.source_resource_ref?.entity_id;
-    if (!sourceRefs.includes(itemId) || output.has(itemId)) {
-      fail('ACTION_PRODUCED_RESOURCE_AMBIGUOUS');
-    }
-    const numerator = numeric(row.quantity_numerator);
-    const denominator = numeric(row.quantity_denominator);
-    const stateVersion = numeric(row.state_version);
-    const unit = row.quantity_unit_ref?.entity_id;
-    if (row.source_resource_ref?.entity_kind !== 'party_item'
-        || Object.keys(row.source_resource_ref).sort().join(',')
-          !== 'entity_id,entity_kind'
-        || !text(unit) || numerator < 0 || denominator < 1
-        || stateVersion < 1 || row.lifecycle_state !== 'active') {
-      fail('ACTION_PRODUCED_RESOURCE_INVALID');
-    }
-    output.set(itemId, {
-      snapshot: {
-        schema: 'rus.items.finite_resource_snapshot.v1',
-        commit_state: 'committed',
-        source_resource_node_id: row.resource_node_id,
-        state_version: stateVersion,
-        lifecycle_state: row.lifecycle_state,
-        quantity: { numerator, denominator, unit }
-      },
-      persisted_row: {
-        resource_node_id: row.resource_node_id,
-        source_resource_ref: row.source_resource_ref,
-        quantity_numerator: numerator,
-        quantity_denominator: denominator,
-        quantity_unit_ref: row.quantity_unit_ref,
-        lifecycle_state: row.lifecycle_state,
-        state_version: stateVersion,
-        position_node_id: row.position_node_id,
-        property_basis_ref: row.property_basis_ref
-      }
-    });
-  }
-  return output;
 }
 
 function accessState(value) {
@@ -290,9 +273,4 @@ function accessState(value) {
 function refs(value, empty) {
   return Array.isArray(value) && (empty || value.length > 0)
     && value.every(text) && new Set(value).size === value.length;
-}
-function numeric(value) {
-  const number = Number(value);
-  if (!Number.isSafeInteger(number)) fail('ACTION_PRODUCED_NUMERIC_INVALID');
-  return number;
 }

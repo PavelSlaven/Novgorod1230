@@ -247,6 +247,9 @@ function validActionProductionExtension(plan) {
   if (action == null) return true;
   try {
     const sealed = createActionProducedAtomicWritePlan(action);
+    const prepared = [...sealed.source_pins, ...sealed.tool_pins]
+      .filter((pin) => pin.prepared_ordinary != null);
+    const ordinary = plan.ordinary_materialization_atomic_write_plan;
     const party = plan.updates?.find((write) =>
       write.target_table === 'parties' && write.id === plan.party_id);
     return sealed.party_id === plan.party_id
@@ -256,6 +259,11 @@ function validActionProductionExtension(plan) {
       && plan.expected_state_versions.some((version) =>
         version.target_table === 'parties' && version.id === plan.party_id
           && version.state_version === sealed.base_party_state_version)
+      && prepared.every((pin) => ordinary != null
+        && pin.prepared_ordinary.request_identity
+          === ordinary.request_identity
+        && pin.prepared_ordinary.write_plan_digest
+          === ordinary.write_plan_digest)
       && actionProducedPhysicalKeys(sealed).every((key) =>
         plan.physical_keys.includes(key));
   } catch { return false; }

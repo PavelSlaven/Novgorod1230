@@ -52,6 +52,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     const qualitative = operation.action_production;
     const sourceRefs = qualitative.source_refs;
     const toolRefs = qualitative.tool_refs;
+    const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
     if (!refs(sourceRefs, false) || !refs(toolRefs, true)
         || sourceRefs[0] !== operation.item_ref
         || sourceRefs.some((ref) => toolRefs.includes(ref))
@@ -67,7 +68,10 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       action_ref: actionRef, step_index: stepIndex,
       context_ref: profile.context_ref,
       expected_party_state_version: stateVersion,
-      source_refs: sourceRefs, tool_refs: toolRefs
+      source_refs: sourceRefs, tool_refs: toolRefs,
+      prepared_ordinary_plan: envelope
+        .prepared_ordinary_materialization_atomic_write_plan ?? null,
+      change_set_id: changeSetId
     });
     const mechanics = new Map();
     for (const pin of loaded.row_pins) {
@@ -130,7 +134,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
     const atomicPlan = createActionProducedAtomicWritePlan({
       schema: 'action_production_atomic_write_request_v1',
       party_id: partyId, base_party_state_version: stateVersion,
-      change_set_id: `change:${partyId}:turn-step:${turnNumber}`,
+      change_set_id: changeSetId,
       committed_load: loaded, transition_proposal: proposal
     });
     return Object.freeze({

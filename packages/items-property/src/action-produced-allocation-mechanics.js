@@ -9,9 +9,6 @@ const MECHANICS_KEYS = [
   'mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost',
   'quantity', 'container'
 ];
-const SCALED_KEYS = [
-  'mass_grams', 'external_hand_cost', 'packing_slot_cost'
-];
 
 export function resolveActionProducedAllocationMechanics(rawInput) {
   const input = snapshotActionProducedBoundary(rawInput);
@@ -56,7 +53,15 @@ function independentResolution(request, byRef, outputCount) {
   const consumed = request.source_inputs.map((source) => {
     const finite = source.finite_resource;
     const mechanics = byRef.get(source.entity_ref);
-    if (finite?.lifecycle_state !== 'active') gap();
+    if (finite === null) {
+      if (mechanics.quantity !== null
+          && (mechanics.quantity.value !== 1
+            || mechanics.quantity.unit !== 'item')) gap();
+      return { source, mechanics, quantity: rational(1, 1, 'whole_item'),
+        consumedMass: mechanics.mass_grams, consumedPacking:
+          mechanics.packing_slot_cost, retire: true };
+    }
+    if (finite.lifecycle_state !== 'active') gap();
     const quantity = exactFiniteQuantity(finite?.quantity);
     if (mechanics.quantity?.unit !== quantity.unit
         || !Number.isSafeInteger(mechanics.quantity.value)
@@ -64,25 +69,36 @@ function independentResolution(request, byRef, outputCount) {
           !== quantity.numerator || quantity.numerator < quantity.denominator) {
       gap();
     }
-    const allocated = scaledMechanics(mechanics,
-      quantity.denominator, quantity.numerator);
-    return { source, mechanics, quantity, allocated };
+    return { source, mechanics, quantity,
+      consumedMass: exactRatio(mechanics.mass_grams,
+        quantity.denominator, quantity.numerator),
+      consumedPacking: mechanics.packing_slot_cost * quantity.denominator
+        / quantity.numerator, retire: false };
   });
   const carryForms = new Set(consumed.map(({ mechanics }) =>
     mechanics.carry_form));
   if (carryForms.size !== 1) gap();
   const outputMechanics = {
-    ...Object.fromEntries(SCALED_KEYS.map((key) => [key,
-      exactDivide(consumed.reduce((sum, entry) =>
-        sum + entry.allocated[key], 0), outputCount)])),
+    mass_grams: exactDivide(consumed.reduce((sum, entry) =>
+      sum + entry.consumedMass, 0), outputCount),
+    external_hand_cost: Math.max(...consumed.map(({ mechanics }) =>
+      mechanics.external_hand_cost)),
+    packing_slot_cost: Math.ceil(consumed.reduce((sum, entry) =>
+      sum + entry.consumedPacking, 0) / outputCount),
     carry_form: consumed[0].mechanics.carry_form,
     quantity: { value: 1, unit: 'item' }, container: null
   };
-  const effects = consumed.map(({ source, mechanics, quantity, allocated }) => {
+  const effects = consumed.map(({ source, mechanics, quantity, consumedMass,
+    retire }) => {
+    if (retire) return { source_ref: source.entity_ref,
+      requested_decrement: null, mechanics_snapshot_after: null };
     const remainingNumerator = quantity.numerator - quantity.denominator;
     const after = {
-      ...Object.fromEntries(SCALED_KEYS.map((key) => [key,
-        mechanics[key] - allocated[key]])),
+      mass_grams: mechanics.mass_grams - consumedMass,
+      external_hand_cost: remainingNumerator === 0
+        ? 0 : mechanics.external_hand_cost,
+      packing_slot_cost: remainingNumerator === 0
+        ? 0 : mechanics.packing_slot_cost,
       carry_form: mechanics.carry_form,
       quantity: remainingNumerator === 0 ? null : {
         value: remainingNumerator / quantity.denominator,
@@ -121,11 +137,6 @@ function sourceMechanics(values, inputs) {
     byRef.set(entry.source_ref, entry.mechanics);
   }
   return byRef;
-}
-
-function scaledMechanics(mechanics, numerator, denominator) {
-  return Object.fromEntries(SCALED_KEYS.map((key) => [key,
-    exactRatio(mechanics[key], numerator, denominator)]));
 }
 
 function snapshot(request, mechanics, operationRef) {

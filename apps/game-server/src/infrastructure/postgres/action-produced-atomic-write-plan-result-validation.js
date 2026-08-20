@@ -59,9 +59,13 @@ function validQualitative(value, proposal) {
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
     && exact(descriptor, descriptorKeys(descriptor))
-    && (descriptor.display_name === null || text(descriptor.display_name))
-    && (descriptor.physical_description === null
-      || text(descriptor.physical_description))
+    && (proposal.identity_mode === 'independent_outputs'
+      ? text(descriptor.display_name) : descriptor.display_name === null
+        || text(descriptor.display_name))
+    && (proposal.identity_mode === 'independent_outputs'
+      ? text(descriptor.physical_description)
+      : descriptor.physical_description === null
+        || text(descriptor.physical_description))
     && Array.isArray(descriptor.qualitative_facts)
     && descriptor.qualitative_facts.every(text)
     && new Set(descriptor.qualitative_facts).size

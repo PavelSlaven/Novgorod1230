@@ -17,8 +17,16 @@ import { deriveActionProducedResultItem } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-result-item.js';
 import { validateActionProducedAtomicProposal } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan-validation.js';
+import { validateActionProducedRowPins } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan-pins.js';
 import { loadActionProducedCommittedContext } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-committed-context-loader.js';
+import { batchInput } from
+  '../../apps/game-server/test/ordinary-materialization-container-batch-plan.test.js';
+import { applyActionProductionProjection } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-action-production-projection.js';
+import { projectItems } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-items.js';
 
 test('A1 write plan is sealed, detached and rejects hostile boundaries unread', () => {
   const request = fixture();
@@ -218,6 +226,54 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
     assert.equal(reads, 0); assert.equal(calls, 0);
   });
 
+test('A1 loader accepts only one sealed same-root ordinary overlay', async () => {
+  const ordinary = batchInput({ masses: [800], party: 'party-1',
+    partyStateVersion: 7, ownerControllerRef: 'actor:mikula',
+    rootTurnId: 'turn-8', stepIndex: 1 });
+  const itemId = ordinary.items[0].item_id;
+  const loaded = await loadActionProducedCommittedContext(loaderClient([]), {
+    ...loadInput(), step_index: 2, source_refs: [itemId],
+    prepared_ordinary_plan: ordinary,
+    change_set_id: 'change-8'
+  });
+  assert.equal(loaded.source_snapshots[0].entity_ref, itemId);
+  assert.equal(loaded.source_snapshots[0].access_state, 'quick');
+  assert.equal(loaded.row_pins[0].prepared_ordinary.write_plan_digest,
+    ordinary.write_plan_digest);
+  assert.deepEqual(loaded.row_pins[0].prepared_ordinary, {
+    schema: 'action_production_prepared_ordinary_pin_v1',
+    request_identity: ordinary.request_identity,
+    write_plan_digest: ordinary.write_plan_digest,
+    root_turn_id: 'turn-8', step_index: 1
+  });
+  assert.throws(() => validateActionProducedRowPins(loaded.row_pins, 'source',
+    'actor:mikula', '7', { root_turn_id: 'turn:other', step_index: 2 }), {
+    code: 'ACTION_PRODUCED_PLAN_INVALID'
+  });
+  assert.deepEqual(loaded.row_pins[0].item.state.ordinary_metadata, {
+    semantic_type: 'household_supply', name: 'ordinary item 0',
+    origin: { kind: 'ordinary_container_contents', source_refs:
+      ordinary.items[0].mechanics_snapshot.provenance.source_refs },
+    semantic_facts: ['ordinary'], operation_history: []
+  });
+  const concealed = batchInput({ masses: [800], party: 'party-1',
+    partyStateVersion: 7, ownerControllerRef: 'actor:mikula', reveal: false,
+    rootTurnId: 'turn-8', stepIndex: 1 });
+  await assert.rejects(loadActionProducedCommittedContext(loaderClient([]), {
+    ...loadInput(), step_index: 2,
+    source_refs: [concealed.items[0].item_id],
+    prepared_ordinary_plan: concealed, change_set_id: 'change-8'
+  }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+  const wrongRoot = batchInput({ masses: [800], party: 'party-1',
+    partyStateVersion: 7, ownerControllerRef: 'actor:mikula',
+    rootTurnId: 'turn:other', stepIndex: 1 });
+  await assert.rejects(loadActionProducedCommittedContext(loaderClient([]), {
+    ...loadInput(), step_index: 2,
+    source_refs: [wrongRoot.items[0].item_id],
+    prepared_ordinary_plan: wrongRoot, change_set_id: 'change-8'
+  }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+});
+
 test('sealed proposal requires exact one-to-one source and tool coverage', () => {
   const sourceRequest = fixture();
   const sourceLoad = structuredClone(sourceRequest.committed_load);
@@ -298,7 +354,11 @@ test('independent A1 output cannot inherit currency or official state', () => {
   const proposalValue = { causal_identity: { request_id: 'request:token',
     root_turn_id: 'turn:token', action_ref: 'action:token', step_index: 1 },
   result_class: 'ordinary_physical_result', qualitative_result: {
-    output_class: 'money_like_token' } };
+    output_class: 'money_like_token', result_descriptor: {
+      display_name: 'деревянный счётный жетон',
+      physical_description: 'небольшой деревянный кружок',
+      qualitative_facts: ['имеет сходство с жетоном'],
+      inscription_text: null } } };
   const item = deriveActionProducedResultItem(result, sourcePins,
     proposalValue, 'change:token', destinationPin);
 
@@ -307,6 +367,12 @@ test('independent A1 output cannot inherit currency or official state', () => {
   assert.equal(item.item_row.state.property_state, null);
   assert.equal(item.item_row.state.action_production.output_class,
     'money_like_token');
+  assert.deepEqual(item.item_row.state.ordinary_metadata, {
+    semantic_type: 'money_like_token', name: 'деревянный счётный жетон',
+    origin: { kind: 'action_produced', source_refs: ['item:coin-source'] },
+    semantic_facts: ['небольшой деревянный кружок',
+      'имеет сходство с жетоном'], operation_history: []
+  });
   assert.equal(item.ownership_row.owner_character_id, 'actor:mikula');
   assert.equal(result.property_state_ref, digest({
     property_state: item.item_row.state.property_state,
@@ -318,6 +384,13 @@ test('independent A1 output cannot inherit currency or official state', () => {
   ]);
   assert.equal('currency' in item.item_row.state.action_production, false);
   assert.equal('official_seal' in item.item_row.state.action_production, false);
+  const next = { items: [] };
+  applyActionProductionProjection({ next, plan: { source_updates: [],
+    result_items: [item] } });
+  const playerSafe = projectItems(next.items, { actorId: 'actor:mikula',
+    position: { anchor_id: 'output-anchor' } });
+  assert.equal(playerSafe[0].name, 'деревянный счётный жетон');
+  assert.equal(playerSafe[0].semantic_type, 'money_like_token');
 });
 
 test('written A1 state persists inscription without truth or knowledge', () => {

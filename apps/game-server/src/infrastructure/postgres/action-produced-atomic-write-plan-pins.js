@@ -13,6 +13,7 @@ const ROW_PIN_KEYS = [
   'placement_digest', 'ownership_digest', 'entity_snapshot',
   'finite_resource_row'
 ];
+const PREPARED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_ordinary'];
 const ENTITY_KEYS = [
   'schema', 'commit_state', 'role', 'entity_ref', 'state_version',
   'lifecycle_state', 'access_state', 'holder_ref', 'controller_ref',
@@ -95,11 +96,30 @@ export function actionProducedOwnerOutputDestination(destinationPin,
 }
 
 export function validateActionProducedRowPins(pins, role, actorRef,
-  contextVersion) {
+  contextVersion, causalIdentity) {
   const seenItems = new Set();
   const seenResources = new Set();
   for (const pin of pins) {
-    if (!exact(pin, ROW_PIN_KEYS) || pin.role !== role
+    const prepared = Object.hasOwn(pin, 'prepared_ordinary')
+      ? pin.prepared_ordinary : null;
+    if (!(prepared === null ? exact(pin, ROW_PIN_KEYS)
+      : exact(pin, PREPARED_ROW_PIN_KEYS))
+        || prepared !== null && (!exact(prepared,
+          ['schema', 'request_identity', 'write_plan_digest', 'root_turn_id',
+            'step_index'])
+          || prepared.schema
+            !== 'action_production_prepared_ordinary_pin_v1'
+          || !text(prepared.request_identity)
+          || !text(prepared.write_plan_digest)
+          || prepared.root_turn_id !== causalIdentity.root_turn_id
+          || !Number.isSafeInteger(prepared.step_index)
+          || prepared.step_index < 1
+          || prepared.step_index >= causalIdentity.step_index
+          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
+            ?.root_turn_id !== prepared.root_turn_id
+          || pin.item.state?.runtime_instance_mechanics_snapshot?.provenance
+            ?.step_index !== prepared.step_index)
+        || pin.role !== role
         || !text(pin.item_id) || seenItems.has(pin.item_id)
         || pin.item?.item_id !== pin.item_id
         || digest(pin.item) !== pin.item_digest
@@ -127,14 +147,15 @@ export function validateActionProducedRowPins(pins, role, actorRef,
 
 function expectedEntity(pin, role, actorRef, contextVersion, finite) {
   const { item, placement, ownership } = pin;
-  const accessState = access(placement.physical_position);
+  const prepared = pin.prepared_ordinary != null;
+  const accessState = prepared ? 'quick' : access(placement.physical_position);
   const propertyBasis = deriveActionProducedPropertyCompatibilityBasis(
     ownership, item.state?.property_state ?? null);
   if (!exact(pin.entity_snapshot, ENTITY_KEYS)
       || !Number.isSafeInteger(item.state_version) || item.state_version < 1
       || item.state?.lifecycle_status != null
         && item.state.lifecycle_status !== 'active'
-      || placement.holder_character_id !== actorRef
+      || !prepared && placement.holder_character_id !== actorRef
       || placement.holder_npc_id !== null
       || !validOwnership(ownership)
       || ownership.controller_character_id !== actorRef

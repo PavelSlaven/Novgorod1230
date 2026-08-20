@@ -161,7 +161,10 @@ export async function resolveBoundTurnStepCommand({
             } : {}),
             committed_state: structuredClone(committedState),
             prepared_chain_context:
-              structuredClone(execution.prepared_chain_context)
+              structuredClone(execution.prepared_chain_context),
+            prepared_ordinary_materialization_atomic_write_plan:
+              structuredClone(execution
+                .prepared_ordinary_materialization_atomic_write_plan)
           }));
         }
       }
@@ -464,11 +467,9 @@ function exactVisibleScope(...projections) {
   }
   return refs;
 }
-
 function addRef(refs, value) {
   if (typeof value === 'string' && value.length > 0) refs.add(value);
 }
-
 function ownPlainDataRecord(value, keys) {
   if (value == null || typeof value !== 'object' || Array.isArray(value)
       || (Object.getPrototypeOf(value) !== Object.prototype
@@ -486,7 +487,6 @@ function ownPlainDataRecord(value, keys) {
   }
   return output;
 }
-
 function ownDataProperty(value, key) {
   if (value == null || typeof value !== 'object') return undefined;
   const descriptor = Object.getOwnPropertyDescriptor(value, key);

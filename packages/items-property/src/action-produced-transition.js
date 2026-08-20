@@ -269,12 +269,15 @@ function validateSourceEffects(values, sources, handoff) {
     const mechanicsSnapshot = effect.mechanics_snapshot_after === null
       ? null : mechanics(effect.mechanics_snapshot_after, handoff,
         handoff.action_ref);
-    const changed = finiteTransition !== null || mechanicsSnapshot !== null;
+    const retireSource = handoff.identity_mode === 'independent_outputs'
+      && source.finite_resource === null && mechanicsSnapshot === null;
+    const changed = finiteTransition !== null || mechanicsSnapshot !== null
+      || retireSource;
     const afterStateVersion = changed
       ? nextActionProducedStateVersion(source.state_version)
       : source.state_version;
     return { source, effect, afterStateVersion,
-      finiteTransition, mechanicsSnapshot };
+      finiteTransition, mechanicsSnapshot, retireSource };
   });
 }
 function validateOutputs(values, effects, handoff, policy, committedRefs) {
@@ -334,8 +337,11 @@ function allocationsFor(values, sources) {
 }
 function validateConservation(effects, outputs, waste) {
   for (const source of effects) {
-    if (source.finiteTransition === null) continue;
-    let total = zero(source.finiteTransition.decrement_quantity.unit);
+    const conserved = source.finiteTransition?.decrement_quantity
+      ?? (source.retireSource
+        ? { numerator: 1, denominator: 1, unit: 'whole_item' } : null);
+    if (conserved === null) continue;
+    let total = zero(conserved.unit);
     for (const output of outputs) {
       const allocation = output.material_allocations.find((entry) =>
         entry.source_ref === source.source.entity_ref);
@@ -344,7 +350,7 @@ function validateConservation(effects, outputs, waste) {
     const discarded = waste.find((entry) =>
       entry.source_ref === source.source.entity_ref);
     if (discarded) total = add(total, discarded.quantity);
-    if (compare(total, source.finiteTransition.decrement_quantity) > 0) fail();
+    if (compare(total, conserved) > 0) fail();
   }
 }
 function validateIdentityShape(handoff, effects, outputs) {
@@ -356,7 +362,10 @@ function validateIdentityShape(handoff, effects, outputs) {
   if (handoff.identity_mode === 'independent_outputs') {
     if (outputs.length === 0
         || outputs.some((output) => output.material_allocations.length === 0)
-        || effects.some((effect) => effect.finiteTransition === null)) fail();
+        || effects.some((effect) =>
+          effect.finiteTransition === null && effect.retireSource !== true)) {
+      fail();
+    }
     return;
   }
   if (outputs.length !== 0) fail();
@@ -430,7 +439,6 @@ function statePin(value) {
     controller_ref: value.controller_ref
   });
 }
-
 function sanitizedEntity(value) {
   return {
     entity_ref: value.entity_ref,
@@ -443,14 +451,13 @@ function sanitizedEntity(value) {
     finite_resource: structuredClone(value.finite_resource)
   };
 }
-
 function sameFiniteUnit(effect, quantity) {
-  if (effect.finiteTransition === null
-      || effect.finiteTransition.decrement_quantity.unit !== quantity.unit) {
+  const unit = effect.finiteTransition?.decrement_quantity.unit
+    ?? (effect.retireSource ? 'whole_item' : null);
+  if (unit !== quantity.unit) {
     fail();
   }
 }
-
 function outputRef(handoff, ordinal) {
   return createActionProducedOutputIdentity({
     root_turn_id: handoff.root_turn_id,
@@ -458,7 +465,6 @@ function outputRef(handoff, ordinal) {
     ordinal
   });
 }
-
 export { createActionProducedOutputIdentity } from
   './action-produced-output-identity.js';
 function sameRefs(left, right) {

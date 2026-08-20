@@ -209,8 +209,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
             'ACTION_PRODUCED_AUTHORITY_STALE',
             'ACTION_PRODUCED_DESTINATION_STALE'].includes(cause?.code)) {
             cause.spatialCode = 'state_version_conflict';
-          } else if (cause?.code === 'ACTION_PRODUCED_IDEMPOTENCY_CONFLICT'
-              || cause?.code === 'ACTION_PRODUCED_OUTPUT_COLLISION') {
+          } else if (cause?.code === 'ACTION_PRODUCED_OUTPUT_COLLISION') {
             cause.spatialCode = 'idempotency_conflict';
           }
           throw cause;

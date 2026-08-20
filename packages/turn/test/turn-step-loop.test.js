@@ -131,6 +131,43 @@ test('direct continuation sees the updated immutable working projection', async 
   assert.equal(outcome.write_fragments.length, 1);
 });
 
+test('later owner receives the sealed ordinary plan from the same root',
+  async () => {
+    const ordinaryPlan = { schema:
+      'ordinary_container_contents_atomic_write_plan_v2',
+    write_plan_digest: 'sha256:ordinary' };
+    let received;
+    const executionRegistry = createTurnStepExecutionRegistry({
+      direct: {
+        move_entity: async ({ working_projection: projection }) => result(
+          projection, 'ordinary prepared', {
+            ordinary_materialization_atomic_write_plan: ordinaryPlan
+          }),
+        change_entity_facts: async (execution) => {
+          received = execution
+            .prepared_ordinary_materialization_atomic_write_plan;
+          return result(execution.working_projection, 'prepared item used');
+        }
+      },
+      applySemanticActivity: async ({ working_projection: projection }) =>
+        result(projection, 'moment')
+    });
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry,
+      turnStepModel: async (request) => request.step_index === 1
+        ? basePlan(request, { goal_result: 'pending', operations: [{
+          op: 'move_entity', entity_ref: 'stone-1',
+          placement: { relation: 'held_by', target_ref: 'actor-1' }
+        }], continuation: { remaining_intent: 'обработать найденное',
+          depends_on_refs: ['stone-1'] } })
+        : basePlan(request, { operations: [{ op: 'change_entity_facts',
+          entity_ref: 'stone-1', remove_fact_refs: [], add_facts: [] }] })
+    }));
+    assert.deepEqual(received, ordinaryPlan);
+    assert.deepEqual(outcome.ordinary_materialization_atomic_write_plan,
+      ordinaryPlan);
+  });
+
 test('generic check uses the shared RNG owner and branch continuation', async () => {
   let rolls = 0;
   const executionRegistry = createTurnStepExecutionRegistry({

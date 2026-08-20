@@ -86,14 +86,17 @@ function deriveSourceUpdates(proposal, sourcePins) {
   return proposal.source_transitions.flatMap((transition) => {
     const pin = sourcePins.find(({ item_id: id }) =>
       id === transition.entity_ref);
+    const retireSource = proposal.identity_mode === 'independent_outputs'
+      && transition.finite_resource_transition === null
+      && transition.after.mechanics_snapshot === null;
     const changed = transition.finite_resource_transition !== null
-      || transition.after.mechanics_snapshot !== null;
+      || transition.after.mechanics_snapshot !== null || retireSource;
     if (!changed) return [];
     const preservedResult = proposal.identity_mode === 'preserve_source'
       ? proposal.results[0] : null;
     const nextState = {
       ...(pin.item.state ?? {}),
-      lifecycle_status: transition.finite_resource_transition
+      lifecycle_status: retireSource || transition.finite_resource_transition
           ?.lifecycle_state_after === 'depleted' ? 'retired' : 'active',
       ...(transition.after.mechanics_snapshot === null ? {} : {
         runtime_instance_mechanics_snapshot:
@@ -125,6 +128,7 @@ function deriveSourceUpdates(proposal, sourcePins) {
           run_id: null, template_id: null, profile_id: null,
           category_id: null
         }),
+        ...(retireSource ? { condition_state: 'retired' } : {}),
         state: nextState,
         state_version: pin.item.state_version + 1 },
       finite_resource_transition: structuredClone(
@@ -217,9 +221,9 @@ function validateSealed(value) {
     fail('ACTION_PRODUCED_AUTHORITY_INVALID');
   }
   validateActionProducedRowPins(value.source_pins, 'source', value.actor_ref,
-    contextVersion);
+    contextVersion, value.causal_identity);
   validateActionProducedRowPins(value.tool_pins, 'tool', value.actor_ref,
-    contextVersion);
+    contextVersion, value.causal_identity);
   const pinnedItemIds = [...value.source_pins, ...value.tool_pins]
     .map(({ item_id: itemId }) => itemId);
   if (new Set(pinnedItemIds).size !== pinnedItemIds.length) {

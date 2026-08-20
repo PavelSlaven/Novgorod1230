@@ -181,6 +181,22 @@ test('independent outputs require finite decrements and material allocations',
     })), TypeError);
   });
 
+test('whole source retires with conserved mass', () => {
+  const s = partitionScenario({ finite: false, decrement: null,
+    allocation: quantity(1, 2, 'whole_item'), outputCount: 2,
+    outputMass: 400 });
+  const planner = createActionProducedTransitionPlanner({
+    resolveMechanics: () => s.resolution
+  });
+  const plan = planner(s.input);
+  assert.equal(plan.source_transitions[0].finite_resource_transition,
+    null);
+  assert.equal(plan.source_transitions[0].after.state_version, '8');
+  assert.equal(plan.source_transitions[0].after.mechanics_snapshot, null);
+  assert.equal(plan.results.reduce((sum, result) =>
+    sum + result.mechanics_snapshot.mechanics.mass_grams, 0), 800);
+});
+
 test('duplicate finite resource node identity fails before mechanics resolver',
   () => {
     const handoff = pendingHandoff({
@@ -610,7 +626,7 @@ function quantity(numerator, denominator, unit) {
 function partitionScenario({
   decrement = quantity(2, 1, 'board_portion'),
   allocation = quantity(1, 1, 'board_portion'),
-  outputCount = 1
+  outputCount = 1, outputMass = 100, finite = true
 } = {}) {
   const handoff = pendingHandoff({
     source_refs: ['item:board'], tool_refs: ['item:axe'],
@@ -622,14 +638,14 @@ function partitionScenario({
       qualitative_facts: [], inscription_text: null
     }
   });
-  const source = entitySnapshot('item:board', {
-    role: 'source', finiteResource: {
+  const source = entitySnapshot('item:board', { role: 'source',
+    finiteResource: finite ? {
       schema: 'rus.items.finite_resource_snapshot.v1',
       commit_state: 'committed',
       source_resource_node_id: 'resource:item:board',
       state_version: 3, lifecycle_state: 'active',
       quantity: quantity(5, 1, 'board_portion')
-    }
+    } : null
   });
   const outputEntityRef = deterministicOutputRef;
   const resolution = mechanicsResolution({
@@ -641,10 +657,10 @@ function partitionScenario({
       return { ordinal, property_source_ref: 'item:board',
         mechanics_snapshot: mechanicsSnapshot({
           operationRef: outputEntityRef(ordinal), sourceRefs: ['item:board'],
-          originKind: 'direct_partition', massGrams: 100
+          originKind: 'direct_partition', massGrams: outputMass
         }),
         material_allocations: [{ source_ref: 'item:board',
-          quantity: allocation }]
+          quantity: { ...allocation } }]
       };
     })
   });

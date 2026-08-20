@@ -33,6 +33,7 @@ export async function executeTurnStepActorStep({
   request,
   workingProjection,
   preparedChainContext,
+  preparedOrdinaryPlan,
   registry,
   ports
 }) {
@@ -104,7 +105,7 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
-      preparedChainContext: chainContext, ports
+      preparedChainContext: chainContext, preparedOrdinaryPlan, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
@@ -128,7 +129,7 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
-      preparedChainContext: chainContext, ports
+      preparedChainContext: chainContext, preparedOrdinaryPlan, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
@@ -159,6 +160,7 @@ export async function executeTurnStepActorStep({
         projection,
         checkResult,
         preparedChainContext: chainContext,
+        preparedOrdinaryPlan,
         ports
       });
       chainContext = advanceChainContext(chainContext, applied);
@@ -214,11 +216,12 @@ async function invokeOwner(handler, {
   projection,
   checkResult,
   preparedChainContext,
+  preparedOrdinaryPlan,
   ports
 }) {
   const applied = await handler(createTurnStepExecutionInput({
     plan, request, operation, projection, checkResult,
-    preparedChainContext
+    preparedChainContext, preparedOrdinaryPlan
   }));
   return orchestrateTurnStepPreparedEffect({
     request,

@@ -118,14 +118,16 @@ concealed and no partial batch leaks; reload/reopen uses committed coverage with
 calls. Narration consumes only the persisted post-reveal package and cannot add
 items. No new HTTP operation, contents store or transaction owner is added.
 
-Active revision 21 A1 accepts one or more visible actor-held non-container
-material sources and zero or more visible actor-held/controller-controlled
+Active revision 21 A1 accepts one or more committed or sealed same-root
+revealed non-container material sources and zero or more accessible actor-controlled
 non-container tools through explicit disjoint source/tool refs;
 legal ownership need not belong to the actor. Qualitative outcome is part of
 the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
-profile admits preserve, up to four finite independent outputs and no-result,
-with output/source mechanics derived exactly from consumed allocations,
-including
+profile admits preserve, up to four mass-conserving independent outputs and
+no-result, with output/source mechanics derived exactly from consumed
+allocations; finite sources decrement, while a fully partitioned whole item
+retires without a synthetic resource row. Safe result descriptors persist in
+ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
 closed qualitative weapon-capable outcomes. Item mechanics, conservation,
 identity and placement remain code-owned. It reuses one generic check and one

@@ -21,12 +21,12 @@ test('allocation mechanics conserves two finite sources across two outputs',
     })), [
       { ref: 'material:a', decrement: quantity(1), mechanics: {
         mass_grams: 200, external_hand_cost: 0, carry_form: 'compact',
-        packing_slot_cost: 1, quantity: { value: 1, unit: 'piece' },
+        packing_slot_cost: 2, quantity: { value: 1, unit: 'piece' },
         container: null
       } },
       { ref: 'material:b', decrement: quantity(1), mechanics: {
         mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
-        packing_slot_cost: 1, quantity: { value: 1, unit: 'piece' },
+        packing_slot_cost: 2, quantity: { value: 1, unit: 'piece' },
         container: null
       } }
     ]);
@@ -46,18 +46,45 @@ test('allocation mechanics conserves two finite sources across two outputs',
     })));
   });
 
-test('allocation mechanics fails closed when exact discrete mechanics cannot split',
+test('allocation mechanics retires one whole item and derives output carrying',
   () => {
-    assert.throws(() => resolveActionProducedAllocationMechanics({
+    const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({
-        source_inputs: [sourceInput('material:board', 2)]
+        source_inputs: [{ entity_ref: 'material:board',
+          finite_resource: null }]
       }),
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
         mass_grams: 800, external_hand_cost: 1, carry_form: 'regular',
-        packing_slot_cost: 2, quantity: { value: 2, unit: 'piece' },
+        packing_slot_cost: 3, quantity: null,
         container: null
       } }],
-      output_count: 1
+      output_count: 2
+    });
+    assert.deepEqual(resolution.source_effects, [{
+      source_ref: 'material:board', requested_decrement: null,
+      mechanics_snapshot_after: null
+    }]);
+    assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: snapshot,
+      material_allocations: allocations }) => ({
+      mechanics: snapshot.mechanics, allocations
+    })), [1, 2].map(() => ({ mechanics: {
+      mass_grams: 400, external_hand_cost: 1, carry_form: 'regular',
+      packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+      container: null
+    }, allocations: [{ source_ref: 'material:board', quantity: {
+      numerator: 1, denominator: 2, unit: 'whole_item'
+    } }] })));
+  });
+
+test('allocation mechanics still fails when known mass cannot split exactly',
+  () => {
+    assert.throws(() => resolveActionProducedAllocationMechanics({
+      mechanics_request: mechanicsRequest({ source_inputs: [{
+        entity_ref: 'material:board', finite_resource: null }] }),
+      source_mechanics: [{ source_ref: 'material:board', mechanics: {
+        mass_grams: 801, external_hand_cost: 1, carry_form: 'regular',
+        packing_slot_cost: 3, quantity: null, container: null } }],
+      output_count: 2
     }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
   });
 

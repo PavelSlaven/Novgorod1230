@@ -1024,9 +1024,9 @@
       "type": "sql"
     },
     {
-      "bytes": 9244,
+      "bytes": 2339,
       "path": "schemas/party-db/027_party_runtime_action_production.sql",
-      "sha256": "b4182806f1d0d11c7a0b662615fc6d6c3d8dc6ee64171d9a3cd532cb084be890",
+      "sha256": "24721013b33e93c1302745936e70eea88a6db382c730c3ed999e74c2e6adfe76",
       "type": "sql"
     },
     {

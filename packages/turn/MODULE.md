@@ -197,12 +197,13 @@ significant/hidden facts остаются disabled.
 Active A1 revision 21 не добавляет semantic fallback: sole
 `turn_step_plan_v1` помещает qualitative `action_production` внутрь
 `request_item_use`, а code-owned action-production owner лишь проверяет
-committed items и строит mechanics/P16 plan без LLM. После exact/authored
-priority разрешены один или несколько видимых held non-container material
-sources и ноль или несколько видимых held/controller-controlled tools
+committed items либо sealed revealed ordinary overlay текущего root turn и
+строит mechanics/P16 plan без LLM. После exact/authored priority разрешены
+один или несколько доступных non-container material sources и ноль или
+несколько доступных controller-controlled tools
 независимо от legal owner. Общие
 generic-check/activity owners выполняются один раз. Profile допускает
-preserve, до четырёх finite independent outputs и no-result;
+preserve, до четырёх mass-conserving independent outputs и no-result;
 partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 не задаёт mechanics, расход, identity, property, placement, roll, time,

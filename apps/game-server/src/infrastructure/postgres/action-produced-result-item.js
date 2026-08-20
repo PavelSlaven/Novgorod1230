@@ -36,6 +36,19 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
   const state = {
     lifecycle_status: 'active',
     runtime_instance_mechanics_snapshot: result.mechanics_snapshot,
+    ordinary_metadata: {
+      semantic_type: proposal.qualitative_result.output_class,
+      name: proposal.qualitative_result.result_descriptor.display_name,
+      origin: { kind: 'action_produced',
+        source_refs: result.material_allocations.length === 0
+          ? [result.source_ref] : [...new Set(result.material_allocations.map(
+            ({ source_ref: sourceRef }) => sourceRef))] },
+      semantic_facts: [proposal.qualitative_result.result_descriptor
+        .physical_description,
+        ...result.physical_facts],
+      operation_history: []
+    },
+    semantic_category: proposal.qualitative_result.output_class,
     property_state: outputProperty.property_state,
     action_production: {
       schema: 'rus.items.action_production_item_state.v1',

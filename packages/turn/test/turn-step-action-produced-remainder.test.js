@@ -155,11 +155,14 @@ test('A1 action-production owner receives a deeply immutable detached envelope',
           'turn_step_action_produced_remainder_request_v1');
         for (const key of [
           'operation', 'plan', 'request', 'actor', 'working_projection',
-          'committed_state', 'prepared_chain_context'
+          'committed_state', 'prepared_chain_context',
+          'prepared_ordinary_materialization_atomic_write_plan'
         ]) {
           assert.equal(Object.hasOwn(envelope, key), true);
         }
         assert.equal(Object.hasOwn(envelope, 'check_result'), false);
+        assert.equal(envelope
+          .prepared_ordinary_materialization_atomic_write_plan, null);
         assert.equal(Object.isFrozen(envelope), true);
         assert.equal(Object.isFrozen(envelope.operation), true);
         assert.equal(Object.isFrozen(envelope.operation.target_refs), true);

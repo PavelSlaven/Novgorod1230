@@ -184,6 +184,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       request,
       workingProjection,
       preparedChainContext,
+      preparedOrdinaryPlan: ordinaryPlans[0] ?? null,
       registry,
       ports
     });

@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.knowledge_retrieval_policy.v1",
   "policy_version": "1.0.0",
-  "baseline_manifest_sha256": "14ebf308b995ae7c0e09ecadd8196fcaa653cb6c2d9d7edf24e6d79b5a86838f",
+  "baseline_manifest_sha256": "c2c0d228e42e7845b0eab5e61fa6ab0bcf59dbc5d4c4ac0374581772a7b932dc",
   "default_statuses": [
     "active"
   ],
@@ -1174,6 +1174,58 @@
         "world-base-materialization-table-requirements",
         "read-only-database-and-graph-architecture",
         "map-g0-g4-workflow"
+      ],
+      "semantic_coverage_disposition": "baseline_gap"
+    },
+    {
+      "document_id": "semantic-world-actions-materialization-and-processes-contract",
+      "document_type": "target_normative",
+      "priority_tier": "technical_contract",
+      "subsystems": [
+        "turn",
+        "materialization",
+        "items-property",
+        "world-processes",
+        "npc",
+        "persistence",
+        "visibility"
+      ],
+      "related_document_ids": [
+        "turn-step-llm-contract",
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "items-and-property",
+        "npc-autonomous-decision-contract",
+        "temporal-world-and-interruptible-activities",
+        "llm-documentation-navigation"
+      ],
+      "related_module_paths": [
+        "packages/turn",
+        "packages/materialization",
+        "packages/items-property",
+        "packages/world-processes",
+        "packages/party-store",
+        "apps/game-server"
+      ],
+      "related_contracts": [
+        "O1/O2/A1/F1/S1/N1 independent versioned profile cutovers",
+        "proposed umbrella target; active production behavior remains defined by active contracts and code until profile cutover"
+      ],
+      "search_terms": [
+        "semantic world actions",
+        "ordinary materialization",
+        "supporting basis",
+        "identity budget",
+        "local fire",
+        "profile cutover"
+      ],
+      "conflicts_with_document_ids": [
+        "turn-step-llm-contract",
+        "code-driven-world-materialization-architecture",
+        "world-base-materialization-table-requirements",
+        "items-and-property",
+        "npc-autonomous-decision-contract",
+        "temporal-world-and-interruptible-activities"
       ],
       "semantic_coverage_disposition": "baseline_gap"
     },

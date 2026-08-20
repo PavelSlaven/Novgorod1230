@@ -53,6 +53,8 @@ paths не заменяют active-нормативы.
 
 `universal_category_classification_policy.md` и `universal_category_classification_references.md` зарегистрированы в canonical corpus со статусом `proposed`. Они задают целевую модель классификации и внешние опоры, но не отменяют active-нормативы и не подтверждают готовность предметных каталогов, regional permissions или materializer. До отдельного повышения действует приоритет выше.
 
+`semantic_world_actions_materialization_and_processes_contract.md` зарегистрирован как `proposed umbrella target` для независимых profiles `O1`, `O2`, `A1`, `F1`, `S1` и `N1`. Он не активирует новую production semantics: до profile-specific versioned cutover production behavior определяется current active contracts и code.
+
 `temporal_world_and_interruptible_activities.md` имеет status `active` после
 реализации, полного набора проверок и независимого критика. Для exact time,
 activities, boundaries, NPC temporal runtime, carriers, environment или remote
@@ -163,6 +165,7 @@ Historical bounded Phase 3/4 доступен исключительно по я
 | `formulas.md` | Справочник расчётных и структурных формул проекта с пояснениями. Объединяет формулы проверок, состояний, веса, нагрузки, боя, времени, перемещения и структуры сущностей. | Когда нужно быстро найти формулу, а затем проверить её смысл в профильном документе. |
 | `universal_category_classification_policy.md` | Proposed-норматив базового слоя universal categories, external mappings и фасетной модели; не является active. | При работе с классификационными схемами, labels, mappings, category relations и планировании этапов 3–9. |
 | `universal_category_classification_references.md` | Proposed-реестр внешних классификационных опор; не подтверждает историческую применимость. | При редакторском mapping к внешней схеме, без live runtime-запросов и без regional permission. |
+| `semantic_world_actions_materialization_and_processes_contract.md` | Proposed umbrella target для profiles O1/O2/A1/F1/S1/N1; до отдельного profile cutover не имеет production authority. | При планировании будущих ordinary-materialization, actor-action, local-process, NPC или persistence changes; сначала сверить active contract соответствующей подсистемы. |
 | `information_sources_llm_prompts.md` | Правила работы с исторической, игровой и технической информацией: происхождение сведений, статус достоверности, пополнение базы, сжатие источников, черновики, утверждённые данные и аудит. | При проектировании RAG/поиска, пополнении базы, сохранении источников, работе с внешними сведениями, снижении токенов, отделении чернового знания от утверждённого. |
 | `llm_agent_prompt_templates.md` | Active player planner/repair, conversation, autonomous и combat roles. Security projection является code-owned; bounded role только closed-choice; narrator получает persisted player-safe package. | При изменении player/NPC semantic LLM pipeline, bounded/audit/narrator ролей, генерации прозы и post-commit presentation. |
 

@@ -80,8 +80,8 @@
       "document_id": "documentation-corpus-readme",
       "canonical_path": "corpus/DOCUMENTS/README.md",
       "file_name": "README.md",
-      "sha256": "3ff12604ab8798809c4a5a710cb5b4263bf0881e66ff0eb774a7876cd6495182",
-      "bytes": 5593,
+      "sha256": "0b4a2993938f61a69017eeb6f4a9b4fe090a281065dab34cd6aae3dd5cff53b3",
+      "bytes": 5852,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/README.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -173,8 +173,8 @@
       "document_id": "llm-documentation-navigation",
       "canonical_path": "corpus/DOCUMENTS/llm_documentation_navigation.md",
       "file_name": "llm_documentation_navigation.md",
-      "sha256": "0e68c2782d104bc7044b4e549658e689aba7e57d89516ad804431c3231e0343c",
-      "bytes": 37086,
+      "sha256": "8c49b3fa80a1042c4395e47c92d02cc2704d59f45d8282c21d0481ef6f55f289",
+      "bytes": 37927,
       "status": "active",
       "source_legacy_path": "legacy/DOCUMENTS/documents-kg/corpus/DOCUMENTS/llm_documentation_navigation.md",
       "provenance_mode": "canonicalized_from_legacy",
@@ -281,6 +281,15 @@
       "sha256": "c839a7f21ef2af6375ada54a39413b7aaaa1040e7f1a661c29ffd16c80d67719",
       "bytes": 13576,
       "status": "active",
+      "provenance_mode": "native"
+    },
+    {
+      "document_id": "semantic-world-actions-materialization-and-processes-contract",
+      "canonical_path": "corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md",
+      "file_name": "semantic_world_actions_materialization_and_processes_contract.md",
+      "sha256": "7a7d31cdb55a1179244a8bfb1a70471869e1668af36ea53a12bbac3d8a2024c4",
+      "bytes": 182684,
+      "status": "proposed",
       "provenance_mode": "native"
     },
     {

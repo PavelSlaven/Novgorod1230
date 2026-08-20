@@ -1,2 +1,3 @@
 # External auditor source snapshots are immutable, digest-bound evidence.
 data/world-catalogs/novgorod/temporal-v4/sources/** -whitespace
+data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md -whitespace

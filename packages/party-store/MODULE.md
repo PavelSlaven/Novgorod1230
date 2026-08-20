@@ -16,6 +16,9 @@ Logical party persistence boundary: validates/adapts approved plans and delegate
 
 - `.`: `createPartyStore({ transact })`.
 - `./stage-25`: physical-plan adapter contract and fixed v2 schema mappings.
+- `./ordinary-materialization`: logical exact-scope load/CAS handoff for the
+  closed ordinary aggregate; it reuses the materialization aggregate validator
+  and never owns SQL or a transaction.
 - `./spatial-v3`: `createSpatialV3Repository`, `createCombinedWritePlanCommitter`; `./spatial-v3-domain-integration`: placement integrator/mutation service.
 
 The target repository exposes explicit-column reads for perception replay,
@@ -35,7 +38,7 @@ appearance остаётся внутри существующих player profile
 
 ## Ошибки, зависимости и effects
 
-Missing/miswired transaction port and infrastructure failures propagate as typed port/transaction errors; Stage 25 target mapping rejects unsafe targets. Dependencies are `@rus/kernel`, `@rus/contracts`, `@rus/turn`; package has no DB driver and performs persistence only through its injected transaction boundary. The sole physical PostgreSQL transaction owner is `@rus/game-server`.
+Missing/miswired transaction port and infrastructure failures propagate as typed port/transaction errors; Stage 25 target mapping rejects unsafe targets. Dependencies are `@rus/kernel`, `@rus/contracts`, `@rus/materialization`, `@rus/turn`; package has no DB driver and performs persistence only through its injected transaction boundary. The sole physical PostgreSQL transaction owner is `@rus/game-server`.
 
 ## Target / activation и тесты
 

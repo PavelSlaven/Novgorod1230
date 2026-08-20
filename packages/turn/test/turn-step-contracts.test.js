@@ -244,6 +244,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
         tool_refs: ['item:knife', 'item:stone'], output_count: 0,
         identity_mode: 'preserve_source', origin: null,
         result_class: 'partial_transformation',
+        material_extent: null,
         result_descriptor: {
           display_name: 'заострённая жердь',
           physical_description: 'конец жерди физически заострён',
@@ -271,7 +272,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
     ...partition.operations[0].action_production,
     source_refs: ['item:pole', 'item:stone'], tool_refs: ['item:knife'],
     output_count: 2, identity_mode: 'independent_outputs',
-    origin: 'crafted'
+    origin: 'crafted', material_extent: 'minor'
   };
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
   partition.operations[0].action_production.result_descriptor.display_name =

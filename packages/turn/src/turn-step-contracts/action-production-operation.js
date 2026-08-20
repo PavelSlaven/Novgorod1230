@@ -5,7 +5,7 @@ export function validateActionProduction(value, path, errors, trace,
   operation) {
   if (!strict(value, path, [
     'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
-    'result_class', 'result_descriptor', 'output_class'
+    'result_class', 'material_extent', 'result_descriptor', 'output_class'
   ], errors)) return;
   refs(value.source_refs, `${path}.source_refs`, errors, trace, { min: 1 });
   refs(value.tool_refs, `${path}.tool_refs`, errors, trace,
@@ -25,6 +25,9 @@ export function validateActionProduction(value, path, errors, trace,
     'nonworking_construction', 'waste', 'written_carrier',
     'no_useful_result'
   ], `${path}.result_class`, errors);
+  if (value.material_extent !== null) enumValue(value.material_extent, [
+    'minor', 'half', 'major', 'whole'
+  ], `${path}.material_extent`, errors);
   if (value.output_class !== null) enumValue(value.output_class, [
     'ordinary_mundane', 'weapon_capable', 'money_like_token',
     'written_carrier'
@@ -106,6 +109,16 @@ function validateShape(value, path, errors) {
         && !['direct_partition', 'crafted'].includes(value.origin)) {
     add(errors, path, 'identity_shape',
       'identity mode and origin are incompatible');
+  }
+  const partialOutput = value.identity_mode === 'independent_outputs'
+    && value.result_class === 'partial_transformation';
+  if (partialOutput
+      ? !['minor', 'half', 'major'].includes(value.material_extent)
+      : value.identity_mode === 'independent_outputs'
+        ? value.material_extent !== 'whole'
+        : value.material_extent !== null) {
+    add(errors, `${path}.material_extent`, 'material_extent_shape',
+      'material extent must match the physical identity transition');
   }
   if (value.identity_mode === 'independent_outputs'
       && typeof descriptor.display_name !== 'string') {

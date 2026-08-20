@@ -22,6 +22,7 @@ function request(overrides = {}) {
     source_refs: ['item:pole'],
     tool_refs: ['item:knife'],
     intended_transformation: 'заострить один конец жерди',
+    material_extent: null,
     output_class: 'ordinary_mundane',
     ...overrides
   };
@@ -46,6 +47,7 @@ function plan(overrides = {}) {
     identity_mode: 'preserve_source',
     origin: null,
     intended_transformation: input.intended_transformation,
+    material_extent: input.material_extent,
     result_class: 'ordinary_physical_result',
     result_descriptor: {
       display_name: 'заострённая жердь',
@@ -64,10 +66,12 @@ test('A1 contract admits same identity, independent outputs and no result', () =
   assert.equal(Object.isFrozen(same.result_descriptor), true);
 
   const splitRequest = request({ source_refs: ['item:board'],
-    tool_refs: ['item:axe'], intended_transformation: 'разделить доску на клинья' });
+    tool_refs: ['item:axe'], intended_transformation: 'разделить доску на клинья',
+    material_extent: 'whole' });
   const split = plan({ request_id: splitRequest.request_id,
     source_refs: splitRequest.source_refs, tool_refs: splitRequest.tool_refs,
     intended_transformation: splitRequest.intended_transformation,
+    material_extent: splitRequest.material_extent,
     identity_mode: 'independent_outputs', origin: 'direct_partition',
     result_descriptor: { display_name: 'деревянные клинья',
       physical_description: 'отделённые от доски деревянные клинья',

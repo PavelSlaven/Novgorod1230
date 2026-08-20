@@ -14,7 +14,8 @@ const RESULT_KEYS = [
   'controller_ref', 'physical_facts', 'inscription_text', 'output_authority'
 ];
 const QUALITATIVE_KEYS = [
-  'intended_transformation', 'result_descriptor', 'output_class'
+  'intended_transformation', 'material_extent', 'result_descriptor',
+  'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -59,6 +60,11 @@ function validQualitative(value, proposal) {
   const descriptor = value?.result_descriptor;
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
+    && (proposal.identity_mode !== 'independent_outputs'
+      ? value.material_extent === null
+      : proposal.result_class === 'partial_transformation'
+        ? ['minor', 'half', 'major'].includes(value.material_extent)
+        : value.material_extent === 'whole')
     && exact(descriptor, descriptorKeys(descriptor))
     && (proposal.identity_mode === 'independent_outputs'
       ? text(descriptor.display_name) : descriptor.display_name === null

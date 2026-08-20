@@ -21,6 +21,7 @@ const INVENTORY_KEYS = new Set([
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
   'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'physical_facts',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'state', 'visible', 'is_visible'
@@ -181,6 +182,7 @@ function projectItem(item, strict) {
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
     name: text(item.name), semantic_type: text(item.semantic_type),
+    physical_facts: projectPhysicalFacts(item, strict),
     quantity: finite(item.quantity),
     quantity_unit_id: text(item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),
@@ -196,6 +198,10 @@ function projectItem(item, strict) {
       : undefined,
     state: projectItemState(item.state, strict)
   });
+}
+
+function projectPhysicalFacts(item, strict) {
+  return textArray(item.physical_facts ?? item.state?.action_production?.physical_facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
 }
 
 function projectPlacement(value, strict) {

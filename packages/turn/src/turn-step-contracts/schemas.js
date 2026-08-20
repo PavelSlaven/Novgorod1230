@@ -36,7 +36,7 @@ const jsonDataDefinitions = {
 
 const ACTION_PRODUCTION_FIELDS = [
   'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
-  'result_class', 'result_descriptor', 'output_class'
+  'result_class', 'material_extent', 'result_descriptor', 'output_class'
 ];
 const ACTION_PRODUCTION_PROPERTIES = {
   source_refs: { type: 'array', minItems: 1, uniqueItems: true,
@@ -54,6 +54,9 @@ const ACTION_PRODUCTION_PROPERTIES = {
     'nonworking_construction', 'waste', 'written_carrier',
     'no_useful_result'
   ] },
+  material_extent: { anyOf: [{ type: 'null' }, { enum: [
+    'minor', 'half', 'major', 'whole'
+  ] }] },
   result_descriptor: { $ref: '#/$defs/action_production_descriptor' },
   output_class: { anyOf: [{ type: 'null' }, { enum: [
     'ordinary_mundane', 'weapon_capable', 'money_like_token',

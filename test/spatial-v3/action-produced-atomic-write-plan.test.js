@@ -366,7 +366,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
   const proposalValue = { causal_identity: { request_id: 'request:token',
     root_turn_id: 'turn:token', action_ref: 'action:token', step_index: 1 },
   result_class: 'ordinary_physical_result', qualitative_result: {
-    output_class: 'money_like_token', result_descriptor: {
+    material_extent: 'whole', output_class: 'money_like_token', result_descriptor: {
       display_name: 'деревянный счётный жетон',
       physical_description: null,
       qualitative_facts: ['имеет сходство с жетоном'],
@@ -702,6 +702,7 @@ function proposal({ mechanicsStateRef = 'mechanics:item:pole:7',
       } }],
     known_waste: [], qualitative_result: {
       intended_transformation: 'sharpen the end',
+      material_extent: null,
       output_class: 'ordinary_mundane',
       result_descriptor: { display_name: 'sharpened pole',
         physical_description: 'one end is sharpened',

@@ -18,7 +18,8 @@ test('written transition preserves carrier and only adds physical inscription',
       actor_ref: 'actor:mikula', identity_mode: 'preserve_source',
       origin: null, result_class: 'written_carrier', source_pins: [pin],
       tool_pins: [toolPin], qualitative_result: {
-        intended_transformation: 'write on carrier', result_descriptor: {
+        intended_transformation: 'write on carrier', material_extent: null,
+        result_descriptor: {
           display_name: 'written carrier',
           physical_description: 'carrier has physical writing',
           qualitative_facts: ['physically inscribed'],

@@ -92,6 +92,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       causal_mode: 'action_produced', actor_ref: actorRef,
       source_refs: sourceRefs, tool_refs: toolRefs,
       intended_transformation: envelope.plan.interpretation.grounded_attempt,
+      material_extent: qualitative.material_extent,
       output_class: qualitative.output_class
     });
     const semantic = requireActionProducedResultPlan({

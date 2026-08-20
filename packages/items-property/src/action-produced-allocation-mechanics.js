@@ -50,7 +50,10 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
 
 function independentResolution(request, byRef, outputCount) {
   const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
-  if (request.result_class === 'partial_transformation') gap();
+  const partial = request.result_class === 'partial_transformation';
+  const extent = request.qualitative_intent?.material_extent;
+  if (partial ? !['minor', 'half', 'major'].includes(extent)
+    : extent !== 'whole') gap();
   const consumed = request.source_inputs.map((source) => {
     const finite = source.finite_resource;
     const mechanics = byRef.get(source.entity_ref);
@@ -58,15 +61,21 @@ function independentResolution(request, byRef, outputCount) {
       if (mechanics.quantity !== null
           && (mechanics.quantity.value !== 1
             || mechanics.quantity.unit !== 'item')) gap();
-      const denominator = outputCount;
-      const consumedMass = mechanics.mass_grams;
+      const consumedMass = partial
+        ? partialMass(mechanics.mass_grams, extent, outputCount)
+        : mechanics.mass_grams;
       if (consumedMass < outputCount) gap();
       return { source, mechanics,
-        quantity: rational(1, 1, 'whole_item'),
-        allocation: rational(1, denominator, 'whole_item'),
+        quantity: partial
+          ? rational(consumedMass, 1, 'gram')
+          : rational(1, 1, 'whole_item'),
+        allocations: partial
+          ? distribute(consumedMass, outputCount, 'gram')
+          : Array.from({ length: outputCount }, () =>
+              rational(1, outputCount, 'whole_item')),
         consumedMass, consumedPacking: mechanics.packing_slot_cost
           * consumedMass / mechanics.mass_grams,
-        retire: true };
+        retire: !partial };
     }
     if (finite.lifecycle_state !== 'active') gap();
     const quantity = exactFiniteQuantity(finite?.quantity);
@@ -77,7 +86,8 @@ function independentResolution(request, byRef, outputCount) {
       gap();
     }
     return { source, mechanics, quantity,
-      allocation: rational(1, outputCount, quantity.unit),
+      allocations: Array.from({ length: outputCount }, () =>
+        rational(1, outputCount, quantity.unit)),
       consumedMass: ceilRatio(mechanics.mass_grams,
         quantity.denominator, quantity.numerator),
       consumedPacking: mechanics.packing_slot_cost * quantity.denominator
@@ -94,6 +104,14 @@ function independentResolution(request, byRef, outputCount) {
     consumedPacking, retire }) => {
     if (retire) return { source_ref: source.entity_ref,
       requested_decrement: null, mechanics_snapshot_after: null };
+    if (source.finite_resource === null) {
+      const after = { ...mechanics,
+        mass_grams: mechanics.mass_grams - consumedMass };
+      return { source_ref: source.entity_ref,
+        requested_decrement: rational(consumedMass, 1, 'gram'),
+        mechanics_snapshot_after: snapshot(request, after,
+          request.causal_identity.action_ref) };
+    }
     const remainingNumerator = quantity.numerator - quantity.denominator;
     const after = {
       mass_grams: mechanics.mass_grams - consumedMass,
@@ -123,12 +141,28 @@ function independentResolution(request, byRef, outputCount) {
       { value: 1, unit: 'item' });
     return { ordinal, property_source_ref: sourceRefs[0],
       mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
-      material_allocations: consumed.map(({ source, allocation }) => ({
+      material_allocations: consumed.map(({ source, allocations }) => ({
         source_ref: source.entity_ref,
-        quantity: structuredClone(allocation)
+        quantity: structuredClone(allocations[index])
       })) };
   });
   return resolution(request, effects, outputs);
+}
+
+function partialMass(mass, extent, outputCount) {
+  if (!Number.isSafeInteger(mass) || mass < 1) gap();
+  const [numerator, denominator] = extent === 'minor' ? [1, 4]
+    : extent === 'half' ? [1, 2] : [3, 4];
+  const consumed = ceilRatio(mass, numerator, denominator);
+  if (consumed < outputCount || consumed >= mass) gap();
+  return consumed;
+}
+
+function distribute(total, count, unit) {
+  const base = Math.floor(total / count);
+  const remainder = total % count;
+  return Array.from({ length: count }, (_, index) =>
+    rational(base + Number(index < remainder), 1, unit));
 }
 
 function derivedMechanics(mass, packing, quantity) {

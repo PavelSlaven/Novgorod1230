@@ -211,6 +211,7 @@ function proposal(overrides = {}) {
     source_transitions: [], tool_state_pins: [], results: [result],
     known_waste: [], qualitative_result: {
       intended_transformation: 'выполнить физическое преобразование',
+      material_extent: identityMode === 'independent_outputs' ? 'whole' : null,
       output_class: overrides.output_class ?? 'ordinary_mundane',
       result_descriptor: {
         display_name: overrides.display_name ?? 'необычная физическая деталь',

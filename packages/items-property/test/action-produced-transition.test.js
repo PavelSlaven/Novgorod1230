@@ -5,7 +5,6 @@ import { admitActionProducedResult } from
 import { createActionProducedTransitionPlanner } from
   '@rus/items-property/action-produced-transition';
 import { sha256 } from '@rus/kernel';
-
 test('preserved physical source keeps identity and receives owner mechanics',
   () => {
     const planner = createActionProducedTransitionPlanner({
@@ -21,9 +20,7 @@ test('preserved physical source keeps identity and receives owner mechanics',
         }]
       })
     });
-
     const proposal = planner(ownerInput());
-
     assert.equal(proposal.causal_identity.step_index, 1);
     assert.equal(proposal.results.length, 1);
     assert.equal(proposal.results[0].entity_ref, 'item:pole');
@@ -52,9 +49,9 @@ test('partition creates deterministic independent identities and conserves sourc
       intended_transformation: 'cut board into wedges',
       result_class: 'ordinary_physical_result',
       result_descriptor: {
-        display_name: 'wooden wedge',
-        physical_description: 'wedge separated from board',
-        qualitative_facts: ['separated from source board'],
+        display_name: 'wedge',
+        physical_description: 'separated',
+        qualitative_facts: ['separated'],
         inscription_text: null
       }
     });
@@ -95,7 +92,6 @@ test('partition creates deterministic independent identities and conserves sourc
         }]
       })
     });
-
     const proposal = planner(ownerInput({
       handoff,
       sources: [entitySnapshot('item:board', {
@@ -104,7 +100,6 @@ test('partition creates deterministic independent identities and conserves sourc
       tools: [entitySnapshot('item:axe', { role: 'tool' })],
       committedEntityRefs: ['item:board', 'item:axe']
     }));
-
     assert.deepEqual(proposal.results.map(({ entity_ref: ref }) => ref), [
       outputEntityRef(1), outputEntityRef(2), outputEntityRef(3)
     ]);
@@ -119,7 +114,6 @@ test('partition creates deterministic independent identities and conserves sourc
     assert.equal(proposal.results.every((result) =>
       result.source_ref === 'item:board'), true);
   });
-
 test('known conservation rejects insufficient, cross-unit and excess allocation',
   () => {
     const cases = [
@@ -145,7 +139,6 @@ test('known conservation rejects insufficient, cross-unit and excess allocation'
       assert.throws(() => planner(scenario.input), TypeError);
     }
   });
-
 test('independent outputs require finite decrements and material allocations',
   () => {
     const handoff = pendingHandoff({
@@ -180,7 +173,6 @@ test('independent outputs require finite decrements and material allocations',
       committedEntityRefs: ['item:board', 'item:axe']
     })), TypeError);
   });
-
 test('whole source retires with conserved mass', () => {
   const s = partitionScenario({ finite: false, decrement: null,
     allocation: quantity(1, 2, 'whole_item'), outputCount: 2,
@@ -196,7 +188,6 @@ test('whole source retires with conserved mass', () => {
   assert.equal(plan.results.reduce((sum, result) =>
     sum + result.mechanics_snapshot.mechanics.mass_grams, 0), 800);
 });
-
 test('duplicate finite resource node identity fails before mechanics resolver',
   () => {
     const handoff = pendingHandoff({
@@ -224,7 +215,6 @@ test('duplicate finite resource node identity fails before mechanics resolver',
     })), TypeError);
     assert.equal(calls, 0);
   });
-
 test('no useful result keeps source and tool state without creating identity',
   () => {
     const handoff = pendingHandoff({
@@ -241,9 +231,7 @@ test('no useful result keeps source and tool state without creating identity',
           mechanics_snapshot_after: null }]
       })
     });
-
     const proposal = planner(ownerInput({ handoff }));
-
     assert.deepEqual(proposal.results, []);
     assert.deepEqual(proposal.known_waste, []);
     assert.deepEqual(proposal.source_transitions[0].after, { state_version: '7',
@@ -254,7 +242,6 @@ test('no useful result keeps source and tool state without creating identity',
       controller_ref: 'actor:mikula'
     });
   });
-
 test('mechanics port receives only a frozen detached owner request', () => {
   let request;
   let rawResolution;
@@ -494,12 +481,9 @@ function pendingHandoff(overrides = {}) {
 
 function phaseOneInput(overrides = {}) {
   const entities = [
-    phaseOneEntity('item:pole', ['source']),
-    phaseOneEntity('item:knife', ['tool']),
-    phaseOneEntity('item:board', ['source']),
-    phaseOneEntity('item:axe', ['tool']),
-    phaseOneEntity('item:bark', ['source']),
-    phaseOneEntity('item:charcoal', ['tool'])
+    phaseOneEntity('item:pole', ['source']), phaseOneEntity('item:knife', ['tool']),
+    phaseOneEntity('item:board', ['source']), phaseOneEntity('item:axe', ['tool']),
+    phaseOneEntity('item:bark', ['source']), phaseOneEntity('item:charcoal', ['tool'])
   ];
   const proposal = {
     schema: 'action_produced_result_plan_v1',
@@ -517,7 +501,8 @@ function phaseOneInput(overrides = {}) {
     tool_refs: ['item:knife'],
     identity_mode: 'preserve_source',
     origin: null,
-    intended_transformation: 'sharpen one end of pole',
+    intended_transformation: 'sharpen one end of pole', material_extent:
+      overrides.identity_mode === 'independent_outputs' ? 'whole' : null,
     result_class: 'ordinary_physical_result',
     result_descriptor: {
       display_name: 'sharpened pole',
@@ -548,15 +533,12 @@ function phaseOneInput(overrides = {}) {
       context_ref: 'context:party:7',
       context_state_version: '7',
       allowed_access_states: ['immediate'],
-      allowed_identity_modes: [
-        'preserve_source', 'independent_outputs', 'no_useful_result'
-      ],
+      allowed_identity_modes: ['preserve_source', 'independent_outputs',
+        'no_useful_result'],
       allowed_origins: ['direct_partition', 'crafted'],
-      allowed_result_classes: [
-        'ordinary_physical_result', 'partial_transformation',
-        'nonworking_construction', 'waste', 'written_carrier',
-        'no_useful_result'
-      ]
+      allowed_result_classes: ['ordinary_physical_result',
+        'partial_transformation', 'nonworking_construction', 'waste',
+        'written_carrier', 'no_useful_result']
     },
     proposal
   };

@@ -64,7 +64,7 @@ Item identity, containers, ownership, access, inventory load, recognition and pr
 
 Multi-source A1 требует совместимой ownership basis каждого material input, но не одинаковой source-specific property basis; property результата детерминированно выводится из выбранного contributing source. Физически доступный material source не обязан уже контролироваться actor, тогда как tool остаётся actor-controlled.
 
-`partial_transformation + independent_outputs` требует exact grounded material allocation; при отсутствии такой величины owner возвращает mechanics gap и не выбирает долю source самостоятельно. Для полного partition нечётная масса распределяется детерминированно, а output hand/packing/carry выводятся code-owned и не наследуют форму source.
+`partial_transformation + independent_outputs` принимает только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity и остаточную механику source и распределяет consumed mass по outputs. Full partition использует `whole`, retire-ит source и детерминированно распределяет нечётную массу. Output hand/packing/carry выводятся code-owned и не наследуют форму source.
 
 ## Зависимости
 

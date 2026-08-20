@@ -3,12 +3,12 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { Pool } from 'pg';
-import { sha256 } from '@rus/kernel';
 import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { admitActionProducedResult } from
   '@rus/items-property/action-produced-result';
-import { createActionProducedTransitionPlanner } from
+import { createActionProducedTransitionPlanner,
+  resolveActionProducedAllocationMechanics } from
   '@rus/items-property/action-produced-transition';
 import { loadActionProducedCommittedContext } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-committed-context-loader.js';
@@ -167,7 +167,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
        WHERE party_id='party-a1') AS party_version`);
     assert.equal(partitionRows.rows[0].outputs, 2);
     assert.equal(partitionRows.rows[0].grounded_outputs, 2);
-    assert.equal(partitionRows.rows[0].left, 1);
+    assert.equal(partitionRows.rows[0].left, 2);
     assert.equal(partitionRows.rows[0].party_version, 3);
     assert.equal(partitionRows.rows[0].source_state.lifecycle_status, 'active');
     assert.equal(partitionRows.rows[0].source_state.property_state.source_ref,
@@ -382,7 +382,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
        WHERE party_id='party-a1' AND resource_node_id='resource-board') AS board,
       (SELECT quantity_numerator::int FROM party_runtime.party_resource_nodes
        WHERE party_id='party-a1' AND resource_node_id='resource-scrap') AS scrap`))
-      .rows[0], { party_version: 4, board: 1, scrap: 2 });
+      .rows[0], { party_version: 4, board: 2, scrap: 3 });
 
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id='pc',owner_party=false
@@ -418,7 +418,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
        WHERE party_id='party-a1' AND resource_node_id='resource-board') AS board,
       (SELECT quantity_numerator::int FROM party_runtime.party_resource_nodes
        WHERE party_id='party-a1' AND resource_node_id='resource-scrap') AS scrap`))
-      .rows[0], { party_version: 5, board: 0, scrap: 1 });
+      .rows[0], { party_version: 5, board: 1, scrap: 2 });
 
     await provisionProductionScope(pool);
     const loadedProfile = await loadLowerDvinaTraceA1Profile();
@@ -792,7 +792,10 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         reloaded.output_destination_pin.item_capacity);
     } finally { reloadClient.release(); }
 
-    await assert.rejects(() => productionOwner('production-partial')(
+    await pool.query(`UPDATE party_runtime.party_g5_anchors
+      SET item_capacity=item_capacity+2 WHERE party_id='party-a1'
+        AND anchor_id='output-anchor'`);
+    const partial = await productionOwner('production-partial')(
       productionEnvelope({
       checked: false, stateVersion: 10, turnNumber: 9,
       itemRef: 'production-partial-board',
@@ -805,7 +808,14 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         result_class: 'partial_transformation',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
           physical_description: 'небольшая отделённая часть доски' })
-      }) })), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
+      }) }));
+    const partialCombined = await combinedPlan(
+      partial.action_production_atomic_write_plan, 'production-partial', 10);
+    assert.equal((await committer.commit({ plan: partialCombined })).ok, true);
+    assert.deepEqual(await committer.commit({ plan: partialCombined }), {
+      ok: true, replay: true,
+      change_set_id: 'change:party-a1:turn-step:10'
+    });
     assert.deepEqual((await pool.query(`SELECT
       (SELECT condition_state FROM party_runtime.party_items
        WHERE party_id='party-a1' AND item_id='production-partial-board')
@@ -818,11 +828,26 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
        WHERE party_id='party-a1' AND item_id='production-partial-board')
         AS source_mass,
       (SELECT count(*)::int
-       FROM party_runtime.party_items WHERE party_id='party-a1'
+      FROM party_runtime.party_items WHERE party_id='party-a1'
          AND state->'action_production'->'causal_identity'->>'request_id'
            ='production-partial') AS outputs`)).rows[0], {
-      source_condition: 'serviceable', source_mass: 801, outputs: 0
+      source_condition: 'serviceable', source_mass: 600, outputs: 2
     });
+    const partialReload = await pool.connect();
+    try {
+      const loaded = await loadActionProducedCommittedContext(partialReload, {
+        party_id: 'party-a1', actor_ref: 'pc',
+        root_turn_id: 'turn-after-partial', action_ref: 'action-after-partial',
+        step_index: 1, context_ref: A1.context_ref,
+        expected_party_state_version: 11,
+        source_refs: ['production-partial-board'],
+        tool_refs: ['production-knife'], admission_profile: admissionProfile(11),
+        technical_policy: technicalPolicy()
+      });
+      assert.equal(loaded.row_pins.find(({ role }) => role === 'source')
+        .item.state.runtime_instance_mechanics_snapshot.mechanics.mass_grams,
+      600);
+    } finally { partialReload.release(); }
   });
 
 async function actionPlan(pool, config) {
@@ -859,6 +884,7 @@ async function actionPlan(pool, config) {
       source_refs: config.sources, tool_refs: config.tools,
       identity_mode: config.mode, origin,
       intended_transformation: 'bounded physical transformation',
+      material_extent: config.mode === 'independent_outputs' ? 'whole' : null,
       result_class: resultClass,
       output_class: config.mode === 'no_useful_result'
         ? null : config.outputClass ?? 'ordinary_mundane',
@@ -879,9 +905,9 @@ async function actionPlan(pool, config) {
       resolveMechanics: (request) => ownerResolution(request, {
         ...config, sourceMechanics: Object.fromEntries(loaded.row_pins
           .filter(({ role }) => role === 'source').map((pin) => [pin.item_id,
-          pin.item.state
+          exactMechanics(pin.item.state
             .runtime_instance_mechanics_snapshot?.mechanics
-              ?? pin.item.state.inventory_profile_snapshot]))
+              ?? pin.item.state.inventory_profile_snapshot)]))
       })
     });
     const transition = planner({ handoff: admitted.handoff,
@@ -901,84 +927,28 @@ async function actionPlan(pool, config) {
 }
 
 function ownerResolution(request, config) {
-  const finite = config.mode !== 'preserve_source'
-    || config.sources[0].includes('rollback');
-  const decrements = new Map(request.source_inputs.map(({ entity_ref,
-    finite_resource: resource }) => [entity_ref, finite ? {
-      numerator: config.decrement
-          ?? (config.mode === 'independent_outputs' ? 2 : 1),
-      denominator: 1, unit: 'piece', before: resource?.quantity } : null]));
-  const sourceEffects = request.source_inputs.map(({ entity_ref }) => {
-    const decrement = decrements.get(entity_ref);
-    const current = config.sourceMechanics?.[entity_ref];
-    const remaining = decrement?.before == null ? null
-      : decrement.before.numerator * decrement.denominator
-        - decrement.numerator * decrement.before.denominator;
-    return { source_ref: entity_ref,
-      requested_decrement: decrement == null ? null : {
-        numerator: decrement.numerator, denominator: decrement.denominator,
-        unit: decrement.unit },
-      mechanics_snapshot_after: config.mode === 'preserve_source'
-        ? mechanics(request, config.actionRef)
-        : decrement == null ? null : mechanics(request, config.actionRef,
-          current.mass_grams * remaining
-            / (decrement.before.numerator * decrement.denominator), {
-            external_hand_cost: remaining === 0 ? 0
-              : current.external_hand_cost,
-            carry_form: current.carry_form,
-            packing_slot_cost: remaining === 0 ? 0
-              : current.packing_slot_cost,
-            quantity: remaining === 0 ? null : { value: remaining
-              / (decrement.before.denominator * decrement.denominator),
-              unit: decrement.unit },
-            container: current.container
-          }) };
+  if (config.mode === 'no_useful_result' && config.decrement != null) {
+    return { schema: 'rus.items.action_produced_owner_resolution.v1',
+      identity_mode: config.mode, source_effects: request.source_inputs.map(
+        ({ entity_ref: sourceRef }) => ({ source_ref: sourceRef,
+          requested_decrement: { numerator: config.decrement,
+            denominator: 1, unit: 'piece' },
+          mechanics_snapshot_after: null })), outputs: [], known_waste: [] };
+  }
+  return resolveActionProducedAllocationMechanics({
+    mechanics_request: request,
+    source_mechanics: request.source_inputs.map(({ entity_ref: sourceRef }) =>
+      ({ source_ref: sourceRef, mechanics: config.sourceMechanics[sourceRef] })),
+    output_count: config.mode === 'independent_outputs'
+      ? config.outputCount ?? 2 : 0
   });
-  const outputCount = config.outputCount ?? 2;
-  const allocationSources = config.allocationSources ?? [config.sources[0]];
-  const consumedMass = config.mode !== 'independent_outputs' ? 0
-    : allocationSources.reduce((sum, sourceRef) => {
-    const decrement = decrements.get(sourceRef);
-    const current = config.sourceMechanics[sourceRef];
-    return sum + current.mass_grams * decrement.numerator
-      * decrement.before.denominator
-      / (decrement.denominator * decrement.before.numerator);
-    }, 0);
-  const outputs = config.mode !== 'independent_outputs' ? []
-    : Array.from({ length: outputCount }, (_, index) => index + 1)
-    .map((ordinal) => ({ ordinal,
-      property_source_ref: config.propertySource ?? config.sources[0],
-      mechanics_snapshot: mechanics(request, outputId(request, ordinal),
-        consumedMass / outputCount),
-      material_allocations: allocationSources.map((sourceRef) => ({
-        source_ref: sourceRef,
-        quantity: { numerator: 1, denominator: 1, unit: 'piece' }
-      })) }));
-  return { schema: 'rus.items.action_produced_owner_resolution.v1',
-    identity_mode: config.mode, source_effects: sourceEffects, outputs,
-    known_waste: [] };
 }
 
-function mechanics(request, operationRef, massGrams = 100,
-  mechanicsOverrides = {}) {
-  return { schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
-    version: 1, provenance: {
-      source_kind: 'ordinary_direct_action_result',
-      root_turn_id: request.causal_identity.root_turn_id,
-      step_index: request.causal_identity.step_index,
-      operation_ref: operationRef,
-      origin_kind: request.origin ?? 'crafted',
-      source_refs: request.source_inputs.map(({ entity_ref }) => entity_ref)
-    }, mechanics: { mass_grams: massGrams, external_hand_cost: 0,
-      carry_form: 'compact', packing_slot_cost: 1, quantity: null,
-      container: null, ...mechanicsOverrides, mass_grams: massGrams } };
-}
-function outputId(request, ordinal) {
-  return `a1_result_${sha256({
-    domain: 'rus.items.action_produced_output_identity.v1',
-    root_turn_id: request.causal_identity.root_turn_id,
-    action_ref: request.causal_identity.action_ref, ordinal
-  }).slice(0, 32)}`;
+function exactMechanics(value) {
+  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity, container } = value;
+  return { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
+    quantity: structuredClone(quantity), container };
 }
 
 async function combinedPlan(action, suffix, partyVersion,
@@ -1269,8 +1239,13 @@ function descriptor(overrides = {}) {
 }
 
 function actionProduction(overrides = {}) {
+  const identityMode = overrides.identity_mode ?? 'preserve_source';
+  const resultClass = overrides.result_class ?? 'partial_transformation';
   return { identity_mode: 'preserve_source', origin: null,
     result_class: 'partial_transformation',
+    material_extent: identityMode === 'independent_outputs'
+      ? resultClass === 'partial_transformation' ? 'minor' : 'whole'
+      : null,
     result_descriptor: descriptor(), output_class: 'ordinary_mundane',
     ...overrides };
 }

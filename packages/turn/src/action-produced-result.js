@@ -9,7 +9,7 @@ const REQUEST_KEYS = [
   'step_index',
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs',
-  'intended_transformation', 'output_class'
+  'intended_transformation', 'material_extent', 'output_class'
 ];
 const PLAN_KEYS = [
   'schema', 'request_id', 'root_turn_id', 'action_ref',
@@ -17,7 +17,7 @@ const PLAN_KEYS = [
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs', 'identity_mode',
   'origin', 'intended_transformation', 'result_class', 'result_descriptor',
-  'output_class'
+  'material_extent', 'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -111,6 +111,7 @@ function validateRequestSnapshot(value) {
   disjoint(value.source_refs, value.tool_refs, 'request refs', errors);
   exactText(value.intended_transformation,
     'request.intended_transformation', errors);
+  materialExtent(value.material_extent, 'request.material_extent', errors);
   nullableMember(value.output_class, OUTPUT_CLASSES,
     'request.output_class', errors);
   return errors;
@@ -138,6 +139,7 @@ function validatePlanSnapshot(value) {
   nullableMember(value.origin, ORIGINS, 'plan.origin', errors);
   exactText(value.intended_transformation,
     'plan.intended_transformation', errors);
+  materialExtent(value.material_extent, 'plan.material_extent', errors);
   member(value.result_class, RESULT_CLASSES, 'plan.result_class', errors);
   descriptor(value.result_descriptor, errors);
   nullableMember(value.output_class, OUTPUT_CLASSES,
@@ -182,6 +184,15 @@ function validateCausalShape(value, errors) {
   if (value.identity_mode === 'independent_outputs'
       && !exactTextValue(descriptorValue.display_name)) {
     errors.push('independent_outputs requires a safe display name');
+  }
+  const partialOutput = value.identity_mode === 'independent_outputs'
+    && value.result_class === 'partial_transformation';
+  if (partialOutput
+      ? !['minor', 'half', 'major'].includes(value.material_extent)
+      : value.identity_mode === 'independent_outputs'
+        ? value.material_extent !== 'whole'
+        : value.material_extent !== null) {
+    errors.push('material extent must match the physical identity transition');
   }
   if (value.identity_mode === 'no_useful_result') {
     if (value.origin !== null
@@ -229,7 +240,8 @@ function validateEcho(plan, request, errors) {
     'request_id', 'root_turn_id', 'action_ref', 'step_index',
     'committed_state_version',
     'context_ref', 'profile_ref', 'profile_version', 'causal_mode',
-    'actor_ref', 'source_refs', 'tool_refs', 'intended_transformation'
+    'actor_ref', 'source_refs', 'tool_refs', 'intended_transformation',
+    'material_extent'
   ]) {
     if (!same(plan[key], request[key])) {
       errors.push(`plan.${key} must exactly echo request.${key}`);
@@ -241,6 +253,12 @@ function validateEcho(plan, request, errors) {
     }
   } else if (!same(plan.output_class, request.output_class)) {
     errors.push('plan.output_class must exactly echo request.output_class');
+  }
+}
+
+function materialExtent(value, path, errors) {
+  if (value !== null && !['minor', 'half', 'major', 'whole'].includes(value)) {
+    errors.push(`${path} must be null or a supported qualitative extent`);
   }
 }
 

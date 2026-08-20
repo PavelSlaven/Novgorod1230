@@ -24,10 +24,8 @@ import { validateActionProducedEntitySnapshots as validateSnapshots,
 import { validateActionProducedOutputClass } from './action-produced-output-class.js';
 import { createActionProducedOutputIdentity } from
   './action-produced-output-identity.js';
-const INPUT_KEYS = [
-  'handoff', 'source_snapshots', 'tool_snapshots',
-  'committed_entity_refs', 'technical_policy', 'output_destination'
-];
+const INPUT_KEYS = ['handoff', 'source_snapshots', 'tool_snapshots',
+  'committed_entity_refs', 'technical_policy', 'output_destination'];
 const HANDOFF_KEYS = [
   'schema', 'status', 'request_id', 'root_turn_id', 'action_ref',
   'step_index',
@@ -41,24 +39,14 @@ const PIN_KEYS = [
   'ownership_state_ref', 'ownership_basis_ref', 'property_basis_ref',
   'placement_state_ref'
 ];
-const POLICY_KEYS = ['schema', 'version', 'status', 'policy_ref', 'profile_ref',
-  'profile_version', 'max_new_entities'];
-const RESOLUTION_KEYS = [
-  'schema', 'identity_mode', 'source_effects', 'outputs', 'known_waste'
-];
-const SOURCE_EFFECT_KEYS = [
-  'source_ref', 'requested_decrement', 'mechanics_snapshot_after'
-];
-const OUTPUT_KEYS = [
-  'ordinal', 'property_source_ref', 'mechanics_snapshot',
-  'material_allocations'
-];
+const POLICY_KEYS = ['schema', 'version', 'status', 'policy_ref', 'profile_ref', 'profile_version', 'max_new_entities'];
+const RESOLUTION_KEYS = ['schema', 'identity_mode', 'source_effects', 'outputs', 'known_waste'];
+const SOURCE_EFFECT_KEYS = ['source_ref', 'requested_decrement', 'mechanics_snapshot_after'];
+const OUTPUT_KEYS = ['ordinal', 'property_source_ref', 'mechanics_snapshot', 'material_allocations'];
 const ALLOCATION_KEYS = ['source_ref', 'quantity'];
 const WASTE_KEYS = ['source_ref', 'quantity'];
-const QUALITATIVE_KEYS = ['intended_transformation', 'result_descriptor',
-  'output_class'];
-const DESCRIPTOR_KEYS = ['display_name', 'physical_description',
-  'qualitative_facts', 'inscription_text'];
+const QUALITATIVE_KEYS = ['intended_transformation', 'material_extent', 'result_descriptor', 'output_class'];
+const DESCRIPTOR_KEYS = ['display_name', 'physical_description', 'qualitative_facts', 'inscription_text'];
 const RESULT_CLASSES = new Set(['ordinary_physical_result',
   'partial_transformation', 'nonworking_construction', 'waste',
   'written_carrier', 'no_useful_result']);
@@ -203,20 +191,27 @@ function validateHandoff(value) {
         !== WEAPON_CLASSES.has(value.qualitative_result?.result_descriptor
           ?.weapon_qualitative_class)
       || !validQualitativeResult(value.qualitative_result,
-        value.identity_mode)) fail();
+        value.identity_mode, value.result_class)) fail();
   return value;
 }
-function validQualitativeResult(value, identityMode) {
+function validQualitativeResult(value, identityMode, resultClass) {
   if (!exact(value, QUALITATIVE_KEYS)
       || !text(value.intended_transformation)
       || !exact(value.result_descriptor,
         descriptorKeys(value.result_descriptor))) return false;
   const descriptor = value.result_descriptor;
-  return (identityMode === 'independent_outputs'
+  return validMaterialExtent(value, identityMode, resultClass)
+    && (identityMode === 'independent_outputs'
       ? text(descriptor.display_name) : nullableText(descriptor.display_name))
     && nullableText(descriptor.physical_description)
     && refs(descriptor.qualitative_facts, true) != null
     && nullableText(descriptor.inscription_text);
+}
+function validMaterialExtent(value, identityMode, resultClass) {
+  return identityMode !== 'independent_outputs' ? value.material_extent === null
+    : resultClass === 'partial_transformation'
+    ? ['minor', 'half', 'major'].includes(value.material_extent)
+    : value.material_extent === 'whole';
 }
 function descriptorKeys(value) { return value != null
   && Object.hasOwn(value, 'weapon_qualitative_class')
@@ -248,7 +243,12 @@ function validateSourceEffects(values, sources, handoff) {
     const source = byRef.get(effect.source_ref);
     let finiteTransition = null;
     if (source.finite_resource === null) {
-      if (effect.requested_decrement !== null) fail();
+      if (effect.requested_decrement !== null) {
+        const partial = rational(effect.requested_decrement, false);
+        if (handoff.identity_mode !== 'independent_outputs'
+          || handoff.result_class !== 'partial_transformation'
+          || partial.unit !== 'gram') fail();
+      }
     } else {
       if (effect.requested_decrement !== null) {
         rational(effect.requested_decrement, false);
@@ -267,18 +267,17 @@ function validateSourceEffects(values, sources, handoff) {
         });
       }
     }
-    const mechanicsSnapshot = effect.mechanics_snapshot_after === null
-      ? null : mechanics(effect.mechanics_snapshot_after, handoff,
-        handoff.action_ref);
+    const mechanicsSnapshot = effect.mechanics_snapshot_after === null ? null
+      : mechanics(effect.mechanics_snapshot_after, handoff, handoff.action_ref);
     const retireSource = handoff.identity_mode === 'independent_outputs'
       && source.finite_resource === null && mechanicsSnapshot === null;
     const partialWholeSource = handoff.identity_mode === 'independent_outputs'
       && handoff.result_class === 'partial_transformation'
-      && source.finite_resource === null && mechanicsSnapshot !== null;
+      && source.finite_resource === null && mechanicsSnapshot !== null
+      && effect.requested_decrement !== null;
     const changed = finiteTransition !== null || mechanicsSnapshot !== null
       || retireSource;
-    const afterStateVersion = changed
-      ? nextActionProducedStateVersion(source.state_version)
+    const afterStateVersion = changed ? nextActionProducedStateVersion(source.state_version)
       : source.state_version;
     return { source, effect, afterStateVersion,
       finiteTransition, mechanicsSnapshot, retireSource, partialWholeSource };
@@ -342,6 +341,7 @@ function allocationsFor(values, sources) {
 function validateConservation(effects, outputs, waste) {
   for (const source of effects) {
     const conserved = source.finiteTransition?.decrement_quantity
+      ?? (source.partialWholeSource ? source.effect.requested_decrement : null)
       ?? (source.retireSource
         ? { numerator: 1, denominator: 1, unit: 'whole_item' } : null);
     if (conserved === null) continue;
@@ -458,9 +458,9 @@ function sanitizedEntity(value) {
   };
 }
 function sameFiniteUnit(effect, quantity) {
-  const unit = effect.finiteTransition?.decrement_quantity.unit
-    ?? (effect.retireSource || effect.partialWholeSource
-      ? 'whole_item' : null);
+  const unit = effect.finiteTransition?.decrement_quantity.unit ??
+    (effect.partialWholeSource ? effect.effect.requested_decrement.unit
+      : effect.retireSource ? 'whole_item' : null);
   if (unit !== quantity.unit) fail();
 }
 function outputRef(handoff, ordinal) {

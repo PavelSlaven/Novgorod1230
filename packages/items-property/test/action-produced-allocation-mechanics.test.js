@@ -95,31 +95,53 @@ test('allocation mechanics conserves odd mass without inheriting board shape',
       container: null }]);
   });
 
-test('partial outputs require a grounded exact material allocation', () => {
-  for (const { input, mechanics } of [{
-    input: { entity_ref: 'material:board', finite_resource: null },
-    mechanics: { mass_grams: 801, external_hand_cost: 1,
-      carry_form: 'long', packing_slot_cost: 6, quantity: null,
-      container: null }
-  }, {
-    input: sourceInput('material:board', 2),
-    mechanics: { mass_grams: 800, external_hand_cost: 1,
-      carry_form: 'long', packing_slot_cost: 6,
-      quantity: { value: 2, unit: 'piece' }, container: null }
-  }]) {
-    assert.throws(() => resolveActionProducedAllocationMechanics({
+test('partial outputs consume a grounded minor extent and preserve source',
+  () => {
+    const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({
-        result_class: 'partial_transformation', source_inputs: [input] }),
-      source_mechanics: [{ source_ref: 'material:board', mechanics }],
+        result_class: 'partial_transformation',
+        qualitative_intent: { material_extent: 'minor' },
+        source_inputs: [{ entity_ref: 'material:board',
+          finite_resource: null }] }),
+      source_mechanics: [{ source_ref: 'material:board', mechanics: {
+        mass_grams: 800, external_hand_cost: 1,
+        carry_form: 'long', packing_slot_cost: 6, quantity: null,
+        container: null } }],
       output_count: 2
-    }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
-  }
+    });
+
+    assert.deepEqual(resolution.source_effects, [{
+      source_ref: 'material:board',
+      requested_decrement: { numerator: 200, denominator: 1, unit: 'gram' },
+      mechanics_snapshot_after: {
+        schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
+        version: 1,
+        provenance: { source_kind: 'ordinary_direct_action_result',
+          root_turn_id: 'turn', step_index: 1, operation_ref: 'action',
+          origin_kind: 'crafted', source_refs: ['material:board'] },
+        mechanics: { mass_grams: 600, external_hand_cost: 1,
+          carry_form: 'long', packing_slot_cost: 6, quantity: null,
+          container: null }
+      }
+    }]);
+    assert.deepEqual(resolution.outputs.map((output) => ({
+      mechanics: output.mechanics_snapshot.mechanics,
+      allocations: output.material_allocations
+    })), [1, 2].map(() => ({
+      mechanics: { mass_grams: 100, external_hand_cost: 0,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null },
+      allocations: [{ source_ref: 'material:board', quantity: {
+        numerator: 100, denominator: 1, unit: 'gram'
+      } }]
+    })));
 });
 
 test('preserve source keeps ordinary mechanics without a discrete quantity',
   () => {
     const request = mechanicsRequest({ identity_mode: 'preserve_source',
-      origin: null, source_inputs: [sourceInput('item:garment', 1)] });
+      origin: null, qualitative_intent: { material_extent: null },
+      source_inputs: [sourceInput('item:garment', 1)] });
     const mechanics = { mass_grams: 900, external_hand_cost: 0,
       carry_form: 'regular', packing_slot_cost: 2, quantity: null,
       container: null };
@@ -142,7 +164,7 @@ function mechanicsRequest(overrides = {}) {
     result_class: 'ordinary_physical_result',
     source_inputs: [sourceInput('material:a', 2),
       sourceInput('material:b', 2)],
-    tool_inputs: [], qualitative_intent: {},
+    tool_inputs: [], qualitative_intent: { material_extent: 'whole' },
     technical_limits: { policy_ref: 'policy', policy_version: 1,
       max_new_entities: 4 }, ...overrides
   };

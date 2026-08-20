@@ -19,7 +19,8 @@ const CONTEXT_KEYS = [
 ];
 const TECHNICAL_KEYS = ['policy_ref', 'version', 'max_new_entities'];
 const QUALITATIVE_KEYS = [
-  'intended_transformation', 'result_descriptor', 'output_class'
+  'intended_transformation', 'material_extent', 'result_descriptor',
+  'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -105,7 +106,7 @@ function validProposal(value) {
       || !Array.isArray(value.source_transitions)
       || !Array.isArray(value.tool_state_pins)
       || !Array.isArray(value.known_waste)
-      || !validQualitative(value.qualitative_result)
+      || !validQualitative(value.qualitative_result, value)
       || !validateActionProducedOutputClass(
         value.qualitative_result.output_class,
         value.result_class, value.identity_mode)
@@ -138,9 +139,14 @@ function validTechnical(value) {
     && value.version === 1 && Number.isSafeInteger(value.max_new_entities)
     && value.max_new_entities >= 1 && value.max_new_entities <= 8;
 }
-function validQualitative(value) {
+function validQualitative(value, proposal) {
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
+    && (proposal.identity_mode !== 'independent_outputs'
+      ? value.material_extent === null
+      : proposal.result_class === 'partial_transformation'
+        ? ['minor', 'half', 'major'].includes(value.material_extent)
+        : value.material_extent === 'whole')
     && exact(value.result_descriptor, descriptorKeys(value.result_descriptor))
     && nullableText(value.result_descriptor.display_name)
     && nullableText(value.result_descriptor.physical_description)

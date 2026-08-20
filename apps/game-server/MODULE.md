@@ -129,13 +129,15 @@ profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
 retires and leaves active placement/capacity without a synthetic resource row.
-Partial output without an exact
-grounded material allocation fails with a mechanics gap instead of choosing a
-source fraction. Odd mass is distributed deterministically; output
+Partial independent output carries only grounded qualitative
+`minor|half|major` extent; the item owner maps it to an exact gram decrement,
+keeps the changed source active and derives its remaining mechanics. Odd mass
+is distributed deterministically; output
 hand/packing/carry is code-derived. Safe named result descriptors persist in
 ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
-closed qualitative weapon-capable outcomes. Item mechanics, conservation,
+closed qualitative weapon-capable outcomes. Visible non-authoritative physical
+facts also survive same-root continuation and reload. Item mechanics, conservation,
 identity and placement remain code-owned. Uncertain actions reuse one generic
 check and semantic activity/time resolution from turn owners; deterministic
 actions use `domain_request` without mandatory RNG/time. The same combined P16 write set contains the full turn snapshot,

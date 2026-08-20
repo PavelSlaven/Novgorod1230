@@ -825,6 +825,7 @@ LLM не перечисляет contents до их появления в player-
     "identity_mode": "preserve_source | independent_outputs | no_useful_result",
     "origin": "direct_partition | crafted | null",
     "result_class": "ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result",
+    "material_extent": "minor | half | major | whole | null",
     "result_descriptor": {
       "display_name": "безопасное имя физического результата",
       "physical_description": "видимый физический результат",
@@ -853,18 +854,20 @@ RNG/time owners исполняют их один раз; детерминиро�
 `domain_request` без check. Profile допускает preserve, до четырёх independent outputs,
 no-result,
 partial/nonworking/waste, writing, non-authoritative token-like и closed
-weapon-capable outcomes. Model не задаёт массу, расход, mechanics, identity,
+weapon-capable outcomes. Model не задаёт массу, numeric расход, mechanics, identity,
 property, placement, время, roll, currency/official status или combat numbers.
 Exact source/output mechanics выводится из реально списанных allocations:
 finite source уменьшается, а полностью разделённый единичный source без
-resource row retire-ится. Partial output без exact grounded material allocation
-возвращает typed mechanics gap; code не выводит расход из одного output count.
+resource row retire-ится. Для partial independent output sole plan задаёт только
+grounded qualitative `material_extent = minor|half|major`; item owner переводит
+его в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.
+Full independent partition использует `whole`, preserve/no-result — `null`.
 Масса полного partition сохраняется с детерминированным остатком,
 hand/packing/carry выводятся code-owned и не наследуют форму source. Новый
 independent output обязан иметь safe непустое display name; nullable physical
 description не добавляется как `null` fact. Non-authoritative display name/type сохраняются в
-ordinary item metadata и переживают reload; нецелимая mass allocation
-возвращает typed gap.
+ordinary item metadata и переживают reload; persisted non-authoritative
+physical facts видны следующему internal step и после reload.
 Один combined P16 сохраняет causal pins, conservation и physical transition
 атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 

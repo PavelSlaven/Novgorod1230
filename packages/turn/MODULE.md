@@ -213,7 +213,11 @@ writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 не задаёт mechanics, расход, identity, property, placement, roll, time,
 currency/official status или combat numbers. Independent output требует
 непустое safe display name; nullable physical description не создаёт `null`
-fact. Partial output без exact grounded allocation возвращает mechanics gap.
+fact. Для partial independent output sole plan задаёт только grounded
+`material_extent = minor|half|major`; full partition использует `whole`, а
+preserve/no-result — `null`. Числовую долю и exact mechanics выводит item owner.
+Persisted non-authoritative physical facts входят в следующую player-safe
+working/reload projection.
 
 ## Тесты
 

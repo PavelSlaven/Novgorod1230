@@ -10,7 +10,8 @@ import {
 } from './action-produced-persistence-boundary.js';
 import { validateActionProducedProposalResults } from
   './action-produced-atomic-write-plan-result-validation.js';
-import { validateActionProducedMassConservation } from
+import { actionProducedConsumedMass,
+  validateActionProducedOwnerMechanics } from
   './action-produced-mass-conservation.js';
 
 const PROPOSAL_KEYS = [
@@ -195,12 +196,19 @@ function validateFinite(value, row, causal, itemId, required) {
 
 function validateIndependentConservation(proposal, sourcePins) {
   if (proposal.identity_mode !== 'independent_outputs') return;
-  const transitions = new Map(proposal.source_transitions.map((entry) => [
-    entry.entity_ref, entry.finite_resource_transition ?? {
-      decrement_quantity: { numerator: 1, denominator: 1,
-        unit: 'whole_item' }
-    }
-  ]));
+  const transitions = new Map(proposal.source_transitions.map((entry) => {
+    const pin = sourcePins.find(({ item_id: itemId }) =>
+      itemId === entry.entity_ref);
+    const partialWhole = proposal.result_class === 'partial_transformation'
+      && entry.finite_resource_transition === null
+      && entry.after.mechanics_snapshot !== null;
+    return [entry.entity_ref, entry.finite_resource_transition ?? {
+      decrement_quantity: partialWhole
+        ? { numerator: actionProducedConsumedMass(entry, pin),
+          denominator: 1, unit: 'gram' }
+        : { numerator: 1, denominator: 1, unit: 'whole_item' }
+    }];
+  }));
   const seenResults = new Set();
   const totals = new Map();
   for (let index = 0; index < proposal.results.length; index += 1) {
@@ -251,7 +259,7 @@ function validateIndependentConservation(proposal, sourcePins) {
       fail('ACTION_PRODUCED_RESULT_INVALID');
     }
   }
-  validateActionProducedMassConservation(proposal, sourcePins);
+  validateActionProducedOwnerMechanics(proposal, sourcePins);
 }
 
 function statePin(pin) {

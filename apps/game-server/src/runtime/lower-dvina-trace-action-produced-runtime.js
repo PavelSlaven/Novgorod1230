@@ -54,6 +54,9 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
         ?? metadata?.semantic_type ?? current.category_id,
       name: metadata?.name ?? current.name,
       semantic_type: metadata?.semantic_type ?? current.semantic_type,
+      physical_facts: structuredClone(update.after_item.state
+        ?.action_production?.physical_facts
+        ?? current.physical_facts ?? []),
       quantity: update.after_item.quantity,
       condition_state: update.after_item.condition_state,
       legal_status: update.after_item.legal_status
@@ -83,6 +86,8 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       category_id: row.category_id ?? metadata?.semantic_type ?? null,
       name: metadata?.name ?? null,
       semantic_type: metadata?.semantic_type ?? null, quantity: row.quantity,
+      physical_facts: structuredClone(row.state?.action_production
+        ?.physical_facts ?? []),
       quantity_unit_id: runtime.mechanics.quantity?.unit,
       condition_state: row.condition_state, legal_status: row.legal_status,
       placement: structuredClone(placement)

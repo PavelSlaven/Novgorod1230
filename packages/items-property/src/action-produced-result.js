@@ -27,7 +27,7 @@ const PROPOSAL_KEYS = [
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs', 'identity_mode',
   'origin', 'intended_transformation', 'result_class', 'result_descriptor',
-  'output_class'
+  'material_extent', 'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -113,6 +113,7 @@ export function admitActionProducedResult(value) {
       tool_pins: tools.pins,
       qualitative_result: {
         intended_transformation: proposal.intended_transformation,
+        material_extent: proposal.material_extent,
         result_descriptor: proposal.result_descriptor,
         output_class: proposal.output_class
       }
@@ -182,6 +183,7 @@ function validateProposal(value) {
       || !IDENTITY_MODES.has(value.identity_mode)
       || value.origin !== null && !ORIGINS.has(value.origin)
       || !text(value.intended_transformation)
+      || !validMaterialExtent(value)
       || !RESULT_CLASSES.has(value.result_class)
       || !validDescriptor(value.result_descriptor)
       || !validateActionProducedOutputClass(value.output_class,
@@ -193,6 +195,15 @@ function validateProposal(value) {
     return 'ITEM_ACTION_PRODUCED_PROPOSAL_INVALID';
   }
   return null;
+}
+
+function validMaterialExtent(value) {
+  if (value.identity_mode !== 'independent_outputs') {
+    return value.material_extent === null;
+  }
+  return value.result_class === 'partial_transformation'
+    ? ['minor', 'half', 'major'].includes(value.material_extent)
+    : value.material_extent === 'whole';
 }
 
 function validDescriptor(value) {

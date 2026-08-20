@@ -45,6 +45,7 @@ function profile() {
       'no_useful_result'] };
 }
 function proposal(overrides = {}) {
+  const identityMode = overrides.identity_mode ?? 'preserve_source';
   return { schema: 'action_produced_result_plan_v1',
     request_id: 'a1:turn-1:step-1', root_turn_id: 'turn:party-1:1',
     action_ref: 'action:turn-1:step-1', step_index: 1,
@@ -55,6 +56,7 @@ function proposal(overrides = {}) {
     source_refs: ['item:pole'], tool_refs: ['item:knife'],
     identity_mode: 'preserve_source', origin: null,
     intended_transformation: 'заострить один конец жерди',
+    material_extent: identityMode === 'independent_outputs' ? 'whole' : null,
     result_class: 'ordinary_physical_result', result_descriptor: {
       display_name: 'заострённая жердь',
       physical_description: 'один конец жерди физически заострён',

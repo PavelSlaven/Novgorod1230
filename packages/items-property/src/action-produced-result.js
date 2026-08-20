@@ -28,7 +28,7 @@ const PROPOSAL_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text'
+  'inscription_text', 'physical_form'
 ];
 const ACCESS_STATES = new Set([
   'immediate', 'quick', 'top_bag', 'deep_bag', 'contained'
@@ -41,10 +41,6 @@ const RESULT_CLASSES = new Set([
   'ordinary_physical_result', 'partial_transformation',
   'nonworking_construction', 'waste', 'written_carrier',
   'no_useful_result'
-]);
-const WEAPON_CLASSES = new Set([
-  'improvised_puncture_light', 'improvised_impact_light',
-  'improvised_cutting_light', 'improvised_two_hand_heavy'
 ]);
 const ROLES = new Set(['source', 'tool']);
 
@@ -181,9 +177,6 @@ function validateProposal(value) {
       || !validDescriptor(value.result_descriptor)
       || !validateActionProducedOutputClass(value.output_class,
         value.result_class, value.identity_mode)
-      || (value.output_class === 'weapon_capable')
-        !== WEAPON_CLASSES.has(
-          value.result_descriptor?.weapon_qualitative_class)
       || !validCausalShape(value)) {
     return 'ITEM_ACTION_PRODUCED_PROPOSAL_INVALID';
   }
@@ -208,16 +201,16 @@ function validDescriptor(value) {
     && textArray(value.qualitative_facts, true)
     && (!Object.hasOwn(value, 'removed_physical_fact_refs')
       || textArray(value.removed_physical_fact_refs, true))
-    && nullableText(value.inscription_text);
+    && nullableText(value.inscription_text)
+    && (value.physical_form === null
+      || ['compact', 'regular', 'long', 'bulky'].includes(
+        value.physical_form));
 }
 
 function descriptorKeys(value) {
   const keys = [...DESCRIPTOR_KEYS];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
-  }
-  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
-    keys.push('weapon_qualitative_class');
   }
   return keys;
 }
@@ -228,7 +221,8 @@ function validCausalShape(value) {
       && value.origin !== null) return false;
   if (value.identity_mode === 'independent_outputs'
       && (!ORIGINS.has(value.origin)
-        || !text(descriptor.display_name))) return false;
+        || !text(descriptor.display_name)
+        || descriptor.physical_form === null)) return false;
   if (value.identity_mode === 'no_useful_result') {
     return value.origin === null && value.result_class === 'no_useful_result'
       && descriptor.display_name === null

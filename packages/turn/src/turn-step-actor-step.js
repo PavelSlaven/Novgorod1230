@@ -142,7 +142,7 @@ export async function executeTurnStepActorStep({
         actionProducedPlans
       }));
   }
-  if (plan.resolution !== 'domain_request') {
+  if (plan.activity?.owner === 'semantic') {
     const activities = [plan.activity];
     if (plan.resolution === 'generic_check') {
       const outcome = plan.check.outcomes[checkResult.outcome.band];

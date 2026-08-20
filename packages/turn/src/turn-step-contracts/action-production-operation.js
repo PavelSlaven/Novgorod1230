@@ -67,8 +67,7 @@ function validateOutputCount(value, path, errors) {
 function validateDescriptor(descriptor, path, errors, trace) {
   if (!strict(descriptor, `${path}.result_descriptor`, [
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text',
-    'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
   ], errors)) return;
   for (const key of [
     'display_name', 'physical_description', 'inscription_text'
@@ -91,11 +90,9 @@ function validateDescriptor(descriptor, path, errors, trace) {
   refs(descriptor.removed_physical_fact_refs,
     `${path}.result_descriptor.removed_physical_fact_refs`, errors, trace,
     { allowEmpty: true });
-  if (descriptor.weapon_qualitative_class !== null) enumValue(
-    descriptor.weapon_qualitative_class, [
-      'improvised_puncture_light', 'improvised_impact_light',
-      'improvised_cutting_light', 'improvised_two_hand_heavy'
-    ], `${path}.result_descriptor.weapon_qualitative_class`, errors);
+  if (descriptor.physical_form !== null) enumValue(descriptor.physical_form,
+    ['compact', 'regular', 'long', 'bulky'],
+    `${path}.result_descriptor.physical_form`, errors);
 }
 
 function validateShape(value, path, errors) {
@@ -149,10 +146,10 @@ function validateShape(value, path, errors) {
     add(errors, `${path}.result_descriptor.inscription_text`,
       'writing_shape', 'inscription is allowed only for a written carrier');
   }
-  const weapon = value.output_class === 'weapon_capable';
-  if (weapon !== (descriptor.weapon_qualitative_class !== null)) {
-    add(errors, `${path}.result_descriptor.weapon_qualitative_class`,
-      'weapon_shape', 'weapon capability requires one closed combat class');
+  if (value.identity_mode === 'independent_outputs'
+      && descriptor.physical_form === null) {
+    add(errors, `${path}.result_descriptor.physical_form`, 'identity_shape',
+      'independent output requires a qualitative physical form');
   }
   if (value.output_class === 'money_like_token'
       && value.identity_mode !== 'independent_outputs') {

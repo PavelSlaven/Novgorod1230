@@ -28,6 +28,7 @@ test('A1 action-production owner runs only after external and authored owners',
         return appliedResult();
       },
       executionRegistry: createTurnStepExecutionRegistry({
+        applySemanticActivity: noTimeActivity,
         domain: {
           request_item_use: ({ working_projection: projection }) => {
             externalCalls += 1;
@@ -457,20 +458,26 @@ function servicesFor({ bindingMatches = () => false, resolver = () =>
       semantic_binding: binding('unmatched-item-owner', bindingMatches)
     },
     playerSafeStateProjector: () => projection,
-    ...(executionRegistry == null ? {} : {
-      turnStepExecutionRegistry: executionRegistry
-    }),
+    turnStepExecutionRegistry: executionRegistry ??
+      createTurnStepExecutionRegistry({ applySemanticActivity: noTimeActivity }),
     ...(resolver == null ? {} : {
       turnStepActionProductionOwner: resolver
     }),
     turnStepModel: (request) => turnStepPlan(request, {
       resolution: 'domain_request',
       goal_result: 'pending',
-      activity: { owner: 'domain', duration_class: null, effort: null },
+      activity: useKind === 'other'
+        ? { owner: 'semantic', duration_class: 'brief', effort: 'light' }
+        : { owner: 'domain', duration_class: null, effort: null },
       operations: [itemUseOperation({ useKind, itemRef, targetRefs })],
       continuation: null
     })
   }).services;
+}
+
+function noTimeActivity({ working_projection: projection }) {
+  return { working_projection: projection, write_fragments: [],
+    consequence_fragment: null };
 }
 
 function actionProjection(marker = undefined, extra = {}) {
@@ -490,10 +497,7 @@ function actionProjection(marker = undefined, extra = {}) {
       'ordinary_mundane', 'weapon_capable', 'money_like_token',
       'written_carrier'
     ],
-    weapon_qualitative_classes: [
-      'improvised_puncture_light', 'improvised_impact_light',
-      'improvised_cutting_light', 'improvised_two_hand_heavy'
-    ]
+    allowed_physical_forms: ['compact', 'regular', 'long', 'bulky']
   } : marker;
   return {
     actor: { actor_ref: 'party-1' },
@@ -537,7 +541,7 @@ function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
           physical_description: 'Жердь физически обработана.',
           qualitative_facts: ['на конце жерди видны свежие срезы'],
           removed_physical_fact_refs: [],
-          inscription_text: null, weapon_qualitative_class: null },
+          inscription_text: null, physical_form: 'long' },
         output_class: 'ordinary_mundane'
       } })
   };

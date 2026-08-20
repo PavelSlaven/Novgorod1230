@@ -24,7 +24,7 @@ const QUALITATIVE_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text'
+  'inscription_text', 'physical_form'
 ];
 const RESULT_KEYS = [
   'entity_ref', 'identity_kind', 'source_ref', 'mechanics_snapshot',
@@ -64,12 +64,14 @@ export function admitActionProducedOutputSemantics(value) {
 
 export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
   action_ref: actionRef, existing = [], physical_description: description,
-  physical_facts: facts, removed_fact_refs: removedRefs = [] }) {
+  physical_facts: facts, removed_fact_refs: removedRefs = [],
+  inscription_text: inscription = null }) {
   if (!text(entityRef) || !text(actionRef) || !Array.isArray(existing)
       || !Array.isArray(facts) || !facts.every(text)
       || !Array.isArray(removedRefs) || !removedRefs.every(text)
       || new Set(removedRefs).size !== removedRefs.length
-      || !(description === null || text(description))) failFacts();
+      || !(description === null || text(description))
+      || !(inscription === null || text(inscription))) failFacts();
   const output = [];
   const ids = new Set();
   const texts = new Set();
@@ -99,6 +101,12 @@ export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
     ids.add(factId);
     texts.add(factText);
     output.push({ fact_id: factId, text: factText, operation_id: actionRef });
+  }
+  if (inscription !== null && !texts.has(inscription)) {
+    let factId = `${actionRef}:inscription`;
+    if (ids.has(factId)) factId = `${factId}:${output.length + 1}`;
+    output.push({ fact_id: factId, text: inscription,
+      operation_id: actionRef });
   }
   return deepFreeze(output);
 }
@@ -202,6 +210,9 @@ function validQualitative(value, proposal) {
     && exact(value.result_descriptor, descriptorKeys(value.result_descriptor))
     && nullableText(value.result_descriptor.display_name)
     && nullableText(value.result_descriptor.physical_description)
+    && (value.result_descriptor.physical_form === null
+      || ['compact', 'regular', 'long', 'bulky'].includes(
+        value.result_descriptor.physical_form))
     && textArray(value.result_descriptor.qualitative_facts)
     && (!Object.hasOwn(value.result_descriptor,
       'removed_physical_fact_refs')
@@ -214,9 +225,6 @@ function descriptorKeys(value) {
   const keys = [...DESCRIPTOR_KEYS];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
-  }
-  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
-    keys.push('weapon_qualitative_class');
   }
   return keys;
 }

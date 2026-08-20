@@ -354,7 +354,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
       display_name: 'деревянный счётный жетон',
       physical_description: null,
       qualitative_facts: ['имеет сходство с жетоном'],
-      inscription_text: null } } };
+      inscription_text: null, physical_form: 'compact' } } };
   const item = deriveActionProducedResultItem(result, sourcePins,
     proposalValue, 'change:token', destinationPin, 'actor:mikula');
 
@@ -400,14 +400,30 @@ test('written A1 state persists inscription without truth or knowledge', () => {
 
   const plan = createActionProducedAtomicWritePlan(request);
   const state = plan.source_updates[0].after_item.state.action_production;
-  assert.equal(state.inscription_text, 'Я князь.');
+  assert.equal('inscription_text' in state, false);
+  assert.equal(plan.source_updates[0].after_item.state.ordinary_metadata
+    .semantic_facts.some(({ text }) => text === 'Я князь.'), true);
   assert.equal('objective_truth' in state, false);
   assert.equal('knowledge' in state, false);
   assert.deepEqual(Object.keys(state).sort(), [
-    'causal_identity', 'inscription_text', 'output_class',
+    'causal_identity', 'output_class', 'physical_form',
     'result_class', 'schema'
   ]);
 });
+
+test('weapon-capable A1 state persists no combat classification or damage',
+  () => {
+    const request = fixture();
+    request.transition_proposal.qualitative_result.output_class =
+      'weapon_capable';
+    const state = createActionProducedAtomicWritePlan(request)
+      .source_updates[0].after_item.state.action_production;
+    assert.equal(state.output_class, 'weapon_capable');
+    for (const key of [
+      'weapon_qualitative_class', 'weapon_danger', 'damage',
+      'canonical_weapon_identity'
+    ]) assert.equal(key in state, false);
+  });
 
 function loaderClient(itemRows, resourceRows = [], accessAnchorId = null,
   containerRows = []) {
@@ -654,7 +670,8 @@ function proposal() {
       output_class: 'ordinary_mundane',
       result_descriptor: { display_name: 'sharpened pole',
         physical_description: 'one end is sharpened',
-        qualitative_facts: ['sharpened'], inscription_text: null }
+        qualitative_facts: ['sharpened'], inscription_text: null,
+        physical_form: 'long' }
     }
   };
 }

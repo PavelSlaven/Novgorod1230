@@ -25,9 +25,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
   semanticResolver,
   turnStepModel = null,
   playerConversationModel = null,
-  npcSemanticModel = null,
-  npcAutonomousModel = null,
-  npcCombatModel = null,
+  npcSemanticModel = null, npcAutonomousModel = null,
+  npcCombatModel = null, actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
   randomSourceFactory,
@@ -153,7 +152,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
       const turn10Contracts = turn10?.contracts ?? null;
       const combatCommand = createTraceCombatCommand({
         state, bundle, inputDigest, randomSource: turnRandomSource,
-        npcCombatModel, revalidateStateVersion, temporalAdvanceOwner
+        npcCombatModel, actionProducedWeaponClassifier,
+        revalidateStateVersion, temporalAdvanceOwner
       });
       const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),

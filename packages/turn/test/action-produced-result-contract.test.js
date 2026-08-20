@@ -53,7 +53,7 @@ function plan(overrides = {}) {
       display_name: 'заострённая жердь',
       physical_description: 'один конец жерди физически заострён',
       qualitative_facts: ['один конец заострён'],
-      inscription_text: null
+      inscription_text: null, physical_form: 'long'
     },
     output_class: input.output_class,
     ...overrides
@@ -75,7 +75,8 @@ test('A1 contract admits same identity, independent outputs and no result', () =
     identity_mode: 'independent_outputs', origin: 'direct_partition',
     result_descriptor: { display_name: 'деревянные клинья',
       physical_description: 'отделённые от доски деревянные клинья',
-      qualitative_facts: [], inscription_text: null } });
+      qualitative_facts: [], inscription_text: null,
+      physical_form: 'compact' } });
   assert.equal(validateActionProducedResultPlan(split,
     { request: splitRequest }).ok, true);
   assert.equal(validateActionProducedResultPlan({ ...split,
@@ -92,7 +93,7 @@ test('A1 contract admits same identity, independent outputs and no result', () =
     output_class: null,
     result_class: 'no_useful_result', result_descriptor: {
       display_name: null, physical_description: null,
-      qualitative_facts: [], inscription_text: null } });
+      qualitative_facts: [], inscription_text: null, physical_form: null } });
   assert.equal(validateActionProducedResultPlan(failed,
     { request: failedRequest }).ok, true);
 });
@@ -109,7 +110,7 @@ test('written carrier is qualitative and preserves its physical identity', () =>
       display_name: 'кусок коры с надписью',
       physical_description: 'на коре оставлена видимая надпись',
       qualitative_facts: ['носитель имеет рукописную надпись'],
-      inscription_text: 'Жду у переправы.' } });
+      inscription_text: 'Жду у переправы.', physical_form: null } });
   assert.equal(validateActionProducedResultPlan(writingPlan,
     { request: writingRequest }).ok, true);
 });
@@ -129,15 +130,13 @@ test('preserved identity may consume additional material sources', () => {
     { request: combinedRequest }).ok, true);
 });
 
-test('weapon-capable A1 result carries only one closed qualitative class',
+test('weapon-capable A1 result carries no combat-owned classification',
   () => {
     const weaponRequest = request({ output_class: 'weapon_capable' });
-    const weaponPlan = plan({ output_class: 'weapon_capable',
-      result_descriptor: { ...plan().result_descriptor,
-        weapon_qualitative_class: 'improvised_puncture_light' } });
+    const weaponPlan = plan({ output_class: 'weapon_capable' });
     assert.equal(validateActionProducedResultPlan(weaponPlan,
       { request: weaponRequest }).ok, true);
-    weaponPlan.result_descriptor.weapon_qualitative_class = 'forged_class';
+    weaponPlan.result_descriptor.weapon_danger = 2;
     assert.equal(validateActionProducedResultPlan(weaponPlan,
       { request: weaponRequest }).ok, false);
   });

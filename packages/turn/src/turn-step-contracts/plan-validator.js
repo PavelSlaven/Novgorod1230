@@ -211,9 +211,15 @@ function validateResolution(plan, kinds, errors) {
         'generic_check must be pending');
     }
   } else if (plan.resolution === 'domain_request') {
-    if (plan.activity?.owner !== 'domain') {
+    const actionProduction = plan.operations?.length === 1
+      && plan.operations[0]?.op === 'request_item_use'
+      && plan.operations[0]?.action_production != null;
+    const expectedOwner = actionProduction ? 'semantic' : 'domain';
+    if (plan.activity?.owner !== expectedOwner) {
       add(errors, '$.activity.owner', 'resolution',
-        'domain_request requires domain activity');
+        actionProduction
+          ? 'action production requires semantic activity'
+          : 'domain_request requires domain activity');
     }
     requireNull(plan.check, '$.check', errors);
     requireNull(plan.clarification, '$.clarification', errors);

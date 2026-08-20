@@ -50,7 +50,7 @@ test('partition creates deterministic independent identities and conserves sourc
         display_name: 'wedge',
         physical_description: 'separated',
         qualitative_facts: ['separated'],
-        inscription_text: null
+        inscription_text: null, physical_form: 'compact'
       }
     });
     const finiteResource = {
@@ -145,7 +145,8 @@ test('independent outputs require finite decrements and material allocations',
       intended_transformation: 'partition source',
       result_descriptor: {
         display_name: 'part', physical_description: 'separated part',
-        qualitative_facts: [], inscription_text: null
+        qualitative_facts: [], inscription_text: null,
+        physical_form: 'compact'
       }
     });
     const planner = createActionProducedTransitionPlanner({
@@ -193,7 +194,8 @@ test('duplicate finite resource node identity fails before mechanics resolver',
       identity_mode: 'independent_outputs', origin: 'direct_partition',
       intended_transformation: 'partition', result_descriptor: {
         display_name: 'part', physical_description: 'separated part',
-        qualitative_facts: [], inscription_text: null }
+        qualitative_facts: [], inscription_text: null,
+        physical_form: 'compact' }
     });
     const duplicateFinite = { schema: 'rus.items.finite_resource_snapshot.v1',
       commit_state: 'committed', source_resource_node_id: 'resource:shared', state_version: 3,
@@ -220,7 +222,7 @@ test('no useful result keeps source and tool state without creating identity',
       output_class: null,
       result_class: 'no_useful_result', result_descriptor: {
         display_name: null, physical_description: null,
-        qualitative_facts: [], inscription_text: null }
+        qualitative_facts: [], inscription_text: null, physical_form: null }
     });
     const planner = createActionProducedTransitionPlanner({
       resolveMechanics: () => mechanicsResolution({
@@ -503,7 +505,7 @@ function phaseOneInput(overrides = {}) {
       display_name: 'sharpened pole',
       physical_description: 'one end is physically sharpened',
       qualitative_facts: ['one end sharpened'],
-      inscription_text: null
+      inscription_text: null, physical_form: 'long'
     },
     output_class: 'ordinary_mundane',
     ...overrides
@@ -597,7 +599,8 @@ function partitionScenario({
     result_descriptor: {
       display_name: 'деревянная деталь',
       physical_description: 'отделённая часть доски',
-      qualitative_facts: [], inscription_text: null
+      qualitative_facts: [], inscription_text: null,
+      physical_form: 'compact'
     }
   });
   const source = entitySnapshot('item:board', { role: 'source',

@@ -230,7 +230,7 @@ function validExecutionEvidence(envelope) {
   const result = envelope.check_result;
   if (plan?.resolution === 'domain_request') {
     return plan.check === null && result === null
-      && plan.activity?.owner === 'domain';
+      && plan.activity?.owner === 'semantic';
   }
   return plan?.resolution === 'generic_check' && plan.check != null
     && plan.activity?.owner === 'semantic'

@@ -47,9 +47,6 @@ const WASTE_KEYS = ['source_ref', 'quantity'];
 const RESULT_CLASSES = new Set(['ordinary_physical_result',
   'partial_transformation', 'nonworking_construction', 'waste',
   'written_carrier', 'no_useful_result']);
-const WEAPON_CLASSES = new Set(['improvised_puncture_light',
-  'improvised_impact_light', 'improvised_cutting_light',
-  'improvised_two_hand_heavy']);
 export function createActionProducedTransitionPlanner(options) {
   const resolveMechanics = exactActionProducedFunctionOption(
     options, 'resolveMechanics');
@@ -185,9 +182,6 @@ function validateHandoff(value) {
       || !validateActionProducedOutputClass(
         value.qualitative_result?.output_class,
         value.result_class, value.identity_mode)
-      || (value.qualitative_result?.output_class === 'weapon_capable')
-        !== WEAPON_CLASSES.has(value.qualitative_result?.result_descriptor
-          ?.weapon_qualitative_class)
       || !validActionProducedQualitativeResult(value.qualitative_result, {
         identityMode: value.identity_mode, resultClass: value.result_class,
         sourceCount: value.source_pins.length })) fail();

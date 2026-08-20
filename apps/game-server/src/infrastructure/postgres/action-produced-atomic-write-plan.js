@@ -91,15 +91,20 @@ function deriveSourceUpdates(proposal, sourcePins) {
     const preservedResult = proposal.identity_mode === 'preserve_source'
       && transition.entity_ref === proposal.results[0].entity_ref
       ? proposal.results[0] : null;
-    const semanticFacts = preservedResult === null ? null
+    const survivingPartition = proposal.identity_mode === 'independent_outputs'
+      && transition.after.mechanics_snapshot !== null && !retireSource;
+    const semanticFacts = preservedResult === null && !survivingPartition
+      ? null
       : mergeActionProducedPhysicalFacts({ entity_ref: pin.item_id,
         action_ref: proposal.causal_identity.action_ref,
         existing: pin.item.state?.ordinary_metadata?.semantic_facts ?? [],
         physical_description: proposal.qualitative_result.result_descriptor
           .physical_description,
-        physical_facts: preservedResult.physical_facts,
+        physical_facts: preservedResult?.physical_facts
+          ?? proposal.qualitative_result.result_descriptor.qualitative_facts,
         removed_fact_refs: proposal.qualitative_result.result_descriptor
-          .removed_physical_fact_refs ?? [] });
+          .removed_physical_fact_refs ?? [],
+        inscription_text: preservedResult?.inscription_text ?? null });
     const nextState = {
       ...(pin.item.state ?? {}),
       lifecycle_status: retireSource || transition.finite_resource_transition
@@ -108,23 +113,19 @@ function deriveSourceUpdates(proposal, sourcePins) {
         runtime_instance_mechanics_snapshot:
           structuredClone(transition.after.mechanics_snapshot)
       }),
-      ...(preservedResult === null ? {} : {
+      ...(semanticFacts === null ? {} : {
         ordinary_metadata: {
           ...(pin.item.state?.ordinary_metadata ?? {}),
           semantic_facts: structuredClone(semanticFacts)
         },
-        action_production: {
+        ...(preservedResult === null ? {} : { action_production: {
           schema: 'rus.items.action_production_item_state.v1',
           causal_identity: structuredClone(proposal.causal_identity),
           result_class: proposal.result_class,
           output_class: proposal.qualitative_result.output_class,
-          ...(proposal.qualitative_result.result_descriptor
-            .weapon_qualitative_class == null ? {} : {
-              weapon_qualitative_class: proposal.qualitative_result
-                .result_descriptor.weapon_qualitative_class
-            }),
-          inscription_text: preservedResult.inscription_text
-        }
+          physical_form: proposal.qualitative_result.result_descriptor
+            .physical_form
+        } })
       })
     };
     return [{

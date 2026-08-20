@@ -21,7 +21,7 @@ export function isActionProductionOwnerInScope({
     ['semantic_grounding_available', 'max_new_entities',
       'allowed_identity_modes',
       'allowed_origins', 'allowed_result_classes', 'allowed_output_classes',
-      'weapon_qualitative_classes']
+      'allowed_physical_forms']
   );
   if (marker?.semantic_grounding_available !== true
       || !Number.isSafeInteger(marker.max_new_entities)

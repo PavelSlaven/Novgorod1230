@@ -206,9 +206,10 @@ Validated source changes и новые outputs сразу обновляют о�
 projection, поэтому pending intent может использовать результат в следующем
 internal step. Несколько причинных A1 steps одного root turn выполняются
 последовательно над этой projection и входят в один combined P16 commit.
-При неопределённом исходе общие
-generic-check/activity owners выполняются один раз; детерминированное действие
-использует `domain_request` без обязательного RNG/time. Profile допускает
+При неопределённом исходе общие generic-check/activity owners выполняются
+один раз; детерминированное действие использует `domain_request` без RNG, но
+любая реально выполненная физическая попытка декларативно несёт одну обычную
+semantic activity и тратит code-owned время. Profile допускает
 preserve, до четырёх mass-conserving independent outputs и no-result;
 partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model
@@ -222,7 +223,11 @@ materials — grounded `minor|half|major|whole`. Числовую долю и ex
 выводит item owner. Persisted non-authoritative physical facts входят в
 следующую player-safe working/reload projection; модель видит их safe refs и
 может удалить ставший ложным fact только через explicit
-`removed_physical_fact_refs`, без текстового/NLP-сопоставления.
+`removed_physical_fact_refs`, без текстового/NLP-сопоставления. Физическая
+надпись является таким же durable current fact и сохраняется до явного
+стирания/замены по видимому `fact_ref`. `physical_form` сообщает только
+качественную форму `compact|regular|long|bulky`; числовые hands/carry/packing
+по ней и exact mass выводит item owner. Combat classes в A1 contract нет.
 
 ## Тесты
 

@@ -23,7 +23,8 @@ test('written transition preserves carrier and only adds physical inscription',
           display_name: 'written carrier',
           physical_description: 'carrier has physical writing',
           qualitative_facts: ['physically inscribed'],
-          inscription_text: 'Я князь.' }, output_class: 'written_carrier' }
+          inscription_text: 'Я князь.', physical_form: null },
+        output_class: 'written_carrier' }
     });
     const planner = createActionProducedTransitionPlanner({
       resolveMechanics: () => ({

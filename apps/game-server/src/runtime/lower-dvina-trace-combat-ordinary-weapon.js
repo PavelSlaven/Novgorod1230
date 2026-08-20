@@ -1,26 +1,30 @@
-import { combatActionProducedWeaponProfile,
+import {
+  ACTION_PRODUCED_WEAPON_CLASSES,
   ordinaryArmamentWeaponDanger,
-  resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
+  resolveActionProducedCombatWeaponClass
+} from '@rus/combat-health';
 
-export function resolveTraceOrdinaryWeaponDanger(items, actorRef) {
-  if (!Array.isArray(items)) return undefined;
-  const snapshots = items.filter((item) => {
-    const placement = item?.placement;
-    return actorRef.entity_kind === 'player_character'
-      ? placement?.holder_character_id === actorRef.entity_id
-      : placement?.holder_npc_id === actorRef.entity_id;
-  }).map((item) => {
-    const snapshot = item.weapon_mechanics_snapshot
-      ?? item.state?.weapon_mechanics_snapshot;
-    if (snapshot != null) return { kind: 'ordinary', snapshot,
-      condition: item.state?.condition_state ?? item.condition_state };
-    const action = item.state?.action_production;
-    return action?.output_class === 'weapon_capable'
-      ? { kind: 'action_produced',
-          qualitative_class: action.weapon_qualitative_class,
-          condition: item.state?.condition_state ?? item.condition_state }
-      : null;
-  }).filter(Boolean);
+export function createLowerDvinaTraceActionProducedWeaponClassifier({
+  roleRunner
+} = {}) {
+  if (typeof roleRunner?.run !== 'function') {
+    throw new TypeError('roleRunner.run must be a function.');
+  }
+  return async (request) => (await roleRunner.run({
+    scope: 'turn_runtime', role_id: 'combat_weapon_classification',
+    messages: [{ role: 'system', content: [
+      'Classify the supplied current physical item for this combat only.',
+      'Choose exactly one allowed qualitative_class.',
+      'Return only schema, request_id and qualitative_class.',
+      'Never return damage, weapon_danger, identity, facts, or mechanics.'
+    ].join(' ') }, { role: 'user', content: JSON.stringify(request) }],
+    overrides: { temperature: 0, maxTokens: 500 }
+  }))?.output ?? null;
+}
+
+export function resolveTraceOrdinaryWeaponDanger(items, actorRef,
+  actionProduced = null) {
+  const snapshots = heldWeaponSnapshots(items, actorRef);
   if (snapshots.length === 0) return undefined;
   if (snapshots.length !== 1) return null;
   const selected = snapshots[0];
@@ -29,21 +33,102 @@ export function resolveTraceOrdinaryWeaponDanger(items, actorRef) {
     if (selected.snapshot.condition_state !== selected.condition) return null;
     danger = ordinaryArmamentWeaponDanger(selected.snapshot);
   } else {
-    if (selected.condition !== 'serviceable') return null;
-    try {
-      const profile = combatActionProducedWeaponProfile();
-      danger = resolveActionProducedCombatWeaponClass({
-        classification: {
-          schema: 'rus.combat.action_produced_weapon_classification.v1',
-          qualitative_class: selected.qualitative_class
-        }, profile, expected_profile_pin: {
-          profile_ref: profile.profile_ref,
-          profile_version: profile.profile_version,
-          state_version: profile.state_version,
-          catalog_digest: profile.catalog_digest
-        }
-      }).formal_mechanics.weapon_danger;
-    } catch { return null; }
+    if (selected.condition !== 'serviceable'
+        || actionProduced?.item_ref !== selected.item.item_id) return null;
+    danger = actionProduced.weapon_danger;
   }
   return danger == null || danger === 0 ? null : danger;
 }
+
+export async function classifyTraceActionProducedWeapon({ items, actor_ref,
+  request_id, classify }) {
+  const snapshots = heldWeaponSnapshots(items, actor_ref);
+  if (snapshots.length !== 1 || snapshots[0].kind !== 'action_produced') {
+    return null;
+  }
+  if (typeof classify !== 'function') return null;
+  const item = snapshots[0].item;
+  const state = item.state ?? {};
+  const metadata = state.ordinary_metadata ?? {};
+  const request = {
+    schema: 'rus.combat.action_produced_weapon_classification_request.v1',
+    request_id,
+    item: {
+      item_ref: item.item_id,
+      name: text(metadata.name) ? metadata.name : null,
+      semantic_type: text(metadata.semantic_type)
+        ? metadata.semantic_type : null,
+      condition_state: state.condition_state ?? item.condition_state ?? null,
+      physical_form: state.action_production?.physical_form ?? null,
+      physical_facts: factTexts(metadata.semantic_facts),
+      carry_form: state.runtime_instance_mechanics_snapshot?.mechanics
+        ?.carry_form ?? null
+    },
+    allowed_classes: [...ACTION_PRODUCED_WEAPON_CLASSES]
+  };
+  let raw;
+  try { raw = await classify(structuredClone(request)); } catch { return null; }
+  try {
+    const resolved = resolveActionProducedCombatWeaponClass({
+      classification: raw
+    });
+    if (resolved.request_id !== request.request_id) return null;
+    return { item_ref: item.item_id,
+      weapon_danger: resolved.formal_mechanics.weapon_danger };
+  } catch { return null; }
+}
+
+export async function classifyTraceActionProducedWeapons({ session, items,
+  classify, requestId }) {
+  const values = new Map();
+  for (const participant of session.participant_states) {
+    if (participant.current_intent?.intent_kind !== 'engage') continue;
+    const actor = participant.actor_ref;
+    const result = await classifyTraceActionProducedWeapon({ items,
+      actor_ref: actor, request_id: ['combat-weapon', requestId,
+        session.exchange_ordinal, actor.entity_kind, actor.entity_id].join(':'),
+      classify });
+    if (result != null) values.set(actorKey(actor), result);
+  }
+  return values;
+}
+
+export function traceActionProducedWeaponForActor(values, actor) {
+  return values?.get(actorKey(actor)) ?? null;
+}
+
+export function resolveTraceCombatWeaponDanger(items, actor, values) {
+  return resolveTraceOrdinaryWeaponDanger(items, actor,
+    traceActionProducedWeaponForActor(values, actor));
+}
+
+function heldWeaponSnapshots(items, actorRef) {
+  if (!Array.isArray(items)) return [];
+  return items.filter((item) => {
+    const placement = item?.placement;
+    return actorRef.entity_kind === 'player_character'
+      ? placement?.holder_character_id === actorRef.entity_id
+      : placement?.holder_npc_id === actorRef.entity_id;
+  }).map((item) => {
+    const snapshot = item.weapon_mechanics_snapshot
+      ?? item.state?.weapon_mechanics_snapshot;
+    if (snapshot != null) return { kind: 'ordinary', snapshot,
+      condition: item.state?.condition_state ?? item.condition_state, item };
+    return item.state?.action_production?.output_class === 'weapon_capable'
+      ? { kind: 'action_produced',
+          condition: item.state?.condition_state ?? item.condition_state,
+          item }
+      : null;
+  }).filter(Boolean);
+}
+
+function factTexts(values) {
+  if (!Array.isArray(values)) return [];
+  return values.map((fact) => typeof fact === 'string' ? fact : fact?.text)
+    .filter(text);
+}
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
+}
+function actorKey(actor) { return `${actor.entity_kind}:${actor.entity_id}`; }

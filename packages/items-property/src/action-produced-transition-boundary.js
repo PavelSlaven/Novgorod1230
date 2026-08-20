@@ -43,6 +43,9 @@ export function validActionProducedQualitativeResult(value, {
     && (identityMode === 'independent_outputs'
       ? text(descriptor.display_name) : nullableText(descriptor.display_name))
     && nullableText(descriptor.physical_description)
+    && (descriptor.physical_form === null
+      || ['compact', 'regular', 'long', 'bulky'].includes(
+        descriptor.physical_form))
     && refs(descriptor.qualitative_facts)
     && (!Object.hasOwn(descriptor, 'removed_physical_fact_refs')
       || refs(descriptor.removed_physical_fact_refs)
@@ -62,12 +65,9 @@ function validMaterialExtent(value, identityMode, resultClass, sourceCount) {
 
 function descriptorKeys(value) {
   const keys = ['display_name', 'physical_description', 'qualitative_facts',
-    'inscription_text'];
+    'inscription_text', 'physical_form'];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
-  }
-  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
-    keys.push('weapon_qualitative_class');
   }
   return keys;
 }

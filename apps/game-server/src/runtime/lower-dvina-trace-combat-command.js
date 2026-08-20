@@ -8,10 +8,10 @@ import { traceCombatBindingForActor, traceCombatMovementBindings, traceCombatOpe
 import { projectTraceCombatSubjectiveState, projectTracePerceivedCombatState } from './lower-dvina-trace-combat-subjective.js';
 import { projectTraceCombatWorkingState } from './lower-dvina-trace-combat-working-state.js';
 import { createTraceCombatTemporalSliceOwner } from './lower-dvina-trace-combat-temporal.js';
-import { resolveTraceOrdinaryWeaponDanger } from './lower-dvina-trace-combat-ordinary-weapon.js';
+import { classifyTraceActionProducedWeapons, resolveTraceCombatWeaponDanger } from './lower-dvina-trace-combat-ordinary-weapon.js';
 const COMMAND_ID = 'lower_dvina_trace.respond_in_active_combat';
 export function createTraceCombatCommand({ state, bundle, inputDigest, randomSource,
-  npcCombatModel, revalidateStateVersion, temporalAdvanceOwner = null }) {
+  npcCombatModel, actionProducedWeaponClassifier = null, revalidateStateVersion, temporalAdvanceOwner = null }) {
   if (![16, 17, 18, 19, 20, 21].includes(bundle?.definition_revision)) return null;
   const playerProfiles = bundle.turn_step_bindings?.player_execution_profiles;
   const bindings = bundle.combat_semantic_bindings;
@@ -60,7 +60,9 @@ export function createTraceCombatCommand({ state, bundle, inputDigest, randomSou
         },
         state_version: session.state_version
       });
-      const active = activateCombatSessionForPlayerIntent(session, intent);
+      const active = activateCombatSessionForPlayerIntent(session, intent),
+        weaponClassifications = await classifyTraceActionProducedWeapons({
+        session: active, items: retrievedState.items, classify: actionProducedWeaponClassifier, requestId: playerInput.request_id });
       const prepared = await prepareCombatExchange({
         session: active,
         working_state: projectTraceCombatWorkingState(retrievedState),
@@ -70,7 +72,7 @@ export function createTraceCombatCommand({ state, bundle, inputDigest, randomSou
         ports: exchangePorts({ state: retrievedState, bundle, playerProfiles,
           bindings, npcCombatModel, revalidateStateVersion,
           rootTurnId, playerInput, inputDigest, session: active,
-          movementBindings: null, temporalAdvanceOwner })
+          movementBindings: null, temporalAdvanceOwner, weaponClassifications })
       });
       const exchange = prepared.prepared;
       return {
@@ -146,8 +148,7 @@ function resolveProfile(intent, context, working = context.state) {
     ? context.playerProfiles
     : traceCombatBindingForActor(intent.actor_ref.entity_id, context)
       ?.execution_profiles;
-  const profile = records?.find(
-    (entry) => entry.intent_kind === intent.intent_kind);
+  const profile = records?.find((entry) => entry.intent_kind === intent.intent_kind);
   if (!profile || profile.status !== 'approved') return { applicable: false };
   const positionPlan = ['reach', 'break_contact'].includes(intent.intent_kind)
     ? resolveTraceCombatPositionPlan({ intent, workingState: working,
@@ -156,9 +157,8 @@ function resolveProfile(intent, context, working = context.state) {
       && positionPlan == null) {
     return { applicable: false };
   }
-  const weaponDanger = intent.intent_kind === 'engage'
-    ? resolveTraceOrdinaryWeaponDanger(working?.items, intent.actor_ref)
-    : undefined;
+  const weaponDanger = intent.intent_kind !== 'engage' ? undefined
+    : resolveTraceCombatWeaponDanger(working?.items, intent.actor_ref, context.weaponClassifications);
   if (weaponDanger === null) return { applicable: false };
   return {
     applicable: true,

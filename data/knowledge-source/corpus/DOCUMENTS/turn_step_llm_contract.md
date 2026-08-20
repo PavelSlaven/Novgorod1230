@@ -830,8 +830,9 @@ LLM не перечисляет contents до их появления в player-
       "display_name": "безопасное имя физического результата",
       "physical_description": "видимый физический результат",
       "qualitative_facts": [],
+      "removed_physical_fact_refs": [],
       "inscription_text": null,
-      "weapon_qualitative_class": null
+      "physical_form": "compact | regular | long | bulky | null"
     },
     "output_class": "ordinary_mundane | weapon_capable | money_like_token | written_carrier | null"
   }
@@ -846,12 +847,13 @@ registered/external handler, затем authored binding, и лишь при н�
 — code-owned A1 owner. Это не второй semantic fallback: qualitative
 `action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не
 вызывает LLM. Активный scope принимает один или несколько committed либо
-sealed same-root revealed non-container material sources и ноль или несколько
+validated same-root revealed non-container material sources и ноль или несколько
 доступных actor-controlled non-container tools; `source_refs` и
 `tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает
-generic check и semantic activity только при неопределённом исходе, а существующие
-RNG/time owners исполняют их один раз; детерминированное действие использует
-`domain_request` без check. Profile допускает preserve, до четырёх independent outputs,
+generic check только при неопределённом исходе; существующий semantic activity/time
+owner исполняется ровно один раз для любой реально выполненной физической попытки.
+Детерминированное действие использует `domain_request` без check и RNG, но не
+становится zero-time. Profile допускает preserve, до четырёх independent outputs,
 no-result,
 partial/nonworking/waste, writing, non-authoritative token-like и closed
 weapon-capable outcomes. Model не задаёт массу, numeric расход, mechanics, identity,
@@ -863,11 +865,16 @@ grounded qualitative `material_extent = minor|half|major`; item owner перев
 его в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.
 Full independent partition использует `whole`, preserve/no-result — `null`.
 Масса полного partition сохраняется с детерминированным остатком,
-hand/packing/carry выводятся code-owned и не наследуют форму source. Новый
+hand/packing/carry выводятся code-owned из exact mass и qualitative
+`physical_form`, а не наследуют форму source. Новый
 independent output обязан иметь safe непустое display name; nullable physical
 description не добавляется как `null` fact. Non-authoritative display name/type сохраняются в
 ordinary item metadata и переживают reload; persisted non-authoritative
-physical facts видны следующему internal step и после reload.
+physical facts видны следующему internal step и после reload. Надпись хранится
+как durable physical fact до explicit удаления/замены по видимому `fact_ref`;
+surviving source partial partition получает обновлённые current facts в том же
+P16. `weapon_capable` здесь не содержит combat class/damage: combat owner
+bounded-классифицирует текущее физическое состояние только при combat use.
 Один combined P16 сохраняет causal pins, conservation и physical transition
 атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 

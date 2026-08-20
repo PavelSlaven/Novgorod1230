@@ -37,7 +37,8 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     existing: [],
     physical_description: proposal.qualitative_result.result_descriptor
       .physical_description,
-    physical_facts: result.physical_facts
+    physical_facts: result.physical_facts,
+    inscription_text: result.inscription_text
   });
   const state = {
     lifecycle_status: 'active',
@@ -59,12 +60,8 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
       causal_identity: structuredClone(proposal.causal_identity),
       result_class: proposal.result_class,
       output_class: proposal.qualitative_result.output_class,
-      ...(proposal.qualitative_result?.result_descriptor
-        ?.weapon_qualitative_class == null ? {} : {
-          weapon_qualitative_class: proposal.qualitative_result
-            .result_descriptor.weapon_qualitative_class
-        }),
-      inscription_text: result.inscription_text,
+      physical_form: proposal.qualitative_result.result_descriptor
+        .physical_form,
       source_ref: result.source_ref,
       material_allocations: structuredClone(result.material_allocations)
     },

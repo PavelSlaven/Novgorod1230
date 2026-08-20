@@ -266,8 +266,7 @@ const planDefinitions = {
   }),
   action_production_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text',
-    'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
   ], {
     display_name: { anyOf: [{ type: 'null' }, textSchema] },
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
@@ -278,15 +277,13 @@ const planDefinitions = {
       type: 'array', uniqueItems: true, items: refSchema
     },
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
-    weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [
-      'improvised_puncture_light', 'improvised_impact_light',
-      'improvised_cutting_light', 'improvised_two_hand_heavy'
+    physical_form: { anyOf: [{ type: 'null' }, { enum: [
+      'compact', 'regular', 'long', 'bulky'
     ] }] }
   }),
   action_production_output_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text',
-    'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
   ], {
     display_name: textSchema,
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
@@ -297,10 +294,7 @@ const planDefinitions = {
       type: 'array', uniqueItems: true, items: refSchema
     },
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
-    weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [
-      'improvised_puncture_light', 'improvised_impact_light',
-      'improvised_cutting_light', 'improvised_two_hand_heavy'
-    ] }] }
+    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] }
   }),
   action_production: { oneOf: [
     actionProductionSchema('preserve_source', { const: 0 }),

@@ -69,7 +69,7 @@ function expectedSlots(traces) {
     const direct = operations.filter(({ op }) => DIRECT.has(op));
     const domain = operations.filter(({ op }) => !DIRECT.has(op)
       && op === 'request_container_access');
-    const activities = plan?.resolution === 'domain_request' ? [] : [
+    const activities = plan?.activity?.owner !== 'semantic' ? [] : [
       plan?.activity,
       ...(selected?.additional_activity == null
         ? [] : [selected.additional_activity])

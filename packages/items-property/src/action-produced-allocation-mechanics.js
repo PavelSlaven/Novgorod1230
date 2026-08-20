@@ -46,12 +46,18 @@ function preserveResolution(request, byRef, outputCount) {
   if (outputCount !== 0) invalid();
   const [primary, ...materials] = request.source_inputs;
   const extent = request.qualitative_intent?.material_extent;
+  const physicalForm = request.qualitative_intent?.result_descriptor
+    ?.physical_form ?? null;
   if (materials.length === 0) {
     if (extent !== null) invalid();
+    const mechanics = byRef.get(primary.entity_ref);
+    const after = physicalForm === null ? mechanics
+      : derivedMechanics(mechanics.mass_grams, 0, mechanics.quantity,
+        physicalForm);
     return resolution(request, [{ source_ref: primary.entity_ref,
       requested_decrement: null,
       mechanics_snapshot_after: snapshot(request,
-        byRef.get(primary.entity_ref), request.causal_identity.action_ref)
+        after, request.causal_identity.action_ref)
     }], []);
   }
   if (!['minor', 'half', 'major', 'whole'].includes(extent)) gap();
@@ -62,14 +68,9 @@ function preserveResolution(request, byRef, outputCount) {
     sum + entry.consumedMass, 0);
   const packing = Math.ceil(primaryMechanics.packing_slot_cost
     + consumed.reduce((sum, entry) => sum + entry.consumedPacking, 0));
-  const derived = derivedMechanics(mass, packing,
-    primaryMechanics.quantity);
-  const carryRank = ['compact', 'regular', 'long', 'bulky'];
-  const afterPrimary = { ...derived,
-    external_hand_cost: Math.max(primaryMechanics.external_hand_cost,
-      derived.external_hand_cost),
-    carry_form: carryRank[Math.max(carryRank.indexOf(
-      primaryMechanics.carry_form), carryRank.indexOf(derived.carry_form))] };
+  const afterPrimary = derivedMechanics(mass,
+    physicalForm === null ? packing : 0, primaryMechanics.quantity,
+    physicalForm ?? primaryMechanics.carry_form);
   return resolution(request, [{ source_ref: primary.entity_ref,
     requested_decrement: null,
     mechanics_snapshot_after: snapshot(request, afterPrimary,
@@ -81,8 +82,10 @@ function independentResolution(request, byRef, outputCount) {
   const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
   const partial = request.result_class === 'partial_transformation';
   const extent = request.qualitative_intent?.material_extent;
-  if (partial ? !['minor', 'half', 'major'].includes(extent)
-    : extent !== 'whole') gap();
+  const physicalForm = request.qualitative_intent?.result_descriptor
+    ?.physical_form ?? null;
+  if ((partial ? !['minor', 'half', 'major'].includes(extent)
+    : extent !== 'whole') || physicalForm === null) gap();
   const consumed = request.source_inputs.map((source) => consumeSource(source,
     byRef.get(source.entity_ref), partial ? extent : 'whole', outputCount));
   const totalMass = consumed.reduce((sum, entry) =>
@@ -90,8 +93,6 @@ function independentResolution(request, byRef, outputCount) {
   if (totalMass < outputCount) gap();
   const baseMass = Math.floor(totalMass / outputCount);
   const remainderMass = totalMass % outputCount;
-  const outputPacking = Math.ceil(consumed.reduce((sum, entry) =>
-    sum + entry.consumedPacking, 0) / outputCount);
   const effects = consumed.map((entry) => sourceEffect(request, entry));
   const outputs = Array.from({ length: outputCount }, (_, index) => {
     const ordinal = index + 1;
@@ -100,8 +101,8 @@ function independentResolution(request, byRef, outputCount) {
       action_ref: request.causal_identity.action_ref, ordinal
     });
     const outputMechanics = derivedMechanics(
-      baseMass + Number(index < remainderMass), outputPacking,
-      { value: 1, unit: 'item' });
+      baseMass + Number(index < remainderMass), 0,
+      { value: 1, unit: 'item' }, physicalForm);
     return { ordinal, property_source_ref: sourceRefs[0],
       mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
       material_allocations: consumed.map(({ source, allocations }) => ({
@@ -200,13 +201,22 @@ function distribute(total, count, unit) {
     rational(base + Number(index < remainder), 1, unit));
 }
 
-function derivedMechanics(mass, packing, quantity) {
-  const externalHandCost = mass <= 2_000 && packing <= 2 ? 0
-    : mass <= 15_000 && packing <= 8 ? 1 : 2;
-  const carryForm = packing <= 2 && mass <= 2_000 ? 'compact'
-    : packing <= 8 && mass <= 15_000 ? 'regular' : 'bulky';
+function derivedMechanics(mass, packing, quantity, physicalForm = null) {
+  const rank = ['compact', 'regular', 'long', 'bulky'];
+  const massForm = mass <= 2_000 && packing <= 2 ? 'compact'
+    : mass <= 15_000 && packing <= 8 ? 'regular' : 'bulky';
+  const carryForm = rank[Math.max(rank.indexOf(massForm),
+    rank.indexOf(physicalForm ?? massForm))];
+  const minimumPacking = { compact: 1, regular: 2, long: 3, bulky: 9 }[
+    carryForm];
+  const packingSlotCost = Math.max(Math.ceil(packing), minimumPacking);
+  const weightHandCost = mass <= 2_000 && packingSlotCost <= 2 ? 0
+    : mass <= 15_000 && packingSlotCost <= 8 ? 1 : 2;
+  const formHandCost = carryForm === 'long' ? 1
+    : carryForm === 'bulky' ? 2 : 0;
+  const externalHandCost = Math.max(weightHandCost, formHandCost);
   return { mass_grams: mass, external_hand_cost: externalHandCost,
-    carry_form: carryForm, packing_slot_cost: packing,
+    carry_form: carryForm, packing_slot_cost: packingSlotCost,
     quantity: structuredClone(quantity), container: null };
 }
 

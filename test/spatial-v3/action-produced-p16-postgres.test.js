@@ -536,8 +536,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           inscription_text: 'Жду у переправы.'
         }) }) }));
     assert.equal(writing.action_production_atomic_write_plan.source_updates[0]
-      .after_item.state.action_production.inscription_text,
-    'Жду у переправы.');
+      .after_item.state.ordinary_metadata.semantic_facts.some(({ text }) =>
+        text === 'Жду у переправы.'), true);
+    assert.equal('inscription_text' in writing
+      .action_production_atomic_write_plan.source_updates[0]
+      .after_item.state.action_production, false);
 
     const token = await productionOwner('production-token-gap')(
       productionEnvelope({
@@ -632,7 +635,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           display_name: 'тканевая праща',
           physical_description: 'край ткани свит в гибкую ударную петлю',
           qualitative_facts: ['петля пригодна для импровизированного удара'],
-          weapon_qualitative_class: 'improvised_impact_light'
+          physical_form: 'long'
         }) }) }));
     const productionCombined = await combinedPlan(
       production.action_production_atomic_write_plan, 'production', 6);
@@ -656,8 +659,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           .transition_proposal.causal_identity,
         result_class: 'partial_transformation',
         output_class: 'weapon_capable',
-        weapon_qualitative_class: 'improvised_impact_light',
-        inscription_text: null }, tool_version: 1 });
+        physical_form: 'long' }, tool_version: 1 });
 
     const ordinary = batchInput({ party: 'party-a1', partyStateVersion: 7,
       requestIdentity: 'same-root-ordinary', masses: [80],
@@ -829,6 +831,15 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
            ='production-partial') AS outputs`)).rows[0], {
       source_condition: 'serviceable', source_mass: 600, outputs: 2
     });
+    const partialFacts = await pool.query(`SELECT item_id,
+      state->'ordinary_metadata'->'semantic_facts' AS facts
+      FROM party_runtime.party_items
+      WHERE party_id='party-a1' AND (item_id='production-partial-board'
+        OR state->'action_production'->'causal_identity'->>'request_id'
+          ='production-partial') ORDER BY item_id`);
+    assert.equal(partialFacts.rows.length, 3);
+    assert.equal(partialFacts.rows.every(({ facts }) => facts.some(({ text }) =>
+      text === 'небольшая отделённая часть доски')), true);
     const partialReload = await pool.connect();
     try {
       const loaded = await loadActionProducedCommittedContext(partialReload, {
@@ -852,6 +863,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       sources: ['production-partial-board', 'production-material-a'],
       tools: ['production-knife'], mode: 'preserve_source',
       materialExtent: 'whole',
+      resultClass: 'written_carrier', outputClass: 'written_carrier',
+      inscriptionText: 'Жду у переправы.',
       physicalDescription: 'дополнительный материал закреплён на доске',
       qualitativeFacts: ['на доске закреплена составная накладка']
     });
@@ -904,8 +917,10 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.equal(sequentialState.state_version, '5');
     assert.deepEqual(sequentialState.state.ordinary_metadata.semantic_facts
       .map(({ text }) => text), [
+      'небольшая отделённая часть доски',
       'дополнительный материал закреплён на доске',
       'на доске закреплена составная накладка',
+      'Жду у переправы.',
       'рядом вырезана неглубокая зарубка',
       'зарубка видна на поверхности'
     ]);
@@ -924,8 +939,33 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       assert.deepEqual(loaded.source_snapshots[0].entity_ref,
         'production-partial-board');
       assert.equal(loaded.row_pins[0].item.state.ordinary_metadata
-        .semantic_facts.length, 4);
+        .semantic_facts.some(({ text }) => text === 'Жду у переправы.'),
+      true);
     } finally { sequentialReload.release(); }
+
+    const eraseInscription = await actionPlan(pool, {
+      partyVersion: 13, changeSetId: 'change-erase-inscription',
+      requestId: 'erase-inscription', actionRef: 'action-erase-inscription',
+      rootTurnId: 'turn-erase-inscription', stepIndex: 1,
+      sources: ['production-partial-board'], tools: ['production-knife'],
+      mode: 'preserve_source',
+      physicalDescription: 'надпись физически соскоблена',
+      qualitativeFacts: ['поверхность очищена от надписи'],
+      removedFactRefs: ['action-preserve-multi:inscription']
+    });
+    const eraseCombined = await combinedPlan(eraseInscription,
+      'erase-inscription', 13);
+    assert.equal((await committer.commit({ plan: eraseCombined })).ok, true);
+    assert.deepEqual(await committer.commit({ plan: eraseCombined }), {
+      ok: true, replay: true, change_set_id: 'change-erase-inscription'
+    });
+    const erased = (await pool.query(`SELECT state,state_version
+      FROM party_runtime.party_items
+      WHERE party_id='party-a1' AND item_id='production-partial-board'`))
+      .rows[0];
+    assert.equal(erased.state_version, '6');
+    assert.equal(erased.state.ordinary_metadata.semantic_facts
+      .some(({ text }) => text === 'Жду у переправы.'), false);
   });
 
 async function actionPlan(pool, config) {
@@ -952,7 +992,7 @@ async function actionPlan(pool, config) {
     const origin = config.mode === 'independent_outputs'
       ? 'direct_partition' : null;
     const resultClass = config.mode === 'no_useful_result'
-      ? 'no_useful_result' : 'ordinary_physical_result';
+      ? 'no_useful_result' : config.resultClass ?? 'ordinary_physical_result';
     const semantic = {
       schema: 'action_produced_result_plan_v1', request_id: config.requestId,
       root_turn_id: rootTurnId, action_ref: config.actionRef,
@@ -972,7 +1012,7 @@ async function actionPlan(pool, config) {
         ? null : config.outputClass ?? 'ordinary_mundane',
       result_descriptor: config.mode === 'no_useful_result'
         ? { display_name: null, physical_description: null,
-          qualitative_facts: [], inscription_text: null }
+          qualitative_facts: [], inscription_text: null, physical_form: null }
         : { display_name: config.displayName ?? 'ordinary result',
           physical_description: config.physicalDescription
             ?? 'physically transformed',
@@ -981,7 +1021,9 @@ async function actionPlan(pool, config) {
           ...(config.removedFactRefs == null ? {} : {
             removed_physical_fact_refs: config.removedFactRefs
           }),
-          inscription_text: null }
+          inscription_text: config.inscriptionText ?? null,
+          physical_form: config.physicalForm
+            ?? (config.mode === 'independent_outputs' ? 'compact' : null) }
     };
     const admitted = admitActionProducedResult({
       committed_context: loaded.committed_context,
@@ -1326,20 +1368,24 @@ function descriptor(overrides = {}) {
   return { display_name: null,
     physical_description: 'Край предмета физически обработан.',
     qualitative_facts: [], removed_physical_fact_refs: [],
-    inscription_text: null,
-    weapon_qualitative_class: null, ...overrides };
+    inscription_text: null, physical_form: null, ...overrides };
 }
 
 function actionProduction(overrides = {}) {
   const identityMode = overrides.identity_mode ?? 'preserve_source';
   const resultClass = overrides.result_class ?? 'partial_transformation';
-  return { identity_mode: 'preserve_source', origin: null,
+  const result = { identity_mode: 'preserve_source', origin: null,
     result_class: 'partial_transformation',
     material_extent: identityMode === 'independent_outputs'
       ? resultClass === 'partial_transformation' ? 'minor' : 'whole'
       : null,
     result_descriptor: descriptor(), output_class: 'ordinary_mundane',
     ...overrides };
+  if (identityMode === 'independent_outputs'
+      && result.result_descriptor.physical_form === null) {
+    result.result_descriptor.physical_form = 'compact';
+  }
+  return result;
 }
 
 function productionEnvelope({ itemRef = 'production-garment',
@@ -1351,7 +1397,7 @@ function productionEnvelope({ itemRef = 'production-garment',
   const plan = { resolution: checked ? 'generic_check' : 'domain_request',
     activity: checked
       ? { owner: 'semantic', duration_class: 'short', effort: 'light' }
-      : { owner: 'domain', duration_class: null, effort: null },
+      : { owner: 'semantic', duration_class: 'short', effort: 'light' },
     check: checked ? { attribute_ref: 'dexterity', skill_ref: null,
       difficulty_id: 'standard' } : null, interpretation: {
       player_goal: remainingIntent, grounded_attempt: remainingIntent,

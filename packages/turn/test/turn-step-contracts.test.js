@@ -235,6 +235,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
     { entity_ref: { entity_kind: 'item', entity_id: 'item:stone' } }
   ];
   const action = plan({
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
     operations: [{
       op: 'request_item_use', actor_ref: 'actor_mikula',
       item_ref: 'item:pole', use_kind: 'other',
@@ -251,7 +252,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
           qualitative_facts: ['на конце видны свежие срезы'],
           removed_physical_fact_refs: [],
           inscription_text: null,
-          weapon_qualitative_class: 'improvised_puncture_light'
+          physical_form: 'long'
         },
         output_class: 'weapon_capable'
       }
@@ -261,6 +262,11 @@ test('sole turn plan boundary admits qualitative action production', () => {
   assert.deepEqual(validateTurnStepPlan(action, { request: source }), {
     ok: true, errors: []
   });
+
+  const unrelated = plan({
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' }
+  });
+  assert.equal(validateTurnStepPlan(unrelated, { request: source }).ok, false);
 
   source.player_safe_state.items = [{ item_id: 'item:pole',
     physical_fact_records: [{ fact_ref: 'fact:sharp',
@@ -274,13 +280,13 @@ test('sole turn plan boundary admits qualitative action production', () => {
   action.operations[0].action_production.result_descriptor
     .removed_physical_fact_refs = [];
 
-  action.operations[0].action_production.result_descriptor
-    .weapon_qualitative_class = 'forged_weapon_class';
+  action.operations[0].action_production.result_descriptor.physical_form =
+    'forged_form';
   assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
 
   const partition = structuredClone(action);
-  partition.operations[0].action_production.result_descriptor
-    .weapon_qualitative_class = 'improvised_puncture_light';
+  partition.operations[0].action_production.result_descriptor.physical_form =
+    'compact';
   partition.operations[0].action_production = {
     ...partition.operations[0].action_production,
     source_refs: ['item:pole', 'item:stone'], tool_refs: ['item:knife'],

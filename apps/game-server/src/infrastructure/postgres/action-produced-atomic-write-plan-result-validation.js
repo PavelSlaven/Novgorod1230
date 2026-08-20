@@ -21,12 +21,8 @@ const QUALITATIVE_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text'
+  'inscription_text', 'physical_form'
 ];
-const WEAPON_CLASSES = new Set([
-  'improvised_puncture_light', 'improvised_impact_light',
-  'improvised_cutting_light', 'improvised_two_hand_heavy'
-]);
 
 export function validateActionProducedProposalResults(proposal, sourcePins) {
   if (!validQualitative(proposal.qualitative_result, proposal)) {
@@ -88,8 +84,9 @@ function validQualitative(value, proposal) {
           || descriptor.removed_physical_fact_refs.length === 0))
     && (descriptor.inscription_text === null
       || text(descriptor.inscription_text))
-    && (value.output_class === 'weapon_capable')
-      === WEAPON_CLASSES.has(descriptor.weapon_qualitative_class)
+    && (descriptor.physical_form === null
+      || ['compact', 'regular', 'long', 'bulky'].includes(
+        descriptor.physical_form))
     && validateActionProducedOutputClass(value.output_class,
       proposal.result_class, proposal.identity_mode);
 }
@@ -98,9 +95,6 @@ function descriptorKeys(value) {
   const keys = [...DESCRIPTOR_KEYS];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
-  }
-  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
-    keys.push('weapon_qualitative_class');
   }
   return keys;
 }

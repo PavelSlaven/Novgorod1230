@@ -10,7 +10,8 @@ test('P16 replays partial allocation mechanics instead of trusting forged grams'
     const source = sourcePin();
     const causal = { request_id: 'request', root_turn_id: 'turn',
       action_ref: 'action', step_index: 1 };
-    const qualitative = { material_extent: 'minor' };
+    const qualitative = { material_extent: 'minor',
+      result_descriptor: { physical_form: 'compact' } };
     const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: { schema:
         'rus.items.action_produced_mechanics_request.v1',

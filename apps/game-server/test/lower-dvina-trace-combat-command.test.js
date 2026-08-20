@@ -8,7 +8,8 @@ import {
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createTraceCombatCommand, traceCombatTargetRefs } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
-import { resolveTraceOrdinaryWeaponDanger } from
+import { classifyTraceActionProducedWeapon,
+  resolveTraceOrdinaryWeaponDanger } from
   '../src/runtime/lower-dvina-trace-combat-ordinary-weapon.js';
 import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
@@ -125,20 +126,72 @@ test('combat owner reads a reloaded ordinary armament snapshot', () => {
   }], player), null);
 });
 
-test('combat owner classifies one reloaded A1 weapon without A1 damage claims',
-  () => {
+test('combat owner classifies current reloaded A1 weapon only at combat use',
+  async () => {
     const item = { item_id: 'a1-spear',
       placement: { holder_character_id: 'mikula-1' }, state: {
-        condition_state: 'serviceable', action_production: {
-          output_class: 'weapon_capable',
-          weapon_qualitative_class: 'improvised_puncture_light'
-        } } };
-    assert.equal(resolveTraceOrdinaryWeaponDanger([item], player), 1);
+        condition_state: 'serviceable', ordinary_metadata: {
+          name: 'заострённая жердь', semantic_type: 'weapon_capable',
+          semantic_facts: [{ fact_id: 'fact:sharp', text: 'конец заострён' }]
+        }, action_production: { output_class: 'weapon_capable',
+          physical_form: 'long' } } };
+    let calls = 0;
+    const classified = await classifyTraceActionProducedWeapon({
+      items: [item], actor_ref: player, request_id: 'combat-weapon:1',
+      classify: async (request) => {
+        calls += 1;
+        assert.deepEqual(request.item.physical_facts, ['конец заострён']);
+        return { schema:
+          'rus.combat.action_produced_weapon_classification.v1',
+        request_id: request.request_id,
+        qualitative_class: 'improvised_puncture_light' };
+      }
+    });
+    assert.equal(calls, 1);
+    assert.equal(resolveTraceOrdinaryWeaponDanger([item], player,
+      classified), 1);
     assert.equal(resolveTraceOrdinaryWeaponDanger([{ ...item, state: {
-      ...item.state, condition_state: 'damaged' } }], player), null);
-    assert.equal(resolveTraceOrdinaryWeaponDanger([{ ...item, state: {
-      ...item.state, action_production: { output_class: 'weapon_capable',
-        weapon_qualitative_class: 'forged_class' } } }], player), null);
+      ...item.state, condition_state: 'damaged' } }], player, classified),
+    null);
+    const changed = structuredClone(item);
+    changed.state.ordinary_metadata.semantic_facts = [{
+      fact_id: 'fact:blunt', text: 'конец затуплён' }];
+    await classifyTraceActionProducedWeapon({ items: [changed],
+      actor_ref: player, request_id: 'combat-weapon:changed',
+      classify: async (request) => {
+        calls += 1;
+        assert.deepEqual(request.item.physical_facts, ['конец затуплён']);
+        return { schema:
+          'rus.combat.action_produced_weapon_classification.v1',
+        request_id: request.request_id,
+        qualitative_class: 'improvised_impact_light' };
+      } });
+    assert.equal(calls, 2);
+    const forged = await classifyTraceActionProducedWeapon({ items: [item],
+      actor_ref: player, request_id: 'combat-weapon:2',
+      classify: async (request) => ({ schema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      request_id: request.request_id, qualitative_class: 'forged_class',
+      weapon_danger: 900 }) });
+    assert.equal(forged, null);
+  });
+
+test('authored weapon fast path does not invoke semantic classification',
+  async () => {
+    const snapshot = resolveOrdinaryArmamentMechanics({
+      mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+      condition_state: 'serviceable'
+    });
+    let calls = 0;
+    const items = [{ item_id: 'ordinary-spear', placement: {
+      holder_character_id: 'mikula-1' }, state: {
+      condition_state: 'serviceable', weapon_mechanics_snapshot: snapshot }
+    }];
+    assert.equal(await classifyTraceActionProducedWeapon({ items,
+      actor_ref: player, request_id: 'combat-weapon:exact',
+      classify: async () => { calls += 1; } }), null);
+    assert.equal(calls, 0);
+    assert.equal(resolveTraceOrdinaryWeaponDanger(items, player), 1);
   });
 
 test('post-exchange subjective projection reads body and equipment from working state',
@@ -188,11 +241,13 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
       instance_id: npc.entity_id,
       participant_slot_ref: 'ratsha_storehouse_helper',
       machine_state: { body_condition: { health: index === 0 ? 5 : 100 } }
-      })), items: [{ item_id: 'ordinary-spear', placement: {
+      })), items: [{ item_id: 'crafted-pole', placement: {
       holder_character_id: 'mikula-1' }, state: { condition_state: 'serviceable',
-        weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
-          mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
-          condition_state: 'serviceable' }) } }], combat_sessions: [current] };
+        ordinary_metadata: { name: 'заострённая жердь',
+          semantic_type: 'weapon_capable', semantic_facts: [{
+            fact_id: 'fact:sharp', text: 'конец заострён' }] },
+        action_production: { output_class: 'weapon_capable',
+          physical_form: 'long' } } }], combat_sessions: [current] };
     const attack = { attribute_value: 20, skill_bonus: 0,
       target_defense: 1, weapon_danger: 4, target_protection: 0,
       target_vulnerability: 0 };
@@ -208,9 +263,18 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
         operation_contract: {}, execution_profiles: [{
           profile_id: 'ratsha-engage', intent_kind: 'engage',
           status: 'approved', check_request: attack }] } } };
+    let weaponClassifierCalls = 0;
     const command = createTraceCombatCommand({ state, bundle,
       inputDigest: 'digest-2', randomSource: { next: () => 0.99 },
       temporalAdvanceOwner: combatTemporalOwner(),
+      actionProducedWeaponClassifier: async (request) => {
+        weaponClassifierCalls += 1;
+        assert.deepEqual(request.item.physical_facts, ['конец заострён']);
+        return { schema:
+          'rus.combat.action_produced_weapon_classification.v1',
+        request_id: request.request_id,
+        qualitative_class: 'improvised_puncture_light' };
+      },
       npcCombatModel: async () => assert.fail(
         'incapacitated NPC must not receive a combat decision'),
       revalidateStateVersion: async () => 3 });
@@ -229,6 +293,7 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
     assert.equal(result.combat.check_results.length, 2);
     assert.equal(result.combat.exchange.technical_steps.find(({ actor_ref }) =>
       actor_ref.entity_id === 'mikula-1').check_request.weapon_danger, 1);
+    assert.equal(weaponClassifierCalls, 1);
     assert.deepEqual(result.combat.decision_results, []);
   });
 

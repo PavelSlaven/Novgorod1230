@@ -134,18 +134,24 @@ consumed by grounded extent, and mixed ownership does not block the physical
 change; output property follows the selected primary/property source.
 Partial independent output carries only grounded qualitative
 `minor|half|major` extent; the item owner maps it to an exact gram decrement,
-keeps the changed source active and derives its remaining mechanics. Odd mass
+keeps the changed source active, updates its current physical facts and derives
+its remaining mechanics. Odd mass
 is distributed deterministically; output
 hand/packing/carry is code-derived. Safe named result descriptors persist in
 ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
-closed qualitative weapon-capable outcomes. Visible non-authoritative physical
-facts accumulate across repeated transformations and survive same-root
-continuation and reload. Multiple causal A1 steps run in order over the shared
+closed qualitative weapon-capable outcomes. Visible non-authoritative current
+physical facts, including exact inscription text, survive unrelated transforms,
+same-root continuation and reload; explicit visible fact refs allow physical
+removal/replacement. Multiple causal A1 steps run in order over the shared
 working projection and commit in one combined P16. Item mechanics, conservation,
-identity and placement remain code-owned. Uncertain actions reuse one generic
-check and semantic activity/time resolution from turn owners; deterministic
-actions use `domain_request` without mandatory RNG/time. The same combined P16 write set contains the full turn snapshot,
+identity and placement remain code-owned. Qualitative physical form is mapped
+with exact mass to hands/carry/packing by the item owner. Weapon combat class is
+ephemeral and belongs only to the combat boundary; A1 state stores no class or
+damage. Uncertain actions reuse one generic check and semantic activity/time
+resolution from turn owners; deterministic actions use `domain_request` without
+RNG but still apply one ordinary semantic activity/time cost after a real
+physical attempt. The same combined P16 write set contains the full turn snapshot,
 append-only check resolution, clock/activity writes and the ordered A1 plans.
 The existing transaction, state-version checks and idempotency owner bind the
 physical transitions to the same root commit without a second RNG, clock, A1

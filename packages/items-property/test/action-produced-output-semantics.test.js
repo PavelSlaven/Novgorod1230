@@ -23,6 +23,31 @@ test('preserved facts remove known obsolete refs before adding replacements',
     ]);
   });
 
+test('physical inscription survives unrelated change until explicit removal',
+  () => {
+    const written = mergeActionProducedPhysicalFacts({
+      entity_ref: 'item:bark', action_ref: 'action:write', existing: [],
+      physical_description: 'на бересте появилась надпись',
+      physical_facts: [], inscription_text: 'Жду у переправы.'
+    });
+    const transformed = mergeActionProducedPhysicalFacts({
+      entity_ref: 'item:bark', action_ref: 'action:fold', existing: written,
+      physical_description: 'береста сложена вдвое', physical_facts: []
+    });
+    assert.equal(transformed.some(({ text }) =>
+      text === 'Жду у переправы.'), true);
+
+    const inscriptionRef = transformed.find(({ text }) =>
+      text === 'Жду у переправы.').fact_id;
+    const erased = mergeActionProducedPhysicalFacts({
+      entity_ref: 'item:bark', action_ref: 'action:erase',
+      existing: transformed, removed_fact_refs: [inscriptionRef],
+      physical_description: 'надпись физически соскоблена',
+      physical_facts: []
+    });
+    assert.equal(erased.some(({ text }) => text === 'Жду у переправы.'), false);
+  });
+
 test('weapon-capable output remains pending for the combat-owned boundary',
   () => {
     const result = admitActionProducedOutputSemantics(input(proposal({
@@ -236,7 +261,9 @@ function proposal(overrides = {}) {
         physical_description: overrides.physical_description
           ?? 'материал получил новую физическую форму',
         qualitative_facts: ['физически обработан'],
-        inscription_text: inscriptionText
+        inscription_text: inscriptionText,
+        physical_form: identityMode === 'independent_outputs'
+          ? 'compact' : null
       }
     }
   };

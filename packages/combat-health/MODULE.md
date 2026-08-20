@@ -39,7 +39,7 @@ Combat state, attack/defense requests, harm packages, wounds and combat conseque
 - `combatBodyThresholdSignalProfile`
 - `resolveOrdinaryArmamentMechanics`
 - `ordinaryArmamentWeaponDanger`
-- `combatActionProducedWeaponProfile`
+- `ACTION_PRODUCED_WEAPON_CLASSES`
 - `resolveActionProducedCombatWeaponClass`
 
 ## Контракты и инварианты
@@ -64,7 +64,11 @@ production v9 сохраняется как historical recovery path. SQL, RNG,
 body write и scenario ordering здесь отсутствуют. Unit/contract tests
 находятся в `test/domain.test.js` и `test/combat-foundation.test.js`.
 
-Revision 21 A1 не пишет damage либо canonical weapon identity. Persisted
-`weapon_capable` item несёт одну закрытую qualitative class; только этот модуль
-сверяет exact versioned catalog pin и переводит class в `weapon_danger` для
-существующей combat formula. Damaged/unknown/ambiguous held items fail-closed.
+Revision 21 A1 не пишет damage, combat class либо canonical weapon identity.
+При конкретном combat use существующая exact weapon mechanics имеет приоритет
+и не вызывает модель. Для одного held template-less `weapon_capable` item combat
+owner получает current player-safe physical facts/form, bounded-классифицирует
+их в один из `ACTION_PRODUCED_WEAPON_CLASSES` и code-owned mapping переводит
+class в `weapon_danger` только для этого resolution. Класс не сохраняется и
+после физического изменения определяется заново. Digest/profile-pin слоя нет;
+strict validation достаточна. Damaged/unknown/ambiguous items fail-closed.

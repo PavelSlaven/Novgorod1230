@@ -6,7 +6,7 @@ export { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
   ordinaryArmamentWeaponDanger,
   resolveOrdinaryArmamentMechanics } from
   './ordinary-armament-mechanics.js';
-export { combatActionProducedWeaponProfile,
+export { ACTION_PRODUCED_WEAPON_CLASSES,
   resolveActionProducedCombatWeaponClass } from
   './action-produced-weapon-mechanics.js';
 export const validateCombatSession=sessionValid, validateCombatIntent=intentValid;

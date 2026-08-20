@@ -69,7 +69,7 @@ test('allocation mechanics retires one whole item and derives output carrying',
       mechanics: snapshot.mechanics, allocations
     })), [1, 2].map(() => ({ mechanics: {
       mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
-      packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+      packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
       container: null
     }, allocations: [{ source_ref: 'material:board', quantity: {
       numerator: 1, denominator: 2, unit: 'whole_item'
@@ -88,10 +88,10 @@ test('allocation mechanics conserves odd mass without inheriting board shape',
     });
     assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: value }) =>
       value.mechanics), [{ mass_grams: 401, external_hand_cost: 0,
-      carry_form: 'compact', packing_slot_cost: 2,
+      carry_form: 'compact', packing_slot_cost: 1,
       quantity: { value: 1, unit: 'item' }, container: null }, {
       mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
-      packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+      packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
       container: null }]);
   });
 
@@ -100,7 +100,8 @@ test('partial outputs consume a grounded minor extent and preserve source',
     const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({
         result_class: 'partial_transformation',
-        qualitative_intent: { material_extent: 'minor' },
+        qualitative_intent: { material_extent: 'minor',
+          result_descriptor: { physical_form: 'compact' } },
         source_inputs: [{ entity_ref: 'material:board',
           finite_resource: null }] }),
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
@@ -182,8 +183,60 @@ test('preserve source can consume another material into the same identity',
     assert.deepEqual(resolution.outputs, []);
   });
 
+test('equal mass uses qualitative physical form for inventory mechanics', () => {
+  const resolve = (physicalForm) => resolveActionProducedAllocationMechanics({
+    mechanics_request: mechanicsRequest({
+      qualitative_intent: { material_extent: 'whole',
+        result_descriptor: { physical_form: physicalForm } },
+      source_inputs: [{ entity_ref: 'material:one', finite_resource: null }]
+    }),
+    source_mechanics: [{ source_ref: 'material:one', mechanics: {
+      mass_grams: 800, external_hand_cost: 1, carry_form: 'long',
+      packing_slot_cost: 6, quantity: null, container: null } }],
+    output_count: 1
+  }).outputs[0].mechanics_snapshot.mechanics;
+
+  assert.deepEqual(resolve('compact'), { mass_grams: 800,
+    external_hand_cost: 0, carry_form: 'compact', packing_slot_cost: 1,
+    quantity: { value: 1, unit: 'item' }, container: null });
+  assert.deepEqual(resolve('long'), { mass_grams: 800,
+    external_hand_cost: 1, carry_form: 'long', packing_slot_cost: 3,
+    quantity: { value: 1, unit: 'item' }, container: null });
+});
+
+test('preserve source can change inventory geometry without changing mass', () => {
+  const resolution = resolveActionProducedAllocationMechanics({
+    mechanics_request: mechanicsRequest({ identity_mode: 'preserve_source',
+      origin: null, qualitative_intent: { material_extent: null,
+        result_descriptor: { physical_form: 'compact' } },
+      source_inputs: [{ entity_ref: 'item:pole', finite_resource: null }] }),
+    source_mechanics: [{ source_ref: 'item:pole', mechanics: {
+      mass_grams: 900, external_hand_cost: 1, carry_form: 'long',
+      packing_slot_cost: 6, quantity: null, container: null } }],
+    output_count: 0
+  });
+  assert.deepEqual(resolution.source_effects[0].mechanics_snapshot_after
+    .mechanics, { mass_grams: 900, external_hand_cost: 0,
+    carry_form: 'compact', packing_slot_cost: 1, quantity: null,
+    container: null });
+});
+
+test('finite A1 sources consume one discrete committed unit per action', () => {
+  const resolve = (resultClass, extent) =>
+    resolveActionProducedAllocationMechanics({
+      mechanics_request: mechanicsRequest({ result_class: resultClass,
+        qualitative_intent: { material_extent: extent,
+          result_descriptor: { physical_form: 'compact' } },
+        source_inputs: [sourceInput('material:finite', 2)] }),
+      source_mechanics: [sourceMechanics('material:finite', 400, 2, 2)],
+      output_count: 1
+    }).source_effects[0].requested_decrement;
+  assert.deepEqual(resolve('partial_transformation', 'minor'), quantity(1));
+  assert.deepEqual(resolve('ordinary_physical_result', 'whole'), quantity(1));
+});
+
 function mechanicsRequest(overrides = {}) {
-  return {
+  const request = {
     schema: 'rus.items.action_produced_mechanics_request.v1',
     causal_identity: { request_id: 'request', root_turn_id: 'turn',
       action_ref: 'action', step_index: 1 },
@@ -191,10 +244,12 @@ function mechanicsRequest(overrides = {}) {
     result_class: 'ordinary_physical_result',
     source_inputs: [sourceInput('material:a', 2),
       sourceInput('material:b', 2)],
-    tool_inputs: [], qualitative_intent: { material_extent: 'whole' },
+    tool_inputs: [], qualitative_intent: { material_extent: 'whole',
+      result_descriptor: { physical_form: 'compact' } },
     technical_limits: { policy_ref: 'policy', policy_version: 1,
       max_new_entities: 4 }, ...overrides
   };
+  return request;
 }
 
 function sourceInput(entityRef, available) {

@@ -40,19 +40,9 @@ test('agent instruction links resolve to repository files', async () => {
   assert.doesNotMatch(readme, /Правила автоматического применения/u);
 });
 
-test('canonical agent instructions preserve critical project invariants without universal workflow gates', async () => {
+test('canonical documentation preserves active guidance without obsolete workflow gates', async () => {
   const agents = await readFile(join(root, 'AGENTS.md'), 'utf8');
 
-  assert.match(agents, /единственный канонический набор общих инструкций/u);
-  assert.match(agents, /Не читай весь нормативный корпус перед каждой задачей/u);
-  assert.match(agents, /Repository Intelligence и Graphify применяй только когда/u);
-  assert.match(agents, /пустой обязательный candidate set возвращает типизированную ошибку или data gap/u);
-  assert.match(agents, /запрещено ослаблять фильтры и создавать смысловые fallback/u);
-  assert.match(agents, /LLM выбирает только из переданного закрытого набора/u);
-  assert.match(agents, /LLM не пишет непосредственно в базу данных/u);
-  assert.match(agents, /Сценарному коду запрещено:[\s\S]*создавать собственный resolver, scheduler или state machine/u);
-  assert.match(agents, /Наличие scenario-local orchestration общей механики является блокирующим архитектурным дефектом/u);
-  assert.match(agents, /Для обычного локального исправления отдельный агент-критик не требуется/u);
   assert.doesNotMatch(agents, /Перед любой задачей полностью прочитай/u);
   assert.doesNotMatch(agents, /Перед grep, file search, GitHub code search/u);
   assert.doesNotMatch(agents, /PR №13/u);

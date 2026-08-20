@@ -650,11 +650,13 @@ const turnFiles = (await walk(join(turnRoot, 'src'))).filter((file) => ['.js', '
 const turnFileSet = new Set(turnFiles.map((file) => resolve(file)));
 const turnGraph = new Map();
 const approvedTurnImports = new Set([
+  '@rus/contracts/ordinary-materialization-v1',
   '@rus/contracts/combat-v1',
   '@rus/contracts/spatial-v3/ports',
   '@rus/contracts/spatial-v3/registry',
   '@rus/kernel',
   '@rus/checks-rng',
+  '@rus/items-property',
   '@rus/time-events-history',
   '@rus/time-events-history/legacy',
     '@rus/time-events-history/temporal-boundaries',
@@ -713,7 +715,7 @@ for (const appSpec of [
     name: 'game-server',
     required: ['MODULE.md', 'package.json', 'src/index.js', 'src/composition/root.js', 'src/http/handler.js', 'test/game-server.test.js'],
     approved: new Set([
-      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
+      '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
@@ -722,7 +724,9 @@ for (const appSpec of [
       '@rus/party-store', '@rus/party-store/internal/lower-dvina-trace-phase-1a', '@rus/party-store/ordinary-materialization', '@rus/presentation', '@rus/presentation/opening-delivery', '@rus/turn', '@rus/turn/spatial-v3-execution', '@rus/turn/spatial-v3-target-composition', '@rus/turn/spatial-v3-temporal-write-integration', '@rus/turn/temporal-advance',
       '@rus/runtime-catalog', '@rus/runtime-catalog/common-lookups', '@rus/runtime-catalog/runtime-contract', '@rus/social-law', '@rus/time-events-history', '@rus/time-events-history/calendar',
       '@rus/time-events-history/temporal-boundaries',
-      '@rus/visibility-knowledge-memory', '@rus/world-base',
+      '@rus/visibility-knowledge-memory',
+      '@rus/visibility-knowledge-memory/ordinary-resolution-capability',
+      '@rus/world-base',
       '@rus/npc-runtime', 'pg'
     ])
   },

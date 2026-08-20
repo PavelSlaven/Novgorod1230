@@ -248,6 +248,8 @@ function projectItemState(value, strict) {
     'use_state'
   ]);
   if (strict) assertAllowedKeys(value, allowed, 'item.state', invalidCode());
+  const propertyState = scalarRecord(value.property_state, { strict,
+    path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS });
   return compact({
     semantic_category: text(value.semantic_category),
     evidence_ref: text(value.evidence_ref),
@@ -255,8 +257,8 @@ function projectItemState(value, strict) {
       : scalarRecord(value.condition, { strict, path: 'item.state.condition',
           allowedKeys: ITEM_CONDITION_KEYS }),
     condition_state: text(value.condition_state),
-    property_state: scalarRecord(value.property_state, { strict,
-      path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS }),
+    property_state: propertyState != null && Object.keys(propertyState).length
+      ? propertyState : undefined,
     accessibility: text(value.accessibility),
     access_state: projectReferenceState(value.access_state, strict,
       'item.state.access_state'),

@@ -28,6 +28,21 @@ read-only; all writes still pass through the game-server combined committer.
 
 Inputs are approved, idempotency-bound logical write plans plus explicit injected transaction/repository ports. A P23 semantic mutation additionally requires a caller-supplied, contract-valid `visible_package_persistence_envelope`; party-store never invents that projection. Outputs are committed-result semantics or typed failure; target ports fail closed when unavailable and never invoke v2 fallback. Unknown/v1 targets are rejected rather than mapped semantically.
 
+O1 uses the existing `./ordinary-materialization` closed aggregate only after
+`request_discovery` meaningful/code-first gates and model execution outside a
+physical transaction. Its logical plan carries candidate-free Stage A seed,
+prepared/committed supporting basis, or a targeted Stage B resolution with
+`evidence_weight = 0` and code-owned identity/classification/policy fields;
+normalized discovery query and exact target derive the code-owned candidate
+identity; the query remains only a `candidate_hint`, not a noun/recipe gate or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution; a different query has a different identity. Positive plans additionally
+carry admitted immutable mechanics/property/placement. The handoff preserves
+CAS/idempotency for exact positive and negative resolutions, so retry/reload
+does not reroll an exact deterministically normalized identity. This package neither exposes player capability/visibility nor
+creates a public ordinary operation; O2/A1/F1/S1/N1, template-less containers,
+context-bound weapons/value/currency and natural finite sources are outside it.
+
 Party migration `020` расширяет constraints будущих item/container placements:
 actor physical positions, `equipped` и `equipment_slot_category_id` допустимы
 для player и NPC holder. Historical NPC-container rows без physical position

@@ -15,6 +15,12 @@ import {
   resolveTurnDecision
 } from './bounded-decision.js';
 import { enterG4WithMaterialization } from './first-entry-materialization.js';
+import { resolveOrdinaryMaterializationSeedScope } from
+  './ordinary-materialization-seed.js';
+import { resolveOrdinaryMaterializationPresence } from
+  './ordinary-materialization-presence.js';
+import { createOrdinaryMaterializationDiscoveryOwner } from
+  './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
 import { requestNpcSemanticDecision } from './npc-semantic-decision.js';
 import { runConversationExchange } from './conversation-exchange.js';
@@ -129,7 +135,10 @@ export {
   TurnWorkflowError,
   createTurnDecisionRequest,
   resolveTurnDecision,
-  enterG4WithMaterialization
+  enterG4WithMaterialization,
+  resolveOrdinaryMaterializationSeedScope,
+  resolveOrdinaryMaterializationPresence,
+  createOrdinaryMaterializationDiscoveryOwner
 };
 export {
   createTurnAvailableActionSet,

@@ -18,7 +18,7 @@ import {
   projectPlayerSafeOrdinaryResolutionCapability
 } from '../src/ordinary-resolution-capability.js';
 
-test('ordinary resolution marker is an immutable false-only allowlist projection', () => {
+test('ordinary resolution marker has one immutable player-safe capability owner', () => {
   const marker = createDisabledOrdinaryResolutionCapability();
   assert.deepEqual(marker, {
     ordinary_resolution: {
@@ -45,12 +45,16 @@ test('ordinary resolution marker is an immutable false-only allowlist projection
   };
   assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability(adversarial),
     /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
-  assert.throws(() => projectPlayerSafeOrdinaryResolutionCapability({
+  const enabled = projectPlayerSafeOrdinaryResolutionCapability({
     ordinary_resolution: {
       discovery_available: true,
       container_resolution_available: false
     }
-  }), /ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE/);
+  });
+  assert.deepEqual(enabled, { ordinary_resolution: {
+    discovery_available: true, container_resolution_available: false
+  } });
+  assert.ok(Object.isFrozen(enabled.ordinary_resolution));
   let reads = 0;
   const topAccessor = {};
   Object.defineProperty(topAccessor, 'ordinary_resolution', {

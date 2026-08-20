@@ -5,6 +5,7 @@ import {
   calculateContainerUsage,
   calculateHandsState,
   calculateInventoryMass,
+  createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
   resolveInventoryMechanicsProfile
 } from '../src/index.js';
@@ -202,4 +203,38 @@ test('authored instances still resolve and calculate exclusively by template pro
   assert.equal(Object.isFrozen(resolved.profile), true);
   assert.equal(calculateInventoryMass(state).total_mass_grams, 600);
   assert.equal(calculateHandsState(state).hands_used, 1);
+});
+
+test('direct-action constructor stays v1-only while inventory resolves exact O1 v2', () => {
+  const v2 = {
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
+    provenance: { source_kind: 'ordinary_world_materialization',
+      causal_ref: 'ordinary:1', request_id: 'request:1', candidate_key: 'candidate:1',
+      coverage_key: 'coverage:1', context_version: 'context:1', policy_ref: 'policy:1',
+      source_refs: ['basis:1'] },
+    mechanics: { mass_grams: 1, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 0, quantity: { value: 1, unit: 'item' }, container: null }
+  };
+  assert.throws(() => createRuntimeInstanceMechanicsSnapshot(v2),
+  { code: 'ITEM_RUNTIME_MECHANICS_SNAPSHOT_INVALID' });
+  const created = createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(v2);
+  assert.deepEqual(created, v2);
+  const resolved = resolveInventoryMechanicsProfile({ instance: {
+    item_id: 'future-o1', runtime_instance_mechanics_snapshot: v2
+  }, profiles: {} });
+  assert.equal(resolved.pass, true);
+  assert.equal(resolved.source, 'ordinary_world_materialization_snapshot');
+  assert.deepEqual(resolved.profile, { ...v2.mechanics,
+    packing_bundle_size: 1 });
+  assert.equal(Object.isFrozen(resolved.snapshot), true);
+
+  assert.throws(() => createOrdinaryWorldRuntimeInstanceMechanicsSnapshot({
+    ...v2, provenance: { ...v2.provenance,
+      source_kind: 'ordinary_direct_action_result' }
+  }), { code: 'ITEM_ORDINARY_WORLD_RUNTIME_MECHANICS_SNAPSHOT_INVALID' });
+});
+
+test('v1 mechanics snapshots retain null-prototype input compatibility', () => {
+  const source = Object.assign(Object.create(null), snapshot());
+  assert.equal(createRuntimeInstanceMechanicsSnapshot(source).version, 1);
 });

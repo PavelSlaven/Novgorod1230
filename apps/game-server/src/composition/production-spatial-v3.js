@@ -1,5 +1,7 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from '../internal/lower-dvina-trace-ordinary-materialization-profile.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -136,11 +138,8 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
-      pool: pools.partyPool,
-      recheck: bindings.commitRecheck,
-      now
-    });
+    const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile({ rootDir: config.rootDir ?? process.cwd() });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: ordinaryProfile }), now });
     const target = targetRootFactory({
       ...bindings.targetCompositionPorts,
       committer

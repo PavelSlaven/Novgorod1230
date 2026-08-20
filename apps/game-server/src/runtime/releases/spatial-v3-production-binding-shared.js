@@ -24,6 +24,13 @@ import {
   createLowerDvinaTraceSemanticResolver,
   createLowerDvinaTraceTurnStepModel
 } from '../lower-dvina-trace-phase-2-llm.js';
+import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
+import { loadLowerDvinaTraceOrdinaryStageBApproval } from
+  '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
+import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
+  '../lower-dvina-trace-ordinary-discovery.js';
+import { createPostgresOrdinaryMaterializationEnablementRepository } from
+  '../../infrastructure/postgres/ordinary-materialization-enablement.js';
 import {
   createProductionLlmRoleRunner
 } from '../../infrastructure/provider/deepseek.js';
@@ -136,6 +143,10 @@ export async function createSpatialV3ProductionBindings(
       'active runtime catalog uses another exact runtime contract'
     );
   }
+  const ordinaryStageBApproval =
+    await loadLowerDvinaTraceOrdinaryStageBApproval({
+      rootDir: config.rootDir ?? process.cwd()
+    });
   let publicRuntime = null;
   const targetCompositionPorts =
     createTargetCompositionPorts(
@@ -169,7 +180,8 @@ export async function createSpatialV3ProductionBindings(
           committer,
           env,
           config,
-          createNpcRuntimePorts
+          createNpcRuntimePorts,
+          ordinaryStageBApproval
         })
       });
       return Object.freeze(Object.fromEntries([
@@ -194,7 +206,8 @@ function createTraceTurnRuntime({
   committer,
   env,
   config,
-  createNpcRuntimePorts
+  createNpcRuntimePorts,
+  ordinaryStageBApproval
 }) {
   const decisionSecret = String(
     config.traceTurnDecisionSecret
@@ -216,8 +229,14 @@ function createTraceTurnRuntime({
     env,
     telemetry: config.telemetry ?? null
   });
+  const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
+    roleRunner, stageBApprovalReceipt: ordinaryStageBApproval
+  });
   const narrationService =
     createLowerDvinaTraceNarrationService({ roleRunner });
+  const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
+    pool: partyPool
+  });
   return createLowerDvinaTracePhase2Runtime({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
@@ -227,6 +246,13 @@ function createTraceTurnRuntime({
       createLowerDvinaTraceSemanticResolver({ roleRunner }),
     turnStepModel:
       createLowerDvinaTraceTurnStepModel({ roleRunner }),
+    createTurnStepOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+      createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
+        loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel
+      }),
+    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
+      (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,

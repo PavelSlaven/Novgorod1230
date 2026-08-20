@@ -42,6 +42,7 @@ export const TurnRuntimeRoles = Object.freeze({
   FORMAT_REPAIRER: 'format_repairer',
   TURN_STEP_PLANNER: 'turn_step_planner',
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
+  ORDINARY_MATERIALIZATION: 'ordinary_materialization',
   PLAYER_CONVERSATION_INTERPRETER: 'player_conversation_interpreter',
   PLAYER_CONVERSATION_INTERPRETER_REPAIR:
     'player_conversation_interpreter_format_repair',
@@ -223,6 +224,24 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     hardInputLimitTokens: 100000,
     reserveOutputTokens: 4000,
     reserveRepairTokens: 4000
+  },
+  [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
+    envPrefix: 'TURN_ORDINARY_MATERIALIZATION',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
+    responseFormat: 'json_object',
+    maxTokens: 6000,
+    temperature: 0,
+    topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'ordinary_materialization_plan_v1',
+    parseJson: true,
+    targetInputTokens: 30000,
+    comfortableInputTokens: 30000,
+    hardInputLimitTokens: 100000,
+    reserveOutputTokens: 6000,
+    reserveRepairTokens: 6000
   },
   ...conversationTurnRoleDefaults(OutputContractModes),
   ...autonomousTurnRoleDefaults(OutputContractModes),

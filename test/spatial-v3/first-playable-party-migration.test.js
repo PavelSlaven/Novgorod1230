@@ -49,12 +49,37 @@ const ordinaryMaterializationSql = readFileSync(
   new URL('../../schemas/party-db/021_party_runtime_ordinary_materialization.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 021 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 21);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-11), [sql,
+const ordinaryCommitSql = readFileSync(
+  new URL('../../schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql', import.meta.url),
+  'utf8'
+);
+const ordinaryEnablementSql = readFileSync(
+  new URL('../../schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql', import.meta.url),
+  'utf8'
+);
+const ordinaryWorldItemsSql = readFileSync(
+  new URL('../../schemas/party-db/024_party_runtime_ordinary_world_items.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 024 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 24);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-14), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
-    combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql]);
+    combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
+    ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql]);
+});
+
+test('024 admits only the separate closed O1 v2 runtime snapshot', () => {
+  assert.match(ordinaryWorldItemsSql,
+    /ordinary_world_runtime_instance_mechanics_snapshot_valid/u);
+  assert.match(ordinaryWorldItemsSql,
+    /rus\.items\.runtime_instance_mechanics_snapshot\.v2/u);
+  assert.match(ordinaryWorldItemsSql,
+    /source_kind' <> 'ordinary_world_materialization'/u);
+  assert.match(ordinaryWorldItemsSql,
+    /runtime_instance_mechanics_snapshot_valid[\s\S]+OR party_runtime[\s\S]+ordinary_world_runtime_instance/u);
+  assert.doesNotMatch(ordinaryWorldItemsSql, /^\s*(?:BEGIN|COMMIT)\s*;/imu);
 });
 
 test('019 keeps combat sessions in the target migration transaction', () => {

@@ -1,4 +1,5 @@
-export { executeRoleLlmCall, createScopedChatCompletionClient } from './runtime.js';
+export { executeRoleLlmCall, createScopedChatCompletionClient,
+  describeRoleLlmCall } from './runtime.js';
 export {
   PortraitLabRoles, TurnRuntimeRoles,
   resolveLlmExecutionConfig

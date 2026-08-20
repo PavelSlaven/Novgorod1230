@@ -50,6 +50,38 @@ domain write.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
+Active O1 Phase 6 composition accepts only the closed
+`ordinary_materialization_atomic_write_plan_v1` DTO after the sanitized model
+call outside a physical transaction and Phase 4 admission. The existing
+`request_discovery` route reaches it only after meaningful-engagement and
+code-first known-result gates; Stage A is candidate-free and Stage B has
+`evidence_weight = 0`, with identity/classification/policy fields built by
+code. Stage A concrete entities are forbidden; its density band is converted
+to numeric budget by a versioned code-owned policy. Normalized discovery query
+and exact target derive the code-owned candidate identity; the query reaches
+the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution, while a different query has a different identity.
+One discovery has a shared two-call semantic budget; structural repair consumes
+the remaining call, and a repaired Stage A can finish as a seed-only commit.
+The exact M7 profile and versioned adversarial Stage B approval receipt are
+mandatory cutover pins. The probes run before profile activation; gameplay
+only verifies the receipt against the profile digest and exact
+provider/model/config identity, without additional eval calls.
+Its server-owned
+PostgreSQL committer locks the party, aggregate and trusted context pins, then
+atomically writes migrations 021–023 state: O1 enablement/objective, aggregate,
+prepared/committed scoped supporting-basis catalog, positive or negative exact
+resolution/idempotency, optional private-v2 item with immutable
+mechanics/property/placement and normalized basis links, aggregate CAS, catalog
+pin and party version. Stale proposals are rejected rather than silently
+rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
+response exposes only the O1 discovery capability marker and approved visible
+result, and narration runs only after factual commit. O1 has no new HTTP/public
+operation and does not activate O2/A1/F1/S1/N1, template-less runtime
+containers, context-bound weapons/value/currency or natural finite sources;
+negative resolutions contain no item and every failure rolls back.
+
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility
 policy: the server verifies party/request identity, the `start_text` branch

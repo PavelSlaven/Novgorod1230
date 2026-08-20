@@ -1,8 +1,13 @@
-import { executeRoleLlmCall } from '@rus/llm-runtime';
+import { describeRoleLlmCall, executeRoleLlmCall } from '@rus/llm-runtime';
 
 export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null, execute = executeRoleLlmCall } = {}) {
   if (typeof execute !== 'function') throw new TypeError('execute must be a function.');
   return Object.freeze({
+    describe({ scope, role_id = null, tier_id = null,
+      overrides = null } = {}) {
+      return describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
+        overrides, env });
+    },
     async run({ scope, role_id = null, tier_id = null, messages = [], overrides = null } = {}) {
       if (!String(scope ?? '').trim()) throw new TypeError('scope is required.');
       if (!Array.isArray(messages)) throw new TypeError('messages must be an array.');

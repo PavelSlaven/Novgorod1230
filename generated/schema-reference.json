@@ -994,6 +994,24 @@
       "type": "sql"
     },
     {
+      "bytes": 8117,
+      "path": "schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql",
+      "sha256": "6608767df190a95c6b572ea01fe4d4340c4f9115d050c456d35a4af183ef80d2",
+      "type": "sql"
+    },
+    {
+      "bytes": 1231,
+      "path": "schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql",
+      "sha256": "7b288909880e472a72c59bf74f8a4a169272e3adab7dfb3b0e15d29698b6f949",
+      "type": "sql"
+    },
+    {
+      "bytes": 5348,
+      "path": "schemas/party-db/024_party_runtime_ordinary_world_items.sql",
+      "sha256": "f7592aa2599b93e15f4e8004405bff65053e972e6cc7139c2815ae1b8877f177",
+      "type": "sql"
+    },
+    {
       "bytes": 18438,
       "path": "schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json",
       "sha256": "2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40",

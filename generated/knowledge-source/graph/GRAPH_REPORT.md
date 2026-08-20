@@ -7,6 +7,6 @@
 - Nodes: 440
 - Links: 787
 - Hyperedges: 0
-- Graph SHA-256: `a3e47bd08fc3b2b61c2e38c0a7bd3cd76db69ee490001b8ea4b82a066e2f8077`
+- Graph SHA-256: `79f58acc6b0406513505a83cc90b6250fa930f819bb2f58471cf1e4bcc158b18`
 
 Approved semantic nodes and links are preserved unchanged. New canonical documents receive structural document nodes only; the generator does not invent semantic relations.

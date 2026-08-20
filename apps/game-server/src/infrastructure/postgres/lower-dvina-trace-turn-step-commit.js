@@ -19,6 +19,7 @@ import {
 import {
   buildLowerDvinaTracePendingScreen
 } from './lower-dvina-trace-turn-presentation.js';
+import { applyOrdinaryMaterializationProjection, ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -44,8 +45,17 @@ export async function commitLowerDvinaTraceTurnStep({
   const idemId = `idem:${partyId}:${canonicalDigest(
     envelope.player_input.idempotency_key
   ).slice(0, 20)}`;
+  let ordinaryPlan;
+  try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
+  catch { throw serverError('TRACE_TURN_STEP_ORDINARY_PLAN_INVALID',
+    'Ordinary atomic plan failed its sealed contract.', { status: 409 }); }
+  const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
+    ...envelope, visible_context: applyOrdinaryMaterializationProjection({
+      next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
+    })
+  };
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
-    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope, contracts
+    partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts
   });
   const base = buildLowerDvinaTraceTurnStepSnapshot({
     state, envelope, inputDigest, nextVersion, turnNumber, changeSetId,
@@ -62,6 +72,8 @@ export async function commitLowerDvinaTraceTurnStep({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
     changeSetId, idemId
   });
+  applyOrdinaryMaterializationProjection({ next: turnStep.snapshot,
+    visibleContext: envelope.visible_context, ordinaryPlan });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state,
     turnId: envelope.root_turn_id,
@@ -83,7 +95,7 @@ export async function commitLowerDvinaTraceTurnStep({
   );
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
-    turnNumber, changeSetId, idemId
+    turnNumber, changeSetId, idemId, ordinaryPlan
   });
   const committed = await committer.commit({
     plan: built.plan,

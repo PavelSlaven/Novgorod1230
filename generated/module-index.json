@@ -482,7 +482,8 @@
       "name": "@rus/visibility-knowledge-memory",
       "owns": [
         "Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package, factual conversation audience projection и deterministic resolution утверждённого evidence graph из committed facts/statements",
-        "Владеет чистой player-safe проекцией `portrait_spec_v1` из canonical actor"
+        "Владеет чистой player-safe проекцией `portrait_spec_v1` из canonical actor",
+        "Владеет единственной allow-list проекцией `ordinary_resolution` capability:"
       ],
       "path": "packages/visibility-knowledge-memory",
       "public_entry": "./src/index.js",

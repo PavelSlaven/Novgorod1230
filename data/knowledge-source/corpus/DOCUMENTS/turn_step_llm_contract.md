@@ -755,6 +755,10 @@ LLM может материализовать объект, который яв�
 
 LLM не придумывает значимый скрытый результат.
 
+Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry использует persisted resolution без reroll; другой normalized query получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
+
+O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned.
+
 ### 12.2. `request_container_access`
 
 ```json
@@ -1009,7 +1013,7 @@ Production implementation существующего владельца:
 - `request_container_access`;
 - `request_discovery`.
 
-Container owner раскрывает или впервые materializes persisted contents. Discovery owner разрешает значимые hidden facts и items. LLM создаёт только ordinary ambient result по правилам раздела 11.1.
+Container owner раскрывает или впервые materializes persisted contents. Discovery owner разрешает значимые hidden facts и items. LLM создаёт ordinary direct/ambient result только по правилам раздела 11.1. O1 discovery не расширяет этот path: он materializes только common mundane non-container `man_made` item через описанный в 12.1 code-owned admission.
 
 ### 17.4. Temporal integration
 
@@ -1280,7 +1284,7 @@ Module doc публикует contract и владельца:
 
 Нельзя создавать как ordinary result уникальные, ценные, изготовленные, принадлежащие кому-либо, информационные или сюжетно значимые предметы: монеты, оружие, письма, останки, клады, улики, предметы с владельцем и contents закрытых контейнеров.
 
-Для значимого скрытого результата используй `request_discovery`. Для контейнера используй `request_container_access`.
+Для значимого скрытого результата используй `request_discovery`. Для контейнера используй `request_container_access`. O1 ordinary discovery не является свободным источником обычных вещей: он не разрешает natural finite source, context-bound weapon/value/currency или template-less container.
 
 Для каждого нового физического экземпляра укажи полный mechanics profile с отдельной правдоподобной массой. Не пересчитывай сохранённую механику существующего экземпляра без физического изменения.
 

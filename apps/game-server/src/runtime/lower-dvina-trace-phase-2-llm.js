@@ -97,6 +97,9 @@ export function createLowerDvinaTraceTurnStepModel({
   };
 }
 
+/** Server-only O1 role: its request is built from committed enablement data. */
+export { createOrdinaryMaterializationModel } from './ordinary-materialization-llm.js';
+
 export function createLowerDvinaTracePlayerConversationModel({
   roleRunner
 } = {}) {
@@ -208,7 +211,7 @@ export function createLowerDvinaTraceNarrationService({
       generate: (request) => runNarrationRole(
         roleRunner,
         'legacy.narrator.dossier',
-        'Return only narration_output JSON grounded exclusively in visible_context.',
+        'Return only narration_output JSON grounded exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
         request
       )
     },

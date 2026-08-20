@@ -9,9 +9,18 @@ export function validateActionProducedMassConservation(proposal, sourcePins) {
       itemId === entry.entity_ref);
     const mechanics = committedMechanics(pin?.item);
     const finite = entry.finite_resource_transition;
-    return sum + (finite === null ? mechanics.mass_grams
-      : exactMassFraction(mechanics.mass_grams,
-        finite.decrement_quantity, finite.before_quantity));
+    const after = entry.after.mechanics_snapshot == null ? null
+      : createRuntimeInstanceMechanicsSnapshot(
+        entry.after.mechanics_snapshot).mechanics;
+    if (finite !== null && after !== null
+        && after.mass_grams !== remainingMass(mechanics.mass_grams,
+          finite.after_quantity, finite.before_quantity)) {
+      fail('ACTION_PRODUCED_RESULT_INVALID');
+    }
+    const consumed = after === null ? mechanics.mass_grams
+      : mechanics.mass_grams - after.mass_grams;
+    if (consumed < 0) fail('ACTION_PRODUCED_RESULT_INVALID');
+    return sum + consumed;
   }, 0);
   const outputMass = proposal.results.reduce((sum, result) =>
     sum + createRuntimeInstanceMechanicsSnapshot(result.mechanics_snapshot)
@@ -38,13 +47,11 @@ function committedMechanics(item) {
   return resolved.profile;
 }
 
-function exactMassFraction(mass, part, whole) {
+function remainingMass(mass, part, whole) {
   const numerator = BigInt(mass) * BigInt(part.numerator)
     * BigInt(whole.denominator);
   const denominator = BigInt(part.denominator) * BigInt(whole.numerator);
-  if (denominator === 0n || numerator % denominator !== 0n) {
-    fail('ACTION_PRODUCED_RESULT_INVALID');
-  }
+  if (denominator === 0n) fail('ACTION_PRODUCED_RESULT_INVALID');
   const value = numerator / denominator;
   if (value > BigInt(Number.MAX_SAFE_INTEGER)) {
     fail('ACTION_PRODUCED_RESULT_INVALID');

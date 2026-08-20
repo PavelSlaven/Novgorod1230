@@ -200,9 +200,10 @@ Active A1 revision 21 не добавляет semantic fallback: sole
 committed items либо sealed revealed ordinary overlay текущего root turn и
 строит mechanics/P16 plan без LLM. После exact/authored priority разрешены
 один или несколько доступных non-container material sources и ноль или
-несколько доступных controller-controlled tools
-независимо от legal owner. Общие
-generic-check/activity owners выполняются один раз. Profile допускает
+несколько доступных controller-controlled tools на текущем placement
+независимо от legal owner. При неопределённом исходе общие
+generic-check/activity owners выполняются один раз; детерминированное действие
+использует `domain_request` без обязательного RNG/time. Profile допускает
 preserve, до четырёх mass-conserving independent outputs и no-result;
 partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model

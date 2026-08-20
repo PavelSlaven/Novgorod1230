@@ -848,15 +848,18 @@ registered/external handler, затем authored binding, и лишь при н�
 sealed same-root revealed non-container material sources и ноль или несколько
 доступных actor-controlled non-container tools; `source_refs` и
 `tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает
-generic check и semantic activity, а существующие RNG/time owners исполняют их
-один раз. Profile допускает preserve, до четырёх independent outputs,
+generic check и semantic activity только при неопределённом исходе, а существующие
+RNG/time owners исполняют их один раз; детерминированное действие использует
+`domain_request` без check. Profile допускает preserve, до четырёх independent outputs,
 no-result,
 partial/nonworking/waste, writing, non-authoritative token-like и closed
 weapon-capable outcomes. Model не задаёт массу, расход, mechanics, identity,
 property, placement, время, roll, currency/official status или combat numbers.
 Exact source/output mechanics выводится из реально списанных allocations:
 finite source уменьшается, а полностью разделённый единичный source без
-resource row retire-ится; масса сохраняется, hand/packing выводятся code-owned.
+resource row retire-ится; partial transformation может одновременно изменить
+source и создать outputs. Масса сохраняется с детерминированным остатком,
+hand/packing/carry выводятся code-owned и не наследуют форму source.
 Safe non-authoritative display name/type/physical description сохраняются в
 ordinary item metadata и переживают reload; нецелимая mass allocation
 возвращает typed gap.

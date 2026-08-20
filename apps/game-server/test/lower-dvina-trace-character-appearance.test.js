@@ -66,8 +66,7 @@ test('revision 21 activates open A1 authority over ordinary item mechanics', () 
   const authored = materializeAuthored(
     'party:revision21-action-production', revision21, 21);
   assert.equal(roadBagProfile(authored).capacity, 4);
-  assert.equal(authored.action_production_authority.profile_ref,
-    'lower_dvina_trace_a1_open_physical_action_profile_v1');
+  assert.equal(Object.hasOwn(authored, 'action_production_authority'), false);
   const knife = authored.immediate.items.find(({ template_id: id }) =>
     id === 'trace_ld_v1_item_mikula_knife');
   assert.equal(Object.hasOwn(knife.state,

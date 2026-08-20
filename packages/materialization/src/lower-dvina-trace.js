@@ -37,8 +37,6 @@ import {
 } from './lower-dvina-trace-appearance.js';
 import { buildLowerDvinaTracePlayerDossier } from
   './lower-dvina-trace-player-dossier.js';
-import { buildActionProductionAuthority } from
-  './lower-dvina-trace-action-production.js';
 
 export {
   assertLowerDvinaTraceSelectionClosure,
@@ -450,13 +448,6 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
     hidden_truth: hiddenTruth,
-    ...(revision === 21 ? {
-      action_production_authority: buildActionProductionAuthority({
-        partyId: input.party_id,
-        actorRef: playerId,
-        profile: bundle.action_production_profile
-      })
-    } : {}),
     ...(revision19EquipmentHandoff ? {
       initial_actor_equipment_handoff: revision19EquipmentHandoff
     } : {}),

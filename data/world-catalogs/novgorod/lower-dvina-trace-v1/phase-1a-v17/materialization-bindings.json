@@ -24,7 +24,7 @@
       "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_action_production_profile.v1",
-      "digest": "89e8aa61c5579393a88a952e2e494ba726897888fa65dc81206fd975e6a59957"
+      "digest": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694"
     },
     "authority_provisioning": "atomic_new_game_stage_25",
     "fallback_policy": "forbidden"

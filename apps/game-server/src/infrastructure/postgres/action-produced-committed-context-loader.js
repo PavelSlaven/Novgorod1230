@@ -10,8 +10,7 @@ import {
   failActionProducedPersistence as fail,
   snapshotActionProducedPersistenceData as snapshot
 } from './action-produced-persistence-boundary.js';
-import { loadActionProducedAuthority as loadAuthority,
-  loadActionProducedOutputDestination as loadOutputDestination } from
+import { loadActionProducedOutputDestination } from
   './action-produced-authority-loader.js';
 import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
@@ -22,7 +21,8 @@ import { bindActionProducedResourcePins } from
 
 const INPUT_KEYS = [
   'party_id', 'actor_ref', 'root_turn_id', 'action_ref', 'step_index',
-  'context_ref', 'expected_party_state_version', 'source_refs', 'tool_refs'
+  'context_ref', 'expected_party_state_version', 'source_refs', 'tool_refs',
+  'admission_profile', 'technical_policy'
 ];
 const PREPARED_INPUT_KEYS = [...INPUT_KEYS, 'prepared_ordinary_plan',
   'change_set_id'];
@@ -39,6 +39,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
       || input.expected_party_state_version < 0
       || !refs(input.source_refs, false) || !refs(input.tool_refs, true)
       || input.source_refs.some((ref) => input.tool_refs.includes(ref))
+      || !validProfiles(input)
       || typeof client?.query !== 'function'
       || Object.hasOwn(input, 'prepared_ordinary_plan')
         && !text(input.change_set_id)) fail('ACTION_PRODUCED_LOAD_INVALID');
@@ -51,8 +52,8 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
         !== input.expected_party_state_version) {
     fail('ACTION_PRODUCED_PARTY_STALE');
   }
-  const authority = await loadAuthority(client, input);
-  const outputDestinationPin = await loadOutputDestination(client, input);
+  const outputDestinationPin = await loadActionProducedOutputDestination(
+    client, input);
 
   const requested = [...input.source_refs, ...input.tool_refs];
   const rows = await client.query(
@@ -95,6 +96,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     actorRef: input.actor_ref,
     contextVersion,
     finite: resources.get(itemId) ?? null,
+    accessAnchorId: outputDestinationPin?.anchor_id ?? null,
     preparedOrdinary: future?.preparedOrdinary ?? null
   });
   });
@@ -124,30 +126,11 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     schema: 'action_produced_committed_context_load_v1',
     party_id: input.party_id,
     party_state_version: input.expected_party_state_version,
-    authority_pin: authority.pin,
     output_destination_pin: outputDestinationPin,
     output_destination: actionProducedOwnerOutputDestination(
       outputDestinationPin, input.actor_ref),
-    admission_profile: {
-      schema: 'rus.items.action_produced_admission_profile.v1',
-      profile_ref: authority.row.profile_ref,
-      profile_version: authority.row.profile_version,
-      status: 'committed', context_ref: authority.row.context_ref,
-      context_state_version: contextVersion,
-      allowed_access_states: structuredClone(authority.row.allowed_access_states),
-      allowed_identity_modes:
-        structuredClone(authority.row.allowed_identity_modes),
-      allowed_origins: structuredClone(authority.row.allowed_origins),
-      allowed_result_classes:
-        structuredClone(authority.row.allowed_result_classes)
-    },
-    technical_policy: {
-      schema: 'rus.items.action_produced_technical_policy.v1', version: 1,
-      status: 'committed', policy_ref: authority.row.policy_ref,
-      profile_ref: authority.row.profile_ref,
-      profile_version: authority.row.profile_version,
-      max_new_entities: authority.row.max_new_entities
-    },
+    admission_profile: structuredClone(input.admission_profile),
+    technical_policy: structuredClone(input.technical_policy),
     committed_context: {
       schema: 'rus.items.action_produced_committed_context.v1',
       context_ref: input.context_ref,
@@ -165,12 +148,13 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   });
 }
 
-function rowPin({ row, role, actorRef, contextVersion, finite,
+function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
   preparedOrdinary = null }) {
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
-      || preparedOrdinary === null && row.holder_character_id !== actorRef
+      || preparedOrdinary === null
+        && !accessiblePlacement(row, actorRef, accessAnchorId)
       || row.holder_npc_id !== null
       || !validOwnership(row)
       || row.controller_character_id !== actorRef
@@ -185,7 +169,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite,
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
   const access = preparedOrdinary === null
-    ? accessState(row.physical_position) : 'quick';
+    ? accessState(row, actorRef, accessAnchorId) : 'quick';
+  const holderRef = row.holder_character_id === actorRef ? actorRef : null;
   const item = {
     item_id: row.item_id,
     run_id: row.run_id,
@@ -238,7 +223,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite,
       commit_state: 'committed', role, entity_ref: row.item_id,
       state_version: contextVersion,
       lifecycle_state: 'active', access_state: access,
-      holder_ref: actorRef, controller_ref: actorRef,
+      holder_ref: holderRef, controller_ref: actorRef,
       mechanics_state_ref: mechanicsRef,
       property_state_ref: propertyRef,
       ownership_state_ref: digest(ownership),
@@ -258,6 +243,28 @@ function contextVersionFrom(input) {
   return String(input.expected_party_state_version);
 }
 
+function validProfiles(input) {
+  const admission = input.admission_profile;
+  const policy = input.technical_policy;
+  return exact(admission, ['schema', 'profile_ref', 'profile_version',
+    'status', 'context_ref', 'context_state_version',
+    'allowed_access_states', 'allowed_identity_modes', 'allowed_origins',
+    'allowed_result_classes'])
+    && admission.schema === 'rus.items.action_produced_admission_profile.v1'
+    && admission.status === 'committed'
+    && admission.context_ref === input.context_ref
+    && admission.context_state_version
+      === String(input.expected_party_state_version)
+    && exact(policy, ['schema', 'version', 'status', 'policy_ref',
+      'profile_ref', 'profile_version', 'max_new_entities'])
+    && policy.schema === 'rus.items.action_produced_technical_policy.v1'
+    && policy.version === 1 && policy.status === 'committed'
+    && policy.profile_ref === admission.profile_ref
+    && policy.profile_version === admission.profile_version
+    && Number.isSafeInteger(policy.max_new_entities)
+    && policy.max_new_entities >= 1 && policy.max_new_entities <= 8;
+}
+
 function validOwnership(row) {
   const owners = Number(text(row.owner_character_id))
     + Number(text(row.owner_npc_id)) + Number(row.owner_party === true);
@@ -265,9 +272,22 @@ function validOwnership(row) {
     && text(row.claim_state);
 }
 
-function accessState(value) {
-  if (['hands', 'equipped', 'worn_quick'].includes(value)) return 'immediate';
-  if (['worn', 'external', 'external_load'].includes(value)) return 'quick';
+function accessiblePlacement(row, actorRef, accessAnchorId) {
+  return row.holder_character_id === actorRef && row.holder_npc_id === null
+    || text(accessAnchorId) && row.anchor_id === accessAnchorId
+      && row.holder_character_id === null && row.holder_npc_id === null
+      && row.container_id === null && row.attached_item_id === null;
+}
+
+function accessState(row, actorRef, accessAnchorId) {
+  if (row.holder_character_id === actorRef
+      && ['hands', 'equipped', 'worn_quick'].includes(row.physical_position)) {
+    return 'immediate';
+  }
+  if (row.holder_character_id === actorRef
+      && ['worn', 'external', 'external_load'].includes(
+        row.physical_position)
+      || row.anchor_id === accessAnchorId) return 'quick';
   fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
 }
 function refs(value, empty) {

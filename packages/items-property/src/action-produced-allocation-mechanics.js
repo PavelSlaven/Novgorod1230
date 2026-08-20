@@ -50,6 +50,7 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
 
 function independentResolution(request, byRef, outputCount) {
   const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
+  const partial = request.result_class === 'partial_transformation';
   const consumed = request.source_inputs.map((source) => {
     const finite = source.finite_resource;
     const mechanics = byRef.get(source.entity_ref);
@@ -57,9 +58,18 @@ function independentResolution(request, byRef, outputCount) {
       if (mechanics.quantity !== null
           && (mechanics.quantity.value !== 1
             || mechanics.quantity.unit !== 'item')) gap();
-      return { source, mechanics, quantity: rational(1, 1, 'whole_item'),
-        consumedMass: mechanics.mass_grams, consumedPacking:
-          mechanics.packing_slot_cost, retire: true };
+      const denominator = partial ? outputCount + 1 : outputCount;
+      const consumedMass = partial
+        ? mechanics.mass_grams - Math.floor(mechanics.mass_grams / denominator)
+        : mechanics.mass_grams;
+      if (consumedMass < outputCount) gap();
+      return { source, mechanics,
+        quantity: rational(partial ? outputCount : 1,
+          partial ? outputCount + 1 : 1, 'whole_item'),
+        allocation: rational(1, denominator, 'whole_item'),
+        consumedMass, consumedPacking: mechanics.packing_slot_cost
+          * consumedMass / mechanics.mass_grams,
+        retire: !partial };
     }
     if (finite.lifecycle_state !== 'active') gap();
     const quantity = exactFiniteQuantity(finite?.quantity);
@@ -70,28 +80,31 @@ function independentResolution(request, byRef, outputCount) {
       gap();
     }
     return { source, mechanics, quantity,
-      consumedMass: exactRatio(mechanics.mass_grams,
+      allocation: rational(1, outputCount, quantity.unit),
+      consumedMass: ceilRatio(mechanics.mass_grams,
         quantity.denominator, quantity.numerator),
       consumedPacking: mechanics.packing_slot_cost * quantity.denominator
         / quantity.numerator, retire: false };
   });
-  const carryForms = new Set(consumed.map(({ mechanics }) =>
-    mechanics.carry_form));
-  if (carryForms.size !== 1) gap();
-  const outputMechanics = {
-    mass_grams: exactDivide(consumed.reduce((sum, entry) =>
-      sum + entry.consumedMass, 0), outputCount),
-    external_hand_cost: Math.max(...consumed.map(({ mechanics }) =>
-      mechanics.external_hand_cost)),
-    packing_slot_cost: Math.ceil(consumed.reduce((sum, entry) =>
-      sum + entry.consumedPacking, 0) / outputCount),
-    carry_form: consumed[0].mechanics.carry_form,
-    quantity: { value: 1, unit: 'item' }, container: null
-  };
+  const totalMass = consumed.reduce((sum, entry) =>
+    sum + entry.consumedMass, 0);
+  if (totalMass < outputCount) gap();
+  const baseMass = Math.floor(totalMass / outputCount);
+  const remainderMass = totalMass % outputCount;
+  const outputPacking = Math.ceil(consumed.reduce((sum, entry) =>
+    sum + entry.consumedPacking, 0) / outputCount);
   const effects = consumed.map(({ source, mechanics, quantity, consumedMass,
-    retire }) => {
+    consumedPacking, retire }) => {
     if (retire) return { source_ref: source.entity_ref,
       requested_decrement: null, mechanics_snapshot_after: null };
+    if (source.finite_resource === null) {
+      const after = derivedMechanics(mechanics.mass_grams - consumedMass,
+        Math.max(0, mechanics.packing_slot_cost
+          - Math.ceil(consumedPacking)), mechanics.quantity);
+      return { source_ref: source.entity_ref, requested_decrement: null,
+        mechanics_snapshot_after: snapshot(request, after,
+          request.causal_identity.action_ref) };
+    }
     const remainingNumerator = quantity.numerator - quantity.denominator;
     const after = {
       mass_grams: mechanics.mass_grams - consumedMass,
@@ -116,14 +129,27 @@ function independentResolution(request, byRef, outputCount) {
       root_turn_id: request.causal_identity.root_turn_id,
       action_ref: request.causal_identity.action_ref, ordinal
     });
+    const outputMechanics = derivedMechanics(
+      baseMass + Number(index < remainderMass), outputPacking,
+      { value: 1, unit: 'item' });
     return { ordinal, property_source_ref: sourceRefs[0],
       mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
-      material_allocations: consumed.map(({ source, quantity }) => ({
+      material_allocations: consumed.map(({ source, allocation }) => ({
         source_ref: source.entity_ref,
-        quantity: rational(1, outputCount, quantity.unit)
+        quantity: structuredClone(allocation)
       })) };
   });
   return resolution(request, effects, outputs);
+}
+
+function derivedMechanics(mass, packing, quantity) {
+  const externalHandCost = mass <= 2_000 && packing <= 2 ? 0
+    : mass <= 15_000 && packing <= 8 ? 1 : 2;
+  const carryForm = packing <= 2 && mass <= 2_000 ? 'compact'
+    : packing <= 8 && mass <= 15_000 ? 'regular' : 'bulky';
+  return { mass_grams: mass, external_hand_cost: externalHandCost,
+    carry_form: carryForm, packing_slot_cost: packing,
+    quantity: structuredClone(quantity), container: null };
 }
 
 function sourceMechanics(values, inputs) {
@@ -179,15 +205,13 @@ function exactFiniteQuantity(value) {
   return value;
 }
 
-function exactRatio(value, numerator, denominator) {
+function ceilRatio(value, numerator, denominator) {
   const product = BigInt(value) * BigInt(numerator);
   const divisor = BigInt(denominator);
-  if (product % divisor !== 0n) gap();
-  const result = product / divisor;
+  const result = (product + divisor - 1n) / divisor;
   if (result > BigInt(Number.MAX_SAFE_INTEGER)) gap();
   return Number(result);
 }
-function exactDivide(value, divisor) { return exactRatio(value, 1, divisor); }
 function rational(numerator, denominator, unit) {
   const divisor = gcd(numerator, denominator);
   return { numerator: numerator / divisor, denominator: denominator / divisor,

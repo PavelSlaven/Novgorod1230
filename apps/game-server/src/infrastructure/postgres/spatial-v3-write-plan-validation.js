@@ -19,6 +19,8 @@ import { createOrdinaryMaterializationAtomicWritePlan } from
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
+import { validLowerDvinaTraceActionProductionPlanProfile } from
+  '../../internal/lower-dvina-trace-a1-bundle.js';
 import { validActionProducedOuterCausalBinding } from
   './action-produced-causal-binding.js';
 
@@ -254,6 +256,7 @@ function validActionProductionExtension(plan) {
       write.target_table === 'parties' && write.id === plan.party_id);
     return sealed.party_id === plan.party_id
       && sealed.change_set_id === plan.change_set_id
+      && validLowerDvinaTraceActionProductionPlanProfile(sealed)
       && validActionProducedOuterCausalBinding(plan, sealed)
       && party?.record?.party_id === plan.party_id
       && plan.expected_state_versions.some((version) =>

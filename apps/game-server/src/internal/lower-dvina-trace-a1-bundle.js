@@ -77,7 +77,7 @@ function revision21Checks(historical, loaded, paths) {
       === historical.m8_content_manifest_digest,
     files: exact(manifest.files, files),
     content_digest: manifest.content_digest
-      === '9557533b5f5676c575bf51f7fe36c06a7e380ab34f05c269b94526b96687b13a',
+      === '36b472b9101657990341f7cd9f88cfcd4cf8c67ff8c2ee40c854610094a70005',
     definition_ref: exactRef(manifest.content_refs?.definition,
       loaded.definition, 'definition.json', 'lower_dvina_trace_v1', 21),
     profile_ref: exactRef(manifest.content_refs?.action_production_profile,
@@ -114,6 +114,29 @@ export function validLowerDvinaTraceActionProductionProfile(value) {
   return validProfile(value);
 }
 
+export function validLowerDvinaTraceActionProductionPlanProfile(value) {
+  return value?.context_pin?.context_ref
+      === 'lower_dvina_trace:a1:personal_tool_transform'
+    && value.context_pin.profile_ref
+      === 'lower_dvina_trace_a1_open_physical_action_profile_v1'
+    && value.context_pin.profile_version === '1'
+    && value.transition_proposal?.technical_policy_pin?.policy_ref
+      === 'lower_dvina_trace:a1:personal_tool_policy_v1'
+    && value.transition_proposal.technical_policy_pin.version === 1
+    && value.transition_proposal.technical_policy_pin.max_new_entities === 4
+    && ['preserve_source', 'independent_outputs', 'no_useful_result']
+      .includes(value.identity_mode)
+    && (value.origin === null
+      || ['direct_partition', 'crafted'].includes(value.origin))
+    && ['ordinary_physical_result', 'partial_transformation',
+      'nonworking_construction', 'waste', 'written_carrier',
+      'no_useful_result'].includes(value.result_class)
+    && (value.transition_proposal.qualitative_result.output_class === null
+      || ['ordinary_mundane', 'weapon_capable', 'money_like_token',
+        'written_carrier'].includes(
+        value.transition_proposal.qualitative_result.output_class));
+}
+
 function validProfile(value) {
   return exact(value, ['schema', 'profile_id', 'revision', 'status',
     'context_ref', 'policy_ref', 'policy_version', 'max_new_entities',
@@ -140,7 +163,7 @@ function validProfile(value) {
     && value.tool_policy
       === 'zero_to_many_visible_accessible_non_container_items'
     && value.execution_policy
-      === 'existing_turn_step_generic_check_and_semantic_activity'
+      === 'existing_turn_step_optional_check_and_activity'
     && value.model_authority === 'primary_turn_step_plan_qualitative_only'
     && value.mechanics_owner === '@rus/items-property'
     && value.persistence_owner === 'P16_combined_atomic_committer'

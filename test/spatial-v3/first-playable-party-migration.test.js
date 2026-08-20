@@ -83,8 +83,9 @@ test('target chain appends migrations 011 through 027 in exact order', () => {
     finiteResourceSql, existingContainerOrdinarySql, actionProductionSql]);
 });
 
-test('027 adds A1 authority without a parallel execution ledger', () => {
-  assert.match(actionProductionSql,
+test('027 adds only A1 item versioning without parallel authority or ledger',
+  () => {
+  assert.doesNotMatch(actionProductionSql,
     /party_action_production_authorities/u);
   assert.doesNotMatch(actionProductionSql,
     /party_action_production_(?:commits|resource_transitions)/u);

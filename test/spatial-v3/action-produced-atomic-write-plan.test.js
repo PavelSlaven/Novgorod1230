@@ -51,19 +51,7 @@ test('A1 write plan is sealed, detached and rejects hostile boundaries unread', 
     Object.entries(forgedActor)
       .filter(([key]) => key !== 'write_plan_digest')));
   assert.throws(() => createActionProducedAtomicWritePlan(forgedActor),
-    { code: 'ACTION_PRODUCED_AUTHORITY_INVALID' });
-  const forgedAuthority = structuredClone(plan);
-  forgedAuthority.context_pin.profile_ref = 'profile:forged';
-  forgedAuthority.transition_proposal.context_pin.profile_ref =
-    'profile:forged';
-  forgedAuthority.transition_proposal.technical_policy_pin.policy_ref =
-    'policy:forged';
-  forgedAuthority.transition_proposal.technical_policy_pin.max_new_entities = 8;
-  forgedAuthority.write_plan_digest = digest(Object.fromEntries(
-    Object.entries(forgedAuthority)
-      .filter(([key]) => key !== 'write_plan_digest')));
-  assert.throws(() => createActionProducedAtomicWritePlan(forgedAuthority),
-    { code: 'ACTION_PRODUCED_AUTHORITY_INVALID' });
+    { code: 'ACTION_PRODUCED_PLAN_INVALID' });
   const forgedOutputAuthority = structuredClone(plan);
   forgedOutputAuthority.transition_proposal.results[0].output_authority.mode =
     'new_non_authoritative';
@@ -153,9 +141,7 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
       if (sql.includes('FROM party_runtime.party_items')) {
         return { rows: [dbRow()] };
       }
-      if (sql.includes('party_action_production_authorities')) {
-        return { rows: [authorityRow()] };
-      }
+      if (sql.includes('SELECT p.g5_anchor_id')) return { rows: [] };
       return { rows: [] };
     } };
     const loaded = await loadActionProducedCommittedContext(client,
@@ -178,6 +164,15 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
       loaded.source_snapshots[0].property_state_ref);
     assert.notEqual(changed.source_snapshots[0].placement_state_ref,
       loaded.source_snapshots[0].placement_state_ref);
+
+    const groundedRow = dbRow();
+    groundedRow.anchor_id = 'anchor:workbench';
+    groundedRow.holder_character_id = null;
+    groundedRow.physical_position = null;
+    const grounded = await loadActionProducedCommittedContext(
+      loaderClient([groundedRow], [], 'anchor:workbench'), loadInput());
+    assert.equal(grounded.source_snapshots[0].access_state, 'quick');
+    assert.equal(grounded.source_snapshots[0].holder_ref, null);
 
     const toolInput = { ...loadInput(), tool_refs: ['item:tool'] };
     const toolRow = { ...dbRow(), item_id: 'item:tool',
@@ -395,19 +390,9 @@ test('independent A1 output cannot inherit currency or official state', () => {
 
 test('written A1 state persists inscription without truth or knowledge', () => {
   const request = fixture();
-  const authority = request.committed_load.authority_pin.persisted_row;
-  authority.allowed_result_classes = [
-    ...authority.allowed_result_classes, 'written_carrier'
-  ];
-  const authorityInput = Object.fromEntries(Object.entries(authority)
-    .filter(([key]) => key !== 'authority_digest'));
-  authority.authority_digest = digest(authorityInput);
-  request.committed_load.authority_pin.authority_digest =
-    authority.authority_digest;
-  request.committed_load.authority_pin.persisted_row_digest =
-    digest(authority);
   request.committed_load.admission_profile.allowed_result_classes =
-    [...authority.allowed_result_classes];
+    [...request.committed_load.admission_profile.allowed_result_classes,
+      'written_carrier'];
   const proposalValue = request.transition_proposal;
   proposalValue.result_class = 'written_carrier';
   proposalValue.qualitative_result.output_class = 'written_carrier';
@@ -426,7 +411,7 @@ test('written A1 state persists inscription without truth or knowledge', () => {
   ]);
 });
 
-function loaderClient(itemRows, resourceRows = []) {
+function loaderClient(itemRows, resourceRows = [], accessAnchorId = null) {
   return { query: async (sql) => {
     if (sql.includes('FROM party_runtime.parties')) {
       return { rows: [{ state_version: 7 }] };
@@ -435,8 +420,11 @@ function loaderClient(itemRows, resourceRows = []) {
       return { rows: itemRows };
     }
     if (sql.includes('party_resource_nodes')) return { rows: resourceRows };
-    if (sql.includes('party_action_production_authorities')) {
-      return { rows: [authorityRow()] };
+    if (sql.includes('SELECT p.g5_anchor_id')) return { rows:
+      accessAnchorId == null ? [] : [{ anchor_id: accessAnchorId,
+        item_capacity: 8 }] };
+    if (sql.includes('FROM party_runtime.party_item_placements')) {
+      return { rows: [] };
     }
     return { rows: [] };
   } };
@@ -584,23 +572,20 @@ function fixture() {
     ownership_digest: digest(ownership), entity_snapshot: entity,
     finite_resource_row: null
   };
-  const authority = authorityRow();
-  const authorityPin = { schema: 'action_production_committed_authority_pin_v1',
-    authority_digest: authority.authority_digest,
-    persisted_row_digest: digest(authority), persisted_row: authority };
   return {
     schema: 'action_production_atomic_write_request_v1', party_id: 'party-1',
     base_party_state_version: 7, change_set_id: 'change-8',
     committed_load: {
       schema: 'action_produced_committed_context_load_v1',
       party_id: 'party-1', party_state_version: 7,
-      authority_pin: authorityPin, output_destination_pin: null,
+      output_destination_pin: null,
       output_destination: null,
       admission_profile: admissionProfile(),
       technical_policy: technicalPolicy(),
       committed_context: {
         schema: 'rus.items.action_produced_committed_context.v1',
-        context_ref: 'context-7', state_version: '7',
+        context_ref: 'lower_dvina_trace:a1:personal_tool_transform',
+        state_version: '7',
         commit_state: 'committed', root_turn_id: 'turn-8',
         action_ref: 'action-1', step_index: 1, actor_ref: 'actor:mikula',
         entities: [{ entity_ref: 'item:pole', state_version: '7',
@@ -623,15 +608,15 @@ function fixture() {
 }
 
 function authorityRow() {
-  const input = { party_id: 'party-1', actor_ref: 'actor:mikula',
-    context_ref: 'context-7', profile_ref: 'profile-a1',
-    profile_version: '1', policy_ref: 'policy-a1', policy_version: 1,
+  return { context_ref: 'lower_dvina_trace:a1:personal_tool_transform',
+    profile_ref: 'lower_dvina_trace_a1_open_physical_action_profile_v1',
+    profile_version: '1',
+    policy_ref: 'lower_dvina_trace:a1:personal_tool_policy_v1',
     max_new_entities: 4, allowed_access_states: ['immediate', 'quick'],
     allowed_identity_modes: ['preserve_source', 'independent_outputs',
       'no_useful_result'], allowed_origins: ['direct_partition', 'crafted'],
     allowed_result_classes: ['ordinary_physical_result',
-      'no_useful_result'], authority_state_version: 1, status: 'committed' };
-  return { ...input, authority_digest: digest(input) };
+      'no_useful_result'] };
 }
 function admissionProfile() {
   const row = authorityRow();
@@ -668,9 +653,13 @@ function proposal({ mechanicsStateRef = 'mechanics:item:pole:7',
       request_id: 'request-1', root_turn_id: 'turn-8',
       action_ref: 'action-1', step_index: 1
     },
-    context_pin: { context_ref: 'context-7', context_state_version: '7',
-      profile_ref: 'profile-a1', profile_version: '1' },
-    technical_policy_pin: { policy_ref: 'policy-a1', version: 1,
+    context_pin: {
+      context_ref: 'lower_dvina_trace:a1:personal_tool_transform',
+      context_state_version: '7',
+      profile_ref: 'lower_dvina_trace_a1_open_physical_action_profile_v1',
+      profile_version: '1' },
+    technical_policy_pin: {
+      policy_ref: 'lower_dvina_trace:a1:personal_tool_policy_v1', version: 1,
       max_new_entities: 4 },
     identity_mode: 'preserve_source', origin: null,
     result_class: 'ordinary_physical_result',
@@ -715,8 +704,11 @@ function mechanicsSnapshot() {
 function loadInput() {
   return { party_id: 'party-1', actor_ref: 'actor:mikula',
     root_turn_id: 'turn-8', action_ref: 'action-1', step_index: 1,
-    context_ref: 'context-7', expected_party_state_version: 7,
-    source_refs: ['item:pole'], tool_refs: [] };
+    context_ref: 'lower_dvina_trace:a1:personal_tool_transform',
+    expected_party_state_version: 7,
+    source_refs: ['item:pole'], tool_refs: [],
+    admission_profile: admissionProfile(),
+    technical_policy: technicalPolicy() };
 }
 function dbRow() {
   return { item_id: 'item:pole', run_id: null, template_id: null,

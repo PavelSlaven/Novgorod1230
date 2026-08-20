@@ -10,8 +10,7 @@ import {
 } from './action-produced-persistence-boundary.js';
 import { validateActionProducedAtomicProposal as validateProposal } from
   './action-produced-atomic-write-plan-validation.js';
-import { validateActionProducedAuthorityPin,
-  actionProducedOwnerOutputDestination,
+import { actionProducedOwnerOutputDestination,
   validateActionProducedDestinationPin,
   validateActionProducedRowPins } from
   './action-produced-atomic-write-plan-pins.js';
@@ -25,7 +24,7 @@ const REQUEST_KEYS = [
 ];
 const PLAN_KEYS = [
   'schema', 'party_id', 'base_party_state_version', 'change_set_id',
-  'actor_ref', 'authority_pin', 'output_destination_pin', 'causal_identity',
+  'actor_ref', 'output_destination_pin', 'causal_identity',
   'context_pin', 'identity_mode', 'origin', 'result_class', 'transition_proposal',
   'source_pins', 'tool_pins',
   'source_updates', 'result_items', 'result_set_evidence', 'write_plan_digest'
@@ -52,6 +51,7 @@ export function createActionProducedAtomicWritePlan(rawInput) {
   const toolPins = load.row_pins.filter(({ role }) => role === 'tool');
   const sourceUpdates = deriveSourceUpdates(proposal, sourcePins);
   const outputDestination = proposal.identity_mode === 'independent_outputs'
+      || load.row_pins.some(({ placement }) => placement.anchor_id != null)
     ? load.output_destination_pin : null;
   const resultItems = proposal.identity_mode === 'independent_outputs'
     ? proposal.results.map((result) => producedItem(result, sourcePins,
@@ -63,7 +63,6 @@ export function createActionProducedAtomicWritePlan(rawInput) {
     base_party_state_version: input.base_party_state_version,
     change_set_id: input.change_set_id,
     actor_ref: load.committed_context.actor_ref,
-    authority_pin: structuredClone(load.authority_pin),
     output_destination_pin: structuredClone(outputDestination),
     causal_identity: structuredClone(proposal.causal_identity),
     context_pin: structuredClone(proposal.context_pin),
@@ -156,7 +155,7 @@ export function actionProducedPhysicalKeys(plan) {
 function validateLoad(value, input) {
   const keys = [
     'schema', 'party_id', 'party_state_version', 'committed_context',
-    'authority_pin', 'output_destination_pin', 'output_destination',
+    'output_destination_pin', 'output_destination',
     'admission_profile',
     'technical_policy',
     'source_snapshots', 'tool_snapshots', 'row_pins'
@@ -169,7 +168,6 @@ function validateLoad(value, input) {
       || !Array.isArray(value.row_pins)
       || value.row_pins.length !== value.source_snapshots.length
         + value.tool_snapshots.length) fail('ACTION_PRODUCED_PLAN_CONTEXT_INVALID');
-  validateActionProducedAuthorityPin(value.authority_pin);
   const expectedDestination = actionProducedOwnerOutputDestination(
     value.output_destination_pin, value.committed_context.actor_ref);
   if (digest(value.output_destination) !== digest(expectedDestination)) {
@@ -194,42 +192,18 @@ function validateSealed(value) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
   const contextVersion = String(value.base_party_state_version);
-  const authority = validateActionProducedAuthorityPin(value.authority_pin);
   const destination = validateActionProducedDestinationPin(
     value.output_destination_pin);
-  if (authority.persisted_row.party_id !== value.party_id
-      || authority.persisted_row.actor_ref !== value.actor_ref
-      || authority.persisted_row.context_ref !== value.context_pin.context_ref
-      || authority.persisted_row.profile_ref !== value.context_pin.profile_ref
-      || authority.persisted_row.profile_version
-        !== value.context_pin.profile_version
-      || authority.persisted_row.policy_ref
-        !== value.transition_proposal.technical_policy_pin.policy_ref
-      || authority.persisted_row.policy_version
-        !== value.transition_proposal.technical_policy_pin.version
-      || authority.persisted_row.max_new_entities
-        !== value.transition_proposal.technical_policy_pin.max_new_entities
-      || !authority.persisted_row.allowed_identity_modes
-        .includes(value.identity_mode)
-      || value.origin !== null
-        && !authority.persisted_row.allowed_origins.includes(value.origin)
-      || !authority.persisted_row.allowed_result_classes
-        .includes(value.result_class)
-      || [...value.source_pins, ...value.tool_pins].some((pin) =>
-        !authority.persisted_row.allowed_access_states
-          .includes(pin.entity_snapshot.access_state))) {
-    fail('ACTION_PRODUCED_AUTHORITY_INVALID');
-  }
   validateActionProducedRowPins(value.source_pins, 'source', value.actor_ref,
-    contextVersion, value.causal_identity);
+    contextVersion, value.causal_identity, destination?.anchor_id ?? null);
   validateActionProducedRowPins(value.tool_pins, 'tool', value.actor_ref,
-    contextVersion, value.causal_identity);
+    contextVersion, value.causal_identity, destination?.anchor_id ?? null);
   const pinnedItemIds = [...value.source_pins, ...value.tool_pins]
     .map(({ item_id: itemId }) => itemId);
   if (new Set(pinnedItemIds).size !== pinnedItemIds.length) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
-  if (value.identity_mode === 'independent_outputs'
+  if (value.result_items.length > 0
       && (destination === null
         || destination.used_item_ids.length + value.result_items.length
           > destination.item_capacity)) {
@@ -243,7 +217,6 @@ function validateSealed(value) {
       context_ref: value.context_pin.context_ref,
       state_version: value.context_pin.context_state_version
     },
-    authority_pin: value.authority_pin,
     row_pins: [...value.source_pins, ...value.tool_pins]
   });
   const expectedUpdates = deriveSourceUpdates(proposal, value.source_pins);

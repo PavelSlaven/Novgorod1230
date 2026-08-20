@@ -69,7 +69,7 @@ async function lockAndVerifyPins(client, plan) {
     if (selected.rows.length !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
     const normalized = normalizedRows(selected.rows[0]);
     if (!accessibleByActor(normalized.placement, normalized.ownership,
-      plan.actor_ref)
+      plan.actor_ref, plan.output_destination_pin?.anchor_id ?? null)
         || digest(normalized.item) !== pin.item_digest
         || digest(normalized.placement) !== pin.placement_digest
         || digest(normalized.ownership) !== pin.ownership_digest) {
@@ -93,12 +93,17 @@ async function lockAndVerifyPins(client, plan) {
   }
 }
 
-function accessibleByActor(placement, ownership, actorRef) {
+function accessibleByActor(placement, ownership, actorRef, accessAnchorId) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
     + Number(ownership.owner_party === true);
-  return placement.holder_character_id === actorRef
-    && placement.holder_npc_id === null
+  const placementAccessible = placement.holder_character_id === actorRef
+      && placement.holder_npc_id === null
+    || text(accessAnchorId) && placement.anchor_id === accessAnchorId
+      && placement.holder_character_id === null
+      && placement.holder_npc_id === null && placement.container_id === null
+      && placement.attached_item_id === null;
+  return placementAccessible
     && ownership.controller_character_id === actorRef
     && ownership.controller_npc_id === null
     && owners === 1 && typeof ownership.owner_party === 'boolean'

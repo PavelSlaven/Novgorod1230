@@ -264,28 +264,6 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       SET item_capacity=8 WHERE party_id='party-a1'
         AND anchor_id='output-anchor'`);
 
-    const authorityStale = await actionPlan(pool, {
-      partyVersion: 4, changeSetId: 'change-authority-stale',
-      requestId: 'authority-stale', actionRef: 'action-authority-stale',
-      sources: ['stale-source'], tools: ['stale-tool'],
-      mode: 'preserve_source'
-    });
-    const authorityV2 = authorityFixture(2);
-    await pool.query(`UPDATE party_runtime.party_action_production_authorities
-      SET authority_state_version=2,authority_digest=$1
-      WHERE party_id='party-a1' AND actor_ref='pc' AND context_ref='context-a1'`,
-    [digest(authorityV2)]);
-    const authorityStaleResult = await committer.commit({
-      plan: await combinedPlan(authorityStale, 'authority-stale', 4)
-    });
-    assert.equal(authorityStaleResult.ok, false);
-    assert.equal(authorityStaleResult.error.code, 'state_version_conflict');
-    const authorityV1 = authorityFixture();
-    await pool.query(`UPDATE party_runtime.party_action_production_authorities
-      SET authority_state_version=1,authority_digest=$1
-      WHERE party_id='party-a1' AND actor_ref='pc' AND context_ref='context-a1'`,
-    [digest(authorityV1)]);
-
     await assert.rejects(actionPlan(pool, {
       partyVersion: 4, changeSetId: 'change-insufficient',
       requestId: 'insufficient', actionRef: 'action-insufficient',
@@ -485,6 +463,12 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await assert.rejects(resolveProduction(wrongActivity), {
       code: 'TRACE_A1_SCOPE_INVALID'
     });
+    const unchecked = await factory({ partyId: 'party-a1',
+      requestId: 'production-unchecked' })(productionEnvelope({
+      checked: false }));
+    assert.equal(unchecked.action_production_atomic_write_plan
+      .transition_proposal.causal_identity.request_id,
+    'production-unchecked');
 
     const impossibleEnvelope = productionEnvelope({ targetRefs: [],
       remainingIntent: 'Собираю невозможный работающий механизм.',
@@ -534,7 +518,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       }) }));
     assert.deepEqual(token.action_production_atomic_write_plan.result_items[0]
       .mechanics_snapshot.mechanics, {
-      mass_grams: 400, external_hand_cost: 1, carry_form: 'regular',
+      mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
       packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
       container: null
     });
@@ -691,6 +675,43 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
        WHERE party_id='party-a1' AND state->'action_production'
          ->'causal_identity'->>'request_id'='production-whole') AS mass`))
       .rows[0], { source_condition: 'retired', outputs: 2, mass: 800 });
+
+    const partial = await factory({ partyId: 'party-a1',
+      requestId: 'production-partial' })(productionEnvelope({
+      checked: false, stateVersion: 9, turnNumber: 8,
+      itemRef: 'production-partial-board',
+      targetRefs: ['production-knife'],
+      remainingIntent: 'Срезаю с доски два небольших клина.',
+      actionProduction: actionProduction({
+        source_refs: ['production-partial-board'],
+        tool_refs: ['production-knife'], output_count: 2,
+        identity_mode: 'independent_outputs', origin: 'direct_partition',
+        result_class: 'partial_transformation',
+        result_descriptor: descriptor({ display_name: 'деревянный клин',
+          physical_description: 'небольшая отделённая часть доски' })
+      }) }));
+    const partialPlan = partial.action_production_atomic_write_plan;
+    assert.equal(partialPlan.source_pins[0].placement.anchor_id,
+      'output-anchor');
+    assert.equal(partialPlan.source_pins[0].entity_snapshot.holder_ref, null);
+    assert.equal((await committer.commit({ plan: await combinedPlan(
+      partialPlan, 'production-partial', 9) })).ok, true);
+    assert.deepEqual((await pool.query(`SELECT
+      (SELECT condition_state FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-partial-board')
+        AS source_condition,
+      (SELECT (state->'runtime_instance_mechanics_snapshot'->'mechanics'
+        ->>'mass_grams')::int FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-partial-board')
+        AS source_mass,
+      (SELECT array_agg((state->'runtime_instance_mechanics_snapshot'
+        ->'mechanics'->>'mass_grams')::int ORDER BY item_id)
+       FROM party_runtime.party_items WHERE party_id='party-a1'
+         AND state->'action_production'->'causal_identity'->>'request_id'
+           ='production-partial') AS output_masses`)).rows[0], {
+      source_condition: 'serviceable', source_mass: 267,
+      output_masses: [267, 267]
+    });
   });
 
 async function actionPlan(pool, config) {
@@ -698,13 +719,15 @@ async function actionPlan(pool, config) {
   try {
     const rootTurnId = config.rootTurnId ?? `turn-${config.requestId}`;
     const stepIndex = config.stepIndex ?? 1;
-    const contextRef = 'context-a1';
+    const contextRef = A1.context_ref;
     const loaded = await loadActionProducedCommittedContext(client, {
       party_id: 'party-a1', actor_ref: 'pc', root_turn_id: rootTurnId,
       action_ref: config.actionRef, step_index: stepIndex,
       context_ref: contextRef,
       expected_party_state_version: config.partyVersion,
       source_refs: config.sources, tool_refs: config.tools,
+      admission_profile: admissionProfile(config.partyVersion),
+      technical_policy: technicalPolicy(),
       ...(config.preparedOrdinary == null ? {} : {
         prepared_ordinary_plan: config.preparedOrdinary,
         change_set_id: config.changeSetId
@@ -719,7 +742,8 @@ async function actionPlan(pool, config) {
       root_turn_id: rootTurnId, action_ref: config.actionRef,
       step_index: stepIndex,
       committed_state_version: String(config.partyVersion),
-      context_ref: contextRef, profile_ref: 'a1-profile', profile_version: '1',
+      context_ref: contextRef, profile_ref: A1.profile_ref,
+      profile_version: '1',
       causal_mode: 'action_produced', actor_ref: 'pc',
       source_refs: config.sources, tool_refs: config.tools,
       identity_mode: config.mode, origin,
@@ -1003,21 +1027,6 @@ async function provision(pool) {
   await pool.query(`INSERT INTO party_runtime.party_positions
     (party_id,g4_id,g5_node_id,g5_anchor_id)
     VALUES ('party-a1','g4','legacy-g5','output-anchor')`);
-  const authorityInput = authorityFixture();
-  await pool.query(`INSERT INTO
-    party_runtime.party_action_production_authorities
-    (party_id,actor_ref,context_ref,profile_ref,profile_version,policy_ref,
-     policy_version,max_new_entities,allowed_access_states,
-     allowed_identity_modes,allowed_origins,allowed_result_classes,
-     authority_state_version,status,authority_digest)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10::jsonb,$11::jsonb,
-      $12::jsonb,$13,$14,$15)`, [...Object.values(authorityInput).slice(0, 8),
-    JSON.stringify(authorityInput.allowed_access_states),
-    JSON.stringify(authorityInput.allowed_identity_modes),
-    JSON.stringify(authorityInput.allowed_origins),
-    JSON.stringify(authorityInput.allowed_result_classes),
-    authorityInput.authority_state_version, authorityInput.status,
-    digest(authorityInput)]);
   await pool.query(`INSERT INTO party_runtime.party_v3_change_sets
     (id,party_id,operation_kind,expected_state_version_set_digest,
      expected_state_version_set,committed_state_version_set_digest,
@@ -1099,16 +1108,28 @@ async function provision(pool) {
   }
 }
 
-function authorityFixture(authorityStateVersion = 1) {
-  return { party_id: 'party-a1', actor_ref: 'pc',
-    context_ref: 'context-a1', profile_ref: 'a1-profile',
-    profile_version: '1', policy_ref: 'a1-policy', policy_version: 1,
-    max_new_entities: 4, allowed_access_states: ['immediate', 'quick'],
+const A1 = {
+  context_ref: 'lower_dvina_trace:a1:personal_tool_transform',
+  profile_ref: 'lower_dvina_trace_a1_open_physical_action_profile_v1',
+  policy_ref: 'lower_dvina_trace:a1:personal_tool_policy_v1'
+};
+
+function admissionProfile(stateVersion) {
+  return { schema: 'rus.items.action_produced_admission_profile.v1',
+    profile_ref: A1.profile_ref, profile_version: '1', status: 'committed',
+    context_ref: A1.context_ref, context_state_version: String(stateVersion),
+    allowed_access_states: ['immediate', 'quick'],
     allowed_identity_modes: ['preserve_source', 'independent_outputs',
       'no_useful_result'], allowed_origins: ['direct_partition', 'crafted'],
     allowed_result_classes: ['ordinary_physical_result',
-      'no_useful_result'], authority_state_version: authorityStateVersion,
-    status: 'committed' };
+      'partial_transformation', 'nonworking_construction', 'waste',
+      'written_carrier', 'no_useful_result'] };
+}
+
+function technicalPolicy() {
+  return { schema: 'rus.items.action_produced_technical_policy.v1',
+    version: 1, status: 'committed', policy_ref: A1.policy_ref,
+    profile_ref: A1.profile_ref, profile_version: '1', max_new_entities: 4 };
 }
 
 function descriptor(overrides = {}) {
@@ -1128,11 +1149,14 @@ function actionProduction(overrides = {}) {
 function productionEnvelope({ itemRef = 'production-garment',
   targetRefs = ['production-knife'], actionProduction: qualitative =
     actionProduction(), stateVersion = 5, turnNumber = 4,
-  remainingIntent = 'Физически изменяю доступный предмет.' } = {}) {
-  const plan = { resolution: 'generic_check',
-    activity: { owner: 'semantic', duration_class: 'short', effort: 'light' },
-    check: { attribute_ref: 'dexterity', skill_ref: null,
-      difficulty_id: 'standard' }, interpretation: {
+  remainingIntent = 'Физически изменяю доступный предмет.',
+  checked = true } = {}) {
+  const plan = { resolution: checked ? 'generic_check' : 'domain_request',
+    activity: checked
+      ? { owner: 'semantic', duration_class: 'short', effort: 'light' }
+      : { owner: 'domain', duration_class: null, effort: null },
+    check: checked ? { attribute_ref: 'dexterity', skill_ref: null,
+      difficulty_id: 'standard' } : null, interpretation: {
       player_goal: remainingIntent, grounded_attempt: remainingIntent,
       adaptation: 'literal' } };
   const action = { source_refs: [itemRef], tool_refs: [...targetRefs],
@@ -1145,35 +1169,16 @@ function productionEnvelope({ itemRef = 'production-garment',
       committed_state_version: stateVersion, remaining_intent: remainingIntent },
     actor: { actor_id: 'pc' }, working_projection: {},
     committed_state: { party_state: { turn_number: turnNumber } },
-    check_result: { check_id: 'turn-production:step:1', roll: 12,
-      outcome: { band: 'success' } } };
+    check_result: checked ? { check_id: 'turn-production:step:1', roll: 12,
+      outcome: { band: 'success' } } : null };
 }
 
 async function provisionProductionScope(pool) {
   const loaded = await loadLowerDvinaTraceA1Profile();
-  const profile = loaded.profile;
-  const authority = { party_id: 'party-a1', actor_ref: 'pc',
-    context_ref: profile.context_ref, profile_ref: profile.profile_id,
-    profile_version: String(profile.revision), policy_ref: profile.policy_ref,
-    policy_version: profile.policy_version,
-    max_new_entities: profile.max_new_entities,
-    allowed_access_states: profile.allowed_access_states,
-    allowed_identity_modes: profile.allowed_identity_modes,
-    allowed_origins: profile.allowed_origins,
-    allowed_result_classes: profile.allowed_result_classes,
-    authority_state_version: 1, status: 'committed' };
-  await pool.query(`INSERT INTO party_runtime.party_action_production_authorities
-    (party_id,actor_ref,context_ref,profile_ref,profile_version,policy_ref,
-     policy_version,max_new_entities,allowed_access_states,
-     allowed_identity_modes,allowed_origins,allowed_result_classes,
-     authority_state_version,status,authority_digest)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10::jsonb,$11::jsonb,
-      $12::jsonb,$13,$14,$15)`, [...Object.values(authority).slice(0, 8),
-    JSON.stringify(authority.allowed_access_states),
-    JSON.stringify(authority.allowed_identity_modes),
-    JSON.stringify(authority.allowed_origins),
-    JSON.stringify(authority.allowed_result_classes), 1, 'committed',
-    digest(authority)]);
+  assert.equal(loaded.profile.profile_id, A1.profile_ref);
+  await pool.query(`UPDATE party_runtime.party_g5_anchors
+    SET item_capacity=16 WHERE party_id='party-a1'
+      AND anchor_id='output-anchor'`);
   for (const [itemId, itemProfile, physicalPosition, equipmentSlot] of [
     ['production-garment', inventoryProfile('production-garment', 900, 0,
       'regular', 2), 'equipped', 'outer_garment'],
@@ -1185,6 +1190,8 @@ async function provisionProductionScope(pool) {
       'regular', 2, { value: 2, unit: 'piece' }), 'hands', null],
     ['production-whole-board', inventoryProfile('production-whole-board',
       800, 1, 'regular', 2), 'hands', null],
+    ['production-partial-board', inventoryProfile('production-partial-board',
+      801, 1, 'long', 6), 'hands', null],
     ['production-material-a', inventoryProfile('production-material-a',
       400, 0, 'compact', 2, { value: 2, unit: 'piece' }), 'hands', null],
     ['production-material-b', inventoryProfile('production-material-b',
@@ -1209,6 +1216,12 @@ async function provisionProductionScope(pool) {
        equipment_slot_category_id)
       VALUES ('party-a1',$1,'pc',$2,$3)`, [itemId, physicalPosition,
       equipmentSlot]);
+    if (itemId === 'production-partial-board') {
+      await pool.query(`UPDATE party_runtime.party_item_placements
+        SET holder_character_id=NULL,physical_position=NULL,
+            anchor_id='output-anchor'
+        WHERE party_id='party-a1' AND item_id=$1`, [itemId]);
+    }
     await pool.query(`INSERT INTO party_runtime.party_ownership
       (party_id,ownership_id,item_id,owner_character_id,owner_party,
        controller_character_id,claim_state)

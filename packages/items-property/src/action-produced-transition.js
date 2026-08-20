@@ -271,13 +271,16 @@ function validateSourceEffects(values, sources, handoff) {
         handoff.action_ref);
     const retireSource = handoff.identity_mode === 'independent_outputs'
       && source.finite_resource === null && mechanicsSnapshot === null;
+    const partialWholeSource = handoff.identity_mode === 'independent_outputs'
+      && handoff.result_class === 'partial_transformation'
+      && source.finite_resource === null && mechanicsSnapshot !== null;
     const changed = finiteTransition !== null || mechanicsSnapshot !== null
       || retireSource;
     const afterStateVersion = changed
       ? nextActionProducedStateVersion(source.state_version)
       : source.state_version;
     return { source, effect, afterStateVersion,
-      finiteTransition, mechanicsSnapshot, retireSource };
+      finiteTransition, mechanicsSnapshot, retireSource, partialWholeSource };
   });
 }
 function validateOutputs(values, effects, handoff, policy, committedRefs) {
@@ -362,8 +365,9 @@ function validateIdentityShape(handoff, effects, outputs) {
   if (handoff.identity_mode === 'independent_outputs') {
     if (outputs.length === 0
         || outputs.some((output) => output.material_allocations.length === 0)
-        || effects.some((effect) =>
-          effect.finiteTransition === null && effect.retireSource !== true)) {
+        || effects.some((effect) => effect.finiteTransition === null
+          && effect.retireSource !== true
+          && effect.partialWholeSource !== true)) {
       fail();
     }
     return;
@@ -453,10 +457,9 @@ function sanitizedEntity(value) {
 }
 function sameFiniteUnit(effect, quantity) {
   const unit = effect.finiteTransition?.decrement_quantity.unit
-    ?? (effect.retireSource ? 'whole_item' : null);
-  if (unit !== quantity.unit) {
-    fail();
-  }
+    ?? (effect.retireSource || effect.partialWholeSource
+      ? 'whole_item' : null);
+  if (unit !== quantity.unit) fail();
 }
 function outputRef(handoff, ordinal) {
   return createActionProducedOutputIdentity({
@@ -482,18 +485,13 @@ function exact(value, keys) {
   return record(value) && Object.keys(value).length === keys.length
     && keys.every((key) => Object.hasOwn(value, key));
 }
-function record(value) {
-  return value != null && typeof value === 'object' && !Array.isArray(value);
-}
+function record(value) { return value != null && typeof value === 'object'
+  && !Array.isArray(value); }
 function nullableText(value) { return value === null || text(value); }
-function validStepIndex(value) {
-  return Number.isSafeInteger(value) && value >= 1 && value <= 8;
-}
-function text(value) {
-  return typeof value === 'string' && value.length > 0
-    && value.trim() === value;
-}
-function fail() {
-  throw Object.assign(new TypeError('ITEM_ACTION_PRODUCED_TRANSITION_INVALID'),
-    { code: 'ITEM_ACTION_PRODUCED_TRANSITION_INVALID' });
-}
+function validStepIndex(value) { return Number.isSafeInteger(value)
+  && value >= 1 && value <= 8; }
+function text(value) { return typeof value === 'string' && value.length > 0
+  && value.trim() === value; }
+function fail() { throw Object.assign(new TypeError(
+  'ITEM_ACTION_PRODUCED_TRANSITION_INVALID'),
+{ code: 'ITEM_ACTION_PRODUCED_TRANSITION_INVALID' }); }

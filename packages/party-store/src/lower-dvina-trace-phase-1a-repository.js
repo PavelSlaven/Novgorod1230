@@ -2,10 +2,6 @@ import { deepFreeze, sha256 } from '@rus/kernel';
 import { computeMaterializationEnvelopeDigest } from '@rus/contracts';
 import { normalizedContainer, normalizedPartyAssets } from
   './lower-dvina-trace-phase-1a-read-assets.js';
-import { lowerDvinaTraceActionProductionAuthorityField,
-  lowerDvinaTraceActionProductionAuthorityMatches,
-  readLowerDvinaTraceActionProductionAuthorities } from
-  './lower-dvina-trace-action-production-authority.js';
 
 export function createLowerDvinaTracePhase1ARepository({query}={}) {
   if (typeof query !== 'function') throw new TypeError('query function is required.');
@@ -127,10 +123,6 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
           ORDER BY obligation_id`,
         [partyId]
       )).rows;
-      const actionProductionAuthorities =
-        await readLowerDvinaTraceActionProductionAuthorities({
-          query, partyId
-        });
       const counts = await one(
         `SELECT
           (SELECT count(*)::int FROM party_runtime.party_g5_nodes WHERE party_id=$1) AS node_count,
@@ -163,7 +155,6 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         items,
         containers,
         obligations,
-        actionProductionAuthorities,
         conditions,
         counts,
         payload
@@ -240,8 +231,6 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         timestamp: { whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator, subminute_denominator: clock.subminute_denominator },
         environment_snapshot: payload.immediate.environment_snapshot,
         hidden_truth: payload.hidden_truth,
-        ...lowerDvinaTraceActionProductionAuthorityField(
-          payload.action_production_authority),
         sealed_selections: payload.sealed_selections,
         policy_profile_pins: payload.policy_profile_pins,
         materialization_trace: run.trace,
@@ -299,7 +288,6 @@ function assertRoundTrip({
   items,
   containers,
   obligations,
-  actionProductionAuthorities,
   conditions,
   counts,
   payload
@@ -316,8 +304,6 @@ function assertRoundTrip({
     request_identity: payload.request_identity,
     immediate: payload.immediate,
     hidden_truth: payload.hidden_truth,
-    ...lowerDvinaTraceActionProductionAuthorityField(
-      payload.action_production_authority),
     sealed_selections: payload.sealed_selections,
     policy_profile_pins: payload.policy_profile_pins,
     validation_report: run?.validation_report?.materialization,
@@ -360,8 +346,6 @@ function assertRoundTrip({
       (value) => !expectedContainerIds.has(value.container_id)
     )
     || npcs.some((value) => !expectedNpcIds.has(value.npc_id))
-    || !lowerDvinaTraceActionProductionAuthorityMatches(
-      actionProductionAuthorities, payload.action_production_authority)
     || conditions.some((value) => value.status !== 'active'
       || !expectedConditions.some((expected) => expected.state === value.condition_profile_ref?.state))
     || sha256(run.trace) !== sha256(payload.materialization_trace)

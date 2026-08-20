@@ -132,7 +132,9 @@ export function validateActionProducedAtomicProposal(value, load) {
               itemId === transition.entity_ref);
             return transition.finite_resource_transition === null
               && !(pin?.finite_resource_row === null
-                && transition.after.mechanics_snapshot === null);
+                && (transition.after.mechanics_snapshot === null
+                  || value.result_class === 'partial_transformation'
+                    && transition.after.mechanics_snapshot !== null));
           })
           || value.results.some(({ identity_kind }) =>
             identity_kind !== 'independent_output'))

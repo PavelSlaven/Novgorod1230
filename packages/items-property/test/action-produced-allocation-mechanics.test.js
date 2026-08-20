@@ -68,7 +68,7 @@ test('allocation mechanics retires one whole item and derives output carrying',
       material_allocations: allocations }) => ({
       mechanics: snapshot.mechanics, allocations
     })), [1, 2].map(() => ({ mechanics: {
-      mass_grams: 400, external_hand_cost: 1, carry_form: 'regular',
+      mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
       packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
       container: null
     }, allocations: [{ source_ref: 'material:board', quantity: {
@@ -76,17 +76,44 @@ test('allocation mechanics retires one whole item and derives output carrying',
     } }] })));
   });
 
-test('allocation mechanics still fails when known mass cannot split exactly',
+test('allocation mechanics conserves odd mass without inheriting board shape',
   () => {
-    assert.throws(() => resolveActionProducedAllocationMechanics({
+    const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({ source_inputs: [{
         entity_ref: 'material:board', finite_resource: null }] }),
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
         mass_grams: 801, external_hand_cost: 1, carry_form: 'regular',
         packing_slot_cost: 3, quantity: null, container: null } }],
       output_count: 2
-    }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
+    });
+    assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: value }) =>
+      value.mechanics), [{ mass_grams: 401, external_hand_cost: 0,
+      carry_form: 'compact', packing_slot_cost: 2,
+      quantity: { value: 1, unit: 'item' }, container: null }, {
+      mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 2, quantity: { value: 1, unit: 'item' },
+      container: null }]);
   });
+
+test('partial transformation keeps changed source and creates outputs', () => {
+  const resolution = resolveActionProducedAllocationMechanics({
+    mechanics_request: mechanicsRequest({
+      result_class: 'partial_transformation', source_inputs: [{
+        entity_ref: 'material:board', finite_resource: null }] }),
+    source_mechanics: [{ source_ref: 'material:board', mechanics: {
+      mass_grams: 801, external_hand_cost: 1, carry_form: 'long',
+      packing_slot_cost: 6, quantity: null, container: null } }],
+    output_count: 2
+  });
+  assert.equal(resolution.source_effects[0]
+    .mechanics_snapshot_after.mechanics.mass_grams, 267);
+  assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: value }) =>
+    value.mechanics.mass_grams), [267, 267]);
+  assert.deepEqual(resolution.outputs[0].material_allocations, [{
+    source_ref: 'material:board', quantity: {
+      numerator: 1, denominator: 3, unit: 'whole_item' }
+  }]);
+});
 
 test('preserve source keeps ordinary mechanics without a discrete quantity',
   () => {

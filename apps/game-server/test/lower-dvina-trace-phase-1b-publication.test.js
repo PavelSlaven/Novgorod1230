@@ -79,7 +79,7 @@ test('current publication pins the exact v16 -> Phase 1A v17 -> revision 21 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v16');
   assert.equal(publication.manifest.revision, 16);
   assert.equal(publication.manifest_digest,
-    '51ac7241a0c987ccdbb0b56e7e05fdb55bb4e841b6051fd80e4f58e3b3b82ea8');
+    'c4d832ecc4e9ee51bb86fa92e4765ef1bb6777e0cae2be36f91adfb91aae4037');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v15/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v15',
@@ -91,19 +91,19 @@ test('current publication pins the exact v16 -> Phase 1A v17 -> revision 21 chai
     'lower_dvina_trace_phase_1b_publication_v16');
   assert.equal(publication.binding.revision, 16);
   assert.equal(publication.binding_digest,
-    'c7491e8094ff5d057952b195cf588f2697b610c170458262f017dfd838328f78');
+    '8ba3f391b6d0d19ae3d541ea97a65c27f56e62817da4214fa602e149df4bbe0d');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     'bb90c9ce8750641a258f84d8b7a7c0cdb417460da45f263b158d1ae0862f0c8c');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v17');
   assert.equal(publication.phase_1a_manifest.revision, 17);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '88aaf5b78a23754dc70ab0ef7537d483c66d8e0a280aca02100367712368b54d');
+    '0243e0b3aa5dd65d07e4cc4c227672dba4c66e9fc2cd5f452647745275d066d7');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     'c4422cc17fc110bd486222377c0a262878077e9af9aef3da3977cfaed925cccd');
   assert.equal(publication.definition.revision, 21);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    'b2762bd059622fabb38986720c9ecf1d5e8f28974d00cf2c1e5471396a528a44');
+    '95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d');
   assert.equal(
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v17'

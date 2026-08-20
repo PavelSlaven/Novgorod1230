@@ -14,7 +14,7 @@
   "allowed_output_classes": ["ordinary_mundane", "weapon_capable", "money_like_token", "written_carrier"],
   "source_policy": "one_to_many_visible_accessible_non_container_items",
   "tool_policy": "zero_to_many_visible_accessible_non_container_items",
-  "execution_policy": "existing_turn_step_generic_check_and_semantic_activity",
+  "execution_policy": "existing_turn_step_optional_check_and_activity",
   "model_authority": "primary_turn_step_plan_qualitative_only",
   "mechanics_owner": "@rus/items-property",
   "persistence_owner": "P16_combined_atomic_committer",

@@ -69,6 +69,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       context_ref: profile.context_ref,
       expected_party_state_version: stateVersion,
       source_refs: sourceRefs, tool_refs: toolRefs,
+      admission_profile: admissionProfile(profile, stateVersion),
+      technical_policy: technicalPolicy(profile),
       prepared_ordinary_plan: envelope
         .prepared_ordinary_materialization_atomic_write_plan ?? null,
       change_set_id: changeSetId
@@ -113,13 +115,15 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         if ([...mechanicsRequest.source_inputs,
           ...mechanicsRequest.tool_inputs].some(({ entity_ref: ref }) =>
           mechanics.get(ref) == null)) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
-        return resolveActionProducedAllocationMechanics({
+        const mechanicsInput = {
           mechanics_request: mechanicsRequest,
           source_mechanics: mechanicsRequest.source_inputs.map(
             ({ entity_ref: ref }) => ({ source_ref: ref,
               mechanics: mechanics.get(ref) })),
           output_count: qualitative.output_count
-        });
+        };
+        return resolveActionProducedAllocationMechanics(
+          structuredClone(mechanicsInput));
       }
     });
     const proposal = planner({
@@ -188,11 +192,37 @@ function validateLoadedProfile(value) {
   return profile;
 }
 
+function admissionProfile(profile, stateVersion) {
+  return {
+    schema: 'rus.items.action_produced_admission_profile.v1',
+    profile_ref: profile.profile_id, profile_version: String(profile.revision),
+    status: 'committed', context_ref: profile.context_ref,
+    context_state_version: String(stateVersion),
+    allowed_access_states: structuredClone(profile.allowed_access_states),
+    allowed_identity_modes: structuredClone(profile.allowed_identity_modes),
+    allowed_origins: structuredClone(profile.allowed_origins),
+    allowed_result_classes: structuredClone(profile.allowed_result_classes)
+  };
+}
+
+function technicalPolicy(profile) {
+  return {
+    schema: 'rus.items.action_produced_technical_policy.v1', version: 1,
+    status: 'committed', policy_ref: profile.policy_ref,
+    profile_ref: profile.profile_id, profile_version: String(profile.revision),
+    max_new_entities: profile.max_new_entities
+  };
+}
+
 function validExecutionEvidence(envelope) {
   const plan = envelope.plan;
   const result = envelope.check_result;
-  return plan?.resolution === 'generic_check'
-    && plan.check != null && plan.activity?.owner === 'semantic'
+  if (plan?.resolution === 'domain_request') {
+    return plan.check === null && result === null
+      && plan.activity?.owner === 'domain';
+  }
+  return plan?.resolution === 'generic_check' && plan.check != null
+    && plan.activity?.owner === 'semantic'
     && result != null
     && result.check_id === `${envelope.request.root_turn_id}:step:${
       envelope.request.step_index}`

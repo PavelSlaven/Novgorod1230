@@ -1,6 +1,5 @@
 export function actionProducedPhysicalKeysForSealed(sealed) {
   return [
-    `party_runtime.party_action_production_authorities:${sealed.party_id}:${sealed.actor_ref}:${sealed.context_pin.context_ref}`,
     ...(sealed.output_destination_pin == null ? [] : [
       `party_runtime.party_g5_anchors:${sealed.party_id}:${sealed.output_destination_pin.anchor_id}`,
       `party_runtime.party_positions:${sealed.party_id}`,

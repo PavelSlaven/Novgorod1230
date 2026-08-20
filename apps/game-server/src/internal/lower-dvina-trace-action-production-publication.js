@@ -14,13 +14,13 @@ const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v15/publication-binding.json`;
 const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v16/manifest.json`;
 
 export const TRACE_ACTION_PRODUCTION_PHASE_1A_MANIFEST_DIGEST =
-  '88aaf5b78a23754dc70ab0ef7537d483c66d8e0a280aca02100367712368b54d';
+  '0243e0b3aa5dd65d07e4cc4c227672dba4c66e9fc2cd5f452647745275d066d7';
 const MANIFEST_DIGEST =
-  '51ac7241a0c987ccdbb0b56e7e05fdb55bb4e841b6051fd80e4f58e3b3b82ea8';
+  'c4d832ecc4e9ee51bb86fa92e4765ef1bb6777e0cae2be36f91adfb91aae4037';
 const BINDING_DIGEST =
-  'c7491e8094ff5d057952b195cf588f2697b610c170458262f017dfd838328f78';
+  '8ba3f391b6d0d19ae3d541ea97a65c27f56e62817da4214fa602e149df4bbe0d';
 const DEFINITION_DIGEST =
-  'b2762bd059622fabb38986720c9ecf1d5e8f28974d00cf2c1e5471396a528a44';
+  '95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d';
 
 export async function loadLowerDvinaTraceActionProductionPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null

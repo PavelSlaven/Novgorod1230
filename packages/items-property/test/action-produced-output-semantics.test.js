@@ -1,7 +1,27 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { admitActionProducedOutputSemantics } from
+import { admitActionProducedOutputSemantics,
+  mergeActionProducedPhysicalFacts } from
   '@rus/items-property/action-produced-output-semantics';
+
+test('preserved facts remove known obsolete refs before adding replacements',
+  () => {
+    const facts = mergeActionProducedPhysicalFacts({ entity_ref: 'item:pole',
+      action_ref: 'action:blunt', existing: [
+        { fact_id: 'fact:sharp', text: 'конец заострён',
+          operation_id: 'action:sharp' },
+        { fact_id: 'fact:notched', text: 'на древке есть зарубка',
+          operation_id: 'action:notch' }
+      ], removed_fact_refs: ['fact:sharp'],
+      physical_description: 'конец теперь затуплен',
+      physical_facts: ['конец затуплен'] });
+
+    assert.deepEqual(facts.map(({ fact_id, text }) => ({ fact_id, text })), [
+      { fact_id: 'fact:notched', text: 'на древке есть зарубка' },
+      { fact_id: 'action:blunt:fact:1', text: 'конец теперь затуплен' },
+      { fact_id: 'action:blunt:fact:2', text: 'конец затуплен' }
+    ]);
+  });
 
 test('weapon-capable output remains pending for the combat-owned boundary',
   () => {

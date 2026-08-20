@@ -90,8 +90,14 @@ test('validated A1 output is usable by the next internal step', async () => {
   assert.equal(playerSafe.items[0].semantic_type, 'ordinary_mundane');
   assert.deepEqual(playerSafe.items[0].physical_facts,
     ['имеет заострённый конец']);
+  assert.deepEqual(playerSafe.items[0].physical_fact_records, [{
+    fact_ref: 'a1-wedge:fact:1', text: 'имеет заострённый конец'
+  }]);
   assert.deepEqual(reloaded.items[0].physical_facts,
     ['имеет заострённый конец']);
+  assert.deepEqual(reloaded.items[0].physical_fact_records, [{
+    fact_ref: 'a1-wedge:fact:1', text: 'имеет заострённый конец'
+  }]);
   assert.equal(moved.working_projection.inventory.items.includes(
     'a1-wedge'), true);
 });
@@ -162,6 +168,9 @@ test('preserved A1 source exposes its physical change now and after reload', () 
 
   assert.deepEqual(current.items[0].physical_facts,
     ['один конец жерди заострён']);
+  assert.deepEqual(current.items[0].physical_fact_records, [{
+    fact_ref: 'sharpen-pole:fact:1', text: 'один конец жерди заострён'
+  }]);
   assert.deepEqual(reloaded.items[0].physical_facts,
     ['один конец жерди заострён']);
 });

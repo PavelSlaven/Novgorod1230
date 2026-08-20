@@ -152,6 +152,33 @@ test('preserve source keeps ordinary mechanics without a discrete quantity',
     });
     assert.deepEqual(resolution.source_effects[0]
       .mechanics_snapshot_after.mechanics, mechanics);
+  assert.deepEqual(resolution.outputs, []);
+  });
+
+test('preserve source can consume another material into the same identity',
+  () => {
+    const request = mechanicsRequest({ identity_mode: 'preserve_source',
+      origin: null, qualitative_intent: { material_extent: 'whole' },
+      source_inputs: [{ entity_ref: 'item:handle', finite_resource: null },
+        { entity_ref: 'item:wrap', finite_resource: null }] });
+    const resolution = resolveActionProducedAllocationMechanics({
+      mechanics_request: request,
+      source_mechanics: [{ source_ref: 'item:handle', mechanics: {
+        mass_grams: 600, external_hand_cost: 0, carry_form: 'regular',
+        packing_slot_cost: 2, quantity: null, container: null } },
+      { source_ref: 'item:wrap', mechanics: {
+        mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
+        packing_slot_cost: 1, quantity: null, container: null } }],
+      output_count: 0
+    });
+
+    assert.deepEqual(resolution.source_effects.map((effect) => ({
+      ref: effect.source_ref, after: effect.mechanics_snapshot_after?.mechanics
+        ?? null
+    })), [{ ref: 'item:handle', after: {
+      mass_grams: 700, external_hand_cost: 1, carry_form: 'regular',
+      packing_slot_cost: 3, quantity: null, container: null
+    } }, { ref: 'item:wrap', after: null }]);
     assert.deepEqual(resolution.outputs, []);
   });
 

@@ -157,6 +157,9 @@ function descriptor(value, errors) {
     'plan.result_descriptor.physical_description', errors);
   refs(value.qualitative_facts,
     'plan.result_descriptor.qualitative_facts', errors, true);
+  if (Object.hasOwn(value, 'removed_physical_fact_refs')) refs(
+    value.removed_physical_fact_refs,
+    'plan.result_descriptor.removed_physical_fact_refs', errors, true);
   nullableText(value.inscription_text,
     'plan.result_descriptor.inscription_text', errors);
   nullableMember(value.weapon_qualitative_class ?? null, WEAPON_CLASSES,
@@ -166,10 +169,11 @@ function descriptor(value, errors) {
 function validateCausalShape(value, errors) {
   const descriptorValue = value.result_descriptor;
   if (!record(descriptorValue)) return;
+  if (value.identity_mode !== 'preserve_source'
+      && descriptorValue.removed_physical_fact_refs?.length > 0) {
+    errors.push('only a preserved source can remove existing facts');
+  }
   if (value.identity_mode === 'preserve_source') {
-    if (value.source_refs?.length !== 1) {
-      errors.push('preserve_source requires exactly one source ref');
-    }
     if (value.origin !== null) {
       errors.push('preserve_source must not replace the source origin');
     }
@@ -184,7 +188,11 @@ function validateCausalShape(value, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
-  if (partialOutput
+  const combinedSource = value.identity_mode === 'preserve_source'
+    && value.source_refs?.length > 1;
+  if (combinedSource
+      ? !['minor', 'half', 'major', 'whole'].includes(value.material_extent)
+      : partialOutput
       ? !['minor', 'half', 'major'].includes(value.material_extent)
       : value.identity_mode === 'independent_outputs'
         ? value.material_extent !== 'whole'
@@ -228,8 +236,14 @@ function validateCausalShape(value, errors) {
 }
 
 function descriptorKeys(value) {
-  return Object.hasOwn(value, 'weapon_qualitative_class')
-    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
+  const keys = [...DESCRIPTOR_KEYS];
+  if (Object.hasOwn(value, 'removed_physical_fact_refs')) {
+    keys.push('removed_physical_fact_refs');
+  }
+  if (Object.hasOwn(value, 'weapon_qualitative_class')) {
+    keys.push('weapon_qualitative_class');
+  }
+  return keys;
 }
 
 function validateEcho(plan, request, errors) {

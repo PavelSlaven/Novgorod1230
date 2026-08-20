@@ -64,13 +64,16 @@ export function admitActionProducedOutputSemantics(value) {
 
 export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
   action_ref: actionRef, existing = [], physical_description: description,
-  physical_facts: facts }) {
+  physical_facts: facts, removed_fact_refs: removedRefs = [] }) {
   if (!text(entityRef) || !text(actionRef) || !Array.isArray(existing)
       || !Array.isArray(facts) || !facts.every(text)
+      || !Array.isArray(removedRefs) || !removedRefs.every(text)
+      || new Set(removedRefs).size !== removedRefs.length
       || !(description === null || text(description))) failFacts();
   const output = [];
   const ids = new Set();
   const texts = new Set();
+  const removed = new Set(removedRefs);
   for (const [index, value] of existing.entries()) {
     const fact = typeof value === 'string'
       ? { fact_id: `${entityRef}:fact:${index + 1}`, text: value,
@@ -80,9 +83,14 @@ export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
         || !(fact.operation_id === null || text(fact.operation_id))
         || ids.has(fact.fact_id)) failFacts();
     ids.add(fact.fact_id);
+    if (removed.has(fact.fact_id)) {
+      removed.delete(fact.fact_id);
+      continue;
+    }
     texts.add(fact.text);
     output.push(structuredClone(fact));
   }
+  if (removed.size !== 0) failFacts();
   const added = [...(description === null ? [] : [description]), ...facts];
   for (const [index, factText] of added.entries()) {
     if (texts.has(factText)) continue;
@@ -182,7 +190,11 @@ function validTechnical(value) {
 function validQualitative(value, proposal) {
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
-    && (proposal.identity_mode !== 'independent_outputs'
+    && (proposal.identity_mode === 'preserve_source'
+      ? proposal.source_transitions.length > 1
+        ? ['minor', 'half', 'major', 'whole'].includes(value.material_extent)
+        : value.material_extent === null
+      : proposal.identity_mode !== 'independent_outputs'
       ? value.material_extent === null
       : proposal.result_class === 'partial_transformation'
         ? ['minor', 'half', 'major'].includes(value.material_extent)
@@ -191,11 +203,22 @@ function validQualitative(value, proposal) {
     && nullableText(value.result_descriptor.display_name)
     && nullableText(value.result_descriptor.physical_description)
     && textArray(value.result_descriptor.qualitative_facts)
+    && (!Object.hasOwn(value.result_descriptor,
+      'removed_physical_fact_refs')
+      || textArray(value.result_descriptor.removed_physical_fact_refs)
+        && (proposal.identity_mode === 'preserve_source'
+          || value.result_descriptor.removed_physical_fact_refs.length === 0))
     && nullableText(value.result_descriptor.inscription_text);
 }
 function descriptorKeys(value) {
-  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
-    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
+  const keys = [...DESCRIPTOR_KEYS];
+  if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
+    keys.push('removed_physical_fact_refs');
+  }
+  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
+    keys.push('weapon_qualitative_class');
+  }
+  return keys;
 }
 function validResult(value) {
   const keys = value?.identity_kind === 'independent_output'

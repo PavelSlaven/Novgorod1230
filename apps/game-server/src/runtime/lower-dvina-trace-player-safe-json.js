@@ -81,6 +81,29 @@ export function textArray(value, { strict = false, path = 'array',
   return value.map(text).filter(Boolean);
 }
 
+export function physicalFactRecords(value, { strict = false,
+  path = 'physical_fact_records', code =
+    'TRACE_PLAYER_SAFE_WORKING_PROJECTION_INVALID' } = {}) {
+  if (value == null) return undefined;
+  if (!Array.isArray(value)) {
+    if (strict) throw projectionError(code, `${path} must be an array.`);
+    return undefined;
+  }
+  const result = [];
+  for (const fact of value) {
+    if (!plain(fact)) {
+      if (strict) throw projectionError(code, `${path} must contain objects.`);
+      continue;
+    }
+    if (strict) assertAllowedKeys(fact, new Set(['fact_ref', 'text']), path,
+      code);
+    const factRef = text(fact.fact_ref);
+    const factText = text(fact.text);
+    if (factRef && factText) result.push({ fact_ref: factRef, text: factText });
+  }
+  return result.length ? result : undefined;
+}
+
 function validateJson(value, path, ancestors) {
   if (value === null || typeof value === 'string'
       || typeof value === 'boolean') return;

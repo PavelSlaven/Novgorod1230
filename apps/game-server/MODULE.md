@@ -129,6 +129,9 @@ profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
 retires and leaves active placement/capacity without a synthetic resource row.
+For multi-source preserve the first source keeps identity, later sources are
+consumed by grounded extent, and mixed ownership does not block the physical
+change; output property follows the selected primary/property source.
 Partial independent output carries only grounded qualitative
 `minor|half|major` extent; the item owner maps it to an exact gram decrement,
 keeps the changed source active and derives its remaining mechanics. Odd mass

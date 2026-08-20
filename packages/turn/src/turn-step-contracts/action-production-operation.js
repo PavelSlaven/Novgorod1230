@@ -34,7 +34,7 @@ export function validateActionProduction(value, path, errors, trace,
   ], `${path}.output_class`, errors);
   validateRefs(value, path, errors, operation);
   validateOutputCount(value, path, errors);
-  validateDescriptor(value.result_descriptor, path, errors);
+  validateDescriptor(value.result_descriptor, path, errors, trace);
   validateShape(value, path, errors);
 }
 
@@ -53,7 +53,7 @@ function validateRefs(value, path, errors, operation) {
 
 function validateOutputCount(value, path, errors) {
   if (value.identity_mode === 'preserve_source'
-      && (value.source_refs?.length !== 1 || value.output_count !== 0)
+      && value.output_count !== 0
       || value.identity_mode === 'independent_outputs'
         && (!Number.isSafeInteger(value.output_count)
           || value.output_count < 1)
@@ -64,10 +64,11 @@ function validateOutputCount(value, path, errors) {
   }
 }
 
-function validateDescriptor(descriptor, path, errors) {
+function validateDescriptor(descriptor, path, errors, trace) {
   if (!strict(descriptor, `${path}.result_descriptor`, [
     'display_name', 'physical_description', 'qualitative_facts',
-    'inscription_text', 'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text',
+    'weapon_qualitative_class'
   ], errors)) return;
   for (const key of [
     'display_name', 'physical_description', 'inscription_text'
@@ -87,6 +88,9 @@ function validateDescriptor(descriptor, path, errors) {
         'must contain unique values');
     }
   }
+  refs(descriptor.removed_physical_fact_refs,
+    `${path}.result_descriptor.removed_physical_fact_refs`, errors, trace,
+    { allowEmpty: true });
   if (descriptor.weapon_qualitative_class !== null) enumValue(
     descriptor.weapon_qualitative_class, [
       'improvised_puncture_light', 'improvised_impact_light',
@@ -96,6 +100,11 @@ function validateDescriptor(descriptor, path, errors) {
 
 function validateShape(value, path, errors) {
   const descriptor = value.result_descriptor ?? {};
+  if (value.identity_mode !== 'preserve_source'
+      && descriptor.removed_physical_fact_refs?.length > 0) {
+    add(errors, `${path}.result_descriptor.removed_physical_fact_refs`,
+      'identity_shape', 'only a preserved source can remove existing facts');
+  }
   const noResult = value.identity_mode === 'no_useful_result';
   if (noResult !== (value.result_class === 'no_useful_result')
       || noResult && (value.origin !== null || value.output_class !== null
@@ -112,7 +121,11 @@ function validateShape(value, path, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
-  if (partialOutput
+  const combinedSource = value.identity_mode === 'preserve_source'
+    && value.source_refs?.length > 1;
+  if (combinedSource
+      ? !['minor', 'half', 'major', 'whole'].includes(value.material_extent)
+      : partialOutput
       ? !['minor', 'half', 'major'].includes(value.material_extent)
       : value.identity_mode === 'independent_outputs'
         ? value.material_extent !== 'whole'

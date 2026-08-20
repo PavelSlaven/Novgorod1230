@@ -27,13 +27,7 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
       || outputCount > request.technical_limits.max_new_entities) invalid();
   const byRef = sourceMechanics(sources, request.source_inputs);
   if (request.identity_mode === 'preserve_source') {
-    if (outputCount !== 0 || request.source_inputs.length !== 1) invalid();
-    const source = request.source_inputs[0];
-    return resolution(request, [{ source_ref: source.entity_ref,
-      requested_decrement: null,
-      mechanics_snapshot_after: snapshot(request,
-        byRef.get(source.entity_ref), request.causal_identity.action_ref)
-    }], []);
+    return preserveResolution(request, byRef, outputCount);
   }
   if (request.identity_mode === 'no_useful_result') {
     if (outputCount !== 0) invalid();
@@ -48,28 +42,93 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
   return independentResolution(request, byRef, outputCount);
 }
 
+function preserveResolution(request, byRef, outputCount) {
+  if (outputCount !== 0) invalid();
+  const [primary, ...materials] = request.source_inputs;
+  const extent = request.qualitative_intent?.material_extent;
+  if (materials.length === 0) {
+    if (extent !== null) invalid();
+    return resolution(request, [{ source_ref: primary.entity_ref,
+      requested_decrement: null,
+      mechanics_snapshot_after: snapshot(request,
+        byRef.get(primary.entity_ref), request.causal_identity.action_ref)
+    }], []);
+  }
+  if (!['minor', 'half', 'major', 'whole'].includes(extent)) gap();
+  const consumed = materials.map((source) => consumeSource(source,
+    byRef.get(source.entity_ref), extent, 0));
+  const primaryMechanics = byRef.get(primary.entity_ref);
+  const mass = primaryMechanics.mass_grams + consumed.reduce((sum, entry) =>
+    sum + entry.consumedMass, 0);
+  const packing = Math.ceil(primaryMechanics.packing_slot_cost
+    + consumed.reduce((sum, entry) => sum + entry.consumedPacking, 0));
+  const derived = derivedMechanics(mass, packing,
+    primaryMechanics.quantity);
+  const carryRank = ['compact', 'regular', 'long', 'bulky'];
+  const afterPrimary = { ...derived,
+    external_hand_cost: Math.max(primaryMechanics.external_hand_cost,
+      derived.external_hand_cost),
+    carry_form: carryRank[Math.max(carryRank.indexOf(
+      primaryMechanics.carry_form), carryRank.indexOf(derived.carry_form))] };
+  return resolution(request, [{ source_ref: primary.entity_ref,
+    requested_decrement: null,
+    mechanics_snapshot_after: snapshot(request, afterPrimary,
+      request.causal_identity.action_ref)
+  }, ...consumed.map((entry) => sourceEffect(request, entry))], []);
+}
+
 function independentResolution(request, byRef, outputCount) {
   const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
   const partial = request.result_class === 'partial_transformation';
   const extent = request.qualitative_intent?.material_extent;
   if (partial ? !['minor', 'half', 'major'].includes(extent)
     : extent !== 'whole') gap();
-  const consumed = request.source_inputs.map((source) => {
+  const consumed = request.source_inputs.map((source) => consumeSource(source,
+    byRef.get(source.entity_ref), partial ? extent : 'whole', outputCount));
+  const totalMass = consumed.reduce((sum, entry) =>
+    sum + entry.consumedMass, 0);
+  if (totalMass < outputCount) gap();
+  const baseMass = Math.floor(totalMass / outputCount);
+  const remainderMass = totalMass % outputCount;
+  const outputPacking = Math.ceil(consumed.reduce((sum, entry) =>
+    sum + entry.consumedPacking, 0) / outputCount);
+  const effects = consumed.map((entry) => sourceEffect(request, entry));
+  const outputs = Array.from({ length: outputCount }, (_, index) => {
+    const ordinal = index + 1;
+    const outputRef = createActionProducedOutputIdentity({
+      root_turn_id: request.causal_identity.root_turn_id,
+      action_ref: request.causal_identity.action_ref, ordinal
+    });
+    const outputMechanics = derivedMechanics(
+      baseMass + Number(index < remainderMass), outputPacking,
+      { value: 1, unit: 'item' });
+    return { ordinal, property_source_ref: sourceRefs[0],
+      mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
+      material_allocations: consumed.map(({ source, allocations }) => ({
+        source_ref: source.entity_ref,
+        quantity: structuredClone(allocations[index])
+      })) };
+  });
+  return resolution(request, effects, outputs);
+}
+
+function consumeSource(source, mechanics, extent, outputCount) {
     const finite = source.finite_resource;
-    const mechanics = byRef.get(source.entity_ref);
     if (finite === null) {
       if (mechanics.quantity !== null
           && (mechanics.quantity.value !== 1
             || mechanics.quantity.unit !== 'item')) gap();
+      const partial = extent !== 'whole';
       const consumedMass = partial
-        ? partialMass(mechanics.mass_grams, extent, outputCount)
+        ? partialMass(mechanics.mass_grams, extent,
+          Math.max(1, outputCount))
         : mechanics.mass_grams;
-      if (consumedMass < outputCount) gap();
+      if (outputCount > 0 && consumedMass < outputCount) gap();
       return { source, mechanics,
         quantity: partial
           ? rational(consumedMass, 1, 'gram')
           : rational(1, 1, 'whole_item'),
-        allocations: partial
+        allocations: outputCount === 0 ? [] : partial
           ? distribute(consumedMass, outputCount, 'gram')
           : Array.from({ length: outputCount }, () =>
               rational(1, outputCount, 'whole_item')),
@@ -92,16 +151,10 @@ function independentResolution(request, byRef, outputCount) {
         quantity.denominator, quantity.numerator),
       consumedPacking: mechanics.packing_slot_cost * quantity.denominator
         / quantity.numerator, retire: false };
-  });
-  const totalMass = consumed.reduce((sum, entry) =>
-    sum + entry.consumedMass, 0);
-  if (totalMass < outputCount) gap();
-  const baseMass = Math.floor(totalMass / outputCount);
-  const remainderMass = totalMass % outputCount;
-  const outputPacking = Math.ceil(consumed.reduce((sum, entry) =>
-    sum + entry.consumedPacking, 0) / outputCount);
-  const effects = consumed.map(({ source, mechanics, quantity, consumedMass,
-    consumedPacking, retire }) => {
+}
+
+function sourceEffect(request, { source, mechanics, quantity, consumedMass,
+  retire }) {
     if (retire) return { source_ref: source.entity_ref,
       requested_decrement: null, mechanics_snapshot_after: null };
     if (source.finite_resource === null) {
@@ -129,24 +182,6 @@ function independentResolution(request, byRef, outputCount) {
       requested_decrement: rational(1, 1, quantity.unit),
       mechanics_snapshot_after: snapshot(request, after,
         request.causal_identity.action_ref) };
-  });
-  const outputs = Array.from({ length: outputCount }, (_, index) => {
-    const ordinal = index + 1;
-    const outputRef = createActionProducedOutputIdentity({
-      root_turn_id: request.causal_identity.root_turn_id,
-      action_ref: request.causal_identity.action_ref, ordinal
-    });
-    const outputMechanics = derivedMechanics(
-      baseMass + Number(index < remainderMass), outputPacking,
-      { value: 1, unit: 'item' });
-    return { ordinal, property_source_ref: sourceRefs[0],
-      mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
-      material_allocations: consumed.map(({ source, allocations }) => ({
-        source_ref: source.entity_ref,
-        quantity: structuredClone(allocations[index])
-      })) };
-  });
-  return resolution(request, effects, outputs);
 }
 
 function partialMass(mass, extent, outputCount) {

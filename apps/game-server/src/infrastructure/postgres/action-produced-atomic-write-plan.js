@@ -79,13 +79,17 @@ function deriveSourceUpdates(proposal, sourcePins) {
   return proposal.source_transitions.flatMap((transition) => {
     const pin = sourcePins.find(({ item_id: id }) =>
       id === transition.entity_ref);
-    const retireSource = proposal.identity_mode === 'independent_outputs'
-      && transition.finite_resource_transition === null
-      && transition.after.mechanics_snapshot === null;
+    const primaryRef = proposal.source_transitions[0].entity_ref;
+    const retireSource = transition.finite_resource_transition === null
+      && transition.after.mechanics_snapshot === null
+      && (proposal.identity_mode === 'independent_outputs'
+        || proposal.identity_mode === 'preserve_source'
+          && transition.entity_ref !== primaryRef);
     const changed = transition.finite_resource_transition !== null
       || transition.after.mechanics_snapshot !== null || retireSource;
     if (!changed) return [];
     const preservedResult = proposal.identity_mode === 'preserve_source'
+      && transition.entity_ref === proposal.results[0].entity_ref
       ? proposal.results[0] : null;
     const semanticFacts = preservedResult === null ? null
       : mergeActionProducedPhysicalFacts({ entity_ref: pin.item_id,
@@ -93,7 +97,9 @@ function deriveSourceUpdates(proposal, sourcePins) {
         existing: pin.item.state?.ordinary_metadata?.semantic_facts ?? [],
         physical_description: proposal.qualitative_result.result_descriptor
           .physical_description,
-        physical_facts: preservedResult.physical_facts });
+        physical_facts: preservedResult.physical_facts,
+        removed_fact_refs: proposal.qualitative_result.result_descriptor
+          .removed_physical_fact_refs ?? [] });
     const nextState = {
       ...(pin.item.state ?? {}),
       lifecycle_status: retireSource || transition.finite_resource_transition

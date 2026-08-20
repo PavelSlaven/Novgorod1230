@@ -361,13 +361,15 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id=NULL,owner_party=true
       WHERE party_id='party-a1' AND item_id='scrap'`);
-    await assert.rejects(actionPlan(pool, {
+    const mixedOwnership = await actionPlan(pool, {
       partyVersion: 4, changeSetId: 'change-mixed-denied',
       requestId: 'mixed-denied', actionRef: 'action-mixed-denied',
       sources: ['board', 'scrap'], tools: ['axe'],
       mode: 'independent_outputs', outputCount: 1, decrement: 1,
       propertySource: 'board', allocationSources: ['board', 'scrap']
-    }), { code: 'ITEM_ACTION_PRODUCED_TRANSITION_INVALID' });
+    });
+    assert.equal(mixedOwnership.result_items[0].ownership_row
+      .owner_character_id, 'pc');
     assert.deepEqual((await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
        WHERE party_id='party-a1') AS party_version,
@@ -843,8 +845,33 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       600);
     } finally { partialReload.release(); }
 
+    const combinedPreserve = await actionPlan(pool, {
+      partyVersion: 11, changeSetId: 'change-preserve-multi',
+      requestId: 'preserve-multi', actionRef: 'action-preserve-multi',
+      rootTurnId: 'turn-preserve-multi', stepIndex: 1,
+      sources: ['production-partial-board', 'production-material-a'],
+      tools: ['production-knife'], mode: 'preserve_source',
+      materialExtent: 'whole',
+      physicalDescription: 'дополнительный материал закреплён на доске',
+      qualitativeFacts: ['на доске закреплена составная накладка']
+    });
+    assert.equal((await committer.commit({ plan: await combinedPlan(
+      combinedPreserve, 'preserve-multi', 11) })).ok, true);
+    assert.deepEqual((await pool.query(`SELECT
+      (SELECT state->'runtime_instance_mechanics_snapshot'->'mechanics'
+        ->>'mass_grams' FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-partial-board')
+        AS primary_mass,
+      (SELECT lifecycle_state FROM party_runtime.party_resource_nodes
+       WHERE party_id='party-a1' AND resource_node_id='resource-material-a')
+        AS material_state,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+       WHERE party_id='party-a1' AND item_id='production-material-a')
+        AS item_state`)).rows[0], { primary_mass: '800',
+      material_state: 'depleted', item_state: 'retired' });
+
     const sequentialFirst = await actionPlan(pool, {
-      partyVersion: 11, changeSetId: 'change-sequential',
+      partyVersion: 12, changeSetId: 'change-sequential',
       requestId: 'sequential-a1', actionRef: 'action-sequential-1',
       rootTurnId: 'turn-sequential', stepIndex: 1,
       sources: ['production-partial-board'], tools: ['production-knife'],
@@ -853,16 +880,18 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       qualitativeFacts: ['на конце появилась острая грань']
     });
     const sequentialSecond = await actionPlan(pool, {
-      partyVersion: 11, changeSetId: 'change-sequential',
+      partyVersion: 12, changeSetId: 'change-sequential',
       requestId: 'sequential-a1', actionRef: 'action-sequential-2',
       rootTurnId: 'turn-sequential', stepIndex: 2,
       sources: ['production-partial-board'], tools: ['production-knife'],
       mode: 'preserve_source', preparedActions: [sequentialFirst],
       physicalDescription: 'рядом вырезана неглубокая зарубка',
-      qualitativeFacts: ['зарубка видна на поверхности']
+      qualitativeFacts: ['зарубка видна на поверхности'],
+      removedFactRefs: ['action-sequential-1:fact:1',
+        'action-sequential-1:fact:2']
     });
     const sequentialCombined = await combinedPlan(
-      [sequentialFirst, sequentialSecond], 'sequential-a1', 11);
+      [sequentialFirst, sequentialSecond], 'sequential-a1', 12);
     assert.equal((await committer.commit({ plan: sequentialCombined })).ok,
       true);
     assert.deepEqual(await committer.commit({ plan: sequentialCombined }), {
@@ -872,10 +901,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       FROM party_runtime.party_items
       WHERE party_id='party-a1' AND item_id='production-partial-board'`))
       .rows[0];
-    assert.equal(sequentialState.state_version, '4');
+    assert.equal(sequentialState.state_version, '5');
     assert.deepEqual(sequentialState.state.ordinary_metadata.semantic_facts
       .map(({ text }) => text), [
-      'один конец доски заострён', 'на конце появилась острая грань',
+      'дополнительный материал закреплён на доске',
+      'на доске закреплена составная накладка',
       'рядом вырезана неглубокая зарубка',
       'зарубка видна на поверхности'
     ]);
@@ -886,10 +916,10 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           party_id: 'party-a1', actor_ref: 'pc',
           root_turn_id: 'turn-after-sequential',
           action_ref: 'action-after-sequential', step_index: 1,
-          context_ref: A1.context_ref, expected_party_state_version: 12,
+          context_ref: A1.context_ref, expected_party_state_version: 13,
           source_refs: ['production-partial-board'],
           tool_refs: ['production-knife'], admission_profile:
-            admissionProfile(12), technical_policy: technicalPolicy()
+            admissionProfile(13), technical_policy: technicalPolicy()
         });
       assert.deepEqual(loaded.source_snapshots[0].entity_ref,
         'production-partial-board');
@@ -934,7 +964,9 @@ async function actionPlan(pool, config) {
       source_refs: config.sources, tool_refs: config.tools,
       identity_mode: config.mode, origin,
       intended_transformation: 'bounded physical transformation',
-      material_extent: config.mode === 'independent_outputs' ? 'whole' : null,
+      material_extent: config.mode === 'independent_outputs' ? 'whole'
+        : config.mode === 'preserve_source' && config.sources.length > 1
+          ? config.materialExtent ?? 'whole' : null,
       result_class: resultClass,
       output_class: config.mode === 'no_useful_result'
         ? null : config.outputClass ?? 'ordinary_mundane',
@@ -946,6 +978,9 @@ async function actionPlan(pool, config) {
             ?? 'physically transformed',
           qualitative_facts: config.qualitativeFacts
             ?? ['physically transformed'],
+          ...(config.removedFactRefs == null ? {} : {
+            removed_physical_fact_refs: config.removedFactRefs
+          }),
           inscription_text: null }
     };
     const admitted = admitActionProducedResult({
@@ -1290,7 +1325,8 @@ function technicalPolicy() {
 function descriptor(overrides = {}) {
   return { display_name: null,
     physical_description: 'Край предмета физически обработан.',
-    qualitative_facts: [], inscription_text: null,
+    qualitative_facts: [], removed_physical_fact_refs: [],
+    inscription_text: null,
     weapon_qualitative_class: null, ...overrides };
 }
 

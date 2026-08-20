@@ -58,6 +58,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       semantic_type: metadata?.semantic_type ?? current.semantic_type,
       physical_facts: actionProducedPhysicalFactTexts(metadata
         ?.semantic_facts ?? current.physical_facts ?? []),
+      physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
       quantity: update.after_item.quantity,
       condition_state: update.after_item.condition_state,
       legal_status: update.after_item.legal_status
@@ -89,6 +90,7 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       semantic_type: metadata?.semantic_type ?? null, quantity: row.quantity,
       physical_facts: actionProducedPhysicalFactTexts(
         metadata?.semantic_facts ?? []),
+      physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
       quantity_unit_id: runtime.mechanics.quantity?.unit,
       condition_state: row.condition_state, legal_status: row.legal_status,
       placement: structuredClone(placement)
@@ -105,6 +107,14 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
     });
   }
   return next;
+}
+
+function physicalFactRecords(values) {
+  if (!Array.isArray(values)) return undefined;
+  const records = values.filter((fact) => text(fact?.fact_id)
+    && text(fact?.text)).map((fact) => ({ fact_ref: fact.fact_id,
+    text: fact.text }));
+  return records.length === 0 ? undefined : records;
 }
 
 function runtimeEntity(itemId, itemState) {

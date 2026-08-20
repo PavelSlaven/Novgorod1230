@@ -80,18 +80,8 @@ export function validateActionProducedOutputPropertyBasis(propertySourceRef,
     sourceRef === propertySourceRef)) fail();
   for (const { source_ref: sourceRef } of allocations) {
     const contributor = sources.get(sourceRef)?.source;
-    if (!contributor || !sameOwnershipBasis(
-      contributor.ownership_snapshot, selected.ownership_snapshot)) {
-      fail();
-    }
+    if (!contributor) fail();
   }
-}
-
-function sameOwnershipBasis(left, right) {
-  return left?.owner_npc_id === right?.owner_npc_id
-    && left?.owner_character_id === right?.owner_character_id
-    && left?.owner_party === right?.owner_party
-    && left?.claim_state === right?.claim_state;
 }
 
 function validateFinite(value) {

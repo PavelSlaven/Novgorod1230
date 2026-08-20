@@ -114,6 +114,21 @@ test('written carrier is qualitative and preserves its physical identity', () =>
     { request: writingRequest }).ok, true);
 });
 
+test('preserved identity may consume additional material sources', () => {
+  const combinedRequest = request({
+    source_refs: ['item:handle', 'item:wrap'], tool_refs: ['item:knife'],
+    intended_transformation: 'обмотать рукоять полоской материала',
+    material_extent: 'whole'
+  });
+  const combined = plan({ source_refs: combinedRequest.source_refs,
+    tool_refs: combinedRequest.tool_refs,
+    intended_transformation: combinedRequest.intended_transformation,
+    material_extent: combinedRequest.material_extent });
+
+  assert.equal(validateActionProducedResultPlan(combined,
+    { request: combinedRequest }).ok, true);
+});
+
 test('weapon-capable A1 result carries only one closed qualitative class',
   () => {
     const weaponRequest = request({ output_class: 'weapon_capable' });

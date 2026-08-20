@@ -9,7 +9,8 @@ import {
   exactActionProducedFunctionOption,
   frozenActionProducedDataProperty,
   nextActionProducedStateVersion,
-  snapshotActionProducedBoundary
+  snapshotActionProducedBoundary,
+  validActionProducedQualitativeResult
 } from './action-produced-transition-boundary.js';
 import {
   actionProducedRational as rational,
@@ -43,8 +44,6 @@ const SOURCE_EFFECT_KEYS = ['source_ref', 'requested_decrement', 'mechanics_snap
 const OUTPUT_KEYS = ['ordinal', 'property_source_ref', 'mechanics_snapshot', 'material_allocations'];
 const ALLOCATION_KEYS = ['source_ref', 'quantity'];
 const WASTE_KEYS = ['source_ref', 'quantity'];
-const QUALITATIVE_KEYS = ['intended_transformation', 'material_extent', 'result_descriptor', 'output_class'];
-const DESCRIPTOR_KEYS = ['display_name', 'physical_description', 'qualitative_facts', 'inscription_text'];
 const RESULT_CLASSES = new Set(['ordinary_physical_result',
   'partial_transformation', 'nonworking_construction', 'waste',
   'written_carrier', 'no_useful_result']);
@@ -189,32 +188,11 @@ function validateHandoff(value) {
       || (value.qualitative_result?.output_class === 'weapon_capable')
         !== WEAPON_CLASSES.has(value.qualitative_result?.result_descriptor
           ?.weapon_qualitative_class)
-      || !validQualitativeResult(value.qualitative_result,
-        value.identity_mode, value.result_class)) fail();
+      || !validActionProducedQualitativeResult(value.qualitative_result, {
+        identityMode: value.identity_mode, resultClass: value.result_class,
+        sourceCount: value.source_pins.length })) fail();
   return value;
 }
-function validQualitativeResult(value, identityMode, resultClass) {
-  if (!exact(value, QUALITATIVE_KEYS)
-      || !text(value.intended_transformation)
-      || !exact(value.result_descriptor,
-        descriptorKeys(value.result_descriptor))) return false;
-  const descriptor = value.result_descriptor;
-  return validMaterialExtent(value, identityMode, resultClass)
-    && (identityMode === 'independent_outputs'
-      ? text(descriptor.display_name) : nullableText(descriptor.display_name))
-    && nullableText(descriptor.physical_description)
-    && refs(descriptor.qualitative_facts, true) != null
-    && nullableText(descriptor.inscription_text);
-}
-function validMaterialExtent(value, identityMode, resultClass) {
-  return identityMode !== 'independent_outputs' ? value.material_extent === null
-    : resultClass === 'partial_transformation'
-    ? ['minor', 'half', 'major'].includes(value.material_extent)
-    : value.material_extent === 'whole';
-}
-function descriptorKeys(value) { return value != null
-  && Object.hasOwn(value, 'weapon_qualitative_class')
-  ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS; }
 function validatePin(value) {
   return exact(value, PIN_KEYS) && PIN_KEYS.every((key) =>
     ['holder_ref', 'controller_ref'].includes(key)
@@ -268,10 +246,16 @@ function validateSourceEffects(values, sources, handoff) {
     }
     const mechanicsSnapshot = effect.mechanics_snapshot_after === null ? null
       : mechanics(effect.mechanics_snapshot_after, handoff, handoff.action_ref);
-    const retireSource = handoff.identity_mode === 'independent_outputs'
-      && source.finite_resource === null && mechanicsSnapshot === null;
-    const partialWholeSource = handoff.identity_mode === 'independent_outputs'
+    const primaryRef = handoff.source_pins[0].entity_ref;
+    const retireSource = source.finite_resource === null
+      && mechanicsSnapshot === null
+      && (handoff.identity_mode === 'independent_outputs'
+        || handoff.identity_mode === 'preserve_source'
+          && source.entity_ref !== primaryRef);
+    const partialWholeSource = (handoff.identity_mode === 'independent_outputs'
       && handoff.result_class === 'partial_transformation'
+      || handoff.identity_mode === 'preserve_source'
+        && source.entity_ref !== primaryRef)
       && source.finite_resource === null && mechanicsSnapshot !== null
       && effect.requested_decrement !== null;
     const changed = finiteTransition !== null || mechanicsSnapshot !== null
@@ -358,8 +342,11 @@ function validateConservation(effects, outputs, waste) {
 }
 function validateIdentityShape(handoff, effects, outputs) {
   if (handoff.identity_mode === 'preserve_source') {
-    if (effects.length !== 1 || outputs.length !== 0
-        || effects[0].mechanicsSnapshot === null) fail();
+    if (outputs.length !== 0 || effects[0].mechanicsSnapshot === null
+        || effects.slice(1).some((effect) =>
+          effect.finiteTransition === null
+          && effect.retireSource !== true
+          && effect.partialWholeSource !== true)) fail();
     return;
   }
   if (handoff.identity_mode === 'independent_outputs') {

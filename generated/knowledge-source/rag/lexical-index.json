@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "9a56cb41b894469c54ee38fd1b3eb42281b7c00fc84e0003646974f28fc44dc9",
+  "corpus_hash": "932c300295a1308a9ee0801e12ae313b83284fd046c430ec60cc4f7350b3d0e8",
   "chunk_count": 2526,
   "chunks": [
     {
@@ -2538,8 +2538,8 @@
       "section": "Active two-class materialization boundary",
       "line_start": 3,
       "line_end": 11,
-      "text": "## items_and_property.txt — Active two-class materialization boundary\nдый путь обязан иметь допустимые committed source/context refs, ordinary semantics, exact mechanics/property/placement и отдельную persisted identity.\n\nВторой класс не заполняет пустой authored candidate set и не разрешает direct action создавать NPC, места, оружие, деньги, письма, улики, чужие/ценные/уникальные/скрытые предметы или container contents. Активный O2b — отдельная узкая ветка existing committed container, а не это исключение. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.",
-      "char_count": 621
+      "text": "## items_and_property.txt — Active two-class materialization boundary\nдый путь обязан иметь допустимые committed source/context refs, ordinary semantics, exact mechanics/property/placement и отдельную persisted identity.\n\nВторой класс не заполняет пустой authored candidate set и не разрешает direct action создавать NPC, места, улики, чужие/ценные/уникальные/скрытые предметы, container contents либо authoritative identity оружия, денег и документов. Active A1 может сохранить только неавторитетный physical writing, token-like форму и weapon-capable qualitative class; currency/legal/document truth и combat mechanics остаются у профильных owners. Активный O2b — отдельная узкая ветка existing committed container, а не это исключение. JSONB не заменяет нормализованные ссылки между экземплярами, шаблонами, контейнерами, владельцами и местами.",
+      "char_count": 847
     },
     {
       "id": "items_and_property.txt:Packing slots v1:0",
@@ -2619,8 +2619,8 @@
       "section": "2. Главное правило материализации",
       "line_start": 67,
       "line_end": 82,
-      "text": "## items_and_property.txt — 2. Главное правило материализации\ntricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 не имеет recipe/template whitelist и второго semantic model. Sole `turn_step_plan_v1` возвращает qualitative `action_production`; item owner принимает один или несколько committed либо sealed same-root revealed non-container material sources и ноль или несколько доступных controller-controlled tools, включая borrowed/party-owned. Sources и tools разделены exact refs. До четырёх independent outputs получают deterministic identities, material allocations и mechanics, выведенную только code-owned: finite source уменьшается, а полностью разделённый единичный source без resource row retire-ится; partial whole-item source получает only qualitative `minor|half|major` extent, который owner переводит в exact gram decrement и остаточную mechanics. Известная масса сохраняется, hand/packing не считаются материей. Safe non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible physical facts переживают same-root continuation и reload. Preserve сохраняет item identity, no-result ничего не создаёт. Writing сохраняет только inscription, token-like output остаётся non-currency, а weapon-capable item содержит только закрытую qualitative class, которую отдельно классифицирует combat owner.",
-      "char_count": 1452
+      "text": "## items_and_property.txt — 2. Главное правило материализации\ntricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 не имеет recipe/template whitelist и второго semantic model. Sole `turn_step_plan_v1` возвращает qualitative `action_production`; item owner принимает один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных controller-controlled tools, включая borrowed/party-owned. Sources и tools разделены exact refs. В `preserve_source` первый source сохраняет identity, а последующие sources являются расходуемыми материалами; grounded `minor|half|major|whole` extent переводится owner в exact расход и обновлённую mechanics основного предмета. Разные ownership claims contributors не являются физическим запретом: property результата детерминированно наследуется от primary/property source, а социально-правовые последствия остаются отдельным owner. До четырёх independent outputs получают deterministic identities, material allocations и mechanics, выведенную только code-owned: finite source уменьшается, а полностью разделённый единичный source без resource row retire-ится; partial whole-item source получает only qualitative `minor|half|major` extent, который owner переводит в exact gram decrement и остаточную mechanics. Известная масса сохраняется, hand/packing не считаются материей. Safe non-authoritative semantic descriptor сохраняется в ordinary item metadata. Visible physical facts переживают same-root continuation и reload; новый causal step явно удаляет ставшие ложными facts только по visible `fact_ref` и добавляет новый current набор без NLP-сопоставления. No-result ничего не создаёт. Writing сохраняет только inscription, token-like output остаётся non-currency, а weapon-capable item содержит только закрытую qualitative class, которую отдельно классифицирует combat owner.",
+      "char_count": 1991
     },
     {
       "id": "items_and_property.txt:3. Обязательные параметры значимого предмета:0",

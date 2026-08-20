@@ -60,7 +60,11 @@ function validQualitative(value, proposal) {
   const descriptor = value?.result_descriptor;
   return exact(value, QUALITATIVE_KEYS)
     && text(value.intended_transformation)
-    && (proposal.identity_mode !== 'independent_outputs'
+    && (proposal.identity_mode === 'preserve_source'
+      ? proposal.source_transitions.length > 1
+        ? ['minor', 'half', 'major', 'whole'].includes(value.material_extent)
+        : value.material_extent === null
+      : proposal.identity_mode !== 'independent_outputs'
       ? value.material_extent === null
       : proposal.result_class === 'partial_transformation'
         ? ['minor', 'half', 'major'].includes(value.material_extent)
@@ -75,6 +79,13 @@ function validQualitative(value, proposal) {
     && descriptor.qualitative_facts.every(text)
     && new Set(descriptor.qualitative_facts).size
       === descriptor.qualitative_facts.length
+    && (!Object.hasOwn(descriptor, 'removed_physical_fact_refs')
+      || Array.isArray(descriptor.removed_physical_fact_refs)
+        && descriptor.removed_physical_fact_refs.every(text)
+        && new Set(descriptor.removed_physical_fact_refs).size
+          === descriptor.removed_physical_fact_refs.length
+        && (proposal.identity_mode === 'preserve_source'
+          || descriptor.removed_physical_fact_refs.length === 0))
     && (descriptor.inscription_text === null
       || text(descriptor.inscription_text))
     && (value.output_class === 'weapon_capable')
@@ -84,8 +95,14 @@ function validQualitative(value, proposal) {
 }
 
 function descriptorKeys(value) {
-  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
-    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
+  const keys = [...DESCRIPTOR_KEYS];
+  if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
+    keys.push('removed_physical_fact_refs');
+  }
+  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
+    keys.push('weapon_qualitative_class');
+  }
+  return keys;
 }
 
 function validatePropertyBasis(result, selectedPin, sourcePins) {

@@ -29,6 +29,60 @@ export function nextActionProducedStateVersion(value) {
   return String(current + 1);
 }
 
+export function validActionProducedQualitativeResult(value, {
+  identityMode, resultClass, sourceCount
+}) {
+  if (!exact(value, ['intended_transformation', 'material_extent',
+    'result_descriptor', 'output_class'])
+      || !text(value.intended_transformation)
+      || !exact(value.result_descriptor,
+        descriptorKeys(value.result_descriptor))) return false;
+  const descriptor = value.result_descriptor;
+  return validMaterialExtent(value.material_extent, identityMode,
+    resultClass, sourceCount)
+    && (identityMode === 'independent_outputs'
+      ? text(descriptor.display_name) : nullableText(descriptor.display_name))
+    && nullableText(descriptor.physical_description)
+    && refs(descriptor.qualitative_facts)
+    && (!Object.hasOwn(descriptor, 'removed_physical_fact_refs')
+      || refs(descriptor.removed_physical_fact_refs)
+        && (identityMode === 'preserve_source'
+          || descriptor.removed_physical_fact_refs.length === 0))
+    && nullableText(descriptor.inscription_text);
+}
+
+function validMaterialExtent(value, identityMode, resultClass, sourceCount) {
+  return identityMode === 'preserve_source'
+    ? sourceCount > 1 ? ['minor', 'half', 'major', 'whole'].includes(value)
+      : value === null
+    : identityMode !== 'independent_outputs' ? value === null
+    : resultClass === 'partial_transformation'
+      ? ['minor', 'half', 'major'].includes(value) : value === 'whole';
+}
+
+function descriptorKeys(value) {
+  const keys = ['display_name', 'physical_description', 'qualitative_facts',
+    'inscription_text'];
+  if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
+    keys.push('removed_physical_fact_refs');
+  }
+  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
+    keys.push('weapon_qualitative_class');
+  }
+  return keys;
+}
+
+function exact(value, keys) {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === keys.length
+    && keys.every((key) => Object.hasOwn(value, key));
+}
+function text(value) { return typeof value === 'string'
+  && value.length > 0 && value.trim() === value; }
+function nullableText(value) { return value === null || text(value); }
+function refs(value) { return Array.isArray(value) && value.every(text)
+  && new Set(value).size === value.length; }
+
 function deeplyFrozen(value, seen) {
   if (value === null || typeof value !== 'object') return true;
   if (seen.has(value) || !Object.isFrozen(value)) return false;

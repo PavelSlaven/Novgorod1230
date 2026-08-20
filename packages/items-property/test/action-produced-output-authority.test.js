@@ -47,7 +47,7 @@ test('authority and ownership boundaries reject drift without getter reads',
     assert.equal(reads, 0);
   });
 
-test('output property source must contribute and match every contributor',
+test('output property source must contribute while ownership may differ',
   () => {
     const ownerA = { ownership_snapshot: ownership('ownership:a') };
     const ownerB = { ownership_snapshot: {
@@ -59,9 +59,9 @@ test('output property source must contribute and match every contributor',
     ]);
     assert.throws(() => validateActionProducedOutputPropertyBasis('source:a',
       [{ source_ref: 'source:b' }], sources), TypeError);
-    assert.throws(() => validateActionProducedOutputPropertyBasis('source:a',
-      [{ source_ref: 'source:a' }, { source_ref: 'source:b' }], sources),
-    TypeError);
+    assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
+      'source:a', [{ source_ref: 'source:a' }, { source_ref: 'source:b' }],
+      sources));
 
     sources.set('source:b', { source: {
       ownership_snapshot: ownership('ownership:b') } });

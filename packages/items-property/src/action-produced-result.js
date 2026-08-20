@@ -191,9 +191,11 @@ function validateProposal(value) {
 }
 
 function validMaterialExtent(value) {
-  if (value.identity_mode !== 'independent_outputs') {
-    return value.material_extent === null;
-  }
+  if (value.identity_mode === 'preserve_source') return value.source_refs
+    .length > 1 ? ['minor', 'half', 'major', 'whole']
+      .includes(value.material_extent) : value.material_extent === null;
+  if (value.identity_mode !== 'independent_outputs') return value
+    .material_extent === null;
   return value.result_class === 'partial_transformation'
     ? ['minor', 'half', 'major'].includes(value.material_extent)
     : value.material_extent === 'whole';
@@ -204,18 +206,26 @@ function validDescriptor(value) {
     && nullableText(value.display_name)
     && nullableText(value.physical_description)
     && textArray(value.qualitative_facts, true)
+    && (!Object.hasOwn(value, 'removed_physical_fact_refs')
+      || textArray(value.removed_physical_fact_refs, true))
     && nullableText(value.inscription_text);
 }
 
 function descriptorKeys(value) {
-  return value != null && Object.hasOwn(value, 'weapon_qualitative_class')
-    ? [...DESCRIPTOR_KEYS, 'weapon_qualitative_class'] : DESCRIPTOR_KEYS;
+  const keys = [...DESCRIPTOR_KEYS];
+  if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
+    keys.push('removed_physical_fact_refs');
+  }
+  if (value != null && Object.hasOwn(value, 'weapon_qualitative_class')) {
+    keys.push('weapon_qualitative_class');
+  }
+  return keys;
 }
 
 function validCausalShape(value) {
   const descriptor = value.result_descriptor;
   if (value.identity_mode === 'preserve_source'
-      && (value.source_refs.length !== 1 || value.origin !== null)) return false;
+      && value.origin !== null) return false;
   if (value.identity_mode === 'independent_outputs'
       && (!ORIGINS.has(value.origin)
         || !text(descriptor.display_name))) return false;
@@ -224,6 +234,7 @@ function validCausalShape(value) {
       && descriptor.display_name === null
       && descriptor.physical_description === null
       && descriptor.qualitative_facts.length === 0
+      && (descriptor.removed_physical_fact_refs?.length ?? 0) === 0
       && descriptor.inscription_text === null;
   }
   if (value.result_class === 'no_useful_result') return false;

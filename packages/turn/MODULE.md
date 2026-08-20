@@ -216,11 +216,13 @@ writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 currency/official status или combat numbers. Independent output требует
 непустое safe display name; nullable physical description не создаёт `null`
 fact. Для partial independent output sole plan задаёт только grounded
-`material_extent = minor|half|major`; full partition использует `whole`, а
-preserve/no-result — `null`. Числовую долю и exact mechanics выводит item owner.
-Persisted non-authoritative physical facts накапливаются в общей ordinary
-semantic-facts projection и входят в следующую player-safe working/reload
-projection.
+`material_extent = minor|half|major`; full partition использует `whole`.
+Preserve с одним source использует `null`, а с дополнительными расходуемыми
+materials — grounded `minor|half|major|whole`. Числовую долю и exact mechanics
+выводит item owner. Persisted non-authoritative physical facts входят в
+следующую player-safe working/reload projection; модель видит их safe refs и
+может удалить ставший ложным fact только через explicit
+`removed_physical_fact_refs`, без текстового/NLP-сопоставления.
 
 ## Тесты
 

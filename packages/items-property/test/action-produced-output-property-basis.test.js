@@ -15,10 +15,10 @@ test('output may combine owned sources with distinct property states', () => {
 
   sources.get('bark').source.ownership_snapshot.owner_character_id
     = 'actor:other';
-  assert.throws(() => validateActionProducedOutputPropertyBasis(
-    'board', allocations, sources), {
-    code: 'ITEM_ACTION_PRODUCED_TRANSITION_INVALID'
-  });
+  sources.get('bark').source.ownership_snapshot.controller_character_id
+    = 'actor:other';
+  assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
+    'board', allocations, sources));
 });
 
 function ownership(id) {

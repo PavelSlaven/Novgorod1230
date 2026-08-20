@@ -14,7 +14,8 @@ export function validateActionProducedOwnerMechanics(proposal, sourcePins) {
       source_mechanics: sourcePins.map((pin) => ({
         source_ref: pin.item_id, mechanics: committedMechanics(pin.item)
       })),
-      output_count: proposal.results.length
+      output_count: proposal.identity_mode === 'independent_outputs'
+        ? proposal.results.length : 0
     });
   } catch { fail('ACTION_PRODUCED_RESULT_INVALID'); }
   const actual = {
@@ -23,7 +24,11 @@ export function validateActionProducedOwnerMechanics(proposal, sourcePins) {
     source_effects: proposal.source_transitions.map((entry) => {
       const pin = sourcePins.find(({ item_id: itemId }) =>
         itemId === entry.entity_ref);
-      const partial = proposal.result_class === 'partial_transformation'
+      const preservedPrimary = proposal.identity_mode === 'preserve_source'
+        && entry.entity_ref === proposal.results[0]?.entity_ref;
+      const partial = !preservedPrimary
+        && (proposal.result_class === 'partial_transformation'
+          || proposal.identity_mode === 'preserve_source')
         && entry.finite_resource_transition === null
         && entry.after.mechanics_snapshot !== null;
       return { source_ref: entry.entity_ref,
@@ -33,10 +38,11 @@ export function validateActionProducedOwnerMechanics(proposal, sourcePins) {
               denominator: 1, unit: 'gram' } : null),
         mechanics_snapshot_after: entry.after.mechanics_snapshot };
     }),
-    outputs: proposal.results.map((result, index) => ({ ordinal: index + 1,
-      property_source_ref: result.source_ref,
-      mechanics_snapshot: result.mechanics_snapshot,
-      material_allocations: result.material_allocations })),
+    outputs: proposal.identity_mode !== 'independent_outputs' ? []
+      : proposal.results.map((result, index) => ({ ordinal: index + 1,
+        property_source_ref: result.source_ref,
+        mechanics_snapshot: result.mechanics_snapshot,
+        material_allocations: result.material_allocations })),
     known_waste: proposal.known_waste
   };
   if (!isDeepStrictEqual(actual, expected)) {

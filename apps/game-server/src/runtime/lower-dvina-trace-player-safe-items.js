@@ -2,6 +2,7 @@ import {
   assertAllowedKeys,
   compact,
   finite,
+  physicalFactRecords,
   plain,
   projectionError,
   scalarRecord,
@@ -20,7 +21,7 @@ const INVENTORY_KEYS = new Set([
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
   'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
-  'physical_facts',
+  'physical_facts', 'physical_fact_records',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'state', 'visible', 'is_visible'
@@ -60,7 +61,6 @@ export function playerSafeItemIds(items) {
   return new Set((items ?? []).map((item) => item?.item_id)
     .filter((itemId) => typeof itemId === 'string' && itemId.length > 0));
 }
-
 export function projectItems(records, { actorId, position, visibleNpcIds,
   strict = false } = {}) {
   if (!Array.isArray(records)) return undefined;
@@ -74,7 +74,6 @@ export function projectItems(records, { actorId, position, visibleNpcIds,
       visibleNpcIds))
     .map((item) => projectItem(item, strict));
 }
-
 function itemIsStructurallyVisible(item, byId, ancestors) {
   if (!plain(item) || recordIsClosed(item)) return false;
   const itemId = item.item_id ?? item.instance_id;
@@ -90,7 +89,6 @@ function itemIsStructurallyVisible(item, byId, ancestors) {
   if (typeof itemId === 'string') nextAncestors.add(itemId);
   return itemIsStructurallyVisible(host, byId, nextAncestors);
 }
-
 function projectInventoryItem(value, strict) {
   if (typeof value === 'string') return value;
   if (!plain(value)) return undefined;
@@ -109,13 +107,11 @@ function projectInventoryItem(value, strict) {
     risk: textArray(value.risk), use: text(value.use)
   });
 }
-
 function inventoryItemRef(value) {
   return typeof value === 'string'
     ? value
     : plain(value) ? value.item_id ?? value.instance_id : undefined;
 }
-
 function projectWeight(value, strict) {
   if (!plain(value)) return undefined;
   if (strict) {
@@ -123,7 +119,6 @@ function projectWeight(value, strict) {
   }
   return compact({ grams: finite(value.grams) });
 }
-
 function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
   visibleNpcIds) {
   if (!plain(item) || recordIsClosed(item)) return false;
@@ -179,6 +174,10 @@ function projectItem(item, strict) {
     profile_id: text(item.profile_id), category_id: text(item.category_id),
     name: text(item.name), semantic_type: text(item.semantic_type),
     physical_facts: projectPhysicalFacts(item, strict),
+    physical_fact_records: physicalFactRecords(item.physical_fact_records
+      ?? item.state?.ordinary_metadata?.semantic_facts?.map?.((fact) => ({
+        fact_ref: fact?.fact_id, text: fact?.text })), { strict,
+      path: 'items[].physical_fact_records[]', code: invalidCode() }),
     quantity: finite(item.quantity),
     quantity_unit_id: text(item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),

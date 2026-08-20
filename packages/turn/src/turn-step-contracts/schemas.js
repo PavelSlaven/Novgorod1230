@@ -266,12 +266,16 @@ const planDefinitions = {
   }),
   action_production_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'inscription_text', 'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text',
+    'weapon_qualitative_class'
   ], {
     display_name: { anyOf: [{ type: 'null' }, textSchema] },
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
     qualitative_facts: {
       type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
     },
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
     weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [
@@ -281,12 +285,16 @@ const planDefinitions = {
   }),
   action_production_output_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'inscription_text', 'weapon_qualitative_class'
+    'removed_physical_fact_refs', 'inscription_text',
+    'weapon_qualitative_class'
   ], {
     display_name: textSchema,
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
     qualitative_facts: {
       type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
     },
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
     weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [

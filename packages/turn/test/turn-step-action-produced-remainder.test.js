@@ -536,6 +536,7 @@ function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
         result_descriptor: { display_name: null,
           physical_description: 'Жердь физически обработана.',
           qualitative_facts: ['на конце жерди видны свежие срезы'],
+          removed_physical_fact_refs: [],
           inscription_text: null, weapon_qualitative_class: null },
         output_class: 'ordinary_mundane'
       } })

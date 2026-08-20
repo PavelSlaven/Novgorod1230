@@ -249,6 +249,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
           display_name: 'заострённая жердь',
           physical_description: 'конец жерди физически заострён',
           qualitative_facts: ['на конце видны свежие срезы'],
+          removed_physical_fact_refs: [],
           inscription_text: null,
           weapon_qualitative_class: 'improvised_puncture_light'
         },
@@ -260,6 +261,18 @@ test('sole turn plan boundary admits qualitative action production', () => {
   assert.deepEqual(validateTurnStepPlan(action, { request: source }), {
     ok: true, errors: []
   });
+
+  source.player_safe_state.items = [{ item_id: 'item:pole',
+    physical_fact_records: [{ fact_ref: 'fact:sharp',
+      text: 'конец заострён' }] }];
+  action.operations[0].action_production.result_descriptor
+    .removed_physical_fact_refs = ['fact:sharp'];
+  assert.equal(validateTurnStepPlan(action, { request: source }).ok, true);
+  action.operations[0].action_production.result_descriptor
+    .removed_physical_fact_refs = ['fact:unknown'];
+  assert.equal(validateTurnStepPlan(action, { request: source }).ok, false);
+  action.operations[0].action_production.result_descriptor
+    .removed_physical_fact_refs = [];
 
   action.operations[0].action_production.result_descriptor
     .weapon_qualitative_class = 'forged_weapon_class';

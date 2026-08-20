@@ -86,10 +86,13 @@ export function validateActionProducedAtomicProposal(value, load) {
           !== pin.entity_snapshot.controller_ref) {
       fail('ACTION_PRODUCED_SOURCE_PIN_MISMATCH');
     }
-    const retireSource = value.identity_mode === 'independent_outputs'
-      && transition.finite_resource_transition === null
+    const primaryRef = value.source_transitions[0].entity_ref;
+    const retireSource = transition.finite_resource_transition === null
       && pin.finite_resource_row === null
-      && transition.after.mechanics_snapshot === null;
+      && transition.after.mechanics_snapshot === null
+      && (value.identity_mode === 'independent_outputs'
+        || value.identity_mode === 'preserve_source'
+          && transition.entity_ref !== primaryRef);
     const changed = transition.finite_resource_transition !== null
       || transition.after.mechanics_snapshot !== null || retireSource;
     const expectedAfterVersion = changed
@@ -116,7 +119,6 @@ export function validateActionProducedAtomicProposal(value, load) {
   validateActionProducedProposalResults(value, sourcePins);
   if (value.identity_mode === 'preserve_source'
       && (value.results.length !== 1
-        || value.source_transitions.length !== 1
         || value.results[0].identity_kind !== 'preserved_source'
         || value.results[0].entity_ref
           !== value.source_transitions[0].entity_ref
@@ -192,6 +194,11 @@ function validateFinite(value, row, causal, itemId, required) {
 }
 
 function validateIndependentConservation(proposal, sourcePins) {
+  if (proposal.identity_mode === 'independent_outputs'
+      || proposal.identity_mode === 'preserve_source'
+        && sourcePins.length > 1) {
+    validateActionProducedOwnerMechanics(proposal, sourcePins);
+  }
   if (proposal.identity_mode !== 'independent_outputs') return;
   const transitions = new Map(proposal.source_transitions.map((entry) => {
     const pin = sourcePins.find(({ item_id: itemId }) =>
@@ -254,7 +261,6 @@ function validateIndependentConservation(proposal, sourcePins) {
       fail('ACTION_PRODUCED_RESULT_INVALID');
     }
   }
-  validateActionProducedOwnerMechanics(proposal, sourcePins);
 }
 
 function statePin(pin) {

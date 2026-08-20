@@ -382,6 +382,20 @@ Ordinary materialization должна иметь причинное основа
 
 При первой конкретизации ordinary-resource LLM может определить правдоподобный первоначальный масштаб только если код не имеет готового exact value и профильный контракт это допускает. После commit значение принадлежит коду и не переоценивается LLM при каждом обращении.
 
+### 10.4. Ordinary semantic remainder
+
+Не перечисляй заранее исчерпывающий набор ordinary NPC, ресурсов и материалов, ordinary buildings и local natural features, ordinary belongings, crafting results и обычных локальных последствий действий.
+
+Такие ordinary-детали могут семантически конкретизироваться или материализоваться LLM в пределах committed контекста, канонической географии, исторической и физической правдоподобности и authoritative envelope.
+
+Это не даёт права создавать без соответствующей authority authored, significant, hidden или scenario-critical NPC, места, предметы, факты или последствия.
+
+Материализованный ordinary NPC, локальное место или другой продолжающий существовать world entity получает stable identity и persisted state.
+
+Имя или иной обычный descriptor сами по себе не превращают entity в authored, significant, hidden или scenario-critical.
+
+Повторное обращение, повторное посещение, save/load и restart должны возвращать тот же entity и его текущее состояние, если мир причинно не изменился.
+
 ---
 
 ## 11. Каноническая география и semantic freedom

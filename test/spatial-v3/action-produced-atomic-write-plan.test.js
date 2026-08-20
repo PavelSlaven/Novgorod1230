@@ -351,7 +351,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
   result_class: 'ordinary_physical_result', qualitative_result: {
     output_class: 'money_like_token', result_descriptor: {
       display_name: 'деревянный счётный жетон',
-      physical_description: 'небольшой деревянный кружок',
+      physical_description: null,
       qualitative_facts: ['имеет сходство с жетоном'],
       inscription_text: null } } };
   const item = deriveActionProducedResultItem(result, sourcePins,
@@ -365,8 +365,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
   assert.deepEqual(item.item_row.state.ordinary_metadata, {
     semantic_type: 'money_like_token', name: 'деревянный счётный жетон',
     origin: { kind: 'action_produced', source_refs: ['item:coin-source'] },
-    semantic_facts: ['небольшой деревянный кружок',
-      'имеет сходство с жетоном'], operation_history: []
+    semantic_facts: ['имеет сходство с жетоном'], operation_history: []
   });
   assert.equal(item.ownership_row.owner_character_id, 'actor:mikula');
   assert.equal(result.property_state_ref, digest({

@@ -676,7 +676,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
          ->'causal_identity'->>'request_id'='production-whole') AS mass`))
       .rows[0], { source_condition: 'retired', outputs: 2, mass: 800 });
 
-    const partial = await factory({ partyId: 'party-a1',
+    await assert.rejects(() => factory({ partyId: 'party-a1',
       requestId: 'production-partial' })(productionEnvelope({
       checked: false, stateVersion: 9, turnNumber: 8,
       itemRef: 'production-partial-board',
@@ -689,28 +689,23 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         result_class: 'partial_transformation',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
           physical_description: 'небольшая отделённая часть доски' })
-      }) }));
-    const partialPlan = partial.action_production_atomic_write_plan;
-    assert.equal(partialPlan.source_pins[0].placement.anchor_id,
-      'output-anchor');
-    assert.equal(partialPlan.source_pins[0].entity_snapshot.holder_ref, null);
-    assert.equal((await committer.commit({ plan: await combinedPlan(
-      partialPlan, 'production-partial', 9) })).ok, true);
+      }) })), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
     assert.deepEqual((await pool.query(`SELECT
       (SELECT condition_state FROM party_runtime.party_items
        WHERE party_id='party-a1' AND item_id='production-partial-board')
         AS source_condition,
-      (SELECT (state->'runtime_instance_mechanics_snapshot'->'mechanics'
-        ->>'mass_grams')::int FROM party_runtime.party_items
+      (SELECT COALESCE(
+        (state->'runtime_instance_mechanics_snapshot'->'mechanics'
+          ->>'mass_grams')::int,
+        (state->'inventory_profile_snapshot'->>'mass_grams')::int)
+       FROM party_runtime.party_items
        WHERE party_id='party-a1' AND item_id='production-partial-board')
         AS source_mass,
-      (SELECT array_agg((state->'runtime_instance_mechanics_snapshot'
-        ->'mechanics'->>'mass_grams')::int ORDER BY item_id)
+      (SELECT count(*)::int
        FROM party_runtime.party_items WHERE party_id='party-a1'
          AND state->'action_production'->'causal_identity'->>'request_id'
-           ='production-partial') AS output_masses`)).rows[0], {
-      source_condition: 'serviceable', source_mass: 267,
-      output_masses: [267, 267]
+           ='production-partial') AS outputs`)).rows[0], {
+      source_condition: 'serviceable', source_mass: 801, outputs: 0
     });
   });
 

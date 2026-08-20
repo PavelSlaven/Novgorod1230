@@ -126,9 +126,10 @@ the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
 profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
-retires without a synthetic resource row, and partial transformation may keep
-the changed source while creating outputs. Odd mass is distributed
-deterministically; output hand/packing/carry is code-derived. Safe result descriptors persist in
+retires without a synthetic resource row. Partial output without an exact
+grounded material allocation fails with a mechanics gap instead of choosing a
+source fraction. Odd mass is distributed deterministically; output
+hand/packing/carry is code-derived. Safe named result descriptors persist in
 ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
 closed qualitative weapon-capable outcomes. Item mechanics, conservation,

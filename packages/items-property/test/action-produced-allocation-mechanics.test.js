@@ -95,24 +95,25 @@ test('allocation mechanics conserves odd mass without inheriting board shape',
       container: null }]);
   });
 
-test('partial transformation keeps changed source and creates outputs', () => {
-  const resolution = resolveActionProducedAllocationMechanics({
-    mechanics_request: mechanicsRequest({
-      result_class: 'partial_transformation', source_inputs: [{
-        entity_ref: 'material:board', finite_resource: null }] }),
-    source_mechanics: [{ source_ref: 'material:board', mechanics: {
-      mass_grams: 801, external_hand_cost: 1, carry_form: 'long',
-      packing_slot_cost: 6, quantity: null, container: null } }],
-    output_count: 2
-  });
-  assert.equal(resolution.source_effects[0]
-    .mechanics_snapshot_after.mechanics.mass_grams, 267);
-  assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: value }) =>
-    value.mechanics.mass_grams), [267, 267]);
-  assert.deepEqual(resolution.outputs[0].material_allocations, [{
-    source_ref: 'material:board', quantity: {
-      numerator: 1, denominator: 3, unit: 'whole_item' }
-  }]);
+test('partial outputs require a grounded exact material allocation', () => {
+  for (const { input, mechanics } of [{
+    input: { entity_ref: 'material:board', finite_resource: null },
+    mechanics: { mass_grams: 801, external_hand_cost: 1,
+      carry_form: 'long', packing_slot_cost: 6, quantity: null,
+      container: null }
+  }, {
+    input: sourceInput('material:board', 2),
+    mechanics: { mass_grams: 800, external_hand_cost: 1,
+      carry_form: 'long', packing_slot_cost: 6,
+      quantity: { value: 2, unit: 'piece' }, container: null }
+  }]) {
+    assert.throws(() => resolveActionProducedAllocationMechanics({
+      mechanics_request: mechanicsRequest({
+        result_class: 'partial_transformation', source_inputs: [input] }),
+      source_mechanics: [{ source_ref: 'material:board', mechanics }],
+      output_count: 2
+    }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
+  }
 });
 
 test('preserve source keeps ordinary mechanics without a discrete quantity',

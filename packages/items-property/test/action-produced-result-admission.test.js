@@ -117,6 +117,8 @@ test('independent, impossible no-result and writing remain qualitative', () => {
   for (const value of [independent, noResult, writing]) {
     assert.equal(admitActionProducedResult(input(value)).pass, true);
   }
+  independent.result_descriptor.display_name = null;
+  assert.equal(admitActionProducedResult(input(independent)).pass, false);
   const denied = admitActionProducedResult(input(noResult)).handoff;
   assert.equal(denied.identity_mode, 'no_useful_result');
   assert.equal(denied.result_class, 'no_useful_result');

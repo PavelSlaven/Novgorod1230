@@ -203,16 +203,18 @@ function validateHandoff(value) {
       || (value.qualitative_result?.output_class === 'weapon_capable')
         !== WEAPON_CLASSES.has(value.qualitative_result?.result_descriptor
           ?.weapon_qualitative_class)
-      || !validQualitativeResult(value.qualitative_result)) fail();
+      || !validQualitativeResult(value.qualitative_result,
+        value.identity_mode)) fail();
   return value;
 }
-function validQualitativeResult(value) {
+function validQualitativeResult(value, identityMode) {
   if (!exact(value, QUALITATIVE_KEYS)
       || !text(value.intended_transformation)
       || !exact(value.result_descriptor,
         descriptorKeys(value.result_descriptor))) return false;
   const descriptor = value.result_descriptor;
-  return nullableText(descriptor.display_name)
+  return (identityMode === 'independent_outputs'
+      ? text(descriptor.display_name) : nullableText(descriptor.display_name))
     && nullableText(descriptor.physical_description)
     && refs(descriptor.qualitative_facts, true) != null
     && nullableText(descriptor.inscription_text);

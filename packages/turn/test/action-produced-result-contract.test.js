@@ -74,6 +74,14 @@ test('A1 contract admits same identity, independent outputs and no result', () =
       qualitative_facts: [], inscription_text: null } });
   assert.equal(validateActionProducedResultPlan(split,
     { request: splitRequest }).ok, true);
+  assert.equal(validateActionProducedResultPlan({ ...split,
+    result_descriptor: { ...split.result_descriptor,
+      display_name: null, physical_description: null }
+  }, { request: splitRequest }).ok, false);
+  assert.equal(validateActionProducedResultPlan({ ...split,
+    result_descriptor: { ...split.result_descriptor,
+      physical_description: null }
+  }, { request: splitRequest }).ok, true);
 
   const failedRequest = request({ output_class: null });
   const failed = plan({ identity_mode: 'no_useful_result', origin: null,

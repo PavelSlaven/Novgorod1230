@@ -213,7 +213,8 @@ function validCausalShape(value) {
   if (value.identity_mode === 'preserve_source'
       && (value.source_refs.length !== 1 || value.origin !== null)) return false;
   if (value.identity_mode === 'independent_outputs'
-      && !ORIGINS.has(value.origin)) return false;
+      && (!ORIGINS.has(value.origin)
+        || !text(descriptor.display_name))) return false;
   if (value.identity_mode === 'no_useful_result') {
     return value.origin === null && value.result_class === 'no_useful_result'
       && descriptor.display_name === null

@@ -179,6 +179,10 @@ function validateCausalShape(value, errors) {
       && !ORIGINS.has(value.origin)) {
     errors.push('independent_outputs requires a produced origin');
   }
+  if (value.identity_mode === 'independent_outputs'
+      && !exactTextValue(descriptorValue.display_name)) {
+    errors.push('independent_outputs requires a safe display name');
+  }
   if (value.identity_mode === 'no_useful_result') {
     if (value.origin !== null
         || value.result_class !== 'no_useful_result'

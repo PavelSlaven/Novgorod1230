@@ -34,6 +34,43 @@ const jsonDataDefinitions = {
   }
 };
 
+const ACTION_PRODUCTION_FIELDS = [
+  'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
+  'result_class', 'result_descriptor', 'output_class'
+];
+const ACTION_PRODUCTION_PROPERTIES = {
+  source_refs: { type: 'array', minItems: 1, uniqueItems: true,
+    items: refSchema },
+  tool_refs: { type: 'array', uniqueItems: true, items: refSchema },
+  output_count: { type: 'integer', minimum: 0, maximum: 8 },
+  identity_mode: { enum: [
+    'preserve_source', 'independent_outputs', 'no_useful_result'
+  ] },
+  origin: { anyOf: [{ type: 'null' }, {
+    enum: ['direct_partition', 'crafted']
+  }] },
+  result_class: { enum: [
+    'ordinary_physical_result', 'partial_transformation',
+    'nonworking_construction', 'waste', 'written_carrier',
+    'no_useful_result'
+  ] },
+  result_descriptor: { $ref: '#/$defs/action_production_descriptor' },
+  output_class: { anyOf: [{ type: 'null' }, { enum: [
+    'ordinary_mundane', 'weapon_capable', 'money_like_token',
+    'written_carrier'
+  ] }] }
+};
+
+function actionProductionSchema(identityMode, outputCount, descriptorRef) {
+  return strictObject(ACTION_PRODUCTION_FIELDS, {
+    ...ACTION_PRODUCTION_PROPERTIES,
+    identity_mode: { const: identityMode }, output_count: outputCount,
+    ...(descriptorRef == null ? {} : {
+      result_descriptor: { $ref: descriptorRef }
+    })
+  });
+}
+
 export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'urn:rus:turn:turn_step_request_v1',
@@ -239,31 +276,28 @@ const planDefinitions = {
       'improvised_cutting_light', 'improvised_two_hand_heavy'
     ] }] }
   }),
-  action_production: strictObject([
-    'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
-    'result_class', 'result_descriptor', 'output_class'
+  action_production_output_descriptor: strictObject([
+    'display_name', 'physical_description', 'qualitative_facts',
+    'inscription_text', 'weapon_qualitative_class'
   ], {
-    source_refs: { type: 'array', minItems: 1, uniqueItems: true,
-      items: refSchema },
-    tool_refs: { type: 'array', uniqueItems: true, items: refSchema },
-    output_count: { type: 'integer', minimum: 0, maximum: 8 },
-    identity_mode: { enum: [
-      'preserve_source', 'independent_outputs', 'no_useful_result'
-    ] },
-    origin: { anyOf: [{ type: 'null' }, {
-      enum: ['direct_partition', 'crafted']
-    }] },
-    result_class: { enum: [
-      'ordinary_physical_result', 'partial_transformation',
-      'nonworking_construction', 'waste', 'written_carrier',
-      'no_useful_result'
-    ] },
-    result_descriptor: { $ref: '#/$defs/action_production_descriptor' },
-    output_class: { anyOf: [{ type: 'null' }, { enum: [
-      'ordinary_mundane', 'weapon_capable', 'money_like_token',
-      'written_carrier'
+    display_name: textSchema,
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
+    weapon_qualitative_class: { anyOf: [{ type: 'null' }, { enum: [
+      'improvised_puncture_light', 'improvised_impact_light',
+      'improvised_cutting_light', 'improvised_two_hand_heavy'
     ] }] }
   }),
+  action_production: { oneOf: [
+    actionProductionSchema('preserve_source', { const: 0 }),
+    actionProductionSchema('independent_outputs', {
+      type: 'integer', minimum: 1, maximum: 8
+    }, '#/$defs/action_production_output_descriptor'),
+    actionProductionSchema('no_useful_result', { const: 0 })
+  ] },
   request_item_use_legacy: strictObject([
     'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'
   ], {

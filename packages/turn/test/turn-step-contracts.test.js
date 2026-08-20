@@ -274,6 +274,14 @@ test('sole turn plan boundary admits qualitative action production', () => {
     origin: 'crafted'
   };
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
+  partition.operations[0].action_production.result_descriptor.display_name =
+    null;
+  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);
+  partition.operations[0].action_production.result_descriptor.display_name =
+    'деревянный клин';
+  partition.operations[0].action_production.result_descriptor
+    .physical_description = null;
+  assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
   partition.operations[0].action_production.tool_refs = ['item:stone'];
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);
 });

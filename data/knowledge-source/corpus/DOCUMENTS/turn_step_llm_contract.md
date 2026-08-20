@@ -826,7 +826,7 @@ LLM не перечисляет contents до их появления в player-
     "origin": "direct_partition | crafted | null",
     "result_class": "ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result",
     "result_descriptor": {
-      "display_name": null,
+      "display_name": "безопасное имя физического результата",
       "physical_description": "видимый физический результат",
       "qualitative_facts": [],
       "inscription_text": null,
@@ -857,10 +857,12 @@ weapon-capable outcomes. Model не задаёт массу, расход, mecha
 property, placement, время, roll, currency/official status или combat numbers.
 Exact source/output mechanics выводится из реально списанных allocations:
 finite source уменьшается, а полностью разделённый единичный source без
-resource row retire-ится; partial transformation может одновременно изменить
-source и создать outputs. Масса сохраняется с детерминированным остатком,
-hand/packing/carry выводятся code-owned и не наследуют форму source.
-Safe non-authoritative display name/type/physical description сохраняются в
+resource row retire-ится. Partial output без exact grounded material allocation
+возвращает typed mechanics gap; code не выводит расход из одного output count.
+Масса полного partition сохраняется с детерминированным остатком,
+hand/packing/carry выводятся code-owned и не наследуют форму source. Новый
+independent output обязан иметь safe непустое display name; nullable physical
+description не добавляется как `null` fact. Non-authoritative display name/type сохраняются в
 ordinary item metadata и переживают reload; нецелимая mass allocation
 возвращает typed gap.
 Один combined P16 сохраняет causal pins, conservation и physical transition

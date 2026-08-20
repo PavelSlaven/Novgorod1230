@@ -50,7 +50,7 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
 
 function independentResolution(request, byRef, outputCount) {
   const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
-  const partial = request.result_class === 'partial_transformation';
+  if (request.result_class === 'partial_transformation') gap();
   const consumed = request.source_inputs.map((source) => {
     const finite = source.finite_resource;
     const mechanics = byRef.get(source.entity_ref);
@@ -58,18 +58,15 @@ function independentResolution(request, byRef, outputCount) {
       if (mechanics.quantity !== null
           && (mechanics.quantity.value !== 1
             || mechanics.quantity.unit !== 'item')) gap();
-      const denominator = partial ? outputCount + 1 : outputCount;
-      const consumedMass = partial
-        ? mechanics.mass_grams - Math.floor(mechanics.mass_grams / denominator)
-        : mechanics.mass_grams;
+      const denominator = outputCount;
+      const consumedMass = mechanics.mass_grams;
       if (consumedMass < outputCount) gap();
       return { source, mechanics,
-        quantity: rational(partial ? outputCount : 1,
-          partial ? outputCount + 1 : 1, 'whole_item'),
+        quantity: rational(1, 1, 'whole_item'),
         allocation: rational(1, denominator, 'whole_item'),
         consumedMass, consumedPacking: mechanics.packing_slot_cost
           * consumedMass / mechanics.mass_grams,
-        retire: !partial };
+        retire: true };
     }
     if (finite.lifecycle_state !== 'active') gap();
     const quantity = exactFiniteQuantity(finite?.quantity);
@@ -97,14 +94,6 @@ function independentResolution(request, byRef, outputCount) {
     consumedPacking, retire }) => {
     if (retire) return { source_ref: source.entity_ref,
       requested_decrement: null, mechanics_snapshot_after: null };
-    if (source.finite_resource === null) {
-      const after = derivedMechanics(mechanics.mass_grams - consumedMass,
-        Math.max(0, mechanics.packing_slot_cost
-          - Math.ceil(consumedPacking)), mechanics.quantity);
-      return { source_ref: source.entity_ref, requested_decrement: null,
-        mechanics_snapshot_after: snapshot(request, after,
-          request.causal_identity.action_ref) };
-    }
     const remainingNumerator = quantity.numerator - quantity.denominator;
     const after = {
       mass_grams: mechanics.mass_grams - consumedMass,

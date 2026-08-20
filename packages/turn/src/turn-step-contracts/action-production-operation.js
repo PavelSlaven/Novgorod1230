@@ -107,6 +107,11 @@ function validateShape(value, path, errors) {
     add(errors, path, 'identity_shape',
       'identity mode and origin are incompatible');
   }
+  if (value.identity_mode === 'independent_outputs'
+      && typeof descriptor.display_name !== 'string') {
+    add(errors, `${path}.result_descriptor.display_name`, 'identity_shape',
+      'independent output requires a safe display name');
+  }
   if (value.result_class === 'written_carrier') {
     if (value.identity_mode !== 'preserve_source'
         || value.output_class !== 'written_carrier'

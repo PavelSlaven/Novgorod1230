@@ -208,7 +208,9 @@ preserve, до четырёх mass-conserving independent outputs и no-result;
 partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 не задаёт mechanics, расход, identity, property, placement, roll, time,
-currency/official status или combat numbers.
+currency/official status или combat numbers. Independent output требует
+непустое safe display name; nullable physical description не создаёт `null`
+fact. Partial output без exact grounded allocation возвращает mechanics gap.
 
 ## Тесты
 

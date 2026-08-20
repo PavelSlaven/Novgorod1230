@@ -43,8 +43,10 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
         source_refs: result.material_allocations.length === 0
           ? [result.source_ref] : [...new Set(result.material_allocations.map(
             ({ source_ref: sourceRef }) => sourceRef))] },
-      semantic_facts: [proposal.qualitative_result.result_descriptor
-        .physical_description,
+      semantic_facts: [
+        ...(proposal.qualitative_result.result_descriptor
+          .physical_description === null ? [] : [proposal.qualitative_result
+          .result_descriptor.physical_description]),
         ...result.physical_facts],
       operation_history: []
     },

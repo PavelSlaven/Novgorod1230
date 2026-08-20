@@ -91,7 +91,7 @@ export async function applyOrdinaryContainerContentsAtomicWritePlanInTransaction
   }
   for (let ordinal = 0; ordinal < plan.items.length; ordinal += 1) {
     await insertItem(client, plan, plan.items[ordinal], ordinal,
-      p16ChangeSetId);
+      p16ChangeSetId, current.container_ownership);
   }
   const aggregateUpdate = await client.query(`UPDATE party_runtime.party_ordinary_materialization_aggregates
     SET state_version=$4,aggregate_payload=$5::jsonb
@@ -140,7 +140,9 @@ async function lockCore(client, plan) {
       x.state->'ordinary_contents_context'->>'mechanics_profile_ref' AS mechanics_profile_ref,
       x.state->'ordinary_contents_context'->>'mechanics_profile_digest' AS mechanics_profile_digest,
       x.state->'ordinary_contents_context'->>'context_digest' AS container_context_digest,
-      x.state->'ordinary_contents_context'->'ordinary_policy' AS ordinary_policy
+      x.state->'ordinary_contents_context'->'ordinary_policy' AS ordinary_policy,
+      o.owner_npc_id,o.owner_character_id,o.owner_party,
+      o.controller_npc_id,o.controller_character_id,o.claim_state
     FROM party_runtime.parties p
     JOIN party_runtime.party_ordinary_materialization_aggregates a
       ON a.party_id=p.party_id AND a.scope_kind='container' AND a.scope_id=$2
@@ -148,7 +150,9 @@ async function lockCore(client, plan) {
       ON c.party_id=a.party_id AND c.scope_kind=a.scope_kind AND c.scope_id=a.scope_id
     JOIN party_runtime.party_containers x
       ON x.party_id=p.party_id AND x.container_id=$2
-    WHERE p.party_id=$1 FOR UPDATE OF p,a,c,x`,
+    JOIN party_runtime.party_ownership o
+      ON o.party_id=x.party_id AND o.container_id=x.container_id
+    WHERE p.party_id=$1 FOR UPDATE OF p,a,c,x,o`,
   [plan.party_id,plan.scope_ref.entity_id]);
   if (result.rowCount !== 1) fail('ORDINARY_PHASE6_COMMITTED_STATE_MISSING');
   const row = result.rows[0];
@@ -176,6 +180,11 @@ async function lockCore(client, plan) {
     mechanics_profile_digest:row.mechanics_profile_digest,
     container_context_digest:row.container_context_digest,
     ordinary_policy:row.ordinary_policy,
+    container_ownership:{owner_npc_id:row.owner_npc_id,
+      owner_character_id:row.owner_character_id,owner_party:row.owner_party,
+      controller_npc_id:row.controller_npc_id,
+      controller_character_id:row.controller_character_id,
+      claim_state:row.claim_state},
     aggregate:row.aggregate_payload };
 }
 
@@ -225,7 +234,7 @@ function policyLimitMatches(policy, limits) {
     && canonicalDigest(policy.technical_limits) === canonicalDigest(limits);
 }
 
-async function insertItem(client, plan, item, ordinal, changeSetId) {
+async function insertItem(client, plan, item, ordinal, changeSetId, ownership) {
   const evidence = item.item_proposal.property_placement_evidence;
   await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_items
     (party_id,item_id,request_identity,resolution_request_identity,scope_kind,
@@ -268,4 +277,13 @@ async function insertItem(client, plan, item, ordinal, changeSetId) {
      attached_item_id)
     VALUES ($1,$2,NULL,$3,NULL,NULL,NULL,NULL,NULL)`,
   [plan.party_id,item.item_id,item.container_id]);
+  await client.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,item_id,container_id,owner_npc_id,
+     owner_character_id,owner_party,controller_npc_id,
+     controller_character_id,claim_state)
+    VALUES ($1,$2,$3,NULL,$4,$5,$6,$7,$8,$9)`,
+  [plan.party_id,`ownership:${item.item_id}`,item.item_id,
+    ownership.owner_npc_id,ownership.owner_character_id,ownership.owner_party,
+    ownership.controller_npc_id,ownership.controller_character_id,
+    ownership.claim_state]);
 }

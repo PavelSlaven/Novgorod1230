@@ -20,6 +20,11 @@ export async function provisionProductionO2bFixture(pool) {
     VALUES ('party-o2b-production',$1,'run',$2,'pc','hands','closed',$3::jsonb,$4)`,
   [container.container_id,container.template_id,JSON.stringify(container.state),
     container.state_version]);
+  await pool.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,container_id,owner_character_id,
+     controller_character_id,claim_state)
+    VALUES ('party-o2b-production',$1,$2,'pc','pc','owned')`,
+  [`ownership:${container.container_id}`,container.container_id]);
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)
     VALUES ('party-o2b-production','container',$1,$2,$3::jsonb)`,

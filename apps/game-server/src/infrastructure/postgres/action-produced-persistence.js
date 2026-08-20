@@ -8,6 +8,9 @@ import { lockAndVerifyActionProducedContext } from
   './action-produced-persistence-context.js';
 import { lockAndVerifyPreparedActionProducedPin } from
   './action-produced-prepared-ordinary-persistence.js';
+import { actionProducedPlacementAccessible,
+  loadActionProducedAccessContainers } from
+  './action-produced-contained-access.js';
 
 export async function applyActionProducedAtomicWritePlanInTransaction({
   client, input, p16ChangeSetId, partyStateVersionAfter
@@ -38,6 +41,12 @@ export async function applyActionProducedAtomicWritePlanInTransaction({
       update.after_item.state_version, plan.party_id, update.item_id,
       update.expected_item_state_version]);
     if (changed.rowCount !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
+    if (update.after_item.state?.lifecycle_status === 'retired') {
+      const removed = await client.query(
+        `DELETE FROM party_runtime.party_item_placements
+         WHERE party_id=$1 AND item_id=$2`, [plan.party_id, update.item_id]);
+      if (removed.rowCount !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
+    }
   }
   for (const result of plan.result_items) {
     await insertResult(client, plan.party_id, result);
@@ -47,6 +56,7 @@ export async function applyActionProducedAtomicWritePlanInTransaction({
 
 async function lockAndVerifyPins(client, plan) {
   const pins = [...plan.source_pins, ...plan.tool_pins];
+  const containers = new Map();
   for (const pin of pins) {
     if (pin.prepared_ordinary != null) {
       await lockAndVerifyPreparedActionProducedPin(client, plan, pin);
@@ -68,11 +78,21 @@ async function lockAndVerifyPins(client, plan) {
        FOR UPDATE OF i,p,o`, [plan.party_id, pin.item_id]);
     if (selected.rows.length !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
     const normalized = normalizedRows(selected.rows[0]);
+    const containerId = normalized.placement.container_id;
+    if (containerId != null && !containers.has(containerId)) {
+      const loaded = await loadActionProducedAccessContainers(client,
+        plan.party_id, [containerId], { lock: true });
+      containers.set(containerId, loaded.get(containerId) ?? null);
+    }
+    const accessContainer = containerId == null ? null
+      : containers.get(containerId);
     if (!accessibleByActor(normalized.placement, normalized.ownership,
-      plan.actor_ref, plan.output_destination_pin?.anchor_id ?? null)
+      accessContainer, plan.actor_ref,
+      plan.output_destination_pin?.anchor_id ?? null)
         || digest(normalized.item) !== pin.item_digest
         || digest(normalized.placement) !== pin.placement_digest
-        || digest(normalized.ownership) !== pin.ownership_digest) {
+        || digest(normalized.ownership) !== pin.ownership_digest
+        || digest(accessContainer) !== digest(pin.access_container ?? null)) {
       fail(pin.role === 'tool'
         ? 'ACTION_PRODUCED_TOOL_STALE' : 'ACTION_PRODUCED_SOURCE_STALE');
     }
@@ -93,17 +113,13 @@ async function lockAndVerifyPins(client, plan) {
   }
 }
 
-function accessibleByActor(placement, ownership, actorRef, accessAnchorId) {
+function accessibleByActor(placement, ownership, accessContainer, actorRef,
+  accessAnchorId) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
     + Number(ownership.owner_party === true);
-  const placementAccessible = placement.holder_character_id === actorRef
-      && placement.holder_npc_id === null
-    || text(accessAnchorId) && placement.anchor_id === accessAnchorId
-      && placement.holder_character_id === null
-      && placement.holder_npc_id === null && placement.container_id === null
-      && placement.attached_item_id === null;
-  return placementAccessible
+  return actionProducedPlacementAccessible(placement, accessContainer,
+    actorRef, accessAnchorId)
     && ownership.controller_character_id === actorRef
     && ownership.controller_npc_id === null
     && owners === 1 && typeof ownership.owner_party === 'boolean'

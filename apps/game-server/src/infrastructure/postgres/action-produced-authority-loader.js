@@ -20,8 +20,12 @@ export async function loadActionProducedOutputDestination(client, input) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   const used = await client.query(
-    `SELECT item_id FROM party_runtime.party_item_placements
-     WHERE party_id=$1 AND anchor_id=$2 ORDER BY item_id`,
+    `SELECT p.item_id FROM party_runtime.party_item_placements p
+     JOIN party_runtime.party_items i
+       ON i.party_id=p.party_id AND i.item_id=p.item_id
+     WHERE p.party_id=$1 AND p.anchor_id=$2
+       AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired'
+     ORDER BY p.item_id`,
   [input.party_id, selected.rows[0].anchor_id]);
   const usedItemIds = used.rows.map(({ item_id: itemId }) => itemId);
   if (!refs(usedItemIds) || usedItemIds.length > itemCapacity) {

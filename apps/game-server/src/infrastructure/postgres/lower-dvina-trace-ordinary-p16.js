@@ -37,7 +37,8 @@ export function ordinaryPhysicalKeys(plan) {
       `party_runtime.party_containers:${plan.scope_ref.entity_id}`,
       ...materializationItemIds.flatMap((itemId) => [
         `party_runtime.party_items:${itemId}`,
-        `party_runtime.party_item_placements:${itemId}`
+        `party_runtime.party_item_placements:${itemId}`,
+        `party_runtime.party_ownership:ownership:${itemId}`
       ])
     ] : []),
     ...(plan.item == null ? [] : [

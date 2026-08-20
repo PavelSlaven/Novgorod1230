@@ -2,6 +2,10 @@ import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { deriveActionProducedPropertyCompatibilityBasis } from
   '@rus/items-property';
+import { actionProducedAccessState,
+  actionProducedPlacementAccessible,
+  validActionProducedAccessContainer } from
+  './action-produced-contained-access.js';
 import {
   actionProducedText as text,
   exactActionProducedRecord as exact,
@@ -14,6 +18,7 @@ const ROW_PIN_KEYS = [
   'finite_resource_row'
 ];
 const PREPARED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_ordinary'];
+const CONTAINED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'access_container'];
 const ENTITY_KEYS = [
   'schema', 'commit_state', 'role', 'entity_ref', 'state_version',
   'lifecycle_state', 'access_state', 'holder_ref', 'controller_ref',
@@ -44,6 +49,18 @@ export function validateActionProducedDestinationPin(pin) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   return pin;
+}
+
+export function actionProducedDestinationFits(pin, sourceUpdates,
+  resultItems) {
+  const destination = validateActionProducedDestinationPin(pin);
+  if (destination === null) return resultItems.length === 0;
+  const retired = new Set(sourceUpdates.filter((update) =>
+    update.after_item?.state?.lifecycle_status === 'retired')
+    .map(({ item_id: itemId }) => itemId));
+  const remaining = destination.used_item_ids.filter((itemId) =>
+    !retired.has(itemId)).length;
+  return remaining + resultItems.length <= destination.item_capacity;
 }
 
 export function actionProducedOutputPlacement(destinationPin) {
@@ -77,8 +94,12 @@ export function validateActionProducedRowPins(pins, role, actorRef,
   for (const pin of pins) {
     const prepared = Object.hasOwn(pin, 'prepared_ordinary')
       ? pin.prepared_ordinary : null;
-    if (!(prepared === null ? exact(pin, ROW_PIN_KEYS)
-      : exact(pin, PREPARED_ROW_PIN_KEYS))
+    const accessContainer = Object.hasOwn(pin, 'access_container')
+      ? pin.access_container : null;
+    const exactPin = prepared !== null ? exact(pin, PREPARED_ROW_PIN_KEYS)
+      : accessContainer !== null ? exact(pin, CONTAINED_ROW_PIN_KEYS)
+        : exact(pin, ROW_PIN_KEYS);
+    if (!exactPin
         || prepared !== null && (!exact(prepared,
           ['schema', 'request_identity', 'write_plan_digest', 'root_turn_id',
             'step_index'])
@@ -99,7 +120,11 @@ export function validateActionProducedRowPins(pins, role, actorRef,
         || pin.item?.item_id !== pin.item_id
         || digest(pin.item) !== pin.item_digest
         || digest(pin.placement) !== pin.placement_digest
-        || digest(pin.ownership) !== pin.ownership_digest) {
+        || digest(pin.ownership) !== pin.ownership_digest
+        || accessContainer !== null
+          && (!validActionProducedAccessContainer(accessContainer, actorRef,
+            accessAnchorId)
+            || pin.placement.container_id !== accessContainer.container_id)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
     seenItems.add(pin.item_id);
@@ -113,7 +138,7 @@ export function validateActionProducedRowPins(pins, role, actorRef,
     const finite = finiteSnapshot(pin.finite_resource_row, pin.item_id,
       role, seenResources);
     const expected = expectedEntity(pin, role, actorRef, contextVersion,
-      finite, accessAnchorId);
+      finite, accessAnchorId, accessContainer);
     if (digest(pin.entity_snapshot) !== digest(expected)) {
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
@@ -121,11 +146,12 @@ export function validateActionProducedRowPins(pins, role, actorRef,
 }
 
 function expectedEntity(pin, role, actorRef, contextVersion, finite,
-  accessAnchorId) {
+  accessAnchorId, accessContainer) {
   const { item, placement, ownership } = pin;
   const prepared = pin.prepared_ordinary != null;
   const accessState = prepared ? 'quick'
-    : access(placement, actorRef, accessAnchorId);
+    : actionProducedAccessState(placement, accessContainer, actorRef,
+      accessAnchorId);
   const holderRef = placement.holder_character_id === actorRef
     ? actorRef : null;
   const propertyBasis = deriveActionProducedPropertyCompatibilityBasis(
@@ -134,7 +160,8 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
       || !Number.isSafeInteger(item.state_version) || item.state_version < 1
       || item.state?.lifecycle_status != null
         && item.state.lifecycle_status !== 'active'
-      || !prepared && !accessiblePlacement(placement, actorRef, accessAnchorId)
+      || !prepared && !actionProducedPlacementAccessible(placement,
+        accessContainer, actorRef, accessAnchorId)
       || placement.holder_npc_id !== null
       || !validOwnership(ownership)
       || ownership.controller_character_id !== actorRef
@@ -199,26 +226,4 @@ function finiteSnapshot(row, itemId, role, seenResources) {
     quantity: { numerator: row.quantity_numerator,
       denominator: row.quantity_denominator, unit }
   };
-}
-
-function accessiblePlacement(placement, actorRef, accessAnchorId) {
-  return placement.holder_character_id === actorRef
-      && placement.holder_npc_id === null
-    || text(accessAnchorId) && placement.anchor_id === accessAnchorId
-      && placement.holder_character_id === null
-      && placement.holder_npc_id === null && placement.container_id === null
-      && placement.attached_item_id === null;
-}
-
-function access(placement, actorRef, accessAnchorId) {
-  if (placement.holder_character_id === actorRef
-      && ['hands', 'equipped', 'worn_quick'].includes(
-        placement.physical_position)) {
-    return 'immediate';
-  }
-  if (placement.holder_character_id === actorRef
-      && ['worn', 'external', 'external_load'].includes(
-        placement.physical_position)
-      || placement.anchor_id === accessAnchorId) return 'quick';
-  fail('ACTION_PRODUCED_PLAN_INVALID');
 }

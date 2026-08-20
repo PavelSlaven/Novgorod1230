@@ -1,5 +1,7 @@
 import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
+import { actionProducedDestinationFits } from
+  './action-produced-atomic-write-plan-pins.js';
 
 export async function lockAndVerifyActionProducedContext(client, plan) {
   await lockDestination(client, plan);
@@ -15,8 +17,12 @@ async function lockDestination(client, plan) {
        ON a.party_id=p.party_id AND a.anchor_id=p.g5_anchor_id
      WHERE p.party_id=$1 FOR UPDATE OF p,a`, [plan.party_id]);
   const used = await client.query(
-    `SELECT item_id FROM party_runtime.party_item_placements
-     WHERE party_id=$1 AND anchor_id=$2 ORDER BY item_id FOR UPDATE`,
+    `SELECT p.item_id FROM party_runtime.party_item_placements p
+     JOIN party_runtime.party_items i
+       ON i.party_id=p.party_id AND i.item_id=p.item_id
+     WHERE p.party_id=$1 AND p.anchor_id=$2
+       AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired'
+     ORDER BY p.item_id FOR UPDATE OF p,i`,
   [plan.party_id, pin.anchor_id]);
   const value = selected.rows.length === 1 ? {
     anchor_id: selected.rows[0].anchor_id,
@@ -24,8 +30,8 @@ async function lockDestination(client, plan) {
     used_item_ids: used.rows.map(({ item_id: itemId }) => itemId)
   } : null;
   if (value == null || digest(value) !== pin.destination_digest
-      || value.used_item_ids.length + plan.result_items.length
-        > value.item_capacity) fail('ACTION_PRODUCED_DESTINATION_STALE');
+      || !actionProducedDestinationFits(pin, plan.source_updates,
+        plan.result_items)) fail('ACTION_PRODUCED_DESTINATION_STALE');
 }
 
 function fail(code) { throw Object.assign(new Error(code), { code }); }

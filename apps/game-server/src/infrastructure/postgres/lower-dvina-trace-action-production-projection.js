@@ -16,6 +16,8 @@ export function applyActionProductionProjection({ next, plan }) {
       legal_status: after.legal_status,
       state: structuredClone(after.state),
       state_version: after.state_version,
+      ...(after.state?.lifecycle_status === 'retired'
+        ? { placement: null } : {}),
       runtime_instance_mechanics_snapshot: structuredClone(
         after.state?.runtime_instance_mechanics_snapshot ?? null)
     };

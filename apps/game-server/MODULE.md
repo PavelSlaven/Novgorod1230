@@ -121,12 +121,14 @@ items. No new HTTP operation, contents store or transaction owner is added.
 Active revision 21 A1 accepts one or more committed or sealed same-root
 revealed non-container material sources and zero or more accessible actor-controlled
 non-container tools through explicit disjoint source/tool refs; current-anchor
-placement is sufficient and legal ownership need not belong to the actor. Qualitative outcome is part of
+placement or an already revealed open actor-accessible container is sufficient,
+and legal ownership need not belong to the actor. Qualitative outcome is part of
 the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
 profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
-retires without a synthetic resource row. Partial output without an exact
+retires and leaves active placement/capacity without a synthetic resource row.
+Partial output without an exact
 grounded material allocation fails with a mechanics gap instead of choosing a
 source fraction. Odd mass is distributed deterministically; output
 hand/packing/carry is code-derived. Safe named result descriptors persist in

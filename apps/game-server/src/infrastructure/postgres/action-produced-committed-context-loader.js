@@ -18,6 +18,10 @@ import { actionProducedPreparedOrdinaryRows } from
   './action-produced-prepared-ordinary.js';
 import { bindActionProducedResourcePins } from
   './action-produced-resource-pins.js';
+import { actionProducedAccessState,
+  actionProducedPlacementAccessible,
+  loadActionProducedAccessContainers } from
+  './action-produced-contained-access.js';
 
 const INPUT_KEYS = [
   'party_id', 'actor_ref', 'root_turn_id', 'action_ref', 'step_index',
@@ -87,6 +91,8 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
   const resources = bindActionProducedResourcePins(resourceRows.rows,
     input.source_refs);
   const byId = new Map(rows.rows.map((row) => [row.item_id, row]));
+  const accessContainers = await loadActionProducedAccessContainers(client,
+    input.party_id, rows.rows.map(({ container_id: id }) => id));
   const contextVersion = contextVersionFrom(input);
   const rowPins = requested.map((itemId) => {
     const future = prepared.get(itemId);
@@ -97,6 +103,8 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     contextVersion,
     finite: resources.get(itemId) ?? null,
     accessAnchorId: outputDestinationPin?.anchor_id ?? null,
+    accessContainer: future == null
+      ? accessContainers.get(byId.get(itemId)?.container_id) ?? null : null,
     preparedOrdinary: future?.preparedOrdinary ?? null
   });
   });
@@ -149,12 +157,13 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
 }
 
 function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
-  preparedOrdinary = null }) {
+  accessContainer = null, preparedOrdinary = null }) {
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
       || Number(row.state_version) < 1
       || preparedOrdinary === null
-        && !accessiblePlacement(row, actorRef, accessAnchorId)
+        && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
+          accessAnchorId)
       || row.holder_npc_id !== null
       || !validOwnership(row)
       || row.controller_character_id !== actorRef
@@ -169,7 +178,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
   }
   const access = preparedOrdinary === null
-    ? accessState(row, actorRef, accessAnchorId) : 'quick';
+    ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId)
+    : 'quick';
   const holderRef = row.holder_character_id === actorRef ? actorRef : null;
   const item = {
     item_id: row.item_id,
@@ -233,6 +243,9 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
       finite_resource: finite?.snapshot ?? null
     },
     finite_resource_row: finite?.persisted_row ?? null,
+    ...(accessContainer === null ? {} : {
+      access_container: structuredClone(accessContainer)
+    }),
     ...(preparedOrdinary === null ? {} : {
       prepared_ordinary: preparedOrdinary
     })
@@ -272,24 +285,6 @@ function validOwnership(row) {
     && text(row.claim_state);
 }
 
-function accessiblePlacement(row, actorRef, accessAnchorId) {
-  return row.holder_character_id === actorRef && row.holder_npc_id === null
-    || text(accessAnchorId) && row.anchor_id === accessAnchorId
-      && row.holder_character_id === null && row.holder_npc_id === null
-      && row.container_id === null && row.attached_item_id === null;
-}
-
-function accessState(row, actorRef, accessAnchorId) {
-  if (row.holder_character_id === actorRef
-      && ['hands', 'equipped', 'worn_quick'].includes(row.physical_position)) {
-    return 'immediate';
-  }
-  if (row.holder_character_id === actorRef
-      && ['worn', 'external', 'external_load'].includes(
-        row.physical_position)
-      || row.anchor_id === accessAnchorId) return 'quick';
-  fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
-}
 function refs(value, empty) {
   return Array.isArray(value) && (empty || value.length > 0)
     && value.every(text) && new Set(value).size === value.length;

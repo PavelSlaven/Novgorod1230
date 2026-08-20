@@ -246,7 +246,8 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     const resolverPlan=await makeCombinedPlan(
       resolved.ordinary_materialization_atomic_write_plan,'resolver-success',
       {partyId});
-    assert.equal((await combined.commit({plan:resolverPlan})).ok,true);
+    const resolverCommit=await combined.commit({plan:resolverPlan});
+    assert.equal(resolverCommit.ok,true,JSON.stringify(resolverCommit));
     const reloaded=await loader({party_id:partyId,
       container_ref:containerRef});
     assert.equal(reloaded.capacity_snapshot.length,1);
@@ -356,7 +357,8 @@ test('O2b PostgreSQL batch is atomic, normalized, replay-safe and one-bump',
     const activePlan=await makeCombinedPlan(
       activeResolution.ordinary_materialization_atomic_write_plan,
       'revision20-access',{partyId:activeParty});
-    assert.equal((await combined.commit({plan:activePlan})).ok,true);
+    const activeCommit=await combined.commit({plan:activePlan});
+    assert.equal(activeCommit.ok,true,JSON.stringify(activeCommit));
     const activeReload=await activeLoader({party_id:activeParty,
       container_ref:activeRef});
     assert.equal(activeReload.capacity_snapshot.length,1);
@@ -743,7 +745,11 @@ async function provision(pool, plan) {
     plan.container_pin.context_digest,ordinary_policy:{schema:
       'rus.items.existing_container_ordinary_policy.v2',version:2,
       unresolved_ordinary_contents:true,
-      technical_limits:plan.technical_limits}}})]);
+       technical_limits:plan.technical_limits}}})]);
+  await pool.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,container_id,owner_character_id,
+     controller_character_id,claim_state)
+    VALUES ('party-o2b','ownership:chest','chest','pc','pc','owned')`);
   const initial=createOrdinaryAggregate({scope_ref:plan.scope_ref,
     resolution_record_cap:32});
   await pool.query(`INSERT INTO party_runtime.party_ordinary_materialization_aggregates

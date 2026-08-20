@@ -11,6 +11,7 @@ import {
 import { validateActionProducedAtomicProposal as validateProposal } from
   './action-produced-atomic-write-plan-validation.js';
 import { actionProducedOwnerOutputDestination,
+  actionProducedDestinationFits,
   validateActionProducedDestinationPin,
   validateActionProducedRowPins } from
   './action-produced-atomic-write-plan-pins.js';
@@ -204,9 +205,8 @@ function validateSealed(value) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
   if (value.result_items.length > 0
-      && (destination === null
-        || destination.used_item_ids.length + value.result_items.length
-          > destination.item_capacity)) {
+      && (destination === null || !actionProducedDestinationFits(destination,
+        value.source_updates, value.result_items))) {
     fail('ACTION_PRODUCED_DESTINATION_CAPACITY');
   }
   const proposal = validateProposal(value.transition_proposal, {

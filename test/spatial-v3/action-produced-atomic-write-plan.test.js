@@ -174,6 +174,23 @@ test('A1 loader derives committed access pins and rejects stale/hostile input',
     assert.equal(grounded.source_snapshots[0].access_state, 'quick');
     assert.equal(grounded.source_snapshots[0].holder_ref, null);
 
+    const containedRow = dbRow();
+    containedRow.container_id = 'container:pouch';
+    containedRow.holder_character_id = null;
+    containedRow.physical_position = null;
+    const accessContainer = dbContainerRow();
+    const contained = await loadActionProducedCommittedContext(
+      loaderClient([containedRow], [], null, [accessContainer]), loadInput());
+    assert.equal(contained.source_snapshots[0].access_state, 'quick');
+    assert.equal(contained.row_pins[0].access_container.container_id,
+      'container:pouch');
+    validateActionProducedRowPins(contained.row_pins, 'source',
+      'actor:mikula', '7', { root_turn_id: 'turn-8', step_index: 1 });
+    await assert.rejects(loadActionProducedCommittedContext(
+      loaderClient([containedRow], [], null, [{ ...accessContainer,
+        closure_state: 'closed' }]), loadInput()),
+    { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+
     const toolInput = { ...loadInput(), tool_refs: ['item:tool'] };
     const toolRow = { ...dbRow(), item_id: 'item:tool',
       ownership_id: 'ownership:tool' };
@@ -410,13 +427,17 @@ test('written A1 state persists inscription without truth or knowledge', () => {
   ]);
 });
 
-function loaderClient(itemRows, resourceRows = [], accessAnchorId = null) {
+function loaderClient(itemRows, resourceRows = [], accessAnchorId = null,
+  containerRows = []) {
   return { query: async (sql) => {
     if (sql.includes('FROM party_runtime.parties')) {
       return { rows: [{ state_version: 7 }] };
     }
     if (sql.includes('FROM party_runtime.party_items')) {
       return { rows: itemRows };
+    }
+    if (sql.includes('FROM party_runtime.party_containers')) {
+      return { rows: containerRows };
     }
     if (sql.includes('party_resource_nodes')) return { rows: resourceRows };
     if (sql.includes('SELECT p.g5_anchor_id')) return { rows:
@@ -718,6 +739,17 @@ function dbRow() {
     holder_character_id: 'actor:mikula', physical_position: 'hands',
     equipment_slot_category_id: null, attached_item_id: null,
     ownership_id: 'ownership:pole', owner_npc_id: null,
+    owner_character_id: 'actor:mikula', owner_party: false,
+    controller_npc_id: null, controller_character_id: 'actor:mikula',
+    claim_state: 'owned' };
+}
+function dbContainerRow() {
+  return { container_id: 'container:pouch', anchor_id: null,
+    parent_container_id: null, holder_npc_id: null,
+    holder_character_id: 'actor:mikula', physical_position: 'hands',
+    equipment_slot_category_id: null, condition_state: 'serviceable',
+    closure_state: 'open', state: { access_state: { access: 'open' } },
+    state_version: 2, ownership_id: 'ownership:pouch', owner_npc_id: null,
     owner_character_id: 'actor:mikula', owner_party: false,
     controller_npc_id: null, controller_character_id: 'actor:mikula',
     claim_state: 'owned' };

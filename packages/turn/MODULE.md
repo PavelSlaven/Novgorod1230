@@ -201,7 +201,8 @@ committed items либо sealed revealed ordinary overlay текущего root 
 строит mechanics/P16 plan без LLM. После exact/authored priority разрешены
 один или несколько доступных non-container material sources и ноль или
 несколько доступных controller-controlled tools на текущем placement
-независимо от legal owner. При неопределённом исходе общие
+либо в уже раскрытом открытом доступном контейнере независимо от legal owner.
+При неопределённом исходе общие
 generic-check/activity owners выполняются один раз; детерминированное действие
 использует `domain_request` без обязательного RNG/time. Profile допускает
 preserve, до четырёх mass-conserving independent outputs и no-result;

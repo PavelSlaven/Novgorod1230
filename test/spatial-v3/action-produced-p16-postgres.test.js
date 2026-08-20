@@ -647,9 +647,55 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
          AND item_id=$1) AS item_schema`, [preparedItem])).rows[0],
     { ordinary: 1, item_schema: 'rus.items.action_production_item_state.v1' });
 
+    await pool.query(`UPDATE party_runtime.party_item_placements
+      SET holder_character_id=NULL,physical_position=NULL,container_id='chest'
+      WHERE party_id='party-a1' AND item_id='production-knife'`);
+    assert.deepEqual((await pool.query(`SELECT i.item_id
+      FROM party_runtime.party_items i
+      JOIN party_runtime.party_item_placements p
+        ON p.party_id=i.party_id AND p.item_id=i.item_id
+      JOIN party_runtime.party_ownership o
+        ON o.party_id=i.party_id AND o.item_id=i.item_id
+      WHERE i.party_id='party-a1' AND i.item_id=ANY($1::text[])
+      ORDER BY i.item_id`, [[preparedItem, 'production-knife']])).rows.map(
+      ({ item_id: itemId }) => itemId),
+    [preparedItem, 'production-knife'].sort());
+
+    const reloadedContained = await actionPlan(pool, { partyVersion: 8,
+      changeSetId: 'change-contained-reload', requestId: 'contained-reload',
+      actionRef: 'action-contained-reload', sources: [preparedItem],
+      tools: ['production-knife'], mode: 'preserve_source',
+      rootTurnId: 'turn-contained-reload', stepIndex: 1 });
+    assert.equal(reloadedContained.source_pins[0]
+      .access_container.container_id, 'chest');
+    assert.equal(reloadedContained.tool_pins[0]
+      .access_container.container_id, 'chest');
+    const containedCombined = await combinedPlan(reloadedContained,
+      'contained-reload', 8);
+    assert.equal((await committer.commit({ plan: containedCombined })).ok,
+      true);
+    assert.deepEqual(await committer.commit({ plan: containedCombined }), {
+      ok: true, replay: true, change_set_id: 'change-contained-reload'
+    });
+
+    await pool.query(`UPDATE party_runtime.party_item_placements
+      SET holder_character_id=NULL,physical_position=NULL,
+          anchor_id='output-anchor'
+      WHERE party_id='party-a1' AND item_id='production-whole-board'`);
+    const activeBefore = Number((await pool.query(`SELECT count(*)::int AS n
+      FROM party_runtime.party_item_placements p
+      JOIN party_runtime.party_items i
+        ON i.party_id=p.party_id AND i.item_id=p.item_id
+      WHERE p.party_id='party-a1' AND p.anchor_id='output-anchor'
+        AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired'`))
+      .rows[0].n);
+    await pool.query(`UPDATE party_runtime.party_g5_anchors
+      SET item_capacity=$1 WHERE party_id='party-a1'
+        AND anchor_id='output-anchor'`, [activeBefore + 1]);
+
     const whole = await factory({ partyId: 'party-a1',
       requestId: 'production-whole' })(productionEnvelope({
-      stateVersion: 8, turnNumber: 7, itemRef: 'production-whole-board',
+      stateVersion: 9, turnNumber: 8, itemRef: 'production-whole-board',
       targetRefs: ['production-knife'],
       remainingIntent: 'Разрезаю доску на два деревянных клина.',
       actionProduction: actionProduction({
@@ -661,7 +707,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           physical_description: 'часть разрезанной доски' })
       }) }));
     const wholeCombined = await combinedPlan(
-      whole.action_production_atomic_write_plan, 'production-whole', 8);
+      whole.action_production_atomic_write_plan, 'production-whole', 9);
     assert.equal((await committer.commit({ plan: wholeCombined })).ok, true);
     assert.deepEqual((await pool.query(`SELECT
       (SELECT condition_state FROM party_runtime.party_items
@@ -670,15 +716,45 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       (SELECT count(*)::int FROM party_runtime.party_items
        WHERE party_id='party-a1' AND state->'action_production'
          ->'causal_identity'->>'request_id'='production-whole') AS outputs,
+      (SELECT count(*)::int FROM party_runtime.party_item_placements
+       WHERE party_id='party-a1' AND item_id='production-whole-board')
+        AS source_placements,
+      (SELECT count(*)::int FROM party_runtime.party_item_placements p
+       JOIN party_runtime.party_items i
+         ON i.party_id=p.party_id AND i.item_id=p.item_id
+       WHERE p.party_id='party-a1' AND p.anchor_id='output-anchor'
+         AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired')
+        AS active_placements,
+      (SELECT item_capacity::int FROM party_runtime.party_g5_anchors
+       WHERE party_id='party-a1' AND anchor_id='output-anchor') AS capacity,
       (SELECT sum((state->'runtime_instance_mechanics_snapshot'->'mechanics'
         ->>'mass_grams')::int)::int FROM party_runtime.party_items
        WHERE party_id='party-a1' AND state->'action_production'
          ->'causal_identity'->>'request_id'='production-whole') AS mass`))
-      .rows[0], { source_condition: 'retired', outputs: 2, mass: 800 });
+      .rows[0], { source_condition: 'retired', outputs: 2,
+        source_placements: 0, active_placements: activeBefore + 1,
+        capacity: activeBefore + 1, mass: 800 });
+
+    const reloadClient = await pool.connect();
+    try {
+      const reloaded = await loadActionProducedCommittedContext(reloadClient, {
+        party_id: 'party-a1', actor_ref: 'pc',
+        root_turn_id: 'turn-after-partition', action_ref: 'action-after',
+        step_index: 1, context_ref: A1.context_ref,
+        expected_party_state_version: 10,
+        source_refs: ['production-partial-board'],
+        tool_refs: ['production-knife'], admission_profile: admissionProfile(10),
+        technical_policy: technicalPolicy()
+      });
+      assert.equal(reloaded.output_destination_pin.used_item_ids.includes(
+        'production-whole-board'), false);
+      assert.equal(reloaded.output_destination_pin.used_item_ids.length,
+        reloaded.output_destination_pin.item_capacity);
+    } finally { reloadClient.release(); }
 
     await assert.rejects(() => factory({ partyId: 'party-a1',
       requestId: 'production-partial' })(productionEnvelope({
-      checked: false, stateVersion: 9, turnNumber: 8,
+      checked: false, stateVersion: 10, turnNumber: 9,
       itemRef: 'production-partial-board',
       targetRefs: ['production-knife'],
       remainingIntent: 'Срезаю с доски два небольших клина.',
@@ -971,6 +1047,10 @@ async function provisionPreparedOrdinary(pool, plan) {
         'rus.items.existing_container_ordinary_policy.v2', version: 2,
       unresolved_ordinary_contents: true,
       technical_limits: plan.technical_limits } } })]);
+  await pool.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,container_id,owner_character_id,owner_party,
+     controller_character_id,claim_state)
+    VALUES ('party-a1','ownership:chest','chest','pc',false,'pc','owned')`);
   await pool.query(`INSERT INTO
     party_runtime.party_ordinary_materialization_aggregates
     (party_id,scope_kind,scope_id,state_version,aggregate_payload)

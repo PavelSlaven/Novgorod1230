@@ -90,8 +90,7 @@ export function validateActionProducedOutputPropertyBasis(propertySourceRef,
   for (const { source_ref: sourceRef } of allocations) {
     const contributor = sources.get(sourceRef)?.source;
     if (!contributor
-        || contributor.ownership_basis_ref !== selected.ownership_basis_ref
-        || contributor.property_basis_ref !== selected.property_basis_ref) {
+        || contributor.ownership_basis_ref !== selected.ownership_basis_ref) {
       fail();
     }
   }

@@ -186,7 +186,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(typeof createTurnStepActionProductionOwner === 'function'
         && actionProductionProfile?.profile?.status === 'approved' ? {
       turnStepActionProductionOwner: createTurnStepActionProductionOwner({
-        partyId, requestId, inputDigest
+        partyId, requestId, inputDigest,
+        applyWorkingProjection: turnStepPorts.applyActionProductionProjection
       })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,

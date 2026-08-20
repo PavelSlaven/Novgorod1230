@@ -3,6 +3,8 @@ import { computeSpatialV3CanonicalDigest as digest } from
 import { deriveActionProducedPropertyCompatibilityBasis } from
   '@rus/items-property';
 import { actionProducedAccessState,
+  actionProducedControllerPermitted,
+  actionProducedControllerRef,
   actionProducedPlacementAccessible,
   validActionProducedAccessContainer } from
   './action-produced-contained-access.js';
@@ -164,8 +166,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
         accessContainer, actorRef, accessAnchorId)
       || placement.holder_npc_id !== null
       || !validOwnership(ownership)
-      || ownership.controller_character_id !== actorRef
-      || ownership.controller_npc_id !== null) {
+      || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');
   }
   return {
@@ -173,7 +174,7 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
     commit_state: 'committed', role, entity_ref: pin.item_id,
     state_version: contextVersion, lifecycle_state: 'active',
     access_state: accessState, holder_ref: holderRef,
-    controller_ref: actorRef,
+    controller_ref: actionProducedControllerRef(ownership),
     mechanics_state_ref: digest({
       runtime_instance_mechanics_snapshot:
         item.state?.runtime_instance_mechanics_snapshot ?? null,

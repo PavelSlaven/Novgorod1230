@@ -55,6 +55,18 @@ export function actionProducedAccessState(placement, accessContainer,
     ? 'immediate' : 'quick';
 }
 
+export function actionProducedControllerRef(value) {
+  return value.controller_character_id ?? value.controller_npc_id ?? null;
+}
+
+export function actionProducedControllerPermitted(value, role, actorRef) {
+  return role === 'tool'
+    ? value.controller_character_id === actorRef
+      && value.controller_npc_id === null
+    : Number(Boolean(text(value.controller_character_id)))
+      + Number(Boolean(text(value.controller_npc_id))) <= 1;
+}
+
 export function validActionProducedAccessContainer(value, actorRef,
   accessAnchorId) {
   if (!exact(value, CONTAINER_KEYS) || !text(value.container_id)

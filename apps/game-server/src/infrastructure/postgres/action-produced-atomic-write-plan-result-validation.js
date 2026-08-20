@@ -40,7 +40,8 @@ export function validateActionProducedProposalResults(proposal, sourcePins) {
     const expectedPropertyRef = result.identity_kind === 'preserved_source'
       ? sourcePin?.entity_snapshot.property_state_ref
       : sourcePin == null ? null : deriveActionProducedOutputProperty(
-        sourcePin.entity_snapshot.ownership_snapshot, result.entity_ref)
+        sourcePin.entity_snapshot.ownership_snapshot, result.entity_ref,
+        result.controller_ref)
         .property_state_ref;
     if (result.property_state_ref !== expectedPropertyRef
         || result.inscription_text
@@ -92,9 +93,7 @@ function validatePropertyBasis(result, selectedPin, sourcePins) {
       id === allocation?.source_ref);
     if (!contributor
         || contributor.entity_snapshot.ownership_basis_ref
-          !== selectedPin.entity_snapshot.ownership_basis_ref
-        || contributor.entity_snapshot.property_basis_ref
-          !== selectedPin.entity_snapshot.property_basis_ref) {
+          !== selectedPin.entity_snapshot.ownership_basis_ref) {
       fail('ACTION_PRODUCED_RESULT_INVALID');
     }
   }

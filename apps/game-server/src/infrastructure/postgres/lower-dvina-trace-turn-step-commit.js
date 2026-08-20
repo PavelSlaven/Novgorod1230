@@ -80,6 +80,8 @@ export async function commitLowerDvinaTraceTurnStep({
   });
   applyOrdinaryMaterializationProjection({ next:base.snapshot,
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
+  applyActionProductionProjection({ next: base.snapshot,
+    plan: actionProductionPlan });
   const factual = {
     player_input: envelope.player_input,
     mode_resolution: envelope.mode_resolution,
@@ -91,8 +93,6 @@ export async function commitLowerDvinaTraceTurnStep({
     partyId, writePlan, state, snapshot: base.snapshot, factual,
     changeSetId, idemId
   });
-  applyActionProductionProjection({ next: turnStep.snapshot,
-    plan: actionProductionPlan });
   const pendingScreen = buildLowerDvinaTracePendingScreen({
     state,
     turnId: envelope.root_turn_id,

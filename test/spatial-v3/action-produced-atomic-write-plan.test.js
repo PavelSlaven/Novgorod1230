@@ -347,7 +347,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
   }, ownership: sourceOwnership, entity_snapshot: {
     controller_ref: 'actor:mikula', ownership_snapshot: sourceOwnership } }];
   const outputProperty = deriveActionProducedOutputProperty(
-    sourceOwnership, 'result:token');
+    sourceOwnership, 'result:token', 'actor:mikula');
   const result = { entity_ref: 'result:token', source_ref: 'item:coin-source',
     holder_ref: null, controller_ref: 'actor:mikula',
     placement_state_ref: digest(placement),
@@ -372,7 +372,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
       qualitative_facts: ['имеет сходство с жетоном'],
       inscription_text: null } } };
   const item = deriveActionProducedResultItem(result, sourcePins,
-    proposalValue, 'change:token', destinationPin);
+    proposalValue, 'change:token', destinationPin, 'actor:mikula');
 
   assert.equal(item.item_row.legal_status,
     'action_produced_non_authoritative');

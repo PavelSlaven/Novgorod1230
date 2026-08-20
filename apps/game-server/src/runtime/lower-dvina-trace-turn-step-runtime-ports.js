@@ -8,6 +8,8 @@ import {
   createItemOperationHandlers,
   initializeRuntimeState
 } from './lower-dvina-trace-turn-step-item-operations.js';
+import { applyActionProducedRuntimeProjection } from
+  './lower-dvina-trace-action-produced-runtime.js';
 import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
   './lower-dvina-trace-turn-step-container-access.js';
 import {
@@ -125,7 +127,13 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         genericCheckContextOwner),
     ...(typeof ordinaryDiscoveryResolver === 'function' ? {
       ordinaryDiscoveryResolver
-    } : {})
+    } : {}),
+    applyActionProductionProjection: ({ working_projection: projection,
+      actor, action_production_atomic_write_plan: plan }) =>
+      workingProjectionAuthority.admit(applyActionProducedRuntimeProjection({
+        workingProjection: projection, actor, plan, state,
+        resolveItemMechanics
+      }))
   });
 }
 

@@ -19,6 +19,8 @@ import { actionProducedPreparedOrdinaryRows } from
 import { bindActionProducedResourcePins } from
   './action-produced-resource-pins.js';
 import { actionProducedAccessState,
+  actionProducedControllerPermitted,
+  actionProducedControllerRef,
   actionProducedPlacementAccessible,
   loadActionProducedAccessContainers } from
   './action-produced-contained-access.js';
@@ -166,8 +168,7 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
           accessAnchorId)
       || row.holder_npc_id !== null
       || !validOwnership(row)
-      || row.controller_character_id !== actorRef
-      || row.controller_npc_id !== null
+      || !actionProducedControllerPermitted(row, role, actorRef)
       || row.state?.lifecycle_status != null
         && row.state.lifecycle_status !== 'active'
       || finite != null && (
@@ -233,7 +234,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
       commit_state: 'committed', role, entity_ref: row.item_id,
       state_version: contextVersion,
       lifecycle_state: 'active', access_state: access,
-      holder_ref: holderRef, controller_ref: actorRef,
+      holder_ref: holderRef,
+      controller_ref: actionProducedControllerRef(row),
       mechanics_state_ref: mechanicsRef,
       property_state_ref: propertyRef,
       ownership_state_ref: digest(ownership),

@@ -9,7 +9,7 @@ import { failActionProducedPersistence as fail } from
   './action-produced-persistence-boundary.js';
 
 export function deriveActionProducedResultItem(result, sourcePins, proposal,
-  changeSetId, destinationPin) {
+  changeSetId, destinationPin, actorRef) {
   const source = sourcePins.find(({ item_id: itemId }) =>
     itemId === result.source_ref);
   if (!source) fail('ACTION_PRODUCED_RESULT_SOURCE_INVALID');
@@ -17,7 +17,7 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
   if (destination === null) fail('ACTION_PRODUCED_DESTINATION_INVALID');
   const placement = actionProducedOutputPlacement(destination);
   const expected = actionProducedOwnerOutputDestination(destination,
-    source.entity_snapshot.controller_ref);
+    actorRef);
   if (result.holder_ref !== expected.holder_ref
       || result.controller_ref !== expected.controller_ref
       || result.placement_state_ref !== expected.placement_state_ref
@@ -29,7 +29,7 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     fail('ACTION_PRODUCED_RESULT_AUTHORITY_INVALID');
   }
   const outputProperty = deriveActionProducedOutputProperty(
-    source.entity_snapshot.ownership_snapshot, result.entity_ref);
+    source.entity_snapshot.ownership_snapshot, result.entity_ref, actorRef);
   if (result.property_state_ref !== outputProperty.property_state_ref) {
     fail('ACTION_PRODUCED_RESULT_PROPERTY_INVALID');
   }

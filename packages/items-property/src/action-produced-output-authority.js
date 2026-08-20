@@ -53,7 +53,7 @@ export function validateActionProducedOutputAuthority(value, identityKind) {
 }
 
 export function deriveActionProducedOutputProperty(ownershipValue,
-  outputEntityRef) {
+  outputEntityRef, controllerCharacterRef = undefined) {
   const source = snapshot(ownershipValue);
   if (!exact(source, OWNERSHIP_KEYS) || !text(source.ownership_id)
       || !nullableText(source.owner_npc_id)
@@ -61,10 +61,16 @@ export function deriveActionProducedOutputProperty(ownershipValue,
       || typeof source.owner_party !== 'boolean'
       || !nullableText(source.controller_npc_id)
       || !nullableText(source.controller_character_id)
-      || !text(source.claim_state) || !text(outputEntityRef)) fail();
+      || !text(source.claim_state) || !text(outputEntityRef)
+      || controllerCharacterRef !== undefined
+        && !text(controllerCharacterRef)) fail();
   const ownership = {
     ...source,
-    ownership_id: `ownership:${outputEntityRef}`
+    ownership_id: `ownership:${outputEntityRef}`,
+    ...(controllerCharacterRef === undefined ? {} : {
+      controller_npc_id: null,
+      controller_character_id: controllerCharacterRef
+    })
   };
   const propertyState = null;
   return deepFreeze({

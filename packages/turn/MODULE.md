@@ -202,6 +202,8 @@ committed items либо sealed revealed ordinary overlay текущего root 
 один или несколько доступных non-container material sources и ноль или
 несколько доступных controller-controlled tools на текущем placement
 либо в уже раскрытом открытом доступном контейнере независимо от legal owner.
+Sealed source changes и новые outputs сразу обновляют общую working projection,
+поэтому pending intent может использовать результат в следующем internal step.
 При неопределённом исходе общие
 generic-check/activity owners выполняются один раз; детерминированное действие
 использует `domain_request` без обязательного RNG/time. Profile допускает

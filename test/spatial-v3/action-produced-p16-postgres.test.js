@@ -387,6 +387,13 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id='pc',owner_party=false
       WHERE party_id='party-a1' AND item_id='scrap'`);
+    await pool.query(`UPDATE party_runtime.party_items
+      SET state=jsonb_set(state,'{property_state}',
+        '{"source_ref":"scrap","resource_property_basis_ref":"property:scrap"}'::jsonb)
+      WHERE party_id='party-a1' AND item_id='scrap'`);
+    await pool.query(`UPDATE party_runtime.party_resource_nodes
+      SET property_basis_ref='property:scrap'
+      WHERE party_id='party-a1' AND resource_node_id='resource-scrap'`);
     const compatibleMixed = await actionPlan(pool, {
       partyVersion: 4, changeSetId: 'change-mixed-compatible',
       requestId: 'mixed-compatible', actionRef: 'action-mixed-compatible',
@@ -395,7 +402,15 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       propertySource: 'board', allocationSources: ['board', 'scrap']
     });
     assert.equal((await committer.commit({ plan: await combinedPlan(
-      compatibleMixed, 'mixed-compatible', 4) })).ok, true);
+      compatibleMixed, 'mixed-compatible', 4,
+      { followUpMove: true }) })).ok, true);
+    assert.deepEqual((await pool.query(`SELECT anchor_id,
+      holder_character_id,physical_position
+      FROM party_runtime.party_item_placements
+      WHERE party_id='party-a1' AND item_id=$1`,
+    [compatibleMixed.result_items[0].item_id])).rows[0], {
+      anchor_id: null, holder_character_id: 'pc', physical_position: 'hands'
+    });
     assert.deepEqual((await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
        WHERE party_id='party-a1') AS party_version,
@@ -410,8 +425,19 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     const factory = createLowerDvinaTraceA1ProductionResolverFactory({
       pool, loadedProfile
     });
+    const productionOwner = (requestId) => factory({
+      partyId: 'party-a1', requestId,
+      applyWorkingProjection: ({ working_projection: projection }) =>
+        structuredClone(projection)
+    });
+    const appliedA1 = [];
     const resolveProduction = factory({ partyId: 'party-a1',
-      requestId: 'production-request' });
+      requestId: 'production-request',
+      applyWorkingProjection: ({ working_projection: projection,
+        action_production_atomic_write_plan: plan }) => {
+        appliedA1.push(plan.causal_identity.request_id);
+        return { ...structuredClone(projection), prepared_a1: true };
+      } });
 
     const productionState = (await pool.query(`SELECT state
       FROM party_runtime.party_items
@@ -441,8 +467,12 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id=NULL,owner_party=true,claim_state='entrusted'
       WHERE party_id='party-a1' AND item_id='production-knife'`);
-    assert.equal((await resolveProduction(productionEnvelope()))
-      .action_production_atomic_write_plan.tool_pins.length, 1);
+    const borrowedTool = await resolveProduction(productionEnvelope());
+    assert.equal(borrowedTool.action_production_atomic_write_plan
+      .tool_pins.length, 1);
+    assert.equal(borrowedTool.working_projection.prepared_a1, true);
+    assert.equal('player_response_boundary' in borrowedTool, false);
+    assert.deepEqual(appliedA1, ['production-request']);
     await pool.query(`UPDATE party_runtime.party_ownership
       SET controller_character_id=NULL
       WHERE party_id='party-a1' AND item_id='production-knife'`);
@@ -452,6 +482,16 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET controller_character_id='pc'
       WHERE party_id='party-a1' AND item_id='production-knife'`);
+
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET owner_character_id='other-pc',controller_character_id='other-pc'
+      WHERE party_id='party-a1' AND item_id='production-garment'`);
+    const foreignSource = await resolveProduction(productionEnvelope());
+    assert.equal(foreignSource.action_production_atomic_write_plan
+      .source_pins[0].ownership.owner_character_id, 'other-pc');
+    await pool.query(`UPDATE party_runtime.party_ownership
+      SET owner_character_id='pc',controller_character_id='pc'
+      WHERE party_id='party-a1' AND item_id='production-garment'`);
 
     const wrongCheck = productionEnvelope();
     wrongCheck.check_result = null;
@@ -463,8 +503,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await assert.rejects(resolveProduction(wrongActivity), {
       code: 'TRACE_A1_SCOPE_INVALID'
     });
-    const unchecked = await factory({ partyId: 'party-a1',
-      requestId: 'production-unchecked' })(productionEnvelope({
+    const unchecked = await productionOwner('production-unchecked')(
+      productionEnvelope({
       checked: false }));
     assert.equal(unchecked.action_production_atomic_write_plan
       .transition_proposal.causal_identity.request_id,
@@ -480,8 +520,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           qualitative_facts: ['конструкция физически собрана']
         })
       }) });
-    const impossible = await factory({ partyId: 'party-a1',
-      requestId: 'production-impossible' })(impossibleEnvelope);
+    const impossible = await productionOwner('production-impossible')(
+      impossibleEnvelope);
     assert.equal(impossible.action_production_atomic_write_plan.identity_mode,
       'preserve_source');
     assert.equal(impossible.action_production_atomic_write_plan
@@ -489,8 +529,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.deepEqual(impossible.action_production_atomic_write_plan
       .result_items, []);
 
-    const writing = await factory({ partyId: 'party-a1',
-      requestId: 'production-writing' })(productionEnvelope({
+    const writing = await productionOwner('production-writing')(
+      productionEnvelope({
       targetRefs: ['production-knife', 'production-stone'],
       remainingIntent: 'Оставляю на ткани короткую надпись.',
       actionProduction: actionProduction({ result_class: 'written_carrier',
@@ -504,8 +544,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .after_item.state.action_production.inscription_text,
     'Жду у переправы.');
 
-    const token = await factory({ partyId: 'party-a1',
-      requestId: 'production-token-gap' })(productionEnvelope({
+    const token = await productionOwner('production-token-gap')(
+      productionEnvelope({
       itemRef: 'production-board', targetRefs: [],
       remainingIntent: 'Отделяю от доски простой счётный жетон.',
       actionProduction: actionProduction({
@@ -523,8 +563,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       container: null
     });
 
-    const multi = await factory({ partyId: 'party-a1',
-      requestId: 'production-multi' })(productionEnvelope({
+    const multi = await productionOwner('production-multi')(
+      productionEnvelope({
       itemRef: 'production-material-a',
       targetRefs: ['production-material-b', 'production-knife'],
       remainingIntent: 'Соединяю два материала и делаю две одинаковые детали.',
@@ -587,8 +627,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       operation_history: []
     });
 
-    const production = await factory({ partyId: 'party-a1',
-      requestId: 'production-request' })(productionEnvelope({
+    const production = await productionOwner('production-request')(
+      productionEnvelope({
       stateVersion: 6, turnNumber: 5,
       actionProduction: actionProduction({ output_class: 'weapon_capable',
         result_descriptor: descriptor({
@@ -693,8 +733,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       SET item_capacity=$1 WHERE party_id='party-a1'
         AND anchor_id='output-anchor'`, [activeBefore + 1]);
 
-    const whole = await factory({ partyId: 'party-a1',
-      requestId: 'production-whole' })(productionEnvelope({
+    const whole = await productionOwner('production-whole')(
+      productionEnvelope({
       stateVersion: 9, turnNumber: 8, itemRef: 'production-whole-board',
       targetRefs: ['production-knife'],
       remainingIntent: 'Разрезаю доску на два деревянных клина.',
@@ -752,8 +792,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         reloaded.output_destination_pin.item_capacity);
     } finally { reloadClient.release(); }
 
-    await assert.rejects(() => factory({ partyId: 'party-a1',
-      requestId: 'production-partial' })(productionEnvelope({
+    await assert.rejects(() => productionOwner('production-partial')(
+      productionEnvelope({
       checked: false, stateVersion: 10, turnNumber: 9,
       itemRef: 'production-partial-board',
       targetRefs: ['production-knife'],
@@ -942,7 +982,7 @@ function outputId(request, ordinal) {
 }
 
 async function combinedPlan(action, suffix, partyVersion,
-  { missingClock = false, ordinaryPlan = null } = {}) {
+  { missingClock = false, ordinaryPlan = null, followUpMove = false } = {}) {
   const changeSetId = action.change_set_id;
   const payload = { schema: 'temporal_visible_package.v1',
     perceived_scene: 'Изменение зафиксировано.', perceived_changes: [],
@@ -957,13 +997,25 @@ async function combinedPlan(action, suffix, partyVersion,
     state_version: partyVersion }, ...(missingClock ? [{
       target_table: 'party_clocks', id: 'party-a1', state_version: 1
     }] : [])];
+  const movedResult = followUpMove ? action.result_items[0] : null;
   const updates = [{ target_table: 'parties', id: 'party-a1',
     record: { party_id: 'party-a1', profile_bundle_digest: 'profiles' } },
   ...(missingClock ? [{ target_table: 'party_clocks', id: 'party-a1',
     record: { party_id: 'party-a1', whole_minutes: 0,
       subminute_numerator: 0, subminute_denominator: 1,
       clock_owner_kind: 'party', clock_owner_id: null,
-      updated_change_set_id: changeSetId } }] : [])];
+      updated_change_set_id: changeSetId } }] : []),
+  ...(movedResult == null ? [] : [{ target_table: 'party_items',
+    id: movedResult.item_id, record: { party_id: 'party-a1',
+      item_id: movedResult.item_id, quantity: movedResult.item_row.quantity,
+      condition_state: movedResult.item_row.condition_state,
+      legal_status: movedResult.item_row.legal_status,
+      state: movedResult.item_row.state } }, {
+    target_table: 'party_item_placements', id: movedResult.item_id,
+    record: { party_id: 'party-a1', item_id: movedResult.item_id,
+      anchor_id: null, container_id: null, holder_npc_id: null,
+      holder_character_id: 'pc', physical_position: 'hands',
+      equipment_slot_category_id: null, attached_item_id: null } }])];
   const idem = action.causal_identity.request_id;
   const causalInputDigest = digest({
     schema: 'action_production_p16_causal_input_v1',
@@ -1093,6 +1145,8 @@ async function provision(pool) {
       'committed')`);
   await pool.query(`INSERT INTO party_runtime.party_player_characters
     (party_id,character_id,profile) VALUES ('party-a1','pc','{}')`);
+  await pool.query(`INSERT INTO party_runtime.party_player_characters
+    (party_id,character_id,profile) VALUES ('party-a1','other-pc','{}')`);
   await pool.query(`INSERT INTO party_runtime.party_g5_nodes
     (party_id,g5_node_id,run_id,parent_g4_id,template_id,slot_key,state)
     VALUES ('party-a1','legacy-g5','run-a1','g4','g5-template','main','{}')`);

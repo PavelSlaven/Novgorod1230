@@ -56,7 +56,8 @@ export function createActionProducedAtomicWritePlan(rawInput) {
     ? load.output_destination_pin : null;
   const resultItems = proposal.identity_mode === 'independent_outputs'
     ? proposal.results.map((result) => producedItem(result, sourcePins,
-      proposal, input.change_set_id, outputDestination)) : [];
+      proposal, input.change_set_id, outputDestination,
+      load.committed_context.actor_ref)) : [];
   const resultEvidence = resultEvidenceFor(proposal, sourcePins, toolPins);
   const plan = {
     schema: 'action_production_atomic_write_plan_v1',
@@ -223,7 +224,7 @@ function validateSealed(value) {
   const expectedItems = proposal.identity_mode === 'independent_outputs'
     ? proposal.results.map((result) => producedItem(result,
       value.source_pins, proposal, value.change_set_id,
-      value.output_destination_pin)) : [];
+      value.output_destination_pin, value.actor_ref)) : [];
   const expectedEvidence = resultEvidenceFor(proposal, value.source_pins,
     value.tool_pins);
   if (digest(value.causal_identity) !== digest(proposal.causal_identity)

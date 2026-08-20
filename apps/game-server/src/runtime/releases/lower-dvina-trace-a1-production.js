@@ -23,7 +23,11 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   if (!pool?.query) {
     throw new TypeError('A1 production resolver dependencies are required.');
   }
-  return ({ partyId, requestId }) => async function resolveA1(rawEnvelope) {
+  return ({ partyId, requestId, applyWorkingProjection }) =>
+    async function resolveA1(rawEnvelope) {
+    if (typeof applyWorkingProjection !== 'function') {
+      fail('TRACE_A1_PROJECTION_OWNER_MISSING');
+    }
     const envelope = snapshot(rawEnvelope);
     if (envelope === INVALID_ACTION_PRODUCED_DATA) fail('TRACE_A1_SCOPE_INVALID');
     const operation = envelope.operation;
@@ -141,14 +145,18 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       change_set_id: changeSetId,
       committed_load: loaded, transition_proposal: proposal
     });
-    return Object.freeze({
+    const workingProjection = await applyWorkingProjection({
       working_projection: structuredClone(envelope.working_projection),
+      actor: structuredClone(envelope.actor),
+      action_production_atomic_write_plan: atomicPlan
+    });
+    return Object.freeze({
+      working_projection: structuredClone(workingProjection),
       summary: semantic.identity_mode === 'no_useful_result'
         ? 'action_production:no_useful_result'
         : 'action_production:physical_change',
       write_fragments: [],
-      action_production_atomic_write_plan: atomicPlan,
-      player_response_boundary: true
+      action_production_atomic_write_plan: atomicPlan
     });
   };
 }

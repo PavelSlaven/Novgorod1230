@@ -113,7 +113,6 @@ function plan(rawInput, resolveMechanics) {
   if (resolution == null || !exact(resolution, RESOLUTION_KEYS)
       || resolution.schema !== 'rus.items.action_produced_owner_resolution.v1'
       || resolution.identity_mode !== handoff.identity_mode) fail();
-
   const effects = validateSourceEffects(resolution.source_effects, sources,
     handoff);
   const waste = validateWaste(resolution.known_waste, effects);
@@ -414,7 +413,8 @@ function producedResult(handoff, output, sources, destination) {
   const propertySource = sources.find((source) =>
     source.entity_ref === output.property_source_ref);
   const outputProperty = deriveActionProducedOutputProperty(
-    propertySource.ownership_snapshot, output.entity_ref);
+    propertySource.ownership_snapshot, output.entity_ref,
+    destination.controller_ref);
   return deepFreeze({
     entity_ref: output.entity_ref,
     identity_kind: 'independent_output',

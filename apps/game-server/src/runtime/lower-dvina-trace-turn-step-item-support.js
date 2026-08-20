@@ -9,6 +9,7 @@ import {
 import {
   fail,
   plain,
+  requireProjection,
   requireRefs,
   text
 } from './lower-dvina-trace-turn-step-runtime-common.js';
@@ -242,7 +243,6 @@ export function requireAvailableTempRef(ref, refs, state, rootTurnId) {
 export function reserveTempRef(ref, state, rootTurnId) {
   state.reservedRefs.add(reservedKey(rootTurnId, ref));
 }
-
 export function factRef(record) {
   return typeof record === 'string'
     ? record

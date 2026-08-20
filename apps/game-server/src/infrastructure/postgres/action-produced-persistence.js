@@ -9,6 +9,7 @@ import { lockAndVerifyActionProducedContext } from
 import { lockAndVerifyPreparedActionProducedPin } from
   './action-produced-prepared-ordinary-persistence.js';
 import { actionProducedPlacementAccessible,
+  actionProducedControllerPermitted,
   loadActionProducedAccessContainers } from
   './action-produced-contained-access.js';
 
@@ -88,7 +89,7 @@ async function lockAndVerifyPins(client, plan) {
       : containers.get(containerId);
     if (!accessibleByActor(normalized.placement, normalized.ownership,
       accessContainer, plan.actor_ref,
-      plan.output_destination_pin?.anchor_id ?? null)
+      plan.output_destination_pin?.anchor_id ?? null, pin.role)
         || digest(normalized.item) !== pin.item_digest
         || digest(normalized.placement) !== pin.placement_digest
         || digest(normalized.ownership) !== pin.ownership_digest
@@ -114,14 +115,13 @@ async function lockAndVerifyPins(client, plan) {
 }
 
 function accessibleByActor(placement, ownership, accessContainer, actorRef,
-  accessAnchorId) {
+  accessAnchorId, role) {
   const owners = Number(text(ownership.owner_character_id))
     + Number(text(ownership.owner_npc_id))
     + Number(ownership.owner_party === true);
   return actionProducedPlacementAccessible(placement, accessContainer,
     actorRef, accessAnchorId)
-    && ownership.controller_character_id === actorRef
-    && ownership.controller_npc_id === null
+    && actionProducedControllerPermitted(ownership, role, actorRef)
     && owners === 1 && typeof ownership.owner_party === 'boolean'
     && text(ownership.claim_state);
 }

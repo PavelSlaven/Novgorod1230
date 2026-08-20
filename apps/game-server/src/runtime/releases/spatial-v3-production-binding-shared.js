@@ -1,12 +1,8 @@
-import {
-  loadActiveRuntimeCatalogPin
-} from '../../infrastructure/postgres/spatial-v3-production-readiness.js';
-import {
-  createFirstPlayablePublicRuntime
-} from '../first-playable-public-runtime.js';
-import {
-  firstPlayableCommitRecheck
-} from '../../infrastructure/postgres/first-playable/recheck.js';
+import { loadActiveRuntimeCatalogPin } from
+  '../../infrastructure/postgres/spatial-v3-production-readiness.js';
+import { createFirstPlayablePublicRuntime } from '../first-playable-public-runtime.js';
+import { firstPlayableCommitRecheck } from
+  '../../infrastructure/postgres/first-playable/recheck.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../infrastructure/postgres/lower-dvina-trace-phase-1b.js';
@@ -25,6 +21,7 @@ import {
   createLowerDvinaTraceTurnStepModel
 } from '../lower-dvina-trace-phase-2-llm.js';
 import { createOrdinaryMaterializationModel } from '../ordinary-materialization-llm.js';
+import { createLowerDvinaTraceO2aAmbientPort } from '../lower-dvina-trace-o2a-ambient-port.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
@@ -120,10 +117,12 @@ export async function createSpatialV3ProductionBindings(
     ports,
     release,
     env = process.env,
-    config = {}
+    config = {},
+    ordinaryMaterializationProfile = null
   } = {},
   {
     createNpcRuntimePorts,
+    createPhase2RuntimeFactory = createLowerDvinaTracePhase2Runtime,
     technicalCommandBoundary = 'production-v2'
   } = {}
 ) {
@@ -181,7 +180,9 @@ export async function createSpatialV3ProductionBindings(
           env,
           config,
           createNpcRuntimePorts,
-          ordinaryStageBApproval
+          ordinaryStageBApproval,
+          ordinaryMaterializationProfile,
+          createPhase2RuntimeFactory
         })
       });
       return Object.freeze(Object.fromEntries([
@@ -207,7 +208,9 @@ function createTraceTurnRuntime({
   env,
   config,
   createNpcRuntimePorts,
-  ordinaryStageBApproval
+  ordinaryStageBApproval,
+  ordinaryMaterializationProfile,
+  createPhase2RuntimeFactory
 }) {
   const decisionSecret = String(
     config.traceTurnDecisionSecret
@@ -237,7 +240,7 @@ function createTraceTurnRuntime({
   const ordinaryEnablements = createPostgresOrdinaryMaterializationEnablementRepository({
     pool: partyPool
   });
-  return createLowerDvinaTracePhase2Runtime({
+  return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool,
       committer
@@ -251,8 +254,21 @@ function createTraceTurnRuntime({
         loadEnablement: (input) => ordinaryEnablements.load(input),
         ordinaryMaterializationModel
       }),
-    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) =>
-      (await ordinaryEnablements.load({ partyId, scopeRef })) != null,
+    ordinaryDiscoveryEnablementMarker: async ({ partyId, scopeRef }) => {
+      const enabled = await ordinaryEnablements.load({ partyId, scopeRef });
+      if (enabled == null) return null;
+      const capabilities = enabled.execution_context?.context_bound_capabilities ?? [];
+      return Object.freeze({ discovery_available: true, sources: Object.freeze(
+        capabilities.map((entry) => Object.freeze({
+          source_ref: entry.candidate_context.target_ref,
+          public_name: entry.public_name, disclosure_state: entry.disclosure_state }))) });
+    },
+    createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
+      createLowerDvinaTraceO2aAmbientPort({
+        profile: ordinaryMaterializationProfile,
+        committedState
+      }),
+    requireTurnStepAmbientOrdinaryAdmission: false,
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool,

@@ -177,6 +177,23 @@ receipt ранее выполненного adversarial Stage B classification e
 O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
 context-bound weapons/value/currency или natural finite sources.
 
+Active O2a добавляет authored wreck-shore ambient capability и first-entry
+context-bound finite stock подготовленной глины. Player-safe state показывает
+committed stock как обычный source только при отдельном approved disclosure
+state; concealed capabilities остаются server-only. Unresolved remainder
+проецируется только через boolean `discovery_available`, без expected result,
+permission и capacity.
+Stage B может выбрать unlisted ordinary semantic type/name внутри approved class;
+source/property/permission/mechanics и пустой facts остаются code-owned gates. Сам `ambient_ordinary`
+не является O2a marker: legacy direct actions без
+этого capability сохраняют прежний path. Drifted binding не публикует capability,
+а forged ref не проходит current-ref validation. Generic finite effect связан с
+current row выбранного admitted `finite_source`; несколько sources не делят
+mutable quantity. Constrained policy добавляет только resource
+permissions. Не provisioned precious material и damaged remnant в этой revision не
+объявлены active. O2b/A1/F1/S1/N1, containers, authentic currency и
+significant/hidden facts остаются disabled.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

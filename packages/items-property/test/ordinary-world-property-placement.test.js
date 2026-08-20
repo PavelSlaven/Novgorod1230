@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolveOrdinaryWorldPropertyPlacement } from '../src/index.js';
+import { ordinaryWorldPropertyPlacementContextDigest,
+  resolveOrdinaryWorldPropertyPlacement } from '../src/index.js';
 
 const scope_ref = { entity_kind: 'g6', entity_id: 'kitchen-g6' };
 
@@ -54,11 +55,13 @@ test('O1 property precedence is explicit, personal/communal, occupied default, t
   assert.equal(resolveOrdinaryWorldPropertyPlacement(input({ property_catalog: [{ property_basis_ref: 'unowned', state: 'committed', scope_ref, basis_class: 'genuinely_unowned', source_ref: 'abandoned-source', unowned_cause_ref: null }] })).pass, false);
 });
 
-test('O1 fails closed for ambiguous rank, non-man-made scope, and invalid positions', () => {
+test('O1 fails closed for ambiguous rank, unknown item kind, and invalid positions', () => {
   const sameRank = input({ property_catalog: [
     input().property_catalog[2], { property_basis_ref: 'other-spoon-owner', state: 'committed', scope_ref, basis_class: 'explicit_source_item', source_ref: 'spoon-source-1', unowned_cause_ref: null }
   ] });
   assert.equal(resolveOrdinaryWorldPropertyPlacement(sameRank).pass, false);
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(input({
+    item_kind: 'natural_resource_portion' })).pass, true);
   assert.equal(resolveOrdinaryWorldPropertyPlacement(input({ item_kind: 'natural' })).pass, false);
   for (const placement_catalog of [
     [],
@@ -78,4 +81,107 @@ test('O1 property/placement resolution never reads getters or writes graph/basel
   assert.equal(reads, 0);
   const ordinary = input(); resolveOrdinaryWorldPropertyPlacement(ordinary);
   assert.deepEqual(ordinary, before);
+});
+
+function v2Input(overrides = {}) {
+  return {
+    schema: 'rus.items.ordinary_world_property_placement_context.v2', version: 2,
+    scope_ref: structuredClone(scope_ref), property_catalog_version_ref: 'property-catalog-v2',
+    placement_catalog_version_ref: 'placement-catalog-v2', item_kind: 'man_made',
+    supporting_basis_ref: 'item-source', causal_basis_refs: ['item-source'],
+    requested_position_ref: 'kitchen-table', explicit_item_source_refs: ['item-source'],
+    personal_possession_refs: ['person-a'], communal_public_service_refs: ['service-a'],
+    container_property_refs: ['container-a'], occupied_site_refs: ['household-a'],
+    unowned_cause_refs: ['discarded-group', 'discarded-cause'],
+    placement_context_refs: ['kitchen-context'],
+    property_catalog: [], placement_catalog: [input().placement_catalog[0]], ...overrides
+  };
+}
+function v2Property(property_basis_ref, basis_class, source_ref, unowned_cause_ref = null,
+  unowned_cause_kind = null) {
+  return { property_basis_ref, state: 'committed', scope_ref: structuredClone(scope_ref),
+    basis_class, source_ref, unowned_cause_ref, unowned_cause_kind };
+}
+
+test('O2a v2 applies every property tier in code-owned order', () => {
+  const tiers = [
+    v2Property('site', 'occupied_site_default', 'household-a'),
+    v2Property('container', 'container_property', 'container-a'),
+    v2Property('service', 'communal_public_service', 'service-a'),
+    v2Property('personal', 'personal_possession', 'person-a'),
+    v2Property('explicit', 'explicit_source_item', 'item-source')
+  ];
+  const result = resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: tiers }));
+  assert.equal(result.pass, true);
+  assert.equal(result.evidence.property_basis_ref, 'explicit');
+  assert.equal(result.evidence.property_basis_class, 'explicit_source_item');
+  assert.equal(result.evidence.schema, 'rus.items.ordinary_world_property_placement_evidence.v3');
+  assert.equal(result.evidence.property_context_version, 2);
+  assert.equal(ordinaryWorldPropertyPlacementContextDigest(v2Input({ property_catalog: tiers })),
+    result.evidence.property_placement_context_digest);
+  for (const [catalog, expected] of [
+    [tiers.slice(0, 4), 'personal'], [tiers.slice(0, 3), 'service'],
+    [tiers.slice(0, 2), 'container'], [tiers.slice(0, 1), 'site']
+  ]) assert.equal(resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: catalog }))
+    .evidence.property_basis_ref, expected);
+});
+
+test('O2a v2 ignores a lower authored property ref and derives precedence from the source', () => {
+  const result = resolveOrdinaryWorldPropertyPlacement(v2Input({
+    supporting_basis_ref: 'item-source', causal_basis_refs: ['item-source'],
+    property_catalog: [
+      v2Property('site', 'occupied_site_default', 'household-a'),
+      v2Property('personal', 'personal_possession', 'person-a'),
+      v2Property('explicit', 'explicit_source_item', 'item-source')
+    ]
+  }));
+  assert.equal(result.pass, true);
+  assert.equal(result.evidence.property_basis_ref, 'explicit');
+});
+
+test('O2a v2 only reports property evidence and never transfers legal ownership', () => {
+  const candidate = v2Input({ property_catalog: [
+    v2Property('personal', 'personal_possession', 'person-a')
+  ] });
+  const before = structuredClone(candidate);
+  const result = resolveOrdinaryWorldPropertyPlacement(candidate);
+  assert.equal(result.pass, true);
+  assert.equal(result.evidence.property_source_ref, 'person-a');
+  assert.deepEqual(candidate, before);
+});
+
+test('O2a v2 grants genuinely unowned only for a committed closed cause', () => {
+  const valid = v2Property('discarded', 'genuinely_unowned', 'discarded-group',
+    'discarded-cause', 'discarded');
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: [valid] }))
+    .pass, true);
+  for (const cause of [null, 'unknown', 'lost_by_absence', 'battlefield']) {
+    const candidate = { ...valid, unowned_cause_kind: cause };
+    assert.equal(resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: [candidate] }))
+      .pass, false);
+  }
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(v2Input({ property_catalog: [
+    { ...valid, source_ref: 'owner-not-in-frame' }
+  ] })).pass, false);
+});
+
+test('O2a v2 fails closed for ambiguous property, prototype, symbols, and getters', () => {
+  const ambiguous = v2Input({ property_catalog: [
+    v2Property('personal-a', 'personal_possession', 'person-a'),
+    v2Property('personal-b', 'personal_possession', 'person-a')
+  ] });
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(ambiguous).pass, false);
+  const proto = v2Input({ property_catalog: [v2Property('site', 'occupied_site_default', 'household-a')] });
+  Object.setPrototypeOf(proto.property_catalog[0], { inherited: true });
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(proto).pass, false);
+  const symbol = v2Input({ property_catalog: [v2Property('site', 'occupied_site_default', 'household-a')] });
+  symbol.property_catalog[0][Symbol('hidden')] = true;
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(symbol).pass, false);
+  const getter = v2Input({ property_catalog: [v2Property('site', 'occupied_site_default', 'household-a')] });
+  let reads = 0;
+  Object.defineProperty(getter.property_catalog[0], 'basis_class', {
+    enumerable: true, get() { reads += 1; return 'occupied_site_default'; }
+  });
+  assert.equal(resolveOrdinaryWorldPropertyPlacement(getter).pass, false);
+  assert.equal(reads, 0);
 });

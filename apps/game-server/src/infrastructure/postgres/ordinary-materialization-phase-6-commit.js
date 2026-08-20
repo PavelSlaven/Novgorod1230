@@ -10,8 +10,6 @@ import {
   freezePhase6Data,
   normalizeSupportingBases,
   normalizePropertyPlacementBase,
-  propertyPlacementBaseDigest,
-  propertyPlacementEvidenceMatches,
   safeVersion,
   sameText,
   sameTextList,
@@ -19,8 +17,17 @@ import {
   validTransitionShape,
   version
 } from './ordinary-materialization-phase-6-commit-internal.js';
+import { exactMaterializedItem } from
+  './ordinary-materialization-item-validation.js';
+import { propertyPlacementBaseDigest, propertyPlacementEvidenceMatches } from
+  './ordinary-materialization-property-evidence.js';
 import { insertOrdinaryMaterializedRuntimeItem } from
   './ordinary-materialization-runtime-item.js';
+import { applyFiniteResourceInitializationInTransaction,
+  applyFiniteResourceTransitionInTransaction,
+  validateFiniteResourceInitializationBounds,
+  validateFiniteResourceTransition } from
+  './ordinary-materialization-finite-resource-persistence.js';
 
 const RESOLUTIONS = new Set(['materialize', 'absent', 'no_change', 'authority_required']);
 export { OrdinaryMaterializationCommitError };
@@ -29,15 +36,13 @@ export { OrdinaryMaterializationCommitError };
 export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   value = clonePhase6Data(value);
   if (Object.hasOwn(value, 'schema') || Object.hasOwn(value, 'write_plan_digest')) {
-    if (Object.hasOwn(value, 'enablement_pin')) exact(value, ['schema','party_id','scope_ref','request_identity','input_digest','transition_digest','expected_versions','expected_supporting_basis_catalog','new_prepared_bases','next_supporting_basis_catalog','next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest','expected_property_placement_context','enablement_pin','resolution','transitions','next_aggregate','item','write_plan_digest']);
-    else exact(value, ['schema','party_id','scope_ref','request_identity','input_digest','transition_digest','expected_versions','expected_supporting_basis_catalog','new_prepared_bases','next_supporting_basis_catalog','next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest','expected_property_placement_context','resolution','transitions','next_aggregate','item','write_plan_digest']);
+    exact(value, phase6Keys(value, true));
     if (value.schema !== 'ordinary_materialization_atomic_write_plan_v1' || !sameText(value.write_plan_digest)) fail('ORDINARY_PHASE6_PLAN_INVALID');
     const { schema, write_plan_digest, ...raw } = value, normalized = createOrdinaryMaterializationAtomicWritePlan(raw);
     if (normalized.write_plan_digest !== write_plan_digest) fail('ORDINARY_PHASE6_PLAN_INVALID');
     return normalized;
   }
-  if (Object.hasOwn(value, 'enablement_pin')) exact(value, ['party_id','scope_ref','request_identity','input_digest','transition_digest','expected_versions','expected_supporting_basis_catalog','new_prepared_bases','next_supporting_basis_catalog','next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest','expected_property_placement_context','enablement_pin','resolution','transitions','next_aggregate','item']);
-  else exact(value, ['party_id','scope_ref','request_identity','input_digest','transition_digest','expected_versions','expected_supporting_basis_catalog','new_prepared_bases','next_supporting_basis_catalog','next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest','expected_property_placement_context','resolution','transitions','next_aggregate','item']);
+  exact(value, phase6Keys(value, false));
   const scope = exact(value.scope_ref, ['entity_kind','entity_id']), pins = exact(value.expected_versions, ['party_state_version','ordinary_state_version','catalog_version','property_version','placement_version','supporting_basis_catalog_version','supporting_basis_catalog_digest','property_placement_context_digest']);
   text(value.party_id); text(scope.entity_kind); text(scope.entity_id); text(value.request_identity); text(value.input_digest); text(value.transition_digest); text(pins.supporting_basis_catalog_digest); text(pins.property_placement_context_digest); Object.entries(pins).filter(([key])=>!key.endsWith('_digest')).forEach(([,entry])=>version(entry));
   if (!RESOLUTIONS.has(value.resolution)) fail('ORDINARY_PHASE6_PLAN_INVALID');
@@ -81,14 +86,60 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
     fail('ORDINARY_PHASE6_PROPERTY_PLACEMENT_CONTEXT_INVALID');
   }
   if (value.resolution === 'materialize') {
-    const item = exact(value.item, ['item_id','candidate_key','coverage_key','context_version','functional_bucket','admission_class','supporting_basis_ref','causal_basis_refs','property_basis_ref','position_ref','runtime_placement','mechanics_policy_ref','item_proposal','mechanics_snapshot']);
+    const item = exactMaterializedItem(value.item);
     for (const key of ['item_id','candidate_key','coverage_key','context_version','functional_bucket','admission_class','supporting_basis_ref','property_basis_ref','position_ref','mechanics_policy_ref']) text(item[key]);
     const runtimePlacement = exact(item.runtime_placement, ['anchor_id']);
     text(runtimePlacement.anchor_id);
     if (!sameTextList(item.causal_basis_refs,[...item.causal_basis_refs].sort()) || !exactAdmittedItem({ item, scope, request_identity:value.request_identity }) || !basisCoversItem(bases,item) || !propertyPlacementEvidenceMatches({ base:propertyPlacement, item }) || !resolution.identity_key || item.item_id !== `ordinary_item_${canonicalDigest({party_id:value.party_id,scope_ref:scope,candidate_key:item.candidate_key,coverage_key:item.coverage_key,context_version:item.context_version}).slice(0,24)}`) fail('ORDINARY_PHASE6_POSITIVE_ITEM_INVALID');
   } else if (value.item !== null || (!seedOnly && resolution.identity_key !== undefined)) fail('ORDINARY_PHASE6_NEGATIVE_ITEM_FORBIDDEN');
-  const plan = { schema:'ordinary_materialization_atomic_write_plan_v1', party_id:value.party_id, scope_ref:scope, request_identity:value.request_identity, input_digest:value.input_digest, transition_digest:value.transition_digest, expected_versions:pins, expected_supporting_basis_catalog:expectedBases, new_prepared_bases:newBases, next_supporting_basis_catalog:bases, next_supporting_basis_catalog_version:nextBasisVersion, next_supporting_basis_catalog_digest:nextBasisDigest, expected_property_placement_context:propertyPlacement, ...(enablementPin == null ? {} : { enablement_pin: enablementPin }), resolution:value.resolution, transitions:value.transitions, next_aggregate:aggregate, item:value.item };
+  const finite = value.finite_resource_transition == null ? null
+    : validateFiniteResourceTransition(value.finite_resource_transition,
+      value.item, value.request_identity, exact);
+  if (value.item?.causal_basis_kind === 'finite_source' && finite == null) {
+    fail('ORDINARY_PHASE6_FINITE_SOURCE_INVALID');
+  }
+  const initialization = value.finite_resource_initialization == null ? null
+    : validateFiniteResourceInitialization(value.finite_resource_initialization,
+      finite, value.request_identity);
+  const plan = { schema:'ordinary_materialization_atomic_write_plan_v1', party_id:value.party_id, scope_ref:scope, request_identity:value.request_identity, input_digest:value.input_digest, transition_digest:value.transition_digest, expected_versions:pins, expected_supporting_basis_catalog:expectedBases, new_prepared_bases:newBases, next_supporting_basis_catalog:bases, next_supporting_basis_catalog_version:nextBasisVersion, next_supporting_basis_catalog_digest:nextBasisDigest, expected_property_placement_context:propertyPlacement, ...(enablementPin == null ? {} : { enablement_pin: enablementPin }), ...(finite == null ? {} : { finite_resource_transition: finite }), ...(initialization == null ? {} : { finite_resource_initialization: initialization }), resolution:value.resolution, transitions:value.transitions, next_aggregate:aggregate, item:value.item };
   return freezePhase6Data({ ...plan, write_plan_digest:canonicalDigest(plan) });
+}
+
+function phase6Keys(value, sealed) {
+  const keys = ['party_id','scope_ref','request_identity','input_digest',
+    'transition_digest','expected_versions','expected_supporting_basis_catalog',
+    'new_prepared_bases','next_supporting_basis_catalog',
+    'next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest',
+    'expected_property_placement_context'];
+  if (Object.hasOwn(value, 'enablement_pin')) keys.push('enablement_pin');
+  if (Object.hasOwn(value, 'finite_resource_transition')) {
+    keys.push('finite_resource_transition');
+  }
+  if (Object.hasOwn(value, 'finite_resource_initialization')) {
+    keys.push('finite_resource_initialization');
+  }
+  keys.push('resolution','transitions','next_aggregate','item');
+  return sealed ? ['schema', ...keys, 'write_plan_digest'] : keys;
+}
+
+function validateFiniteResourceInitialization(value, transition,
+  requestIdentity) {
+  if (transition == null) fail('ORDINARY_PHASE6_FINITE_SOURCE_INITIALIZATION_INVALID');
+  const initialization = exact(value, ['source_resource_node_id',
+    'expected_state_version','initialization_identity','quantity_unit_ref',
+    'estimated_amount','approved_bounds']);
+  if (initialization.source_resource_node_id !== transition.source_resource_node_id
+      || initialization.expected_state_version + 1
+        !== transition.expected_state_version
+      || initialization.initialization_identity !== requestIdentity
+      || canonicalDigest(initialization.quantity_unit_ref)
+        !== canonicalDigest(transition.quantity_unit_ref)
+      || canonicalDigest(initialization.estimated_amount)
+        !== canonicalDigest(transition.before_quantity)) {
+    fail('ORDINARY_PHASE6_FINITE_SOURCE_INITIALIZATION_INVALID');
+  }
+  validateFiniteResourceInitializationBounds(initialization);
+  return initialization;
 }
 
 export function createPostgresOrdinaryMaterializationAtomicCommitter({ pool } = {}) {
@@ -104,7 +155,7 @@ export function createPostgresOrdinaryMaterializationAtomicCommitter({ pool } = 
 /** Applies only the sealed 022 write set. The caller owns transaction and party bump. */
 export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
   client, input, partyStateVersionAfter = null, updatePartyState = false,
-  requireEnablementPin = false
+  requireEnablementPin = false, p16ChangeSetId = null
 } = {}) {
   if (!client?.query) fail('ORDINARY_PHASE6_TRANSACTION_REQUIRED');
   const plan = createOrdinaryMaterializationAtomicWritePlan(input);
@@ -135,6 +186,16 @@ export async function applyOrdinaryMaterializationAtomicWritePlanInTransaction({
   }
   const next = applyTransitions(current.aggregate, plan.transitions);
   if (canonicalDigest(next) !== canonicalDigest(plan.next_aggregate)) fail('ORDINARY_PHASE6_AGGREGATE_DELTA_INVALID');
+  if (plan.finite_resource_transition != null) {
+    if (!sameText(p16ChangeSetId)) fail('ORDINARY_PHASE6_FINITE_SOURCE_P16_REQUIRED');
+    if (plan.finite_resource_initialization != null) {
+      await applyFiniteResourceInitializationInTransaction(client,
+        plan.party_id, plan.finite_resource_initialization, p16ChangeSetId);
+    }
+    await applyFiniteResourceTransitionInTransaction(client, plan.party_id,
+      plan.finite_resource_transition, plan.item, p16ChangeSetId,
+      plan.finite_resource_initialization ?? null);
+  }
   await client.query(`INSERT INTO party_runtime.party_ordinary_materialization_commits (party_id,scope_kind,scope_id,request_identity,input_digest,transition_digest,write_plan_digest,resolution,transition_count,from_party_state_version,to_party_state_version,from_ordinary_state_version,to_ordinary_state_version,item_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)`, [plan.party_id,plan.scope_ref.entity_kind,plan.scope_ref.entity_id,plan.request_identity,plan.input_digest,plan.transition_digest,plan.write_plan_digest,plan.resolution,plan.transitions.length,current.party_state_version,nextPartyStateVersion,current.ordinary_state_version,current.ordinary_state_version+plan.transitions.length,plan.item?.item_id??null]);
     if (canonicalDigest(current.supporting_bases) !== canonicalDigest(plan.expected_supporting_basis_catalog)) fail('ORDINARY_PHASE6_PROPOSAL_STALE');
     if (canonicalDigest(current.property_placement_context)

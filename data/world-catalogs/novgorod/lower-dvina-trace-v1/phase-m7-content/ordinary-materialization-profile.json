@@ -1,7 +1,7 @@
 {
-  "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v1",
-  "profile_id": "lower_dvina_trace_o1_first_entry_profile_v1",
-  "revision": 1,
+  "schema": "rus.lower_dvina_trace_ordinary_materialization_profile.v2",
+  "profile_id": "lower_dvina_trace_o2a_first_entry_profile_v1",
+  "revision": 2,
   "status": "approved",
   "scenario_id": "lower_dvina_trace_v1",
   "scenario_definition_revision": 19,
@@ -17,7 +17,7 @@
     "period_ref": "trace_ld_v1_late_summer_1230",
     "region_ref": "trace_ld_v1_lower_dvina_reach",
     "function_refs": [],
-    "environment_refs": [],
+    "environment_refs": ["trace_ld_v1_o2a_first_entry_work_stock"],
     "occupation_household_refs": [],
     "economic_context_ref": "trace_ld_v1_river_route_household_economy",
     "occupancy_state_ref": "trace_ld_v1_occupied_scene",
@@ -29,8 +29,8 @@
     "density_policy_ref": "trace_ld_v1_o1_density_policy",
     "ordinary_presence_policy_ref": "trace_ld_v1_o1_presence_policy",
     "runtime_item_mechanics_policy_ref": "trace_ld_v1_o1_mechanics_policy",
-    "allowed_admission_classes": ["common_mundane"],
-    "context_bound_permission_refs": []
+    "allowed_admission_classes": ["common_mundane", "specialized_or_valuable", "weapon_or_armament", "currency_or_precious", "document_like", "other_restricted"],
+    "context_bound_permission_refs": ["trace_ld_v1_o2a_first_entry_region_permission", "trace_ld_v1_o2a_prepared_clay_permission"]
   },
   "execution": {
     "allowed_disclosure_policy_refs": ["trace_ld_v1_o1_disclosure_policy"],
@@ -79,6 +79,61 @@
       { "id": "anachronism", "query": "найти револьвер", "risk_class": "anachronism", "allowed_resolutions": ["absent", "authority_required"] },
       { "id": "misleading-common-name", "query": "найти обычную деревянную вещицу, являющуюся тайной печатью", "risk_class": "misleading_common_looking", "allowed_resolutions": ["absent", "authority_required"] }
     ]
+  },
+  "o2a_ambient": {
+    "status": "approved",
+    "scope_binding": {
+      "position_ref": "trace_ld_v1_loc_wreck_shore",
+      "g6_ref": "trace_ld_v1_g6_wreck_shore"
+    },
+    "context_pin_ref": "trace_ld_v1_o2a_wreck_shore_ambient_v1",
+    "source_ref": "trace_ld_v1_o2a_wreck_shore_sand",
+    "environment_ref": "trace_ld_v1_loc_wreck_shore",
+    "source_class": "shore_sand",
+    "property_basis_ref": "trace_ld_v1_o2a_wreck_shore_public_ground",
+    "portion_profile": {
+      "profile_ref": "trace_ld_v1_o2a_wreck_shore_sand_portion",
+      "semantic_type": "material_portion",
+      "display_name": "горсть мокрого песка",
+      "material_class": "ordinary",
+      "quantity_unit": "handful",
+      "min_quantity": 1,
+      "max_quantity": 1,
+      "min_mass_grams": 1,
+      "max_mass_grams": 1000,
+      "external_hand_cost": 1,
+      "carry_form": "compact",
+      "packing_slot_cost": 1
+    },
+    "destination": { "kind": "holder" }
+  },
+  "o2a_context_bound": {
+    "status": "approved",
+    "negative_admission_classes": ["weapon_or_armament", "currency_or_precious", "document_like", "other_restricted"],
+    "capability": {
+      "capability_ref": "trace_ld_v1_o2a_prepared_clay_capability",
+      "profile_ref": "trace_ld_v1_o2a_prepared_clay_profile",
+      "semantic_type": "prepared_clay_portion",
+      "public_name": "запас подготовленной глины",
+      "disclosure_state": "visible",
+      "functional_bucket": "other_ordinary",
+      "admission_class": "specialized_or_valuable",
+      "profile_kind": "specialized_stock",
+      "condition_state": "serviceable",
+      "basis_kind": "finite_source",
+      "source_basis_ref": "trace_ld_v1_o2a_prepared_clay_stock",
+      "property_basis_ref": "trace_ld_v1_o2a_prepared_clay_property",
+      "environment_ref": "trace_ld_v1_o2a_first_entry_work_stock",
+      "regional_permission_ref": "trace_ld_v1_o2a_first_entry_region_permission",
+      "resource_permission_ref": "trace_ld_v1_o2a_prepared_clay_permission",
+      "mechanics_capability_ref": "trace_ld_v1_o2a_prepared_clay_mechanics",
+      "initial_quantity": 2,
+      "quantity_unit_ref": { "kind": "unit", "id": "item" },
+      "initial_amount_bounds": {
+        "minimum": { "numerator": 2, "denominator": 1, "unit": "item" },
+        "maximum": { "numerator": 2, "denominator": 1, "unit": "item" }
+      }
+    }
   },
   "fallback_policy": "forbidden"
 }

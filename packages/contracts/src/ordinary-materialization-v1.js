@@ -1,22 +1,15 @@
-import {
-  ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA,
-  ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA,
-  ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA,
-  ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA,
-  ORDINARY_MATERIALIZATION_V1_ENUMS
-} from './ordinary-materialization-v1-schema.js';
+import { ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA, ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA, ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA, ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA, ORDINARY_MATERIALIZATION_V1_ENUMS } from './ordinary-materialization-v1-schema.js';
+import { validateFiniteInitialAmountEstimate as initialEstimate,
+  validateFiniteInitialAmountEstimateBinding as initialBinding,
+  validateFiniteInitialAmountEstimatePolicy as initialPolicy } from
+  './ordinary-materialization-initial-amount-choice.js';
+export { ordinaryWorldPropertyPlacementContextDigest } from
+  './ordinary-materialization-property-context-digest.js';
 
 const REQUEST_SCHEMA = ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA;
 const PLAN_SCHEMA = ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA;
 
-export {
-  ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA,
-  ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA,
-  ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA,
-  ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA,
-  ORDINARY_MATERIALIZATION_V1_ENUMS
-};
-
+export { ORDINARY_MATERIALIZATION_PLAN_V1_JSON_SCHEMA, ORDINARY_MATERIALIZATION_PLAN_V1_SCHEMA, ORDINARY_MATERIALIZATION_REQUEST_V1_JSON_SCHEMA, ORDINARY_MATERIALIZATION_REQUEST_V1_SCHEMA, ORDINARY_MATERIALIZATION_V1_ENUMS };
 export function validateOrdinaryMaterializationRequestV1(value) {
   const boundaryErrors = validateJsonDataBoundary(value);
   if (boundaryErrors.length !== 0) return freezeErrors(boundaryErrors);
@@ -24,11 +17,9 @@ export function validateOrdinaryMaterializationRequestV1(value) {
   validateRequest(value, errors);
   return freezeErrors(errors);
 }
-
 export function assertOrdinaryMaterializationRequestV1(value) {
   return assertValid(value, validateOrdinaryMaterializationRequestV1, 'ORDINARY_MATERIALIZATION_REQUEST_INVALID');
 }
-
 export function validateOrdinaryMaterializationPlanV1(value, request = null) {
   const boundaryErrors = validateJsonDataBoundary(value);
   if (boundaryErrors.length !== 0) return freezeErrors(boundaryErrors);
@@ -42,7 +33,7 @@ export function assertOrdinaryMaterializationPlanV1(value, request = null) {
   return assertValid(value, (candidate) => validateOrdinaryMaterializationPlanV1(candidate, request), 'ORDINARY_MATERIALIZATION_PLAN_INVALID');
 }
 
-function validateRequest(value, errors) {
+function validateRequest(value,errors) {
   if (!exactObject(value, ['schema', 'request_id', 'mode', 'scope_ref', 'context_refs', 'policy_refs', 'ordinary_state', 'candidate_query', 'technical_limits'], '$', errors)) return;
   stringConst(value.schema, REQUEST_SCHEMA, 'schema', errors);
   nonemptyString(value.request_id, 'request_id', errors);
@@ -59,7 +50,7 @@ function validateRequest(value, errors) {
   }
 }
 
-function validatePlan(value, errors) {
+function validatePlan(value,errors) {
   if (!exactObject(value, ['schema', 'request_id', 'resolution', 'density_band_proposal', 'background_groups', 'entities', 'presence_resolutions', 'reason_code'], '$', errors)) return;
   stringConst(value.schema, PLAN_SCHEMA, 'schema', errors);
   nonemptyString(value.request_id, 'request_id', errors);
@@ -74,36 +65,29 @@ function validatePlan(value, errors) {
   }
 }
 
-function validateScopeRef(value, path, errors) {
-  if (!exactObject(value, ['entity_kind', 'entity_id'], path, errors)) return;
-  enumValue(value.entity_kind, ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind, `${path}.entity_kind`, errors);
-  nonemptyString(value.entity_id, `${path}.entity_id`, errors);
-}
+function validateScopeRef(value,path,errors){if(!exactObject(value,['entity_kind','entity_id'],path,errors))return;enumValue(value.entity_kind,ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind,`${path}.entity_kind`,errors);nonemptyString(value.entity_id,`${path}.entity_id`,errors);}
 
-function validateContextRefs(value, errors) {
-  const path = 'context_refs';
+function validateContextRefs(value,errors) {
+  const path='context_refs';
   if (!exactObject(value, ['period_ref', 'region_ref', 'function_refs', 'environment_refs', 'occupation_household_refs', 'economic_context_ref', 'occupancy_state_ref', 'material_culture_refs', 'property_context_ref'], path, errors)) return;
   for (const key of ['period_ref', 'region_ref', 'economic_context_ref', 'occupancy_state_ref', 'property_context_ref']) nonemptyString(value[key], `${path}.${key}`, errors);
   for (const key of ['function_refs', 'environment_refs', 'occupation_household_refs', 'material_culture_refs']) arrayOfStrings(value[key], `${path}.${key}`, errors);
 }
 
-function validatePolicyRefs(value, errors) {
-  const path = 'policy_refs';
-  if (!exactObject(value, ['authority_policy_ref', 'density_policy_ref', 'ordinary_presence_policy_ref', 'runtime_item_mechanics_policy_ref', 'allowed_admission_classes', 'context_bound_permission_refs', 'allowed_supporting_bases'], path, errors)) return;
+function validatePolicyRefs(value,errors) {
+  const path='policy_refs',keys=['authority_policy_ref','density_policy_ref','ordinary_presence_policy_ref','runtime_item_mechanics_policy_ref','allowed_admission_classes','context_bound_permission_refs','allowed_supporting_bases'],has=Object.hasOwn(value??{},'finite_source_initial_amount_estimate_policy');
+  if (!exactObject(value,has?[...keys,'finite_source_initial_amount_estimate_policy']:keys,path,errors)) return;
   for (const key of ['authority_policy_ref', 'density_policy_ref', 'ordinary_presence_policy_ref', 'runtime_item_mechanics_policy_ref']) nonemptyString(value[key], `${path}.${key}`, errors);
   arrayOfEnum(value.allowed_admission_classes, ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class, `${path}.allowed_admission_classes`, errors);
   arrayOfStrings(value.context_bound_permission_refs, `${path}.context_bound_permission_refs`, errors);
   arrayOf(value.allowed_supporting_bases, `${path}.allowed_supporting_bases`, errors, validateAllowedSupportingBasis);
+  if(has) initialPolicy(value.finite_source_initial_amount_estimate_policy,`${path}.finite_source_initial_amount_estimate_policy`,errors,exactObject,stringConst,nonemptyString,issue);
 }
 
-function validateAllowedSupportingBasis(value, path, errors) {
-  if (!exactObject(value, ['basis_ref', 'basis_state'], path, errors)) return;
-  nonemptyString(value.basis_ref, `${path}.basis_ref`, errors);
-  enumValue(value.basis_state, ORDINARY_MATERIALIZATION_V1_ENUMS.basis_state, `${path}.basis_state`, errors);
-}
+function validateAllowedSupportingBasis(value,path,errors){if(!exactObject(value,['basis_ref','basis_state'],path,errors))return;nonemptyString(value.basis_ref,`${path}.basis_ref`,errors);enumValue(value.basis_state,ORDINARY_MATERIALIZATION_V1_ENUMS.basis_state,`${path}.basis_state`,errors);}
 
-function validateOrdinaryState(value, errors) {
-  const path = 'ordinary_state';
+function validateOrdinaryState(value,errors) {
+  const path='ordinary_state';
   if (!exactObject(value, ['seeded', 'density_band', 'remaining_identity_budget', 'background_groups', 'presence_resolutions', 'closed_observation_scopes'], path, errors)) return;
   boolean(value.seeded, `${path}.seeded`, errors);
   nullableEnum(value.density_band, ORDINARY_MATERIALIZATION_V1_ENUMS.density_band, `${path}.density_band`, errors);
@@ -120,20 +104,20 @@ function validateOrdinaryState(value, errors) {
   }
 }
 
-function validateCandidateQuery(value, errors) {
-  const path = 'candidate_query';
+function validateCandidateQuery(value,errors) {
+  const path='candidate_query';
   if (!exactObject(value, ['candidate_key', 'candidate_hint', 'coverage_key', 'evidence_weight'], path, errors)) return;
   for (const key of ['candidate_key', 'candidate_hint', 'coverage_key']) nonemptyString(value[key], `${path}.${key}`, errors);
   if (value.evidence_weight !== 0) issue(errors, `${path}.evidence_weight`, 'const', `${path}.evidence_weight must equal 0.`);
 }
 
-function validateTechnicalLimits(value, errors) {
-  const path = 'technical_limits';
+function validateTechnicalLimits(value,errors) {
+  const path='technical_limits';
   if (!exactObject(value, ['max_new_entities', 'max_new_background_groups', 'max_resolution_records'], path, errors)) return;
   for (const key of ['max_new_entities', 'max_new_background_groups', 'max_resolution_records']) positiveInteger(value[key], `${path}.${key}`, errors);
 }
 
-function validateBackgroundGroup(value, path, errors) {
+function validateBackgroundGroup(value,path,errors) {
   if (!exactObject(value, ['descriptor', 'functional_bucket', 'availability_class', 'allowed_admission_classes', 'causal_basis', 'property_basis_ref', 'permission_refs', 'disclosure_policy_ref'], path, errors)) return;
   nonemptyString(value.descriptor, `${path}.descriptor`, errors);
   enumValue(value.functional_bucket, ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket, `${path}.functional_bucket`, errors);
@@ -146,41 +130,31 @@ function validateBackgroundGroup(value, path, errors) {
 }
 
 function validateEntity(value, path, errors) {
-  if (!exactObject(value, ['semantic_descriptor', 'authority_class', 'admission_class', 'availability_class', 'functional_bucket', 'presence_expectation', 'supporting_basis_ref', 'causal_basis', 'property_basis_ref', 'placement_proposal', 'mechanics_proposal'], path, errors)) return;
-  validateSemanticDescriptor(value.semantic_descriptor, `${path}.semantic_descriptor`, errors);
-  enumValue(value.authority_class, ORDINARY_MATERIALIZATION_V1_ENUMS.authority_class, `${path}.authority_class`, errors);
-  if (value.authority_class !== 'ordinary') issue(errors, `${path}.authority_class`, 'const', `${path}.authority_class must equal ordinary.`);
-  enumValue(value.admission_class, ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class, `${path}.admission_class`, errors);
-  enumValue(value.availability_class, ORDINARY_MATERIALIZATION_V1_ENUMS.availability_class, `${path}.availability_class`, errors);
-  enumValue(value.functional_bucket, ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket, `${path}.functional_bucket`, errors);
-  enumValue(value.presence_expectation, ORDINARY_MATERIALIZATION_V1_ENUMS.presence_expectation, `${path}.presence_expectation`, errors);
-  nonemptyString(value.supporting_basis_ref, `${path}.supporting_basis_ref`, errors);
-  validateCausalBasis(value.causal_basis, `${path}.causal_basis`, errors);
-  nonemptyString(value.property_basis_ref, `${path}.property_basis_ref`, errors);
-  validatePlacementProposal(value.placement_proposal, `${path}.placement_proposal`, errors);
-  validateMechanicsProposal(value.mechanics_proposal, `${path}.mechanics_proposal`, errors);
+  const keys=['semantic_descriptor','authority_class','admission_class','availability_class','functional_bucket','presence_expectation','supporting_basis_ref','causal_basis','property_basis_ref','placement_proposal','mechanics_proposal'],has=Object.hasOwn(value??{},'finite_source_initial_amount_estimate');
+  if (!exactObject(value,has?[...keys,'finite_source_initial_amount_estimate']:keys,path,errors)) return;
+  validateSemanticDescriptor(value.semantic_descriptor,`${path}.semantic_descriptor`,errors); enumValue(value.authority_class,ORDINARY_MATERIALIZATION_V1_ENUMS.authority_class,`${path}.authority_class`,errors); if(value.authority_class!=='ordinary') issue(errors,`${path}.authority_class`,'const',`${path}.authority_class must equal ordinary.`); enumValue(value.admission_class,ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class,`${path}.admission_class`,errors); enumValue(value.availability_class,ORDINARY_MATERIALIZATION_V1_ENUMS.availability_class,`${path}.availability_class`,errors); enumValue(value.functional_bucket,ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket,`${path}.functional_bucket`,errors); enumValue(value.presence_expectation,ORDINARY_MATERIALIZATION_V1_ENUMS.presence_expectation,`${path}.presence_expectation`,errors); nonemptyString(value.supporting_basis_ref,`${path}.supporting_basis_ref`,errors); validateCausalBasis(value.causal_basis,`${path}.causal_basis`,errors); nonemptyString(value.property_basis_ref,`${path}.property_basis_ref`,errors); validatePlacementProposal(value.placement_proposal,`${path}.placement_proposal`,errors); validateMechanicsProposal(value.mechanics_proposal,`${path}.mechanics_proposal`,errors); if(has) initialEstimate(value.finite_source_initial_amount_estimate,`${path}.finite_source_initial_amount_estimate`,errors,exactObject,stringConst,nonemptyString,issue);
 }
 
-function validateSemanticDescriptor(value, path, errors) {
+function validateSemanticDescriptor(value,path,errors) {
   if (!exactObject(value, ['semantic_type', 'name', 'facts'], path, errors)) return;
   nonemptyString(value.semantic_type, `${path}.semantic_type`, errors);
   nonemptyString(value.name, `${path}.name`, errors);
   arrayOfStrings(value.facts, `${path}.facts`, errors);
 }
 
-function validateCausalBasis(value, path, errors) {
+function validateCausalBasis(value,path,errors) {
   if (!exactObject(value, ['basis_kind', 'basis_refs'], path, errors)) return;
   nonemptyString(value.basis_kind, `${path}.basis_kind`, errors);
   arrayOfStrings(value.basis_refs, `${path}.basis_refs`, errors, true);
 }
 
-function validatePlacementProposal(value, path, errors) {
+function validatePlacementProposal(value,path,errors) {
   if (!exactObject(value, ['scope_ref', 'position_ref'], path, errors)) return;
   nonemptyString(value.scope_ref, `${path}.scope_ref`, errors);
   nonemptyString(value.position_ref, `${path}.position_ref`, errors);
 }
 
-function validateMechanicsProposal(value, path, errors) {
+function validateMechanicsProposal(value,path,errors) {
   if (!exactObject(value, ['mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost', 'quantity', 'container'], path, errors)) return;
   boundedInteger(value.mass_grams, 1, 1000000, `${path}.mass_grams`, errors);
   boundedInteger(value.external_hand_cost, 0, 2, `${path}.external_hand_cost`, errors);
@@ -192,7 +166,7 @@ function validateMechanicsProposal(value, path, errors) {
   if (value.container !== null) issue(errors, `${path}.container`, 'const', `${path}.container must be null.`);
 }
 
-function validatePresenceResolution(value, path, errors) {
+function validatePresenceResolution(value,path,errors) {
   if (!exactObject(value, ['candidate_key', 'coverage_key', 'resolution'], path, errors)) return;
   nonemptyString(value.candidate_key, `${path}.candidate_key`, errors);
   nonemptyString(value.coverage_key, `${path}.coverage_key`, errors);
@@ -207,10 +181,12 @@ function validatePlanRequestBinding(plan, request, errors) {
   if (plan.request_id !== request.request_id) issue(errors, 'request_id', 'const', 'request_id must match the request.');
   const bases = new Set(request.policy_refs.allowed_supporting_bases.map(({ basis_ref }) => basis_ref));
   const admissions = new Set(request.policy_refs.allowed_admission_classes);
+  const initialAmountPolicy = request.policy_refs.finite_source_initial_amount_estimate_policy ?? null;
   for (const [index, entity] of plan.entities.entries()) {
     const path = `entities[${index}]`;
     if (!bases.has(entity.supporting_basis_ref)) issue(errors, `${path}.supporting_basis_ref`, 'enum', `${path}.supporting_basis_ref must be supplied by the request.`);
     if (!admissions.has(entity.admission_class)) issue(errors, `${path}.admission_class`, 'enum', `${path}.admission_class must be allowed by the request.`);
+    initialBinding({entity,path,policy:initialAmountPolicy,errors,issue});
   }
   if (request.mode === 'seed_scope') {
     validateSeedPlanBinding(plan, errors);
@@ -246,8 +222,6 @@ function validateTargetedPlanBinding(plan, candidateQuery, errors) {
     return;
   }
   if (plan.resolution === 'materialize') {
-    // candidate_key is opaque code-owned identity: this DTO has no model-owned
-    // candidate field, so commit binds the one proposal to request.candidate_query.
     if (plan.entities.length !== 1) issue(errors, 'entities', 'items', 'entities must contain exactly one proposal for targeted materialize.');
     if (plan.presence_resolutions.length !== 0) issue(errors, 'presence_resolutions', 'min_items', 'presence_resolutions must be empty for targeted materialize.');
     return;

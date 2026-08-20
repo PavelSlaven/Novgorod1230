@@ -251,7 +251,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)/)?.[1]);
   client = new pg.Client({ host: '127.0.0.1', port, user: 'p16', password: 'p16', database: 'p16' });
   await client.connect();
-  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql', '009_party_runtime_pr8_reaction_knowledge.sql', '010_party_runtime_pr8_reaction_options.sql', '011_party_runtime_first_playable.sql', '012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql', '015_party_runtime_turn_step_items.sql', '016_party_runtime_npc_semantic_conversation.sql', '017_party_runtime_conversation_transcript.sql', '018_party_runtime_phase7_container_state.sql', '019_party_runtime_combat_sessions.sql', '020_party_runtime_actor_equipment.sql', '021_party_runtime_ordinary_materialization.sql', '022_party_runtime_ordinary_materialization_commit.sql', '023_party_runtime_ordinary_materialization_enablement.sql', '024_party_runtime_ordinary_world_items.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
+  for (const file of ['001_party_runtime.sql', '002_party_runtime_v3.sql', '003_party_runtime_v3_planning.sql', '004_party_runtime_v3_journeys.sql', '005_party_runtime_v3_domain.sql', '006_party_runtime_v3_migration.sql', '007_party_runtime_temporal_world.sql', '008_party_runtime_pr8_first_entry.sql', '009_party_runtime_pr8_reaction_knowledge.sql', '010_party_runtime_pr8_reaction_options.sql', '011_party_runtime_first_playable.sql', '012_party_runtime_external_ownership.sql', '013_party_runtime_obligations.sql', '014_party_runtime_activity_resume_terminal.sql', '015_party_runtime_turn_step_items.sql', '016_party_runtime_npc_semantic_conversation.sql', '017_party_runtime_conversation_transcript.sql', '018_party_runtime_phase7_container_state.sql', '019_party_runtime_combat_sessions.sql', '020_party_runtime_actor_equipment.sql', '021_party_runtime_ordinary_materialization.sql', '022_party_runtime_ordinary_materialization_commit.sql', '023_party_runtime_ordinary_materialization_enablement.sql', '024_party_runtime_ordinary_world_items.sql', '025_party_runtime_finite_resource_transitions.sql']) await client.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   await client.query("INSERT INTO party_runtime.parties(party_id,schema_version,world_revision_id,world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest) VALUES ('p',3,'w','d','m','r','c','b'); INSERT INTO party_runtime.party_clocks(party_id,whole_minutes,subminute_numerator,subminute_denominator,clock_owner_kind,state_version,updated_change_set_id) VALUES ('p',0,0,1,'party',1,'old');");
   await client.query(`INSERT INTO party_runtime.party_player_characters
     (party_id,character_id,profile) VALUES ('p','actor-1','{}'::jsonb)`);
@@ -956,18 +956,77 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
        WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new' AND enabled) AS enablements,
       (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_basis_catalog
        WHERE party_id='p' AND scope_kind='g6' AND scope_id='g6-new') AS bases,
+      (SELECT count(*)::int FROM party_runtime.party_resource_nodes
+       WHERE party_id='p') AS finite_sources,
       (SELECT state_version FROM party_runtime.parties WHERE party_id='p') AS party_state_version`);
   assert.deepEqual(ordinaryProvisioned.rows[0], {
-    aggregates: 1, contexts: 1, enablements: 1, bases: 1,
+    aggregates: 1, contexts: 1, enablements: 1, bases: 2, finite_sources: 1,
     party_state_version: partyBeforeFirstEntry
   }, 'first-entry O1 provisioning is atomic and does not add a party bump');
   const enablements = createPostgresOrdinaryMaterializationEnablementRepository({ pool });
   const loadedEnablement = await enablements.load({ partyId: 'p',
     scopeRef: { entity_kind: 'g6', entity_id: 'g6-new' } });
   assert.ok(loadedEnablement, 'the exact newly entered G6 exposes the O1 marker');
+  assert.equal(loadedEnablement.execution_context.context_bound_capabilities.length, 1);
+  assert.equal(loadedEnablement.execution_context.committed_finite_source.lifecycle_state,
+    'active');
   assert.equal(await enablements.load({ partyId: 'p',
     scopeRef: { entity_kind: 'g6', entity_id: 'g6-old' } }), null,
   'other G6 scopes remain unavailable');
+  const [finiteCapability] = loadedEnablement.execution_context
+    .context_bound_capabilities;
+  const finiteBasis = finiteCapability.supporting_bases[0];
+  assert.equal(finiteCapability.source_ref, finiteBasis.basis_ref);
+  assert.equal(finiteCapability.candidate_context.target_ref,
+    finiteCapability.source_ref);
+  let finiteCalls = 0;
+  const finiteResolver = createLowerDvinaTraceOrdinaryDiscoveryResolver({
+    partyId: 'p', inputDigest: 'first-entry-o2a-finite',
+    loadEnablement: (value) => enablements.load(value),
+    verifyStageBCutover: async () => ({ pass: true }),
+    ordinaryMaterializationModel: async (request) => {
+      finiteCalls += 1;
+      if (request.mode === 'seed_scope') return {
+        schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,
+        resolution: 'seeded', density_band_proposal: 'ordinary',
+        background_groups: [], entities: [], presence_resolutions: [],
+        reason_code: 'seed' };
+      return { schema: 'ordinary_materialization_plan_v1',
+        request_id: request.request_id, resolution: 'materialize',
+        density_band_proposal: null, background_groups: [],
+        presence_resolutions: [], reason_code: 'finite-present', entities: [{
+          semantic_descriptor: { semantic_type: 'hand_formed_clay_blank',
+            name: 'небольшая заготовка из глины', facts: [] },
+          authority_class: 'ordinary', admission_class: 'specialized_or_valuable',
+          availability_class: 'context_bound', functional_bucket: 'other_ordinary',
+          presence_expectation: 'routine', supporting_basis_ref: finiteBasis.basis_ref,
+          causal_basis: { basis_kind: 'finite_source',
+            basis_refs: [finiteBasis.basis_ref] },
+          property_basis_ref:
+            finiteCapability.context_refs.property_context_ref,
+          placement_proposal: { scope_ref: 'g6-new', position_ref: 'position-new' },
+          mechanics_proposal: { mass_grams: 300, external_hand_cost: 1,
+            carry_form: 'regular', packing_slot_cost: 1,
+            quantity: { value: 1, unit: 'item' }, container: null } }] };
+    }
+  });
+  const finiteAvailable = await finiteResolver({
+    request: { root_turn_id: 'first-entry-o2a-finite' },
+    committed_state: { position: { g6_id: 'g6-new',
+      g5_anchor_id: 'ordinary-anchor' } },
+    operation: { target_refs: [finiteCapability.source_ref],
+      query: 'взять порцию подготовленной глины' }, working_projection: {} });
+  const finitePlan = finiteAvailable.ordinary_materialization_atomic_write_plan;
+  assert.ok(finitePlan, JSON.stringify(finiteAvailable));
+  assert.equal(finiteCalls, 2, JSON.stringify(finiteAvailable));
+  assert.equal(finitePlan.item.admission_class, 'specialized_or_valuable');
+  assert.deepEqual(finitePlan.item.item_proposal.semantic_descriptor, {
+    semantic_type: 'hand_formed_clay_blank',
+    name: 'небольшая заготовка из глины', facts: [] });
+  assert.deepEqual(finitePlan.finite_resource_transition.before_quantity,
+    { numerator: 2, denominator: 1, unit: 'item' });
+  assert.deepEqual(finitePlan.finite_resource_transition.after_quantity,
+    { numerator: 1, denominator: 1, unit: 'item' });
   const calls = [];
   const provisionedBasis = loadedEnablement.execution_context.supporting_bases[0];
   const provisionedProperty = loadedEnablement.property_placement_context;
@@ -1024,7 +1083,7 @@ test('P16 Node committer executes sealed plans against isolated PostgreSQL', asy
       g5_anchor_id: 'ordinary-anchor' } },
     operation: { target_refs: ['g6-new'], query: ' найти вещь ' }, working_projection: {} });
   assert.ok(ordinaryAvailable.ordinary_materialization_atomic_write_plan,
-    'the production resolver can use only the provisioned exact scope');
+    `the production resolver can use only the provisioned exact scope: calls=${calls.length} ${JSON.stringify(ordinaryAvailable)}`);
   assert.equal(calls.length, 2);
   const productionOrdinaryPlan =
     ordinaryAvailable.ordinary_materialization_atomic_write_plan;

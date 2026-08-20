@@ -1,7 +1,5 @@
-import {
-  applyRuntimeContainerAccess,
-  planRuntimeContainerAccess
-} from '@rus/items-property';
+import { applyRuntimeContainerAccess, planRuntimeContainerAccess } from
+  '@rus/items-property';
 import {
   applied,
   collectCurrentRefs,
@@ -12,20 +10,21 @@ import {
   requireRef,
   visibleConsequence
 } from './lower-dvina-trace-turn-step-runtime-common.js';
-
+import { resolveOrdinaryContents, snapshotContainerValue,
+  snapshotO2bCommittedContainerInput } from
+  './lower-dvina-trace-turn-step-container-ordinary.js';
 const SAFE_ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
-  'name', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'visible', 'is_visible'
 ]);
+export function createContainerAccessHandler(state, options = {}) { return (execution) =>
+  requestContainerAccess(execution, state, options); }
+export { snapshotO2bCommittedContainerInput };
 
-export function createContainerAccessHandler(state) {
-  return (execution) => requestContainerAccess(execution, state);
-}
-
-function requestContainerAccess(execution, state) {
+async function requestContainerAccess(execution, state, options) {
   const { operation, working_projection: projection } = execution;
   requireProjection(projection);
   const refs = collectCurrentRefs(execution);
@@ -42,20 +41,28 @@ function requestContainerAccess(execution, state) {
       container_ref: operation.container_ref
     });
   }
+  const committed = snapshotContainerValue(canonical);
+  if (committed == null) fail('TRACE_TURN_STEP_CONTAINER_ORDINARY_CONTEXT_INVALID');
   const plan = planRuntimeContainerAccess({
-    container: { ...structuredClone(canonical), ...structuredClone(visible) },
+    container: { ...committed, ...structuredClone(visible) },
     access_kind: operation.access_kind,
     check_result: execution.check_result
   });
   if (!plan.pass) failIssue(plan.errors[0]);
+  const ordinary = await resolveOrdinaryContents({
+    canonical: committed, revealContents:plan.reveal_contents,
+    state, options, execution, projection
+  });
+  const ordinaryPlan = ordinary?.plan ?? null;
+  const preparedProjection = ordinary?.working_projection ?? projection;
   const transitioned = applyRuntimeContainerAccess({
-    visible_items: projection.items ?? [],
+    visible_items: preparedProjection.items ?? [],
     materialized_items: [...state.materializedItems.values()],
     plan,
     project_item: playerSafeItem
   });
   if (!transitioned.pass) failIssue(transitioned.errors[0]);
-  const next = structuredClone(projection);
+  const next = structuredClone(preparedProjection);
   next.items = transitioned.items;
   const stored = state.materializedItems.get(operation.container_ref);
   state.materializedItems.set(operation.container_ref, {
@@ -69,12 +76,14 @@ function requestContainerAccess(execution, state) {
   return applied({
     projection: next,
     summary: `container_access:${operation.container_ref}`,
-    fragment: directFragment(identity, 'party_items', {
-      container_ref: operation.container_ref,
-      access_kind: operation.access_kind,
-      state_patch: plan.state_patch,
-      revealed_refs: transitioned.revealed_refs
-    }),
+    fragment: ordinaryPlan == null
+      ? directFragment(identity, 'party_items', {
+        container_ref: operation.container_ref,
+        access_kind: operation.access_kind,
+        state_patch: plan.state_patch,
+        revealed_refs: transitioned.revealed_refs
+      }) : null,
+    ordinaryPlan,
     consequence: visibleConsequence(identity, {
       change: 'container_accessed',
       container_ref: operation.container_ref,

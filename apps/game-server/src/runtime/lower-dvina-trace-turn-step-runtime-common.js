@@ -37,12 +37,16 @@ export function visibleKey(identity) {
 }
 
 export function applied({ projection, summary, fragment, consequence,
-  boundary = false }) {
+  ordinaryPlan = null, boundary = false }) {
   return deepFreeze({
     working_projection: structuredClone(projection),
     summary,
     write_fragments: fragment ? [structuredClone(fragment)] : [],
     consequence_fragment: structuredClone(consequence),
+    ...(ordinaryPlan == null ? {} : {
+      ordinary_materialization_atomic_write_plan:
+        structuredClone(ordinaryPlan)
+    }),
     ...(boundary ? { player_response_boundary: true } : {})
   });
 }

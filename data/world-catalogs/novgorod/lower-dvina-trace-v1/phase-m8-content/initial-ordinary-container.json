@@ -1,0 +1,31 @@
+{
+  "schema": "rus.trace_initial_ordinary_container.v1",
+  "container_id": "trace_ld_v1_container_player_small_pouch",
+  "revision": 1,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 20,
+  "template_ref": {
+    "template_id": "container_tpl_nov_small_soft_bag_v1",
+    "category_id": "cat_container_form_small_soft_bag_v1",
+    "mechanics_profile_ref": "inventory_container_tpl_nov_small_soft_bag_v1",
+    "mechanics_profile_digest": "7bf970a1a5868c5a6733620fb1879887215ff47e35f11a53c5d28bb308970a41"
+  },
+  "first_entry_placement": {
+    "holder_rule": "first_entry_player_character",
+    "owner_rule": "first_entry_player_character",
+    "controller_rule": "first_entry_player_character",
+    "position_rule": "sealed_first_entry_position",
+    "physical_position": "external",
+    "claim_state": "established",
+    "access_profile_ref": "owner_direct"
+  },
+  "container_state": {
+    "semantic_category": "road_bag_container",
+    "visibility_state": "visible",
+    "access_state": "owner_accessible",
+    "contents_state": "contents_hidden",
+    "authoritative_contents_status": "absent"
+  },
+  "fallback_policy": "forbidden"
+}

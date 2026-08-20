@@ -1,0 +1,227 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v16",
+  "revision": 16,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 20,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v15/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v15",
+    "revision": 15,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "751a98207b76dbe78a6a6d0de0d23f6281949a9ac42e1ac77e2c5725fab798d5"
+  },
+  "binding_resolution_policy": "reuse_exact_revision_18_materialization_with_actor_appearance_and_stage16_equipment_candidates_or_fail_closed",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "actor_appearance_materialization": {
+    "owner": "@rus/materialization",
+    "contract_owner": "@rus/actors",
+    "selection_policy": "approved_applicable_weighted_entries_stable_id_order",
+    "draw_order": "after_revision_18_choices_stable_actor_slot_order",
+    "runtime_llm": "forbidden"
+  },
+  "initial_equipment_materialization": {
+    "owner": "@rus/new-game:stage-16-item-placement",
+    "transition_owner": "@rus/items-property",
+    "source_ref": "trace_ld_v1_item_container_set",
+    "candidate_to_instance_mapping": "participant_slot_to_materialized_actor_instance",
+    "outfit_materializer": "forbidden"
+  },
+  "sealed_selection_inventory": {
+    "schema": "rus.lower_dvina_trace_sealed_selection_inventory.v1",
+    "inventory_id": "lower_dvina_trace_phase_1a_sealed_selection_inventory_v10",
+    "status": "approved",
+    "record_proof_contract": "canonical_sha256_sorted_record_id_and_record_digest_v1",
+    "source_artifact_digests": {
+      "participant_profile_set": "0ad494487653a186902148496c30cf3042a7c8f73ae105e86273441ac4132c6f",
+      "location_topology_set": "3410d8652aa87d76a2be37cf6f21b9179ac3dd61c88ea84b94486b19765342ce",
+      "item_container_set": "edd3a46d9172041c5fefb5658e00b1aaa5b61c6ac5c086e4cd2de96434cb340e",
+      "clue_evidence_graph_set": "7ad621e00550ddf4b1a714c4effc9c678ed7c3c2e421ce0e4128bf998b0b8222",
+      "knowledge_lie_memory_rules": "2e4fc36faf83edb42aacf218f43815b4f4ff1bf04f2938b88208ce00b7e52c48",
+      "activity_check_consequence_profiles": "3d12485c9c6bd29e8994d43ac6ac684e9f14c62de13d6547a51a9c65a1c743ef",
+      "npc_decision_schedule_policies": "a00ae410328e3e392cde57484d18691fec01a295a3383a9bde84fac69db20a51",
+      "movement_bindings": "66ba6e5c16319da88ab3215692a7cec2b25a51f5322ad581bdee734f3b0a85cd",
+      "body_environment_profiles": "c25da568872c294306b5f341b769d1d3a1d553e30decbeb81ce39d0d7b5dbac2",
+      "promise_policy": "9b6c4096886782151bf49f80f2bfdb8a1062576824fbcafde92143859f69574b",
+      "completion_rules": "497e6ed12d4393f890e47e38e61a52a2f103a6ad0546793ec587b329364fc614",
+      "epilogue_rules": "959f42e52147d9e19f5ac945e336b0280090f2d7025e79c01159f341a2ed36c3"
+    },
+    "required_groups": [
+      {
+        "selection_kind": "participants",
+        "source_artifact_key": "participant_profile_set",
+        "required_record_count": 6,
+        "required_records_digest": "a713251741c215f95dddbd5dddc993ae6dac3a9b8ab80333e635cc89dae60741"
+      },
+      {
+        "selection_kind": "locations",
+        "source_artifact_key": "location_topology_set",
+        "required_record_count": 3,
+        "required_records_digest": "06feff9d69116e12be0137aef0d07be09d9fe2b086c4dacb067bd70ef9a6dd96"
+      },
+      {
+        "selection_kind": "items",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 23,
+        "required_records_digest": "1086eb35bc1a400d864db09959f143b30a1c8d61ad77b5eba87aee9d6c03cc60"
+      },
+      {
+        "selection_kind": "containers",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 2,
+        "required_records_digest": "1baf876995c58f2c1469a2fc21f76ebe7609074f5406028116bfbadb7ce8598a"
+      },
+      {
+        "selection_kind": "clue_placements",
+        "source_artifact_key": "item_container_set",
+        "required_record_count": 5,
+        "required_records_digest": "c9580ccb07a4f8d251873142a3cc83efdf5cf0b3dcd7af17db03b34beabd58d6"
+      },
+      {
+        "selection_kind": "evidence",
+        "source_artifact_key": "clue_evidence_graph_set",
+        "required_record_count": 12,
+        "required_records_digest": "84f7c8ed7cf3fb9fccc43b0eb9e0de50a922d911b2c00ef3d784dce9d8155e79"
+      },
+      {
+        "selection_kind": "knowledge",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 7,
+        "required_records_digest": "57dd5512ebc42211ca1cd4ddd51dc58e577fd54cecfa9f3dca0c608b47312fef"
+      },
+      {
+        "selection_kind": "lies_and_statements",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 5,
+        "required_records_digest": "b3864eaf2fbb4ed067040d054f2da20f6f6922f8948192633c1abcf41ed56ae1"
+      },
+      {
+        "selection_kind": "memories",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 1,
+        "required_records_digest": "f5eb8c355bc01e9f84f24c005a18dda5e07f4a55c435165a33c64e9d721cfa3d"
+      },
+      {
+        "selection_kind": "interaction_persistence_mappings",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 2,
+        "required_records_digest": "06e31a47e5c16d57fa77f56fec06c985113e1f8399bf08855fb3ed055f3fdf8f"
+      },
+      {
+        "selection_kind": "speaker_memory_templates",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 2,
+        "required_records_digest": "a07ebe8d0ebd32b63f85d430596cf6c67d07b87c01f57021ceeac8d2fef35403"
+      },
+      {
+        "selection_kind": "player_journal_templates",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 2,
+        "required_records_digest": "f852221d1766a2a5269e279eaf273a1edbc21a6a02c3d598764146b9ec955562"
+      },
+      {
+        "selection_kind": "activities",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 26,
+        "required_records_digest": "c66b0b11e23dd32163ce8c9fdf3c349bdaf667c09e8cd22dc22d6a5b304dd447"
+      },
+      {
+        "selection_kind": "checks",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 4,
+        "required_records_digest": "2de9839af7731be864cf5ec9290913cfa735776a21c20f6a432958fa3121bae5"
+      },
+      {
+        "selection_kind": "consequences",
+        "source_artifact_key": "activity_check_consequence_profiles",
+        "required_record_count": 39,
+        "required_records_digest": "09af86b44bdc6b12dc11070fd974a823c1b13d98d7ca8161ca09bc100dd747ab"
+      },
+      {
+        "selection_kind": "npc_decisions",
+        "source_artifact_key": "npc_decision_schedule_policies",
+        "required_record_count": 6,
+        "required_records_digest": "ac5a816ef805027a6d137f5a0e2217d4e22579eaad06897228e7bc93b0101cea"
+      },
+      {
+        "selection_kind": "npc_schedules",
+        "source_artifact_key": "npc_decision_schedule_policies",
+        "required_record_count": 1,
+        "required_records_digest": "89e9086486bc481f276b1e5c593989eda16fc5bc4b91076cd4433529e58238f8"
+      },
+      {
+        "selection_kind": "movement",
+        "source_artifact_key": "movement_bindings",
+        "required_record_count": 8,
+        "required_records_digest": "5ce9b69099dc46d428317e25a3841cbfc5e3de51ec52cf1e4107ac3cc574fbc9"
+      },
+      {
+        "selection_kind": "body",
+        "source_artifact_key": "body_environment_profiles",
+        "required_record_count": 1,
+        "required_records_digest": "44344a2778116495ce9784bcd86fb6fbc605a17d4de1cc8b913c71497a070210"
+      },
+      {
+        "selection_kind": "environment",
+        "source_artifact_key": "body_environment_profiles",
+        "required_record_count": 1,
+        "required_records_digest": "7e2ad93846bb517eee2595ba209eb771a790d3d7d4218c399d532c5a65187093"
+      },
+      {
+        "selection_kind": "promise",
+        "source_artifact_key": "promise_policy",
+        "required_record_count": 1,
+        "required_records_digest": "a3aa59d4f634aed4e6ae4c1f404372e0d3c14dae43b917a50e137680a350273b"
+      },
+      {
+        "selection_kind": "completion",
+        "source_artifact_key": "completion_rules",
+        "required_record_count": 1,
+        "required_records_digest": "0716f75a1174638edffb9dcc2037178865df3f2273012cb55def9d72441766d5"
+      },
+      {
+        "selection_kind": "epilogue",
+        "source_artifact_key": "epilogue_rules",
+        "required_record_count": 1,
+        "required_records_digest": "965f33428610aaaf9ac50e8ae49ec59885b3fa49cdc2c260b4833eef6b5f3030"
+      },
+      {
+        "selection_kind": "audience",
+        "source_artifact_key": "knowledge_lie_memory_rules",
+        "required_record_count": 1,
+        "allowed_records_digests": [
+          "53329ab1693635f0a8428257a35c95b5099da568fd9268fdcd3b0c66d492a859",
+          "1ed9bbe0e5ee72b2fe0b2e823c1f8b098f0ec79ea51866465c2cc75400661d96"
+        ]
+      }
+    ]
+  },
+  "excludes": [
+    "renderer_rng",
+    "actor_clothing_state",
+    "portrait_persistence",
+    "runtime_llm"
+  ],
+  "ordinary_container_contents_materialization": {
+    "runtime_owner": "@rus/items-property",
+    "persistence_owner": "P16_combined_atomic_committer",
+    "model_stage": "candidate_free_stage_a",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/ordinary-container-contents-profile.json",
+      "id": "lower_dvina_trace_o2b_existing_container_profile_v2",
+      "revision": 2,
+      "schema": "rus.lower_dvina_trace_o2b_existing_container_profile.v2",
+      "digest": "4a889554f786ca1b0f2b9606bc9fbe1ec8b255efdd618727ad704465220e636d"
+    },
+    "initial_container_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/initial-ordinary-container.json",
+      "id": "trace_ld_v1_container_player_small_pouch",
+      "revision": 1,
+      "schema": "rus.trace_initial_ordinary_container.v1",
+      "digest": "1053d5dc00e8f718ab25524cb8d064a5715878b16fd0118ab917a343e192feaa"
+    },
+    "fallback_policy": "forbidden"
+  }
+}

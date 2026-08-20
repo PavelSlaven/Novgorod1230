@@ -39,12 +39,15 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.m4,
     revisions.m5,
     revisions.m6,
-    revisions.m7
+    revisions.m7,
+    revisions.m8
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
         ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m7
+        ? definitionRevision === revisions.m8
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v16'
+        : definitionRevision === revisions.m7
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v15'
         : definitionRevision === revisions.m6
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v14'
@@ -143,6 +146,43 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m8) {
+    const manifest = bundle.phase_1a_manifest;
+    const bindings = bundle.materialization_bindings;
+    const initialContainerPin = bundle.artifact_pins?.initial_ordinary_container;
+    const profilePin = bundle.artifact_pins?.ordinary_container_contents_profile;
+    const o2b = bindings?.ordinary_container_contents_materialization;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v16'
+      || manifest.revision !== 16
+      || manifest.scenario_definition_revision !== 20
+      || manifest.base_definition_ref?.path
+        !== 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/manifest.json'
+      || manifest.base_definition_ref.id !== 'lower_dvina_trace_m8_content_v1'
+      || manifest.base_definition_ref.revision !== 1
+      || manifest.base_definition_ref.schema
+        !== 'rus.lower_dvina_trace_m8_content_manifest.v1'
+      || manifest.base_definition_ref.digest !== bundle.m8_content_manifest_digest
+      || bindings?.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v16'
+      || bindings.revision !== 16
+      || bindings.scenario_definition_revision !== 20
+      || bindings.actor_appearance_materialization?.runtime_llm !== 'forbidden'
+      || bindings.initial_equipment_materialization?.outfit_materializer
+        !== 'forbidden'
+      || o2b?.fallback_policy !== 'forbidden'
+      || o2b.profile_ref?.digest !== profilePin?.digest
+      || o2b.profile_ref?.id !== bundle.ordinary_container_contents_profile?.profile_id
+      || o2b.profile_ref?.revision !== profilePin?.revision
+      || o2b.profile_ref?.schema !== profilePin?.schema
+      || o2b.initial_container_ref?.digest !== initialContainerPin?.digest
+      || o2b.initial_container_ref?.id !== bundle.initial_ordinary_container?.container_id
+      || o2b.initial_container_ref?.revision !== initialContainerPin?.revision
+      || o2b.initial_container_ref?.schema !== initialContainerPin?.schema) {
+      fail('TRACE_M8_PHASE_1A_CUTOVER_INVALID',
+        'Revision 20 requires the exact O2b Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m7) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

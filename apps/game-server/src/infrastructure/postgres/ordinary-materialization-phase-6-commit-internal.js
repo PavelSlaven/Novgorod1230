@@ -40,6 +40,13 @@ export function clonePhase6Data(value) {
   return visit(value);
 }
 
+export function ownData(value, key) {
+  if (!value || typeof value !== 'object') return undefined;
+  const descriptor = Object.getOwnPropertyDescriptor(value, key);
+  return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
+    ? descriptor.value : undefined;
+}
+
 export function exact(value, keys) {
   if (!plain(value) || Object.keys(value).length !== keys.length
       || keys.some((key) => !Object.hasOwn(value, key))) fail('ORDINARY_PHASE6_PLAN_INVALID');

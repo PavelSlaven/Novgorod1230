@@ -20,7 +20,7 @@ const INVENTORY_KEYS = new Set([
 ]);
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
-  'name', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'state', 'visible', 'is_visible'
@@ -180,7 +180,8 @@ function projectItem(item, strict) {
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: text(item.name), quantity: finite(item.quantity),
+    name: text(item.name), semantic_type: text(item.semantic_type),
+    quantity: finite(item.quantity),
     quantity_unit_id: text(item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),
     claim_state: text(item.claim_state),

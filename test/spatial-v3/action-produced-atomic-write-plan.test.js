@@ -354,7 +354,8 @@ test('independent A1 output cannot inherit currency or official state', () => {
       display_name: 'деревянный счётный жетон',
       physical_description: null,
       qualitative_facts: ['имеет сходство с жетоном'],
-      inscription_text: null, physical_form: 'compact' } } };
+      inscription_text: null, physical_form: 'compact',
+      source_fact_delta: null } } };
   const item = deriveActionProducedResultItem(result, sourcePins,
     proposalValue, 'change:token', destinationPin, 'actor:mikula');
 
@@ -671,7 +672,7 @@ function proposal() {
       result_descriptor: { display_name: 'sharpened pole',
         physical_description: 'one end is sharpened',
         qualitative_facts: ['sharpened'], inscription_text: null,
-        physical_form: 'long' }
+        physical_form: 'long', source_fact_delta: null }
     }
   };
 }

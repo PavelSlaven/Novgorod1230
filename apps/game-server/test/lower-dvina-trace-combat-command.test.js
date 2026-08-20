@@ -133,8 +133,9 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
         condition_state: 'serviceable', ordinary_metadata: {
           name: 'заострённая жердь', semantic_type: 'weapon_capable',
           semantic_facts: [{ fact_id: 'fact:sharp', text: 'конец заострён' }]
-        }, action_production: { output_class: 'weapon_capable',
-          physical_form: 'long' } } };
+        }, action_production: {
+          schema: 'rus.items.action_production_item_state.v1',
+          output_class: 'written_carrier', physical_form: 'long' } } };
     let calls = 0;
     const classified = await classifyTraceActionProducedWeapon({
       items: [item], actor_ref: player, request_id: 'combat-weapon:1',
@@ -156,7 +157,7 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
     const changed = structuredClone(item);
     changed.state.ordinary_metadata.semantic_facts = [{
       fact_id: 'fact:blunt', text: 'конец затуплён' }];
-    await classifyTraceActionProducedWeapon({ items: [changed],
+    const blunt = await classifyTraceActionProducedWeapon({ items: [changed],
       actor_ref: player, request_id: 'combat-weapon:changed',
       classify: async (request) => {
         calls += 1;
@@ -164,9 +165,11 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
         return { schema:
           'rus.combat.action_produced_weapon_classification.v1',
         request_id: request.request_id,
-        qualitative_class: 'improvised_impact_light' };
+          qualitative_class: 'not_weapon_capable' };
       } });
     assert.equal(calls, 2);
+    assert.equal(resolveTraceOrdinaryWeaponDanger([changed], player, blunt),
+      null);
     const forged = await classifyTraceActionProducedWeapon({ items: [item],
       actor_ref: player, request_id: 'combat-weapon:2',
       classify: async (request) => ({ schema:
@@ -246,8 +249,10 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
         ordinary_metadata: { name: 'заострённая жердь',
           semantic_type: 'weapon_capable', semantic_facts: [{
             fact_id: 'fact:sharp', text: 'конец заострён' }] },
-        action_production: { output_class: 'weapon_capable',
-          physical_form: 'long' } } }], combat_sessions: [current] };
+        action_production: {
+          schema: 'rus.items.action_production_item_state.v1',
+          output_class: 'weapon_capable', physical_form: 'long' } } }],
+      combat_sessions: [current] };
     const attack = { attribute_value: 20, skill_bonus: 0,
       target_defense: 1, weapon_danger: 4, target_protection: 0,
       target_vulnerability: 0 };

@@ -805,7 +805,12 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         identity_mode: 'independent_outputs', origin: 'direct_partition',
         result_class: 'partial_transformation',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
-          physical_description: 'небольшая отделённая часть доски' })
+          physical_description: 'небольшой отделённый клин',
+          source_fact_delta: {
+            physical_description: 'с края доски срезана часть',
+            qualitative_facts: [],
+            removed_physical_fact_refs: ['fact:production-partial-board:whole']
+          } })
       }) }));
     const partialCombined = await combinedPlan(
       partial.action_production_atomic_write_plan, 'production-partial', 10);
@@ -838,8 +843,12 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         OR state->'action_production'->'causal_identity'->>'request_id'
           ='production-partial') ORDER BY item_id`);
     assert.equal(partialFacts.rows.length, 3);
-    assert.equal(partialFacts.rows.every(({ facts }) => facts.some(({ text }) =>
-      text === 'небольшая отделённая часть доски')), true);
+    const sourceFacts = partialFacts.rows.find(({ item_id: id }) =>
+      id === 'production-partial-board').facts.map(({ text }) => text);
+    assert.deepEqual(sourceFacts, ['с края доски срезана часть']);
+    assert.equal(partialFacts.rows.filter(({ item_id: id }) =>
+      id !== 'production-partial-board').every(({ facts }) => facts.some(
+      ({ text }) => text === 'небольшой отделённый клин')), true);
     const partialReload = await pool.connect();
     try {
       const loaded = await loadActionProducedCommittedContext(partialReload, {
@@ -917,7 +926,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.equal(sequentialState.state_version, '5');
     assert.deepEqual(sequentialState.state.ordinary_metadata.semantic_facts
       .map(({ text }) => text), [
-      'небольшая отделённая часть доски',
+      'с края доски срезана часть',
       'дополнительный материал закреплён на доске',
       'на доске закреплена составная накладка',
       'Жду у переправы.',
@@ -1012,7 +1021,8 @@ async function actionPlan(pool, config) {
         ? null : config.outputClass ?? 'ordinary_mundane',
       result_descriptor: config.mode === 'no_useful_result'
         ? { display_name: null, physical_description: null,
-          qualitative_facts: [], inscription_text: null, physical_form: null }
+          qualitative_facts: [], inscription_text: null, physical_form: null,
+          source_fact_delta: null }
         : { display_name: config.displayName ?? 'ordinary result',
           physical_description: config.physicalDescription
             ?? 'physically transformed',
@@ -1023,7 +1033,8 @@ async function actionPlan(pool, config) {
           }),
           inscription_text: config.inscriptionText ?? null,
           physical_form: config.physicalForm
-            ?? (config.mode === 'independent_outputs' ? 'compact' : null) }
+            ?? (config.mode === 'independent_outputs' ? 'compact' : null),
+          source_fact_delta: null }
     };
     const admitted = admitActionProducedResult({
       committed_context: loaded.committed_context,
@@ -1368,7 +1379,8 @@ function descriptor(overrides = {}) {
   return { display_name: null,
     physical_description: 'Край предмета физически обработан.',
     qualitative_facts: [], removed_physical_fact_refs: [],
-    inscription_text: null, physical_form: null, ...overrides };
+    inscription_text: null, physical_form: null, source_fact_delta: null,
+    ...overrides };
 }
 
 function actionProduction(overrides = {}) {
@@ -1448,6 +1460,12 @@ async function provisionProductionScope(pool) {
         'owned',$4::jsonb,1)`, [itemId, itemProfile.template_id,
       itemProfile.inventory_profile_id, JSON.stringify({ lifecycle_status:
         'active', inventory_profile_snapshot: itemProfile,
+        ...(itemId === 'production-partial-board' ? { ordinary_metadata: {
+          semantic_facts: [{
+            fact_id: 'fact:production-partial-board:whole',
+            text: 'доска целая', operation_id: null
+          }]
+        } } : {}),
         ...(itemId !== 'production-board' && !material ? {} : {
           resource_position_node_id: 'position-a1', property_state: {
             ...(material ? {} : { source_ref: itemId }),

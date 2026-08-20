@@ -21,7 +21,10 @@ const PLAN_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text', 'physical_form'
+  'inscription_text', 'physical_form', 'source_fact_delta'
+];
+const SOURCE_FACT_DELTA_KEYS = [
+  'physical_description', 'qualitative_facts', 'removed_physical_fact_refs'
 ];
 const IDENTITY_MODES = new Set([
   'preserve_source', 'independent_outputs', 'no_useful_result'
@@ -161,6 +164,24 @@ function descriptor(value, errors) {
   nullableMember(value.physical_form, new Set([
     'compact', 'regular', 'long', 'bulky'
   ]), 'plan.result_descriptor.physical_form', errors);
+  sourceFactDelta(value.source_fact_delta, errors);
+}
+
+function sourceFactDelta(value, errors) {
+  if (value === null) return;
+  if (!record(value)) {
+    errors.push('plan.result_descriptor.source_fact_delta must be an object');
+    return;
+  }
+  exact(value, SOURCE_FACT_DELTA_KEYS,
+    'plan.result_descriptor.source_fact_delta', errors);
+  nullableText(value.physical_description,
+    'plan.result_descriptor.source_fact_delta.physical_description', errors);
+  refs(value.qualitative_facts,
+    'plan.result_descriptor.source_fact_delta.qualitative_facts', errors, true);
+  refs(value.removed_physical_fact_refs,
+    'plan.result_descriptor.source_fact_delta.removed_physical_fact_refs',
+    errors, true);
 }
 
 function validateCausalShape(value, errors) {
@@ -185,6 +206,15 @@ function validateCausalShape(value, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
+  if (partialOutput !== (descriptorValue.source_fact_delta !== null)) {
+    errors.push('only a surviving partial source requires a fact delta');
+  }
+  const sourceDelta = descriptorValue.source_fact_delta;
+  if (sourceDelta != null && sourceDelta.physical_description === null
+      && sourceDelta.qualitative_facts?.length === 0
+      && sourceDelta.removed_physical_fact_refs?.length === 0) {
+    errors.push('source fact delta must change current physical facts');
+  }
   const combinedSource = value.identity_mode === 'preserve_source'
     && value.source_refs?.length > 1;
   if (combinedSource

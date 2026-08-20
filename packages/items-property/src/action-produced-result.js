@@ -204,11 +204,19 @@ function validDescriptor(value) {
     && nullableText(value.inscription_text)
     && (value.physical_form === null
       || ['compact', 'regular', 'long', 'bulky'].includes(
-        value.physical_form));
+        value.physical_form))
+    && (value.source_fact_delta === null
+      || exact(value.source_fact_delta, [
+        'physical_description', 'qualitative_facts',
+        'removed_physical_fact_refs'
+      ]) && nullableText(value.source_fact_delta.physical_description)
+        && textArray(value.source_fact_delta.qualitative_facts, true)
+        && textArray(value.source_fact_delta.removed_physical_fact_refs,
+          true));
 }
 
 function descriptorKeys(value) {
-  const keys = [...DESCRIPTOR_KEYS];
+  const keys = [...DESCRIPTOR_KEYS, 'source_fact_delta'];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
   }
@@ -223,6 +231,13 @@ function validCausalShape(value) {
       && (!ORIGINS.has(value.origin)
         || !text(descriptor.display_name)
         || descriptor.physical_form === null)) return false;
+  const partialOutput = value.identity_mode === 'independent_outputs'
+    && value.result_class === 'partial_transformation';
+  const sourceDelta = descriptor.source_fact_delta;
+  if (partialOutput !== (sourceDelta !== null)
+      || sourceDelta != null && sourceDelta.physical_description === null
+        && sourceDelta.qualitative_facts.length === 0
+        && sourceDelta.removed_physical_fact_refs.length === 0) return false;
   if (value.identity_mode === 'no_useful_result') {
     return value.origin === null && value.result_class === 'no_useful_result'
       && descriptor.display_name === null

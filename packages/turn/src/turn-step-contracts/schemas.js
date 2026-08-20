@@ -266,7 +266,8 @@ const planDefinitions = {
   }),
   action_production_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form',
+    'source_fact_delta'
   ], {
     display_name: { anyOf: [{ type: 'null' }, textSchema] },
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
@@ -279,11 +280,15 @@ const planDefinitions = {
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
     physical_form: { anyOf: [{ type: 'null' }, { enum: [
       'compact', 'regular', 'long', 'bulky'
-    ] }] }
+    ] }] },
+    source_fact_delta: { anyOf: [{ type: 'null' }, {
+      $ref: '#/$defs/action_production_source_fact_delta'
+    }] }
   }),
   action_production_output_descriptor: strictObject([
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form',
+    'source_fact_delta'
   ], {
     display_name: textSchema,
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
@@ -294,7 +299,22 @@ const planDefinitions = {
       type: 'array', uniqueItems: true, items: refSchema
     },
     inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
-    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] }
+    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] },
+    source_fact_delta: { anyOf: [{ type: 'null' }, {
+      $ref: '#/$defs/action_production_source_fact_delta'
+    }] }
+  }),
+  action_production_source_fact_delta: strictObject([
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs'
+  ], {
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
+    }
   }),
   action_production: { oneOf: [
     actionProductionSchema('preserve_source', { const: 0 }),

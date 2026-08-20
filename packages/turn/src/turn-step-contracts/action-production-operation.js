@@ -67,7 +67,8 @@ function validateOutputCount(value, path, errors) {
 function validateDescriptor(descriptor, path, errors, trace) {
   if (!strict(descriptor, `${path}.result_descriptor`, [
     'display_name', 'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs', 'inscription_text', 'physical_form'
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form',
+    'source_fact_delta'
   ], errors)) return;
   for (const key of [
     'display_name', 'physical_description', 'inscription_text'
@@ -93,6 +94,32 @@ function validateDescriptor(descriptor, path, errors, trace) {
   if (descriptor.physical_form !== null) enumValue(descriptor.physical_form,
     ['compact', 'regular', 'long', 'bulky'],
     `${path}.result_descriptor.physical_form`, errors);
+  sourceFactDelta(descriptor.source_fact_delta, path, errors, trace);
+}
+
+function sourceFactDelta(value, path, errors, trace) {
+  const deltaPath = `${path}.result_descriptor.source_fact_delta`;
+  if (value === null) return;
+  if (!strict(value, deltaPath, [
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs'
+  ], errors)) return;
+  if (value.physical_description !== null) requiredText(
+    value.physical_description, `${deltaPath}.physical_description`, errors);
+  if (!Array.isArray(value.qualitative_facts)) {
+    add(errors, `${deltaPath}.qualitative_facts`, 'type', 'must be an array');
+  } else {
+    value.qualitative_facts.forEach((fact, index) => requiredText(
+      fact, `${deltaPath}.qualitative_facts[${index}]`, errors));
+    if (new Set(value.qualitative_facts).size
+        !== value.qualitative_facts.length) {
+      add(errors, `${deltaPath}.qualitative_facts`, 'unique',
+        'must contain unique values');
+    }
+  }
+  refs(value.removed_physical_fact_refs,
+    `${deltaPath}.removed_physical_fact_refs`, errors, trace,
+    { allowEmpty: true });
 }
 
 function validateShape(value, path, errors) {
@@ -118,6 +145,18 @@ function validateShape(value, path, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
+  if (partialOutput !== (descriptor.source_fact_delta !== null)) {
+    add(errors, `${path}.result_descriptor.source_fact_delta`,
+      'identity_shape',
+      'only a surviving partial source requires a fact delta');
+  }
+  const sourceDelta = descriptor.source_fact_delta;
+  if (sourceDelta != null && sourceDelta.physical_description === null
+      && sourceDelta.qualitative_facts?.length === 0
+      && sourceDelta.removed_physical_fact_refs?.length === 0) {
+    add(errors, `${path}.result_descriptor.source_fact_delta`,
+      'result_shape', 'must change current physical facts');
+  }
   const combinedSource = value.identity_mode === 'preserve_source'
     && value.source_refs?.length > 1;
   if (combinedSource

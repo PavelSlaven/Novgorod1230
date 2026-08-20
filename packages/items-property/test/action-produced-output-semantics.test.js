@@ -263,7 +263,8 @@ function proposal(overrides = {}) {
         qualitative_facts: ['физически обработан'],
         inscription_text: inscriptionText,
         physical_form: identityMode === 'independent_outputs'
-          ? 'compact' : null
+          ? 'compact' : null,
+        source_fact_delta: null
       }
     }
   };

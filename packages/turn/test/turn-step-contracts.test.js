@@ -252,7 +252,8 @@ test('sole turn plan boundary admits qualitative action production', () => {
           qualitative_facts: ['на конце видны свежие срезы'],
           removed_physical_fact_refs: [],
           inscription_text: null,
-          physical_form: 'long'
+          physical_form: 'long',
+          source_fact_delta: null
         },
         output_class: 'weapon_capable'
       }
@@ -262,6 +263,15 @@ test('sole turn plan boundary admits qualitative action production', () => {
   assert.deepEqual(validateTurnStepPlan(action, { request: source }), {
     ok: true, errors: []
   });
+  const preparedAction = structuredClone(action);
+  preparedAction.operations.unshift({ op: 'move_entity',
+    entity_ref: 'item:pole', placement: {
+      relation: 'held_by', target_ref: 'actor_mikula' } });
+  const preparedValidation = validateTurnStepPlan(preparedAction,
+    { request: source });
+  assert.equal(preparedValidation.ok, false);
+  assert.equal(preparedValidation.errors.some(({ message }) =>
+    message.includes('does not support direct preparation')), true);
 
   const unrelated = plan({
     activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' }
@@ -293,6 +303,11 @@ test('sole turn plan boundary admits qualitative action production', () => {
     output_count: 2, identity_mode: 'independent_outputs',
     origin: 'crafted', material_extent: 'minor'
   };
+  partition.operations[0].action_production.result_descriptor
+    .source_fact_delta = {
+      physical_description: 'с жерди снята часть материала',
+      qualitative_facts: [], removed_physical_fact_refs: []
+    };
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
   partition.operations[0].action_production.result_descriptor.display_name =
     null;

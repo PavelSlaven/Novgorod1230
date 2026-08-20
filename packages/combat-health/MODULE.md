@@ -66,9 +66,11 @@ body write и scenario ordering здесь отсутствуют. Unit/contract
 
 Revision 21 A1 не пишет damage, combat class либо canonical weapon identity.
 При конкретном combat use существующая exact weapon mechanics имеет приоритет
-и не вызывает модель. Для одного held template-less `weapon_capable` item combat
-owner получает current player-safe physical facts/form, bounded-классифицирует
-их в один из `ACTION_PRODUCED_WEAPON_CLASSES` и code-owned mapping переводит
-class в `weapon_danger` только для этого resolution. Класс не сохраняется и
-после физического изменения определяется заново. Digest/profile-pin слоя нет;
-strict validation достаточна. Damaged/unknown/ambiguous items fail-closed.
+и не вызывает модель. Для одного held action-produced item без exact weapon
+mechanics combat owner получает current player-safe physical facts/form,
+bounded-классифицирует их в один из `ACTION_PRODUCED_WEAPON_CLASSES`, включая
+`not_weapon_capable`, и code-owned mapping переводит класс в `weapon_danger`
+только для этого resolution. Последний A1 `output_class` не является combat
+gate. Класс не сохраняется и после физического изменения определяется заново.
+Digest/profile-pin слоя нет; strict validation достаточна.
+Damaged/unknown/ambiguous items fail-closed.

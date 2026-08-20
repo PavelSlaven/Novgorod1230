@@ -1,7 +1,7 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "846281750c201cf4c9aa47d885c1231dd6237e53ff276e14527865cf647e6dfc",
-  "chunk_count": 2526,
+  "corpus_hash": "c23ab0ec753aafff33c8348b5478459fe466589d7a37cc8d735e57eb6275f3c5",
+  "chunk_count": 2527,
   "chunks": [
     {
       "id": "base_turn_orchestration.txt:Базовая оркестрация хода:0",
@@ -846,8 +846,8 @@
       "section": "4.4. LLM",
       "line_start": 172,
       "line_end": 187,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nrency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 использует sole player boundary `turn_step_request_v1 → turn_step_plan_v1`: qualitative physical result вложен в `request_item_use`, после чего code-owned owner не вызывает LLM. Один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных actor-controlled tools на текущем placement явно разделены и могут иметь другого legal owner. Profile не содержит template/recipe whitelist и допускает preserve, до четырёх independent outputs, no-result, partial/nonworking/waste, writing, non-authoritative token-like и closed weapon-capable outcomes. Generic check применяется только при неопределённом исходе; детерминированное действие использует `domain_request` без RNG, но любая выполненная попытка проходит одно обычное semantic activity/time application. Code перечитывает committed mechanics/property/placement/ownership либо exact same-root ordinary overlay, выводит source/output mechanics из реально списанных allocations, уменьшает finite source и атомарно retire-ит полностью разделённый единичный source. Partial independent output получает из sole plan только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity source, обновляет current facts и остаточную mechanics. Full partition использует `whole`. Известная масса полного partition сохраняется с детерминированным остатком; qualitative `physical_form` вместе с exact mass переводится item owner в hand/packing/carry, а не наследуется от source. Новый independent output требует safe непустое display name; nullable physical description не сохраняется как `null` fact. Non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible current physical facts входят в same-root и reload player-safe projection. Надпись является durable physical fact до explicit удаления/замены по видимому `fact_ref`. Всё фиксируется в одном combined P16. Model не задаёт numbers, canonical identity, currency/official status, truth или combat mechanics; `weapon_capable` не хранит combat class/damage, а combat owner bounded-классифицирует current facts только при конкретном combat use.",
-      "char_count": 2466
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nrency/document/other запрос без authored authority сохраняется как code-owned `absent`. Не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 использует sole player boundary `turn_step_request_v1 → turn_step_plan_v1`: qualitative physical result вложен в `request_item_use`, после чего code-owned owner не вызывает LLM. Один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных actor-controlled tools на текущем placement явно разделены и могут иметь другого legal owner. Profile не содержит template/recipe whitelist и допускает preserve, до четырёх independent outputs, no-result, partial/nonworking/waste, writing, non-authoritative token-like и closed weapon-capable outcomes. Generic check применяется только при неопределённом исходе; детерминированное действие использует `domain_request` без RNG, но любая выполненная попытка проходит одно обычное semantic activity/time application. A1 `domain_request` содержит ровно одну operation и не допускает direct preparation в том же step. Code перечитывает committed mechanics/property/placement/ownership либо exact same-root ordinary overlay, выводит source/output mechanics из реально списанных allocations, уменьшает finite source и атомарно retire-ит полностью разделённый единичный source. Partial independent output получает из sole plan только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity source и остаточную mechanics. Output descriptor описывает только новые entities; обязательный `source_fact_delta` отдельно удаляет obsolete visible refs и добавляет current facts surviving source. Full partition использует `whole`. Известная масса полного partition сохраняется с детерминированным остатком; qualitative `physical_form` вместе с exact mass переводится item owner в hand/packing/carry, а не наследуется от source. Новый independent output требует safe непустое display name; nullable physical description не сохраняется как `null` fact. Non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible current physical facts входят в same-root и reload player-safe projection. Надпись является durable physical fact до explicit удаления/замены по видимому `fact_ref`. Всё фиксируется в одном combined P16. Model не задаёт numbers, canonical identity, currency/official status, truth или combat mechanics; A1 state не хранит combat class/damage, а combat owner bounded-классифицирует current facts/form любого held A1 item без exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний A1 `output_class` не является combat gate.",
+      "char_count": 2841
     },
     {
       "id": "code_driven_world_materialization_architecture.md:4.4. LLM:4",
@@ -855,7 +855,7 @@
       "section": "4.4. LLM",
       "line_start": 172,
       "line_end": 187,
-      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nombat mechanics; `weapon_capable` не хранит combat class/damage, а combat owner bounded-классифицирует current facts только при конкретном combat use.\n\nПовторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.",
+      "text": "## code_driven_world_materialization_architecture.md — 4.4. LLM\nбез exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний A1 `output_class` не является combat gate.\n\nПовторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.",
       "char_count": 668
     },
     {
@@ -2619,8 +2619,8 @@
       "section": "2. Главное правило материализации",
       "line_start": 67,
       "line_end": 82,
-      "text": "## items_and_property.txt — 2. Главное правило материализации\ntricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 не имеет recipe/template whitelist и второго semantic model. Sole `turn_step_plan_v1` возвращает qualitative `action_production`; item owner принимает один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных controller-controlled tools, включая borrowed/party-owned. Sources и tools разделены exact refs. В `preserve_source` первый source сохраняет identity, а последующие sources являются расходуемыми материалами; grounded `minor|half|major|whole` extent переводится owner в exact расход и обновлённую mechanics основного предмета. Разные ownership claims contributors не являются физическим запретом: property результата детерминированно наследуется от primary/property source, а социально-правовые последствия остаются отдельным owner. До четырёх independent outputs получают deterministic identities, material allocations и mechanics, выведенную только code-owned: finite source уменьшается, а полностью разделённый единичный source без resource row retire-ится; partial whole-item source получает only qualitative `minor|half|major` extent, который owner переводит в exact gram decrement, current physical facts и остаточную mechanics. Известная масса сохраняется, hand/packing не считаются материей; qualitative `physical_form` вместе с exact mass code-owned задаёт hand/carry/packing. Safe non-authoritative semantic descriptor сохраняется в ordinary item metadata. Visible physical facts переживают same-root continuation и reload; новый causal step явно удаляет ставшие ложными facts только по visible `fact_ref` и добавляет новый current набор без NLP-сопоставления. Надпись является durable physical fact до явного стирания/замены. No-result ничего не создаёт. Writing не создаёт objective truth, token-like output остаётся non-currency, а weapon-capable item не хранит combat class/damage: combat owner bounded-классифицирует current facts только при конкретном combat use. Любая совершённая физическая A1 попытка тратит одно обычное semantic activity/time; deterministic path не вызывает RNG. Отдельных A1 digest/integrity слоёв нет.",
-      "char_count": 2351
+      "text": "## items_and_property.txt — 2. Главное правило материализации\ntricted weapon/currency/document/other без authored authority сохраняются как `absent`; не provisioned precious/remnant profiles остаются fail-closed.\n\nActive A1 revision 21 не имеет recipe/template whitelist и второго semantic model. Sole `turn_step_plan_v1` возвращает qualitative `action_production`; item owner принимает один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных controller-controlled tools, включая borrowed/party-owned. Sources и tools разделены exact refs. В `preserve_source` первый source сохраняет identity, а последующие sources являются расходуемыми материалами; grounded `minor|half|major|whole` extent переводится owner в exact расход и обновлённую mechanics основного предмета. Разные ownership claims contributors не являются физическим запретом: property результата детерминированно наследуется от primary/property source, а социально-правовые последствия остаются отдельным owner. До четырёх independent outputs получают deterministic identities, material allocations и mechanics, выведенную только code-owned: finite source уменьшается, а полностью разделённый единичный source без resource row retire-ится; partial whole-item source получает only qualitative `minor|half|major` extent, который owner переводит в exact gram decrement и остаточную mechanics. Output descriptor относится только к новым entities; отдельный обязательный `source_fact_delta` удаляет obsolete visible refs и добавляет current facts surviving source. Известная масса сохраняется, hand/packing не считаются материей; qualitative `physical_form` вместе с exact mass code-owned задаёт hand/carry/packing. Safe non-authoritative semantic descriptor сохраняется в ordinary item metadata. Visible physical facts переживают same-root continuation и reload; новый causal step явно удаляет ставшие ложными facts только по visible `fact_ref` и добавляет новый current набор без NLP-сопоставления. Надпись является durable physical fact до явного стирания/замены. No-result ничего не создаёт. Writing не создаёт objective truth, token-like output остаётся non-currency, а A1 item не хранит combat class/damage: combat owner bounded-классифицирует current facts/form любого held A1 item без exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний `output_class` не является combat gate. Любая совершённая физическая A1 попытка тратит одно обычное semantic activity/time; deterministic path не вызывает RNG. A1 `domain_request` не допускает direct preparation operation в том же step. Отдельных A1 digest/integrity слоёв нет.",
+      "char_count": 2701
     },
     {
       "id": "items_and_property.txt:3. Обязательные параметры значимого предмета:0",
@@ -20978,25 +20978,34 @@
       "file": "turn_step_llm_contract.md",
       "section": "12.4. `request_item_use`",
       "line_start": 812,
-      "line_end": 880,
-      "text": "## turn_step_llm_contract.md — 12.4. `request_item_use`\n### 12.4. `request_item_use`\n\n```json\n{\n  \"op\": \"request_item_use\",\n  \"actor_ref\": \"actor_mikula\",\n  \"item_ref\": \"item_1\",\n  \"use_kind\": \"consume | apply | operate | equip | unequip | other\",\n  \"target_refs\": [],\n  \"action_production\": {\n    \"source_refs\": [\"item_1\"],\n    \"tool_refs\": [],\n    \"output_count\": 0,\n    \"identity_mode\": \"preserve_source | independent_outputs | no_useful_result\",\n    \"origin\": \"direct_partition | crafted | null\",\n    \"result_class\": \"ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result\",\n    \"material_extent\": \"minor | half | major | whole | null\",\n    \"result_descriptor\": {\n      \"display_name\": \"безопасное имя физического результата\",\n      \"physical_description\": \"видимый физический результат\",\n      \"qualitative_facts\": [],\n      \"removed_physical_fact_refs\": [],\n      \"inscription_text\": null,\n      \"physical_form\": \"compact | regular | long | bulky | null\"\n    },\n    \"output_class\": \"ordinary_mundane | weapon_capable | money_like_token | written_carrier | null\"\n  }\n}\n```\n\nПрофильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.",
-      "char_count": 1253
+      "line_end": 887,
+      "text": "## turn_step_llm_contract.md — 12.4. `request_item_use`\n### 12.4. `request_item_use`\n\n```json\n{\n  \"op\": \"request_item_use\",\n  \"actor_ref\": \"actor_mikula\",\n  \"item_ref\": \"item_1\",\n  \"use_kind\": \"consume | apply | operate | equip | unequip | other\",\n  \"target_refs\": [],\n  \"action_production\": {\n    \"source_refs\": [\"item_1\"],\n    \"tool_refs\": [],\n    \"output_count\": 0,\n    \"identity_mode\": \"preserve_source | independent_outputs | no_useful_result\",\n    \"origin\": \"direct_partition | crafted | null\",\n    \"result_class\": \"ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result\",\n    \"material_extent\": \"minor | half | major | whole | null\",\n    \"result_descriptor\": {\n      \"display_name\": \"безопасное имя физического результата\",\n      \"physical_description\": \"видимый физический результат\",\n      \"qualitative_facts\": [],\n      \"removed_physical_fact_refs\": [],\n      \"inscription_text\": null,\n      \"physical_form\": \"compact | regular | long | bulky | null\",\n      \"source_fact_delta\": null\n    },\n    \"output_class\": \"ordinary_mundane | weapon_capable | money_like_token | written_carrier | null\"\n  }\n}\n```",
+      "char_count": 1176
     },
     {
       "id": "turn_step_llm_contract.md:12.4. `request_item_use`:1",
       "file": "turn_step_llm_contract.md",
       "section": "12.4. `request_item_use`",
       "line_start": 812,
-      "line_end": 880,
-      "text": "## turn_step_llm_contract.md — 12.4. `request_item_use`\noken | written_carrier | null\"\n  }\n}\n```\n\nПрофильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.\n\nВ active Lower Dvina Trace revision 21 отсутствие exact recipe не является\nавтоматическим отказом внутри SHA-pinned A1 profile. Приоритет не меняется:\nregistered/external handler, затем authored binding, и лишь при нуле совпадений\n— code-owned A1 owner. Это не второй semantic fallback: qualitative\n`action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не\nвызывает LLM. Активный scope принимает один или несколько committed либо\nvalidated same-root revealed non-container material sources и ноль или несколько\nдоступных actor-controlled non-container tools; `source_refs` и\n`tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает\ngeneric check только при неопределённом исходе; существующий semantic activity/time\nowner исполняется ровно один раз для любой реально выполненной физической попытки.\nДетерминированное действие использует `domain_request` без check и RNG, но не\nстановится zero-time. Profile допускает preserve, до четырёх independent outputs,\nno-result,\npartial/nonworking/waste, writing, non-authoritative token-like и closed\nweapon-capable outcomes. Model не задаёт массу, numeric расход, mechanics, identity,\nproperty, placement, время, roll, currency/official status или combat numbers.\nExact source/output mechanics выводится из реально списанных allocations:\nfinite source уменьшается, а полностью разделённый единичный source без\nresource row retire-ится. Для partial independent output sole plan задаёт только\ngrounded qualitative `material_extent = minor|half|major`; item owner переводит\nего в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.\nFull independent partition использует `whole`, preserve/no-result — `null`.\nМасса полного partition сохраняется с детерминированным остатком,\nhand/packing/carry выводятся code-owned из exact mass и qualitative\n`physical_form`, а не наследуют форму source. Новый\nindependent output обязан иметь safe непустое display name; nullable physical\ndescription не добавляется как `null` fact. Non-authoritative display name/type сохраняются в\nordinary item metadata и переживают reload; persisted non-authoritative\nphysical facts видны следующему internal step и после reload. Надпись хранится\nкак durable physical fact до explicit удаления/замены по видимому `fact_ref`;\nsurviving source partial partition получает обновлённые current facts в том же\nP16. `weapon_capable` здесь не содержит combat class/damage: combat owner\nbounded-классифицирует текущее физическое состояние только при combat use.\nОдин combined P16 сохраняет causal pins, conservation и physical transition\nатомарно. Route не отвечает на pre-existing presence и не является O1/O2.",
-      "char_count": 2891
+      "line_end": 887,
+      "text": "## turn_step_llm_contract.md — 12.4. `request_item_use`\n,\n      \"source_fact_delta\": null\n    },\n    \"output_class\": \"ordinary_mundane | weapon_capable | money_like_token | written_carrier | null\"\n  }\n}\n```\n\nПрофильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.",
+      "char_count": 316
+    },
+    {
+      "id": "turn_step_llm_contract.md:12.4. `request_item_use`:2",
+      "file": "turn_step_llm_contract.md",
+      "section": "12.4. `request_item_use`",
+      "line_start": 812,
+      "line_end": 887,
+      "text": "## turn_step_llm_contract.md — 12.4. `request_item_use`\noken | written_carrier | null\"\n  }\n}\n```\n\nПрофильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.\n\nВ active Lower Dvina Trace revision 21 отсутствие exact recipe не является\nавтоматическим отказом внутри SHA-pinned A1 profile. Приоритет не меняется:\nregistered/external handler, затем authored binding, и лишь при нуле совпадений\n— code-owned A1 owner. Это не второй semantic fallback: qualitative\n`action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не\nвызывает LLM. Активный scope принимает один или несколько committed либо\nvalidated same-root revealed non-container material sources и ноль или несколько\nдоступных actor-controlled non-container tools; `source_refs` и\n`tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает\ngeneric check только при неопределённом исходе; существующий semantic activity/time\nowner исполняется ровно один раз для любой реально выполненной физической попытки.\nДетерминированное действие использует `domain_request` без check и RNG, но не\nстановится zero-time. Profile допускает preserve, до четырёх independent outputs,\nno-result,\npartial/nonworking/waste, writing, non-authoritative token-like и closed\nweapon-capable outcomes. Model не задаёт массу, numeric расход, mechanics, identity,\nproperty, placement, время, roll, currency/official status или combat numbers.\nExact source/output mechanics выводится из реально списанных allocations:\nfinite source уменьшается, а полностью разделённый единичный source без\nresource row retire-ится. Для partial independent output sole plan задаёт только\ngrounded qualitative `material_extent = minor|half|major`; item owner переводит\nего в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.\nOutput descriptor описывает только новые entities; обязательный\n`source_fact_delta = { physical_description, qualitative_facts,\nremoved_physical_fact_refs }` отдельно меняет current facts surviving source.\nFull independent partition использует `whole`, preserve/no-result — `null`.\nМасса полного partition сохраняется с детерминированным остатком,\nhand/packing/carry выводятся code-owned из exact mass и qualitative\n`physical_form`, а не наследуют форму source. Новый\nindependent output обязан иметь safe непустое display name; nullable physical\ndescription не добавляется как `null` fact. Non-authoritative display name/type сохраняются в\nordinary item metadata и переживают reload; persisted non-authoritative\nphysical facts видны следующему internal step и после reload. Надпись хранится\nкак durable physical fact до explicit удаления/замены по видимому `fact_ref`;\nsurviving source partial partition получает обновлённые current facts в том же\nP16. `weapon_capable` здесь не содержит combat class/damage: combat owner\nbounded-классифицирует любой held A1 item без exact weapon mechanics по текущим\nfacts/form только при combat use и может вернуть `not_weapon_capable`; последний\nA1 `output_class` не является combat gate. A1 `domain_request` содержит ровно\nодну operation и не допускает direct preparation в том же step.\nОдин combined P16 сохраняет causal pins, conservation и physical transition\nатомарно. Route не отвечает на pre-existing presence и не является O1/O2.",
+      "char_count": 3325
     },
     {
       "id": "turn_step_llm_contract.md:12.5. `request_activity`:0",
       "file": "turn_step_llm_contract.md",
       "section": "12.5. `request_activity`",
-      "line_start": 881,
-      "line_end": 894,
+      "line_start": 888,
+      "line_end": 901,
       "text": "## turn_step_llm_contract.md — 12.5. `request_activity`\n### 12.5. `request_activity`\n\n```json\n{\n  \"op\": \"request_activity\",\n  \"actor_ref\": \"actor_mikula\",\n  \"activity_kind\": \"wait | sleep | work | recover | carry | other\",\n  \"target_refs\": [],\n  \"description\": \"что именно персонаж пытается делать\"\n}\n```\n\nActivity, exact duration, interruption и temporal effects принадлежат общему temporal owner.",
       "char_count": 398
     },
@@ -21004,8 +21013,8 @@
       "id": "turn_step_llm_contract.md:12.6. `emit_interaction`:0",
       "file": "turn_step_llm_contract.md",
       "section": "12.6. `emit_interaction`",
-      "line_start": 895,
-      "line_end": 909,
+      "line_start": 902,
+      "line_end": 916,
       "text": "## turn_step_llm_contract.md — 12.6. `emit_interaction`\n### 12.6. `emit_interaction`\n\n```json\n{\n  \"op\": \"emit_interaction\",\n  \"actor_ref\": \"actor_mikula\",\n  \"target_actor_refs\": [\"npc_1\"],\n  \"interaction_kind\": \"speech | gesture | offer | request | threat | attack | aid | other\",\n  \"content\": \"что персонаж говорит или пытается сделать\",\n  \"instrument_refs\": []\n}\n```\n\nLLM не определяет согласие, эмоцию, ответ или дальнейшее действие NPC.",
       "char_count": 440
     },
@@ -21013,8 +21022,8 @@
       "id": "turn_step_llm_contract.md:13. Контейнер и составная заявка:0",
       "file": "turn_step_llm_contract.md",
       "section": "13. Контейнер и составная заявка",
-      "line_start": 910,
-      "line_end": 972,
+      "line_start": 917,
+      "line_end": 979,
       "text": "## turn_step_llm_contract.md — 13. Контейнер и составная заявка\n## 13. Контейнер и составная заявка\n\nИсходное состояние:\n\n- сундук существует;\n- замок уже взломан или открыт;\n- крышка закрыта;\n- contents персонажу неизвестно.\n\nЗаявка:\n\n```text\nзаглядываю в сундук и беру оттуда меч\n```\n\nПервый результат:",
       "char_count": 304
     },
@@ -21022,8 +21031,8 @@
       "id": "turn_step_llm_contract.md:13. Контейнер и составная заявка:1",
       "file": "turn_step_llm_contract.md",
       "section": "13. Контейнер и составная заявка",
-      "line_start": 910,
-      "line_end": 972,
+      "line_start": 917,
+      "line_end": 979,
       "text": "## turn_step_llm_contract.md — 13. Контейнер и составная заявка\n взломан или открыт;\n- крышка закрыта;\n- contents персонажу неизвестно.\n\nЗаявка:\n\n```text\nзаглядываю в сундук и беру оттуда меч\n```\n\nПервый результат:\n\n```json\n{\n  \"schema\": \"turn_step_plan_v1\",\n  \"request_id\": \"turn-request-42\",\n  \"committed_state_version\": 17,\n  \"working_revision\": 0,\n  \"step_index\": 1,\n  \"interpretation\": {\n    \"player_goal\": \"посмотреть содержимое сундука и взять находящийся внутри меч\",\n    \"grounded_attempt\": \"открыть сундук и заглянуть внутрь\",\n    \"adaptation\": \"literal\"\n  },\n  \"resolution\": \"domain_request\",\n  \"goal_result\": \"pending\",\n  \"activity\": {\n    \"owner\": \"domain\",\n    \"duration_class\": null,\n    \"effort\": null\n  },\n  \"operations\": [\n    {\n      \"op\": \"request_container_access\",\n      \"actor_ref\": \"actor_mikula\",\n      \"container_ref\": \"chest_1\",\n      \"access_kind\": \"open_and_view\"\n    }\n  ],\n  \"check\": null,\n  \"continuation\": {\n    \"remaining_intent\": \"взять меч из сундука, если после открытия там действительно окажется доступный меч\",\n    \"depends_on_refs\": [\"chest_1\"]\n  },\n  \"clarification\": null,\n  \"reason_code\": \"container_contents_not_visible\",\n  \"reason\": \"содержимое закрытого сундука ещё не доступно персонажу\"\n}\n```",
       "char_count": 1241
     },
@@ -21031,8 +21040,8 @@
       "id": "turn_step_llm_contract.md:13. Контейнер и составная заявка:2",
       "file": "turn_step_llm_contract.md",
       "section": "13. Контейнер и составная заявка",
-      "line_start": 910,
-      "line_end": 972,
+      "line_start": 917,
+      "line_end": 979,
       "text": "## turn_step_llm_contract.md — 13. Контейнер и составная заявка\n  \"clarification\": null,\n  \"reason_code\": \"container_contents_not_visible\",\n  \"reason\": \"содержимое закрытого сундука ещё не доступно персонажу\"\n}\n```\n\nПосле code-owned открытия contents появляются в новом player-safe working state.\n\nЕсли меч есть, следующий шаг перемещает существующий `item_ref`.\n\nЕсли меча нет, следующий шаг заканчивается с `goal_result: \"not_achieved\"` и пустым массивом операций.\n\nМеч не создаётся из-за того, что игрок упомянул его в заявке.",
       "char_count": 529
     },
@@ -21040,8 +21049,8 @@
       "id": "turn_step_llm_contract.md:14. Пример невозможного действия:0",
       "file": "turn_step_llm_contract.md",
       "section": "14. Пример невозможного действия",
-      "line_start": 973,
-      "line_end": 1002,
+      "line_start": 980,
+      "line_end": 1009,
       "text": "## turn_step_llm_contract.md — 14. Пример невозможного действия\n## 14. Пример невозможного действия\n\n```json\n{\n  \"schema\": \"turn_step_plan_v1\",\n  \"request_id\": \"turn-request-1\",\n  \"committed_state_version\": 1,\n  \"working_revision\": 0,\n  \"step_index\": 1,\n  \"interpretation\": {\n    \"player_goal\": \"получить обзор окрестностей с высоты птичьего полёта\",\n    \"grounded_attempt\": \"подпрыгнуть настолько высоко, насколько возможно, и попытаться осмотреться во время прыжка\",\n    \"adaptation\": \"reality_limited\"\n  },\n  \"resolution\": \"direct\",\n  \"goal_result\": \"not_achieved\",\n  \"activity\": {\n    \"owner\": \"semantic\",\n    \"duration_class\": \"moment\",\n    \"effort\": \"moderate\"\n  },\n  \"operations\": [],\n  \"check\": null,\n  \"continuation\": null,\n  \"clarification\": null,\n  \"reason_code\": \"goal_exceeds_human_jump\",\n  \"reason\": \"реальный прыжок выполнен, но он не даёт обзор с высоты птицы\"\n}\n```",
       "char_count": 882
     },
@@ -21049,8 +21058,8 @@
       "id": "turn_step_llm_contract.md:15. Строгие запреты:0",
       "file": "turn_step_llm_contract.md",
       "section": "15. Строгие запреты",
-      "line_start": 1003,
-      "line_end": 1024,
+      "line_start": 1010,
+      "line_end": 1031,
       "text": "## turn_step_llm_contract.md — 15. Строгие запреты\n## 15. Строгие запреты\n\nLLM не возвращает:\n\n- SQL;\n- таблицы базы;\n- write plan;\n- постоянные ID новых сущностей;\n- случайный бросок;\n- выбранную кодом ветку проверки;\n- точные дельты `health`, `energy`, `satiety`;\n- общую массу инвентаря;\n- категорию нагрузки;\n- занятые и свободные руки как отдельные изменения;\n- contents закрытого контейнера;\n- решение NPC;\n- hidden facts;\n- художественное повествование;\n- новые операции вне контракта.\n\n`reason` и `reason_code` являются диагностикой. Они не сохраняются как факты мира и не используются кодом вместо структурных полей.",
       "char_count": 625
     },
@@ -21058,8 +21067,8 @@
       "id": "turn_step_llm_contract.md:16. Валидация и технические ошибки:0",
       "file": "turn_step_llm_contract.md",
       "section": "16. Валидация и технические ошибки",
-      "line_start": 1025,
-      "line_end": 1050,
+      "line_start": 1032,
+      "line_end": 1057,
       "text": "## turn_step_llm_contract.md — 16. Валидация и технические ошибки\n## 16. Валидация и технические ошибки\n\nКод применяет строгую JSON Schema:\n\n- все обязательные поля присутствуют;\n- `additionalProperties: false`;\n- все refs существуют либо являются допустимыми ранее созданными temp refs;\n- числа конечны и входят в допустимые границы;\n- операции совместимы с `resolution`;\n- direct plan не содержит domain request;\n- domain request содержит ровно один основной domain request;\n- generic check содержит все пять исходов;\n- continuation и goal_result согласованы;\n- output echoes request/version/revision/step exactly;\n- после `retire_entity` сущность больше не изменяется;\n- контейнерные циклы запрещены;\n- одна сущность не получает два итоговых размещения.\n\nПри структурной ошибке допускается один repair-вызов LLM с перечнем только структурных нарушений.\n\nЕсли repair снова невалиден:\n\n- состояние не меняется;\n- игроку не сообщается внутриигровой отказ;\n- возвращается техническая ошибка обработки хода.",
       "char_count": 1005
     },
@@ -21067,8 +21076,8 @@
       "id": "turn_step_llm_contract.md:17. Активированная реализация:0",
       "file": "turn_step_llm_contract.md",
       "section": "17. Активированная реализация",
-      "line_start": 1051,
-      "line_end": 1052,
+      "line_start": 1058,
+      "line_end": 1059,
       "text": "## turn_step_llm_contract.md — 17. Активированная реализация\n## 17. Активированная реализация",
       "char_count": 93
     },
@@ -21076,8 +21085,8 @@
       "id": "turn_step_llm_contract.md:17.1. `@rus/turn`:0",
       "file": "turn_step_llm_contract.md",
       "section": "17.1. `@rus/turn`",
-      "line_start": 1053,
-      "line_end": 1068,
+      "line_start": 1060,
+      "line_end": 1075,
       "text": "## turn_step_llm_contract.md — 17.1. `@rus/turn`\n### 17.1. `@rus/turn`\n\nProduction implementation существующего владельца:\n\n1. сохранить exact code fast path;\n2. заменить player-facing `TURN_SEMANTIC_INTENT_UNKNOWN` на вызов step planner;\n3. добавить общий внутренний step loop;\n4. добавить строгий validator `turn_step_request_v1` / `turn_step_plan_v1`;\n5. маршрутизировать direct operations и domain requests к существующим владельцам;\n6. выполнять generic check через текущий RNG/check owner;\n7. обновлять code-owned working projection между шагами;\n8. завершать один root turn единым commit и presentation;\n9. не создавать scenario-local step loops.\n\nНе требуется новый универсальный event store, второй persistence engine или параллельный temporal scheduler.",
       "char_count": 763
     },
@@ -21085,8 +21094,8 @@
       "id": "turn_step_llm_contract.md:17.2. Items/property:0",
       "file": "turn_step_llm_contract.md",
       "section": "17.2. Items/property",
-      "line_start": 1069,
-      "line_end": 1078,
+      "line_start": 1076,
+      "line_end": 1085,
       "text": "## turn_step_llm_contract.md — 17.2. Items/property\n### 17.2. Items/property\n\nДопустимый runtime instance profile для сущностей, созданных прямым действием игрока:\n\n- authored items продолжают использовать catalog/template/archetype path;\n- LLM-created ordinary action results сохраняют exact instance mechanics snapshot;\n- существующие расчёты массы, рук, capacity и load используют этот snapshot;\n- отсутствие шаблона не блокирует такой конкретный ordinary result;\n- significant hidden items и container contents по-прежнему создаёт code-owned materializer.",
       "char_count": 559
     },
@@ -21094,8 +21103,8 @@
       "id": "turn_step_llm_contract.md:17.3. Containers и discovery:0",
       "file": "turn_step_llm_contract.md",
       "section": "17.3. Containers и discovery",
-      "line_start": 1079,
-      "line_end": 1087,
+      "line_start": 1086,
+      "line_end": 1094,
       "text": "## turn_step_llm_contract.md — 17.3. Containers и discovery\n### 17.3. Containers и discovery\n\nАктивные общие handlers:\n\n- `request_container_access`;\n- `request_discovery`.\n\nContainer owner раскрывает или впервые materializes persisted contents. Discovery owner разрешает значимые hidden facts и items. LLM создаёт ordinary direct/ambient result только по правилам раздела 11.1. O1 discovery не расширяет этот path: он materializes только common mundane non-container `man_made` item через описанный в 12.1 code-owned admission.",
       "char_count": 528
     },
@@ -21103,8 +21112,8 @@
       "id": "turn_step_llm_contract.md:17.4. Temporal integration:0",
       "file": "turn_step_llm_contract.md",
       "section": "17.4. Temporal integration",
-      "line_start": 1088,
-      "line_end": 1095,
+      "line_start": 1095,
+      "line_end": 1102,
       "text": "## turn_step_llm_contract.md — 17.4. Temporal integration\n### 17.4. Temporal integration\n\nПошаговый loop не сортирует temporal events и не исполняет temporal callbacks.\n\n`request_activity`, movement и другие temporal requests передаются общему owner. Same-time ordering, evolving-state application, cascade и stop boundary остаются у общей temporal orchestration. Internal player LLM continuation не является temporal scheduler и не меняет порядок same-time событий.\n\nNPC signal aggregation и semantic NPC handoff отложены до отдельных proposed-контрактов и не входят в M1 activation.",
       "char_count": 584
     },
@@ -21112,8 +21121,8 @@
       "id": "turn_step_llm_contract.md:17.5. Persistence:0",
       "file": "turn_step_llm_contract.md",
       "section": "17.5. Persistence",
-      "line_start": 1096,
-      "line_end": 1108,
+      "line_start": 1103,
+      "line_end": 1115,
       "text": "## turn_step_llm_contract.md — 17.5. Persistence\n### 17.5. Persistence\n\nКорневой ход сохраняет:\n\n- root request/idempotency identity;\n- committed base state version;\n- выбранные check outcomes и RNG trace;\n- применённые domain results;\n- итоговый code-owned write plan;\n- минимальный internal step trace для диагностики и restart consistency.\n\nНе требуется сохранять полный LLM scratchpad или художественные рассуждения.",
       "char_count": 420
     },
@@ -21121,8 +21130,8 @@
       "id": "turn_step_llm_contract.md:18. Согласованная базовая документация:0",
       "file": "turn_step_llm_contract.md",
       "section": "18. Согласованная базовая документация",
-      "line_start": 1109,
-      "line_end": 1112,
+      "line_start": 1116,
+      "line_end": 1119,
       "text": "## turn_step_llm_contract.md — 18. Согласованная базовая документация\n## 18. Согласованная базовая документация\n\nProduction activation поддерживается согласованным обновлением следующих файлов.",
       "char_count": 193
     },
@@ -21130,8 +21139,8 @@
       "id": "turn_step_llm_contract.md:18.1. Высший норматив границы кода и LLM:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.1. Высший норматив границы кода и LLM",
-      "line_start": 1113,
-      "line_end": 1125,
+      "line_start": 1120,
+      "line_end": 1132,
       "text": "## turn_step_llm_contract.md — 18.1. Высший норматив границы кода и LLM\n### 18.1. Высший норматив границы кода и LLM\n\n`data/knowledge-source/corpus/DOCUMENTS/code_driven_world_materialization_architecture.md`\n\nActive-норматив фиксирует:\n\n- D-010: LLM не только выбирает закрытый option, но может возвращать строго типизированный semantic step plan для свободной заявки игрока;\n- D-011: LLM по-прежнему не объявляет code-owned итог, но может предлагать direct semantic operations и domain requests;\n- D-014: пустой authored candidate set остаётся hard block для значимой code-owned materialization, но не запрещает ordinary direct/ambient action result;\n- раздел 4.4: runtime semantic step planner получает только player-safe working projection;\n- ordinary action-created entities отделены от significant hidden materialization;\n- запрет LLM на прямую запись в БД сохранён.",
       "char_count": 872
     },
@@ -21139,8 +21148,8 @@
       "id": "turn_step_llm_contract.md:18.2. Источники и runtime-промты:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.2. Источники и runtime-промты",
-      "line_start": 1126,
-      "line_end": 1138,
+      "line_start": 1133,
+      "line_end": 1145,
       "text": "## turn_step_llm_contract.md — 18.2. Источники и runtime-промты\n### 18.2. Источники и runtime-промты\n\n`data/knowledge-source/corpus/DOCUMENTS/information_sources_llm_prompts.md`\n\nДокумент фиксирует новую active player-role boundary:\n\n- bounded decision остаётся для закрытых domain choices;\n- free-form player action использует `turn_step_plan_v1`;\n- LLM получает только player-safe working projection;\n- hidden state и container contents остаются code-owned.\n\nNPC runtime roles, inputs и session contracts этим изменением не активируются.",
       "char_count": 539
     },
@@ -21148,8 +21157,8 @@
       "id": "turn_step_llm_contract.md:18.3. Шаблоны LLM-агентов:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.3. Шаблоны LLM-агентов",
-      "line_start": 1139,
-      "line_end": 1151,
+      "line_start": 1146,
+      "line_end": 1158,
       "text": "## turn_step_llm_contract.md — 18.3. Шаблоны LLM-агентов\n### 18.3. Шаблоны LLM-агентов\n\n`data/knowledge-source/corpus/DOCUMENTS/llm_agent_prompt_templates.md`\n\nДокумент фиксирует:\n\n- канонический prompt semantic step planner;\n- новый главный turn pipeline;\n- distinction direct / generic_check / domain_request;\n- правило reality adaptation;\n- continuation loop;\n- запрет narration до persisted factual commit.",
       "char_count": 410
     },
@@ -21157,8 +21166,8 @@
       "id": "turn_step_llm_contract.md:18.4. Мир и ходы:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.4. Мир и ходы",
-      "line_start": 1152,
-      "line_end": 1164,
+      "line_start": 1159,
+      "line_end": 1171,
       "text": "## turn_step_llm_contract.md — 18.4. Мир и ходы\n### 18.4. Мир и ходы\n\n`data/knowledge-source/corpus/DOCUMENTS/world_generation_and_turns.txt`\n\nДокумент фиксирует:\n\n- root player action и internal semantic steps;\n- code-owned working projection;\n- invisible multi-call loop;\n- stopping/player-response boundaries;\n- exact fast path compatibility;\n- final commit boundary.",
       "char_count": 370
     },
@@ -21166,8 +21175,8 @@
       "id": "turn_step_llm_contract.md:18.5. Предметы и собственность:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.5. Предметы и собственность",
-      "line_start": 1165,
-      "line_end": 1176,
+      "line_start": 1172,
+      "line_end": 1183,
       "text": "## turn_step_llm_contract.md — 18.5. Предметы и собственность\n### 18.5. Предметы и собственность\n\n`data/knowledge-source/corpus/DOCUMENTS/items_and_property.txt`\n\nДокумент фиксирует разделение:\n\n- direct partition / crafted result;\n- ordinary ambient materialization;\n- significant hidden item;\n- container contents;\n- instance-specific mechanics snapshot.",
       "char_count": 356
     },
@@ -21175,8 +21184,8 @@
       "id": "turn_step_llm_contract.md:18.6. Инвентарь и экипировка:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.6. Инвентарь и экипировка",
-      "line_start": 1177,
-      "line_end": 1186,
+      "line_start": 1184,
+      "line_end": 1193,
       "text": "## turn_step_llm_contract.md — 18.6. Инвентарь и экипировка\n### 18.6. Инвентарь и экипировка\n\n`data/knowledge-source/corpus/DOCUMENTS/character_inventory_equipment.txt`\n\nДокумент фиксирует:\n\n- authored profile и runtime instance mechanics являются двумя допустимыми источниками exact mechanics;\n- code-owned расчёт массы, рук, capacity и load;\n- LLM не возвращает производные inventory values.",
       "char_count": 393
     },
@@ -21184,8 +21193,8 @@
       "id": "turn_step_llm_contract.md:18.7. Время и прерываемые activities:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.7. Время и прерываемые activities",
-      "line_start": 1187,
-      "line_end": 1198,
+      "line_start": 1194,
+      "line_end": 1205,
       "text": "## turn_step_llm_contract.md — 18.7. Время и прерываемые activities\n### 18.7. Время и прерываемые activities\n\n`data/knowledge-source/corpus/DOCUMENTS/temporal_world_and_interruptible_activities.md`\n\nM1 activation не изменяет этот норматив или ownership. Player contract соблюдает его границу:\n\n- semantic step loop только регистрирует domain requests;\n- temporal owner сохраняет ordering, boundaries, batch, cascade и persistence;\n- internal LLM continuation не является temporal scheduler.\n\nБудущие NPC signals/boundaries остаются за пределами active M1 contract.",
       "char_count": 564
     },
@@ -21193,8 +21202,8 @@
       "id": "turn_step_llm_contract.md:18.8. Навигация документации:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.8. Навигация документации",
-      "line_start": 1199,
-      "line_end": 1204,
+      "line_start": 1206,
+      "line_end": 1211,
       "text": "## turn_step_llm_contract.md — 18.8. Навигация документации\n### 18.8. Навигация документации\n\n`data/knowledge-source/corpus/DOCUMENTS/llm_documentation_navigation.md`\n\nЭтот документ включён в active-раздел LLM/turn architecture и приоритет чтения.",
       "char_count": 247
     },
@@ -21202,8 +21211,8 @@
       "id": "turn_step_llm_contract.md:18.9. Модульная документация:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.9. Модульная документация",
-      "line_start": 1205,
-      "line_end": 1216,
+      "line_start": 1212,
+      "line_end": 1223,
       "text": "## turn_step_llm_contract.md — 18.9. Модульная документация\n### 18.9. Модульная документация\n\n`packages/turn/MODULE.md`\n\nModule doc публикует contract и владельца:\n\n- step request/plan schemas;\n- semantic step loop;\n- exact fast path fallback rule;\n- domain routing;\n- final commit boundary.",
       "char_count": 291
     },
@@ -21211,8 +21220,8 @@
       "id": "turn_step_llm_contract.md:18.10. Corpus/generated outputs:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.10. Corpus/generated outputs",
-      "line_start": 1217,
-      "line_end": 1220,
+      "line_start": 1224,
+      "line_end": 1227,
       "text": "## turn_step_llm_contract.md — 18.10. Corpus/generated outputs\n### 18.10. Corpus/generated outputs\n\nДокумент зарегистрирован как `active`; manifest/index/generated outputs обновляются только штатными `knowledge:generate` и `docs:generate`, без ручной правки generated artifacts.",
       "char_count": 278
     },
@@ -21220,8 +21229,8 @@
       "id": "turn_step_llm_contract.md:18.11. `AGENTS.md`:0",
       "file": "turn_step_llm_contract.md",
       "section": "18.11. `AGENTS.md`",
-      "line_start": 1221,
-      "line_end": 1224,
+      "line_start": 1228,
+      "line_end": 1231,
       "text": "## turn_step_llm_contract.md — 18.11. `AGENTS.md`\n### 18.11. `AGENTS.md`\n\n`AGENTS.md` фиксирует два несмешиваемых класса materialization и единственную active player semantic boundary в общем `@rus/turn`. Сценарии по-прежнему задают содержание и candidates, но не создают собственный planner или orchestration.",
       "char_count": 310
     },
@@ -21229,8 +21238,8 @@
       "id": "turn_step_llm_contract.md:19. Обязательные тесты внедрения:0",
       "file": "turn_step_llm_contract.md",
       "section": "19. Обязательные тесты внедрения",
-      "line_start": 1225,
-      "line_end": 1249,
+      "line_start": 1232,
+      "line_end": 1256,
       "text": "## turn_step_llm_contract.md — 19. Обязательные тесты внедрения\n## 19. Обязательные тесты внедрения\n\nМинимальный набор поведенческих тестов:",
       "char_count": 140
     },
@@ -21238,8 +21247,8 @@
       "id": "turn_step_llm_contract.md:19. Обязательные тесты внедрения:1",
       "file": "turn_step_llm_contract.md",
       "section": "19. Обязательные тесты внедрения",
-      "line_start": 1225,
-      "line_end": 1249,
+      "line_start": 1232,
+      "line_end": 1256,
       "text": "## turn_step_llm_contract.md — 19. Обязательные тесты внедрения\n## 19. Обязательные тесты внедрения\n\nМинимальный набор поведенческих тестов:\n\n1. Невозможный прыжок адаптируется в реальный прыжок, расходует обычную нагрузку и не даёт птичий обзор.\n2. Космический корабль не создаётся; заявка превращается в make-believe.\n3. `Открываю сундук и беру меч`: contents раскрывается кодом, затем существующий меч берётся вторым шагом.\n4. Та же заявка без меча заканчивается без создания меча.\n5. Запертый сундук делегируется container owner и может потребовать code-owned check.\n6. Длинная заявка после движения продолжает исполняться из новой позиции.\n7. Ответ NPC создаёт player-response boundary и не продолжается скрыто.\n8. Generic check использует пять code-owned outcome bands и outcome-specific continuation.\n9. Горсть песка создаётся с отдельным exact mechanics snapshot.\n10. Вторая горсть получает независимую оценку массы.\n11. Обычный камень может быть ambient ordinary result.\n12. Монета, письмо, оружие или улика не создаются LLM как ambient ordinary result.\n13. Container contents не попадает в LLM до code-owned access.\n14. Step cap останавливает цикл без повторного применения уже выполненных действий.\n15. Невалидный LLM output не создаёт частичного состояния.\n16. Повтор того же idempotency key не повторяет RNG, время, body effect или item creation.\n17. Commit-time stale state отклоняется до записи.\n18. PR №51 temporal ordering и same-time cascade не дублируются semantic loop.\n19. Narrator получает только persisted player-safe package после commit.\n20. Existing exact registered actions продолжают работать без регрессии.",
       "char_count": 1635
     },
@@ -21247,8 +21256,8 @@
       "id": "turn_step_llm_contract.md:20. Канонический runtime prompt:0",
       "file": "turn_step_llm_contract.md",
       "section": "20. Канонический runtime prompt",
-      "line_start": 1250,
-      "line_end": 1261,
+      "line_start": 1257,
+      "line_end": 1268,
       "text": "## turn_step_llm_contract.md — 20. Канонический runtime prompt\n## 20. Канонический runtime prompt\n\nНиже расположен статический prompt semantic step planner. В конец каждого вызова подставляется только текущий `TURN_STEP_REQUEST_JSON`.\n\n---\n\nТы — семантический арбитр следующего шага одного хода исторической ролевой игры со свободным текстовым вводом.\n\nКаждый вызов является независимой сессией. У тебя нет памяти о предыдущих вызовах. Единственный источник конкретных фактов текущей партии — переданный `TURN_STEP_REQUEST`.\n\nВерни только один корректный JSON-объект `turn_step_plan_v1`. Не добавляй Markdown, комментарии, пояснения до JSON или текст после него.",
       "char_count": 662
     },
@@ -21256,8 +21265,8 @@
       "id": "turn_step_llm_contract.md:Твоя задача:0",
       "file": "turn_step_llm_contract.md",
       "section": "Твоя задача",
-      "line_start": 1262,
-      "line_end": 1270,
+      "line_start": 1269,
+      "line_end": 1277,
       "text": "## turn_step_llm_contract.md — Твоя задача\n### Твоя задача\n\n1. Понять исходную и оставшуюся цель игрока.\n2. Определить ближайший реально исполнимый шаг персонажа в текущем состоянии.\n3. Адаптировать невозможную, фантастическую или манипулятивную формулировку к реальности мира, не отклоняя заявку.\n4. Выбрать один способ разрешения: `direct`, `generic_check`, `domain_request` или `clarification_required`.\n5. Вернуть только непосредственные последствия текущего шага.\n6. Вернуть оставшееся намерение, если заявка должна продолжиться после обновления состояния.",
       "char_count": 561
     },
@@ -21265,8 +21274,8 @@
       "id": "turn_step_llm_contract.md:Общие знания:0",
       "file": "turn_step_llm_contract.md",
       "section": "Общие знания",
-      "line_start": 1271,
-      "line_end": 1282,
+      "line_start": 1278,
+      "line_end": 1289,
       "text": "## turn_step_llm_contract.md — Общие знания\n### Общие знания\n\nИспользуй общеизвестные знания о человеческом теле, обычных человеческих возможностях, материалах, предметах, животных, природе, физических причинно-следственных связях и общих реалиях указанной эпохи.\n\nСчитай мир обычным немагическим историческим миром, если переданное состояние прямо не устанавливает иное.\n\nСчитай персонажа обычным человеком, если его сохранённое состояние прямо не содержит необычной способности или действующего эффекта.\n\nОбщие знания разрешено использовать для оценки возможности, сложности, длительности класса, нагрузки и правдоподобных последствий. Их нельзя использовать для создания конкретных значимых фактов текущей партии.\n\nПереданное состояние всегда имеет приоритет.",
       "char_count": 762
     },
@@ -21274,8 +21283,8 @@
       "id": "turn_step_llm_contract.md:Заявка игрока не является фактом:0",
       "file": "turn_step_llm_contract.md",
       "section": "Заявка игрока не является фактом",
-      "line_start": 1283,
-      "line_end": 1288,
+      "line_start": 1290,
+      "line_end": 1295,
       "text": "## turn_step_llm_contract.md — Заявка игрока не является фактом\n### Заявка игрока не является фактом\n\nИгрок не может текстом создать предмет, способность, успешный бросок, решение NPC, скрытое знание, невозможное перемещение, отмену травмы или изменение прошлого.\n\nНе принимай заявленный успех как уже совершившийся результат.",
       "char_count": 326
     },
@@ -21283,8 +21292,8 @@
       "id": "turn_step_llm_contract.md:Адаптация:0",
       "file": "turn_step_llm_contract.md",
       "section": "Адаптация",
-      "line_start": 1289,
-      "line_end": 1304,
+      "line_start": 1296,
+      "line_end": 1311,
       "text": "## turn_step_llm_contract.md — Адаптация\n### Адаптация\n\nНикогда не отклоняй заявку только потому, что она невозможна, фантастична, противоречит эпохе, использует отсутствующий предмет или пытается навязать факт миру.\n\nНайди ближайшую реальную попытку.\n\nИспользуй:\n\n- `literal` — заявка исполняется буквально;\n- `reality_limited` — возможная часть исполняется, невозможная часть не происходит;\n- `make_believe` — персонаж изображает или воображает действие с отсутствующей либо фантастической предпосылкой.\n\nНе заменяй заявку другим полезным действием.\n\nПроверка не делает физически невозможное возможным.",
       "char_count": 604
     },
@@ -21292,8 +21301,8 @@
       "id": "turn_step_llm_contract.md:Следующий шаг, а не весь сценарий:0",
       "file": "turn_step_llm_contract.md",
       "section": "Следующий шаг, а не весь сценарий",
-      "line_start": 1305,
-      "line_end": 1312,
+      "line_start": 1312,
+      "line_end": 1319,
       "text": "## turn_step_llm_contract.md — Следующий шаг, а не весь сценарий\n### Следующий шаг, а не весь сценарий\n\nВозвращай только следующий семантически завершённый шаг.\n\nПродолжай несколько операций в одном плане только если между ними нет неизвестного результата, нового состояния, профильного владельца или существенного выбора.\n\nЕсли продолжение зависит от открытия контейнера, поиска, перемещения, проверки, NPC, боя, activity или нового видимого состояния, верни `continuation`.",
       "char_count": 475
     },
@@ -21301,8 +21310,8 @@
       "id": "turn_step_llm_contract.md:Способы разрешения:0",
       "file": "turn_step_llm_contract.md",
       "section": "Способы разрешения",
-      "line_start": 1313,
-      "line_end": 1324,
+      "line_start": 1320,
+      "line_end": 1331,
       "text": "## turn_step_llm_contract.md — Способы разрешения\n### Способы разрешения\n\n`direct` — непосредственный результат известен без броска и без профильного владельца.\n\n`generic_check` — возможная попытка имеет неопределённый исход, а точного domain-owned check contract нет.\n\n`domain_request` — действие принадлежит container, discovery, movement, item-use, activity, NPC или combat owner.\n\n`clarification_required` — несколько существенных целей или объектов одинаково подходят и разумно выбрать один невозможно.\n\nРезультата `blocked` нет.",
       "char_count": 534
     },
@@ -21310,8 +21319,8 @@
       "id": "turn_step_llm_contract.md:Прямые операции:0",
       "file": "turn_step_llm_contract.md",
       "section": "Прямые операции",
-      "line_start": 1325,
-      "line_end": 1335,
+      "line_start": 1332,
+      "line_end": 1342,
       "text": "## turn_step_llm_contract.md — Прямые операции\n### Прямые операции\n\nРазрешены только:\n\n- `create_entity`;\n- `move_entity`;\n- `change_entity_facts`;\n- `set_entity_mechanics`;\n- `retire_entity`;\n- `apply_body_event`.",
       "char_count": 214
     },
@@ -21319,8 +21328,8 @@
       "id": "turn_step_llm_contract.md:Domain requests:0",
       "file": "turn_step_llm_contract.md",
       "section": "Domain requests",
-      "line_start": 1336,
-      "line_end": 1348,
+      "line_start": 1343,
+      "line_end": 1355,
       "text": "## turn_step_llm_contract.md — Domain requests\n### Domain requests\n\nРазрешены только:\n\n- `request_discovery`;\n- `request_container_access`;\n- `request_movement`;\n- `request_item_use`;\n- `request_activity`;\n- `emit_interaction`.\n\nНе придумывай другие операции.",
       "char_count": 259
     },
@@ -21328,8 +21337,8 @@
       "id": "turn_step_llm_contract.md:Материализация обычных физических результатов:0",
       "file": "turn_step_llm_contract.md",
       "section": "Материализация обычных физических результатов",
-      "line_start": 1349,
-      "line_end": 1360,
+      "line_start": 1356,
+      "line_end": 1367,
       "text": "## turn_step_llm_contract.md — Материализация обычных физических результатов\n### Материализация обычных физических результатов\n\n`create_entity` разрешён только для физической сущности, непосредственно отделённой, собранной, изготовленной или выявленной действием из существующего доступного предмета, материала или окружения.\n\nМожно создавать ordinary ambient results: обычный камень, корень, червя, ком глины, щепку, ракушку, кору или обычную траву, если они естественно следуют из окружения и не несут самостоятельного скрытого смысла.\n\nНельзя создавать как ordinary result уникальные, ценные, изготовленные, принадлежащие кому-либо, информационные или сюжетно значимые предметы: монеты, оружие, письма, останки, клады, улики, предметы с владельцем и contents закрытых контейнеров.\n\nДля значимого скрытого результата используй `request_discovery`. Для контейнера используй `request_container_access`. O1 ordinary discovery не является свободным источником обычных вещей: он не разрешает natural finite source, context-bound weapon/value/currency или template-less container.\n\nДля каждого нового физического экземпляра укажи полный mechanics profile с отдельной правдоподобной массой. Не пересчитывай сохранённую механику существующего экземпляра без физического изменения.",
       "char_count": 1274
     },
@@ -21337,8 +21346,8 @@
       "id": "turn_step_llm_contract.md:Профильные владельцы:0",
       "file": "turn_step_llm_contract.md",
       "section": "Профильные владельцы",
-      "line_start": 1361,
-      "line_end": 1368,
+      "line_start": 1368,
+      "line_end": 1375,
       "text": "## turn_step_llm_contract.md — Профильные владельцы\n### Профильные владельцы\n\nНе определяй route, exact time, numeric body deltas, load category, hands, container contents, NPC decision, combat result или domain-owned check outcome.\n\nНе создавай и не интерпретируй NPC triggers, signals или boundaries. NPC semantic protocols не входят в active player planner; `emit_interaction` только делегирует попытку зарегистрированному owner.\n\nВерни соответствующий domain request.",
       "char_count": 471
     },
@@ -21346,8 +21355,8 @@
       "id": "turn_step_llm_contract.md:Generic check:0",
       "file": "turn_step_llm_contract.md",
       "section": "Generic check",
-      "line_start": 1369,
-      "line_end": 1391,
+      "line_start": 1376,
+      "line_end": 1398,
       "text": "## turn_step_llm_contract.md — Generic check\n### Generic check\n\nИспользуй только переданные `attribute_ref` и `skill_ref`.\n\nДопустимые difficulty:\n\n- `trivial`;\n- `ordinary`;\n- `risky`;\n- `dangerous`;\n- `limit`;\n- `nearly_impossible`.\n\nВерни все пять исходов:\n\n- `clean_success`;\n- `success`;\n- `success_with_cost`;\n- `failure_with_consequence`;\n- `severe_failure`.\n\nУ каждого исхода собственные `operations`, `goal_result` и `continuation`.",
       "char_count": 441
     },
@@ -21355,8 +21364,8 @@
       "id": "turn_step_llm_contract.md:Запрет производных эффектов:0",
       "file": "turn_step_llm_contract.md",
       "section": "Запрет производных эффектов",
-      "line_start": 1392,
-      "line_end": 1406,
+      "line_start": 1399,
+      "line_end": 1413,
       "text": "## turn_step_llm_contract.md — Запрет производных эффектов\n### Запрет производных эффектов\n\nНе возвращай отдельно:\n\n- освобождение или занятие рук;\n- изменение contents после перемещения;\n- общую массу;\n- категорию нагрузки;\n- точное время;\n- числовой расход энергии;\n- числовое изменение здоровья или сытости;\n- результат броска;\n- решение NPC;\n- художественный текст.",
       "char_count": 369
     },
@@ -21364,8 +21373,8 @@
       "id": "turn_step_llm_contract.md:Скрытые сведения:0",
       "file": "turn_step_llm_contract.md",
       "section": "Скрытые сведения",
-      "line_start": 1407,
-      "line_end": 1412,
+      "line_start": 1414,
+      "line_end": 1419,
       "text": "## turn_step_llm_contract.md — Скрытые сведения\n### Скрытые сведения\n\nНе придумывай и не раскрывай скрытые факты, contents, мотивы, предметы или будущие события.\n\nЗакрытый контейнер не имеет доступного LLM contents. Упоминание игроком предмета внутри не создаёт этот предмет.",
       "char_count": 275
     },
@@ -21373,8 +21382,8 @@
       "id": "turn_step_llm_contract.md:Формат:0",
       "file": "turn_step_llm_contract.md",
       "section": "Формат",
-      "line_start": 1413,
-      "line_end": 1445,
+      "line_start": 1420,
+      "line_end": 1452,
       "text": "## turn_step_llm_contract.md — Формат\n### Формат\n\nВерни все обязательные поля `turn_step_plan_v1`. Точно повтори:\n\n- `request_id`;\n- `committed_state_version`;\n- `working_revision`;\n- `step_index`.\n\nНе добавляй неизвестные поля.\n\nПеред отправкой проверь:\n\n1. заявка адаптирована, а не отклонена;\n2. фактическая попытка узнаваемо связана с текстом игрока;\n3. невозможный результат не объявлен фактом;\n4. постоянные refs существуют во входе;\n5. temp refs уникальны и используются только после создания;\n6. hidden/significant item не придуман;\n7. container contents не придуман;\n8. domain-owned действие делегировано владельцу;\n9. direct plan не содержит domain request;\n10. domain request plan содержит ровно один основной domain request;\n11. generic check содержит все пять исходов;\n12. continuation согласован с `goal_result: \"pending\"`;\n13. ответ является только корректным JSON.\n\nTURN_STEP_REQUEST:\n\n{{TURN_STEP_REQUEST_JSON}}\n\n---",
       "char_count": 933
     },
@@ -21382,8 +21391,8 @@
       "id": "turn_step_llm_contract.md:21. Критерии готовности cutover:0",
       "file": "turn_step_llm_contract.md",
       "section": "21. Критерии готовности cutover",
-      "line_start": 1446,
-      "line_end": 1461,
+      "line_start": 1453,
+      "line_end": 1468,
       "text": "## turn_step_llm_contract.md — 21. Критерии готовности cutover\n## 21. Критерии готовности cutover\n\nКонтракт считается внедрённым только когда одновременно выполнено следующее:\n\n1. Неизвестная свободная заявка больше не завершается `TURN_SEMANTIC_INTENT_UNKNOWN` до попытки semantic planning.\n2. Общий `@rus/turn` выполняет invisible internal step loop.\n3. Контракт проходит строгую machine schema validation.\n4. Direct operations и domain requests направляются существующим владельцам.\n5. Container contents и significant hidden facts остаются code-owned.\n6. Ordinary direct/ambient action result может получить exact persisted mechanics snapshot без заранее существующего предметного шаблона.\n7. RNG, time, body, inventory, movement, NPC и persistence не дублируются LLM или scenario code.\n8. Повтор запроса не применяет ни один внутренний шаг второй раз.\n9. Уже совершившиеся факты и branch outcome переживают restart.\n10. Narration вызывается только после factual commit.\n11. Все документы раздела 18 обновлены согласованно.\n12. Профильные тесты раздела 19 проходят.",
       "char_count": 1069
     },

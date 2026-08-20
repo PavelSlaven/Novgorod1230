@@ -74,7 +74,6 @@ export function createActionProducedAtomicWritePlan(rawInput) {
   validatePlan(plan);
   return deepFreeze(plan);
 }
-
 function deriveSourceUpdates(proposal, sourcePins) {
   return proposal.source_transitions.flatMap((transition) => {
     const pin = sourcePins.find(({ item_id: id }) =>
@@ -93,17 +92,21 @@ function deriveSourceUpdates(proposal, sourcePins) {
       ? proposal.results[0] : null;
     const survivingPartition = proposal.identity_mode === 'independent_outputs'
       && transition.after.mechanics_snapshot !== null && !retireSource;
+    const descriptor = proposal.qualitative_result.result_descriptor;
+    const sourceDelta = survivingPartition ? descriptor.source_fact_delta : null;
     const semanticFacts = preservedResult === null && !survivingPartition
       ? null
       : mergeActionProducedPhysicalFacts({ entity_ref: pin.item_id,
         action_ref: proposal.causal_identity.action_ref,
         existing: pin.item.state?.ordinary_metadata?.semantic_facts ?? [],
-        physical_description: proposal.qualitative_result.result_descriptor
-          .physical_description,
-        physical_facts: preservedResult?.physical_facts
-          ?? proposal.qualitative_result.result_descriptor.qualitative_facts,
-        removed_fact_refs: proposal.qualitative_result.result_descriptor
-          .removed_physical_fact_refs ?? [],
+        physical_description: sourceDelta === null
+          ? descriptor.physical_description : sourceDelta.physical_description,
+        physical_facts: sourceDelta === null
+          ? preservedResult?.physical_facts ?? descriptor.qualitative_facts
+          : sourceDelta.qualitative_facts,
+        removed_fact_refs: sourceDelta === null
+          ? descriptor.removed_physical_fact_refs ?? []
+          : sourceDelta.removed_physical_fact_refs,
         inscription_text: preservedResult?.inscription_text ?? null });
     const nextState = {
       ...(pin.item.state ?? {}),
@@ -145,13 +148,11 @@ function deriveSourceUpdates(proposal, sourcePins) {
     }];
   });
 }
-
 export function actionProducedPhysicalKeys(plan) {
   if (plan == null) return [];
   return actionProducedPhysicalKeysForPlan(
     createActionProducedAtomicWritePlan(plan));
 }
-
 export function validActionProductionExtension(plan) {
   const actions = plan.action_production_atomic_write_plans ?? [];
   if (!Array.isArray(actions) || actions.length > 8) return false;
@@ -182,7 +183,6 @@ export function validActionProductionExtension(plan) {
       });
   } catch { return false; }
 }
-
 function preparedPinMatches(pin, ordinary, priorPlans) {
   if (pin.prepared_ordinary != null) {
     return ordinary?.request_identity === pin.prepared_ordinary.request_identity

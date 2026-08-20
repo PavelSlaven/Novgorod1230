@@ -218,6 +218,8 @@ currency/official status или combat numbers. Independent output требуе�
 непустое safe display name; nullable physical description не создаёт `null`
 fact. Для partial independent output sole plan задаёт только grounded
 `material_extent = minor|half|major`; full partition использует `whole`.
+Output descriptor относится только к новым entities, а обязательный
+`source_fact_delta` задаёт отдельное current-fact изменение surviving source.
 Preserve с одним source использует `null`, а с дополнительными расходуемыми
 materials — grounded `minor|half|major|whole`. Числовую долю и exact mechanics
 выводит item owner. Persisted non-authoritative physical facts входят в
@@ -228,6 +230,8 @@ materials — grounded `minor|half|major|whole`. Числовую долю и ex
 стирания/замены по видимому `fact_ref`. `physical_form` сообщает только
 качественную форму `compact|regular|long|bulky`; числовые hands/carry/packing
 по ней и exact mass выводит item owner. Combat classes в A1 contract нет.
+`domain_request` A1 содержит ровно одну operation: direct preparation в том же
+step запрещена, потому что A1 не имеет prepared-direct overlay.
 
 ## Тесты
 

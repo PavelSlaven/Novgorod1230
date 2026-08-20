@@ -21,7 +21,7 @@ const QUALITATIVE_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text', 'physical_form'
+  'inscription_text', 'physical_form', 'source_fact_delta'
 ];
 
 export function validateActionProducedProposalResults(proposal, sourcePins) {
@@ -87,8 +87,30 @@ function validQualitative(value, proposal) {
     && (descriptor.physical_form === null
       || ['compact', 'regular', 'long', 'bulky'].includes(
         descriptor.physical_form))
+    && validSourceFactDelta(descriptor.source_fact_delta,
+      proposal.identity_mode === 'independent_outputs'
+        && proposal.result_class === 'partial_transformation')
     && validateActionProducedOutputClass(value.output_class,
       proposal.result_class, proposal.identity_mode);
+}
+
+function validSourceFactDelta(value, required) {
+  if (value === null) return !required;
+  return required && exact(value, [
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs'
+  ]) && (value.physical_description === null
+      || text(value.physical_description))
+    && Array.isArray(value.qualitative_facts)
+    && value.qualitative_facts.every(text)
+    && new Set(value.qualitative_facts).size === value.qualitative_facts.length
+    && Array.isArray(value.removed_physical_fact_refs)
+    && value.removed_physical_fact_refs.every(text)
+    && new Set(value.removed_physical_fact_refs).size
+      === value.removed_physical_fact_refs.length
+    && (value.physical_description !== null
+      || value.qualitative_facts.length > 0
+      || value.removed_physical_fact_refs.length > 0);
 }
 
 function descriptorKeys(value) {

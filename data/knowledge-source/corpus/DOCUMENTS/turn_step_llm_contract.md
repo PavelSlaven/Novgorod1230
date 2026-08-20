@@ -832,7 +832,8 @@ LLM не перечисляет contents до их появления в player-
       "qualitative_facts": [],
       "removed_physical_fact_refs": [],
       "inscription_text": null,
-      "physical_form": "compact | regular | long | bulky | null"
+      "physical_form": "compact | regular | long | bulky | null",
+      "source_fact_delta": null
     },
     "output_class": "ordinary_mundane | weapon_capable | money_like_token | written_carrier | null"
   }
@@ -863,6 +864,9 @@ finite source уменьшается, а полностью разделённы
 resource row retire-ится. Для partial independent output sole plan задаёт только
 grounded qualitative `material_extent = minor|half|major`; item owner переводит
 его в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.
+Output descriptor описывает только новые entities; обязательный
+`source_fact_delta = { physical_description, qualitative_facts,
+removed_physical_fact_refs }` отдельно меняет current facts surviving source.
 Full independent partition использует `whole`, preserve/no-result — `null`.
 Масса полного partition сохраняется с детерминированным остатком,
 hand/packing/carry выводятся code-owned из exact mass и qualitative
@@ -874,7 +878,10 @@ physical facts видны следующему internal step и после reloa
 как durable physical fact до explicit удаления/замены по видимому `fact_ref`;
 surviving source partial partition получает обновлённые current facts в том же
 P16. `weapon_capable` здесь не содержит combat class/damage: combat owner
-bounded-классифицирует текущее физическое состояние только при combat use.
+bounded-классифицирует любой held A1 item без exact weapon mechanics по текущим
+facts/form только при combat use и может вернуть `not_weapon_capable`; последний
+A1 `output_class` не является combat gate. A1 `domain_request` содержит ровно
+одну operation и не допускает direct preparation в том же step.
 Один combined P16 сохраняет causal pins, conservation и physical transition
 атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 

@@ -1,6 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 
 export const ACTION_PRODUCED_WEAPON_CLASSES = Object.freeze([
+  'not_weapon_capable',
   'improvised_puncture_light',
   'improvised_impact_light',
   'improvised_cutting_light',
@@ -8,6 +9,7 @@ export const ACTION_PRODUCED_WEAPON_CLASSES = Object.freeze([
 ]);
 
 const dangerByClass = new Map([
+  ['not_weapon_capable', 0],
   ['improvised_puncture_light', 1],
   ['improvised_impact_light', 1],
   ['improvised_cutting_light', 1],

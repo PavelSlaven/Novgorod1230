@@ -24,7 +24,7 @@ const QUALITATIVE_KEYS = [
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
-  'inscription_text', 'physical_form'
+  'inscription_text', 'physical_form', 'source_fact_delta'
 ];
 const RESULT_KEYS = [
   'entity_ref', 'identity_kind', 'source_ref', 'mechanics_snapshot',
@@ -219,7 +219,22 @@ function validQualitative(value, proposal) {
       || textArray(value.result_descriptor.removed_physical_fact_refs)
         && (proposal.identity_mode === 'preserve_source'
           || value.result_descriptor.removed_physical_fact_refs.length === 0))
-    && nullableText(value.result_descriptor.inscription_text);
+    && nullableText(value.result_descriptor.inscription_text)
+    && validSourceFactDelta(value.result_descriptor.source_fact_delta,
+      proposal.identity_mode === 'independent_outputs'
+        && proposal.result_class === 'partial_transformation');
+}
+function validSourceFactDelta(value, required) {
+  if (value === null) return !required;
+  return required && exact(value, [
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs'
+  ]) && nullableText(value.physical_description)
+    && textArray(value.qualitative_facts)
+    && textArray(value.removed_physical_fact_refs)
+    && (value.physical_description !== null
+      || value.qualitative_facts.length > 0
+      || value.removed_physical_fact_refs.length > 0);
 }
 function descriptorKeys(value) {
   const keys = [...DESCRIPTOR_KEYS];

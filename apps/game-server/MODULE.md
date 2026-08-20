@@ -147,8 +147,10 @@ removal/replacement. Multiple causal A1 steps run in order over the shared
 working projection and commit in one combined P16. Item mechanics, conservation,
 identity and placement remain code-owned. Qualitative physical form is mapped
 with exact mass to hands/carry/packing by the item owner. Weapon combat class is
-ephemeral and belongs only to the combat boundary; A1 state stores no class or
-damage. Uncertain actions reuse one generic check and semantic activity/time
+ephemeral and belongs only to the combat boundary; every held A1 item without
+exact weapon mechanics is classified from current facts/form, including a
+closed not-weapon result, regardless of the last A1 output class. A1 state
+stores no combat class or damage. Uncertain actions reuse one generic check and semantic activity/time
 resolution from turn owners; deterministic actions use `domain_request` without
 RNG but still apply one ordinary semantic activity/time cost after a real
 physical attempt. The same combined P16 write set contains the full turn snapshot,

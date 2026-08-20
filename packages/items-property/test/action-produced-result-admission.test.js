@@ -48,7 +48,7 @@ function proposal(overrides = {}) {
       display_name: 'заострённая жердь',
       physical_description: 'один конец жерди физически заострён',
       qualitative_facts: ['один конец заострён'], inscription_text: null,
-      physical_form: 'long' },
+      physical_form: 'long', source_fact_delta: null },
     output_class: 'ordinary_mundane',
     ...overrides };
 }
@@ -89,14 +89,15 @@ test('independent, impossible no-result and writing remain qualitative', () => {
     result_descriptor: { display_name: 'деревянные клинья',
       physical_description: 'отделённые деревянные клинья',
       qualitative_facts: [], inscription_text: null,
-      physical_form: 'compact' } });
+      physical_form: 'compact', source_fact_delta: null } });
   const noResult = proposal({ identity_mode: 'no_useful_result', origin: null,
     intended_transformation:
       'make a self-moving precision mechanism from one wooden pole',
     output_class: null,
     result_class: 'no_useful_result', result_descriptor: {
       display_name: null, physical_description: null,
-      qualitative_facts: [], inscription_text: null, physical_form: null } });
+      qualitative_facts: [], inscription_text: null, physical_form: null,
+      source_fact_delta: null } });
   const writing = proposal({ source_refs: ['item:bark'],
     tool_refs: ['item:charcoal'], result_class: 'written_carrier',
     output_class: 'written_carrier',
@@ -104,7 +105,8 @@ test('independent, impossible no-result and writing remain qualitative', () => {
       display_name: 'кора с надписью',
       physical_description: 'на коре есть физическая надпись',
       qualitative_facts: ['носитель имеет рукописную надпись'],
-      inscription_text: 'Жду у переправы.', physical_form: null } });
+      inscription_text: 'Жду у переправы.', physical_form: null,
+      source_fact_delta: null } });
   for (const value of [independent, noResult, writing]) {
     assert.equal(admitActionProducedResult(input(value)).pass, true);
   }
@@ -122,7 +124,8 @@ test('physical weapon-like and token-like labels cannot assert authority', () =>
     assert.equal(admitActionProducedResult(input(proposal({
       result_descriptor: { display_name,
         physical_description: 'обычная физическая форма без статуса',
-        qualitative_facts: [], inscription_text: null, physical_form: 'long' }
+        qualitative_facts: [], inscription_text: null, physical_form: 'long',
+        source_fact_delta: null }
     }))).pass, true);
   }
   for (const forbidden of [

@@ -51,7 +51,22 @@ export function validActionProducedQualitativeResult(value, {
       || refs(descriptor.removed_physical_fact_refs)
         && (identityMode === 'preserve_source'
           || descriptor.removed_physical_fact_refs.length === 0))
-    && nullableText(descriptor.inscription_text);
+    && nullableText(descriptor.inscription_text)
+    && validSourceFactDelta(descriptor.source_fact_delta,
+      identityMode === 'independent_outputs'
+        && resultClass === 'partial_transformation');
+}
+
+function validSourceFactDelta(value, required) {
+  if (value === null) return !required;
+  return required && exact(value, [
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs'
+  ]) && nullableText(value.physical_description)
+    && refs(value.qualitative_facts) && refs(value.removed_physical_fact_refs)
+    && (value.physical_description !== null
+      || value.qualitative_facts.length > 0
+      || value.removed_physical_fact_refs.length > 0);
 }
 
 function validMaterialExtent(value, identityMode, resultClass, sourceCount) {
@@ -65,7 +80,7 @@ function validMaterialExtent(value, identityMode, resultClass, sourceCount) {
 
 function descriptorKeys(value) {
   const keys = ['display_name', 'physical_description', 'qualitative_facts',
-    'inscription_text', 'physical_form'];
+    'inscription_text', 'physical_form', 'source_fact_delta'];
   if (value != null && Object.hasOwn(value, 'removed_physical_fact_refs')) {
     keys.push('removed_physical_fact_refs');
   }

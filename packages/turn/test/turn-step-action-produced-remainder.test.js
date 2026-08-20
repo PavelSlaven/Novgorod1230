@@ -541,7 +541,8 @@ function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
           physical_description: 'Жердь физически обработана.',
           qualitative_facts: ['на конце жерди видны свежие срезы'],
           removed_physical_fact_refs: [],
-          inscription_text: null, physical_form: 'long' },
+          inscription_text: null, physical_form: 'long',
+          source_fact_delta: null },
         output_class: 'ordinary_mundane'
       } })
   };

@@ -22,6 +22,8 @@ test('combat-owned qualitative classes map to exact weapon danger', () => {
       weaponDanger);
     assert.equal(result.request_id, 'combat-weapon:1');
   }
+  assert.deepEqual(resolveActionProducedCombatWeaponClass(
+    request('not_weapon_capable')).formal_mechanics, { weapon_danger: 0 });
   assert.equal(Object.isFrozen(ACTION_PRODUCED_WEAPON_CLASSES), true);
 });
 

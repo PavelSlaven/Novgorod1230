@@ -15,6 +15,7 @@ export function createLowerDvinaTraceActionProducedWeaponClassifier({
     messages: [{ role: 'system', content: [
       'Classify the supplied current physical item for this combat only.',
       'Choose exactly one allowed qualitative_class.',
+      'Choose not_weapon_capable when current facts do not support a weapon.',
       'Return only schema, request_id and qualitative_class.',
       'Never return damage, weapon_danger, identity, facts, or mechanics.'
     ].join(' ') }, { role: 'user', content: JSON.stringify(request) }],
@@ -114,7 +115,8 @@ function heldWeaponSnapshots(items, actorRef) {
       ?? item.state?.weapon_mechanics_snapshot;
     if (snapshot != null) return { kind: 'ordinary', snapshot,
       condition: item.state?.condition_state ?? item.condition_state, item };
-    return item.state?.action_production?.output_class === 'weapon_capable'
+    return item.state?.action_production?.schema
+        === 'rus.items.action_production_item_state.v1'
       ? { kind: 'action_produced',
           condition: item.state?.condition_state ?? item.condition_state,
           item }

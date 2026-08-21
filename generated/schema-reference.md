@@ -197,6 +197,12 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/019_party_runtime_combat_sessions.sql` | sql | 2833 | `d816eeab68afc3bb5bb8486b5d8d9c03f5861756c58de91807de020f27c682a7` |
 | `schemas/party-db/020_party_runtime_actor_equipment.sql` | sql | 3516 | `885e37576265633867b8100d841b74f21e5e2fb4495adf34fb0d1a47f400d741` |
 | `schemas/party-db/021_party_runtime_ordinary_materialization.sql` | sql | 679 | `1ca6fc28b89d475d64766fb7e70c6a2013aaf062717ded1543bbb7a467e9ec2e` |
+| `schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql` | sql | 8281 | `674c4dc998ff1191f5c89b81de33be508a8ae954b3a9de94a719f4e3493259e9` |
+| `schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql` | sql | 1231 | `7b288909880e472a72c59bf74f8a4a169272e3adab7dfb3b0e15d29698b6f949` |
+| `schemas/party-db/024_party_runtime_ordinary_world_items.sql` | sql | 5348 | `f7592aa2599b93e15f4e8004405bff65053e972e6cc7139c2815ae1b8877f177` |
+| `schemas/party-db/025_party_runtime_finite_resource_transitions.sql` | sql | 10446 | `202370f150359de58d1da68d27db7ea104e71c306a160ff257fb03e9160c4846` |
+| `schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql` | sql | 18261 | `0a992319808bb09c8633ec322a464b142b2c0e0eca6e93d0618486c9db14c99d` |
+| `schemas/party-db/027_party_runtime_action_production.sql` | sql | 894 | `61b46a84bb664ab5552db3fc209a4ad4b1e4f5b5ac806467e8bcd5c3177f81cd` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

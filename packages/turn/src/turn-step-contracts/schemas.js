@@ -34,6 +34,49 @@ const jsonDataDefinitions = {
   }
 };
 
+const ACTION_PRODUCTION_FIELDS = [
+  'source_refs', 'tool_refs', 'requested_output_count', 'identity_mode', 'origin',
+  'result_class', 'material_extent', 'result_descriptor', 'output_class'
+];
+const ACTION_PRODUCTION_PROPERTIES = {
+  source_refs: { type: 'array', minItems: 1, uniqueItems: true,
+    items: refSchema },
+  tool_refs: { type: 'array', uniqueItems: true, items: refSchema },
+  requested_output_count: { anyOf: [
+    { type: 'null' }, { type: 'integer', minimum: 1, maximum: 8 }
+  ] },
+  identity_mode: { enum: [
+    'preserve_source', 'independent_outputs', 'no_useful_result'
+  ] },
+  origin: { anyOf: [{ type: 'null' }, {
+    enum: ['direct_partition', 'crafted']
+  }] },
+  result_class: { enum: [
+    'ordinary_physical_result', 'partial_transformation',
+    'nonworking_construction', 'waste', 'written_carrier',
+    'no_useful_result'
+  ] },
+  material_extent: { anyOf: [{ type: 'null' }, { enum: [
+    'minor', 'half', 'major', 'whole'
+  ] }] },
+  result_descriptor: { $ref: '#/$defs/action_production_descriptor' },
+  output_class: { anyOf: [{ type: 'null' }, { enum: [
+    'ordinary_mundane', 'weapon_capable', 'money_like_token',
+    'written_carrier'
+  ] }] }
+};
+
+function actionProductionSchema(identityMode, requestedCount, descriptorRef) {
+  return strictObject(ACTION_PRODUCTION_FIELDS, {
+    ...ACTION_PRODUCTION_PROPERTIES,
+    identity_mode: { const: identityMode },
+    requested_output_count: requestedCount,
+    ...(descriptorRef == null ? {} : {
+      result_descriptor: { $ref: descriptorRef }
+    })
+  });
+}
+
 export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema',
   $id: 'urn:rus:turn:turn_step_request_v1',
@@ -224,7 +267,69 @@ const planDefinitions = {
     target_ref: refSchema,
     movement_kind: { enum: ['local', 'route', 'long_course'] }
   }),
-  request_item_use: strictObject([
+  action_production_descriptor: strictObject([
+    'display_name', 'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form',
+    'source_fact_delta'
+  ], {
+    display_name: { anyOf: [{ type: 'null' }, textSchema] },
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
+    },
+    inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
+    physical_form: { anyOf: [{ type: 'null' }, { enum: [
+      'compact', 'regular', 'long', 'bulky'
+    ] }] },
+    source_fact_delta: { anyOf: [{ type: 'null' }, {
+      $ref: '#/$defs/action_production_source_fact_delta'
+    }] }
+  }),
+  action_production_output_descriptor: strictObject([
+    'display_name', 'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs', 'inscription_text', 'physical_form',
+    'source_fact_delta'
+  ], {
+    display_name: textSchema,
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
+    },
+    inscription_text: { anyOf: [{ type: 'null' }, textSchema] },
+    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] },
+    source_fact_delta: { anyOf: [{ type: 'null' }, {
+      $ref: '#/$defs/action_production_source_fact_delta'
+    }] }
+  }),
+  action_production_source_fact_delta: strictObject([
+    'physical_description', 'qualitative_facts',
+    'removed_physical_fact_refs', 'physical_form'
+  ], {
+    physical_description: { anyOf: [{ type: 'null' }, textSchema] },
+    qualitative_facts: {
+      type: 'array', uniqueItems: true, items: textSchema
+    },
+    removed_physical_fact_refs: {
+      type: 'array', uniqueItems: true, items: refSchema
+    },
+    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] }
+  }),
+  action_production: { oneOf: [
+    actionProductionSchema('preserve_source', { const: null }),
+    actionProductionSchema('independent_outputs', {
+      anyOf: [{ type: 'null' }, {
+        type: 'integer', minimum: 1, maximum: 8
+      }]
+    }, '#/$defs/action_production_output_descriptor'),
+    actionProductionSchema('no_useful_result', { const: null })
+  ] },
+  request_item_use_legacy: strictObject([
     'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'
   ], {
     op: { const: 'request_item_use' },
@@ -233,6 +338,21 @@ const planDefinitions = {
     use_kind: { enum: ['consume', 'apply', 'operate', 'equip', 'unequip', 'other'] },
     target_refs: { type: 'array', uniqueItems: true, items: refSchema }
   }),
+  request_item_use_action_production: strictObject([
+    'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs',
+    'action_production'
+  ], {
+    op: { const: 'request_item_use' }, actor_ref: refSchema,
+    item_ref: refSchema, use_kind: { const: 'other' },
+    target_refs: { type: 'array', uniqueItems: true, items: refSchema },
+    action_production: { $ref: '#/$defs/action_production' }
+  }),
+  request_item_use: {
+    oneOf: [
+      { $ref: '#/$defs/request_item_use_legacy' },
+      { $ref: '#/$defs/request_item_use_action_production' }
+    ]
+  },
   request_activity: strictObject([
     'op', 'actor_ref', 'activity_kind', 'target_refs', 'description'
   ], {

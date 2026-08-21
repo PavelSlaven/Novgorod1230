@@ -312,6 +312,9 @@ test('M1 rejects container access payload detached from its code owner', () => {
       envelope.mode_resolution.decision_trace.step_traces[0]]) {
       trace.resolution = 'domain_request';
       trace.approved_plan.resolution = 'domain_request';
+      trace.approved_plan.activity = {
+        owner: 'domain', duration_class: null, effort: null
+      };
     }
     bindCommitEnvelopeToBatch(envelope,
       { value: { operations: [operation] } });
@@ -333,6 +336,9 @@ test('M1 accepts only the exact canonical turn-step commit envelope', () => {
     envelope.mode_resolution.decision_trace.step_traces[0]]) {
     trace.resolution = 'domain_request';
     trace.approved_plan.resolution = 'domain_request';
+    trace.approved_plan.activity = {
+      owner: 'domain', duration_class: null, effort: null
+    };
   }
   bindCommitEnvelopeToBatch(envelope, { value: { operations: [operation] } });
   assert.doesNotThrow(() => prepare({ state: baseState(),

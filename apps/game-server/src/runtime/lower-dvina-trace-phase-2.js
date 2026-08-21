@@ -1,7 +1,5 @@
-import { canonicalDigest } from '@rus/materialization';
-import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
-import { serverError } from '../errors.js';
-import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { canonicalDigest } from '@rus/materialization'; import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
+import { serverError } from '../errors.js'; import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
@@ -22,15 +20,13 @@ import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js'; import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js'; import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js'; import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
 import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, requiredTraceTurnText, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
-import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
-import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
+import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-check.js'; import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js'; import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-refs.js'; export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
   turnStepModel = null,
   playerConversationModel = null,
-  npcSemanticModel = null,
-  npcAutonomousModel = null,
-  npcCombatModel = null,
+  npcSemanticModel = null, npcAutonomousModel = null,
+  npcCombatModel = null, actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
   randomSourceFactory,
@@ -39,6 +35,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
   turnStepBodyEventOwner = null,
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
+  turnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null, ordinaryDiscoveryEnablementMarker = null, createTurnStepAmbientOrdinaryPortionAdmission = null, requireTurnStepAmbientOrdinaryAdmission = false, createTurnStepActionProductionOwner = null, actionProductionProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) =>
@@ -117,16 +114,16 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         bundle,
         phase2Bundle
       });
-      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
+      const phase3Contracts = [9,10,11,12,13,14,15,16,17,18,19,20,21].includes(bundle.definition_revision)
         ? resolveTracePhase3Contracts({ state, bundle })
         : null;
-      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
+      const phase4Contracts = [10,11,12,13,14,15,16,17,18,19,20,21].includes(bundle.definition_revision)
         ? resolveTracePhase4Contracts({ state, bundle })
         : null;
-      const phase5Contracts = [11,12,13,14,15,16,17,18,19].includes(bundle.definition_revision)
+      const phase5Contracts = [11,12,13,14,15,16,17,18,19,20,21].includes(bundle.definition_revision)
         ? resolveTracePhase5Contracts({ state, bundle })
         : null;
-      const phase6Contracts = [12,13,14,15,16,17,18,19].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
+      const phase6Contracts = [12,13,14,15,16,17,18,19,20,21].includes(bundle.definition_revision) ? resolveTracePhase6Contracts({ bundle }) : null;
       const genericOwners = bundle.turn_step_owner_profiles
         ? createLowerDvinaTraceTurnStepGenericOwners({
             profiles: bundle.turn_step_owner_profiles,
@@ -135,7 +132,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         : null;
       const turnRandomSource = randomSourceFactory({ party_id: partyId,
         request_id: requestId, idempotency_key: idempotencyKey });
-      const phase7Contracts = [15,16,17,18,19].includes(bundle.definition_revision)
+      const phase7Contracts = [15,16,17,18,19,20,21].includes(bundle.definition_revision)
         ? resolveTracePhase7Contracts({ state, bundle }) : null;
       const revalidateStateVersion = createStateVersionRevalidator({ repository, partyId, idempotencyKey });
       const phase8 = createTracePhase8Runtime({ state, bundle,
@@ -146,7 +143,7 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
           phase3Contracts?.conversationBindings,
         inputDigest, playerConversationModel, npcSemanticModel,
         temporalAdvanceOwner, revalidateStateVersion }), phase9Contracts=phase9?.contracts??null;
-      const phase10Contracts = [18, 19].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+      const phase10Contracts = [18, 19, 20, 21].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
       const turn10 = createTraceTurn10Runtime({
         state, bundle, phase3Contracts, phase5Contracts, phase7Contracts,
         inputDigest, playerConversationModel, npcSemanticModel,
@@ -155,7 +152,8 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
       const turn10Contracts = turn10?.contracts ?? null;
       const combatCommand = createTraceCombatCommand({
         state, bundle, inputDigest, randomSource: turnRandomSource,
-        npcCombatModel, revalidateStateVersion, temporalAdvanceOwner
+        npcCombatModel, actionProducedWeaponClassifier,
+        revalidateStateVersion, temporalAdvanceOwner
       });
       const commands = [
         createTracePhase2InspectionCommand({ contracts, inputDigest }),
@@ -274,6 +272,10 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
         turnStepGenericCheckContextOwner:
           genericOwners?.genericCheckContextOwner,
         turnStepGenericBodyEffect: genericOwners?.bodyEffect,
+        turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker, createTurnStepActionProductionOwner: bundle.definition_revision === 21 ? createTurnStepActionProductionOwner : null, actionProductionProfile: bundle.definition_revision === 21 ? actionProductionProfile : null,
+        admitAmbientOrdinaryPortion: typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
+          ? createTurnStepAmbientOrdinaryPortionAdmission({ committedState: state }) : null,
+        requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
         turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
         turnStepApprovedOwners: genericOwners,
         turnStepPackingCalculator,
@@ -294,5 +296,4 @@ import { buildTracePhase2TargetRefs } from './lower-dvina-trace-phase-2-target-r
       };
       return executeTraceTurnWithAutonomousRetry(executeAttempt);
     }
-  });
-}
+  }); }

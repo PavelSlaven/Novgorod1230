@@ -1,0 +1,164 @@
+import { createOrdinaryMaterializationAtomicWritePlan } from
+  './ordinary-materialization-phase-6-commit.js';
+import { createActionProducedAtomicWritePlan } from
+  './action-produced-atomic-write-plan.js';
+import { ordinaryContainerRuntimeItemState } from
+  './ordinary-materialization-container-batch-item.js';
+import { failActionProducedPersistence as fail } from
+  './action-produced-persistence-boundary.js';
+
+export function actionProducedPreparedOrdinaryRows(input, requested) {
+  if (input.prepared_ordinary_plan == null) return new Map();
+  let plan;
+  try {
+    plan = createOrdinaryMaterializationAtomicWritePlan(
+      input.prepared_ordinary_plan);
+  } catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+  if (plan.schema !== 'ordinary_container_contents_atomic_write_plan_v2'
+      || plan.party_id !== input.party_id
+      || plan.expected_versions.party_state_version
+        !== input.expected_party_state_version) {
+    fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  }
+  const byId = new Map();
+  for (const item of plan.items) {
+    if (!requested.includes(item.item_id)) continue;
+    const evidence = item.item_proposal.property_placement_evidence;
+    const provenance = item.runtime_mechanics_snapshot.provenance;
+    if (evidence.owner_controller_ref !== input.actor_ref
+        || provenance.root_turn_id !== input.root_turn_id
+        || !Number.isSafeInteger(provenance.step_index)
+        || provenance.step_index >= input.step_index
+        || !plan.container_transition.revealed_refs.includes(item.item_id)) {
+      fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
+    }
+    byId.set(item.item_id, {
+      row: preparedRow(item, input),
+      preparedOrdinary: {
+        schema: 'action_production_prepared_ordinary_pin_v1',
+        request_identity: plan.request_identity,
+        root_turn_id: provenance.root_turn_id,
+        step_index: provenance.step_index
+      }
+    });
+  }
+  return byId;
+}
+
+export function actionProducedPreparedActionRows(input) {
+  const values = input.prepared_action_plans ?? [];
+  if (!Array.isArray(values)) fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+  const rows = new Map();
+  const retired = new Set();
+  let priorStep = 0;
+  for (const value of values) {
+    let plan;
+    try { plan = createActionProducedAtomicWritePlan(value); }
+    catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+    const causal = plan.transition_proposal.causal_identity;
+    if (plan.party_id !== input.party_id
+        || plan.base_party_state_version
+          !== input.expected_party_state_version
+        || plan.change_set_id !== input.change_set_id
+        || causal.root_turn_id !== input.root_turn_id
+        || causal.step_index <= priorStep
+        || causal.step_index >= input.step_index) {
+      fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+    }
+    priorStep = causal.step_index;
+    for (const update of plan.source_updates) {
+      const pin = plan.source_pins.find(({ item_id: id }) =>
+        id === update.item_id);
+      if (pin == null) fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID');
+      if (update.after_item.state?.lifecycle_status === 'retired') {
+        rows.delete(update.item_id);
+        retired.add(update.item_id);
+        continue;
+      }
+      retired.delete(update.item_id);
+      rows.set(update.item_id, preparedActionRow({
+        item: update.after_item,
+        placement: pin.placement,
+        ownership: pin.ownership,
+        finiteResourceRow: afterResourceRow(pin.finite_resource_row,
+          update.finite_resource_transition),
+        causal
+      }));
+    }
+    for (const result of plan.result_items) {
+      retired.delete(result.item_id);
+      rows.set(result.item_id, preparedActionRow({
+        item: { item_id: result.item_id, ...result.item_row },
+        placement: result.placement_row,
+        ownership: result.ownership_row,
+        finiteResourceRow: null,
+        causal
+      }));
+    }
+  }
+  return { rows, retired };
+}
+
+export function actionProducedDestinationAfterPreparedActions(pin, values) {
+  if (pin == null) return null;
+  const used = new Set(pin.used_item_ids);
+  for (const raw of values ?? []) {
+    let plan;
+    try { plan = createActionProducedAtomicWritePlan(raw); }
+    catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+    for (const update of plan.source_updates) {
+      if (update.after_item.state?.lifecycle_status === 'retired') {
+        used.delete(update.item_id);
+      }
+    }
+    for (const result of plan.result_items) {
+      if (result.placement_row.anchor_id === pin.anchor_id) {
+        used.add(result.item_id);
+      }
+    }
+  }
+  if (used.size > pin.item_capacity) {
+    fail('ACTION_PRODUCED_DESTINATION_INVALID');
+  }
+  return { ...pin, used_item_ids: [...used].sort() };
+}
+
+function preparedActionRow({ item, placement, ownership,
+  finiteResourceRow, causal }) {
+  return {
+    row: { ...structuredClone(item), ...structuredClone(placement),
+      ...structuredClone(ownership) },
+    finiteResourceRow: structuredClone(finiteResourceRow),
+    preparedAction: {
+      schema: 'action_production_prepared_action_pin_v1',
+      root_turn_id: causal.root_turn_id,
+      step_index: causal.step_index
+    }
+  };
+}
+
+function afterResourceRow(row, transition) {
+  if (transition == null) return row;
+  return { ...row,
+    quantity_numerator: transition.after_quantity.numerator,
+    quantity_denominator: transition.after_quantity.denominator,
+    lifecycle_state: transition.lifecycle_state_after,
+    state_version: transition.next_state_version };
+}
+
+function preparedRow(item, input) {
+  return {
+    item_id: item.item_id, run_id: null, template_id: null,
+    profile_id: null, category_id: null, quantity: 1,
+    condition_state: item.condition_state,
+    legal_status: 'ordinary_container_content',
+    state: ordinaryContainerRuntimeItemState(item, input.change_set_id),
+    state_version: 1, anchor_id: null, container_id: item.container_id,
+    holder_npc_id: null, holder_character_id: null,
+    physical_position: null, equipment_slot_category_id: null,
+    attached_item_id: null, ownership_id: `ownership:${item.item_id}`,
+    owner_npc_id: null, owner_character_id: input.actor_ref,
+    owner_party: false, controller_npc_id: null,
+    controller_character_id: input.actor_ref, claim_state: 'owned'
+  };
+}

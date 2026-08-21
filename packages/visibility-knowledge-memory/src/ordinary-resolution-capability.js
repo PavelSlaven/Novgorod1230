@@ -7,36 +7,28 @@ const MARKER = deepFreeze({
   })
 });
 
-/**
- * PR1's player-safe ordinary capability is intentionally unavailable.
- * The input is accepted only to reject malformed or future-enabled state;
- * no caller can obtain a true capability through this API.
- */
 export function projectPlayerSafeOrdinaryResolutionCapability(value = undefined) {
   if (value === undefined) return undefined;
-  if (!isDisabledMarker(value)) {
+  const marker = exactMarker(value);
+  if (marker == null) {
     throw new TypeError('ORDINARY_RESOLUTION_CAPABILITY_NOT_AVAILABLE');
   }
-  return deepFreeze({
-    ordinary_resolution: deepFreeze({
-      discovery_available: false,
-      container_resolution_available: false
-    })
-  });
+  return deepFreeze(structuredClone(marker));
 }
 
 export function createDisabledOrdinaryResolutionCapability() {
   return MARKER;
 }
 
-function isDisabledMarker(value) {
+function exactMarker(value) {
   const marker = plainDataRecord(value);
   if (!marker || Object.keys(marker).length !== 1
-    || !Object.hasOwn(marker, 'ordinary_resolution')) return false;
+    || !Object.hasOwn(marker, 'ordinary_resolution')) return null;
   const resolution = plainDataRecord(marker.ordinary_resolution);
-  return Boolean(resolution) && Object.keys(resolution).length === 2
-    && resolution.discovery_available === false
-    && resolution.container_resolution_available === false;
+  if (!resolution || Object.keys(resolution).length !== 2
+      || typeof resolution.discovery_available !== 'boolean'
+      || resolution.container_resolution_available !== false) return null;
+  return { ordinary_resolution: resolution };
 }
 
 function plainDataRecord(value) {

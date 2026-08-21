@@ -14,6 +14,11 @@ import {
   stable,
   validIdentity
 } from './spatial-v3-write-layout.js';
+import { createOrdinaryMaterializationAtomicWritePlan } from
+  './ordinary-materialization-phase-6-commit.js';
+import { actionProducedPhysicalKeys,
+  validActionProductionExtension } from
+  './action-produced-atomic-write-plan.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -21,6 +26,13 @@ export const lockOrder = (plan) => [
   ...[...new Set(plan.execution_keys ?? [])].sort().map((key) => `03:execution:${key}`),
   ...[...new Set(plan.g4_keys ?? [])].sort().map((key) => `04:g4:${key}`),
   ...[...new Set(plan.physical_keys)].sort().map((key) => `05:physical:${key}`),
+  ...(plan.ordinary_materialization_atomic_write_plan?.finite_resource_transition == null
+    ? [] : [`05:resource:${plan.party_id}:${plan.ordinary_materialization_atomic_write_plan.finite_resource_transition.source_resource_node_id}`]),
+  ...(plan.action_production_atomic_write_plans ?? []).flatMap((action) =>
+    action.source_pins ?? [])
+    .filter(({ finite_resource_row: row }) => row != null)
+    .map(({ finite_resource_row: row }) =>
+      `05:resource:${plan.party_id}:${row.resource_node_id}`),
   `06:change-set:${plan.change_set_id}`,
   `06:idempotency:${plan.party_id}:${plan.operation_kind}:${plan.idempotency_key}`
 ];
@@ -106,12 +118,18 @@ export function firstEntryEvidenceMatches(check, evidence) {
 }
 export function validateSpatialV3CombinedWritePlan(plan) {
   if (!plan || plan.schema !== 'spatial_v3.combined_write_plan.v2' || !stable(plan.party_id) || !stable(plan.operation_kind) || !stable(plan.canonical_input_digest) || !stable(plan.digest) || computeSpatialV3CanonicalDigest(digestInput(plan)) !== plan.digest) return false;
-  if (computeSpatialV3CanonicalDigest({
+  const writeSet = {
     inserts: plan.inserts,
     updates: plan.updates,
     appends: plan.appends,
     deletes: plan.deletes
-  }) !== plan.write_set_digest || computeSpatialV3CanonicalDigest(plan.expected_state_versions) !== plan.expected_state_versions_digest) return false;
+  };
+  if (computeSpatialV3CanonicalDigest(extensionDigestInput(plan, writeSet))
+      !== plan.write_set_digest
+      || computeSpatialV3CanonicalDigest(plan.expected_state_versions)
+        !== plan.expected_state_versions_digest) return false;
+  if (!validOrdinaryMaterializationExtension(plan)) return false;
+  if (!validActionProductionExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -182,4 +200,43 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       && item.id === write.id
       && Number.isInteger(item.state_version)
       && item.state_version >= 0));
+}
+
+function extensionDigestInput(plan, writeSet) {
+  const ordinary = plan.ordinary_materialization_atomic_write_plan;
+  const actions = plan.action_production_atomic_write_plans ?? [];
+  if (ordinary == null && actions.length === 0) return writeSet;
+  if (actions.length === 0) return { write_set: writeSet,
+    ordinary_materialization_atomic_write_plan: ordinary };
+  return { write_set: writeSet,
+    ...(ordinary == null ? {} : {
+      ordinary_materialization_atomic_write_plan: ordinary
+    }),
+    action_production_atomic_write_plans: actions };
+}
+
+function validOrdinaryMaterializationExtension(plan) {
+  const ordinary = plan.ordinary_materialization_atomic_write_plan;
+  if (ordinary == null) return true;
+  try {
+    const sealed = createOrdinaryMaterializationAtomicWritePlan(ordinary);
+    const party = plan.updates?.find((write) => write.target_table === 'parties'
+      && write.id === plan.party_id);
+    return sealed.party_id === plan.party_id
+      && party?.record?.party_id === plan.party_id
+      && plan.expected_state_versions.some((version) =>
+        version.target_table === 'parties' && version.id === plan.party_id
+          && version.state_version === sealed.expected_versions.party_state_version)
+      && plan.physical_keys.includes(
+        `party_runtime.party_ordinary_materialization_aggregates:${sealed.party_id}:${sealed.scope_ref.entity_kind}:${sealed.scope_ref.entity_id}`)
+      && (sealed.schema !== 'ordinary_container_contents_atomic_write_plan_v2'
+        || plan.physical_keys.includes(
+          `party_runtime.party_containers:${sealed.scope_ref.entity_id}`)
+        && sealed.items.every((item) =>
+          plan.physical_keys.includes(`party_runtime.party_items:${item.item_id}`)
+          && plan.physical_keys.includes(
+            `party_runtime.party_item_placements:${item.item_id}`)))
+      && (sealed.finite_resource_transition == null || plan.physical_keys.includes(
+        `party_runtime.party_resource_nodes:${sealed.party_id}:${sealed.finite_resource_transition.source_resource_node_id}`));
+  } catch { return false; }
 }

@@ -12,7 +12,7 @@ const IDS = Object.freeze({
 export function resolveTracePhase9Contracts({ state, bundle,
   conversationBindings }) {
   const binding = bundle?.phase_9_bindings;
-  if (![17, 18, 19].includes(bundle?.definition_revision)
+  if (![17, 18, 19, 20, 21].includes(bundle?.definition_revision)
       || binding?.scenario_definition_revision !== 17
       || binding?.fallback_policy !== 'forbidden') gap();
   const profiles = bundle.activity_check_consequence_profiles;

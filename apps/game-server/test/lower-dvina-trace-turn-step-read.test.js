@@ -33,6 +33,19 @@ test('M1 restart validator requires terminal lifecycle to match v2 snapshot',
       queryPool([retired]), payload
     ));
 
+    payload.items[0].placement = null;
+    retired.placement_item_id = null;
+    retired.anchor_id = null;
+    retired.container_id = null;
+    retired.holder_npc_id = null;
+    retired.holder_character_id = null;
+    retired.physical_position = null;
+    retired.equipment_slot_category_id = null;
+    retired.attached_item_id = null;
+    await assert.doesNotReject(() => assertTurnStepRuntimeItemRows(
+      queryPool([retired]), payload
+    ));
+
     retired.state.lifecycle_status = 'active';
     await assert.rejects(() => assertTurnStepRuntimeItemRows(
       queryPool([retired]), payload

@@ -43,3 +43,8 @@ RandomSource port, dice requests, check formula, modifiers and check result. К�
 ## Совместимость и тесты
 
 Модуль сохраняет подтверждённые чистые формулы legacy там, где они существовали, но не импортирует legacy runtime. Unit/contract tests находятся в `test/domain.test.js`. Cutover выполняется отдельно после shadow run.
+
+Lower Dvina revision 21 A1 не вводит отдельный check owner: он принимает только
+уже рассчитанный actor-step `generic_check` result с выбранными общим turn plan
+attribute/skill/difficulty pins. Qualitative action-production output не задаёт roll, DC или
+числовой outcome и не вызывает RNG повторно.

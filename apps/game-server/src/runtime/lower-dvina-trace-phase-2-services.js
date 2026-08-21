@@ -55,6 +55,8 @@ import {
   './lower-dvina-trace-turn-step-generic-owners.js';
 import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
+import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
+  './lower-dvina-trace-phase-2-player-safe.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
@@ -63,7 +65,15 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepModel, playerSafeStateProjector, locationProfiles,
     turnStepBodyEventOwner, turnStepSemanticActivityOwner,
     turnStepGenericCheckContextOwner, turnStepGenericBodyEffect,
-    turnStepOrdinaryResultPolicy, turnStepApprovedOwners,
+    turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
+    createTurnStepOrdinaryContainerContentsResolver,
+    ordinaryDiscoveryEnablementMarker,
+    createTurnStepActionProductionOwner,
+    actionProductionProfile,
+    admitAmbientOrdinaryPortion,
+    requireAmbientOrdinaryAdmission,
+    turnStepOrdinaryResultPolicy,
+    turnStepApprovedOwners,
     turnStepPackingCalculator,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     decisionSecret, phase3Contracts,
@@ -126,7 +136,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     bodyEventOwner: turnStepBodyEventOwner,
     committedState: state,
     genericCheckContextOwner: turnStepGenericCheckContextOwner,
+    ordinaryDiscoveryResolver: turnStepOrdinaryDiscoveryResolver
+      ?? createTurnStepOrdinaryDiscoveryResolver?.({ partyId, inputDigest }),
+    ordinaryContainerContentsResolver:
+      createTurnStepOrdinaryContainerContentsResolver?.({partyId,inputDigest}),
     ordinaryResultPolicy: turnStepOrdinaryResultPolicy,
+    admitAmbientOrdinaryPortion,
+    requireAmbientOrdinaryAdmission,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
       packingCalculator: turnStepPackingCalculator
     }),
@@ -134,17 +150,25 @@ export function buildLowerDvinaTracePhase2Services(context) {
     temporalAdvance,
     workingProjectionAuthority
   });
-  const turnStepPlayerSafeStateProjector = playerSafeStateProjector
-    ? (input) => {
-        const committedState = structuredClone(input.committed_state);
-        delete committedState.current_visible_context;
-        return playerSafeStateProjector({
-          ...input,
-          committed_state: committedState,
-          working_projection_authority: workingProjectionAuthority
-        });
-      }
-    : null;
+  const turnStepPlayerSafeStateProjector =
+    createLowerDvinaTraceTurnStepPlayerSafeProjector({
+      admitAmbientOrdinaryPortion,
+      actionProductionProfile,
+      createTurnStepActionProductionOwner,
+      ordinaryDiscoveryEnablementMarker,
+      ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
+      partyId,
+      playerSafeStateProjector,
+      workingProjectionAuthority
+    });
+  const actionProductionOwner =
+    typeof createTurnStepActionProductionOwner === 'function'
+      && actionProductionProfile?.profile?.status === 'approved'
+      ? createTurnStepActionProductionOwner({
+          partyId, requestId, inputDigest,
+          applyWorkingProjection: turnStepPorts.applyActionProductionProjection
+        })
+      : null;
   return {
     commandRegistry: registry,
     stateReader: {
@@ -163,6 +187,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
       playerSafeStateProjector: turnStepPlayerSafeStateProjector
     } : {}),
     turnStepExecutionRegistry: turnStepPorts.executionRegistry,
+    ...(turnStepPorts.ordinaryDiscoveryResolver ? {
+      turnStepOrdinaryDiscoveryResolver:
+        turnStepPorts.ordinaryDiscoveryResolver
+    } : {}),
+    ...(actionProductionOwner ? {
+      turnStepActionProductionOwner: actionProductionOwner.execute,
+      turnStepActionProductionPreflight: actionProductionOwner.preflight
+    } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {
       turnStepPreparedDomainEffect: turnStepPorts.preparedDomainEffect,

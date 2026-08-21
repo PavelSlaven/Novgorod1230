@@ -1,5 +1,7 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
+import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -18,11 +20,11 @@ import {
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v9';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v10';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.7.0-character-appearance.1',
+  contract_version: '4.8.0-action-production.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
@@ -49,7 +51,7 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v8',
+  rollback_source_release_id: 'spatial-v3-production-v9',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
@@ -114,12 +116,14 @@ export async function createSpatialV3ProductionCompositionRoot({
       party_database:
         await probePostgresPool(pools.partyPool, 'party_runtime')
     };
-    const worldBase = createSpatialV3WorldBaseReader({
-      query: (sql, params) => pools.worldPool.query(sql, params)
-    });
+    const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
+    const profiles = await loadLowerDvinaTraceProductionMaterializationProfiles({
+      rootDir:config.rootDir ?? process.cwd()});
     const bindingContext = Object.freeze({
       env,
       config,
+      ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
+      ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile, actionProductionProfile:profiles.actionProductionProfile,
       ports: Object.freeze({
         partyPool: pools.partyPool,
         worldPool: pools.worldPool,
@@ -136,11 +140,7 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
-      pool: pools.partyPool,
-      recheck: bindings.commitRecheck,
-      now
-    });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile }), now });
     const target = targetRootFactory({
       ...bindings.targetCompositionPorts,
       committer

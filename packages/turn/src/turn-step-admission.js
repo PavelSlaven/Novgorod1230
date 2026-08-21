@@ -12,7 +12,13 @@ import {
   validateAvailabilityDecision,
   validateConsequencePackage
 } from './validators.js';
-
+import {
+  isActionProductionOwnerInScope
+} from './turn-step-action-produced-remainder.js';
+import { initialWorkingProjectionFrom } from
+  './turn-step-player-safe-projection.js';
+export { isActionProductionOwnerInScope } from
+  './turn-step-action-produced-remainder.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -22,11 +28,9 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'emit_interaction',
   'request_combat'
 ]);
-
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
 }
-
 const DIRECT_STEP_OPERATIONS = new Set([
   'create_entity',
   'move_entity',
@@ -35,7 +39,6 @@ const DIRECT_STEP_OPERATIONS = new Set([
   'retire_entity',
   'apply_body_event'
 ]);
-
 export async function resolveBoundTurnStepCommand({
   registry,
   semanticBindings,
@@ -70,6 +73,7 @@ export async function resolveBoundTurnStepCommand({
   ));
   const selectedCommands = [];
   let firstProjection = structuredClone(projected.player_safe_state);
+  const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
   if (externalRegistry != null) {
     requireTurnStepExecutionRegistry(externalRegistry);
@@ -106,6 +110,61 @@ export async function resolveBoundTurnStepCommand({
           ),
           committed_state: structuredClone(committedState)
         })) === true);
+      if (matches.length === 0 && operation.op === 'request_discovery') {
+        const ordinaryResolver =
+          services.turnStepOrdinaryDiscoveryResolver;
+        if (typeof ordinaryResolver === 'function'
+            && isOrdinaryDiscoveryInScope({
+              operation,
+              playerSafeState: execution.request.player_safe_state
+            })) {
+          return ordinaryResolver(deepFreeze({
+            schema: 'turn_step_ordinary_discovery_request_v1',
+            operation: structuredClone(operation),
+            plan: structuredClone(execution.plan),
+            request: structuredClone(execution.request),
+            actor: structuredClone(projected.actor),
+            working_projection: structuredClone(execution.working_projection),
+            committed_state: structuredClone(committedState),
+            prepared_chain_context:
+              structuredClone(execution.prepared_chain_context)
+          }));
+        }
+      }
+      if (matches.length === 0) {
+        const actionProductionOwner =
+          services.turnStepActionProductionOwner;
+        if (typeof actionProductionOwner === 'function'
+            && isActionProductionOwnerInScope({
+              operation,
+              playerSafeState: execution.request.player_safe_state,
+              remainingIntent: execution.request.remaining_intent
+            })) {
+          const checked = execution.check_result != null;
+          return actionProductionOwner(deepFreeze({
+            schema: checked
+              ? 'turn_step_action_produced_remainder_request_v2'
+              : 'turn_step_action_produced_remainder_request_v1',
+            operation: structuredClone(operation),
+            plan: structuredClone(execution.plan),
+            request: structuredClone(execution.request),
+            actor: structuredClone(projected.actor),
+            working_projection:
+              structuredClone(execution.working_projection),
+            ...(checked ? {
+              check_result: structuredClone(execution.check_result)
+            } : {}),
+            committed_state: structuredClone(committedState),
+            prepared_chain_context:
+              structuredClone(execution.prepared_chain_context),
+            prepared_ordinary_materialization_atomic_write_plan:
+              structuredClone(execution
+                .prepared_ordinary_materialization_atomic_write_plan),
+            prepared_action_production_atomic_write_plans: structuredClone(
+              execution.prepared_action_production_atomic_write_plans)
+          }));
+        }
+      }
       if (matches.length !== 1) {
         throw turnCommandError(
           matches.length === 0
@@ -223,7 +282,7 @@ export async function resolveBoundTurnStepCommand({
     committedStateVersion: actionSet.state_version,
     rootPlayerAction: playerInput.raw_text,
     actor: structuredClone(projected.actor),
-    initialWorkingProjection: firstProjection,
+    initialWorkingProjection,
     maxInternalSteps: 8
   }, {
     turnStepModel: services.turnStepModel,
@@ -233,6 +292,11 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
+    preflightActionProduction: typeof services
+      .turnStepActionProductionPreflight !== 'function' ? null : (execution) =>
+      services.turnStepActionProductionPreflight(deepFreeze({
+        ...structuredClone(execution), actor: structuredClone(projected.actor),
+        committed_state: structuredClone(committedState) })),
     admitPreparedDomainPlan: async ({ plan, request,
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
@@ -327,7 +391,6 @@ export async function resolveBoundTurnStepCommand({
     })
   };
 }
-
 function commandWithDraftWrites({ command, registry, loopResult }) {
   const draftWrites = loopResult.write_fragments.length > 0
     ? [TURN_STEP_OPERATION_BATCH_TARGET]
@@ -362,13 +425,73 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
     }
   };
 }
-
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
 
 function plain(value) {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+}
+
+export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
+  if (!['inspect', 'search'].includes(operation?.discovery_kind)
+      || !Array.isArray(operation.target_refs)
+      || operation.target_refs.length !== 1
+      || typeof operation.query !== 'string'
+      || operation.query.trim().length === 0
+      || !ordinaryDiscoveryAvailable(playerSafeState)) {
+    return false;
+  }
+  return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
+}
+
+function ordinaryDiscoveryAvailable(playerSafeState) {
+  const resolution = ownDataProperty(playerSafeState, 'ordinary_resolution');
+  const marker = ownPlainDataRecord(resolution, [
+    'discovery_available', 'container_resolution_available'
+  ]);
+  return marker?.discovery_available === true
+    && marker.container_resolution_available === false;
+}
+
+function exactVisibleScope(...projections) {
+  const refs = new Set();
+  for (const projection of projections) {
+    addRef(refs, projection?.position?.location_ref);
+    for (const entity of projection?.visible_entities ?? []) {
+      addRef(refs, entity?.entity_ref);
+    }
+    for (const entity of projection?.visible_objects ?? []) {
+      addRef(refs, entity?.entity_ref);
+    }
+  }
+  return refs;
+}
+function addRef(refs, value) {
+  if (typeof value === 'string' && value.length > 0) refs.add(value);
+}
+function ownPlainDataRecord(value, keys) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)
+      || (Object.getPrototypeOf(value) !== Object.prototype
+        && Object.getPrototypeOf(value) !== null)
+      || Object.getOwnPropertySymbols(value).length !== 0) return null;
+  const names = Object.getOwnPropertyNames(value);
+  if (names.length !== keys.length
+      || !keys.every((key) => names.includes(key))) return null;
+  const output = {};
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (descriptor == null || descriptor.enumerable !== true
+        || !Object.hasOwn(descriptor, 'value')) return null;
+    output[key] = descriptor.value;
+  }
+  return output;
+}
+function ownDataProperty(value, key) {
+  if (value == null || typeof value !== 'object') return undefined;
+  const descriptor = Object.getOwnPropertyDescriptor(value, key);
+  return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
+    ? descriptor.value : undefined;
 }
 
 function turnCommandError(code, message) {

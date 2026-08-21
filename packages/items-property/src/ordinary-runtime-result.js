@@ -1,4 +1,9 @@
 import { deepFreeze } from '@rus/kernel';
+export { admitOrdinaryWorldMaterialization } from './ordinary-world-admission.js';
+export { resolveOrdinaryWorldPropertyPlacement } from
+  './ordinary-world-property-placement.js';
+export { ordinaryWorldPropertyPlacementContextDigest } from
+  './ordinary-world-property-placement.js';
 
 const POLICY_SCHEMA = 'rus.items.ordinary_result_admission_policy.v1';
 const POLICY_KEYS = new Set([

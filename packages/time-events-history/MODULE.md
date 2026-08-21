@@ -36,6 +36,13 @@ Temporal World v4 base — immutable `temporal-world-v1` /
 release `spatial-v3-production-v1` сделал v3 sole production owner. Модуль
 остаётся pure domain owner и не делает writes.
 
+Lower Dvina revision 21 A1 использует существующую semantic activity и её
+prepared temporal/body handoff. A1 owner проверяет уже admitted общим turn plan
+duration/effort evidence; отдельный crafting clock, process kind либо второй
+time advance не создаётся. Детерминированная физическая A1 попытка использует
+тот же semantic activity owner без RNG; checked A1 использует ровно один RNG и
+то же единственное activity/time application.
+
 ## Тесты
 
 `test/exact-time.test.js`, `calendar.test.js`, `temporal-boundaries.test.js`, `historical-phases.test.js`, `domain.test.js` проверяют exact arithmetic, profile gaps, ordering/cascades, phase boundary и legacy-compatible pure helpers.

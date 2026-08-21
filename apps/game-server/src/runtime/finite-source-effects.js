@@ -1,0 +1,134 @@
+import { planFiniteResourceDecrement, resolveFiniteSourceInitialAmount } from
+  '@rus/items-property/finite-resource-transition';
+
+// Runtime adapter: policy proves source applicability; @rus/items-property
+// remains the sole owner of finite decrement arithmetic.
+export function finiteSourceTransition({ profile, item,
+  request_identity } = {}) {
+  const source = finiteSource(profile);
+  const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
+  if (!source || !text(request_identity)
+      || !Array.isArray(item?.causal_basis_refs)
+      || !item.causal_basis_refs.includes(source.source_resource_node_id)
+      || item.position_ref == null || item.property_basis_ref == null
+      || !integer(quantity?.value) || quantity.value < 1
+      || quantity.unit !== source.quantity.unit) return null;
+  return finiteDecrement({ source, request_identity, quantity });
+}
+
+export function finiteSourceInitialization({ profile, item,
+  request_identity, estimated_amount } = {}) {
+  const source = finiteSource(profile);
+  if (!source || source.lifecycle_state !== 'uninitialized'
+      || !rational(estimated_amount) || !Array.isArray(item?.causal_basis_refs)
+      || !item.causal_basis_refs.includes(source.source_resource_node_id)) {
+    return null;
+  }
+  let initialized;
+  try {
+    initialized = resolveFiniteSourceInitialAmount({
+      initialization_identity: request_identity, committed_amount: null,
+      approved_bounds: structuredClone(source.initial_amount_bounds),
+      estimated_amount: structuredClone(estimated_amount)
+    });
+  } catch { return null; }
+  const quantity = item?.mechanics_snapshot?.mechanics?.quantity;
+  if (!integer(quantity?.value) || quantity.value < 1
+      || quantity.unit !== initialized.amount.unit) return null;
+  const transition = finiteDecrement({ source: { ...source,
+    state_version: source.state_version + 1, lifecycle_state: 'active',
+    quantity: initialized.amount }, request_identity, quantity });
+  if (transition == null) return null;
+  return deepFreeze({ finite_resource_initialization: {
+    source_resource_node_id: source.source_resource_node_id,
+    expected_state_version: source.state_version,
+    initialization_identity: request_identity,
+    quantity_unit_ref: structuredClone(source.quantity_unit_ref),
+    estimated_amount: structuredClone(initialized.amount),
+    approved_bounds: structuredClone(source.initial_amount_bounds)
+  }, finite_resource_transition: transition });
+}
+
+function finiteDecrement({ source, request_identity, quantity }) {
+  let planned;
+  try {
+    planned = planFiniteResourceDecrement({
+      source_resource_node_id: source.source_resource_node_id,
+      expected_state_version: source.state_version,
+      causal_transition_identity: request_identity,
+      source: { state_version: source.state_version,
+        lifecycle_state: source.lifecycle_state,
+        quantity: structuredClone(source.quantity) },
+      requested_decrement: { numerator: quantity.value, denominator: 1,
+        unit: quantity.unit }
+    });
+  } catch { return null; }
+  const { schema: _schema, ...transition } = planned;
+  return deepFreeze({ ...transition,
+    quantity_unit_ref: structuredClone(source.quantity_unit_ref) });
+}
+
+export function resolveFiniteSourceAuthority({ authority,
+  committed_source } = {}) {
+  const value = record(authority, ['schema','version','state',
+    'source_basis_ref','finite_source']);
+  const pin = value && record(value.finite_source,
+    ['source_resource_node_id','quantity_unit_ref','position_ref',
+      'property_basis_ref','initial_amount_bounds']);
+  const committed = finiteSource({ source_basis_ref: value?.source_basis_ref,
+    finite_source: committed_source });
+  if (!value || value.schema !== 'rus.items.finite_source_authority.v1'
+      || value.version !== 1 || value.state !== 'committed' || !pin || !committed
+      || pin.source_resource_node_id !== value.source_basis_ref
+      || pin.source_resource_node_id !== committed.source_resource_node_id
+      || JSON.stringify(pin.quantity_unit_ref)
+        !== JSON.stringify(committed.quantity_unit_ref)
+      || pin.position_ref !== committed.position_ref
+      || pin.property_basis_ref !== committed.property_basis_ref
+      || (committed.lifecycle_state === 'uninitialized'
+        && JSON.stringify(pin.initial_amount_bounds)
+          !== JSON.stringify(committed.initial_amount_bounds))) return null;
+  return deepFreeze({ ...structuredClone(value),
+    finite_source: structuredClone(committed) });
+}
+
+function finiteSource(profile) {
+  if (!plain(profile) || !text(profile.source_basis_ref)) return null;
+  const value = profile.finite_source;
+  const keys = value?.lifecycle_state === 'uninitialized'
+    ? ['source_resource_node_id','state_version','lifecycle_state','quantity',
+      'quantity_unit_ref','position_ref','property_basis_ref','initial_amount_bounds']
+    : ['source_resource_node_id','state_version','lifecycle_state','quantity',
+      'quantity_unit_ref','position_ref','property_basis_ref'];
+  if (!record(value, keys) || value.source_resource_node_id !== profile.source_basis_ref
+      || !integer(value.state_version) || value.state_version < 1
+      || !['active','uninitialized'].includes(value.lifecycle_state)
+      || !rational(value.quantity) || !plain(value.quantity_unit_ref)
+      || !text(value.quantity_unit_ref.id)
+      || value.quantity.unit !== value.quantity_unit_ref.id
+      || !text(value.position_ref)
+      || !(value.property_basis_ref === null || text(value.property_basis_ref))) {
+    return null;
+  }
+  if (value.lifecycle_state === 'uninitialized'
+      && !validBounds(value.initial_amount_bounds, value.quantity.unit)) return null;
+  return value;
+}
+function validBounds(value, unit) { const bounds=record(value,['minimum','maximum']);
+  return !!bounds && rational(bounds.minimum) && rational(bounds.maximum)
+    && bounds.minimum.numerator>0 && bounds.maximum.numerator>0
+    && bounds.minimum.unit===unit && bounds.maximum.unit===unit
+    && BigInt(bounds.minimum.numerator)*BigInt(bounds.maximum.denominator)
+      <= BigInt(bounds.maximum.numerator)*BigInt(bounds.minimum.denominator); }
+function rational(value) { const q=record(value,['numerator','denominator','unit']);
+  return q&&integer(q.numerator)&&q.numerator>=0&&integer(q.denominator)
+    &&q.denominator>=1&&text(q.unit)&&gcd(q.numerator,q.denominator)===1; }
+function gcd(a,b){while(b!==0)[a,b]=[b,a%b];return a||1;}
+function record(value,keys){return plain(value)&&Object.keys(value).length===keys.length
+  &&keys.every((key)=>Object.hasOwn(value,key))?value:null;}
+function plain(value){return value!=null&&typeof value==='object'&&!Array.isArray(value)
+  &&Object.getPrototypeOf(value)===Object.prototype;}
+function integer(value){return Number.isSafeInteger(value);}
+function text(value){return typeof value==='string'&&value.length>0&&value.trim()===value;}
+function deepFreeze(value){if(value&&typeof value==='object'&&!Object.isFrozen(value)){
+  for(const entry of Object.values(value))deepFreeze(entry);Object.freeze(value);}return value;}

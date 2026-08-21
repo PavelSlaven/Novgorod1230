@@ -50,6 +50,118 @@ domain write.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
+Active O1 Phase 6 composition accepts only the closed
+`ordinary_materialization_atomic_write_plan_v1` DTO after the sanitized model
+call outside a physical transaction and Phase 4 admission. The existing
+`request_discovery` route reaches it only after meaningful-engagement and
+code-first known-result gates; Stage A is candidate-free and Stage B has
+`evidence_weight = 0`, with identity/classification/policy fields built by
+code. Stage A concrete entities are forbidden; its density band is converted
+to numeric budget by a versioned code-owned policy. Normalized discovery query
+and exact target derive the code-owned candidate identity; the query reaches
+the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
+classification/mechanics authority. Exact normalized retry reuses the
+persisted resolution, while a different query has a different identity.
+One discovery has a shared two-call semantic budget; structural repair consumes
+the remaining call, and a repaired Stage A can finish as a seed-only commit.
+The exact M7 profile and versioned adversarial Stage B approval receipt are
+mandatory cutover pins. The probes run before profile activation; gameplay
+only verifies the receipt against the profile digest and exact
+provider/model/config identity, without additional eval calls.
+Its server-owned
+PostgreSQL committer locks the party, aggregate and trusted context pins, then
+atomically writes migrations 021–025 state: O1/O2a enablement/objective, aggregate,
+prepared/committed scoped supporting-basis catalog, positive or negative exact
+resolution/idempotency, optional private-v2 item with immutable
+mechanics/property/placement and normalized basis links, aggregate CAS, catalog
+pin and party version. Stale proposals are rejected rather than silently
+rebased; reload/retry cannot reroll a committed code-owned identity. The player-safe
+response exposes only the O1 discovery capability marker and approved visible
+result, and narration runs only after factual commit. O1 has no new HTTP/public
+operation. Active O2a includes the authored wreck-shore abundant sand and one
+first-entry context-bound finite prepared-clay stock. Player-safe state exposes
+that committed stock as an ordinary source only when its separate approved
+disclosure state is visible; concealed capabilities remain server-only. The
+discovery marker is boolean and exposes no unresolved result, permission or
+capacity. Stage B may choose an
+unlisted ordinary semantic type/name inside the approved class, while the owner
+rechecks mechanics, property, permission and source. The `ambient_ordinary`
+enum alone never selects O2a, so existing clay/wood/bark/grass/stone/shell/root/worm direct actions retain
+their legacy admission. Migration 025 conservation and bounded initialization/decrement
+are active for every admitted `finite_source`; each selected source reloads its
+own committed row, while constrained policy adds resource
+permissions but does not own conservation. Unprovisioned precious/remnant profiles
+remain fail-closed. Currency identity,
+significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain
+disabled. Negative resolutions contain no item and
+every failure rolls back.
+
+Active O2b keeps the same public `request_container_access`. Production startup
+loads and SHA-validates revision 20 M8 / Phase 1A v16 / Phase 1B v15 plus one
+exact existing-container profile; revision 19 publication/loading remains an
+immutable historical recovery path. First-entry P16 provisions the approved
+template-backed player pouch, ownership and its container-scoped ordinary
+aggregate/context/basis/enablement inside the existing transaction without an
+extra party bump. Only an exact persisted container/profile/property/owner/
+placement/mechanics match installs the resolver; drift, missing profile,
+template-less container or non-bound container fails closed before model.
+Authoritative contents bypass resolver/model. Candidate-free model execution is
+outside SQL, and the server validates the complete ordinary batch, individual
+mass/mechanics, exact parent placement and packing/capacity before constructing
+one `ordinary_container_contents_atomic_write_plan_v2`. The existing combined
+P16 transaction atomically persists ledger transition, children through
+`party_items` plus mechanics/property/placement and the container transition.
+Mechanics-sensitive moves resolve unresolved contents concealed before exact
+mass/packing calculation without opening the container; later access reveals
+the committed safe name/type without reroll. Precommit/failed children remain
+concealed and no partial batch leaks; reload/reopen uses committed coverage with zero model
+calls. Narration consumes only the persisted post-reveal package and cannot add
+items. No new HTTP operation, contents store or transaction owner is added.
+
+Active revision 21 A1 accepts one or more committed or validated same-root
+revealed non-container material sources and zero or more accessible actor-controlled
+non-container tools through explicit disjoint source/tool refs; current-anchor
+placement or an already revealed open actor-accessible container is sufficient,
+and legal ownership need not belong to the actor. Qualitative outcome is part of
+the sole `turn_step_plan_v1`; no A1 model or scenario planner exists. The
+validated result is projected into the same root turn before pending continuation.
+profile admits preserve, up to four mass-conserving independent outputs and
+no-result, with output/source mechanics derived exactly from consumed
+allocations; finite sources decrement, while a fully partitioned whole item
+retires and leaves active placement/capacity without a synthetic resource row.
+For multi-source preserve the first source keeps identity and later sources are consumed by grounded extent. Independent multi-source outputs require the same owner/claim basis; their property source is the canonical minimum source ref, while mixed basis fails closed independent of ref order.
+Partial independent output carries only grounded qualitative
+`minor|half|major` extent for one non-finite source; the item owner maps it to an exact gram decrement,
+keeps the changed source active, updates its current physical facts and derives
+its remaining mechanics. Odd mass
+is distributed deterministically; output
+hand/packing/carry is code-derived. Safe named result descriptors persist with neutral `ordinary_mundane` identity in ordinary item metadata and survive reload, including
+partial/nonworking/waste, physical writing, non-authoritative token-like and
+closed qualitative weapon-capable outcomes. Visible non-authoritative current
+physical facts and separately typed physical inscriptions survive unrelated transforms, same-root continuation and reload; explicit visible fact refs allow physical
+removal/replacement. Multiple causal A1 steps run in order over the shared
+working projection and commit in one combined P16. Item mechanics, conservation,
+identity and placement remain code-owned. Qualitative physical form is mapped
+with exact mass to hands/carry/packing by the item owner. Weapon combat class is
+ephemeral and belongs only to the combat boundary; every held A1 item without
+exact weapon mechanics is classified from current facts/form, including a
+closed not-weapon result, regardless of the last A1 output class. A1 state
+stores no combat class or damage. Valid zero-positive classification keeps the
+ordinary unarmed/default profile applicable; one positive selects its
+code-owned danger, while ambiguity or invalid classification fails closed.
+Positive weapon/token/writing outcomes require an admitted accessible tool;
+ordinary/no-result keeps the zero-tool path. Partial survivor text facts may be
+empty when its required form alone changes code-owned inventory geometry.
+Uncertain actions perform a read-only authority preflight before RNG, then reuse one generic check and semantic activity/time resolution from turn owners; deterministic actions use `domain_request` without
+RNG but still apply one ordinary semantic activity/time cost after a real
+physical attempt. The same combined P16 write set contains the full turn snapshot,
+append-only check resolution, clock/activity writes and the ordered A1 plans.
+The existing transaction, state-version checks and idempotency owner bind the
+physical transitions to the same root commit without a second RNG, clock, A1
+execution ledger or A1-specific plan hashes.
+
+A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
+
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility
 policy: the server verifies party/request identity, the `start_text` branch
@@ -59,8 +171,11 @@ replay never permits switching the request to a scenario-ID branch.
 Trace publications pin materializer and RNG versions as historical execution
 identity. Current build support is checked only before a new materialization;
 persisted trace reads use the immutable publication/session/party pins.
-Runtime release `spatial-v3-production-v9` активирует revision 19 appearance и
-equipment-driven portrait path; v8 остаётся rollback source.
+Runtime release `spatial-v3-production-v10` сохраняет revision 19 appearance,
+equipment-driven portrait path и revision 20 O2b content; active publication
+revision 21 добавляет SHA-pinned open physical A1 M9/v17/v16 profile. Revision 20/v9 и
+revision 19 остаются immutable historical compatibility paths, v9 — rollback
+source.
 
 ## Ошибки, зависимости и effects
 

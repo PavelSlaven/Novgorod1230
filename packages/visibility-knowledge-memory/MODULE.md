@@ -9,6 +9,9 @@ Pure player-safety projection boundary: validates and constructs narrator-safe v
 - Владеет visible package allow-list, hidden-leak detection/stripping, memory/knowledge validation and deterministic merge, safe narrator package, factual conversation audience projection и deterministic resolution утверждённого evidence graph из committed facts/statements.
 - Владеет чистой player-safe проекцией `portrait_spec_v1` из canonical actor
   identity, sanitized visible equipped items и presentation-only state.
+- Владеет единственной allow-list проекцией `ordinary_resolution` capability:
+  активный O1 может раскрыть только два boolean поля без budget, bases,
+  permissions, negative ledger или candidate identity.
 
 ## Не владеет
 
@@ -28,6 +31,10 @@ base/outer/headwear item на slot и завершает `assertPortraitSpecV1`.
 historical/incomplete/ambiguous state возвращается `null`; projection не делает
 draw, не исправляет и не сохраняет state.
 
+`projectPlayerSafeOrdinaryResolutionCapability` доступен через узкий subpath
+`@rus/visibility-knowledge-memory/ordinary-resolution-capability`, принимает
+только exact own-data marker и возвращает detached frozen allow-list.
+
 ## Ошибки, зависимости и effects
 
 Invalid package/fact is reported in result errors (including hidden-leak paths); this module does not silently grant knowledge or infer missing fields. Depends only on `@rus/kernel`; has no I/O, DB, LLM, persistence or UI side effects.
@@ -44,9 +51,10 @@ package after commit. It neither activates target nor dual-writes before the
 versioned production activation cutover. Revision 17 /
 `spatial-v3-production-v7` activates deterministic authored evidence
 resolution; historical revision 18 / production v8 additionally activates
-provenance-validated composite completion and player-safe projection. Current
-revision 19 / production v9 inherits that path and adds the pure, non-persisted
-`portrait_spec_v1` projection from sanitized actor facts and visible equipped
-items. `test/domain.test.js` covers allow-list,
+provenance-validated composite completion and player-safe projection. Revision
+19 / production v9 adds the pure, non-persisted `portrait_spec_v1` projection
+from sanitized actor facts and visible equipped items and remains a historical
+recovery path. Active revision 20 / M8 / Phase 1A v16 / Phase 1B v15 inherits
+the same visibility owner boundary unchanged. `test/domain.test.js` covers allow-list,
 leak stripping/detection, safe-package, evidence, completion and memory
 contracts.

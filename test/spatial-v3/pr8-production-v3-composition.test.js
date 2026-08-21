@@ -606,7 +606,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger with migrations 012 through 020', async () => {
+test('restart extends the exact immutable catalog ledger through migration 027', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -636,7 +636,7 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 9);
+  assert.equal(result.newly_applied, 15);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -649,10 +649,16 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
   for (const marker of [
     'party_obligations',
     'terminal activity execution does not match its append-only attempt',
-    'runtime_instance_mechanics_snapshot_valid',
+    'CREATE OR REPLACE FUNCTION\n  party_runtime.runtime_instance_mechanics_snapshot_valid',
+    'CREATE OR REPLACE FUNCTION\n  party_runtime.ordinary_world_runtime_instance_mechanics_snapshot_valid',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_sessions',
     'CREATE TABLE IF NOT EXISTS party_runtime.party_conversation_contributions',
-    'CREATE TABLE IF NOT EXISTS party_runtime.party_combat_sessions'
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_combat_sessions',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_aggregates',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commits',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_enablements',
+    'initial_amount_bounds jsonb',
+    'CREATE TABLE IF NOT EXISTS party_runtime.party_ordinary_materialization_commit_items'
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,
@@ -660,6 +666,8 @@ test('restart extends the exact immutable catalog ledger with migrations 012 thr
       marker
     );
   }
+  assert.equal(statements.filter((sql) =>
+    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,3);
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

@@ -8,7 +8,9 @@ import {
   createItemOperationHandlers,
   initializeRuntimeState
 } from './lower-dvina-trace-turn-step-item-operations.js';
-import { createContainerAccessHandler } from
+import { applyActionProducedRuntimeProjection } from
+  './lower-dvina-trace-action-produced-runtime.js';
+import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
   './lower-dvina-trace-turn-step-container-access.js';
 import {
   createLowerDvinaTracePreparedDomainEffect
@@ -18,7 +20,11 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   bodyEventOwner = null,
   committedState = null,
   genericCheckContextOwner = null,
+  ordinaryDiscoveryResolver = null,
   ordinaryResultPolicy = null,
+  admitAmbientOrdinaryPortion = null,
+  requireAmbientOrdinaryAdmission = false,
+  ordinaryContainerContentsResolver = null,
   resolveItemMechanics = null,
   semanticActivityOwner = null,
   temporalAdvance = null,
@@ -28,11 +34,24 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   if (typeof workingProjectionAuthority?.admit !== 'function') {
     throw new TypeError('workingProjectionAuthority.admit is required.');
   }
-  const state = initializeRuntimeState(committedState);
-  const containerAccessHandler = createContainerAccessHandler(state);
+  const safeCommittedState = typeof ordinaryContainerContentsResolver === 'function'
+    ? snapshotO2bCommittedContainerInput(committedState) : committedState;
+  if (typeof ordinaryContainerContentsResolver === 'function'
+      && committedState != null && safeCommittedState == null) {
+    const error = new TypeError('TRACE_TURN_STEP_CONTAINER_ORDINARY_CONTEXT_INVALID');
+    error.code = 'TRACE_TURN_STEP_CONTAINER_ORDINARY_CONTEXT_INVALID';
+    throw error;
+  }
+  const state = initializeRuntimeState(safeCommittedState);
+  const containerAccessHandler = createContainerAccessHandler(state, {
+    ordinaryContainerContentsResolver
+  });
   const handlers = {
     ...createItemOperationHandlers(state, {
       ordinaryResultPolicy,
+      ambientOrdinaryPortionAdmission: admitAmbientOrdinaryPortion,
+      requireAmbientOrdinaryAdmission,
+      ordinaryContainerContentsResolver,
       resolveItemMechanics
     }),
     apply_body_event: (execution) =>
@@ -44,10 +63,10 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       (execution) => admitResult(
         handler(execution), workingProjectionAuthority)
     ]));
-  const phase9ContainerOwner = [17, 18, 19].includes(committedState
+  const phase9ContainerOwner = [17, 18, 19, 20, 21].includes(safeCommittedState
     ?.materialization_trace?.seed_context?.scenario_definition_revision)
-    && (committedState.phase9 != null
-      || committedState.last_turn?.consequence?.combat?.session_after
+    && (safeCommittedState.phase9 != null
+      || safeCommittedState.last_turn?.consequence?.combat?.session_after
         ?.status === 'ended');
   const domain = phase9ContainerOwner ? {} : {
     request_container_access: (execution) => admitResult(
@@ -56,7 +75,7 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
   const preparedDomainEffect = typeof temporalAdvance === 'function'
       && typeof bodyEffect?.apply === 'function'
     ? createLowerDvinaTracePreparedDomainEffect({
-        state, committedState, temporalAdvance, bodyEffect
+        state, committedState: safeCommittedState, temporalAdvance, bodyEffect
       })
     : null;
   return Object.freeze({
@@ -81,14 +100,14 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
     ...(preparedDomainEffect == null ? {} : {
       preparedEffectContext: Object.freeze({
         current_clock: structuredClone(
-          committedState?.clock_weather_light?.clock
-            ?? committedState?.clock),
-        current_body_state: structuredClone(committedState?.body_state)
+          safeCommittedState?.clock_weather_light?.clock
+            ?? safeCommittedState?.clock),
+        current_body_state: structuredClone(safeCommittedState?.body_state)
       }),
       preparedEffectTimeOwner: (input) => prepareEffectTime(
-        input, committedState, temporalAdvance),
+        input, safeCommittedState, temporalAdvance),
       preparedEffectBodyOwner: (input) => prepareEffectBody(
-        input, committedState, bodyEffect),
+        input, safeCommittedState, bodyEffect),
       preparedEffectProjectionOwner: (input) => {
         preparedDomainEffect.advanceState(input);
         return workingProjectionAuthority.admit(input.working_projection);
@@ -105,7 +124,16 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
               input.prepared_chain_context.current_body_state)
           }
         },
-        genericCheckContextOwner)
+        genericCheckContextOwner),
+    ...(typeof ordinaryDiscoveryResolver === 'function' ? {
+      ordinaryDiscoveryResolver
+    } : {}),
+    applyActionProductionProjection: ({ working_projection: projection,
+      actor, action_production_atomic_write_plan: plan }) =>
+      workingProjectionAuthority.admit(applyActionProducedRuntimeProjection({
+        workingProjection: projection, actor, plan, state,
+        resolveItemMechanics
+      }))
   });
 }
 

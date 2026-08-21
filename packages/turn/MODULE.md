@@ -149,6 +149,91 @@ Revision 19 / `spatial-v3-production-v9` наследует этот orchestrati
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
 
+O1 активирует internal ordinary branch только внутри существующего
+`request_discovery`; нового public op и scenario-local resolver нет. После
+authored/committed discovery, exact persisted ordinary resolution и остальных
+code-first short circuits `@rus/turn` допускает ordinary model call лишь при
+meaningful engagement. Candidate-free Stage A использует только committed
+objective context, запрещает concrete entities и принимает от model только
+density band; numeric budget выводится versioned code policy. Stage B имеет
+`evidence_weight = 0`, а code-owned builder создаёт normalized
+classification/coverage/policy fields. Normalized discovery query (NFKC,
+trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
+code-owned candidate identity и передаётся model только как `candidate_hint`;
+это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
+другой normalized query получает другую identity. Один discovery имеет общий
+лимит двух semantic calls; structural repair расходует оставшийся call, а
+Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
+supporting-basis/property/placement admission `@rus/items-property`, собирает
+один ordinary P16 plan после revalidation и передаёт его persistence owner;
+model call никогда не находится внутри physical transaction. Player-safe
+working projection получает только capability marker и approved concrete
+result, narration начинается лишь после commit. Exact positive/negative
+resolution/idempotency сохраняется, поэтому retry/reload не reroll-ит её для
+code-owned identity. Active cutover локально проверяет versioned approval
+receipt ранее выполненного adversarial Stage B classification eval, связанный
+с profile digest и exact production provider/model/config identity; gameplay
+не запускает probes. Любой sensitive `materialize` блокирует активацию.
+O1 не активирует O2, A1, F1, S1, N1, template-less runtime containers,
+context-bound weapons/value/currency или natural finite sources.
+
+Active O2a добавляет authored wreck-shore ambient capability и first-entry
+context-bound finite stock подготовленной глины. Player-safe state показывает
+committed stock как обычный source только при отдельном approved disclosure
+state; concealed capabilities остаются server-only. Unresolved remainder
+проецируется только через boolean `discovery_available`, без expected result,
+permission и capacity.
+Stage B может выбрать unlisted ordinary semantic type/name внутри approved class;
+source/property/permission/mechanics и пустой facts остаются code-owned gates. Сам `ambient_ordinary`
+не является O2a marker: legacy direct actions без
+этого capability сохраняют прежний path. Drifted binding не публикует capability,
+а forged ref не проходит current-ref validation. Generic finite effect связан с
+current row выбранного admitted `finite_source`; несколько sources не делят
+mutable quantity. Constrained policy добавляет только resource
+permissions. Не provisioned precious material и damaged remnant в этой revision не
+объявлены active. O2b/F1/S1/N1, containers, authentic currency и
+significant/hidden facts остаются disabled.
+
+Active A1 revision 21 не добавляет semantic fallback: sole
+`turn_step_plan_v1` помещает qualitative `action_production` внутрь
+`request_item_use`, а code-owned action-production owner лишь проверяет
+committed items либо validated revealed ordinary overlay текущего root turn и
+строит mechanics/P16 plan без LLM. После exact/authored priority разрешены
+один или несколько доступных non-container material sources и ноль или
+несколько доступных controller-controlled tools на текущем placement
+либо в уже раскрытом открытом доступном контейнере независимо от legal owner.
+Validated source changes и новые outputs сразу обновляют общую working
+projection, поэтому pending intent может использовать результат в следующем
+internal step. Несколько причинных A1 steps одного root turn выполняются
+последовательно над этой projection и входят в один combined P16 commit.
+Перед generic check A1 выполняет read-only authority preflight: invalid access/controller/state/profile, finite-v1 restriction или property ambiguity дают ноль RNG/time/writes. Затем общие generic-check/activity owners выполняются один раз; детерминированное действие использует `domain_request` без RNG, но
+любая реально выполненная физическая попытка декларативно несёт одну обычную
+semantic activity и тратит code-owned время. Profile допускает preserve, до четырёх mass-conserving independent outputs и no-result. `requested_output_count` равен `null`, если игрок не назвал число; actual count выбирает item owner (один по умолчанию), а невозможный explicit count даёт физический no-result без item writes, но с одной activity;
+partial/nonworking/waste,
+writing, non-authoritative token-like и closed weapon-capable outcomes. Model
+не задаёт mechanics, расход, identity, property, placement, roll, time,
+currency/official status или combat numbers. Independent output требует
+непустое safe display name; nullable physical description не создаёт `null`
+fact. Для partial independent output sole plan задаёт только grounded
+`material_extent = minor|half|major`; full partition использует `whole`.
+Output descriptor относится только к новым entities, а обязательный
+`source_fact_delta` задаёт отдельные current facts и `physical_form` единственного surviving non-finite source; multi-source и finite partial partition в A1 v1 закрыты.
+Text-поля delta могут быть пустыми, если меняется только code-owned inventory
+geometry. Положительные weapon/token/writing outcomes требуют хотя бы один
+admitted tool; ordinary/no-result — нет.
+Preserve с одним source использует `null`, а с дополнительными расходуемыми
+materials — grounded `minor|half|major|whole`. Числовую долю и exact mechanics
+выводит item owner. Persisted non-authoritative physical facts входят в
+следующую player-safe working/reload projection; модель видит их safe refs и
+может удалить ставший ложным fact только через explicit
+`removed_physical_fact_refs`, без текстового/NLP-сопоставления. Физическая надпись сохраняется отдельной typed inscription записью и остаётся carrier text, а не truth/knowledge/status; она стирается/заменяется по видимому `fact_ref`. `physical_form` сообщает только
+качественную форму `compact|regular|long|bulky`; числовые hands/carry/packing
+по ней и exact mass выводит item owner. Combat classes в A1 contract нет.
+`domain_request` A1 содержит ровно одну operation: direct preparation в том же
+step запрещена, потому что A1 не имеет prepared-direct overlay.
+
+Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

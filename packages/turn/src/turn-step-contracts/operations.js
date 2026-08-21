@@ -17,6 +17,8 @@ import {
   requiredText,
   strict
 } from './validation.js';
+import { validateActionProduction } from
+  './action-production-operation.js';
 
 export function validateOperations(value, path, errors, trace, {
   directOnly
@@ -185,9 +187,10 @@ function validateMovement(value, path, errors, trace) {
 }
 
 function validateItemUse(value, path, errors, trace) {
-  if (!strict(value, path,
-    ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'],
-    errors)) return;
+  const keys = ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'];
+  const hasActionProduction = Object.hasOwn(value, 'action_production');
+  if (hasActionProduction) keys.push('action_production');
+  if (!strict(value, path, keys, errors)) return;
   constant(value.op, 'request_item_use', `${path}.op`, errors);
   knownRef(value.actor_ref, `${path}.actor_ref`, errors, trace);
   knownRef(value.item_ref, `${path}.item_ref`, errors, trace);
@@ -196,6 +199,14 @@ function validateItemUse(value, path, errors, trace) {
     `${path}.use_kind`, errors);
   refs(value.target_refs, `${path}.target_refs`, errors, trace,
     { allowEmpty: true });
+  if (hasActionProduction) {
+    validateActionProduction(value.action_production,
+      `${path}.action_production`, errors, trace, value);
+    if (value.use_kind !== 'other') {
+      add(errors, `${path}.action_production`, 'operation_shape',
+        'action production is allowed only for item use kind other');
+    }
+  }
 }
 
 function validateRequestedActivity(value, path, errors, trace) {

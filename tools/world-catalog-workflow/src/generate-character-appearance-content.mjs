@@ -232,9 +232,19 @@ definitionV19.immutable_content_refs.item_container_set = {
 definitionV19.scope = [...definitionV19.scope, 'canonical_actor_appearance_and_equipment_driven_portraits'];
 const definitionDigest = await writeJson(`${contentRoot}/definition.json`, definitionV19);
 
+const ordinaryMaterializationProfilePath =
+  `${contentRoot}/ordinary-materialization-profile.json`;
+const ordinaryMaterializationProfile = await readJson(
+  ordinaryMaterializationProfilePath
+);
+const ordinaryMaterializationProfileDigest = await rawDigest(
+  ordinaryMaterializationProfilePath
+);
+
 const contentFiles = {
   'definition.json': definitionDigest,
   'item-container-set-overlay.json': itemDigest,
+  'ordinary-materialization-profile.json': ordinaryMaterializationProfileDigest,
   'participant-profile-set.json': participantDigest,
   'player-profile-set.json': playerSetDigest,
   'player-profile.json': playerDigest
@@ -256,7 +266,14 @@ const contentManifest = {
     player_profile: contentRef('player-profile.json', playerV2.profile_id, 2, playerV2.schema, playerDigest),
     player_profile_set: contentRef('player-profile-set.json', playerSetV2.profile_set_id, 2, playerSetV2.schema, playerSetDigest),
     participant_profile_set: contentRef('participant-profile-set.json', participantV2.profile_set_id, 2, participantV2.schema, participantDigest),
-    item_container_set: contentRef('item-container-set-overlay.json', itemV5.set_id, 5, itemV5.schema, itemDigest)
+    item_container_set: contentRef('item-container-set-overlay.json', itemV5.set_id, 5, itemV5.schema, itemDigest),
+    ordinary_materialization_profile: contentRef(
+      'ordinary-materialization-profile.json',
+      ordinaryMaterializationProfile.profile_id,
+      ordinaryMaterializationProfile.revision,
+      ordinaryMaterializationProfile.schema,
+      ordinaryMaterializationProfileDigest
+    )
   },
   content_digest_algorithm: 'sha256_sorted_file_map_v1',
   content_digest: digestFileMap(contentFiles),

@@ -1,0 +1,64 @@
+import { projectLowerDvinaTraceA1Capability } from
+  './lower-dvina-trace-a1-player-safe.js';
+import { projectPlayerSafeOrdinaryResolutionCapability } from
+  '@rus/visibility-knowledge-memory/ordinary-resolution-capability';
+import { projectLowerDvinaTraceO2aCapabilities,
+  projectLowerDvinaTraceO2aDiscoverySources } from
+  './lower-dvina-trace-o2a-player-safe.js';
+
+export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
+  admitAmbientOrdinaryPortion,
+  actionProductionProfile,
+  createTurnStepActionProductionOwner,
+  ordinaryDiscoveryEnablementMarker,
+  ordinaryDiscoveryResolver,
+  partyId,
+  playerSafeStateProjector,
+  workingProjectionAuthority
+}) {
+  if (typeof playerSafeStateProjector !== 'function') return null;
+  return async (input) => {
+    const committedState = structuredClone(input.committed_state);
+    delete committedState.current_visible_context;
+    let projected = await playerSafeStateProjector({
+      ...input,
+      committed_state: committedState,
+      working_projection_authority: workingProjectionAuthority
+    });
+    projected = projectLowerDvinaTraceO2aCapabilities({ projected,
+      admission: admitAmbientOrdinaryPortion });
+    const initialWorkingProjection = projected.player_safe_state;
+    const playerSafeState = projectLowerDvinaTraceA1Capability({
+      playerSafeState: initialWorkingProjection,
+      loadedProfile: actionProductionProfile,
+      resolverAvailable:
+        typeof createTurnStepActionProductionOwner === 'function'
+    });
+    const base = { ...projected,
+      initial_working_projection: initialWorkingProjection };
+    if (typeof ordinaryDiscoveryEnablementMarker !== 'function'
+        || typeof ordinaryDiscoveryResolver !== 'function') {
+      return { ...base, player_safe_state: playerSafeState };
+    }
+    const scopeId = committedState.position?.g6_id
+      ?? committedState.position?.g6_ref
+      ?? committedState.position?.location_ref;
+    if (typeof scopeId !== 'string' || !scopeId) {
+      return { ...base, player_safe_state: playerSafeState };
+    }
+    const enabled = await ordinaryDiscoveryEnablementMarker({ partyId,
+      scopeRef: { entity_kind: 'g6', entity_id: scopeId } });
+    if (enabled !== true && enabled?.discovery_available !== true) {
+      return { ...base, player_safe_state: playerSafeState };
+    }
+    const withSources = projectLowerDvinaTraceO2aDiscoverySources({
+      projected:{...base,player_safe_state:playerSafeState},
+      sources:enabled === true ? [] : enabled.sources });
+    const capability = projectPlayerSafeOrdinaryResolutionCapability({
+      ordinary_resolution:{discovery_available:true,
+        container_resolution_available:false}
+    });
+    return {...withSources,initial_working_projection:initialWorkingProjection,
+      player_safe_state:{...withSources.player_safe_state,...capability}};
+  };
+}

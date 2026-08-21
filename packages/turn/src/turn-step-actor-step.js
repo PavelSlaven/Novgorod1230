@@ -33,6 +33,8 @@ export async function executeTurnStepActorStep({
   request,
   workingProjection,
   preparedChainContext,
+  preparedOrdinaryPlan,
+  preparedActionProductionPlans,
   registry,
   ports
 }) {
@@ -41,6 +43,8 @@ export async function executeTurnStepActorStep({
   const writes = [];
   const consequences = [];
   const preparedEffects = [];
+  const ordinaryPlans = [];
+  const actionProducedPlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -51,6 +55,22 @@ export async function executeTurnStepActorStep({
   let chainContext = preparedChainContext;
 
   if (plan.resolution === 'generic_check') {
+    const preflightOperations = actionProductionPreflightOperations(plan);
+    if (preflightOperations != null
+        && typeof ports.preflightActionProduction === 'function') {
+      await ports.preflightActionProduction(deepFreeze({
+        plan: structuredClone(plan), request: structuredClone(request),
+        operations: structuredClone(preflightOperations),
+        working_projection: structuredClone(projection),
+        prepared_chain_context: chainContext == null ? null
+          : structuredClone(chainContext),
+        prepared_ordinary_materialization_atomic_write_plan:
+          preparedOrdinaryPlan == null ? null
+            : structuredClone(preparedOrdinaryPlan),
+        prepared_action_production_atomic_write_plans:
+          structuredClone(preparedActionProductionPlans)
+      }));
+    }
     const contextResolver = requireFunction(
       ports.resolveCheckContext,
       'TURN_STEP_CHECK_CONTEXT_MISSING',
@@ -102,13 +122,15 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
-      preparedChainContext: chainContext, ports
+      preparedChainContext: chainContext, preparedOrdinaryPlan,
+      preparedActionProductionPlans, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects
+        summaries, writes, consequences, preparedEffects, ordinaryPlans,
+        actionProducedPlans
       }));
   }
 
@@ -125,16 +147,18 @@ export async function executeTurnStepActorStep({
     }
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
-      preparedChainContext: chainContext, ports
+      preparedChainContext: chainContext, preparedOrdinaryPlan,
+      preparedActionProductionPlans, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
-        summaries, writes, consequences, preparedEffects
+        summaries, writes, consequences, preparedEffects, ordinaryPlans,
+        actionProducedPlans
       }));
   }
-  if (plan.resolution !== 'domain_request') {
+  if (plan.activity?.owner === 'semantic') {
     const activities = [plan.activity];
     if (plan.resolution === 'generic_check') {
       const outcome = plan.check.outcomes[checkResult.outcome.band];
@@ -155,13 +179,16 @@ export async function executeTurnStepActorStep({
         projection,
         checkResult,
         preparedChainContext: chainContext,
+        preparedOrdinaryPlan,
+        preparedActionProductionPlans,
         ports
       });
       chainContext = advanceChainContext(chainContext, applied);
       ({ projection, boundary, progress, goalResult, continuation } =
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
-          summaries, writes, consequences, preparedEffects
+          summaries, writes, consequences, preparedEffects, ordinaryPlans,
+          actionProducedPlans
         }));
     }
   }
@@ -178,8 +205,43 @@ export async function executeTurnStepActorStep({
     writeFragments: writes,
     consequenceFragments: consequences,
     preparedEffects,
+    ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
+    action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
     preparedChainContext: chainContext
   };
+}
+
+function actionProductionPreflightOperations(plan) {
+  const outcomes = Object.values(plan.check?.outcomes ?? {});
+  const operations = outcomes.map((outcome) => (outcome.operations ?? [])
+    .find((operation) => operation?.op === 'request_item_use'
+      && operation.action_production != null) ?? null);
+  if (operations.every((operation) => operation === null)) return null;
+  if (operations.some((operation) => operation === null)) {
+    throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
+      'Every generic A1 outcome must use the same authority scope.');
+  }
+  const expected = preflightIdentity(operations[0]);
+  if (operations.slice(1).some((operation) =>
+    JSON.stringify(preflightIdentity(operation)) !== JSON.stringify(expected))) {
+    throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
+      'Every generic A1 outcome must use the same authority scope.');
+  }
+  return operations;
+}
+
+function preflightIdentity(operation) {
+  return {
+    actor_ref: operation.actor_ref,
+    item_ref: operation.item_ref,
+    target_refs: canonicalRefs(operation.target_refs),
+    source_refs: canonicalRefs(operation.action_production.source_refs),
+    tool_refs: canonicalRefs(operation.action_production.tool_refs)
+  };
+}
+
+function canonicalRefs(values) {
+  return [...values].sort((left, right) => left.localeCompare(right));
 }
 
 function advanceChainContext(context, applied) {
@@ -207,11 +269,14 @@ async function invokeOwner(handler, {
   projection,
   checkResult,
   preparedChainContext,
+  preparedOrdinaryPlan,
+  preparedActionProductionPlans,
   ports
 }) {
   const applied = await handler(createTurnStepExecutionInput({
     plan, request, operation, projection, checkResult,
-    preparedChainContext
+    preparedChainContext, preparedOrdinaryPlan,
+    preparedActionProductionPlans
   }));
   return orchestrateTurnStepPreparedEffect({
     request,

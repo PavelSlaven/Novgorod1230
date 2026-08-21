@@ -4,6 +4,20 @@ import { planApprovedItemVisibilityTransition } from
   './approved-item-visibility-transition.js';
 import { planApplicableApprovedItemTransition } from
   './applicable-approved-item-transition.js';
+import { ambientOrdinaryCommittedContextDigest, createAmbientOrdinaryPortionAdmission } from './ambient-ordinary-portion.js';
+import { classifyExistingContainerContents } from './container-ordinary-eligibility.js';
+import { buildExistingContainerOrdinarySeedRequest } from './container-ordinary-request.js';
+import { validateOrdinaryContainerContentsMechanics } from './ordinary-container-contents-mechanics.js';
+import { createActionProducedOutputAuthority,
+  deriveActionProducedOutputProperty,
+  validateActionProducedOutputAuthority } from
+  './action-produced-output-authority.js';
+import { ACTION_PRODUCED_OUTPUT_CLASSES, actionProducedOutputRequiresTool,
+  validateActionProducedOutputClass } from
+  './action-produced-output-class.js';
+import { actionProducedPhysicalFactTexts,
+  mergeActionProducedPhysicalFacts } from
+  './action-produced-output-semantics.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
@@ -12,12 +26,17 @@ export {
 export { planApprovedPropertyTransition } from './approved-property-transition.js';
 export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryProfile } from './inventory-archetypes.js';
 export {
+  createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
-  resolveInventoryMechanicsProfile
+  resolveInventoryMechanicsProfile,
+  resolvePhysicalItemCondition
 } from './runtime-instance-mechanics.js';
 export {
   admitOrdinaryRuntimeFact,
-  admitOrdinaryRuntimeResult
+  admitOrdinaryRuntimeResult,
+  admitOrdinaryWorldMaterialization,
+  resolveOrdinaryWorldPropertyPlacement,
+  ordinaryWorldPropertyPlacementContextDigest
 } from './ordinary-runtime-result.js';
 export {
   applyRuntimeInventoryTransition,
@@ -146,10 +165,23 @@ export function validatePropertyRelation(relation = {}) {
 }
 
 export {
+  ambientOrdinaryCommittedContextDigest,
+  ACTION_PRODUCED_OUTPUT_CLASSES,
+  actionProducedOutputRequiresTool,
+  actionProducedPhysicalFactTexts,
+  buildExistingContainerOrdinarySeedRequest,
+  classifyExistingContainerContents,
+  createActionProducedOutputAuthority,
+  deriveActionProducedOutputProperty,
+  validateOrdinaryContainerContentsMechanics,
+  createAmbientOrdinaryPortionAdmission,
   normalizeItem,
+  mergeActionProducedPhysicalFacts,
   planApplicableApprovedItemTransition,
   planApprovedItemVisibilityTransition,
   planApprovedItemZoneTransition,
+  validateActionProducedOutputAuthority,
+  validateActionProducedOutputClass,
   validateItem
 };
 

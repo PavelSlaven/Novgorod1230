@@ -1,0 +1,52 @@
+{
+  "schema": "rus.lower_dvina_trace_m9_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m9_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 21,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/manifest.json",
+    "id": "lower_dvina_trace_m8_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m8_content_manifest.v1",
+    "digest": "3b2ec8edf55c2db80290a63c1d96946cd8f82d251d481259f4f337704780706b"
+  },
+  "superseded_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/definition.json",
+    "id": "lower_dvina_trace_v1",
+    "revision": 20,
+    "schema": "rus.trace_scenario_definition.v1",
+    "digest": "d0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262"
+  },
+  "files": {
+    "action-production-profile.json": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694",
+    "definition.json": "95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d"
+  },
+  "content_refs": {
+    "definition": {
+      "path": "definition.json", "id": "lower_dvina_trace_v1",
+      "revision": 21, "schema": "rus.trace_scenario_definition.v1",
+      "digest": "95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d"
+    },
+    "action_production_profile": {
+      "path": "action-production-profile.json",
+      "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_action_production_profile.v1",
+      "digest": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694"
+    },
+    "inherited_m8_content": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m8-content/manifest.json",
+      "id": "lower_dvina_trace_m8_content_v1", "revision": 1,
+      "schema": "rus.lower_dvina_trace_m8_content_manifest.v1",
+      "digest": "3b2ec8edf55c2db80290a63c1d96946cd8f82d251d481259f4f337704780706b"
+    }
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "36b472b9101657990341f7cd9f88cfcd4cf8c67ff8c2ee40c854610094a70005",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

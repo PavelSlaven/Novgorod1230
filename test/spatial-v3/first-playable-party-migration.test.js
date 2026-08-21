@@ -49,12 +49,62 @@ const ordinaryMaterializationSql = readFileSync(
   new URL('../../schemas/party-db/021_party_runtime_ordinary_materialization.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 021 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 21);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-11), [sql,
+const ordinaryCommitSql = readFileSync(
+  new URL('../../schemas/party-db/022_party_runtime_ordinary_materialization_commit.sql', import.meta.url),
+  'utf8'
+);
+const ordinaryEnablementSql = readFileSync(
+  new URL('../../schemas/party-db/023_party_runtime_ordinary_materialization_enablement.sql', import.meta.url),
+  'utf8'
+);
+const ordinaryWorldItemsSql = readFileSync(
+  new URL('../../schemas/party-db/024_party_runtime_ordinary_world_items.sql', import.meta.url),
+  'utf8'
+);
+const finiteResourceSql = readFileSync(
+  new URL('../../schemas/party-db/025_party_runtime_finite_resource_transitions.sql', import.meta.url),
+  'utf8'
+);
+const existingContainerOrdinarySql = readFileSync(
+  new URL('../../schemas/party-db/026_party_runtime_existing_container_ordinary_contents.sql', import.meta.url),
+  'utf8'
+);
+const actionProductionSql = readFileSync(
+  new URL('../../schemas/party-db/027_party_runtime_action_production.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 027 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
-    combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql]);
+    combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
+    ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
+    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql]);
+});
+
+test('027 adds only A1 item versioning without parallel authority or ledger',
+  () => {
+  assert.doesNotMatch(actionProductionSql,
+    /party_action_production_authorities/u);
+  assert.doesNotMatch(actionProductionSql,
+    /party_action_production_(?:commits|resource_transitions)/u);
+  assert.match(actionProductionSql,
+    /ALTER TABLE party_runtime\.party_items[\s\S]*state_version/u);
+  assert.doesNotMatch(actionProductionSql,
+    /ALTER TABLE party_runtime\.party_resource_node_decrements/u);
+});
+
+test('024 admits only the separate closed O1 v2 runtime snapshot', () => {
+  assert.match(ordinaryWorldItemsSql,
+    /ordinary_world_runtime_instance_mechanics_snapshot_valid/u);
+  assert.match(ordinaryWorldItemsSql,
+    /rus\.items\.runtime_instance_mechanics_snapshot\.v2/u);
+  assert.match(ordinaryWorldItemsSql,
+    /source_kind' <> 'ordinary_world_materialization'/u);
+  assert.match(ordinaryWorldItemsSql,
+    /runtime_instance_mechanics_snapshot_valid[\s\S]+OR party_runtime[\s\S]+ordinary_world_runtime_instance/u);
+  assert.doesNotMatch(ordinaryWorldItemsSql, /^\s*(?:BEGIN|COMMIT)\s*;/imu);
 });
 
 test('019 keeps combat sessions in the target migration transaction', () => {

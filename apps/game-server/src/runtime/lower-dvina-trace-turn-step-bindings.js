@@ -142,7 +142,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14, 15, 16, 17, 18, 19].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17, 18, 19, 20, 21].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(
     ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision

@@ -4,6 +4,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.js",
+    "./action-produced-result": "./src/action-produced-result.js",
     "./spatial-v3": "./src/spatial-v3-ports.js",
     "./spatial-v3-orchestration": "./src/spatial-v3-orchestration.js",
     "./spatial-v3-target-composition": "./src/spatial-v3-target-composition.js",

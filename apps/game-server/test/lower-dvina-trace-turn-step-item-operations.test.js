@@ -33,6 +33,33 @@ test('scenario item factory requires injected approved ordinary policy', () => {
   });
 });
 
+test('ambient adapter preserves semantic intent for code-owned source selection', async () => {
+  let received;
+  const snapshot = createRuntimeInstanceMechanicsSnapshot({
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+    provenance: { source_kind: 'ordinary_direct_action_result',
+      root_turn_id: 'turn:party:1', step_index: 1,
+      operation_ref: 'turn:party:1:operation:1', origin_kind: 'ambient_ordinary',
+      source_refs: ['ambient:shore'] },
+    mechanics: createSand().mechanics
+  });
+  const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
+    ordinaryResultPolicy,
+    ambientOrdinaryPortionAdmission: async (input) => {
+      received = input.request;
+      return { pass: true, proposal: { semantic_descriptor: {
+        semantic_type: 'material_portion', name: 'горсть мокрого песка' } },
+      runtime_instance_mechanics_snapshot: snapshot };
+    }
+  });
+  await handlers.create_entity(execution(createSand()));
+  assert.equal(received.semantic_type, 'material_portion');
+  assert.equal(received.semantic_name, 'горсть мокрого песка');
+  assert.deepEqual(received.source_identity_refs, ['shore']);
+  assert.equal(received.source_ref, 'committed');
+  assert.equal(received.portion_profile_ref, 'committed');
+});
+
 test('inside uses a visible open container and code-owned capacity', () => {
   const options = {
     ordinaryResultPolicy,
@@ -188,7 +215,7 @@ test('inside capacity includes runtime items created earlier in the same submit'
   });
 });
 
-test('attached topology rejects cycles and remote prepared destinations', () => {
+test('attached topology rejects cycles and remote prepared destinations', async () => {
   const handlers = createItemOperationHandlers(initializeRuntimeState(null), {
     ordinaryResultPolicy
   });
@@ -201,12 +228,12 @@ test('attached topology rejects cycles and remote prepared destinations', () => 
   const second = handlers.create_entity(execution(attachedOperation,
     first.working_projection));
   const move = handlers.move_entity;
-  assert.throws(() => move(execution({
+  await assert.rejects(() => move(execution({
     op: 'move_entity',
     entity_ref: 'new_entity_1',
     placement: { relation: 'attached_to', target_ref: 'new_entity_2' }
   }, second.working_projection)), { code: 'ITEM_RUNTIME_PLACEMENT_CYCLE' });
-  assert.throws(() => move(execution({
+  await assert.rejects(() => move(execution({
     op: 'move_entity',
     entity_ref: 'new_entity_1',
     placement: { relation: 'located_at', target_ref: 'camp' }
@@ -412,6 +439,38 @@ test('committed capacity overlay releases an item retired in the same submit', (
   assert.equal(resolver('bag', {
     retiredItemRefs: ['runtime-item']
   }).used_slots, 0);
+});
+
+test('committed inventory restores authored and O2b container profiles from persisted state', () => {
+  const state = {
+    party_id: 'party', actor_id: 'mikula',
+    party_state: { state_version: 2 },
+    position: { g5_anchor_id: 'shore-anchor' },
+    player_profile: { attributes: { strength: { value: 9 } } },
+    items: [], container_placements: [], containers: [{
+      container_id: 'road-bag', template_id: 'road-bag-template',
+      state: { inventory_profile_snapshot: {
+        mass_grams: 300, external_hand_cost: 1, carry_form: 'regular',
+        capacity: 4
+      } }
+    }, {
+      container_id: 'pouch', template_id: 'small-pouch-template',
+      state: { ordinary_contents_context: { container_inventory_profile: {
+        template_id: 'small-pouch-template', mass_grams: 300,
+        external_hand_cost: 0, carry_form: 'regular',
+        packing_slot_cost: 3, capacity: 4
+      } } }
+    }]
+  };
+
+  assert.deepEqual(buildCommittedInventoryInput(state).container_profiles, [{
+    mass_grams: 300, external_hand_cost: 1, carry_form: 'regular',
+    capacity: 4, template_id: 'road-bag-template'
+  }, {
+    template_id: 'small-pouch-template', mass_grams: 300,
+    external_hand_cost: 0, carry_form: 'regular',
+    packing_slot_cost: 3, capacity: 4
+  }]);
 });
 
 function execution(operation, workingProjection = projection()) {

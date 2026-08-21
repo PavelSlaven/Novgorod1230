@@ -6,6 +6,7 @@ import { createSpatialV3PartyRepository } from '../../packages/party-store/src/s
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3CombinedAtomicCommitter } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { batchInput } from '../../apps/game-server/test/ordinary-materialization-container-batch-plan.test.js';
 const digest = 'a'.repeat(64);
 const approval = async () => ({ ok: true });
 const firstEntryBindingFields = [
@@ -179,6 +180,67 @@ test('P16 builder verifies approval, preserves three disjoint sets and rejects a
     { verifyApproval: approval }
   );
   assert.equal(forbiddenPortrait.error.code, 'generated_schema_mismatch');
+});
+
+test('P16 builder snapshots outer ordinary plan input without executing accessors', async () => {
+  let reads=0,approvals=0;
+  const accessor=input();
+  Object.defineProperty(accessor,'ordinary_materialization_atomic_write_plan',{
+    enumerable:true,get(){reads+=1;return batchInput({masses:[]});}});
+  const rejected=await buildCombinedWritePlan(accessor,{verifyApproval:async()=>{
+    approvals+=1;return {ok:true};}});
+  assert.equal(rejected.error.code,'generated_schema_mismatch');
+  assert.equal(reads,0);
+  assert.equal(approvals,0);
+
+  const hostile=[];
+  const symbol=structuredClone(batchInput({masses:[]}));
+  symbol[Symbol('hidden')]=true; hostile.push(symbol);
+  const proto=structuredClone(batchInput({masses:[]}));
+  Object.setPrototypeOf(proto,{inherited:true}); hostile.push(proto);
+  const cycle=structuredClone(batchInput({masses:[]})); cycle.self=cycle;
+  hostile.push(cycle);
+  const alias=structuredClone(batchInput({masses:[80]}));
+  alias.alias=alias.items[0]; hostile.push(alias);
+  for(const ordinaryPlan of hostile) assert.equal((await buildCombinedWritePlan(
+    input({ordinary_materialization_atomic_write_plan:ordinaryPlan}),
+    {verifyApproval:approval})).error.code,'generated_schema_mismatch');
+
+  const legacy=await buildCombinedWritePlan(input({
+    ordinary_materialization_atomic_write_plan:null,
+    action_production_atomic_write_plans:[]}),{verifyApproval:approval});
+  assert.equal(legacy.ok,true);
+  assert.equal(legacy.plan.write_set_digest,computeSpatialV3CanonicalDigest({
+    inserts:legacy.plan.inserts,updates:legacy.plan.updates,
+    appends:legacy.plan.appends,deletes:legacy.plan.deletes}));
+  assert.equal(Object.hasOwn(legacy.plan,
+    'action_production_atomic_write_plans'),false);
+  const ordinary=batchInput({masses:[80]});
+  const sealed=await buildCombinedWritePlan(input({
+    ordinary_materialization_atomic_write_plan:ordinary}),
+  {verifyApproval:approval});
+  assert.equal(sealed.ok,true);
+  assert.deepEqual(sealed.plan.ordinary_materialization_atomic_write_plan,
+    ordinary);
+  assert.notEqual(sealed.plan.write_set_digest,legacy.plan.write_set_digest);
+  const mutable=structuredClone(ordinary);
+  const originalDigest=mutable.write_plan_digest;
+  const detached=await buildCombinedWritePlan(input({
+    ordinary_materialization_atomic_write_plan:mutable}),{
+    verifyApproval:async()=>{mutable.write_plan_digest='forged';return {ok:true};}});
+  assert.equal(detached.ok,true);
+  assert.equal(detached.plan.ordinary_materialization_atomic_write_plan
+    .write_plan_digest,originalDigest);
+
+  let actionReads=0,actionApprovals=0;
+  const actionAccessor=input();
+  Object.defineProperty(actionAccessor,'action_production_atomic_write_plans',{
+    enumerable:true,get(){actionReads+=1;return [{}];}});
+  const actionRejected=await buildCombinedWritePlan(actionAccessor,{
+    verifyApproval:async()=>{actionApprovals+=1;return {ok:true};}});
+  assert.equal(actionRejected.error.code,'generated_schema_mismatch');
+  assert.equal(actionReads,0);
+  assert.equal(actionApprovals,0);
 });
 
 test('P16 admits one exact non-versioned party position update without a fabricated state version', async () => {

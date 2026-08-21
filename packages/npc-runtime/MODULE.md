@@ -85,8 +85,9 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
-Current revision 19 / `spatial-v3-production-v9` наследует эту boundary без
-нового NPC semantic mode. Phase 7 фиксирует
+Active revision 20 / M8 / Phase 1A v16 / Phase 1B v15 наследует эту boundary
+без нового NPC semantic mode; revision 19 / `spatial-v3-production-v9`
+сохраняется как historical recovery path. Phase 7 фиксирует
 fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
 точные actor-step operations из зарегистрированных domain handlers
 (`operation_contract` публикует exact executable combinations owners —

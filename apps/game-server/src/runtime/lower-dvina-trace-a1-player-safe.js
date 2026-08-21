@@ -1,0 +1,27 @@
+export function projectLowerDvinaTraceA1Capability({
+  playerSafeState, loadedProfile, resolverAvailable
+}) {
+  const profile = loadedProfile?.profile;
+  if (profile?.status !== 'approved' || resolverAvailable !== true
+      || !(playerSafeState.visible_objects ?? []).some(({ entity_ref: ref }) =>
+        ref?.entity_kind === 'item' && text(ref.entity_id))) {
+    return playerSafeState;
+  }
+  return {
+    ...playerSafeState,
+    action_production: {
+      semantic_grounding_available: true,
+      max_new_entities: profile.max_new_entities,
+      allowed_identity_modes: structuredClone(profile.allowed_identity_modes),
+      allowed_origins: structuredClone(profile.allowed_origins),
+      allowed_result_classes: structuredClone(profile.allowed_result_classes),
+      allowed_output_classes: structuredClone(profile.allowed_output_classes),
+      allowed_physical_forms: ['compact', 'regular', 'long', 'bulky']
+    }
+  };
+}
+
+function text(value) {
+  return typeof value === 'string' && value.length > 0
+    && value.trim() === value;
+}

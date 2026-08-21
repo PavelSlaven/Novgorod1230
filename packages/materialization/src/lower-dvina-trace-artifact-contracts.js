@@ -58,6 +58,17 @@ export const M6_REQUIRED_ARTIFACTS = Object.freeze([
 
 export const M7_REQUIRED_ARTIFACTS = M6_REQUIRED_ARTIFACTS;
 
+export const M8_REQUIRED_ARTIFACTS = Object.freeze([
+  ...M7_REQUIRED_ARTIFACTS,
+  'initial_ordinary_container',
+  'ordinary_container_contents_profile'
+]);
+
+export const M9_REQUIRED_ARTIFACTS = Object.freeze([
+  ...M8_REQUIRED_ARTIFACTS,
+  'action_production_profile'
+]);
+
 export const ARTIFACT_CONTRACTS = Object.freeze({
   phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 3],
   materialization_bindings: ['rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 3],
@@ -245,4 +256,31 @@ export const M7_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   player_profile_set: ['rus.trace_player_profile_set.v1', 2],
   participant_profile_set: ['rus.trace_participant_profile_set.v1', 2],
   item_container_set: ['rus.trace_item_container_set.v1', 5]
+});
+
+export const M8_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M7_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 16],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1',
+    16
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 20],
+  initial_ordinary_container: ['rus.trace_initial_ordinary_container.v1', 1],
+  ordinary_container_contents_profile: [
+    'rus.lower_dvina_trace_o2b_existing_container_profile.v2',
+    2
+  ]
+});
+
+export const M9_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
+  ...M8_ARTIFACT_CONTRACT_OVERRIDES,
+  phase_1a_manifest: ['rus.lower_dvina_trace_phase_1a_manifest.v1', 17],
+  materialization_bindings: [
+    'rus.lower_dvina_trace_phase_1a_materialization_bindings.v1', 17
+  ],
+  definition: ['rus.trace_scenario_definition.v1', 21],
+  action_production_profile: [
+    'rus.lower_dvina_trace_action_production_profile.v1', 1
+  ]
 });

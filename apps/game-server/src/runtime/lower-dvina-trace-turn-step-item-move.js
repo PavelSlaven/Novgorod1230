@@ -25,9 +25,12 @@ import {
   applyCommittedActorItemMove,
   planCommittedActorItemMove
 } from './lower-dvina-trace-actor-item-transition.js';
+import { resolveOrdinaryContents } from
+  './lower-dvina-trace-turn-step-container-ordinary.js';
 
-export function moveEntity(execution, state, options) {
-  const { operation, working_projection: projection } = execution;
+export async function moveEntity(execution, state, options) {
+  const { operation } = execution;
+  let projection = execution.working_projection;
   requireProjection(projection);
   const refs = collectCurrentRefs(execution);
   requireRef(operation.entity_ref, refs, 'entity_ref');
@@ -35,10 +38,19 @@ export function moveEntity(execution, state, options) {
   const current = requireProjectedItem(projection, operation.entity_ref);
   const runtime = state.entities.get(actualRef(operation.entity_ref, state));
   const authoredItem = state.authoredItems.get(operation.entity_ref);
-  const authoredContainer = state.authoredContainers.get(
+  let authoredContainer = state.authoredContainers.get(
     operation.entity_ref);
-  const authored = authoredItem ?? authoredContainer;
+  let authored = authoredItem ?? authoredContainer;
   const instanceKind = authoredContainer ? 'container' : 'item';
+  let ordinaryPlan = null;
+  if (authoredContainer) {
+    const ordinary = await resolveOrdinaryContents({canonical:authoredContainer,
+      revealContents:false,state,options,execution,projection});
+    ordinaryPlan=ordinary?.plan ?? null;
+    projection=ordinary?.working_projection ?? projection;
+    authoredContainer=state.authoredContainers.get(operation.entity_ref);
+    authored=authoredContainer;
+  }
   let owned = runtime;
   if (!owned && authored) {
     const mechanics = typeof options.resolveItemMechanics === 'function'
@@ -148,7 +160,7 @@ export function moveEntity(execution, state, options) {
     }),
     consequence: visibleConsequence(identity, {
       change: 'moved', entity_ref: owned.instance_id
-    })
+    }),ordinaryPlan
   });
 }
 

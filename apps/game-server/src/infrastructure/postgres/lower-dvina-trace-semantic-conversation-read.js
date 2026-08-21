@@ -23,7 +23,7 @@ import { assertSupportingOperationPerceptions } from
   './lower-dvina-trace-semantic-conversation-read-supporting-perceptions.js';
 
 export function isLowerDvinaTraceSemanticRevision(payload) {
-  return [14, 15, 16, 17, 18, 19].includes(Number(payload?.materialization_trace?.seed_context
+  return [14, 15, 16, 17, 18, 19, 20, 21].includes(Number(payload?.materialization_trace?.seed_context
     ?.scenario_definition_revision));
 }
 

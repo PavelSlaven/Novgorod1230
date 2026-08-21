@@ -23,13 +23,29 @@ export const TRACE_PHASE_1B_APPROVED_PHASE_1A_MANIFEST_DIGEST =
 export const TRACE_PHASE_1B_APPROVED_DEFINITION_DIGEST =
   '624a0a35179f6a72f035bd7c7fbaa3426260a38d720c00838d10654d0356bc41';
 export const TRACE_PHASE_1B_REVISION19_MANIFEST_DIGEST =
-  'fa618512b184668b8fba72c0ff964d6b981b782575cd882858ca288df5311bfb';
+  '27572f1f031fe9089b628e4dcd99cb66402496c5c3d2a0f0d296aef05f2f9aec';
 export const TRACE_PHASE_1B_REVISION19_BINDING_DIGEST =
-  'e29a8230daea086c527384f3828d52e1a645760a2ea20415a687546ad7d0f568';
+  'dbc1bebf2fe6b812af6eec8085dd74d43668e179214fa74a27f6aa04e1de5c84';
 export const TRACE_PHASE_1B_REVISION19_PHASE_1A_MANIFEST_DIGEST =
-  '3e12b8aacb7b45fd17cdd00c6baf69dc4c7053ffca58e3bc312e4376b1a76be3';
+  '5b54d6037ad8e969f22c0051dd617af8c6fac8ac81d4035ba1fd7d126af3220e';
 export const TRACE_PHASE_1B_REVISION19_DEFINITION_DIGEST =
   'a2bc08aa214da499777517bfb724c9fe7e64b887fad14c65458a517ba9c228f4';
+export const TRACE_PHASE_1B_REVISION20_MANIFEST_DIGEST =
+  'a7306762a8f57e9f43bb30dc0d8a9b48780aa9e69adcb26a66029b4064f868b4';
+export const TRACE_PHASE_1B_REVISION20_BINDING_DIGEST =
+  'bb90c9ce8750641a258f84d8b7a7c0cdb417460da45f263b158d1ae0862f0c8c';
+export const TRACE_PHASE_1B_REVISION20_PHASE_1A_MANIFEST_DIGEST =
+  'c4422cc17fc110bd486222377c0a262878077e9af9aef3da3977cfaed925cccd';
+export const TRACE_PHASE_1B_REVISION20_DEFINITION_DIGEST =
+  'd0e42ce7e1109ce5ef0d47fc9953f9d247cb5e7166137a4c31f2cacbdf258262';
+export const TRACE_PHASE_1B_REVISION21_MANIFEST_DIGEST =
+  'c4d832ecc4e9ee51bb86fa92e4765ef1bb6777e0cae2be36f91adfb91aae4037';
+export const TRACE_PHASE_1B_REVISION21_BINDING_DIGEST =
+  '8ba3f391b6d0d19ae3d541ea97a65c27f56e62817da4214fa602e149df4bbe0d';
+export const TRACE_PHASE_1B_REVISION21_PHASE_1A_MANIFEST_DIGEST =
+  '0243e0b3aa5dd65d07e4cc4c227672dba4c66e9fc2cd5f452647745275d066d7';
+export const TRACE_PHASE_1B_REVISION21_DEFINITION_DIGEST =
+  '95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d';
 export const TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION =
   'code_materializer_v2';
 export const TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID =
@@ -209,5 +225,29 @@ export const TRACE_PHASE_1B_SESSION_IDENTITIES = Object.freeze([
     scenario_definition_digest: TRACE_PHASE_1B_REVISION19_DEFINITION_DIGEST,
     materializer_binding_id:
       'lower_dvina_trace_phase_1a_materialization_bindings_v15'
+  }),
+  Object.freeze({
+    publication_manifest_digest: TRACE_PHASE_1B_REVISION20_MANIFEST_DIGEST,
+    publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v15',
+    publication_binding_revision: 15,
+    publication_binding_digest: TRACE_PHASE_1B_REVISION20_BINDING_DIGEST,
+    phase_1a_manifest_digest:
+      TRACE_PHASE_1B_REVISION20_PHASE_1A_MANIFEST_DIGEST,
+    scenario_definition_revision: 20,
+    scenario_definition_digest: TRACE_PHASE_1B_REVISION20_DEFINITION_DIGEST,
+    materializer_binding_id:
+      'lower_dvina_trace_phase_1a_materialization_bindings_v16'
+  }),
+  Object.freeze({
+    publication_manifest_digest: TRACE_PHASE_1B_REVISION21_MANIFEST_DIGEST,
+    publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v16',
+    publication_binding_revision: 16,
+    publication_binding_digest: TRACE_PHASE_1B_REVISION21_BINDING_DIGEST,
+    phase_1a_manifest_digest:
+      TRACE_PHASE_1B_REVISION21_PHASE_1A_MANIFEST_DIGEST,
+    scenario_definition_revision: 21,
+    scenario_definition_digest: TRACE_PHASE_1B_REVISION21_DEFINITION_DIGEST,
+    materializer_binding_id:
+      'lower_dvina_trace_phase_1a_materialization_bindings_v17'
   })
 ]);

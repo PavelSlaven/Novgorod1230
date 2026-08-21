@@ -755,6 +755,10 @@ LLM может материализовать объект, который яв�
 
 LLM не придумывает значимый скрытый результат.
 
+Для O1 этот же существующий request — единственный public путь к common ordinary detail; `request_ordinary_detail` не существует. После authored и committed discovery, exact persisted resolution и other code-first short circuits ordinary resolver вызывается только при meaningful engagement, когда concrete detail нужна factual projection. Pass-through, movement и обычный вход в scene ordinary LLM не вызывают. Stage A получает только committed objective context, не содержит candidate, raw player action, wishlist, desired use или narration suggestion и может подготовить лишь candidate-free seed/groups. Stage B имеет `evidence_weight: 0`; код строит `candidate_key`/`coverage_key`, classification и policy fields. Normalized discovery query (NFKC, trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит code-owned candidate identity и передаётся model только как `candidate_hint`: это не noun/recipe allowlist и не permissions/classification/mechanics authority. Exact normalized retry использует persisted resolution без reroll; другой normalized query получает другую identity. Один discovery допускает максимум два semantic calls суммарно для Stage A, Stage B и structural repair; repair всегда расходует оставшийся call. Если Stage A repair исчерпал лимит, Stage B не вызывается и сохраняется seed-only. Positive `materialize` требует independent committed/prepared supporting basis, `common_mundane`/`common` admission, exact property basis, narrow existing placement и immutable mechanics snapshot в пределах bounded mechanics policy. Model-produced `absent`, `no_change` и `authority_required` — persisted first-class resolutions; preflight `no_change` из-за исчерпанного budget/cap остаётся transient и не создаёт granular record. Если в том же turn впервые выполнен Stage A, сохраняется seed-only P16 plan. Model call происходит вне physical transaction; revalidation и one atomic P16 commit сохраняют seed/basis, positive либо negative exact resolution. Planner и narrator видят только capability marker и approved visible concrete result.
+
+O1 сам не активирует O2, A1, F1, S1, N1, template-less runtime containers, context-bound weapons/value/currency или natural finite sources. Значимые, hidden и informational facts, container contents и topology остаются code-owned. Независимо активированный O2b ниже не расширяет O1 discovery.
+
 ### 12.2. `request_container_access`
 
 ```json
@@ -769,11 +773,26 @@ LLM не придумывает значимый скрытый результа
 Владелец контейнера:
 
 - проверяет замок, доступ и состояние;
-- применяет точную механику открытия;
-- при необходимости выполняет утверждённую проверку;
-- раскрывает уже материализованное hidden contents;
-- либо впервые материализует contents по утверждённому code-owned профилю;
-- сохраняет конкретное содержимое, чтобы оно не определялось повторно.
+- сначала классифицирует уже committed authoritative contents;
+- при authoritative результате не вызывает ordinary resolver/model;
+- только для existing template-backed container с exact explicit O2b profile,
+  policy и `ordinary_contents_context` может разрешить `ordinary_unresolved`;
+- строит candidate-free Stage A только из committed template/mechanics,
+  owner-controller/property, site/economic context, permissions, bases,
+  capacity и prior resolutions;
+- до state mutation проверяет exact mechanics, individual mass,
+  packing/capacity и approved batch limit `1..8`;
+- materialize-ит approved ordinary children concealed до reveal, затем применяет
+  точную механику открытия и при необходимости утверждённую проверку;
+- сохраняет container-scoped ordinary ledger, concrete children и reveal одним
+  combined P16, чтобы reload/reopen не вызывал model и не reroll-ил contents.
+
+Root action, remaining intent, desired item/query/use и narration не входят в
+O2b Stage A. Разные формулировки игрока при одном committed container context
+дают byte-identical seed. Ordinary `concealed` не означает hidden authority:
+O2b не создаёт clues/evidence, authentic documents, hidden history, secret
+caches, currency, significant/hidden truth, новый container или armament.
+Template-less container и отсутствующий/drifted profile/policy fail closed.
 
 LLM не перечисляет contents до их появления в player-safe working projection.
 
@@ -798,11 +817,78 @@ LLM не перечисляет contents до их появления в player-
   "actor_ref": "actor_mikula",
   "item_ref": "item_1",
   "use_kind": "consume | apply | operate | equip | unequip | other",
-  "target_refs": []
+  "target_refs": [],
+  "action_production": {
+    "source_refs": ["item_1"],
+    "tool_refs": [],
+    "output_count": 0,
+    "identity_mode": "preserve_source | independent_outputs | no_useful_result",
+    "origin": "direct_partition | crafted | null",
+    "result_class": "ordinary_physical_result | partial_transformation | nonworking_construction | waste | written_carrier | no_useful_result",
+    "material_extent": "minor | half | major | whole | null",
+    "result_descriptor": {
+      "display_name": "безопасное имя физического результата",
+      "physical_description": "видимый физический результат",
+      "qualitative_facts": [],
+      "removed_physical_fact_refs": [],
+      "inscription_text": null,
+      "physical_form": "compact | regular | long | bulky | null",
+      "source_fact_delta": null
+    },
+    "output_class": "ordinary_mundane | weapon_capable | money_like_token | written_carrier | null"
+  }
 }
 ```
 
 Профильный владелец предмета рассчитывает расход количества, effects, body changes и допустимые transitions.
+
+В active Lower Dvina Trace revision 21 отсутствие exact recipe не является
+автоматическим отказом внутри SHA-pinned A1 profile. Приоритет не меняется:
+registered/external handler, затем authored binding, и лишь при нуле совпадений
+— code-owned A1 owner. Это не второй semantic fallback: qualitative
+`action_production` возвращает тот же sole `turn_step_plan_v1`, а A1 owner не
+вызывает LLM. Активный scope принимает один или несколько committed либо
+validated same-root revealed non-container material sources и ноль или несколько
+доступных actor-controlled non-container tools; `source_refs` и
+`tool_refs` явно разделены, legal owner может быть другим. Общий turn plan выбирает
+generic check только при неопределённом исходе; существующий semantic activity/time
+owner исполняется ровно один раз для любой реально выполненной физической попытки.
+Детерминированное действие использует `domain_request` без check и RNG, но не
+становится zero-time. Profile допускает preserve, до четырёх independent outputs,
+no-result,
+partial/nonworking/waste, writing, non-authoritative token-like и closed
+weapon-capable outcomes. Model не задаёт массу, numeric расход, mechanics, identity,
+property, placement, время, roll, currency/official status или combat numbers.
+Exact source/output mechanics выводится из реально списанных allocations:
+finite source уменьшается, а полностью разделённый единичный source без
+resource row retire-ится. Для partial independent output sole plan задаёт только
+grounded qualitative `material_extent = minor|half|major`; item owner переводит
+его в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.
+Output descriptor описывает только новые entities; обязательный
+`source_fact_delta = { physical_description, qualitative_facts,
+removed_physical_fact_refs, physical_form }` отдельно меняет current state
+surviving source. Text-поля delta могут быть пустыми, если меняется только
+code-owned inventory geometry по обязательной `physical_form`.
+Full independent partition использует `whole`, preserve/no-result — `null`.
+Масса полного partition сохраняется с детерминированным остатком,
+hand/packing/carry выводятся code-owned из exact mass и qualitative
+`physical_form`, а не наследуют форму source. Новый
+independent output обязан иметь safe непустое display name; nullable physical
+description не добавляется как `null` fact. Non-authoritative display name/type сохраняются в
+ordinary item metadata и переживают reload; persisted non-authoritative
+physical facts видны следующему internal step и после reload. Надпись хранится
+как durable physical fact до explicit удаления/замены по видимому `fact_ref`;
+surviving source partial partition получает обновлённые current facts в том же
+P16. `weapon_capable` здесь не содержит combat class/damage: combat owner
+bounded-классифицирует любой held A1 item без exact weapon mechanics по текущим
+facts/form только при combat use и может вернуть `not_weapon_capable`; последний
+A1 `output_class` не является combat gate. A1 `domain_request` содержит ровно
+одну operation и не допускает direct preparation в том же step.
+Положительные `weapon_capable`, `money_like_token` и `written_carrier`
+результаты требуют хотя бы один реально доступный и controller-validated
+`tool_ref`; `ordinary_mundane` и `no_useful_result` такого требования не имеют.
+Один combined P16 сохраняет causal pins, conservation и physical transition
+атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 
 ### 12.5. `request_activity`
 
@@ -1009,7 +1095,7 @@ Production implementation существующего владельца:
 - `request_container_access`;
 - `request_discovery`.
 
-Container owner раскрывает или впервые materializes persisted contents. Discovery owner разрешает значимые hidden facts и items. LLM создаёт только ordinary ambient result по правилам раздела 11.1.
+Container owner раскрывает или впервые materializes persisted contents. Discovery owner разрешает значимые hidden facts и items. LLM создаёт ordinary direct/ambient result только по правилам раздела 11.1. O1 discovery не расширяет этот path: он materializes только common mundane non-container `man_made` item через описанный в 12.1 code-owned admission.
 
 ### 17.4. Temporal integration
 
@@ -1280,7 +1366,7 @@ Module doc публикует contract и владельца:
 
 Нельзя создавать как ordinary result уникальные, ценные, изготовленные, принадлежащие кому-либо, информационные или сюжетно значимые предметы: монеты, оружие, письма, останки, клады, улики, предметы с владельцем и contents закрытых контейнеров.
 
-Для значимого скрытого результата используй `request_discovery`. Для контейнера используй `request_container_access`.
+Для значимого скрытого результата используй `request_discovery`. Для контейнера используй `request_container_access`. O1 ordinary discovery не является свободным источником обычных вещей: он не разрешает natural finite source, context-bound weapon/value/currency или template-less container.
 
 Для каждого нового физического экземпляра укажи полный mechanics profile с отдельной правдоподобной массой. Не пересчитывай сохранённую механику существующего экземпляра без физического изменения.
 

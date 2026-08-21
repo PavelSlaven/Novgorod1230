@@ -1,0 +1,23 @@
+{
+  "schema": "rus.ordinary_materialization_stage_b_approval_receipt.v1",
+  "version": 1,
+  "profile_digest": "56e310ce0b127e25c11ba942c0d2483c0119022431d9835746a47cca27fbcf42",
+  "eval_contract_digest": "5d17dd3f810d6af169a8af51929af7601206903036acbcd3e810f64a98333f48",
+  "model_identity": {
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "scope": "turn_runtime",
+    "role_id": "ordinary_materialization",
+    "config_hash": "af6b22db5449f13e"
+  },
+  "approved_case_ids": [
+    "anachronism",
+    "evidence-clue",
+    "letter-document",
+    "misleading-common-name",
+    "significant-hidden",
+    "silver-currency",
+    "sword-weapon"
+  ],
+  "result_digest": "828090cab96caa8e38cda1fc1d4f37ce081c87fcd68b0ed84180245c8b074cdd"
+}

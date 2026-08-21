@@ -211,15 +211,25 @@ function validateResolution(plan, kinds, errors) {
         'generic_check must be pending');
     }
   } else if (plan.resolution === 'domain_request') {
-    if (plan.activity?.owner !== 'domain') {
+    const actionProduction = plan.operations?.find((operation) =>
+      operation?.op === 'request_item_use'
+        && operation.action_production != null);
+    const expectedOwner = actionProduction ? 'semantic' : 'domain';
+    if (plan.activity?.owner !== expectedOwner) {
       add(errors, '$.activity.owner', 'resolution',
-        'domain_request requires domain activity');
+        actionProduction
+          ? 'action production requires semantic activity'
+          : 'domain_request requires domain activity');
     }
     requireNull(plan.check, '$.check', errors);
     requireNull(plan.clarification, '$.clarification', errors);
     if (domainCount !== 1) {
       add(errors, '$.operations', 'resolution',
         'domain_request requires exactly one domain operation');
+    }
+    if (actionProduction && plan.operations.length !== 1) {
+      add(errors, '$.operations', 'resolution',
+        'action production does not support direct preparation operations');
     }
     if (firstDomain >= 0 && firstDomain !== kinds.length - 1) {
       add(errors, '$.operations', 'ordering',

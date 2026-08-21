@@ -101,6 +101,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const writeFragments = [];
   const consequenceFragments = [];
   const preparedEffects = [];
+  const ordinaryPlans = [];
+  const actionProducedPlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   const seen = new Set();
@@ -182,6 +184,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       request,
       workingProjection,
       preparedChainContext,
+      preparedOrdinaryPlan: ordinaryPlans[0] ?? null,
+      preparedActionProductionPlans: actionProducedPlans,
       registry,
       ports
     });
@@ -189,6 +193,15 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     writeFragments.push(...execution.writeFragments);
     consequenceFragments.push(...execution.consequenceFragments);
     preparedEffects.push(...execution.preparedEffects);
+    if (execution.ordinary_materialization_atomic_write_plan != null) {
+      if (ordinaryPlans.length !== 0) throw turnFailure(
+        'TURN_STEP_ORDINARY_PLAN_DUPLICATE',
+        'Only one ordinary atomic plan is allowed per turn.');
+      ordinaryPlans.push(execution.ordinary_materialization_atomic_write_plan);
+    }
+    if (execution.action_production_atomic_write_plan != null) {
+      actionProducedPlans.push(execution.action_production_atomic_write_plan);
+    }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
       throw turnFailure('TURN_STEP_PREPARED_EFFECT_COUNT_INVALID',
@@ -271,6 +284,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     write_fragments: writeFragments,
     consequence_fragments: consequenceFragments,
     prepared_effect_ledger: preparedEffectLedger,
+    ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
+    action_production_atomic_write_plans: actionProducedPlans,
     clarification
   });
 }

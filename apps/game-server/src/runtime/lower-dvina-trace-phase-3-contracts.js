@@ -18,7 +18,8 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19].includes(bundle.definition_revision)) {
+  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+    .includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
   const activities = bundle.activity_check_consequence_profiles.activity_profiles;
@@ -120,7 +121,8 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'transition_template_id',
     'trace_ld_v1_transition_blue_wool_pickup'
   );
-  const conversationBindings = [14, 15, 16, 17, 18, 19].includes(bundle.definition_revision)
+  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21]
+    .includes(bundle.definition_revision)
     ? bundle.conversation_semantic_bindings
     : null;
   const conversationSignalMappings = conversationBindings == null

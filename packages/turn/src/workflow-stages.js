@@ -22,6 +22,8 @@ import {
 import { buildScreenProjectionStage } from './stages/screen-projection.js';
 import {
   getTurnStepWorkflowDraft,
+  turnStepDraftActionProductionAtomicWritePlans,
+  turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
   turnStepDraftPreparedEffectLedger
 } from './turn-step-workflow-draft.js';
@@ -135,6 +137,11 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       bodyUpdate: state.bodyUpdate,
       hiddenUpdate: state.hiddenUpdate,
       visibleContext: state.visibleContext,
+      ordinary_materialization_atomic_write_plan: turnStepDraftOrdinaryAtomicWritePlan(
+        getTurnStepWorkflowDraft(state.modeResolution)),
+      action_production_atomic_write_plans:
+        turnStepDraftActionProductionAtomicWritePlans(
+          getTurnStepWorkflowDraft(state.modeResolution)),
       commandRegistry: services.commandRegistry
     }), context)),
     stage(14, 'commit', async (state) => {

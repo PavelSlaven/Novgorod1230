@@ -184,7 +184,11 @@ function authoredItemRowProof(row) {
 }
 
 function itemProof(row) {
-  if (row.placement_item_id !== row.item_id) throw phase2IntegrityError();
+  if (row.placement_item_id !== row.item_id
+      && !(row.placement_item_id == null
+        && row.state?.lifecycle_status === 'retired')) {
+    throw phase2IntegrityError();
+  }
   return {
     item_id: row.item_id,
     run_id: row.run_id,
@@ -200,6 +204,7 @@ function itemProof(row) {
 }
 
 function placementProof(value = {}) {
+  value ??= {};
   return {
     anchor_id: value.anchor_id ?? null,
     container_id: value.container_id ?? null,

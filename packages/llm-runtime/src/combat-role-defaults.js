@@ -1,6 +1,7 @@
 export const CombatTurnRuntimeRoles = Object.freeze({
   NPC_COMBAT_DECIDER: 'npc_combat_decider',
-  NPC_COMBAT_DECIDER_REPAIR: 'npc_combat_decider_format_repair'
+  NPC_COMBAT_DECIDER_REPAIR: 'npc_combat_decider_format_repair',
+  ACTION_PRODUCED_WEAPON_CLASSIFIER: 'combat_weapon_classification'
 });
 
 export function combatTurnRoleDefaults(contractModes) {
@@ -12,7 +13,19 @@ export function combatTurnRoleDefaults(contractModes) {
     npc_combat_decider_format_repair: repairRole(
       'NPC_COMBAT_DECIDER_REPAIR',
       contractModes.JSON_REPAIR
-    )
+    ),
+    combat_weapon_classification: {
+      envPrefix: 'COMBAT_WEAPON_CLASSIFICATION',
+      model: 'deepseek-v4-flash', thinking: 'disabled',
+      reasoningEffort: null, responseFormat: 'json_object', maxTokens: 500,
+      temperature: 0, topP: 1,
+      outputContractMode: contractModes.JSON_OBJECT_WITH_SCHEMA,
+      expectedSchema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      parseJson: true, targetInputTokens: 4000,
+      comfortableInputTokens: 8000, hardInputLimitTokens: 30000,
+      reserveOutputTokens: 500, reserveRepairTokens: 500
+    }
   };
 }
 

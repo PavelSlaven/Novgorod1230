@@ -18,7 +18,9 @@ export function collectTurnStepExecutionResult({
   summaries,
   writes,
   consequences,
-  preparedEffects
+  preparedEffects,
+  ordinaryPlans,
+  actionProducedPlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -57,6 +59,23 @@ export function collectTurnStepExecutionResult({
         structuredClone(applied.working_projection)
     });
   }
+  if (applied.ordinary_materialization_atomic_write_plan != null) {
+    if (!Array.isArray(ordinaryPlans) || ordinaryPlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one ordinary atomic plan.');
+    }
+    ordinaryPlans.push(structuredClone(
+      applied.ordinary_materialization_atomic_write_plan));
+  }
+  if (applied.action_production_atomic_write_plan != null) {
+    if (!Array.isArray(actionProducedPlans)
+        || actionProducedPlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one action-production atomic plan.');
+    }
+    actionProducedPlans.push(structuredClone(
+      applied.action_production_atomic_write_plan));
+  }
   return {
     projection: structuredClone(applied.working_projection),
     boundary: boundary
@@ -77,7 +96,9 @@ export function createTurnStepExecutionInput({
   operation,
   projection,
   checkResult,
-  preparedChainContext
+  preparedChainContext,
+  preparedOrdinaryPlan = null,
+  preparedActionProductionPlans = []
 }) {
   return deepFreeze({
     plan: structuredClone(plan),
@@ -86,7 +107,12 @@ export function createTurnStepExecutionInput({
     working_projection: structuredClone(projection),
     check_result: checkResult == null ? null : structuredClone(checkResult),
     prepared_chain_context: preparedChainContext == null ? null
-      : structuredClone(preparedChainContext)
+      : structuredClone(preparedChainContext),
+    prepared_ordinary_materialization_atomic_write_plan:
+      preparedOrdinaryPlan == null ? null
+        : structuredClone(preparedOrdinaryPlan),
+    prepared_action_production_atomic_write_plans:
+      structuredClone(preparedActionProductionPlans)
   });
 }
 

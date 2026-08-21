@@ -2,6 +2,7 @@ import {
   assertAllowedKeys,
   compact,
   finite,
+  physicalFactRecords,
   plain,
   projectionError,
   scalarRecord,
@@ -14,13 +15,13 @@ import {
   runtimeItemRecordIsConcealed as recordIsClosed,
   runtimeItemStateValues as stateValues
 } from '@rus/items-property';
-
 const INVENTORY_KEYS = new Set([
   'items', 'total_weight', 'load_category', 'occupied_hands'
 ]);
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
-  'name', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
+  'physical_facts', 'physical_fact_records', 'physical_inscriptions',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'state', 'visible', 'is_visible'
@@ -35,7 +36,6 @@ const PROPERTY_STATE_KEYS = new Set([
 const USE_STATE_KEYS = new Set([
   'id', 'state', 'status', 'kind', 'remaining', 'uses_remaining'
 ]);
-
 export function projectInventory(value, { strict = false,
   allowedItemIds = null } = {}) {
   if (!plain(value)) return undefined;
@@ -57,12 +57,10 @@ export function projectInventory(value, { strict = false,
     occupied_hands: finite(value.occupied_hands)
   });
 }
-
 export function playerSafeItemIds(items) {
   return new Set((items ?? []).map((item) => item?.item_id)
     .filter((itemId) => typeof itemId === 'string' && itemId.length > 0));
 }
-
 export function projectItems(records, { actorId, position, visibleNpcIds,
   strict = false } = {}) {
   if (!Array.isArray(records)) return undefined;
@@ -76,7 +74,6 @@ export function projectItems(records, { actorId, position, visibleNpcIds,
       visibleNpcIds))
     .map((item) => projectItem(item, strict));
 }
-
 function itemIsStructurallyVisible(item, byId, ancestors) {
   if (!plain(item) || recordIsClosed(item)) return false;
   const itemId = item.item_id ?? item.instance_id;
@@ -92,7 +89,6 @@ function itemIsStructurallyVisible(item, byId, ancestors) {
   if (typeof itemId === 'string') nextAncestors.add(itemId);
   return itemIsStructurallyVisible(host, byId, nextAncestors);
 }
-
 function projectInventoryItem(value, strict) {
   if (typeof value === 'string') return value;
   if (!plain(value)) return undefined;
@@ -111,13 +107,11 @@ function projectInventoryItem(value, strict) {
     risk: textArray(value.risk), use: text(value.use)
   });
 }
-
 function inventoryItemRef(value) {
   return typeof value === 'string'
     ? value
     : plain(value) ? value.item_id ?? value.instance_id : undefined;
 }
-
 function projectWeight(value, strict) {
   if (!plain(value)) return undefined;
   if (strict) {
@@ -125,7 +119,6 @@ function projectWeight(value, strict) {
   }
   return compact({ grams: finite(value.grams) });
 }
-
 function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
   visibleNpcIds) {
   if (!plain(item) || recordIsClosed(item)) return false;
@@ -173,14 +166,23 @@ function itemIsPlayerSafe(item, actorId, position, byId, ancestors,
       .some((state) =>
       ['visible', 'scene'].includes(state));
 }
-
 function projectItem(item, strict) {
   if (strict) assertAllowedKeys(item, ITEM_KEYS, 'items[]', invalidCode());
   return compact({
     item_id: text(item.item_id ?? item.instance_id),
     instance_id: text(item.instance_id), template_id: text(item.template_id),
     profile_id: text(item.profile_id), category_id: text(item.category_id),
-    name: text(item.name), quantity: finite(item.quantity),
+    name: text(item.name), semantic_type: text(item.semantic_type),
+    physical_facts: projectPhysicalFacts(item, strict),
+    physical_fact_records: physicalFactRecords(item.physical_fact_records
+      ?? item.state?.ordinary_metadata?.semantic_facts?.map?.((fact) => ({
+        fact_ref: fact?.fact_id, text: fact?.text })), { strict,
+      path: 'items[].physical_fact_records[]', code: invalidCode() }),
+    physical_inscriptions: physicalFactRecords(item.physical_inscriptions
+      ?? item.state?.ordinary_metadata?.physical_inscriptions?.map?.((fact) =>
+        ({ fact_ref: fact?.fact_id, text: fact?.text })), { strict,
+      path: 'items[].physical_inscriptions[]', code: invalidCode() }),
+    quantity: finite(item.quantity),
     quantity_unit_id: text(item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),
     claim_state: text(item.claim_state),
@@ -196,7 +198,13 @@ function projectItem(item, strict) {
     state: projectItemState(item.state, strict)
   });
 }
-
+function projectPhysicalFacts(item, strict) {
+  const values = item.state?.ordinary_metadata?.semantic_facts;
+  const facts = item.physical_facts ?? values?.map?.((fact) =>
+    typeof fact === 'string' ? fact : fact?.text);
+  const projected = textArray(facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
+  return projected?.length ? projected : undefined;
+}
 function projectPlacement(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
@@ -210,7 +218,6 @@ function projectPlacement(value, strict) {
     key, text(value[key])
   ])));
 }
-
 function projectReferenceState(value, strict, path) {
   if (typeof value === 'string') return value;
   if (!plain(value)) return undefined;
@@ -248,6 +255,8 @@ function projectItemState(value, strict) {
     'use_state'
   ]);
   if (strict) assertAllowedKeys(value, allowed, 'item.state', invalidCode());
+  const propertyState = scalarRecord(value.property_state, { strict,
+    path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS });
   return compact({
     semantic_category: text(value.semantic_category),
     evidence_ref: text(value.evidence_ref),
@@ -255,8 +264,8 @@ function projectItemState(value, strict) {
       : scalarRecord(value.condition, { strict, path: 'item.state.condition',
           allowedKeys: ITEM_CONDITION_KEYS }),
     condition_state: text(value.condition_state),
-    property_state: scalarRecord(value.property_state, { strict,
-      path: 'item.state.property_state', allowedKeys: PROPERTY_STATE_KEYS }),
+    property_state: propertyState != null && Object.keys(propertyState).length
+      ? propertyState : undefined,
     accessibility: text(value.accessibility),
     access_state: projectReferenceState(value.access_state, strict,
       'item.state.access_state'),

@@ -30,20 +30,29 @@ function outerCauseMatches(plan,value){
       &&JSON.stringify(cause.due_at)===JSON.stringify(
         proposal.process_before?.next_boundary_at);
   }
+  const npc=plan.semantic_command_snapshot?.npc_actor_step;
+  if(npc!=null){
+    return plan.operation_kind==='trace_phase_7_fire_rest'
+      &&cause.kind==='actor_step'&&cause.request_id===npc.request_id
+      &&cause.root_turn_id===npc.root_turn_id
+      &&cause.step_index===npc.step_index
+      &&plan.owner_keys.includes(`actor:${value.actor_ref}`)
+      &&traceOperationMatches(npc.operation,value);
+  }
   const trace=plan.semantic_command_snapshot?.semantic_trace?.step_traces
     ?.[cause.step_index-1];
+  const operations=(trace?.approved_plan?.operations??[])
+    .filter(({op})=>op==='request_world_process');
   return cause.kind==='actor_step'&&cause.request_id===plan.request_id
     &&cause.root_turn_id===plan.visible_package_envelope?.turn_id
     &&plan.owner_keys.includes(`actor:${value.actor_ref}`)
-    &&trace?.step_index===cause.step_index
-    &&traceOperationMatches(trace.approved_plan,value);
+      &&trace?.step_index===cause.step_index
+      &&operations.length===1&&traceOperationMatches(operations[0],value);
 }
 
-function traceOperationMatches(approvedPlan,value){
-  const matches=(approvedPlan?.operations??[])
-    .filter(({op})=>op==='request_world_process');
-  if(matches.length!==1)return false;
-  const operation=matches[0],proposal=value.transition_proposal;
+function traceOperationMatches(operation,value){
+  if(operation?.op!=='request_world_process')return false;
+  const proposal=value.transition_proposal;
   const sourceRefs=proposal.action==='affect'
     ?[proposal.consumed_item_ref]:proposal.added_fuel_refs;
   return operation.actor_ref===value.actor_ref

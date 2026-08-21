@@ -27,6 +27,9 @@ export function createTracePhase7FireRestCommand({
   npcAutonomousModel,
   semanticActivityScheduleOwner,
   genericCheckContextOwner,
+  localFireProfile,
+  worldProcessResolver,
+  projectNpcWorldProcessCapability,
   randomSource,
   temporalAdvanceOwner,
   revalidateStateVersion
@@ -107,7 +110,9 @@ export function createTracePhase7FireRestCommand({
         async resolveDecision({ temporal, signal_batch: signalBatch }) {
           actorStepRuntime = createTracePhase7ActorStepRuntime({
             state, contracts, temporal, semanticActivityScheduleOwner,
-            genericCheckContextOwner, randomSource
+            genericCheckContextOwner, localFireProfile,
+            worldProcessResolver, projectNpcWorldProcessCapability,
+            randomSource
           });
           const autonomous = await resolveTracePhase7AutonomousDecision({
             state,
@@ -178,6 +183,10 @@ export function createTracePhase7FireRestCommand({
           schedule_temporal: scheduleTemporal,
           schedule_execution: scheduleExecution
         },
+        ...(flow.actor_step.local_fire_atomic_write_plan == null ? {} : {
+          local_fire_atomic_write_plan:
+            flow.actor_step.local_fire_atomic_write_plan
+        }),
         visible_seed: {},
         hidden_update: {},
         state_changes: [],

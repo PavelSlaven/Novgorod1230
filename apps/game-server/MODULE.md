@@ -184,8 +184,9 @@ whole fuel units, композирует production resolver и регистри
 существующего temporal owner. Любой другой item-owned whole fuel допускается
 тем же generic правилом без ID whitelist; A1 output получает fuel class только
 от causally consumed classified fuel source. Player capability берётся из
-player-safe projection, NPC capability — из exact NPC-safe operation contract,
-после чего оба проходят один DB/item-owner admission. Start/add/due и qualitative
+player-safe projection; Phase 7 строит NPC capability из NPC-safe доступных
+ресурсов и публикует exact operation contract. Оба пути проходят один
+DB/item-owner admission. Start/add/due и qualitative
 whole-water affect, включая `no_effect`, входят в тот же combined P16; bound fuel mutation, stale
 pins, duplicate transition и late failure откатываются атомарно. Due
 actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe

@@ -236,8 +236,9 @@ step запрещена, потому что A1 не имеет prepared-direct 
 
 Active F1 сохраняет единственную actor-step semantic boundary: public
 `request_world_process` имеет только `start|affect` для player и NPC. Player
-получает visible capability, NPC — exact NPC-safe operation contract; physical
-admission в обоих случаях повторяет item/world-process owner. Exact start и generic
+получает visible capability, NPC — exact operation contract из NPC-safe
+доступных ресурсов текущего autonomous boundary; physical admission в обоих
+случаях повторяет item/world-process owner. Exact start и generic
 whole-fuel addition детерминированы и не вызывают model. Whole-water affect
 использует bounded `world_process_step_request_v1` только для qualitative
 `no_effect|continue|complete`; request не даёт model числовых mechanics и не

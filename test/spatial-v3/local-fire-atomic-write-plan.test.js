@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createLocalFireAtomicWritePlan, localFirePhysicalKeys } from
+import { applyLocalFireProjection, createLocalFireAtomicWritePlan,
+  localFirePhysicalKeys } from
   '../../apps/game-server/src/infrastructure/postgres/local-fire-atomic-write-plan.js';
 import { validLocalFireExtension } from
   '../../apps/game-server/src/infrastructure/postgres/local-fire-write-plan-validation.js';
@@ -120,6 +121,11 @@ test('water affect retires whole portion and remains bound to trace operation', 
   assert.equal(plan.transition_proposal.outcome, 'complete');
   assert.equal(plan.item_retirement_transition.after_item.condition_state,
     'retired');
+  const snapshot = { items: [structuredClone(water.item)] };
+  applyLocalFireProjection({ next: snapshot, plan });
+  assert.equal(snapshot.items[0].condition_state, 'retired');
+  assert.equal(snapshot.items[0].state.lifecycle_status, 'retired');
+  assert.equal(snapshot.items[0].state_version, 2);
 
   const approved = approvedPlan({ process_action: 'affect',
     process_ref: input.process_ref, source_refs: ['item:water'], target_refs: [] });

@@ -60,6 +60,25 @@ export function localFirePhysicalKeys(plan) {
   ];
 }
 
+export function applyLocalFireProjection({ next, plan }) {
+  const transition = createLocalFireAtomicWritePlan(plan)
+    .item_retirement_transition;
+  if (transition == null) return next;
+  const item = next?.items?.find(
+    ({ item_id: id }) => id === transition.item_id);
+  if (item == null) fail('LOCAL_FIRE_PROJECTION_INVALID');
+  const fields = ({ condition_state, state, state_version }) =>
+    ({ condition_state, state, state_version });
+  const current = fields(item), before = fields(transition.before_item);
+  const after = fields(transition.after_item);
+  if (JSON.stringify(current) === JSON.stringify(after)) return next;
+  if (JSON.stringify(current) !== JSON.stringify(before)) {
+    fail('LOCAL_FIRE_PROJECTION_INVALID');
+  }
+  Object.assign(item, clone(after));
+  return next;
+}
+
 function validatePlan(value) {
   if (!exact(value, PLAN_KEYS) || value.schema !== 'local_fire_atomic_write_plan_v1'
       || !text(value.party_id) || !text(value.change_set_id)

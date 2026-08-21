@@ -31,6 +31,7 @@ import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { applyOrdinaryMaterializationProjection, ordinaryPhysicalKeys,
   ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
+import { applyLocalFireProjection, createLocalFireAtomicWritePlan, localFirePhysicalKeys } from './local-fire-atomic-write-plan.js';
 
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
@@ -57,6 +58,15 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   let ordinaryPlan;
   try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
   catch { fail('TRACE_PHASE_7_ORDINARY_PLAN_INVALID'); }
+  let localFirePlan = null;
+  try {
+    if (writePlan.local_fire_atomic_write_plan != null) {
+      localFirePlan = createLocalFireAtomicWritePlan(
+        writePlan.local_fire_atomic_write_plan);
+      if (localFirePlan.party_id !== partyId
+          || localFirePlan.change_set_id !== changeSetId) throw new Error();
+    }
+  } catch { fail('TRACE_PHASE_7_LOCAL_FIRE_PLAN_INVALID'); }
   let next = nextPhase7State({
     state,
     factual,
@@ -66,6 +76,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     inputDigest,
     turn10Contracts
   });
+  if (localFirePlan != null) applyLocalFireProjection({ next, plan: localFirePlan });
   const ordinaryVisibleContext = applyOrdinaryMaterializationProjection({
     next, visibleContext, ordinaryPlan
   });
@@ -139,7 +150,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      ...bindLowerDvinaTraceFactualTurnStepIdempotency({
+      ...phase7IdempotencyBinding({
         envelope: writePlan.turn_step_commit,
         inputDigest,
         factual,
@@ -172,7 +183,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
         `party_runtime.party_npcs:${
           factual.consequence.phase7.autonomous.request.npc_ref}`,
         ...scheduleItemKeys(state, factual),
-        ...ordinaryPhysicalKeys(ordinaryPlan)
+        ...ordinaryPhysicalKeys(ordinaryPlan),
+        ...localFirePhysicalKeys(localFirePlan)
       ])]
     },
     commit_rechecks: commitRechecks({
@@ -182,7 +194,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
       phase7Contracts,
       inputDigest
     }),
-    ordinary_materialization_atomic_write_plan: ordinaryPlan
+    ordinary_materialization_atomic_write_plan: ordinaryPlan,
+    local_fire_atomic_write_plan: localFirePlan
   };
   const firstIntegrated = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: baseInput,
@@ -221,10 +234,11 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest
   };
 }
-
 export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase7Contracts,
-  ordinaryMaterializationAtomicWritePlan = null }) {
+  ordinaryMaterializationAtomicWritePlan = null,
+  localFireAtomicWritePlan = factual?.consequence
+    ?.local_fire_atomic_write_plan ?? null }) {
   const writePlan = {
     base_state_version: state.party_state.state_version,
     write_targets: [{ target: 'party_state', value: factual }, {
@@ -233,6 +247,9 @@ export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
     ...(ordinaryMaterializationAtomicWritePlan == null ? {} : {
       ordinary_materialization_atomic_write_plan:
         ordinaryMaterializationAtomicWritePlan
+    }),
+    ...(localFireAtomicWritePlan == null ? {} : {
+      local_fire_atomic_write_plan: localFireAtomicWritePlan
     })
   };
   let captured = null;
@@ -250,6 +267,22 @@ export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
     }
   });
   return captured;
+}
+function phase7IdempotencyBinding(input) {
+  const binding = bindLowerDvinaTraceFactualTurnStepIdempotency(input);
+  const plan = input.factual.consequence.phase7.autonomous.proposal.plan;
+  const operation = plan.operations.find(
+    ({ op }) => op === 'request_world_process');
+  if (operation == null) return binding;
+  return { ...binding, semantic_command_snapshot: {
+    ...binding.semantic_command_snapshot,
+    npc_actor_step: {
+      request_id: plan.request_id,
+      root_turn_id: plan.root_turn_id,
+      step_index: plan.decision_index,
+      operation: structuredClone(operation)
+    }
+  } };
 }
 
 const target = (writePlan, name) => writePlan.write_targets

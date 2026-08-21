@@ -6,8 +6,22 @@ import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
   './lower-dvina-trace-phase-7-owner-proposals.js';
 import { resolveTracePhase7SemanticActivity } from './lower-dvina-trace-phase-7-semantic-activity.js';
 export function createTracePhase7DomainExecution({ state, contracts,
-  temporal, semanticActivityScheduleOwner }) {
-  const capabilities = ownerCapabilities(contracts);
+  temporal, semanticActivityScheduleOwner, worldProcessResolver = null,
+  worldProcessContract = null }) {
+  const capabilities = ownerCapabilities(contracts, worldProcessContract);
+  const handlers = {
+    request_activity: (execution) => executeActivity({ execution, state,
+      contracts, temporal, capabilities }),
+    request_item_use: (execution) => executeItem({ execution, state,
+      contracts, temporal, capabilities }),
+    request_movement: (execution) => executeMovement({ execution, state,
+      contracts, temporal, capabilities })
+  };
+  if (worldProcessContract != null && typeof worldProcessResolver === 'function') {
+    handlers.request_world_process = (execution) => executeWorldProcess({
+      execution, state, temporal, worldProcessResolver
+    });
+  }
   return Object.freeze({
     semantic_activity_handler: async (execution) => {
       const semantic = await resolveTracePhase7SemanticActivity({
@@ -16,18 +30,30 @@ export function createTracePhase7DomainExecution({ state, contracts,
       return started({ execution, temporal, ...semantic, movement: null,
         property: null });
     },
-    handlers: {
-      request_activity: (execution) => executeActivity({ execution, state,
-        contracts, temporal, capabilities }),
-      request_item_use: (execution) => executeItem({ execution, state,
-        contracts, temporal, capabilities }),
-      request_movement: (execution) => executeMovement({ execution, state,
-        contracts, temporal, capabilities })
-    },
+    handlers: Object.freeze(handlers),
     operation_contract: capabilities.operation_contract
   });
 }
-function ownerCapabilities(contracts) {
+
+async function executeWorldProcess({ execution, state, temporal,
+  worldProcessResolver }) {
+  const resolved = await worldProcessResolver({ ...execution,
+    actor: execution.request.actor,
+    committed_state: state,
+    request: { ...execution.request,
+      change_set_id: `change:${state.party_id}:trace-phase7:${
+        state.party_state.turn_number + 1}` }
+  });
+  const startedResult = started({ execution: {
+    ...execution,
+    working_projection: resolved.working_projection
+  }, temporal, profile: null, movement: null, property: null });
+  return Object.freeze({ ...startedResult,
+    summary: `${startedResult.summary}; ${resolved.summary}`,
+    local_fire_atomic_write_plan: resolved.local_fire_atomic_write_plan
+  });
+}
+function ownerCapabilities(contracts, worldProcessContract) {
   const activityAllowed = exactActivityAllowed(contracts);
   const itemAllowed = exactItemAllowed(contracts);
   const movement = contracts.localTransition == null ? null : Object.freeze({
@@ -51,6 +77,9 @@ function ownerCapabilities(contracts) {
     }
   };
   if (movement != null) operationContract.request_movement = movement;
+  if (worldProcessContract != null) {
+    operationContract.request_world_process = worldProcessContract;
+  }
   return Object.freeze({
     activity_allowed: activityAllowed,
     item_allowed: itemAllowed,

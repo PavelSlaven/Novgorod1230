@@ -144,7 +144,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
         turnStepDraftActionProductionAtomicWritePlans(
           getTurnStepWorkflowDraft(state.modeResolution)),
       local_fire_atomic_write_plan: turnStepDraftLocalFireAtomicWritePlan(
-        getTurnStepWorkflowDraft(state.modeResolution)),
+        getTurnStepWorkflowDraft(state.modeResolution))
+          ?? state.consequence?.local_fire_atomic_write_plan ?? null,
       commandRegistry: services.commandRegistry
     }), context)),
     stage(14, 'commit', async (state) => {

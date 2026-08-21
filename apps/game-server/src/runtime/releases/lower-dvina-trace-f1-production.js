@@ -1,5 +1,7 @@
-import { admitLocalFireInput } from '@rus/items-property';
-import { matchesOperationContract } from '@rus/npc-runtime';
+import { admitLocalFireIgnitionBasis, admitLocalFireInput } from
+  '@rus/items-property';
+import { matchesOperationContract, projectNpcSafeResourceSnapshots } from
+  '@rus/npc-runtime';
 import { resolveWorldProcessStep } from '@rus/turn';
 import { createLocalFireAtomicWritePlan } from
   '../../infrastructure/postgres/local-fire-atomic-write-plan.js';
@@ -64,7 +66,7 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
     const plan=createLocalFireAtomicWritePlan({
       schema:'local_fire_atomic_write_request_v1',party_id:partyId,
       base_party_state_version:Number(request.committed_state_version),
-      change_set_id:`change:${partyId}:turn-step:${Number(
+      change_set_id:request.change_set_id??`change:${partyId}:turn-step:${Number(
         envelope.committed_state.party_state.turn_number)+1}`,
       actor_ref:actorRef,profile_pin:profilePin,
       process_state:loaded.process_state,input_pins:loaded.input_pins,
@@ -101,6 +103,82 @@ export function projectLowerDvinaTraceF1Capability({playerSafeState,
     ignition_basis_refs:ignition,active_process_refs:active.map(({process_ref:ref})=>ref),
     process_ignition_basis_refs:Object.fromEntries(active.map((state)=>
       [state.process_ref,state.causal_basis_ref]))}};
+}
+
+export function projectLowerDvinaTraceF1NpcCapability({ committedState,
+  npcSnapshot, loadedProfile, resolverAvailable } = {}) {
+  const profile = loadedProfile?.profile;
+  if (!resolverAvailable || profile?.status !== 'approved') return null;
+  const scopeRef = npcSnapshot?.anchor_id
+    ?? npcSnapshot?.machine_state?.location_ref
+    ?? npcSnapshot?.location_profile_ref ?? null;
+  if (!text(scopeRef)) return null;
+  const resources = [
+    ...(committedState?.containers ?? []), ...(committedState?.items ?? [])
+  ];
+  const available = new Set(projectNpcSafeResourceSnapshots({
+    npc_snapshot: npcSnapshot, resource_snapshots: resources,
+    perception_snapshot: npcSnapshot?.perception_snapshot ?? null,
+    knowledge_snapshot: npcSnapshot?.knowledge_snapshot ?? null
+  }).map(({ resource_ref: ref }) => ref));
+  const active = (committedState?.local_fire_runtime ?? [])
+    .map(({ process_state: state }) => state)
+    .filter((state) => state?.status === 'active'
+      && state.scope_ref === scopeRef)
+    .sort((left, right) => left.process_ref.localeCompare(right.process_ref));
+  const bound = new Map(active.flatMap((state) =>
+    state.fuel_bindings.map(({ fuel_ref: ref }) => [ref, state.process_ref])));
+  const items = (committedState?.items ?? []).filter(({ item_id: id }) =>
+    available.has(id));
+  const ignition = items.filter((item) => admitLocalFireIgnitionBasis({
+    item, placement: item.placement, ownership: item.ownership,
+    actor_ref: npcSnapshot?.instance_id, scope_ref: scopeRef
+  }).pass).map(({ item_id: id }) => id).sort();
+  const allowed = [];
+  if (profile.allowed_actions?.includes('start')) {
+    const fuels = admittedInputRefs(items, npcSnapshot?.instance_id, scopeRef,
+      profile, bound, 'fuel_unit');
+    for (const sourceRef of fuels) for (const ignitionRef of ignition) {
+      allowed.push({ process_action: 'start', process_ref: null,
+        process_kind: 'fire', source_refs: [sourceRef],
+        target_refs: [ignitionRef] });
+    }
+  }
+  if (profile.allowed_actions?.includes('affect')) {
+    for (const process of active) {
+      const inputs = admittedInputRefs(items, npcSnapshot?.instance_id,
+        scopeRef, profile, bound, null);
+      for (const sourceRef of inputs) allowed.push({
+        process_action: 'affect', process_ref: process.process_ref,
+        process_kind: 'fire', source_refs: [sourceRef], target_refs: []
+      });
+    }
+  }
+  if (allowed.length === 0) return null;
+  return Object.freeze({ owner: '@rus/world-processes',
+    context_ref: profile.context_ref, scope_ref: scopeRef,
+    ignition_basis_refs: Object.freeze(ignition),
+    active_process_refs: Object.freeze(active.map(
+      ({ process_ref: ref }) => ref)),
+    process_ignition_basis_refs: Object.freeze(Object.fromEntries(active.map(
+      (state) => [state.process_ref, state.causal_basis_ref]))),
+    allowed: Object.freeze(allowed.map(Object.freeze)) });
+}
+
+function admittedInputRefs(items, actorRef, scopeRef, profile, bound,
+  requiredKind) {
+  return items.flatMap((item) => {
+    const admitted = admitLocalFireInput({ item, placement: item.placement,
+      ownership: item.ownership,
+      bound_process_ref: bound.get(item.item_id)
+        ?? item.bound_process_ref ?? null,
+      actor_ref: actorRef, scope_ref: scopeRef,
+      fuel_mass_grams_min: profile.fuel_unit_mass_grams_min,
+      fuel_mass_grams_max: profile.fuel_unit_mass_grams_max,
+      process_ref: null });
+    return admitted.pass && (requiredKind == null
+      || admitted.input_kind === requiredKind) ? [item.item_id] : [];
+  }).sort();
 }
 
 function worldProcessRequest({envelope,loaded,operation,scopeRef}){

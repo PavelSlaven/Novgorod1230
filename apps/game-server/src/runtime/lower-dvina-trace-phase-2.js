@@ -1,7 +1,6 @@
 import { canonicalDigest } from '@rus/materialization'; import { createTurnCommandRegistry, runTurnWorkflow } from '@rus/turn';
 import { serverError } from '../errors.js'; import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
-import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
-import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
+import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js'; import { createTracePhase2InspectionCommand } from './lower-dvina-trace-phase-2-command.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
 import { resolveTracePhase3Contracts } from './lower-dvina-trace-phase-3-contracts.js';
 import { createTracePhase3Commands } from './lower-dvina-trace-phase-3-command.js';
@@ -12,10 +11,9 @@ import { resolveTracePhase5Contracts } from './lower-dvina-trace-phase-5-contrac
 import { resolveTracePhase6Contracts } from './lower-dvina-trace-phase-6-contracts.js';
 import { createTracePhase6CarryCommand } from './lower-dvina-trace-phase-6-carry.js';
 import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contracts.js';
-import { createTracePhase7FireRestCommand } from './lower-dvina-trace-phase-7-command.js';
+import { createTracePhase7FireRestCommand } from './lower-dvina-trace-phase-7-command.js'; import { projectLowerDvinaTraceF1NpcCapability } from './releases/lower-dvina-trace-f1-production.js';
 import { createTracePhase8Runtime } from './lower-dvina-trace-phase-8-runtime.js'; import { createTracePhase9Runtime } from './lower-dvina-trace-phase-9-runtime.js';
-import { resolveTracePhase10Contracts } from './lower-dvina-trace-phase-10-completion.js';
-import { completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
+import { resolveTracePhase10Contracts } from './lower-dvina-trace-phase-10-completion.js'; import { completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
 import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js';
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js'; import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { bindLowerDvinaTraceTurnStepCommands } from './lower-dvina-trace-turn-step-bindings.js'; import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js'; import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
@@ -203,6 +201,8 @@ import { createNpcSocialCheckResolver } from './lower-dvina-trace-npc-social-che
           semanticActivityScheduleOwner:
             genericOwners?.semanticActivityScheduleOwner,
           genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
+          localFireProfile: bundle.definition_revision === 22 ? localFireProfile : null,
+          worldProcessResolver: bundle.definition_revision === 22 && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved' ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest }) : null, projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
           randomSource: turnRandomSource,
           temporalAdvanceOwner,
           revalidateStateVersion

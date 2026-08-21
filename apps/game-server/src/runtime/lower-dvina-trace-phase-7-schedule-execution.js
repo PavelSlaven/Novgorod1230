@@ -17,10 +17,21 @@ export function createTracePhase7ActorStepRuntime({
   temporal,
   semanticActivityScheduleOwner,
   genericCheckContextOwner,
+  localFireProfile,
+  worldProcessResolver,
+  projectNpcWorldProcessCapability,
   randomSource
 }) {
+  const npc = liveNpc(state, contracts.zhdanko);
+  const worldProcessContract =
+    typeof projectNpcWorldProcessCapability === 'function'
+      ? projectNpcWorldProcessCapability({ committedState: state,
+          npcSnapshot: npc, loadedProfile: localFireProfile,
+          resolverAvailable: typeof worldProcessResolver === 'function' })
+      : null;
   const domainExecution = createTracePhase7DomainExecution({
-    state, contracts, temporal, semanticActivityScheduleOwner
+    state, contracts, temporal, semanticActivityScheduleOwner,
+    worldProcessResolver, worldProcessContract
   });
   const registry = createTurnStepExecutionRegistry({
     domain: domainExecution.handlers,
@@ -70,6 +81,9 @@ export async function executeTracePhase7SchedulePlan({
     started_at: structuredClone(temporal.result.clock_after),
     working_projection: structuredClone(execution.workingProjection),
     result: structuredClone(result),
+    local_fire_atomic_write_plan:
+      execution.local_fire_atomic_write_plan == null ? null
+        : structuredClone(execution.local_fire_atomic_write_plan),
     check: execution.checkResult == null ? null : {
       request: structuredClone(execution.checkRequest),
       result: structuredClone(execution.checkResult)

@@ -24,7 +24,7 @@ import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { applyActionProductionProjection } from
   './lower-dvina-trace-action-production-projection.js';
-import { createLocalFireAtomicWritePlan } from
+import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
 
 export async function commitLowerDvinaTraceTurnStep({
@@ -97,6 +97,9 @@ export async function commitLowerDvinaTraceTurnStep({
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
+  }
+  if (localFirePlan != null) {
+    applyLocalFireProjection({ next: base.snapshot, plan: localFirePlan });
   }
   const factual = {
     player_input: envelope.player_input,

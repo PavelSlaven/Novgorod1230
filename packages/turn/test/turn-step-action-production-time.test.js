@@ -117,6 +117,52 @@ test('A1 generic check preflights authority before RNG', async () => {
   assert.deepEqual(calls, { activities: 0, rng: 0, preflight: 1 });
 });
 
+test('A1 generic check preflights every qualitative outcome before RNG',
+  async () => {
+    const calls = { activities: 0, rng: 0, preflight: 0 };
+    const exactPorts = ports(calls);
+    exactPorts.preflightActionProduction = async ({ operations }) => {
+      calls.preflight += 1;
+      assert.equal(operations.length, 5);
+      assert.deepEqual(new Set(operations[0].target_refs),
+        new Set(operations[1].target_refs));
+      if (operations.some(({ action_production: result }) =>
+        result.material_extent === 'minor')) {
+        throw Object.assign(new Error('finite partial unsupported'), {
+          code: 'ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED'
+        });
+      }
+    };
+    const plan = genericPlan();
+    const outcomes = Object.values(plan.check.outcomes);
+    outcomes[0].operations[0].target_refs = ['item:knife', 'item:stone'];
+    outcomes[0].operations[0].action_production.tool_refs =
+      ['item:knife', 'item:stone'];
+    outcomes[1].operations[0].target_refs = ['item:stone', 'item:knife'];
+    outcomes[1].operations[0].action_production.tool_refs =
+      ['item:stone', 'item:knife'];
+    outcomes[2].operations[0].action_production = {
+      ...outcomes[2].operations[0].action_production,
+      identity_mode: 'independent_outputs', origin: 'direct_partition',
+      result_class: 'partial_transformation', material_extent: 'minor',
+      requested_output_count: 1,
+      result_descriptor: {
+        ...outcomes[2].operations[0].action_production.result_descriptor,
+        display_name: 'отделённая часть', physical_form: 'compact',
+        source_fact_delta: { physical_description: null,
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          physical_form: 'regular' }
+      }
+    };
+    await assert.rejects(() => executeTurnStepActorStep({
+      plan, request, workingProjection: {},
+      preparedChainContext: chainContext(), preparedOrdinaryPlan: null,
+      preparedActionProductionPlans: [], registry: registry(calls),
+      ports: exactPorts
+    }), { code: 'ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED' });
+    assert.deepEqual(calls, { activities: 0, rng: 0, preflight: 1 });
+  });
+
 test('valid A1 preflight is read once before one generic check', async () => {
   const calls = { activities: 0, rng: 0, preflight: 0 };
   const exactPorts = ports(calls);

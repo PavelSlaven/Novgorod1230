@@ -1,14 +1,6 @@
-import { resolveInventoryMechanicsProfile } from '@rus/items-property';
-import { admitActionProducedResult } from
-  '@rus/items-property/action-produced-result';
 import { createActionProducedTransitionPlanner,
-  resolveActionProducedAllocationMechanics,
-  selectActionProducedPropertySource } from
+  resolveActionProducedAllocationMechanics } from
   '@rus/items-property/action-produced-transition';
-import { requireActionProducedResultPlan,
-  requireActionProducedResultRequest,
-  createActionProducedTraceActionRef } from
-  '@rus/turn/action-produced-result';
 import { createActionProducedAtomicWritePlan } from
   '../../infrastructure/postgres/action-produced-atomic-write-plan.js';
 import { loadActionProducedCommittedContext } from
@@ -16,6 +8,8 @@ import { loadActionProducedCommittedContext } from
 import { INVALID_ACTION_PRODUCED_DATA,
   snapshotActionProducedPersistenceData as snapshot } from
   '../../infrastructure/postgres/action-produced-persistence-boundary.js';
+import { admitA1PreAttempt, contextForA1Operation,
+  resolveA1OperationScope } from './lower-dvina-trace-a1-pre-attempt.js';
 
 export function createLowerDvinaTraceA1ProductionResolverFactory({
   pool, loadedProfile
@@ -30,45 +24,10 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       if (envelope === INVALID_ACTION_PRODUCED_DATA) {
         fail('TRACE_A1_SCOPE_INVALID');
       }
-      const operation = envelope.operation;
-      const actorRef = envelope.actor?.actor_id;
-      const stepIndex = envelope.request?.step_index;
-      const rootTurnId = envelope.request?.root_turn_id;
-      const stateVersion = Number(envelope.request?.committed_state_version);
-      const turnNumber = Number(
-        envelope.committed_state?.party_state?.turn_number) + 1;
-      if (operation?.actor_ref !== actorRef || !text(actorRef)
-          || !text(operation.item_ref) || !Array.isArray(operation.target_refs)
-          || operation.target_refs.some((ref) => !text(ref))
-          || new Set(operation.target_refs).size !== operation.target_refs.length
-          || operation.target_refs.includes(operation.item_ref)
-          || operation.action_production == null
-          || !Number.isSafeInteger(stepIndex) || !text(rootTurnId)
-          || !Number.isSafeInteger(stateVersion)
-          || !Number.isSafeInteger(turnNumber)
-          || requireEvidence && !validExecutionEvidence(envelope)) {
-        fail('TRACE_A1_SCOPE_INVALID');
-      }
-      const actionRef = createActionProducedTraceActionRef({
-        root_turn_id: rootTurnId, step_index: stepIndex,
-        approved_plan: envelope.plan
-      });
-      const qualitative = operation.action_production;
-      const sourceRefs = qualitative.source_refs;
-      const toolRefs = qualitative.tool_refs;
+      const { actorRef, stepIndex, rootTurnId, stateVersion, turnNumber,
+        actionRef, qualitative, sourceRefs, toolRefs } = resolveA1OperationScope(
+        envelope, envelope.operation, profile, requireEvidence);
       const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
-      if (!refs(sourceRefs, false) || !refs(toolRefs, true)
-          || sourceRefs[0] !== operation.item_ref
-          || sourceRefs.some((ref) => toolRefs.includes(ref))
-          || !sameRefSet([...sourceRefs.slice(1), ...toolRefs],
-            operation.target_refs)
-          || qualitative.requested_output_count !== null
-            && (!Number.isSafeInteger(qualitative.requested_output_count)
-              || qualitative.requested_output_count < 1
-              || qualitative.requested_output_count
-                > profile.max_new_entities)) {
-        fail('TRACE_A1_SCOPE_INVALID');
-      }
       const loaded = await loadActionProducedCommittedContext(pool, {
         party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
         action_ref: actionRef, step_index: stepIndex,
@@ -83,60 +42,39 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           .prepared_action_production_atomic_write_plans ?? [],
         change_set_id: changeSetId
       });
-      validateA1V1Scope(qualitative, loaded.source_snapshots);
       return { envelope, actorRef, stepIndex, rootTurnId, stateVersion,
         actionRef, qualitative, sourceRefs, toolRefs, changeSetId, loaded };
     };
     return Object.freeze({
       async preflight(rawEnvelope) {
-        await load(rawEnvelope, false);
+        const boundary = snapshot(rawEnvelope);
+        if (boundary === INVALID_ACTION_PRODUCED_DATA) {
+          fail('TRACE_A1_SCOPE_INVALID');
+        }
+        const operations = boundary.operations ?? [boundary.operation];
+        if (!Array.isArray(operations) || operations.length === 0) {
+          fail('TRACE_A1_SCOPE_INVALID');
+        }
+        const firstEnvelope = { ...structuredClone(boundary),
+          operation: structuredClone(operations[0]) };
+        delete firstEnvelope.operations;
+        const base = await load(firstEnvelope, false);
+        for (const operation of operations) {
+          admitA1PreAttempt(contextForA1Operation(base, operation, profile),
+            profile, requestId);
+        }
         return true;
       },
       async execute(rawEnvelope) {
         if (typeof applyWorkingProjection !== 'function') {
           fail('TRACE_A1_PROJECTION_OWNER_MISSING');
         }
+        const context = await load(rawEnvelope, true);
         const { envelope, actorRef, stepIndex, rootTurnId, stateVersion,
           actionRef, qualitative, sourceRefs, toolRefs, changeSetId, loaded } =
-          await load(rawEnvelope, true);
-        const mechanics = new Map();
-        for (const pin of loaded.row_pins) {
-          mechanics.set(pin.item_id, committedMechanics(pin.item));
-        }
-        const request = requireActionProducedResultRequest({
-          schema: 'action_produced_result_request_v1', request_id: requestId,
-          root_turn_id: rootTurnId, action_ref: actionRef,
-          step_index: stepIndex, committed_state_version: String(stateVersion),
-          context_ref: profile.context_ref, profile_ref: profile.profile_id,
-          profile_version: String(profile.revision),
-          causal_mode: 'action_produced', actor_ref: actorRef,
-          source_refs: sourceRefs, tool_refs: toolRefs,
-          intended_transformation: envelope.plan.interpretation.grounded_attempt,
-          material_extent: qualitative.material_extent,
-          requested_output_count: qualitative.requested_output_count,
-          output_class: qualitative.output_class
-        });
-        const semantic = requireActionProducedResultPlan({
-          ...structuredClone(request), schema: 'action_produced_result_plan_v1',
-          identity_mode: qualitative.identity_mode, origin: qualitative.origin,
-          result_class: qualitative.result_class,
-          result_descriptor: structuredClone(qualitative.result_descriptor)
-        }, { request });
-        if (!profile.allowed_identity_modes.includes(semantic.identity_mode)
-            || !profile.allowed_result_classes.includes(semantic.result_class)
-            || semantic.origin !== null
-              && !profile.allowed_origins.includes(semantic.origin)
-            || semantic.output_class !== null
-              && !profile.allowed_output_classes.includes(
-                semantic.output_class)) {
-          fail('TRACE_A1_SEMANTIC_PROFILE_DENIED');
-        }
-        const admission = admitActionProducedResult({
-          committed_context: loaded.committed_context,
-          profile: loaded.admission_profile,
-          proposal: semantic
-        });
-        if (admission.pass !== true) fail('TRACE_A1_ADMISSION_DENIED');
+          context;
+        const { semantic, admission, mechanics } = admitA1PreAttempt(context,
+          profile, requestId);
         const planner = createActionProducedTransitionPlanner({
           resolveMechanics: (mechanicsRequest) => {
             if ([...mechanicsRequest.source_inputs,
@@ -195,50 +133,6 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   };
 }
 
-function validateA1V1Scope(qualitative, sources) {
-  const finite = sources.map(({ finite_resource: value }) => value !== null);
-  if (qualitative.identity_mode === 'independent_outputs') {
-    selectActionProducedPropertySource(sources);
-    if (qualitative.result_class === 'partial_transformation'
-        && finite.some(Boolean)) {
-      fail('ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED');
-    }
-  }
-  if (qualitative.identity_mode === 'preserve_source'
-      && finite.slice(1).some(Boolean)
-      && qualitative.material_extent !== 'whole') {
-    fail('ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED');
-  }
-}
-
-function committedMechanics(item) {
-  const state = item?.state;
-  const templateId = item?.template_id;
-  const instance = templateId == null
-    ? { template_id: null, runtime_instance_mechanics_snapshot:
-      state?.runtime_instance_mechanics_snapshot }
-    : { template_id: templateId };
-  const profiles = templateId == null ? [] : [{
-    ...structuredClone(state?.inventory_profile_snapshot),
-    template_id: templateId
-  }];
-  const resolved = resolveInventoryMechanicsProfile({ instance, profiles });
-  if (!resolved.pass || resolved.profile.container !== null) {
-    fail('TRACE_A1_ITEM_MECHANICS_INVALID');
-  }
-  const { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
-    quantity, container } = resolved.profile;
-  if (!Number.isSafeInteger(mass_grams) || mass_grams < 0
-      || ![0, 1, 2].includes(external_hand_cost)
-      || !['compact', 'regular', 'long', 'bulky'].includes(carry_form)
-      || !Number.isSafeInteger(packing_slot_cost) || packing_slot_cost < 0
-      || quantity !== null && (!Number.isFinite(quantity?.value)
-        || quantity.value <= 0 || !text(quantity.unit))
-      || container !== null) fail('TRACE_A1_ITEM_MECHANICS_INVALID');
-  return { mass_grams, external_hand_cost, carry_form, packing_slot_cost,
-    quantity: structuredClone(quantity), container };
-}
-
 function validateLoadedProfile(value) {
   const profile = value?.schema === 'rus.lower_dvina_trace_a1_loaded_profile.v1'
     ? value.profile : null;
@@ -272,26 +166,4 @@ function technicalPolicy(profile) {
   };
 }
 
-function validExecutionEvidence(envelope) {
-  const plan = envelope.plan;
-  const result = envelope.check_result;
-  if (plan?.resolution === 'domain_request') {
-    return plan.check === null && result === null
-      && plan.activity?.owner === 'semantic';
-  }
-  return plan?.resolution === 'generic_check' && plan.check != null
-    && plan.activity?.owner === 'semantic'
-    && result != null
-    && result.check_id === `${envelope.request.root_turn_id}:step:${
-      envelope.request.step_index}`
-    && Number.isSafeInteger(result.roll)
-    && typeof result.outcome?.band === 'string';
-}
-function text(value) { return typeof value === 'string'
-  && value.trim() === value && value.length > 0; }
-function refs(value, allowEmpty) { return Array.isArray(value)
-  && (allowEmpty || value.length > 0) && value.every(text)
-  && new Set(value).size === value.length; }
-function sameRefSet(left, right) { return Array.isArray(right)
-  && left.length === right.length && left.every((ref) => right.includes(ref)); }
 function fail(code) { throw Object.assign(new Error(code), { code }); }

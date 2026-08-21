@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolvePhysicalItemCondition } from '../src/index.js';
+import { createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
+  resolvePhysicalItemCondition } from '../src/index.js';
 
 test('physical condition separates runtime lifecycle marker from damage', () => {
   const item = { template_id: null,
@@ -16,12 +17,15 @@ test('physical condition separates runtime lifecycle marker from damage', () => 
 });
 
 function snapshot() {
-  return { schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
-    version: 1, provenance: {
-      source_kind: 'ordinary_world_materialization', root_turn_id: 'turn:1',
-      step_index: 1, operation_ref: 'operation:1', origin_kind: 'crafted',
-      source_refs: ['source:1']
-    }, mechanics: { mass_grams: 500, external_hand_cost: 0,
-      carry_form: 'regular', packing_slot_cost: 2, quantity: null,
-      container: null } };
+  return createOrdinaryWorldRuntimeInstanceMechanicsSnapshot({
+    schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
+    provenance: { source_kind: 'ordinary_world_materialization',
+      causal_ref: 'ordinary:1', request_id: 'request:1',
+      candidate_key: 'candidate:1', coverage_key: 'coverage:1',
+      context_version: 'context:1', policy_ref: 'policy:1',
+      source_refs: ['source:1'] },
+    mechanics: { mass_grams: 500, external_hand_cost: 0,
+      carry_form: 'regular', packing_slot_cost: 2,
+      quantity: { value: 1, unit: 'item' }, container: null }
+  });
 }

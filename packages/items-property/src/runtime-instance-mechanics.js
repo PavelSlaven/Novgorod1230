@@ -28,6 +28,9 @@ const SOURCE_KINDS = new Set([
 ]);
 const CARRY_FORMS = new Set(['compact', 'regular', 'long', 'bulky']);
 const PHYSICAL_CONDITIONS = new Set(['serviceable', 'damaged']);
+const ACTIVE_RUNTIME_MECHANICS_SOURCES = new Set([
+  'runtime_instance_snapshot', 'ordinary_world_materialization_snapshot'
+]);
 
 export function resolvePhysicalItemCondition(item) {
   const state = item?.state;
@@ -47,7 +50,7 @@ export function resolvePhysicalItemCondition(item) {
         state?.runtime_instance_mechanics_snapshot },
     profiles: []
   });
-  return resolved.pass && resolved.source === 'runtime_instance_snapshot'
+  return resolved.pass && ACTIVE_RUNTIME_MECHANICS_SOURCES.has(resolved.source)
     ? 'serviceable' : null;
 }
 

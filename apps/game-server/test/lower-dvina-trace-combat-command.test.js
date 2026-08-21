@@ -20,6 +20,8 @@ import { projectTraceCombatSubjectiveState } from
   '../src/runtime/lower-dvina-trace-combat-subjective.js';
 import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
   resolveOrdinaryArmamentMechanics } from '@rus/combat-health';
+import { createOrdinaryWorldRuntimeInstanceMechanicsSnapshot } from
+  '@rus/items-property';
 
 const at = { whole_minutes: '620', subminute_numerator: '0',
   subminute_denominator: '1' };
@@ -188,14 +190,18 @@ test('O1 runtime marker does not block current A1 combat classification',
     const item = actionProducedItem('o1-stick', ['конец заострён'], 'long');
     delete item.state.condition_state;
     item.condition_state = 'ordinary_runtime_instance';
-    item.state.runtime_instance_mechanics_snapshot = {
-      schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+    item.state.runtime_instance_mechanics_snapshot =
+      createOrdinaryWorldRuntimeInstanceMechanicsSnapshot({
+      schema: 'rus.items.runtime_instance_mechanics_snapshot.v2', version: 2,
       provenance: { source_kind: 'ordinary_world_materialization',
-        root_turn_id: 'turn:o1', step_index: 1, operation_ref: 'o1:stick',
-        origin_kind: 'crafted', source_refs: ['source:wood'] }, mechanics: {
+        causal_ref: 'ordinary:o1-stick', request_id: 'request:o1-stick',
+        candidate_key: 'candidate:o1-stick', coverage_key: 'coverage:o1-stick',
+        context_version: 'context:1', policy_ref: 'policy:o1',
+        source_refs: ['source:wood'] }, mechanics: {
         mass_grams: 700, external_hand_cost: 1, carry_form: 'long',
-        packing_slot_cost: 3, quantity: null, container: null }
-    };
+        packing_slot_cost: 3, quantity: { value: 1, unit: 'item' },
+        container: null }
+    });
     const result = await classifyTraceActionProducedWeapon({ items: [item],
       actor_ref: player, request_id: 'combat-weapon:o1',
       classify: async (request) => ({ schema:
@@ -204,6 +210,12 @@ test('O1 runtime marker does not block current A1 combat classification',
       qualitative_class: 'improvised_puncture_light' }) });
     assert.equal(result.weapon_danger, 1);
     assert.equal(resolveTraceOrdinaryWeaponDanger([item], player, result), 1);
+    const damaged = structuredClone(item);
+    damaged.state.condition_state = 'damaged';
+    assert.equal(await classifyTraceActionProducedWeapon({ items: [damaged],
+      actor_ref: player, request_id: 'combat-weapon:o1-damaged',
+      classify: async () => assert.fail('damaged item must fail closed') }),
+    null);
   });
 
 test('authored weapon fast path does not invoke semantic classification',

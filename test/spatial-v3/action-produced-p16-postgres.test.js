@@ -432,6 +432,72 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         return { ...structuredClone(projection), prepared_a1: true };
       } });
     const resolveProduction = productionRuntime.execute;
+
+    const wholeFinite = productionEnvelope({
+      itemRef: 'production-board', targetRefs: ['production-knife'],
+      actionProduction: actionProduction({
+        identity_mode: 'independent_outputs', origin: 'direct_partition',
+        result_class: 'ordinary_physical_result', material_extent: 'whole',
+        result_descriptor: descriptor({ display_name: 'деревянная часть',
+          physical_form: 'compact' })
+      })
+    });
+    const partialFinite = productionEnvelope({
+      itemRef: 'production-board', targetRefs: ['production-knife'],
+      actionProduction: actionProduction({
+        identity_mode: 'independent_outputs', origin: 'direct_partition',
+        result_class: 'partial_transformation', material_extent: 'minor',
+        result_descriptor: descriptor({ display_name: 'отделённая часть',
+          physical_form: 'compact', source_fact_delta: {
+            physical_description: 'от источника отделена часть',
+            qualitative_facts: [], removed_physical_fact_refs: [],
+            physical_form: 'regular' } })
+      })
+    });
+    await assert.rejects(productionRuntime.preflight({
+      ...wholeFinite,
+      operations: [structuredClone(wholeFinite.operation),
+        structuredClone(partialFinite.operation)]
+    }), { code: 'ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED' });
+
+    const toolLessWeapon = productionEnvelope({ targetRefs: [],
+      actionProduction: actionProduction({ output_class: 'weapon_capable' }) });
+    await assert.rejects(productionRuntime.preflight({
+      ...toolLessWeapon, operations: [structuredClone(toolLessWeapon.operation)]
+    }), { code: 'TRACE_A1_ADMISSION_DENIED' });
+
+    const reorderedTools = productionEnvelope({
+      targetRefs: ['production-knife', 'production-stone'] });
+    const reversedTools = structuredClone(reorderedTools.operation);
+    reversedTools.target_refs.reverse();
+    reversedTools.action_production.tool_refs.reverse();
+    assert.equal(await productionRuntime.preflight({
+      ...reorderedTools,
+      operations: [structuredClone(reorderedTools.operation), reversedTools]
+    }), true);
+
+    const reorderedSources = productionEnvelope({
+      itemRef: 'production-material-a',
+      targetRefs: ['production-material-b', 'production-knife'],
+      actionProduction: actionProduction({
+        identity_mode: 'independent_outputs', origin: 'crafted',
+        result_class: 'ordinary_physical_result', material_extent: 'whole',
+        result_descriptor: descriptor({ display_name: 'составная деталь',
+          physical_form: 'compact' })
+      })
+    });
+    reorderedSources.operation.action_production.source_refs =
+      ['production-material-a', 'production-material-b'];
+    reorderedSources.operation.action_production.tool_refs =
+      ['production-knife'];
+    const reversedSources = structuredClone(reorderedSources.operation);
+    reversedSources.action_production.source_refs.reverse();
+    assert.equal(await productionRuntime.preflight({
+      ...reorderedSources,
+      operations: [structuredClone(reorderedSources.operation),
+        reversedSources]
+    }), true);
+
     await assert.rejects(productionRuntime.preflight(productionEnvelope({
       itemRef: 'production-board', targetRefs: ['production-knife'],
       actionProduction: actionProduction({
@@ -462,7 +528,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       await pool.query(`UPDATE party_runtime.party_items SET state=$1::jsonb
         WHERE party_id='party-a1' AND item_id='production-garment'`,
       [JSON.stringify(state)]);
-      await assert.rejects(resolveProduction(productionEnvelope()), {
+      await assert.rejects(productionRuntime.preflight(productionEnvelope()), {
         code: 'TRACE_A1_ITEM_MECHANICS_INVALID'
       });
     }

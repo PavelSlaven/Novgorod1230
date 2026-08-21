@@ -55,12 +55,12 @@ export async function executeTurnStepActorStep({
   let chainContext = preparedChainContext;
 
   if (plan.resolution === 'generic_check') {
-    const preflightOperation = actionProductionPreflightOperation(plan);
-    if (preflightOperation != null
+    const preflightOperations = actionProductionPreflightOperations(plan);
+    if (preflightOperations != null
         && typeof ports.preflightActionProduction === 'function') {
       await ports.preflightActionProduction(deepFreeze({
         plan: structuredClone(plan), request: structuredClone(request),
-        operation: structuredClone(preflightOperation),
+        operations: structuredClone(preflightOperations),
         working_projection: structuredClone(projection),
         prepared_chain_context: chainContext == null ? null
           : structuredClone(chainContext),
@@ -211,7 +211,7 @@ export async function executeTurnStepActorStep({
   };
 }
 
-function actionProductionPreflightOperation(plan) {
+function actionProductionPreflightOperations(plan) {
   const outcomes = Object.values(plan.check?.outcomes ?? {});
   const operations = outcomes.map((outcome) => (outcome.operations ?? [])
     .find((operation) => operation?.op === 'request_item_use'
@@ -227,17 +227,21 @@ function actionProductionPreflightOperation(plan) {
     throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
       'Every generic A1 outcome must use the same authority scope.');
   }
-  return operations[0];
+  return operations;
 }
 
 function preflightIdentity(operation) {
   return {
     actor_ref: operation.actor_ref,
     item_ref: operation.item_ref,
-    target_refs: [...operation.target_refs],
-    source_refs: [...operation.action_production.source_refs],
-    tool_refs: [...operation.action_production.tool_refs]
+    target_refs: canonicalRefs(operation.target_refs),
+    source_refs: canonicalRefs(operation.action_production.source_refs),
+    tool_refs: canonicalRefs(operation.action_production.tool_refs)
   };
+}
+
+function canonicalRefs(values) {
+  return [...values].sort((left, right) => left.localeCompare(right));
 }
 
 function advanceChainContext(context, applied) {

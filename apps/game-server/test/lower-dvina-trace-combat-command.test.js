@@ -9,8 +9,11 @@ import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createTraceCombatCommand, traceCombatTargetRefs } from
   '../src/runtime/lower-dvina-trace-combat-command.js';
 import { classifyTraceActionProducedWeapon,
+  createLowerDvinaTraceActionProducedWeaponClassifier,
   resolveTraceOrdinaryWeaponDanger } from
   '../src/runtime/lower-dvina-trace-combat-ordinary-weapon.js';
+import { createLlmRoleRunnerAdapter } from
+  '../src/adapters/llm-role-runner.js';
 import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-combat-temporal-effect-owner.js';
 import { projectTraceCombatSubjectiveState } from
@@ -274,6 +277,39 @@ test('valid A1 non-weapons resolve as unarmed while classification failures clos
       assert.equal(failed, null);
       assert.equal(resolveTraceOrdinaryWeaponDanger([note], player, failed),
         null);
+    }
+  });
+
+test('production LLM role resolves A1 weapon classification at combat boundary',
+  async () => {
+    const previousFetch = globalThis.fetch;
+    let requestBody = null;
+    globalThis.fetch = async (_url, init) => {
+      requestBody = JSON.parse(init.body);
+      return new Response(JSON.stringify({ choices: [{ message: { content:
+        JSON.stringify({ schema:
+          'rus.combat.action_produced_weapon_classification.v1',
+        request_id: 'combat-weapon:production',
+        qualitative_class: 'improvised_two_hand_heavy' }) } }] }),
+        { status: 200 });
+    };
+    try {
+      const classify = createLowerDvinaTraceActionProducedWeaponClassifier({
+        roleRunner: createLlmRoleRunnerAdapter({ env: {
+          DEEPSEEK_API_KEY: 'fixture-key',
+          DEEPSEEK_BASE_URL: 'https://fixture.invalid'
+        } })
+      });
+      const item = actionProducedItem('a1-spear', ['конец заострён'], 'long');
+      const result = await classifyTraceActionProducedWeapon({ items: [item],
+        actor_ref: player, request_id: 'combat-weapon:production', classify });
+      assert.deepEqual(result, { item_ref: 'a1-spear', weapon_danger: 2 });
+      assert.equal(resolveTraceOrdinaryWeaponDanger([item], player, result), 2);
+      assert.equal(requestBody.max_tokens, 500);
+      assert.equal(requestBody.temperature, 0);
+      assert.deepEqual(requestBody.response_format, { type: 'json_object' });
+    } finally {
+      globalThis.fetch = previousFetch;
     }
   });
 

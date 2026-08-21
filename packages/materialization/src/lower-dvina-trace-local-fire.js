@@ -1,4 +1,3 @@
-import { canonicalDigest } from './core.js';
 import { failLowerDvinaTraceMaterialization as fail } from
   './lower-dvina-trace-contract.js';
 
@@ -13,17 +12,7 @@ export function materializeLocalFireActivation(partyId, actorRef, anchorId,
   }));
   const ignition = item({ descriptor: profile.ignition_basis,
     instanceId: ignitionId, anchorId, actorRef, fuel: false });
-  const row = { party_id: partyId, context_ref: profile.context_ref,
-    profile_ref: profile.profile_id, profile_version: String(profile.revision),
-    policy_ref: profile.policy_ref, policy_version: profile.policy_version,
-    scope_ref: anchorId, ignition_basis_item_id: ignitionId,
-    approved_fuel_item_ids: fuelItems.map(({ instance_id: id }) => id),
-    recheck_interval: structuredClone(profile.recheck_interval),
-    fuel_unit_mass_grams_min: profile.fuel_unit_mass_grams_min,
-    fuel_unit_mass_grams_max: profile.fuel_unit_mass_grams_max,
-    authority_state_version: 1, status: 'committed' };
-  return { items: [ignition, ...fuelItems],
-    authority: { ...row, authority_digest: `sha256:${canonicalDigest(row)}` } };
+  return { items: [ignition, ...fuelItems] };
 }
 
 function item({ descriptor, instanceId, anchorId, actorRef, fuel }) {
@@ -71,9 +60,9 @@ function validate(value) {
       || !Array.isArray(value.fuel_units) || value.fuel_units.length < 2
       || new Set(value.fuel_units.map(({ authored_ref: ref }) => ref)).size
         !== value.fuel_units.length
-      || JSON.stringify(value.allowed_actions) !== JSON.stringify(['start','add_fuel'])
+      || JSON.stringify(value.allowed_actions) !== JSON.stringify(['start','affect'])
       || value.water_extinguish_policy
-        !== 'disabled_missing_exact_finite_water_authority'
+        !== 'semantic_existing_whole_portion'
       || value.process_owner !== '@rus/world-processes'
       || value.time_owner !== '@rus/time-events-history'
       || value.persistence_owner !== 'P16_combined_atomic_committer'

@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 const ROOT =
   'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content';
 const MANIFEST_DIGEST =
-  '0748131b6a6c85172735944651f9f9e5b244f7d6a55318b01d7a4da71c6c4091';
+  'eff193c6e7348ff2e18593a00d3f4197934398629bd41f9880b141fc8f04c3ef';
 
 export async function loadLowerDvinaTraceLocalFireProfile({
   rootDir = process.cwd()

@@ -70,6 +70,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ordinaryDiscoveryEnablementMarker,
     createTurnStepActionProductionOwner,
     actionProductionProfile,
+    createTurnStepWorldProcessResolver,
+    localFireProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -155,6 +157,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
       createTurnStepActionProductionOwner,
+      localFireProfile,
+      createTurnStepWorldProcessResolver,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
@@ -194,6 +198,12 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(actionProductionOwner ? {
       turnStepActionProductionOwner: actionProductionOwner.execute,
       turnStepActionProductionPreflight: actionProductionOwner.preflight
+    } : {}),
+    ...(typeof createTurnStepWorldProcessResolver === 'function'
+        && localFireProfile?.profile?.status === 'approved' ? {
+      turnStepWorldProcessResolver: createTurnStepWorldProcessResolver({
+        partyId, requestId, inputDigest
+      })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

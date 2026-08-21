@@ -9,7 +9,7 @@
     "id": "lower_dvina_trace_phase_1b_publication_v16",
     "revision": 16,
     "schema": "rus.lower_dvina_trace_publication_binding.v1",
-    "digest": "45066b65fb366f40015849bc7558b0d8458fdc7326c6b9554af8ad3223441b91"
+    "digest": "8ba3f391b6d0d19ae3d541ea97a65c27f56e62817da4214fa602e149df4bbe0d"
   },
   "public_metadata": {
     "title": "След на Нижней Двине",
@@ -21,14 +21,14 @@
     "id": "lower_dvina_trace_phase_1a_v18",
     "revision": 18,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "89673fd4ce4ba5d5f87de091c9794e2519e6b623a259c433e73d73ae40d598c1"
+    "digest": "daa33208e16e0bf77fdf9f2a11b4d25899a19f816f6d843fd9ea9977f3c5d48e"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/definition.json",
     "id": "lower_dvina_trace_v1",
     "revision": 22,
     "schema": "rus.trace_scenario_definition.v1",
-    "digest": "0ac57def8064c6e637cd34b9ce522bf6a9d9f32ea241cb6b10f822b561c122a2"
+    "digest": "54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe"
   },
   "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v18",
   "opening_projection": {
@@ -55,8 +55,8 @@
     "trigger": "new_game",
     "occurrence": 0,
     "scenario_definition_revision": 22,
-    "phase_1a_manifest_digest": "89673fd4ce4ba5d5f87de091c9794e2519e6b623a259c433e73d73ae40d598c1",
-    "scenario_definition_digest": "0ac57def8064c6e637cd34b9ce522bf6a9d9f32ea241cb6b10f822b561c122a2"
+    "phase_1a_manifest_digest": "daa33208e16e0bf77fdf9f2a11b4d25899a19f816f6d843fd9ea9977f3c5d48e",
+    "scenario_definition_digest": "54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe"
   },
   "world_compatibility": {
     "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",

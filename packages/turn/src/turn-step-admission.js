@@ -4,21 +4,13 @@ import {
   requireTurnStepExecutionRegistry,
   runTurnStepLoop
 } from './turn-step-loop.js';
-import {
-  TURN_STEP_OPERATION_BATCH_TARGET
-} from './turn-step-operation-batch.js';
-import {
-  assertValid,
-  validateAvailabilityDecision,
-  validateConsequencePackage
-} from './validators.js';
-import {
-  isActionProductionOwnerInScope
-} from './turn-step-action-produced-remainder.js';
-import { initialWorkingProjectionFrom } from
-  './turn-step-player-safe-projection.js';
-export { isActionProductionOwnerInScope } from
-  './turn-step-action-produced-remainder.js';
+import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
+import { assertValid, validateAvailabilityDecision,
+  validateConsequencePackage } from './validators.js';
+import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
+import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
+import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
+export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -26,7 +18,8 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'request_item_use',
   'request_activity',
   'emit_interaction',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
@@ -130,6 +123,11 @@ export async function resolveBoundTurnStepCommand({
               structuredClone(execution.prepared_chain_context)
           }));
         }
+      }
+      if (matches.length === 0) {
+        const worldProcess = resolveWorldProcessRemainder({ operation,
+          execution, projected, committedState, services });
+        if (worldProcess !== null) return worldProcess;
       }
       if (matches.length === 0) {
         const actionProductionOwner =

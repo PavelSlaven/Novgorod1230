@@ -23,6 +23,7 @@ import { buildScreenProjectionStage } from './stages/screen-projection.js';
 import {
   getTurnStepWorkflowDraft,
   turnStepDraftActionProductionAtomicWritePlans,
+  turnStepDraftLocalFireAtomicWritePlan,
   turnStepDraftOrdinaryAtomicWritePlan,
   turnStepDraftOperationBatch,
   turnStepDraftPreparedEffectLedger
@@ -142,6 +143,8 @@ export function createTurnStageDefinitions({ context, services, rawInput, now })
       action_production_atomic_write_plans:
         turnStepDraftActionProductionAtomicWritePlans(
           getTurnStepWorkflowDraft(state.modeResolution)),
+      local_fire_atomic_write_plan: turnStepDraftLocalFireAtomicWritePlan(
+        getTurnStepWorkflowDraft(state.modeResolution)),
       commandRegistry: services.commandRegistry
     }), context)),
     stage(14, 'commit', async (state) => {

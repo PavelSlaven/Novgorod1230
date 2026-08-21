@@ -35,8 +35,8 @@
       "mass_grams": 700
     }
   ],
-  "allowed_actions": ["start", "add_fuel"],
-  "water_extinguish_policy": "disabled_missing_exact_finite_water_authority",
+  "allowed_actions": ["start", "affect"],
+  "water_extinguish_policy": "semantic_existing_whole_portion",
   "process_owner": "@rus/world-processes",
   "time_owner": "@rus/time-events-history",
   "persistence_owner": "P16_combined_atomic_committer",

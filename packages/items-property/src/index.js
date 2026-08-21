@@ -18,6 +18,8 @@ import { ACTION_PRODUCED_OUTPUT_CLASSES, actionProducedOutputRequiresTool,
 import { actionProducedPhysicalFactTexts,
   mergeActionProducedPhysicalFacts } from
   './action-produced-output-semantics.js';
+import { admitLocalFireInput, planLocalFireWholeItemRetirement } from
+  './local-fire-input.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
 export {
   ACTOR_ITEM_PHYSICAL_POSITIONS,
@@ -167,6 +169,7 @@ export function validatePropertyRelation(relation = {}) {
 export {
   ambientOrdinaryCommittedContextDigest,
   ACTION_PRODUCED_OUTPUT_CLASSES,
+  admitLocalFireInput,
   actionProducedOutputRequiresTool,
   actionProducedPhysicalFactTexts,
   buildExistingContainerOrdinarySeedRequest,
@@ -178,6 +181,7 @@ export {
   normalizeItem,
   mergeActionProducedPhysicalFacts,
   planApplicableApprovedItemTransition,
+  planLocalFireWholeItemRetirement,
   planApprovedItemVisibilityTransition,
   planApprovedItemZoneTransition,
   validateActionProducedOutputAuthority,

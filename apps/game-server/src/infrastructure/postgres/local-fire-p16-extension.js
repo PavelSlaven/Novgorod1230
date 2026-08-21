@@ -4,8 +4,8 @@ import { applyLocalFireAtomicWritePlanInTransaction } from
 export async function assertLocalFireFuelMutationBound(client, plan) {
   const itemIds = [...new Set([
     ...genericItemMutationRefs(plan),
-    ...(plan.local_fire_atomic_write_plan?.transition_proposal
-      ?.added_fuel_refs ?? [])
+    ...(plan.local_fire_atomic_write_plan?.input_pins ?? [])
+      .map(({item_id:id})=>id)
   ])];
   if (itemIds.length === 0) return;
   const generic = new Set(genericItemMutationRefs(plan));
@@ -49,11 +49,10 @@ export async function applyLocalFireP16Extension(client, plan) {
         plan.local_fire_atomic_write_plan.base_party_state_version + 1,
       p16ChangeSetId: plan.change_set_id });
   } catch (cause) {
-    if (['LOCAL_FIRE_FUEL_STALE', 'LOCAL_FIRE_PROCESS_STALE',
-      'LOCAL_FIRE_AUTHORITY_STALE', 'LOCAL_FIRE_IGNITION_BASIS_STALE']
+    if (['LOCAL_FIRE_INPUT_STALE', 'LOCAL_FIRE_PROCESS_STALE',
+      'LOCAL_FIRE_IGNITION_BASIS_STALE']
       .includes(cause?.code)) cause.spatialCode = 'state_version_conflict';
-    else if (['LOCAL_FIRE_IDEMPOTENCY_CONFLICT',
-      'LOCAL_FIRE_PROCESS_COLLISION', 'LOCAL_FIRE_FUEL_BOUND']
+    else if (['LOCAL_FIRE_PROCESS_COLLISION']
       .includes(cause?.code)) cause.spatialCode = 'idempotency_conflict';
     throw cause;
   }

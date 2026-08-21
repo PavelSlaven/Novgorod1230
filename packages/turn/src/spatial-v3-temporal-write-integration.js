@@ -73,10 +73,9 @@ export function integrateSpatialV3TemporalWriteFragments({
   }
   if (localFirePlans.length === 1
       && (!Array.isArray(localFirePlans[0].physical_keys)
-        || !Array.isArray(localFirePlans[0].owner_keys)
-        || !validLocalFireCandidateEvidence(localFirePlans[0]))) {
+        || !Array.isArray(localFirePlans[0].owner_keys))) {
     return failure(base_write_plan_input.party_id,
-      'local-fire temporal transition requires exact candidate, owner and physical evidence');
+      'local-fire temporal transition requires owner and physical lock sets');
   }
   if (fragments.length === 0 && localFirePlans.length === 0) {
     return freeze({ ok: true, input: clone(base_write_plan_input), fragment_count: 0 });
@@ -89,19 +88,6 @@ export function integrateSpatialV3TemporalWriteFragments({
     }
     input.local_fire_atomic_write_plan = clone(
       localFirePlans[0].local_fire_atomic_write_plan);
-    const fragmentDigests = fragments.map(
-      (fragment) => fragment.canonical_digest);
-    const evidence = {
-      schema: 'rus.turn.local_fire_temporal_integration_evidence.v1',
-      base_canonical_input_digest: base_write_plan_input.canonical_input_digest,
-      temporal_result_digest: temporal_result.canonical_digest,
-      temporal_fragment_digests: fragmentDigests,
-      candidate_evidence: clone(
-        localFirePlans[0].temporal_candidate_evidence)
-    };
-    input.local_fire_temporal_evidence = {
-      ...evidence, canonical_digest: computeSpatialV3CanonicalDigest(evidence)
-    };
   }
   if (!Array.isArray(input.approved_write_sets)
     || !Array.isArray(input.expected_state_versions)
@@ -208,72 +194,4 @@ export function integrateSpatialV3TemporalWriteFragments({
     )
   });
   return freeze({ ok: true, input, fragment_count: fragments.length });
-}
-
-function validLocalFireCandidateEvidence(proposal) {
-  const evidence = proposal.temporal_candidate_evidence;
-  const plan = proposal.local_fire_atomic_write_plan;
-  const candidate = evidence?.candidate_snapshot;
-  const process = plan?.transition_proposal?.process_before;
-  const source = candidate?.source_ref;
-  const authority = plan?.authority_pin?.persisted_row;
-  const boundaryId = `local-fire:${process?.process_ref}:state:${
-    process?.state_version}`;
-  const subjects = process?.fuel_bindings?.map(({ fuel_ref: ref }) =>
-    ({ entity_kind: 'item', entity_id: ref }));
-  const exact = ['schema','rule_ref','policy_ref','candidate_snapshot',
-    'candidate_digest','local_fire_write_plan_digest',
-    'resolution_identity_digest'];
-  const candidateKeys = ['boundary_id','boundary_kind','scheduled_at',
-    'source_ref','primary_subject_ref','scope_ref','rule_ref','policy_ref',
-    'preconditions_digest','resolution_class','interrupt_effect',
-    'visibility_policy_ref','idempotency_key','subject_refs',
-    'causal_parent_refs'];
-  return record(evidence) && Object.keys(evidence).length === exact.length
-    && exact.every((key) => Object.hasOwn(evidence, key))
-    && evidence.schema === 'rus.turn.local_fire_temporal_candidate_evidence.v1'
-    && record(candidate) && Object.keys(candidate).length === candidateKeys.length
-    && candidateKeys.every((key) => Object.hasOwn(candidate, key))
-    && candidate.boundary_id === boundaryId
-    && candidate.boundary_kind === 'world_process'
-    && source?.entity_kind === 'local_world_process'
-    && source.entity_id === process?.process_ref
-    && computeSpatialV3CanonicalDigest(candidate.primary_subject_ref)
-      === computeSpatialV3CanonicalDigest(subjects?.[0])
-    && computeSpatialV3CanonicalDigest(candidate.scope_ref)
-      === computeSpatialV3CanonicalDigest({ entity_kind: 'party',
-        entity_id: plan.party_id })
-    && computeSpatialV3CanonicalDigest(candidate.rule_ref)
-      === computeSpatialV3CanonicalDigest(evidence.rule_ref)
-    && evidence.rule_ref?.entity_ref?.entity_kind === 'world_process_rule'
-    && evidence.rule_ref.entity_ref.entity_id === 'local_exact_fire_due_v1'
-    && evidence.rule_ref.authoring_version === '1'
-    && computeSpatialV3CanonicalDigest(candidate.policy_ref)
-      === computeSpatialV3CanonicalDigest(evidence.policy_ref)
-    && evidence.policy_ref?.entity_ref?.entity_kind === 'world_process_policy'
-    && evidence.policy_ref.entity_ref.entity_id === authority?.policy_ref
-    && evidence.policy_ref.authoring_version === String(authority?.policy_version)
-    && candidate.resolution_class === 'local_exact_fire_due'
-    && candidate.interrupt_effect === 'background'
-    && computeSpatialV3CanonicalDigest(candidate.visibility_policy_ref)
-      === computeSpatialV3CanonicalDigest(evidence.policy_ref)
-    && candidate.idempotency_key === boundaryId
-    && computeSpatialV3CanonicalDigest(candidate.subject_refs)
-      === computeSpatialV3CanonicalDigest(subjects)
-    && Array.isArray(candidate.causal_parent_refs)
-    && candidate.causal_parent_refs.length === 0
-    && computeSpatialV3CanonicalDigest(candidate) === evidence.candidate_digest
-    && computeSpatialV3CanonicalDigest(candidate.scheduled_at)
-      === computeSpatialV3CanonicalDigest(plan.transition_proposal.at_timestamp)
-    && computeSpatialV3CanonicalDigest(candidate.scheduled_at)
-      === computeSpatialV3CanonicalDigest(process?.next_boundary_at)
-    && candidate.preconditions_digest === computeSpatialV3CanonicalDigest({
-      process_state: process, expected_state_version: process?.state_version })
-    && plan.transition_proposal.causal_identity?.action_ref
-      === `local-fire-boundary:${boundaryId}`
-    && evidence.local_fire_write_plan_digest === plan.write_plan_digest
-    && evidence.resolution_identity_digest
-      === computeSpatialV3CanonicalDigest({ proposal_id: proposal.proposal_id,
-        local_fire_write_plan_digest: plan.write_plan_digest,
-        owner_keys: proposal.owner_keys, physical_keys: proposal.physical_keys });
 }

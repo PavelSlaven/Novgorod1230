@@ -75,6 +75,13 @@ code-owned изменения inventory geometry. Положительные `we
 
 A1 v1 сознательно не моделирует небольшой subtractive mass loss/known waste для single-source `preserve_source`; outputs одного action однородны; tools остаются неизменяемыми pins без wear/consumption. Дополнительный finite material в `preserve_source` расходуется только целой unit (`whole`), а finite partial independent transformation закрыта. Неназванное игроком число outputs представляется `requested_output_count = null`; item owner выбирает один actual output, а явно названное число принимает только в пределах массы и `max_new_entities`.
 
+Active F1 переиспользует item owner: любой accessible whole non-container item с
+явным generic fuel marker и допустимой exact mass может стать fuel unit без
+каталога authored ID. Existing whole water portion допускается как qualitative
+affect input. Actor-step проверяет holder/controller/owner; due boundary
+проверяет exact process binding без actor. Retirement топлива или воды также
+планирует этот owner и сохраняет общий P16.
+
 ## Зависимости
 
 Разрешены `@rus/kernel` и узкий contract digest из `@rus/contracts/ordinary-materialization-v1`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.

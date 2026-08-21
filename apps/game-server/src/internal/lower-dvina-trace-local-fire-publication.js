@@ -14,13 +14,13 @@ const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v16/publication-binding.json`;
 const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v17/manifest.json`;
 
 export const TRACE_LOCAL_FIRE_PHASE_1A_MANIFEST_DIGEST =
-  '89673fd4ce4ba5d5f87de091c9794e2519e6b623a259c433e73d73ae40d598c1';
+  'daa33208e16e0bf77fdf9f2a11b4d25899a19f816f6d843fd9ea9977f3c5d48e';
 const MANIFEST_DIGEST =
-  'eb61284181e29b2d1fae5dcd68ae4cafc93d82953c109e39ded462a193332f53';
+  'ecce763643bc6ad6cfc2eff87e5778a66aeaaaec870d6a5a68efe30d93b08bb1';
 const BINDING_DIGEST =
-  'd8b5c03c1a5daa416b75ce71227bf6ada76563b186dcfdbc704cd4f74112c4a8';
+  '8f52b3c9288cb94b19c65d6b1627eaf03260c8d27fdc2234b3f0b02764a1cb92';
 const DEFINITION_DIGEST =
-  '0ac57def8064c6e637cd34b9ce522bf6a9d9f32ea241cb6b10f822b561c122a2';
+  '54b868f174a25f35525e9188848986889a481551be158d9494965fc47b0027fe';
 
 export async function loadLowerDvinaTraceLocalFirePublication({
   rootDir = process.cwd(), phase1AManifestDigest = null

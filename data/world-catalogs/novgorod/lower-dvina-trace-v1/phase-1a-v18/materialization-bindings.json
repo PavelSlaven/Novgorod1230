@@ -10,7 +10,7 @@
     "id": "lower_dvina_trace_phase_1a_materialization_bindings_v17",
     "revision": 17,
     "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
-    "digest": "3a63636da6a1dd5ebe85a768a07a2dd74a92900897b311535cbfc4096747ec5c"
+    "digest": "6d531334eda14ef005515745096b59be27959bc549659e923888db71b7fd15d6"
   },
   "binding_resolution_policy": "reuse_exact_revision_21_materialization_and_activate_sha_pinned_f1_or_fail_closed",
   "fallback_policy": "forbidden",
@@ -38,10 +38,10 @@
       "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
-      "digest": "ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"
+      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
     },
-    "authority_provisioning": "atomic_new_game_stage_24",
-    "water_extinguish": "disabled_missing_exact_finite_water_authority",
+    "input_admission": "current_item_owner_state",
+    "water_extinguish": "semantic_existing_whole_portion",
     "fallback_policy": "forbidden"
   }
 }

@@ -100,11 +100,11 @@ test('unbound world-process request reaches only the active exact owner seam',
     assert.equal(calls,1);
   });
 
-test('world-process affect with no target refs reaches resolver and seals plan',
+test('world-process affect with no target refs reaches resolver and carries plan',
   async () => {
     let resolvedOperation = null;
-    const sealedPlan = { schema:'local_fire_atomic_write_plan_v1',
-      write_plan_digest:'sha256:sealed-affect' };
+    const processPlan = { schema:'local_fire_atomic_write_plan_v1',
+      transition_proposal:{outcome:'fuel_added'} };
     const { services } = createServices([], {
       command: { matches: () => false, semantic_binding: {
         binding_id:'unmatched-fire-affect',operation:'request_world_process',
@@ -118,7 +118,7 @@ test('world-process affect with no target refs reaches resolver and seals plan',
         return {working_projection:request.working_projection,
           write_fragments:[{target:'party_hidden_state',
             value:{local_fire_fuel_added:true}}],
-          local_fire_atomic_write_plan:sealedPlan,
+          local_fire_atomic_write_plan:processPlan,
           player_response_boundary:true};
       },
       turnStepModel: async (request) => turnStepPlan(request,{
@@ -133,9 +133,8 @@ test('world-process affect with no target refs reaches resolver and seals plan',
       services);
     assert.equal(result.status,'partial');
     assert.deepEqual(resolvedOperation?.target_refs,[]);
-    assert.equal(result.checkpoint.stages.persistence_plan
-      .local_fire_atomic_write_plan.write_plan_digest,
-    sealedPlan.write_plan_digest);
+    assert.deepEqual(result.checkpoint.stages.persistence_plan
+      .local_fire_atomic_write_plan,processPlan);
   });
 
 test('ordinary discovery resolver runs only after existing discovery owners',

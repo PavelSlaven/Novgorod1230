@@ -234,6 +234,15 @@ step запрещена, потому что A1 не имеет prepared-direct 
 
 Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
+Active F1 сохраняет единственную player semantic boundary: public
+`request_world_process` имеет только `start|affect`. Exact start и generic
+whole-fuel addition детерминированы и не вызывают model. Whole-water affect
+использует bounded `world_process_step_request_v1` только для qualitative
+`no_effect|continue|complete`; request не даёт model числовых mechanics и не
+создаёт второй planner. Due boundary приходит через общий temporal integration
+без fake player turn и без actor requirement. Все F1 plans входят в
+существующий combined P16.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

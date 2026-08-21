@@ -89,37 +89,26 @@ test('production-v11 threads exact F1 profile, resolver and temporal owner',
     assert.equal(absent.createTurnStepWorldProcessResolver, null);
   });
 
-test('F1 player-safe marker exposes only visible approved exact refs',
+test('F1 player-safe marker exposes visible ignition and active process refs',
   async () => {
     const loadedProfile = await loadLowerDvinaTraceLocalFireProfile();
-    const authority = { status: 'committed',
-      context_ref: loadedProfile.profile.context_ref,
-      profile_ref: loadedProfile.profile.profile_id,
-      profile_version: '1', scope_ref: 'anchor:current',
-      ignition_basis_item_id: 'item:ignition',
-      approved_fuel_item_ids: ['item:fuel:1','item:fuel:2'] };
-    const base = { items: ['item:ignition','item:fuel:1','item:fuel:2']
-      .map((item_id)=>({item_id})) };
+    const ignition = { item_id:'item:ignition', state:{lifecycle_status:'active',
+      local_fire_ignition_basis:{schema:
+        'rus.items.local_fire_ignition_basis.v1'}} };
+    const base = { items: [ignition,{item_id:'item:unlisted-fuel'}] };
     const active = projectLowerDvinaTraceF1Capability({playerSafeState:base,
       committedState:{position:{g5_anchor_id:'anchor:current'},
-        local_fire_authority:authority,local_fire_runtime:[{process_state:{
-          process_ref:'process:1',status:'active'}}]},loadedProfile,
+        items:[ignition],local_fire_runtime:[{process_state:{
+          process_ref:'process:1',status:'active',scope_ref:'anchor:current',
+          causal_basis_ref:'item:ignition'}}]},loadedProfile,
       resolverAvailable:true});
     assert.deepEqual(active.local_world_process,{semantic_grounding_available:true,
-      context_ref:authority.context_ref,ignition_basis_ref:'item:ignition',
-      approved_fuel_refs:['item:fuel:1','item:fuel:2'],
-      active_process_refs:['process:1']});
-    const partial = projectLowerDvinaTraceF1Capability({playerSafeState:{
-      items:[{item_id:'item:ignition'},{item_id:'item:fuel:2'}]},
-      committedState:{position:{g5_anchor_id:'anchor:current'},
-        local_fire_authority:authority,local_fire_runtime:[{process_state:{
-          process_ref:'process:1',status:'active'}}]},loadedProfile,
-      resolverAvailable:true});
-    assert.deepEqual(partial.local_world_process.approved_fuel_refs,
-      ['item:fuel:2']);
+      context_ref:loadedProfile.profile.context_ref,scope_ref:'anchor:current',
+      ignition_basis_refs:['item:ignition'],active_process_refs:['process:1'],
+      process_ignition_basis_refs:{'process:1':'item:ignition'}});
     const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{items:[]},
-      committedState:{position:{g5_anchor_id:'anchor:current'},
-        local_fire_authority:authority},loadedProfile,resolverAvailable:true});
+      committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},
+      loadedProfile,resolverAvailable:true});
     assert.equal(hidden.local_world_process,undefined);
   });
 

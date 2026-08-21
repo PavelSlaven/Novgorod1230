@@ -132,8 +132,8 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
   ])
 });
 const STATE_GATED_COMMANDS = new Set([
-  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
-  'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse', 'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  'lower_dvina_trace.respond_in_active_combat',
   ...Object.keys(EXPECTED).filter((id) => EXPECTED[id].minRevision === 17)
 ]);
 

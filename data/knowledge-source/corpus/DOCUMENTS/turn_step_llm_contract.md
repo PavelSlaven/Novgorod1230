@@ -922,10 +922,11 @@ Activity, exact duration, interruption и temporal effects принадлежа�
 Этот request только передаёт намерение существующему владельцу world process.
 LLM не задаёт timestamp, duration, interval, process id, fuel mass или числовую
 скорость. В active Lower Dvina Trace revision 22 start требует exact authored
-ignition basis в `target_refs`, а affect/add-fuel использует пустой
-`target_refs`; оба пути принимают только видимые concrete whole fuel units из
-SHA-pinned F1 authority. Due boundary разрешает без LLM общий temporal owner.
-Extinguish/water в текущем F1 profile не активированы и fail closed.
+ignition basis в `target_refs`; generic whole fuel допускается item owner без
+каталога ID и без model call. Existing whole-water affect получает через
+`world_process_step_request_v1` только bounded qualitative outcome
+`no_effect|continue|complete`. Due boundary разрешает без LLM общий temporal
+owner и не требует живого actor.
 
 ### 12.7. `emit_interaction`
 

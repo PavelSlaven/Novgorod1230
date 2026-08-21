@@ -170,9 +170,8 @@ function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revision
       || f1.profile_ref.id !== bundle.local_fire_profile?.profile_id
       || f1.profile_ref.revision !== profilePin?.revision
       || f1.profile_ref.schema !== profilePin?.schema
-      || f1.authority_provisioning !== 'atomic_new_game_stage_24'
-      || f1.water_extinguish
-        !== 'disabled_missing_exact_finite_water_authority'
+      || f1.input_admission !== 'current_item_owner_state'
+      || f1.water_extinguish !== 'semantic_existing_whole_portion'
       || f1.fallback_policy !== 'forbidden') {
       fail('TRACE_M10_PHASE_1A_CUTOVER_INVALID',
         'Revision 22 requires the exact F1 Phase 1A cutover.');

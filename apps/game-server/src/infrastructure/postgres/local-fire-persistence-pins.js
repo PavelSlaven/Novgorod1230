@@ -1,6 +1,3 @@
-import { computeSpatialV3CanonicalDigest as digest } from
-  '@rus/contracts/spatial-v3/registry';
-
 export function localFireItemQuery(lock) { return `SELECT i.item_id,i.run_id,
   i.template_id,i.profile_id,i.category_id,i.quantity,i.condition_state,
   i.legal_status,i.state,i.state_version,p.anchor_id,p.container_id,
@@ -18,31 +15,10 @@ export function localFireItemQuery(lock) { return `SELECT i.item_id,i.run_id,
    AND b.released_at_change_set_id IS NULL
  WHERE i.party_id=$1 AND i.item_id=$2${lock ? ' FOR UPDATE OF i,p,o' : ''}`; }
 
-export function localFireFuelPin(row) {
-  const base = localFireEntityPin(row);
-  const { item, placement } = base;
-  const classification = item.state?.local_fire_fuel;
-  const mechanics = classification?.mechanics;
-  if (classification?.schema !== 'rus.items.local_fire_fuel.v1'
-      || classification.fuel_class !== 'ordinary_solid_fuel_unit'
-      || classification.whole_unit !== true || item.quantity !== 1
-      || item.state?.lifecycle_status === 'retired'
-      || !Number.isSafeInteger(mechanics?.mass_grams)) fail();
-  const placementRef = placement.anchor_id ?? placement.container_id
-    ?? placement.holder_character_id ?? placement.holder_npc_id;
-  return { ...base, fuel_snapshot: { fuel_ref: row.item_id,
-    fuel_class: classification.fuel_class, state_version: item.state_version,
-    lifecycle_state: 'active', mass_grams: mechanics.mass_grams,
-    quantity: item.quantity, bound_process_ref: row.bound_process_ref ?? null,
-    placement_ref: placementRef,
-    property_digest: digest(item.state?.property_state),
-    mechanics_digest: digest(mechanics) } };
-}
-
-export function localFireEntityPin(row) {
+export function localFireItemPin(row) {
   const item = { item_id: row.item_id, run_id: row.run_id,
     template_id: row.template_id, profile_id: row.profile_id,
-    category_id: row.category_id, quantity: row.quantity,
+    category_id: row.category_id, quantity: Number(row.quantity),
     condition_state: row.condition_state, legal_status: row.legal_status,
     state: row.state, state_version: Number(row.state_version) };
   const placement = { item_id: row.item_id, anchor_id: row.anchor_id,
@@ -58,29 +34,26 @@ export function localFireEntityPin(row) {
     controller_character_id: row.controller_character_id,
     claim_state: row.claim_state };
   return { item_id: row.item_id, item, placement, ownership,
-    item_digest: digest(item), placement_digest: digest(placement),
-    ownership_digest: digest(ownership) };
+    bound_process_ref: row.bound_process_ref ?? null };
 }
 
-export function localFireAccessible(pin, actorRef, scopeRef) {
-  const ownership = pin.ownership;
-  const actorOwned = ownership.owner_character_id === actorRef
-    && ownership.owner_npc_id === null && ownership.owner_party === false;
-  const partyOwned = ownership.owner_character_id === null
-    && ownership.owner_npc_id === null && ownership.owner_party === true;
-  const controlled = ownership.claim_state === 'owned'
-    && ownership.controller_character_id === actorRef
-    && ownership.controller_npc_id === null;
-  const placement = pin.placement;
-  const atScope = placement.anchor_id === scopeRef
-    && placement.container_id === null && placement.holder_npc_id === null
-    && placement.holder_character_id === null
-    && placement.attached_item_id === null;
-  const heldByActor = placement.anchor_id === null
-    && placement.container_id === null && placement.holder_npc_id === null
-    && placement.holder_character_id === actorRef
-    && placement.attached_item_id === null;
-  return (actorOwned || partyOwned) && controlled && (atScope || heldByActor);
+export function validLocalFireIgnitionBasis(pin, actorRef, scopeRef) {
+  const marker = pin?.item?.state?.local_fire_ignition_basis;
+  return marker?.schema === 'rus.items.local_fire_ignition_basis.v1'
+    && pin.item.state.lifecycle_status === 'active'
+    && accessible(pin, actorRef, scopeRef);
 }
-function fail() { throw Object.assign(new Error('LOCAL_FIRE_FUEL_INVALID'),
-  { code: 'LOCAL_FIRE_FUEL_INVALID' }); }
+
+function accessible(pin, actorRef, scopeRef) {
+  const placement = pin.placement, ownership = pin.ownership;
+  const held = placement.holder_character_id === actorRef
+    || placement.holder_npc_id === actorRef;
+  const local = placement.anchor_id === scopeRef
+    && placement.container_id == null && placement.holder_character_id == null
+    && placement.holder_npc_id == null && placement.attached_item_id == null;
+  const controlled = ownership.controller_character_id === actorRef
+    || ownership.controller_npc_id === actorRef;
+  const owned = ownership.owner_character_id === actorRef
+    || ownership.owner_npc_id === actorRef || ownership.owner_party === true;
+  return (held || local) && controlled && owned;
+}

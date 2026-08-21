@@ -170,11 +170,7 @@ test('local-fire temporal proposal contributes its mandatory physical locks', ()
   assert.deepEqual(integrated.input.lock_context.physical_keys,
     [...base.lock_context.physical_keys, ...required].sort());
   assert.deepEqual(integrated.input.lock_context.owner_keys,
-    [...base.lock_context.owner_keys,
-      'actor:system:local_fire_boundary'].sort());
-  assert.equal(integrated.input.local_fire_temporal_evidence
-    .candidate_evidence.candidate_digest,
-  proposal.temporal_candidate_evidence.candidate_digest);
+    base.lock_context.owner_keys);
 
   const missing = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base,
@@ -194,78 +190,33 @@ test('local-fire temporal proposal contributes its mandatory physical locks', ()
   assert.equal(missingOwner.ok, false);
   assert.equal(missingOwner.error.code, 'temporal_change_set_conflict');
 
-  const drifted = localFireProposal();
-  const forgedBoundary = 'local-fire:fire-1:state:forged';
-  drifted.temporal_candidate_evidence.candidate_snapshot.boundary_id =
-    forgedBoundary;
-  drifted.temporal_candidate_evidence.candidate_snapshot.idempotency_key =
-    forgedBoundary;
-  drifted.local_fire_atomic_write_plan.transition_proposal.causal_identity
-    .action_ref = `local-fire-boundary:${forgedBoundary}`;
-  drifted.local_fire_atomic_write_plan.write_plan_digest = 'sha256:forged-fire';
-  drifted.temporal_candidate_evidence.candidate_digest =
-    computeSpatialV3CanonicalDigest(
-      drifted.temporal_candidate_evidence.candidate_snapshot);
-  drifted.temporal_candidate_evidence.local_fire_write_plan_digest =
-    drifted.local_fire_atomic_write_plan.write_plan_digest;
-  drifted.temporal_candidate_evidence.resolution_identity_digest =
-    computeSpatialV3CanonicalDigest({ proposal_id: drifted.proposal_id,
-      local_fire_write_plan_digest:
-        drifted.local_fire_atomic_write_plan.write_plan_digest,
-      owner_keys: drifted.owner_keys, physical_keys: drifted.physical_keys });
-  const drift = integrateSpatialV3TemporalWriteFragments({
-    base_write_plan_input: base,
-    temporal_result: seal({ combined_change_set: { proposals: [drifted] } })
-  });
-  assert.equal(drift.ok, false);
-  assert.equal(drift.error.code, 'temporal_change_set_conflict');
 });
 
 function localFireProposal() {
   const at = { whole_minutes: '15', subminute_numerator: '0',
     subminute_denominator: '1' };
-  const process = { process_ref: 'fire-1', state_version: 2 };
-  process.next_boundary_at = at;
-  process.fuel_bindings = [{ fuel_ref: 'fuel-1', binding_ordinal: 0 }];
+  const process = { schema: 'local_world_process_state_v1',
+    process_ref: 'fire-1', process_mode: 'local_exact', process_kind: 'fire',
+    scope_ref: 'shore', causal_basis_ref: 'ignition', status: 'active',
+    started_at: { whole_minutes: '10', subminute_numerator: '0',
+      subminute_denominator: '1' }, next_boundary_at: at,
+    fuel_bindings: [{ fuel_ref: 'fuel-1',
+      fuel_class: 'ordinary_solid_fuel_unit' }], state_version: 2 };
   const boundaryId = 'local-fire:fire-1:state:2';
   const localFire = { schema: 'local_fire_atomic_write_plan_v1',
-    write_plan_digest: 'sha256:local-fire', transition_proposal: {
+    party_id: 'party-1', base_party_state_version: 2,
+    change_set_id: 'change-1', actor_ref: 'actor:system',
+    profile_pin: {}, input_pins: [], ignition_basis_pin: null,
+    item_retirement_transition: null, transition_proposal: {
       action: 'due_boundary', at_timestamp: at, process_before: process,
-      causal_identity: { action_ref: `local-fire-boundary:${boundaryId}` } },
-    party_id: 'party-1', authority_pin: { persisted_row: {
-      policy_ref: 'policy-fire', policy_version: 1 } } };
-  const ownerKeys = ['actor:system:local_fire_boundary'];
+      cause: { kind: 'temporal_boundary', boundary_id: boundaryId,
+        expected_process_state_version: 2, due_at: at } } };
+  const ownerKeys = [];
   const physicalKeys = [
     'party_runtime.party_local_world_processes:party-1:fire-1',
     'party_runtime.party_items:party-1:fuel-1'
   ];
-  const ruleRef = { entity_ref: { entity_kind: 'world_process_rule',
-    entity_id: 'local_exact_fire_due_v1' }, authoring_version: '1' };
-  const policyRef = { entity_ref: { entity_kind: 'world_process_policy',
-    entity_id: 'policy-fire' }, authoring_version: '1' };
-  const subjects = [{ entity_kind: 'item', entity_id: 'fuel-1' }];
-  const candidate = { boundary_id: boundaryId, boundary_kind:'world_process',
-    source_ref: { entity_kind: 'local_world_process', entity_id: 'fire-1' },
-    primary_subject_ref: subjects[0],
-    scope_ref: { entity_kind: 'party', entity_id: 'party-1' },
-    rule_ref: ruleRef, policy_ref: policyRef,
-    scheduled_at: at, preconditions_digest: computeSpatialV3CanonicalDigest({
-      process_state: process, expected_state_version: 2 }),
-    resolution_class: 'local_exact_fire_due', interrupt_effect: 'background',
-    visibility_policy_ref: policyRef, idempotency_key: boundaryId,
-    subject_refs: subjects, causal_parent_refs: [] };
   const proposalId = 'local-fire:fire-1:due';
   return { proposal_id: proposalId, local_fire_atomic_write_plan: localFire,
-    owner_keys: ownerKeys, physical_keys: physicalKeys,
-    temporal_candidate_evidence: {
-      schema: 'rus.turn.local_fire_temporal_candidate_evidence.v1',
-      rule_ref: ruleRef, policy_ref: policyRef,
-      candidate_snapshot: candidate,
-      candidate_digest: computeSpatialV3CanonicalDigest(candidate),
-      local_fire_write_plan_digest: localFire.write_plan_digest,
-      resolution_identity_digest: computeSpatialV3CanonicalDigest({
-        proposal_id: proposalId,
-        local_fire_write_plan_digest: localFire.write_plan_digest,
-        owner_keys: ownerKeys, physical_keys: physicalKeys })
-    } };
+    owner_keys: ownerKeys, physical_keys: physicalKeys };
 }

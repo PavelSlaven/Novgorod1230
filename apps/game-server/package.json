@@ -28,6 +28,7 @@
     "@rus/turn": "0.15.0",
     "@rus/visibility-knowledge-memory": "0.13.0",
     "@rus/world-base": "0.9.0",
+    "@rus/world-processes": "0.1.0",
     "pg": "^8.22.0"
   }
 }

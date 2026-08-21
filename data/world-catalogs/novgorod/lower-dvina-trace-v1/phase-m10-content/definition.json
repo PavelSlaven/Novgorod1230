@@ -7,7 +7,7 @@
     "id": "lower_dvina_trace_v1",
     "revision": 21,
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/definition.json",
-    "digest": "1be1b36ef4d718e1178ef3377a2e86f2ea91ca407dab6f5918e75bdb36c7e5af"
+    "digest": "95e2d113c459b101935adfe8d5e00b20477b61e06852fb4050bf3200062e027d"
   },
   "applicability": {
     "schema": "rus.trace_scenario_applicability.v1",
@@ -79,7 +79,7 @@
     "local_fire_profile": {
       "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
       "revision": 1,
-      "digest": "bc3242db75efa773af9eec1e12a243a5876b55de097c26819d4adb7df7d94f18"
+      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
     }
   },
   "resolved_policy_refs": {

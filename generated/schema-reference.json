@@ -1030,9 +1030,9 @@
       "type": "sql"
     },
     {
-      "bytes": 7665,
-      "path": "schemas/party-db/027_party_runtime_local_exact_fire.sql",
-      "sha256": "9a7f5052be00d32623e7abbfe5627fbbbd65398cc0a0f540e2d56313089dafc7",
+      "bytes": 3175,
+      "path": "schemas/party-db/028_party_runtime_local_exact_fire.sql",
+      "sha256": "3cf779d3e79dd86085293bd496e5239a8c72477515cd49d0d4c6a7453d0f1c71",
       "type": "sql"
     },
     {

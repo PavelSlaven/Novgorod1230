@@ -1,7 +1,8 @@
 import { serverError } from '../../errors.js';
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
-import { loadLocalFireCommittedContext } from './local-fire-persistence.js';
+import { localFireItemPin, localFireItemQuery } from
+  './local-fire-persistence-pins.js';
 
 const TEMPORAL_OWNER =
   '@rus/time-events-history/temporal-boundaries';
@@ -52,11 +53,8 @@ export async function loadTracePhase2TemporalSourceProof(
       [partyId]
     ),
     partyPool.query(
-      `SELECT p.process_ref,p.context_ref,p.process_state,p.next_boundary_at,p.state_version,
-              a.policy_ref,a.policy_version
+      `SELECT p.process_ref,p.context_ref,p.process_state,p.next_boundary_at,p.state_version
          FROM party_runtime.party_local_world_processes p
-         JOIN party_runtime.party_local_fire_authorities a
-           ON a.party_id=p.party_id AND a.context_ref=p.context_ref
         WHERE p.party_id=$1 AND p.status='active'
         ORDER BY p.process_ref`, [partyId])
   ]);
@@ -110,19 +108,24 @@ export async function loadTracePhase2TemporalSourceProof(
     ruleRef: { entity_ref: { entity_kind: 'world_process_rule',
       entity_id: 'local_exact_fire_due_v1' }, authoring_version: '1' },
     policyRef: { entity_ref: { entity_kind: 'world_process_policy',
-      entity_id: row.policy_ref }, authoring_version: String(row.policy_version) },
+      entity_id: row.context_ref }, authoring_version: '1' },
     preconditionsDigest: computeSpatialV3CanonicalDigest({
       process_state: row.process_state, expected_state_version:
         Number(row.state_version) }), resolutionClass: 'local_exact_fire_due',
     idempotencyKey: `local-fire:${row.process_ref}:state:${row.state_version}`,
     subjectRefs: fuelRefs, causalParentRefs: [] });
   });
-  const localFireRuntime = await Promise.all(localProcesses.rows.map((row) =>
-    loadLocalFireCommittedContext({ client: partyPool, partyId,
-      actorRef: 'system:local_fire_boundary', contextRef: row.context_ref,
-      fuelItemIds: row.process_state.fuel_bindings.map(
-        ({ fuel_ref: ref }) => ref), processRef: row.process_ref,
-      requireActorAccess: false })));
+  const localFireRuntime = await Promise.all(localProcesses.rows.map(async(row)=>{
+    const inputPins=[];
+    for(const {fuel_ref:ref} of row.process_state.fuel_bindings){
+      const selected=await partyPool.query(localFireItemQuery(false),[partyId,ref]);
+      if(selected.rows.length!==1)throw temporalGap({process_ref:row.process_ref,
+        fuel_ref:ref});
+      inputPins.push(localFireItemPin(selected.rows[0]));
+    }
+    return Object.freeze({party_id:partyId,
+      process_state:structuredClone(row.process_state),input_pins:inputPins});
+  }));
   const candidates = [...eventCandidates, ...scheduleCandidates,
     ...localProcessCandidates];
   const eventVersions = Object.fromEntries(events.rows.map((row) => [

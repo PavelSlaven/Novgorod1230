@@ -180,11 +180,15 @@ source.
 Runtime release `spatial-v3-production-v11` сохраняет все inherited paths и
 делает revision 22 / M10 / Phase 1A v18 / Phase 1B v17 sole current
 publication. Он materialize-ит exact authored ignition basis и два concrete
-whole fuel units, сохраняет F1 authority, композирует production resolver и
-регистрирует due boundary у существующего temporal owner. Start/add/due входят
-в тот же combined P16; bound fuel mutation, stale pins, duplicate transition и
-late failure откатываются атомарно. Player-safe marker содержит только visible
-approved refs. Water/extinguish остаются fail-closed disabled.
+whole fuel units, композирует production resolver и регистрирует due boundary у
+существующего temporal owner. Любой другой item-owned whole fuel допускается
+тем же generic правилом без ID whitelist. Start/add/due и qualitative
+whole-water affect входят в тот же combined P16; bound fuel mutation, stale
+pins, duplicate transition и late failure откатываются атомарно. Due
+actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
+marker содержит только visible refs. Отдельных F1 authority/commit tables,
+evidence, digest или sealing нет; model выбирает только bounded qualitative
+outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 

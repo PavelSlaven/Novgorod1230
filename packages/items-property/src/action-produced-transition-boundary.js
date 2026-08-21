@@ -66,10 +66,7 @@ function validSourceFactDelta(value, required) {
     'removed_physical_fact_refs', 'physical_form'
   ]) && nullableText(value.physical_description)
     && refs(value.qualitative_facts) && refs(value.removed_physical_fact_refs)
-    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form)
-    && (value.physical_description !== null
-      || value.qualitative_facts.length > 0
-      || value.removed_physical_fact_refs.length > 0);
+    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form);
 }
 
 function validMaterialExtent(value, identityMode, resultClass, sourceCount) {

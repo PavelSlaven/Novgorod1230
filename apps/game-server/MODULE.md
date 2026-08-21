@@ -150,7 +150,13 @@ with exact mass to hands/carry/packing by the item owner. Weapon combat class is
 ephemeral and belongs only to the combat boundary; every held A1 item without
 exact weapon mechanics is classified from current facts/form, including a
 closed not-weapon result, regardless of the last A1 output class. A1 state
-stores no combat class or damage. Uncertain actions reuse one generic check and semantic activity/time
+stores no combat class or damage. Valid zero-positive classification keeps the
+ordinary unarmed/default profile applicable; one positive selects its
+code-owned danger, while ambiguity or invalid classification fails closed.
+Positive weapon/token/writing outcomes require an admitted accessible tool;
+ordinary/no-result keeps the zero-tool path. Partial survivor text facts may be
+empty when its required form alone changes code-owned inventory geometry.
+Uncertain actions reuse one generic check and semantic activity/time
 resolution from turn owners; deterministic actions use `domain_request` without
 RNG but still apply one ordinary semantic activity/time cost after a real
 physical attempt. The same combined P16 write set contains the full turn snapshot,

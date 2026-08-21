@@ -119,6 +119,53 @@ test('independent, impossible no-result and writing remain qualitative', () => {
   assert.equal('working_mechanism' in denied, false);
 });
 
+test('special positive A1 outputs require an admitted tool', () => {
+  const weapon = proposal({ tool_refs: [], output_class: 'weapon_capable' });
+  const writing = proposal({ source_refs: ['item:bark'], tool_refs: [],
+    result_class: 'written_carrier', output_class: 'written_carrier',
+    intended_transformation: 'написать на коре', result_descriptor: {
+      display_name: 'кора с надписью',
+      physical_description: 'на коре есть физическая надпись',
+      qualitative_facts: [], inscription_text: 'Жду у переправы.',
+      physical_form: null, source_fact_delta: null } });
+  const token = proposal({ source_refs: ['item:board'], tool_refs: [],
+    identity_mode: 'independent_outputs', origin: 'crafted',
+    material_extent: 'whole', output_class: 'money_like_token',
+    result_descriptor: { display_name: 'деревянный счётный знак',
+      physical_description: 'неофициальный деревянный знак',
+      qualitative_facts: [], inscription_text: null,
+      physical_form: 'compact', source_fact_delta: null } });
+  for (const value of [weapon, writing, token]) {
+    assert.equal(admitActionProducedResult(input(value)).pass, false);
+  }
+
+  assert.equal(admitActionProducedResult(input(proposal({
+    output_class: 'weapon_capable' }))).pass, true);
+  assert.equal(admitActionProducedResult(input(proposal({
+    tool_refs: [], output_class: 'ordinary_mundane' }))).pass, true);
+  assert.equal(admitActionProducedResult(input(proposal({
+    tool_refs: [], identity_mode: 'no_useful_result', origin: null,
+    output_class: null, result_class: 'no_useful_result', result_descriptor: {
+      display_name: null, physical_description: null, qualitative_facts: [],
+      inscription_text: null, physical_form: null, source_fact_delta: null }
+  }))).pass, true);
+});
+
+test('partial survivor may change only its code-owned physical form', () => {
+  const partial = proposal({ source_refs: ['item:board'],
+    tool_refs: ['item:axe'], identity_mode: 'independent_outputs',
+    origin: 'direct_partition', material_extent: 'minor',
+    result_class: 'partial_transformation', result_descriptor: {
+      display_name: 'деревянный клин',
+      physical_description: 'отделённый деревянный клин',
+      qualitative_facts: [], inscription_text: null,
+      physical_form: 'compact', source_fact_delta: {
+        physical_description: null, qualitative_facts: [],
+        removed_physical_fact_refs: [], physical_form: 'regular'
+      } } });
+  assert.equal(admitActionProducedResult(input(partial)).pass, true);
+});
+
 test('physical weapon-like and token-like labels cannot assert authority', () => {
   for (const display_name of ['заострённая жердь', 'похожий на монету жетон']) {
     assert.equal(admitActionProducedResult(input(proposal({
@@ -145,6 +192,8 @@ test('source, tool, access and version membership are exact', () => {
     (value) => { value.proposal.source_refs = ['item:knife'];
       value.proposal.tool_refs = []; },
     (value) => { value.committed_context.entities[0].access_state = 'restricted'; },
+    (value) => { value.committed_context.entities.find(({ entity_ref: ref }) =>
+      ref === 'item:knife').controller_ref = 'actor:other'; },
     (value) => { value.committed_context.entities[0].state_version = '6'; },
     (value) => { value.proposal.committed_state_version = '6'; },
     (value) => { value.profile.context_state_version = '6'; }

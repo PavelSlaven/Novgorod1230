@@ -37,6 +37,19 @@ test('preserved physical source keeps identity and receives owner mechanics',
     assert.equal('write_fragments' in proposal, false);
   });
 
+test('transition owner rejects a special output without a tool pin', () => {
+  const handoff = structuredClone(pendingHandoff());
+  handoff.qualitative_result.output_class = 'weapon_capable';
+  handoff.tool_pins = [];
+  let calls = 0;
+  const planner = createActionProducedTransitionPlanner({
+    resolveMechanics() { calls += 1; return null; }
+  });
+  assert.throws(() => planner(ownerInput({ handoff, tools: [],
+    committedEntityRefs: ['item:pole'] })), TypeError);
+  assert.equal(calls, 0);
+});
+
 test('partition creates deterministic independent identities and conserves source',
   () => {
     const handoff = pendingHandoff({

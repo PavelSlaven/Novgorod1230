@@ -22,7 +22,8 @@ import { validateActionProducedEntitySnapshots as validateSnapshots,
   validateActionProducedOutputDestination as validateOutputDestination,
   validateActionProducedOutputPropertyBasis } from
   './action-produced-transition-entities.js';
-import { validateActionProducedOutputClass } from './action-produced-output-class.js';
+import { actionProducedOutputRequiresTool,
+  validateActionProducedOutputClass } from './action-produced-output-class.js';
 import { createActionProducedOutputIdentity } from
   './action-produced-output-identity.js';
 const INPUT_KEYS = ['handoff', 'source_snapshots', 'tool_snapshots',
@@ -182,6 +183,8 @@ function validateHandoff(value) {
       || !validateActionProducedOutputClass(
         value.qualitative_result?.output_class,
         value.result_class, value.identity_mode)
+      || actionProducedOutputRequiresTool(
+        value.qualitative_result?.output_class) && value.tool_pins.length === 0
       || !validActionProducedQualitativeResult(value.qualitative_result, {
         identityMode: value.identity_mode, resultClass: value.result_class,
         sourceCount: value.source_pins.length })) fail();

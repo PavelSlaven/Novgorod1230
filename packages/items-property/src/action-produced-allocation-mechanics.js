@@ -144,6 +144,8 @@ function consumeSource(source, mechanics, extent, outputCount) {
     }
     if (finite.lifecycle_state !== 'active') gap();
     const quantity = exactFiniteQuantity(finite?.quantity);
+    // Active A1 finite rows expose discrete owner units (`item`/`piece`).
+    // Material extent changes whole-item mass only; one finite unit is atomic.
     if (mechanics.quantity?.unit !== quantity.unit
         || !Number.isSafeInteger(mechanics.quantity.value)
         || mechanics.quantity.value * quantity.denominator

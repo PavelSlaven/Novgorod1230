@@ -220,6 +220,9 @@ fact. Для partial independent output sole plan задаёт только grou
 `material_extent = minor|half|major`; full partition использует `whole`.
 Output descriptor относится только к новым entities, а обязательный
 `source_fact_delta` задаёт отдельные current facts и `physical_form` единственного surviving source; multi-source partial partition в A1 v1 закрыт.
+Text-поля delta могут быть пустыми, если меняется только code-owned inventory
+geometry. Положительные weapon/token/writing outcomes требуют хотя бы один
+admitted tool; ordinary/no-result — нет.
 Preserve с одним source использует `null`, а с дополнительными расходуемыми
 materials — grounded `minor|half|major|whole`. Числовую долю и exact mechanics
 выводит item owner. Persisted non-authoritative physical facts входят в

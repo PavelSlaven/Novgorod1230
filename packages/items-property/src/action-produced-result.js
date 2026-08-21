@@ -1,5 +1,6 @@
 import { deepFreeze } from '@rus/kernel';
-import { validateActionProducedOutputClass } from
+import { actionProducedOutputRequiresTool,
+  validateActionProducedOutputClass } from
   './action-produced-output-class.js';
 
 // Revision 21 hands the admitted subset to owner-native mechanics and common
@@ -227,6 +228,8 @@ function descriptorKeys(value) {
 
 function validCausalShape(value) {
   const descriptor = value.result_descriptor;
+  if (actionProducedOutputRequiresTool(value.output_class)
+      && value.tool_refs.length === 0) return false;
   if (value.identity_mode === 'preserve_source'
       && value.origin !== null) return false;
   if (value.identity_mode === 'independent_outputs'
@@ -237,10 +240,7 @@ function validCausalShape(value) {
     && value.result_class === 'partial_transformation';
   if (partialOutput && value.source_refs.length !== 1) return false;
   const sourceDelta = descriptor.source_fact_delta;
-  if (partialOutput !== (sourceDelta !== null)
-      || sourceDelta != null && sourceDelta.physical_description === null
-        && sourceDelta.qualitative_facts.length === 0
-        && sourceDelta.removed_physical_fact_refs.length === 0) return false;
+  if (partialOutput !== (sourceDelta !== null)) return false;
   if (value.identity_mode === 'no_useful_result') {
     return value.origin === null && value.result_class === 'no_useful_result'
       && descriptor.display_name === null
@@ -264,6 +264,7 @@ function bindEntities(refs, role, byRef, context, profile) {
     if (!entity || entity.state_version !== context.state_version
         || entity.accessible_actor_ref !== context.actor_ref
         || !entity.role_membership.includes(role)
+        || role === 'tool' && entity.controller_ref !== context.actor_ref
         || !profile.allowed_access_states.includes(entity.access_state)) {
       return failed('ITEM_ACTION_PRODUCED_ENTITY_NOT_ADMITTED', {
         entity_ref: ref, role

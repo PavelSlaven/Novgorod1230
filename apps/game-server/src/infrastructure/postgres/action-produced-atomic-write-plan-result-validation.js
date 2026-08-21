@@ -111,10 +111,7 @@ function validSourceFactDelta(value, required) {
     && value.removed_physical_fact_refs.every(text)
     && new Set(value.removed_physical_fact_refs).size
       === value.removed_physical_fact_refs.length
-    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form)
-    && (value.physical_description !== null
-      || value.qualitative_facts.length > 0
-      || value.removed_physical_fact_refs.length > 0);
+    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form);
 }
 
 function descriptorKeys(value) {

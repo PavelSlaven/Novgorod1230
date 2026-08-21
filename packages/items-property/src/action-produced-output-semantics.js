@@ -235,10 +235,7 @@ function validSourceFactDelta(value, required) {
   ]) && nullableText(value.physical_description)
     && textArray(value.qualitative_facts)
     && textArray(value.removed_physical_fact_refs)
-    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form)
-    && (value.physical_description !== null
-      || value.qualitative_facts.length > 0
-      || value.removed_physical_fact_refs.length > 0);
+    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form);
 }
 function descriptorKeys(value) {
   const keys = [...DESCRIPTOR_KEYS];

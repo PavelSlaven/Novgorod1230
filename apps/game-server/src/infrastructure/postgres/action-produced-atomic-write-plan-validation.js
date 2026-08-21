@@ -1,5 +1,6 @@
 import { isDeepStrictEqual } from 'node:util';
-import { createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
+import { actionProducedOutputRequiresTool,
+  createRuntimeInstanceMechanicsSnapshot } from '@rus/items-property';
 import { planFiniteResourceDecrement } from
   '@rus/items-property/finite-resource-transition';
 import { createActionProducedOutputIdentity } from
@@ -68,6 +69,10 @@ export function validateActionProducedAtomicProposal(value, load) {
   }
   const sourcePins = load.row_pins.filter(({ role }) => role === 'source');
   const toolPins = load.row_pins.filter(({ role }) => role === 'tool');
+  if (actionProducedOutputRequiresTool(
+    value.qualitative_result?.output_class) && toolPins.length === 0) {
+    fail('ACTION_PRODUCED_PROPOSAL_INVALID');
+  }
   if (value.source_transitions.length !== sourcePins.length
       || value.tool_state_pins.length !== toolPins.length) {
     fail('ACTION_PRODUCED_PROPOSAL_INVALID');

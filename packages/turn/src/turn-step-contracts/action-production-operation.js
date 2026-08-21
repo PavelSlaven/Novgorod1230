@@ -156,13 +156,6 @@ function validateShape(value, path, errors) {
       'identity_shape',
       'only a surviving partial source requires a fact delta');
   }
-  const sourceDelta = descriptor.source_fact_delta;
-  if (sourceDelta != null && sourceDelta.physical_description === null
-      && sourceDelta.qualitative_facts?.length === 0
-      && sourceDelta.removed_physical_fact_refs?.length === 0) {
-    add(errors, `${path}.result_descriptor.source_fact_delta`,
-      'result_shape', 'must change current physical facts');
-  }
   const combinedSource = value.identity_mode === 'preserve_source'
     && value.source_refs?.length > 1;
   if (combinedSource

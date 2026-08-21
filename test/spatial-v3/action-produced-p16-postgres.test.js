@@ -544,9 +544,10 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
 
     const token = await productionOwner('production-token-gap')(
       productionEnvelope({
-      itemRef: 'production-board', targetRefs: [],
+      itemRef: 'production-board', targetRefs: ['production-knife'],
       remainingIntent: 'Отделяю от доски простой счётный жетон.',
       actionProduction: actionProduction({
+        tool_refs: ['production-knife'],
         identity_mode: 'independent_outputs', origin: 'direct_partition',
         result_class: 'ordinary_physical_result',
         output_class: 'money_like_token', result_descriptor: descriptor({
@@ -807,9 +808,9 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
           physical_description: 'небольшой отделённый клин',
           source_fact_delta: {
-            physical_description: 'с края доски срезана часть',
+            physical_description: null,
             qualitative_facts: [],
-            removed_physical_fact_refs: ['fact:production-partial-board:whole'],
+            removed_physical_fact_refs: [],
             physical_form: 'regular'
           } })
       }) }));
@@ -846,7 +847,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.equal(partialFacts.rows.length, 3);
     const sourceFacts = partialFacts.rows.find(({ item_id: id }) =>
       id === 'production-partial-board').facts.map(({ text }) => text);
-    assert.deepEqual(sourceFacts, ['с края доски срезана часть']);
+    assert.deepEqual(sourceFacts, ['деревянная доска']);
     assert.equal(partialFacts.rows.filter(({ item_id: id }) =>
       id !== 'production-partial-board').every(({ facts }) => facts.some(
       ({ text }) => text === 'небольшой отделённый клин')), true);
@@ -932,7 +933,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     assert.equal(sequentialState.state_version, '5');
     assert.deepEqual(sequentialState.state.ordinary_metadata.semantic_facts
       .map(({ text }) => text), [
-      'с края доски срезана часть',
+      'деревянная доска',
       'дополнительный материал закреплён на доске',
       'на доске закреплена составная накладка',
       'Жду у переправы.',
@@ -1468,8 +1469,8 @@ async function provisionProductionScope(pool) {
         'active', inventory_profile_snapshot: itemProfile,
         ...(itemId === 'production-partial-board' ? { ordinary_metadata: {
           semantic_facts: [{
-            fact_id: 'fact:production-partial-board:whole',
-            text: 'доска целая', operation_id: null
+            fact_id: 'fact:production-partial-board:material',
+            text: 'деревянная доска', operation_id: null
           }]
         } } : {}),
         ...(itemId !== 'production-board' && !material ? {} : {

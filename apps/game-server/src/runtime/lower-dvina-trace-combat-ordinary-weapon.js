@@ -37,6 +37,8 @@ export function resolveTraceOrdinaryWeaponDanger(items, actorRef,
   }
   const selected = snapshots.find(({ kind, item }) =>
     kind === 'action_produced' && item.item_id === actionProduced?.item_ref);
+  if (actionProduced?.item_ref === null
+      && actionProduced.weapon_danger === 0) return undefined;
   if (selected == null || selected.condition !== 'serviceable') return null;
   const danger = actionProduced.weapon_danger;
   return danger == null || danger === 0 ? null : danger;
@@ -85,7 +87,9 @@ export async function classifyTraceActionProducedWeapon({ items, actor_ref,
       weapon_danger: resolved.formal_mechanics.weapon_danger
     });
   }
-  return weapons.length === 1 ? weapons[0] : null;
+  return weapons.length === 0
+    ? { item_ref: null, weapon_danger: 0 }
+    : weapons.length === 1 ? weapons[0] : null;
 }
 
 export async function classifyTraceActionProducedWeapons({ session, items,

@@ -143,7 +143,7 @@ test('partial independent output has one surviving source with its own form',
         display_name: 'деревянный клин', physical_description: 'отделённый клин',
         qualitative_facts: [], inscription_text: null,
         physical_form: 'compact', source_fact_delta: {
-          physical_description: 'с края доски срезана часть',
+          physical_description: null,
           qualitative_facts: [], removed_physical_fact_refs: [],
           physical_form: 'regular' } } });
     assert.equal(validateActionProducedResultPlan(partial,

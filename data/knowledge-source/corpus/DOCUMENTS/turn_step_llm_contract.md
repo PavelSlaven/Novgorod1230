@@ -866,7 +866,9 @@ grounded qualitative `material_extent = minor|half|major`; item owner перев
 его в exact code-owned gram decrement и оставляет source с уменьшенной mechanics.
 Output descriptor описывает только новые entities; обязательный
 `source_fact_delta = { physical_description, qualitative_facts,
-removed_physical_fact_refs }` отдельно меняет current facts surviving source.
+removed_physical_fact_refs, physical_form }` отдельно меняет current state
+surviving source. Text-поля delta могут быть пустыми, если меняется только
+code-owned inventory geometry по обязательной `physical_form`.
 Full independent partition использует `whole`, preserve/no-result — `null`.
 Масса полного partition сохраняется с детерминированным остатком,
 hand/packing/carry выводятся code-owned из exact mass и qualitative
@@ -882,6 +884,9 @@ bounded-классифицирует любой held A1 item без exact weapon
 facts/form только при combat use и может вернуть `not_weapon_capable`; последний
 A1 `output_class` не является combat gate. A1 `domain_request` содержит ровно
 одну operation и не допускает direct preparation в том же step.
+Положительные `weapon_capable`, `money_like_token` и `written_carrier`
+результаты требуют хотя бы один реально доступный и controller-validated
+`tool_ref`; `ordinary_mundane` и `no_useful_result` такого требования не имеют.
 Один combined P16 сохраняет causal pins, conservation и physical transition
 атомарно. Route не отвечает на pre-existing presence и не является O1/O2.
 

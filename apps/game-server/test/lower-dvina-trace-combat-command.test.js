@@ -169,7 +169,7 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
       } });
     assert.equal(calls, 2);
     assert.equal(resolveTraceOrdinaryWeaponDanger([changed], player, blunt),
-      null);
+      undefined);
     const forged = await classifyTraceActionProducedWeapon({ items: [item],
       actor_ref: player, request_id: 'combat-weapon:2',
       classify: async (request) => ({ schema:
@@ -243,6 +243,38 @@ test('combat classifies held A1 items and selects the sole weapon result',
       request_id: request.request_id,
       qualitative_class: 'improvised_impact_light' }) });
     assert.equal(ambiguous, null);
+  });
+
+test('valid A1 non-weapons resolve as unarmed while classification failures close',
+  async () => {
+    const note = actionProducedItem('a1-note', ['на бересте написано имя'],
+      'compact');
+    const token = actionProducedItem('a1-token', ['деревянный счётный знак'],
+      'compact');
+    const unarmed = await classifyTraceActionProducedWeapon({
+      items: [note, token], actor_ref: player,
+      request_id: 'combat-weapon:unarmed', classify: async (request) => ({
+        schema: 'rus.combat.action_produced_weapon_classification.v1',
+        request_id: request.request_id,
+        qualitative_class: 'not_weapon_capable'
+      })
+    });
+    assert.deepEqual(unarmed, { item_ref: null, weapon_danger: 0 });
+    assert.equal(resolveTraceOrdinaryWeaponDanger([note, token], player,
+      unarmed), undefined);
+
+    for (const classify of [
+      async (request) => ({ schema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      request_id: request.request_id, qualitative_class: 'unknown' }),
+      async () => { throw new Error('classifier unavailable'); }
+    ]) {
+      const failed = await classifyTraceActionProducedWeapon({ items: [note],
+        actor_ref: player, request_id: 'combat-weapon:invalid', classify });
+      assert.equal(failed, null);
+      assert.equal(resolveTraceOrdinaryWeaponDanger([note], player, failed),
+        null);
+    }
   });
 
 test('post-exchange subjective projection reads body and equipment from working state',
@@ -348,6 +380,35 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
       actor_ref.entity_id === 'mikula-1').check_request.weapon_danger, 1);
     assert.equal(weaponClassifierCalls, 1);
     assert.deepEqual(result.combat.decision_results, []);
+
+    const unarmedState = structuredClone(state);
+    unarmedState.items = [actionProducedItem('a1-note',
+      ['на бересте написано имя'], 'compact')];
+    const unarmedBundle = structuredClone(bundle);
+    unarmedBundle.turn_step_bindings.player_execution_profiles[0]
+      .check_request.weapon_danger = 0;
+    const unarmedCommand = createTraceCombatCommand({ state: unarmedState,
+      bundle: unarmedBundle, inputDigest: 'digest-unarmed',
+      randomSource: { next: () => 0.99 },
+      temporalAdvanceOwner: combatTemporalOwner(),
+      actionProducedWeaponClassifier: async (request) => ({ schema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      request_id: request.request_id,
+      qualitative_class: 'not_weapon_capable' }),
+      npcCombatModel: async () => assert.fail(
+        'unarmed profile must remain applicable without NPC reroll'),
+      revalidateStateVersion: async () => 3 });
+    const unarmedResult = await unarmedCommand.consequence({
+      retrievedState: unarmedState, rootTurnId: 'turn:party-2:unarmed',
+      playerInput: { request_id: 'request-unarmed',
+        idempotency_key: 'idem-unarmed' }, semanticPlan: { operations: [{
+        op: 'request_combat', actor_ref: 'mikula-1', intent_kind: 'engage',
+        target_refs: ['ratsha-1'], protected_refs: [], scope_ref: null,
+        destination_ref: null, force_limit: 'ordinary',
+        risk_posture: 'ordinary' }] } });
+    assert.equal(unarmedResult.combat.exchange.technical_steps.find(
+      ({ actor_ref: actor }) => actor.entity_id === 'mikula-1')
+      .check_request.weapon_danger, 0);
   });
 
 function combatTemporalOwner() {

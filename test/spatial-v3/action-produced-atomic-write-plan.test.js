@@ -388,7 +388,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
 });
 
 test('written A1 state persists inscription without truth or knowledge', () => {
-  const request = fixture();
+  const request = fixtureWithTool();
   request.committed_load.admission_profile.allowed_result_classes =
     [...request.committed_load.admission_profile.allowed_result_classes,
       'written_carrier'];
@@ -414,7 +414,14 @@ test('written A1 state persists inscription without truth or knowledge', () => {
 
 test('weapon-capable A1 state persists no combat classification or damage',
   () => {
-    const request = fixture();
+    const denied = fixture();
+    denied.transition_proposal.qualitative_result.output_class =
+      'weapon_capable';
+    assert.throws(() => createActionProducedAtomicWritePlan(denied), {
+      code: 'ACTION_PRODUCED_PROPOSAL_INVALID'
+    });
+
+    const request = fixtureWithTool();
     request.transition_proposal.qualitative_result.output_class =
       'weapon_capable';
     const state = createActionProducedAtomicWritePlan(request)
@@ -598,6 +605,35 @@ function fixture() {
     },
     transition_proposal: proposal()
   };
+}
+
+function fixtureWithTool() {
+  const value = fixture();
+  const source = value.committed_load.row_pins[0];
+  const tool = structuredClone(source);
+  tool.role = 'tool';
+  tool.item_id = 'item:knife';
+  tool.item.item_id = tool.item_id;
+  tool.placement.holder_character_id = 'actor:mikula';
+  tool.ownership.ownership_id = 'ownership:knife';
+  tool.entity_snapshot.role = 'tool';
+  tool.entity_snapshot.entity_ref = tool.item_id;
+  tool.entity_snapshot.ownership_snapshot = structuredClone(tool.ownership);
+  value.committed_load.row_pins.push(tool);
+  value.committed_load.tool_snapshots.push(
+    structuredClone(tool.entity_snapshot));
+  value.committed_load.committed_context.entities.push({
+    entity_ref: tool.item_id, state_version: '7', lifecycle_state: 'active',
+    access_state: 'immediate', accessible_actor_ref: 'actor:mikula',
+    holder_ref: 'actor:mikula', controller_ref: 'actor:mikula',
+    role_membership: ['tool']
+  });
+  const before = { state_version: '7', holder_ref: 'actor:mikula',
+    controller_ref: 'actor:mikula' };
+  value.transition_proposal.tool_state_pins.push({
+    entity_ref: tool.item_id, before, after: structuredClone(before)
+  });
+  return value;
 }
 
 function authorityRow() {

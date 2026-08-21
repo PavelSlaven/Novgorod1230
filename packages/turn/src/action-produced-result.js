@@ -216,12 +216,6 @@ function validateCausalShape(value, errors) {
   if (partialOutput !== (descriptorValue.source_fact_delta !== null)) {
     errors.push('only a surviving partial source requires a fact delta');
   }
-  const sourceDelta = descriptorValue.source_fact_delta;
-  if (sourceDelta != null && sourceDelta.physical_description === null
-      && sourceDelta.qualitative_facts?.length === 0
-      && sourceDelta.removed_physical_fact_refs?.length === 0) {
-    errors.push('source fact delta must change current physical facts');
-  }
   const combinedSource = value.identity_mode === 'preserve_source'
     && value.source_refs?.length > 1;
   if (combinedSource

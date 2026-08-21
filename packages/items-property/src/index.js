@@ -12,7 +12,7 @@ import { createActionProducedOutputAuthority,
   deriveActionProducedOutputProperty,
   validateActionProducedOutputAuthority } from
   './action-produced-output-authority.js';
-import { ACTION_PRODUCED_OUTPUT_CLASSES,
+import { ACTION_PRODUCED_OUTPUT_CLASSES, actionProducedOutputRequiresTool,
   validateActionProducedOutputClass } from
   './action-produced-output-class.js';
 import { actionProducedPhysicalFactTexts,
@@ -166,6 +166,7 @@ export function validatePropertyRelation(relation = {}) {
 export {
   ambientOrdinaryCommittedContextDigest,
   ACTION_PRODUCED_OUTPUT_CLASSES,
+  actionProducedOutputRequiresTool,
   actionProducedPhysicalFactTexts,
   buildExistingContainerOrdinarySeedRequest,
   classifyExistingContainerContents,

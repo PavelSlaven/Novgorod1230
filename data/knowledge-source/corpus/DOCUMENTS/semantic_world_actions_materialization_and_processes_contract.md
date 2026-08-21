@@ -1738,6 +1738,7 @@ Template-less object может участвовать в бою или друг
 Для combat пример закрытых classes:
 
 ```text
+not_weapon_capable
 improvised_puncture_light
 improvised_impact_light
 improvised_cutting_light
@@ -1749,6 +1750,11 @@ improvised_two_hand_heavy
 LLM не возвращает произвольный `damage = 900`.
 
 Combat owner переводит qualitative class в свои code-owned parameters.
+
+Валидный `not_weapon_capable` не является ошибкой: ноль положительных
+классификаций оставляет обычный unarmed/default profile применимым. Ровно один
+positive задаёт weapon mechanics текущего resolution; несколько positive,
+invalid output или exception fail closed.
 
 В этой редакции не требуется long-lived универсальный affordance/combat profile item. После физического изменения вещи её можно классифицировать заново при следующей реально требующей этого boundary.
 

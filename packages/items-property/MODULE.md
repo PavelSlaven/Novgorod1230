@@ -68,6 +68,11 @@ Multi-source A1 не требует одинаковой ownership/property basi
 
 `partial_transformation + independent_outputs` в A1 v1 принимает ровно один source и grounded qualitative `material_extent = minor|half|major`; output descriptor описывает только новые entities, а обязательный `source_fact_delta` отдельно задаёт current facts и `physical_form` surviving source. Item owner переводит extent в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity, пересчитывает остаточную механику source и распределяет consumed mass по outputs. Full partition использует `whole`, retire-ит sources и детерминированно распределяет нечётную массу. Output hand/packing/carry выводятся code-owned из exact mass и qualitative physical form, а не наследуют форму source.
 
+Form-only `source_fact_delta` допустим: пустые text/removal fields не нужны для
+code-owned изменения inventory geometry. Положительные `weapon_capable`,
+`money_like_token` и `written_carrier` требуют хотя бы один уже admitted tool;
+`ordinary_mundane` и `no_useful_result` сохраняют zero-tool path.
+
 ## Зависимости
 
 Разрешены `@rus/kernel` и узкий contract digest из `@rus/contracts/ordinary-materialization-v1`. Запрещены импорты из `apps`, `legacy`, UI, БД, конкретного LLM provider и соседних workflow stages.

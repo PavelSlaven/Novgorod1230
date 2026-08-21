@@ -90,7 +90,7 @@ function deriveSourceUpdates(proposal, sourcePins) {
     const preservedResult = proposal.identity_mode === 'preserve_source'
       && transition.entity_ref === proposal.results[0].entity_ref
       ? proposal.results[0] : null;
-    const survivingPartition = proposal.identity_mode === 'independent_outputs'
+    const survivingPartition = proposal.identity_mode === 'independent_outputs' && proposal.result_class === 'partial_transformation'
       && transition.after.mechanics_snapshot !== null && !retireSource
       && transition.finite_resource_transition?.lifecycle_state_after
         !== 'depleted';

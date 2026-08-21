@@ -242,19 +242,24 @@ test('preserve source can change inventory geometry without changing mass', () =
 });
 
 test('finite A1 sources consume one discrete committed unit per action', () => {
-  const resolve = (resultClass, extent) =>
+  const resolve = (resultClass, extent, unit) =>
     resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({ result_class: resultClass,
         qualitative_intent: { material_extent: extent,
           result_descriptor: { physical_form: 'compact',
             source_fact_delta: resultClass === 'partial_transformation'
               ? { physical_form: 'compact' } : null } },
-        source_inputs: [sourceInput('material:finite', 2)] }),
-      source_mechanics: [sourceMechanics('material:finite', 400, 2, 2)],
+        source_inputs: [sourceInput('material:finite', 2, unit)] }),
+      source_mechanics: [sourceMechanics('material:finite', 400, 2, 2,
+        unit)],
       output_count: 1
     }).source_effects[0].requested_decrement;
-  assert.deepEqual(resolve('partial_transformation', 'minor'), quantity(1));
-  assert.deepEqual(resolve('ordinary_physical_result', 'whole'), quantity(1));
+  for (const unit of ['piece', 'item']) {
+    assert.deepEqual(resolve('partial_transformation', 'minor', unit),
+      quantity(1, 1, unit));
+    assert.deepEqual(resolve('ordinary_physical_result', 'whole', unit),
+      quantity(1, 1, unit));
+  }
 });
 
 function mechanicsRequest(overrides = {}) {
@@ -274,23 +279,24 @@ function mechanicsRequest(overrides = {}) {
   return request;
 }
 
-function sourceInput(entityRef, available) {
+function sourceInput(entityRef, available, unit = 'piece') {
   return { entity_ref: entityRef, finite_resource: {
-    quantity: quantity(available), state_version: 1,
+    quantity: quantity(available, 1, unit), state_version: 1,
     source_resource_node_id: `resource:${entityRef}`,
     lifecycle_state: 'active', schema: 'rus.items.finite_resource_snapshot.v1',
     commit_state: 'committed'
   } };
 }
 
-function sourceMechanics(sourceRef, mass, quantityValue, packing) {
+function sourceMechanics(sourceRef, mass, quantityValue, packing,
+  unit = 'piece') {
   return { source_ref: sourceRef, mechanics: {
     mass_grams: mass, external_hand_cost: 0, carry_form: 'compact',
     packing_slot_cost: packing,
-    quantity: { value: quantityValue, unit: 'piece' }, container: null
+    quantity: { value: quantityValue, unit }, container: null
   } };
 }
 
-function quantity(numerator, denominator = 1) {
-  return { numerator, denominator, unit: 'piece' };
+function quantity(numerator, denominator = 1, unit = 'piece') {
+  return { numerator, denominator, unit };
 }

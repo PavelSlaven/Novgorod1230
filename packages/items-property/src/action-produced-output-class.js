@@ -4,6 +4,13 @@ export const ACTION_PRODUCED_OUTPUT_CLASSES = Object.freeze([
 ]);
 
 const OUTPUT_CLASSES = new Set(ACTION_PRODUCED_OUTPUT_CLASSES);
+const TOOL_REQUIRED_OUTPUT_CLASSES = new Set([
+  'weapon_capable', 'money_like_token', 'written_carrier'
+]);
+
+export function actionProducedOutputRequiresTool(outputClass) {
+  return TOOL_REQUIRED_OUTPUT_CLASSES.has(outputClass);
+}
 
 export function validateActionProducedOutputClass(outputClass, resultClass,
   identityMode) {

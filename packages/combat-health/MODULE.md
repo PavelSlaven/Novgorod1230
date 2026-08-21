@@ -72,5 +72,8 @@ bounded-классифицирует их в один из `ACTION_PRODUCED_WEAP
 `not_weapon_capable`, и code-owned mapping переводит класс в `weapon_danger`
 только для этого resolution. Последний A1 `output_class` не является combat
 gate. Класс не сохраняется и после физического изменения определяется заново.
+Ноль положительных valid classifications означает обычный unarmed/default
+profile; один positive выбирает его danger, несколько positive либо invalid/
+exception fail closed.
 Digest/profile-pin слоя нет; strict validation достаточна.
 Damaged/unknown/ambiguous items fail-closed.

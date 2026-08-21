@@ -361,15 +361,13 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id=NULL,owner_party=true
       WHERE party_id='party-a1' AND item_id='scrap'`);
-    const mixedOwnership = await actionPlan(pool, {
+    await assert.rejects(actionPlan(pool, {
       partyVersion: 4, changeSetId: 'change-mixed-denied',
       requestId: 'mixed-denied', actionRef: 'action-mixed-denied',
       sources: ['board', 'scrap'], tools: ['axe'],
       mode: 'independent_outputs', outputCount: 1, decrement: 1,
       propertySource: 'board', allocationSources: ['board', 'scrap']
-    });
-    assert.equal(mixedOwnership.result_items[0].ownership_row
-      .owner_character_id, 'pc');
+    }), { code: 'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS' });
     assert.deepEqual((await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
        WHERE party_id='party-a1') AS party_version,
@@ -424,15 +422,28 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       partyId: 'party-a1', requestId,
       applyWorkingProjection: ({ working_projection: projection }) =>
         structuredClone(projection)
-    });
+    }).execute;
     const appliedA1 = [];
-    const resolveProduction = factory({ partyId: 'party-a1',
+    const productionRuntime = factory({ partyId: 'party-a1',
       requestId: 'production-request',
       applyWorkingProjection: ({ working_projection: projection,
         action_production_atomic_write_plan: plan }) => {
         appliedA1.push(plan.transition_proposal.causal_identity.request_id);
         return { ...structuredClone(projection), prepared_a1: true };
       } });
+    const resolveProduction = productionRuntime.execute;
+    await assert.rejects(productionRuntime.preflight(productionEnvelope({
+      itemRef: 'production-board', targetRefs: ['production-knife'],
+      actionProduction: actionProduction({
+        identity_mode: 'independent_outputs', origin: 'direct_partition',
+        result_class: 'partial_transformation', material_extent: 'minor',
+        result_descriptor: descriptor({ display_name: 'отделённая часть',
+          physical_form: 'compact', source_fact_delta: {
+            physical_description: 'от источника отделена часть',
+            qualitative_facts: [], removed_physical_fact_refs: [],
+            physical_form: 'regular' } })
+      })
+    })), { code: 'ITEM_ACTION_PRODUCED_FINITE_PARTIAL_UNSUPPORTED' });
 
     const productionState = (await pool.query(`SELECT state
       FROM party_runtime.party_items
@@ -471,6 +482,9 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET controller_character_id=NULL
       WHERE party_id='party-a1' AND item_id='production-knife'`);
+    await assert.rejects(productionRuntime.preflight(productionEnvelope()), {
+      code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
+    });
     await assert.rejects(resolveProduction(productionEnvelope()), {
       code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
     });
@@ -536,7 +550,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           inscription_text: 'Жду у переправы.'
         }) }) }));
     assert.equal(writing.action_production_atomic_write_plan.source_updates[0]
-      .after_item.state.ordinary_metadata.semantic_facts.some(({ text }) =>
+      .after_item.state.ordinary_metadata.physical_inscriptions.some(({ text }) =>
         text === 'Жду у переправы.'), true);
     assert.equal('inscription_text' in writing
       .action_production_atomic_write_plan.source_updates[0]
@@ -569,7 +583,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       remainingIntent: 'Соединяю два материала и делаю две одинаковые детали.',
       actionProduction: actionProduction({
         source_refs: ['production-material-a', 'production-material-b'],
-        tool_refs: ['production-knife'], output_count: 2,
+        tool_refs: ['production-knife'], requested_output_count: 2,
         identity_mode: 'independent_outputs', origin: 'crafted',
         result_class: 'ordinary_physical_result',
         result_descriptor: descriptor({ display_name: 'составная деталь',
@@ -738,7 +752,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       remainingIntent: 'Разрезаю доску на два деревянных клина.',
       actionProduction: actionProduction({
         source_refs: ['production-whole-board'],
-        tool_refs: ['production-knife'], output_count: 2,
+        tool_refs: ['production-knife'], requested_output_count: 2,
         identity_mode: 'independent_outputs', origin: 'direct_partition',
         result_class: 'ordinary_physical_result',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
@@ -802,7 +816,7 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       remainingIntent: 'Срезаю с доски два небольших клина.',
       actionProduction: actionProduction({
         source_refs: ['production-partial-board'],
-        tool_refs: ['production-knife'], output_count: 2,
+        tool_refs: ['production-knife'], requested_output_count: 2,
         identity_mode: 'independent_outputs', origin: 'direct_partition',
         result_class: 'partial_transformation',
         result_descriptor: descriptor({ display_name: 'деревянный клин',
@@ -936,10 +950,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       'деревянная доска',
       'дополнительный материал закреплён на доске',
       'на доске закреплена составная накладка',
-      'Жду у переправы.',
       'рядом вырезана неглубокая зарубка',
       'зарубка видна на поверхности'
     ]);
+    assert.deepEqual(sequentialState.state.ordinary_metadata
+      .physical_inscriptions.map(({ text }) => text), ['Жду у переправы.']);
     const sequentialReload = await pool.connect();
     try {
       const loaded = await loadActionProducedCommittedContext(
@@ -955,7 +970,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       assert.deepEqual(loaded.source_snapshots[0].entity_ref,
         'production-partial-board');
       assert.equal(loaded.row_pins[0].item.state.ordinary_metadata
-        .semantic_facts.some(({ text }) => text === 'Жду у переправы.'),
+        .physical_inscriptions.some(({ text }) =>
+          text === 'Жду у переправы.'),
       true);
     } finally { sequentialReload.release(); }
 
@@ -981,6 +997,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .rows[0];
     assert.equal(erased.state_version, '6');
     assert.equal(erased.state.ordinary_metadata.semantic_facts
+      .some(({ text }) => text === 'Жду у переправы.'), false);
+    assert.equal(erased.state.ordinary_metadata.physical_inscriptions
       .some(({ text }) => text === 'Жду у переправы.'), false);
   });
 
@@ -1023,6 +1041,8 @@ async function actionPlan(pool, config) {
       material_extent: config.mode === 'independent_outputs' ? 'whole'
         : config.mode === 'preserve_source' && config.sources.length > 1
           ? config.materialExtent ?? 'whole' : null,
+      requested_output_count: config.mode === 'independent_outputs'
+        ? config.outputCount ?? 2 : null,
       result_class: resultClass,
       output_class: config.mode === 'no_useful_result'
         ? null : config.outputClass ?? 'ordinary_mundane',
@@ -1076,6 +1096,7 @@ async function actionPlan(pool, config) {
 function ownerResolution(request, config) {
   if (config.mode === 'no_useful_result' && config.decrement != null) {
     return { schema: 'rus.items.action_produced_owner_resolution.v1',
+      status: 'resolved', actual_output_count: 0,
       identity_mode: config.mode, source_effects: request.source_inputs.map(
         ({ entity_ref: sourceRef }) => ({ source_ref: sourceRef,
           requested_decrement: { numerator: config.decrement,
@@ -1086,8 +1107,8 @@ function ownerResolution(request, config) {
     mechanics_request: request,
     source_mechanics: request.source_inputs.map(({ entity_ref: sourceRef }) =>
       ({ source_ref: sourceRef, mechanics: config.sourceMechanics[sourceRef] })),
-    output_count: config.mode === 'independent_outputs'
-      ? config.outputCount ?? 2 : 0
+    requested_output_count: config.mode === 'independent_outputs'
+      ? config.outputCount ?? 2 : null
   });
 }
 
@@ -1422,7 +1443,8 @@ function productionEnvelope({ itemRef = 'production-garment',
       player_goal: remainingIntent, grounded_attempt: remainingIntent,
       adaptation: 'literal' } };
   const action = { source_refs: [itemRef], tool_refs: [...targetRefs],
-    output_count: qualitative.identity_mode === 'independent_outputs' ? 1 : 0,
+    requested_output_count:
+      qualitative.identity_mode === 'independent_outputs' ? 1 : null,
     ...qualitative };
   return { operation: { op: 'request_item_use', actor_ref: 'pc',
       item_ref: itemRef, use_kind: 'other', target_refs: targetRefs,

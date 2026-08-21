@@ -25,7 +25,7 @@ const PROPOSAL_KEYS = [
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs', 'identity_mode',
   'origin', 'intended_transformation', 'result_class', 'result_descriptor',
-  'material_extent', 'output_class'
+  'material_extent', 'requested_output_count', 'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -173,6 +173,10 @@ function validateProposal(value) {
       || !IDENTITY_MODES.has(value.identity_mode)
       || value.origin !== null && !ORIGINS.has(value.origin)
       || !text(value.intended_transformation)
+      || value.requested_output_count !== null
+        && (!Number.isSafeInteger(value.requested_output_count)
+          || value.requested_output_count < 1
+          || value.requested_output_count > 8)
       || !validMaterialExtent(value)
       || !RESULT_CLASSES.has(value.result_class)
       || !validDescriptor(value.result_descriptor)

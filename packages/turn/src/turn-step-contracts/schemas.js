@@ -35,14 +35,16 @@ const jsonDataDefinitions = {
 };
 
 const ACTION_PRODUCTION_FIELDS = [
-  'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
+  'source_refs', 'tool_refs', 'requested_output_count', 'identity_mode', 'origin',
   'result_class', 'material_extent', 'result_descriptor', 'output_class'
 ];
 const ACTION_PRODUCTION_PROPERTIES = {
   source_refs: { type: 'array', minItems: 1, uniqueItems: true,
     items: refSchema },
   tool_refs: { type: 'array', uniqueItems: true, items: refSchema },
-  output_count: { type: 'integer', minimum: 0, maximum: 8 },
+  requested_output_count: { anyOf: [
+    { type: 'null' }, { type: 'integer', minimum: 1, maximum: 8 }
+  ] },
   identity_mode: { enum: [
     'preserve_source', 'independent_outputs', 'no_useful_result'
   ] },
@@ -64,10 +66,11 @@ const ACTION_PRODUCTION_PROPERTIES = {
   ] }] }
 };
 
-function actionProductionSchema(identityMode, outputCount, descriptorRef) {
+function actionProductionSchema(identityMode, requestedCount, descriptorRef) {
   return strictObject(ACTION_PRODUCTION_FIELDS, {
     ...ACTION_PRODUCTION_PROPERTIES,
-    identity_mode: { const: identityMode }, output_count: outputCount,
+    identity_mode: { const: identityMode },
+    requested_output_count: requestedCount,
     ...(descriptorRef == null ? {} : {
       result_descriptor: { $ref: descriptorRef }
     })
@@ -318,11 +321,13 @@ const planDefinitions = {
     physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] }
   }),
   action_production: { oneOf: [
-    actionProductionSchema('preserve_source', { const: 0 }),
+    actionProductionSchema('preserve_source', { const: null }),
     actionProductionSchema('independent_outputs', {
-      type: 'integer', minimum: 1, maximum: 8
+      anyOf: [{ type: 'null' }, {
+        type: 'integer', minimum: 1, maximum: 8
+      }]
     }, '#/$defs/action_production_output_descriptor'),
-    actionProductionSchema('no_useful_result', { const: 0 })
+    actionProductionSchema('no_useful_result', { const: null })
   ] },
   request_item_use_legacy: strictObject([
     'op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'

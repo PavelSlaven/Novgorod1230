@@ -16,7 +16,8 @@ test('preserved facts remove known obsolete refs before adding replacements',
       physical_description: 'конец теперь затуплен',
       physical_facts: ['конец затуплен'] });
 
-    assert.deepEqual(facts.map(({ fact_id, text }) => ({ fact_id, text })), [
+    assert.deepEqual(facts.physical_facts.map(({ fact_id, text }) => ({
+      fact_id, text })), [
       { fact_id: 'fact:notched', text: 'на древке есть зарубка' },
       { fact_id: 'action:blunt:fact:1', text: 'конец теперь затуплен' },
       { fact_id: 'action:blunt:fact:2', text: 'конец затуплен' }
@@ -31,21 +32,26 @@ test('physical inscription survives unrelated change until explicit removal',
       physical_facts: [], inscription_text: 'Жду у переправы.'
     });
     const transformed = mergeActionProducedPhysicalFacts({
-      entity_ref: 'item:bark', action_ref: 'action:fold', existing: written,
+      entity_ref: 'item:bark', action_ref: 'action:fold',
+      existing: written.physical_facts,
+      existing_inscriptions: written.physical_inscriptions,
       physical_description: 'береста сложена вдвое', physical_facts: []
     });
-    assert.equal(transformed.some(({ text }) =>
+    assert.equal(transformed.physical_inscriptions.some(({ text }) =>
       text === 'Жду у переправы.'), true);
 
-    const inscriptionRef = transformed.find(({ text }) =>
+    const inscriptionRef = transformed.physical_inscriptions.find(({ text }) =>
       text === 'Жду у переправы.').fact_id;
     const erased = mergeActionProducedPhysicalFacts({
       entity_ref: 'item:bark', action_ref: 'action:erase',
-      existing: transformed, removed_fact_refs: [inscriptionRef],
+      existing: transformed.physical_facts,
+      existing_inscriptions: transformed.physical_inscriptions,
+      removed_fact_refs: [inscriptionRef],
       physical_description: 'надпись физически соскоблена',
       physical_facts: []
     });
-    assert.equal(erased.some(({ text }) => text === 'Жду у переправы.'), false);
+    assert.equal(erased.physical_inscriptions.some(({ text }) =>
+      text === 'Жду у переправы.'), false);
   });
 
 test('weapon-capable output remains pending for the combat-owned boundary',
@@ -251,6 +257,7 @@ function proposal(overrides = {}) {
       max_new_entities: 4 },
     identity_mode: identityMode, origin: overrides.origin ?? null,
     result_class: overrides.result_class ?? 'ordinary_physical_result',
+    actual_output_count: identityMode === 'independent_outputs' ? 1 : 0,
     source_transitions: [], tool_state_pins: [], results: [result],
     known_waste: [], qualitative_result: {
       intended_transformation: 'выполнить физическое преобразование',

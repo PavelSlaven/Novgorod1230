@@ -206,11 +206,9 @@ Validated source changes и новые outputs сразу обновляют о�
 projection, поэтому pending intent может использовать результат в следующем
 internal step. Несколько причинных A1 steps одного root turn выполняются
 последовательно над этой projection и входят в один combined P16 commit.
-При неопределённом исходе общие generic-check/activity owners выполняются
-один раз; детерминированное действие использует `domain_request` без RNG, но
+Перед generic check A1 выполняет read-only authority preflight: invalid access/controller/state/profile, finite-v1 restriction или property ambiguity дают ноль RNG/time/writes. Затем общие generic-check/activity owners выполняются один раз; детерминированное действие использует `domain_request` без RNG, но
 любая реально выполненная физическая попытка декларативно несёт одну обычную
-semantic activity и тратит code-owned время. Profile допускает
-preserve, до четырёх mass-conserving independent outputs и no-result;
+semantic activity и тратит code-owned время. Profile допускает preserve, до четырёх mass-conserving independent outputs и no-result. `requested_output_count` равен `null`, если игрок не назвал число; actual count выбирает item owner (один по умолчанию), а невозможный explicit count даёт физический no-result без item writes, но с одной activity;
 partial/nonworking/waste,
 writing, non-authoritative token-like и closed weapon-capable outcomes. Model
 не задаёт mechanics, расход, identity, property, placement, roll, time,
@@ -219,7 +217,7 @@ currency/official status или combat numbers. Independent output требуе�
 fact. Для partial independent output sole plan задаёт только grounded
 `material_extent = minor|half|major`; full partition использует `whole`.
 Output descriptor относится только к новым entities, а обязательный
-`source_fact_delta` задаёт отдельные current facts и `physical_form` единственного surviving source; multi-source partial partition в A1 v1 закрыт.
+`source_fact_delta` задаёт отдельные current facts и `physical_form` единственного surviving non-finite source; multi-source и finite partial partition в A1 v1 закрыты.
 Text-поля delta могут быть пустыми, если меняется только code-owned inventory
 geometry. Положительные weapon/token/writing outcomes требуют хотя бы один
 admitted tool; ordinary/no-result — нет.
@@ -228,13 +226,13 @@ materials — grounded `minor|half|major|whole`. Числовую долю и ex
 выводит item owner. Persisted non-authoritative physical facts входят в
 следующую player-safe working/reload projection; модель видит их safe refs и
 может удалить ставший ложным fact только через explicit
-`removed_physical_fact_refs`, без текстового/NLP-сопоставления. Физическая
-надпись является таким же durable current fact и сохраняется до явного
-стирания/замены по видимому `fact_ref`. `physical_form` сообщает только
+`removed_physical_fact_refs`, без текстового/NLP-сопоставления. Физическая надпись сохраняется отдельной typed inscription записью и остаётся carrier text, а не truth/knowledge/status; она стирается/заменяется по видимому `fact_ref`. `physical_form` сообщает только
 качественную форму `compact|regular|long|bulky`; числовые hands/carry/packing
 по ней и exact mass выводит item owner. Combat classes в A1 contract нет.
 `domain_request` A1 содержит ровно одну operation: direct preparation в том же
 step запрещена, потому что A1 не имеет prepared-direct overlay.
+
+Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
 ## Тесты
 

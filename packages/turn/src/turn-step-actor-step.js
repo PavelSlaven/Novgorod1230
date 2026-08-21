@@ -55,6 +55,22 @@ export async function executeTurnStepActorStep({
   let chainContext = preparedChainContext;
 
   if (plan.resolution === 'generic_check') {
+    const preflightOperation = actionProductionPreflightOperation(plan);
+    if (preflightOperation != null
+        && typeof ports.preflightActionProduction === 'function') {
+      await ports.preflightActionProduction(deepFreeze({
+        plan: structuredClone(plan), request: structuredClone(request),
+        operation: structuredClone(preflightOperation),
+        working_projection: structuredClone(projection),
+        prepared_chain_context: chainContext == null ? null
+          : structuredClone(chainContext),
+        prepared_ordinary_materialization_atomic_write_plan:
+          preparedOrdinaryPlan == null ? null
+            : structuredClone(preparedOrdinaryPlan),
+        prepared_action_production_atomic_write_plans:
+          structuredClone(preparedActionProductionPlans)
+      }));
+    }
     const contextResolver = requireFunction(
       ports.resolveCheckContext,
       'TURN_STEP_CHECK_CONTEXT_MISSING',
@@ -192,6 +208,35 @@ export async function executeTurnStepActorStep({
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
     preparedChainContext: chainContext
+  };
+}
+
+function actionProductionPreflightOperation(plan) {
+  const outcomes = Object.values(plan.check?.outcomes ?? {});
+  const operations = outcomes.map((outcome) => (outcome.operations ?? [])
+    .find((operation) => operation?.op === 'request_item_use'
+      && operation.action_production != null) ?? null);
+  if (operations.every((operation) => operation === null)) return null;
+  if (operations.some((operation) => operation === null)) {
+    throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
+      'Every generic A1 outcome must use the same authority scope.');
+  }
+  const expected = preflightIdentity(operations[0]);
+  if (operations.slice(1).some((operation) =>
+    JSON.stringify(preflightIdentity(operation)) !== JSON.stringify(expected))) {
+    throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
+      'Every generic A1 outcome must use the same authority scope.');
+  }
+  return operations[0];
+}
+
+function preflightIdentity(operation) {
+  return {
+    actor_ref: operation.actor_ref,
+    item_ref: operation.item_ref,
+    target_refs: [...operation.target_refs],
+    source_refs: [...operation.action_production.source_refs],
+    tool_refs: [...operation.action_production.tool_refs]
   };
 }
 

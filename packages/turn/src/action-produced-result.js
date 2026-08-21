@@ -9,7 +9,8 @@ const REQUEST_KEYS = [
   'step_index',
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs',
-  'intended_transformation', 'material_extent', 'output_class'
+  'intended_transformation', 'material_extent', 'requested_output_count',
+  'output_class'
 ];
 const PLAN_KEYS = [
   'schema', 'request_id', 'root_turn_id', 'action_ref',
@@ -17,7 +18,7 @@ const PLAN_KEYS = [
   'committed_state_version', 'context_ref', 'profile_ref', 'profile_version',
   'causal_mode', 'actor_ref', 'source_refs', 'tool_refs', 'identity_mode',
   'origin', 'intended_transformation', 'result_class', 'result_descriptor',
-  'material_extent', 'output_class'
+  'material_extent', 'requested_output_count', 'output_class'
 ];
 const DESCRIPTOR_KEYS = [
   'display_name', 'physical_description', 'qualitative_facts',
@@ -109,6 +110,8 @@ function validateRequestSnapshot(value) {
   exactText(value.intended_transformation,
     'request.intended_transformation', errors);
   materialExtent(value.material_extent, 'request.material_extent', errors);
+  requestedOutputCount(value.requested_output_count,
+    'request.requested_output_count', errors);
   nullableMember(value.output_class, OUTPUT_CLASSES,
     'request.output_class', errors);
   return errors;
@@ -137,6 +140,8 @@ function validatePlanSnapshot(value) {
   exactText(value.intended_transformation,
     'plan.intended_transformation', errors);
   materialExtent(value.material_extent, 'plan.material_extent', errors);
+  requestedOutputCount(value.requested_output_count,
+    'plan.requested_output_count', errors);
   member(value.result_class, RESULT_CLASSES, 'plan.result_class', errors);
   descriptor(value.result_descriptor, errors);
   nullableMember(value.output_class, OUTPUT_CLASSES,
@@ -196,6 +201,9 @@ function validateCausalShape(value, errors) {
     errors.push('only a preserved source can remove existing facts');
   }
   if (value.identity_mode === 'preserve_source') {
+    if (value.requested_output_count !== null) {
+      errors.push('preserve_source must not request new entities');
+    }
     if (value.origin !== null) {
       errors.push('preserve_source must not replace the source origin');
     }
@@ -203,6 +211,10 @@ function validateCausalShape(value, errors) {
   if (value.identity_mode === 'independent_outputs'
       && !ORIGINS.has(value.origin)) {
     errors.push('independent_outputs requires a produced origin');
+  }
+  if (value.identity_mode === 'no_useful_result'
+      && value.requested_output_count !== null) {
+    errors.push('no_useful_result must not request new entities');
   }
   if (value.identity_mode === 'independent_outputs'
       && !exactTextValue(descriptorValue.display_name)) {
@@ -277,7 +289,7 @@ function validateEcho(plan, request, errors) {
     'committed_state_version',
     'context_ref', 'profile_ref', 'profile_version', 'causal_mode',
     'actor_ref', 'source_refs', 'tool_refs', 'intended_transformation',
-    'material_extent'
+    'material_extent', 'requested_output_count'
   ]) {
     if (!same(plan[key], request[key])) {
       errors.push(`plan.${key} must exactly echo request.${key}`);
@@ -295,6 +307,13 @@ function validateEcho(plan, request, errors) {
 function materialExtent(value, path, errors) {
   if (value !== null && !['minor', 'half', 'major', 'whole'].includes(value)) {
     errors.push(`${path} must be null or a supported qualitative extent`);
+  }
+}
+
+function requestedOutputCount(value, path, errors) {
+  if (value !== null && (!Number.isSafeInteger(value)
+      || value < 1 || value > 8)) {
+    errors.push(`${path} must be null or a positive integer <= 8`);
   }
 }
 

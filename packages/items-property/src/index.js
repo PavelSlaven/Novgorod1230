@@ -28,7 +28,8 @@ export { InventoryArchetypeError, validateInventoryArchetypes, resolveInventoryP
 export {
   createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
-  resolveInventoryMechanicsProfile
+  resolveInventoryMechanicsProfile,
+  resolvePhysicalItemCondition
 } from './runtime-instance-mechanics.js';
 export {
   admitOrdinaryRuntimeFact,

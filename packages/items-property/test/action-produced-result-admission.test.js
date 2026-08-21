@@ -44,6 +44,7 @@ function proposal(overrides = {}) {
     identity_mode: 'preserve_source', origin: null,
     intended_transformation: 'заострить один конец жерди',
     material_extent: identityMode === 'independent_outputs' ? 'whole' : null,
+    requested_output_count: null,
     result_class: 'ordinary_physical_result', result_descriptor: {
       display_name: 'заострённая жердь',
       physical_description: 'один конец жерди физически заострён',
@@ -178,7 +179,7 @@ test('physical weapon-like and token-like labels cannot assert authority', () =>
   for (const forbidden of [
     { authority: 'canonical_weapon' }, { legal_status: 'currency' },
     { evidence: true }, { history: 'authentic' }, { damage: 4 },
-    { mass_grams: 100 }, { quantity_delta: 2 }, { output_count: 3 },
+    { mass_grams: 100 }, { quantity_delta: 2 },
     { difficulty_class: 12 }, { success_probability: 0.5 }
   ]) {
     assert.equal(admitActionProducedResult(input({

@@ -11,7 +11,7 @@ test('allocation mechanics conserves two finite sources across two outputs',
         sourceMechanics('material:a', 400, 2, 2),
         sourceMechanics('material:b', 200, 2, 2)
       ],
-      output_count: 2
+      requested_output_count: 2
     });
 
     assert.deepEqual(resolution.source_effects.map((effect) => ({
@@ -46,6 +46,18 @@ test('allocation mechanics conserves two finite sources across two outputs',
     })));
   });
 
+test('multi-source property source is stable under source order', () => {
+  const resolve = (inputs) => resolveActionProducedAllocationMechanics({
+    mechanics_request: mechanicsRequest({ source_inputs: inputs }),
+    source_mechanics: inputs.map(({ entity_ref: ref }) =>
+      sourceMechanics(ref, 200, 2, 2)), requested_output_count: 1
+  }).outputs[0].property_source_ref;
+  const left = sourceInput('material:a', 2);
+  const right = sourceInput('material:b', 2);
+  assert.equal(resolve([left, right]), 'material:a');
+  assert.equal(resolve([right, left]), 'material:a');
+});
+
 test('allocation mechanics retires one whole item and derives output carrying',
   () => {
     const resolution = resolveActionProducedAllocationMechanics({
@@ -58,7 +70,7 @@ test('allocation mechanics retires one whole item and derives output carrying',
         packing_slot_cost: 3, quantity: null,
         container: null
       } }],
-      output_count: 2
+      requested_output_count: 2
     });
     assert.deepEqual(resolution.source_effects, [{
       source_ref: 'material:board', requested_decrement: null,
@@ -84,7 +96,7 @@ test('allocation mechanics conserves odd mass without inheriting board shape',
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
         mass_grams: 801, external_hand_cost: 1, carry_form: 'regular',
         packing_slot_cost: 3, quantity: null, container: null } }],
-      output_count: 2
+      requested_output_count: 2
     });
     assert.deepEqual(resolution.outputs.map(({ mechanics_snapshot: value }) =>
       value.mechanics), [{ mass_grams: 401, external_hand_cost: 0,
@@ -109,7 +121,7 @@ test('partial outputs consume a grounded minor extent and preserve source',
         mass_grams: 800, external_hand_cost: 1,
         carry_form: 'long', packing_slot_cost: 6, quantity: null,
         container: null } }],
-      output_count: 2
+      requested_output_count: 2
     });
 
     assert.deepEqual(resolution.source_effects, [{
@@ -139,8 +151,24 @@ test('partial outputs consume a grounded minor extent and preserve source',
     })));
 });
 
+test('item owner defaults an unspecified count to one and rejects impossible count',
+  () => {
+    const input = { mechanics_request: mechanicsRequest({
+      source_inputs: [{ entity_ref: 'material:splinter',
+        finite_resource: null }] }), source_mechanics: [{
+      source_ref: 'material:splinter', mechanics: {
+        mass_grams: 1, external_hand_cost: 0, carry_form: 'compact',
+        packing_slot_cost: 1, quantity: null, container: null }
+    }], requested_output_count: null };
+    const resolved = resolveActionProducedAllocationMechanics(input);
+    assert.equal(resolved.actual_output_count, 1);
+    const impossible = resolveActionProducedAllocationMechanics({
+      ...input, requested_output_count: 2 });
+    assert.equal(impossible.status, 'physically_infeasible');
+  });
+
 test('partial outputs reject multiple surviving sources in A1 v1', () => {
-  assert.throws(() => resolveActionProducedAllocationMechanics({
+  assert.equal(resolveActionProducedAllocationMechanics({
     mechanics_request: mechanicsRequest({
       result_class: 'partial_transformation',
       qualitative_intent: { material_extent: 'minor',
@@ -154,8 +182,8 @@ test('partial outputs reject multiple surviving sources in A1 v1', () => {
     { source_ref: 'material:rope', mechanics: {
       mass_grams: 200, external_hand_cost: 0, carry_form: 'compact',
       packing_slot_cost: 1, quantity: null, container: null } }],
-    output_count: 2
-  }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
+    requested_output_count: 2
+  }).status, 'physically_infeasible');
 });
 
 test('preserve source keeps ordinary mechanics without a discrete quantity',
@@ -169,7 +197,7 @@ test('preserve source keeps ordinary mechanics without a discrete quantity',
     const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: request,
       source_mechanics: [{ source_ref: 'item:garment', mechanics }],
-      output_count: 0
+      requested_output_count: null
     });
     assert.deepEqual(resolution.source_effects[0]
       .mechanics_snapshot_after.mechanics, mechanics);
@@ -190,7 +218,7 @@ test('preserve source can consume another material into the same identity',
       { source_ref: 'item:wrap', mechanics: {
         mass_grams: 100, external_hand_cost: 0, carry_form: 'compact',
         packing_slot_cost: 1, quantity: null, container: null } }],
-      output_count: 0
+      requested_output_count: null
     });
 
     assert.deepEqual(resolution.source_effects.map((effect) => ({
@@ -213,7 +241,7 @@ test('equal mass uses qualitative physical form for inventory mechanics', () => 
     source_mechanics: [{ source_ref: 'material:one', mechanics: {
       mass_grams: 800, external_hand_cost: 1, carry_form: 'long',
       packing_slot_cost: 6, quantity: null, container: null } }],
-    output_count: 1
+    requested_output_count: 1
   }).outputs[0].mechanics_snapshot.mechanics;
 
   assert.deepEqual(resolve('compact'), { mass_grams: 800,
@@ -233,7 +261,7 @@ test('preserve source can change inventory geometry without changing mass', () =
     source_mechanics: [{ source_ref: 'item:pole', mechanics: {
       mass_grams: 900, external_hand_cost: 1, carry_form: 'long',
       packing_slot_cost: 6, quantity: null, container: null } }],
-    output_count: 0
+    requested_output_count: null
   });
   assert.deepEqual(resolution.source_effects[0].mechanics_snapshot_after
     .mechanics, { mass_grams: 900, external_hand_cost: 0,
@@ -241,7 +269,8 @@ test('preserve source can change inventory geometry without changing mass', () =
     container: null });
 });
 
-test('finite A1 sources consume one discrete committed unit per action', () => {
+test('finite A1 sources allow whole units and reject partial v1 consumption',
+  () => {
   const resolve = (resultClass, extent, unit) =>
     resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({ result_class: resultClass,
@@ -252,12 +281,13 @@ test('finite A1 sources consume one discrete committed unit per action', () => {
         source_inputs: [sourceInput('material:finite', 2, unit)] }),
       source_mechanics: [sourceMechanics('material:finite', 400, 2, 2,
         unit)],
-      output_count: 1
-    }).source_effects[0].requested_decrement;
+      requested_output_count: 1
+    });
   for (const unit of ['piece', 'item']) {
-    assert.deepEqual(resolve('partial_transformation', 'minor', unit),
-      quantity(1, 1, unit));
-    assert.deepEqual(resolve('ordinary_physical_result', 'whole', unit),
+    assert.equal(resolve('partial_transformation', 'minor', unit).status,
+      'physically_infeasible');
+    assert.deepEqual(resolve('ordinary_physical_result', 'whole', unit)
+      .source_effects[0].requested_decrement,
       quantity(1, 1, unit));
   }
 });
@@ -276,6 +306,9 @@ function mechanicsRequest(overrides = {}) {
     technical_limits: { policy_ref: 'policy', policy_version: 1,
       max_new_entities: 4 }, ...overrides
   };
+  request.source_inputs = request.source_inputs.map((source) => ({
+    ownership_snapshot: ownership(source.entity_ref), ...source
+  }));
   return request;
 }
 
@@ -286,6 +319,13 @@ function sourceInput(entityRef, available, unit = 'piece') {
     lifecycle_state: 'active', schema: 'rus.items.finite_resource_snapshot.v1',
     commit_state: 'committed'
   } };
+}
+
+function ownership(entityRef) {
+  return { ownership_id: `ownership:${entityRef}`, owner_npc_id: null,
+    owner_character_id: 'actor', owner_party: false,
+    controller_npc_id: null, controller_character_id: 'actor',
+    claim_state: 'owned' };
 }
 
 function sourceMechanics(sourceRef, mass, quantityValue, packing,

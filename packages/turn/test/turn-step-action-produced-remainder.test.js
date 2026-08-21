@@ -533,7 +533,7 @@ function itemUseOperation({ useKind = 'other', itemRef = 'item:pole',
     target_refs: targetRefs,
     ...(useKind !== 'other' ? {} : { action_production:
       actionProduction ?? {
-        source_refs: [itemRef], tool_refs: targetRefs, output_count: 0,
+        source_refs: [itemRef], tool_refs: targetRefs, requested_output_count: null,
         identity_mode: 'preserve_source', origin: null,
         result_class: 'partial_transformation',
         material_extent: null,

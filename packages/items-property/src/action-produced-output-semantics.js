@@ -10,7 +10,7 @@ const INPUT_KEYS = ['transition_proposal'];
 const PROPOSAL_KEYS = [
   'schema', 'version', 'causal_identity', 'context_pin',
   'technical_policy_pin', 'identity_mode', 'origin', 'result_class',
-  'source_transitions', 'tool_state_pins', 'results', 'known_waste',
+  'actual_output_count', 'source_transitions', 'tool_state_pins', 'results', 'known_waste',
   'qualitative_result'
 ];
 const CAUSAL_KEYS = ['request_id', 'root_turn_id', 'action_ref', 'step_index'];
@@ -63,52 +63,62 @@ export function admitActionProducedOutputSemantics(value) {
 }
 
 export function mergeActionProducedPhysicalFacts({ entity_ref: entityRef,
-  action_ref: actionRef, existing = [], physical_description: description,
+  action_ref: actionRef, existing = [], existing_inscriptions: inscriptions = [],
+  physical_description: description,
   physical_facts: facts, removed_fact_refs: removedRefs = [],
   inscription_text: inscription = null }) {
   if (!text(entityRef) || !text(actionRef) || !Array.isArray(existing)
+      || !Array.isArray(inscriptions)
       || !Array.isArray(facts) || !facts.every(text)
       || !Array.isArray(removedRefs) || !removedRefs.every(text)
       || new Set(removedRefs).size !== removedRefs.length
       || !(description === null || text(description))
       || !(inscription === null || text(inscription))) failFacts();
   const output = [];
+  const inscriptionOutput = [];
   const ids = new Set();
-  const texts = new Set();
+  const factTexts = new Set();
+  const inscriptionTexts = new Set();
   const removed = new Set(removedRefs);
-  for (const [index, value] of existing.entries()) {
-    const fact = typeof value === 'string'
-      ? { fact_id: `${entityRef}:fact:${index + 1}`, text: value,
+  const appendExisting = (values, target, texts, kind) => {
+    for (const [index, value] of values.entries()) {
+      const fact = typeof value === 'string'
+        ? { fact_id: `${entityRef}:${kind}:${index + 1}`, text: value,
           operation_id: null }
-      : value;
-    if (!text(fact?.fact_id) || !text(fact?.text)
-        || !(fact.operation_id === null || text(fact.operation_id))
-        || ids.has(fact.fact_id)) failFacts();
-    ids.add(fact.fact_id);
-    if (removed.has(fact.fact_id)) {
-      removed.delete(fact.fact_id);
-      continue;
+        : value;
+      if (!text(fact?.fact_id) || !text(fact?.text)
+          || !(fact.operation_id === null || text(fact.operation_id))
+          || ids.has(fact.fact_id)) failFacts();
+      ids.add(fact.fact_id);
+      if (removed.has(fact.fact_id)) {
+        removed.delete(fact.fact_id);
+        continue;
+      }
+      texts.add(fact.text);
+      target.push(structuredClone(fact));
     }
-    texts.add(fact.text);
-    output.push(structuredClone(fact));
-  }
+  };
+  appendExisting(existing, output, factTexts, 'fact');
+  appendExisting(inscriptions, inscriptionOutput, inscriptionTexts,
+    'inscription');
   if (removed.size !== 0) failFacts();
   const added = [...(description === null ? [] : [description]), ...facts];
   for (const [index, factText] of added.entries()) {
-    if (texts.has(factText)) continue;
+    if (factTexts.has(factText)) continue;
     let factId = `${actionRef}:fact:${index + 1}`;
     if (ids.has(factId)) factId = `${factId}:${output.length + 1}`;
     ids.add(factId);
-    texts.add(factText);
+    factTexts.add(factText);
     output.push({ fact_id: factId, text: factText, operation_id: actionRef });
   }
-  if (inscription !== null && !texts.has(inscription)) {
+  if (inscription !== null && !inscriptionTexts.has(inscription)) {
     let factId = `${actionRef}:inscription`;
     if (ids.has(factId)) factId = `${factId}:${output.length + 1}`;
-    output.push({ fact_id: factId, text: inscription,
+    inscriptionOutput.push({ fact_id: factId, text: inscription,
       operation_id: actionRef });
   }
-  return deepFreeze(output);
+  return deepFreeze({ physical_facts: output,
+    physical_inscriptions: inscriptionOutput });
 }
 
 export function actionProducedPhysicalFactTexts(values) {
@@ -158,6 +168,9 @@ function validProposal(value) {
       || value.origin !== null
         && !['direct_partition', 'crafted'].includes(value.origin)
       || !RESULT_CLASSES.has(value.result_class)
+      || !Number.isSafeInteger(value.actual_output_count)
+      || value.actual_output_count !== (value.identity_mode
+        === 'independent_outputs' ? value.results?.length : 0)
       || value.result_class === 'no_useful_result'
       || !Array.isArray(value.source_transitions)
       || !Array.isArray(value.tool_state_pins)

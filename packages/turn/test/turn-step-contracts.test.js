@@ -242,7 +242,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
       target_refs: ['item:knife', 'item:stone'],
       action_production: {
         source_refs: ['item:pole'],
-        tool_refs: ['item:knife', 'item:stone'], output_count: 0,
+        tool_refs: ['item:knife', 'item:stone'], requested_output_count: null,
         identity_mode: 'preserve_source', origin: null,
         result_class: 'partial_transformation',
         material_extent: null,
@@ -300,7 +300,7 @@ test('sole turn plan boundary admits qualitative action production', () => {
   partition.operations[0].action_production = {
     ...partition.operations[0].action_production,
     source_refs: ['item:pole'], tool_refs: ['item:knife', 'item:stone'],
-    output_count: 2, identity_mode: 'independent_outputs',
+    requested_output_count: 2, identity_mode: 'independent_outputs',
     origin: 'crafted', material_extent: 'minor'
   };
   partition.operations[0].action_production.result_descriptor

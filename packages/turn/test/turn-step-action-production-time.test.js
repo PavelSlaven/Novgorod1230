@@ -44,7 +44,14 @@ function ports(calls) {
   return {
     randomSource: { next() { calls.rng += 1; return 0.5; } },
     resolveCheckContext: async () => ({
-      attribute_value: 10, skill_bonus: 0, situational_modifier: 0
+      attribute_value: 10, skill_bonus: 0, situational_modifier: 0,
+      check_policy_ref: { entity_kind: 'check_policy',
+        entity_id: 'check-policy', authoring_version: '1' },
+      consequence_policy_ref: { entity_kind: 'consequence_policy',
+        entity_id: 'consequence-policy', authoring_version: '1' },
+      policy_profile_ref: 'policy-profile',
+      policy_profile_pin: { artifact_id: 'policy-profile', revision: 1,
+        digest: 'a'.repeat(64) }
     }),
     preparedEffectTimeOwner: async ({ prepared_chain_context: context }) => ({
       version: 2, schema: 'turn_time_update',
@@ -91,6 +98,86 @@ test('unrelated domain request retains domain-owned time', async () => {
   assert.equal(calls.activities, 0);
   assert.equal(calls.rng, 0);
 });
+
+test('A1 generic check preflights authority before RNG', async () => {
+  const calls = { activities: 0, rng: 0, preflight: 0 };
+  const exactPorts = ports(calls);
+  exactPorts.preflightActionProduction = async () => {
+    calls.preflight += 1;
+    throw Object.assign(new Error('denied'), {
+      code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
+    });
+  };
+  await assert.rejects(() => executeTurnStepActorStep({
+    plan: genericPlan(), request, workingProjection: {},
+    preparedChainContext: chainContext(), preparedOrdinaryPlan: null,
+    preparedActionProductionPlans: [], registry: registry(calls),
+    ports: exactPorts
+  }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+  assert.deepEqual(calls, { activities: 0, rng: 0, preflight: 1 });
+});
+
+test('valid A1 preflight is read once before one generic check', async () => {
+  const calls = { activities: 0, rng: 0, preflight: 0 };
+  const exactPorts = ports(calls);
+  exactPorts.preflightActionProduction = async () => {
+    calls.preflight += 1;
+  };
+  const result = await executeTurnStepActorStep({
+    plan: genericPlan(), request, workingProjection: {},
+    preparedChainContext: chainContext(), preparedOrdinaryPlan: null,
+    preparedActionProductionPlans: [], registry: registry(calls),
+    ports: exactPorts
+  });
+  assert.deepEqual(calls, { activities: 1, rng: 1, preflight: 1 });
+  assert.equal(result.checkResult.check_id, 'turn:1:step:1');
+});
+
+test('admitted physical infeasibility still spends one semantic activity',
+  async () => {
+    const calls = { activities: 0, rng: 0, preflight: 0 };
+    const exactPorts = ports(calls);
+    exactPorts.preflightActionProduction = async () => {
+      calls.preflight += 1;
+    };
+    const exactRegistry = createTurnStepExecutionRegistry({
+      domain: { request_item_use: async ({ working_projection: projection }) =>
+        ({ working_projection: projection,
+          summary: 'action_production:no_useful_result',
+          action_production_atomic_write_plan: null }) },
+      applySemanticActivity: registry(calls).semanticActivity()
+    });
+    const result = await executeTurnStepActorStep({ plan: genericPlan(),
+      request, workingProjection: {}, preparedChainContext: chainContext(),
+      preparedOrdinaryPlan: null, preparedActionProductionPlans: [],
+      registry: exactRegistry, ports: exactPorts });
+    assert.deepEqual(calls, { activities: 1, rng: 1, preflight: 1 });
+    assert.equal(result.action_production_atomic_write_plan, null);
+  });
+
+function genericPlan() {
+  const genericOperation = { ...structuredClone(operation),
+    action_production: { source_refs: ['item:board'], tool_refs: [],
+      requested_output_count: null, identity_mode: 'preserve_source', origin: null,
+      result_class: 'ordinary_physical_result', material_extent: null,
+      result_descriptor: { display_name: null, physical_description: 'cut',
+        qualitative_facts: [], removed_physical_fact_refs: [],
+        inscription_text: null, physical_form: 'regular',
+        source_fact_delta: null }, output_class: 'ordinary_mundane' } };
+  const outcome = () => ({ goal_result: 'achieved',
+    additional_activity: null, operations: [genericOperation],
+    continuation: null });
+  return {
+    resolution: 'generic_check', activity, operations: [],
+    goal_result: 'pending', continuation: null,
+    check: { purpose: 'uncertain physical action', attribute_ref: 'actor:1',
+      skill_ref: null, difficulty_id: 'risky', outcomes: {
+        clean_success: outcome(), success: outcome(),
+        success_with_cost: outcome(), failure_with_consequence: outcome(),
+        severe_failure: outcome()
+      } }
+  };
+}
 
 function chainContext() {
   return buildTurnStepPreparedChainContext({ priorEffectCount: 0,

@@ -17,10 +17,8 @@ import {
 } from './turn-step-action-produced-remainder.js';
 import { initialWorkingProjectionFrom } from
   './turn-step-player-safe-projection.js';
-
 export { isActionProductionOwnerInScope } from
   './turn-step-action-produced-remainder.js';
-
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -30,11 +28,9 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'emit_interaction',
   'request_combat'
 ]);
-
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
 }
-
 const DIRECT_STEP_OPERATIONS = new Set([
   'create_entity',
   'move_entity',
@@ -43,7 +39,6 @@ const DIRECT_STEP_OPERATIONS = new Set([
   'retire_entity',
   'apply_body_event'
 ]);
-
 export async function resolveBoundTurnStepCommand({
   registry,
   semanticBindings,
@@ -164,7 +159,9 @@ export async function resolveBoundTurnStepCommand({
               structuredClone(execution.prepared_chain_context),
             prepared_ordinary_materialization_atomic_write_plan:
               structuredClone(execution
-                .prepared_ordinary_materialization_atomic_write_plan)
+                .prepared_ordinary_materialization_atomic_write_plan),
+            prepared_action_production_atomic_write_plans: structuredClone(
+              execution.prepared_action_production_atomic_write_plans)
           }));
         }
       }
@@ -295,6 +292,11 @@ export async function resolveBoundTurnStepCommand({
     preparedEffectBodyOwner: services.turnStepPreparedEffectBodyOwner,
     preparedEffectProjectionOwner:
       services.turnStepPreparedEffectProjectionOwner,
+    preflightActionProduction: typeof services
+      .turnStepActionProductionPreflight !== 'function' ? null : (execution) =>
+      services.turnStepActionProductionPreflight(deepFreeze({
+        ...structuredClone(execution), actor: structuredClone(projected.actor),
+        committed_state: structuredClone(committedState) })),
     admitPreparedDomainPlan: async ({ plan, request,
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
@@ -389,7 +391,6 @@ export async function resolveBoundTurnStepCommand({
     })
   };
 }
-
 function commandWithDraftWrites({ command, registry, loopResult }) {
   const draftWrites = loopResult.write_fragments.length > 0
     ? [TURN_STEP_OPERATION_BATCH_TARGET]
@@ -424,7 +425,6 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
     }
   };
 }
-
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }

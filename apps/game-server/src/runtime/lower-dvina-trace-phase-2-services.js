@@ -161,6 +161,14 @@ export function buildLowerDvinaTracePhase2Services(context) {
       playerSafeStateProjector,
       workingProjectionAuthority
     });
+  const actionProductionOwner =
+    typeof createTurnStepActionProductionOwner === 'function'
+      && actionProductionProfile?.profile?.status === 'approved'
+      ? createTurnStepActionProductionOwner({
+          partyId, requestId, inputDigest,
+          applyWorkingProjection: turnStepPorts.applyActionProductionProjection
+        })
+      : null;
   return {
     commandRegistry: registry,
     stateReader: {
@@ -183,12 +191,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
       turnStepOrdinaryDiscoveryResolver:
         turnStepPorts.ordinaryDiscoveryResolver
     } : {}),
-    ...(typeof createTurnStepActionProductionOwner === 'function'
-        && actionProductionProfile?.profile?.status === 'approved' ? {
-      turnStepActionProductionOwner: createTurnStepActionProductionOwner({
-        partyId, requestId, inputDigest,
-        applyWorkingProjection: turnStepPorts.applyActionProductionProjection
-      })
+    ...(actionProductionOwner ? {
+      turnStepActionProductionOwner: actionProductionOwner.execute,
+      turnStepActionProductionPreflight: actionProductionOwner.preflight
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

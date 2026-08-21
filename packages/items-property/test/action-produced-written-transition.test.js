@@ -30,7 +30,8 @@ test('written transition preserves carrier and only adds physical inscription',
     const planner = createActionProducedTransitionPlanner({
       resolveMechanics: () => ({
         schema: 'rus.items.action_produced_owner_resolution.v1',
-        identity_mode: 'preserve_source', source_effects: [{
+        status: 'resolved', identity_mode: 'preserve_source',
+        actual_output_count: 0, source_effects: [{
           source_ref: 'item:bark', requested_decrement: null,
           mechanics_snapshot_after: mechanicsSnapshot()
         }], outputs: [], known_waste: []

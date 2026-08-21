@@ -3,22 +3,27 @@ import test from 'node:test';
 import { validateActionProducedOutputPropertyBasis } from
   '../src/action-produced-transition-entities.js';
 
-test('output may combine owned sources with distinct property states', () => {
+test('output property is canonical for equal ownership and mixed basis fails',
+  () => {
   const sources = new Map([
-    ['board', { source: { ownership_snapshot: ownership('board') } }],
-    ['bark', { source: { ownership_snapshot: ownership('bark') } }]
+    ['board', { source: { entity_ref: 'board',
+      ownership_snapshot: ownership('board') } }],
+    ['bark', { source: { entity_ref: 'bark',
+      ownership_snapshot: ownership('bark') } }]
   ]);
   const allocations = [{ source_ref: 'board' }, { source_ref: 'bark' }];
 
   assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
-    'board', allocations, sources));
+    'bark', allocations, sources));
+  assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
+    'bark', [...allocations].reverse(), sources));
 
   sources.get('bark').source.ownership_snapshot.owner_character_id
     = 'actor:other';
-  sources.get('bark').source.ownership_snapshot.controller_character_id
-    = 'actor:other';
-  assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
-    'board', allocations, sources));
+  assert.throws(() => validateActionProducedOutputPropertyBasis(
+    'bark', allocations, sources), {
+    code: 'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS'
+  });
 });
 
 function ownership(id) {

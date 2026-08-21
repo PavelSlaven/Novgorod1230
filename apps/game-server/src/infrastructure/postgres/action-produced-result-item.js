@@ -4,6 +4,7 @@ import {
   validateActionProducedDestinationPin
 } from './action-produced-atomic-write-plan-pins.js';
 import { deriveActionProducedOutputProperty,
+  resolvePhysicalItemCondition,
   validateActionProducedOutputAuthority } from '@rus/items-property';
 import { mergeActionProducedPhysicalFacts } from
   '@rus/items-property';
@@ -31,7 +32,9 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
   }
   const outputProperty = deriveActionProducedOutputProperty(
     source.entity_snapshot.ownership_snapshot, result.entity_ref, actorRef);
-  const semanticFacts = mergeActionProducedPhysicalFacts({
+  const condition = resolvePhysicalItemCondition(source.item);
+  if (condition === null) fail('ACTION_PRODUCED_RESULT_CONDITION_INVALID');
+  const physicalState = mergeActionProducedPhysicalFacts({
     entity_ref: result.entity_ref,
     action_ref: proposal.causal_identity.action_ref,
     existing: [],
@@ -44,16 +47,18 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     lifecycle_status: 'active',
     runtime_instance_mechanics_snapshot: result.mechanics_snapshot,
     ordinary_metadata: {
-      semantic_type: proposal.qualitative_result.output_class,
+      semantic_type: 'ordinary_mundane',
       name: proposal.qualitative_result.result_descriptor.display_name,
       origin: { kind: 'action_produced',
         source_refs: result.material_allocations.length === 0
           ? [result.source_ref] : [...new Set(result.material_allocations.map(
             ({ source_ref: sourceRef }) => sourceRef))] },
-      semantic_facts: structuredClone(semanticFacts),
+      semantic_facts: structuredClone(physicalState.physical_facts),
+      physical_inscriptions:
+        structuredClone(physicalState.physical_inscriptions),
       operation_history: []
     },
-    semantic_category: proposal.qualitative_result.output_class,
+    semantic_category: 'ordinary_mundane',
     property_state: outputProperty.property_state,
     action_production: {
       schema: 'rus.items.action_production_item_state.v1',
@@ -71,7 +76,7 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     item_id: result.entity_ref, source_ref: result.source_ref,
     item_row: {
       run_id: null, template_id: null, profile_id: null, category_id: null,
-      quantity: 1, condition_state: source.item.condition_state,
+      quantity: 1, condition_state: condition,
       legal_status: 'action_produced_non_authoritative',
       state, state_version: 1
     },

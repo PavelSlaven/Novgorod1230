@@ -23,6 +23,7 @@ function request(overrides = {}) {
     tool_refs: ['item:knife'],
     intended_transformation: 'заострить один конец жерди',
     material_extent: null,
+    requested_output_count: null,
     output_class: 'ordinary_mundane',
     ...overrides
   };
@@ -48,6 +49,7 @@ function plan(overrides = {}) {
     origin: null,
     intended_transformation: input.intended_transformation,
     material_extent: input.material_extent,
+    requested_output_count: input.requested_output_count,
     result_class: 'ordinary_physical_result',
     result_descriptor: {
       display_name: 'заострённая жердь',
@@ -208,7 +210,7 @@ test('presence questions, authority claims and arbitrary numeric mechanics are o
     { historical_identity: 'ancient_relic' },
     { mass_grams: 100 },
     { quantity_delta: 2 },
-    { output_count: 4 },
+    { requested_output_count: 4 },
     { damage: 10 },
     { difficulty_class: 12 },
     { success_probability: 0.8 }

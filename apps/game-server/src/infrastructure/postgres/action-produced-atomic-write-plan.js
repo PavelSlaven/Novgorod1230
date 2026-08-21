@@ -92,15 +92,14 @@ function deriveSourceUpdates(proposal, sourcePins) {
       ? proposal.results[0] : null;
     const survivingPartition = proposal.identity_mode === 'independent_outputs' && proposal.result_class === 'partial_transformation'
       && transition.after.mechanics_snapshot !== null && !retireSource
-      && transition.finite_resource_transition?.lifecycle_state_after
-        !== 'depleted';
+      && transition.finite_resource_transition?.lifecycle_state_after !== 'depleted';
     const descriptor = proposal.qualitative_result.result_descriptor;
     const sourceDelta = survivingPartition ? descriptor.source_fact_delta : null;
-    const semanticFacts = preservedResult === null && !survivingPartition
-      ? null
+    const physicalState = preservedResult === null && !survivingPartition ? null
       : mergeActionProducedPhysicalFacts({ entity_ref: pin.item_id,
         action_ref: proposal.causal_identity.action_ref,
         existing: pin.item.state?.ordinary_metadata?.semantic_facts ?? [],
+        existing_inscriptions: pin.item.state?.ordinary_metadata?.physical_inscriptions ?? [],
         physical_description: sourceDelta === null
           ? descriptor.physical_description : sourceDelta.physical_description,
         physical_facts: sourceDelta === null
@@ -118,10 +117,11 @@ function deriveSourceUpdates(proposal, sourcePins) {
         runtime_instance_mechanics_snapshot:
           structuredClone(transition.after.mechanics_snapshot)
       }),
-      ...(semanticFacts === null ? {} : {
+      ...(physicalState === null ? {} : {
         ordinary_metadata: {
           ...(pin.item.state?.ordinary_metadata ?? {}),
-          semantic_facts: structuredClone(semanticFacts)
+          semantic_facts: structuredClone(physicalState.physical_facts),
+          physical_inscriptions: structuredClone(physicalState.physical_inscriptions)
         },
         ...(preservedResult === null && !survivingPartition ? {} : {
           action_production: {

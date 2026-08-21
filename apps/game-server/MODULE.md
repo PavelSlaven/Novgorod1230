@@ -129,20 +129,16 @@ profile admits preserve, up to four mass-conserving independent outputs and
 no-result, with output/source mechanics derived exactly from consumed
 allocations; finite sources decrement, while a fully partitioned whole item
 retires and leaves active placement/capacity without a synthetic resource row.
-For multi-source preserve the first source keeps identity, later sources are
-consumed by grounded extent, and mixed ownership does not block the physical
-change; output property follows the selected primary/property source.
+For multi-source preserve the first source keeps identity and later sources are consumed by grounded extent. Independent multi-source outputs require the same owner/claim basis; their property source is the canonical minimum source ref, while mixed basis fails closed independent of ref order.
 Partial independent output carries only grounded qualitative
-`minor|half|major` extent; the item owner maps it to an exact gram decrement,
+`minor|half|major` extent for one non-finite source; the item owner maps it to an exact gram decrement,
 keeps the changed source active, updates its current physical facts and derives
 its remaining mechanics. Odd mass
 is distributed deterministically; output
-hand/packing/carry is code-derived. Safe named result descriptors persist in
-ordinary item metadata and survive reload, including
+hand/packing/carry is code-derived. Safe named result descriptors persist with neutral `ordinary_mundane` identity in ordinary item metadata and survive reload, including
 partial/nonworking/waste, physical writing, non-authoritative token-like and
 closed qualitative weapon-capable outcomes. Visible non-authoritative current
-physical facts, including exact inscription text, survive unrelated transforms,
-same-root continuation and reload; explicit visible fact refs allow physical
+physical facts and separately typed physical inscriptions survive unrelated transforms, same-root continuation and reload; explicit visible fact refs allow physical
 removal/replacement. Multiple causal A1 steps run in order over the shared
 working projection and commit in one combined P16. Item mechanics, conservation,
 identity and placement remain code-owned. Qualitative physical form is mapped
@@ -156,14 +152,15 @@ code-owned danger, while ambiguity or invalid classification fails closed.
 Positive weapon/token/writing outcomes require an admitted accessible tool;
 ordinary/no-result keeps the zero-tool path. Partial survivor text facts may be
 empty when its required form alone changes code-owned inventory geometry.
-Uncertain actions reuse one generic check and semantic activity/time
-resolution from turn owners; deterministic actions use `domain_request` without
+Uncertain actions perform a read-only authority preflight before RNG, then reuse one generic check and semantic activity/time resolution from turn owners; deterministic actions use `domain_request` without
 RNG but still apply one ordinary semantic activity/time cost after a real
 physical attempt. The same combined P16 write set contains the full turn snapshot,
 append-only check resolution, clock/activity writes and the ordered A1 plans.
 The existing transaction, state-version checks and idempotency owner bind the
 physical transitions to the same root commit without a second RNG, clock, A1
 execution ledger or A1-specific plan hashes.
+
+A1 v1 limits are explicit: single-source preserve has no small subtractive mass-loss/waste model; one action produces homogeneous outputs; tools are unchanged pins without wear or consumption; finite partial partition and partial additional finite consumption are unsupported. Unspecified requested output count is `null` and resolves to one owner-chosen entity; impossible explicit count is a time-spending physical no-result without item writes.
 
 Public new-game replay uses an exact persisted creation identity. Pre-Phase-1B
 `start_text` snapshots are admitted by a separate fail-closed compatibility

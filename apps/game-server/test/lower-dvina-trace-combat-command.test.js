@@ -145,6 +145,7 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
       classify: async (request) => {
         calls += 1;
         assert.deepEqual(request.item.physical_facts, ['конец заострён']);
+        assert.equal('semantic_type' in request.item, false);
         return { schema:
           'rus.combat.action_produced_weapon_classification.v1',
         request_id: request.request_id,
@@ -180,6 +181,29 @@ test('combat owner classifies current reloaded A1 weapon only at combat use',
       request_id: request.request_id, qualitative_class: 'forged_class',
       weapon_danger: 900 }) });
     assert.equal(forged, null);
+  });
+
+test('O1 runtime marker does not block current A1 combat classification',
+  async () => {
+    const item = actionProducedItem('o1-stick', ['конец заострён'], 'long');
+    delete item.state.condition_state;
+    item.condition_state = 'ordinary_runtime_instance';
+    item.state.runtime_instance_mechanics_snapshot = {
+      schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+      provenance: { source_kind: 'ordinary_world_materialization',
+        root_turn_id: 'turn:o1', step_index: 1, operation_ref: 'o1:stick',
+        origin_kind: 'crafted', source_refs: ['source:wood'] }, mechanics: {
+        mass_grams: 700, external_hand_cost: 1, carry_form: 'long',
+        packing_slot_cost: 3, quantity: null, container: null }
+    };
+    const result = await classifyTraceActionProducedWeapon({ items: [item],
+      actor_ref: player, request_id: 'combat-weapon:o1',
+      classify: async (request) => ({ schema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      request_id: request.request_id,
+      qualitative_class: 'improvised_puncture_light' }) });
+    assert.equal(result.weapon_danger, 1);
+    assert.equal(resolveTraceOrdinaryWeaponDanger([item], player, result), 1);
   });
 
 test('authored weapon fast path does not invoke semantic classification',

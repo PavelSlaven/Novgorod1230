@@ -21,7 +21,7 @@ const INVENTORY_KEYS = new Set([
 const ITEM_KEYS = new Set([
   'item_id', 'instance_id', 'template_id', 'profile_id', 'category_id',
   'name', 'semantic_type', 'quantity', 'quantity_unit_id', 'condition_state', 'legal_status',
-  'physical_facts', 'physical_fact_records',
+  'physical_facts', 'physical_fact_records', 'physical_inscriptions',
   'claim_state', 'placement', 'ownership', 'access_state',
   'visibility_state', 'open_state', 'closure_state', 'contents_state',
   'contents', 'state', 'visible', 'is_visible'
@@ -178,6 +178,10 @@ function projectItem(item, strict) {
       ?? item.state?.ordinary_metadata?.semantic_facts?.map?.((fact) => ({
         fact_ref: fact?.fact_id, text: fact?.text })), { strict,
       path: 'items[].physical_fact_records[]', code: invalidCode() }),
+    physical_inscriptions: physicalFactRecords(item.physical_inscriptions
+      ?? item.state?.ordinary_metadata?.physical_inscriptions?.map?.((fact) =>
+        ({ fact_ref: fact?.fact_id, text: fact?.text })), { strict,
+      path: 'items[].physical_inscriptions[]', code: invalidCode() }),
     quantity: finite(item.quantity),
     quantity_unit_id: text(item.quantity_unit_id),
     condition_state: text(item.condition_state), legal_status: text(item.legal_status),
@@ -194,7 +198,6 @@ function projectItem(item, strict) {
     state: projectItemState(item.state, strict)
   });
 }
-
 function projectPhysicalFacts(item, strict) {
   const values = item.state?.ordinary_metadata?.semantic_facts;
   const facts = item.physical_facts ?? values?.map?.((fact) =>
@@ -202,7 +205,6 @@ function projectPhysicalFacts(item, strict) {
   const projected = textArray(facts, { strict, path: 'items[].physical_facts', code: invalidCode() });
   return projected?.length ? projected : undefined;
 }
-
 function projectPlacement(value, strict) {
   if (!plain(value)) return undefined;
   const allowed = new Set([
@@ -216,7 +218,6 @@ function projectPlacement(value, strict) {
     key, text(value[key])
   ])));
 }
-
 function projectReferenceState(value, strict, path) {
   if (typeof value === 'string') return value;
   if (!plain(value)) return undefined;

@@ -59,6 +59,8 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       physical_facts: actionProducedPhysicalFactTexts(metadata
         ?.semantic_facts ?? current.physical_facts ?? []),
       physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
+      physical_inscriptions: physicalFactRecords(
+        metadata?.physical_inscriptions) ?? [],
       quantity: update.after_item.quantity,
       condition_state: update.after_item.condition_state,
       legal_status: update.after_item.legal_status
@@ -91,6 +93,8 @@ export function applyActionProducedRuntimeProjection({ workingProjection,
       physical_facts: actionProducedPhysicalFactTexts(
         metadata?.semantic_facts ?? []),
       physical_fact_records: physicalFactRecords(metadata?.semantic_facts),
+      physical_inscriptions: physicalFactRecords(
+        metadata?.physical_inscriptions) ?? [],
       quantity_unit_id: runtime.mechanics.quantity?.unit,
       condition_state: row.condition_state, legal_status: row.legal_status,
       placement: structuredClone(placement)

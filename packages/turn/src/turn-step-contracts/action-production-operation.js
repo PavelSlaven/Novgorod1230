@@ -4,15 +4,17 @@ import { add, enumValue, integer, refs, requiredText, strict } from
 export function validateActionProduction(value, path, errors, trace,
   operation) {
   if (!strict(value, path, [
-    'source_refs', 'tool_refs', 'output_count', 'identity_mode', 'origin',
+    'source_refs', 'tool_refs', 'requested_output_count', 'identity_mode', 'origin',
     'result_class', 'material_extent', 'result_descriptor', 'output_class'
   ], errors)) return;
   refs(value.source_refs, `${path}.source_refs`, errors, trace, { min: 1 });
   refs(value.tool_refs, `${path}.tool_refs`, errors, trace,
     { allowEmpty: true });
-  integer(value.output_count, 0, `${path}.output_count`, errors);
-  if (Number.isSafeInteger(value.output_count) && value.output_count > 8) {
-    add(errors, `${path}.output_count`, 'range',
+  if (value.requested_output_count !== null) integer(
+    value.requested_output_count, 1, `${path}.requested_output_count`, errors);
+  if (Number.isSafeInteger(value.requested_output_count)
+      && value.requested_output_count > 8) {
+    add(errors, `${path}.requested_output_count`, 'range',
       'must be a safe integer <= 8');
   }
   enumValue(value.identity_mode, [
@@ -53,14 +55,15 @@ function validateRefs(value, path, errors, operation) {
 
 function validateOutputCount(value, path, errors) {
   if (value.identity_mode === 'preserve_source'
-      && value.output_count !== 0
+      && value.requested_output_count !== null
       || value.identity_mode === 'independent_outputs'
-        && (!Number.isSafeInteger(value.output_count)
-          || value.output_count < 1)
+        && value.requested_output_count !== null
+        && (!Number.isSafeInteger(value.requested_output_count)
+          || value.requested_output_count < 1)
       || value.identity_mode === 'no_useful_result'
-        && value.output_count !== 0) {
-    add(errors, `${path}.output_count`, 'operation_shape',
-      'output count must match identity mode');
+        && value.requested_output_count !== null) {
+    add(errors, `${path}.requested_output_count`, 'operation_shape',
+      'requested output count must match identity mode');
   }
 }
 

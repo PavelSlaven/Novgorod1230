@@ -40,7 +40,8 @@ const PIN_KEYS = [
   'controller_ref'
 ];
 const POLICY_KEYS = ['schema', 'version', 'status', 'policy_ref', 'profile_ref', 'profile_version', 'max_new_entities'];
-const RESOLUTION_KEYS = ['schema', 'identity_mode', 'source_effects', 'outputs', 'known_waste'];
+const RESOLUTION_KEYS = ['schema', 'status', 'identity_mode',
+  'actual_output_count', 'source_effects', 'outputs', 'known_waste'];
 const SOURCE_EFFECT_KEYS = ['source_ref', 'requested_decrement', 'mechanics_snapshot_after'];
 const OUTPUT_KEYS = ['ordinal', 'property_source_ref', 'mechanics_snapshot', 'material_allocations'];
 const ALLOCATION_KEYS = ['source_ref', 'quantity'];
@@ -58,6 +59,8 @@ export { resolveActionProducedAllocationMechanics } from
 export { createActionProducedOutputIdentity } from
   './action-produced-output-identity.js';
 export { validateActionProducedOutputPropertyBasis } from
+  './action-produced-transition-entities.js';
+export { selectActionProducedPropertySource } from
   './action-produced-transition-entities.js';
 function plan(rawInput, resolveMechanics) {
   const input = snapshotActionProducedBoundary(rawInput);
@@ -97,14 +100,22 @@ function plan(rawInput, resolveMechanics) {
   });
   const resolution = snapshotActionProducedBoundary(
     resolveMechanics(mechanicsRequest));
+  if (resolution?.schema === 'rus.items.action_produced_owner_resolution.v1'
+      && resolution.status === 'physically_infeasible'
+      && exact(resolution, ['schema', 'status', 'reason'])
+      && text(resolution.reason)) {
+    return deepFreeze(resolution);
+  }
   if (resolution == null || !exact(resolution, RESOLUTION_KEYS)
       || resolution.schema !== 'rus.items.action_produced_owner_resolution.v1'
+      || resolution.status !== 'resolved'
       || resolution.identity_mode !== handoff.identity_mode) fail();
   const effects = validateSourceEffects(resolution.source_effects, sources,
     handoff);
   const waste = validateWaste(resolution.known_waste, effects);
   const outputs = validateOutputs(resolution.outputs, effects, handoff,
     policy, committedRefs);
+  if (resolution.actual_output_count !== outputs.length) fail();
   validateConservation(effects, outputs, waste);
   validateIdentityShape(handoff, effects, outputs);
 
@@ -157,6 +168,7 @@ function plan(rawInput, resolveMechanics) {
     identity_mode: handoff.identity_mode,
     origin: handoff.origin,
     result_class: handoff.result_class,
+    actual_output_count: resolution.actual_output_count,
     source_transitions: sourceTransitions,
     tool_state_pins: toolPins,
     results,
@@ -427,6 +439,7 @@ function sanitizedEntity(value) {
     state_version: value.state_version,
     holder_ref: value.holder_ref,
     controller_ref: value.controller_ref,
+    ownership_snapshot: structuredClone(value.ownership_snapshot),
     finite_resource: structuredClone(value.finite_resource)
   };
 }

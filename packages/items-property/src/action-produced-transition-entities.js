@@ -75,13 +75,43 @@ export function validateActionProducedOutputDestination(value, mode,
 
 export function validateActionProducedOutputPropertyBasis(propertySourceRef,
   allocations, sources) {
-  const selected = sources.get(propertySourceRef)?.source;
-  if (!selected || !allocations.some(({ source_ref: sourceRef }) =>
-    sourceRef === propertySourceRef)) fail();
-  for (const { source_ref: sourceRef } of allocations) {
+  const contributors = allocations.map(({ source_ref: sourceRef }) => {
     const contributor = sources.get(sourceRef)?.source;
     if (!contributor) fail();
+    return contributor;
+  });
+  const expected = selectActionProducedPropertySource(contributors);
+  if (propertySourceRef !== expected
+      || !allocations.some(({ source_ref: sourceRef }) =>
+        sourceRef === propertySourceRef)) fail();
+}
+
+export function selectActionProducedPropertySource(sources) {
+  if (!Array.isArray(sources) || sources.length === 0) fail();
+  const basis = ownershipBasis(sources[0]);
+  for (const source of sources) {
+    if (!text(source.entity_ref) || !sameBasis(basis, ownershipBasis(source))) {
+      throw Object.assign(new TypeError(
+        'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS'), {
+        code: 'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS' });
+    }
   }
+  return sources.map(({ entity_ref: ref }) => ref).sort()[0];
+}
+
+function ownershipBasis(source) {
+  const value = source?.ownership_snapshot;
+  if (!validOwnership(value)) fail();
+  return { owner_npc_id: value.owner_npc_id,
+    owner_character_id: value.owner_character_id,
+    owner_party: value.owner_party, claim_state: value.claim_state };
+}
+
+function sameBasis(left, right) {
+  return left.owner_npc_id === right.owner_npc_id
+    && left.owner_character_id === right.owner_character_id
+    && left.owner_party === right.owner_party
+    && left.claim_state === right.claim_state;
 }
 
 function validateFinite(value) {

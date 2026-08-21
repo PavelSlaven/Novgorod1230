@@ -14,12 +14,15 @@ export function validateActionProducedOwnerMechanics(proposal, sourcePins) {
       source_mechanics: sourcePins.map((pin) => ({
         source_ref: pin.item_id, mechanics: committedMechanics(pin.item)
       })),
-      output_count: proposal.identity_mode === 'independent_outputs'
-        ? proposal.results.length : 0
+      requested_output_count: proposal.identity_mode === 'independent_outputs'
+        ? proposal.results.length : null
     });
   } catch { fail('ACTION_PRODUCED_RESULT_INVALID'); }
   const actual = {
     schema: 'rus.items.action_produced_owner_resolution.v1',
+    status: 'resolved', actual_output_count:
+      proposal.identity_mode === 'independent_outputs'
+        ? proposal.results.length : 0,
     identity_mode: proposal.identity_mode,
     source_effects: proposal.source_transitions.map((entry) => {
       const pin = sourcePins.find(({ item_id: itemId }) =>
@@ -95,6 +98,7 @@ function mechanicsRequest(proposal, sourcePins) {
     source_inputs: sourcePins.map(({ entity_snapshot: value }) => ({
       entity_ref: value.entity_ref, state_version: value.state_version,
       holder_ref: value.holder_ref, controller_ref: value.controller_ref,
+      ownership_snapshot: structuredClone(value.ownership_snapshot),
       finite_resource: structuredClone(value.finite_resource)
     })),
     tool_inputs: [],

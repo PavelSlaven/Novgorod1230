@@ -365,10 +365,11 @@ test('independent A1 output cannot inherit currency or official state', () => {
   assert.equal(item.item_row.state.action_production.output_class,
     'money_like_token');
   assert.deepEqual(item.item_row.state.ordinary_metadata, {
-    semantic_type: 'money_like_token', name: 'деревянный счётный жетон',
+    semantic_type: 'ordinary_mundane', name: 'деревянный счётный жетон',
     origin: { kind: 'action_produced', source_refs: ['item:coin-source'] },
     semantic_facts: [{ fact_id: 'action:token:fact:1',
       text: 'имеет сходство с жетоном', operation_id: 'action:token' }],
+    physical_inscriptions: [],
     operation_history: []
   });
   assert.equal(item.ownership_row.owner_character_id, 'actor:mikula');
@@ -384,7 +385,7 @@ test('independent A1 output cannot inherit currency or official state', () => {
   const playerSafe = projectItems(next.items, { actorId: 'actor:mikula',
     position: { anchor_id: 'output-anchor' } });
   assert.equal(playerSafe[0].name, 'деревянный счётный жетон');
-  assert.equal(playerSafe[0].semantic_type, 'money_like_token');
+  assert.equal(playerSafe[0].semantic_type, 'ordinary_mundane');
 });
 
 test('written A1 state persists inscription without truth or knowledge', () => {
@@ -403,7 +404,9 @@ test('written A1 state persists inscription without truth or knowledge', () => {
   const state = plan.source_updates[0].after_item.state.action_production;
   assert.equal('inscription_text' in state, false);
   assert.equal(plan.source_updates[0].after_item.state.ordinary_metadata
-    .semantic_facts.some(({ text }) => text === 'Я князь.'), true);
+    .semantic_facts.some(({ text }) => text === 'Я князь.'), false);
+  assert.equal(plan.source_updates[0].after_item.state.ordinary_metadata
+    .physical_inscriptions.some(({ text }) => text === 'Я князь.'), true);
   assert.equal('objective_truth' in state, false);
   assert.equal('knowledge' in state, false);
   assert.deepEqual(Object.keys(state).sort(), [
@@ -688,6 +691,7 @@ function proposal() {
       max_new_entities: 4 },
     identity_mode: 'preserve_source', origin: null,
     result_class: 'ordinary_physical_result',
+    actual_output_count: 0,
     source_transitions: [{ entity_ref: 'item:pole', before,
       after: { state_version: '8', mechanics_snapshot: structuredClone(mechanics),
         holder_ref: before.holder_ref, controller_ref: before.controller_ref },

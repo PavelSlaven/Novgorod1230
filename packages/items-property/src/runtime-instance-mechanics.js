@@ -27,6 +27,29 @@ const SOURCE_KINDS = new Set([
   'ordinary_direct_action_result', 'ordinary_world_materialization'
 ]);
 const CARRY_FORMS = new Set(['compact', 'regular', 'long', 'bulky']);
+const PHYSICAL_CONDITIONS = new Set(['serviceable', 'damaged']);
+
+export function resolvePhysicalItemCondition(item) {
+  const state = item?.state;
+  if (state?.lifecycle_status === 'retired'
+      || item?.condition_state === 'retired') return null;
+  if (PHYSICAL_CONDITIONS.has(state?.condition_state)) {
+    return state.condition_state;
+  }
+  if (PHYSICAL_CONDITIONS.has(item?.condition_state)) {
+    return item.condition_state;
+  }
+  if (item?.condition_state !== 'ordinary_runtime_instance'
+      || state?.damage != null || state?.damage_state != null) return null;
+  const resolved = resolveInventoryMechanicsProfile({
+    instance: { template_id: null,
+      runtime_instance_mechanics_snapshot:
+        state?.runtime_instance_mechanics_snapshot },
+    profiles: []
+  });
+  return resolved.pass && resolved.source === 'runtime_instance_snapshot'
+    ? 'serviceable' : null;
+}
 
 export function createRuntimeInstanceMechanicsSnapshot(value) {
   if (!exactObject(value, SNAPSHOT_FIELDS)

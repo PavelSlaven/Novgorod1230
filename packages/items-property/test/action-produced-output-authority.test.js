@@ -47,10 +47,11 @@ test('authority and ownership boundaries reject drift without getter reads',
     assert.equal(reads, 0);
   });
 
-test('output property source must contribute while ownership may differ',
+test('output property source must contribute and ownership must agree',
   () => {
-    const ownerA = { ownership_snapshot: ownership('ownership:a') };
-    const ownerB = { ownership_snapshot: {
+    const ownerA = { entity_ref: 'source:a',
+      ownership_snapshot: ownership('ownership:a') };
+    const ownerB = { entity_ref: 'source:b', ownership_snapshot: {
       ...ownership('ownership:b'), owner_character_id: 'actor:other'
     } };
     const sources = new Map([
@@ -59,11 +60,12 @@ test('output property source must contribute while ownership may differ',
     ]);
     assert.throws(() => validateActionProducedOutputPropertyBasis('source:a',
       [{ source_ref: 'source:b' }], sources), TypeError);
-    assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
+    assert.throws(() => validateActionProducedOutputPropertyBasis(
       'source:a', [{ source_ref: 'source:a' }, { source_ref: 'source:b' }],
-      sources));
+      sources), { code: 'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS' });
 
     sources.set('source:b', { source: {
+      entity_ref: 'source:b',
       ownership_snapshot: ownership('ownership:b') } });
     assert.doesNotThrow(() => validateActionProducedOutputPropertyBasis(
       'source:a', [{ source_ref: 'source:a' }, { source_ref: 'source:b' }],

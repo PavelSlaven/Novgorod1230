@@ -24,7 +24,7 @@ test('P16 replays partial allocation mechanics instead of trusting forged grams'
       source_mechanics: [{ source_ref: source.item_id,
         mechanics: source.item.state.runtime_instance_mechanics_snapshot
           .mechanics }],
-      output_count: 2
+      requested_output_count: 2
     });
     const proposal = {
       causal_identity: causal, identity_mode: 'independent_outputs',
@@ -77,5 +77,9 @@ function sourcePin() {
   entity_snapshot: { entity_ref: 'item:board', state_version: '7',
     mechanics_state_ref: 'mechanics:7', property_state_ref: 'property:7',
     placement_state_ref: 'placement:7', holder_ref: 'actor:mikula',
-    controller_ref: 'actor:mikula', finite_resource: null } };
+    controller_ref: 'actor:mikula', ownership_snapshot: {
+      ownership_id: 'ownership:item:board', owner_npc_id: null,
+      owner_character_id: 'actor:mikula', owner_party: false,
+      controller_npc_id: null, controller_character_id: 'actor:mikula',
+      claim_state: 'owned' }, finite_resource: null } };
 }

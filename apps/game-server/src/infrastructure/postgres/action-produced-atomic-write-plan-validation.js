@@ -15,11 +15,10 @@ import { validateActionProducedProposalResults } from
 import { actionProducedConsumedMass,
   validateActionProducedOwnerMechanics } from
   './action-produced-mass-conservation.js';
-
 const PROPOSAL_KEYS = [
   'schema', 'version', 'causal_identity', 'context_pin',
   'technical_policy_pin', 'identity_mode', 'origin', 'result_class',
-  'source_transitions', 'tool_state_pins', 'results', 'known_waste',
+  'actual_output_count', 'source_transitions', 'tool_state_pins', 'results', 'known_waste',
   'qualitative_result'
 ];
 const CAUSAL_KEYS = ['request_id', 'root_turn_id', 'action_ref', 'step_index'];
@@ -30,7 +29,6 @@ const TECHNICAL_KEYS = ['policy_ref', 'version', 'max_new_entities'];
 const SOURCE_TRANSITION_KEYS = [
   'entity_ref', 'before', 'after', 'finite_resource_transition'
 ];
-
 export function validateActionProducedAtomicProposal(value, load) {
   if (!exact(value, PROPOSAL_KEYS)
       || value.schema !== 'rus.items.action_produced_transition_proposal.v1'
@@ -61,6 +59,9 @@ export function validateActionProducedAtomicProposal(value, load) {
         !== load.committed_context.state_version
       || !['preserve_source', 'independent_outputs',
         'no_useful_result'].includes(value.identity_mode)
+      || !Number.isSafeInteger(value.actual_output_count)
+      || value.actual_output_count !== (value.identity_mode ===
+        'independent_outputs' ? value.results?.length : 0)
       || !Array.isArray(value.source_transitions)
       || !Array.isArray(value.tool_state_pins)
       || !Array.isArray(value.results)
@@ -148,7 +149,6 @@ export function validateActionProducedAtomicProposal(value, load) {
   validateIndependentConservation(value, sourcePins);
   return value;
 }
-
 function requireExactCoverage(values, pins) {
   const actual = values.map(({ entity_ref: entityRef }) => entityRef);
   const expected = pins.map(({ item_id: itemId }) => itemId);

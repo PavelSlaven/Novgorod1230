@@ -515,6 +515,7 @@ function phaseOneInput(overrides = {}) {
     origin: null,
     intended_transformation: 'sharpen one end of pole', material_extent:
       overrides.identity_mode === 'independent_outputs' ? 'whole' : null,
+    requested_output_count: null,
     result_class: 'ordinary_physical_result',
     result_descriptor: {
       display_name: 'sharpened pole',
@@ -582,7 +583,8 @@ function ownershipFor(entityRef) {
 function mechanicsResolution({ identityMode, sourceEffects,
   outputs = [], knownWaste = [] }) {
   return { schema: 'rus.items.action_produced_owner_resolution.v1',
-    identity_mode: identityMode, source_effects: sourceEffects,
+    status: 'resolved', identity_mode: identityMode,
+    actual_output_count: outputs.length, source_effects: sourceEffects,
     outputs, known_waste: knownWaste };
 }
 

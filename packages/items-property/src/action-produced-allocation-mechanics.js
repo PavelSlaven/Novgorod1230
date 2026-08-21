@@ -4,6 +4,8 @@ import { createActionProducedOutputIdentity } from
   './action-produced-output-identity.js';
 import { snapshotActionProducedBoundary } from
   './action-produced-transition-boundary.js';
+import { selectActionProducedPropertySource } from
+  './action-produced-transition-entities.js';
 
 const MECHANICS_KEYS = [
   'mass_grams', 'external_hand_cost', 'carry_form', 'packing_slot_cost',
@@ -11,11 +13,23 @@ const MECHANICS_KEYS = [
 ];
 
 export function resolveActionProducedAllocationMechanics(rawInput) {
+  try { return resolve(rawInput); } catch (error) {
+    if (error?.code === 'ITEM_ACTION_PRODUCED_PHYSICALLY_INFEASIBLE') {
+      return { schema: 'rus.items.action_produced_owner_resolution.v1',
+        status: 'physically_infeasible', reason: error.reason };
+    }
+    throw error;
+  }
+}
+
+function resolve(rawInput) {
   const input = snapshotActionProducedBoundary(rawInput);
   const request = input?.mechanics_request;
   const sources = input?.source_mechanics;
-  const outputCount = input?.output_count;
-  if (!exact(input, ['mechanics_request', 'source_mechanics', 'output_count'])
+  const requestedCount = input?.requested_output_count;
+  if (!exact(input, [
+    'mechanics_request', 'source_mechanics', 'requested_output_count'
+  ])
       || request?.schema !== 'rus.items.action_produced_mechanics_request.v1'
       || !Array.isArray(request.source_inputs)
       || request.source_inputs.length === 0
@@ -23,8 +37,13 @@ export function resolveActionProducedAllocationMechanics(rawInput) {
       || request.technical_limits.max_new_entities < 1
       || request.technical_limits.max_new_entities > 8
       || !Array.isArray(sources)
-      || !Number.isSafeInteger(outputCount) || outputCount < 0
-      || outputCount > request.technical_limits.max_new_entities) invalid();
+      || requestedCount !== null && (!Number.isSafeInteger(requestedCount)
+        || requestedCount < 1
+        || requestedCount > request.technical_limits.max_new_entities)) {
+    invalid();
+  }
+  const outputCount = request.identity_mode === 'independent_outputs'
+    ? requestedCount ?? 1 : 0;
   const byRef = sourceMechanics(sources, request.source_inputs);
   if (request.identity_mode === 'preserve_source') {
     return preserveResolution(request, byRef, outputCount);
@@ -61,6 +80,8 @@ function preserveResolution(request, byRef, outputCount) {
     }], []);
   }
   if (!['minor', 'half', 'major', 'whole'].includes(extent)) gap();
+  if (extent !== 'whole'
+      && materials.some((source) => source.finite_resource !== null)) gap();
   const consumed = materials.map((source) => consumeSource(source,
     byRef.get(source.entity_ref), extent, 0));
   const primaryMechanics = byRef.get(primary.entity_ref);
@@ -79,7 +100,8 @@ function preserveResolution(request, byRef, outputCount) {
 }
 
 function independentResolution(request, byRef, outputCount) {
-  const sourceRefs = request.source_inputs.map(({ entity_ref: ref }) => ref);
+  const propertySourceRef = selectActionProducedPropertySource(
+    request.source_inputs);
   const partial = request.result_class === 'partial_transformation';
   const extent = request.qualitative_intent?.material_extent;
   const physicalForm = request.qualitative_intent?.result_descriptor
@@ -90,6 +112,8 @@ function independentResolution(request, byRef, outputCount) {
     : extent !== 'whole') || physicalForm === null
       || partial && (request.source_inputs.length !== 1
         || sourcePhysicalForm === null)) gap();
+  if (partial && request.source_inputs.some(
+    (source) => source.finite_resource !== null)) gap();
   const consumed = request.source_inputs.map((source) => consumeSource(source,
     byRef.get(source.entity_ref), partial ? extent : 'whole', outputCount));
   const totalMass = consumed.reduce((sum, entry) =>
@@ -108,7 +132,7 @@ function independentResolution(request, byRef, outputCount) {
     const outputMechanics = derivedMechanics(
       baseMass + Number(index < remainderMass), 0,
       { value: 1, unit: 'item' }, physicalForm);
-    return { ordinal, property_source_ref: sourceRefs[0],
+    return { ordinal, property_source_ref: propertySourceRef,
       mechanics_snapshot: snapshot(request, outputMechanics, outputRef),
       material_allocations: consumed.map(({ source, allocations }) => ({
         source_ref: source.entity_ref,
@@ -142,7 +166,7 @@ function consumeSource(source, mechanics, extent, outputCount) {
           * consumedMass / mechanics.mass_grams,
         retire: !partial };
     }
-    if (finite.lifecycle_state !== 'active') gap();
+    if (finite.lifecycle_state !== 'active') invalid();
     const quantity = exactFiniteQuantity(finite?.quantity);
     // Active A1 finite rows expose discrete owner units (`item`/`piece`).
     // Material extent changes whole-item mass only; one finite unit is atomic.
@@ -150,7 +174,7 @@ function consumeSource(source, mechanics, extent, outputCount) {
         || !Number.isSafeInteger(mechanics.quantity.value)
         || mechanics.quantity.value * quantity.denominator
           !== quantity.numerator || quantity.numerator < quantity.denominator) {
-      gap();
+      invalid();
     }
     return { source, mechanics, quantity,
       allocations: Array.from({ length: outputCount }, () =>
@@ -259,7 +283,8 @@ function snapshot(request, mechanics, operationRef) {
 
 function resolution(request, sourceEffects, outputs) {
   return { schema: 'rus.items.action_produced_owner_resolution.v1',
-    identity_mode: request.identity_mode, source_effects: sourceEffects,
+    status: 'resolved', identity_mode: request.identity_mode,
+    actual_output_count: outputs.length, source_effects: sourceEffects,
     outputs, known_waste: [] };
 }
 
@@ -281,7 +306,7 @@ function exactFiniteQuantity(value) {
   if (!exact(value, ['numerator', 'denominator', 'unit'])
       || !Number.isSafeInteger(value.numerator) || value.numerator < 1
       || !Number.isSafeInteger(value.denominator) || value.denominator < 1
-      || !text(value.unit)) gap();
+      || !text(value.unit)) invalid();
   return value;
 }
 
@@ -311,6 +336,8 @@ function text(value) { return typeof value === 'string'
 function invalid() { throw Object.assign(new TypeError(
   'ITEM_ACTION_PRODUCED_MECHANICS_INPUT_INVALID'),
 { code: 'ITEM_ACTION_PRODUCED_MECHANICS_INPUT_INVALID' }); }
-function gap() { throw Object.assign(new TypeError(
-  'ITEM_ACTION_PRODUCED_MECHANICS_GAP'),
-{ code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' }); }
+function gap(reason = 'unsupported_physical_allocation') {
+  throw Object.assign(new TypeError(
+    'ITEM_ACTION_PRODUCED_PHYSICALLY_INFEASIBLE'),
+  { code: 'ITEM_ACTION_PRODUCED_PHYSICALLY_INFEASIBLE', reason });
+}

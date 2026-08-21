@@ -3,6 +3,7 @@ import {
   ordinaryArmamentWeaponDanger,
   resolveActionProducedCombatWeaponClass
 } from '@rus/combat-health';
+import { resolvePhysicalItemCondition } from '@rus/items-property';
 
 export function createLowerDvinaTraceActionProducedWeaponClassifier({
   roleRunner
@@ -63,9 +64,7 @@ export async function classifyTraceActionProducedWeapon({ items, actor_ref,
       item: {
         item_ref: item.item_id,
         name: text(metadata.name) ? metadata.name : null,
-        semantic_type: text(metadata.semantic_type)
-          ? metadata.semantic_type : null,
-        condition_state: state.condition_state ?? item.condition_state ?? null,
+        condition_state: resolvePhysicalItemCondition(item),
         physical_form: state.action_production?.physical_form ?? null,
         physical_facts: factTexts(metadata.semantic_facts),
         carry_form: state.runtime_instance_mechanics_snapshot?.mechanics
@@ -127,11 +126,11 @@ function heldWeaponSnapshots(items, actorRef) {
     const snapshot = item.weapon_mechanics_snapshot
       ?? item.state?.weapon_mechanics_snapshot;
     if (snapshot != null) return { kind: 'ordinary', snapshot,
-      condition: item.state?.condition_state ?? item.condition_state, item };
+      condition: resolvePhysicalItemCondition(item), item };
     return item.state?.action_production?.schema
         === 'rus.items.action_production_item_state.v1'
       ? { kind: 'action_produced',
-          condition: item.state?.condition_state ?? item.condition_state,
+          condition: resolvePhysicalItemCondition(item),
           item }
       : null;
   }).filter(Boolean);

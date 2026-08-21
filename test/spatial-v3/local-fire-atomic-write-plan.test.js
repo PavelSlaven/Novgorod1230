@@ -16,8 +16,8 @@ function itemPin(itemId = 'item:unlisted-fuel', actorRef = 'actor:1') {
     state: { lifecycle_status: 'active', local_fire_fuel: {
       schema: 'rus.items.local_fire_fuel.v1',
       fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
-      mechanics: { mass_grams: 300 }
-    } } };
+      provenance: { source_refs: ['source:wood'] }
+    }, runtime_instance_mechanics_snapshot: mechanics(300) } };
   return { item_id: itemId, item,
     placement: { item_id: itemId, anchor_id: null, container_id: null,
       holder_npc_id: null, holder_character_id: actorRef,
@@ -85,9 +85,8 @@ test('local-fire plan rejects stale input, access gaps and hostile descriptors',
   });
   const foreign = fixture();
   foreign.input_pins[0].ownership.owner_character_id = 'actor:foreign';
-  assert.throws(() => createLocalFireAtomicWritePlan(foreign), {
-    code: 'LOCAL_FIRE_INPUT_NOT_ADMITTED'
-  });
+  assert.equal(createLocalFireAtomicWritePlan(foreign)
+    .input_pins[0].ownership.owner_character_id,'actor:foreign');
   let reads = 0; const hostile = fixture();
   Object.defineProperty(hostile, 'input_pins', { enumerable: true,
     get() { reads += 1; return []; } });
@@ -148,8 +147,16 @@ function approvedPlan(overrides = {}) {
       ...overrides }] };
 }
 
+function mechanics(mass){return{schema:
+  'rus.items.runtime_instance_mechanics_snapshot.v1',version:1,provenance:{
+    source_kind:'ordinary_direct_action_result',root_turn_id:'turn:source',
+    step_index:1,operation_ref:'operation:source',origin_kind:'direct_partition',
+    source_refs:['source:wood']},mechanics:{mass_grams:mass,
+    external_hand_cost:1,carry_form:'compact',packing_slot_cost:1,
+    quantity:{value:1,unit:'item'},container:null}};}
+
 function outerPlan(localFire, approved, actorRef = 'actor:1') {
-  return { local_fire_atomic_write_plan: localFire,
+  return { local_fire_atomic_write_plans: [localFire],
     operation_kind: 'trace_turn_step', request_id: 'request:1',
     idempotency_key: 'idem:1', party_id: 'party:1', change_set_id: 'change:1',
     owner_keys: [`actor:${actorRef}`],

@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_local_world_processes (
     ON DELETE RESTRICT,
   process_ref text NOT NULL,
   context_ref text NOT NULL CHECK (context_ref<>''),
+  rule_ref jsonb NOT NULL,
+  policy_ref jsonb NOT NULL,
   process_mode text NOT NULL CHECK (process_mode='local_exact'),
   process_kind text NOT NULL CHECK (process_kind='fire'),
   scope_ref text NOT NULL CHECK (scope_ref<>''),
@@ -19,6 +21,7 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_local_world_processes (
     REFERENCES party_runtime.party_v3_change_sets(party_id,id)
     DEFERRABLE INITIALLY DEFERRED,
   CHECK ((status='active')=(next_boundary_at IS NOT NULL)),
+  CHECK (jsonb_typeof(rule_ref)='object' AND jsonb_typeof(policy_ref)='object'),
   CHECK (
     party_runtime.runtime_item_jsonb_exact_keys(
       process_state, ARRAY['schema','process_ref','process_mode','process_kind',

@@ -34,7 +34,7 @@ export function buildTracePhase7TemporalRequest({ state, contracts,
     inclusive_limit_timestamp: structuredClone(limit),
     active_scope: 'exact_active_g6',
     relevant_state_projection: projection ?? initialProjection({
-      executionId, sourceCandidates, contracts
+      executionId, sourceCandidates, contracts, state
     }),
     catalog_pins: pins,
     temporal_resolution_policy_ref: sealed({ policy_ref: versioned(
@@ -74,7 +74,7 @@ export function tracePhase7TemporalVisibleEnvelope(request) {
   };
 }
 
-function initialProjection({ executionId, sourceCandidates, contracts }) {
+function initialProjection({ executionId, sourceCandidates, contracts, state }) {
   return {
     calendar_profile_ref: sealed({ profile_ref: versioned(
       'calendar_profile', 'lower-dvina-trace-calendar', '1') }),
@@ -90,7 +90,8 @@ function initialProjection({ executionId, sourceCandidates, contracts }) {
         status: 'waiting'
       }
     },
-    npc_activity_factual_transitions: []
+    npc_activity_factual_transitions: [],
+    local_fire_runtime: structuredClone(state.local_fire_runtime ?? [])
   };
 }
 

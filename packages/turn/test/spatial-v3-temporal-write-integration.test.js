@@ -159,14 +159,14 @@ test('temporal fragment integration fails closed on duplicate writes or conflict
 
 test('local-fire temporal proposal contributes its mandatory physical locks', () => {
   const proposal = localFireProposal();
-  const localFire = proposal.local_fire_atomic_write_plan;
+  const localFire = proposal.local_fire_atomic_write_plans;
   const required = proposal.physical_keys;
   const temporal = seal({ combined_change_set: { proposals: [proposal] } });
   const integrated = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base, temporal_result: temporal
   });
   assert.equal(integrated.ok, true, JSON.stringify(integrated));
-  assert.deepEqual(integrated.input.local_fire_atomic_write_plan, localFire);
+  assert.deepEqual(integrated.input.local_fire_atomic_write_plans, localFire);
   assert.deepEqual(integrated.input.lock_context.physical_keys,
     [...base.lock_context.physical_keys, ...required].sort());
   assert.deepEqual(integrated.input.lock_context.owner_keys,
@@ -176,7 +176,7 @@ test('local-fire temporal proposal contributes its mandatory physical locks', ()
     base_write_plan_input: base,
     temporal_result: seal({ combined_change_set: { proposals: [{
       proposal_id: 'local-fire:fire-1:due',
-      local_fire_atomic_write_plan: localFire
+      local_fire_atomic_write_plans: localFire
     }] } })
   });
   assert.equal(missing.ok, false);
@@ -217,6 +217,6 @@ function localFireProposal() {
     'party_runtime.party_items:party-1:fuel-1'
   ];
   const proposalId = 'local-fire:fire-1:due';
-  return { proposal_id: proposalId, local_fire_atomic_write_plan: localFire,
+  return { proposal_id: proposalId, local_fire_atomic_write_plans: [localFire],
     owner_keys: ownerKeys, physical_keys: physicalKeys };
 }

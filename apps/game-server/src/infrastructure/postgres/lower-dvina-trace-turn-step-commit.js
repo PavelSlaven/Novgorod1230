@@ -69,14 +69,13 @@ export async function commitLowerDvinaTraceTurnStep({
       'Action-production atomic plan failed its sealed contract.',
       { status: 409 });
   }
-  let localFirePlan=null;
+  let localFirePlans=[];
   try{
-    if(writePlan.local_fire_atomic_write_plan!=null){
-      localFirePlan=createLocalFireAtomicWritePlan(
-        writePlan.local_fire_atomic_write_plan);
-      if(localFirePlan.party_id!==partyId
-          ||localFirePlan.change_set_id!==changeSetId)throw new Error();
-    }
+    if(!Array.isArray(writePlan.local_fire_atomic_write_plans??[]))throw new Error();
+    localFirePlans=(writePlan.local_fire_atomic_write_plans??[])
+      .map(createLocalFireAtomicWritePlan);
+    if(localFirePlans.some((plan)=>plan.party_id!==partyId
+      ||plan.change_set_id!==changeSetId))throw new Error();
   }catch{
     throw serverError('TRACE_TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
       'Local-fire atomic plan failed its contract.',{status:409});
@@ -98,9 +97,8 @@ export async function commitLowerDvinaTraceTurnStep({
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
   }
-  if (localFirePlan != null) {
-    applyLocalFireProjection({ next: base.snapshot, plan: localFirePlan });
-  }
+  for(const plan of localFirePlans)
+    applyLocalFireProjection({ next: base.snapshot, plan });
   const factual = {
     player_input: envelope.player_input,
     mode_resolution: envelope.mode_resolution,
@@ -134,7 +132,7 @@ export async function commitLowerDvinaTraceTurnStep({
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
     turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlan
+    localFirePlans
   });
   const committed = await committer.commit({
     plan: built.plan,

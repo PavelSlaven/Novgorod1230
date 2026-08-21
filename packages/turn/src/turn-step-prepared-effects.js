@@ -7,8 +7,7 @@ import {
 } from '@rus/time-events-history';
 import { turnFailure } from './errors.js';
 
-const LEDGER_SCHEMA = 'turn_step_prepared_effect_ledger_v1';
-const SLICE_SCHEMA = 'turn_step_prepared_effect_slice_v1';
+const LEDGER_SCHEMA='turn_step_prepared_effect_ledger_v1',SLICE_SCHEMA='turn_step_prepared_effect_slice_v1';
 const EFFECT_KINDS = new Set(['domain_command', 'semantic_activity']);
 const RAW_KEYS = new Set([
   'step_index', 'effect_kind', 'owner_ref', 'operation_ref', 'availability',
@@ -24,7 +23,6 @@ const LEDGER_KEYS = new Set([
   'version', 'schema', 'root_turn_id', 'committed_state_version', 'slices',
   'ledger_digest'
 ]);
-
 export function buildTurnStepPreparedChainContext({
   priorEffectCount,
   currentClock,
@@ -43,7 +41,6 @@ export function buildTurnStepPreparedChainContext({
     current_body_state: structuredClone(currentBodyState)
   });
 }
-
 export async function orchestrateTurnStepPreparedEffect({
   request,
   applied,
@@ -69,7 +66,12 @@ export async function orchestrateTurnStepPreparedEffect({
     consequence: structuredClone(candidate.consequence),
     effect_kind: candidate.effect_kind,
     owner_ref: candidate.owner_ref,
-    operation_ref: candidate.operation_ref
+    operation_ref: candidate.operation_ref,
+    root_turn_id: request?.root_turn_id,
+    step_index: request?.step_index,
+    working_projection: structuredClone(applied.working_projection),
+    local_fire_atomic_write_plans: structuredClone(applied
+      .local_fire_atomic_write_plans ?? [])
   };
   const timeUpdate = await timeOwner(deepFreeze(ownerInput));
   const bodyUpdate = await bodyOwner(deepFreeze({
@@ -100,6 +102,9 @@ export async function orchestrateTurnStepPreparedEffect({
       }));
   return deepFreeze({
     ...structuredClone(result),
+    local_fire_atomic_write_plans:[...structuredClone(result
+      .local_fire_atomic_write_plans??[]),...structuredClone(timeUpdate
+      .local_fire_atomic_write_plans??[])],
     working_projection: requireObject(
       workingProjection, 'prepared working projection'),
     prepared_effect: effect

@@ -53,7 +53,8 @@ export async function loadTracePhase2TemporalSourceProof(
       [partyId]
     ),
     partyPool.query(
-      `SELECT p.process_ref,p.context_ref,p.process_state,p.next_boundary_at,p.state_version
+      `SELECT p.process_ref,p.context_ref,p.rule_ref,p.policy_ref,
+              p.process_state,p.next_boundary_at,p.state_version
          FROM party_runtime.party_local_world_processes p
         WHERE p.party_id=$1 AND p.status='active'
         ORDER BY p.process_ref`, [partyId])
@@ -102,16 +103,14 @@ export async function loadTracePhase2TemporalSourceProof(
     }
     return candidate({ boundaryId:
       `local-fire:${row.process_ref}:state:${row.state_version}`,
-    boundaryKind: 'world_process', timestamp: row.next_boundary_at,
-    sourceRef: { entity_kind: 'local_world_process',
+    boundaryKind: 'propagation', timestamp: row.next_boundary_at,
+    sourceRef: { entity_kind: 'propagation_process',
       entity_id: row.process_ref }, primarySubjectRef: fuelRefs[0], partyId,
-    ruleRef: { entity_ref: { entity_kind: 'world_process_rule',
-      entity_id: 'local_exact_fire_due_v1' }, authoring_version: '1' },
-    policyRef: { entity_ref: { entity_kind: 'world_process_policy',
-      entity_id: row.context_ref }, authoring_version: '1' },
+    ruleRef: versionedRef(row.rule_ref),
+    policyRef: versionedRef(row.policy_ref),
     preconditionsDigest: computeSpatialV3CanonicalDigest({
       process_state: row.process_state, expected_state_version:
-        Number(row.state_version) }), resolutionClass: 'local_exact_fire_due',
+        Number(row.state_version) }), resolutionClass: 'propagation_background',
     idempotencyKey: `local-fire:${row.process_ref}:state:${row.state_version}`,
     subjectRefs: fuelRefs, causalParentRefs: [] });
   });
@@ -124,6 +123,7 @@ export async function loadTracePhase2TemporalSourceProof(
       inputPins.push(localFireItemPin(selected.rows[0]));
     }
     return Object.freeze({party_id:partyId,
+      rule_ref:versionedRef(row.rule_ref),policy_ref:versionedRef(row.policy_ref),
       process_state:structuredClone(row.process_state),input_pins:inputPins});
   }));
   const candidates = [...eventCandidates, ...scheduleCandidates,

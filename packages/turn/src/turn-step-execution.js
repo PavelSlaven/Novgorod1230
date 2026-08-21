@@ -77,12 +77,13 @@ export function collectTurnStepExecutionResult({
     actionProducedPlans.push(structuredClone(
       applied.action_production_atomic_write_plan));
   }
-  if (applied.local_fire_atomic_write_plan != null) {
-    if (!Array.isArray(localFirePlans) || localFirePlans.length !== 0) {
+  if (applied.local_fire_atomic_write_plans != null) {
+    if (!Array.isArray(localFirePlans)
+        || !Array.isArray(applied.local_fire_atomic_write_plans)) {
       throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
-        'A turn step can carry at most one local-fire atomic plan.');
+        'Local-fire atomic plans must be an ordered array.');
     }
-    localFirePlans.push(structuredClone(applied.local_fire_atomic_write_plan));
+    localFirePlans.push(...structuredClone(applied.local_fire_atomic_write_plans));
   }
   return {
     projection: structuredClone(applied.working_projection),

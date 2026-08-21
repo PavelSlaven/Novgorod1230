@@ -433,7 +433,7 @@ test('A1 partitioned fuel keeps item-owned fire classification', () => {
     state: { lifecycle_status: 'active', local_fire_fuel: {
       schema: 'rus.items.local_fire_fuel.v1',
       fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
-      mechanics: { mass_grams: 500 }
+      provenance: { source_refs: ['authored:item:kindling'] }
     } }
   }, ownership: sourceOwnership, entity_snapshot: {
     controller_ref: 'actor:mikula', ownership_snapshot: sourceOwnership } }];

@@ -185,10 +185,14 @@ whole fuel units, композирует production resolver и регистри
 тем же generic правилом без ID whitelist; A1 output получает fuel class только
 от causally consumed classified fuel source. Player capability берётся из
 player-safe projection; Phase 7 строит NPC capability из NPC-safe доступных
-ресурсов и публикует exact operation contract. Оба пути проходят один
+ресурсов и публикует exact operation contract. Process ref появляется только
+при safe evidence хотя бы одного bound fuel; causal ignition basis model не
+публикуется. Оба пути проходят один
 DB/item-owner admission. Start/add/due и qualitative
-whole-water affect, включая `no_effect`, входят в тот же combined P16; bound fuel mutation, stale
-pins, duplicate transition и late failure откатываются атомарно. Due
+whole-water affect, включая `no_effect`, входят в тот же combined P16; bound
+fuel mutation, nested A1 source mutation, stale pins, duplicate transition и
+late failure откатываются атомарно. Несколько ordered due, включая same-time
+разные fires, фиксируются одной transaction и отражаются в canonical snapshot. Due
 actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
 marker содержит только visible refs. Отдельных F1 authority/commit tables,
 evidence, digest или sealing нет; model выбирает только bounded qualitative

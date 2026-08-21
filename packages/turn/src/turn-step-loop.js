@@ -203,11 +203,11 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     if (execution.action_production_atomic_write_plan != null) {
       actionProducedPlans.push(execution.action_production_atomic_write_plan);
     }
-    if (execution.local_fire_atomic_write_plan != null) {
-      if (localFirePlans.length !== 0) throw turnFailure(
-        'TURN_STEP_LOCAL_FIRE_PLAN_DUPLICATE',
-        'Only one local-fire atomic plan is allowed per turn.');
-      localFirePlans.push(execution.local_fire_atomic_write_plan);
+    if (execution.local_fire_atomic_write_plans != null) {
+      if (!Array.isArray(execution.local_fire_atomic_write_plans)) throw turnFailure(
+        'TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
+        'Local-fire atomic plans must be an ordered array.');
+      localFirePlans.push(...execution.local_fire_atomic_write_plans);
     }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
@@ -293,7 +293,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plans: actionProducedPlans,
-    local_fire_atomic_write_plan: localFirePlans[0] ?? null,
+    local_fire_atomic_write_plans: localFirePlans,
     clarification
   });
 }

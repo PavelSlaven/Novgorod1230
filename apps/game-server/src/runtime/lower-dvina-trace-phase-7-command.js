@@ -183,9 +183,9 @@ export function createTracePhase7FireRestCommand({
           schedule_temporal: scheduleTemporal,
           schedule_execution: scheduleExecution
         },
-        ...(flow.actor_step.local_fire_atomic_write_plan == null ? {} : {
-          local_fire_atomic_write_plan:
-            flow.actor_step.local_fire_atomic_write_plan
+        ...(!flow.actor_step.local_fire_atomic_write_plans?.length ? {} : {
+          local_fire_atomic_write_plans:
+            flow.actor_step.local_fire_atomic_write_plans
         }),
         visible_seed: {},
         hidden_update: {},

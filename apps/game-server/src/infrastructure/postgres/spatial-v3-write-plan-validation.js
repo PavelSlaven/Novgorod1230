@@ -208,16 +208,16 @@ export function validateSpatialV3CombinedWritePlan(plan) {
 function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   const actions = plan.action_production_atomic_write_plans ?? [];
-  const localFire=plan.local_fire_atomic_write_plan;
-  if (ordinary == null && actions.length === 0 && localFire==null) return writeSet;
-  if (actions.length === 0 && localFire==null) return { write_set: writeSet,
+  const localFire=plan.local_fire_atomic_write_plans??[];
+  if (ordinary == null && actions.length === 0 && localFire.length===0) return writeSet;
+  if (actions.length === 0 && localFire.length===0) return { write_set: writeSet,
     ordinary_materialization_atomic_write_plan: ordinary };
   return { write_set: writeSet,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
     ...(actions.length===0?{}:{action_production_atomic_write_plans:actions}),
-    ...(localFire==null?{}:{local_fire_atomic_write_plan:localFire}) };
+    ...(localFire.length===0?{}:{local_fire_atomic_write_plans:localFire}) };
 }
 
 function validOrdinaryMaterializationExtension(plan) {

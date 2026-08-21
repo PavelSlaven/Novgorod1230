@@ -4,13 +4,15 @@ import { resolveInventoryMechanicsProfile } from
 import { runtimeItemIsTerminal } from './runtime-item-visibility.js';
 
 export function admitLocalFireIgnitionBasis({ item, placement, ownership,
+  container = null,
   actor_ref: actorRef, scope_ref: scopeRef } = {}) {
   const pass = plain(item) && plain(placement) && plain(ownership)
     && placement.item_id === item.item_id && ownership.item_id === item.item_id
     && item.state?.local_fire_ignition_basis?.schema
       === 'rus.items.local_fire_ignition_basis.v1'
     && item.state?.lifecycle_status === 'active'
-    && accessible(placement, ownership, actorRef, scopeRef);
+    && itemPlacementIsPhysicallyAccessible({ placement, container,
+      actor_ref: actorRef, scope_ref: scopeRef });
   return deepFreeze({ pass, errors: pass ? [] : [{
     code: 'ITEM_LOCAL_FIRE_IGNITION_BASIS_NOT_ADMITTED'
   }] });
@@ -33,10 +35,11 @@ export function deriveLocalFireFuelClassification({ source_items: sourceItems,
       || mechanics.profile.quantity.unit !== 'item') return null;
   return deepFreeze({ schema: 'rus.items.local_fire_fuel.v1',
     fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
-    mechanics: structuredClone(mechanics.profile) });
+    provenance: { source_refs: [...sourceRefs] } });
 }
 
 export function admitLocalFireInput({ item, placement, ownership,
+  container = null,
   bound_process_ref: boundProcessRef = null, actor_ref: actorRef,
   scope_ref: scopeRef, fuel_mass_grams_min: minimum,
   fuel_mass_grams_max: maximum, process_ref: processRef = null } = {}) {
@@ -47,32 +50,29 @@ export function admitLocalFireInput({ item, placement, ownership,
       || item.state?.lifecycle_status !== 'active'
       || !Number.isSafeInteger(item.state_version) || item.state_version < 0
       || (due ? boundProcessRef !== processRef : boundProcessRef !== null)
-      || (!due && !accessible(placement, ownership, actorRef, scopeRef))) {
+      || (!due && !itemPlacementIsPhysicallyAccessible({ placement,container,
+        actor_ref: actorRef, scope_ref: scopeRef }))) {
     return denied();
   }
   const classification = item.state?.local_fire_fuel;
+  const mechanics = currentMechanics(item);
   if (classification?.schema === 'rus.items.local_fire_fuel.v1'
       && classification.fuel_class === 'ordinary_solid_fuel_unit'
       && classification.whole_unit === true && item.quantity === 1
-      && Number.isSafeInteger(classification.mechanics?.mass_grams)
-      && classification.mechanics.mass_grams >= minimum
-      && classification.mechanics.mass_grams <= maximum) {
+      && mechanics.pass && mechanics.profile.container === null
+      && mechanics.profile.quantity?.value === 1
+      && mechanics.profile.quantity.unit === 'item'
+      && Number.isSafeInteger(mechanics.profile.mass_grams)
+      && mechanics.profile.mass_grams >= minimum
+      && mechanics.profile.mass_grams <= maximum) {
     return admitted('fuel_unit', item, placement, ownership, {
       fuel_ref: item.item_id, fuel_class: classification.fuel_class,
       state_version: item.state_version, lifecycle_state: 'active',
-      mass_grams: classification.mechanics.mass_grams, quantity: 1,
+      mass_grams: mechanics.profile.mass_grams, quantity: 1,
       bound_process_ref: boundProcessRef
     });
   }
   if (due) return denied();
-  const mechanics = resolveInventoryMechanicsProfile({
-    instance: { template_id: item.template_id,
-      ...(item.template_id == null ? {
-        runtime_instance_mechanics_snapshot:
-          item.state?.runtime_instance_mechanics_snapshot
-      } : {}) },
-    profiles: []
-  });
   if (item.state?.ordinary_metadata?.semantic_type !== 'water_portion'
       || item.quantity !== 1 || !mechanics.pass
       || mechanics.profile.quantity?.value !== 1) return denied();
@@ -80,6 +80,19 @@ export function admitLocalFireInput({ item, placement, ownership,
     item_ref: item.item_id, state_version: item.state_version,
     mass_grams: mechanics.profile.mass_grams, quantity: 1
   });
+}
+
+function currentMechanics(item) {
+  if (item.template_id == null) return resolveInventoryMechanicsProfile({
+    instance: { template_id: null, runtime_instance_mechanics_snapshot:
+      item.state?.runtime_instance_mechanics_snapshot }, profiles: []
+  });
+  const profile = item.state?.inventory_profile_snapshot;
+  const pass = plain(profile) && profile.item_template_ref === item.template_id
+    && Number.isSafeInteger(profile.mass_grams) && profile.mass_grams > 0;
+  return pass ? { pass: true, profile: { ...structuredClone(profile),
+    quantity: { value: item.quantity, unit: 'item' }, container: null } }
+    : { pass: false, profile: null };
 }
 
 export function planLocalFireWholeItemRetirement({ admission,
@@ -111,19 +124,23 @@ function validFuelMarker(value) {
   return value?.schema === 'rus.items.local_fire_fuel.v1'
     && value.fuel_class === 'ordinary_solid_fuel_unit'
     && value.whole_unit === true
-    && Number.isSafeInteger(value.mechanics?.mass_grams)
-    && value.mechanics.mass_grams > 0;
+    && Array.isArray(value.provenance?.source_refs)
+    && value.provenance.source_refs.length > 0;
 }
-function accessible(placement, ownership, actorRef, scopeRef) {
+export function itemPlacementIsPhysicallyAccessible({ placement,container=null,
+  actor_ref: actorRef, scope_ref: scopeRef } = {}) {
+  if (!plain(placement) || !text(actorRef) || !text(scopeRef)) return false;
   const held = actorField(placement, 'holder') === actorRef;
   const local = placement.anchor_id === scopeRef
     && placement.container_id == null && placement.holder_npc_id == null
     && placement.holder_character_id == null
     && placement.attached_item_id == null;
-  const controlled = actorField(ownership, 'controller') === actorRef;
-  const owned = actorField(ownership, 'owner') === actorRef
-    || ownership.owner_party === true;
-  return (held || local) && controlled && owned;
+  if(held||local)return true;
+  return placement.container_id===container?.container_id
+    &&container.closure_state==='open'&&container.parent_container_id==null
+    &&(actorField(container,'holder')===actorRef
+      ||container.anchor_id===scopeRef&&container.holder_npc_id==null
+        &&container.holder_character_id==null);
 }
 function actorField(value, prefix) {
   const character = value?.[`${prefix}_character_id`];

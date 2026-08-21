@@ -2,21 +2,22 @@ import { createLocalFireAtomicWritePlan, localFirePhysicalKeys } from
   './local-fire-atomic-write-plan.js';
 
 export function validLocalFireExtension(plan) {
-  const localFire=plan.local_fire_atomic_write_plan;
-  if(localFire==null)return true;
+  const localFire=plan.local_fire_atomic_write_plans??[];
+  if(!Array.isArray(localFire))return false;
+  if(localFire.length===0)return true;
   try{
-    const value=createLocalFireAtomicWritePlan(localFire);
+    const values=localFire.map(createLocalFireAtomicWritePlan);
     const party=plan.updates?.find((write)=>write.target_table==='parties'
       &&write.id===plan.party_id);
-    return value.party_id===plan.party_id
+    return values.every((value)=>value.party_id===plan.party_id
       &&value.change_set_id===plan.change_set_id
       &&party?.record?.party_id===plan.party_id
       &&plan.expected_state_versions.some((version)=>
         version.target_table==='parties'&&version.id===plan.party_id
           &&version.state_version===value.base_party_state_version)
       &&localFirePhysicalKeys(value).every((key)=>plan.physical_keys.includes(key))
-      &&outerCauseMatches(plan,value)
-      &&!hasGenericInputMutationConflict(plan,value);
+      &&outerCauseMatches(plan,value))
+      &&!hasGenericInputMutationConflict(plan,values);
   }catch{return false;}
 }
 
@@ -24,7 +25,8 @@ function outerCauseMatches(plan,value){
   const proposal=value.transition_proposal,cause=proposal.cause;
   if(proposal.action==='due_boundary'){
     return cause.kind==='temporal_boundary'
-      &&cause.boundary_id===plan.idempotency_key
+      &&cause.boundary_id===`local-fire:${proposal.process_before?.process_ref}`
+        +`:state:${proposal.process_before?.state_version}`
       &&cause.expected_process_state_version===proposal.process_before?.state_version
       &&JSON.stringify(cause.due_at)===JSON.stringify(proposal.at_timestamp)
       &&JSON.stringify(cause.due_at)===JSON.stringify(
@@ -65,8 +67,9 @@ function traceOperationMatches(operation,value){
       proposal.action==='start'?[value.profile_pin.ignition_basis_ref]:[]);
 }
 
-function hasGenericInputMutationConflict(plan,value){
-  const protectedRefs=new Set(value.input_pins.map(({item_id:id})=>id));
+function hasGenericInputMutationConflict(plan,values){
+  const protectedRefs=new Set(values.flatMap((value)=>
+    value.input_pins.map(({item_id:id})=>id)));
   return genericItemMutationRefs(plan).some((ref)=>protectedRefs.has(ref));
 }
 function genericItemMutationRefs(plan){return[...(plan.inserts??[]),
@@ -74,4 +77,7 @@ function genericItemMutationRefs(plan){return[...(plan.inserts??[]),
     if(write.target_table==='party_items'
         ||write.target_table==='party_item_placements')return[write.record?.item_id??write.id];
     if(write.target_table==='party_ownership'&&write.record?.item_id!=null)
-      return[write.record.item_id];return[];});}
+      return[write.record.item_id];return[];}).concat(
+        (plan.action_production_atomic_write_plans??[]).flatMap((action)=>
+          (action.source_updates??[]).map(({item_id:id})=>id))
+      );}

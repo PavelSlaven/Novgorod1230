@@ -4,13 +4,13 @@ import { applyLocalFireAtomicWritePlanInTransaction } from
 export async function assertLocalFireFuelMutationBound(client, plan) {
   const itemIds = [...new Set([
     ...genericItemMutationRefs(plan),
-    ...(plan.local_fire_atomic_write_plan?.input_pins ?? [])
+    ...(plan.local_fire_atomic_write_plans ?? []).flatMap(({input_pins:pins})=>pins)
       .map(({item_id:id})=>id)
   ])];
   if (itemIds.length === 0) return;
   const generic = new Set(genericItemMutationRefs(plan));
-  const added = plan.local_fire_atomic_write_plan?.transition_proposal
-    ?.added_fuel_refs ?? [];
+  const added = (plan.local_fire_atomic_write_plans??[]).flatMap((value)=>
+    value.transition_proposal?.added_fuel_refs??[]);
   if (added.some((ref) => generic.has(ref))) conflict();
   const result = await client.query(
     `SELECT fuel_item_id FROM party_runtime.party_local_world_process_fuel_bindings
@@ -31,7 +31,8 @@ function genericItemMutationRefs(plan) {
     if (write.target_table === 'party_ownership'
         && write.record?.item_id != null) return [write.record.item_id];
     return [];
-  });
+  }).concat((plan.action_production_atomic_write_plans??[]).flatMap((action)=>
+    (action.source_updates??[]).map(({item_id:id})=>id)));
 }
 
 function conflict() {
@@ -41,13 +42,13 @@ function conflict() {
 }
 
 export async function applyLocalFireP16Extension(client, plan) {
-  if (plan.local_fire_atomic_write_plan == null) return;
+  if (!plan.local_fire_atomic_write_plans?.length) return;
   try {
-    await applyLocalFireAtomicWritePlanInTransaction({ client,
-      input: plan.local_fire_atomic_write_plan,
-      partyStateVersionAfter:
-        plan.local_fire_atomic_write_plan.base_party_state_version + 1,
-      p16ChangeSetId: plan.change_set_id });
+    for (const input of plan.local_fire_atomic_write_plans) {
+      await applyLocalFireAtomicWritePlanInTransaction({ client, input,
+        partyStateVersionAfter: input.base_party_state_version + 1,
+        p16ChangeSetId: plan.change_set_id });
+    }
   } catch (cause) {
     if (['LOCAL_FIRE_INPUT_STALE', 'LOCAL_FIRE_PROCESS_STALE',
       'LOCAL_FIRE_IGNITION_BASIS_STALE']

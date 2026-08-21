@@ -17,7 +17,7 @@ import { localFirePhysicalKeys } from './local-fire-atomic-write-plan.js';
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = [], localFirePlan = null
+  actionProductionPlans = [], localFirePlans = []
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
@@ -84,11 +84,11 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
       ...actionPlans.flatMap(actionProducedPhysicalKeys),
-      ...localFirePhysicalKeys(localFirePlan)]
+      ...localFirePlans.flatMap(localFirePhysicalKeys)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     action_production_atomic_write_plans: actionPlans,
-    local_fire_atomic_write_plan: localFirePlan,
+    local_fire_atomic_write_plans: localFirePlans,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

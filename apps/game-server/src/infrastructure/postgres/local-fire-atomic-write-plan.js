@@ -51,7 +51,9 @@ export function localFirePhysicalKeys(plan) {
     ...value.input_pins.flatMap((pin) => [
       `party_runtime.party_items:${party}:${pin.item_id}`,
       `party_runtime.party_item_placements:${party}:${pin.item_id}`,
-      `party_runtime.party_ownership:${party}:${pin.ownership.ownership_id}`
+      `party_runtime.party_ownership:${party}:${pin.ownership.ownership_id}`,
+      ...(pin.container==null?[]:[
+        `party_runtime.party_containers:${party}:${pin.container.container_id}`])
     ]), ...(value.ignition_basis_pin == null ? [] : [
       `party_runtime.party_items:${party}:${value.ignition_basis_pin.item_id}`,
       `party_runtime.party_item_placements:${party}:${value.ignition_basis_pin.item_id}`,
@@ -132,6 +134,7 @@ function admitInputs(input, profile) {
   const due = input.action === 'due_boundary';
   const admissions = input.input_pins.map((pin) => admitLocalFireInput({
     item: pin.item, placement: pin.placement, ownership: pin.ownership,
+    container: pin.container,
     bound_process_ref: pin.bound_process_ref,
     actor_ref: due ? null : input.actor_ref, scope_ref: profile.scope_ref,
     fuel_mass_grams_min: profile.policy.fuel_unit_mass_grams_min,
@@ -166,6 +169,7 @@ function validateIgnition(pin, action, actorRef, profile) {
   if (pin?.item_id !== profile.ignition_basis_ref
       || !admitLocalFireIgnitionBasis({ item: pin.item,
         placement: pin.placement, ownership: pin.ownership,
+        container: pin.container,
         actor_ref: actorRef, scope_ref: profile.scope_ref }).pass) {
     fail('LOCAL_FIRE_IGNITION_BASIS_INVALID');
   }

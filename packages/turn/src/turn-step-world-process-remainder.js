@@ -13,6 +13,10 @@ export function resolveWorldProcessRemainder({ operation, execution,
     actor: structuredClone(projected.actor),
     working_projection: structuredClone(execution.working_projection),
     committed_state: structuredClone(committedState),
-    prepared_chain_context: structuredClone(execution.prepared_chain_context)
+    prepared_chain_context: structuredClone(execution.prepared_chain_context),
+    prepared_ordinary_materialization_atomic_write_plan: structuredClone(
+      execution.prepared_ordinary_materialization_atomic_write_plan),
+    prepared_action_production_atomic_write_plans: structuredClone(
+      execution.prepared_action_production_atomic_write_plans)
   }));
 }

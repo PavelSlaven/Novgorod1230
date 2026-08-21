@@ -14,7 +14,16 @@ const fuel = (itemId = 'unlisted-fuel') => ({
     state: { lifecycle_status: 'active', local_fire_fuel: {
       schema: 'rus.items.local_fire_fuel.v1',
       fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
-      mechanics: { mass_grams: 450 }
+      provenance: { source_refs: ['source:wood'] }
+    }, runtime_instance_mechanics_snapshot: {
+      schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
+      provenance: { source_kind: 'ordinary_direct_action_result',
+        root_turn_id: 'turn:fuel', step_index: 1,
+        operation_ref: 'operation:fuel', origin_kind: 'direct_partition',
+        source_refs: ['source:wood'] },
+      mechanics: { mass_grams: 450, external_hand_cost: 1,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null }
     } }
   },
   placement: { item_id: itemId, anchor_id: null, container_id: null,
@@ -49,7 +58,7 @@ test('unlisted whole fuel uses item-owned class, access and mass bounds', () => 
     fuel_mass_grams_max: 1000 }).pass, true);
 });
 
-test('ignition basis uses the same item-owned physical access boundary', () => {
+test('ignition basis uses the shared physical access boundary', () => {
   const value = fuel('ignition');
   delete value.item.state.local_fire_fuel;
   value.item.state.local_fire_ignition_basis = {
@@ -57,7 +66,7 @@ test('ignition basis uses the same item-owned physical access boundary', () => {
   };
   assert.equal(admitLocalFireIgnitionBasis({ ...value, actor_ref: 'actor',
     scope_ref: 'shore' }).pass, true);
-  value.ownership.controller_character_id = 'other';
+  value.placement.holder_character_id = 'other';
   assert.equal(admitLocalFireIgnitionBasis({ ...value, actor_ref: 'actor',
     scope_ref: 'shore' }).pass, false);
 });
@@ -65,7 +74,13 @@ test('ignition basis uses the same item-owned physical access boundary', () => {
 test('fuel admission rejects wrong class, bounds, access and active binding', () => {
   for (const mutate of [
     (value) => { value.item.state.local_fire_fuel.fuel_class = 'wood'; },
-    (value) => { value.item.state.local_fire_fuel.mechanics.mass_grams = 99; },
+    (value) => { value.item.state.runtime_instance_mechanics_snapshot
+      .mechanics.mass_grams = 99; },
+    (value) => { value.item.state.runtime_instance_mechanics_snapshot
+      .mechanics.mass_grams = 1001; },
+    (value) => { value.item.quantity = 2; },
+    (value) => { value.item.state.runtime_instance_mechanics_snapshot
+      .mechanics.quantity.value = 2; },
     (value) => { value.placement.holder_character_id = 'other'; },
     (value) => { value.bound_process_ref = 'fire:other'; }
   ]) {
@@ -74,6 +89,29 @@ test('fuel admission rejects wrong class, bounds, access and active binding', ()
       scope_ref: 'shore', fuel_mass_grams_min: 100,
       fuel_mass_grams_max: 1000 }).pass, false);
   }
+  const labelled=fuel('labelled');
+  labelled.item.display_name='прекрасное топливо';
+  delete labelled.item.state.local_fire_fuel;
+  assert.equal(admitLocalFireInput({...labelled,actor_ref:'actor',
+    scope_ref:'shore',fuel_mass_grams_min:100,
+    fuel_mass_grams_max:1000}).pass,false);
+});
+
+test('current mechanics override historical classification and ownership', () => {
+  const stale = fuel('stale');
+  stale.item.state.local_fire_fuel.historical_mass_grams = 300;
+  stale.item.state.runtime_instance_mechanics_snapshot.mechanics.mass_grams = 75;
+  assert.equal(admitLocalFireInput({ ...stale, actor_ref: 'actor',
+    scope_ref: 'shore', fuel_mass_grams_min: 100,
+    fuel_mass_grams_max: 1000 }).pass, false);
+
+  const foreign = fuel('foreign');
+  foreign.ownership.owner_character_id = 'other';
+  foreign.ownership.controller_character_id = 'other';
+  assert.equal(admitLocalFireInput({ ...foreign, actor_ref: 'actor',
+    scope_ref: 'shore', fuel_mass_grams_min: 100,
+    fuel_mass_grams_max: 1000 }).pass, true);
+  assert.equal(foreign.ownership.owner_character_id, 'other');
 });
 
 test('committed water portion is typed affect input and retirement is owner-owned', () => {
@@ -106,6 +144,25 @@ test('committed water portion is typed affect input and retirement is owner-owne
   assert.equal(transition.after_item.condition_state, 'retired');
   assert.equal(transition.after_item.state.lifecycle_status, 'retired');
   assert.equal(transition.after_item.state_version, 4);
+});
+
+test('open local or actor-held parent container preserves physical placement',()=>{
+  const value=fuel('contained');
+  value.placement.holder_character_id=null;
+  value.placement.physical_position=null;
+  value.placement.container_id='bucket';
+  value.container={container_id:'bucket',anchor_id:'shore',
+    parent_container_id:null,holder_npc_id:null,holder_character_id:null,
+    physical_position:null,closure_state:'open',state_version:2};
+  assert.equal(admitLocalFireInput({...value,actor_ref:'actor',scope_ref:'shore',
+    fuel_mass_grams_min:100,fuel_mass_grams_max:1000}).pass,true);
+  value.container.closure_state='closed';
+  assert.equal(admitLocalFireInput({...value,actor_ref:'actor',scope_ref:'shore',
+    fuel_mass_grams_min:100,fuel_mass_grams_max:1000}).pass,false);
+  value.container.closure_state='open';value.container.anchor_id=null;
+  value.container.holder_character_id='other';
+  assert.equal(admitLocalFireInput({...value,actor_ref:'actor',scope_ref:'shore',
+    fuel_mass_grams_min:100,fuel_mass_grams_max:1000}).pass,false);
 });
 
 test('due boundary admits only fuel already bound to the exact process', () => {

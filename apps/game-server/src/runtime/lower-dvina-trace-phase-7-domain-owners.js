@@ -50,7 +50,7 @@ async function executeWorldProcess({ execution, state, temporal,
   }, temporal, profile: null, movement: null, property: null });
   return Object.freeze({ ...startedResult,
     summary: `${startedResult.summary}; ${resolved.summary}`,
-    local_fire_atomic_write_plan: resolved.local_fire_atomic_write_plan
+    local_fire_atomic_write_plans: resolved.local_fire_atomic_write_plans
   });
 }
 function ownerCapabilities(contracts, worldProcessContract) {

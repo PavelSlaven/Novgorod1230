@@ -153,7 +153,12 @@ async function prepareEffectTime(input, committedState, temporalAdvance) {
       input.prepared_chain_context.current_clock),
     exact_elapsed: exactElapsed,
     relevant_state: structuredClone(committedState),
-    consequence: structuredClone(input.consequence)
+    consequence: structuredClone(input.consequence),
+    working_projection: structuredClone(input.working_projection),
+    local_fire_atomic_write_plans: structuredClone(
+      input.local_fire_atomic_write_plans ?? []),
+    root_turn_id: input.root_turn_id,
+    step_index: input.step_index
   });
   return Object.freeze({
     version: 2,

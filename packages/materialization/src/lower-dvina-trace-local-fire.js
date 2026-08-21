@@ -40,7 +40,8 @@ function item({ descriptor, instanceId, anchorId, actorRef, fuel }) {
         authority: 'authored', mutable: true },
       ...(fuel ? { local_fire_fuel: {
         schema: 'rus.items.local_fire_fuel.v1',
-        fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true, mechanics
+        fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
+        provenance: { source_refs: [descriptor.authored_ref] }
       } } : { local_fire_ignition_basis: {
         schema: 'rus.items.local_fire_ignition_basis.v1',
         ignition_kind: 'authored_manual', mechanics } }) } };

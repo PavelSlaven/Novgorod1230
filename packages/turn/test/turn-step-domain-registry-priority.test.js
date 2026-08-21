@@ -83,7 +83,7 @@ test('unbound world-process request reaches only the active exact owner seam',
         assert.equal(request.schema,'turn_step_world_process_request_v1');
         return {working_projection:request.working_projection,
           write_fragments:[{target:'party_hidden_state',value:{fire:true}}],
-          local_fire_atomic_write_plan:{sealed:true},
+          local_fire_atomic_write_plans:[{sealed:true}],
           player_response_boundary:true};
       },
       turnStepModel: async (request) => turnStepPlan(request,{
@@ -118,7 +118,7 @@ test('world-process affect with no target refs reaches resolver and carries plan
         return {working_projection:request.working_projection,
           write_fragments:[{target:'party_hidden_state',
             value:{local_fire_fuel_added:true}}],
-          local_fire_atomic_write_plan:processPlan,
+          local_fire_atomic_write_plans:[processPlan],
           player_response_boundary:true};
       },
       turnStepModel: async (request) => turnStepPlan(request,{
@@ -134,7 +134,7 @@ test('world-process affect with no target refs reaches resolver and carries plan
     assert.equal(result.status,'partial');
     assert.deepEqual(resolvedOperation?.target_refs,[]);
     assert.deepEqual(result.checkpoint.stages.persistence_plan
-      .local_fire_atomic_write_plan,processPlan);
+      .local_fire_atomic_write_plans,[processPlan]);
   });
 
 test('ordinary discovery resolver runs only after existing discovery owners',

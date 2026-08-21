@@ -61,7 +61,7 @@ export function resolveTracePhase7RestTemporalAdvance({
       visible_package_candidate: tracePhase7TemporalVisibleEnvelope(request),
       validation_report: { ok: true }
     },
-    stop_after_source_batch: true
+    stop_after_source_batch: false
   });
   const result = advanced.result;
   const projection = advanced.state_projection;

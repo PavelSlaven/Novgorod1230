@@ -46,7 +46,9 @@ time advance не создаётся. Детерминированная физ�
 Lower Dvina revision 22 F1 регистрирует exact `next_boundary_at` candidate в
 существующем temporal-resolution owner. Earliest/same-time ordering остаётся
 общим; boundary resolver передаёт уже выбранный exact timestamp pure F1 owner
-и не создаёт scenario scheduler, clock или второй transaction.
+и не создаёт scenario scheduler, clock или второй transaction. Active fire
+использует существующие `propagation`/`propagation_background`; replacement
+candidate продолжает active process, а completed process его не создаёт.
 
 ## Тесты
 

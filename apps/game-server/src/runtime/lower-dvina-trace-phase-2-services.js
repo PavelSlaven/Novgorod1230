@@ -78,6 +78,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
+    temporalAdvanceOwner,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
@@ -107,7 +108,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
           fallback: createTracePhase5TemporalAdvance({
             phase4Advance: createTracePhase4TemporalAdvance({
               phase3Advance: createTracePhase3TemporalAdvance({
-                phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+                phase2Advance: createTracePhase2TemporalAdvance({ contracts,
+                  temporalAdvanceOwner })
               })
             })
           })

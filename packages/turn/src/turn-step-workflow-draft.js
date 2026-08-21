@@ -35,8 +35,8 @@ export function turnStepDraftActionProductionAtomicWritePlans(draft) {
   return draft?.loop_result?.action_production_atomic_write_plans ?? [];
 }
 
-export function turnStepDraftLocalFireAtomicWritePlan(draft) {
-  return draft?.loop_result?.local_fire_atomic_write_plan ?? null;
+export function turnStepDraftLocalFireAtomicWritePlans(draft) {
+  return draft?.loop_result?.local_fire_atomic_write_plans ?? [];
 }
 
 export function turnStepDraftPreparedDomainSlice(draft) {

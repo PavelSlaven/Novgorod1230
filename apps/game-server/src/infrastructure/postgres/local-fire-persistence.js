@@ -1,11 +1,17 @@
 import { createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
+import { isDeepStrictEqual } from 'node:util';
 import { localFireItemPin, localFireItemQuery } from
   './local-fire-persistence-pins.js';
+import { actionProducedPreparedActionRows,
+  actionProducedPreparedOrdinaryRows } from
+  './action-produced-prepared-ordinary.js';
 
 export async function loadLocalFireCommittedContext({ client, partyId,
   actorRef, profilePin, inputItemIds = [], processRef = null,
-  ignitionBasisRef = null } = {}) {
+  ignitionBasisRef = null, rootTurnId = null, stepIndex = null,
+  changeSetId = null, preparedOrdinaryPlan = null,
+  preparedActionPlans = [] } = {}) {
   if (!client?.query || ![partyId, actorRef].every(text)
       || !plain(profilePin) || !Array.isArray(inputItemIds)
       || new Set(inputItemIds).size !== inputItemIds.length) fail('LOCAL_FIRE_LOAD_INVALID');
@@ -22,7 +28,20 @@ export async function loadLocalFireCommittedContext({ client, partyId,
     processState = process.rows[0].process_state;
   }
   const inputPins = [];
+  const preparedInput = { party_id:partyId,actor_ref:actorRef,
+    root_turn_id:rootTurnId,step_index:stepIndex,
+    expected_party_state_version:Number(party.rows[0].state_version),
+    change_set_id:changeSetId,prepared_ordinary_plan:preparedOrdinaryPlan,
+    prepared_action_plans:preparedActionPlans };
+  const preparedActions=actionProducedPreparedActionRows(preparedInput);
+  if(inputItemIds.some((id)=>preparedActions.retired.has(id)))
+    fail('LOCAL_FIRE_INPUT_STALE');
+  const preparedOrdinary=actionProducedPreparedOrdinaryRows(preparedInput,
+    inputItemIds);
   for (const itemId of inputItemIds) {
+    const prepared=preparedActions.rows.get(itemId)
+      ??preparedOrdinary.get(itemId);
+    if(prepared!=null){inputPins.push(localFireItemPin(prepared.row));continue;}
     const result = await client.query(localFireItemQuery(false), [partyId,itemId]);
     if (result.rows.length !== 1) fail('LOCAL_FIRE_INPUT_STALE');
     inputPins.push(localFireItemPin(result.rows[0]));
@@ -68,8 +87,8 @@ async function lockPin(client, partyId, expected) {
   const result = await client.query(localFireItemQuery(true),
     [partyId,expected.item_id]);
   if (result.rows.length !== 1
-      || JSON.stringify(localFireItemPin(result.rows[0]))
-        !== JSON.stringify(expected)) fail('LOCAL_FIRE_INPUT_STALE');
+      || !isDeepStrictEqual(localFireItemPin(result.rows[0]),expected))
+    fail('LOCAL_FIRE_INPUT_STALE');
 }
 
 async function lockProcess(client, plan) {
@@ -80,7 +99,7 @@ async function lockProcess(client, plan) {
      WHERE party_id=$1 AND process_ref=$2 FOR UPDATE`,[plan.party_id,ref]);
   if (before===null ? result.rows.length!==0
     : result.rows.length!==1
-      || JSON.stringify(result.rows[0].process_state)!==JSON.stringify(before)) {
+      || !isDeepStrictEqual(result.rows[0].process_state,before)) {
     fail(before===null?'LOCAL_FIRE_PROCESS_COLLISION':'LOCAL_FIRE_PROCESS_STALE');
   }
 }
@@ -89,15 +108,24 @@ async function insertProcess(client,plan) {
   const state=plan.transition_proposal.process_after;
   await client.query(
     `INSERT INTO party_runtime.party_local_world_processes
-      (party_id,process_ref,context_ref,process_mode,process_kind,scope_ref,
+      (party_id,process_ref,context_ref,rule_ref,policy_ref,
+       process_mode,process_kind,scope_ref,
        causal_basis_ref,status,started_at,next_boundary_at,process_state,
        state_version,last_change_set_id)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10::jsonb,$11::jsonb,$12,$13)`,
+     VALUES ($1,$2,$3,$4::jsonb,$5::jsonb,$6,$7,$8,$9,$10,$11::jsonb,
+       $12::jsonb,$13::jsonb,$14,$15)`,
   [plan.party_id,state.process_ref,plan.profile_pin.context_ref,
+    JSON.stringify(localFireRuleRef()),JSON.stringify(localFirePolicyRef(plan)),
     state.process_mode,state.process_kind,state.scope_ref,state.causal_basis_ref,
     state.status,JSON.stringify(state.started_at),JSON.stringify(state.next_boundary_at),
     JSON.stringify(state),state.state_version,plan.change_set_id]);
 }
+
+function localFireRuleRef(){return{entity_ref:{entity_kind:'action_contract',
+  entity_id:'local_exact_fire_due_v1'},authoring_version:'1'};}
+function localFirePolicyRef(plan){return{entity_ref:{
+  entity_kind:'activity_contract',entity_id:plan.profile_pin.policy.policy_ref},
+  authoring_version:String(plan.profile_pin.policy.version)};}
 
 async function updateProcess(client,plan) {
   const before=plan.transition_proposal.process_before;

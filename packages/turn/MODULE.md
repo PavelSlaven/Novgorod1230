@@ -243,9 +243,11 @@ whole-fuel addition детерминированы и не вызывают mode
 использует bounded `world_process_step_request_v1` только для qualitative
 `no_effect|continue|complete`; request не даёт model числовых mechanics и не
 создаёт второй planner. Любой water outcome сохраняет whole-water consumption
-атомарно с process transition. Due boundary приходит через общий temporal integration
-без fake player turn и без actor requirement. Все F1 plans входят в
-существующий combined P16.
+атомарно с process transition. Due boundary приходит через общий temporal
+integration без fake player turn и без actor requirement. Ordered plural F1
+plans сохраняют несколько due одного process и same-time due разных processes
+в одном существующем combined P16. Prepared ordinary/A1 plans передаются F1
+как уже validated owner output, а не как model projection.
 
 ## Тесты
 

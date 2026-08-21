@@ -33,7 +33,7 @@ export function actionProducedPreparedOrdinaryRows(input, requested) {
       fail('ACTION_PRODUCED_ITEM_ACCESS_DENIED');
     }
     byId.set(item.item_id, {
-      row: preparedRow(item, input),
+      row: preparedRow(item, input,plan),
       preparedOrdinary: {
         schema: 'action_production_prepared_ordinary_pin_v1',
         request_identity: plan.request_identity,
@@ -146,7 +146,9 @@ function afterResourceRow(row, transition) {
     state_version: transition.next_state_version };
 }
 
-function preparedRow(item, input) {
+function preparedRow(item, input,plan) {
+  const placement=plan.mechanics.inventory_input.container_placements.find(
+    ({container_id:id})=>id===item.container_id);
   return {
     item_id: item.item_id, run_id: null, template_id: null,
     profile_id: null, category_id: null, quantity: 1,
@@ -159,6 +161,13 @@ function preparedRow(item, input) {
     attached_item_id: null, ownership_id: `ownership:${item.item_id}`,
     owner_npc_id: null, owner_character_id: input.actor_ref,
     owner_party: false, controller_npc_id: null,
-    controller_character_id: input.actor_ref, claim_state: 'owned'
+    controller_character_id: input.actor_ref, claim_state: 'owned',
+    container_anchor_id:placement?.anchor_id??null,
+    container_parent_container_id:placement?.parent_container_id??null,
+    container_holder_npc_id:placement?.holder_npc_id??null,
+    container_holder_character_id:placement?.holder_character_id??null,
+    container_physical_position:placement?.physical_position??null,
+    container_closure_state:'open',
+    container_state_version:plan.container_pin.state_version+1
   };
 }

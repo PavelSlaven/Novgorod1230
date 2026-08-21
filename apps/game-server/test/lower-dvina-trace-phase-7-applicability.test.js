@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { validateNpcStepPlan } from '@rus/npc-runtime';
+import {createTemporalAdvanceOwner,npcTemporalEffectRegistrations} from
+  '@rus/turn/temporal-advance';
 import {
   approvedPhase7Contracts,
   phase7AutonomousPlan,
@@ -21,6 +23,13 @@ import { projectLowerDvinaTraceF1NpcCapability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
 import { createLocalFireAtomicWritePlan } from
   '../src/infrastructure/postgres/local-fire-atomic-write-plan.js';
+import {applyLocalFireTemporalProjection,
+  lowerDvinaTraceLocalFireTemporalRegistration} from
+  '../src/runtime/lower-dvina-trace-local-fire-temporal.js';
+import {lowerDvinaTraceTemporalSourceRegistrations} from
+  '../src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
+import {lowerDvinaTracePhase7TemporalEffectRegistrations} from
+  '../src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 
 const ownerProfilesUrl = new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
@@ -211,34 +220,35 @@ test('Phase 7 operation contract publishes exact executable combinations',
     assert.equal(validateNpcStepPlan(invalidCarry, captured[0]), false);
   });
 
-test('Phase 7 publishes NPC-safe F1 capability from production state',
-  async () => {
-    const state = phase7CommittedState();
+test('Phase 7 F1 capability',async()=>{
+    const state=phase7CommittedState();
     state.items.push(npcFireItem('npc-kindling', 'fuel'),
       npcFireItem('npc-firesteel', 'ignition'));
-    const contracts = approvedPhase7Contracts(state);
+    const contracts=approvedPhase7Contracts(state);
     assert.notEqual(projectLowerDvinaTraceF1NpcCapability({
       committedState: state, npcSnapshot: contracts.zhdanko,
       loadedProfile: loadedFireProfile(), resolverAvailable: true
     }), null);
-    let localPlan = null;
-    let ownerCalls = 0;
+    let localPlan=null,ownerCalls=0;
+    const temporalOwner=createTemporalAdvanceOwner({source_registrations:
+      lowerDvinaTraceTemporalSourceRegistrations([lowerDvinaTraceLocalFireTemporalRegistration(
+        loadedFireProfile().profile)]),effect_registrations:[...npcTemporalEffectRegistrations(),
+      ...lowerDvinaTracePhase7TemporalEffectRegistrations()]});
     const consequence = await phase7Command({
-      state,
-      contracts,
+      state,contracts,
+      temporalAdvanceOwner:temporalOwner,
       localFireProfile: loadedFireProfile(),
       worldProcessResolver: async (execution) => {
-        ownerCalls += 1;
-        assert.equal(execution.plan.schema, 'npc_step_plan_v1');
-        assert.equal(execution.request.player_safe_state, undefined);
-        localPlan = phase7LocalFirePlan(state, execution);
-        return { working_projection: execution.working_projection,
-          summary: 'local_fire:started', write_fragments: [],
-          local_fire_atomic_write_plan: localPlan,
-          player_response_boundary: true };
+        ownerCalls+=1;
+        assert.equal(execution.plan.schema,'npc_step_plan_v1');
+        assert.equal(execution.request.player_safe_state,undefined);
+        localPlan=phase7LocalFirePlan(state,execution);
+        return{working_projection:applyLocalFireTemporalProjection(
+          execution.working_projection,localPlan),summary:'local_fire:started',
+          write_fragments:[],local_fire_atomic_write_plans:[localPlan],
+          player_response_boundary:true};
       },
-      projectNpcWorldProcessCapability:
-        projectLowerDvinaTraceF1NpcCapability,
+      projectNpcWorldProcessCapability:projectLowerDvinaTraceF1NpcCapability,
       model: async (request) => {
         assert.deepEqual(
           request.decision_scope.operation_contract.request_world_process,
@@ -248,36 +258,40 @@ test('Phase 7 publishes NPC-safe F1 capability from production state',
             scope_ref: 'storehouse-anchor',
             ignition_basis_refs: ['npc-firesteel'],
             active_process_refs: [],
-            process_ignition_basis_refs: {},
             allowed: [{ process_action: 'start', process_ref: null,
               process_kind: 'fire', source_refs: ['npc-kindling'],
               target_refs: ['npc-firesteel'] }]
           }
         );
-        const operation = { op: 'request_world_process',
-          actor_ref: request.npc_ref, process_action: 'start',
-          process_ref: null, process_kind: 'fire',
-          source_refs: ['npc-kindling'], target_refs: ['npc-firesteel'],
-          description: 'разжечь огонь' };
-        const plan = phase7AutonomousPlan(request, 'wait');
-        plan.operations = [operation];
+        const operation={op:'request_world_process',actor_ref:request.npc_ref,
+          process_action:'start',process_ref:null,process_kind:'fire',
+          source_refs:['npc-kindling'],target_refs:['npc-firesteel'],
+          description:'разжечь огонь'};
+        const plan=phase7AutonomousPlan(request,'wait');
+        plan.operations=[operation];
         return plan;
       }
-    }).consequence({
-      retrievedState: state,
-      playerInput: phase7PlayerInput(state, 'npc-fire-capability')
-    });
-    assert.equal(ownerCalls, 1);
-    assert.deepEqual(consequence.local_fire_atomic_write_plan, localPlan);
+    }).consequence({retrievedState:state,
+      playerInput:phase7PlayerInput(state,'npc-fire-capability')});
+    assert.equal(ownerCalls,1);assert.deepEqual(
+      consequence.local_fire_atomic_write_plans,[localPlan]);
+    assert.deepEqual(localPlan.transition_proposal.at_timestamp,
+      consequence.phase7.temporal.result.clock_after);
+    const duePlan=consequence.phase7.schedule_temporal.result.combined_change_set.proposals
+      .flatMap((proposal)=>proposal.local_fire_atomic_write_plans??[])[0];
+    assert.equal(duePlan.transition_proposal.process_after.status,'completed');
+    assert.deepEqual(duePlan.transition_proposal.at_timestamp,
+      consequence.phase7.schedule_temporal.result.clock_after);
     assert.equal(consequence.phase7.schedule_execution.semantic_operation.op,
       'request_world_process');
     const persisted = await persistPhase7Consequence({
       state, contracts, consequence
     });
-    assert.deepEqual(persisted.plan.local_fire_atomic_write_plan, localPlan);
+    assert.deepEqual(persisted.plan.local_fire_atomic_write_plans,
+      [localPlan,duePlan]);
     const boundFuel = persisted.snapshot.items.find(
       ({ item_id: id }) => id === 'npc-kindling');
-    assert.equal(boundFuel.condition_state, 'serviceable');
+    assert.equal(boundFuel.condition_state, 'retired');
     const reloaded = structuredClone(persisted.snapshot);
     reloaded.local_fire_runtime = [{ party_id: state.party_id,
       process_state: localPlan.transition_proposal.process_after,
@@ -526,7 +540,15 @@ function npcFireItem(itemId, kind) {
       ...(kind === 'fuel' ? { local_fire_fuel: {
         schema: 'rus.items.local_fire_fuel.v1',
         fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
-        mechanics: { mass_grams: 300 }
+        provenance: { source_refs: ['source:wood'] }
+      }, runtime_instance_mechanics_snapshot: {
+        schema:'rus.items.runtime_instance_mechanics_snapshot.v1',version:1,
+        provenance:{source_kind:'ordinary_direct_action_result',
+          root_turn_id:'turn:source',step_index:1,
+          operation_ref:'operation:source',origin_kind:'direct_partition',
+          source_refs:['source:wood']},mechanics:{mass_grams:300,
+          external_hand_cost:1,carry_form:'compact',packing_slot_cost:1,
+          quantity:{value:1,unit:'item'},container:null}
       } } : { local_fire_ignition_basis: {
         schema: 'rus.items.local_fire_ignition_basis.v1'
       } }) }
@@ -562,7 +584,7 @@ function phase7LocalFirePlan(state, execution) {
     ignition_basis_pin: pin('npc-firesteel'), action: 'start',
     process_ref: `local-fire:${state.party_id}:${
       execution.request.root_turn_id}:${execution.request.decision_index}`,
-    at_timestamp: state.clock,
+    at_timestamp: execution.request.occurred_at,
     cause: { kind: 'actor_step', request_id: execution.request.request_id,
       root_turn_id: execution.request.root_turn_id,
       step_index: execution.request.decision_index },
@@ -570,14 +592,9 @@ function phase7LocalFirePlan(state, execution) {
   });
 }
 
-function loadedFireProfile() {
-  return { schema: 'rus.lower_dvina_trace_f1_loaded_profile.v1', profile: {
-    schema: 'rus.lower_dvina_trace_local_fire_profile.v1',
-    profile_id: 'lower-dvina-fire', revision: 1, status: 'approved',
-    context_ref: 'lower-dvina-trace:f1:local_exact_fire',
-    policy_ref: 'lower-dvina-fire-policy', policy_version: 1,
-    allowed_actions: ['start', 'affect'],
-    recheck_interval: { exact_minutes: { numerator: '5', denominator: '1' } },
-    fuel_unit_mass_grams_min: 100, fuel_unit_mass_grams_max: 1000
-  } };
-}
+function loadedFireProfile(){return{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
+profile:{schema:'rus.lower_dvina_trace_local_fire_profile.v1',profile_id:'lower-dvina-fire',
+revision:1,status:'approved',context_ref:'lower-dvina-trace:f1:local_exact_fire',
+policy_ref:'lower-dvina-fire-policy',policy_version:1,allowed_actions:['start','affect'],
+recheck_interval:{exact_minutes:{numerator:'5',denominator:'1'}},
+fuel_unit_mass_grams_min:100,fuel_unit_mass_grams_max:1000}};}

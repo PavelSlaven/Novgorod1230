@@ -100,12 +100,12 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
       committedState:{position:{g5_anchor_id:'anchor:current'},
         items:[ignition],local_fire_runtime:[{process_state:{
           process_ref:'process:1',status:'active',scope_ref:'anchor:current',
-          causal_basis_ref:'item:ignition'}}]},loadedProfile,
+          causal_basis_ref:'item:ignition',fuel_bindings:[{
+            fuel_ref:'item:unlisted-fuel'}]}}]},loadedProfile,
       resolverAvailable:true});
     assert.deepEqual(active.local_world_process,{semantic_grounding_available:true,
       context_ref:loadedProfile.profile.context_ref,scope_ref:'anchor:current',
-      ignition_basis_refs:['item:ignition'],active_process_refs:['process:1'],
-      process_ignition_basis_refs:{'process:1':'item:ignition'}});
+      ignition_basis_refs:['item:ignition'],active_process_refs:['process:1']});
     const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{items:[]},
       committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},
       loadedProfile,resolverAvailable:true});

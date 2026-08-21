@@ -20,6 +20,7 @@ import { actionProducedPhysicalFactTexts,
   './action-produced-output-semantics.js';
 import { admitLocalFireIgnitionBasis, admitLocalFireInput,
   deriveLocalFireFuelClassification,
+  itemPlacementIsPhysicallyAccessible,
   planLocalFireWholeItemRetirement } from
   './local-fire-input.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
@@ -174,6 +175,7 @@ export {
   admitLocalFireIgnitionBasis,
   admitLocalFireInput,
   deriveLocalFireFuelClassification,
+  itemPlacementIsPhysicallyAccessible,
   actionProducedOutputRequiresTool,
   actionProducedPhysicalFactTexts,
   buildExistingContainerOrdinarySeedRequest,

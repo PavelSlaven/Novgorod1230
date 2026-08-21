@@ -209,7 +209,7 @@ export async function executeTurnStepActorStep({
     preparedEffects,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
-    local_fire_atomic_write_plan: localFirePlans[0] ?? null,
+    local_fire_atomic_write_plans: localFirePlans,
     preparedChainContext: chainContext
   };
 }

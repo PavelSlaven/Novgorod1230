@@ -75,14 +75,19 @@ code-owned изменения inventory geometry. Положительные `we
 
 A1 v1 сознательно не моделирует небольшой subtractive mass loss/known waste для single-source `preserve_source`; outputs одного action однородны; tools остаются неизменяемыми pins без wear/consumption. Дополнительный finite material в `preserve_source` расходуется только целой unit (`whole`), а finite partial independent transformation закрыта. Неназванное игроком число outputs представляется `requested_output_count = null`; item owner выбирает один actual output, а явно названное число принимает только в пределах массы и `max_new_entities`.
 
-Active F1 переиспользует item owner: любой accessible whole non-container item с
-явным generic fuel marker и допустимой exact mass может стать fuel unit без
-каталога authored ID. Тот же owner переносит этот класс на whole A1 output
+Active F1 переиспользует item owner: любой physically accessible whole
+non-container item с явным generic fuel marker и допустимой current exact mass
+из authoritative inventory mechanics может стать fuel unit без каталога
+authored ID. Marker хранит только classification/provenance и не дублирует
+mechanics. Тот же owner переносит этот класс на whole A1 output
 только из causally consumed уже classified fuel sources; qualitative descriptor
 сам класс не создаёт. Existing whole water portion допускается как qualitative
-affect input. Actor-step и ignition basis проверяют общий physical-access owner;
+affect input. Actor-step и ignition basis проверяют общий physical-access owner:
+direct parent container должен быть open и сам находиться у actor либо uncontained
+на текущем anchor; closed, nested и удерживаемый другим actor container недоступен.
 due boundary проверяет exact process binding без actor. Retirement топлива или
-воды также планирует этот owner и сохраняет общий P16.
+воды также планирует этот owner и сохраняет общий P16; legal ownership при
+физическом доступе не переписывается.
 
 ## Зависимости
 

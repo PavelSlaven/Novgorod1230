@@ -8,10 +8,11 @@ Production composition root and the only physical PostgreSQL transaction owner. 
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
 - После чтения committed screen/state владеет server-side adapter, который
-  фильтрует active interlocutor identity/equipment и добавляет неперсистентный
-  `portrait_spec_v1` к public response.
+  фильтрует active interlocutor identity/equipment, добавляет неперсистентный
+  `portrait_spec_v1` и для Lower Dvina сопоставляет committed
+  `participant_slot_ref` с безопасным presentation-only `portrait_asset_id`.
 - Безопасно раздаёт browser assets из `apps/game-web/public/assets/`, включая
-  WebP-пейзажи и PNG-портрет, без изменения публичного игрового JSON.
+  WebP-пейзажи и PNG-комплекты портретов.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
 
 ## Не владеет

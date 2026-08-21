@@ -362,6 +362,7 @@
         "`FirstGameScreen` и `TurnScreen` version 1",
         "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
         "optional exact `portrait_spec_v1` внутри player-safe active interlocutor",
+        "optional non-empty presentation-only `portrait_asset_id` внутри того же",
         "visible-only validation и leak rejection",
         "compatibility `createPublicViewModel`",
         "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"

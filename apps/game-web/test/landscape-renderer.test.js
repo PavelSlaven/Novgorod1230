@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { inflateSync } from 'node:zlib';
 import {
   renderForegroundWeather,
   renderLandscapeCanvas
@@ -14,10 +15,12 @@ import {
   LANDSCAPE_WEATHER
 } from '../src/features/landscape/render-model.js';
 import {
-  PORTRAIT_12_URL,
-  renderPortrait12,
-  supportsPortrait12
-} from '../src/features/conversation-portrait/portrait-12.js';
+  AUTHORED_PORTRAIT_ASSETS,
+  PORTRAIT_EMOTIONS,
+  authoredPortraitUrls,
+  renderAuthoredPortrait,
+  supportsAuthoredPortrait
+} from '../src/features/conversation-portrait/authored-portrait.js';
 import { hydrateSceneCanvases } from
   '../src/app/scene-canvas-hydration.js';
 import { loadImage } from '../src/shared/image-cache.js';
@@ -35,7 +38,7 @@ function screen(profile = 'env.local_variable', dayPart = 'day',
   };
 }
 
-function portrait12Spec() {
+function portraitSpec() {
   return {
     schema: 'portrait_spec_v1',
     person: {
@@ -80,14 +83,31 @@ test('landscape catalog has exactly 8 x 36 normalized WebP assets', async () => 
   assert.equal(total, 288);
 });
 
-test('portrait 12 asset is a genuine transparent 768 x 768 PNG', async () => {
-  const png = await readFile(join(
-    PUBLIC_ROOT, 'assets', 'portrait', 'portrait-12-neutral.png'
-  ));
-  assert.equal(png.toString('ascii', 1, 4), 'PNG');
-  assert.equal(png.readUInt32BE(16), 768);
-  assert.equal(png.readUInt32BE(20), 768);
-  assert.equal(png[25], 6, 'PNG must use RGBA color type');
+test('authored portrait catalog has 7 outfits and 63 unique transparent heads',
+  async () => {
+    assert.equal(Object.keys(AUTHORED_PORTRAIT_ASSETS).length, 7);
+    assert.equal(PORTRAIT_EMOTIONS.length, 9);
+    for (const folder of Object.values(AUTHORED_PORTRAIT_ASSETS)) {
+      const root = join(PUBLIC_ROOT, 'assets', 'portrait', 'lower-dvina', folder);
+      const heads = [];
+      for (const path of [
+        join(root, 'outfit.png'),
+        ...PORTRAIT_EMOTIONS.map((emotion) =>
+          join(root, 'heads', `${emotion}.png`))
+      ]) {
+        const png = await readFile(path);
+        assert.equal(png.toString('ascii', 1, 4), 'PNG', path);
+        assert.equal(png.readUInt32BE(16), 768, path);
+        assert.equal(png.readUInt32BE(20), 768, path);
+        assert.equal(png[25], 6, `${path} must use RGBA color type`);
+        assert.equal(firstPngPixelAlpha(png), 0, `${path} must be transparent`);
+        if (path.includes(`${join('heads', '')}`)) heads.push(png);
+      }
+      for (let index = 0; index < heads.length; index += 1) {
+        assert.equal(heads.slice(index + 1).some((head) =>
+          head.equals(heads[index])), false, `${folder} has repeated heads`);
+      }
+    }
 });
 
 test('selector maps all profiles and preserves independent time/weather axes',
@@ -185,39 +205,28 @@ test('missing landscape asset uses the daily open-meadow fallback', async () => 
   ]);
 });
 
-test('portrait 12 is selected only for its compatible appearance', async () => {
-  const compatible = portrait12Spec();
-  assert.equal(supportsPortrait12(compatible), true);
-  assert.equal(supportsPortrait12({
-    ...compatible,
-    expression: { emotion: 'angry', intensity: 'high' }
-  }), true, 'temporary neutral head supports every valid emotion');
-  assert.equal(supportsPortrait12({
-    ...compatible,
-    person: { ...compatible.person, age: 'adult' }
-  }), false);
-  assert.equal(supportsPortrait12({
-    ...compatible,
-    clothing: { ...compatible.clothing, outer: 'wrap' }
-  }), false);
+test('authored portrait draws outfit then emotion head with shared lighting',
+  async () => {
+  assert.equal(supportsAuthoredPortrait('lower-dvina-onisim'), true);
+  assert.equal(supportsAuthoredPortrait('unknown'), false);
+  assert.equal(authoredPortraitUrls('lower-dvina-onisim', 'unknown').emotion,
+    'neutral');
 
-  const firstDraws = [];
-  const secondDraws = [];
-  const imageLoader = async () => ({});
+  const draws = [];
+  const imageLoader = async (url) => ({ url });
   const day = buildLandscapeRenderModel(screen()).portraitLighting;
-  const night = buildLandscapeRenderModel(
-    screen('env.local_variable', 'night', 'clear')
-  ).portraitLighting;
-  const first = await renderPortrait12(fakeCanvas(firstDraws), day,
-    { imageLoader });
-  const second = await renderPortrait12(fakeCanvas(secondDraws), night,
-    { imageLoader });
-  assert.equal(first.assetUrl, PORTRAIT_12_URL);
-  assert.equal(second.assetUrl, PORTRAIT_12_URL);
+  const rendered = await renderAuthoredPortrait(fakeCanvas(draws),
+    'lower-dvina-onisim', 'angry', day, { imageLoader });
+  assert.equal(rendered.emotion, 'angry');
+  assert.deepEqual(draws.filter(([kind]) => kind === 'drawImage')
+    .map(([, image]) => image.url), [
+    '/assets/portrait/lower-dvina/onisim/outfit.png',
+    '/assets/portrait/lower-dvina/onisim/outfit.png',
+    '/assets/portrait/lower-dvina/onisim/heads/angry.png'
+  ]);
   assert.deepEqual(
-    firstDraws.find(([kind]) => kind === 'drawImage').slice(2),
-    secondDraws.find(([kind]) => kind === 'drawImage').slice(2)
-  );
+    draws.filter(([kind]) => kind === 'drawImage')[0].slice(2, 6),
+    [0, 320, 768, 20]);
 });
 
 test('hydration rejects stale generations and keeps procedural fallback',
@@ -244,13 +253,14 @@ test('hydration rejects stale generations and keeps procedural fallback',
     assert.equal(second.cancelled, false);
     assert.equal(stale.cancelled, true);
 
-    const spec = portrait12Spec();
+    const spec = portraitSpec();
     const actorScreen = {
       ...screen(),
       panels: { people: { visible: true, data: {
         active_interlocutor: {
           entity_ref: { entity_kind: 'npc', entity_id: 'npc-12' },
           display_label: 'Старик',
+          portrait_asset_id: 'lower-dvina-onisim',
           portrait_spec_v1: spec
         }
       } } }
@@ -265,7 +275,7 @@ test('hydration rejects stale generations and keeps procedural fallback',
           model: buildLandscapeRenderModel(actorScreen), cancelled: false
         };
       },
-      bitmapPortraitRenderer: async () => {
+      authoredPortraitRenderer: async () => {
         order.push('portrait');
         bitmap += 1;
         return {};
@@ -276,19 +286,29 @@ test('hydration rejects stale generations and keeps procedural fallback',
     assert.deepEqual([bitmap, procedural], [1, 0]);
     assert.deepEqual(order, ['landscape', 'portrait', 'weather']);
 
-    actorScreen.panels.people.data.active_interlocutor.portrait_spec_v1 = {
-      ...spec,
-      person: { ...spec.person, age: 'adult' }
-    };
+    actorScreen.panels.people.data.active_interlocutor.portrait_asset_id =
+      'unknown';
     await hydrateSceneCanvases(fakeRoot(true), actorScreen, {
       landscapeRenderer: async () => ({
         model: buildLandscapeRenderModel(actorScreen), cancelled: false
       }),
-      bitmapPortraitRenderer: async () => { bitmap += 1; return {}; },
+      authoredPortraitRenderer: async () => { bitmap += 1; return {}; },
       proceduralPortraitRenderer: () => { procedural += 1; return {}; },
       weatherRenderer: () => null
     });
     assert.deepEqual([bitmap, procedural], [1, 1]);
+
+    actorScreen.panels.people.data.active_interlocutor.portrait_asset_id =
+      'lower-dvina-onisim';
+    await hydrateSceneCanvases(fakeRoot(true), actorScreen, {
+      landscapeRenderer: async () => ({
+        model: buildLandscapeRenderModel(actorScreen), cancelled: false
+      }),
+      authoredPortraitRenderer: async () => { throw new Error('broken PNG'); },
+      proceduralPortraitRenderer: () => { procedural += 1; return {}; },
+      weatherRenderer: () => null
+    });
+    assert.equal(procedural, 2, 'broken authored set uses whole fallback');
 });
 
 test('foreground weather draws only rain, snow and fog', () => {
@@ -370,4 +390,16 @@ function webpDimensions(buffer) {
     offset = data + size + (size % 2);
   }
   throw new Error('Unsupported WebP');
+}
+
+function firstPngPixelAlpha(buffer) {
+  const chunks = [];
+  for (let offset = 8; offset + 12 <= buffer.length;) {
+    const size = buffer.readUInt32BE(offset);
+    const type = buffer.toString('ascii', offset + 4, offset + 8);
+    if (type === 'IDAT') chunks.push(buffer.subarray(offset + 8,
+      offset + 8 + size));
+    offset += 12 + size;
+  }
+  return inflateSync(Buffer.concat(chunks))[4];
 }

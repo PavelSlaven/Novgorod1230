@@ -17,8 +17,10 @@ Browser-клиент, который получает только versioned pub
   profile и одно из 36 независимых сочетаний времени и погоды, затем
   асинхронно гидратирует Canvas 2D;
 - композицией landscape + active interlocutor в `renderSceneViewport`:
-  совместимый `portrait_spec_v1` использует растровый портрет №12 справа с
-  освещением сцены, остальные спецификации — процедурный Portrait Lab fallback;
+  безопасный `portrait_asset_id` выбирает один из семи авторских комплектов
+  Нижней Двины (одежда/тело + сменная голова эмоции), а отсутствующий,
+  неизвестный или повреждённый комплект целиком использует процедурный
+  `portrait_spec_v1` fallback без смешивания двух систем;
 - отдельным foreground Canvas для дождя, снега и тумана поверх собеседника;
 - отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и детерминированным Canvas 2D renderer;
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
@@ -44,9 +46,10 @@ Browser-клиент, который получает только versioned pub
 - `bootstrapGameWeb`
 
 Portrait Lab остаётся отдельным browser-инструментом и не участвует в
-production actor/interlocutor path. Game-web принимает только готовый
-player-safe `portrait_spec_v1` из server response, не выводит внешность из
-имени, роли или prose и сохраняет прежний fallback для historical parties.
+production actor/interlocutor path. Game-web принимает только готовые
+player-safe `portrait_asset_id` и `portrait_spec_v1` из server response, не
+выводит внешность из имени, роли или prose и сохраняет прежний процедурный
+fallback для historical parties.
 
 ## Portrait Drawing Contract v1
 

@@ -6,6 +6,16 @@ import { projectActiveConversationInterlocutor } from
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
 
+const PORTRAIT_ASSET_BY_SLOT = new Map([
+  ['player_clerk', 'lower-dvina-mikula'],
+  ['onisim_boatman', 'lower-dvina-onisim'],
+  ['eremey_fisher', 'lower-dvina-eremey'],
+  ['ratsha_storehouse_helper', 'lower-dvina-ratsha'],
+  ['zhdanko_storehouse_controller', 'lower-dvina-zhdanko'],
+  ['background_fisher_1', 'lower-dvina-fisher-1'],
+  ['background_fisher_2', 'lower-dvina-fisher-2']
+]);
+
 export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   const projection = projectLowerDvinaTracePlayerSafeState({
     committed_state: payload,
@@ -59,6 +69,9 @@ function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,
         candidate?.npc_id].includes(id)));
     const committed = committedMatches.length === 1 ? committedMatches[0] : null;
+    const portraitAssetId = PORTRAIT_ASSET_BY_SLOT.get(
+      committed?.participant_slot_ref
+    );
     return {
       instance_id: npc.instance_id,
       actor_id: npc.actor_id,
@@ -66,7 +79,8 @@ function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
       identity_state: sanitizeActorIdentity(
         committed?.identity_state, publicNames[0]),
       visible_equipment: sanitizeVisibleEquipment(committedItems, ids),
-      presentation: sanitizePresentation(committed?.player_safe_presentation)
+      presentation: sanitizePresentation(committed?.player_safe_presentation),
+      ...(portraitAssetId ? { portrait_asset_id: portraitAssetId } : {})
     };
   }).filter(Boolean);
 }

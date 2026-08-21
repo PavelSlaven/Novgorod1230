@@ -77,7 +77,8 @@ test('public screen validates exact optional scene affordances', () => {
         data: {
           active_interlocutor: {
             entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
-            display_label: 'Еремей', role_label: 'рыбак'
+            display_label: 'Еремей', role_label: 'рыбак',
+            portrait_asset_id: 'lower-dvina-eremey'
           }
         }
       }
@@ -444,6 +445,24 @@ test('conversation portrait uses an explicit valid spec and rejects malformed ap
       }
     } } }
   }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
+});
+
+test('conversation portrait renders authored asset without requiring a spec', () => {
+  const screen = {
+    ...firstScreen(),
+    panels: { people: { visible: true, data: { active_interlocutor: {
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+      display_label: 'Еремей',
+      portrait_asset_id: 'lower-dvina-eremey'
+    } } } }
+  };
+  assert.doesNotThrow(() => validatePublicScreen(screen));
+  assert.match(renderConversationPortrait(screen),
+    /data-conversation-portrait-canvas/u);
+  screen.panels.people.data.active_interlocutor.portrait_asset_id = ' ';
+  assert.throws(() => validatePublicScreen(screen), {
+    code: 'ACTIVE_INTERLOCUTOR_INVALID'
+  });
 });
 
 test('minimap uses only sorted public nodes and links and keeps text facts', () => {

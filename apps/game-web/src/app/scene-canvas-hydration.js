@@ -3,9 +3,9 @@ import {
   renderLandscapeCanvas
 } from '../features/landscape/canvas.js';
 import {
-  renderPortrait12,
-  supportsPortrait12
-} from '../features/conversation-portrait/portrait-12.js';
+  renderAuthoredPortrait,
+  supportsAuthoredPortrait
+} from '../features/conversation-portrait/authored-portrait.js';
 import { renderPortrait } from '../portrait-lab/renderer.js';
 import { validActiveInterlocutor } from '../shared/scene-affordances.js';
 
@@ -13,7 +13,7 @@ const generation = new WeakMap();
 
 export async function hydrateSceneCanvases(root, screen, {
   landscapeRenderer = renderLandscapeCanvas,
-  bitmapPortraitRenderer = renderPortrait12,
+  authoredPortraitRenderer = renderAuthoredPortrait,
   proceduralPortraitRenderer = renderPortrait,
   weatherRenderer = renderForegroundWeather
 } = {}) {
@@ -41,19 +41,22 @@ export async function hydrateSceneCanvases(root, screen, {
   const interlocutor = screen?.panels?.people?.data?.active_interlocutor;
   let portraitResult = null;
   if (portrait && validActiveInterlocutor(interlocutor)
-      && interlocutor.portrait_spec_v1) {
+      && (interlocutor.portrait_asset_id
+        || interlocutor.portrait_spec_v1)) {
     const spec = interlocutor.portrait_spec_v1;
-    if (supportsPortrait12(spec)) {
-      portraitResult = await bitmapPortraitRenderer(
-        portrait, landscapeResult.model.portraitLighting, {
+    if (supportsAuthoredPortrait(interlocutor.portrait_asset_id)) {
+      portraitResult = await authoredPortraitRenderer(
+        portrait, interlocutor.portrait_asset_id,
+        spec?.expression?.emotion,
+        landscapeResult.model.portraitLighting, {
           isCurrent: current
         }
-      ).catch(() => current()
+      ).catch(() => current() && spec
         ? proceduralPortraitRenderer(
           portrait, spec, { fills: true, background: false }
         )
         : null);
-    } else {
+    } else if (spec) {
       portraitResult = proceduralPortraitRenderer(portrait, spec, {
         fills: true,
         background: false

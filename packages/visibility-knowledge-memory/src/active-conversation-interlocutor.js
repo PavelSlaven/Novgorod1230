@@ -51,6 +51,9 @@ export function projectActiveConversationInterlocutor({
     display_label: npc.identity_state.display_name.trim()
   };
   if (nonEmptyText(npc.role_label)) output.role_label = npc.role_label.trim();
+  if (nonEmptyText(npc.portrait_asset_id)) {
+    output.portrait_asset_id = npc.portrait_asset_id.trim();
+  }
   const portrait = projectActorPortraitSpecV1({
     identity: npc.identity_state,
     visible_equipment: npc.visible_equipment,

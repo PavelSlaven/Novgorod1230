@@ -102,7 +102,7 @@ function sourceFactDelta(value, path, errors, trace) {
   if (value === null) return;
   if (!strict(value, deltaPath, [
     'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs'
+    'removed_physical_fact_refs', 'physical_form'
   ], errors)) return;
   if (value.physical_description !== null) requiredText(
     value.physical_description, `${deltaPath}.physical_description`, errors);
@@ -120,6 +120,8 @@ function sourceFactDelta(value, path, errors, trace) {
   refs(value.removed_physical_fact_refs,
     `${deltaPath}.removed_physical_fact_refs`, errors, trace,
     { allowEmpty: true });
+  enumValue(value.physical_form, ['compact', 'regular', 'long', 'bulky'],
+    `${deltaPath}.physical_form`, errors);
 }
 
 function validateShape(value, path, errors) {
@@ -145,6 +147,10 @@ function validateShape(value, path, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
+  if (partialOutput && value.source_refs?.length !== 1) {
+    add(errors, `${path}.source_refs`, 'identity_shape',
+      'partial independent output requires exactly one source');
+  }
   if (partialOutput !== (descriptor.source_fact_delta !== null)) {
     add(errors, `${path}.result_descriptor.source_fact_delta`,
       'identity_shape',

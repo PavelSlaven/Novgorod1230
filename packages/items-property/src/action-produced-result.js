@@ -208,11 +208,13 @@ function validDescriptor(value) {
     && (value.source_fact_delta === null
       || exact(value.source_fact_delta, [
         'physical_description', 'qualitative_facts',
-        'removed_physical_fact_refs'
+        'removed_physical_fact_refs', 'physical_form'
       ]) && nullableText(value.source_fact_delta.physical_description)
         && textArray(value.source_fact_delta.qualitative_facts, true)
         && textArray(value.source_fact_delta.removed_physical_fact_refs,
-          true));
+          true)
+        && ['compact', 'regular', 'long', 'bulky'].includes(
+          value.source_fact_delta.physical_form));
 }
 
 function descriptorKeys(value) {
@@ -233,6 +235,7 @@ function validCausalShape(value) {
         || descriptor.physical_form === null)) return false;
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
+  if (partialOutput && value.source_refs.length !== 1) return false;
   const sourceDelta = descriptor.source_fact_delta;
   if (partialOutput !== (sourceDelta !== null)
       || sourceDelta != null && sourceDelta.physical_description === null

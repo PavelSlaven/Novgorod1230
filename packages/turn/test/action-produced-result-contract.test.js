@@ -132,6 +132,30 @@ test('preserved identity may consume additional material sources', () => {
     { request: combinedRequest }).ok, true);
 });
 
+test('partial independent output has one surviving source with its own form',
+  () => {
+    const partialRequest = request({ source_refs: ['item:board'],
+      tool_refs: ['item:knife'], material_extent: 'minor' });
+    const partial = plan({ source_refs: partialRequest.source_refs,
+      tool_refs: partialRequest.tool_refs, material_extent: 'minor',
+      identity_mode: 'independent_outputs', origin: 'direct_partition',
+      result_class: 'partial_transformation', result_descriptor: {
+        display_name: 'деревянный клин', physical_description: 'отделённый клин',
+        qualitative_facts: [], inscription_text: null,
+        physical_form: 'compact', source_fact_delta: {
+          physical_description: 'с края доски срезана часть',
+          qualitative_facts: [], removed_physical_fact_refs: [],
+          physical_form: 'regular' } } });
+    assert.equal(validateActionProducedResultPlan(partial,
+      { request: partialRequest }).ok, true);
+
+    const multiRequest = request({ source_refs: ['item:board', 'item:rope'],
+      tool_refs: ['item:knife'], material_extent: 'minor' });
+    assert.equal(validateActionProducedResultPlan({ ...partial,
+      source_refs: multiRequest.source_refs }, { request: multiRequest }).ok,
+    false);
+  });
+
 test('weapon-capable A1 result carries no combat-owned classification',
   () => {
     const weaponRequest = request({ output_class: 'weapon_capable' });

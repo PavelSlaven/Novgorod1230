@@ -90,6 +90,9 @@ function validQualitative(value, proposal) {
     && validSourceFactDelta(descriptor.source_fact_delta,
       proposal.identity_mode === 'independent_outputs'
         && proposal.result_class === 'partial_transformation')
+    && !(proposal.identity_mode === 'independent_outputs'
+      && proposal.result_class === 'partial_transformation'
+      && proposal.source_transitions.length !== 1)
     && validateActionProducedOutputClass(value.output_class,
       proposal.result_class, proposal.identity_mode);
 }
@@ -98,7 +101,7 @@ function validSourceFactDelta(value, required) {
   if (value === null) return !required;
   return required && exact(value, [
     'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs'
+    'removed_physical_fact_refs', 'physical_form'
   ]) && (value.physical_description === null
       || text(value.physical_description))
     && Array.isArray(value.qualitative_facts)
@@ -108,6 +111,7 @@ function validSourceFactDelta(value, required) {
     && value.removed_physical_fact_refs.every(text)
     && new Set(value.removed_physical_fact_refs).size
       === value.removed_physical_fact_refs.length
+    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form)
     && (value.physical_description !== null
       || value.qualitative_facts.length > 0
       || value.removed_physical_fact_refs.length > 0);

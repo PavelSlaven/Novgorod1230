@@ -299,16 +299,24 @@ test('sole turn plan boundary admits qualitative action production', () => {
     'compact';
   partition.operations[0].action_production = {
     ...partition.operations[0].action_production,
-    source_refs: ['item:pole', 'item:stone'], tool_refs: ['item:knife'],
+    source_refs: ['item:pole'], tool_refs: ['item:knife', 'item:stone'],
     output_count: 2, identity_mode: 'independent_outputs',
     origin: 'crafted', material_extent: 'minor'
   };
   partition.operations[0].action_production.result_descriptor
     .source_fact_delta = {
       physical_description: 'с жерди снята часть материала',
-      qualitative_facts: [], removed_physical_fact_refs: []
+      qualitative_facts: [], removed_physical_fact_refs: [],
+      physical_form: 'regular'
     };
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, true);
+  const multiPartial = structuredClone(partition);
+  multiPartial.operations[0].action_production.source_refs = [
+    'item:pole', 'item:stone'
+  ];
+  multiPartial.operations[0].action_production.tool_refs = ['item:knife'];
+  assert.equal(validateTurnStepPlan(multiPartial, { request: source }).ok,
+    false);
   partition.operations[0].action_production.result_descriptor.display_name =
     null;
   assert.equal(validateTurnStepPlan(partition, { request: source }).ok, false);

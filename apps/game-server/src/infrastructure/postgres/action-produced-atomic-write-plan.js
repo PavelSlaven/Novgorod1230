@@ -91,7 +91,9 @@ function deriveSourceUpdates(proposal, sourcePins) {
       && transition.entity_ref === proposal.results[0].entity_ref
       ? proposal.results[0] : null;
     const survivingPartition = proposal.identity_mode === 'independent_outputs'
-      && transition.after.mechanics_snapshot !== null && !retireSource;
+      && transition.after.mechanics_snapshot !== null && !retireSource
+      && transition.finite_resource_transition?.lifecycle_state_after
+        !== 'depleted';
     const descriptor = proposal.qualitative_result.result_descriptor;
     const sourceDelta = survivingPartition ? descriptor.source_fact_delta : null;
     const semanticFacts = preservedResult === null && !survivingPartition
@@ -121,13 +123,14 @@ function deriveSourceUpdates(proposal, sourcePins) {
           ...(pin.item.state?.ordinary_metadata ?? {}),
           semantic_facts: structuredClone(semanticFacts)
         },
-        ...(preservedResult === null ? {} : { action_production: {
+        ...(preservedResult === null && !survivingPartition ? {} : {
+          action_production: {
           schema: 'rus.items.action_production_item_state.v1',
           causal_identity: structuredClone(proposal.causal_identity),
           result_class: proposal.result_class,
           output_class: proposal.qualitative_result.output_class,
-          physical_form: proposal.qualitative_result.result_descriptor
-            .physical_form
+          physical_form: survivingPartition ? sourceDelta.physical_form
+            : proposal.qualitative_result.result_descriptor.physical_form
         } })
       })
     };
@@ -213,7 +216,6 @@ function preparedPinMatches(pin, ordinary, priorPlans) {
       preparedResourceRow(source.finite_resource_row,
         update.finite_resource_transition));
 }
-
 function preparedResourceRow(row, transition) {
   return transition == null ? row : { ...row,
     quantity_numerator: transition.after_quantity.numerator,
@@ -221,7 +223,6 @@ function preparedResourceRow(row, transition) {
     lifecycle_state: transition.lifecycle_state_after,
     state_version: transition.next_state_version };
 }
-
 function validateLoad(value, input) {
   const keys = [
     'schema', 'party_id', 'party_state_version', 'committed_context',
@@ -245,7 +246,6 @@ function validateLoad(value, input) {
   }
   return value;
 }
-
 function validatePlan(value) {
   if (!exact(value, PLAN_KEYS)
       || value.schema !== 'action_production_atomic_write_plan_v1'

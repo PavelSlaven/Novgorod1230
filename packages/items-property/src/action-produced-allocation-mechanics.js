@@ -84,8 +84,12 @@ function independentResolution(request, byRef, outputCount) {
   const extent = request.qualitative_intent?.material_extent;
   const physicalForm = request.qualitative_intent?.result_descriptor
     ?.physical_form ?? null;
+  const sourcePhysicalForm = request.qualitative_intent?.result_descriptor
+    ?.source_fact_delta?.physical_form ?? null;
   if ((partial ? !['minor', 'half', 'major'].includes(extent)
-    : extent !== 'whole') || physicalForm === null) gap();
+    : extent !== 'whole') || physicalForm === null
+      || partial && (request.source_inputs.length !== 1
+        || sourcePhysicalForm === null)) gap();
   const consumed = request.source_inputs.map((source) => consumeSource(source,
     byRef.get(source.entity_ref), partial ? extent : 'whole', outputCount));
   const totalMass = consumed.reduce((sum, entry) =>
@@ -93,7 +97,8 @@ function independentResolution(request, byRef, outputCount) {
   if (totalMass < outputCount) gap();
   const baseMass = Math.floor(totalMass / outputCount);
   const remainderMass = totalMass % outputCount;
-  const effects = consumed.map((entry) => sourceEffect(request, entry));
+  const effects = consumed.map((entry) => sourceEffect(request, entry,
+    partial ? sourcePhysicalForm : null));
   const outputs = Array.from({ length: outputCount }, (_, index) => {
     const ordinal = index + 1;
     const outputRef = createActionProducedOutputIdentity({
@@ -155,30 +160,35 @@ function consumeSource(source, mechanics, extent, outputCount) {
 }
 
 function sourceEffect(request, { source, mechanics, quantity, consumedMass,
-  retire }) {
+  retire }, physicalForm = null) {
     if (retire) return { source_ref: source.entity_ref,
       requested_decrement: null, mechanics_snapshot_after: null };
     if (source.finite_resource === null) {
-      const after = { ...mechanics,
-        mass_grams: mechanics.mass_grams - consumedMass };
+      const after = physicalForm === null ? { ...mechanics,
+        mass_grams: mechanics.mass_grams - consumedMass }
+        : derivedMechanics(mechanics.mass_grams - consumedMass, 0,
+          mechanics.quantity, physicalForm);
       return { source_ref: source.entity_ref,
         requested_decrement: rational(consumedMass, 1, 'gram'),
         mechanics_snapshot_after: snapshot(request, after,
           request.causal_identity.action_ref) };
     }
     const remainingNumerator = quantity.numerator - quantity.denominator;
-    const after = {
-      mass_grams: mechanics.mass_grams - consumedMass,
-      external_hand_cost: remainingNumerator === 0
-        ? 0 : mechanics.external_hand_cost,
-      packing_slot_cost: remainingNumerator === 0
-        ? 0 : mechanics.packing_slot_cost,
-      carry_form: mechanics.carry_form,
-      quantity: remainingNumerator === 0 ? null : {
+    const remainingQuantity = remainingNumerator === 0 ? null : {
         value: remainingNumerator / quantity.denominator,
         unit: quantity.unit
-      }, container: null
-    };
+      };
+    const after = remainingNumerator === 0 ? {
+      mass_grams: 0, external_hand_cost: 0, packing_slot_cost: 0,
+      carry_form: mechanics.carry_form, quantity: null, container: null
+    } : physicalForm === null ? {
+      mass_grams: mechanics.mass_grams - consumedMass,
+      external_hand_cost: mechanics.external_hand_cost,
+      packing_slot_cost: mechanics.packing_slot_cost,
+      carry_form: mechanics.carry_form,
+      quantity: remainingQuantity, container: null
+    } : derivedMechanics(mechanics.mass_grams - consumedMass, 0,
+      remainingQuantity, physicalForm);
     return { source_ref: source.entity_ref,
       requested_decrement: rational(1, 1, quantity.unit),
       mechanics_snapshot_after: snapshot(request, after,

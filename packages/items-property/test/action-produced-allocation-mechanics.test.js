@@ -101,7 +101,8 @@ test('partial outputs consume a grounded minor extent and preserve source',
       mechanics_request: mechanicsRequest({
         result_class: 'partial_transformation',
         qualitative_intent: { material_extent: 'minor',
-          result_descriptor: { physical_form: 'compact' } },
+          result_descriptor: { physical_form: 'compact', source_fact_delta: {
+            physical_form: 'regular' } } },
         source_inputs: [{ entity_ref: 'material:board',
           finite_resource: null }] }),
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
@@ -120,8 +121,8 @@ test('partial outputs consume a grounded minor extent and preserve source',
         provenance: { source_kind: 'ordinary_direct_action_result',
           root_turn_id: 'turn', step_index: 1, operation_ref: 'action',
           origin_kind: 'crafted', source_refs: ['material:board'] },
-        mechanics: { mass_grams: 600, external_hand_cost: 1,
-          carry_form: 'long', packing_slot_cost: 6, quantity: null,
+        mechanics: { mass_grams: 600, external_hand_cost: 0,
+          carry_form: 'regular', packing_slot_cost: 2, quantity: null,
           container: null }
       }
     }]);
@@ -136,6 +137,25 @@ test('partial outputs consume a grounded minor extent and preserve source',
         numerator: 100, denominator: 1, unit: 'gram'
       } }]
     })));
+});
+
+test('partial outputs reject multiple surviving sources in A1 v1', () => {
+  assert.throws(() => resolveActionProducedAllocationMechanics({
+    mechanics_request: mechanicsRequest({
+      result_class: 'partial_transformation',
+      qualitative_intent: { material_extent: 'minor',
+        result_descriptor: { physical_form: 'compact', source_fact_delta: {
+          physical_form: 'regular' } } },
+      source_inputs: [{ entity_ref: 'material:board', finite_resource: null },
+        { entity_ref: 'material:rope', finite_resource: null }] }),
+    source_mechanics: [{ source_ref: 'material:board', mechanics: {
+      mass_grams: 800, external_hand_cost: 1, carry_form: 'long',
+      packing_slot_cost: 6, quantity: null, container: null } },
+    { source_ref: 'material:rope', mechanics: {
+      mass_grams: 200, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 1, quantity: null, container: null } }],
+    output_count: 2
+  }), { code: 'ITEM_ACTION_PRODUCED_MECHANICS_GAP' });
 });
 
 test('preserve source keeps ordinary mechanics without a discrete quantity',
@@ -226,7 +246,9 @@ test('finite A1 sources consume one discrete committed unit per action', () => {
     resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({ result_class: resultClass,
         qualitative_intent: { material_extent: extent,
-          result_descriptor: { physical_form: 'compact' } },
+          result_descriptor: { physical_form: 'compact',
+            source_fact_delta: resultClass === 'partial_transformation'
+              ? { physical_form: 'compact' } : null } },
         source_inputs: [sourceInput('material:finite', 2)] }),
       source_mechanics: [sourceMechanics('material:finite', 400, 2, 2)],
       output_count: 1

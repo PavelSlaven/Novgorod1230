@@ -197,6 +197,54 @@ test('authored weapon fast path does not invoke semantic classification',
     assert.equal(resolveTraceOrdinaryWeaponDanger(items, player), 1);
   });
 
+test('held A1 note does not disable the authored weapon fast path',
+  async () => {
+    const items = [{ item_id: 'ordinary-spear', placement: {
+      holder_character_id: 'mikula-1' }, state: {
+      condition_state: 'serviceable', weapon_mechanics_snapshot:
+        resolveOrdinaryArmamentMechanics({ mechanics_capability_ref:
+          ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
+        condition_state: 'serviceable' }) }
+    }, actionProducedItem('a1-note', ['на бересте написано имя'], 'compact')];
+    let calls = 0;
+    assert.equal(await classifyTraceActionProducedWeapon({ items,
+      actor_ref: player, request_id: 'combat-weapon:exact-plus-note',
+      classify: async () => { calls += 1; } }), null);
+    assert.equal(calls, 0);
+    assert.equal(resolveTraceOrdinaryWeaponDanger(items, player), 1);
+  });
+
+test('combat classifies held A1 items and selects the sole weapon result',
+  async () => {
+    const spear = actionProducedItem('a1-spear', ['конец заострён'], 'long');
+    const note = actionProducedItem('a1-note', ['на бересте написано имя'],
+      'compact');
+    const seen = [];
+    const classified = await classifyTraceActionProducedWeapon({
+      items: [spear, note], actor_ref: player,
+      request_id: 'combat-weapon:a1-candidates', classify: async (request) => {
+        seen.push(request.item.item_ref);
+        return { schema:
+          'rus.combat.action_produced_weapon_classification.v1',
+        request_id: request.request_id,
+        qualitative_class: request.item.item_ref === 'a1-spear'
+          ? 'improvised_puncture_light' : 'not_weapon_capable' };
+      } });
+    assert.deepEqual(seen, ['a1-spear', 'a1-note']);
+    assert.equal(classified.item_ref, 'a1-spear');
+    assert.equal(resolveTraceOrdinaryWeaponDanger([spear, note], player,
+      classified), 1);
+
+    const ambiguous = await classifyTraceActionProducedWeapon({
+      items: [spear, actionProducedItem('a1-club', ['тяжёлый конец'], 'long')],
+      actor_ref: player, request_id: 'combat-weapon:ambiguous',
+      classify: async (request) => ({ schema:
+        'rus.combat.action_produced_weapon_classification.v1',
+      request_id: request.request_id,
+      qualitative_class: 'improvised_impact_light' }) });
+    assert.equal(ambiguous, null);
+  });
+
 test('post-exchange subjective projection reads body and equipment from working state',
   () => {
     const state = {
@@ -305,4 +353,16 @@ test('incapacitated NPC does not require an LLM while other hostility continues'
 function combatTemporalOwner() {
   return createTemporalAdvanceOwner({ effect_registrations:
     lowerDvinaTraceCombatTemporalEffectRegistrations() });
+}
+
+function actionProducedItem(itemId, facts, physicalForm) {
+  return { item_id: itemId,
+    placement: { holder_character_id: 'mikula-1' }, state: {
+      condition_state: 'serviceable', ordinary_metadata: {
+        name: itemId, semantic_type: 'ordinary_object',
+        semantic_facts: facts.map((text, index) => ({
+          fact_id: `${itemId}:fact:${index + 1}`, text }))
+      }, action_production: {
+        schema: 'rus.items.action_production_item_state.v1',
+        physical_form: physicalForm } } };
 }

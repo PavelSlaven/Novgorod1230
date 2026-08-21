@@ -27,56 +27,65 @@ export function resolveTraceOrdinaryWeaponDanger(items, actorRef,
   actionProduced = null) {
   const snapshots = heldWeaponSnapshots(items, actorRef);
   if (snapshots.length === 0) return undefined;
-  if (snapshots.length !== 1) return null;
-  const selected = snapshots[0];
-  let danger;
-  if (selected.kind === 'ordinary') {
+  const ordinary = snapshots.filter(({ kind }) => kind === 'ordinary');
+  if (ordinary.length > 1) return null;
+  if (ordinary.length === 1) {
+    const selected = ordinary[0];
     if (selected.snapshot.condition_state !== selected.condition) return null;
-    danger = ordinaryArmamentWeaponDanger(selected.snapshot);
-  } else {
-    if (selected.condition !== 'serviceable'
-        || actionProduced?.item_ref !== selected.item.item_id) return null;
-    danger = actionProduced.weapon_danger;
+    const danger = ordinaryArmamentWeaponDanger(selected.snapshot);
+    return danger == null || danger === 0 ? null : danger;
   }
+  const selected = snapshots.find(({ kind, item }) =>
+    kind === 'action_produced' && item.item_id === actionProduced?.item_ref);
+  if (selected == null || selected.condition !== 'serviceable') return null;
+  const danger = actionProduced.weapon_danger;
   return danger == null || danger === 0 ? null : danger;
 }
 
 export async function classifyTraceActionProducedWeapon({ items, actor_ref,
   request_id, classify }) {
   const snapshots = heldWeaponSnapshots(items, actor_ref);
-  if (snapshots.length !== 1 || snapshots[0].kind !== 'action_produced') {
-    return null;
-  }
+  if (snapshots.some(({ kind }) => kind === 'ordinary')) return null;
+  const candidates = snapshots.filter(({ kind }) =>
+    kind === 'action_produced');
+  if (candidates.length === 0) return null;
   if (typeof classify !== 'function') return null;
-  const item = snapshots[0].item;
-  const state = item.state ?? {};
-  const metadata = state.ordinary_metadata ?? {};
-  const request = {
-    schema: 'rus.combat.action_produced_weapon_classification_request.v1',
-    request_id,
-    item: {
-      item_ref: item.item_id,
-      name: text(metadata.name) ? metadata.name : null,
-      semantic_type: text(metadata.semantic_type)
-        ? metadata.semantic_type : null,
-      condition_state: state.condition_state ?? item.condition_state ?? null,
-      physical_form: state.action_production?.physical_form ?? null,
-      physical_facts: factTexts(metadata.semantic_facts),
-      carry_form: state.runtime_instance_mechanics_snapshot?.mechanics
-        ?.carry_form ?? null
-    },
-    allowed_classes: [...ACTION_PRODUCED_WEAPON_CLASSES]
-  };
-  let raw;
-  try { raw = await classify(structuredClone(request)); } catch { return null; }
-  try {
-    const resolved = resolveActionProducedCombatWeaponClass({
-      classification: raw
-    });
+  const weapons = [];
+  for (const { item } of candidates) {
+    const state = item.state ?? {};
+    const metadata = state.ordinary_metadata ?? {};
+    const request = {
+      schema: 'rus.combat.action_produced_weapon_classification_request.v1',
+      request_id: candidates.length === 1 ? request_id
+        : `${request_id}:${item.item_id}`,
+      item: {
+        item_ref: item.item_id,
+        name: text(metadata.name) ? metadata.name : null,
+        semantic_type: text(metadata.semantic_type)
+          ? metadata.semantic_type : null,
+        condition_state: state.condition_state ?? item.condition_state ?? null,
+        physical_form: state.action_production?.physical_form ?? null,
+        physical_facts: factTexts(metadata.semantic_facts),
+        carry_form: state.runtime_instance_mechanics_snapshot?.mechanics
+          ?.carry_form ?? null
+      },
+      allowed_classes: [...ACTION_PRODUCED_WEAPON_CLASSES]
+    };
+    let raw;
+    try { raw = await classify(structuredClone(request)); } catch { return null; }
+    let resolved;
+    try {
+      resolved = resolveActionProducedCombatWeaponClass({
+        classification: raw
+      });
+    } catch { return null; }
     if (resolved.request_id !== request.request_id) return null;
-    return { item_ref: item.item_id,
-      weapon_danger: resolved.formal_mechanics.weapon_danger };
-  } catch { return null; }
+    if (resolved.formal_mechanics.weapon_danger > 0) weapons.push({
+      item_ref: item.item_id,
+      weapon_danger: resolved.formal_mechanics.weapon_danger
+    });
+  }
+  return weapons.length === 1 ? weapons[0] : null;
 }
 
 export async function classifyTraceActionProducedWeapons({ session, items,

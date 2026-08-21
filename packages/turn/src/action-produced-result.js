@@ -24,7 +24,8 @@ const DESCRIPTOR_KEYS = [
   'inscription_text', 'physical_form', 'source_fact_delta'
 ];
 const SOURCE_FACT_DELTA_KEYS = [
-  'physical_description', 'qualitative_facts', 'removed_physical_fact_refs'
+  'physical_description', 'qualitative_facts', 'removed_physical_fact_refs',
+  'physical_form'
 ];
 const IDENTITY_MODES = new Set([
   'preserve_source', 'independent_outputs', 'no_useful_result'
@@ -182,6 +183,9 @@ function sourceFactDelta(value, errors) {
   refs(value.removed_physical_fact_refs,
     'plan.result_descriptor.source_fact_delta.removed_physical_fact_refs',
     errors, true);
+  member(value.physical_form, new Set([
+    'compact', 'regular', 'long', 'bulky'
+  ]), 'plan.result_descriptor.source_fact_delta.physical_form', errors);
 }
 
 function validateCausalShape(value, errors) {
@@ -206,6 +210,9 @@ function validateCausalShape(value, errors) {
   }
   const partialOutput = value.identity_mode === 'independent_outputs'
     && value.result_class === 'partial_transformation';
+  if (partialOutput && value.source_refs?.length !== 1) {
+    errors.push('partial independent output requires exactly one source');
+  }
   if (partialOutput !== (descriptorValue.source_fact_delta !== null)) {
     errors.push('only a surviving partial source requires a fact delta');
   }

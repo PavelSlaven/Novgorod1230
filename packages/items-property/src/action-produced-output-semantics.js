@@ -222,16 +222,20 @@ function validQualitative(value, proposal) {
     && nullableText(value.result_descriptor.inscription_text)
     && validSourceFactDelta(value.result_descriptor.source_fact_delta,
       proposal.identity_mode === 'independent_outputs'
-        && proposal.result_class === 'partial_transformation');
+        && proposal.result_class === 'partial_transformation')
+    && !(proposal.identity_mode === 'independent_outputs'
+      && proposal.result_class === 'partial_transformation'
+      && proposal.source_transitions.length !== 1);
 }
 function validSourceFactDelta(value, required) {
   if (value === null) return !required;
   return required && exact(value, [
     'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs'
+    'removed_physical_fact_refs', 'physical_form'
   ]) && nullableText(value.physical_description)
     && textArray(value.qualitative_facts)
     && textArray(value.removed_physical_fact_refs)
+    && ['compact', 'regular', 'long', 'bulky'].includes(value.physical_form)
     && (value.physical_description !== null
       || value.qualitative_facts.length > 0
       || value.removed_physical_fact_refs.length > 0);

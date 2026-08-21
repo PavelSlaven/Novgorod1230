@@ -306,7 +306,7 @@ const planDefinitions = {
   }),
   action_production_source_fact_delta: strictObject([
     'physical_description', 'qualitative_facts',
-    'removed_physical_fact_refs'
+    'removed_physical_fact_refs', 'physical_form'
   ], {
     physical_description: { anyOf: [{ type: 'null' }, textSchema] },
     qualitative_facts: {
@@ -314,7 +314,8 @@ const planDefinitions = {
     },
     removed_physical_fact_refs: {
       type: 'array', uniqueItems: true, items: refSchema
-    }
+    },
+    physical_form: { enum: ['compact', 'regular', 'long', 'bulky'] }
   }),
   action_production: { oneOf: [
     actionProductionSchema('preserve_source', { const: 0 }),

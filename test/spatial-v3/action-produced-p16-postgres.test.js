@@ -809,7 +809,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
           source_fact_delta: {
             physical_description: 'с края доски срезана часть',
             qualitative_facts: [],
-            removed_physical_fact_refs: ['fact:production-partial-board:whole']
+            removed_physical_fact_refs: ['fact:production-partial-board:whole'],
+            physical_form: 'regular'
           } })
       }) }));
     const partialCombined = await combinedPlan(
@@ -833,8 +834,8 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       (SELECT count(*)::int
       FROM party_runtime.party_items WHERE party_id='party-a1'
          AND state->'action_production'->'causal_identity'->>'request_id'
-           ='production-partial') AS outputs`)).rows[0], {
-      source_condition: 'serviceable', source_mass: 600, outputs: 2
+          ='production-partial') AS action_items`)).rows[0], {
+      source_condition: 'serviceable', source_mass: 600, action_items: 3
     });
     const partialFacts = await pool.query(`SELECT item_id,
       state->'ordinary_metadata'->'semantic_facts' AS facts
@@ -863,6 +864,11 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       assert.equal(loaded.row_pins.find(({ role }) => role === 'source')
         .item.state.runtime_instance_mechanics_snapshot.mechanics.mass_grams,
       600);
+      assert.equal(loaded.row_pins.find(({ role }) => role === 'source')
+        .item.state.runtime_instance_mechanics_snapshot.mechanics.carry_form,
+      'regular');
+      assert.equal(loaded.row_pins.find(({ role }) => role === 'source')
+        .item.state.action_production.physical_form, 'regular');
     } finally { partialReload.release(); }
 
     const combinedPreserve = await actionPlan(pool, {

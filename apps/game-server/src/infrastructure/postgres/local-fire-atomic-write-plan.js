@@ -1,8 +1,7 @@
-import { admitLocalFireInput, planLocalFireWholeItemRetirement } from
+import { admitLocalFireIgnitionBasis, admitLocalFireInput,
+  planLocalFireWholeItemRetirement } from
   '@rus/items-property';
 import { resolveLocalExactFire } from '@rus/world-processes/local-exact-fire';
-import { validLocalFireIgnitionBasis } from
-  './local-fire-persistence-pins.js';
 
 const REQUEST_KEYS = ['schema','party_id','base_party_state_version',
   'change_set_id','actor_ref','profile_pin','process_state','input_pins',
@@ -146,7 +145,9 @@ function validateIgnition(pin, action, actorRef, profile) {
     return;
   }
   if (pin?.item_id !== profile.ignition_basis_ref
-      || !validLocalFireIgnitionBasis(pin, actorRef, profile.scope_ref)) {
+      || !admitLocalFireIgnitionBasis({ item: pin.item,
+        placement: pin.placement, ownership: pin.ownership,
+        actor_ref: actorRef, scope_ref: profile.scope_ref }).pass) {
     fail('LOCAL_FIRE_IGNITION_BASIS_INVALID');
   }
 }

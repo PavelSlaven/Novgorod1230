@@ -1,4 +1,5 @@
 import { admitLocalFireInput } from '@rus/items-property';
+import { matchesOperationContract } from '@rus/npc-runtime';
 import { resolveWorldProcessStep } from '@rus/turn';
 import { createLocalFireAtomicWritePlan } from
   '../../infrastructure/postgres/local-fire-atomic-write-plan.js';
@@ -11,11 +12,12 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
   if(!pool?.query)throw new TypeError('F1 PostgreSQL pool is required.');
   return({partyId})=>async function resolveLocalFire(envelope){
     const operation=envelope.operation,actorRef=actorFrom(envelope.actor);
-    const marker=markerFrom(envelope.request?.player_safe_state);
-    const scopeRef=currentScope(envelope.committed_state);
+    const marker=capabilityFrom(envelope,operation);
+    const npc=envelope.plan?.schema==='npc_step_plan_v1';
+    const scopeRef=npc?marker?.scope_ref:currentScope(envelope.committed_state);
     if(operation?.op!=='request_world_process'||operation.process_kind!=='fire'
         ||operation.actor_ref!==actorRef||!text(actorRef)
-        ||marker?.semantic_grounding_available!==true
+        ||marker==null||!npc&&marker.semantic_grounding_available!==true
         ||marker.context_ref!==profile.context_ref||marker.scope_ref!==scopeRef
         ||!Array.isArray(operation.source_refs)||operation.source_refs.length<1){
       fail('TRACE_F1_SCOPE_INVALID');
@@ -51,16 +53,13 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
           request:worldProcessRequest({envelope,loaded,operation,scopeRef}),
           worldProcessStepModel});
         qualitativeOutcome=semantic.process_outcome;
-        if(qualitativeOutcome==='no_effect')return Object.freeze({
-          working_projection:structuredClone(envelope.working_projection),
-          summary:'local_fire:no_effect',write_fragments:[],
-          player_response_boundary:true});
         action='affect';
       }else fail('TRACE_F1_INPUT_NOT_ADMITTED');
     }
     const request=envelope.request;
+    const stepIndex=request.step_index??request.decision_index;
     const processRef=start
-      ?`local-fire:${partyId}:${request.root_turn_id}:${request.step_index}`
+      ?`local-fire:${partyId}:${request.root_turn_id}:${stepIndex}`
       :operation.process_ref;
     const plan=createLocalFireAtomicWritePlan({
       schema:'local_fire_atomic_write_request_v1',party_id:partyId,
@@ -72,7 +71,7 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
       ignition_basis_pin:loaded.ignition_basis_pin,action,process_ref:processRef,
       at_timestamp:envelope.committed_state.clock,
       cause:{kind:'actor_step',request_id:request.request_id,
-        root_turn_id:request.root_turn_id,step_index:request.step_index},
+        root_turn_id:request.root_turn_id,step_index:stepIndex},
       qualitative_outcome:qualitativeOutcome});
     return Object.freeze({working_projection:structuredClone(
       envelope.working_projection),summary:`local_fire:${plan.transition_proposal.outcome}`,
@@ -127,6 +126,20 @@ function profilePinFrom(profile,scopeRef,ignitionBasisRef){return{
     fuel_unit_mass_grams_max:profile.fuel_unit_mass_grams_max}};}
 function markerFrom(state){const value=state?.local_world_process;
   return value&&typeof value==='object'&&!Array.isArray(value)?value:null;}
+function capabilityFrom(envelope,operation){
+  if(envelope.plan?.schema!=='npc_step_plan_v1'){
+    return markerFrom(envelope.request?.player_safe_state);
+  }
+  const value=envelope.request?.decision_scope?.operation_contract
+    ?.request_world_process;
+  return matchesOperationContract(operation,value)
+    &&text(value?.context_ref)&&text(value?.scope_ref)
+    &&Array.isArray(value.ignition_basis_refs)
+    &&Array.isArray(value.active_process_refs)
+    &&value.process_ignition_basis_refs&&typeof value.process_ignition_basis_refs
+      ==='object'&&!Array.isArray(value.process_ignition_basis_refs)
+    ?value:null;
+}
 function currentScope(state){return state?.position?.g5_anchor_id
   ??state?.position?.anchor_id??state?.position?.location_ref??null;}
 function actorFrom(actor){return actor?.actor_id??actor?.actor_ref??actor?.npc_id??null;}

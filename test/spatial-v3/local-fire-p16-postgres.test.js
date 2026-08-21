@@ -4,6 +4,10 @@ import test from 'node:test';
 import { Pool } from 'pg';
 import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
+import { buildNpcActionDecisionRequest, buildNpcStepPlan } from
+  '@rus/npc-runtime';
+import { createTurnStepExecutionRegistry, executeTurnStepActorStep } from
+  '@rus/turn';
 import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
 import { integrateSpatialV3TemporalWriteFragments } from
@@ -22,6 +26,8 @@ import { lowerDvinaTraceLocalFireTemporalRegistration } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-local-fire-temporal.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   '../../apps/game-server/src/runtime/releases/lower-dvina-trace-f1-production.js';
+import { deriveActionProducedResultItem } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-result-item.js';
 
 const docker = (args) => spawnSync('docker', args,
   { encoding: 'utf8', timeout: 60_000 });
@@ -208,6 +214,11 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       partyId:'party-fire',actorRef:'system:local_fire_boundary',
       profilePin:profilePin(),inputItemIds:['fuel-2'],processRef});
     assert.equal(afterFirstDue.process_state.fuel_bindings[0].fuel_ref,'fuel-2');
+    assert.deepEqual((await pool.query(`SELECT template_id,
+      state->'local_fire_fuel'->>'fuel_class' AS fuel_class
+      FROM party_runtime.party_items
+      WHERE party_id='party-fire' AND item_id='fuel-3'`)).rows[0],{
+      template_id:null,fuel_class:'ordinary_solid_fuel_unit'});
     const productionResolver=createLowerDvinaTraceF1ProductionResolverFactory({
       pool,loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
         profile:profile()}})({
@@ -279,8 +290,9 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
             process_ref:request.process.process_ref,
             process_state_version:request.process_state_version,
             interpretation:{grounded_transition:'whole water portion extinguishes fire'},
-            process_outcome:'complete',affected_refs:['water-1'],fact_changes:[],
-            reason_code:'water_extinguishes'};
+            process_outcome:request.subject_state.source_refs[0]==='water-1'
+              ?'no_effect':'complete',affected_refs:request.subject_state.source_refs,
+            fact_changes:[],reason_code:'water_affects_fire'};
         }})({partyId:'party-fire'});
     const waterResult=await waterResolver({operation:{op:'request_world_process',
       actor_ref:'pc',process_action:'affect',process_ref:waterProcess,
@@ -309,28 +321,62 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         party_runtime.party_local_world_process_fuel_bindings
        WHERE party_id='party-fire' AND process_ref=$1 AND fuel_item_id='fuel-4')
        AS fuel_release`,[waterProcess])).rows[0];
+    assert.deepEqual(rows,{status:'active',water_state:'retired',
+      fuel_release:null});
+
+    const completedByWater=await waterResolver({operation:{
+      op:'request_world_process',actor_ref:'pc',process_action:'affect',
+      process_ref:waterProcess,process_kind:'fire',source_refs:['water-2'],
+      target_refs:[],description:'вылить вторую воду на огонь'},
+    actor:{actor_id:'pc'},plan:{schema:'turn_step_plan_v1'},request:{
+      request_id:'request-water-2',root_turn_id:'turn-water-2',step_index:1,
+      committed_state_version:'8',player_safe_state:{local_world_process:{
+        semantic_grounding_available:true,context_ref:'context-fire',
+        scope_ref:'scope-fire',ignition_basis_refs:['ignition'],
+        active_process_refs:[waterProcess],
+        process_ignition_basis_refs:{[waterProcess]:'ignition'}}}},
+    working_projection:{},committed_state:{party_state:{turn_number:8},
+      clock:clock(32),position:{location_ref:'scope-fire'}}});
+    assert.equal(semanticCalls,2);
+    assert.equal((await committer.commit({plan:await combinedPlan(
+      completedByWater.local_fire_atomic_write_plan,8)})).ok,true);
+    rows=(await pool.query(`SELECT
+      (SELECT status FROM party_runtime.party_local_world_processes
+       WHERE party_id='party-fire' AND process_ref=$1) AS status,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+       WHERE party_id='party-fire' AND item_id='water-2') AS water_state,
+      (SELECT released_at_change_set_id FROM
+        party_runtime.party_local_world_process_fuel_bindings
+       WHERE party_id='party-fire' AND process_ref=$1 AND fuel_item_id='fuel-4')
+       AS fuel_release`,[waterProcess])).rows[0];
     assert.deepEqual(rows,{status:'completed',water_state:'retired',
-      fuel_release:'change:party-fire:turn-step:8'});
+      fuel_release:'change:party-fire:turn-step:9'});
 
     const npcResolver=createLowerDvinaTraceF1ProductionResolverFactory({pool,
       loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
         profile:profile()}})({partyId:'party-fire'});
-    const npcResult=await npcResolver({operation:{op:'request_world_process',
+    const npcOperation={op:'request_world_process',
       actor_ref:'npc-fire',process_action:'start',process_ref:null,
       process_kind:'fire',source_refs:['npc-fuel'],
-      target_refs:['npc-ignition'],description:'разжечь огонь'},
-    actor:{npc_id:'npc-fire'},plan:{schema:'turn_step_plan_v1'},request:{
-      request_id:'request-npc-fire',root_turn_id:'turn-npc-fire',step_index:1,
-      committed_state_version:'8',player_safe_state:{local_world_process:{
-        semantic_grounding_available:true,context_ref:'context-fire',
-        scope_ref:'scope-fire',ignition_basis_refs:['npc-ignition'],
-        active_process_refs:[],process_ignition_basis_refs:{}}}},
-    working_projection:{},committed_state:{party_state:{turn_number:8},
-      clock:clock(40),position:{location_ref:'scope-fire'}}});
-    const npcPlan=npcResult.local_fire_atomic_write_plan;
+      target_refs:['npc-ignition'],description:'разжечь огонь'};
+    const npcRequest=buildNpcActionDecisionRequest(
+      npcWorldProcessRequest(npcOperation,9));
+    const npcStepPlan=buildNpcStepPlan(npcWorldProcessPlan(
+      npcRequest,npcOperation),npcRequest);
+    const npcState={party_state:{turn_number:9},clock:clock(40),
+      position:{location_ref:'player-scope'}};
+    const npcRegistry=createTurnStepExecutionRegistry({domain:{
+      request_world_process:(execution)=>npcResolver({...execution,
+        actor:{npc_id:'npc-fire'},committed_state:npcState})},
+    operationContract:npcRequest.decision_scope.operation_contract});
+    const npcExecution=await executeTurnStepActorStep({plan:npcStepPlan,
+      request:npcRequest,workingProjection:{},preparedChainContext:null,
+      preparedOrdinaryPlan:null,preparedActionProductionPlans:[],
+      registry:npcRegistry,ports:{}});
+    const npcPlan=npcExecution.local_fire_atomic_write_plan;
     assert.equal(npcPlan.actor_ref,'npc-fire');
     assert.equal((await committer.commit({
-      plan:await combinedPlan(npcPlan,8)})).ok,true);
+      plan:await combinedPlan(npcPlan,9)})).ok,true);
     assert.equal((await pool.query(`SELECT count(*)::int AS count
       FROM party_runtime.party_local_world_process_fuel_bindings
       WHERE party_id='party-fire' AND fuel_item_id='npc-fuel'
@@ -506,7 +552,7 @@ async function provision(pool) {
     (party_id,npc_id,run_id,profile_set_id,profile_level)
     VALUES ('party-fire','npc-fire','run-fire','profile:npc-fire','background')`);
   for (const [id,kind,mass] of [['ignition','ignition',180],
-    ['fuel-1','fuel',300],['fuel-2','fuel',700],['fuel-3','fuel',400],
+    ['fuel-1','fuel',300],['fuel-2','fuel',700],
     ['fuel-4','fuel',500]]) {
     const state={lifecycle_status:'active',property_state:{kind},
       ...(kind==='fuel'?{local_fire_fuel:{
@@ -530,6 +576,7 @@ async function provision(pool) {
        controller_character_id,claim_state)
       VALUES ('party-fire',$1,$2,'pc',false,'pc','owned')`,[`own:${id}`,id]);
   }
+  await insertA1Fuel(pool);
   const waterState={lifecycle_status:'active',ordinary_metadata:{
     semantic_type:'water_portion',semantic_category:'ordinary_mundane'},
     runtime_instance_mechanics_snapshot:{
@@ -544,15 +591,19 @@ async function provision(pool) {
     (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
      condition_state,legal_status,state,state_version)
     VALUES ('party-fire','water-1',NULL,NULL,NULL,NULL,1,
+      'ordinary_runtime_instance','ordinary',$1::jsonb,1),
+      ('party-fire','water-2',NULL,NULL,NULL,NULL,1,
       'ordinary_runtime_instance','ordinary',$1::jsonb,1)`,
   [JSON.stringify(waterState)]);
   await pool.query(`INSERT INTO party_runtime.party_item_placements
     (party_id,item_id,holder_character_id,physical_position)
-    VALUES ('party-fire','water-1','pc','hands')`);
+    VALUES ('party-fire','water-1','pc','hands'),
+      ('party-fire','water-2','pc','hands')`);
   await pool.query(`INSERT INTO party_runtime.party_ownership
     (party_id,ownership_id,item_id,owner_character_id,owner_party,
      controller_character_id,claim_state)
-    VALUES ('party-fire','own:water-1','water-1','pc',false,'pc','owned')`);
+    VALUES ('party-fire','own:water-1','water-1','pc',false,'pc','owned'),
+      ('party-fire','own:water-2','water-2','pc',false,'pc','owned')`);
   for (const [id,kind,mass] of [['npc-ignition','ignition',180],
     ['npc-fuel','fuel',350]]) {
     const state={lifecycle_status:'active',...(kind==='fuel'?{local_fire_fuel:{
@@ -577,6 +628,62 @@ async function provision(pool) {
   }
 }
 
+async function insertA1Fuel(pool){
+  const ownership={ownership_id:'own:fuel-2',owner_npc_id:null,
+    owner_character_id:'pc',owner_party:false,controller_npc_id:null,
+    controller_character_id:'pc',claim_state:'owned'};
+  const sourcePins=[{item_id:'fuel-2',item:{item_id:'fuel-2',
+    condition_state:'serviceable',state:{lifecycle_status:'active',
+      local_fire_fuel:{schema:'rus.items.local_fire_fuel.v1',
+        fuel_class:'ordinary_solid_fuel_unit',whole_unit:true,
+        mechanics:{mass_grams:700}}}},ownership,entity_snapshot:{
+      controller_ref:'pc',ownership_snapshot:ownership}}];
+  const mechanics={schema:'rus.items.runtime_instance_mechanics_snapshot.v1',
+    version:1,provenance:{source_kind:'ordinary_direct_action_result',
+      root_turn_id:'turn-a1-fuel',step_index:1,operation_ref:'action-a1-fuel',
+      origin_kind:'direct_partition',source_refs:['fuel-2']},mechanics:{
+      mass_grams:400,external_hand_cost:0,carry_form:'compact',
+      packing_slot_cost:1,quantity:{value:1,unit:'item'},container:null}};
+  const produced=deriveActionProducedResultItem({entity_ref:'fuel-3',
+    source_ref:'fuel-2',holder_ref:null,controller_ref:'pc',
+    mechanics_snapshot:mechanics,physical_facts:['отделённая сухая часть'],
+    inscription_text:null,output_authority:{
+      schema:'rus.items.action_produced_output_authority.v1',
+      mode:'new_non_authoritative',canonical_identity_status:'absent',
+      currency_status:'not_currency',legal_tender_status:'not_legal_tender',
+      official_status:'not_official',objective_truth_status:'not_projected',
+      knowledge_status:'not_projected'},material_allocations:[{
+      source_ref:'fuel-2',quantity:{numerator:4,denominator:7,
+        unit:'whole_item'}}]},sourcePins,{causal_identity:{
+      action_ref:'action-a1-fuel'},result_class:'partial_transformation',
+      qualitative_result:{output_class:'ordinary_mundane',result_descriptor:{
+        display_name:'отделённая сухая растопка',physical_description:null,
+        physical_form:'compact'}}},'change-a1-fuel',{schema:
+      'action_production_output_destination_pin_v1',destination_kind:
+      'party_current_anchor',anchor_id:'scope-fire',item_capacity:20,
+      used_item_ids:[]},'pc');
+  await pool.query(`INSERT INTO party_runtime.party_items
+    (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
+     condition_state,legal_status,state,state_version)
+    VALUES ('party-fire',$1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb,$10)`,[
+    produced.item_id,produced.item_row.run_id,produced.item_row.template_id,
+    produced.item_row.profile_id,produced.item_row.category_id,
+    produced.item_row.quantity,produced.item_row.condition_state,
+    produced.item_row.legal_status,JSON.stringify(produced.item_row.state),
+    produced.item_row.state_version]);
+  await pool.query(`INSERT INTO party_runtime.party_item_placements
+    (party_id,item_id,holder_character_id,physical_position)
+    VALUES ('party-fire',$1,'pc','hands')`,[produced.item_id]);
+  await pool.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,item_id,owner_character_id,owner_party,
+     controller_character_id,claim_state)
+    VALUES ('party-fire',$1,$2,$3,$4,$5,$6)`,[
+    produced.ownership_row.ownership_id,produced.item_id,
+    produced.ownership_row.owner_character_id,produced.ownership_row.owner_party,
+    produced.ownership_row.controller_character_id,
+    produced.ownership_row.claim_state]);
+}
+
 function profile() {
   return { schema:'rus.lower_dvina_trace_local_fire_profile.v1',
     profile_id:'profile-fire',revision:1,status:'approved',
@@ -595,6 +702,48 @@ function profilePin() {
       fuel_unit_mass_grams_min:value.fuel_unit_mass_grams_min,
       fuel_unit_mass_grams_max:value.fuel_unit_mass_grams_max}};
 }
+
+function npcWorldProcessRequest(operation,partyVersion){
+  return{schema:'npc_action_decision_request_v1',request_id:'request-npc-fire',
+    root_turn_id:'turn-npc-fire',boundary_id:'boundary-npc-fire',
+    committed_state_version:partyVersion,working_revision:0,decision_index:1,
+    occurred_at:clock(40),npc_ref:'npc-fire',decision_reasons:{
+      significance:'material',categories:['environment','objective'],
+      signal_refs:[{entity_kind:'npc_decision_signal',entity_id:'signal-fire'}],
+      perceived_changes:['NPC располагает топливом и кресалом.']},
+    historical_context:{year:1230,season:'summer',region:'Нижняя Двина',
+      applicable_norms:[],known_local_customs:[]},npc:{profile_level:'scene',
+      identity:{name_or_label:'NPC',age_range:'adult',origin:null},
+      social_role:{role_ref:null,status:null,authority:[],dependencies:[]},
+      attributes:[],skills:[],body_state:{summary:null,conditions:[]},mood:null,
+      temperament:[],values:[],goals:[],fears:[],obligations:[],relationships:[],
+      current_activity:{activity_ref:null,summary:null,status:'idle',
+        can_continue_automatically:false},available_resources:[
+        {item_ref:'npc-fuel'},{item_ref:'npc-ignition'}]},perception:{
+      visible_scene:[],perceived_changes:[],heard:[],felt:[],present_actors:[],
+      visible_objects:[{item_ref:'npc-fuel'},{item_ref:'npc-ignition'}],
+      known_routes_and_exits:[],uncertainties:[]},knowledge:{known_facts:[],
+      beliefs:[],hypotheses:[]},memory:{recent_events:[],
+      relevant_long_term_events:[],previous_decisions:[]},decision_scope:{
+      mode:'autonomous_action',allowed_attribute_refs:[],allowed_skill_refs:[],
+      operation_contract:{request_world_process:{
+        owner:'@rus/world-processes',context_ref:'context-fire',
+        scope_ref:'scope-fire',ignition_basis_refs:['npc-ignition'],
+        active_process_refs:[],process_ignition_basis_refs:{},allowed:[{
+          process_action:operation.process_action,
+          process_ref:operation.process_ref,process_kind:operation.process_kind,
+          source_refs:operation.source_refs,target_refs:operation.target_refs}]}}}};
+}
+function npcWorldProcessPlan(request,operation){return{
+  schema:'npc_step_plan_v1',request_id:request.request_id,
+  root_turn_id:request.root_turn_id,boundary_id:request.boundary_id,
+  committed_state_version:request.committed_state_version,
+  working_revision:request.working_revision,decision_index:request.decision_index,
+  npc_ref:request.npc_ref,interpretation:{npc_goal:'разжечь огонь',
+    grounded_attempt:'использовать топливо и кресало',adaptation:'literal'},
+  resolution:'domain_request',goal_result:'pending',activity:{owner:'domain',
+    duration_class:null,effort:null},operations:[operation],check:null,
+  reason_code:'local_fire_needed',reason:'Доступны топливо и кресало.'};}
 
 function semanticSnapshot(local) {
   const proposal=local.transition_proposal;

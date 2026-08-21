@@ -182,8 +182,11 @@ Runtime release `spatial-v3-production-v11` сохраняет все inherited 
 publication. Он materialize-ит exact authored ignition basis и два concrete
 whole fuel units, композирует production resolver и регистрирует due boundary у
 существующего temporal owner. Любой другой item-owned whole fuel допускается
-тем же generic правилом без ID whitelist. Start/add/due и qualitative
-whole-water affect входят в тот же combined P16; bound fuel mutation, stale
+тем же generic правилом без ID whitelist; A1 output получает fuel class только
+от causally consumed classified fuel source. Player capability берётся из
+player-safe projection, NPC capability — из exact NPC-safe operation contract,
+после чего оба проходят один DB/item-owner admission. Start/add/due и qualitative
+whole-water affect, включая `no_effect`, входят в тот же combined P16; bound fuel mutation, stale
 pins, duplicate transition и late failure откатываются атомарно. Due
 actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
 marker содержит только visible refs. Отдельных F1 authority/commit tables,

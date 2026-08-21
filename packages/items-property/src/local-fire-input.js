@@ -3,6 +3,39 @@ import { resolveInventoryMechanicsProfile } from
   './runtime-instance-mechanics.js';
 import { runtimeItemIsTerminal } from './runtime-item-visibility.js';
 
+export function admitLocalFireIgnitionBasis({ item, placement, ownership,
+  actor_ref: actorRef, scope_ref: scopeRef } = {}) {
+  const pass = plain(item) && plain(placement) && plain(ownership)
+    && placement.item_id === item.item_id && ownership.item_id === item.item_id
+    && item.state?.local_fire_ignition_basis?.schema
+      === 'rus.items.local_fire_ignition_basis.v1'
+    && item.state?.lifecycle_status === 'active'
+    && accessible(placement, ownership, actorRef, scopeRef);
+  return deepFreeze({ pass, errors: pass ? [] : [{
+    code: 'ITEM_LOCAL_FIRE_IGNITION_BASIS_NOT_ADMITTED'
+  }] });
+}
+
+export function deriveLocalFireFuelClassification({ source_items: sourceItems,
+  source_refs: sourceRefs, mechanics_snapshot: mechanicsSnapshot } = {}) {
+  if (!Array.isArray(sourceItems) || !Array.isArray(sourceRefs)
+      || sourceRefs.length === 0 || new Set(sourceRefs).size !== sourceRefs.length) {
+    return null;
+  }
+  const byRef = new Map(sourceItems.map((item) => [item?.item_id, item]));
+  if (sourceRefs.some((ref) => !validFuelMarker(
+    byRef.get(ref)?.state?.local_fire_fuel))) return null;
+  const mechanics = resolveInventoryMechanicsProfile({ instance: {
+    template_id: null, runtime_instance_mechanics_snapshot: mechanicsSnapshot
+  }, profiles: [] });
+  if (!mechanics.pass || mechanics.profile.container !== null
+      || mechanics.profile.quantity?.value !== 1
+      || mechanics.profile.quantity.unit !== 'item') return null;
+  return deepFreeze({ schema: 'rus.items.local_fire_fuel.v1',
+    fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
+    mechanics: structuredClone(mechanics.profile) });
+}
+
 export function admitLocalFireInput({ item, placement, ownership,
   bound_process_ref: boundProcessRef = null, actor_ref: actorRef,
   scope_ref: scopeRef, fuel_mass_grams_min: minimum,
@@ -73,6 +106,13 @@ function denied() {
   return deepFreeze({ pass: false, input_kind: null, item: null,
     placement: null, ownership: null, snapshot: null,
     errors: [{ code: 'ITEM_LOCAL_FIRE_INPUT_NOT_ADMITTED' }] });
+}
+function validFuelMarker(value) {
+  return value?.schema === 'rus.items.local_fire_fuel.v1'
+    && value.fuel_class === 'ordinary_solid_fuel_unit'
+    && value.whole_unit === true
+    && Number.isSafeInteger(value.mechanics?.mass_grams)
+    && value.mechanics.mass_grams > 0;
 }
 function accessible(placement, ownership, actorRef, scopeRef) {
   const held = actorField(placement, 'holder') === actorRef;

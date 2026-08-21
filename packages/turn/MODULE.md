@@ -234,12 +234,15 @@ step запрещена, потому что A1 не имеет prepared-direct 
 
 Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
-Active F1 сохраняет единственную player semantic boundary: public
-`request_world_process` имеет только `start|affect`. Exact start и generic
+Active F1 сохраняет единственную actor-step semantic boundary: public
+`request_world_process` имеет только `start|affect` для player и NPC. Player
+получает visible capability, NPC — exact NPC-safe operation contract; physical
+admission в обоих случаях повторяет item/world-process owner. Exact start и generic
 whole-fuel addition детерминированы и не вызывают model. Whole-water affect
 использует bounded `world_process_step_request_v1` только для qualitative
 `no_effect|continue|complete`; request не даёт model числовых mechanics и не
-создаёт второй planner. Due boundary приходит через общий temporal integration
+создаёт второй planner. Любой water outcome сохраняет whole-water consumption
+атомарно с process transition. Due boundary приходит через общий temporal integration
 без fake player turn и без actor requirement. Все F1 plans входят в
 существующий combined P16.
 

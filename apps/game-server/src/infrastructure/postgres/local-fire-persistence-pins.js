@@ -36,24 +36,3 @@ export function localFireItemPin(row) {
   return { item_id: row.item_id, item, placement, ownership,
     bound_process_ref: row.bound_process_ref ?? null };
 }
-
-export function validLocalFireIgnitionBasis(pin, actorRef, scopeRef) {
-  const marker = pin?.item?.state?.local_fire_ignition_basis;
-  return marker?.schema === 'rus.items.local_fire_ignition_basis.v1'
-    && pin.item.state.lifecycle_status === 'active'
-    && accessible(pin, actorRef, scopeRef);
-}
-
-function accessible(pin, actorRef, scopeRef) {
-  const placement = pin.placement, ownership = pin.ownership;
-  const held = placement.holder_character_id === actorRef
-    || placement.holder_npc_id === actorRef;
-  const local = placement.anchor_id === scopeRef
-    && placement.container_id == null && placement.holder_character_id == null
-    && placement.holder_npc_id == null && placement.attached_item_id == null;
-  const controlled = ownership.controller_character_id === actorRef
-    || ownership.controller_npc_id === actorRef;
-  const owned = ownership.owner_character_id === actorRef
-    || ownership.owner_npc_id === actorRef || ownership.owner_party === true;
-  return (held || local) && controlled && owned;
-}

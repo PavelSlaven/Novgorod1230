@@ -77,10 +77,12 @@ A1 v1 сознательно не моделирует небольшой subtra
 
 Active F1 переиспользует item owner: любой accessible whole non-container item с
 явным generic fuel marker и допустимой exact mass может стать fuel unit без
-каталога authored ID. Existing whole water portion допускается как qualitative
-affect input. Actor-step проверяет holder/controller/owner; due boundary
-проверяет exact process binding без actor. Retirement топлива или воды также
-планирует этот owner и сохраняет общий P16.
+каталога authored ID. Тот же owner переносит этот класс на whole A1 output
+только из causally consumed уже classified fuel sources; qualitative descriptor
+сам класс не создаёт. Existing whole water portion допускается как qualitative
+affect input. Actor-step и ignition basis проверяют общий physical-access owner;
+due boundary проверяет exact process binding без actor. Retirement топлива или
+воды также планирует этот owner и сохраняет общий P16.
 
 ## Зависимости
 

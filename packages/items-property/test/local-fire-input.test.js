@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  admitLocalFireIgnitionBasis,
   admitLocalFireInput,
   planLocalFireWholeItemRetirement
 } from '../src/index.js';
@@ -46,6 +47,19 @@ test('unlisted whole fuel uses item-owned class, access and mass bounds', () => 
   assert.equal(admitLocalFireInput({ ...npc, actor_ref: 'npc',
     scope_ref: 'shore', fuel_mass_grams_min: 100,
     fuel_mass_grams_max: 1000 }).pass, true);
+});
+
+test('ignition basis uses the same item-owned physical access boundary', () => {
+  const value = fuel('ignition');
+  delete value.item.state.local_fire_fuel;
+  value.item.state.local_fire_ignition_basis = {
+    schema: 'rus.items.local_fire_ignition_basis.v1'
+  };
+  assert.equal(admitLocalFireIgnitionBasis({ ...value, actor_ref: 'actor',
+    scope_ref: 'shore' }).pass, true);
+  value.ownership.controller_character_id = 'other';
+  assert.equal(admitLocalFireIgnitionBasis({ ...value, actor_ref: 'actor',
+    scope_ref: 'shore' }).pass, false);
 });
 
 test('fuel admission rejects wrong class, bounds, access and active binding', () => {

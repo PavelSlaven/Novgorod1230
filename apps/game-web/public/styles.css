@@ -177,77 +177,14 @@ textarea {
   width: 100%;
   height: 100%;
 }
-.landscape-sky, .landscape-horizon, .landscape-ground,
-.landscape-weather { position: absolute; inset-inline: 0; }
-.landscape-sky {
-  top: 0;
-  height: 62%;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--paper-raised) 86%, var(--brass)),
-    var(--paper-muted));
+.scene-weather-overlay {
+  position: absolute;
+  z-index: 7;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
-.landscape-horizon {
-  top: 53%;
-  height: 12%;
-  background: color-mix(in srgb, var(--ink-muted) 18%, var(--paper-muted));
-  filter: blur(7px);
-}
-.landscape-ground {
-  bottom: 0;
-  height: 43%;
-  background: linear-gradient(165deg,
-    color-mix(in srgb, var(--paper-muted) 74%, var(--ink-muted)),
-    color-mix(in srgb, var(--paper) 82%, var(--ink)));
-}
-.landscape-weather { z-index: 2; inset-block: 0; pointer-events: none; }
-.landscape--day-dawn .landscape-sky,
-.landscape--day-dusk .landscape-sky {
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--paper-muted) 70%, var(--cinnabar)),
-    color-mix(in srgb, var(--paper-raised) 72%, var(--brass)));
-}
-.landscape--day-evening .landscape-sky {
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--paper-muted) 78%, var(--brass)),
-    var(--paper-muted));
-}
-.landscape--day-night .landscape-sky {
-  background: linear-gradient(180deg, #171923,
-    color-mix(in srgb, #29303c 72%, var(--paper-muted)));
-}
-.landscape--day-night .landscape-ground {
-  background: linear-gradient(165deg, #252822, #171916);
-}
-.landscape--weather-cloudy .landscape-sky,
-.landscape--weather-overcast .landscape-sky {
-  filter: saturate(.55) brightness(.88);
-}
-.landscape--weather-overcast .landscape-horizon,
-.landscape--weather-fog .landscape-horizon { opacity: .72; filter: blur(13px); }
-.landscape--weather-fog .landscape-weather {
-  background: linear-gradient(180deg, transparent 20%,
-    color-mix(in srgb, var(--paper-raised) 68%, transparent) 55%, transparent);
-}
-.landscape--weather-rain .landscape-weather {
-  opacity: .34;
-  background: repeating-linear-gradient(105deg,
-    transparent 0 14px, color-mix(in srgb, var(--ink-muted) 54%, transparent) 15px 16px);
-}
-.landscape--weather-snow .landscape-weather {
-  opacity: .48;
-  background-image: radial-gradient(circle,
-    color-mix(in srgb, var(--paper-raised) 88%, white) 0 1px, transparent 2px);
-  background-size: 24px 28px;
-}
-.landscape--cold { filter: saturate(.78); }
-.landscape--wet .landscape-ground {
-  background: linear-gradient(165deg,
-    color-mix(in srgb, var(--paper-muted) 62%, var(--ink-muted)),
-    color-mix(in srgb, var(--paper) 68%, var(--ink)),
-    color-mix(in srgb, var(--brass) 20%, var(--paper-muted)));
-}
-.landscape--exposed .landscape-horizon { height: 7%; opacity: .7; }
-.scene-grain { z-index: 3; position: absolute; inset: 0; opacity: .22; background-image: repeating-linear-gradient(23deg, transparent 0 5px, var(--line-soft) 6px); mix-blend-mode: multiply; }
 .scene-viewport p { z-index: 1; margin: 0; padding: 1rem; color: var(--ink-muted); font: 500 .72rem/1.4 var(--font-ui); letter-spacing: .12em; text-align: center; text-transform: uppercase; }
 .landscape-caption {
   position: absolute;
@@ -287,7 +224,7 @@ textarea {
 }
 .conversation-portrait--procedural canvas {
   display: block;
-  width: clamp(13rem, 31vw, 22rem);
+  width: clamp(18rem, 40vw, 32rem);
   height: auto;
   filter: drop-shadow(0 .8rem 1rem rgba(30, 24, 19, .28));
 }
@@ -371,7 +308,7 @@ textarea {
   .conversation-portrait { top: .35rem; right: .35rem; bottom: auto; max-width: calc(100% - .7rem); }
   .conversation-portrait svg { width: 2.65rem; height: 2.65rem; }
   .conversation-portrait--procedural { top: auto; right: 0; bottom: 0; }
-  .conversation-portrait--procedural canvas { width: clamp(9rem, 42vw, 14rem); }
+  .conversation-portrait--procedural canvas { width: clamp(9rem, 48vw, 18rem); }
   .conversation-portrait--procedural div { right: .4rem; bottom: .3rem; }
   .landscape-caption { bottom: .35rem; }
   .reader-column { margin-top: 2rem; padding-inline: .5rem; }

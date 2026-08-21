@@ -201,9 +201,12 @@ test('static asset resolver serves only allowlisted web paths', async () => {
   const root = await mkdtemp(join(tmpdir(), 'rus-web-'));
   const contractsRoot = await mkdtemp(join(tmpdir(), 'rus-contracts-'));
   await mkdir(join(root, 'public'), { recursive: true });
+  await mkdir(join(root, 'public', 'assets', 'landscape'), { recursive: true });
   await mkdir(join(root, 'src'), { recursive: true });
   await writeFile(join(root, 'public', 'index.html'), '<h1>RUS</h1>');
   await writeFile(join(root, 'public', 'portrait-lab.html'), '<h1>Portrait Lab</h1>');
+  await writeFile(join(root, 'public', 'assets', 'landscape', 'scene.webp'),
+    Buffer.from('RIFF'));
   await writeFile(join(root, 'src', 'main.js'), 'export {};');
   await writeFile(join(contractsRoot, 'portrait-spec-v1.js'), 'export const schema = 1;');
   const resolver = createStaticAssetResolver({ webRoot: root, contractsRoot });
@@ -213,6 +216,11 @@ test('static asset resolver serves only allowlisted web paths', async () => {
     (await resolver.read('/packages/contracts/src/portrait-spec-v1.js')).body.toString(),
     /schema/u
   );
+  assert.equal(
+    (await resolver.read('/assets/landscape/scene.webp')).contentType,
+    'image/webp'
+  );
+  assert.equal(await resolver.read('/assets/../index.html'), null);
   assert.equal(await resolver.read('/../package.json'), null);
   assert.equal(await resolver.read('/secret.txt'), null);
 });

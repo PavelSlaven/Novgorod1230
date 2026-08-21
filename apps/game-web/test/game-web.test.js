@@ -247,6 +247,7 @@ test('game shell has factual context, neutral viewport, independent input and no
   const html = renderScreen(screen, { openingStatus: 'acknowledged' });
   assert.match(html, /data-screen-schema="first_game_screen"/u);
   assert.match(html, /scene-viewport/u);
+  assert.match(html, /data-scene-weather-canvas/u);
   assert.match(html, /Берег Двины/u);
   assert.match(html, /Позднее лето/u);
   assert.match(html, /data-turn-form/u);
@@ -331,12 +332,12 @@ test('public screen rejects unapproved landscape semantic inputs', () => {
   }
 });
 
-test('landscape without supported cues stays abstract and deterministic', () => {
+test('landscape without supported cues uses the deterministic daily meadow', () => {
   const emptyScreen = { ...firstScreen(), visible_context: {} };
   const empty = renderLandscape(emptyScreen);
   assert.equal(empty, renderLandscape(structuredClone(emptyScreen)));
-  assert.doesNotMatch(empty,
-    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+  assert.match(empty, /landscape--weather-clear/u);
+  assert.match(empty, /landscape--day-day/u);
 
   const unsupportedScreen = {
     ...firstScreen(),
@@ -352,8 +353,8 @@ test('landscape without supported cues stays abstract and deterministic', () => 
     renderLandscape(structuredClone(unsupportedScreen)));
   assert.match(unsupported, /&lt;Стан&gt;/u);
   assert.doesNotMatch(unsupported, /<Стан>/u);
-  assert.doesNotMatch(unsupported,
-    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+  assert.match(unsupported, /landscape--weather-clear/u);
+  assert.match(unsupported, /landscape--day-day/u);
   assert.doesNotMatch(unsupported,
     /night-rain|very_cold|Сильный дождь|Поздняя ночь/u);
 });

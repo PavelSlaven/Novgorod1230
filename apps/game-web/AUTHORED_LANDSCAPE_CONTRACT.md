@@ -6,6 +6,9 @@
 `@rus/game-web`. Он описывает текущее поведение, а не будущую систему масок
 или декоративных sprites.
 
+Самостоятельное задание на производство матрицы времени и погоды находится
+в [Landscape Time & Weather Art Contract](./LANDSCAPE_TIME_WEATHER_ART_CONTRACT.md).
+
 Единственный владелец выбора сцены — `buildLandscapeRenderModel(screen)`.
 Server передаёт только player-safe данные; browser не выводит сцену из prose,
 названия локации или имени персонажа.

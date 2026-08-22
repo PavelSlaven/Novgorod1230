@@ -52,7 +52,7 @@
         "скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`",
         "semantic geometry branches, включая отдельную процедурную конструкцию косы для `hair.style: \"braided\"`",
         "единым внутренним владельцем процедурной одежды `buildClothingGeometry(model, bodyGeometry)`: neckline, anchored arm/sleeve boundaries (либо armholes для sleeveless overlayer), outer construction, fabric-driven folds/texture и trim строятся от общих body anchors, а `body.torsoPatch` остаётся только envelope",
-        "`Portrait Drawing Contract v1`: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии и общий handmade ink-pass"
+        "процедурным Portrait Lab Drawing Contract: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии и общий handmade ink-pass"
       ],
       "path": "apps/game-web",
       "public_entry": "./src/index.js",

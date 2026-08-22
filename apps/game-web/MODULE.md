@@ -28,7 +28,7 @@ Browser-клиент, который получает только versioned pub
 - скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`;
 - semantic geometry branches, включая отдельную процедурную конструкцию косы для `hair.style: "braided"`;
 - единым внутренним владельцем процедурной одежды `buildClothingGeometry(model, bodyGeometry)`: neckline, anchored arm/sleeve boundaries (либо armholes для sleeveless overlayer), outer construction, fabric-driven folds/texture и trim строятся от общих body anchors, а `body.torsoPatch` остаётся только envelope;
-- `Portrait Drawing Contract v1`: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии и общий handmade ink-pass.
+- процедурным Portrait Lab Drawing Contract: anchors и допустимые области частей, единственный владелец каждой видимой границы, hard limits геометрии и общий handmade ink-pass.
 
 ## Не делает
 
@@ -47,13 +47,24 @@ Browser-клиент, который получает только versioned pub
 - `renderScreen`
 - `bootstrapGameWeb`
 
+## Production authored renderer
+
+Фактический production-flow, каталоги, player-safe ключи, fallback и точки
+аудита зафиксированы отдельно:
+
+- [Authored Landscape Contract](./AUTHORED_LANDSCAPE_CONTRACT.md);
+- [Authored Portrait Contract](./AUTHORED_PORTRAIT_CONTRACT.md).
+
+Эти документы описывают готовые WebP/PNG assets. Они не распространяют
+процедурные инварианты Portrait Lab на авторские портреты.
+
 Portrait Lab остаётся отдельным browser-инструментом и не участвует в
 production actor/interlocutor path. Game-web принимает только готовые
 player-safe `portrait_asset_id` и `portrait_spec_v1` из server response, не
 выводит внешность из имени, роли или prose и сохраняет прежний процедурный
 fallback для historical parties.
 
-## Portrait Drawing Contract v1
+## Procedural Portrait Lab Drawing Contract
 
 - `Drawing Part` — самостоятельная часть портрета с собственными `Anchor` и `Allowed Region`;
 - `Anchor` — точка или родительская область, к которой часть обязана быть присоединена;

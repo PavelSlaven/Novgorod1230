@@ -217,6 +217,58 @@ test('generic composition preserves domain body and handles direct visible',
     assert.equal(scene.known_context.includes('health:95'), true);
   });
 
+test('generic visible projector preserves ordered player F1 facts',
+  async () => {
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project() { throw new Error('unexpected fallback'); } }
+    });
+    const result = await visible.project({ consequence: { visible_seed: {
+      completed_steps: [], clarification: 'Что делать дальше?',
+      turn_step_world_process_1: fireVisible('start', 'started', 'active'),
+      turn_step_world_process_2:
+        fireVisible('add_fuel', 'fuel_added', 'active'),
+      turn_step_world_process_3:
+        fireVisible('affect', 'no_effect', 'active'),
+      turn_step_world_process_4:
+        fireVisible('affect', 'continue', 'active'),
+      turn_step_world_process_5:
+        fireVisible('affect', 'complete', 'completed')
+    } }, body_update: { state_after: body() } });
+    assert.equal(result.visible_scene,
+      'Огонь разгорелся. В огонь добавлено топливо. '
+      + 'Воздействие не изменило огонь. '
+      + 'Огонь изменился, но продолжает гореть. Огонь погас. '
+      + 'Требуется уточнение дальнейшего действия.');
+    assert.deepEqual(result.visible_changes, [
+      'turn_step_world_process_1:local_fire:started',
+      'turn_step_world_process_2:local_fire:fuel_added',
+      'turn_step_world_process_3:local_fire:no_effect',
+      'turn_step_world_process_4:local_fire:continue',
+      'turn_step_world_process_5:local_fire:complete'
+    ]);
+  });
+
+test('generic visible projector rejects malformed player F1 facts',
+  async () => {
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project() { throw new Error('unexpected fallback'); } }
+    });
+    const project = (seed) => visible.project({ consequence: { visible_seed: {
+      completed_steps: [], clarification: null,
+      turn_step_world_process_1: seed
+    } }, body_update: { state_after: body() } });
+    await assert.rejects(project(fireVisible('start', 'complete', 'completed')),
+      { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project({ ...fireVisible('start', 'started', 'active'),
+      process_ref: 'hidden-process' }),
+    { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(null),
+      { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(Object.assign(Object.create({}),
+      fireVisible('start', 'started', 'active'))),
+    { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+  });
+
 test('missing or tampered owner profiles fail closed', async () => {
   const { profiles, artifactPin } = await loadProfiles();
   assert.throws(() => createLowerDvinaTraceTurnStepGenericOwners({
@@ -254,5 +306,13 @@ function body(overrides = {}) {
     active_conditions: [],
     body_parts: { left_arm: { id: 'left_arm' } },
     ...overrides
+  };
+}
+
+function fireVisible(action, outcome, status) {
+  return {
+    schema:
+      'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1',
+    process_kind: 'fire', action, outcome, status
   };
 }

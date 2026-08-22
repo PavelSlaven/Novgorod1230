@@ -956,6 +956,26 @@ validation не смешивает provenance: actor transition сохраняе
 completed-step checks, system boundary — exact boundary/process-version/due/
 profile/change-set/item-pin checks.
 
+Успешный player actor-step F1 возвращает внутренний factual seed:
+
+```yaml
+turn_step_world_process_<step_index>:
+  schema: rus.lower_dvina_trace_turn_step_world_process_visible_result.v1
+  process_kind: fire
+  action: start | add_fuel | affect
+  outcome: started | fuel_added | no_effect | continue | complete
+  status: active | completed
+```
+
+Допустимы только пары `start/started/active`,
+`add_fuel/fuel_added/active`, `affect/no_effect/active`,
+`affect/continue/active`, `affect/complete/completed`. Seed не содержит refs,
+bindings, pins, timestamps или causal evidence. Code-owned visible projector
+сохраняет несколько результатов в step order и добавляет более позднюю
+clarification после уже совершённых factual results. NPC F1 и
+`temporal_boundary` seed не создают; их видимость определяется существующим
+perception owner. Narrator излагает только persisted approved visible package.
+
 ### 12.7. `emit_interaction`
 
 ```json

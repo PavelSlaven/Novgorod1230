@@ -266,6 +266,20 @@ ordered transaction boundary.
 Prepared-effect ledger допускает между time/body slices такие applied owner
 steps, сохраняя непрерывность clock/body и exact step lineage.
 
+Успешный player actor-step F1 добавляет во внутренний `consequence_fragment`
+минимальный code-owned `visible_seed` с ключом
+`turn_step_world_process_<step_index>` и schema
+`rus.lower_dvina_trace_turn_step_world_process_visible_result.v1`. Seed содержит
+только `process_kind: fire`, `action`, `outcome`, `status`; refs, pins, bindings,
+timestamps и causal evidence запрещены. Разрешены ровно
+`start/started/active`, `add_fuel/fuel_added/active`,
+`affect/no_effect/active`, `affect/continue/active` и
+`affect/complete/completed`. Existing visible projector превращает ordered
+seeds в safe factual changes; последующая clarification добавляется после уже
+совершённых фактов. NPC actor-step и system temporal boundary такого seed не
+создают: их disclosure остаётся perception-gated. Narrator получает только
+persisted approved visible package после P16 commit.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

@@ -209,6 +209,15 @@ due output применяет через существующий local-fire ite
 system temporal-boundary provenance; completed process удаляет candidate.
 Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
 start и попавшая в remaining window due сохраняются ordered в одном P16.
+Production player F1 resolver дополнительно возвращает только safe factual
+seed `turn_step_world_process_<step_index>`: fire action/outcome/status без
+process/item refs, pins, bindings, timestamps или causal evidence. Generic
+visible projector строго принимает только согласованные start/started,
+add_fuel/fuel_added и affect/no_effect|continue|complete combinations, сохраняет
+их step order и строит approved Russian factual sentence/change token. NPC и
+off-screen due seed не получают. Existing turn-step visible envelope сохраняет
+эти facts в `party_visible_packages`; narrator и screen читают тот же persisted
+package, не механику F1 и не temporal state.
 Отдельных F1 authority/commit tables,
 evidence, digest или sealing нет; model выбирает только bounded qualitative
 outcome воды вне SQL transaction.

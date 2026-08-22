@@ -9,6 +9,8 @@ import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
   '@rus/turn/temporal-advance';
 import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
+import { buildTurnStepDraftConsequence } from
+  '../../packages/turn/src/turn-step-workflow-draft.js';
 import { integrateSpatialV3TemporalWriteFragments } from
   '../../packages/turn/src/spatial-v3-temporal-write-integration.js';
 import { createSpatialV3CombinedAtomicCommitter } from
@@ -43,6 +45,10 @@ import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
 import { createLowerDvinaTraceF1ProductionResolverFactory,
   projectLowerDvinaTraceF1NpcCapability } from
   '../../apps/game-server/src/runtime/releases/lower-dvina-trace-f1-production.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+import { phase2VisibleContextFromPayload } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
 import { approvedPhase7Contracts, phase7AutonomousPlan } from
@@ -64,6 +70,19 @@ const container = `local-fire-${process.pid}`;
 const hex = 'd'.repeat(64);
 const clock = (n) => ({ whole_minutes: String(n),
   subminute_numerator: '0', subminute_denominator: '1' });
+const fireConsequence = (step,action,outcome,status) => ({visible_seed:{
+  [`turn_step_world_process_${step}`]:{schema:
+    'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1',
+  process_kind:'fire',action,outcome,status}}});
+const visibleProjector=createLowerDvinaTraceTurnStepVisibleProjector({
+  fallback:{project(){throw new Error('unexpected visible fallback');}}
+});
+const fireVisibleContext=async(...fragments)=>visibleProjector.project({
+  consequence:buildTurnStepDraftConsequence({loop_result:{status:'resolved',
+    completed_steps:[],clarification:null,consequence_fragments:fragments}}),
+  body_update:{state_after:{}}
+});
+const persistedVisible=(context)=>({...context,do_not_imply:[]});
 const keepWorkingProjection = ({ working_projection: value }) => value;
 const objectiveProcess = (state) => ({ process_ref: state.process_ref,
   scope_ref: state.scope_ref, causal_basis_ref: state.causal_basis_ref,
@@ -290,6 +309,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       .transition_proposal.action,'add_fuel');
     assert.deepEqual(resolvedAdd.local_fire_atomic_write_plans[0]
       .transition_proposal.added_fuel_refs,['fuel-3']);
+    assert.deepEqual(resolvedAdd.consequence_fragment,
+      fireConsequence(1,'add_fuel','fuel_added','active'));
     const appended=await firePlan(pool,{action:'add_fuel',requestId:'add-late',
       changeSetId:'change-add-late',partyVersion:3,fuelIds:['fuel-3'],
       processRef,at:clock(16)});
@@ -339,12 +360,14 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
           assert.deepEqual(request.process,objectiveProcess(
             waterStart.transition_proposal.process_after));
           semanticQuantities.push(request.subject_state.quantities[0]);
+          const sourceRef=request.subject_state.source_refs[0];
           return {schema:'world_process_step_plan_v1',request_id:request.request_id,
             process_ref:request.process.process_ref,
             process_state_version:request.process_state_version,
             interpretation:{grounded_transition:'whole water portion extinguishes fire'},
-            process_outcome:request.subject_state.source_refs[0]==='water-1'
-              ?'no_effect':'complete',affected_refs:request.subject_state.source_refs,
+            process_outcome:sourceRef==='water-1'?'no_effect'
+              :sourceRef==='water-continue'?'continue':'complete',
+            affected_refs:request.subject_state.source_refs,
             fact_changes:[],reason_code:'water_affects_fire'};
         }})({partyId:'party-fire',
           applyWorkingProjection:keepWorkingProjection});
@@ -360,11 +383,21 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     working_projection:{},committed_state:{party_state:{turn_number:7},
       clock:clock(31),position:{location_ref:'scope-fire'}}});
     assert.equal(semanticCalls,1);
+    assert.deepEqual(waterResult.consequence_fragment,
+      fireConsequence(1,'affect','no_effect','active'));
+    const waterVisible=await fireVisibleContext(waterResult.consequence_fragment);
     const waterCombined=await combinedPlan(
-      waterResult.local_fire_atomic_write_plans[0],7);
+      waterResult.local_fire_atomic_write_plans[0],7,
+      {visibleContext:waterVisible});
     assert.equal((await committer.commit({plan:waterCombined})).ok,true);
     assert.deepEqual(await committer.commit({plan:waterCombined}),{
       ok:true,replay:true,change_set_id:'change:party-fire:turn-step:8'});
+    let visibleRows=(await pool.query(`SELECT visible_payload FROM
+      party_runtime.party_visible_packages WHERE change_set_id=$1`,
+    ['change:party-fire:turn-step:8'])).rows;
+    assert.equal(visibleRows.length,1);
+    assert.deepEqual(phase2VisibleContextFromPayload(
+      visibleRows[0].visible_payload),persistedVisible(waterVisible));
     rows=(await pool.query(`SELECT
       (SELECT status FROM party_runtime.party_local_world_processes
        WHERE party_id='party-fire' AND process_ref=$1) AS status,
@@ -376,6 +409,22 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
        AS fuel_release`,[waterProcess])).rows[0];
     assert.deepEqual(rows,{status:'active',water_state:'retired',
       fuel_release:null});
+
+    const continuedByWater=await waterResolver({operation:{
+      op:'request_world_process',actor_ref:'pc',process_action:'affect',
+      process_ref:waterProcess,process_kind:'fire',
+      source_refs:['water-continue'],target_refs:[],
+      description:'воздействовать ещё одной порцией воды'},
+    actor:{actor_id:'pc'},plan:{schema:'turn_step_plan_v1'},request:{
+      request_id:'request-water-continue',root_turn_id:'turn-water-continue',
+      step_index:1,committed_state_version:'8',player_safe_state:{
+        local_world_process:{semantic_grounding_available:true,
+          context_ref:'context-fire',scope_ref:'scope-fire',
+          ignition_basis_refs:['ignition'],active_process_refs:[waterProcess]}}},
+    working_projection:{},committed_state:{party_state:{turn_number:8},
+      clock:clock(32),position:{location_ref:'scope-fire'}}});
+    assert.deepEqual(continuedByWater.consequence_fragment,
+      fireConsequence(1,'affect','continue','active'));
 
     const completedByWater=await waterResolver({operation:{
       op:'request_world_process',actor_ref:'pc',process_action:'affect',
@@ -389,11 +438,24 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
          active_process_refs:[waterProcess]}}},
     working_projection:{},committed_state:{party_state:{turn_number:8},
       clock:clock(32),position:{location_ref:'scope-fire'}}});
-    assert.equal(semanticCalls,2);
+    assert.equal(semanticCalls,3);
+    assert.deepEqual(completedByWater.consequence_fragment,
+      fireConsequence(1,'affect','complete','completed'));
     assert.deepEqual(semanticQuantities.map(({mass_grams:mass})=>mass),
-      [700,1200]);
+      [700,850,1200]);
+    const completedVisible=await fireVisibleContext(
+      completedByWater.consequence_fragment);
     assert.equal((await committer.commit({plan:await combinedPlan(
-      completedByWater.local_fire_atomic_write_plans[0],8)})).ok,true);
+      completedByWater.local_fire_atomic_write_plans[0],8,
+      {visibleContext:completedVisible})})).ok,true);
+    visibleRows=(await pool.query(`SELECT visible_payload FROM
+      party_runtime.party_visible_packages WHERE change_set_id=$1`,
+    ['change:party-fire:turn-step:9'])).rows;
+    assert.equal(visibleRows.length,1);
+    assert.deepEqual(phase2VisibleContextFromPayload(
+      visibleRows[0].visible_payload),persistedVisible(completedVisible));
+    assert.notDeepEqual(completedVisible.visible_changes,
+      waterVisible.visible_changes);
     rows=(await pool.query(`SELECT
       (SELECT status FROM party_runtime.party_local_world_processes
        WHERE party_id='party-fire' AND process_ref=$1) AS status,
@@ -417,9 +479,11 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         lowerDvinaTraceLocalFireTemporalRegistration(profile())]),
       effect_registrations:[...npcTemporalEffectRegistrations(),
         ...lowerDvinaTracePhase7TemporalEffectRegistrations()]});
+    let npcResolverResult=null;
     const npcConsequence=await phase7Command({state:npcState,
       contracts:npcContracts,temporalAdvanceOwner:npcTemporalOwner,
-      localFireProfile:loadedProfile,worldProcessResolver:npcResolver,
+      localFireProfile:loadedProfile,worldProcessResolver:async(input)=>{
+        npcResolverResult=await npcResolver(input);return npcResolverResult;},
       projectNpcWorldProcessCapability:projectLowerDvinaTraceF1NpcCapability,
       model:async(request)=>{
         const allowed=request.decision_scope.operation_contract
@@ -434,6 +498,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       }}).consequence({retrievedState:npcState,
       playerInput:phase7PlayerInput(npcState,'db-fire')});
     const npcPlan=npcConsequence.local_fire_atomic_write_plans[0];
+    assert.equal(npcResolverResult.consequence_fragment,undefined);
     const npcDue=npcConsequence.phase7.schedule_temporal.result
       .combined_change_set.proposals.flatMap((proposal)=>
         proposal.local_fire_atomic_write_plans??[])[0];
@@ -707,12 +772,16 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       op:'request_world_process',actor_ref:'pc',process_action:'start',
       process_ref:null,process_kind:'fire',source_refs:['fuel-chain-1'],
       target_refs:['ignition'],description:'разжечь огонь'}));
+    assert.deepEqual(startResult.consequence_fragment,
+      fireConsequence(1,'start','started','active'));
     const chainStart=startResult.local_fire_atomic_write_plans[0];
     const chainProcess=chainStart.transition_proposal.process_after.process_ref;
     const addOperation={op:'request_world_process',actor_ref:'pc',
       process_action:'affect',process_ref:chainProcess,process_kind:'fire',
       source_refs:['fuel-chain-2'],target_refs:[],description:'добавить топливо'};
     const addResult=await chainResolver(chainEnvelope(2,addOperation,[chainStart]));
+    assert.deepEqual(addResult.consequence_fragment,
+      fireConsequence(2,'add_fuel','fuel_added','active'));
     const chainAdd=addResult.local_fire_atomic_write_plans[0];
     const waterOperation={...addOperation,source_refs:['water-chain'],
       description:'залить водой'};
@@ -722,6 +791,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       .transition_proposal.process_before.state_version,1);
     const waterResultSameRoot=await chainResolver(chainEnvelope(3,
       waterOperation,[chainStart,chainAdd]));
+    assert.deepEqual(waterResultSameRoot.consequence_fragment,
+      fireConsequence(3,'affect','complete','completed'));
     const chainWater=waterResultSameRoot.local_fire_atomic_write_plans[0];
     assert.equal(chainWater.transition_proposal.process_before.state_version,2);
 
@@ -738,6 +809,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       .local_fire_atomic_write_plans[0];
     const mixedWaterResult=await chainResolver(chainEnvelope(3,waterOperation,
       [chainStart,chainAdd,chainDue],chainDue.transition_proposal.at_timestamp));
+    assert.deepEqual(mixedWaterResult.consequence_fragment,
+      fireConsequence(3,'affect','complete','completed'));
     const mixedWater=mixedWaterResult.local_fire_atomic_write_plans[0];
     assert.equal(mixedWater.transition_proposal.process_before.state_version,3);
 
@@ -797,8 +870,11 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
       [chainStart,chainDue,chainAdd],clock(95))),/LOCAL_FIRE_/u);
 
+    const chainVisible=await fireVisibleContext(startResult.consequence_fragment,
+      addResult.consequence_fragment,mixedWaterResult.consequence_fragment);
     const chainCombined=await combinedPlan(mixedWater,chainVersion,{
-      localPlans:[chainStart,chainAdd,chainDue,mixedWater]});
+      localPlans:[chainStart,chainAdd,chainDue,mixedWater],
+      visibleContext:chainVisible});
     await pool.query(`UPDATE party_runtime.party_items SET state_version=2
       WHERE party_id='party-fire' AND item_id='water-chain'`);
     assert.equal((await committer.commit({plan:chainCombined})).ok,false);
@@ -822,6 +898,17 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     assert.equal(chainCommitted.ok,true,JSON.stringify(chainCommitted));
     assert.deepEqual(await committer.commit({plan:chainCombined}),{
       ok:true,replay:true,change_set_id:chainChange});
+    visibleRows=(await pool.query(`SELECT visible_payload FROM
+      party_runtime.party_visible_packages WHERE change_set_id=$1`,
+    [chainChange])).rows;
+    assert.equal(visibleRows.length,1);
+    assert.deepEqual(phase2VisibleContextFromPayload(
+      visibleRows[0].visible_payload),persistedVisible(chainVisible));
+    assert.deepEqual(chainVisible.visible_changes,[
+      'turn_step_world_process_1:local_fire:started',
+      'turn_step_world_process_2:local_fire:fuel_added',
+      'turn_step_world_process_3:local_fire:complete'
+    ]);
     assert.deepEqual((await pool.query(`SELECT
       (SELECT state_version::int FROM party_runtime.parties
         WHERE party_id='party-fire') AS party_version,
@@ -1048,14 +1135,19 @@ async function provisionPreparedWater(pool,plan){
 
 async function combinedPlan(local,partyVersion,{missingClock=false,
   temporalResult=null,fuelMutation=false,expectBuildFailure=false,
-  localPlans=[local],ordinaryPlan=null,actionPlans=[]}={}) {
+  localPlans=[local],ordinaryPlan=null,actionPlans=[],visibleContext=null}={}) {
   const cause=local.transition_proposal.cause;
   const due=cause.kind==='temporal_boundary';
   const id=due?cause.boundary_id:cause.request_id;
   const changeSetId=local.change_set_id;
-  const payload={schema:'temporal_visible_package.v1',perceived_scene:'Огонь.',
-    perceived_changes:[],sensory_details:[],visible_npcs:[],visible_objects:[],
-    known_context:[],uncertainties:[],hypotheses:[],
+  const payload={schema:'temporal_visible_package.v1',
+    perceived_scene:visibleContext?.visible_scene??'Огонь.',
+    perceived_changes:visibleContext?.visible_changes??[],
+    sensory_details:visibleContext?.sensory_details??[],
+    visible_npcs:visibleContext?.visible_npc??[],
+    visible_objects:visibleContext?.visible_objects??[],
+    known_context:visibleContext?.known_context??[],
+    uncertainties:visibleContext?.uncertainties??[],hypotheses:[],
     player_safe_interruption:null,allowed_action_affordances:[]};
   const pins=[{dependency_role:'source_authoring',entity_ref:{
     entity_kind:'world_revision',entity_id:'fire-test'},version_pin:{
@@ -1255,20 +1347,24 @@ async function provision(pool) {
       'ordinary_runtime_instance','ordinary',$1::jsonb,1),
       ('party-fire','water-2',NULL,NULL,NULL,NULL,1,
       'ordinary_runtime_instance','ordinary',$2::jsonb,1),
+      ('party-fire','water-continue',NULL,NULL,NULL,NULL,1,
+      'ordinary_runtime_instance','ordinary',$3::jsonb,1),
       ('party-fire','water-chain',NULL,NULL,NULL,NULL,1,
-      'ordinary_runtime_instance','ordinary',$3::jsonb,1)`,
+      'ordinary_runtime_instance','ordinary',$4::jsonb,1)`,
   [JSON.stringify(waterState(700)),JSON.stringify(waterState(1200)),
-    JSON.stringify(waterState(900))]);
+    JSON.stringify(waterState(850)),JSON.stringify(waterState(900))]);
   await pool.query(`INSERT INTO party_runtime.party_item_placements
     (party_id,item_id,holder_character_id,physical_position)
     VALUES ('party-fire','water-1','pc','hands'),
       ('party-fire','water-2','pc','hands'),
+      ('party-fire','water-continue','pc','hands'),
       ('party-fire','water-chain','pc','hands')`);
   await pool.query(`INSERT INTO party_runtime.party_ownership
     (party_id,ownership_id,item_id,owner_character_id,owner_party,
      controller_character_id,claim_state)
     VALUES ('party-fire','own:water-1','water-1','pc',false,'pc','owned'),
       ('party-fire','own:water-2','water-2','pc',false,'pc','owned'),
+      ('party-fire','own:water-continue','water-continue','pc',false,'pc','owned'),
       ('party-fire','own:water-chain','water-chain','pc',false,'pc','owned')`);
   for (const [id,kind,mass] of [['npc-ignition','ignition',180],
     ['npc-fuel','fuel',350]]) {

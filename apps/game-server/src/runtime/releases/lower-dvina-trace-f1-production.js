@@ -104,8 +104,17 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
     return Object.freeze({working_projection:workingProjection,
       summary:`local_fire:${plan.transition_proposal.outcome}`,
       write_fragments:[],local_fire_atomic_write_plans:[plan],
+      ...(npc?{}:{consequence_fragment:playerVisibleConsequence(plan,stepIndex)}),
       player_response_boundary:false});
   };
+}
+
+function playerVisibleConsequence(plan,stepIndex){
+  const proposal=plan.transition_proposal;
+  return{visible_seed:{[`turn_step_world_process_${stepIndex}`]:{
+    schema:'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1',
+    process_kind:'fire',action:proposal.action,outcome:proposal.outcome,
+    status:proposal.process_after.status}}};
 }
 
 export function projectLowerDvinaTraceF1Capability({playerSafeState,

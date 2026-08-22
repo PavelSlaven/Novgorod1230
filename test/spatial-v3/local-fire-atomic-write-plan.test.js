@@ -59,6 +59,16 @@ test('plain local-fire plan admits unlisted item-owned fuel and detaches input',
   input.input_pins[0].item.state_version = 9;
   assert.equal(plan.input_pins[0].item.state_version, 1);
   assert.equal(plan.transition_proposal.outcome, 'started');
+  assert.equal(plan.fuel_placement_transitions.length, 1);
+  assert.equal(plan.fuel_placement_transitions[0].after_placement.anchor_id,
+    'place:shore');
+  const snapshot = { items: [{ ...structuredClone(plan.input_pins[0].item),
+    placement: structuredClone(plan.input_pins[0].placement) }] };
+  applyLocalFireProjection({ next: snapshot, plan });
+  assert.deepEqual(snapshot.items[0].placement, { anchor_id: 'place:shore',
+    container_id: null, holder_npc_id: null, holder_character_id: null,
+    physical_position: null, equipment_slot_category_id: null,
+    attached_item_id: null });
   assert.equal(Object.hasOwn(plan, 'write_plan_digest'), false);
   assert.equal(Object.hasOwn(plan, 'status'), false);
   assert.deepEqual(createLocalFireAtomicWritePlan(

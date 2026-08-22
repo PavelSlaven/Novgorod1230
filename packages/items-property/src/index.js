@@ -21,6 +21,7 @@ import { actionProducedPhysicalFactTexts,
 import { admitLocalFireIgnitionBasis, admitLocalFireInput,
   deriveLocalFireFuelClassification,
   itemPlacementIsPhysicallyAccessible,
+  planLocalFireFuelPlacementTransition,
   planLocalFireWholeItemRetirement } from
   './local-fire-input.js';
 export { validateInventoryTopology, calculateInventoryMass, resolveInventoryLoad, calculateHandsState, resolveInventoryAccess, deriveInventoryZone, calculateContainerUsage, buildInventoryStackSignature, planInventoryTransfer } from './inventory.js';
@@ -187,6 +188,7 @@ export {
   normalizeItem,
   mergeActionProducedPhysicalFacts,
   planApplicableApprovedItemTransition,
+  planLocalFireFuelPlacementTransition,
   planLocalFireWholeItemRetirement,
   planApprovedItemVisibilityTransition,
   planApprovedItemZoneTransition,

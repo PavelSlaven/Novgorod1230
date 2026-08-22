@@ -95,7 +95,8 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
     const ignition = { item_id:'item:ignition', state:{lifecycle_status:'active',
       local_fire_ignition_basis:{schema:
         'rus.items.local_fire_ignition_basis.v1'}} };
-    const base = { items: [ignition,{item_id:'item:unlisted-fuel'}] };
+    const base = { position:{g5_anchor_id:'anchor:current'},
+      items: [ignition,{item_id:'item:unlisted-fuel'}] };
     const active = projectLowerDvinaTraceF1Capability({playerSafeState:base,
       committedState:{position:{g5_anchor_id:'anchor:current'},
         items:[ignition],local_fire_runtime:[{process_state:{
@@ -106,7 +107,8 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
     assert.deepEqual(active.local_world_process,{semantic_grounding_available:true,
       context_ref:loadedProfile.profile.context_ref,scope_ref:'anchor:current',
       ignition_basis_refs:['item:ignition'],active_process_refs:['process:1']});
-    const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{items:[]},
+    const hidden = projectLowerDvinaTraceF1Capability({playerSafeState:{
+      position:{g5_anchor_id:'anchor:current'},items:[]},
       committedState:{position:{g5_anchor_id:'anchor:current'},items:[]},
       loadedProfile,resolverAvailable:true});
     assert.equal(hidden.local_world_process,undefined);

@@ -111,7 +111,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   while (stepIndex <= identity.maxInternalSteps) {
     const playerSafeState = await ports.projectPlayerSafeState(deepFreeze({
       working_projection: structuredClone(workingProjection),
-      completed_steps: structuredClone(completedSteps)
+      completed_steps: structuredClone(completedSteps),
+      local_fire_atomic_write_plans: structuredClone(localFirePlans)
     }));
     const request = {
       schema: 'turn_step_request_v1',

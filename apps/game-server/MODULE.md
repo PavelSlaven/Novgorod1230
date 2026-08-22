@@ -186,7 +186,8 @@ whole fuel units, композирует production resolver и регистри
 от causally consumed classified fuel source. Player capability берётся из
 player-safe projection; Phase 7 строит NPC capability из NPC-safe доступных
 ресурсов и публикует exact operation contract. Process ref появляется только
-при safe evidence хотя бы одного bound fuel; causal ignition basis model не
+при source-backed NPC-safe evidence самого process; знание bound fuel не
+раскрывает objective binding или process ref. Causal ignition basis model не
 публикуется. Оба пути проходят один
 DB/item-owner admission. Start/add/due и qualitative
 whole-water affect, включая `no_effect`, входят в тот же combined P16; bound
@@ -194,7 +195,12 @@ fuel mutation, nested A1 source mutation, stale pins, duplicate transition и
 late failure откатываются атомарно. Несколько ordered due, включая same-time
 разные fires, фиксируются одной transaction и отражаются в canonical snapshot. Due
 actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
-marker содержит только visible refs. Отдельных F1 authority/commit tables,
+marker содержит только visible refs. Player resolver применяет F1 plan к
+текущему working projection, а item owner переносит bound fuel в process scope
+и сразу убирает его mass/hands из carried inventory без смены ownership.
+Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
+start и попавшая в remaining window due сохраняются ordered в одном P16.
+Отдельных F1 authority/commit tables,
 evidence, digest или sealing нет; model выбирает только bounded qualitative
 outcome воды вне SQL transaction.
 

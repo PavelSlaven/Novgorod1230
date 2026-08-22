@@ -5,11 +5,8 @@ import { Pool } from 'pg';
 import { computeSpatialV3CanonicalDigest as digest } from
   '@rus/contracts/spatial-v3/registry';
 import { canonicalDigest,createOrdinaryAggregate } from '@rus/materialization';
-import { buildNpcActionDecisionRequest, buildNpcStepPlan } from
-  '@rus/npc-runtime';
-import { createTurnStepExecutionRegistry, executeTurnStepActorStep } from
-  '@rus/turn';
-import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
+import { createTemporalAdvanceOwner, npcTemporalEffectRegistrations } from
+  '@rus/turn/temporal-advance';
 import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
 import { integrateSpatialV3TemporalWriteFragments } from
@@ -41,8 +38,15 @@ import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js';
-import { createLowerDvinaTraceF1ProductionResolverFactory } from
+import { createLowerDvinaTraceF1ProductionResolverFactory,
+  projectLowerDvinaTraceF1NpcCapability } from
   '../../apps/game-server/src/runtime/releases/lower-dvina-trace-f1-production.js';
+import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-phase-7-temporal-effect-owner.js';
+import { approvedPhase7Contracts, phase7AutonomousPlan } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-7-contract-fixture.js';
+import { phase7Command, phase7CommittedState, phase7PlayerInput } from
+  '../../apps/game-server/test/lower-dvina-trace-phase-7-runtime-fixture.js';
 import { deriveActionProducedResultItem } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-result-item.js';
 import { createOrdinaryContainerContentsAtomicWritePlan } from
@@ -58,6 +62,12 @@ const container = `local-fire-${process.pid}`;
 const hex = 'd'.repeat(64);
 const clock = (n) => ({ whole_minutes: String(n),
   subminute_numerator: '0', subminute_denominator: '1' });
+const keepWorkingProjection = ({ working_projection: value }) => value;
+const objectiveProcess = (state) => ({ process_ref: state.process_ref,
+  scope_ref: state.scope_ref, causal_basis_ref: state.causal_basis_ref,
+  status: state.status, started_at: state.started_at,
+  next_boundary_at: state.next_boundary_at,
+  fuel_bindings: state.fuel_bindings });
 
 test('F1 start/add/due share P16 atomic replay and survive actor absence',
   async (t) => {
@@ -150,6 +160,13 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     assert.equal((await committer.commit({plan:startCombined})).ok,true);
     assert.deepEqual(await committer.commit({plan:startCombined}),{
       ok:true,replay:true,change_set_id:'change-start'});
+    assert.deepEqual((await pool.query(`SELECT p.anchor_id,p.container_id,
+      p.holder_character_id,p.physical_position,o.owner_character_id
+      FROM party_runtime.party_item_placements p
+      JOIN party_runtime.party_ownership o USING (party_id,item_id)
+      WHERE p.party_id='party-fire' AND p.item_id='fuel-1'`)).rows[0],{
+      anchor_id:'scope-fire',container_id:null,holder_character_id:null,
+      physical_position:null,owner_character_id:'pc'});
     const processRef=start.transition_proposal.process_after.process_ref;
     const guardClient=await pool.connect();
     try {
@@ -179,6 +196,11 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     await pool.query(`UPDATE party_runtime.party_items SET state_version=1
       WHERE party_id='party-fire' AND item_id='fuel-2'`);
     assert.equal((await committer.commit({plan:addCombined})).ok,true);
+    assert.deepEqual((await pool.query(`SELECT anchor_id,container_id,
+      holder_character_id,physical_position FROM
+      party_runtime.party_item_placements WHERE party_id='party-fire'
+      AND item_id='fuel-2'`)).rows[0],{anchor_id:'scope-fire',
+      container_id:null,holder_character_id:null,physical_position:null});
 
     const dueContext=await loadLocalFireCommittedContext({client:pool,
       partyId:'party-fire',actorRef:'system:local_fire_boundary',
@@ -247,7 +269,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     const productionResolver=createLowerDvinaTraceF1ProductionResolverFactory({
       pool,loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
         profile:profile()}})({
-      partyId:'party-fire'});
+      partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
     const resolvedAdd=await productionResolver({operation:{
       op:'request_world_process',actor_ref:'pc',process_action:'affect',
       process_ref:processRef,process_kind:'fire',source_refs:['fuel-3'],
@@ -312,8 +334,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
         profile:profile()},worldProcessStepModel:async(request)=>{
           semanticCalls+=1;
-          assert.deepEqual(request.process,{process_ref:waterProcess,
-            status:'active'});
+          assert.deepEqual(request.process,objectiveProcess(
+            waterStart.transition_proposal.process_after));
           semanticQuantities.push(request.subject_state.quantities[0]);
           return {schema:'world_process_step_plan_v1',request_id:request.request_id,
             process_ref:request.process.process_ref,
@@ -322,7 +344,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
             process_outcome:request.subject_state.source_refs[0]==='water-1'
               ?'no_effect':'complete',affected_refs:request.subject_state.source_refs,
             fact_changes:[],reason_code:'water_affects_fire'};
-        }})({partyId:'party-fire'});
+        }})({partyId:'party-fire',
+          applyWorkingProjection:keepWorkingProjection});
     const waterResult=await waterResolver({operation:{op:'request_world_process',
       actor_ref:'pc',process_action:'affect',process_ref:waterProcess,
       process_kind:'fire',source_refs:['water-1'],target_refs:[],
@@ -381,40 +404,57 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     assert.deepEqual(rows,{status:'completed',water_state:'retired',
       fuel_release:'change:party-fire:turn-step:9'});
 
+    const loadedProfile={schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
+      profile:profile()};
+    const npcState=phase7DatabaseState();
+    const npcContracts=approvedPhase7Contracts(npcState);
     const npcResolver=createLowerDvinaTraceF1ProductionResolverFactory({pool,
-      loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
-        profile:profile()}})({partyId:'party-fire'});
-    const npcOperation={op:'request_world_process',
-      actor_ref:'npc-fire',process_action:'start',process_ref:null,
-      process_kind:'fire',source_refs:['npc-fuel'],
-      target_refs:['npc-ignition'],description:'разжечь огонь'};
-    const npcRequest=buildNpcActionDecisionRequest(
-      npcWorldProcessRequest(npcOperation,9));
-    const npcStepPlan=buildNpcStepPlan(npcWorldProcessPlan(
-      npcRequest,npcOperation),npcRequest);
-    const npcState={party_state:{turn_number:9},clock:clock(1),
-      position:{location_ref:'player-scope'}};
-    const npcRegistry=createTurnStepExecutionRegistry({domain:{
-      request_world_process:(execution)=>npcResolver({...execution,
-        actor:{npc_id:'npc-fire'},committed_state:npcState})},
-    operationContract:npcRequest.decision_scope.operation_contract});
-    const npcExecution=await executeTurnStepActorStep({plan:npcStepPlan,
-      request:npcRequest,workingProjection:{},preparedChainContext:null,
-      preparedOrdinaryPlan:null,preparedActionProductionPlans:[],
-      registry:npcRegistry,ports:{}});
-    const npcPlan=npcExecution.local_fire_atomic_write_plans[0];
+      loadedProfile})({partyId:'party-fire'});
+    const npcTemporalOwner=createTemporalAdvanceOwner({
+      source_registrations:lowerDvinaTraceTemporalSourceRegistrations([
+        lowerDvinaTraceLocalFireTemporalRegistration(profile())]),
+      effect_registrations:[...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()]});
+    const npcConsequence=await phase7Command({state:npcState,
+      contracts:npcContracts,temporalAdvanceOwner:npcTemporalOwner,
+      localFireProfile:loadedProfile,worldProcessResolver:npcResolver,
+      projectNpcWorldProcessCapability:projectLowerDvinaTraceF1NpcCapability,
+      model:async(request)=>{
+        const allowed=request.decision_scope.operation_contract
+          .request_world_process.allowed.find(
+            ({process_action:action})=>action==='start');
+        const operation={op:'request_world_process',actor_ref:request.npc_ref,
+          ...structuredClone(allowed),
+          description:'разжечь огонь'};
+        const plan=phase7AutonomousPlan(request,'wait');
+        plan.operations=[operation];
+        return plan;
+      }}).consequence({retrievedState:npcState,
+      playerInput:phase7PlayerInput(npcState,'db-fire')});
+    const npcPlan=npcConsequence.local_fire_atomic_write_plans[0];
+    const npcDue=npcConsequence.phase7.schedule_temporal.result
+      .combined_change_set.proposals.flatMap((proposal)=>
+        proposal.local_fire_atomic_write_plans??[])[0];
     assert.equal(npcPlan.actor_ref,'npc-fire');
-    assert.deepEqual(npcPlan.transition_proposal.at_timestamp,clock(40));
+    assert.deepEqual(npcPlan.transition_proposal.at_timestamp,clock(125));
     assert.deepEqual(npcPlan.transition_proposal.process_after.started_at,
-      clock(40));
+      clock(125));
     assert.deepEqual(npcPlan.transition_proposal.process_after.next_boundary_at,
-      clock(45));
-    assert.equal((await committer.commit({
-      plan:await combinedPlan(npcPlan,9)})).ok,true);
-    assert.equal((await pool.query(`SELECT count(*)::int AS count
+      clock(130));
+    assert.deepEqual(npcDue.transition_proposal.at_timestamp,clock(130));
+    assert.equal(npcDue.transition_proposal.process_after.status,'completed');
+    const npcCommitted=await committer.commit({
+      plan:await combinedPlan(npcPlan,9,{localPlans:[npcPlan,npcDue]})});
+    assert.equal(npcCommitted.ok,true,JSON.stringify(npcCommitted));
+    const npcRows=(await pool.query(`SELECT
+      (SELECT count(*)::int
       FROM party_runtime.party_local_world_process_fuel_bindings
       WHERE party_id='party-fire' AND fuel_item_id='npc-fuel'
-        AND released_at_change_set_id IS NULL`)).rows[0].count,1);
+        AND released_at_change_set_id IS NULL) AS active_bindings,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+       WHERE party_id='party-fire' AND item_id='npc-fuel') AS fuel_status`))
+      .rows[0];
+    assert.deepEqual(npcRows,{active_bindings:0,fuel_status:'retired'});
 
     const multiStart=await firePlan(pool,{action:'start',requestId:'multi',
       changeSetId:'change-multi-start',partyVersion:10,
@@ -480,13 +520,22 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       AND process_ref=$1`,[multiCandidate.source_ref.entity_id])).rows[0],{
       status:'completed',next_boundary_at:null,fuels:[]});
 
+    const freshVersion=Number((await pool.query(`SELECT state_version
+      FROM party_runtime.parties WHERE party_id='party-fire'`)).rows[0]
+      .state_version);
+    const preparedFire=await firePlan(pool,{action:'start',
+      requestId:'prepared-water-fire',changeSetId:'change-prepared-water-fire',
+      partyVersion:freshVersion,fuelIds:['fuel-5'],at:clock(70)});
+    assert.equal((await committer.commit({plan:await combinedPlan(
+      preparedFire,freshVersion)})).ok,true);
     const preparedVersion=Number((await pool.query(`SELECT state_version
       FROM party_runtime.parties WHERE party_id='party-fire'`)).rows[0]
       .state_version);
     const preparedChange=`change:party-fire:turn-step:${preparedVersion+1}`;
     const waterPlan=preparedWater(preparedVersion);
     await provisionPreparedWater(pool,waterPlan);
-    const preparedProcess=npcPlan.transition_proposal.process_after.process_ref;
+    const preparedProcess=preparedFire.transition_proposal.process_after
+      .process_ref;
     const preparedResolver=createLowerDvinaTraceF1ProductionResolverFactory({pool,
       loadedProfile:{schema:'rus.lower_dvina_trace_f1_loaded_profile.v1',
         profile:profile()},worldProcessStepModel:async(request)=>({
@@ -495,7 +544,8 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
           process_state_version:request.process_state_version,
           interpretation:{grounded_transition:'whole water portion extinguishes fire'},
           process_outcome:'complete',affected_refs:request.subject_state.source_refs,
-          fact_changes:[],reason_code:'water_extinguishes'})})({partyId:'party-fire'});
+          fact_changes:[],reason_code:'water_extinguishes'})})({
+      partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
     const preparedEnvelope={operation:{op:'request_world_process',actor_ref:'pc',
       process_action:'affect',process_ref:preparedProcess,process_kind:'fire',
       source_refs:[waterPlan.items[0].item_id],target_refs:[],
@@ -556,7 +606,13 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
 
     const a1Version=preparedVersion+1;
     const a1Change=`change:party-fire:turn-step:${a1Version+1}`;
-    const a1Plan=preparedA1Fuel(a1Version,a1Change);
+    const occupiedAnchorItems=(await pool.query(`SELECT p.item_id
+      FROM party_runtime.party_item_placements p
+      JOIN party_runtime.party_items i USING (party_id,item_id)
+      WHERE p.party_id='party-fire' AND p.anchor_id='scope-fire'
+        AND COALESCE(i.state->>'lifecycle_status','active') <> 'retired'
+      ORDER BY p.item_id`)).rows.map(({item_id:id})=>id);
+    const a1Plan=preparedA1Fuel(a1Version,a1Change,occupiedAnchorItems);
     const a1ResultRef=a1Plan.result_items[0].item_id;
     const a1Envelope={operation:{op:'request_world_process',actor_ref:'pc',
       process_action:'start',process_ref:null,process_kind:'fire',
@@ -658,7 +714,7 @@ function preparedWater(partyVersion){
   return createOrdinaryContainerContentsAtomicWritePlan(raw);
 }
 
-function preparedA1Fuel(partyVersion,changeSetId){
+function preparedA1Fuel(partyVersion,changeSetId,usedItemIds=[]){
   const sourceRef='fuel-prepared-source',root='turn-prepared-a1',step=1;
   const approved=preparedA1ApprovedPlan();
   const actionRef=actionProducedTraceActionRef({rootTurnId:root,
@@ -718,7 +774,7 @@ function preparedA1Fuel(partyVersion,changeSetId){
     party_state_version:partyVersion,output_destination_pin:{schema:
       'action_production_output_destination_pin_v1',destination_kind:
       'party_current_anchor',anchor_id:'scope-fire',item_capacity:20,
-    used_item_ids:[]},output_destination:{schema:
+    used_item_ids:usedItemIds},output_destination:{schema:
       'rus.items.action_produced_output_destination.v1',placement_kind:'anchor',
     target_ref:'scope-fire',holder_ref:null,controller_ref:'pc'},
     admission_profile:{schema:'rus.items.action_produced_admission_profile.v1',
@@ -985,7 +1041,7 @@ async function provision(pool) {
     VALUES ('party-fire','npc-fire','run-fire','profile:npc-fire','background')`);
   for (const [id,kind,mass] of [['ignition','ignition',180],
     ['fuel-1','fuel',300],['fuel-2','fuel',700],
-    ['fuel-4','fuel',500],['fuel-m1','fuel',250],
+    ['fuel-4','fuel',500],['fuel-5','fuel',500],['fuel-m1','fuel',250],
     ['fuel-m2','fuel',350],['fuel-m3','fuel',450],
     ['fuel-prepared-source','fuel',700]]) {
     const state={lifecycle_status:'active',property_state:{kind},
@@ -1128,6 +1184,7 @@ function profile() {
   return { schema:'rus.lower_dvina_trace_local_fire_profile.v1',
     profile_id:'profile-fire',revision:1,status:'approved',
     context_ref:'context-fire',policy_ref:'policy-fire',policy_version:1,
+    allowed_actions:['start','affect'],
     recheck_interval:{exact_minutes:{numerator:'5',denominator:'1'}},
     fuel_unit_mass_grams_min:100,fuel_unit_mass_grams_max:1000 };
 }
@@ -1143,47 +1200,45 @@ function profilePin() {
       fuel_unit_mass_grams_max:value.fuel_unit_mass_grams_max}};
 }
 
-function npcWorldProcessRequest(operation,partyVersion){
-  return{schema:'npc_action_decision_request_v1',request_id:'request-npc-fire',
-    root_turn_id:'turn-npc-fire',boundary_id:'boundary-npc-fire',
-    committed_state_version:partyVersion,working_revision:0,decision_index:1,
-    occurred_at:clock(40),npc_ref:'npc-fire',decision_reasons:{
-      significance:'material',categories:['environment','objective'],
-      signal_refs:[{entity_kind:'npc_decision_signal',entity_id:'signal-fire'}],
-      perceived_changes:['NPC располагает топливом и кресалом.']},
-    historical_context:{year:1230,season:'summer',region:'Нижняя Двина',
-      applicable_norms:[],known_local_customs:[]},npc:{profile_level:'scene',
-      identity:{name_or_label:'NPC',age_range:'adult',origin:null},
-      social_role:{role_ref:null,status:null,authority:[],dependencies:[]},
-      attributes:[],skills:[],body_state:{summary:null,conditions:[]},mood:null,
-      temperament:[],values:[],goals:[],fears:[],obligations:[],relationships:[],
-      current_activity:{activity_ref:null,summary:null,status:'idle',
-        can_continue_automatically:false},available_resources:[
-        {item_ref:'npc-fuel'},{item_ref:'npc-ignition'}]},perception:{
-      visible_scene:[],perceived_changes:[],heard:[],felt:[],present_actors:[],
-      visible_objects:[{item_ref:'npc-fuel'},{item_ref:'npc-ignition'}],
-      known_routes_and_exits:[],uncertainties:[]},knowledge:{known_facts:[],
-      beliefs:[],hypotheses:[]},memory:{recent_events:[],
-      relevant_long_term_events:[],previous_decisions:[]},decision_scope:{
-      mode:'autonomous_action',allowed_attribute_refs:[],allowed_skill_refs:[],
-      operation_contract:{request_world_process:{
-        owner:'@rus/world-processes',context_ref:'context-fire',
-        scope_ref:'scope-fire',ignition_basis_refs:['npc-ignition'],
-        active_process_refs:[],process_ignition_basis_refs:{},allowed:[{
-          process_action:operation.process_action,
-          process_ref:operation.process_ref,process_kind:operation.process_kind,
-          source_refs:operation.source_refs,target_refs:operation.target_refs}]}}}};
+function phase7DatabaseState() {
+  const state=phase7CommittedState();
+  state.party_id='party-fire';
+  state.party_state.state_version=9;
+  state.party_state.turn_number=9;
+  const npc=state.npcs.find(({participant_slot_ref:slot})=>
+    slot==='zhdanko_storehouse_controller');
+  npc.instance_id='npc-fire';
+  npc.anchor_id='scope-fire';
+  state.containers[0].holder_npc_id='npc-fire';
+  state.containers[0].state.controller_npc_id='npc-fire';
+  state.items.push(phase7DatabaseItem('npc-fuel','fuel'),
+    phase7DatabaseItem('npc-ignition','ignition'));
+  return state;
 }
-function npcWorldProcessPlan(request,operation){return{
-  schema:'npc_step_plan_v1',request_id:request.request_id,
-  root_turn_id:request.root_turn_id,boundary_id:request.boundary_id,
-  committed_state_version:request.committed_state_version,
-  working_revision:request.working_revision,decision_index:request.decision_index,
-  npc_ref:request.npc_ref,interpretation:{npc_goal:'разжечь огонь',
-    grounded_attempt:'использовать топливо и кресало',adaptation:'literal'},
-  resolution:'domain_request',goal_result:'pending',activity:{owner:'domain',
-    duration_class:null,effort:null},operations:[operation],check:null,
-  reason_code:'local_fire_needed',reason:'Доступны топливо и кресало.'};}
+
+function phase7DatabaseItem(itemId,kind) {
+  const mass=kind==='fuel'?350:180;
+  return{item_id:itemId,run_id:'run-fire',template_id:`template:${itemId}`,
+    profile_id:`profile:${itemId}`,category_id:kind,quantity:1,
+    condition_state:'serviceable',legal_status:'owned',state_version:1,
+    placement:{item_id:itemId,holder_npc_id:'npc-fire',
+      holder_character_id:null,anchor_id:null,container_id:null,
+      physical_position:'hands',equipment_slot_category_id:null,
+      attached_item_id:null},ownership:{ownership_id:`own:${itemId}`,
+      item_id:itemId,owner_npc_id:'npc-fire',owner_character_id:null,
+      owner_party:false,controller_npc_id:'npc-fire',
+      controller_character_id:null,claim_state:'owned'},state:{
+      lifecycle_status:'active',inventory_profile_snapshot:{
+        inventory_profile_id:`profile:${itemId}`,
+        item_template_ref:`template:${itemId}`,mass_grams:mass,
+        carry_form:'compact',external_hand_cost:0,packing_slot_cost:1},
+      ...(kind==='fuel'?{local_fire_fuel:{
+        schema:'rus.items.local_fire_fuel.v1',
+        fuel_class:'ordinary_solid_fuel_unit',whole_unit:true,
+        provenance:{source_refs:[`authored:${itemId}`]}}}:{
+        local_fire_ignition_basis:{
+          schema:'rus.items.local_fire_ignition_basis.v1'}})}};
+}
 
 function semanticSnapshot(local,actionPlans=[]) {
   const proposal=local.transition_proposal;

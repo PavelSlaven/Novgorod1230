@@ -75,12 +75,30 @@ export async function applyLocalFireAtomicWritePlanInTransaction({ client,
   if (proposal.action === 'start') await insertProcess(client, plan);
   else await updateProcess(client, plan);
   if (proposal.added_fuel_refs.length) await appendBindings(client, plan);
+  for (const transition of plan.fuel_placement_transitions) {
+    await applyFuelPlacement(client, plan.party_id, transition);
+  }
   if (proposal.released_fuel_refs.length) await releaseBindings(client, plan);
   if (plan.item_retirement_transition != null) {
     await applyRetirement(client, plan.party_id,
       plan.item_retirement_transition);
   }
   return Object.freeze({ replay:false });
+}
+
+async function applyFuelPlacement(client, partyId, transition) {
+  const after = transition.after_placement;
+  const result = await client.query(
+    `UPDATE party_runtime.party_item_placements
+     SET anchor_id=$1,container_id=$2,holder_npc_id=$3,
+       holder_character_id=$4,physical_position=$5,
+       equipment_slot_category_id=$6,attached_item_id=$7
+     WHERE party_id=$8 AND item_id=$9`,
+  [after.anchor_id,after.container_id,after.holder_npc_id,
+    after.holder_character_id,after.physical_position,
+    after.equipment_slot_category_id,after.attached_item_id,
+    partyId,transition.item_id]);
+  if (result.rowCount !== 1) fail('LOCAL_FIRE_INPUT_STALE');
 }
 
 async function lockPin(client, partyId, expected) {

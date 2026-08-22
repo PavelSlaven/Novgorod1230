@@ -44,9 +44,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       batch: null,
       envelope: writePlan?.turn_step_commit,
       factual,
-      state,
-      phase3Contracts,
-      turnStepApprovedOwners
+      state, phase3Contracts, turnStepApprovedOwners,
+      localFirePlans: writePlan
+        ?.local_fire_atomic_write_plans ?? []
     });
     validateNoBatchFactualCommit({ writePlan, factual, state, preparedEffect });
     return emptyTurnStepPersistence(committedSnapshot);
@@ -69,9 +69,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     batch,
     envelope: commit,
     factual,
-    state,
-    phase3Contracts,
-    turnStepApprovedOwners
+    state, phase3Contracts, turnStepApprovedOwners,
+    localFirePlans: writePlan
+      ?.local_fire_atomic_write_plans ?? []
   });
   const next = structuredClone(committedSnapshot);
   const authoredItems = (next.items ?? []).filter((item) =>

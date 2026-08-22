@@ -74,7 +74,8 @@ export function applyLocalFireTemporalProjection(projection,plan){
   }
   runtime.process_state=structuredClone(after);
   const remaining=new Set(after.fuel_bindings.map(({fuel_ref:ref})=>ref));
-  const pins=new Map([...runtime.input_pins,...plan.input_pins]
+  const pins=new Map([...runtime.input_pins,...plan.input_pins.map((pin)=>
+    projectBoundFuelPin(plan,pin,after.process_ref))]
     .map((pin)=>[pin.item_id,pin]));
   runtime.input_pins=[...remaining].map((ref)=>structuredClone(pins.get(ref)));
   if(runtime.input_pins.some((pin)=>pin==null))
@@ -90,8 +91,13 @@ export function localFireTemporalRuntimeFromPlan(raw){
       'activity_contract',plan.profile_pin.policy.policy_ref,
       String(plan.profile_pin.policy.version)),process_state:structuredClone(
       process),input_pins:plan.input_pins.filter(({item_id:id})=>bound.has(id))
-        .map((pin)=>({...structuredClone(pin),bound_process_ref:
-          process.process_ref}))};
+        .map((pin)=>projectBoundFuelPin(plan,pin,process.process_ref))};
+}
+function projectBoundFuelPin(plan,pin,processRef){
+  const placement=plan.fuel_placement_transitions.find(
+    ({item_id:id})=>id===pin.item_id)?.after_placement??pin.placement;
+  return{...structuredClone(pin),placement:structuredClone(placement),
+    bound_process_ref:processRef};
 }
 export function localFireTemporalCandidateFromRuntime(runtime){
   const state=runtime.process_state;

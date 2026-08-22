@@ -87,7 +87,10 @@ direct parent container должен быть open и сам находитьс�
 на текущем anchor; closed, nested и удерживаемый другим actor container недоступен.
 due boundary проверяет exact process binding без actor. Retirement топлива или
 воды также планирует этот owner и сохраняет общий P16; legal ownership при
-физическом доступе не переписывается.
+физическом доступе не переписывается. При `start/add_fuel` этот же owner
+атомарно переводит добавленную whole fuel unit из hand/container placement на
+локальный process scope; inventory mass/hands немедленно пересчитываются, а
+ownership/controller остаются неизменными.
 
 ## Зависимости
 

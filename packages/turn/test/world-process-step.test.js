@@ -9,10 +9,10 @@ function request() {
     process_mode: 'local_exact', process_kind: 'fire',
     process: { process_ref: 'fire:1', scope_ref: 'anchor:shore',
       causal_basis_ref: 'item:hearth', status: 'active',
-      started_at: { day: 1, second: 0 },
-      next_boundary_at: { day: 1, second: 600 },
-      fuel_bindings: ['item:wood'] },
-    current_timestamp: { day: 1, second: 120 }, trigger: 'actor_affected',
+      started_at: timestamp(0), next_boundary_at: timestamp(10),
+      fuel_bindings: [{ fuel_ref: 'item:wood',
+        fuel_class: 'ordinary_solid_fuel_unit' }] },
+    current_timestamp: timestamp(2), trigger: 'actor_affected',
     subject_state: { source_refs: ['water'],
       facts: ['water portion'], quantities: [{ ref: 'water', value: 1,
         unit: 'portion' }] },
@@ -36,6 +36,31 @@ test('world process semantic step accepts only a bounded qualitative result', as
   assert.equal(Object.isFrozen(seen[0]), true);
   assert.equal(result.process_outcome, 'complete');
 });
+
+test('world process request requires the exact objective process projection',
+  async () => {
+    for (const mutate of [
+      (value) => { delete value.process.scope_ref; },
+      (value) => { value.process.hidden_state = true; },
+      (value) => { value.process.fuel_bindings = ['item:wood']; },
+      (value) => { value.process_state_version = null; },
+      (value) => { value.process.started_at.whole_minutes = 'x'; },
+      (value) => { value.process.next_boundary_at.subminute_denominator = '0'; },
+      (value) => { value.current_timestamp.subminute_numerator = '-1'; }
+    ]) {
+      const invalid = request();
+      mutate(invalid);
+      await assert.rejects(resolveWorldProcessStep({ request: invalid,
+        worldProcessStepModel: async () => null }), {
+        code: 'TURN_WORLD_PROCESS_STEP_REQUEST_INVALID'
+      });
+    }
+  });
+
+function timestamp(wholeMinutes) {
+  return { whole_minutes: String(wholeMinutes), subminute_numerator: '0',
+    subminute_denominator: '1' };
+}
 
 test('world process semantic step rejects unrequested effects and numeric deltas', async () => {
   await assert.rejects(resolveWorldProcessStep({ request: request(),

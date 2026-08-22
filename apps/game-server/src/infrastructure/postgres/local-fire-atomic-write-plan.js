@@ -1,4 +1,5 @@
 import { admitLocalFireIgnitionBasis, admitLocalFireInput,
+  planLocalFireFuelPlacementTransition,
   planLocalFireWholeItemRetirement } from
   '@rus/items-property';
 import { resolveLocalExactFire } from '@rus/world-processes/local-exact-fire';
@@ -9,7 +10,8 @@ const REQUEST_KEYS = ['schema','party_id','base_party_state_version',
   'qualitative_outcome'];
 const PLAN_KEYS = ['schema','party_id','base_party_state_version',
   'change_set_id','actor_ref','profile_pin','input_pins',
-  'ignition_basis_pin','transition_proposal','item_retirement_transition'];
+  'ignition_basis_pin','transition_proposal','fuel_placement_transitions',
+  'item_retirement_transition'];
 
 export function createLocalFireAtomicWritePlan(raw) {
   const input = clone(raw);
@@ -32,6 +34,7 @@ export function createLocalFireAtomicWritePlan(raw) {
   const retirement = proposal.consumed_item_ref == null ? null
     : planLocalFireWholeItemRetirement({ admission,
       process_ref: proposal.process_after.process_ref });
+  const placements = fuelPlacementTransitions(admissions, proposal);
   return validatePlan({ schema: 'local_fire_atomic_write_plan_v1',
     party_id: input.party_id,
     base_party_state_version: input.base_party_state_version,
@@ -39,6 +42,7 @@ export function createLocalFireAtomicWritePlan(raw) {
     profile_pin: profile, input_pins: input.input_pins,
     ignition_basis_pin: input.ignition_basis_pin,
     transition_proposal: proposal,
+    fuel_placement_transitions: placements,
     item_retirement_transition: retirement });
 }
 
@@ -63,8 +67,20 @@ export function localFirePhysicalKeys(plan) {
 }
 
 export function applyLocalFireProjection({ next, plan }) {
-  const transition = createLocalFireAtomicWritePlan(plan)
-    .item_retirement_transition;
+  const value = createLocalFireAtomicWritePlan(plan);
+  for (const placement of value.fuel_placement_transitions) {
+    const item = next?.items?.find(({ item_id: id }) => id === placement.item_id);
+    if (item == null) fail('LOCAL_FIRE_PROJECTION_INVALID');
+    const current = physicalPlacement(item.placement ?? item);
+    const before = physicalPlacement(placement.before_placement);
+    const after = physicalPlacement(placement.after_placement);
+    if (JSON.stringify(current) === JSON.stringify(after)) continue;
+    if (JSON.stringify(current) !== JSON.stringify(before)) {
+      fail('LOCAL_FIRE_PROJECTION_INVALID');
+    }
+    item.placement = clone(after);
+  }
+  const transition = value.item_retirement_transition;
   if (transition == null) return next;
   const item = next?.items?.find(
     ({ item_id: id }) => id === transition.item_id);
@@ -112,7 +128,28 @@ function validatePlan(value) {
   if (JSON.stringify(retirement) !== JSON.stringify(value.item_retirement_transition)) {
     fail('LOCAL_FIRE_PLAN_INVALID');
   }
+  if (JSON.stringify(fuelPlacementTransitions(admissions, proposal))
+      !== JSON.stringify(value.fuel_placement_transitions)) {
+    fail('LOCAL_FIRE_PLAN_INVALID');
+  }
   return freeze(value);
+}
+
+function fuelPlacementTransitions(admissions, proposal) {
+  const added = new Set(proposal.added_fuel_refs);
+  return admissions.filter(({ item }) => added.has(item.item_id))
+    .map((admission) => planLocalFireFuelPlacementTransition({ admission,
+      scope_ref: proposal.process_after.scope_ref })).filter(Boolean);
+}
+
+function physicalPlacement(value) {
+  return { anchor_id: value?.anchor_id ?? null,
+    container_id: value?.container_id ?? null,
+    holder_npc_id: value?.holder_npc_id ?? null,
+    holder_character_id: value?.holder_character_id ?? null,
+    physical_position: value?.physical_position ?? null,
+    equipment_slot_category_id: value?.equipment_slot_category_id ?? null,
+    attached_item_id: value?.attached_item_id ?? null };
 }
 
 function transitionRequest(input, profile, admissions) {

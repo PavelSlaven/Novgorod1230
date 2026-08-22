@@ -43,6 +43,7 @@ export {
 } from './semantic-decision-request-contract.js';
 export {
   buildNpcActionDecisionRequestFromSnapshots,
+  npcSafeSnapshotHasEntityEvidence,
   projectNpcSafeResourceSnapshots
 } from
   './npc-safe-request-projector.js';

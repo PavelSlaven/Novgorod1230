@@ -40,6 +40,7 @@ export function createLowerDvinaTraceTurnStepPlayerSafeProjector({
     });
     const playerSafeState = projectLowerDvinaTraceF1Capability({
       playerSafeState: actionState, committedState,
+      localFirePlans: input.local_fire_atomic_write_plans,
       loadedProfile: localFireProfile,
       resolverAvailable: typeof createTurnStepWorldProcessResolver === 'function'
     });

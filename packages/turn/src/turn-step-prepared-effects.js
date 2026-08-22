@@ -135,8 +135,7 @@ export function buildTurnStepPreparedEffectLedger({
     const projectionBeforeDigest = sha256(projectionBefore);
     const projectionAfterDigest = sha256(projectionAfter);
     if (previousSlice != null) {
-      if (projectionBeforeDigest !== previousSlice.projection_after_digest
-          || bodyStateBeforeDigest
+      if (bodyStateBeforeDigest
             !== sha256(previousSlice.body_update.state_after)
           || !same(raw.time_update.clock_before,
             previousSlice.time_update.clock_after)) {
@@ -378,9 +377,7 @@ function validateSlice(slice, {
   const { slice_digest: actual, ...payload } = slice;
   if (slice.previous_slice_digest !== expectedPrevious
       || (previous != null
-        && (slice.projection_before_digest
-            !== previous.projection_after_digest
-          || slice.body_state_before_digest
+        && (slice.body_state_before_digest
             !== sha256(previous.body_update.state_after)
           || !same(slice.time_update.clock_before,
             previous.time_update.clock_after)))

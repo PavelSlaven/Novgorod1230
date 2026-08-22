@@ -299,6 +299,8 @@ export async function resolveBoundTurnStepCommand({
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
       if (plan.operations.length !== 1 || operation == null) return false;
+      if (operation.op === 'request_world_process'
+          && typeof services.turnStepWorldProcessResolver === 'function') return true;
       const preparedOwner = services.turnStepPreparedDomainEffect;
       const matches = semanticBindings.filter(({ command, binding }) =>
         ((preparedChainContext?.prior_effect_count ?? 0) > 0

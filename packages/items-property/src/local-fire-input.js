@@ -110,6 +110,24 @@ export function planLocalFireWholeItemRetirement({ admission,
       state_version: item.state_version + 1 } });
 }
 
+export function planLocalFireFuelPlacementTransition({ admission,
+  scope_ref: scopeRef } = {}) {
+  if (admission?.pass !== true || admission.input_kind !== 'fuel_unit'
+      || !text(scopeRef) || !plain(admission.placement)) {
+    throw coded('ITEM_LOCAL_FIRE_PLACEMENT_INVALID');
+  }
+  const before = structuredClone(admission.placement);
+  const after = { item_id: admission.item.item_id, anchor_id: scopeRef,
+    container_id: null, holder_npc_id: null, holder_character_id: null,
+    physical_position: null, equipment_slot_category_id: null,
+    attached_item_id: null };
+  if (JSON.stringify(before) === JSON.stringify(after)) return null;
+  return deepFreeze({ owner: '@rus/items-property',
+    transition_kind: 'local_fire_fuel_placement',
+    item_id: admission.item.item_id, before_placement: before,
+    after_placement: after, owner_change: 'forbidden' });
+}
+
 function admitted(inputKind, item, placement, ownership, snapshot) {
   return deepFreeze({ pass: true, input_kind: inputKind,
     item: structuredClone(item), placement: structuredClone(placement),

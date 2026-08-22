@@ -32,6 +32,7 @@ export {
 export {
   buildNpcActionDecisionRequest,
   buildNpcActionDecisionRequestFromSnapshots,
+  npcSafeSnapshotHasEntityEvidence,
   projectNpcSafeResourceSnapshots,
   buildNpcSemanticDecisionTrace,
   buildNpcStepPlan,

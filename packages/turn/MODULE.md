@@ -241,13 +241,20 @@ Active F1 сохраняет единственную actor-step semantic bounda
 случаях повторяет item/world-process owner. Exact start и generic
 whole-fuel addition детерминированы и не вызывают model. Whole-water affect
 использует bounded `world_process_step_request_v1` только для qualitative
-`no_effect|continue|complete`; request не даёт model числовых mechanics и не
-создаёт второй planner. Любой water outcome сохраняет whole-water consumption
+`no_effect|continue|complete`; existing-process DTO строго содержит exact
+`process_ref/scope_ref/causal_basis_ref/status/started_at/next_boundary_at/
+fuel_bindings`, а subject quantity приходит от item owner. Request не даёт
+model права менять числовые mechanics и не создаёт второй planner. Любой water outcome сохраняет whole-water consumption
 атомарно с process transition. Due boundary приходит через общий temporal
 integration без fake player turn и без actor requirement. Ordered plural F1
 plans сохраняют несколько due одного process и same-time due разных processes
 в одном существующем combined P16. Prepared ordinary/A1 plans передаются F1
-как уже validated owner output, а не как model projection.
+как уже validated owner output, а не как model projection. Успешный F1 step
+обновляет owner-admitted working projection и не создаёт безусловную player
+boundary; накопленные F1 plans входят в следующий player-safe projection,
+поэтому общий loop может выполнить следующий однозначный шаг того же root.
+Prepared-effect ledger допускает между time/body slices такие applied owner
+steps, сохраняя непрерывность clock/body и exact step lineage.
 
 ## Тесты
 

@@ -6,6 +6,7 @@ import {
 } from '../src/decision-signals.js';
 import {
   buildNpcActionDecisionRequestFromSnapshots,
+  npcSafeSnapshotHasEntityEvidence,
   validateNpcActionDecisionRequest
 } from '../src/semantic-decision-contracts.js';
 
@@ -15,6 +16,16 @@ const occurredAt = {
   subminute_numerator: '0',
   subminute_denominator: '1'
 };
+
+test('NPC-safe entity evidence requires a source-backed exact entity ref', () => {
+  assert.equal(npcSafeSnapshotHasEntityEvidence({ entity_ref: 'fire:1',
+    perception_snapshot: { visible_objects: [{ process_ref: 'fire:1',
+      summary: 'огонь' }] } }), false);
+  assert.equal(npcSafeSnapshotHasEntityEvidence({ entity_ref: 'fire:1',
+    perception_snapshot: { visible_objects: [{ process_ref: 'fire:1',
+      source_event_ref: ref('actor_step', 'start-fire'),
+      summary: 'разожжённый огонь' }] } }), true);
+});
 
 test('NPC-safe projector allowlists persisted subjective snapshots', () => {
   const signal = buildNpcDecisionSignal({

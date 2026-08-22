@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   admitLocalFireIgnitionBasis,
   admitLocalFireInput,
+  planLocalFireFuelPlacementTransition,
   planLocalFireWholeItemRetirement
 } from '../src/index.js';
 
@@ -56,6 +57,30 @@ test('unlisted whole fuel uses item-owned class, access and mass bounds', () => 
   assert.equal(admitLocalFireInput({ ...npc, actor_ref: 'npc',
     scope_ref: 'shore', fuel_mass_grams_min: 100,
     fuel_mass_grams_max: 1000 }).pass, true);
+});
+
+test('bound fuel moves to the local anchor without changing ownership', () => {
+  const admitted = admitLocalFireInput({ ...fuel(), actor_ref: 'actor',
+    scope_ref: 'shore', fuel_mass_grams_min: 100,
+    fuel_mass_grams_max: 1000 });
+  const transition = planLocalFireFuelPlacementTransition({ admission: admitted,
+    scope_ref: 'shore' });
+  assert.equal(transition.owner, '@rus/items-property');
+  assert.equal(transition.owner_change, 'forbidden');
+  assert.deepEqual(transition.after_placement, {
+    item_id: 'unlisted-fuel', anchor_id: 'shore', container_id: null,
+    holder_npc_id: null, holder_character_id: null, physical_position: null,
+    equipment_slot_category_id: null, attached_item_id: null
+  });
+  const local = fuel();
+  local.placement.anchor_id = 'shore';
+  local.placement.holder_character_id = null;
+  local.placement.physical_position = null;
+  const localAdmission = admitLocalFireInput({ ...local, actor_ref: 'actor',
+    scope_ref: 'shore', fuel_mass_grams_min: 100,
+    fuel_mass_grams_max: 1000 });
+  assert.equal(planLocalFireFuelPlacementTransition({ admission: localAdmission,
+    scope_ref: 'shore' }), null);
 });
 
 test('ignition basis uses the shared physical access boundary', () => {

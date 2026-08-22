@@ -7,6 +7,8 @@ const REQUEST_KEYS = ['schema','request_id','party_state_version',
   'allowed_outcomes'];
 const PLAN_KEYS = ['schema','request_id','process_ref','process_state_version',
   'interpretation','process_outcome','affected_refs','fact_changes','reason_code'];
+const PROCESS_KEYS = ['process_ref','scope_ref','causal_basis_ref','status',
+  'started_at','next_boundary_at','fuel_bindings'];
 
 export async function resolveWorldProcessStep({ request,
   worldProcessStepModel } = {}) {
@@ -34,8 +36,8 @@ function validRequest(value) {
       || Number.isSafeInteger(value.process_state_version)
         && value.process_state_version >= 0)
     && value.process_mode === 'local_exact' && value.process_kind === 'fire'
-    && (value.process === null || plain(value.process))
-    && plain(value.current_timestamp)
+    && validProcess(value.process, value.process_state_version)
+    && timestamp(value.current_timestamp)
     && ['start_attempt','actor_affected','subject_changed'].includes(value.trigger)
     && plain(value.subject_state) && plain(value.environment_state)
     && Array.isArray(value.allowed_outcomes)
@@ -43,6 +45,31 @@ function validRequest(value) {
     && new Set(value.allowed_outcomes).size === value.allowed_outcomes.length
     && value.allowed_outcomes.every((entry) =>
       ['no_effect','start','continue','complete'].includes(entry));
+}
+
+function validProcess(value, stateVersion) {
+  if (value === null) return stateVersion === null;
+  if (!Number.isSafeInteger(stateVersion) || stateVersion < 0
+      || !exact(value, PROCESS_KEYS) || !text(value.process_ref)
+      || !text(value.scope_ref) || !text(value.causal_basis_ref)
+      || value.status !== 'active' || !timestamp(value.started_at)
+      || !timestamp(value.next_boundary_at)
+      || !Array.isArray(value.fuel_bindings)
+      || value.fuel_bindings.length === 0) return false;
+  const refs = new Set();
+  return value.fuel_bindings.every((binding) =>
+    exact(binding, ['fuel_ref','fuel_class']) && text(binding.fuel_ref)
+      && binding.fuel_class === 'ordinary_solid_fuel_unit'
+      && !refs.has(binding.fuel_ref) && refs.add(binding.fuel_ref));
+}
+
+function timestamp(value) {
+  return exact(value, ['whole_minutes','subminute_numerator',
+    'subminute_denominator'])
+    && /^(?:0|[1-9][0-9]*)$/u.test(value.whole_minutes)
+    && /^(?:0|[1-9][0-9]*)$/u.test(value.subminute_numerator)
+    && /^[1-9][0-9]*$/u.test(value.subminute_denominator)
+    && BigInt(value.subminute_numerator) < BigInt(value.subminute_denominator);
 }
 
 function validPlan(value, request) {

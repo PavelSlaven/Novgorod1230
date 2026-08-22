@@ -8,6 +8,8 @@ import {
   createItemOperationHandlers,
   initializeRuntimeState
 } from './lower-dvina-trace-turn-step-item-operations.js';
+import { applyInventoryTransition, matchesItem, requireProjectedItem } from
+  './lower-dvina-trace-turn-step-item-support.js';
 import { applyActionProducedRuntimeProjection } from
   './lower-dvina-trace-action-produced-runtime.js';
 import { createContainerAccessHandler, snapshotO2bCommittedContainerInput } from
@@ -133,8 +135,63 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
       workingProjectionAuthority.admit(applyActionProducedRuntimeProjection({
         workingProjection: projection, actor, plan, state,
         resolveItemMechanics
+      })),
+    applyLocalFireProjection: ({ working_projection: projection, actor,
+      local_fire_atomic_write_plan: plan }) =>
+      workingProjectionAuthority.admit(applyLocalFireRuntimeProjection({
+        projection, actor, plan, state, resolveItemMechanics
       }))
   });
+}
+
+function applyLocalFireRuntimeProjection({ projection, actor, plan, state,
+  resolveItemMechanics }) {
+  let next = structuredClone(projection);
+  for (const transition of plan.fuel_placement_transitions ?? []) {
+    const item = requireProjectedItem(next, transition.item_id);
+    const mechanics = state.entities.get(transition.item_id)?.mechanics
+      ?? resolveItemMechanics?.(transition.item_id);
+    next = applyInventoryTransition({ projection: next, actor,
+      beforePlacement: item.placement ?? {},
+      afterPlacement: transition.after_placement,
+      beforeMechanics: mechanics, afterMechanics: mechanics,
+      itemRef: transition.item_id, state });
+    next.items = next.items.map((entry) => matchesItem(entry,
+      transition.item_id) ? { ...entry,
+        placement: projectedPlacement(transition.after_placement) } : entry);
+    updateRuntimePlacement(state, transition.item_id,
+      transition.after_placement);
+  }
+  const retirement = plan.item_retirement_transition;
+  if (retirement != null) {
+    const item = requireProjectedItem(next, retirement.item_id);
+    const mechanics = state.entities.get(retirement.item_id)?.mechanics
+      ?? resolveItemMechanics?.(retirement.item_id);
+    next = applyInventoryTransition({ projection: next, actor,
+      beforePlacement: item.placement ?? {}, afterPlacement: null,
+      beforeMechanics: mechanics, afterMechanics: null,
+      itemRef: retirement.item_id, state });
+    next.items = next.items.filter((entry) =>
+      !matchesItem(entry, retirement.item_id));
+    state.entities.delete(retirement.item_id);
+    state.materializedItems.delete(retirement.item_id);
+    state.authoredItems.delete(retirement.item_id);
+    state.retiredEntities.add(retirement.item_id);
+  }
+  return next;
+}
+
+function projectedPlacement(value) {
+  return Object.fromEntries(Object.entries(value).filter(
+    ([key, entry]) => key !== 'item_id' && entry != null));
+}
+
+function updateRuntimePlacement(state, itemId, placement) {
+  for (const collection of [state.materializedItems, state.authoredItems]) {
+    const item = collection.get(itemId);
+    if (item != null) collection.set(itemId, { ...item,
+      placement: structuredClone(placement) });
+  }
 }
 
 async function prepareEffectTime(input, committedState, temporalAdvance) {

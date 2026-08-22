@@ -204,7 +204,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(typeof createTurnStepWorldProcessResolver === 'function'
         && localFireProfile?.profile?.status === 'approved' ? {
       turnStepWorldProcessResolver: createTurnStepWorldProcessResolver({
-        partyId, requestId, inputDigest
+        partyId, requestId, inputDigest,
+        applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,

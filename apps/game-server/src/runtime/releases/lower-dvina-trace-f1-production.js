@@ -1,6 +1,7 @@
 import { admitLocalFireIgnitionBasis, admitLocalFireInput } from
   '@rus/items-property';
-import { matchesOperationContract, projectNpcSafeResourceSnapshots } from
+import { matchesOperationContract, npcSafeSnapshotHasEntityEvidence,
+  projectNpcSafeResourceSnapshots } from
   '@rus/npc-runtime';
 import { resolveWorldProcessStep } from '@rus/turn';
 import { createLocalFireAtomicWritePlan } from
@@ -14,11 +15,11 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
   loadedProfile, worldProcessStepModel } = {}) {
   const profile=requireProfile(loadedProfile);
   if(!pool?.query)throw new TypeError('F1 PostgreSQL pool is required.');
-  return({partyId})=>async function resolveLocalFire(envelope){
+  return({partyId,applyWorkingProjection=null})=>async function resolveLocalFire(envelope){
     const operation=envelope.operation,actorRef=actorFrom(envelope.actor);
     const marker=capabilityFrom(envelope,operation);
     const npc=envelope.plan?.schema==='npc_step_plan_v1';
-    const scopeRef=npc?marker?.scope_ref:currentScope(envelope.committed_state);
+    const scopeRef=marker?.scope_ref;
     if(operation?.op!=='request_world_process'||operation.process_kind!=='fire'
         ||operation.actor_ref!==actorRef||!text(actorRef)
         ||marker==null||!npc&&marker.semantic_grounding_available!==true
@@ -91,28 +92,32 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
       qualitative_outcome:qualitativeOutcome});
     if(JSON.stringify(plan.transition_proposal.at_timestamp)
         !==JSON.stringify(atTimestamp))fail('TRACE_F1_ACTOR_TIME_MISMATCH');
-    return Object.freeze({working_projection:npc
+    const workingProjection=npc
       ?applyLocalFireTemporalProjection(envelope.working_projection,plan)
-      :structuredClone(envelope.working_projection),
+      :typeof applyWorkingProjection==='function'
+        ?applyWorkingProjection({working_projection:envelope.working_projection,
+          actor:envelope.actor,local_fire_atomic_write_plan:plan})
+        :fail('TRACE_F1_WORKING_PROJECTION_OWNER_MISSING');
+    return Object.freeze({working_projection:workingProjection,
       summary:`local_fire:${plan.transition_proposal.outcome}`,
       write_fragments:[],local_fire_atomic_write_plans:[plan],
-      player_response_boundary:true});
+      player_response_boundary:false});
   };
 }
 
 export function projectLowerDvinaTraceF1Capability({playerSafeState,
-  committedState,loadedProfile,resolverAvailable}){
+  committedState,localFirePlans=[],loadedProfile,resolverAvailable}){
   const profile=loadedProfile?.profile;
   if(!resolverAvailable||profile?.status!=='approved')return structuredClone(playerSafeState);
   const visible=new Set((playerSafeState?.items??[])
     .map((item)=>item?.item_id??item?.instance_id).filter(text));
-  const scopeRef=currentScope(committedState);
+  const scopeRef=currentScope(playerSafeState);
   const ignition=(committedState?.items??[]).filter((item)=>visible.has(item.item_id)
     &&item.state?.local_fire_ignition_basis?.schema
       ==='rus.items.local_fire_ignition_basis.v1'
     &&item.state?.lifecycle_status==='active').map(({item_id:id})=>id);
-  const active=(committedState?.local_fire_runtime??[])
-    .map(({process_state:state})=>state).filter((state)=>state?.status==='active'
+  const active=currentProcessStates(committedState,localFirePlans)
+    .filter((state)=>state?.status==='active'
       &&state.scope_ref===scopeRef&&state.fuel_bindings?.some(
         ({fuel_ref:ref})=>visible.has(ref)));
   if(!text(scopeRef)||ignition.length===0&&active.length===0)
@@ -121,6 +126,18 @@ export function projectLowerDvinaTraceF1Capability({playerSafeState,
     semantic_grounding_available:true,context_ref:profile.context_ref,scope_ref:scopeRef,
     ignition_basis_refs:ignition,active_process_refs:active.map(({process_ref:ref})=>ref),
     }};
+}
+
+function currentProcessStates(committedState, plans) {
+  const byRef = new Map((committedState?.local_fire_runtime ?? [])
+    .map(({ process_state: state }) => [state?.process_ref, state])
+    .filter(([ref]) => text(ref)));
+  for (const raw of plans ?? []) {
+    const state = createLocalFireAtomicWritePlan(raw)
+      .transition_proposal.process_after;
+    byRef.set(state.process_ref, state);
+  }
+  return [...byRef.values()];
 }
 
 export function projectLowerDvinaTraceF1NpcCapability({ committedState,
@@ -139,13 +156,16 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
     perception_snapshot: npcSnapshot?.perception_snapshot ?? null,
     knowledge_snapshot: npcSnapshot?.knowledge_snapshot ?? null
   }).map(({ resource_ref: ref }) => ref));
-  const active = (committedState?.local_fire_runtime ?? [])
+  const objectiveActive = (committedState?.local_fire_runtime ?? [])
     .map(({ process_state: state }) => state)
     .filter((state) => state?.status === 'active'
-      && state.scope_ref === scopeRef
-      && state.fuel_bindings?.some(({fuel_ref:ref})=>available.has(ref)))
+      && state.scope_ref === scopeRef);
+  const active = objectiveActive.filter((state) =>
+    npcSafeSnapshotHasEntityEvidence({ entity_ref: state.process_ref,
+      perception_snapshot: npcSnapshot?.perception_snapshot ?? null,
+      knowledge_snapshot: npcSnapshot?.knowledge_snapshot ?? null }))
     .sort((left, right) => left.process_ref.localeCompare(right.process_ref));
-  const bound = new Map(active.flatMap((state) =>
+  const bound = new Map(objectiveActive.flatMap((state) =>
     state.fuel_bindings.map(({ fuel_ref: ref }) => [ref, state.process_ref])));
   const items = (committedState?.items ?? []).filter(({ item_id: id }) =>
     available.has(id));
@@ -205,7 +225,10 @@ function worldProcessRequest({envelope,loaded,operation,scopeRef,admission}){
     party_state_version:loaded.party_state_version,
     process_state_version:process.state_version,process_mode:'local_exact',
     process_kind:'fire',process:{process_ref:process.process_ref,
-      status:process.status},
+      scope_ref:process.scope_ref,causal_basis_ref:process.causal_basis_ref,
+      status:process.status,started_at:structuredClone(process.started_at),
+      next_boundary_at:structuredClone(process.next_boundary_at),
+      fuel_bindings:structuredClone(process.fuel_bindings)},
     current_timestamp:actorStepTimestamp(envelope),
     trigger:'actor_affected',subject_state:{source_refs:[...operation.source_refs],
       facts:['existing water portion'],quantities:[{ref:operation.source_refs[0],

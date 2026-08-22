@@ -925,8 +925,22 @@ LLM не задаёт timestamp, duration, interval, process id, fuel mass ил�
 ignition basis в `target_refs`; generic whole fuel допускается item owner без
 каталога ID и без model call. Existing whole-water affect получает через
 `world_process_step_request_v1` только bounded qualitative outcome
-`no_effect|continue|complete`. Due boundary разрешает без LLM общий temporal
-owner и не требует живого actor.
+`no_effect|continue|complete`. Для существующего process request содержит
+строго один objective DTO:
+
+```text
+process_ref, scope_ref, causal_basis_ref, status,
+started_at, next_boundary_at, fuel_bindings
+```
+
+Это внутренняя process-relevant projection для qualitative resolver, а не
+player/NPC capability: semantic planner получает process ref только из своей
+safe projection. Exact whole quantity/mass subject передаёт item owner. После
+успешного F1 шага code-owned plan применяется к working projection, включая
+placement/inventory топлива и текущий process marker; безусловная
+`player_response_boundary` запрещена. Следующий однозначный semantic step того
+же root видит это состояние и накопленные F1 plans. Due boundary разрешает без
+LLM общий temporal owner и не требует живого actor.
 
 ### 12.7. `emit_interaction`
 

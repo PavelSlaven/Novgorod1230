@@ -115,6 +115,20 @@ export function localFireTemporalCandidateFromRuntime(runtime){
     visibility_policy_ref:runtime.policy_ref,idempotency_key:id,
     subject_refs:refs,causal_parent_refs:[]};
 }
+export function replaceLocalFireTemporalCandidates(candidates,projection,plans){
+  const refs=new Set((plans??[]).map((raw)=>createLocalFireAtomicWritePlan(raw)
+    .transition_proposal.process_after.process_ref));
+  const next=structuredClone(candidates??[]).filter((candidate)=>
+    candidate?.source_ref?.entity_kind!=='propagation_process'
+      ||!refs.has(candidate.source_ref.entity_id));
+  for(const ref of refs){
+    const runtime=findRuntime(projection,ref);
+    if(runtime==null)fail('LOCAL_FIRE_TEMPORAL_CONTEXT_STALE');
+    if(runtime?.process_state?.status==='active')
+      next.push(localFireTemporalCandidateFromRuntime(runtime));
+  }
+  return next;
+}
 function nextCandidate(candidate,after,ruleRef,policyRef){
   const fuelRefs=after.fuel_bindings.map(({fuel_ref:ref})=>({
     entity_kind:'item',entity_id:ref}));

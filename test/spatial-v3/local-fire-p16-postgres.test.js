@@ -30,7 +30,9 @@ import { loadTracePhase2TemporalSourceProof } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2-temporal-state.js';
 import { assertLocalFireFuelMutationBound } from
   '../../apps/game-server/src/infrastructure/postgres/local-fire-p16-extension.js';
-import { lowerDvinaTraceLocalFireTemporalRegistration } from
+import { applyLocalFireTemporalProjection,
+  localFireTemporalCandidateFromRuntime,
+  lowerDvinaTraceLocalFireTemporalRegistration } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-local-fire-temporal.js';
 import { createTracePhase2TemporalAdvance } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2-temporal.js';
@@ -686,7 +688,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         process_outcome:'complete',affected_refs:request.subject_state.source_refs,
         fact_changes:[],reason_code:'water_extinguishes'})})({
       partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
-    const chainEnvelope=(step,operation,prior=[])=>({operation,
+    const chainEnvelope=(step,operation,prior=[],currentClock=clock(90))=>({operation,
       actor:{actor_id:'pc'},plan:{schema:'turn_step_plan_v1'},request:{
         request_id:`${chainRequest}:step:${step}`,root_turn_id:chainRoot,
         step_index:step,change_set_id:chainChange,
@@ -699,7 +701,7 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       prior_local_fire_atomic_write_plans:prior,
       prepared_ordinary_materialization_atomic_write_plan:null,
       prepared_action_production_atomic_write_plans:[],working_projection:{},
-      committed_state:{party_state:{turn_number:chainVersion},clock:clock(90),
+      committed_state:{party_state:{turn_number:chainVersion},clock:currentClock,
         position:{location_ref:'scope-fire'}}});
     const startResult=await chainResolver(chainEnvelope(1,{
       op:'request_world_process',actor_ref:'pc',process_action:'start',
@@ -722,6 +724,22 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
       waterOperation,[chainStart,chainAdd]));
     const chainWater=waterResultSameRoot.local_fire_atomic_write_plans[0];
     assert.equal(chainWater.transition_proposal.process_before.state_version,2);
+
+    let mixedProjection=applyLocalFireTemporalProjection({
+      local_fire_runtime:[]},chainStart);
+    mixedProjection=applyLocalFireTemporalProjection(mixedProjection,chainAdd);
+    const mixedCandidate=localFireTemporalCandidateFromRuntime(
+      mixedProjection.local_fire_runtime[0]);
+    const mixedResolution=lowerDvinaTraceLocalFireTemporalRegistration(profile())
+      .resolve(mixedCandidate,{request:{base_state_version:String(chainVersion),
+        idempotency_context:{change_set_id:chainChange}},
+      projection:mixedProjection});
+    const chainDue=mixedResolution.proposals[0]
+      .local_fire_atomic_write_plans[0];
+    const mixedWaterResult=await chainResolver(chainEnvelope(3,waterOperation,
+      [chainStart,chainAdd,chainDue],chainDue.transition_proposal.at_timestamp));
+    const mixedWater=mixedWaterResult.local_fire_atomic_write_plans[0];
+    assert.equal(mixedWater.transition_proposal.process_before.state_version,3);
 
     for (const mutate of [
       (plan)=>{plan.party_id='forged-party';},
@@ -764,8 +782,23 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
     await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
       [chainStart,staleItemPlan])),{code:'LOCAL_FIRE_INPUT_STALE'});
 
-    const chainCombined=await combinedPlan(chainWater,chainVersion,{
-      localPlans:[chainStart,chainAdd,chainWater]});
+    for(const mutate of [
+      (plan)=>{plan.actor_ref='pc';},
+      (plan)=>{plan.change_set_id='forged-change';},
+      (plan)=>{plan.transition_proposal.cause.boundary_id='forged-boundary';},
+      (plan)=>{plan.transition_proposal.cause
+        .expected_process_state_version+=1;},
+      (plan)=>{plan.transition_proposal.cause.due_at=clock(96);}
+    ]){
+      const forged=structuredClone(chainDue);mutate(forged);
+      await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+        [chainStart,chainAdd,forged],clock(95))),/LOCAL_FIRE_/u);
+    }
+    await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+      [chainStart,chainDue,chainAdd],clock(95))),/LOCAL_FIRE_/u);
+
+    const chainCombined=await combinedPlan(mixedWater,chainVersion,{
+      localPlans:[chainStart,chainAdd,chainDue,mixedWater]});
     await pool.query(`UPDATE party_runtime.party_items SET state_version=2
       WHERE party_id='party-fire' AND item_id='water-chain'`);
     assert.equal((await committer.commit({plan:chainCombined})).ok,false);
@@ -778,9 +811,11 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         party_runtime.party_local_world_process_fuel_bindings
         WHERE party_id='party-fire' AND process_ref=$1) AS bindings,
       (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+        WHERE party_id='party-fire' AND item_id='fuel-chain-1') AS fuel_state,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
         WHERE party_id='party-fire' AND item_id='water-chain') AS water_state`,
     [chainProcess])).rows[0],{party_version:chainVersion,processes:0,
-      bindings:0,water_state:'active'});
+      bindings:0,fuel_state:'active',water_state:'active'});
     await pool.query(`UPDATE party_runtime.party_items SET state_version=1
       WHERE party_id='party-fire' AND item_id='water-chain'`);
     const chainCommitted=await committer.commit({plan:chainCombined});
@@ -794,12 +829,15 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         WHERE party_id='party-fire' AND process_ref=$1) AS process_status,
       (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
         WHERE party_id='party-fire' AND item_id='water-chain') AS water_state,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+        WHERE party_id='party-fire' AND item_id='fuel-chain-1') AS fuel_state,
       (SELECT count(*)::int FROM
         party_runtime.party_local_world_process_fuel_bindings
         WHERE party_id='party-fire' AND process_ref=$1
           AND released_at_change_set_id=$2) AS released_bindings`,
     [chainProcess,chainChange])).rows[0],{party_version:chainVersion+1,
-      process_status:'completed',water_state:'retired',released_bindings:2});
+      process_status:'completed',water_state:'retired',fuel_state:'retired',
+      released_bindings:2});
   });
 
 async function firePlan(pool,{action,requestId,changeSetId,partyVersion,

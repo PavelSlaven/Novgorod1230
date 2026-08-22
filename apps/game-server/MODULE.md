@@ -202,6 +202,11 @@ marker содержит только visible refs. Player resolver примен�
 только как code-owned input, проверяет party/actor/root/change set/base version,
 step-specific request и process/item pins, затем последовательно проецирует
 process state, placement, binding и retirement без промежуточной записи в БД.
+Prepared time adapter получает весь accumulated same-root F1 chain, заменяет
+committed runtime и temporal candidate текущим состоянием каждого process, а
+due output применяет через существующий local-fire item projection owner до
+следующего model request. Loader отдельно проверяет строгий actor-step и
+system temporal-boundary provenance; completed process удаляет candidate.
 Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
 start и попавшая в remaining window due сохраняются ordered в одном P16.
 Отдельных F1 authority/commit tables,

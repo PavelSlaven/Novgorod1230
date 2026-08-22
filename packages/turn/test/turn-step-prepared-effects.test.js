@@ -126,6 +126,57 @@ test('common prepared orchestration chains arbitrary domain and semantic owners'
     assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
   });
 
+test('prepared time sees cumulative F1 plans without duplicating prior output',
+  async () => {
+    const actorPlan = { plan: 'actor' }, duePlan = { plan: 'due' };
+    const seen = [];
+    const registry = createTurnStepExecutionRegistry({ domain: {
+      request_world_process: async ({ working_projection: projection }) => ({
+        working_projection: projection, summary: 'fire', write_fragments: [],
+        local_fire_atomic_write_plans: [actorPlan]
+      }),
+      request_movement: async ({ working_projection: projection }) => ({
+        working_projection: { ...projection, position: 'camp' },
+        summary: 'route', write_fragments: [], prepared_effect_request: {
+          effect_kind: 'domain_command', owner_ref: 'route_owner',
+          operation_ref: 'request_movement', availability: available(),
+          consequence: { duration_minutes: 8 }
+        }
+      })
+    }, applySemanticActivity:async({working_projection:projection})=>({
+      working_projection:projection,summary:'done',write_fragments:[],
+      player_response_boundary:true}) });
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: registry,
+      preparedEffectContext: { current_clock: at(0),
+        current_body_state: body() },
+      async preparedEffectTimeOwner(value) {
+        seen.push(value.local_fire_atomic_write_plans);
+        return { version: 2, schema: 'turn_time_update',
+          owner: '@rus/time-events-history', clock_before: at(0),
+          clock_after: at(8), exact_elapsed: minutes(8), nearest_boundary: null,
+          local_fire_atomic_write_plans: [duePlan] };
+      },
+      async preparedEffectBodyOwner() {
+        return { version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+          applied: false, proposal: null, state_after: body() };
+      },
+      async preparedEffectProjectionOwner(value) {
+        assert.equal(value.actor.actor_id, 'actor-1');
+        return value.working_projection;
+      },
+      turnStepModel(request) {
+        if (request.step_index === 1) return worldProcessPlan(request);
+        if (request.step_index === 2) return routePlan(request);
+        return directPlan(request);
+      }
+    }));
+
+    assert.deepEqual(seen, [[actorPlan]]);
+    assert.deepEqual(outcome.local_fire_atomic_write_plans,
+      [actorPlan, duePlan]);
+  });
+
 test('prepared chain suppresses step-two schema repair and a repaired start',
   async (t) => {
     await t.test('invalid step two makes exactly two model calls', async () => {

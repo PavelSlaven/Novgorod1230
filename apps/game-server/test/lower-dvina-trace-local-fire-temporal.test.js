@@ -1,9 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createTurnStepExecutionRegistry,runTurnStepLoop } from '@rus/turn';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createLocalFireAtomicWritePlan } from
   '../src/infrastructure/postgres/local-fire-atomic-write-plan.js';
-import { lowerDvinaTraceLocalFireTemporalRegistration } from
+import { applyLocalFireTemporalProjection,
+  localFireTemporalCandidateFromRuntime,
+  localFireTemporalRuntimeFromPlan,
+  lowerDvinaTraceLocalFireTemporalRegistration,
+  replaceLocalFireTemporalCandidates } from
   '../src/runtime/lower-dvina-trace-local-fire-temporal.js';
 import { createTracePhase2TemporalAdvance } from
   '../src/runtime/lower-dvina-trace-phase-2-temporal.js';
@@ -11,6 +16,10 @@ import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import { lowerDvinaTracePhase6TemporalEffectRegistrations } from
   '../src/runtime/lower-dvina-trace-phase-6-temporal-effect-owner.js';
+import { createLowerDvinaTraceTurnStepRuntimePorts } from
+  '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
+import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
+  '../src/runtime/lower-dvina-trace-player-safe-working.js';
 
 const clock=(whole)=>({whole_minutes:String(whole),subminute_numerator:'0',
   subminute_denominator:'1'});
@@ -44,6 +53,102 @@ test('configured temporal owner preserves both same-time fires deterministically
       'local-fire:fire-a:state:1','local-fire:fire-b:state:1']);
   });
 
+test('local-fire temporal overlay inserts, replaces and removes candidates',()=>{
+  const start=startPlan('fire-fold',['fuel-1','fuel-2']);
+  let projection=applyLocalFireTemporalProjection({local_fire_runtime:[]},start);
+  let candidates=replaceLocalFireTemporalCandidates([],projection,[start]);
+  assert.deepEqual(candidates.map(({boundary_id:id})=>id),[
+    'local-fire:fire-fold:state:1']);
+
+  const add=addPlan(start,'fuel-3');
+  projection=applyLocalFireTemporalProjection(projection,add);
+  candidates=replaceLocalFireTemporalCandidates(candidates,projection,[add]);
+  assert.deepEqual(candidates.map(({boundary_id:id})=>id),[
+    'local-fire:fire-fold:state:2']);
+
+  const single=startPlan('fire-complete',['fuel-last']);
+  const runtime=localFireTemporalRuntimeFromPlan(single);
+  const candidate=localFireTemporalCandidateFromRuntime(runtime);
+  const resolved=lowerDvinaTraceLocalFireTemporalRegistration(profile())
+    .resolve(candidate,{request:{base_state_version:'1',
+      idempotency_context:{change_set_id:'change-complete'}},
+    projection:{local_fire_runtime:[runtime]}});
+  const due=resolved.proposals[0].local_fire_atomic_write_plans[0];
+  assert.deepEqual(replaceLocalFireTemporalCandidates([candidate],
+    resolved.state_projection,[due]),[]);
+});
+
+test('production prepared route advances prior fire and hides retired fuel',
+  async()=>{
+    const start=startPlan('fire-route',['fuel-route'],0);
+    const temporalAdvanceOwner=createTemporalAdvanceOwner({
+      source_registrations:lowerDvinaTraceTemporalSourceRegistrations([
+        lowerDvinaTraceLocalFireTemporalRegistration(profile())]),
+      effect_registrations:lowerDvinaTracePhase6TemporalEffectRegistrations()});
+    const temporalAdvance=createTracePhase2TemporalAdvance({contracts:{
+      activity:{nearest_temporal_boundary_rule:
+        'split_before_earliest_boundary',duration_minutes:8}},
+    temporalAdvanceOwner});
+    const committed={party_id:'party-fire',party_state:{state_version:1},
+      actor_id:'pc',clock:clock(0),clock_weather_light:{clock:clock(0)},
+      body_state:{},local_fire_runtime:[],temporal_boundary_candidates:[],
+      temporal_source_proof:sourceProof(),items:[{item_id:'fuel-route',
+        runtime_instance_mechanics_snapshot:mechanics('fuel-route')},{
+        item_id:'ignition',runtime_instance_mechanics_snapshot:
+          mechanics('ignition'),placement:{anchor_id:'scope-fire'}}],
+      knowledge:[],prepared_scenes:[{location_profile_ref:'camp',
+        node:{instance_id:'camp-node'}}]};
+    const ports=createLowerDvinaTraceTurnStepRuntimePorts({
+      committedState:committed,temporalAdvance,bodyEffect:{apply:async()=>({
+        applied:false,proposal:null,state_after:{}})},workingProjectionAuthority:
+        createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()});
+    const registry=createTurnStepExecutionRegistry({domain:{
+      request_world_process:async(execution)=>({working_projection:
+        ports.applyLocalFireProjection({working_projection:
+          execution.working_projection,actor:execution.request.actor,
+        local_fire_atomic_write_plan:start}),summary:'fire',write_fragments:[],
+      local_fire_atomic_write_plans:[start]}),
+      request_movement:(execution)=>ports.preparedDomainEffect.apply({
+        ...execution,command_id:
+          'lower_dvina_trace.follow_path_to_fishing_camp',option_id:'route',
+        availability:{available:true},consequence:{phase3_kind:'movement',
+          duration_minutes:8,movement:{route_ref:'shore-camp',source:{
+            location_ref:'scope-fire'},destination:{location_ref:'camp',
+            g5_anchor_id:'camp-anchor'}}}})},applySemanticActivity:async(
+        {working_projection:projection})=>({working_projection:projection,
+          summary:'done',write_fragments:[],player_response_boundary:true})});
+    const requests=[];
+    const result=await runTurnStepLoop({requestId:'request-route',
+      rootTurnId:'turn-route',committedStateVersion:1,
+      rootPlayerAction:'разжечь огонь и уйти в лагерь',actor:{actor_id:'pc',
+        attributes:{strength:{value:9}}},
+      initialWorkingProjection:{actor_id:'pc',position:{
+        location_ref:'scope-fire'},destination_refs:['camp'],clock:clock(0),
+        clock_weather_light:{clock:clock(0)},knowledge:[],items:[{
+          item_id:'fuel-route',instance_id:'fuel-route',placement:{
+            holder_character_id:'pc',physical_position:'hands'}},{
+          item_id:'ignition',instance_id:'ignition',placement:{
+            anchor_id:'scope-fire'}}],inventory:{
+          items:['fuel-route'],total_weight:{grams:300},load_category:'light',
+          occupied_hands:1}},maxInternalSteps:8},{executionRegistry:registry,
+      preparedEffectContext:ports.preparedEffectContext,
+      preparedEffectTimeOwner:ports.preparedEffectTimeOwner,
+      preparedEffectBodyOwner:ports.preparedEffectBodyOwner,
+      preparedEffectProjectionOwner:ports.preparedEffectProjectionOwner,
+      projectPlayerSafeState:async({working_projection:projection})=>projection,
+      revalidateCommittedState:async()=>true,turnStepModel(request){
+        requests.push(request);
+        if(request.step_index===1)return fireStepPlan(request);
+        if(request.step_index===2)return routeStepPlan(request);
+        return doneStepPlan(request);}});
+    assert.equal(requests[2].player_safe_state.position.location_ref,'camp');
+    assert.equal(requests[2].player_safe_state.clock.whole_minutes,'8');
+    assert.equal(requests[2].player_safe_state.items.some(
+      ({item_id:id})=>id==='fuel-route'),false);
+    assert.deepEqual(result.local_fire_atomic_write_plans.map((plan)=>
+      plan.transition_proposal.action),['start','due_boundary']);
+  });
+
 async function advance(actorPlans,minutes){
   const temporalAdvanceOwner=createTemporalAdvanceOwner({
     source_registrations:lowerDvinaTraceTemporalSourceRegistrations([
@@ -58,15 +163,26 @@ async function advance(actorPlans,minutes){
     local_fire_atomic_write_plans:actorPlans,root_turn_id:'turn-fire'});
 }
 
-function startPlan(processRef,fuelRefs){
+function startPlan(processRef,fuelRefs,at=10){
   return createLocalFireAtomicWritePlan({schema:
     'local_fire_atomic_write_request_v1',party_id:'party-fire',
     base_party_state_version:1,change_set_id:'change-fire',actor_ref:'pc',
     profile_pin:profilePin(),process_state:null,
     input_pins:fuelRefs.map(fuelPin),ignition_basis_pin:ignitionPin(),
-    action:'start',process_ref:processRef,at_timestamp:clock(10),cause:{
+    action:'start',process_ref:processRef,at_timestamp:clock(at),cause:{
       kind:'actor_step',request_id:`request:${processRef}`,
       root_turn_id:'turn-fire',step_index:1},qualitative_outcome:null});
+}
+
+function addPlan(start,itemId){
+  const process=start.transition_proposal.process_after;
+  return createLocalFireAtomicWritePlan({schema:
+    'local_fire_atomic_write_request_v1',party_id:'party-fire',
+    base_party_state_version:1,change_set_id:'change-fire',actor_ref:'pc',
+    profile_pin:profilePin(),process_state:process,input_pins:[fuelPin(itemId)],
+    ignition_basis_pin:null,action:'add_fuel',process_ref:process.process_ref,
+    at_timestamp:clock(11),cause:{kind:'actor_step',request_id:'request:add',
+      root_turn_id:'turn-fire',step_index:2},qualitative_outcome:null});
 }
 
 function fuelPin(itemId){return itemPin(itemId,{local_fire_fuel:{schema:
@@ -115,3 +231,25 @@ function sourceProof(){return{schema:'lower_dvina_trace_temporal_source_proof',
   admission_policy:'pass_exact_candidates_to_temporal_activity_owner',
   pending_event_count:0,active_schedule_count:0,candidate_count:0,
   candidates:[]};}
+
+function fireStepPlan(request){return stepPlan(request,{resolution:'domain_request',
+  goal_result:'pending',activity:{owner:'domain',duration_class:null,
+    effort:null},operations:[{op:'request_world_process',actor_ref:'pc',
+    process_action:'start',process_ref:null,process_kind:'fire',
+    source_refs:['fuel-route'],target_refs:['ignition'],description:'огонь'}],
+  continuation:{remaining_intent:'уйти в лагерь',depends_on_refs:['camp']}});}
+function routeStepPlan(request){return stepPlan(request,{resolution:
+  'domain_request',goal_result:'pending',activity:{owner:'domain',
+    duration_class:null,effort:null},operations:[{op:'request_movement',
+    actor_ref:'pc',movement_kind:'local',target_ref:'camp'}],continuation:{
+    remaining_intent:'осмотреться',depends_on_refs:['camp']}});}
+function doneStepPlan(request){return stepPlan(request,{});}
+function stepPlan(request,overrides){return{schema:'turn_step_plan_v1',
+  request_id:request.request_id,committed_state_version:
+    request.committed_state_version,working_revision:request.working_revision,
+  step_index:request.step_index,interpretation:{player_goal:
+    request.root_player_action,grounded_attempt:request.remaining_intent,
+    adaptation:'literal'},resolution:'direct',goal_result:'achieved',activity:{
+    owner:'semantic',duration_class:'moment',effort:'none'},operations:[],
+  check:null,continuation:null,clarification:null,reason_code:'test',
+  reason:'temporal F1 production regression',...overrides};}

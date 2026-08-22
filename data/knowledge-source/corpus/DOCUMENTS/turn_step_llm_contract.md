@@ -946,6 +946,16 @@ step-specific request, process chain и item pins проверяются до с
 плана, а placement/binding/retirement проецируются последовательно. Due boundary разрешает без
 LLM общий temporal owner и не требует живого actor.
 
+Тот же accumulated chain входит в каждый prepared temporal segment вместе с
+планами текущего handler. Temporal adapter заменяет committed process runtime и
+его старый candidate по `process_ref`; active process получает один current
+candidate, completed process — ни одного. Созданные temporal due plans сразу
+проходят существующий item projection owner, поэтому следующий semantic step
+видит согласованные process, placement, inventory и retirement. Prior-chain
+validation не смешивает provenance: actor transition сохраняет root/request/
+completed-step checks, system boundary — exact boundary/process-version/due/
+profile/change-set/item-pin checks.
+
 ### 12.7. `emit_interaction`
 
 ```json

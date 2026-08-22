@@ -14,8 +14,8 @@ import { buildTracePhase7TemporalRequest,
   TRACE_PHASE7_EXTERNAL_PROVIDER,TRACE_PHASE7_PROVIDER,
   tracePhase7TemporalVisibleEnvelope } from
   './lower-dvina-trace-phase-7-temporal-request.js';
-import { localFireTemporalCandidateFromRuntime,
-  localFireTemporalRuntimeFromPlan } from
+import { applyLocalFireTemporalProjection,
+  replaceLocalFireTemporalCandidates } from
   './lower-dvina-trace-local-fire-temporal.js';
 
 export function createTracePhase2TemporalAdvance({ contracts,
@@ -36,15 +36,12 @@ export function createTracePhase2TemporalAdvance({ contracts,
       clockBefore,
       exactElapsed
     });
-    const sourceCandidates=[...(state.temporal_boundary_candidates??[])];
-    const localFireRuntime=structuredClone(state.local_fire_runtime??[]);
-    for(const raw of actorPlans){
-      const runtime=localFireTemporalRuntimeFromPlan(raw);
-      const after=runtime.process_state;
-      if(after.status!=='active')continue;
-      localFireRuntime.push(runtime);
-      sourceCandidates.push(localFireTemporalCandidateFromRuntime(runtime));
-    }
+    let localFireProjection={local_fire_runtime:structuredClone(
+      state.local_fire_runtime??[])};
+    for(const plan of actorPlans)localFireProjection=
+      applyLocalFireTemporalProjection(localFireProjection,plan);
+    const sourceCandidates=replaceLocalFireTemporalCandidates(
+      state.temporal_boundary_candidates??[],localFireProjection,actorPlans);
     if(window.ok&&sourceCandidates.length===0)return basicResult(
       clockBefore,window.clock_after,exactElapsed,window.candidate_count);
     if(typeof temporalAdvanceOwner?.advance!=='function')
@@ -55,7 +52,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
         entity_id:executionId}],active_execution_requires_boundary:false,
       available_event_ids:sourceCandidates.map(({boundary_id:id})=>id),
       cumulative_elapsed_minutes:0,processed_source_boundary_ids:[],
-      local_fire_runtime:localFireRuntime};
+      local_fire_runtime:localFireProjection.local_fire_runtime};
     const request=buildTracePhase7TemporalRequest({state,contracts:null,
       executionId,limit:window.clock_after,commandIdempotencyKey:
         `${rootTurnId}:prepared`,rootTurnId,clockBefore,
@@ -85,7 +82,7 @@ export function createTracePhase2TemporalAdvance({ contracts,
         owner: '@rus/time-events-history/temporal-boundaries',
         policy:
           contracts.activity.nearest_temporal_boundary_rule,
-        evaluated_candidate_count: window.candidate_count,
+        evaluated_candidate_count: sourceCandidates.length,
         processed_boundary_ids: advanced.result.trace.processed_boundary_ids
       }
     };

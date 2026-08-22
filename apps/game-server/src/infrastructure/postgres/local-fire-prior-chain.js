@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
+import { compareGameTimestamp } from '@rus/time-events-history';
 import { createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
 
@@ -16,24 +17,23 @@ export function validateLocalFirePriorChain({ rawPlans, partyId, actorRef,
   if (plans.length === 0) return { plans, processStates, itemPins };
   const completed = new Set(completedSteps.map(({ step_index: index }) => index));
   const requestPrefix = requestPrefixFrom(currentRequestId, stepIndex);
-  let priorStep = 0;
+  let priorStep = 0, priorTimestamp = null, priorTemporal = null;
   for (const plan of plans) {
     const proposal = plan.transition_proposal;
     const cause = proposal.cause;
     const ref = proposal.process_after.process_ref;
-    if (plan.party_id !== partyId || plan.actor_ref !== actorRef
+    if (plan.party_id !== partyId
         || plan.base_party_state_version !== partyStateVersion
         || plan.change_set_id !== changeSetId
-        || cause.kind !== 'actor_step' || cause.root_turn_id !== rootTurnId
-        || !Number.isSafeInteger(cause.step_index)
-        || cause.step_index <= priorStep || cause.step_index >= stepIndex
-        || !completed.has(cause.step_index)
-        || cause.request_id !== `${requestPrefix}${cause.step_index}`
         || !sameProfile(profilePin, plan.profile_pin)
         || plan.profile_pin.ignition_basis_ref
           !== proposal.process_after.causal_basis_ref
         || proposal.process_before?.process_ref !== ref
-          && proposal.process_before !== null) {
+          && proposal.process_before !== null
+        || priorTimestamp != null && compareGameTimestamp(
+          proposal.at_timestamp, priorTimestamp) < 0
+        || !validCause({ plan, cause, proposal, actorRef, rootTurnId,
+          stepIndex, completed, requestPrefix, priorStep, priorTemporal })) {
       fail('LOCAL_FIRE_PRIOR_CHAIN_INVALID');
     }
     const current = processStates.get(ref) ?? null;
@@ -47,9 +47,33 @@ export function validateLocalFirePriorChain({ rawPlans, partyId, actorRef,
     }
     projectItemPins(plan, itemPins);
     processStates.set(ref, structuredClone(proposal.process_after));
-    priorStep = cause.step_index;
+    if (cause.kind === 'actor_step') priorStep = cause.step_index;
+    priorTimestamp = proposal.at_timestamp;
+    if (cause.kind === 'temporal_boundary') priorTemporal = {
+      boundary_id:cause.boundary_id,due_at:cause.due_at };
   }
   return { plans, processStates, itemPins };
+}
+
+function validCause({ plan, cause, proposal, actorRef, rootTurnId, stepIndex,
+  completed, requestPrefix, priorStep, priorTemporal }) {
+  if (cause.kind === 'actor_step') return plan.actor_ref === actorRef
+    && cause.root_turn_id === rootTurnId
+    && Number.isSafeInteger(cause.step_index)
+    && cause.step_index > priorStep && cause.step_index < stepIndex
+    && completed.has(cause.step_index)
+    && cause.request_id === `${requestPrefix}${cause.step_index}`;
+  const before = proposal.process_before;
+  if (cause.kind !== 'temporal_boundary'
+      || plan.actor_ref !== 'system:local_fire_boundary'
+      || proposal.action !== 'due_boundary' || before == null
+      || cause.boundary_id !== `local-fire:${before.process_ref}:state:${before.state_version}`
+      || cause.expected_process_state_version !== before.state_version
+      || !isDeepStrictEqual(cause.due_at, before.next_boundary_at)
+      || !isDeepStrictEqual(cause.due_at, proposal.at_timestamp)) return false;
+  return priorTemporal == null
+    || !isDeepStrictEqual(priorTemporal.due_at, cause.due_at)
+    || priorTemporal.boundary_id.localeCompare(cause.boundary_id) < 0;
 }
 
 export function localFirePriorRefs(rawPlans) {

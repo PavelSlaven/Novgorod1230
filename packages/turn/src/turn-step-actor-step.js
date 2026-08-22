@@ -288,6 +288,7 @@ async function invokeOwner(handler, {
     request,
     applied,
     preparedChainContext,
+    priorLocalFirePlans,
     timeOwner: ports.preparedEffectTimeOwner,
     bodyOwner: ports.preparedEffectBodyOwner,
     projectionOwner: ports.preparedEffectProjectionOwner

@@ -112,7 +112,13 @@ export function createLowerDvinaTraceTurnStepRuntimePorts({
         input, safeCommittedState, bodyEffect),
       preparedEffectProjectionOwner: (input) => {
         preparedDomainEffect.advanceState(input);
-        return workingProjectionAuthority.admit(input.working_projection);
+        let projection = input.working_projection;
+        for (const plan of input.prepared_effect?.time_update
+          ?.local_fire_atomic_write_plans ?? []) {
+          projection = applyLocalFireRuntimeProjection({ projection,
+            actor: input.actor, plan, state, resolveItemMechanics });
+        }
+        return workingProjectionAuthority.admit(projection);
       }
     }),
     resolveCheckContext: (input) =>

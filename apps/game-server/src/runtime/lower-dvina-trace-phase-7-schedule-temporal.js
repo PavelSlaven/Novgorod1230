@@ -15,8 +15,7 @@ import {
   TRACE_PHASE7_PROVIDER,
   tracePhase7TemporalVisibleEnvelope
 } from './lower-dvina-trace-phase-7-temporal-request.js';
-import { localFireTemporalCandidateFromRuntime,
-  localFireTemporalRuntimeFromPlan } from
+import { replaceLocalFireTemporalCandidates } from
   './lower-dvina-trace-local-fire-temporal.js';
 
 export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
@@ -28,14 +27,12 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   const processed = new Set(
     temporal.result.trace.processed_boundary_ids ?? []
   );
-  const sourceCandidates = (state.temporal_boundary_candidates ?? []).filter(
+  const committedCandidates = (state.temporal_boundary_candidates ?? []).filter(
     ({ boundary_id: id }) => !processed.has(id)
   );
-  for(const plan of actorStep.local_fire_atomic_write_plans??[]){
-    const runtime=localFireTemporalRuntimeFromPlan(plan);
-    if(runtime.process_state.status==='active')
-      sourceCandidates.push(localFireTemporalCandidateFromRuntime(runtime));
-  }
+  const sourceCandidates=replaceLocalFireTemporalCandidates(
+    committedCandidates,actorStep.working_projection,
+    actorStep.local_fire_atomic_write_plans??[]);
   const request = buildTracePhase7TemporalRequest({
     state,
     executionId: temporal.execution_id,

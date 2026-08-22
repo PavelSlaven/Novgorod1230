@@ -36,3 +36,36 @@ test('local fire placement leaves ownership but removes carried mass and hand', 
     load_category:'light',occupied_hands:0});
   assert.deepEqual(projected.items[0].placement,{anchor_id:'shore'});
 });
+
+test('prepared temporal due uses the local-fire item projection owner', async()=>{
+  const itemRef='fuel-due';
+  const mechanics={schema:'rus.items.runtime_instance_mechanics_snapshot.v1',
+    version:1,provenance:{source_kind:'ordinary_direct_action_result',
+      root_turn_id:'turn-1',step_index:1,operation_ref:'op-1',
+      origin_kind:'direct_partition',source_refs:['wood-1']},mechanics:{
+      mass_grams:300,external_hand_cost:1,carry_form:'compact',
+      packing_slot_cost:1,quantity:{value:1,unit:'item'},container:null}};
+  const ports=createLowerDvinaTraceTurnStepRuntimePorts({committedState:{
+    clock:{whole_minutes:'0',subminute_numerator:'0',subminute_denominator:'1'},
+    body_state:{},items:[{item_id:itemRef,
+      runtime_instance_mechanics_snapshot:mechanics}],knowledge:[]},
+    temporalAdvance:async()=>null,bodyEffect:{apply:async()=>null},
+    workingProjectionAuthority:
+      createLowerDvinaTracePlayerSafeWorkingProjectionAuthority()});
+  const projection=await ports.preparedEffectProjectionOwner({
+    actor:{actor_id:'mikula',attributes:{strength:{value:9}}},
+    working_projection:{actor_id:'mikula',position:{location_ref:'camp'},
+      destination_refs:[],knowledge:[],items:[{item_id:itemRef,
+        instance_id:itemRef,condition_state:'serviceable',state_version:1,
+        state:{lifecycle_status:'active'},placement:{anchor_id:'shore'}}],
+      inventory:{items:[],total_weight:{grams:0},load_category:'light',
+        occupied_hands:0}},prepared_effect:{consequence:{},time_update:{
+      clock_after:{whole_minutes:'8',subminute_numerator:'0',
+        subminute_denominator:'1'},local_fire_atomic_write_plans:[{
+          fuel_placement_transitions:[],item_retirement_transition:{
+            item_id:itemRef}}]},body_update:{state_after:{}}}});
+
+  assert.deepEqual(projection.items,[]);
+  assert.deepEqual(projection.inventory,{items:[],total_weight:{grams:0},
+    load_category:'light',occupied_hands:0});
+});

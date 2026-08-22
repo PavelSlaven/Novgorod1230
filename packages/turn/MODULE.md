@@ -257,6 +257,12 @@ Ordered prior F1 chain передаётся resolver через внутренн
 `prior_local_fire_atomic_write_plans` и остаётся code-owned validated input:
 resolver сверяет root/step/request/process/item lineage до построения следующего
 плана; LLM этот chain не создаёт и не изменяет.
+Каждый prepared temporal segment получает этот accumulated chain вместе с
+планами текущего handler. Temporal owner fold-ит process runtime/candidate по
+`process_ref`, а его новые due plans применяются тем же item projection owner к
+working items/inventory до следующего semantic step. Mixed prior chain строго
+различает actor-step и system temporal-boundary provenance; P16 остаётся одной
+ordered transaction boundary.
 Prepared-effect ledger допускает между time/body slices такие applied owner
 steps, сохраняя непрерывность clock/body и exact step lineage.
 

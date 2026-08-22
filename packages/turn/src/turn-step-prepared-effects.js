@@ -42,12 +42,9 @@ export function buildTurnStepPreparedChainContext({
   });
 }
 export async function orchestrateTurnStepPreparedEffect({
-  request,
-  applied,
-  preparedChainContext,
-  timeOwner,
-  bodyOwner,
-  projectionOwner = null
+  request, applied, preparedChainContext,
+  priorLocalFirePlans = [],
+  timeOwner, bodyOwner, projectionOwner = null
 }) {
   if (!plain(applied) || !plain(applied.prepared_effect_request)) {
     return applied;
@@ -60,7 +57,12 @@ export async function orchestrateTurnStepPreparedEffect({
   if (typeof timeOwner !== 'function' || typeof bodyOwner !== 'function') {
     invalid('Prepared effects require injected time and body owners.');
   }
+  if (!Array.isArray(priorLocalFirePlans)) invalid(
+    'Prepared effects require an ordered prior local-fire plan array.');
   const candidate = requirePreparedRequest(applied.prepared_effect_request);
+  const currentLocalFirePlans = applied.local_fire_atomic_write_plans ?? [];
+  if (!Array.isArray(currentLocalFirePlans)) invalid(
+    'Prepared effects require an ordered current local-fire plan array.');
   const ownerInput = {
     prepared_chain_context: structuredClone(context),
     consequence: structuredClone(candidate.consequence),
@@ -70,8 +72,8 @@ export async function orchestrateTurnStepPreparedEffect({
     root_turn_id: request?.root_turn_id,
     step_index: request?.step_index,
     working_projection: structuredClone(applied.working_projection),
-    local_fire_atomic_write_plans: structuredClone(applied
-      .local_fire_atomic_write_plans ?? [])
+    local_fire_atomic_write_plans: structuredClone(
+      [...priorLocalFirePlans,...currentLocalFirePlans])
   };
   const timeUpdate = await timeOwner(deepFreeze(ownerInput));
   const bodyUpdate = await bodyOwner(deepFreeze({
@@ -97,6 +99,7 @@ export async function orchestrateTurnStepPreparedEffect({
     ? advancedProjection
     : await projectionOwner(deepFreeze({
         prepared_chain_context: structuredClone(context),
+        actor: structuredClone(request?.actor),
         working_projection: structuredClone(advancedProjection),
         prepared_effect: structuredClone(effect)
       }));

@@ -44,6 +44,10 @@ export async function buildPersistencePlanStage(input) {
       action_production_atomic_write_plans: structuredClone(
         input.action_production_atomic_write_plans)
     } : {}),
+    ...(input.local_fire_atomic_write_plans?.length ? {
+      local_fire_atomic_write_plans: structuredClone(
+        input.local_fire_atomic_write_plans)
+    } : {}),
     ...(transition?.from_g4_id !== transition?.to_g4_id ? { first_entry_materialization: { g4_id: transition.to_g4_id }, destination_position: structuredClone(transition.destination_position) } : {})
   };
   assertValid('party_turn_write_plan', validateTurnWritePlan(plan));

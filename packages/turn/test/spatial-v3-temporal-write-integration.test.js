@@ -89,6 +89,26 @@ test('temporal fragments extend the one P16 input and bind idempotency to the te
   }]);
 });
 
+test('legacy temporal fragments do not require or add local-fire owner locks', () => {
+  const legacyBase = structuredClone(base);
+  delete legacyBase.lock_context.owner_keys;
+  const fragment = seal({
+    proposal_id: 'legacy-background', write_target: 'party_npcs:npc-1',
+    write_set: { appends: [], inserts: [], deletes: [], updates: [{
+      target_table: 'party_npcs', id: 'npc-1',
+      record: { party_id: 'party-1', npc_id: 'npc-1' }
+    }] },
+    expected_state_versions: [],
+    physical_keys: ['party_runtime.party_npcs:npc-1']
+  });
+  const result = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: legacyBase,
+    temporal_result: seal({ combined_change_set: { proposals: [fragment] } })
+  });
+  assert.equal(result.ok, true, JSON.stringify(result));
+  assert.equal(Object.hasOwn(result.input.lock_context, 'owner_keys'), false);
+});
+
 test('temporal fragment integration fails closed on duplicate writes or conflicting versions', () => {
   const duplicate = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: base,
@@ -136,3 +156,67 @@ test('temporal fragment integration fails closed on duplicate writes or conflict
   assert.equal(conflict.ok, false);
   assert.equal(conflict.error.code, 'temporal_change_set_conflict');
 });
+
+test('local-fire temporal proposal contributes its mandatory physical locks', () => {
+  const proposal = localFireProposal();
+  const localFire = proposal.local_fire_atomic_write_plans;
+  const required = proposal.physical_keys;
+  const temporal = seal({ combined_change_set: { proposals: [proposal] } });
+  const integrated = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: base, temporal_result: temporal
+  });
+  assert.equal(integrated.ok, true, JSON.stringify(integrated));
+  assert.deepEqual(integrated.input.local_fire_atomic_write_plans, localFire);
+  assert.deepEqual(integrated.input.lock_context.physical_keys,
+    [...base.lock_context.physical_keys, ...required].sort());
+  assert.deepEqual(integrated.input.lock_context.owner_keys,
+    base.lock_context.owner_keys);
+
+  const missing = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: base,
+    temporal_result: seal({ combined_change_set: { proposals: [{
+      proposal_id: 'local-fire:fire-1:due',
+      local_fire_atomic_write_plans: localFire
+    }] } })
+  });
+  assert.equal(missing.ok, false);
+  assert.equal(missing.error.code, 'temporal_change_set_conflict');
+
+  const noOwnerLocks = structuredClone(base);
+  delete noOwnerLocks.lock_context.owner_keys;
+  const missingOwner = integrateSpatialV3TemporalWriteFragments({
+    base_write_plan_input: noOwnerLocks, temporal_result: temporal
+  });
+  assert.equal(missingOwner.ok, false);
+  assert.equal(missingOwner.error.code, 'temporal_change_set_conflict');
+
+});
+
+function localFireProposal() {
+  const at = { whole_minutes: '15', subminute_numerator: '0',
+    subminute_denominator: '1' };
+  const process = { schema: 'local_world_process_state_v1',
+    process_ref: 'fire-1', process_mode: 'local_exact', process_kind: 'fire',
+    scope_ref: 'shore', causal_basis_ref: 'ignition', status: 'active',
+    started_at: { whole_minutes: '10', subminute_numerator: '0',
+      subminute_denominator: '1' }, next_boundary_at: at,
+    fuel_bindings: [{ fuel_ref: 'fuel-1',
+      fuel_class: 'ordinary_solid_fuel_unit' }], state_version: 2 };
+  const boundaryId = 'local-fire:fire-1:state:2';
+  const localFire = { schema: 'local_fire_atomic_write_plan_v1',
+    party_id: 'party-1', base_party_state_version: 2,
+    change_set_id: 'change-1', actor_ref: 'actor:system',
+    profile_pin: {}, input_pins: [], ignition_basis_pin: null,
+    item_retirement_transition: null, transition_proposal: {
+      action: 'due_boundary', at_timestamp: at, process_before: process,
+      cause: { kind: 'temporal_boundary', boundary_id: boundaryId,
+        expected_process_state_version: 2, due_at: at } } };
+  const ownerKeys = [];
+  const physicalKeys = [
+    'party_runtime.party_local_world_processes:party-1:fire-1',
+    'party_runtime.party_items:party-1:fuel-1'
+  ];
+  const proposalId = 'local-fire:fire-1:due';
+  return { proposal_id: proposalId, local_fire_atomic_write_plans: [localFire],
+    owner_keys: ownerKeys, physical_keys: physicalKeys };
+}

@@ -117,8 +117,8 @@ export function buildNpcActionDecisionRequestFromSnapshots({
     knowledge: {
       known_facts: projectEntries(knowledge_snapshot?.known_facts,
         [
-          'fact_ref', 'source_event_ref', 'resource_ref', 'summary', 'state',
-          'confidence'
+          'fact_ref', 'source_event_ref', 'resource_ref', 'process_ref',
+          'summary', 'state', 'confidence'
         ]),
       beliefs: projectEntries(knowledge_snapshot?.beliefs,
         ['belief_ref', 'source_event_ref', 'summary', 'state', 'confidence']),
@@ -182,10 +182,10 @@ export function projectNpcSafeResourceSnapshots({
       .includes(visibility);
     const resourceRef = resource?.resource_ref ?? resource?.container_id
       ?? resource?.item_id;
-    const subjectivelyKnown = controlled || hasSubjectiveResourceEvidence({
-      resourceRef,
-      perceptionSnapshot: perception_snapshot,
-      knowledgeSnapshot: knowledge_snapshot
+    const subjectivelyKnown = controlled || npcSafeSnapshotHasEntityEvidence({
+      entity_ref: resourceRef,
+      perception_snapshot,
+      knowledge_snapshot
     });
     if ((!controlled && (!colocated || !accessible || hidden
       || !subjectivelyKnown)) || blocked) {
@@ -204,11 +204,11 @@ export function projectNpcSafeResourceSnapshots({
     typeof resourceRef === 'string' && resourceRef.length > 0);
 }
 
-function hasSubjectiveResourceEvidence({
-  resourceRef,
-  perceptionSnapshot,
-  knowledgeSnapshot
-}) {
+export function npcSafeSnapshotHasEntityEvidence({
+  entity_ref: resourceRef,
+  perception_snapshot: perceptionSnapshot,
+  knowledge_snapshot: knowledgeSnapshot
+} = {}) {
   if (typeof resourceRef !== 'string' || resourceRef.length === 0) {
     return false;
   }
@@ -230,11 +230,12 @@ function sourceBacked(entry) {
 
 function entryReferencesResource(entry, resourceRef) {
   const fields = [
-    'resource_ref', 'object_ref', 'item_ref', 'container_ref', 'entity_ref'
+    'resource_ref', 'object_ref', 'item_ref', 'container_ref', 'process_ref',
+    'entity_ref'
   ];
   return fields.some((field) => evidenceRefId(entry?.[field]) === resourceRef)
     || ['resource_refs', 'object_refs', 'item_refs', 'container_refs',
-      'entity_refs', 'scope_refs'].some((field) =>
+      'process_refs', 'entity_refs', 'scope_refs'].some((field) =>
       Array.isArray(entry?.[field]) && entry[field].some(
         (value) => evidenceRefId(value) === resourceRef));
 }
@@ -277,8 +278,8 @@ function projectPerceivedChanges(orderedSignals, perception_snapshot) {
 function completePerceptionSnapshot(snapshot) {
   const fields = [
     'fact_ref', 'source_event_ref', 'actor_ref', 'speaker_ref', 'object_ref',
-    'resource_ref', 'template_ref', 'location_ref', 'zone_ref', 'route_ref',
-    'condition_ref', 'summary', 'content', 'change_kind', 'relation',
+    'resource_ref', 'process_ref', 'template_ref', 'location_ref', 'zone_ref',
+    'route_ref', 'condition_ref', 'summary', 'content', 'change_kind', 'relation',
     'visibility_state', 'destination_zone_ref', 'state', 'confidence'
   ];
   return Object.fromEntries([

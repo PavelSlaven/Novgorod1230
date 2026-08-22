@@ -4,6 +4,7 @@ import {
   validateActionProducedDestinationPin
 } from './action-produced-atomic-write-plan-pins.js';
 import { deriveActionProducedOutputProperty,
+  deriveLocalFireFuelClassification,
   resolvePhysicalItemCondition,
   validateActionProducedOutputAuthority } from '@rus/items-property';
 import { mergeActionProducedPhysicalFacts } from
@@ -43,6 +44,13 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     physical_facts: result.physical_facts,
     inscription_text: result.inscription_text
   });
+  const sourceRefs = result.material_allocations.length === 0
+    ? [result.source_ref] : [...new Set(result.material_allocations.map(
+      ({ source_ref: sourceRef }) => sourceRef))];
+  const fuel = deriveLocalFireFuelClassification({
+    source_items: sourcePins.map(({ item }) => item), source_refs: sourceRefs,
+    mechanics_snapshot: result.mechanics_snapshot
+  });
   const state = {
     lifecycle_status: 'active',
     runtime_instance_mechanics_snapshot: result.mechanics_snapshot,
@@ -50,14 +58,13 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
       semantic_type: 'ordinary_mundane',
       name: proposal.qualitative_result.result_descriptor.display_name,
       origin: { kind: 'action_produced',
-        source_refs: result.material_allocations.length === 0
-          ? [result.source_ref] : [...new Set(result.material_allocations.map(
-            ({ source_ref: sourceRef }) => sourceRef))] },
+        source_refs: sourceRefs },
       semantic_facts: structuredClone(physicalState.physical_facts),
       physical_inscriptions:
         structuredClone(physicalState.physical_inscriptions),
       operation_history: []
     },
+    ...(fuel === null ? {} : { local_fire_fuel: fuel }),
     semantic_category: 'ordinary_mundane',
     property_state: outputProperty.property_state,
     action_production: {

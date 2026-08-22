@@ -18,8 +18,8 @@ import {
   semanticBodyContext,
   validBodyPart
 } from './lower-dvina-trace-turn-step-owner-profiles.js';
-import { projectCurrentSceneForNoOperationDirect } from
-  './lower-dvina-trace-turn-step-current-scene.js';
+export { createLowerDvinaTraceTurnStepVisibleProjector } from
+  './lower-dvina-trace-turn-step-fire-visible.js';
 
 export const GENERIC_BODY_EFFECT_REF =
   'trace_ld_v1_turn_step_generic_body_effect_v1';
@@ -237,59 +237,6 @@ export function createLowerDvinaTraceCompositeBodyEffect({
       return input?.consequence?.body_effect_ref === GENERIC_BODY_EFFECT_REF
         ? genericBodyEffect.apply(input)
         : fallback.apply(input);
-    }
-  });
-}
-
-export function createLowerDvinaTraceTurnStepVisibleProjector({
-  fallback
-} = {}) {
-  if (typeof fallback?.project !== 'function') {
-    throw new TypeError('fallback visibleProjector.project is required');
-  }
-  return Object.freeze({
-    async project(input) {
-      const consequence = input?.consequence;
-      const synthetic = plain(consequence?.visible_seed)
-        && Array.isArray(consequence.visible_seed.completed_steps)
-        && !Array.isArray(consequence.observations)
-        && consequence.phase3_kind == null
-        && consequence.phase4_kind == null
-        && consequence.phase5_kind == null
-        && consequence.phase6_kind == null
-        && consequence.phase7_kind == null;
-      if (!synthetic) return fallback.project(input);
-      const directSeeds = Object.entries(consequence.visible_seed)
-        .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
-      const body = input.body_update?.state_after ?? {};
-      const currentScene = projectCurrentSceneForNoOperationDirect({
-        input,
-        directSeedKeys: directSeeds.map(([key]) => key),
-        body
-      });
-      if (currentScene != null) return currentScene;
-      return deepFreeze({
-        version: 1,
-        schema: 'visible_context_package',
-        visible_scene: consequence.visible_seed.clarification
-          ? 'Требуется уточнение дальнейшего действия.'
-          : 'Заявленное действие завершено.',
-        visible_changes: directSeeds.map(([key]) => key),
-        sensory_details: [],
-        visible_npc: [],
-        visible_objects: [],
-        known_context: [
-          ...(Number.isFinite(body.health) ? [`health:${body.health}`] : []),
-          ...(Number.isFinite(body.satiety) ? [`satiety:${body.satiety}`] : []),
-          ...(Number.isFinite(body.energy) ? [`energy:${body.energy}`] : [])
-        ],
-        uncertainties: consequence.visible_seed.clarification
-          ? ['Фактическое действие не применено до уточнения.'] : [],
-        allowed_tensions: [],
-        do_not_imply: [
-          'hidden_fact', 'uncommitted_body_delta', 'uncommitted_time'
-        ]
-      });
     }
   });
 }

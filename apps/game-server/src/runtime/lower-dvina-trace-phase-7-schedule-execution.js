@@ -17,10 +17,21 @@ export function createTracePhase7ActorStepRuntime({
   temporal,
   semanticActivityScheduleOwner,
   genericCheckContextOwner,
+  localFireProfile,
+  worldProcessResolver,
+  projectNpcWorldProcessCapability,
   randomSource
 }) {
+  const npc = liveNpc(state, contracts.zhdanko);
+  const worldProcessContract =
+    typeof projectNpcWorldProcessCapability === 'function'
+      ? projectNpcWorldProcessCapability({ committedState: state,
+          npcSnapshot: npc, loadedProfile: localFireProfile,
+          resolverAvailable: typeof worldProcessResolver === 'function' })
+      : null;
   const domainExecution = createTracePhase7DomainExecution({
-    state, contracts, temporal, semanticActivityScheduleOwner
+    state, contracts, temporal, semanticActivityScheduleOwner,
+    worldProcessResolver, worldProcessContract
   });
   const registry = createTurnStepExecutionRegistry({
     domain: domainExecution.handlers,
@@ -55,7 +66,8 @@ export async function executeTracePhase7SchedulePlan({
   const execution = await executeTurnStepActorStep({
     plan: autonomous.proposal.plan,
     request: actorStepRequest(
-      autonomous.request, contracts, state, autonomous.proposal.plan),
+      autonomous.request, contracts, state, autonomous.proposal.plan,
+      temporal.result.clock_after),
     workingProjection: checkWorkingProjection(
       temporal.projection, state, contracts, autonomous.proposal.plan),
     preparedChainContext: null,
@@ -70,6 +82,8 @@ export async function executeTracePhase7SchedulePlan({
     started_at: structuredClone(temporal.result.clock_after),
     working_projection: structuredClone(execution.workingProjection),
     result: structuredClone(result),
+    local_fire_atomic_write_plans: structuredClone(
+      execution.local_fire_atomic_write_plans ?? []),
     check: execution.checkResult == null ? null : {
       request: structuredClone(execution.checkRequest),
       result: structuredClone(execution.checkResult)
@@ -77,7 +91,7 @@ export async function executeTracePhase7SchedulePlan({
   });
 }
 
-function actorStepRequest(request, contracts, state, plan) {
+function actorStepRequest(request, contracts, state, plan, occurredAt) {
   const npc = liveNpc(state, contracts.zhdanko);
   const context = contracts.genericCheckContext ?? {};
   const body = plan.resolution === 'generic_check'
@@ -86,6 +100,7 @@ function actorStepRequest(request, contracts, state, plan) {
   return {
     ...structuredClone(request),
     step_index: request.decision_index,
+    occurred_at: structuredClone(occurredAt),
     actor: {
       actor_id: npc.instance_id,
       attributes: ratedMap(context.attributes, 'attribute_ref', 'value'),

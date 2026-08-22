@@ -335,8 +335,15 @@ function docker(args, options = {}) {
 
 function closeServer(server) {
   if (!server?.listening) return Promise.resolve();
-  return new Promise((resolve, reject) =>
-    server.close((error) => error ? reject(error) : resolve()));
+  return new Promise((resolve, reject) => {
+    const fallback = setTimeout(resolve, 1_000);
+    server.close((error) => {
+      clearTimeout(fallback);
+      if (error) reject(error); else resolve();
+    });
+    server.closeIdleConnections?.();
+    server.closeAllConnections?.();
+  });
 }
 
 function createAcceptanceIdentityFactory() {

@@ -78,11 +78,21 @@ export function projectCurrentSceneForNoOperationDirect({
         || !Array.isArray(plan.operations)
         || plan.operations.length !== 0
         || plan.check !== null)
-      || !plain(current)
-      || !validateVisibleContext(current).ok
-      || ARRAY_FIELDS.some((field) => !Array.isArray(current[field]))) {
+      || !validCurrentScene(current)) {
     return null;
   }
+  return projectCurrentSceneForVisibleOverlay({
+    input, directSeedKeys, body
+  });
+}
+
+export function projectCurrentSceneForVisibleOverlay({
+  input,
+  directSeedKeys,
+  body
+}) {
+  const current = input?.retrieved_state?.current_visible_context;
+  if (!validCurrentScene(current)) failCurrentScene();
   return deepFreeze({
     ...structuredClone(current),
     visible_changes: unique([

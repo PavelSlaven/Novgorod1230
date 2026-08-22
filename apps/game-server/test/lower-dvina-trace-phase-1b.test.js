@@ -75,18 +75,18 @@ test('trace dispatch commits before its safe screen', async () => {
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 21);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 22);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.stage26_result.publication_binding_id,
-    'lower_dvina_trace_phase_1b_publication_v16');
-  assert.equal(session.stage26_result.publication_binding_revision, 16);
-  assert.equal(session.stage26_result.scenario_definition_revision, 21);
+    'lower_dvina_trace_phase_1b_publication_v17');
+  assert.equal(session.stage26_result.publication_binding_revision, 17);
+  assert.equal(session.stage26_result.scenario_definition_revision, 22);
   assert.equal(session.stage26_result.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v17');
+    'lower_dvina_trace_phase_1a_materialization_bindings_v18');
   const serialized = JSON.stringify(started);
   for (const forbidden of [
     'hidden_truth',

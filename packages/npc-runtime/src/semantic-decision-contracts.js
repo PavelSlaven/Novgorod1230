@@ -13,7 +13,8 @@ import {
   validateNpcCombatDecisionRequest,
   validateNpcCombatIntentPlan
 } from './combat-decision-contracts.js';
-import { matchesOperationContract } from './operation-contract-match.js';
+import { matchesOperationContract, validateWorldProcessOperation,
+  worldProcessOperationRefs } from './operation-contract-match.js';
 import {
   ADAPTATIONS,
   DIRECT_OPERATIONS,
@@ -42,6 +43,7 @@ export {
 } from './semantic-decision-request-contract.js';
 export {
   buildNpcActionDecisionRequestFromSnapshots,
+  npcSafeSnapshotHasEntityEvidence,
   projectNpcSafeResourceSnapshots
 } from
   './npc-safe-request-projector.js';
@@ -200,6 +202,8 @@ function validateOperationShape(value) {
         && uniqueStableIds(value.target_actor_refs)
         && value.target_actor_refs.length > 0
         && text(value.combat_intent);
+    case 'request_world_process':
+      return validateWorldProcessOperation(value);
     default:
       return false;
   }
@@ -228,6 +232,8 @@ function operationRefs(operation) {
       return [operation.actor_ref, operation.item_ref, ...operation.target_refs];
     case 'request_activity':
       return [operation.actor_ref, ...operation.target_refs];
+    case 'request_world_process':
+      return worldProcessOperationRefs(operation);
     case 'emit_interaction':
       return [operation.actor_ref, ...operation.target_actor_refs, ...operation.instrument_refs];
     case 'request_conversation':

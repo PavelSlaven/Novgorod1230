@@ -1,0 +1,44 @@
+{
+  "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
+  "profile_id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
+  "revision": 1,
+  "status": "approved",
+  "context_ref": "lower_dvina_trace:f1:local_exact_fire",
+  "policy_ref": "lower_dvina_trace:f1:local_exact_fire_policy_v1",
+  "policy_version": 1,
+  "scope_binding": "initial_party_anchor",
+  "recheck_interval": {
+    "exact_minutes": {"numerator": "5", "denominator": "1"}
+  },
+  "fuel_unit_mass_grams_min": 100,
+  "fuel_unit_mass_grams_max": 1000,
+  "ignition_basis": {
+    "authored_ref": "trace_ld_v1_f1_ignition_basis",
+    "template_id": "trace_ld_v1_item_firesteel_set",
+    "profile_id": "trace_ld_v1_inventory_profile_firesteel_set",
+    "display_name": "кресало с кремнем",
+    "mass_grams": 180
+  },
+  "fuel_units": [
+    {
+      "authored_ref": "trace_ld_v1_f1_fuel_unit_1",
+      "template_id": "trace_ld_v1_item_dry_kindling_bundle",
+      "profile_id": "trace_ld_v1_inventory_profile_dry_kindling_bundle",
+      "display_name": "связка сухой растопки",
+      "mass_grams": 300
+    },
+    {
+      "authored_ref": "trace_ld_v1_f1_fuel_unit_2",
+      "template_id": "trace_ld_v1_item_split_fuel_billet",
+      "profile_id": "trace_ld_v1_inventory_profile_split_fuel_billet",
+      "display_name": "сухое колотое полено",
+      "mass_grams": 700
+    }
+  ],
+  "allowed_actions": ["start", "affect"],
+  "water_extinguish_policy": "semantic_existing_whole_portion",
+  "process_owner": "@rus/world-processes",
+  "time_owner": "@rus/time-events-history",
+  "persistence_owner": "P16_combined_atomic_committer",
+  "fallback_policy": "forbidden"
+}

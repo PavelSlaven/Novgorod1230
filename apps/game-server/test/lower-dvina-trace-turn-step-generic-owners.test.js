@@ -8,6 +8,10 @@ import {
   createLowerDvinaTraceTurnStepGenericOwners,
   createLowerDvinaTraceTurnStepVisibleProjector
 } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+import { createTracePhase8VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-8-effects.js';
+import { createTracePhase9VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-9-effects.js';
 
 const profileUrl = new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
@@ -217,6 +221,150 @@ test('generic composition preserves domain body and handles direct visible',
     assert.equal(scene.known_context.includes('health:95'), true);
   });
 
+test('generic visible projector preserves ordered player F1 facts',
+  async () => {
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project() { throw new Error('unexpected fallback'); } }
+    });
+    const result = await visible.project({
+      retrieved_state: { current_visible_context: currentVisibleContext() },
+      consequence: { visible_seed: {
+        completed_steps: [], clarification: 'Что делать дальше?',
+        turn_step_world_process_5:
+          fireVisible('affect', 'complete', 'completed'),
+        turn_step_world_process_1: fireVisible('start', 'started', 'active'),
+        turn_step_world_process_4:
+          fireVisible('affect', 'continue', 'active'),
+        turn_step_world_process_2:
+          fireVisible('add_fuel', 'fuel_added', 'active'),
+        turn_step_world_process_3:
+          fireVisible('affect', 'no_effect', 'active')
+      } }, body_update: { state_after: body() } });
+    assert.equal(result.visible_scene,
+      'Уже видимый берег. Огонь разгорелся. В огонь добавлено топливо. '
+      + 'Воздействие не изменило огонь. '
+      + 'Огонь изменился, но продолжает гореть. Огонь погас. '
+      + 'Требуется уточнение дальнейшего действия.');
+    assert.deepEqual(result.visible_npc,
+      currentVisibleContext().visible_npc);
+    assert.deepEqual(result.visible_objects,
+      currentVisibleContext().visible_objects);
+    assert.deepEqual(result.sensory_details, ['cold', 'wet']);
+    assert.equal(result.known_context.includes('берег'), true);
+    assert.deepEqual(result.visible_changes, [
+      'turn_step_world_process_1:local_fire:started',
+      'turn_step_world_process_2:local_fire:fuel_added',
+      'turn_step_world_process_3:local_fire:no_effect',
+      'turn_step_world_process_4:local_fire:continue',
+      'turn_step_world_process_5:local_fire:complete'
+    ]);
+  });
+
+test('generic visible projector overlays F1 facts on domain projection',
+  async () => {
+    let fallbackCalls = 0;
+    const base = {
+      ...currentVisibleContext(),
+      visible_scene: 'Микула пришёл в рыбацкий стан.',
+      visible_changes: ['route'],
+      known_context: ['стан']
+    };
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project() { fallbackCalls += 1; return base; } }
+    });
+    const result = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase3-movement',
+      phase3_kind: 'movement',
+      visible_seed: { completed_steps: [], clarification: null,
+        turn_step_world_process_1:
+          fireVisible('start', 'started', 'active') }
+    } });
+    assert.equal(fallbackCalls, 1);
+    assert.deepEqual(result, {
+      ...base,
+      visible_scene: 'Микула пришёл в рыбацкий стан. Огонь разгорелся.',
+      visible_changes: [
+        'route', 'turn_step_world_process_1:local_fire:started'
+      ]
+    });
+  });
+
+test('generic visible projector overlays F1 facts through Phase 8 and 9',
+  async () => {
+    const normal = { project() { throw new Error('unexpected fallback'); } };
+    const phase8 = createTracePhase8VisibleProjector({
+      contracts: { actors: {} }, fallback: normal
+    });
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: createTracePhase9VisibleProjector({
+        contracts: { packet: { item_id: 'packet-1' } }, fallback: phase8
+      })
+    });
+    const movement = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase8-movement', phase8_kind: 'movement',
+      visible_seed: { completed_steps: [], clarification: null,
+        turn_step_world_process_1:
+        fireVisible('start', 'started', 'active') }
+    } });
+    assert.equal(movement.visible_scene,
+      'Группа пришла во двор клети Жданко. Огонь разгорелся.');
+    assert.deepEqual(movement.visible_changes, [
+      'trace_ld_v1_route_camp_to_storehouse_committed',
+      'turn_step_world_process_1:local_fire:started'
+    ]);
+
+    const recovery = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase9-recovery', phase9_kind: 'bag_recovery',
+      phase9: {},
+      visible_seed: { completed_steps: [], clarification: null,
+        turn_step_world_process_1:
+        fireVisible('add_fuel', 'fuel_added', 'active') }
+    } });
+    assert.equal(recovery.visible_scene,
+      'Дорожная сумка теперь под вашим контролем. В огонь добавлено топливо.');
+    assert.deepEqual(recovery.visible_changes, [
+      'road_bag_recovered', 'turn_step_world_process_1:local_fire:fuel_added'
+    ]);
+
+    const fallback = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase8-no-f1', phase8_kind: 'movement',
+      visible_seed: { completed_steps: [], clarification: null }
+    } });
+    assert.equal(fallback.visible_scene, 'Группа пришла во двор клети Жданко.');
+    assert.deepEqual(fallback.visible_changes,
+      ['trace_ld_v1_route_camp_to_storehouse_committed']);
+  });
+
+test('generic visible projector rejects malformed player F1 facts',
+  async () => {
+    let fallbackCalls = 0;
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: { project() { fallbackCalls += 1; return {}; } }
+    });
+    const project = (seed, phase3_kind) => visible.project({ consequence: {
+      phase3_kind, visible_seed: {
+      completed_steps: [], clarification: null,
+      turn_step_world_process_1: seed
+    } }, body_update: { state_after: body() } });
+    await assert.rejects(project(fireVisible('start', 'complete', 'completed')),
+      { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project({ ...fireVisible('start', 'started', 'active'),
+      process_ref: 'hidden-process' }),
+    { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(null),
+      { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(Object.assign(Object.create({}),
+      fireVisible('start', 'started', 'active'))),
+    { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(
+      fireVisible('start', 'complete', 'completed'), 'movement'),
+    { code: 'TRACE_TURN_STEP_WORLD_PROCESS_VISIBLE_SEED_INVALID' });
+    await assert.rejects(project(
+      fireVisible('start', 'started', 'active')),
+    { code: 'TRACE_CURRENT_SCENE_PROJECTION_INVALID' });
+    assert.equal(fallbackCalls, 0);
+  });
+
 test('missing or tampered owner profiles fail closed', async () => {
   const { profiles, artifactPin } = await loadProfiles();
   assert.throws(() => createLowerDvinaTraceTurnStepGenericOwners({
@@ -254,5 +402,31 @@ function body(overrides = {}) {
     active_conditions: [],
     body_parts: { left_arm: { id: 'left_arm' } },
     ...overrides
+  };
+}
+
+function fireVisible(action, outcome, status) {
+  return {
+    schema:
+      'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1',
+    process_kind: 'fire', action, outcome, status
+  };
+}
+
+function currentVisibleContext() {
+  return {
+    version: 1,
+    schema: 'visible_context_package',
+    visible_scene: 'Уже видимый берег.',
+    visible_changes: [],
+    sensory_details: ['cold', 'wet'],
+    visible_npc: [{ entity_ref: { entity_kind: 'npc', entity_id: 'npc-1' },
+      display_label: 'Еремей' }],
+    visible_objects: [{ entity_ref: {
+      entity_kind: 'item', entity_id: 'fuel-1' } }],
+    known_context: ['берег'],
+    uncertainties: [],
+    allowed_tensions: [],
+    do_not_imply: ['hidden_fact']
   };
 }

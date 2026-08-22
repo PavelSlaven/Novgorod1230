@@ -177,6 +177,54 @@ revision 21 добавляет SHA-pinned open physical A1 M9/v17/v16 profile. R
 revision 19 остаются immutable historical compatibility paths, v9 — rollback
 source.
 
+Runtime release `spatial-v3-production-v11` сохраняет все inherited paths и
+делает revision 22 / M10 / Phase 1A v18 / Phase 1B v17 sole current
+publication. Он materialize-ит exact authored ignition basis и два concrete
+whole fuel units, композирует production resolver и регистрирует due boundary у
+существующего temporal owner. Любой другой item-owned whole fuel допускается
+тем же generic правилом без ID whitelist; A1 output получает fuel class только
+от causally consumed classified fuel source. Player capability берётся из
+player-safe projection; Phase 7 строит NPC capability из NPC-safe доступных
+ресурсов и публикует exact operation contract. Process ref появляется только
+при source-backed NPC-safe evidence самого process; знание bound fuel не
+раскрывает objective binding или process ref. Causal ignition basis model не
+публикуется. Оба пути проходят один
+DB/item-owner admission. Start/add/due и qualitative
+whole-water affect, включая `no_effect`, входят в тот же combined P16; bound
+fuel mutation, nested A1 source mutation, stale pins, duplicate transition и
+late failure откатываются атомарно. Несколько ordered due, включая same-time
+разные fires, фиксируются одной transaction и отражаются в canonical snapshot. Due
+actor-neutral и продолжает процесс после ухода/смерти инициатора. Player-safe
+marker содержит только visible refs. Player resolver применяет F1 plan к
+текущему working projection, а item owner переносит bound fuel в process scope
+и сразу убирает его mass/hands из carried inventory без смены ownership.
+Для следующего actor step PostgreSQL loader принимает ordered prior F1 chain
+только как code-owned input, проверяет party/actor/root/change set/base version,
+step-specific request и process/item pins, затем последовательно проецирует
+process state, placement, binding и retirement без промежуточной записи в БД.
+Prepared time adapter получает весь accumulated same-root F1 chain, заменяет
+committed runtime и temporal candidate текущим состоянием каждого process, а
+due output применяет через существующий local-fire item projection owner до
+следующего model request. Loader отдельно проверяет строгий actor-step и
+system temporal-boundary provenance; completed process удаляет candidate.
+Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
+start и попавшая в remaining window due сохраняются ordered в одном P16.
+Production player F1 resolver дополнительно возвращает только safe factual
+seed `turn_step_world_process_<step_index>`: fire action/outcome/status без
+process/item refs, pins, bindings, timestamps или causal evidence. Generic
+visible projector строго принимает только согласованные start/started,
+add_fuel/fuel_added и affect/no_effect|continue|complete combinations, сохраняет
+их step order и строит approved Russian factual sentence/change token. Эти
+facts накладываются на обычную phase projection того же root turn либо на
+validated current-scene package pure F1, не удаляя видимых NPC, objects и
+scene context; clarification остаётся после уже совершённых facts. NPC и
+off-screen due seed не получают. Existing turn-step visible envelope сохраняет
+combined package в `party_visible_packages`; narrator и screen читают тот же
+persisted package, не механику F1 и не temporal state.
+Отдельных F1 authority/commit tables,
+evidence, digest или sealing нет; model выбирает только bounded qualitative
+outcome воды вне SQL transaction.
+
 ## Ошибки, зависимости и effects
 
 Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.

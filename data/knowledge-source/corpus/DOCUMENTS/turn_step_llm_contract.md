@@ -904,7 +904,81 @@ A1 `output_class` не является combat gate. A1 `domain_request` сод�
 
 Activity, exact duration, interruption и temporal effects принадлежат общему temporal owner.
 
-### 12.6. `emit_interaction`
+### 12.6. `request_world_process`
+
+```json
+{
+  "op": "request_world_process",
+  "actor_ref": "actor_mikula",
+  "process_action": "start | affect",
+  "process_ref": "active_process_ref_or_null",
+  "process_kind": "fire",
+  "source_refs": ["approved_concrete_fuel_ref"],
+  "target_refs": ["approved_ignition_basis_ref"],
+  "description": "какое именно воздействие на локальный процесс пытается выполнить персонаж"
+}
+```
+
+Этот request только передаёт намерение существующему владельцу world process.
+LLM не задаёт timestamp, duration, interval, process id, fuel mass или числовую
+скорость. В active Lower Dvina Trace revision 22 start требует exact authored
+ignition basis в `target_refs`; generic whole fuel допускается item owner без
+каталога ID и без model call. Existing whole-water affect получает через
+`world_process_step_request_v1` только bounded qualitative outcome
+`no_effect|continue|complete`. Для существующего process request содержит
+строго один objective DTO:
+
+```text
+process_ref, scope_ref, causal_basis_ref, status,
+started_at, next_boundary_at, fuel_bindings
+```
+
+Это внутренняя process-relevant projection для qualitative resolver, а не
+player/NPC capability: semantic planner получает process ref только из своей
+safe projection. Exact whole quantity/mass subject передаёт item owner. После
+успешного F1 шага code-owned plan применяется к working projection, включая
+placement/inventory топлива и текущий process marker; безусловная
+`player_response_boundary` запрещена. Следующий однозначный semantic step того
+же root видит это состояние и накопленные F1 plans. Ordered prior chain приходит
+в resolver через внутренний `prior_local_fire_atomic_write_plans` только как
+code-owned validated input: party/actor/root/change-set/base version,
+step-specific request, process chain и item pins проверяются до следующего
+плана, а placement/binding/retirement проецируются последовательно. Due boundary разрешает без
+LLM общий temporal owner и не требует живого actor.
+
+Тот же accumulated chain входит в каждый prepared temporal segment вместе с
+планами текущего handler. Temporal adapter заменяет committed process runtime и
+его старый candidate по `process_ref`; active process получает один current
+candidate, completed process — ни одного. Созданные temporal due plans сразу
+проходят существующий item projection owner, поэтому следующий semantic step
+видит согласованные process, placement, inventory и retirement. Prior-chain
+validation не смешивает provenance: actor transition сохраняет root/request/
+completed-step checks, system boundary — exact boundary/process-version/due/
+profile/change-set/item-pin checks.
+
+Успешный player actor-step F1 возвращает внутренний factual seed:
+
+```yaml
+turn_step_world_process_<step_index>:
+  schema: rus.lower_dvina_trace_turn_step_world_process_visible_result.v1
+  process_kind: fire
+  action: start | add_fuel | affect
+  outcome: started | fuel_added | no_effect | continue | complete
+  status: active | completed
+```
+
+Допустимы только пары `start/started/active`,
+`add_fuel/fuel_added/active`, `affect/no_effect/active`,
+`affect/continue/active`, `affect/complete/completed`. Seed не содержит refs,
+bindings, pins, timestamps или causal evidence. Code-owned visible projector
+сохраняет несколько результатов в step order и накладывает их на обычную phase
+projection того же root turn либо на validated current-scene package pure F1,
+не удаляя остальные visible facts. Более поздняя clarification добавляется
+после уже совершённых factual results. NPC F1 и `temporal_boundary` seed не
+создают; их видимость определяется существующим perception owner. Narrator
+излагает только persisted combined approved visible package.
+
+### 12.7. `emit_interaction`
 
 ```json
 {
@@ -1354,6 +1428,7 @@ Module doc публикует contract и владельца:
 - `request_movement`;
 - `request_item_use`;
 - `request_activity`;
+- `request_world_process`;
 - `emit_interaction`.
 
 Не придумывай другие операции.

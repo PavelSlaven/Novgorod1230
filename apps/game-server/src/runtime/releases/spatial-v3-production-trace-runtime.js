@@ -10,6 +10,10 @@ import { createLowerDvinaTraceActionProducedWeaponClassifier } from
   '../lower-dvina-trace-combat-ordinary-weapon.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
+import { createLowerDvinaTraceF1ProductionResolverFactory } from
+  './lower-dvina-trace-f1-production.js';
+import { createLowerDvinaTraceWorldProcessStepModel } from
+  '../lower-dvina-trace-world-process-llm.js';
 import { createOrdinaryMaterializationModel } from
   '../ordinary-materialization-llm.js';
 import { createLowerDvinaTraceO2aAmbientPort } from
@@ -37,12 +41,14 @@ import { lowerDvinaTraceCombatTemporalEffectRegistrations } from
   '../lower-dvina-trace-combat-temporal-effect-owner.js';
 import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../lower-dvina-trace-phase-6-temporal-source.js';
+import { lowerDvinaTraceLocalFireTemporalRegistration } from
+  '../lower-dvina-trace-local-fire-temporal.js';
 import { serverError } from '../../errors.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
-  actionProductionProfile,
+  actionProductionProfile, localFireProfile,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -71,6 +77,10 @@ export function createTraceTurnRuntime({
   const actionProductionResolverFactory = actionProductionProfile == null
     ? null : createLowerDvinaTraceA1ProductionResolverFactory({ pool: partyPool,
       loadedProfile: actionProductionProfile });
+  const localFireResolverFactory = localFireProfile == null ? null
+    : createLowerDvinaTraceF1ProductionResolverFactory({ pool: partyPool,
+      loadedProfile: localFireProfile,
+      worldProcessStepModel:createLowerDvinaTraceWorldProcessStepModel({roleRunner}) });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -99,6 +109,8 @@ export function createTraceTurnRuntime({
     },
     createTurnStepActionProductionOwner: actionProductionResolverFactory,
     actionProductionProfile,
+    createTurnStepWorldProcessResolver: localFireResolverFactory,
+    localFireProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState
@@ -114,8 +126,12 @@ export function createTraceTurnRuntime({
       })
     ),
     temporalAdvanceOwner: createTemporalAdvanceOwner({
-      source_registrations: lowerDvinaTraceTemporalSourceRegistrations(
-        config.temporalBoundaryRegistrations ?? []),
+      source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
+        ...(config.temporalBoundaryRegistrations ?? []),
+        ...(localFireProfile?.profile?.status==='approved'
+          ?[lowerDvinaTraceLocalFireTemporalRegistration(
+            localFireProfile.profile)]:[])
+      ]),
       effect_registrations: [
         ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
         ...npcTemporalEffectRegistrations(),

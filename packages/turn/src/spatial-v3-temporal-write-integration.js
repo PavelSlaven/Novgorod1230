@@ -65,14 +65,46 @@ export function integrateSpatialV3TemporalWriteFragments({
     );
   }
   const fragments = proposals.filter((proposal) => proposal?.write_set !== undefined);
-  if (fragments.length === 0) {
+  const localFireProposals = proposals.filter((proposal) =>
+    proposal?.local_fire_atomic_write_plans !== undefined);
+  if (localFireProposals.some((proposal) =>
+    !Array.isArray(proposal.local_fire_atomic_write_plans)
+      || !Array.isArray(proposal.physical_keys)
+      || !Array.isArray(proposal.owner_keys))) {
+    return failure(base_write_plan_input.party_id,
+      'local-fire temporal transition requires owner and physical lock sets');
+  }
+  const localFirePlans = localFireProposals.flatMap((proposal) =>
+    proposal.local_fire_atomic_write_plans);
+  if (fragments.length === 0 && localFirePlans.length === 0) {
     return freeze({ ok: true, input: clone(base_write_plan_input), fragment_count: 0 });
   }
   const input = clone(base_write_plan_input);
+  if (input.local_fire_atomic_write_plans === undefined) {
+    input.local_fire_atomic_write_plans = [];
+  }
+  if (!Array.isArray(input.local_fire_atomic_write_plans)) {
+    return failure(input.party_id,
+      'base local-fire write plans must be an ordered array');
+  }
+  const existingPlans=new Map(input.local_fire_atomic_write_plans.map(
+    (plan)=>[localFireIdentity(plan),JSON.stringify(plan)]));
+  for(const plan of localFirePlans){
+    const identity=localFireIdentity(plan),serialized=JSON.stringify(plan);
+    if(existingPlans.has(identity)){
+      if(existingPlans.get(identity)!==serialized)return failure(input.party_id,
+        'conflicting local-fire temporal transition identity');
+      continue;
+    }
+    existingPlans.set(identity,serialized);
+    input.local_fire_atomic_write_plans.push(clone(plan));
+  }
   if (!Array.isArray(input.approved_write_sets)
     || !Array.isArray(input.expected_state_versions)
     || !record(input.lock_context)
-    || !Array.isArray(input.lock_context.physical_keys)) {
+    || !Array.isArray(input.lock_context.physical_keys)
+    || localFirePlans.length > 0
+      && !Array.isArray(input.lock_context.owner_keys)) {
     return failure(
       input.party_id,
       'base write-plan input lacks explicit write, version or lock sets'
@@ -94,6 +126,24 @@ export function integrateSpatialV3TemporalWriteFragments({
     input.expected_state_versions.map((entry) => [key(entry), entry.state_version])
   );
   const physicalKeys = new Set(input.lock_context.physical_keys);
+  const ownerKeys = localFirePlans.length > 0
+    ? new Set(input.lock_context.owner_keys) : null;
+  for (const proposal of localFireProposals) {
+    for (const ownerKey of proposal.owner_keys) {
+      if (typeof ownerKey !== 'string' || ownerKey.length === 0) {
+        return failure(input.party_id,
+          'local-fire temporal owner lock identity is invalid');
+      }
+      ownerKeys.add(ownerKey);
+    }
+    for (const physicalKey of proposal.physical_keys) {
+      if (typeof physicalKey !== 'string' || physicalKey.length === 0) {
+        return failure(input.party_id,
+          'local-fire temporal physical lock identity is invalid');
+      }
+      physicalKeys.add(physicalKey);
+    }
+  }
   for (const fragment of fragments) {
     if (!record(fragment.write_set)
       || !Array.isArray(fragment.expected_state_versions)
@@ -145,6 +195,9 @@ export function integrateSpatialV3TemporalWriteFragments({
     input.approved_write_sets.push(copied);
   }
   input.lock_context.physical_keys = [...physicalKeys].sort();
+  if (ownerKeys !== null) {
+    input.lock_context.owner_keys = [...ownerKeys].sort();
+  }
   input.canonical_input_digest = computeSpatialV3CanonicalDigest({
     command_input_digest: base_write_plan_input.canonical_input_digest,
     temporal_result_digest: temporal_result.canonical_digest,
@@ -154,3 +207,8 @@ export function integrateSpatialV3TemporalWriteFragments({
   });
   return freeze({ ok: true, input, fragment_count: fragments.length });
 }
+
+function localFireIdentity(plan){const proposal=plan?.transition_proposal;
+  const cause=proposal?.cause;return cause?.kind==='temporal_boundary'
+    ?`temporal:${cause.boundary_id}`
+    :`actor:${cause?.root_turn_id}:${cause?.step_index}:${plan?.actor_ref}`;}

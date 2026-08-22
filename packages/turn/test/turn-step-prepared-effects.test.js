@@ -126,6 +126,57 @@ test('common prepared orchestration chains arbitrary domain and semantic owners'
     assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
   });
 
+test('prepared time sees cumulative F1 plans without duplicating prior output',
+  async () => {
+    const actorPlan = { plan: 'actor' }, duePlan = { plan: 'due' };
+    const seen = [];
+    const registry = createTurnStepExecutionRegistry({ domain: {
+      request_world_process: async ({ working_projection: projection }) => ({
+        working_projection: projection, summary: 'fire', write_fragments: [],
+        local_fire_atomic_write_plans: [actorPlan]
+      }),
+      request_movement: async ({ working_projection: projection }) => ({
+        working_projection: { ...projection, position: 'camp' },
+        summary: 'route', write_fragments: [], prepared_effect_request: {
+          effect_kind: 'domain_command', owner_ref: 'route_owner',
+          operation_ref: 'request_movement', availability: available(),
+          consequence: { duration_minutes: 8 }
+        }
+      })
+    }, applySemanticActivity:async({working_projection:projection})=>({
+      working_projection:projection,summary:'done',write_fragments:[],
+      player_response_boundary:true}) });
+    const outcome = await runTurnStepLoop(input(), ports({
+      executionRegistry: registry,
+      preparedEffectContext: { current_clock: at(0),
+        current_body_state: body() },
+      async preparedEffectTimeOwner(value) {
+        seen.push(value.local_fire_atomic_write_plans);
+        return { version: 2, schema: 'turn_time_update',
+          owner: '@rus/time-events-history', clock_before: at(0),
+          clock_after: at(8), exact_elapsed: minutes(8), nearest_boundary: null,
+          local_fire_atomic_write_plans: [duePlan] };
+      },
+      async preparedEffectBodyOwner() {
+        return { version: 1, schema: 'turn_body_update', owner: '@rus/body-state',
+          applied: false, proposal: null, state_after: body() };
+      },
+      async preparedEffectProjectionOwner(value) {
+        assert.equal(value.actor.actor_id, 'actor-1');
+        return value.working_projection;
+      },
+      turnStepModel(request) {
+        if (request.step_index === 1) return worldProcessPlan(request);
+        if (request.step_index === 2) return routePlan(request);
+        return directPlan(request);
+      }
+    }));
+
+    assert.deepEqual(seen, [[actorPlan]]);
+    assert.deepEqual(outcome.local_fire_atomic_write_plans,
+      [actorPlan, duePlan]);
+  });
+
 test('prepared chain suppresses step-two schema repair and a repaired start',
   async (t) => {
     await t.test('invalid step two makes exactly two model calls', async () => {
@@ -371,33 +422,44 @@ test('clarification after a prepared route is one persisted boundary trace',
     assert.equal(outcome.prepared_effect_ledger.slices.length, 1);
   });
 
-test('the second prepared slice is terminal even without handler boundary',
+test('prepared world-process continuation sees evolving state before terminal step',
   async () => {
-    let modelCalls = 0;
+    const requests = [];
     const outcome = await runTurnStepLoop(input(), ports({
       executionRegistry: preparedRegistry({
-        semanticDuration: 0,
-        semanticBoundary: false
+        semanticBoundary: false,
+        extraDomain: {
+          request_world_process: async ({ plan,
+            working_projection: projection }) => ({
+            working_projection: {
+              ...projection,
+              local_fire_processes: [{ process_ref: 'fire-1',
+                status: 'active', fuel_refs: ['fuel-1'] }]
+            },
+            summary: 'fuel added to fire',
+            write_fragments: []
+          })
+        }
       }),
+      admitPreparedDomainPlan: async ({ plan }) =>
+        plan.operations[0]?.op === 'request_world_process',
       turnStepModel(request) {
-        modelCalls += 1;
-        return request.step_index === 1 ? routePlan(request) : directPlan(
-          request, {
-            goal_result: 'pending',
-            continuation: {
-              remaining_intent: 'продолжить осмотр', depends_on_refs: ['camp']
-            }
-          });
+        requests.push(request);
+        if (request.step_index === 1) return routePlan(request);
+        if (request.step_index === 2) return worldProcessPlan(request);
+        return directPlan(request);
       }
     }));
 
-    assert.equal(modelCalls, 2);
+    assert.equal(requests.length, 3);
     assert.equal(outcome.stop_reason, 'player_response');
-    assert.equal(outcome.working_revision, 2);
-    assert.equal(outcome.step_traces[1].player_response_boundary, true);
+    assert.equal(outcome.working_revision, 3);
+    assert.equal(outcome.step_traces[1].player_response_boundary, false);
+    assert.deepEqual(requests[2].player_safe_state.local_fire_processes,
+      [{ process_ref: 'fire-1', status: 'active', fuel_refs: ['fuel-1'] }]);
     assert.equal(outcome.prepared_effect_ledger.slices.length, 2);
-    assert.equal(outcome.prepared_effect_ledger.slices[1]
-      .time_update.clock_after.whole_minutes, '8');
+    assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) =>
+      slice.time_update.clock_after.whole_minutes), ['8', '9']);
   });
 
 function preparedRegistry({
@@ -436,9 +498,10 @@ function preparedRegistry({
     applySemanticActivity: async ({ plan,
       working_projection: projection }) => {
       increment(counters, 'semanticActivityHandler');
+      const before = Number(projection.clock.whole_minutes);
       return {
         working_projection: {
-          ...projection, clock: at(8 + semanticDuration)
+          ...projection, clock: at(before + semanticDuration)
         },
         summary: 'direct activity',
         write_fragments: [],
@@ -451,8 +514,8 @@ function preparedRegistry({
           operation: 'activity:2',
           availability: null,
           duration: semanticDuration,
-          before: 8,
-          after: 8 + semanticDuration
+          before,
+          after: before + semanticDuration
         })
       };
     }
@@ -498,7 +561,11 @@ function input() {
     actor: { actor_id: 'actor-1' },
     initialWorkingProjection: {
       actor_id: 'actor-1', position: 'shore', destination_refs: ['camp'],
-      clock: at(0)
+      clock: at(0),
+      visible_entities: [
+        { entity_ref: 'fire-1', kind: 'local_world_process' },
+        { entity_ref: 'fuel-1', kind: 'item' }
+      ]
     },
     maxInternalSteps: 8
   };
@@ -558,6 +625,28 @@ function secondDomainPlan(request) {
     activity: { owner: 'domain', duration_class: null, effort: null },
     operations: [{ op: 'request_activity', actor_ref: 'actor-1',
       activity_kind: 'wait', target_refs: [], description: 'ждать' }]
+  });
+}
+
+function worldProcessPlan(request) {
+  return plan(request, {
+    resolution: 'domain_request',
+    goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{
+      op: 'request_world_process',
+      actor_ref: 'actor-1',
+      process_action: 'affect',
+      process_ref: 'fire-1',
+      process_kind: 'fire',
+      source_refs: ['fuel-1'],
+      target_refs: [],
+      description: 'положить топливо в огонь'
+    }],
+    continuation: {
+      remaining_intent: 'осмотреть результат',
+      depends_on_refs: ['fire-1']
+    }
   });
 }
 

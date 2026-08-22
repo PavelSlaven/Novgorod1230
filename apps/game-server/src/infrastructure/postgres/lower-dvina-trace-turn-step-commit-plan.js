@@ -12,11 +12,12 @@ import { ordinaryPhysicalKeys } from './lower-dvina-trace-ordinary-p16.js';
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
+import { localFirePhysicalKeys } from './local-fire-atomic-write-plan.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = []
+  actionProductionPlans = [], localFirePlans = []
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
@@ -82,10 +83,12 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
       physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
-      ...actionPlans.flatMap(actionProducedPhysicalKeys)]
+      ...actionPlans.flatMap(actionProducedPhysicalKeys),
+      ...localFirePlans.flatMap(localFirePhysicalKeys)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     action_production_atomic_write_plans: actionPlans,
+    local_fire_atomic_write_plans: localFirePlans,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })

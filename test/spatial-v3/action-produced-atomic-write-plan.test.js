@@ -26,6 +26,7 @@ import { applyActionProductionProjection } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-action-production-projection.js';
 import { projectItems } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-player-safe-items.js';
+import { admitLocalFireInput } from '@rus/items-property';
 
 test('A1 write plan is validated, detached and rejects hostile boundaries unread', () => {
   const request = fixture();
@@ -413,6 +414,60 @@ test('written A1 state persists inscription without truth or knowledge', () => {
     'causal_identity', 'output_class', 'physical_form',
     'result_class', 'schema'
   ]);
+});
+
+test('A1 partitioned fuel keeps item-owned fire classification', () => {
+  const destination = {
+    schema: 'action_production_output_destination_pin_v1',
+    destination_kind: 'party_current_anchor', anchor_id: 'output-anchor',
+    item_capacity: 8, used_item_ids: []
+  };
+  const sourceOwnership = {
+    ownership_id: 'ownership:kindling', owner_npc_id: null,
+    owner_character_id: 'actor:mikula', owner_party: false,
+    controller_npc_id: null, controller_character_id: 'actor:mikula',
+    claim_state: 'owned'
+  };
+  const sourcePins = [{ item_id: 'item:kindling', item: {
+    item_id: 'item:kindling', condition_state: 'serviceable',
+    state: { lifecycle_status: 'active', local_fire_fuel: {
+      schema: 'rus.items.local_fire_fuel.v1',
+      fuel_class: 'ordinary_solid_fuel_unit', whole_unit: true,
+      provenance: { source_refs: ['authored:item:kindling'] }
+    } }
+  }, ownership: sourceOwnership, entity_snapshot: {
+    controller_ref: 'actor:mikula', ownership_snapshot: sourceOwnership } }];
+  const mechanics = mechanicsSnapshot();
+  mechanics.mechanics.mass_grams = 250;
+  mechanics.mechanics.quantity = { value: 1, unit: 'item' };
+  const result = deriveActionProducedResultItem({
+    entity_ref: 'result:kindling', source_ref: 'item:kindling',
+    holder_ref: null, controller_ref: 'actor:mikula', mechanics_snapshot: mechanics,
+    physical_facts: ['отделённая сухая часть'], inscription_text: null,
+    output_authority: {
+      schema: 'rus.items.action_produced_output_authority.v1',
+      mode: 'new_non_authoritative', canonical_identity_status: 'absent',
+      currency_status: 'not_currency', legal_tender_status: 'not_legal_tender',
+      official_status: 'not_official', objective_truth_status: 'not_projected',
+      knowledge_status: 'not_projected'
+    },
+    material_allocations: [{ source_ref: 'item:kindling', quantity: {
+      numerator: 1, denominator: 2, unit: 'whole_item' } }]
+  }, sourcePins, { causal_identity: { action_ref: 'action-1' },
+    result_class: 'partial_transformation', qualitative_result: {
+      output_class: 'ordinary_mundane', result_descriptor: {
+        display_name: 'отделённая растопка', physical_description: null,
+        physical_form: 'compact' } } }, 'change:kindling', destination,
+  'actor:mikula');
+  const item = { item_id: result.item_id, ...result.item_row };
+  assert.equal(item.state.local_fire_fuel?.fuel_class,
+    'ordinary_solid_fuel_unit');
+  assert.equal(admitLocalFireInput({ item, placement: {
+    item_id: result.item_id, ...result.placement_row },
+    ownership: { item_id: result.item_id, ...result.ownership_row },
+    actor_ref: 'actor:mikula',
+    scope_ref: 'output-anchor', fuel_mass_grams_min: 100,
+    fuel_mass_grams_max: 1000 }).pass, true);
 });
 
 test('weapon-capable A1 state persists no combat classification or damage',

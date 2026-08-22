@@ -68,7 +68,7 @@ test('player combat response resolves one common two-minute exchange', async () 
       weapon_mechanics_snapshot: resolveOrdinaryArmamentMechanics({
         mechanics_capability_ref: ORDINARY_ARMAMENT_MECHANICS_CAPABILITY,
         condition_state: 'serviceable' }) } }], combat_sessions: [session] };
-  const bundle = { definition_revision: 16,
+  const bundle = { definition_revision: 22,
     turn_step_bindings: { player_execution_profiles: [{
       profile_id: 'player-control', intent_kind: 'control', status: 'approved',
       allowed_force_limits: ['nonlethal_if_possible'],

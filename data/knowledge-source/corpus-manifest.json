@@ -287,8 +287,8 @@
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
       "canonical_path": "corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md",
       "file_name": "semantic_world_actions_materialization_and_processes_contract.md",
-      "sha256": "7e1d92efe64a53612613f68b6869548f22d34263407910c8ea752f427989766a",
-      "bytes": 183085,
+      "sha256": "715055b6784cddd06200d52931f65d16b018eae4b9d8707e2c8bd48da3b4147b",
+      "bytes": 184469,
       "status": "proposed",
       "provenance_mode": "native"
     },
@@ -362,8 +362,8 @@
       "document_id": "turn-step-llm-contract",
       "canonical_path": "corpus/DOCUMENTS/turn_step_llm_contract.md",
       "file_name": "turn_step_llm_contract.md",
-      "sha256": "fd91f9f92fab7e6703e18da301097659144872d23499340439ff6d2203b63fa8",
-      "bytes": 78556,
+      "sha256": "1fb2309a0940e0c44697dc498e5317b2ef8c82059798e0c639a923930b297579",
+      "bytes": 83209,
       "status": "active",
       "provenance_mode": "native"
     },

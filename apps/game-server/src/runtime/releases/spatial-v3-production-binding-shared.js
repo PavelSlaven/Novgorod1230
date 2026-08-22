@@ -86,7 +86,8 @@ export async function createSpatialV3ProductionBindings(
     config = {},
     ordinaryMaterializationProfile = null,
     ordinaryContainerContentsProfile = null,
-    actionProductionProfile = null
+    actionProductionProfile = null,
+    localFireProfile = null
   } = {},
   {
     createNpcRuntimePorts,
@@ -151,6 +152,7 @@ export async function createSpatialV3ProductionBindings(
           ordinaryContainerContentsProfile,
           ordinaryStageBApproval,
           actionProductionProfile,
+          localFireProfile,
           createPhase2RuntimeFactory,
           createNpcRuntimePorts
         })

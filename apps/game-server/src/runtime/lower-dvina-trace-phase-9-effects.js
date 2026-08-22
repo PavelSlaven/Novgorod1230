@@ -35,28 +35,30 @@ export function createTracePhase9VisibleProjector({ fallback, contracts }) {
     if (kind == null) return fallback.project(input);
     const phase9 = input.consequence.phase9;
     const detail = {
-      bag_recovery: ['Дорожная сумка теперь под вашим контролем.',
+      bag_recovery: () => ['Дорожная сумка теперь под вашим контролем.',
         ['road_bag_recovered'], []],
-      bag_opened: ['Сумка открыта; внутри виден свёрток.',
-        ['road_bag_opened'], [{ item_id: contracts.packet.item_id,
-          label: 'Запечатанный свёрток' }]],
-      packet_recovered: [phase9.seal_observation.seal_state === 'intact'
+      bag_opened: () => ['Сумка открыта; внутри виден свёрток.',
+        ['road_bag_opened'], [{ entity_ref: { entity_kind: 'item',
+          entity_id: contracts.packet.item_id },
+        display_label: 'Запечатанный свёрток', recognition: 'recognized' }]],
+      packet_recovered: () => [phase9.seal_observation.seal_state === 'intact'
         ? 'Свёрток извлечён; печать цела, содержимое не вскрыто.'
         : 'Свёрток извлечён; печать повреждена.',
-      ['sealed_packet_observed'], [{ item_id: contracts.packet.item_id,
-        label: 'Свёрток Саввы' }]],
-      return_to_camp: ['Группа вернулась к Онисиму в рыбацкий стан.',
+      ['sealed_packet_observed'], [{ entity_ref: { entity_kind: 'item',
+        entity_id: contracts.packet.item_id },
+      display_label: 'Свёрток Саввы', recognition: 'recognized' }]],
+      return_to_camp: () => ['Группа вернулась к Онисиму в рыбацкий стан.',
         ['guarded_return_completed'], []],
-      onisim_testimony: [phase9.semantic_exchange.testimony_committed
+      onisim_testimony: () => [phase9.semantic_exchange.testimony_committed
         ? 'Показание Онисима сохранено как его слова.'
         : 'Ответ Онисима сохранён как речь; показанием он не признан.',
       ['onisim_statement_committed'], []],
-      evidence_resolved: ['Собранные доказательства сопоставлены.',
+      evidence_resolved: () => ['Собранные доказательства сопоставлены.',
         ['evidence_resolution_committed'], []],
-      temporary_disposition: [
+      temporary_disposition: () => [
         'Временное решение о людях и имуществе сохранено.',
         ['temporary_disposition_committed'], []]
-    }[kind];
+    }[kind]?.();
     if (!detail) fail('TRACE_PHASE_9_VISIBLE_KIND_INVALID');
     return { version: 1, schema: 'visible_context_package',
       visible_scene: detail[0], visible_changes: detail[1],

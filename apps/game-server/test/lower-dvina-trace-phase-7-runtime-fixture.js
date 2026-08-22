@@ -19,6 +19,9 @@ export function phase7Command({
   model,
   continuationTargetRefs = [],
   genericCheckContextOwner = null,
+  localFireProfile = null,
+  worldProcessResolver = null,
+  projectNpcWorldProcessCapability = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -48,6 +51,9 @@ export function phase7Command({
       }
     },
     genericCheckContextOwner,
+    localFireProfile,
+    worldProcessResolver,
+    projectNpcWorldProcessCapability,
     randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion

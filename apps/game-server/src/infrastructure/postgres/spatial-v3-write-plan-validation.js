@@ -19,6 +19,8 @@ import { createOrdinaryMaterializationAtomicWritePlan } from
 import { actionProducedPhysicalKeys,
   validActionProductionExtension } from
   './action-produced-atomic-write-plan.js';
+import { validLocalFireExtension } from
+  './local-fire-write-plan-validation.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -130,6 +132,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
         !== plan.expected_state_versions_digest) return false;
   if (!validOrdinaryMaterializationExtension(plan)) return false;
   if (!validActionProductionExtension(plan)) return false;
+  if (!validLocalFireExtension(plan)) return false;
   if (!['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'].every((kind) => plan.commit_rechecks?.some((check) => check?.kind === kind && stable(check.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(plan[key]) || plan[key].some((value) => !stable(value)))) return false;
   if (plan.operation_kind === 'first_entry') {
     if (!validFirstEntryPhysicalRecheck(plan)) return false;
@@ -205,14 +208,16 @@ export function validateSpatialV3CombinedWritePlan(plan) {
 function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;
   const actions = plan.action_production_atomic_write_plans ?? [];
-  if (ordinary == null && actions.length === 0) return writeSet;
-  if (actions.length === 0) return { write_set: writeSet,
+  const localFire=plan.local_fire_atomic_write_plans??[];
+  if (ordinary == null && actions.length === 0 && localFire.length===0) return writeSet;
+  if (actions.length === 0 && localFire.length===0) return { write_set: writeSet,
     ordinary_materialization_atomic_write_plan: ordinary };
   return { write_set: writeSet,
     ...(ordinary == null ? {} : {
       ordinary_materialization_atomic_write_plan: ordinary
     }),
-    action_production_atomic_write_plans: actions };
+    ...(actions.length===0?{}:{action_production_atomic_write_plans:actions}),
+    ...(localFire.length===0?{}:{local_fire_atomic_write_plans:localFire}) };
 }
 
 function validOrdinaryMaterializationExtension(plan) {

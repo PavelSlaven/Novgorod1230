@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { applyLocalFireTemporalProjection } from
+  './lower-dvina-trace-local-fire-temporal.js';
 
 export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
   if (!Array.isArray(registrations)) {
@@ -23,6 +25,10 @@ export function lowerDvinaTraceTemporalSourceRegistrations(registrations) {
 export function validatePhase6TemporalSourceResolution({ candidate,
   projection, resolution }) {
   const nextProjection = resolution?.state_projection ?? projection;
+  if (candidate?.source_ref?.entity_kind === 'propagation_process') {
+    return validateLocalFireProjection({ candidate, projection, resolution,
+      nextProjection });
+  }
   return validateNpcStateProjection({ candidate, resolution, projection,
     nextProjection, before: projection.phase6_state,
     after: nextProjection.phase6_state,
@@ -34,6 +40,10 @@ export function validatePhase6TemporalSourceResolution({ candidate,
 export function validateConversationTemporalSourceResolution({ candidate,
   projection, resolution }) {
   const nextProjection = resolution?.state_projection ?? projection;
+  if (candidate?.source_ref?.entity_kind === 'propagation_process') {
+    return validateLocalFireProjection({ candidate, projection, resolution,
+      nextProjection });
+  }
   if ((resolution?.proposals ?? []).some((proposal) =>
     (proposal.expected_state_versions ?? []).some((entry) =>
       entry.target_table === 'party_npcs'))) {
@@ -47,6 +57,21 @@ export function validateConversationTemporalSourceResolution({ candidate,
     unsupportedCode:
       'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED',
     writeGapCode: 'TRACE_CONVERSATION_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP' });
+}
+
+function validateLocalFireProjection({candidate,projection,resolution,
+  nextProjection}){
+  const plans=(resolution?.proposals??[]).flatMap((proposal)=>
+    proposal.local_fire_atomic_write_plans??[]);
+  if(plans.length!==1
+      || plans[0].transition_proposal.cause?.boundary_id!==candidate.boundary_id){
+    fail(candidate,'TRACE_LOCAL_FIRE_TEMPORAL_SOURCE_PROJECTION_WRITE_GAP');
+  }
+  const expected=applyLocalFireTemporalProjection(projection,plans[0]);
+  if(canonicalDigest(expected)!==canonicalDigest(nextProjection)){
+    fail(candidate,'TRACE_LOCAL_FIRE_TEMPORAL_SOURCE_PROJECTION_UNSUPPORTED');
+  }
+  return resolution;
 }
 
 function validateNpcStateProjection({ candidate, resolution, before, after,

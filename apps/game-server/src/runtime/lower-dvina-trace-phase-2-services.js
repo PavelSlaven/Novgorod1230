@@ -70,12 +70,15 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ordinaryDiscoveryEnablementMarker,
     createTurnStepActionProductionOwner,
     actionProductionProfile,
+    createTurnStepWorldProcessResolver,
+    localFireProfile,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
+    temporalAdvanceOwner,
     decisionSecret, phase3Contracts,
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
@@ -105,7 +108,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
           fallback: createTracePhase5TemporalAdvance({
             phase4Advance: createTracePhase4TemporalAdvance({
               phase3Advance: createTracePhase3TemporalAdvance({
-                phase2Advance: createTracePhase2TemporalAdvance({ contracts })
+                phase2Advance: createTracePhase2TemporalAdvance({ contracts,
+                  temporalAdvanceOwner })
               })
             })
           })
@@ -155,6 +159,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       admitAmbientOrdinaryPortion,
       actionProductionProfile,
       createTurnStepActionProductionOwner,
+      localFireProfile,
+      createTurnStepWorldProcessResolver,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
@@ -194,6 +200,13 @@ export function buildLowerDvinaTracePhase2Services(context) {
     ...(actionProductionOwner ? {
       turnStepActionProductionOwner: actionProductionOwner.execute,
       turnStepActionProductionPreflight: actionProductionOwner.preflight
+    } : {}),
+    ...(typeof createTurnStepWorldProcessResolver === 'function'
+        && localFireProfile?.profile?.status === 'approved' ? {
+      turnStepWorldProcessResolver: createTurnStepWorldProcessResolver({
+        partyId, requestId, inputDigest,
+        applyWorkingProjection: turnStepPorts.applyLocalFireProjection
+      })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

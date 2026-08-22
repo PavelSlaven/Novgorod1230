@@ -10,10 +10,11 @@ import {
   validateAuthoritativePreparedRoute,
   validatePreparedBodyReplay,
   validatePreparedDirectSlice,
-  validatePreparedRouteTraceLineage
+  validatePreparedRouteTraceLineage,
+  validLocalFireIntermediateTrace
 } from './lower-dvina-trace-turn-step-prepared-effect-authority.js';
-import { plain } from
-  './lower-dvina-trace-turn-step-persistence-support.js';
+import { mergePreparedRecord, samePreparedTimeBase } from
+  './lower-dvina-trace-turn-step-prepared-effect-values.js';
 import {
   isPreparedTurn10Ledger,
   validatePreparedTurn10
@@ -36,7 +37,8 @@ export function validatePreparedEffectCommit({
   factual,
   state,
   phase3Contracts,
-  turnStepApprovedOwners
+  turnStepApprovedOwners,
+  localFirePlans = []
 }) {
   const ledgerValue = envelope?.time_update?.prepared_effect_ledger;
   if (ledgerValue == null) return { prepared: false };
@@ -66,11 +68,18 @@ export function validatePreparedEffectCommit({
     return validatePreparedPhase9({ ledger, envelope, factual, state, batch });
   }
   const [route, direct] = slices;
-  const [routeTrace, directTrace] = traces ?? [];
+  const routeTrace = traces?.find(({step_index:step})=>step===route?.step_index);
+  const directTrace = direct == null ? traces?.[1] : traces?.find(
+    ({step_index:step})=>step===direct.step_index);
+  const intermediateTraces = direct == null ? [] : traces?.filter(
+    ({step_index:step})=>step>route.step_index&&step<direct.step_index) ?? [];
   const routeOperation = routeTrace?.approved_plan?.operations?.[0];
   const hasDirect = direct != null;
   const validTraceCount = hasDirect
-    ? traces?.length === 2
+    ? traces?.length === direct.step_index
+      && traces.every(({ applied }) => applied === true)
+      && intermediateTraces.every((trace) =>
+        validLocalFireIntermediateTrace(trace, localFirePlans))
     : [1, 2].includes(traces?.length);
   if (ledger.root_turn_id !== (batch?.root_turn_id
         ?? envelope.root_turn_id)
@@ -78,7 +87,8 @@ export function validatePreparedEffectCommit({
         ?? envelope.base_state_version)
       || ![1, 2].includes(slices.length)
       || !Array.isArray(traces) || !validTraceCount
-      || envelope.loop_trace.working_revision !== slices.length
+      || envelope.loop_trace.working_revision
+        !== (hasDirect ? traces.length : slices.length)
       || route.effect_kind !== 'domain_command'
       || route.owner_ref !== ROUTE_COMMAND
       || route.operation_ref !== 'request_movement'
@@ -95,7 +105,8 @@ export function validatePreparedEffectCommit({
   validateAuthoritativePreparedRoute({ route, state, phase3Contracts });
   validatePreparedRouteTraceLineage({
     route, routeTrace, directTrace, loopTrace: envelope.loop_trace,
-    envelope, state, routeOnly: !hasDirect
+    envelope, state, routeOnly: !hasDirect,
+    intermediateTraces
   });
   if (hasDirect) validatePreparedDirectSlice({
     batch, direct, directTrace, route, turnStepApprovedOwners
@@ -141,7 +152,7 @@ export function validatePreparedEffectCommit({
         !== ledger.ledger_digest
       || envelope.body_update.prepared_effect_ledger_digest
         !== ledger.ledger_digest
-      || !sameTimeBase(expectedTime, envelope.time_update)
+      || !samePreparedTimeBase(expectedTime, envelope.time_update)
       || !samePreparedValue(expectedBody, envelope.body_update)) {
     preparedEffectFail('ledger aggregate differs from factual commit');
   }
@@ -150,6 +161,7 @@ export function validatePreparedEffectCommit({
   });
   return { prepared: true, routeSlice: route, directSlice: direct };
 }
+
 function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
   const slice = ledger.slices[0];
   const trace = envelope?.loop_trace?.step_traces?.[0];
@@ -172,7 +184,7 @@ function validatePreparedCombat({ ledger, envelope, factual, state, batch }) {
       || !samePreparedValue(envelope.time_update, factual?.time_update)
       || !samePreparedValue(envelope.body_update, factual?.body_update)
       || !samePreparedValue(expectedBody, envelope.body_update)
-      || !sameTimeBase(expectedTime, envelope.time_update)
+      || !samePreparedTimeBase(expectedTime, envelope.time_update)
       || trace.plan_request?.player_safe_state?.combat_sessions?.length !== 1
       || !samePreparedValue(trace.plan_request.player_safe_state.clock,
         state.clock)) {
@@ -244,7 +256,7 @@ function expectedPreparedConsequence({
 }) {
   const base = structuredClone(route.consequence);
   const fragment = direct?.consequence ?? {};
-  const preparedVisible = mergeRecord({
+  const preparedVisible = mergePreparedRecord({
     completed_steps: structuredClone(loopTrace.completed_steps),
     clarification: structuredClone(loopTrace.clarification)
   }, fragment.visible_seed ?? {});
@@ -252,8 +264,8 @@ function expectedPreparedConsequence({
     ...base,
     duration_minutes: Number(base.duration_minutes)
       + Number(fragment.duration_minutes ?? 0),
-    visible_seed: mergeRecord(preparedVisible, base.visible_seed ?? {}),
-    hidden_update: mergeRecord(
+    visible_seed: mergePreparedRecord(preparedVisible, base.visible_seed ?? {}),
+    hidden_update: mergePreparedRecord(
       fragment.hidden_update ?? {}, base.hidden_update ?? {}),
     state_changes: [
       ...structuredClone(fragment.state_changes ?? []),
@@ -272,28 +284,6 @@ function expectedPreparedConsequence({
       preparedEffectFail(`prepared consequence conflicts on ${key}`);
     }
     output[key] = structuredClone(fragment[key]);
-  }
-  return output;
-}
-
-function sameTimeBase(expected, actual) {
-  return ['version', 'schema', 'owner', 'clock_before', 'clock_after',
-    'exact_elapsed', 'nearest_boundary', 'boundary_trace',
-    'prepared_effect_ledger_digest', 'prepared_effect_ledger']
-    .every((key) => samePreparedValue(expected[key], actual?.[key]));
-}
-
-function mergeRecord(left, right) {
-  if (!plain(left) || !plain(right)) {
-    preparedEffectFail('prepared consequence record is invalid');
-  }
-  const output = structuredClone(left);
-  for (const [key, value] of Object.entries(right)) {
-    if (Object.hasOwn(output, key)
-        && !samePreparedValue(output[key], value)) {
-      preparedEffectFail(`prepared consequence record conflicts on ${key}`);
-    }
-    output[key] = structuredClone(value);
   }
   return output;
 }

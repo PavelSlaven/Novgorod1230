@@ -2730,6 +2730,31 @@ water portion consumed
 
 Нельзя сначала расходовать resource, а затем отдельно решать effect.
 
+## 40.5. Player-visible factual result
+
+После успешного player actor-step F1 production resolver добавляет во
+внутренний consequence safe factual seed с ordered key
+`turn_step_world_process_<step_index>`:
+
+```yaml
+schema: rus.lower_dvina_trace_turn_step_world_process_visible_result.v1
+process_kind: fire
+action: start | add_fuel | affect
+outcome: started | fuel_added | no_effect | continue | complete
+status: active | completed
+```
+
+Разрешены ровно `start/started/active`, `add_fuel/fuel_added/active`,
+`affect/no_effect/active`, `affect/continue/active` и
+`affect/complete/completed`. Process/item refs, bindings, pins, causal evidence
+и timestamps в seed запрещены. Existing visibility owner преобразует seed в
+safe factual overlay над обычной phase projection того же root turn либо над
+validated current-scene package pure F1. Overlay сохраняет остальные visible
+facts, а clarification следует после уже совершённых F1 results. Combined
+package сохраняется до narration; narrator только излагает сохранённые факты.
+NPC actor-step и `temporal_boundary` seed не создают: off-screen transition
+остаётся perception-gated и не раскрывается из process mechanics.
+
 # 41. `world_process_step_request_v1`
 
 Request создаётся только при irreducible qualitative gap.

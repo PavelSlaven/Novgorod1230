@@ -34,7 +34,8 @@ export function validateTracePhase7Plan({ plan, request, contracts,
   const operation = plan.operations.find(({ op }) =>
     op === 'request_activity'
       || op === 'request_item_use'
-      || op === 'request_movement');
+      || op === 'request_movement'
+      || op === 'request_world_process');
   if (operation == null
       || !Object.hasOwn(operationContract, operation.op)
       || !matchesOperationContract(operation, operationContract[operation.op])) {
@@ -42,6 +43,8 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       ? 'NPC_ITEM_OPERATION_NOT_APPLICABLE'
       : operation?.op === 'request_movement'
         ? 'NPC_MOVEMENT_OPERATION_NOT_APPLICABLE'
+        : operation?.op === 'request_world_process'
+          ? 'NPC_WORLD_PROCESS_NOT_APPLICABLE'
         : 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
   }
   if (operation.op === 'request_activity') {

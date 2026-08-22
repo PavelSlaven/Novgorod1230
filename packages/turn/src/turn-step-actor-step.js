@@ -22,7 +22,8 @@ export const TURN_STEP_DOMAIN_OPERATIONS = Object.freeze([
   'request_item_use',
   'request_activity',
   'emit_interaction',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 
 const DIRECT_OPS = new Set(TURN_STEP_DIRECT_OPERATIONS);
@@ -35,6 +36,7 @@ export async function executeTurnStepActorStep({
   preparedChainContext,
   preparedOrdinaryPlan,
   preparedActionProductionPlans,
+  priorLocalFirePlans = [],
   registry,
   ports
 }) {
@@ -45,6 +47,7 @@ export async function executeTurnStepActorStep({
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
+  const localFirePlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -123,14 +126,14 @@ export async function executeTurnStepActorStep({
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
       preparedChainContext: chainContext, preparedOrdinaryPlan,
-      preparedActionProductionPlans, ports
+      preparedActionProductionPlans, priorLocalFirePlans, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans
+        actionProducedPlans, localFirePlans
       }));
   }
 
@@ -148,14 +151,14 @@ export async function executeTurnStepActorStep({
     const applied = await invokeOwner(handler, {
       plan, request, operation, projection, checkResult,
       preparedChainContext: chainContext, preparedOrdinaryPlan,
-      preparedActionProductionPlans, ports
+      preparedActionProductionPlans, priorLocalFirePlans, ports
     });
     chainContext = advanceChainContext(chainContext, applied);
     ({ projection, boundary, progress, goalResult, continuation } =
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans
+        actionProducedPlans, localFirePlans
       }));
   }
   if (plan.activity?.owner === 'semantic') {
@@ -181,6 +184,7 @@ export async function executeTurnStepActorStep({
         preparedChainContext: chainContext,
         preparedOrdinaryPlan,
         preparedActionProductionPlans,
+        priorLocalFirePlans,
         ports
       });
       chainContext = advanceChainContext(chainContext, applied);
@@ -188,7 +192,7 @@ export async function executeTurnStepActorStep({
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
           summaries, writes, consequences, preparedEffects, ordinaryPlans,
-          actionProducedPlans
+          actionProducedPlans, localFirePlans
         }));
     }
   }
@@ -207,6 +211,7 @@ export async function executeTurnStepActorStep({
     preparedEffects,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
+    local_fire_atomic_write_plans: localFirePlans,
     preparedChainContext: chainContext
   };
 }
@@ -271,17 +276,19 @@ async function invokeOwner(handler, {
   preparedChainContext,
   preparedOrdinaryPlan,
   preparedActionProductionPlans,
+  priorLocalFirePlans,
   ports
 }) {
   const applied = await handler(createTurnStepExecutionInput({
     plan, request, operation, projection, checkResult,
     preparedChainContext, preparedOrdinaryPlan,
-    preparedActionProductionPlans
+    preparedActionProductionPlans, priorLocalFirePlans
   }));
   return orchestrateTurnStepPreparedEffect({
     request,
     applied,
     preparedChainContext,
+    priorLocalFirePlans,
     timeOwner: ports.preparedEffectTimeOwner,
     bodyOwner: ports.preparedEffectBodyOwner,
     projectionOwner: ports.preparedEffectProjectionOwner

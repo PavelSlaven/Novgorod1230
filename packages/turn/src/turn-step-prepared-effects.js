@@ -7,8 +7,7 @@ import {
 } from '@rus/time-events-history';
 import { turnFailure } from './errors.js';
 
-const LEDGER_SCHEMA = 'turn_step_prepared_effect_ledger_v1';
-const SLICE_SCHEMA = 'turn_step_prepared_effect_slice_v1';
+const LEDGER_SCHEMA='turn_step_prepared_effect_ledger_v1',SLICE_SCHEMA='turn_step_prepared_effect_slice_v1';
 const EFFECT_KINDS = new Set(['domain_command', 'semantic_activity']);
 const RAW_KEYS = new Set([
   'step_index', 'effect_kind', 'owner_ref', 'operation_ref', 'availability',
@@ -24,7 +23,6 @@ const LEDGER_KEYS = new Set([
   'version', 'schema', 'root_turn_id', 'committed_state_version', 'slices',
   'ledger_digest'
 ]);
-
 export function buildTurnStepPreparedChainContext({
   priorEffectCount,
   currentClock,
@@ -43,14 +41,10 @@ export function buildTurnStepPreparedChainContext({
     current_body_state: structuredClone(currentBodyState)
   });
 }
-
 export async function orchestrateTurnStepPreparedEffect({
-  request,
-  applied,
-  preparedChainContext,
-  timeOwner,
-  bodyOwner,
-  projectionOwner = null
+  request, applied, preparedChainContext,
+  priorLocalFirePlans = [],
+  timeOwner, bodyOwner, projectionOwner = null
 }) {
   if (!plain(applied) || !plain(applied.prepared_effect_request)) {
     return applied;
@@ -63,13 +57,23 @@ export async function orchestrateTurnStepPreparedEffect({
   if (typeof timeOwner !== 'function' || typeof bodyOwner !== 'function') {
     invalid('Prepared effects require injected time and body owners.');
   }
+  if (!Array.isArray(priorLocalFirePlans)) invalid(
+    'Prepared effects require an ordered prior local-fire plan array.');
   const candidate = requirePreparedRequest(applied.prepared_effect_request);
+  const currentLocalFirePlans = applied.local_fire_atomic_write_plans ?? [];
+  if (!Array.isArray(currentLocalFirePlans)) invalid(
+    'Prepared effects require an ordered current local-fire plan array.');
   const ownerInput = {
     prepared_chain_context: structuredClone(context),
     consequence: structuredClone(candidate.consequence),
     effect_kind: candidate.effect_kind,
     owner_ref: candidate.owner_ref,
-    operation_ref: candidate.operation_ref
+    operation_ref: candidate.operation_ref,
+    root_turn_id: request?.root_turn_id,
+    step_index: request?.step_index,
+    working_projection: structuredClone(applied.working_projection),
+    local_fire_atomic_write_plans: structuredClone(
+      [...priorLocalFirePlans,...currentLocalFirePlans])
   };
   const timeUpdate = await timeOwner(deepFreeze(ownerInput));
   const bodyUpdate = await bodyOwner(deepFreeze({
@@ -95,11 +99,15 @@ export async function orchestrateTurnStepPreparedEffect({
     ? advancedProjection
     : await projectionOwner(deepFreeze({
         prepared_chain_context: structuredClone(context),
+        actor: structuredClone(request?.actor),
         working_projection: structuredClone(advancedProjection),
         prepared_effect: structuredClone(effect)
       }));
   return deepFreeze({
     ...structuredClone(result),
+    local_fire_atomic_write_plans:[...structuredClone(result
+      .local_fire_atomic_write_plans??[]),...structuredClone(timeUpdate
+      .local_fire_atomic_write_plans??[])],
     working_projection: requireObject(
       workingProjection, 'prepared working projection'),
     prepared_effect: effect
@@ -130,8 +138,7 @@ export function buildTurnStepPreparedEffectLedger({
     const projectionBeforeDigest = sha256(projectionBefore);
     const projectionAfterDigest = sha256(projectionAfter);
     if (previousSlice != null) {
-      if (projectionBeforeDigest !== previousSlice.projection_after_digest
-          || bodyStateBeforeDigest
+      if (bodyStateBeforeDigest
             !== sha256(previousSlice.body_update.state_after)
           || !same(raw.time_update.clock_before,
             previousSlice.time_update.clock_after)) {
@@ -373,9 +380,7 @@ function validateSlice(slice, {
   const { slice_digest: actual, ...payload } = slice;
   if (slice.previous_slice_digest !== expectedPrevious
       || (previous != null
-        && (slice.projection_before_digest
-            !== previous.projection_after_digest
-          || slice.body_state_before_digest
+        && (slice.body_state_before_digest
             !== sha256(previous.body_update.state_after)
           || !same(slice.time_update.clock_before,
             previous.time_update.clock_after)))

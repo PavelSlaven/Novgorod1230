@@ -132,8 +132,8 @@ const REVISION_13_EXACT_TEXTS = Object.freeze({
   ])
 });
 const STATE_GATED_COMMANDS = new Set([
-  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse',
-  'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  'lower_dvina_trace.follow_known_route_to_zhdanko_storehouse', 'lower_dvina_trace.accuse_zhdanko_at_storehouse',
+  'lower_dvina_trace.respond_in_active_combat',
   ...Object.keys(EXPECTED).filter((id) => EXPECTED[id].minRevision === 17)
 ]);
 
@@ -142,7 +142,7 @@ export function bindLowerDvinaTraceTurnStepCommands({
   bundle,
   targetRefs
 }) {
-  if (![13, 14, 15, 16, 17, 18, 19, 20, 21].includes(bundle.definition_revision)) return commands;
+  if (![13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(bundle.definition_revision)) return commands;
   const records = bundle.turn_step_bindings?.domain_bindings;
   const expectedCommands = Object.entries(EXPECTED).filter(
     ([, expected]) => (expected.minRevision ?? 13) <= bundle.definition_revision

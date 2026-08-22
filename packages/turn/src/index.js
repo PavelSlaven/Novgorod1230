@@ -19,6 +19,7 @@ import { resolveOrdinaryMaterializationSeedScope } from
   './ordinary-materialization-seed.js';
 import { resolveOrdinaryMaterializationPresence } from
   './ordinary-materialization-presence.js';
+import { resolveWorldProcessStep } from './world-process-step.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from
   './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
@@ -138,6 +139,7 @@ export {
   enterG4WithMaterialization,
   resolveOrdinaryMaterializationSeedScope,
   resolveOrdinaryMaterializationPresence,
+  resolveWorldProcessStep,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

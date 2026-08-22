@@ -1,8 +1,8 @@
-import { canonicalDigest } from '@rus/materialization';
-import { createCombinedWritePlanBuilder } from '@rus/turn';
-import { integrateSpatialV3TemporalWriteFragments } from
+import {canonicalDigest} from '@rus/materialization';
+import {createCombinedWritePlanBuilder} from '@rus/turn';
+import {integrateSpatialV3TemporalWriteFragments} from
   '@rus/turn/spatial-v3-temporal-write-integration';
-import { serverError } from '../../errors.js';
+import {serverError} from '../../errors.js';
 import { assertPhase2CurrentStateVersion } from
   './lower-dvina-trace-phase-2-commit-admission.js';
 import { nextPhase7State } from './lower-dvina-trace-phase-7-state.js';
@@ -31,7 +31,7 @@ import { integrateConversationTemporalWrites } from
   './lower-dvina-trace-conversation-temporal.js';
 import { applyOrdinaryMaterializationProjection, ordinaryPhysicalKeys,
   ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
-
+import {applyLocalFireProjection,createLocalFireAtomicWritePlan,localFirePhysicalKeys} from './local-fire-atomic-write-plan.js';
 export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   inputDigest, phase7Contracts, turn10Contracts, loadState, committer }) {
   const persistedFactual = target(writePlan, 'party_state');
@@ -57,6 +57,19 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
   let ordinaryPlan;
   try { ordinaryPlan = ordinaryPlanFromWritePlan(writePlan, partyId); }
   catch { fail('TRACE_PHASE_7_ORDINARY_PLAN_INVALID'); }
+  let localFirePlans = [];
+  try{if(!Array.isArray(writePlan.local_fire_atomic_write_plans??[]))
+      throw new Error();
+    const direct=writePlan.local_fire_atomic_write_plans??[];
+    localFirePlans=[
+      ...temporalLocalFirePlans(factual.consequence.phase7.temporal.result),
+      ...direct,
+      ...temporalLocalFirePlans(
+        factual.consequence.phase7.schedule_temporal.result)
+    ].map(createLocalFireAtomicWritePlan);
+    if(localFirePlans.some((plan)=>plan.party_id!==partyId
+      ||plan.change_set_id!==changeSetId))throw new Error();
+  }catch{fail('TRACE_PHASE_7_LOCAL_FIRE_PLAN_INVALID');}
   let next = nextPhase7State({
     state,
     factual,
@@ -66,6 +79,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     inputDigest,
     turn10Contracts
   });
+  for(const plan of localFirePlans)applyLocalFireProjection({next,plan});
   const ordinaryVisibleContext = applyOrdinaryMaterializationProjection({
     next, visibleContext, ordinaryPlan
   });
@@ -139,7 +153,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     idempotency: {
       id: idemId,
       key: factual.player_input.idempotency_key,
-      ...bindLowerDvinaTraceFactualTurnStepIdempotency({
+      ...phase7IdempotencyBinding({
         envelope: writePlan.turn_step_commit,
         inputDigest,
         factual,
@@ -172,7 +186,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
         `party_runtime.party_npcs:${
           factual.consequence.phase7.autonomous.request.npc_ref}`,
         ...scheduleItemKeys(state, factual),
-        ...ordinaryPhysicalKeys(ordinaryPlan)
+        ...ordinaryPhysicalKeys(ordinaryPlan),
+        ...localFirePlans.flatMap(localFirePhysicalKeys)
       ])]
     },
     commit_rechecks: commitRechecks({
@@ -182,7 +197,8 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
       phase7Contracts,
       inputDigest
     }),
-    ordinary_materialization_atomic_write_plan: ordinaryPlan
+    ordinary_materialization_atomic_write_plan: ordinaryPlan,
+    local_fire_atomic_write_plans: localFirePlans
   };
   const firstIntegrated = integrateSpatialV3TemporalWriteFragments({
     base_write_plan_input: baseInput,
@@ -221,21 +237,24 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     package_digest: visibleEnvelope.package_digest
   };
 }
-
-export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
+function temporalLocalFirePlans(result){return(result?.combined_change_set?.proposals??[]).flatMap((proposal)=>proposal.local_fire_atomic_write_plans??[]);} export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase7Contracts,
-  ordinaryMaterializationAtomicWritePlan = null }) {
-  const writePlan = {
-    base_state_version: state.party_state.state_version,
+  ordinaryMaterializationAtomicWritePlan = null,
+  localFireAtomicWritePlans = factual?.consequence
+    ?.local_fire_atomic_write_plans ?? [] }) {
+  const writePlan={base_state_version:state.party_state.state_version,
     write_targets: [{ target: 'party_state', value: factual }, {
       target: 'party_visible_context_package', value: visibleContext
     }],
     ...(ordinaryMaterializationAtomicWritePlan == null ? {} : {
       ordinary_materialization_atomic_write_plan:
         ordinaryMaterializationAtomicWritePlan
+    }),
+    ...(localFireAtomicWritePlans.length === 0 ? {} : {
+      local_fire_atomic_write_plans: localFireAtomicWritePlans
     })
   };
-  let captured = null;
+  let captured=null;
   await commitLowerDvinaTracePhase7({
     partyId,
     writePlan,
@@ -251,13 +270,27 @@ export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
   });
   return captured;
 }
-
+function phase7IdempotencyBinding(input) {
+  const binding = bindLowerDvinaTraceFactualTurnStepIdempotency(input);
+  const plan = input.factual.consequence.phase7.autonomous.proposal.plan;
+  const operation = plan.operations.find(
+    ({ op }) => op === 'request_world_process');
+  if (operation == null) return binding;
+  return { ...binding, semantic_command_snapshot: {
+    ...binding.semantic_command_snapshot,
+    npc_actor_step: {
+      request_id: plan.request_id,
+      root_turn_id: plan.root_turn_id,
+      step_index: plan.decision_index,
+      operation: structuredClone(operation)
+    }
+  } };
+}
 const target = (writePlan, name) => writePlan.write_targets
   .find(({ target: id }) => id === name)?.value;
 
 const normalizeDigest = (value) =>
   `sha256:${String(value).replace('sha256:', '')}`;
-
 function fail(code, details = null) {
   throw serverError(code, 'Phase 7 factual commit failed closed.', {
     status: 409,

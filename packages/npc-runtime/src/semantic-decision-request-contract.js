@@ -93,7 +93,8 @@ const DOMAIN_OPERATIONS = new Set([
   'request_activity',
   'emit_interaction',
   'request_conversation',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 const SUPPORTED_OPERATIONS = new Set([...DIRECT_OPERATIONS, ...DOMAIN_OPERATIONS]);
 

@@ -103,6 +103,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const preparedEffects = [];
   const ordinaryPlans = [];
   const actionProducedPlans = [];
+  const localFirePlans = [];
   let preparedChainContext = initialPreparedChainContext(
     ports.preparedEffectContext);
   const seen = new Set();
@@ -110,7 +111,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   while (stepIndex <= identity.maxInternalSteps) {
     const playerSafeState = await ports.projectPlayerSafeState(deepFreeze({
       working_projection: structuredClone(workingProjection),
-      completed_steps: structuredClone(completedSteps)
+      completed_steps: structuredClone(completedSteps),
+      local_fire_atomic_write_plans: structuredClone(localFirePlans)
     }));
     const request = {
       schema: 'turn_step_request_v1',
@@ -186,6 +188,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       preparedChainContext,
       preparedOrdinaryPlan: ordinaryPlans[0] ?? null,
       preparedActionProductionPlans: actionProducedPlans,
+      priorLocalFirePlans: localFirePlans,
       registry,
       ports
     });
@@ -201,6 +204,12 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     if (execution.action_production_atomic_write_plan != null) {
       actionProducedPlans.push(execution.action_production_atomic_write_plan);
+    }
+    if (execution.local_fire_atomic_write_plans != null) {
+      if (!Array.isArray(execution.local_fire_atomic_write_plans)) throw turnFailure(
+        'TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
+        'Local-fire atomic plans must be an ordered array.');
+      localFirePlans.push(...execution.local_fire_atomic_write_plans);
     }
     preparedChainContext = execution.preparedChainContext;
     if (preparedEffects.length > 2) {
@@ -286,6 +295,7 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     prepared_effect_ledger: preparedEffectLedger,
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plans: actionProducedPlans,
+    local_fire_atomic_write_plans: localFirePlans,
     clarification
   });
 }

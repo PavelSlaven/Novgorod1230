@@ -731,6 +731,7 @@ for (const appSpec of [
       '@rus/visibility-knowledge-memory',
       '@rus/visibility-knowledge-memory/ordinary-resolution-capability',
       '@rus/world-base',
+      '@rus/world-processes/local-exact-fire',
       '@rus/npc-runtime', 'pg'
     ])
   },

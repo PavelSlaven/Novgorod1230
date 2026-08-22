@@ -56,7 +56,8 @@ export function validatePreparedRouteTraceLineage({
   loopTrace,
   envelope,
   state,
-  routeOnly
+  routeOnly,
+  intermediateTraces = []
 }) {
   const routeRequest = routeTrace.plan_request;
   const continuation = routeTrace.approved_plan?.continuation;
@@ -87,10 +88,12 @@ export function validatePreparedRouteTraceLineage({
   } catch (cause) {
     preparedEffectFail('prepared route lineage could not be projected', cause);
   }
-  const expectedFirstStep = [{
-    step_index: 1,
-    summary: routeTrace.approved_plan?.interpretation?.grounded_attempt
-  }];
+  const priorTraces = loopTrace.step_traces.filter(({ step_index: step }) =>
+    step < directTrace?.step_index && step >= routeTrace.step_index);
+  const expectedPriorSteps = priorTraces.map((trace) => ({
+    step_index: trace.step_index,
+    summary: trace.approved_plan?.interpretation?.grounded_attempt
+  }));
   if (routeRequest?.request_id !== `${expectedRequestRoot}:step:1`
       || routeRequest.root_turn_id !== loopTrace.root_turn_id
       || routeRequest.root_turn_id !== envelope.root_turn_id
@@ -111,21 +114,32 @@ export function validatePreparedRouteTraceLineage({
   }
   if (directTrace == null) return;
   const request = directTrace.plan_request;
-  if (request?.request_id !== `${expectedRequestRoot}:step:2`
+  const previousTrace = priorTraces.at(-1);
+  const exactPlayerSafe = intermediateTraces.length === 0
+    ? samePreparedValue(request?.player_safe_state, playerSafeAfter)
+    : samePreparedValue(request?.player_safe_state?.position,
+      playerSafeAfter.position)
+      && samePreparedValue(request?.player_safe_state?.clock,
+        playerSafeAfter.clock)
+      && request?.player_safe_state?.actor_id === playerSafeAfter.actor_id;
+  if (request?.request_id
+      !== `${expectedRequestRoot}:step:${directTrace.step_index}`
       || request.root_turn_id !== routeRequest.root_turn_id
       || request.committed_state_version
         !== routeRequest.committed_state_version
-      || request.working_revision !== 1
-      || request.step_index !== 2
+      || request.working_revision !== directTrace.step_index - 1
+      || request.step_index !== directTrace.step_index
       || !samePreparedValue(request.actor, routeRequest.actor)
       || request.root_player_action !== routeRequest.root_player_action
-      || request.remaining_intent !== continuation?.remaining_intent
-      || !samePreparedValue(request.completed_steps, expectedFirstStep)
-      || !samePreparedValue(request.player_safe_state, playerSafeAfter)
+      || request.remaining_intent
+        !== previousTrace?.approved_plan?.continuation?.remaining_intent
+      || !samePreparedValue(request.completed_steps, expectedPriorSteps)
+      || !exactPlayerSafe
       || (routeOnly && (
         loopTrace.remaining_intent !== continuation?.remaining_intent
-        || !samePreparedValue(loopTrace.completed_steps, expectedFirstStep)))) {
-    preparedEffectFail('step2 trace does not bind the applied route lineage');
+        || !samePreparedValue(loopTrace.completed_steps,
+          expectedPriorSteps)))) {
+    preparedEffectFail('direct trace does not bind the applied route lineage');
   }
 }
 
@@ -171,7 +185,7 @@ export function validatePreparedDirectSlice({
   if (!isPreparedDirectContinuation(plan)
       || approved == null
       || direct.effect_kind !== 'semantic_activity'
-      || direct.step_index !== 2
+      || direct.step_index !== directTrace?.step_index
       || directTrace?.applied !== true
       || directTrace.player_response_boundary !== true
       || directTrace.approved_plan?.resolution !== 'direct'
@@ -198,6 +212,23 @@ export function validatePreparedDirectSlice({
     preparedEffectFail(
       'direct activity slice differs from its trace and batch');
   }
+}
+
+export function validLocalFireIntermediateTrace(trace, plans) {
+  const operation = trace?.approved_plan?.operations?.[0];
+  const request = trace?.plan_request;
+  const matches = plans.filter((plan) =>
+    plan?.transition_proposal?.cause?.kind === 'actor_step'
+      && plan.transition_proposal.cause.request_id === request?.request_id
+      && plan.transition_proposal.cause.step_index === trace?.step_index);
+  return trace?.applied === true
+    && trace.player_response_boundary === false
+    && trace.approved_plan?.resolution === 'domain_request'
+    && trace.approved_plan.operations?.length === 1
+    && operation?.op === 'request_world_process'
+    && request?.step_index === trace.step_index
+    && request.working_revision === trace.working_revision
+    && matches.length === 1;
 }
 
 export function validatePreparedBodyReplay({

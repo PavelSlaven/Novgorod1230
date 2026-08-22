@@ -20,7 +20,8 @@ export function collectTurnStepExecutionResult({
   consequences,
   preparedEffects,
   ordinaryPlans,
-  actionProducedPlans
+  actionProducedPlans,
+  localFirePlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -76,6 +77,14 @@ export function collectTurnStepExecutionResult({
     actionProducedPlans.push(structuredClone(
       applied.action_production_atomic_write_plan));
   }
+  if (applied.local_fire_atomic_write_plans != null) {
+    if (!Array.isArray(localFirePlans)
+        || !Array.isArray(applied.local_fire_atomic_write_plans)) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'Local-fire atomic plans must be an ordered array.');
+    }
+    localFirePlans.push(...structuredClone(applied.local_fire_atomic_write_plans));
+  }
   return {
     projection: structuredClone(applied.working_projection),
     boundary: boundary
@@ -98,7 +107,8 @@ export function createTurnStepExecutionInput({
   checkResult,
   preparedChainContext,
   preparedOrdinaryPlan = null,
-  preparedActionProductionPlans = []
+  preparedActionProductionPlans = [],
+  priorLocalFirePlans = []
 }) {
   return deepFreeze({
     plan: structuredClone(plan),
@@ -112,7 +122,9 @@ export function createTurnStepExecutionInput({
       preparedOrdinaryPlan == null ? null
         : structuredClone(preparedOrdinaryPlan),
     prepared_action_production_atomic_write_plans:
-      structuredClone(preparedActionProductionPlans)
+      structuredClone(preparedActionProductionPlans),
+    prior_local_fire_atomic_write_plans:
+      structuredClone(priorLocalFirePlans)
   });
 }
 

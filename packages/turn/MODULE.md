@@ -234,6 +234,54 @@ step запрещена, потому что A1 не имеет prepared-direct 
 
 Ограничения A1 v1: single-source preserve не моделирует небольшой subtractive mass loss/known waste; outputs одного action однородны; tools не изнашиваются и не расходуются. Дополнительный finite source в preserve допускает только whole-unit consumption. Independent multi-source property требует одинаковую owner/claim basis и выбирает канонический минимальный source ref; mixed basis закрыта.
 
+Active F1 сохраняет единственную actor-step semantic boundary: public
+`request_world_process` имеет только `start|affect` для player и NPC. Player
+получает visible capability, NPC — exact operation contract из NPC-safe
+доступных ресурсов текущего autonomous boundary; physical admission в обоих
+случаях повторяет item/world-process owner. Exact start и generic
+whole-fuel addition детерминированы и не вызывают model. Whole-water affect
+использует bounded `world_process_step_request_v1` только для qualitative
+`no_effect|continue|complete`; existing-process DTO строго содержит exact
+`process_ref/scope_ref/causal_basis_ref/status/started_at/next_boundary_at/
+fuel_bindings`, а subject quantity приходит от item owner. Request не даёт
+model права менять числовые mechanics и не создаёт второй planner. Любой water outcome сохраняет whole-water consumption
+атомарно с process transition. Due boundary приходит через общий temporal
+integration без fake player turn и без actor requirement. Ordered plural F1
+plans сохраняют несколько due одного process и same-time due разных processes
+в одном существующем combined P16. Prepared ordinary/A1 plans передаются F1
+как уже validated owner output, а не как model projection. Успешный F1 step
+обновляет owner-admitted working projection и не создаёт безусловную player
+boundary; накопленные F1 plans входят в следующий player-safe projection,
+поэтому общий loop может выполнить следующий однозначный шаг того же root.
+Ordered prior F1 chain передаётся resolver через внутренний
+`prior_local_fire_atomic_write_plans` и остаётся code-owned validated input:
+resolver сверяет root/step/request/process/item lineage до построения следующего
+плана; LLM этот chain не создаёт и не изменяет.
+Каждый prepared temporal segment получает этот accumulated chain вместе с
+планами текущего handler. Temporal owner fold-ит process runtime/candidate по
+`process_ref`, а его новые due plans применяются тем же item projection owner к
+working items/inventory до следующего semantic step. Mixed prior chain строго
+различает actor-step и system temporal-boundary provenance; P16 остаётся одной
+ordered transaction boundary.
+Prepared-effect ledger допускает между time/body slices такие applied owner
+steps, сохраняя непрерывность clock/body и exact step lineage.
+
+Успешный player actor-step F1 добавляет во внутренний `consequence_fragment`
+минимальный code-owned `visible_seed` с ключом
+`turn_step_world_process_<step_index>` и schema
+`rus.lower_dvina_trace_turn_step_world_process_visible_result.v1`. Seed содержит
+только `process_kind: fire`, `action`, `outcome`, `status`; refs, pins, bindings,
+timestamps и causal evidence запрещены. Разрешены ровно
+`start/started/active`, `add_fuel/fuel_added/active`,
+`affect/no_effect/active`, `affect/continue/active` и
+`affect/complete/completed`. Existing visible projector превращает ordered
+seeds в safe factual overlay над обычной phase projection того же root turn
+либо validated current-scene package pure F1, сохраняя остальные visible facts;
+последующая clarification добавляется после уже совершённых фактов. NPC
+actor-step и system temporal boundary такого seed не создают: их disclosure
+остаётся perception-gated. Narrator получает только persisted combined approved
+visible package после P16 commit.
+
 ## Тесты
 
 Player semantic coverage: `turn-step-contracts.test.js`, `turn-step-loop.test.js`, `turn-step-security.test.js`, `turn-workflow-semantic-step-1.test.js`, `turn-workflow-semantic-step-2.test.js`, `turn-step-operation-batch.test.js` and game-server `lower-dvina-trace-turn-step-*.test.js`. Exact/closed path and temporal coverage remain in `turn-workflow.test.js`, `bounded-decision.test.js`, `temporal-advance.test.js`, `temporal-carriers.test.js`, `temporal-activity-engine.test.js`, `temporal-presentation-lifecycle.test.js` and `first-entry-materialization.test.js`.

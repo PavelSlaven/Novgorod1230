@@ -4,21 +4,13 @@ import {
   requireTurnStepExecutionRegistry,
   runTurnStepLoop
 } from './turn-step-loop.js';
-import {
-  TURN_STEP_OPERATION_BATCH_TARGET
-} from './turn-step-operation-batch.js';
-import {
-  assertValid,
-  validateAvailabilityDecision,
-  validateConsequencePackage
-} from './validators.js';
-import {
-  isActionProductionOwnerInScope
-} from './turn-step-action-produced-remainder.js';
-import { initialWorkingProjectionFrom } from
-  './turn-step-player-safe-projection.js';
-export { isActionProductionOwnerInScope } from
-  './turn-step-action-produced-remainder.js';
+import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
+import { assertValid, validateAvailabilityDecision,
+  validateConsequencePackage } from './validators.js';
+import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
+import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
+import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
+export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -26,7 +18,8 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'request_item_use',
   'request_activity',
   'emit_interaction',
-  'request_combat'
+  'request_combat',
+  'request_world_process'
 ]);
 export function isDomainStepOperation(value) {
   return DOMAIN_STEP_OPERATIONS.has(value);
@@ -130,6 +123,11 @@ export async function resolveBoundTurnStepCommand({
               structuredClone(execution.prepared_chain_context)
           }));
         }
+      }
+      if (matches.length === 0) {
+        const worldProcess = resolveWorldProcessRemainder({ operation,
+          execution, projected, committedState, services });
+        if (worldProcess !== null) return worldProcess;
       }
       if (matches.length === 0) {
         const actionProductionOwner =
@@ -301,6 +299,8 @@ export async function resolveBoundTurnStepCommand({
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
       if (plan.operations.length !== 1 || operation == null) return false;
+      if (operation.op === 'request_world_process'
+          && typeof services.turnStepWorldProcessResolver === 'function') return true;
       const preparedOwner = services.turnStepPreparedDomainEffect;
       const matches = semanticBindings.filter(({ command, binding }) =>
         ((preparedChainContext?.prior_effect_count ?? 0) > 0
@@ -331,8 +331,8 @@ export async function resolveBoundTurnStepCommand({
     },
     randomSource: services.randomSource,
     resolveCheckContext: services.turnStepCheckContextResolver,
-    async projectPlayerSafeState({ working_projection: workingProjection,
-      completed_steps: completedSteps }) {
+    async projectPlayerSafeState({working_projection:workingProjection,completed_steps:completedSteps,
+      local_fire_atomic_write_plans: localFirePlans }) {
       if (firstProjection != null) {
         const first = firstProjection;
         firstProjection = null;
@@ -341,7 +341,7 @@ export async function resolveBoundTurnStepCommand({
       const next = await services.playerSafeStateProjector(deepFreeze({
         committed_state: structuredClone(committedState),
         working_projection: structuredClone(workingProjection),
-        completed_steps: structuredClone(completedSteps),
+        completed_steps:structuredClone(completedSteps),local_fire_atomic_write_plans:structuredClone(localFirePlans),
         actor_id: routingContext.actor_id ?? playerInput.party_id,
         party_id: playerInput.party_id,
         turn_number: playerInput.turn_number

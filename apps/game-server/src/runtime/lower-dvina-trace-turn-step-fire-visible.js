@@ -34,7 +34,7 @@ export function createLowerDvinaTraceTurnStepVisibleProjector({
       const fireVisible = projectLowerDvinaTraceFireVisible(seedEntries,
         consequence.visible_seed.clarification);
       const body = input.body_update?.state_after ?? {};
-      const base = phaseSpecific(consequence)
+      const base = hasVisibleDomainProjection(consequence)
         ? await fallback.project(input)
         : projectCurrentSceneForVisibleOverlay({
             input,
@@ -63,7 +63,7 @@ async function projectWithoutFire({ input, consequence, seedEntries,
   fallback }) {
   const synthetic = plain(consequence?.visible_seed)
     && Array.isArray(consequence.visible_seed.completed_steps)
-    && !phaseSpecific(consequence);
+    && !hasVisibleDomainProjection(consequence);
   if (!synthetic) return fallback.project(input);
   const directSeeds = seedEntries
     .filter(([key, value]) => key.startsWith('turn_step_') && plain(value));
@@ -115,13 +115,10 @@ function directSeedKeys(entries) {
       && plain(value)).map(([key]) => key);
 }
 
-function phaseSpecific(consequence) {
+function hasVisibleDomainProjection(consequence) {
   return Array.isArray(consequence?.observations)
-    || consequence?.phase3_kind != null
-    || consequence?.phase4_kind != null
-    || consequence?.phase5_kind != null
-    || consequence?.phase6_kind != null
-    || consequence?.phase7_kind != null;
+    || Object.keys(consequence ?? {}).some((key) =>
+      /^phase\d+_kind$/u.test(key) && consequence[key] != null);
 }
 
 function stepIndex(key) {

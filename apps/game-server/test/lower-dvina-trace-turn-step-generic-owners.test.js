@@ -8,6 +8,10 @@ import {
   createLowerDvinaTraceTurnStepGenericOwners,
   createLowerDvinaTraceTurnStepVisibleProjector
 } from '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
+import { createTracePhase8VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-8-effects.js';
+import { createTracePhase9VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-9-effects.js';
 
 const profileUrl = new URL(
   '../../../data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m1-content/turn-step-owner-profiles.json',
@@ -269,6 +273,7 @@ test('generic visible projector overlays F1 facts on domain projection',
       fallback: { project() { fallbackCalls += 1; return base; } }
     });
     const result = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase3-movement',
       phase3_kind: 'movement',
       visible_seed: { completed_steps: [], clarification: null,
         turn_step_world_process_1:
@@ -282,6 +287,52 @@ test('generic visible projector overlays F1 facts on domain projection',
         'route', 'turn_step_world_process_1:local_fire:started'
       ]
     });
+  });
+
+test('generic visible projector overlays F1 facts through Phase 8 and 9',
+  async () => {
+    const normal = { project() { throw new Error('unexpected fallback'); } };
+    const phase8 = createTracePhase8VisibleProjector({
+      contracts: { actors: {} }, fallback: normal
+    });
+    const visible = createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback: createTracePhase9VisibleProjector({
+        contracts: { packet: { item_id: 'packet-1' } }, fallback: phase8
+      })
+    });
+    const movement = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase8-movement', phase8_kind: 'movement',
+      visible_seed: { completed_steps: [], clarification: null,
+        turn_step_world_process_1:
+        fireVisible('start', 'started', 'active') }
+    } });
+    assert.equal(movement.visible_scene,
+      'Группа пришла во двор клети Жданко. Огонь разгорелся.');
+    assert.deepEqual(movement.visible_changes, [
+      'trace_ld_v1_route_camp_to_storehouse_committed',
+      'turn_step_world_process_1:local_fire:started'
+    ]);
+
+    const recovery = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase9-recovery', phase9_kind: 'bag_recovery',
+      phase9: {},
+      visible_seed: { completed_steps: [], clarification: null,
+        turn_step_world_process_1:
+        fireVisible('add_fuel', 'fuel_added', 'active') }
+    } });
+    assert.equal(recovery.visible_scene,
+      'Дорожная сумка теперь под вашим контролем. В огонь добавлено топливо.');
+    assert.deepEqual(recovery.visible_changes, [
+      'road_bag_recovered', 'turn_step_world_process_1:local_fire:fuel_added'
+    ]);
+
+    const fallback = await visible.project({ consequence: {
+      activity_attempt_id: 'attempt:phase8-no-f1', phase8_kind: 'movement',
+      visible_seed: { completed_steps: [], clarification: null }
+    } });
+    assert.equal(fallback.visible_scene, 'Группа пришла во двор клети Жданко.');
+    assert.deepEqual(fallback.visible_changes,
+      ['trace_ld_v1_route_camp_to_storehouse_committed']);
   });
 
 test('generic visible projector rejects malformed player F1 facts',

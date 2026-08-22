@@ -1,12 +1,17 @@
 import {
   LANDSCAPE_ENVIRONMENT_PROFILES,
   LANDSCAPE_NODE_CATEGORIES,
+  LANDSCAPE_SCENE_ASSET_IDS,
   normalizeLandscapeDayPart,
   normalizeLandscapeEnvironmentProfile,
   normalizeLandscapeWeather
 } from '../../shared/scene-affordances.js';
 
-export { LANDSCAPE_ENVIRONMENT_PROFILES, LANDSCAPE_NODE_CATEGORIES };
+export {
+  LANDSCAPE_ENVIRONMENT_PROFILES,
+  LANDSCAPE_NODE_CATEGORIES,
+  LANDSCAPE_SCENE_ASSET_IDS
+};
 
 export const LANDSCAPE_WEATHER = Object.freeze([
   'clear', 'cloudy', 'overcast', 'rain', 'snow', 'fog'
@@ -25,6 +30,33 @@ export const LANDSCAPE_SCENES = Object.freeze({
   'env.wetland': 'wetland',
   'env.offroad': 'offroad',
   'env.shore_transition': 'shore_transition'
+});
+
+export const LOWER_DVINA_LANDSCAPE_SCENES = Object.freeze({
+  'lower-dvina-old-drying-shed-interior': {
+    folder: 'old-drying-shed-interior', interior: true
+  },
+  'lower-dvina-old-drying-shed-exterior': {
+    folder: 'old-drying-shed-exterior', interior: false
+  },
+  'lower-dvina-wreck-shore': {
+    folder: 'wreck-shore', interior: false
+  },
+  'lower-dvina-zhdanko-storehouse-interior': {
+    folder: 'zhdanko-storehouse-interior', interior: true
+  },
+  'lower-dvina-fishing-camp-firepit': {
+    folder: 'fishing-camp-firepit', interior: false
+  },
+  'lower-dvina-zhdanko-river-descent': {
+    folder: 'zhdanko-river-descent', interior: false
+  },
+  'lower-dvina-fishing-camp': {
+    folder: 'fishing-camp', interior: false
+  },
+  'lower-dvina-zhdanko-storehouse-exterior': {
+    folder: 'zhdanko-storehouse-exterior', interior: false
+  }
 });
 
 export const FALLBACK_LANDSCAPE_URL =
@@ -60,6 +92,13 @@ const WEATHER_LIGHT = Object.freeze({
     tint: '#dfe3df', tintAlpha: .22 }
 });
 
+const INTERIOR_LIGHT = Object.freeze({
+  natural: { exposure: .82, contrast: .88, saturation: .8,
+    tint: '#c9b99d', tintAlpha: .12, snowBounce: 0 },
+  dark: { exposure: .42, contrast: .82, saturation: .68,
+    tint: '#414958', tintAlpha: .24, snowBounce: 0 }
+});
+
 const FACT_SET = new Set(['cold', 'wet', 'exposed']);
 
 export function buildLandscapeRenderModel(screen) {
@@ -71,31 +110,43 @@ export function buildLandscapeRenderModel(screen) {
   );
   const dayPart = normalizeLandscapeDayPart(context.day_part) ?? 'day';
   const weather = normalizeLandscapeWeather(context.weather) ?? 'clear';
-  const sceneId = LANDSCAPE_SCENES[environmentProfile] ?? 'open_meadow';
+  const authoredScene = LOWER_DVINA_LANDSCAPE_SCENES[screen?.scene_asset_id];
+  const sceneId = authoredScene
+    ? screen.scene_asset_id
+    : LANDSCAPE_SCENES[environmentProfile] ?? 'open_meadow';
   const environmentFacts = Object.freeze([...new Set([
     ...(Array.isArray(environment.facts) ? environment.facts : []),
     ...(Array.isArray(context.sensory_details)
       ? context.sensory_details : [])
   ].filter((value) => typeof value === 'string' && FACT_SET.has(value)))]
     .sort());
-  const stateId = `${dayPart}-${weather}`;
+  const stateId = authoredScene?.interior
+    ? (['dusk', 'night'].includes(dayPart) ? 'dark' : 'natural')
+    : `${dayPart}-${weather}`;
+  const assetUrl = authoredScene
+    ? `/assets/landscape/lower-dvina/${authoredScene.folder}/${stateId}.webp`
+    : `/assets/landscape/${sceneId}/${stateId}.webp`;
 
   return deepFreeze({
     width: 1280,
     height: 720,
     sceneId,
     stateId,
-    assetUrl: `/assets/landscape/${sceneId}/${stateId}.webp`,
+    assetUrl,
     fallbackUrl: FALLBACK_LANDSCAPE_URL,
-    foregroundWeather: ['rain', 'snow', 'fog'].includes(weather)
+    foregroundWeather: !authoredScene?.interior
+      && ['rain', 'snow', 'fog'].includes(weather)
       ? weather : null,
-    portraitLighting: combineLighting(dayPart, weather),
+    portraitLighting: authoredScene?.interior
+      ? INTERIOR_LIGHT[stateId]
+      : combineLighting(dayPart, weather),
     semantics: {
       environmentProfile,
       nodeCategory: LANDSCAPE_NODE_CATEGORIES.includes(environment.node_category)
         ? environment.node_category : null,
       dayPart,
       weather,
+      sceneAssetId: authoredScene ? screen.scene_asset_id : null,
       environmentFacts
     }
   });

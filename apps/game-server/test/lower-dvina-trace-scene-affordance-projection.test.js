@@ -142,6 +142,47 @@ test('participant slots map to safe authored portrait ids', () => {
     'portrait_asset_id'), false);
 });
 
+test('committed Lower Dvina position maps to a safe authored scene id', () => {
+  const cases = [
+    ['trace_ld_v1_loc_wreck_shore', 'open_shore',
+      'lower-dvina-wreck-shore'],
+    ['trace_ld_v1_loc_fishing_camp', 'working_camp',
+      'lower-dvina-fishing-camp'],
+    ['trace_ld_v1_loc_fishing_camp', 'fire_rest_area',
+      'lower-dvina-fishing-camp-firepit'],
+    ['trace_ld_v1_loc_old_drying_shed', 'shed_approach',
+      'lower-dvina-old-drying-shed-exterior'],
+    ['trace_ld_v1_loc_old_drying_shed', 'shed_interior',
+      'lower-dvina-old-drying-shed-interior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'yard',
+      'lower-dvina-zhdanko-storehouse-exterior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'river_access',
+      'lower-dvina-zhdanko-river-descent'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'storehouse_interior',
+      'lower-dvina-zhdanko-storehouse-interior']
+  ];
+  for (const [locationRef, zoneRef, sceneAssetId] of cases) {
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: payload({ position: {
+        location_ref: locationRef, zone_ref: zoneRef
+      } }),
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    assert.equal(projected.scene_asset_id, sceneAssetId);
+  }
+});
+
+test('unknown position removes a stale authored scene id', () => {
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({ position: { location_ref: 'unknown' } }),
+    screen: {
+      panels: {}, visible_context: visibleContext(),
+      scene_asset_id: 'lower-dvina-wreck-shore'
+    }
+  });
+  assert.equal(Object.hasOwn(projected, 'scene_asset_id'), false);
+});
+
 test('nearby NPC alone does not become an interlocutor', () => {
   const projected = projectLowerDvinaTraceScreenPanels({
     payload: payload({ conversation_sessions: [] }),

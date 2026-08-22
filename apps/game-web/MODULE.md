@@ -13,9 +13,11 @@ Browser-клиент, который получает только versioned pub
 - feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics;
 - browser bootstrap и обработкой пользовательских намерений.
 - существующим `renderLandscape(screen)` как единственным владельцем game
-  landscape: он выбирает одну из восьми авторских сцен по exact environment
-  profile и одно из 36 независимых сочетаний времени и погоды, затем
-  асинхронно гидратирует Canvas 2D;
+  landscape: он выбирает generic-сцену по exact environment profile либо одну
+  из восьми утверждённых сцен Нижней Двины по player-safe `scene_asset_id`;
+  наружные сцены используют одно из 36 независимых сочетаний времени и
+  погоды, два интерьера — `natural` или `dark`, затем Canvas 2D гидратируется
+  асинхронно;
 - композицией landscape + active interlocutor в `renderSceneViewport`:
   безопасный `portrait_asset_id` выбирает один из семи авторских комплектов
   Нижней Двины (одежда/тело + сменная голова эмоции), а отсутствующий,
@@ -69,6 +71,9 @@ fallback для historical parties.
 - landscape использует только canonical `env.*` transition profile и
   `spatial.g3.*` category из закрытых allowlist; отсутствующее/неизвестное
   значение остаётся neutral, а label, prose и node ID не анализируются;
+- утверждённый `scene_asset_id` Нижней Двины приходит только из server
+  projection и выбирает готовый asset; клиент не выводит его из location ID,
+  названия или prose;
 - environment profile выбирает только готовую композицию; время и погода
   выбирают точный авторский WebP `{time}-{weather}` без анализа prose/labels;
 - неизвестный профиль или повреждённый asset использует

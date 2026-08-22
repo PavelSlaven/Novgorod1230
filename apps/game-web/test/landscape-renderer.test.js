@@ -11,8 +11,10 @@ import {
 import {
   buildLandscapeRenderModel,
   LANDSCAPE_DAY_PARTS,
+  LANDSCAPE_SCENE_ASSET_IDS,
   LANDSCAPE_SCENES,
-  LANDSCAPE_WEATHER
+  LANDSCAPE_WEATHER,
+  LOWER_DVINA_LANDSCAPE_SCENES
 } from '../src/features/landscape/render-model.js';
 import {
   AUTHORED_PORTRAIT_ASSETS,
@@ -83,6 +85,32 @@ test('landscape catalog has exactly 8 x 36 normalized WebP assets', async () => 
   assert.equal(total, 288);
 });
 
+test('Lower Dvina catalog has six 36-state exteriors and two interiors',
+  async () => {
+    assert.deepEqual(Object.keys(LOWER_DVINA_LANDSCAPE_SCENES).sort(),
+      [...LANDSCAPE_SCENE_ASSET_IDS].sort());
+    let total = 0;
+    for (const [sceneId, scene] of
+      Object.entries(LOWER_DVINA_LANDSCAPE_SCENES)) {
+      const folder = join(PUBLIC_ROOT, 'assets', 'landscape', 'lower-dvina',
+        scene.folder);
+      const names = (await readdir(folder)).filter((name) =>
+        name.endsWith('.webp')).sort();
+      const expected = scene.interior
+        ? ['dark.webp', 'natural.webp']
+        : LANDSCAPE_DAY_PARTS.flatMap((dayPart) =>
+          LANDSCAPE_WEATHER.map((weather) => `${dayPart}-${weather}.webp`))
+          .sort();
+      assert.deepEqual(names, expected, sceneId);
+      for (const name of names) {
+        assert.deepEqual(webpDimensions(await readFile(join(folder, name))),
+          [2560, 1440], `${sceneId}/${name}`);
+        total += 1;
+      }
+    }
+    assert.equal(total, 220);
+  });
+
 test('authored portrait catalog has 7 outfits and 63 unique transparent heads',
   async () => {
     assert.equal(Object.keys(AUTHORED_PORTRAIT_ASSETS).length, 7);
@@ -132,6 +160,28 @@ test('selector maps all profiles and preserves independent time/weather axes',
       screen('trace_ld_v1_env_cold_wet_shore', 'night', 'fog')
     ).sceneId, 'shore_transition');
   });
+
+test('Lower Dvina scene id selects authored exterior or interior assets', () => {
+  const exterior = screen('env.shore_transition', 'night', 'snow');
+  exterior.scene_asset_id = 'lower-dvina-wreck-shore';
+  const exteriorModel = buildLandscapeRenderModel(exterior);
+  assert.equal(exteriorModel.assetUrl,
+    '/assets/landscape/lower-dvina/wreck-shore/night-snow.webp');
+  assert.equal(exteriorModel.foregroundWeather, 'snow');
+
+  const interior = screen('env.local_variable', 'day', 'rain');
+  interior.scene_asset_id =
+    'lower-dvina-old-drying-shed-interior';
+  const natural = buildLandscapeRenderModel(interior);
+  assert.equal(natural.assetUrl,
+    '/assets/landscape/lower-dvina/old-drying-shed-interior/natural.webp');
+  assert.equal(natural.foregroundWeather, null);
+
+  interior.visible_context.day_part = 'night';
+  const dark = buildLandscapeRenderModel(interior);
+  assert.equal(dark.assetUrl,
+    '/assets/landscape/lower-dvina/old-drying-shed-interior/dark.webp');
+});
 
 test('time and weather alter portrait light, never scene identity', () => {
   const day = buildLandscapeRenderModel(

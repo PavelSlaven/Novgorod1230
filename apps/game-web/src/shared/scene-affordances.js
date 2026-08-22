@@ -23,6 +23,16 @@ export const LANDSCAPE_NODE_CATEGORIES = Object.freeze([
   'spatial.g3.resource_site',
   'spatial.g3.recurrent_site'
 ]);
+export const LANDSCAPE_SCENE_ASSET_IDS = Object.freeze([
+  'lower-dvina-old-drying-shed-interior',
+  'lower-dvina-old-drying-shed-exterior',
+  'lower-dvina-wreck-shore',
+  'lower-dvina-zhdanko-storehouse-interior',
+  'lower-dvina-fishing-camp-firepit',
+  'lower-dvina-zhdanko-river-descent',
+  'lower-dvina-fishing-camp',
+  'lower-dvina-zhdanko-storehouse-exterior'
+]);
 
 const ENVIRONMENT_PROFILE = new Map([
   ...LANDSCAPE_ENVIRONMENT_PROFILES.map((profile) => [profile, profile]),

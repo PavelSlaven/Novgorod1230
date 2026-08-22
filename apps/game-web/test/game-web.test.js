@@ -314,6 +314,12 @@ test('public screen rejects unapproved landscape semantic inputs', () => {
     weather: 'Дождь',
     day_part: 'сумерки'
   })));
+  assert.doesNotThrow(() => validatePublicScreen({
+    ...withContext({}), scene_asset_id: 'lower-dvina-wreck-shore'
+  }));
+  assert.throws(() => validatePublicScreen({
+    ...withContext({}), scene_asset_id: 'unknown-scene'
+  }), { code: 'LANDSCAPE_SCENE_ASSET_INVALID' });
   for (const visible_context of [{
     environment: { profile_id: 'forest_edge' }
   }, {

@@ -1,5 +1,6 @@
 import { webError } from '../shared/errors.js';
 import {
+  LANDSCAPE_SCENE_ASSET_IDS,
   validActiveInterlocutor,
   validCurrentTask,
   validLandscapeContext
@@ -46,6 +47,13 @@ export function validatePublicScreen(screen) {
 }
 
 function validateSceneAffordances(screen) {
+  if (Object.hasOwn(screen, 'scene_asset_id')
+      && !LANDSCAPE_SCENE_ASSET_IDS.includes(screen.scene_asset_id)) {
+    throw webError(
+      'LANDSCAPE_SCENE_ASSET_INVALID',
+      'scene_asset_id must reference an authored player-safe scene.'
+    );
+  }
   if (!validLandscapeContext(screen.visible_context ?? {})) {
     throw webError(
       'LANDSCAPE_AFFORDANCE_INVALID',

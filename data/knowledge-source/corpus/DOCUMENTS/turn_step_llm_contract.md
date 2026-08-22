@@ -971,10 +971,12 @@ turn_step_world_process_<step_index>:
 `add_fuel/fuel_added/active`, `affect/no_effect/active`,
 `affect/continue/active`, `affect/complete/completed`. Seed не содержит refs,
 bindings, pins, timestamps или causal evidence. Code-owned visible projector
-сохраняет несколько результатов в step order и добавляет более позднюю
-clarification после уже совершённых factual results. NPC F1 и
-`temporal_boundary` seed не создают; их видимость определяется существующим
-perception owner. Narrator излагает только persisted approved visible package.
+сохраняет несколько результатов в step order и накладывает их на обычную phase
+projection того же root turn либо на validated current-scene package pure F1,
+не удаляя остальные visible facts. Более поздняя clarification добавляется
+после уже совершённых factual results. NPC F1 и `temporal_boundary` seed не
+создают; их видимость определяется существующим perception owner. Narrator
+излагает только persisted combined approved visible package.
 
 ### 12.7. `emit_interaction`
 

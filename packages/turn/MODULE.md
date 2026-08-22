@@ -275,10 +275,12 @@ timestamps и causal evidence запрещены. Разрешены ровно
 `start/started/active`, `add_fuel/fuel_added/active`,
 `affect/no_effect/active`, `affect/continue/active` и
 `affect/complete/completed`. Existing visible projector превращает ordered
-seeds в safe factual changes; последующая clarification добавляется после уже
-совершённых фактов. NPC actor-step и system temporal boundary такого seed не
-создают: их disclosure остаётся perception-gated. Narrator получает только
-persisted approved visible package после P16 commit.
+seeds в safe factual overlay над обычной phase projection того же root turn
+либо validated current-scene package pure F1, сохраняя остальные visible facts;
+последующая clarification добавляется после уже совершённых фактов. NPC
+actor-step и system temporal boundary такого seed не создают: их disclosure
+остаётся perception-gated. Narrator получает только persisted combined approved
+visible package после P16 commit.
 
 ## Тесты
 

@@ -2748,9 +2748,12 @@ status: active | completed
 `affect/no_effect/active`, `affect/continue/active` и
 `affect/complete/completed`. Process/item refs, bindings, pins, causal evidence
 и timestamps в seed запрещены. Existing visibility owner преобразует seed в
-persisted factual package; narrator только излагает сохранённый факт. NPC
-actor-step и `temporal_boundary` seed не создают: off-screen transition остаётся
-perception-gated и не раскрывается из process mechanics.
+safe factual overlay над обычной phase projection того же root turn либо над
+validated current-scene package pure F1. Overlay сохраняет остальные visible
+facts, а clarification следует после уже совершённых F1 results. Combined
+package сохраняется до narration; narrator только излагает сохранённые факты.
+NPC actor-step и `temporal_boundary` seed не создают: off-screen transition
+остаётся perception-gated и не раскрывается из process mechanics.
 
 # 41. `world_process_step_request_v1`
 

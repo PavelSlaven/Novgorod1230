@@ -78,6 +78,11 @@ const visibleProjector=createLowerDvinaTraceTurnStepVisibleProjector({
   fallback:{project(){throw new Error('unexpected visible fallback');}}
 });
 const fireVisibleContext=async(...fragments)=>visibleProjector.project({
+  retrieved_state:{current_visible_context:{version:1,
+    schema:'visible_context_package',visible_scene:'Берег у костра.',
+    visible_changes:[],sensory_details:['Шумит вода.'],visible_npc:[],
+    visible_objects:[],known_context:['берег'],uncertainties:[],
+    allowed_tensions:[],do_not_imply:['hidden_fact']}},
   consequence:buildTurnStepDraftConsequence({loop_result:{status:'resolved',
     completed_steps:[],clarification:null,consequence_fragments:fragments}}),
   body_update:{state_after:{}}

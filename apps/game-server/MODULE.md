@@ -214,10 +214,13 @@ seed `turn_step_world_process_<step_index>`: fire action/outcome/status без
 process/item refs, pins, bindings, timestamps или causal evidence. Generic
 visible projector строго принимает только согласованные start/started,
 add_fuel/fuel_added и affect/no_effect|continue|complete combinations, сохраняет
-их step order и строит approved Russian factual sentence/change token. NPC и
+их step order и строит approved Russian factual sentence/change token. Эти
+facts накладываются на обычную phase projection того же root turn либо на
+validated current-scene package pure F1, не удаляя видимых NPC, objects и
+scene context; clarification остаётся после уже совершённых facts. NPC и
 off-screen due seed не получают. Existing turn-step visible envelope сохраняет
-эти facts в `party_visible_packages`; narrator и screen читают тот же persisted
-package, не механику F1 и не temporal state.
+combined package в `party_visible_packages`; narrator и screen читают тот же
+persisted package, не механику F1 и не temporal state.
 Отдельных F1 authority/commit tables,
 evidence, digest или sealing нет; model выбирает только bounded qualitative
 outcome воды вне SQL transaction.

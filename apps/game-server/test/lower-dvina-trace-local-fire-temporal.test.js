@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createTurnStepExecutionRegistry,runTurnStepLoop } from '@rus/turn';
+import {
+  buildTurnStepPreparedDomainConsequence,
+  createTurnStepExecutionRegistry,
+  mergeTurnStepDraftConsequence,
+  runTurnStepLoop
+} from '@rus/turn';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createLocalFireAtomicWritePlan } from
   '../src/infrastructure/postgres/local-fire-atomic-write-plan.js';
@@ -20,6 +25,10 @@ import { createLowerDvinaTraceTurnStepRuntimePorts } from
   '../src/runtime/lower-dvina-trace-turn-step-runtime-ports.js';
 import { createLowerDvinaTracePlayerSafeWorkingProjectionAuthority } from
   '../src/runtime/lower-dvina-trace-player-safe-working.js';
+import { createTracePhase3VisibleProjector } from
+  '../src/runtime/lower-dvina-trace-phase-3-effects.js';
+import { createLowerDvinaTraceTurnStepVisibleProjector } from
+  '../src/runtime/lower-dvina-trace-turn-step-generic-owners.js';
 
 const clock=(whole)=>({whole_minutes:String(whole),subminute_numerator:'0',
   subminute_denominator:'1'});
@@ -107,14 +116,18 @@ test('production prepared route advances prior fire and hides retired fuel',
         ports.applyLocalFireProjection({working_projection:
           execution.working_projection,actor:execution.request.actor,
         local_fire_atomic_write_plan:start}),summary:'fire',write_fragments:[],
-      local_fire_atomic_write_plans:[start]}),
+      local_fire_atomic_write_plans:[start],consequence_fragment:{visible_seed:{
+        turn_step_world_process_1:{schema:
+          'rus.lower_dvina_trace_turn_step_world_process_visible_result.v1',
+        process_kind:'fire',action:'start',outcome:'started',status:'active'}}}}),
       request_movement:(execution)=>ports.preparedDomainEffect.apply({
         ...execution,command_id:
           'lower_dvina_trace.follow_path_to_fishing_camp',option_id:'route',
         availability:{available:true},consequence:{phase3_kind:'movement',
           duration_minutes:8,movement:{route_ref:'shore-camp',source:{
             location_ref:'scope-fire'},destination:{location_ref:'camp',
-            g5_anchor_id:'camp-anchor'}}}})},applySemanticActivity:async(
+            g5_anchor_id:'camp-anchor'}},visible_seed:{},hidden_update:{},
+          state_changes:[],suggested_actions:[]}})},applySemanticActivity:async(
         {working_projection:projection})=>({working_projection:projection,
           summary:'done',write_fragments:[],player_response_boundary:true})});
     const requests=[];
@@ -147,6 +160,23 @@ test('production prepared route advances prior fire and hides retired fuel',
       ({item_id:id})=>id==='fuel-route'),false);
     assert.deepEqual(result.local_fire_atomic_write_plans.map((plan)=>
       plan.transition_proposal.action),['start','due_boundary']);
+    const draft={loop_result:result,selected_command_ids:[
+      'lower_dvina_trace.follow_path_to_fishing_camp']};
+    const consequence=mergeTurnStepDraftConsequence(
+      buildTurnStepPreparedDomainConsequence(draft),draft);
+    const visible=await createLowerDvinaTraceTurnStepVisibleProjector({
+      fallback:createTracePhase3VisibleProjector({
+        phase2Projector:{project(){throw new Error('unexpected phase2');}},
+        contracts:{actors:[{instance_id:'npc-camp',ref:'eremey_fisher'}]}
+      })
+    }).project({consequence});
+    assert.equal(visible.visible_scene,
+      'Микула пришёл в рыбацкий стан. Огонь разгорелся.');
+    assert.deepEqual(visible.visible_changes,[
+      'trace_ld_v1_route_wreck_to_camp_committed',
+      'turn_step_world_process_1:local_fire:started']);
+    assert.equal(visible.visible_changes.some((change)=>
+      change.includes(':complete')),false);
   });
 
 async function advance(actorPlans,minutes){

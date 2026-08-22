@@ -9,6 +9,8 @@
 - `FirstGameScreen` и `TurnScreen` version 1;
 - Character, Inventory, People, Route, Map, Journal и Diagnostic panels;
 - optional exact `portrait_spec_v1` внутри player-safe active interlocutor;
+- optional non-empty presentation-only `portrait_asset_id` внутри того же
+  active interlocutor;
 - visible-only validation и leak rejection;
 - compatibility `createPublicViewModel`;
 - first-screen delivery attempt, acknowledgement и Stage 27 intent handoff.
@@ -47,3 +49,5 @@ write beliefs, or alter the P08 fail-closed port boundary.
 - diagnostic panel разрешён только при явном developer mode и также не содержит hidden state.
 - active interlocutor appearance, если передан, проходит общий строгий
   `portrait_spec_v1` validator; свободные appearance-поля запрещены.
+- `portrait_asset_id`, если передан, является только непустым ключом
+  авторского browser-asset и не становится persisted world state.

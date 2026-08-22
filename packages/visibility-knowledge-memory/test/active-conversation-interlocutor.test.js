@@ -24,6 +24,7 @@ function visibleNpcs() {
   return [{
     instance_id: 'npc-eremey',
     location_ref: 'camp',
+    portrait_asset_id: 'lower-dvina-eremey',
     identity_state: { display_name: 'Еремей' }
   }, {
     instance_id: 'npc-ratsha',
@@ -45,7 +46,16 @@ function project(overrides = {}) {
 test('projects one active, present and safely named NPC interlocutor', () => {
   assert.deepEqual(project(), {
     entity_ref: eremey,
-    display_label: 'Еремей'
+    display_label: 'Еремей',
+    portrait_asset_id: 'lower-dvina-eremey'
+  });
+});
+
+test('blank portrait asset id is not exposed', () => {
+  const npcs = visibleNpcs();
+  npcs[0].portrait_asset_id = ' ';
+  assert.deepEqual(project({ visible_npcs: npcs }), {
+    entity_ref: eremey, display_label: 'Еремей'
   });
 });
 

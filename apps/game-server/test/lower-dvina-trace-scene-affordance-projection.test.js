@@ -16,6 +16,7 @@ function payload(overrides = {}) {
     position: { location_ref: 'camp' },
     npcs: [{
       instance_id: 'npc-eremey',
+      participant_slot_ref: 'eremey_fisher',
       location_ref: 'camp',
       identity_state: {
         canonical_name: 'Еремей'
@@ -102,12 +103,84 @@ test('post-commit and historical screens share the active people projection', ()
   assert.deepEqual(postCommit.panels.people, historical.panels.people);
   assert.deepEqual(postCommit.panels.people.data.active_interlocutor, {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
-    display_label: 'Еремей'
+    display_label: 'Еремей',
+    portrait_asset_id: 'lower-dvina-eremey'
   });
   assert.deepEqual(
     Object.keys(postCommit.panels.people.data.active_interlocutor).sort(),
-    ['display_label', 'entity_ref']
+    ['display_label', 'entity_ref', 'portrait_asset_id']
   );
+});
+
+test('participant slots map to safe authored portrait ids', () => {
+  const cases = [
+    ['onisim_boatman', 'lower-dvina-onisim'],
+    ['eremey_fisher', 'lower-dvina-eremey'],
+    ['ratsha_storehouse_helper', 'lower-dvina-ratsha'],
+    ['zhdanko_storehouse_controller', 'lower-dvina-zhdanko'],
+    ['background_fisher_1', 'lower-dvina-fisher-1'],
+    ['background_fisher_2', 'lower-dvina-fisher-2']
+  ];
+  for (const [participantSlot, assetId] of cases) {
+    const state = payload();
+    state.npcs[0].participant_slot_ref = participantSlot;
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: state,
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    assert.equal(projected.panels.people.data.active_interlocutor
+      .portrait_asset_id, assetId);
+  }
+
+  const state = payload();
+  state.npcs[0].participant_slot_ref = 'unknown_slot';
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: state,
+    screen: { panels: {}, visible_context: visibleContext() }
+  });
+  assert.equal(Object.hasOwn(projected.panels.people.data.active_interlocutor,
+    'portrait_asset_id'), false);
+});
+
+test('committed Lower Dvina position maps to a safe authored scene id', () => {
+  const cases = [
+    ['trace_ld_v1_loc_wreck_shore', 'open_shore',
+      'lower-dvina-wreck-shore'],
+    ['trace_ld_v1_loc_fishing_camp', 'working_camp',
+      'lower-dvina-fishing-camp'],
+    ['trace_ld_v1_loc_fishing_camp', 'fire_rest_area',
+      'lower-dvina-fishing-camp-firepit'],
+    ['trace_ld_v1_loc_old_drying_shed', 'shed_approach',
+      'lower-dvina-old-drying-shed-exterior'],
+    ['trace_ld_v1_loc_old_drying_shed', 'shed_interior',
+      'lower-dvina-old-drying-shed-interior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'yard',
+      'lower-dvina-zhdanko-storehouse-exterior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'river_access',
+      'lower-dvina-zhdanko-river-descent'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'storehouse_interior',
+      'lower-dvina-zhdanko-storehouse-interior']
+  ];
+  for (const [locationRef, zoneRef, sceneAssetId] of cases) {
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: payload({ position: {
+        location_ref: locationRef, zone_ref: zoneRef
+      } }),
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    assert.equal(projected.scene_asset_id, sceneAssetId);
+  }
+});
+
+test('unknown position removes a stale authored scene id', () => {
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({ position: { location_ref: 'unknown' } }),
+    screen: {
+      panels: {}, visible_context: visibleContext(),
+      scene_asset_id: 'lower-dvina-wreck-shore'
+    }
+  });
+  assert.equal(Object.hasOwn(projected, 'scene_asset_id'), false);
 });
 
 test('nearby NPC alone does not become an interlocutor', () => {

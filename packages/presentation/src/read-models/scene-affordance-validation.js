@@ -1,7 +1,8 @@
 import { validatePortraitSpecV1 } from '@rus/contracts';
 
 const INTERLOCUTOR_KEYS = new Set([
-  'entity_ref', 'display_label', 'role_label', 'portrait_spec_v1'
+  'entity_ref', 'display_label', 'role_label', 'portrait_asset_id',
+  'portrait_spec_v1'
 ]);
 const ENTITY_REF_KEYS = new Set(['entity_kind', 'entity_id']);
 const PLAYER_SAFE_ENVIRONMENT_PROFILES = new Set([
@@ -110,6 +111,8 @@ function validActiveInterlocutor(value) {
   }
   if (Object.hasOwn(value, 'role_label')
       && !nonEmptyText(value.role_label)) return false;
+  if (Object.hasOwn(value, 'portrait_asset_id')
+      && !nonEmptyText(value.portrait_asset_id)) return false;
   return !Object.hasOwn(value, 'portrait_spec_v1')
     || validatePortraitSpecV1(value.portrait_spec_v1).length === 0;
 }

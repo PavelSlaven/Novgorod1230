@@ -27,7 +27,7 @@ export function bootstrapGameWeb({
     const state = store.getState();
     root.ownerDocument.documentElement.dataset.theme = state.theme;
     root.innerHTML = renderAppState(state);
-    if (state.screen) hydrateSceneCanvases(root, state.screen);
+    if (state.screen) void hydrateSceneCanvases(root, state.screen);
   };
   store.subscribe(render);
   render();

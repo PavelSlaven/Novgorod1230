@@ -6,7 +6,9 @@ const MIME = Object.freeze({
   '.css': 'text/css; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml'
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.webp': 'image/webp'
 });
 
 export function createStaticAssetResolver({ webRoot, contractsRoot = null } = {}) {
@@ -35,6 +37,12 @@ function routeToFile(pathname) {
   if (pathname === '/styles.css') return { relative: 'public/styles.css', shared: false };
   if (pathname === '/portrait-lab.css') {
     return { relative: 'public/portrait-lab.css', shared: false };
+  }
+  if (pathname.startsWith('/assets/')) {
+    const assetPath = pathname.slice('/assets/'.length);
+    if (!assetPath || assetPath.split('/').some((part) =>
+      part === '.' || part === '..' || part.includes('\\'))) return null;
+    return { relative: `public/assets/${assetPath}`, shared: false };
   }
   if (pathname.startsWith('/src/')) {
     return { relative: pathname.slice(1), shared: false };

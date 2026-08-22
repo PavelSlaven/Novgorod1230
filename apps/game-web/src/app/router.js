@@ -88,7 +88,7 @@ function renderPanelNavigation(screen, { developerMode = false } = {}) {
 }
 
 function renderSceneViewport(screen) {
-  return `<div class="scene-viewport-shell">${renderLandscape(screen)}${renderConversationPortrait(screen)}</div>`;
+  return `<div class="scene-viewport-shell">${renderLandscape(screen)}${renderConversationPortrait(screen)}<canvas class="scene-weather-overlay" data-scene-weather-canvas width="1280" height="720" aria-hidden="true"></canvas></div>`;
 }
 
 function renderOpeningState({ openingStatus, error } = {}) {

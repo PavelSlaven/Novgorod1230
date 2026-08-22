@@ -77,7 +77,8 @@ test('public screen validates exact optional scene affordances', () => {
         data: {
           active_interlocutor: {
             entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
-            display_label: 'Еремей', role_label: 'рыбак'
+            display_label: 'Еремей', role_label: 'рыбак',
+            portrait_asset_id: 'lower-dvina-eremey'
           }
         }
       }
@@ -247,6 +248,7 @@ test('game shell has factual context, neutral viewport, independent input and no
   const html = renderScreen(screen, { openingStatus: 'acknowledged' });
   assert.match(html, /data-screen-schema="first_game_screen"/u);
   assert.match(html, /scene-viewport/u);
+  assert.match(html, /data-scene-weather-canvas/u);
   assert.match(html, /Берег Двины/u);
   assert.match(html, /Позднее лето/u);
   assert.match(html, /data-turn-form/u);
@@ -312,6 +314,12 @@ test('public screen rejects unapproved landscape semantic inputs', () => {
     weather: 'Дождь',
     day_part: 'сумерки'
   })));
+  assert.doesNotThrow(() => validatePublicScreen({
+    ...withContext({}), scene_asset_id: 'lower-dvina-wreck-shore'
+  }));
+  assert.throws(() => validatePublicScreen({
+    ...withContext({}), scene_asset_id: 'unknown-scene'
+  }), { code: 'LANDSCAPE_SCENE_ASSET_INVALID' });
   for (const visible_context of [{
     environment: { profile_id: 'forest_edge' }
   }, {
@@ -331,12 +339,12 @@ test('public screen rejects unapproved landscape semantic inputs', () => {
   }
 });
 
-test('landscape without supported cues stays abstract and deterministic', () => {
+test('landscape without supported cues uses the deterministic daily meadow', () => {
   const emptyScreen = { ...firstScreen(), visible_context: {} };
   const empty = renderLandscape(emptyScreen);
   assert.equal(empty, renderLandscape(structuredClone(emptyScreen)));
-  assert.doesNotMatch(empty,
-    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+  assert.match(empty, /landscape--weather-clear/u);
+  assert.match(empty, /landscape--day-day/u);
 
   const unsupportedScreen = {
     ...firstScreen(),
@@ -352,8 +360,8 @@ test('landscape without supported cues stays abstract and deterministic', () => 
     renderLandscape(structuredClone(unsupportedScreen)));
   assert.match(unsupported, /&lt;Стан&gt;/u);
   assert.doesNotMatch(unsupported, /<Стан>/u);
-  assert.doesNotMatch(unsupported,
-    /landscape-(?:sky|horizon|ground|weather|day-|cold|wet|exposed)/u);
+  assert.match(unsupported, /landscape--weather-clear/u);
+  assert.match(unsupported, /landscape--day-day/u);
   assert.doesNotMatch(unsupported,
     /night-rain|very_cold|Сильный дождь|Поздняя ночь/u);
 });
@@ -443,6 +451,24 @@ test('conversation portrait uses an explicit valid spec and rejects malformed ap
       }
     } } }
   }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
+});
+
+test('conversation portrait renders authored asset without requiring a spec', () => {
+  const screen = {
+    ...firstScreen(),
+    panels: { people: { visible: true, data: { active_interlocutor: {
+      entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+      display_label: 'Еремей',
+      portrait_asset_id: 'lower-dvina-eremey'
+    } } } }
+  };
+  assert.doesNotThrow(() => validatePublicScreen(screen));
+  assert.match(renderConversationPortrait(screen),
+    /data-conversation-portrait-canvas/u);
+  screen.panels.people.data.active_interlocutor.portrait_asset_id = ' ';
+  assert.throws(() => validatePublicScreen(screen), {
+    code: 'ACTIVE_INTERLOCUTOR_INVALID'
+  });
 });
 
 test('minimap uses only sorted public nodes and links and keeps text facts', () => {

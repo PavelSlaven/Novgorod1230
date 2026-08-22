@@ -13,7 +13,7 @@ export function renderLandscape(screen) {
   const label = scalar(context.location_label ?? context.place);
   return `<section class="scene-viewport landscape${
     modifiers ? ` ${modifiers}` : ''
-  }" data-landscape aria-label="Условный вид места действия"><canvas data-landscape-canvas width="1280" height="720" aria-hidden="true"></canvas>${
+  }" data-landscape aria-label="Вид места действия"><canvas data-landscape-canvas width="1280" height="720" aria-hidden="true"></canvas>${
     label ? `<p class="landscape-caption">${escapeHtml(label)}</p>` : ''
   }</section>`;
 }
@@ -24,5 +24,4 @@ function scalar(value) {
   return null;
 }
 
-export { buildLandscapeGeometry } from './geometry.js';
 export { buildLandscapeRenderModel } from './render-model.js';

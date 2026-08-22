@@ -6,6 +6,32 @@ import { projectActiveConversationInterlocutor } from
 import { projectLowerDvinaTracePlayerSafeState } from
   '../../runtime/lower-dvina-trace-player-safe-state.js';
 
+const PORTRAIT_ASSET_BY_SLOT = new Map([
+  ['player_clerk', 'lower-dvina-mikula'],
+  ['onisim_boatman', 'lower-dvina-onisim'],
+  ['eremey_fisher', 'lower-dvina-eremey'],
+  ['ratsha_storehouse_helper', 'lower-dvina-ratsha'],
+  ['zhdanko_storehouse_controller', 'lower-dvina-zhdanko'],
+  ['background_fisher_1', 'lower-dvina-fisher-1'],
+  ['background_fisher_2', 'lower-dvina-fisher-2']
+]);
+
+const SCENE_ASSET_BY_LOCATION = new Map([
+  ['trace_ld_v1_loc_wreck_shore', 'lower-dvina-wreck-shore'],
+  ['trace_ld_v1_loc_fishing_camp', 'lower-dvina-fishing-camp'],
+  ['trace_ld_v1_loc_old_drying_shed',
+    'lower-dvina-old-drying-shed-exterior'],
+  ['trace_ld_v1_loc_zhdanko_storehouse',
+    'lower-dvina-zhdanko-storehouse-exterior']
+]);
+
+const SCENE_ASSET_BY_ZONE = new Map([
+  ['fire_rest_area', 'lower-dvina-fishing-camp-firepit'],
+  ['shed_interior', 'lower-dvina-old-drying-shed-interior'],
+  ['storehouse_interior', 'lower-dvina-zhdanko-storehouse-interior'],
+  ['river_access', 'lower-dvina-zhdanko-river-descent']
+]);
+
 export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   const projection = projectLowerDvinaTracePlayerSafeState({
     committed_state: payload,
@@ -39,7 +65,15 @@ export function projectLowerDvinaTraceScreenPanels({ payload, screen }) {
   } else {
     delete panels.people;
   }
-  return { ...screen, panels };
+  const sceneAssetId = SCENE_ASSET_BY_ZONE.get(projection.position?.zone_ref)
+    ?? SCENE_ASSET_BY_LOCATION.get(projection.position?.location_ref);
+  const { scene_asset_id: _previousSceneAssetId, ...screenWithoutSceneAsset } =
+    screen;
+  return {
+    ...screenWithoutSceneAsset,
+    ...(sceneAssetId ? { scene_asset_id: sceneAssetId } : {}),
+    panels
+  };
 }
 
 function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
@@ -59,6 +93,9 @@ function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
       ids.some((id) => [candidate?.instance_id, candidate?.actor_id,
         candidate?.npc_id].includes(id)));
     const committed = committedMatches.length === 1 ? committedMatches[0] : null;
+    const portraitAssetId = PORTRAIT_ASSET_BY_SLOT.get(
+      committed?.participant_slot_ref
+    );
     return {
       instance_id: npc.instance_id,
       actor_id: npc.actor_id,
@@ -66,7 +103,8 @@ function playerSafeDisplayNamedNpcs({ projectedNpcs, visibleNpcs,
       identity_state: sanitizeActorIdentity(
         committed?.identity_state, publicNames[0]),
       visible_equipment: sanitizeVisibleEquipment(committedItems, ids),
-      presentation: sanitizePresentation(committed?.player_safe_presentation)
+      presentation: sanitizePresentation(committed?.player_safe_presentation),
+      ...(portraitAssetId ? { portrait_asset_id: portraitAssetId } : {})
     };
   }).filter(Boolean);
 }

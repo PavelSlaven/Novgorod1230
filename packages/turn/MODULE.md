@@ -253,6 +253,10 @@ plans сохраняют несколько due одного process и same-tim
 обновляет owner-admitted working projection и не создаёт безусловную player
 boundary; накопленные F1 plans входят в следующий player-safe projection,
 поэтому общий loop может выполнить следующий однозначный шаг того же root.
+Ordered prior F1 chain передаётся resolver через внутренний
+`prior_local_fire_atomic_write_plans` и остаётся code-owned validated input:
+resolver сверяет root/step/request/process/item lineage до построения следующего
+плана; LLM этот chain не создаёт и не изменяет.
 Prepared-effect ledger допускает между time/body slices такие applied owner
 steps, сохраняя непрерывность clock/body и exact step lineage.
 

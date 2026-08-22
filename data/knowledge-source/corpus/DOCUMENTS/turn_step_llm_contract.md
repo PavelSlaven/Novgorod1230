@@ -939,7 +939,11 @@ safe projection. Exact whole quantity/mass subject передаёт item owner. 
 успешного F1 шага code-owned plan применяется к working projection, включая
 placement/inventory топлива и текущий process marker; безусловная
 `player_response_boundary` запрещена. Следующий однозначный semantic step того
-же root видит это состояние и накопленные F1 plans. Due boundary разрешает без
+же root видит это состояние и накопленные F1 plans. Ordered prior chain приходит
+в resolver через внутренний `prior_local_fire_atomic_write_plans` только как
+code-owned validated input: party/actor/root/change-set/base version,
+step-specific request, process chain и item pins проверяются до следующего
+плана, а placement/binding/retirement проецируются последовательно. Due boundary разрешает без
 LLM общий temporal owner и не требует живого actor.
 
 ### 12.7. `emit_interaction`

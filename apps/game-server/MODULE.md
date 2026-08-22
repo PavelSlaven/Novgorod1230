@@ -198,6 +198,10 @@ actor-neutral и продолжает процесс после ухода/см�
 marker содержит только visible refs. Player resolver применяет F1 plan к
 текущему working projection, а item owner переносит bound fuel в process scope
 и сразу убирает его mass/hands из carried inventory без смены ownership.
+Для следующего actor step PostgreSQL loader принимает ordered prior F1 chain
+только как code-owned input, проверяет party/actor/root/change set/base version,
+step-specific request и process/item pins, затем последовательно проецирует
+process state, placement, binding и retirement без промежуточной записи в БД.
 Production Phase 7 использует тот же PostgreSQL-backed resolver; same-root
 start и попавшая в remaining window due сохраняются ordered в одном P16.
 Отдельных F1 authority/commit tables,

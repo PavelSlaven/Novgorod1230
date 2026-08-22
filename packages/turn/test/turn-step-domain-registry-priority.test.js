@@ -137,6 +137,56 @@ test('world-process affect with no target refs reaches resolver and carries plan
       .local_fire_atomic_write_plans,[processPlan]);
   });
 
+test('same-root world-process steps receive prior plans and projected process',
+  async () => {
+    const modelRequests = [], resolverPriors = [];
+    const plans = [1, 2, 3].map((step_index) => ({
+      schema:'local_fire_atomic_write_plan_v1',step_index
+    }));
+    const { services } = createServices([], {
+      command:{matches:()=>false,semantic_binding:{binding_id:'free-fire',
+        operation:'request_world_process',matches:()=>false}},
+      playerSafeStateProjector:async ({local_fire_atomic_write_plans:prior=[]})=>({
+        actor:{actor_ref:'party-1'},player_safe_state:{visible_entities:[
+          {entity_ref:'fuel-1'},{entity_ref:'fuel-2'},{entity_ref:'water-1'},
+          {entity_ref:'ignition-1'},{entity_ref:'process-1'}],
+        local_world_process:{semantic_grounding_available:true,
+          active_process_refs:prior.length===0?[]:['process-1']}}}),
+      turnStepWorldProcessResolver:async (request)=>{
+        resolverPriors.push(request.prior_local_fire_atomic_write_plans);
+        return {working_projection:request.working_projection,
+          write_fragments:[],local_fire_atomic_write_plans:[
+            plans[request.request.step_index-1]],
+          player_response_boundary:request.request.step_index===3};
+      },
+      turnStepModel:async (request)=>{
+        modelRequests.push(structuredClone(request));
+        const step=request.step_index;
+        const operation=step===1?{process_action:'start',process_ref:null,
+          source_refs:['fuel-1'],target_refs:['ignition-1']}
+          :{process_action:'affect',process_ref:'process-1',
+            source_refs:[step===2?'fuel-2':'water-1'],target_refs:[]};
+        return turnStepPlan(request,{resolution:'domain_request',
+          goal_result:'pending',
+          activity:{owner:'domain',duration_class:null,effort:null},
+          operations:[{op:'request_world_process',actor_ref:'party-1',
+            process_kind:'fire',description:'продолжить огонь',...operation}],
+          continuation:{remaining_intent:step===1
+            ?'добавить топлива и залить водой':'залить водой',
+          depends_on_refs:['process-1']}});
+      }
+    });
+    const result=await runTurnWorkflow({...input(),raw_text:'Развести огонь, '
+      +'добавить топлива и залить водой.'},services);
+    assert.equal(result.status,'partial');
+    assert.deepEqual(modelRequests.slice(1).map((request)=>request
+      .player_safe_state.local_world_process.active_process_refs),
+    [['process-1'],['process-1']]);
+    assert.deepEqual(resolverPriors.map((prior)=>prior.map(
+      ({step_index:index})=>index)),
+      [[],[1],[1,2]]);
+  });
+
 test('ordinary discovery resolver runs only after existing discovery owners',
   async () => {
     let ordinaryCalls = 0;

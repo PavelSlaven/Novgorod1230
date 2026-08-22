@@ -17,6 +17,8 @@ export function resolveWorldProcessRemainder({ operation, execution,
     prepared_ordinary_materialization_atomic_write_plan: structuredClone(
       execution.prepared_ordinary_materialization_atomic_write_plan),
     prepared_action_production_atomic_write_plans: structuredClone(
-      execution.prepared_action_production_atomic_write_plans)
+      execution.prepared_action_production_atomic_write_plans),
+    prior_local_fire_atomic_write_plans: structuredClone(
+      execution.prior_local_fire_atomic_write_plans)
   }));
 }

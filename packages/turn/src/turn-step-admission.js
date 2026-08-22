@@ -331,8 +331,8 @@ export async function resolveBoundTurnStepCommand({
     },
     randomSource: services.randomSource,
     resolveCheckContext: services.turnStepCheckContextResolver,
-    async projectPlayerSafeState({ working_projection: workingProjection,
-      completed_steps: completedSteps }) {
+    async projectPlayerSafeState({working_projection:workingProjection,completed_steps:completedSteps,
+      local_fire_atomic_write_plans: localFirePlans }) {
       if (firstProjection != null) {
         const first = firstProjection;
         firstProjection = null;
@@ -341,7 +341,7 @@ export async function resolveBoundTurnStepCommand({
       const next = await services.playerSafeStateProjector(deepFreeze({
         committed_state: structuredClone(committedState),
         working_projection: structuredClone(workingProjection),
-        completed_steps: structuredClone(completedSteps),
+        completed_steps:structuredClone(completedSteps),local_fire_atomic_write_plans:structuredClone(localFirePlans),
         actor_id: routingContext.actor_id ?? playerInput.party_id,
         party_id: playerInput.party_id,
         turn_number: playerInput.turn_number

@@ -43,13 +43,16 @@ function outerCauseMatches(plan,value){
   }
   const trace=plan.semantic_command_snapshot?.semantic_trace?.step_traces
     ?.[cause.step_index-1];
+  const request=trace?.plan_request;
   const operations=(trace?.approved_plan?.operations??[])
     .filter(({op})=>op==='request_world_process');
-  return cause.kind==='actor_step'&&cause.request_id===plan.request_id
+  return cause.kind==='actor_step'&&cause.request_id===request?.request_id
+    &&cause.root_turn_id===request?.root_turn_id
     &&cause.root_turn_id===plan.visible_package_envelope?.turn_id
     &&plan.owner_keys.includes(`actor:${value.actor_ref}`)
       &&trace?.step_index===cause.step_index
-      &&operations.length===1&&traceOperationMatches(operations[0],value);
+      &&request?.step_index===cause.step_index
+    &&operations.length===1&&traceOperationMatches(operations[0],value);
 }
 
 function traceOperationMatches(operation,value){

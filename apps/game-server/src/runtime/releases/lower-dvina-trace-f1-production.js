@@ -46,6 +46,9 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
       processRef:operation.process_ref,
       ignitionBasisRef:start?provisionalIgnition:null,
       rootTurnId:request.root_turn_id,stepIndex,changeSetId,
+      currentRequestId:request.request_id,
+      completedSteps:request.completed_steps??[],
+      priorLocalFirePlans:envelope.prior_local_fire_atomic_write_plans??[],
       preparedOrdinaryPlan:envelope
         .prepared_ordinary_materialization_atomic_write_plan,
       preparedActionPlans:envelope

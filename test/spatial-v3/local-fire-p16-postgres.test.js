@@ -671,6 +671,135 @@ test('F1 start/add/due share P16 atomic replay and survive actor absence',
         WHERE party_id='party-fire' AND fuel_item_id=$1
           AND released_at_change_set_id IS NULL) AS active_bindings`,
     [a1ResultRef])).rows[0],{result_items:1,active_bindings:1});
+
+    const chainVersion=Number((await pool.query(`SELECT state_version
+      FROM party_runtime.parties WHERE party_id='party-fire'`)).rows[0]
+      .state_version);
+    const chainRoot='turn-same-root',chainRequest='request-same-root';
+    const chainChange=`change:party-fire:turn-step:${chainVersion+1}`;
+    const chainResolver=createLowerDvinaTraceF1ProductionResolverFactory({pool,
+      loadedProfile,worldProcessStepModel:async(request)=>({
+        schema:'world_process_step_plan_v1',request_id:request.request_id,
+        process_ref:request.process.process_ref,
+        process_state_version:request.process_state_version,
+        interpretation:{grounded_transition:'whole water portion extinguishes fire'},
+        process_outcome:'complete',affected_refs:request.subject_state.source_refs,
+        fact_changes:[],reason_code:'water_extinguishes'})})({
+      partyId:'party-fire',applyWorkingProjection:keepWorkingProjection});
+    const chainEnvelope=(step,operation,prior=[])=>({operation,
+      actor:{actor_id:'pc'},plan:{schema:'turn_step_plan_v1'},request:{
+        request_id:`${chainRequest}:step:${step}`,root_turn_id:chainRoot,
+        step_index:step,change_set_id:chainChange,
+        committed_state_version:String(chainVersion),completed_steps:
+          Array.from({length:step-1},(_,index)=>({step_index:index+1,
+            summary:`step ${index+1}`})),player_safe_state:{local_world_process:{
+          semantic_grounding_available:true,context_ref:'context-fire',
+          scope_ref:'scope-fire',ignition_basis_refs:['ignition'],
+          active_process_refs:step===1?[]:[operation.process_ref]}}},
+      prior_local_fire_atomic_write_plans:prior,
+      prepared_ordinary_materialization_atomic_write_plan:null,
+      prepared_action_production_atomic_write_plans:[],working_projection:{},
+      committed_state:{party_state:{turn_number:chainVersion},clock:clock(90),
+        position:{location_ref:'scope-fire'}}});
+    const startResult=await chainResolver(chainEnvelope(1,{
+      op:'request_world_process',actor_ref:'pc',process_action:'start',
+      process_ref:null,process_kind:'fire',source_refs:['fuel-chain-1'],
+      target_refs:['ignition'],description:'разжечь огонь'}));
+    const chainStart=startResult.local_fire_atomic_write_plans[0];
+    const chainProcess=chainStart.transition_proposal.process_after.process_ref;
+    const addOperation={op:'request_world_process',actor_ref:'pc',
+      process_action:'affect',process_ref:chainProcess,process_kind:'fire',
+      source_refs:['fuel-chain-2'],target_refs:[],description:'добавить топливо'};
+    const addResult=await chainResolver(chainEnvelope(2,addOperation,[chainStart]));
+    const chainAdd=addResult.local_fire_atomic_write_plans[0];
+    const waterOperation={...addOperation,source_refs:['water-chain'],
+      description:'залить водой'};
+    const directWater=await chainResolver(chainEnvelope(2,waterOperation,
+      [chainStart]));
+    assert.equal(directWater.local_fire_atomic_write_plans[0]
+      .transition_proposal.process_before.state_version,1);
+    const waterResultSameRoot=await chainResolver(chainEnvelope(3,
+      waterOperation,[chainStart,chainAdd]));
+    const chainWater=waterResultSameRoot.local_fire_atomic_write_plans[0];
+    assert.equal(chainWater.transition_proposal.process_before.state_version,2);
+
+    for (const mutate of [
+      (plan)=>{plan.party_id='forged-party';},
+      (plan)=>{plan.actor_ref='forged-actor';},
+      (plan)=>{plan.change_set_id='forged-change';},
+      (plan)=>{plan.transition_proposal.cause.root_turn_id='forged-root';},
+      (plan)=>{plan.transition_proposal.cause.step_index=2;},
+      (plan)=>{plan.transition_proposal.cause.request_id='forged-request';}
+    ]) {
+      const forged=structuredClone(chainStart);mutate(forged);
+      await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+        [forged,chainAdd])),/LOCAL_FIRE_/u);
+    }
+    await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+      [chainAdd,chainStart])),{code:'LOCAL_FIRE_PROCESS_STALE'});
+    const staleBefore=structuredClone(chainStart.transition_proposal.process_after);
+    staleBefore.state_version+=1;
+    const staleProcessPlan=createLocalFireAtomicWritePlan({schema:
+      'local_fire_atomic_write_request_v1',party_id:'party-fire',
+    base_party_state_version:chainVersion,change_set_id:chainChange,
+    actor_ref:'pc',profile_pin:chainAdd.profile_pin,process_state:staleBefore,
+    input_pins:chainAdd.input_pins,ignition_basis_pin:null,action:'add_fuel',
+    process_ref:chainProcess,at_timestamp:clock(90),cause:{kind:'actor_step',
+      request_id:`${chainRequest}:step:2`,root_turn_id:chainRoot,step_index:2},
+    qualitative_outcome:null});
+    await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+      [chainStart,staleProcessPlan])),{code:'LOCAL_FIRE_PROCESS_STALE'});
+    const stalePin=structuredClone(chainAdd.input_pins[0]);
+    stalePin.placement={...stalePin.placement,anchor_id:'scope-fire',
+      holder_character_id:null,physical_position:null};
+    const staleItemPlan=createLocalFireAtomicWritePlan({schema:
+      'local_fire_atomic_write_request_v1',party_id:'party-fire',
+    base_party_state_version:chainVersion,change_set_id:chainChange,
+    actor_ref:'pc',profile_pin:chainAdd.profile_pin,
+    process_state:chainStart.transition_proposal.process_after,
+    input_pins:[stalePin],ignition_basis_pin:null,action:'add_fuel',
+    process_ref:chainProcess,at_timestamp:clock(90),cause:{kind:'actor_step',
+      request_id:`${chainRequest}:step:2`,root_turn_id:chainRoot,step_index:2},
+    qualitative_outcome:null});
+    await assert.rejects(chainResolver(chainEnvelope(3,waterOperation,
+      [chainStart,staleItemPlan])),{code:'LOCAL_FIRE_INPUT_STALE'});
+
+    const chainCombined=await combinedPlan(chainWater,chainVersion,{
+      localPlans:[chainStart,chainAdd,chainWater]});
+    await pool.query(`UPDATE party_runtime.party_items SET state_version=2
+      WHERE party_id='party-fire' AND item_id='water-chain'`);
+    assert.equal((await committer.commit({plan:chainCombined})).ok,false);
+    assert.deepEqual((await pool.query(`SELECT
+      (SELECT state_version::int FROM party_runtime.parties
+        WHERE party_id='party-fire') AS party_version,
+      (SELECT count(*)::int FROM party_runtime.party_local_world_processes
+        WHERE party_id='party-fire' AND process_ref=$1) AS processes,
+      (SELECT count(*)::int FROM
+        party_runtime.party_local_world_process_fuel_bindings
+        WHERE party_id='party-fire' AND process_ref=$1) AS bindings,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+        WHERE party_id='party-fire' AND item_id='water-chain') AS water_state`,
+    [chainProcess])).rows[0],{party_version:chainVersion,processes:0,
+      bindings:0,water_state:'active'});
+    await pool.query(`UPDATE party_runtime.party_items SET state_version=1
+      WHERE party_id='party-fire' AND item_id='water-chain'`);
+    const chainCommitted=await committer.commit({plan:chainCombined});
+    assert.equal(chainCommitted.ok,true,JSON.stringify(chainCommitted));
+    assert.deepEqual(await committer.commit({plan:chainCombined}),{
+      ok:true,replay:true,change_set_id:chainChange});
+    assert.deepEqual((await pool.query(`SELECT
+      (SELECT state_version::int FROM party_runtime.parties
+        WHERE party_id='party-fire') AS party_version,
+      (SELECT status FROM party_runtime.party_local_world_processes
+        WHERE party_id='party-fire' AND process_ref=$1) AS process_status,
+      (SELECT state->>'lifecycle_status' FROM party_runtime.party_items
+        WHERE party_id='party-fire' AND item_id='water-chain') AS water_state,
+      (SELECT count(*)::int FROM
+        party_runtime.party_local_world_process_fuel_bindings
+        WHERE party_id='party-fire' AND process_ref=$1
+          AND released_at_change_set_id=$2) AS released_bindings`,
+    [chainProcess,chainChange])).rows[0],{party_version:chainVersion+1,
+      process_status:'completed',water_state:'retired',released_bindings:2});
   });
 
 async function firePlan(pool,{action,requestId,changeSetId,partyVersion,
@@ -942,11 +1071,11 @@ async function combinedPlan(local,partyVersion,{missingClock=false,
           'party_runtime.party_ownership:own:fuel-1']:[]),
         ...(ordinaryPlan==null?[]:ordinaryPhysicalKeys(ordinaryPlan)),
         ...actionPlans.flatMap(actionProducedPhysicalKeys),
-        ...(temporalResult===null?localFirePhysicalKeys(local):[])]},
+        ...(temporalResult===null?localPlans.flatMap(localFirePhysicalKeys):[])]},
     ordinary_materialization_atomic_write_plan:ordinaryPlan,
     action_production_atomic_write_plans:actionPlans,
     local_fire_atomic_write_plans:temporalResult===null?localPlans:[],
-    idempotency:idempotency(local,id,due,actionPlans),
+    idempotency:idempotency(local,id,due,actionPlans,localPlans),
     commit_rechecks:['physical','state','pin','endpoint','route','capacity',
       'time','change_set'].map((kind)=>({kind,digest:`sha256:${hex}`}))
   };
@@ -1043,6 +1172,7 @@ async function provision(pool) {
     ['fuel-1','fuel',300],['fuel-2','fuel',700],
     ['fuel-4','fuel',500],['fuel-5','fuel',500],['fuel-m1','fuel',250],
     ['fuel-m2','fuel',350],['fuel-m3','fuel',450],
+    ['fuel-chain-1','fuel',400],['fuel-chain-2','fuel',450],
     ['fuel-prepared-source','fuel',700]]) {
     const state={lifecycle_status:'active',property_state:{kind},
       inventory_profile_snapshot:{inventory_profile_id:`profile:${id}`,
@@ -1086,17 +1216,22 @@ async function provision(pool) {
     VALUES ('party-fire','water-1',NULL,NULL,NULL,NULL,1,
       'ordinary_runtime_instance','ordinary',$1::jsonb,1),
       ('party-fire','water-2',NULL,NULL,NULL,NULL,1,
-      'ordinary_runtime_instance','ordinary',$2::jsonb,1)`,
-  [JSON.stringify(waterState(700)),JSON.stringify(waterState(1200))]);
+      'ordinary_runtime_instance','ordinary',$2::jsonb,1),
+      ('party-fire','water-chain',NULL,NULL,NULL,NULL,1,
+      'ordinary_runtime_instance','ordinary',$3::jsonb,1)`,
+  [JSON.stringify(waterState(700)),JSON.stringify(waterState(1200)),
+    JSON.stringify(waterState(900))]);
   await pool.query(`INSERT INTO party_runtime.party_item_placements
     (party_id,item_id,holder_character_id,physical_position)
     VALUES ('party-fire','water-1','pc','hands'),
-      ('party-fire','water-2','pc','hands')`);
+      ('party-fire','water-2','pc','hands'),
+      ('party-fire','water-chain','pc','hands')`);
   await pool.query(`INSERT INTO party_runtime.party_ownership
     (party_id,ownership_id,item_id,owner_character_id,owner_party,
      controller_character_id,claim_state)
     VALUES ('party-fire','own:water-1','water-1','pc',false,'pc','owned'),
-      ('party-fire','own:water-2','water-2','pc',false,'pc','owned')`);
+      ('party-fire','own:water-2','water-2','pc',false,'pc','owned'),
+      ('party-fire','own:water-chain','water-chain','pc',false,'pc','owned')`);
   for (const [id,kind,mass] of [['npc-ignition','ignition',180],
     ['npc-fuel','fuel',350]]) {
     const state={lifecycle_status:'active',inventory_profile_snapshot:{
@@ -1240,28 +1375,36 @@ function phase7DatabaseItem(itemId,kind) {
           schema:'rus.items.local_fire_ignition_basis.v1'}})}};
 }
 
-function semanticSnapshot(local,actionPlans=[]) {
+function semanticSnapshot(local,actionPlans=[],localPlans=[local]) {
   const proposal=local.transition_proposal;
-  const prior=Array.from({length:proposal.cause.step_index-1},(_,index)=>({
-    step_index:index+1,approved_plan:actionPlans.some((plan)=>plan
-      .transition_proposal.causal_identity.step_index===index+1)
-      ?preparedA1ApprovedPlan():{operations:[]}}));
-  return {semantic_trace:{step_traces:[...prior,{step_index:proposal.cause.step_index,
-    approved_plan:{operations:[{op:'request_world_process',
-      actor_ref:local.actor_ref,process_action:proposal.action==='start'
-        ?'start':'affect',process_ref:proposal.action==='start'?null
-          :proposal.process_before.process_ref,process_kind:'fire',
-      source_refs:proposal.action==='affect'?[proposal.consumed_item_ref]
-        :proposal.added_fuel_refs,
-      target_refs:proposal.action==='start'
-        ?[local.profile_pin.ignition_basis_ref]:[]}]}}]}};
+  const steps=Array.from({length:proposal.cause.step_index},(_,index)=>{
+    const step=index+1;
+    const fire=localPlans.find((plan)=>plan.transition_proposal.cause.step_index===step);
+    const action=actionPlans.some((plan)=>plan
+      .transition_proposal.causal_identity.step_index===step);
+    return {step_index:step,plan_request:{request_id:
+      fire?.transition_proposal.cause.request_id??`prior-step-${step}`,
+    root_turn_id:proposal.cause.root_turn_id,step_index:step},
+    approved_plan:action?preparedA1ApprovedPlan():{operations:
+      fire==null?[]:[semanticFireOperation(fire)]}};
+  });
+  return {semantic_trace:{step_traces:steps}};
 }
 
-function idempotency(local,id,due,actionPlans=[]) {
+function semanticFireOperation(local){const proposal=local.transition_proposal;
+  return {op:'request_world_process',actor_ref:local.actor_ref,
+    process_action:proposal.action==='start'?'start':'affect',
+    process_ref:proposal.action==='start'?null:proposal.process_before.process_ref,
+    process_kind:'fire',source_refs:proposal.action==='affect'
+      ?[proposal.consumed_item_ref]:proposal.added_fuel_refs,
+    target_refs:proposal.action==='start'
+      ?[local.profile_pin.ignition_basis_ref]:[]};}
+
+function idempotency(local,id,due,actionPlans=[],localPlans=[local]) {
   if (due) return {id:`idem-${id}`,key:id,request_id:null,
     semantic_command_snapshot:null,semantic_command_digest:null,
     semantic_dependency_pins:null};
-  const snapshot=semanticSnapshot(local,actionPlans);
+  const snapshot=semanticSnapshot(local,actionPlans,localPlans);
   return {id:`idem-${id}`,key:id,request_id:local.transition_proposal.cause.request_id,
     semantic_command_snapshot:snapshot,semantic_command_digest:digest(snapshot),
     semantic_dependency_pins:{}};

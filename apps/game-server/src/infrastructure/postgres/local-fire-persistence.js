@@ -6,55 +6,69 @@ import { localFireItemPin, localFireItemQuery } from
 import { actionProducedPreparedActionRows,
   actionProducedPreparedOrdinaryRows } from
   './action-produced-prepared-ordinary.js';
+import { localFirePriorRefs, validateLocalFirePriorChain } from
+  './local-fire-prior-chain.js';
 
 export async function loadLocalFireCommittedContext({ client, partyId,
   actorRef, profilePin, inputItemIds = [], processRef = null,
   ignitionBasisRef = null, rootTurnId = null, stepIndex = null,
   changeSetId = null, preparedOrdinaryPlan = null,
-  preparedActionPlans = [] } = {}) {
+  preparedActionPlans = [], priorLocalFirePlans = [],
+  currentRequestId = null, completedSteps = [] } = {}) {
   if (!client?.query || ![partyId, actorRef].every(text)
       || !plain(profilePin) || !Array.isArray(inputItemIds)
-      || new Set(inputItemIds).size !== inputItemIds.length) fail('LOCAL_FIRE_LOAD_INVALID');
+      || new Set(inputItemIds).size !== inputItemIds.length
+      || !Array.isArray(priorLocalFirePlans)) fail('LOCAL_FIRE_LOAD_INVALID');
   const party = await client.query(
     `SELECT state_version FROM party_runtime.parties WHERE party_id=$1`,
   [partyId]);
   if (party.rows.length !== 1) fail('LOCAL_FIRE_LOAD_INVALID');
-  let processState = null;
-  if (processRef !== null) {
+  const partyStateVersion = Number(party.rows[0].state_version);
+  const priorRefs = localFirePriorRefs(priorLocalFirePlans);
+  const processRefs = new Set(priorRefs.processRefs);
+  if (processRef !== null) processRefs.add(processRef);
+  const processStates = new Map();
+  for (const ref of processRefs) {
     const process = await client.query(
       `SELECT process_state FROM party_runtime.party_local_world_processes
-       WHERE party_id=$1 AND process_ref=$2`, [partyId, processRef]);
-    if (process.rows.length !== 1) fail('LOCAL_FIRE_PROCESS_STALE');
-    processState = process.rows[0].process_state;
+       WHERE party_id=$1 AND process_ref=$2`, [partyId, ref]);
+    if (process.rows.length > 1) fail('LOCAL_FIRE_PROCESS_STALE');
+    if (process.rows.length === 1) processStates.set(ref,
+      process.rows[0].process_state);
   }
-  const inputPins = [];
+  const allItemIds = [...new Set([...inputItemIds, ...priorRefs.itemRefs,
+    ...(ignitionBasisRef === null ? [] : [ignitionBasisRef])])];
   const preparedInput = { party_id:partyId,actor_ref:actorRef,
     root_turn_id:rootTurnId,step_index:stepIndex,
-    expected_party_state_version:Number(party.rows[0].state_version),
+    expected_party_state_version:partyStateVersion,
     change_set_id:changeSetId,prepared_ordinary_plan:preparedOrdinaryPlan,
     prepared_action_plans:preparedActionPlans };
   const preparedActions=actionProducedPreparedActionRows(preparedInput);
-  if(inputItemIds.some((id)=>preparedActions.retired.has(id)))
+  if(allItemIds.some((id)=>preparedActions.retired.has(id)))
     fail('LOCAL_FIRE_INPUT_STALE');
   const preparedOrdinary=actionProducedPreparedOrdinaryRows(preparedInput,
-    inputItemIds);
-  for (const itemId of inputItemIds) {
+    allItemIds);
+  const itemPins = new Map();
+  for (const itemId of allItemIds) {
     const prepared=preparedActions.rows.get(itemId)
       ??preparedOrdinary.get(itemId);
-    if(prepared!=null){inputPins.push(localFireItemPin(prepared.row));continue;}
+    if(prepared!=null){itemPins.set(itemId,localFireItemPin(prepared.row));continue;}
     const result = await client.query(localFireItemQuery(false), [partyId,itemId]);
     if (result.rows.length !== 1) fail('LOCAL_FIRE_INPUT_STALE');
-    inputPins.push(localFireItemPin(result.rows[0]));
+    itemPins.set(itemId,localFireItemPin(result.rows[0]));
   }
-  let ignitionBasisPin = null;
-  if (ignitionBasisRef !== null) {
-    const result = await client.query(localFireItemQuery(false),
-      [partyId,ignitionBasisRef]);
-    if (result.rows.length !== 1) fail('LOCAL_FIRE_IGNITION_BASIS_STALE');
-    ignitionBasisPin = localFireItemPin(result.rows[0]);
+  validateLocalFirePriorChain({ rawPlans:priorLocalFirePlans, partyId,actorRef,
+    profilePin,partyStateVersion,rootTurnId,stepIndex,changeSetId,
+    currentRequestId,completedSteps,processStates,itemPins });
+  const processState=processRef===null?null:processStates.get(processRef);
+  if(processRef!==null&&processState==null)fail('LOCAL_FIRE_PROCESS_STALE');
+  const inputPins=inputItemIds.map((id)=>itemPins.get(id));
+  const ignitionBasisPin=ignitionBasisRef===null?null:itemPins.get(ignitionBasisRef);
+  if(ignitionBasisRef!==null&&ignitionBasisPin==null){
+    fail('LOCAL_FIRE_IGNITION_BASIS_STALE');
   }
   return freeze({ schema:'local_fire_committed_context_load_v2',
-    party_id:partyId, party_state_version:Number(party.rows[0].state_version),
+    party_id:partyId, party_state_version:partyStateVersion,
     actor_ref:actorRef, profile_pin:structuredClone(profilePin), process_state:processState,
     input_pins:inputPins, ignition_basis_pin:ignitionBasisPin });
 }

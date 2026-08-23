@@ -3,6 +3,7 @@ import { runTurnWorkflow } from '@rus/turn';
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js';
 import { serverError } from '../errors.js';
 import { loadLowerDvinaTraceMaterializationBundle } from '../internal/lower-dvina-trace-phase-1a-bundle.js';
+import { isExactLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { loadLowerDvinaTracePhase2Bundle } from '../internal/lower-dvina-trace-phase-2-bundle.js';
 import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contracts.js';
 import { createTracePhase8Runtime } from './lower-dvina-trace-phase-8-runtime.js';
@@ -107,6 +108,7 @@ export function createLowerDvinaTracePhase2Runtime({
           bundle,
           phase2Bundle,
         });
+        const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts } = resolveTracePhase2InheritedContracts({ state, bundle });
         const genericOwners = bundle.turn_step_owner_profiles
           ? createLowerDvinaTraceTurnStepGenericOwners({
@@ -261,8 +263,10 @@ export function createLowerDvinaTracePhase2Runtime({
               actionProductionProfile: [21, 22, 23, 24].includes(bundle.definition_revision) ? actionProductionProfile : null,
               createTurnStepWorldProcessResolver: [22, 23, 24].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
               localFireProfile: [22, 23, 24].includes(bundle.definition_revision) ? localFireProfile : null,
-              createTurnStepSpatialSemanticResolver,
-              spatialSemanticProfile,
+              createTurnStepSpatialSemanticResolver:
+                activeSpatialSemanticProfile == null
+                  ? null : createTurnStepSpatialSemanticResolver,
+              spatialSemanticProfile: activeSpatialSemanticProfile,
               admitAmbientOrdinaryPortion:
                 typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
                   ? createTurnStepAmbientOrdinaryPortionAdmission({
@@ -279,10 +283,7 @@ export function createLowerDvinaTracePhase2Runtime({
               decisionSecret,
               decisionNow: now,
             }),
-            {
-              now: issuedAt,
-              requestId,
-            },
+            { now: issuedAt, requestId },
           );
         return repository.persistPhase2Screen({
           partyId,

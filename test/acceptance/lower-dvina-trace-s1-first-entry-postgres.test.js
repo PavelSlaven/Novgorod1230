@@ -128,7 +128,8 @@ function s1Responder(shouldFail = () => false) {
         schema: 'rus.s1_spatial_semantic_proposal.v1',
         request_id: request.input.request_id,
         name: 'Низкая плетёная загородка',
-        description: 'Сырая плетёная загородка у берега, без особого значения.'
+        description: 'Сырая плетёная загородка у берега, без особого значения.',
+        semantic_requirements: []
       };
     }
     return base(request);

@@ -198,8 +198,13 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const identities = Object.values(sets).flat().map(identity);
   if (new Set(identities).size !== identities.length) return fail('state_version_conflict', party_id, { reason: 'insert/update/append/delete identities must be disjoint' });
   const identitySet = new Set(identities);
+  const externalSpatialParents = spatial_semantic_atomic_write_plan == null ? new Set() : new Set([
+    `party_runtime.party_scene_baselines:${spatial_semantic_atomic_write_plan.formal_spatial_context?.baseline_ref}`,
+    `party_runtime.scene_position_nodes:${spatial_semantic_atomic_write_plan.resolution?.position_ref}`
+  ]);
   if (Object.values(sets).flat().some((write) =>
-    childParentIdentities(write).some((parent) => !identitySet.has(parent)))) {
+    childParentIdentities(write).some((parent) => !identitySet.has(parent)
+      && !externalSpatialParents.has(parent)))) {
     return fail('generated_schema_mismatch', party_id, { reason: 'party-owned child writes require their exact parent in the same sealed write plan' });
   }
   if (!identities.every((value) => physicalKeys.has(value))) return fail('lock_order_violation', party_id, { reason: 'every physical write must declare its exact physical lock key' });
@@ -315,6 +320,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   };
   return freeze({ ok: true, plan: { ...plan, digest: computeSpatialV3CanonicalDigest(plan) } });
 }
+
 
 function ownData(value, key) {
   if (!value || typeof value !== 'object') return undefined;

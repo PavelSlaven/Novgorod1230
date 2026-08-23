@@ -28,6 +28,7 @@ import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
 import { createSpatialSemanticAtomicWritePlan } from
   './spatial-semantic-atomic-write-plan.js';
+import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -143,6 +144,9 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  if (spatialSemanticPlan != null) {
+    writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
+  }
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
     turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,

@@ -12,12 +12,25 @@ export function createSpatialSemanticAuthorityRepository({ pool } = {}) {
       if (result.rowCount !== 1) fail('S1_SPATIAL_AUTHORITY_MISSING');
       return snapshot(result.rows[0], party_id);
     },
-    findCommittedResolution: async ({ party_id, request_id, local_ref = null }) => {
-      if (!text(party_id) || !text(request_id) || (local_ref != null && !text(local_ref))) fail('S1_SPATIAL_RESOLUTION_INVALID');
-      const result = await pool.query(`SELECT request_id,local_ref,envelope_ref,position_ref,root_turn_id,step_index,semantics,
+    loadPreModelAtPosition: async ({ party_id, position_ref }) => {
+      if (!text(party_id) || !text(position_ref)) fail('S1_SPATIAL_AUTHORITY_INVALID');
+      const result = await pool.query(`SELECT envelope,capacity_total,consumed_count,state_version,status
+        FROM party_runtime.party_spatial_semantic_envelopes
+        WHERE party_id=$1 AND envelope->>'position_ref'=$2 AND status='committed'
+          AND consumed_count < capacity_total
+        ORDER BY envelope_ref LIMIT 1`, [party_id, position_ref]);
+      if (result.rowCount !== 1) fail('S1_SPATIAL_AUTHORITY_MISSING');
+      return snapshot(result.rows[0], party_id);
+    },
+    findCommittedResolution: async ({ party_id, request_id = null, local_ref = null }) => {
+      if (!text(party_id) || (request_id != null && !text(request_id))
+          || (local_ref != null && !text(local_ref))
+          || (request_id == null && local_ref == null)) fail('S1_SPATIAL_RESOLUTION_INVALID');
+      const result = await pool.query(`SELECT request_id,local_ref,envelope_ref,position_ref,root_turn_id,step_index,semantics,formal_spatial_refs,
         from_party_state_version,to_party_state_version,p16_change_set_id
         FROM party_runtime.party_spatial_semantic_resolutions
-        WHERE party_id=$1 AND (request_id=$2 OR ($3::text IS NOT NULL AND local_ref=$3))`, [party_id, request_id, local_ref]);
+        WHERE party_id=$1 AND ${local_ref == null ? 'request_id=$2' : 'local_ref=$2'}`,
+      [party_id, local_ref ?? request_id]);
       if (result.rowCount > 1) fail('S1_SPATIAL_RESOLUTION_CONFLICT');
       return result.rowCount === 0 ? null : Object.freeze(structuredClone(result.rows[0]));
     }

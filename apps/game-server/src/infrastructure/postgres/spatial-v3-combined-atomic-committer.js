@@ -221,11 +221,7 @@ export function createSpatialV3CombinedAtomicCommitter({ withTransaction, rechec
       await applyLocalFireP16Extension(tx,plan);
       if (plan.spatial_semantic_atomic_write_plan != null) {
         try {
-          await applySpatialSemanticAtomicWritePlanInTransaction({ client: tx,
-            input: plan.spatial_semantic_atomic_write_plan,
-            partyStateVersionAfter: plan.spatial_semantic_atomic_write_plan
-              .base_party_state_version + 1,
-            p16ChangeSetId: plan.change_set_id });
+          await applySpatialSemanticAtomicWritePlanInTransaction({ client: tx, input: plan.spatial_semantic_atomic_write_plan, sealedWrites: plan.inserts, partyStateVersionAfter: plan.spatial_semantic_atomic_write_plan.base_party_state_version + 1, p16ChangeSetId: plan.change_set_id });
         } catch (cause) {
           if (['SPATIAL_SEMANTIC_PARTY_STALE',
             'SPATIAL_SEMANTIC_AUTHORITY_STALE',

@@ -50,7 +50,8 @@ async function lockedScope(transaction, partyId, binding) {
 
 function buildEnvelope(profile, entry, scope) {
   return { envelope_ref: entry.envelope_ref, kind: entry.kind,
-    scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
+    scope_kind: 'current_position_local_reference', structural_variant: entry.structural_variant,
+    available_mechanics: entry.available_mechanics,
     baseline_ref: scope.baseline_ref, g5_ref: scope.g5_ref, g6_ref: scope.g6_ref,
     position_ref: scope.position_ref,
     property_ref: profile.property_ref, function_ref: profile.function_ref,
@@ -79,7 +80,12 @@ function requireProfile(value) {
     if (!entry || !text(entry.envelope_ref) || !text(entry.template_id)
         || !text(entry.position_kind) || !['ordinary_structure','local_natural_feature'].includes(entry.kind)
         || entry.scope_kind !== 'current_position_local_reference'
-        || entry.mechanics_class !== 'descriptive_only'
+        || !['open_one_space','one_space_controlled_passage','descriptive_local_reference'].includes(entry.structural_variant)
+        || ((entry.kind === 'ordinary_structure')
+          !== (entry.structural_variant !== 'descriptive_local_reference'))
+        || !Array.isArray(entry.available_mechanics)
+        || new Set(entry.available_mechanics).size !== entry.available_mechanics.length
+        || !entry.available_mechanics.every((mechanic) => ['interaction','projection','perception','interior_space','controlled_passage','movement_constraint','hazard','extractable_resource'].includes(mechanic))
         || !Number.isSafeInteger(entry.capacity_total) || entry.capacity_total < 1
         || !semanticContext(entry.semantic_context, entry.kind)) {
       throw new TypeError('Exact approved S1 envelope profile is required.');

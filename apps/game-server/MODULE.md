@@ -4,10 +4,12 @@
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
-S1 local descriptive detail uses the existing P16 transaction: the server
-revalidates code-owned finite capacity and committed current-position scope,
-then persists the admitted ordinary name/description without creating a second
-transaction, topology owner or mechanics path.
+S1 uses the existing P16 transaction for approved local variants: open
+one-space structure or descriptive natural-feature placement. Controlled
+passage remains fail-closed without approved P11 portal bindings. The server revalidates code-owned finite capacity
+and committed baseline/G5/G6/current-position scope, then persists only their
+admitted formal refs and semantic detail; no false topology/resource mechanics
+or second transaction owner is added.
 
 ## Владеет
 
@@ -97,7 +99,7 @@ are active for every admitted `finite_source`; each selected source reloads its
 own committed row, while constrained policy adds resource
 permissions but does not own conservation. Unprovisioned precious/remnant profiles
 remain fail-closed. Currency identity,
-significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain
+significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
 

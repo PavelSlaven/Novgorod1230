@@ -14,12 +14,12 @@ const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v18/publication-binding.json`;
 const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v19/manifest.json`;
 
 export const TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST =
-  '4ab64ff3247b986b59f3f3b05d0b7b58d99f0195cf7196d1491855ecfe844230';
+  '1e61d7a555f82643eda5773cd232755e5072d2fae4fd2edd442e2173f8fe469f';
 export const TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST =
   '97616177c25fe0e0507afb3df5d7fd9bdc4298cede54f0a8626ce5cfc271586a';
-const MANIFEST_DIGEST = '98867d2fd40634f71cd8e845f7315020cac54fa34ee82854c2dda24b787530ed';
-const BINDING_DIGEST = 'd19b8bddafb01b1188c59b615d405f6538bf82d33ebc1d9dfe2ffdcfbe92f0a0';
-const DEFINITION_DIGEST = '8b03d8ebee9ad04c8321ff336f34ffad0f4fa8ed8adfc5b0a7cdc0026beb8d78';
+const MANIFEST_DIGEST = '3258cd3cf534811db77d7be7b9845ee52013e7cd4f295ce9543934aecd0ce955';
+const BINDING_DIGEST = '1732780a7f9f68523830269cf2a8c05368464ee5154ccee4ccee947af47857a4';
+const DEFINITION_DIGEST = '28274bf6d6978a1187c777c26d76bea0716b508ccfa6d8d2262f1c6592a4210f';
 
 export async function loadLowerDvinaTraceSpatialSemanticPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null

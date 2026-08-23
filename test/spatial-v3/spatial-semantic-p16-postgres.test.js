@@ -12,7 +12,7 @@ import { createSpatialSemanticFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { applySpatialSemanticAtomicWritePlanInTransaction } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-persistence.js';
-import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } from
+import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys, spatialSemanticRows } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
 import { admitSpatialSemanticRemainder, prepareSpatialSemanticRemainder } from
@@ -33,12 +33,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
     '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
     'postgres:16-alpine']);
   assert.equal(started.status, 0, started.stderr);
-  for (let attempt = 0; attempt < 50; attempt += 1) {
-    await new Promise((done) => setTimeout(done, 250));
-    if (docker(['exec', container, 'pg_isready', '-U', 's1', '-d', 's1']).status === 0) break;
-    if (attempt === 49) assert.fail('PostgreSQL not ready');
-  }
-  await new Promise((done) => setTimeout(done, 750));
+  await waitForP16Postgres(container);
   const port = Number(docker(['port', container, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
   pool = new Pool({ host: '127.0.0.1', port, user: 's1', password: 's1', database: 's1' });
   for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) await pool.query(sql);
@@ -57,7 +52,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
   for (const obsolete of ['authority_digest', 'resolution_digest', 'write_plan_digest', 'reservation_ref']) assert.equal([...names].some((name) => name.endsWith(`.${obsolete}`)), false);
 });
 
-test('S1 first-entry provisioning persists approved narrow descriptive envelopes', async () => {
+test('S1 first-entry provisioning persists approved descriptive envelopes', async () => {
   const inserts = [];
   const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile() });
   const transaction = { query: async (sql, values) => {
@@ -74,12 +69,12 @@ test('S1 first-entry provisioning persists approved narrow descriptive envelopes
   for (const envelope of inserts) {
     assert.deepEqual(Object.keys(envelope).sort(), ['baseline_ref','baseline_state_version',
       'capacity_total','consumed_count','envelope_ref','environment_ref','function_ref','g5_ref',
-      'g5_state_version','g6_ref','g6_state_version','kind','mechanics_class','policy_ref',
+      'g5_state_version','g6_ref','g6_state_version','kind','structural_variant','available_mechanics','policy_ref',
       'policy_version','position_ref','position_state_version','profile_ref','profile_version',
       'semantic_context',
       'property_ref','scope_kind','state_version'].sort());
     assert.equal(envelope.scope_kind, 'current_position_local_reference');
-    assert.equal(envelope.mechanics_class, 'descriptive_only');
+    assert.equal(typeof envelope.structural_variant, 'string');
     assert.deepEqual([envelope.capacity_total, envelope.consumed_count, envelope.state_version], [1, 0, 1]);
   }
 });
@@ -89,15 +84,15 @@ test('S1 first-entry provisions only template-and-position matches from a mixed 
   const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile([
     { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
       position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-      mechanics_class: 'descriptive_only', capacity_total: 1,
+      structural_variant: 'descriptive_local_reference', available_mechanics: [], capacity_total: 1,
       semantic_context: semanticContext('local_natural_feature') },
     { envelope_ref: 'other-template-s1', kind: 'ordinary_structure', template_id: 'template-other',
       position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-      mechanics_class: 'descriptive_only', capacity_total: 1,
+      structural_variant: 'open_one_space', available_mechanics: [], capacity_total: 1,
       semantic_context: semanticContext('ordinary_structure') },
     { envelope_ref: 'other-position-s1', kind: 'ordinary_structure', template_id: 'template-s1',
       position_kind: 'other_position', scope_kind: 'current_position_local_reference',
-      mechanics_class: 'descriptive_only', capacity_total: 1,
+      structural_variant: 'open_one_space', available_mechanics: [], capacity_total: 1,
       semantic_context: semanticContext('ordinary_structure') }
   ]) });
   const transaction = { query: async (sql, values) => {
@@ -136,6 +131,16 @@ test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commi
   const spatialBefore = await spatialSnapshot(pool);
   const first = s1Plan('request:one', 'change:one');
   const stale = s1Plan('request:two', 'change:two');
+  const rejected = await pool.connect();
+  try {
+    await rejected.query('BEGIN');
+    await assert.rejects(() => applySpatialSemanticAtomicWritePlanInTransaction({ client: rejected,
+      input: first, sealedWrites: [], p16ChangeSetId: 'change:one', partyStateVersionAfter: 5 }),
+    { code: 'SPATIAL_SEMANTIC_P16_BINDING_INVALID' });
+    await rejected.query('ROLLBACK');
+  } finally { rejected.release(); }
+  assert.deepEqual((await pool.query(`SELECT consumed_count FROM party_runtime.party_spatial_semantic_envelopes
+    WHERE party_id='party:s1' AND envelope_ref='envelope:s1'`)).rows, [{ consumed_count: '0' }]);
   const client = await pool.connect();
   const second = await pool.connect();
   try {
@@ -193,23 +198,136 @@ test('S1 combined P16 maps concurrent last-slot loss to typed conflict', async (
   { consumed_count: '1', state_version: '2' });
   assert.equal((await pool.query(`SELECT count(*)::int AS count FROM party_runtime.party_v3_change_sets
     WHERE party_id='party:s1' AND id IN ('change:combined-one','change:combined-two')`)).rows[0].count, 1);
+  assert.deepEqual((await pool.query(`SELECT count(*)::int AS g6,
+    (SELECT count(*)::int FROM party_runtime.scene_position_nodes WHERE id LIKE 's1:%') AS positions,
+    (SELECT count(*)::int FROM party_runtime.scene_movement_edges WHERE id LIKE 's1:%') AS edges,
+    (SELECT count(*)::int FROM party_runtime.visibility_links WHERE id LIKE 's1:%') AS visibility
+    FROM party_runtime.party_g6_instances WHERE id LIKE 's1:%'`)).rows[0],
+  { g6: 1, positions: 1, edges: 2, visibility: 2 });
+  assert.deepEqual((await pool.query(`SELECT passage_type_id,transition_environment_profile_ref,
+    movement_orientation_profile_ref FROM party_runtime.scene_movement_edges
+    WHERE party_id='party:s1' ORDER BY id`)).rows, [
+    { passage_type_id: 'passage.local', transition_environment_profile_ref: {
+      entity_ref: { entity_kind: 'transition_environment_profile', entity_id: 'env.local_variable' },
+      authoring_version: '1' }, movement_orientation_profile_ref: {
+      entity_ref: { entity_kind: 'movement_orientation_profile', entity_id: 'orientation.topological_local' },
+      authoring_version: '1' } },
+    { passage_type_id: 'passage.local', transition_environment_profile_ref: {
+      entity_ref: { entity_kind: 'transition_environment_profile', entity_id: 'env.local_variable' },
+      authoring_version: '1' }, movement_orientation_profile_ref: {
+        entity_ref: { entity_kind: 'movement_orientation_profile', entity_id: 'orientation.topological_local' },
+      authoring_version: '1' } }
+  ]);
+  const placementAndVisibility = (await pool.query(`SELECT p.position_node_id, v.from_position_id,v.to_position_id
+    FROM party_runtime.entity_placements p CROSS JOIN party_runtime.visibility_links v
+    WHERE p.party_id='party:s1' AND p.entity_kind='ordinary_structure'
+    ORDER BY v.id`)).rows;
+  assert.equal(placementAndVisibility.length, 2);
+  for (const row of placementAndVisibility) assert.equal(row.position_node_id, 'position:s1');
+  const interiorPosition = placementAndVisibility[0].from_position_id === 'position:s1'
+    ? placementAndVisibility[0].to_position_id : placementAndVisibility[0].from_position_id;
+  assert.notEqual(interiorPosition, 'position:s1');
+  assert.deepEqual(placementAndVisibility.map(({ from_position_id, to_position_id }) =>
+    [from_position_id, to_position_id].sort()).sort(), [
+    ['position:s1', interiorPosition], ['position:s1', interiorPosition]
+  ].sort());
 });
 
-function s1Plan(request_id, change_set_id) {
-  const envelope = s1Envelope();
+test('S1 controlled passage fails before P16 without portal condition owner', async (t) => {
+  const database = await startP16Postgres(t, 'passage'); if (!database) return;
+  const { pool } = database;
+  const envelope = { ...s1Envelope(), structural_variant: 'one_space_controlled_passage',
+    available_mechanics: ['controlled_passage'] };
+  await seedCommitScope(pool, envelope);
+  const requestId = 'request:passage';
+  await assert.rejects(() => s1CombinedPlan(requestId, 'change:passage', envelope),
+    { code: 'S1_SPATIAL_DATA_GAP' });
+  assert.deepEqual((await pool.query(`SELECT
+    (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_resolutions WHERE party_id='party:s1') AS resolutions,
+    (SELECT count(*)::int FROM party_runtime.portal_entities WHERE party_id='party:s1') AS portals,
+    (SELECT count(*)::int FROM party_runtime.scene_movement_edges WHERE party_id='party:s1') AS edges,
+    (SELECT count(*)::int FROM party_runtime.visibility_links WHERE party_id='party:s1') AS visibility`)).rows[0],
+  { resolutions: 0, portals: 0, edges: 0, visibility: 0 });
+});
+
+test('S1 combined P16 persists descriptive local reference without topology', async (t) => {
+  const database = await startP16Postgres(t, 'feature'); if (!database) return;
+  const { pool } = database;
+  const envelope = { ...s1Envelope(), kind: 'local_natural_feature',
+    structural_variant: 'descriptive_local_reference', available_mechanics: [],
+    semantic_context: semanticContext('local_natural_feature') };
+  await seedCommitScope(pool, envelope);
+  const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool,
+    now: () => new Date('2030-01-01T00:00:00.000Z'), recheck: async () => ({ ok: true }) });
+  const requestId = 'request:feature';
+  const result = await committer.commit({ plan: await s1CombinedPlan(requestId, 'change:feature', envelope) });
+  assert.equal(result.ok, true, JSON.stringify(result));
+  const resolution = (await pool.query(`SELECT local_ref,position_ref,formal_spatial_refs FROM
+    party_runtime.party_spatial_semantic_resolutions WHERE party_id='party:s1' AND request_id=$1`,
+  [requestId])).rows[0];
+  const refs = resolution.formal_spatial_refs;
+  assert.deepEqual(refs, { schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized',
+    structural_variant: 'descriptive_local_reference', local_ref: resolution.local_ref,
+    placement_ref: `local_natural_feature:${resolution.local_ref}`, g6_instance_ref: null,
+    position_ref: null, portal_ref: null, movement_edge_refs: [], visibility_link_refs: [] });
+  assert.deepEqual((await pool.query(`SELECT entity_kind,entity_id,position_node_id FROM party_runtime.entity_placements
+    WHERE party_id='party:s1'`)).rows,
+  [{ entity_kind: 'local_natural_feature', entity_id: resolution.local_ref, position_node_id: resolution.position_ref }]);
+  assert.deepEqual((await pool.query(`SELECT count(*)::int AS g6,
+    (SELECT count(*)::int FROM party_runtime.scene_position_nodes WHERE party_id='party:s1') AS positions,
+    (SELECT count(*)::int FROM party_runtime.scene_movement_edges WHERE party_id='party:s1') AS edges,
+    (SELECT count(*)::int FROM party_runtime.visibility_links WHERE party_id='party:s1') AS visibility,
+    (SELECT count(*)::int FROM party_runtime.portal_entities WHERE party_id='party:s1') AS portals
+    FROM party_runtime.party_g6_instances WHERE party_id='party:s1'`)).rows[0],
+  { g6: 1, positions: 1, edges: 0, visibility: 0, portals: 0 });
+  assert.deepEqual((await pool.query(`SELECT consumed_count,state_version FROM party_runtime.party_spatial_semantic_envelopes
+    WHERE party_id='party:s1' AND envelope_ref='envelope:s1'`)).rows[0], { consumed_count: '1', state_version: '2' });
+});
+
+test('S1 P16 rejects persisted context variant or mechanics drift before capacity decrement', async (t) => {
+  const database = await startP16Postgres(t, 'context-drift'); if (!database) return;
+  const { pool } = database;
+  await seedCommitScope(pool);
+  const input = s1Plan('request:context-drift', 'change:context-drift');
+  const drifted = { ...s1Envelope(), structural_variant: 'one_space_controlled_passage',
+    available_mechanics: ['controlled_passage'] };
+  await pool.query(`UPDATE party_runtime.party_spatial_semantic_envelopes SET envelope=$1::jsonb
+    WHERE party_id='party:s1' AND envelope_ref='envelope:s1'`, [JSON.stringify(drifted)]);
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await assert.rejects(() => applySpatialSemanticAtomicWritePlanInTransaction({ client, input,
+      p16ChangeSetId: 'change:context-drift', partyStateVersionAfter: 5 }),
+    { code: 'SPATIAL_SEMANTIC_SCOPE_STALE' });
+    await client.query('ROLLBACK');
+  } finally { client.release(); }
+  assert.deepEqual((await pool.query(`SELECT consumed_count,state_version FROM
+    party_runtime.party_spatial_semantic_envelopes WHERE party_id='party:s1' AND envelope_ref='envelope:s1'`)).rows[0],
+  { consumed_count: '0', state_version: '1' });
+  assert.deepEqual((await pool.query(`SELECT
+    (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_resolutions WHERE party_id='party:s1') AS resolutions,
+    (SELECT count(*)::int FROM party_runtime.scene_movement_edges WHERE party_id='party:s1') AS edges,
+    (SELECT count(*)::int FROM party_runtime.visibility_links WHERE party_id='party:s1') AS visibility,
+    (SELECT count(*)::int FROM party_runtime.entity_placements WHERE party_id='party:s1') AS placements`)).rows[0],
+  { resolutions: 0, edges: 0, visibility: 0, placements: 0 });
+});
+
+function s1Plan(request_id, change_set_id, envelope = s1Envelope()) {
   const prepared = prepareSpatialSemanticRemainder({ schema: 'rus.s1_spatial_semantic_request.v1',
     request_id, causal_request_ref: 'action:s1', party_id: 'party:s1', need: 'perception', envelope });
   return createSpatialSemanticAtomicWritePlan({ schema: 'spatial_semantic_atomic_write_plan_v1',
     party_id: 'party:s1', base_party_state_version: 4, change_set_id,
     causal_identity: { request_id, root_turn_id: 'turn:s1', action_ref: 'action:s1',
       step_index: 1, actor_ref: 'actor:s1' }, envelope_ref: 'envelope:s1',
-    expected_envelope_state_version: 1, resolution: admitSpatialSemanticRemainder({ prepared,
+    expected_envelope_state_version: 1, formal_spatial_context: { baseline_ref: envelope.baseline_ref,
+      g5_ref: envelope.g5_ref, kind: envelope.kind,
+      structural_variant: envelope.structural_variant, available_mechanics: envelope.available_mechanics }, resolution: admitSpatialSemanticRemainder({ prepared,
       proposal: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
-        name: 'Выступ', description: 'Камень у воды.' } }) });
+        name: 'Выступ', description: 'Камень у воды.', semantic_requirements: [] } }) });
 }
 
-async function s1CombinedPlan(request_id, change_set_id) {
-  const spatial = s1Plan(request_id, change_set_id);
+async function s1CombinedPlan(request_id, change_set_id, envelope = s1Envelope()) {
+  const spatial = s1Plan(request_id, change_set_id, envelope);
   const payload = { schema: 'temporal_visible_package.v1', perceived_scene: 'Осмотр.',
     perceived_changes: [], sensory_details: [], visible_npcs: [], visible_objects: [],
     known_context: [], uncertainties: [], hypotheses: [], player_safe_interruption: null,
@@ -239,7 +357,7 @@ async function s1CombinedPlan(request_id, change_set_id) {
         entity_kind: 'visibility_modifier', entity_id: 'projection-v1' }, authoring_version: 'test-v1' },
       dependency_pins: { pins, canonical_digest: computeSpatialV3CanonicalDigest(pins).replace('sha256:', '') },
       idempotency_record_id: `idem:${request_id}` },
-    approved_write_sets: [{ inserts: [], updates: [{ target_table: 'parties', id: 'party:s1',
+    approved_write_sets: [{ inserts: spatialSemanticRows(spatial), updates: [{ target_table: 'parties', id: 'party:s1',
       record: { party_id: 'party:s1', profile_bundle_digest: 'profiles' } }], appends: [{
       target_table: 'party_v3_change_sets', id: change_set_id,
       record: { id: change_set_id, party_id: 'party:s1', operation_kind: 'trace_turn_step',
@@ -255,18 +373,18 @@ async function s1CombinedPlan(request_id, change_set_id) {
   return built.plan;
 }
 function s1Envelope() {
-  return { envelope_ref: 'envelope:s1', kind: 'local_natural_feature',
-    scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
+  return { envelope_ref: 'envelope:s1', kind: 'ordinary_structure',
+    scope_kind: 'current_position_local_reference', structural_variant: 'open_one_space', available_mechanics: [],
     baseline_ref: 'baseline:s1', g5_ref: 'g5:s1', g6_ref: 'g6:s1', position_ref: 'position:s1',
     property_ref: 'property:s1', function_ref: 'function:s1',
-    environment_ref: 'environment:s1', semantic_context: semanticContext('local_natural_feature'),
+    environment_ref: 'environment:s1', semantic_context: semanticContext('ordinary_structure'),
     profile_ref: 'profile:s1', profile_version: 1,
     policy_ref: 'policy:s1', policy_version: 1, baseline_state_version: 0,
     g5_state_version: 0, g6_state_version: 0, position_state_version: 0,
     capacity_total: 1, consumed_count: 0, state_version: 1 };
 }
 
-async function seedCommitScope(pool) {
+async function seedCommitScope(pool, envelope = s1Envelope()) {
   await pool.query(`INSERT INTO party_runtime.parties (party_id,schema_version,world_revision_id,
     world_catalog_digest,materializer_version,rng_version,command_catalog_digest,profile_bundle_digest,state_version)
     VALUES ('party:s1',3,'world','catalog','materializer','rng','commands','profiles',4)`);
@@ -294,7 +412,36 @@ async function seedCommitScope(pool) {
     'public','active',0,'fixture:s1','fixture:s1')`);
   await pool.query(`INSERT INTO party_runtime.party_spatial_semantic_envelopes (party_id,envelope_ref,envelope,
     capacity_total,consumed_count,state_version,status,created_change_set_id) VALUES ('party:s1','envelope:s1',
-    $1::jsonb,1,0,1,'committed','fixture:s1')`, [JSON.stringify(s1Envelope())]);
+    $1::jsonb,1,0,1,'committed','fixture:s1')`, [JSON.stringify(envelope)]);
+}
+
+async function startP16Postgres(t, suffix) {
+  if (docker(['version']).status !== 0) {
+    t.skip('Docker required'); return null;
+  }
+  const name = `${container}-${suffix}`;
+  let pool;
+  t.after(async () => { if (pool) await pool.end(); docker(['rm', '-f', name]); });
+  const started = docker(['run', '-d', '--name', name, '-p', '127.0.0.1::5432',
+    '-e', 'POSTGRES_PASSWORD=s1', '-e', 'POSTGRES_USER=s1', '-e', 'POSTGRES_DB=s1',
+    'postgres:16-alpine']);
+  assert.equal(started.status, 0, started.stderr);
+  await waitForP16Postgres(name);
+  const port = Number(docker(['port', name, '5432/tcp']).stdout.match(/:(\d+)\s*$/u)?.[1]);
+  pool = new Pool({ host: '127.0.0.1', port, user: 's1', password: 's1', database: 's1' });
+  for (const sql of SPATIAL_V3_TARGET_MIGRATIONS) await pool.query(sql);
+  return { pool };
+}
+
+async function waitForP16Postgres(name) {
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    await new Promise((done) => setTimeout(done, 250));
+    const logs = docker(['logs', name]);
+    const initialized = `${logs.stdout}\n${logs.stderr}`.includes(
+      'PostgreSQL init process complete; ready for start up.');
+    if (initialized && docker(['exec', name, 'pg_isready', '-U', 's1', '-d', 's1']).status === 0) return;
+  }
+  assert.fail('PostgreSQL not ready');
 }
 
 async function spatialSnapshot(pool) {
@@ -319,11 +466,11 @@ async function spatialSnapshot(pool) {
 function profile(envelopes = [
   { envelope_ref: 'structure-s1', kind: 'ordinary_structure', template_id: 'template-s1',
     position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-    mechanics_class: 'descriptive_only', capacity_total: 1,
+    structural_variant: 'open_one_space', available_mechanics: [], capacity_total: 1,
     semantic_context: semanticContext('ordinary_structure') },
   { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
     position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-    mechanics_class: 'descriptive_only', capacity_total: 1,
+    structural_variant: 'descriptive_local_reference', available_mechanics: [], capacity_total: 1,
     semantic_context: semanticContext('local_natural_feature') }
 ]) {
   return { schema: 'rus.lower_dvina_trace_s1_loaded_profile.v1', profile: {
@@ -333,7 +480,7 @@ function profile(envelopes = [
       policy_ref: 'lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1',
       revision: 2, policy_version: 1,
       property_ref: 'lower_dvina_trace:s1:shore_property_context_v1',
-      function_ref: 'lower_dvina_trace:s1:descriptive_only_v1',
+      function_ref: 'lower_dvina_trace:s1:formal_spatial_owner_v1',
       environment_ref: 'lower_dvina_trace:s1:late_summer_open_water_v1', envelopes } };
 }
 

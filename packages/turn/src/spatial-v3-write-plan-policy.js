@@ -91,6 +91,9 @@ export const TABLE_MODES = Object.freeze({
   party_scene_baselines: ['inserts'],
   party_g6_instances: ['inserts'],
   scene_position_nodes: ['inserts'],
+  portal_entities: ['inserts'],
+  scene_movement_edges: ['inserts'],
+  visibility_links: ['inserts'],
   party_cohorts: ['inserts'],
   party_cohort_memberships: ['inserts'],
   party_narration_jobs: ['inserts']
@@ -207,6 +210,17 @@ export function childParentIdentities(write) {
       return [`party_runtime.party_scene_baselines:${write.record?.scene_baseline_id}`];
     case 'scene_position_nodes':
       return [`party_runtime.party_g6_instances:${write.record?.g6_instance_id}`];
+    case 'portal_entities':
+      return [`party_runtime.party_scene_baselines:${write.record?.scene_baseline_id}`];
+    case 'scene_movement_edges':
+    case 'visibility_links':
+      return [
+        `party_runtime.scene_position_nodes:${write.record?.from_position_id}`,
+        `party_runtime.scene_position_nodes:${write.record?.to_position_id}`,
+        ...(write.record?.portal_entity_id == null ? [] : [
+          `party_runtime.portal_entities:${write.record.portal_entity_id}`
+        ])
+      ];
     case 'party_temporal_event_subjects':
     case 'party_temporal_event_dependencies':
       return [`party_runtime.party_temporal_events:${write.record?.event_id}`];

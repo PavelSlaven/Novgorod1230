@@ -1,17 +1,17 @@
-// S1 is intentionally a last, narrow discovery remainder.  It cannot shadow
-// authored/external command bindings and has no separate operation grammar.
+// S1 uses shared discovery semantics after authored/external command bindings.
 export function isSpatialSemanticRemainderInScope(input) {
   const root = record(input);
   const operation = record(root?.operation);
   const playerSafeState = record(root?.playerSafeState);
   const marker = exactMarker(playerSafeState?.spatial_semantic);
   const targets = array(operation?.target_refs);
-  const look = operation?.op === 'request_discovery'
-    && operation.discovery_kind === 'look'
-    && targets?.length === 1 && text(targets[0])
+  const discovery = operation?.op === 'request_discovery'
+    && ['look', 'inspect'].includes(operation.discovery_kind)
+    && targets?.length === 1 && text(targets[0]);
+  return discovery && (operation.discovery_kind === 'look'
     && marker?.semantic_grounding_available === true
-    && marker.position_ref === targets[0] && text(marker.envelope_ref);
-  return look;
+      && marker.position_ref === targets[0]
+      || visibleLocalReference(playerSafeState?.visible_objects, targets[0]));
 }
 
 export function resolveSpatialSemanticRemainder({ resolver, execution, actor,
@@ -28,10 +28,27 @@ export function resolveSpatialSemanticRemainder({ resolver, execution, actor,
 function exactMarker(value) {
   const marker = record(value);
   if (marker == null) return null;
-  const required = ['semantic_grounding_available', 'envelope_ref', 'position_ref'];
+  const required = ['semantic_grounding_available', 'position_ref'];
   const names = Object.keys(marker);
   if (names.length !== required.length || !required.every((key) => names.includes(key))) return null;
   return marker;
+}
+function visibleLocalReference(value, target) {
+  const entries = array(value);
+  return entries?.some((entry) => {
+    const object = record(entry);
+    if (object == null || !exactKeys(object,
+      ['entity_ref', 'display_label', 'recognition', 'visible_status'])
+      || !text(object.display_label) || object.recognition !== 'recognized'
+      || object.visible_status !== 'замечен') return false;
+    const ref = record(object.entity_ref);
+    return ref != null && exactKeys(ref, ['entity_kind', 'entity_id'])
+      && ref.entity_kind === 'spatial_local_reference' && ref.entity_id === target;
+  }) === true;
+}
+function exactKeys(value, keys) {
+  const names = Object.keys(value);
+  return names.length === keys.length && keys.every((key) => names.includes(key));
 }
 function record(value) {
   if (value == null || typeof value !== 'object' || Array.isArray(value)

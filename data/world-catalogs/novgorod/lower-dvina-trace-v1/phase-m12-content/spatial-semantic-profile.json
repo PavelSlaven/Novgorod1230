@@ -7,7 +7,7 @@
   "policy_ref": "lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1",
   "policy_version": 1,
   "property_ref": "lower_dvina_trace:s1:shore_property_context_v1",
-  "function_ref": "lower_dvina_trace:s1:descriptive_only_v1",
+  "function_ref": "lower_dvina_trace:s1:formal_spatial_owner_v1",
   "environment_ref": "lower_dvina_trace:s1:late_summer_open_water_v1",
   "envelopes": [
     {
@@ -16,7 +16,8 @@
       "template_id": "trace_ld_v1_tpl_wreck_shore",
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
-      "mechanics_class": "descriptive_only",
+      "structural_variant": "open_one_space",
+      "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {
         "allowed_kind": "ordinary_structure",
@@ -25,7 +26,7 @@
         "place_type": "open river shore at a boat-wreck site",
         "environment": "late summer open water; wet sand, driftwood, reeds, riverbank stones and timber",
         "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
-        "ordinary_boundary": "create one unimportant local ordinary structure only. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, hazards, movement, resources, or mechanics."
+        "ordinary_boundary": "create one unimportant local ordinary structure only. State only name, description, and any needed semantic requirements. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
       }
     },
     {
@@ -34,7 +35,8 @@
       "template_id": "trace_ld_v1_tpl_wreck_shore",
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
-      "mechanics_class": "descriptive_only",
+      "structural_variant": "descriptive_local_reference",
+      "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {
         "allowed_kind": "local_natural_feature",
@@ -43,7 +45,7 @@
         "place_type": "open river shore at a boat-wreck site",
         "environment": "late summer open water; wet sand, driftwood, reeds, riverbank stones and timber",
         "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
-        "ordinary_boundary": "create one unimportant local natural feature only. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, hazards, movement, resources, or mechanics."
+        "ordinary_boundary": "create one unimportant local natural feature only. State only name, description, and any needed semantic requirements. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
       }
     },
     {
@@ -52,7 +54,8 @@
       "template_id": "trace_ld_v1_tpl_fishing_camp",
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
-      "mechanics_class": "descriptive_only",
+      "structural_variant": "open_one_space",
+      "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {
         "allowed_kind": "ordinary_structure",
@@ -61,7 +64,7 @@
         "place_type": "working fishing camp on the Lower Dvina",
         "environment": "late summer riverbank; fishing nets, wet boats, timber, reeds, sand and river stones",
         "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
-        "ordinary_boundary": "create one unimportant local ordinary structure only. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, hazards, movement, resources, or mechanics."
+        "ordinary_boundary": "create one unimportant local ordinary structure only. State only name, description, and any needed semantic requirements. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
       }
     }
   ],

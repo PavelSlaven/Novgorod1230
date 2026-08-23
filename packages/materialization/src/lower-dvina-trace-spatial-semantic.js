@@ -3,6 +3,13 @@ import { MaterializationError } from './core.js';
 
 const KINDS = new Set(['ordinary_structure', 'local_natural_feature']);
 const NEEDS = new Set(['interaction', 'projection', 'perception']);
+const REQUIREMENTS = new Set(['interior_space', 'controlled_passage', 'movement_constraint',
+  'hazard', 'extractable_resource']);
+const STRUCTURAL_REQUIREMENTS = Object.freeze({
+  open_one_space: new Set(['interior_space']),
+  one_space_controlled_passage: new Set(['interior_space', 'controlled_passage']),
+  descriptive_local_reference: new Set()
+});
 
 export function prepareSpatialSemanticRemainder(input) {
   const value = json(input, 'S1_SPATIAL_INPUT_INVALID', 'input');
@@ -15,13 +22,19 @@ export function prepareSpatialSemanticRemainder(input) {
     text(value[key], 'S1_SPATIAL_INPUT_INVALID', `input.${key}`);
   }
   const envelope = envelopeOf(value.envelope);
+  assertSpatialSemanticStructuralVariantAdmitted(envelope.structural_variant);
   const semantic_context = structuredClone(envelope.semantic_context);
+  const approved_envelope = {
+    kind: envelope.kind, structural_variant: envelope.structural_variant,
+    available_mechanics: structuredClone(envelope.available_mechanics)
+  };
   const code_owned = { envelope: structuredClone(envelope), local_ref: `s1-local:${value.request_id}` };
   const model_request = {
     schema: 'rus.s1_spatial_semantic_model_request.v1', request_id: value.request_id,
-    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', semantic_context,
+    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', semantic_context, approved_envelope,
     proposal_example: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: value.request_id,
-      name: 'ordinary local reference', description: 'ordinary local description' }
+      name: 'ordinary local reference', description: 'ordinary local description',
+      semantic_requirements: [] }
   };
   return deepFreeze({ schema: 'rus.s1_spatial_semantic_prepared.v1', request_id: value.request_id,
     causal_request_ref: value.causal_request_ref, party_id: value.party_id, need: value.need,
@@ -32,11 +45,51 @@ export function admitSpatialSemanticRemainder({ prepared, proposal }) {
   const safePrepared = preparedOf(prepared);
   const safeProposal = proposalOf(proposal, safePrepared);
   const { envelope, local_ref } = safePrepared.code_owned;
+  assertSpatialSemanticRequirementsAdmitted({
+    semantic_requirements: safeProposal.semantic_requirements,
+    structural_variant: envelope.structural_variant,
+    available_mechanics: envelope.available_mechanics
+  });
   return deepFreeze({ schema: 'rus.s1_spatial_semantic_resolution.v1',
     request_id: safePrepared.request_id, causal_request_ref: safePrepared.causal_request_ref,
     party_id: safePrepared.party_id, local_ref, envelope_ref: envelope.envelope_ref,
-    position_ref: envelope.position_ref, semantics: { kind: envelope.kind, name: safeProposal.name,
-      description: safeProposal.description, mechanics_class: envelope.mechanics_class } });
+    position_ref: envelope.position_ref,
+    outcome: { name: safeProposal.name, description: safeProposal.description,
+      semantic_requirements: safeProposal.semantic_requirements }, materialized: true,
+    formal_spatial_refs: { schema: 'rus.s1_formal_spatial_refs_placeholder.v1',
+      status: 'pending_owner_resolution', structural_variant: envelope.structural_variant,
+      available_mechanics: envelope.available_mechanics } });
+}
+
+export function assertSpatialSemanticRequirementsAdmitted({ semantic_requirements,
+  structural_variant, available_mechanics }) {
+  if (!Object.hasOwn(STRUCTURAL_REQUIREMENTS, structural_variant)
+      || !Array.isArray(available_mechanics)
+      || new Set(available_mechanics).size !== available_mechanics.length
+      || !available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))
+      || !Array.isArray(semantic_requirements)
+      || new Set(semantic_requirements).size !== semantic_requirements.length
+      || !semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))) {
+    fail('S1_SPATIAL_ADMISSION_INVALID', 'S1 admission context is invalid.');
+  }
+  for (const requirement of semantic_requirements) {
+    if (STRUCTURAL_REQUIREMENTS[structural_variant]?.has(requirement)) continue;
+    if (requirement === 'interior_space' || requirement === 'controlled_passage') {
+      fail('S1_SPATIAL_DATA_GAP', 'S1 requirement has no approved structural data.', { requirement });
+    }
+    if (!available_mechanics.includes(requirement)) {
+      fail('S1_SPATIAL_MECHANICS_GAP', 'S1 requirement has no approved mechanic.', { requirement });
+    }
+    fail('S1_SPATIAL_DATA_GAP', 'S1 requirement has no approved structural data.', { requirement });
+  }
+}
+
+// Controlled passages need a portal condition/profile owner that this M12
+// profile does not bind. Do not send an unusable variant to model or P16.
+export function assertSpatialSemanticStructuralVariantAdmitted(structural_variant) {
+  if (structural_variant === 'one_space_controlled_passage') {
+    fail('S1_SPATIAL_DATA_GAP', 'S1 controlled passage has no approved portal condition profile.');
+  }
 }
 
 export function normalizeSpatialSemanticEnvelope(value, { allowExhausted = false } = {}) {
@@ -44,9 +97,16 @@ export function normalizeSpatialSemanticEnvelope(value, { allowExhausted = false
 }
 
 export function validateSpatialSemanticResolution(value) {
+  return validateResolution(value, true);
+}
+export function validateSpatialSemanticCandidate(value) {
+  return validateResolution(value, false);
+}
+function validateResolution(value, final) {
   const resolution = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
   exact(resolution, ['schema', 'request_id', 'causal_request_ref', 'party_id', 'local_ref',
-    'envelope_ref', 'position_ref', 'semantics'], 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
+    'envelope_ref', 'position_ref', 'outcome', 'materialized', 'formal_spatial_refs'],
+  'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
   if (resolution.schema !== 'rus.s1_spatial_semantic_resolution.v1') {
     fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 resolution schema is invalid.');
   }
@@ -56,14 +116,11 @@ export function validateSpatialSemanticResolution(value) {
   if (resolution.local_ref !== `s1-local:${resolution.request_id}`) {
     fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 local ref is invalid.');
   }
-  const semantics = json(resolution.semantics, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.semantics');
-  exact(semantics, ['kind', 'name', 'description', 'mechanics_class'],
-    'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.semantics');
-  if (!KINDS.has(semantics.kind) || semantics.mechanics_class !== 'descriptive_only') {
-    fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 semantics exceed descriptive authority.');
-  }
-  text(semantics.name, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.semantics.name');
-  text(semantics.description, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.semantics.description');
+  proposalOf({ schema: 'rus.s1_spatial_semantic_proposal.v1',
+    request_id: resolution.request_id, ...json(resolution.outcome,
+      'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.outcome') }, { request_id: resolution.request_id });
+  if (resolution.materialized !== true) fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 materialization is invalid.');
+  formalSpatialRefs(resolution.formal_spatial_refs, final);
   return deepFreeze(resolution);
 }
 
@@ -85,7 +142,7 @@ function preparedOf(value) {
 
 function envelopeOf(value, allowExhausted = false) {
   const envelope = json(value, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope');
-  const keys = ['envelope_ref', 'kind', 'scope_kind', 'mechanics_class', 'baseline_ref', 'g5_ref',
+  const keys = ['envelope_ref', 'kind', 'scope_kind', 'structural_variant', 'available_mechanics', 'baseline_ref', 'g5_ref',
     'g6_ref', 'position_ref', 'property_ref', 'function_ref', 'environment_ref', 'semantic_context',
     'profile_ref', 'profile_version', 'policy_ref', 'policy_version', 'baseline_state_version',
     'g5_state_version', 'g6_state_version', 'position_state_version', 'capacity_total',
@@ -96,8 +153,15 @@ function envelopeOf(value, allowExhausted = false) {
     text(envelope[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.${key}`);
   }
   if (!KINDS.has(envelope.kind) || envelope.scope_kind !== 'current_position_local_reference'
-      || envelope.mechanics_class !== 'descriptive_only') {
+      || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, envelope.structural_variant)
+      || !Array.isArray(envelope.available_mechanics)
+      || new Set(envelope.available_mechanics).size !== envelope.available_mechanics.length
+      || !envelope.available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))) {
     fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 envelope authority is invalid.');
+  }
+  if ((envelope.kind === 'ordinary_structure')
+    !== (envelope.structural_variant !== 'descriptive_local_reference')) {
+    fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 kind and structural variant are incompatible.');
   }
   semanticContext(envelope.semantic_context, envelope.kind);
   for (const key of ['profile_version', 'policy_version', 'capacity_total', 'state_version']) {
@@ -116,7 +180,7 @@ function envelopeOf(value, allowExhausted = false) {
 
 function proposalOf(value, prepared) {
   const proposal = json(value, 'S1_SPATIAL_PROPOSAL_INVALID', 'proposal');
-  exact(proposal, ['schema', 'request_id', 'name', 'description'],
+  exact(proposal, ['schema', 'request_id', 'name', 'description', 'semantic_requirements'],
     'S1_SPATIAL_PROPOSAL_INVALID', 'proposal');
   if (proposal.schema !== 'rus.s1_spatial_semantic_proposal.v1'
       || proposal.request_id !== prepared.request_id) {
@@ -124,7 +188,47 @@ function proposalOf(value, prepared) {
   }
   text(proposal.name, 'S1_SPATIAL_PROPOSAL_INVALID', 'proposal.name');
   text(proposal.description, 'S1_SPATIAL_PROPOSAL_INVALID', 'proposal.description');
+  if (!Array.isArray(proposal.semantic_requirements)
+      || new Set(proposal.semantic_requirements).size !== proposal.semantic_requirements.length
+      || !proposal.semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))) {
+    fail('S1_SPATIAL_PROPOSAL_INVALID', 'S1 proposal requirements are invalid.');
+  }
   return deepFreeze(proposal);
+}
+
+function formalSpatialRefs(value, final = false) {
+  const refs = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
+  if (refs.schema === 'rus.s1_formal_spatial_refs.v1') {
+    const keys = ['schema', 'status', 'structural_variant', 'local_ref', 'placement_ref',
+      'g6_instance_ref', 'position_ref', 'portal_ref', 'movement_edge_refs', 'visibility_link_refs'];
+    exact(refs, keys, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
+    if (refs.status !== 'materialized' || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, refs.structural_variant)
+        || ![refs.local_ref, refs.placement_ref].every((value) => typeof value === 'string' && value.length > 0)
+        || !Array.isArray(refs.movement_edge_refs) || !Array.isArray(refs.visibility_link_refs)
+        || ![...refs.movement_edge_refs, ...refs.visibility_link_refs].every((value) => typeof value === 'string' && value.length > 0)) {
+      fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
+    }
+    const structural = refs.structural_variant !== 'descriptive_local_reference';
+    if (structural !== (typeof refs.g6_instance_ref === 'string' && typeof refs.position_ref === 'string')
+        || (refs.structural_variant === 'one_space_controlled_passage')
+          !== (typeof refs.portal_ref === 'string')
+        || (!structural && (refs.portal_ref !== null || refs.movement_edge_refs.length !== 0 || refs.visibility_link_refs.length !== 0))
+        || (structural && (refs.movement_edge_refs.length !== 2 || refs.visibility_link_refs.length !== 2))) {
+      fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
+    }
+    return;
+  }
+  if (final) fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 final resolution lacks formal spatial refs.');
+  exact(refs, ['schema', 'status', 'structural_variant', 'available_mechanics'],
+    'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
+  if (refs.schema !== 'rus.s1_formal_spatial_refs_placeholder.v1'
+      || refs.status !== 'pending_owner_resolution'
+      || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, refs.structural_variant)
+      || !Array.isArray(refs.available_mechanics)
+      || new Set(refs.available_mechanics).size !== refs.available_mechanics.length
+      || !refs.available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))) {
+    fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
+  }
 }
 
 function semanticContext(value, kind) {

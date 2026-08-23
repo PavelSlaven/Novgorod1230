@@ -158,7 +158,7 @@ async function recheckCarriers(transaction, partyId, check) {
          FROM party_runtime.party_containers c
          JOIN carrier_containers carried
            ON carried.container_id=c.container_id
-        WHERE c.party_id=$1
+       WHERE c.party_id=$1
         ORDER BY c.container_id FOR UPDATE OF c`,
       [partyId, npcIds, playerId, expectedContainerIds]]
   ]);
@@ -171,7 +171,7 @@ async function recheckCarriers(transaction, partyId, check) {
     try {
       const actual = carrierInventorySnapshot({ state,
         actorId: expected.actor_id, excludedAssemblyItemIds: excluded });
-      return actual != null;
+      return actual?.canonical_digest === expected.canonical_digest;
     } catch {
       return false;
     }

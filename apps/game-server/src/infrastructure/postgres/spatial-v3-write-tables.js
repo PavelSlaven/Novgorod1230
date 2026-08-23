@@ -90,6 +90,9 @@ export const TABLES = Object.freeze({
   party_scene_baselines: { modes: ['insert'], key: ['id'] },
   party_g6_instances: { modes: ['insert'], key: ['id'] },
   scene_position_nodes: { modes: ['insert'], key: ['id'] },
+  portal_entities: { modes: ['insert'], key: ['id'] },
+  scene_movement_edges: { modes: ['insert'], key: ['id'] },
+  visibility_links: { modes: ['insert'], key: ['id'] },
   party_cohorts: { modes: ['insert'], key: ['id'] },
   party_cohort_memberships: { modes: ['insert'], key: ['id'] },
   party_narration_jobs: { modes: ['insert'], key: ['job_id'] }

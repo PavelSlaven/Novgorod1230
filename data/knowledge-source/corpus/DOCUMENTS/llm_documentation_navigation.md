@@ -83,13 +83,14 @@ candidate-free container веткой; A1 сохраняет exact handler prior
 переиспользует pure `@rus/world-processes`, общий temporal boundary owner и тот
 же P16; water/extinguish остаются disabled без exact finite-water authority.
 
-Revision 23 / M11 / Phase 1A v19 / Phase 1B v18 / `spatial-v3-production-v12`
-активирует только узкий descriptive S1 subprofile для profile-bound ordinary
-local references в current position. Его envelopes independent и provisioned
-только для реально совпавшего locked scope; нет movement/hazard/water authority.
-Это не full S1: broad structure/site semantic envelope inside approved topology
-остаётся pending отдельного owner-specific contract/test cutover. Current stage
-uses same combined P16 and follows O1→A1→F1 priority.
+Revision 24 / M12 / Phase 1A v20 / Phase 1B v19 / `spatial-v3-production-v12`
+активирует full S1 для profile-bound local variants в current position: open
+one-space structure или descriptive natural-feature placement. Controlled
+passage fail-closed без approved P11 portal bindings. Envelopes independent и provisioned только для
+реально совпавшего locked baseline/G5/G6/current-position scope; код создаёт
+admitted formal spatial refs и сохраняет их тем же combined P16. Model supplies
+only ordinary semantic detail; false topology/resource mechanics не возникают.
+N1 и unrelated profiles не активируются.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует

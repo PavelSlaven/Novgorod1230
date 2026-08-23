@@ -1,4 +1,4 @@
-import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } from
+import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys, spatialSemanticRows } from
   './spatial-semantic-atomic-write-plan.js';
 
 export function validSpatialSemanticExtension(plan) {
@@ -29,7 +29,10 @@ export function validSpatialSemanticExtension(plan) {
         version.target_table === 'parties' && version.id === plan.party_id
           && version.state_version === sealed.base_party_state_version)
       && spatialSemanticPhysicalKeys(sealed).every((key) =>
-        plan.physical_keys.includes(key));
+        plan.physical_keys.includes(key))
+      && spatialSemanticRows(sealed).every((expected) => plan.inserts.some((write) =>
+        JSON.stringify({ target_table: write.target_table, id: write.id, record: write.record })
+          === JSON.stringify(expected)));
   } catch { return false; }
 }
 

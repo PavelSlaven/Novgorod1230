@@ -31,6 +31,7 @@ import { assertCombatSessionRows } from './lower-dvina-trace-combat-read.js';
 import { assertPhase9NormalizedRows } from './lower-dvina-trace-phase-9-read.js';
 import { assertPhase10NormalizedRows } from './lower-dvina-trace-phase-10-read.js';
 import { commitLowerDvinaTracePhase10 } from './lower-dvina-trace-phase-10-commit.js';
+import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-committed-runtime-containers.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
   partyPool,
@@ -141,7 +142,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     const loadedPayload = structuredClone(payload);
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    return withSpatialSemanticCommittedState(partyPool, partyId, {
+    return withSpatialSemanticCommittedState(partyPool, partyId, await withCommittedRuntimeContainers(partyPool, partyId, {
       ...loadedPayload,
       world_identity: {
         world_revision_id: row.world_revision_id,
@@ -151,7 +152,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         structuredClone(temporalSourceProof.candidates),
       temporal_source_proof: structuredClone(temporalSourceProof),
       local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
-    });
+      }));
   }
   async function loadPhase2Replay({ partyId, idempotencyKey }) {
     return loadCurrentOrHistoricalPhase2Replay({
@@ -285,7 +286,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     if (updated.rowCount !== 1) throw phase2IntegrityError();
     return phase2PublicResult({ payload, screen });
   }
-
   return Object.freeze({
     loadPhase2State,
     loadPhase2Replay,

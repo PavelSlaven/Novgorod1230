@@ -1,11 +1,12 @@
-import { createSpatialSemanticAtomicWritePlan } from './spatial-semantic-atomic-write-plan.js';
+import { createSpatialSemanticAtomicWritePlan, spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
 import { normalizeSpatialSemanticEnvelope } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
 
-export async function applySpatialSemanticAtomicWritePlanInTransaction({ client, input, p16ChangeSetId, partyStateVersionAfter }) {
+export async function applySpatialSemanticAtomicWritePlanInTransaction({ client, input, p16ChangeSetId, partyStateVersionAfter, sealedWrites = null }) {
   const plan = createSpatialSemanticAtomicWritePlan(input);
   if (plan.change_set_id !== p16ChangeSetId
       || partyStateVersionAfter !== plan.base_party_state_version + 1) fail('SPATIAL_SEMANTIC_P16_BINDING_INVALID');
+  if (sealedWrites != null && !formalWritesBound(plan, sealedWrites)) fail('SPATIAL_SEMANTIC_P16_BINDING_INVALID');
   const party = await client.query(`SELECT state_version FROM party_runtime.parties
     WHERE party_id=$1 FOR UPDATE`, [plan.party_id]);
   if (party.rowCount !== 1 || Number(party.rows[0].state_version)
@@ -29,6 +30,13 @@ export async function applySpatialSemanticAtomicWritePlanInTransaction({ client,
       || Number(envelope.rows[0].capacity_total) !== row.capacity_total
       || Number(envelope.rows[0].consumed_count) !== row.consumed_count
       || Number(envelope.rows[0].state_version) !== row.state_version) fail('SPATIAL_SEMANTIC_AUTHORITY_STALE');
+  if (plan.formal_spatial_context.baseline_ref !== row.baseline_ref
+      || plan.formal_spatial_context.g5_ref !== row.g5_ref
+      || plan.formal_spatial_context.kind !== row.kind
+      || plan.formal_spatial_context.structural_variant !== row.structural_variant
+      || JSON.stringify(plan.formal_spatial_context.available_mechanics)
+        !== JSON.stringify(row.available_mechanics)
+      || plan.resolution.position_ref !== row.position_ref) fail('SPATIAL_SEMANTIC_SCOPE_STALE');
   await lockExactSpatialScope(client, plan, row);
   if (row.consumed_count >= row.capacity_total) fail('SPATIAL_SEMANTIC_CAPACITY_EXHAUSTED');
   const next = { ...row, consumed_count: row.consumed_count + 1, state_version: row.state_version + 1 };
@@ -39,14 +47,27 @@ export async function applySpatialSemanticAtomicWritePlanInTransaction({ client,
   if (updated.rowCount !== 1) fail('SPATIAL_SEMANTIC_AUTHORITY_STALE');
   await client.query(`INSERT INTO party_runtime.party_spatial_semantic_resolutions
     (party_id,request_id,local_ref,envelope_ref,position_ref,root_turn_id,step_index,semantics,
-     from_party_state_version,to_party_state_version,p16_change_set_id)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9,$10,$11)`, [plan.party_id,
+     formal_spatial_refs,from_party_state_version,to_party_state_version,p16_change_set_id)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10,$11,$12)`, [plan.party_id,
     plan.resolution.request_id, plan.resolution.local_ref, plan.envelope_ref,
     plan.resolution.position_ref, plan.causal_identity.root_turn_id,
-    plan.causal_identity.step_index, JSON.stringify(plan.resolution.semantics),
-    plan.base_party_state_version, partyStateVersionAfter, p16ChangeSetId]);
+    plan.causal_identity.step_index, JSON.stringify({ kind: row.kind, ...plan.resolution.outcome }),
+    JSON.stringify(plan.resolution.formal_spatial_refs), plan.base_party_state_version,
+    partyStateVersionAfter, p16ChangeSetId]);
   return Object.freeze({ replay: false });
 }
+
+function formalWritesBound(plan, writes) {
+  if (!Array.isArray(writes)) return false;
+  const expectedWrites = spatialSemanticRows(plan);
+  const actual = writes.filter((write) => expectedWrites.some((expected) =>
+    expected.target_table === write.target_table && expected.id === write.id));
+  return actual.length === expectedWrites.length
+    && actual.every((write) => expectedWrites.some((expected) =>
+      JSON.stringify(expected) === JSON.stringify({ target_table: write.target_table,
+        id: write.id, record: write.record })));
+}
+
 
 async function lockExactSpatialScope(client, plan, envelope) {
   const result = await client.query(`SELECT b.state_version AS baseline_state_version,

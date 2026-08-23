@@ -23,7 +23,6 @@ export function createLowerDvinaTraceTurnStepTestModel({
 function spatialLook(request) {
   const marker = request?.player_safe_state?.spatial_semantic;
   if (marker?.semantic_grounding_available !== true
-      || typeof marker.envelope_ref !== 'string' || marker.envelope_ref.length === 0
       || typeof marker.position_ref !== 'string' || marker.position_ref.length === 0) {
     return null;
   }

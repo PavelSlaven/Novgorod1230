@@ -168,8 +168,14 @@ export function validateSpatialV3CombinedWritePlan(plan) {
     || versionedMutableWrites.length
       !== plan.expected_state_versions.length) return false;
   const keySet = new Set(keys);
+  const spatial = plan.spatial_semantic_atomic_write_plan;
+  const externalSpatialParents = spatial == null ? new Set() : new Set([
+    `party_runtime.party_scene_baselines:${spatial.formal_spatial_context?.baseline_ref}`,
+    `party_runtime.scene_position_nodes:${spatial.resolution?.position_ref}`
+  ]);
   if ([...plan.inserts, ...plan.updates, ...plan.appends, ...plan.deletes].some((write) =>
-    childParentKeys(write).some((parent) => !keySet.has(parent)))) return false;
+    childParentKeys(write).some((parent) => !keySet.has(parent)
+      && !externalSpatialParents.has(parent)))) return false;
   if (!keys.every((key) => plan.physical_keys.includes(key))) return false;
   const changes = plan.appends.filter((write) => write.target_table === 'party_v3_change_sets' && write.id === plan.change_set_id && write.record.operation_kind === plan.operation_kind && write.record.idempotency_record_id === plan.idempotency_record_id);
   if (changes.length !== 1) return false;
@@ -207,6 +213,7 @@ export function validateSpatialV3CombinedWritePlan(plan) {
       && Number.isInteger(item.state_version)
       && item.state_version >= 0));
 }
+
 
 function extensionDigestInput(plan, writeSet) {
   const ordinary = plan.ordinary_materialization_atomic_write_plan;

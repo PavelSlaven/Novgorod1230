@@ -21,21 +21,26 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
         || operation.target_refs.length !== 1 || !text(request?.request_id)) {
       fail('TRACE_S1_SCOPE_INVALID');
     }
-    const committed = await authority.findCommittedResolution({ party_id: partyId,
-      request_id: request.request_id, local_ref: target });
+    const initialTarget = operation.discovery_kind === 'look'
+      && markerOf(request.player_safe_state)?.position_ref === target;
+    const localTarget = !initialTarget;
+    const committed = await authority.findCommittedResolution(localTarget
+      ? { party_id: partyId, local_ref: target }
+      : { party_id: partyId, request_id: request.request_id });
     if (committed != null) {
       if (committed.position_ref !== currentPosition(value.committed_state)
-          || committed.position_ref !== target) {
+          || localTarget && (!visibleLocalReference(request.player_safe_state, target)
+            || committed.local_ref !== target)) {
         fail('TRACE_S1_SCOPE_INVALID');
       }
       return resolvedResult(value, committed);
     }
     const marker = markerOf(request.player_safe_state);
-    if (marker?.position_ref !== target || !text(marker.envelope_ref)) {
+    if (localTarget || marker?.position_ref !== target) {
       fail('TRACE_S1_SCOPE_INVALID');
     }
-    const preModel = await authority.loadPreModel({ party_id: partyId,
-      envelope_ref: marker.envelope_ref });
+    const preModel = await authority.loadPreModelAtPosition({ party_id: partyId,
+      position_ref: target });
     if (preModel.envelope.position_ref !== target) fail('TRACE_S1_SCOPE_INVALID');
     const actionRef = `s1:${request.root_turn_id}:${request.step_index}`;
     const prepared = prepareSpatialSemanticRemainder({
@@ -54,6 +59,10 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
         step_index: request.step_index, actor_ref: actor },
       envelope_ref: preModel.envelope_ref,
       expected_envelope_state_version: preModel.state_version,
+      formal_spatial_context: { baseline_ref: preModel.envelope.baseline_ref,
+        g5_ref: preModel.envelope.g5_ref, kind: preModel.envelope.kind,
+        structural_variant: preModel.envelope.structural_variant,
+        available_mechanics: preModel.envelope.available_mechanics },
       resolution
     });
     return Object.freeze({ working_projection: structuredClone(value.working_projection),
@@ -63,7 +72,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
 }
 
 function lookOperation(operation, actor) {
-  return operation?.op === 'request_discovery' && operation.discovery_kind === 'look'
+  return operation?.op === 'request_discovery' && ['look', 'inspect'].includes(operation.discovery_kind)
     && operation.actor_ref === actor && text(actor);
 }
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,
@@ -74,12 +83,18 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return player;
   const position = committed.position?.position_id ?? committed.position?.position_ref;
   if (!text(position)) return player;
-  const descriptions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
+  const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => resolution?.position_ref === position
-      && visibleResolution(resolution)).map(({ semantics }) =>
-      `${semantics.name}: ${semantics.description}`));
+      && visibleResolution(resolution)));
+  const descriptions = resolutions.map(({ semantics }) => `${semantics.name}: ${semantics.description}`);
   const existing = Array.isArray(player.known_context) ? player.known_context : [];
-  const next = descriptions.length === 0 ? player : { ...player,
+  const visible = Array.isArray(player.visible_objects) ? player.visible_objects : [];
+  const knownRefs = new Set(visible.map((object) => object?.entity_ref?.entity_id));
+  const visible_objects = [...visible, ...resolutions.filter(({ local_ref }) => !knownRefs.has(local_ref))
+    .map(({ local_ref, semantics }) => ({ entity_ref: {
+      entity_kind: 'spatial_local_reference', entity_id: local_ref },
+    display_label: semantics.name, recognition: 'recognized', visible_status: 'замечен' }))];
+  const next = descriptions.length === 0 ? player : { ...player, visible_objects,
     known_context: [...existing, ...descriptions.filter((description) =>
       !existing.includes(description))] };
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
@@ -88,7 +103,6 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
       && Number.isSafeInteger(used) && used < total);
   return available == null ? next : { ...next, spatial_semantic: {
     semantic_grounding_available: true,
-    envelope_ref: available.envelope_ref,
     position_ref: position } };
 }
 
@@ -110,9 +124,19 @@ function currentPosition(value) {
 }
 function markerOf(value) {
   const marker = ownRecord(value, 'spatial_semantic');
-  if (marker == null || Object.keys(marker).length !== 3
+  if (marker == null || Object.keys(marker).length !== 2
       || marker.semantic_grounding_available !== true) return null;
   return marker;
+}
+function visibleLocalReference(value, target) {
+  return Array.isArray(value?.visible_objects) && value.visible_objects.some((object) =>
+    Object.keys(object ?? {}).length === 4
+      && ['entity_ref', 'display_label', 'recognition', 'visible_status'].every((key) =>
+        Object.hasOwn(object, key))
+      && text(object.display_label) && object.recognition === 'recognized'
+      && object.visible_status === 'замечен' && Object.keys(object.entity_ref ?? {}).length === 2
+      && object.entity_ref?.entity_kind === 'spatial_local_reference'
+      && object.entity_ref.entity_id === target);
 }
 function ownRecord(value, key) {
   if (value == null || typeof value !== 'object') return null;

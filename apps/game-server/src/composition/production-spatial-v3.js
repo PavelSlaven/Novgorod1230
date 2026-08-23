@@ -122,6 +122,7 @@ export async function createSpatialV3ProductionCompositionRoot({
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
+      spatialSemanticProfile,
       ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });

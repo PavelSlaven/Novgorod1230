@@ -238,7 +238,7 @@ test('S1 look remainder runs through the final discovery seam', async () => {
   assert.equal(spatialCalls, 1);
 });
 
-test('S1 scope admits only discovery look at current marker', () => {
+test('S1 scope admits visible refs', () => {
   const operation = { op: 'request_discovery', actor_ref: 'party-1',
     discovery_kind: 'look', target_refs: ['place-gate'], query: 'осмотреть' };
   const playerSafeState = discoveryProjection(undefined,
@@ -250,12 +250,12 @@ test('S1 scope admits only discovery look at current marker', () => {
   assert.equal(isSpatialSemanticRemainderInScope({ operation,
     playerSafeState: discoveryProjection(undefined, {
       ...spatialMarker(), extra: true }).player_safe_state }), false);
-  const committed = { ...playerSafeState, visible_objects: [{
-    entity_ref: 's1-local:resolved', display_label: 'Коряга',
-    description: 'Старая коряга у воды.', kind: 'local_natural_feature'
-  }] };
-  assert.equal(isSpatialSemanticRemainderInScope({ operation: {
-    ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), false);
+  const committed={...playerSafeState,visible_objects:[{entity_ref:{entity_kind:'spatial_local_reference',entity_id:'s1-local:resolved'},display_label:'Коряга',recognition:'recognized',visible_status:'замечен'}]};
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), true);
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, discovery_kind: 'inspect', target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), true);
+  const hostileExtra = structuredClone(committed);
+  hostileExtra.visible_objects[0].extra = true;
+  assert.equal(isSpatialSemanticRemainderInScope({ operation: { ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: hostileExtra }), false);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
     ...operation, target_refs: ['s1-local:forged'] }, playerSafeState: committed }), false);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
@@ -607,7 +607,7 @@ function discoveryProjection(ordinaryResolution = undefined,
 
 function spatialMarker() {
   return { semantic_grounding_available: true,
-    envelope_ref: 'envelope:shore', position_ref: 'place-gate' };
+    position_ref: 'place-gate' };
 }
 
 function discoveryPlan(request, query = 'осмотреть неизвестную деталь',

@@ -38,7 +38,7 @@ import { digestRunIdentity } from
   '../../apps/game-server/src/infrastructure/postgres/party-store-turn.js';
 import {
   firstPlayableCommitRecheck
-} from '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck.js';
+} from '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js';
 import {
   loadLowerDvinaTraceMaterializationBundle
 } from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
@@ -123,19 +123,19 @@ test('Phase 3 PostgreSQL semantic conversation persists and survives restart', a
   const movedA = await pathA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-move',
     idempotency_key: 'phase-3-a-move',
-    raw_text: 'Пройти по тропе к рыбацкому стану.'
+    raw_text: 'Дойти до рыбацкого стана.'
   });
   assert.equal(movedA.option_id, 'follow_path_to_fishing_camp');
   assert.equal(movedA.movement.result.elapsed_minutes, 8);
   assert.equal(movedA.check, null);
   assert.equal(await count(pool,
-    'party_runtime.party_route_plans', partyA.party_id), 1);
+    'party_runtime.party_route_plans', partyA.party_id), 2);
   assert.equal(await count(pool,
-    'party_runtime.party_route_plan_executions', partyA.party_id), 1);
+    'party_runtime.party_route_plan_executions', partyA.party_id), 2);
   assert.equal(await count(pool,
     'party_runtime.traveller_travel_states', partyA.party_id), 1);
   assert.equal(await traversalIntervalCount(pool, partyA.party_id), 1);
-  assert.equal(await traversalLifecycleCount(pool, partyA.party_id), 3);
+  assert.equal(await traversalLifecycleCount(pool, partyA.party_id), 4);
   const firstTalk = await pathA.submitTurn(partyA.party_id, {
     request_id: 'phase-3-a-talk',
     idempotency_key: 'phase-3-a-talk',

@@ -64,6 +64,8 @@ export function nextPhase4State({ state, factual, nextVersion, turnNumber,
   if (c.phase4_kind === 'movement') {
     const scene = next.prepared_scenes.find((entry) => entry.location_profile_ref === c.movement.destination_location_ref);
     if (!scene) throw new Error('TRACE_PHASE_4_DRYING_SHED_MISSING');
+    delete next.position.position_id;
+    delete next.position.g6_id;
     next.position = { ...next.position, location_ref: c.movement.destination_location_ref,
       g5_anchor_id: scene.anchor.instance_id, g5_node_id: scene.node.instance_id };
     next.npcs = next.npcs.map((npc) => c.movement.participants.includes(npc.instance_id)

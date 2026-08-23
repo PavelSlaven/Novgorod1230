@@ -2,8 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildLowerDvinaTracePhase6Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-6-commit.js';
+import { recheckPhase6TargetedAdmission } from
+  '../src/infrastructure/postgres/first-playable/recheck-phase6-admission.js';
 import { planTracePhase6SynchronizedCarry as planCarry } from
   '../src/runtime/lower-dvina-trace-phase-6-carry.js';
+import { carrierInventorySnapshot } from
+  '../src/runtime/lower-dvina-trace-phase-6-carry-inventory.js';
 import { createPhase6TestTemporalOwner } from
   './lower-dvina-trace-phase-6-fixtures.js';
 
@@ -166,6 +170,90 @@ test('Phase 6 P16 plan atomically persists one owner traversal and terminal carr
   assert.equal('expected_inventory_snapshot' in physical, false);
   assert.equal(physical.assembly_resources.length, 2);
 });
+
+test('Phase 6 admission includes concurrent carrier-held container contents',
+  async () => {
+    const assemblyResources = ['net', 'poles'].map((itemId) => ({
+      item_id: itemId, item_template_ref: `${itemId}-template`,
+      condition_state: 'serviceable', holder_npc_id: 'onisim',
+      physical_position: 'external', owner_npc_id: 'eremey',
+      controller_npc_id: 'onisim', accessibility: 'available',
+      use_state: 'ready'
+    }));
+    const assemblyRows = assemblyResources.map((resource) => ({
+      item_id: resource.item_id, template_id: resource.item_template_ref,
+      condition_state: resource.condition_state,
+      accessibility: resource.accessibility, use_state: resource.use_state,
+      holder_npc_id: resource.holder_npc_id,
+      physical_position: resource.physical_position
+    }));
+    const carrierRows = assemblyRows.map((row) => ({ ...row, quantity: 1,
+      state: {}, anchor_id: 'shore', container_id: null,
+      holder_character_id: null, equipment_slot_category_id: null }));
+    const pouch = { container_id: 'legacy-pouch',
+      template_id: 'legacy-pouch-template', anchor_id: null,
+      parent_container_id: null, holder_npc_id: null,
+      holder_character_id: 'player', physical_position: 'worn_quick',
+      equipment_slot_category_id: null, state: {
+        ordinary_contents_context: { container_inventory_profile: {
+          mass_grams: 300, carry_form: 'regular', capacity: 4,
+          packing_slot_cost: 3
+        }, mechanics_policy: { max_external_hand_cost: 0 } }
+      } };
+    const pouchContents = { item_id: 'pouch-contents',
+      template_id: 'pouch-contents-template', quantity: 1,
+      state: { inventory_profile_snapshot: { mass_grams: 10,
+        external_hand_cost: 0, carry_form: 'compact' } }, anchor_id: null,
+      container_id: pouch.container_id, holder_npc_id: null,
+      holder_character_id: null, physical_position: null,
+      equipment_slot_category_id: null };
+    const state = { party_id: 'party', actor_id: 'player',
+      party_state: { state_version: 0 },
+      position: { g5_anchor_id: 'shore' },
+      player_profile: { attributes: { strength: { value: 9 } } },
+      items: [], containers: [],
+      container_placements: [], container_profiles: [] };
+    const snapshot = carrierInventorySnapshot({ state, actorId: 'player',
+      excludedAssemblyItemIds: new Set(assemblyResources.map(
+        ({ item_id: id }) => id
+      )) });
+    const check = { physical_model: 'trace_phase6_targeted_admission',
+      source_anchor_id: 'shore', execution_id: 'carry', resume: false,
+      participant_bindings: { source_anchor_id: 'shore',
+        player_actor_id: 'player', initial_carrier_ids: [
+          'player', 'eremey', 'ratsha'
+        ], replacement_carrier_id: 'fisher', carried_actor_id: 'onisim' },
+      assembly_resources: assemblyResources,
+      active_carrier_snapshots: [snapshot], player_strength: 9 };
+    const rows = (values) => ({ rows: values, rowCount: values.length });
+    const carrierContainerQueries = [];
+    const result = await recheckPhase6TargetedAdmission({ partyId: 'party',
+      check, transaction: { async query(sql) {
+        if (sql.includes('FROM party_runtime.party_containers c')) {
+          carrierContainerQueries.push(sql);
+        }
+        if (sql.includes('party_positions')) return rows([{ g5_anchor_id:
+          'shore' }]);
+        if (sql.includes('party_npcs')) return rows(['eremey', 'fisher',
+          'onisim', 'ratsha'].map((npc_id) => ({ npc_id, anchor_id: 'shore' })));
+        if (sql.includes('party_activity_participant_bindings')) return rows([]);
+        if (sql.includes('party_ownership')) return rows(assemblyResources.map(
+          ({ item_id }) => ({ item_id, owner_npc_id: 'eremey',
+            controller_npc_id: 'onisim' })));
+        if (sql.includes('i.condition_state')) return rows(assemblyRows);
+        if (sql.includes('i.quantity')) return rows([
+          ...carrierRows,
+          ...(sql.includes('carrier_containers') ? [pouchContents] : [])
+        ]);
+        if (sql.includes('party_containers')) return rows(
+          sql.includes('carrier_containers') ? [pouch] : []
+        );
+        throw new Error(`unexpected query: ${sql}`);
+      } } });
+
+    assert.deepEqual(result, { ok: true, code: 'state_version_conflict' });
+    assert.match(carrierContainerQueries.at(-1), /WHERE c\.party_id=\$1/);
+  });
 
 test('Phase 6 P16 preserves an interrupted owner traversal and resumes the same execution', async () => {
   const state = committedState();

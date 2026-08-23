@@ -16,12 +16,32 @@ import { projectLowerDvinaTraceS1Capability } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
+import { createLowerDvinaTraceSpatialSemanticModel } from
+  '../src/runtime/lower-dvina-trace-s1-llm.js';
+import { loadSpatialSemanticCommittedState } from
+  '../src/infrastructure/postgres/spatial-semantic-readback.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
 
-test('S1 profile loads revision 23 bundle', async () => {
+test('S1 profile loads revision 24 bundle', async () => {
   const loaded = await loadLowerDvinaTraceSpatialSemanticProfile();
-  assert.equal(loaded.profile.scenario_definition_revision, 23);
+  assert.equal(loaded.profile.scenario_definition_revision, 24);
+});
+
+test('S1 LLM receives profile-owned semantic context, never envelope refs', async () => {
+  let modelRequest;
+  const model = createLowerDvinaTraceSpatialSemanticModel({ roleRunner: { run: async ({ messages }) => {
+    modelRequest = JSON.parse(messages[1].content);
+    return { output: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: 'request',
+      name: 'Каменная гряда', description: 'Низкие мокрые камни.' } };
+  } } });
+  await model({ schema: 'rus.s1_spatial_semantic_model_request.v1', request_id: 'request',
+    semantic_context: { allowed_kind: 'local_natural_feature', period: '1230, Rus',
+      region: 'Lower Dvina', place_type: 'shore', environment: 'wet sand',
+      material_culture: 'wood and stone', ordinary_boundary: 'ordinary only' },
+    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', proposal_example: {} });
+  assert.equal(modelRequest.semantic_context.region, 'Lower Dvina');
+  assert.equal(JSON.stringify(modelRequest).includes('envelope_ref'), false);
 });
 
 test('production-v10 threads the exact A1 profile and resolver into Phase 2',
@@ -125,7 +145,7 @@ test('F1 player-safe marker exposes visible ignition and active process refs',
     assert.equal(hidden.local_world_process,undefined);
   });
 
-test('S1 player-safe projection exposes only current committed local refs',
+test('S1 player-safe projection keeps current committed detail descriptive after reload',
   async () => {
     const committedState = { position: { position_id: 'position:shore' },
       spatial_semantic: [
@@ -141,22 +161,22 @@ test('S1 player-safe projection exposes only current committed local refs',
               kind: 'ordinary_structure' } }] }
       ] };
     const projected = projectLowerDvinaTraceS1Capability({
-      playerSafeState: { visible_objects: [{ entity_ref: 'existing' }] },
+      playerSafeState: { visible_objects: [{ entity_ref: 'existing' }], known_context: ['берег'] },
       committedState, resolverAvailable: true });
-    assert.deepEqual(projected.visible_objects, [{ entity_ref: 'existing' }, {
-      entity_ref: 's1-local:shore', display_label: 'Коряга',
-      description: 'Сырая коряга у воды.', kind: 'local_natural_feature' }]);
+    assert.deepEqual(projected.visible_objects, [{ entity_ref: 'existing' }]);
+    assert.deepEqual(projected.known_context, ['берег', 'Коряга: Сырая коряга у воды.']);
     assert.deepEqual(projected.spatial_semantic, { semantic_grounding_available: true,
       envelope_ref: 'envelope:shore', position_ref: 'position:shore' });
     const away = projectLowerDvinaTraceS1Capability({
-      playerSafeState: { visible_objects: [] }, committedState: {
+      playerSafeState: { visible_objects: [], known_context: [] }, committedState: {
         ...committedState, position: { position_id: 'position:far' }
       }, resolverAvailable: true });
-    assert.deepEqual(away.visible_objects, [{ entity_ref: 's1-local:far',
-      display_label: 'Пень', description: 'Пень далеко.', kind: 'ordinary_structure' }]);
+    assert.deepEqual(away.visible_objects, []);
+    assert.deepEqual(away.known_context, ['Пень: Пень далеко.']);
     const returned = projectLowerDvinaTraceS1Capability({
-      playerSafeState: { visible_objects: [] }, committedState, resolverAvailable: true });
-    assert.equal(returned.visible_objects[0].entity_ref, 's1-local:shore');
+      playerSafeState: { visible_objects: [], known_context: [] }, committedState,
+      resolverAvailable: true });
+    assert.deepEqual(returned.known_context, ['Коряга: Сырая коряга у воды.']);
   });
 
 test('production binding installs S1 resolver without profile gating',
@@ -191,7 +211,24 @@ test('S1 production boundary rejects hostile envelopes before getters or storage
   assert.equal(modelCalls, 0);
 });
 
-test('S1 resolver models one open result, then replays only visible current resolution', async () => {
+test('S1 readback accepts exhausted committed envelope with its resolution', async () => {
+  const envelope = { ...s1Envelope(), consumed_count: 1, state_version: 2 };
+  const state = await loadSpatialSemanticCommittedState({ query: async (sql) =>
+    sql.includes('party_spatial_semantic_envelopes')
+      ? { rows: [{ envelope, capacity_total: 1, consumed_count: 1,
+        state_version: 2, status: 'committed' }] }
+      : { rows: [{ request_id: 'request:s1', local_ref: 's1-local:request:s1',
+        envelope_ref: 'envelope:s1', position_ref: 'position:s1',
+        root_turn_id: 'turn:s1', step_index: 1,
+        semantics: { kind: 'local_natural_feature', name: 'Гряда',
+          description: 'Мокрый камень.', mechanics_class: 'descriptive_only' } }] }
+  }, 'party:s1');
+  assert.equal(state[0].envelope_ref, 'envelope:s1');
+  assert.equal(state[0].consumed_count, 1);
+  assert.equal(state[0].resolutions.length, 1);
+});
+
+test('S1 resolver models one open result, then replays only current position marker', async () => {
   let modelCalls = 0;
   const envelope = s1Envelope();
   const pool = { query: async (sql) => {
@@ -236,38 +273,32 @@ test('S1 resolver models one open result, then replays only visible current reso
       ? { rowCount: 1, rows: [committed] }
       : assert.fail(`unexpected replay write/read: ${sql}`)
   }, spatialSemanticModel: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
-  const replayed = await replay(s1Request({ target: committed.local_ref,
-    visible: [s1Visible(committed.local_ref)] }));
+  const replayed = await replay(s1Request());
   assert.equal(replayed.spatial_semantic_atomic_write_plan, undefined);
   assert.equal(modelCalls, 2);
-  await assert.rejects(() => replay(s1Request({ target: committed.local_ref,
-    visible: [s1Visible(committed.local_ref)], position: 'position:other' })),
-  { code: 'TRACE_S1_SCOPE_INVALID' });
-  await assert.rejects(() => replay(s1Request({ target: committed.local_ref,
-    visible: [s1Visible('s1-local:forged')] })), { code: 'TRACE_S1_SCOPE_INVALID' });
+  await assert.rejects(() => replay(s1Request({ target: committed.local_ref })),
+    { code: 'TRACE_S1_SCOPE_INVALID' });
 });
 
-test('S1 visible local refs reject unsupported mechanics after committed scope check', async () => {
-  const committed = { request_id: 'request:s1', local_ref: 's1-local:request:s1',
-    envelope_ref: 'envelope:s1', position_ref: 'position:s1', root_turn_id: 'turn:s1',
-    step_index: 1, semantics: { kind: 'local_natural_feature', name: 'Выступ',
-      description: 'Камень у воды.', mechanics_class: 'descriptive_only' } };
-  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool: {
-    query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
-      ? { rowCount: 1, rows: [committed] }
-      : assert.fail(`unexpected S1 query: ${sql}`)
-  }, spatialSemanticModel: async () => assert.fail('model must not run')
+test('exhausted S1 envelope exposes no resolver marker or model path', async () => {
+  let reads = 0; let modelCalls = 0;
+  const playerSafeState = projectLowerDvinaTraceS1Capability({
+    playerSafeState: { visible_objects: [] }, resolverAvailable: true,
+    committedState: { position: { position_id: 'position:s1' },
+      spatial_semantic: [{ status: 'committed', envelope_ref: 'envelope:s1',
+        capacity_total: 1, consumed_count: 1,
+        envelope: { position_ref: 'position:s1' }, resolutions: [] }] }
+  });
+  assert.equal(playerSafeState.spatial_semantic, undefined);
+  const request = s1Request();
+  request.request.player_safe_state = playerSafeState;
+  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
+    pool: { query: async () => { reads += 1; return { rowCount: 0, rows: [] }; } },
+    spatialSemanticModel: async () => { modelCalls += 1; }
   })({ partyId: 'party:s1' });
-  const use = (overrides = {}) => s1Request({ target: committed.local_ref,
-    visible: [s1Visible(committed.local_ref)], operation: {
-      op: 'request_item_use', actor_ref: 'actor:s1', item_ref: committed.local_ref,
-      use_kind: 'operate', target_refs: [] }, ...overrides });
-  await assert.rejects(() => resolver(use()),
-    { code: 'TRACE_S1_MECHANICS_UNSUPPORTED' });
-  await assert.rejects(() => resolver(use({ position: 'position:other' })),
-    { code: 'TRACE_S1_SCOPE_INVALID' });
-  await assert.rejects(() => resolver(use({ visible: [s1Visible('s1-local:forged')] })),
-    { code: 'TRACE_S1_SCOPE_INVALID' });
+  await assert.rejects(() => resolver(request), { code: 'TRACE_S1_SCOPE_INVALID' });
+  assert.equal(reads, 1, 'replay lookup remains read-only');
+  assert.equal(modelCalls, 0);
 });
 
 test('S1 player-safe projection rejects hostile committed snapshots without reads',
@@ -336,24 +367,23 @@ function s1Envelope() {
   return { envelope_ref: 'envelope:s1', kind: 'local_natural_feature',
     scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
     baseline_ref: 'baseline:s1', g5_ref: 'g5:s1', g6_ref: 'g6:s1',
-    position_ref: 'position:s1', template_ref: 'template:s1', property_ref: 'property:s1',
-    function_ref: 'function:s1', environment_ref: 'environment:s1', profile_ref: 'profile:s1',
+    position_ref: 'position:s1', property_ref: 'property:s1',
+    function_ref: 'function:s1', environment_ref: 'environment:s1',
+    semantic_context: { allowed_kind: 'local_natural_feature', period: 'period', region: 'region',
+      place_type: 'place', environment: 'environment', material_culture: 'culture',
+      ordinary_boundary: 'ordinary only' }, profile_ref: 'profile:s1',
     profile_version: 1, policy_ref: 'policy:s1', policy_version: 1,
     baseline_state_version: 0, g5_state_version: 0, g6_state_version: 0,
     position_state_version: 0, capacity_total: 1, consumed_count: 0, state_version: 1 };
 }
-function s1Visible(entity_ref) {
-  return { entity_ref, display_label: 'Выступ', description: 'Камень у воды.',
-    kind: 'local_natural_feature' };
-}
-function s1Request({ target = 'position:s1', visible = [], position = 'position:s1',
+function s1Request({ target = 'position:s1', position = 'position:s1',
   operation = undefined } = {}) {
   return { schema: 'turn_step_spatial_semantic_remainder_request_v1',
     operation: operation ?? { op: 'request_discovery', discovery_kind: 'look',
       actor_ref: 'actor:s1', target_refs: [target] }, request: { request_id: 'request:s1', root_turn_id: 'turn:s1',
       step_index: 1, committed_state_version: 4, player_safe_state: {
         spatial_semantic: { semantic_grounding_available: true,
-          envelope_ref: 'envelope:s1', position_ref: 'position:s1' }, visible_objects: visible } },
+          envelope_ref: 'envelope:s1', position_ref: 'position:s1' }, visible_objects: [] } },
     actor: { actor_id: 'actor:s1' }, working_projection: {},
     committed_state: { party_state: { turn_number: 4 }, position: { position_id: position } } };
 }

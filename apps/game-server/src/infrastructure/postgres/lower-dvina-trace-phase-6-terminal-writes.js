@@ -2,7 +2,8 @@ import { row } from './first-playable/plan-shared.js';
 
 export function appendTerminal({ inserts, updates, appends, partyId, state, next,
   intent, changeSetId, idemId }) {
-  updates.push(row('party_positions', partyId, {
+  const preparedFirstEntry = usesPreparedFirstEntry(state, next.position);
+  if (!preparedFirstEntry) updates.push(row('party_positions', partyId, {
     party_id: partyId,
     g4_id: next.position.g4_id,
     g5_node_id: next.position.g5_node_id,
@@ -13,7 +14,7 @@ export function appendTerminal({ inserts, updates, appends, partyId, state, next
     updates.push(row('party_npcs', npc.instance_id, {
       party_id: partyId,
       npc_id: npc.instance_id,
-      anchor_id: npc.anchor_id,
+      anchor_id: preparedFirstEntry ? null : npc.anchor_id,
       machine_state: npc.machine_state
     }));
   }
@@ -28,6 +29,12 @@ export function appendTerminal({ inserts, updates, appends, partyId, state, next
         evidence: [intent.execution_id]
       }));
   }
+}
+
+function usesPreparedFirstEntry(state, position) {
+  const firstEntry = state.first_entry_preparation;
+  return firstEntry?.spatial_v3?.target?.status === 'prepared'
+    && position?.g5_anchor_id === firstEntry.scene?.anchor?.instance_id;
 }
 
 export function appendPlayerBodyEffect({ updates, appends, partyId, state,

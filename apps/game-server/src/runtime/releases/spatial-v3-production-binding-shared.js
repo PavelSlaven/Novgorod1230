@@ -5,8 +5,10 @@ import {
   createFirstPlayablePublicRuntime
 } from '../first-playable-public-runtime.js';
 import {
-  firstPlayableCommitRecheck
+  firstPlayableCommitRecheck as baseCommitRecheck
 } from '../../infrastructure/postgres/first-playable/recheck.js';
+import { recheckSpatialV3PostgresFirstEntry } from
+  '../../infrastructure/postgres/spatial-v3-first-entry-recheck.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter
 } from '../../infrastructure/postgres/lower-dvina-trace-phase-1b.js';
@@ -18,7 +20,13 @@ import { createTraceTurnRuntime } from
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../../internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 
-export { firstPlayableCommitRecheck };
+export async function firstPlayableCommitRecheck(input) {
+  if (input?.plan?.operation_kind === 'first_entry'
+      && input?.check?.kind === 'physical') {
+    return recheckSpatialV3PostgresFirstEntry(input);
+  }
+  return baseCommitRecheck(input);
+}
 
 function createTargetCompositionPorts(
   getPublicRuntime,

@@ -6,6 +6,10 @@ import {
 } from './lower-dvina-trace-phase-2-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from
   './lower-dvina-trace-turn-step-model-fixture.js';
+import { loadLowerDvinaTraceA1Profile } from
+  '../src/internal/lower-dvina-trace-a1-profile.js';
+import { loadLowerDvinaTraceLocalFireProfile } from
+  '../src/internal/lower-dvina-trace-local-fire-profile.js';
 
 const bundle13 = await loadScenarioBundle(13);
 
@@ -68,6 +72,51 @@ test('revision 13 general look stays a generic player-safe turn',
         assert.equal(playerSafe.includes('visible:road_bag_missing'), false);
         assert.equal(playerSafe.includes(
           'trace_ld_v1_item_blue_wool_fragment'), false);
+      });
+    }
+  });
+
+test('runtime keeps inherited A1/F1 owners through revision 24',
+  async (t) => {
+    const [actionProductionProfile, localFireProfile] = await Promise.all([
+      loadLowerDvinaTraceA1Profile(), loadLowerDvinaTraceLocalFireProfile()
+    ]);
+    for (const [revision, expected] of [[20, [0, 0]], [21, [1, 0]],
+      [22, [1, 2]], [23, [1, 2]], [24, [1, 2]]]) {
+      await t.test(`revision ${revision}`, async () => {
+        let actionOwners = 0; let fireOwners = 0;
+        const scenarioBundle = await loadScenarioBundle(revision);
+        const f = fixture({ scenarioBundle, materializationBundle: revision === 24
+          ? await loadScenarioBundle(23) : scenarioBundle,
+          actionProductionProfile, localFireProfile,
+          createTurnStepActionProductionOwner: () => {
+            actionOwners += 1;
+            return { execute: async () => assert.fail('unexpected A1 execution'),
+              preflight: async () => assert.fail('unexpected A1 preflight') };
+          },
+          createTurnStepWorldProcessResolver: () => {
+            fireOwners += 1;
+            return async () => assert.fail('unexpected F1 execution');
+          }, turnStepModel: createLowerDvinaTraceTurnStepTestModel() });
+        const fireCarrier = f.state.items.find(({ placement }) =>
+          placement.holder_character_id === f.state.actor_id);
+        assert.ok(fireCarrier);
+        fireCarrier.state = { ...fireCarrier.state, lifecycle_status: 'active',
+          local_fire_ignition_basis: { schema:
+            'rus.items.local_fire_ignition_basis.v1' } };
+        f.state.position.g5_anchor_id = f.state.position.location_ref;
+        f.state.materialization_trace.seed_context.scenario_definition_revision = revision;
+        if (revision === 24) f.state.first_entry_preparation = {
+          spatial_v3: { target: { status: 'prepared' } }
+        };
+        await f.runtime.submitTurn({ partyId: f.partyId, input: {
+          request_id: `runtime-gate-${revision}`,
+          idempotency_key: `runtime-gate-${revision}`, raw_text: 'Осмотреться' } });
+        const playerSafe = f.turnStepInput().player_safe_state;
+        assert.equal(actionOwners, expected[0]);
+        assert.equal(fireOwners, expected[1]);
+        assert.equal(playerSafe.local_world_process?.semantic_grounding_available === true,
+          expected[1] > 0);
       });
     }
   });

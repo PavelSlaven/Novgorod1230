@@ -10,11 +10,24 @@ async function lockDestination(client, plan) {
   const pin = plan.output_destination_pin;
   if (pin == null) return;
   const selected = await client.query(
-    `SELECT p.g5_anchor_id AS anchor_id,a.item_capacity
+    `WITH modern_position AS (
+       SELECT l.id FROM party_runtime.party_journey_locations l
+       JOIN party_runtime.parties current_party
+         ON current_party.party_id=l.party_id
+       JOIN party_runtime.party_state_snapshots snapshot
+         ON snapshot.party_id=current_party.party_id
+        AND snapshot.state_version=current_party.state_version
+        WHERE l.party_id=$1 AND l.owner_kind='actor' AND l.owner_id=$2
+          AND snapshot.state_payload#>>'{position,position_id}'
+            =l.scene_position_id
+        FOR UPDATE OF l,current_party,snapshot
+     )
+     SELECT p.g5_anchor_id AS anchor_id,a.item_capacity
      FROM party_runtime.party_positions p
      JOIN party_runtime.party_g5_anchors a
        ON a.party_id=p.party_id AND a.anchor_id=p.g5_anchor_id
-     WHERE p.party_id=$1 FOR UPDATE OF p,a`, [plan.party_id]);
+     WHERE p.party_id=$1 AND NOT EXISTS (SELECT 1 FROM modern_position)
+     FOR UPDATE OF p,a`, [plan.party_id, plan.actor_ref]);
   const used = await client.query(
     `SELECT p.item_id FROM party_runtime.party_item_placements p
      JOIN party_runtime.party_items i

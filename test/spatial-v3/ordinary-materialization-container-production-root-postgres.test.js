@@ -35,7 +35,7 @@ const pin = Object.freeze({
   compatible_world_pin_manifest_digest:hex
 });
 
-test('production root provisions active rev20 O2b in the first-entry P16',
+test('production root provisions active O2b and S1 in the first-entry P16',
   async (t) => {
     if (docker(['version']).status !== 0) return t.skip('Docker required');
     let pool;
@@ -100,7 +100,7 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:3,all_enablements:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,s1_envelopes:2,change_sets:1,idempotency:1
     });
     const container=(await pool.query(`SELECT template_id,holder_character_id,
         physical_position,closure_state,state
@@ -129,7 +129,7 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:3,all_enablements:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,s1_envelopes:2,change_sets:1,idempotency:1
     });
 
     const rollbackParty='party-root-rollback';
@@ -141,7 +141,7 @@ test('production root provisions active rev20 O2b in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,rollbackParty),{
       party_state_version:'0',containers:0,ownership:0,aggregates:0,
       contexts:0,bases:0,enablements:0,all_aggregates:0,all_contexts:0,
-      all_bases:0,all_enablements:0,change_sets:0,idempotency:0
+      all_bases:0,all_enablements:0,s1_envelopes:0,change_sets:0,idempotency:0
     });
     await root.close();
   });
@@ -378,11 +378,11 @@ function sceneWrites(partyId,suffix,changeSetId) {
     superseded_by_site_id:null}},{target_table:'party_scene_baselines',
     id:baseline,record:{id:baseline,...common,host_kind:'g5_site',host_id:g5,
       source_kind:'generated_template',scene_template_ref:{entity_ref:{
-        entity_kind:'scene_template',entity_id:'scene'},authoring_version:'1'},
+        entity_kind:'scene_template',entity_id:'trace_ld_v1_tpl_wreck_shore'},authoring_version:'1'},
       materialization_trace_id:`trace-${suffix}`,materializer_version:'v1',
       catalog_digest:hex}},{target_table:'party_g6_instances',id:g6,record:{
       id:g6,...common,scene_baseline_id:baseline,source_scene_template_ref:{
-        entity_ref:{entity_kind:'scene_template',entity_id:'scene'},
+        entity_ref:{entity_kind:'scene_template',entity_id:'trace_ld_v1_tpl_wreck_shore'},
         authoring_version:'1'},scene_slot_key:'entry',
       enclosing_stable_structure_id:null,host_kind:'g5_site',host_id:g5,
       physical_class_id:'spatial.g6.open',primary_scene_role_id:'entry',
@@ -390,7 +390,7 @@ function sceneWrites(partyId,suffix,changeSetId) {
       intra_g6_visibility_mode:'default_clear',
       default_visibility_distance_band:'near',acoustic_uniformity:'uniform'}},
   {target_table:'scene_position_nodes',id:position,record:{id:position,...common,
-    g6_instance_id:g6,position_type_id:'scene_position.central',
+    g6_instance_id:g6,position_type_id:'scene_position',
     template_slot_key:'arrival',template_instance_ordinal:0,stable_basis_ref:null,
     capacity:10,access_class_id:'open',light_profile_ref:null,
     hazard_profile_ref:null}}];
@@ -423,6 +423,8 @@ async function provisionedState(pool,partyId) {
       WHERE party_id=$1) AS all_bases,
     (SELECT count(*)::int FROM party_runtime.party_ordinary_materialization_enablements
       WHERE party_id=$1) AS all_enablements,
+    (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_envelopes
+      WHERE party_id=$1) AS s1_envelopes,
     (SELECT count(*)::int FROM party_runtime.party_v3_change_sets
       WHERE party_id=$1) AS change_sets,
     (SELECT count(*)::int FROM party_runtime.party_command_idempotency

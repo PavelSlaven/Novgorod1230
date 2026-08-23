@@ -1,0 +1,22 @@
+{
+  "schema": "rus.lower_dvina_trace_m12_content_manifest.v1",
+  "package_id": "lower_dvina_trace_m12_content_v1",
+  "revision": 1,
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 24,
+  "status": "approved",
+  "publication_status": "unpublished",
+  "superseded_package_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/manifest.json","id":"lower_dvina_trace_m11_content_v1","revision":1,"schema":"rus.lower_dvina_trace_m11_content_manifest.v1","digest":"29a8144863f7cd78e5b7019a5ee5265e0e380e7802f91a2a7cccc8865c7ca577"},
+  "superseded_definition_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/definition.json","id":"lower_dvina_trace_v1","revision":23,"schema":"rus.trace_scenario_definition.v1","digest":"8f1f4e331738243ab26da5d1e280e89b2086e837c1f167e03d806da162083810"},
+  "files": {"definition.json":"8b03d8ebee9ad04c8321ff336f34ffad0f4fa8ed8adfc5b0a7cdc0026beb8d78","local-fire-profile.json":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5","spatial-semantic-profile.json":"1b103f2ac9b483ba7a9e5b4f3168957c8cc1f066906ff19bc3bef9c6d712e000"},
+  "content_refs": {
+    "definition": {"path":"definition.json","id":"lower_dvina_trace_v1","revision":24,"schema":"rus.trace_scenario_definition.v1","digest":"8b03d8ebee9ad04c8321ff336f34ffad0f4fa8ed8adfc5b0a7cdc0026beb8d78"},
+    "local_fire_profile": {"path":"local-fire-profile.json","id":"lower_dvina_trace_f1_local_exact_fire_profile_v1","revision":1,"schema":"rus.lower_dvina_trace_local_fire_profile.v1","digest":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"},
+    "spatial_semantic_profile": {"path":"spatial-semantic-profile.json","id":"lower_dvina_trace_s1_spatial_semantic_profile_v2","revision":2,"schema":"rus.lower_dvina_trace_spatial_semantic_profile.v1","digest":"1b103f2ac9b483ba7a9e5b4f3168957c8cc1f066906ff19bc3bef9c6d712e000"}
+  },
+  "content_digest_algorithm": "sha256_sorted_file_map_v1",
+  "content_digest": "196f8d2cce8548b8bad0741a7083297ed7ac2fa7216af37e11c1729c9715f3f0",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "alias_policy": "forbidden"
+}

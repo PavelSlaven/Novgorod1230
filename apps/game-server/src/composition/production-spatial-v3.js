@@ -1,7 +1,9 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { createSpatialSemanticFirstEntryProvisioner } from '../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
+import { loadLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -110,26 +112,17 @@ export async function createSpatialV3ProductionCompositionRoot({
         'The complete exact spatial-v3 migration chain is required.'
       );
     }
-    const startup = {
-      world_database:
-        await probePostgresPool(pools.worldPool, 'world_base'),
-      party_database:
-        await probePostgresPool(pools.partyPool, 'party_runtime')
-    };
+    const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
-    const profiles = await loadLowerDvinaTraceProductionMaterializationProfiles({
-      rootDir:config.rootDir ?? process.cwd()});
-    const bindingContext = Object.freeze({
-      env,
-      config,
+    const [profiles, spatialSemanticProfile] = await Promise.all([
+      loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
+      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() })
+    ]);
+    const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
-      ports: Object.freeze({
-        partyPool: pools.partyPool,
-        worldPool: pools.worldPool,
-        worldBase
-      }),
+      ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
     const bindings = bindingsFactory
@@ -141,11 +134,15 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile }), now });
-    const target = targetRootFactory({
-      ...bindings.targetCompositionPorts,
-      committer
+    const ordinaryFirstEntryProvisioner = createOrdinaryMaterializationFirstEntryProvisioner({
+      profile: profiles.ordinaryMaterializationProfile,
+      ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
     });
+    const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
+      pool: pools.partyPool, recheck: bindings.commitRecheck,
+      ordinaryFirstEntryProvisioner: { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }, now });
+    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer });
     const activatedRelease = deriveActivatedReleaseFromReadback(
       release,
       bindings.runtimeCatalogPin

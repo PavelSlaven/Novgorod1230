@@ -1,4 +1,3 @@
-import { canonicalDigest } from '@rus/materialization';
 import { provisionSpatialSemanticEnvelope } from './spatial-semantic-authority-repository.js';
 
 // S1 authority is installed only during the already locked first-entry P16.
@@ -19,9 +18,6 @@ export function createSpatialSemanticFirstEntryProvisioner({ loadedProfile } = {
         return Object.freeze({ provisioned: false,
           envelope_refs: Object.freeze([]) });
       }
-      if (envelopes.length !== profile.envelopes.length) {
-        fail('S1_SPATIAL_PROFILE_SCOPE_GAP');
-      }
       const results = [];
       for (const entry of envelopes) {
         const envelope = buildEnvelope(profile, entry, scope);
@@ -38,7 +34,6 @@ async function lockedScope(transaction, partyId, binding) {
   const result = await transaction.query(`SELECT b.id AS baseline_ref,b.state_version AS baseline_state_version,
       g5.id AS g5_ref,g5.state_version AS g5_state_version,g6.id AS g6_ref,
       g6.state_version AS g6_state_version,
-      g6.source_scene_template_ref AS template_ref,
       g6.source_scene_template_ref#>>'{entity_ref,entity_id}' AS template_id,
       p.id AS position_ref,p.state_version AS position_state_version,
       p.position_type_id AS position_kind
@@ -58,9 +53,9 @@ function buildEnvelope(profile, entry, scope) {
     scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
     baseline_ref: scope.baseline_ref, g5_ref: scope.g5_ref, g6_ref: scope.g6_ref,
     position_ref: scope.position_ref,
-    template_ref: `sha256:${canonicalDigest(scope.template_ref)}`,
     property_ref: profile.property_ref, function_ref: profile.function_ref,
     environment_ref: profile.environment_ref,
+    semantic_context: entry.semantic_context,
     profile_ref: profile.profile_id, profile_version: profile.revision,
     policy_ref: profile.policy_ref, policy_version: profile.policy_version,
     baseline_state_version: Number(scope.baseline_state_version),
@@ -73,28 +68,31 @@ function requireProfile(value) {
   const profile = value?.profile;
   if (value?.schema !== 'rus.lower_dvina_trace_s1_loaded_profile.v1'
       || profile?.schema !== 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
-      || profile.status !== 'approved' || profile.scenario_definition_revision !== 23
+      || profile.status !== 'approved' || profile.scenario_definition_revision !== 24
       || !text(profile.profile_id) || !text(profile.policy_ref)
       || !Number.isSafeInteger(profile.revision) || !Number.isSafeInteger(profile.policy_version)
       || !['property_ref','function_ref','environment_ref'].every((key) => text(profile[key]))
-      || !Array.isArray(profile.envelopes) || profile.envelopes.length !== 2) {
+      || !Array.isArray(profile.envelopes) || profile.envelopes.length === 0) {
     throw new TypeError('Exact approved S1 profile is required.');
   }
-  const scope = profile.envelopes[0] == null ? null : {
-    template_id: profile.envelopes[0].template_id,
-    position_kind: profile.envelopes[0].position_kind };
   for (const entry of profile.envelopes) {
     if (!entry || !text(entry.envelope_ref) || !text(entry.template_id)
         || !text(entry.position_kind) || !['ordinary_structure','local_natural_feature'].includes(entry.kind)
         || entry.scope_kind !== 'current_position_local_reference'
         || entry.mechanics_class !== 'descriptive_only'
         || !Number.isSafeInteger(entry.capacity_total) || entry.capacity_total < 1
-        || entry.template_id !== scope?.template_id
-        || entry.position_kind !== scope?.position_kind) {
+        || !semanticContext(entry.semantic_context, entry.kind)) {
       throw new TypeError('Exact approved S1 envelope profile is required.');
     }
   }
   return profile;
+}
+function semanticContext(value, kind) {
+  const keys = ['allowed_kind', 'period', 'region', 'place_type', 'environment',
+    'material_culture', 'ordinary_boundary'];
+  return value && Object.getPrototypeOf(value) === Object.prototype
+    && Object.keys(value).length === keys.length && keys.every((key) => text(value[key]))
+    && value.allowed_kind === kind;
 }
 function text(value) { return typeof value === 'string' && value.trim() === value && value.length > 0; }
 function fail(code) { throw Object.assign(new Error(code), { code, spatialCode: 'state_version_conflict' }); }

@@ -152,7 +152,7 @@ export function phase4SemanticCommitContext({
   const semanticExchange = isNegotiation
     ? factual.consequence.negotiation?.semantic_exchange
     : null;
-  if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23].includes(scenarioRevision)) {
+  if (![14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(scenarioRevision)) {
     if (semanticExchange != null) {
       throw fail('TRACE_M2_PHASE_4_SEMANTIC_REVISION_INVALID');
     }

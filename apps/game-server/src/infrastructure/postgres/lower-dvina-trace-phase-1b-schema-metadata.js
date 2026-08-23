@@ -20,7 +20,19 @@ export const PHASE_1A_TABLES = Object.freeze([
   'party_obligations',
   'party_obligation_transitions',
   'party_clocks',
-  'party_state_snapshots'
+  'party_state_snapshots',
+  'party_g5_sites',
+  'party_scene_baselines',
+  'party_g6_instances',
+  'scene_position_nodes',
+  'party_journey_locations',
+  'preparation_snapshots',
+  'preparation_snapshot_members',
+  'party_route_plans',
+  'party_route_plan_steps',
+  'party_route_plan_executions',
+  'party_route_plan_execution_events',
+  'preparation_claims'
 ]);
 
 export async function loadPhase1ASchemaMetadata(partyPool) {

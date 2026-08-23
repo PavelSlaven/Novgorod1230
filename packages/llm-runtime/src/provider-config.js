@@ -44,6 +44,7 @@ export const TurnRuntimeRoles = Object.freeze({
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
   WORLD_PROCESS_STEP: 'world_process_step',
   ORDINARY_MATERIALIZATION: 'ordinary_materialization',
+  SPATIAL_SEMANTIC_DESCRIPTOR: 'spatial_semantic_descriptor',
   PLAYER_CONVERSATION_INTERPRETER: 'player_conversation_interpreter',
   PLAYER_CONVERSATION_INTERPRETER_REPAIR:
     'player_conversation_interpreter_format_repair',
@@ -107,41 +108,21 @@ const NEW_GAME_TIER_DEFAULTS = newGameTierDefaults(OutputContractModes);
 
 const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
   [PortraitLabRoles.SPEC_NORMALIZER]: {
-    envPrefix: 'PORTRAIT_SPEC_NORMALIZER',
-    model: 'deepseek-v4-flash',
-    thinking: 'disabled',
-    reasoningEffort: null,
-    responseFormat: 'json_object',
-    maxTokens: 1600,
-    temperature: 0,
-    topP: 1,
+    envPrefix: 'PORTRAIT_SPEC_NORMALIZER', model: 'deepseek-v4-flash',
+    thinking: 'disabled', reasoningEffort: null, responseFormat: 'json_object',
+    maxTokens: 1600, temperature: 0, topP: 1,
     outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'portrait_spec_v1',
-    parseJson: true,
-    targetInputTokens: 4000,
-    comfortableInputTokens: 8000,
-    hardInputLimitTokens: 16000,
-    reserveOutputTokens: 1600,
-    reserveRepairTokens: 0
+    expectedSchema: 'portrait_spec_v1', parseJson: true, targetInputTokens: 4000,
+    comfortableInputTokens: 8000, hardInputLimitTokens: 16000,
+    reserveOutputTokens: 1600, reserveRepairTokens: 0
   }
 });
 
 const TURN_ROLE_DEFAULTS = Object.freeze({
   [TurnRuntimeRoles.INTENT_ROUTER]: {
-    envPrefix: 'TURN_INTENT_ROUTER',
-    model: 'deepseek-v4-flash',
-    thinking: 'disabled',
-    reasoningEffort: null,
-    responseFormat: 'json_object',
-    maxTokens: 2500,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'turn_intent_route',
-    parseJson: true,
-    targetInputTokens: 20000,
-    comfortableInputTokens: 20000,
-    hardInputLimitTokens: 80000,
-    reserveOutputTokens: 2500,
-    reserveRepairTokens: 10000
+    envPrefix: 'TURN_INTENT_ROUTER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 2500, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
+    targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
   },
   [TurnRuntimeRoles.ORCHESTRATOR]: {
     envPrefix: 'TURN_ORCHESTRATOR',
@@ -193,66 +174,28 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
-    envPrefix: 'TURN_STEP_PLANNER',
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
-    responseFormat: 'json_object',
-    maxTokens: 8000,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'turn_step_plan_v1',
-    parseJson: true,
-    targetInputTokens: 100000,
-    comfortableInputTokens: 220000,
-    hardInputLimitTokens: 600000,
-    reserveOutputTokens: 8000,
-    reserveRepairTokens: 30000
+    envPrefix: 'TURN_STEP_PLANNER', model: 'deepseek-v4-pro', thinking: 'enabled',
+    reasoningEffort: 'high', responseFormat: 'json_object', maxTokens: 8000,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_step_plan_v1', parseJson: true,
+    targetInputTokens: 100000, comfortableInputTokens: 220000, hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER_REPAIR]: {
-    envPrefix: 'TURN_STEP_PLANNER_REPAIR',
-    model: 'deepseek-v4-flash',
-    thinking: 'disabled',
-    reasoningEffort: null,
-    responseFormat: 'json_object',
-    maxTokens: 4000,
-    temperature: 0,
-    topP: 1,
-    outputContractMode: OutputContractModes.JSON_REPAIR,
-    expectedSchema: 'turn_step_plan_v1',
-    parseJson: true,
-    targetInputTokens: 30000,
-    comfortableInputTokens: 30000,
-    hardInputLimitTokens: 100000,
-    reserveOutputTokens: 4000,
-    reserveRepairTokens: 4000
+    envPrefix: 'TURN_STEP_PLANNER_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 4000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_REPAIR, expectedSchema: 'turn_step_plan_v1', parseJson: true,
+    targetInputTokens: 30000, comfortableInputTokens: 30000, hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
-    envPrefix: 'TURN_ORDINARY_MATERIALIZATION',
-    model: 'deepseek-v4-flash',
-    thinking: 'disabled',
-    reasoningEffort: null,
-    responseFormat: 'json_object',
-    maxTokens: 6000,
-    temperature: 0,
-    topP: 1,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'ordinary_materialization_plan_v1',
-    parseJson: true,
-    targetInputTokens: 30000,
-    comfortableInputTokens: 30000,
-    hardInputLimitTokens: 100000,
-    reserveOutputTokens: 6000,
-    reserveRepairTokens: 6000
+    envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null, responseFormat: 'json_object', maxTokens: 6000, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'ordinary_materialization_plan_v1', parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000, hardInputLimitTokens: 100000, reserveOutputTokens: 6000, reserveRepairTokens: 6000
+  },
+  [TurnRuntimeRoles.SPATIAL_SEMANTIC_DESCRIPTOR]: {
+    envPrefix: 'TURN_SPATIAL_SEMANTIC_DESCRIPTOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null, responseFormat: 'json_object', maxTokens: 400, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,expectedSchema: 'rus.s1_spatial_semantic_proposal.v1',parseJson: true,targetInputTokens: 4000,comfortableInputTokens: 8000, hardInputLimitTokens: 30000, reserveOutputTokens: 400, reserveRepairTokens: 0
   },
   [TurnRuntimeRoles.WORLD_PROCESS_STEP]: {
-    envPrefix: 'TURN_WORLD_PROCESS_STEP', model: 'deepseek-v4-flash',
-    thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'world_process_step_plan_v1', parseJson: true,
-    targetInputTokens: 6000, comfortableInputTokens: 12000,
-    hardInputLimitTokens: 30000, reserveOutputTokens: 800,
-    reserveRepairTokens: 0
+    envPrefix: 'TURN_WORLD_PROCESS_STEP', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null, responseFormat: 'json_object', maxTokens: 800, temperature: 0, topP: 1,
+    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'world_process_step_plan_v1', parseJson: true, targetInputTokens: 6000, comfortableInputTokens: 12000, hardInputLimitTokens: 30000, reserveOutputTokens: 800, reserveRepairTokens: 0
   },
   ...conversationTurnRoleDefaults(OutputContractModes),
   ...autonomousTurnRoleDefaults(OutputContractModes),

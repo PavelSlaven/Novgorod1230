@@ -238,7 +238,7 @@ test('S1 look remainder runs through the final discovery seam', async () => {
   assert.equal(spatialCalls, 1);
 });
 
-test('S1 scope admits current marker or projected committed ref only', () => {
+test('S1 scope admits only discovery look at current marker', () => {
   const operation = { op: 'request_discovery', actor_ref: 'party-1',
     discovery_kind: 'look', target_refs: ['place-gate'], query: 'осмотреть' };
   const playerSafeState = discoveryProjection(undefined,
@@ -255,13 +255,13 @@ test('S1 scope admits current marker or projected committed ref only', () => {
     description: 'Старая коряга у воды.', kind: 'local_natural_feature'
   }] };
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
-    ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), true);
+    ...operation, target_refs: ['s1-local:resolved'] }, playerSafeState: committed }), false);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
     ...operation, target_refs: ['s1-local:forged'] }, playerSafeState: committed }), false);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
     op: 'request_item_use', actor_ref: 'party-1', item_ref: 's1-local:resolved',
     use_kind: 'operate', target_refs: []
-  }, playerSafeState: committed }), true);
+  }, playerSafeState: committed }), false);
   assert.equal(isSpatialSemanticRemainderInScope({ operation: {
     op: 'request_item_use', actor_ref: 'party-1', item_ref: 's1-local:forged',
     use_kind: 'operate', target_refs: []

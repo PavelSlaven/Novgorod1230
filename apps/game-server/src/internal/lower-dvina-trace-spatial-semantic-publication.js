@@ -5,19 +5,21 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from
   './lower-dvina-trace-phase-1b-world-lineage.js';
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
-const MANIFEST_PATH = `${ROOT}/phase-1b-v18/manifest.json`;
-const BINDING_PATH = `${ROOT}/phase-1b-v18/publication-binding.json`;
-const PHASE_1A_PATH = `${ROOT}/phase-1a-v19/manifest.json`;
-const DEFINITION_PATH = `${ROOT}/phase-m11-content/definition.json`;
-const SUPERSEDED_MANIFEST_PATH = `${ROOT}/phase-1b-v17/manifest.json`;
-const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v17/publication-binding.json`;
-const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v18/manifest.json`;
+const MANIFEST_PATH = `${ROOT}/phase-1b-v19/manifest.json`;
+const BINDING_PATH = `${ROOT}/phase-1b-v19/publication-binding.json`;
+const PHASE_1A_PATH = `${ROOT}/phase-1a-v20/manifest.json`;
+const DEFINITION_PATH = `${ROOT}/phase-m12-content/definition.json`;
+const SUPERSEDED_MANIFEST_PATH = `${ROOT}/phase-1b-v18/manifest.json`;
+const SUPERSEDED_BINDING_PATH = `${ROOT}/phase-1b-v18/publication-binding.json`;
+const SUPERSEDED_PHASE_1A_PATH = `${ROOT}/phase-1a-v19/manifest.json`;
 
 export const TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST =
+  '4ab64ff3247b986b59f3f3b05d0b7b58d99f0195cf7196d1491855ecfe844230';
+export const TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST =
   '97616177c25fe0e0507afb3df5d7fd9bdc4298cede54f0a8626ce5cfc271586a';
-const MANIFEST_DIGEST = '4f4d39587992415ddc258423eaa7e5228b8c2260d3505b2d0b9db7840e3838f0';
-const BINDING_DIGEST = '99febe4b34ae1c179f9cc1aa890bd42762be3b0abb5e1fa8ca97c66c7aeeb369';
-const DEFINITION_DIGEST = '8f1f4e331738243ab26da5d1e280e89b2086e837c1f167e03d806da162083810';
+const MANIFEST_DIGEST = '98867d2fd40634f71cd8e845f7315020cac54fa34ee82854c2dda24b787530ed';
+const BINDING_DIGEST = 'd19b8bddafb01b1188c59b615d405f6538bf82d33ebc1d9dfe2ffdcfbe92f0a0';
+const DEFINITION_DIGEST = '8b03d8ebee9ad04c8321ff336f34ffad0f4fa8ed8adfc5b0a7cdc0026beb8d78';
 
 export async function loadLowerDvinaTraceSpatialSemanticPublication({
   rootDir = process.cwd(), phase1AManifestDigest = null
@@ -38,28 +40,28 @@ export async function loadLowerDvinaTraceSpatialSemanticPublication({
   if (binding.digest !== BINDING_DIGEST) fail('TRACE_PHASE_1B_CONTENT_REF_MISMATCH');
   if (phase1a.digest !== TRACE_SPATIAL_SEMANTIC_PHASE_1A_MANIFEST_DIGEST) fail('TRACE_PHASE_1B_PHASE_1A_REF_INVALID');
   if (definition.digest !== DEFINITION_DIGEST
-      || manifest.value?.package_id !== 'lower_dvina_trace_phase_1b_v18'
-      || manifest.value.revision !== 18 || manifest.value.status !== 'approved'
+      || manifest.value?.package_id !== 'lower_dvina_trace_phase_1b_v19'
+      || manifest.value.revision !== 19 || manifest.value.status !== 'approved'
       || manifest.value.publication_status !== 'public'
       || !exactRef(manifest.value.content_refs?.publication_binding, binding,
-        BINDING_PATH, 'lower_dvina_trace_phase_1b_publication_v18', 18)
+        BINDING_PATH, 'lower_dvina_trace_phase_1b_publication_v19', 19)
       || binding.value?.scenario_id !== 'lower_dvina_trace_v1'
       || binding.value.materializer_binding_id
-        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v19'
-      || binding.value.execution_identity?.scenario_definition_revision !== 23
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
+      || binding.value.execution_identity?.scenario_definition_revision !== 24
       || binding.value.execution_identity?.phase_1a_manifest_digest !== phase1a.digest
       || binding.value.execution_identity?.scenario_definition_digest !== definition.digest
       || !exactRef(binding.value.phase_1a_manifest_ref, phase1a, PHASE_1A_PATH,
-        'lower_dvina_trace_phase_1a_v19', 19, 'package_id')
+        'lower_dvina_trace_phase_1a_v20', 20, 'package_id')
       || !exactRef(binding.value.scenario_definition_ref, definition,
-        DEFINITION_PATH, 'lower_dvina_trace_v1', 23, 'scenario_id')
+        DEFINITION_PATH, 'lower_dvina_trace_v1', 24, 'scenario_id')
       || !exactRef(manifest.value.superseded_package_ref, supersededManifest,
-        SUPERSEDED_MANIFEST_PATH, 'lower_dvina_trace_phase_1b_v17', 17,
+        SUPERSEDED_MANIFEST_PATH, 'lower_dvina_trace_phase_1b_v18', 18,
         'package_id')
       || !exactRef(binding.value.superseded_binding_ref, supersededBinding,
-        SUPERSEDED_BINDING_PATH, 'lower_dvina_trace_phase_1b_publication_v17', 17)
+        SUPERSEDED_BINDING_PATH, 'lower_dvina_trace_phase_1b_publication_v18', 18)
       || !exactRef(phase1a.value.superseded_package_ref, supersededPhase1a,
-        SUPERSEDED_PHASE_1A_PATH, 'lower_dvina_trace_phase_1a_v18', 18,
+        SUPERSEDED_PHASE_1A_PATH, 'lower_dvina_trace_phase_1a_v19', 19,
         'package_id') || definition.value.required_unresolved_refs?.length !== 0) {
     fail('TRACE_PHASE_1B_SPATIAL_SEMANTIC_INVALID');
   }
@@ -82,3 +84,36 @@ async function readJson(rootDir, path) { const raw = await readFile(resolve(root
 function fail(code) { throw Object.assign(new Error(code), { code, status: 409 }); }
 function freeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) {
   Object.values(value).forEach(freeze); Object.freeze(value); } return value; }
+
+export async function loadLowerDvinaTraceRevision23SpatialSemanticPublication({
+  rootDir = process.cwd(), phase1AManifestDigest = null
+} = {}) {
+  if (phase1AManifestDigest !== TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST) {
+    fail('TRACE_PHASE_1B_PUBLICATION_IDENTITY_UNKNOWN');
+  }
+  const root = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
+  const [manifest, binding, phase1a, definition] = await Promise.all([
+    readJson(rootDir, `${root}/phase-1b-v18/manifest.json`),
+    readJson(rootDir, `${root}/phase-1b-v18/publication-binding.json`),
+    readJson(rootDir, `${root}/phase-1a-v19/manifest.json`),
+    readJson(rootDir, `${root}/phase-m11-content/definition.json`)
+  ]);
+  if (manifest.digest !== '4f4d39587992415ddc258423eaa7e5228b8c2260d3505b2d0b9db7840e3838f0'
+      || binding.digest !== '99febe4b34ae1c179f9cc1aa890bd42762be3b0abb5e1fa8ca97c66c7aeeb369'
+      || phase1a.digest !== TRACE_SPATIAL_SEMANTIC_REVISION23_PHASE_1A_MANIFEST_DIGEST
+      || definition.digest !== '8f1f4e331738243ab26da5d1e280e89b2086e837c1f167e03d806da162083810'
+      || manifest.value?.package_id !== 'lower_dvina_trace_phase_1b_v18'
+      || binding.value?.binding_id !== 'lower_dvina_trace_phase_1b_publication_v18'
+      || binding.value.phase_1a_manifest_ref?.digest !== phase1a.digest
+      || binding.value.scenario_definition_ref?.digest !== definition.digest) {
+    fail('TRACE_PHASE_1B_SPATIAL_SEMANTIC_INVALID');
+  }
+  await assertLowerDvinaTracePhase1BWorldLineage({ rootDir,
+    compatibility: binding.value.world_compatibility, readJson });
+  return freeze({ manifest: manifest.value, manifest_digest: manifest.digest,
+    binding: binding.value, binding_digest: binding.digest,
+    phase_1a_manifest: phase1a.value, definition: definition.value,
+    public_projection: { scenario_id: binding.value.scenario_id,
+      public_metadata: structuredClone(binding.value.public_metadata),
+      opening_projection: structuredClone(binding.value.opening_projection) } });
+}

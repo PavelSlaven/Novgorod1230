@@ -185,13 +185,16 @@ Active A1 revision 21 использует sole player boundary `turn_step_reque
 
 Повторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.
 
-S1 materializes only an ordinary descriptive local detail inside a finite,
+Current revision 23 activation is a narrow descriptive S1 subprofile: it
+materializes only an ordinary descriptive local detail inside a finite,
 code-owned envelope bound to committed baseline/G5/G6/current-position scope.
 The model supplies an open ordinary name and description outside the
 transaction; it cannot choose topology, movement, hazards, water/fire effects,
 authority or mechanics. The existing owner-native P16 revalidates capacity and
 current position, then atomically persists the accepted detail and updated
-capacity; retry/reload reads the committed result.
+capacity; retry/reload reads the committed result. Full S1 broad structure/site
+semantic concretization inside supported topology remains proposed pending an
+owner-specific cutover.
 
 ### 4.5. Party database
 

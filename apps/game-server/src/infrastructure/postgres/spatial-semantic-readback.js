@@ -17,12 +17,14 @@ export async function loadSpatialSemanticCommittedState(pool, partyId) {
   }
   return Object.freeze(envelopes.rows.map((row) => {
     let envelope;
-    try { envelope = normalizeSpatialSemanticEnvelope(row.envelope); } catch { throw invalid(); }
+    try { envelope = normalizeSpatialSemanticEnvelope(row.envelope,
+      { allowExhausted: true }); } catch { throw invalid(); }
     if (row.status !== 'committed' || Number(row.capacity_total) !== envelope.capacity_total
         || Number(row.consumed_count) !== envelope.consumed_count
         || Number(row.state_version) !== envelope.state_version) throw invalid();
     const resolved = byEnvelope.get(envelope.envelope_ref) ?? [];
-    return Object.freeze({ envelope: structuredClone(envelope), capacity_total: envelope.capacity_total,
+    return Object.freeze({ envelope_ref: envelope.envelope_ref,
+      envelope: structuredClone(envelope), capacity_total: envelope.capacity_total,
       consumed_count: envelope.consumed_count, state_version: envelope.state_version,
       status: row.status, resolutions: Object.freeze(resolved),
       resolution: resolved.length === 1 ? resolved[0] : null });

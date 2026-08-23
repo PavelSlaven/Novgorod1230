@@ -17,19 +17,6 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     const request = value.request;
     const actor = value.actor?.actor_id;
     const target = operation?.target_refs?.[0];
-    const localRef = spatialSemanticLocalRef(operation);
-    if (localRef != null) {
-      const committed = await authority.findCommittedResolution({ party_id: partyId,
-        request_id: request?.request_id, local_ref: localRef });
-      if (committed == null
-          || committed.position_ref !== currentPosition(value.committed_state)
-          || !projectedLocalRef(request?.player_safe_state?.visible_objects,
-            localRef)) {
-        fail('TRACE_S1_SCOPE_INVALID');
-      }
-      if (!lookOperation(operation, actor)) fail('TRACE_S1_MECHANICS_UNSUPPORTED');
-      return resolvedResult(value, committed);
-    }
     if (!lookOperation(operation, actor) || !text(target)
         || operation.target_refs.length !== 1 || !text(request?.request_id)) {
       fail('TRACE_S1_SCOPE_INVALID');
@@ -38,7 +25,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
       request_id: request.request_id, local_ref: target });
     if (committed != null) {
       if (committed.position_ref !== currentPosition(value.committed_state)
-          || !projectedLocalRef(request.player_safe_state?.visible_objects, target)) {
+          || committed.position_ref !== target) {
         fail('TRACE_S1_SCOPE_INVALID');
       }
       return resolvedResult(value, committed);
@@ -79,14 +66,6 @@ function lookOperation(operation, actor) {
   return operation?.op === 'request_discovery' && operation.discovery_kind === 'look'
     && operation.actor_ref === actor && text(actor);
 }
-function spatialSemanticLocalRef(operation) {
-  const refs = [operation?.item_ref, operation?.container_ref, operation?.target_ref,
-    ...(Array.isArray(operation?.target_refs) ? operation.target_refs : []),
-    ...(Array.isArray(operation?.protected_refs) ? operation.protected_refs : [])]
-    .filter((ref) => typeof ref === 'string' && ref.startsWith('s1-local:'));
-  return refs.length === 1 ? refs[0] : null;
-}
-
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   committedState, resolverAvailable }) {
   let player; let committed;
@@ -95,22 +74,21 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return player;
   const position = committed.position?.position_id ?? committed.position?.position_ref;
   if (!text(position)) return player;
-  const visible = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
+  const descriptions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => resolution?.position_ref === position
-      && visibleResolution(resolution)).map((resolution) => ({
-      entity_ref: resolution.local_ref, display_label: resolution.semantics.name,
-      description: resolution.semantics.description, kind: resolution.semantics.kind
-    })));
-  const existing = Array.isArray(player.visible_objects) ? player.visible_objects : [];
-  const next = visible.length === 0 ? player : { ...player,
-    visible_objects: [...existing, ...visible.filter(({ entity_ref: ref }) =>
-      !existing.some(({ entity_ref: present }) => present === ref))] };
-  const available = committed.spatial_semantic.find(({ envelope, status,
+      && visibleResolution(resolution)).map(({ semantics }) =>
+      `${semantics.name}: ${semantics.description}`));
+  const existing = Array.isArray(player.known_context) ? player.known_context : [];
+  const next = descriptions.length === 0 ? player : { ...player,
+    known_context: [...existing, ...descriptions.filter((description) =>
+      !existing.includes(description))] };
+  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
     capacity_total: total, consumed_count: used }) => status === 'committed'
-      && envelope?.position_ref === position && Number.isSafeInteger(total)
+      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
       && Number.isSafeInteger(used) && used < total);
   return available == null ? next : { ...next, spatial_semantic: {
-    semantic_grounding_available: true, envelope_ref: available.envelope_ref,
+    semantic_grounding_available: true,
+    envelope_ref: available.envelope_ref,
     position_ref: position } };
 }
 
@@ -129,12 +107,6 @@ function currentPosition(value) {
   const position = value?.position;
   return text(position?.position_id) ? position.position_id
     : text(position?.position_ref) ? position.position_ref : null;
-}
-function projectedLocalRef(value, target) {
-  return Array.isArray(value) && value.some((entry) => entry != null
-    && Object.getPrototypeOf(entry) === Object.prototype
-    && Object.keys(entry).length === 4 && entry.entity_ref === target
-    && text(entry.display_label) && text(entry.description) && text(entry.kind));
 }
 function markerOf(value) {
   const marker = ownRecord(value, 'spatial_semantic');

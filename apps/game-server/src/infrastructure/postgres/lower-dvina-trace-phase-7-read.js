@@ -249,9 +249,14 @@ function assertNpcAndContainer(payload, phase7, zhdanko, bag, npc, container) {
   const bagRow = container.rows[0];
   const bagChangedAfterPhase7 = (payload.phase9?.checkpoints ?? []).some(
     ({ kind }) => ['bag_recovery', 'bag_opened'].includes(kind));
+  const firstEntryAnchor = payload.first_entry_preparation?.scene?.anchor
+    ?.instance_id;
+  const expectedNpcAnchor = payload.first_entry_preparation?.spatial_v3
+    ?.target?.status === 'prepared' && zhdanko.anchor_id === firstEntryAnchor
+    ? null : zhdanko.anchor_id;
   if (npc.rowCount !== 1 || container.rowCount !== 1
       || npcRow.npc_id !== zhdanko.instance_id
-      || npcRow.anchor_id !== zhdanko.anchor_id
+      || npcRow.anchor_id !== expectedNpcAnchor
       || canonicalDigest(npcRow.machine_state)
         !== canonicalDigest(zhdanko.machine_state)
       || canonicalDigest(npcRow.machine_state?.last_schedule_execution)

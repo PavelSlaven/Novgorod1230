@@ -6,6 +6,7 @@ export async function assertPhase3NormalizedRows(pool, payload) {
   const [
     clock,
     position,
+    journeyLocation,
     activities,
     interactions,
     summaries,
@@ -27,6 +28,12 @@ export async function assertPhase3NormalizedRows(pool, payload) {
         `SELECT g4_id,g5_node_id,g5_anchor_id
            FROM party_runtime.party_positions WHERE party_id=$1`,
         [payload.party_id]
+      ),
+      pool.query(
+        `SELECT scene_position_id
+           FROM party_runtime.party_journey_locations
+          WHERE party_id=$1 AND owner_kind='actor' AND owner_id=$2`,
+        [payload.party_id, payload.actor_id]
       ),
       pool.query(
         `SELECT e.id,e.activity_snapshot,e.original_total_minutes::text,
@@ -140,6 +147,7 @@ export async function assertPhase3NormalizedRows(pool, payload) {
     results: {
       clock,
       position,
+      journeyLocation,
       activities,
       interactions,
       summaries,

@@ -12,7 +12,7 @@ const IDS = Object.freeze({
 export function resolveTracePhase9Contracts({ state, bundle,
   conversationBindings }) {
   const binding = bundle?.phase_9_bindings;
-  if (![17, 18, 19, 20, 21, 22, 23].includes(bundle?.definition_revision)
+  if (![17, 18, 19, 20, 21, 22, 23, 24].includes(bundle?.definition_revision)
       || binding?.scenario_definition_revision !== 17
       || binding?.fallback_policy !== 'forbidden') gap();
   const profiles = bundle.activity_check_consequence_profiles;
@@ -49,7 +49,9 @@ export function resolveTracePhase9Contracts({ state, bundle,
   const capacity = exact(bundle.location_capacity_contracts.capacity_contracts,
     'contract_id', 'trace_ld_v1_capacity_zhdanko_storehouse');
   const campScene = (state.prepared_scenes ?? []).find(
-    ({ location_profile_ref: id }) => id === IDS.camp);
+    ({ location_profile_ref: id }) => id === IDS.camp)
+    ?? (state.first_entry_preparation?.scene?.location_profile_ref === IDS.camp
+      ? state.first_entry_preparation.scene : null);
   const historicalDisposition = exact(profiles.temporary_disposition_contracts,
     'contract_id', binding.temporary_disposition.contract_ref);
   const disposition = binding.temporary_disposition.approved_contract;

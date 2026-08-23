@@ -84,10 +84,12 @@ candidate-free container веткой; A1 сохраняет exact handler prior
 же P16; water/extinguish остаются disabled без exact finite-water authority.
 
 Revision 23 / M11 / Phase 1A v19 / Phase 1B v18 / `spatial-v3-production-v12`
-добавляет только S1 closed spatial-semantic remainder: one reserved ordinary
-structure and one reserved local natural feature, descriptive-only and with no
-movement/hazard/water authority. It follows O1→A1→F1 priority and persists its
-exact descriptor resolution in the same combined P16.
+активирует только узкий descriptive S1 subprofile для profile-bound ordinary
+local references в current position. Его envelopes independent и provisioned
+только для реально совпавшего locked scope; нет movement/hazard/water authority.
+Это не full S1: broad structure/site semantic envelope inside approved topology
+остаётся pending отдельного owner-specific contract/test cutover. Current stage
+uses same combined P16 and follows O1→A1→F1 priority.
 
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует

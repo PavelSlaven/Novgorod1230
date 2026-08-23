@@ -15,11 +15,11 @@ export function prepareSpatialSemanticRemainder(input) {
     text(value[key], 'S1_SPATIAL_INPUT_INVALID', `input.${key}`);
   }
   const envelope = envelopeOf(value.envelope);
+  const semantic_context = structuredClone(envelope.semantic_context);
   const code_owned = { envelope: structuredClone(envelope), local_ref: `s1-local:${value.request_id}` };
   const model_request = {
     schema: 'rus.s1_spatial_semantic_model_request.v1', request_id: value.request_id,
-    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', envelope_ref: envelope.envelope_ref,
-    position_ref: envelope.position_ref, envelope: structuredClone(envelope),
+    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', semantic_context,
     proposal_example: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: value.request_id,
       name: 'ordinary local reference', description: 'ordinary local description' }
   };
@@ -39,7 +39,9 @@ export function admitSpatialSemanticRemainder({ prepared, proposal }) {
       description: safeProposal.description, mechanics_class: envelope.mechanics_class } });
 }
 
-export function normalizeSpatialSemanticEnvelope(value) { return envelopeOf(value); }
+export function normalizeSpatialSemanticEnvelope(value, { allowExhausted = false } = {}) {
+  return envelopeOf(value, allowExhausted);
+}
 
 export function validateSpatialSemanticResolution(value) {
   const resolution = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
@@ -81,22 +83,23 @@ function preparedOf(value) {
   return rebuilt;
 }
 
-function envelopeOf(value) {
+function envelopeOf(value, allowExhausted = false) {
   const envelope = json(value, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope');
   const keys = ['envelope_ref', 'kind', 'scope_kind', 'mechanics_class', 'baseline_ref', 'g5_ref',
-    'g6_ref', 'position_ref', 'template_ref', 'property_ref', 'function_ref', 'environment_ref',
+    'g6_ref', 'position_ref', 'property_ref', 'function_ref', 'environment_ref', 'semantic_context',
     'profile_ref', 'profile_version', 'policy_ref', 'policy_version', 'baseline_state_version',
     'g5_state_version', 'g6_state_version', 'position_state_version', 'capacity_total',
     'consumed_count', 'state_version'];
   exact(envelope, keys, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope');
   for (const key of ['envelope_ref', 'baseline_ref', 'g5_ref', 'g6_ref', 'position_ref',
-    'template_ref', 'property_ref', 'function_ref', 'environment_ref', 'profile_ref', 'policy_ref']) {
+    'property_ref', 'function_ref', 'environment_ref', 'profile_ref', 'policy_ref']) {
     text(envelope[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.${key}`);
   }
   if (!KINDS.has(envelope.kind) || envelope.scope_kind !== 'current_position_local_reference'
       || envelope.mechanics_class !== 'descriptive_only') {
     fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 envelope authority is invalid.');
   }
+  semanticContext(envelope.semantic_context, envelope.kind);
   for (const key of ['profile_version', 'policy_version', 'capacity_total', 'state_version']) {
     positive(envelope[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.${key}`);
   }
@@ -104,7 +107,8 @@ function envelopeOf(value) {
     'position_state_version', 'consumed_count']) {
     nonnegative(envelope[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.${key}`);
   }
-  if (envelope.consumed_count >= envelope.capacity_total) {
+  if (envelope.consumed_count > envelope.capacity_total
+      || (!allowExhausted && envelope.consumed_count === envelope.capacity_total)) {
     fail('S1_SPATIAL_CAPACITY_INVALID', 'S1 envelope has no remaining capacity.');
   }
   return deepFreeze(envelope);
@@ -121,6 +125,19 @@ function proposalOf(value, prepared) {
   text(proposal.name, 'S1_SPATIAL_PROPOSAL_INVALID', 'proposal.name');
   text(proposal.description, 'S1_SPATIAL_PROPOSAL_INVALID', 'proposal.description');
   return deepFreeze(proposal);
+}
+
+function semanticContext(value, kind) {
+  const context = json(value, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope.semantic_context');
+  const keys = ['allowed_kind', 'period', 'region', 'place_type', 'environment',
+    'material_culture', 'ordinary_boundary'];
+  exact(context, keys, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope.semantic_context');
+  for (const key of keys) text(context[key], 'S1_SPATIAL_ENVELOPE_INVALID',
+    `envelope.semantic_context.${key}`);
+  if (context.allowed_kind !== kind) {
+    fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 semantic context kind is invalid.');
+  }
+  return deepFreeze(context);
 }
 
 function json(value, code, path) {

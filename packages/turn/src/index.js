@@ -55,6 +55,10 @@ import { activateCombatSessionForPlayerIntent, createCombatSession,
 import { selectTemporaryDispositionOptions,
   TemporaryDispositionSelectionError } from
   './temporary-disposition.js';
+import { resolveSpatialV3FirstEntryLifecycle } from
+  './spatial-v3-first-entry-lifecycle.js';
+import { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate,
+  runAutonomousUpdates } from './autonomous-update.js';
 
 export {
   createTurnWorkflowContext,
@@ -90,7 +94,11 @@ export {
   createCombatSession,
   selectTemporaryDispositionOptions,
   TemporaryDispositionSelectionError,
-  bindTurnStepPreparedConsequence
+  bindTurnStepPreparedConsequence,
+  resolveSpatialV3FirstEntryLifecycle,
+  createAutonomousUpdateRegistry,
+  isCodeOwnedAutonomousUpdate,
+  runAutonomousUpdates
 };
 export {
   TURN_PRIMARY_MODES,
@@ -156,7 +164,6 @@ export {
   resolveLowerDvinaBoundaryContext,
   selectLowerDvinaBoundaryContext
 } from './spatial-v3-public.js';
-export { createAutonomousUpdateRegistry, isCodeOwnedAutonomousUpdate, runAutonomousUpdates } from './autonomous-update.js';
 export {
   SPATIAL_V3_COMMAND_KINDS,
   SPATIAL_V3_TURN_STAGE_IDS,

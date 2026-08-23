@@ -9,13 +9,9 @@ export function isSpatialSemanticRemainderInScope(input) {
   const look = operation?.op === 'request_discovery'
     && operation.discovery_kind === 'look'
     && targets?.length === 1 && text(targets[0])
-    && ((marker?.semantic_grounding_available === true
-      && marker.position_ref === targets[0] && text(marker.envelope_ref))
-      || exactProjectedLocalRef(playerSafeState?.visible_objects, targets[0]));
-  if (look) return true;
-  return spatialSemanticTargets(operation).some((target) =>
-    target.startsWith('s1-local:')
-      && exactProjectedLocalRef(playerSafeState?.visible_objects, target));
+    && marker?.semantic_grounding_available === true
+    && marker.position_ref === targets[0] && text(marker.envelope_ref);
+  return look;
 }
 
 export function resolveSpatialSemanticRemainder({ resolver, execution, actor,
@@ -36,21 +32,6 @@ function exactMarker(value) {
   const names = Object.keys(marker);
   if (names.length !== required.length || !required.every((key) => names.includes(key))) return null;
   return marker;
-}
-function exactProjectedLocalRef(value, target) {
-  const objects = array(value);
-  return objects?.some((entry) => {
-    const item = record(entry);
-    return item != null && Object.keys(item).length === 4
-      && text(item.entity_ref) && text(item.display_label)
-      && text(item.description) && text(item.kind) && item.entity_ref === target;
-  }) === true;
-}
-function spatialSemanticTargets(operation) {
-  return [operation?.item_ref, operation?.container_ref, operation?.target_ref,
-    ...(array(operation?.target_refs) ?? []),
-    ...(array(operation?.protected_refs) ?? [])]
-    .filter(text);
 }
 function record(value) {
   if (value == null || typeof value !== 'object' || Array.isArray(value)

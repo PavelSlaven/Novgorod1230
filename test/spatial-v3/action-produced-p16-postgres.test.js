@@ -12,6 +12,10 @@ import { createActionProducedTransitionPlanner,
   '@rus/items-property/action-produced-transition';
 import { loadActionProducedCommittedContext } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-committed-context-loader.js';
+import { loadActionProducedOutputDestination } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js';
+import { createPostgresOrdinaryContainerContentsLoader } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-container-contents-loader.js';
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
@@ -1066,6 +1070,52 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .some(({ text }) => text === 'Жду у переправы.'), false);
     assert.equal(erased.state.ordinary_metadata.physical_inscriptions
       .some(({ text }) => text === 'Жду у переправы.'), false);
+
+    await pool.query(`INSERT INTO party_runtime.party_journey_locations
+      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,
+       state_version,updated_change_set_id)
+      VALUES ('location-a1','party-a1','actor','pc','scene','position-a1',1,
+        'first-entry-a1')`);
+    assert.equal((await loadActionProducedOutputDestination(pool, {
+      party_id: 'party-a1', actor_ref: 'pc'
+    })).anchor_id, 'output-anchor');
+    const sourceContainer = await createPostgresOrdinaryContainerContentsLoader({
+      pool
+    })({ party_id: 'party-a1', container_ref: 'chest' });
+    assert.equal(sourceContainer.container.actor_position_ref, 'output-anchor');
+    await pool.query(`UPDATE party_runtime.party_g5_anchors
+      SET item_capacity=100 WHERE party_id='party-a1'
+        AND anchor_id='output-anchor'`);
+    const partyVersion = Number((await pool.query(`SELECT state_version
+      FROM party_runtime.parties WHERE party_id='party-a1'`)).rows[0]
+      .state_version);
+    const beforeModernPosition = await actionPlan(pool, {
+      partyVersion, changeSetId: 'change-modern-position',
+      requestId: 'modern-position', actionRef: 'action-modern-position',
+      sources: ['rollback-source'], tools: ['rollback-tool'],
+      mode: 'independent_outputs'
+    });
+    await pool.query(`INSERT INTO party_runtime.party_state_snapshots
+      (party_id,state_version,state_payload,state_digest)
+      VALUES ('party-a1',$1,'{"position":{"position_id":"position-a1"}}',
+        'modern-position')`, [partyVersion]);
+    assert.equal(await loadActionProducedOutputDestination(pool, {
+      party_id: 'party-a1', actor_ref: 'pc'
+    }), null);
+    const rejectedModernPosition = await committer.commit({
+      plan: await combinedPlan(beforeModernPosition, 'modern-position',
+        partyVersion)
+    });
+    assert.equal(rejectedModernPosition.ok, false);
+    assert.equal(rejectedModernPosition.error.code, 'state_version_conflict');
+    assert.equal((await pool.query(`SELECT count(*)::int AS n
+      FROM party_runtime.party_items
+      WHERE party_id='party-a1' AND item_id=ANY($1::text[])`,
+    [beforeModernPosition.result_items.map(({ item_id: id }) => id)])).rows[0].n, 0);
+    const currentContainer = await createPostgresOrdinaryContainerContentsLoader({
+      pool
+    })({ party_id: 'party-a1', container_ref: 'chest' });
+    assert.equal(currentContainer.container.actor_position_ref, 'position-a1');
   });
 
 async function actionPlan(pool, config) {

@@ -67,9 +67,9 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     await installSchemas(pool);
     await installWorldLineage(pool);
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
-      scenarioDefinitionRevision: 18
+      scenarioDefinitionRevision: 24
     });
-    assert.equal(bundle.definition_revision, 18);
+    assert.equal(bundle.definition_revision, 24);
     const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
     const runtimeCatalogPin = Object.freeze({ ...sourcePin,
       compatible_world_revision_id: world.revision,
@@ -92,6 +92,9 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     await first.submitTurn(party.party_id, turn(
       'phase-9-postgres-initial-inspection',
       'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+    ));
+    await first.submitTurn(party.party_id, turn(
+      'phase-9-postgres-first-entry', 'Дойти до рыбацкого стана.'
     ));
     await seedPostCombatPhase9State(pool, party.party_id, ids);
 
@@ -279,7 +282,15 @@ function phase9Plan(request, ids) {
   const actor = request.actor.actor_id;
   const text = request.remaining_intent;
   let operation;
-  if (text.includes('Забрать дорожную')) operation = {
+  if (text.includes('Дойти до рыбацкого стана')) {
+    operation = {
+      op: 'request_movement', actor_ref: actor, movement_kind: 'route',
+      target_ref: request.player_safe_state.destination_refs.find(
+        (ref) => ref === 'trace_ld_v1_loc_fishing_camp'
+      )
+    };
+  }
+  else if (text.includes('Забрать дорожную')) operation = {
     op: 'request_item_use', actor_ref: actor, use_kind: 'operate',
     item_ref: ids.bag, target_refs: [] };
   else if (text.includes('Открыть возвращённую')) operation = {
@@ -290,7 +301,9 @@ function phase9Plan(request, ids) {
     item_ref: ids.packet, target_refs: [] };
   else if (text.includes('Вернуться всей')) operation = {
     op: 'request_movement', actor_ref: actor, movement_kind: 'route',
-    target_ref: 'trace_ld_v1_loc_fishing_camp' };
+    target_ref: request.player_safe_state.destination_refs.find(
+      (ref) => ref === 'trace_ld_v1_loc_fishing_camp'
+    ) };
   else if (text.includes('Попросить Онисима')) operation = {
     op: 'emit_interaction', actor_ref: actor, interaction_kind: 'request',
     target_actor_refs: [ids.onisim], content: text, instrument_refs: [] };
@@ -330,8 +343,10 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
   const storehouse = state.prepared_scenes.find(
     ({ location_profile_ref: id }) =>
       id === 'trace_ld_v1_loc_zhdanko_storehouse');
-  const camp = state.prepared_scenes.find(({ location_profile_ref: id }) =>
-    id === 'trace_ld_v1_loc_fishing_camp');
+  const camp = state.first_entry_preparation.scene;
+  assert.equal(camp.location_profile_ref, 'trace_ld_v1_loc_fishing_camp');
+  assert.equal(state.prepared_scenes.some(({ location_profile_ref: id }) =>
+    id === camp.location_profile_ref), false);
   state.position = { ...state.position,
     g5_node_id: storehouse.node.instance_id,
     g5_anchor_id: storehouse.anchor.instance_id,
@@ -361,7 +376,8 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
   state.knowledge = [...(state.knowledge ?? []), {
     fact_id: 'ratsha_surrender_without_further_harm_committed',
     knowledge_state: 'known_from_committed_conversation_event',
-    evidence_refs: ['phase9-postgres-fixture'] }];
+    evidence_refs: ['phase9-postgres-fixture'] }].sort(
+    ({ fact_id: left }, { fact_id: right }) => left.localeCompare(right));
   await pool.query('BEGIN');
   try {
     await pool.query(
@@ -375,12 +391,15 @@ async function seedPostCombatPhase9State(pool, partyId, ids) {
           SET g4_id=$2,g5_node_id=$3,g5_anchor_id=$4 WHERE party_id=$1`,
       [partyId, state.position.g4_id, state.position.g5_node_id,
         state.position.g5_anchor_id]);
-    for (const npc of state.npcs) await pool.query(
+    for (const npc of state.npcs) {
+      await pool.query(
       `UPDATE party_runtime.party_npcs SET anchor_id=$3,
           machine_state=$4::jsonb
         WHERE party_id=$1 AND npc_id=$2`,
-      [partyId, npc.instance_id, npc.anchor_id,
+      [partyId, npc.instance_id,
+        npc.anchor_id === camp.anchor.instance_id ? null : npc.anchor_id,
         JSON.stringify(npc.machine_state)]);
+    }
     await pool.query(
       `INSERT INTO party_runtime.party_character_knowledge(
          party_id,character_id,fact_id,knowledge_state,evidence)

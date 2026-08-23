@@ -288,17 +288,18 @@ async function assertSameTimeHazardCascade(pool, pins) {
       const phase6State = structuredClone(projection.phase6_state);
       const replacement = actor(phase6State,
         selectedParticipatingFisher(phase6State));
-      replacement.anchor_id = phase6State.prepared_scenes.find(
+      const camp = phase6State.prepared_scenes.find(
         ({ location_profile_ref: ref }) =>
           ref === 'trace_ld_v1_loc_fishing_camp'
-      ).anchor.instance_id;
+      ) ?? phase6State.first_entry_preparation?.scene;
+      replacement.anchor_id = camp.anchor.instance_id;
       const eventProposal = resolvedEventProposal(candidate, projection);
       const writeSet = {
         appends: [], inserts: [], deletes: [],
         updates: [{ target_table: 'party_npcs', id: replacement.instance_id,
           record: { party_id: phase6State.party_id,
             npc_id: replacement.instance_id,
-            anchor_id: replacement.anchor_id } }]
+            anchor_id: null } }]
       };
       return { disposition: 'execute', proposals: [eventProposal, {
         proposal_id: `hazard:${candidate.boundary_id}`,
@@ -334,9 +335,8 @@ async function assertSameTimeHazardCascade(pool, pins) {
     false);
   assert.deepEqual(body(paused), [79, 35, 57]);
   const replacement = actor(paused, selectedParticipatingFisher(paused));
-  assert.equal(replacement.anchor_id,
-    paused.prepared_scenes.find(({ location_profile_ref: ref }) =>
-      ref === 'trace_ld_v1_loc_fishing_camp').anchor.instance_id);
+  assert.equal(replacement.anchor_id, null,
+    'legacy NPC projection has no modern first-entry anchor');
   assert.equal(await boundaryStatus(pool, partyId), 'resolved');
   assert.ok(paused.phase6_history[0].attempt.processed_boundary_ids.includes(
     `event:${partyId}:phase6-interruption:reaction`

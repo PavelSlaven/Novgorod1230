@@ -9,6 +9,9 @@ import {
   resolveTracePhase5Contracts
 } from '../src/runtime/lower-dvina-trace-phase-5-contracts.js';
 import {
+  resolveTracePhase6Contracts
+} from '../src/runtime/lower-dvina-trace-phase-6-contracts.js';
+import {
   createTracePhase5Command,
   phase5PreconditionsSatisfied
 } from '../src/runtime/lower-dvina-trace-phase-5-command.js';
@@ -25,8 +28,19 @@ import { nextPhase5State } from
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 11
 });
+const revision24Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 24
+});
 const initial = state();
 const contracts = resolveTracePhase5Contracts({ state: initial, bundle });
+
+test('Phase 5 and 6 accept inherited revision 24 profile', () => {
+  assert.equal(resolveTracePhase5Contracts({ state: initial,
+    bundle: revision24Bundle }).activity.profile_id,
+  'trace_ld_v1_activity_first_aid_onisim');
+  assert.equal(resolveTracePhase6Contracts({ bundle: revision24Bundle })
+    .activity.profile_id, 'trace_ld_v1_activity_make_stretcher_and_carry');
+});
 
 test('Phase 5 admits treatment only from the exact safe committed state', () => {
   assert.equal(phase5PreconditionsSatisfied(initial, contracts), true);

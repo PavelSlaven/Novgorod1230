@@ -20,6 +20,11 @@ const revision16Bindings = JSON.parse(await readFile(
     + 'phase-m4-content/turn-step-bindings.json',
   'utf8'
 ));
+const revision17Bindings = JSON.parse(await readFile(
+  'data/world-catalogs/novgorod/lower-dvina-trace-v1/'
+    + 'phase-m5-content/turn-step-bindings.json',
+  'utf8'
+));
 const commandIds = turnStepBindings.domain_bindings.map(
   ({ command_id: commandId }) => commandId
 );
@@ -215,6 +220,17 @@ test('revision 16 keeps future Phase 8 bindings inactive before admission', () =
     bundle,
     targetRefs
   }), { code: 'TRACE_TURN_STEP_BINDING_INVALID' });
+});
+
+test('revision 24 keeps inherited inactive bindings unbound', () => {
+  const activeCommands = commands.slice(0, 4);
+  const bound = bindLowerDvinaTraceTurnStepCommands({
+    commands: activeCommands,
+    bundle: { definition_revision: 24, turn_step_bindings: revision17Bindings },
+    targetRefs
+  });
+  assert.equal(bound.length, activeCommands.length);
+  assert.equal(bound.every(({ semantic_binding: binding }) => binding), true);
 });
 
 function assertMatches(commandsToSearch, commandId, operation) {

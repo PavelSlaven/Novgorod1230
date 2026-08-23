@@ -34,7 +34,9 @@ import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 
-const bundle = await loadLowerDvinaTraceMaterializationBundle();
+const bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 24
+});
 const domainCatalogPin = lowerDvinaTracePhase1ADomainPin(bundle);
 
 test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal manifest', async () => {
@@ -49,6 +51,8 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
     'party_materialization_choices',
     'party_g5_nodes',
     'party_g5_anchors',
+    'party_npcs',
+    'party_containers',
     'party_positions',
     'party_player_characters',
     'party_actor_profile_bindings',
@@ -57,10 +61,44 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
     'party_items',
     'party_item_placements',
     'party_ownership',
+    'party_obligations',
     'party_clocks',
+    'party_g5_sites',
+    'party_scene_baselines',
+    'party_g6_instances',
+    'scene_position_nodes',
+    'party_journey_locations',
+    'preparation_snapshots',
+    'preparation_snapshot_members',
+    'party_route_plans',
+    'party_route_plan_steps',
+    'party_route_plan_executions',
+    'party_route_plan_execution_events',
+    'preparation_claims',
     'party_state_snapshots'
   ]);
   assert.ok(!tables.includes('party_visible_read_models'));
+  assert.ok(!tables.includes('entity_placements'));
+  const npcRecords = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_npcs'
+  ).records;
+  const campNpcRecords = npcRecords.filter(({ semantic_state: state }) => [
+    'eremey_fisher', 'background_fisher_1', 'background_fisher_2'
+  ].includes(state.participant_slot_ref));
+  assert.equal(campNpcRecords.length, 3);
+  assert.ok(campNpcRecords.every(({ anchor_id: anchorId }) => anchorId === null));
+  for (const table of ['party_g5_nodes', 'party_g5_anchors']) {
+    const records = stage24.party_db_write_plan.write_batches.find(
+      ({ target_table: target }) => target === table
+    ).records;
+    assert.equal(records.some(({ state }) =>
+      state?.location_profile_ref === 'trace_ld_v1_loc_fishing_camp'
+    ), false);
+  }
+  const sites = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_g5_sites'
+  ).records;
+  assert.equal(sites.some(({ origin }) => origin === 'generated'), false);
   assert.equal(stage24.party_db_write_plan.transaction.is_atomic, true);
   assert.deepEqual(new Set(stage24.party_db_write_plan.rollback_plan.covered_batch_ids), new Set(stage24.party_db_write_plan.transaction.write_order));
 
@@ -219,7 +257,7 @@ function createMaterialization() {
     materializeLowerDvinaTracePartyInstance({
     party_id: 'trace-stage24-party',
     scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: 7,
+    scenario_definition_revision: 24,
     scenario_manifest_digest: bundle.manifest_digest,
     world_revision_id: bundle.location_topology_set.spatial_source_ref.world_revision_id,
     world_catalog_digest: bundle.location_topology_set.spatial_source_ref.world_revision_catalog_digest,

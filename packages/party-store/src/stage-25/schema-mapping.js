@@ -13,7 +13,12 @@ const PARTY_RUNTIME_V2_TARGETS = new Set([
   'party_autonomous_updates', 'party_visible_read_models', 'party_catalog_pins',
   'party_materialization_run_catalog_pins', 'party_v3_change_sets', 'party_actor_profile_bindings',
   'party_actor_body_states', 'party_actor_active_conditions', 'party_clocks',
-  'party_obligations', 'party_obligation_transitions'
+  'party_obligations', 'party_obligation_transitions', 'party_g5_sites',
+  'party_scene_baselines', 'party_g6_instances', 'scene_position_nodes',
+  'party_journey_locations', 'preparation_snapshots',
+  'preparation_snapshot_members', 'party_route_plans',
+  'party_route_plan_steps', 'party_route_plan_executions',
+  'party_route_plan_execution_events', 'preparation_claims'
 ]);
 
 const SPEC_STATUS_TO_DDL_STATUS = Object.freeze({
@@ -182,7 +187,12 @@ export const PARTY_SPEC_TARGET_MAPPINGS = Object.freeze({
     'party_catalog_pins', 'party_materialization_run_catalog_pins', 'party_v3_change_sets',
     'party_actor_profile_bindings', 'party_actor_body_states',
     'party_actor_active_conditions', 'party_clocks', 'party_obligations',
-    'party_obligation_transitions'
+    'party_obligation_transitions', 'party_g5_sites',
+    'party_scene_baselines', 'party_g6_instances', 'scene_position_nodes',
+    'party_journey_locations', 'preparation_snapshots',
+    'preparation_snapshot_members', 'party_route_plans',
+    'party_route_plan_steps', 'party_route_plan_executions',
+    'party_route_plan_execution_events', 'preparation_claims'
   ].map((table) => [table, { actualTargetTable: table, storage: 'party_runtime_v2' }]))
 });
 

@@ -8,7 +8,19 @@ export async function loadActionProducedOutputDestination(client, input) {
      FROM party_runtime.party_positions p
      JOIN party_runtime.party_g5_anchors a
        ON a.party_id=p.party_id AND a.anchor_id=p.g5_anchor_id
-     WHERE p.party_id=$1`, [input.party_id]);
+     WHERE p.party_id=$1
+       AND NOT EXISTS (
+         SELECT 1 FROM party_runtime.party_journey_locations l
+         JOIN party_runtime.parties current_party
+           ON current_party.party_id=l.party_id
+         JOIN party_runtime.party_state_snapshots snapshot
+           ON snapshot.party_id=current_party.party_id
+          AND snapshot.state_version=current_party.state_version
+          WHERE l.party_id=p.party_id AND l.owner_kind='actor'
+            AND l.owner_id=$2
+            AND snapshot.state_payload#>>'{position,position_id}'
+              =l.scene_position_id
+       )`, [input.party_id, input.actor_ref]);
   if (selected.rows.length === 0) return null;
   if (selected.rows.length !== 1 || !text(selected.rows[0].anchor_id)) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');

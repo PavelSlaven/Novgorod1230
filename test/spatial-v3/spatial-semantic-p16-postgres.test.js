@@ -57,7 +57,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
   for (const obsolete of ['authority_digest', 'resolution_digest', 'write_plan_digest', 'reservation_ref']) assert.equal([...names].some((name) => name.endsWith(`.${obsolete}`)), false);
 });
 
-test('S1 first-entry provisioning persists broad descriptive envelopes', async () => {
+test('S1 first-entry provisioning persists approved narrow descriptive envelopes', async () => {
   const inserts = [];
   const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile() });
   const transaction = { query: async (sql, values) => {
@@ -76,11 +76,42 @@ test('S1 first-entry provisioning persists broad descriptive envelopes', async (
       'capacity_total','consumed_count','envelope_ref','environment_ref','function_ref','g5_ref',
       'g5_state_version','g6_ref','g6_state_version','kind','mechanics_class','policy_ref',
       'policy_version','position_ref','position_state_version','profile_ref','profile_version',
-      'property_ref','scope_kind','state_version','template_ref'].sort());
+      'semantic_context',
+      'property_ref','scope_kind','state_version'].sort());
     assert.equal(envelope.scope_kind, 'current_position_local_reference');
     assert.equal(envelope.mechanics_class, 'descriptive_only');
     assert.deepEqual([envelope.capacity_total, envelope.consumed_count, envelope.state_version], [1, 0, 1]);
   }
+});
+
+test('S1 first-entry provisions only template-and-position matches from a mixed profile', async () => {
+  const inserts = [];
+  const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile([
+    { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
+      position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
+      mechanics_class: 'descriptive_only', capacity_total: 1,
+      semantic_context: semanticContext('local_natural_feature') },
+    { envelope_ref: 'other-template-s1', kind: 'ordinary_structure', template_id: 'template-other',
+      position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
+      mechanics_class: 'descriptive_only', capacity_total: 1,
+      semantic_context: semanticContext('ordinary_structure') },
+    { envelope_ref: 'other-position-s1', kind: 'ordinary_structure', template_id: 'template-s1',
+      position_kind: 'other_position', scope_kind: 'current_position_local_reference',
+      mechanics_class: 'descriptive_only', capacity_total: 1,
+      semantic_context: semanticContext('ordinary_structure') }
+  ]) });
+  const transaction = { query: async (sql, values) => {
+    if (sql.includes('FROM party_runtime.party_scene_baselines')) return { rowCount: 1, rows: [scope()] };
+    if (sql.includes('FROM party_runtime.party_spatial_semantic_envelopes')) return { rowCount: 0, rows: [] };
+    if (sql.includes('INSERT INTO party_runtime.party_spatial_semantic_envelopes')) {
+      inserts.push(JSON.parse(values[2])); return { rowCount: 1, rows: [] };
+    }
+    assert.fail(`unexpected query: ${sql}`);
+  } };
+  const result = await provisioner.provision({ transaction, partyId: 'party-s1', changeSetId: 'change-s1',
+    firstEntryBinding: { g6_instance_id: 'g6-s1', position_id: 'position-s1' } });
+  assert.deepEqual(result.envelope_refs, ['feature-s1']);
+  assert.deepEqual(inserts.map(({ envelope_ref }) => envelope_ref), ['feature-s1']);
 });
 
 test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commit', async (t) => {
@@ -227,8 +258,9 @@ function s1Envelope() {
   return { envelope_ref: 'envelope:s1', kind: 'local_natural_feature',
     scope_kind: 'current_position_local_reference', mechanics_class: 'descriptive_only',
     baseline_ref: 'baseline:s1', g5_ref: 'g5:s1', g6_ref: 'g6:s1', position_ref: 'position:s1',
-    template_ref: 'template:s1', property_ref: 'property:s1', function_ref: 'function:s1',
-    environment_ref: 'environment:s1', profile_ref: 'profile:s1', profile_version: 1,
+    property_ref: 'property:s1', function_ref: 'function:s1',
+    environment_ref: 'environment:s1', semantic_context: semanticContext('local_natural_feature'),
+    profile_ref: 'profile:s1', profile_version: 1,
     policy_ref: 'policy:s1', policy_version: 1, baseline_state_version: 0,
     g5_state_version: 0, g6_state_version: 0, position_state_version: 0,
     capacity_total: 1, consumed_count: 0, state_version: 1 };
@@ -284,18 +316,25 @@ async function spatialSnapshot(pool) {
   return result.rows[0].snapshot;
 }
 
-function profile() {
+function profile(envelopes = [
+  { envelope_ref: 'structure-s1', kind: 'ordinary_structure', template_id: 'template-s1',
+    position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
+    mechanics_class: 'descriptive_only', capacity_total: 1,
+    semantic_context: semanticContext('ordinary_structure') },
+  { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
+    position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
+    mechanics_class: 'descriptive_only', capacity_total: 1,
+    semantic_context: semanticContext('local_natural_feature') }
+]) {
   return { schema: 'rus.lower_dvina_trace_s1_loaded_profile.v1', profile: {
       schema: 'rus.lower_dvina_trace_spatial_semantic_profile.v1', status: 'approved',
-      scenario_definition_revision: 23, profile_id: 'profile-s1', policy_ref: 'policy-s1',
-      revision: 1, policy_version: 1, property_ref: 'property-s1', function_ref: 'function-s1',
-      environment_ref: 'environment-s1', envelopes: [
-        { envelope_ref: 'structure-s1', kind: 'ordinary_structure', template_id: 'template-s1',
-          position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-          mechanics_class: 'descriptive_only', capacity_total: 1 },
-        { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
-          position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-          mechanics_class: 'descriptive_only', capacity_total: 1 }] } };
+      scenario_definition_revision: 24,
+      profile_id: 'lower_dvina_trace_s1_spatial_semantic_profile_v2',
+      policy_ref: 'lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1',
+      revision: 2, policy_version: 1,
+      property_ref: 'lower_dvina_trace:s1:shore_property_context_v1',
+      function_ref: 'lower_dvina_trace:s1:descriptive_only_v1',
+      environment_ref: 'lower_dvina_trace:s1:late_summer_open_water_v1', envelopes } };
 }
 
 function scope() {
@@ -304,3 +343,8 @@ function scope() {
     template_ref: { entity_ref: { entity_id: 'template-s1' } }, position_ref: 'position-s1',
     position_state_version: 0, template_id: 'template-s1', position_kind: 'scene_position' };
 }
+function semanticContext(allowed_kind) { return { allowed_kind, period: '1230, Rus',
+  region: 'Lower Dvina', place_type: 'open river shore at a boat-wreck site',
+  environment: 'late summer open water; wet sand, driftwood, reeds, riverbank stones and timber',
+  material_culture: 'early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions',
+  ordinary_boundary: `create one unimportant local ${allowed_kind.replaceAll('_', ' ')} only. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, hazards, movement, resources, or mechanics.` }; }

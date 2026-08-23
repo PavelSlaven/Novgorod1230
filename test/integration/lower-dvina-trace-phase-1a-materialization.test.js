@@ -32,7 +32,7 @@ const revision22DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
   revision22Bundle
 );
 const activeBundle = await loadLowerDvinaTraceMaterializationBundle({
-  scenarioDefinitionRevision: 23
+  scenarioDefinitionRevision: 24
 });
 const activeDomainCatalogPin = lowerDvinaTracePhase1ADomainPin(activeBundle);
 
@@ -58,7 +58,7 @@ function request(overrides = {}) {
   };
 }
 
-test('revision 23 materialization contract admits the S1 artifact and prior owners', () => {
+test('revision 24 materialization contract admits first-entry S1 artifact and prior owners', () => {
   assert.deepEqual(activeBundle.local_fire_profile, revision22Bundle.local_fire_profile);
   assert.deepEqual(
     activeBundle.materialization_bindings.action_production_materialization,
@@ -82,8 +82,8 @@ test('revision 23 materialization contract admits the S1 artifact and prior owne
     scenario_bundle: revision22Bundle
   }));
   const result = materializeLowerDvinaTracePartyInstance(request({
-    party_id: 'trace-phase-1a-revision-23-party',
-    scenario_definition_revision: 23,
+    party_id: 'trace-phase-1a-revision-24-party',
+    scenario_definition_revision: 24,
     scenario_manifest_digest: activeBundle.manifest_digest,
     world_revision_id:
       activeBundle.location_topology_set.spatial_source_ref.world_revision_id,
@@ -91,7 +91,7 @@ test('revision 23 materialization contract admits the S1 artifact and prior owne
       activeBundle.location_topology_set.spatial_source_ref
         .world_revision_catalog_digest,
     domain_catalog_pin: activeDomainCatalogPin,
-    idempotency_key: 'trace-phase-1a-revision-23-idempotency',
+    idempotency_key: 'trace-phase-1a-revision-24-idempotency',
     scenario_bundle: activeBundle
   }));
 
@@ -99,7 +99,33 @@ test('revision 23 materialization contract admits the S1 artifact and prior owne
   assert.ok(result.sealed_selections.some(
     ({ selection_kind: kind }) => kind === 'interaction_persistence_mappings'
   ));
-  assert.equal(result.immediate.prepared_scenes.length, 3);
+  assert.equal(result.immediate.prepared_scenes.length, 2);
+  const deferredCampNpcs = result.immediate.npcs.filter(
+    ({ participant_slot_ref: slot }) => [
+      'eremey_fisher', 'background_fisher_1', 'background_fisher_2'
+    ].includes(slot)
+  );
+  assert.equal(deferredCampNpcs.length, 3);
+  assert.ok(deferredCampNpcs.every(({ anchor_id: anchorId }) => anchorId === null));
+  assert.deepEqual(result.first_entry_preparation.binding, {
+    ...activeBundle.materialization_bindings.first_entry_preparation
+  });
+  assert.equal(
+    result.first_entry_preparation.scene.location_profile_ref,
+    'trace_ld_v1_loc_fishing_camp'
+  );
+  assert.equal(
+    result.first_entry_preparation.scene.node.parent_g4_id,
+    'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach'
+  );
+  assert.deepEqual(
+    result.first_entry_preparation.npcs.map(({ participant_slot_ref: slot }) => slot),
+    ['eremey_fisher', 'background_fisher_1', 'background_fisher_2']
+  );
+  assert.ok(result.first_entry_preparation.npcs.every(
+    ({ anchor_id: anchorId }) =>
+      anchorId === result.first_entry_preparation.scene.anchor.instance_id
+  ));
   assert.equal(result.immediate.containers.length, 1);
   for (const owner of ['local_fire_authority', 'action_production_authority']) {
     assert.equal(Object.hasOwn(result, owner), Object.hasOwn(prior, owner));

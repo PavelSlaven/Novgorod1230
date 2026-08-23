@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { isSpatialSemanticRemainderInScope } from
+  '../../packages/turn/src/turn-step-spatial-semantic-remainder.js';
 
 import { startLowerDvinaProductionAcceptanceEnv } from
   '../helpers/lower-dvina-production-acceptance-env.js';
@@ -58,6 +60,23 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
     assert.equal(typeof committedResolution.semantics.description, 'string');
     const calls = s1Calls(environment);
     await environment.restartRoot();
+    const reloaded = await get(environment,
+      `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
+    const local = reloaded.screen.visible_context.visible_objects.find(
+      ({ entity_ref: ref }) => ref?.entity_kind === 'spatial_local_reference');
+    assert.deepEqual(local, { entity_ref: { entity_kind: 'spatial_local_reference',
+      entity_id: committedResolution.local_ref },
+    display_label: committedResolution.semantics.name,
+    recognition: 'recognized', visible_status: 'замечен' });
+    const inspected = await submit(environment, partyId,
+      's1-first-entry-inspect-local', 'Осмотреть низкую плетёную загородку.');
+    assert.equal(inspected.screen.visible_context.visible_objects.some(
+      ({ entity_ref: ref }) => ref?.entity_id === committedResolution.local_ref),
+    true);
+    assert.equal(s1Calls(environment), calls,
+      'a reloaded visible local ref must not invoke the S1 model again');
+    assert.equal(await resolutionCount(environment, partyId), 1);
+    assert.deepEqual(await resolution(environment, partyId), committedResolution);
     assert.deepEqual(await submit(environment, partyId, 's1-first-entry-look',
       'Осмотреться.'), look);
     assert.equal(s1Calls(environment), calls);
@@ -131,6 +150,32 @@ function s1Responder(shouldFail = () => false) {
         description: 'Сырая плетёная загородка у берега, без особого значения.',
         semantic_requirements: []
       };
+    }
+    if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
+        .includes(request.model)
+        && (request.input?.request ?? request.input)?.root_player_action
+          === 'Осмотреть низкую плетёную загородку.') {
+      const turn = request.input.request ?? request.input;
+      const target = turn.player_safe_state.visible_objects.find(
+        ({ entity_ref: ref }) => ref?.entity_kind === 'spatial_local_reference')
+        ?.entity_ref?.entity_id;
+      assert.equal(typeof target, 'string');
+      const operation = { op: 'request_discovery', actor_ref: turn.actor.actor_id,
+        discovery_kind: 'inspect', target_refs: [target],
+        query: 'осмотреть видимую загородку' };
+      assert.equal(isSpatialSemanticRemainderInScope({ operation,
+        playerSafeState: turn.player_safe_state }), true);
+      return { schema: 'turn_step_plan_v1', request_id: turn.request_id,
+        committed_state_version: turn.committed_state_version,
+        working_revision: turn.working_revision, step_index: turn.step_index,
+        interpretation: { player_goal: turn.root_player_action,
+          grounded_attempt: turn.remaining_intent, adaptation: 'literal' },
+        resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [operation], check: null,
+        continuation: null, clarification: null,
+        reason_code: 'inspect_reloaded_s1_local',
+        reason: 'Осмотреть уже видимую локальную деталь.' };
     }
     return base(request);
   };

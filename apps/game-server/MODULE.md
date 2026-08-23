@@ -4,12 +4,11 @@
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
-S1 uses the existing P16 transaction for approved local variants: open
-one-space structure or descriptive natural-feature placement. Controlled
-passage remains fail-closed without approved P11 portal bindings. The server revalidates code-owned finite capacity
-and committed baseline/G5/G6/current-position scope, then persists only their
-admitted formal refs and semantic detail; no false topology/resource mechanics
-or second transaction owner is added.
+Spatial semantic materialization hands the server one validated formal proposal.
+Server owns only P16/SQL: it revalidates committed profile pins, scope and
+capacity in existing transaction, then persists accepted refs and semantic
+detail. It does not create proposal, topology or resource mechanics, and adds
+no second transaction owner.
 
 ## Владеет
 
@@ -21,7 +20,7 @@ or second transaction owner is added.
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, write-plan construction, materialization semantics, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 

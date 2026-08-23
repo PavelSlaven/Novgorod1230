@@ -4,6 +4,70 @@ import { copy, digest, endpoint, exactSlots, failure, freeze, same, sameVersione
 // remains independently fail-closed until a caller deliberately uses P20 APIs.
 export { createTopologyProposalValidator } from './spatial-v3-ports.js';
 
+/** S1 formal topology stays code-owned; P16 only persists these row templates. */
+export function materializeS1FormalSpatialProposal({ party_id, request_id, local_ref, kind,
+  structural_variant, baseline_ref, g5_ref, position_ref }) {
+  if (!text(party_id) || !text(request_id) || !text(local_ref)
+      || !['ordinary_structure', 'local_natural_feature'].includes(kind)
+      || !['open_one_space', 'descriptive_local_reference'].includes(structural_variant)
+      || !text(baseline_ref) || !text(g5_ref) || !text(position_ref)) {
+    return failure('s1_formal_spatial_data_gap', null, { stage: 's1_formal_spatial_refs' });
+  }
+  const base = `s1:${party_id}:${request_id}`;
+  const structural = structural_variant === 'open_one_space';
+  const refs = {
+    schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized', structural_variant,
+    local_ref, placement_ref: `${kind}:${local_ref}`,
+    g6_instance_ref: structural ? `${base}:g6` : null,
+    position_ref: structural ? `${base}:position` : null, portal_ref: null,
+    movement_edge_refs: structural ? [`${base}:edge:out`, `${base}:edge:back`] : [],
+    visibility_link_refs: structural
+      ? [`${base}:edge:out:visible`, `${base}:edge:back:visible`] : [] };
+  const placement = (position_node_id) => ({ target_table: 'entity_placements', id: refs.placement_ref,
+    record: { entity_kind: kind, entity_id: local_ref, placement_kind: 'scene_position',
+      position_node_id, host_entity_ref: null, occupies_capacity_units: 0,
+      visibility_modifier_ref: null, interaction_profile_ref: null, state_version: 0 } });
+  if (!structural) return freeze({ ok: true, proposal: {
+    schema: 'rus.s1_formal_spatial_proposal.v1', refs, rows: [placement(position_ref)] } });
+  const rows = [
+    { target_table: 'party_g6_instances', id: refs.g6_instance_ref,
+      record: { id: refs.g6_instance_ref, scene_baseline_id: baseline_ref,
+        source_scene_template_ref: { entity_id: refs.g6_instance_ref }, scene_slot_key: refs.g6_instance_ref,
+        enclosing_stable_structure_id: null, host_kind: 'g5_site', host_id: g5_ref,
+        physical_class_id: 'ordinary', primary_scene_role_id: 'ordinary_local',
+        vertical_context_id: 'ground', overhead_cover_id: 'none',
+        intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near',
+        acoustic_uniformity: 'uniform', status: 'active', state_version: 0 } },
+    { target_table: 'scene_position_nodes', id: refs.position_ref,
+      record: { id: refs.position_ref, g6_instance_id: refs.g6_instance_ref,
+        position_type_id: 'ordinary_local', template_slot_key: refs.position_ref,
+        template_instance_ordinal: 0, stable_basis_ref: null, capacity: 1,
+        access_class_id: 'public', light_profile_ref: null, hazard_profile_ref: null,
+        status: 'active', state_version: 0 } }
+  ];
+  for (const [id, from, to, reverse] of [[refs.movement_edge_refs[0], position_ref,
+    refs.position_ref, refs.movement_edge_refs[1]], [refs.movement_edge_refs[1], refs.position_ref,
+    position_ref, refs.movement_edge_refs[0]]]) rows.push({ target_table: 'scene_movement_edges', id,
+    record: { id, scene_baseline_id: baseline_ref, source_scene_template_ref: { entity_id: id },
+      source_edge_slot_key: id, from_position_id: from, to_position_id: to,
+      passage_type_id: 'passage.local', transition_environment_profile_ref: { entity_ref: {
+        entity_kind: 'transition_environment_profile', entity_id: 'env.local_variable' }, authoring_version: '1' },
+      movement_orientation_profile_ref: { entity_ref: { entity_kind: 'movement_orientation_profile',
+        entity_id: 'orientation.topological_local' }, authoring_version: '1' }, cost_kind: 'action',
+      action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
+      base_minutes: null, dynamic_recheck_policy_ref: null, capacity: 1, portal_entity_id: null,
+      availability_condition_set_ref: null, reverse_edge_id: reverse, status: 'active', state_version: 0 } });
+  for (const [id, from, to, reverse] of [[refs.visibility_link_refs[0], position_ref,
+    refs.position_ref, refs.visibility_link_refs[1]], [refs.visibility_link_refs[1], refs.position_ref,
+    position_ref, refs.visibility_link_refs[0]]]) rows.push({ target_table: 'visibility_links', id,
+    record: { id, scene_baseline_id: baseline_ref, source_scene_template_ref: { entity_id: id },
+      source_link_slot_key: id, from_position_id: from, to_position_id: to, quality: 'clear',
+      distance_band: 'near', portal_entity_id: null, condition_profile_ref: null,
+      reverse_link_id: reverse, status: 'active', state_version: 0 } });
+  return freeze({ ok: true, proposal: { schema: 'rus.s1_formal_spatial_proposal.v1', refs,
+    rows: [...rows, placement(position_ref)] } });
+}
+
 
 /**
  * P20-S01. The caller owns I/O. This adapter validates and freezes one exact

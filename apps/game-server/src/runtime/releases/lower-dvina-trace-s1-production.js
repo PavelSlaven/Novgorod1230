@@ -86,17 +86,8 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => resolution?.position_ref === position
       && visibleResolution(resolution)));
-  const descriptions = resolutions.map(({ semantics }) => `${semantics.name}: ${semantics.description}`);
-  const existing = Array.isArray(player.known_context) ? player.known_context : [];
-  const visible = Array.isArray(player.visible_objects) ? player.visible_objects : [];
-  const knownRefs = new Set(visible.map((object) => object?.entity_ref?.entity_id));
-  const visible_objects = [...visible, ...resolutions.filter(({ local_ref }) => !knownRefs.has(local_ref))
-    .map(({ local_ref, semantics }) => ({ entity_ref: {
-      entity_kind: 'spatial_local_reference', entity_id: local_ref },
-    display_label: semantics.name, recognition: 'recognized', visible_status: 'замечен' }))];
-  const next = descriptions.length === 0 ? player : { ...player, visible_objects,
-    known_context: [...existing, ...descriptions.filter((description) =>
-      !existing.includes(description))] };
+  const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
+    resolutions });
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
     capacity_total: total, consumed_count: used }) => status === 'committed'
       && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
@@ -104,6 +95,29 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   return available == null ? next : { ...next, spatial_semantic: {
     semantic_grounding_available: true,
     position_ref: position } };
+}
+
+export function projectLowerDvinaTraceS1Resolutions({ playerSafeState,
+  resolutions }) {
+  let player; let safeResolutions;
+  try {
+    player = strictSnapshot(playerSafeState);
+    safeResolutions = strictSnapshot(resolutions);
+  } catch { return player ?? {}; }
+  if (!Array.isArray(safeResolutions)) return player;
+  const visibleResolutions = safeResolutions.filter(visibleResolution);
+  const descriptions = visibleResolutions.map(({ semantics }) =>
+    `${semantics.name}: ${semantics.description}`);
+  const existing = Array.isArray(player.known_context) ? player.known_context : [];
+  const visible = Array.isArray(player.visible_objects) ? player.visible_objects : [];
+  const knownRefs = new Set(visible.map((object) => object?.entity_ref?.entity_id));
+  const visible_objects = [...visible, ...visibleResolutions.filter(({ local_ref }) => !knownRefs.has(local_ref))
+    .map(({ local_ref, semantics }) => ({ entity_ref: {
+      entity_kind: 'spatial_local_reference', entity_id: local_ref },
+    display_label: semantics.name, recognition: 'recognized', visible_status: 'замечен' }))];
+  return descriptions.length === 0 ? player : { ...player, visible_objects,
+    known_context: [...existing, ...descriptions.filter((description) =>
+      !existing.includes(description))] };
 }
 
 function resolvedResult(value, committed) {

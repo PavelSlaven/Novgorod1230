@@ -45,11 +45,12 @@ container eligibility, contents semantics, mechanics, reveal или persistence.
 
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 
-S1 `internal/lower-dvina-trace-s1` validates a finite code-owned envelope bound
-to committed baseline/G5/G6/current position and admits only open ordinary
-`name`/`description`. It creates no topology, movement, hazards, water/fire
-effects or persistence writes; final capacity revalidation and commit belong to
-the existing P16 owner.
+Spatial semantic materialization owns formal proposal/resolution: it validates
+a finite code-owned envelope bound to committed spatial scope, admits open
+ordinary semantic detail and produces formal refs, capacity effect and only
+profile-provided mechanics. Capacity consumption remains in P16. It creates no unapproved topology, movement,
+hazards, resource effects or persistence writes; `@rus/game-server` performs
+only P16 revalidation and SQL commit.
 
 ## Контракты
 

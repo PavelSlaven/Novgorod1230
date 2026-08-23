@@ -1,5 +1,7 @@
 import { deepFreeze } from '@rus/kernel';
 import { MaterializationError } from './core.js';
+import { materializeS1FormalSpatialProposal } from './spatial-v3.js';
+export { materializeS1FormalSpatialProposal } from './spatial-v3.js';
 
 const KINDS = new Set(['ordinary_structure', 'local_natural_feature']);
 const NEEDS = new Set(['interaction', 'projection', 'perception']);
@@ -50,15 +52,19 @@ export function admitSpatialSemanticRemainder({ prepared, proposal }) {
     structural_variant: envelope.structural_variant,
     available_mechanics: envelope.available_mechanics
   });
+  const formal = materializeS1FormalSpatialProposal({ party_id: safePrepared.party_id,
+    request_id: safePrepared.request_id, local_ref, kind: envelope.kind,
+    structural_variant: envelope.structural_variant, baseline_ref: envelope.baseline_ref,
+    g5_ref: envelope.g5_ref, position_ref: envelope.position_ref });
+  if (!formal.ok) fail('S1_SPATIAL_DATA_GAP', 'S1 formal spatial data is unavailable.');
   return deepFreeze({ schema: 'rus.s1_spatial_semantic_resolution.v1',
     request_id: safePrepared.request_id, causal_request_ref: safePrepared.causal_request_ref,
     party_id: safePrepared.party_id, local_ref, envelope_ref: envelope.envelope_ref,
     position_ref: envelope.position_ref,
     outcome: { name: safeProposal.name, description: safeProposal.description,
       semantic_requirements: safeProposal.semantic_requirements }, materialized: true,
-    formal_spatial_refs: { schema: 'rus.s1_formal_spatial_refs_placeholder.v1',
-      status: 'pending_owner_resolution', structural_variant: envelope.structural_variant,
-      available_mechanics: envelope.available_mechanics } });
+    formal_spatial_refs: structuredClone(formal.proposal.refs),
+    formal_spatial_proposal: formal.proposal });
 }
 
 export function assertSpatialSemanticRequirementsAdmitted({ semantic_requirements,
@@ -105,7 +111,8 @@ export function validateSpatialSemanticCandidate(value) {
 function validateResolution(value, final) {
   const resolution = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
   exact(resolution, ['schema', 'request_id', 'causal_request_ref', 'party_id', 'local_ref',
-    'envelope_ref', 'position_ref', 'outcome', 'materialized', 'formal_spatial_refs'],
+    'envelope_ref', 'position_ref', 'outcome', 'materialized', 'formal_spatial_refs',
+    'formal_spatial_proposal'],
   'S1_SPATIAL_RESOLUTION_INVALID', 'resolution');
   if (resolution.schema !== 'rus.s1_spatial_semantic_resolution.v1') {
     fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 resolution schema is invalid.');
@@ -121,7 +128,19 @@ function validateResolution(value, final) {
       'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.outcome') }, { request_id: resolution.request_id });
   if (resolution.materialized !== true) fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 materialization is invalid.');
   formalSpatialRefs(resolution.formal_spatial_refs, final);
+  formalSpatialProposal(resolution.formal_spatial_proposal, resolution.formal_spatial_refs);
   return deepFreeze(resolution);
+}
+
+function formalSpatialProposal(value, refs) {
+  const proposal = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_proposal');
+  exact(proposal, ['schema', 'refs', 'rows'], 'S1_SPATIAL_RESOLUTION_INVALID',
+    'resolution.formal_spatial_proposal');
+  if (proposal.schema !== 'rus.s1_formal_spatial_proposal.v1'
+      || JSON.stringify(proposal.refs) !== JSON.stringify(refs)
+      || !Array.isArray(proposal.rows) || proposal.rows.length === 0) {
+    fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial proposal is invalid.');
+  }
 }
 
 function preparedOf(value) {
@@ -196,37 +215,24 @@ function proposalOf(value, prepared) {
   return deepFreeze(proposal);
 }
 
-function formalSpatialRefs(value, final = false) {
+function formalSpatialRefs(value) {
   const refs = json(value, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
-  if (refs.schema === 'rus.s1_formal_spatial_refs.v1') {
-    const keys = ['schema', 'status', 'structural_variant', 'local_ref', 'placement_ref',
-      'g6_instance_ref', 'position_ref', 'portal_ref', 'movement_edge_refs', 'visibility_link_refs'];
-    exact(refs, keys, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
-    if (refs.status !== 'materialized' || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, refs.structural_variant)
-        || ![refs.local_ref, refs.placement_ref].every((value) => typeof value === 'string' && value.length > 0)
-        || !Array.isArray(refs.movement_edge_refs) || !Array.isArray(refs.visibility_link_refs)
-        || ![...refs.movement_edge_refs, ...refs.visibility_link_refs].every((value) => typeof value === 'string' && value.length > 0)) {
-      fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
-    }
-    const structural = refs.structural_variant !== 'descriptive_local_reference';
-    if (structural !== (typeof refs.g6_instance_ref === 'string' && typeof refs.position_ref === 'string')
-        || (refs.structural_variant === 'one_space_controlled_passage')
-          !== (typeof refs.portal_ref === 'string')
-        || (!structural && (refs.portal_ref !== null || refs.movement_edge_refs.length !== 0 || refs.visibility_link_refs.length !== 0))
-        || (structural && (refs.movement_edge_refs.length !== 2 || refs.visibility_link_refs.length !== 2))) {
-      fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
-    }
-    return;
-  }
-  if (final) fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 final resolution lacks formal spatial refs.');
-  exact(refs, ['schema', 'status', 'structural_variant', 'available_mechanics'],
-    'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
-  if (refs.schema !== 'rus.s1_formal_spatial_refs_placeholder.v1'
-      || refs.status !== 'pending_owner_resolution'
+  const keys = ['schema', 'status', 'structural_variant', 'local_ref', 'placement_ref',
+    'g6_instance_ref', 'position_ref', 'portal_ref', 'movement_edge_refs', 'visibility_link_refs'];
+  exact(refs, keys, 'S1_SPATIAL_RESOLUTION_INVALID', 'resolution.formal_spatial_refs');
+  if (refs.schema !== 'rus.s1_formal_spatial_refs.v1' || refs.status !== 'materialized'
       || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, refs.structural_variant)
-      || !Array.isArray(refs.available_mechanics)
-      || new Set(refs.available_mechanics).size !== refs.available_mechanics.length
-      || !refs.available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))) {
+      || ![refs.local_ref, refs.placement_ref].every((value) => typeof value === 'string' && value.length > 0)
+      || !Array.isArray(refs.movement_edge_refs) || !Array.isArray(refs.visibility_link_refs)
+      || ![...refs.movement_edge_refs, ...refs.visibility_link_refs].every((value) => typeof value === 'string' && value.length > 0)) {
+    fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
+  }
+  const structural = refs.structural_variant !== 'descriptive_local_reference';
+  if (structural !== (typeof refs.g6_instance_ref === 'string' && typeof refs.position_ref === 'string')
+      || (refs.structural_variant === 'one_space_controlled_passage')
+        !== (typeof refs.portal_ref === 'string')
+      || (!structural && (refs.portal_ref !== null || refs.movement_edge_refs.length !== 0 || refs.visibility_link_refs.length !== 0))
+      || (structural && (refs.movement_edge_refs.length !== 2 || refs.visibility_link_refs.length !== 2))) {
     fail('S1_SPATIAL_RESOLUTION_INVALID', 'S1 formal spatial refs are invalid.');
   }
 }

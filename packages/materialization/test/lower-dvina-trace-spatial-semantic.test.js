@@ -42,8 +42,16 @@ test('S1 accepts open unseen local concretization inside code-owned envelope', (
     description: 'Низкий заслон из прутьев у кромки воды.', semantic_requirements: [] });
   assert.equal(result.materialized, true);
   assert.deepEqual(result.formal_spatial_refs, {
-    schema: 'rus.s1_formal_spatial_refs_placeholder.v1', status: 'pending_owner_resolution',
-    structural_variant: 'open_one_space', available_mechanics: [] });
+    schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized',
+    structural_variant: 'open_one_space', local_ref: 's1-local:request-a',
+    placement_ref: 'ordinary_structure:s1-local:request-a',
+    g6_instance_ref: 's1:party-a:request-a:g6', position_ref: 's1:party-a:request-a:position',
+    portal_ref: null, movement_edge_refs: ['s1:party-a:request-a:edge:out',
+      's1:party-a:request-a:edge:back'], visibility_link_refs: [
+      's1:party-a:request-a:edge:out:visible', 's1:party-a:request-a:edge:back:visible'] });
+  assert.deepEqual(result.formal_spatial_proposal.rows.map(({ target_table }) => target_table),
+    ['party_g6_instances', 'scene_position_nodes', 'scene_movement_edges',
+      'scene_movement_edges', 'visibility_links', 'visibility_links', 'entity_placements']);
   assert.deepEqual(Object.keys(prepared.model_request.proposal_example).sort(),
     ['description', 'name', 'request_id', 'schema', 'semantic_requirements']);
   assert.deepEqual(prepared.model_request.semantic_context, semanticContext('ordinary_structure'));
@@ -95,9 +103,25 @@ test('S1 rejects controlled passages before model because no portal condition ow
   const feature = prepareSpatialSemanticRemainder(request({ envelope: { ...request().envelope,
     kind: 'local_natural_feature', structural_variant: 'descriptive_local_reference',
     semantic_context: semanticContext('local_natural_feature') } }));
+  const descriptive = admitSpatialSemanticRemainder({ prepared: feature, proposal: proposal() });
+  assert.deepEqual(descriptive.formal_spatial_refs, {
+    schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized',
+    structural_variant: 'descriptive_local_reference', local_ref: 's1-local:request-a',
+    placement_ref: 'local_natural_feature:s1-local:request-a', g6_instance_ref: null,
+    position_ref: null, portal_ref: null, movement_edge_refs: [], visibility_link_refs: [] });
+  assert.deepEqual(descriptive.formal_spatial_proposal.rows.map(({ target_table }) => target_table),
+    ['entity_placements']);
   assert.throws(() => admitSpatialSemanticRemainder({ prepared: feature,
     proposal: proposal({ semantic_requirements: ['interior_space'] }) }),
   (error) => code(error) === 'S1_SPATIAL_DATA_GAP');
+  assert.throws(() => admitSpatialSemanticRemainder({ prepared: feature,
+    proposal: proposal({ semantic_requirements: ['controlled_passage'] }) }),
+  (error) => code(error) === 'S1_SPATIAL_DATA_GAP');
+  for (const requirement of ['extractable_resource', 'hazard', 'movement_constraint']) {
+    assert.throws(() => admitSpatialSemanticRemainder({ prepared: feature,
+      proposal: proposal({ semantic_requirements: [requirement] }) }),
+    (error) => code(error) === 'S1_SPATIAL_MECHANICS_GAP');
+  }
 });
 
 test('S1 model context comes from envelope profile data without leaking server refs', () => {

@@ -29,6 +29,8 @@ import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
 import { createSpatialSemanticAtomicWritePlan } from
   './spatial-semantic-atomic-write-plan.js';
 import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
+import { projectLowerDvinaTraceS1Resolutions } from
+  '../../runtime/releases/lower-dvina-trace-s1-production.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -95,11 +97,26 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_SPATIAL_SEMANTIC_PLAN_INVALID',
       'Spatial semantic atomic plan failed its sealed contract.', { status: 409 });
   }
-  const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
-    ...envelope, visible_context: applyOrdinaryMaterializationProjection({
+  const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
+    : applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
-    })
-  };
+    });
+  const currentPosition = state.position?.position_id
+    ?? state.position?.position_ref;
+  const committedSpatialResolutions = (state.spatial_semantic ?? [])
+    .flatMap(({ resolutions = [] }) => resolutions)
+    .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
+  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+    playerSafeState: ordinaryVisibleContext,
+    resolutions: [...committedSpatialResolutions,
+      ...(spatialSemanticPlan == null ? [] : [{
+        local_ref: spatialSemanticPlan.resolution.local_ref,
+        position_ref: spatialSemanticPlan.resolution.position_ref,
+        semantics: { kind: spatialSemanticPlan.formal_spatial_context.kind,
+          ...spatialSemanticPlan.resolution.outcome } }])]
+  });
+  const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
+    : { ...envelope, visible_context: visibleContext };
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
     partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts
   });

@@ -6,9 +6,7 @@
 
 ## Production/target routing
 
-The completed `versioned production activation cutover` made the spatial-v3 semantics in `spatial_v3_target_code_driven_world_materialization_architecture.md` and `spatial_architecture_standard_g0_g6.md` the production specialization of this highest code/LLM boundary. Materialization v2 is retained only as an explicit migration/rollback source.
-
-The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. Historical P28 exact-head evidence did not itself authorize production activation; the later cutover release `spatial-v3-production-v1` did. Spatial v3 is now the sole production owner.
+Spatial-v3 is production specialization of this code/LLM boundary; materialization v2 remains only an explicit migration/rollback source. Exact scenario activation, revision, profile, manifest and binding belong to versioned profile sources, not to this general document.
 
 ## 0. Назначение и приоритет
 
@@ -185,18 +183,17 @@ Active A1 revision 21 использует sole player boundary `turn_step_reque
 
 Повторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.
 
-Current revision 24 / M12 / Phase 1A v20 / Phase 1B v19 /
-`spatial-v3-production-v12` is the full approved S1 profile. It materializes
-an approved local variant—open one-space structure or descriptive
-natural-feature placement—inside a finite,
-code-owned envelope bound to committed baseline/G5/G6/current-position scope.
-The model supplies only open ordinary semantic detail outside the transaction;
-code owns admitted formal refs, capacity and the limited variant mechanics.
-It does not invent topology or resource mechanics. Controlled passage remains
-fail-closed until approved P11 portal bindings exist. The existing owner-native
-P16 revalidates all pins and current scope, then atomically persists the
-accepted detail, formal refs and updated capacity; retry/reload reads the
-committed result.
+Spatial semantic materialization starts from a finite code-owned envelope,
+bound to committed scope and active profile. LLM supplies only open ordinary
+semantic concretization outside transaction; it cannot invent topology,
+resources, exact mechanics or authority. Existing Spatial materialization owner
+validates this concretization and produces one formal proposal with admitted
+refs and profile-provided mechanics. Game server does
+not make that proposal: its P16/SQL boundary revalidates committed pins, scope
+and capacity, then atomically persists accepted formal proposal. Retry/reload
+reads committed result. Concrete profile variants, including passages and their
+fail-closed prerequisites, belong to versioned profile, manifest and binding.
+Activation remains a versioned production activation cutover.
 
 ### 4.5. Party database
 

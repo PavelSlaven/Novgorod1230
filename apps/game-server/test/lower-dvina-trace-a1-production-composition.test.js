@@ -22,6 +22,8 @@ import { loadSpatialSemanticCommittedState } from
   '../src/infrastructure/postgres/spatial-semantic-readback.js';
 import { createSpatialSemanticAuthorityRepository } from
   '../src/infrastructure/postgres/spatial-semantic-authority-repository.js';
+import { createSpatialSemanticAtomicWritePlan } from
+  '../src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { createSpatialV3ProductionBindings } from
   '../src/runtime/releases/spatial-v3-production-binding-shared.js';
 
@@ -253,6 +255,7 @@ test('S1 readback accepts exhausted committed envelope with its resolution', asy
   assert.equal(state[0].envelope_ref, 'envelope:s1');
   assert.equal(state[0].consumed_count, 1);
   assert.equal(state[0].resolutions.length, 1);
+  assert.notEqual(state[0].resolution, state[0].resolutions[0]);
 });
 
 test('S1 initial authority picks stable eligible envelope and skips exhausted rows', async () => {
@@ -310,6 +313,10 @@ test('S1 resolver models one open result, then replays current visible local ref
   });
   assert.equal('operation_digest' in planned.spatial_semantic_atomic_write_plan.causal_identity,
     false);
+  const forged = structuredClone(planned.spatial_semantic_atomic_write_plan);
+  forged.resolution.formal_spatial_proposal.rows[0].record.position_node_id = 'position:forged';
+  assert.throws(() => createSpatialSemanticAtomicWritePlan(forged),
+    { code: 'SPATIAL_SEMANTIC_PLAN_INVALID' });
   const afterCrash = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     spatialSemanticModel: async ({ request_id }) => {
       modelCalls += 1;

@@ -103,11 +103,12 @@ export function validateTurnWritePlan(value) {
   requiredText(errors, value.turn_id, 'turn_id');
   if (!Array.isArray(value.write_targets)
       || value.write_targets.length === 0
+        && value.turn_step_commit == null
         && value.ordinary_materialization_atomic_write_plan == null
         && !(value.action_production_atomic_write_plans?.length)
         && !(value.local_fire_atomic_write_plans?.length)
         && value.spatial_semantic_atomic_write_plan == null) {
-    errors.push('write_targets must be non-empty unless an atomic extension owns the change');
+    errors.push('write_targets must be non-empty unless turn-step or an atomic extension owns the change');
   }
   for (const target of Array.isArray(value.write_targets) ? value.write_targets : []) {
     if (!plain(target)) errors.push('write target must be an object');

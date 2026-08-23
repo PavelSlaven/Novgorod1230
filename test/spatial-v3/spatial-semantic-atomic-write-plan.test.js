@@ -86,7 +86,7 @@ test('S1 atomic plan rejects stale envelope or mismatched semantic result', () =
   }
 });
 
-test('S1 atomic plan rejects forged placeholder variant, mechanics and unsupported requirements', () => {
+test('S1 atomic plan rejects forged formal variant, mechanics and unsupported requirements', () => {
   for (const mutate of [
     (input) => { input.resolution.formal_spatial_refs.structural_variant = 'one_space_controlled_passage'; },
     (input) => { input.resolution.formal_spatial_refs.available_mechanics = ['hazard']; },
@@ -100,7 +100,7 @@ test('S1 atomic plan rejects forged placeholder variant, mechanics and unsupport
   }
 });
 
-test('S1 atomic plan rejects controlled placeholder against descriptive context', () => {
+test('S1 atomic plan rejects controlled formal refs against descriptive context', () => {
   const input = fixture();
   input.formal_spatial_context.kind = 'local_natural_feature';
   input.formal_spatial_context.structural_variant = 'descriptive_local_reference';

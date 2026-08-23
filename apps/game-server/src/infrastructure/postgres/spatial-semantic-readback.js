@@ -27,7 +27,7 @@ export async function loadSpatialSemanticCommittedState(pool, partyId) {
       envelope: structuredClone(envelope), capacity_total: envelope.capacity_total,
       consumed_count: envelope.consumed_count, state_version: envelope.state_version,
       status: row.status, resolutions: Object.freeze(resolved),
-      resolution: resolved.length === 1 ? resolved[0] : null });
+      resolution: resolved.length === 1 ? structuredClone(resolved[0]) : null });
   }));
 }
 

@@ -37,11 +37,13 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   };
   const s1Topology = prepared.s1_topology;
   const s1PhysicalWrites = prepared.s1_physical_writes;
-  const s1Base = `s1:${partyId}:${ids.baseline}:${binding.destination.g6.s1_topology_slot.g6.slot_key}`;
+  const baseStatic = prepared.base_static_template;
+  const s1Base = `s1:${partyId}:${ids.baseline}:${binding.destination.g6.s1_topology_slot.g6_slot_key}`;
   if (!s1Topology || !Array.isArray(s1PhysicalWrites)
       || s1PhysicalWrites.length !== 6
       || s1Topology.g6_instance_ref !== `${s1Base}:g6`
-      || s1Topology.position_ref !== `${s1Base}:position`) {
+      || s1Topology.position_ref !== `${s1Base}:position`
+      || !baseStatic?.g6 || !baseStatic?.position) {
     const error = new Error('First-entry S1 topology is incomplete.');
     error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
     throw error;
@@ -264,13 +266,13 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     scene_slot_key: sourceAnchor.slot_key,
     host_kind: 'g5_site',
     host_id: ids.sourceG5,
-    physical_class_id: 'open',
-    primary_scene_role_id: sourceAnchor.state.zone_ref,
-    vertical_context_id: 'surface',
-    overhead_cover_id: 'none',
-    intra_g6_visibility_mode: 'default_clear',
-    default_visibility_distance_band: 'near',
-    acoustic_uniformity: 'uniform',
+    physical_class_id: baseStatic.g6.physical_class_id,
+    primary_scene_role_id: baseStatic.g6.primary_scene_role_id,
+    vertical_context_id: baseStatic.g6.vertical_context_id,
+    overhead_cover_id: baseStatic.g6.overhead_cover_id,
+    intra_g6_visibility_mode: baseStatic.g6.intra_g6_visibility_mode,
+    default_visibility_distance_band: baseStatic.g6.default_visibility_distance_band,
+    acoustic_uniformity: baseStatic.g6.acoustic_uniformity,
     status: 'active',
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -280,11 +282,11 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     id: ids.sourcePosition,
     party_id: partyId,
     g6_instance_id: ids.sourceG6,
-    position_type_id: 'scene_position',
+    position_type_id: baseStatic.position.position_type_id,
     template_slot_key: sourceAnchor.state.zone_ref,
     template_instance_ordinal: 0,
-    capacity: Math.max(1, sourceAnchor.npc_capacity),
-    access_class_id: sourceAnchor.state.access_policy_ref,
+    capacity: baseStatic.position.capacity,
+    access_class_id: baseStatic.position.access_class_id,
     status: 'active',
     state_version: 1,
     created_change_set_id: changeSetId,

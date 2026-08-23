@@ -9,12 +9,12 @@ import { loadLowerDvinaTraceSpatialSemanticPublication } from
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content';
 const ACTIVE = Object.freeze({
-  profile_digest: '16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0',
-  profile_canonical_digest: '7eeba0d6c6dbcb01f042a92772ec517ca1af7dedc1db49193a45690419bd4315',
-  m12_manifest_digest: 'edbd8da29cc780a62f4e1bd46dcf1c22da7834c61ec1e80fe38e41d382b57852',
-  phase_1a_manifest_digest: '9bf7ea54ba32fb114c67f00ca34844e68daafb5fdfeea232668a6e3e3986b219',
-  phase_1b_manifest_digest: '3ed3be74d2c7632b048c201df44500ac35e7a44bf4d35ae2feea8449c76156d9',
-  phase_1b_binding_digest: '0c0e9efc60107e1274e6d202c4d30323b4fd06039739dbf0e754b0b113aabbe6'
+  profile_digest: '20f547096e9631dc0a3843c532bdab4fc606d3ca01d0408ffea1f6137fa6af77',
+  profile_canonical_digest: '8b118fc1ba8df3b636924c07b86771d6d6dbc6b595cb64efc22216b7d839f3bc',
+  m12_manifest_digest: '2f3710377b840475f5d9af4e7cf9ed71dab017a073806eb032c297fc8119ff32',
+  phase_1a_manifest_digest: '65f4a64e0764774f8e04842433a66b8ddfabe13b07cabb3c8360931a2bfeb5f0',
+  phase_1b_manifest_digest: '28e5d9bddfb1e027d3017756ac0a1c9c3e107c7ac479e981663727443622f7a3',
+  phase_1b_binding_digest: '909d3f7f63fa275ac9e3d777584a062d89c0ee8d8284eb48b2179dec54b79160'
 });
 
 export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = process.cwd() } = {}) {
@@ -38,7 +38,7 @@ export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = proc
       || ref.id !== profile.profile_id || ref.revision !== profile.revision
       || ref.schema !== profile.schema || profile?.schema
         !== 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
-      || profile.status !== 'approved' || profile.revision !== 2
+      || profile.status !== 'approved' || profile.revision !== 3
       || bundle?.definition_revision !== 24
       || bundle.m12_content_manifest_digest !== ACTIVE.m12_manifest_digest
       || bundle.manifest_digest !== ACTIVE.phase_1a_manifest_digest
@@ -63,7 +63,7 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
   return bundle?.definition_revision === 24
     && loaded?.schema === 'rus.lower_dvina_trace_s1_loaded_profile.v1'
     && profile?.schema === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
-    && profile.status === 'approved' && profile.revision === 2
+    && profile.status === 'approved' && profile.revision === 3
     && profile.scenario_definition_revision === 24
     && exactProfile(profile)
     && pin?.digest === loaded.artifact_digest

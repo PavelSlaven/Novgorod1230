@@ -32,88 +32,151 @@ export function materializeS1FormalSpatialProposal({ party_id, request_id, local
 
 /** First-entry-only physical topology. Late S1 may only bind these immutable refs. */
 export function materializeS1OpenOneSpaceTopology({ party_id, baseline_ref, g5_ref,
-  position_ref, scene_template_ref, slot }) {
+  position_ref, base_position_slot_key, scene_template_ref, slot,
+  world_base_reference_snapshot }) {
+  const closure = closureFor(world_base_reference_snapshot, scene_template_ref);
+  const resolved = closure && resolveSlot(closure, slot, base_position_slot_key);
   if (![party_id, baseline_ref, g5_ref, position_ref, scene_template_ref].every(text)
-      || !s1Slot(slot, scene_template_ref)) {
+      || !resolved) {
     return failure('s1_formal_spatial_data_gap', null, { stage: 's1_first_entry_topology' });
   }
-  const base = `s1:${party_id}:${baseline_ref}:${slot.g6.slot_key}`;
+  const { g6, position, movement: [out, back], visibility: [visibleOut, visibleBack] } = resolved;
+  const base = `s1:${party_id}:${baseline_ref}:${g6.scene_slot_key}`;
   const topology = { g6_instance_ref: `${base}:g6`, position_ref: `${base}:position`,
     movement_edge_refs: [`${base}:edge:out`, `${base}:edge:back`],
     visibility_link_refs: [`${base}:edge:out:visible`, `${base}:edge:back:visible`] };
   const rows = [
     { target_table: 'party_g6_instances', id: topology.g6_instance_ref,
       record: { id: topology.g6_instance_ref, scene_baseline_id: baseline_ref,
-        source_scene_template_ref: versionedSceneTemplate(scene_template_ref), scene_slot_key: slot.g6.slot_key,
+        source_scene_template_ref: versionedSceneTemplate(scene_template_ref), scene_slot_key: g6.scene_slot_key,
         enclosing_stable_structure_id: null, host_kind: 'g5_site', host_id: g5_ref,
-        physical_class_id: slot.g6.physical_class_id,
-        primary_scene_role_id: slot.g6.primary_scene_role_id,
-        vertical_context_id: slot.g6.vertical_context_id,
-        overhead_cover_id: slot.g6.overhead_cover_id,
-        intra_g6_visibility_mode: slot.g6.intra_g6_visibility_mode,
-        default_visibility_distance_band: slot.g6.default_visibility_distance_band,
-        acoustic_uniformity: slot.g6.acoustic_uniformity, status: 'active', state_version: 0 } },
+        physical_class_id: g6.physical_class_id,
+        primary_scene_role_id: g6.primary_scene_role_id,
+        vertical_context_id: g6.vertical_context_id,
+        overhead_cover_id: g6.overhead_cover_id,
+        intra_g6_visibility_mode: g6.intra_g6_visibility_mode,
+        default_visibility_distance_band: g6.default_visibility_distance_band,
+        acoustic_uniformity: g6.acoustic_uniformity, status: 'active', state_version: 0 } },
     { target_table: 'scene_position_nodes', id: topology.position_ref,
       record: { id: topology.position_ref, g6_instance_id: topology.g6_instance_ref,
-        position_type_id: slot.position.position_type_id, template_slot_key: slot.position.slot_key,
-        template_instance_ordinal: 0, stable_basis_ref: null, capacity: slot.position.capacity,
-        access_class_id: slot.position.access_class_id, light_profile_ref: null, hazard_profile_ref: null,
+        position_type_id: position.position_type_id, template_slot_key: position.position_slot_key,
+        template_instance_ordinal: 0, stable_basis_ref: null, capacity: position.capacity,
+        access_class_id: position.access_class_id, light_profile_ref: null, hazard_profile_ref: null,
         status: 'active', state_version: 0 } }
   ];
-  for (const [id, from, to, reverse] of [[topology.movement_edge_refs[0], position_ref,
-    topology.position_ref, topology.movement_edge_refs[1]], [topology.movement_edge_refs[1], topology.position_ref,
-    position_ref, topology.movement_edge_refs[0]]]) rows.push({ target_table: 'scene_movement_edges', id,
-    record: { id, scene_baseline_id: baseline_ref, source_scene_template_ref: versionedSceneTemplate(scene_template_ref),
-      source_edge_slot_key: slot.movement[id === topology.movement_edge_refs[0] ? 'out_slot_key' : 'back_slot_key'], from_position_id: from, to_position_id: to,
-      passage_type_id: slot.movement.passage_type_id, transition_environment_profile_ref: slot.movement.transition_environment_profile_ref,
-      movement_orientation_profile_ref: slot.movement.movement_orientation_profile_ref, cost_kind: 'action',
-      action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
-      base_minutes: null, dynamic_recheck_policy_ref: null, capacity: 1, portal_entity_id: null,
-      availability_condition_set_ref: null, reverse_edge_id: reverse, status: 'active', state_version: 0 } });
-  for (const [id, from, to, reverse] of [[topology.visibility_link_refs[0], position_ref,
-    topology.position_ref, topology.visibility_link_refs[1]], [topology.visibility_link_refs[1], topology.position_ref,
-    position_ref, topology.visibility_link_refs[0]]]) rows.push({ target_table: 'visibility_links', id,
-    record: { id, scene_baseline_id: baseline_ref, source_scene_template_ref: versionedSceneTemplate(scene_template_ref),
-      source_link_slot_key: slot.visibility[id === topology.visibility_link_refs[0] ? 'out_slot_key' : 'back_slot_key'], from_position_id: from, to_position_id: to, quality: slot.visibility.quality,
-      distance_band: slot.visibility.distance_band, portal_entity_id: null, condition_profile_ref: null,
-      reverse_link_id: reverse, status: 'active', state_version: 0 } });
-  return freeze({ ok: true, topology: freeze(topology), rows: freeze(rows) });
+  rows.push(movementRow(topology.movement_edge_refs[0], position_ref,
+    topology.position_ref, topology.movement_edge_refs[1], out, baseline_ref,
+    scene_template_ref));
+  rows.push(movementRow(topology.movement_edge_refs[1], topology.position_ref,
+    position_ref, topology.movement_edge_refs[0], back, baseline_ref,
+    scene_template_ref));
+  rows.push(visibilityRow(topology.visibility_link_refs[0], position_ref,
+    topology.position_ref, topology.visibility_link_refs[1], visibleOut,
+    baseline_ref, scene_template_ref));
+  rows.push(visibilityRow(topology.visibility_link_refs[1], topology.position_ref,
+    position_ref, topology.visibility_link_refs[0], visibleBack, baseline_ref,
+    scene_template_ref));
+  return freeze({ ok: true, topology: freeze(topology), rows: freeze(rows),
+    base_static_template: freeze({ g6: structuredClone(resolved.baseG6),
+      position: structuredClone(resolved.basePosition) }) });
 }
 
-export function materializeS1FirstEntryPreparation({ party_id, binding, scene, npcs }) {
+export function materializeS1FirstEntryPreparation({ party_id, binding, scene, npcs, world_base_reference_snapshot }) {
   const s1 = materializeS1OpenOneSpaceTopology({
     party_id,
     baseline_ref: `baseline:${scene?.node?.instance_id}`,
     g5_ref: `g5:${scene?.node?.instance_id}`,
     position_ref: `position:${scene?.anchor?.instance_id}`,
+    base_position_slot_key: scene?.anchor?.slot_key,
     scene_template_ref: binding?.destination?.g6?.scene_template_ref,
-    slot: binding?.destination?.g6?.s1_topology_slot
+    slot: binding?.destination?.g6?.s1_topology_slot,
+    world_base_reference_snapshot
   });
   if (!s1.ok) return s1;
   return freeze({ ok: true, preparation: freeze({
     binding: structuredClone(binding), scene: structuredClone(scene),
-    npcs: structuredClone(npcs), s1_topology: structuredClone(s1.topology),
+    npcs: structuredClone(npcs), base_static_template: structuredClone(s1.base_static_template),
+    s1_topology: structuredClone(s1.topology),
     s1_physical_writes: structuredClone(s1.rows)
   }) });
 }
 
-function s1Slot(value, sceneTemplateRef) {
-  const source = value?.source_scene_template_ref;
-  return value && typeof value === 'object' && versionedRef(source, 'scene_template', sceneTemplateRef)
-    && text(value.g6?.slot_key) && ['spatial.g6.enclosed', 'spatial.g6.semi_enclosed', 'spatial.g6.open', 'spatial.g6.water'].includes(value.g6.physical_class_id)
-    && ['surface', 'elevated', 'subsurface'].includes(value.g6.vertical_context_id)
-    && ['none', 'partial', 'full'].includes(value.g6.overhead_cover_id)
-    && value.g6.intra_g6_visibility_mode === 'default_clear' && ['near', 'short', 'medium'].includes(value.g6.default_visibility_distance_band)
-    && value.g6.acoustic_uniformity === 'uniform' && text(value.g6.primary_scene_role_id)
-    && text(value.position?.slot_key) && value.position.position_type_id === 'scene_position.central' && Number.isSafeInteger(value.position.capacity) && value.position.capacity > 0 && text(value.position.access_class_id)
-    && ['out_slot_key', 'back_slot_key', 'passage_type_id'].every((key) => text(value.movement?.[key]))
-    && ['out_slot_key', 'back_slot_key', 'quality', 'distance_band'].every((key) => text(value.visibility?.[key]))
-    && value.visibility.quality === 'clear'
-    && versionedRef(value.movement.transition_environment_profile_ref,
-      'transition_environment_profile', 'topological_default')
-    && versionedRef(value.movement.movement_orientation_profile_ref,
-      'movement_orientation_profile', 'topological_default');
+function closureFor(snapshot, sceneTemplateRef) {
+  const rows = snapshot?.scene_template_closures?.filter((row) => row?.header?.id === sceneTemplateRef && row.header.version === 1) ?? [];
+  return rows.length === 1 ? rows[0] : null;
 }
+function resolveSlot(closure, slot, basePositionSlotKey) {
+  if (!slot || !versionedRef(slot.source_scene_template_ref, 'scene_template', closure?.header?.id)) return null;
+  const g6 = one(closure.g6_slots, 'scene_slot_key', slot.g6_slot_key);
+  const position = one(closure.position_slots, 'position_slot_key', slot.position_slot_key);
+  const basePosition = one(closure.position_slots, 'position_slot_key', basePositionSlotKey);
+  const baseG6 = basePosition && one(closure.g6_slots, 'scene_slot_key', basePosition.g6_scene_slot_key);
+  const movement = selectedRows(closure.movement_edges, 'edge_slot_key', slot.movement_edge_slot_keys);
+  const visibility = selectedRows(closure.visibility_links, 'link_slot_key', slot.visibility_link_slot_keys);
+  if (!g6 || !position || !baseG6 || !basePosition
+      || g6.scene_slot_key === baseG6.scene_slot_key
+      || position.position_slot_key === basePosition.position_slot_key
+      || position.g6_scene_slot_key !== g6.scene_slot_key
+      || basePosition.g6_scene_slot_key !== baseG6.scene_slot_key
+      || !directedPair(movement, 'edge_slot_key', 'reverse_edge_slot_key',
+        basePosition.position_slot_key, position.position_slot_key)
+      || !directedPair(visibility, 'link_slot_key', 'reverse_link_slot_key',
+        basePosition.position_slot_key, position.position_slot_key)
+      || !physicalRowsComplete(g6, position, baseG6, basePosition, movement, visibility)) return null;
+  return { g6, position, baseG6, basePosition, movement, visibility };
+}
+function one(rows, key, value) { const found = (rows ?? []).filter((row) => row?.[key] === value); return found.length === 1 ? found[0] : null; }
+function selectedRows(rows, key, keys) { return Array.isArray(keys) && keys.length === 2 && keys[0] !== keys[1] ? keys.map((value) => one(rows, key, value)) : null; }
+function directedPair(rows, key, reverse, base, interior) { return Array.isArray(rows) && rows.length === 2 && rows.every(Boolean) && rows[0].from_position_slot_key === base && rows[0].to_position_slot_key === interior && rows[1].from_position_slot_key === interior && rows[1].to_position_slot_key === base && rows[0][reverse] === rows[1][key] && rows[1][reverse] === rows[0][key]; }
+function physicalRowsComplete(g6, position, baseG6, basePosition, movement, visibility) {
+  const has = (row, keys) => keys.every((key) => Object.hasOwn(row, key));
+  const exactKeys = (row, keys) => Object.keys(row).length === keys.length
+    && Object.keys(row).every((key) => keys.includes(key));
+  const g6Keys = ['scene_slot_key', 'physical_class_id', 'primary_scene_role_id',
+    'vertical_context_id', 'overhead_cover_id', 'intra_g6_visibility_mode',
+    'default_visibility_distance_band', 'acoustic_uniformity'];
+  const positionKeys = ['position_slot_key', 'g6_scene_slot_key', 'position_type_id',
+    'capacity', 'access_class_id'];
+  const movementKeys = ['edge_slot_key', 'from_position_slot_key', 'to_position_slot_key',
+    'reverse_edge_slot_key', 'passage_type_id', 'transition_environment_profile_id',
+    'transition_environment_profile_version', 'movement_orientation_profile_id',
+    'movement_orientation_profile_version', 'cost_kind', 'action_units',
+    'baseline_movement_method_id', 'movement_method_cost_profile_id',
+    'movement_method_cost_profile_version', 'base_minutes', 'dynamic_recheck_policy_id',
+    'dynamic_recheck_policy_version', 'capacity', 'portal_template_id',
+    'portal_template_version', 'availability_condition_set_id',
+    'availability_condition_set_version'];
+  const visibilityKeys = ['link_slot_key', 'from_position_slot_key',
+    'to_position_slot_key', 'reverse_link_slot_key', 'quality', 'distance_band',
+    'portal_template_id', 'portal_template_version', 'condition_profile_id',
+    'condition_profile_version'];
+  return has(g6, g6Keys) && has(baseG6, g6Keys)
+    && has(position, positionKeys) && has(basePosition, positionKeys)
+    && [g6, baseG6].every((row) => exactKeys(row, g6Keys))
+    && [position, basePosition].every((row) => exactKeys(row, positionKeys))
+    && movement.every((row) => has(row, movementKeys) && exactKeys(row, movementKeys)
+      && row.passage_type_id === 'passage.local'
+      && row.cost_kind === 'action' && row.action_units === 1 && row.capacity === 1
+      && ['baseline_movement_method_id', 'movement_method_cost_profile_id',
+        'movement_method_cost_profile_version', 'base_minutes',
+        'dynamic_recheck_policy_id', 'dynamic_recheck_policy_version',
+        'portal_template_id', 'portal_template_version',
+        'availability_condition_set_id', 'availability_condition_set_version']
+        .every((key) => row[key] === null)
+      && ['transition_environment_profile', 'movement_orientation_profile',
+        'movement_method_cost_profile', 'dynamic_recheck_policy',
+        'portal_template', 'availability_condition_set'].every((prefix) =>
+        catalogReferenceComplete(row, prefix)))
+    && visibility.every((row) => has(row, visibilityKeys) && exactKeys(row, visibilityKeys)
+      && row.portal_template_id === null && row.portal_template_version === null
+      && row.condition_profile_id === null && row.condition_profile_version === null
+      && ['portal_template', 'condition_profile'].every((prefix) =>
+        catalogReferenceComplete(row, prefix)));
+}
+function catalogReferenceComplete(row, prefix) { const id = row[`${prefix}_id`]; const version = row[`${prefix}_version`]; return id == null && version == null || typeof id === 'string' && Number.isSafeInteger(version) && version > 0; }
+function catalogRef(row, prefix) { const id = row?.[`${prefix}_id`]; const version = row?.[`${prefix}_version`]; return id == null && version == null ? null : typeof id === 'string' && Number.isSafeInteger(version) && version > 0 ? { entity_ref: { entity_kind: prefix, entity_id: id }, authoring_version: String(version) } : undefined; }
+function movementRow(id, from, to, reverse, row, baseline, template) { return { target_table: 'scene_movement_edges', id, record: { id, scene_baseline_id: baseline, source_scene_template_ref: versionedSceneTemplate(template), source_edge_slot_key: row.edge_slot_key, from_position_id: from, to_position_id: to, passage_type_id: row.passage_type_id, transition_environment_profile_ref: catalogRef(row, 'transition_environment_profile'), movement_orientation_profile_ref: catalogRef(row, 'movement_orientation_profile'), cost_kind: row.cost_kind, action_units: row.action_units, baseline_movement_method_id: row.baseline_movement_method_id, movement_method_cost_profile_ref: catalogRef(row, 'movement_method_cost_profile'), base_minutes: row.base_minutes, dynamic_recheck_policy_ref: catalogRef(row, 'dynamic_recheck_policy'), capacity: row.capacity, portal_entity_id: row.portal_template_id, availability_condition_set_ref: catalogRef(row, 'availability_condition_set'), reverse_edge_id: reverse, status: 'active', state_version: 0 } }; }
+function visibilityRow(id, from, to, reverse, row, baseline, template) { return { target_table: 'visibility_links', id, record: { id, scene_baseline_id: baseline, source_scene_template_ref: versionedSceneTemplate(template), source_link_slot_key: row.link_slot_key, from_position_id: from, to_position_id: to, quality: row.quality, distance_band: row.distance_band, portal_entity_id: row.portal_template_id, condition_profile_ref: catalogRef(row, 'condition_profile'), reverse_link_id: reverse, status: 'active', state_version: 0 } }; }
 
 function versionedRef(value, kind, id) {
   return value && Object.keys(value).sort().join('\u0000') === 'authoring_version\u0000entity_ref'

@@ -8,14 +8,14 @@
   "publication_status": "unpublished",
   "superseded_package_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/manifest.json","id":"lower_dvina_trace_m11_content_v1","revision":1,"schema":"rus.lower_dvina_trace_m11_content_manifest.v1","digest":"29a8144863f7cd78e5b7019a5ee5265e0e380e7802f91a2a7cccc8865c7ca577"},
   "superseded_definition_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/definition.json","id":"lower_dvina_trace_v1","revision":23,"schema":"rus.trace_scenario_definition.v1","digest":"8f1f4e331738243ab26da5d1e280e89b2086e837c1f167e03d806da162083810"},
-  "files": {"definition.json":"563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77","local-fire-profile.json":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5","spatial-semantic-profile.json":"16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0"},
+  "files": {"definition.json":"563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77","local-fire-profile.json":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5","spatial-semantic-profile.json":"20f547096e9631dc0a3843c532bdab4fc606d3ca01d0408ffea1f6137fa6af77"},
   "content_refs": {
     "definition": {"path":"definition.json","id":"lower_dvina_trace_v1","revision":24,"schema":"rus.trace_scenario_definition.v1","digest":"563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77"},
     "local_fire_profile": {"path":"local-fire-profile.json","id":"lower_dvina_trace_f1_local_exact_fire_profile_v1","revision":1,"schema":"rus.lower_dvina_trace_local_fire_profile.v1","digest":"ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"},
-    "spatial_semantic_profile": {"path":"spatial-semantic-profile.json","id":"lower_dvina_trace_s1_spatial_semantic_profile_v2","revision":2,"schema":"rus.lower_dvina_trace_spatial_semantic_profile.v1","digest":"16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0"}
+    "spatial_semantic_profile": {"path":"spatial-semantic-profile.json","id":"lower_dvina_trace_s1_spatial_semantic_profile_v3","revision":3,"schema":"rus.lower_dvina_trace_spatial_semantic_profile.v1","digest":"20f547096e9631dc0a3843c532bdab4fc606d3ca01d0408ffea1f6137fa6af77"}
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "ca0a54531a2549e0500c15dc47decffcbaa3f83534986e65eca68899a358baf4",
+  "content_digest": "5ca039ca187ffc6804793e25957fbe0aee7d6dc3ccfa9badea664d5cac6ee616",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

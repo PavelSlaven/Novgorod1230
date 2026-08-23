@@ -1,0 +1,12 @@
+[
+  {
+    "id": "trace_ld_v1_tpl_fishing_camp",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+    "regional_template_id": "regional_scene_basis__g5_work_storage_social_v1",
+    "regional_template_version": 3,
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_trace_phase_1a_v20",
+    "canonical_digest": "6f68fc0225dfbccf12705e1c0636c3b1b97fff343a6c9ca53376fa6e4c81dfb4"
+  }
+]

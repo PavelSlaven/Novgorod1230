@@ -48,10 +48,10 @@
     "persistence_owner": "P16_combined_atomic_committer",
     "profile_ref": {
       "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json",
-      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v2",
-      "revision": 2,
+      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v3",
+      "revision": 3,
       "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
-      "digest": "16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0"
+      "digest": "20f547096e9631dc0a3843c532bdab4fc606d3ca01d0408ffea1f6137fa6af77"
     },
     "authority_provisioning": "atomic_new_game_first_entry_p16",
     "fallback_policy": "forbidden"
@@ -83,47 +83,10 @@
             },
             "authoring_version": "1"
           },
-          "g6": {
-            "slot_key": "s1_open_one_space",
-            "physical_class_id": "spatial.g6.semi_enclosed",
-            "primary_scene_role_id": "ordinary_local",
-            "vertical_context_id": "surface",
-            "overhead_cover_id": "partial",
-            "intra_g6_visibility_mode": "default_clear",
-            "default_visibility_distance_band": "near",
-            "acoustic_uniformity": "uniform"
-          },
-          "position": {
-            "slot_key": "s1_open_one_space.interior",
-            "position_type_id": "scene_position.central",
-            "capacity": 1,
-            "access_class_id": "default"
-          },
-          "movement": {
-            "out_slot_key": "s1_open_one_space.out",
-            "back_slot_key": "s1_open_one_space.back",
-            "passage_type_id": "passage.local",
-            "transition_environment_profile_ref": {
-              "entity_ref": {
-                "entity_kind": "transition_environment_profile",
-                "entity_id": "topological_default"
-              },
-              "authoring_version": "1"
-            },
-            "movement_orientation_profile_ref": {
-              "entity_ref": {
-                "entity_kind": "movement_orientation_profile",
-                "entity_id": "topological_default"
-              },
-              "authoring_version": "1"
-            }
-          },
-          "visibility": {
-            "out_slot_key": "s1_open_one_space.visible_out",
-            "back_slot_key": "s1_open_one_space.visible_back",
-            "quality": "clear",
-            "distance_band": "near"
-          }
+          "g6_slot_key": "s1_open_one_space",
+          "position_slot_key": "s1_open_one_space.interior",
+          "movement_edge_slot_keys": ["s1_open_one_space.out", "s1_open_one_space.back"],
+          "visibility_link_slot_keys": ["s1_open_one_space.visible_out", "s1_open_one_space.visible_back"]
         }
       },
       "entry_position": {

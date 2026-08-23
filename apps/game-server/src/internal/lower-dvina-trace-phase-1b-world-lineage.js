@@ -1,7 +1,8 @@
 import {
   canonicalDigest,
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
-  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST
+  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST
 } from '@rus/materialization';
 
 export async function assertLowerDvinaTracePhase1BWorldLineage({
@@ -9,28 +10,26 @@ export async function assertLowerDvinaTracePhase1BWorldLineage({
   compatibility,
   readJson
 }) {
-  const appearanceRevision = compatibility?.production_world_revision_id
-    === 'novgorod_spatial_v3_production_v4_candidate_001';
-  const expectedDigest = appearanceRevision
-    ? LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST
-    : LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST;
-  if (canonicalDigest(compatibility) !== expectedDigest
+  const productionRevision = compatibility?.production_world_revision_id;
+  const expected = productionRevision
+    === 'novgorod_spatial_v3_production_v5_candidate_001'
+    ? [LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
+      '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176', 4]
+    : productionRevision === 'novgorod_spatial_v3_production_v4_candidate_001'
+      ? [LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
+        'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79', 3]
+      : [LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
+        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e', 2];
+  if (canonicalDigest(compatibility) !== expected[0]
     || compatibility?.source_world_revision_id
       !== 'novgorod_spatial_v3_target_contract_approval_001'
     || compatibility.source_world_catalog_digest
       !== '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e'
-    || compatibility.production_world_revision_id
-      !== (appearanceRevision
-        ? 'novgorod_spatial_v3_production_v4_candidate_001'
-        : 'novgorod_spatial_v3_production_v3_candidate_001')
-    || compatibility.production_world_catalog_digest
-      !== (appearanceRevision
-        ? 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
-        : '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e')
+    || compatibility.production_world_catalog_digest !== expected[1]
     || compatibility.source_status !== 'approved'
     || compatibility.production_status !== 'approved'
     || !Array.isArray(compatibility.lineage)
-    || compatibility.lineage.length !== (appearanceRevision ? 3 : 2)) {
+    || compatibility.lineage.length !== expected[2]) {
     fail(
       'TRACE_PHASE_1B_WORLD_COMPATIBILITY_INVALID',
       'Exact approved source-to-production world lineage is required.'

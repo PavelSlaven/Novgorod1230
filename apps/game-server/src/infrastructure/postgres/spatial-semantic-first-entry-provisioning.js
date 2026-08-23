@@ -18,15 +18,14 @@ export function createSpatialSemanticFirstEntryProvisioner({ loadedProfile } = {
         return Object.freeze({ provisioned: false,
           envelope_refs: Object.freeze([]) });
       }
-      const results = [];
-      for (const entry of envelopes) {
-        const topology = await persistedTopology(transaction, partyId, entry, scope);
-        const envelope = buildEnvelope(profile, entry, scope, topology);
-        results.push(await provisionSpatialSemanticEnvelope({ client: transaction,
-          partyId, envelope, changeSetId }));
-      }
-      return Object.freeze({ provisioned: results.length > 0,
-        envelope_refs: Object.freeze(envelopes.map(({ envelope_ref }) => envelope_ref)) });
+      if (envelopes.length !== 1) fail('S1_SPATIAL_PROVISIONING_INVALID');
+      const [entry] = envelopes;
+      const topology = await persistedTopology(transaction, partyId, entry, scope);
+      const envelope = buildEnvelope(profile, entry, scope, topology);
+      await provisionSpatialSemanticEnvelope({ client: transaction, partyId,
+        envelope, changeSetId });
+      return Object.freeze({ provisioned: true,
+        envelope_refs: Object.freeze([entry.envelope_ref]) });
     }
   });
 }

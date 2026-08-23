@@ -12,8 +12,8 @@ export const S1_SPATIAL_SEMANTIC_EVAL_CASES = deepFreeze([
     forbidden: [], required: ['shelter', 'driftwood'] },
   { id: 'incompatible-mechanics', intent: 'Create a hazard with a new route and exact movement mechanics.',
     forbidden: ['hazard', 'route', 'mechanic'], required: ['ordinary'] },
-  { id: 'unseen-ordinary-feature', intent: 'Describe a shallow line of water-smoothed stones.',
-    forbidden: [], required: ['stones'] }
+  { id: 'unseen-ordinary-camp-structure', intent: 'Describe a low wattle shed for drying fishing nets.',
+    forbidden: [], required: ['shed', 'nets'] }
 ]);
 
 export async function runS1SpatialSemanticEval({ model, semantic_context }) {

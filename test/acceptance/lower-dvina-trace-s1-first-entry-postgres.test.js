@@ -97,9 +97,24 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
     await environment.restartRoot();
     const moved = await get(environment,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
+    assert.equal(moved.screen.visible_context.visible_objects.some(
+      ({ entity_ref: ref }) => ref?.entity_id === committedResolution.local_ref), true);
     assert.equal(JSON.stringify(moved).includes('formal_spatial_refs'), false);
     assert.equal(JSON.stringify(moved).includes('movement_edge_ref'), false);
     assert.equal(await journeyPosition(environment, partyId), afterMove);
+    await submit(environment, partyId, 's1-first-entry-exit-local',
+      'Выйти из-за низкой плетёной загородки.');
+    assert.equal(s1Calls(environment), calls,
+      'reverse committed local movement must not invoke the S1 model');
+    assert.equal(await journeyPosition(environment, partyId), beforeMove);
+    assert.deepEqual(await campRows(environment, partyId), topologyBeforeLook);
+    assert.deepEqual(await resolution(environment, partyId), committedResolution);
+    await environment.restartRoot();
+    const exited = await get(environment,
+      `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
+    assert.equal(JSON.stringify(exited).includes('formal_spatial_refs'), false);
+    assert.equal(JSON.stringify(exited).includes('movement_edge_ref'), false);
+    assert.equal(await journeyPosition(environment, partyId), beforeMove);
   });
 
 test('public first entry is singleton; failed later S1 leaves committed entry intact',
@@ -170,8 +185,9 @@ function s1Responder(shouldFail = () => false) {
     }
     if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
         .includes(request.model)
-        && (request.input?.request ?? request.input)?.root_player_action
-          === 'Войти за низкую плетёную загородку.') {
+        && ['Войти за низкую плетёную загородку.',
+          'Выйти из-за низкой плетёной загородки.'].includes(
+          (request.input?.request ?? request.input)?.root_player_action)) {
       const turn = request.input.request ?? request.input;
       const target = turn.player_safe_state.visible_objects.find(
         ({ entity_ref: ref }) => ref?.entity_kind === 'spatial_local_reference')

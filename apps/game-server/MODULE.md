@@ -5,10 +5,12 @@
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
 Spatial semantic materialization hands the server one validated formal proposal.
-Server owns only P16/SQL: it revalidates committed profile pins, scope and
-capacity in existing transaction, then persists accepted refs and semantic
-detail. It does not create proposal, topology or resource mechanics, and adds
-no second transaction owner.
+Exact physical topology comes from the exact Spatial catalog closure through
+`@rus/materialization/spatial-v3`; scenario bindings carry only profile refs
+and slot keys. Server owns only P16/SQL: it revalidates committed profile pins,
+scope and capacity in existing transaction, then persists accepted refs and
+semantic detail. It does not create proposal, topology or resource mechanics,
+and adds no second transaction owner.
 
 ## Владеет
 

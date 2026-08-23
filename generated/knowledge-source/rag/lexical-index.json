@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "144dbf55c8061918a77c4ccba9e53acc50a4fb59fddd9328f8722f84a1e2a999",
+  "corpus_hash": "bee65239624ac1a27e4827270b98cceba1ca297d0c70026b3e18f14aadafb074",
   "chunk_count": 2536,
   "chunks": [
     {
@@ -3834,8 +3834,8 @@
       "section": "Active semantic LLM contracts",
       "line_start": 66,
       "line_end": 124,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nпользует pure `@rus/world-processes`, общий temporal boundary owner и тот\nже P16; water/extinguish остаются disabled без exact finite-water authority.\n\nRevision 24 / M12 / Phase 1A v20 / Phase 1B v19 / `spatial-v3-production-v12`\nактивирует full S1 для profile-bound local variants в current position: open\none-space structure или descriptive natural-feature placement. Controlled\npassage fail-closed без approved P11 portal bindings. Envelopes independent и provisioned только для\nреально совпавшего locked baseline/G5/G6/current-position scope; код создаёт\nadmitted formal spatial refs и сохраняет их тем же combined P16. Model supplies\nonly ordinary semantic detail; false topology/resource mechanics не возникают.\nN1 и unrelated profiles не активируются.",
-      "char_count": 825
+      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nпользует pure `@rus/world-processes`, общий temporal boundary owner и тот\nже P16; water/extinguish остаются disabled без exact finite-water authority.\n\nRevision 24 / M12 / Phase 1A v20 / Phase 1B v19 / `spatial-v3-production-v12`\nактивирует S1 только для fishing-camp `ordinary_structure` с\n`open_one_space`. Wreck-shore и `local_natural_feature` не active. Exact\nG6/position/topology создаёт `@rus/materialization/spatial-v3` только из exact\nSpatial catalog closure; scenario binding передаёт лишь profile refs и slot\nkeys. В пределах finite code-owned envelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.",
+      "char_count": 774
     },
     {
       "id": "llm_documentation_navigation.md:Active semantic LLM contracts:3",
@@ -3843,7 +3843,7 @@
       "section": "Active semantic LLM contracts",
       "line_start": 66,
       "line_end": 124,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nе combined P16. Model supplies\nonly ordinary semantic detail; false topology/resource mechanics не возникают.\nN1 и unrelated profiles не активируются.\n\nActive player contract остаётся единственной semantic boundary свободной\nзаявки игрока после exact fast path. Revision 14 дополнительно активирует\nconversation path: общие `npc_decision_signal_v1` и\n`npc_decision_boundary_v1`, player conversation contribution и ровно один\nsemantic responder для одного NPC/same-time batch. Phase-7 autonomous contract\nactive: «Отдых у огня» advances 30 minutes, creates Жданко's boundary at +25\nand applies one actor-step from the operations actually registered in the\nruntime at the same timestamp, then resumes the common temporal owner to +30\nfrom the updated working projection. Persistence and visibility remain\ncode-owned. Combat active для revision 16 и наследуется revisions 17–18. Phase 9\nне вводит новый LLM contract: свободные действия идут через active turn-step\ncontract, а показание Онисима — через active conversation contract.\nProperty/evidence/temporary-disposition consequences остаются code-owned;\nсодержимое документа недоступно этому path. Revision 18 Phase 10 не вводит\nLLM contract: completion и player-safe epilogue детерминированно строятся из\nуже committed Phase 9 producers, сохраняются отдельным zero-time commit и\nтолько затем передаются обычной narration stage.\nHistorical bounded Phase 3/4 доступен исключительно по явному revision pin и\nне является production fallback.",
+      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.\n\nActive player contract остаётся единственной semantic boundary свободной\nзаявки игрока после exact fast path. Revision 14 дополнительно активирует\nconversation path: общие `npc_decision_signal_v1` и\n`npc_decision_boundary_v1`, player conversation contribution и ровно один\nsemantic responder для одного NPC/same-time batch. Phase-7 autonomous contract\nactive: «Отдых у огня» advances 30 minutes, creates Жданко's boundary at +25\nand applies one actor-step from the operations actually registered in the\nruntime at the same timestamp, then resumes the common temporal owner to +30\nfrom the updated working projection. Persistence and visibility remain\ncode-owned. Combat active для revision 16 и наследуется revisions 17–18. Phase 9\nне вводит новый LLM contract: свободные действия идут через active turn-step\ncontract, а показание Онисима — через active conversation contract.\nProperty/evidence/temporary-disposition consequences остаются code-owned;\nсодержимое документа недоступно этому path. Revision 18 Phase 10 не вводит\nLLM contract: completion и player-safe epilogue детерминированно строятся из\nуже committed Phase 9 producers, сохраняются отдельным zero-time commit и\nтолько затем передаются обычной narration stage.\nHistorical bounded Phase 3/4 доступен исключительно по явному revision pin и\nне является production fallback.",
       "char_count": 1554
     },
     {
@@ -18674,25 +18674,25 @@
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "3. Authoring, materialization и data gaps",
       "line_start": 37,
-      "line_end": 44,
-      "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 3. Authoring, materialization и data gaps\n## 3. Authoring, materialization и data gaps\n\nКод материализует экземпляры только по цепочке `category → regional template → profile → rule → candidate set → persisted instance`. Он не придумывает category, исторический факт, маршрут, owner или отсутствующий option.\n\nПустой required candidate set — `spatial_candidate_gap`: hard block с диагностическими pins. Запрещены fallback, ослабление filter, заглушка, semantic continuation и LLM repair. Repair исправляет только формат/contract отклонённого ответа при неизменных input и candidate set.\n\nGenerated G5 ограничен утверждённым profile, frontier, template/slot capacity и terminal-resolution rule. Runtime не создаёт G0–G4 и не выполняет бесконечную procedural generation.",
-      "char_count": 841
+      "line_end": 51,
+      "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 3. Authoring, materialization и data gaps\n## 3. Authoring, materialization и data gaps\n\nКод материализует authoritative физические экземпляры только по finite exact\nSpatial catalog closure: `category → regional template → profile → rule →\ncatalog slots → persisted instance`. Это делает\n`@rus/materialization/spatial-v3`; scenario binding передаёт только exact\nprofile refs и slot keys, не topology. Внутри такого finite code-owned envelope\nдопустима open ordinary semantic concretization, но она не создаёт topology,\nresources, exact mechanics или authority. Код не придумывает category,\nисторический факт, маршрут, owner или отсутствующий authoritative option.\n\nПустой required candidate set — `spatial_candidate_gap`: hard block с диагностическими pins. Запрещены fallback, ослабление filter, заглушка, semantic continuation и LLM repair. Repair исправляет только формат/contract отклонённого ответа при неизменных input и candidate set.\n\nGenerated G5 ограничен утверждённым profile, frontier, template/slot capacity и terminal-resolution rule. Runtime не создаёт G0–G4 и не выполняет бесконечную procedural generation.",
+      "char_count": 1195
     },
     {
       "id": "spatial_v3_target_code_driven_world_materialization_architecture.md:4. Ownership и commit:0",
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "4. Ownership и commit",
-      "line_start": 45,
-      "line_end": 52,
-      "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 4. Ownership и commit\n## 4. Ownership и commit\n\nМатериализаторы, route/scene resolvers и validators возвращают immutable proposals/reports. Единственный production commit component применяет уже approved write set атомарно, сохраняет version pins, digests, seed, trace, idempotency key и append-only history. Он не выбирает альтернативу во время commit.\n\nPreparation обязана завершить required target/transfer G5 and G6 bindings до activation executable plan. `party_route_plan` immutable; изменение endpoint, carrier, method, static dependency или recovery target создаёт новый plan/execution. Время, progress и results не переписываются.\n\nLLM допускается только для bounded decision, разрешённой конкретизации, аудита, player character и prose from approved visible context. LLM не пишет SQL, DB state или произвольный patch/write plan.",
-      "char_count": 911
+      "line_start": 52,
+      "line_end": 59,
+      "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 4. Ownership и commit\n## 4. Ownership и commit\n\nМатериализаторы, route/scene resolvers и validators возвращают immutable proposals/reports. `@rus/materialization/spatial-v3` владеет exact Spatial closure и semantic proposal; game server делает только P16 revalidation и SQL mapping/commit. Единственный production commit component применяет уже approved write set атомарно, сохраняет version pins, digests, seed, trace, idempotency key и append-only history. Он не выбирает альтернативу во время commit.\n\nPreparation обязана завершить required target/transfer G5 and G6 bindings до activation executable plan. `party_route_plan` immutable; изменение endpoint, carrier, method, static dependency или recovery target создаёт новый plan/execution. Время, progress и results не переписываются.\n\nLLM допускается только для bounded decision, разрешённой конкретизации, аудита, player character и prose from approved visible context. LLM не пишет SQL, DB state или произвольный patch/write plan.",
+      "char_count": 1061
     },
     {
       "id": "spatial_v3_target_code_driven_world_materialization_architecture.md:5. Bounded decision:0",
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "5. Bounded decision",
-      "line_start": 53,
-      "line_end": 56,
+      "line_start": 60,
+      "line_end": 63,
       "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 5. Bounded decision\n## 5. Bounded decision\n\nКод сначала фильтрует невозможные options и передаёт конечный set с `option_id`, `command_token`, actor/target, preconditions, cost/risk, policy/state versions и options digest. LLM выбирает ровно один известный option и точный token. Неизвестный token, свободный текст, SQL, patch, несколько вариантов или stale state — typed rejection.",
       "char_count": 454
     },
@@ -18700,8 +18700,8 @@
       "id": "spatial_v3_target_code_driven_world_materialization_architecture.md:6. Party state и visible boundary:0",
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "6. Party state и visible boundary",
-      "line_start": 57,
-      "line_end": 65,
+      "line_start": 64,
+      "line_end": 72,
       "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 6. Party state и visible boundary\n## 6. Party state и visible boundary\n\n`party_runtime` хранит mutable party state: party-generated G5, G6/positions,\nactors, NPC/items, carriers, blockers, plans/executions, exact temporal state,\nperception, knowledge и history. Factual state, character knowledge и visible\nprojection различны. Code-owned projector формирует factual player-safe\npackage и сохраняет его в том же atomic commit, что и state change. Narrator\nполучает только этот persisted package после commit.",
       "char_count": 581
     },
@@ -18709,8 +18709,8 @@
       "id": "spatial_v3_target_code_driven_world_materialization_architecture.md:7. Условия активации:0",
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "7. Условия активации",
-      "line_start": 66,
-      "line_end": 76,
+      "line_start": 73,
+      "line_end": 83,
       "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 7. Условия активации\n## 7. Условия активации\n\nStatus flip запрещён до одновременного выполнения target §0.4:\nDDL/SCHEMA_REFERENCE/contracts/import/save-load синхронизированы, migration and\nrollback validated, tests включая PostgreSQL проходят,\ngenerated/repository-intelligence artifacts актуальны, independent critic\nвернул PASS или допустимый PASS WITH NOTES. Единственную атомарную activation\nвыполнил release `spatial-v3-production-v1` как отдельный `versioned\nproduction activation cutover`; историческое P28 evidence не является этой\nоперацией.",
       "char_count": 623
     },
@@ -18718,8 +18718,8 @@
       "id": "spatial_v3_target_code_driven_world_materialization_architecture.md:8. Migration history: materialization v2:0",
       "file": "spatial_v3_target_code_driven_world_materialization_architecture.md",
       "section": "8. Migration history: materialization v2",
-      "line_start": 77,
-      "line_end": 83,
+      "line_start": 84,
+      "line_end": 90,
       "text": "## spatial_v3_target_code_driven_world_materialization_architecture.md — 8. Migration history: materialization v2\n## 8. Migration history: materialization v2\n\nДо завершённого `versioned production activation cutover` active v2\nиспользовал canonical G0–G4 в `world_base` и party-scoped G5. Эта историческая\nмодель сохранена только как описание migration/rollback source и не является\nproduction v3 semantics. Ни один v3 request не может читать или записывать её\nкак fallback.",
       "char_count": 474
     },

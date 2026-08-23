@@ -30,11 +30,11 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
-    'novgorod_spatial_v3_production_v4_candidate_001',
+    'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
+    '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176',
   world_catalog_manifest_sha256:
-    '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb',
+    '1237e81686e357c68ab2a3957c428e538e37b4155786f4768e29622677d0309c',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',

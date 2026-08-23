@@ -45,10 +45,13 @@ container eligibility, contents semantics, mechanics, reveal или persistence.
 
 `@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
 
-Spatial semantic materialization owns formal proposal/resolution: it validates
-a finite code-owned envelope bound to committed spatial scope, admits open
-ordinary semantic detail and produces formal refs, capacity effect and only
-profile-provided mechanics. Capacity consumption remains in P16. It creates no unapproved topology, movement,
+Spatial semantic materialization owns formal proposal/resolution: exact
+physical topology comes only from the exact Spatial catalog closure through
+`@rus/materialization/spatial-v3`. A scenario binding supplies only profile
+refs and slot keys. The owner validates a finite code-owned envelope bound to
+committed spatial scope, admits open ordinary semantic detail and produces
+formal refs, capacity effect and only profile-provided mechanics. Capacity
+consumption remains in P16. It creates no unapproved topology, movement,
 hazards, resource effects or persistence writes; `@rus/game-server` performs
 only P16 revalidation and SQL commit.
 

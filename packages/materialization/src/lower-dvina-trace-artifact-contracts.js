@@ -323,6 +323,6 @@ export const M12_ARTIFACT_CONTRACT_OVERRIDES = Object.freeze({
   ],
   definition: ['rus.trace_scenario_definition.v1', 24],
   spatial_semantic_profile: [
-    'rus.lower_dvina_trace_spatial_semantic_profile.v1', 2
+    'rus.lower_dvina_trace_spatial_semantic_profile.v1', 3
   ]
 });

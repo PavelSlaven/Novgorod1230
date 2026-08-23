@@ -30,15 +30,12 @@ import { lowerDvinaTracePhase1ADomainPin } from
   '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
 import { runPartyRuntimeCatalogMigration } from
   '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+  '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync(
   'docker', args, { encoding: 'utf8', timeout: 45_000 }
 );
-const world = Object.freeze({
-  revision: 'novgorod_spatial_v3_production_v4_candidate_001',
-  digest: 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
-  manifest: '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
-});
 
 test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically',
   async (t) => {
@@ -65,7 +62,7 @@ test('Phase 9 and deterministic Phase 10 persist, restart and replay atomically'
     pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase9',
       password: 'local_only', database: 'phase9', max: 8 });
     await installSchemas(pool);
-    await installWorldLineage(pool);
+    await installLowerDvinaTraceV5World(pool);
     const bundle = await loadLowerDvinaTraceMaterializationBundle({
       scenarioDefinitionRevision: 24
     });
@@ -465,26 +462,6 @@ async function installSchemas(pool) {
   for (const file of files.slice(catalogIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
-}
-async function installWorldLineage(pool) {
-  await pool.query('CREATE SCHEMA IF NOT EXISTS world_base');
-  await pool.query(`CREATE TABLE world_base.spatial_v3_world_revisions (
-    id text PRIMARY KEY, parent_revision_id text REFERENCES
-      world_base.spatial_v3_world_revisions(id),
-    catalog_digest text NOT NULL,status text NOT NULL)`);
-  await pool.query(`INSERT INTO world_base.spatial_v3_world_revisions
-    (id,parent_revision_id,catalog_digest,status) VALUES
-    ('novgorod_spatial_v3_target_contract_approval_001',NULL,
-     '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),
-    ('novgorod_spatial_v3_production_v2_candidate_001',
-     'novgorod_spatial_v3_target_contract_approval_001',
-     'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),
-    ('novgorod_spatial_v3_production_v3_candidate_001',
-     'novgorod_spatial_v3_production_v2_candidate_001',
-     '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),
-    ('novgorod_spatial_v3_production_v4_candidate_001',
-     'novgorod_spatial_v3_production_v3_candidate_001',
-     'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')`);
 }
 async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 30; attempt += 1) {

@@ -58,6 +58,8 @@ export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
   '0e239d47657a9bdf996f5a0cc5ca46e57e42a5326feb540d8acca747ad257b54';
 export const LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST =
   '3d019f3e51cb4e7629713108bb7658127996ee5c70acd38ccb03e7160385ff00';
+export const LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST =
+  'd25886da14772ada1cb03943018a1495242af84dbd432a0a70a71154cac18804';
 
 export function assertLowerDvinaTraceRequest(input) {
   if (!input || typeof input !== 'object') fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'Materialization request is required.');
@@ -363,7 +365,8 @@ function worldTupleIsDirectOrApprovedDescendant(spatial, input) {
   const compatibility = input.world_compatibility;
   const lineage = compatibility?.lineage;
   if (![LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
-    LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST]
+    LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
+    LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST]
       .includes(canonicalDigest(compatibility))
     || compatibility?.source_world_revision_id !== spatial?.world_revision_id
     || compatibility?.source_world_catalog_digest

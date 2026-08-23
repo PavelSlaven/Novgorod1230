@@ -36,7 +36,14 @@ party_runtime: finite party-generated G5, G6, scene_position_node,
 
 ## 3. Authoring, materialization и data gaps
 
-Код материализует экземпляры только по цепочке `category → regional template → profile → rule → candidate set → persisted instance`. Он не придумывает category, исторический факт, маршрут, owner или отсутствующий option.
+Код материализует authoritative физические экземпляры только по finite exact
+Spatial catalog closure: `category → regional template → profile → rule →
+catalog slots → persisted instance`. Это делает
+`@rus/materialization/spatial-v3`; scenario binding передаёт только exact
+profile refs и slot keys, не topology. Внутри такого finite code-owned envelope
+допустима open ordinary semantic concretization, но она не создаёт topology,
+resources, exact mechanics или authority. Код не придумывает category,
+исторический факт, маршрут, owner или отсутствующий authoritative option.
 
 Пустой required candidate set — `spatial_candidate_gap`: hard block с диагностическими pins. Запрещены fallback, ослабление filter, заглушка, semantic continuation и LLM repair. Repair исправляет только формат/contract отклонённого ответа при неизменных input и candidate set.
 
@@ -44,7 +51,7 @@ Generated G5 ограничен утверждённым profile, frontier, temp
 
 ## 4. Ownership и commit
 
-Материализаторы, route/scene resolvers и validators возвращают immutable proposals/reports. Единственный production commit component применяет уже approved write set атомарно, сохраняет version pins, digests, seed, trace, idempotency key и append-only history. Он не выбирает альтернативу во время commit.
+Материализаторы, route/scene resolvers и validators возвращают immutable proposals/reports. `@rus/materialization/spatial-v3` владеет exact Spatial closure и semantic proposal; game server делает только P16 revalidation и SQL mapping/commit. Единственный production commit component применяет уже approved write set атомарно, сохраняет version pins, digests, seed, trace, idempotency key и append-only history. Он не выбирает альтернативу во время commit.
 
 Preparation обязана завершить required target/transfer G5 and G6 bindings до activation executable plan. `party_route_plan` immutable; изменение endpoint, carrier, method, static dependency или recovery target создаёт новый plan/execution. Время, progress и results не переписываются.
 

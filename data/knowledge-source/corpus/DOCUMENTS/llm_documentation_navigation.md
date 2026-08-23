@@ -84,12 +84,12 @@ candidate-free container веткой; A1 сохраняет exact handler prior
 же P16; water/extinguish остаются disabled без exact finite-water authority.
 
 Revision 24 / M12 / Phase 1A v20 / Phase 1B v19 / `spatial-v3-production-v12`
-активирует full S1 для profile-bound local variants в current position: open
-one-space structure или descriptive natural-feature placement. Controlled
-passage fail-closed без approved P11 portal bindings. Envelopes independent и provisioned только для
-реально совпавшего locked baseline/G5/G6/current-position scope; код создаёт
-admitted formal spatial refs и сохраняет их тем же combined P16. Model supplies
-only ordinary semantic detail; false topology/resource mechanics не возникают.
+активирует S1 только для fishing-camp `ordinary_structure` с
+`open_one_space`. Wreck-shore и `local_natural_feature` не active. Exact
+G6/position/topology создаёт `@rus/materialization/spatial-v3` только из exact
+Spatial catalog closure; scenario binding передаёт лишь profile refs и slot
+keys. В пределах finite code-owned envelope model supplies open ordinary
+semantic detail; server лишь P16-revalidates и SQL-commits owner proposal.
 N1 и unrelated profiles не активируются.
 
 Active player contract остаётся единственной semantic boundary свободной

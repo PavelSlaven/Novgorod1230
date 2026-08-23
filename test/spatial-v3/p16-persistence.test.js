@@ -80,6 +80,42 @@ test('P16 reader requires exact id/version/revision/digest and uses typed projec
   assert.equal((await reader.readRoute({ id: 'route', version: 3, world_revision_id: 'r' })).error.code, 'authoring_dependency_pin_missing');
 });
 
+test('P16 reader loads approved closure from one exact pinned template header', async () => {
+  const calls = [];
+  const ref = { id: 'template', version: 1, world_revision_id: 'revision' };
+  const header = { ...ref, canonical_digest: digest };
+  const children = {
+    spatial_v3_g6_template_slots: [{ scene_slot_key: 'g6', physical_class_id: 'open', primary_scene_role_id: 'role', vertical_context_id: 'surface', overhead_cover_id: 'none', intra_g6_visibility_mode: 'clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' }],
+    spatial_v3_scene_position_templates: [{ position_slot_key: 'position', g6_scene_slot_key: 'g6', position_type_id: 'standing', capacity: 1, access_class_id: 'public' }],
+    spatial_v3_scene_movement_edge_templates: [{ edge_slot_key: 'edge', from_position_slot_key: 'position', to_position_slot_key: 'other', reverse_edge_slot_key: 'reverse', passage_type_id: 'passage', transition_environment_profile_id: null, transition_environment_profile_version: null, movement_orientation_profile_id: null, movement_orientation_profile_version: null, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null }],
+    spatial_v3_visibility_link_templates: [{ link_slot_key: 'link', from_position_slot_key: 'position', to_position_slot_key: 'other', reverse_link_slot_key: 'reverse', quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null }]
+  };
+  const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
+    calls.push({ sql, params });
+    const table = Object.keys(children).find((name) => sql.includes(name));
+    const columns = sql.match(/^SELECT (.+) FROM /u)?.[1]?.split(',');
+    return { rows: table ? children[table].map((row) => ({ ...row,
+      scene_template_id: ref.id, scene_template_version: ref.version,
+      identity: 'must-not-reach-materializer' })).map((row) =>
+      Object.fromEntries(columns.map((column) => [column, row[column]]))) : [header] };
+  } });
+  const result = await reader.readPinnedSceneTemplateClosure(ref);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.value.header, header);
+  assert.deepEqual({ g6_slots: result.value.g6_slots, position_slots: result.value.position_slots,
+    movement_edges: result.value.movement_edges, visibility_links: result.value.visibility_links }, {
+    g6_slots: children.spatial_v3_g6_template_slots,
+    position_slots: children.spatial_v3_scene_position_templates,
+    movement_edges: children.spatial_v3_scene_movement_edge_templates,
+    visibility_links: children.spatial_v3_visibility_link_templates
+  });
+  assert.deepEqual(calls[0].params, [ref.id, ref.version, ref.world_revision_id]);
+  assert.match(calls[0].sql, /status='approved'/);
+  assert.ok(calls.slice(1).every(({ sql }) => !/SELECT \*/u.test(sql)));
+  assert.ok(calls.slice(1).every(({ params }) =>
+    params[0] === ref.id && params[1] === ref.version));
+});
+
 test('P16 repository models composite history identity without generic id ordering', async () => {
   const calls = []; const repository = createSpatialV3PartyRepository({ transaction: { query: async (sql) => { calls.push(sql); return { rows: [{ execution_id: 'e', event_ordinal: 1, party_id: 'p' }] }; } } });
   assert.equal((await repository.loadHistory({ party_id: 'p', execution_id: 'e', event_ordinal: 1 })).ok, true); assert.match(calls[0], /ORDER BY execution_id,event_ordinal/); assert.doesNotMatch(calls[0], /SELECT \*/);

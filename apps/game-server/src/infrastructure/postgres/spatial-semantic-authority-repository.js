@@ -18,8 +18,9 @@ export function createSpatialSemanticAuthorityRepository({ pool } = {}) {
         FROM party_runtime.party_spatial_semantic_envelopes
         WHERE party_id=$1 AND envelope->>'position_ref'=$2 AND status='committed'
           AND consumed_count < capacity_total
-        ORDER BY envelope_ref LIMIT 1`, [party_id, position_ref]);
-      if (result.rowCount !== 1) fail('S1_SPATIAL_AUTHORITY_MISSING');
+        LIMIT 2`, [party_id, position_ref]);
+      if (result.rowCount === 0) fail('S1_SPATIAL_AUTHORITY_MISSING');
+      if (result.rowCount > 1) fail('S1_SPATIAL_AUTHORITY_CONFLICT');
       return snapshot(result.rows[0], party_id);
     },
     findCommittedResolution: async ({ party_id, request_id = null, local_ref = null }) => {

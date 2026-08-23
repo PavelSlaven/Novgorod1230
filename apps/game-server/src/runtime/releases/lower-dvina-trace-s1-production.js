@@ -89,29 +89,32 @@ function movementOperation(operation, actor) {
 async function resolveLocalMovement({ value, authority, partyId, target }) {
   const committed = await authority.findCommittedResolution({ party_id: partyId,
     local_ref: target });
-  if (committed == null || committed.position_ref !== currentPosition(value.committed_state)
-      || !visibleLocalReference(value.request.player_safe_state, target)) {
+  if (committed == null || !visibleLocalReference(value.request.player_safe_state, target)) {
     fail('TRACE_S1_SCOPE_INVALID');
   }
   const refs = committed.formal_spatial_refs;
   if (refs?.structural_variant !== 'open_one_space'
       || !text(refs.position_ref) || !Array.isArray(refs.movement_edge_refs)
       || refs.movement_edge_refs.length !== 2) fail('TRACE_S1_SCOPE_INVALID');
+  const from = currentPosition(value.committed_state);
+  const to = from === committed.position_ref ? refs.position_ref
+    : from === refs.position_ref ? committed.position_ref : null;
+  if (!text(to)) fail('TRACE_S1_SCOPE_INVALID');
   const movementEdgeRef = await authority.findLocalMovementEdge({ party_id: partyId,
-    from_position_ref: committed.position_ref, to_position_ref: refs.position_ref,
+    from_position_ref: from, to_position_ref: to,
     movement_edge_refs: refs.movement_edge_refs });
   const result = planApprovedActorDestinationTransition({
     state_version: value.request.committed_state_version,
     expected_state_version: value.request.committed_state_version,
     actor: { actor_ref: { entity_kind: 'player_character', entity_id: value.actor.actor_id },
-      location_ref: committed.position_ref, zone_ref: committed.position_ref },
+      location_ref: committed.position_ref, zone_ref: from },
     destination: { entity_ref: { entity_kind: 'spatial_local_reference', entity_id: target },
-      location_ref: committed.position_ref, zone_ref: refs.position_ref },
+      location_ref: committed.position_ref, zone_ref: to },
     local_transition_bindings: [{ schema: 'rus.trace_local_zone_transition.v1',
       terminal_outcome: 'same_materialized_location_new_zone',
       location_ref: committed.position_ref,
-      source_zone_candidates: [committed.position_ref],
-      destination_zone_ref: refs.position_ref, admitted_subject_classes: ['actor'],
+      source_zone_candidates: [from],
+      destination_zone_ref: to, admitted_subject_classes: ['actor'],
       transition_id: movementEdgeRef, duration_minutes: 1 }],
     allowed_movement_refs: [movementEdgeRef]
   });
@@ -120,7 +123,7 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
     summary: 'local spatial movement resolved', write_fragments: [],
     consequence_fragment: { position_transition: { owner: '@rus/movement-routes',
       actor_id: value.actor.actor_id, local_ref: target,
-      from_position_ref: committed.position_ref, to_position_ref: refs.position_ref,
+      from_position_ref: from, to_position_ref: to,
       movement_edge_ref: result.proposal.movement_ref } },
     player_response_boundary: true });
 }
@@ -133,8 +136,7 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   const position = committed.position?.position_id ?? committed.position?.position_ref;
   if (!text(position)) return player;
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
-    resolutions.filter((resolution) => resolution?.position_ref === position
-      && visibleResolution(resolution)));
+    resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
   const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
     resolutions });
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
@@ -179,6 +181,11 @@ function visibleResolution(value) {
   return text(value?.local_ref) && text(value?.position_ref)
     && text(value?.semantics?.name) && text(value?.semantics?.description)
     && text(value?.semantics?.kind);
+}
+function visibleAtPosition(resolution, position) {
+  return visibleResolution(resolution) && (resolution.position_ref === position
+    || resolution.formal_spatial_refs?.structural_variant === 'open_one_space'
+      && resolution.formal_spatial_refs.position_ref === position);
 }
 function currentPosition(value) {
   const position = value?.position;

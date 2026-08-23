@@ -16,6 +16,12 @@ const COLUMNS = Object.freeze({
   profile: 'id,version,world_revision_id,source_kind,source_entity_id,source_entity_version,selection_rule_id,selection_rule_version,status,canonical_digest', template: 'id,version,world_revision_id,regional_template_id,regional_template_version,status,canonical_digest',
   orientation_profile: 'id,version,world_revision_id,reference_frame_id,reference_frame_version,profile_kind,fixed_local_azimuth_mdeg,vertical_direction,status,canonical_digest', movement_cost_profile: 'id,version,world_revision_id,baseline_movement_method_id,status,canonical_digest'
 });
+const SCENE_TEMPLATE_CLOSURE_COLUMNS = Object.freeze({
+  spatial_v3_g6_template_slots: 'scene_slot_key,physical_class_id,primary_scene_role_id,vertical_context_id,overhead_cover_id,intra_g6_visibility_mode,default_visibility_distance_band,acoustic_uniformity',
+  spatial_v3_scene_position_templates: 'position_slot_key,g6_scene_slot_key,position_type_id,capacity,access_class_id',
+  spatial_v3_scene_movement_edge_templates: 'edge_slot_key,from_position_slot_key,to_position_slot_key,reverse_edge_slot_key,passage_type_id,transition_environment_profile_id,transition_environment_profile_version,movement_orientation_profile_id,movement_orientation_profile_version,cost_kind,action_units,baseline_movement_method_id,movement_method_cost_profile_id,movement_method_cost_profile_version,base_minutes,dynamic_recheck_policy_id,dynamic_recheck_policy_version,capacity,portal_template_id,portal_template_version,availability_condition_set_id,availability_condition_set_version',
+  spatial_v3_visibility_link_templates: 'link_slot_key,from_position_slot_key,to_position_slot_key,reverse_link_slot_key,quality,distance_band,portal_template_id,portal_template_version,condition_profile_id,condition_profile_version'
+});
 const ENTITY_KINDS = Object.freeze({ node: 'canonical_spatial_node', route: 'world_route', profile: 'scene_materialization_profile', template: 'scene_template', orientation_profile: 'movement_orientation_profile', movement_cost_profile: 'movement_method_cost_profile' });
 function failure(code, kind, id, diagnostics = {}) { const subject_ref = { entity_kind: ENTITY_KINDS[kind] ?? 'world_revision', entity_id: id || 'unknown' }; const pin = { dependency_role: 'source_authoring', entity_ref: subject_ref, version_pin: { pin_kind: 'authoring_version', authoring_version: 'required' } }; return Object.freeze({ ok: false, error: createSpatialV3TypedError(code, { subject_ref, dependency_pins: { pins: [pin], canonical_digest: computeSpatialV3CanonicalDigest([pin]).replace('sha256:', '') }, diagnostics }) }); }
 function exact(ref) { return ref && typeof ref.id === 'string' && ref.id.trim() && Number.isInteger(ref.version) && ref.version > 0 && typeof ref.world_revision_id === 'string' && ref.world_revision_id.trim() && typeof ref.canonical_digest === 'string' && /^[a-f0-9]{64}$/i.test(ref.canonical_digest); }
@@ -100,12 +106,57 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     }
     return buildNpcReactionPolicySnapshotFromAuthoringRow(result.rows[0]);
   }
+  async function readSceneTemplateClosure(ref) {
+    const header = await read({ kind: 'template', ref });
+    if (!header.ok) return header;
+    return composeSceneTemplateClosure(header.value, ref);
+  }
+  async function readPinnedSceneTemplateClosure({ id, version, world_revision_id } = {}) {
+    if (typeof id !== 'string' || !id.trim() || !Number.isInteger(version)
+      || version < 1 || typeof world_revision_id !== 'string'
+      || !world_revision_id.trim()) {
+      return failure('authoring_dependency_pin_missing', 'template', id, {
+        reason: 'exact_template_header_pin_required'
+      });
+    }
+    if (typeof query !== 'function') {
+      return failure('generated_schema_mismatch', 'template', id, {
+        reason: 'read-only query port is required'
+      });
+    }
+    const result = await query(
+      `SELECT ${COLUMNS.template} FROM ${SOURCES.template} WHERE id=$1 AND version=$2 AND world_revision_id=$3 AND status='approved' LIMIT 2`,
+      [id, version, world_revision_id]
+    );
+    if (!Array.isArray(result?.rows) || result.rows.length !== 1
+      || !exact(result.rows[0])) {
+      return failure('route_plan_snapshot_missing', 'template', id, {
+        reason: result?.rows?.length > 1
+          ? 'ambiguous_approved_scene_template'
+          : 'approved_scene_template_missing',
+        version,
+        world_revision_id
+      });
+    }
+    const header = Object.freeze(structuredClone(result.rows[0]));
+    return composeSceneTemplateClosure(header, header);
+  }
+  async function composeSceneTemplateClosure(header, ref) {
+    const tables = Object.keys(SCENE_TEMPLATE_CLOSURE_COLUMNS);
+    const results = await Promise.all(tables.map((table) => query(`SELECT ${SCENE_TEMPLATE_CLOSURE_COLUMNS[table]} FROM world_base.${table} WHERE scene_template_id=$1 AND scene_template_version=$2`, [header.id, header.version])));
+    if (results.some((result) => !Array.isArray(result?.rows))) return failure('route_plan_snapshot_missing', 'template', ref.id, { reason: 'scene_template_closure_missing' });
+    return Object.freeze({ ok: true, value: Object.freeze({ header,
+      g6_slots: structuredClone(results[0].rows), position_slots: structuredClone(results[1].rows),
+      movement_edges: structuredClone(results[2].rows), visibility_links: structuredClone(results[3].rows) }), ref: Object.freeze({ ...ref }) });
+  }
   return Object.freeze({
     read,
     readNode: (ref) => read({ kind: 'node', ref }),
     readRoute: (ref) => read({ kind: 'route', ref }),
     readProfile: (ref) => read({ kind: 'profile', ref }),
     readTemplate: (ref) => read({ kind: 'template', ref }),
+    readSceneTemplateClosure,
+    readPinnedSceneTemplateClosure,
     readOrientationProfile: (ref) =>
       read({ kind: 'orientation_profile', ref }),
     readMovementCostProfile: (ref) =>

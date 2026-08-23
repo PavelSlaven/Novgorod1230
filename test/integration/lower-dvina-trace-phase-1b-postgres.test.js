@@ -19,27 +19,38 @@ import {
   createHttpHandler
 } from '../../apps/game-server/src/http/handler.js';
 import {
-  loadLowerDvinaTraceMaterializationBundle
-} from '../../apps/game-server/src/internal/lower-dvina-trace-phase-1a.js';
+  loadActiveRuntimeCatalogPin
+} from '../../apps/game-server/src/infrastructure/postgres/runtime-catalog-pin-loader.js';
 import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import {
-  runPartyRuntimeCatalogMigration
+  runPartyRuntimeCatalogMigration,
+  runWorldRuntimeCatalogMigration
 } from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
+import {
+  applyFirstPlayableV2ActivationBundle,
+  buildFirstPlayableV2ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
+import {
+  applyLowerDvinaBoundaryV3ActivationBundle,
+  buildLowerDvinaBoundaryV3ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
+import {
+  applySpatialV3ProductionV12ActivationBundle,
+  buildSpatialV3ProductionV12ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
+import { buildLowerDvinaBoundaryV1ImportSql } from
+  '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
+import { buildLowerDvinaV2ImportSql } from
+  '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
+import { buildCharacterAppearanceV1ImportSql } from
+  '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
+import { buildS1AuthoringV5ImportSql } from
+  '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 
 const docker = (args) => spawnSync(
   'docker',
   args,
   { encoding: 'utf8', timeout: 45_000 }
 );
-const productionWorld = Object.freeze({
-  revision:
-    'novgorod_spatial_v3_production_v4_candidate_001',
-  digest:
-    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
-});
-
 test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', async (t) => {
   if (docker(['version']).status !== 0) {
     t.skip('Docker is required for isolated Phase 1B PostgreSQL integration');
@@ -57,7 +68,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
     '-e', 'POSTGRES_PASSWORD=local_only',
     '-e', 'POSTGRES_USER=phase1b',
-    '-e', 'POSTGRES_DB=phase1b',
+    '-e', 'POSTGRES_DB=pr17_phase1b',
     'postgres:16-alpine'
   ]);
   assert.equal(started.status, 0, started.stderr);
@@ -71,7 +82,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     port,
     user: 'phase1b',
     password: 'local_only',
-    database: 'phase1b',
+    database: 'pr17_phase1b',
     max: 8
   });
   await pool.query('SELECT 1');
@@ -88,10 +99,13 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     (await runPartyRuntimeCatalogMigration(pool)).status,
     'applied'
   );
+  const runtimeCatalogPin = await installActivatedRuntimeCatalog({
+    pool,
+    databaseUrl: `postgresql://phase1b:local_only@127.0.0.1:${port}/pr17_phase1b`
+  });
   for (const file of partyFiles.slice(catalogMigrationIndex)) {
     await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8'));
   }
-  await installWorldLineage(pool);
   const schemaSnapshot = await readPartyDatabaseSchemaSnapshot(pool);
   assert.ok(schemaSnapshot.tables.some(
     ({ name }) => name === 'party_containers'
@@ -124,19 +138,10 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     { code: 'TRACE_PHASE_1B_PARTY_SCHEMA_INCOMPLETE' }
   );
 
-  const bundle = await loadLowerDvinaTraceMaterializationBundle();
-  const sourcePin = lowerDvinaTracePhase1ADomainPin(bundle);
-  const runtimeCatalogPin = Object.freeze({
-    ...sourcePin,
-    compatible_world_revision_id: productionWorld.revision,
-    compatible_world_catalog_digest: productionWorld.digest,
-    compatible_world_pin_manifest_digest:
-      '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
-  });
   const release = Object.freeze({
     release_id: 'phase-1b-postgres-release',
-    world_revision_id: productionWorld.revision,
-    world_catalog_digest: productionWorld.digest,
+    world_revision_id: runtimeCatalogPin.compatible_world_revision_id,
+    world_catalog_digest: runtimeCatalogPin.compatible_world_catalog_digest,
     compatible_world_pin_manifest_digest:
       runtimeCatalogPin.compatible_world_pin_manifest_digest
   });
@@ -492,31 +497,55 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   }
 });
 
-async function installWorldLineage(pool) {
-  await pool.query('CREATE SCHEMA IF NOT EXISTS world_base');
-  await pool.query(`
-    CREATE TABLE world_base.spatial_v3_world_revisions (
-      id text PRIMARY KEY,
-      parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),
-      catalog_digest text NOT NULL,
-      status text NOT NULL
-    )`);
-  await pool.query(
-    `INSERT INTO world_base.spatial_v3_world_revisions
-       (id,parent_revision_id,catalog_digest,status)
-     VALUES
-       ('novgorod_spatial_v3_target_contract_approval_001',NULL,
-        '0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),
-       ('novgorod_spatial_v3_production_v2_candidate_001',
-        'novgorod_spatial_v3_target_contract_approval_001',
-        'fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),
-       ('novgorod_spatial_v3_production_v3_candidate_001',
-        'novgorod_spatial_v3_production_v2_candidate_001',
-        '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),
-       ('novgorod_spatial_v3_production_v4_candidate_001',
-        'novgorod_spatial_v3_production_v3_candidate_001',
-        'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')`
+async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {
+  const lifecycle = spawnSync(
+    process.execPath,
+    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'],
+    {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      timeout: 180_000,
+      env: { ...process.env, PR17_TEST_DATABASE_URL: databaseUrl }
+    }
   );
+  assert.equal(lifecycle.status, 0, lifecycle.stderr);
+  assert.equal(JSON.parse(lifecycle.stdout).pass, true);
+  for (const file of ['18.sql', '19.sql', '20.sql']) {
+    await pool.query(await readFile(`infra/world-base/schema/${file}`, 'utf8'));
+  }
+  await pool.query(await buildLowerDvinaV2ImportSql());
+  assert.equal((await runWorldRuntimeCatalogMigration(pool)).status, 'applied');
+  const commitSha = spawnSync('git', ['rev-parse', 'HEAD'], {
+    encoding: 'utf8'
+  }).stdout.trim();
+  assert.match(commitSha, /^[a-f0-9]{40}$/u);
+  const activation = async (build, apply) => {
+    const bundle = await build({
+      worldPool: pool,
+      partyPool: pool,
+      repositoryRoot: process.cwd(),
+      gitCommitSha: commitSha,
+      authorizationRef: 'Phase 1B PostgreSQL integration test'
+    });
+    await apply({ worldPool: pool, partyPool: pool, bundle });
+  };
+  await activation(
+    buildFirstPlayableV2ActivationBundle,
+    applyFirstPlayableV2ActivationBundle
+  );
+  await pool.query(await buildLowerDvinaBoundaryV1ImportSql());
+  await activation(
+    buildLowerDvinaBoundaryV3ActivationBundle,
+    applyLowerDvinaBoundaryV3ActivationBundle
+  );
+  await pool.query(await readFile('infra/world-base/schema/21.sql', 'utf8'));
+  await pool.query(await buildCharacterAppearanceV1ImportSql());
+  await pool.query(await buildS1AuthoringV5ImportSql());
+  await activation(
+    buildSpatialV3ProductionV12ActivationBundle,
+    applySpatialV3ProductionV12ActivationBundle
+  );
+  return loadActiveRuntimeCatalogPin(pool, 'item_container_materialization_v2');
 }
 
 async function api(base, path, body = null) {
@@ -560,7 +589,7 @@ async function waitForPostgres(name) {
   for (let attempt = 0; attempt < 50; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, 300));
     if (docker([
-      'exec', name, 'pg_isready', '-U', 'phase1b', '-d', 'phase1b'
+      'exec', name, 'pg_isready', '-U', 'phase1b', '-d', 'pr17_phase1b'
     ]).status === 0) return;
   }
   assert.fail('PostgreSQL container did not become ready');

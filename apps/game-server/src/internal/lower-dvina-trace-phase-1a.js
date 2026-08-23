@@ -84,6 +84,7 @@ async function materializeAndCommit({ request, domainCatalogPinLoader, partyData
     ...request,
     domain_catalog_pin: domainCatalogPin,
     scenario_bundle: bundle,
+    world_base_reference_snapshot: worldBaseReferenceSnapshot,
     resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
   });
   const materialization = materializeInitialActorEquipment(

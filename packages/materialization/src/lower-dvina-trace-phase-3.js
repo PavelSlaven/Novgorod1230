@@ -75,7 +75,8 @@ export function materializeLowerDvinaTracePreparedCamp({
     party_id: input.party_id,
     binding: bundle.materialization_bindings.first_entry_preparation,
     scene,
-    npcs
+    npcs,
+    world_base_reference_snapshot: input.world_base_reference_snapshot
   });
   if (!firstEntry.ok) {
     fail('TRACE_FIRST_ENTRY_S1_TOPOLOGY_INVALID',

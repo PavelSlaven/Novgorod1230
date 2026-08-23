@@ -19,9 +19,9 @@ import {
   buildFirstPlayableV2ActivationBundle
 } from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
 import {
-  applyCharacterAppearanceV4ActivationBundle,
-  buildCharacterAppearanceV4ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/character-appearance-v4-activation.js';
+  applySpatialV3ProductionV12ActivationBundle,
+  buildSpatialV3ProductionV12ActivationBundle
+} from '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
 import {
   applyLowerDvinaBoundaryV3ActivationBundle,
   buildLowerDvinaBoundaryV3ActivationBundle
@@ -36,6 +36,8 @@ import { buildLowerDvinaV2ImportSql } from
   '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
 import { buildCharacterAppearanceV1ImportSql } from
   '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
+import { buildS1AuthoringV5ImportSql } from
+  '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 
@@ -258,24 +260,27 @@ async function installActivatedRuntimeCatalog({
   await worldPool.query(await buildCharacterAppearanceV1ImportSql({
     root: repositoryRoot
   }));
-  const v4Bundle = await buildCharacterAppearanceV4ActivationBundle({
+  await worldPool.query(await buildS1AuthoringV5ImportSql({
+    root: repositoryRoot
+  }));
+  const v12Bundle = await buildSpatialV3ProductionV12ActivationBundle({
     worldPool,
     partyPool,
     repositoryRoot,
     gitCommitSha: commitSha,
     authorizationRef: 'Character appearance isolated production acceptance'
   });
-  await applyCharacterAppearanceV4ActivationBundle({
+  await applySpatialV3ProductionV12ActivationBundle({
     worldPool,
     partyPool,
-    bundle: v4Bundle
+    bundle: v12Bundle
   });
   return Object.freeze({
     pinManifestDigest:
-      v4Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
+      v12Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
     v2Bundle,
     v3Bundle,
-    v4Bundle
+    v12Bundle
   });
 }
 

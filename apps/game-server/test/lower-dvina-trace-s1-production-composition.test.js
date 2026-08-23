@@ -32,8 +32,8 @@ test('S1 exact profile rejects mismatched structural requirements', async () => 
   for (const mutate of [
     (profile) => { delete profile.envelopes[0].slot_key; },
     (profile) => { profile.envelopes[0].required_semantic_requirements = []; },
-    (profile) => { profile.envelopes[1].slot_key = null; },
-    (profile) => { profile.envelopes[1].topology = null; }
+    (profile) => { profile.envelopes[0].structural_variant = 'descriptive_local_reference'; },
+    (profile) => { profile.envelopes[0].topology = null; }
   ]) {
     const drifted = structuredClone(loaded);
     mutate(drifted.profile);
@@ -171,32 +171,71 @@ test('S1 readback accepts exhausted committed envelope with its resolution', asy
   assert.notEqual(state[0].resolution, state[0].resolutions[0]);
 });
 
-test('S1 initial authority picks stable eligible envelope and skips exhausted rows', async () => {
+test('S1 local ref stays visible inside open one-space without a creation marker', () => {
+  const projected = projectLowerDvinaTraceS1Capability({ resolverAvailable: true,
+    playerSafeState: { visible_objects: [], known_context: [] }, committedState: {
+      position: { position_id: 'position:inside' }, spatial_semantic: [{
+        status: 'committed', envelope_ref: 'envelope:base', capacity_total: 1,
+        consumed_count: 1, envelope: { position_ref: 'position:base' }, resolutions: [{
+          local_ref: 's1-local:structure', position_ref: 'position:base',
+          semantics: { kind: 'ordinary_structure', name: 'Загородка', description: 'Плетень.' },
+          formal_spatial_refs: { structural_variant: 'open_one_space',
+            position_ref: 'position:inside' }
+        }]
+      }]
+    } });
+  assert.equal(projected.visible_objects[0].entity_ref.entity_id, 's1-local:structure');
+  assert.equal(projected.spatial_semantic, undefined);
+  assert.equal(JSON.stringify(projected).includes('position:inside'), false);
+});
+
+test('S1 initial authority rejects ambiguity and preserves zero or one eligible outcome', async () => {
   const rows = ['envelope:b', 'envelope:a'].map((envelope_ref) => {
     const envelope = { ...s1Envelope(), envelope_ref };
     return { envelope, capacity_total: 1, consumed_count: 0, state_version: 1,
       status: 'committed' };
   });
   const authority = createSpatialSemanticAuthorityRepository({ pool: { query: async (sql) => {
-    assert.match(sql, /consumed_count < capacity_total[\s\S]*ORDER BY envelope_ref LIMIT 1/u);
+    assert.match(sql, /consumed_count < capacity_total[\s\S]*LIMIT 2/u);
+    assert.doesNotMatch(sql, /ORDER BY/u);
     const eligible = rows.filter((row) => row.status === 'committed'
-      && row.consumed_count < row.capacity_total).sort((left, right) =>
-      left.envelope.envelope_ref.localeCompare(right.envelope.envelope_ref));
-    return { rowCount: Math.min(eligible.length, 1), rows: eligible.slice(0, 1) };
+      && row.consumed_count < row.capacity_total);
+    return { rowCount: Math.min(eligible.length, 2), rows: eligible.slice(0, 2) };
   } } });
+  await assert.rejects(() => authority.loadPreModelAtPosition({ party_id: 'party:s1',
+    position_ref: 'position:s1' }), { code: 'S1_SPATIAL_AUTHORITY_CONFLICT' });
+  rows.find((row) => row.envelope.envelope_ref === 'envelope:b').consumed_count = 1;
+  rows.find((row) => row.envelope.envelope_ref === 'envelope:b').envelope.consumed_count = 1;
+  rows.find((row) => row.envelope.envelope_ref === 'envelope:b').state_version = 2;
+  rows.find((row) => row.envelope.envelope_ref === 'envelope:b').envelope.state_version = 2;
   assert.equal((await authority.loadPreModelAtPosition({ party_id: 'party:s1',
     position_ref: 'position:s1' })).envelope_ref, 'envelope:a');
   rows.find((row) => row.envelope.envelope_ref === 'envelope:a').consumed_count = 1;
   rows.find((row) => row.envelope.envelope_ref === 'envelope:a').envelope.consumed_count = 1;
   rows.find((row) => row.envelope.envelope_ref === 'envelope:a').state_version = 2;
   rows.find((row) => row.envelope.envelope_ref === 'envelope:a').envelope.state_version = 2;
-  assert.equal((await authority.loadPreModelAtPosition({ party_id: 'party:s1',
-    position_ref: 'position:s1' })).envelope_ref, 'envelope:b');
-  rows[0].consumed_count = rows[0].capacity_total;
-  rows[0].envelope.consumed_count = rows[0].capacity_total;
-  rows[0].state_version = 2; rows[0].envelope.state_version = 2;
   await assert.rejects(() => authority.loadPreModelAtPosition({ party_id: 'party:s1',
     position_ref: 'position:s1' }), { code: 'S1_SPATIAL_AUTHORITY_MISSING' });
+});
+
+test('S1 ambiguous initial authority reaches neither descriptor model nor writes', async () => {
+  let modelCalls = 0; let writes = 0;
+  const envelopes = ['envelope:a', 'envelope:b'].map((envelope_ref) => ({
+    envelope: { ...s1Envelope(), envelope_ref }, capacity_total: 1,
+    consumed_count: 0, state_version: 1, status: 'committed'
+  }));
+  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool: {
+    query: async (sql) => {
+      if (!/^SELECT/u.test(sql.trim())) writes += 1;
+      return sql.includes('party_spatial_semantic_resolutions')
+        ? { rowCount: 0, rows: [] }
+        : { rowCount: 2, rows: envelopes };
+    }
+  }, spatialSemanticModel: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
+  await assert.rejects(() => resolver(s1Request()),
+    { code: 'S1_SPATIAL_AUTHORITY_CONFLICT' });
+  assert.equal(modelCalls, 0);
+  assert.equal(writes, 0);
 });
 
 test('S1 resolver models one open result, then replays current visible local ref', async () => {
@@ -275,61 +314,6 @@ test('S1 resolver models one open result, then replays current visible local ref
   await assert.rejects(() => replay(away), { code: 'TRACE_S1_SCOPE_INVALID' });
 });
 
-test('S1 local movement reuses committed visible detail without model', async () => {
-  let modelCalls = 0;
-  const committed = { request_id: 'request:s1', local_ref: 's1-local:request:s1',
-    envelope_ref: 'envelope:s1', position_ref: 'position:s1', root_turn_id: 'turn:s1',
-    step_index: 1, semantics: { kind: 'ordinary_structure', name: 'Загородка',
-      description: 'Плетёная загородка.', semantic_requirements: ['interior_space'] },
-    formal_spatial_refs: { schema: 'rus.s1_formal_spatial_refs.v1',
-      status: 'materialized', structural_variant: 'open_one_space',
-      local_ref: 's1-local:request:s1', placement_ref: 'ordinary_structure:s1-local:request:s1',
-      g6_instance_ref: 'g6:inside', position_ref: 'position:inside', portal_ref: null,
-      movement_edge_refs: ['edge:out', 'edge:into'],
-      visibility_link_refs: ['visible:into', 'visible:out'] } };
-  const resolver = localMovementResolver({ committed, model: () => { modelCalls += 1; },
-    edge: { rowCount: 1, rows: [{ id: 'edge:into' }] } });
-  const request = s1Request({ requestId: 'request:move', operation: {
-    op: 'request_movement', actor_ref: 'actor:s1', movement_kind: 'local',
-    target_ref: committed.local_ref } });
-  request.request.player_safe_state.visible_objects = [{ entity_ref: {
-    entity_kind: 'spatial_local_reference', entity_id: committed.local_ref },
-  display_label: 'Загородка', recognition: 'recognized', visible_status: 'замечен' }];
-  const planned = await resolver(request);
-  assert.equal(modelCalls, 0);
-  assert.deepEqual(planned.consequence_fragment.position_transition, {
-    owner: '@rus/movement-routes', actor_id: 'actor:s1', local_ref: committed.local_ref,
-    from_position_ref: 'position:s1', to_position_ref: 'position:inside',
-    movement_edge_ref: 'edge:into' });
-  for (const edge of [{ rowCount: 0, rows: [] }, { rowCount: 2,
-    rows: [{ id: 'edge:into' }, { id: 'edge:out' }] }, { rowCount: 1,
-    rows: [{ id: 'edge:forged' }] }]) {
-    await assert.rejects(() => localMovementResolver({ committed, edge })(request),
-      { code: 'S1_SPATIAL_MOVEMENT_EDGE_INVALID' });
-  }
-});
-
-test('exhausted S1 envelope exposes no resolver marker or model path', async () => {
-  let reads = 0; let modelCalls = 0;
-  const playerSafeState = projectLowerDvinaTraceS1Capability({
-    playerSafeState: { visible_objects: [] }, resolverAvailable: true,
-    committedState: { position: { position_id: 'position:s1' },
-      spatial_semantic: [{ status: 'committed', envelope_ref: 'envelope:s1',
-        capacity_total: 1, consumed_count: 1,
-        envelope: { position_ref: 'position:s1' }, resolutions: [] }] }
-  });
-  assert.equal(playerSafeState.spatial_semantic, undefined);
-  const request = s1Request();
-  request.request.player_safe_state = playerSafeState;
-  const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
-    pool: { query: async () => { reads += 1; return { rowCount: 0, rows: [] }; } },
-    spatialSemanticModel: async () => { modelCalls += 1; }
-  })({ partyId: 'party:s1' });
-  await assert.rejects(() => resolver(request), { code: 'TRACE_S1_SCOPE_INVALID' });
-  assert.equal(reads, 1, 'replay lookup remains read-only');
-  assert.equal(modelCalls, 0);
-});
-
 async function capturedTraceRuntime(spatialSemanticProfile = null) {
   let captured = null;
   const release = {
@@ -405,11 +389,6 @@ function formalRefs(local_ref) {
     structural_variant: 'descriptive_local_reference', local_ref,
     placement_ref: `placement:${local_ref}`, g6_instance_ref: null, position_ref: null,
     portal_ref: null, movement_edge_refs: [], visibility_link_refs: [] };
-}
-function localMovementResolver({ committed, edge, model = () => {} }) {
-  return createLowerDvinaTraceS1ProductionResolverFactory({ pool: { query: async (sql) =>
-    sql.includes('scene_movement_edges') ? edge : { rowCount: 1, rows: [committed] }
-  }, spatialSemanticModel: async () => model() })({ partyId: 'party:s1' });
 }
 function s1Request({ target = 'position:s1', position = 'position:s1', requestId = 'request:s1',
   discoveryKind = 'look', operation = undefined } = {}) {

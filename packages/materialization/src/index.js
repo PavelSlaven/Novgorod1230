@@ -16,7 +16,8 @@ export { canonicalDigest, createRandomSource, deriveSeed, MATERIALIZER_VERSION, 
 export { materializeActorBaseAppearance } from './actor-base-appearance.js';
 export {
   LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST,
-  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST
+  LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
+  LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST
 } from './lower-dvina-trace-contract.js';
 export { executeBoundedDecision, issueBoundedDecisionRequest, validateBoundedDecisionResult } from './bounded-decision.js';
 export { computeMaterializationResultDigest as materializationResultDigest } from '@rus/contracts';

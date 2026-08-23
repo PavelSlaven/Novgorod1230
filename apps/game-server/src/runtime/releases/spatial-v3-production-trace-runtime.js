@@ -90,7 +90,7 @@ export function createTraceTurnRuntime({
     && spatialSemanticProfile.profile?.schema
       === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
     && spatialSemanticProfile.profile.status === 'approved'
-    && spatialSemanticProfile.profile.revision === 2
+    && spatialSemanticProfile.profile.revision === 3
     && spatialSemanticProfile.profile.scenario_definition_revision === 24
     ? spatialSemanticProfile : null;
   const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null

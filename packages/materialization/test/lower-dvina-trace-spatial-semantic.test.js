@@ -168,20 +168,20 @@ test('S1 model context comes from envelope profile data without leaking server r
   assert.equal(JSON.stringify(prepared.model_request).includes('lower_dvina_trace:s1:'), false);
 });
 
-test('S1 model eval calls injected provider six times and scores outputs', async () => {
+test('S1 model eval calls injected provider six times and scores camp-structure outputs', async () => {
   let calls = 0;
-  const good = await runS1SpatialSemanticEval({ semantic_context: semanticContext('local_natural_feature'),
+  const good = await runS1SpatialSemanticEval({ semantic_context: semanticContext('ordinary_structure'),
     model: async ({ case_id }) => { calls += 1; return ({
       anachronism: { name: 'ordinary bank feature', description: 'ordinary reeds' },
       'canonical-significant-evidence-ownership-leakage': { name: 'ordinary bank feature', description: 'ordinary reeds' },
       'unseen-ordinary-structure': { name: 'windbreak', description: 'reeds' },
       'unseen-ordinary-shelter': { name: 'shelter', description: 'driftwood' },
       'incompatible-mechanics': { name: 'ordinary bank feature', description: 'ordinary reeds' },
-      'unseen-ordinary-feature': { name: 'stones', description: 'water-smoothed stones' }
+      'unseen-ordinary-camp-structure': { name: 'net shed', description: 'wattle shed for fishing nets' }
     })[case_id]; } });
   assert.equal(calls, 6);
   assert.equal(good.pass, true);
-  const bad = await runS1SpatialSemanticEval({ semantic_context: semanticContext('local_natural_feature'),
+  const bad = await runS1SpatialSemanticEval({ semantic_context: semanticContext('ordinary_structure'),
     model: async () => ({ name: 'Arkhangelsk lighthouse', description: 'electric concrete' }) });
   assert.equal(bad.pass, false);
   assert.equal(bad.cases[0].pass, false);

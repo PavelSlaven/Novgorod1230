@@ -22,9 +22,9 @@ import {
 
 const release = Object.freeze({
   release_id: 'phase-1b-test-release',
-  world_revision_id: 'novgorod_spatial_v3_production_v4_candidate_001',
+  world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
+    '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176'
 });
 const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'

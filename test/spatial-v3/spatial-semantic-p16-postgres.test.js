@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { Pool } from 'pg';
 import { computeSpatialV3CanonicalDigest } from
@@ -21,6 +22,20 @@ import { admitSpatialSemanticRemainder, prepareSpatialSemanticRemainder } from
 const docker = (args) => spawnSync('docker', args,
   { encoding: 'utf8', timeout: 60_000 });
 const container = `spatial-semantic-schema-${process.pid}`;
+
+test('M12 profile contains only fishing-camp open-one-space authority', async () => {
+  const profile = JSON.parse(await readFile(new URL('../../data/world-catalogs/novgorod/'
+    + 'lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json',
+  import.meta.url)));
+  assert.deepEqual(profile.envelopes.map(({ envelope_ref, kind, template_id,
+    structural_variant }) => ({ envelope_ref, kind, template_id, structural_variant })), [{
+    envelope_ref: 'lower_dvina_trace:s1:fishing_camp:ordinary_structure',
+    kind: 'ordinary_structure', template_id: 'trace_ld_v1_tpl_fishing_camp',
+    structural_variant: 'open_one_space'
+  }]);
+  assert.equal(JSON.stringify(profile).includes('wreck_shore'), false);
+  assert.equal(JSON.stringify(profile).includes('local_natural_feature'), false);
+});
 
 test('S1 P16 schema stores envelope capacity and resolution without reservations or digests', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');
@@ -52,7 +67,7 @@ test('S1 P16 schema stores envelope capacity and resolution without reservations
   for (const obsolete of ['authority_digest', 'resolution_digest', 'write_plan_digest', 'reservation_ref']) assert.equal([...names].some((name) => name.endsWith(`.${obsolete}`)), false);
 });
 
-test('S1 first-entry provisioning persists approved descriptive envelopes', async () => {
+test('S1 first-entry provisioning persists one matching envelope', async () => {
   const inserts = [];
   const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile() });
   const transaction = { query: async (sql, values) => {
@@ -68,7 +83,7 @@ test('S1 first-entry provisioning persists approved descriptive envelopes', asyn
   } };
   await provisioner.provision({ transaction, partyId: 'party-s1', changeSetId: 'change-s1',
     firstEntryBinding: { g6_instance_id: 'g6-s1', position_id: 'position-s1' } });
-  assert.equal(inserts.length, 2);
+  assert.equal(inserts.length, 1);
   for (const envelope of inserts) {
     assert.deepEqual(Object.keys(envelope).sort(), ['baseline_ref','baseline_state_version',
       'capacity_total','consumed_count','envelope_ref','environment_ref','function_ref','g5_ref',
@@ -82,19 +97,11 @@ test('S1 first-entry provisioning persists approved descriptive envelopes', asyn
   }
 });
 
-test('S1 first-entry provisions only template-and-position matches from a mixed profile', async () => {
+test('S1 first-entry leaves unmatched scope unprovisioned', async () => {
   const inserts = [];
   const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile([
-    { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
-      position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-      structural_variant: 'descriptive_local_reference', available_mechanics: [], required_semantic_requirements: [], capacity_total: 1,
-      semantic_context: semanticContext('local_natural_feature') },
     { envelope_ref: 'other-template-s1', kind: 'ordinary_structure', template_id: 'template-other',
       position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-      structural_variant: 'open_one_space', slot_key: 's1_open_one_space', available_mechanics: [], required_semantic_requirements: ['interior_space'], capacity_total: 1,
-      semantic_context: semanticContext('ordinary_structure') },
-    { envelope_ref: 'other-position-s1', kind: 'ordinary_structure', template_id: 'template-s1',
-      position_kind: 'other_position', scope_kind: 'current_position_local_reference',
       structural_variant: 'open_one_space', slot_key: 's1_open_one_space', available_mechanics: [], required_semantic_requirements: ['interior_space'], capacity_total: 1,
       semantic_context: semanticContext('ordinary_structure') }
   ]) });
@@ -108,8 +115,27 @@ test('S1 first-entry provisions only template-and-position matches from a mixed 
   } };
   const result = await provisioner.provision({ transaction, partyId: 'party-s1', changeSetId: 'change-s1',
     firstEntryBinding: { g6_instance_id: 'g6-s1', position_id: 'position-s1' } });
-  assert.deepEqual(result.envelope_refs, ['feature-s1']);
-  assert.deepEqual(inserts.map(({ envelope_ref }) => envelope_ref), ['feature-s1']);
+  assert.deepEqual(result, { provisioned: false, envelope_refs: [] });
+  assert.deepEqual(inserts, []);
+});
+
+test('S1 first-entry rejects duplicate matching envelopes before writes', async () => {
+  const provisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: profile([
+    ...profile().profile.envelopes,
+    { ...profile().profile.envelopes[0], envelope_ref: 'structure-s1-duplicate' }
+  ]) });
+  let queries = 0;
+  const transaction = { query: async (sql) => {
+    queries += 1;
+    if (sql.includes('FROM party_runtime.party_scene_baselines')) {
+      return { rowCount: 1, rows: [scope()] };
+    }
+    assert.fail(`unexpected query: ${sql}`);
+  } };
+  await assert.rejects(() => provisioner.provision({ transaction, partyId: 'party-s1',
+    changeSetId: 'change-s1', firstEntryBinding: { g6_instance_id: 'g6-s1',
+      position_id: 'position-s1' } }), { code: 'S1_SPATIAL_PROVISIONING_INVALID' });
+  assert.equal(queries, 1);
 });
 
 test('S1 P16 commit reloads one resolution and stale last-slot plan cannot commit', async (t) => {
@@ -491,18 +517,14 @@ function profile(envelopes = [
   { envelope_ref: 'structure-s1', kind: 'ordinary_structure', template_id: 'template-s1',
     position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
     structural_variant: 'open_one_space', slot_key: 's1_open_one_space', available_mechanics: [], required_semantic_requirements: ['interior_space'], capacity_total: 1,
-    semantic_context: semanticContext('ordinary_structure') },
-  { envelope_ref: 'feature-s1', kind: 'local_natural_feature', template_id: 'template-s1',
-    position_kind: 'scene_position', scope_kind: 'current_position_local_reference',
-    structural_variant: 'descriptive_local_reference', available_mechanics: [], required_semantic_requirements: [], capacity_total: 1,
-    semantic_context: semanticContext('local_natural_feature') }
+    semantic_context: semanticContext('ordinary_structure') }
 ]) {
   return { schema: 'rus.lower_dvina_trace_s1_loaded_profile.v1', profile: {
       schema: 'rus.lower_dvina_trace_spatial_semantic_profile.v1', status: 'approved',
       scenario_definition_revision: 24,
-      profile_id: 'lower_dvina_trace_s1_spatial_semantic_profile_v2',
+      profile_id: 'lower_dvina_trace_s1_spatial_semantic_profile_v3',
       policy_ref: 'lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1',
-      revision: 2, policy_version: 1,
+      revision: 3, policy_version: 1,
       property_ref: 'lower_dvina_trace:s1:shore_property_context_v1',
       function_ref: 'lower_dvina_trace:s1:formal_spatial_owner_v1',
       environment_ref: 'lower_dvina_trace:s1:late_summer_open_water_v1', envelopes } };

@@ -79,7 +79,7 @@ test('current publication pins the exact v19 -> Phase 1A v20 -> revision 24 chai
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v19');
   assert.equal(publication.manifest.revision, 19);
   assert.equal(publication.manifest_digest,
-    '3ed3be74d2c7632b048c201df44500ac35e7a44bf4d35ae2feea8449c76156d9');
+    '28e5d9bddfb1e027d3017756ac0a1c9c3e107c7ac479e981663727443622f7a3');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v18/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v18',
@@ -91,14 +91,14 @@ test('current publication pins the exact v19 -> Phase 1A v20 -> revision 24 chai
     'lower_dvina_trace_phase_1b_publication_v19');
   assert.equal(publication.binding.revision, 19);
   assert.equal(publication.binding_digest,
-    '0c0e9efc60107e1274e6d202c4d30323b4fd06039739dbf0e754b0b113aabbe6');
+    '909d3f7f63fa275ac9e3d777584a062d89c0ee8d8284eb48b2179dec54b79160');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     '99febe4b34ae1c179f9cc1aa890bd42762be3b0abb5e1fa8ca97c66c7aeeb369');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v20');
   assert.equal(publication.phase_1a_manifest.revision, 20);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '9bf7ea54ba32fb114c67f00ca34844e68daafb5fdfeea232668a6e3e3986b219');
+    '65f4a64e0764774f8e04842433a66b8ddfabe13b07cabb3c8360931a2bfeb5f0');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     '97616177c25fe0e0507afb3df5d7fd9bdc4298cede54f0a8626ce5cfc271586a');
   assert.equal(publication.definition.revision, 24);
@@ -388,7 +388,8 @@ async function copyPublicationClosure() {
     'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-3-content-v2/definition.json',
     'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v2/manifest.json',
     'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json',
-    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json'
+    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json',
+    'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json'
   ]) {
     await cp(relative, join(root, relative), { recursive: true });
   }

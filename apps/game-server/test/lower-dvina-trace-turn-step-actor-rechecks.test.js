@@ -51,3 +51,27 @@ test('actor-held item and container updates seal exact common P16 sources',
     assert.deepEqual(await recheck({ ...row, owner_npc_id: 'other' }),
       { ok: false, code: 'state_version_conflict' });
   });
+
+test('S1 local movement locks exact journey, edge, and endpoints', async () => {
+  const check = { kind: 's1_local_movement', actor_id: 'player',
+    journey_location_id: 'journey:player', expected_journey_state_version: 4,
+    from_position_ref: 'position:shore', to_position_ref: 'position:inside',
+    movement_edge_ref: 'edge:shore:inside' };
+  const query = async (sql, params) => {
+    assert.match(sql, /FOR UPDATE OF l,e,source,destination/u);
+    assert.deepEqual(params, ['party', 'journey:player', 'player',
+      'edge:shore:inside']);
+    return { rowCount: 1, rows: [{ journey_state_version: 4,
+      journey_position_id: 'position:shore', from_position_id: 'position:shore',
+      to_position_id: 'position:inside', edge_status: 'active',
+      source_status: 'active', destination_status: 'active' }] };
+  };
+  assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+    transaction: { query } }), { ok: true, code: 'state_version_conflict' });
+  assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+    transaction: { query: async () => ({ rowCount: 1, rows: [{
+      journey_state_version: 4, journey_position_id: 'position:shore',
+      from_position_id: 'position:shore', to_position_id: 'position:forged',
+      edge_status: 'active', source_status: 'active', destination_status: 'active'
+    }] }) } }), { ok: false, code: 'state_version_conflict' });
+});

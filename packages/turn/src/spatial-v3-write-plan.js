@@ -7,57 +7,25 @@ import {
 import {
   ALLOWED,
   CHILD_TABLES,
-  FIRST_ENTRY_BINDING_FIELDS,
-  FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS,
   NON_VERSIONED_MUTABLE_TABLES,
   PRESENTATION_TABLES,
   TABLE_MODES,
   childParentIdentities,
   validIdentity
 } from './spatial-v3-write-plan-policy.js';
+import {
+  completeS1Topology,
+  validFirstEntryPhysicalRecheck
+} from './spatial-v3-write-plan-s1-validation.js';
 
 const clone = (value) => structuredClone(value);
 const INVALID_INPUT = Symbol('invalid combined write plan input');
 const stable = (value) => typeof value === 'string' && value.trim().length > 0;
-const sha256Hex = (value) => typeof value === 'string' && /^[0-9a-f]{64}$/u.test(value);
 const pin = (party_id) => ({ dependency_role: 'planning_context_dependency', entity_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, version_pin: { pin_kind: 'party_state_version', state_version: 1 } });
 const fail = (code, party_id, diagnostics = {}) => Object.freeze({ ok: false, error: createSpatialV3TypedError(code, { subject_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, dependency_pins: { pins: [pin(party_id)], canonical_digest: computeSpatialV3CanonicalDigest([pin(party_id)]).replace('sha256:', '') }, diagnostics }) });
 const identity = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 const canonicalWrites = (writes) => [...writes].sort((a, b) => identity(a).localeCompare(identity(b)));
 function freeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }
-function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
-  if (!check
-    || Object.keys(check).sort().join('\u0000')
-      !== [...FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS].sort().join('\u0000')
-    || check.kind !== 'physical'
-    || !['create', 'reuse'].includes(check.baseline_disposition)
-    || !stable(check.g4_id)
-    || !stable(check.preparation_snapshot_id)
-    || !Number.isInteger(check.preparation_member_ordinal)
-    || check.preparation_member_ordinal < 0
-    || !sha256Hex(check.preparation_snapshot_digest)
-    || !sha256Hex(check.preparation_member_digest)
-    || !stable(check.route_plan_id)
-    || !sha256Hex(check.route_plan_digest)
-    || !stable(check.route_plan_execution_id)
-    || !stable(check.preparation_claim_id)
-    || ![
-      check.scene_baseline_id,
-      check.g5_site_id,
-      check.g6_instance_id,
-      check.position_id
-    ].every(stable)
-    || check.materialization_scope_key
-      !== `party_runtime.party_scene_baselines:${check.scene_baseline_id}`
-    || !physicalKeys.includes(check.materialization_scope_key)
-    || g4Keys.length !== 1
-    || g4Keys[0] !== `${partyId}:${check.g4_id}`) {
-    return false;
-  }
-  const { digest, ...payload } = check;
-  return digest === computeSpatialV3CanonicalDigest(payload);
-}
-
 /** Builds no domain decision: its verifier attests pre-approved input and it only seals the three physical write sets. */
 export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const input = rawInput;
@@ -235,12 +203,18 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       }
     } else {
       const baseline = baselines[0];
-      const g6 = g6Instances[0];
-      const position = positions[0];
+      const g6 = g6Instances.find((write) => write.id === physicalRecheck.g6_instance_id);
+      const position = positions.find((write) => write.id === physicalRecheck.position_id);
+      const edgeCount = sets.inserts.filter((write) => write.target_table === 'scene_movement_edges').length;
+      const linkCount = sets.inserts.filter((write) => write.target_table === 'visibility_links').length;
+      const legacy = g6Instances.length === 1 && positions.length === 1
+        && edgeCount === 0 && linkCount === 0;
+      const s1 = g6Instances.length === 2 && positions.length === 2
+        && g5Sites.length === 1 && edgeCount === 2 && linkCount === 2
+        && completeS1Topology(sets.inserts, physicalRecheck, baseline, g6, position);
       if (baselines.length !== 1
-        || g6Instances.length !== 1
-        || positions.length !== 1
         || g5Sites.length > 1
+        || (!legacy && !s1)
         || baseline.id !== physicalRecheck.scene_baseline_id
         || baseline.record.host_kind !== 'g5_site'
         || baseline.record.host_id !== physicalRecheck.g5_site_id

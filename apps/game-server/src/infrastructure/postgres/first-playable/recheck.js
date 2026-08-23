@@ -2,6 +2,7 @@ import { canonicalDigest } from '@rus/materialization';
 import { recheckTracePhase3LocationCapacity } from './recheck-location-capacity.js';
 import { recheckLocalEvidenceSlot } from './recheck-local-evidence-slot.js';
 import { recheckPhase6TargetedAdmission } from './recheck-phase6-admission.js';
+import { recheckS1LocalMovement } from './recheck-s1-local-movement.js';
 import { recheckSpatialV3PostgresFirstEntry } from '../spatial-v3-first-entry-recheck.js';
 
 export async function firstPlayableCommitRecheck({ transaction, party_id: partyId, check, plan }) {
@@ -14,6 +15,9 @@ export async function firstPlayableCommitRecheck({ transaction, party_id: partyI
       [partyId],
     );
     return resultOf(Number(result.rows[0]?.state_version) === check.expected_party_state_version);
+  }
+  if (check.kind === 's1_local_movement') {
+    return recheckS1LocalMovement({ transaction, partyId, check });
   }
   if (check.kind === 'resource_binding') {
     const result = await transaction.query(

@@ -144,7 +144,11 @@ function firstEntryPhysicalWrites({ partyId, target, scene, changeSetId }) {
       access_class_id: scene.anchor.state.access_policy_ref, status: 'active',
       state_version: 1, created_change_set_id: changeSetId,
       updated_change_set_id: changeSetId
-    })
+    }),
+    ...target.s1_physical_writes.map((row) => write(row.target_table, row.id, null, {
+      ...row.record, party_id: partyId, created_change_set_id: changeSetId,
+      updated_change_set_id: changeSetId
+    }))
   ];
 }
 

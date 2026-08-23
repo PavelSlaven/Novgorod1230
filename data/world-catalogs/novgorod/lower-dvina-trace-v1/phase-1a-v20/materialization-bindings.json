@@ -43,10 +43,16 @@
     "authority_provisioning": "atomic_new_game_stage_24",
     "water_extinguish": "disabled_missing_exact_finite_water_authority",
     "fallback_policy": "forbidden"
-  }
-  ,"spatial_semantic_materialization": {
+  },
+  "spatial_semantic_materialization": {
     "persistence_owner": "P16_combined_atomic_committer",
-    "profile_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json","id":"lower_dvina_trace_s1_spatial_semantic_profile_v2","revision":2,"schema":"rus.lower_dvina_trace_spatial_semantic_profile.v1","digest":"47ce22b695f6dd83877c6cc57d23cb7b0eaf1cf5ae72e500bab147cd03b10ec5"},
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json",
+      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v2",
+      "revision": 2,
+      "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
+      "digest": "16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0"
+    },
     "authority_provisioning": "atomic_new_game_first_entry_p16",
     "fallback_policy": "forbidden"
   },
@@ -57,15 +63,100 @@
     "destination": {
       "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
       "g4_node_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
-      "g5": {"profile_ref": "trace_ld_v1_loc_fishing_camp", "origin": "approved_generated_g5_profile"},
-      "scene_baseline": {"profile_ref": "trace_ld_v1_loc_fishing_camp", "status": "prepare_on_first_entry"},
-      "g6": {"scene_template_ref": "trace_ld_v1_tpl_fishing_camp", "materialization_profile": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1", "status": "prepare_on_first_entry"},
-      "entry_position": {"position_kind": "scene_position", "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1", "zone_ref": "working_camp"}
+      "g5": {
+        "profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "origin": "approved_generated_g5_profile"
+      },
+      "scene_baseline": {
+        "profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "status": "prepare_on_first_entry"
+      },
+      "g6": {
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "materialization_profile": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "status": "prepare_on_first_entry",
+        "s1_topology_slot": {
+          "source_scene_template_ref": {
+            "entity_ref": {
+              "entity_kind": "scene_template",
+              "entity_id": "trace_ld_v1_tpl_fishing_camp"
+            },
+            "authoring_version": "1"
+          },
+          "g6": {
+            "slot_key": "s1_open_one_space",
+            "physical_class_id": "spatial.g6.semi_enclosed",
+            "primary_scene_role_id": "ordinary_local",
+            "vertical_context_id": "surface",
+            "overhead_cover_id": "partial",
+            "intra_g6_visibility_mode": "default_clear",
+            "default_visibility_distance_band": "near",
+            "acoustic_uniformity": "uniform"
+          },
+          "position": {
+            "slot_key": "s1_open_one_space.interior",
+            "position_type_id": "scene_position.central",
+            "capacity": 1,
+            "access_class_id": "default"
+          },
+          "movement": {
+            "out_slot_key": "s1_open_one_space.out",
+            "back_slot_key": "s1_open_one_space.back",
+            "passage_type_id": "passage.local",
+            "transition_environment_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "transition_environment_profile",
+                "entity_id": "topological_default"
+              },
+              "authoring_version": "1"
+            },
+            "movement_orientation_profile_ref": {
+              "entity_ref": {
+                "entity_kind": "movement_orientation_profile",
+                "entity_id": "topological_default"
+              },
+              "authoring_version": "1"
+            }
+          },
+          "visibility": {
+            "out_slot_key": "s1_open_one_space.visible_out",
+            "back_slot_key": "s1_open_one_space.visible_back",
+            "quality": "clear",
+            "distance_band": "near"
+          }
+        }
+      },
+      "entry_position": {
+        "position_kind": "scene_position",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp"
+      }
     },
     "authored_initial_npc_placements": [
-      {"participant_slot_ref": "eremey_fisher", "location_profile_ref": "trace_ld_v1_loc_fishing_camp", "scene_template_ref": "trace_ld_v1_tpl_fishing_camp", "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1", "zone_ref": "working_camp", "materialization_depth": "scene"},
-      {"participant_slot_ref": "background_fisher_1", "location_profile_ref": "trace_ld_v1_loc_fishing_camp", "scene_template_ref": "trace_ld_v1_tpl_fishing_camp", "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1", "zone_ref": "working_camp", "materialization_depth": "background"},
-      {"participant_slot_ref": "background_fisher_2", "location_profile_ref": "trace_ld_v1_loc_fishing_camp", "scene_template_ref": "trace_ld_v1_tpl_fishing_camp", "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1", "zone_ref": "working_camp", "materialization_depth": "background"}
+      {
+        "participant_slot_ref": "eremey_fisher",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "scene"
+      },
+      {
+        "participant_slot_ref": "background_fisher_1",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "background"
+      },
+      {
+        "participant_slot_ref": "background_fisher_2",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "background"
+      }
     ]
   }
 }

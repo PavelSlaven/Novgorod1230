@@ -9,12 +9,12 @@ import { loadLowerDvinaTraceSpatialSemanticPublication } from
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content';
 const ACTIVE = Object.freeze({
-  profile_digest: '47ce22b695f6dd83877c6cc57d23cb7b0eaf1cf5ae72e500bab147cd03b10ec5',
-  profile_canonical_digest: 'be5068dfb5f76c4833dac96e842299288b4aa60ae4bb11d3b55a6f56eb59aec8',
-  m12_manifest_digest: 'f342c3b7fa0adf4840b51270c9dfc67c442cdf8f62e2762a98cf5497d2f2c123',
-  phase_1a_manifest_digest: '1e61d7a555f82643eda5773cd232755e5072d2fae4fd2edd442e2173f8fe469f',
-  phase_1b_manifest_digest: '3258cd3cf534811db77d7be7b9845ee52013e7cd4f295ce9543934aecd0ce955',
-  phase_1b_binding_digest: '1732780a7f9f68523830269cf2a8c05368464ee5154ccee4ccee947af47857a4'
+  profile_digest: '16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0',
+  profile_canonical_digest: '7eeba0d6c6dbcb01f042a92772ec517ca1af7dedc1db49193a45690419bd4315',
+  m12_manifest_digest: 'edbd8da29cc780a62f4e1bd46dcf1c22da7834c61ec1e80fe38e41d382b57852',
+  phase_1a_manifest_digest: '9bf7ea54ba32fb114c67f00ca34844e68daafb5fdfeea232668a6e3e3986b219',
+  phase_1b_manifest_digest: '3ed3be74d2c7632b048c201df44500ac35e7a44bf4d35ae2feea8449c76156d9',
+  phase_1b_binding_digest: '0c0e9efc60107e1274e6d202c4d30323b4fd06039739dbf0e754b0b113aabbe6'
 });
 
 export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = process.cwd() } = {}) {
@@ -48,7 +48,8 @@ export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = proc
       || publication.binding?.execution_identity?.phase_1a_manifest_digest
         !== ACTIVE.phase_1a_manifest_digest
       || publication.phase_1a_manifest?.base_definition_ref?.digest
-        !== ACTIVE.m12_manifest_digest) invalid();
+        !== ACTIVE.m12_manifest_digest
+      || !exactProfile(profile)) invalid();
   return freeze({ schema: 'rus.lower_dvina_trace_s1_loaded_profile.v1',
     artifact_digest: digest, profile_canonical_digest: canonicalDigest(profile),
     publication_identity: { ...ACTIVE }, profile });
@@ -64,6 +65,7 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
     && profile?.schema === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
     && profile.status === 'approved' && profile.revision === 2
     && profile.scenario_definition_revision === 24
+    && exactProfile(profile)
     && pin?.digest === loaded.artifact_digest
     && pin.canonical_digest === loaded.profile_canonical_digest
     && canonicalDigest(bundle.spatial_semantic_profile)
@@ -79,6 +81,20 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
     && s1.authority_provisioning === 'atomic_new_game_first_entry_p16'
     && s1.fallback_policy === 'forbidden';
 }
+function exactProfile(profile) {
+  return Array.isArray(profile?.envelopes) && profile.envelopes.every((entry) => {
+    if (!Array.isArray(entry.required_semantic_requirements)
+        || Object.hasOwn(entry, 'topology')) return false;
+    if (entry.structural_variant === 'open_one_space') {
+      return entry.slot_key === 's1_open_one_space'
+        && same(entry.required_semantic_requirements, ['interior_space']);
+    }
+    return entry.structural_variant === 'descriptive_local_reference'
+      && !Object.hasOwn(entry, 'slot_key')
+      && same(entry.required_semantic_requirements, []);
+  });
+}
+function same(left, right) { return left.length === right.length && left.every((value, index) => value === right[index]); }
 function hash(value) { return createHash('sha256').update(value).digest('hex'); }
 function invalid() { throw Object.assign(new Error('TRACE_S1_PROFILE_INVALID'),
   { code: 'TRACE_S1_PROFILE_INVALID' }); }

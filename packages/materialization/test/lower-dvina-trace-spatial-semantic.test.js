@@ -12,8 +12,12 @@ function request(overrides = {}) {
     causal_request_ref: 'turn-a', party_id: 'party-a', need: 'interaction',
     envelope: { envelope_ref: 'envelope-a', kind: 'ordinary_structure',
       scope_kind: 'current_position_local_reference', structural_variant: 'open_one_space',
-      available_mechanics: [],
+      available_mechanics: [], required_semantic_requirements: ['interior_space'],
       baseline_ref: 'baseline-a', g5_ref: 'g5-a', g6_ref: 'g6-a', position_ref: 'position-a',
+      topology: { baseline_ref: 'baseline-a', g5_ref: 'g5-a', position_ref: 'position-a',
+        g6_instance_ref: 'g6-a', interior_position_ref: 'position-a',
+        movement_edge_refs: ['edge-a-out', 'edge-a-back'],
+        visibility_link_refs: ['visibility-a-out', 'visibility-a-back'] },
       property_ref: 'property-a', function_ref: 'function-a',
       environment_ref: 'environment-a', semantic_context: semanticContext('ordinary_structure'),
       profile_ref: 'profile-a', profile_version: 1,
@@ -24,7 +28,7 @@ function request(overrides = {}) {
 function proposal(overrides = {}) {
   return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: 'request-a',
     name: 'Рядовой навес', description: 'Невысокий навес у берега с грубым настилом.',
-    semantic_requirements: [], ...overrides };
+    semantic_requirements: ['interior_space'], ...overrides };
 }
 function code(error) { return error instanceof MaterializationFailure && error.code; }
 
@@ -39,24 +43,23 @@ test('S1 accepts open unseen local concretization inside code-owned envelope', (
   assert.equal(result.envelope_ref, 'envelope-a');
   assert.equal(result.position_ref, 'position-a');
   assert.deepEqual(result.outcome, { name: 'Плетёный заслон',
-    description: 'Низкий заслон из прутьев у кромки воды.', semantic_requirements: [] });
+    description: 'Низкий заслон из прутьев у кромки воды.', semantic_requirements: ['interior_space'] });
   assert.equal(result.materialized, true);
   assert.deepEqual(result.formal_spatial_refs, {
     schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized',
     structural_variant: 'open_one_space', local_ref: 's1-local:request-a',
     placement_ref: 'ordinary_structure:s1-local:request-a',
-    g6_instance_ref: 's1:party-a:request-a:g6', position_ref: 's1:party-a:request-a:position',
-    portal_ref: null, movement_edge_refs: ['s1:party-a:request-a:edge:out',
-      's1:party-a:request-a:edge:back'], visibility_link_refs: [
-      's1:party-a:request-a:edge:out:visible', 's1:party-a:request-a:edge:back:visible'] });
+    g6_instance_ref: 'g6-a', position_ref: 'position-a', portal_ref: null,
+    movement_edge_refs: ['edge-a-out', 'edge-a-back'],
+    visibility_link_refs: ['visibility-a-out', 'visibility-a-back'] });
   assert.deepEqual(result.formal_spatial_proposal.rows.map(({ target_table }) => target_table),
-    ['party_g6_instances', 'scene_position_nodes', 'scene_movement_edges',
-      'scene_movement_edges', 'visibility_links', 'visibility_links', 'entity_placements']);
+    ['entity_placements']);
   assert.deepEqual(Object.keys(prepared.model_request.proposal_example).sort(),
     ['description', 'name', 'request_id', 'schema', 'semantic_requirements']);
   assert.deepEqual(prepared.model_request.semantic_context, semanticContext('ordinary_structure'));
   assert.deepEqual(prepared.model_request.approved_envelope, {
-    kind: 'ordinary_structure', structural_variant: 'open_one_space', available_mechanics: []
+    kind: 'ordinary_structure', structural_variant: 'open_one_space', available_mechanics: [],
+    required_semantic_requirements: ['interior_space']
   });
   assert.equal('envelope' in prepared.model_request, false);
   assert.equal('envelope_ref' in prepared.model_request, false);
@@ -66,6 +69,7 @@ test('S1 accepts open unseen local concretization inside code-owned envelope', (
   assert.equal('capacity_total' in prepared.model_request, false);
   assert.equal('state_version' in prepared.model_request, false);
   assert.equal('profile_ref' in prepared.model_request, false);
+  assert.equal('topology' in prepared.model_request, false);
   assert.equal(Object.isFrozen(result), true);
 });
 
@@ -80,6 +84,22 @@ test('S1 proposal cannot set formal authority, IDs, topology, kind, mechanics, o
     assert.throws(() => admitSpatialSemanticRemainder({ prepared, proposal: proposal(extra) }),
       (error) => code(error) === 'S1_SPATIAL_PROPOSAL_INVALID');
   }
+});
+
+test('S1 requires profile-approved qualitative semantics for open space only', () => {
+  const { required_semantic_requirements, ...withoutRequired } = request().envelope;
+  assert.throws(() => prepareSpatialSemanticRemainder(request({ envelope: withoutRequired })),
+    (error) => code(error) === 'S1_SPATIAL_ENVELOPE_INVALID');
+  const prepared = prepareSpatialSemanticRemainder(request());
+  assert.throws(() => admitSpatialSemanticRemainder({ prepared,
+    proposal: proposal({ semantic_requirements: [] }) }),
+  (error) => code(error) === 'S1_SPATIAL_REQUIRED_SEMANTICS_MISSING');
+  const feature = prepareSpatialSemanticRemainder(request({ envelope: { ...request().envelope,
+    kind: 'local_natural_feature', structural_variant: 'descriptive_local_reference',
+    required_semantic_requirements: [], semantic_context: semanticContext('local_natural_feature'),
+    topology: null } }));
+  assert.deepEqual(admitSpatialSemanticRemainder({ prepared: feature,
+    proposal: proposal({ semantic_requirements: [] }) }).outcome.semantic_requirements, []);
 });
 
 test('S1 recomposes model boundary from code-owned envelope', () => {
@@ -102,8 +122,9 @@ test('S1 rejects controlled passages before model because no portal condition ow
   (error) => code(error) === 'S1_SPATIAL_MECHANICS_GAP');
   const feature = prepareSpatialSemanticRemainder(request({ envelope: { ...request().envelope,
     kind: 'local_natural_feature', structural_variant: 'descriptive_local_reference',
-    semantic_context: semanticContext('local_natural_feature') } }));
-  const descriptive = admitSpatialSemanticRemainder({ prepared: feature, proposal: proposal() });
+    required_semantic_requirements: [], semantic_context: semanticContext('local_natural_feature'), topology: null } }));
+  const descriptive = admitSpatialSemanticRemainder({ prepared: feature,
+    proposal: proposal({ semantic_requirements: [] }) });
   assert.deepEqual(descriptive.formal_spatial_refs, {
     schema: 'rus.s1_formal_spatial_refs.v1', status: 'materialized',
     structural_variant: 'descriptive_local_reference', local_ref: 's1-local:request-a',
@@ -134,6 +155,8 @@ test('S1 model context comes from envelope profile data without leaking server r
     environment_ref: 'lower_dvina_trace:s1:late_summer_open_water_v1',
     semantic_context: semanticContext('local_natural_feature'),
     structural_variant: 'descriptive_local_reference',
+    required_semantic_requirements: [],
+    topology: null,
     profile_ref: 'lower_dvina_trace_s1_spatial_semantic_profile_v1' } }));
   assert.deepEqual(prepared.model_request.semantic_context, {
     allowed_kind: 'local_natural_feature', period: '1230, Rus', region: 'Lower Dvina',
@@ -145,16 +168,18 @@ test('S1 model context comes from envelope profile data without leaking server r
   assert.equal(JSON.stringify(prepared.model_request).includes('lower_dvina_trace:s1:'), false);
 });
 
-test('S1 model eval calls injected provider four times and scores outputs', async () => {
+test('S1 model eval calls injected provider six times and scores outputs', async () => {
   let calls = 0;
   const good = await runS1SpatialSemanticEval({ semantic_context: semanticContext('local_natural_feature'),
     model: async ({ case_id }) => { calls += 1; return ({
       anachronism: { name: 'ordinary bank feature', description: 'ordinary reeds' },
-      'canonical-significant-leakage': { name: 'ordinary bank feature', description: 'ordinary reeds' },
+      'canonical-significant-evidence-ownership-leakage': { name: 'ordinary bank feature', description: 'ordinary reeds' },
       'unseen-ordinary-structure': { name: 'windbreak', description: 'reeds' },
+      'unseen-ordinary-shelter': { name: 'shelter', description: 'driftwood' },
+      'incompatible-mechanics': { name: 'ordinary bank feature', description: 'ordinary reeds' },
       'unseen-ordinary-feature': { name: 'stones', description: 'water-smoothed stones' }
     })[case_id]; } });
-  assert.equal(calls, 4);
+  assert.equal(calls, 6);
   assert.equal(good.pass, true);
   const bad = await runS1SpatialSemanticEval({ semantic_context: semanticContext('local_natural_feature'),
     model: async () => ({ name: 'Arkhangelsk lighthouse', description: 'electric concrete' }) });

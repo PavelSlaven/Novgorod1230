@@ -17,6 +17,8 @@
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
       "structural_variant": "open_one_space",
+      "slot_key": "s1_open_one_space",
+      "required_semantic_requirements": ["interior_space"],
       "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {
@@ -36,6 +38,7 @@
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
       "structural_variant": "descriptive_local_reference",
+      "required_semantic_requirements": [],
       "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {
@@ -55,6 +58,8 @@
       "position_kind": "scene_position",
       "scope_kind": "current_position_local_reference",
       "structural_variant": "open_one_space",
+      "slot_key": "s1_open_one_space",
+      "required_semantic_requirements": ["interior_space"],
       "available_mechanics": [],
       "capacity_total": 1,
       "semantic_context": {

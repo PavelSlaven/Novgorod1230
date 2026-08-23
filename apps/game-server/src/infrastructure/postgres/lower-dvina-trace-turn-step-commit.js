@@ -126,6 +126,8 @@ export async function commitLowerDvinaTraceTurnStep({
   });
   applyOrdinaryMaterializationProjection({ next:base.snapshot,
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
+  applyS1LocalPositionTransition({ snapshot: base.snapshot, state,
+    transition: envelope.consequence.position_transition });
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
   }
@@ -189,6 +191,22 @@ export async function commitLowerDvinaTraceTurnStep({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest
   };
+}
+
+function applyS1LocalPositionTransition({ snapshot, state, transition }) {
+  if (transition == null) return;
+  if (transition.owner !== '@rus/movement-routes'
+      || transition.actor_id !== state.actor_id
+      || transition.from_position_ref !== state.position?.position_id
+      || typeof transition.to_position_ref !== 'string'
+      || !state.journey_location?.id
+      || state.journey_location.scene_position_id !== transition.from_position_ref
+      || !Number.isSafeInteger(Number(state.journey_location.state_version))) {
+    throw serverError('TRACE_S1_MOVEMENT_TRANSITION_INVALID',
+      'S1 local movement transition failed its committed position binding.', { status: 409 });
+  }
+  snapshot.position = { ...snapshot.position,
+    position_id: transition.to_position_ref };
 }
 
 function requireEnvelope(writePlan) {

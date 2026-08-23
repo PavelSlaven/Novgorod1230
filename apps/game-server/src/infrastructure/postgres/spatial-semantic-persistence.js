@@ -1,3 +1,4 @@
+import { isDeepStrictEqual } from 'node:util';
 import { createSpatialSemanticAtomicWritePlan, spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
 import { normalizeSpatialSemanticEnvelope } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
@@ -36,6 +37,9 @@ export async function applySpatialSemanticAtomicWritePlanInTransaction({ client,
       || plan.formal_spatial_context.structural_variant !== row.structural_variant
       || JSON.stringify(plan.formal_spatial_context.available_mechanics)
         !== JSON.stringify(row.available_mechanics)
+      || !isDeepStrictEqual(plan.formal_spatial_context.required_semantic_requirements,
+        row.required_semantic_requirements)
+      || !isDeepStrictEqual(plan.formal_spatial_context.topology, row.topology)
       || plan.resolution.position_ref !== row.position_ref) fail('SPATIAL_SEMANTIC_SCOPE_STALE');
   await lockExactSpatialScope(client, plan, row);
   if (row.consumed_count >= row.capacity_total) fail('SPATIAL_SEMANTIC_CAPACITY_EXHAUSTED');

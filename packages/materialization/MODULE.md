@@ -52,6 +52,13 @@ profile-provided mechanics. Capacity consumption remains in P16. It creates no u
 hazards, resource effects or persistence writes; `@rus/game-server` performs
 only P16 revalidation and SQL commit.
 
+During normal first-entry/baseline materialization, Spatial-v3 owner creates
+each approved broad `open_one_space` slot with its G6, position and local
+topology in the immutable baseline. Late S1 resolution never augments that
+baseline: LLM supplies only name, description and qualitative required
+semantics; Spatial owner validates them and binds `local_ref` to the already
+persisted formal placement.
+
 ## Контракты
 
 Принимает `world_materialization_request_v2` либо stage-specific approved bundle. Authoring candidates ссылаются на будущие экземпляры через однозначные `slot_key`, которые код разрешает после deterministic selection. Generic result содержит стартовую позицию и исполняемый, но не записанный materializer-ом `proposed_write_set` для нормализованных таблиц `party_runtime`. Profile/layout/slot/template refs, capacities, access, visibility, quantity, condition, legal status, causal basis и property policy обязательны; пропуск завершает операцию typed failure.

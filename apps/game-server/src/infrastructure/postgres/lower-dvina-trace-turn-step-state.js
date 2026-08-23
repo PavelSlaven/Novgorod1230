@@ -217,5 +217,14 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       updated_change_set_id: changeSetId
     }
   ));
+  const transition = envelope.consequence?.position_transition;
+  if (transition?.owner === '@rus/movement-routes') writes.updates.push(row(
+    'party_journey_locations', state.journey_location.id, {
+      id: state.journey_location.id, party_id: partyId, owner_kind: 'actor',
+      owner_id: state.actor_id, location_kind: 'scene',
+      scene_position_id: snapshot.position.position_id, transit_anchor_id: null,
+      travel_state_id: null, updated_change_set_id: changeSetId
+    }
+  ));
   return writes;
 }

@@ -254,10 +254,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   }));
   assertLowerDvinaTraceTimestamp(timestamp);
 
-  const firstEntryPreparation = revision >= 24 ? {
-    binding: structuredClone(bundle.materialization_bindings.first_entry_preparation),
-    scene: structuredClone(phase3Prepared.scene), npcs: structuredClone(phase3Prepared.npcs)
-  } : null;
+  const firstEntryPreparation = phase3Prepared?.first_entry_preparation ?? null;
   const materializedNpcs = phase3Prepared
     ? [
       ...phase3Prepared.npcs,

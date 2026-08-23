@@ -54,6 +54,12 @@ scene-baseline materialization-scope key; its transaction-scoped advisory
 lock precedes the idempotency lease, baseline absence/reuse recheck and every
 domain write.
 
+On normal first entry, Spatial-v3 owner supplies any approved broad
+`open_one_space` slot as part of that baseline plan; server only composes,
+P16-revalidates and persists it. Late S1 keeps the baseline topology immutable:
+it commits the owner-validated `local_ref` binding and semantic detail, not a
+new G6, position, edge, route or mechanics.
+
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
 Active O1 Phase 6 composition accepts only the closed

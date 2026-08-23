@@ -20,7 +20,8 @@ export function createSpatialSemanticFirstEntryProvisioner({ loadedProfile } = {
       }
       const results = [];
       for (const entry of envelopes) {
-        const envelope = buildEnvelope(profile, entry, scope);
+        const topology = await persistedTopology(transaction, partyId, entry, scope);
+        const envelope = buildEnvelope(profile, entry, scope, topology);
         results.push(await provisionSpatialSemanticEnvelope({ client: transaction,
           partyId, envelope, changeSetId }));
       }
@@ -48,10 +49,11 @@ async function lockedScope(transaction, partyId, binding) {
   return result.rows[0];
 }
 
-function buildEnvelope(profile, entry, scope) {
+function buildEnvelope(profile, entry, scope, topology) {
   return { envelope_ref: entry.envelope_ref, kind: entry.kind,
     scope_kind: 'current_position_local_reference', structural_variant: entry.structural_variant,
     available_mechanics: entry.available_mechanics,
+    required_semantic_requirements: entry.required_semantic_requirements,
     baseline_ref: scope.baseline_ref, g5_ref: scope.g5_ref, g6_ref: scope.g6_ref,
     position_ref: scope.position_ref,
     property_ref: profile.property_ref, function_ref: profile.function_ref,
@@ -61,7 +63,7 @@ function buildEnvelope(profile, entry, scope) {
     policy_ref: profile.policy_ref, policy_version: profile.policy_version,
     baseline_state_version: Number(scope.baseline_state_version),
     g5_state_version: Number(scope.g5_state_version), g6_state_version: Number(scope.g6_state_version),
-    position_state_version: Number(scope.position_state_version),
+    position_state_version: Number(scope.position_state_version), topology,
     capacity_total: entry.capacity_total, consumed_count: 0, state_version: 1 };
 }
 
@@ -86,12 +88,37 @@ function requireProfile(value) {
         || !Array.isArray(entry.available_mechanics)
         || new Set(entry.available_mechanics).size !== entry.available_mechanics.length
         || !entry.available_mechanics.every((mechanic) => ['interaction','projection','perception','interior_space','controlled_passage','movement_constraint','hazard','extractable_resource'].includes(mechanic))
+        || !Array.isArray(entry.required_semantic_requirements)
+        || new Set(entry.required_semantic_requirements).size !== entry.required_semantic_requirements.length
+        || !entry.required_semantic_requirements.every((requirement) => ['interior_space','controlled_passage','movement_constraint','hazard','extractable_resource'].includes(requirement))
         || !Number.isSafeInteger(entry.capacity_total) || entry.capacity_total < 1
+        || (entry.structural_variant === 'open_one_space'
+          && (!text(entry.slot_key)
+            || !entry.required_semantic_requirements.includes('interior_space')))
         || !semanticContext(entry.semantic_context, entry.kind)) {
       throw new TypeError('Exact approved S1 envelope profile is required.');
     }
   }
   return profile;
+}
+
+async function persistedTopology(transaction, partyId, entry, scope) {
+  if (entry.structural_variant !== 'open_one_space') return null;
+  const rows = await transaction.query(`SELECT g6.id AS g6_instance_ref,p.id AS interior_position_ref,
+      ARRAY(SELECT id FROM party_runtime.scene_movement_edges
+        WHERE party_id=$1 AND scene_baseline_id=$2 ORDER BY id) AS movement_edge_refs,
+      ARRAY(SELECT id FROM party_runtime.visibility_links
+        WHERE party_id=$1 AND scene_baseline_id=$2 ORDER BY id) AS visibility_link_refs
+    FROM party_runtime.party_g6_instances g6
+    JOIN party_runtime.scene_position_nodes p ON p.party_id=g6.party_id AND p.g6_instance_id=g6.id
+    WHERE g6.party_id=$1 AND g6.scene_baseline_id=$2 AND g6.scene_slot_key=$3
+      AND p.template_slot_key=$4 FOR UPDATE OF g6,p`, [partyId, scope.baseline_ref,
+    entry.slot_key, `${entry.slot_key}.interior`]);
+  const topology = rows.rows[0];
+  if (rows.rowCount !== 1 || topology.movement_edge_refs.length !== 2
+      || topology.visibility_link_refs.length !== 2) fail('S1_SPATIAL_PROVISIONING_INVALID');
+  return { baseline_ref: scope.baseline_ref, g5_ref: scope.g5_ref,
+    position_ref: scope.position_ref, ...topology };
 }
 function semanticContext(value, kind) {
   const keys = ['allowed_kind', 'period', 'region', 'place_type', 'environment',

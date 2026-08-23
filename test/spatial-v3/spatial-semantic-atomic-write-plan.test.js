@@ -7,13 +7,17 @@ import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys, spat
 
 function fixture() {
   const envelope = { envelope_ref: 'envelope-a', kind: 'ordinary_structure',
-    scope_kind: 'current_position_local_reference', structural_variant: 'open_one_space', available_mechanics: [],
+    scope_kind: 'current_position_local_reference', structural_variant: 'open_one_space', available_mechanics: [], required_semantic_requirements: ['interior_space'],
     baseline_ref: 'baseline-a', g5_ref: 'g5-a', g6_ref: 'g6-a', position_ref: 'position-a',
     property_ref: 'property-a', function_ref: 'function-a',
     environment_ref: 'environment-a', semantic_context: semanticContext('ordinary_structure'),
     profile_ref: 'profile-a', profile_version: 1,
     policy_ref: 'policy-a', policy_version: 1, baseline_state_version: 1,
     g5_state_version: 1, g6_state_version: 1, position_state_version: 1,
+    topology: { baseline_ref: 'baseline-a', g5_ref: 'g5-a', position_ref: 'position-a',
+      interior_position_ref: 'position:interior', g6_instance_ref: 'g6:interior',
+      movement_edge_refs: ['edge:out', 'edge:back'],
+      visibility_link_refs: ['visibility:out', 'visibility:back'] },
     capacity_total: 2, consumed_count: 0, state_version: 1 };
   const causal_identity = { request_id: 'request-a', root_turn_id: 'turn-a',
     action_ref: 'action-a', step_index: 1, actor_ref: 'actor-a' };
@@ -25,10 +29,12 @@ function fixture() {
     envelope_ref: envelope.envelope_ref, expected_envelope_state_version: 1,
     formal_spatial_context: { baseline_ref: envelope.baseline_ref, g5_ref: envelope.g5_ref,
       kind: envelope.kind, structural_variant: envelope.structural_variant,
-      available_mechanics: envelope.available_mechanics },
+      available_mechanics: envelope.available_mechanics,
+      required_semantic_requirements: envelope.required_semantic_requirements,
+      topology: envelope.topology },
     resolution: structuredClone(admitSpatialSemanticRemainder({ prepared, proposal: {
       schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: 'request-a',
-      name: 'навес', description: 'Небольшой навес у берега.', semantic_requirements: [] } })) };
+      name: 'навес', description: 'Небольшой навес у берега.', semantic_requirements: ['interior_space'] } })) };
 }
 function semanticContext(allowed_kind) { return { allowed_kind, period: 'period', region: 'region',
   place_type: 'place', environment: 'environment', material_culture: 'culture',
@@ -43,34 +49,18 @@ test('S1 atomic plan binds existing causal IDs and envelope version without rese
   assert.deepEqual(spatialSemanticPhysicalKeys(plan), [
     'party_runtime.party_spatial_semantic_envelopes:party-a:envelope-a',
     'party_runtime.party_spatial_semantic_resolutions:party-a:request-a',
-    'party_runtime.party_g6_instances:s1:party-a:request-a:g6',
-    'party_runtime.scene_position_nodes:s1:party-a:request-a:position',
-    'party_runtime.scene_movement_edges:s1:party-a:request-a:edge:out',
-    'party_runtime.scene_movement_edges:s1:party-a:request-a:edge:back',
-    'party_runtime.visibility_links:s1:party-a:request-a:edge:out:visible',
-    'party_runtime.visibility_links:s1:party-a:request-a:edge:back:visible',
     'party_runtime.entity_placements:ordinary_structure:s1-local:request-a'
   ]);
 });
 
-test('S1 open one-space edges use approved local topology owners', () => {
+test('S1 open one-space binds prebuilt local topology and writes only placement', () => {
   const rows = spatialSemanticRows(fixture());
   const edges = rows.filter(({ target_table }) =>
     target_table === 'scene_movement_edges');
-  assert.equal(edges.length, 2);
-  for (const { record } of edges) assert.deepEqual({ passage_type_id: record.passage_type_id,
-    transition_environment_profile_ref: record.transition_environment_profile_ref,
-    movement_orientation_profile_ref: record.movement_orientation_profile_ref }, {
-    passage_type_id: 'passage.local',
-    transition_environment_profile_ref: { entity_ref: { entity_kind: 'transition_environment_profile',
-      entity_id: 'env.local_variable' }, authoring_version: '1' },
-    movement_orientation_profile_ref: { entity_ref: { entity_kind: 'movement_orientation_profile',
-      entity_id: 'orientation.topological_local' }, authoring_version: '1' }
-  });
+  assert.equal(edges.length, 0);
   const placement = rows.find(({ target_table }) => target_table === 'entity_placements');
-  assert.equal(placement.record.position_node_id, 'position-a');
-  assert.notEqual(placement.record.position_node_id,
-    rows.find(({ target_table }) => target_table === 'scene_position_nodes').id);
+  assert.equal(placement.record.position_node_id, 'position:interior');
+  assert.equal(rows.length, 1);
 });
 
 test('S1 atomic plan rejects stale envelope or mismatched semantic result', () => {
@@ -84,6 +74,36 @@ test('S1 atomic plan rejects stale envelope or mismatched semantic result', () =
     assert.throws(() => createSpatialSemanticAtomicWritePlan(input),
       { code: 'SPATIAL_SEMANTIC_PLAN_INVALID' });
   }
+});
+
+test('S1 atomic plan requires sealed semantics but permits descriptive empty semantics', () => {
+  assert.doesNotThrow(() => createSpatialSemanticAtomicWritePlan(fixture()));
+  const missing = fixture();
+  missing.resolution.outcome.semantic_requirements = [];
+  assert.throws(() => createSpatialSemanticAtomicWritePlan(missing),
+    { code: 'SPATIAL_SEMANTIC_PLAN_INVALID' });
+
+  const input = fixture();
+  input.formal_spatial_context.kind = 'local_natural_feature';
+  input.formal_spatial_context.structural_variant = 'descriptive_local_reference';
+  input.formal_spatial_context.required_semantic_requirements = [];
+  input.formal_spatial_context.topology = null;
+  const envelope = { envelope_ref: 'envelope-a', kind: 'local_natural_feature',
+    scope_kind: 'current_position_local_reference', structural_variant: 'descriptive_local_reference',
+    available_mechanics: [], required_semantic_requirements: [], baseline_ref: 'baseline-a',
+    g5_ref: 'g5-a', g6_ref: 'g6-a', position_ref: 'position-a', property_ref: 'property-a',
+    function_ref: 'function-a', environment_ref: 'environment-a',
+    semantic_context: semanticContext('local_natural_feature'), profile_ref: 'profile-a',
+    profile_version: 1, policy_ref: 'policy-a', policy_version: 1, baseline_state_version: 1,
+    g5_state_version: 1, g6_state_version: 1, position_state_version: 1, topology: null,
+    capacity_total: 2, consumed_count: 0, state_version: 1 };
+  const prepared = prepareSpatialSemanticRemainder({ schema: 'rus.s1_spatial_semantic_request.v1',
+    request_id: 'request-a', causal_request_ref: 'action-a', party_id: 'party-a',
+    need: 'perception', envelope });
+  input.resolution = structuredClone(admitSpatialSemanticRemainder({ prepared, proposal: {
+    schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: 'request-a',
+    name: 'выступ', description: 'Камень у воды.', semantic_requirements: [] } }));
+  assert.doesNotThrow(() => createSpatialSemanticAtomicWritePlan(input));
 });
 
 test('S1 atomic plan rejects forged formal variant, mechanics and unsupported requirements', () => {

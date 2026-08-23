@@ -23,6 +23,7 @@ import { validLocalFireExtension } from
   './local-fire-write-plan-validation.js';
 import { validSpatialSemanticExtension } from
   './spatial-semantic-write-plan-validation.js';
+import { completeS1Topology } from './spatial-v3-s1-topology-validation.js';
 
 export const lockOrder = (plan) => [
   `01:clock:${plan.party_id}`,
@@ -94,12 +95,14 @@ function firstEntryWritesMatch(plan) {
     return !g5Sites.length && !baselines.length && !g6Instances.length && !positions.length;
   }
   const baseline = baselines[0];
-  const g6 = g6Instances[0];
-  const position = positions[0];
-  return baselines.length === 1
-    && g6Instances.length === 1
-    && positions.length === 1
-    && g5Sites.length <= 1
+  const g6 = g6Instances.find((write) => write.id === check.g6_instance_id);
+  const position = positions.find((write) => write.id === check.position_id);
+  const edgeCount = plan.inserts.filter((write) => write.target_table === 'scene_movement_edges').length;
+  const linkCount = plan.inserts.filter((write) => write.target_table === 'visibility_links').length;
+  const legacy = g6Instances.length === 1 && positions.length === 1 && edgeCount === 0 && linkCount === 0;
+  const s1 = g6Instances.length === 2 && positions.length === 2 && edgeCount === 2 && linkCount === 2
+    && completeS1Topology(plan.inserts, check, baseline, g6, position);
+  return baselines.length === 1 && g5Sites.length <= 1 && (legacy || s1)
     && baseline.id === check.scene_baseline_id
     && baseline.record.host_kind === 'g5_site'
     && baseline.record.host_id === check.g5_site_id
@@ -114,6 +117,7 @@ function firstEntryWritesMatch(plan) {
     && (baseline.record.source_kind !== 'generated_template'
       || (g5Sites.length === 1 && g5Sites[0].record.origin === 'generated'));
 }
+
 export function firstEntryEvidenceMatches(check, evidence) {
   return evidence
     && Object.keys(evidence).sort().join('\u0000')

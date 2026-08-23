@@ -948,6 +948,13 @@ Expansion template описывает обычное физическое про
 
 Re-entry читает baseline. Template update не создаёт второй baseline и не меняет старую party автоматически.
 
+Normal first-entry materialization may create an approved broad
+`open_one_space` slot with its G6, position and topology as part of this
+baseline. Its later S1 semantic resolution does not augment the baseline:
+after the baseline commit, it only binds one `local_ref` to that persisted
+placement from an owner-validated ordinary name, description and qualitative
+required semantics.
+
 ### 6.2. Допустимые triggers
 
 G6 materialization запускается только:

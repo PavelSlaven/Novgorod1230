@@ -22,7 +22,8 @@ export function createSpatialSemanticAtomicWritePlan(input) {
   try { assertSpatialSemanticStructuralVariantAdmitted(plan.formal_spatial_context.structural_variant); assertSpatialSemanticRequirementsAdmitted({
     semantic_requirements: plan.resolution.outcome.semantic_requirements,
     structural_variant: plan.formal_spatial_context.structural_variant,
-    available_mechanics: plan.formal_spatial_context.available_mechanics
+    available_mechanics: plan.formal_spatial_context.available_mechanics,
+    required_semantic_requirements: plan.formal_spatial_context.required_semantic_requirements
   }); } catch { fail(); }
   return freeze(plan);
 }
@@ -50,10 +51,13 @@ function spatialWrites(plan) {
 
 function resolution(value) { try { validateSpatialSemanticResolution(value); return true; } catch { return false; } }
 function identity(value) { return exact(value, ['request_id','root_turn_id','action_ref','step_index','actor_ref']) && ['request_id','root_turn_id','action_ref','actor_ref'].every((key) => text(value[key])) && integer(value.step_index, 1) && value.step_index <= 8; }
-function context(value) { return exact(value, ['baseline_ref','g5_ref','kind','structural_variant','available_mechanics'])
+function context(value) { return exact(value, ['baseline_ref','g5_ref','kind','structural_variant','available_mechanics','required_semantic_requirements','topology'])
   && ['baseline_ref','g5_ref','kind','structural_variant'].every((key) => text(value[key]))
   && Array.isArray(value.available_mechanics) && new Set(value.available_mechanics).size === value.available_mechanics.length
-  && value.available_mechanics.every((mechanic) => typeof mechanic === 'string'); }
+  && value.available_mechanics.every((mechanic) => typeof mechanic === 'string')
+  && Array.isArray(value.required_semantic_requirements)
+  && new Set(value.required_semantic_requirements).size === value.required_semantic_requirements.length
+  && value.required_semantic_requirements.every((requirement) => typeof requirement === 'string'); }
 function formalProposalBound(plan) {
   const context = plan.formal_spatial_context;
   const actual = plan.resolution.formal_spatial_proposal;
@@ -61,7 +65,7 @@ function formalProposalBound(plan) {
     request_id: plan.causal_identity.request_id, local_ref: plan.resolution.local_ref,
     kind: context.kind, structural_variant: context.structural_variant,
     baseline_ref: context.baseline_ref, g5_ref: context.g5_ref,
-    position_ref: plan.resolution.position_ref });
+    position_ref: plan.resolution.position_ref, topology: context.topology });
   return expected.ok && JSON.stringify(actual) === JSON.stringify(expected.proposal)
     && JSON.stringify(plan.resolution.formal_spatial_refs) === JSON.stringify(actual.refs);
 }

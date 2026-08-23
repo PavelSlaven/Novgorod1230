@@ -4,6 +4,7 @@ import { createSpatialSemanticAtomicWritePlan } from
   '../../infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { prepareSpatialSemanticRemainder, admitSpatialSemanticRemainder } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
+import { planApprovedActorDestinationTransition } from '@rus/movement-routes';
 
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
   spatialSemanticModel } = {}) {
@@ -16,10 +17,14 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     const operation = value.operation;
     const request = value.request;
     const actor = value.actor?.actor_id;
-    const target = operation?.target_refs?.[0];
-    if (!lookOperation(operation, actor) || !text(target)
-        || operation.target_refs.length !== 1 || !text(request?.request_id)) {
+    const target = lookOperation(operation, actor) ? operation.target_refs?.[0]
+      : movementOperation(operation, actor) ? operation.target_ref : null;
+    if (!text(target) || !text(request?.request_id)
+        || lookOperation(operation, actor) && operation.target_refs.length !== 1) {
       fail('TRACE_S1_SCOPE_INVALID');
+    }
+    if (movementOperation(operation, actor)) {
+      return resolveLocalMovement({ value, authority, partyId, target });
     }
     const initialTarget = operation.discovery_kind === 'look'
       && markerOf(request.player_safe_state)?.position_ref === target;
@@ -62,7 +67,9 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
       formal_spatial_context: { baseline_ref: preModel.envelope.baseline_ref,
         g5_ref: preModel.envelope.g5_ref, kind: preModel.envelope.kind,
         structural_variant: preModel.envelope.structural_variant,
-        available_mechanics: preModel.envelope.available_mechanics },
+        available_mechanics: preModel.envelope.available_mechanics,
+        required_semantic_requirements: preModel.envelope.required_semantic_requirements,
+        topology: preModel.envelope.topology },
       resolution
     });
     return Object.freeze({ working_projection: structuredClone(value.working_projection),
@@ -74,6 +81,48 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
 function lookOperation(operation, actor) {
   return operation?.op === 'request_discovery' && ['look', 'inspect'].includes(operation.discovery_kind)
     && operation.actor_ref === actor && text(actor);
+}
+function movementOperation(operation, actor) {
+  return operation?.op === 'request_movement' && operation.movement_kind === 'local'
+    && operation.actor_ref === actor && text(actor);
+}
+async function resolveLocalMovement({ value, authority, partyId, target }) {
+  const committed = await authority.findCommittedResolution({ party_id: partyId,
+    local_ref: target });
+  if (committed == null || committed.position_ref !== currentPosition(value.committed_state)
+      || !visibleLocalReference(value.request.player_safe_state, target)) {
+    fail('TRACE_S1_SCOPE_INVALID');
+  }
+  const refs = committed.formal_spatial_refs;
+  if (refs?.structural_variant !== 'open_one_space'
+      || !text(refs.position_ref) || !Array.isArray(refs.movement_edge_refs)
+      || refs.movement_edge_refs.length !== 2) fail('TRACE_S1_SCOPE_INVALID');
+  const movementEdgeRef = await authority.findLocalMovementEdge({ party_id: partyId,
+    from_position_ref: committed.position_ref, to_position_ref: refs.position_ref,
+    movement_edge_refs: refs.movement_edge_refs });
+  const result = planApprovedActorDestinationTransition({
+    state_version: value.request.committed_state_version,
+    expected_state_version: value.request.committed_state_version,
+    actor: { actor_ref: { entity_kind: 'player_character', entity_id: value.actor.actor_id },
+      location_ref: committed.position_ref, zone_ref: committed.position_ref },
+    destination: { entity_ref: { entity_kind: 'spatial_local_reference', entity_id: target },
+      location_ref: committed.position_ref, zone_ref: refs.position_ref },
+    local_transition_bindings: [{ schema: 'rus.trace_local_zone_transition.v1',
+      terminal_outcome: 'same_materialized_location_new_zone',
+      location_ref: committed.position_ref,
+      source_zone_candidates: [committed.position_ref],
+      destination_zone_ref: refs.position_ref, admitted_subject_classes: ['actor'],
+      transition_id: movementEdgeRef, duration_minutes: 1 }],
+    allowed_movement_refs: [movementEdgeRef]
+  });
+  if (!result.pass) fail('TRACE_S1_MOVEMENT_OWNER_REJECTED');
+  return Object.freeze({ working_projection: structuredClone(value.working_projection),
+    summary: 'local spatial movement resolved', write_fragments: [],
+    consequence_fragment: { position_transition: { owner: '@rus/movement-routes',
+      actor_id: value.actor.actor_id, local_ref: target,
+      from_position_ref: committed.position_ref, to_position_ref: refs.position_ref,
+      movement_edge_ref: result.proposal.movement_ref } },
+    player_response_boundary: true });
 }
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   committedState, resolverAvailable }) {

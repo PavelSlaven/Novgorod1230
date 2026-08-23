@@ -33,6 +33,29 @@ export function createSpatialSemanticAuthorityRepository({ pool } = {}) {
       [party_id, local_ref ?? request_id]);
       if (result.rowCount > 1) fail('S1_SPATIAL_RESOLUTION_CONFLICT');
       return result.rowCount === 0 ? null : Object.freeze(structuredClone(result.rows[0]));
+    },
+    findLocalMovementEdge: async ({ party_id, from_position_ref,
+      to_position_ref, movement_edge_refs }) => {
+      if (!text(party_id) || !text(from_position_ref) || !text(to_position_ref)
+          || !Array.isArray(movement_edge_refs) || movement_edge_refs.length !== 2
+          || new Set(movement_edge_refs).size !== 2
+          || !movement_edge_refs.every(text)) fail('S1_SPATIAL_MOVEMENT_EDGE_INVALID');
+      const result = await pool.query(`SELECT e.id
+        FROM party_runtime.scene_movement_edges e
+        JOIN party_runtime.scene_position_nodes source
+          ON source.party_id=e.party_id AND source.id=e.from_position_id
+        JOIN party_runtime.scene_position_nodes destination
+          ON destination.party_id=e.party_id AND destination.id=e.to_position_id
+        WHERE e.party_id=$1 AND e.from_position_id=$2 AND e.to_position_id=$3
+          AND e.id = ANY($4::text[]) AND e.status='active'
+          AND source.status='active' AND destination.status='active'
+        ORDER BY e.id`, [party_id, from_position_ref, to_position_ref,
+        movement_edge_refs]);
+      if (result.rowCount !== 1 || !text(result.rows[0]?.id)
+          || !movement_edge_refs.includes(result.rows[0].id)) {
+        fail('S1_SPATIAL_MOVEMENT_EDGE_INVALID');
+      }
+      return result.rows[0].id;
     }
   });
 }

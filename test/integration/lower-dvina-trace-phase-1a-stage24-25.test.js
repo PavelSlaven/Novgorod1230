@@ -33,6 +33,8 @@ import {
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import { resolveFirstEntry } from
+  '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-3-first-entry.js';
 
 const bundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 24
@@ -101,6 +103,34 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   assert.equal(sites.some(({ origin }) => origin === 'generated'), false);
   assert.equal(stage24.party_db_write_plan.transaction.is_atomic, true);
   assert.deepEqual(new Set(stage24.party_db_write_plan.rollback_plan.covered_batch_ids), new Set(stage24.party_db_write_plan.transaction.write_order));
+
+  const snapshot = JSON.parse(JSON.stringify(stage24.party_db_write_plan
+    .write_batches.find(({ target_table: table }) =>
+      table === 'party_state_snapshots').records[0].state_payload));
+  const firstEntry = resolveFirstEntry({
+    partyId: materialization.party_id, state: {
+      ...snapshot,
+      first_entry_preparation: {
+        ...snapshot.first_entry_preparation,
+        spatial_v3: snapshot.first_entry_spatial_v3
+      }
+    }, changeSetId: 'entry',
+    scenarioRevision: 24,
+    phase3Contracts: {
+      route: { route_id: 'trace_ld_v1_route_wreck_to_camp' },
+      sourceEndpoint: { endpoint_id: 'trace_ld_v1_ep_wreck_path_to_camp' },
+      destinationEndpoint: { endpoint_id: 'trace_ld_v1_ep_camp_path_to_wreck' }
+    },
+    factual: { mode_resolution: {
+      command_id: 'lower_dvina_trace.follow_path_to_fishing_camp'
+    }, consequence: { phase3_kind: 'movement', movement: {
+      route_ref: 'trace_ld_v1_route_wreck_to_camp', destination: {
+        location_ref: snapshot.first_entry_preparation.binding.destination
+          .location_profile_ref
+      }
+    } } }
+  });
+  assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
 
   const input = buildStage25CommitInput({
     request_id: context.request_id,

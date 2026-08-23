@@ -10,10 +10,11 @@ CREATE TABLE IF NOT EXISTS party_runtime.party_spatial_semantic_envelopes (
   PRIMARY KEY (party_id,envelope_ref),
   CHECK (envelope->>'envelope_ref'=envelope_ref),
   CHECK (party_runtime.runtime_item_jsonb_exact_keys(envelope, ARRAY[
-    'envelope_ref','kind','scope_kind','structural_variant','available_mechanics','baseline_ref','g5_ref','g6_ref',
+    'envelope_ref','kind','scope_kind','structural_variant','available_mechanics','required_semantic_requirements',
+    'baseline_ref','g5_ref','g6_ref',
     'position_ref','property_ref','function_ref','environment_ref','semantic_context','profile_ref',
     'profile_version','policy_ref','policy_version','baseline_state_version','g5_state_version',
-    'g6_state_version','position_state_version','capacity_total','consumed_count','state_version'
+    'g6_state_version','position_state_version','topology','capacity_total','consumed_count','state_version'
   ])),
   CHECK ((envelope->>'capacity_total')::bigint=capacity_total
     AND (envelope->>'consumed_count')::bigint=consumed_count

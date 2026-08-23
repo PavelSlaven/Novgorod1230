@@ -126,6 +126,11 @@ test('revision 24 materialization contract admits first-entry S1 artifact and pr
     ({ anchor_id: anchorId }) =>
       anchorId === result.first_entry_preparation.scene.anchor.instance_id
   ));
+  assert.equal(result.first_entry_preparation.s1_physical_writes.length, 6);
+  assert.equal(
+    result.first_entry_preparation.s1_topology.g6_instance_ref,
+    `s1:${result.party_id}:baseline:${result.first_entry_preparation.scene.node.instance_id}:${result.first_entry_preparation.binding.destination.g6.s1_topology_slot.g6.slot_key}:g6`
+  );
   assert.equal(result.immediate.containers.length, 1);
   for (const owner of ['local_fire_authority', 'action_production_authority']) {
     assert.equal(Object.hasOwn(result, owner), Object.hasOwn(prior, owner));

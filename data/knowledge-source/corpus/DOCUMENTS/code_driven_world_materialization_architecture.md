@@ -195,6 +195,15 @@ reads committed result. Concrete profile variants, including passages and their
 fail-closed prerequisites, belong to versioned profile, manifest and binding.
 Activation remains a versioned production activation cutover.
 
+For normal first-entry/baseline materialization, the Spatial owner creates
+every approved broad `open_one_space` slot and its formal G6/position/topology
+before any late semantic call; those baseline rows are immutable after commit.
+Late S1 is therefore not topology expansion or lazy baseline materialization:
+LLM returns only ordinary name, description and qualitative required semantics.
+The Spatial owner validates that response against the finite envelope and binds
+one `local_ref` to the already persisted formal placement; game server only
+composes and P16/SQL-commits that owner result.
+
 ### 4.5. Party database
 
 Хранит G5, NPC, предметы, контейнеры, ownership, relations, schedules, knowledge, decisions, change sets, autonomous updates, traces, visible read models и изменяемое состояние партии.

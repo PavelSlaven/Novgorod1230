@@ -35,6 +35,17 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     g6: `g6:${scene.anchor.instance_id}`,
     position: `position:${scene.anchor.instance_id}`
   };
+  const s1Topology = prepared.s1_topology;
+  const s1PhysicalWrites = prepared.s1_physical_writes;
+  const s1Base = `s1:${partyId}:${ids.baseline}:${binding.destination.g6.s1_topology_slot.g6.slot_key}`;
+  if (!s1Topology || !Array.isArray(s1PhysicalWrites)
+      || s1PhysicalWrites.length !== 6
+      || s1Topology.g6_instance_ref !== `${s1Base}:g6`
+      || s1Topology.position_ref !== `${s1Base}:position`) {
+    const error = new Error('First-entry S1 topology is incomplete.');
+    error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
+    throw error;
+  }
   const sourceEndpointRef = {
     endpoint_kind: 'scene_position',
     endpoint_id: 'trace_ld_v1_ep_wreck_path_to_camp'
@@ -346,7 +357,9 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
         position_id: ids.sourcePosition,
         endpoint_ref: sourceEndpointRef
       },
-      target: { ...materialization, endpoint_ref: targetEndpointRef },
+      target: { ...materialization, endpoint_ref: targetEndpointRef,
+        s1_topology: structuredClone(s1Topology),
+        s1_physical_writes: structuredClone(s1PhysicalWrites) },
       preparation_snapshot_id: ids.snapshot,
       preparation_snapshot_digest: snapshot.canonical_digest,
       preparation_member_ordinal: 0,

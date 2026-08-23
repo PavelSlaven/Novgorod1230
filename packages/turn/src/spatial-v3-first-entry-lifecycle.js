@@ -117,23 +117,83 @@ function physicalWrites(value, member) {
   if (member.baseline_disposition === 'reuse') {
     return value.length === 0 ? [] : null;
   }
-  const expected = ['party_scene_baselines', 'party_g6_instances',
-    'scene_position_nodes'];
   const writes = value.map(copy);
-  if (writes.length < expected.length || writes.length > expected.length + 1
-      || writes.some((entry) => !write(entry))
-      || writes.some((entry) => ![...expected, 'party_g5_sites'].includes(
+  const hasSlot = writes.filter((entry) => entry.target_table === 'party_g6_instances').length === 2;
+  if ((!hasSlot && (writes.length < 3 || writes.length > 4))
+      || (hasSlot && writes.length !== 10) || writes.some((entry) => !write(entry))
+      || writes.some((entry) => !['party_scene_baselines', 'party_g5_sites', 'party_g6_instances',
+        'scene_position_nodes', 'scene_movement_edges', 'visibility_links'].includes(
         entry.target_table))
-      || expected.some((table) => !writes.some((entry) => entry.target_table === table))) {
+      || !writes.some((entry) => entry.target_table === 'party_scene_baselines')
+      || (hasSlot && !completeS1Topology(writes, member))) {
     return null;
   }
-  const byTable = Object.fromEntries(writes.map((entry) => [entry.target_table, entry]));
-  return byTable.party_scene_baselines.id === member.scene_baseline_id
-    && byTable.party_g6_instances.id === member.g6_instance_id
-    && byTable['scene_position_nodes'].id === member.position_id
-    && (byTable.party_g5_sites == null
-      || byTable.party_g5_sites.id === member.g5_site_id)
+  const one = (table, id) => writes.find((entry) => entry.target_table === table && entry.id === id);
+  return Boolean(one('party_scene_baselines', member.scene_baseline_id)
+    && one('party_g6_instances', member.g6_instance_id)
+    && one('scene_position_nodes', member.position_id)
+    && (!hasSlot || one('party_g5_sites', member.g5_site_id)))
     ? writes : null;
+}
+
+function completeS1Topology(writes, member) {
+  const one = (table, id) => writes.find((entry) => entry.target_table === table && entry.id === id);
+  const baseline = one('party_scene_baselines', member.scene_baseline_id);
+  const g6 = one('party_g6_instances', member.g6_instance_id);
+  const position = one('scene_position_nodes', member.position_id);
+  const slots = writes.filter((entry) => entry.target_table === 'party_g6_instances'
+    || entry.target_table === 'scene_position_nodes');
+  const slotG6 = slots.find((entry) => entry.target_table === 'party_g6_instances'
+    && entry.id !== member.g6_instance_id);
+  const slotPosition = slots.find((entry) => entry.target_table === 'scene_position_nodes'
+    && entry.id !== member.position_id);
+  const edges = writes.filter((entry) => entry.target_table === 'scene_movement_edges');
+  const links = writes.filter((entry) => entry.target_table === 'visibility_links');
+  if (!baseline || !g6 || !position || !slotG6 || !slotPosition) return false;
+  const source = baseline?.record?.scene_template_ref;
+  return slots.length === 4 && edges.length === 2 && links.length === 2
+    && sameVersioned(source, g6?.record?.source_scene_template_ref)
+    && sameVersioned(source, slotG6?.record?.source_scene_template_ref)
+    && g6?.record?.scene_baseline_id === member.scene_baseline_id
+    && position?.record?.g6_instance_id === member.g6_instance_id
+    && slotG6?.record?.scene_baseline_id === member.scene_baseline_id
+    && slotPosition?.record?.g6_instance_id === slotG6.id
+    && edges.every((edge) => edge.record?.scene_baseline_id === member.scene_baseline_id
+      && sameVersioned(source, edge.record?.source_scene_template_ref))
+    && links.every((link) => link.record?.scene_baseline_id === member.scene_baseline_id
+      && sameVersioned(source, link.record?.source_scene_template_ref))
+    && reciprocal(edges, 'reverse_edge_id', member.position_id, slotPosition?.id)
+    && reciprocal(links, 'reverse_link_id', member.position_id, slotPosition?.id);
+}
+
+function reciprocal(rows, reverseKey, basePositionId, slotPositionId) {
+  return rows.length === 2 && rows.every((row) => rows.some((other) => other.id === row.record?.[reverseKey]
+    && other.record?.[reverseKey] === row.id && row.record?.from_position_id === other.record?.to_position_id
+    && row.record?.to_position_id === other.record?.from_position_id))
+    && rows.some((row) => row.record?.from_position_id === basePositionId
+      && row.record?.to_position_id === slotPositionId)
+    && rows.some((row) => row.record?.from_position_id === slotPositionId
+      && row.record?.to_position_id === basePositionId);
+}
+
+function sameVersioned(left, right) {
+  return validSceneTemplate(left) && validSceneTemplate(right)
+    && left.authoring_version === right.authoring_version
+    && left.entity_ref.entity_kind === right.entity_ref.entity_kind
+    && left.entity_ref.entity_id === right.entity_ref.entity_id;
+}
+
+function validSceneTemplate(value) {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    && Object.keys(value).length === 2
+    && Object.hasOwn(value, 'entity_ref') && Object.hasOwn(value, 'authoring_version')
+    && value.authoring_version === '1' && value.entity_ref
+    && typeof value.entity_ref === 'object' && !Array.isArray(value.entity_ref)
+    && Object.keys(value.entity_ref).length === 2
+    && Object.hasOwn(value.entity_ref, 'entity_kind')
+    && Object.hasOwn(value.entity_ref, 'entity_id')
+    && value.entity_ref.entity_kind === 'scene_template'
+    && text(value.entity_ref.entity_id);
 }
 
 function write(value) {

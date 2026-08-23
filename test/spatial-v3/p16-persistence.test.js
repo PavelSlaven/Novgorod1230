@@ -415,6 +415,93 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
   }), { verifyApproval: approval });
   assert.equal(built.ok, true, JSON.stringify(built));
 
+  const sceneTemplate = {
+    entity_ref: { entity_kind: 'scene_template', entity_id: 'template-1' },
+    authoring_version: '1'
+  };
+  const s1Inserts = structuredClone(inserts);
+  s1Inserts.find(({ id }) => id === 'baseline-new').record.scene_template_ref = sceneTemplate;
+  s1Inserts.find(({ id }) => id === 'g6-new').record.source_scene_template_ref = sceneTemplate;
+  s1Inserts.push(
+    {
+      target_table: 'party_g6_instances', id: 'g6-slot',
+      record: { id: 'g6-slot', party_id: 'p', scene_baseline_id: 'baseline-new',
+        source_scene_template_ref: sceneTemplate, status: 'active' }
+    },
+    {
+      target_table: 'scene_position_nodes', id: 'position-slot',
+      record: { id: 'position-slot', party_id: 'p', g6_instance_id: 'g6-slot',
+        status: 'active' }
+    },
+    ...['scene_movement_edges', 'visibility_links'].flatMap((target_table) => [
+      {
+        target_table, id: `${target_table}-out`,
+        record: { id: `${target_table}-out`, party_id: 'p',
+          scene_baseline_id: 'baseline-new', source_scene_template_ref: sceneTemplate,
+          from_position_id: 'position-new', to_position_id: 'position-slot',
+          [target_table === 'scene_movement_edges' ? 'reverse_edge_id' : 'reverse_link_id']:
+            `${target_table}-back` }
+      },
+      {
+        target_table, id: `${target_table}-back`,
+        record: { id: `${target_table}-back`, party_id: 'p',
+          scene_baseline_id: 'baseline-new', source_scene_template_ref: sceneTemplate,
+          from_position_id: 'position-slot', to_position_id: 'position-new',
+          [target_table === 'scene_movement_edges' ? 'reverse_edge_id' : 'reverse_link_id']:
+            `${target_table}-out` }
+      }
+    ])
+  );
+  const buildS1 = (candidate) => buildCombinedWritePlan(input({
+    operation_kind: 'first_entry',
+    expected_state_versions: [
+      { target_table: 'party_journey_locations', id: 'journey-location', state_version: 4 },
+      { target_table: 'preparation_claims', id: 'preparation-claim-1', state_version: 1 }
+    ],
+    lock_context: {
+      owner_keys: ['actor:actor-1'], execution_keys: ['route-execution-1'],
+      g4_keys: ['p:g4-existing'],
+      physical_keys: [
+        'party_runtime.party_v3_change_sets:cs',
+        ...candidate.map((write) => `party_runtime.${write.target_table}:${write.id}`),
+        'party_runtime.party_journey_locations:journey-location',
+        'party_runtime.preparation_claims:preparation-claim-1'
+      ]
+    },
+    commit_rechecks: commitRechecks,
+    approved_write_sets: [{
+      inserts: candidate, updates: [location, consumedClaim],
+      appends: [{ target_table: 'party_v3_change_sets', id: 'cs',
+        record: { id: 'cs', party_id: 'p', operation_kind: 'first_entry',
+          idempotency_record_id: 'idem' } }]
+    }]
+  }), { verifyApproval: approval });
+  assert.equal((await buildS1(s1Inserts)).ok, true);
+  const reorderedS1 = structuredClone(s1Inserts);
+  for (const write of reorderedS1) {
+    if (write.record.source_scene_template_ref) {
+      write.record.source_scene_template_ref = { authoring_version: '1',
+        entity_ref: { entity_id: 'template-1', entity_kind: 'scene_template' } };
+    }
+  }
+  const reorderedS1Plan = await buildS1(reorderedS1);
+  assert.equal(reorderedS1Plan.ok, true);
+  assert.equal((await buildS1(s1Inserts.slice(0, -1))).error.code,
+    'target_preparation_failed');
+  const forgedS1 = structuredClone(s1Inserts);
+  forgedS1.find(({ id }) => id === 'scene_movement_edges-back')
+    .record.reverse_edge_id = 'forged';
+  assert.equal((await buildS1(forgedS1)).error.code, 'target_preparation_failed');
+  for (const ref of [
+    { ...sceneTemplate, extra: true },
+    { entity_ref: { entity_kind: 'scene_template' }, authoring_version: '1' },
+    { ...sceneTemplate, authoring_version: '2' }
+  ]) {
+    const forged = structuredClone(s1Inserts);
+    forged.find(({ id }) => id === 'g6-slot').record.source_scene_template_ref = ref;
+    assert.equal((await buildS1(forged)).error.code, 'target_preparation_failed');
+  }
+
   const calls = [];
   const committer = createSpatialV3CombinedAtomicCommitter({
     recheck: async ({ transaction, check }) => {
@@ -462,7 +549,7 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
       }
     })
   });
-  const committed = await committer.commit({ plan: built.plan });
+  const committed = await committer.commit({ plan: reorderedS1Plan.plan });
 
   assert.equal(committed.ok, true, JSON.stringify(committed));
   const baselineLockIndex = calls.indexOf(`lock:05:physical:${materializationScopeKey}`);

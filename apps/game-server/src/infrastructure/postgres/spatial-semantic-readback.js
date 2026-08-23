@@ -5,7 +5,7 @@ export async function loadSpatialSemanticCommittedState(pool, partyId) {
   const [envelopes, resolutions] = await Promise.all([
     pool.query(`SELECT envelope,capacity_total,consumed_count,state_version,status
       FROM party_runtime.party_spatial_semantic_envelopes WHERE party_id=$1 ORDER BY envelope_ref`, [partyId]),
-    pool.query(`SELECT request_id,local_ref,envelope_ref,position_ref,root_turn_id,step_index,semantics,
+    pool.query(`SELECT request_id,local_ref,envelope_ref,position_ref,root_turn_id,step_index,semantics,formal_spatial_refs,
       from_party_state_version,to_party_state_version,p16_change_set_id
       FROM party_runtime.party_spatial_semantic_resolutions WHERE party_id=$1 ORDER BY request_id`, [partyId])
   ]);

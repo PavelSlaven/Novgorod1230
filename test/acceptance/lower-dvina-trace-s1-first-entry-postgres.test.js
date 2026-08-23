@@ -26,7 +26,7 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
         client_ack_id: 's1-first-entry-ack'
       });
     assert.deepEqual(await campRows(environment, partyId), {
-      g5: 0, baselines: 0, g6: 0, positions: 0, envelopes: 0,
+      g5: 0, baselines: 0, g6: 0, positions: 0, edges: 0, visibility: 0, envelopes: 0,
       claims: ['reserved'], actorAtCamp: 0, npcPlacements: 0
     });
     await submit(environment, partyId, 's1-first-entry-inspection',
@@ -36,17 +36,18 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
       'Дойти до рыбацкого стана.');
     assert.equal(s1Calls(environment), 0);
     assert.deepEqual(await campRows(environment, partyId), {
-      g5: 1, baselines: 1, g6: 1, positions: 1, envelopes: 1,
+      g5: 1, baselines: 1, g6: 2, positions: 2, edges: 2, visibility: 2, envelopes: 1,
       claims: ['consumed'], actorAtCamp: 1, npcPlacements: 3
     });
     assert.equal(await resolutionCount(environment, partyId), 0);
     assert.equal(await firstEntryChangeCount(environment, partyId), 1);
+    const topologyBeforeLook = await campRows(environment, partyId);
 
     await environment.restartRoot();
     await get(environment,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
     assert.deepEqual(await campRows(environment, partyId), {
-      g5: 1, baselines: 1, g6: 1, positions: 1, envelopes: 1,
+      g5: 1, baselines: 1, g6: 2, positions: 2, edges: 2, visibility: 2, envelopes: 1,
       claims: ['consumed'], actorAtCamp: 1, npcPlacements: 3
     });
 
@@ -54,6 +55,8 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
       'Осмотреться.');
     assert.equal(s1Calls(environment), 1);
     assert.equal(await resolutionCount(environment, partyId), 1);
+    assert.deepEqual(await campRows(environment, partyId), topologyBeforeLook,
+      'S1 look must not materialize topology after entry');
     const committedResolution = await resolution(environment, partyId);
     assert.equal(typeof committedResolution.local_ref, 'string');
     assert.equal(typeof committedResolution.semantics.name, 'string');
@@ -83,6 +86,20 @@ test('public Trace first entry provisions fishing camp once; S1 resolves only la
     assert.equal(await resolutionCount(environment, partyId), 1);
     assert.deepEqual(await resolution(environment, partyId), committedResolution);
     assert.equal(await firstEntryChangeCount(environment, partyId), 1);
+
+    const beforeMove = await journeyPosition(environment, partyId);
+    await submit(environment, partyId, 's1-first-entry-enter-local',
+      'Войти за низкую плетёную загородку.');
+    assert.equal(s1Calls(environment), calls,
+      'committed local movement must not invoke the S1 model');
+    const afterMove = await journeyPosition(environment, partyId);
+    assert.notEqual(afterMove, beforeMove);
+    await environment.restartRoot();
+    const moved = await get(environment,
+      `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
+    assert.equal(JSON.stringify(moved).includes('formal_spatial_refs'), false);
+    assert.equal(JSON.stringify(moved).includes('movement_edge_ref'), false);
+    assert.equal(await journeyPosition(environment, partyId), afterMove);
   });
 
 test('public first entry is singleton; failed later S1 leaves committed entry intact',
@@ -103,7 +120,7 @@ test('public first entry is singleton; failed later S1 leaves committed entry in
     assert.ok(attempts.some(({ status }) => status === 'fulfilled'));
     assert.equal(await firstEntryChangeCount(environment, concurrent), 1);
     assert.deepEqual(await campRows(environment, concurrent), {
-      g5: 1, baselines: 1, g6: 1, positions: 1, envelopes: 1,
+      g5: 1, baselines: 1, g6: 2, positions: 2, edges: 2, visibility: 2, envelopes: 1,
       claims: ['consumed'], actorAtCamp: 1, npcPlacements: 3
     });
 
@@ -148,8 +165,33 @@ function s1Responder(shouldFail = () => false) {
         request_id: request.input.request_id,
         name: 'Низкая плетёная загородка',
         description: 'Сырая плетёная загородка у берега, без особого значения.',
-        semantic_requirements: []
+        semantic_requirements: ['interior_space']
       };
+    }
+    if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
+        .includes(request.model)
+        && (request.input?.request ?? request.input)?.root_player_action
+          === 'Войти за низкую плетёную загородку.') {
+      const turn = request.input.request ?? request.input;
+      const target = turn.player_safe_state.visible_objects.find(
+        ({ entity_ref: ref }) => ref?.entity_kind === 'spatial_local_reference')
+        ?.entity_ref?.entity_id;
+      assert.equal(typeof target, 'string');
+      const operation = { op: 'request_movement', actor_ref: turn.actor.actor_id,
+        movement_kind: 'local', target_ref: target };
+      assert.equal(isSpatialSemanticRemainderInScope({ operation,
+        playerSafeState: turn.player_safe_state }), true);
+      return { schema: 'turn_step_plan_v1', request_id: turn.request_id,
+        committed_state_version: turn.committed_state_version,
+        working_revision: turn.working_revision, step_index: turn.step_index,
+        interpretation: { player_goal: turn.root_player_action,
+          grounded_attempt: turn.remaining_intent, adaptation: 'literal' },
+        resolution: 'domain_request', goal_result: 'pending',
+        activity: { owner: 'domain', duration_class: null, effort: null },
+        operations: [operation], check: null,
+        continuation: null, clarification: null,
+        reason_code: 'enter_reloaded_s1_local',
+        reason: 'Войти в видимую локальную деталь.' };
     }
     if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
         .includes(request.model)
@@ -212,6 +254,12 @@ async function campRows(environment, partyId) {
       (SELECT count(*)::int FROM party_runtime.scene_position_nodes p
        JOIN party_runtime.party_g6_instances g ON g.id=p.g6_instance_id
        WHERE p.party_id=$1 AND g.source_scene_template_ref#>>'{entity_ref,entity_id}'=$2) AS positions,
+      (SELECT count(*)::int FROM party_runtime.scene_movement_edges e
+       JOIN party_runtime.party_scene_baselines b ON b.id=e.scene_baseline_id
+       WHERE e.party_id=$1 AND b.scene_template_ref#>>'{entity_ref,entity_id}'=$2) AS edges,
+      (SELECT count(*)::int FROM party_runtime.visibility_links v
+       JOIN party_runtime.party_scene_baselines b ON b.id=v.scene_baseline_id
+       WHERE v.party_id=$1 AND b.scene_template_ref#>>'{entity_ref,entity_id}'=$2) AS visibility,
       (SELECT count(*)::int FROM party_runtime.party_spatial_semantic_envelopes
        WHERE party_id=$1 AND envelope->>'position_ref' IN (
          SELECT p.id FROM party_runtime.scene_position_nodes p
@@ -256,6 +304,13 @@ async function resolution(environment, partyId) {
     `SELECT local_ref,semantics FROM party_runtime.party_spatial_semantic_resolutions
       WHERE party_id=$1`, [partyId]
   )).rows[0];
+}
+
+async function journeyPosition(environment, partyId) {
+  return (await environment.partyPool.query(
+    `SELECT scene_position_id FROM party_runtime.party_journey_locations
+      WHERE party_id=$1 AND owner_kind='actor'`, [partyId]
+  )).rows[0].scene_position_id;
 }
 
 async function firstEntryChangeCount(environment, partyId) {

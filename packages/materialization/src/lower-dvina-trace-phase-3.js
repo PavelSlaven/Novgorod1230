@@ -1,5 +1,6 @@
 import { deterministicInstanceId } from './core.js';
 import { failLowerDvinaTraceMaterialization as fail } from './lower-dvina-trace-contract.js';
+import { materializeS1FirstEntryPreparation } from './spatial-v3-s1-first-entry.js';
 
 export function materializeLowerDvinaTracePreparedCamp({
   input,
@@ -69,7 +70,18 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Prepared camp NPC identities or capacity are invalid.'
     );
   }
-  return { scene, npcs };
+  if (input.scenario_definition_revision < 24) return { scene, npcs };
+  const firstEntry = materializeS1FirstEntryPreparation({
+    party_id: input.party_id,
+    binding: bundle.materialization_bindings.first_entry_preparation,
+    scene,
+    npcs
+  });
+  if (!firstEntry.ok) {
+    fail('TRACE_FIRST_ENTRY_S1_TOPOLOGY_INVALID',
+      'Approved first-entry S1 topology is incomplete.');
+  }
+  return { scene, npcs, first_entry_preparation: firstEntry.preparation };
 }
 
 export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {

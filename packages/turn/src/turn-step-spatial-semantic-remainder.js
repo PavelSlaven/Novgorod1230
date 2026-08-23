@@ -8,10 +8,14 @@ export function isSpatialSemanticRemainderInScope(input) {
   const discovery = operation?.op === 'request_discovery'
     && ['look', 'inspect'].includes(operation.discovery_kind)
     && targets?.length === 1 && text(targets[0]);
-  return discovery && (operation.discovery_kind === 'look'
+  const movement = operation?.op === 'request_movement'
+    && operation.movement_kind === 'local' && text(operation.target_ref);
+  return (discovery && (operation.discovery_kind === 'look'
     && marker?.semantic_grounding_available === true
       && marker.position_ref === targets[0]
-      || visibleLocalReference(playerSafeState?.visible_objects, targets[0]));
+      || visibleLocalReference(playerSafeState?.visible_objects, targets[0])))
+    || movement && visibleLocalReference(playerSafeState?.visible_objects,
+      operation.target_ref);
 }
 
 export function resolveSpatialSemanticRemainder({ resolver, execution, actor,

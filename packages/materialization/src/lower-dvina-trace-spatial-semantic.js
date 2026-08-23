@@ -28,7 +28,8 @@ export function prepareSpatialSemanticRemainder(input) {
   const semantic_context = structuredClone(envelope.semantic_context);
   const approved_envelope = {
     kind: envelope.kind, structural_variant: envelope.structural_variant,
-    available_mechanics: structuredClone(envelope.available_mechanics)
+    available_mechanics: structuredClone(envelope.available_mechanics),
+    required_semantic_requirements: structuredClone(envelope.required_semantic_requirements)
   };
   const code_owned = { envelope: structuredClone(envelope), local_ref: `s1-local:${value.request_id}` };
   const model_request = {
@@ -36,7 +37,7 @@ export function prepareSpatialSemanticRemainder(input) {
     proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', semantic_context, approved_envelope,
     proposal_example: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: value.request_id,
       name: 'ordinary local reference', description: 'ordinary local description',
-      semantic_requirements: [] }
+      semantic_requirements: structuredClone(envelope.required_semantic_requirements) }
   };
   return deepFreeze({ schema: 'rus.s1_spatial_semantic_prepared.v1', request_id: value.request_id,
     causal_request_ref: value.causal_request_ref, party_id: value.party_id, need: value.need,
@@ -50,12 +51,14 @@ export function admitSpatialSemanticRemainder({ prepared, proposal }) {
   assertSpatialSemanticRequirementsAdmitted({
     semantic_requirements: safeProposal.semantic_requirements,
     structural_variant: envelope.structural_variant,
-    available_mechanics: envelope.available_mechanics
+    available_mechanics: envelope.available_mechanics,
+    required_semantic_requirements: envelope.required_semantic_requirements
   });
   const formal = materializeS1FormalSpatialProposal({ party_id: safePrepared.party_id,
     request_id: safePrepared.request_id, local_ref, kind: envelope.kind,
     structural_variant: envelope.structural_variant, baseline_ref: envelope.baseline_ref,
-    g5_ref: envelope.g5_ref, position_ref: envelope.position_ref });
+    g5_ref: envelope.g5_ref, position_ref: envelope.position_ref,
+    topology: envelope.topology });
   if (!formal.ok) fail('S1_SPATIAL_DATA_GAP', 'S1 formal spatial data is unavailable.');
   return deepFreeze({ schema: 'rus.s1_spatial_semantic_resolution.v1',
     request_id: safePrepared.request_id, causal_request_ref: safePrepared.causal_request_ref,
@@ -68,14 +71,17 @@ export function admitSpatialSemanticRemainder({ prepared, proposal }) {
 }
 
 export function assertSpatialSemanticRequirementsAdmitted({ semantic_requirements,
-  structural_variant, available_mechanics }) {
+  structural_variant, available_mechanics, required_semantic_requirements = [] }) {
   if (!Object.hasOwn(STRUCTURAL_REQUIREMENTS, structural_variant)
       || !Array.isArray(available_mechanics)
       || new Set(available_mechanics).size !== available_mechanics.length
       || !available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))
       || !Array.isArray(semantic_requirements)
       || new Set(semantic_requirements).size !== semantic_requirements.length
-      || !semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))) {
+      || !semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))
+      || !Array.isArray(required_semantic_requirements)
+      || new Set(required_semantic_requirements).size !== required_semantic_requirements.length
+      || !required_semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))) {
     fail('S1_SPATIAL_ADMISSION_INVALID', 'S1 admission context is invalid.');
   }
   for (const requirement of semantic_requirements) {
@@ -87,6 +93,11 @@ export function assertSpatialSemanticRequirementsAdmitted({ semantic_requirement
       fail('S1_SPATIAL_MECHANICS_GAP', 'S1 requirement has no approved mechanic.', { requirement });
     }
     fail('S1_SPATIAL_DATA_GAP', 'S1 requirement has no approved structural data.', { requirement });
+  }
+  for (const requirement of required_semantic_requirements) {
+    if (!semantic_requirements.includes(requirement)) {
+      fail('S1_SPATIAL_REQUIRED_SEMANTICS_MISSING', 'S1 proposal omits a required semantic requirement.', { requirement });
+    }
   }
 }
 
@@ -161,10 +172,10 @@ function preparedOf(value) {
 
 function envelopeOf(value, allowExhausted = false) {
   const envelope = json(value, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope');
-  const keys = ['envelope_ref', 'kind', 'scope_kind', 'structural_variant', 'available_mechanics', 'baseline_ref', 'g5_ref',
+  const keys = ['envelope_ref', 'kind', 'scope_kind', 'structural_variant', 'available_mechanics', 'required_semantic_requirements', 'baseline_ref', 'g5_ref',
     'g6_ref', 'position_ref', 'property_ref', 'function_ref', 'environment_ref', 'semantic_context',
     'profile_ref', 'profile_version', 'policy_ref', 'policy_version', 'baseline_state_version',
-    'g5_state_version', 'g6_state_version', 'position_state_version', 'capacity_total',
+    'g5_state_version', 'g6_state_version', 'position_state_version', 'topology', 'capacity_total',
     'consumed_count', 'state_version'];
   exact(envelope, keys, 'S1_SPATIAL_ENVELOPE_INVALID', 'envelope');
   for (const key of ['envelope_ref', 'baseline_ref', 'g5_ref', 'g6_ref', 'position_ref',
@@ -173,9 +184,12 @@ function envelopeOf(value, allowExhausted = false) {
   }
   if (!KINDS.has(envelope.kind) || envelope.scope_kind !== 'current_position_local_reference'
       || !Object.hasOwn(STRUCTURAL_REQUIREMENTS, envelope.structural_variant)
-      || !Array.isArray(envelope.available_mechanics)
-      || new Set(envelope.available_mechanics).size !== envelope.available_mechanics.length
-      || !envelope.available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))) {
+       || !Array.isArray(envelope.available_mechanics)
+       || new Set(envelope.available_mechanics).size !== envelope.available_mechanics.length
+       || !envelope.available_mechanics.every((requirement) => REQUIREMENTS.has(requirement))
+       || !Array.isArray(envelope.required_semantic_requirements)
+       || new Set(envelope.required_semantic_requirements).size !== envelope.required_semantic_requirements.length
+       || !envelope.required_semantic_requirements.every((requirement) => REQUIREMENTS.has(requirement))) {
     fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 envelope authority is invalid.');
   }
   if ((envelope.kind === 'ordinary_structure')
@@ -183,6 +197,12 @@ function envelopeOf(value, allowExhausted = false) {
     fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 kind and structural variant are incompatible.');
   }
   semanticContext(envelope.semantic_context, envelope.kind);
+  if (envelope.structural_variant === 'open_one_space' && !topology(envelope.topology, envelope)) {
+    fail('S1_SPATIAL_DATA_GAP', 'S1 open space topology is not prepared.');
+  }
+  if (envelope.structural_variant === 'descriptive_local_reference' && envelope.topology !== null) {
+    fail('S1_SPATIAL_ENVELOPE_INVALID', 'S1 descriptive detail cannot bind topology.');
+  }
   for (const key of ['profile_version', 'policy_version', 'capacity_total', 'state_version']) {
     positive(envelope[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.${key}`);
   }
@@ -195,6 +215,17 @@ function envelopeOf(value, allowExhausted = false) {
     fail('S1_SPATIAL_CAPACITY_INVALID', 'S1 envelope has no remaining capacity.');
   }
   return deepFreeze(envelope);
+}
+
+function topology(value, envelope) {
+  return value && Object.getPrototypeOf(value) === Object.prototype
+    && Object.keys(value).length === 7 && value.baseline_ref === envelope.baseline_ref
+    && value.g5_ref === envelope.g5_ref && value.position_ref === envelope.position_ref
+    && ['g6_instance_ref', 'interior_position_ref'].every((key) => {
+      text(value[key], 'S1_SPATIAL_ENVELOPE_INVALID', `envelope.topology.${key}`); return true;
+    })
+    && ['movement_edge_refs', 'visibility_link_refs'].every((key) => Array.isArray(value[key])
+      && value[key].length === 2 && value[key].every((entry) => typeof entry === 'string' && entry.length > 0));
 }
 
 function proposalOf(value, prepared) {

@@ -182,23 +182,13 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   const g5NodeId = deterministicInstanceId(input.party_id, runId, 'g5_node', 'trace_ld_v1_loc_wreck_shore', 0);
   const anchorId = deterministicInstanceId(input.party_id, runId, 'g5_anchor', spatialBinding.anchor_template.template_id, 0);
   const revision = input.scenario_definition_revision;
-  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22].includes(revision)
-    ? materializeLowerDvinaTracePreparedCamp({
-      input,
-      bundle,
-      runId,
-      participantSelections,
-      locationSelections
-    })
-    : null;
-  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21,22].includes(revision)
+  const phase3Prepared = [8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24].includes(revision)
+    ? materializeLowerDvinaTracePreparedCamp({ input, bundle, runId, participantSelections, locationSelections }) : null;
+  const phase4Prepared = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24].includes(revision)
     ? materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections })
     : null;
-  const phase7Prepared = [15,16,17,18,19,20,21,22].includes(revision)
-    ? materializeLowerDvinaTracePreparedStorehouse({
-      input, bundle, runId, participantSelections, locationSelections
-    })
-    : null;
+  const phase7Prepared = [15,16,17,18,19,20,21,22,23,24].includes(revision)
+    ? materializeLowerDvinaTracePreparedStorehouse({ input, bundle, runId, participantSelections, locationSelections }) : null;
   const knifeTemplate = requiredById(bundle.item_container_set.item_templates, 'item_template_id', 'trace_ld_v1_item_mikula_knife');
   const knifeInventoryProfile = requiredPinnedById(
     bundle.item_inventory_profiles,
@@ -237,7 +227,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       fail('TRACE_PHASE_4_RATSHA_KNIFE_BINDING_INVALID', 'The exact approved Ratsha knife placement is required.');
     }
   }
-  const phase4Promise = phase4Prepared
+  const phase4Promise = phase4Prepared && phase3Prepared
     ? buildLowerDvinaTracePhase4Promise({
       input,
       runId,
@@ -264,6 +254,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
   }));
   assertLowerDvinaTraceTimestamp(timestamp);
 
+  const firstEntryPreparation = phase3Prepared?.first_entry_preparation ?? null;
   const materializedNpcs = phase3Prepared
     ? [
       ...phase3Prepared.npcs,
@@ -271,7 +262,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
       ...(phase7Prepared ? [phase7Prepared.npc] : [])
     ]
     : [];
-  const revision19Actors = [19, 20, 21, 22].includes(revision)
+  const revision19Actors = [19, 20, 21, 22, 23, 24].includes(revision)
     ? materializeRevision19ActorAppearances({
       bundle, playerId, name, random, choices, npcs: materializedNpcs
     })
@@ -325,7 +316,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     sequence: structuredClone(sequence),
     digest: canonicalDigest({ culprit, motive, sequence })
   };
-  const localFire=revision===22?materializeLocalFireActivation(
+  const localFire=[22,23,24].includes(revision)?materializeLocalFireActivation(
     input.party_id,playerId,anchorId,runId,bundle.local_fire_profile,
     deterministicInstanceId):null;
   const immediate = {
@@ -403,15 +394,19 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     containers: phase7Prepared ? [phase7Prepared.container] : [],
     timestamp,
     environment_snapshot: structuredClone(environment),
-    ...(phase3Prepared
+    ...(phase3Prepared || phase4Prepared || phase7Prepared
       ? {
         prepared_scenes: [
-          phase3Prepared.scene,
+          ...(phase3Prepared && revision < 24 ? [phase3Prepared.scene] : []),
           ...(phase4Prepared ? [phase4Prepared.scene] : []),
           ...(phase7Prepared ? [phase7Prepared.scene] : [])
         ],
         npcs: [
-          ...phase3Prepared.npcs,
+          ...(phase3Prepared
+            ? revision < 24
+              ? phase3Prepared.npcs
+              : phase3Prepared.npcs.map((npc) => ({ ...npc, anchor_id: null }))
+            : []),
           ...(phase4Prepared ? phase4Prepared.npcs : []),
           ...(phase7Prepared ? [phase7Prepared.npc] : [])
         ]
@@ -453,6 +448,7 @@ export function materializeLowerDvinaTracePartyInstance(input) {
     run_id: runId,
     request_identity: lowerDvinaTraceRequestIdentity(input),
     immediate,
+    ...(firstEntryPreparation ? { first_entry_preparation: firstEntryPreparation } : {}),
     hidden_truth: hiddenTruth,
     ...(revision19EquipmentHandoff ? {
       initial_actor_equipment_handoff: revision19EquipmentHandoff

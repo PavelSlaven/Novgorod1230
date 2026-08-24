@@ -43,11 +43,17 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
     revisions.m8,
     revisions.m9
     ,revisions.m10
+    ,revisions.m11
+    ,revisions.m12
   ].includes(definitionRevision);
   const expectedBindingId = phase3Definition
     ? definitionRevision >= revisions.phase4
         ? definitionRevision >= revisions.phase5
-        ? definitionRevision === revisions.m10
+        ? definitionRevision === revisions.m12
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
+        : definitionRevision === revisions.m11
+          ? 'lower_dvina_trace_phase_1a_materialization_bindings_v19'
+        : definitionRevision === revisions.m10
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v18'
         : definitionRevision === revisions.m9
           ? 'lower_dvina_trace_phase_1a_materialization_bindings_v17'
@@ -152,6 +158,51 @@ function assertPhase1ABindings(bundle, definitionRevision, fail, revisions, scen
 }
 
 function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revisions, scenarioId) {
+  if (definitionRevision === revisions.m12) {
+    const manifest = bundle.phase_1a_manifest;
+    const bindings = bundle.materialization_bindings;
+    const profilePin = bundle.artifact_pins?.spatial_semantic_profile;
+    const s1 = bindings?.spatial_semantic_materialization;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v20'
+      || manifest.revision !== 20 || manifest.scenario_definition_revision !== 24
+      || manifest.base_definition_ref?.digest !== bundle.m12_content_manifest_digest
+      || bindings?.binding_set_id !== 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
+      || bindings.revision !== 20 || bindings.scenario_definition_revision !== 24
+      || s1?.profile_ref?.digest !== profilePin?.digest
+      || s1.profile_ref.id !== bundle.spatial_semantic_profile?.profile_id
+      || s1.profile_ref.revision !== profilePin?.revision
+      || s1.profile_ref.schema !== profilePin?.schema
+      || s1.authority_provisioning !== 'atomic_new_game_first_entry_p16'
+      || s1.fallback_policy !== 'forbidden') {
+      fail('TRACE_M12_PHASE_1A_CUTOVER_INVALID',
+        'Revision 24 requires the exact first-entry Phase 1A cutover.');
+    }
+    return;
+  }
+  if (definitionRevision === revisions.m11) {
+    const manifest = bundle.phase_1a_manifest;
+    const bindings = bundle.materialization_bindings;
+    const profilePin = bundle.artifact_pins?.spatial_semantic_profile;
+    const s1 = bindings?.spatial_semantic_materialization;
+    if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v19'
+      || manifest.revision !== 19
+      || manifest.scenario_definition_revision !== 23
+      || manifest.base_definition_ref?.digest !== bundle.m11_content_manifest_digest
+      || bindings?.binding_set_id
+        !== 'lower_dvina_trace_phase_1a_materialization_bindings_v19'
+      || bindings.revision !== 19
+      || bindings.scenario_definition_revision !== 23
+      || s1?.profile_ref?.digest !== profilePin?.digest
+      || s1.profile_ref.id !== bundle.spatial_semantic_profile?.profile_id
+      || s1.profile_ref.revision !== profilePin?.revision
+      || s1.profile_ref.schema !== profilePin?.schema
+      || s1.authority_provisioning !== 'atomic_new_game_first_entry_p16'
+      || s1.fallback_policy !== 'forbidden') {
+      fail('TRACE_M11_PHASE_1A_CUTOVER_INVALID',
+        'Revision 23 requires the exact S1 Phase 1A cutover.');
+    }
+    return;
+  }
   if (definitionRevision === revisions.m10) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;

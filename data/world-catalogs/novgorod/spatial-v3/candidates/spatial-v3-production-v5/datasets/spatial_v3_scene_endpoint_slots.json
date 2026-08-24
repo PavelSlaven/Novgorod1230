@@ -1,0 +1,10 @@
+[
+  {
+    "scene_template_id": "trace_ld_v1_tpl_wreck_shore",
+    "scene_template_version": 1,
+    "slot_key": "departure",
+    "endpoint_role": "departure",
+    "required_position_slot_key": "open_shore",
+    "required_position_instance_ordinal": 0
+  }
+]

@@ -6,9 +6,7 @@
 
 ## Production/target routing
 
-The completed `versioned production activation cutover` made the spatial-v3 semantics in `spatial_v3_target_code_driven_world_materialization_architecture.md` and `spatial_architecture_standard_g0_g6.md` the production specialization of this highest code/LLM boundary. Materialization v2 is retained only as an explicit migration/rollback source.
-
-The approved P12 authoring projection is rooted at `data/world-catalogs/novgorod/spatial-v3/manifest.json`: it has 37 SHA-256-pinned datasets and `data_gaps: []`, compiling only previously approved source records. Historical P28 exact-head evidence did not itself authorize production activation; the later cutover release `spatial-v3-production-v1` did. Spatial v3 is now the sole production owner.
+Spatial-v3 is production specialization of this code/LLM boundary; materialization v2 remains only an explicit migration/rollback source. Exact scenario activation, revision, profile, manifest and binding belong to versioned profile sources, not to this general document.
 
 ## 0. Назначение и приоритет
 
@@ -184,6 +182,27 @@ O1 активирует только common ordinary discovery через сущ
 Active A1 revision 21 использует sole player boundary `turn_step_request_v1 → turn_step_plan_v1`: qualitative physical result вложен в `request_item_use`, после чего code-owned owner не вызывает LLM. Один или несколько committed либо validated same-root revealed non-container material sources и ноль или несколько доступных actor-controlled tools на текущем placement явно разделены и могут иметь другого legal owner. Profile не содержит template/recipe whitelist и допускает preserve, до четырёх independent outputs, no-result, partial/nonworking/waste, writing, non-authoritative token-like и closed weapon-capable outcomes. Generic check применяется только при неопределённом исходе; детерминированное действие использует `domain_request` без RNG, но любая выполненная попытка проходит одно обычное semantic activity/time application. A1 `domain_request` содержит ровно одну operation и не допускает direct preparation в том же step. Code перечитывает committed mechanics/property/placement/ownership либо exact same-root ordinary overlay, выводит source/output mechanics из реально списанных allocations, уменьшает finite source и атомарно retire-ит полностью разделённый единичный source. Partial independent output получает из sole plan только grounded qualitative `material_extent = minor|half|major`; item owner переводит его в exact code-owned `ceil(1/4|1/2|3/4 × mass)` gram decrement, сохраняет identity source и остаточную mechanics. Output descriptor описывает только новые entities; обязательный `source_fact_delta` отдельно удаляет obsolete visible refs и добавляет current facts surviving source. Full partition использует `whole`. Известная масса полного partition сохраняется с детерминированным остатком; qualitative `physical_form` вместе с exact mass переводится item owner в hand/packing/carry, а не наследуется от source. Новый independent output требует safe непустое display name; nullable physical description не сохраняется как `null` fact. Non-authoritative semantic descriptor сохраняется в ordinary item metadata, а visible current physical facts входят в same-root и reload player-safe projection. Надпись является durable physical fact до explicit удаления/замены по видимому `fact_ref`. Всё фиксируется в одном combined P16. Model не задаёт numbers, canonical identity, currency/official status, truth или combat mechanics; A1 state не хранит combat class/damage, а combat owner bounded-классифицирует current facts/form любого held A1 item без exact weapon mechanics только при конкретном combat use и может вернуть `not_weapon_capable`; последний A1 `output_class` не является combat gate.
 
 Повторные A1 transitions сохраняют current non-authoritative physical facts в общей ordinary metadata, exact-дедуплицируют одинаковый текст и удаляют ложные facts только по explicit ref. Несколько причинных A1 steps одного root turn последовательно читают общий working state и фиксируются одним combined P16 через существующие transaction/state-version/idempotency механизмы; отдельные A1 plan hashes или combat profile digests для этого не создаются.
+
+Spatial semantic materialization starts from a finite code-owned envelope,
+bound to committed scope and active profile. LLM supplies only open ordinary
+semantic concretization outside transaction; it cannot invent topology,
+resources, exact mechanics or authority. Existing Spatial materialization owner
+validates this concretization and produces one formal proposal with admitted
+refs and profile-provided mechanics. Game server does
+not make that proposal: its P16/SQL boundary revalidates committed pins, scope
+and capacity, then atomically persists accepted formal proposal. Retry/reload
+reads committed result. Concrete profile variants, including passages and their
+fail-closed prerequisites, belong to versioned profile, manifest and binding.
+Activation remains a versioned production activation cutover.
+
+For normal first-entry/baseline materialization, the Spatial owner creates
+every approved broad `open_one_space` slot and its formal G6/position/topology
+before any late semantic call; those baseline rows are immutable after commit.
+Late S1 is therefore not topology expansion or lazy baseline materialization:
+LLM returns only ordinary name, description and qualitative required semantics.
+The Spatial owner validates that response against the finite envelope and binds
+one `local_ref` to the already persisted formal placement; game server only
+composes and P16/SQL-commits that owner result.
 
 ### 4.5. Party database
 

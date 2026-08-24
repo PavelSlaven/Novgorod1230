@@ -7,21 +7,11 @@ import { createTracePhase3TemporalAdvance, createTracePhase3VisibleProjector } f
 import { tracePhase4PreconditionSatisfied } from './lower-dvina-trace-phase-4-command.js';
 import { createTracePhase4TemporalAdvance, createTracePhase4VisibleProjector } from './lower-dvina-trace-phase-4-effects.js';
 import { tracePhase5PreconditionSatisfied } from './lower-dvina-trace-phase-5-command.js';
-import {
-  createTracePhase5BodyEffect,
-  createTracePhase5TemporalAdvance,
-  createTracePhase5VisibleProjector
-} from './lower-dvina-trace-phase-5-effects.js';
+import { createTracePhase5BodyEffect, createTracePhase5TemporalAdvance, createTracePhase5VisibleProjector } from './lower-dvina-trace-phase-5-effects.js';
 import { createTraceRouteBodyEffect } from './lower-dvina-trace-route-body-effects.js';
-import {
-  tracePhase6PreconditionSatisfied
-} from './lower-dvina-trace-phase-6-carry.js';
+import { tracePhase6PreconditionSatisfied } from './lower-dvina-trace-phase-6-carry.js';
 import { createTracePhase6BodyEffect, createTracePhase6TemporalAdvance, createTracePhase6VisibleProjector } from './lower-dvina-trace-phase-6-effects.js';
-import {
-  createTracePhase7BodyEffect,
-  createTracePhase7TemporalAdvance,
-  createTracePhase7VisibleProjector
-} from './lower-dvina-trace-phase-7-effects.js';
+import { createTracePhase7BodyEffect, createTracePhase7TemporalAdvance, createTracePhase7VisibleProjector } from './lower-dvina-trace-phase-7-effects.js';
 import { tracePhase7PreconditionSatisfied } from
   './lower-dvina-trace-phase-7-command.js';
 import { traceTurn10PreconditionSatisfied } from
@@ -72,6 +62,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     actionProductionProfile,
     createTurnStepWorldProcessResolver,
     localFireProfile,
+    createTurnStepSpatialSemanticResolver,
     admitAmbientOrdinaryPortion,
     requireAmbientOrdinaryAdmission,
     turnStepOrdinaryResultPolicy,
@@ -161,6 +152,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
       createTurnStepActionProductionOwner,
       localFireProfile,
       createTurnStepWorldProcessResolver,
+      createTurnStepSpatialSemanticResolver,
       ordinaryDiscoveryEnablementMarker,
       ordinaryDiscoveryResolver: turnStepPorts.ordinaryDiscoveryResolver,
       partyId,
@@ -207,6 +199,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
         partyId, requestId, inputDigest,
         applyWorkingProjection: turnStepPorts.applyLocalFireProjection
       })
+    } : {}),
+    ...(typeof createTurnStepSpatialSemanticResolver === 'function' ? {
+      turnStepSpatialSemanticResolver: createTurnStepSpatialSemanticResolver({ partyId })
     } : {}),
     turnStepCheckContextResolver: turnStepPorts.resolveCheckContext,
     ...(turnStepPorts.preparedDomainEffect ? {

@@ -22,6 +22,14 @@ export function buildApprovedReferenceIndex(input) {
       if (text(npc?.instance_id)) sets.npcIds.add(npc.instance_id);
       if (text(npc?.anchor_id)) sets.anchorIds.add(npc.anchor_id);
     }
+    const deferred = phase1A.first_entry_preparation;
+    if (text(deferred?.scene?.anchor?.instance_id)) {
+      sets.anchorIds.add(deferred.scene.anchor.instance_id);
+    }
+    for (const npc of array(deferred?.npcs)) {
+      if (text(npc?.instance_id)) sets.npcIds.add(npc.instance_id);
+      if (text(npc?.anchor_id)) sets.anchorIds.add(npc.anchor_id);
+    }
     if (text(phase1A.immediate?.player?.instance_id)) sets.playerCharacterIds.add(phase1A.immediate.player.instance_id);
   }
   collectIds(outputs.initial_npc_placement, sets, 'npc');

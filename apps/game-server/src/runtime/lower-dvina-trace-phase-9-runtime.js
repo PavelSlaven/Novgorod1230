@@ -8,7 +8,7 @@ import { createTracePhase9TestimonyCommand } from
 export function createTracePhase9Runtime({ state, bundle,
   conversationBindings, inputDigest, playerConversationModel,
   npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion }) {
-  if (![17, 18, 19, 20, 21, 22].includes(bundle.definition_revision)
+  if (![17, 18, 19, 20, 21, 22, 23, 24].includes(bundle.definition_revision)
       || !phase8Terminal(state)) return null;
   const contracts = resolveTracePhase9Contracts({ state, bundle,
     conversationBindings });

@@ -227,6 +227,12 @@ export function createLowerDvinaTracePhase1ARepository({query}={}) {
         body: { profile_ref: player.body_profile_ref, health: Number(player.health), energy: Number(player.energy), satiety: Number(player.satiety) },
         position,
         prepared_scenes: payload.immediate.prepared_scenes ?? [],
+        ...(payload.first_entry_preparation == null ? {} : {
+          first_entry_preparation: {
+            ...payload.first_entry_preparation,
+            spatial_v3: payload.first_entry_spatial_v3
+          }
+        }),
         npcs: payload.immediate.npcs ?? [],
         timestamp: { whole_minutes: clock.whole_minutes, subminute_numerator: clock.subminute_numerator, subminute_denominator: clock.subminute_denominator },
         environment_snapshot: payload.immediate.environment_snapshot,
@@ -303,6 +309,9 @@ function assertRoundTrip({
     run_id: run?.run_id,
     request_identity: payload.request_identity,
     immediate: payload.immediate,
+    ...(payload.first_entry_preparation == null ? {} : {
+      first_entry_preparation: payload.first_entry_preparation
+    }),
     hidden_truth: payload.hidden_truth,
     sealed_selections: payload.sealed_selections,
     policy_profile_pins: payload.policy_profile_pins,

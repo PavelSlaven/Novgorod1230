@@ -18,7 +18,7 @@ export const TRACE_PHASE_3_IDS = Object.freeze({
 
 export function resolveTracePhase3Contracts({ state, bundle }) {
   const ids = TRACE_PHASE_3_IDS;
-  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+  if (![9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
     .includes(bundle.definition_revision)) {
     gap('TRACE_PHASE_3_REVISION_MISMATCH');
   }
@@ -121,7 +121,7 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
     'transition_template_id',
     'trace_ld_v1_transition_blue_wool_pickup'
   );
-  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22]
+  const conversationBindings = [14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
     .includes(bundle.definition_revision)
     ? bundle.conversation_semantic_bindings
     : null;
@@ -171,11 +171,14 @@ export function resolveTracePhase3Contracts({ state, bundle }) {
   }
   const prepared = state.prepared_scenes?.find(
     (scene) => scene.location_profile_ref === ids.campLocation
-  );
+  ) ?? (state.first_entry_preparation?.scene?.location_profile_ref
+      === ids.campLocation
+    ? state.first_entry_preparation.scene : null);
   const campAnchor = prepared?.anchor?.instance_id;
   if (!campAnchor) gap('TRACE_PHASE_3_CAMP_ANCHOR_MISSING');
   const actors = [ids.eremeyRef, ...ids.fisherRefs].map((ref) => {
-    const npc = state.npcs?.find((entry) =>
+    const npc = [...(state.npcs ?? []),
+      ...(state.first_entry_preparation?.npcs ?? [])].find((entry) =>
       entry.participant_slot_ref === ref);
     if (!npc?.instance_id) gap('TRACE_PHASE_3_PARTICIPANT_MISSING');
     return { ref, ...structuredClone(npc) };

@@ -4,6 +4,16 @@
 
 Production composition root and the only physical PostgreSQL transaction owner. It binds domain public APIs to HTTP, verified knowledge/runtime catalog, read-only world-base and `party_runtime` adapters; it owns persisted presentation delivery state, not its domain projection rules.
 
+Spatial semantic materialization hands the server one validated formal proposal.
+Exact physical topology comes from the exact Spatial catalog closure through
+`@rus/materialization/spatial-v3`; Spatial owner supplies exact source and
+destination base rows from those closures. The fixed fishing-camp G5 uses its
+canonical authored identity, never a generated/frontier claim; scenario bindings
+carry only profile refs and slot keys. Server owns only P16/SQL: it revalidates committed profile pins,
+scope and capacity in existing transaction, then persists accepted refs and
+semantic detail. It does not create proposal, topology or resource mechanics,
+and adds no second transaction owner.
+
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
@@ -14,7 +24,7 @@ Production composition root and the only physical PostgreSQL transaction owner. 
 
 ## Не владеет
 
-Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, write-plan construction, materialization semantics, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
+Не владеет temporal/body/movement/visibility formulae, route or endpoint logic, domain write-plan construction, Spatial materialization proposal/resolution, runtime LLM prompts/repair policy, narration prose, UI read-model rules or world-base writes. Небольшой prompt Portrait Lab относится только к экспериментальному text-to-contract endpoint и не участвует в игровой симуляции.
 
 ## Public API и контракты
 
@@ -47,6 +57,12 @@ update only through one approved combined plan. The plan binds a stable
 scene-baseline materialization-scope key; its transaction-scoped advisory
 lock precedes the idempotency lease, baseline absence/reuse recheck and every
 domain write.
+
+On normal first entry, Spatial-v3 owner supplies any approved broad
+`open_one_space` slot as part of that baseline plan; server only composes,
+P16-revalidates and persists it. Late S1 keeps the baseline topology immutable:
+it commits the owner-validated `local_ref` binding and semantic detail, not a
+new G6, position, edge, route or mechanics.
 
 Infrastructure inputs are explicit pool/config/binding/plan DTO and transactional callbacks; output is a committed physical result, HTTP envelope or typed server/infrastructure error. SQL targets are explicitly `party_runtime`; world-base adapter is read-only. Temporal presentation persistence stores package/pending-delivery lifecycle separately from narrator output, atomically with factual write when required by the combined plan.
 
@@ -92,7 +108,7 @@ are active for every admitted `finite_source`; each selected source reloads its
 own committed row, while constrained policy adds resource
 permissions but does not own conservation. Unprovisioned precious/remnant profiles
 remain fail-closed. Currency identity,
-significant/hidden facts, template-less containers and O2b/A1/F1/S1/N1 remain
+significant/hidden facts, template-less containers and O2b/A1/F1/N1 remain
 disabled. Negative resolutions contain no item and
 every failure rolls back.
 
@@ -231,14 +247,14 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The separate versioned production activation cutover completed as
-`spatial-v3-production-v1`. The server and config expose only
+The current versioned production activation cutover is `spatial-v3-production-v12`.
+The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
 and the completed cutover stage `13`, and fails closed while any persisted
-party remains on schema v2. Release metadata pins
-`novgorod_spatial_v3_target_contract_approval_001`, the exact approved Spatial
-manifest digest, `temporal-world-v1.1`, exact dependency-pin mode and the
+party remains on schema v2. Release metadata pins the exact approved
+`novgorod_spatial_v3_production_v5_candidate_001` world tuple and manifest,
+`temporal-world-v1.1`, exact dependency-pin mode and the
 existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
 party; persisted historical pin thereafter).
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,

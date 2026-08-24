@@ -318,8 +318,27 @@ test('A1 qualitative plan cannot provide rolls, difficulty numbers or duration',
     assert.equal(randomCalls, 0);
   });
 
-test('A1 scope gate is exact, visible-only and dormant without its port',
+test('A1 scope gate accepts player-safe item refs or visible items',
   async () => {
+    let heldItemCalls = 0;
+    const heldItem = servicesFor({
+      projection: actionProjection(undefined, {
+        visible_objects: [visibleObject('item:knife')],
+        inventory: {
+          items: ['item:pole'], total_weight: { grams: 400 },
+          load_category: 'light', occupied_hands: 0
+        },
+        items: [{ item_id: 'item:pole' }]
+      }),
+      resolver() {
+        heldItemCalls += 1;
+        return appliedResult();
+      }
+    });
+    const heldItemResult = await runTurnWorkflow(actionInput(), heldItem);
+    assert.equal(heldItemResult.status, 'partial');
+    assert.equal(heldItemCalls, 1);
+
     const cases = [
       { name: 'missing marker', projection: actionProjection(null) },
       { name: 'disabled marker', projection: actionProjection({
@@ -329,9 +348,9 @@ test('A1 scope gate is exact, visible-only and dormant without its port',
         semantic_grounding_available: true, extra: true
       }) },
       { name: 'wrong use kind', useKind: 'consume' },
-      { name: 'known but nonvisible item', itemRef: 'item:hidden',
+      { name: 'projected but nonvisible item', itemRef: 'item:hidden',
         projection: actionProjection(undefined, {
-          known_refs: [{ item_id: 'item:hidden' }]
+          items: [{ item_id: 'item:hidden' }]
         }) },
       { name: 'known but nonvisible target', targetRefs: ['item:hidden'],
         projection: actionProjection(undefined, {
@@ -374,6 +393,28 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
       operation: { ...operation, target_refs: [] },
       playerSafeState: enabled, remainingIntent: 'заострить жердь'
     }), true);
+    const heldObject = actionProjection(undefined, {
+      visible_objects: [visibleObject('item:knife')],
+      inventory: { items: [{ item_id: 'item:pole', template_id: 'pole' }] }
+    }).player_safe_state;
+    assert.equal(isActionProductionOwnerInScope({
+      operation, playerSafeState: heldObject,
+      remainingIntent: 'заострить жердь'
+    }), true);
+    const reloadedHeldObject = actionProjection(undefined, {
+      actor_id: 'party-1', visible_objects: [visibleObject('item:knife')],
+      inventory: { items: [] }, items: [{ item_id: 'item:pole',
+        placement: { holder_character_id: 'party-1' } }]
+    }).player_safe_state;
+    assert.equal(isActionProductionOwnerInScope({
+      operation, playerSafeState: reloadedHeldObject,
+      remainingIntent: 'заострить жердь'
+    }), true);
+    assert.equal(isActionProductionOwnerInScope({
+      operation, playerSafeState: { ...reloadedHeldObject, items: [{
+        item_id: 'item:pole', placement: { anchor_id: 'anchor:shore' }
+      }] }, remainingIntent: 'заострить жердь'
+    }), false);
     for (const marker of [null,
       { semantic_grounding_available: false },
       { semantic_grounding_available: true, extra: true }]) {
@@ -412,6 +453,24 @@ test('A1 scope predicate rejects hostile marker data without reading getters',
         operation, playerSafeState, remainingIntent: 'заострить жердь'
       }), false);
     }
+    assert.equal(reads, 0);
+
+    const heldGetter = {};
+    Object.defineProperty(heldGetter, 'item_id', {
+      enumerable: true,
+      get() {
+        reads += 1;
+        return 'item:pole';
+      }
+    });
+    assert.equal(isActionProductionOwnerInScope({
+      operation,
+      playerSafeState: actionProjection(undefined, {
+        visible_objects: [visibleObject('item:knife')],
+        inventory: { items: [heldGetter] }
+      }).player_safe_state,
+      remainingIntent: 'заострить жердь'
+    }), false);
     assert.equal(reads, 0);
 
     const hostileOperation = itemUseOperation();

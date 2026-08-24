@@ -15,9 +15,7 @@ const ROW_PIN_KEYS = [
   'role', 'item_id', 'item', 'placement', 'ownership', 'entity_snapshot',
   'finite_resource_row'
 ];
-const PREPARED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_ordinary'];
-const PREPARED_ACTION_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'prepared_action'];
-const CONTAINED_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'access_container'];
+const SCENE_ROW_PIN_KEYS = [...ROW_PIN_KEYS, 'scene_placement'];
 const ENTITY_KEYS = [
   'schema', 'commit_state', 'role', 'entity_ref', 'state_version',
   'lifecycle_state', 'access_state', 'holder_ref', 'controller_ref',
@@ -32,29 +30,47 @@ export function validateActionProducedDestinationPin(pin) {
   if (pin === null) return null;
   const keys = ['schema', 'destination_kind', 'anchor_id', 'item_capacity',
     'used_item_ids'];
-  if (!exact(pin, keys)
+  const modern = pin.destination_kind === 'party_current_scene_position';
+  if (!exact(pin, modern ? [...keys, 'scene_position_id', 'scene_capacity',
+    'scene_occupancy'] : keys)
       || pin.schema !== 'action_production_output_destination_pin_v1'
-      || pin.destination_kind !== 'party_current_anchor'
+      || !['party_current_anchor', 'party_current_scene_position'].includes(
+        pin.destination_kind)
       || !text(pin.anchor_id) || !Number.isSafeInteger(pin.item_capacity)
       || pin.item_capacity < 0 || !Array.isArray(pin.used_item_ids)
+      || modern && !text(pin.scene_position_id)
+      || modern && (!Number.isSafeInteger(pin.scene_capacity)
+        || pin.scene_capacity < 1 || !Number.isSafeInteger(pin.scene_occupancy)
+        || pin.scene_occupancy < 0 || pin.scene_occupancy > pin.scene_capacity)
       || pin.used_item_ids.some((itemId) => !text(itemId))
       || new Set(pin.used_item_ids).size !== pin.used_item_ids.length
-      || pin.used_item_ids.length > pin.item_capacity) {
+      || !modern && pin.used_item_ids.length > pin.item_capacity) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   return pin;
 }
 
 export function actionProducedDestinationFits(pin, sourceUpdates,
-  resultItems) {
+  resultItems, sourcePins = []) {
   const destination = validateActionProducedDestinationPin(pin);
   if (destination === null) return resultItems.length === 0;
-  const retired = new Set(sourceUpdates.filter((update) =>
+  if (destination.destination_kind !== 'party_current_scene_position') {
+    const retired = new Set(sourceUpdates.filter((update) =>
     update.after_item?.state?.lifecycle_status === 'retired')
     .map(({ item_id: itemId }) => itemId));
-  const remaining = destination.used_item_ids.filter((itemId) =>
-    !retired.has(itemId)).length;
-  return remaining + resultItems.length <= destination.item_capacity;
+    const remaining = destination.used_item_ids.filter((itemId) =>
+      !retired.has(itemId)).length;
+    return remaining + resultItems.length <= destination.item_capacity;
+  }
+  const freed = sourceUpdates.reduce((total, update) => {
+    const source = sourcePins.find(({ item_id: id }) => id === update.item_id);
+    return total + (update.after_item?.state?.lifecycle_status === 'retired'
+      && source?.scene_placement?.position_node_id
+        === destination.scene_position_id
+      ? source.scene_placement.occupies_capacity_units : 0);
+  }, 0);
+  return destination.scene_occupancy - freed + resultItems.length
+    <= destination.scene_capacity;
 }
 
 export function actionProducedOutputPlacement(destinationPin) {
@@ -75,7 +91,9 @@ export function actionProducedOwnerOutputDestination(destinationPin,
   const placement = actionProducedOutputPlacement(destinationPin);
   return {
     schema: 'rus.items.action_produced_output_destination.v1',
-    placement_kind: 'anchor', target_ref: placement.anchor_id,
+    placement_kind: destinationPin.destination_kind
+      === 'party_current_scene_position' ? 'scene_position' : 'anchor',
+    target_ref: destinationPin.scene_position_id ?? placement.anchor_id,
     holder_ref: null, controller_ref: actorRef
   };
 }
@@ -91,11 +109,14 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       ? pin.prepared_action : null;
     const accessContainer = Object.hasOwn(pin, 'access_container')
       ? pin.access_container : null;
-    const exactPin = prepared !== null ? exact(pin, PREPARED_ROW_PIN_KEYS)
+    const baseKeys = pin.scene_placement == null ? ROW_PIN_KEYS
+      : SCENE_ROW_PIN_KEYS;
+    const exactPin = prepared !== null ? exact(pin,
+      [...baseKeys, 'prepared_ordinary'])
       : preparedAction !== null
-        ? exact(pin, PREPARED_ACTION_ROW_PIN_KEYS)
-      : accessContainer !== null ? exact(pin, CONTAINED_ROW_PIN_KEYS)
-        : exact(pin, ROW_PIN_KEYS);
+        ? exact(pin, [...baseKeys, 'prepared_action'])
+      : accessContainer !== null ? exact(pin, [...baseKeys, 'access_container'])
+        : exact(pin, baseKeys);
     if (!exactPin
         || prepared !== null && (!exact(prepared,
           ['schema', 'request_identity', 'root_turn_id',
@@ -122,6 +143,8 @@ export function validateActionProducedRowPins(pins, role, actorRef,
         || pin.role !== role
         || !text(pin.item_id) || seenItems.has(pin.item_id)
         || pin.item?.item_id !== pin.item_id
+        || pin.scene_placement != null && !validScenePlacement(
+          pin.scene_placement)
         || accessContainer !== null
           && (!validActionProducedAccessContainer(accessContainer, actorRef,
             accessAnchorId)
@@ -144,6 +167,14 @@ export function validateActionProducedRowPins(pins, role, actorRef,
       fail('ACTION_PRODUCED_PLAN_INVALID');
     }
   }
+}
+
+function validScenePlacement(value) {
+  return exact(value, ['position_node_id', 'occupies_capacity_units',
+    'state_version']) && text(value.position_node_id)
+    && Number.isSafeInteger(value.occupies_capacity_units)
+    && value.occupies_capacity_units >= 0
+    && Number.isSafeInteger(value.state_version) && value.state_version >= 0;
 }
 
 function expectedEntity(pin, role, actorRef, contextVersion, finite,

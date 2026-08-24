@@ -57,6 +57,21 @@ test('Phase 6 terminal carry uses one root attempt, exact assembly and committed
   ]);
 });
 
+test('Phase 6 accepts prepared Rev24 first-entry camp target and rejects duplicates', () => {
+  const value = state();
+  const [camp] = value.prepared_scenes;
+  value.prepared_scenes = [];
+  value.first_entry_preparation = { spatial_v3: { target: { status: 'prepared' } }, scene: camp };
+  assert.equal(planTracePhase6SynchronizedCarry({
+    state: value, contracts, inputDigest: 'rev24-first-entry'
+  }).execution_after.status, 'completed');
+  const duplicate = state();
+  duplicate.prepared_scenes.push(structuredClone(duplicate.prepared_scenes[0]));
+  assert.throws(() => planTracePhase6SynchronizedCarry({
+    state: duplicate, contracts, inputDigest: 'duplicate-camp'
+  }), { code: 'TRACE_PHASE_6_TERMINAL_POSITION_GAP' });
+});
+
 test('Phase 6 pauses at the earliest external temporal boundary and persists partial progress', () => {
   const value = state(); value.temporal_boundary_candidates.push(boundary('weather-change', 5 + 100), boundary('later', 115));
   const result = planTracePhase6SynchronizedCarry({ state: value, contracts, inputDigest: 'input' });

@@ -23,6 +23,12 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - `createTurnAvailableActionSet(...)` строит полный детерминированный player-safe набор зарегистрированных действий. Однозначное exact совпадение исполняется без model/decision clock. Если exact path отсутствует, revision 13 вызывает injected `turnStepModel` с player-safe `turn_step_request_v1`; strict plan validator допускает только direct operations, generic check, один domain request или clarification.
 - `runTurnStepLoop(...)` применяет до восьми шагов к code-owned working projection, заново проецирует player-safe state, сохраняет ordered step traces и допускает один structural repair до execution невалидного шага. Direct handlers и domain bindings передаются registry; semantic loop не вычисляет профильные формулы.
 - Internal ordinary hook применяет уже вычисленный pure aggregate result к общей working projection без собственного schema/type; raw ordinary transition остаётся ответственностью `@rus/materialization` reducer. Hook не экспортируется как второй projection owner и не активирует O1.
+- S1 reaches only through existing `request_discovery/look` after higher-priority
+  owners. Turn forwards the current player-safe position marker and does not
+  choose local detail, capacity, topology, mechanics or a persistence path.
+- `resolveSpatialSemanticDescriptor` owns S1 descriptor prompt, injected
+  role-runner invocation and exact request/proposal DTO validation; materialization
+  remains the admission/formal-handoff owner.
 - `continuation` переносит только `remaining_intent` и `depends_on_refs`.
   Следующий semantic step всегда заново выбирается моделью из обновлённой
   player-safe working projection и только затем проходит exact binding и

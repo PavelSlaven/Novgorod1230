@@ -13,14 +13,17 @@ import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
 import { localFirePhysicalKeys } from './local-fire-atomic-write-plan.js';
+import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys } from './spatial-semantic-atomic-write-plan.js';
 
 export async function buildLowerDvinaTraceTurnStepCommitPlan({
   partyId, state, envelope, inputDigest, visibleEnvelope, writes,
   turnNumber, changeSetId, idemId, ordinaryPlan = null,
-  actionProductionPlans = [], localFirePlans = []
+  actionProductionPlans = [], localFirePlans = [], spatialSemanticPlan = null
 }) {
   const actionPlans = actionProductionPlans.map((plan) =>
     createActionProducedAtomicWritePlan(plan));
+  const semanticPlan = spatialSemanticPlan == null ? null
+    : createSpatialSemanticAtomicWritePlan(spatialSemanticPlan);
   if (actionPlans.some((plan) => plan.actor_ref !== state.actor_id)) {
     throw serverError(
       'TRACE_TURN_STEP_ACTION_PRODUCTION_ACTOR_MISMATCH',
@@ -84,11 +87,13 @@ export async function buildLowerDvinaTraceTurnStepCommitPlan({
         (write) => `party_runtime.${write.target_table}:${write.id}`
       ), ...ordinaryPhysicalKeys(ordinaryPlan),
       ...actionPlans.flatMap(actionProducedPhysicalKeys),
-      ...localFirePlans.flatMap(localFirePhysicalKeys)]
+      ...localFirePlans.flatMap(localFirePhysicalKeys),
+      ...spatialSemanticPhysicalKeys(semanticPlan)]
     },
     ordinary_materialization_atomic_write_plan: ordinaryPlan,
     action_production_atomic_write_plans: actionPlans,
     local_fire_atomic_write_plans: localFirePlans,
+    spatial_semantic_atomic_write_plan: semanticPlan,
     commit_rechecks: commitRechecks({
       partyId, state, envelope, inputDigest, writes
     })
@@ -115,7 +120,8 @@ function currentVersion(state, write) {
     parties: state.party_state.state_version,
     party_server_sessions: state.party_state.session_state_version,
     party_clocks: state.party_state.clock_state_version,
-    party_actor_body_states: state.party_state.body_state_version
+    party_actor_body_states: state.party_state.body_state_version,
+    party_journey_locations: state.journey_location?.state_version
   }[write.target_table];
   if (Number.isSafeInteger(known) && known >= 0) return known;
   const item = (state.items ?? []).find(({ item_id: id }) => id === write.id);
@@ -164,8 +170,29 @@ function commitRechecks({ partyId, state, envelope, inputDigest, writes }) {
       expected_clock_state_version: state.party_state.clock_state_version
     }),
     sealedCheck('change_set', { canonical_input_digest: inputDigest }),
+    ...s1LocalMovementRecheck({ partyId, state, envelope }),
     ...buildActorInstanceRechecks(state, writes)
   ];
+}
+
+function s1LocalMovementRecheck({ partyId, state, envelope }) {
+  const transition = envelope.consequence?.position_transition;
+  if (transition?.owner !== '@rus/movement-routes') return [];
+  if (!state.journey_location?.id
+      || !Number.isSafeInteger(Number(state.journey_location.state_version))) {
+    throw serverError('TRACE_S1_MOVEMENT_TRANSITION_INVALID',
+      'S1 local movement lacks its committed journey location.', { status: 409 });
+  }
+  return [sealedCheck('s1_local_movement', {
+    party_id: partyId,
+    actor_id: state.actor_id,
+    journey_location_id: state.journey_location.id,
+    expected_journey_state_version: Number(state.journey_location.state_version),
+    from_position_ref: transition.from_position_ref,
+    to_position_ref: transition.to_position_ref,
+    movement_edge_ref: transition.movement_edge_ref,
+    movement_admission: transition.movement_admission
+  })];
 }
 
 const normalizeDigest = (value) =>

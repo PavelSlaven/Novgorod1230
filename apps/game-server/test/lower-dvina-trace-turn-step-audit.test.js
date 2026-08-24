@@ -2,9 +2,12 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest } from '@rus/materialization';
 import { validateTurnStepCommitEnvelope } from '@rus/turn';
-import {
-  createLowerDvinaTracePhase2PostgresRepository
-} from '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { createLowerDvinaTracePhase2PostgresRepository } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import { withCommittedRuntimeContainers } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-committed-runtime-containers.js';
+import { buildCommittedInventoryInput, validateCommittedInventoryState } from
+  '../src/runtime/lower-dvina-trace-committed-inventory.js';
 import {
   assertPhase2ReplayRecord
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-replay.js';
@@ -72,6 +75,67 @@ test('replay looks up idempotency before loading committed mechanics',
     assert.equal(replay, null);
     assert.equal(queries.length, 1);
     assert.match(queries[0], /party_command_idempotency/u);
+  });
+
+test('Phase 2 load projects first-entry committed container inventory',
+  async () => {
+    const pouch = {
+      container_id: 'trace_ld_v1_container_player_small_pouch',
+      run_id: 'trace-run', template_id: 'trace_ld_v1_template_small_pouch',
+      condition_state: 'serviceable', closure_state: 'closed', state_version: '4',
+      updated_change_set_id: 'change-set-4', anchor_id: null,
+      parent_container_id: null, holder_npc_id: null,
+      holder_character_id: 'player', physical_position: 'worn_quick',
+      equipment_slot_category_id: null,
+      state: { ordinary_contents_context: { container_inventory_profile: {
+        mass_grams: 300, carry_form: 'regular', packing_slot_cost: 3,
+        capacity: 4
+      }, mechanics_policy: { max_external_hand_cost: 0 } } }
+    };
+    const state = await withCommittedRuntimeContainers({
+      async query(statement) {
+        assert.match(statement, /FROM party_runtime\.party_containers/u);
+        return { rowCount: 1, rows: [pouch] };
+      }
+    }, 'party', {
+      party_id: 'party', actor_id: 'player',
+      party_state: { state_version: 3 }, position: { g5_anchor_id: 'camp' },
+      player_profile: { attributes: { strength: { value: 9 } } },
+      containers: [{ container_id: pouch.container_id,
+        condition_state: 'damaged', closure_state: 'open', state_version: 1,
+        ownership: { owner_character_id: 'player' } }],
+      container_placements: [], container_profiles: []
+    });
+    assert.deepEqual(state.containers, [{
+      container_id: pouch.container_id, run_id: pouch.run_id,
+      template_id: pouch.template_id, condition_state: pouch.condition_state,
+      closure_state: pouch.closure_state, state: pouch.state, state_version: 4,
+      updated_change_set_id: pouch.updated_change_set_id, anchor_id: null,
+      parent_container_id: null, holder_npc_id: null,
+      holder_character_id: 'player', physical_position: 'worn_quick',
+      equipment_slot_category_id: null,
+      ownership: { owner_character_id: 'player' }
+    }]);
+    assert.deepEqual(state.container_placements, [{
+      party_id: 'party', container_id: pouch.container_id,
+      anchor_id: null, parent_container_id: null, holder_npc_id: null,
+      holder_character_id: 'player', physical_position: 'worn_quick',
+      equipment_slot_category_id: null
+    }]);
+    assert.deepEqual(buildCommittedInventoryInput(state).container_profiles, [{
+      ...pouch.state.ordinary_contents_context.container_inventory_profile,
+      external_hand_cost: 0,
+      template_id: pouch.template_id
+    }]);
+    assert.deepEqual(state.container_profiles, [{
+      ...pouch.state.ordinary_contents_context.container_inventory_profile,
+      external_hand_cost: 0,
+      template_id: pouch.template_id
+    }]);
+    const validation = validateCommittedInventoryState(state, {
+      skipContainerUsage: true
+    });
+    assert.equal(validation.pass, true, JSON.stringify(validation.errors));
   });
 
 test('replay rejects tampered command digest, dependency pins and envelope digest',

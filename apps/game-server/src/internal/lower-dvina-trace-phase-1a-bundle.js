@@ -46,7 +46,7 @@ export async function loadLowerDvinaTraceMaterializationBundle({
   if (scenarioDefinitionRevision === 7) {
     return loadRevision7Bundle({ rootDir });
   }
-  if ([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(
+  if ([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(
     scenarioDefinitionRevision
   )) {
     return loadLowerDvinaTraceRevisionBundle({
@@ -232,7 +232,7 @@ async function readJson(rootDir, relativePath) {
 }
 function assertManifestFile(manifest, name, pin) { if (manifest?.files?.[name] !== pin.digest) fail('TRACE_SCENARIO_ARTIFACT_DIGEST_MISMATCH', `Manifest digest mismatch for ${name}.`); }
 function assertContentRef(ref, pin) { if (!ref || ref.digest !== pin.digest || (ref.schema && ref.schema !== pin.schema)) fail('TRACE_SCENARIO_ARTIFACT_DIGEST_MISMATCH', `Content ref mismatch for ${pin.key}.`); }
-function validateDefinitionPins(bundle) {
+export function validateDefinitionPins(bundle) {
   for (const [definitionKey, artifactKey] of Object.entries({
     player_profile_set: 'player_profile_set',
     participant_profile_set: 'participant_profile_set',
@@ -240,9 +240,12 @@ function validateDefinitionPins(bundle) {
     item_container_set: 'item_container_set',
     hidden_truth_candidate_set: 'hidden_truth_candidate_set',
     clue_evidence_graph_set: 'clue_evidence_graph_set',
-    knowledge_lie_memory_rules: 'knowledge_lie_memory_rules'
+    knowledge_lie_memory_rules: 'knowledge_lie_memory_rules',
+    spatial_semantic_profile: 'spatial_semantic_profile'
   })) {
-    if (bundle.definition.immutable_content_refs?.[definitionKey]?.digest !== bundle.artifact_pins[artifactKey].digest) fail('TRACE_DEFINITION_PIN_MISMATCH', `Definition pin ${definitionKey} is stale.`);
+    const definitionPin = bundle.definition.immutable_content_refs?.[definitionKey];
+    const artifactPin = bundle.artifact_pins[artifactKey];
+    if ((definitionPin || artifactPin) && definitionPin?.digest !== artifactPin?.digest) fail('TRACE_DEFINITION_PIN_MISMATCH', `Definition pin ${definitionKey} is stale.`);
   }
   for (const key of Object.keys(bundle.definition.resolved_policy_refs ?? {})) {
     if (bundle.definition.resolved_policy_refs[key].digest !== bundle.artifact_pins[key]?.digest) fail('TRACE_DEFINITION_PIN_MISMATCH', `Policy pin ${key} is stale.`);

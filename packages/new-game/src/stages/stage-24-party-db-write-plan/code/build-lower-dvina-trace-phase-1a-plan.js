@@ -3,6 +3,8 @@ import {
   STAGE24_PLAN_SCHEMA,
 } from '@rus/contracts';
 import { sha256 } from '@rus/kernel';
+import { addFirstEntryPreparationBatches } from
+  './lower-dvina-trace-first-entry-preparation.js';
 import {
   assertMaterializationRuntimeCatalogPins,
   assertPartyRuntimeCatalogPins,
@@ -31,6 +33,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
   const playerId = player.instance_id;
   const runId = result.run_id;
   const { preparedScenes, preparedNpcs, preparedContainers } = phase3PreparedInputs(result);
+  const identityNpcs = preparedNpcs;
   const changeSetId = `change_${sha256([partyId, runId, 'phase_1a']).slice(0, 24)}`;
   const sourceTrace = [{
     source_id: result.request_identity.scenario_id,
@@ -65,7 +68,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
         { domain: 'g5_node', instance_id: scene.node.instance_id },
         { domain: 'g5_anchor', instance_id: scene.anchor.instance_id }
       ]),
-      ...preparedNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
+      ...identityNpcs.map((npc) => ({ domain: 'npc', instance_id: npc.instance_id })),
       ...preparedContainers.map((container) => ({ domain: 'container', instance_id: container.instance_id })),
       ...result.immediate.items.map((item) => ({ domain: 'item', instance_id: item.instance_id }))
     ]
@@ -159,7 +162,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     container_capacity: scene.anchor.container_capacity,
     state: scene.anchor.state
   }))], ['party_g5_nodes'], sourceTrace);
-  addBatch(batches, 'party_npcs', preparedNpcs.map((npc) => ({
+  addBatch(batches, 'party_npcs', identityNpcs.map((npc) => ({
     party_id: partyId,
     npc_id: npc.instance_id,
     run_id: runId,
@@ -222,7 +225,7 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     created_change_set_id: changeSetId,
     updated_change_set_id: changeSetId
-  }, ...preparedNpcs.map((npc) => ({
+  }, ...identityNpcs.map((npc) => ({
     party_id: partyId,
     actor_kind: 'npc',
     actor_id: npc.instance_id,
@@ -354,6 +357,9 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     state_version: 1,
     updated_change_set_id: changeSetId
   }], ['parties', 'party_v3_change_sets'], sourceTrace);
+  const firstEntryPreparation = addFirstEntryPreparationBatches({
+    batches, result, partyId, playerId,
+    changeSetId, sourceTrace, addBatch });
   const persistedProjection = buildLowerDvinaTracePersistedProjection({
     result,
     changeSetId,
@@ -365,6 +371,10 @@ export function buildLowerDvinaTracePhase1AWritePlan(input = {}) {
     version: 2,
     request_identity: result.request_identity,
     immediate: result.immediate,
+    ...(firstEntryPreparation == null ? {} : {
+      first_entry_preparation: result.first_entry_preparation,
+      first_entry_spatial_v3: firstEntryPreparation.spatial_v3
+    }),
     hidden_truth: result.hidden_truth,
     sealed_selections: result.sealed_selections,
     policy_profile_pins: result.policy_profile_pins,
@@ -430,7 +440,7 @@ function addBatch(batches, table, records, dependencies, sourceTrace) {
 }
 
 function phase3PreparedInputs(result) {
-  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(
+  if (![8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(
     result.request_identity.scenario_definition_revision
   )) {
     return { preparedScenes: [], preparedNpcs: [], preparedContainers: [] };
@@ -441,13 +451,14 @@ function phase3PreparedInputs(result) {
   const phase4 = [10, 11, 12, 13, 14].includes(
     result.request_identity.scenario_definition_revision
   );
-  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22].includes(
+  const phase7 = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(
     result.request_identity.scenario_definition_revision
   );
+  const firstEntry = result.request_identity.scenario_definition_revision >= 24;
   if (!Array.isArray(preparedScenes)
-    || preparedScenes.length !== (phase7 ? 3 : phase4 ? 2 : 1)
+    || preparedScenes.length !== (firstEntry ? 2 : phase7 ? 3 : phase4 ? 2 : 1)
     || !Array.isArray(preparedNpcs)
-    || preparedNpcs.length !== (phase7 ? 6 : phase4 ? 5 : 3)
+    || preparedNpcs.length !== (firstEntry ? 6 : phase7 ? 6 : phase4 ? 5 : 3)
     || !Array.isArray(preparedContainers)
     || preparedContainers.length !== (phase7 ? 1 : 0)) {
     const error = new Error(
@@ -470,7 +481,7 @@ function assertInput(input) {
     error.code = 'LOWER_DVINA_TRACE_PHASE_1A_PLAN_INPUT_INVALID';
     throw error;
   }
-  if ([19, 20, 21, 22].includes(result.request_identity.scenario_definition_revision)) {
+  if ([19, 20, 21, 22, 23, 24].includes(result.request_identity.scenario_definition_revision)) {
     assertRevision19CharacterState(result);
   }
 }

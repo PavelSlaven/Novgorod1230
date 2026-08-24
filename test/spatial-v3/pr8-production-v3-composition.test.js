@@ -51,9 +51,13 @@ const TEST_RUNTIME_CATALOG_PIN = Object.freeze({
 });
 
 test('production-v6 trace runtime wires canonical packing and semantic NPC models', async () => {
-  const [sharedSource, releaseSource] = await Promise.all([
+  const [sharedSource, traceRuntimeSource, releaseSource] = await Promise.all([
     readFile(new URL(
       '../../apps/game-server/src/runtime/releases/spatial-v3-production-binding-shared.js',
+      import.meta.url
+    ), 'utf8'),
+    readFile(new URL(
+      '../../apps/game-server/src/runtime/releases/spatial-v3-production-trace-runtime.js',
       import.meta.url
     ), 'utf8'),
     readFile(new URL(
@@ -61,11 +65,12 @@ test('production-v6 trace runtime wires canonical packing and semantic NPC model
       import.meta.url
     ), 'utf8')
   ]);
-  assert.match(sharedSource,
+  assert.match(sharedSource, /traceTurnRuntime:\s*createTraceTurnRuntime/u);
+  assert.match(traceRuntimeSource,
     /turnStepPackingCalculator:\s*calculatePackingSlots/u);
-  assert.match(sharedSource, /from '@rus\/items-property'/u);
+  assert.match(traceRuntimeSource, /from '@rus\/items-property'/u);
   assert.match(
-    sharedSource,
+    traceRuntimeSource,
     /\.\.\.createNpcRuntimePorts\(\{ roleRunner \}\)/u
   );
   assert.match(
@@ -116,6 +121,11 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     method: 'submitTurn'
   });
   assert.deepEqual(calls.map(({ method }) => method), ['submitTurn']);
+  assert.deepEqual(bindings.runtimeCatalogPin, TEST_RUNTIME_CATALOG_PIN);
+  assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
+    'novgorod_spatial_v3_production_v5_candidate_001');
+  assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad');
 });
 
 function fixture() {
@@ -262,7 +272,17 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v9 root is sole owner with production-v8 rollback identity', async () => {
+test('production-v12 root is sole owner with production-v11 rollback identity', async () => {
+  const [parentWorld, currentWorld] = await Promise.all([
+    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json', 'utf8').then(JSON.parse),
+    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json', 'utf8').then(JSON.parse)
+  ]);
+  assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
+    world_revision_id: parentWorld.world_revision_id,
+    world_catalog_digest: parentWorld.catalog_digest,
+    world_catalog_manifest_sha256: currentWorld.parent_manifest_sha256
+  });
+  assert.equal(currentWorld.parent_revision_id, parentWorld.world_revision_id);
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {
@@ -289,7 +309,7 @@ test('production-v9 root is sole owner with production-v8 rollback identity', as
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v8'
+    'spatial-v3-production-v11'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -606,7 +626,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 027', async () => {
+test('restart extends the exact immutable catalog ledger through migration 030', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -636,7 +656,7 @@ test('restart extends the exact immutable catalog ledger through migration 027',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 15);
+  assert.equal(result.newly_applied, 19);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -662,12 +682,12 @@ test('restart extends the exact immutable catalog ledger through migration 027',
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,
-      1,
+      marker === 'CREATE OR REPLACE FUNCTION\n  party_runtime.runtime_instance_mechanics_snapshot_valid' ? 2 : 1,
       marker
     );
   }
   assert.equal(statements.filter((sql) =>
-    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,3);
+    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,5);
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

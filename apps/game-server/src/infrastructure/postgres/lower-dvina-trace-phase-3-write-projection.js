@@ -1,13 +1,11 @@
 import { canonicalDigest } from '@rus/materialization';
-import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
 import { row } from './first-playable/plan-shared.js';
-import { phase2ScreenDigest, phase2VisibleContextFromPayload } from './lower-dvina-trace-phase-2-projection.js';
 import { appendActivity } from './lower-dvina-trace-phase-3-activity-writes.js';
 import { appendConversation, appendKnowledge } from './lower-dvina-trace-phase-3-conversation-writes.js';
 import {
   appendPhase3MovementTraversal
 } from './lower-dvina-trace-phase-3-movement-writes.js';
-import { phase3ActivityRef, routeMovement } from './lower-dvina-trace-phase-3-state.js';
+import { routeMovement } from './lower-dvina-trace-phase-3-state.js';
 import { appendRouteBodyWrites } from './lower-dvina-trace-route-body-writes.js';
 import {
   appendNpcSemanticConversationWrites,
@@ -22,7 +20,7 @@ export function phase3Writes(input) {
   const {
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
-    phase3Contracts, rootTurnId, workingRevision
+    phase3Contracts, rootTurnId, workingRevision, operationKind
   } = input;
   assertSharedSemanticSnapshotSafe(next);
   const inserts = [row(
@@ -52,7 +50,7 @@ export function phase3Writes(input) {
       updated_change_set_id: changeSetId
     })
   ];
-  if (routeMovement(factual)) {
+  if (routeMovement(factual) && operationKind !== 'first_entry') {
     updates.push(row('party_positions', partyId, {
       party_id: partyId,
       g4_id: next.position.g4_id,
@@ -63,7 +61,7 @@ export function phase3Writes(input) {
   const appends = [row('party_v3_change_sets', changeSetId, {
     id: changeSetId,
     party_id: partyId,
-    operation_kind: 'trace_phase_3_turn',
+    operation_kind: operationKind ?? 'trace_phase_3_turn',
     idempotency_record_id: idemId
   })];
   if (routeMovement(factual)) {
@@ -78,14 +76,40 @@ export function phase3Writes(input) {
     for (const npcId of factual.consequence.movement.participants ?? []) {
       const npc = next.npcs?.find(({ instance_id: id }) => id === npcId);
       const before = state.npcs?.find(({ instance_id: id }) => id === npcId);
-      if (npc && npcId !== state.actor_id) updates.push(row('party_npcs', npcId,
-        { party_id: partyId, npc_id: npcId, anchor_id: npc.anchor_id,
+      if (npc && before != null && npcId !== state.actor_id) updates.push(row('party_npcs', npcId,
+        { party_id: partyId, npc_id: npcId,
+          anchor_id: npc.anchor_id,
+          run_id: npc.run_id ?? state.materialization_trace?.run_id,
+          profile_set_id: npc.profile_id,
+          profile_level: npc.profile_level,
+          identity_state: npc.identity_state,
           machine_state: npc.machine_state ?? before?.machine_state,
           semantic_state: {
             ...(before?.semantic_state ?? {}),
-            participant_slot_ref: before?.participant_slot_ref,
+            participant_slot_ref:
+              before?.participant_slot_ref ?? npc.participant_slot_ref,
+            location_profile_ref: npc.location_profile_ref,
+            zone_ref: npc.zone_ref,
             ...(npc.semantic_state ?? {})
           } }));
+    }
+    if (operationKind === 'first_entry') {
+      for (const npc of state.first_entry_preparation?.npcs ?? []) {
+        inserts.push(row('entity_placements', `npc:${npc.instance_id}`, {
+          party_id: partyId,
+          entity_kind: 'npc',
+          entity_id: npc.instance_id,
+          placement_kind: 'scene_position',
+          position_node_id:
+            state.first_entry_preparation.spatial_v3.target.position_id,
+          host_entity_ref: null,
+          occupies_capacity_units: 1,
+          visibility_modifier_ref: null,
+          interaction_profile_ref: null,
+          state_version: 1,
+          updated_change_set_id: changeSetId
+        }));
+      }
     }
     appendRouteBodyWrites({ updates, appends, partyId, state, next, factual,
       changeSetId, idemId, historyId: `body-history:${partyId}:trace-phase3:${turnNumber}` });
@@ -213,84 +237,4 @@ function appendPhase3SemanticConsequences({
       result_change_set_id: changeSetId,
       canonical_digest: canonicalDigest(conversation.check_result)
     }));
-}
-
-export function visibleEnvelopeFor({
-  partyId, nextVersion, turnNumber, changeSetId, idemId,
-  visibleContext, factual, phase3Contracts
-}) {
-  const payload = {
-    schema: 'temporal_visible_package.v1',
-    perceived_scene: visibleContext.visible_scene,
-    perceived_changes: visibleContext.visible_changes,
-    sensory_details: visibleContext.sensory_details,
-    visible_npcs: visibleContext.visible_npc,
-    visible_objects: visibleContext.visible_objects,
-    known_context: visibleContext.known_context,
-    uncertainties: visibleContext.uncertainties,
-    hypotheses: [],
-    player_safe_interruption: null,
-    allowed_action_affordances: []
-  };
-  const activity = phase3Contracts.activityPins.find(
-      ({ id }) => id === phase3ActivityRef(factual)
-  );
-  const dependencyPins = [{
-    dependency_role: 'source_authoring',
-    entity_ref: {
-      entity_kind: 'activity_profile',
-      entity_id: activity.id
-    },
-    version_pin: {
-      pin_kind: 'authoring_version',
-      authoring_version: String(activity.version),
-      state_version: null
-    }
-  }];
-  return {
-    package_id: `visible:${partyId}:trace-phase3:${turnNumber}`,
-    party_id: partyId,
-    turn_id: `turn:${partyId}:${turnNumber}`,
-    committed_state_version: String(nextVersion),
-    change_set_id: changeSetId,
-    package_digest: computeSpatialV3CanonicalDigest(payload),
-    visible_payload: payload,
-    presentation_status: 'pending',
-    projection_policy_ref: {
-      entity_ref: {
-        entity_kind: 'visibility_modifier',
-        entity_id: 'lower_dvina_trace_phase_3_visible_v1'
-      },
-      authoring_version: '1'
-    },
-    dependency_pins: {
-      pins: dependencyPins,
-      canonical_digest: canonicalDigest(dependencyPins)
-    },
-    idempotency_record_id: idemId
-  };
-}
-
-export function pendingScreenFor({ state, factual, visibleEnvelope }) {
-  const screen = {
-    version: 1,
-    schema: 'lower_dvina_trace_turn_screen',
-    scenario_id: 'lower_dvina_trace_v1',
-    party_id: state.party_id,
-    turn_id: factual.mode_resolution.turn_id,
-    turn_number: state.party_state.turn_number,
-    screen_status: 'committed_presentation_pending',
-    opening_screen_digest: state.opening_identity.opening_screen_digest,
-    current_projection_anchor: {
-      committed_state_version: state.party_state.state_version,
-      package_id: visibleEnvelope.package_id,
-      package_digest: visibleEnvelope.package_digest,
-      narration_output_digest: null
-    },
-    visible_context:
-      phase2VisibleContextFromPayload(visibleEnvelope.visible_payload),
-    main_prose: 'Факты хода сохранены; повествование ожидает повторной доставки.'
-  };
-  screen.screen_digest = phase2ScreenDigest(screen);
-  return screen;
 }

@@ -22,9 +22,9 @@ import {
 
 const release = Object.freeze({
   release_id: 'phase-1b-test-release',
-  world_revision_id: 'novgorod_spatial_v3_production_v4_candidate_001',
+  world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79'
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad'
 });
 const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'
@@ -75,18 +75,18 @@ test('trace dispatch commits before its safe screen', async () => {
     f.materializeCalls[0].materializer_version,
     TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION
   );
-  assert.equal(f.materializeCalls[0].scenario_definition_revision, 22);
+  assert.equal(f.materializeCalls[0].scenario_definition_revision, 24);
   assert.equal(
     f.materializeCalls[0].rng_algorithm_id,
     TRACE_PHASE_1B_APPROVED_RNG_ALGORITHM_ID
   );
   const session = f.repository.sessions.get(started.party_id);
   assert.equal(session.stage26_result.publication_binding_id,
-    'lower_dvina_trace_phase_1b_publication_v17');
-  assert.equal(session.stage26_result.publication_binding_revision, 17);
-  assert.equal(session.stage26_result.scenario_definition_revision, 22);
+    'lower_dvina_trace_phase_1b_publication_v19');
+  assert.equal(session.stage26_result.publication_binding_revision, 19);
+  assert.equal(session.stage26_result.scenario_definition_revision, 24);
   assert.equal(session.stage26_result.materializer_binding_id,
-    'lower_dvina_trace_phase_1a_materialization_bindings_v18');
+    'lower_dvina_trace_phase_1a_materialization_bindings_v20');
   const serialized = JSON.stringify(started);
   for (const forbidden of [
     'hidden_truth',

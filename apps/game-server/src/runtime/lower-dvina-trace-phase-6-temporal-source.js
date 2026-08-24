@@ -110,7 +110,7 @@ function validateNpcStateProjection({ candidate, resolution, before, after,
     const matching = writes.filter((write) => write.id === npcId
       && write.record?.party_id === after.party_id
       && write.record?.npc_id === npcId
-      && matchesPhysicalWrite(priorPhysical, nextPhysical, write.record));
+      && matchesPhysicalWrite(priorPhysical, nextPhysical, write.record, after));
     if (matching.length !== 1) fail(candidate,
       writeGapCode, {
         npc_id: npcId, matching_write_count: matching.length,
@@ -127,15 +127,23 @@ function physicalNpcState(npc) {
     machine_state: structuredClone(npc.machine_state ?? null) };
 }
 
-function matchesPhysicalWrite(prior, expected, record) {
+function matchesPhysicalWrite(prior, expected, record, state) {
   const anchorChanged = prior.anchor_id !== expected.anchor_id;
   const machineChanged = canonicalDigest(prior.machine_state)
     !== canonicalDigest(expected.machine_state);
-  return (!anchorChanged || record.anchor_id === expected.anchor_id)
+  const legacyAnchor = usesPreparedFirstEntry(state, expected.anchor_id)
+    ? null : expected.anchor_id;
+  return (!anchorChanged || record.anchor_id === legacyAnchor)
     && (!machineChanged || record.machine_state !== undefined
       && canonicalDigest(record.machine_state)
         === canonicalDigest(expected.machine_state))
     && (anchorChanged || machineChanged);
+}
+
+function usesPreparedFirstEntry(state, anchorId) {
+  const firstEntry = state.first_entry_preparation;
+  return firstEntry?.spatial_v3?.target?.status === 'prepared'
+    && anchorId === firstEntry.scene?.anchor?.instance_id;
 }
 
 function fail(candidate, code, details = {}) {

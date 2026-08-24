@@ -145,7 +145,7 @@ function appendNpcBodyWrites({ updates, state, next, partyId }) {
     if (prior && canonicalDigest(prior.machine_state)
         !== canonicalDigest(npc.machine_state)) updates.push(row('party_npcs',
       npc.instance_id, { party_id: partyId, npc_id: npc.instance_id,
-        anchor_id: npc.anchor_id, machine_state: npc.machine_state }));
+        machine_state: npc.machine_state }));
   }
 }
 

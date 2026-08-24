@@ -1,5 +1,6 @@
 import { deterministicInstanceId } from './core.js';
 import { failLowerDvinaTraceMaterialization as fail } from './lower-dvina-trace-contract.js';
+import { materializeS1FirstEntryPreparation } from './spatial-v3-s1-first-entry.js';
 
 export function materializeLowerDvinaTracePreparedCamp({
   input,
@@ -69,7 +70,23 @@ export function materializeLowerDvinaTracePreparedCamp({
       'Prepared camp NPC identities or capacity are invalid.'
     );
   }
-  return { scene, npcs };
+  if (input.scenario_definition_revision < 24) return { scene, npcs };
+  const firstEntry = materializeS1FirstEntryPreparation({
+    party_id: input.party_id,
+    binding: bundle.materialization_bindings.first_entry_preparation,
+    start_binding: bundle.materialization_bindings.start_spatial_binding,
+    source_g4_id: locationSelections.find(({ slot_key: key }) =>
+      key === bundle.materialization_bindings.start_spatial_binding
+        .location_profile_ref)?.selected?.g4_node_ref?.id,
+    scene,
+    npcs,
+    world_base_reference_snapshot: input.world_base_reference_snapshot
+  });
+  if (!firstEntry.ok) {
+    fail('TRACE_FIRST_ENTRY_S1_TOPOLOGY_INVALID',
+      'Approved first-entry S1 topology is incomplete.');
+  }
+  return { scene, npcs, first_entry_preparation: firstEntry.preparation };
 }
 
 export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, runId, participantSelections, locationSelections }) {
@@ -123,7 +140,7 @@ export function materializeLowerDvinaTracePreparedDryingShed({ input, bundle, ru
     controller_npc_id: ratsha.instance_id,
     use_state: rope.use_state
   };
-  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22].includes(input.scenario_definition_revision)) {
+  if ([12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(input.scenario_definition_revision)) {
     const template = requiredById(
       bundle.item_container_set.item_templates,
       'item_template_id',
@@ -179,7 +196,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   const placement = binding?.npc_placement;
   const bag = binding?.container_placement;
   const weapon = binding?.weapon_placement ?? null;
-  const weaponRequired = [16, 17, 18, 19, 20, 21, 22]
+  const weaponRequired = [16, 17, 18, 19, 20, 21, 22, 23, 24]
     .includes(input.scenario_definition_revision);
   const location = locationSelections.find(
     ({ slot_key: key }) => key === spatial?.location_profile_ref
@@ -323,7 +340,7 @@ export function materializeLowerDvinaTracePreparedStorehouse({
   };
   const weaponItem = weapon == null ? null : materializeStorehouseWeapon({
     input, bundle, runId, weapon, npc });
-  const packet = [17, 18, 19, 20, 21, 22].includes(input.scenario_definition_revision)
+  const packet = [17, 18, 19, 20, 21, 22, 23, 24].includes(input.scenario_definition_revision)
     ? materializeHiddenPacket({ input, bundle, runId, container, npc,
       roadBagResource })
     : null;

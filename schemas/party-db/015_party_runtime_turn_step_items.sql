@@ -121,7 +121,8 @@ BEGIN
   IF jsonb_array_length(source_refs) = 0 THEN
     RETURN false;
   END IF;
-  FOR source_ref IN SELECT value FROM jsonb_array_elements(source_refs)
+  FOR source_ref IN SELECT entry.value
+    FROM jsonb_array_elements(source_refs) AS entry(value)
   LOOP
     IF NOT party_runtime.runtime_item_jsonb_exact_text(source_ref) THEN
       RETURN false;

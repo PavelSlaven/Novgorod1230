@@ -73,14 +73,36 @@ const actionProductionSql = readFileSync(
   new URL('../../schemas/party-db/027_party_runtime_action_production.sql', import.meta.url),
   'utf8'
 );
-test('target chain appends migrations 011 through 027 in exact order', () => {
-  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 27);
-  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-17), [sql,
+const spatialSemanticSql = readFileSync(
+  new URL('../../schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql', import.meta.url),
+  'utf8'
+);
+const snapshotValidatorAliasSql = readFileSync(
+  new URL('../../schemas/party-db/030_party_runtime_snapshot_validator_alias.sql', import.meta.url),
+  'utf8'
+);
+const localFireSql = readFileSync(
+  new URL('../../schemas/party-db/028_party_runtime_local_exact_fire.sql', import.meta.url),
+  'utf8'
+);
+test('target chain appends migrations 011 through 030 in exact order', () => {
+  assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 30);
+  assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-20), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,
     combatSessionSql, actorEquipmentSql, ordinaryMaterializationSql,
     ordinaryCommitSql, ordinaryEnablementSql, ordinaryWorldItemsSql,
-    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql]);
+    finiteResourceSql, existingContainerOrdinarySql, actionProductionSql, localFireSql,
+    spatialSemanticSql, snapshotValidatorAliasSql]);
+});
+
+test('015 and 030 qualify jsonb array entry values in snapshot validators', () => {
+  for (const validatorSql of [turnStepItemsSql, snapshotValidatorAliasSql]) {
+    assert.match(validatorSql,
+      /FOR source_ref IN SELECT entry\.value[\s\S]*jsonb_array_elements\(source_refs\) AS entry\(value\)/u);
+    assert.doesNotMatch(validatorSql,
+      /FOR source_ref IN SELECT value FROM jsonb_array_elements\(source_refs\)/u);
+  }
 });
 
 test('027 adds only A1 item versioning without parallel authority or ledger',

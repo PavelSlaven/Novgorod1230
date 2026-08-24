@@ -10,6 +10,10 @@ import {
   loadInitialTracePhase2State
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-initial-state.js';
 import {
+  normalizeJourneyLocation,
+  normalizeJourneyLocationRows
+} from '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
+import {
   buildCommittedInventoryInput
 } from '../src/runtime/lower-dvina-trace-committed-inventory.js';
 import { validateInventoryTopology } from '@rus/items-property';
@@ -163,6 +167,23 @@ test('initial Phase 2 state rehydrates persisted container placements', async ()
   }]);
   assert.equal(validateInventoryTopology(
     buildCommittedInventoryInput(state)).pass, true);
+});
+
+test('Phase 2 normalizes persisted journey version and rejects malformed rows', () => {
+  assert.deepEqual(normalizeJourneyLocation({ id: 'journey:player',
+    scene_position_id: 'position:shore', state_version: '4' }), {
+    id: 'journey:player', scene_position_id: 'position:shore', state_version: 4
+  });
+  for (const row of [
+    { id: 'journey:player', scene_position_id: 'position:shore', state_version: '4.0' },
+    { id: 'journey:player', scene_position_id: '', state_version: '4' },
+    { id: 'journey:player', scene_position_id: 'position:shore', state_version: '-1' }
+  ]) assert.throws(() => normalizeJourneyLocation(row));
+  assert.equal(normalizeJourneyLocationRows([]), null);
+  assert.throws(() => normalizeJourneyLocationRows([
+    { id: 'journey:one', scene_position_id: 'position:shore', state_version: '4' },
+    { id: 'journey:two', scene_position_id: 'position:shore', state_version: '4' }
+  ]));
 });
 
 function localSlotCheck() {

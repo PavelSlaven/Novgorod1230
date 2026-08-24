@@ -2,15 +2,68 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { nextPhase4State } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
+import { routeToShedEffect } from
+  '../src/runtime/lower-dvina-trace-phase-4-effects.js';
+import { phase4Writes } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-4-write-projection.js';
 import { initializeTracePhase4Combat } from
   '../src/runtime/lower-dvina-trace-phase-4-combat-initialization.js';
+import { resolveTracePhase4Contracts } from
+  '../src/runtime/lower-dvina-trace-phase-4-contracts.js';
+import { projectLowerDvinaTraceS1Capability } from
+  '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 import {
   digest,
   phase4ArrivalState,
   phase4Factual,
+  phase3State,
   ref,
+  revision14Bundle,
   runPhase4
 } from './lower-dvina-trace-m2-conversation-fixture.js';
+
+test('Phase 4 shed handoff drops stale camp S1 position marker', () => {
+  const state = phase3State();
+  state.position = { ...state.position, position_id: 'position:camp',
+    g6_id: 'g6:camp' };
+  state.spatial_semantic = [{ envelope_ref: 'envelope:camp',
+    status: 'committed', capacity_total: 1, consumed_count: 0,
+    envelope: { position_ref: 'position:camp' }, resolutions: [] }];
+  state.route_knowledge = ['trace_ld_v1_route_camp_to_shed'];
+  const contracts = resolveTracePhase4Contracts({ state,
+    bundle: revision14Bundle });
+  const factual = {
+    player_input: { request_id: 'request:phase4-shed',
+      idempotency_key: 'idempotency:phase4-shed', raw_text: 'Идти к сушильне.' },
+    mode_resolution: { option_id: contracts.ids.routeOption,
+      decision_trace: { action_set_digest: 'phase4-shed' } },
+    consequence: routeToShedEffect({ contracts, inputDigest: digest('s'), state,
+      playerInput: { idempotency_key: 'idempotency:phase4-shed' } })
+  };
+  factual.time_update = { clock_after:
+    factual.consequence.movement.traversal.clock_update.world_time_after };
+  const next = nextPhase4State({ state, factual,
+    nextVersion: state.party_state.state_version + 1,
+    turnNumber: state.party_state.turn_number + 1, inputDigest: digest('s'),
+    changeSetId: 'change:phase4-shed', contracts,
+    rootTurnId: 'turn:phase4-shed', workingRevision: 0 });
+
+  assert.equal(next.position.location_ref, contracts.ids.shed);
+  assert.equal(Object.hasOwn(next.position, 'position_id'), false);
+  assert.equal(Object.hasOwn(next.position, 'g6_id'), false);
+  const writes = phase4Writes({ partyId: state.party_id, state, next, factual,
+    visibleEnvelope: null, pendingScreen: null,
+    nextVersion: next.party_state.state_version,
+    turnNumber: next.party_state.turn_number, changeSetId: 'change:phase4-shed',
+    idemId: 'idem:phase4-shed', contracts, scenarioRevision: 14 });
+  assert.equal(writes.updates.find(({ target_table: table }) =>
+    table === 'party_positions').record.g5_anchor_id,
+  next.position.g5_anchor_id);
+  assert.equal(Object.hasOwn(projectLowerDvinaTraceS1Capability({
+    playerSafeState: { known_context: [] }, committedState: next,
+    resolverAvailable: true
+  }), 'spatial_semantic'), false);
+});
 
 test('Phase 4 combat snapshot keeps authoritative semantic working revision',
   async () => {

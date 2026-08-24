@@ -21,7 +21,8 @@ export function collectTurnStepExecutionResult({
   preparedEffects,
   ordinaryPlans,
   actionProducedPlans,
-  localFirePlans
+  localFirePlans,
+  spatialSemanticPlans
 }) {
   if (!plain(applied) || !plain(applied.working_projection)) {
     throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
@@ -84,6 +85,13 @@ export function collectTurnStepExecutionResult({
         'Local-fire atomic plans must be an ordered array.');
     }
     localFirePlans.push(...structuredClone(applied.local_fire_atomic_write_plans));
+  }
+  if (applied.spatial_semantic_atomic_write_plan != null) {
+    if (!Array.isArray(spatialSemanticPlans) || spatialSemanticPlans.length !== 0) {
+      throw turnFailure('TURN_STEP_EXECUTION_RESULT_INVALID',
+        'A turn step can carry at most one spatial semantic atomic plan.');
+    }
+    spatialSemanticPlans.push(structuredClone(applied.spatial_semantic_atomic_write_plan));
   }
   return {
     projection: structuredClone(applied.working_projection),

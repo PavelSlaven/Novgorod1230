@@ -12,6 +12,8 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
+  './lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../lower-dvina-trace-world-process-llm.js';
 import { createOrdinaryMaterializationModel } from
@@ -49,6 +51,7 @@ export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
   ordinaryContainerContentsProfile, ordinaryStageBApproval,
   actionProductionProfile, localFireProfile,
+  spatialSemanticProfile,
   createPhase2RuntimeFactory, createNpcRuntimePorts
 }) {
   const decisionSecret = String(
@@ -81,6 +84,17 @@ export function createTraceTurnRuntime({
     : createLowerDvinaTraceF1ProductionResolverFactory({ pool: partyPool,
       loadedProfile: localFireProfile,
       worldProcessStepModel:createLowerDvinaTraceWorldProcessStepModel({roleRunner}) });
+  const activeSpatialSemanticProfile = spatialSemanticProfile?.schema
+      === 'rus.lower_dvina_trace_s1_loaded_profile.v1'
+    && spatialSemanticProfile.profile?.schema
+      === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
+    && spatialSemanticProfile.profile.status === 'approved'
+    && spatialSemanticProfile.profile.revision === 3
+    && spatialSemanticProfile.profile.scenario_definition_revision === 24
+    ? spatialSemanticProfile : null;
+  const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null
+    ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool, roleRunner })
+    : null;
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -111,6 +125,8 @@ export function createTraceTurnRuntime({
     actionProductionProfile,
     createTurnStepWorldProcessResolver: localFireResolverFactory,
     localFireProfile,
+    createTurnStepSpatialSemanticResolver: spatialSemanticResolverFactory,
+    spatialSemanticProfile: activeSpatialSemanticProfile,
     createTurnStepAmbientOrdinaryPortionAdmission: ({ committedState }) =>
       createLowerDvinaTraceO2aAmbientPort({
         profile: ordinaryMaterializationProfile, committedState

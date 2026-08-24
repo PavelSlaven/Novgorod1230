@@ -27,9 +27,10 @@ import { createM2ConversationModels } from
   '../../apps/game-server/test/lower-dvina-trace-m2-conversation-fixture.js';
 import { createLowerDvinaTraceTurnStepTestModel } from
   '../../apps/game-server/test/lower-dvina-trace-turn-step-model-fixture.js';
+import { installLowerDvinaTraceV5World, lowerDvinaTraceV5World as world } from
+  '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 
 const docker = (args) => spawnSync('docker', args, { encoding: 'utf8', timeout: 45_000 });
-const world = Object.freeze({ revision: 'novgorod_spatial_v3_production_v4_candidate_001', digest: 'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79', manifest: '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb' });
 
 test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks and rollback', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker is required for isolated Phase 6 PostgreSQL integration');
@@ -40,7 +41,7 @@ test('Phase 6 PostgreSQL carry persists exact terminal, restart/resume, rechecks
   await waitForPostgres(name, 'phase6');
   const port = Number(docker(['port', name, '5432']).stdout.match(/:(\d+)\s*$/u)?.[1]);
   pool = new pg.Pool({ host: '127.0.0.1', port, user: 'phase6', password: 'local_only', database: 'phase6', max: 8 });
-  await installSchemas(pool); await installWorldLineage(pool);
+  await installSchemas(pool); await installLowerDvinaTraceV5World(pool);
   const pins = await runtimePins();
 
   const counters = { rng_factories: 0, rng_draws: 0, now: 0 };
@@ -288,17 +289,18 @@ async function assertSameTimeHazardCascade(pool, pins) {
       const phase6State = structuredClone(projection.phase6_state);
       const replacement = actor(phase6State,
         selectedParticipatingFisher(phase6State));
-      replacement.anchor_id = phase6State.prepared_scenes.find(
+      const camp = phase6State.prepared_scenes.find(
         ({ location_profile_ref: ref }) =>
           ref === 'trace_ld_v1_loc_fishing_camp'
-      ).anchor.instance_id;
+      ) ?? phase6State.first_entry_preparation?.scene;
+      replacement.anchor_id = camp.anchor.instance_id;
       const eventProposal = resolvedEventProposal(candidate, projection);
       const writeSet = {
         appends: [], inserts: [], deletes: [],
         updates: [{ target_table: 'party_npcs', id: replacement.instance_id,
           record: { party_id: phase6State.party_id,
             npc_id: replacement.instance_id,
-            anchor_id: replacement.anchor_id } }]
+            anchor_id: null } }]
       };
       return { disposition: 'execute', proposals: [eventProposal, {
         proposal_id: `hazard:${candidate.boundary_id}`,
@@ -334,9 +336,8 @@ async function assertSameTimeHazardCascade(pool, pins) {
     false);
   assert.deepEqual(body(paused), [79, 35, 57]);
   const replacement = actor(paused, selectedParticipatingFisher(paused));
-  assert.equal(replacement.anchor_id,
-    paused.prepared_scenes.find(({ location_profile_ref: ref }) =>
-      ref === 'trace_ld_v1_loc_fishing_camp').anchor.instance_id);
+  assert.equal(replacement.anchor_id, null,
+    'legacy NPC projection has no modern first-entry anchor');
   assert.equal(await boundaryStatus(pool, partyId), 'resolved');
   assert.ok(paused.phase6_history[0].attempt.processed_boundary_ids.includes(
     `event:${partyId}:phase6-interruption:reaction`
@@ -655,5 +656,4 @@ async function boundaryStatus(pool, partyId) {
 }
 function narration(request_id) { return { version: 1, schema: 'narration_flow_result', request_id, surface: 'turn', status: 'approved', pass: true, approved_output: { version: 1, schema: 'narration_output', output_id: `narration:${request_id}`, prose: 'Факты сохранены.', action_options: [], used_references: [], self_check: { no_new_world_facts: true } }, final_audit: { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: [] }, repair_request: null, generation_history: [], audit_history: [], repair_history: [], diagnostics: {} }; }
 async function installSchemas(pool) { const files = (await readdir('schemas/party-db')).filter((file) => /^\d+.*\.sql$/u.test(file)).sort(); const catalogMigrationIndex = files.findIndex((file) => file.startsWith('012_')); assert.equal(catalogMigrationIndex, 11); for (const file of files.slice(0, catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); assert.equal((await runPartyRuntimeCatalogMigration(pool)).status, 'applied'); for (const file of files.slice(catalogMigrationIndex)) await pool.query(await readFile(`schemas/party-db/${file}`, 'utf8')); }
-async function installWorldLineage(pool) { await pool.query('CREATE SCHEMA IF NOT EXISTS world_base'); await pool.query('CREATE TABLE world_base.spatial_v3_world_revisions (id text PRIMARY KEY,parent_revision_id text REFERENCES world_base.spatial_v3_world_revisions(id),catalog_digest text NOT NULL,status text NOT NULL)'); await pool.query("INSERT INTO world_base.spatial_v3_world_revisions (id,parent_revision_id,catalog_digest,status) VALUES ('novgorod_spatial_v3_target_contract_approval_001',NULL,'0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e','approved'),('novgorod_spatial_v3_production_v2_candidate_001','novgorod_spatial_v3_target_contract_approval_001','fd75d9cb1ad0e949ff3b0bb5ef044e510f340a967f43867e9c4d41c16ba9f255','approved'),('novgorod_spatial_v3_production_v3_candidate_001','novgorod_spatial_v3_production_v2_candidate_001','1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e','approved'),('novgorod_spatial_v3_production_v4_candidate_001','novgorod_spatial_v3_production_v3_candidate_001','acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79','approved')"); }
 async function waitForPostgres(name, user) { for (let i = 0; i < 30; i += 1) { if (docker(['exec', name, 'pg_isready']).status === 0 && docker(['exec', name, 'psql', '-U', user, '-d', user, '-c', 'SELECT 1']).status === 0) { await new Promise((resolve) => setTimeout(resolve, 750)); return; } await new Promise((resolve) => setTimeout(resolve, 500)); } throw new Error('PostgreSQL did not become ready'); }

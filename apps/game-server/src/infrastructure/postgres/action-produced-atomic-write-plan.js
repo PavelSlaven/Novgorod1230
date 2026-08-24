@@ -284,7 +284,7 @@ function validatePlan(value) {
   }
   if (value.result_items.length > 0
       && (destination === null || !actionProducedDestinationFits(destination,
-        value.source_updates, value.result_items))) {
+        value.source_updates, value.result_items, value.source_pins))) {
     fail('ACTION_PRODUCED_DESTINATION_CAPACITY');
   }
   const expectedUpdates = deriveSourceUpdates(proposal, value.source_pins);

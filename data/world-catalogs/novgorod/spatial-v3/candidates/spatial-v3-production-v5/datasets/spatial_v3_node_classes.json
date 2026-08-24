@@ -1,0 +1,12 @@
+[
+  {"node_id":"region_novgorod_land","node_version":4,"category_id":"spatial.g0.historical_geographic_region","class_ordinal":0},
+  {"node_id":"gn_nov_g1_xp017_yp026","node_version":4,"category_id":"spatial.g1.territorial_grid_cell","class_ordinal":0},
+  {"node_id":"gn_nov_g2_xp017_yp026_r2_dry_ridge_belt","node_version":4,"category_id":"spatial.g2.territorial_zone","class_ordinal":0},
+  {"node_id":"gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","node_version":4,"category_id":"spatial.g3.route_site","class_ordinal":0},
+  {"node_id":"g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace","node_version":4,"category_id":"spatial.g4.sector","class_ordinal":0},
+  {"node_id":"gn_nov_g2_xp017_yp026_r2_vikhtuy_local_area","node_version":4,"category_id":"spatial.g2.territorial_zone","class_ordinal":0},
+  {"node_id":"gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","node_version":4,"category_id":"spatial.g3.route_site","class_ordinal":0},
+  {"node_id":"g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach","node_version":4,"category_id":"spatial.g4.sector","class_ordinal":0},
+  {"node_id":"trace_ld_v1_g5_wreck_shore","node_version":1,"category_id":"spatial.g5.parcel","class_ordinal":0},
+  {"node_id":"trace_ld_v1_g5_fishing_camp","node_version":1,"category_id":"spatial.g5.compound","class_ordinal":0}
+]

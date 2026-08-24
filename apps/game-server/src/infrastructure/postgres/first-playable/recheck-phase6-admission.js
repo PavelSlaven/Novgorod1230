@@ -116,7 +116,19 @@ async function recheckCarriers(transaction, partyId, check) {
     check.active_carrier_snapshots.flatMap(({ container_ids: ids }) => ids)
   )];
   const [items, containers] = await sequential(transaction, [
-    [`SELECT i.item_id,i.template_id,i.quantity,i.state,
+    [`WITH RECURSIVE carrier_containers(container_id) AS (
+         SELECT container_id
+           FROM party_runtime.party_containers
+          WHERE party_id=$1 AND (holder_npc_id=ANY($2::text[])
+             OR holder_character_id=$3 OR container_id=ANY($5::text[]))
+         UNION
+         SELECT child.container_id
+           FROM party_runtime.party_containers child
+           JOIN carrier_containers parent
+             ON parent.container_id=child.parent_container_id
+          WHERE child.party_id=$1
+       )
+       SELECT i.item_id,i.template_id,i.quantity,i.state,
             p.anchor_id,p.container_id,p.holder_npc_id,
             p.holder_character_id,p.physical_position,
             p.equipment_slot_category_id
@@ -125,16 +137,29 @@ async function recheckCarriers(transaction, partyId, check) {
          ON p.party_id=i.party_id AND p.item_id=i.item_id
       WHERE i.party_id=$1 AND (p.holder_npc_id=ANY($2::text[])
          OR p.holder_character_id=$3 OR i.item_id=ANY($4::text[])
-         OR p.container_id=ANY($5::text[]))
+         OR p.container_id IN (SELECT container_id FROM carrier_containers))
       ORDER BY i.item_id FOR UPDATE OF i,p`,
       [partyId, npcIds, playerId, expectedItemIds, expectedContainerIds]],
-    [`SELECT container_id,template_id,anchor_id,parent_container_id,
-            holder_npc_id,holder_character_id,physical_position,
-            equipment_slot_category_id,state
-       FROM party_runtime.party_containers
-      WHERE party_id=$1 AND (holder_npc_id=ANY($2::text[])
-         OR holder_character_id=$3 OR container_id=ANY($4::text[]))
-      ORDER BY container_id FOR UPDATE`,
+    [`WITH RECURSIVE carrier_containers(container_id) AS (
+         SELECT container_id
+           FROM party_runtime.party_containers
+          WHERE party_id=$1 AND (holder_npc_id=ANY($2::text[])
+             OR holder_character_id=$3 OR container_id=ANY($4::text[]))
+         UNION
+         SELECT child.container_id
+           FROM party_runtime.party_containers child
+           JOIN carrier_containers parent
+             ON parent.container_id=child.parent_container_id
+          WHERE child.party_id=$1
+       )
+       SELECT c.container_id,c.template_id,c.anchor_id,c.parent_container_id,
+              c.holder_npc_id,c.holder_character_id,c.physical_position,
+              c.equipment_slot_category_id,c.state
+         FROM party_runtime.party_containers c
+         JOIN carrier_containers carried
+           ON carried.container_id=c.container_id
+       WHERE c.party_id=$1
+        ORDER BY c.container_id FOR UPDATE OF c`,
       [partyId, npcIds, playerId, expectedContainerIds]]
   ]);
   const state = committedInventoryState({ partyId, playerId, check,
@@ -146,7 +171,7 @@ async function recheckCarriers(transaction, partyId, check) {
     try {
       const actual = carrierInventorySnapshot({ state,
         actorId: expected.actor_id, excludedAssemblyItemIds: excluded });
-      return actual.canonical_digest === expected.canonical_digest;
+      return actual?.canonical_digest === expected.canonical_digest;
     } catch {
       return false;
     }
@@ -176,10 +201,20 @@ function committedInventoryState({ partyId, playerId, check, items,
       container_id: row.container_id, parent_container_id:
         row.parent_container_id, ...placement(row)
     })),
-    container_profiles: containers.map((row) => ({
-      ...(row.state?.inventory_profile_snapshot ?? {}),
-      template_id: row.template_id
-    }))
+    container_profiles: containers.map(containerProfile)
+  };
+}
+
+function containerProfile(row) {
+  const context = row.state?.ordinary_contents_context;
+  const profile = row.state?.inventory_profile_snapshot
+    ?? context?.container_inventory_profile ?? {};
+  return {
+    ...profile,
+    ...(profile.external_hand_cost == null
+      && context?.mechanics_policy?.max_external_hand_cost === 0
+      ? { external_hand_cost: 0 } : {}),
+    template_id: row.template_id
   };
 }
 

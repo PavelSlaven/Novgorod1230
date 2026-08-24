@@ -13,9 +13,23 @@ export function createLowerDvinaTraceTurnStepTestModel({
   }
   return (request) => {
     onCall(request);
-    if (generalLook(request)) return directPlan(request);
+    if (generalLook(request)) {
+      return spatialLook(request) ?? directPlan(request);
+    }
     return domainPlan(request, operationFor(request));
   };
+}
+
+function spatialLook(request) {
+  const marker = request?.player_safe_state?.spatial_semantic;
+  if (marker?.semantic_grounding_available !== true
+      || typeof marker.position_ref !== 'string' || marker.position_ref.length === 0) {
+    return null;
+  }
+  return domainPlan(request, {
+    op: 'request_discovery', actor_ref: requiredActorRef(request),
+    discovery_kind: 'look', target_refs: [marker.position_ref], query: 'осмотреться'
+  });
 }
 
 function generalLook(request) {

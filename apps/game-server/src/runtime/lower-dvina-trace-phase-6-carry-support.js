@@ -125,7 +125,7 @@ function resourceProof(item) {
 function canonicalResourceProof(value) {
   return canonicalDigest(value ?? null);
 }
-export function requiredCamp(state, contracts) { const values = (state.prepared_scenes ?? []).filter((scene) => scene.location_profile_ref === contracts.terminalPlacement.group.location_ref); const camp = values[0]; if (values.length !== 1 || camp?.anchor?.template_id !== contracts.terminalPlacement.group.anchor_template_ref || !camp.node?.instance_id || !camp.anchor?.instance_id) fail('TRACE_PHASE_6_TERMINAL_POSITION_GAP'); return camp; }
+export function requiredCamp(state, contracts) { const values = (state.prepared_scenes ?? []).filter((scene) => scene.location_profile_ref === contracts.terminalPlacement.group.location_ref); const camp = values.length === 1 ? values[0] : values.length === 0 && state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared' && state.first_entry_preparation.scene?.location_profile_ref === contracts.terminalPlacement.group.location_ref ? state.first_entry_preparation.scene : null; if (camp?.anchor?.template_id !== contracts.terminalPlacement.group.anchor_template_ref || !camp.node?.instance_id || !camp.anchor?.instance_id) fail('TRACE_PHASE_6_TERMINAL_POSITION_GAP'); return camp; }
 export function bodyEffectsBySubject({ state, contracts, eremey, ratsha, replacement, onisim }) {
   const onisimState = onisim.machine_state?.body_condition?.state;
   const onisimFact = onisimState === 'stabilized_unable_to_walk' ? 'onisim_stabilized_unable_to_walk' : onisimState === 'injured_unable_to_walk' ? 'onisim_first_aid_completed_without_stabilization' : null;

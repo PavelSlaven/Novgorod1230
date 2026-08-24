@@ -3,6 +3,7 @@ import { copy, digest, endpoint, exactSlots, failure, freeze, same, sameVersione
 // Kept during the target-only migration so the P08 public-surface contract
 // remains independently fail-closed until a caller deliberately uses P20 APIs.
 export { createTopologyProposalValidator } from './spatial-v3-ports.js';
+export { materializeS1FormalSpatialProposal, materializeS1OpenOneSpaceTopology } from './spatial-v3-s1-first-entry.js';
 
 
 /**

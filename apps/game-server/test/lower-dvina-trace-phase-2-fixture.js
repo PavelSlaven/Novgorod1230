@@ -1,85 +1,35 @@
 import {
-  LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
-  materializeLowerDvinaTracePartyInstance
-} from '@rus/materialization/internal/lower-dvina-trace-phase-1a';
-import {
-  canonicalDigest,
-  MATERIALIZER_VERSION,
-  RNG_VERSION
-} from '@rus/materialization';
-import { materializeInitialActorEquipment } from '@rus/new-game';
+  approvedNarration,
+  phase1AInstance,
+  replaceState,
+  unexpectedNpcAutonomousModel,
+  unexpectedNpcCombatModel,
+  unexpectedNpcSemanticModel,
+  unexpectedPlayerConversationModel,
+} from './lower-dvina-trace-phase-2-fixture-support.js';
+import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
-import {
-  createLowerDvinaTracePhase2Runtime
-} from '../src/runtime/lower-dvina-trace-phase-2.js';
-import { commitGeneric } from
-  './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
-import {
-  loadLowerDvinaTraceMaterializationBundle,
-  resolveLowerDvinaTraceStartTimestamp
-} from '../src/internal/lower-dvina-trace-phase-1a.js';
-import {
-  lowerDvinaTracePhase1ADomainPin
-} from '../../../test/fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
-import { nextState as nextPhase3State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-3-state.js';
-import { nextPhase4State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
-import { nextPhase5State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-5-state.js';
-import { nextPhase6State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
-import { nextPhase7State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-state.js';
-import { nextPhase8AccusationState } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-8-state.js';
-import { nextCombatState } from
-  '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
-import { nextPhase9State } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-9-state.js';
-import { buildTracePhase10Completion } from
-  '../src/runtime/lower-dvina-trace-phase-10-completion.js';
-import { nextPhase10State, phase10VisibleEnvelope } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
-import { phase2VisibleContextFromPayload } from
-  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
-import { fixturePhase2VisibleState } from
-  './lower-dvina-trace-phase-2-fixture-current-visible.js';
-
-export const bundle = await loadLowerDvinaTraceMaterializationBundle();
-export const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
-  scenarioDefinitionRevision: 9
+import { createLowerDvinaTracePhase2Runtime } from '../src/runtime/lower-dvina-trace-phase-2.js';
+import { commitGeneric } from './lower-dvina-trace-phase-2-fixture-turn-step-commit.js';
+import { loadLowerDvinaTraceMaterializationBundle } from '../src/internal/lower-dvina-trace-phase-1a.js';
+import { nextState as nextPhase3State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-3-state.js';
+import { nextPhase4State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-4-state.js';
+import { nextPhase5State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-5-state.js';
+import { nextPhase6State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-6-state.js';
+import { nextPhase7State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-7-state.js';
+import { nextPhase8AccusationState } from '../src/infrastructure/postgres/lower-dvina-trace-phase-8-state.js';
+import { nextCombatState } from '../src/infrastructure/postgres/lower-dvina-trace-combat-state.js';
+import { nextPhase9State } from '../src/infrastructure/postgres/lower-dvina-trace-phase-9-state.js';
+import { buildTracePhase10Completion } from '../src/runtime/lower-dvina-trace-phase-10-completion.js';
+import { nextPhase10State, phase10VisibleEnvelope } from '../src/infrastructure/postgres/lower-dvina-trace-phase-10-writes.js';
+import { phase2VisibleContextFromPayload } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
+import { fixturePhase2VisibleState } from './lower-dvina-trace-phase-2-fixture-current-visible.js';
+const bundle = await loadLowerDvinaTraceMaterializationBundle();
+const bundle9 = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 9,
 });
-export const loadScenarioBundle = (scenarioDefinitionRevision) =>
-  loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision });
-
-function phase1AInstance(partyId, scenarioBundle = bundle) {
-  return materializeInitialActorEquipment(
-    materializeLowerDvinaTracePartyInstance({
-    party_id: partyId,
-    scenario_id: 'lower_dvina_trace_v1',
-    scenario_definition_revision: scenarioBundle.definition_revision,
-    scenario_manifest_digest: scenarioBundle.manifest_digest,
-    world_revision_id:
-      scenarioBundle.location_topology_set.spatial_source_ref.world_revision_id,
-    world_catalog_digest:
-      scenarioBundle.location_topology_set.spatial_source_ref
-        .world_revision_catalog_digest,
-    domain_catalog_pin: lowerDvinaTracePhase1ADomainPin(scenarioBundle),
-    materializer_version: MATERIALIZER_VERSION,
-    rng_algorithm_id: RNG_VERSION,
-    seed_context: LOWER_DVINA_TRACE_ACCEPTANCE_SEED_CONTEXT,
-    idempotency_key: `phase1a:${partyId}`,
-    trigger: 'new_game',
-    occurrence: 0,
-    existing_party_state: { baseline_exists: false },
-    scenario_bundle: scenarioBundle,
-      resolve_timestamp: resolveLowerDvinaTraceStartTimestamp
-    })
-  );
-}
-
-export function fixture({
+const loadScenarioBundle = (scenarioDefinitionRevision) => loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision });
+function fixture({
   semantic = 'resolved',
   narrationFails = false,
   scenarioBundle = bundle,
@@ -93,107 +43,107 @@ export function fixture({
   npcAutonomousModel = unexpectedNpcAutonomousModel,
   npcCombatModel = unexpectedNpcCombatModel,
   playerSafeStateProjector = null,
-  temporalAdvanceOwner = null
+  temporalAdvanceOwner = null,
+  actionProductionProfile = null,
+  createTurnStepActionProductionOwner = null,
+  localFireProfile = null,
+  createTurnStepWorldProcessResolver = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle);
-  const state = committedState == null ? {
-    party_id: partyId,
-    actor_id: instance.immediate.player.instance_id,
-    party_state: {
-      state_version: 1,
-      turn_number: 0,
-      session_state_version: 1,
-      clock_state_version: 1,
-      body_state_version: 1
-    },
-    player_profile: instance.immediate.player.dossier,
-    body_state: {
-      ...instance.immediate.body.values,
-      active_conditions:
-        instance.immediate.body.condition_bindings.map((condition, ordinal) => ({
-          id: condition.state,
-          storage_condition_id: `condition-phase2-${ordinal}`,
-          condition_profile_ref: structuredClone(condition),
-          status: 'active',
-          state_version: 1
-        }))
-    },
-    body_effect_history: [],
-    position: {
-      ...instance.immediate.spatial.position,
-      location_ref: 'trace_ld_v1_loc_wreck_shore'
-    },
-    ...fixturePhase2VisibleState(instance, materializationBundle),
-    materialization_trace: structuredClone(instance.trace),
-    prepared_scenes:
-      structuredClone(instance.immediate.prepared_scenes ?? []),
-    npcs: structuredClone(instance.immediate.npcs ?? []),
-    promise_instances:
-      structuredClone(instance.immediate.promise_instances ?? []),
-    interactions: [],
-    route_history: [],
-    route_knowledge: [],
-    sealed_selections: instance.sealed_selections,
-    policy_pins: structuredClone(instance.policy_profile_pins),
-    relevant_events: [],
-    historical_events: [],
-    temporal_boundary_candidates: [],
-    items: instance.immediate.items.map((item) => ({
-      item_id: item.instance_id,
-      template_id: item.template_id,
-      profile_id: item.profile_id,
-      quantity: item.quantity,
-      condition_state: item.condition_state,
-      legal_status: item.legal_status,
-      claim_state: item.claim_state,
-      placement: {
-        anchor_id: item.anchor_id ?? null,
-        container_id: item.container_id ?? null,
-        holder_character_id: item.holder_character_id ?? null,
-        holder_npc_id: item.holder_npc_id ?? null,
-        physical_position: item.physical_position ?? null
-      },
-      ownership: {
-        owner_character_id: item.owner_character_id ?? null,
-        owner_external_ref: item.owner_external_ref ?? null,
-        controller_character_id: item.controller_character_id ?? null,
-        owner_npc_id: item.owner_npc_id ?? null,
-        controller_npc_id: item.controller_npc_id ?? null,
-        claim_state: item.claim_state
-      },
-      state: structuredClone(item.state)
-    })),
-    containers: (instance.immediate.containers ?? []).map((container) => ({
-      container_id: container.instance_id,
-      template_id: container.template_id,
-      anchor_id: container.anchor_id ?? null,
-      holder_npc_id: container.holder_npc_id ?? null,
-      closure_state: container.closure_state,
-      state: structuredClone(container.state),
-      state_version: 1
-    })),
-    knowledge: [],
-    opening_identity: {
-      opening_screen_digest: 'a'.repeat(64)
-    },
-    relevant_hidden_state: {
-      culprit: 'must-not-reach-llm',
-      motive: 'must-not-reach-llm'
-    },
-    temporal_source_proof: {
-      version: 1,
-      schema: 'lower_dvina_trace_phase_2_temporal_source_proof',
-      owner: '@rus/time-events-history/temporal-boundaries',
-      same_time_cascade_owner:
-        '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
-      admission_policy:
-        'fail_closed_before_activity_when_unbound_candidate_exists',
-      pending_event_count: 0,
-      active_schedule_count: 0,
-      candidate_count: 0
-    }
-  } : structuredClone(committedState);
+  const state =
+    committedState == null
+      ? {
+          party_id: partyId,
+          actor_id: instance.immediate.player.instance_id,
+          party_state: {
+            state_version: 1,
+            turn_number: 0,
+            session_state_version: 1,
+            clock_state_version: 1,
+            body_state_version: 1,
+          },
+          player_profile: instance.immediate.player.dossier,
+          body_state: {
+            ...instance.immediate.body.values,
+            active_conditions: instance.immediate.body.condition_bindings.map((condition, ordinal) => ({
+              id: condition.state,
+              storage_condition_id: `condition-phase2-${ordinal}`,
+              condition_profile_ref: structuredClone(condition),
+              status: 'active',
+              state_version: 1,
+            })),
+          },
+          body_effect_history: [],
+          position: {
+            ...instance.immediate.spatial.position,
+            location_ref: 'trace_ld_v1_loc_wreck_shore',
+          },
+          ...fixturePhase2VisibleState(instance, materializationBundle),
+          materialization_trace: structuredClone(instance.trace),
+          prepared_scenes: structuredClone(instance.immediate.prepared_scenes ?? []),
+          npcs: structuredClone(instance.immediate.npcs ?? []),
+          promise_instances: structuredClone(instance.immediate.promise_instances ?? []),
+          interactions: [],
+          route_history: [],
+          route_knowledge: [],
+          sealed_selections: instance.sealed_selections,
+          policy_pins: structuredClone(instance.policy_profile_pins),
+          relevant_events: [],
+          historical_events: [],
+          temporal_boundary_candidates: [],
+          items: instance.immediate.items.map((item) => ({
+            item_id: item.instance_id,
+            template_id: item.template_id,
+            profile_id: item.profile_id,
+            quantity: item.quantity,
+            condition_state: item.condition_state,
+            legal_status: item.legal_status,
+            claim_state: item.claim_state,
+            placement: {
+              anchor_id: item.anchor_id ?? null,
+              container_id: item.container_id ?? null,
+              holder_character_id: item.holder_character_id ?? null,
+              holder_npc_id: item.holder_npc_id ?? null,
+              physical_position: item.physical_position ?? null,
+            },
+            ownership: {
+              owner_character_id: item.owner_character_id ?? null,
+              owner_external_ref: item.owner_external_ref ?? null,
+              controller_character_id: item.controller_character_id ?? null,
+              owner_npc_id: item.owner_npc_id ?? null,
+              controller_npc_id: item.controller_npc_id ?? null,
+              claim_state: item.claim_state,
+            },
+            state: structuredClone(item.state),
+          })),
+          containers: (instance.immediate.containers ?? []).map((container) => ({
+            container_id: container.instance_id,
+            template_id: container.template_id,
+            anchor_id: container.anchor_id ?? null,
+            holder_npc_id: container.holder_npc_id ?? null,
+            closure_state: container.closure_state,
+            state: structuredClone(container.state),
+            state_version: 1,
+          })),
+          knowledge: [],
+          opening_identity: { opening_screen_digest: 'a'.repeat(64) },
+          relevant_hidden_state: {
+            culprit: 'must-not-reach-llm',
+            motive: 'must-not-reach-llm',
+          },
+          temporal_source_proof: {
+            version: 1,
+            schema: 'lower_dvina_trace_phase_2_temporal_source_proof',
+            owner: '@rus/time-events-history/temporal-boundaries',
+            same_time_cascade_owner: '@rus/time-events-history/temporal-boundaries:resolveSameTimeCascade',
+            admission_policy: 'fail_closed_before_activity_when_unbound_candidate_exists',
+            pending_event_count: 0,
+            active_schedule_count: 0,
+            candidate_count: 0,
+          },
+        }
+      : structuredClone(committedState);
   const replays = new Map();
   const events = [];
   let committedVisible = null;
@@ -225,131 +175,181 @@ export function fixture({
       return structuredClone(replays.get(idempotencyKey) ?? null);
     },
     async replayPhase2Turn({ replay, narrator }) {
-      if (replay.public_result != null) return structuredClone(
-        replay.public_result);
-      const visibleContext = committedVisible?.visible_payload
-        ? phase2VisibleContextFromPayload(committedVisible.visible_payload)
-        : structuredClone(committedVisible);
-      const narration = await narrator.run({ version: 1,
-        schema: 'narration_request', request_id: replay.factual
-          .mode_resolution.turn_id, surface: 'turn',
-        visible_context: visibleContext, context: {
+      if (replay.public_result != null) return structuredClone(replay.public_result);
+      const visibleContext = committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      const narration = await narrator.run({
+        version: 1,
+        schema: 'narration_request',
+        request_id: replay.factual.mode_resolution.turn_id,
+        surface: 'turn',
+        visible_context: visibleContext,
+        context: {
           player_input: structuredClone(replay.factual.player_input),
-          mode_resolution: structuredClone(replay.factual.mode_resolution) },
-        style_policy: { preserve_uncertainty: true,
-          no_new_world_facts: true }, max_repairs: 1 });
+          mode_resolution: structuredClone(replay.factual.mode_resolution),
+        },
+        style_policy: { preserve_uncertainty: true, no_new_world_facts: true },
+        max_repairs: 1,
+      });
       if (narration?.status !== 'approved' || narration.pass !== true) {
         throw new Error('narration_flow_result invalid');
       }
-      const publicResult = { party_id: partyId,
+      const publicResult = {
+        party_id: partyId,
         turn_number: state.party_state.turn_number,
         state_version: state.party_state.state_version,
-        completion: structuredClone(state.completion ?? null), narration };
+        completion: structuredClone(state.completion ?? null),
+        narration,
+      };
       const stored = replays.get(replay.factual.player_input.idempotency_key);
       if (stored) stored.public_result = structuredClone(publicResult);
       return publicResult;
     },
     async commitPhase2Turn(commitInput) {
-      const { writePlan, inputDigest, phase3Contracts,
-        phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts,
-        phase9Contracts, phase10Contracts,
-        turn10Contracts } = commitInput;
+      const { writePlan, inputDigest, phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase8Contracts, phase9Contracts, phase10Contracts, turn10Contracts } = commitInput;
       events.push('commit');
       commitCount += 1;
       lastCommitInput = commitInput;
       lastWritePlan = structuredClone(writePlan);
-      const factual = writePlan.write_targets.find(
-        ({ target }) => target === 'party_state')?.value;
+      const factual = writePlan.write_targets.find(({ target }) => target === 'party_state')?.value;
       if (factual == null) {
         const generic = await commitGeneric({ commitInput, state });
         committedVisible = generic.visible;
         replaceState(state, generic.snapshot);
         replays.set(generic.idempotencyKey, {
-          input_digest: inputDigest, factual: generic.factual,
-          state: structuredClone(state), public_result: null });
+          input_digest: inputDigest,
+          factual: generic.factual,
+          state: structuredClone(state),
+          public_result: null,
+        });
         return generic.committed;
       }
-      committedVisible = writePlan.write_targets.find(
-        ({ target }) => target === 'party_visible_context_package'
-      ).value;
+      committedVisible = writePlan.write_targets.find(({ target }) => target === 'party_visible_context_package').value;
       const clue = factual.consequence.clue_materialization;
       const nextVersion = state.party_state.state_version + 1;
       const turnNumber = state.party_state.turn_number + 1;
       const changeSetId = `change:${partyId}:${turnNumber}`;
       if (factual.consequence.phase9_kind != null) {
-        replaceState(state, nextPhase9State({ state, factual, nextVersion,
-          turnNumber, changeSetId, inputDigest, contracts: phase9Contracts }));
+        replaceState(
+          state,
+          nextPhase9State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+            contracts: phase9Contracts,
+          }),
+        );
       } else if (factual.consequence.combat_kind != null) {
-        replaceState(state, nextCombatState({ state, factual, nextVersion,
-          turnNumber, changeSetId, inputDigest }));
+        replaceState(
+          state,
+          nextCombatState({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
       } else if (factual.consequence.phase8_kind === 'accusation') {
-        replaceState(state, nextPhase8AccusationState({ state, factual,
-          nextVersion, turnNumber, changeSetId, inputDigest }));
+        replaceState(
+          state,
+          nextPhase8AccusationState({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
       } else if (factual.consequence.phase8_kind === 'movement') {
-        replaceState(state, nextPhase3State({ state, factual, nextVersion,
-          turnNumber, inputDigest, changeSetId, contracts: phase8Contracts,
-          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
-          workingRevision:
-            writePlan.turn_step_commit?.loop_trace?.working_revision }));
+        replaceState(
+          state,
+          nextPhase3State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase8Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
       } else if (factual.consequence.phase7_kind != null) {
-        replaceState(state, nextPhase7State({
+        replaceState(
           state,
-          factual,
-          nextVersion,
-          turnNumber,
-          changeSetId,
-          inputDigest,
-          turn10Contracts
-        }));
+          nextPhase7State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+            turn10Contracts,
+          }),
+        );
       } else if (factual.consequence.phase6_kind != null) {
-        replaceState(state, nextPhase6State({
+        replaceState(
           state,
-          factual,
-          nextVersion,
-          turnNumber,
-          changeSetId,
-          inputDigest
-        }));
+          nextPhase6State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            changeSetId,
+            inputDigest,
+          }),
+        );
       } else if (factual.consequence.phase5_kind != null) {
-        replaceState(state, nextPhase5State({
+        replaceState(
           state,
-          factual,
-          nextVersion,
-          turnNumber,
-          inputDigest,
-          changeSetId,
-          contracts: phase5Contracts
-        }));
+          nextPhase5State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase5Contracts,
+          }),
+        );
       } else if (factual.consequence.phase4_kind != null) {
-        replaceState(state, nextPhase4State({
+        replaceState(
           state,
-          factual,
-          nextVersion,
-          turnNumber,
-          inputDigest,
-          changeSetId,
-          contracts: phase4Contracts,
-          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
-          workingRevision:
-            writePlan.turn_step_commit?.loop_trace?.working_revision
-        }));
+          nextPhase4State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase4Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
       } else if (factual.consequence.phase3_kind != null) {
-        replaceState(state, nextPhase3State({
+        replaceState(
           state,
-          factual,
-          nextVersion,
-          turnNumber,
-          inputDigest,
-          changeSetId,
-          contracts: phase3Contracts,
-          rootTurnId: writePlan.turn_step_commit?.root_turn_id,
-          workingRevision:
-            writePlan.turn_step_commit?.loop_trace?.working_revision
-        }));
+          nextPhase3State({
+            state,
+            factual,
+            nextVersion,
+            turnNumber,
+            inputDigest,
+            changeSetId,
+            contracts: phase3Contracts,
+            rootTurnId: writePlan.turn_step_commit?.root_turn_id,
+            workingRevision: writePlan.turn_step_commit?.loop_trace?.working_revision,
+          }),
+        );
       } else {
-        if (clue && !state.items.some(
-          (item) => item.template_id === clue.template_id
-        )) {
+        if (clue && !state.items.some((item) => item.template_id === clue.template_id)) {
           itemCreationCount += 1;
           state.items.push({
             item_id: clue.instance_id,
@@ -360,11 +360,10 @@ export function fixture({
             state: {
               evidence_ref: 'trace_ld_v1_evidence_blue_wool',
               property_state: structuredClone(clue.property_state),
-              inventory_profile_snapshot:
-                structuredClone(clue.inventory_profile),
+              inventory_profile_snapshot: structuredClone(clue.inventory_profile),
               inventory_effect: structuredClone(clue.inventory_effect),
-              pickup_transition: structuredClone(clue.pickup_transition)
-            }
+              pickup_transition: structuredClone(clue.pickup_transition),
+            },
           });
         }
         timeUpdateCount += 1;
@@ -373,19 +372,13 @@ export function fixture({
         bodyUpdateCount += 1;
         state.body_state = factual.body_update.state_after;
         state.body_effect_history.push({
-          history_id:
-            `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
+          history_id: `body-history:${partyId}:trace-phase2:${state.party_state.turn_number + 1}`,
           effect_ref: factual.consequence.body_effect_ref,
           activity_attempt_id: factual.consequence.activity_attempt_id,
-          execution_variant_id:
-            factual.body_update.proposal.execution_variant_id,
-          occurred_at: structuredClone(factual.time_update.clock_after)
+          execution_variant_id: factual.body_update.proposal.execution_variant_id,
+          occurred_at: structuredClone(factual.time_update.clock_after),
         });
-        state.knowledge.push(
-          ...factual.consequence.knowledge_records.map(
-            (entry) => structuredClone(entry)
-          )
-        );
+        state.knowledge.push(...factual.consequence.knowledge_records.map((entry) => structuredClone(entry)));
         state.party_state.state_version += 1;
         state.party_state.turn_number += 1;
         state.party_state.session_state_version += 1;
@@ -393,23 +386,21 @@ export function fixture({
         state.party_state.body_state_version += 1;
       }
       let completionCommit = null;
-      if (factual.consequence.phase9_kind === 'temporary_disposition'
-          && phase10Contracts != null) {
+      if (factual.consequence.phase9_kind === 'temporary_disposition' && phase10Contracts != null) {
         completionCommit = applyPhase10(phase10Contracts);
       }
       const commit = completionCommit ?? {
         committed: true,
         state_version: state.party_state.state_version,
         package_id: committedVisible.package_id ?? null,
-        package_digest: committedVisible.package_digest
-          ?? committedVisible.canonical_digest ?? null,
-        visible_package_digest: committedVisible.canonical_digest ?? null
+        package_digest: committedVisible.package_digest ?? committedVisible.canonical_digest ?? null,
+        visible_package_digest: committedVisible.canonical_digest ?? null,
       };
       replays.set(factual.player_input.idempotency_key, {
         input_digest: inputDigest,
         factual,
         state: structuredClone(state),
-        public_result: null
+        public_result: null,
       });
       return commit;
     },
@@ -418,9 +409,7 @@ export function fixture({
     },
     async loadPhase2VisibleContext() {
       events.push('read_committed_visible');
-      return committedVisible?.visible_payload
-        ? phase2VisibleContextFromPayload(committedVisible.visible_payload)
-        : structuredClone(committedVisible);
+      return committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
     },
     async persistPhase2Screen({ inputDigest, result }) {
       events.push('persist_screen');
@@ -433,58 +422,63 @@ export function fixture({
         check: result.checkpoint.stages.checks.results[0],
         time_update: result.checkpoint.stages.time_update,
         body_update: result.checkpoint.stages.body_update,
-        observations:
-          result.checkpoint.stages.consequence.observations,
-        evidence:
-          result.checkpoint.stages.consequence.evidence_relations,
-        clue:
-          result.checkpoint.stages.consequence.clue_materialization,
+        observations: result.checkpoint.stages.consequence.observations,
+        evidence: result.checkpoint.stages.consequence.evidence_relations,
+        clue: result.checkpoint.stages.consequence.clue_materialization,
         movement: result.checkpoint.stages.consequence.movement ?? null,
-        conversation:
-          result.checkpoint.stages.consequence.conversation ?? null,
-        negotiation:
-          result.checkpoint.stages.consequence.negotiation ?? null,
+        conversation: result.checkpoint.stages.consequence.conversation ?? null,
+        negotiation: result.checkpoint.stages.consequence.negotiation ?? null,
         treatment: result.checkpoint.stages.consequence.treatment ?? null,
         carry: result.checkpoint.stages.consequence.carry ?? null,
-        completion: structuredClone(state.completion ?? null)
+        completion: structuredClone(state.completion ?? null),
       };
-      const replay = [...replays.values()].find(
-        (entry) => entry.input_digest === inputDigest
-      );
+      const replay = [...replays.values()].find((entry) => entry.input_digest === inputDigest);
       replay.public_result = structuredClone(publicResult);
       return publicResult;
-    }
+    },
   };
   function applyPhase10(phase10Contracts, replayed = false) {
-    if (state.completion?.status === 'committed') return {
-      ok: true, replayed: true,
-      state_version: state.party_state.state_version,
-      turn_number: state.party_state.turn_number,
-      package_id: state.last_turn.visible_package.package_id,
-      package_digest: state.last_turn.visible_package.package_digest,
-      completion: structuredClone(state.completion)
-    };
+    if (state.completion?.status === 'committed')
+      return {
+        ok: true,
+        replayed: true,
+        state_version: state.party_state.state_version,
+        turn_number: state.party_state.turn_number,
+        package_id: state.last_turn.visible_package.package_id,
+        package_digest: state.last_turn.visible_package.package_digest,
+        completion: structuredClone(state.completion),
+      };
     const sourceVersion = state.party_state.state_version;
     const nextVersion = sourceVersion + 1;
     const changeSetId = `change:${partyId}:trace-phase10:${sourceVersion}`;
     const idemId = `idem:${partyId}:trace-phase10:${sourceVersion}`;
     const { outcome, terminalProjection } = buildTracePhase10Completion({
-      state, contracts: phase10Contracts
+      state,
+      contracts: phase10Contracts,
     });
-    const envelope = phase10VisibleEnvelope({ partyId, state, nextVersion,
-      changeSetId, idemId, contracts: phase10Contracts,
-      terminalProjection });
-    replaceState(state, nextPhase10State({ state, outcome, envelope,
-      changeSetId }));
+    const envelope = phase10VisibleEnvelope({
+      partyId,
+      state,
+      nextVersion,
+      changeSetId,
+      idemId,
+      contracts: phase10Contracts,
+      terminalProjection,
+    });
+    replaceState(state, nextPhase10State({ state, outcome, envelope, changeSetId }));
     committedVisible = structuredClone(envelope);
     commitCount += 1;
     events.push('commit_phase10');
     for (const replay of replays.values()) replay.state = structuredClone(state);
-    return { ok: true, replayed, state_version: nextVersion,
+    return {
+      ok: true,
+      replayed,
+      state_version: nextVersion,
       turn_number: state.party_state.turn_number,
       package_id: envelope.package_id,
       package_digest: envelope.package_digest,
-      completion: structuredClone(state.completion) };
+      completion: structuredClone(state.completion),
+    };
   }
   const runtime = createLowerDvinaTracePhase2Runtime({
     repository,
@@ -499,20 +493,20 @@ export function fixture({
       if (semantic === 'unknown' || semantic === 'ambiguous') {
         return {
           status: 'unknown',
-          reason_code: semantic === 'ambiguous'
-            ? 'ambiguous_intent'
-            : 'unknown_intent'
+          reason_code: semantic === 'ambiguous' ? 'ambiguous_intent' : 'unknown_intent',
         };
       }
       return { option_id: input.action_set[0].option_id };
     },
-    ...(turnStepModel ? {
-      turnStepModel: async (input, repairContext) => {
-        turnStepCount += 1;
-        turnStepInput = structuredClone(input);
-        return turnStepModel(input, repairContext);
-      }
-    } : {}),
+    ...(turnStepModel
+      ? {
+          turnStepModel: async (input, repairContext) => {
+            turnStepCount += 1;
+            turnStepInput = structuredClone(input);
+            return turnStepModel(input, repairContext);
+          },
+        }
+      : {}),
     playerConversationModel: async (input) => {
       playerConversationCount += 1;
       playerConversationInput = structuredClone(input);
@@ -531,27 +525,27 @@ export function fixture({
     },
     ...(playerSafeStateProjector ? { playerSafeStateProjector } : {}),
     ...(temporalAdvanceOwner ? { temporalAdvanceOwner } : {}),
+    actionProductionProfile,
+    createTurnStepActionProductionOwner,
+    localFireProfile,
+    createTurnStepWorldProcessResolver,
     npcDecisionSelector: async (request) => {
-      const selected = request.options.find(
-        ({ option_id: optionId }) => optionId === npcOption
-      ) ?? request.options[0];
+      const selected = request.options.find(({ option_id: optionId }) => optionId === npcOption) ?? request.options[0];
       return {
         request_id: request.request_id,
         state_version: request.state_version,
         option_id: selected.option_id,
-        command_token: selected.command_token
+        command_token: selected.command_token,
       };
     },
     randomSourceFactory: () => {
-      const source = createSeededRandomSource(
-        'lower-dvina-trace-phase-2-acceptance'
-      );
+      const source = createSeededRandomSource('lower-dvina-trace-phase-2-acceptance');
       return {
         next() {
           rollCount += 1;
           return rollValue == null ? source.next() : rollValue;
         },
-        snapshot: () => source.snapshot()
+        snapshot: () => source.snapshot(),
       };
     },
     narrator: {
@@ -566,12 +560,12 @@ export function fixture({
             status: 'blocked',
             pass: false,
             approved_output: null,
-            final_audit: null
+            final_audit: null,
           };
         }
         return approvedNarration(input.request_id);
-      }
-    }
+      },
+    },
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,
@@ -593,63 +587,13 @@ export function fixture({
     rollCount: () => rollCount,
     runtime,
     semanticInput: () => semanticInput,
-    setNarrationFails(value) { shouldFailNarration = value === true; },
+    setNarrationFails(value) {
+      shouldFailNarration = value === true;
+    },
     timeUpdateCount: () => timeUpdateCount,
     turnStepCount: () => turnStepCount,
     turnStepInput: () => turnStepInput,
-    state
+    state,
   };
 }
-
-async function unexpectedPlayerConversationModel() {
-  throw new Error('Unexpected player conversation model call');
-}
-
-async function unexpectedNpcSemanticModel() {
-  throw new Error('Unexpected NPC semantic model call');
-}
-
-async function unexpectedNpcAutonomousModel() {
-  throw new Error('Unexpected autonomous NPC model call');
-}
-
-async function unexpectedNpcCombatModel() {
-  throw new Error('Unexpected NPC combat model call');
-}
-
-function replaceState(target, source) {
-  for (const key of Object.keys(target)) delete target[key];
-  Object.assign(target, structuredClone(source));
-}
-
-function approvedNarration(requestId) {
-  return {
-    version: 1,
-    schema: 'narration_flow_result',
-    request_id: requestId,
-    surface: 'turn',
-    status: 'approved',
-    pass: true,
-    approved_output: {
-      version: 1,
-      schema: 'narration_output',
-      output_id: `narration:${requestId}`,
-      prose: 'Ты внимательно осматриваешь повреждённую лодку и следы на берегу.',
-      action_options: [],
-      used_references: [],
-      self_check: { no_new_world_facts: true }
-    },
-    final_audit: {
-      version: 1,
-      schema: 'narration_audit',
-      pass: true,
-      concerns: [],
-      evidence: ['Текст основан только на persisted visible context.']
-    },
-    repair_request: null,
-    generation_history: [],
-    audit_history: [],
-    repair_history: [],
-    diagnostics: {}
-  };
-}
+export { bundle, bundle9, fixture, loadScenarioBundle };

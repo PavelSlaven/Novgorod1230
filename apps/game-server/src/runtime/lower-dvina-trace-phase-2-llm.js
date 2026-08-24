@@ -70,6 +70,7 @@ export function createLowerDvinaTraceTurnStepModel({
           'decision, a random result, exact time, or numeric domain effects.',
           'A general look around at already visible surroundings is direct',
           'with semantic activity moment/none and no operations or check.',
+          'Exception: when player_safe_state.spatial_semantic has semantic_grounding_available true for current position, a general look uses request_discovery/look for that position.',
           'Focused inspect or search for hidden or new details uses discovery.',
           'Delegate movement, containers, discovery, items, activities, NPC',
           'interaction, combat, body calculations, and other domain mechanics',

@@ -952,9 +952,9 @@
       "type": "sql"
     },
     {
-      "bytes": 8156,
+      "bytes": 8182,
       "path": "schemas/party-db/015_party_runtime_turn_step_items.sql",
-      "sha256": "1ed053d2dc29c259bd7d3d01b2f959268ae353205758a564a046f7d5bae5ef7d",
+      "sha256": "86734c9beac056974a1b16f46dcee8d889362dfbbf507d7281813b0fa509e77c",
       "type": "sql"
     },
     {
@@ -1033,6 +1033,18 @@
       "bytes": 3312,
       "path": "schemas/party-db/028_party_runtime_local_exact_fire.sql",
       "sha256": "bea7d3cb2e1cbadb9f901e9cf71011498d44845d3b3fda3342fa361d764375b3",
+      "type": "sql"
+    },
+    {
+      "bytes": 2673,
+      "path": "schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql",
+      "sha256": "ef20ef6ce21f85e717c327bceb70751e1210bed0ae92b8dcbe97a4eb8dfeddab",
+      "type": "sql"
+    },
+    {
+      "bytes": 4489,
+      "path": "schemas/party-db/030_party_runtime_snapshot_validator_alias.sql",
+      "sha256": "037bf322358021dbdf73650259fc64eec346ba00474e072d3098393e2baee9cc",
       "type": "sql"
     },
     {

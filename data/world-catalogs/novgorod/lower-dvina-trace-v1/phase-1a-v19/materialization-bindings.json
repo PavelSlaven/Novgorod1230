@@ -1,0 +1,53 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v19",
+  "revision": 19,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 23,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v18/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v18",
+    "revision": 18,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "be5d71e21c11336c65b334617168b329f5ab277b1aedb134e5da035797722d35"
+  },
+  "binding_resolution_policy": "reuse_exact_revision_22_materialization_and_activate_sha_pinned_s1_or_fail_closed",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "action_production_materialization": {
+    "runtime_owner": "@rus/items-property",
+    "semantic_owner": "@rus/turn",
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/action-production-profile.json",
+      "id": "lower_dvina_trace_a1_personal_tool_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_action_production_profile.v1",
+      "digest": "df9ece3b89dbab8f33688a34ef076ab8a25dbb565cd831003999f72204ead8b6"
+    },
+    "authority_provisioning": "atomic_new_game_stage_25",
+    "fallback_policy": "forbidden"
+  },
+  "local_fire_materialization": {
+    "process_owner": "@rus/world-processes",
+    "time_owner": "@rus/time-events-history",
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/local-fire-profile.json",
+      "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
+      "digest": "ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"
+    },
+    "authority_provisioning": "atomic_new_game_stage_24",
+    "water_extinguish": "disabled_missing_exact_finite_water_authority",
+    "fallback_policy": "forbidden"
+  }
+  ,"spatial_semantic_materialization": {
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {"path":"data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/spatial-semantic-profile.json","id":"lower_dvina_trace_s1_spatial_semantic_profile_v1","revision":1,"schema":"rus.lower_dvina_trace_spatial_semantic_profile.v1","digest":"08e0978fd47bc91cfcf4f3d91908c583786e80a2d9a7ffc5e61af85bbd11074c"},
+    "authority_provisioning": "atomic_new_game_first_entry_p16",
+    "fallback_policy": "forbidden"
+  }
+}

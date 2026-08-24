@@ -5,7 +5,12 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
   return async function load({ party_id: partyId, container_ref: containerRef }) {
     if (!text(partyId) || !text(containerRef)) return null;
     const core = await pool.query(`SELECT p.state_version AS party_state_version,
-        pc.character_id AS actor_id,pos.g5_anchor_id AS actor_position_ref,
+        pc.character_id AS actor_id,
+        CASE WHEN journey.id IS NULL
+          OR snapshot.state_payload#>>'{position,position_id}'
+            IS DISTINCT FROM journey.scene_position_id
+          THEN pos.g5_anchor_id ELSE journey.scene_position_id
+        END AS actor_position_ref,
         x.container_id,x.template_id,x.state_version AS container_state_version,
         x.closure_state,x.state AS container_state,x.anchor_id,
         x.parent_container_id,x.holder_npc_id,x.holder_character_id,
@@ -24,6 +29,11 @@ export function createPostgresOrdinaryContainerContentsLoader({ pool } = {}) {
       LEFT JOIN party_runtime.party_player_characters pc
         ON pc.party_id=p.party_id
         AND pc.character_id=o.owner_character_id
+      LEFT JOIN party_runtime.party_journey_locations journey
+        ON journey.party_id=p.party_id AND journey.owner_kind='actor'
+        AND journey.owner_id=pc.character_id
+      LEFT JOIN party_runtime.party_state_snapshots snapshot
+        ON snapshot.party_id=p.party_id AND snapshot.state_version=p.state_version
       LEFT JOIN party_runtime.party_positions pos ON pos.party_id=p.party_id
       JOIN party_runtime.party_ordinary_materialization_aggregates a
         ON a.party_id=p.party_id AND a.scope_kind='container'

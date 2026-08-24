@@ -7,57 +7,25 @@ import {
 import {
   ALLOWED,
   CHILD_TABLES,
-  FIRST_ENTRY_BINDING_FIELDS,
-  FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS,
   NON_VERSIONED_MUTABLE_TABLES,
   PRESENTATION_TABLES,
   TABLE_MODES,
   childParentIdentities,
   validIdentity
 } from './spatial-v3-write-plan-policy.js';
+import {
+  completeS1Topology,
+  validFirstEntryPhysicalRecheck
+} from './spatial-v3-write-plan-s1-validation.js';
 
 const clone = (value) => structuredClone(value);
 const INVALID_INPUT = Symbol('invalid combined write plan input');
 const stable = (value) => typeof value === 'string' && value.trim().length > 0;
-const sha256Hex = (value) => typeof value === 'string' && /^[0-9a-f]{64}$/u.test(value);
 const pin = (party_id) => ({ dependency_role: 'planning_context_dependency', entity_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, version_pin: { pin_kind: 'party_state_version', state_version: 1 } });
 const fail = (code, party_id, diagnostics = {}) => Object.freeze({ ok: false, error: createSpatialV3TypedError(code, { subject_ref: { entity_kind: 'party_change_set', entity_id: party_id || 'unknown' }, dependency_pins: { pins: [pin(party_id)], canonical_digest: computeSpatialV3CanonicalDigest([pin(party_id)]).replace('sha256:', '') }, diagnostics }) });
 const identity = (write) => `${write.target_schema ?? 'party_runtime'}.${write.target_table}:${write.id}`;
 const canonicalWrites = (writes) => [...writes].sort((a, b) => identity(a).localeCompare(identity(b)));
 function freeze(value) { if (value && typeof value === 'object' && !Object.isFrozen(value)) { for (const child of Object.values(value)) freeze(child); Object.freeze(value); } return value; }
-function validFirstEntryPhysicalRecheck(check, physicalKeys, partyId, g4Keys) {
-  if (!check
-    || Object.keys(check).sort().join('\u0000')
-      !== [...FIRST_ENTRY_PHYSICAL_RECHECK_FIELDS].sort().join('\u0000')
-    || check.kind !== 'physical'
-    || !['create', 'reuse'].includes(check.baseline_disposition)
-    || !stable(check.g4_id)
-    || !stable(check.preparation_snapshot_id)
-    || !Number.isInteger(check.preparation_member_ordinal)
-    || check.preparation_member_ordinal < 0
-    || !sha256Hex(check.preparation_snapshot_digest)
-    || !sha256Hex(check.preparation_member_digest)
-    || !stable(check.route_plan_id)
-    || !sha256Hex(check.route_plan_digest)
-    || !stable(check.route_plan_execution_id)
-    || !stable(check.preparation_claim_id)
-    || ![
-      check.scene_baseline_id,
-      check.g5_site_id,
-      check.g6_instance_id,
-      check.position_id
-    ].every(stable)
-    || check.materialization_scope_key
-      !== `party_runtime.party_scene_baselines:${check.scene_baseline_id}`
-    || !physicalKeys.includes(check.materialization_scope_key)
-    || g4Keys.length !== 1
-    || g4Keys[0] !== `${partyId}:${check.g4_id}`) {
-    return false;
-  }
-  const { digest, ...payload } = check;
-  return digest === computeSpatialV3CanonicalDigest(payload);
-}
-
 /** Builds no domain decision: its verifier attests pre-approved input and it only seals the three physical write sets. */
 export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const input = rawInput;
@@ -66,10 +34,13 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     'action_production_atomic_write_plans');
   const localFirePlans = snapshotExtensionPlans(rawInput,
     'local_fire_atomic_write_plans');
+  const spatialSemanticPlan = snapshotExtensionPlan(rawInput,
+    'spatial_semantic_atomic_write_plan');
   const verifyApproval = ownData(options, 'verifyApproval');
   if (ordinaryMaterializationPlan === INVALID_INPUT
       || actionProductionPlans === INVALID_INPUT
-      || localFirePlans === INVALID_INPUT) {
+      || localFirePlans === INVALID_INPUT
+      || spatialSemanticPlan === INVALID_INPUT) {
     return fail('generated_schema_mismatch', null,
       { reason: 'extension atomic plans must be strict JSON data' });
   }
@@ -92,6 +63,7 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     ordinaryMaterializationPlan;
   const action_production_atomic_write_plans = actionProductionPlans;
   const local_fire_atomic_write_plans = localFirePlans;
+  const spatial_semantic_atomic_write_plan = spatialSemanticPlan;
   if (![plan_id, party_id, operation_kind, canonical_input_digest, idempotency?.id, idempotency?.key, change_set?.id].every(stable) || !['semantic_commit', 'blocked_audit'].includes(write_plan_kind) || !Array.isArray(expected_state_versions) || !Array.isArray(approved_write_sets) || !lock_context || !Array.isArray(commit_rechecks) || typeof verifyApproval !== 'function') return fail('generated_schema_mismatch', party_id, { reason: 'complete combined-write input and injected approval verifier are required' });
   const requiredRechecks = ['physical', 'state', 'pin', 'endpoint', 'route', 'capacity', 'time', 'change_set'];
   if (!requiredRechecks.every((kind) => commit_rechecks.some((check) => check?.kind === kind && stable(check?.digest))) || ['owner_keys', 'execution_keys', 'g4_keys', 'physical_keys'].some((key) => !Array.isArray(lock_context[key]) || lock_context[key].some((value) => !stable(value)))) return fail('generated_schema_mismatch', party_id, { reason: 'complete lock context and commit rechecks are required' });
@@ -130,7 +102,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     approved_write_sets,
     ordinary_materialization_atomic_write_plan,
     action_production_atomic_write_plans,
-    local_fire_atomic_write_plans
+    local_fire_atomic_write_plans,
+    spatial_semantic_atomic_write_plan
   }));
   if (!verified?.ok) return fail('generated_schema_mismatch', party_id, { reason: 'approved write set verifier rejected input' });
   const sets = { inserts: [], updates: [], appends: [], deletes: [] };
@@ -193,8 +166,13 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const identities = Object.values(sets).flat().map(identity);
   if (new Set(identities).size !== identities.length) return fail('state_version_conflict', party_id, { reason: 'insert/update/append/delete identities must be disjoint' });
   const identitySet = new Set(identities);
+  const externalSpatialParents = spatial_semantic_atomic_write_plan == null ? new Set() : new Set([
+    `party_runtime.party_scene_baselines:${spatial_semantic_atomic_write_plan.formal_spatial_context?.baseline_ref}`,
+    `party_runtime.scene_position_nodes:${spatial_semantic_atomic_write_plan.resolution?.position_ref}`
+  ]);
   if (Object.values(sets).flat().some((write) =>
-    childParentIdentities(write).some((parent) => !identitySet.has(parent)))) {
+    childParentIdentities(write).some((parent) => !identitySet.has(parent)
+      && !externalSpatialParents.has(parent)))) {
     return fail('generated_schema_mismatch', party_id, { reason: 'party-owned child writes require their exact parent in the same sealed write plan' });
   }
   if (!identities.every((value) => physicalKeys.has(value))) return fail('lock_order_violation', party_id, { reason: 'every physical write must declare its exact physical lock key' });
@@ -225,12 +203,18 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
       }
     } else {
       const baseline = baselines[0];
-      const g6 = g6Instances[0];
-      const position = positions[0];
+      const g6 = g6Instances.find((write) => write.id === physicalRecheck.g6_instance_id);
+      const position = positions.find((write) => write.id === physicalRecheck.position_id);
+      const edgeCount = sets.inserts.filter((write) => write.target_table === 'scene_movement_edges').length;
+      const linkCount = sets.inserts.filter((write) => write.target_table === 'visibility_links').length;
+      const legacy = g6Instances.length === 1 && positions.length === 1
+        && edgeCount === 0 && linkCount === 0;
+      const s1 = g6Instances.length === 2 && positions.length === 2
+        && g5Sites.length === 1 && edgeCount === 2 && linkCount === 2
+        && completeS1Topology(sets.inserts, physicalRecheck, baseline, g6, position);
       if (baselines.length !== 1
-        || g6Instances.length !== 1
-        || positions.length !== 1
         || g5Sites.length > 1
+        || (!legacy && !s1)
         || baseline.id !== physicalRecheck.scene_baseline_id
         || baseline.record.host_kind !== 'g5_site'
         || baseline.record.host_id !== physicalRecheck.g5_site_id
@@ -259,7 +243,8 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
   const write_set = { inserts: sets.inserts, updates: sets.updates, appends: sets.appends, deletes: sets.deletes };
   const write_set_digest = computeSpatialV3CanonicalDigest(extensionDigestInput({
     write_set, ordinary_materialization_atomic_write_plan,
-    action_production_atomic_write_plans, local_fire_atomic_write_plans
+    action_production_atomic_write_plans, local_fire_atomic_write_plans,
+    spatial_semantic_atomic_write_plan
   }));
   const plan = {
     schema: 'spatial_v3.combined_write_plan.v2',
@@ -301,11 +286,15 @@ export async function buildCombinedWritePlan(rawInput = {}, options = {}) {
     ...(local_fire_atomic_write_plans.length === 0 ? {} : {
       local_fire_atomic_write_plans: clone(local_fire_atomic_write_plans)
     }),
+    ...(spatial_semantic_atomic_write_plan == null ? {} : {
+      spatial_semantic_atomic_write_plan: clone(spatial_semantic_atomic_write_plan)
+    }),
     write_set_digest,
     ...write_set
   };
   return freeze({ ok: true, plan: { ...plan, digest: computeSpatialV3CanonicalDigest(plan) } });
 }
+
 
 function ownData(value, key) {
   if (!value || typeof value !== 'object') return undefined;
@@ -351,11 +340,13 @@ function snapshotExtensionPlan(input, field) {
 function extensionDigestInput({ write_set,
   ordinary_materialization_atomic_write_plan: ordinary,
   action_production_atomic_write_plans: actions,
-  local_fire_atomic_write_plans: localFire }) {
-  if (ordinary == null && actions.length === 0 && localFire.length === 0) return write_set;
+  local_fire_atomic_write_plans: localFire,
+  spatial_semantic_atomic_write_plan: spatialSemantic }) {
+  if (ordinary == null && actions.length === 0 && localFire.length === 0 && spatialSemantic == null) return write_set;
   if (actions.length === 0 && localFire.length === 0) {
     return { write_set,
-      ordinary_materialization_atomic_write_plan: ordinary };
+      ordinary_materialization_atomic_write_plan: ordinary,
+      ...(spatialSemantic == null ? {} : { spatial_semantic_atomic_write_plan: spatialSemantic }) };
   }
   return {
     write_set,
@@ -364,7 +355,8 @@ function extensionDigestInput({ write_set,
     }),
     ...(actions.length === 0 ? {} : {
       action_production_atomic_write_plans: actions }),
-    ...(localFire.length === 0 ? {} : { local_fire_atomic_write_plans: localFire })
+    ...(localFire.length === 0 ? {} : { local_fire_atomic_write_plans: localFire }),
+    ...(spatialSemantic == null ? {} : { spatial_semantic_atomic_write_plan: spatialSemantic })
   };
 }
 

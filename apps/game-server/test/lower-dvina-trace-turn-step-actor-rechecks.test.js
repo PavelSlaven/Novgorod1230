@@ -51,3 +51,57 @@ test('actor-held item and container updates seal exact common P16 sources',
     assert.deepEqual(await recheck({ ...row, owner_npc_id: 'other' }),
       { ok: false, code: 'state_version_conflict' });
   });
+
+test('S1 local movement locks exact journey, edge, and endpoints', async () => {
+  const check = { kind: 's1_local_movement', actor_id: 'player',
+    journey_location_id: 'journey:player', expected_journey_state_version: 4,
+    from_position_ref: 'position:shore', to_position_ref: 'position:inside',
+    movement_edge_ref: 'edge:shore:inside', movement_admission: admission() };
+  const current = { journey_state_version: 4, journey_position_id: 'position:shore',
+    from_position_id: 'position:shore', to_position_id: 'position:inside',
+    edge_status: 'active', ...admission(), reverse_from_position_id: 'position:inside',
+    reverse_to_position_id: 'position:shore', reverse_reverse_edge_id: 'edge:shore:inside',
+    reverse_edge_status: 'active', source_status: 'active', destination_status: 'active' };
+  const query = recheckQuery(current);
+  assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+    transaction: { query } }), { ok: true, code: 'state_version_conflict' });
+  assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+    transaction: { query: recheckQuery({ ...current, to_position_id: 'position:forged' }) } }),
+  { ok: false, code: 'state_version_conflict' });
+  for (const stale of [{ edge_state_version: 1 },
+    { reverse_reverse_edge_id: 'edge:forged' }]) {
+    assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+      transaction: { query: recheckQuery({ ...current, ...stale }) } }),
+    { ok: false, code: 'state_version_conflict' });
+  }
+  assert.deepEqual(await firstPlayableCommitRecheck({ party_id: 'party', check,
+    transaction: { query: recheckQuery(current, 2) } }),
+  { ok: false, code: 'state_version_conflict' });
+});
+
+function recheckQuery(row, destination_occupancy = 0) {
+  let calls = 0;
+  return async (sql, params) => {
+    calls += 1;
+    if (calls === 1) {
+      assert.match(sql, /FOR UPDATE OF l,e,reverse,source,destination/u);
+      assert.doesNotMatch(sql, /FOR UPDATE OF[^;]*occupancy/u);
+      assert.deepEqual(params, ['party', 'journey:player', 'player',
+        'edge:shore:inside']);
+      return { rowCount: 1, rows: [row] };
+    }
+    assert.match(sql, /SUM\(occupies_capacity_units\)/u);
+    assert.deepEqual(params, ['party', 'position:inside']);
+    return { rowCount: 1, rows: [{ destination_occupancy }] };
+  };
+}
+
+function admission() { return { edge_id: 'edge:shore:inside', reverse_edge_id: 'edge:inside:shore',
+  edge_state_version: 0, reverse_edge_state_version: 0, source_node_state_version: 0,
+  destination_node_state_version: 0, cost_kind: 'action', action_units: 1,
+  base_minutes: null, edge_capacity: 1, destination_capacity: 2,
+  transition_footprint_units: 1, transition_environment_profile_ref: { id: 'environment', version: 1 },
+  movement_orientation_profile_ref: { id: 'orientation', version: 1 },
+  baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
+  dynamic_recheck_policy_ref: null, from_position_ref: 'position:shore',
+  to_position_ref: 'position:inside', destination_occupancy: 0 }; }

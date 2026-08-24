@@ -64,6 +64,25 @@ test('plans one approved reverse route and fails closed without a route', () => 
   }).errors[0].code, 'APPROVED_DESTINATION_TRANSITION_NOT_APPLICABLE');
 });
 
+test('plans an exact persisted action edge at zero time', () => {
+  const result = planApprovedActorDestinationTransition({ state_version: 4,
+    expected_state_version: 4, actor, destination: { entity_ref: ref('local', 'inside'),
+      location_ref: 'storehouse', zone_ref: 'inside' },
+    persisted_scene_movement_edge: sceneEdge() });
+  assert.equal(result.pass, true);
+  assert.deepEqual(result.proposal.exact_elapsed, { exact_minutes: {
+    numerator: '0', denominator: '1' } });
+  assert.deepEqual(result.proposal.action_cost, { cost_kind: 'action', action_units: 1 });
+  assert.equal(planApprovedActorDestinationTransition({ state_version: 4,
+    expected_state_version: 4, actor, destination: { entity_ref: ref('local', 'inside'),
+      location_ref: 'storehouse', zone_ref: 'inside' }, persisted_scene_movement_edge:
+      { ...sceneEdge(), destination_occupancy: 2 } }).pass, false);
+  assert.equal(planApprovedActorDestinationTransition({ state_version: 4,
+    expected_state_version: 4, actor, destination: { entity_ref: ref('local', 'inside'),
+      location_ref: 'storehouse', zone_ref: 'inside' }, persisted_scene_movement_edge:
+      { ...sceneEdge(), destination_occupancy: 1 } }).pass, true);
+});
+
 test('fails closed for absent versions and non-admitted movement refs', () => {
   const destination = { entity_ref: ref('container', 'road-bag'),
     location_ref: 'storehouse', zone_ref: 'river', anchor_id: null };
@@ -96,3 +115,12 @@ function routePair() { return [{
   terminal_position_outcome: 'camp'
 }]; }
 function ref(entity_kind, entity_id) { return { entity_kind, entity_id }; }
+function sceneEdge() { return { edge_id: 'edge:yard:inside', reverse_edge_id: 'edge:inside:yard',
+  from_position_ref: 'yard', to_position_ref: 'inside', cost_kind: 'action', action_units: 1,
+  base_minutes: null, edge_capacity: 1, destination_capacity: 2,
+  transition_footprint_units: 1, destination_occupancy: 0, edge_state_version: 0,
+  reverse_edge_state_version: 0, source_node_state_version: 0, destination_node_state_version: 0,
+  transition_environment_profile_ref: { id: 'environment', version: 1 },
+  movement_orientation_profile_ref: { id: 'orientation', version: 1 },
+  baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
+  dynamic_recheck_policy_ref: null }; }

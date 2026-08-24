@@ -26,6 +26,11 @@ import { applyActionProductionProjection } from
   './lower-dvina-trace-action-production-projection.js';
 import { applyLocalFireProjection, createLocalFireAtomicWritePlan } from
   './local-fire-atomic-write-plan.js';
+import { createSpatialSemanticAtomicWritePlan } from
+  './spatial-semantic-atomic-write-plan.js';
+import { spatialSemanticRows } from './spatial-semantic-atomic-write-plan.js';
+import { projectLowerDvinaTraceS1Resolutions } from
+  '../../runtime/releases/lower-dvina-trace-s1-production.js';
 
 export async function commitLowerDvinaTraceTurnStep({
   partyId, writePlan, inputDigest, contracts, loadState, committer
@@ -80,11 +85,38 @@ export async function commitLowerDvinaTraceTurnStep({
     throw serverError('TRACE_TURN_STEP_LOCAL_FIRE_PLAN_INVALID',
       'Local-fire atomic plan failed its contract.',{status:409});
   }
-  const visibleEnvelopeInput = ordinaryPlan == null ? envelope : {
-    ...envelope, visible_context: applyOrdinaryMaterializationProjection({
+  let spatialSemanticPlan = null;
+  try {
+    if (writePlan.spatial_semantic_atomic_write_plan != null) {
+      spatialSemanticPlan = createSpatialSemanticAtomicWritePlan(
+        writePlan.spatial_semantic_atomic_write_plan);
+      if (spatialSemanticPlan.party_id !== partyId
+          || spatialSemanticPlan.change_set_id !== changeSetId) throw new Error();
+    }
+  } catch {
+    throw serverError('TRACE_TURN_STEP_SPATIAL_SEMANTIC_PLAN_INVALID',
+      'Spatial semantic atomic plan failed its sealed contract.', { status: 409 });
+  }
+  const ordinaryVisibleContext = ordinaryPlan == null ? envelope.visible_context
+    : applyOrdinaryMaterializationProjection({
       next: structuredClone(state), visibleContext: envelope.visible_context, ordinaryPlan
-    })
-  };
+    });
+  const currentPosition = state.position?.position_id
+    ?? state.position?.position_ref;
+  const committedSpatialResolutions = (state.spatial_semantic ?? [])
+    .flatMap(({ resolutions = [] }) => resolutions)
+    .filter(({ position_ref: positionRef }) => positionRef === currentPosition);
+  const visibleContext = projectLowerDvinaTraceS1Resolutions({
+    playerSafeState: ordinaryVisibleContext,
+    resolutions: [...committedSpatialResolutions,
+      ...(spatialSemanticPlan == null ? [] : [{
+        local_ref: spatialSemanticPlan.resolution.local_ref,
+        position_ref: spatialSemanticPlan.resolution.position_ref,
+        semantics: { kind: spatialSemanticPlan.formal_spatial_context.kind,
+          ...spatialSemanticPlan.resolution.outcome } }])]
+  });
+  const visibleEnvelopeInput = visibleContext === envelope.visible_context ? envelope
+    : { ...envelope, visible_context: visibleContext };
   const visibleEnvelope = buildLowerDvinaTraceTurnStepVisibleEnvelope({
     partyId, turnNumber, nextVersion, changeSetId, idemId, envelope: visibleEnvelopeInput, contracts
   });
@@ -94,6 +126,8 @@ export async function commitLowerDvinaTraceTurnStep({
   });
   applyOrdinaryMaterializationProjection({ next:base.snapshot,
     visibleContext:envelope.visible_context,ordinaryPlan,changeSetId });
+  applyS1LocalPositionTransition({ snapshot: base.snapshot, state,
+    transition: envelope.consequence.position_transition });
   for (const plan of actionProductionPlans) {
     applyActionProductionProjection({ next: base.snapshot, plan });
   }
@@ -129,10 +163,13 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  if (spatialSemanticPlan != null) {
+    writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
+  }
   const built = await buildLowerDvinaTraceTurnStepCommitPlan({
     partyId, state, envelope, inputDigest, visibleEnvelope, writes,
     turnNumber, changeSetId, idemId, ordinaryPlan, actionProductionPlans,
-    localFirePlans
+    localFirePlans, spatialSemanticPlan
   });
   const committed = await committer.commit({
     plan: built.plan,
@@ -154,6 +191,22 @@ export async function commitLowerDvinaTraceTurnStep({
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest
   };
+}
+
+function applyS1LocalPositionTransition({ snapshot, state, transition }) {
+  if (transition == null) return;
+  if (transition.owner !== '@rus/movement-routes'
+      || transition.actor_id !== state.actor_id
+      || transition.from_position_ref !== state.position?.position_id
+      || typeof transition.to_position_ref !== 'string'
+      || !state.journey_location?.id
+      || state.journey_location.scene_position_id !== transition.from_position_ref
+      || !Number.isSafeInteger(Number(state.journey_location.state_version))) {
+    throw serverError('TRACE_S1_MOVEMENT_TRANSITION_INVALID',
+      'S1 local movement transition failed its committed position binding.', { status: 409 });
+  }
+  snapshot.position = { ...snapshot.position,
+    position_id: transition.to_position_ref };
 }
 
 function requireEnvelope(writePlan) {

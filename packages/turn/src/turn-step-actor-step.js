@@ -48,6 +48,7 @@ export async function executeTurnStepActorStep({
   const ordinaryPlans = [];
   const actionProducedPlans = [];
   const localFirePlans = [];
+  const spatialSemanticPlans = [];
   let boundary = false;
   let progress = true;
   let goalResult = plan.goal_result;
@@ -133,7 +134,7 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans, localFirePlans
+        actionProducedPlans, localFirePlans, spatialSemanticPlans
       }));
   }
 
@@ -158,7 +159,7 @@ export async function executeTurnStepActorStep({
       collectTurnStepExecutionResult({
         applied, projection, boundary, progress, goalResult, continuation,
         summaries, writes, consequences, preparedEffects, ordinaryPlans,
-        actionProducedPlans, localFirePlans
+        actionProducedPlans, localFirePlans, spatialSemanticPlans
       }));
   }
   if (plan.activity?.owner === 'semantic') {
@@ -192,7 +193,7 @@ export async function executeTurnStepActorStep({
         collectTurnStepExecutionResult({
           applied, projection, boundary, progress, goalResult, continuation,
           summaries, writes, consequences, preparedEffects, ordinaryPlans,
-          actionProducedPlans, localFirePlans
+          actionProducedPlans, localFirePlans, spatialSemanticPlans
         }));
     }
   }
@@ -212,6 +213,7 @@ export async function executeTurnStepActorStep({
     ordinary_materialization_atomic_write_plan: ordinaryPlans[0] ?? null,
     action_production_atomic_write_plan: actionProducedPlans[0] ?? null,
     local_fire_atomic_write_plans: localFirePlans,
+    spatial_semantic_atomic_write_plan: spatialSemanticPlans[0] ?? null,
     preparedChainContext: chainContext
   };
 }

@@ -239,16 +239,20 @@ function persistedBoundary(rebinding) {
 
 function assertTerminal(payload, values) {
   const { position, npcs, knowledge } = values;
+  const preparedFirstEntry = usesPreparedFirstEntry(payload, payload.position);
   if (position.rowCount !== 1
-      || position.rows[0].g4_id !== payload.position.g4_id
-      || position.rows[0].g5_node_id !== payload.position.g5_node_id
-      || position.rows[0].g5_anchor_id !== payload.position.g5_anchor_id
+      || (!preparedFirstEntry && (position.rows[0].g4_id !== payload.position.g4_id
+        || position.rows[0].g5_node_id !== payload.position.g5_node_id
+        || position.rows[0].g5_anchor_id !== payload.position.g5_anchor_id))
       || knowledge.rowCount !== 2) fail();
   const actualNpcs = new Map(npcs.rows.map((npc) => [npc.npc_id, npc]));
   for (const expected of payload.npcs) {
     if (!expected.machine_state?.phase6_body_effect) continue;
     const actual = actualNpcs.get(expected.instance_id);
-    if (!actual || actual.anchor_id !== expected.anchor_id
+    if (!actual || actual.anchor_id
+        !== (usesPreparedFirstEntry(payload, {
+          g5_anchor_id: expected.anchor_id
+        }) ? null : expected.anchor_id)
         || canonicalDigest(actual.machine_state)
           !== canonicalDigest(expected.machine_state)) fail();
   }
@@ -257,6 +261,12 @@ function assertTerminal(payload, values) {
     'onisim_carried_to_camp_committed',
     'ratsha_under_group_observation_committed'
   ])) fail();
+}
+
+function usesPreparedFirstEntry(payload, position) {
+  const firstEntry = payload.first_entry_preparation;
+  return firstEntry?.spatial_v3?.target?.status === 'prepared'
+    && position?.g5_anchor_id === firstEntry.scene?.anchor?.instance_id;
 }
 
 function carriedActor(payload) {

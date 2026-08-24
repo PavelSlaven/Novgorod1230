@@ -9,6 +9,9 @@ export function actionProducedPhysicalKeysForPlan(plan) {
     ...plan.source_pins.flatMap((pin) => [
       `party_runtime.party_items:${pin.item_id}`,
       `party_runtime.party_item_placements:${pin.item_id}`,
+      ...(pin.scene_placement == null ? [] : [
+        `party_runtime.entity_placements:item:${pin.item_id}`
+      ]),
       ...(pin.prepared_ordinary == null ? [
         `party_runtime.party_ownership:${pin.ownership.ownership_id}`
       ] : []),
@@ -20,6 +23,9 @@ export function actionProducedPhysicalKeysForPlan(plan) {
     ...plan.tool_pins.flatMap((pin) => [
       `party_runtime.party_items:${pin.item_id}`,
       `party_runtime.party_item_placements:${pin.item_id}`,
+      ...(pin.scene_placement == null ? [] : [
+        `party_runtime.entity_placements:item:${pin.item_id}`
+      ]),
       ...(pin.prepared_ordinary == null ? [
         `party_runtime.party_ownership:${pin.ownership.ownership_id}`
       ] : []),
@@ -28,6 +34,9 @@ export function actionProducedPhysicalKeysForPlan(plan) {
     ...plan.result_items.flatMap((result) => [
       `party_runtime.party_items:${result.item_id}`,
       `party_runtime.party_item_placements:${result.item_id}`,
+      ...(plan.output_destination_pin?.scene_position_id == null ? [] : [
+        `party_runtime.entity_placements:item:${result.item_id}`
+      ]),
       `party_runtime.party_ownership:${result.ownership_row.ownership_id}`
     ])
   ];

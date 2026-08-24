@@ -17,7 +17,7 @@ const IDS = Object.freeze({
 
 export function resolveTracePhase8Contracts({ state, bundle,
   conversationBindings }) {
-  if (![16, 17, 18, 19, 20, 21, 22].includes(bundle?.definition_revision)
+  if (![16, 17, 18, 19, 20, 21, 22, 23, 24].includes(bundle?.definition_revision)
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_8_REVISION_GAP');
   }

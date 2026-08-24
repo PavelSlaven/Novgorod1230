@@ -12,6 +12,10 @@ import { createActionProducedTransitionPlanner,
   '@rus/items-property/action-produced-transition';
 import { loadActionProducedCommittedContext } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-committed-context-loader.js';
+import { loadActionProducedOutputDestination } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-authority-loader.js';
+import { createPostgresOrdinaryContainerContentsLoader } from
+  '../../apps/game-server/src/infrastructure/postgres/ordinary-container-contents-loader.js';
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
@@ -1066,6 +1070,105 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
       .some(({ text }) => text === 'Жду у переправы.'), false);
     assert.equal(erased.state.ordinary_metadata.physical_inscriptions
       .some(({ text }) => text === 'Жду у переправы.'), false);
+
+    await pool.query(`INSERT INTO party_runtime.party_journey_locations
+      (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,
+       state_version,updated_change_set_id)
+      VALUES ('location-a1','party-a1','actor','pc','scene','position-a1',1,
+        'first-entry-a1')`);
+    await pool.query(`UPDATE party_runtime.party_g5_anchors
+      SET item_capacity=1 WHERE party_id='party-a1'
+        AND anchor_id='output-anchor'`);
+    const partyVersion = Number((await pool.query(`SELECT state_version
+      FROM party_runtime.parties WHERE party_id='party-a1'`)).rows[0]
+      .state_version);
+    await pool.query(`INSERT INTO party_runtime.party_state_snapshots
+      (party_id,state_version,state_payload,state_digest)
+      VALUES ('party-a1',$1,'{"position":{"position_id":"position-a1"}}',
+        'modern-position')`, [partyVersion]);
+    const modernDestination = await loadActionProducedOutputDestination(pool,
+      { party_id: 'party-a1', actor_ref: 'pc' });
+    assert.equal(modernDestination.destination_kind,
+      'party_current_scene_position');
+    assert.equal(modernDestination.anchor_id, 'output-anchor');
+    assert.equal(modernDestination.scene_position_id, 'position-a1');
+    const modernPosition = await actionPlan(pool, {
+      partyVersion, changeSetId: 'change-modern-position',
+      requestId: 'modern-position', actionRef: 'action-modern-position',
+      sources: ['rollback-source'], tools: ['rollback-tool'],
+      mode: 'independent_outputs'
+    });
+    await pool.query(`UPDATE party_runtime.scene_position_nodes SET capacity=2
+      WHERE party_id='party-a1' AND id='position-a1'`);
+    const sceneCapacityStale = await committer.commit({ plan: await combinedPlan(
+      modernPosition, 'modern-position', partyVersion) });
+    assert.equal(sceneCapacityStale.ok, false);
+    assert.equal(sceneCapacityStale.error.code, 'state_version_conflict');
+    await pool.query(`UPDATE party_runtime.scene_position_nodes SET capacity=8
+      WHERE party_id='party-a1' AND id='position-a1'`);
+    const modernCommit = await committer.commit({ plan: await combinedPlan(
+      modernPosition, 'modern-position', partyVersion) });
+    assert.equal(modernCommit.ok, true, JSON.stringify(modernCommit));
+    assert.equal((await pool.query(`SELECT count(*)::int AS n
+      FROM party_runtime.entity_placements
+      WHERE party_id='party-a1' AND entity_kind='item'
+        AND entity_id=ANY($1::text[]) AND placement_kind='scene_position'
+        AND position_node_id='position-a1'`,
+    [modernPosition.result_items.map(({ item_id: id }) => id)])).rows[0].n,
+    modernPosition.result_items.length);
+
+    const movedVersion = partyVersion + 1;
+    await pool.query(`INSERT INTO party_runtime.party_state_snapshots
+      (party_id,state_version,state_payload,state_digest)
+      VALUES ('party-a1',$1,'{"position":{"position_id":"position-a1"}}',
+        'modern-position-after-commit')`, [movedVersion]);
+    const preMove = await actionPlan(pool, {
+      partyVersion: movedVersion, changeSetId: 'change-pre-move',
+      requestId: 'pre-move', actionRef: 'action-pre-move',
+      sources: ['collision-source'], tools: ['collision-tool'],
+      mode: 'independent_outputs'
+    });
+    await pool.query(`UPDATE party_runtime.party_journey_locations
+      SET scene_position_id='position-b1'
+      WHERE party_id='party-a1' AND id='location-a1'`);
+    await pool.query(`UPDATE party_runtime.party_state_snapshots
+      SET state_payload='{"position":{"position_id":"position-b1"}}'
+      WHERE party_id='party-a1' AND state_version=$1`, [movedVersion]);
+    await assert.rejects(actionPlan(pool, {
+      partyVersion: movedVersion, changeSetId: 'change-after-exit',
+      requestId: 'after-exit', actionRef: 'action-after-exit',
+      sources: [modernPosition.result_items[0].item_id],
+      tools: ['rollback-tool'], mode: 'independent_outputs'
+    }), { code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED' });
+    const rejectedPreMove = await committer.commit({
+      plan: await combinedPlan(preMove, 'pre-move', movedVersion)
+    });
+    assert.equal(rejectedPreMove.ok, false);
+    assert.equal(rejectedPreMove.error.code, 'state_version_conflict');
+    assert.equal((await pool.query(`SELECT count(*)::int AS n
+      FROM party_runtime.entity_placements
+      WHERE party_id='party-a1' AND entity_kind='item'
+        AND entity_id=ANY($1::text[]) AND position_node_id='position-a1'`,
+    [modernPosition.result_items.map(({ item_id: id }) => id)])).rows[0].n,
+    modernPosition.result_items.length);
+    await pool.query(`UPDATE party_runtime.party_journey_locations
+      SET scene_position_id='position-a1'
+      WHERE party_id='party-a1' AND id='location-a1'`);
+    await pool.query(`UPDATE party_runtime.party_state_snapshots
+      SET state_payload='{"position":{"position_id":"position-a1"}}'
+      WHERE party_id='party-a1' AND state_version=$1`, [movedVersion]);
+    const afterReentry = await actionPlan(pool, {
+      partyVersion: movedVersion, changeSetId: 'change-after-reentry',
+      requestId: 'after-reentry', actionRef: 'action-after-reentry',
+      sources: [modernPosition.result_items[0].item_id],
+      tools: ['rollback-tool'], mode: 'independent_outputs'
+    });
+    assert.equal((await committer.commit({ plan: await combinedPlan(
+      afterReentry, 'after-reentry', movedVersion) })).ok, true);
+    assert.equal((await pool.query(`SELECT count(*)::int AS n
+      FROM party_runtime.entity_placements
+      WHERE party_id='party-a1' AND entity_kind='item' AND entity_id=$1`,
+    [modernPosition.result_items[0].item_id])).rows[0].n, 0);
   });
 
 async function actionPlan(pool, config) {
@@ -1397,6 +1500,12 @@ async function provision(pool) {
      template_instance_ordinal,capacity,access_class_id,status,state_version,
      created_change_set_id,updated_change_set_id)
     VALUES ('position-a1','party-a1','g6-a1','ground','source',0,8,'open',
+      'active',0,'fixture-a1','fixture-a1')`);
+  await pool.query(`INSERT INTO party_runtime.scene_position_nodes
+    (id,party_id,g6_instance_id,position_type_id,template_slot_key,
+     template_instance_ordinal,capacity,access_class_id,status,state_version,
+     created_change_set_id,updated_change_set_id)
+    VALUES ('position-b1','party-a1','g6-a1','ground','destination',1,8,'open',
       'active',0,'fixture-a1','fixture-a1')`);
   const items = ['pole', 'knife', 'board', 'axe', 'scrap', 'hammer',
     'rollback-source', 'rollback-tool', 'stale-source', 'stale-tool'];

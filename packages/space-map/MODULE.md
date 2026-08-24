@@ -20,6 +20,9 @@ cutover` release `spatial-v3-production-v1` сделал v3 sole production owne
 - route traversal decisions
 - map knowledge visibility
 - database queries or layout rendering
+- Spatial semantic materialization proposal/resolution: `@rus/materialization`
+  owns it. This module supplies only spatial contracts and committed scope;
+  it never creates or changes topology, routes, baselines or positions.
 
 ## Public API
 

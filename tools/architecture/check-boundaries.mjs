@@ -720,7 +720,7 @@ for (const appSpec of [
       '@rus/actors', '@rus/body-state', '@rus/checks-rng', '@rus/combat-health', '@rus/contracts', '@rus/contracts/combat-v1', '@rus/contracts/ordinary-materialization-v1', '@rus/contracts/portrait-spec-v1', '@rus/contracts/spatial-v3/registry', '@rus/knowledge-source', '@rus/llm-runtime',
       '@rus/items-property', '@rus/items-property/action-produced-result',
       '@rus/items-property/action-produced-transition',
-      '@rus/items-property/finite-resource-transition', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a',
+      '@rus/items-property/finite-resource-transition', '@rus/materialization', '@rus/materialization/internal/lower-dvina-trace-phase-1a', '@rus/materialization/internal/lower-dvina-trace-s1',
       '@rus/movement-routes', '@rus/new-game',
       '@rus/new-game/stages/stage-11', '@rus/new-game/stages/stage-12',
       '@rus/new-game/stages/stage-24',

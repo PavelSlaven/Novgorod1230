@@ -43,6 +43,9 @@ export async function loadInitialTracePhase2State({
       location_ref: 'trace_ld_v1_loc_wreck_shore'
     },
     prepared_scenes: structuredClone(initial.prepared_scenes),
+    ...(initial.first_entry_preparation == null ? {} : {
+      first_entry_preparation: structuredClone(initial.first_entry_preparation)
+    }),
     npcs: structuredClone(initial.npcs),
     promise_instances: structuredClone(initial.promise_instances ?? []),
     interactions: [],

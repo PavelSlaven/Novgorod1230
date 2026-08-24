@@ -67,7 +67,7 @@ export function validateActionProducedOutputDestination(value, mode,
   }
   if (!exact(value, OUTPUT_DESTINATION_KEYS)
       || value.schema !== 'rus.items.action_produced_output_destination.v1'
-      || value.placement_kind !== 'anchor'
+      || !['anchor', 'scene_position'].includes(value.placement_kind)
       || !text(value.target_ref) || value.holder_ref !== null
       || value.controller_ref !== actorRef) fail();
   return value;

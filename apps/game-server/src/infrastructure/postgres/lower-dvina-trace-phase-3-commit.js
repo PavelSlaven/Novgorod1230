@@ -12,11 +12,12 @@ import {
   nextState,
   phase3ActivityRef
 } from './lower-dvina-trace-phase-3-state.js';
+import { phase3Writes } from './lower-dvina-trace-phase-3-write-projection.js';
+import { resolveFirstEntry } from './lower-dvina-trace-phase-3-first-entry.js';
 import {
   pendingScreenFor,
-  phase3Writes,
   visibleEnvelopeFor
-} from './lower-dvina-trace-phase-3-write-projection.js';
+} from './lower-dvina-trace-phase-3-read-projection.js';
 import {
   mergeLowerDvinaTraceTurnStepWrites,
   prepareLowerDvinaTraceTurnStepPersistence
@@ -100,10 +101,14 @@ export async function commitLowerDvinaTracePhase3({
   const pendingScreen = pendingScreenFor({
     state: next, factual, visibleEnvelope
   });
+  const firstEntry = resolveFirstEntry({
+    partyId, state, factual, phase3Contracts, changeSetId, scenarioRevision
+  });
+  const operationKind = firstEntry?.operation_kind ?? 'trace_phase_3_turn';
   const writes = mergeLowerDvinaTraceTurnStepWrites(phase3Writes({
     partyId, state, next, factual, visibleEnvelope, pendingScreen,
     nextVersion, turnNumber, changeSetId, idemId, inputDigest,
-    phase3Contracts, scenarioRevision,
+    phase3Contracts, scenarioRevision, operationKind,
     rootTurnId: semanticContext?.rootTurnId,
     workingRevision: semanticContext?.workingRevision
   }), turnStep.writes);
@@ -115,7 +120,7 @@ export async function commitLowerDvinaTracePhase3({
     plan_id: `p16:${partyId}:trace-phase3:${turnNumber}`,
     party_id: partyId,
     write_plan_kind: 'semantic_commit',
-    operation_kind: 'trace_phase_3_turn',
+    operation_kind: operationKind,
     canonical_input_digest: canonicalInputDigest,
     expected_state_versions: [
       expected('parties', partyId, state.party_state.state_version),
@@ -137,7 +142,8 @@ export async function commitLowerDvinaTracePhase3({
         'party_actor_body_states', `player_character:${state.actor_id}`,
         state.party_state.body_state_version
       ), ...expectedChangedConditions(state,
-        factual.body_update.state_after)] : [])
+        factual.body_update.state_after)] : []),
+      ...(firstEntry?.expected_state_versions ?? [])
     ],
     validation_report: {
       status: 'pass',
@@ -176,22 +182,24 @@ export async function commitLowerDvinaTracePhase3({
     },
     change_set: { id: changeSetId },
     visible_package_envelope: visibleEnvelope,
-    approved_write_sets: [writes],
+    approved_write_sets: [writes, ...(firstEntry?.approved_write_sets ?? [])],
     lock_context: {
       owner_keys: [`actor:${state.actor_id}`],
       execution_keys: [],
-      g4_keys: [],
-      physical_keys: Object.values(writes).flat().map(
+      g4_keys: firstEntry?.lock_context.g4_keys ?? [],
+      physical_keys: [...Object.values(writes).flat().map(
         (write) => `party_runtime.${write.target_table}:${write.id}`
-      )
+      ), ...(firstEntry?.lock_context.physical_keys ?? [])]
     },
-    commit_rechecks: phase3CommitRechecks({
-      partyId,
-      state,
-      factual,
-      phase3Contracts,
-      inputDigest
-    })
+    commit_rechecks: [
+      ...phase3CommitRechecks({ partyId, state, factual, phase3Contracts,
+        inputDigest }).filter(({ kind }) => kind !== 'physical').map((check) =>
+          operationKind === 'first_entry' && check.kind === 'capacity'
+            ? sealedCheck('capacity', { party_id: partyId }) : check),
+      ...(firstEntry?.commit_rechecks ?? phase3CommitRechecks({ partyId,
+        state, factual, phase3Contracts, inputDigest })
+        .filter(({ kind }) => kind === 'physical'))
+    ]
   };
   const integratedInput = integrateConversationTemporalWrites({
     input: baseWritePlanInput,
@@ -207,7 +215,7 @@ export async function commitLowerDvinaTracePhase3({
   const builder = createCombinedWritePlanBuilder({
     verifyApproval: async (candidate) => ({
       ok: candidate.party_id === partyId
-        && candidate.operation_kind === 'trace_phase_3_turn'
+        && candidate.operation_kind === operationKind
         && candidate.canonical_input_digest
           === integratedInput.canonical_input_digest
     })

@@ -1,0 +1,38 @@
+{
+  "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
+  "profile_id": "lower_dvina_trace_s1_spatial_semantic_profile_v3",
+  "revision": 3,
+  "status": "approved",
+  "scenario_definition_revision": 24,
+  "policy_ref": "lower_dvina_trace:s1:ordinary_spatial_semantic_policy_v1",
+  "policy_version": 1,
+  "property_ref": "lower_dvina_trace:s1:shore_property_context_v1",
+  "function_ref": "lower_dvina_trace:s1:formal_spatial_owner_v1",
+  "environment_ref": "lower_dvina_trace:s1:late_summer_open_water_v1",
+  "envelopes": [
+    {
+      "envelope_ref": "lower_dvina_trace:s1:fishing_camp:ordinary_structure",
+      "kind": "ordinary_structure",
+      "template_id": "trace_ld_v1_tpl_fishing_camp",
+      "position_kind": "scene_position",
+      "scope_kind": "current_position_local_reference",
+      "structural_variant": "open_one_space",
+      "slot_key": "s1_open_one_space",
+      "required_semantic_requirements": ["interior_space"],
+      "available_mechanics": [],
+      "capacity_total": 1,
+      "semantic_context": {
+        "allowed_kind": "ordinary_structure",
+        "period": "1230, Rus",
+        "region": "Lower Dvina",
+        "place_type": "working fishing camp on the Lower Dvina",
+        "environment": "late summer riverbank; fishing nets, wet boats, timber, reeds, sand and river stones",
+        "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
+        "ordinary_boundary": "The fishing camp G5 is fixed canonical authored identity; never create, relabel, or treat it as a generated/frontier result. Create one unimportant local ordinary structure only. State only name, description, and any needed semantic requirements. Never create or identify other canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
+      }
+    }
+  ],
+  "movement_hazard_policy": "none_only",
+  "water_fire_coupling": "disabled",
+  "fallback_policy": "forbidden"
+}

@@ -79,6 +79,7 @@ export function actionProducedPreparedActionRows(input) {
       rows.set(update.item_id, preparedActionRow({
         item: update.after_item,
         placement: pin.placement,
+        scenePlacement: pin.scene_placement ?? null,
         ownership: pin.ownership,
         finiteResourceRow: afterResourceRow(pin.finite_resource_row,
           update.finite_resource_transition),
@@ -90,6 +91,10 @@ export function actionProducedPreparedActionRows(input) {
       rows.set(result.item_id, preparedActionRow({
         item: { item_id: result.item_id, ...result.item_row },
         placement: result.placement_row,
+        scenePlacement: plan.output_destination_pin?.destination_kind
+          === 'party_current_scene_position' ? {
+            position_node_id: plan.output_destination_pin.scene_position_id,
+            occupies_capacity_units: 1, state_version: 1 } : null,
         ownership: result.ownership_row,
         finiteResourceRow: null,
         causal
@@ -101,6 +106,31 @@ export function actionProducedPreparedActionRows(input) {
 
 export function actionProducedDestinationAfterPreparedActions(pin, values) {
   if (pin == null) return null;
+  if (pin.destination_kind === 'party_current_scene_position') {
+    let occupancy = pin.scene_occupancy;
+    for (const raw of values ?? []) {
+      let plan;
+      try { plan = createActionProducedAtomicWritePlan(raw); }
+      catch { fail('ACTION_PRODUCED_PREPARED_ITEM_INVALID'); }
+      for (const update of plan.source_updates) {
+        const source = plan.source_pins.find(({ item_id: id }) =>
+          id === update.item_id);
+        if (update.after_item.state?.lifecycle_status === 'retired'
+            && source?.scene_placement?.position_node_id
+              === pin.scene_position_id) {
+          occupancy -= source.scene_placement.occupies_capacity_units;
+        }
+      }
+      if (plan.output_destination_pin?.destination_kind
+          === 'party_current_scene_position'
+          && plan.output_destination_pin.scene_position_id
+            === pin.scene_position_id) occupancy += plan.result_items.length;
+    }
+    if (occupancy < 0 || occupancy > pin.scene_capacity) {
+      fail('ACTION_PRODUCED_DESTINATION_INVALID');
+    }
+    return { ...pin, scene_occupancy: occupancy };
+  }
   const used = new Set(pin.used_item_ids);
   for (const raw of values ?? []) {
     let plan;
@@ -124,10 +154,14 @@ export function actionProducedDestinationAfterPreparedActions(pin, values) {
 }
 
 function preparedActionRow({ item, placement, ownership,
-  finiteResourceRow, causal }) {
+  scenePlacement, finiteResourceRow, causal }) {
   return {
     row: { ...structuredClone(item), ...structuredClone(placement),
-      ...structuredClone(ownership) },
+      ...structuredClone(ownership),
+      ...(scenePlacement === null ? {} : {
+        scene_position_id: scenePlacement.position_node_id,
+        scene_occupies_capacity_units: scenePlacement.occupies_capacity_units,
+        scene_state_version: scenePlacement.state_version }) },
     finiteResourceRow: structuredClone(finiteResourceRow),
     preparedAction: {
       schema: 'action_production_prepared_action_pin_v1',

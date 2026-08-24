@@ -1,7 +1,9 @@
 import { createSpatialV3ProductionComposition } from '@rus/turn/spatial-v3-target-composition';
 import { createSpatialV3PostgresCombinedAtomicCommitter } from '../infrastructure/postgres/spatial-v3-combined-atomic-committer.js';
 import { createOrdinaryMaterializationFirstEntryProvisioner } from '../infrastructure/postgres/ordinary-materialization-first-entry-provisioning.js';
+import { createSpatialSemanticFirstEntryProvisioner } from '../infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { loadLowerDvinaTraceProductionMaterializationProfiles } from '../internal/lower-dvina-trace-production-materialization-profiles.js';
+import { loadLowerDvinaTraceSpatialSemanticProfile } from '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import {
   SPATIAL_V3_TARGET_MIGRATIONS,
   SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
@@ -20,19 +22,19 @@ import {
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v11';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v12';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.9.0-local-exact-fire.1',
+  contract_version: '4.10.0-spatial-semantic.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
-    'novgorod_spatial_v3_production_v4_candidate_001',
+    'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
   world_catalog_manifest_sha256:
-    '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb',
+    '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',
@@ -51,15 +53,15 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v10',
+  rollback_source_release_id: 'spatial-v3-production-v11',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
-      'novgorod_spatial_v3_production_v3_candidate_001',
+      'novgorod_spatial_v3_production_v4_candidate_001',
     world_catalog_digest:
-      '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
+      'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
     world_catalog_manifest_sha256:
-      '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
+      '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
   }),
   boundary_crossing_capability: 'ready_for_runtime_acceptance',
   npc_conversation_capability: 'ready_for_runtime_acceptance',
@@ -110,26 +112,18 @@ export async function createSpatialV3ProductionCompositionRoot({
         'The complete exact spatial-v3 migration chain is required.'
       );
     }
-    const startup = {
-      world_database:
-        await probePostgresPool(pools.worldPool, 'world_base'),
-      party_database:
-        await probePostgresPool(pools.partyPool, 'party_runtime')
-    };
+    const startup = { world_database: await probePostgresPool(pools.worldPool, 'world_base'), party_database: await probePostgresPool(pools.partyPool, 'party_runtime') };
     const worldBase = createSpatialV3WorldBaseReader({query:(sql, params) => pools.worldPool.query(sql, params)});
-    const profiles = await loadLowerDvinaTraceProductionMaterializationProfiles({
-      rootDir:config.rootDir ?? process.cwd()});
-    const bindingContext = Object.freeze({
-      env,
-      config,
+    const [profiles, spatialSemanticProfile] = await Promise.all([
+      loadLowerDvinaTraceProductionMaterializationProfiles({ rootDir: config.rootDir ?? process.cwd() }),
+      loadLowerDvinaTraceSpatialSemanticProfile({ rootDir: config.rootDir ?? process.cwd() })
+    ]);
+    const bindingContext = Object.freeze({ env, config,
       ordinaryMaterializationProfile:profiles.ordinaryMaterializationProfile,
       ordinaryContainerContentsProfile:profiles.ordinaryContainerContentsProfile,
       actionProductionProfile:profiles.actionProductionProfile, localFireProfile:profiles.localFireProfile,
-      ports: Object.freeze({
-        partyPool: pools.partyPool,
-        worldPool: pools.worldPool,
-        worldBase
-      }),
+      spatialSemanticProfile,
+      ports: Object.freeze({ partyPool: pools.partyPool, worldPool: pools.worldPool, worldBase }),
       release
     });
     const bindings = bindingsFactory
@@ -141,11 +135,15 @@ export async function createSpatialV3ProductionCompositionRoot({
           resolveSpatialV3ProductionBindingsModule(config, env),
           bindingContext
         );
-    const committer = createSpatialV3PostgresCombinedAtomicCommitter({ pool: pools.partyPool, recheck: bindings.commitRecheck, ordinaryFirstEntryProvisioner: createOrdinaryMaterializationFirstEntryProvisioner({ profile: profiles.ordinaryMaterializationProfile, ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile }), now });
-    const target = targetRootFactory({
-      ...bindings.targetCompositionPorts,
-      committer
+    const ordinaryFirstEntryProvisioner = createOrdinaryMaterializationFirstEntryProvisioner({
+      profile: profiles.ordinaryMaterializationProfile,
+      ordinaryContainerContentsProfile: profiles.ordinaryContainerContentsProfile
     });
+    const spatialSemanticFirstEntryProvisioner = createSpatialSemanticFirstEntryProvisioner({ loadedProfile: spatialSemanticProfile });
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
+      pool: pools.partyPool, recheck: bindings.commitRecheck,
+      ordinaryFirstEntryProvisioner: { async provision(input) { await ordinaryFirstEntryProvisioner.provision(input); return spatialSemanticFirstEntryProvisioner.provision(input); } }, now });
+    const target = targetRootFactory({ ...bindings.targetCompositionPorts, committer });
     const activatedRelease = deriveActivatedReleaseFromReadback(
       release,
       bindings.runtimeCatalogPin

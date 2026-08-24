@@ -1,0 +1,32 @@
+[
+  {
+    "scene_template_id": "trace_ld_v1_tpl_wreck_shore",
+    "scene_template_version": 1,
+    "position_slot_key": "open_shore",
+    "g6_scene_slot_key": "open_shore",
+    "instance_count": 1,
+    "position_type_id": "scene_position.water_reach",
+    "capacity": 7,
+    "access_class_id": "trace_ld_v1_access_wreck_shore"
+  },
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "position_slot_key": "working_camp",
+    "g6_scene_slot_key": "working_camp",
+    "instance_count": 1,
+    "position_type_id": "scene_position.fixed_working_reach",
+    "capacity": 7,
+    "access_class_id": "trace_ld_v1_access_fishing_camp"
+  },
+  {
+    "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
+    "scene_template_version": 1,
+    "position_slot_key": "s1_open_one_space.interior",
+    "g6_scene_slot_key": "s1_open_one_space",
+    "instance_count": 1,
+    "position_type_id": "scene_position.central",
+    "capacity": 5,
+    "access_class_id": "default"
+  }
+]

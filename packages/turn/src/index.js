@@ -20,6 +20,7 @@ import { resolveOrdinaryMaterializationSeedScope } from
 import { resolveOrdinaryMaterializationPresence } from
   './ordinary-materialization-presence.js';
 import { resolveWorldProcessStep } from './world-process-step.js';
+import { resolveSpatialSemanticDescriptor } from './spatial-semantic-remainder.js';
 import { createOrdinaryMaterializationDiscoveryOwner } from
   './ordinary-materialization-discovery.js';
 import { requestPlayerConversationContribution } from './player-conversation.js';
@@ -148,6 +149,7 @@ export {
   resolveOrdinaryMaterializationSeedScope,
   resolveOrdinaryMaterializationPresence,
   resolveWorldProcessStep,
+  resolveSpatialSemanticDescriptor,
   createOrdinaryMaterializationDiscoveryOwner
 };
 export {

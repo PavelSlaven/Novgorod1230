@@ -13,6 +13,8 @@ export function planApprovedActorDestinationTransition(input = {}) {
     return failed('APPROVED_DESTINATION_TRANSITION_INPUT_INVALID');
   }
   const candidates = [
+    ...persistedSceneEdgeCandidates(input.persisted_scene_movement_edge,
+      actor, destination, input.allowed_movement_refs),
     ...localCandidates(input.local_transition_bindings, actor, destination,
       input.allowed_movement_refs),
     ...localAccessCandidates(input.local_access_bindings, actor, destination,
@@ -26,6 +28,28 @@ export function planApprovedActorDestinationTransition(input = {}) {
       : 'APPROVED_DESTINATION_TRANSITION_AMBIGUOUS');
   }
   return deepFreeze({ pass: true, proposal: candidates[0], errors: [] });
+}
+
+function persistedSceneEdgeCandidates(edge, actor, destination, allowed = []) {
+  if (actor.location_ref !== destination.location_ref
+      || actor.zone_ref === destination.zone_ref
+      || !validPersistedSceneEdge(edge)
+      || edge.from_position_ref !== actor.zone_ref
+      || edge.to_position_ref !== destination.zone_ref
+      || !allowedMovement(edge.edge_id, allowed)
+      || edge.transition_footprint_units > edge.edge_capacity
+      || edge.destination_occupancy + edge.transition_footprint_units
+        > edge.destination_capacity) return [];
+  return [Object.freeze({ owner: '@rus/movement-routes',
+    movement_kind: 'persisted_scene_edge_action', movement_ref: edge.edge_id,
+    execution_mode: 'immediate_position_transition',
+    actor_ref: structuredClone(actor.actor_ref), source: spatialSnapshot(actor),
+    destination: { entity_ref: structuredClone(destination.entity_ref),
+      ...spatialSnapshot(destination) },
+    exact_elapsed: { exact_minutes: { numerator: '0', denominator: '1' } },
+    action_cost: { cost_kind: 'action', action_units: edge.action_units },
+    persisted_scene_movement_edge: structuredClone(edge),
+    clock_write: 'none' })];
 }
 
 function localCandidates(bindings = [], actor, destination, allowed = []) {
@@ -133,6 +157,24 @@ function positiveMinutes(value) {
   return Number.isSafeInteger(value) && value > 0;
 }
 
+function validPersistedSceneEdge(value) {
+  return value?.cost_kind === 'action' && Number.isSafeInteger(value.action_units)
+    && value.action_units > 0 && value.base_minutes === null
+    && text(value.edge_id) && text(value.reverse_edge_id)
+    && text(value.from_position_ref) && text(value.to_position_ref)
+    && integer(value.edge_state_version) && integer(value.reverse_edge_state_version)
+    && integer(value.source_node_state_version)
+    && integer(value.destination_node_state_version)
+    && Number.isSafeInteger(value.edge_capacity) && value.edge_capacity > 0
+    && Number.isSafeInteger(value.destination_capacity) && value.destination_capacity > 0
+    && value.transition_footprint_units === 1
+    && Number.isSafeInteger(value.destination_occupancy)
+    && value.destination_occupancy >= 0
+    && ['transition_environment_profile_ref', 'movement_orientation_profile_ref',
+      'baseline_movement_method_id', 'movement_method_cost_profile_ref',
+      'dynamic_recheck_policy_ref'].every((key) => Object.hasOwn(value, key));
+}
+
 function allowedMovement(id, allowed) {
   return !Array.isArray(allowed) || allowed.length === 0
     || allowed.includes(id);
@@ -142,6 +184,8 @@ function validStateVersion(value) {
   return Number.isSafeInteger(value) && value >= 0
     || typeof value === 'string' && /^(?:0|[1-9][0-9]*)$/u.test(value);
 }
+
+function integer(value) { return Number.isSafeInteger(value) && value >= 0; }
 
 function text(value) {
   return typeof value === 'string' && value.length > 0;

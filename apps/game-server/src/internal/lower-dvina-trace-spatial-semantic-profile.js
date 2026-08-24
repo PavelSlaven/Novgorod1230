@@ -13,8 +13,8 @@ const ACTIVE = Object.freeze({
   profile_canonical_digest: '8b118fc1ba8df3b636924c07b86771d6d6dbc6b595cb64efc22216b7d839f3bc',
   m12_manifest_digest: '2f3710377b840475f5d9af4e7cf9ed71dab017a073806eb032c297fc8119ff32',
   phase_1a_manifest_digest: '65f4a64e0764774f8e04842433a66b8ddfabe13b07cabb3c8360931a2bfeb5f0',
-  phase_1b_manifest_digest: '28e5d9bddfb1e027d3017756ac0a1c9c3e107c7ac479e981663727443622f7a3',
-  phase_1b_binding_digest: '909d3f7f63fa275ac9e3d777584a062d89c0ee8d8284eb48b2179dec54b79160'
+  phase_1b_manifest_digest: '836e47481473b00ed7ee52d687c38aede33f55936fcdc1917c05d5b2618cdd3a',
+  phase_1b_binding_digest: '0f99932451cabee1f286cde2eb40b787c85800d7cfa58fc6db19ff4d8c85b206'
 });
 
 export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = process.cwd() } = {}) {

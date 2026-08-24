@@ -31,12 +31,62 @@ export function isActionProductionOwnerInScope({
   const visibleObjects = exactVisibleRefs(playerSafeState, 'visible_objects', {
     requireItemKind: true
   });
-  if (!visibleObjects.has(itemUse.item_ref)) return false;
+  const playerSafeItems = exactPlayerSafeItemRefs(playerSafeState);
+  const actorHeldItems = exactActorHeldItemRefs(playerSafeState);
+  if (!visibleObjects.has(itemUse.item_ref)
+      && !playerSafeItems.has(itemUse.item_ref)
+      && !actorHeldItems.has(itemUse.item_ref)) return false;
   const visibleTargets = new Set([
     ...visibleObjects,
     ...exactVisibleRefs(playerSafeState, 'visible_entities')
   ]);
   return targetRefs.every((ref) => visibleTargets.has(ref));
+}
+
+function exactActorHeldItemRefs(playerSafeState) {
+  const actorId = ownDataProperty(playerSafeState, 'actor_id');
+  const items = ownDataArray(ownDataProperty(playerSafeState, 'items'));
+  if (!canonicalText(actorId) || items == null) return new Set();
+  const refs = new Set();
+  for (const value of items) {
+    const item = ownPlainDataObject(value);
+    const placement = item && ownPlainDataObject(
+      ownDataProperty(item, 'placement'));
+    const itemId = item && ownCanonicalItemId(item);
+    if (canonicalText(itemId) && placement != null
+        && ownDataProperty(placement, 'holder_character_id') === actorId) {
+      refs.add(itemId);
+    }
+  }
+  return refs;
+}
+
+function exactPlayerSafeItemRefs(playerSafeState) {
+  const inventory = ownPlainDataObject(
+    ownDataProperty(playerSafeState, 'inventory'));
+  const items = inventory && ownPlayerSafeItemRefArray(
+    ownDataProperty(inventory, 'items'));
+  return new Set(items ?? []);
+}
+
+function ownPlayerSafeItemRefArray(value) {
+  const values = ownDataArray(value);
+  if (values == null) return null;
+  const refs = [];
+  const unique = new Set();
+  for (const value of values) {
+    const ref = canonicalText(value) ? value : ownCanonicalItemId(value);
+    if (!canonicalText(ref) || unique.has(ref)) return null;
+    refs.push(ref);
+    unique.add(ref);
+  }
+  return refs;
+}
+
+function ownCanonicalItemId(value) {
+  const item = ownPlainDataObject(value);
+  const itemId = item && ownDataProperty(item, 'item_id');
+  return canonicalText(itemId) ? itemId : null;
 }
 
 function ownCanonicalRefArray(value) {
@@ -102,6 +152,17 @@ function ownPlainDataRecord(value, keys) {
     output[key] = descriptor.value;
   }
   return output;
+}
+
+function ownPlainDataObject(value) {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)
+      || (Object.getPrototypeOf(value) !== Object.prototype
+        && Object.getPrototypeOf(value) !== null)
+      || Object.getOwnPropertySymbols(value).length !== 0) return null;
+  return Object.getOwnPropertyNames(value).every((key) => {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value');
+  }) ? value : null;
 }
 
 function ownDataProperty(value, key) {

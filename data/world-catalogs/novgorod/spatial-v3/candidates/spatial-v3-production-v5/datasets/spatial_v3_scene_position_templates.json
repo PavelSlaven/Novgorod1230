@@ -16,7 +16,7 @@
     "g6_scene_slot_key": "s1_open_one_space",
     "instance_count": 1,
     "position_type_id": "scene_position.central",
-    "capacity": 1,
+    "capacity": 5,
     "access_class_id": "default"
   }
 ]

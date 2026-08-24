@@ -19,7 +19,7 @@ test('exhausted S1 envelope exposes no resolver marker or model path', async () 
   request.request.player_safe_state = playerSafeState;
   const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
     pool: { query: async () => { reads += 1; return { rowCount: 0, rows: [] }; } },
-    spatialSemanticModel: async () => { modelCalls += 1; }
+    resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; }
   })({ partyId: 'party:s1' });
   await assert.rejects(() => resolver(request), { code: 'TRACE_S1_SCOPE_INVALID' });
   assert.equal(reads, 1, 'replay lookup remains read-only');
@@ -48,10 +48,9 @@ test('S1 local movement reuses committed visible detail without model', async ()
   display_label: 'Загородка', recognition: 'recognized', visible_status: 'замечен' }];
   const planned = await resolver(request);
   assert.equal(modelCalls, 0);
-  assert.deepEqual(planned.consequence_fragment.position_transition, {
-    owner: '@rus/movement-routes', actor_id: 'actor:s1', local_ref: committed.local_ref,
-    from_position_ref: 'position:s1', to_position_ref: 'position:inside',
-    movement_edge_ref: 'edge:into' });
+  assert.equal(planned.consequence_fragment.position_transition.movement_edge_ref, 'edge:into');
+  assert.equal(planned.consequence_fragment.position_transition.movement_admission.action_units, 1);
+  assert.equal(planned.consequence_fragment.position_transition.movement_admission.base_minutes, null);
   const reverse = s1Request({ requestId: 'request:exit', position: 'position:inside', operation: {
     op: 'request_movement', actor_ref: 'actor:s1', movement_kind: 'local',
     target_ref: committed.local_ref } });
@@ -59,10 +58,9 @@ test('S1 local movement reuses committed visible detail without model', async ()
     request.request.player_safe_state.visible_objects);
   const exited = await localMovementResolver({ committed,
     edge: { rowCount: 1, rows: [{ id: 'edge:out' }] } })(reverse);
-  assert.deepEqual(exited.consequence_fragment.position_transition, {
-    owner: '@rus/movement-routes', actor_id: 'actor:s1', local_ref: committed.local_ref,
-    from_position_ref: 'position:inside', to_position_ref: 'position:s1',
-    movement_edge_ref: 'edge:out' });
+  assert.equal(exited.consequence_fragment.position_transition.movement_edge_ref, 'edge:out');
+  assert.equal(exited.consequence_fragment.position_transition.movement_admission.reverse_edge_id,
+    'edge:into');
   for (const edge of [{ rowCount: 0, rows: [] }, { rowCount: 2,
     rows: [{ id: 'edge:into' }, { id: 'edge:out' }] }, { rowCount: 1,
     rows: [{ id: 'edge:forged' }] }]) {
@@ -82,9 +80,21 @@ test('S1 local movement reuses committed visible detail without model', async ()
 
 function localMovementResolver({ committed, edge, model = () => {} }) {
   return createLowerDvinaTraceS1ProductionResolverFactory({ pool: { query: async (sql) =>
-    sql.includes('scene_movement_edges') ? edge : { rowCount: 1, rows: [committed] }
-  }, spatialSemanticModel: async () => model() })({ partyId: 'party:s1' });
+    sql.includes('scene_movement_edges') ? { ...edge, rows: edge.rows.map((row) =>
+      row.id ? sceneEdge(row.id) : row) } : { rowCount: 1, rows: [committed] }
+  }, resolveSpatialSemanticDescriptor: async () => model() })({ partyId: 'party:s1' });
 }
+function sceneEdge(id) { const forward = id === 'edge:into'; return { edge_id: id,
+  reverse_edge_id: forward ? 'edge:out' : 'edge:into',
+  from_position_ref: forward ? 'position:s1' : 'position:inside',
+  to_position_ref: forward ? 'position:inside' : 'position:s1', cost_kind: 'action',
+  action_units: 1, base_minutes: null, edge_capacity: 1, destination_capacity: 2,
+  transition_footprint_units: 1, destination_occupancy: 0,
+  edge_state_version: 0, reverse_edge_state_version: 0, source_node_state_version: 0,
+  destination_node_state_version: 0, transition_environment_profile_ref: { id: 'environment', version: 1 },
+  movement_orientation_profile_ref: { id: 'orientation', version: 1 },
+  baseline_movement_method_id: null, movement_method_cost_profile_ref: null,
+  dynamic_recheck_policy_ref: null }; }
 function s1Request({ target = 'position:s1', position = 'position:s1', requestId = 'request:s1',
   discoveryKind = 'look', operation = undefined } = {}) {
   return { schema: 'turn_step_spatial_semantic_remainder_request_v1',

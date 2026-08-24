@@ -46,10 +46,15 @@ export async function applyActionProducedAtomicWritePlanInTransaction({
         `DELETE FROM party_runtime.party_item_placements
          WHERE party_id=$1 AND item_id=$2`, [plan.party_id, update.item_id]);
       if (removed.rowCount !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
+      await client.query(
+        `DELETE FROM party_runtime.entity_placements
+         WHERE party_id=$1 AND entity_kind='item' AND entity_id=$2`,
+      [plan.party_id, update.item_id]);
     }
   }
   for (const result of plan.result_items) {
-    await insertResult(client, plan.party_id, result);
+    await insertResult(client, plan.party_id, result, plan.change_set_id,
+      plan.output_destination_pin?.scene_position_id ?? null);
   }
   return Object.freeze({ replay: false });
 }
@@ -77,7 +82,19 @@ async function lockAndVerifyPins(client, plan) {
        WHERE i.party_id=$1 AND i.item_id=$2
        FOR UPDATE OF i,p,o`, [plan.party_id, pin.item_id]);
     if (selected.rows.length !== 1) fail('ACTION_PRODUCED_SOURCE_STALE');
-    const normalized = normalizedRows(selected.rows[0]);
+    const scene = await client.query(
+      `SELECT position_node_id,occupies_capacity_units,state_version
+       FROM party_runtime.entity_placements
+       WHERE party_id=$1 AND entity_kind='item' AND entity_id=$2
+         AND placement_kind='scene_position' FOR UPDATE`,
+    [plan.party_id, pin.item_id]);
+    if (scene.rows.length > 1) fail('ACTION_PRODUCED_SOURCE_STALE');
+    const normalized = normalizedRows({ ...selected.rows[0],
+      ...(scene.rows[0] == null ? {} : {
+        scene_position_id: scene.rows[0].position_node_id,
+        scene_occupies_capacity_units:
+          scene.rows[0].occupies_capacity_units,
+        scene_state_version: scene.rows[0].state_version }) });
     const containerId = normalized.placement.container_id;
     if (containerId != null && !containers.has(containerId)) {
       const loaded = await loadActionProducedAccessContainers(client,
@@ -93,6 +110,11 @@ async function lockAndVerifyPins(client, plan) {
         || !isDeepStrictEqual(normalized.item, pin.item)
         || !isDeepStrictEqual(normalized.placement, pin.placement)
         || !isDeepStrictEqual(normalized.ownership, pin.ownership)
+        || !isDeepStrictEqual(normalized.scene_placement,
+          pin.scene_placement ?? null)
+        || normalized.scene_placement != null
+          && normalized.scene_placement.position_node_id
+            !== plan.output_destination_pin?.scene_position_id
         || pin.prepared_action == null
           && !isDeepStrictEqual(accessContainer,
             pin.access_container ?? null)) {
@@ -154,7 +176,8 @@ async function applyResourceTransition(client, plan, update, changeSetId) {
   if (changed.rowCount !== 1) fail('ACTION_PRODUCED_RESOURCE_STALE');
 }
 
-async function insertResult(client, partyId, result) {
+async function insertResult(client, partyId, result, changeSetId,
+  scenePositionId) {
   const item = result.item_row;
   await client.query(
     `INSERT INTO party_runtime.party_items
@@ -186,6 +209,12 @@ async function insertResult(client, partyId, result) {
     ownership.owner_npc_id, ownership.owner_character_id,
     ownership.owner_party, ownership.controller_npc_id,
     ownership.controller_character_id, ownership.claim_state]);
+  if (scenePositionId !== null) await client.query(
+    `INSERT INTO party_runtime.entity_placements
+      (party_id,entity_kind,entity_id,placement_kind,position_node_id,
+       occupies_capacity_units,state_version,updated_change_set_id)
+     VALUES ($1,'item',$2,'scene_position',$3,1,1,$4)`,
+  [partyId, result.item_id, scenePositionId, changeSetId]);
 }
 
 function normalizedRows(row) {
@@ -212,7 +241,11 @@ function normalizedRows(row) {
       controller_npc_id: row.controller_npc_id,
       controller_character_id: row.controller_character_id,
       claim_state: row.claim_state
-    }
+    },
+    scene_placement: row.scene_position_id == null ? null : {
+      position_node_id: row.scene_position_id,
+      occupies_capacity_units: Number(row.scene_occupies_capacity_units),
+      state_version: Number(row.scene_state_version) }
   };
 }
 

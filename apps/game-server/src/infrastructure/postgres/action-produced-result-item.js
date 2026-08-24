@@ -24,7 +24,7 @@ export function deriveActionProducedResultItem(result, sourcePins, proposal,
     actorRef);
   if (result.holder_ref !== expected.holder_ref
       || result.controller_ref !== expected.controller_ref
-      || placement.anchor_id !== expected.target_ref) {
+      || placement.anchor_id !== destination.anchor_id) {
     fail('ACTION_PRODUCED_DESTINATION_INVALID');
   }
   if (!validateActionProducedOutputAuthority(result.output_authority,

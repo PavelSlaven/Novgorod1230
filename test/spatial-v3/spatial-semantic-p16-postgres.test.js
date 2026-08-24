@@ -13,6 +13,8 @@ import { createSpatialSemanticFirstEntryProvisioner } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-first-entry-provisioning.js';
 import { applySpatialSemanticAtomicWritePlanInTransaction } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-persistence.js';
+import { recheckS1LocalMovement } from
+  '../../apps/game-server/src/infrastructure/postgres/first-playable/recheck-s1-local-movement.js';
 import { createSpatialSemanticAtomicWritePlan, spatialSemanticPhysicalKeys, spatialSemanticRows } from
   '../../apps/game-server/src/infrastructure/postgres/spatial-semantic-atomic-write-plan.js';
 import { buildCombinedWritePlan } from '../../packages/turn/src/spatial-v3-write-plan.js';
@@ -252,6 +254,58 @@ test('S1 combined P16 maps concurrent last-slot loss to typed conflict', async (
     [from_position_id, to_position_id].sort()).sort(), [
     ['position:s1', interiorPosition].sort(), ['position:s1', interiorPosition].sort()
   ].sort());
+});
+
+test('S1 local movement PostgreSQL recheck counts capacity without locking nullable join', async (t) => {
+  const database = await startP16Postgres(t, 'movement'); if (!database) return;
+  const { pool } = database;
+  await seedCommitScope(pool);
+  await pool.query(`UPDATE party_runtime.scene_movement_edges
+    SET reverse_edge_id=CASE id WHEN 'edge:back' THEN 'edge:out' ELSE 'edge:back' END,
+        capacity=1
+    WHERE party_id='party:s1'`);
+  await pool.query(`UPDATE party_runtime.scene_position_nodes SET capacity=1
+    WHERE party_id='party:s1' AND id='position:interior'`);
+  await pool.query(`INSERT INTO party_runtime.party_player_characters
+    (party_id,character_id,profile) VALUES ('party:s1','actor:s1','{}'),
+      ('party:s1','actor:other','{}')`);
+  await pool.query(`INSERT INTO party_runtime.party_journey_locations
+    (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,
+     updated_change_set_id) VALUES ('journey:s1','party:s1','actor','actor:s1','scene',
+     'position:s1',0,'fixture:s1')`);
+  const check = s1MovementCheck();
+  assert.deepEqual(await recheckS1LocalMovement({ transaction: pool,
+    partyId: 'party:s1', check }), { ok: true, code: 'state_version_conflict' });
+  await pool.query(`INSERT INTO party_runtime.entity_placements
+    (party_id,entity_kind,entity_id,placement_kind,position_node_id,
+     occupies_capacity_units,state_version,updated_change_set_id)
+    VALUES ('party:s1','ordinary_structure','fixture:occupant','scene_position',
+      'position:interior',1,0,'fixture:s1')`);
+  assert.deepEqual(await recheckS1LocalMovement({ transaction: pool,
+    partyId: 'party:s1', check }), { ok: false, code: 'state_version_conflict' });
+  await pool.query(`DELETE FROM party_runtime.entity_placements
+    WHERE party_id='party:s1' AND entity_kind='ordinary_structure'
+      AND entity_id='fixture:occupant'`);
+  await pool.query(`INSERT INTO party_runtime.party_journey_locations
+    (id,party_id,owner_kind,owner_id,location_kind,scene_position_id,state_version,
+     updated_change_set_id) VALUES ('journey:other','party:s1','actor','actor:other','scene',
+     'position:s1',0,'fixture:s1')`);
+  const first = await pool.connect(); const second = await pool.connect();
+  try {
+    await first.query('BEGIN'); await second.query('BEGIN');
+    assert.deepEqual(await recheckS1LocalMovement({ transaction: first,
+      partyId: 'party:s1', check }), { ok: true, code: 'state_version_conflict' });
+    const concurrent = recheckS1LocalMovement({ transaction: second,
+      partyId: 'party:s1', check: { ...check, actor_id: 'actor:other',
+        journey_location_id: 'journey:other' } });
+    await first.query(`UPDATE party_runtime.party_journey_locations
+      SET scene_position_id='position:interior',state_version=1
+      WHERE party_id='party:s1' AND id='journey:s1'`);
+    await first.query('COMMIT');
+    assert.deepEqual(await concurrent,
+      { ok: false, code: 'state_version_conflict' });
+    await second.query('ROLLBACK');
+  } finally { first.release(); second.release(); }
 });
 
 test('S1 controlled passage fails before P16 without portal condition owner', async (t) => {
@@ -536,6 +590,23 @@ function scope() {
     template_ref: { entity_ref: { entity_id: 'template-s1' } }, position_ref: 'position-s1',
     position_state_version: 0, template_id: 'template-s1', position_kind: 'scene_position' };
 }
+function s1MovementCheck() { return { actor_id: 'actor:s1',
+  journey_location_id: 'journey:s1', expected_journey_state_version: 0,
+  from_position_ref: 'position:s1', to_position_ref: 'position:interior',
+  movement_edge_ref: 'edge:back', movement_admission: {
+    edge_id: 'edge:back', reverse_edge_id: 'edge:out', edge_state_version: 0,
+    reverse_edge_state_version: 0, source_node_state_version: 0,
+    destination_node_state_version: 0, cost_kind: 'action', action_units: 1,
+    base_minutes: null, edge_capacity: 1, destination_capacity: 1,
+    transition_footprint_units: 1,
+    transition_environment_profile_ref: { entity_ref: {
+      entity_kind: 'transition_environment_profile', entity_id: 'env.local_variable'
+    }, authoring_version: '1' }, movement_orientation_profile_ref: { entity_ref: {
+      entity_kind: 'movement_orientation_profile', entity_id: 'orientation.topological_local'
+    }, authoring_version: '1' }, baseline_movement_method_id: null,
+    movement_method_cost_profile_ref: null, dynamic_recheck_policy_ref: null,
+    from_position_ref: 'position:s1', to_position_ref: 'position:interior'
+  } } }
 function semanticContext(allowed_kind) { return { allowed_kind, period: '1230, Rus',
   region: 'Lower Dvina', place_type: 'open river shore at a boat-wreck site',
   environment: 'late summer open water; wet sand, driftwood, reeds, riverbank stones and timber',

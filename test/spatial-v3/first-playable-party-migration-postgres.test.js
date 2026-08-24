@@ -211,6 +211,12 @@ test('011 applies to isolated PostgreSQL and permits transport departure without
   const migrated = psql(SPATIAL_V3_TARGET_MIGRATIONS.join('\n'));
   assert.equal(migrated.status, 0, migrated.stderr);
 
+  const snapshotValid = psql(`SELECT party_runtime.runtime_instance_mechanics_snapshot_valid(
+    '{"schema":"rus.items.runtime_instance_mechanics_snapshot.v1","version":1,"provenance":{"source_kind":"ordinary_direct_action_result","root_turn_id":"turn","step_index":1,"operation_ref":"operation","origin_kind":"ambient_ordinary","source_refs":["shore"]},"mechanics":{"mass_grams":1,"external_hand_cost":0,"carry_form":"compact","packing_slot_cost":0,"quantity":null,"container":null}}'::jsonb
+  )`, ['-t', '-A']);
+  assert.equal(snapshotValid.status, 0, snapshotValid.stderr);
+  assert.equal(snapshotValid.stdout.trim(), 't');
+
   const seed = psql(`
     INSERT INTO party_runtime.parties(
       party_id,schema_version,world_revision_id,world_catalog_digest,

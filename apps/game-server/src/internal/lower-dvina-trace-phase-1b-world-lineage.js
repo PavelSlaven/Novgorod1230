@@ -14,7 +14,7 @@ export async function assertLowerDvinaTracePhase1BWorldLineage({
   const expected = productionRevision
     === 'novgorod_spatial_v3_production_v5_candidate_001'
     ? [LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST,
-      '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176', 4]
+      '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd', 4]
     : productionRevision === 'novgorod_spatial_v3_production_v4_candidate_001'
       ? [LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST,
         'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79', 3]

@@ -41,22 +41,43 @@ export function createSpatialSemanticAuthorityRepository({ pool } = {}) {
           || !Array.isArray(movement_edge_refs) || movement_edge_refs.length !== 2
           || new Set(movement_edge_refs).size !== 2
           || !movement_edge_refs.every(text)) fail('S1_SPATIAL_MOVEMENT_EDGE_INVALID');
-      const result = await pool.query(`SELECT e.id
+      const result = await pool.query(`SELECT e.id AS edge_id,e.reverse_edge_id,
+          e.from_position_id AS from_position_ref,e.to_position_id AS to_position_ref,
+          e.cost_kind,e.action_units,e.base_minutes,e.capacity AS edge_capacity,
+          e.transition_environment_profile_ref,e.movement_orientation_profile_ref,
+          e.baseline_movement_method_id,e.movement_method_cost_profile_ref,
+          e.dynamic_recheck_policy_ref,e.state_version AS edge_state_version,
+          reverse.state_version AS reverse_edge_state_version,
+          source.state_version AS source_node_state_version,
+          destination.state_version AS destination_node_state_version,
+          destination.capacity AS destination_capacity,
+          (SELECT COUNT(*)::int FROM party_runtime.party_journey_locations occupancy
+            WHERE occupancy.party_id=e.party_id AND occupancy.location_kind='scene'
+              AND occupancy.scene_position_id=e.to_position_id)
+          + COALESCE((SELECT SUM(occupies_capacity_units) FROM party_runtime.entity_placements occupancy
+            WHERE occupancy.party_id=e.party_id AND occupancy.position_node_id=e.to_position_id),0)::int
+            AS destination_occupancy
         FROM party_runtime.scene_movement_edges e
+        JOIN party_runtime.scene_movement_edges reverse
+          ON reverse.party_id=e.party_id AND reverse.id=e.reverse_edge_id
         JOIN party_runtime.scene_position_nodes source
           ON source.party_id=e.party_id AND source.id=e.from_position_id
         JOIN party_runtime.scene_position_nodes destination
           ON destination.party_id=e.party_id AND destination.id=e.to_position_id
         WHERE e.party_id=$1 AND e.from_position_id=$2 AND e.to_position_id=$3
           AND e.id = ANY($4::text[]) AND e.status='active'
+          AND reverse.status='active' AND reverse.from_position_id=e.to_position_id
+          AND reverse.to_position_id=e.from_position_id AND reverse.reverse_edge_id=e.id
           AND source.status='active' AND destination.status='active'
         ORDER BY e.id`, [party_id, from_position_ref, to_position_ref,
         movement_edge_refs]);
-      if (result.rowCount !== 1 || !text(result.rows[0]?.id)
-          || !movement_edge_refs.includes(result.rows[0].id)) {
+      const edge = result.rows[0];
+      if (result.rowCount !== 1 || !validEdge(edge)
+          || !movement_edge_refs.includes(edge.edge_id)
+          || edge.destination_occupancy + 1 > edge.destination_capacity) {
         fail('S1_SPATIAL_MOVEMENT_EDGE_INVALID');
       }
-      return result.rows[0].id;
+      return Object.freeze(sceneEdgeSnapshot(edge));
     }
   });
 }
@@ -96,4 +117,26 @@ function snapshot(row, partyId) {
     status: 'committed' });
 }
 function text(value) { return typeof value === 'string' && value.length > 0; }
+function integer(value) { return Number.isSafeInteger(Number(value)) && Number(value) >= 0; }
+function validEdge(value) {
+  return text(value?.edge_id) && text(value.reverse_edge_id)
+    && text(value.from_position_ref) && text(value.to_position_ref)
+    && value.cost_kind === 'action' && Number.isSafeInteger(Number(value.action_units))
+    && Number(value.action_units) > 0 && value.base_minutes === null
+    && Number.isSafeInteger(Number(value.edge_capacity)) && Number(value.edge_capacity) > 0
+    && Number.isSafeInteger(Number(value.destination_capacity)) && Number(value.destination_capacity) > 0
+    && integer(value.edge_state_version) && integer(value.reverse_edge_state_version)
+    && integer(value.source_node_state_version)
+    && integer(value.destination_node_state_version)
+    && Number.isSafeInteger(Number(value.destination_occupancy));
+}
+function sceneEdgeSnapshot(value) {
+  return { ...structuredClone(value), action_units: Number(value.action_units),
+    edge_capacity: Number(value.edge_capacity), destination_capacity: Number(value.destination_capacity),
+    transition_footprint_units: 1, destination_occupancy: Number(value.destination_occupancy),
+    edge_state_version: Number(value.edge_state_version),
+    reverse_edge_state_version: Number(value.reverse_edge_state_version),
+    source_node_state_version: Number(value.source_node_state_version),
+    destination_node_state_version: Number(value.destination_node_state_version) };
+}
 function fail(code) { const error = new Error(code); error.code = code; throw error; }

@@ -35,8 +35,8 @@ const closureColumns = Object.freeze({
 
 export const lowerDvinaTraceV5World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v5_candidate_001',
-  digest: '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176',
-  manifest: '1237e81686e357c68ab2a3957c428e538e37b4155786f4768e29622677d0309c'
+  digest: '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd',
+  manifest: '424a79955c4285c47c0c08240006b3e17d979e071abc160e7588b5597800921d'
 });
 
 const pick = (row, columns) => Object.fromEntries(

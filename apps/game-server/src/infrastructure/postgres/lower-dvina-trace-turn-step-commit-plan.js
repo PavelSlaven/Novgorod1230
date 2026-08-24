@@ -190,7 +190,8 @@ function s1LocalMovementRecheck({ partyId, state, envelope }) {
     expected_journey_state_version: Number(state.journey_location.state_version),
     from_position_ref: transition.from_position_ref,
     to_position_ref: transition.to_position_ref,
-    movement_edge_ref: transition.movement_edge_ref
+    movement_edge_ref: transition.movement_edge_ref,
+    movement_admission: transition.movement_admission
   })];
 }
 

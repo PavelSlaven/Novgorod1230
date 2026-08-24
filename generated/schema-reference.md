@@ -190,7 +190,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/012_party_runtime_external_ownership.sql` | sql | 1878 | `f075187ee20cee962d7f215881eb89169770f555e5b556b3aa82f45afc5b9bab` |
 | `schemas/party-db/013_party_runtime_obligations.sql` | sql | 6406 | `9fa0ddd3fdb9a9f63266533fdf9124a0178dd8a8dd2805c23aca2532f6c64b68` |
 | `schemas/party-db/014_party_runtime_activity_resume_terminal.sql` | sql | 5728 | `877954824b980740281cd9b5737771559ce38ac8817751703bb4996967fdb0c2` |
-| `schemas/party-db/015_party_runtime_turn_step_items.sql` | sql | 8156 | `1ed053d2dc29c259bd7d3d01b2f959268ae353205758a564a046f7d5bae5ef7d` |
+| `schemas/party-db/015_party_runtime_turn_step_items.sql` | sql | 8182 | `86734c9beac056974a1b16f46dcee8d889362dfbbf507d7281813b0fa509e77c` |
 | `schemas/party-db/016_party_runtime_npc_semantic_conversation.sql` | sql | 11809 | `6c1f48de83313bf32b31d33d74e9c78d9dbd8b8963f7167b99cc0ac4cedc8b7f` |
 | `schemas/party-db/017_party_runtime_conversation_transcript.sql` | sql | 1762 | `3eed33f61aca6f0889057d9758e22e0aa7550f38359e6563c3b4a5b0141a6611` |
 | `schemas/party-db/018_party_runtime_phase7_container_state.sql` | sql | 444 | `ed6e61b2a1a7d9d0f882ba4904f48ff61426d5e0037571f8af35ff449848053f` |
@@ -205,6 +205,7 @@ Release: `0.23.0-migration.24`
 | `schemas/party-db/027_party_runtime_action_production.sql` | sql | 894 | `61b46a84bb664ab5552db3fc209a4ad4b1e4f5b5ac806467e8bcd5c3177f81cd` |
 | `schemas/party-db/028_party_runtime_local_exact_fire.sql` | sql | 3312 | `bea7d3cb2e1cbadb9f901e9cf71011498d44845d3b3fda3342fa361d764375b3` |
 | `schemas/party-db/029_party_runtime_spatial_semantic_remainder.sql` | sql | 2673 | `ef20ef6ce21f85e717c327bceb70751e1210bed0ae92b8dcbe97a4eb8dfeddab` |
+| `schemas/party-db/030_party_runtime_snapshot_validator_alias.sql` | sql | 4489 | `037bf322358021dbdf73650259fc64eec346ba00474e072d3098393e2baee9cc` |
 | `schemas/runtime-catalog/runtime-catalog-artifacts-v2.schema.json` | json | 18438 | `2d8e9167f701e193b2e2eb03c162e4b8228cb2c46cea7cc26368de4304a3ed40` |
 | `schemas/world-base/world-base-source-bundle.schema.json` | json | 1447 | `358430badf2821197ffc74d4600b2cc2b153d1a1a141020e998650cb1c325dc2` |
 | `schemas/world-catalogs/g1-boundary-contract.schema.json` | json | 1199 | `9a255c612dc382e4ead28c5566ae6583878840651904a134f364bb1b1291f3aa` |

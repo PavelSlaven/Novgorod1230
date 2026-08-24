@@ -8,6 +8,8 @@ import { projectLowerDvinaTraceA1Capability } from
   '../src/runtime/lower-dvina-trace-a1-player-safe.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
+import { resolveA1OperationScope } from
+  '../src/runtime/releases/lower-dvina-trace-a1-pre-attempt.js';
 import { projectLowerDvinaTraceF1Capability } from
   '../src/runtime/releases/lower-dvina-trace-f1-production.js';
 import { createSpatialV3ProductionBindings } from
@@ -50,6 +52,48 @@ test('A1 capability marker requires the exact profile and installed resolver',
     assert.deepEqual(active.visible_objects, [bag, sceneObject]);
     assert.equal(active.visible_objects.some(({ entity_ref: ref }) =>
       ref.entity_id === 'item:hidden-unrelated'), false);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { visible_objects: [bag], inventory: {
+        items: ['item:carried']
+      } }, loadedProfile, resolverAvailable: true
+    }).action_production.semantic_grounding_available, true);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { visible_objects: [bag], inventory: {
+        items: [{ item_id: 'item:reloaded-carried', template_id: 'stick' }]
+      } }, loadedProfile, resolverAvailable: true
+    }).action_production.semantic_grounding_available, true);
+    let itemIdReads = 0;
+    const getterItem = {};
+    Object.defineProperty(getterItem, 'item_id', {
+      enumerable: true,
+      get() {
+        itemIdReads += 1;
+        return 'item:hostile';
+      }
+    });
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { visible_objects: [bag], inventory: {
+        items: [getterItem]
+      } }, loadedProfile, resolverAvailable: true
+    }).action_production, undefined);
+    assert.equal(itemIdReads, 0);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { visible_objects: [bag], items: [
+        { item_id: 'item:hidden-unrelated', template_id: 'unrelated-template' }
+      ] }, loadedProfile, resolverAvailable: true
+    }).action_production, undefined);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { actor_id: 'character:player', items: [{
+        item_id: 'item:held', placement: {
+          holder_character_id: 'character:player'
+        }
+      }] }, loadedProfile, resolverAvailable: true
+    }).action_production.semantic_grounding_available, true);
+    assert.equal(projectLowerDvinaTraceA1Capability({
+      playerSafeState: { actor_id: 'character:player', items: [{
+        item_id: 'item:held', placement: { anchor_id: 'anchor:shore' }
+      }] }, loadedProfile, resolverAvailable: true
+    }).action_production, undefined);
 
     const afterPreserve = projectLowerDvinaTraceA1Capability({
       playerSafeState: { visible_objects: [bag, {
@@ -76,6 +120,18 @@ test('A1 capability marker requires the exact profile and installed resolver',
       pool: { query: async () => ({ rows: [] }) }, loadedProfile: drifted
     }), /Exact loaded A1 profile is required/u);
   });
+
+test('A1 admits unchecked domain request but keeps checked evidence strict', () => {
+  const unchecked = a1EvidenceEnvelope();
+  assert.equal(Object.hasOwn(unchecked, 'check_result'), false);
+  assert.doesNotThrow(() => resolveA1OperationScope(unchecked,
+    unchecked.operation, { max_new_entities: 4 }, true));
+
+  const checked = a1EvidenceEnvelope({ resolution: 'generic_check',
+    check: { difficulty_id: 'standard' } });
+  assert.throws(() => resolveA1OperationScope(checked, checked.operation,
+    { max_new_entities: 4 }, true), { code: 'TRACE_A1_SCOPE_INVALID' });
+});
 
 test('production-v11 threads exact F1 profile, resolver and temporal owner',
   async () => {
@@ -153,4 +209,17 @@ async function capturedTraceRuntime(actionProductionProfile,
     committer: { commit: async () => ({ ok: true }) }
   });
   return captured;
+}
+
+function a1EvidenceEnvelope({ resolution = 'domain_request',
+  check = null } = {}) {
+  const operation = { actor_ref: 'party-1', item_ref: 'item:pole',
+    target_refs: ['item:knife'], action_production: {
+      source_refs: ['item:pole'], tool_refs: ['item:knife'],
+      requested_output_count: null } };
+  return { operation, actor: { actor_id: 'party-1' },
+    request: { step_index: 1, root_turn_id: 'turn:unchecked',
+      committed_state_version: 1 },
+    committed_state: { party_state: { turn_number: 1 } },
+    plan: { resolution, check, activity: { owner: 'semantic' } } };
 }

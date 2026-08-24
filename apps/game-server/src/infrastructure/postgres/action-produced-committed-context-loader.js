@@ -1,17 +1,14 @@
-import {
-  INVALID_ACTION_PRODUCED_DATA,
+import { INVALID_ACTION_PRODUCED_DATA,
   actionProducedText as text,
   deepFreezeActionProducedPersistenceData as deepFreeze,
   exactActionProducedRecord as exact,
   failActionProducedPersistence as fail,
   snapshotActionProducedPersistenceData as snapshot
 } from './action-produced-persistence-boundary.js';
-import { loadActionProducedOutputDestination } from
-  './action-produced-authority-loader.js';
+import { loadActionProducedOutputDestination } from './action-produced-authority-loader.js';
 import { actionProducedOwnerOutputDestination } from
   './action-produced-atomic-write-plan-pins.js';
-import { actionProducedPreparedOrdinaryRows } from
-  './action-produced-prepared-ordinary.js';
+import { actionProducedPreparedOrdinaryRows } from './action-produced-prepared-ordinary.js';
 import { actionProducedDestinationAfterPreparedActions,
   actionProducedPreparedActionRows } from
   './action-produced-prepared-ordinary.js';
@@ -24,11 +21,9 @@ import { actionProducedAccessState,
   loadActionProducedAccessContainers } from
   './action-produced-contained-access.js';
 
-const INPUT_KEYS = [
-  'party_id', 'actor_ref', 'root_turn_id', 'action_ref', 'step_index',
-  'context_ref', 'expected_party_state_version', 'source_refs', 'tool_refs',
-  'admission_profile', 'technical_policy'
-];
+const INPUT_KEYS = ['party_id', 'actor_ref', 'root_turn_id', 'action_ref',
+  'step_index', 'context_ref', 'expected_party_state_version', 'source_refs',
+  'tool_refs', 'admission_profile', 'technical_policy'];
 const PREPARED_INPUT_KEYS = [...INPUT_KEYS, 'prepared_ordinary_plan',
   'prepared_action_plans', 'change_set_id'];
 
@@ -77,6 +72,9 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
        i.quantity,i.condition_state,i.legal_status,i.state,i.state_version,
        p.anchor_id,p.container_id,p.holder_npc_id,p.holder_character_id,
        p.physical_position,p.equipment_slot_category_id,p.attached_item_id,
+       e.position_node_id AS scene_position_id,
+       e.occupies_capacity_units AS scene_occupies_capacity_units,
+       e.state_version AS scene_state_version,
        o.ownership_id,o.owner_npc_id,o.owner_character_id,o.owner_party,
        o.controller_npc_id,o.controller_character_id,o.claim_state
      FROM party_runtime.party_items i
@@ -84,6 +82,9 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
        ON p.party_id=i.party_id AND p.item_id=i.item_id
      JOIN party_runtime.party_ownership o
        ON o.party_id=i.party_id AND o.item_id=i.item_id
+     LEFT JOIN party_runtime.entity_placements e
+       ON e.party_id=i.party_id AND e.entity_kind='item'
+      AND e.entity_id=i.item_id AND e.placement_kind='scene_position'
      WHERE i.party_id=$1 AND i.item_id=ANY($2::text[])
      ORDER BY i.item_id`, [input.party_id, databaseRefs]);
   if (rows.rows.length + prepared.size + [...preparedActions.rows.keys()]
@@ -125,6 +126,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
     contextVersion,
     finite: resources.get(itemId) ?? null,
     accessAnchorId: outputDestinationPin?.anchor_id ?? null,
+    accessScenePositionId: outputDestinationPin?.scene_position_id ?? null,
     accessContainer: future == null
       ? accessContainers.get(byId.get(itemId)?.container_id) ?? null : null,
     preparedOrdinary: future?.preparedOrdinary ?? null,
@@ -174,6 +176,7 @@ export async function loadActionProducedCommittedContext(client, rawInput) {
 }
 
 function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
+  accessScenePositionId,
   accessContainer = null, preparedOrdinary = null, preparedAction = null }) {
   if (!row || !text(row.item_id)
       || !Number.isSafeInteger(Number(row.state_version))
@@ -181,6 +184,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
       || preparedOrdinary === null && preparedAction === null
         && !actionProducedPlacementAccessible(row, accessContainer, actorRef,
           accessAnchorId)
+      || row.scene_position_id != null && (!text(accessScenePositionId)
+        || row.scene_position_id !== accessScenePositionId)
       || row.holder_npc_id !== null
       || !validOwnership(row)
       || !actionProducedControllerPermitted(row, role, actorRef)
@@ -228,6 +233,10 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
   };
   return {
     role, item_id: row.item_id, item, placement, ownership,
+    ...(row.scene_position_id == null ? {} : { scene_placement: {
+      position_node_id: row.scene_position_id,
+      occupies_capacity_units: Number(row.scene_occupies_capacity_units),
+      state_version: Number(row.scene_state_version) } }),
     entity_snapshot: {
       schema: 'rus.items.action_produced_committed_entity_snapshot.v1',
       commit_state: 'committed', role, entity_ref: row.item_id,
@@ -250,7 +259,6 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
     })
   };
 }
-
 function contextVersionFrom(input) {
   return String(input.expected_party_state_version);
 }

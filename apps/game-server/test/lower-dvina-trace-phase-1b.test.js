@@ -24,7 +24,7 @@ const release = Object.freeze({
   release_id: 'phase-1b-test-release',
   world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176'
+    '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd'
 });
 const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'

@@ -5,11 +5,12 @@ import { createSpatialSemanticAtomicWritePlan } from
 import { prepareSpatialSemanticRemainder, admitSpatialSemanticRemainder } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
 import { planApprovedActorDestinationTransition } from '@rus/movement-routes';
+import { resolveSpatialSemanticDescriptor as resolveTurnSpatialSemanticDescriptor } from '@rus/turn';
 
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
-  spatialSemanticModel } = {}) {
-  if (!pool?.query || typeof spatialSemanticModel !== 'function') {
-    throw new TypeError('S1 PostgreSQL pool and descriptor model are required.');
+  roleRunner, resolveSpatialSemanticDescriptor = resolveTurnSpatialSemanticDescriptor } = {}) {
+  if (!pool?.query || typeof resolveSpatialSemanticDescriptor !== 'function') {
+    throw new TypeError('S1 PostgreSQL pool and turn semantic resolver are required.');
   }
   const authority = createSpatialSemanticAuthorityRepository({ pool });
   return ({ partyId }) => async function resolveSpatialSemantic(input) {
@@ -54,7 +55,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
       envelope: preModel.envelope
     });
     const resolution = admitSpatialSemanticRemainder({ prepared,
-      proposal: await spatialSemanticModel(prepared.model_request) });
+      proposal: await resolveSpatialSemanticDescriptor({ request: prepared.model_request, roleRunner }) });
     const atomic = createSpatialSemanticAtomicWritePlan({
       schema: 'spatial_semantic_atomic_write_plan_v1', party_id: partyId,
       base_party_state_version: Number(request.committed_state_version),
@@ -100,7 +101,7 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
   const to = from === committed.position_ref ? refs.position_ref
     : from === refs.position_ref ? committed.position_ref : null;
   if (!text(to)) fail('TRACE_S1_SCOPE_INVALID');
-  const movementEdgeRef = await authority.findLocalMovementEdge({ party_id: partyId,
+  const movementEdge = await authority.findLocalMovementEdge({ party_id: partyId,
     from_position_ref: from, to_position_ref: to,
     movement_edge_refs: refs.movement_edge_refs });
   const result = planApprovedActorDestinationTransition({
@@ -110,13 +111,8 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
       location_ref: committed.position_ref, zone_ref: from },
     destination: { entity_ref: { entity_kind: 'spatial_local_reference', entity_id: target },
       location_ref: committed.position_ref, zone_ref: to },
-    local_transition_bindings: [{ schema: 'rus.trace_local_zone_transition.v1',
-      terminal_outcome: 'same_materialized_location_new_zone',
-      location_ref: committed.position_ref,
-      source_zone_candidates: [from],
-      destination_zone_ref: to, admitted_subject_classes: ['actor'],
-      transition_id: movementEdgeRef, duration_minutes: 1 }],
-    allowed_movement_refs: [movementEdgeRef]
+    persisted_scene_movement_edge: movementEdge,
+    allowed_movement_refs: [movementEdge.edge_id]
   });
   if (!result.pass) fail('TRACE_S1_MOVEMENT_OWNER_REJECTED');
   return Object.freeze({ working_projection: structuredClone(value.working_projection),
@@ -124,7 +120,8 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
     consequence_fragment: { position_transition: { owner: '@rus/movement-routes',
       actor_id: value.actor.actor_id, local_ref: target,
       from_position_ref: from, to_position_ref: to,
-      movement_edge_ref: result.proposal.movement_ref } },
+      movement_edge_ref: result.proposal.movement_ref,
+      movement_admission: result.proposal.persisted_scene_movement_edge } },
     player_response_boundary: true });
 }
 export function projectLowerDvinaTraceS1Capability({ playerSafeState,

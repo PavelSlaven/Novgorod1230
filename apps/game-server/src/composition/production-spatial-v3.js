@@ -32,9 +32,9 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   world_revision_id:
     'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176',
+    '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd',
   world_catalog_manifest_sha256:
-    '1237e81686e357c68ab2a3957c428e538e37b4155786f4768e29622677d0309c',
+    '424a79955c4285c47c0c08240006b3e17d979e071abc160e7588b5597800921d',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',

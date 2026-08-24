@@ -59,7 +59,7 @@ test('v5 fishing-camp S1 closure is sealed, inactive and reciprocal', async () =
   }, {
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1,
     position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space',
-    instance_count: 1, position_type_id: 'scene_position.central', capacity: 1,
+    instance_count: 1, position_type_id: 'scene_position.central', capacity: 5,
     access_class_id: 'default'
   }]);
   assert.deepEqual(datasets.get('spatial_v3_scene_movement_edge_templates'), [{

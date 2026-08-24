@@ -9,8 +9,6 @@ import { projectLowerDvinaTraceS1Capability } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
-import { createLowerDvinaTraceSpatialSemanticModel } from
-  '../src/runtime/lower-dvina-trace-s1-llm.js';
 import { loadSpatialSemanticCommittedState } from
   '../src/infrastructure/postgres/spatial-semantic-readback.js';
 import { createSpatialSemanticAuthorityRepository } from
@@ -40,31 +38,6 @@ test('S1 exact profile rejects mismatched structural requirements', async () => 
     drifted.profile_canonical_digest = canonicalDigest(drifted.profile);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(s1ProfileBundle(drifted), drifted), false);
   }
-});
-
-test('S1 LLM prompt shape; raw output', async () => {
-  let modelRequest, systemPrompt;
-  const model = createLowerDvinaTraceSpatialSemanticModel({ roleRunner: { run: async ({ messages }) => {
-    systemPrompt = messages[0].content;
-    modelRequest = JSON.parse(messages[1].content);
-    return { output: { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id: 'request',
-      name: 'Каменная гряда', description: 'Низкие мокрые камни.',
-      semantic_requirements: [], forbidden: true } };
-  } } });
-  const output = await model({ schema: 'rus.s1_spatial_semantic_model_request.v1', request_id: 'request',
-    semantic_context: { allowed_kind: 'local_natural_feature', period: '1230, Rus',
-      region: 'Lower Dvina', place_type: 'shore', environment: 'wet sand',
-      material_culture: 'wood and stone', ordinary_boundary: 'ordinary only' },
-    proposal_schema: 'rus.s1_spatial_semantic_proposal.v1', proposal_example: {},
-    approved_envelope: { kind: 'ordinary_structure', structural_variant: 'open_one_space',
-      available_mechanics: [], required_semantic_requirements: ['interior_space'] } });
-  assert.equal(modelRequest.semantic_context.region, 'Lower Dvina');
-  assert.deepEqual(modelRequest.approved_envelope.required_semantic_requirements, ['interior_space']);
-  assert.equal(JSON.stringify(modelRequest).includes('envelope_ref'), false);
-  assert.match(systemPrompt, /exactly these keys: schema, request_id, name, description, semantic_requirements[\s\S]*return \[\] when none apply/u);
-  assert.match(systemPrompt, /include every value in approved_envelope\.required_semantic_requirements/u);
-  assert.match(systemPrompt, /only declare a qualitative need in semantic_requirements/u);
-  assert.equal(output.forbidden, true);
 });
 
 test('S1 player-safe projection keeps current committed detail descriptive after reload',
@@ -135,7 +108,7 @@ test('S1 production boundary rejects hostile envelopes before getters or storage
     const resolver = createLowerDvinaTraceS1ProductionResolverFactory({
       pool: { query: async () => { connections += 1;
         throw new Error('storage must not be reached'); } },
-      spatialSemanticModel: async () => { modelCalls += 1; } })({
+      resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; } })({
         partyId: 'party:test' });
     const topLevel = {};
     Object.defineProperty(topLevel, 'request', { enumerable: true,
@@ -231,7 +204,7 @@ test('S1 ambiguous initial authority reaches neither descriptor model nor writes
         ? { rowCount: 0, rows: [] }
         : { rowCount: 2, rows: envelopes };
     }
-  }, spatialSemanticModel: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
+  }, resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
   await assert.rejects(() => resolver(s1Request()),
     { code: 'S1_SPATIAL_AUTHORITY_CONFLICT' });
   assert.equal(modelCalls, 0);
@@ -251,7 +224,7 @@ test('S1 resolver models one open result, then replays current visible local ref
     assert.fail(`unexpected S1 query: ${sql}`);
   } };
   const resolver = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
-    spatialSemanticModel: async ({ request_id }) => {
+    resolveSpatialSemanticDescriptor: async ({ request: { request_id } }) => {
       modelCalls += 1;
       return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
         name: 'Незнакомый выступ', description: 'Сырым камнем выдается у воды.',
@@ -270,7 +243,7 @@ test('S1 resolver models one open result, then replays current visible local ref
   assert.throws(() => createSpatialSemanticAtomicWritePlan(forged),
     { code: 'SPATIAL_SEMANTIC_PLAN_INVALID' });
   const afterCrash = createLowerDvinaTraceS1ProductionResolverFactory({ pool,
-    spatialSemanticModel: async ({ request_id }) => {
+    resolveSpatialSemanticDescriptor: async ({ request: { request_id } }) => {
       modelCalls += 1;
       return { schema: 'rus.s1_spatial_semantic_proposal.v1', request_id,
         name: 'Другой выступ', description: 'Ничего не было сохранено.',
@@ -289,7 +262,7 @@ test('S1 resolver models one open result, then replays current visible local ref
     query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
       ? { rowCount: 1, rows: [committed] }
       : assert.fail(`unexpected replay write/read: ${sql}`)
-  }, spatialSemanticModel: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
+  }, resolveSpatialSemanticDescriptor: async () => { modelCalls += 1; } })({ partyId: 'party:s1' });
   const replayed = await replay(s1Request());
   assert.equal(replayed.spatial_semantic_atomic_write_plan, undefined);
   assert.equal(modelCalls, 2);

@@ -18,7 +18,7 @@ export async function buildS1AuthoringV5ImportSql({
   if (manifest.world_revision_id
       !== 'novgorod_spatial_v3_production_v5_candidate_001'
     || manifest.catalog_digest
-      !== '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176'
+      !== '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd'
     || manifest.status !== 'approved') {
     throw new Error('s1_authoring_v5_manifest_mismatch');
   }

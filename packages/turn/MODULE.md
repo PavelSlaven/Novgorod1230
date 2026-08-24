@@ -26,6 +26,9 @@ owner. Applicability и typed temporary-disposition proposal принадлеж�
 - S1 reaches only through existing `request_discovery/look` after higher-priority
   owners. Turn forwards the current player-safe position marker and does not
   choose local detail, capacity, topology, mechanics or a persistence path.
+- `resolveSpatialSemanticDescriptor` owns S1 descriptor prompt, injected
+  role-runner invocation and exact request/proposal DTO validation; materialization
+  remains the admission/formal-handoff owner.
 - `continuation` переносит только `remaining_intent` и `depends_on_refs`.
   Следующий semantic step всегда заново выбирается моделью из обновлённой
   player-safe working projection и только затем проходит exact binding и

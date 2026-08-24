@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
-import { createLowerDvinaTraceSpatialSemanticModel } from '../src/runtime/lower-dvina-trace-s1-llm.js';
+import { resolveSpatialSemanticDescriptor } from '@rus/turn';
 import { runS1SpatialSemanticEval } from '../../../packages/materialization/src/lower-dvina-trace-spatial-semantic-eval.js';
 import { admitSpatialSemanticRemainder, prepareSpatialSemanticRemainder } from
   '../../../packages/materialization/src/lower-dvina-trace-spatial-semantic.js';
@@ -16,9 +16,7 @@ test('S1 live eval uses configured spatial semantic descriptor and admission',
   { skip: enabled ? false : 'set RUS_S1_LIVE_EVAL=1 and DEEPSEEK_API_KEY' }, async () => {
     const profile = JSON.parse(await readFile(profileUrl, 'utf8'));
     const envelope = activeCampEnvelope(profile);
-    const model = createLowerDvinaTraceSpatialSemanticModel({
-      roleRunner: createProductionLlmRoleRunner({ env: process.env })
-    });
+    const roleRunner = createProductionLlmRoleRunner({ env: process.env });
     let requestNumber = 0;
     const report = await runS1SpatialSemanticEval({
       semantic_context: envelope.semantic_context,
@@ -26,8 +24,8 @@ test('S1 live eval uses configured spatial semantic descriptor and admission',
         const prepared = prepareSpatialSemanticRemainder(request({
           request_id: `s1-live-${++requestNumber}`, envelope
         }));
-        const proposal = await model({ ...prepared.model_request,
-          evaluation_intent: intent });
+        const proposal = await resolveSpatialSemanticDescriptor({
+          request: prepared.model_request, roleRunner, evaluation: { case_id, intent } });
         admitSpatialSemanticRemainder({ prepared, proposal });
         return proposal;
       }

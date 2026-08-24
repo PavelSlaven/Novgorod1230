@@ -125,7 +125,7 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
     'novgorod_spatial_v3_production_v5_candidate_001');
   assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
-    '0648325928b72e5ce73e46e3249300da46994645178170998b33f22088ad4176');
+    '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd');
 });
 
 function fixture() {
@@ -616,7 +616,7 @@ test('target DDL rolls back when the in-transaction release gate fails', async (
   );
 });
 
-test('restart extends the exact immutable catalog ledger through migration 029', async () => {
+test('restart extends the exact immutable catalog ledger through migration 030', async () => {
   const statements = [];
   const migration = {
     migration_id:
@@ -646,7 +646,7 @@ test('restart extends the exact immutable catalog ledger through migration 029',
     beforeCommit: async () => ({ status: 'ready' })
   });
   assert.equal(result.execution_mode, 'extended_existing');
-  assert.equal(result.newly_applied, 18);
+  assert.equal(result.newly_applied, 19);
   assert.equal(
     statements.some((sql) =>
       sql.includes('CREATE SCHEMA IF NOT EXISTS party_runtime')),
@@ -672,12 +672,12 @@ test('restart extends the exact immutable catalog ledger through migration 029',
   ]) {
     assert.equal(
       statements.filter((sql) => sql.includes(marker)).length,
-      1,
+      marker === 'CREATE OR REPLACE FUNCTION\n  party_runtime.runtime_instance_mechanics_snapshot_valid' ? 2 : 1,
       marker
     );
   }
   assert.equal(statements.filter((sql) =>
-    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,4);
+    sql.includes('runtime_instance_mechanics_snapshot_valid')).length,5);
   assert.equal(statements.at(-1), 'COMMIT');
 });
 

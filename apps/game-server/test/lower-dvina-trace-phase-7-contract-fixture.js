@@ -92,9 +92,7 @@ export function approvedPhase7Contracts(state) {
     semanticActivityProfiles: semanticActivityProfiles(),
     genericCheckContext: {
       profile_ref: 'trace_ld_v1_zhdanko_phase7_generic_check_context_v1',
-      attributes: [{
-        attribute_ref: 'attention', label: 'внимание', value: 13
-      }],
+      attributes: [{ attribute_ref: 'attention', label: 'внимание', value: 13 }],
       skills: [{
         skill_ref: 'observation', label: 'наблюдательность', value: 2
       }]

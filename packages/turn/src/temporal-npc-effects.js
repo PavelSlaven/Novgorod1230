@@ -58,7 +58,6 @@ export function startNpcActorStep({ execution, started_at: startedAt,
   const prior = priorIndex < 0 ? null : actorSteps[priorIndex];
   const composing = operation.op === 'apply_semantic_activity'
     && prior?.status === 'started'
-    && prior.semantic_operation?.op === 'apply_semantic_activity'
     && prior.decision_trace_ref?.entity_id === decisionTraceRef.entity_id;
   const priorDuration = composing ? exactActorStepMinutes(prior) : 0;
   const semanticOperation = composing

@@ -51,6 +51,7 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     committedStateVersion: state.party_state.state_version,
     semanticOperation: factual.consequence.phase7.schedule_execution.semantic_operation,
     semanticPlan: factual.consequence.phase7.autonomous.proposal.plan,
+    carrierPlan: selectedCarrierPlan(factual.consequence.phase7),
     semanticRequest: factual.consequence.phase7.autonomous.request,
     registeredOwner: factual.consequence.phase7.autonomous.request
       .decision_scope.operation_contract[
@@ -140,6 +141,14 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     package_id: visibleEnvelope.package_id,
     package_digest: visibleEnvelope.package_digest
   };
+}
+function selectedCarrierPlan(phase7) {
+  const plan = phase7.autonomous.proposal.plan;
+  if (plan?.resolution !== 'generic_check') return plan;
+  const selected = plan.check?.outcomes?.[
+    phase7.actor_step_check?.result?.outcome?.band];
+  return selected == null ? plan : { ...structuredClone(plan),
+    operations: structuredClone(selected.operations) };
 }
 function temporalLocalFirePlans(result){return(result?.combined_change_set?.proposals??[]).flatMap((proposal)=>proposal.local_fire_atomic_write_plans??[]);} export async function buildLowerDvinaTracePhase7Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase7Contracts,

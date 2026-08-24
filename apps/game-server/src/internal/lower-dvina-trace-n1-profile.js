@@ -30,6 +30,9 @@ export function isExactLowerDvinaTraceN1Profile(bundle, loaded) {
     && profile.activation_boundary?.phase === 'phase_7'
     && profile.activation_boundary?.npc_participant_slot_ref
       === 'zhdanko_storehouse_controller'
+    && canonicalDigest(profile.actor_mechanics_context) === canonicalDigest({
+      attributes: [{ attribute_ref: 'strength', label: 'сила', value: 10 }]
+    })
     && profile.fallback_policy === 'forbidden'
     && pin?.digest === loaded.artifact_digest
     && binding?.profile_ref?.digest === pin.digest

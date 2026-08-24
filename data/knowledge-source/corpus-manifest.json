@@ -215,8 +215,8 @@
       "document_id": "npc-autonomous-decision-contract",
       "canonical_path": "corpus/DOCUMENTS/npc_autonomous_decision_contract.md",
       "file_name": "npc_autonomous_decision_contract.md",
-      "sha256": "6b3c225fe09ca87c1e7dd0b21fc616e296e050a27458af617509db2e915731b7",
-      "bytes": 101056,
+      "sha256": "f1b2fe8f52eaa19c5bfcdb42e90a43f11a57e21cca9b06870aec2efbcc8c032e",
+      "bytes": 101653,
       "status": "active",
       "provenance_mode": "native"
     },
@@ -287,8 +287,8 @@
       "document_id": "semantic-world-actions-materialization-and-processes-contract",
       "canonical_path": "corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md",
       "file_name": "semantic_world_actions_materialization_and_processes_contract.md",
-      "sha256": "edfea86181069f9fecbc9e46ea7105fb8b74f36a274295dfcb310e479cbb8260",
-      "bytes": 185626,
+      "sha256": "8d3872db26e41e1259d453764d22980bffe156b69d99f6bd01a14f42f68855ac",
+      "bytes": 186487,
       "status": "proposed",
       "provenance_mode": "native"
     },

@@ -192,6 +192,9 @@ export async function loadLowerDvinaTraceRevision25Bundle({ rootDir,
     profile.activation_boundary?.phase === 'phase_7',
     profile.activation_boundary?.npc_participant_slot_ref
       === 'zhdanko_storehouse_controller',
+    canonicalDigest(profile.actor_mechanics_context) === canonicalDigest({
+      attributes: [{ attribute_ref: 'strength', label: 'сила', value: 10 }]
+    }),
     profile.fallback_policy === 'forbidden',
     phase1a?.package_id === 'lower_dvina_trace_phase_1a_v21',
     phase1a.scenario_definition_revision === 25,
@@ -201,6 +204,7 @@ export async function loadLowerDvinaTraceRevision25Bundle({ rootDir,
       paths.materialization_bindings, 'lower_dvina_trace_phase_1a_materialization_bindings_v21', 21, 'binding_set_id'),
     bindings?.scenario_definition_revision === 25,
     bindings.superseded_binding_ref?.digest === historicalBundle.artifact_pins.materialization_bindings.digest,
+    hasOnlyN1AuthorityDelta(bindings, historicalBundle),
     bindings.npc_semantic_activation?.profile_ref?.digest === loaded.npc_semantic_profile.digest,
     bindings.npc_semantic_activation?.fallback_policy === 'forbidden'
   ].every(Boolean)) return fail('TRACE_REVISION_25_CONTENT_INVALID',
@@ -241,4 +245,47 @@ function digestN1FileMap(files) {
   const payload = ['definition.json', 'npc-semantic-profile.json']
     .map((name) => `${name}:${files[name]}`).join('\n').concat('\n');
   return createHash('sha256').update(payload).digest('hex');
+}
+function hasOnlyN1AuthorityDelta(bindings, historicalBundle) {
+  const inherited = historicalBundle?.materialization_bindings;
+  const expected = structuredClone(inherited);
+  for (const [bindingKey, pinKey, profileKey] of [
+    ['action_production_materialization', 'action_production_profile', 'action_production_profile'],
+    ['local_fire_materialization', 'local_fire_profile', 'local_fire_profile'],
+    ['spatial_semantic_materialization', 'spatial_semantic_profile', 'spatial_semantic_profile']
+  ]) {
+    const pin = historicalBundle?.artifact_pins?.[pinKey];
+    const profile = historicalBundle?.[profileKey];
+    if (!expected?.[bindingKey] || !pin || !profile?.profile_id) return false;
+    expected[bindingKey].profile_ref = {
+      path: pin.path,
+      id: profile.profile_id,
+      revision: pin.revision,
+      schema: pin.schema,
+      digest: pin.digest
+    };
+  }
+  const metadata = [
+    'binding_set_id',
+    'revision',
+    'scenario_definition_revision',
+    'superseded_binding_ref'
+  ];
+  const inheritedKeys = Object.keys(bindings ?? {})
+    .filter((key) => ![...metadata, 'npc_semantic_activation'].includes(key));
+  return JSON.stringify(Object.keys(bindings ?? {}).sort()) === JSON.stringify([
+    ...metadata,
+    'schema',
+    'status',
+    'scenario_id',
+    'binding_resolution_policy',
+    'fallback_policy',
+    'normalization_policy',
+    'action_production_materialization',
+    'local_fire_materialization',
+    'spatial_semantic_materialization',
+    'first_entry_preparation',
+    'npc_semantic_activation'
+  ].sort())
+    && inheritedKeys.every((key) => JSON.stringify(bindings[key]) === JSON.stringify(expected[key]));
 }

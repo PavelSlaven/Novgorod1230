@@ -39,7 +39,9 @@ const plan = (decisionRequest, actionProduction = null) => ({
   decision_index: decisionRequest.decision_index, npc_ref: decisionRequest.npc_ref,
   interpretation: { npc_goal: 'обработать доску', grounded_attempt: 'срезать край',
     adaptation: 'literal' }, resolution: 'domain_request', goal_result: 'pending',
-  activity: { owner: 'domain', duration_class: null, effort: null }, operations: [{
+  activity: actionProduction === null
+    ? { owner: 'domain', duration_class: null, effort: null }
+    : { owner: 'semantic', duration_class: 'brief', effort: 'light' }, operations: [{
     op: 'request_item_use', actor_ref: decisionRequest.npc_ref, item_ref: 'item:board',
     use_kind: 'other', target_refs: ['item:knife'],
     ...(actionProduction === null ? {} : { action_production: actionProduction })

@@ -167,6 +167,11 @@ function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revision
     const profilePin = bundle.artifact_pins?.npc_semantic_profile;
     const profile = bundle.npc_semantic_profile;
     const activation = bindings?.npc_semantic_activation;
+    const inheritedProfiles = [
+      ['action_production_materialization', 'action_production_profile'],
+      ['local_fire_materialization', 'local_fire_profile'],
+      ['spatial_semantic_materialization', 'spatial_semantic_profile']
+    ];
     if (manifest?.package_id !== 'lower_dvina_trace_phase_1a_v21'
       || manifest.revision !== 21 || manifest.scenario_definition_revision !== 25
       || manifest.base_definition_ref?.digest !== bundle.m13_content_manifest_digest
@@ -176,7 +181,17 @@ function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revision
       || activation.profile_ref.id !== profile?.profile_id
       || activation.profile_ref.revision !== profilePin?.revision
       || activation.profile_ref.schema !== profilePin?.schema
-      || activation.fallback_policy !== 'forbidden') {
+      || activation.fallback_policy !== 'forbidden'
+      || !inheritedProfiles.every(([bindingKey, pinKey]) => {
+        const inherited = bindings?.[bindingKey]?.profile_ref;
+        const pin = bundle.artifact_pins?.[pinKey];
+        const inheritedProfile = bundle[pinKey];
+        return inherited?.path === pin?.path
+          && inherited?.id === inheritedProfile?.profile_id
+          && inherited?.revision === pin?.revision
+          && inherited?.schema === pin?.schema
+          && inherited?.digest === pin?.digest;
+      })) {
       fail('TRACE_M13_PHASE_1A_CUTOVER_INVALID',
         'Revision 25 requires the exact inherited Phase 1A cutover.');
     }

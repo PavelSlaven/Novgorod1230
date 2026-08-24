@@ -21,10 +21,10 @@
     "persistence_owner": "P16_combined_atomic_committer",
     "profile_ref": {
       "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/action-production-profile.json",
-      "id": "lower_dvina_trace_a1_personal_tool_profile_v1",
+      "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_action_production_profile.v1",
-      "digest": "df9ece3b89dbab8f33688a34ef076ab8a25dbb565cd831003999f72204ead8b6"
+      "digest": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694"
     },
     "authority_provisioning": "atomic_new_game_stage_25",
     "fallback_policy": "forbidden"
@@ -34,14 +34,14 @@
     "time_owner": "@rus/time-events-history",
     "persistence_owner": "P16_combined_atomic_committer",
     "profile_ref": {
-      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m11-content/local-fire-profile.json",
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/local-fire-profile.json",
       "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
-      "digest": "ce38fd13a70ed67d7bedd5680cec0603fc7b2d91a950e7f76304724e9ad57cc5"
+      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
     },
-    "authority_provisioning": "atomic_new_game_stage_24",
-    "water_extinguish": "disabled_missing_exact_finite_water_authority",
+    "input_admission": "current_item_owner_state",
+    "water_extinguish": "semantic_existing_whole_portion",
     "fallback_policy": "forbidden"
   },
   "spatial_semantic_materialization": {
@@ -164,7 +164,7 @@
       "id": "lower_dvina_trace_n1_npc_semantic_profile_v1",
       "revision": 1,
       "schema": "rus.lower_dvina_trace_n1_npc_semantic_profile.v1",
-      "digest": "b3fc12b551165acf6d21301d14eeaa99ca4731973381628e15de7eccffb5394d"
+      "digest": "4145e98068c2c74b6e2f15682aeb5639edb8b963bf5cf3d38dcd9ec70530113d"
     },
     "fallback_policy": "forbidden"
   }

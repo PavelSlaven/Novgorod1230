@@ -175,9 +175,21 @@ function validScheduleExecution(schedule, contracts, request, plan,
   const additionalOperations = schedule.additional_semantic_operations ?? [];
   const selectedOutcome = plan.resolution === 'generic_check'
     ? plan.check.outcomes[actorStepCheck?.result?.outcome?.band] : null;
+  const selectedOperations = selectedOutcome?.operations ?? [];
+  const selectedDomain = selectedOperations.filter(({ op }) =>
+    Object.hasOwn(request.decision_scope.operation_contract, op));
   const additionalActivities = selectedOutcome?.additional_activity == null
     ? [] : [selectedOutcome.additional_activity];
-  const possibleAdditionalOperations = additionalActivities.map(
+  const actionProduction = plan.resolution === 'domain_request'
+    && plan.operations.length === 1
+    && plan.operations[0]?.op === 'request_item_use'
+    && plan.operations[0]?.action_production != null;
+  const possibleAdditionalOperations = [
+    ...((actionProduction || plan.resolution === 'generic_check'
+      && selectedDomain.length === 1)
+      ? [plan.activity] : []),
+    ...additionalActivities
+  ].map(
     (activity) => ({
       op: 'apply_semantic_activity',
       activity: { owner: 'semantic', ...activity }
@@ -200,9 +212,11 @@ function validScheduleExecution(schedule, contracts, request, plan,
       && Number(schedule.exact_elapsed.exact_minutes.numerator)
         === semanticProfile?.duration_minutes + additionalDuration
       && additionalMatch
-    : plan.resolution === 'domain_request'
-      && plan.operations.length === 1
-      && canonicalDigest(operation) === canonicalDigest(plan.operations[0])
+    : (plan.resolution === 'domain_request'
+        ? plan.operations : selectedOperations).length === 1
+      && canonicalDigest(operation) === canonicalDigest(
+        (plan.resolution === 'domain_request'
+          ? plan.operations : selectedOperations)[0])
       && Object.hasOwn(request.decision_scope.operation_contract, operation.op)
       && (schedule.execution_binding_ref === null
         ? schedule.activity_profile_ref === null
@@ -210,8 +224,13 @@ function validScheduleExecution(schedule, contracts, request, plan,
         : profiles.some((profile) =>
           profile.execution_binding_id === schedule.execution_binding_ref
             && profile.activity_profile_ref === schedule.activity_profile_ref
-            && profile.schedule_option_id === schedule.schedule_option_id));
-  if (!profileMatch || (!semantic && additionalOperations.length !== 0)) {
+          && profile.schedule_option_id === schedule.schedule_option_id));
+  if (!profileMatch || (!semantic && (plan.resolution === 'domain_request'
+    ? actionProduction
+      ? !additionalMatch || Number(schedule.exact_elapsed.exact_minutes.numerator)
+        !== additionalDuration
+      : additionalOperations.length !== 0
+    : selectedDomain.length !== 1 || !additionalMatch))) {
     return false;
   }
   if (semantic && (schedule.movement_proposal || schedule.property_proposal)) {

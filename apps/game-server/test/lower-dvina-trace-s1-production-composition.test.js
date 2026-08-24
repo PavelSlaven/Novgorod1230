@@ -51,6 +51,18 @@ test('S1 exact profile accepts inherited revision 25 bundle only with exact S1 p
     ]);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision24, loaded), true);
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision25, loaded), true);
+    for (const [key, pinKey] of [
+      ['action_production_materialization', 'action_production_profile'],
+      ['local_fire_materialization', 'local_fire_profile'],
+      ['spatial_semantic_materialization', 'spatial_semantic_profile']
+    ]) {
+      const expected = structuredClone(revision24.materialization_bindings[key]);
+      const pin = revision24.artifact_pins[pinKey];
+      expected.profile_ref = { path: pin.path,
+        id: revision24[pinKey].profile_id, revision: pin.revision,
+        schema: pin.schema, digest: pin.digest };
+      assert.deepEqual(revision25.materialization_bindings[key], expected);
+    }
     for (const mutate of [
       (bundle) => { delete bundle.artifact_pins.spatial_semantic_profile; },
       (bundle) => { delete bundle.materialization_bindings.spatial_semantic_materialization; },

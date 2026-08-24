@@ -7,5 +7,10 @@
     "phase": "phase_7",
     "npc_participant_slot_ref": "zhdanko_storehouse_controller"
   },
+  "actor_mechanics_context": {
+    "attributes": [
+      {"attribute_ref": "strength", "label": "сила", "value": 10}
+    ]
+  },
   "fallback_policy": "forbidden"
 }

@@ -15,7 +15,7 @@ import { requireTurnStepOwnerCarrierBinding } from
 export function phase7OwnerOutputPlans({ ownerOutputs, partyId, changeSetId,
   npcRef, temporalPlans, rootTurnId, committedStateVersion,
   semanticOperation, semanticPlan = null, semanticRequest = null,
-  registeredOwner = null, fail }) {
+  registeredOwner = null, carrierPlan = semanticPlan, fail }) {
   const keys = ['write_fragments', 'consequence_fragment',
     'ordinary_materialization_atomic_write_plan',
     'action_production_atomic_write_plans', 'local_fire_atomic_write_plans',
@@ -37,7 +37,7 @@ export function phase7OwnerOutputPlans({ ownerOutputs, partyId, changeSetId,
   }
   try {
     requireSelectedOwnerOutput(ownerOutputs, semanticOperation, {
-      semanticPlan, semanticRequest, registeredOwner
+      semanticPlan: carrierPlan, semanticRequest, registeredOwner
     });
     const operationBatch = ownerOutputs.write_fragments.length === 0 ? null
       : requireTurnStepOperationBatch({ version: 1,
@@ -63,7 +63,7 @@ export function phase7OwnerOutputPlans({ ownerOutputs, partyId, changeSetId,
     requireOwnerCarrierBindings({ ordinaryPlan, actionProductionPlans,
       localFirePlans: localFirePlans.slice(0,
         ownerOutputs.local_fire_atomic_write_plans.length), spatialSemanticPlan,
-      semanticOperation, semanticPlan, semanticRequest, registeredOwner });
+      semanticOperation, semanticPlan, carrierPlan, semanticRequest, registeredOwner });
     return { operationBatch, ordinaryPlan, actionProductionPlans,
       localFirePlans, spatialSemanticPlan };
   } catch { return fail('TRACE_PHASE_7_OWNER_OUTPUT_PLAN_INVALID'); }
@@ -109,9 +109,9 @@ function requireSelectedOwnerOutput(outputs, operation, binding) {
 
 function requireOwnerCarrierBindings({ ordinaryPlan, actionProductionPlans,
   localFirePlans, spatialSemanticPlan, semanticOperation, semanticPlan,
-  semanticRequest, registeredOwner }) {
+  carrierPlan = semanticPlan, semanticRequest, registeredOwner }) {
   if (semanticRequest == null) return;
-  const binding = { semanticOperation, semanticPlan, semanticRequest,
+  const binding = { semanticOperation, semanticPlan: carrierPlan, semanticRequest,
     registeredOwner };
   if (ordinaryPlan != null) {
     if (ordinaryPlan.schema === 'ordinary_materialization_atomic_write_plan_v1') {

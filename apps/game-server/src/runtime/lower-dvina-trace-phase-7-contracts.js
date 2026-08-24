@@ -68,6 +68,11 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const npcSemanticProfile = bundle.definition_revision === 25
     ? exactNpcSemanticProfile(bundle.npc_semantic_profile, autonomous.target_npc_ref)
     : null;
+  const currentGenericCheckContext = npcSemanticProfile == null
+    ? genericCheckContext
+    : { ...genericCheckContext,
+      attributes: [...genericCheckContext.attributes,
+        ...npcSemanticProfile.actor_mechanics_context.attributes] };
   if (autonomous.schema
         !== 'rus.lower_dvina_trace_autonomous_semantic_bindings.v1'
       || autonomous.decision_mode !== 'autonomous'
@@ -123,7 +128,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     ]),
     semanticActivityProfiles: structuredClone(semanticActivityProfiles),
     genericCheckModifierPolicy,
-    genericCheckContext: structuredClone(genericCheckContext),
+    genericCheckContext: structuredClone(currentGenericCheckContext),
     ...(npcSemanticProfile == null ? {} : { npcSemanticProfile }),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
@@ -144,11 +149,15 @@ function exactNpcSemanticProfile(profile, targetNpcRef) {
       || profile.revision !== 1 || profile.status !== 'approved'
       || profile.activation_boundary?.phase !== 'phase_7'
       || profile.activation_boundary?.npc_participant_slot_ref !== targetNpcRef
-      || profile.fallback_policy !== 'forbidden') {
+      || profile.fallback_policy !== 'forbidden'
+      || canonicalDigest(profile.actor_mechanics_context) !== canonicalDigest({
+        attributes: [{ attribute_ref: 'strength', label: 'сила', value: 10 }]
+      })) {
     gap('TRACE_N1_PROFILE_INVALID');
   }
   return Object.freeze({ profile_id: profile.profile_id, revision: profile.revision,
-    status: profile.status, activation_boundary: structuredClone(profile.activation_boundary) });
+    status: profile.status, activation_boundary: structuredClone(profile.activation_boundary),
+    actor_mechanics_context: structuredClone(profile.actor_mechanics_context) });
 }
 
 function validGenericCheckContext(profile) {

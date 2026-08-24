@@ -6,9 +6,14 @@ export async function resolveTracePhase7SemanticActivity({ execution,
   const expected = contracts.semanticActivityProfiles.find((profile) =>
     profile.duration_class === activity?.duration_class
       && profile.effort === activity?.effort);
-  if (!['direct', 'generic_check'].includes(execution.plan.resolution)
+  const actionProduction = execution.plan.resolution === 'domain_request'
+    && execution.plan.operations.length === 1
+    && execution.plan.operations[0]?.op === 'request_item_use'
+    && execution.plan.operations[0]?.action_production != null;
+  if ((!['direct', 'generic_check'].includes(execution.plan.resolution)
+      && !actionProduction)
       || activity?.owner !== 'semantic'
-      || execution.plan.operations.length !== 0
+      || (!actionProduction && execution.plan.operations.length !== 0)
       || !expected
       || typeof semanticActivityScheduleOwner?.resolve !== 'function') {
     fail('TRACE_PHASE_7_SEMANTIC_ACTIVITY_NOT_APPLICABLE');

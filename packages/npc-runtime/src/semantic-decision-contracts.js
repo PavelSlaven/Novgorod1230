@@ -9,10 +9,6 @@ import {
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from './conversation-contracts.js';
-import {
-  validateNpcCombatDecisionRequest,
-  validateNpcCombatIntentPlan
-} from './combat-decision-contracts.js';
 import { npcActionProductionRefs, validateNpcActionProduction } from './npc-action-production-contract.js';
 import { matchesOperationContract, validateWorldProcessOperation,
   worldProcessOperationRefs } from './operation-contract-match.js';
@@ -28,7 +24,6 @@ import {
   PLAN_KEYS,
   RESOLUTIONS,
   SUPPORTED_OPERATIONS,
-  TRACE_KEYS,
   enumValue,
   finiteInteger,
   jsonSafe,
@@ -36,6 +31,11 @@ import {
   text,
   validateNpcActionDecisionRequest
 } from './semantic-decision-request-contract.js';
+
+import {
+  buildNpcSemanticDecisionTrace as buildNpcSemanticDecisionTraceInternal,
+  validateNpcSemanticDecisionTrace as validateNpcSemanticDecisionTraceInternal
+} from './semantic-decision-trace-contract.js';
 
 export { buildNpcActionDecisionRequest, validateNpcActionDecisionRequest } from './semantic-decision-request-contract.js';
 export { buildNpcActionDecisionRequestFromSnapshots, npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from './npc-safe-request-projector.js';
@@ -301,7 +301,16 @@ function validateOutcome(value, request) {
   return exactKeys(value, ['goal_result', 'additional_activity', 'operations'])
     && enumValue(value.goal_result, GOAL_RESULTS)
     && validateAdditionalActivity(value.additional_activity)
-    && validateOperations(value.operations, request, DIRECT_OPERATIONS);
+    && validateOutcomeOperations(value.operations, request);
+}
+
+function validateOutcomeOperations(operations, request) {
+  if (!validateOperations(operations, request, SUPPORTED_OPERATIONS)) return false;
+  const domainIndexes = operations.flatMap((operation, index) =>
+    DOMAIN_OPERATIONS.has(operation.op) ? [index] : []);
+  return domainIndexes.length <= 1
+    && (domainIndexes.length === 0
+      || domainIndexes[0] === operations.length - 1);
 }
 
 function validateCheck(value, request) {
@@ -361,7 +370,11 @@ function validateNpcStepPlanShape(value, request) {
       && value.operations.length === 0
       && validateCheck(value.check, request);
   }
-  return validateDomainActivity(value.activity)
+  const actionProduction = value.operations.some((operation) =>
+    operation.op === 'request_item_use' && operation.action_production != null);
+  return (actionProduction
+    ? validateSemanticActivity(value.activity)
+    : validateDomainActivity(value.activity))
     && value.check === null
     && validateOperations(value.operations, request, SUPPORTED_OPERATIONS)
     && value.operations.filter((operation) => DOMAIN_OPERATIONS.has(operation.op)).length === 1;
@@ -380,117 +393,9 @@ export function buildNpcStepPlan(value, request) {
 }
 
 export function validateNpcSemanticDecisionTrace(value, request = null) {
-  if (!exactKeys(value, TRACE_KEYS)
-    || value.schema !== 'npc_semantic_decision_trace_v1'
-    || !stableId(value.request_id)
-    || !stableId(value.root_turn_id)
-    || !stableId(value.boundary_id)
-    || !stableId(value.npc_ref)
-    || !finiteInteger(value.committed_state_version, 1)
-    || !finiteInteger(value.working_revision)
-    || !stableId(value.applied_change_set_id)
-    || value.status !== 'committed'
-    || !semanticTracePlanValid(value.plan, request)
-    || value.request_id !== value.plan.request_id
-    || value.boundary_id !== value.plan.boundary_id
-    || value.npc_ref !== semanticPlanNpcId(value.plan)
-    || value.committed_state_version !== semanticPlanStateVersion(value.plan)
-    || !semanticTraceLineageMatches(value, value.plan)
-    || !jsonSafe(value)) {
-    return false;
-  }
-  return request === null || semanticTraceRequestMatches(value, request);
+  return validateNpcSemanticDecisionTraceInternal(value, request, validateNpcStepPlan);
 }
 
-export function buildNpcSemanticDecisionTrace({
-  request,
-  plan,
-  root_turn_id = request?.root_turn_id,
-  working_revision = request?.working_revision,
-  applied_change_set_id,
-  status = 'committed'
-} = {}) {
-  if (!semanticTracePlanValid(plan, request)) {
-    throw new TypeError('Semantic decision trace requires a matching request and NPC step plan');
-  }
-  const trace = {
-    schema: 'npc_semantic_decision_trace_v1',
-    request_id: request.request_id,
-    root_turn_id,
-    boundary_id: request.boundary_id,
-    npc_ref: semanticPlanNpcId(plan),
-    committed_state_version: semanticPlanStateVersion(plan),
-    working_revision,
-    plan,
-    applied_change_set_id,
-    status
-  };
-  if (!validateNpcSemanticDecisionTrace(trace, request)) {
-    throw new TypeError('NPC semantic decision trace must match npc_semantic_decision_trace_v1');
-  }
-  return freeze(trace);
-}
-
-function semanticTracePlanValid(plan, request) {
-  if (plan?.schema === 'npc_step_plan_v1') {
-    return request === null
-      ? validateNpcStepPlanShape(plan, null)
-      : validateNpcActionDecisionRequest(request)
-        && validateNpcStepPlan(plan, request);
-  }
-  if (plan?.schema === 'conversation_contribution_plan_v1') {
-    return request === null
-      ? validateConversationContributionPlan(plan)
-      : validateNpcConversationResponseRequest(request)
-        && validateConversationContributionPlan(plan, request);
-  }
-  if (plan?.schema === 'npc_combat_intent_plan_v1') {
-    return request === null
-      ? validateNpcCombatIntentPlan(plan)
-      : validateNpcCombatDecisionRequest(request)
-        && validateNpcCombatIntentPlan(plan, request);
-  }
-  return false;
-}
-
-function semanticPlanNpcId(plan) {
-  if (plan?.schema === 'npc_step_plan_v1') return plan.npc_ref;
-  if (plan?.schema === 'npc_combat_intent_plan_v1') {
-    return plan.npc_ref?.entity_id;
-  }
-  return plan?.speaker_ref?.entity_id;
-}
-
-function semanticPlanStateVersion(plan) {
-  if (plan?.schema === 'npc_step_plan_v1') {
-    return plan.committed_state_version;
-  }
-  return plan?.schema === 'npc_combat_intent_plan_v1'
-    ? Number(plan.state_version) : plan?.state_version;
-}
-
-function semanticTraceLineageMatches(trace, plan) {
-  return plan.schema === 'npc_step_plan_v1'
-    ? trace.root_turn_id === plan.root_turn_id
-      && trace.working_revision === plan.working_revision
-    : true;
-}
-
-function semanticTraceRequestMatches(trace, request) {
-  if (request.schema === 'npc_action_decision_request_v1') {
-    return validateNpcActionDecisionRequest(request)
-      && matchingIdentity(trace.plan, request)
-      && trace.root_turn_id === request.root_turn_id
-      && trace.working_revision === request.working_revision;
-  }
-  if (request.schema === 'npc_combat_decision_request_v1') {
-    return validateNpcCombatDecisionRequest(request)
-      && validateNpcCombatIntentPlan(trace.plan, request)
-      && trace.npc_ref === request.npc_ref.entity_id
-      && trace.committed_state_version === Number(request.state_version);
-  }
-  return validateNpcConversationResponseRequest(request)
-    && validateConversationContributionPlan(trace.plan, request)
-    && trace.npc_ref === request.npc_ref.entity_id
-    && trace.committed_state_version === request.state_version;
+export function buildNpcSemanticDecisionTrace(value = {}) {
+  return buildNpcSemanticDecisionTraceInternal(value, validateNpcStepPlan);
 }

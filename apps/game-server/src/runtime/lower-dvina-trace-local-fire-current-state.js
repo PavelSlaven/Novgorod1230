@@ -23,3 +23,18 @@ export function projectLowerDvinaTraceF1CurrentState({ committedState,
     item?.condition_state !== 'retired' && item?.state?.lifecycle_status !== 'retired');
   return current;
 }
+
+export function projectTracePhase7CurrentBoundaryState({
+  state, workingProjection, priorLocalFirePlans = []
+}) {
+  const current = projectLowerDvinaTraceF1CurrentState({
+    committedState: state,
+    localFireRuntime: workingProjection?.local_fire_runtime,
+    priorLocalFirePlans
+  });
+  if (workingProjection?.npc_activity_states != null) {
+    current.npc_activity_states = structuredClone(
+      workingProjection.npc_activity_states);
+  }
+  return current;
+}

@@ -95,10 +95,14 @@ test('N1 A1 subset capability stays valid beside existing item owner', () => {
 
 test('N1 A1 advertises only owner-applicable refs and exact target binding', async () => {
   const state = stateWithNpc();
-  state.items.push({ item_id: 'remote', holder_npc_id: 'npc' },
-    { item_id: 'foreign', holder_npc_id: 'other' },
-    { item_id: 'retired', holder_npc_id: 'npc' },
-    { item_id: 'bound', holder_npc_id: 'npc' });
+  state.items.push({ ...npcItem('remote'), placement: { holder_npc_id: 'npc',
+    holder_character_id: null, container_id: null, physical_position: 'worn' } }, { ...npcItem('foreign'),
+    holder_npc_id: 'other', placement: { holder_npc_id: 'other',
+      holder_character_id: null, container_id: null, physical_position: 'hands' } },
+  { ...npcItem('retired'), condition_state: 'retired', state: {
+    ...npcItem('retired').state, lifecycle_status: 'retired' } },
+  { ...npcItem('bound'), placement: { holder_npc_id: 'npc',
+    holder_character_id: null, container_id: null, physical_position: 'worn' } });
   const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({
       referencesApplicable: async ({ source_refs, tool_refs }) =>
@@ -121,10 +125,98 @@ test('N1 A1 advertises only owner-applicable refs and exact target binding', asy
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } } }), false);
 });
 
+test('N1 A1 admits revealed items in open NPC-controlled container into shared P16 path',
+  async () => {
+    const state = stateWithNpc();
+    state.items = [containedNpcItem('stored-source', 'open-kit'),
+      containedNpcItem('stored-tool', 'open-kit')];
+    state.containers = [npcOpenContainer('open-kit')];
+    addNpcContainerInventory(state);
+    let received;
+    const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+      createActionProductionOwner: () => ({
+        referencesApplicable: async () => true,
+        execute: async (input) => {
+          received = input;
+          return { working_projection: input.working_projection, summary: 'a1',
+            action_production_atomic_write_plan: { plan_id: 'shared-p16' } };
+        }
+      })
+    });
+    const capabilities = await factory({ partyId: 'party', requestId: 'request',
+      inputDigest: 'digest', state, phase7Contracts: contracts(state) });
+    const action = capabilities.find(({ operation }) => operation === 'request_item_use');
+    assert.ok(action, JSON.stringify(capabilities.map(({ operation }) => operation)));
+    assert.deepEqual(action.capability.action_production, {
+      source_refs: ['stored-source', 'stored-tool'],
+      tool_refs: ['stored-source', 'stored-tool']
+    });
+    const result = await action.execute(execution({ op: 'request_item_use',
+      actor_ref: 'npc', item_ref: 'stored-source', use_kind: 'other',
+      target_refs: ['stored-tool'], action_production: {
+        source_refs: ['stored-source'], tool_refs: ['stored-tool'] } }));
+    assert.deepEqual(received.operation.action_production, {
+      source_refs: ['stored-source'], tool_refs: ['stored-tool'] });
+    assert.deepEqual(result.action_production_atomic_write_plan,
+      { plan_id: 'shared-p16' });
+  });
+
+test('N1 A1 retirement accounts for source mass through contained host topology',
+  async () => {
+    const state = stateWithNpc();
+    state.items = [containedNpcItem('stored-source', 'open-kit'),
+      containedNpcItem('stored-tool', 'open-kit')];
+    state.containers = [npcOpenContainer('open-kit')];
+    state.player_profile = { attributes: { strength: { value: 10 } } };
+    addNpcContainerInventory(state);
+    let applyWorkingProjection;
+    const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+      createActionProductionOwner: ({ applyWorkingProjection: apply }) => {
+        applyWorkingProjection = apply;
+        return { referencesApplicable: async () => true,
+          execute: async () => ({}) };
+      }
+    });
+    await factory({ partyId: 'party', requestId: 'request', inputDigest: 'digest',
+      state, phase7Contracts: contracts(state) });
+    const projection = applyWorkingProjection({
+      working_projection: { actor_id: 'npc' },
+      actor: { actor_id: 'npc', attributes: { strength: { value: 10 } } },
+      action_production_atomic_write_plan: { source_updates: [{
+        item_id: 'stored-source', after_item: {
+          state: { lifecycle_status: 'retired' }
+        } }], result_items: [] }
+    });
+    assert.equal(projection.inventory.total_weight.grams, 200);
+    assert.equal(projection.items.some(({ item_id }) =>
+      item_id === 'stored-source'), false);
+  });
+
+test('N1 A1 omits concealed or closed NPC container contents rejected by item owner',
+  async () => {
+  const state = stateWithNpc();
+  state.items = [containedNpcItem('closed-source', 'closed-kit'),
+    containedNpcItem('hidden-tool', 'open-kit', { visible: false })];
+  state.containers = [npcOpenContainer('open-kit'), npcOpenContainer('closed-kit', {
+    closure_state: 'closed', state: { access_state: 'closed' }
+  })];
+  addNpcContainerInventory(state);
+  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+    createActionProductionOwner: () => ({ referencesApplicable: async ({ source_refs }) =>
+      source_refs[0] !== 'closed-source',
+      execute: async () => ({}) })
+  });
+  const capabilities = await factory({ partyId: 'party', requestId: 'request',
+    inputDigest: 'digest', state, phase7Contracts: contracts(state) });
+  assert.equal(capabilities.some(({ operation }) => operation === 'request_item_use'), false);
+});
+
 test('N1 publishes current NPC-safe container access kinds', async () => {
   const state = stateWithNpc();
-  state.items.push({ item_id: 'road-packet', template_id: 'packet',
-    placement: { container_id: 'road-bag' } });
+  state.items.push({ ...npcItem('road-packet'), template_id: null,
+    holder_npc_id: null, placement: { holder_npc_id: null,
+      holder_character_id: null, container_id: 'road-bag',
+      physical_position: null } });
   state.containers = [{ container_id: 'road-bag', template_id: 'road-bag-template',
     holder_npc_id: 'npc', closure_state: 'tied', state_version: 1,
     state: { controller_npc_id: 'npc', location_ref: 'camp', zone_ref: 'shore' } },
@@ -136,6 +228,21 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
     closure_state: 'closed', state_version: 1,
     state: { controller_npc_id: 'npc', location_ref: 'far', zone_ref: 'road',
       access_state: 'accessible' } }];
+  state.container_placements = state.containers.map(({ container_id }) => ({
+    party_id: 'party', container_id, anchor_id: 'camp-anchor',
+    parent_container_id: null, holder_npc_id: container_id === 'road-bag'
+      ? 'npc' : null, holder_character_id: container_id === 'player-pouch'
+      ? 'player' : null, physical_position: container_id === 'road-bag'
+    ? 'worn' : container_id === 'player-pouch' ? 'worn' : null,
+    equipment_slot_category_id: null
+  }));
+  state.container_profiles = [{ template_id: 'road-bag-template', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 500,
+    external_hand_cost: 0 }, { template_id: 'pouch-template', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
+    external_hand_cost: 0 }, { template_id: 'chest-template', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 1000,
+    external_hand_cost: 0 }];
   const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({ execute: async () => ({}) })
   });
@@ -214,11 +321,12 @@ test('N1 O1 loads and executes from explicit NPC G6, not player position', async
 });
 
 function stateWithNpc() {
-  return { position: { location_ref: 'camp', zone_ref: 'shore', g6_ref: 'g6:camp' },
-    items: [{ item_id: 'safe-source', holder_npc_id: 'npc' },
-      { item_id: 'safe-tool', holder_npc_id: 'npc' }],
+  return { party_id: 'party', party_state: { state_version: 1, turn_number: 0 },
+    position: { location_ref: 'camp', zone_ref: 'shore', g5_anchor_id: 'camp-anchor',
+      g6_ref: 'g6:camp' },
+    items: [npcItem('safe-source'), npcItem('safe-tool')],
     npcs: [{ instance_id: 'npc', anchor_id: 'camp-anchor', machine_state: { location_ref: 'camp',
-      spatial_zone_ref: 'shore', g6_ref: 'g6:camp' }, perception_snapshot: { visible_objects: [
+      spatial_zone_ref: 'shore', g6_ref: 'g6:camp', load_category: 'light' }, perception_snapshot: { visible_objects: [
         { entity_ref: { entity_id: 'seen-first' }, source_perception_ref: 'p:1' },
         { entity_ref: { entity_id: 'seen-second' }, source_perception_ref: 'p:2' }
       ] } }] };
@@ -228,11 +336,59 @@ function contracts(state) {
   return { zhdanko: state.npcs[0], npcSemanticProfile: {
     profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
-      npc_participant_slot_ref: 'zhdanko_storehouse_controller' } } };
+      npc_participant_slot_ref: 'zhdanko_storehouse_controller' } },
+    genericCheckContext: { attributes: [{ attribute_ref: 'strength',
+      label: 'сила', value: 10 }] } };
+}
+
+function npcItem(item_id) {
+  const snapshot = { schema: 'rus.items.runtime_instance_mechanics_snapshot.v1',
+    version: 1, provenance: { source_kind: 'ordinary_direct_action_result',
+      root_turn_id: 'turn:source', step_index: 1, operation_ref: 'source',
+      origin_kind: 'crafted', source_refs: ['safe-source'] }, mechanics: {
+      mass_grams: 100, external_hand_cost: 1, carry_form: 'regular',
+      packing_slot_cost: 1, quantity: null, container: null } };
+  return { item_id, holder_npc_id: 'npc', condition_state: 'serviceable',
+    placement: { holder_npc_id: 'npc', holder_character_id: null,
+      container_id: null, physical_position: 'hands' }, state: {
+      lifecycle_status: 'active', runtime_instance_mechanics_snapshot: snapshot },
+    runtime_instance_mechanics_snapshot: structuredClone(snapshot) };
+}
+
+function containedNpcItem(item_id, container_id, extra = {}) {
+  const item = npcItem(item_id);
+  return { ...item, holder_npc_id: null, ownership: { owner_npc_id: 'npc',
+    owner_character_id: null, owner_party: false, controller_npc_id: 'npc',
+    controller_character_id: null, claim_state: 'owned' }, placement: {
+      holder_npc_id: null, holder_character_id: null, container_id,
+      physical_position: null }, ...extra };
+}
+
+function npcOpenContainer(container_id, extra = {}) {
+  return { container_id, anchor_id: null, parent_container_id: null,
+    holder_npc_id: 'npc', holder_character_id: null, physical_position: 'worn',
+    equipment_slot_category_id: null, condition_state: 'serviceable',
+    template_id: 'npc-kit-template', closure_state: 'open',
+    state: { access_state: 'open' }, state_version: 1,
+    ownership: { ownership_id: `ownership:${container_id}`, owner_npc_id: 'npc',
+      owner_character_id: null, owner_party: false, controller_npc_id: 'npc',
+      controller_character_id: null, claim_state: 'owned' }, ...extra };
+}
+
+function addNpcContainerInventory(state) {
+  state.container_placements = state.containers.map(({ container_id }) => ({
+    party_id: 'party', container_id, anchor_id: null, parent_container_id: null,
+    holder_npc_id: 'npc', holder_character_id: null, physical_position: 'worn',
+    equipment_slot_category_id: null
+  }));
+  state.container_profiles = [{ template_id: 'npc-kit-template', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
+    external_hand_cost: 0 }];
 }
 
 function execution(operation) {
   return { operation, plan: { schema: 'npc_step_plan_v1' }, request: {
-    root_turn_id: 'turn', step_index: 1, committed_state_version: 1 },
+    root_turn_id: 'turn', step_index: 1, committed_state_version: 1,
+    actor: { actor_id: 'npc' } },
   working_projection: { actor_id: 'npc', items: [] }, prepared_chain_context: null };
 }

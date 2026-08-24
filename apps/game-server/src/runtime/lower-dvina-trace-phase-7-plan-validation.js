@@ -24,7 +24,12 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       contracts.semanticActivityProfiles.some((candidate) =>
         candidate.duration_class === activity.duration_class
           && candidate.effort === activity.effort));
-    return profile != null && additionalApplicable
+    const outcomesApplicable = plan.resolution !== 'generic_check'
+      || Object.values(plan.check.outcomes).every(({ operations }) =>
+        operations.every((operation) =>
+          Object.hasOwn(operationContract, operation.op)
+          && matchesOperationContract(operation, operationContract[operation.op])));
+    return profile != null && additionalApplicable && outcomesApplicable
       ? accepted()
       : rejected('NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
   }

@@ -1,4 +1,4 @@
-# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1
+# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2
 
 **Предлагаемый файл в репозитории:**  
 `data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`
@@ -6,7 +6,8 @@
 **Статус:** `proposed umbrella target`; не является active production contract. Каждая описанная ниже feature profile активируется отдельным versioned cutover только после своей реализации и профильных tests.  
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`.  
 **Сверено с GitHub `main`:** 2026-08-16, HEAD `2a6ce7ab72a515ae1d240ca99eb4fc5dd4795b58`.  
-**Редакция ревизии:** `2.1.0-review`.  
+**Редакция ревизии:** `2.2.0-n1-taxonomy-amendment`.  
+**Нормативная поправка N1:** принята 2026-08-25 для versioned cutover revision 25 / M13. Эта поправка формально заменяет прежнее значение идентификатора N1 из reviewed v2.1; она не выводится из реализации PR.  
 **Основной владелец LLM orchestration:** `@rus/turn`.  
 **Deterministic authored materialization, RNG и code-only helpers:** `@rus/materialization`.  
 **Предметы, количество, масса, контейнеры и property:** `@rus/items-property`.  
@@ -20,6 +21,7 @@
 
 Ключевые изменения ревизии:
 
+- identifier `N1` закреплён за общим autonomous NPC current actor-step path: NPC получает только реально доступные owner capabilities и NPC-safe refs, а проверку, механику, время и persistence выполняют существующие owners; прежний ordinary NPC materializer remainder больше не называется N1 и остаётся отдельной неактивной будущей идеей без profile identifier;
 - ordinary world resolution переиспользует существующие player domain requests `request_discovery` и `request_container_access`; новый player operation для ordinary content не вводится;
 - любой положительный targeted result требует independent eligible `supporting_basis_ref`: уже committed либо candidate-free prepared Stage A basis в той же working projection; player/NPC wording остаётся только trigger и имеет `evidence_weight = 0`;
 - LLM не назначает числовую world-capacity: она предлагает только закрытый `density_band`, а code-owned policy переводит его в persisted identity budget;

@@ -1,13 +1,13 @@
 # Контракт автономных решений и действий NPC
 
-**Статус:** `active`, production contract Phase 7 / `spatial-v3-production-v5`\
+**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current N1 cutover — `spatial-v3-production-v13`\
 **Идентификатор:** `npc_autonomous_decision_contract_v1`\
 **Владелец решения NPC:** `@rus/npc-runtime`\
 **Владелец оркестрации и общего actor-step:** `@rus/turn`\
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\
-**Дата подготовки:** 2026-08-02\
-**База сверки:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`\
-**Учтён PR:** №51, слит в `main` 2026-08-02\
+**Историческая дата подготовки:** 2026-08-02\
+**Историческая база первой активации:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`, PR №51\
+**Текущая редакция/cutover:** 2026-08-25, Lower Dvina Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20 / `spatial-v3-production-v13`\
 **Связанный active-контракт игрока:** `turn_step_llm_contract.md`
 
 ## 1. Назначение
@@ -924,13 +924,24 @@ LLM не может объявить:
 }
 ```
 
-Для domain-owned действия:
+Для domain-owned действия, кроме `request_item_use.action_production`:
 
 ```json
 {
   "owner": "domain",
   "duration_class": null,
   "effort": null
+}
+```
+
+`request_item_use.action_production` остаётся одним domain request, но использует
+semantic activity, как player A1:
+
+```json
+{
+  "owner": "semantic",
+  "duration_class": "moment | brief | short | extended",
+  "effort": "none | light | moderate | heavy | extreme"
 }
 ```
 

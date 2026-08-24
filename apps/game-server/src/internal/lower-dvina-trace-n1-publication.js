@@ -6,11 +6,11 @@ import { assertLowerDvinaTracePhase1BWorldLineage } from
 
 const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1';
 export const TRACE_N1_PHASE_1A_MANIFEST_DIGEST =
-  '91d0fe5a0070faa3675dd8feb73937c102c0930024ebb6049a6e2465fb823a77';
+  '9571e3ad874979a9f44614ba5fb02b1df677383a7816cce6c592f925c39401c0';
 const PINS = Object.freeze({
-  manifest: '347276b7f12bc6bd244e847fad5836bea82153e056e4a017005a48714f466839',
-  binding: '87c20cc4fe88413050ee0d30acfe97f18bc6c3ffb329c64d5a4879a8df5521c9',
-  definition: 'cb97cb175fa4a10a4fa7bf65558ce3634217632807ea9a82bfb13cfaadb286d4'
+  manifest: '622cabeceac5917caefe757ff85885a7a5ca56ce05bd637a17aa8c95b7985e7f',
+  binding: 'dc19c877b5325c0cdd38f1590e6aca29ab38f98b93fb8c41e2c4ca99efe3fa14',
+  definition: '07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a'
 });
 
 export async function loadLowerDvinaTraceN1Publication({

@@ -3,9 +3,14 @@ import { npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } fro
 import { createNpcContainerCapability } from './lower-dvina-trace-n1-container-capability.js';
 import { applyActionProducedRuntimeProjection } from
   './lower-dvina-trace-action-produced-runtime.js';
-import { createCommittedItemMechanicsResolver } from
+import { initializeRuntimeState } from
+  './lower-dvina-trace-turn-step-item-support.js';
+import { createCommittedItemMechanicsResolver, getCommittedActorInventoryLoad } from
   './lower-dvina-trace-committed-inventory.js';
-import { projectLowerDvinaTraceF1CurrentState } from
+import { projectTracePhase7CurrentBoundaryState } from
+  './lower-dvina-trace-local-fire-current-state.js';
+
+export { projectTracePhase7CurrentBoundaryState } from
   './lower-dvina-trace-local-fire-current-state.js';
 
 export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
@@ -51,28 +56,33 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
       });
     }
     const itemRefs = npcSafeItemRefs(state, npc);
-    if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0) {
+    if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0
+        && genericContextStrength(phase7Contracts?.genericCheckContext) != null) {
       const referenceInput = ({ item_ref, source_refs, tool_refs }) => ({
         actor_ref: npcRef, item_ref, source_refs, tool_refs,
         root_turn_id: `turn:${partyId}:${Number(state.party_state?.turn_number) + 1}`,
         step_index: 1,
         committed_state_version: Number(state.party_state?.state_version)
       });
-      const owner = createActionProductionOwner({ partyId, requestId, inputDigest,
-        applyWorkingProjection: createNpcA1ProjectionOwner({ state, npcRef }) });
-      const applicableRefs = typeof owner?.referencesApplicable === 'function'
+      const projectionOwner = createNpcA1ProjectionOwner({ state, npc, itemRefs });
+      const ownerFor = (ownerRequestId) => createActionProductionOwner({ partyId,
+        requestId: ownerRequestId, inputDigest, applyWorkingProjection: projectionOwner });
+      const owner = ownerFor(requestId);
+      const applicable = typeof owner?.referencesApplicable === 'function'
         ? await applicableNpcA1Refs(owner, itemRefs, referenceInput)
         : { source_refs: itemRefs, tool_refs: itemRefs };
-      if (typeof owner?.execute === 'function'
+      const applicableRefs = applicable;
+      if (typeof projectionOwner === 'function' && typeof owner?.execute === 'function'
           && applicableRefs.source_refs.length > 0) capabilities.push({
         operation: 'request_item_use', capability: { owner: '@rus/items-property',
-          item_refs: applicableRefs.source_refs, use_kinds: ['other'],
-          action_production: applicableRefs },
+          item_refs: [...applicableRefs.source_refs], use_kinds: ['other'],
+          action_production: { source_refs: [...applicableRefs.source_refs],
+            tool_refs: [...applicableRefs.tool_refs] } },
         isApplicable: () => true,
         supports: ({ operation }) => npcA1OperationSupported(
           operation, npcRef, applicableRefs),
-        execute: (execution) => owner.execute(ownerInput(execution, state, npcRef,
-          execution.check_result == null
+        execute: (execution) => ownerFor(execution.request.request_id).execute(
+          ownerInput(execution, state, npcRef, execution.check_result == null
             ? 'turn_step_action_produced_remainder_request_v1'
             : 'turn_step_action_produced_remainder_request_v2'))
       });
@@ -82,21 +92,6 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
     if (containerCapability != null) capabilities.push(containerCapability);
     return capabilities;
   };
-}
-
-export function projectTracePhase7CurrentBoundaryState({
-  state, workingProjection, priorLocalFirePlans = []
-}) {
-  const current = projectLowerDvinaTraceF1CurrentState({
-    committedState: state,
-    localFireRuntime: workingProjection?.local_fire_runtime,
-    priorLocalFirePlans
-  });
-  if (workingProjection?.npc_activity_states != null) {
-    current.npc_activity_states = structuredClone(
-      workingProjection.npc_activity_states);
-  }
-  return current;
 }
 
 export async function resolveNpcOwnerCapabilities(factory, fallback, input) {
@@ -141,22 +136,74 @@ function sameRefSet(left, right) {
     && left.every((ref) => right.includes(ref));
 }
 
-function createNpcA1ProjectionOwner({ state, npcRef }) {
+function createNpcA1ProjectionOwner({ state, npc, itemRefs }) {
+  const npcRef = npc.instance_id;
+  const inventory = npcInventory(state, npc);
+  if (inventory == null) return null;
   let runtimeState = null;
   return ({ working_projection, actor, action_production_atomic_write_plan: plan }) => {
     runtimeState ??= initializeRuntimeState(state);
-    const sourceRefs = new Set((plan.source_updates ?? []).map(({ item_id }) => item_id));
     const projection = {
       ...structuredClone(working_projection), actor_id: npcRef,
-      items: Array.isArray(working_projection?.items)
-        ? structuredClone(working_projection.items)
-        : structuredClone((state.items ?? []).filter(({ item_id, instance_id }) =>
-          sourceRefs.has(item_id ?? instance_id)))
+      inventory: structuredClone(inventory),
+      items: npcProjectionItems(Array.isArray(working_projection?.items)
+        ? working_projection.items : [], state.items, itemRefs, npcRef, runtimeState)
     };
     return applyActionProducedRuntimeProjection({ workingProjection: projection,
       actor, plan, state: runtimeState,
       resolveItemMechanics: createCommittedItemMechanicsResolver(state) });
   };
+}
+
+function npcProjectionItems(items, stateItems, itemRefs, npcRef, runtimeState) {
+  const selected = new Map(items.filter((item) => itemRefs.includes(
+    item.item_id ?? item.instance_id)).map((item) => [item.item_id ?? item.instance_id, item]));
+  for (const item of stateItems ?? []) {
+    const ref = item.item_id ?? item.instance_id;
+    if (itemRefs.includes(ref) && !selected.has(ref)) selected.set(ref, item);
+  }
+  for (const item of [...selected.values()]) for (let ref = item.placement?.container_id;
+    ref && !selected.has(ref);) {
+    const host = runtimeState.materializedItems.get(ref);
+    if (host == null) break;
+    selected.set(ref, host);
+    ref = host.placement?.container_id;
+  }
+  return [...selected.values()].map((item) => npcProjectionItem(item, npcRef));
+}
+
+function npcHoldsItem(item, npcRef) {
+  return item?.holder_npc_id === npcRef || item?.placement?.holder_npc_id === npcRef;
+}
+
+function npcProjectionItem(item, npcRef) {
+  const placement = item.placement ?? { holder_npc_id: item.holder_npc_id ?? null,
+    holder_character_id: item.holder_character_id ?? null,
+    container_id: item.container_id ?? null,
+    physical_position: item.physical_position ?? null };
+  return { ...structuredClone(item), placement: {
+    ...structuredClone(placement),
+    ...(placement.holder_npc_id === npcRef ? {
+      holder_character_id: npcRef } : {}),
+    ...(placement.holder_npc_id === npcRef ? { holder_npc_id: null } : {})
+  } };
+}
+
+function npcInventory(state, npc) {
+  try {
+    const load = getCommittedActorInventoryLoad(state, npc.instance_id);
+    return { total_weight: { grams: load.total_mass_grams },
+      occupied_hands: load.hands_used,
+      items: (state.items ?? []).filter((item) => npcHoldsItem(item, npc.instance_id))
+        .map(({ item_id, instance_id }) => item_id ?? instance_id),
+      load_category: load.load_category };
+  } catch { return null; }
+}
+
+function genericContextStrength(context) {
+  const value = context?.attributes?.find(({ attribute_ref }) =>
+    attribute_ref === 'strength')?.value;
+  return Number.isSafeInteger(value) && value >= 0 ? value : null;
 }
 
 function ownerInput(execution, state, npcRef, schema) {
@@ -165,7 +212,7 @@ function ownerInput(execution, state, npcRef, schema) {
     operation: structuredClone(execution.operation),
     plan: structuredClone(execution.plan),
     request: structuredClone(execution.request),
-    actor: { actor_id: npcRef },
+    actor: structuredClone(execution.request.actor),
     working_projection: structuredClone(execution.working_projection),
     committed_state: structuredClone(state),
     prepared_chain_context: structuredClone(execution.prepared_chain_context),

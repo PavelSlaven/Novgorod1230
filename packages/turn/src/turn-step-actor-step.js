@@ -224,17 +224,14 @@ function actionProductionPreflightOperations(plan) {
     .find((operation) => operation?.op === 'request_item_use'
       && operation.action_production != null) ?? null);
   if (operations.every((operation) => operation === null)) return null;
-  if (operations.some((operation) => operation === null)) {
-    throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
-      'Every generic A1 outcome must use the same authority scope.');
-  }
-  const expected = preflightIdentity(operations[0]);
-  if (operations.slice(1).some((operation) =>
+  const scoped = operations.filter(Boolean);
+  const expected = preflightIdentity(scoped[0]);
+  if (scoped.slice(1).some((operation) =>
     JSON.stringify(preflightIdentity(operation)) !== JSON.stringify(expected))) {
     throw turnFailure('TURN_STEP_ACTION_PRODUCTION_PREFLIGHT_INVALID',
       'Every generic A1 outcome must use the same authority scope.');
   }
-  return operations;
+  return scoped;
 }
 
 function preflightIdentity(operation) {

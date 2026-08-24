@@ -539,6 +539,9 @@ const temporalPureModules = new Map([
   ['npc-runtime', 'test/npc-runtime.test.js'],
   ['world-processes', 'test/world-processes.test.js']
 ]);
+const temporalPureImportsByModule = new Map([
+  ['npc-runtime', new Set(['@rus/items-property'])]
+]);
 const temporalPureImports = new Set([
   '@rus/contracts/spatial-v3/registry',
   '@rus/contracts/combat-v1',
@@ -570,7 +573,8 @@ for (const [moduleName, testPath] of temporalPureModules) {
     const deps = [];
     for (const specifier of importsOf(source)) {
       if (!specifier.startsWith('.')) {
-        if (!temporalPureImports.has(specifier)) violations.push(`${rel}: pure Temporal owner import is not approved (${specifier})`);
+        const approvedImports = temporalPureImportsByModule.get(moduleName) ?? new Set();
+        if (!temporalPureImports.has(specifier) && !approvedImports.has(specifier)) violations.push(`${rel}: pure Temporal owner import is not approved (${specifier})`);
         continue;
       }
       const candidateBase = resolve(dirname(file), specifier);

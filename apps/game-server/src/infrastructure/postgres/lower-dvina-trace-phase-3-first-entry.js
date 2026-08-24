@@ -7,7 +7,7 @@ const FIRST_ENTRY_COMMAND = 'lower_dvina_trace.follow_path_to_fishing_camp';
 export function resolveFirstEntry({
   partyId, state, factual, phase3Contracts, changeSetId, scenarioRevision
 }) {
-  if (scenarioRevision !== 24 || !routeMovement(factual)
+  if (![24, 25].includes(scenarioRevision) || !routeMovement(factual)
       || factual.mode_resolution?.command_id !== FIRST_ENTRY_COMMAND) {
     return null;
   }

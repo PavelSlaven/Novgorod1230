@@ -252,7 +252,19 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
         resource_ref: 'known-packet',
         source_event_ref: ref('knowledge_event', 'packet-known'),
         summary: 'известный свёрток лежит рядом'
-      }],
+      }, {
+        fact_ref: 'known-private-controlled-fact',
+        resource_ref: 'known-private-controlled',
+        source_event_ref: ref('knowledge_event', 'private-packet-known'),
+        summary: 'свой закрытый свёрток'
+      }, ...['known-no-access-packet', 'known-unavailable-packet'].map(
+        (resource_ref) => ({
+          fact_ref: `${resource_ref}-fact`,
+          resource_ref,
+          source_event_ref: ref('knowledge_event', `${resource_ref}-known`),
+          summary: 'известный свёрток лежит рядом'
+        }))
+      ],
       beliefs: [{
         resource_ref: 'believed-packet',
         source_event_ref: ref('rumor_event', 'packet-believed'),
@@ -277,6 +289,26 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
         location_ref: 'yard',
         zone_ref: 'gate',
         controller_npc_id: 'speaker'
+      }
+    }, ...['concealed', 'private', 'blocked'].map((state) => ({
+      item_id: `${state}-controlled`,
+      template_id: 'packet',
+      holder_npc_id: 'speaker',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        ...(state === 'blocked'
+          ? { access_state: state }
+          : { visibility_state: state })
+      }
+    })), {
+      item_id: 'known-private-controlled',
+      template_id: 'packet',
+      holder_npc_id: 'speaker',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        visibility_state: 'private'
       }
     }, {
       item_id: 'unknown-packet',
@@ -308,6 +340,25 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
         access_state: 'available',
         visibility_state: 'visible'
       }
+    }, {
+      item_id: 'known-no-access-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        visibility_state: 'visible'
+      }
+    }, {
+      item_id: 'known-unavailable-packet',
+      template_id: 'packet',
+      holder_npc_id: 'other',
+      state: {
+        location_ref: 'yard',
+        zone_ref: 'gate',
+        access_state: 'unavailable',
+        visibility_state: 'visible'
+      }
     }, ...['uncertain-packet', 'believed-packet', 'hypothetical-packet'].map(
       (item_id) => ({
         item_id,
@@ -328,6 +379,15 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
     ({ resource_ref: resourceRef }) => resourceRef === 'bag-1'), true);
   assert.equal(request.npc.available_resources.some(
     ({ resource_ref: resourceRef }) => resourceRef === 'axe-1'), true);
+  for (const resourceRef of [
+    'concealed-controlled', 'private-controlled', 'blocked-controlled'
+  ]) {
+    assert.equal(request.npc.available_resources.some(
+      ({ resource_ref: value }) => value === resourceRef), false);
+  }
+  assert.equal(request.npc.available_resources.some(
+    ({ resource_ref: resourceRef }) => resourceRef === 'known-private-controlled'),
+  true);
   assert.equal(request.npc.available_resources.some(
     ({ resource_ref: resourceRef }) => resourceRef === 'unknown-packet'), false);
   assert.equal(request.npc.available_resources.some(
@@ -335,7 +395,8 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
   assert.equal(request.npc.available_resources.some(
     ({ resource_ref: resourceRef }) => resourceRef === 'known-packet'), true);
   for (const resourceRef of [
-    'uncertain-packet', 'believed-packet', 'hypothetical-packet'
+    'known-no-access-packet', 'known-unavailable-packet', 'uncertain-packet',
+    'believed-packet', 'hypothetical-packet'
   ]) {
     assert.equal(request.npc.available_resources.some(
       ({ resource_ref: value }) => value === resourceRef), false);

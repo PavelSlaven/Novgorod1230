@@ -261,6 +261,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
       : structuredClone(finiteResourceEffects)) });
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
+    duration_minutes: 0,
     player_response_boundary: true,
     ordinary_materialization_atomic_write_plan: plan });
 }
@@ -353,6 +354,7 @@ function sourceRefs({ envelope, proposed, execution, property, permissionRefs })
 function ordinaryNoop(request) { return Object.freeze({
   working_projection: structuredClone(request?.working_projection ?? {}),
   write_fragments: [], summary: 'ordinary discovery unavailable',
+  duration_minutes: 0,
   player_response_boundary: true }); }
 function ordinaryState(a) { return { seeded: a.seeded,
   density_band: a.density_band,

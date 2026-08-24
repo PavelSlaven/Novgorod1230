@@ -31,6 +31,7 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/mode/same-time batch не более одной boundary. Новая identity включает mode (`autonomous|conversation`) либо combat context; persisted pre-cutover identity без mode принимается только для exact replay и не переписывается.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
 - Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots. Общий resource projector допускает контролируемый NPC ресурс либо физически доступный чужой ресурс с source-backed factual perception/`known_facts` exact resource ref; одной location/access записи, belief, hypothesis или uncertainty недостаточно. `npcSafeSnapshotHasEntityEvidence` тем же правилом проверяет exact evidence самой entity/process, поэтому известный bound resource не раскрывает скрытый process ref. `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; autonomous operation vocabulary включает exact NPC-safe `request_world_process`, а физическое применение остаётся у domain owner; production v5 uses conversation mode and Phase-7 autonomous mode.
+- `npc_step_plan_v1` допускает общий A1 `request_item_use.action_production`: contract сохраняет один domain request, operation-contract и NPC-safe ref gates; mechanics и action-production transition остаются у existing item/turn owners.
 - Combat builders/validators — strict `npc_combat_decision_request_v1` /
   `npc_combat_intent_plan_v1`, formal operation-contract applicability,
   source-backed statement refs и shared signal/boundary aggregation. Пакет не
@@ -79,7 +80,7 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 ## Зависимости, IO и persistence
 
-Разрешены `@rus/kernel`, versioned `@rus/contracts` и `@rus/time-events-history` для формальных контрактов, digest и exact timestamp comparison/normalization. Нет скрытых IO: пакет не читает DB, network, LLM, narrator, UI, global clock или скрытое process state; он не пишет SQL и не создаёт write plan. Persisted inputs служат только для pure replay verification. `@rus/turn` валидирует и передаёт одобренные изменения в target `CombinedAtomicCommitter`.
+Разрешены `@rus/kernel`, versioned `@rus/contracts`, `@rus/time-events-history` и read-only `@rus/items-property` для формальных контрактов, digest, exact timestamp comparison/normalization и concealment projection. `npc-runtime` не владеет concealment semantics. Нет скрытых IO: пакет не читает DB, network, LLM, narrator, UI, global clock или скрытое process state; он не пишет SQL и не создаёт write plan. Persisted inputs служат только для pure replay verification. `@rus/turn` валидирует и передаёт одобренные изменения в target `CombinedAtomicCommitter`.
 
 ## Activation и тесты
 

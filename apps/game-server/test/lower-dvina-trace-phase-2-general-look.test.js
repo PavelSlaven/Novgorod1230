@@ -76,17 +76,17 @@ test('revision 13 general look stays a generic player-safe turn',
     }
   });
 
-test('runtime keeps inherited A1/F1 owners through revision 24',
+test('runtime keeps inherited A1/F1 owners through revisions 24 and 25',
   async (t) => {
     const [actionProductionProfile, localFireProfile] = await Promise.all([
       loadLowerDvinaTraceA1Profile(), loadLowerDvinaTraceLocalFireProfile()
     ]);
     for (const [revision, expected] of [[20, [0, 0]], [21, [1, 0]],
-      [22, [1, 2]], [23, [1, 2]], [24, [1, 2]]]) {
+      [22, [1, 2]], [23, [1, 2]], [24, [1, 2]], [25, [1, 2]]]) {
       await t.test(`revision ${revision}`, async () => {
         let actionOwners = 0; let fireOwners = 0;
         const scenarioBundle = await loadScenarioBundle(revision);
-        const f = fixture({ scenarioBundle, materializationBundle: revision === 24
+        const f = fixture({ scenarioBundle, materializationBundle: revision >= 24
           ? await loadScenarioBundle(23) : scenarioBundle,
           actionProductionProfile, localFireProfile,
           createTurnStepActionProductionOwner: () => {
@@ -106,7 +106,7 @@ test('runtime keeps inherited A1/F1 owners through revision 24',
             'rus.items.local_fire_ignition_basis.v1' } };
         f.state.position.g5_anchor_id = f.state.position.location_ref;
         f.state.materialization_trace.seed_context.scenario_definition_revision = revision;
-        if (revision === 24) f.state.first_entry_preparation = {
+        if (revision >= 24) f.state.first_entry_preparation = {
           spatial_v3: { target: { status: 'prepared' } }
         };
         await f.runtime.submitTurn({ partyId: f.partyId, input: {

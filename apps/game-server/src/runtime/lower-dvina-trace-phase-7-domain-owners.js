@@ -1,14 +1,19 @@
 import { selectApplicableNpcActivityExecution } from '@rus/npc-runtime';
 import { subtractGameTimestamp } from '@rus/time-events-history';
 import { startNpcActorStep } from '@rus/turn/temporal-advance';
-import { resolveTracePhase7DomainProposals, tracePhase7ItemUseTransitions,
-  tracePhase7PropertyTransitions, tracePhase7TransitionTarget } from
+import { resolveTracePhase7DomainProposals,
+  tracePhase7PropertyTransitions } from
   './lower-dvina-trace-phase-7-owner-proposals.js';
 import { resolveTracePhase7SemanticActivity } from './lower-dvina-trace-phase-7-semantic-activity.js';
+import { phase7OwnerOutputs } from './lower-dvina-trace-phase-7-owner-registry.js';
+import { projectTracePhase7OwnerCapabilities } from
+  './lower-dvina-trace-phase-7-owner-capabilities.js';
 export function createTracePhase7DomainExecution({ state, contracts,
   temporal, semanticActivityScheduleOwner, worldProcessResolver = null,
-  worldProcessContract = null }) {
-  const capabilities = ownerCapabilities(contracts, worldProcessContract);
+  worldProcessContract = null, npcOwnerCapabilities = [] }) {
+  const capabilities = projectTracePhase7OwnerCapabilities({ contracts,
+    worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver });
+  let registeredOwnerOutput = null;
   const handlers = {
     request_activity: (execution) => executeActivity({ execution, state,
       contracts, temporal, capabilities }),
@@ -17,10 +22,14 @@ export function createTracePhase7DomainExecution({ state, contracts,
     request_movement: (execution) => executeMovement({ execution, state,
       contracts, temporal, capabilities })
   };
-  if (worldProcessContract != null && typeof worldProcessResolver === 'function') {
-    handlers.request_world_process = (execution) => executeWorldProcess({
-      execution, state, temporal, worldProcessResolver
-    });
+  for (const owner of capabilities.additional_owners) {
+    const fallback = handlers[owner.operation];
+    handlers[owner.operation] = (execution) => owner.supports(execution)
+      ? executeRegisteredOwner({ execution, state, temporal, owner,
+          capture: (output) => { registeredOwnerOutput = output; } })
+      : fallback == null
+        ? fail('TRACE_PHASE_7_DOMAIN_REQUEST_NOT_APPLICABLE')
+        : fallback(execution);
   }
   return Object.freeze({
     semantic_activity_handler: async (execution) => {
@@ -31,106 +40,41 @@ export function createTracePhase7DomainExecution({ state, contracts,
         property: null });
     },
     handlers: Object.freeze(handlers),
-    operation_contract: capabilities.operation_contract
+    operation_contract: capabilities.operation_contract,
+    registered_owner_output: () => structuredClone(registeredOwnerOutput)
   });
 }
 
-async function executeWorldProcess({ execution, state, temporal,
-  worldProcessResolver }) {
-  const resolved = await worldProcessResolver({ ...execution,
+async function executeRegisteredOwner({ execution, state, temporal, owner,
+  capture }) {
+  const resolved = await owner.execute({ ...execution,
     actor: execution.request.actor,
     committed_state: state,
     request: { ...execution.request,
       change_set_id: `change:${state.party_id}:trace-phase7:${
         state.party_state.turn_number + 1}` }
   });
+  capture({ consequence_fragment: structuredClone(
+    resolved.consequence_fragment ?? null) });
   const startedResult = started({ execution: {
     ...execution,
     working_projection: resolved.working_projection
-  }, temporal, profile: null, movement: null, property: null });
+  }, temporal, profile: null, movement: null, property: null,
+  minutes: registeredOwnerMinutes(resolved, temporal) });
   return Object.freeze({ ...startedResult,
     summary: `${startedResult.summary}; ${resolved.summary}`,
-    local_fire_atomic_write_plans: resolved.local_fire_atomic_write_plans
+    write_fragments: structuredClone(resolved.write_fragments ?? []),
+    ...phase7OwnerOutputs(resolved)
   });
 }
-function ownerCapabilities(contracts, worldProcessContract) {
-  const activityAllowed = exactActivityAllowed(contracts);
-  const itemAllowed = exactItemAllowed(contracts);
-  const movement = contracts.localTransition == null ? null : Object.freeze({
-    owner: '@rus/movement-routes',
-    movement_kinds: Object.freeze(['local']),
-    target_refs: Object.freeze([
-      contracts.localTransition.destination_zone_ref]),
-    route_refs: Object.freeze([contracts.localTransition.transition_id]),
-    factual_outcome_write: 'owner_only'
-  });
-  const operationContract = {
-    request_activity: {
-      owner: '@rus/turn',
-      allowed: activityAllowed,
-      factual_outcome_write: 'forbidden'
-    },
-    request_item_use: {
-      owner: '@rus/items-property',
-      allowed: itemAllowed,
-      factual_outcome_write: 'owner_only'
-    }
-  };
-  if (movement != null) operationContract.request_movement = movement;
-  if (worldProcessContract != null) {
-    operationContract.request_world_process = worldProcessContract;
+
+function registeredOwnerMinutes(resolved, temporal) {
+  const minutes = resolved?.duration_minutes ?? 0;
+  if (!Number.isSafeInteger(minutes) || minutes < 0) {
+    fail('TRACE_PHASE_7_OWNER_TIME_INVALID');
   }
-  return Object.freeze({
-    activity_allowed: activityAllowed,
-    item_allowed: itemAllowed,
-    movement,
-    operation_contract: Object.freeze(operationContract)
-  });
+  return minutes;
 }
-
-function exactActivityAllowed(contracts) {
-  const profiles = new Map(contracts.scheduleActivityProfiles.map((profile) =>
-    [profile.profile_id, profile]));
-  const movements = new Map([[contracts.localTransition.transition_id,
-    contracts.localTransition]]);
-  const transitions = new Map(tracePhase7PropertyTransitions(contracts).map(
-    (profile) => [profile.transition_profile_id, profile]
-  ));
-  return Object.freeze(Object.values(contracts.scheduleExecutions).map(
-    (binding) => {
-      const profile = profiles.get(binding.activity_profile_ref);
-      const activityKind = activityKindFor(profile, binding);
-      if (activityKind == null) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-      const required = new Set(profile.resource_refs ?? []);
-      if (binding.movement_ref != null) {
-        const movement = movements.get(binding.movement_ref);
-        if (!movement) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-        required.add(movement.destination_zone_ref);
-      }
-      for (const ref of binding.property_transition_refs ?? []) {
-        const transition = transitions.get(ref);
-        if (!transition) fail('TRACE_PHASE_7_EXECUTION_PROFILE_GAP');
-        required.add(transition.subject_ref);
-        required.add(transition.writes?.zone_ref
-          ?? transition.writes?.location_ref);
-      }
-      return Object.freeze({ activity_kind: activityKind,
-        target_refs: Object.freeze([...required]) });
-    }
-  ));
-}
-
-function exactItemAllowed(contracts) {
-  const targets = tracePhase7ItemUseTransitions(contracts)
-    .map(tracePhase7TransitionTarget);
-  return Object.freeze(['operate', 'other'].flatMap((useKind) =>
-    targets.map((target) => Object.freeze({
-      item_ref: contracts.roadBag.item_ref,
-      use_kind: useKind,
-      target_refs: Object.freeze([target])
-    }))));
-}
-
 function executeActivity({ execution, state, contracts, temporal,
   capabilities }) {
   const operation = execution.operation;
@@ -189,20 +133,6 @@ function executeMovement({ execution, state, contracts, temporal,
   });
 }
 
-function activityKindFor(profile, binding) {
-  if (profile?.activity_type === 'autonomous_wait'
-      && binding.movement_ref === null
-      && binding.property_transition_refs?.length === 0) {
-    return 'wait';
-  }
-  if (profile?.activity_type === 'autonomous_local_property_transfer'
-      && binding.movement_ref != null
-      && binding.property_transition_refs?.length > 0) {
-    return 'carry';
-  }
-  return null;
-}
-
 function matchesAllowed(allowed, operation) {
   return allowed.some((entry) => {
     if (operation.op === 'request_activity') {
@@ -222,9 +152,7 @@ function started({ execution, temporal, profile, movement, property,
   minutes = null, npcRef = null }) {
   const ownDuration = minutes == null
     ? profileMinutes(profile) ?? remainingMinutes(temporal) : Number(minutes);
-  // ponytail: allow planned duration past remaining Mikula rest; temporal owner
-  // keeps unfinished actor-step active after T+30. Ceiling: no interrupt policy.
-  if (!Number.isSafeInteger(ownDuration) || ownDuration < 1) {
+  if (!Number.isSafeInteger(ownDuration) || ownDuration < 0) {
     fail('TRACE_PHASE_7_SCHEDULE_TIME_PROFILE_INVALID');
   }
   return startNpcActorStep({

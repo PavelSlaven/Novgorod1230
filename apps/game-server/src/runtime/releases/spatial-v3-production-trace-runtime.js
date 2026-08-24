@@ -12,7 +12,8 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
-import { createLowerDvinaTraceS1ProductionResolverFactory } from
+import { createLowerDvinaTraceS1ProductionResolverFactory,
+  projectLowerDvinaTraceNpcS1Capability } from
   './lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../lower-dvina-trace-world-process-llm.js';
@@ -22,6 +23,8 @@ import { createLowerDvinaTraceO2aAmbientPort } from
   '../lower-dvina-trace-o2a-ambient-port.js';
 import { createLowerDvinaTraceO2bProductionResolverFactory } from
   './lower-dvina-trace-o2b-production.js';
+import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
+  '../lower-dvina-trace-n1-owner-capabilities.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../lower-dvina-trace-ordinary-discovery.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
@@ -95,6 +98,21 @@ export function createTraceTurnRuntime({
   const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null
     ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool, roleRunner })
     : null;
+  const createNpcOwnerCapabilities = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+    createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
+      createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
+        loadEnablement: (input) => ordinaryEnablements.load(input),
+        ordinaryMaterializationModel }),
+    createActionProductionOwner: actionProductionResolverFactory,
+    createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
+    loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
+    createSpatialSemanticResolver: spatialSemanticResolverFactory,
+    spatialSemanticProfile: activeSpatialSemanticProfile,
+    projectNpcSpatialSemanticCapability: ({ committedState, npcSnapshot }) =>
+      projectLowerDvinaTraceNpcS1Capability({ npcSnapshot, committedState,
+        resolverAvailable: spatialSemanticResolverFactory != null
+      })
+  });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -132,6 +150,7 @@ export function createTraceTurnRuntime({
         profile: ordinaryMaterializationProfile, committedState
       }),
     requireTurnStepAmbientOrdinaryAdmission: false,
+    createNpcOwnerCapabilities,
     ...createNpcRuntimePorts({ roleRunner }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool, narrationService

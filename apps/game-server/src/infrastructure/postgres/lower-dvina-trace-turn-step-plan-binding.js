@@ -6,6 +6,8 @@ import {
 } from '@rus/items-property';
 import { fail, text } from
   './lower-dvina-trace-turn-step-persistence-support.js';
+export { requireTurnStepOwnerCarrierBinding } from
+  './lower-dvina-trace-turn-step-owner-carrier-binding.js';
 
 const DIRECT = new Set([
   'create_entity', 'move_entity', 'change_entity_facts',
@@ -240,8 +242,7 @@ function same(left, right) {
 }
 
 function mismatch(value, reason) {
-  fail('TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH', {
-    reason, operation_id: text(value?.operation_id)
+  fail('TRACE_TURN_STEP_OPERATION_PLAN_MISMATCH', { reason, operation_id: text(value?.operation_id)
       ? value.operation_id : null,
     activity_id: text(value?.activity_id) ? value.activity_id : null,
     step_index: value?.step_index ?? null,

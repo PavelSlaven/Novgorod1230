@@ -22,6 +22,8 @@ export function phase7Command({
   localFireProfile = null,
   worldProcessResolver = null,
   projectNpcWorldProcessCapability = null,
+  npcOwnerCapabilities = [],
+  createBoundaryNpcOwnerCapabilities = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -54,6 +56,8 @@ export function phase7Command({
     localFireProfile,
     worldProcessResolver,
     projectNpcWorldProcessCapability,
+    npcOwnerCapabilities,
+    createBoundaryNpcOwnerCapabilities,
     randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion

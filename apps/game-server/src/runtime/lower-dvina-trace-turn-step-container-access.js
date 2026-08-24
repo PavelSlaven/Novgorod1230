@@ -73,7 +73,7 @@ async function requestContainerAccess(execution, state, options) {
     })
   });
   const identity = nextOperationIdentity(execution, state);
-  return applied({
+  return Object.freeze({ ...applied({
     projection: next,
     summary: `container_access:${operation.container_ref}`,
     fragment: ordinaryPlan == null
@@ -89,6 +89,8 @@ async function requestContainerAccess(execution, state, options) {
       container_ref: operation.container_ref,
       revealed_refs: transitioned.revealed_refs
     })
+  }),
+    duration_minutes: 0
   });
 }
 

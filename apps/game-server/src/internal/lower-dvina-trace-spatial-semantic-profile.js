@@ -60,7 +60,16 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
   const pin = bundle?.artifact_pins?.spatial_semantic_profile;
   const binding = bundle?.materialization_bindings;
   const s1 = binding?.spatial_semantic_materialization;
-  return bundle?.definition_revision === 24
+  return ([
+    bundle?.definition_revision === 24
+      && binding?.binding_set_id
+        === 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
+      && binding.scenario_definition_revision === 24,
+    bundle?.definition_revision === 25
+      && binding?.binding_set_id
+        === 'lower_dvina_trace_phase_1a_materialization_bindings_v21'
+      && binding.scenario_definition_revision === 25
+  ].some(Boolean))
     && loaded?.schema === 'rus.lower_dvina_trace_s1_loaded_profile.v1'
     && profile?.schema === 'rus.lower_dvina_trace_spatial_semantic_profile.v1'
     && profile.status === 'approved' && profile.revision === 3
@@ -70,10 +79,7 @@ export function isExactLowerDvinaTraceSpatialSemanticProfile(bundle, loaded) {
     && pin.canonical_digest === loaded.profile_canonical_digest
     && canonicalDigest(bundle.spatial_semantic_profile)
       === loaded.profile_canonical_digest
-    && binding?.binding_set_id
-      === 'lower_dvina_trace_phase_1a_materialization_bindings_v20'
     && binding.status === 'approved'
-    && binding.scenario_definition_revision === 24
     && s1?.profile_ref?.id === profile.profile_id
     && s1.profile_ref.revision === pin.revision
     && s1.profile_ref.schema === pin.schema

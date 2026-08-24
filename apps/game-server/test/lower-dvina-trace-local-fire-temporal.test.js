@@ -9,6 +9,8 @@ import {
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { createLocalFireAtomicWritePlan } from
   '../src/infrastructure/postgres/local-fire-atomic-write-plan.js';
+import { phase7OwnerOutputPlans } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-7-owner-output.js';
 import { applyLocalFireTemporalProjection,
   localFireTemporalCandidateFromRuntime,
   localFireTemporalRuntimeFromPlan,
@@ -85,6 +87,39 @@ test('local-fire temporal overlay inserts, replaces and removes candidates',()=>
   const due=resolved.proposals[0].local_fire_atomic_write_plans[0];
   assert.deepEqual(replaceLocalFireTemporalCandidates([candidate],
     resolved.state_projection,[due]),[]);
+});
+
+test('Phase 7 applies actor fire output before due temporal plans', async () => {
+  const actorPlan = startPlan('fire-phase7-order', ['fuel-phase7-order']);
+  const temporalPlan = structuredClone((await advance([actorPlan], 5))
+    .local_fire_atomic_write_plans[0]);
+  temporalPlan.change_set_id = 'change-fire';
+  const plans = phase7OwnerOutputPlans({
+    ownerOutputs: { write_fragments: [], consequence_fragment: null,
+      ordinary_materialization_atomic_write_plan: null,
+      action_production_atomic_write_plans: [],
+      local_fire_atomic_write_plans: [actorPlan],
+      spatial_semantic_atomic_write_plan: null },
+    partyId: 'party-fire', changeSetId: 'change-fire', npcRef: 'pc',
+    rootTurnId: 'turn-fire', committedStateVersion: 1,
+    semanticOperation: { op: 'request_world_process' },
+    temporalPlans: [temporalPlan], fail(code) { throw new Error(code); }
+  });
+  assert.deepEqual(plans.localFirePlans.map(({ transition_proposal: plan }) =>
+    plan.action), ['start', 'due_boundary']);
+  const temporalOnly = phase7OwnerOutputPlans({
+    ownerOutputs: { write_fragments: [], consequence_fragment: null,
+      ordinary_materialization_atomic_write_plan: null,
+      action_production_atomic_write_plans: [],
+      local_fire_atomic_write_plans: [],
+      spatial_semantic_atomic_write_plan: null },
+    partyId: 'party-fire', changeSetId: 'change-fire', npcRef: 'pc',
+    rootTurnId: 'turn-fire', committedStateVersion: 1,
+    semanticOperation: { op: 'request_activity', activity_kind: 'wait' },
+    temporalPlans: [temporalPlan], fail(code) { throw new Error(code); }
+  });
+  assert.deepEqual(temporalOnly.localFirePlans.map(
+    ({ transition_proposal: plan }) => plan.action), ['due_boundary']);
 });
 
 test('production prepared route advances prior fire and hides retired fuel',

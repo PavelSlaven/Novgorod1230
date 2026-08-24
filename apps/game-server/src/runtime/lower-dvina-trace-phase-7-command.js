@@ -1,17 +1,5 @@
-import { resolveTracePhase7AutonomousDecision } from
-  './lower-dvina-trace-phase-7-autonomous.js';
-import { advanceTemporalNpcDecisionBoundary } from
-  '@rus/turn/temporal-advance';
-import {
-  createTracePhase7ActorStepRuntime,
-  executeTracePhase7SchedulePlan,
-  finalizeTracePhase7ScheduleExecution
-} from
-  './lower-dvina-trace-phase-7-schedule-execution.js';
-import { resolveTracePhase7ScheduleTemporalAdvance } from
-  './lower-dvina-trace-phase-7-schedule-temporal.js';
-import { resolveTracePhase7RestTemporalAdvance } from
-  './lower-dvina-trace-phase-7-temporal.js';
+import { resolveTracePhase7FireRestConsequence } from
+  './lower-dvina-trace-phase-7-command-consequence.js';
 
 const PRECONDITION = 'phase7_fire_rest_admission';
 
@@ -30,6 +18,8 @@ export function createTracePhase7FireRestCommand({
   localFireProfile,
   worldProcessResolver,
   projectNpcWorldProcessCapability,
+  npcOwnerCapabilities,
+  createBoundaryNpcOwnerCapabilities,
   randomSource,
   temporalAdvanceOwner,
   revalidateStateVersion
@@ -76,122 +66,14 @@ export function createTracePhase7FireRestCommand({
     async consequence({ retrievedState: state, playerInput,
       semanticPlan = null,
       modeResolution = null, rootTurnId = null }) {
-      if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
-      const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
-      const expectedRootTurnId = [
-        'turn', state.party_id, state.party_state.turn_number + 1
-      ].join(':');
-      if (typeof actualRootTurnId !== 'string'
-          || actualRootTurnId !== expectedRootTurnId) {
-        fail('TRACE_PHASE_7_ROOT_TURN_ID_INVALID');
-      }
-      let actorStepRuntime = null;
-      const deferRestCompletion = continuationTargetsMatch(
-        semanticPlan?.continuation, continuationTargetRefs
-      );
-      const flow = await advanceTemporalNpcDecisionBoundary({
-        advanceToBoundary: () => resolveTracePhase7RestTemporalAdvance({
-          state,
-          contracts,
-          temporalAdvanceOwner,
-          commandIdempotencyKey: playerInput.idempotency_key,
-          rootTurnId: actualRootTurnId
-        }),
-        decisionSignalState: {
-          factual_state: state,
-          npc_ref: {
-            entity_kind: 'npc',
-            entity_id: contracts.zhdanko.instance_id
-          },
-          active_mode: 'autonomous',
-          current_intent: null,
-          decision_capability: true
-        },
-        async resolveDecision({ temporal, signal_batch: signalBatch }) {
-          actorStepRuntime = createTracePhase7ActorStepRuntime({
-            state, contracts, temporal, semanticActivityScheduleOwner,
-            genericCheckContextOwner, localFireProfile,
-            worldProcessResolver, projectNpcWorldProcessCapability,
-            randomSource
-          });
-          const autonomous = await resolveTracePhase7AutonomousDecision({
-            state,
-            contracts,
-            temporal,
-            signalBatch,
-            operationContract:
-              actorStepRuntime.registry.operationContract(),
-            npcAutonomousModel,
-            revalidateStateVersion,
-            rootTurnId: actualRootTurnId
-          });
-          return { boundary: autonomous.boundary, autonomous };
-        },
-        executeActorStep: ({ temporal, decision }) =>
-          executeTracePhase7SchedulePlan({
-            state,
-            contracts,
-            temporal,
-            autonomous: decision.autonomous,
-            actorStepRuntime
-          }),
-        continueAdvance: ({ temporal, actor_step: actorStep }) =>
-          resolveTracePhase7ScheduleTemporalAdvance({
-            state,
-            temporal,
-            actorStep,
-            temporalAdvanceOwner,
-            commandIdempotencyKey: playerInput.idempotency_key,
-            rootTurnId: actualRootTurnId,
-            restLimitTimestamp: deferRestCompletion
-              ? temporal.result.clock_after : null
-          })
+      return resolveTracePhase7FireRestConsequence({
+        state, playerInput, semanticPlan, modeResolution, rootTurnId,
+        contracts, continuationTargetRefs, inputDigest, npcAutonomousModel,
+        semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
+        worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
+        createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
+        revalidateStateVersion, admitted
       });
-      if (flow.unresolved_domain_rejection !== null) {
-        return blockedDomainResult(
-          flow.unresolved_domain_rejection.actor_step.domain_result
-        );
-      }
-      const temporal = flow.temporal;
-      const autonomous = flow.decision.autonomous;
-      const scheduleTemporal = flow.continuation;
-      const scheduleExecution = finalizeTracePhase7ScheduleExecution({
-        actorStep: flow.actor_step,
-        scheduleTemporal
-      });
-      const restCompleted = scheduleTemporal.rest_completed === true;
-      return {
-        version: 1,
-        schema: 'turn_consequence_package',
-        status: 'resolved',
-        phase7_kind: 'fire_rest',
-        activity_attempt_id:
-          `activity:${state.party_id}:trace-phase7:fire-rest`,
-        body_effect_ref: restCompleted
-          ? contracts.bodyEffect.effect_profile_id
-          : null,
-        duration_minutes: restCompleted
-          ? 30
-          : scheduleTemporal.elapsed_after_decision
-            + temporal.elapsed_before_decision,
-        phase7: {
-          input_digest: inputDigest,
-          temporal,
-          autonomous,
-          actor_step: flow.actor_step.result,
-          actor_step_check: flow.actor_step.check,
-          schedule_temporal: scheduleTemporal,
-          schedule_execution: scheduleExecution
-        },
-        ...(!flow.actor_step.local_fire_atomic_write_plans?.length ? {} : {
-          local_fire_atomic_write_plans:
-            flow.actor_step.local_fire_atomic_write_plans
-        }),
-        visible_seed: {},
-        hidden_update: {},
-        state_changes: [],
-        suggested_actions: []
-      };
     },
     writeTargets(input) {
       return [{
@@ -213,37 +95,12 @@ export function createTracePhase7FireRestCommand({
   });
 }
 
-function blockedDomainResult(domainResult) {
-  return {
-    version: 1,
-    schema: 'turn_consequence_package',
-    status: 'blocked',
-    duration_minutes: 0,
-    visible_seed: {},
-    hidden_update: {
-      npc_autonomous_domain_result: structuredClone(domainResult)
-    },
-    state_changes: [],
-    suggested_actions: []
-  };
-}
-
 export function tracePhase7PreconditionSatisfied(
   precondition,
   state,
   contracts
 ) {
   return precondition?.kind === PRECONDITION && admitted(state, contracts);
-}
-
-function continuationTargetsMatch(continuation, requiredRefs) {
-  if (continuation == null || requiredRefs.length === 0
-      || typeof continuation.remaining_intent !== 'string'
-      || continuation.remaining_intent.length === 0) {
-    return false;
-  }
-  const declared = new Set(continuation.depends_on_refs ?? []);
-  return requiredRefs.every((ref) => declared.has(ref));
 }
 
 function admitted(state, contracts) {
@@ -272,8 +129,4 @@ function available(ok) {
     reasons: ok ? [] : ['phase7_fire_rest_precondition_failed'],
     check_requests: []
   };
-}
-
-function fail(code) {
-  throw Object.assign(new Error(code), { code });
 }

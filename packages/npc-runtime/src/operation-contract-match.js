@@ -22,6 +22,10 @@ export function worldProcessOperationRefs(operation) {
 
 export function matchesOperationContract(operation, contract) {
   if (!record(contract)) return false;
+  if (Array.isArray(contract.alternatives)) {
+    return contract.alternatives.some((alternative) =>
+      matchesOperationContract(operation, alternative));
+  }
   if (Array.isArray(contract.allowed)) {
     if (contract.allowed.length === 0) return false;
     return contract.allowed.some((entry) =>
@@ -39,13 +43,24 @@ function matchesCapabilityContract(operation, contract) {
           contract.target_refs.includes(ref)));
   }
   if (operation.op === 'request_item_use') {
-    return (!Array.isArray(contract.item_refs)
+    const base = (!Array.isArray(contract.item_refs)
         || contract.item_refs.includes(operation.item_ref))
       && (!Array.isArray(contract.use_kinds)
         || contract.use_kinds.includes(operation.use_kind))
       && (!Array.isArray(contract.target_refs)
         || operation.target_refs.every((ref) =>
           contract.target_refs.includes(ref)));
+    const action = operation.action_production;
+    return base && (contract.action_production == null || action != null
+      && exactActionProductionRefs(operation, contract.action_production));
+  }
+  if (operation.op === 'request_container_access') {
+    return (!Array.isArray(contract.actor_refs)
+        || contract.actor_refs.includes(operation.actor_ref))
+      && (!Array.isArray(contract.container_refs)
+        || contract.container_refs.includes(operation.container_ref))
+      && (!Array.isArray(contract.access_kinds)
+        || contract.access_kinds.includes(operation.access_kind));
   }
   if (operation.op === 'request_movement') {
     return (!Array.isArray(contract.movement_kinds)
@@ -69,6 +84,11 @@ function matchesCapabilityContract(operation, contract) {
 }
 
 function operationMatchesAllowedEntry(operation, entry) {
+  if (operation.op === 'request_discovery') {
+    return sameIdSet(entry.target_refs, operation.target_refs)
+      && (!Array.isArray(entry.discovery_kinds)
+        || entry.discovery_kinds.includes(operation.discovery_kind));
+  }
   if (operation.op === 'request_activity') {
     return entry.activity_kind === operation.activity_kind
       && sameIdSet(entry.target_refs, operation.target_refs);
@@ -76,7 +96,15 @@ function operationMatchesAllowedEntry(operation, entry) {
   if (operation.op === 'request_item_use') {
     return entry.item_ref === operation.item_ref
       && entry.use_kind === operation.use_kind
-      && sameIdSet(entry.target_refs, operation.target_refs);
+      && sameIdSet(entry.target_refs, operation.target_refs)
+      && (entry.action_production == null
+        || exactActionProductionRefs(operation, entry.action_production));
+  }
+  if (operation.op === 'request_container_access') {
+    return entry.actor_ref === operation.actor_ref
+      && entry.container_ref === operation.container_ref
+      && Array.isArray(entry.access_kinds)
+      && entry.access_kinds.includes(operation.access_kind);
   }
   if (operation.op === 'request_world_process') {
     return entry.process_action === operation.process_action
@@ -86,6 +114,20 @@ function operationMatchesAllowedEntry(operation, entry) {
       && sameIdSet(entry.target_refs, operation.target_refs);
   }
   return true;
+}
+
+function exactActionProductionRefs(operation, contract) {
+  const action = operation.action_production;
+  const sources = action?.source_refs;
+  const tools = action?.tool_refs;
+  return Array.isArray(sources) && sources.length > 0
+    && Array.isArray(tools) && sources[0] === operation.item_ref
+    && new Set(sources).size === sources.length
+    && new Set(tools).size === tools.length
+    && !sources.some((ref) => tools.includes(ref))
+    && sources.every((ref) => contract.source_refs.includes(ref))
+    && tools.every((ref) => contract.tool_refs.includes(ref))
+    && sameIdSet(operation.target_refs, [...sources.slice(1), ...tools]);
 }
 
 function sameIdSet(left, right) {

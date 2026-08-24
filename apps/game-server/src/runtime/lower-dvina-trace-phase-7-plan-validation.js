@@ -31,12 +31,10 @@ export function validateTracePhase7Plan({ plan, request, contracts,
   if (plan.resolution !== 'domain_request') {
     return rejected('NPC_DOMAIN_REQUEST_NOT_APPLICABLE');
   }
-  const operation = plan.operations.find(({ op }) =>
-    op === 'request_activity'
-      || op === 'request_item_use'
-      || op === 'request_movement'
-      || op === 'request_world_process');
-  if (operation == null
+  const domainOperations = plan.operations.filter(({ op }) =>
+    Object.hasOwn(operationContract, op));
+  const operation = domainOperations[0];
+  if (domainOperations.length !== 1
       || !Object.hasOwn(operationContract, operation.op)
       || !matchesOperationContract(operation, operationContract[operation.op])) {
     return rejected(operation?.op === 'request_item_use'
@@ -45,7 +43,7 @@ export function validateTracePhase7Plan({ plan, request, contracts,
         ? 'NPC_MOVEMENT_OPERATION_NOT_APPLICABLE'
         : operation?.op === 'request_world_process'
           ? 'NPC_WORLD_PROCESS_NOT_APPLICABLE'
-        : 'NPC_ACTIVITY_EXECUTION_NOT_APPLICABLE');
+          : 'NPC_DOMAIN_REQUEST_NOT_APPLICABLE');
   }
   if (operation.op === 'request_activity') {
     const selection = selectApplicableNpcActivityExecution({

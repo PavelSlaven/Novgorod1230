@@ -1,5 +1,6 @@
 import { buildNpcActionDecisionRequest } from
   './semantic-decision-request-contract.js';
+import { runtimeItemRecordIsConcealed } from '@rus/items-property';
 
 export function buildNpcActionDecisionRequestFromSnapshots({
   request_identity,
@@ -169,26 +170,25 @@ export function projectNpcSafeResourceSnapshots({
     const zone = state.zone_ref ?? resource?.zone_ref ?? null;
     const access = state.access_state ?? state.accessibility
       ?? resource?.access_state ?? null;
-    const visibility = state.visibility_state
-      ?? resource?.visibility_state ?? null;
+    const accessible = ['accessible', 'available', 'open', 'immediate', 'quick']
+      .includes(access);
     const controlled = holder === npcId || controller === npcId;
     const colocated = (location !== null && location === npcLocation)
       || (zone !== null && zone === npcZone);
-    const accessible = ['accessible', 'available', 'open', 'immediate', 'quick']
-      .includes(access);
-    const blocked = ['blocked', 'inaccessible', 'unavailable', 'sealed']
-      .includes(access);
-    const hidden = ['hidden', 'concealed', 'unknown']
-      .includes(visibility);
     const resourceRef = resource?.resource_ref ?? resource?.container_id
       ?? resource?.item_id;
-    const subjectivelyKnown = controlled || npcSafeSnapshotHasEntityEvidence({
+    const subjectivelyKnown = npcSafeSnapshotHasEntityEvidence({
       entity_ref: resourceRef,
       perception_snapshot,
       knowledge_snapshot
     });
-    if ((!controlled && (!colocated || !accessible || hidden
-      || !subjectivelyKnown)) || blocked) {
+    const concealed = runtimeItemRecordIsConcealed({
+      ...resource,
+      access_state: access
+    });
+    if ((controlled && concealed && !subjectivelyKnown)
+      || (!controlled && (!colocated || concealed || !subjectivelyKnown
+        || !accessible))) {
       return [];
     }
     return [{
@@ -198,7 +198,8 @@ export function projectNpcSafeResourceSnapshots({
       zone_ref: zone,
       holder_npc_id: holder,
       controller_npc_id: controller,
-      visibility_state: visibility
+      visibility_state: state.visibility_state
+        ?? resource?.visibility_state ?? null
     }];
   }).filter(({ resource_ref: resourceRef }) =>
     typeof resourceRef === 'string' && resourceRef.length > 0);

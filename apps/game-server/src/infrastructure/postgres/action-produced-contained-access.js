@@ -33,8 +33,8 @@ export async function loadActionProducedAccessContainers(client, partyId,
 
 export function actionProducedPlacementAccessible(placement, accessContainer,
   actorRef, accessAnchorId) {
-  if (placement.holder_character_id === actorRef
-      && placement.holder_npc_id === null) return true;
+  if (actorMatches(placement, actorRef, 'holder_character_id',
+    'holder_npc_id')) return true;
   if (text(accessAnchorId) && placement.anchor_id === accessAnchorId
       && placement.holder_character_id === null
       && placement.holder_npc_id === null && placement.container_id === null
@@ -49,7 +49,8 @@ export function actionProducedAccessState(placement, accessContainer,
   actorRef, accessAnchorId) {
   if (!actionProducedPlacementAccessible(placement, accessContainer, actorRef,
     accessAnchorId)) return null;
-  return placement.holder_character_id === actorRef
+  return actorMatches(placement, actorRef, 'holder_character_id',
+    'holder_npc_id')
       && ['hands', 'equipped', 'worn_quick'].includes(
         placement.physical_position)
     ? 'immediate' : 'quick';
@@ -61,8 +62,8 @@ export function actionProducedControllerRef(value) {
 
 export function actionProducedControllerPermitted(value, role, actorRef) {
   return role === 'tool'
-    ? value.controller_character_id === actorRef
-      && value.controller_npc_id === null
+    ? actorMatches(value, actorRef, 'controller_character_id',
+      'controller_npc_id')
     : Number(Boolean(text(value.controller_character_id)))
       + Number(Boolean(text(value.controller_npc_id))) <= 1;
 }
@@ -74,11 +75,11 @@ export function validActionProducedAccessContainer(value, actorRef,
       || value.state_version < 0 || !plain(value.state)
       || !exact(value.ownership, OWNERSHIP_KEYS)
       || !validOwnership(value.ownership)
-      || value.ownership.controller_character_id !== actorRef
-      || value.ownership.controller_npc_id !== null
+      || !actorMatches(value.ownership, actorRef, 'controller_character_id',
+        'controller_npc_id')
       || !runtimeItemContentsAreOpen(value)) return false;
-  return value.holder_character_id === actorRef
-      && value.holder_npc_id === null && value.parent_container_id === null
+  return actorMatches(value, actorRef, 'holder_character_id', 'holder_npc_id')
+      && value.parent_container_id === null
     || text(accessAnchorId) && value.anchor_id === accessAnchorId
       && value.holder_character_id === null && value.holder_npc_id === null
       && value.parent_container_id === null;
@@ -110,6 +111,10 @@ function validOwnership(value) {
     + Number(value.owner_party === true);
   return owners === 1 && typeof value.owner_party === 'boolean'
     && text(value.claim_state);
+}
+function actorMatches(value, actorRef, characterKey, npcKey) {
+  return value[characterKey] === actorRef && value[npcKey] === null
+    || value[npcKey] === actorRef && value[characterKey] === null;
 }
 function exact(value, keys) {
   return plain(value) && Object.keys(value).length === keys.length

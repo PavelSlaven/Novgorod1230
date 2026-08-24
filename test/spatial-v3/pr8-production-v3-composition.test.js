@@ -128,6 +128,17 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
     'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad');
 });
 
+test('production-v13 is direct non-selectable child of v12', () => {
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.release_id,
+    'spatial-v3-production-v13');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
+    'spatial-v3-production-v12');
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.runtime_selectable_in_canonical_production,
+    false);
+  assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
+    'novgorod_spatial_v3_production_v4_candidate_001');
+});
+
 function fixture() {
   let closed = 0;
   const pool = {
@@ -272,7 +283,7 @@ test('v5 release requires exact committed activation readback', () => {
   );
 });
 
-test('production-v12 root is sole owner with production-v11 rollback identity', async () => {
+test('production-v13 root is sole owner with production-v12 rollback identity', async () => {
   const [parentWorld, currentWorld] = await Promise.all([
     readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json', 'utf8').then(JSON.parse),
     readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json', 'utf8').then(JSON.parse)
@@ -309,7 +320,7 @@ test('production-v12 root is sole owner with production-v11 rollback identity', 
   );
   assert.equal(
     SPATIAL_V3_PRODUCTION_RELEASE.rollback_source_release_id,
-    'spatial-v3-production-v11'
+    'spatial-v3-production-v12'
   );
   assert.equal(
     health.rollback_source_release_id,
@@ -691,7 +702,7 @@ test('restart extends the exact immutable catalog ledger through migration 030',
   assert.equal(statements.at(-1), 'COMMIT');
 });
 
-test('cutover config defaults to builtin v6 and rejects every other binding', () => {
+test('cutover config selects only builtin production-v13 binding', () => {
   const configured = readServerConfig({
     RUS_SPATIAL_V3_RUNTIME_CATALOG_PIN_MANIFEST_DIGEST:
       TEST_PIN_MANIFEST_DIGEST
@@ -705,6 +716,8 @@ test('cutover config defaults to builtin v6 and rejects every other binding', ()
     SPATIAL_V3_PRODUCTION_BINDINGS_MODULE
   );
   assert.equal(assertModularStartupConfig(configured), configured);
+  assert.equal(SPATIAL_V3_PRODUCTION_BINDINGS_MODULE,
+    'builtin:spatial-v3-production-v13');
   assert.throws(
     () => assertModularStartupConfig(readServerConfig({
       RUS_SPATIAL_V3_BINDINGS_MODULE:

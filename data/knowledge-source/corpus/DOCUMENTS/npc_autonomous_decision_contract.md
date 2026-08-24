@@ -87,6 +87,14 @@ code-owned. Этот autonomous mode не разрешает combat: отдел�
 active revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /
 production v9 сохраняется как historical recovery path; A1 cutover не меняет
 этот autonomous NPC owner.
+Revision 25 / M13 / Phase 1A v21 / Phase 1B v20 /
+`spatial-v3-production-v13` публикует approved N1 profile: существующая
+Phase-7 boundary Жданко — первый текущий activation participant/probe. Runtime
+N1 — общий текущий actor-step owner-capability path: он допускает
+зарегистрированные и применимые к current state операции и NPC-safe current
+refs, без whitelist actions/refs/owners и специальной action logic Жданко.
+Это direct non-selectable child v12; S1 остаётся отдельным prepared gate и
+runtime-catalog activation не меняется.
 
 ## 4. Архитектурные владельцы
 

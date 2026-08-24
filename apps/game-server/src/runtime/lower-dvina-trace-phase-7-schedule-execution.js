@@ -10,6 +10,7 @@ import {
 import { npcActorSteps } from '@rus/turn/temporal-advance';
 import { createTracePhase7DomainExecution } from
   './lower-dvina-trace-phase-7-domain-owners.js';
+import { phase7ActorStepOwnerOutputs } from './lower-dvina-trace-phase-7-owner-registry.js';
 
 export function createTracePhase7ActorStepRuntime({
   state,
@@ -20,6 +21,8 @@ export function createTracePhase7ActorStepRuntime({
   localFireProfile,
   worldProcessResolver,
   projectNpcWorldProcessCapability,
+  npcOwnerCapabilities,
+  priorLocalFirePlans = [],
   randomSource
 }) {
   const npc = liveNpc(state, contracts.zhdanko);
@@ -27,11 +30,12 @@ export function createTracePhase7ActorStepRuntime({
     typeof projectNpcWorldProcessCapability === 'function'
       ? projectNpcWorldProcessCapability({ committedState: state,
           npcSnapshot: npc, loadedProfile: localFireProfile,
-          resolverAvailable: typeof worldProcessResolver === 'function' })
+          resolverAvailable: typeof worldProcessResolver === 'function',
+          priorLocalFirePlans })
       : null;
   const domainExecution = createTracePhase7DomainExecution({
     state, contracts, temporal, semanticActivityScheduleOwner,
-    worldProcessResolver, worldProcessContract
+    worldProcessResolver, worldProcessContract, npcOwnerCapabilities
   });
   const registry = createTurnStepExecutionRegistry({
     domain: domainExecution.handlers,
@@ -47,7 +51,8 @@ export function createTracePhase7ActorStepRuntime({
           }),
     randomSource
   });
-  return Object.freeze({ registry, ports });
+  return Object.freeze({ registry, ports,
+    registeredOwnerOutput: domainExecution.registered_owner_output });
 }
 
 export async function executeTracePhase7SchedulePlan({
@@ -55,7 +60,8 @@ export async function executeTracePhase7SchedulePlan({
   contracts,
   temporal,
   autonomous,
-  actorStepRuntime
+  actorStepRuntime,
+  priorLocalFirePlans = []
 }) {
   if (autonomous.proposal.status === 'domain_rejected') {
     return Object.freeze({
@@ -71,6 +77,7 @@ export async function executeTracePhase7SchedulePlan({
     workingProjection: checkWorkingProjection(
       temporal.projection, state, contracts, autonomous.proposal.plan),
     preparedChainContext: null,
+    priorLocalFirePlans,
     registry: actorStepRuntime.registry,
     ports: actorStepRuntime.ports
   });
@@ -84,6 +91,8 @@ export async function executeTracePhase7SchedulePlan({
     result: structuredClone(result),
     local_fire_atomic_write_plans: structuredClone(
       execution.local_fire_atomic_write_plans ?? []),
+    owner_outputs: phase7ActorStepOwnerOutputs(execution,
+      actorStepRuntime.registeredOwnerOutput()),
     check: execution.checkResult == null ? null : {
       request: structuredClone(execution.checkRequest),
       result: structuredClone(execution.checkResult)
@@ -99,6 +108,8 @@ function actorStepRequest(request, contracts, state, plan, occurredAt) {
     : {};
   return {
     ...structuredClone(request),
+    change_set_id: `change:${state.party_id}:trace-phase7:${
+      state.party_state.turn_number + 1}`,
     step_index: request.decision_index,
     occurred_at: structuredClone(occurredAt),
     actor: {

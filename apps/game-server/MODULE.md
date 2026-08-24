@@ -247,7 +247,7 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The current versioned production activation cutover is `spatial-v3-production-v12`.
+The current versioned production activation cutover is `spatial-v3-production-v13`.
 The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
@@ -257,6 +257,14 @@ party remains on schema v2. Release metadata pins the exact approved
 `temporal-world-v1.1`, exact dependency-pin mode and the
 existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
 party; persisted historical pin thereafter).
+Release v13 is the direct non-selectable child of v12 and pins Lower Dvina
+Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20. It activates the
+approved N1 Phase-7 NPC semantic profile: the existing Жданко boundary is the
+first current activation participant/probe. Runtime N1 is the general current
+actor-step owner-capability path: it admits registered, state-applicable
+operations and NPC-safe current refs, with no action/ref/owner whitelist or
+special Жданко action logic. S1 remains gated by its separate prepared
+revision-24 profile. No runtime-catalog activation is added.
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,
 `runtime-catalog-boundary.test.js`,
 `test/spatial-v3/p16-committer-postgres.test.js`,

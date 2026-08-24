@@ -40,7 +40,7 @@ export function startNpcActorStep({ execution, started_at: startedAt,
   property_proposal: propertyProposal } = {}) {
   const operation = execution?.operation;
   const npcRef = actorRef ?? operation?.actor_ref;
-  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 1
+  if (!Number.isSafeInteger(durationMinutes) || durationMinutes < 0
       || typeof npcRef !== 'string' || npcRef.length === 0
       || typeof execution?.request?.request_id !== 'string'
       || execution?.plan == null || execution?.working_projection == null) {
@@ -229,15 +229,17 @@ function exactActorStepMinutes(active) {
   const exact = active?.planned_exact_elapsed?.exact_minutes;
   const value = Number(exact?.numerator);
   if (exact?.denominator !== '1'
-      || !Number.isSafeInteger(value) || value < 1) {
+      || !Number.isSafeInteger(value) || value < 0) {
     fail('npc_actor_step_start_gap');
   }
   return value;
 }
 
-function domainOwner(operation) {
+export function domainOwner(operation) {
   if (operation === 'request_item_use') return '@rus/items-property';
+  if (operation === 'request_container_access') return '@rus/items-property';
   if (operation === 'request_movement') return '@rus/movement-routes';
+  if (operation === 'request_world_process') return '@rus/world-processes';
   return '@rus/turn';
 }
 

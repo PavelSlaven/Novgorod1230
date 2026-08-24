@@ -186,7 +186,6 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
           accessAnchorId)
       || row.scene_position_id != null && (!text(accessScenePositionId)
         || row.scene_position_id !== accessScenePositionId)
-      || row.holder_npc_id !== null
       || !validOwnership(row)
       || !actionProducedControllerPermitted(row, role, actorRef)
       || row.state?.lifecycle_status != null
@@ -201,7 +200,8 @@ function rowPin({ row, role, actorRef, contextVersion, finite, accessAnchorId,
   const access = preparedOrdinary === null && preparedAction === null
     ? actionProducedAccessState(row, accessContainer, actorRef, accessAnchorId)
     : 'quick';
-  const holderRef = row.holder_character_id === actorRef ? actorRef : null;
+  const holderRef = [row.holder_character_id, row.holder_npc_id]
+    .includes(actorRef) ? actorRef : null;
   const item = {
     item_id: row.item_id,
     run_id: row.run_id,

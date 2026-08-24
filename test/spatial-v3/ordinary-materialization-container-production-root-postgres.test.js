@@ -100,7 +100,7 @@ test('production root provisions active O2b and S1 in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:3,all_enablements:2,s1_envelopes:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,s1_envelopes:1,change_sets:1,idempotency:1
     });
     const container=(await pool.query(`SELECT template_id,holder_character_id,
         physical_position,closure_state,state
@@ -129,7 +129,7 @@ test('production root provisions active O2b and S1 in the first-entry P16',
     assert.deepEqual(await provisionedState(pool,partyId),{
       party_state_version:'1',containers:1,ownership:1,aggregates:1,
       contexts:1,bases:1,enablements:1,all_aggregates:2,all_contexts:2,
-      all_bases:3,all_enablements:2,s1_envelopes:2,change_sets:1,idempotency:1
+      all_bases:3,all_enablements:2,s1_envelopes:1,change_sets:1,idempotency:1
     });
 
     const rollbackParty='party-root-rollback';
@@ -364,36 +364,86 @@ function physicalCheck(partyId,suffix) {
 
 function sceneWrites(partyId,suffix,changeSetId) {
   const g5=`g5-new-${suffix}`,baseline=`baseline-new-${suffix}`,
-    g6=`g6-new-${suffix}`,position=`position-new-${suffix}`;
+    g6=`g6-new-${suffix}`,position=`position-new-${suffix}`,
+    s1G6=`g6-s1-${suffix}`,s1Position=`position-s1-${suffix}`,
+    edgeOut=`edge-s1-out-${suffix}`,edgeBack=`edge-s1-back-${suffix}`,
+    visibleOut=`visibility-s1-out-${suffix}`,visibleBack=`visibility-s1-back-${suffix}`;
+  const template={entity_ref:{entity_kind:'scene_template',
+    entity_id:'trace_ld_v1_tpl_fishing_camp'},authoring_version:'1'};
   const common={party_id:partyId,status:'active',state_version:0,
     created_change_set_id:changeSetId,updated_change_set_id:changeSetId,
     terminal_change_set_id:null};
   return [{target_table:'party_g5_sites',id:g5,record:{id:g5,...common,
-    origin:'generated',parent_g4_id:'g4-root',canonical_g5_ref:null,
-    generated_template_ref:{entity_ref:{entity_kind:'g5_template',
-      entity_id:'generated-site'},authoring_version:'1'},expansion_slot_ref:{
-      entity_ref:{entity_kind:'expansion_slot',entity_id:'slot'},
-      authoring_version:'1'},source_frontier_id:'frontier',generation_ordinal:0,
+    origin:'canonical',parent_g4_id:'g4-root',canonical_g5_ref:{entity_ref:{
+      entity_kind:'canonical_spatial_node',entity_id:'trace_ld_v1_g5_fishing_camp'},
+      authoring_version:'1'},generated_template_ref:null,expansion_slot_ref:null,
+    source_frontier_id:null,generation_ordinal:null,
     direction_context_id:null,continuation_chain_id:null,continuation_ordinal:null,
     superseded_by_site_id:null}},{target_table:'party_scene_baselines',
     id:baseline,record:{id:baseline,...common,host_kind:'g5_site',host_id:g5,
-      source_kind:'generated_template',scene_template_ref:{entity_ref:{
-        entity_kind:'scene_template',entity_id:'trace_ld_v1_tpl_wreck_shore'},authoring_version:'1'},
+      source_kind:'canonical_template',scene_template_ref:template,
       materialization_trace_id:`trace-${suffix}`,materializer_version:'v1',
       catalog_digest:hex}},{target_table:'party_g6_instances',id:g6,record:{
-      id:g6,...common,scene_baseline_id:baseline,source_scene_template_ref:{
-        entity_ref:{entity_kind:'scene_template',entity_id:'trace_ld_v1_tpl_wreck_shore'},
-        authoring_version:'1'},scene_slot_key:'entry',
+      id:g6,...common,scene_baseline_id:baseline,source_scene_template_ref:template,
+      scene_slot_key:'working_camp',
       enclosing_stable_structure_id:null,host_kind:'g5_site',host_id:g5,
-      physical_class_id:'spatial.g6.open',primary_scene_role_id:'entry',
+      physical_class_id:'spatial.g6.open',primary_scene_role_id:'working_camp',
       vertical_context_id:'surface',overhead_cover_id:'none',
       intra_g6_visibility_mode:'default_clear',
       default_visibility_distance_band:'near',acoustic_uniformity:'uniform'}},
   {target_table:'scene_position_nodes',id:position,record:{id:position,...common,
     g6_instance_id:g6,position_type_id:'scene_position',
-    template_slot_key:'arrival',template_instance_ordinal:0,stable_basis_ref:null,
+    template_slot_key:'working_camp',template_instance_ordinal:0,stable_basis_ref:null,
     capacity:10,access_class_id:'open',light_profile_ref:null,
-    hazard_profile_ref:null}}];
+    hazard_profile_ref:null}},
+  {target_table:'party_g6_instances',id:s1G6,record:{id:s1G6,...common,
+    scene_baseline_id:baseline,source_scene_template_ref:template,
+    scene_slot_key:'s1_open_one_space',enclosing_stable_structure_id:null,
+    host_kind:'g5_site',host_id:g5,physical_class_id:'spatial.g6.open',
+    primary_scene_role_id:'s1_open_one_space',vertical_context_id:'surface',
+    overhead_cover_id:'none',intra_g6_visibility_mode:'default_clear',
+    default_visibility_distance_band:'near',acoustic_uniformity:'uniform'}},
+  {target_table:'scene_position_nodes',id:s1Position,record:{id:s1Position,...common,
+    g6_instance_id:s1G6,position_type_id:'scene_position',
+    template_slot_key:'s1_open_one_space.interior',template_instance_ordinal:0,
+    stable_basis_ref:null,capacity:1,access_class_id:'open',light_profile_ref:null,
+    hazard_profile_ref:null}},
+  {target_table:'scene_movement_edges',id:edgeOut,record:{id:edgeOut,...common,
+    scene_baseline_id:baseline,source_scene_template_ref:template,
+    source_edge_slot_key:'s1_open_one_space.out',from_position_id:position,
+    to_position_id:s1Position,passage_type_id:'passage.local',
+    transition_environment_profile_ref:{entity_ref:{
+      entity_kind:'transition_environment_profile',entity_id:'env.local_variable'},authoring_version:'1'},
+    movement_orientation_profile_ref:{entity_ref:{
+      entity_kind:'movement_orientation_profile',entity_id:'orientation.topological_local'},authoring_version:'1'},
+    cost_kind:'action',action_units:1,baseline_movement_method_id:null,
+    movement_method_cost_profile_ref:null,base_minutes:null,
+    dynamic_recheck_policy_ref:null,capacity:1,portal_entity_id:null,
+    availability_condition_set_ref:null,reverse_edge_id:edgeBack,status:'active',state_version:0}},
+  {target_table:'scene_movement_edges',id:edgeBack,record:{id:edgeBack,...common,
+    scene_baseline_id:baseline,source_scene_template_ref:template,
+    source_edge_slot_key:'s1_open_one_space.back',from_position_id:s1Position,
+    to_position_id:position,passage_type_id:'passage.local',
+    transition_environment_profile_ref:{entity_ref:{
+      entity_kind:'transition_environment_profile',entity_id:'env.local_variable'},authoring_version:'1'},
+    movement_orientation_profile_ref:{entity_ref:{
+      entity_kind:'movement_orientation_profile',entity_id:'orientation.topological_local'},authoring_version:'1'},
+    cost_kind:'action',action_units:1,baseline_movement_method_id:null,
+    movement_method_cost_profile_ref:null,base_minutes:null,
+    dynamic_recheck_policy_ref:null,capacity:1,portal_entity_id:null,
+    availability_condition_set_ref:null,reverse_edge_id:edgeOut,status:'active',state_version:0}},
+  {target_table:'visibility_links',id:visibleOut,record:{id:visibleOut,...common,
+    scene_baseline_id:baseline,source_scene_template_ref:template,
+    source_link_slot_key:'s1_open_one_space.visible_out',from_position_id:position,
+    to_position_id:s1Position,quality:'clear',distance_band:'near',
+    portal_entity_id:null,condition_profile_ref:null,reverse_link_id:visibleBack,
+    status:'active',state_version:0}},
+  {target_table:'visibility_links',id:visibleBack,record:{id:visibleBack,...common,
+    scene_baseline_id:baseline,source_scene_template_ref:template,
+    source_link_slot_key:'s1_open_one_space.visible_back',from_position_id:s1Position,
+    to_position_id:position,quality:'clear',distance_band:'near',
+    portal_entity_id:null,condition_profile_ref:null,reverse_link_id:visibleOut,
+    status:'active',state_version:0}}];
 }
 
 const writeKey=(write)=>`party_runtime.${write.target_table}:${write.id}`;

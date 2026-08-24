@@ -7,7 +7,11 @@ import { ordinaryContainerRuntimeItemState } from
   './ordinary-materialization-container-batch-item.js';
 
 export function ordinaryPlanFromWritePlan(writePlan, partyId) {
-  const raw = writePlan?.ordinary_materialization_atomic_write_plan;
+  return ordinaryPlanFromRaw(
+    writePlan?.ordinary_materialization_atomic_write_plan, partyId);
+}
+
+export function ordinaryPlanFromRaw(raw, partyId) {
   if (raw == null) return null;
   const plan = createOrdinaryMaterializationAtomicWritePlan(raw);
   if (plan.party_id !== partyId) throw new Error('ordinary party mismatch');

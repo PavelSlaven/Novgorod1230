@@ -1,0 +1,34 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
+  "package_id": "lower_dvina_trace_phase_1a_v21",
+  "revision": 21,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 25,
+  "publication_status": "internal_only",
+  "materialization_status": "phase_1a_internal",
+  "superseded_package_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v20/manifest.json",
+    "id": "lower_dvina_trace_phase_1a_v20",
+    "revision": 20,
+    "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
+    "digest": "d11563d81d0249fcd8efe95a99cb53ace6f8ecb76ffab42a6bb8c16b5eb2cd6b"
+  },
+  "base_definition_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/manifest.json",
+    "id": "lower_dvina_trace_m13_content_v1",
+    "revision": 1,
+    "schema": "rus.lower_dvina_trace_m13_content_manifest.v1",
+    "digest": "af999c36df2d9342dbe24fb80d0db6cd7c42450f3d967795f58b395b979450a2"
+  },
+  "content_refs": {
+    "materialization_bindings": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v21/materialization-bindings.json",
+      "digest": "7d934070078922231d35fda5bf645d191947a49605fbcfd3cbb57c730ae3339a",
+      "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+      "id": "lower_dvina_trace_phase_1a_materialization_bindings_v21",
+      "revision": 21
+    }
+  },
+  "fallback_policy": "forbidden"
+}

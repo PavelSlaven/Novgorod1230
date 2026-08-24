@@ -1,4 +1,3 @@
-import { canonicalDigest } from '@rus/materialization';
 import { runTurnWorkflow } from '@rus/turn';
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js';
 import { serverError } from '../errors.js';
@@ -15,8 +14,9 @@ import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-co
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
-import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, requiredTraceTurnText, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
+import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
+import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository,
   semanticResolver,
@@ -24,7 +24,7 @@ export function createLowerDvinaTracePhase2Runtime({
   playerConversationModel = null,
   npcSemanticModel = null,
   npcAutonomousModel = null,
-  npcCombatModel = null,
+  npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
@@ -61,15 +61,8 @@ export function createLowerDvinaTracePhase2Runtime({
       return true;
     },
     async submitTurn({ partyId, input = {} }) {
-      const requestId = requiredTraceTurnText(input.request_id, 'TRACE_TURN_REQUEST_ID_REQUIRED');
-      const idempotencyKey = requiredTraceTurnText(input.idempotency_key ?? input.request_id, 'TRACE_TURN_IDEMPOTENCY_KEY_REQUIRED');
-      const rawText = requiredTraceTurnText(input.raw_text, 'TRACE_TURN_RAW_TEXT_REQUIRED');
-      const inputDigest = canonicalDigest({
-        party_id: partyId,
-        request_id: requestId,
-        idempotency_key: idempotencyKey,
-        raw_text: rawText,
-      });
+      const { requestId, idempotencyKey, rawText, inputDigest } =
+        buildTracePhase2TurnRequest({ partyId, input });
       const executeAttempt = async () => {
         let replay = await repository.loadPhase2Replay({
           partyId,
@@ -99,8 +92,7 @@ export function createLowerDvinaTracePhase2Runtime({
           scenarioDefinitionRevision,
           playerConversationModel,
           npcSemanticModel,
-          npcAutonomousModel,
-          npcCombatModel,
+          npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
         const bundle = await bundleLoader({ scenarioDefinitionRevision });
         const contracts = resolveTracePhase2Contracts({
@@ -110,6 +102,10 @@ export function createLowerDvinaTracePhase2Runtime({
         });
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts } = resolveTracePhase2InheritedContracts({ state, bundle });
+        const createBoundaryNpcOwnerCapabilities =
+          typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
+            createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
+              bundle, phase7Contracts, ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
           ? createLowerDvinaTraceTurnStepGenericOwners({
               profiles: bundle.turn_step_owner_profiles,
@@ -149,7 +145,7 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
         const turn10 = createTraceTurn10Runtime({
           state,
           bundle,
@@ -183,6 +179,8 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest,
           localFireProfile,
           npcAutonomousModel,
+          npcOwnerCapabilities,
+          createBoundaryNpcOwnerCapabilities,
           npcCombatModel,
           npcDecisionSelector,
           npcSemanticModel,
@@ -259,10 +257,10 @@ export function createLowerDvinaTracePhase2Runtime({
               createTurnStepOrdinaryDiscoveryResolver,
               createTurnStepOrdinaryContainerContentsResolver,
               ordinaryDiscoveryEnablementMarker,
-              createTurnStepActionProductionOwner: [21, 22, 23, 24].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null,
-              actionProductionProfile: [21, 22, 23, 24].includes(bundle.definition_revision) ? actionProductionProfile : null,
-              createTurnStepWorldProcessResolver: [22, 23, 24].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
-              localFireProfile: [22, 23, 24].includes(bundle.definition_revision) ? localFireProfile : null,
+              createTurnStepActionProductionOwner: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null,
+              actionProductionProfile: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? actionProductionProfile : null,
+              createTurnStepWorldProcessResolver: [22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
+              localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
               createTurnStepSpatialSemanticResolver:
                 activeSpatialSemanticProfile == null
                   ? null : createTurnStepSpatialSemanticResolver,

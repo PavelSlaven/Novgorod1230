@@ -18,8 +18,9 @@ import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contrac
 
 export function resolveTracePhase2InheritedContracts({ state, bundle }) {
   const revision = bundle.definition_revision;
-  const ready = revision !== 24 || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
-  const enabled = (first) => revision >= first && revision <= 24;
+  const ready = ![24, 25].includes(revision)
+    || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
+  const enabled = (first) => revision >= first && revision <= 25;
   return {
     phase3Contracts: enabled(9) ? resolveTracePhase3Contracts({ state, bundle }) : null,
     phase4Contracts: enabled(10) && ready ? resolveTracePhase4Contracts({ state, bundle }) : null,
@@ -35,11 +36,13 @@ export function buildTracePhase2Registry(context) {
     combatCommand,
     contracts,
     createTurnStepWorldProcessResolver,
+    createBoundaryNpcOwnerCapabilities,
     genericOwners,
     idempotencyKey,
     inputDigest,
     localFireProfile,
     npcAutonomousModel,
+    npcOwnerCapabilities,
     npcCombatModel,
     npcDecisionSelector,
     npcSemanticModel,
@@ -122,12 +125,14 @@ export function buildTracePhase2Registry(context) {
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
             genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-            localFireProfile: [22, 23, 24].includes(bundle.definition_revision) ? localFireProfile : null,
+            localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
             worldProcessResolver:
-              [22, 23, 24].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
+              [22, 23, 24, 25].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
                 ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest })
                 : null,
             projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
+            npcOwnerCapabilities,
+            createBoundaryNpcOwnerCapabilities,
             randomSource: turnRandomSource,
             temporalAdvanceOwner,
             revalidateStateVersion,

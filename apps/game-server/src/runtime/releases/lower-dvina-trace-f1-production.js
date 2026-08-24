@@ -10,6 +10,8 @@ import { loadLocalFireCommittedContext } from
   '../../infrastructure/postgres/local-fire-persistence.js';
 import { applyLocalFireTemporalProjection } from
   '../lower-dvina-trace-local-fire-temporal.js';
+import { projectLowerDvinaTraceF1CurrentState } from
+  '../lower-dvina-trace-local-fire-current-state.js';
 
 export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
   loadedProfile, worldProcessStepModel } = {}) {
@@ -103,7 +105,7 @@ export function createLowerDvinaTraceF1ProductionResolverFactory({ pool,
         :fail('TRACE_F1_WORKING_PROJECTION_OWNER_MISSING');
     return Object.freeze({working_projection:workingProjection,
       summary:`local_fire:${plan.transition_proposal.outcome}`,
-      write_fragments:[],local_fire_atomic_write_plans:[plan],
+      write_fragments:[],duration_minutes:0,local_fire_atomic_write_plans:[plan],
       ...(npc?{}:{consequence_fragment:playerVisibleConsequence(plan,stepIndex)}),
       player_response_boundary:false});
   };
@@ -153,23 +155,21 @@ function currentProcessStates(committedState, plans) {
 }
 
 export function projectLowerDvinaTraceF1NpcCapability({ committedState,
-  npcSnapshot, loadedProfile, resolverAvailable } = {}) {
+  npcSnapshot, loadedProfile, resolverAvailable, priorLocalFirePlans = [] } = {}) {
   const profile = loadedProfile?.profile;
   if (!resolverAvailable || profile?.status !== 'approved') return null;
   const scopeRef = npcSnapshot?.anchor_id
     ?? npcSnapshot?.machine_state?.location_ref
     ?? npcSnapshot?.location_profile_ref ?? null;
   if (!text(scopeRef)) return null;
-  const resources = [
-    ...(committedState?.containers ?? []), ...(committedState?.items ?? [])
-  ];
+  const items = currentFireItems(committedState, priorLocalFirePlans);
+  const resources = [...(committedState?.containers ?? []), ...items];
   const available = new Set(projectNpcSafeResourceSnapshots({
     npc_snapshot: npcSnapshot, resource_snapshots: resources,
     perception_snapshot: npcSnapshot?.perception_snapshot ?? null,
     knowledge_snapshot: npcSnapshot?.knowledge_snapshot ?? null
   }).map(({ resource_ref: ref }) => ref));
-  const objectiveActive = (committedState?.local_fire_runtime ?? [])
-    .map(({ process_state: state }) => state)
+  const objectiveActive = currentProcessStates(committedState, priorLocalFirePlans)
     .filter((state) => state?.status === 'active'
       && state.scope_ref === scopeRef);
   const active = objectiveActive.filter((state) =>
@@ -179,15 +179,14 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
     .sort((left, right) => left.process_ref.localeCompare(right.process_ref));
   const bound = new Map(objectiveActive.flatMap((state) =>
     state.fuel_bindings.map(({ fuel_ref: ref }) => [ref, state.process_ref])));
-  const items = (committedState?.items ?? []).filter(({ item_id: id }) =>
-    available.has(id));
-  const ignition = items.filter((item) => admitLocalFireIgnitionBasis({
+  const availableItems = items.filter(({ item_id: id }) => available.has(id));
+  const ignition = availableItems.filter((item) => admitLocalFireIgnitionBasis({
     item, placement: item.placement, ownership: item.ownership,
     actor_ref: npcSnapshot?.instance_id, scope_ref: scopeRef
   }).pass).map(({ item_id: id }) => id).sort();
   const allowed = [];
   if (profile.allowed_actions?.includes('start')) {
-    const fuels = admittedInputRefs(items, npcSnapshot?.instance_id, scopeRef,
+    const fuels = admittedInputRefs(availableItems, npcSnapshot?.instance_id, scopeRef,
       profile, bound, 'fuel_unit');
     for (const sourceRef of fuels) for (const ignitionRef of ignition) {
       allowed.push({ process_action: 'start', process_ref: null,
@@ -197,7 +196,7 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
   }
   if (profile.allowed_actions?.includes('affect')) {
     for (const process of active) {
-      const inputs = admittedInputRefs(items, npcSnapshot?.instance_id,
+      const inputs = admittedInputRefs(availableItems, npcSnapshot?.instance_id,
         scopeRef, profile, bound, null);
       for (const sourceRef of inputs) allowed.push({
         process_action: 'affect', process_ref: process.process_ref,
@@ -212,6 +211,12 @@ export function projectLowerDvinaTraceF1NpcCapability({ committedState,
     active_process_refs: Object.freeze(active.map(
       ({ process_ref: ref }) => ref)),
     allowed: Object.freeze(allowed.map(Object.freeze)) });
+}
+
+function currentFireItems(committedState, plans) {
+  return projectLowerDvinaTraceF1CurrentState({
+    committedState, priorLocalFirePlans: plans
+  }).items;
 }
 
 function admittedInputRefs(items, actorRef, scopeRef, profile, bound,

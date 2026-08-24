@@ -6,6 +6,7 @@ import { prepareSpatialSemanticRemainder, admitSpatialSemanticRemainder } from
   '@rus/materialization/internal/lower-dvina-trace-s1';
 import { planApprovedActorDestinationTransition } from '@rus/movement-routes';
 import { resolveSpatialSemanticDescriptor as resolveTurnSpatialSemanticDescriptor } from '@rus/turn';
+import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
 
 export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
   roleRunner, resolveSpatialSemanticDescriptor = resolveTurnSpatialSemanticDescriptor } = {}) {
@@ -27,21 +28,22 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     if (movementOperation(operation, actor)) {
       return resolveLocalMovement({ value, authority, partyId, target });
     }
+    const safeState = scopeState(request);
     const initialTarget = operation.discovery_kind === 'look'
-      && markerOf(request.player_safe_state)?.position_ref === target;
+      && markerOf(safeState)?.position_ref === target;
     const localTarget = !initialTarget;
     const committed = await authority.findCommittedResolution(localTarget
       ? { party_id: partyId, local_ref: target }
       : { party_id: partyId, request_id: request.request_id });
     if (committed != null) {
       if (committed.position_ref !== currentPosition(value.committed_state)
-          || localTarget && (!visibleLocalReference(request.player_safe_state, target)
+          || localTarget && (!visibleLocalReference(safeState, target)
             || committed.local_ref !== target)) {
         fail('TRACE_S1_SCOPE_INVALID');
       }
       return resolvedResult(value, committed);
     }
-    const marker = markerOf(request.player_safe_state);
+    const marker = markerOf(safeState);
     if (localTarget || marker?.position_ref !== target) {
       fail('TRACE_S1_SCOPE_INVALID');
     }
@@ -59,7 +61,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     const atomic = createSpatialSemanticAtomicWritePlan({
       schema: 'spatial_semantic_atomic_write_plan_v1', party_id: partyId,
       base_party_state_version: Number(request.committed_state_version),
-      change_set_id: `change:${partyId}:turn-step:${Number(value.committed_state?.party_state?.turn_number) + 1}`,
+      change_set_id: exactChangeSetId(value, partyId),
       causal_identity: { request_id: request.request_id,
         root_turn_id: request.root_turn_id, action_ref: actionRef,
         step_index: request.step_index, actor_ref: actor },
@@ -75,6 +77,7 @@ export function createLowerDvinaTraceS1ProductionResolverFactory({ pool,
     });
     return Object.freeze({ working_projection: structuredClone(value.working_projection),
       summary: 'spatial semantic detail resolved', write_fragments: [],
+      duration_minutes: 0,
       player_response_boundary: true, spatial_semantic_atomic_write_plan: atomic });
   };
 }
@@ -90,7 +93,7 @@ function movementOperation(operation, actor) {
 async function resolveLocalMovement({ value, authority, partyId, target }) {
   const committed = await authority.findCommittedResolution({ party_id: partyId,
     local_ref: target });
-  if (committed == null || !visibleLocalReference(value.request.player_safe_state, target)) {
+  if (committed == null || !visibleLocalReference(scopeState(value.request), target)) {
     fail('TRACE_S1_SCOPE_INVALID');
   }
   const refs = committed.formal_spatial_refs;
@@ -117,6 +120,7 @@ async function resolveLocalMovement({ value, authority, partyId, target }) {
   if (!result.pass) fail('TRACE_S1_MOVEMENT_OWNER_REJECTED');
   return Object.freeze({ working_projection: structuredClone(value.working_projection),
     summary: 'local spatial movement resolved', write_fragments: [],
+    duration_minutes: 0,
     consequence_fragment: { position_transition: { owner: '@rus/movement-routes',
       actor_id: value.actor.actor_id, local_ref: target,
       from_position_ref: from, to_position_ref: to,
@@ -135,6 +139,31 @@ export function projectLowerDvinaTraceS1Capability({ playerSafeState,
   const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
     resolutions.filter((resolution) => visibleAtPosition(resolution, position)));
   const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: player,
+    resolutions });
+  const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
+    capacity_total: total, consumed_count: used }) => status === 'committed'
+      && text(ref) && envelope?.position_ref === position && Number.isSafeInteger(total)
+      && Number.isSafeInteger(used) && used < total);
+  return available == null ? next : { ...next, spatial_semantic: {
+    semantic_grounding_available: true,
+    position_ref: position } };
+}
+
+export function projectLowerDvinaTraceNpcS1Capability({ npcSnapshot,
+  committedState, resolverAvailable }) {
+  let npc; let committed;
+  try { npc = strictSnapshot(npcSnapshot); committed = strictSnapshot(committedState); }
+  catch { return { visible_objects: [], known_context: [] }; }
+  const safe = { visible_objects: [], known_context: [] };
+  if (!resolverAvailable || !Array.isArray(committed.spatial_semantic)) return safe;
+  const position = committed.position?.position_id ?? committed.position?.position_ref;
+  if (!text(position)) return safe;
+  const resolutions = committed.spatial_semantic.flatMap(({ resolutions = [] }) =>
+    resolutions.filter((resolution) => visibleAtPosition(resolution, position)
+      && npcSafeSnapshotHasEntityEvidence({ entity_ref: resolution.local_ref,
+        perception_snapshot: npc.perception_snapshot,
+        knowledge_snapshot: npc.knowledge_snapshot })));
+  const next = projectLowerDvinaTraceS1Resolutions({ playerSafeState: safe,
     resolutions });
   const available = committed.spatial_semantic.find(({ envelope_ref: ref, envelope, status,
     capacity_total: total, consumed_count: used }) => status === 'committed'
@@ -171,7 +200,7 @@ export function projectLowerDvinaTraceS1Resolutions({ playerSafeState,
 function resolvedResult(value, committed) {
   if (!visibleResolution(committed)) fail('TRACE_S1_RESOLUTION_INVALID');
   return Object.freeze({ working_projection: structuredClone(value.working_projection),
-    summary: committed.semantics.description, write_fragments: [],
+    summary: committed.semantics.description, write_fragments: [], duration_minutes: 0,
     player_response_boundary: true });
 }
 function visibleResolution(value) {
@@ -194,6 +223,20 @@ function markerOf(value) {
   if (marker == null || Object.keys(marker).length !== 2
       || marker.semantic_grounding_available !== true) return null;
   return marker;
+}
+function scopeState(request) {
+  return request?.npc_safe_state ?? request?.player_safe_state;
+}
+function exactChangeSetId(value, partyId) {
+  const turn = Number(value.committed_state?.party_state?.turn_number) + 1;
+  const standard = `change:${partyId}:turn-step:${turn}`;
+  const phase7 = `change:${partyId}:trace-phase7:${turn}`;
+  const given = value.request?.change_set_id;
+  if (given == null || given === standard) return standard;
+  if (given === phase7 && value.request?.root_turn_id === `turn:${partyId}:${turn}`) {
+    return phase7;
+  }
+  fail('TRACE_S1_CHANGE_SET_INVALID');
 }
 function visibleLocalReference(value, target) {
   return Array.isArray(value?.visible_objects) && value.visible_objects.some((object) =>

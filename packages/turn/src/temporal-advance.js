@@ -32,7 +32,8 @@ export {
   npcScheduleDecisionTransitionId,
   npcTemporalEffectRegistrations,
   npcActorSteps,
-  startNpcActorStep
+  startNpcActorStep,
+  domainOwner
 } from './temporal-npc-effects.js';
 
 const engines = new WeakSet();

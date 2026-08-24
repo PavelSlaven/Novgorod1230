@@ -38,6 +38,7 @@ test('F1 NPC capability needs evidence of the process, not its bound fuel', () =
   assert.deepEqual(visible.active_process_refs,['hidden-fire']);
   assert.equal(visible.allowed.some(({process_ref})=>process_ref==='hidden-fire'),
     true);
+
 });
 
 function fireItem(itemId,kind) {

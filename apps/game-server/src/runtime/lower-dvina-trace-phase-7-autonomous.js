@@ -78,7 +78,9 @@ export async function resolveTracePhase7AutonomousDecision({
 function buildRequestFromSnapshots({ state, contracts, boundary,
   orderedSignals, operationContract, rootTurnId, waitingTransition,
   perceivedChanges }) {
-  const npc = contracts.zhdanko;
+  const npc = (state.npcs ?? []).find(
+    ({ instance_id }) => instance_id === contracts.zhdanko.instance_id
+  ) ?? contracts.zhdanko;
   const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
     .filter(({ npc_ref: npcRef }) => npcRef?.entity_id === npc.instance_id)

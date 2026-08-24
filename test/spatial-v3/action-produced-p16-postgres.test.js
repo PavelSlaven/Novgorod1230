@@ -19,6 +19,8 @@ import { createPostgresOrdinaryContainerContentsLoader } from
 import { actionProducedPhysicalKeys,
   createActionProducedAtomicWritePlan } from
   '../../apps/game-server/src/infrastructure/postgres/action-produced-atomic-write-plan.js';
+import { applyActionProducedAtomicWritePlanInTransaction } from
+  '../../apps/game-server/src/infrastructure/postgres/action-produced-persistence.js';
 import { buildCombinedWritePlan } from
   '../../packages/turn/src/spatial-v3-write-plan.js';
 import { createSpatialV3CombinedAtomicCommitter } from
@@ -571,6 +573,47 @@ test('A1 uses the common P16 transaction for identity, conservation and replay',
     await pool.query(`UPDATE party_runtime.party_ownership
       SET owner_character_id='pc',controller_character_id='pc'
       WHERE party_id='party-a1' AND item_id='production-garment'`);
+
+    const npcProduction = await productionOwner('production-npc')(
+      productionEnvelope({ actorRef: 'production-npc',
+        itemRef: 'production-npc-source',
+        targetRefs: ['production-npc-tool'] }));
+    assert.equal(npcProduction.action_production_atomic_write_plan.actor_ref,
+      'production-npc');
+    assert.deepEqual(npcProduction.action_production_atomic_write_plan
+      .source_pins[0].placement, {
+      anchor_id: null, container_id: null,
+      holder_npc_id: 'production-npc', holder_character_id: null,
+      physical_position: 'hands', equipment_slot_category_id: null,
+      attached_item_id: null
+    });
+    assert.equal(npcProduction.action_production_atomic_write_plan
+      .tool_pins[0].ownership.controller_npc_id, 'production-npc');
+    const npcClient = await pool.connect();
+    try {
+      await npcClient.query('BEGIN');
+      await applyActionProducedAtomicWritePlanInTransaction({
+        client: npcClient,
+        input: npcProduction.action_production_atomic_write_plan,
+        p16ChangeSetId: 'change:party-a1:turn-step:5',
+        partyStateVersionAfter: 6
+      });
+    } finally {
+      await npcClient.query('ROLLBACK');
+      npcClient.release();
+    }
+    await assert.rejects(productionOwner('production-npc-foreign')(
+      productionEnvelope({ actorRef: 'production-npc',
+        itemRef: 'production-npc-source',
+        targetRefs: ['production-other-npc-tool'] })), {
+      code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
+    });
+    await assert.rejects(productionOwner('production-npc-hidden')(
+      productionEnvelope({ actorRef: 'production-npc',
+        itemRef: 'production-npc-hidden-source',
+        targetRefs: ['production-npc-tool'] })), {
+      code: 'ACTION_PRODUCED_ITEM_ACCESS_DENIED'
+    });
 
     const wrongCheck = productionEnvelope();
     wrongCheck.check_result = null;
@@ -1603,7 +1646,8 @@ function actionProduction(overrides = {}) {
   return result;
 }
 
-function productionEnvelope({ itemRef = 'production-garment',
+function productionEnvelope({ actorRef = 'pc',
+  itemRef = 'production-garment',
   targetRefs = ['production-knife'], actionProduction: qualitative =
     actionProduction(), stateVersion = 5, turnNumber = 4,
   rootTurnId = `turn-production:${turnNumber}`,
@@ -1621,12 +1665,12 @@ function productionEnvelope({ itemRef = 'production-garment',
     requested_output_count:
       qualitative.identity_mode === 'independent_outputs' ? 1 : null,
     ...qualitative };
-  return { operation: { op: 'request_item_use', actor_ref: 'pc',
+  return { operation: { op: 'request_item_use', actor_ref: actorRef,
       item_ref: itemRef, use_kind: 'other', target_refs: targetRefs,
       action_production: action }, plan,
     request: { root_turn_id: rootTurnId, step_index: 1,
       committed_state_version: stateVersion, remaining_intent: remainingIntent },
-    actor: { actor_id: 'pc' }, working_projection: {},
+    actor: { actor_id: actorRef }, working_projection: {},
     committed_state: { party_state: { turn_number: turnNumber } },
     check_result: checked ? { check_id: `${rootTurnId}:step:1`, roll: 12,
       outcome: { band: 'success' } } : null };
@@ -1715,6 +1759,53 @@ async function provisionProductionScope(pool) {
       JSON.stringify({ entity_kind: 'party_item',
         entity_id: `production-material-${suffix}` }),
       JSON.stringify({ entity_id: 'piece' })]);
+  }
+  await provisionNpcProductionScope(pool);
+}
+
+async function provisionNpcProductionScope(pool) {
+  for (const npcId of ['production-npc', 'production-other-npc']) {
+    await pool.query(`INSERT INTO party_runtime.party_npcs
+      (party_id,npc_id,run_id,profile_set_id,profile_level,anchor_id)
+      VALUES ('party-a1',$1,'run-a1','production-profile','scene',
+        'output-anchor')`, [npcId]);
+  }
+  await pool.query(`INSERT INTO party_runtime.party_containers
+    (party_id,container_id,run_id,template_id,holder_npc_id,
+     physical_position,closure_state,state,state_version)
+    VALUES ('party-a1','production-npc-closed-pouch','run-a1',
+      'template:npc-pouch','production-npc','hands','closed',
+      '{"access_state":{"access":"closed"}}'::jsonb,1)`);
+  await pool.query(`INSERT INTO party_runtime.party_ownership
+    (party_id,ownership_id,container_id,owner_npc_id,owner_party,
+     controller_npc_id,claim_state)
+    VALUES ('party-a1','ownership:production-npc-closed-pouch',
+      'production-npc-closed-pouch','production-npc',false,
+      'production-npc','owned')`);
+  for (const [itemId, npcId, containerId, physicalPosition] of [
+    ['production-npc-source', 'production-npc', null, 'hands'],
+    ['production-npc-tool', 'production-npc', null, 'worn_quick'],
+    ['production-other-npc-tool', 'production-other-npc', null, 'hands'],
+    ['production-npc-hidden-source', 'production-npc',
+      'production-npc-closed-pouch', null]
+  ]) {
+    const profile = inventoryProfile(itemId, 300, 1, 'compact', 1);
+    await pool.query(`INSERT INTO party_runtime.party_items
+      (party_id,item_id,run_id,template_id,profile_id,category_id,quantity,
+       condition_state,legal_status,state,state_version)
+      VALUES ('party-a1',$1,'run-a1',$2,$3,'ordinary',1,'serviceable',
+        'owned',$4::jsonb,1)`, [itemId, profile.template_id,
+      profile.inventory_profile_id, JSON.stringify({ lifecycle_status:
+        'active', inventory_profile_snapshot: profile })]);
+    await pool.query(`INSERT INTO party_runtime.party_item_placements
+      (party_id,item_id,container_id,holder_npc_id,physical_position)
+      VALUES ('party-a1',$1,$2,$3,$4)`, [itemId, containerId,
+      containerId === null ? npcId : null, physicalPosition]);
+    await pool.query(`INSERT INTO party_runtime.party_ownership
+      (party_id,ownership_id,item_id,owner_npc_id,owner_party,
+       controller_npc_id,claim_state)
+      VALUES ('party-a1',$1,$2,$3,false,$3,'owned')`,
+    [`ownership:${itemId}`, itemId, npcId]);
   }
 }
 

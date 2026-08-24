@@ -13,6 +13,7 @@ import {
   validateNpcCombatDecisionRequest,
   validateNpcCombatIntentPlan
 } from './combat-decision-contracts.js';
+import { npcActionProductionRefs, validateNpcActionProduction } from './npc-action-production-contract.js';
 import { matchesOperationContract, validateWorldProcessOperation,
   worldProcessOperationRefs } from './operation-contract-match.js';
 import {
@@ -32,21 +33,12 @@ import {
   finiteInteger,
   jsonSafe,
   nullableStableId,
-  nullableText,
   text,
   validateNpcActionDecisionRequest
 } from './semantic-decision-request-contract.js';
 
-export {
-  buildNpcActionDecisionRequest,
-  validateNpcActionDecisionRequest
-} from './semantic-decision-request-contract.js';
-export {
-  buildNpcActionDecisionRequestFromSnapshots,
-  npcSafeSnapshotHasEntityEvidence,
-  projectNpcSafeResourceSnapshots
-} from
-  './npc-safe-request-projector.js';
+export { buildNpcActionDecisionRequest, validateNpcActionDecisionRequest } from './semantic-decision-request-contract.js';
+export { buildNpcActionDecisionRequestFromSnapshots, npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from './npc-safe-request-projector.js';
 
 function validateInterpretation(value) {
   return exactKeys(value, ['npc_goal', 'grounded_attempt', 'adaptation'])
@@ -169,11 +161,15 @@ function validateOperationShape(value) {
         && stableId(value.target_ref)
         && enumValue(value.movement_kind, ['local', 'route', 'long_course']);
     case 'request_item_use':
-      return exactKeys(value, ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'])
+      return exactKeys(value, ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs',
+        ...(Object.hasOwn(value, 'action_production') ? ['action_production'] : [])])
         && stableId(value.actor_ref)
         && stableId(value.item_ref)
         && enumValue(value.use_kind, ['consume', 'apply', 'operate', 'equip', 'unequip', 'other'])
-        && uniqueStableIds(value.target_refs);
+        && uniqueStableIds(value.target_refs)
+        && (!Object.hasOwn(value, 'action_production')
+          || (value.use_kind === 'other'
+            && validateNpcActionProduction(value.action_production, value)));
     case 'request_activity':
       return exactKeys(value, ['op', 'actor_ref', 'activity_kind', 'target_refs', 'description'])
         && stableId(value.actor_ref)
@@ -229,7 +225,8 @@ function operationRefs(operation) {
     case 'request_movement':
       return [operation.actor_ref, operation.target_ref];
     case 'request_item_use':
-      return [operation.actor_ref, operation.item_ref, ...operation.target_refs];
+      return [operation.actor_ref, operation.item_ref, ...operation.target_refs,
+        ...npcActionProductionRefs(operation.action_production)];
     case 'request_activity':
       return [operation.actor_ref, ...operation.target_refs];
     case 'request_world_process':

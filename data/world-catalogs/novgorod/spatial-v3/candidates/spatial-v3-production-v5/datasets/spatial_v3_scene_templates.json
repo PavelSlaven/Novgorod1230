@@ -1,5 +1,15 @@
 [
   {
+    "id": "trace_ld_v1_tpl_wreck_shore",
+    "version": 1,
+    "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
+    "regional_template_id": "regional_scene_basis__g5_work_storage_social_v1",
+    "regional_template_version": 3,
+    "status": "approved",
+    "provenance_ref": "prov_lower_dvina_trace_phase_1a_v20",
+    "canonical_digest": "9eed3de184c60bcd4b0caee3f81fc7f642acd38c74518237aa5b69dda08fd032"
+  },
+  {
     "id": "trace_ld_v1_tpl_fishing_camp",
     "version": 1,
     "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",

@@ -14,9 +14,9 @@ test('v12 activation registry pins runtime catalog to v5 world manifest', () => 
     domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_v12_001',
     worldRevision: 'novgorod_spatial_v3_production_v5_candidate_001',
     worldCatalogDigest:
-      '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd',
+      'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8',
     worldManifestSha256:
-      '424a79955c4285c47c0c08240006b3e17d979e071abc160e7588b5597800921d',
+      '6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c',
     worldSchemaFingerprint:
       'd5bb566dd7d22d34d06fcff0c3db961294c619753ce93557c4e91adae6375541',
     candidateDirectory: 'spatial-v3-production-v5',

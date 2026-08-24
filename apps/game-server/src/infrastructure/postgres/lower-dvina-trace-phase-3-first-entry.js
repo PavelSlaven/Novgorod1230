@@ -90,9 +90,7 @@ export function resolveFirstEntry({
           state_version: 1,
           updated_change_set_id: changeSetId
         }),
-      physical_writes: firstEntryPhysicalWrites({
-        partyId, target, scene, changeSetId
-      })
+      physical_writes: firstEntryPhysicalWrites({ partyId, target, changeSetId })
     } })
   });
   if (!lifecycle.ok) {
@@ -101,25 +99,28 @@ export function resolveFirstEntry({
   return lifecycle.extension;
 }
 
-function firstEntryPhysicalWrites({ partyId, target, scene, changeSetId }) {
-  const templateRef = dbRef('scene_template',
-    scene.node.template_id ?? target.scene_template_ref.entity_ref.entity_id);
+function firstEntryPhysicalWrites({ partyId, target, changeSetId }) {
+  const baseStatic = target.base_static_template;
+  if (!baseStatic?.scene_template_ref || !baseStatic?.g6 || !baseStatic?.position
+      || !target.canonical_g5_ref || !target.materialization_trace_id) {
+    fail('TRACE_PHASE_3_FIRST_ENTRY_PREPARATION_MISSING');
+  }
+  const templateRef = baseStatic.scene_template_ref;
   return [
     write('party_g5_sites', target.g5_site_id, null, {
-      id: target.g5_site_id, party_id: partyId, origin: 'generated',
+      id: target.g5_site_id, party_id: partyId, origin: 'canonical',
       parent_g4_id: target.g4_id,
-      generated_template_ref: dbRef('location_profile',
-        scene.location_profile_ref),
-      expansion_slot_ref: dbRef('expansion_slot', scene.node.slot_key),
-      source_frontier_id: `prepared-frontier:${target.g5_site_id}`,
-      generation_ordinal: 0, status: 'active', state_version: 1,
+      canonical_g5_ref: target.canonical_g5_ref,
+      generated_template_ref: null, expansion_slot_ref: null,
+      source_frontier_id: null, generation_ordinal: null,
+      status: 'active', state_version: 1,
       created_change_set_id: changeSetId, updated_change_set_id: changeSetId
     }),
     write('party_scene_baselines', target.scene_baseline_id, null, {
       id: target.scene_baseline_id, party_id: partyId, host_kind: 'g5_site',
-      host_id: target.g5_site_id, source_kind: 'generated_template',
+      host_id: target.g5_site_id, source_kind: 'canonical_template',
       scene_template_ref: templateRef,
-      materialization_trace_id: target.canonical_digest,
+      materialization_trace_id: target.materialization_trace_id,
       materializer_version: target.materializer_version,
       catalog_digest: target.catalog_digest, status: 'active', state_version: 1,
       created_change_set_id: changeSetId, updated_change_set_id: changeSetId
@@ -127,21 +128,15 @@ function firstEntryPhysicalWrites({ partyId, target, scene, changeSetId }) {
     write('party_g6_instances', target.g6_instance_id, null, {
       id: target.g6_instance_id, party_id: partyId,
       scene_baseline_id: target.scene_baseline_id,
-      source_scene_template_ref: templateRef, scene_slot_key: scene.anchor.slot_key,
+      ...baseStatic.g6,
       host_kind: 'g5_site', host_id: target.g5_site_id,
-      physical_class_id: 'open', primary_scene_role_id: scene.anchor.state.zone_ref,
-      vertical_context_id: 'surface', overhead_cover_id: 'none',
-      intra_g6_visibility_mode: 'default_clear',
-      default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform',
       status: 'active', state_version: 1, created_change_set_id: changeSetId,
       updated_change_set_id: changeSetId
     }),
     write('scene_position_nodes', target.position_id, null, {
       id: target.position_id, party_id: partyId,
-      g6_instance_id: target.g6_instance_id, position_type_id: 'scene_position',
-      template_slot_key: scene.anchor.state.zone_ref, template_instance_ordinal: 0,
-      capacity: Math.max(1, scene.anchor.npc_capacity),
-      access_class_id: scene.anchor.state.access_policy_ref, status: 'active',
+      g6_instance_id: target.g6_instance_id, ...baseStatic.position,
+      template_instance_ordinal: 0, status: 'active',
       state_version: 1, created_change_set_id: changeSetId,
       updated_change_set_id: changeSetId
     }),
@@ -156,12 +151,5 @@ function write(targetTable, id, stateVersion, record) {
   return {
     target_schema: 'party_runtime', target_table: targetTable, id,
     ...(stateVersion == null ? {} : { state_version: stateVersion }), record
-  };
-}
-
-function dbRef(entityKind, entityId) {
-  return {
-    entity_ref: { entity_kind: entityKind, entity_id: entityId },
-    authoring_version: '1'
   };
 }

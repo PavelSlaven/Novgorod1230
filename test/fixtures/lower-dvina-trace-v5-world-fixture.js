@@ -32,11 +32,13 @@ const closureColumns = Object.freeze({
     'quality', 'distance_band', 'portal_template_id', 'portal_template_version',
     'condition_profile_id', 'condition_profile_version']
 });
+const endpointColumns = ['slot_key', 'endpoint_role',
+  'required_position_slot_key', 'required_position_instance_ordinal'];
 
 export const lowerDvinaTraceV5World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v5_candidate_001',
-  digest: '1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd',
-  manifest: '424a79955c4285c47c0c08240006b3e17d979e071abc160e7588b5597800921d'
+  digest: 'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8',
+  manifest: '6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c'
 });
 
 const pick = (row, columns) => Object.fromEntries(
@@ -72,6 +74,9 @@ export async function installLowerDvinaTraceV5World(pool) {
       instance_count text, enclosing_structure_slot_key text,
       stable_asymmetry_evidence_ref text)`);
   }
+  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_endpoint_slots (
+    scene_template_id text NOT NULL, scene_template_version integer NOT NULL,
+    ${endpointColumns.map((column) => `${column} text`).join(', ')})`);
   await pool.query(`ALTER TABLE world_base.spatial_v3_scene_position_templates
     ALTER COLUMN capacity TYPE integer USING capacity::integer`);
   for (const table of ['spatial_v3_scene_movement_edge_templates']) {
@@ -101,7 +106,8 @@ export async function installLowerDvinaTraceV5World(pool) {
     [revision.id ?? revision.world_revision_id, revision.parent_revision_id, revision.catalog_digest,
       revision.status]);
   }
-  for (const table of ['spatial_v3_scene_templates', ...Object.keys(closureColumns)]) {
+  for (const table of ['spatial_v3_scene_templates', ...Object.keys(closureColumns),
+    'spatial_v3_scene_endpoint_slots']) {
     for (const row of datasets[table]) {
       const columns = Object.keys(row);
       await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
@@ -109,26 +115,24 @@ export async function installLowerDvinaTraceV5World(pool) {
       columns.map((column) => row[column]));
     }
   }
-  const scene = datasets.spatial_v3_scene_templates[0];
-  const closure = await createSpatialV3WorldBaseReader({
-    query: (sql, params) => pool.query(sql, params)
-  }).readPinnedSceneTemplateClosure({ id: scene.id, version: scene.version,
-    world_revision_id: lowerDvinaTraceV5World.revision });
-  assert.equal(closure.ok, true);
-  assert.deepEqual(closure.value.header, pick(scene, ['id', 'version',
-    'world_revision_id', 'regional_template_id', 'regional_template_version',
-    'status', 'canonical_digest']));
-  assert.deepEqual({ g6_slots: closure.value.g6_slots,
-    position_slots: closure.value.position_slots,
-    movement_edges: closure.value.movement_edges,
-    visibility_links: closure.value.visibility_links }, {
-    g6_slots: datasets.spatial_v3_g6_template_slots.map((row) =>
-      pick(row, closureColumns.spatial_v3_g6_template_slots)),
-    position_slots: datasets.spatial_v3_scene_position_templates.map((row) =>
-      pick(row, closureColumns.spatial_v3_scene_position_templates)),
-    movement_edges: datasets.spatial_v3_scene_movement_edge_templates.map((row) =>
-      pick(row, closureColumns.spatial_v3_scene_movement_edge_templates)),
-    visibility_links: datasets.spatial_v3_visibility_link_templates.map((row) =>
-      pick(row, closureColumns.spatial_v3_visibility_link_templates))
-  });
+  const reader = createSpatialV3WorldBaseReader({ query: (sql, params) => pool.query(sql, params) });
+  for (const scene of datasets.spatial_v3_scene_templates) {
+    const closure = await reader.readPinnedSceneTemplateClosure({ id: scene.id,
+      version: scene.version, world_revision_id: lowerDvinaTraceV5World.revision });
+    assert.equal(closure.ok, true);
+    assert.deepEqual(closure.value.header, pick(scene, ['id', 'version',
+      'world_revision_id', 'regional_template_id', 'regional_template_version',
+      'status', 'canonical_digest']));
+    const rows = (table) => datasets[table].filter(({ scene_template_id }) =>
+      scene_template_id === scene.id).map((row) => pick(row, closureColumns[table]));
+    assert.deepEqual({ g6_slots: closure.value.g6_slots,
+      position_slots: closure.value.position_slots,
+      movement_edges: closure.value.movement_edges,
+      visibility_links: closure.value.visibility_links }, {
+      g6_slots: rows('spatial_v3_g6_template_slots'),
+      position_slots: rows('spatial_v3_scene_position_templates'),
+      movement_edges: rows('spatial_v3_scene_movement_edge_templates'),
+      visibility_links: rows('spatial_v3_visibility_link_templates')
+    });
+  }
 }

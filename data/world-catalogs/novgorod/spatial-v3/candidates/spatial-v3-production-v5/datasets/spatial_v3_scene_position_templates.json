@@ -1,5 +1,15 @@
 [
   {
+    "scene_template_id": "trace_ld_v1_tpl_wreck_shore",
+    "scene_template_version": 1,
+    "position_slot_key": "open_shore",
+    "g6_scene_slot_key": "open_shore",
+    "instance_count": 1,
+    "position_type_id": "scene_position",
+    "capacity": 7,
+    "access_class_id": "trace_ld_v1_access_wreck_shore"
+  },
+  {
     "scene_template_id": "trace_ld_v1_tpl_fishing_camp",
     "scene_template_version": 1,
     "position_slot_key": "working_camp",

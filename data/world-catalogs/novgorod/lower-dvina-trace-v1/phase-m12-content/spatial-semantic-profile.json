@@ -28,7 +28,7 @@
         "place_type": "working fishing camp on the Lower Dvina",
         "environment": "late summer riverbank; fishing nets, wet boats, timber, reeds, sand and river stones",
         "material_culture": "early thirteenth-century Rus: wood, bark, rope, woven wattle, clay and stone; no modern technology or later institutions",
-        "ordinary_boundary": "create one unimportant local ordinary structure only. State only name, description, and any needed semantic requirements. Never create or identify canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
+        "ordinary_boundary": "The fishing camp G5 is fixed canonical authored identity; never create, relabel, or treat it as a generated/frontier result. Create one unimportant local ordinary structure only. State only name, description, and any needed semantic requirements. Never create or identify other canonical places, historical people or events, significant landmarks, hidden clues, evidence, ownership, law, routes, or numeric mechanics."
       }
     }
   ],

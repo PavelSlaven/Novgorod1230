@@ -314,7 +314,7 @@ async function campRows(environment, partyId) {
   const { rows: [row] } = await environment.partyPool.query(`
     SELECT
       (SELECT count(*)::int FROM party_runtime.party_g5_sites
-       WHERE party_id=$1 AND generated_template_ref#>>'{entity_ref,entity_id}'=
+       WHERE party_id=$1 AND canonical_g5_ref->>'entity_id'=
          'trace_ld_v1_loc_fishing_camp') AS g5,
       (SELECT count(*)::int FROM party_runtime.party_scene_baselines
        WHERE party_id=$1 AND scene_template_ref#>>'{entity_ref,entity_id}'=$2) AS baselines,

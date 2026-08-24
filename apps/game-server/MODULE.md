@@ -6,8 +6,10 @@ Production composition root and the only physical PostgreSQL transaction owner. 
 
 Spatial semantic materialization hands the server one validated formal proposal.
 Exact physical topology comes from the exact Spatial catalog closure through
-`@rus/materialization/spatial-v3`; scenario bindings carry only profile refs
-and slot keys. Server owns only P16/SQL: it revalidates committed profile pins,
+`@rus/materialization/spatial-v3`; Spatial owner supplies exact source and
+destination base rows from those closures. The fixed fishing-camp G5 uses its
+canonical authored identity, never a generated/frontier claim; scenario bindings
+carry only profile refs and slot keys. Server owns only P16/SQL: it revalidates committed profile pins,
 scope and capacity in existing transaction, then persists accepted refs and
 semantic detail. It does not create proposal, topology or resource mechanics,
 and adds no second transaction owner.

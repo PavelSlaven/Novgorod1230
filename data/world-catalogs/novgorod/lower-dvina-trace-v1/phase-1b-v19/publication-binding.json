@@ -21,7 +21,7 @@
     "id": "lower_dvina_trace_phase_1a_v20",
     "revision": 20,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "65f4a64e0764774f8e04842433a66b8ddfabe13b07cabb3c8360931a2bfeb5f0"
+    "digest": "24cd6f15fdfec5686a666a782b9b3040d6cba5330e142a720214c4f0e815fdaa"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/definition.json",
@@ -55,7 +55,7 @@
     "trigger": "new_game",
     "occurrence": 0,
     "scenario_definition_revision": 24,
-    "phase_1a_manifest_digest": "65f4a64e0764774f8e04842433a66b8ddfabe13b07cabb3c8360931a2bfeb5f0",
+    "phase_1a_manifest_digest": "24cd6f15fdfec5686a666a782b9b3040d6cba5330e142a720214c4f0e815fdaa",
     "scenario_definition_digest": "563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77"
   },
   "world_compatibility": {
@@ -63,7 +63,7 @@
     "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
     "source_status": "approved",
     "production_world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
-    "production_world_catalog_digest": "1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd",
+    "production_world_catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
     "production_status": "approved",
     "lineage": [
       {
@@ -94,9 +94,9 @@
         "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
         "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
         "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
-        "world_catalog_digest": "1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd",
+        "world_catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
         "status": "approved",
-        "digest": "424a79955c4285c47c0c08240006b3e17d979e071abc160e7588b5597800921d"
+        "digest": "6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c"
       }
     ]
   },

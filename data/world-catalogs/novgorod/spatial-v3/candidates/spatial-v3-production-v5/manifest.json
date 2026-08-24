@@ -14,16 +14,17 @@
   "runtime_selectable_in_canonical_production": false,
   "delete_policy": "forbid",
   "compiler_version": "s1-authoring-delta@1",
-  "catalog_digest": "1fd4900f0a838bf0ac38fe6b08a8941bd91947b201cdb4113beeec3bd3d7dafd",
+  "catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
   "datasets": [
     { "table": "source_records", "file": "datasets/source_records.json", "sha256": "850c7b4815a99bd177787cd51ad97377ce311f6762c27cb7988f2b2a9b98890d", "status": "approved", "delete_policy": "forbid", "depends_on": [] },
-    { "table": "world_revisions", "file": "datasets/world_revisions.json", "sha256": "51ca0f134887335d42347f404761cb3c338cb3a1eb5dbdcc41e05f84859d8b6a", "status": "approved", "delete_policy": "forbid", "depends_on": [] },
-    { "table": "spatial_v3_world_revisions", "file": "datasets/spatial_v3_world_revisions.json", "sha256": "3d9f05801b5ea60f9fc396f6a15fb5d0d6010632417846ad595b228eb53079dd", "status": "approved", "delete_policy": "forbid", "depends_on": ["world_revisions", "source_records"] },
-    { "table": "spatial_v3_scene_templates", "file": "datasets/spatial_v3_scene_templates.json", "sha256": "3e0345c0c3fdebd1860241917487a2052976039477598ff16d399ab9daa2b356", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_world_revisions", "source_records"] },
-    { "table": "spatial_v3_g6_template_slots", "file": "datasets/spatial_v3_g6_template_slots.json", "sha256": "13e9f2f18cef4f2b41a469ddec9fdafe77631cd910ea7ef9cf1bbf59f4f41218", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_scene_templates"] },
-    { "table": "spatial_v3_scene_position_templates", "file": "datasets/spatial_v3_scene_position_templates.json", "sha256": "0ace76182514c9f7e9e33c6f0b009e29808f5022466ada4358e0850de8fd0182", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_g6_template_slots"] },
+    { "table": "world_revisions", "file": "datasets/world_revisions.json", "sha256": "8fe79a1f0d3a61a7f4ba8df380c964a1e816d2283d24ec87cd2f0cfcebb282dc", "status": "approved", "delete_policy": "forbid", "depends_on": [] },
+    { "table": "spatial_v3_world_revisions", "file": "datasets/spatial_v3_world_revisions.json", "sha256": "12050f7085f8ea3f21005a8443f6ac5020acbf908af56f8eabd4580f68fd47db", "status": "approved", "delete_policy": "forbid", "depends_on": ["world_revisions", "source_records"] },
+    { "table": "spatial_v3_scene_templates", "file": "datasets/spatial_v3_scene_templates.json", "sha256": "ec7afdd229cf759cf09926597aaf300b8d0e356b739f530a65baf34e5ae07b2b", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_world_revisions", "source_records"] },
+    { "table": "spatial_v3_g6_template_slots", "file": "datasets/spatial_v3_g6_template_slots.json", "sha256": "2163813e9b78a72a2610fbe2dc673e6b555574db3a8998f944a0d42e95aecfc1", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_scene_templates"] },
+    { "table": "spatial_v3_scene_position_templates", "file": "datasets/spatial_v3_scene_position_templates.json", "sha256": "0c7e87592f2de846a2850f5261a59fc4d37935e22029b8a567578fbef4568475", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_g6_template_slots"] },
+    { "table": "spatial_v3_scene_endpoint_slots", "file": "datasets/spatial_v3_scene_endpoint_slots.json", "sha256": "317f44ab4d2381ef170db1923fedcb0dd1fdafd1bd6d219c72c5cf2388d9d838", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_scene_position_templates"] },
     { "table": "spatial_v3_scene_movement_edge_templates", "file": "datasets/spatial_v3_scene_movement_edge_templates.json", "sha256": "98de4480794a148f110c4240140016b4c10750a04a9e1b50bd98b4d8d43f5680", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_scene_position_templates"] },
     { "table": "spatial_v3_visibility_link_templates", "file": "datasets/spatial_v3_visibility_link_templates.json", "sha256": "a9455fff4d9322b2e84f867685c2377301e3ebed85a639242dfe87960e862032", "status": "approved", "delete_policy": "forbid", "depends_on": ["spatial_v3_scene_position_templates"] }
   ],
-  "canonical_output_digest": "9e5f43721057e3d9ae47b1da9937ea46c311d301d23f04359e1456d0f7765744"
+  "canonical_output_digest": "551a28c285c3f013033abbaa5e5765c262d7ce70f343b6f9d45417d504d015cb"
 }

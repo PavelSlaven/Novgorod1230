@@ -1,6 +1,5 @@
 import { computeSpatialV3CanonicalDigest, validateSpatialV3Contract } from
   '@rus/contracts/spatial-v3/registry';
-import { sha256 } from '@rus/kernel';
 
 export function addFirstEntryPreparationBatches({ batches, result, partyId, playerId,
   changeSetId, sourceTrace, addBatch }) {
@@ -11,12 +10,14 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   if (binding?.route_command_id !== 'lower_dvina_trace.follow_path_to_fishing_camp'
     || binding.route_ref !== 'trace_ld_v1_route_wreck_to_camp'
     || binding.materialization_timing !== 'on_first_successful_entry_only'
+    || binding.destination?.g5?.origin !== 'canonical'
+    || binding.destination.g5.profile_ref !== binding.destination.location_profile_ref
     || !scene?.node?.instance_id || !scene?.anchor?.instance_id) {
     const error = new Error('First-entry preparation is incomplete.');
     error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
     throw error;
   }
-  const prefix = sha256([partyId, result.run_id, 'first_entry']).slice(0, 24);
+  const prefix = `${partyId}:${result.run_id}:first-entry`;
   const sourceNode = result.immediate.spatial.node;
   const sourceAnchor = result.immediate.spatial.anchor;
   const sourceLocationRef = sourceNode.state.location_profile_ref;
@@ -37,13 +38,14 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   };
   const s1Topology = prepared.s1_topology;
   const s1PhysicalWrites = prepared.s1_physical_writes;
-  const baseStatic = prepared.base_static_template;
+  const baseStatic = prepared.base_static_templates;
   const s1Base = `s1:${partyId}:${ids.baseline}:${binding.destination.g6.s1_topology_slot.g6_slot_key}`;
   if (!s1Topology || !Array.isArray(s1PhysicalWrites)
       || s1PhysicalWrites.length !== 6
       || s1Topology.g6_instance_ref !== `${s1Base}:g6`
       || s1Topology.position_ref !== `${s1Base}:position`
-      || !baseStatic?.g6 || !baseStatic?.position) {
+      || !baseStatic?.source?.g6 || !baseStatic?.source?.position
+      || !baseStatic?.destination?.g6 || !baseStatic?.destination?.position) {
     const error = new Error('First-entry S1 topology is incomplete.');
     error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
     throw error;
@@ -84,7 +86,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   const materializationPayload = {
     g4_id: scene.node.parent_g4_id,
     g5_site_id: ids.g5,
-    g5_origin: 'generated',
+    g5_origin: 'canonical',
     scene_baseline_id: ids.baseline,
     g6_instance_id: ids.g6,
     position_id: ids.position,
@@ -231,7 +233,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   assertSpatialContract('party_route_plan_step', step);
   assertSpatialContract('preparation_snapshot', snapshot);
   assertSpatialContract('party_route_plan', routePlan);
-  const sourceTemplateRef = dbVersionedRef('scene_template', sourceNode.template_id);
+  const sourceTemplateRef = baseStatic.source.scene_template_ref;
   addBatch(batches, 'party_g5_sites', [{
     id: ids.sourceG5,
     party_id: partyId,
@@ -262,17 +264,17 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     id: ids.sourceG6,
     party_id: partyId,
     scene_baseline_id: ids.sourceBaseline,
-    source_scene_template_ref: sourceTemplateRef,
-    scene_slot_key: sourceAnchor.slot_key,
+    source_scene_template_ref: baseStatic.source.g6.source_scene_template_ref,
+    scene_slot_key: baseStatic.source.g6.scene_slot_key,
     host_kind: 'g5_site',
     host_id: ids.sourceG5,
-    physical_class_id: baseStatic.g6.physical_class_id,
-    primary_scene_role_id: baseStatic.g6.primary_scene_role_id,
-    vertical_context_id: baseStatic.g6.vertical_context_id,
-    overhead_cover_id: baseStatic.g6.overhead_cover_id,
-    intra_g6_visibility_mode: baseStatic.g6.intra_g6_visibility_mode,
-    default_visibility_distance_band: baseStatic.g6.default_visibility_distance_band,
-    acoustic_uniformity: baseStatic.g6.acoustic_uniformity,
+    physical_class_id: baseStatic.source.g6.physical_class_id,
+    primary_scene_role_id: baseStatic.source.g6.primary_scene_role_id,
+    vertical_context_id: baseStatic.source.g6.vertical_context_id,
+    overhead_cover_id: baseStatic.source.g6.overhead_cover_id,
+    intra_g6_visibility_mode: baseStatic.source.g6.intra_g6_visibility_mode,
+    default_visibility_distance_band: baseStatic.source.g6.default_visibility_distance_band,
+    acoustic_uniformity: baseStatic.source.g6.acoustic_uniformity,
     status: 'active',
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -282,11 +284,11 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     id: ids.sourcePosition,
     party_id: partyId,
     g6_instance_id: ids.sourceG6,
-    position_type_id: baseStatic.position.position_type_id,
-    template_slot_key: sourceAnchor.state.zone_ref,
+    position_type_id: baseStatic.source.position.position_type_id,
+    template_slot_key: baseStatic.source.position.template_slot_key,
     template_instance_ordinal: 0,
-    capacity: baseStatic.position.capacity,
-    access_class_id: baseStatic.position.access_class_id,
+    capacity: baseStatic.source.position.capacity,
+    access_class_id: baseStatic.source.position.access_class_id,
     status: 'active',
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -359,7 +361,12 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
         position_id: ids.sourcePosition,
         endpoint_ref: sourceEndpointRef
       },
-      target: { ...materialization, endpoint_ref: targetEndpointRef,
+      target: { ...materialization,
+        canonical_g5_ref: dbVersionedRef('location_profile',
+          binding.destination.location_profile_ref),
+        materialization_trace_id: result.run_id,
+        endpoint_ref: targetEndpointRef,
+        base_static_template: structuredClone(baseStatic.destination),
         s1_topology: structuredClone(s1Topology),
         s1_physical_writes: structuredClone(s1PhysicalWrites) },
       preparation_snapshot_id: ids.snapshot,

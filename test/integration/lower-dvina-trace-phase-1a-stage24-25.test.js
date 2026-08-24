@@ -107,6 +107,24 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   const snapshot = JSON.parse(JSON.stringify(stage24.party_db_write_plan
     .write_batches.find(({ target_table: table }) =>
       table === 'party_state_snapshots').records[0].state_payload));
+  const preparedTarget = snapshot.first_entry_spatial_v3.target;
+  assert.equal(preparedTarget.g5_origin, 'canonical');
+  assert.deepEqual(preparedTarget.canonical_g5_ref, {
+    entity_kind: 'location_profile',
+    entity_id: 'trace_ld_v1_loc_fishing_camp',
+    authoring_version: '1'
+  });
+  assert.equal('source_frontier_id' in preparedTarget, false);
+  assert.equal('generation_ordinal' in preparedTarget, false);
+  for (const id of [
+    snapshot.first_entry_spatial_v3.preparation_snapshot_id,
+    snapshot.first_entry_spatial_v3.route_plan_id,
+    snapshot.first_entry_spatial_v3.route_plan_execution_id,
+    snapshot.first_entry_spatial_v3.preparation_claim_id
+  ]) {
+    assert.ok(id.includes(materialization.party_id));
+    assert.ok(id.includes(materialization.run_id));
+  }
   const firstEntry = resolveFirstEntry({
     partyId: materialization.party_id, state: {
       ...snapshot,
@@ -131,6 +149,46 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
     } } }
   });
   assert.equal(firstEntry.approved_write_sets[0].inserts.length, 10);
+  const targetSite = firstEntry.approved_write_sets[0].inserts.find(
+    ({ target_table: table }) => table === 'party_g5_sites'
+  ).record;
+  assert.equal(targetSite.origin, 'canonical');
+  assert.deepEqual(targetSite.canonical_g5_ref, preparedTarget.canonical_g5_ref);
+  assert.equal(targetSite.source_frontier_id, null);
+  assert.equal(targetSite.generation_ordinal, null);
+  assert.equal(firstEntry.approved_write_sets[0].inserts.find(
+    ({ target_table: table }) => table === 'party_scene_baselines'
+  ).record.materialization_trace_id, materialization.run_id);
+  const sourceG6 = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'party_g6_instances'
+  ).records.find(({ id }) => id === snapshot.first_entry_spatial_v3.source.g6_instance_id);
+  const sourcePosition = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'scene_position_nodes'
+  ).records.find(({ id }) => id === snapshot.first_entry_spatial_v3.source.position_id);
+  const destinationG6 = firstEntry.approved_write_sets[0].inserts.find(
+    ({ target_table: table, id }) => table === 'party_g6_instances'
+      && id === snapshot.first_entry_spatial_v3.target.g6_instance_id
+  ).record;
+  const destinationPosition = firstEntry.approved_write_sets[0].inserts.find(
+    ({ target_table: table, id }) => table === 'scene_position_nodes'
+      && id === snapshot.first_entry_spatial_v3.target.position_id
+  ).record;
+  assert.deepEqual(
+    pickStaticG6(sourceG6),
+    { physical_class_id: 'spatial.g6.open', primary_scene_role_id: 'open_shore', vertical_context_id: 'surface', overhead_cover_id: 'none', intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' }
+  );
+  assert.deepEqual(
+    pickStaticPosition(sourcePosition),
+    { position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }
+  );
+  assert.deepEqual(
+    pickStaticG6(destinationG6),
+    { physical_class_id: 'spatial.g6.open', primary_scene_role_id: 'working_camp', vertical_context_id: 'surface', overhead_cover_id: 'none', intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' }
+  );
+  assert.deepEqual(
+    pickStaticPosition(destinationPosition),
+    { position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }
+  );
 
   const input = buildStage25CommitInput({
     request_id: context.request_id,
@@ -390,6 +448,13 @@ function worldSnapshot() {
   const g6 = (scene_slot_key, physical_class_id, primary_scene_role_id, overhead_cover_id) => ({ scene_slot_key, physical_class_id, primary_scene_role_id, vertical_context_id: 'surface', overhead_cover_id, intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' });
   const edge = (edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key) => ({ edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key, passage_type_id: 'passage.local', transition_environment_profile_id: 'topological_default', transition_environment_profile_version: 1, movement_orientation_profile_id: 'topological_default', movement_orientation_profile_version: 1, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null });
   const link = (link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key) => ({ link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key, quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null });
+  const fishingCamp = { header, g6_slots: [g6('working_camp', 'spatial.g6.open', 'working_camp', 'none'), g6('s1_open_one_space', 'spatial.g6.semi_enclosed', 'ordinary_local', 'partial')], position_slots: [{ position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp', position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }, { position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space', position_type_id: 'scene_position.central', capacity: 1, access_class_id: 'default' }], movement_edges: [edge('s1_open_one_space.out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.back'), edge('s1_open_one_space.back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.out')], visibility_links: [link('s1_open_one_space.visible_out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.visible_back'), link('s1_open_one_space.visible_back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.visible_out')] };
+  const wreckShore = structuredClone(fishingCamp);
+  wreckShore.header = { id: 'trace_ld_v1_tpl_wreck_shore', version: 1 };
+  wreckShore.g6_slots = [g6('open_shore', 'spatial.g6.open', 'open_shore', 'none')];
+  wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
+  wreckShore.movement_edges = [];
+  wreckShore.visibility_links = [];
   return {
     version: 1,
     schema: 'world_base_reference_snapshot',
@@ -403,8 +468,22 @@ function worldSnapshot() {
     allowed_container_profile_ids: [],
     allowed_property_rule_ids: [],
     allowed_source_ids: [],
-    scene_template_closures: [{ header, g6_slots: [g6('working_camp', 'spatial.g6.open', 'working_camp', 'none'), g6('s1_open_one_space', 'spatial.g6.semi_enclosed', 'ordinary_local', 'partial')], position_slots: [{ position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp', position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }, { position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space', position_type_id: 'scene_position.central', capacity: 1, access_class_id: 'default' }], movement_edges: [edge('s1_open_one_space.out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.back'), edge('s1_open_one_space.back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.out')], visibility_links: [link('s1_open_one_space.visible_out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.visible_back'), link('s1_open_one_space.visible_back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.visible_out')] }]
+    scene_template_closures: [wreckShore, fishingCamp]
   };
+}
+
+function pickStaticG6(record) {
+  const { physical_class_id, primary_scene_role_id, vertical_context_id,
+    overhead_cover_id, intra_g6_visibility_mode,
+    default_visibility_distance_band, acoustic_uniformity } = record;
+  return { physical_class_id, primary_scene_role_id, vertical_context_id,
+    overhead_cover_id, intra_g6_visibility_mode,
+    default_visibility_distance_band, acoustic_uniformity };
+}
+
+function pickStaticPosition(record) {
+  const { position_type_id, capacity, access_class_id } = record;
+  return { position_type_id, capacity, access_class_id };
 }
 
 function schemaFor(batches) {

@@ -237,19 +237,19 @@ export async function readWorldBaseReferenceSnapshot(
       'Production world revision does not have the pinned approved status.'
     );
   }
-  const closure = await createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) })
-    .readPinnedSceneTemplateClosure({ id: 'trace_ld_v1_tpl_fishing_camp', version: 1,
-    world_revision_id: compatibility.production_world_revision_id
-  });
-  if (!closure.ok) fail('TRACE_S1_WORLD_CATALOG_GAP', 'S1 template closure is unavailable from world-base.');
+  const reader = createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) });
+  const closures = await Promise.all(['trace_ld_v1_tpl_wreck_shore',
+    'trace_ld_v1_tpl_fishing_camp'].map((id) => reader.readPinnedSceneTemplateClosure({ id, version: 1,
+    world_revision_id: compatibility.production_world_revision_id })));
+  if (closures.some(({ ok }) => !ok)) fail('TRACE_S1_WORLD_CATALOG_GAP',
+    'S1 template closure is unavailable from world-base.');
   return Object.freeze({
     version: 1, schema: 'world_base_reference_snapshot',
-    readonly_checksum: digest({ rows, closure: closure.value }),
-    allowed_region_ids: [], allowed_graph_node_ids: [],
-    allowed_graph_edge_ids: [], allowed_place_template_ids: [],
+    readonly_checksum: digest({ rows, closures: closures.map(({ value }) => value) }),
+    allowed_region_ids: [], allowed_graph_node_ids: [], allowed_graph_edge_ids: [], allowed_place_template_ids: [],
     allowed_npc_candidate_ids: [], allowed_item_profile_ids: [],
     allowed_container_profile_ids: [], allowed_property_rule_ids: [],
-    allowed_source_ids: [], scene_template_closures: [closure.value]
+    allowed_source_ids: [], scene_template_closures: closures.map(({ value }) => value)
   });
 }
 

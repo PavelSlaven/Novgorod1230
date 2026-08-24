@@ -74,6 +74,7 @@ export function materializeLowerDvinaTracePreparedCamp({
   const firstEntry = materializeS1FirstEntryPreparation({
     party_id: input.party_id,
     binding: bundle.materialization_bindings.first_entry_preparation,
+    start_binding: bundle.materialization_bindings.start_spatial_binding,
     scene,
     npcs,
     world_base_reference_snapshot: input.world_base_reference_snapshot

@@ -81,7 +81,39 @@ export function materializeS1OpenOneSpaceTopology({ party_id, baseline_ref, g5_r
       position: structuredClone(resolved.basePosition) }) });
 }
 
-export function materializeS1FirstEntryPreparation({ party_id, binding, scene, npcs, world_base_reference_snapshot }) {
+export function materializeS1SceneBaseStatic({ scene_template_ref, g6_slot_key,
+  position_slot_key, world_base_reference_snapshot }) {
+  const closure = closureFor(world_base_reference_snapshot, scene_template_ref);
+  const g6 = one(closure?.g6_slots, 'scene_slot_key', g6_slot_key);
+  const position = one(closure?.position_slots, 'position_slot_key', position_slot_key);
+  if (!g6 || !position || position.g6_scene_slot_key !== g6.scene_slot_key
+      || !physicalRowsComplete(g6, position, g6, position, [], [])) {
+    return failure('s1_formal_spatial_data_gap', null, { stage: 's1_scene_base_static' });
+  }
+  return freeze({ ok: true, base_static_template: freeze({
+    scene_template_ref: versionedSceneTemplate(scene_template_ref),
+    g6: { source_scene_template_ref: versionedSceneTemplate(scene_template_ref),
+      ...structuredClone(g6) },
+    position: { template_slot_key: position.position_slot_key,
+      position_type_id: position.position_type_id, capacity: position.capacity,
+      access_class_id: position.access_class_id }
+  }) });
+}
+
+export function materializeS1FirstEntryPreparation({ party_id, binding, start_binding,
+  scene, npcs, world_base_reference_snapshot }) {
+  const source = materializeS1SceneBaseStatic({
+    scene_template_ref: start_binding?.node_template_ref,
+    g6_slot_key: start_binding?.anchor_template?.slot_key,
+    position_slot_key: start_binding?.anchor_template?.state?.zone_ref,
+    world_base_reference_snapshot
+  });
+  const destination = materializeS1SceneBaseStatic({
+    scene_template_ref: binding?.destination?.g6?.scene_template_ref,
+    g6_slot_key: scene?.anchor?.slot_key,
+    position_slot_key: scene?.anchor?.state?.zone_ref,
+    world_base_reference_snapshot
+  });
   const s1 = materializeS1OpenOneSpaceTopology({
     party_id,
     baseline_ref: `baseline:${scene?.node?.instance_id}`,
@@ -92,10 +124,15 @@ export function materializeS1FirstEntryPreparation({ party_id, binding, scene, n
     slot: binding?.destination?.g6?.s1_topology_slot,
     world_base_reference_snapshot
   });
-  if (!s1.ok) return s1;
+  if (!source.ok || !destination.ok || !s1.ok) {
+    return failure('s1_formal_spatial_data_gap', null, { stage: 's1_first_entry_static' });
+  }
   return freeze({ ok: true, preparation: freeze({
     binding: structuredClone(binding), scene: structuredClone(scene),
-    npcs: structuredClone(npcs), base_static_template: structuredClone(s1.base_static_template),
+    npcs: structuredClone(npcs), base_static_templates: {
+      source: structuredClone(source.base_static_template),
+      destination: structuredClone(destination.base_static_template)
+    },
     s1_topology: structuredClone(s1.topology),
     s1_physical_writes: structuredClone(s1.rows)
   }) });

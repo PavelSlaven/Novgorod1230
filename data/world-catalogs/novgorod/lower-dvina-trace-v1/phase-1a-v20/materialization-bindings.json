@@ -51,7 +51,7 @@
       "id": "lower_dvina_trace_s1_spatial_semantic_profile_v3",
       "revision": 3,
       "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
-      "digest": "20f547096e9631dc0a3843c532bdab4fc606d3ca01d0408ffea1f6137fa6af77"
+      "digest": "6f098af0e8be7a5acff46a270668b71055add42e535ff376578785a715159f86"
     },
     "authority_provisioning": "atomic_new_game_first_entry_p16",
     "fallback_policy": "forbidden"
@@ -65,7 +65,7 @@
       "g4_node_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
       "g5": {
         "profile_ref": "trace_ld_v1_loc_fishing_camp",
-        "origin": "approved_generated_g5_profile"
+        "origin": "canonical"
       },
       "scene_baseline": {
         "profile_ref": "trace_ld_v1_loc_fishing_camp",

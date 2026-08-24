@@ -43,7 +43,9 @@ projection) остаётся одним generic exact-scope ledger для O1 и 
 history и тем самым закрывает exact reload/reopen без reroll. Module не решает
 container eligibility, contents semantics, mechanics, reveal или persistence.
 
-`@rus/materialization/spatial-v3` is target-only P20: `createSpatialContextLoader`, `createSceneMaterializer`, `createFrontierTopologyResolver`, `createTargetPreparationService` and `createCrossDomainProposalComposer` return immutable proposals/snapshots and never commit or invoke v2. `createTopologyProposalValidator` remains the P08 fail-closed compatibility skeleton.
+`@rus/materialization/spatial-v3` owns immutable Spatial proposals and snapshots.
+Its P20 helpers never commit or invoke v2; production S1 reuses the same owner
+to resolve formal state from one exact world-catalog closure.
 
 Spatial semantic materialization owns formal proposal/resolution: exact
 physical topology comes only from the exact Spatial catalog closure through

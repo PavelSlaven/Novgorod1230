@@ -37,9 +37,34 @@ const endpointColumns = ['slot_key', 'endpoint_role',
 
 export const lowerDvinaTraceV5World = Object.freeze({
   revision: 'novgorod_spatial_v3_production_v5_candidate_001',
-  digest: 'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8',
-  manifest: '6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c'
+  digest: 'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
+  manifest: '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c'
 });
+
+export const lowerDvinaTraceCanonicalG5SceneBindings = Object.freeze([
+  Object.freeze({
+    id: 'trace_ld_v1_g5_wreck_shore', version: 1,
+    world_revision_id: lowerDvinaTraceV5World.revision, spatial_level: 'G5',
+    primary_class_id: 'spatial.g5.parcel', status: 'approved',
+    canonical_digest: 'b7ace289584fad2c96417fbb005a445bd578fb1d4531fc73ffd58a95393f2888',
+    parent_id: 'g4v3__gn_nov_g3_xp017_yp026_r2_sheltered_landing_terrace',
+    parent_version: 4, materialization_profile_id: 'trace_ld_v1_smp_wreck_shore',
+    materialization_profile_version: 1,
+    materialization_profile_digest: '4ba7f7eb4876457e252bb2489be1862de3e4a4b7dccaf8872b739bec98329e3d',
+    scene_template_id: 'trace_ld_v1_tpl_wreck_shore', scene_template_version: 1
+  }),
+  Object.freeze({
+    id: 'trace_ld_v1_g5_fishing_camp', version: 1,
+    world_revision_id: lowerDvinaTraceV5World.revision, spatial_level: 'G5',
+    primary_class_id: 'spatial.g5.compound', status: 'approved',
+    canonical_digest: '0e5d543516e2055c7dd5a0879addef8293cfc2f76107cdf3c338beabc24fb621',
+    parent_id: 'g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach',
+    parent_version: 4, materialization_profile_id: 'trace_ld_v1_smp_fishing_camp',
+    materialization_profile_version: 1,
+    materialization_profile_digest: '7c679edfd07ddb67bcef759df023cf2fd2ec1d476c89b0c59ae8e22db100a7de',
+    scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1
+  })
+]);
 
 const pick = (row, columns) => Object.fromEntries(
   columns.map((column) => [column, row[column]])
@@ -67,6 +92,21 @@ export async function installLowerDvinaTraceV5World(pool) {
     regional_template_id text NOT NULL, regional_template_version integer NOT NULL,
     status text NOT NULL, provenance_ref text NOT NULL, canonical_digest text NOT NULL,
     PRIMARY KEY(id, version))`);
+  await pool.query(`CREATE TABLE world_base.spatial_v3_nodes (
+    id text NOT NULL, version integer NOT NULL, world_revision_id text NOT NULL,
+    spatial_level text NOT NULL, primary_class_id text NOT NULL, status text NOT NULL,
+    canonical_digest text NOT NULL, PRIMARY KEY(id, version))`);
+  await pool.query(`CREATE TABLE world_base.spatial_v3_node_parents (
+    child_id text NOT NULL, child_version integer NOT NULL, parent_id text NOT NULL,
+    parent_version integer NOT NULL, world_revision_id text NOT NULL)`);
+  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_materialization_profiles (
+    id text NOT NULL, version integer NOT NULL, world_revision_id text NOT NULL,
+    source_kind text NOT NULL, source_entity_id text NOT NULL,
+    source_entity_version integer NOT NULL, status text NOT NULL,
+    canonical_digest text NOT NULL, PRIMARY KEY(id, version))`);
+  await pool.query(`CREATE TABLE world_base.spatial_v3_scene_materialization_candidates (
+    profile_id text NOT NULL, profile_version integer NOT NULL,
+    scene_template_id text NOT NULL, scene_template_version integer NOT NULL)`);
   for (const [table, columns] of Object.entries(closureColumns)) {
     await pool.query(`CREATE TABLE world_base.${table} (
       scene_template_id text NOT NULL, scene_template_version integer NOT NULL,
@@ -106,10 +146,22 @@ export async function installLowerDvinaTraceV5World(pool) {
     [revision.id ?? revision.world_revision_id, revision.parent_revision_id, revision.catalog_digest,
       revision.status]);
   }
-  for (const table of ['spatial_v3_scene_templates', ...Object.keys(closureColumns),
-    'spatial_v3_scene_endpoint_slots']) {
+  for (const table of ['spatial_v3_nodes', 'spatial_v3_node_parents',
+    'spatial_v3_scene_materialization_profiles',
+    'spatial_v3_scene_materialization_candidates', 'spatial_v3_scene_templates',
+    ...Object.keys(closureColumns), 'spatial_v3_scene_endpoint_slots']) {
     for (const row of datasets[table]) {
-      const columns = Object.keys(row);
+      const available = table === 'spatial_v3_nodes'
+        ? ['id', 'version', 'world_revision_id', 'spatial_level',
+          'primary_class_id', 'status', 'canonical_digest']
+        : table === 'spatial_v3_scene_materialization_profiles'
+          ? ['id', 'version', 'world_revision_id', 'source_kind',
+            'source_entity_id', 'source_entity_version', 'status',
+            'canonical_digest']
+          : table === 'spatial_v3_scene_materialization_candidates'
+            ? ['profile_id', 'profile_version', 'scene_template_id',
+              'scene_template_version'] : Object.keys(row);
+      const columns = available.filter((column) => Object.hasOwn(row, column));
       await pool.query(`INSERT INTO world_base.${table} (${columns.join(',')})
         VALUES(${columns.map((_, index) => `$${index + 1}`).join(',')})`,
       columns.map((column) => row[column]));

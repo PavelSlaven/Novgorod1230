@@ -33,6 +33,8 @@ import {
 import {
   lowerDvinaTracePhase1ADomainPin
 } from '../fixtures/lower-dvina-trace-phase-1a-domain-pin.mjs';
+import { lowerDvinaTraceCanonicalG5SceneBindings } from
+  '../fixtures/lower-dvina-trace-v5-world-fixture.js';
 import { resolveFirstEntry } from
   '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-3-first-entry.js';
 
@@ -110,8 +112,23 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   const preparedTarget = snapshot.first_entry_spatial_v3.target;
   assert.equal(preparedTarget.g5_origin, 'canonical');
   assert.deepEqual(preparedTarget.canonical_g5_ref, {
-    entity_kind: 'location_profile',
-    entity_id: 'trace_ld_v1_loc_fishing_camp',
+    entity_kind: 'canonical_spatial_node',
+    entity_id: 'trace_ld_v1_g5_fishing_camp',
+    authoring_version: '1'
+  });
+  assert.deepEqual(preparedTarget.dependency_pins.pins.map(({ entity_ref: ref }) =>
+    `${ref.entity_kind}:${ref.entity_id}`).sort(), [
+    'canonical_spatial_node:trace_ld_v1_g5_fishing_camp',
+    'scene_materialization_profile:trace_ld_v1_smp_fishing_camp',
+    'scene_template:trace_ld_v1_tpl_fishing_camp'
+  ]);
+  const member = stage24.party_db_write_plan.write_batches.find(
+    ({ target_table: table }) => table === 'preparation_snapshot_members'
+  ).records[0];
+  assert.deepEqual(member.source_authoring_ref, {
+    entity_ref: {
+      entity_kind: 'scene_template', entity_id: 'trace_ld_v1_tpl_fishing_camp'
+    },
     authoring_version: '1'
   });
   assert.equal('source_frontier_id' in preparedTarget, false);
@@ -179,7 +196,7 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   );
   assert.deepEqual(
     pickStaticPosition(sourcePosition),
-    { position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }
+    { position_type_id: 'scene_position.water_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }
   );
   assert.deepEqual(
     pickStaticG6(destinationG6),
@@ -187,7 +204,7 @@ test('Stage 24 plan owns every Phase 1A write and Stage 25 admits the internal m
   );
   assert.deepEqual(
     pickStaticPosition(destinationPosition),
-    { position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }
+    { position_type_id: 'scene_position.fixed_working_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }
   );
 
   const input = buildStage25CommitInput({
@@ -446,13 +463,13 @@ function phase1AStage24Input({ artifacts, context, schema }) {
 function worldSnapshot() {
   const header = { id: 'trace_ld_v1_tpl_fishing_camp', version: 1 };
   const g6 = (scene_slot_key, physical_class_id, primary_scene_role_id, overhead_cover_id) => ({ scene_slot_key, physical_class_id, primary_scene_role_id, vertical_context_id: 'surface', overhead_cover_id, intra_g6_visibility_mode: 'default_clear', default_visibility_distance_band: 'near', acoustic_uniformity: 'uniform' });
-  const edge = (edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key) => ({ edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key, passage_type_id: 'passage.local', transition_environment_profile_id: 'topological_default', transition_environment_profile_version: 1, movement_orientation_profile_id: 'topological_default', movement_orientation_profile_version: 1, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null });
+  const edge = (edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key) => ({ edge_slot_key, from_position_slot_key, to_position_slot_key, reverse_edge_slot_key, passage_type_id: 'passage.local', transition_environment_profile_id: 'env.local_variable', transition_environment_profile_version: 3, movement_orientation_profile_id: 'orientation.topological_local', movement_orientation_profile_version: 2, cost_kind: 'action', action_units: 1, baseline_movement_method_id: null, movement_method_cost_profile_id: null, movement_method_cost_profile_version: null, base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null, capacity: 1, portal_template_id: null, portal_template_version: null, availability_condition_set_id: null, availability_condition_set_version: null });
   const link = (link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key) => ({ link_slot_key, from_position_slot_key, to_position_slot_key, reverse_link_slot_key, quality: 'clear', distance_band: 'near', portal_template_id: null, portal_template_version: null, condition_profile_id: null, condition_profile_version: null });
-  const fishingCamp = { header, g6_slots: [g6('working_camp', 'spatial.g6.open', 'working_camp', 'none'), g6('s1_open_one_space', 'spatial.g6.semi_enclosed', 'ordinary_local', 'partial')], position_slots: [{ position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp', position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }, { position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space', position_type_id: 'scene_position.central', capacity: 1, access_class_id: 'default' }], movement_edges: [edge('s1_open_one_space.out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.back'), edge('s1_open_one_space.back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.out')], visibility_links: [link('s1_open_one_space.visible_out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.visible_back'), link('s1_open_one_space.visible_back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.visible_out')] };
+  const fishingCamp = { header, g6_slots: [g6('working_camp', 'spatial.g6.open', 'working_camp', 'none'), g6('s1_open_one_space', 'spatial.g6.semi_enclosed', 'ordinary_local', 'partial')], position_slots: [{ position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp', position_type_id: 'scene_position.fixed_working_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_fishing_camp' }, { position_slot_key: 's1_open_one_space.interior', g6_scene_slot_key: 's1_open_one_space', position_type_id: 'scene_position.central', capacity: 1, access_class_id: 'default' }], movement_edges: [edge('s1_open_one_space.out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.back'), edge('s1_open_one_space.back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.out')], visibility_links: [link('s1_open_one_space.visible_out', 'working_camp', 's1_open_one_space.interior', 's1_open_one_space.visible_back'), link('s1_open_one_space.visible_back', 's1_open_one_space.interior', 'working_camp', 's1_open_one_space.visible_out')] };
   const wreckShore = structuredClone(fishingCamp);
   wreckShore.header = { id: 'trace_ld_v1_tpl_wreck_shore', version: 1 };
   wreckShore.g6_slots = [g6('open_shore', 'spatial.g6.open', 'open_shore', 'none')];
-  wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
+  wreckShore.position_slots = [{ position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore', position_type_id: 'scene_position.water_reach', capacity: 7, access_class_id: 'trace_ld_v1_access_wreck_shore' }];
   wreckShore.movement_edges = [];
   wreckShore.visibility_links = [];
   return {
@@ -468,7 +485,8 @@ function worldSnapshot() {
     allowed_container_profile_ids: [],
     allowed_property_rule_ids: [],
     allowed_source_ids: [],
-    scene_template_closures: [wreckShore, fishingCamp]
+    scene_template_closures: [wreckShore, fishingCamp],
+    canonical_g5_scene_bindings: lowerDvinaTraceCanonicalG5SceneBindings
   };
 }
 

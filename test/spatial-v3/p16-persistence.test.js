@@ -116,6 +116,32 @@ test('P16 reader loads approved closure from one exact pinned template header', 
     params[0] === ref.id && params[1] === ref.version));
 });
 
+test('P16 reader resolves one exact canonical G5 scene binding', async () => {
+  const row = {
+    id: 'g5', version: 1, world_revision_id: 'revision', spatial_level: 'G5',
+    primary_class_id: 'spatial.g5.parcel', status: 'approved',
+    canonical_digest: digest, parent_id: 'g4', parent_version: 4,
+    materialization_profile_id: 'profile', materialization_profile_version: 1,
+    materialization_profile_digest: digest, scene_template_id: 'scene',
+    scene_template_version: 1
+  };
+  const calls = [];
+  const reader = createSpatialV3WorldBaseReader({ query: async (sql, params) => {
+    calls.push({ sql, params }); return { rows: [row] };
+  } });
+  assert.deepEqual((await reader.readPinnedCanonicalG5SceneBinding({
+    id: 'g5', version: 1, world_revision_id: 'revision'
+  })).value, row);
+  assert.deepEqual(calls[0].params, ['g5', 1, 'revision']);
+  assert.match(calls[0].sql, /source_kind='canonical_g5'/u);
+  const ambiguous = createSpatialV3WorldBaseReader({ query: async () => ({
+    rows: [row, row]
+  }) });
+  assert.equal((await ambiguous.readPinnedCanonicalG5SceneBinding({
+    id: 'g5', version: 1, world_revision_id: 'revision'
+  })).ok, false);
+});
+
 test('P16 repository models composite history identity without generic id ordering', async () => {
   const calls = []; const repository = createSpatialV3PartyRepository({ transaction: { query: async (sql) => { calls.push(sql); return { rows: [{ execution_id: 'e', event_ordinal: 1, party_id: 'p' }] }; } } });
   assert.equal((await repository.loadHistory({ party_id: 'p', execution_id: 'e', event_ordinal: 1 })).ok, true); assert.match(calls[0], /ORDER BY execution_id,event_ordinal/); assert.doesNotMatch(calls[0], /SELECT \*/);

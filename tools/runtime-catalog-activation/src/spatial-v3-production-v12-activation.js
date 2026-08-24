@@ -10,9 +10,9 @@ export const SPATIAL_V3_PRODUCTION_V12_RELEASE = Object.freeze({
   domainRevision: 'runtime_catalog_lower_dvina_spatial_v3_v12_001',
   worldRevision: 'novgorod_spatial_v3_production_v5_candidate_001',
   worldCatalogDigest:
-    'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8',
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
   worldManifestSha256:
-    '6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c',
+    '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c',
   worldSchemaFingerprint:
     'd5bb566dd7d22d34d06fcff0c3db961294c619753ce93557c4e91adae6375541',
   candidateDirectory: 'spatial-v3-production-v5',

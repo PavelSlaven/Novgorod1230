@@ -247,14 +247,14 @@ Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server err
 
 ## Production activation и тесты
 
-The separate versioned production activation cutover completed as
-`spatial-v3-production-v1`. The server and config expose only
+The current versioned production activation cutover is `spatial-v3-production-v12`.
+The server and config expose only
 `builtin:production-spatial-v3`; v2 has no runtime selector or public
 composition export. Startup requires the complete Spatial-v3 bindings module
 and the completed cutover stage `13`, and fails closed while any persisted
-party remains on schema v2. Release metadata pins
-`novgorod_spatial_v3_target_contract_approval_001`, the exact approved Spatial
-manifest digest, `temporal-world-v1.1`, exact dependency-pin mode and the
+party remains on schema v2. Release metadata pins the exact approved
+`novgorod_spatial_v3_production_v5_candidate_001` world tuple and manifest,
+`temporal-world-v1.1`, exact dependency-pin mode and the
 existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
 party; persisted historical pin thereafter).
 `test/game-server.test.js`, `party-store-runtime-catalog.test.js`,

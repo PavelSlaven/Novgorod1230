@@ -11,7 +11,6 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     || binding.route_ref !== 'trace_ld_v1_route_wreck_to_camp'
     || binding.materialization_timing !== 'on_first_successful_entry_only'
     || binding.destination?.g5?.origin !== 'canonical'
-    || binding.destination.g5.profile_ref !== binding.destination.location_profile_ref
     || !scene?.node?.instance_id || !scene?.anchor?.instance_id) {
     const error = new Error('First-entry preparation is incomplete.');
     error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
@@ -20,7 +19,18 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
   const prefix = `${partyId}:${result.run_id}:first-entry`;
   const sourceNode = result.immediate.spatial.node;
   const sourceAnchor = result.immediate.spatial.anchor;
-  const sourceLocationRef = sourceNode.state.location_profile_ref;
+  const canonicalG5 = prepared.canonical_g5_refs;
+  const sceneProfiles = prepared.scene_materialization_profile_refs;
+  if (!dbRef(canonicalG5?.source, 'canonical_spatial_node')
+      || !dbRef(canonicalG5?.destination, 'canonical_spatial_node')
+      || !dbRef(sceneProfiles?.source, 'scene_materialization_profile')
+      || !dbRef(sceneProfiles?.destination, 'scene_materialization_profile')
+      || sceneProfiles.destination.entity_id
+        !== binding.destination.g6.materialization_profile) {
+    const error = new Error('First-entry canonical G5 handoff is incomplete.');
+    error.code = 'LOWER_DVINA_TRACE_FIRST_ENTRY_PREPARATION_INVALID';
+    throw error;
+  }
   const ids = {
     snapshot: `preparation:${prefix}`,
     route: `route:${prefix}`,
@@ -59,21 +69,15 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     endpoint_id: 'trace_ld_v1_ep_camp_path_to_wreck'
   };
   const routePin = authoringPin('route', 'world_route', binding.route_ref);
-  const sourcePin = authoringPin(
-    'source_authoring', 'scene_materialization_candidate', sourceLocationRef);
-  const targetPin = authoringPin(
-    'target', 'scene_materialization_candidate',
-    binding.destination.location_profile_ref);
-  const templatePin = authoringPin(
-    'scene_template', 'scene_template', binding.destination.g6.scene_template_ref);
-  const profilePin = authoringPin('scene_materialization_profile',
-    'scene_materialization_profile',
-    binding.destination.g6.materialization_profile);
-  const targetPins = dependencyPinSet([targetPin, templatePin, profilePin]);
-  const planningPins = dependencyPinSet([routePin, sourcePin, targetPin]);
+  const sourcePins = canonicalScenePins(canonicalG5.source,
+    sceneProfiles.source, baseStatic.source.scene_template_ref);
+  const targetPinList = canonicalScenePins(canonicalG5.destination,
+    sceneProfiles.destination, baseStatic.destination.scene_template_ref);
+  const targetPins = dependencyPinSet(targetPinList);
+  const planningPins = dependencyPinSet([routePin, ...sourcePins, ...targetPinList]);
   const sourceEndpoint = endpointSnapshot({
     endpoint_ref: sourceEndpointRef,
-    dependency_pins: dependencyPinSet([sourcePin, routePin]),
+    dependency_pins: dependencyPinSet([routePin, ...sourcePins]),
     resolved_scene_baseline_id: ids.sourceBaseline,
     resolved_position_id: ids.sourcePosition
   });
@@ -90,11 +94,8 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     scene_baseline_id: ids.baseline,
     g6_instance_id: ids.g6,
     position_id: ids.position,
-    scene_template_ref: versionedRef(
-      'scene_template', binding.destination.g6.scene_template_ref),
-    materialization_profile_ref: versionedRef(
-      'scene_materialization_profile',
-      binding.destination.g6.materialization_profile),
+    scene_template_ref: structuredClone(baseStatic.destination.scene_template_ref),
+    materialization_profile_ref: versionedDbRef(sceneProfiles.destination),
     catalog_digest: result.trace.catalog_digest,
     materializer_version: result.trace.materializer_version,
     dependency_pins: targetPins
@@ -104,9 +105,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     preparation_snapshot_id: ids.snapshot,
     ordinal: 0,
     member_kind: 'transfer_scene',
-    source_authoring_ref: versionedRef(
-      'scene_materialization_candidate',
-      binding.destination.location_profile_ref),
+    source_authoring_ref: structuredClone(baseStatic.destination.scene_template_ref),
     prepared_scene_materialization: materialization,
     dependency_pins: targetPins,
     share_mode: 'execution_exclusive'
@@ -239,7 +238,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
     party_id: partyId,
     origin: 'canonical',
     parent_g4_id: sourceNode.parent_g4_id,
-    canonical_g5_ref: dbVersionedRef('location_profile', sourceLocationRef),
+    canonical_g5_ref: structuredClone(canonicalG5.source),
     status: 'active',
     state_version: 1,
     created_change_set_id: changeSetId,
@@ -362,8 +361,7 @@ export function addFirstEntryPreparationBatches({ batches, result, partyId, play
         endpoint_ref: sourceEndpointRef
       },
       target: { ...materialization,
-        canonical_g5_ref: dbVersionedRef('location_profile',
-          binding.destination.location_profile_ref),
+        canonical_g5_ref: structuredClone(canonicalG5.destination),
         materialization_trace_id: result.run_id,
         endpoint_ref: targetEndpointRef,
         base_static_template: structuredClone(baseStatic.destination),
@@ -389,8 +387,10 @@ function versionedRef(entityKind, entityId) {
   };
 }
 
-function dbVersionedRef(entityKind, entityId) {
-  return { entity_kind: entityKind, entity_id: entityId, authoring_version: '1' };
+function dbRef(value, entityKind) {
+  return value && value.entity_kind === entityKind
+    && typeof value.entity_id === 'string' && value.entity_id.length > 0
+    && value.authoring_version === '1';
 }
 
 function authoringPin(dependencyRole, entityKind, entityId) {
@@ -398,6 +398,32 @@ function authoringPin(dependencyRole, entityKind, entityId) {
     dependency_role: dependencyRole,
     entity_ref: { entity_kind: entityKind, entity_id: entityId },
     version_pin: { pin_kind: 'authoring_version', authoring_version: '1' }
+  };
+}
+
+function canonicalScenePins(canonicalG5Ref, profileRef, templateRef) {
+  return [
+    authoringPinFromRef('canonical_g5', canonicalG5Ref),
+    authoringPinFromRef('scene_materialization_profile', profileRef),
+    authoringPinFromRef('scene_template', templateRef)
+  ];
+}
+
+function authoringPinFromRef(dependencyRole, value) {
+  const ref = value?.entity_ref ?? value;
+  return {
+    dependency_role: dependencyRole,
+    entity_ref: { entity_kind: ref.entity_kind, entity_id: ref.entity_id },
+    version_pin: {
+      pin_kind: 'authoring_version', authoring_version: value.authoring_version
+    }
+  };
+}
+
+function versionedDbRef(value) {
+  return {
+    entity_ref: { entity_kind: value.entity_kind, entity_id: value.entity_id },
+    authoring_version: value.authoring_version
   };
 }
 

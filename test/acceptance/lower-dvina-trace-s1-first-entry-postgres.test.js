@@ -315,7 +315,7 @@ async function campRows(environment, partyId) {
     SELECT
       (SELECT count(*)::int FROM party_runtime.party_g5_sites
        WHERE party_id=$1 AND canonical_g5_ref->>'entity_id'=
-         'trace_ld_v1_loc_fishing_camp') AS g5,
+         'trace_ld_v1_g5_fishing_camp') AS g5,
       (SELECT count(*)::int FROM party_runtime.party_scene_baselines
        WHERE party_id=$1 AND scene_template_ref#>>'{entity_ref,entity_id}'=$2) AS baselines,
       (SELECT count(*)::int FROM party_runtime.party_g6_instances
@@ -356,8 +356,8 @@ async function campRows(environment, partyId) {
          ON m.preparation_snapshot_id=c.preparation_snapshot_id
         AND m.ordinal=c.preparation_member_ordinal
        WHERE s.party_id=$1
-         AND m.source_authoring_ref->'entity_ref'->>'entity_id'=
-         'trace_ld_v1_loc_fishing_camp') AS claims`, [partyId, CAMP_TEMPLATE]);
+         AND m.source_authoring_ref->'entity_ref'->>'entity_id'=$2) AS claims`,
+  [partyId, CAMP_TEMPLATE]);
   return row;
 }
 

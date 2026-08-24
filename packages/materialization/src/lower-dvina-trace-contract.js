@@ -59,7 +59,7 @@ export const LOWER_DVINA_TRACE_APPROVED_WORLD_COMPATIBILITY_DIGEST =
 export const LOWER_DVINA_TRACE_APPEARANCE_WORLD_COMPATIBILITY_DIGEST =
   '3d019f3e51cb4e7629713108bb7658127996ee5c70acd38ccb03e7160385ff00';
 export const LOWER_DVINA_TRACE_SPATIAL_SEMANTIC_WORLD_COMPATIBILITY_DIGEST =
-  '2a1d571f0f8c59e7b03b6c876970ceeebada76492d5d38c542821464d7d54c75';
+  'bbc14100e3f43d4a383c22fc717b4b54f4a464bf5f9c90489be22d5ab4b70e11';
 
 export function assertLowerDvinaTraceRequest(input) {
   if (!input || typeof input !== 'object') fail('TRACE_MATERIALIZATION_REQUEST_INVALID', 'Materialization request is required.');

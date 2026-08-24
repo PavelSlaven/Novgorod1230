@@ -10,6 +10,8 @@ const evidencePath = 'docs/migration/spatial-v3/release-evidence.v1.json';
 const historicalFreezePath = 'docs/migration/spatial-v3/normative-freeze.json';
 const worldCatalogManifestPath =
   'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3/manifest.json';
+const currentWorldCatalogManifestPath =
+  'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json';
 const expectedCutover = 'versioned production activation cutover';
 const errors = [];
 
@@ -21,6 +23,10 @@ const historicalFreezeBytes = await readFile(resolve(root, historicalFreezePath)
 const worldCatalogManifestBytes = await readFile(
   resolve(root, worldCatalogManifestPath)
 );
+const currentWorldCatalogManifestBytes = await readFile(
+  resolve(root, currentWorldCatalogManifestPath)
+);
+const currentWorldCatalogManifest = JSON.parse(currentWorldCatalogManifestBytes);
 const serverConfig = await read('apps/game-server/src/config.js');
 const compositionLoader = await read(
   'apps/game-server/src/runtime/load-composition.js'
@@ -186,9 +192,9 @@ check(
   'production root lacks migrated-party readiness gate'
 );
 for (const fragment of [
-  'novgorod_spatial_v3_production_v3_candidate_001',
-  sha256(worldCatalogManifestBytes),
-  boundary.release.world_catalog_digest,
+  currentWorldCatalogManifest.world_revision_id,
+  sha256(currentWorldCatalogManifestBytes),
+  currentWorldCatalogManifest.catalog_digest,
   'temporal-world-v1.1',
   'exact_only',
   'rus.runtime_catalog_pin.v2',

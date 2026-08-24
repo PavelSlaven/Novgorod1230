@@ -11,10 +11,10 @@ const ROOT = 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-conten
 const ACTIVE = Object.freeze({
   profile_digest: '6f098af0e8be7a5acff46a270668b71055add42e535ff376578785a715159f86',
   profile_canonical_digest: '1ccdfc04a23a7071d9e425496897e13f4a2afaa88493f32e94d7a1b2248f781e',
-  m12_manifest_digest: '646f748bbbca67e351cb17c92019f28ee9f299d999c73c29e3cb5852bb3f9e0b',
-  phase_1a_manifest_digest: '24cd6f15fdfec5686a666a782b9b3040d6cba5330e142a720214c4f0e815fdaa',
-  phase_1b_manifest_digest: '5f10b25bcd715256191ba8513b78e1244ee382918c54b7b89cd4c845f99c8fd8',
-  phase_1b_binding_digest: '61f774800a36f2a3e0002f594ea13b410f2a8b52b1e10e9843024b54283da83e'
+  m12_manifest_digest: '2460b7089e1e825054adcb707e1907c9deb32a2cd3dd0a55f035547c44cca110',
+  phase_1a_manifest_digest: 'd11563d81d0249fcd8efe95a99cb53ace6f8ecb76ffab42a6bb8c16b5eb2cd6b',
+  phase_1b_manifest_digest: '1184e6dad56bed75b1b7bbaf700b9fe606109074d361a862249da7cb5c8ffcf7',
+  phase_1b_binding_digest: '8c8b7dd7410de91735f70809c05a95a9272a6a3555c3f7e2901c952f2e099228'
 });
 
 export async function loadLowerDvinaTraceSpatialSemanticProfile({ rootDir = process.cwd() } = {}) {

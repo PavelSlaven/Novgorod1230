@@ -141,6 +141,53 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     const header = Object.freeze(structuredClone(result.rows[0]));
     return composeSceneTemplateClosure(header, header);
   }
+  async function readPinnedCanonicalG5SceneBinding({ id, version,
+    world_revision_id } = {}) {
+    if (typeof id !== 'string' || !id.trim() || !Number.isInteger(version)
+      || version < 1 || typeof world_revision_id !== 'string'
+      || !world_revision_id.trim()) {
+      return failure('authoring_dependency_pin_missing', 'node', id, {
+        reason: 'exact_canonical_g5_pin_required'
+      });
+    }
+    if (typeof query !== 'function') {
+      return failure('generated_schema_mismatch', 'node', id, {
+        reason: 'read-only query port is required'
+      });
+    }
+    const result = await query(`SELECT n.id,n.version,n.world_revision_id,
+      n.spatial_level,n.primary_class_id,n.status,n.canonical_digest,
+      parent.parent_id,parent.parent_version,
+      profile.id AS materialization_profile_id,
+      profile.version AS materialization_profile_version,
+      profile.canonical_digest AS materialization_profile_digest,
+      candidate.scene_template_id,candidate.scene_template_version
+      FROM world_base.spatial_v3_nodes n
+      JOIN world_base.spatial_v3_node_parents parent
+        ON parent.child_id=n.id AND parent.child_version=n.version
+       AND parent.world_revision_id=n.world_revision_id
+      JOIN world_base.spatial_v3_scene_materialization_profiles profile
+        ON profile.source_kind='canonical_g5'
+       AND profile.source_entity_id=n.id
+       AND profile.source_entity_version=n.version
+       AND profile.world_revision_id=n.world_revision_id
+       AND profile.status='approved'
+      JOIN world_base.spatial_v3_scene_materialization_candidates candidate
+        ON candidate.profile_id=profile.id
+       AND candidate.profile_version=profile.version
+      WHERE n.id=$1 AND n.version=$2 AND n.world_revision_id=$3
+        AND n.spatial_level='G5' AND n.status='approved' LIMIT 2`,
+    [id, version, world_revision_id]);
+    if (!Array.isArray(result?.rows) || result.rows.length !== 1) {
+      return failure('route_plan_snapshot_missing', 'node', id, {
+        reason: result?.rows?.length > 1
+          ? 'ambiguous_canonical_g5_scene_binding'
+          : 'canonical_g5_scene_binding_missing', version, world_revision_id
+      });
+    }
+    return Object.freeze({ ok: true,
+      value: Object.freeze(structuredClone(result.rows[0])) });
+  }
   async function composeSceneTemplateClosure(header, ref) {
     const tables = Object.keys(SCENE_TEMPLATE_CLOSURE_COLUMNS);
     const results = await Promise.all(tables.map((table) => query(`SELECT ${SCENE_TEMPLATE_CLOSURE_COLUMNS[table]} FROM world_base.${table} WHERE scene_template_id=$1 AND scene_template_version=$2`, [header.id, header.version])));
@@ -157,6 +204,7 @@ export function createSpatialV3WorldBaseReader({ query } = {}) {
     readTemplate: (ref) => read({ kind: 'template', ref }),
     readSceneTemplateClosure,
     readPinnedSceneTemplateClosure,
+    readPinnedCanonicalG5SceneBinding,
     readOrientationProfile: (ref) =>
       read({ kind: 'orientation_profile', ref }),
     readMovementCostProfile: (ref) =>

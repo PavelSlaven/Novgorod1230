@@ -125,7 +125,7 @@ test('builtin v6 binding constructs the production semantic runtime', async () =
   assert.equal(bindings.runtimeCatalogPin.compatible_world_revision_id,
     'novgorod_spatial_v3_production_v5_candidate_001');
   assert.equal(bindings.runtimeCatalogPin.compatible_world_catalog_digest,
-    'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8');
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad');
 });
 
 function fixture() {
@@ -273,6 +273,16 @@ test('v5 release requires exact committed activation readback', () => {
 });
 
 test('production-v12 root is sole owner with production-v11 rollback identity', async () => {
+  const [parentWorld, currentWorld] = await Promise.all([
+    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json', 'utf8').then(JSON.parse),
+    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json', 'utf8').then(JSON.parse)
+  ]);
+  assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
+    world_revision_id: parentWorld.world_revision_id,
+    world_catalog_digest: parentWorld.catalog_digest,
+    world_catalog_manifest_sha256: currentWorld.parent_manifest_sha256
+  });
+  assert.equal(currentWorld.parent_revision_id, parentWorld.world_revision_id);
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {

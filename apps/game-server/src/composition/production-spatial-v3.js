@@ -32,9 +32,9 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   world_revision_id:
     'novgorod_spatial_v3_production_v5_candidate_001',
   world_catalog_digest:
-    'aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8',
+    'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
   world_catalog_manifest_sha256:
-    '6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c',
+    '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c',
   dependency_pin_mode: 'exact_only',
   runtime_catalog_pin_schema: 'rus.runtime_catalog_pin.v2',
   runtime_catalog_scope: 'item_container_materialization_v2',
@@ -57,11 +57,11 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
-      'novgorod_spatial_v3_production_v3_candidate_001',
+      'novgorod_spatial_v3_production_v4_candidate_001',
     world_catalog_digest:
-      '1cf914ed9a19801f94b8b1463a717dbb0be7f1d51ea2351e6d1d5a51c492215e',
+      'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
     world_catalog_manifest_sha256:
-      '593ccb341084f7433ec4ae9d7d0b2ea8b1dea07833636ef385550ba5a295ecea'
+      '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
   }),
   boundary_crossing_capability: 'ready_for_runtime_acceptance',
   npc_conversation_capability: 'ready_for_runtime_acceptance',

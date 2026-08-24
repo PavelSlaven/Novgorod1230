@@ -101,7 +101,15 @@ export function materializeS1SceneBaseStatic({ scene_template_ref, g6_slot_key,
 }
 
 export function materializeS1FirstEntryPreparation({ party_id, binding, start_binding,
-  scene, npcs, world_base_reference_snapshot }) {
+  source_g4_id, scene, npcs, world_base_reference_snapshot }) {
+  const sourceG5 = canonicalG5Binding(world_base_reference_snapshot,
+    binding?.source?.canonical_g5_ref,
+    binding?.source?.materialization_profile_ref,
+    start_binding?.node_template_ref, source_g4_id);
+  const destinationG5 = canonicalG5Binding(world_base_reference_snapshot,
+    binding?.destination?.g5?.canonical_ref,
+    binding?.destination?.g5?.materialization_profile_ref,
+    binding?.destination?.g6?.scene_template_ref, scene?.node?.parent_g4_id);
   const source = materializeS1SceneBaseStatic({
     scene_template_ref: start_binding?.node_template_ref,
     g6_slot_key: start_binding?.anchor_template?.slot_key,
@@ -124,7 +132,7 @@ export function materializeS1FirstEntryPreparation({ party_id, binding, start_bi
     slot: binding?.destination?.g6?.s1_topology_slot,
     world_base_reference_snapshot
   });
-  if (!source.ok || !destination.ok || !s1.ok) {
+  if (!sourceG5 || !destinationG5 || !source.ok || !destination.ok || !s1.ok) {
     return failure('s1_formal_spatial_data_gap', null, { stage: 's1_first_entry_static' });
   }
   return freeze({ ok: true, preparation: freeze({
@@ -133,9 +141,43 @@ export function materializeS1FirstEntryPreparation({ party_id, binding, start_bi
       source: structuredClone(source.base_static_template),
       destination: structuredClone(destination.base_static_template)
     },
+    canonical_g5_refs: {
+      source: canonicalNodeRef(sourceG5), destination: canonicalNodeRef(destinationG5)
+    },
+    scene_materialization_profile_refs: {
+      source: materializationProfileRef(sourceG5),
+      destination: materializationProfileRef(destinationG5)
+    },
     s1_topology: structuredClone(s1.topology),
     s1_physical_writes: structuredClone(s1.rows)
   }) });
+}
+
+function canonicalG5Binding(snapshot, canonicalRef, profileRef, sceneTemplateId,
+  parentG4Id) {
+  const rows = snapshot?.canonical_g5_scene_bindings?.filter((row) =>
+    versionedRef(canonicalRef, 'canonical_spatial_node', row?.id)
+    && row.version === 1 && row.spatial_level === 'G5' && row.status === 'approved'
+    && row.parent_id === parentG4Id && Number.isSafeInteger(row.parent_version)
+    && versionedRef(profileRef, 'scene_materialization_profile',
+      row.materialization_profile_id)
+    && row.materialization_profile_version === 1
+    && row.scene_template_id === sceneTemplateId
+    && row.scene_template_version === 1
+    && /^[a-f0-9]{64}$/u.test(row.canonical_digest ?? '')
+    && /^[a-f0-9]{64}$/u.test(row.materialization_profile_digest ?? '')) ?? [];
+  return rows.length === 1 ? rows[0] : null;
+}
+
+function canonicalNodeRef(row) {
+  return freeze({ entity_kind: 'canonical_spatial_node', entity_id: row.id,
+    authoring_version: String(row.version) });
+}
+
+function materializationProfileRef(row) {
+  return freeze({ entity_kind: 'scene_materialization_profile',
+    entity_id: row.materialization_profile_id,
+    authoring_version: String(row.materialization_profile_version) });
 }
 
 function closureFor(snapshot, sceneTemplateRef) {

@@ -1,22 +1,16 @@
 import { createHash } from 'node:crypto';
-import {
-  createLowerDvinaTracePhase1ARepository
-} from '@rus/party-store/internal/lower-dvina-trace-phase-1a';
-import {
-  createLowerDvinaTracePhase1APostcommitProjector,
-  materializeLowerDvinaTraceParty
-} from '../../internal/lower-dvina-trace-phase-1a.js';
-import {
-  createPostgresStage25Ports
-} from './stage25.js';
+import { createLowerDvinaTracePhase1ARepository } from
+  '@rus/party-store/internal/lower-dvina-trace-phase-1a';
+import { createLowerDvinaTracePhase1APostcommitProjector,
+  materializeLowerDvinaTraceParty } from '../../internal/lower-dvina-trace-phase-1a.js';
+import { createPostgresStage25Ports } from './stage25.js';
 import {
   loadPhase1ASchemaMetadata,
   mandatorySchemaContracts,
   PHASE_1A_TABLES
 } from './lower-dvina-trace-phase-1b-schema-metadata.js';
-import {
-  assertLowerDvinaTraceExecutionSupport
-} from './lower-dvina-trace-execution-support.js';
+import { assertLowerDvinaTraceExecutionSupport } from
+  './lower-dvina-trace-execution-support.js';
 import { createSpatialV3WorldBaseReader } from './spatial-v3-world-base-reader.js';
 
 export function createLowerDvinaTracePhase1BProductionAdapter({
@@ -238,18 +232,25 @@ export async function readWorldBaseReferenceSnapshot(
     );
   }
   const reader = createSpatialV3WorldBaseReader({ query: worldPool.query.bind(worldPool) });
-  const closures = await Promise.all(['trace_ld_v1_tpl_wreck_shore',
-    'trace_ld_v1_tpl_fishing_camp'].map((id) => reader.readPinnedSceneTemplateClosure({ id, version: 1,
-    world_revision_id: compatibility.production_world_revision_id })));
-  if (closures.some(({ ok }) => !ok)) fail('TRACE_S1_WORLD_CATALOG_GAP',
+  const [closures, canonicalG5] = await Promise.all([
+    Promise.all(['trace_ld_v1_tpl_wreck_shore', 'trace_ld_v1_tpl_fishing_camp']
+      .map((id) => reader.readPinnedSceneTemplateClosure({ id, version: 1,
+        world_revision_id: compatibility.production_world_revision_id }))),
+    Promise.all(['trace_ld_v1_g5_wreck_shore', 'trace_ld_v1_g5_fishing_camp']
+      .map((id) => reader.readPinnedCanonicalG5SceneBinding({ id, version: 1,
+        world_revision_id: compatibility.production_world_revision_id })))
+  ]);
+  if ([...closures, ...canonicalG5].some(({ ok }) => !ok)) fail('TRACE_S1_WORLD_CATALOG_GAP',
     'S1 template closure is unavailable from world-base.');
   return Object.freeze({
     version: 1, schema: 'world_base_reference_snapshot',
-    readonly_checksum: digest({ rows, closures: closures.map(({ value }) => value) }),
+    readonly_checksum: digest({ rows, closures: closures.map(({ value }) => value),
+      canonicalG5: canonicalG5.map(({ value }) => value) }),
     allowed_region_ids: [], allowed_graph_node_ids: [], allowed_graph_edge_ids: [], allowed_place_template_ids: [],
     allowed_npc_candidate_ids: [], allowed_item_profile_ids: [],
     allowed_container_profile_ids: [], allowed_property_rule_ids: [],
-    allowed_source_ids: [], scene_template_closures: closures.map(({ value }) => value)
+    allowed_source_ids: [], scene_template_closures: closures.map(({ value }) => value),
+    canonical_g5_scene_bindings: canonicalG5.map(({ value }) => value)
   });
 }
 
@@ -289,9 +290,7 @@ function requirePool(pool, name) {
 }
 
 function digest(value) {
-  return createHash('sha256')
-    .update(JSON.stringify(value))
-    .digest('hex');
+  return createHash('sha256').update(JSON.stringify(value)).digest('hex');
 }
 
 function fail(code, message) {

@@ -2,7 +2,7 @@
   {
     "id": "novgorod_spatial_v3_production_v5_candidate_001",
     "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
-    "catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
+    "catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
     "status": "approved",
     "provenance_ref": "prov_lower_dvina_trace_phase_1a_v20",
     "deprecated_at": null

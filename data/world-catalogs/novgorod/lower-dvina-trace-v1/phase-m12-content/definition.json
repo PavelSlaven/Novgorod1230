@@ -82,9 +82,9 @@
       "digest": "bc3242db75efa773af9eec1e12a243a5876b55de097c26819d4adb7df7d94f18"
     }
     ,"spatial_semantic_profile": {
-      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v2",
-      "revision": 2,
-      "digest": "16146d2467073abe4f534902f47da5ce736284a17382dd2b402f99825391a5c0"
+      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v3",
+      "revision": 3,
+      "digest": "6f098af0e8be7a5acff46a270668b71055add42e535ff376578785a715159f86"
     }
   },
   "resolved_policy_refs": {

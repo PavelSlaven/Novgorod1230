@@ -36,7 +36,7 @@ async function lockedScope(transaction, partyId, binding) {
       g6.state_version AS g6_state_version,
       g6.source_scene_template_ref#>>'{entity_ref,entity_id}' AS template_id,
       p.id AS position_ref,p.state_version AS position_state_version,
-      p.position_type_id AS position_kind
+      'scene_position' AS position_kind
     FROM party_runtime.party_scene_baselines b
     JOIN party_runtime.party_g5_sites g5 ON g5.party_id=b.party_id AND b.host_kind='g5_site' AND b.host_id=g5.id
     JOIN party_runtime.party_g6_instances g6 ON g6.party_id=b.party_id AND g6.scene_baseline_id=b.id

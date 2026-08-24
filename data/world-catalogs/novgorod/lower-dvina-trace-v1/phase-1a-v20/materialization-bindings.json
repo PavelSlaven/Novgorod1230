@@ -60,11 +60,29 @@
     "route_command_id": "lower_dvina_trace.follow_path_to_fishing_camp",
     "route_ref": "trace_ld_v1_route_wreck_to_camp",
     "materialization_timing": "on_first_successful_entry_only",
+    "source": {
+      "location_profile_ref": "trace_ld_v1_loc_wreck_shore",
+      "canonical_g5_ref": {
+        "entity_ref": {"entity_kind": "canonical_spatial_node", "entity_id": "trace_ld_v1_g5_wreck_shore"},
+        "authoring_version": "1"
+      },
+      "materialization_profile_ref": {
+        "entity_ref": {"entity_kind": "scene_materialization_profile", "entity_id": "trace_ld_v1_smp_wreck_shore"},
+        "authoring_version": "1"
+      }
+    },
     "destination": {
       "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
       "g4_node_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
       "g5": {
-        "profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "canonical_ref": {
+          "entity_ref": {"entity_kind": "canonical_spatial_node", "entity_id": "trace_ld_v1_g5_fishing_camp"},
+          "authoring_version": "1"
+        },
+        "materialization_profile_ref": {
+          "entity_ref": {"entity_kind": "scene_materialization_profile", "entity_id": "trace_ld_v1_smp_fishing_camp"},
+          "authoring_version": "1"
+        },
         "origin": "canonical"
       },
       "scene_baseline": {
@@ -73,7 +91,7 @@
       },
       "g6": {
         "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
-        "materialization_profile": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "materialization_profile": "trace_ld_v1_smp_fishing_camp",
         "status": "prepare_on_first_entry",
         "s1_topology_slot": {
           "source_scene_template_ref": {

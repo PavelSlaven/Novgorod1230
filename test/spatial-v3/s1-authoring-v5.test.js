@@ -2,6 +2,10 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
+import { validateControlledValue } from
+  '../../packages/contracts/src/spatial-v3/controlled-vocabularies.js';
+import { validateS1AuthoringV5Candidate } from
+  '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
 
 const root = 'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5';
 const read = async (file) => JSON.parse(await readFile(`${root}/${file}`, 'utf8'));
@@ -67,12 +71,12 @@ test('v5 wreck-shore and fishing-camp closures are sealed, inactive and reciproc
   assert.deepEqual(datasets.get('spatial_v3_scene_position_templates'), [{
     scene_template_id: 'trace_ld_v1_tpl_wreck_shore', scene_template_version: 1,
     position_slot_key: 'open_shore', g6_scene_slot_key: 'open_shore',
-    instance_count: 1, position_type_id: 'scene_position', capacity: 7,
+    instance_count: 1, position_type_id: 'scene_position.water_reach', capacity: 7,
     access_class_id: 'trace_ld_v1_access_wreck_shore'
   }, {
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1,
     position_slot_key: 'working_camp', g6_scene_slot_key: 'working_camp',
-    instance_count: 1, position_type_id: 'scene_position', capacity: 7,
+    instance_count: 1, position_type_id: 'scene_position.fixed_working_reach', capacity: 7,
     access_class_id: 'trace_ld_v1_access_fishing_camp'
   }, {
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1,
@@ -89,8 +93,8 @@ test('v5 wreck-shore and fishing-camp closures are sealed, inactive and reciproc
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1,
     edge_slot_key: 's1_open_one_space.out', from_position_slot_key: 'working_camp',
     to_position_slot_key: 's1_open_one_space.interior', passage_type_id: 'passage.local',
-    transition_environment_profile_id: 'topological_default', transition_environment_profile_version: 1,
-    movement_orientation_profile_id: 'topological_default', movement_orientation_profile_version: 1,
+    transition_environment_profile_id: 'env.local_variable', transition_environment_profile_version: 3,
+    movement_orientation_profile_id: 'orientation.topological_local', movement_orientation_profile_version: 2,
     cost_kind: 'action', action_units: 1, baseline_movement_method_id: null,
     movement_method_cost_profile_id: null, movement_method_cost_profile_version: null,
     base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null,
@@ -101,8 +105,8 @@ test('v5 wreck-shore and fishing-camp closures are sealed, inactive and reciproc
     scene_template_id: 'trace_ld_v1_tpl_fishing_camp', scene_template_version: 1,
     edge_slot_key: 's1_open_one_space.back', from_position_slot_key: 's1_open_one_space.interior',
     to_position_slot_key: 'working_camp', passage_type_id: 'passage.local',
-    transition_environment_profile_id: 'topological_default', transition_environment_profile_version: 1,
-    movement_orientation_profile_id: 'topological_default', movement_orientation_profile_version: 1,
+    transition_environment_profile_id: 'env.local_variable', transition_environment_profile_version: 3,
+    movement_orientation_profile_id: 'orientation.topological_local', movement_orientation_profile_version: 2,
     cost_kind: 'action', action_units: 1, baseline_movement_method_id: null,
     movement_method_cost_profile_id: null, movement_method_cost_profile_version: null,
     base_minutes: null, dynamic_recheck_policy_id: null, dynamic_recheck_policy_version: null,
@@ -124,4 +128,51 @@ test('v5 wreck-shore and fishing-camp closures are sealed, inactive and reciproc
       assert.equal(reverse.to_position_slot_key, row.from_position_slot_key);
     }
   }
+
+  for (const { position_type_id: value } of datasets.get(
+    'spatial_v3_scene_position_templates'
+  )) validateControlledValue('controlled_position_type', value);
+
+  const g5 = datasets.get('spatial_v3_nodes').filter(({ spatial_level }) =>
+    spatial_level === 'G5');
+  assert.deepEqual(g5.map(({ id }) => id).sort(), [
+    'trace_ld_v1_g5_fishing_camp', 'trace_ld_v1_g5_wreck_shore'
+  ]);
+  const parents = datasets.get('spatial_v3_node_parents');
+  assert.ok(g5.every(({ id, version }) => parents.some((row) =>
+    row.child_id === id && row.child_version === version)));
+  const profiles = datasets.get('spatial_v3_scene_materialization_profiles');
+  assert.deepEqual(profiles.map(({ source_entity_id }) =>
+    source_entity_id).sort(), g5.map(({ id }) => id).sort());
+  assert.equal(datasets.get('universal_categories').some(({ id }) =>
+    id === 'spatial.g5.compound'), true);
+
+  const lineageDatasets = await readLineageDatasets();
+  assert.doesNotThrow(() => validateS1AuthoringV5Candidate({
+    manifest, datasets, lineageDatasets
+  }));
+  const invalid = new Map([...datasets].map(([table, rows]) =>
+    [table, structuredClone(rows)]));
+  invalid.get('spatial_v3_scene_movement_edge_templates')[0]
+    .transition_environment_profile_id = 'missing.profile';
+  assert.throws(() => validateS1AuthoringV5Candidate({
+    manifest, datasets: invalid, lineageDatasets
+  }), /s1_authoring_v5_reference_gap:transition_environment_profile/u);
 });
+
+async function readLineageDatasets() {
+  const parentRoot = 'data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v3';
+  const parent = JSON.parse(await readFile(`${parentRoot}/manifest.json`, 'utf8'));
+  const wanted = new Set([
+    'spatial_v3_regional_scene_template_bases',
+    'universal_categories',
+    'spatial_v3_scene_selection_rules',
+    'spatial_v3_scene_applicability_rules',
+    'spatial_v3_transition_environment_profiles',
+    'spatial_v3_topological_movement_orientation_profiles'
+  ]);
+  return new Map(await Promise.all(parent.datasets.filter(({ table }) =>
+    wanted.has(table)).map(async ({ table, file }) => [
+    table, JSON.parse(await readFile(`${parentRoot}/${file}`, 'utf8'))
+  ])));
+}

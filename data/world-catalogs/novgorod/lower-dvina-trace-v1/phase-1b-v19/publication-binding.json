@@ -21,14 +21,14 @@
     "id": "lower_dvina_trace_phase_1a_v20",
     "revision": 20,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "24cd6f15fdfec5686a666a782b9b3040d6cba5330e142a720214c4f0e815fdaa"
+    "digest": "d11563d81d0249fcd8efe95a99cb53ace6f8ecb76ffab42a6bb8c16b5eb2cd6b"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/definition.json",
     "id": "lower_dvina_trace_v1",
     "revision": 24,
     "schema": "rus.trace_scenario_definition.v1",
-    "digest": "563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77"
+    "digest": "3d791395c5dec4e9c12e5a65fda1acc8ef135f4b4394faea4c2c7bb418ef06aa"
   },
   "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v20",
   "opening_projection": {
@@ -55,15 +55,15 @@
     "trigger": "new_game",
     "occurrence": 0,
     "scenario_definition_revision": 24,
-    "phase_1a_manifest_digest": "24cd6f15fdfec5686a666a782b9b3040d6cba5330e142a720214c4f0e815fdaa",
-    "scenario_definition_digest": "563c920e6960623850aadaf15a27676f9789f9288911cb4c0c8dcf64fc4cdc77"
+    "phase_1a_manifest_digest": "d11563d81d0249fcd8efe95a99cb53ace6f8ecb76ffab42a6bb8c16b5eb2cd6b",
+    "scenario_definition_digest": "3d791395c5dec4e9c12e5a65fda1acc8ef135f4b4394faea4c2c7bb418ef06aa"
   },
   "world_compatibility": {
     "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",
     "source_world_catalog_digest": "0ed3a9388930b0245fecdf6ec8adfa08d74d5fe88d5458bd452bee20de16fb1e",
     "source_status": "approved",
     "production_world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
-    "production_world_catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
+    "production_world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
     "production_status": "approved",
     "lineage": [
       {
@@ -94,9 +94,9 @@
         "path": "data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json",
         "world_revision_id": "novgorod_spatial_v3_production_v5_candidate_001",
         "parent_revision_id": "novgorod_spatial_v3_production_v4_candidate_001",
-        "world_catalog_digest": "aa62e775635c5ec17693f3c15f7ef0a7427a77733566f534afc1dd201c5a42a8",
+        "world_catalog_digest": "e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad",
         "status": "approved",
-        "digest": "6ef44bce7192e00481a58a0dedaf2d661252f0d2c7cc707df3e85cdf02c10e1c"
+        "digest": "6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c"
       }
     ]
   },

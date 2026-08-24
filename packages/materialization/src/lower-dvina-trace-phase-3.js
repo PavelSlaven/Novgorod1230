@@ -75,6 +75,9 @@ export function materializeLowerDvinaTracePreparedCamp({
     party_id: input.party_id,
     binding: bundle.materialization_bindings.first_entry_preparation,
     start_binding: bundle.materialization_bindings.start_spatial_binding,
+    source_g4_id: locationSelections.find(({ slot_key: key }) =>
+      key === bundle.materialization_bindings.start_spatial_binding
+        .location_profile_ref)?.selected?.g4_node_ref?.id,
     scene,
     npcs,
     world_base_reference_snapshot: input.world_base_reference_snapshot

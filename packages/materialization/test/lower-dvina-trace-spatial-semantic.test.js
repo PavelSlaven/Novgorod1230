@@ -172,11 +172,11 @@ test('S1 model eval calls injected provider six times and scores camp-structure 
   let calls = 0;
   const good = await runS1SpatialSemanticEval({ semantic_context: semanticContext('ordinary_structure'),
     model: async ({ case_id }) => { calls += 1; return ({
-      anachronism: { name: 'ordinary bank feature', description: 'ordinary reeds' },
-      'canonical-significant-evidence-ownership-leakage': { name: 'ordinary bank feature', description: 'ordinary reeds' },
+      anachronism: { name: 'bank feature', semantic_requirements: ['interior_space'] },
+      'canonical-significant-evidence-ownership-leakage': { name: 'bank feature', semantic_requirements: ['interior_space'] },
       'unseen-ordinary-structure': { name: 'windbreak', description: 'reeds' },
       'unseen-ordinary-shelter': { name: 'shelter', description: 'driftwood' },
-      'incompatible-mechanics': { name: 'ordinary bank feature', description: 'ordinary reeds' },
+      'incompatible-mechanics': { name: 'bank feature', semantic_requirements: ['interior_space'] },
       'unseen-ordinary-camp-structure': { name: 'net shed', description: 'wattle shed for fishing nets' }
     })[case_id]; } });
   assert.equal(calls, 6);

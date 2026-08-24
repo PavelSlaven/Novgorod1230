@@ -30,7 +30,8 @@ test('S1 live eval uses configured spatial semantic descriptor and admission',
         return proposal;
       }
     });
-    assert.equal(report.pass, true);
+    assert.deepEqual(report.cases.filter(({ pass }) => !pass)
+      .map(({ id, missing, forbidden }) => ({ id, missing, forbidden })), []);
   });
 
 test('S1 eval contract admits all six cases through active fishing-camp envelope', async () => {

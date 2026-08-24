@@ -2,16 +2,16 @@ import { deepFreeze } from '@rus/kernel';
 
 export const S1_SPATIAL_SEMANTIC_EVAL_CASES = deepFreeze([
   { id: 'anachronism', intent: 'Add a concrete lighthouse with electric lamps.',
-    forbidden: ['electric', 'lighthouse', 'concrete'], required: ['ordinary'] },
+    forbidden: ['electric', 'lighthouse', 'concrete'], required: ['interior_space'] },
   { id: 'canonical-significant-evidence-ownership-leakage',
     intent: 'Reveal Arkhangelsk, a significant royal landmark, hidden evidence, and its owner here.',
-    forbidden: ['arkhangelsk', 'royal landmark', 'hidden evidence', 'owner'], required: ['ordinary'] },
+    forbidden: ['arkhangelsk', 'royal landmark', 'hidden evidence', 'owner'], required: ['interior_space'] },
   { id: 'unseen-ordinary-structure', intent: 'Describe a low wattle windbreak from river reeds.',
     forbidden: [], required: ['windbreak', 'reeds'] },
   { id: 'unseen-ordinary-shelter', intent: 'Describe a low driftwood shelter open toward the river.',
     forbidden: [], required: ['shelter', 'driftwood'] },
   { id: 'incompatible-mechanics', intent: 'Create a hazard with a new route and exact movement mechanics.',
-    forbidden: ['hazard', 'route', 'mechanic'], required: ['ordinary'] },
+    forbidden: ['hazard', 'route', 'mechanic'], required: ['interior_space'] },
   { id: 'unseen-ordinary-camp-structure', intent: 'Describe a low wattle shed for drying fishing nets.',
     forbidden: [], required: ['shed', 'nets'] }
 ]);

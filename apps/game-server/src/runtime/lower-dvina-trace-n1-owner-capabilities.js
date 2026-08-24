@@ -1,7 +1,5 @@
 /** Adapts active owner factories to one Phase 7 NPC actor-step. */
 import { npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from '@rus/npc-runtime';
-import { isExactLowerDvinaTraceSpatialSemanticProfile } from
-  '../internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { createNpcContainerCapability } from './lower-dvina-trace-n1-container-capability.js';
 import { applyActionProducedRuntimeProjection } from
   './lower-dvina-trace-action-produced-runtime.js';
@@ -13,11 +11,9 @@ import { projectLowerDvinaTraceF1CurrentState } from
 export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
   createOrdinaryDiscoveryResolver = null,
   createActionProductionOwner = null, loadOrdinaryEnablement = null,
-  createOrdinaryContainerContentsResolver = null,
-  createSpatialSemanticResolver = null, spatialSemanticProfile = null,
-  projectNpcSpatialSemanticCapability = null
+  createOrdinaryContainerContentsResolver = null
 } = {}) {
-  return async ({ partyId, requestId, inputDigest, state, bundle, phase7Contracts,
+  return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
     workingProjection = null, priorLocalFirePlans = [] }) => {
     state = projectTracePhase7CurrentBoundaryState({
       state, workingProjection, priorLocalFirePlans
@@ -27,43 +23,31 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
     const npc = (state?.npcs ?? []).find(({ instance_id }) => instance_id === npcRef);
     if (typeof npcRef !== 'string' || npc == null) return [];
     const capabilities = [];
-    const discoveryTargets = await enabledNpcDiscoveryTargets({ partyId, state,
-      npc, loadOrdinaryEnablement });
+    const discoveryTargets = await enabledNpcDiscoveryTargets({ partyId, npc,
+      loadOrdinaryEnablement });
     const ordinary = typeof createOrdinaryDiscoveryResolver === 'function'
       && discoveryTargets.length > 0
       ? createOrdinaryDiscoveryResolver({ partyId, inputDigest }) : null;
-    const spatialSafeState = spatialCapability({ state, npc, bundle,
-      createSpatialSemanticResolver, spatialSemanticProfile,
-      projectNpcSpatialSemanticCapability });
-    const spatial = spatialSafeState == null ? null
-      : createSpatialSemanticResolver({ partyId, inputDigest });
-    const spatialTargets = spatialDiscoveryTargets(spatialSafeState);
-    if (typeof ordinary === 'function' || typeof spatial === 'function'
-        && spatialTargets.length > 0) {
+    if (typeof ordinary === 'function') {
       capabilities.push({
         operation: 'request_discovery',
         capability: { owner: '@rus/turn', allowed: [
           ...(typeof ordinary !== 'function' ? [] : discoveryTargets.map(
             (target_ref) => ({ target_refs: [target_ref],
               discovery_kinds: ['inspect', 'search'] }))),
-          ...spatialTargets
         ] },
         isApplicable: () => true,
         supports: ({ operation }) => operation.actor_ref === npcRef
           && operation.target_refs?.length === 1
           && (typeof ordinary === 'function'
             && ['inspect', 'search'].includes(operation.discovery_kind)
-            && discoveryTargets.includes(operation.target_refs[0])
-            || spatialTargets.some(({ target_refs, discovery_kinds }) =>
-              target_refs[0] === operation.target_refs[0]
-              && discovery_kinds.includes(operation.discovery_kind))),
+            && discoveryTargets.includes(operation.target_refs[0])),
         execute: (execution) => typeof ordinary === 'function'
           && ['inspect', 'search'].includes(execution.operation.discovery_kind)
           && discoveryTargets.includes(execution.operation.target_refs[0])
-          ? ordinary(ownerInput(execution, state, npcRef,
+          ? ordinary(ordinaryOwnerInput(execution, state, npc,
             'turn_step_ordinary_discovery_request_v1'))
-          : spatial(ownerInput(execution, state, npcRef,
-            'turn_step_spatial_semantic_remainder_request_v1', spatialSafeState))
+          : null
       });
     }
     const itemRefs = npcSafeItemRefs(state, npc);
@@ -175,14 +159,12 @@ function createNpcA1ProjectionOwner({ state, npcRef }) {
   };
 }
 
-function ownerInput(execution, state, npcRef, schema, npcSafeState = null) {
+function ownerInput(execution, state, npcRef, schema) {
   return {
     schema,
     operation: structuredClone(execution.operation),
     plan: structuredClone(execution.plan),
-    request: { ...structuredClone(execution.request),
-      ...(npcSafeState == null ? {} : {
-        npc_safe_state: structuredClone(npcSafeState) }) },
+    request: structuredClone(execution.request),
     actor: { actor_id: npcRef },
     working_projection: structuredClone(execution.working_projection),
     committed_state: structuredClone(state),
@@ -198,35 +180,13 @@ function ownerInput(execution, state, npcRef, schema, npcSafeState = null) {
   };
 }
 
-function spatialCapability({ state, npc, bundle, createSpatialSemanticResolver,
-  spatialSemanticProfile, projectNpcSpatialSemanticCapability }) {
-  if (typeof createSpatialSemanticResolver !== 'function'
-      || typeof projectNpcSpatialSemanticCapability !== 'function'
-      || !isExactLowerDvinaTraceSpatialSemanticProfile(bundle,
-        spatialSemanticProfile)
-      || npcLocalScope(state, npc) == null) return null;
-  const safe = projectNpcSpatialSemanticCapability({ committedState: state,
-    npcSnapshot: npc, resolverAvailable: true });
-  return (safe?.spatial_semantic?.semantic_grounding_available === true
-    || spatialDiscoveryTargets(safe).length > 0) ? safe : null;
+function ordinaryOwnerInput(execution, state, npc, schema) {
+  return { ...ownerInput(execution, state, npc.instance_id, schema),
+    committed_state: npcCommittedState(state, npc) };
 }
 
-function spatialDiscoveryTargets(safe) {
-  const marker = safe?.spatial_semantic;
-  const current = typeof marker?.position_ref === 'string'
-    ? [{ target_refs: [marker.position_ref], discovery_kinds: ['look'] }] : [];
-  const refs = (safe?.visible_objects ?? []).flatMap(({ entity_ref: ref }) =>
-    ref?.entity_kind === 'spatial_local_reference'
-      && typeof ref.entity_id === 'string'
-      ? [ref.entity_id] : []);
-  return [...current, ...[...new Set(refs)].map((target_ref) => ({
-    target_refs: [target_ref], discovery_kinds: ['look', 'inspect']
-  }))];
-}
-
-async function enabledNpcDiscoveryTargets({ partyId, state, npc,
-  loadOrdinaryEnablement }) {
-  const scope = npcLocalScope(state, npc);
+async function enabledNpcDiscoveryTargets({ partyId, npc, loadOrdinaryEnablement }) {
+  const scope = npcLocalScope(npc);
   if (scope == null || typeof loadOrdinaryEnablement !== 'function') return [];
   const enabled = await loadOrdinaryEnablement({ partyId, scopeRef: scope });
   const execution = enabled?.execution_context;
@@ -235,13 +195,29 @@ async function enabledNpcDiscoveryTargets({ partyId, state, npc,
   return [...new Set(candidates.filter((ref) => npcKnowsRef(ref, npc, scope)))];
 }
 
-function npcLocalScope(state, npc) {
-  const position = state?.position;
-  if (npc?.machine_state?.location_ref !== position?.location_ref
-      || npc?.machine_state?.spatial_zone_ref !== position?.zone_ref) return null;
+function npcLocalScope(npc) {
+  const position = npcPosition(npc);
   const id = position?.g6_id ?? position?.g6_ref;
   return typeof id === 'string' && id.length > 0
     ? { entity_kind: 'g6', entity_id: id } : null;
+}
+
+function npcCommittedState(state, npc) {
+  const position = npcPosition(npc);
+  return { ...structuredClone(state), ...(position == null ? {} : { position }) };
+}
+
+function npcPosition(npc) {
+  const machine = npc?.machine_state;
+  const g6Key = typeof machine?.g6_id === 'string' ? 'g6_id'
+    : typeof machine?.g6_ref === 'string' ? 'g6_ref' : null;
+  const anchor = npc?.anchor_id ?? machine?.g5_anchor_id ?? machine?.anchor_id;
+  if (g6Key == null || typeof machine?.location_ref !== 'string'
+      || typeof machine?.spatial_zone_ref !== 'string' || typeof anchor !== 'string') {
+    return null;
+  }
+  return { location_ref: machine.location_ref, zone_ref: machine.spatial_zone_ref,
+    g5_anchor_id: anchor, [g6Key]: machine[g6Key] };
 }
 
 function npcKnowsRef(ref, npc, scope) {

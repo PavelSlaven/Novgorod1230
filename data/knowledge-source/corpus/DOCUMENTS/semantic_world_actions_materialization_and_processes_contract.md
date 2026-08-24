@@ -65,7 +65,7 @@
 8. ресурсы, первоначальное количество, расход и practically abundant sources;
 9. free crafting без обязательного recipe;
 10. party-scoped ordinary content внутри уже существующей spatial рамки;
-11. отдельный будущий профиль ordinary NPC/structure semantic remainder;
+11. отдельный будущий structural semantic remainder;
 12. импровизированные предметы в domain mechanics;
 13. самостоятельные world processes;
 14. первый exact local process — `fire`;
@@ -162,7 +162,7 @@ O2 — context-bound, natural/resource и existing-container extensions
 A1 — broader action-produced physical results / free crafting admission
 F1 — exact local fire
 S1 — broad ordinary structure/spatial semantic remainder
-N1 — ordinary NPC semantic remainder
+N1 — autonomous NPC decisions through current actor-step owner capabilities
 ```
 
 Правила:
@@ -170,8 +170,8 @@ N1 — ordinary NPC semantic remainder
 - каждый profile имеет собственный versioned atomic cutover;
 - внутри profile запрещены dual writers, prompt-only activation и mixed old/new semantics;
 - profile не обязан ждать unrelated profile;
-- O1 не активирует A1, F1, S1 или N1;
-- S1/N1 не входят в минимальную реализацию ordinary item world;
+- O1 не активирует A1, F1 или S1;
+- S1 не входит в минимальную реализацию ordinary item world; N1 регулируется отдельным active NPC contract;
 - authored/significant/hidden/informational materialization остаётся fail-closed во всех profiles.
 
 Такое разделение уменьшает release risk и соответствует проектному принципу разумной достаточности без создания новых owners.
@@ -1866,19 +1866,19 @@ Party-scoped ordinary feature допустима:
 
 ---
 
-# 27. Ordinary NPC и structural semantic remainder
+# 27. Structural semantic remainder
 
-Этот раздел задаёт будущие profiles `N1` и `S1`. Он не является обязательной частью O1 common ordinary item world.
+Этот раздел задаёт будущий profile `S1`. Он не является обязательной частью O1 common ordinary item world. N1 — active общий механизм автономного решения NPC на existing decision boundary: NPC получает только реально исполнимые current actor-step owner capabilities и NPC-safe refs, LLM выбирает одно действие, а existing domain owners исполняют mechanics и persistence. Это не сценарный whitelist и не специальная logic Жданко.
 
 ## 27.1. Structural capacity остаётся code-owned
 
-NPC/G5/G6 slots, finite topology и approved templates остаются у current owners.
+G5/G6 slots, finite topology и approved templates остаются у current owners.
 
 LLM не увеличивает population или spatial capacity.
 
 ## 27.2. Code path имеет приоритет
 
-Если current regional NPC/profile materializer либо approved spatial template уже разрешает instance без semantic gap, используется deterministic code path.
+Если approved spatial template уже разрешает instance без semantic gap, используется deterministic code path.
 
 LLM нужна только для поля, которое:
 
@@ -1897,16 +1897,14 @@ S1
 → broad ordinary structure/site semantic envelope inside approved topology
 
 N1
-→ ordinary NPC semantic remainder after code-owned formal facets
+→ active autonomous NPC decision through executable current actor-step owner capabilities and NPC-safe refs, not scenario whitelist or Zhanko-specific logic
 ```
 
 O1 не получает право materialize NPC или building.
 
 ## 27.4. Appearance и mechanics
 
-N1 не отменяет current deterministic demographic, appearance, equipment и schedule mechanics.
-
-LLM не заполняет поля, которыми уже владеет approved profile/materializer.
+Старое понятие ordinary NPC semantic remainder after deterministic profile/materializer отменено как значение N1. Оно может рассматриваться только как отдельная неактивная будущая идея без profile identifier.
 
 ## 27.5. Structure parts
 
@@ -3354,7 +3352,7 @@ PASS.
 - ordinary content does not mutate scene baseline;
 - no permanent edge/position from O1/O2 item materialization;
 - movement-significant feature routes through spatial owner;
-- S1/N1 remain disabled when only O1/O2 active.
+- S1 remains disabled when only O1/O2 active; N1 follows its separate active NPC contract.
 
 ## 49.10. A1 action-produced objects
 
@@ -3594,7 +3592,7 @@ Survey также указывает research gaps; поэтому schema/gates 
 | A1 | broader action-produced physical results | высокая | medium-high; admission/contract cutover |
 | F1 | local exact fire | высокая | high; process + time + item persistence |
 | S1 | broad structure/spatial semantic remainder | условно высокая | high, separate spatial profile |
-| N1 | ordinary NPC semantic remainder | условно высокая | high, separate NPC profile |
+| N1 | autonomous NPC decision through current actor-step owner capabilities and NPC-safe refs | active | separate NPC contract |
 | new template-less container | возможна позже | high | requires container mechanics snapshot version |
 
 ## 52.4. Итоговая оценка
@@ -3608,7 +3606,7 @@ Survey также указывает research gaps; поэтому schema/gates 
 - одним небольшим cutover;
 - готовым только потому, что owners уже существуют.
 
-O1 является разумным первым production slice. F1, S1 и N1 не должны блокировать его и не должны активироваться вместе ради формальной «целостности документа».
+O1 является разумным первым production slice. F1 и S1 не должны блокировать его и не должны активироваться вместе ради формальной «целостности документа»; N1 следует отдельному active NPC contract.
 
 # 53. Противоречия с current active contracts и code
 
@@ -3777,7 +3775,7 @@ O1 becomes active only after:
 - model call outside transaction;
 - pass-through zero-call proof.
 
-O1 may activate without O2/A1/F1/S1/N1.
+O1 may activate without O2/A1/F1/S1; N1 follows its separate active NPC contract.
 
 ## 54.3. O2 cutover
 
@@ -3804,9 +3802,9 @@ F1 requires:
 - bound-fuel conflict validation on item transitions;
 - unchanged remote catch-up tests.
 
-## 54.6. S1/N1 cutovers
+## 54.6. S1 cutover
 
-S1/N1 require their own owner-specific contract/test acceptance and do not enter production merely because O1 ledger exists.
+S1 requires its own owner-specific contract/test acceptance and does not enter production merely because O1 ledger exists. N1 is governed by its separate active NPC contract.
 
 ## 54.7. Mixed semantics rule
 
@@ -3966,12 +3964,12 @@ Versioned-расширить admission для:
 
 Remote engine/API unchanged.
 
-## 55.12. S1/N1
+## 55.12. S1 and inactive future NPC semantic remainder
 
 Вынести в отдельные implementation plans:
 
 - S1 broad template semantic fields inside finite topology;
-- N1 semantic remainder after deterministic profile materializer.
+- inactive future NPC semantic remainder after deterministic profile/materializer, without profile identifier.
 
 Не включать в O1 MVP.
 
@@ -4047,10 +4045,10 @@ Template-less new container remains deferred.
 - persistence/retry;
 - remote compatibility tests.
 
-## 56.7. S1/N1 — only on concrete demand
+## 56.7. S1 and inactive future NPC semantic remainder — only on concrete demand
 
 - broad spatial/structure envelope;
-- ordinary NPC semantic remainder.
+- ordinary NPC semantic remainder without profile identifier.
 
 Каждый получает отдельный plan/cutover.
 
@@ -4104,7 +4102,7 @@ implement
 - one LLM call per small object;
 - offline generation of all possible contents;
 - template-less runtime container before exact container mechanics contract;
-- synchronized activation of unrelated O1/O2/A1/F1/S1/N1 profiles.
+- synchronized activation of unrelated O1/O2/A1/F1/S1 profiles.
 
 Technical strictness remains mandatory where it directly preserves committed facts, atomicity, exact mechanics, safe projections and owner boundaries.
 
@@ -4206,7 +4204,7 @@ O2 context/resource/container
 A1 action-produced results
 F1 local fire
 S1 spatial remainder
-N1 NPC remainder
+N1 active autonomous NPC decisions
 ```
 
 Each profile is independently atomic. Umbrella document is not a reason to combine them in one release.
@@ -4223,7 +4221,7 @@ Each profile is independently atomic. Umbrella document is not a reason to combi
 
 Это противоречило принципу разумной достаточности и увеличивало release risk.
 
-Решение: независимые atomic profiles O1/O2/A1/F1/S1/N1. Mixed semantics запрещена внутри profile, но profile не ждёт unrelated implementation.
+Решение: независимые atomic profiles O1/O2/A1/F1/S1; N1 регулируется отдельным active NPC contract. Mixed semantics запрещена внутри profile, но profile не ждёт unrelated implementation.
 
 ## A.2. Новый player operation для ordinary detail — отклонено
 
@@ -4347,7 +4345,7 @@ Pre-existing sources используют separate `basis_kind`, а не нов�
 
 ## A.21. Broad structure/NPC remainder входит в O1 — отклонено
 
-S1/N1 являются separate high-risk profiles.
+S1 — separate high-risk profile. N1 не является ordinary materialization profile: это separate active NPC contract.
 
 O1 materialize-ит only ordinary content in existing scope.
 

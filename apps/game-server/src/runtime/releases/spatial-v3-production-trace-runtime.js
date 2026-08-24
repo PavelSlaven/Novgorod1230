@@ -12,8 +12,7 @@ import { createLowerDvinaTraceA1ProductionResolverFactory } from
   './lower-dvina-trace-a1-production.js';
 import { createLowerDvinaTraceF1ProductionResolverFactory } from
   './lower-dvina-trace-f1-production.js';
-import { createLowerDvinaTraceS1ProductionResolverFactory,
-  projectLowerDvinaTraceNpcS1Capability } from
+import { createLowerDvinaTraceS1ProductionResolverFactory } from
   './lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../lower-dvina-trace-world-process-llm.js';
@@ -105,13 +104,7 @@ export function createTraceTurnRuntime({
         ordinaryMaterializationModel }),
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
-    loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
-    createSpatialSemanticResolver: spatialSemanticResolverFactory,
-    spatialSemanticProfile: activeSpatialSemanticProfile,
-    projectNpcSpatialSemanticCapability: ({ committedState, npcSnapshot }) =>
-      projectLowerDvinaTraceNpcS1Capability({ npcSnapshot, committedState,
-        resolverAvailable: spatialSemanticResolverFactory != null
-      })
+    loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input)
   });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({

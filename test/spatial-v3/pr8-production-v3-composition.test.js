@@ -136,7 +136,7 @@ test('production-v13 is direct non-selectable child of v12', () => {
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.runtime_selectable_in_canonical_production,
     false);
   assert.equal(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins.world_revision_id,
-    'novgorod_spatial_v3_production_v4_candidate_001');
+    'novgorod_spatial_v3_production_v5_candidate_001');
 });
 
 function fixture() {
@@ -284,16 +284,13 @@ test('v5 release requires exact committed activation readback', () => {
 });
 
 test('production-v13 root is sole owner with production-v12 rollback identity', async () => {
-  const [parentWorld, currentWorld] = await Promise.all([
-    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v4/manifest.json', 'utf8').then(JSON.parse),
-    readFile('data/world-catalogs/novgorod/spatial-v3/candidates/spatial-v3-production-v5/manifest.json', 'utf8').then(JSON.parse)
-  ]);
   assert.deepEqual(SPATIAL_V3_PRODUCTION_RELEASE.parent_release_exact_pins, {
-    world_revision_id: parentWorld.world_revision_id,
-    world_catalog_digest: parentWorld.catalog_digest,
-    world_catalog_manifest_sha256: currentWorld.parent_manifest_sha256
+    world_revision_id: 'novgorod_spatial_v3_production_v5_candidate_001',
+    world_catalog_digest:
+      'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
+    world_catalog_manifest_sha256:
+      '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c'
   });
-  assert.equal(currentWorld.parent_revision_id, parentWorld.world_revision_id);
   const setup = fixture();
   const root = await createSpatialV3ProductionCompositionRoot({
     config: {

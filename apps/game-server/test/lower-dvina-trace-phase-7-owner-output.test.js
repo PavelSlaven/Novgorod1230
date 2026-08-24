@@ -153,45 +153,6 @@ test('Phase 7 rejects injected NPC S1 output on selected wait owner', async () =
     { code: 'TRACE_PHASE_7_OWNER_OUTPUT_PLAN_INVALID' });
 });
 
-test('Phase 7 commits private NPC S1 output selected through request_discovery',
-  async () => {
-    const state = phase7CommittedState();
-    state.position.position_id = 'position:s1';
-    state.position.g6_ref = 'g6:s1';
-    const npc = state.npcs.find(({ instance_id: id }) => id === 'zhdanko-1');
-    npc.machine_state.location_ref = state.position.location_ref;
-    npc.machine_state.spatial_zone_ref = state.position.zone_ref;
-    const contracts = contractsFor(state);
-    contracts.npcSemanticProfile = npcSemanticProfile();
-    const [bundle, spatialSemanticProfile] = await Promise.all([
-      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 25 }),
-      loadLowerDvinaTraceSpatialSemanticProfile()
-    ]);
-    const capabilities = await createLowerDvinaTraceN1OwnerCapabilitiesFactory({
-      createSpatialSemanticResolver: () => npcS1Resolver(state),
-      spatialSemanticProfile,
-      projectNpcSpatialSemanticCapability: () => ({
-        spatial_semantic: { semantic_grounding_available: true,
-          position_ref: 'position:s1' }, visible_objects: []
-      })
-    })({ partyId: state.party_id, requestId: 'npc-s1-genuine',
-      inputDigest: digest, state, bundle, phase7Contracts: contracts });
-    const consequence = await phase7Command({ state, contracts,
-      npcOwnerCapabilities: capabilities,
-      model: async (request) => discoveryPlan(request, 'position:s1')
-    }).consequence({ retrievedState: state,
-      playerInput: phase7PlayerInput(state, 'npc-s1-genuine') });
-    assert.equal(consequence.phase7.schedule_execution.semantic_operation.op,
-      'request_discovery');
-    const spatialPlan = consequence.phase7.actor_step_owner_outputs
-      .spatial_semantic_atomic_write_plan;
-    const committed = await commit({ state, contracts, consequence });
-    assert.equal(committed.plan.spatial_semantic_atomic_write_plan.resolution.local_ref,
-      spatialPlan.resolution.local_ref);
-    assert.equal(committed.plan.visible_package_envelope.visible_payload.visible_objects
-      .some(({ entity_ref: ref }) => ref?.entity_id === spatialPlan.resolution.local_ref), false);
-});
-
 test('Phase 7 persists generic NPC container access through root P16 only',
   async () => {
     const state = phase7CommittedState();

@@ -48,7 +48,7 @@ function npcSafeContainers(state, npc) {
     const holder = container?.placement?.holder_npc_id ?? container?.holder_npc_id;
     const accessKinds = ACCESS_KINDS.filter((access_kind) => {
       const plan = planRuntimeContainerAccess({ container, access_kind });
-      return plan.pass || plan.errors[0]?.category === 'check';
+      return plan.pass;
     });
     return safe.has(containerRef(container)) && (holder === npc.instance_id
       || holder == null && colocated(container, npc)) && accessKinds.length > 0

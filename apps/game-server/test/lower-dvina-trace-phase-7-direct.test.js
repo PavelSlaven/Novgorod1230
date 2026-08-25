@@ -9,6 +9,7 @@ import { createLowerDvinaTraceN1DirectOperations } from
   '../src/runtime/lower-dvina-trace-n1-direct-operations.js';
 import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
   '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { matchesOperationContract } from '@rus/npc-runtime';
 import { persistPhase7Consequence } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
 import { assertTurnStepBodyHistoryRows } from
@@ -133,9 +134,11 @@ test('Phase 7 production boundary exposes and persists an unseen safe item direc
     }),
     model: async (request) => {
       assert.deepEqual(request.decision_scope.operation_contract
-        .change_entity_facts.entity_refs, ['npc-cord', 'npc-strap']);
-      assert.equal(request.decision_scope.operation_contract.move_entity
-        .target_refs.includes('zhdanko-1'), true);
+        .change_entity_facts.allowed.map(({ entity_ref }) => entity_ref),
+      ['npc-cord', 'npc-strap']);
+      assert.equal(request.decision_scope.operation_contract.move_entity.allowed
+        .some(({ placement }) => placement.relation === 'worn_by'
+          && placement.target_ref === 'zhdanko-1'), true);
       const plan = phase7DirectPlan(request);
       const container = request.decision_scope.operation_contract
         .request_container_access.allowed[0];
@@ -258,10 +261,46 @@ test('N1 exposes ambient create_entity without a runtime item', () => {
         'trace_ld_v1_loc_storehouse');
       return Object.assign(async () => ({ pass: false }), { supports: () => true });
     } });
-  assert.deepEqual(direct.operationContract.create_entity, {
-    owner: '@rus/items-property', source_refs: ['trace_ld_v1_loc_storehouse'],
-    target_refs: ['zhdanko-1', 'trace_ld_v1_loc_storehouse']
-  });
+  assert.deepEqual(direct.operationContract.create_entity.allowed, [{
+    origin_kind: 'ambient_ordinary',
+    source_refs: ['trace_ld_v1_loc_storehouse'],
+    placement: { relation: 'held_by', target_ref: 'zhdanko-1' }
+  }]);
+});
+
+test('N1 direct contract closes owner-derived origin and placement combinations before handlers', () => {
+  const state = phase7CommittedState();
+  state.items.push(runtimeNpcItem('npc-unseen', 'fact:unseen'),
+    runtimeNpcItem('npc-unseen-2', 'fact:unseen-2'));
+  const phase7Contracts = approvedPhase7Contracts(state);
+  phase7Contracts.npcSemanticProfile = { profile_id:
+    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    status: 'approved', activation_boundary: { phase: 'phase_7',
+      npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
+  const direct = createLowerDvinaTraceN1DirectOperations({ state, phase7Contracts,
+    ordinaryResultPolicy: cordFactPolicy,
+    createAmbientOrdinaryPortionAdmission: () =>
+      Object.assign(async () => ({ pass: false }), { supports: () => true }) });
+  const create = direct.operationContract.create_entity;
+  const move = direct.operationContract.move_entity;
+  const npcRef = 'zhdanko-1';
+  const locationRef = 'trace_ld_v1_loc_storehouse';
+
+  assert.equal(matchesOperationContract({ op: 'create_entity',
+    origin: { kind: 'ambient_ordinary', source_refs: ['npc-unseen'] },
+    placement: { relation: 'held_by', target_ref: npcRef } }, create), false);
+  assert.equal(matchesOperationContract({ op: 'create_entity',
+    origin: { kind: 'direct_partition', source_refs: [locationRef] },
+    placement: { relation: 'held_by', target_ref: npcRef } }, create), false);
+  assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
+    placement: { relation: 'worn_by', target_ref: locationRef } }, move), false);
+  assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
+    placement: { relation: 'located_at', target_ref: npcRef } }, move), false);
+  assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
+    placement: { relation: 'worn_by', target_ref: npcRef } }, move), true);
+  assert.equal(matchesOperationContract({ op: 'create_entity', origin: {
+    kind: 'crafted', source_refs: ['npc-unseen', 'npc-unseen-2'] },
+  placement: { relation: 'held_by', target_ref: npcRef } }, create), true);
 });
 
 const cordFactPolicy = Object.freeze({

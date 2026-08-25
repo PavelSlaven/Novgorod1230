@@ -107,6 +107,7 @@ export function createTraceTurnRuntime({
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
     loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
+    createSpatialSemanticResolver: spatialSemanticResolverFactory,
     createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
   });
   return createPhase2RuntimeFactory({

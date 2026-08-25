@@ -86,18 +86,20 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
-Active revision 20 / M8 / Phase 1A v16 / Phase 1B v15 наследует эту boundary
-без нового NPC semantic mode; revision 19 / `spatial-v3-production-v9`
-сохраняется как historical recovery path. Phase 7 фиксирует
-fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
-точные actor-step operations из зарегистрированных domain handlers
-(`operation_contract` публикует exact executable combinations owners —
-не narrative whitelist и не cartesian kinds×targets), применяется на
-том же timestamp; activity Жданко может продолжаться после +30, пока
-общий temporal owner завершает rest Микулы; temporal/persistence/
-visibility остаются code-owned. Production v7 является explicit rollback
-source; v4–v6 доступны только по historical revision pins, не как current
-runtime fallback. Partial activation, dual write и in-turn fallback запрещены.
+Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
+Phase 1A v21 / Phase 1B v20 и активирует approved N1 Phase-7 NPC semantic
+profile. N1 — общий current actor-step path: в `operation_contract` входят
+только зарегистрированные и state-applicable owner capabilities с текущими
+NPC-safe refs и exact executable structural combinations, не narrative
+whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,
+special Жданко action logic или fallback. Жданко остаётся первым activation
+participant/probe.
+Phase 7 фиксирует fire rest на 30 минут и boundary Жданко на +25; применимый
+semantic plan исполняет зарегистрированный domain handler на том же timestamp,
+а temporal/persistence/visibility остаются code-owned. Revision 19 /
+`spatial-v3-production-v9` сохраняется как immutable historical recovery path;
+v4–v6 доступны только по historical revision pins. Partial activation, dual
+write и in-turn fallback запрещены.
 Combat decision request/plan получает один общий snapshot exchange, использует
 тот же five-category signal protocol и не исполняет checks/harm/items сам.
 Tests покрывают exact schedule/perception, five-category signals, one

@@ -37,9 +37,10 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       ...structuredClone(state), actor_id: npcRef,
       position: structuredClone(position)
     } }) : null;
-  const createRefs = [...runtimeRefs, ...(ambientOrdinaryPortionAdmission != null
-    && locationRef != null ? [locationRef] : [])];
-  const targets = [npcRef, ...(locationRef == null ? [] : [locationRef])];
+  const placements = directPlacements(npcRef, locationRef);
+  const createAllowed = ordinaryResultPolicy == null ? [] : createCombinations({
+    runtimeRefs, placements, ambientOrdinaryPortionAdmission, locationRef
+  });
   const all = createItemOperationHandlers(runtimeState, {
     ordinaryResultPolicy,
     ambientOrdinaryPortionAdmission,
@@ -55,19 +56,21 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       mechanisms: ['impact', 'cut', 'puncture', 'burn', 'strain', 'crush',
         'fall', 'cold', 'heat', 'suffocation', 'poison', 'other'],
       severities: ['minor', 'moderate', 'severe', 'critical'] } } : {}),
-    ...(createRefs.length > 0 && targets.length > 0
-      && ordinaryResultPolicy != null ? { create_entity: {
-        owner: '@rus/items-property', source_refs: createRefs,
-        target_refs: targets } } : {}),
-    ...(itemRefs.length > 0 && targets.length > 0 ? { move_entity: {
-      owner: '@rus/items-property', entity_refs: itemRefs,
-      target_refs: targets } } : {}),
+    ...(createAllowed.length > 0
+      ? { create_entity: { owner: '@rus/items-property',
+        allowed: createAllowed } } : {}),
+    ...(itemRefs.length > 0 && placements.length > 0 ? { move_entity: {
+      owner: '@rus/items-property', allowed: placements.map((placement) =>
+        ({ entity_refs: itemRefs, placement })) } } : {}),
     ...(runtimeRefs.length > 0 ? { change_entity_facts: {
-      owner: '@rus/items-property', entity_refs: runtimeRefs } } : {}),
+      owner: '@rus/items-property', allowed: runtimeRefs.map((entity_ref) =>
+        ({ entity_ref })) } } : {}),
     ...(eligibleMechanicsRefs.length > 0 ? { set_entity_mechanics: {
-      owner: '@rus/items-property', entity_refs: eligibleMechanicsRefs } } : {}),
+      owner: '@rus/items-property', allowed: eligibleMechanicsRefs.map((entity_ref) =>
+        ({ entity_ref })) } } : {}),
     ...(retireRefs.length > 0 ? { retire_entity: {
-      owner: '@rus/items-property', entity_refs: retireRefs } } : {})
+      owner: '@rus/items-property', allowed: retireRefs.map((entity_ref) =>
+        ({ entity_ref })) } } : {})
   };
   const handlers = Object.fromEntries(Object.keys(operationContract).map(
     (operation) => [operation, (execution) => operation === 'apply_body_event'
@@ -81,6 +84,28 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
         }) })]));
   return Object.freeze({ handlers: Object.freeze(handlers),
     operationContract: Object.freeze(operationContract) });
+}
+
+function directPlacements(npcRef, locationRef) {
+  return [
+    { relation: 'held_by', target_ref: npcRef },
+    { relation: 'worn_by', target_ref: npcRef },
+    ...(locationRef == null ? [] : [{ relation: 'located_at', target_ref: locationRef }])
+  ];
+}
+
+function createCombinations({ runtimeRefs, placements,
+  ambientOrdinaryPortionAdmission, locationRef }) {
+  return [
+    ...(runtimeRefs.length === 0 ? [] : placements.map((placement) => ({
+      origin_kinds: ['direct_partition', 'crafted'], source_refs: runtimeRefs,
+      placement
+    }))),
+    ...(ambientOrdinaryPortionAdmission != null && locationRef != null ? [{
+      origin_kind: 'ambient_ordinary', source_refs: [locationRef],
+      placement: placements[0]
+    }] : [])
+  ];
 }
 
 function hasNpcBody(npc) {

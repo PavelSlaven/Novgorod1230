@@ -10,6 +10,8 @@ import { npcSafeActorRefs, npcSafeModeCapabilities } from
   './lower-dvina-trace-n1-mode-handoffs.js';
 import { npcItemWorkingProjection, npcPosition, npcSafeItemRefs } from
   './lower-dvina-trace-n1-item-context.js';
+import { projectLowerDvinaTraceNpcS1Capability } from
+  './releases/lower-dvina-trace-s1-production.js';
 export { projectTracePhase7CurrentBoundaryState } from
   './lower-dvina-trace-local-fire-current-state.js';
 
@@ -17,6 +19,7 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
   createOrdinaryDiscoveryResolver = null,
   createActionProductionOwner = null, loadOrdinaryEnablement = null,
   createOrdinaryContainerContentsResolver = null,
+  createSpatialSemanticResolver = null,
   createModeOwnerCapabilities = null
 } = {}) {
   return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
@@ -56,6 +59,22 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
           : null
       });
     }
+    const spatial = npcS1Capability({ state, npc,
+      resolverAvailable: typeof createSpatialSemanticResolver === 'function' });
+    const s1 = spatial != null ? createSpatialSemanticResolver({ partyId }) : null;
+    if (typeof s1 === 'function') capabilities.push({
+      operation: 'request_discovery', capability: { owner: '@rus/turn', allowed: [{
+        target_refs: [spatial.safe_state.spatial_semantic.position_ref],
+        discovery_kinds: ['look']
+      }] },
+      isApplicable: () => true,
+      supports: ({ operation }) => operation.actor_ref === npcRef
+        && operation.target_refs?.length === 1
+        && operation.target_refs[0] === spatial.safe_state.spatial_semantic.position_ref
+        && operation.discovery_kind === 'look',
+      execute: (execution) => s1(spatialOwnerInput(execution,
+        spatial.committed_state, npc, spatial.safe_state))
+    });
     const itemRefs = npcSafeItemRefs(state, npc);
     if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0) {
       const referenceInput = ({ item_ref, source_refs, tool_refs }) => ({
@@ -212,6 +231,29 @@ function npcLocalScope(npc) {
 function npcCommittedState(state, npc) {
   const position = npcPosition(npc);
   return { ...structuredClone(state), ...(position == null ? {} : { position }) };
+}
+
+function npcS1Capability({ state, npc, resolverAvailable }) {
+  const scope = npcLocalScope(npc);
+  if (scope == null) return null;
+  const position = [...new Set((state?.spatial_semantic ?? []).flatMap((entry) =>
+    entry?.status === 'committed' && entry.envelope?.g6_ref === scope.entity_id
+      && typeof entry.envelope.position_ref === 'string'
+      ? [entry.envelope.position_ref] : []))];
+  if (position.length !== 1 || !npcKnowsRef(position[0], npc, scope)) return null;
+  const committed_state = { ...npcCommittedState(state, npc), position: {
+    ...npcPosition(npc), position_id: position[0] } };
+  const safe_state = projectLowerDvinaTraceNpcS1Capability({ npcSnapshot: npc,
+    committedState: committed_state, resolverAvailable });
+  return safe_state.spatial_semantic?.position_ref === position[0]
+    ? { committed_state, safe_state } : null;
+}
+
+function spatialOwnerInput(execution, state, npc, safeState) {
+  const input = ownerInput(execution, state, npc.instance_id,
+    'turn_step_spatial_semantic_remainder_request_v1');
+  return { ...input, request: { ...input.request,
+    npc_safe_state: structuredClone(safeState) } };
 }
 
 function npcKnowsRef(ref, npc, scope) {

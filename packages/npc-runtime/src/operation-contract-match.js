@@ -153,6 +153,9 @@ const DIRECT_OPERATION_REFS = new Set([
 ]);
 
 function matchesDirectCapability(operation, contract) {
+  if (directStructuralScope(operation, contract)) {
+    return directStructuralCombination(operation, contract);
+  }
   const refs = directRefs(operation);
   return (!Array.isArray(contract.entity_refs)
       || refs.entity_refs.every((ref) => contract.entity_refs.includes(ref)))
@@ -171,6 +174,38 @@ function matchesDirectCapability(operation, contract) {
     && (!Array.isArray(contract.severities)
       || operation.severity == null
       || contract.severities.includes(operation.severity));
+}
+
+function directStructuralScope(operation, contract) {
+  return (operation.op === 'create_entity'
+      && (Object.hasOwn(contract, 'origin_kind')
+        || Object.hasOwn(contract, 'origin_kinds')))
+    || (operation.op === 'move_entity' && Object.hasOwn(contract, 'placement'))
+    || (['change_entity_facts', 'set_entity_mechanics', 'retire_entity']
+      .includes(operation.op) && Object.hasOwn(contract, 'entity_ref'));
+}
+
+function directStructuralCombination(operation, contract) {
+  if (operation.op === 'create_entity') {
+    return (contract.origin_kind === operation.origin?.kind
+        || Array.isArray(contract.origin_kinds)
+          && contract.origin_kinds.includes(operation.origin?.kind))
+      && Array.isArray(contract.source_refs)
+      && operation.origin.source_refs.every((ref) => contract.source_refs.includes(ref))
+      && samePlacement(contract.placement, operation.placement);
+  }
+  if (operation.op === 'move_entity') {
+    return (contract.entity_ref === operation.entity_ref
+        || Array.isArray(contract.entity_refs)
+          && contract.entity_refs.includes(operation.entity_ref))
+      && samePlacement(contract.placement, operation.placement);
+  }
+  return contract.entity_ref === operation.entity_ref;
+}
+
+function samePlacement(left, right) {
+  return record(left) && record(right)
+    && left.relation === right.relation && left.target_ref === right.target_ref;
 }
 
 function directRefs(operation) {

@@ -294,9 +294,9 @@ test('NPC actor-step exposes ambient create_entity without a runtime item', () =
   }]);
 });
 
-test('NPC actor-step direct contract closes owner-derived origin and placement combinations before handlers', () => {
+test('NPC actor-step rejects raw physical transforms before persistence', () => {
   const state = phase7CommittedState();
-  state.items.push(runtimeNpcItem('npc-unseen', 'fact:unseen'),
+  state.items.push(runtimeNpcItem('npc-unseen', 'fact:unseen', 1000),
     runtimeNpcItem('npc-unseen-2', 'fact:unseen-2'));
   const phase7Contracts = approvedPhase7Contracts(state);
   phase7Contracts.npcSemanticProfile = { profile_id:
@@ -307,26 +307,40 @@ test('NPC actor-step direct contract closes owner-derived origin and placement c
     ordinaryResultPolicy: cordFactPolicy,
     createAmbientOrdinaryPortionAdmission: () =>
       Object.assign(async () => ({ pass: false }), { supports: () => true }) });
-  const create = direct.operationContract.create_entity;
   const move = direct.operationContract.move_entity;
   const npcRef = 'zhdanko-1';
   const locationRef = 'trace_ld_v1_loc_storehouse';
 
-  assert.equal(matchesOperationContract({ op: 'create_entity',
-    origin: { kind: 'ambient_ordinary', source_refs: ['npc-unseen'] },
-    placement: { relation: 'held_by', target_ref: npcRef } }, create), false);
-  assert.equal(matchesOperationContract({ op: 'create_entity',
-    origin: { kind: 'direct_partition', source_refs: [locationRef] },
-    placement: { relation: 'held_by', target_ref: npcRef } }, create), false);
+  assert.equal(Object.hasOwn(direct.operationContract, 'create_entity'), false);
+  assert.equal(Object.hasOwn(direct.operationContract, 'set_entity_mechanics'), false);
+  assert.equal(Object.hasOwn(direct.operationContract, 'retire_entity'), false);
+  assert.equal(Object.hasOwn(direct.handlers, 'create_entity'), false);
+  assert.equal(Object.hasOwn(direct.handlers, 'set_entity_mechanics'), false);
+  assert.equal(Object.hasOwn(direct.handlers, 'retire_entity'), false);
+  assert.equal(matchesOperationContract({ op: 'create_entity', temp_ref: 'half-board',
+    semantic_type: 'wood_piece', name: 'половина доски', facts: [],
+    origin: { kind: 'crafted', source_refs: ['npc-unseen'] }, mechanics: {
+      mass_grams: 500, external_hand_cost: 0, carry_form: 'compact',
+      packing_slot_cost: 1, quantity: null, container: null },
+    placement: { relation: 'held_by', target_ref: npcRef } },
+  direct.operationContract.create_entity), false);
+  assert.equal(matchesOperationContract({ op: 'create_entity', origin: {
+    kind: 'direct_partition', source_refs: ['npc-unseen'] },
+  placement: { relation: 'held_by', target_ref: npcRef } },
+  direct.operationContract.create_entity), false);
+  assert.equal(matchesOperationContract({ op: 'set_entity_mechanics',
+    entity_ref: 'npc-unseen', mechanics: { mass_grams: 5000,
+      external_hand_cost: 1, carry_form: 'regular', packing_slot_cost: 5,
+      quantity: null, container: null }, reason: 'сделать тяжелее' },
+  direct.operationContract.set_entity_mechanics), false);
+  assert.equal(matchesOperationContract({ op: 'retire_entity',
+    entity_ref: 'npc-unseen' }, direct.operationContract.retire_entity), false);
   assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
     placement: { relation: 'worn_by', target_ref: locationRef } }, move), false);
   assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
     placement: { relation: 'located_at', target_ref: npcRef } }, move), false);
   assert.equal(matchesOperationContract({ op: 'move_entity', entity_ref: 'npc-unseen',
     placement: { relation: 'worn_by', target_ref: npcRef } }, move), true);
-  assert.equal(matchesOperationContract({ op: 'create_entity', origin: {
-    kind: 'crafted', source_refs: ['npc-unseen', 'npc-unseen-2'] },
-  placement: { relation: 'held_by', target_ref: npcRef } }, create), true);
 });
 
 test('NPC actor-step derives unseen inside and attached placements from NPC-safe current state', async () => {
@@ -394,14 +408,14 @@ const cordFactPolicy = Object.freeze({
     approved_fact_texts: ['шнур подтянут'] }]
 });
 
-function runtimeNpcItem(itemId, factId) {
+function runtimeNpcItem(itemId, factId, mass_grams = 20) {
   const snapshot = {
     schema: 'rus.items.runtime_instance_mechanics_snapshot.v1', version: 1,
     provenance: { source_kind: 'ordinary_direct_action_result',
       root_turn_id: 'turn:source', step_index: 1,
       operation_ref: 'operation:source', origin_kind: 'crafted',
       source_refs: ['safe-source'] },
-    mechanics: { mass_grams: 20, external_hand_cost: 1,
+    mechanics: { mass_grams, external_hand_cost: 1,
       carry_form: 'regular', packing_slot_cost: 1, quantity: null,
       container: null }
   };

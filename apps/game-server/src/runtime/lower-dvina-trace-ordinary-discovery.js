@@ -97,6 +97,7 @@ export function createLowerDvinaTraceOrdinaryDiscoveryResolver({
           finite_source_initial_amount_estimate_policy: estimatePolicy
         } };
       return { ...enabled, party_id: partyId, scope_ref: scopeRef,
+        semantic_target_ref: request.operation.target_refs[0],
         expected_supporting_bases:
           structuredClone(enabled.execution_context.supporting_bases),
         objective_context: objectiveContext,

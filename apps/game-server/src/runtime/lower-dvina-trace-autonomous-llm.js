@@ -20,6 +20,8 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
           'Use only the supplied subjective knowledge, perception, memory,',
           'goals, relationships, body state and available resources.',
           'Use only supplied refs and the registered operation contract.',
+          'emit_interaction is only an observable nonverbal action; never put spoken words, dialogue, or a verbal message in its content.',
+          'For hailing, asking, ordering aloud, calling, or replying, use request_conversation.',
           'Do not roll RNG or declare success, movement, destruction, escape,',
           'exact time, body delta, consequences, or a write plan as facts.',
           'Do not decide for another actor or infer hidden cross-NPC state.',

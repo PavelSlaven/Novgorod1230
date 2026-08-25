@@ -78,6 +78,9 @@ and exact target derive the code-owned candidate identity; the query reaches
 the model only as `candidate_hint` and never acts as a noun/recipe allowlist or
 classification/mechanics authority. Exact normalized retry reuses the
 persisted resolution, while a different query has a different identity.
+The O1 plan keeps that exact semantic target in `semantic_target_ref`, separate
+from the G6 simulation `scope_ref`; P16 binds owner output to the selected
+`request_discovery` target before commit.
 One discovery has a shared two-call semantic budget; structural repair consumes
 the remaining call, and a repaired Stage A can finish as a seed-only commit.
 The exact M7 profile and versioned adversarial Stage B approval receipt are

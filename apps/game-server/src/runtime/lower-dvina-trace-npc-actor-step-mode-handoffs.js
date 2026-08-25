@@ -1,19 +1,19 @@
 import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
-import { initializeTraceCombatHandoff } from
-  './lower-dvina-trace-phase-4-combat-initialization.js';
+import { initializeTraceCombatHandoff } from './lower-dvina-trace-phase-4-combat-initialization.js';
 import { traceCombatBindingForActor } from
   './lower-dvina-trace-combat-bindings.js';
 import { validateCombatSession } from '@rus/contracts/combat-v1';
 import { startNpcActorStep } from '@rus/turn/temporal-advance';
-const MODE_OPERATIONS = new Set([
-  'emit_interaction', 'request_conversation', 'request_combat'
-]);
+const MODE_OPERATIONS = new Set(['emit_interaction', 'request_conversation', 'request_combat']);
+const NONVERBAL_INTERACTION_CONTRACT = Object.freeze({ content_semantics:'nonverbal_observable_action_only', speech_operation:'request_conversation' });
 const HANDOFF_SCHEMA = 'rus.lower_dvina_trace_npc_actor_step_mode_handoff.v1';
 export function npcSafeModeCapabilities({ modeCapabilities, npcRef,
   visibleTargetRefs }) {
   return (Array.isArray(modeCapabilities) ? modeCapabilities : []).flatMap((entry) => {
     if (!MODE_OPERATIONS.has(entry?.operation) || entry?.capability == null
-        || typeof entry.execute !== 'function') return [];
+        || typeof entry.execute !== 'function'
+        || entry.operation === 'emit_interaction'
+        && !same(entry.capability.interaction_contract, NONVERBAL_INTERACTION_CONTRACT)) return [];
     const ownerTargets = Array.isArray(entry.capability.target_actor_refs)
       ? new Set(entry.capability.target_actor_refs) : null;
     const exposedTargets = visibleTargetRefs.filter((ref) =>
@@ -58,8 +58,8 @@ export function createLowerDvinaTraceNpcActorStepModeOwnerCapabilities({ npc,
         (participant) => participant.entity_id === npc?.instance_id));
   const combatAvailable = !(state?.combat_sessions ?? []).some(
     ({ status }) => status !== 'ended');
-  return [{ operation: 'emit_interaction', capability: { owner: '@rus/turn',
-    instrument_refs: [...availableResourceRefs] },
+  return [{ operation: 'emit_interaction', capability: { owner: '@rus/turn', instrument_refs:
+    [...availableResourceRefs], interaction_contract: NONVERBAL_INTERACTION_CONTRACT },
     execute: handoff('emit_interaction') },
   ...(conversationAvailable ? [{ operation: 'request_conversation',
     capability: { owner: '@rus/turn' },

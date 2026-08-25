@@ -174,8 +174,11 @@ classification/coverage/policy fields. Normalized discovery query (NFKC,
 trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
 code-owned candidate identity и передаётся model только как `candidate_hint`;
 это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity. Один discovery имеет общий
-лимит двух semantic calls; structural repair расходует оставшийся call, а
+другой normalized query получает другую identity. O1 plan отдельно хранит
+выбранную semantic target в `semantic_target_ref`, тогда как `scope_ref`
+остаётся G6 simulation scope; P16 связывает owner output с exact
+`request_discovery` target до commit. Один discovery имеет общий лимит двух
+semantic calls; structural repair расходует оставшийся call, а
 Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
 supporting-basis/property/placement admission `@rus/items-property`, собирает
 один ordinary P16 plan после revalidation и передаёт его persistence owner;

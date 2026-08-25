@@ -191,11 +191,12 @@ function requireO1CarrierBinding({ ordinaryPlan, semanticRequest, ...binding }) 
   const rootTurnId = semanticRequest?.root_turn_id;
   if (!['seed', 'presence'].some((phase) => requestIdentity ===
       `${rootTurnId}:ordinary:${phase}`)
+      || typeof ordinaryPlan.semantic_target_ref !== 'string'
       || ordinaryPlan.item != null
         && ordinaryPlan.item.mechanics_snapshot.provenance.request_id
           !== requestIdentity) throw new Error();
   requireTurnStepOwnerCarrierBinding({ ...binding, semanticRequest, carrier: {
-    target_refs: [ordinaryPlan.scope_ref.entity_id]
+    target_refs: [ordinaryPlan.semantic_target_ref]
   }, carrierOperation: operationFor('request_discovery',
     binding.semanticOperations) });
 }

@@ -60,7 +60,11 @@ test('NPC actor-step mode handoffs expose only NPC-safe visible targets and keep
       supports: ({ operation }) => operation.target_actor_refs[0] === 'visible-1',
       execute: async () => ({ working_projection: {}, summary: 'combat handoff',
         duration_minutes: 0 })
-    }, { operation: 'emit_interaction', capability: { owner: '@rus/interaction' },
+    }, { operation: 'emit_interaction', capability: { owner: '@rus/interaction',
+      interaction_contract: {
+        content_semantics: 'nonverbal_observable_action_only',
+        speech_operation: 'request_conversation'
+      } },
       execute: async () => ({ working_projection: {}, summary: 'interaction handoff',
         duration_minutes: 0 })
     }]
@@ -75,6 +79,12 @@ test('NPC actor-step mode handoffs expose only NPC-safe visible targets and keep
   }
   const conversation = capabilities.find(({ operation }) =>
     operation === 'request_conversation');
+  const interaction = capabilities.find(({ operation }) =>
+    operation === 'emit_interaction');
+  assert.deepEqual(interaction.capability.interaction_contract, {
+    content_semantics: 'nonverbal_observable_action_only',
+    speech_operation: 'request_conversation'
+  });
   assert.equal(conversation.supports({ operation: { op: 'request_conversation',
     actor_ref: 'npc-1', target_actor_refs: ['visible-1'] } }), true);
   await conversation.execute({});
@@ -97,8 +107,14 @@ test('production handoffs expose only current NPC-safe actor targets', async () 
     operation === 'request_conversation');
   const combat = capabilities.find(({ operation }) =>
     operation === 'request_combat');
+  const interaction = capabilities.find(({ operation }) =>
+    operation === 'emit_interaction');
   assert.deepEqual(conversation.capability.target_actor_refs,
     ['visible-1', 'visible-2']);
+  assert.deepEqual(interaction.capability.interaction_contract, {
+    content_semantics: 'nonverbal_observable_action_only',
+    speech_operation: 'request_conversation'
+  });
   assert.equal(combat, undefined);
   assert.equal(JSON.stringify(capabilities).includes('remote-1'), false);
 });

@@ -4,6 +4,7 @@ import { canonicalDigest, createOrdinaryAggregate } from '@rus/materialization';
 import { ordinaryWorldPropertyPlacementContextDigest } from '@rus/items-property';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../src/runtime/lower-dvina-trace-ordinary-discovery.js';
+import bindO1 from './o1-binding.js';
 import { resolveContextBoundOrdinaryPolicy } from
   '../src/runtime/context-bound-ordinary-policy.js';
 import { ORDINARY_ARMAMENT_MECHANICS_CAPABILITY } from '@rus/combat-health';
@@ -174,7 +175,7 @@ test('context-bound variants stay free', async () => {
   }
 });
 
-test('authority-sensitive wording cannot become persisted sensitive identity', async () => {
+test('sensitive wording cannot persist authority', async () => {
   for (const fixture of [{
     admissionClass: 'currency_or_precious', profileKind: 'precious_material',
     semanticType: 'precious_material_fragment', publicName: 'серебряная заготовка',
@@ -319,9 +320,10 @@ test('selected finite capability consumes its own committed source row', async (
   assert.deepEqual(result.ordinary_materialization_atomic_write_plan.item
     .item_proposal.semantic_descriptor,
   { semantic_type: 'prepared_stock', name: 'stock-b', facts: [] });
+  bindO1(result.ordinary_materialization_atomic_write_plan);
 });
 
-test('missing authority persists absence after candidate-free Stage A without Stage B', async () => {
+test('missing authority persists candidate-free absence', async () => {
   for (const input of [enabled({ withProfile: false }),
     enabled({ admission_class: 'currency_or_precious', semantic_type: 'authentic_coin' })]
     .map((value) => JSON.parse(JSON.stringify(value)))) {
@@ -346,7 +348,7 @@ test('missing authority persists absence after candidate-free Stage A without St
   }
 });
 
-test('specialized candidate without either authority persists absence and never rerolls', async () => {
+test('unauthorized specialized candidate persists absence', async () => {
   const current = enabled({ admission_class: 'specialized_or_valuable',
     semantic_type: 'prepared_stock', withProfile: false });
   let calls = 0;

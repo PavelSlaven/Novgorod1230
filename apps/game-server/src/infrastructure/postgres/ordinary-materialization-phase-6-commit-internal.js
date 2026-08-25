@@ -53,6 +53,11 @@ export function exact(value, keys) {
   return value;
 }
 
+export function phase6Keys(value, sealed) {
+  const keys=['party_id','scope_ref',...(Object.hasOwn(value,'semantic_target_ref')?['semantic_target_ref']:[]),'request_identity','input_digest','transition_digest','expected_versions','expected_supporting_basis_catalog','new_prepared_bases','next_supporting_basis_catalog','next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest','expected_property_placement_context',...(Object.hasOwn(value,'enablement_pin')?['enablement_pin']:[]),...(Object.hasOwn(value,'finite_resource_transition')?['finite_resource_transition']:[]),...(Object.hasOwn(value,'finite_resource_initialization')?['finite_resource_initialization']:[]),'resolution','transitions','next_aggregate','item'];
+  return sealed ? ['schema',...keys,'write_plan_digest'] : keys;
+}
+
 export function validTransitionShape(value) {
   return plain(value) && typeof value.kind === 'string'
     && typeof value.request_identity === 'string'

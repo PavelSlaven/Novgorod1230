@@ -36,11 +36,21 @@ test('autonomous adapter uses isolated plan and repair roles', async () => {
     'npc_step_plan_v1',
     'nearest independent intention',
     'subjective knowledge',
+    'observable nonverbal action',
+    'never put spoken words',
+    'hailing, asking, ordering aloud, calling, or replying',
+    'use request_conversation',
     'Do not roll RNG',
     'exact time',
     'write plan',
     'another actor'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
+  const spokenRoute = prompt.match(/For hailing[^.]+/)?.[0] ?? '';
+  for (const intent of ['hailing', 'asking', 'ordering aloud', 'calling', 'replying']) {
+    assert.equal(spokenRoute.includes(intent), true, intent);
+  }
+  assert.equal(spokenRoute.includes('request_conversation'), true);
+  assert.equal(spokenRoute.includes('emit_interaction'), false);
   assert.deepEqual(JSON.parse(calls[0].messages[1].content), request);
   assert.deepEqual(JSON.parse(calls[1].messages[1].content), {
     request,

@@ -240,7 +240,9 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   resolution, item = null, finiteResourceEffects = null }) {
   const expected = enabled.version_pins;
   const plan = sealAtomicWritePlan({ party_id: partyId,
-    scope_ref: structuredClone(scopeRef), request_identity: requestIdentity,
+    scope_ref: structuredClone(scopeRef),
+    semantic_target_ref: enabled.semantic_target_ref,
+    request_identity: requestIdentity,
     input_digest: canonicalDigest({ inputDigest, request_id: requestIdentity }),
     transition_digest: canonicalDigest(transitions.at(-1)),
     expected_versions: structuredClone(expected),

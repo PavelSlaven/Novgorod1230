@@ -44,6 +44,18 @@ export function createTracePhase7DomainExecution({ state, contracts,
     handlers: Object.freeze(handlers),
     direct_handlers: capabilities.direct_handlers,
     operation_contract: capabilities.operation_contract,
+    preflight_action_production: (execution) => {
+      const operations = execution.operations;
+      const owner = Array.isArray(operations)
+        ? capabilities.additional_owners.find((candidate) =>
+          candidate.operation === 'request_item_use'
+          && operations.every((operation) => candidate.supports({ operation })))
+        : null;
+      if (typeof owner?.preflight !== 'function') {
+        fail('TRACE_PHASE_7_A1_PREFLIGHT_MISSING');
+      }
+      return owner.preflight(execution);
+    },
     registered_owner_output: () => structuredClone(registeredOwnerOutput)
   });
 }

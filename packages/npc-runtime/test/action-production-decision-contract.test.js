@@ -69,3 +69,31 @@ test('NPC item use admits A1 production and keeps ref and contract gates', () =>
 
   assert.doesNotThrow(() => buildNpcStepPlan(plan(decisionRequest), decisionRequest));
 });
+
+test('NPC checked container access is generic-check only', () => {
+  const decisionRequest = request();
+  decisionRequest.npc.available_resources.push({ item_ref: 'locked-kit' });
+  decisionRequest.decision_scope.allowed_attribute_refs = ['attention'];
+  decisionRequest.decision_scope.operation_contract = { request_container_access: {
+    allowed: [{ actor_ref: decisionRequest.npc_ref, container_ref: 'locked-kit',
+      access_kinds: ['close'], resolution: 'domain_request' }, {
+      actor_ref: decisionRequest.npc_ref, container_ref: 'locked-kit',
+      access_kinds: ['force'], resolution: 'generic_check' }]
+  } };
+  const force = { op: 'request_container_access', actor_ref: decisionRequest.npc_ref,
+    container_ref: 'locked-kit', access_kind: 'force' };
+  const checked = plan(decisionRequest);
+  Object.assign(checked, { resolution: 'generic_check', goal_result: 'pending',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'none' },
+    operations: [], check: { purpose: 'сорвать запор', attribute_ref: 'attention',
+      skill_ref: null, difficulty_id: 'risky', outcomes: Object.fromEntries([
+        'clean_success', 'success', 'success_with_cost',
+        'failure_with_consequence', 'severe_failure'
+      ].map((band) => [band, { goal_result: band === 'clean_success'
+        ? 'achieved' : 'not_achieved', additional_activity: null,
+      operations: band === 'clean_success' ? [force] : [] }])) } });
+  assert.equal(validateNpcStepPlan(checked, decisionRequest), true);
+  const direct = plan(decisionRequest);
+  direct.operations = [force];
+  assert.equal(validateNpcStepPlan(direct, decisionRequest), false);
+});

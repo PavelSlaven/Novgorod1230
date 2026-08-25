@@ -42,6 +42,7 @@ export function createTracePhase7ActorStepRuntime({ state, contracts, temporal,
           genericCheckContextOwner.resolve({
             check, actor, working_projection: projection
           }),
+    preflightActionProduction: domainExecution.preflight_action_production,
     randomSource
   });
   return Object.freeze({ registry, ports,

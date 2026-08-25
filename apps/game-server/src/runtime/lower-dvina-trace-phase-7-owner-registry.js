@@ -14,6 +14,7 @@ export function registeredPhase7Owners({ npcOwnerCapabilities, state, contracts,
         || entry.isApplicable?.({ state, contracts }) === false) return [];
     return [Object.freeze({ operation: entry.operation,
       capability: structuredClone(entry.capability), execute: entry.execute,
+      preflight: typeof entry.preflight === 'function' ? entry.preflight : null,
       supports: typeof entry.supports === 'function'
         ? entry.supports : () => true })];
   }));

@@ -108,6 +108,31 @@ test('N1 A1 subset capability stays valid beside existing item owner', () => {
       source_refs: ['source'], tool_refs: ['hidden'] } }, contract), false);
 });
 
+test('N1 A1 capability does not depend on a Strength probe', async () => {
+  const state = stateWithNpc();
+  const phase7Contracts = contracts(state);
+  delete phase7Contracts.genericCheckContext;
+  let executed = false;
+  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+    createActionProductionOwner: () => ({
+      referencesApplicable: async () => true,
+      execute: async (input) => {
+        executed = input.check_result?.outcome === 'clean_success';
+        return { working_projection: input.working_projection, summary: 'a1' };
+      }
+    })
+  });
+  const capabilities = await factory({ partyId: 'party', requestId: 'request',
+    inputDigest: 'digest', state, phase7Contracts });
+  const action = capabilities.find(({ operation }) => operation === 'request_item_use');
+  assert.ok(action);
+  await action.execute({ ...execution({ op: 'request_item_use', actor_ref: 'npc',
+    item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],
+    action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } }),
+  check_result: { outcome: 'clean_success' } });
+  assert.equal(executed, true);
+});
+
 test('N1 A1 advertises only owner-applicable refs and exact target binding', async () => {
   const state = stateWithNpc();
   state.items.push({ ...npcItem('remote'), placement: { holder_npc_id: 'npc',
@@ -269,8 +294,10 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
     ({ operation }) => operation === 'request_item_use'), true);
   assert.deepEqual(container.capability, { owner: '@rus/items-property', allowed: [{
     actor_ref: 'npc', container_ref: 'road-bag',
-    access_kinds: ['open', 'close', 'open_and_view']
-  }] });
+    access_kinds: ['open', 'close', 'open_and_view'],
+    resolution: 'domain_request'
+  }, { actor_ref: 'npc', container_ref: 'road-bag',
+    access_kinds: ['unlock', 'force'], resolution: 'generic_check' }] });
   assert.equal(JSON.stringify(container.capability).includes('road-packet'), false);
   assert.equal(container.supports({ operation: { op: 'request_container_access',
     actor_ref: 'npc', container_ref: 'road-bag', access_kind: 'open_and_view' } }), true);
@@ -292,6 +319,43 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
   assert.equal(resolved.working_projection.actor_id, 'npc');
   assert.equal(resolved.working_projection.items.some(
     ({ item_id }) => item_id === 'player-pouch'), false);
+});
+
+test('N1 advertises checked container access only through generic check', async () => {
+  const state = stateWithNpc();
+  state.containers = [{ container_id: 'locked-kit', template_id: 'locked-kit-template',
+    holder_npc_id: 'npc', open_state: 'locked', state_version: 1,
+    state: { controller_npc_id: 'npc', location_ref: 'camp', zone_ref: 'shore' } }];
+  state.container_placements = [{ party_id: 'party', container_id: 'locked-kit',
+    anchor_id: 'camp-anchor', parent_container_id: null, holder_npc_id: 'npc',
+    holder_character_id: null, physical_position: 'worn',
+    equipment_slot_category_id: null }];
+  state.container_profiles = [{ template_id: 'locked-kit-template', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
+    external_hand_cost: 0 }];
+  const capabilities = await createLowerDvinaTraceN1OwnerCapabilitiesFactory()({
+    partyId: 'party', requestId: 'request', inputDigest: 'digest', state,
+    phase7Contracts: contracts(state) });
+  const container = capabilities.find(
+    ({ operation }) => operation === 'request_container_access');
+  assert.deepEqual(container.capability.allowed, [{ actor_ref: 'npc',
+    container_ref: 'locked-kit', access_kinds: ['close'],
+    resolution: 'domain_request' }, { actor_ref: 'npc',
+    container_ref: 'locked-kit',
+    access_kinds: ['open', 'unlock', 'force', 'open_and_view'],
+    resolution: 'generic_check' }]);
+  const force = { op: 'request_container_access', actor_ref: 'npc',
+    container_ref: 'locked-kit', access_kind: 'force' };
+  assert.equal(matchesOperationContract(force, container.capability,
+    'domain_request'), false);
+  assert.equal(matchesOperationContract(force, container.capability,
+    'generic_check'), true);
+  const checked = execution(force);
+  checked.plan.resolution = 'generic_check';
+  checked.check_result = { outcome: { band: 'success' } };
+  const resolved = await container.execute(checked);
+  assert.equal(resolved.write_fragments[0].value.payload.state_patch.open_state,
+    'open');
 });
 
 test('N1 omits adapters when current NPC-safe owner refs disappear', async () => {

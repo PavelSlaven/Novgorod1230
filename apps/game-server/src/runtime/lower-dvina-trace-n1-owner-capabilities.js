@@ -57,8 +57,7 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
       });
     }
     const itemRefs = npcSafeItemRefs(state, npc);
-    if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0
-        && genericContextStrength(phase7Contracts?.genericCheckContext) != null) {
+    if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0) {
       const referenceInput = ({ item_ref, source_refs, tool_refs }) => ({
         actor_ref: npcRef, item_ref, source_refs, tool_refs,
         root_turn_id: `turn:${partyId}:${Number(state.party_state?.turn_number) + 1}`,
@@ -82,6 +81,14 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
         isApplicable: () => true,
         supports: ({ operation }) => npcA1OperationSupported(
           operation, npcRef, applicableRefs),
+        preflight: (execution) => {
+          const activeOwner = ownerFor(execution.request.request_id);
+          if (typeof activeOwner.preflight !== 'function') {
+            fail('TRACE_PHASE_7_A1_PREFLIGHT_MISSING');
+          }
+          return activeOwner.preflight(ownerInput(execution, state, npcRef,
+            'turn_step_action_produced_remainder_request_v1'));
+        },
         execute: (execution) => ownerFor(execution.request.request_id).execute(
           ownerInput(execution, state, npcRef, execution.check_result == null
             ? 'turn_step_action_produced_remainder_request_v1'
@@ -156,24 +163,19 @@ function createNpcA1ProjectionOwner({ state, npc, itemRefs }) {
       resolveItemMechanics: createCommittedItemMechanicsResolver(state) });
   };
 }
-
-
-function genericContextStrength(context) {
-  const value = context?.attributes?.find(({ attribute_ref }) =>
-    attribute_ref === 'strength')?.value;
-  return Number.isSafeInteger(value) && value >= 0 ? value : null;
-}
-
 function ownerInput(execution, state, npcRef, schema) {
   return {
     schema,
-    operation: structuredClone(execution.operation),
+    ...(execution.operation == null ? {} : {
+      operation: structuredClone(execution.operation) }),
     plan: structuredClone(execution.plan),
     request: structuredClone(execution.request),
     actor: structuredClone(execution.request.actor),
     working_projection: structuredClone(execution.working_projection),
     committed_state: structuredClone(state),
     prepared_chain_context: structuredClone(execution.prepared_chain_context),
+    ...(execution.operations == null ? {} : {
+      operations: structuredClone(execution.operations) }),
     ...(execution.check_result == null ? {} : {
       check_result: structuredClone(execution.check_result) }),
     ...(execution.prepared_ordinary_materialization_atomic_write_plan == null ? {} : {
@@ -217,6 +219,8 @@ function npcKnowsRef(ref, npc, scope) {
     entity_ref: ref, perception_snapshot: npc.perception_snapshot,
     knowledge_snapshot: npc.knowledge_snapshot });
 }
+
+function fail(code) { throw Object.assign(new Error(code), { code }); }
 
 export function activeN1Profile(profile) {
   return profile?.profile_id === 'lower_dvina_trace_n1_npc_semantic_profile_v1'

@@ -267,7 +267,8 @@ function collectKnownRefs(value, refs = new Set(), key = '') {
   return refs;
 }
 
-function validateOperations(operations, request, allowedKinds) {
+function validateOperations(operations, request, allowedKinds,
+  resolution = null) {
   if (!Array.isArray(operations)) return false;
   const knownRefs = request === null ? null : collectKnownRefs(request);
   const declared = new Set();
@@ -281,7 +282,8 @@ function validateOperations(operations, request, allowedKinds) {
     if (request !== null
         && !matchesOperationContract(
           operation,
-          request.decision_scope.operation_contract[operation.op]
+          request.decision_scope.operation_contract[operation.op],
+          resolution
         )) {
       return false;
     }
@@ -305,7 +307,8 @@ function validateOutcome(value, request) {
 }
 
 function validateOutcomeOperations(operations, request) {
-  if (!validateOperations(operations, request, SUPPORTED_OPERATIONS)) return false;
+  if (!validateOperations(operations, request, SUPPORTED_OPERATIONS,
+    'generic_check')) return false;
   const domainIndexes = operations.flatMap((operation, index) =>
     DOMAIN_OPERATIONS.has(operation.op) ? [index] : []);
   return domainIndexes.length <= 1
@@ -319,13 +322,14 @@ function validateCheck(value, request) {
   ])
     && text(value.purpose)
     && stableId(value.attribute_ref)
-    && stableId(value.skill_ref)
+    && nullableStableId(value.skill_ref)
     && enumValue(value.difficulty_id, DIFFICULTIES)
     && exactKeys(value.outcomes, OUTCOME_KEYS)
     && OUTCOME_KEYS.every((outcome) => validateOutcome(value.outcomes[outcome], request))
     && (request === null
       || (request.decision_scope.allowed_attribute_refs.includes(value.attribute_ref)
-        && request.decision_scope.allowed_skill_refs.includes(value.skill_ref)));
+        && (value.skill_ref === null
+          || request.decision_scope.allowed_skill_refs.includes(value.skill_ref))));
 }
 
 function matchingIdentity(value, request) {
@@ -361,7 +365,8 @@ function validateNpcStepPlanShape(value, request) {
   if (value.resolution === 'direct') {
     return validateSemanticActivity(value.activity)
       && value.check === null
-      && validateOperations(value.operations, request, DIRECT_OPERATIONS);
+      && validateOperations(value.operations, request, DIRECT_OPERATIONS,
+        'direct');
   }
   if (value.resolution === 'generic_check') {
     return value.goal_result === 'pending'
@@ -376,7 +381,8 @@ function validateNpcStepPlanShape(value, request) {
     ? validateSemanticActivity(value.activity)
     : validateDomainActivity(value.activity))
     && value.check === null
-    && validateOperations(value.operations, request, SUPPORTED_OPERATIONS)
+    && validateOperations(value.operations, request, SUPPORTED_OPERATIONS,
+      'domain_request')
     && value.operations.filter((operation) => DOMAIN_OPERATIONS.has(operation.op)).length === 1;
 }
 

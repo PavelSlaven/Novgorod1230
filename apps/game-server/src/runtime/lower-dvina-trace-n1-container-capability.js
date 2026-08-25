@@ -22,15 +22,21 @@ export function createNpcContainerCapability({ state, npc, partyId, inputDigest,
     [containerRef(container), accessKinds]));
   return {
     operation: 'request_container_access',
-    capability: { owner: '@rus/items-property', allowed: containers.map(
-      ({ container, accessKinds }) => ({ actor_ref: npc.instance_id,
-        container_ref: containerRef(container), access_kinds: [...accessKinds] })) },
+    capability: { owner: '@rus/items-property', allowed: containers.flatMap(
+      ({ container, accessKinds }) => Object.entries(accessKinds).flatMap(
+        ([resolution, kinds]) => kinds.length === 0 ? [] : [{
+          actor_ref: npc.instance_id, container_ref: containerRef(container),
+          access_kinds: [...kinds], resolution
+        }])) },
     isApplicable: () => true,
-    supports: ({ operation }) => operation.actor_ref === npc.instance_id
-      && byRef.get(operation.container_ref)?.includes(operation.access_kind) === true,
+    supports: (execution) => execution.operation.actor_ref === npc.instance_id
+      && supportedKinds(byRef, execution.operation.container_ref, execution)
+        .includes(execution.operation.access_kind),
     execute: (execution) => {
-      if (!byRef.get(execution.operation.container_ref)?.includes(
-        execution.operation.access_kind)) throw new Error('TRACE_TURN_STEP_CONTAINER_ACCESS_DENIED');
+      if (!supportedKinds(byRef, execution.operation.container_ref, execution)
+        .includes(execution.operation.access_kind)) {
+        throw new Error('TRACE_TURN_STEP_CONTAINER_ACCESS_DENIED');
+      }
       return handler({ ...execution, working_projection: {
         ...structuredClone(execution.working_projection), actor_id: npc.instance_id,
         items: [{ item_id: execution.operation.container_ref }]
@@ -46,14 +52,25 @@ function npcSafeContainers(state, npc) {
     knowledge_snapshot: npc.knowledge_snapshot }).map(({ resource_ref }) => resource_ref));
   return containers.flatMap((container) => {
     const holder = container?.placement?.holder_npc_id ?? container?.holder_npc_id;
-    const accessKinds = ACCESS_KINDS.filter((access_kind) => {
-      const plan = planRuntimeContainerAccess({ container, access_kind });
-      return plan.pass;
-    });
+    const planned = ACCESS_KINDS.map((access_kind) => ({ access_kind,
+      plan: planRuntimeContainerAccess({ container, access_kind }) }));
+    const accessKinds = {
+      domain_request: planned.filter(({ plan }) => plan.pass)
+        .map(({ access_kind }) => access_kind),
+      generic_check: planned.filter(({ plan }) =>
+        plan.disposition === 'check_required')
+        .map(({ access_kind }) => access_kind)
+    };
+    const applicable = Object.values(accessKinds).some((kinds) => kinds.length > 0);
     return safe.has(containerRef(container)) && (holder === npc.instance_id
-      || holder == null && colocated(container, npc)) && accessKinds.length > 0
+      || holder == null && colocated(container, npc)) && applicable
       ? [{ container, accessKinds }] : [];
   });
+}
+
+function supportedKinds(byRef, containerRefValue, execution) {
+  const resolution = execution?.plan?.resolution ?? 'domain_request';
+  return byRef.get(containerRefValue)?.[resolution] ?? [];
 }
 
 function colocated(container, npc) {

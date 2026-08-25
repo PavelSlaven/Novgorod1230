@@ -240,6 +240,30 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
   }));
 });
 
+test('N1 exposes ambient create_entity without a runtime item', () => {
+  const state = phase7CommittedState();
+  state.items = [];
+  state.npcs.find(({ instance_id }) => instance_id === 'zhdanko-1')
+    .machine_state.g6_ref = 'trace_ld_v1_g6_storehouse';
+  const contracts = approvedPhase7Contracts(state);
+  contracts.npcSemanticProfile = { profile_id:
+    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    status: 'approved', activation_boundary: { phase: 'phase_7',
+      npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
+  const direct = createLowerDvinaTraceN1DirectOperations({ state,
+    phase7Contracts: contracts, ordinaryResultPolicy: cordFactPolicy,
+    createAmbientOrdinaryPortionAdmission: ({ committedState }) => {
+      assert.equal(committedState.actor_id, 'zhdanko-1');
+      assert.equal(committedState.position.location_ref,
+        'trace_ld_v1_loc_storehouse');
+      return Object.assign(async () => ({ pass: false }), { supports: () => true });
+    } });
+  assert.deepEqual(direct.operationContract.create_entity, {
+    owner: '@rus/items-property', source_refs: ['trace_ld_v1_loc_storehouse'],
+    target_refs: ['zhdanko-1', 'trace_ld_v1_loc_storehouse']
+  });
+});
+
 const cordFactPolicy = Object.freeze({
   schema: 'rus.items.ordinary_result_admission_policy.v1', version: 1,
   status: 'approved', candidates: [{ semantic_type: 'cord', name: 'шнур',

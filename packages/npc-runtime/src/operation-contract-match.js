@@ -20,17 +20,21 @@ export function worldProcessOperationRefs(operation) {
     ...operation.source_refs, ...operation.target_refs];
 }
 
-export function matchesOperationContract(operation, contract) {
+export function matchesOperationContract(operation, contract, resolution = null) {
   if (!record(contract)) return false;
+  if (resolution !== null && contract.resolution != null
+      && contract.resolution !== resolution) return false;
   if (Array.isArray(contract.alternatives)) {
     return contract.alternatives.some((alternative) =>
-      matchesOperationContract(operation, alternative));
+      matchesOperationContract(operation, alternative, resolution));
   }
   if (Array.isArray(contract.allowed)) {
     if (contract.allowed.length === 0) return false;
     return modeTargetsAllowed(operation, contract)
       && contract.allowed.some((entry) =>
-      record(entry) && operationMatchesAllowedEntry(operation, entry));
+      record(entry) && (resolution === null || entry.resolution == null
+        || entry.resolution === resolution)
+      && operationMatchesAllowedEntry(operation, entry));
   }
   return modeTargetsAllowed(operation, contract)
     && matchesCapabilityContract(operation, contract);

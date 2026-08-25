@@ -28,7 +28,7 @@ export function validateTracePhase7Plan({ plan, request, contracts,
       ? Object.values(plan.check.outcomes).map(({ operations }) => operations)
       : [plan.operations];
     const operationsApplicable = batches.every((operations) =>
-      validOperationBatch(operations, operationContract));
+      validOperationBatch(operations, operationContract, plan.resolution));
     return profile != null && additionalApplicable && operationsApplicable
       ? accepted()
       : rejected('NPC_ACTIVITY_PROFILE_NOT_APPLICABLE');
@@ -40,7 +40,7 @@ export function validateTracePhase7Plan({ plan, request, contracts,
     !['create_entity', 'move_entity', 'change_entity_facts',
       'set_entity_mechanics', 'retire_entity', 'apply_body_event'].includes(op));
   const operation = domainOperations[0];
-  if (!validOperationBatch(plan.operations, operationContract)
+  if (!validOperationBatch(plan.operations, operationContract, plan.resolution)
       || domainOperations.length !== 1) {
     return rejected(operation?.op === 'request_item_use'
       ? 'NPC_ITEM_OPERATION_NOT_APPLICABLE'
@@ -68,14 +68,14 @@ export function validateTracePhase7Plan({ plan, request, contracts,
   return accepted();
 }
 
-function validOperationBatch(operations, operationContract) {
+function validOperationBatch(operations, operationContract, resolution) {
   return Array.isArray(operations)
     && operations.filter(({ op }) => !['create_entity', 'move_entity',
       'change_entity_facts', 'set_entity_mechanics', 'retire_entity',
       'apply_body_event'].includes(op)).length <= 1
     && operations.every((operation) => Object.hasOwn(operationContract,
       operation.op) && matchesOperationContract(operation,
-      operationContract[operation.op]));
+      operationContract[operation.op], resolution));
 }
 
 function accepted() {

@@ -131,6 +131,7 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
   async () => {
     const operation = genericOwners()[1];
     for (const [roll, changed] of [[0.95, true], [0, false]]) {
+      let rngCalls = 0;
       const state = detached(phase7CommittedState());
       state.container_placements = [{ party_id: state.party_id,
         container_id: 'road-bag-1', anchor_id: null, parent_container_id: null,
@@ -167,7 +168,7 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
         tool_refs: ['npc-source-twig', 'npc-tool-knife']
       });
       const consequence = await run({ state, contracts, randomSource: {
-        next() { return roll; }
+        next() { rngCalls += 1; return roll; }
       }, genericCheckContextOwner: checkContext(contracts),
       npcOwnerCapabilities,
       model: async (request) => {
@@ -176,6 +177,7 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
         return checkedA1Plan(request, operation.makeOperation(request.npc_ref));
       } });
       const phase7 = consequence.phase7;
+      assert.equal(rngCalls, 1);
       assert.equal(phase7.actor_step_check.result.outcome.band,
         changed ? 'clean_success' : 'failure_with_consequence');
       assert.equal(phase7.actor_step.semantic_operation.op,
@@ -207,6 +209,29 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
       }
     }
   });
+
+test('Phase 7 checked A1 preflights owner before RNG', async () => {
+  const state = phase7CommittedState();
+  state.items.push({ item_id: 'npc-current-resource' });
+  const contracts = approvedPhase7Contracts(state);
+  let preflight = 0;
+  let rng = 0;
+  const capability = genericOwners()[1];
+  await assert.rejects(() => run({ state, contracts, randomSource: {
+    next() { rng += 1; return 0.95; }
+  }, genericCheckContextOwner: checkContext(contracts),
+  npcOwnerCapabilities: [{ ...capability,
+    preflight: async () => {
+      preflight += 1;
+      throw Object.assign(new Error('denied'), { code: 'TRACE_A1_PREFLIGHT_DENIED' });
+    },
+    execute: async ({ working_projection }) => ({ working_projection,
+      summary: 'unexpected A1 execution' })
+  }], model: async (request) => checkedA1Plan(request,
+    capability.makeOperation(request.npc_ref)) }),
+  { code: 'TRACE_A1_PREFLIGHT_DENIED' });
+  assert.deepEqual({ preflight, rng }, { preflight: 1, rng: 0 });
+});
 
 function genericOwners() {
   return [{ operation: 'request_discovery', activity_owner: 'domain',

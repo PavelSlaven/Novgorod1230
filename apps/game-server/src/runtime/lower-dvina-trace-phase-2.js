@@ -112,8 +112,8 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceN1DirectOperations({
               state, phase7Contracts, ...boundary,
               ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
-              packingCalculator: turnStepPackingCalculator,
-              bodyEventOwner: genericOwners?.bodyEventOwner
+              packingCalculator: turnStepPackingCalculator, bodyEventOwner: genericOwners?.bodyEventOwner,
+              createAmbientOrdinaryPortionAdmission: createTurnStepAmbientOrdinaryPortionAdmission
             });
         const turnRandomSource = randomSourceFactory({
           party_id: partyId,

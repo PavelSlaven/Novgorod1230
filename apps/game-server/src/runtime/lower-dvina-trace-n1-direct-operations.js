@@ -13,7 +13,7 @@ import { applyBodyEvent } from
 export function createLowerDvinaTraceN1DirectOperations({ state,
   phase7Contracts, workingProjection = null, priorLocalFirePlans = [],
   ordinaryResultPolicy = null, packingCalculator = null,
-  bodyEventOwner = null } = {}) {
+  bodyEventOwner = null, createAmbientOrdinaryPortionAdmission = null } = {}) {
   state = projectTracePhase7CurrentBoundaryState({ state, workingProjection,
     priorLocalFirePlans });
   if (!activeN1Profile(phase7Contracts?.npcSemanticProfile)) return empty();
@@ -30,10 +30,20 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       runtimeState.entities.get(ref)?.origin_kind));
   const retireRefs = runtimeRefs.filter((ref) =>
     runtimeState.consumableSources.has(ref));
-  const locationRef = npcPosition(npc)?.location_ref ?? null;
+  const position = npcPosition(npc);
+  const locationRef = position?.location_ref ?? null;
+  const ambientOrdinaryPortionAdmission = typeof createAmbientOrdinaryPortionAdmission
+    === 'function' && position != null ? createAmbientOrdinaryPortionAdmission({ committedState: {
+      ...structuredClone(state), actor_id: npcRef,
+      position: structuredClone(position)
+    } }) : null;
+  const createRefs = [...runtimeRefs, ...(ambientOrdinaryPortionAdmission != null
+    && locationRef != null ? [locationRef] : [])];
   const targets = [npcRef, ...(locationRef == null ? [] : [locationRef])];
   const all = createItemOperationHandlers(runtimeState, {
     ordinaryResultPolicy,
+    ambientOrdinaryPortionAdmission,
+    requireAmbientOrdinaryAdmission: ambientOrdinaryPortionAdmission != null,
     resolveItemMechanics: createCommittedItemMechanicsResolver(state, {
       packingCalculator, actorId: npcRef, actorStrength: null,
       normalizeNpcHolder: true
@@ -45,9 +55,9 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       mechanisms: ['impact', 'cut', 'puncture', 'burn', 'strain', 'crush',
         'fall', 'cold', 'heat', 'suffocation', 'poison', 'other'],
       severities: ['minor', 'moderate', 'severe', 'critical'] } } : {}),
-    ...(runtimeRefs.length > 0 && targets.length > 0
+    ...(createRefs.length > 0 && targets.length > 0
       && ordinaryResultPolicy != null ? { create_entity: {
-        owner: '@rus/items-property', source_refs: runtimeRefs,
+        owner: '@rus/items-property', source_refs: createRefs,
         target_refs: targets } } : {}),
     ...(itemRefs.length > 0 && targets.length > 0 ? { move_entity: {
       owner: '@rus/items-property', entity_refs: itemRefs,

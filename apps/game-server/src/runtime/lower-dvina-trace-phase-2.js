@@ -101,7 +101,8 @@ export function createLowerDvinaTracePhase2Runtime({
         const createBoundaryNpcOwnerCapabilities =
           typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
             createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
-              bundle, phase7Contracts, ...boundary });
+              bundle, phase7Contracts, npcCombatModel, revalidateStateVersion,
+              ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
           ? createLowerDvinaTraceTurnStepGenericOwners({
               profiles: bundle.turn_step_owner_profiles,
@@ -135,8 +136,7 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           revalidateStateVersion,
         });
-        const phase8Contracts = phase8?.contracts ?? null,
-          phase9 = createTracePhase9Runtime({
+        const phase8Contracts = phase8?.contracts ?? null, phase9 = createTracePhase9Runtime({
             state,
             bundle,
             conversationBindings: phase3Contracts?.conversationBindings,

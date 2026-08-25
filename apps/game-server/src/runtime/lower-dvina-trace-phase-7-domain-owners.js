@@ -71,11 +71,14 @@ async function executeRegisteredOwner({ execution, state, temporal, owner,
   });
   capture({ consequence_fragment: structuredClone(
     resolved.consequence_fragment ?? null) });
-  const startedResult = started({ execution: {
+  const startedResult = resolved.actor_step_start == null ? started({ execution: {
     ...execution,
     working_projection: resolved.working_projection
   }, temporal, profile: null, movement: null, property: null,
-  minutes: registeredOwnerMinutes(resolved, temporal) });
+  minutes: registeredOwnerMinutes(resolved, temporal) }) : {
+    ...resolved.actor_step_start,
+    working_projection: structuredClone(resolved.working_projection)
+  };
   return Object.freeze({ ...startedResult,
     summary: `${startedResult.summary}; ${resolved.summary}`,
     write_fragments: structuredClone(resolved.write_fragments ?? []),

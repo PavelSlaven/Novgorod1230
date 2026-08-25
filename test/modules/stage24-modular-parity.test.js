@@ -129,6 +129,35 @@ test('Stage 24 code builder preserves approved normalized NPC, item, placement a
   assert.equal(containerRows[3].holder_character_id, playerId);
 });
 
+test('Stage 24 persists an approved NPC ordinary semantic remainder in semantic_state', () => {
+  const f = makeStage24Fixture();
+  const input = structuredClone(f.input);
+  const npc = {
+    npc_instance_id: 'npc-n1', npc_candidate_id: 'candidate-n1', profile_set_id: 'profile-n1', profile_level: 'background',
+    placement: { g5_anchor_id: input.approved_pipeline_outputs.g5_scene_graph.g5_anchors[0].anchor_id, presence_reason: 'approved presence' },
+    identity: { name_status: 'unknown' }, machine_state: {}, access_state: {}, visibility_state: {},
+    causal_basis: { causal_basis_type: 'approved_npc_profile', causal_basis_id: 'candidate-n1' }, source_trace: [],
+    ordinary_semantic: { display_name: 'лодочник', visible_descriptor: 'мужчина у пешни' }
+  };
+  input.approved_pipeline_outputs.initial_npc_placement.npc_instances = [npc];
+  const plan = modular.buildPartyRuntimeV2WritePlan(input);
+  assert.deepEqual(plan.write_batches.find((batch) => batch.target_table === 'party_npcs').records[0].semantic_state.ordinary_semantic, npc.ordinary_semantic);
+});
+
+test('Stage 24 omits an empty NPC ordinary semantic remainder', () => {
+  const f = makeStage24Fixture();
+  const input = structuredClone(f.input);
+  const npc = {
+    npc_instance_id: 'npc-n1-empty', npc_candidate_id: 'candidate-n1', profile_set_id: 'profile-n1', profile_level: 'background',
+    placement: { g5_anchor_id: input.approved_pipeline_outputs.g5_scene_graph.g5_anchors[0].anchor_id, presence_reason: 'approved presence' },
+    identity: { name_status: 'unknown' }, machine_state: {}, access_state: {}, visibility_state: {},
+    causal_basis: { causal_basis_type: 'approved_npc_profile', causal_basis_id: 'candidate-n1' }, source_trace: [], ordinary_semantic: {}
+  };
+  input.approved_pipeline_outputs.initial_npc_placement.npc_instances = [npc];
+  const state = modular.buildPartyRuntimeV2WritePlan(input).write_batches.find((batch) => batch.target_table === 'party_npcs').records[0].semantic_state;
+  assert.equal(Object.hasOwn(state, 'ordinary_semantic'), false);
+});
+
 test('Stage 24 blocks an approved item missing quantity instead of applying a fallback', () => {
   const f = makeStage24Fixture();
   const input = structuredClone(f.input);

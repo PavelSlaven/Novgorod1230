@@ -60,7 +60,10 @@ export async function resolveTracePhase7FireRestConsequence({
           : await createBoundaryNpcOwnerCapabilities({
               state: currentBoundaryState, workingProjection: temporal.projection,
               priorLocalFirePlans, runNpcConversationExchange,
-              conversationBindings, conversationActivity
+              conversationBindings, conversationActivity,
+              parentTemporal: { execution_id: temporal.execution_id,
+                limit_timestamp: structuredClone(temporal.limit_timestamp),
+                projection: structuredClone(temporal.projection) }
             });
       const boundaryDirect = typeof createBoundaryNpcDirectOperations !== 'function'
         ? null : await createBoundaryNpcDirectOperations({

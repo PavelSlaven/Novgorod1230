@@ -81,6 +81,8 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     activeActorStep: tracePhase7ActorStep(
       phase7.schedule_temporal.projection, phase7.actor_step)
   });
+  next.active_npc_actor_steps = structuredClone(
+    phase7.schedule_temporal.projection.active_npc_actor_steps ?? []);
   applyNpcDirectBodyState(next, phase7);
   next = projectLowerDvinaTraceNpcActorStepModeHandoff({ state: next,
     consequenceFragment: phase7.actor_step_owner_outputs?.consequence_fragment,

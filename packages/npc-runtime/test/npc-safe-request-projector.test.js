@@ -253,12 +253,12 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
         resource_ref: 'known-packet',
         source_event_ref: ref('knowledge_event', 'packet-known'),
         summary: 'известный свёрток лежит рядом'
-      }, {
-        fact_ref: 'known-private-controlled-fact',
-        resource_ref: 'known-private-controlled',
-        source_event_ref: ref('knowledge_event', 'private-packet-known'),
+      }, ...['private', 'hidden', 'locked'].map((state) => ({
+        fact_ref: `known-${state}-controlled-fact`,
+        resource_ref: `known-${state}-controlled`,
+        source_event_ref: ref('knowledge_event', `${state}-packet-known`),
         summary: 'свой закрытый свёрток'
-      }, ...['known-no-access-packet', 'known-unavailable-packet'].map(
+      })), ...['known-no-access-packet', 'known-unavailable-packet'].map(
         (resource_ref) => ({
           fact_ref: `${resource_ref}-fact`,
           resource_ref,
@@ -302,16 +302,18 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
           ? { access_state: state }
           : { visibility_state: state })
       }
-    })), {
-      item_id: 'known-private-controlled',
+    })), ...['private', 'hidden', 'locked'].map((state) => ({
+      item_id: `known-${state}-controlled`,
       template_id: 'packet',
       holder_npc_id: 'speaker',
       state: {
         location_ref: 'yard',
         zone_ref: 'gate',
-        visibility_state: 'private'
+        ...(state === 'locked'
+          ? { access_state: state }
+          : { visibility_state: state })
       }
-    }, {
+    })), {
       item_id: 'unknown-packet',
       template_id: 'packet',
       holder_npc_id: 'other',
@@ -386,9 +388,12 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
     assert.equal(request.npc.available_resources.some(
       ({ resource_ref: value }) => value === resourceRef), false);
   }
-  assert.equal(request.npc.available_resources.some(
-    ({ resource_ref: resourceRef }) => resourceRef === 'known-private-controlled'),
-  true);
+  for (const resourceRef of [
+    'known-private-controlled', 'known-hidden-controlled', 'known-locked-controlled'
+  ]) {
+    assert.equal(request.npc.available_resources.some(
+      ({ resource_ref: value }) => value === resourceRef), false);
+  }
   assert.equal(request.npc.available_resources.some(
     ({ resource_ref: resourceRef }) => resourceRef === 'unknown-packet'), false);
   assert.equal(request.npc.available_resources.some(

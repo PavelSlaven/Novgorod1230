@@ -26,8 +26,10 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
   return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
     workingProjection = null, priorLocalFirePlans = [],
     conversationBindings = null, conversationActivity = null,
+    parentTemporal = null,
     runNpcConversationExchange: boundaryConversationExchange =
-      runNpcConversationExchange }) => {
+      runNpcConversationExchange, bundle = null, npcCombatModel = null,
+    revalidateStateVersion = null }) => {
     state = projectTracePhase7CurrentBoundaryState({
       state, workingProjection, priorLocalFirePlans
     });
@@ -129,9 +131,12 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
           conversation_activity: conversationActivity });
       const modeCapabilities = await createModeOwnerCapabilities({ partyId, requestId,
         inputDigest, state, npc: structuredClone(npc),
+        bundle: structuredClone(bundle), npcCombatModel, revalidateStateVersion,
         visibleTargetRefs: structuredClone(visibleTargetRefs),
         availableResourceRefs: structuredClone(itemRefs),
-        runNpcConversationExchange: conversationExchange });
+        runNpcConversationExchange: conversationExchange,
+        parentTemporal: structuredClone(parentTemporal),
+        conversationActivity: structuredClone(conversationActivity) });
       capabilities.push(...npcSafeModeCapabilities({ modeCapabilities, npcRef, visibleTargetRefs }));
     }
     return capabilities;

@@ -208,7 +208,7 @@ export function projectNpcSafeResourceSnapshots({
       ...resource,
       access_state: access
     });
-    if ((concealed && !subjectivelyKnown)
+    if (concealed
       || (held && !heldAtNpcPlacement)
       || (!held && (!subjectivelyKnown || !physicallyAvailable))) {
       return [];

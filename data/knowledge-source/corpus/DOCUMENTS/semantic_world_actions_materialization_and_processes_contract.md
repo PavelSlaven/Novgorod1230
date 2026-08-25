@@ -1868,7 +1868,7 @@ Party-scoped ordinary feature допустима:
 
 # 27. Ordinary NPC и structural semantic remainder
 
-Этот раздел задаёт будущие profiles `N1` и `S1`. Он не является обязательной частью O1 common ordinary item world.
+Этот раздел задаёт independent profiles `N1` и `S1`. Он не является обязательной частью O1 common ordinary item world.
 
 ## 27.1. Structural capacity остаётся code-owned
 
@@ -1906,7 +1906,14 @@ O1 не получает право materialize NPC или building.
 
 N1 не отменяет current deterministic demographic, appearance, equipment и schedule mechanics.
 
-LLM не заполняет поля, которыми уже владеет approved profile/materializer.
+Active N1 boundary после deterministic Stage 15 materializer допускает только
+profile-declared missing `display_name` и `visible_descriptor` в dedicated
+`ordinary_semantic`: exact request/instance/field coverage, plain bounded text,
+no overwrite и persistence inside existing `party_npcs.semantic_state`. При
+отсутствии declared gap model call не выполняется. LLM не заполняет поля,
+которыми уже владеет approved profile/materializer, и не создаёт NPC, capacity,
+role, archetype, placement, demographic, appearance, equipment, schedule,
+mechanics, knowledge или hidden authority.
 
 ## 27.5. Structure parts
 

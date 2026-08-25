@@ -24,6 +24,8 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
   if (typeof temporalAdvanceOwner?.advance !== 'function') {
     fail('TRACE_PHASE_7_TEMPORAL_OWNER_MISSING');
   }
+  const composed = composedConversationAdvance({ state, actorStep, temporal });
+  if (composed != null) return composed;
   const processed = new Set(
     temporal.result.trace.processed_boundary_ids ?? []
   );
@@ -116,6 +118,47 @@ export function resolveTracePhase7ScheduleTemporalAdvance({ state, temporal,
     completion_candidate: structuredClone(completion),
     completion_effect: structuredClone(completionEffect)
   });
+}
+
+function composedConversationAdvance({ state, actorStep, temporal }) {
+  const result = actorStep.owner_outputs?.consequence_fragment?.state_changes
+    ?.find(({ mode_handoff: handoff }) => handoff?.mode === 'conversation')
+    ?.mode_handoff?.result;
+  const temporalResult = result?.temporal_advance_results?.at(-1);
+  const completionEffect = result?.parent_temporal_completion_effect;
+  const projection = result?.exchange?.working_state?.world_state;
+  if (temporalResult?.temporal_status == null || completionEffect == null
+      || projection == null) return null;
+  const active = tracePhase7ActorStep(projection, actorStep.result);
+  const elapsed = exactIntegerElapsed(temporal.result.clock_after,
+    temporalResult.clock_after);
+  const expectedElapsed = Number(
+    active.planned_exact_elapsed?.exact_minutes?.numerator);
+  const parentCumulative = result.parent_temporal_cumulative_elapsed_minutes
+    ?? temporal.projection?.cumulative_elapsed_minutes;
+  const expectedCumulative = parentCumulative == null ? null
+    : parentCumulative + elapsed;
+  const restCompleted = compareGameTimestamp(temporalResult.clock_after,
+    temporal.limit_timestamp) === 0;
+  const completed = temporalResult.temporal_status === 'completed';
+  const paused = temporalResult.temporal_status === 'paused';
+  if (!Number.isSafeInteger(expectedElapsed) || expectedElapsed < 0
+      || (completed && (elapsed !== expectedElapsed || active.status !== 'completed'))
+      || (paused && (elapsed >= expectedElapsed || active.status !== 'started'))
+      || (expectedCumulative !== null
+        && projection.cumulative_elapsed_minutes !== expectedCumulative)
+      || (!completed && !paused)) {
+    fail('TRACE_PHASE_7_SCHEDULE_TEMPORAL_INTERRUPTED');
+  }
+  const composedResult = { ...structuredClone(temporalResult),
+    combined_change_set: { ...structuredClone(temporalResult.combined_change_set),
+      change_set_id: temporal.result.combined_change_set.change_set_id } };
+  delete composedResult.canonical_digest;
+  return Object.freeze({ elapsed_after_decision: elapsed,
+    rest_completed: restCompleted && completed,
+    result: composedResult, projection: structuredClone(projection),
+    completion_candidate: structuredClone(completionEffect.candidate),
+    completion_effect: structuredClone(completionEffect) });
 }
 
 function versioned(entityKind, entityId, authoringVersion) {

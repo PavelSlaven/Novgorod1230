@@ -73,20 +73,40 @@ export function createM2ConversationContext(input) {
       'The target NPC must be an actual present listener.'
     );
   }
+  const conversationActorRefs = input.conversationActorRefs == null ? null
+    : canonicalActors(input.conversationActorRefs.map((reference) => ({
+      instance_id: reference.entity_id, ref: reference
+    }))).map(({ ref: reference, instance_id: instanceId }) =>
+      reference ?? (instanceId === input.state.actor_id
+        ? ref('player_character', instanceId) : npcRef(instanceId)));
+  if (conversationActorRefs !== null && (!conversationActorRefs.some(
+    (reference) => reference.entity_kind === 'npc'
+      && reference.entity_id === targetRef.entity_id
+  ) || conversationActorRefs.some((reference) =>
+    reference.entity_kind === 'player_character'
+      ? reference.entity_id !== input.state.actor_id
+      : reference.entity_kind !== 'npc' || !actualNpcActors.some(
+        ({ instance_id: instanceId }) => instanceId === reference.entity_id)))) {
+    fail('TRACE_M2_CONVERSATION_ACTOR_SCOPE_INVALID',
+      'Conversation actor scope must contain only current exact participants.');
+  }
   const batchKey = sameTimeBatchKey(
     input.state.party_id,
     input.state.clock
   );
-  const activeSession = findResumableConversationSession(
-    input.state,
-    ref('player_character', input.state.actor_id),
-    targetRef
-  );
+  const activeSession = conversationActorRefs === null
+    ? findResumableConversationSession(
+        input.state,
+        ref('player_character', input.state.actor_id),
+        targetRef
+      )
+    : null;
   return {
     ...input,
     stateVersion,
     targetRef,
     actualNpcActors,
+    conversationActorRefs,
     batchKey,
     activeSession,
     conversationId: activeSession?.conversation_id
@@ -108,8 +128,10 @@ export function createM2ConversationContext(input) {
 export async function executeM2ConversationExchange(context, {
   initialNpcDecision = null
 } = {}) {
-  const pendingPlayerExecution = hydratedPendingPlayerExecution(context);
-  const pendingExecution = hydratedPendingNpcExecution(context);
+  const pendingPlayerExecution = context.conversationActorRefs === null
+    ? hydratedPendingPlayerExecution(context) : null;
+  const pendingExecution = context.conversationActorRefs === null
+    ? hydratedPendingNpcExecution(context) : null;
   const { decisions, npcOutcomes, exchangeInput, advanceContributionTime } =
     createM2ConversationExchangeSetup(
       context, initialNpcDecision, pendingPlayerExecution, pendingExecution

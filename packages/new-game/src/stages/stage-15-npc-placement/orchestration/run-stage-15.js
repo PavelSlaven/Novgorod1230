@@ -4,6 +4,7 @@ import { commitStage15Artifacts } from '../commit/commit-stage-15.js';
 import { buildStage15NpcPlacementInput, validateStage15NpcPlacementInput } from '../input/input-boundary.js';
 import { FORMAT_CODES } from '../policy/constants.js';
 import { buildStage15AnchorIndex, buildStage15CandidateIndex, filterStage15EligibleAnchors, filterStage15EligibleCandidates } from '../references/indexes.js';
+import { applyStage15NpcSemanticRemainder, buildStage15NpcSemanticRemainderRequest } from './semantic-remainder.js';
 import { concern, isObject } from '../shared/utils.js';
 import { buildStage15NpcPlacementAuditInput, buildStage15NpcPlacementCodePrecheck, validateStage15NpcPlacementAudit } from '../validation/audit-validation.js';
 
@@ -13,7 +14,8 @@ export async function runStage15NpcPlacementBlock({
   place = null,
   audit,
   formatRepair = null,
-  semanticRepair = null
+  semanticRepair = null,
+  semanticRemainder = null
 } = {}) {
   const inputConcerns = validateStage15NpcPlacementInput(input);
   if (inputConcerns.length > 0) throw stage15Error('Stage 15 input gate failed.', inputConcerns, routeForInputConcerns(inputConcerns));
@@ -43,6 +45,14 @@ export async function runStage15NpcPlacementBlock({
   let precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
   if (!precheck.pass) {
     throw stage15Error('Initial NPC placement draft failed code precheck.', precheck.concerns, routeForDraftConcerns(precheck.concerns), { draft, code_precheck: precheck });
+  }
+
+  const remainderRequest = buildStage15NpcSemanticRemainderRequest(draft, input);
+  if (remainderRequest.npc_remainders.length > 0) {
+    if (typeof semanticRemainder !== 'function') throw stage15Error('NPC semantic remainder resolver is required.', [concern('NPC_SEMANTIC_REMAINDER_RESOLVER_REQUIRED', 'Declared ordinary NPC gaps require a semantic remainder resolver.')], routeForDraftConcerns([]), { draft, code_precheck: precheck });
+    draft = applyStage15NpcSemanticRemainder(draft, await callJsonRole(semanticRemainder, remainderRequest, 'NpcSemanticRemainder'), remainderRequest);
+    precheck = buildStage15NpcPlacementCodePrecheck(draft, input);
+    if (!precheck.pass) throw stage15Error('NPC semantic remainder failed code precheck.', precheck.concerns, routeForDraftConcerns(precheck.concerns), { draft, code_precheck: precheck });
   }
 
   let auditOutput = await callJsonRole(audit, buildStage15NpcPlacementAuditInput(input, draft, precheck), 'InitialNpcPlacementAuditor');
@@ -110,7 +120,7 @@ export async function runStage15NpcPlacement(context, options = {}) {
         id: 15,
         slug: 'npc_placement',
         role,
-        output_schema: role.includes('Audit') ? STAGE15_AUDIT_SCHEMA : STAGE15_DRAFT_SCHEMA,
+        output_schema: role.includes('Audit') ? STAGE15_AUDIT_SCHEMA : role === 'NpcSemanticRemainder' ? 'stage15_npc_semantic_remainder_plan_v1' : STAGE15_DRAFT_SCHEMA,
         spec_file: '15.txt'
       }
     });
@@ -118,7 +128,8 @@ export async function runStage15NpcPlacement(context, options = {}) {
       input,
       materialize,
       audit: options.audit ?? roleCall('InitialNpcPlacementAuditor'),
-      formatRepair: options.auditFormatRepair ?? options.formatRepair ?? roleCall('InitialNpcPlacementAuditFormatRepairer')
+      formatRepair: options.auditFormatRepair ?? options.formatRepair ?? roleCall('InitialNpcPlacementAuditFormatRepairer'),
+      semanticRemainder: options.semanticRemainder ?? options.services?.semanticRemainder ?? (typeof executor === 'function' ? roleCall('NpcSemanticRemainder') : null)
     });
   }
 

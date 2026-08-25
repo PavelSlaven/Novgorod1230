@@ -28,7 +28,10 @@ export function buildNpcResponseBoundaryBatch(context, working, input) {
       targetRef,
       batchKey: input.resumedBatchRef?.entity_id ?? null
     })),
-    ...context.actualNpcActors.map(({ instance_id: instanceId }) => ({
+    ...context.actualNpcActors.filter(({ instance_id: instanceId }) =>
+      context.conversationActorRefs == null || context.conversationActorRefs.some(
+        ({ entity_kind, entity_id }) => entity_kind === 'npc' && entity_id === instanceId
+      )).map(({ instance_id: instanceId }) => ({
       targetRef: { entity_kind: 'npc', entity_id: instanceId },
       batchKey: null
     }))

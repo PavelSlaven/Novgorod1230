@@ -4,6 +4,8 @@ import {
   evaluateNpcDecisionSignals
 } from '@rus/npc-runtime';
 import { canonicalDigest } from '@rus/materialization';
+import { createNpcActorStepCompletionEffect } from
+  '@rus/turn/temporal-advance';
 import {
   createM2ConversationContext,
   executeM2ConversationExchange
@@ -16,6 +18,8 @@ import {
 } from './lower-dvina-trace-m2-conversation-projections.js';
 import { classifyOrdinaryConversationPlan } from
   './lower-dvina-trace-m2-conversation-plans.js';
+import { PHASE7_REST_PROGRESS_EFFECT_REF } from
+  './lower-dvina-trace-phase-7-temporal-effect-owner.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
 
@@ -23,7 +27,7 @@ export async function runLowerDvinaTraceNpcConversationExchange({
   state, npc, operation, actor_step_request: actorStepRequest,
   npcSemanticModel, temporalAdvanceOwner, revalidateStateVersion,
   conversation_bindings: conversationBindings,
-  conversation_activity: conversationActivity
+  conversation_activity: conversationActivity, parent_temporal: parentTemporal = null
 }) {
   if (operation?.op !== 'request_conversation'
       || typeof operation.conversation_goal !== 'string'
@@ -32,15 +36,21 @@ export async function runLowerDvinaTraceNpcConversationExchange({
       || conversationBindings == null || conversationActivity == null) {
     throw new TypeError('NPC conversation handoff requires one semantic goal and model');
   }
+  const parent = npcActorStepParentTemporal({ state, parentTemporal });
+  state = parent.state;
   const inputDigest = canonicalDigest({ schema:
     'rus.lower_dvina_trace_npc_initiated_conversation.v1',
     party_id: state.party_id, request_id: actorStepRequest.request_id,
     npc_id: npc.instance_id, goal: operation.conversation_goal });
   const context = createM2ConversationContext({
     state, targetActor: npc, actualNpcActors: state.npcs ?? [], inputDigest,
+    conversationActorRefs: conversationActorRefs(state, npc, operation),
     phase: 'npc_actor_step', contracts: { conversationBindings:
       conversationBindings },
     activityProfile: conversationActivity,
+    ...(parent.contract == null ? {} : { conversationTimeContract: {
+      mode: 'parent_activity_final_segment', parent_activity_ref: 'phase7_rest',
+      parent_temporal: parent.contract } }),
     checkResult: null,
     npcSemanticModel, temporalAdvanceOwner,
     revalidateStateVersion, npcContributionReferencePolicy: {},
@@ -63,6 +73,10 @@ export async function runLowerDvinaTraceNpcConversationExchange({
     clock_after: structuredClone(result.clockAfter),
     exact_elapsed_minutes: result.elapsedMinutes,
     temporal_boundary_refs: structuredClone(result.temporalBoundaryRefs),
+    temporal_advance_results: structuredClone(
+      result.exchange.working_state.temporal_advance_results),
+    parent_temporal_completion_effect: structuredClone(parent.completionEffect),
+    parent_temporal_cumulative_elapsed_minutes: parent.cumulativeElapsedMinutes,
     statements: structuredClone(result.statements),
     audiences: structuredClone(result.audiences),
     supporting_operation_perceptions:
@@ -80,6 +94,40 @@ export async function runLowerDvinaTraceNpcConversationExchange({
     objective_truth_writes: [],
     semantic_context: { conversation_goal: operation.conversation_goal }
   };
+}
+
+function npcActorStepParentTemporal({ state, parentTemporal }) {
+  if (parentTemporal == null) return { state, contract: null, completionEffect: null };
+  const active = parentTemporal.active_actor_step;
+  const completionEffect = createNpcActorStepCompletionEffect({
+    party_ref: { entity_kind: 'party', entity_id: state.party_id },
+    active_actor_step: active, visibility_policy_ref: {
+      entity_ref: { entity_kind: 'visibility_modifier',
+        entity_id: 'lower-dvina-trace-phase-7-hidden-npc' }, authoring_version: '1' }
+  });
+  return {
+    state: structuredClone(state),
+    cumulativeElapsedMinutes: parentTemporal.projection?.cumulative_elapsed_minutes,
+    contract: { execution_id: parentTemporal.execution_id,
+      limit_timestamp: structuredClone(parentTemporal.limit_timestamp),
+      registered_effects: [completionEffect], continuous_effects: [{
+        effect_ref: PHASE7_REST_PROGRESS_EFFECT_REF,
+        input: { execution_id: parentTemporal.execution_id } }] },
+    completionEffect
+  };
+}
+
+function conversationActorRefs(state, npc, operation) {
+  const selected = operation.target_actor_refs.map((actorId) => actorId === state.actor_id
+    ? ref('player_character', actorId)
+    : state.npcs?.some(({ instance_id }) => instance_id === actorId)
+      ? ref('npc', actorId) : null);
+  if (selected.includes(null)
+      || new Set(selected.map(({ entity_kind, entity_id }) =>
+        `${entity_kind}\u0000${entity_id}`)).size !== selected.length) {
+    throw new TypeError('NPC conversation handoff requires exact selected targets');
+  }
+  return [ref('npc', npc.instance_id), ...selected];
 }
 
 function initialDecision({ context, npc, operation, actorStepRequest }) {

@@ -36,5 +36,18 @@ export function projectTracePhase7CurrentBoundaryState({
     current.npc_activity_states = structuredClone(
       workingProjection.npc_activity_states);
   }
+  if (Number.isSafeInteger(workingProjection?.cumulative_elapsed_minutes)) {
+    current.cumulative_elapsed_minutes = workingProjection.cumulative_elapsed_minutes;
+  }
+  for (const key of ['temporal_boundary_candidates', 'active_npc_actor_steps']) {
+    if (Array.isArray(workingProjection?.[key])) {
+      current[key] = structuredClone(workingProjection[key]);
+    }
+  }
+  if (workingProjection?.clock != null) {
+    current.clock = structuredClone(workingProjection.clock);
+    current.clock_weather_light = { ...structuredClone(
+      current.clock_weather_light ?? {}), clock: structuredClone(current.clock) };
+  }
   return current;
 }

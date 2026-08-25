@@ -6,15 +6,6 @@
 
 LLM не создаёт NPC и не дополняет отсутствующие категории. Для key NPC допускается только формальный override разрешённых полей через bounded change-set gate; базовая психология, знания, снаряжение, расписание и отношения остаются ссылочно обусловленными профилями. Повышение уровня NPC детерминированно заполняет только отсутствующие поля и не меняет сохранённые значения.
 
-N1 запускается только после этого deterministic materializer и только когда
-approved candidate явно объявил missing `display_name` или
-`visible_descriptor`. Resolver получает exact instance/formal-facet snapshot,
-возвращает exact coverage простого bounded text и пишет лишь dedicated
-`ordinary_semantic`; без declared gap вызова нет. N1 не создаёт NPC или
-capacity и не меняет ID, profile level, social role, archetype, placement,
-demographic, appearance, equipment, schedule, mechanics, knowledge, hidden
-authority либо уже сохранённое значение.
-
 ### Каноническая базовая внешность NPC
 
 Каждый новый NPC всех уровней получает один actor-level контракт

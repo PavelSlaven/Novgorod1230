@@ -105,7 +105,7 @@
     },
     {
       "path": "data/knowledge-source/corpus/DOCUMENTS/npc_generation_profiles.txt",
-      "sha256": "100c733e84f6d51841f51db12fca19f605028a78e34bf2b3b4d7ca2516ae38f5",
+      "sha256": "cb507321db132d736f307083fb49f08309e5a0eb006c75e0757d3e103628f21e",
       "source_id": "source:first_playable:npc_generation_normative"
     },
     {

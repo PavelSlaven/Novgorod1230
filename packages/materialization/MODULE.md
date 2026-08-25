@@ -29,11 +29,6 @@
 
 `materializeWorldInstances`, `materializeG5Scene`, `materializeNpcPlacement`, `materializeItemPlacement`, `materializeActorBaseAppearance`, RNG/digest helpers, bounded decision functions и pure ordinary foundation exports (`computeOrdinaryIdentityBudget`, basis/group validators, stable-ref helpers and the minimal aggregate reducer/normalizer). Candidate identity helper принимает только code-owned normalized ref/version и не хэширует model-owned semantic descriptor.
 
-`materializeNpcPlacement` остаётся deterministic owner всех formal NPC facets.
-N1 не вызывается здесь: после materialization Stage 15 может заполнить только
-явно разрешённый ordinary semantic remainder, не меняя instance/profile,
-appearance, equipment, schedule, mechanics, knowledge или placement.
-
 Ordinary foundation в этом PR остаётся shadow-only: API не вызывает LLM, не
 читает БД, не выполняет commit и не активирует production O1 route. Он только
 валидирует code-owned inputs и возвращает immutable logical state/result.

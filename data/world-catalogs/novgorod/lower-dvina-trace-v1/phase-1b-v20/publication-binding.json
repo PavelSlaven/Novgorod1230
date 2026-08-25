@@ -21,14 +21,14 @@
     "id": "lower_dvina_trace_phase_1a_v21",
     "revision": 21,
     "schema": "rus.lower_dvina_trace_phase_1a_manifest.v1",
-    "digest": "9571e3ad874979a9f44614ba5fb02b1df677383a7816cce6c592f925c39401c0"
+    "digest": "f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505"
   },
   "scenario_definition_ref": {
     "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/definition.json",
     "id": "lower_dvina_trace_v1",
     "revision": 25,
     "schema": "rus.trace_scenario_definition.v1",
-    "digest": "07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a"
+    "digest": "3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711"
   },
   "materializer_binding_id": "lower_dvina_trace_phase_1a_materialization_bindings_v21",
   "opening_projection": {
@@ -55,8 +55,8 @@
     "trigger": "new_game",
     "occurrence": 0,
     "scenario_definition_revision": 25,
-    "phase_1a_manifest_digest": "9571e3ad874979a9f44614ba5fb02b1df677383a7816cce6c592f925c39401c0",
-    "scenario_definition_digest": "07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a"
+    "phase_1a_manifest_digest": "f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505",
+    "scenario_definition_digest": "3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711"
   },
   "world_compatibility": {
     "source_world_revision_id": "novgorod_spatial_v3_target_contract_approval_001",

@@ -9,8 +9,8 @@ import { loadLowerDvinaTraceA1Profile } from
   '../src/internal/lower-dvina-trace-a1-profile.js';
 import { createLowerDvinaTraceA1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-a1-production.js';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { buildLowerDvinaTracePhase7Commit } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-7-commit.js';
 import { createTracePhase7BodyEffect } from
@@ -153,12 +153,12 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
       contracts.npcSemanticProfile = n1Profile();
       contracts.genericCheckContext.attributes.push({ attribute_ref: 'strength',
         label: 'сила', value: 10 });
-      const n1 = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+      const npcActorStep = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
         createActionProductionOwner: createLowerDvinaTraceA1ProductionResolverFactory({
           pool: a1Pool(state, rows), loadedProfile: await loadLowerDvinaTraceA1Profile()
         })
       });
-      const npcOwnerCapabilities = await n1({ partyId: state.party_id,
+      const npcOwnerCapabilities = await npcActorStep({ partyId: state.party_id,
         requestId: 'phase7-generic-owner-request', inputDigest: 'a'.repeat(64),
         state, phase7Contracts: contracts });
       const actionCapability = npcOwnerCapabilities.find(({ operation: name }) =>
@@ -392,7 +392,7 @@ function checkedA1Plan(request, operation) {
 }
 
 function n1Profile() {
-  return { profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1',
+  return { profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1',
     revision: 1, status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' },
     actor_mechanics_context: { attributes: [{ attribute_ref: 'strength',

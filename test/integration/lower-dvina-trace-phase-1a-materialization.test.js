@@ -174,7 +174,7 @@ test('revision 24 materialization contract admits first-entry S1 artifact and pr
   );
 });
 
-test('revision 25 loads N1 profile and materializes inherited state', () => {
+test('revision 25 loads NPC actor-step profile and materializes inherited state', () => {
   const result = materializeLowerDvinaTracePartyInstance(request({
     party_id: 'trace-phase-1a-revision-25-party',
     scenario_definition_revision: 25,
@@ -187,7 +187,7 @@ test('revision 25 loads N1 profile and materializes inherited state', () => {
     idempotency_key: 'trace-phase-1a-revision-25-idempotency',
     scenario_bundle: revision25Bundle
   }));
-  assert.equal(revision25Bundle.npc_semantic_profile.activation_boundary
+  assert.equal(revision25Bundle.npc_actor_step_profile.activation_boundary
     .npc_participant_slot_ref, 'zhdanko_storehouse_controller');
   assert.ok(result.immediate.npcs.some(({ participant_slot_ref }) =>
     participant_slot_ref === 'zhdanko_storehouse_controller'));

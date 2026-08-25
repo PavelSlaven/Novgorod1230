@@ -6,7 +6,7 @@ import { validateCombatSession } from '@rus/contracts/combat-v1';
 const MODE_OPERATIONS = new Set([
   'emit_interaction', 'request_conversation', 'request_combat'
 ]);
-const HANDOFF_SCHEMA = 'rus.lower_dvina_trace_n1_mode_handoff.v1';
+const HANDOFF_SCHEMA = 'rus.lower_dvina_trace_npc_actor_step_mode_handoff.v1';
 
 export function npcSafeModeCapabilities({ modeCapabilities, npcRef,
   visibleTargetRefs }) {
@@ -37,7 +37,7 @@ export function npcSafeModeCapabilities({ modeCapabilities, npcRef,
   });
 }
 
-export function createLowerDvinaTraceN1ModeOwnerCapabilities({ npc,
+export function createLowerDvinaTraceNpcActorStepModeOwnerCapabilities({ npc,
   state, visibleTargetRefs = [], availableResourceRefs = [] } = {}) {
   const handoff = (operation) => (execution) => modeOwnerResult({
     execution, operation, state, npc
@@ -71,13 +71,13 @@ export function npcSafeActorRefs(npc, state = null) {
         || state.npcs?.some(({ instance_id }) => instance_id === ref)));
 }
 
-export function projectLowerDvinaTraceN1ModeHandoff({ state,
+export function projectLowerDvinaTraceNpcActorStepModeHandoff({ state,
   consequenceFragment, semanticOperation, changeSetId }) {
-  const change = lowerDvinaTraceN1ModeHandoffChange(consequenceFragment);
+  const change = lowerDvinaTraceNpcActorStepModeHandoffChange(consequenceFragment);
   if (change == null) return structuredClone(state);
   const handoff = change.mode_handoff;
   if (!validModeHandoffChange(change, semanticOperation, changeSetId)) {
-    fail('TRACE_N1_MODE_HANDOFF_INVALID');
+    fail('TRACE_NPC_ACTOR_STEP_MODE_HANDOFF_INVALID');
   }
   const next = structuredClone(state);
   if (handoff.mode === 'interaction') {
@@ -101,10 +101,10 @@ export function projectLowerDvinaTraceN1ModeHandoff({ state,
   return next;
 }
 
-export function lowerDvinaTraceN1ModeHandoffChange(consequenceFragment) {
+export function lowerDvinaTraceNpcActorStepModeHandoffChange(consequenceFragment) {
   const matches = (consequenceFragment?.state_changes ?? []).filter(
     (change) => change?.mode_handoff?.schema === HANDOFF_SCHEMA);
-  if (matches.length > 1) fail('TRACE_N1_MODE_HANDOFF_INVALID');
+  if (matches.length > 1) fail('TRACE_NPC_ACTOR_STEP_MODE_HANDOFF_INVALID');
   return matches[0] ?? null;
 }
 
@@ -112,7 +112,7 @@ function modeOwnerResult({ execution, operation, state, npc }) {
   const semanticOperation = execution.operation;
   if (semanticOperation?.op !== operation
       || semanticOperation.actor_ref !== npc?.instance_id) {
-    fail('TRACE_N1_MODE_HANDOFF_INVALID');
+    fail('TRACE_NPC_ACTOR_STEP_MODE_HANDOFF_INVALID');
   }
   const result = operation === 'emit_interaction'
     ? interactionResult(semanticOperation, execution.request, state)
@@ -130,9 +130,9 @@ function modeOwnerResult({ execution, operation, state, npc }) {
       operation: structuredClone(semanticOperation), result }
   };
   if (!validModeHandoffChange(change, semanticOperation,
-      execution.request.change_set_id)) fail('TRACE_N1_MODE_HANDOFF_INVALID');
+      execution.request.change_set_id)) fail('TRACE_NPC_ACTOR_STEP_MODE_HANDOFF_INVALID');
   return Object.freeze({
-    working_projection: projectLowerDvinaTraceN1ModeHandoff({
+    working_projection: projectLowerDvinaTraceNpcActorStepModeHandoff({
       state: execution.working_projection, consequenceFragment: {
         state_changes: [change] }, semanticOperation,
       changeSetId: execution.request.change_set_id }),
@@ -143,7 +143,7 @@ function modeOwnerResult({ execution, operation, state, npc }) {
 
 function interactionResult(operation, request, state) {
   return {
-    interaction_id: `interaction:n1:${request.request_id}`,
+    interaction_id: `interaction:npc_actor_step:${request.request_id}`,
     interaction_kind: operation.interaction_kind,
     speaker_actor_id: operation.actor_ref,
     target_actor_ids: structuredClone(operation.target_actor_refs),
@@ -156,7 +156,7 @@ function interactionResult(operation, request, state) {
 function conversationResult(operation, request, state) {
   const session = buildConversationSession({
     schema: 'conversation_session_v1',
-    conversation_id: `conversation:n1:${request.request_id}`,
+    conversation_id: `conversation:npc_actor_step:${request.request_id}`,
     state_version: 1,
     status: 'active',
     started_at: structuredClone(request.occurred_at),
@@ -172,7 +172,7 @@ function conversationResult(operation, request, state) {
 
 function combatResult(operation, request, state) {
   const session = createCombatSession({
-    combat_id: `combat:n1:${request.request_id}`,
+    combat_id: `combat:npc_actor_step:${request.request_id}`,
     started_at: request.occurred_at,
     scope_ref: ref('location', actorLocation(state, operation.actor_ref)),
     participant_refs: participantRefs(state, operation)
@@ -233,21 +233,21 @@ function actorRef(state, id) {
   if (state?.npcs?.some(({ instance_id }) => instance_id === id)) {
     return ref('npc', id);
   }
-  fail('TRACE_N1_MODE_TARGET_DATA_GAP');
+  fail('TRACE_NPC_ACTOR_STEP_MODE_TARGET_DATA_GAP');
 }
 
 function actorLocation(state, actorId) {
   const actor = state?.npcs?.find(({ instance_id }) => instance_id === actorId);
   const location = actor?.machine_state?.location_ref
     ?? actor?.location_profile_ref;
-  if (!text(location)) fail('TRACE_N1_MODE_LOCATION_DATA_GAP');
+  if (!text(location)) fail('TRACE_NPC_ACTOR_STEP_MODE_LOCATION_DATA_GAP');
   return location;
 }
 
 function appendById(values = [], addition, key) {
   const existing = values.find((entry) => entry?.[key] === addition[key]);
   if (existing != null && !same(existing, addition)) {
-    fail('TRACE_N1_MODE_HANDOFF_CONFLICT');
+    fail('TRACE_NPC_ACTOR_STEP_MODE_HANDOFF_CONFLICT');
   }
   return existing == null ? [...structuredClone(values),
     structuredClone(addition)] : structuredClone(values);

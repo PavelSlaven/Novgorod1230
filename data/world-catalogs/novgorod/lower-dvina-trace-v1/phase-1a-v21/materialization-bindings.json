@@ -158,13 +158,13 @@
       }
     ]
   },
-  "npc_semantic_activation": {
+  "npc_actor_step_activation": {
     "profile_ref": {
-      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/npc-semantic-profile.json",
-      "id": "lower_dvina_trace_n1_npc_semantic_profile_v1",
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/npc-actor-step-profile.json",
+      "id": "lower_dvina_trace_npc_actor_step_profile_v1",
       "revision": 1,
-      "schema": "rus.lower_dvina_trace_n1_npc_semantic_profile.v1",
-      "digest": "4145e98068c2c74b6e2f15682aeb5639edb8b963bf5cf3d38dcd9ec70530113d"
+      "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+      "digest": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
     },
     "fallback_policy": "forbidden"
   }

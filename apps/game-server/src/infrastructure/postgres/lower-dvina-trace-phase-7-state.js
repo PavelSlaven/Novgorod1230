@@ -13,8 +13,8 @@ import {
 } from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 import { tracePhase7ActorStep } from
   '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
-import { projectLowerDvinaTraceN1ModeHandoff } from
-  '../../runtime/lower-dvina-trace-n1-mode-handoffs.js';
+import { projectLowerDvinaTraceNpcActorStepModeHandoff } from
+  '../../runtime/lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
@@ -82,7 +82,7 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
       phase7.schedule_temporal.projection, phase7.actor_step)
   });
   applyNpcDirectBodyState(next, phase7);
-  next = projectLowerDvinaTraceN1ModeHandoff({ state: next,
+  next = projectLowerDvinaTraceNpcActorStepModeHandoff({ state: next,
     consequenceFragment: phase7.actor_step_owner_outputs?.consequence_fragment,
     semanticOperation: phase7.schedule_execution.semantic_operation,
     changeSetId });

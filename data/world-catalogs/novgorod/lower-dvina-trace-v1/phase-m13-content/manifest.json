@@ -21,8 +21,8 @@
     "digest": "3d791395c5dec4e9c12e5a65fda1acc8ef135f4b4394faea4c2c7bb418ef06aa"
   },
   "files": {
-    "definition.json": "07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a",
-    "npc-semantic-profile.json": "4145e98068c2c74b6e2f15682aeb5639edb8b963bf5cf3d38dcd9ec70530113d"
+    "definition.json": "3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711",
+    "npc-actor-step-profile.json": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
   },
   "content_refs": {
     "definition": {
@@ -30,18 +30,18 @@
       "id": "lower_dvina_trace_v1",
       "revision": 25,
       "schema": "rus.trace_scenario_definition.v1",
-      "digest": "07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a"
+      "digest": "3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711"
     },
-    "npc_semantic_profile": {
-      "path": "npc-semantic-profile.json",
-      "id": "lower_dvina_trace_n1_npc_semantic_profile_v1",
+    "npc_actor_step_profile": {
+      "path": "npc-actor-step-profile.json",
+      "id": "lower_dvina_trace_npc_actor_step_profile_v1",
       "revision": 1,
-      "schema": "rus.lower_dvina_trace_n1_npc_semantic_profile.v1",
-      "digest": "4145e98068c2c74b6e2f15682aeb5639edb8b963bf5cf3d38dcd9ec70530113d"
+      "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+      "digest": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
     }
   },
   "content_digest_algorithm": "sha256_sorted_file_map_v1",
-  "content_digest": "83456fb1a8520d301f6b7a7f7e7f533ae954f167d988d27440a7c587411cbf5c",
+  "content_digest": "5c8dc04fe2c369f349d05fbe299230fc054f89b28c7538524b6aedea954c33d4",
   "fallback_policy": "forbidden",
   "normalization_policy": "forbidden",
   "alias_policy": "forbidden"

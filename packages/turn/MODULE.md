@@ -155,8 +155,8 @@ Revision 19 / `spatial-v3-production-v9` наследует этот orchestrati
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
 Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
-Phase 1A v21 / Phase 1B v20 и активирует approved N1 Phase-7 NPC semantic
-profile. Общий current NPC actor-step path принимает только зарегистрированные
+Phase 1A v21 / Phase 1B v20 и активирует approved Phase-7 autonomous NPC
+actor-step profile. Общий current NPC actor-step path принимает только зарегистрированные
 и state-applicable owner capabilities с текущими NPC-safe refs; exact
 `operation_contract` и handler остаются общими owner contracts, без scenario
 action/ref/owner whitelist, special Жданко action logic или fallback. Жданко —

@@ -28,7 +28,7 @@ test('publication loader rejects an exact binding digest mismatch', async (t) =>
   await writeFile(path, `${JSON.stringify(binding, null, 2)}\n`);
   await assert.rejects(
     () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
-    { code: 'TRACE_N1_PUBLICATION_INVALID' }
+    { code: 'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID' }
   );
 });
 
@@ -68,18 +68,18 @@ test('publication root pin rejects resealed semantic mutations', async (t) => {
     await mutateAndResealPublication(root, mutate);
     await assert.rejects(
       () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
-      { code: 'TRACE_N1_PUBLICATION_INVALID' },
+      { code: 'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID' },
       label
     );
   }
 });
 
-test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 N1 chain', async () => {
+test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 NPC actor-step chain', async () => {
   const publication = await loadLowerDvinaTracePhase1BPublication();
   assert.equal(publication.manifest.package_id, 'lower_dvina_trace_phase_1b_v20');
   assert.equal(publication.manifest.revision, 20);
   assert.equal(publication.manifest_digest,
-    '622cabeceac5917caefe757ff85885a7a5ca56ce05bd637a17aa8c95b7985e7f');
+    '0e639ff09f902d21041b64d5cba5ff6e4b9a2bf48f954701b8109ecf302bd87d');
   assert.deepEqual(publication.manifest.superseded_package_ref, {
     path: 'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1b-v19/manifest.json',
     id: 'lower_dvina_trace_phase_1b_v19',
@@ -91,19 +91,19 @@ test('current publication pins exact v20 -> Phase 1A v21 -> revision 25 N1 chain
     'lower_dvina_trace_phase_1b_publication_v20');
   assert.equal(publication.binding.revision, 20);
   assert.equal(publication.binding_digest,
-    'dc19c877b5325c0cdd38f1590e6aca29ab38f98b93fb8c41e2c4ca99efe3fa14');
+    '36f7b738100c1fe1b21b8917da9b683efc1c87e34ccf0229814334614413fd30');
   assert.equal(publication.binding.superseded_binding_ref.digest,
     '8c8b7dd7410de91735f70809c05a95a9272a6a3555c3f7e2901c952f2e099228');
   assert.equal(publication.phase_1a_manifest.package_id,
     'lower_dvina_trace_phase_1a_v21');
   assert.equal(publication.phase_1a_manifest.revision, 21);
   assert.equal(publication.binding.phase_1a_manifest_ref.digest,
-    '9571e3ad874979a9f44614ba5fb02b1df677383a7816cce6c592f925c39401c0');
+    'f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505');
   assert.equal(publication.phase_1a_manifest.superseded_package_ref.digest,
     'd11563d81d0249fcd8efe95a99cb53ace6f8ecb76ffab42a6bb8c16b5eb2cd6b');
   assert.equal(publication.definition.revision, 25);
   assert.equal(publication.binding.scenario_definition_ref.digest,
-    '07d9d2104495684e4fc7dd5b9ae3b10d9f95ca4801da8f4efb1335887aa3b48a');
+    '3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711');
   assert.equal(
     publication.binding.materializer_binding_id,
     'lower_dvina_trace_phase_1a_materialization_bindings_v21'
@@ -114,11 +114,11 @@ test('current publication rejects tampered Phase 1A v21 or revision 25 content',
   for (const [relative, code] of [
     [
       'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v21/manifest.json',
-      'TRACE_N1_PUBLICATION_INVALID'
+      'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID'
     ],
     [
       'data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/definition.json',
-      'TRACE_N1_PUBLICATION_INVALID'
+      'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID'
     ]
   ]) {
     const root = await copyPublicationClosure();
@@ -160,13 +160,13 @@ test('publication loader rejects resealed dependency and lineage mutations', asy
     await mutateAndResealPublication(root, mutate);
     await assert.rejects(
       () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
-      { code: 'TRACE_N1_PUBLICATION_INVALID' },
+      { code: 'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID' },
       label
     );
   }
 });
 
-test('N1 loader leaves historical v12 and revision 24 artifacts untouched', async (t) => {
+test('NPC actor-step loader leaves historical v12 and revision 24 artifacts untouched', async (t) => {
   const root = await copyPublicationClosure();
   t.after(() => rm(root, { recursive: true, force: true }));
   const historical = [
@@ -191,7 +191,7 @@ test('publication cutover rejects mutations of exact superseded packages', async
     await writeFile(path, `${raw} `);
     await assert.rejects(
       () => loadLowerDvinaTracePhase1BPublication({ rootDir: root }),
-      { code: 'TRACE_N1_PUBLICATION_INVALID' },
+      { code: 'TRACE_NPC_ACTOR_STEP_PUBLICATION_INVALID' },
       relative
     );
   }

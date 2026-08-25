@@ -1,6 +1,6 @@
 {
-  "schema": "rus.lower_dvina_trace_n1_npc_semantic_profile.v1",
-  "profile_id": "lower_dvina_trace_n1_npc_semantic_profile_v1",
+  "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+  "profile_id": "lower_dvina_trace_npc_actor_step_profile_v1",
   "revision": 1,
   "status": "approved",
   "activation_boundary": {

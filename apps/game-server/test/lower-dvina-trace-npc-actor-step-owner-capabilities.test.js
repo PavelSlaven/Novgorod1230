@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { matchesOperationContract } from '@rus/npc-runtime';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { createTraceTurnRuntime } from
   '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
 import { mergePhase7Capability } from
   '../src/runtime/lower-dvina-trace-phase-7-owner-registry.js';
 
-test('N1 production runtime injects current owner adapters and mode handoffs', async () => {
+test('runtime injects owner adapters and handoffs', async () => {
   let captured;
   createTraceTurnRuntime({ partyPool: { query() {}, connect() {} },
     committer: { commit() {} }, env: {},
@@ -29,17 +29,17 @@ test('N1 production runtime injects current owner adapters and mode handoffs', a
       state_version: 1 }, items: [], npcs: [npc, {
         instance_id: 'visible' }] },
     phase7Contracts: { zhdanko: npc, npcSemanticProfile: {
-      profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+      profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
       status: 'approved', activation_boundary: { phase: 'phase_7',
         npc_participant_slot_ref: 'zhdanko_storehouse_controller' } } }
   });
-  assert.equal(capabilities.some(({ operation }) =>
-    operation === 'request_conversation'), true);
+  assert.ok(capabilities.some(({ operation }) =>
+    operation === 'request_conversation'));
 });
 
-test('N1 adapters expose only current NPC-safe refs and call selected owner', async () => {
+test('adapters expose NPC-safe refs and call owner', async () => {
   const calls = [];
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     loadOrdinaryEnablement: async () => ({ execution_context: {
       candidate_context: { target_ref: 'seen-first' },
       context_bound_capabilities: [{ source_ref: 'seen-second' }] } }),
@@ -63,36 +63,36 @@ test('N1 adapters expose only current NPC-safe refs and call selected owner', as
     'request_discovery', 'request_item_use'
   ]);
   const discovery = capabilities[0];
-  assert.equal(discovery.supports({ operation: { actor_ref: 'npc',
-    discovery_kind: 'inspect', target_refs: ['seen-second'] } }), true);
-  assert.equal(discovery.supports({ operation: { actor_ref: 'npc',
-    discovery_kind: 'look', target_refs: ['seen-second'] } }), false);
-  assert.equal(matchesOperationContract({ op: 'request_discovery',
+  assert.ok(discovery.supports({ operation: { actor_ref: 'npc',
+    discovery_kind: 'inspect', target_refs: ['seen-second'] } }));
+  assert.ok(!discovery.supports({ operation: { actor_ref: 'npc',
+    discovery_kind: 'look', target_refs: ['seen-second'] } }));
+  assert.ok(matchesOperationContract({ op: 'request_discovery',
     actor_ref: 'npc', discovery_kind: 'inspect', target_refs: ['seen-second'] },
-  discovery.capability), true);
-  assert.equal(matchesOperationContract({ op: 'request_discovery',
+  discovery.capability));
+  assert.ok(!matchesOperationContract({ op: 'request_discovery',
     actor_ref: 'npc', discovery_kind: 'look', target_refs: ['seen-second'] },
-  discovery.capability), false);
+  discovery.capability));
   await discovery.execute(execution({ op: 'request_discovery', actor_ref: 'npc',
     discovery_kind: 'inspect', target_refs: ['seen-second'], query: 'осмотреть' }));
   const action = capabilities[1];
   await action.execute(execution({ op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } }));
-  assert.equal(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
+  assert.ok(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } },
-  action.capability), true);
-  assert.equal(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
+  action.capability));
+  assert.ok(!matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['hidden'],
     action_production: { source_refs: ['safe-source'], tool_refs: ['hidden'] } },
-  action.capability), false);
+  action.capability));
   assert.deepEqual(calls.map(([name]) => name), ['o1', 'a1']);
   assert.equal(calls[1][1].actor.actor_id, 'npc');
-  assert.equal(Object.hasOwn(calls[1][1], 'player_safe_state'), false);
+  assert.ok(!Object.hasOwn(calls[1][1], 'player_safe_state'));
 });
 
-test('N1 A1 subset capability stays valid beside existing item owner', () => {
+test('A1 subset capability merges with item owner', () => {
   const contract = mergePhase7Capability({ owner: '@rus/items-property', allowed: [
     { item_ref: 'road-bag', use_kind: 'operate', target_refs: ['shore'] }
   ] }, { owner: '@rus/items-property', item_refs: ['source', 'tool'],
@@ -108,12 +108,12 @@ test('N1 A1 subset capability stays valid beside existing item owner', () => {
       source_refs: ['source'], tool_refs: ['hidden'] } }, contract), false);
 });
 
-test('N1 A1 capability does not depend on a Strength probe', async () => {
+test('A1 capability needs no Strength probe', async () => {
   const state = stateWithNpc();
   const phase7Contracts = contracts(state);
   delete phase7Contracts.genericCheckContext;
   let executed = false;
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({
       referencesApplicable: async () => true,
       execute: async (input) => {
@@ -130,10 +130,10 @@ test('N1 A1 capability does not depend on a Strength probe', async () => {
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } }),
   check_result: { outcome: 'clean_success' } });
-  assert.equal(executed, true);
+  assert.ok(executed);
 });
 
-test('N1 A1 advertises only owner-applicable refs and exact target binding', async () => {
+test('A1 advertises owner refs and target binding', async () => {
   const state = stateWithNpc();
   state.items.push({ ...npcItem('remote'), placement: { holder_npc_id: 'npc',
     holder_character_id: null, container_id: null, physical_position: 'worn' } }, { ...npcItem('foreign'),
@@ -143,7 +143,7 @@ test('N1 A1 advertises only owner-applicable refs and exact target binding', asy
     ...npcItem('retired').state, lifecycle_status: 'retired' } },
   { ...npcItem('bound'), placement: { holder_npc_id: 'npc',
     holder_character_id: null, container_id: null, physical_position: 'worn' } });
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({
       referencesApplicable: async ({ source_refs, tool_refs }) =>
         [...source_refs, ...tool_refs].every((ref) =>
@@ -165,15 +165,16 @@ test('N1 A1 advertises only owner-applicable refs and exact target binding', asy
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } } }), false);
 });
 
-test('N1 A1 admits revealed items in open NPC-controlled container into shared P16 path',
+test('A1 admits revealed open-container items to P16',
   async () => {
     const state = stateWithNpc();
     state.items = [containedNpcItem('stored-source', 'open-kit'),
       containedNpcItem('stored-tool', 'open-kit')];
     state.containers = [npcOpenContainer('open-kit')];
+    addNpcEvidence(state, ['stored-source', 'stored-tool']);
     addNpcContainerInventory(state);
     let received;
-    const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+    const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       createActionProductionOwner: () => ({
         referencesApplicable: async () => true,
         execute: async (input) => {
@@ -201,16 +202,17 @@ test('N1 A1 admits revealed items in open NPC-controlled container into shared P
       { plan_id: 'shared-p16' });
   });
 
-test('N1 A1 retirement accounts for source mass through contained host topology',
+test('A1 accounts contained source mass',
   async () => {
     const state = stateWithNpc();
     state.items = [containedNpcItem('stored-source', 'open-kit'),
       containedNpcItem('stored-tool', 'open-kit')];
     state.containers = [npcOpenContainer('open-kit')];
+    addNpcEvidence(state, ['stored-source', 'stored-tool']);
     state.player_profile = { attributes: { strength: { value: 10 } } };
     addNpcContainerInventory(state);
     let applyWorkingProjection;
-    const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+    const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       createActionProductionOwner: ({ applyWorkingProjection: apply }) => {
         applyWorkingProjection = apply;
         return { referencesApplicable: async () => true,
@@ -232,7 +234,7 @@ test('N1 A1 retirement accounts for source mass through contained host topology'
       item_id === 'stored-source'), false);
   });
 
-test('N1 A1 omits concealed or closed NPC container contents rejected by item owner',
+test('A1 omits concealed/closed rejected container contents',
   async () => {
   const state = stateWithNpc();
   state.items = [containedNpcItem('closed-source', 'closed-kit'),
@@ -241,17 +243,17 @@ test('N1 A1 omits concealed or closed NPC container contents rejected by item ow
     closure_state: 'closed', state: { access_state: 'closed' }
   })];
   addNpcContainerInventory(state);
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({ referencesApplicable: async ({ source_refs }) =>
       source_refs[0] !== 'closed-source',
       execute: async () => ({}) })
   });
   const capabilities = await factory({ partyId: 'party', requestId: 'request',
     inputDigest: 'digest', state, phase7Contracts: contracts(state) });
-  assert.equal(capabilities.some(({ operation }) => operation === 'request_item_use'), false);
+  assert.ok(!capabilities.some(({ operation }) => operation === 'request_item_use'));
 });
 
-test('N1 publishes current NPC-safe container access kinds', async () => {
+test('publishes NPC-safe container access', async () => {
   const state = stateWithNpc();
   state.items.push({ ...npcItem('road-packet'), template_id: null,
     holder_npc_id: null, placement: { holder_npc_id: null,
@@ -283,7 +285,7 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
     external_hand_cost: 0 }, { template_id: 'chest-template', capacity: 4,
     packing_slot_cost: 1, carry_form: 'regular', mass_grams: 1000,
     external_hand_cost: 0 }];
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createActionProductionOwner: () => ({ execute: async () => ({}) })
   });
   const capabilities = await factory({ partyId: 'party', requestId: 'request',
@@ -298,7 +300,7 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
     resolution: 'domain_request'
   }, { actor_ref: 'npc', container_ref: 'road-bag',
     access_kinds: ['unlock', 'force'], resolution: 'generic_check' }] });
-  assert.equal(JSON.stringify(container.capability).includes('road-packet'), false);
+  assert.ok(!JSON.stringify(container.capability).includes('road-packet'));
   assert.equal(container.supports({ operation: { op: 'request_container_access',
     actor_ref: 'npc', container_ref: 'road-bag', access_kind: 'open_and_view' } }), true);
   assert.equal(container.supports({ operation: { op: 'request_container_access',
@@ -321,7 +323,7 @@ test('N1 publishes current NPC-safe container access kinds', async () => {
     ({ item_id }) => item_id === 'player-pouch'), false);
 });
 
-test('N1 advertises checked container access only through generic check', async () => {
+test('checked container access uses generic check', async () => {
   const state = stateWithNpc();
   state.containers = [{ container_id: 'locked-kit', template_id: 'locked-kit-template',
     holder_npc_id: 'npc', open_state: 'locked', state_version: 1,
@@ -333,7 +335,7 @@ test('N1 advertises checked container access only through generic check', async 
   state.container_profiles = [{ template_id: 'locked-kit-template', capacity: 4,
     packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
     external_hand_cost: 0 }];
-  const capabilities = await createLowerDvinaTraceN1OwnerCapabilitiesFactory()({
+  const capabilities = await createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory()({
     partyId: 'party', requestId: 'request', inputDigest: 'digest', state,
     phase7Contracts: contracts(state) });
   const container = capabilities.find(
@@ -358,8 +360,8 @@ test('N1 advertises checked container access only through generic check', async 
     'open');
 });
 
-test('N1 omits adapters when current NPC-safe owner refs disappear', async () => {
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+test('omits adapters without NPC-safe refs', async () => {
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createOrdinaryDiscoveryResolver: () => async () => ({}),
     createActionProductionOwner: () => ({ execute: async () => ({}) })
   });
@@ -370,7 +372,7 @@ test('N1 omits adapters when current NPC-safe owner refs disappear', async () =>
     inputDigest: 'digest', state, phase7Contracts: contracts(state) }), []);
 });
 
-test('N1 O1 loads and executes from explicit NPC G6, not player position', async () => {
+test('O1 uses NPC G6, not player position', async () => {
   const state = stateWithNpc();
   state.position = { location_ref: 'player-camp', zone_ref: 'player-zone',
     g5_anchor_id: 'player-anchor', g6_ref: 'g6:player' };
@@ -378,7 +380,7 @@ test('N1 O1 loads and executes from explicit NPC G6, not player position', async
   Object.assign(state.npcs[0].machine_state, { location_ref: 'npc-storehouse',
     spatial_zone_ref: 'npc-inside', g6_ref: 'g6:npc' });
   let ownerInput;
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     loadOrdinaryEnablement: async ({ scopeRef }) => {
       assert.deepEqual(scopeRef, { entity_kind: 'g6', entity_id: 'g6:npc' });
       return { execution_context: { candidate_context: { target_ref: 'seen-first' },
@@ -413,7 +415,7 @@ function stateWithNpc() {
 
 function contracts(state) {
   return { zhdanko: state.npcs[0], npcSemanticProfile: {
-    profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' } },
     genericCheckContext: { attributes: [{ attribute_ref: 'strength',
@@ -463,6 +465,11 @@ function addNpcContainerInventory(state) {
   state.container_profiles = [{ template_id: 'npc-kit-template', capacity: 4,
     packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
     external_hand_cost: 0 }];
+}
+
+function addNpcEvidence(state, resourceRefs) {
+  state.npcs[0].perception_snapshot.visible_objects.push(...resourceRefs.map(
+    (resource_ref) => ({ resource_ref, source_perception_ref: `seen:${resource_ref}` })));
 }
 
 function execution(operation) {

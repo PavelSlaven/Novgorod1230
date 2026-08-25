@@ -12,7 +12,7 @@ import { resolveTracePhase7ScheduleTemporalAdvance } from
 import { resolveTracePhase7RestTemporalAdvance } from
   './lower-dvina-trace-phase-7-temporal.js';
 import { projectTracePhase7CurrentBoundaryState } from
-  './lower-dvina-trace-n1-owner-capabilities.js';
+  './lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 
 export async function resolveTracePhase7FireRestConsequence({
   state, playerInput, semanticPlan, modeResolution, rootTurnId, contracts,

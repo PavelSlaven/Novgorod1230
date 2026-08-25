@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
-import { createLowerDvinaTraceN1ModeOwnerCapabilities } from
-  '../src/runtime/lower-dvina-trace-n1-mode-handoffs.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepModeOwnerCapabilities } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 import { hydrateCombatSession } from
   '../src/infrastructure/postgres/combat-session-persistence.js';
 import { assertChangeSetLineage } from
@@ -21,14 +21,14 @@ const state = { party_id: 'party-1', actor_id: 'remote-1', npcs: [npc, {
   instance_id: 'visible-1'
 }], party_state: { turn_number: 1, state_version: 1 } };
 const contracts = { zhdanko: npc, npcSemanticProfile: {
-  profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+  profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
   status: 'approved', activation_boundary: { phase: 'phase_7',
     npc_participant_slot_ref: 'zhdanko_storehouse_controller' }
 } };
 
-test('N1 mode handoffs expose only NPC-safe visible targets and keep owner execution', async () => {
+test('NPC actor-step mode handoffs expose only NPC-safe visible targets and keep owner execution', async () => {
   let executed = 0;
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createModeOwnerCapabilities: async ({ visibleTargetRefs }) => [{
       operation: 'request_conversation', capability: { owner: '@rus/conversation' },
       supports: ({ operation }) => operation.target_actor_refs[0] === 'visible-1',
@@ -65,8 +65,8 @@ test('production handoffs expose only current NPC-safe actor targets', async () 
   current.npcs.push({ instance_id: 'visible-2' });
   actor.perception_snapshot.present_actors.push({ actor_ref: 'visible-2',
     source_perception_ref: 'seen-2' });
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
-    createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
+    createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
   });
   const capabilities = await factory({ partyId: current.party_id,
     requestId: 'r', inputDigest: 'd', state: current,
@@ -96,8 +96,8 @@ for (const operation of ['request_conversation', 'request_combat']) {
     speaker.relationships.push({ actor_ref: 'guard-1', hostility: 'hostile' });
     const phase7Contracts = approvedPhase7Contracts(current);
     phase7Contracts.npcSemanticProfile = contracts.npcSemanticProfile;
-    const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
-      createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
+    const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
+      createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
     });
     const consequence = await phase7Command({ state: current,
       contracts: phase7Contracts,
@@ -163,8 +163,8 @@ test('Phase 7 persists factual nonverbal interaction without target reaction', a
     source_event_ref: { entity_kind: 'event', entity_id: 'seen:guard' } }] };
   const phase7Contracts = approvedPhase7Contracts(current);
   phase7Contracts.npcSemanticProfile = contracts.npcSemanticProfile;
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
-    createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
+    createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
   });
   const consequence = await phase7Command({ state: current,
     contracts: phase7Contracts,

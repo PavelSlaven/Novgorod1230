@@ -87,8 +87,8 @@ genuinely closed choices и historical revisions, выбранных явным 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
 Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
-Phase 1A v21 / Phase 1B v20 и активирует approved N1 Phase-7 NPC semantic
-profile. N1 — общий current actor-step path: в `operation_contract` входят
+Phase 1A v21 / Phase 1B v20 и активирует approved Phase-7 autonomous NPC
+actor-step profile. Общий current actor-step path: в `operation_contract` входят
 только зарегистрированные и state-applicable owner capabilities с текущими
 NPC-safe refs и exact executable structural combinations, не narrative
 whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,

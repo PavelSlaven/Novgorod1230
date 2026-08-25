@@ -242,7 +242,7 @@ export function validateDefinitionPins(bundle) {
     clue_evidence_graph_set: 'clue_evidence_graph_set',
     knowledge_lie_memory_rules: 'knowledge_lie_memory_rules',
     spatial_semantic_profile: 'spatial_semantic_profile',
-    npc_semantic_profile: 'npc_semantic_profile'
+    npc_actor_step_profile: 'npc_actor_step_profile'
   })) {
     const definitionPin = bundle.definition.immutable_content_refs?.[definitionKey];
     const artifactPin = bundle.artifact_pins[artifactKey];

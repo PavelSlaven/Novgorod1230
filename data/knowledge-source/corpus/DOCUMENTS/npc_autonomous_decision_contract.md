@@ -1,6 +1,6 @@
 # Контракт автономных решений и действий NPC
 
-**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current N1 cutover — `spatial-v3-production-v13`\
+**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current actor-step cutover — `spatial-v3-production-v13`\
 **Идентификатор:** `npc_autonomous_decision_contract_v1`\
 **Владелец решения NPC:** `@rus/npc-runtime`\
 **Владелец оркестрации и общего actor-step:** `@rus/turn`\
@@ -88,9 +88,9 @@ active revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /
 production v9 сохраняется как historical recovery path; A1 cutover не меняет
 этот autonomous NPC owner.
 Revision 25 / M13 / Phase 1A v21 / Phase 1B v20 /
-`spatial-v3-production-v13` публикует approved N1 profile: существующая
-Phase-7 boundary Жданко — первый текущий activation participant/probe. Runtime
-N1 — общий текущий actor-step owner-capability path: он допускает
+`spatial-v3-production-v13` публикует approved Phase-7 autonomous actor-step
+profile: существующая boundary Жданко — первый текущий activation participant/probe.
+Runtime path допускает
 зарегистрированные и применимые к current state операции и NPC-safe current
 refs, без whitelist actions/refs/owners и специальной action logic Жданко.
 Это direct non-selectable child v12; S1 остаётся отдельным prepared gate и

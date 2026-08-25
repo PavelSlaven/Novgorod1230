@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 
-test('N1 S1 look reaches production owner only with known prepared position', async () => {
+test('NPC actor-step S1 look reaches production owner only with known prepared position', async () => {
   const state = s1State();
   const resolverFactory = createLowerDvinaTraceS1ProductionResolverFactory({
     pool: { query: async (sql) => sql.includes('party_spatial_semantic_resolutions')
@@ -15,17 +15,17 @@ test('N1 S1 look reaches production owner only with known prepared position', as
       name: 'Незнакомый выступ', description: 'Сырым камнем выдается у воды.',
       semantic_requirements: [] })
   });
-  const factory = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const factory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createSpatialSemanticResolver: resolverFactory });
   const phase7Contracts = { zhdanko: state.npcs[0], npcSemanticProfile: {
-    profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1, status: 'approved',
+    profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1, status: 'approved',
     activation_boundary: { phase: 'phase_7', npc_participant_slot_ref: 'zhdanko_storehouse_controller' } } };
   const findS1 = async () => (await factory({ partyId: 'party', requestId: 'request:npc',
     inputDigest: 'digest', state, phase7Contracts })).find(({ operation, capability }) =>
     operation === 'request_discovery' && capability.allowed?.[0]?.target_refs?.[0] === 'position:npc');
   const s1 = await findS1();
   assert.ok(s1);
-  assert.equal((await createLowerDvinaTraceN1OwnerCapabilitiesFactory()({
+  assert.equal((await createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory()({
     partyId: 'party', requestId: 'request:npc', inputDigest: 'digest', state,
     phase7Contracts })).some(({ operation }) => operation === 'request_discovery'), false);
   assert.equal(s1.supports({ operation: { actor_ref: 'npc', discovery_kind: 'look',

@@ -4,23 +4,25 @@ import { createCommittedItemMechanicsResolver } from
   './lower-dvina-trace-committed-inventory.js';
 import { projectTracePhase7CurrentBoundaryState } from
   './lower-dvina-trace-local-fire-current-state.js';
-import { activeN1Profile } from './lower-dvina-trace-n1-owner-capabilities.js';
-import { npcItemWorkingProjection, npcPosition, npcSafeItemRefs } from
-  './lower-dvina-trace-n1-item-context.js';
+import { activeNpcActorStepProfile } from './lower-dvina-trace-npc-actor-step-owner-capabilities.js';
+import { npcItemWorkingProjection, npcPosition, npcSafeItemRefs,
+  npcSafeOpenContainerRefs } from
+  './lower-dvina-trace-npc-actor-step-item-context.js';
 import { applyBodyEvent } from
   './lower-dvina-trace-turn-step-delegated-ports.js';
 
-export function createLowerDvinaTraceN1DirectOperations({ state,
+export function createLowerDvinaTraceNpcActorStepDirectOperations({ state,
   phase7Contracts, workingProjection = null, priorLocalFirePlans = [],
   ordinaryResultPolicy = null, packingCalculator = null,
   bodyEventOwner = null, createAmbientOrdinaryPortionAdmission = null } = {}) {
   state = projectTracePhase7CurrentBoundaryState({ state, workingProjection,
     priorLocalFirePlans });
-  if (!activeN1Profile(phase7Contracts?.npcSemanticProfile)) return empty();
+  if (!activeNpcActorStepProfile(phase7Contracts?.npcSemanticProfile)) return empty();
   const npcRef = phase7Contracts?.zhdanko?.instance_id;
   const npc = (state?.npcs ?? []).find(({ instance_id: id }) => id === npcRef);
   if (npc == null) return empty();
   const itemRefs = npcSafeItemRefs(state, npc);
+  const insideRefs = npcSafeOpenContainerRefs(state, npc);
   const bodyApplicable = hasNpcBody(npc) &&
     typeof bodyEventOwner?.resolve === 'function';
   const runtimeState = initializeRuntimeState(state);
@@ -37,7 +39,9 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       ...structuredClone(state), actor_id: npcRef,
       position: structuredClone(position)
     } }) : null;
-  const placements = directPlacements(npcRef, locationRef);
+  const placements = directPlacements(npcRef, locationRef, insideRefs, itemRefs);
+  const placementTargetRefs = [...new Set(placements.map(({ target_ref }) => target_ref)
+    .filter((ref) => ref !== npcRef && ref !== locationRef))];
   const createAllowed = ordinaryResultPolicy == null ? [] : createCombinations({
     runtimeRefs, placements, ambientOrdinaryPortionAdmission, locationRef
   });
@@ -61,7 +65,9 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
         allowed: createAllowed } } : {}),
     ...(itemRefs.length > 0 && placements.length > 0 ? { move_entity: {
       owner: '@rus/items-property', allowed: placements.map((placement) =>
-        ({ entity_refs: itemRefs, placement })) } } : {}),
+        ({ entity_refs: ['inside', 'attached_to'].includes(placement.relation)
+          ? itemRefs.filter((ref) => ref !== placement.target_ref) : itemRefs,
+        placement })).filter(({ entity_refs }) => entity_refs.length > 0) } } : {}),
     ...(runtimeRefs.length > 0 ? { change_entity_facts: {
       owner: '@rus/items-property', allowed: runtimeRefs.map((entity_ref) =>
         ({ entity_ref })) } } : {}),
@@ -80,17 +86,19 @@ export function createLowerDvinaTraceN1DirectOperations({ state,
       : all[operation]({ ...execution,
         working_projection: npcItemWorkingProjection({
           workingProjection: execution.working_projection, state, npc,
-          itemRefs, runtimeState
+          itemRefs, placementTargetRefs, runtimeState
         }) })]));
   return Object.freeze({ handlers: Object.freeze(handlers),
     operationContract: Object.freeze(operationContract) });
 }
 
-function directPlacements(npcRef, locationRef) {
+function directPlacements(npcRef, locationRef, insideRefs, itemRefs) {
   return [
     { relation: 'held_by', target_ref: npcRef },
     { relation: 'worn_by', target_ref: npcRef },
-    ...(locationRef == null ? [] : [{ relation: 'located_at', target_ref: locationRef }])
+    ...(locationRef == null ? [] : [{ relation: 'located_at', target_ref: locationRef }]),
+    ...insideRefs.map((target_ref) => ({ relation: 'inside', target_ref })),
+    ...itemRefs.map((target_ref) => ({ relation: 'attached_to', target_ref }))
   ];
 }
 

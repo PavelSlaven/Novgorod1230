@@ -22,10 +22,10 @@ import { createLowerDvinaTraceO2aAmbientPort } from
   '../lower-dvina-trace-o2a-ambient-port.js';
 import { createLowerDvinaTraceO2bProductionResolverFactory } from
   './lower-dvina-trace-o2b-production.js';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../lower-dvina-trace-n1-owner-capabilities.js';
-import { createLowerDvinaTraceN1ModeOwnerCapabilities } from
-  '../lower-dvina-trace-n1-mode-handoffs.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../lower-dvina-trace-npc-actor-step-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepModeOwnerCapabilities } from
+  '../lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../lower-dvina-trace-ordinary-discovery.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
@@ -99,7 +99,7 @@ export function createTraceTurnRuntime({
   const spatialSemanticResolverFactory = activeSpatialSemanticProfile != null
     ? createLowerDvinaTraceS1ProductionResolverFactory({ pool: partyPool, roleRunner })
     : null;
-  const createNpcOwnerCapabilities = createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+  const createNpcOwnerCapabilities = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     createOrdinaryDiscoveryResolver: ({ partyId, inputDigest }) =>
       createLowerDvinaTraceOrdinaryDiscoveryResolver({ partyId, inputDigest,
         loadEnablement: (input) => ordinaryEnablements.load(input),
@@ -108,7 +108,7 @@ export function createTraceTurnRuntime({
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
     loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
     createSpatialSemanticResolver: spatialSemanticResolverFactory,
-    createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
+    createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
   });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({

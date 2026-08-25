@@ -94,8 +94,8 @@ N1 и unrelated profiles не активируются.
 
 Revision 25 / M13 / Phase 1A v21 / Phase 1B v20 /
 `spatial-v3-production-v13` — прямой non-selectable child v12. Он публикует
-approved N1 Phase-7 semantic profile: существующая boundary Жданко — первый
-текущий activation participant/probe. Runtime N1 — общий текущий actor-step
+approved NPC actor-step Phase-7 profile: существующая boundary Жданко — первый
+текущий activation participant/probe. Runtime NPC actor-step — общий текущий actor-step
 owner-capability path: он допускает зарегистрированные и применимые к current
 state операции и NPC-safe current refs, без whitelist actions/refs/owners и
 специальной action logic Жданко. S1 остаётся в отдельном prepared revision-24

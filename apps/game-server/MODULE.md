@@ -259,8 +259,8 @@ existing `rus.runtime_catalog_pin.v2` policy (active event only for a new
 party; persisted historical pin thereafter).
 Release v13 is the direct non-selectable child of v12 and pins Lower Dvina
 Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20. It activates the
-approved N1 Phase-7 NPC semantic profile: the existing Жданко boundary is the
-first current activation participant/probe. Runtime N1 is the general current
+approved NPC actor-step Phase-7 profile: the existing Жданко boundary is the
+first current activation participant/probe. Runtime NPC actor-step is the general current
 actor-step owner-capability path: it admits registered, state-applicable
 operations and NPC-safe current refs, with no action/ref/owner whitelist or
 special Жданко action logic. S1 remains gated by its separate prepared

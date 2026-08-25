@@ -66,7 +66,7 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
   const npcSemanticProfile = bundle.definition_revision === 25
-    ? exactNpcSemanticProfile(bundle.npc_semantic_profile, autonomous.target_npc_ref)
+    ? exactNpcSemanticProfile(bundle.npc_actor_step_profile, autonomous.target_npc_ref)
     : null;
   const currentGenericCheckContext = npcSemanticProfile == null
     ? genericCheckContext
@@ -144,8 +144,8 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
 }
 
 function exactNpcSemanticProfile(profile, targetNpcRef) {
-  if (profile?.schema !== 'rus.lower_dvina_trace_n1_npc_semantic_profile.v1'
-      || profile.profile_id !== 'lower_dvina_trace_n1_npc_semantic_profile_v1'
+  if (profile?.schema !== 'rus.lower_dvina_trace_npc_actor_step_profile.v1'
+      || profile.profile_id !== 'lower_dvina_trace_npc_actor_step_profile_v1'
       || profile.revision !== 1 || profile.status !== 'approved'
       || profile.activation_boundary?.phase !== 'phase_7'
       || profile.activation_boundary?.npc_participant_slot_ref !== targetNpcRef
@@ -153,7 +153,7 @@ function exactNpcSemanticProfile(profile, targetNpcRef) {
       || canonicalDigest(profile.actor_mechanics_context) !== canonicalDigest({
         attributes: [{ attribute_ref: 'strength', label: 'сила', value: 10 }]
       })) {
-    gap('TRACE_N1_PROFILE_INVALID');
+    gap('TRACE_NPC_ACTOR_STEP_PROFILE_INVALID');
   }
   return Object.freeze({ profile_id: profile.profile_id, revision: profile.revision,
     status: profile.status, activation_boundary: structuredClone(profile.activation_boundary),

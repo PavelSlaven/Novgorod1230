@@ -1,12 +1,12 @@
 import { row } from './first-playable/plan-shared.js';
 import { appendCombatSessionWrite } from './combat-session-persistence.js';
 import { sessionRecord } from './npc-semantic-conversation-write-rows.js';
-import { lowerDvinaTraceN1ModeHandoffChange } from
-  '../../runtime/lower-dvina-trace-n1-mode-handoffs.js';
+import { lowerDvinaTraceNpcActorStepModeHandoffChange } from
+  '../../runtime/lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 
-export function appendN1ModeHandoffWrites({ inserts, updates, partyId, phase7,
+export function appendNpcActorStepModeHandoffWrites({ inserts, updates, partyId, phase7,
   changeSetId }) {
-  const change = lowerDvinaTraceN1ModeHandoffChange(
+  const change = lowerDvinaTraceNpcActorStepModeHandoffChange(
     phase7.actor_step_owner_outputs?.consequence_fragment);
   const handoff = change?.mode_handoff;
   if (handoff?.mode === 'conversation') {

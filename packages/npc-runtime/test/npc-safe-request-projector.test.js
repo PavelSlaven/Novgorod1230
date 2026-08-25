@@ -404,8 +404,8 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
   }
 });
 
-test('NPC-safe resources require physical availability beyond controller knowledge', () => {
-  const projected = projectNpcSafeResourceSnapshots({
+test('NPC-safe resources require physical availability and evidence beyond held items', () => {
+  const input = {
     npc_snapshot: {
       instance_id: 'speaker',
       machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
@@ -434,9 +434,21 @@ test('NPC-safe resources require physical availability beyond controller knowled
       state: { location_ref: 'yard', zone_ref: 'gate',
         access_state: 'accessible' }
     }]
-  });
+  };
+  const projected = projectNpcSafeResourceSnapshots(input);
 
   assert.deepEqual(projected.map(({ resource_ref: resourceRef }) => resourceRef),
+    ['held']);
+
+  const perceived = projectNpcSafeResourceSnapshots({ ...input,
+    knowledge_snapshot: { known_facts: [{
+      fact_ref: 'controlled-accessible-fact',
+      resource_ref: 'controlled-accessible',
+      source_perception_ref: ref('perception_result', 'controlled-accessible-seen'),
+      summary: 'доступный контролируемый предмет'
+    }] }
+  });
+  assert.deepEqual(perceived.map(({ resource_ref: resourceRef }) => resourceRef),
     ['held', 'controlled-accessible']);
 
   const unknownNpcPlacement = projectNpcSafeResourceSnapshots({
@@ -466,7 +478,12 @@ test('NPC-safe controlled contents require an open container chain', () => {
       item_id: 'open-child', placement: { container_id: 'open-bag' },
       ownership: { controller_npc_id: 'speaker' }, state: {
         location_ref: 'yard', zone_ref: 'gate', access_state: 'accessible' }
-    }]
+    }],
+    knowledge_snapshot: { known_facts: [{
+      fact_ref: 'open-child-fact', resource_ref: 'open-child',
+      source_perception_ref: ref('perception_result', 'open-bag-inspected'),
+      summary: 'предмет в открытой сумке'
+    }] }
   });
   const refs = projected.map(({ resource_ref: resourceRef }) => resourceRef);
   assert.equal(refs.includes('closed-child'), false);

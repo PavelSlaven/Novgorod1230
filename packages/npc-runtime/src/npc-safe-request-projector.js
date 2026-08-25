@@ -178,7 +178,6 @@ export function projectNpcSafeResourceSnapshots({
     const accessible = ['accessible', 'available', 'open', 'immediate', 'quick']
       .includes(access);
     const held = holder === npcId;
-    const controlled = controller === npcId;
     const colocated = (location !== null && location === npcLocation)
       || (zone !== null && zone === npcZone);
     const heldAtNpcPlacement = held
@@ -201,11 +200,9 @@ export function projectNpcSafeResourceSnapshots({
       ...resource,
       access_state: access
     });
-    if (((held || controlled) && concealed && !subjectivelyKnown)
+    if ((concealed && !subjectivelyKnown)
       || (held && !heldAtNpcPlacement)
-      || (!held && controlled && !physicallyAvailable)
-      || (!held && !controlled
-        && (concealed || !subjectivelyKnown || !physicallyAvailable))) {
+      || (!held && (!subjectivelyKnown || !physicallyAvailable))) {
       return [];
     }
     return [{

@@ -1,13 +1,16 @@
 import { projectNpcSafeResourceSnapshots } from '@rus/npc-runtime';
+import { runtimeItemContentsAreOpen } from '@rus/items-property';
 import { initializeRuntimeState } from './lower-dvina-trace-turn-step-item-support.js';
 import { getCommittedActorInventoryLoad } from
   './lower-dvina-trace-committed-inventory.js';
 
 export function npcItemWorkingProjection({ workingProjection, state, npc,
-  itemRefs, runtimeState = initializeRuntimeState(state) }) {
+  itemRefs, placementTargetRefs = [], runtimeState = initializeRuntimeState(state) }) {
   const npcRef = npc.instance_id;
   const current = structuredClone(workingProjection ?? {});
-  if (current.actor_id === npcRef && Array.isArray(current.items)) return current;
+  if (current.actor_id === npcRef && Array.isArray(current.items)) return {
+    ...current, items: npcProjectionItems(current.items, [], itemRefs,
+      placementTargetRefs, npcRef, runtimeState, true) };
   const inventory = npcInventory(state, npc);
   if (inventory == null) throw Object.assign(
     new Error('TRACE_PHASE_7_NPC_INVENTORY_DATA_GAP'), {
@@ -16,15 +19,20 @@ export function npcItemWorkingProjection({ workingProjection, state, npc,
     position: npcPosition(npc) ?? current.position,
     inventory: structuredClone(inventory),
     items: npcProjectionItems(Array.isArray(current.items) ? current.items : [],
-      state.items, itemRefs, npcRef, runtimeState) };
+      state.items, itemRefs, placementTargetRefs, npcRef, runtimeState) };
 }
 
-function npcProjectionItems(items, stateItems, itemRefs, npcRef, runtimeState) {
-  const selected = new Map(items.filter((item) => itemRefs.includes(
+function npcProjectionItems(items, stateItems, itemRefs, placementTargetRefs,
+  npcRef, runtimeState, preserveCurrent = false) {
+  const selected = new Map(items.filter((item) => preserveCurrent || itemRefs.includes(
     item.item_id ?? item.instance_id)).map((item) => [item.item_id ?? item.instance_id, item]));
   for (const item of stateItems ?? []) {
     const ref = item.item_id ?? item.instance_id;
     if (itemRefs.includes(ref) && !selected.has(ref)) selected.set(ref, item);
+  }
+  for (const ref of placementTargetRefs) {
+    const target = runtimeState.materializedItems.get(ref);
+    if (target != null && !selected.has(ref)) selected.set(ref, target);
   }
   for (const item of [...selected.values()]) for (let ref = item.placement?.container_id;
     ref && !selected.has(ref);) {
@@ -85,4 +93,15 @@ export function npcSafeItemRefs(state, npc) {
   const itemRefs = new Set(items.map(({ item_id, instance_id }) => item_id ?? instance_id));
   return safe.map(({ resource_ref }) => resource_ref).filter((ref) =>
     itemRefs.has(ref) && !bound.has(ref));
+}
+
+export function npcSafeOpenContainerRefs(state, npc) {
+  const containers = state?.containers ?? [];
+  const safe = new Set(projectNpcSafeResourceSnapshots({ npc_snapshot: npc,
+    resource_snapshots: containers, perception_snapshot: npc.perception_snapshot,
+    knowledge_snapshot: npc.knowledge_snapshot }).map(({ resource_ref }) => resource_ref));
+  return containers.flatMap((container) => {
+    const ref = container.container_id ?? container.item_id ?? container.instance_id;
+    return safe.has(ref) && runtimeItemContentsAreOpen(container) ? [ref] : [];
+  });
 }

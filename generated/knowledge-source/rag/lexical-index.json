@@ -1,6 +1,6 @@
 {
   "schema_version": "rus.lexical_index.v1",
-  "corpus_hash": "5ea917d3585c059d09d0a8a460c7a61f73db750988e9ab4e1a172aa741e1d7d7",
+  "corpus_hash": "5c053c4727a168c461da2723f4a065440c8616302c30d6cb18a094de50c766b7",
   "chunk_count": 2537,
   "chunks": [
     {
@@ -3843,8 +3843,8 @@
       "section": "Active semantic LLM contracts",
       "line_start": 66,
       "line_end": 134,
-      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.\n\nRevision 25 / M13 / Phase 1A v21 / Phase 1B v20 /\n`spatial-v3-production-v13` — прямой non-selectable child v12. Он публикует\napproved N1 Phase-7 semantic profile: существующая boundary Жданко — первый\nтекущий activation participant/probe. Runtime N1 — общий текущий actor-step\nowner-capability path: он допускает зарегистрированные и применимые к current\nstate операции и NPC-safe current refs, без whitelist actions/refs/owners и\nспециальной action logic Жданко. S1 остаётся в отдельном prepared revision-24\ngate. Runtime-catalog activation этим release не меняется, а v12/revision-24\nartifacts остаются immutable historical paths.",
-      "char_count": 852
+      "text": "## llm_documentation_navigation.md — Active semantic LLM contracts\nelope model supplies open ordinary\nsemantic detail; server лишь P16-revalidates и SQL-commits owner proposal.\nN1 и unrelated profiles не активируются.\n\nRevision 25 / M13 / Phase 1A v21 / Phase 1B v20 /\n`spatial-v3-production-v13` — прямой non-selectable child v12. Он публикует\napproved NPC actor-step Phase-7 profile: существующая boundary Жданко — первый\nтекущий activation participant/probe. Runtime NPC actor-step — общий текущий actor-step\nowner-capability path: он допускает зарегистрированные и применимые к current\nstate операции и NPC-safe current refs, без whitelist actions/refs/owners и\nспециальной action logic Жданко. S1 остаётся в отдельном prepared revision-24\ngate. Runtime-catalog activation этим release не меняется, а v12/revision-24\nartifacts остаются immutable historical paths.",
+      "char_count": 867
     },
     {
       "id": "llm_documentation_navigation.md:Active semantic LLM contracts:4",
@@ -5463,8 +5463,8 @@
       "section": "Контракт автономных решений и действий NPC",
       "line_start": 1,
       "line_end": 12,
-      "text": "## npc_autonomous_decision_contract.md — Контракт автономных решений и действий NPC\n# Контракт автономных решений и действий NPC\n\n**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current N1 cutover — `spatial-v3-production-v13`\\\n**Идентификатор:** `npc_autonomous_decision_contract_v1`\\\n**Владелец решения NPC:** `@rus/npc-runtime`\\\n**Владелец оркестрации и общего actor-step:** `@rus/turn`\\\n**Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\\\n**Историческая дата подготовки:** 2026-08-02\\\n**Историческая база первой активации:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`, PR №51\\\n**Текущая редакция/cutover:** 2026-08-25, Lower Dvina Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20 / `spatial-v3-production-v13`\\\n**Связанный active-контракт игрока:** `turn_step_llm_contract.md`",
-      "char_count": 858
+      "text": "## npc_autonomous_decision_contract.md — Контракт автономных решений и действий NPC\n# Контракт автономных решений и действий NPC\n\n**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current actor-step cutover — `spatial-v3-production-v13`\\\n**Идентификатор:** `npc_autonomous_decision_contract_v1`\\\n**Владелец решения NPC:** `@rus/npc-runtime`\\\n**Владелец оркестрации и общего actor-step:** `@rus/turn`\\\n**Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\\\n**Историческая дата подготовки:** 2026-08-02\\\n**Историческая база первой активации:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`, PR №51\\\n**Текущая редакция/cutover:** 2026-08-25, Lower Dvina Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20 / `spatial-v3-production-v13`\\\n**Связанный active-контракт игрока:** `turn_step_llm_contract.md`",
+      "char_count": 866
     },
     {
       "id": "npc_autonomous_decision_contract.md:1. Назначение:0",
@@ -5499,8 +5499,8 @@
       "section": "3. Текущее состояние `main` и active-модель",
       "line_start": 51,
       "line_end": 98,
-      "text": "## npc_autonomous_decision_contract.md — 3. Текущее состояние `main` и active-модель\nержание `reaction_decision` для autonomous mode:\n\n```text\nactive autonomous:\nNPC-safe context → semantic LLM decision → structured actor step plan\n```\n\nSchedule, perception, temporal ordering, persistence и профильные владельцы механики сохраняются.\nPhase 7 «Отдых у огня» длится ровно 30 минут: на +25 возникает общая\nautonomous boundary Жданко. Request получает не scenario option set, а\nфактически зарегистрированные текущим actor-step операции и доступные refs.\nВыбранный plan применяется к working projection на том же timestamp +25;\nпосле этого общий temporal owner продолжает интервал до +30 уже с начатым\nдействием. Temporal execution, persistence и player-safe visibility остаются\ncode-owned. Этот autonomous mode не разрешает combat: отдельный combat contract\nбыл активирован позднее revision 16 / `spatial-v3-production-v6` и наследуется\nactive revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /\nproduction v9 сохраняется как historical recovery path; A1 cutover не меняет\nэтот autonomous NPC owner.\nRevision 25 / M13 / Phase 1A v21 / Phase 1B v20 /\n`spatial-v3-production-v13` публикует approved N1 profile: существующая\nPhase-7 boundary Жданко — первый текущий activation participant/probe. Runtime\nN1 — общий текущий actor-step owner-capability path: он допускает\nзарегистрированные и применимые к current state операции и NPC-safe current\nrefs, без whitelist actions/refs/owners и специальной action logic Жданко.\nЭто direct non-selectable child v12; S1 остаётся отдельным prepared gate и\nruntime-catalog activation не меняется.",
-      "char_count": 1639
+      "text": "## npc_autonomous_decision_contract.md — 3. Текущее состояние `main` и active-модель\nержание `reaction_decision` для autonomous mode:\n\n```text\nactive autonomous:\nNPC-safe context → semantic LLM decision → structured actor step plan\n```\n\nSchedule, perception, temporal ordering, persistence и профильные владельцы механики сохраняются.\nPhase 7 «Отдых у огня» длится ровно 30 минут: на +25 возникает общая\nautonomous boundary Жданко. Request получает не scenario option set, а\nфактически зарегистрированные текущим actor-step операции и доступные refs.\nВыбранный plan применяется к working projection на том же timestamp +25;\nпосле этого общий temporal owner продолжает интервал до +30 уже с начатым\nдействием. Temporal execution, persistence и player-safe visibility остаются\ncode-owned. Этот autonomous mode не разрешает combat: отдельный combat contract\nбыл активирован позднее revision 16 / `spatial-v3-production-v6` и наследуется\nactive revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /\nproduction v9 сохраняется как historical recovery path; A1 cutover не меняет\nэтот autonomous NPC owner.\nRevision 25 / M13 / Phase 1A v21 / Phase 1B v20 /\n`spatial-v3-production-v13` публикует approved Phase-7 autonomous actor-step\nprofile: существующая boundary Жданко — первый текущий activation participant/probe.\nRuntime path допускает\nзарегистрированные и применимые к current state операции и NPC-safe current\nrefs, без whitelist actions/refs/owners и специальной action logic Жданко.\nЭто direct non-selectable child v12; S1 остаётся отдельным prepared gate и\nruntime-catalog activation не меняется.",
+      "char_count": 1607
     },
     {
       "id": "npc_autonomous_decision_contract.md:4. Архитектурные владельцы:0",
@@ -11623,56 +11623,56 @@
       "char_count": 916
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2:0",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2",
+      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1",
       "line_start": 1,
-      "line_end": 51,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\n# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\n\n**Предлагаемый файл в репозитории:**  \n`data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`",
+      "line_end": 49,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\n# Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\n\n**Предлагаемый файл в репозитории:**  \n`data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`",
       "char_count": 443
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2:1",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2",
+      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1",
       "line_start": 1,
-      "line_end": 51,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\nv2.2\n\n**Предлагаемый файл в репозитории:**  \n`data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`\n\n**Статус:** `proposed umbrella target`; не является active production contract. Каждая описанная ниже feature profile активируется отдельным versioned cutover только после своей реализации и профильных tests.  \n**Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`.  \n**Сверено с GitHub `main`:** 2026-08-16, HEAD `2a6ce7ab72a515ae1d240ca99eb4fc5dd4795b58`.  \n**Редакция ревизии:** `2.2.0-n1-taxonomy-amendment`.  \n**Нормативная поправка N1:** принята 2026-08-25 для versioned cutover revision 25 / M13. Эта поправка формально заменяет прежнее значение идентификатора N1 из reviewed v2.1; она не выводится из реализации PR.  \n**Основной владелец LLM orchestration:** `@rus/turn`.  \n**Deterministic authored materialization, RNG и code-only helpers:** `@rus/materialization`.  \n**Предметы, количество, масса, контейнеры и property:** `@rus/items-property`.  \n**Пространство и topology:** существующие Spatial v3 owners/contracts.  \n**NPC semantic decision:** `@rus/npc-runtime`, orchestration model calls — через `@rus/turn`.  \n**Самостоятельные процессы:** существующий `@rus/world-processes`.  \n**Точное время:** `@rus/time-events-history`.  \n**Logical persistence boundary:** `@rus/party-store`; physical PostgreSQL transaction остаётся у существующего server-owned committer.",
-      "char_count": 1616
+      "line_end": 49,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\nv2.1\n\n**Предлагаемый файл в репозитории:**  \n`data/knowledge-source/corpus/DOCUMENTS/semantic_world_actions_materialization_and_processes_contract.md`\n\n**Статус:** `proposed umbrella target`; не является active production contract. Каждая описанная ниже feature profile активируется отдельным versioned cutover только после своей реализации и профильных tests.  \n**Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`.  \n**Сверено с GitHub `main`:** 2026-08-16, HEAD `2a6ce7ab72a515ae1d240ca99eb4fc5dd4795b58`.  \n**Редакция ревизии:** `2.1.0-review`.  \n**Основной владелец LLM orchestration:** `@rus/turn`.  \n**Deterministic authored materialization, RNG и code-only helpers:** `@rus/materialization`.  \n**Предметы, количество, масса, контейнеры и property:** `@rus/items-property`.  \n**Пространство и topology:** существующие Spatial v3 owners/contracts.  \n**NPC semantic decision:** `@rus/npc-runtime`, orchestration model calls — через `@rus/turn`.  \n**Самостоятельные процессы:** существующий `@rus/world-processes`.  \n**Точное время:** `@rus/time-events-history`.  \n**Logical persistence boundary:** `@rus/party-store`; physical PostgreSQL transaction остаётся у существующего server-owned committer.",
+      "char_count": 1390
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2:2",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:2",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2",
+      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1",
       "line_start": 1,
-      "line_end": 51,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\nnts-history`.  \n**Logical persistence boundary:** `@rus/party-store`; physical PostgreSQL transaction остаётся у существующего server-owned committer.\n\nЭта редакция сохраняет продуктовую цель исходного v2, но исправляет найденные при сверке с `main` противоречия и недооценённые implementation gaps.\n\nКлючевые изменения ревизии:",
+      "line_end": 49,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\nnts-history`.  \n**Logical persistence boundary:** `@rus/party-store`; physical PostgreSQL transaction остаётся у существующего server-owned committer.\n\nЭта редакция сохраняет продуктовую цель исходного v2, но исправляет найденные при сверке с `main` противоречия и недооценённые implementation gaps.\n\nКлючевые изменения ревизии:",
       "char_count": 511
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2:3",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:3",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2",
+      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1",
       "line_start": 1,
-      "line_end": 51,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\nдуктовую цель исходного v2, но исправляет найденные при сверке с `main` противоречия и недооценённые implementation gaps.\n\nКлючевые изменения ревизии:\n\n- identifier `N1` закреплён за общим autonomous NPC current actor-step path: NPC получает только реально доступные owner capabilities и NPC-safe refs, а проверку, механику, время и persistence выполняют существующие owners; прежний ordinary NPC materializer remainder больше не называется N1 и остаётся отдельной неактивной будущей идеей без profile identifier;\n- ordinary world resolution переиспользует существующие player domain requests `request_discovery` и `request_container_access`; новый player operation для ordinary content не вводится;\n- любой положительный targeted result требует independent eligible `supporting_basis_ref`: уже committed либо candidate-free prepared Stage A basis в той же working projection; player/NPC wording остаётся только trigger и имеет `evidence_weight = 0`;\n- LLM не назначает числовую world-capacity: она предлагает только закрытый `density_band`, а code-owned policy переводит его в persisted identity budget;\n- concrete ordinary proposal получает broad closed `admission_class` и functional bucket: code применяет gates, а semantic correctness классификации проверяется adversarial model eval, без притворного NLP-парсинга free-text name;\n- initial primitive mechanics нового non-container item могут быть предложены LLM только один раз внутри request-bound policy; после validation/commit exact snapshot принадлежит `@rus/items-property`;\n- active authority class `hidden` сохраняется для hidden truth/candidate paths; простая физическая concealment обычного предмета моделируется отдельным disclosure state `concealed`;\n- no-reroll гарантируется для committed exact resolution identity; универсальная эквивалентность произвольных перефразирований и durable replay незафиксированного LLM-плана не обещаются;\n- ordinary contents v1 относятся к уже существующему container; создание нового template-less runtime container отложено до отдельного mechanics snapshot contract;\n- local `fire` v1 использует code-owned discrete whole-unit fuel rule: один persisted fuel-unit entity на exact boundary; LLM не возвращает arbitrary numeric resource deltas;\n- umbrella target разделён на независимые atomic activation profiles. Запрещена mixed semantics внутри одного profile, но не требуется один огромный cutover для ordinary world, free crafting, spatial/NPC remainder и fire одновременно.",
-      "char_count": 2661
+      "line_end": 49,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\nдуктовую цель исходного v2, но исправляет найденные при сверке с `main` противоречия и недооценённые implementation gaps.\n\nКлючевые изменения ревизии:\n\n- ordinary world resolution переиспользует существующие player domain requests `request_discovery` и `request_container_access`; новый player operation для ordinary content не вводится;\n- любой положительный targeted result требует independent eligible `supporting_basis_ref`: уже committed либо candidate-free prepared Stage A basis в той же working projection; player/NPC wording остаётся только trigger и имеет `evidence_weight = 0`;\n- LLM не назначает числовую world-capacity: она предлагает только закрытый `density_band`, а code-owned policy переводит его в persisted identity budget;\n- concrete ordinary proposal получает broad closed `admission_class` и functional bucket: code применяет gates, а semantic correctness классификации проверяется adversarial model eval, без притворного NLP-парсинга free-text name;\n- initial primitive mechanics нового non-container item могут быть предложены LLM только один раз внутри request-bound policy; после validation/commit exact snapshot принадлежит `@rus/items-property`;\n- active authority class `hidden` сохраняется для hidden truth/candidate paths; простая физическая concealment обычного предмета моделируется отдельным disclosure state `concealed`;\n- no-reroll гарантируется для committed exact resolution identity; универсальная эквивалентность произвольных перефразирований и durable replay незафиксированного LLM-плана не обещаются;\n- ordinary contents v1 относятся к уже существующему container; создание нового template-less runtime container отложено до отдельного mechanics snapshot contract;\n- local `fire` v1 использует code-owned discrete whole-unit fuel rule: один persisted fuel-unit entity на exact boundary; LLM не возвращает arbitrary numeric resource deltas;\n- umbrella target разделён на независимые atomic activation profiles. Запрещена mixed semantics внутри одного profile, но не требуется один огромный cutover для ordinary world, free crafting, spatial/NPC remainder и fire одновременно.",
+      "char_count": 2299
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2:4",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1:4",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2",
+      "section": "Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1",
       "line_start": 1,
-      "line_end": 51,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.2\nd semantics внутри одного profile, но не требуется один огромный cutover для ordinary world, free crafting, spatial/NPC remainder и fire одновременно.\n\nДо активации конкретного profile источником production behavior остаются актуальные active-нормативы и код `main`.\n\nДокумент является proposed amendment прежде всего к:\n\n- `AGENTS.md`;\n- `turn_step_llm_contract.md`;\n- `code_driven_world_materialization_architecture.md`;\n- `spatial_architecture_standard_g0_g6.md`;\n- `world_base_materialization_table_requirements.md` и target specialization;\n- `items_and_property.txt`;\n- `npc_autonomous_decision_contract.md` в части доступа NPC к ordinary world;\n- `temporal_world_and_interruptible_activities.md`;\n- module contracts `@rus/turn`, `@rus/items-property`, `@rus/materialization`, `@rus/world-processes`, persistence/visibility owners.\n\n---",
+      "line_end": 49,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — Контракт свободного семантического мира: действия, lazy ordinary-materialization и самостоятельные процессы v2.1\nd semantics внутри одного profile, но не требуется один огромный cutover для ordinary world, free crafting, spatial/NPC remainder и fire одновременно.\n\nДо активации конкретного profile источником production behavior остаются актуальные active-нормативы и код `main`.\n\nДокумент является proposed amendment прежде всего к:\n\n- `AGENTS.md`;\n- `turn_step_llm_contract.md`;\n- `code_driven_world_materialization_architecture.md`;\n- `spatial_architecture_standard_g0_g6.md`;\n- `world_base_materialization_table_requirements.md` и target specialization;\n- `items_and_property.txt`;\n- `npc_autonomous_decision_contract.md` в части доступа NPC к ordinary world;\n- `temporal_world_and_interruptible_activities.md`;\n- module contracts `@rus/turn`, `@rus/items-property`, `@rus/materialization`, `@rus/world-processes`, persistence/visibility owners.\n\n---",
       "char_count": 1024
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0. Назначение, нормативная граница и результат ревизии:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0. Назначение, нормативная граница и результат ревизии",
-      "line_start": 52,
-      "line_end": 93,
+      "line_start": 50,
+      "line_end": 91,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0. Назначение, нормативная граница и результат ревизии\n## 0. Назначение, нормативная граница и результат ревизии\n\nЦель контракта — сохранить основной игровой инвариант проекта:\n\n> Игрок и NPC не ограничены конечным списком команд, recipes, заранее написанных реакций и конкретных ordinary-объектов. Код исполняет всё, что уже можно надёжно формализовать; LLM семантически разрешает неизбежный остаток неизвестных разработчику ситуаций внутри уже заданной реальности; результат после code-owned проверки и commit становится устойчивым состоянием партии.\n\nКонтракт охватывает:",
       "char_count": 644
     },
@@ -11680,17 +11680,17 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0. Назначение, нормативная граница и результат ревизии:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0. Назначение, нормативная граница и результат ревизии",
-      "line_start": 52,
-      "line_end": 93,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0. Назначение, нормативная граница и результат ревизии\nу ситуаций внутри уже заданной реальности; результат после code-owned проверки и commit становится устойчивым состоянием партии.\n\nКонтракт охватывает:\n\n1. свободные действия игрока и NPC;\n2. semantic facts и их связь с формальными mechanics;\n3. ordinary physical materialization;\n4. lazy scene content и targeted presence resolution;\n5. локальный density/identity budget без каталога диапазонов каждого предмета;\n6. property, anti-free-loot и context-bound предметы;\n7. природные sources/features/resources;\n8. ресурсы, первоначальное количество, расход и practically abundant sources;\n9. free crafting без обязательного recipe;\n10. party-scoped ordinary content внутри уже существующей spatial рамки;\n11. отдельный будущий structural semantic remainder;\n12. импровизированные предметы в domain mechanics;\n13. самостоятельные world processes;\n14. первый exact local process — `fire`;\n15. persistence, retry, safe projections и atomicity;\n16. реалистичную implementation delta относительно current `main`.\n\nКонтракт **не**:",
-      "char_count": 1147
+      "line_start": 50,
+      "line_end": 91,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0. Назначение, нормативная граница и результат ревизии\nу ситуаций внутри уже заданной реальности; результат после code-owned проверки и commit становится устойчивым состоянием партии.\n\nКонтракт охватывает:\n\n1. свободные действия игрока и NPC;\n2. semantic facts и их связь с формальными mechanics;\n3. ordinary physical materialization;\n4. lazy scene content и targeted presence resolution;\n5. локальный density/identity budget без каталога диапазонов каждого предмета;\n6. property, anti-free-loot и context-bound предметы;\n7. природные sources/features/resources;\n8. ресурсы, первоначальное количество, расход и practically abundant sources;\n9. free crafting без обязательного recipe;\n10. party-scoped ordinary content внутри уже существующей spatial рамки;\n11. отдельный будущий профиль ordinary NPC/structure semantic remainder;\n12. импровизированные предметы в domain mechanics;\n13. самостоятельные world processes;\n14. первый exact local process — `fire`;\n15. persistence, retry, safe projections и atomicity;\n16. реалистичную implementation delta относительно current `main`.\n\nКонтракт **не**:",
+      "char_count": 1167
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0. Назначение, нормативная граница и результат ревизии:2",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0. Назначение, нормативная граница и результат ревизии",
-      "line_start": 52,
-      "line_end": 93,
+      "line_start": 50,
+      "line_end": 91,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0. Назначение, нормативная граница и результат ревизии\ns — `fire`;\n15. persistence, retry, safe projections и atomicity;\n16. реалистичную implementation delta относительно current `main`.\n\nКонтракт **не**:\n\n- заменяет canonical G0–G5 процедурной генерацией;\n- материализует весь G4/G5/G6 заранее;\n- требует item ranges для всех бытовых объектов;\n- разрешает LLM писать runtime code, SQL или arbitrary state patch;\n- разрешает LLM писать в БД;\n- разрешает LLM придумывать canonical/history/informational truth;\n- создаёт второй player planner;\n- переносит LLM call внутрь `@rus/materialization`;\n- создаёт второй NPC, spatial, temporal или process owner;\n- требует универсальную materials ontology;\n- требует universal affordance engine;\n- требует full economy simulator или event sourcing;\n- требует durable журнала незафиксированных LLM-планов;\n- гарантирует универсальное semantic matching любых перефразирований.",
       "char_count": 985
     },
@@ -11698,8 +11698,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.1. Что подтверждено текущим `main`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.1. Что подтверждено текущим `main`",
-      "line_start": 94,
-      "line_end": 121,
+      "line_start": 92,
+      "line_end": 119,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.1. Что подтверждено текущим `main`\n### 0.1. Что подтверждено текущим `main`\n\nСверка current `main` подтверждает пригодность существующих owners, но показывает, что исходный v2 недооценивал объём cutover.\n\nУже существует:\n\n- `@rus/turn` как единственная active player semantic boundary, internal step loop, working projection, execution registry, state revalidation и combined logical write-plan composition;\n- `@rus/items-property` как owner item/container/property/access, inventory mechanics и immutable mechanics snapshots для template-less direct-action results;\n- `@rus/materialization` как code-only deterministic owner без LLM;\n- Spatial v3 с canonical G0–G5, party-scoped G6/dynamic state, immutable topology baseline и single-writer discipline;\n- `@rus/world-processes` как pure owner coarse remote catch-up, включая remote `process_kind = fire`;\n- `@rus/party-store` как logical persistence boundary и game-server как physical transaction owner.\n\nОдновременно current `main` имеет следующие реальные ограничения:",
       "char_count": 1094
     },
@@ -11707,8 +11707,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.1. Что подтверждено текущим `main`:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.1. Что подтверждено текущим `main`",
-      "line_start": 94,
-      "line_end": 121,
+      "line_start": 92,
+      "line_end": 119,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.1. Что подтверждено текущим `main`\nore` как logical persistence boundary и game-server как physical transaction owner.\n\nОдновременно current `main` имеет следующие реальные ограничения:\n\n1. Active player domain operations не содержат ни ordinary-materialization operation, ни `request_world_process`. Ordinary presence разумнее подключать как внутренний branch существующих `request_discovery` и `request_container_access`.\n2. `@rus/items-property` допускает ordinary runtime result только при exact match заранее approved `semantic_type + name`, а все facts должны входить в `approved_fact_texts`. Это несовместимо со свободной semantic concretization и требует нового admission contract, а не только prompt change.\n3. `rus.items.runtime_instance_mechanics_snapshot.v1` допускает только provenance `ordinary_direct_action_result`, требует `root_turn_id/step_index` и запрещает runtime container mechanics через `container = null`. System/NPC seed и новый template-less container этим contract не выражаются.\n4. `first-entry-materialization.js` выполняет materializer внутри injected transaction после locked baseline read. Этот helper пригоден для deterministic code materialization, но не должен стать местом сетевого LLM-вызова.\n5. Current turn loop сохраняет accepted plan только внутри ещё не committed execution draft. После process crash до final commit нет durable plan, который можно replay без нового model call.\n6. Current `@rus/world-processes` реализует только remote aggregate catch-up. Интерактивный local fire с concrete fuel refs, exact item transitions и actor affect является отдельным additive contract внутри того же owner.\n7. Checked `@rus/items-property` surfaces пересчитывают placement/inventory mechanics, но не предоставляют подтверждённого общего transition для частичного расхода arbitrary mass/quantity. Поэтому F1 v1 использует целые заранее отделённые fuel-unit entities и retirement одного unit на boundary; partial stack/mass burn остаётся отдельной будущей mechanics delta.\n8. Наборы turn-step operations продублированы в validators/admission/actor-step constants. Добавление `request_world_process` требует синхронной правки всех этих surfaces и tests.",
       "char_count": 2260
     },
@@ -11716,8 +11716,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.1. Что подтверждено текущим `main`:2",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.1. Что подтверждено текущим `main`",
-      "line_start": 94,
-      "line_end": 121,
+      "line_start": 92,
+      "line_end": 119,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.1. Что подтверждено текущим `main`\ns продублированы в validators/admission/actor-step constants. Добавление `request_world_process` требует синхронной правки всех этих surfaces и tests.\n\nСледовательно:\n\n> Ordinary common-content profile реализуем поверх существующей архитектуры, но это cross-cutting contract/persistence/admission change. Полный набор ordinary world + free crafting expansion + broad spatial/NPC remainder + local fire не является одной локальной доработкой.",
       "char_count": 548
     },
@@ -11725,8 +11725,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.2. Внешняя design-сверка:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.2. Внешняя design-сверка",
-      "line_start": 122,
-      "line_end": 154,
+      "line_start": 120,
+      "line_end": 152,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.2. Внешняя design-сверка\n### 0.2. Внешняя design-сверка\n\nВнешние решения используются как design validation, а не как источник production semantics проекта.\n\n- Latitude Heroes Dev Log #15 описывает пользу planning/persistence для locations, characters и potential items и прямо связывает чистую импровизацию с проблемами cohesion и boundedness.\n- Latitude Heroes Dev Log #17 формулирует `reactive entity expansion`: создавать ровно столько устойчивой конкретики, сколько требуется в нужный момент.\n- Minecraft Bedrock loot-table documentation разделяет conditions, pools, rolls и entries и допускает `empty`, то есть eligibility и доступный roll не гарантируют предмет.\n- Production pipeline No Man’s Sky демонстрирует техническую жизнеспособность continuous/on-demand generation внутри заранее построенной архитектуры, а не необходимость заранее хранить весь возможный мир.\n- Survey Maleki & Zhao по PCG + LLM рассматривает LLM как один компонент комбинированных PCG-методов и отдельно отмечает сохраняющиеся research gaps.\n\nИз внешней сверки принимается:",
       "char_count": 1128
     },
@@ -11734,8 +11734,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.2. Внешняя design-сверка:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.2. Внешняя design-сверка",
-      "line_start": 122,
-      "line_end": 154,
+      "line_start": 120,
+      "line_end": 152,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.2. Внешняя design-сверка\n LLM рассматривает LLM как один компонент комбинированных PCG-методов и отдельно отмечает сохраняющиеся research gaps.\n\nИз внешней сверки принимается:\n\n```text\npersistent structured state\n+ lazy/reactive expansion\n+ explicit constraints and supporting basis\n+ valid empty/absent outcome\n+ generator proposal inside a controlled representation\n+ code validation before durable effect\n+ profile-specific evaluation of generator behavior\n```\n\nНе принимается как доказанное внешними источниками:\n\n- что LLM сама надёжно избегает wish-fulfillment;\n- что произвольная natural-language paraphrase всегда может быть сведена к одной semantic identity;\n- что полный location inventory нужно генерировать заранее;\n- что runtime-генерация исполняемого кода безопасна;\n- что authored world следует заменить procedural world;\n- что одному feature profile нужен отдельный engine.",
       "char_count": 961
     },
@@ -11743,8 +11743,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.2. Внешняя design-сверка:2",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.2. Внешняя design-сверка",
-      "line_start": 122,
-      "line_end": 154,
+      "line_start": 120,
+      "line_end": 152,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.2. Внешняя design-сверка\nme-генерация исполняемого кода безопасна;\n- что authored world следует заменить procedural world;\n- что одному feature profile нужен отдельный engine.\n\nLatitude Heroes является полезным публичным design precedent, но не доказательством зрелой реализации exact contract этого проекта. Minecraft и No Man’s Sky являются более сильными shipped precedents только для отдельных принципов: conditions/empty result и on-demand generation. Они не снимают необходимость project-specific gates, persistence и tests.",
       "char_count": 602
     },
@@ -11752,17 +11752,17 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:0.3. Результат ревизии:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "0.3. Результат ревизии",
-      "line_start": 155,
-      "line_end": 180,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.3. Результат ревизии\n### 0.3. Результат ревизии\n\nПродуктовая идея признана реалистичной, но исходная оценка «локализуемого единого cutover» исправлена.\n\nДокумент задаёт umbrella target с независимыми activation profiles:\n\n```text\nO1 — common ordinary G6/content resolution\nO2 — context-bound, natural/resource и existing-container extensions\nA1 — broader action-produced physical results / free crafting admission\nF1 — exact local fire\nS1 — broad ordinary structure/spatial semantic remainder\nN1 — autonomous NPC decisions through current actor-step owner capabilities\n```\n\nПравила:\n\n- каждый profile имеет собственный versioned atomic cutover;\n- внутри profile запрещены dual writers, prompt-only activation и mixed old/new semantics;\n- profile не обязан ждать unrelated profile;\n- O1 не активирует A1, F1 или S1;\n- S1 не входит в минимальную реализацию ordinary item world; N1 регулируется отдельным active NPC contract;\n- authored/significant/hidden/informational materialization остаётся fail-closed во всех profiles.\n\nТакое разделение уменьшает release risk и соответствует проектному принципу разумной достаточности без создания новых owners.",
-      "char_count": 1220
+      "line_start": 153,
+      "line_end": 178,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 0.3. Результат ревизии\n### 0.3. Результат ревизии\n\nПродуктовая идея признана реалистичной, но исходная оценка «локализуемого единого cutover» исправлена.\n\nДокумент задаёт umbrella target с независимыми activation profiles:\n\n```text\nO1 — common ordinary G6/content resolution\nO2 — context-bound, natural/resource и existing-container extensions\nA1 — broader action-produced physical results / free crafting admission\nF1 — exact local fire\nS1 — broad ordinary structure/spatial semantic remainder\nN1 — ordinary NPC semantic remainder\n```\n\nПравила:\n\n- каждый profile имеет собственный versioned atomic cutover;\n- внутри profile запрещены dual writers, prompt-only activation и mixed old/new semantics;\n- profile не обязан ждать unrelated profile;\n- O1 не активирует A1, F1, S1 или N1;\n- S1/N1 не входят в минимальную реализацию ordinary item world;\n- authored/significant/hidden/informational materialization остаётся fail-closed во всех profiles.\n\nТакое разделение уменьшает release risk и соответствует проектному принципу разумной достаточности без создания новых owners.",
+      "char_count": 1141
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:1. Главные игровые инварианты:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "1. Главные игровые инварианты",
-      "line_start": 181,
-      "line_end": 182,
+      "line_start": 179,
+      "line_end": 180,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 1. Главные игровые инварианты\n# 1. Главные игровые инварианты",
       "char_count": 131
     },
@@ -11770,8 +11770,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:1.1. Любой actor может попытаться сделать всё осмысленное:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "1.1. Любой actor может попытаться сделать всё осмысленное",
-      "line_start": 183,
-      "line_end": 204,
+      "line_start": 181,
+      "line_end": 202,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 1.1. Любой actor может попытаться сделать всё осмысленное\n## 1.1. Любой actor может попытаться сделать всё осмысленное\n\nИгрок может заявить любое действие.\n\nNPC на своей semantic decision boundary может выбрать любое действие, которое этот NPC способен осмысленно захотеть совершить из своего субъективного состояния.\n\nОтсутствие команды, handler, recipe, action type, dialogue option, заранее написанного outcome, конкретного item template или конкретного ordinary building variant само по себе не является игровым запретом.\n\nОграничивать попытку могут только факты мира и реальные mechanics:\n\n1. committed state;\n2. положение и доступ;\n3. тело и способности;\n4. предметы и материалы;\n5. знания actor;\n6. время;\n7. физическая причинность;\n8. историческая реальность XIII века;\n9. решения других actor;\n10. уже идущие процессы;\n11. authoritative ограничения соответствующего domain owner.",
       "char_count": 958
     },
@@ -11779,8 +11779,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:1.2. Code first, LLM for the unenumerable remainder:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "1.2. Code first, LLM for the unenumerable remainder",
-      "line_start": 205,
-      "line_end": 212,
+      "line_start": 203,
+      "line_end": 210,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 1.2. Code first, LLM for the unenumerable remainder\n## 1.2. Code first, LLM for the unenumerable remainder\n\nЕсли существующий код способен однозначно и корректно разрешить ситуацию — используется код.\n\nLLM вызывается только для неизвестной разработчику семантики, которую невозможно разумно свести к уже существующему closed choice.\n\nЭто относится одинаково к действию, разговору, NPC decision, ordinary materialization, свободному крафту, качественной классификации импровизированного объекта и одному шагу world process, если deterministic resolver недостаточен.",
       "char_count": 634
     },
@@ -11788,8 +11788,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:1.3. После commit мир перестаёт быть предположением:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "1.3. После commit мир перестаёт быть предположением",
-      "line_start": 213,
-      "line_end": 218,
+      "line_start": 211,
+      "line_end": 216,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 1.3. После commit мир перестаёт быть предположением\n## 1.3. После commit мир перестаёт быть предположением\n\nПосле commit найденный камень существует, созданный клин существует, NPC имеет стабильную identity, расход ресурса остаётся расходом, решение NPC не переигрывается, fire process не исчезает из-за ухода actor, изменённое состояние объекта не пересчитывается заново.\n\nLLM не получает право позже «уточнить» committed факт так, будто прежнего решения не было.",
       "char_count": 534
     },
@@ -11797,8 +11797,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:1.4. Semantic freedom inside authoritative envelope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "1.4. Semantic freedom inside authoritative envelope",
-      "line_start": 219,
-      "line_end": 228,
+      "line_start": 217,
+      "line_end": 226,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 1.4. Semantic freedom inside authoritative envelope\n## 1.4. Semantic freedom inside authoritative envelope\n\nLLM свободна только внутри уже определённой рамки.\n\nОна может конкретизировать ordinary-реальность.\n\nОна не может по одному правдоподобию создавать новую каноническую историю, canonical G0–G5, global route, официальную власть, legal status, hidden evidence, informational/authored contents закрытого контейнера, настоящую currency identity, историческую фигуру, significant institution или другой authoritative fact без профильного owner. Ordinary concealed contents уже существующего container допускаются только через O2 pre-reveal resolution и не становятся знанием actor до reveal.\n\n---",
       "char_count": 768
     },
@@ -11806,8 +11806,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:2. Уровни игрового состояния:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "2. Уровни игрового состояния",
-      "line_start": 229,
-      "line_end": 262,
+      "line_start": 227,
+      "line_end": 260,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 2. Уровни игрового состояния\n# 2. Уровни игрового состояния\n\nКонтракт различает пять уровней:\n\n```text\n1. SEMANTIC FACT\n   текущий конкретный качественный факт существующей сущности\n\n2. RUNTIME ENTITY / RESOURCE\n   конкретный party-scoped физический объект, NPC, ordinary content\n   или извлечённая порция ресурса\n\n3. ORDINARY CONTENT COMMITMENT\n   persisted background group, density/identity budget, presence resolution,\n   observation closure или unresolved-state aggregate,\n   который ограничивает будущую конкретизацию, но сам не является item\n\n4. WORLD PROCESS\n   самостоятельный причинный процесс, продолжающийся после породившего действия\n\n5. DOMAIN MECHANICS\n   формализованная code-owned механика\n```\n\nLLM может предлагать фактическую конкретизацию уровней 1–4 только через formal semantic boundary, принадлежащую существующему orchestration owner.\n\nLLM не создаёт уровень 5 во время игры.\n\n`unresolved` не является concealed fact о том, что конкретный предмет «на самом деле уже лежит там». Это simulation commitment: мир ещё не обязан иметь concrete identity, а будущая конкретизация ограничена committed context, identity budget, supporting basis refs, groups, prior observations и authority gates.",
       "char_count": 1281
     },
@@ -11815,8 +11815,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:2. Уровни игрового состояния:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "2. Уровни игрового состояния",
-      "line_start": 229,
-      "line_end": 262,
+      "line_start": 227,
+      "line_end": 260,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 2. Уровни игрового состояния\n identity, а будущая конкретизация ограничена committed context, identity budget, supporting basis refs, groups, prior observations и authority gates.\n\nВо время партии LLM не пишет JavaScript, не создаёт handler, не меняет формулу, не добавляет SQL, не регистрирует owner, не меняет command registry и не создаёт новый process kind.\n\n---",
       "char_count": 436
     },
@@ -11824,8 +11824,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:3. Владельцы ответственности:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "3. Владельцы ответственности",
-      "line_start": 263,
-      "line_end": 299,
+      "line_start": 261,
+      "line_end": 297,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 3. Владельцы ответственности\n# 3. Владельцы ответственности\n\n| Область | Владелец |\n|---|---|\n| player/NPC actor-step orchestration и runtime LLM service calls | `@rus/turn` |\n| player free semantic plan | active `turn_step_*` contract |\n| ordinary-world semantic subrequest | `@rus/turn` + strict contracts; это не второй player planner |\n| code-only materialization/admission helpers | `@rus/materialization` |\n| autonomous NPC decision state/semantics | `@rus/npc-runtime` |\n| items, mass, quantity, containers, property, physical access | `@rus/items-property` |\n| spatial topology, portals, blockers, G5/G6 | существующий Spatial v3 owner |\n| exact time и temporal boundaries | `@rus/time-events-history` / active temporal owner |\n| world-process semantics/lifecycle proposal | `@rus/world-processes` |\n| combat formulas/outcomes | существующий combat owner |\n| body consequences | body-state owner |\n| hidden/knowledge/visibility | `@rus/visibility-knowledge-memory` и связанные owners |\n| social/legal consequence | `@rus/social-law` |\n| logical persistence adaptation | `@rus/party-store` |\n| physical transaction | существующий game-server combined committer |",
       "char_count": 1239
     },
@@ -11833,8 +11833,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:3. Владельцы ответственности:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "3. Владельцы ответственности",
-      "line_start": 263,
-      "line_end": 299,
+      "line_start": 261,
+      "line_end": 297,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 3. Владельцы ответственности\ne | `@rus/social-law` |\n| logical persistence adaptation | `@rus/party-store` |\n| physical transaction | существующий game-server combined committer |\n\nНи один новый contract этого документа не переносит domain ownership.\n\nКлючевой handoff:\n\n```text\n@rus/turn calls LLM\n→ semantic proposal\n→ code-only materialization/admission\n→ профильный domain owner\n→ combined write plan\n→ physical committer\n```\n\n`@rus/materialization` не становится LLM caller. `@rus/items-property` не решает, существует ли неизвестный бытовой предмет только потому, что игрок его назвал. Spatial baseline не становится хранилищем бытовой описи.\n\n---",
       "char_count": 723
     },
@@ -11842,8 +11842,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:4. Единый routing свободного actor action:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "4. Единый routing свободного actor action",
-      "line_start": 300,
-      "line_end": 329,
+      "line_start": 298,
+      "line_end": 327,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 4. Единый routing свободного actor action\n# 4. Единый routing свободного actor action\n\nСохраняется существующая player semantic boundary:\n\n```text\nturn_step_request_v1\n→ turn_step_plan_v1\n```\n\nОтдельный materialization planner или process planner перед player planner не создаётся.\n\nОбщий путь:\n\n```text\nactor intent\n→ existing exact fast path, если он однозначно применим\n→ иначе existing semantic actor planner\n→ direct operations / generic check / domain request\n→ профильный owner проверяет известную механику\n→ если owner не может разрешить только качественную часть:\n     bounded semantic request через @rus/turn\n→ owner валидирует returned semantic proposal\n→ working projection\n→ atomic commit соответствующей causal boundary\n```\n\nNPC использует тот же actor-step после собственного semantic decision.\n\n---",
       "char_count": 884
     },
@@ -11851,8 +11851,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:5. Semantic facts и формальная механика:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "5. Semantic facts и формальная механика",
-      "line_start": 330,
-      "line_end": 331,
+      "line_start": 328,
+      "line_end": 329,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 5. Semantic facts и формальная механика\n# 5. Semantic facts и формальная механика",
       "char_count": 151
     },
@@ -11860,8 +11860,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:5.1. Semantic fact:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "5.1. Semantic fact",
-      "line_start": 332,
-      "line_end": 349,
+      "line_start": 330,
+      "line_end": 347,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 5.1. Semantic fact\n## 5.1. Semantic fact\n\n`change_entity_facts` остаётся стандартным способом сохранить нестандартное текущее качественное состояние существующей entity.\n\nПримеры:\n\n```text\nодин конец жерди заострён\nткань насквозь промокла\nкрай доски обуглен\nповерхность покрыта мокрой грязью\nверёвка туго обмотана вокруг стойки\n```\n\nSemantic fact после commit является authoritative party fact, а не narration.\n\nОн обязан быть текущим, конкретным, причинно возникшим, относящимся к существующей entity и не предсказывающим неизвестное будущее.",
       "char_count": 613
     },
@@ -11869,8 +11869,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:5.2. Противоречащие текущие facts заменяются:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "5.2. Противоречащие текущие facts заменяются",
-      "line_start": 350,
-      "line_end": 365,
+      "line_start": 348,
+      "line_end": 363,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 5.2. Противоречащие текущие facts заменяются\n## 5.2. Противоречащие текущие facts заменяются\n\nЕсли новое состояние делает старый текущий fact ложным, старый `fact_ref` удаляется тем же causal change set.\n\n```text\nbefore:\n  \"один конец жерди заострён\"\n\nafter break:\n  remove old fact_ref\n  add:\n    \"заострённый конец обломан и затуплен\"\n```\n\nНе вводится отдельный `semantic_state`, `state_key` или parallel fact store.",
       "char_count": 488
     },
@@ -11878,8 +11878,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:5.3. Semantic prose не является скрытым mechanics engine:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "5.3. Semantic prose не является скрытым mechanics engine",
-      "line_start": 366,
-      "line_end": 391,
+      "line_start": 364,
+      "line_end": 389,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 5.3. Semantic prose не является скрытым mechanics engine\n## 5.3. Semantic prose не является скрытым mechanics engine\n\nКритическая норма:\n\n> Exact code handler не обязан и не должен семантически интерпретировать произвольный текст facts.\n\nЕсли нестандартное действие влияет на уже существующую formal mechanic, тот же semantic step должен материализовать соответствующее owner-native формальное состояние.\n\nПример:\n\n```text\nplayer:\n  \"подпираю дверь жердью\"\n\nsemantic fact:\n  \"дверь подпёрта жердью\"\n```\n\nЭтого текста недостаточно для exact `open`.\n\nЕсли подпорка реально блокирует проход, spatial owner дополнительно получает существующее formal blocker/portal state representation.\n\nТогда exact `open` читает formal spatial state, видит blocker и возвращает blocked/not-applicable, а не пытается NLP-парсить строку fact.\n\nЕсли нужного owner-native механического представления в проекте нет, а конкретный gameplay case без него ломается, минимально расширяется существующий owner. Универсальный semantic dependency engine не создаётся.",
       "char_count": 1105
     },
@@ -11887,8 +11887,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:5.4. Facts сами по себе не меняют другие domains:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "5.4. Facts сами по себе не меняют другие domains",
-      "line_start": 392,
-      "line_end": 399,
+      "line_start": 390,
+      "line_end": 397,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 5.4. Facts сами по себе не меняют другие domains\n## 5.4. Facts сами по себе не меняют другие domains\n\nSemantic fact не может только текстом менять owner, placement, damage, legal status, currency authenticity, knowledge NPC, hidden container contents, route или exact body values.\n\nДля этого нужен соответствующий domain operation/owner.\n\n---",
       "char_count": 412
     },
@@ -11896,8 +11896,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:6. Главный принцип:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "6. Главный принцип",
-      "line_start": 400,
-      "line_end": 401,
+      "line_start": 398,
+      "line_end": 399,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 6. Главный принцип\n# 6. Главный принцип",
       "char_count": 109
     },
@@ -11905,8 +11905,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:6.1. Semantic freedom inside authoritative envelope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "6.1. Semantic freedom inside authoritative envelope",
-      "line_start": 402,
-      "line_end": 427,
+      "line_start": 400,
+      "line_end": 425,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 6.1. Semantic freedom inside authoritative envelope\n## 6.1. Semantic freedom inside authoritative envelope\n\nOrdinary materialization разрешена только внутри уже committed/approved envelope.\n\n```text\nAUTHORED / COMMITTED WORLD\nperiod + region + G0–G5 + G6 topology + function + environment\n+ ownership/social/economic context + material culture + hard permissions\n                         ↓\nCODE-OWNED POLICY\nscope + authority class + availability gates + supporting basis refs\n+ persisted density/identity budget + prior resolutions/observations\n                         ↓\nLLM\nminimal ordinary semantic proposal\n                         ↓\nCODE-OWNED ADMISSION\nbasis membership + authority + property + mechanics + spatial validation\n                         ↓\nATOMIC COMMIT\n                         ↓\nPERSISTENT PARTY WORLD\n```\n\nLLM не создаёт authoritative envelope и не назначает final supporting-basis refs. Stage A может предложить structured background-group/source basis только из supplied context refs; code-owned admission валидирует proposal и присваивает prepared ref. Stage B использует только allowlisted committed либо candidate-free prepared refs.",
       "char_count": 1231
     },
@@ -11914,8 +11914,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:6.2. Код не обязан знать диапазоны всех предметов:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "6.2. Код не обязан знать диапазоны всех предметов",
-      "line_start": 428,
-      "line_end": 457,
+      "line_start": 426,
+      "line_end": 455,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 6.2. Код не обязан знать диапазоны всех предметов\n## 6.2. Код не обязан знать диапазоны всех предметов\n\nКод не должен содержать таблицу вида:\n\n```text\nкрестьянская изба:\n  горшки 2..6\n  ложки 3..9\n  верёвки 1..4\n  ...\n```\n\nКод обязан знать:\n\n- structural scope;\n- hard authority/property/source gates;\n- approved broad ordinary policies;\n- code-owned mapping density band → identity budget;\n- persisted groups, resolutions и observation closures;\n- exact mechanics уже созданных instances;\n- профильные запреты и ownership.\n\nLLM может один раз предложить только закрытый qualitative band:\n\n```text\nsparse | ordinary | dense\n```\n\nОна не назначает произвольное число slots. Versioned code-owned policy переводит band и authored hints в persisted local identity budget. Такой budget является технической границей плотности и стоимости, а не доказательством присутствия конкретного предмета.",
       "char_count": 957
     },
@@ -11923,8 +11923,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:6.3. Свободный budget не создаёт предмет:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "6.3. Свободный budget не создаёт предмет",
-      "line_start": 458,
-      "line_end": 491,
+      "line_start": 456,
+      "line_end": 489,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 6.3. Свободный budget не создаёт предмет\n## 6.3. Свободный budget не создаёт предмет\n\n```text\nremaining identity budget\n≠ object exists\n```\n\nПоложительный targeted result требует одновременно:\n\n```text\nbudget/admission available\nAND candidate is ordinary under authority policy\nAND historically/materially admissible\nAND supporting_basis_ref is committed or candidate-free prepared before Stage B\nAND that basis is allowed for this request\nAND candidate is covered by that basis\nAND property/source context is valid\nAND prior resolution/observation does not contradict it\nAND context-bound permission exists when required\n```\n\n`supporting_basis_ref` может ссылаться на committed basis либо на code-owned prepared seed basis, созданный Stage A без candidate, например:\n\n- independently committed or candidate-free prepared background group;\n- finite source;\n- ambient ordinary source;\n- existing container context;\n- authored occupation/household/armament/economic permission;\n- approved scope-bound ordinary-presence policy instance.\n\nPlayer/NPC wording, свободный budget и LLM reason text supporting basis не заменяют.",
       "char_count": 1189
     },
@@ -11932,8 +11932,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:6.3. Свободный budget не создаёт предмет:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "6.3. Свободный budget не создаёт предмет",
-      "line_start": 458,
-      "line_end": 491,
+      "line_start": 456,
+      "line_end": 489,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 6.3. Свободный budget не создаёт предмет\nssion;\n- approved scope-bound ordinary-presence policy instance.\n\nPlayer/NPC wording, свободный budget и LLM reason text supporting basis не заменяют.\n\n`absent`, `no_change` и `authority_required` являются нормальными first-class outcomes. Они не требуют materialize-ить похожий или менее полезный предмет.",
       "char_count": 417
     },
@@ -11941,8 +11941,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7. Независимые измерения: authority, availability и disclosure:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7. Независимые измерения: authority, availability и disclosure",
-      "line_start": 492,
-      "line_end": 499,
+      "line_start": 490,
+      "line_end": 497,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7. Независимые измерения: authority, availability и disclosure\n# 7. Независимые измерения: authority, availability и disclosure\n\nНельзя смешивать:\n\n- значимость истины;\n- бытовую доступность объекта;\n- видимость/раскрытость объекта.",
       "char_count": 302
     },
@@ -11950,8 +11950,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.1. Authority class:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.1. Authority class",
-      "line_start": 500,
-      "line_end": 517,
+      "line_start": 498,
+      "line_end": 515,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.1. Authority class\n## 7.1. Authority class\n\nДля materialization используется ось:\n\n```text\nordinary\nsignificant\nhidden\ninformational\nauthored_canonical\n```\n\n`ordinary` означает, что существование и бытовые свойства конкретного объекта сами по себе не создают canonical, legal, historical или evidence-bearing truth.\n\n`significant`, `hidden`, `informational` и `authored_canonical` требуют профильного authoritative owner/candidate path и не могут возникнуть из ordinary fallback.\n\n`hidden` сохраняет active project meaning: существование, содержание или происхождение entity несёт скрытую authoritative truth. Mere physical concealment — другое измерение `disclosure = concealed`. Поэтому обычный предмет может быть `authority = ordinary` и одновременно `disclosure = concealed`, а видимый документ может иметь `authority = informational`.",
       "char_count": 911
     },
@@ -11959,8 +11959,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.2. Availability class:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.2. Availability class",
-      "line_start": 518,
-      "line_end": 526,
+      "line_start": 516,
+      "line_end": 524,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.2. Availability class\n## 7.2. Availability class\n\nДля ordinary physical content используется независимая ось:\n\n```text\ncommon\ncontext_bound\n```",
       "char_count": 215
     },
@@ -11968,8 +11968,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:`common`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "`common`",
-      "line_start": 527,
-      "line_end": 539,
+      "line_start": 525,
+      "line_end": 537,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — `common`\n### `common`\n\nНизкоценная материя, рутинно ожидаемая при подходящем committed basis:\n\n- простая утварь;\n- обычная тара;\n- хозяйственные материалы;\n- дешёвые инструменты общего назначения;\n- отходы и обрезки;\n- стандартные природные материалы.\n\n`common` не означает автоматически `present`, `unowned` или `visible`.",
       "char_count": 393
     },
@@ -11977,8 +11977,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:`context_bound`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "`context_bound`",
-      "line_start": 540,
-      "line_end": 552,
+      "line_start": 538,
+      "line_end": 550,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — `context_bound`\n### `context_bound`\n\nНеуникальный объект, присутствие которого требует отдельной причины:\n\n- оружие;\n- деньги и ценная переносимая материя;\n- дорогой импорт;\n- специализированный профессиональный инструмент;\n- товарный запас;\n- социально ограниченная вещь.\n\nДля `context_bound` нужны matching permission/profile/source и concrete committed basis.",
       "char_count": 432
     },
@@ -11986,8 +11986,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.2.1. Closed ordinary admission class:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.2.1. Closed ordinary admission class",
-      "line_start": 553,
-      "line_end": 579,
+      "line_start": 551,
+      "line_end": 577,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.2.1. Closed ordinary admission class\n### 7.2.1. Closed ordinary admission class\n\nЧтобы code gates не зависели от NLP-парсинга `name`, каждый concrete proposal получает один broad closed class:\n\n```text\ncommon_mundane\nspecialized_or_valuable\nweapon_or_armament\ncurrency_or_precious\ndocument_like\ncontainer_capable\nother_restricted\n```\n\nЭто локальный admission vocabulary, а не catalog конкретных предметов и не universal ontology.\n\nCode-owned mapping задаёт минимальные последствия:\n\n- `common_mundane` может иметь `availability_class = common`;\n- `specialized_or_valuable` и `weapon_or_armament` всегда `context_bound`;\n- `currency_or_precious` требует economic/source permission и не получает authentic currency identity ordinary path;\n- `document_like` не получает informational/authentic content;\n- `container_capable` не materialize-ится template-less до отдельного container mechanics contract;\n- `other_restricted` не получает positive result без explicit versioned policy.",
       "char_count": 1051
     },
@@ -11995,8 +11995,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.2.1. Closed ordinary admission class:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.2.1. Closed ordinary admission class",
-      "line_start": 553,
-      "line_end": 579,
+      "line_start": 551,
+      "line_end": 577,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.2.1. Closed ordinary admission class\nrialize-ится template-less до отдельного container mechanics contract;\n- `other_restricted` не получает positive result без explicit versioned policy.\n\nLLM выполняет неизбежную semantic classification, а code проверяет enum, разрешённость класса и consistency с availability/authority/profile refs. Code не утверждает, что умеет самостоятельно NLP-проверить произвольное имя; correctness этой semantic classification входит в adversarial model-eval acceptance.",
       "char_count": 569
     },
@@ -12004,8 +12004,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.3. Disclosure state:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.3. Disclosure state",
-      "line_start": 580,
-      "line_end": 601,
+      "line_start": 578,
+      "line_end": 599,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.3. Disclosure state\n## 7.3. Disclosure state\n\nVisibility/knowledge owner хранит отдельное измерение:\n\n```text\nvisible\nconcealed\ninaccessible\nunknown_to_actor\nrevealed\n```\n\nOrdinary contents уже существующего закрытого container могут быть `ordinary + concealed`. Ordinary path вправе concrete-изировать их до reveal только по container context и без player wishlist.\n\nOrdinary path не вправе создавать:\n\n- evidence-bearing contents;\n- подлинность документа;\n- hidden historical event;\n- тайного владельца или преступника;\n- canonical secret.",
       "char_count": 613
     },
@@ -12013,8 +12013,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:7.4. Authority имеет приоритет:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "7.4. Authority имеет приоритет",
-      "line_start": 602,
-      "line_end": 616,
+      "line_start": 600,
+      "line_end": 614,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 7.4. Authority имеет приоритет\n## 7.4. Authority имеет приоритет\n\nНаличие common/context-bound permission никогда не открывает ordinary fallback для:\n\n- уникального или легендарного предмета;\n- сюжетной улики;\n- подлинной грамоты;\n- официального статуса;\n- значимой печати;\n- клада как authored event;\n- исторически определённого объекта;\n- content, истинность которого является informational fact.\n\nТакие результаты возвращают `authority_required` либо используют существующий authoritative candidate path.",
       "char_count": 577
     },
@@ -12022,8 +12022,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:8. Пространственный scope: G4/G5 задают рамку, G6 получает concrete content:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "8. Пространственный scope: G4/G5 задают рамку, G6 получает concrete content",
-      "line_start": 617,
-      "line_end": 618,
+      "line_start": 615,
+      "line_end": 616,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 8. Пространственный scope: G4/G5 задают рамку, G6 получает concrete content\n# 8. Пространственный scope: G4/G5 задают рамку, G6 получает concrete content",
       "char_count": 223
     },
@@ -12031,8 +12031,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:8.1. G0–G5 не становятся каталогом всех вещей:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "8.1. G0–G5 не становятся каталогом всех вещей",
-      "line_start": 619,
-      "line_end": 633,
+      "line_start": 617,
+      "line_end": 631,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 8.1. G0–G5 не становятся каталогом всех вещей\n## 8.1. G0–G5 не становятся каталогом всех вещей\n\nКанонические G0–G5 сохраняют действующую spatial-v3 семантику.\n\nLLM не создаёт:\n\n- G0–G4;\n- canonical G5;\n- world routes;\n- permanent topology;\n- canonical containment;\n- новые spatial slots сверх approved capacity.\n\nGenerated G5 по-прежнему создаётся code-owned spatial materialization из approved G4 expansion profile.",
       "char_count": 486
     },
@@ -12040,8 +12040,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:8.2. Ordinary-content envelope наследуется сверху вниз:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "8.2. Ordinary-content envelope наследуется сверху вниз",
-      "line_start": 634,
-      "line_end": 649,
+      "line_start": 632,
+      "line_end": 647,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 8.2. Ordinary-content envelope наследуется сверху вниз\n## 8.2. Ordinary-content envelope наследуется сверху вниз\n\nG4/G5 дают контекст:\n\n- тип и функция места;\n- экономика;\n- occupation/household context;\n- владелец/контролёр;\n- населённость и использование;\n- material culture;\n- сезон/период;\n- sensitive permissions;\n- природная среда.\n\nНо это не означает, что все вещи G5 должны существовать как item instances.",
       "char_count": 484
     },
@@ -12049,8 +12049,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:8.3. Narrowest relevant scope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "8.3. Narrowest relevant scope",
-      "line_start": 650,
-      "line_end": 663,
+      "line_start": 648,
+      "line_end": 661,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 8.3. Narrowest relevant scope\n## 8.3. Narrowest relevant scope\n\nConcrete ordinary entity материализуется в самом узком mechanically relevant scope, обычно:\n\n```text\nG6\n→ scene position / local placement\n→ конкретный container/source при необходимости\n```\n\nПредмет не создаётся «на весь G4» только потому, что игрок вошёл в G4.\n\nПредмет не создаётся «на весь G5» только потому, что G5 стал достижим.",
       "char_count": 468
     },
@@ -12058,8 +12058,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:8.4. Scene baseline не мутируется ordinary-content:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "8.4. Scene baseline не мутируется ordinary-content",
-      "line_start": 664,
-      "line_end": 684,
+      "line_start": 662,
+      "line_end": 682,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 8.4. Scene baseline не мутируется ordinary-content\n## 8.4. Scene baseline не мутируется ordinary-content\n\nДействующий `party_scene_baseline` остаётся immutable владельцем подготовленной spatial topology.\n\nLazy ordinary materialization:\n\n- не добавляет новые permanent positions;\n- не меняет baseline template;\n- не меняет endpoint bindings;\n- не переписывает G6 topology.\n\nОна создаёт только dynamic party state:\n\n- ordinary-content ledger;\n- concrete items/placements;\n- local natural features/modifiers, если разрешены spatial owner;\n- background groups;\n- presence resolutions.\n\n---",
       "char_count": 655
     },
@@ -12067,8 +12067,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9. Lazy materialization: trigger и routing:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9. Lazy materialization: trigger и routing",
-      "line_start": 685,
-      "line_end": 686,
+      "line_start": 683,
+      "line_end": 684,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9. Lazy materialization: trigger и routing\n# 9. Lazy materialization: trigger и routing",
       "char_count": 157
     },
@@ -12076,8 +12076,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9.1. Проход мимо:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9.1. Проход мимо",
-      "line_start": 687,
-      "line_end": 704,
+      "line_start": 685,
+      "line_end": 702,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9.1. Проход мимо\n## 9.1. Проход мимо\n\nЕсли actor только проходит через пространство и concrete ordinary detail не нужна:\n\n```text\nordinary semantic call = 0\n```\n\nSpatial preparation подготавливает только movement/readiness.\n\nНельзя ради pass-through заранее генерировать:\n\n- содержимое домов;\n- полный набор утвари;\n- весь рабочий инвентарь;\n- природные мелочи;\n- contents недоступных containers.",
       "char_count": 466
     },
@@ -12085,8 +12085,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9.2. Meaningful engagement:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9.2. Meaningful engagement",
-      "line_start": 705,
-      "line_end": 720,
+      "line_start": 703,
+      "line_end": 718,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9.2. Meaningful engagement\n## 9.2. Meaningful engagement\n\nOrdinary resolution запускается, когда concrete detail нужна механике или factual projection.\n\nТиповые triggers:\n\n- `look`, `inspect`, `search` либо `dig`;\n- ссылка actor на ещё не существующий mundane object как цель поиска;\n- first reveal ordinary contents уже существующего container;\n- physical extraction из committed source;\n- действие NPC, которому объективно нужна unresolved ordinary detail;\n- system-owned scene seed перед detailed actionable projection;\n- local natural detail становится mechanically relevant.\n\nTrigger определяет code/orchestration. LLM не решает, когда вызвать себя.",
       "char_count": 724
     },
@@ -12094,8 +12094,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9.3. Переиспользование active player domain operations:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9.3. Переиспользование active player domain operations",
-      "line_start": 721,
-      "line_end": 741,
+      "line_start": 719,
+      "line_end": 739,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9.3. Переиспользование active player domain operations\n## 9.3. Переиспользование active player domain operations\n\nДля O1/O2 новый player operation `request_ordinary_detail` не вводится.\n\n```text\nrequest_discovery\n→ domain handler проверяет authored/committed result\n→ при unresolved ordinary gap вызывает internal ordinary semantic subrequest\n→ обновляет working projection\n→ continuation turn loop\n\nrequest_container_access\n→ до reveal проверяет authoritative contents\n→ при разрешённом unresolved ordinary container вызывает internal contents subrequest\n→ применяет open/reveal к обновлённой working projection\n```\n\nЭто сохраняет единственную player semantic boundary и не расширяет public operation vocabulary без необходимости.\n\nSystem-owned initial seed и NPC path используют тот же internal contract через `@rus/turn`, но не притворяются player operation.",
       "char_count": 931
     },
@@ -12103,8 +12103,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9.4. Model call не выполняется внутри PostgreSQL transaction:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9.4. Model call не выполняется внутри PostgreSQL transaction",
-      "line_start": 742,
-      "line_end": 759,
+      "line_start": 740,
+      "line_end": 757,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9.4. Model call не выполняется внутри PostgreSQL transaction\n## 9.4. Model call не выполняется внутри PostgreSQL transaction\n\nТекущий `first-entry-materialization.js` выполняет deterministic materialization внутри injected transaction. Ordinary LLM seed не подключается к этому helper.\n\nПравильный порядок:\n\n```text\nread committed snapshot + state version\n→ build sanitized request\n→ model call outside physical transaction\n→ validate proposal\n→ revalidate committed state/version\n→ build one logical write plan\n→ short atomic physical commit\n```\n\nПри stale state proposal отклоняется или request строится заново. Нельзя удерживать DB lock во время сетевого model call.",
       "char_count": 739
     },
@@ -12112,8 +12112,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:9.5. Code first:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "9.5. Code first",
-      "line_start": 760,
-      "line_end": 772,
+      "line_start": 758,
+      "line_end": 770,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 9.5. Code first\n## 9.5. Code first\n\nLLM не вызывается, если ответ уже следует из:\n\n- committed concrete entity;\n- authored/significant candidate;\n- persisted exact presence resolution;\n- committed background group, для refinement которого достаточно deterministic rule;\n- existing finite/ambient source;\n- exact domain mechanic;\n- closed observation scope;\n- current authoritative container contents.",
       "char_count": 470
     },
@@ -12121,8 +12121,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:10. Двухступенчатая ordinary materialization:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "10. Двухступенчатая ordinary materialization",
-      "line_start": 773,
-      "line_end": 776,
+      "line_start": 771,
+      "line_end": 774,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 10. Двухступенчатая ordinary materialization\n# 10. Двухступенчатая ordinary materialization\n\nДве стадии нужны, чтобы candidate из player wording не мог сформировать собственное основание присутствия.",
       "char_count": 269
     },
@@ -12130,8 +12130,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:10.1. Stage A — independent minimal scope seed:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "10.1. Stage A — independent minimal scope seed",
-      "line_start": 777,
-      "line_end": 809,
+      "line_start": 775,
+      "line_end": 807,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 10.1. Stage A — independent minimal scope seed\n## 10.1. Stage A — independent minimal scope seed\n\nПри первом meaningful engagement unseeded scope `@rus/turn` может создать `mode = seed_scope`.\n\nВ request запрещены:\n\n- raw player action;\n- candidate name;\n- desired use;\n- utility/risk for actor;\n- narration suggestion.\n\nРазрешён только committed server context:\n\n- scope/function/environment;\n- period/region/material culture;\n- occupancy/economic/property context;\n- approved ordinary policies и permissions;\n- existing authored/committed entities;\n- technical limits.\n\nStage A может предложить:\n\n- `density_band`;\n- несколько structured background groups;\n- несколько действительно salient common entities;\n- natural/household source descriptors;\n- `seeded` без concrete entity, если scene этого не требует.\n\nКаждый Stage A concrete entity обязан ссылаться на уже committed allowlisted basis из request. Entity не может ссылаться на background group, предложенный в том же response, пока code не валидировал group и не присвоил prepared ref; такой group предназначен прежде всего для следующего Stage B в той же working projection.\n\nStage A не создаёт arbitrary numeric capacity и не заполняет budget ради заполнения.",
       "char_count": 1290
     },
@@ -12139,8 +12139,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:10.2. Stage B — targeted resolution:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "10.2. Stage B — targeted resolution",
-      "line_start": 810,
-      "line_end": 831,
+      "line_start": 808,
+      "line_end": 829,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 10.2. Stage B — targeted resolution\n## 10.2. Stage B — targeted resolution\n\nПозднее конкретная потребность передаётся как normalized query target:\n\n```json\n{\n  \"candidate_key\": \"code-owned-normalized-key\",\n  \"candidate_hint\": \"верёвка\",\n  \"evidence_weight\": 0\n}\n```\n\n`candidate_hint` помогает понять, что проверяется, но не является world evidence.\n\nПоложительный result обязан ссылаться на `supporting_basis_ref`, который уже существовал до Stage B либо был code-owned prepared Stage A basis, созданным без candidate в той же working projection. Отдельный промежуточный DB commit не требуется.\n\nКонтрфактический критерий:\n\n> Было бы это присутствие допустимо и поддержано тем же independent basis, если бы actor никогда не назвал предмет?\n\nЕсли нет — `absent`, `no_change` или `authority_required`.",
       "char_count": 869
     },
@@ -12148,8 +12148,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:10.3. Первый targeted query в unseeded scope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "10.3. Первый targeted query в unseeded scope",
-      "line_start": 832,
-      "line_end": 846,
+      "line_start": 830,
+      "line_end": 844,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 10.3. Первый targeted query в unseeded scope\n## 10.3. Первый targeted query в unseeded scope\n\nДопустимы два model calls:\n\n```text\n1. seed_scope without candidate\n2. resolve_presence with candidate + evidence_weight 0\n```\n\nМежду ними Stage A proposal проходит validation и получает stable code-owned prepared refs в working projection. Stage B request может включить эти refs как `basis_state = prepared_seed`.\n\nФинальный root commit атомарно сохраняет seed, supporting basis и targeted resolution. Если commit не состоялся, ни seed, ни positive presence не являются world facts.\n\nЕсли Stage A не создаёт подходящего supporting basis, Stage B не может invent-ить его из candidate wording.",
       "char_count": 757
     },
@@ -12157,8 +12157,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:10.4. System seed не равен first-entry materialization:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "10.4. System seed не равен first-entry materialization",
-      "line_start": 847,
-      "line_end": 852,
+      "line_start": 845,
+      "line_end": 850,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 10.4. System seed не равен first-entry materialization\n## 10.4. System seed не равен first-entry materialization\n\nOrdinary seed запускается только при meaningful engagement, а не автоматически при каждом G4/G5/G6 entry.\n\nDeterministic spatial first-entry path остаётся отдельным. Его наличие не является основанием вызывать LLM, генерировать inventory или держать transaction во время semantic call.",
       "char_count": 469
     },
@@ -12166,8 +12166,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11. Density band и ordinary identity budget:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11. Density band и ordinary identity budget",
-      "line_start": 853,
-      "line_end": 854,
+      "line_start": 851,
+      "line_end": 852,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11. Density band и ordinary identity budget\n# 11. Density band и ordinary identity budget",
       "char_count": 159
     },
@@ -12175,8 +12175,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.1. Budget ограничивает concrete identities, а не материю:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.1. Budget ограничивает concrete identities, а не материю",
-      "line_start": 855,
-      "line_end": 869,
+      "line_start": 853,
+      "line_end": 867,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.1. Budget ограничивает concrete identities, а не материю\n## 11.1. Budget ограничивает concrete identities, а не материю\n\nPersisted budget ограничивает число новых независимых mechanically relevant ordinary identities, которые scope может породить через lazy materialization.\n\nОн не равен:\n\n- полному числу вещей в комнате;\n- количеству каждой ложки;\n- объёму песка на берегу;\n- числу частиц сырья;\n- container capacity;\n- technical batch limit.\n\nОднородный слой может оставаться background group/source.",
       "char_count": 576
     },
@@ -12184,8 +12184,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.2. LLM предлагает только density band:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.2. LLM предлагает только density band",
-      "line_start": 870,
-      "line_end": 892,
+      "line_start": 868,
+      "line_end": 890,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.2. LLM предлагает только density band\n## 11.2. LLM предлагает только density band\n\nStage A может вернуть:\n\n```text\nsparse\nordinary\ndense\n```\n\nCode-owned versioned policy принимает:\n\n- density band;\n- authored hints;\n- scope type/function;\n- hard technical maximum;\n\nи вычисляет persisted `identity_budget`.\n\nLLM не видит формулу и не назначает число slots.\n\nЕсли authoring уже содержит exact design-critical limit, code использует его и не спрашивает LLM.",
       "char_count": 528
     },
@@ -12193,8 +12193,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.3. Functional buckets:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.3. Functional buckets",
-      "line_start": 893,
-      "line_end": 911,
+      "line_start": 891,
+      "line_end": 909,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.3. Functional buckets\n## 11.3. Functional buckets\n\nBudget может учитываться по небольшому закрытому набору широких buckets:\n\n```text\nhousehold\nwork\nstorage\nstock\nfurnishing_textile\nmaintenance_material\nwaste_scrap\npersonal_effect\narms\nother_ordinary\n```\n\nBuckets являются локальным admission vocabulary, а не универсальной ontology предметов.",
       "char_count": 415
     },
@@ -12202,8 +12202,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.4. Budget не обязан исчерпываться:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.4. Budget не обязан исчерпываться",
-      "line_start": 912,
-      "line_end": 922,
+      "line_start": 910,
+      "line_end": 920,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.4. Budget не обязан исчерпываться\n## 11.4. Budget не обязан исчерпываться\n\nСвободный budget:\n\n- не создаёт предмет;\n- не заставляет выбирать замену после `absent`;\n- не гарантирует, что любой common object будет present;\n- может остаться полностью неиспользованным.\n\nNegative result обычно не уменьшает unrelated identity budget.",
       "char_count": 402
     },
@@ -12211,8 +12211,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.5. Batch limit отдельно:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.5. Batch limit отдельно",
-      "line_start": 923,
-      "line_end": 933,
+      "line_start": 921,
+      "line_end": 931,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.5. Batch limit отдельно\n## 11.5. Batch limit отдельно\n\n```text\ntechnical max_new_entities\n≠ persisted ordinary identity budget\n```\n\nПервое ограничивает один call/commit ради стоимости и безопасности.\n\nВторое ограничивает party-scoped concrete identities данного scope.",
       "char_count": 341
     },
@@ -12220,8 +12220,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:11.6. Не вводится global quota engine:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "11.6. Не вводится global quota engine",
-      "line_start": 934,
-      "line_end": 945,
+      "line_start": 932,
+      "line_end": 943,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 11.6. Не вводится global quota engine\n## 11.6. Не вводится global quota engine\n\nНе требуется мировой реестр `pot=2..6`, `rope=0..3`, `axe=0..1` для всех типов мест.\n\nData gap возникает не из-за отсутствия item-by-item range, а когда отсутствует обязательный envelope:\n\n- period/region/material culture;\n- function/use context;\n- property/source basis;\n- authority/context-bound permission;\n- code-owned density policy.",
       "char_count": 488
     },
@@ -12229,8 +12229,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12. Background groups: prepared/persisted basis без индивидуализации:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12. Background groups: prepared/persisted basis без индивидуализации",
-      "line_start": 946,
-      "line_end": 947,
+      "line_start": 944,
+      "line_end": 945,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12. Background groups: prepared/persisted basis без индивидуализации\n# 12. Background groups: prepared/persisted basis без индивидуализации",
       "char_count": 209
     },
@@ -12238,8 +12238,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12.1. Назначение:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12.1. Назначение",
-      "line_start": 948,
-      "line_end": 960,
+      "line_start": 946,
+      "line_end": 958,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12.1. Назначение\n## 12.1. Назначение\n\nBackground group фиксирует обычный функциональный слой без materialization каждой вещи.\n\nПримеры:\n\n```text\nобычная кухонная утварь\nмелкие деревообрабатывающие принадлежности\nдешёвая хозяйственная тара\nобрезки и ремонтный материал\n```",
       "char_count": 341
     },
@@ -12247,8 +12247,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12.2. Минимальная structured форма:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12.2. Минимальная structured форма",
-      "line_start": 961,
-      "line_end": 987,
+      "line_start": 959,
+      "line_end": 985,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12.2. Минимальная structured форма\n## 12.2. Минимальная structured форма\n\nКаждый committed group содержит минимум:\n\n```yaml\ngroup_ref:            # code-owned stable ref\nscope_ref:\ndescriptor:\nfunctional_bucket:\navailability_class: common | context_bound\nallowed_admission_classes: []\ncausal_basis:\n  basis_kind:\n  basis_refs: []\nproperty_basis_ref:\npermission_refs: []\ndisclosure_policy_ref:\n```\n\nПравила:\n\n- `basis_refs` и `property_basis_ref` должны существовать;\n- `context_bound` требует matching `permission_refs`;\n- LLM не назначает `group_ref`;\n- free text descriptor не заменяет refs;\n- disclosure определяется visibility owner, а не самим фактом существования group.",
       "char_count": 746
     },
@@ -12256,8 +12256,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12.3. Group не является item:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12.3. Group не является item",
-      "line_start": 988,
-      "line_end": 1000,
+      "line_start": 986,
+      "line_end": 998,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12.3. Group не является item\n## 12.3. Group не является item\n\nBackground group:\n\n- нельзя взять как один предмет;\n- не имеет aggregate item mass;\n- не является inventory entity;\n- не подменяет placement;\n- не раскрывает concealed contents;\n- не является canonical category.\n\nДо commit validated Stage A group является prepared supporting basis только внутри той же working projection; после commit он становится persisted supporting basis для поздней минимальной конкретизации.",
       "char_count": 547
     },
@@ -12265,8 +12265,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12.4. Refinement из group:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12.4. Refinement из group",
-      "line_start": 1001,
-      "line_end": 1015,
+      "line_start": 999,
+      "line_end": 1013,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12.4. Refinement из group\n## 12.4. Refinement из group\n\nCandidate может materialize из group только если code-owned admission подтверждает:\n\n```text\ncandidate declared functional bucket/admission class covered by group policy\nAND group scope/property/permission applicable\nAND budget available\nAND no contradictory resolution/observation\n```\n\nPlayer wording не расширяет descriptor group. Code валидирует closed bucket/class compatibility; произвольный descriptor text не является machine proof coverage.\n\nGroup может описывать слой тары/посуды, но concrete refinement с `admission_class = container_capable` требует existing authored/template-backed container mechanics. До отдельного runtime-container contract такой detail остаётся group-level либо возвращает `no_change/data_gap`.",
       "char_count": 854
     },
@@ -12274,8 +12274,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:12.5. Когда quantity становится механически важным:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "12.5. Когда quantity становится механически важным",
-      "line_start": 1016,
-      "line_end": 1028,
+      "line_start": 1014,
+      "line_end": 1026,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 12.5. Когда quantity становится механически важным\n## 12.5. Когда quantity становится механически важным\n\nПока exact count не влияет на механику, group остаётся aggregate.\n\nПри запросе вроде:\n\n```text\n«собираю все деревянные ложки»\n«сколько здесь поленьев?»\n```\n\nresolver один раз materialize-ит минимально необходимый finite instance/quantity. После commit amount принадлежит `@rus/items-property` и не переоценивается LLM.",
       "char_count": 494
     },
@@ -12283,8 +12283,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13. Independent presence test и anti-wish admission:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13. Independent presence test и anti-wish admission",
-      "line_start": 1029,
-      "line_end": 1030,
+      "line_start": 1027,
+      "line_end": 1028,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13. Independent presence test и anti-wish admission\n# 13. Independent presence test и anti-wish admission",
       "char_count": 175
     },
@@ -12292,8 +12292,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13.1. Candidate query — trigger, не causal source:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13.1. Candidate query — trigger, не causal source",
-      "line_start": 1031,
-      "line_end": 1052,
+      "line_start": 1029,
+      "line_end": 1050,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13.1. Candidate query — trigger, не causal source\n## 13.1. Candidate query — trigger, не causal source\n\nЗапрещено:\n\n```text\nactor назвал предмет\n+ budget available\n→ present\n```\n\nРазрешено:\n\n```text\nactor назвал предмет\n→ code builds candidate_key\n→ read prior exact resolution\n→ identify allowed supporting basis refs\n→ semantic proposal\n→ code validates basis coverage and gates\n→ present | absent | no_change | authority_required\n```",
       "char_count": 506
     },
@@ -12301,8 +12301,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13.2. Presence expectation — diagnostic, не authority:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13.2. Presence expectation — diagnostic, не authority",
-      "line_start": 1053,
-      "line_end": 1066,
+      "line_start": 1051,
+      "line_end": 1064,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13.2. Presence expectation — diagnostic, не authority\n## 13.2. Presence expectation — diagnostic, не authority\n\nLLM может классифицировать:\n\n```text\nroutine\nplausible\nexceptional\n```\n\nЭто помогает review/telemetry, но само по себе не разрешает creation.\n\nДаже `routine` требует allowlisted supporting basis: committed либо candidate-free prepared Stage A basis в той же working projection. Например, household ordinary policy instance или independently seeded background group может быть таким basis; голое рассуждение «обычно бывает» — нет.",
       "char_count": 611
     },
@@ -12310,8 +12310,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13.3. Положительный result:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13.3. Положительный result",
-      "line_start": 1067,
-      "line_end": 1082,
+      "line_start": 1065,
+      "line_end": 1080,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13.3. Положительный result\n## 13.3. Положительный result\n\n`materialize` допустим только если:\n\n1. candidate authority class = `ordinary`;\n2. `supporting_basis_ref` входит в request allowlist;\n3. code-owned validator подтверждает closed bucket/admission-class compatibility basis;\n4. availability gate пройден;\n5. context-bound permission/profile существует при необходимости;\n6. property proposal выводится из committed property basis;\n7. source/conservation rules соблюдены;\n8. exact candidate resolution и observation не противоречат;\n9. identity budget и batch limit доступны.\n\nLLM reason text не может компенсировать провал любого gate. Code не NLP-парсит free-text name; semantic correctness declared class проверяется profile-specific model eval и known sensitive category bindings, где они существуют.",
       "char_count": 878
     },
@@ -12319,8 +12319,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13.4. Negative и authority outcomes:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13.4. Negative и authority outcomes",
-      "line_start": 1083,
-      "line_end": 1091,
+      "line_start": 1081,
+      "line_end": 1089,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13.4. Negative и authority outcomes\n## 13.4. Negative и authority outcomes\n\n- `absent` — в данном resolution scope candidate зафиксирован отсутствующим;\n- `no_change` — данных/coverage недостаточно для factual presence result либо record cap не позволяет создавать новый granular resolution;\n- `authority_required` — candidate относится к authoritative path;\n- `materialize` — positive proposal, ещё не effect до code admission/commit.\n\nПри слабом основании выбирается `absent` или `no_change`, а не полезный игроку object.",
       "char_count": 593
     },
@@ -12328,8 +12328,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:13.5. Candidate identity:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "13.5. Candidate identity",
-      "line_start": 1092,
-      "line_end": 1097,
+      "line_start": 1090,
+      "line_end": 1095,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 13.5. Candidate identity\n## 13.5. Candidate identity\n\n`candidate_key` строится code-owned normalizer из закрытых полей и scope, а не произвольного model text.\n\nNo-reroll гарантируется для того же committed key. Эквивалентное перефразирование использует тот же result только если deterministic normalizer свёл его к тому же key либо observation closure уже покрывает категорию.",
       "char_count": 446
     },
@@ -12337,8 +12337,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:14. Property и anti-free-loot:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "14. Property и anti-free-loot",
-      "line_start": 1098,
-      "line_end": 1099,
+      "line_start": 1096,
+      "line_end": 1097,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 14. Property и anti-free-loot\n# 14. Property и anti-free-loot",
       "char_count": 131
     },
@@ -12346,8 +12346,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:14.1. Property basis precedence:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "14.1. Property basis precedence",
-      "line_start": 1100,
-      "line_end": 1116,
+      "line_start": 1098,
+      "line_end": 1114,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 14.1. Property basis precedence\n## 14.1. Property basis precedence\n\nProperty proposal выводится из committed refs в следующем приоритете:\n\n```text\nexplicit item/source property basis\n→ personal possession basis\n→ communal/public/service property basis\n→ container property basis\n→ occupied site/household/workplace default\n→ explicit genuinely-unowned causal basis\n```\n\nLocation default применяется только если более конкретного basis нет.\n\nLLM не выбирает удобный owner свободным текстом.",
       "char_count": 559
     },
@@ -12355,8 +12355,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:14.2. Default для man-made object:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "14.2. Default для man-made object",
-      "line_start": 1117,
-      "line_end": 1122,
+      "line_start": 1115,
+      "line_end": 1120,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 14.2. Default для man-made object\n## 14.2. Default для man-made object\n\nMan-made object внутри используемого жилья, мастерской, склада, торгового места, двора или служебного пространства по умолчанию наследует соответствующий owner/controller/property context.\n\n`ordinary` не означает `unowned`.",
       "char_count": 365
     },
@@ -12364,8 +12364,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:14.3. Бесхозность требует committed причины:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "14.3. Бесхозность требует committed причины",
-      "line_start": 1123,
-      "line_end": 1136,
+      "line_start": 1121,
+      "line_end": 1134,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 14.3. Бесхозность требует committed причины\n## 14.3. Бесхозность требует committed причины\n\nДопустимые basis kinds:\n\n```text\nlost\ndiscarded\nabandoned\nbroken_waste\nbattlefield_or_ruin_remnant\n```\n\nОтсутствие владельца в текущем кадре не создаёт такой basis.",
       "char_count": 326
     },
@@ -12373,8 +12373,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:14.4. Практический эффект:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "14.4. Практический эффект",
-      "line_start": 1137,
-      "line_end": 1144,
+      "line_start": 1135,
+      "line_end": 1142,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 14.4. Практический эффект\n## 14.4. Практический эффект\n\n- молот в кузнице может существовать, но остаётся рабочим property;\n- оружие в household воина может быть context-bound ordinary property;\n- общественная тара может иметь communal controller, а не household owner;\n- предмет из committed discarded group может быть genuinely unowned;\n- materialization не создаёт бесплатный loot и не меняет legal owner при физическом изъятии.",
       "char_count": 501
     },
@@ -12382,8 +12382,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15. Context-bound content:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15. Context-bound content",
-      "line_start": 1145,
-      "line_end": 1146,
+      "line_start": 1143,
+      "line_end": 1144,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15. Context-bound content\n# 15. Context-bound content",
       "char_count": 123
     },
@@ -12391,8 +12391,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15.1. Минимальный gate:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15.1. Минимальный gate",
-      "line_start": 1147,
-      "line_end": 1158,
+      "line_start": 1145,
+      "line_end": 1156,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15.1. Минимальный gate\n## 15.1. Минимальный gate\n\nДля `context_bound` ordinary materialization требуется одновременно:\n\n- approved permission/profile/source ref;\n- committed local causal basis;\n- matching property/economic context;\n- ordinary authority class;\n- owner-native mechanics path.\n\nОбщего утверждения «для XIII века возможно» недостаточно.",
       "char_count": 419
     },
@@ -12400,8 +12400,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15.2. Оружие:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15.2. Оружие",
-      "line_start": 1159,
-      "line_end": 1172,
+      "line_start": 1157,
+      "line_end": 1170,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15.2. Оружие\n## 15.2. Оружие\n\nНеуникальное оружие может быть `ordinary + context_bound`, но только внутри approved closed weapon/equipment profile либо source.\n\nПримеры:\n\n- ordinary yard без armament basis → `absent`;\n- household воина с armament profile → возможен owned item;\n- weapon production/stock profile → возможен work/stock item;\n- battlefield/ruin remnant source → возможен finite damaged remnant;\n- unique/historical/evidence-bearing weapon → `authority_required`.\n\nLLM не изобретает authoritative weapon type, combat parameters или template identity. Она может concrete-изировать semantic variant только внутри переданного approved class; mechanics определяет item/combat owner.",
       "char_count": 761
     },
@@ -12409,8 +12409,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15.3. Деньги, драгоценности и дорогие материалы:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15.3. Деньги, драгоценности и дорогие материалы",
-      "line_start": 1173,
-      "line_end": 1180,
+      "line_start": 1171,
+      "line_end": 1178,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15.3. Деньги, драгоценности и дорогие материалы\n## 15.3. Деньги, драгоценности и дорогие материалы\n\nCurrency identity, precious metal, expensive import и high-value stock требуют approved economic/source profile.\n\nTemplate-less ordinary path не создаёт настоящую currency identity. Physical money-like token, созданный actor из доступного material, относится к A1 direct-action result и не становится валютой.\n\nСвободный household budget не создаёт серебро или деньги.",
       "char_count": 538
     },
@@ -12418,8 +12418,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15.4. Письменные и document-like objects:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15.4. Письменные и document-like objects",
-      "line_start": 1181,
-      "line_end": 1195,
+      "line_start": 1179,
+      "line_end": 1193,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15.4. Письменные и document-like objects\n## 15.4. Письменные и document-like objects\n\nOrdinary path не создаёт:\n\n- authoritative text content;\n- подпись;\n- official status;\n- seal authenticity;\n- legal force;\n- evidence-bearing information.\n\nМожно materialize ordinary blank substrate или obvious non-authoritative physical imitation только при committed material/source basis.\n\nPlayer-written text как causal action result регулируется A1 и не становится objective truth.",
       "char_count": 542
     },
@@ -12427,8 +12427,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:15.5. Specialized tools и stock:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "15.5. Specialized tools и stock",
-      "line_start": 1196,
-      "line_end": 1199,
+      "line_start": 1194,
+      "line_end": 1197,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 15.5. Specialized tools и stock\n## 15.5. Specialized tools и stock\n\nSpecialized professional tool либо товарный запас требует occupation/stock profile. `work` function без конкретной matching permission недостаточна для дорогого или переносимого context-bound item.",
       "char_count": 335
     },
@@ -12436,8 +12436,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:16. Природная materialization:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "16. Природная materialization",
-      "line_start": 1200,
-      "line_end": 1203,
+      "line_start": 1198,
+      "line_end": 1201,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 16. Природная materialization\n# 16. Природная materialization\n\nПриродные вещи делятся на три практических класса.",
       "char_count": 183
     },
@@ -12445,8 +12445,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:16.1. Ambient abundant source:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "16.1. Ambient abundant source",
-      "line_start": 1204,
-      "line_end": 1229,
+      "line_start": 1202,
+      "line_end": 1227,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 16.1. Ambient abundant source\n## 16.1. Ambient abundant source\n\nПримеры:\n\n- вода большой реки;\n- обычный песок на песчаном берегу;\n- грязь;\n- обычная почва;\n- обычные камни в каменистом месте;\n- трава;\n- мелкий валежник при подходящей среде.\n\nТакой source считается практически неистощимым **в масштабе обычного gameplay**, а не буквально бесконечным.\n\nОн не требует отдельного item slot для всей среды.\n\nКогда actor извлекает порцию:\n\n```text\nambient_abundant_source\n→ direct-action origin ambient_ordinary\n→ finite item/resource portion\n→ exact quantity/mass/container mechanics\n→ @rus/items-property\n```",
       "char_count": 676
     },
@@ -12454,8 +12454,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:16.2. Local natural feature:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "16.2. Local natural feature",
-      "line_start": 1230,
-      "line_end": 1244,
+      "line_start": 1228,
+      "line_end": 1242,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 16.2. Local natural feature\n## 16.2. Local natural feature\n\nПримеры:\n\n- упавшее дерево;\n- валун;\n- небольшой глинистый выход;\n- кустарниковая группа;\n- локальная болотистая лужа;\n- куча плавника.\n\nТакая деталь materialize-ится лениво, только когда становится релевантна сцене.\n\nЕсли она меняет movement/visibility/hazard/topology, semantic proposal передаётся spatial/environment owner; LLM не пишет topology сама.",
       "char_count": 484
     },
@@ -12463,8 +12463,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:16.3. Constrained natural resource:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "16.3. Constrained natural resource",
-      "line_start": 1245,
-      "line_end": 1260,
+      "line_start": 1243,
+      "line_end": 1258,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 16.3. Constrained natural resource\n## 16.3. Constrained natural resource\n\nПримеры:\n\n- руда;\n- драгоценный металл;\n- ценный янтарь;\n- редкое сырьё;\n- иной ресурс с существенной экономической ценностью.\n\nНужен approved regional/resource permission и локальный causal basis.\n\nНельзя получать его только потому, что геологически «такое где-то возможно» или игрок начал копать.\n\n---",
       "char_count": 447
     },
@@ -12472,8 +12472,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:17. Finite sources и сохранение количества:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "17. Finite sources и сохранение количества",
-      "line_start": 1261,
-      "line_end": 1262,
+      "line_start": 1259,
+      "line_end": 1260,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 17. Finite sources и сохранение количества\n# 17. Finite sources и сохранение количества",
       "char_count": 157
     },
@@ -12481,8 +12481,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:17.1. Первый semantic estimate допустим один раз:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "17.1. Первый semantic estimate допустим один раз",
-      "line_start": 1263,
-      "line_end": 1273,
+      "line_start": 1261,
+      "line_end": 1271,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 17.1. Первый semantic estimate допустим один раз\n## 17.1. Первый semantic estimate допустим один раз\n\nЕсли finite ordinary source существует, но его точный initial quantity заранее не задан, LLM может один раз предложить правдоподобный initial amount при первом mechanically relevant resolution.\n\nПримеры:\n\n- куча обрезков;\n- связка дров;\n- запас обычной глины;\n- группа однотипной дешёвой тары.",
       "char_count": 465
     },
@@ -12490,8 +12490,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:17.2. После commit quantity code-owned:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "17.2. После commit quantity code-owned",
-      "line_start": 1274,
-      "line_end": 1286,
+      "line_start": 1272,
+      "line_end": 1284,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 17.2. После commit quantity code-owned\n## 17.2. После commit quantity code-owned\n\nПосле materialization:\n\n- остаток хранится;\n- расход уменьшает его;\n- повторный запрос не пересчитывает объём;\n- save/load сохраняет тот же результат.\n\nLLM не может «найти ещё столько же» в том же finite source без новой causal basis.\n\n---",
       "char_count": 391
     },
@@ -12499,8 +12499,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18. Containers:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18. Containers",
-      "line_start": 1287,
-      "line_end": 1288,
+      "line_start": 1285,
+      "line_end": 1286,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18. Containers\n# 18. Containers",
       "char_count": 101
     },
@@ -12508,8 +12508,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.1. Authoritative contents:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.1. Authoritative contents",
-      "line_start": 1289,
-      "line_end": 1294,
+      "line_start": 1287,
+      "line_end": 1292,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.1. Authoritative contents\n## 18.1. Authoritative contents\n\nAuthored/significant/hidden/informational contents остаются у code/data owner.\n\nПустой authoritative candidate set не открывает ordinary fallback.",
       "char_count": 278
     },
@@ -12517,8 +12517,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.2. O2 v1 scope: уже существующий container:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.2. O2 v1 scope: уже существующий container",
-      "line_start": 1295,
-      "line_end": 1300,
+      "line_start": 1293,
+      "line_end": 1298,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.2. O2 v1 scope: уже существующий container\n## 18.2. O2 v1 scope: уже существующий container\n\nПервый ordinary-container profile поддерживает unresolved contents только для container, который уже существует как committed authored/template-backed instance.\n\nПричина: current `rus.items.runtime_instance_mechanics_snapshot.v1` запрещает runtime container mechanics (`container = null`). Создание нового template-less container требует отдельного mechanics snapshot/versioned contract и не входит в O1/O2 existing-container cutover.",
       "char_count": 600
     },
@@ -12526,8 +12526,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.3. Resolution before reveal:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.3. Resolution before reveal",
-      "line_start": 1301,
-      "line_end": 1318,
+      "line_start": 1299,
+      "line_end": 1316,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.3. Resolution before reveal\n## 18.3. Resolution before reveal\n\nДля разрешённого ordinary unresolved container:\n\n```text\nrequest_container_access\n→ validate existing container/access\n→ authoritative contents path first\n→ if ordinary unresolved allowed:\n     seed contents from container/site/property context\n     without desired player item\n→ validate item/property/mechanics writes\n→ apply open/reveal on working projection\n→ continue turn step from updated player-safe state\n```\n\nСодержимое определяется до player-visible reveal.",
       "char_count": 604
     },
@@ -12535,8 +12535,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.4. Player desire не входит в seed:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.4. Player desire не входит в seed",
-      "line_start": 1319,
-      "line_end": 1340,
+      "line_start": 1317,
+      "line_end": 1338,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.4. Player desire не входит в seed\n## 18.4. Player desire не входит в seed\n\nДля:\n\n```text\n«Открываю сундук и беру меч»\n```\n\ncontents seed не получает `меч` как evidence или desired output.\n\nSeed получает:\n\n- container template/category;\n- owner/controller/property;\n- site function;\n- economic/occupation context;\n- existing content profile;\n- context-bound permissions;\n- prior resolutions.\n\nContinuation берёт sword только если committed/working contents действительно его содержат.",
       "char_count": 556
     },
@@ -12544,8 +12544,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.5. Exact mechanics before they matter:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.5. Exact mechanics before they matter",
-      "line_start": 1341,
-      "line_end": 1346,
+      "line_start": 1339,
+      "line_end": 1344,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.5. Exact mechanics before they matter\n## 18.5. Exact mechanics before they matter\n\nЕсли contents влияют на текущую exact механику container — total mass, packing usage, transportability — они должны быть resolved до выполнения этой mechanics.\n\nЕсли current owner не может выразить exact state, operation блокируется typed data gap. Нельзя считать unresolved contents невесомыми.",
       "char_count": 451
     },
@@ -12553,8 +12553,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:18.6. Concealed ordinary не равно informational truth:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "18.6. Concealed ordinary не равно informational truth",
-      "line_start": 1347,
-      "line_end": 1352,
+      "line_start": 1345,
+      "line_end": 1350,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 18.6. Concealed ordinary не равно informational truth\n## 18.6. Concealed ordinary не равно informational truth\n\nOrdinary contents могут быть concealed до открытия. Это disclosure state.\n\nOrdinary path всё равно не создаёт clue, authentic document, secret cache as authored event или другое informational content.",
       "char_count": 382
     },
@@ -12562,8 +12562,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19. Observation, search и no-reroll:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19. Observation, search и no-reroll",
-      "line_start": 1353,
-      "line_end": 1354,
+      "line_start": 1351,
+      "line_end": 1352,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19. Observation, search и no-reroll\n# 19. Observation, search и no-reroll",
       "char_count": 143
     },
@@ -12571,8 +12571,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.1. Presence state:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.1. Presence state",
-      "line_start": 1355,
-      "line_end": 1368,
+      "line_start": 1353,
+      "line_end": 1366,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.1. Presence state\n## 19.1. Presence state\n\nДля ordinary candidate:\n\n```text\nunresolved\ncommitted_present\ncommitted_absent\n```\n\nVisibility/knowledge хранятся отдельно.\n\n`unresolved` не означает concealed existence.",
       "char_count": 286
     },
@@ -12580,8 +12580,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.2. Exact resolution identity:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.2. Exact resolution identity",
-      "line_start": 1369,
-      "line_end": 1380,
+      "line_start": 1367,
+      "line_end": 1378,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.2. Exact resolution identity\n## 19.2. Exact resolution identity\n\nCommitted resolution привязан к:\n\n- `scope_ref`;\n- `coverage_key`;\n- code-owned `candidate_key`;\n- relevant physical/context version;\n- request/idempotency identity.\n\nПовтор exact identity читает persisted result без model call.",
       "char_count": 366
     },
@@ -12589,8 +12589,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.3. Перефразирование:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.3. Перефразирование",
-      "line_start": 1381,
-      "line_end": 1391,
+      "line_start": 1379,
+      "line_end": 1389,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.3. Перефразирование\n## 19.3. Перефразирование\n\nНе обещается универсальный semantic matcher natural language.\n\nRephrase не reroll-ит только если:\n\n1. deterministic code normalizer дал тот же `candidate_key`; либо\n2. committed category/observation closure уже покрывает новый query.\n\nИначе request может получить новый key, но code всё равно проверяет overlap, closed scope и budget. Добавлять LLM-based paraphrase classifier только ради no-reroll запрещено без отдельной реальной потребности.",
       "char_count": 564
     },
@@ -12598,8 +12598,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.4. Более глубокий поиск:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.4. Более глубокий поиск",
-      "line_start": 1392,
-      "line_end": 1402,
+      "line_start": 1390,
+      "line_end": 1400,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.4. Более глубокий поиск\n## 19.4. Более глубокий поиск\n\n`look`, `inspect`, `search`, открытие container и `dig` могут иметь разные `coverage_key`.\n\n```text\nabsent among visible surface objects\n≠ absent inside closed container\n```\n\nНо exhaustive closure текущего micro-scope запрещает будущую противоречащую materialization без committed world change.",
       "char_count": 422
     },
@@ -12607,8 +12607,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.5. Закрытие micro-scope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.5. Закрытие micro-scope",
-      "line_start": 1403,
-      "line_end": 1414,
+      "line_start": 1401,
+      "line_end": 1412,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.5. Закрытие micro-scope\n## 19.5. Закрытие micro-scope\n\nПример:\n\n```text\nopen shelf + exhaustive large-vessel coverage\n→ committed_absent candidate/category closure\n→ крупный моток верёвки позже не появляется на неизменённой полке\n```\n\nWorld-state change может создать новый version/context и новое causal basis.",
       "char_count": 384
     },
@@ -12616,8 +12616,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:19.6. Bounded negative state:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "19.6. Bounded negative state",
-      "line_start": 1415,
-      "line_end": 1425,
+      "line_start": 1413,
+      "line_end": 1423,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 19.6. Bounded negative state\n## 19.6. Bounded negative state\n\nLedger не хранит бесконечный список каждого вопроса.\n\nVersioned policy задаёт `max_resolution_records` на scope. При приближении к limit code:\n\n- объединяет совместимые negatives в category/coverage closure; либо\n- возвращает `no_change` без нового granular record.\n\nLLM не решает compaction и не получает возможность перезаписать прежние results.",
       "char_count": 479
     },
@@ -12625,8 +12625,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:20. Player-safe completeness:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "20. Player-safe completeness",
-      "line_start": 1426,
-      "line_end": 1427,
+      "line_start": 1424,
+      "line_end": 1425,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 20. Player-safe completeness\n# 20. Player-safe completeness",
       "char_count": 129
     },
@@ -12634,8 +12634,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:20.1. Concrete completeness сохраняется:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "20.1. Concrete completeness сохраняется",
-      "line_start": 1428,
-      "line_end": 1433,
+      "line_start": 1426,
+      "line_end": 1431,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 20.1. Concrete completeness сохраняется\n## 20.1. Concrete completeness сохраняется\n\n`turn_step_request_v1.player_safe_state` остаётся полным для уже существующих player-visible/accessible concrete entities.\n\nЕсли entity отсутствует в concrete player-safe set, actor не может использовать её как already-existing ref.",
       "char_count": 386
     },
@@ -12643,8 +12643,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:20.2. Отсутствие concrete ref не всегда является exhaustive absence:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "20.2. Отсутствие concrete ref не всегда является exhaustive absence",
-      "line_start": 1434,
-      "line_end": 1450,
+      "line_start": 1432,
+      "line_end": 1448,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 20.2. Отсутствие concrete ref не всегда является exhaustive absence\n## 20.2. Отсутствие concrete ref не всегда является exhaustive absence\n\nЕсли current scope допускает unresolved ordinary resolution:\n\n```text\nnot in concrete player-safe entities\n→ cannot reference as existing entity\n\nbut\n\nordinary_resolution_available = true\n→ planner may issue request_discovery or request_container_access\n→ domain handler may resolve ordinary detail\n```\n\nPlanner не создаёт entity через direct `create_entity` для query-conditioned pre-existing world presence.",
       "char_count": 619
     },
@@ -12652,8 +12652,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:20.3. Capability marker:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "20.3. Capability marker",
-      "line_start": 1451,
-      "line_end": 1465,
+      "line_start": 1449,
+      "line_end": 1463,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 20.3. Capability marker\n## 20.3. Capability marker\n\nPlayer-safe projection может содержать минимальный marker:\n\n```json\n{\n  \"ordinary_resolution\": {\n    \"discovery_available\": true,\n    \"container_resolution_available\": false\n  }\n}\n```\n\nMarker сообщает capability, а не hidden capacity, permission или expected result.",
       "char_count": 388
     },
@@ -12661,8 +12661,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:20.4. Hidden server state не раскрывается:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "20.4. Hidden server state не раскрывается",
-      "line_start": 1466,
-      "line_end": 1478,
+      "line_start": 1464,
+      "line_end": 1476,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 20.4. Hidden server state не раскрывается\n## 20.4. Hidden server state не раскрывается\n\nPlanner не получает:\n\n- identity budget;\n- background groups, если actor их не воспринимает;\n- context-bound permissions;\n- supporting basis allowlist;\n- negative records вне actor knowledge;\n- property/source evidence, которое не должно быть известно actor.\n\nDedicated internal ordinary request получает отдельную server-sanitized objective projection.",
       "char_count": 511
     },
@@ -12670,8 +12670,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:21. LLM authority:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "21. LLM authority",
-      "line_start": 1479,
-      "line_end": 1480,
+      "line_start": 1477,
+      "line_end": 1478,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 21. LLM authority\n# 21. LLM authority",
       "char_count": 107
     },
@@ -12679,8 +12679,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:21.1. LLM может предложить:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "21.1. LLM может предложить",
-      "line_start": 1481,
-      "line_end": 1495,
+      "line_start": 1479,
+      "line_end": 1493,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 21.1. LLM может предложить\n## 21.1. LLM может предложить\n\nВ пределах request allowlists LLM может:\n\n- `density_band` для independent seed;\n- minimal structured background groups;\n- ordinary common item semantic descriptor + closed admission class/functional bucket;\n- bounded initial primitive mechanics proposal для нового non-container item, когда request явно разрешает этот field;\n- targeted `materialize|absent|no_change|authority_required`;\n- local natural feature descriptor;\n- initial qualitative scale/amount proposal только там, где contract явно разрешает first resolution;\n- ordinary result existing-entity transformation;\n- qualitative domain classification для импровизированного object;\n- qualitative local-process transition, если deterministic rule недостаточен.",
       "char_count": 849
     },
@@ -12688,8 +12688,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:21.2. LLM обязана ссылаться на supplied basis:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "21.2. LLM обязана ссылаться на supplied basis",
-      "line_start": 1496,
-      "line_end": 1510,
+      "line_start": 1494,
+      "line_end": 1508,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 21.2. LLM обязана ссылаться на supplied basis\n## 21.2. LLM обязана ссылаться на supplied basis\n\nПоложительный ordinary proposal обязан содержать `supporting_basis_ref` из request.\n\nLLM не может:\n\n- создать новый basis ref;\n- заменить ref свободным explanation;\n- расширить permission;\n- перевести `common` в `context_bound`;\n- назначить owner без property basis;\n- назначить numeric identity budget;\n- менять mechanics existing item либо предлагать mechanics вне supplied policy;\n- назначить arbitrary fire resource delta.",
       "char_count": 592
     },
@@ -12697,8 +12697,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:21.3. LLM не может:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "21.3. LLM не может",
-      "line_start": 1511,
-      "line_end": 1528,
+      "line_start": 1509,
+      "line_end": 1526,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 21.3. LLM не может\n## 21.3. LLM не может\n\nLLM не может:\n\n- создавать/изменять G0–G4;\n- создавать canonical G5;\n- создавать permanent route/edge/position;\n- менять history/canon;\n- создавать political/legal/religious authoritative fact;\n- создавать informational/evidence-bearing truth;\n- создавать unique/historical item ordinary path;\n- создавать context-bound item без profile/permission/source;\n- объявлять man-made object бесхозным без committed cause;\n- менять persisted quantity/mass без physical event;\n- писать DB/SQL/write patch;\n- использовать actor wording как world evidence;\n- возвращать player-visible narration как materialization effect.",
       "char_count": 723
     },
@@ -12706,8 +12706,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:22. Identity и преобразование предметов:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "22. Identity и преобразование предметов",
-      "line_start": 1529,
-      "line_end": 1557,
+      "line_start": 1527,
+      "line_end": 1555,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 22. Identity и преобразование предметов\n# 22. Identity и преобразование предметов\n\nЕсли физически продолжается тот же объект, сохраняется та же identity.\n\n```text\nжердь\n→ заострить конец\n→ та же entity_id\n+ changed fact/mechanics при необходимости\n```\n\nНе:\n\n```text\nretire pole\ncreate spear\n```\n\nНовая entity создаётся, когда возникает физически независимый объект:\n\n```text\nдоска\n→ четыре самостоятельных клина\n```\n\nSource transition и result creation должны образовывать один causal change set, если partial commit дал бы противоречивый мир.\n\n---",
       "char_count": 618
     },
@@ -12715,8 +12715,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23. Causal source и supporting basis contract:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23. Causal source и supporting basis contract",
-      "line_start": 1558,
-      "line_end": 1561,
+      "line_start": 1556,
+      "line_end": 1559,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23. Causal source и supporting basis contract\n# 23. Causal source и supporting basis contract\n\nPlayer/NPC wording может быть trigger, но не causal source и не supporting basis.",
       "char_count": 246
     },
@@ -12724,8 +12724,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23.1. Action-produced origin kinds:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23.1. Action-produced origin kinds",
-      "line_start": 1562,
-      "line_end": 1573,
+      "line_start": 1560,
+      "line_end": 1571,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23.1. Action-produced origin kinds\n## 23.1. Action-produced origin kinds\n\nДля current direct-action path сохраняются active names:\n\n```text\ndirect_partition\nambient_ordinary\ncrafted\n```\n\nA1 может versioned-расширить admissible semantics, но не меняет эти origin names без отдельной schema version.",
       "char_count": 367
     },
@@ -12733,8 +12733,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:`direct_partition`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "`direct_partition`",
-      "line_start": 1574,
-      "line_end": 1581,
+      "line_start": 1572,
+      "line_end": 1579,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — `direct_partition`\n### `direct_partition`\n\n- source refs существуют;\n- actor имеет access;\n- source уменьшается/разделяется;\n- known mass/quantity сохраняется;\n- retry не повторяет partition.",
       "char_count": 261
     },
@@ -12742,8 +12742,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:`crafted`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "`crafted`",
-      "line_start": 1582,
-      "line_end": 1589,
+      "line_start": 1580,
+      "line_end": 1587,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — `crafted`\n### `crafted`\n\n- inputs существуют и доступны;\n- tools/conditions учитываются существующими owners;\n- time/check проходят active mechanics;\n- known material budget соблюдается;\n- LLM не создаёт inputs.",
       "char_count": 281
     },
@@ -12751,8 +12751,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:`ambient_ordinary`:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "`ambient_ordinary`",
-      "line_start": 1590,
-      "line_end": 1595,
+      "line_start": 1588,
+      "line_end": 1593,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — `ambient_ordinary`\n### `ambient_ordinary`\n\n- требуется committed spatial/environment source ref;\n- extracted portion становится finite item/resource;\n- precious/constrained material этим origin не создаётся без O2 permission/source.",
       "char_count": 302
     },
@@ -12760,8 +12760,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23.2. Pre-existing ordinary basis kinds:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23.2. Pre-existing ordinary basis kinds",
-      "line_start": 1596,
-      "line_end": 1622,
+      "line_start": 1594,
+      "line_end": 1620,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23.2. Pre-existing ordinary basis kinds\n## 23.2. Pre-existing ordinary basis kinds\n\nPre-existing ordinary content использует отдельное поле `basis_kind`, а не притворяется direct-action origin:\n\n```text\nhousehold_use\nwork_or_occupation_use\nstored_supply\nmaintenance\npersonal_possession\ncommunal_or_service_use\nwaste_or_scrap\nlost\ndiscarded\nabandoned\nbattlefield_or_ruin_remnant\nexisting_finite_source\nambient_ordinary_source\nlocal_natural_feature\napproved_structure_component\nordinary_container_context\nindependent_background_group\nscope_bound_ordinary_policy\n```\n\nКаждый basis содержит existing refs.",
       "char_count": 671
     },
@@ -12769,8 +12769,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23.3. Supporting basis membership:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23.3. Supporting basis membership",
-      "line_start": 1623,
-      "line_end": 1636,
+      "line_start": 1621,
+      "line_end": 1634,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23.3. Supporting basis membership\n## 23.3. Supporting basis membership\n\nRequest передаёт закрытый `allowed_supporting_bases`, где каждый entry содержит `basis_ref` и `basis_state = committed | prepared_seed`.\n\nPositive proposal:\n\n```text\nsupporting_basis_ref ∈ allowed_supporting_bases[].basis_ref\n```\n\nCode дополнительно проверяет, что candidate действительно покрывается basis kind/profile/group.\n\nСвободная reason string не является membership proof.",
       "char_count": 523
     },
@@ -12778,8 +12778,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23.4. Pre-existing man-made object:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23.4. Pre-existing man-made object",
-      "line_start": 1637,
-      "line_end": 1647,
+      "line_start": 1635,
+      "line_end": 1645,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23.4. Pre-existing man-made object\n## 23.4. Pre-existing man-made object\n\nДля ordinary man-made object требуется `why here` relation:\n\n```text\nhousehold | work | storage | maintenance | possession\n| communal/service | waste | lost | abandoned | remnant\n```\n\nЕсли relation слабая или отсутствует, result — `absent` либо `no_change`.",
       "char_count": 401
     },
@@ -12787,8 +12787,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:23.5. Presence не гарантируется желанием:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "23.5. Presence не гарантируется желанием",
-      "line_start": 1648,
-      "line_end": 1659,
+      "line_start": 1646,
+      "line_end": 1657,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 23.5. Presence не гарантируется желанием\n## 23.5. Presence не гарантируется желанием\n\nЕсли existing code/profile/RNG уже определяет presence — он имеет приоритет.\n\nOrdinary semantic path возвращает только:\n\n```text\nmaterialize | absent | no_change | authority_required\n```\n\nBudget и expectation не превращают negative result в positive.",
       "char_count": 406
     },
@@ -12796,8 +12796,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24. Свободный крафт:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24. Свободный крафт",
-      "line_start": 1660,
-      "line_end": 1663,
+      "line_start": 1658,
+      "line_end": 1661,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24. Свободный крафт\n# 24. Свободный крафт\n\nЭтот раздел является target profile `A1`. До A1 cutover действует current direct-action admission `main`.",
       "char_count": 218
     },
@@ -12805,8 +12805,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.1. Recipe — fast path, не whitelist возможной физики:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.1. Recipe — fast path, не whitelist возможной физики",
-      "line_start": 1664,
-      "line_end": 1679,
+      "line_start": 1662,
+      "line_end": 1677,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.1. Recipe — fast path, не whitelist возможной физики\n## 24.1. Recipe — fast path, не whitelist возможной физики\n\nЕсли recipe существует и применим, используется code-owned recipe.\n\nЕсли recipe отсутствует, разумная физическая попытка не блокируется автоматически.\n\n```text\nactor intent\n→ LLM semantic grounding\n→ source/tools/context\n→ existing checks/time mechanics\n→ result or state change\n→ code admission\n→ commit\n```",
       "char_count": 494
     },
@@ -12814,8 +12814,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.2. Known conservation:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.2. Known conservation",
-      "line_start": 1680,
-      "line_end": 1692,
+      "line_start": 1678,
+      "line_end": 1690,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.2. Known conservation\n## 24.2. Known conservation\n\nЕсли известны exact amounts inputs:\n\n```text\noutput + known waste\n≤ available known material\n```\n\nс учётом иных явно существующих sources.\n\nНе требуется моделировать полную химию и материаловедение, если gameplay этого не использует.",
       "char_count": 357
     },
@@ -12823,8 +12823,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.3. Невозможная технология:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.3. Невозможная технология",
-      "line_start": 1693,
-      "line_end": 1705,
+      "line_start": 1691,
+      "line_end": 1703,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.3. Невозможная технология\n## 24.3. Невозможная технология\n\nПопытка сделать невозможное для эпохи устройство остаётся реальной попыткой actor, но не создаёт работающую невозможную технологию.\n\nВозможные результаты:\n\n- неработающая конструкция;\n- частично изменённые materials;\n- wasted time;\n- поломка;\n- травма;\n- fire/process, если есть причинное основание.",
       "char_count": 431
     },
@@ -12832,8 +12832,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.4. Письма и записи:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.4. Письма и записи",
-      "line_start": 1706,
-      "line_end": 1713,
+      "line_start": 1704,
+      "line_end": 1711,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.4. Письма и записи\n## 24.4. Письма и записи\n\nЕсли actor физически написал текст на доступном материале:\n\n- носитель и текст могут стать persisted physical fact;\n- содержание текста не становится objective truth;\n- knowledge других actor возникает только через perception/communication owners.",
       "char_count": 365
     },
@@ -12841,8 +12841,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.5. Weapon-capable и money-like physical outputs:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.5. Weapon-capable и money-like physical outputs",
-      "line_start": 1714,
-      "line_end": 1731,
+      "line_start": 1712,
+      "line_end": 1729,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.5. Weapon-capable и money-like physical outputs\n## 24.5. Weapon-capable и money-like physical outputs\n\nЗапрет на свободную материализацию **предсуществующего** оружия, денег и ценных вещей не запрещает физически получить обычный объект такого рода как прямой причинный результат действия.\n\nДопустимо, например:\n\n- заточить доступный кусок металла или сделать простое импровизированное оружие из реально имеющихся материалов;\n- вырезать или отчеканить похожий на монету жетон;\n- написать записку или изготовить обычный physical document-like carrier.\n\nДля этого обязательны доступные materials/source refs, инструменты и время, а при неопределённом результате — обычная check/domain boundary. Получившийся объект проходит code-owned admission, получает exact mechanics/property/placement и сохраняется как новый causal result.\n\nПри этом LLM не получает права объявить такой объект официальной монетой, подлинным документом, canonical weapon type, законным знаком власти, исторической реликвией или иной authoritative identity без отдельного owner-owned основания. Самодельный money-like token не становится валютой только из-за внешнего сходства.",
       "char_count": 1218
     },
@@ -12850,8 +12850,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:24.5. Weapon-capable и money-like physical outputs:1",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "24.5. Weapon-capable и money-like physical outputs",
-      "line_start": 1714,
-      "line_end": 1731,
+      "line_start": 1712,
+      "line_end": 1729,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 24.5. Weapon-capable и money-like physical outputs\nи иной authoritative identity без отдельного owner-owned основания. Самодельный money-like token не становится валютой только из-за внешнего сходства.\n\nЭтот путь не разрешает отвечать на вопрос игрока «тут лежит меч/монета?» созданием готового предмета: pre-existing world presence разрешается только через ordinary world resolution либо authoritative materialization, описанные выше.\n\n---",
       "char_count": 510
     },
@@ -12859,8 +12859,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:25. Импровизированный предмет в domain mechanics:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "25. Импровизированный предмет в domain mechanics",
-      "line_start": 1732,
-      "line_end": 1764,
+      "line_start": 1730,
+      "line_end": 1762,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 25. Импровизированный предмет в domain mechanics\n# 25. Импровизированный предмет в domain mechanics\n\nTemplate-less object может участвовать в бою или другой mechanic.\n\nЕсли domain owner уже способен решить действие по существующим mechanics, новый LLM call не нужен.\n\nЕсли owner объективно не имеет необходимой qualitative classification, допускается bounded semantic classification **на конкретной domain boundary**.\n\nДля combat пример закрытых classes:\n\n```text\nnot_weapon_capable\nimprovised_puncture_light\nimprovised_impact_light\nimprovised_cutting_light\nimprovised_two_hand_heavy\n```\n\nТочный vocabulary принадлежит combat owner.\n\nLLM не возвращает произвольный `damage = 900`.\n\nCombat owner переводит qualitative class в свои code-owned parameters.\n\nВалидный `not_weapon_capable` не является ошибкой: ноль положительных\nклассификаций оставляет обычный unarmed/default profile применимым. Ровно один\npositive задаёт weapon mechanics текущего resolution; несколько positive,\ninvalid output или exception fail closed.\n\nВ этой редакции не требуется long-lived универсальный affordance/combat profile item. После физического изменения вещи её можно классифицировать заново при следующей реально требующей этого boundary.\n\n---",
       "char_count": 1294
     },
@@ -12868,8 +12868,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26. Spatial semantic concretization: finite topology, broad envelopes:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26. Spatial semantic concretization: finite topology, broad envelopes",
-      "line_start": 1765,
-      "line_end": 1768,
+      "line_start": 1763,
+      "line_end": 1766,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26. Spatial semantic concretization: finite topology, broad envelopes\n# 26. Spatial semantic concretization: finite topology, broad envelopes\n\nBroad structure/site concretization этого раздела относится к отдельному profile `S1`. O1/O2 используют только уже существующий spatial scope и placement primitives.",
       "char_count": 378
     },
@@ -12877,8 +12877,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.1. Canonical geography:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.1. Canonical geography",
-      "line_start": 1769,
-      "line_end": 1782,
+      "line_start": 1767,
+      "line_end": 1780,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.1. Canonical geography\n## 26.1. Canonical geography\n\n`world_base` продолжает владеть:\n\n- canonical G0–G5;\n- containment;\n- routes;\n- directional exits;\n- significant/historical spatial entities;\n- regional constraints;\n- expansion profiles/capacities.\n\nLLM runtime не создаёт G0–G4 и canonical G5.",
       "char_count": 370
     },
@@ -12886,8 +12886,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.2. Generated G5 сохраняет current finite proof:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.2. Generated G5 сохраняет current finite proof",
-      "line_start": 1783,
-      "line_end": 1792,
+      "line_start": 1781,
+      "line_end": 1790,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.2. Generated G5 сохраняет current finite proof\n## 26.2. Generated G5 сохраняет current finite proof\n\nКритическое исправление относительно прежнего proposed-контракта:\n\n> LLM semantic materialization **не отменяет** finite approved template candidate для generated G5.\n\nCurrent Spatial v3 использует finite slots, allowed templates, per-template limits, residual capacities, reservation, terminal ordinal и feasibility proof.\n\nЭти гарантии сохраняются.",
       "char_count": 524
     },
@@ -12895,8 +12895,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.3. Approved template может быть semantic envelope:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.3. Approved template может быть semantic envelope",
-      "line_start": 1793,
-      "line_end": 1815,
+      "line_start": 1791,
+      "line_end": 1813,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.3. Approved template может быть semantic envelope\n## 26.3. Approved template может быть semantic envelope\n\nРазработчик не обязан создавать отдельный concrete template для каждой возможной мастерской, двора или ordinary природной вариации.\n\nApproved generated-G5/scene/structure template может описывать **широкий допустимый envelope**:\n\n```text\nordinary craft parcel\nordinary riverside work compound\nordinary forest parcel\nordinary household outbuilding slot\n```\n\nCode по-прежнему:\n\n1. выбирает/reserve-ит конечный approved template;\n2. расходует существующую capacity;\n3. создаёт topology только supported primitives.\n\nLLM затем конкретизирует только разрешённые semantic fields/content внутри выбранного envelope.\n\nТаким образом finite topology/capacity proof и unbounded concrete semantic variety существуют одновременно.",
       "char_count": 897
     },
@@ -12904,8 +12904,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.4. LLM не рисует arbitrary topology:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.4. LLM не рисует arbitrary topology",
-      "line_start": 1816,
-      "line_end": 1825,
+      "line_start": 1814,
+      "line_end": 1823,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.4. LLM не рисует arbitrary topology\n## 26.4. LLM не рисует arbitrary topology\n\nLLM может предложить смысл:\n\n> небольшая лодочная мастерская с крытым рабочим пространством и навесом.\n\nSpatial owner определяет G5 class, supported G6 classes, positions, portal/blocker mechanics, edges, capacities и placement.\n\nЕсли proposal невозможно представить существующими structural primitives, это mechanics/data gap, а не повод позволить LLM записать свободный graph.",
       "char_count": 530
     },
@@ -12913,8 +12913,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.5. Buildings:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.5. Buildings",
-      "line_start": 1826,
-      "line_end": 1837,
+      "line_start": 1824,
+      "line_end": 1835,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.5. Buildings\n## 26.5. Buildings\n\nOrdinary building/structure может быть semantic-concretized, если:\n\n- есть разрешённый structure/site envelope;\n- capacity имеется;\n- period/region/material culture совместимы;\n- объект ordinary, а не authoritative institution;\n- topology выражается supported primitives.\n\nCanonical monastery, fortress, seat of power и другое significant authored place не создаются ordinary fallback.",
       "char_count": 491
     },
@@ -12922,8 +12922,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.6. Local natural features:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.6. Local natural features",
-      "line_start": 1838,
-      "line_end": 1852,
+      "line_start": 1836,
+      "line_end": 1850,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.6. Local natural features\n## 26.6. Local natural features\n\nParty-scoped ordinary feature допустима:\n\n- небольшой овраг;\n- глинистый обрыв;\n- песчаная коса;\n- валунная россыпь;\n- заболоченная низина;\n- упавшее дерево;\n- кустарник;\n- локальный родник.\n\nОна должна соответствовать canonical environment, не переписывать global hydrography/topology, не создавать новый G3/G4, использовать spatial owner при влиянии на movement/hazard и resource contract при извлечении material.",
       "char_count": 547
     },
@@ -12931,8 +12931,8 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.7. Local landmarks:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.7. Local landmarks",
-      "line_start": 1853,
-      "line_end": 1860,
+      "line_start": 1851,
+      "line_end": 1858,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.7. Local landmarks\n## 26.7. Local landmarks\n\nМатериализованный ordinary объект может стать persisted local reference в knowledge/memory.\n\nОн не становится автоматически canonical route point или глобальным общеизвестным ориентиром.\n\n---",
       "char_count": 309
     },
@@ -12940,55 +12940,55 @@
       "id": "semantic_world_actions_materialization_and_processes_contract.md:26.8. Ordinary-content не является scene-baseline augmentation:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "26.8. Ordinary-content не является scene-baseline augmentation",
-      "line_start": 1861,
-      "line_end": 1870,
+      "line_start": 1859,
+      "line_end": 1868,
       "text": "## semantic_world_actions_materialization_and_processes_contract.md — 26.8. Ordinary-content не является scene-baseline augmentation\n## 26.8. Ordinary-content не является scene-baseline augmentation\n\n`party_scene_baseline` остаётся immutable.\n\nКонкретные utensils, tools, scrap, local movable items, background groups и presence resolutions относятся к dynamic party state.\n\nЕсли ordinary feature реально меняет permanent topology, она перестаёт быть просто content и проходит существующий spatial proposal/validation path. Нельзя использовать lazy-content ledger как обход finite G5/G6 topology rules.\n\n---",
       "char_count": 607
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:27. Structural semantic remainder:0",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:27. Ordinary NPC и structural semantic remainder:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "27. Structural semantic remainder",
-      "line_start": 1871,
-      "line_end": 1874,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27. Structural semantic remainder\n# 27. Structural semantic remainder\n\nЭтот раздел задаёт будущий profile `S1`. Он не является обязательной частью O1 common ordinary item world. N1 — active общий механизм автономного решения NPC на existing decision boundary: NPC получает только реально исполнимые current actor-step owner capabilities и NPC-safe refs, LLM выбирает одно действие, а existing domain owners исполняют mechanics и persistence. Это не сценарный whitelist и не специальная logic Жданко.",
-      "char_count": 569
+      "section": "27. Ordinary NPC и structural semantic remainder",
+      "line_start": 1869,
+      "line_end": 1872,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27. Ordinary NPC и structural semantic remainder\n# 27. Ordinary NPC и structural semantic remainder\n\nЭтот раздел задаёт будущие profiles `N1` и `S1`. Он не является обязательной частью O1 common ordinary item world.",
+      "char_count": 285
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:27.1. Structural capacity остаётся code-owned:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "27.1. Structural capacity остаётся code-owned",
-      "line_start": 1875,
-      "line_end": 1880,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.1. Structural capacity остаётся code-owned\n## 27.1. Structural capacity остаётся code-owned\n\nG5/G6 slots, finite topology и approved templates остаются у current owners.\n\nLLM не увеличивает population или spatial capacity.",
-      "char_count": 295
+      "line_start": 1873,
+      "line_end": 1878,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.1. Structural capacity остаётся code-owned\n## 27.1. Structural capacity остаётся code-owned\n\nNPC/G5/G6 slots, finite topology и approved templates остаются у current owners.\n\nLLM не увеличивает population или spatial capacity.",
+      "char_count": 299
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:27.2. Code path имеет приоритет:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "27.2. Code path имеет приоритет",
-      "line_start": 1881,
-      "line_end": 1891,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.2. Code path имеет приоритет\n## 27.2. Code path имеет приоритет\n\nЕсли approved spatial template уже разрешает instance без semantic gap, используется deterministic code path.\n\nLLM нужна только для поля, которое:\n\n- реально требуется текущему gameplay;\n- не является authoritative;\n- не имеет готового code/data representation;\n- может быть выражено supported primitives.",
-      "char_count": 443
+      "line_start": 1879,
+      "line_end": 1889,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.2. Code path имеет приоритет\n## 27.2. Code path имеет приоритет\n\nЕсли current regional NPC/profile materializer либо approved spatial template уже разрешает instance без semantic gap, используется deterministic code path.\n\nLLM нужна только для поля, которое:\n\n- реально требуется текущему gameplay;\n- не является authoritative;\n- не имеет готового code/data representation;\n- может быть выражено supported primitives.",
+      "char_count": 490
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:27.3. Profile separation:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "27.3. Profile separation",
-      "line_start": 1892,
-      "line_end": 1906,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.3. Profile separation\n## 27.3. Profile separation\n\n```text\nO1/O2\n→ ordinary items, groups, resources, existing-container contents\n\nS1\n→ broad ordinary structure/site semantic envelope inside approved topology\n\nN1\n→ active autonomous NPC decision through executable current actor-step owner capabilities and NPC-safe refs, not scenario whitelist or Zhanko-specific logic\n```\n\nO1 не получает право materialize NPC или building.",
-      "char_count": 498
+      "line_start": 1890,
+      "line_end": 1904,
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.3. Profile separation\n## 27.3. Profile separation\n\n```text\nO1/O2\n→ ordinary items, groups, resources, existing-container contents\n\nS1\n→ broad ordinary structure/site semantic envelope inside approved topology\n\nN1\n→ ordinary NPC semantic remainder after code-owned formal facets\n```\n\nO1 не получает право materialize NPC или building.",
+      "char_count": 406
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:27.4. Appearance и mechanics:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
       "section": "27.4. Appearance и mechanics",
-      "line_start": 1907,
+      "line_start": 1905,
       "line_end": 1910,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.4. Appearance и mechanics\n## 27.4. Appearance и mechanics\n\nСтарое понятие ordinary NPC semantic remainder after deterministic profile/materializer отменено как значение N1. Оно может рассматриваться только как отдельная неактивная будущая идея без profile identifier.",
-      "char_count": 340
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 27.4. Appearance и mechanics\n## 27.4. Appearance и mechanics\n\nN1 не отменяет current deterministic demographic, appearance, equipment и schedule mechanics.\n\nLLM не заполняет поля, которыми уже владеет approved profile/materializer.",
+      "char_count": 301
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:27.5. Structure parts:0",
@@ -14040,8 +14040,8 @@
       "section": "49.9. Spatial",
       "line_start": 3352,
       "line_end": 3358,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 49.9. Spatial\n## 49.9. Spatial\n\n- ordinary content does not mutate scene baseline;\n- no permanent edge/position from O1/O2 item materialization;\n- movement-significant feature routes through spatial owner;\n- S1 remains disabled when only O1/O2 active; N1 follows its separate active NPC contract.",
-      "char_count": 366
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 49.9. Spatial\n## 49.9. Spatial\n\n- ordinary content does not mutate scene baseline;\n- no permanent edge/position from O1/O2 item materialization;\n- movement-significant feature routes through spatial owner;\n- S1/N1 remain disabled when only O1/O2 active.",
+      "char_count": 323
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:49.10. A1 action-produced objects:0",
@@ -14175,8 +14175,8 @@
       "section": "52.3. Оценка по profiles",
       "line_start": 3587,
       "line_end": 3599,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 52.3. Оценка по profiles\n## 52.3. Оценка по profiles\n\n| Profile | Scope | Реалистичность | Риск/объём |\n|---|---|---:|---|\n| O1 | common ordinary items/groups through discovery | высокая | medium-high, cross-cutting |\n| O2a | property/context-bound/natural resources | высокая | medium-high |\n| O2b | contents of existing containers | высокая | medium-high; exact mass/reveal ordering |\n| A1 | broader action-produced physical results | высокая | medium-high; admission/contract cutover |\n| F1 | local exact fire | высокая | high; process + time + item persistence |\n| S1 | broad structure/spatial semantic remainder | условно высокая | high, separate spatial profile |\n| N1 | autonomous NPC decision through current actor-step owner capabilities and NPC-safe refs | active | separate NPC contract |\n| new template-less container | возможна позже | high | requires container mechanics snapshot version |",
-      "char_count": 973
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 52.3. Оценка по profiles\n## 52.3. Оценка по profiles\n\n| Profile | Scope | Реалистичность | Риск/объём |\n|---|---|---:|---|\n| O1 | common ordinary items/groups through discovery | высокая | medium-high, cross-cutting |\n| O2a | property/context-bound/natural resources | высокая | medium-high |\n| O2b | contents of existing containers | высокая | medium-high; exact mass/reveal ordering |\n| A1 | broader action-produced physical results | высокая | medium-high; admission/contract cutover |\n| F1 | local exact fire | высокая | high; process + time + item persistence |\n| S1 | broad structure/spatial semantic remainder | условно высокая | high, separate spatial profile |\n| N1 | ordinary NPC semantic remainder | условно высокая | high, separate NPC profile |\n| new template-less container | возможна позже | high | requires container mechanics snapshot version |",
+      "char_count": 931
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:52.4. Итоговая оценка:0",
@@ -14184,8 +14184,8 @@
       "section": "52.4. Итоговая оценка",
       "line_start": 3600,
       "line_end": 3612,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 52.4. Итоговая оценка\n## 52.4. Итоговая оценка\n\nРеализация реалистична при staged atomic profiles.\n\nНереалистично считать весь umbrella target:\n\n- одной prompt change;\n- одной локальной правкой `@rus/turn`;\n- одним небольшим cutover;\n- готовым только потому, что owners уже существуют.\n\nO1 является разумным первым production slice. F1 и S1 не должны блокировать его и не должны активироваться вместе ради формальной «целостности документа»; N1 следует отдельному active NPC contract.",
-      "char_count": 554
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 52.4. Итоговая оценка\n## 52.4. Итоговая оценка\n\nРеализация реалистична при staged atomic profiles.\n\nНереалистично считать весь umbrella target:\n\n- одной prompt change;\n- одной локальной правкой `@rus/turn`;\n- одним небольшим cutover;\n- готовым только потому, что owners уже существуют.\n\nO1 является разумным первым production slice. F1, S1 и N1 не должны блокировать его и не должны активироваться вместе ради формальной «целостности документа».",
+      "char_count": 515
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:53. Противоречия с current active contracts и code:0",
@@ -14328,8 +14328,8 @@
       "section": "54.2. O1 cutover",
       "line_start": 3767,
       "line_end": 3781,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 54.2. O1 cutover\n## 54.2. O1 cutover\n\nO1 becomes active only after:\n\n- ordinary ledger persistence;\n- density policy mapping;\n- structured groups/supporting basis;\n- `request_discovery` integration;\n- new ordinary-world items admission/provenance;\n- anti-wish/classification/property/no-reroll/lazy-cost tests;\n- model call outside transaction;\n- pass-through zero-call proof.\n\nO1 may activate without O2/A1/F1/S1; N1 follows its separate active NPC contract.",
-      "char_count": 529
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 54.2. O1 cutover\n## 54.2. O1 cutover\n\nO1 becomes active only after:\n\n- ordinary ledger persistence;\n- density policy mapping;\n- structured groups/supporting basis;\n- `request_discovery` integration;\n- new ordinary-world items admission/provenance;\n- anti-wish/classification/property/no-reroll/lazy-cost tests;\n- model call outside transaction;\n- pass-through zero-call proof.\n\nO1 may activate without O2/A1/F1/S1/N1.",
+      "char_count": 487
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:54.3. O2 cutover:0",
@@ -14359,13 +14359,13 @@
       "char_count": 441
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:54.6. S1 cutover:0",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:54.6. S1/N1 cutovers:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "54.6. S1 cutover",
+      "section": "54.6. S1/N1 cutovers",
       "line_start": 3807,
       "line_end": 3810,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 54.6. S1 cutover\n## 54.6. S1 cutover\n\nS1 requires its own owner-specific contract/test acceptance and does not enter production merely because O1 ledger exists. N1 is governed by its separate active NPC contract.",
-      "char_count": 282
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 54.6. S1/N1 cutovers\n## 54.6. S1/N1 cutovers\n\nS1/N1 require their own owner-specific contract/test acceptance and do not enter production merely because O1 ledger exists.",
+      "char_count": 240
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:54.7. Mixed semantics rule:0",
@@ -14485,13 +14485,13 @@
       "char_count": 456
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:55.12. S1 and inactive future NPC semantic remainder:0",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:55.12. S1/N1:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "55.12. S1 and inactive future NPC semantic remainder",
+      "section": "55.12. S1/N1",
       "line_start": 3969,
       "line_end": 3977,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 55.12. S1 and inactive future NPC semantic remainder\n## 55.12. S1 and inactive future NPC semantic remainder\n\nВынести в отдельные implementation plans:\n\n- S1 broad template semantic fields inside finite topology;\n- inactive future NPC semantic remainder after deterministic profile/materializer, without profile identifier.\n\nНе включать в O1 MVP.",
-      "char_count": 416
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 55.12. S1/N1\n## 55.12. S1/N1\n\nВынести в отдельные implementation plans:\n\n- S1 broad template semantic fields inside finite topology;\n- N1 semantic remainder after deterministic profile materializer.\n\nНе включать в O1 MVP.",
+      "char_count": 291
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:55.13. Prompts/eval:0",
@@ -14575,13 +14575,13 @@
       "char_count": 300
     },
     {
-      "id": "semantic_world_actions_materialization_and_processes_contract.md:56.7. S1 and inactive future NPC semantic remainder — only on concrete demand:0",
+      "id": "semantic_world_actions_materialization_and_processes_contract.md:56.7. S1/N1 — only on concrete demand:0",
       "file": "semantic_world_actions_materialization_and_processes_contract.md",
-      "section": "56.7. S1 and inactive future NPC semantic remainder — only on concrete demand",
+      "section": "56.7. S1/N1 — only on concrete demand",
       "line_start": 4050,
       "line_end": 4056,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 56.7. S1 and inactive future NPC semantic remainder — only on concrete demand\n## 56.7. S1 and inactive future NPC semantic remainder — only on concrete demand\n\n- broad spatial/structure envelope;\n- ordinary NPC semantic remainder without profile identifier.\n\nКаждый получает отдельный plan/cutover.",
-      "char_count": 368
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 56.7. S1/N1 — only on concrete demand\n## 56.7. S1/N1 — only on concrete demand\n\n- broad spatial/structure envelope;\n- ordinary NPC semantic remainder.\n\nКаждый получает отдельный plan/cutover.",
+      "char_count": 261
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:56.8. Activation discipline:0",
@@ -14607,8 +14607,8 @@
       "section": "57. Явно не требуется v2.1",
       "line_start": 4073,
       "line_end": 4110,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 57. Явно не требуется v2.1\n# 57. Явно не требуется v2.1\n\nБез следующей конкретной игровой потребности не вводить:\n\n- universal quota engine;\n- item-by-item min/max catalog;\n- LLM numeric world capacity;\n- universal material ontology;\n- universal semantic dependency engine;\n- universal affordance engine;\n- separate loot engine;\n- global resource ecology;\n- full economy simulator;\n- full chemistry/heat/oxygen;\n- procedural replacement G0–G5;\n- runtime creation G0–G4;\n- LLM-authored global routes;\n- mutable scene baseline;\n- second player planner;\n- LLM inside `@rus/materialization`;\n- second spatial/NPC/temporal/process owner;\n- event sourcing;\n- durable journal of uncommitted model plans;\n- universal natural-language paraphrase matcher;\n- long-lived generic combat affordance profile for every item;\n- generic process DSL;\n- dynamic smoke/lighting/fire spread;\n- full flora/fauna simulation;\n- automatic remote/local fire bridge;\n- world materialization far from current causal boundary;\n- decorative mass generation;\n- one LLM call per small object;\n- offline generation of all possible contents;\n- template-less runtime container before exact container mechanics contract;\n- synchronized activation of unrelated O1/O2/A1/F1/S1 profiles.",
-      "char_count": 1317
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 57. Явно не требуется v2.1\n# 57. Явно не требуется v2.1\n\nБез следующей конкретной игровой потребности не вводить:\n\n- universal quota engine;\n- item-by-item min/max catalog;\n- LLM numeric world capacity;\n- universal material ontology;\n- universal semantic dependency engine;\n- universal affordance engine;\n- separate loot engine;\n- global resource ecology;\n- full economy simulator;\n- full chemistry/heat/oxygen;\n- procedural replacement G0–G5;\n- runtime creation G0–G4;\n- LLM-authored global routes;\n- mutable scene baseline;\n- second player planner;\n- LLM inside `@rus/materialization`;\n- second spatial/NPC/temporal/process owner;\n- event sourcing;\n- durable journal of uncommitted model plans;\n- universal natural-language paraphrase matcher;\n- long-lived generic combat affordance profile for every item;\n- generic process DSL;\n- dynamic smoke/lighting/fire spread;\n- full flora/fauna simulation;\n- automatic remote/local fire bridge;\n- world materialization far from current causal boundary;\n- decorative mass generation;\n- one LLM call per small object;\n- offline generation of all possible contents;\n- template-less runtime container before exact container mechanics contract;\n- synchronized activation of unrelated O1/O2/A1/F1/S1/N1 profiles.",
+      "char_count": 1320
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:57. Явно не требуется v2.1:2",
@@ -14616,7 +14616,7 @@
       "section": "57. Явно не требуется v2.1",
       "line_start": 4073,
       "line_end": 4110,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 57. Явно не требуется v2.1\ncontents;\n- template-less runtime container before exact container mechanics contract;\n- synchronized activation of unrelated O1/O2/A1/F1/S1 profiles.\n\nTechnical strictness remains mandatory where it directly preserves committed facts, atomicity, exact mechanics, safe projections and owner boundaries.",
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 57. Явно не требуется v2.1\ntents;\n- template-less runtime container before exact container mechanics contract;\n- synchronized activation of unrelated O1/O2/A1/F1/S1/N1 profiles.\n\nTechnical strictness remains mandatory where it directly preserves committed facts, atomicity, exact mechanics, safe projections and owner boundaries.",
       "char_count": 399
     },
     {
@@ -14679,8 +14679,8 @@
       "section": "58.5. Activation",
       "line_start": 4201,
       "line_end": 4213,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 58.5. Activation\n## 58.5. Activation\n\n```text\nO1 common ordinary\nO2 context/resource/container\nA1 action-produced results\nF1 local fire\nS1 spatial remainder\nN1 active autonomous NPC decisions\n```\n\nEach profile is independently atomic. Umbrella document is not a reason to combine them in one release.",
-      "char_count": 370
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — 58.5. Activation\n## 58.5. Activation\n\n```text\nO1 common ordinary\nO2 context/resource/container\nA1 action-produced results\nF1 local fire\nS1 spatial remainder\nN1 NPC remainder\n```\n\nEach profile is independently atomic. Umbrella document is not a reason to combine them in one release.",
+      "char_count": 352
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:58.6. Главный продуктовый принцип:0",
@@ -14706,8 +14706,8 @@
       "section": "A.1. Один giant cutover для unrelated features — отклонено",
       "line_start": 4220,
       "line_end": 4227,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — A.1. Один giant cutover для unrelated features — отклонено\n## A.1. Один giant cutover для unrelated features — отклонено\n\nИсходный v2 запрещал любую частичную активацию и связывал ordinary world, free crafting, spatial/NPC remainder и local fire.\n\nЭто противоречило принципу разумной достаточности и увеличивало release risk.\n\nРешение: независимые atomic profiles O1/O2/A1/F1/S1; N1 регулируется отдельным active NPC contract. Mixed semantics запрещена внутри profile, но profile не ждёт unrelated implementation.",
-      "char_count": 583
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — A.1. Один giant cutover для unrelated features — отклонено\n## A.1. Один giant cutover для unrelated features — отклонено\n\nИсходный v2 запрещал любую частичную активацию и связывал ordinary world, free crafting, spatial/NPC remainder и local fire.\n\nЭто противоречило принципу разумной достаточности и увеличивало release risk.\n\nРешение: независимые atomic profiles O1/O2/A1/F1/S1/N1. Mixed semantics запрещена внутри profile, но profile не ждёт unrelated implementation.",
+      "char_count": 539
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:A.2. Новый player operation для ordinary detail — отклонено:0",
@@ -14886,8 +14886,8 @@
       "section": "A.21. Broad structure/NPC remainder входит в O1 — отклонено",
       "line_start": 4348,
       "line_end": 4353,
-      "text": "## semantic_world_actions_materialization_and_processes_contract.md — A.21. Broad structure/NPC remainder входит в O1 — отклонено\n## A.21. Broad structure/NPC remainder входит в O1 — отклонено\n\nS1 — separate high-risk profile. N1 не является ordinary materialization profile: это separate active NPC contract.\n\nO1 materialize-ит only ordinary content in existing scope.",
-      "char_count": 369
+      "text": "## semantic_world_actions_materialization_and_processes_contract.md — A.21. Broad structure/NPC remainder входит в O1 — отклонено\n## A.21. Broad structure/NPC remainder входит в O1 — отклонено\n\nS1/N1 являются separate high-risk profiles.\n\nO1 materialize-ит only ordinary content in existing scope.",
+      "char_count": 297
     },
     {
       "id": "semantic_world_actions_materialization_and_processes_contract.md:A.22. Local fire state с `weaken|strengthen|smolder` без state fields — отклонено:0",

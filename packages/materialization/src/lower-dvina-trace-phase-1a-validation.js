@@ -164,9 +164,9 @@ function assertPhase1ACutoverIdentity(bundle, definitionRevision, fail, revision
   if (definitionRevision === revisions.m13) {
     const manifest = bundle.phase_1a_manifest;
     const bindings = bundle.materialization_bindings;
-    const profilePin = bundle.artifact_pins?.npc_semantic_profile;
-    const profile = bundle.npc_semantic_profile;
-    const activation = bindings?.npc_semantic_activation;
+    const profilePin = bundle.artifact_pins?.npc_actor_step_profile;
+    const profile = bundle.npc_actor_step_profile;
+    const activation = bindings?.npc_actor_step_activation;
     const inheritedProfiles = [
       ['action_production_materialization', 'action_production_profile'],
       ['local_fire_materialization', 'local_fire_profile'],

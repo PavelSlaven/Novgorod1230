@@ -1,21 +1,21 @@
 /** Adapts active owner factories to one Phase 7 NPC actor-step. */
 import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
-import { createNpcContainerCapability } from './lower-dvina-trace-n1-container-capability.js';
+import { createNpcContainerCapability } from './lower-dvina-trace-npc-actor-step-container-capability.js';
 import { applyActionProducedRuntimeProjection } from './lower-dvina-trace-action-produced-runtime.js';
 import { initializeRuntimeState } from './lower-dvina-trace-turn-step-item-support.js';
 import { createCommittedItemMechanicsResolver } from './lower-dvina-trace-committed-inventory.js';
 import { projectTracePhase7CurrentBoundaryState } from
   './lower-dvina-trace-local-fire-current-state.js';
 import { npcSafeActorRefs, npcSafeModeCapabilities } from
-  './lower-dvina-trace-n1-mode-handoffs.js';
+  './lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 import { npcItemWorkingProjection, npcPosition, npcSafeItemRefs } from
-  './lower-dvina-trace-n1-item-context.js';
+  './lower-dvina-trace-npc-actor-step-item-context.js';
 import { projectLowerDvinaTraceNpcS1Capability } from
   './releases/lower-dvina-trace-s1-production.js';
 export { projectTracePhase7CurrentBoundaryState } from
   './lower-dvina-trace-local-fire-current-state.js';
 
-export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
+export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
   createOrdinaryDiscoveryResolver = null,
   createActionProductionOwner = null, loadOrdinaryEnablement = null,
   createOrdinaryContainerContentsResolver = null,
@@ -27,7 +27,7 @@ export function createLowerDvinaTraceN1OwnerCapabilitiesFactory({
     state = projectTracePhase7CurrentBoundaryState({
       state, workingProjection, priorLocalFirePlans
     });
-    if (!activeN1Profile(phase7Contracts?.npcSemanticProfile)) return [];
+    if (!activeNpcActorStepProfile(phase7Contracts?.npcSemanticProfile)) return [];
     const npcRef = phase7Contracts?.zhdanko?.instance_id;
     const npc = (state?.npcs ?? []).find(({ instance_id }) => instance_id === npcRef);
     if (typeof npcRef !== 'string' || npc == null) return [];
@@ -264,8 +264,8 @@ function npcKnowsRef(ref, npc, scope) {
 
 function fail(code) { throw Object.assign(new Error(code), { code }); }
 
-export function activeN1Profile(profile) {
-  return profile?.profile_id === 'lower_dvina_trace_n1_npc_semantic_profile_v1'
+export function activeNpcActorStepProfile(profile) {
+  return profile?.profile_id === 'lower_dvina_trace_npc_actor_step_profile_v1'
     && profile.revision === 1 && profile.status === 'approved'
     && profile.activation_boundary?.phase === 'phase_7'
     && profile.activation_boundary?.npc_participant_slot_ref

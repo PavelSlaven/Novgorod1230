@@ -10,8 +10,8 @@ import { createTracePhase7BodyEffect } from
   '../src/runtime/lower-dvina-trace-phase-7-effects.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { loadLowerDvinaTraceMaterializationBundle } from
   '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTraceSpatialSemanticProfile } from
@@ -166,10 +166,10 @@ test('Phase 7 persists generic NPC container access through root P16 only',
       placement: { container_id: bag.container_id }, state: {} });
     const contracts = contractsFor(state);
     contracts.npcSemanticProfile = { profile_id:
-      'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+      'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
-    const capabilities = await createLowerDvinaTraceN1OwnerCapabilitiesFactory()({
+    const capabilities = await createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory()({
       partyId: state.party_id, requestId: 'npc-container', inputDigest: digest,
       state, phase7Contracts: contracts
     });
@@ -285,7 +285,7 @@ function npcS1Resolver(state) {
 }
 
 function npcSemanticProfile() {
-  return { profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1',
+  return { profile_id: 'lower_dvina_trace_npc_actor_step_profile_v1',
     revision: 1, status: 'approved', activation_boundary: {
       phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller'

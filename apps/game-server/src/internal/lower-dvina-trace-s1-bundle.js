@@ -166,28 +166,28 @@ export async function loadLowerDvinaTraceRevision25Bundle({ rootDir,
   const content = `${ROOT}/phase-m13-content`;
   const paths = { manifest: `${content}/manifest.json`,
     definition: `${content}/definition.json`,
-    npc_semantic_profile: `${content}/npc-semantic-profile.json`,
+    npc_actor_step_profile: `${content}/npc-actor-step-profile.json`,
     phase_1a_manifest: `${ROOT}/phase-1a-v21/manifest.json`,
     materialization_bindings: `${ROOT}/phase-1a-v21/materialization-bindings.json` };
   const loaded = Object.fromEntries(await Promise.all(Object.entries(paths)
     .map(async ([key, path]) => [key, await read(rootDir, path)])));
   const manifest = loaded.manifest.value;
-  const profile = loaded.npc_semantic_profile.value;
+  const profile = loaded.npc_actor_step_profile.value;
   const phase1a = loaded.phase_1a_manifest.value;
   const bindings = loaded.materialization_bindings.value;
   const files = { 'definition.json': loaded.definition.digest,
-    'npc-semantic-profile.json': loaded.npc_semantic_profile.digest };
+    'npc-actor-step-profile.json': loaded.npc_actor_step_profile.digest };
   if (![historicalBundle?.definition_revision === 24,
     manifest?.schema === 'rus.lower_dvina_trace_m13_content_manifest.v1',
     manifest.scenario_definition_revision === 25,
     manifest.superseded_package_ref?.digest === historicalBundle.m12_content_manifest_digest,
     manifest.superseded_definition_ref?.digest === historicalBundle.artifact_pins.definition.digest,
-    exact(manifest.files, files), manifest.content_digest === digestN1FileMap(files),
+    exact(manifest.files, files), manifest.content_digest === digestNpcActorStepFileMap(files),
     exactRef(manifest.content_refs?.definition, loaded.definition,
       'definition.json', 'lower_dvina_trace_v1', 25),
-    exactRef(manifest.content_refs?.npc_semantic_profile, loaded.npc_semantic_profile,
-      'npc-semantic-profile.json', 'lower_dvina_trace_n1_npc_semantic_profile_v1', 1, 'profile_id'),
-    profile?.schema === 'rus.lower_dvina_trace_n1_npc_semantic_profile.v1',
+    exactRef(manifest.content_refs?.npc_actor_step_profile, loaded.npc_actor_step_profile,
+      'npc-actor-step-profile.json', 'lower_dvina_trace_npc_actor_step_profile_v1', 1, 'profile_id'),
+    profile?.schema === 'rus.lower_dvina_trace_npc_actor_step_profile.v1',
     profile.status === 'approved', profile.revision === 1,
     profile.activation_boundary?.phase === 'phase_7',
     profile.activation_boundary?.npc_participant_slot_ref
@@ -204,23 +204,23 @@ export async function loadLowerDvinaTraceRevision25Bundle({ rootDir,
       paths.materialization_bindings, 'lower_dvina_trace_phase_1a_materialization_bindings_v21', 21, 'binding_set_id'),
     bindings?.scenario_definition_revision === 25,
     bindings.superseded_binding_ref?.digest === historicalBundle.artifact_pins.materialization_bindings.digest,
-    hasOnlyN1AuthorityDelta(bindings, historicalBundle),
-    bindings.npc_semantic_activation?.profile_ref?.digest === loaded.npc_semantic_profile.digest,
-    bindings.npc_semantic_activation?.fallback_policy === 'forbidden'
+    hasOnlyNpcActorStepAuthorityDelta(bindings, historicalBundle),
+    bindings.npc_actor_step_activation?.profile_ref?.digest === loaded.npc_actor_step_profile.digest,
+    bindings.npc_actor_step_activation?.fallback_policy === 'forbidden'
   ].every(Boolean)) return fail('TRACE_REVISION_25_CONTENT_INVALID',
-    'Revision 25 N1 content is stale or incomplete.');
+    'Revision 25 NPC actor-step content is stale or incomplete.');
   const mergedBindings = { ...structuredClone(historicalBundle.materialization_bindings),
     ...structuredClone(bindings) };
   const bundle = { ...structuredClone(historicalBundle), definition_revision: 25,
     manifest_digest: loaded.phase_1a_manifest.digest, phase_1a_manifest: phase1a,
     m13_content_manifest_digest: loaded.manifest.digest, definition: loaded.definition.value,
-    npc_semantic_profile: profile, materialization_bindings: mergedBindings,
+    npc_actor_step_profile: profile, materialization_bindings: mergedBindings,
     artifact_pins: { ...historicalBundle.artifact_pins } };
   for (const [key, artifact, path] of [
     ['phase_1a_manifest', bundle.phase_1a_manifest, paths.phase_1a_manifest],
     ['materialization_bindings', mergedBindings, paths.materialization_bindings],
     ['definition', bundle.definition, paths.definition],
-    ['npc_semantic_profile', bundle.npc_semantic_profile, paths.npc_semantic_profile]
+    ['npc_actor_step_profile', bundle.npc_actor_step_profile, paths.npc_actor_step_profile]
   ]) bundle.artifact_pins[key] = { key, path, digest: loaded[key].digest,
     canonical_digest: canonicalDigest(artifact), schema: artifact.schema, revision: artifact.revision };
   validateDefinitionPins(bundle);
@@ -241,12 +241,12 @@ function digestFileMap(files) {
     .map((name) => `${name}:${files[name]}`).join('\n').concat('\n');
   return createHash('sha256').update(payload).digest('hex');
 }
-function digestN1FileMap(files) {
-  const payload = ['definition.json', 'npc-semantic-profile.json']
+function digestNpcActorStepFileMap(files) {
+  const payload = ['definition.json', 'npc-actor-step-profile.json']
     .map((name) => `${name}:${files[name]}`).join('\n').concat('\n');
   return createHash('sha256').update(payload).digest('hex');
 }
-function hasOnlyN1AuthorityDelta(bindings, historicalBundle) {
+function hasOnlyNpcActorStepAuthorityDelta(bindings, historicalBundle) {
   const inherited = historicalBundle?.materialization_bindings;
   const expected = structuredClone(inherited);
   for (const [bindingKey, pinKey, profileKey] of [
@@ -272,7 +272,7 @@ function hasOnlyN1AuthorityDelta(bindings, historicalBundle) {
     'superseded_binding_ref'
   ];
   const inheritedKeys = Object.keys(bindings ?? {})
-    .filter((key) => ![...metadata, 'npc_semantic_activation'].includes(key));
+    .filter((key) => ![...metadata, 'npc_actor_step_activation'].includes(key));
   return JSON.stringify(Object.keys(bindings ?? {}).sort()) === JSON.stringify([
     ...metadata,
     'schema',
@@ -285,7 +285,7 @@ function hasOnlyN1AuthorityDelta(bindings, historicalBundle) {
     'local_fire_materialization',
     'spatial_semantic_materialization',
     'first_entry_preparation',
-    'npc_semantic_activation'
+    'npc_actor_step_activation'
   ].sort())
     && inheritedKeys.every((key) => JSON.stringify(bindings[key]) === JSON.stringify(expected[key]));
 }

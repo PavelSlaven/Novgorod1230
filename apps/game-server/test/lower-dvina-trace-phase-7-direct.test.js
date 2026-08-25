@@ -5,10 +5,10 @@ import { phase7Command, phase7CommittedState, phase7PlayerInput } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
 import { approvedPhase7Contracts, phase7DirectPlan, phase7GenericCheckPlan } from
   './lower-dvina-trace-phase-7-contract-fixture.js';
-import { createLowerDvinaTraceN1DirectOperations } from
-  '../src/runtime/lower-dvina-trace-n1-direct-operations.js';
-import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
-  '../src/runtime/lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceNpcActorStepDirectOperations } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-direct-operations.js';
+import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
+  '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { matchesOperationContract } from '@rus/npc-runtime';
 import { persistPhase7Consequence } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
@@ -116,15 +116,15 @@ test('Phase 7 production boundary exposes and persists an unseen safe item direc
     external_hand_cost: 0 }];
   const contracts = approvedPhase7Contracts(state);
   contracts.npcSemanticProfile = { profile_id:
-    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' },
     actor_mechanics_context: { attributes: [{ attribute_ref: 'strength',
       label: 'сила', value: 10 }] } };
-  const ownerFactory = createLowerDvinaTraceN1OwnerCapabilitiesFactory();
+  const ownerFactory = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory();
   const consequence = await phase7Command({ state, contracts,
     createBoundaryNpcDirectOperations: (input) =>
-      createLowerDvinaTraceN1DirectOperations({
+      createLowerDvinaTraceNpcActorStepDirectOperations({
         ...input, phase7Contracts: contracts,
         ordinaryResultPolicy: cordFactPolicy
       }),
@@ -182,7 +182,7 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
   const state = phase7CommittedState();
   const contracts = approvedPhase7Contracts(state);
   contracts.npcSemanticProfile = { profile_id:
-    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
   const owner = { resolve: ({ actor }) => ({
@@ -200,7 +200,7 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
     randomSource: { next: () => 0.99 },
     genericCheckContextOwner: genericCheckContext(contracts),
     createBoundaryNpcDirectOperations: (input) =>
-      createLowerDvinaTraceN1DirectOperations({ ...input,
+      createLowerDvinaTraceNpcActorStepDirectOperations({ ...input,
         phase7Contracts: contracts, bodyEventOwner: owner }),
     model: async (request) => {
       assert.ok(request.decision_scope.operation_contract.apply_body_event);
@@ -243,17 +243,17 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
   }));
 });
 
-test('N1 exposes ambient create_entity without a runtime item', () => {
+test('NPC actor-step exposes ambient create_entity without a runtime item', () => {
   const state = phase7CommittedState();
   state.items = [];
   state.npcs.find(({ instance_id }) => instance_id === 'zhdanko-1')
     .machine_state.g6_ref = 'trace_ld_v1_g6_storehouse';
   const contracts = approvedPhase7Contracts(state);
   contracts.npcSemanticProfile = { profile_id:
-    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
-  const direct = createLowerDvinaTraceN1DirectOperations({ state,
+  const direct = createLowerDvinaTraceNpcActorStepDirectOperations({ state,
     phase7Contracts: contracts, ordinaryResultPolicy: cordFactPolicy,
     createAmbientOrdinaryPortionAdmission: ({ committedState }) => {
       assert.equal(committedState.actor_id, 'zhdanko-1');
@@ -268,16 +268,16 @@ test('N1 exposes ambient create_entity without a runtime item', () => {
   }]);
 });
 
-test('N1 direct contract closes owner-derived origin and placement combinations before handlers', () => {
+test('NPC actor-step direct contract closes owner-derived origin and placement combinations before handlers', () => {
   const state = phase7CommittedState();
   state.items.push(runtimeNpcItem('npc-unseen', 'fact:unseen'),
     runtimeNpcItem('npc-unseen-2', 'fact:unseen-2'));
   const phase7Contracts = approvedPhase7Contracts(state);
   phase7Contracts.npcSemanticProfile = { profile_id:
-    'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+    'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
     status: 'approved', activation_boundary: { phase: 'phase_7',
       npc_participant_slot_ref: 'zhdanko_storehouse_controller' } };
-  const direct = createLowerDvinaTraceN1DirectOperations({ state, phase7Contracts,
+  const direct = createLowerDvinaTraceNpcActorStepDirectOperations({ state, phase7Contracts,
     ordinaryResultPolicy: cordFactPolicy,
     createAmbientOrdinaryPortionAdmission: () =>
       Object.assign(async () => ({ pass: false }), { supports: () => true }) });
@@ -301,6 +301,64 @@ test('N1 direct contract closes owner-derived origin and placement combinations 
   assert.equal(matchesOperationContract({ op: 'create_entity', origin: {
     kind: 'crafted', source_refs: ['npc-unseen', 'npc-unseen-2'] },
   placement: { relation: 'held_by', target_ref: npcRef } }, create), true);
+});
+
+test('NPC actor-step derives unseen inside and attached placements from NPC-safe current state', async () => {
+  const state = phase7CommittedState();
+  state.player_profile = { attributes: { strength: { value: 10 } } };
+  state.items.push(runtimeNpcItem('npc-unseen', 'fact:unseen'),
+    runtimeNpcItem('npc-anchor', 'fact:anchor'));
+  state.containers[0].open_state = 'open';
+  state.container_placements = [{ party_id: state.party_id,
+    container_id: 'road-bag-1', anchor_id: null, parent_container_id: null,
+    holder_npc_id: 'zhdanko-1', holder_character_id: null,
+    physical_position: 'worn', equipment_slot_category_id: null }];
+  state.container_profiles = [{
+    template_id: 'trace_ld_v1_container_road_bag', capacity: 4,
+    packing_slot_cost: 1, carry_form: 'regular', mass_grams: 100,
+    external_hand_cost: 0 }];
+  const phase7Contracts = approvedPhase7Contracts(state);
+  phase7Contracts.npcSemanticProfile = { profile_id:
+    'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
+    status: 'approved', activation_boundary: { phase: 'phase_7',
+      npc_participant_slot_ref: 'zhdanko_storehouse_controller' },
+    actor_mechanics_context: { attributes: [{ attribute_ref: 'strength',
+      label: 'сила', value: 10 }] } };
+  const move = createLowerDvinaTraceNpcActorStepDirectOperations({ state, phase7Contracts,
+    ordinaryResultPolicy: cordFactPolicy }).operationContract.move_entity;
+
+  assert.equal(matchesOperationContract({ op: 'move_entity',
+    entity_ref: 'npc-unseen', placement: { relation: 'inside',
+      target_ref: 'road-bag-1' } }, move), true);
+  assert.equal(matchesOperationContract({ op: 'move_entity',
+    entity_ref: 'npc-unseen', placement: { relation: 'attached_to',
+      target_ref: 'npc-anchor' } }, move), true);
+  assert.equal(matchesOperationContract({ op: 'move_entity',
+    entity_ref: 'npc-unseen', placement: { relation: 'inside',
+      target_ref: 'missing-bag' } }, move), false);
+  assert.equal(matchesOperationContract({ op: 'move_entity',
+    entity_ref: 'npc-unseen', placement: { relation: 'attached_to',
+      target_ref: 'npc-unseen' } }, move), false);
+
+  const consequence = await phase7Command({ state, contracts: phase7Contracts,
+    createBoundaryNpcDirectOperations: (input) =>
+      createLowerDvinaTraceNpcActorStepDirectOperations({ ...input, state,
+        phase7Contracts, ordinaryResultPolicy: cordFactPolicy,
+        packingCalculator: () => ({ pass: true, required_slots: 1 }) }),
+    model: async (request) => {
+      const plan = phase7DirectPlan(request);
+      plan.operations = [{ op: 'move_entity', entity_ref: 'npc-unseen',
+        placement: { relation: 'inside', target_ref: 'road-bag-1' } }, {
+        op: 'move_entity', entity_ref: 'npc-anchor',
+        placement: { relation: 'attached_to', target_ref: 'npc-unseen' } }];
+      return plan;
+    }
+  }).consequence({ retrievedState: state,
+    playerInput: phase7PlayerInput(state, 'unseen-placements') });
+  const moves = consequence.phase7.actor_step_owner_outputs.write_fragments
+    .map(({ value }) => value.payload.placement);
+  assert.deepEqual(moves, [{ container_id: 'road-bag-1' },
+    { attached_item_id: 'npc-unseen' }]);
 });
 
 const cordFactPolicy = Object.freeze({

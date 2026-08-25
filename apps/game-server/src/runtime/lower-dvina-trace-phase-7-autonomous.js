@@ -19,7 +19,7 @@ export async function resolveTracePhase7AutonomousDecision({
   const orderedSignals = signalBatch.ordered_signals;
   const persistedInput = signalBatch.persisted_decision_input;
   const persistedTrace = persistedInput?.trace ?? null;
-  const request = buildRequestFromSnapshots({
+  const request = buildTracePhase7NpcActionDecisionRequest({
     state, contracts, boundary, orderedSignals, operationContract, rootTurnId,
     waitingTransition: temporal.waiting_transition,
     perceivedChanges: signalBatch.perceived_changes
@@ -75,7 +75,7 @@ export async function resolveTracePhase7AutonomousDecision({
   });
 }
 
-function buildRequestFromSnapshots({ state, contracts, boundary,
+export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, boundary,
   orderedSignals, operationContract, rootTurnId, waitingTransition,
   perceivedChanges }) {
   const npc = (state.npcs ?? []).find(
@@ -113,7 +113,10 @@ function buildRequestFromSnapshots({ state, contracts, boundary,
       can_continue_automatically: false
     },
     historical_context_snapshot: state.historical_context ?? null,
-    body_snapshot: npc.body_state ?? null,
+    body_snapshot: npc.check_body_state == null ? npc.body_state : {
+      summary: npc.check_body_state.summary ?? npc.body_state?.summary ?? null,
+      active_conditions: npc.check_body_state.active_conditions
+    },
     mood_snapshot: npc.mood ?? null,
     relationship_snapshots: npc.relationships ?? [],
     resource_snapshots: [

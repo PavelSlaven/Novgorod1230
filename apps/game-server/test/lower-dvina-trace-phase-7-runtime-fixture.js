@@ -27,6 +27,9 @@ export function phase7Command({
   directOperationContract = {},
   createBoundaryNpcOwnerCapabilities = null,
   createBoundaryNpcDirectOperations = null,
+  runNpcConversationExchange = null,
+  conversationBindings = null,
+  conversationActivity = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -64,6 +67,9 @@ export function phase7Command({
     directOperationContract,
     createBoundaryNpcOwnerCapabilities,
     createBoundaryNpcDirectOperations,
+    runNpcConversationExchange,
+    conversationBindings,
+    conversationActivity,
     randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion
@@ -160,7 +166,7 @@ export function phase7CommittedState() {
         health: 100,
         satiety: 100,
         energy: 50,
-        active_conditions: []
+        active_conditions: [{ id: 'tired' }]
       },
       mood: { state: 'сосредоточен', intensity: 'moderate' },
       relationships: [{

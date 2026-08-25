@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
-import { semanticDecisionTraceReference } from
+import { projectSemanticConversationSnapshot, semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
 import { applyTurn10CompanionState } from
   './lower-dvina-trace-turn-10-state.js';
@@ -86,6 +86,21 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     consequenceFragment: phase7.actor_step_owner_outputs?.consequence_fragment,
     semanticOperation: phase7.schedule_execution.semantic_operation,
     changeSetId });
+  const conversation = phase7ConversationExchange(phase7);
+  if (conversation != null) {
+    next = projectSemanticConversationSnapshot({ state: next,
+      semanticExchange: conversation,
+      rootTurnId: autonomous.request.root_turn_id,
+      workingRevision: autonomous.request.working_revision,
+      appliedChangeSetId: changeSetId });
+    if (conversation.exchange.stop_reason === 'player_response') {
+      next.player_response_boundary = {
+        kind: 'conversation',
+        conversation_id: conversation.exchange.conversation_id,
+        exchange_id: conversation.exchange.exchange_id
+      };
+    }
+  }
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: restCompleted ? 'completed' : 'paused',
@@ -158,6 +173,13 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     });
   }
   return next;
+}
+
+function phase7ConversationExchange(phase7) {
+  const change = phase7.actor_step_owner_outputs?.consequence_fragment
+    ?.state_changes?.find(({ mode_handoff: handoff }) =>
+      handoff?.mode === 'conversation');
+  return change?.mode_handoff?.result ?? null;
 }
 
 function applyNpcDirectBodyState(next, phase7) {

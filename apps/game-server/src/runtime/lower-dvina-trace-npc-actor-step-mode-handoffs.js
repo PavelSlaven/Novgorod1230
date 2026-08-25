@@ -1,5 +1,4 @@
-import { buildConversationSession, npcSafeSnapshotHasEntityEvidence,
-  validateConversationSession } from '@rus/npc-runtime';
+import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
 import { createCombatSession } from '@rus/turn';
 import { validateCombatSession } from '@rus/contracts/combat-v1';
 
@@ -38,9 +37,10 @@ export function npcSafeModeCapabilities({ modeCapabilities, npcRef,
 }
 
 export function createLowerDvinaTraceNpcActorStepModeOwnerCapabilities({ npc,
-  state, visibleTargetRefs = [], availableResourceRefs = [] } = {}) {
+  state, visibleTargetRefs = [], availableResourceRefs = [],
+  runNpcConversationExchange = null } = {}) {
   const handoff = (operation) => (execution) => modeOwnerResult({
-    execution, operation, state, npc
+    execution, operation, state, npc, runNpcConversationExchange
   });
   const conversationAvailable = !(state?.conversation_sessions ?? []).some(
     (session) => session.status !== 'ended'
@@ -84,12 +84,7 @@ export function projectLowerDvinaTraceNpcActorStepModeHandoff({ state,
     next.interactions = appendById(next.interactions, handoff.result,
       'interaction_id');
   } else if (handoff.mode === 'conversation') {
-    next.conversation_sessions = appendById(next.conversation_sessions,
-      handoff.result, 'conversation_id');
-    if (targetIds(handoff.operation).includes(next.actor_id)) {
-      next.player_response_boundary = { kind: 'conversation',
-        conversation_id: handoff.result.conversation_id };
-    }
+    // Conversation snapshot owns session and player boundary projection.
   } else {
     next.combat_sessions = appendById(next.combat_sessions, handoff.result,
       'combat_id');
@@ -108,7 +103,8 @@ export function lowerDvinaTraceNpcActorStepModeHandoffChange(consequenceFragment
   return matches[0] ?? null;
 }
 
-function modeOwnerResult({ execution, operation, state, npc }) {
+async function modeOwnerResult({ execution, operation, state, npc,
+  runNpcConversationExchange }) {
   const semanticOperation = execution.operation;
   if (semanticOperation?.op !== operation
       || semanticOperation.actor_ref !== npc?.instance_id) {
@@ -117,7 +113,8 @@ function modeOwnerResult({ execution, operation, state, npc }) {
   const result = operation === 'emit_interaction'
     ? interactionResult(semanticOperation, execution.request, state)
     : operation === 'request_conversation'
-      ? conversationResult(semanticOperation, execution.request, state)
+      ? await conversationResult({ semanticOperation, execution, state,
+        npc, runNpcConversationExchange })
       : combatResult(semanticOperation, execution.request, state);
   const change = {
     operation_kind: operation,
@@ -153,21 +150,22 @@ function interactionResult(operation, request, state) {
   };
 }
 
-function conversationResult(operation, request, state) {
-  const session = buildConversationSession({
-    schema: 'conversation_session_v1',
-    conversation_id: `conversation:npc_actor_step:${request.request_id}`,
-    state_version: 1,
-    status: 'active',
-    started_at: structuredClone(request.occurred_at),
-    location_ref: ref('location', actorLocation(state, operation.actor_ref)),
-    initiator_ref: ref('npc', operation.actor_ref),
-    active_participant_refs: participantRefs(state, operation),
-    last_contribution_ref: null,
-    topic_refs: [],
-    status_reason: null
+async function conversationResult({ semanticOperation, execution, state, npc,
+  runNpcConversationExchange }) {
+  if (typeof runNpcConversationExchange !== 'function') {
+    fail('TRACE_NPC_ACTOR_STEP_CONVERSATION_DEPENDENCY_MISSING');
+  }
+  const semanticExchange = await runNpcConversationExchange({
+    state: structuredClone(state), npc: structuredClone(npc),
+    operation: structuredClone(semanticOperation),
+    actor_step_request: structuredClone(execution.request),
+    working_projection: structuredClone(execution.working_projection)
   });
-  return structuredClone(session);
+  if (semanticExchange?.exchange?.schema !== 'conversation_exchange_result_v1'
+      || semanticExchange.exchange.contributions?.length < 1) {
+    fail('TRACE_NPC_ACTOR_STEP_CONVERSATION_RESULT_INVALID');
+  }
+  return structuredClone(semanticExchange);
 }
 
 function combatResult(operation, request, state) {
@@ -203,16 +201,16 @@ function validModeHandoffChange(change, operation, changeSetId) {
   }
   const participants = result?.active_participant_refs
     ?? result?.participant_refs;
-  if (!same(participants?.map(({ entity_id }) => entity_id),
-    [operation.actor_ref, ...ids])) return false;
   if (mode === 'conversation') {
     return operation.op === 'request_conversation'
-      && validateConversationSession(result)
-      && result.state_version === 1 && result.status === 'active'
-      && result.initiator_ref.entity_kind === 'npc'
-      && result.initiator_ref.entity_id === operation.actor_ref
-      && result.last_contribution_ref === null;
+      && result?.exchange?.schema === 'conversation_exchange_result_v1'
+      && Array.isArray(result.exchange.contributions)
+      && result.exchange.contributions.length > 0
+      && result.decision_request?.npc_ref?.entity_kind === 'npc'
+      && result.decision_request.npc_ref.entity_id === operation.actor_ref;
   }
+  if (!same(participants?.map(({ entity_id }) => entity_id),
+    [operation.actor_ref, ...ids])) return false;
   return mode === 'combat' && operation.op === 'request_combat'
     && validateCombatSession(result)
     && result.state_version === '1' && result.status === 'paused_for_decisions'

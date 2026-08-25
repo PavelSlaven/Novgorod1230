@@ -20,10 +20,14 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
   createActionProductionOwner = null, loadOrdinaryEnablement = null,
   createOrdinaryContainerContentsResolver = null,
   createSpatialSemanticResolver = null,
-  createModeOwnerCapabilities = null
+  createModeOwnerCapabilities = null,
+  runNpcConversationExchange = null
 } = {}) {
   return async ({ partyId, requestId, inputDigest, state, phase7Contracts,
-    workingProjection = null, priorLocalFirePlans = [] }) => {
+    workingProjection = null, priorLocalFirePlans = [],
+    conversationBindings = null, conversationActivity = null,
+    runNpcConversationExchange: boundaryConversationExchange =
+      runNpcConversationExchange }) => {
     state = projectTracePhase7CurrentBoundaryState({
       state, workingProjection, priorLocalFirePlans
     });
@@ -119,10 +123,15 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     if (containerCapability != null) capabilities.push(containerCapability);
     if (typeof createModeOwnerCapabilities === 'function') {
       const visibleTargetRefs = npcSafeActorRefs(npc, state);
+      const conversationExchange = typeof boundaryConversationExchange !== 'function'
+        ? null : (input) => boundaryConversationExchange({ ...input,
+          conversation_bindings: conversationBindings,
+          conversation_activity: conversationActivity });
       const modeCapabilities = await createModeOwnerCapabilities({ partyId, requestId,
         inputDigest, state, npc: structuredClone(npc),
         visibleTargetRefs: structuredClone(visibleTargetRefs),
-        availableResourceRefs: structuredClone(itemRefs) });
+        availableResourceRefs: structuredClone(itemRefs),
+        runNpcConversationExchange: conversationExchange });
       capabilities.push(...npcSafeModeCapabilities({ modeCapabilities, npcRef, visibleTargetRefs }));
     }
     return capabilities;

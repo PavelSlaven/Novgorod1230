@@ -36,6 +36,7 @@ import {
   buildNpcSemanticDecisionTrace as buildNpcSemanticDecisionTraceInternal,
   validateNpcSemanticDecisionTrace as validateNpcSemanticDecisionTraceInternal
 } from './semantic-decision-trace-contract.js';
+import { validateRuntimeInstanceMechanics } from '@rus/items-property';
 
 export { buildNpcActionDecisionRequest, validateNpcActionDecisionRequest } from './semantic-decision-request-contract.js';
 export { buildNpcActionDecisionRequestFromSnapshots, npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from './npc-safe-request-projector.js';
@@ -74,20 +75,7 @@ function validatePlacement(value) {
 }
 
 function validateMechanics(value) {
-  return exactKeys(value, [
-    'mass_grams',
-    'external_hand_cost',
-    'carry_form',
-    'packing_slot_cost',
-    'quantity',
-    'container'
-  ])
-    && finiteInteger(value.mass_grams)
-    && [0, 1, 2].includes(value.external_hand_cost)
-    && enumValue(value.carry_form, ['compact', 'regular', 'long', 'bulky'])
-    && finiteInteger(value.packing_slot_cost)
-    && jsonSafe(value.quantity)
-    && jsonSafe(value.container);
+  return validateRuntimeInstanceMechanics(value);
 }
 
 function validateFact(value) {
@@ -109,6 +97,7 @@ function validateOperationShape(value) {
         && exactKeys(value.origin, ['kind', 'source_refs'])
         && enumValue(value.origin.kind, ['direct_partition', 'ambient_ordinary', 'crafted'])
         && uniqueStableIds(value.origin.source_refs)
+        && value.origin.source_refs.length > 0
         && Array.isArray(value.facts)
         && value.facts.every(validateFact)
         && validateMechanics(value.mechanics)

@@ -59,6 +59,7 @@ export function buildTracePhase2Registry(context) {
     phase9,
     playerConversationModel,
     randomSourceFactory,
+    runNpcConversationExchange,
     repository,
     requestId,
     revalidateStateVersion,
@@ -123,6 +124,8 @@ export function buildTracePhase2Registry(context) {
       ? [
           createTracePhase7FireRestCommand({
             contracts: phase7Contracts,
+            conversationBindings: phase3Contracts?.conversationBindings ?? null,
+            conversationActivity: phase3Contracts?.talk ?? null,
             continuationTargetRefs: turn10?.companionTargetRefs ?? [],
             inputDigest,
             npcAutonomousModel,
@@ -139,6 +142,10 @@ export function buildTracePhase2Registry(context) {
             directOperationContract,
             createBoundaryNpcOwnerCapabilities,
             createBoundaryNpcDirectOperations,
+            runNpcConversationExchange: typeof runNpcConversationExchange !== 'function'
+              ? null
+              : (input) => runNpcConversationExchange({ ...input,
+                revalidateStateVersion }),
             randomSource: turnRandomSource,
             temporalAdvanceOwner,
             revalidateStateVersion,

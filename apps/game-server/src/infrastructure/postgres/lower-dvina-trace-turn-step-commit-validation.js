@@ -46,15 +46,14 @@ export function validateBodyEventCommit(operation, factual, state) {
   const payload = outer.payload;
   if (outer.actor_ref !== bodyActorId(factual, state)
       || outer.body_effect_ref !== payload.body_effect_ref
-      || !exactShape(payload, [
-        'body_effect_ref', 'profile_pin', 'selected_context', 'exact_deltas',
-        'state_after', 'selection_policy', 'rng_consumption'
-      ])
+      || !(exactShape(payload, ['body_effect_ref', 'profile_pin', 'selected_context', 'exact_deltas',
+        'state_after', 'selection_policy', 'rng_consumption']) || exactShape(payload, ['body_effect_ref',
+        'profile_pin', 'selected_context', 'exact_deltas', 'condition_transitions', 'state_after',
+        'selection_policy', 'rng_consumption']))
+      || (payload.condition_transitions !== undefined && !Array.isArray(payload.condition_transitions))
       || !text(payload.body_effect_ref)
       || !validProfilePin(payload.profile_pin)
-      || !exactShape(payload.selected_context, [
-        'kind', 'mechanism', 'severity', 'body_part_ref'
-      ])
+      || !exactShape(payload.selected_context, ['kind', 'mechanism', 'severity', 'body_part_ref'])
       || payload.selected_context.kind !== 'direct_body_event'
       || !exactShape(payload.exact_deltas, ['health', 'satiety', 'energy'])
       || Object.values(payload.exact_deltas).some(

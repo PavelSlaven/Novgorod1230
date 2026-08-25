@@ -14,6 +14,8 @@ import { persistPhase7Consequence } from
   './lower-dvina-trace-phase-7-runtime-fixture.js';
 import { assertTurnStepBodyHistoryRows } from
   '../src/infrastructure/postgres/lower-dvina-trace-turn-step-body-read.js';
+import { buildTracePhase7NpcActionDecisionRequest } from
+  '../src/runtime/lower-dvina-trace-phase-7-autonomous.js';
 
 test('Phase 7 executes only registered NPC-safe direct handler', async () => {
   const state = phase7CommittedState();
@@ -180,6 +182,10 @@ test('Phase 7 production boundary exposes and persists an unseen safe item direc
 
 test('Phase 7 persists generic-check body direct without NPC items', async () => {
   const state = phase7CommittedState();
+  state.npcs.find(({ instance_id }) => instance_id === 'zhdanko-1')
+    .check_body_state.active_conditions = [{
+      id: 'tired', status: 'active', severity: 'minor', summary: 'устал'
+    }];
   const contracts = approvedPhase7Contracts(state);
   contracts.npcSemanticProfile = { profile_id:
     'lower_dvina_trace_npc_actor_step_profile_v1', revision: 1,
@@ -193,7 +199,12 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
     selected_context: { kind: 'direct_body_event', mechanism: 'cold',
       severity: 'minor', body_part_ref: null }, exact_deltas: {
       health: 0, satiety: 0, energy: -1 }, state_after: {
-      ...actor.body, energy: actor.body.energy - 1 },
+      ...actor.body, energy: actor.body.energy - 1,
+      active_conditions: actor.body.active_conditions.map((condition) => ({
+        ...condition, id: 'cold', effect: 'chilled', cause: 'body:cold:minor'
+      })) }, condition_transitions: [{
+      from: 'tired', to: 'cold', outcome: 'chilled'
+    }],
     selection_policy: 'fixed_approved_effect', rng_consumption: 'forbidden' }
   }) };
   const consequence = await phase7Command({ state, contracts,
@@ -222,6 +233,21 @@ test('Phase 7 persists generic-check body direct without NPC items', async () =>
     consequence });
   assert.equal(persisted.snapshot.npcs.find(({ instance_id }) =>
     instance_id === 'zhdanko-1').check_body_state.energy, 49);
+  const reloaded = structuredClone(persisted.snapshot);
+  const priorRequest = consequence.phase7.autonomous.request;
+  const request = buildTracePhase7NpcActionDecisionRequest({
+    state: reloaded, contracts,
+    boundary: consequence.phase7.autonomous.boundary,
+    orderedSignals: [consequence.phase7.autonomous.signal],
+    operationContract: priorRequest.decision_scope.operation_contract,
+    rootTurnId: 'turn:phase7-party:reload',
+    waitingTransition: consequence.phase7.temporal.waiting_transition,
+    perceivedChanges: priorRequest.perception.perceived_changes
+  });
+  assert.deepEqual(request.npc.body_state.conditions, [{
+    condition_ref: 'cold', status: 'active', severity: 'minor',
+    summary: 'устал'
+  }]);
   assert.equal(persisted.snapshot.body_state.energy, 33);
   const history = persisted.plan.appends.find(({ target_table: table,
     record }) => table === 'party_body_temporal_history'

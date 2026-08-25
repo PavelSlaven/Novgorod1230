@@ -70,6 +70,28 @@ test('NPC item use admits A1 production and keeps ref and contract gates', () =>
   assert.doesNotThrow(() => buildNpcStepPlan(plan(decisionRequest), decisionRequest));
 });
 
+test('NPC direct item mechanics reject invalid structural payloads before execution', () => {
+  const decisionRequest = request();
+  decisionRequest.decision_scope.operation_contract = { create_entity: {
+    allowed: [{ origin_kind: 'crafted', source_refs: ['item:board'],
+      placement: { relation: 'held_by', target_ref: decisionRequest.npc_ref } }]
+  } };
+  const valid = directCreatePlan(decisionRequest);
+  assert.equal(validateNpcStepPlan(valid, decisionRequest), true);
+
+  for (const mutate of [
+    (operation) => { operation.origin.source_refs = []; },
+    (operation) => { operation.mechanics.mass_grams = -1; },
+    (operation) => { operation.mechanics.packing_slot_cost = -1; },
+    (operation) => { operation.mechanics.quantity = { value: 0, unit: 'item' }; },
+    (operation) => { operation.mechanics.container = {}; }
+  ]) {
+    const invalid = structuredClone(valid);
+    mutate(invalid.operations[0]);
+    assert.equal(validateNpcStepPlan(invalid, decisionRequest), false);
+  }
+});
+
 test('NPC checked container access is generic-check only', () => {
   const decisionRequest = request();
   decisionRequest.npc.available_resources.push({ item_ref: 'locked-kit' });
@@ -97,3 +119,19 @@ test('NPC checked container access is generic-check only', () => {
   direct.operations = [force];
   assert.equal(validateNpcStepPlan(direct, decisionRequest), false);
 });
+
+function directCreatePlan(decisionRequest) {
+  const result = plan(decisionRequest);
+  Object.assign(result, {
+    resolution: 'direct', goal_result: 'achieved',
+    activity: { owner: 'semantic', duration_class: 'brief', effort: 'light' },
+    operations: [{ op: 'create_entity', temp_ref: 'crafted-edge',
+      semantic_type: 'ordinary_item', name: 'обработанная доска',
+      origin: { kind: 'crafted', source_refs: ['item:board'] }, facts: [],
+      mechanics: { mass_grams: 100, external_hand_cost: 1,
+        carry_form: 'compact', packing_slot_cost: 1,
+        quantity: { value: 1, unit: 'item' }, container: null },
+      placement: { relation: 'held_by', target_ref: decisionRequest.npc_ref } }]
+  });
+  return result;
+}

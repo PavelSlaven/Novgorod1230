@@ -20,7 +20,7 @@ import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-re
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
-  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null,
+  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
   npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
@@ -45,10 +45,9 @@ export function createLowerDvinaTracePhase2Runtime({
   spatialSemanticProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
-  bundleLoader = ({ scenarioDefinitionRevision }) =>
-    loadLowerDvinaTraceMaterializationBundle({
-      scenarioDefinitionRevision,
-    }),
+  bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision,
+  }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
@@ -198,6 +197,7 @@ export function createLowerDvinaTracePhase2Runtime({
           phase9,
           playerConversationModel,
           randomSourceFactory,
+          runNpcConversationExchange,
           repository,
           requestId,
           revalidateStateVersion,

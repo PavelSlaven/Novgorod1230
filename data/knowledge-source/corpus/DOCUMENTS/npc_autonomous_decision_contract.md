@@ -800,11 +800,14 @@ LLM не может объявить:
 - `decision_reasons.perceived_changes` кратко описывает агрегированные source events с точки зрения NPC и не вводит новые trigger types.
 - Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
 - В `available_resources` входят только известные и доступные NPC сущности.
-  Контролируемый NPC ресурс считается известным; чужой ресурс требует и
-  физической доступности, и persisted source-backed perception/knowledge,
-  ссылающегося на exact resource ref.
-- Belief, hypothesis или uncertainty сами по себе не доказывают наличие и
-  положение чужого ресурса и не добавляют его в `available_resources`.
+  Непосредственно удерживаемый NPC ресурс имеет direct basis. Любой
+  не удерживаемый ресурс, включая контролируемый NPC, требует и физической
+  доступности, и persisted source-backed subjective perception/knowledge,
+  ссылающегося на exact resource ref. Concealed ресурс fail-closed не входит
+  в `available_resources`.
+- Belief, hypothesis, uncertainty, location или access сами по себе не
+  доказывают наличие и положение не удерживаемого ресурса и не добавляют его
+  в `available_resources`.
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.

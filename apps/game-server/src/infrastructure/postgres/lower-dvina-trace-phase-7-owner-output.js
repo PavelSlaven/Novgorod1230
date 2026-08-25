@@ -84,18 +84,22 @@ function requireSelectedOwnerOutput(outputs, operations, binding) {
   const actionProduction = outputs.action_production_atomic_write_plans.length > 0;
   const localFire = outputs.local_fire_atomic_write_plans.length > 0;
   const spatialSemantic = outputs.spatial_semantic_atomic_write_plan != null;
+  const modeHandoff = outputs.consequence_fragment?.state_changes?.[0]
+    ?.mode_handoff ?? null;
   const operationFor = (kind) => operations.filter(({ op }) => op === kind);
   const primary = operations.filter(({ op }) => !DIRECT.has(op));
   const op = primary[0]?.op ?? null;
   const primaryOperation = primary[0] ?? null;
   if (!Array.isArray(operations) || operations.some(({ op: kind }) =>
       typeof kind !== 'string') || primary.length > 1
+      || (modeHandoff !== null && (outputs.consequence_fragment.state_changes.length !== 1
+        || MODE_HANDOFF_MODES[op] !== modeHandoff.mode))
       || [...directKinds, ...consequenceKinds].some((kind) =>
-        operationFor(kind).length === 0)
+        kind !== null && operationFor(kind).length === 0)
       || outputs.consequence_fragment != null
         && (positionTransition
           ? op !== 'request_movement' || consequenceKinds.length > 0
-          : consequenceKinds.length === 0)
+          : modeHandoff === null && consequenceKinds.length === 0)
       || ordinary && !['request_discovery',
         'request_container_access'].includes(op)
       || actionProduction && (op !== 'request_item_use'
@@ -111,7 +115,7 @@ function requireSelectedOwnerOutput(outputs, operations, binding) {
       carrier: fragment?.value });
   }
   for (const change of outputs.consequence_fragment?.state_changes ?? []) {
-    if (change?.kind === 'direct_body_event') continue;
+    if (change?.kind === 'direct_body_event' || change?.mode_handoff != null) continue;
     requireTurnStepOwnerCarrierBinding({ ...binding, semanticOperations: operations,
       carrier: change });
   }
@@ -171,6 +175,11 @@ function requireOwnerCarrierBindings({ ordinaryPlan, actionProductionPlans,
 
 const DIRECT = new Set(['create_entity', 'move_entity', 'change_entity_facts',
   'set_entity_mechanics', 'retire_entity', 'apply_body_event']);
+const MODE_HANDOFF_MODES = Object.freeze({
+  emit_interaction: 'interaction',
+  request_conversation: 'conversation',
+  request_combat: 'combat'
+});
 function operationFor(op, operations) {
   const matches = operations.filter((operation) => operation.op === op);
   if (matches.length !== 1) throw new Error();
@@ -246,7 +255,8 @@ function neutralPhase7OwnerFactual(factual, state) {
             profile_pin: structuredClone(direct.payload.profile_pin),
             selected_context: structuredClone(direct.payload.selected_context),
             exact_deltas: structuredClone(direct.payload.exact_deltas),
-            condition_transitions: [],
+            condition_transitions:
+              structuredClone(direct.payload.condition_transitions ?? []),
             selection_policy: direct.payload.selection_policy,
             rng_consumption: direct.payload.rng_consumption,
             state_after: structuredClone(direct.payload.state_after)

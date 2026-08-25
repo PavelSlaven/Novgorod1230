@@ -35,7 +35,8 @@ export {
   createOrdinaryWorldRuntimeInstanceMechanicsSnapshot,
   createRuntimeInstanceMechanicsSnapshot,
   resolveInventoryMechanicsProfile,
-  resolvePhysicalItemCondition
+  resolvePhysicalItemCondition,
+  validateRuntimeInstanceMechanics
 } from './runtime-instance-mechanics.js';
 export {
   admitOrdinaryRuntimeFact,

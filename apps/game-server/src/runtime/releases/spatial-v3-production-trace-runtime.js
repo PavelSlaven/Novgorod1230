@@ -50,6 +50,8 @@ import { lowerDvinaTraceTemporalSourceRegistrations } from
 import { lowerDvinaTraceLocalFireTemporalRegistration } from
   '../lower-dvina-trace-local-fire-temporal.js';
 import { serverError } from '../../errors.js';
+import { runLowerDvinaTraceNpcConversationExchange } from
+  '../lower-dvina-trace-npc-initiated-conversation.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -110,6 +112,22 @@ export function createTraceTurnRuntime({
     createSpatialSemanticResolver: spatialSemanticResolverFactory,
     createModeOwnerCapabilities: createLowerDvinaTraceNpcActorStepModeOwnerCapabilities
   });
+  const temporalAdvanceOwner = createTemporalAdvanceOwner({
+    source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
+      ...(config.temporalBoundaryRegistrations ?? []),
+      ...(localFireProfile?.profile?.status==='approved'
+        ?[lowerDvinaTraceLocalFireTemporalRegistration(
+          localFireProfile.profile)]:[])
+    ]),
+    effect_registrations: [
+      ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
+      ...npcTemporalEffectRegistrations(),
+      ...lowerDvinaTracePhase7TemporalEffectRegistrations(),
+      ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+      ...lowerDvinaTraceCombatTemporalEffectRegistrations()
+    ]
+  });
+  const npcRuntimePorts = createNpcRuntimePorts({ roleRunner });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
@@ -148,7 +166,12 @@ export function createTraceTurnRuntime({
       }),
     requireTurnStepAmbientOrdinaryAdmission: false,
     createNpcOwnerCapabilities,
-    ...createNpcRuntimePorts({ roleRunner }),
+    ...npcRuntimePorts,
+    runNpcConversationExchange: (input) => runLowerDvinaTraceNpcConversationExchange({
+      ...input, npcSemanticModel: npcRuntimePorts.npcSemanticModel,
+      temporalAdvanceOwner,
+      revalidateStateVersion: input.revalidateStateVersion
+    }),
     narrator: createLowerDvinaTracePhase2DurableNarrator({
       partyPool, narrationService
     }),
@@ -157,21 +180,7 @@ export function createTraceTurnRuntime({
         schema: 'rus.lower_dvina_trace_phase_2_rng_identity.v1', ...identity
       })
     ),
-    temporalAdvanceOwner: createTemporalAdvanceOwner({
-      source_registrations: lowerDvinaTraceTemporalSourceRegistrations([
-        ...(config.temporalBoundaryRegistrations ?? []),
-        ...(localFireProfile?.profile?.status==='approved'
-          ?[lowerDvinaTraceLocalFireTemporalRegistration(
-            localFireProfile.profile)]:[])
-      ]),
-      effect_registrations: [
-        ...lowerDvinaTracePhase6TemporalEffectRegistrations(),
-        ...npcTemporalEffectRegistrations(),
-        ...lowerDvinaTracePhase7TemporalEffectRegistrations(),
-        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
-        ...lowerDvinaTraceCombatTemporalEffectRegistrations()
-      ]
-    }),
+    temporalAdvanceOwner,
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret
   });

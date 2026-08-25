@@ -67,8 +67,7 @@ function carrierMatchesOperation(carrier, operation) {
         temp_ref, text })), operation.add_facts);
   }
   if (operation.op === 'move_entity') {
-    return carrierPlacementTarget(carrier.placement)
-      === operation.placement.target_ref;
+    return carrierPlacementMatches(carrier.placement, operation.placement);
   }
   if (operation.op === 'apply_body_event') {
     const context = carrier.payload?.selected_context
@@ -81,10 +80,25 @@ function carrierMatchesOperation(carrier, operation) {
   return true;
 }
 
-function carrierPlacementTarget(placement) {
-  return placement?.target_ref ?? placement?.container_id
-    ?? placement?.attached_item_id ?? placement?.location_ref
-    ?? placement?.holder_character_id ?? placement?.holder_npc_id ?? null;
+function carrierPlacementMatches(actual, expected) {
+  if (!actual || !expected) return false;
+  if (Object.hasOwn(actual, 'relation')) {
+    return actual.relation === expected.relation
+      && actual.target_ref === expected.target_ref;
+  }
+  const target = expected.target_ref;
+  if (expected.relation === 'held_by') {
+    return (actual.holder_character_id === target || actual.holder_npc_id === target)
+      && actual.physical_position === 'hands';
+  }
+  if (expected.relation === 'worn_by') {
+    return (actual.holder_character_id === target || actual.holder_npc_id === target)
+      && ['worn', 'equipped'].includes(actual.physical_position);
+  }
+  if (expected.relation === 'inside') return actual.container_id === target;
+  if (expected.relation === 'attached_to') return actual.attached_item_id === target;
+  return expected.relation === 'located_at'
+    && (actual.location_ref === target || actual.anchor_id === target);
 }
 
 function matchesCarrierCause(cause, request) {

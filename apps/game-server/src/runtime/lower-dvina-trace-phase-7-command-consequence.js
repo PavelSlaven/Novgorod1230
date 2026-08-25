@@ -22,7 +22,8 @@ export async function resolveTracePhase7FireRestConsequence({
   directHandlers, directOperationContract,
   createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
   createBoundaryNpcDirectOperations,
-  revalidateStateVersion, admitted
+  revalidateStateVersion, runNpcConversationExchange,
+  conversationBindings, conversationActivity, admitted
 }) {
   if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
   const actualRootTurnId = modeResolution?.turn_id ?? rootTurnId;
@@ -58,7 +59,8 @@ export async function resolveTracePhase7FireRestConsequence({
           ? npcOwnerCapabilities
           : await createBoundaryNpcOwnerCapabilities({
               state: currentBoundaryState, workingProjection: temporal.projection,
-              priorLocalFirePlans
+              priorLocalFirePlans, runNpcConversationExchange,
+              conversationBindings, conversationActivity
             });
       const boundaryDirect = typeof createBoundaryNpcDirectOperations !== 'function'
         ? null : await createBoundaryNpcDirectOperations({

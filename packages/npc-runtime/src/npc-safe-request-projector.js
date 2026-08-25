@@ -77,7 +77,8 @@ export function buildNpcActionDecisionRequestFromSnapshots({
       skills: projectRatedRefs(npc_snapshot.skills, 'skill_ref'),
       body_state: {
         summary: body_snapshot?.summary ?? null,
-        conditions: projectEntries(body_snapshot?.conditions
+        conditions: projectBodyConditions(body_snapshot?.conditions
+          ?? body_snapshot?.active_conditions
           ?? machineState.body_conditions, [
           'condition_ref', 'condition_profile_ref', 'status', 'severity',
           'summary'
@@ -147,6 +148,13 @@ export function buildNpcActionDecisionRequestFromSnapshots({
       operation_contract: structuredClone(operation_contract)
     }
   });
+}
+
+function projectBodyConditions(conditions, fields) {
+  return projectEntries((conditions ?? []).map((condition) => ({
+    ...condition,
+    condition_ref: condition?.condition_ref ?? condition?.id
+  })), fields);
 }
 
 export function projectNpcSafeResourceSnapshots({

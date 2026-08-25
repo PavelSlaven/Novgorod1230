@@ -103,6 +103,35 @@ test('Phase 7 binds A1, F1 and S1 owner carriers to exact selected refs', () => 
         step_index: 1, actor_ref: 'zhdanko-1', action_ref: 's1:turn:owner:1' } } }));
 });
 
+test('Phase 7 binds move carrier placement relation as well as target', () => {
+  const request = { request_id: 'request:move', root_turn_id: 'turn:move',
+    decision_index: 1, npc_ref: 'zhdanko-1' };
+  const operation = (relation) => ({ op: 'move_entity', actor_ref: 'zhdanko-1',
+    entity_ref: 'item-1', placement: { relation, target_ref: 'target-1' } });
+  const check = (relation, placement) => {
+    const semanticOperation = operation(relation);
+    return requireTurnStepOwnerCarrierBinding({
+      semanticPlan: { operations: [semanticOperation] }, semanticOperation,
+      semanticRequest: request, carrier: { entity_ref: 'item-1', placement }
+    });
+  };
+  for (const [relation, placement] of [
+    ['inside', { relation: 'inside', target_ref: 'target-1' }],
+    ['inside', { container_id: 'target-1' }],
+    ['attached_to', { attached_item_id: 'target-1' }],
+    ['held_by', { holder_npc_id: 'target-1', physical_position: 'hands' }],
+    ['worn_by', { holder_character_id: 'target-1', physical_position: 'equipped' }],
+    ['located_at', { anchor_id: 'target-1' }]
+  ]) assert.doesNotThrow(() => check(relation, placement));
+  for (const [relation, placement] of [
+    ['inside', { attached_item_id: 'target-1' }],
+    ['attached_to', { container_id: 'target-1' }],
+    ['held_by', { holder_npc_id: 'target-1', physical_position: 'worn' }],
+    ['worn_by', { holder_character_id: 'target-1', physical_position: 'hands' }]
+  ]) assert.throws(() => check(relation, placement),
+    { message: 'TRACE_TURN_STEP_OWNER_OUTPUT_BINDING_INVALID' });
+});
+
 test('Phase 7 rejects tampered registered owner with genuine carrier refs', () => {
   const request = { request_id: 'request:owner', root_turn_id: 'turn:owner',
     decision_index: 1, npc_ref: 'zhdanko-1' };

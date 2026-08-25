@@ -1,3 +1,5 @@
+import { canonicalDigest } from '@rus/materialization';
+
 export function registeredPhase7Owners({ npcOwnerCapabilities, state, contracts,
   worldProcessContract, worldProcessResolver }) {
   const raw = [...(Array.isArray(npcOwnerCapabilities)
@@ -42,8 +44,13 @@ export function phase7OwnerOutputs(resolved) {
 export function phase7ActorStepOwnerOutputs(execution, registered = null) {
   return Object.freeze({
     write_fragments: structuredClone(execution.writeFragments ?? []),
-    consequence_fragment: structuredClone(
-      registered?.consequence_fragment ?? null),
+    consequence_fragment: mergeOwnerConsequences([
+      ...(execution.consequenceFragments ?? []).filter((fragment) =>
+        fragment?.state_changes?.some(({ kind }) =>
+          kind === 'direct_body_event')),
+      ...(registered?.consequence_fragment == null ? []
+        : [registered.consequence_fragment])
+    ]),
     ordinary_materialization_atomic_write_plan:
       structuredClone(execution.ordinary_materialization_atomic_write_plan),
     action_production_atomic_write_plans:
@@ -54,6 +61,40 @@ export function phase7ActorStepOwnerOutputs(execution, registered = null) {
     spatial_semantic_atomic_write_plan:
       structuredClone(execution.spatial_semantic_atomic_write_plan)
   });
+}
+
+function mergeOwnerConsequences(fragments) {
+  if (fragments.length === 0) return null;
+  const merged = {};
+  for (const fragment of fragments) {
+    for (const key of ['visible_seed', 'hidden_update']) {
+      for (const [ref, value] of Object.entries(fragment[key] ?? {})) {
+        if (Object.hasOwn(merged[key] ?? {}, ref)
+            && canonicalDigest(merged[key][ref]) !== canonicalDigest(value)) {
+          fail('TRACE_PHASE_7_OWNER_CONSEQUENCE_CONFLICT');
+        }
+        (merged[key] ??= {})[ref] = structuredClone(value);
+      }
+    }
+    for (const key of ['state_changes', 'suggested_actions']) {
+      if (fragment[key] != null) {
+        (merged[key] ??= []).push(...structuredClone(fragment[key]));
+      }
+    }
+    if (fragment.duration_minutes != null) {
+      merged.duration_minutes = (merged.duration_minutes ?? 0)
+        + fragment.duration_minutes;
+    }
+    for (const key of ['body_effect_ref', 'position_transition']) {
+      if (fragment[key] == null) continue;
+      if (merged[key] != null
+          && canonicalDigest(merged[key]) !== canonicalDigest(fragment[key])) {
+        fail('TRACE_PHASE_7_OWNER_CONSEQUENCE_CONFLICT');
+      }
+      merged[key] = structuredClone(fragment[key]);
+    }
+  }
+  return Object.freeze(merged);
 }
 
 function fail(code) { throw Object.assign(new Error(code), { code }); }

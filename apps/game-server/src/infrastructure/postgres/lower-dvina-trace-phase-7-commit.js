@@ -49,14 +49,16 @@ export async function commitLowerDvinaTracePhase7({ partyId, writePlan,
     changeSetId, npcRef: factual.consequence.phase7.autonomous.request.npc_ref,
     rootTurnId: factual.consequence.phase7.autonomous.request.root_turn_id,
     committedStateVersion: state.party_state.state_version,
-    semanticOperation: factual.consequence.phase7.schedule_execution.semantic_operation,
     semanticPlan: factual.consequence.phase7.autonomous.proposal.plan,
     carrierPlan: selectedCarrierPlan(factual.consequence.phase7),
+    semanticOperations: selectedCarrierPlan(factual.consequence.phase7).operations,
     semanticRequest: factual.consequence.phase7.autonomous.request,
-    registeredOwner: factual.consequence.phase7.autonomous.request
-      .decision_scope.operation_contract[
-        factual.consequence.phase7.schedule_execution.semantic_operation.op
-      ]?.owner ?? null,
+    registeredOwner: selectedCarrierPlan(factual.consequence.phase7).operations
+      .filter(({ op }) => !['create_entity', 'move_entity',
+        'change_entity_facts', 'set_entity_mechanics', 'retire_entity',
+        'apply_body_event'].includes(op)).map(({ op }) => factual.consequence
+          .phase7.autonomous.request.decision_scope.operation_contract[op]?.owner)
+      .at(0) ?? null,
     temporalPlans: [...temporalLocalFirePlans(factual.consequence.phase7.temporal.result),
       ...temporalLocalFirePlans(factual.consequence.phase7.schedule_temporal.result)], fail
   });

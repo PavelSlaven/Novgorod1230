@@ -12,13 +12,16 @@ export function prepareTurnStepBodyHistory({
   const effectRef = buildTurnStepBodyEffectRef({ factual, batch });
   const occurredAt = factual.time_update?.clock_after;
   if (!gameTimestamp(occurredAt)) bodyHistoryFail('clock_after is unavailable');
+  const bodyEvent = batch.operations?.find(({ target, value }) =>
+    target === 'party_state' && value?.operation_kind === 'apply_body_event');
+  const actor = bodyEvent?.value?.payload?.actor_ref ?? state.actor_id;
   const turnNumber = state.party_state.turn_number + 1;
   const historyId = `body-history:${partyId}:turn-step:${turnNumber}`;
   const record = {
     history_id: historyId,
     party_id: partyId,
-    subject_kind: 'player_character',
-    subject_id: state.actor_id,
+    subject_kind: actor === state.actor_id ? 'player_character' : 'npc',
+    subject_id: actor,
     effect_ref: effectRef,
     change_set_id: changeSetId,
     idempotency_record_id: idemId,

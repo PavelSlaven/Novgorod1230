@@ -37,6 +37,26 @@ test('M1 body temporal write round-trips exact owner and causal bindings',
     }
   });
 
+test('M1 autonomous semantic activity keeps the player body owner', async () => {
+  const factual = bodyCommit();
+  factual.consequence.phase7 = { autonomous: { request: {
+    npc_ref: 'npc-1'
+  } } };
+  const batch = { root_turn_id: 'turn:p:1', operations: [] };
+  const prepared = prepareTurnStepBodyHistory({
+    partyId: 'p', state: state(), factual, batch,
+    changeSetId: 'change-1', idemId: 'idem-1'
+  });
+  assert.equal(prepared.snapshot.subject_kind, 'player_character');
+  assert.equal(prepared.snapshot.subject_id, 'actor-1');
+  const payload = restartPayload(prepared.snapshot, factual);
+  payload.npcs = [{ instance_id: 'npc-1' }];
+  payload.last_turn.turn_step_operation_batch = batch;
+  await assert.doesNotReject(() => assertTurnStepBodyHistoryRows(
+    pool([structuredClone(prepared.snapshot)]), payload, bodyRow()
+  ));
+});
+
 test('M1 body restart cross-binds envelope, snapshot and normalized row',
   async () => {
     const factual = bodyCommit();

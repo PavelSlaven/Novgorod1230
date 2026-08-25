@@ -12,19 +12,10 @@ import { createTracePhase7DomainExecution } from
   './lower-dvina-trace-phase-7-domain-owners.js';
 import { phase7ActorStepOwnerOutputs } from './lower-dvina-trace-phase-7-owner-registry.js';
 
-export function createTracePhase7ActorStepRuntime({
-  state,
-  contracts,
-  temporal,
-  semanticActivityScheduleOwner,
-  genericCheckContextOwner,
-  localFireProfile,
-  worldProcessResolver,
-  projectNpcWorldProcessCapability,
-  npcOwnerCapabilities,
-  priorLocalFirePlans = [],
-  randomSource
-}) {
+export function createTracePhase7ActorStepRuntime({ state, contracts, temporal,
+  semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
+  worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
+  directHandlers = {}, directOperationContract = {}, priorLocalFirePlans = [], randomSource }) {
   const npc = liveNpc(state, contracts.zhdanko);
   const worldProcessContract =
     typeof projectNpcWorldProcessCapability === 'function'
@@ -35,9 +26,11 @@ export function createTracePhase7ActorStepRuntime({
       : null;
   const domainExecution = createTracePhase7DomainExecution({
     state, contracts, temporal, semanticActivityScheduleOwner,
-    worldProcessResolver, worldProcessContract, npcOwnerCapabilities
+    worldProcessResolver, worldProcessContract, npcOwnerCapabilities,
+    directHandlers, directOperationContract
   });
   const registry = createTurnStepExecutionRegistry({
+    direct: domainExecution.direct_handlers,
     domain: domainExecution.handlers,
     applySemanticActivity: domainExecution.semantic_activity_handler,
     operationContract: domainExecution.operation_contract
@@ -103,9 +96,10 @@ export async function executeTracePhase7SchedulePlan({
 function actorStepRequest(request, contracts, state, plan, occurredAt) {
   const npc = liveNpc(state, contracts.zhdanko);
   const context = contracts.genericCheckContext ?? {};
-  const body = plan.resolution === 'generic_check'
-    ? authoritativeNpcCheckBody(npc)
-    : {};
+  const mechanics = contracts.npcSemanticProfile?.actor_mechanics_context ?? {};
+  const needsBody = plan.resolution === 'generic_check'
+    || plan.operations?.some(({ op }) => op === 'apply_body_event');
+  const body = needsBody ? authoritativeNpcCheckBody(npc) : {};
   return {
     ...structuredClone(request),
     change_set_id: `change:${state.party_id}:trace-phase7:${
@@ -114,7 +108,9 @@ function actorStepRequest(request, contracts, state, plan, occurredAt) {
     occurred_at: structuredClone(occurredAt),
     actor: {
       actor_id: npc.instance_id,
-      attributes: ratedMap(context.attributes, 'attribute_ref', 'value'),
+      attributes: ratedMap([
+        ...(mechanics.attributes ?? []), ...(context.attributes ?? [])
+      ], 'attribute_ref', 'value'),
       skills: ratedMap(context.skills, 'skill_ref', 'bonus'),
       body: structuredClone(body)
     }
@@ -171,8 +167,10 @@ function authoritativeNpcLoadCategory(npc) {
 }
 
 function finalActorStepConsequence(fragments) {
-  if (fragments.length === 1) return fragments[0];
-  const [base, ...composed] = fragments;
+  const actorSteps = fragments.filter((fragment) =>
+    fragment?.semantic_operation?.op != null);
+  if (actorSteps.length === 1) return actorSteps[0];
+  const [base, ...composed] = actorSteps;
   const result = composed.at(-1);
   const additional = result?.additional_semantic_operations;
   return composed.every((entry, index) =>

@@ -8,7 +8,7 @@ import { createTraceTurnRuntime } from
 import { mergePhase7Capability } from
   '../src/runtime/lower-dvina-trace-phase-7-owner-registry.js';
 
-test('N1 factory passes current O1 and A1 adapters into production runtime', () => {
+test('N1 production runtime injects current owner adapters and mode handoffs', async () => {
   let captured;
   createTraceTurnRuntime({ partyPool: { query() {}, connect() {} },
     committer: { commit() {} }, env: {},
@@ -20,6 +20,21 @@ test('N1 factory passes current O1 and A1 adapters into production runtime', () 
     createNpcRuntimePorts: () => ({}),
     createPhase2RuntimeFactory: (input) => { captured = input; return {}; } });
   assert.equal(typeof captured.createNpcOwnerCapabilities, 'function');
+  const npc = { instance_id: 'npc', machine_state: {}, perception_snapshot: {
+    present_actors: [{ actor_ref: 'visible',
+      source_perception_ref: 'seen:visible' }] }, relationships: [] };
+  const capabilities = await captured.createNpcOwnerCapabilities({
+    partyId: 'party', requestId: 'request', inputDigest: 'digest',
+    state: { party_id: 'party', party_state: { turn_number: 1,
+      state_version: 1 }, items: [], npcs: [npc, {
+        instance_id: 'visible' }] },
+    phase7Contracts: { zhdanko: npc, npcSemanticProfile: {
+      profile_id: 'lower_dvina_trace_n1_npc_semantic_profile_v1', revision: 1,
+      status: 'approved', activation_boundary: { phase: 'phase_7',
+        npc_participant_slot_ref: 'zhdanko_storehouse_controller' } } }
+  });
+  assert.equal(capabilities.some(({ operation }) =>
+    operation === 'request_conversation'), true);
 });
 
 test('N1 adapters expose only current NPC-safe refs and call selected owner', async () => {

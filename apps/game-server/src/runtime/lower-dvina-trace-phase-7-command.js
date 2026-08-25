@@ -19,7 +19,10 @@ export function createTracePhase7FireRestCommand({
   worldProcessResolver,
   projectNpcWorldProcessCapability,
   npcOwnerCapabilities,
+  directHandlers,
+  directOperationContract,
   createBoundaryNpcOwnerCapabilities,
+  createBoundaryNpcDirectOperations,
   randomSource,
   temporalAdvanceOwner,
   revalidateStateVersion
@@ -71,7 +74,9 @@ export function createTracePhase7FireRestCommand({
         contracts, continuationTargetRefs, inputDigest, npcAutonomousModel,
         semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
         worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
+        directHandlers, directOperationContract,
         createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
+        createBoundaryNpcDirectOperations,
         revalidateStateVersion, admitted
       });
     },

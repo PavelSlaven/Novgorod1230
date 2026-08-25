@@ -23,7 +23,10 @@ export function phase7Command({
   worldProcessResolver = null,
   projectNpcWorldProcessCapability = null,
   npcOwnerCapabilities = [],
+  directHandlers = {},
+  directOperationContract = {},
   createBoundaryNpcOwnerCapabilities = null,
+  createBoundaryNpcDirectOperations = null,
   randomSource = null,
   revalidateStateVersion = async () => state.party_state.state_version,
   temporalAdvanceOwner = createTemporalAdvanceOwner({
@@ -57,7 +60,10 @@ export function phase7Command({
     worldProcessResolver,
     projectNpcWorldProcessCapability,
     npcOwnerCapabilities,
+    directHandlers,
+    directOperationContract,
     createBoundaryNpcOwnerCapabilities,
+    createBoundaryNpcDirectOperations,
     randomSource,
     temporalAdvanceOwner,
     revalidateStateVersion

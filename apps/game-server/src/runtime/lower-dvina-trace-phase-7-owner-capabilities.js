@@ -5,7 +5,8 @@ import { mergePhase7Capability, registeredPhase7Owners } from
   './lower-dvina-trace-phase-7-owner-registry.js';
 
 export function projectTracePhase7OwnerCapabilities({ contracts,
-  worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver }) {
+  worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver,
+  directHandlers = {}, directOperationContract = {} }) {
   const activityAllowed = exactActivityAllowed(contracts, state);
   const itemAllowed = exactItemAllowed(contracts, state);
   const movement = applicableMovement(contracts, state);
@@ -21,6 +22,13 @@ export function projectTracePhase7OwnerCapabilities({ contracts,
     factual_outcome_write: 'owner_only'
   };
   if (movement != null) operationContract.request_movement = movement;
+  for (const [operation, descriptor] of Object.entries(directOperationContract)) {
+    if (typeof directHandlers[operation] === 'function'
+        && descriptor != null && typeof descriptor === 'object'
+        && !Array.isArray(descriptor)) {
+      operationContract[operation] = structuredClone(descriptor);
+    }
+  }
   const additional = registeredPhase7Owners({ npcOwnerCapabilities, state,
     contracts, worldProcessContract, worldProcessResolver });
   for (const owner of additional) {
@@ -32,6 +40,7 @@ export function projectTracePhase7OwnerCapabilities({ contracts,
     item_allowed: itemAllowed,
     movement,
     additional_owners: Object.freeze(additional),
+    direct_handlers: Object.freeze({ ...directHandlers }),
     operation_contract: Object.freeze(operationContract)
   });
 }

@@ -10,9 +10,11 @@ import { projectTracePhase7OwnerCapabilities } from
   './lower-dvina-trace-phase-7-owner-capabilities.js';
 export function createTracePhase7DomainExecution({ state, contracts,
   temporal, semanticActivityScheduleOwner, worldProcessResolver = null,
-  worldProcessContract = null, npcOwnerCapabilities = [] }) {
+  worldProcessContract = null, npcOwnerCapabilities = [], directHandlers = {},
+  directOperationContract = {} }) {
   const capabilities = projectTracePhase7OwnerCapabilities({ contracts,
-    worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver });
+    worldProcessContract, npcOwnerCapabilities, state, worldProcessResolver,
+    directHandlers, directOperationContract });
   let registeredOwnerOutput = null;
   const handlers = {
     request_activity: (execution) => executeActivity({ execution, state,
@@ -40,6 +42,7 @@ export function createTracePhase7DomainExecution({ state, contracts,
         property: null });
     },
     handlers: Object.freeze(handlers),
+    direct_handlers: capabilities.direct_handlers,
     operation_contract: capabilities.operation_contract,
     registered_owner_output: () => structuredClone(registeredOwnerOutput)
   });

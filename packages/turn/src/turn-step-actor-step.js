@@ -22,6 +22,7 @@ export const TURN_STEP_DOMAIN_OPERATIONS = Object.freeze([
   'request_item_use',
   'request_activity',
   'emit_interaction',
+  'request_conversation',
   'request_combat',
   'request_world_process'
 ]);

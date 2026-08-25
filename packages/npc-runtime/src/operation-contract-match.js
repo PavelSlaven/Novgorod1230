@@ -28,13 +28,32 @@ export function matchesOperationContract(operation, contract) {
   }
   if (Array.isArray(contract.allowed)) {
     if (contract.allowed.length === 0) return false;
-    return contract.allowed.some((entry) =>
+    return modeTargetsAllowed(operation, contract)
+      && contract.allowed.some((entry) =>
       record(entry) && operationMatchesAllowedEntry(operation, entry));
   }
-  return matchesCapabilityContract(operation, contract);
+  return modeTargetsAllowed(operation, contract)
+    && matchesCapabilityContract(operation, contract);
+}
+
+function modeTargetsAllowed(operation, contract) {
+  if (!['emit_interaction', 'request_conversation', 'request_combat']
+    .includes(operation?.op)) return true;
+  return (!Array.isArray(contract.target_actor_refs)
+      || Array.isArray(operation.target_actor_refs)
+        && operation.target_actor_refs.every((ref) =>
+          contract.target_actor_refs.includes(ref)))
+    && (operation.op !== 'emit_interaction'
+      || !Array.isArray(contract.instrument_refs)
+      || Array.isArray(operation.instrument_refs)
+        && operation.instrument_refs.every((ref) =>
+          contract.instrument_refs.includes(ref)));
 }
 
 function matchesCapabilityContract(operation, contract) {
+  if (DIRECT_OPERATION_REFS.has(operation.op)) {
+    return matchesDirectCapability(operation, contract);
+  }
   if (operation.op === 'request_activity') {
     return (!Array.isArray(contract.activity_kinds)
         || contract.activity_kinds.includes(operation.activity_kind))
@@ -84,6 +103,9 @@ function matchesCapabilityContract(operation, contract) {
 }
 
 function operationMatchesAllowedEntry(operation, entry) {
+  if (DIRECT_OPERATION_REFS.has(operation.op)) {
+    return matchesDirectCapability(operation, entry);
+  }
   if (operation.op === 'request_discovery') {
     return sameIdSet(entry.target_refs, operation.target_refs)
       && (!Array.isArray(entry.discovery_kinds)
@@ -113,7 +135,55 @@ function operationMatchesAllowedEntry(operation, entry) {
       && sameIdSet(entry.source_refs, operation.source_refs)
       && sameIdSet(entry.target_refs, operation.target_refs);
   }
+  if (['emit_interaction', 'request_conversation', 'request_combat']
+    .includes(operation.op)) {
+    return !Array.isArray(entry.target_actor_refs)
+      || sameIdSet(entry.target_actor_refs, operation.target_actor_refs);
+  }
   return true;
+}
+
+const DIRECT_OPERATION_REFS = new Set([
+  'create_entity', 'move_entity', 'change_entity_facts',
+  'set_entity_mechanics', 'retire_entity', 'apply_body_event'
+]);
+
+function matchesDirectCapability(operation, contract) {
+  const refs = directRefs(operation);
+  return (!Array.isArray(contract.entity_refs)
+      || refs.entity_refs.every((ref) => contract.entity_refs.includes(ref)))
+    && (!Array.isArray(contract.source_refs)
+      || refs.source_refs.every((ref) => contract.source_refs.includes(ref)))
+    && (!Array.isArray(contract.target_refs)
+      || refs.target_refs.every((ref) => contract.target_refs.includes(ref)))
+    && (!Array.isArray(contract.actor_refs)
+      || refs.actor_refs.every((ref) => contract.actor_refs.includes(ref)))
+    && (!Array.isArray(contract.body_part_refs)
+      || operation.body_part_ref == null
+      || contract.body_part_refs.includes(operation.body_part_ref))
+    && (!Array.isArray(contract.mechanisms)
+      || operation.mechanism == null
+      || contract.mechanisms.includes(operation.mechanism))
+    && (!Array.isArray(contract.severities)
+      || operation.severity == null
+      || contract.severities.includes(operation.severity));
+}
+
+function directRefs(operation) {
+  if (operation.op === 'create_entity') return {
+    entity_refs: [], source_refs: operation.origin.source_refs,
+    target_refs: [operation.placement.target_ref], actor_refs: []
+  };
+  if (operation.op === 'move_entity') return {
+    entity_refs: [operation.entity_ref], source_refs: [],
+    target_refs: [operation.placement.target_ref], actor_refs: []
+  };
+  if (operation.op === 'apply_body_event') return {
+    entity_refs: [], source_refs: [], target_refs: [],
+    actor_refs: [operation.actor_ref]
+  };
+  return { entity_refs: [operation.entity_ref], source_refs: [],
+    target_refs: [], actor_refs: [] };
 }
 
 function exactActionProductionRefs(operation, contract) {

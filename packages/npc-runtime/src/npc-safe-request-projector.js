@@ -1,6 +1,7 @@
 import { buildNpcActionDecisionRequest } from
   './semantic-decision-request-contract.js';
-import { runtimeItemRecordIsConcealed } from '@rus/items-property';
+import { runtimeItemContentsAreOpen, runtimeItemRecordIsConcealed } from
+  '@rus/items-property';
 
 export function buildNpcActionDecisionRequestFromSnapshots({
   request_identity,
@@ -159,6 +160,10 @@ export function projectNpcSafeResourceSnapshots({
   const npcLocation = machineState.location_ref
     ?? npc_snapshot?.location_profile_ref ?? null;
   const npcZone = machineState.spatial_zone_ref ?? npc_snapshot?.zone_ref ?? null;
+  const resourcesByRef = new Map(resource_snapshots.map((resource) => [
+    resource?.resource_ref ?? resource?.container_id ?? resource?.item_id,
+    resource
+  ]));
   return resource_snapshots.flatMap((resource) => {
     const state = resource?.state ?? {};
     const placement = resource?.placement ?? {};
@@ -172,9 +177,19 @@ export function projectNpcSafeResourceSnapshots({
       ?? resource?.access_state ?? null;
     const accessible = ['accessible', 'available', 'open', 'immediate', 'quick']
       .includes(access);
-    const controlled = holder === npcId || controller === npcId;
+    const held = holder === npcId;
+    const controlled = controller === npcId;
     const colocated = (location !== null && location === npcLocation)
       || (zone !== null && zone === npcZone);
+    const heldAtNpcPlacement = held
+      && (location === null || location === npcLocation)
+      && (zone === null || zone === npcZone);
+    const nested = typeof (placement.container_id
+      ?? resource?.parent_container_id) === 'string';
+    const containedAvailable = availableContainerChain({ resource,
+      resourcesByRef, npcId, npcLocation, npcZone });
+    const physicallyAvailable = nested
+      ? containedAvailable : colocated && accessible;
     const resourceRef = resource?.resource_ref ?? resource?.container_id
       ?? resource?.item_id;
     const subjectivelyKnown = npcSafeSnapshotHasEntityEvidence({
@@ -186,9 +201,11 @@ export function projectNpcSafeResourceSnapshots({
       ...resource,
       access_state: access
     });
-    if ((controlled && concealed && !subjectivelyKnown)
-      || (!controlled && (!colocated || concealed || !subjectivelyKnown
-        || !accessible))) {
+    if (((held || controlled) && concealed && !subjectivelyKnown)
+      || (held && !heldAtNpcPlacement)
+      || (!held && controlled && !physicallyAvailable)
+      || (!held && !controlled
+        && (concealed || !subjectivelyKnown || !physicallyAvailable))) {
       return [];
     }
     return [{
@@ -203,6 +220,32 @@ export function projectNpcSafeResourceSnapshots({
     }];
   }).filter(({ resource_ref: resourceRef }) =>
     typeof resourceRef === 'string' && resourceRef.length > 0);
+}
+
+function availableContainerChain({ resource, resourcesByRef, npcId,
+  npcLocation, npcZone }, seen = new Set()) {
+  const containerRef = resource?.placement?.container_id
+    ?? resource?.parent_container_id ?? null;
+  if (typeof containerRef !== 'string' || seen.has(containerRef)) return false;
+  seen.add(containerRef);
+  const container = resourcesByRef.get(containerRef);
+  if (container == null || !runtimeItemContentsAreOpen(container)) return false;
+  const state = container.state ?? {};
+  const placement = container.placement ?? {};
+  const holder = container.holder_npc_id ?? placement.holder_npc_id ?? null;
+  const location = state.location_ref ?? container.location_ref ?? null;
+  const zone = state.zone_ref ?? container.zone_ref ?? null;
+  if (holder === npcId
+      && (location === null || location === npcLocation)
+      && (zone === null || zone === npcZone)) return true;
+  const colocated = (location !== null && location === npcLocation)
+    || (zone !== null && zone === npcZone);
+  const access = state.access_state ?? state.accessibility
+    ?? container.access_state ?? null;
+  if (colocated && ['accessible', 'available', 'open', 'immediate', 'quick']
+    .includes(access)) return true;
+  return availableContainerChain({ resource: container, resourcesByRef,
+    npcId, npcLocation, npcZone }, seen);
 }
 
 export function npcSafeSnapshotHasEntityEvidence({
@@ -232,7 +275,7 @@ function sourceBacked(entry) {
 function entryReferencesResource(entry, resourceRef) {
   const fields = [
     'resource_ref', 'object_ref', 'item_ref', 'container_ref', 'process_ref',
-    'entity_ref'
+    'entity_ref', 'actor_ref'
   ];
   return fields.some((field) => evidenceRefId(entry?.[field]) === resourceRef)
     || ['resource_refs', 'object_refs', 'item_refs', 'container_refs',

@@ -56,6 +56,14 @@ function result(projection, summary, overrides = {}) {
   };
 }
 
+test('actor-step registry accepts conversation owner handoff', () => {
+  const handler = () => {};
+  const registry = createTurnStepExecutionRegistry({
+    domain: { request_conversation: handler }
+  });
+  assert.equal(registry.domain({ op: 'request_conversation' }), handler);
+});
+
 function ports(overrides = {}) {
   return {
     turnStepModel: async (request) => basePlan(request),

@@ -6,9 +6,7 @@ import {
   requireMechanics,
   text
 } from './lower-dvina-trace-turn-step-persistence-support.js';
-
 const BODY_METRICS = ['health', 'satiety', 'energy'];
-
 export function requireFactualCommit({ writePlan, factual, partyId, batch }) {
   const envelope = writePlan.turn_step_commit;
   if (envelope == null) return factual;
@@ -46,7 +44,7 @@ export function requireFactualCommit({ writePlan, factual, partyId, batch }) {
 export function validateBodyEventCommit(operation, factual, state) {
   const outer = operation.payload;
   const payload = outer.payload;
-  if (outer.actor_ref !== state.actor_id
+  if (outer.actor_ref !== bodyActorId(factual, state)
       || outer.body_effect_ref !== payload.body_effect_ref
       || !exactShape(payload, [
         'body_effect_ref', 'profile_pin', 'selected_context', 'exact_deltas',
@@ -106,7 +104,6 @@ export function validateBodyEventCommit(operation, factual, state) {
       'final component state_after differs from factual body_update');
   }
 }
-
 export function validateBodyComponentOrder(batch, factual, state) {
   const expected = batch.operations.flatMap((fragment) => {
     if (fragment.target === 'party_events') return [{
@@ -188,7 +185,7 @@ export function validateBodyComponentOrder(batch, factual, state) {
     reconciliationFail(null,
       'ordered batch, consequence and body proposals differ');
   }
-  let expectedState = structuredClone(state.body_state);
+  let expectedState = structuredClone(bodyState(batch, state));
   for (const proposal of proposals) {
     expectedState = applyBodyProposal(expectedState, proposal);
     if (!same(proposal.state_after, expectedState)) {
@@ -200,6 +197,14 @@ export function validateBodyComponentOrder(batch, factual, state) {
     reconciliationFail(null,
       'final body state differs from ordered component arithmetic');
   }
+}
+function bodyActorId(factual, state) { return factual?.consequence?.phase7
+  ?.autonomous?.request?.npc_ref ?? state.actor_id; }
+function bodyState(batch, state) {
+  const actor = batch.operations.find(({ target, value }) => target === 'party_state' && value?.operation_kind === 'apply_body_event')
+    ?.value?.payload?.actor_ref ?? state.actor_id;
+  return actor === state.actor_id ? state.body_state
+    : state.npcs?.find(({ instance_id }) => instance_id === actor)?.check_body_state;
 }
 function applyBodyProposal(before, proposal) {
   if (!plain(before)) reconciliationFail(null, 'persisted body state is absent');
@@ -283,14 +288,12 @@ function validProfilePin(value) {
     && typeof value.digest === 'string'
     && /^[a-f0-9]{64}$/u.test(value.digest);
 }
-
 function reconciliationFail(operationId, reason = null) {
   fail('TRACE_TURN_STEP_BODY_EVENT_RECONCILIATION_FAILED', {
     operation_id: operationId,
     ...(reason == null ? {} : { reason })
   });
 }
-
 function same(left, right) {
   return canonicalDigest(left) === canonicalDigest(right);
 }

@@ -17,13 +17,10 @@ import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-
 import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
 import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
+import { createLowerDvinaTraceN1DirectOperations } from './lower-dvina-trace-n1-direct-operations.js';
 export function createLowerDvinaTracePhase2Runtime({
-  repository,
-  semanticResolver,
-  turnStepModel = null,
-  playerConversationModel = null,
-  npcSemanticModel = null,
-  npcAutonomousModel = null,
+  repository, semanticResolver, turnStepModel = null,
+  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null,
   npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
@@ -112,6 +109,12 @@ export function createLowerDvinaTracePhase2Runtime({
               artifactPin: bundle.artifact_pins.turn_step_owner_profiles,
             })
           : null;
+        const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceN1DirectOperations({
+              state, phase7Contracts, ...boundary,
+              ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+              packingCalculator: turnStepPackingCalculator,
+              bodyEventOwner: genericOwners?.bodyEventOwner
+            });
         const turnRandomSource = randomSourceFactory({
           party_id: partyId,
           request_id: requestId,
@@ -181,6 +184,7 @@ export function createLowerDvinaTracePhase2Runtime({
           npcAutonomousModel,
           npcOwnerCapabilities,
           createBoundaryNpcOwnerCapabilities,
+          createBoundaryNpcDirectOperations,
           npcCombatModel,
           npcDecisionSelector,
           npcSemanticModel,

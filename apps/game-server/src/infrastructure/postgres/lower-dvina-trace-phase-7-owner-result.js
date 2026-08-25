@@ -177,13 +177,15 @@ function validScheduleExecution(schedule, contracts, request, plan,
     ? plan.check.outcomes[actorStepCheck?.result?.outcome?.band] : null;
   const selectedOperations = selectedOutcome?.operations ?? [];
   const selectedDomain = selectedOperations.filter(({ op }) =>
-    Object.hasOwn(request.decision_scope.operation_contract, op));
+    !DIRECT.has(op)
+      && Object.hasOwn(request.decision_scope.operation_contract, op));
   const additionalActivities = selectedOutcome?.additional_activity == null
     ? [] : [selectedOutcome.additional_activity];
+  const planDomain = plan.operations.filter(({ op }) => !DIRECT.has(op));
   const actionProduction = plan.resolution === 'domain_request'
-    && plan.operations.length === 1
-    && plan.operations[0]?.op === 'request_item_use'
-    && plan.operations[0]?.action_production != null;
+    && planDomain.length === 1
+    && planDomain[0]?.op === 'request_item_use'
+    && planDomain[0]?.action_production != null;
   const possibleAdditionalOperations = [
     ...((actionProduction || plan.resolution === 'generic_check'
       && selectedDomain.length === 1)
@@ -204,7 +206,10 @@ function validScheduleExecution(schedule, contracts, request, plan,
     === canonicalDigest(possibleAdditionalOperations);
   const profileMatch = semantic
     ? ['direct', 'generic_check'].includes(plan.resolution)
-      && plan.operations.length === 0
+      && (plan.resolution !== 'direct'
+        || plan.operations.every(({ op }) => ['create_entity', 'move_entity',
+          'change_entity_facts', 'set_entity_mechanics', 'retire_entity',
+          'apply_body_event'].includes(op)))
       && canonicalDigest(operation.activity) === canonicalDigest(plan.activity)
       && schedule.execution_binding_ref === null
       && schedule.schedule_option_id === null
@@ -213,10 +218,10 @@ function validScheduleExecution(schedule, contracts, request, plan,
         === semanticProfile?.duration_minutes + additionalDuration
       && additionalMatch
     : (plan.resolution === 'domain_request'
-        ? plan.operations : selectedOperations).length === 1
+        ? planDomain : selectedDomain).length === 1
       && canonicalDigest(operation) === canonicalDigest(
         (plan.resolution === 'domain_request'
-          ? plan.operations : selectedOperations)[0])
+          ? planDomain : selectedDomain)[0])
       && Object.hasOwn(request.decision_scope.operation_contract, operation.op)
       && (schedule.execution_binding_ref === null
         ? schedule.activity_profile_ref === null
@@ -258,6 +263,9 @@ function validScheduleExecution(schedule, contracts, request, plan,
   }
   return true;
 }
+
+const DIRECT = new Set(['create_entity', 'move_entity', 'change_entity_facts',
+  'set_entity_mechanics', 'retire_entity', 'apply_body_event']);
 
 function validPinnedMovementShape(proposal, contracts) {
   if (proposal == null) return true;

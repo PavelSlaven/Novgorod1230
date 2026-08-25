@@ -19,7 +19,9 @@ export async function resolveTracePhase7FireRestConsequence({
   continuationTargetRefs, inputDigest, npcAutonomousModel,
   semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
   worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
+  directHandlers, directOperationContract,
   createBoundaryNpcOwnerCapabilities, randomSource, temporalAdvanceOwner,
+  createBoundaryNpcDirectOperations,
   revalidateStateVersion, admitted
 }) {
   if (!admitted(state, contracts)) fail('TRACE_PHASE_7_ADMISSION_FAILED');
@@ -58,11 +60,19 @@ export async function resolveTracePhase7FireRestConsequence({
               state: currentBoundaryState, workingProjection: temporal.projection,
               priorLocalFirePlans
             });
+      const boundaryDirect = typeof createBoundaryNpcDirectOperations !== 'function'
+        ? null : await createBoundaryNpcDirectOperations({
+            state: currentBoundaryState, workingProjection: temporal.projection,
+            priorLocalFirePlans
+          });
       actorStepRuntime = createTracePhase7ActorStepRuntime({
         state: currentBoundaryState, contracts, temporal, semanticActivityScheduleOwner,
         genericCheckContextOwner, localFireProfile, worldProcessResolver,
         projectNpcWorldProcessCapability,
         npcOwnerCapabilities: activeNpcOwnerCapabilities, priorLocalFirePlans,
+        directHandlers: { ...directHandlers, ...(boundaryDirect?.handlers ?? {}) },
+        directOperationContract: { ...directOperationContract,
+          ...(boundaryDirect?.operationContract ?? {}) },
         randomSource
       });
       const autonomous = await resolveTracePhase7AutonomousDecision({

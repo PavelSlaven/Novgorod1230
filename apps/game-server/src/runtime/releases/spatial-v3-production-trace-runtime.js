@@ -24,6 +24,8 @@ import { createLowerDvinaTraceO2bProductionResolverFactory } from
   './lower-dvina-trace-o2b-production.js';
 import { createLowerDvinaTraceN1OwnerCapabilitiesFactory } from
   '../lower-dvina-trace-n1-owner-capabilities.js';
+import { createLowerDvinaTraceN1ModeOwnerCapabilities } from
+  '../lower-dvina-trace-n1-mode-handoffs.js';
 import { createLowerDvinaTraceOrdinaryDiscoveryResolver } from
   '../lower-dvina-trace-ordinary-discovery.js';
 import { createPostgresOrdinaryMaterializationEnablementRepository } from
@@ -104,7 +106,8 @@ export function createTraceTurnRuntime({
         ordinaryMaterializationModel }),
     createActionProductionOwner: actionProductionResolverFactory,
     createOrdinaryContainerContentsResolver: ordinaryContainerResolverFactory,
-    loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input)
+    loadOrdinaryEnablement: (input) => ordinaryEnablements.load(input),
+    createModeOwnerCapabilities: createLowerDvinaTraceN1ModeOwnerCapabilities
   });
   return createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({

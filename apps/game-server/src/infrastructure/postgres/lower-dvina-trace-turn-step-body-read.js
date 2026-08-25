@@ -33,8 +33,7 @@ export async function assertTurnStepBodyHistoryRows(pool, payload, headRow) {
     const row = rows.get(expected.history_id);
     if (!row || !same(row, expected)
         || row.party_id !== payload.party_id
-        || row.subject_id !== payload.actor_id
-        || row.subject_kind !== 'player_character') invalid();
+        || !validSubject(row, payload)) invalid();
   }
   assertCurrentEffect(history, payload);
 }
@@ -83,6 +82,7 @@ function assertCurrentEffect(history, payload) {
   }
   if (current.length !== 1) invalid();
   const expected = current[0];
+  const subject = currentBodySubject(payload);
   let effectRef;
   try {
     effectRef = buildTurnStepBodyEffectRef({
@@ -92,8 +92,10 @@ function assertCurrentEffect(history, payload) {
   } catch {
     invalid();
   }
-  if (!same(expected.effect_ref, effectRef)
-      || !sameBodyMetrics(payload.body_state,
+  if (expected.subject_kind !== subject.kind
+      || expected.subject_id !== subject.id
+      || !same(expected.effect_ref, effectRef)
+      || !sameBodyMetrics(subject.body,
         envelope.body_update.state_after)
       || expected.change_set_id
         !== bodyChangeSetId(payload)
@@ -120,9 +122,31 @@ function assertNormalizedBody(payload, row) {
   if (!valid) invalid();
   const envelope = payload.last_turn?.turn_step_commit;
   if (envelope?.body_update?.applied === true
+      && currentBodySubject(payload).kind === 'player_character'
       && (!sameBodyMetrics(body, envelope.body_update.state_after)
         || row.body_updated_change_set_id
           !== bodyChangeSetId(payload))) invalid();
+}
+
+function validSubject(row, payload) {
+  if (row.subject_kind === 'player_character') {
+    return row.subject_id === payload.actor_id;
+  }
+  return row.subject_kind === 'npc' && (payload.npcs ?? []).some(
+    ({ instance_id: id }) => id === row.subject_id);
+}
+
+function currentBodySubject(payload) {
+  const npcRef = payload.last_turn?.turn_step_operation_batch?.operations
+    ?.find(({ target, value }) => target === 'party_state'
+      && value?.operation_kind === 'apply_body_event')
+    ?.value?.payload?.actor_ref;
+  if (npcRef == null || npcRef === payload.actor_id) return {
+    kind: 'player_character', id: payload.actor_id, body: payload.body_state
+  };
+  const npc = (payload.npcs ?? []).find(({ instance_id: id }) => id === npcRef);
+  if (npc?.check_body_state == null) invalid();
+  return { kind: 'npc', id: npcRef, body: npc.check_body_state };
 }
 
 function bodyChangeSetId(payload) {

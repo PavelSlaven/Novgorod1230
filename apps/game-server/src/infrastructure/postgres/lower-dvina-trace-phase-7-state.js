@@ -13,6 +13,8 @@ import {
 } from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 import { tracePhase7ActorStep } from
   '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
+import { projectLowerDvinaTraceN1ModeHandoff } from
+  '../../runtime/lower-dvina-trace-n1-mode-handoffs.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
@@ -79,6 +81,11 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     activeActorStep: tracePhase7ActorStep(
       phase7.schedule_temporal.projection, phase7.actor_step)
   });
+  applyNpcDirectBodyState(next, phase7);
+  next = projectLowerDvinaTraceN1ModeHandoff({ state: next,
+    consequenceFragment: phase7.actor_step_owner_outputs?.consequence_fragment,
+    semanticOperation: phase7.schedule_execution.semantic_operation,
+    changeSetId });
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: restCompleted ? 'completed' : 'paused',
@@ -151,6 +158,24 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     });
   }
   return next;
+}
+
+function applyNpcDirectBodyState(next, phase7) {
+  const bodyEvents = phase7.actor_step_owner_outputs?.write_fragments
+    ?.filter(({ value }) => value?.operation_kind === 'apply_body_event') ?? [];
+  if (bodyEvents.length === 0) return;
+  if (bodyEvents.length !== 1) fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  const event = bodyEvents[0].value;
+  const actor = phase7.autonomous.request.npc_ref;
+  if (event?.payload?.actor_ref !== actor || event.payload?.payload?.state_after == null) {
+    fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  }
+  const index = next.npcs.findIndex(({ instance_id }) => instance_id === actor);
+  if (index < 0) fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  const body = structuredClone(event.payload.payload.state_after);
+  next.npcs[index] = { ...next.npcs[index], check_body_state:
+    body, machine_state: { ...next.npcs[index].machine_state,
+      check_body_state: body } };
 }
 
 function appendUnique(current = [], additions = [], identity, code) {

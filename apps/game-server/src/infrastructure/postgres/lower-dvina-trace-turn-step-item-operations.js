@@ -18,7 +18,7 @@ export function applyItemOperation({
   operation, entities, authoredItems, authoredItemRefs, authoredContainers,
   authoredContainerRefs, authoredStateTouched,
   creates, touched, placements, ownerships, retired, state, changeSetId,
-  knowledgeInserts
+  knowledgeInserts, recordActorKnowledge = true, actorId = state.actor_id
 }) {
   const { operation_kind: kind, payload } = operation;
   if (kind === 'create_entity') {
@@ -42,7 +42,8 @@ export function applyItemOperation({
         });
       }
     }
-    const placement = normalizePlacement(payload.placement, state, entities);
+    const placement = normalizePlacement(
+      payload.placement, state, entities, actorId);
     const semanticFacts = payload.facts.map((fact) => ({
       fact_id: fact.fact_id, text: fact.text,
       operation_id: operation.operation_id
@@ -79,7 +80,8 @@ export function applyItemOperation({
     creates.add(payload.entity_ref);
     touched.add(payload.entity_ref);
     placements.add(payload.entity_ref);
-    appendKnowledge(knowledgeInserts, semanticFacts, operation.operation_id);
+    if (recordActorKnowledge) appendKnowledge(
+      knowledgeInserts, semanticFacts, operation.operation_id);
     return;
   }
   const authoredRef = payload.entity_ref ?? payload.container_ref;
@@ -87,7 +89,8 @@ export function applyItemOperation({
     operation, authoredItems, authoredItemRefs, authoredContainers,
     authoredContainerRefs, authoredStateTouched,
     placements, ownerships, state,
-    normalizePlacement: (value) => normalizePlacement(value, state, entities)
+    normalizePlacement: (value) => normalizePlacement(
+      value, state, entities, actorId)
   })) return;
   const entity = requireMutableRuntimeEntity(
     entities, authoredRef, retired);
@@ -104,7 +107,8 @@ export function applyItemOperation({
     return;
   }
   if (kind === 'move_entity') {
-    entity.placement = normalizePlacement(payload.placement, state, entities);
+    entity.placement = normalizePlacement(
+      payload.placement, state, entities, actorId);
     placements.add(entity.item_id);
     appendHistory(entity, operation, 'moved');
     return;
@@ -128,8 +132,8 @@ export function applyItemOperation({
       });
     }
     entity.db_state.ordinary_metadata.semantic_facts = [...byId.values()];
-    appendKnowledge(knowledgeInserts, payload.add_facts,
-      operation.operation_id);
+    if (recordActorKnowledge) appendKnowledge(knowledgeInserts,
+      payload.add_facts, operation.operation_id);
     appendHistory(entity, operation, 'facts_changed');
     return;
   }
@@ -166,7 +170,7 @@ export function applyItemOperation({
   fail('TRACE_TURN_STEP_OPERATION_SCHEMA_UNKNOWN', { operation_kind: kind });
 }
 
-function normalizePlacement(value, state, entities) {
+function normalizePlacement(value, state, entities, actorId) {
   let placement = structuredClone(value);
   if (Object.hasOwn(placement, 'relation')) {
     exact(placement, ['relation', 'target_ref']);
@@ -184,12 +188,17 @@ function normalizePlacement(value, state, entities) {
   }
   validatePlacementShape(placement);
   if (placement.holder_character_id) {
-    if (placement.holder_character_id !== state.actor_id
+    if (placement.holder_character_id !== actorId
         || !['hands', 'worn', 'worn_quick', 'equipped', 'external',
           'external_load'].includes(placement.physical_position)) {
       unresolvedPlacement(placement);
     }
-    return placement;
+    if (actorId === state.actor_id) return placement;
+    if (!(state.npcs ?? []).some(({ instance_id: id }) => id === actorId)) {
+      unresolvedPlacement(placement);
+    }
+    return { holder_npc_id: actorId,
+      physical_position: placement.physical_position };
   }
   if (placement.location_ref) {
     const knownAnchors = new Set([
@@ -198,10 +207,16 @@ function normalizePlacement(value, state, entities) {
         anchor?.anchor_id, anchor?.g5_anchor_id
       ])
     ].filter(Boolean));
+    const locatedNpc = (state.npcs ?? []).find(({ instance_id: id,
+      machine_state: machine }) => id === actorId
+        && machine?.location_ref === placement.location_ref);
+    const npcAnchor = locatedNpc?.anchor_id
+      ?? locatedNpc?.machine_state?.g5_anchor_id
+      ?? locatedNpc?.machine_state?.anchor_id ?? null;
     const anchorId = placement.location_ref === state.position?.location_ref
       ? state.position?.g5_anchor_id
       : knownAnchors.has(placement.location_ref)
-        ? placement.location_ref : null;
+        ? placement.location_ref : npcAnchor;
     if (!text(anchorId)) unresolvedPlacement(placement);
     return { anchor_id: anchorId };
   }

@@ -7,6 +7,7 @@ import {
 import {
   buildNpcActionDecisionRequestFromSnapshots,
   npcSafeSnapshotHasEntityEvidence,
+  projectNpcSafeResourceSnapshots,
   validateNpcActionDecisionRequest
 } from '../src/semantic-decision-contracts.js';
 
@@ -401,6 +402,75 @@ test('NPC-safe projector excludes accessible foreign resources without subjectiv
     assert.equal(request.npc.available_resources.some(
       ({ resource_ref: value }) => value === resourceRef), false);
   }
+});
+
+test('NPC-safe resources require physical availability beyond controller knowledge', () => {
+  const projected = projectNpcSafeResourceSnapshots({
+    npc_snapshot: {
+      instance_id: 'speaker',
+      machine_state: { location_ref: 'yard', spatial_zone_ref: 'gate' }
+    },
+    resource_snapshots: [{
+      item_id: 'controlled-remote',
+      ownership: { controller_npc_id: 'speaker' },
+      state: { location_ref: 'storehouse', zone_ref: 'loft',
+        access_state: 'accessible' }
+    }, {
+      item_id: 'controlled-inaccessible',
+      ownership: { controller_npc_id: 'speaker' },
+      state: { location_ref: 'yard', zone_ref: 'gate',
+        access_state: 'unavailable' }
+    }, {
+      item_id: 'held',
+      placement: { holder_npc_id: 'speaker' },
+      state: { location_ref: 'yard', zone_ref: 'gate' }
+    }, {
+      item_id: 'held-at-inconsistent-place',
+      placement: { holder_npc_id: 'speaker' },
+      state: { location_ref: 'storehouse', zone_ref: 'loft' }
+    }, {
+      item_id: 'controlled-accessible',
+      ownership: { controller_npc_id: 'speaker' },
+      state: { location_ref: 'yard', zone_ref: 'gate',
+        access_state: 'accessible' }
+    }]
+  });
+
+  assert.deepEqual(projected.map(({ resource_ref: resourceRef }) => resourceRef),
+    ['held', 'controlled-accessible']);
+
+  const unknownNpcPlacement = projectNpcSafeResourceSnapshots({
+    npc_snapshot: { instance_id: 'speaker', machine_state: {} },
+    resource_snapshots: [{ item_id: 'held-somewhere',
+      placement: { holder_npc_id: 'speaker' },
+      state: { location_ref: 'storehouse' } }]
+  });
+  assert.deepEqual(unknownNpcPlacement, []);
+});
+
+test('NPC-safe controlled contents require an open container chain', () => {
+  const projected = projectNpcSafeResourceSnapshots({
+    npc_snapshot: { instance_id: 'speaker', machine_state: {
+      location_ref: 'yard', spatial_zone_ref: 'gate' } },
+    resource_snapshots: [{
+      container_id: 'closed-bag', placement: { holder_npc_id: 'speaker' },
+      open_state: 'closed'
+    }, {
+      item_id: 'closed-child', placement: { container_id: 'closed-bag' },
+      ownership: { controller_npc_id: 'speaker' }, state: {
+        location_ref: 'yard', zone_ref: 'gate', access_state: 'accessible' }
+    }, {
+      container_id: 'open-bag', placement: { holder_npc_id: 'speaker' },
+      open_state: 'open'
+    }, {
+      item_id: 'open-child', placement: { container_id: 'open-bag' },
+      ownership: { controller_npc_id: 'speaker' }, state: {
+        location_ref: 'yard', zone_ref: 'gate', access_state: 'accessible' }
+    }]
+  });
+  const refs = projected.map(({ resource_ref: resourceRef }) => resourceRef);
+  assert.equal(refs.includes('closed-child'), false);
+  assert.equal(refs.includes('open-child'), true);
 });
 
 test('NPC-safe projector prefers authored perceived change summaries', () => {

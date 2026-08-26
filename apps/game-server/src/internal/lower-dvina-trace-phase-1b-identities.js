@@ -293,5 +293,7 @@ export const TRACE_PHASE_1B_SESSION_IDENTITIES = Object.freeze([
       'lower_dvina_trace_phase_1a_materialization_bindings_v19'
   }),
   Object.freeze({ publication_manifest_digest: TRACE_PHASE_1B_REVISION24_MANIFEST_DIGEST, publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v19', publication_binding_revision: 19, publication_binding_digest: TRACE_PHASE_1B_REVISION24_BINDING_DIGEST,
-    phase_1a_manifest_digest: TRACE_PHASE_1B_REVISION24_PHASE_1A_MANIFEST_DIGEST, scenario_definition_revision: 24, scenario_definition_digest: TRACE_PHASE_1B_REVISION24_DEFINITION_DIGEST, materializer_binding_id: 'lower_dvina_trace_phase_1a_materialization_bindings_v20' })
+    phase_1a_manifest_digest: TRACE_PHASE_1B_REVISION24_PHASE_1A_MANIFEST_DIGEST, scenario_definition_revision: 24, scenario_definition_digest: TRACE_PHASE_1B_REVISION24_DEFINITION_DIGEST, materializer_binding_id: 'lower_dvina_trace_phase_1a_materialization_bindings_v20' }),
+  Object.freeze({ publication_manifest_digest: '0e639ff09f902d21041b64d5cba5ff6e4b9a2bf48f954701b8109ecf302bd87d', publication_binding_id: 'lower_dvina_trace_phase_1b_publication_v20', publication_binding_revision: 20, publication_binding_digest: '36f7b738100c1fe1b21b8917da9b683efc1c87e34ccf0229814334614413fd30',
+    phase_1a_manifest_digest: 'f4216382ba824a7aeec9896432cc275f71bf3a99f69a846d9eed6c79baca3505', scenario_definition_revision: 25, scenario_definition_digest: '3d025b3fef625dfd41426dfc0f2862791ccc9bb5d7ad6659e16205f98da09711', materializer_binding_id: 'lower_dvina_trace_phase_1a_materialization_bindings_v21' })
 ]);

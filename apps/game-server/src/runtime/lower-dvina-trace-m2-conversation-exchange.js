@@ -25,10 +25,8 @@ import {
 } from
   './lower-dvina-trace-m2-conversation-statements.js';
 import {
-  advanceConversationContributionTime,
-  conversationExchangeDurationMinutes
-} from
-  './lower-dvina-trace-m2-conversation-time.js';
+  createM2ConversationExchangeSetup
+} from './lower-dvina-trace-m2-conversation-exchange-setup.js';
 import { conversationNpcContext } from
   './lower-dvina-trace-m2-conversation-participants.js';
 import {
@@ -42,14 +40,11 @@ import {
 } from './lower-dvina-trace-m2-conversation-resume.js';
 import {
   applyTerminalConversationOutcomes,
-  initialConversationParticipantRefs,
   retireTerminalConversationParticipants
 } from './lower-dvina-trace-m2-conversation-session.js';
 import { projectM2ConversationExecutionResult } from
   './lower-dvina-trace-m2-conversation-result.js';
 import { applyPersistedPlayerPlan } from './lower-dvina-trace-m2-conversation-player-resume.js';
-import { conversationContributionSlots } from
-  './lower-dvina-trace-m2-conversation-time-contract.js';
 
 export function createM2ConversationContext(input) {
   const stateVersion = input.state.party_state?.state_version;
@@ -78,20 +73,40 @@ export function createM2ConversationContext(input) {
       'The target NPC must be an actual present listener.'
     );
   }
+  const conversationActorRefs = input.conversationActorRefs == null ? null
+    : canonicalActors(input.conversationActorRefs.map((reference) => ({
+      instance_id: reference.entity_id, ref: reference
+    }))).map(({ ref: reference, instance_id: instanceId }) =>
+      reference ?? (instanceId === input.state.actor_id
+        ? ref('player_character', instanceId) : npcRef(instanceId)));
+  if (conversationActorRefs !== null && (!conversationActorRefs.some(
+    (reference) => reference.entity_kind === 'npc'
+      && reference.entity_id === targetRef.entity_id
+  ) || conversationActorRefs.some((reference) =>
+    reference.entity_kind === 'player_character'
+      ? reference.entity_id !== input.state.actor_id
+      : reference.entity_kind !== 'npc' || !actualNpcActors.some(
+        ({ instance_id: instanceId }) => instanceId === reference.entity_id)))) {
+    fail('TRACE_M2_CONVERSATION_ACTOR_SCOPE_INVALID',
+      'Conversation actor scope must contain only current exact participants.');
+  }
   const batchKey = sameTimeBatchKey(
     input.state.party_id,
     input.state.clock
   );
-  const activeSession = findResumableConversationSession(
-    input.state,
-    ref('player_character', input.state.actor_id),
-    targetRef
-  );
+  const activeSession = conversationActorRefs === null
+    ? findResumableConversationSession(
+        input.state,
+        ref('player_character', input.state.actor_id),
+        targetRef
+      )
+    : null;
   return {
     ...input,
     stateVersion,
     targetRef,
     actualNpcActors,
+    conversationActorRefs,
     batchKey,
     activeSession,
     conversationId: activeSession?.conversation_id
@@ -110,59 +125,26 @@ export function createM2ConversationContext(input) {
       )
   };
 }
-export async function executeM2ConversationExchange(context) {
-  const pendingPlayerExecution = hydratedPendingPlayerExecution(context);
-  const pendingExecution = hydratedPendingNpcExecution(context);
-  const playerRequest = buildPlayerRequest(context);
-  const exchangeDurationMinutes = (pendingPlayerExecution ?? pendingExecution)
-    ?.remaining_exchange_minutes
-    ?? conversationExchangeDurationMinutes(context);
-  const initialWorkingState = {
-    state_version: context.stateVersion,
-    clock: structuredClone(context.state.clock),
-    world_state: structuredClone(context.state),
-    elapsed_minutes: 0,
-    temporal_boundary_refs: [],
-    temporal_advance_results: [],
-    statements: [],
-    audiences: [],
-    supporting_operation_perceptions: [],
-    new_signal_records: [],
-    consumed_signal_ids: [],
-    terminal_npc_outcomes: [],
-    active_participant_refs: initialConversationParticipantRefs(context)
-  };
-  const decisions = new Map();
-  const npcOutcomes = new Map();
+export async function executeM2ConversationExchange(context, {
+  initialNpcDecision = null
+} = {}) {
+  const pendingPlayerExecution = context.conversationActorRefs === null
+    ? hydratedPendingPlayerExecution(context) : null;
+  const pendingExecution = context.conversationActorRefs === null
+    ? hydratedPendingNpcExecution(context) : null;
+  const { decisions, npcOutcomes, exchangeInput, advanceContributionTime } =
+    createM2ConversationExchangeSetup(
+      context, initialNpcDecision, pendingPlayerExecution, pendingExecution
+    );
   let resumedOutcome = null;
-  const contributionSlots = conversationContributionSlots(
-    context, pendingPlayerExecution, pendingExecution);
-  const exchange = await runConversationExchange({
-    playerRequest,
-    initialWorkingState,
-    maxContributionsPerExchange:
-      context.contracts.conversationBindings.max_contributions_per_exchange,
-    timeBudget: {
-      total_minutes: exchangeDurationMinutes,
-      contribution_slots: contributionSlots,
-      ...(context.conversationTimeContract?.mode === 'same_timestamp'
-        ? { mode: 'same_timestamp' } : {})
-    },
-    pendingPlayerExecution,
-    pendingNpcExecution: pendingExecution
-  }, {
+  const exchange = await runConversationExchange(exchangeInput, {
     conversationModel: context.playerPlan ? async () =>
       structuredClone(context.playerPlan) : context.playerConversationModel,
     revalidatePlayerStateVersion: context.revalidateStateVersion,
     applyPlayerContribution: ({ working_state: working, plan }) =>
       applyPlayerPlan(workingConversationContext(context, working), working, plan),
     applyPendingPlayerContribution: ({ working_state: working, plan }) => applyPersistedPlayerPlan(context, working, plan),
-    advanceContributionTime: ({
-      working_state: working,
-      planned_duration_minutes: plannedDurationMinutes
-    }) => advanceConversationContributionTime(
-      context, working, plannedDurationMinutes
-    ),
+    advanceContributionTime,
     revalidateAfterContribution: async () => {
       const current = await context.revalidateStateVersion();
       if (current !== context.stateVersion) {

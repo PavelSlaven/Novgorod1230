@@ -7,7 +7,7 @@ import {
 
 export function resolveTracePhase7Contracts({ state, bundle }) {
   if (!Number.isSafeInteger(bundle.definition_revision)
-      || bundle.definition_revision < 15 || bundle.definition_revision > 24
+      || bundle.definition_revision < 15 || bundle.definition_revision > 25
       || bundle.definition?.revision !== bundle.definition_revision) {
     gap('TRACE_PHASE_7_REVISION_MISMATCH');
   }
@@ -65,6 +65,14 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
   const genericCheckContext = autonomous.generic_check_context_profile;
   const source = autonomous.source_factual_transition;
   const signal = autonomous.signal_descriptor;
+  const npcSemanticProfile = bundle.definition_revision === 25
+    ? exactNpcSemanticProfile(bundle.npc_actor_step_profile, autonomous.target_npc_ref)
+    : null;
+  const currentGenericCheckContext = npcSemanticProfile == null
+    ? genericCheckContext
+    : { ...genericCheckContext,
+      attributes: [...genericCheckContext.attributes,
+        ...npcSemanticProfile.actor_mechanics_context.attributes] };
   if (autonomous.schema
         !== 'rus.lower_dvina_trace_autonomous_semantic_bindings.v1'
       || autonomous.decision_mode !== 'autonomous'
@@ -120,7 +128,8 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
     ]),
     semanticActivityProfiles: structuredClone(semanticActivityProfiles),
     genericCheckModifierPolicy,
-    genericCheckContext: structuredClone(genericCheckContext),
+    genericCheckContext: structuredClone(currentGenericCheckContext),
+    ...(npcSemanticProfile == null ? {} : { npcSemanticProfile }),
     zhdanko: structuredClone(zhdanko),
     waitingBoundary: {
       elapsed_minutes: source.boundary_elapsed_minutes_from_parent_start
@@ -132,6 +141,23 @@ export function resolveTracePhase7Contracts({ state, bundle }) {
       digest: canonicalDigest(restActivity)
     }
   });
+}
+
+function exactNpcSemanticProfile(profile, targetNpcRef) {
+  if (profile?.schema !== 'rus.lower_dvina_trace_npc_actor_step_profile.v1'
+      || profile.profile_id !== 'lower_dvina_trace_npc_actor_step_profile_v1'
+      || profile.revision !== 1 || profile.status !== 'approved'
+      || profile.activation_boundary?.phase !== 'phase_7'
+      || profile.activation_boundary?.npc_participant_slot_ref !== targetNpcRef
+      || profile.fallback_policy !== 'forbidden'
+      || canonicalDigest(profile.actor_mechanics_context) !== canonicalDigest({
+        attributes: [{ attribute_ref: 'strength', label: 'сила', value: 10 }]
+      })) {
+    gap('TRACE_NPC_ACTOR_STEP_PROFILE_INVALID');
+  }
+  return Object.freeze({ profile_id: profile.profile_id, revision: profile.revision,
+    status: profile.status, activation_boundary: structuredClone(profile.activation_boundary),
+    actor_mechanics_context: structuredClone(profile.actor_mechanics_context) });
 }
 
 function validGenericCheckContext(profile) {

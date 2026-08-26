@@ -38,6 +38,12 @@ const activeBundle = await loadLowerDvinaTraceMaterializationBundle({
   scenarioDefinitionRevision: 24
 });
 const activeDomainCatalogPin = lowerDvinaTracePhase1ADomainPin(activeBundle);
+const revision25Bundle = await loadLowerDvinaTraceMaterializationBundle({
+  scenarioDefinitionRevision: 25
+});
+const revision25DomainCatalogPin = lowerDvinaTracePhase1ADomainPin(
+  revision25Bundle
+);
 
 test('revision 24 rejects a stale S1 definition pin', () => {
   assert.throws(() => validateDefinitionPins({
@@ -166,6 +172,25 @@ test('revision 24 materialization contract admits first-entry S1 artifact and pr
       .map(({ template_id: templateId }) => templateId),
     []
   );
+});
+
+test('revision 25 loads NPC actor-step profile and materializes inherited state', () => {
+  const result = materializeLowerDvinaTracePartyInstance(request({
+    party_id: 'trace-phase-1a-revision-25-party',
+    scenario_definition_revision: 25,
+    scenario_manifest_digest: revision25Bundle.manifest_digest,
+    world_revision_id:
+      revision25Bundle.location_topology_set.spatial_source_ref.world_revision_id,
+    world_catalog_digest: revision25Bundle.location_topology_set.spatial_source_ref
+      .world_revision_catalog_digest,
+    domain_catalog_pin: revision25DomainCatalogPin,
+    idempotency_key: 'trace-phase-1a-revision-25-idempotency',
+    scenario_bundle: revision25Bundle
+  }));
+  assert.equal(revision25Bundle.npc_actor_step_profile.activation_boundary
+    .npc_participant_slot_ref, 'zhdanko_storehouse_controller');
+  assert.ok(result.immediate.npcs.some(({ participant_slot_ref }) =>
+    participant_slot_ref === 'zhdanko_storehouse_controller'));
 });
 
 function worldSnapshot() {

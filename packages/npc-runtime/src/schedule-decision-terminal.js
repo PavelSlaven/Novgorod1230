@@ -96,8 +96,8 @@ export function resolveNpcScheduleDecisionTerminal({ candidate, context,
     from: descriptor.from_state,
     to: descriptor.terminal_state,
     occurred_at: structuredClone(candidate.scheduled_at),
-    source_candidate_ref: candidateRef,
-    causal_parent_refs: [candidateRef]
+    source_candidate_ref: structuredClone(candidateRef),
+    causal_parent_refs: [structuredClone(candidateRef)]
   };
   const signal = descriptor.signal;
   return freeze({

@@ -58,7 +58,7 @@ test('multi-source property source is stable under source order', () => {
   assert.equal(resolve([right, left]), 'material:a');
 });
 
-test('allocation mechanics retires one whole item and derives output carrying',
+test('A1 retires a 1000g whole item and conserves output mass',
   () => {
     const resolution = resolveActionProducedAllocationMechanics({
       mechanics_request: mechanicsRequest({
@@ -66,7 +66,7 @@ test('allocation mechanics retires one whole item and derives output carrying',
           finite_resource: null }]
       }),
       source_mechanics: [{ source_ref: 'material:board', mechanics: {
-        mass_grams: 800, external_hand_cost: 1, carry_form: 'regular',
+        mass_grams: 1000, external_hand_cost: 1, carry_form: 'regular',
         packing_slot_cost: 3, quantity: null,
         container: null
       } }],
@@ -80,7 +80,7 @@ test('allocation mechanics retires one whole item and derives output carrying',
       material_allocations: allocations }) => ({
       mechanics: snapshot.mechanics, allocations
     })), [1, 2].map(() => ({ mechanics: {
-      mass_grams: 400, external_hand_cost: 0, carry_form: 'compact',
+      mass_grams: 500, external_hand_cost: 0, carry_form: 'compact',
       packing_slot_cost: 1, quantity: { value: 1, unit: 'item' },
       container: null
     }, allocations: [{ source_ref: 'material:board', quantity: {

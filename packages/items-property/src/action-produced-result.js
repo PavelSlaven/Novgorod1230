@@ -44,6 +44,41 @@ const RESULT_CLASSES = new Set([
   'no_useful_result'
 ]);
 const ROLES = new Set(['source', 'tool']);
+const RESULT_SEMANTIC_CONTRACT = deepFreeze({
+  semantic_contract: 'action_produced_result_v1',
+  material_extent_rules: {
+    preserve_source: { one_source: [null],
+      multiple_sources: ['minor', 'half', 'major', 'whole'] },
+    independent_outputs: {
+      partial_transformation: ['minor', 'half', 'major'],
+      other: ['whole']
+    },
+    no_useful_result: [null]
+  },
+  allowed_physical_forms: ['compact', 'regular', 'long', 'bulky']
+});
+
+export function actionProducedResultSemanticContract() {
+  return RESULT_SEMANTIC_CONTRACT;
+}
+
+export function validateActionProducedQualitativeShape(value) {
+  return value != null && typeof value === 'object'
+    && textArray(value.source_refs, false)
+    && textArray(value.tool_refs, true)
+    && IDENTITY_MODES.has(value.identity_mode)
+    && (value.origin === null || ORIGINS.has(value.origin))
+    && (value.requested_output_count === null
+      || Number.isSafeInteger(value.requested_output_count)
+        && value.requested_output_count >= 1
+        && value.requested_output_count <= 8)
+    && validMaterialExtent(value)
+    && RESULT_CLASSES.has(value.result_class)
+    && validDescriptor(value.result_descriptor)
+    && validateActionProducedOutputClass(value.output_class,
+      value.result_class, value.identity_mode)
+    && validCausalShape(value);
+}
 
 export function admitActionProducedResult(value) {
   const input = snapshotBoundary(value);
@@ -170,19 +205,8 @@ function validateProposal(value) {
       || !textArray(value.source_refs, false)
       || !textArray(value.tool_refs, true)
       || value.source_refs.some((ref) => value.tool_refs.includes(ref))
-      || !IDENTITY_MODES.has(value.identity_mode)
-      || value.origin !== null && !ORIGINS.has(value.origin)
       || !text(value.intended_transformation)
-      || value.requested_output_count !== null
-        && (!Number.isSafeInteger(value.requested_output_count)
-          || value.requested_output_count < 1
-          || value.requested_output_count > 8)
-      || !validMaterialExtent(value)
-      || !RESULT_CLASSES.has(value.result_class)
-      || !validDescriptor(value.result_descriptor)
-      || !validateActionProducedOutputClass(value.output_class,
-        value.result_class, value.identity_mode)
-      || !validCausalShape(value)) {
+      || !validateActionProducedQualitativeShape(value)) {
     return 'ITEM_ACTION_PRODUCED_PROPOSAL_INVALID';
   }
   return null;

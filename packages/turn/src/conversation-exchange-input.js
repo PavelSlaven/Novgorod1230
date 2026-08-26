@@ -1,4 +1,6 @@
 import { validateConversationContributionPlan,
+  validateNpcConversationResponseRequest,
+  validateNpcDecisionBoundary,
   validatePlayerConversationContributionPlan,
   validatePlayerConversationInput,
   validateSocialDeliveryResult } from '@rus/npc-runtime';
@@ -6,6 +8,7 @@ import { turnFailure } from './errors.js';
 
 const INPUT_KEYS = new Set([
   'playerRequest',
+  'initialNpcDecision',
   'initialWorkingState',
   'maxContributionsPerExchange',
   'timeBudget',
@@ -44,12 +47,20 @@ function clone(value, code, message) {
 export function normalizeConversationExchangeInput(input) {
   if (!plainRecord(input)
       || Object.keys(input).some((key) => !INPUT_KEYS.has(key))
-      || !Object.hasOwn(input, 'playerRequest')
+      || (Object.hasOwn(input, 'playerRequest')
+        === Object.hasOwn(input, 'initialNpcDecision'))
       || !Object.hasOwn(input, 'initialWorkingState')
-      || !validatePlayerConversationInput(input.playerRequest)) {
+      || (input.playerRequest !== undefined
+        && !validatePlayerConversationInput(input.playerRequest))
+      || (input.initialNpcDecision !== undefined
+        && (!exactKeys(input.initialNpcDecision,
+          ['boundary', 'request', 'persisted_trace'])
+          || !validateNpcDecisionBoundary(input.initialNpcDecision.boundary)
+          || !validateNpcConversationResponseRequest(
+            input.initialNpcDecision.request)))) {
     fail(
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
-      'Conversation exchange input must contain an exact formal player request and working state'
+      'Conversation exchange input must contain one formal player request or NPC decision and working state'
     );
   }
   const maxContributionsPerExchange = input.maxContributionsPerExchange
@@ -173,9 +184,12 @@ export function normalizeConversationExchangeInput(input) {
       'initialWorkingState must be a plain cloneable object');
   }
   return {
-    playerRequest: clone(input.playerRequest,
-      'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
+    playerRequest: input.playerRequest === undefined ? null : clone(
+      input.playerRequest, 'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'playerRequest must be cloneable'),
+    initialNpcDecision: input.initialNpcDecision === undefined ? null : clone(
+      input.initialNpcDecision, 'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
+      'initialNpcDecision must be cloneable'),
     initialWorkingState: clone(input.initialWorkingState,
       'TURN_CONVERSATION_EXCHANGE_INPUT_INVALID',
       'initialWorkingState must be a plain cloneable object'),

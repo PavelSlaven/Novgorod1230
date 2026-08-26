@@ -30,7 +30,8 @@ signals/boundaries и versioned semantic decision contracts. Historical P28 evid
 - `proposeNpcPerception({ perception_input })` — возвращает frozen formal perception result и replay evidence.
 - `buildNpcDecisionSignal`, `buildNpcDecisionBoundary`, `evaluateNpcDecisionSignals` — валидируют ровно пять категорий `self|others|environment|objective|communication`, значимость `material|critical` и агрегируют для одного NPC/mode/same-time batch не более одной boundary. Новая identity включает mode (`autonomous|conversation`) либо combat context; persisted pre-cutover identity без mode принимается только для exact replay и не переписывается.
 - Conversation builders/validators — формальные session, player contribution, statement, audience-facing request, NPC contribution и social delivery contracts.
-- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots. Общий resource projector допускает контролируемый NPC ресурс либо физически доступный чужой ресурс с source-backed factual perception/`known_facts` exact resource ref; одной location/access записи, belief, hypothesis или uncertainty недостаточно. `npcSafeSnapshotHasEntityEvidence` тем же правилом проверяет exact evidence самой entity/process, поэтому известный bound resource не раскрывает скрытый process ref. `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; autonomous operation vocabulary включает exact NPC-safe `request_world_process`, а физическое применение остаётся у domain owner; production v5 uses conversation mode and Phase-7 autonomous mode.
+- Semantic decision builders/validators — `buildNpcActionDecisionRequestFromSnapshots` проецирует NPC-safe request только из supplied factual snapshots. Общий resource projector даёт непосредственно удерживаемому NPC ресурсу direct basis; любой не удерживаемый ресурс, включая контролируемый NPC, требует physical availability и source-backed factual subjective perception/`known_facts` с exact resource ref. Concealed ресурс fail-closed не допускается; одной location/access записи, belief, hypothesis или uncertainty недостаточно. `npcSafeSnapshotHasEntityEvidence` тем же правилом проверяет exact evidence самой entity/process, поэтому известный bound resource не раскрывает скрытый process ref. `decision_reasons.perceived_changes` требует NPC-safe authored/factual summary для каждого source event и fail-closed отклоняет технический ref без описания; `npc_action_decision_request_v1`, `npc_step_plan_v1` и replay-safe trace; autonomous operation vocabulary включает exact NPC-safe `request_world_process`, а физическое применение остаётся у domain owner; production v5 uses conversation mode and Phase-7 autonomous mode.
+- `npc_step_plan_v1` допускает общий A1 `request_item_use.action_production`: contract сохраняет один domain request, operation-contract и NPC-safe ref gates; mechanics и action-production transition остаются у existing item/turn owners.
 - Combat builders/validators — strict `npc_combat_decision_request_v1` /
   `npc_combat_intent_plan_v1`, formal operation-contract applicability,
   source-backed statement refs и shared signal/boundary aggregation. Пакет не
@@ -79,24 +80,26 @@ genuinely closed choices и historical revisions, выбранных явным 
 
 ## Зависимости, IO и persistence
 
-Разрешены `@rus/kernel`, versioned `@rus/contracts` и `@rus/time-events-history` для формальных контрактов, digest и exact timestamp comparison/normalization. Нет скрытых IO: пакет не читает DB, network, LLM, narrator, UI, global clock или скрытое process state; он не пишет SQL и не создаёт write plan. Persisted inputs служат только для pure replay verification. `@rus/turn` валидирует и передаёт одобренные изменения в target `CombinedAtomicCommitter`.
+Разрешены `@rus/kernel`, versioned `@rus/contracts`, `@rus/time-events-history` и read-only `@rus/items-property` для формальных контрактов, digest, exact timestamp comparison/normalization и concealment projection. `npc-runtime` не владеет concealment semantics. Нет скрытых IO: пакет не читает DB, network, LLM, narrator, UI, global clock или скрытое process state; он не пишет SQL и не создаёт write plan. Persisted inputs служат только для pure replay verification. `@rus/turn` валидирует и передаёт одобренные изменения в target `CombinedAtomicCommitter`.
 
 ## Activation и тесты
 
 Revision 16 / `spatial-v3-production-v6` объединила revision-14 conversation,
 Phase-7 autonomous и combat contracts в одном orchestration/write path.
-Active revision 20 / M8 / Phase 1A v16 / Phase 1B v15 наследует эту boundary
-без нового NPC semantic mode; revision 19 / `spatial-v3-production-v9`
-сохраняется как historical recovery path. Phase 7 фиксирует
-fire rest на 30 минут и boundary Жданко на +25; semantic plan получает
-точные actor-step operations из зарегистрированных domain handlers
-(`operation_contract` публикует exact executable combinations owners —
-не narrative whitelist и не cartesian kinds×targets), применяется на
-том же timestamp; activity Жданко может продолжаться после +30, пока
-общий temporal owner завершает rest Микулы; temporal/persistence/
-visibility остаются code-owned. Production v7 является explicit rollback
-source; v4–v6 доступны только по historical revision pins, не как current
-runtime fallback. Partial activation, dual write и in-turn fallback запрещены.
+Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
+Phase 1A v21 / Phase 1B v20 и активирует approved Phase-7 autonomous NPC
+actor-step profile. Общий current actor-step path: в `operation_contract` входят
+только зарегистрированные и state-applicable owner capabilities с текущими
+NPC-safe refs и exact executable structural combinations, не narrative
+whitelist либо Cartesian kinds×targets; нет scenario action/ref/owner whitelist,
+special Жданко action logic или fallback. Жданко остаётся первым activation
+participant/probe.
+Phase 7 фиксирует fire rest на 30 минут и boundary Жданко на +25; применимый
+semantic plan исполняет зарегистрированный domain handler на том же timestamp,
+а temporal/persistence/visibility остаются code-owned. Revision 19 /
+`spatial-v3-production-v9` сохраняется как immutable historical recovery path;
+v4–v6 доступны только по historical revision pins. Partial activation, dual
+write и in-turn fallback запрещены.
 Combat decision request/plan получает один общий snapshot exchange, использует
 тот же five-category signal protocol и не исполняет checks/harm/items сам.
 Tests покрывают exact schedule/perception, five-category signals, one

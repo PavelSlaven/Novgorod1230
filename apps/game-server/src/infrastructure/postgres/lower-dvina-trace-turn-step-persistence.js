@@ -37,8 +37,8 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
 }) {
   const committedSnapshot = attachTurnStepCommit({ snapshot,
     envelope: writePlan?.turn_step_commit, idemId });
-  const targets = (writePlan?.write_targets ?? []).filter(
-    ({ target }) => target === TURN_STEP_OPERATION_BATCH_TARGET);
+  const targets = (writePlan?.write_targets ?? []).filter(({ target }) =>
+    target === TURN_STEP_OPERATION_BATCH_TARGET);
   if (targets.length === 0) {
     const preparedEffect = validatePreparedEffectCommit({
       batch: null,
@@ -65,13 +65,13 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
       reason: 'direct-only write plan lacks replay and visible-envelope identity'
     });
   }
+  const actorRef = commit.consequence?.phase7?.autonomous?.request?.npc_ref ?? state.actor_id;
   const preparedEffect = validatePreparedEffectCommit({
     batch,
     envelope: commit,
     factual,
     state, phase3Contracts, turnStepApprovedOwners,
-    localFirePlans: writePlan
-      ?.local_fire_atomic_write_plans ?? []
+    localFirePlans: writePlan?.local_fire_atomic_write_plans ?? []
   });
   const next = structuredClone(committedSnapshot);
   const authoredItems = (next.items ?? []).filter((item) =>
@@ -81,8 +81,7 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
   const authoredItemRefs = new Set(authoredItems.map((item) =>
     item.item_id ?? item.instance_id));
   const authoredContainers = authoredTurnStepContainers(next.containers);
-  const authoredContainerRefs = new Set(authoredContainers.map((container) =>
-    container.item_id));
+  const authoredContainerRefs = new Set(authoredContainers.map(({ item_id }) => item_id));
   const entities = runtimeEntities(next.items ?? []);
   const context = {
     creates: new Set(), touched: new Set(), placements: new Set(),
@@ -141,7 +140,9 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
         retired: context.retired,
         state,
         changeSetId,
-        knowledgeInserts: context.knowledgeInserts
+        knowledgeInserts: context.knowledgeInserts,
+        recordActorKnowledge: actorRef === state.actor_id,
+        actorId: actorRef
       });
     }
   }
@@ -175,7 +176,6 @@ export function prepareLowerDvinaTraceTurnStepPersistence({
     semanticDuration: context.semanticDuration
   };
 }
-
 function requireBatch(value) {
   try {
     return requireTurnStepOperationBatch(value);

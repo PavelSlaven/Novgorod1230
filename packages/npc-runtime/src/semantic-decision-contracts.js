@@ -9,10 +9,7 @@ import {
   validateConversationContributionPlan,
   validateNpcConversationResponseRequest
 } from './conversation-contracts.js';
-import {
-  validateNpcCombatDecisionRequest,
-  validateNpcCombatIntentPlan
-} from './combat-decision-contracts.js';
+import { npcActionProductionRefs, validateNpcActionProduction } from './npc-action-production-contract.js';
 import { matchesOperationContract, validateWorldProcessOperation,
   worldProcessOperationRefs } from './operation-contract-match.js';
 import {
@@ -27,26 +24,22 @@ import {
   PLAN_KEYS,
   RESOLUTIONS,
   SUPPORTED_OPERATIONS,
-  TRACE_KEYS,
   enumValue,
   finiteInteger,
   jsonSafe,
   nullableStableId,
-  nullableText,
   text,
   validateNpcActionDecisionRequest
 } from './semantic-decision-request-contract.js';
 
-export {
-  buildNpcActionDecisionRequest,
-  validateNpcActionDecisionRequest
-} from './semantic-decision-request-contract.js';
-export {
-  buildNpcActionDecisionRequestFromSnapshots,
-  npcSafeSnapshotHasEntityEvidence,
-  projectNpcSafeResourceSnapshots
-} from
-  './npc-safe-request-projector.js';
+import {
+  buildNpcSemanticDecisionTrace as buildNpcSemanticDecisionTraceInternal,
+  validateNpcSemanticDecisionTrace as validateNpcSemanticDecisionTraceInternal
+} from './semantic-decision-trace-contract.js';
+import { validateRuntimeInstanceMechanics } from '@rus/items-property';
+
+export { buildNpcActionDecisionRequest, validateNpcActionDecisionRequest } from './semantic-decision-request-contract.js';
+export { buildNpcActionDecisionRequestFromSnapshots, npcSafeSnapshotHasEntityEvidence, projectNpcSafeResourceSnapshots } from './npc-safe-request-projector.js';
 
 function validateInterpretation(value) {
   return exactKeys(value, ['npc_goal', 'grounded_attempt', 'adaptation'])
@@ -82,20 +75,7 @@ function validatePlacement(value) {
 }
 
 function validateMechanics(value) {
-  return exactKeys(value, [
-    'mass_grams',
-    'external_hand_cost',
-    'carry_form',
-    'packing_slot_cost',
-    'quantity',
-    'container'
-  ])
-    && finiteInteger(value.mass_grams)
-    && [0, 1, 2].includes(value.external_hand_cost)
-    && enumValue(value.carry_form, ['compact', 'regular', 'long', 'bulky'])
-    && finiteInteger(value.packing_slot_cost)
-    && jsonSafe(value.quantity)
-    && jsonSafe(value.container);
+  return validateRuntimeInstanceMechanics(value);
 }
 
 function validateFact(value) {
@@ -117,6 +97,7 @@ function validateOperationShape(value) {
         && exactKeys(value.origin, ['kind', 'source_refs'])
         && enumValue(value.origin.kind, ['direct_partition', 'ambient_ordinary', 'crafted'])
         && uniqueStableIds(value.origin.source_refs)
+        && value.origin.source_refs.length > 0
         && Array.isArray(value.facts)
         && value.facts.every(validateFact)
         && validateMechanics(value.mechanics)
@@ -169,11 +150,15 @@ function validateOperationShape(value) {
         && stableId(value.target_ref)
         && enumValue(value.movement_kind, ['local', 'route', 'long_course']);
     case 'request_item_use':
-      return exactKeys(value, ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs'])
+      return exactKeys(value, ['op', 'actor_ref', 'item_ref', 'use_kind', 'target_refs',
+        ...(Object.hasOwn(value, 'action_production') ? ['action_production'] : [])])
         && stableId(value.actor_ref)
         && stableId(value.item_ref)
         && enumValue(value.use_kind, ['consume', 'apply', 'operate', 'equip', 'unequip', 'other'])
-        && uniqueStableIds(value.target_refs);
+        && uniqueStableIds(value.target_refs)
+        && (!Object.hasOwn(value, 'action_production')
+          || (value.use_kind === 'other'
+            && validateNpcActionProduction(value.action_production, value)));
     case 'request_activity':
       return exactKeys(value, ['op', 'actor_ref', 'activity_kind', 'target_refs', 'description'])
         && stableId(value.actor_ref)
@@ -229,7 +214,8 @@ function operationRefs(operation) {
     case 'request_movement':
       return [operation.actor_ref, operation.target_ref];
     case 'request_item_use':
-      return [operation.actor_ref, operation.item_ref, ...operation.target_refs];
+      return [operation.actor_ref, operation.item_ref, ...operation.target_refs,
+        ...npcActionProductionRefs(operation.action_production)];
     case 'request_activity':
       return [operation.actor_ref, ...operation.target_refs];
     case 'request_world_process':
@@ -270,7 +256,8 @@ function collectKnownRefs(value, refs = new Set(), key = '') {
   return refs;
 }
 
-function validateOperations(operations, request, allowedKinds) {
+function validateOperations(operations, request, allowedKinds,
+  resolution = null) {
   if (!Array.isArray(operations)) return false;
   const knownRefs = request === null ? null : collectKnownRefs(request);
   const declared = new Set();
@@ -284,7 +271,8 @@ function validateOperations(operations, request, allowedKinds) {
     if (request !== null
         && !matchesOperationContract(
           operation,
-          request.decision_scope.operation_contract[operation.op]
+          request.decision_scope.operation_contract[operation.op],
+          resolution
         )) {
       return false;
     }
@@ -304,7 +292,17 @@ function validateOutcome(value, request) {
   return exactKeys(value, ['goal_result', 'additional_activity', 'operations'])
     && enumValue(value.goal_result, GOAL_RESULTS)
     && validateAdditionalActivity(value.additional_activity)
-    && validateOperations(value.operations, request, DIRECT_OPERATIONS);
+    && validateOutcomeOperations(value.operations, request);
+}
+
+function validateOutcomeOperations(operations, request) {
+  if (!validateOperations(operations, request, SUPPORTED_OPERATIONS,
+    'generic_check')) return false;
+  const domainIndexes = operations.flatMap((operation, index) =>
+    DOMAIN_OPERATIONS.has(operation.op) ? [index] : []);
+  return domainIndexes.length <= 1
+    && (domainIndexes.length === 0
+      || domainIndexes[0] === operations.length - 1);
 }
 
 function validateCheck(value, request) {
@@ -313,13 +311,14 @@ function validateCheck(value, request) {
   ])
     && text(value.purpose)
     && stableId(value.attribute_ref)
-    && stableId(value.skill_ref)
+    && nullableStableId(value.skill_ref)
     && enumValue(value.difficulty_id, DIFFICULTIES)
     && exactKeys(value.outcomes, OUTCOME_KEYS)
     && OUTCOME_KEYS.every((outcome) => validateOutcome(value.outcomes[outcome], request))
     && (request === null
       || (request.decision_scope.allowed_attribute_refs.includes(value.attribute_ref)
-        && request.decision_scope.allowed_skill_refs.includes(value.skill_ref)));
+        && (value.skill_ref === null
+          || request.decision_scope.allowed_skill_refs.includes(value.skill_ref))));
 }
 
 function matchingIdentity(value, request) {
@@ -355,7 +354,8 @@ function validateNpcStepPlanShape(value, request) {
   if (value.resolution === 'direct') {
     return validateSemanticActivity(value.activity)
       && value.check === null
-      && validateOperations(value.operations, request, DIRECT_OPERATIONS);
+      && validateOperations(value.operations, request, DIRECT_OPERATIONS,
+        'direct');
   }
   if (value.resolution === 'generic_check') {
     return value.goal_result === 'pending'
@@ -364,9 +364,14 @@ function validateNpcStepPlanShape(value, request) {
       && value.operations.length === 0
       && validateCheck(value.check, request);
   }
-  return validateDomainActivity(value.activity)
+  const actionProduction = value.operations.some((operation) =>
+    operation.op === 'request_item_use' && operation.action_production != null);
+  return (actionProduction
+    ? validateSemanticActivity(value.activity)
+    : validateDomainActivity(value.activity))
     && value.check === null
-    && validateOperations(value.operations, request, SUPPORTED_OPERATIONS)
+    && validateOperations(value.operations, request, SUPPORTED_OPERATIONS,
+      'domain_request')
     && value.operations.filter((operation) => DOMAIN_OPERATIONS.has(operation.op)).length === 1;
 }
 
@@ -383,117 +388,9 @@ export function buildNpcStepPlan(value, request) {
 }
 
 export function validateNpcSemanticDecisionTrace(value, request = null) {
-  if (!exactKeys(value, TRACE_KEYS)
-    || value.schema !== 'npc_semantic_decision_trace_v1'
-    || !stableId(value.request_id)
-    || !stableId(value.root_turn_id)
-    || !stableId(value.boundary_id)
-    || !stableId(value.npc_ref)
-    || !finiteInteger(value.committed_state_version, 1)
-    || !finiteInteger(value.working_revision)
-    || !stableId(value.applied_change_set_id)
-    || value.status !== 'committed'
-    || !semanticTracePlanValid(value.plan, request)
-    || value.request_id !== value.plan.request_id
-    || value.boundary_id !== value.plan.boundary_id
-    || value.npc_ref !== semanticPlanNpcId(value.plan)
-    || value.committed_state_version !== semanticPlanStateVersion(value.plan)
-    || !semanticTraceLineageMatches(value, value.plan)
-    || !jsonSafe(value)) {
-    return false;
-  }
-  return request === null || semanticTraceRequestMatches(value, request);
+  return validateNpcSemanticDecisionTraceInternal(value, request, validateNpcStepPlan);
 }
 
-export function buildNpcSemanticDecisionTrace({
-  request,
-  plan,
-  root_turn_id = request?.root_turn_id,
-  working_revision = request?.working_revision,
-  applied_change_set_id,
-  status = 'committed'
-} = {}) {
-  if (!semanticTracePlanValid(plan, request)) {
-    throw new TypeError('Semantic decision trace requires a matching request and NPC step plan');
-  }
-  const trace = {
-    schema: 'npc_semantic_decision_trace_v1',
-    request_id: request.request_id,
-    root_turn_id,
-    boundary_id: request.boundary_id,
-    npc_ref: semanticPlanNpcId(plan),
-    committed_state_version: semanticPlanStateVersion(plan),
-    working_revision,
-    plan,
-    applied_change_set_id,
-    status
-  };
-  if (!validateNpcSemanticDecisionTrace(trace, request)) {
-    throw new TypeError('NPC semantic decision trace must match npc_semantic_decision_trace_v1');
-  }
-  return freeze(trace);
-}
-
-function semanticTracePlanValid(plan, request) {
-  if (plan?.schema === 'npc_step_plan_v1') {
-    return request === null
-      ? validateNpcStepPlanShape(plan, null)
-      : validateNpcActionDecisionRequest(request)
-        && validateNpcStepPlan(plan, request);
-  }
-  if (plan?.schema === 'conversation_contribution_plan_v1') {
-    return request === null
-      ? validateConversationContributionPlan(plan)
-      : validateNpcConversationResponseRequest(request)
-        && validateConversationContributionPlan(plan, request);
-  }
-  if (plan?.schema === 'npc_combat_intent_plan_v1') {
-    return request === null
-      ? validateNpcCombatIntentPlan(plan)
-      : validateNpcCombatDecisionRequest(request)
-        && validateNpcCombatIntentPlan(plan, request);
-  }
-  return false;
-}
-
-function semanticPlanNpcId(plan) {
-  if (plan?.schema === 'npc_step_plan_v1') return plan.npc_ref;
-  if (plan?.schema === 'npc_combat_intent_plan_v1') {
-    return plan.npc_ref?.entity_id;
-  }
-  return plan?.speaker_ref?.entity_id;
-}
-
-function semanticPlanStateVersion(plan) {
-  if (plan?.schema === 'npc_step_plan_v1') {
-    return plan.committed_state_version;
-  }
-  return plan?.schema === 'npc_combat_intent_plan_v1'
-    ? Number(plan.state_version) : plan?.state_version;
-}
-
-function semanticTraceLineageMatches(trace, plan) {
-  return plan.schema === 'npc_step_plan_v1'
-    ? trace.root_turn_id === plan.root_turn_id
-      && trace.working_revision === plan.working_revision
-    : true;
-}
-
-function semanticTraceRequestMatches(trace, request) {
-  if (request.schema === 'npc_action_decision_request_v1') {
-    return validateNpcActionDecisionRequest(request)
-      && matchingIdentity(trace.plan, request)
-      && trace.root_turn_id === request.root_turn_id
-      && trace.working_revision === request.working_revision;
-  }
-  if (request.schema === 'npc_combat_decision_request_v1') {
-    return validateNpcCombatDecisionRequest(request)
-      && validateNpcCombatIntentPlan(trace.plan, request)
-      && trace.npc_ref === request.npc_ref.entity_id
-      && trace.committed_state_version === Number(request.state_version);
-  }
-  return validateNpcConversationResponseRequest(request)
-    && validateConversationContributionPlan(trace.plan, request)
-    && trace.npc_ref === request.npc_ref.entity_id
-    && trace.committed_state_version === request.state_version;
+export function buildNpcSemanticDecisionTrace(value = {}) {
+  return buildNpcSemanticDecisionTraceInternal(value, validateNpcStepPlan);
 }

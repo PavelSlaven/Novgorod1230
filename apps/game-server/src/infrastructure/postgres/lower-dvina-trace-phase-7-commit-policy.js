@@ -4,7 +4,8 @@ import { expected, sealedCheck } from './first-playable/plan-shared.js';
 import { expectedSemanticConversationSession } from
   './lower-dvina-trace-phase-3-commit-support.js';
 
-export function expectedVersions({ partyId, state, factual }) {
+export function expectedVersions({ partyId, state, factual,
+  ownerOperationBatch = null }) {
   const values = [
     expected('parties', partyId, state.party_state.state_version),
     expected('party_server_sessions', partyId,
@@ -35,6 +36,18 @@ export function expectedVersions({ partyId, state, factual }) {
     values.push(expected('party_containers', bag.container_id,
       bag.state_version));
   }
+  for (const containerId of ownerContainerAccessRefs(ownerOperationBatch)) {
+    const container = state.containers.find(
+      ({ container_id: id }) => id === containerId);
+    if (!Number.isInteger(container?.state_version)) {
+      fail('TRACE_PHASE_7_OWNER_CONTAINER_VERSION_MISSING');
+    }
+    if (!values.some(({ target_table: table, id }) =>
+      table === 'party_containers' && id === containerId)) {
+      values.push(expected('party_containers', containerId,
+        container.state_version));
+    }
+  }
   if (factual.consequence.turn10_kind === 'companion_request') {
     values.push(...expectedSemanticConversationSession(
       state,
@@ -42,6 +55,12 @@ export function expectedVersions({ partyId, state, factual }) {
     ));
   }
   return values;
+}
+
+function ownerContainerAccessRefs(batch) {
+  return [...new Set((batch?.operations ?? []).flatMap((fragment) =>
+    fragment?.value?.operation_kind === 'request_container_access'
+      ? [fragment.value.payload.container_ref] : []))];
 }
 
 export function commitRechecks({ partyId, state, factual, phase7Contracts,

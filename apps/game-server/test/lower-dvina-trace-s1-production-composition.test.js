@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { canonicalDigest } from '@rus/materialization';
+import { loadLowerDvinaTraceMaterializationBundle } from
+  '../src/internal/lower-dvina-trace-phase-1a-bundle.js';
 import { loadLowerDvinaTraceSpatialSemanticProfile } from
   '../src/internal/lower-dvina-trace-spatial-semantic-profile.js';
 import { isExactLowerDvinaTraceSpatialSemanticProfile } from
@@ -39,6 +41,39 @@ test('S1 exact profile rejects mismatched structural requirements', async () => 
     assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(s1ProfileBundle(drifted), drifted), false);
   }
 });
+
+test('S1 exact profile accepts inherited revision 25 bundle only with exact S1 pins',
+  async () => {
+    const [loaded, revision24, revision25] = await Promise.all([
+      loadLowerDvinaTraceSpatialSemanticProfile(),
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 24 }),
+      loadLowerDvinaTraceMaterializationBundle({ scenarioDefinitionRevision: 25 })
+    ]);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision24, loaded), true);
+    assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(revision25, loaded), true);
+    for (const [key, pinKey] of [
+      ['action_production_materialization', 'action_production_profile'],
+      ['local_fire_materialization', 'local_fire_profile'],
+      ['spatial_semantic_materialization', 'spatial_semantic_profile']
+    ]) {
+      const expected = structuredClone(revision24.materialization_bindings[key]);
+      const pin = revision24.artifact_pins[pinKey];
+      expected.profile_ref = { path: pin.path,
+        id: revision24[pinKey].profile_id, revision: pin.revision,
+        schema: pin.schema, digest: pin.digest };
+      assert.deepEqual(revision25.materialization_bindings[key], expected);
+    }
+    for (const mutate of [
+      (bundle) => { delete bundle.artifact_pins.spatial_semantic_profile; },
+      (bundle) => { delete bundle.materialization_bindings.spatial_semantic_materialization; },
+      (bundle) => { bundle.materialization_bindings.spatial_semantic_materialization
+        .profile_ref.digest = '0'.repeat(64); }
+    ]) {
+      const tampered = structuredClone(revision25);
+      mutate(tampered);
+      assert.equal(isExactLowerDvinaTraceSpatialSemanticProfile(tampered, loaded), false);
+    }
+  });
 
 test('S1 player-safe projection keeps current committed detail descriptive after reload',
   async () => {
@@ -100,6 +135,11 @@ test('production binding activates S1 only for exact loaded revision 24 profile'
     const inactive = await capturedTraceRuntime(historical);
     assert.equal(inactive.createTurnStepSpatialSemanticResolver, null);
     assert.equal(inactive.spatialSemanticProfile, null);
+    const wrongProfileIdentity = structuredClone(loadedProfile);
+    wrongProfileIdentity.profile.scenario_definition_revision = 25;
+    const wrongProfileRuntime = await capturedTraceRuntime(wrongProfileIdentity);
+    assert.equal(wrongProfileRuntime.createTurnStepSpatialSemanticResolver, null);
+    assert.equal(wrongProfileRuntime.spatialSemanticProfile, null);
   });
 
 test('S1 production boundary rejects hostile envelopes before getters or storage',

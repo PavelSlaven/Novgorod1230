@@ -70,13 +70,17 @@ export function buildCommittedInventoryInput(
 
 export function createCommittedItemMechanicsResolver(
   state,
-  { packingCalculator = null } = {}
+  { packingCalculator = null, actorId = state.actor_id,
+    actorStrength = actorId === state.actor_id
+      ? state.player_profile.attributes.strength.value : null,
+    normalizeNpcHolder = false } = {}
 ) {
-  const committedInput = buildCommittedInventoryInput(state);
+  const inventoryOptions = { actorId, actorStrength, normalizeNpcHolder };
+  const committedInput = buildCommittedInventoryInput(state, inventoryOptions);
   return Object.freeze((ref, { runtimeItems = [], retiredItemRefs = [] } = {}) => {
     const input = runtimeItems.length > 0 || retiredItemRefs.length > 0
       ? buildCommittedInventoryInput(withRuntimeItemOverlay(
-          state, runtimeItems, retiredItemRefs))
+          state, runtimeItems, retiredItemRefs), inventoryOptions)
       : committedInput;
     const itemsById = new Map(input.items.map((item) => [item.item_id, item]));
     const containersById = new Map(input.containers.map((container) =>

@@ -96,7 +96,7 @@ export function allowedNpcContributionReferences(context, {
     refKey(reference), structuredClone(reference)
   ])).values()].sort(compareRefs);
   return {
-    actor_refs: canonical([
+    actor_refs: canonical(context.conversationActorRefs ?? [
       ref('player_character', context.state.actor_id),
       ...context.actualNpcActors.map(({ instance_id: instanceId }) =>
         ref('npc', instanceId))

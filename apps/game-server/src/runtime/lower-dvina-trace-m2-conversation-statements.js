@@ -147,7 +147,7 @@ export function applyNpcPlan(
       ]
     },
     contributionEvent,
-    playerResponseBoundary: ['speech', 'silence'].includes(contributionKind),
+    playerResponseBoundary: playerAddressed(proposal.plan),
     sessionStatus: handoff
       ? 'suspended'
       : contributionKind === 'leave_conversation'
@@ -172,9 +172,7 @@ export function projectNpcPerception(context, working, contributionEvent,
     return applyResult({
       working,
       contributionEvent,
-      playerResponseBoundary: ['speech', 'silence'].includes(
-        contributionEvent.contribution_kind
-      ),
+      playerResponseBoundary: playerAddressed(contributionEvent),
       sessionStatus: contributionEvent.handoff
         ? 'suspended'
         : contributionEvent.contribution_kind === 'leave_conversation'
@@ -184,12 +182,17 @@ export function projectNpcPerception(context, working, contributionEvent,
   }
   const listenerActors = context.actualNpcActors.filter(
     ({ instance_id: instanceId }) => instanceId !== context.targetRef.entity_id
+      && (context.conversationActorRefs == null || context.conversationActorRefs.some(
+        ({ entity_kind, entity_id }) => entity_kind === 'npc' && entity_id === instanceId
+      ))
   );
   const audience = audienceForStatement(
     context,
     contributionEvent,
     listenerActors,
-    [ref('player_character', context.state.actor_id)]
+    context.conversationActorRefs?.some(({ entity_kind, entity_id }) =>
+      entity_kind === 'player_character' && entity_id === context.state.actor_id
+    ) === false ? [] : [ref('player_character', context.state.actor_id)]
   );
   npcOutcome.factualProjection = Object.freeze({
     statement_ref: npcOutcome.statementRef,
@@ -211,10 +214,15 @@ export function projectNpcPerception(context, working, contributionEvent,
       ]
     },
     contributionEvent,
-    playerResponseBoundary: true,
+    playerResponseBoundary: playerAddressed(contributionEvent),
     sessionStatus: 'active',
     handoff: null
   });
+}
+function playerAddressed(contribution) {
+  return contribution.intended_addressee_refs?.some(({ entity_kind, entity_id }) =>
+    entity_kind === 'player_character' && typeof entity_id === 'string'
+  ) ?? false;
 }
 function statementFromPlan({ context, plan, contributionIndex,
   socialDeliveryResult }) {

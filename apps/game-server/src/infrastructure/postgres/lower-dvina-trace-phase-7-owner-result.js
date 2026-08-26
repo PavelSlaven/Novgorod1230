@@ -175,9 +175,23 @@ function validScheduleExecution(schedule, contracts, request, plan,
   const additionalOperations = schedule.additional_semantic_operations ?? [];
   const selectedOutcome = plan.resolution === 'generic_check'
     ? plan.check.outcomes[actorStepCheck?.result?.outcome?.band] : null;
+  const selectedOperations = selectedOutcome?.operations ?? [];
+  const selectedDomain = selectedOperations.filter(({ op }) =>
+    !DIRECT.has(op)
+      && Object.hasOwn(request.decision_scope.operation_contract, op));
   const additionalActivities = selectedOutcome?.additional_activity == null
     ? [] : [selectedOutcome.additional_activity];
-  const possibleAdditionalOperations = additionalActivities.map(
+  const planDomain = plan.operations.filter(({ op }) => !DIRECT.has(op));
+  const actionProduction = plan.resolution === 'domain_request'
+    && planDomain.length === 1
+    && planDomain[0]?.op === 'request_item_use'
+    && planDomain[0]?.action_production != null;
+  const possibleAdditionalOperations = [
+    ...((actionProduction || plan.resolution === 'generic_check'
+      && selectedDomain.length === 1)
+      ? [plan.activity] : []),
+    ...additionalActivities
+  ].map(
     (activity) => ({
       op: 'apply_semantic_activity',
       activity: { owner: 'semantic', ...activity }
@@ -192,7 +206,10 @@ function validScheduleExecution(schedule, contracts, request, plan,
     === canonicalDigest(possibleAdditionalOperations);
   const profileMatch = semantic
     ? ['direct', 'generic_check'].includes(plan.resolution)
-      && plan.operations.length === 0
+      && (plan.resolution !== 'direct'
+        || plan.operations.every(({ op }) => ['create_entity', 'move_entity',
+          'change_entity_facts', 'set_entity_mechanics', 'retire_entity',
+          'apply_body_event'].includes(op)))
       && canonicalDigest(operation.activity) === canonicalDigest(plan.activity)
       && schedule.execution_binding_ref === null
       && schedule.schedule_option_id === null
@@ -200,9 +217,11 @@ function validScheduleExecution(schedule, contracts, request, plan,
       && Number(schedule.exact_elapsed.exact_minutes.numerator)
         === semanticProfile?.duration_minutes + additionalDuration
       && additionalMatch
-    : plan.resolution === 'domain_request'
-      && plan.operations.length === 1
-      && canonicalDigest(operation) === canonicalDigest(plan.operations[0])
+    : (plan.resolution === 'domain_request'
+        ? planDomain : selectedDomain).length === 1
+      && canonicalDigest(operation) === canonicalDigest(
+        (plan.resolution === 'domain_request'
+          ? planDomain : selectedDomain)[0])
       && Object.hasOwn(request.decision_scope.operation_contract, operation.op)
       && (schedule.execution_binding_ref === null
         ? schedule.activity_profile_ref === null
@@ -210,8 +229,13 @@ function validScheduleExecution(schedule, contracts, request, plan,
         : profiles.some((profile) =>
           profile.execution_binding_id === schedule.execution_binding_ref
             && profile.activity_profile_ref === schedule.activity_profile_ref
-            && profile.schedule_option_id === schedule.schedule_option_id));
-  if (!profileMatch || (!semantic && additionalOperations.length !== 0)) {
+          && profile.schedule_option_id === schedule.schedule_option_id));
+  if (!profileMatch || (!semantic && (plan.resolution === 'domain_request'
+    ? actionProduction
+      ? !additionalMatch || Number(schedule.exact_elapsed.exact_minutes.numerator)
+        !== additionalDuration
+      : additionalOperations.length !== 0
+    : selectedDomain.length !== 1 || !additionalMatch))) {
     return false;
   }
   if (semantic && (schedule.movement_proposal || schedule.property_proposal)) {
@@ -239,6 +263,9 @@ function validScheduleExecution(schedule, contracts, request, plan,
   }
   return true;
 }
+
+const DIRECT = new Set(['create_entity', 'move_entity', 'change_entity_facts',
+  'set_entity_mechanics', 'retire_entity', 'apply_body_event']);
 
 function validPinnedMovementShape(proposal, contracts) {
   if (proposal == null) return true;

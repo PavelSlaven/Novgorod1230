@@ -75,9 +75,10 @@ export function requiresFinalTurnStepInventoryValidation({
   const itemOperations = batch.operations.filter(
     ({ target }) => target === 'party_items');
   if (itemOperations.length > 0 && !itemOperations.every(({ value }) =>
-    value?.operation_kind === 'move_entity'
-      && value.payload?.actor_transition?.schema
-        === 'rus.approved_actor_item_transition.v1')) {
+    value?.operation_kind === 'request_container_access'
+      || value?.operation_kind === 'move_entity'
+        && value.payload?.actor_transition?.schema
+          === 'rus.approved_actor_item_transition.v1')) {
     return true;
   }
   const fields = [

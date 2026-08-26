@@ -4,11 +4,15 @@ import { CONVERSATION_PROGRESS_EFFECT_REF } from
 export function conversationContributionSlots(
   context,
   pendingPlayerExecution,
-  pendingNpcExecution
+  pendingNpcExecution,
+  initialNpcDecision = null
 ) {
   const inferred = Math.min(
     context.contracts.conversationBindings.max_contributions_per_exchange,
-    pendingNpcExecution === null
+    initialNpcDecision !== null ? Math.max(1, context.conversationActorRefs?.filter(
+      ({ entity_kind }) => entity_kind === 'npc'
+    ).length ?? 1)
+      : pendingNpcExecution === null
       ? 1 + (pendingPlayerExecution?.plan ?? context.playerPlan)
         .intended_addressee_refs.length
       : Math.max(1, pendingNpcExecution.remaining_responder_refs.length

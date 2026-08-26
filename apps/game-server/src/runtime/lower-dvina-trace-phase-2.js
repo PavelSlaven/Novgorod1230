@@ -1,4 +1,3 @@
-import { canonicalDigest } from '@rus/materialization';
 import { runTurnWorkflow } from '@rus/turn';
 import { buildTracePhase2Registry, resolveTracePhase2InheritedContracts } from './lower-dvina-trace-phase-2-runtime-context.js';
 import { serverError } from '../errors.js';
@@ -15,16 +14,14 @@ import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-co
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
-import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, requiredTraceTurnText, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
+import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
+import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
+import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
 export function createLowerDvinaTracePhase2Runtime({
-  repository,
-  semanticResolver,
-  turnStepModel = null,
-  playerConversationModel = null,
-  npcSemanticModel = null,
-  npcAutonomousModel = null,
-  npcCombatModel = null,
+  repository, semanticResolver, turnStepModel = null,
+  playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
+  npcOwnerCapabilities = [], createNpcOwnerCapabilities = null, npcCombatModel = null,
   actionProducedWeaponClassifier = null,
   playerSafeStateProjector = projectLowerDvinaTracePlayerSafeState,
   narrator,
@@ -48,10 +45,9 @@ export function createLowerDvinaTracePhase2Runtime({
   spatialSemanticProfile = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
-  bundleLoader = ({ scenarioDefinitionRevision }) =>
-    loadLowerDvinaTraceMaterializationBundle({
-      scenarioDefinitionRevision,
-    }),
+  bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
+    scenarioDefinitionRevision,
+  }),
   phase2BundleLoader = loadLowerDvinaTracePhase2Bundle,
 } = {}) {
   validatePhase2RuntimeDependencies({ repository, semanticResolver, narrator, randomSourceFactory, decisionSecret });
@@ -61,15 +57,8 @@ export function createLowerDvinaTracePhase2Runtime({
       return true;
     },
     async submitTurn({ partyId, input = {} }) {
-      const requestId = requiredTraceTurnText(input.request_id, 'TRACE_TURN_REQUEST_ID_REQUIRED');
-      const idempotencyKey = requiredTraceTurnText(input.idempotency_key ?? input.request_id, 'TRACE_TURN_IDEMPOTENCY_KEY_REQUIRED');
-      const rawText = requiredTraceTurnText(input.raw_text, 'TRACE_TURN_RAW_TEXT_REQUIRED');
-      const inputDigest = canonicalDigest({
-        party_id: partyId,
-        request_id: requestId,
-        idempotency_key: idempotencyKey,
-        raw_text: rawText,
-      });
+      const { requestId, idempotencyKey, rawText, inputDigest } =
+        buildTracePhase2TurnRequest({ partyId, input });
       const executeAttempt = async () => {
         let replay = await repository.loadPhase2Replay({
           partyId,
@@ -99,8 +88,7 @@ export function createLowerDvinaTracePhase2Runtime({
           scenarioDefinitionRevision,
           playerConversationModel,
           npcSemanticModel,
-          npcAutonomousModel,
-          npcCombatModel,
+          npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
         const bundle = await bundleLoader({ scenarioDefinitionRevision });
         const contracts = resolveTracePhase2Contracts({
@@ -110,12 +98,23 @@ export function createLowerDvinaTracePhase2Runtime({
         });
         const activeSpatialSemanticProfile = isExactLowerDvinaTraceSpatialSemanticProfile(bundle, spatialSemanticProfile) ? spatialSemanticProfile : null;
         const { phase3Contracts, phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts } = resolveTracePhase2InheritedContracts({ state, bundle });
+        const createBoundaryNpcOwnerCapabilities =
+          typeof createNpcOwnerCapabilities !== 'function' ? null : (boundary) =>
+            createNpcOwnerCapabilities({ partyId, requestId, inputDigest, state,
+              bundle, phase7Contracts, npcCombatModel, revalidateStateVersion,
+              ...boundary });
         const genericOwners = bundle.turn_step_owner_profiles
           ? createLowerDvinaTraceTurnStepGenericOwners({
               profiles: bundle.turn_step_owner_profiles,
               artifactPin: bundle.artifact_pins.turn_step_owner_profiles,
             })
           : null;
+        const createBoundaryNpcDirectOperations = phase7Contracts == null ? null : (boundary) => createLowerDvinaTraceNpcActorStepDirectOperations({
+              state, phase7Contracts, ...boundary,
+              ordinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+              packingCalculator: turnStepPackingCalculator, bodyEventOwner: genericOwners?.bodyEventOwner,
+              createAmbientOrdinaryPortionAdmission: createTurnStepAmbientOrdinaryPortionAdmission
+            });
         const turnRandomSource = randomSourceFactory({
           party_id: partyId,
           request_id: requestId,
@@ -137,8 +136,7 @@ export function createLowerDvinaTracePhase2Runtime({
           temporalAdvanceOwner,
           revalidateStateVersion,
         });
-        const phase8Contracts = phase8?.contracts ?? null,
-          phase9 = createTracePhase9Runtime({
+        const phase8Contracts = phase8?.contracts ?? null, phase9 = createTracePhase9Runtime({
             state,
             bundle,
             conversationBindings: phase3Contracts?.conversationBindings,
@@ -149,7 +147,7 @@ export function createLowerDvinaTracePhase2Runtime({
             revalidateStateVersion,
           }),
           phase9Contracts = phase9?.contracts ?? null;
-        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
+        const phase10Contracts = [18, 19, 20, 21, 22, 23, 24, 25].includes(bundle.definition_revision) ? resolveTracePhase10Contracts({ bundle }) : null;
         const turn10 = createTraceTurn10Runtime({
           state,
           bundle,
@@ -183,6 +181,9 @@ export function createLowerDvinaTracePhase2Runtime({
           inputDigest,
           localFireProfile,
           npcAutonomousModel,
+          npcOwnerCapabilities,
+          createBoundaryNpcOwnerCapabilities,
+          createBoundaryNpcDirectOperations,
           npcCombatModel,
           npcDecisionSelector,
           npcSemanticModel,
@@ -196,6 +197,7 @@ export function createLowerDvinaTracePhase2Runtime({
           phase9,
           playerConversationModel,
           randomSourceFactory,
+          runNpcConversationExchange,
           repository,
           requestId,
           revalidateStateVersion,
@@ -259,10 +261,10 @@ export function createLowerDvinaTracePhase2Runtime({
               createTurnStepOrdinaryDiscoveryResolver,
               createTurnStepOrdinaryContainerContentsResolver,
               ordinaryDiscoveryEnablementMarker,
-              createTurnStepActionProductionOwner: [21, 22, 23, 24].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null,
-              actionProductionProfile: [21, 22, 23, 24].includes(bundle.definition_revision) ? actionProductionProfile : null,
-              createTurnStepWorldProcessResolver: [22, 23, 24].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
-              localFireProfile: [22, 23, 24].includes(bundle.definition_revision) ? localFireProfile : null,
+              createTurnStepActionProductionOwner: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null,
+              actionProductionProfile: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? actionProductionProfile : null,
+              createTurnStepWorldProcessResolver: [22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
+              localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
               createTurnStepSpatialSemanticResolver:
                 activeSpatialSemanticProfile == null
                   ? null : createTurnStepSpatialSemanticResolver,

@@ -16,6 +16,8 @@ import {
 } from './npc-semantic-conversation-writes.js';
 import { appendKnowledge } from
   './lower-dvina-trace-phase-3-conversation-writes.js';
+import { appendPhase7ConversationWrites } from
+  './lower-dvina-trace-phase-7-conversation-writes.js';
 
 export function phase7VisibleEnvelope({ partyId, nextVersion, turnNumber,
   changeSetId, idemId, factual, visibleContext, phase7Contracts }) {
@@ -162,6 +164,8 @@ export function phase7Writes({ partyId, state, next, factual, turnNumber,
     rootTurnId: phase7.autonomous.request.root_turn_id,
     workingRevision: phase7.autonomous.request.working_revision
   });
+  appendPhase7ConversationWrites({ inserts, updates, appends, partyId, state,
+    next, phase7, changeSetId, idemId });
   appendTurn10ConversationWrites({
     inserts, updates, appends, partyId, state, next, factual,
     changeSetId, idemId

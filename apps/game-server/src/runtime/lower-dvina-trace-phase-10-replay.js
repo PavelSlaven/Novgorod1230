@@ -8,7 +8,7 @@ export async function completePendingTracePhase10Replay({ partyId,
   idempotencyKey, replay, repository, bundleLoader }) {
   if (!tracePhase10Pending(replay.state)) return replay;
   const revision = committedTraceScenarioDefinitionRevision(replay.state);
-  if (![18, 19, 20, 21, 22, 23, 24].includes(revision)) return replay;
+  if (![18, 19, 20, 21, 22, 23, 24, 25].includes(revision)) return replay;
   const bundle = await bundleLoader({ scenarioDefinitionRevision: revision });
   const phase10Contracts = resolveTracePhase10Contracts({ bundle });
   if (typeof repository.commitPhase10FollowUp !== 'function') {

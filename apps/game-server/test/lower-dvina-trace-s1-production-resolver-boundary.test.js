@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { projectLowerDvinaTraceS1Capability } from
+import { projectLowerDvinaTraceNpcS1Capability,
+  projectLowerDvinaTraceS1Capability } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
 import { createLowerDvinaTraceS1ProductionResolverFactory } from
   '../src/runtime/releases/lower-dvina-trace-s1-production.js';
@@ -24,6 +25,21 @@ test('exhausted S1 envelope exposes no resolver marker or model path', async () 
   await assert.rejects(() => resolver(request), { code: 'TRACE_S1_SCOPE_INVALID' });
   assert.equal(reads, 1, 'replay lookup remains read-only');
   assert.equal(modelCalls, 0);
+});
+
+test('NPC S1 projects saved refs only with source-backed NPC evidence', () => {
+  const committedState = { position: { position_id: 'position:s1' },
+    spatial_semantic: [{ status: 'committed', envelope_ref: 'envelope:s1',
+      capacity_total: 2, consumed_count: 2, envelope: { position_ref: 'position:s1' },
+      resolutions: [s1Resolution('s1-local:shore', 'Коряга', 'Сырая коряга у воды.'),
+        s1Resolution('s1-local:private', 'Тайник', 'Скрытая private detail.')] }] };
+  const projected = projectLowerDvinaTraceNpcS1Capability({ resolverAvailable: true,
+    committedState, npcSnapshot: { perception_snapshot: { visible_objects: [{
+      entity_ref: { entity_id: 's1-local:shore' }, source_perception_ref: 'p:shore' },
+    { entity_ref: { entity_id: 's1-local:private' } }] } } });
+  assert.deepEqual(projected.visible_objects.map(({ entity_ref: ref }) => ref.entity_id),
+    ['s1-local:shore']);
+  assert.deepEqual(projected.known_context, ['Коряга: Сырая коряга у воды.']);
 });
 
 test('S1 local movement reuses committed visible detail without model', async () => {
@@ -107,4 +123,8 @@ function s1Request({ target = 'position:s1', position = 'position:s1', requestId
     actor: { actor_id: 'actor:s1' }, working_projection: {},
     committed_state: { party_state: { turn_number: 4 },
       position: { position_id: position } } };
+}
+function s1Resolution(local_ref, name, description) {
+  return { local_ref, position_ref: 'position:s1', semantics: {
+    name, description, kind: 'local_natural_feature' } };
 }

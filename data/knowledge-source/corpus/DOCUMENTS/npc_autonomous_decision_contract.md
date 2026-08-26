@@ -1,13 +1,13 @@
 # Контракт автономных решений и действий NPC
 
-**Статус:** `active`, production contract Phase 7 / `spatial-v3-production-v5`\
+**Статус:** `active`, production contract Phase 7; initial activation — `spatial-v3-production-v5`, current actor-step cutover — `spatial-v3-production-v13`\
 **Идентификатор:** `npc_autonomous_decision_contract_v1`\
 **Владелец решения NPC:** `@rus/npc-runtime`\
 **Владелец оркестрации и общего actor-step:** `@rus/turn`\
 **Проект:** «Русь XIII век» / `PavelSlaven/Novgorod1230`\
-**Дата подготовки:** 2026-08-02\
-**База сверки:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`\
-**Учтён PR:** №51, слит в `main` 2026-08-02\
+**Историческая дата подготовки:** 2026-08-02\
+**Историческая база первой активации:** `main`, commit `0a21ffd45fcbbf7dfe5706e36098f3f207b7318f`, PR №51\
+**Текущая редакция/cutover:** 2026-08-25, Lower Dvina Trace revision 25 / M13 / Phase 1A v21 / Phase 1B v20 / `spatial-v3-production-v13`\
 **Связанный active-контракт игрока:** `turn_step_llm_contract.md`
 
 ## 1. Назначение
@@ -87,6 +87,14 @@ code-owned. Этот autonomous mode не разрешает combat: отдел�
 active revision 21 / M9 / Phase 1A v17 / Phase 1B v16. Revision 20 /
 production v9 сохраняется как historical recovery path; A1 cutover не меняет
 этот autonomous NPC owner.
+Revision 25 / M13 / Phase 1A v21 / Phase 1B v20 /
+`spatial-v3-production-v13` публикует approved Phase-7 autonomous actor-step
+profile: существующая boundary Жданко — первый текущий activation participant/probe.
+Runtime path допускает
+зарегистрированные и применимые к current state операции и NPC-safe current
+refs, без whitelist actions/refs/owners и специальной action logic Жданко.
+Это direct non-selectable child v12; S1 остаётся отдельным prepared gate и
+runtime-catalog activation не меняется.
 
 ## 4. Архитектурные владельцы
 
@@ -792,11 +800,14 @@ LLM не может объявить:
 - `decision_reasons.perceived_changes` кратко описывает агрегированные source events с точки зрения NPC и не вводит новые trigger types.
 - Ошибочное убеждение находится в `beliefs`, а не в `known_facts`.
 - В `available_resources` входят только известные и доступные NPC сущности.
-  Контролируемый NPC ресурс считается известным; чужой ресурс требует и
-  физической доступности, и persisted source-backed perception/knowledge,
-  ссылающегося на exact resource ref.
-- Belief, hypothesis или uncertainty сами по себе не доказывают наличие и
-  положение чужого ресурса и не добавляют его в `available_resources`.
+  Непосредственно удерживаемый NPC ресурс имеет direct basis. Любой
+  не удерживаемый ресурс, включая контролируемый NPC, требует и физической
+  доступности, и persisted source-backed subjective perception/knowledge,
+  ссылающегося на exact resource ref. Concealed ресурс fail-closed не входит
+  в `available_resources`.
+- Belief, hypothesis, uncertainty, location или access сами по себе не
+  доказывают наличие и положение не удерживаемого ресурса и не добавляют его
+  в `available_resources`.
 - `allowed_attribute_refs` и `allowed_skill_refs` ограничивают generic check.
 - `operation_contract` содержит только реально поддерживаемые operations текущего runtime.
 - Отсутствующее поле личности не заполняется LLM как постоянная черта.
@@ -916,13 +927,24 @@ LLM не может объявить:
 }
 ```
 
-Для domain-owned действия:
+Для domain-owned действия, кроме `request_item_use.action_production`:
 
 ```json
 {
   "owner": "domain",
   "duration_class": null,
   "effort": null
+}
+```
+
+`request_item_use.action_production` остаётся одним domain request, но использует
+semantic activity, как player A1:
+
+```json
+{
+  "owner": "semantic",
+  "duration_class": "moment | brief | short | extended",
+  "effort": "none | light | moderate | heavy | extreme"
 }
 ```
 

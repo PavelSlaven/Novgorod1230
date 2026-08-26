@@ -10,30 +10,27 @@ import {
 import { npcActorSteps } from '@rus/turn/temporal-advance';
 import { createTracePhase7DomainExecution } from
   './lower-dvina-trace-phase-7-domain-owners.js';
+import { phase7ActorStepOwnerOutputs } from './lower-dvina-trace-phase-7-owner-registry.js';
 
-export function createTracePhase7ActorStepRuntime({
-  state,
-  contracts,
-  temporal,
-  semanticActivityScheduleOwner,
-  genericCheckContextOwner,
-  localFireProfile,
-  worldProcessResolver,
-  projectNpcWorldProcessCapability,
-  randomSource
-}) {
+export function createTracePhase7ActorStepRuntime({ state, contracts, temporal,
+  semanticActivityScheduleOwner, genericCheckContextOwner, localFireProfile,
+  worldProcessResolver, projectNpcWorldProcessCapability, npcOwnerCapabilities,
+  directHandlers = {}, directOperationContract = {}, priorLocalFirePlans = [], randomSource }) {
   const npc = liveNpc(state, contracts.zhdanko);
   const worldProcessContract =
     typeof projectNpcWorldProcessCapability === 'function'
       ? projectNpcWorldProcessCapability({ committedState: state,
           npcSnapshot: npc, loadedProfile: localFireProfile,
-          resolverAvailable: typeof worldProcessResolver === 'function' })
+          resolverAvailable: typeof worldProcessResolver === 'function',
+          priorLocalFirePlans })
       : null;
   const domainExecution = createTracePhase7DomainExecution({
     state, contracts, temporal, semanticActivityScheduleOwner,
-    worldProcessResolver, worldProcessContract
+    worldProcessResolver, worldProcessContract, npcOwnerCapabilities,
+    directHandlers, directOperationContract
   });
   const registry = createTurnStepExecutionRegistry({
+    direct: domainExecution.direct_handlers,
     domain: domainExecution.handlers,
     applySemanticActivity: domainExecution.semantic_activity_handler,
     operationContract: domainExecution.operation_contract
@@ -45,9 +42,11 @@ export function createTracePhase7ActorStepRuntime({
           genericCheckContextOwner.resolve({
             check, actor, working_projection: projection
           }),
+    preflightActionProduction: domainExecution.preflight_action_production,
     randomSource
   });
-  return Object.freeze({ registry, ports });
+  return Object.freeze({ registry, ports,
+    registeredOwnerOutput: domainExecution.registered_owner_output });
 }
 
 export async function executeTracePhase7SchedulePlan({
@@ -55,7 +54,8 @@ export async function executeTracePhase7SchedulePlan({
   contracts,
   temporal,
   autonomous,
-  actorStepRuntime
+  actorStepRuntime,
+  priorLocalFirePlans = []
 }) {
   if (autonomous.proposal.status === 'domain_rejected') {
     return Object.freeze({
@@ -71,6 +71,7 @@ export async function executeTracePhase7SchedulePlan({
     workingProjection: checkWorkingProjection(
       temporal.projection, state, contracts, autonomous.proposal.plan),
     preparedChainContext: null,
+    priorLocalFirePlans,
     registry: actorStepRuntime.registry,
     ports: actorStepRuntime.ports
   });
@@ -84,6 +85,8 @@ export async function executeTracePhase7SchedulePlan({
     result: structuredClone(result),
     local_fire_atomic_write_plans: structuredClone(
       execution.local_fire_atomic_write_plans ?? []),
+    owner_outputs: phase7ActorStepOwnerOutputs(execution,
+      actorStepRuntime.registeredOwnerOutput()),
     check: execution.checkResult == null ? null : {
       request: structuredClone(execution.checkRequest),
       result: structuredClone(execution.checkResult)
@@ -94,16 +97,21 @@ export async function executeTracePhase7SchedulePlan({
 function actorStepRequest(request, contracts, state, plan, occurredAt) {
   const npc = liveNpc(state, contracts.zhdanko);
   const context = contracts.genericCheckContext ?? {};
-  const body = plan.resolution === 'generic_check'
-    ? authoritativeNpcCheckBody(npc)
-    : {};
+  const mechanics = contracts.npcSemanticProfile?.actor_mechanics_context ?? {};
+  const needsBody = plan.resolution === 'generic_check'
+    || plan.operations?.some(({ op }) => op === 'apply_body_event');
+  const body = needsBody ? authoritativeNpcCheckBody(npc) : {};
   return {
     ...structuredClone(request),
+    change_set_id: `change:${state.party_id}:trace-phase7:${
+      state.party_state.turn_number + 1}`,
     step_index: request.decision_index,
     occurred_at: structuredClone(occurredAt),
     actor: {
       actor_id: npc.instance_id,
-      attributes: ratedMap(context.attributes, 'attribute_ref', 'value'),
+      attributes: ratedMap([
+        ...(mechanics.attributes ?? []), ...(context.attributes ?? [])
+      ], 'attribute_ref', 'value'),
       skills: ratedMap(context.skills, 'skill_ref', 'bonus'),
       body: structuredClone(body)
     }
@@ -160,18 +168,21 @@ function authoritativeNpcLoadCategory(npc) {
 }
 
 function finalActorStepConsequence(fragments) {
-  if (fragments.length === 1) return fragments[0];
-  if (fragments.length !== 2) return null;
-  const [base, composed] = fragments;
-  const additional = composed?.additional_semantic_operations;
-  return base?.semantic_operation?.op === 'apply_semantic_activity'
-    && composed?.semantic_operation?.op === 'apply_semantic_activity'
+  const actorSteps = fragments.filter((fragment) =>
+    fragment?.semantic_operation?.op != null);
+  if (actorSteps.length === 1) return actorSteps[0];
+  const [base, ...composed] = actorSteps;
+  const result = composed.at(-1);
+  const additional = result?.additional_semantic_operations;
+  return composed.every((entry, index) =>
+    canonicalDigest(base?.semantic_operation)
+      === canonicalDigest(entry?.semantic_operation)
+    && Array.isArray(entry?.additional_semantic_operations)
+    && entry.additional_semantic_operations.length === index + 1)
     && Array.isArray(additional)
-    && additional.length === 1
-    && canonicalDigest(base.semantic_operation)
-      === canonicalDigest(composed.semantic_operation)
-      ? composed
-      : null;
+    && additional.every(({ op }) => op === 'apply_semantic_activity')
+    ? result
+    : null;
 }
 
 function ratedMap(entries, refKey, numericKey) {

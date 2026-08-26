@@ -72,10 +72,11 @@ export function assertChangeSetLineage(sessions, statements, decisions, contribu
       decision.semantic_request.conversation_id === statement.conversation_id
         && decision.semantic_request.exchange_id === statement.exchange_id
         && decision.change_set_id === statement.change_set_id);
-  }) || sessions.some((session) =>
-    latestByConversation.get(session.conversation_id)?.change_set_id
-      !== session.updated_change_set_id
-  )) fail();
+  }) || sessions.some((session) => {
+    const latest = latestByConversation.get(session.conversation_id);
+    return latest ? latest.change_set_id !== session.updated_change_set_id
+      : Number(session.state_version) !== 1 || session.last_contribution_ref !== null;
+  })) fail();
 }
 export function assertSessions(payload, rows) {
   const expected = sorted(

@@ -65,6 +65,10 @@ export function createRuntimeInstanceMechanicsSnapshot(value) {
   return deepFreeze(structuredClone(value));
 }
 
+export function validateRuntimeInstanceMechanics(value) {
+  return validMechanics(value);
+}
+
 /** Validates the committed O1 snapshot without widening direct-action v1. */
 export function createOrdinaryWorldRuntimeInstanceMechanicsSnapshot(value) {
   if (!exactObject(value, SNAPSHOT_FIELDS)

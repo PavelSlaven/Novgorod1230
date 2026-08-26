@@ -199,7 +199,9 @@ function versioned(entityKind, entityId, authoringVersion) {
   };
 }
 
-export function conversationExchangeDurationMinutes(context) {
+export function conversationExchangeDurationMinutes(context,
+  initialNpcDecision = false) {
+  if (initialNpcDecision) return exactDurationMinutes(context);
   if (context.playerPlan?.activity?.duration_class !== 'domain_owned') {
     fail('TRACE_M2_CONVERSATION_DURATION_CLASS_INVALID');
   }

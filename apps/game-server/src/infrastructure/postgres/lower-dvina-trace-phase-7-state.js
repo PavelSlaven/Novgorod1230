@@ -1,7 +1,7 @@
 import { canonicalDigest } from '@rus/materialization';
 import { buildNpcSemanticDecisionTrace } from '@rus/npc-runtime';
 import { commitPhase2BodyState } from './lower-dvina-trace-phase-2-state.js';
-import { semanticDecisionTraceReference } from
+import { projectSemanticConversationSnapshot, semanticDecisionTraceReference } from
   './lower-dvina-trace-conversation-state.js';
 import { applyTurn10CompanionState } from
   './lower-dvina-trace-turn-10-state.js';
@@ -13,6 +13,8 @@ import {
 } from '../../runtime/lower-dvina-trace-phase-7-state-projection.js';
 import { tracePhase7ActorStep } from
   '../../runtime/lower-dvina-trace-phase-7-schedule-execution.js';
+import { projectLowerDvinaTraceNpcActorStepModeHandoff } from
+  '../../runtime/lower-dvina-trace-npc-actor-step-mode-handoffs.js';
 
 export function nextPhase7State({ state, factual, nextVersion, turnNumber,
   changeSetId, inputDigest, turn10Contracts = null }) {
@@ -79,6 +81,28 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     activeActorStep: tracePhase7ActorStep(
       phase7.schedule_temporal.projection, phase7.actor_step)
   });
+  next.active_npc_actor_steps = structuredClone(
+    phase7.schedule_temporal.projection.active_npc_actor_steps ?? []);
+  applyNpcDirectBodyState(next, phase7);
+  next = projectLowerDvinaTraceNpcActorStepModeHandoff({ state: next,
+    consequenceFragment: phase7.actor_step_owner_outputs?.consequence_fragment,
+    semanticOperation: phase7.schedule_execution.semantic_operation,
+    changeSetId });
+  const conversation = phase7ConversationExchange(phase7);
+  if (conversation != null) {
+    next = projectSemanticConversationSnapshot({ state: next,
+      semanticExchange: conversation,
+      rootTurnId: autonomous.request.root_turn_id,
+      workingRevision: autonomous.request.working_revision,
+      appliedChangeSetId: changeSetId });
+    if (conversation.exchange.stop_reason === 'player_response') {
+      next.player_response_boundary = {
+        kind: 'conversation',
+        conversation_id: conversation.exchange.conversation_id,
+        exchange_id: conversation.exchange.exchange_id
+      };
+    }
+  }
   next.phase7_fire_rest = {
     schema: 'rus.lower_dvina_trace_phase_7_state.v1',
     status: restCompleted ? 'completed' : 'paused',
@@ -151,6 +175,31 @@ export function nextPhase7State({ state, factual, nextVersion, turnNumber,
     });
   }
   return next;
+}
+
+function phase7ConversationExchange(phase7) {
+  const change = phase7.actor_step_owner_outputs?.consequence_fragment
+    ?.state_changes?.find(({ mode_handoff: handoff }) =>
+      handoff?.mode === 'conversation');
+  return change?.mode_handoff?.result ?? null;
+}
+
+function applyNpcDirectBodyState(next, phase7) {
+  const bodyEvents = phase7.actor_step_owner_outputs?.write_fragments
+    ?.filter(({ value }) => value?.operation_kind === 'apply_body_event') ?? [];
+  if (bodyEvents.length === 0) return;
+  if (bodyEvents.length !== 1) fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  const event = bodyEvents[0].value;
+  const actor = phase7.autonomous.request.npc_ref;
+  if (event?.payload?.actor_ref !== actor || event.payload?.payload?.state_after == null) {
+    fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  }
+  const index = next.npcs.findIndex(({ instance_id }) => instance_id === actor);
+  if (index < 0) fail('TRACE_PHASE_7_NPC_BODY_EVENT_INVALID');
+  const body = structuredClone(event.payload.payload.state_after);
+  next.npcs[index] = { ...next.npcs[index], check_body_state:
+    body, machine_state: { ...next.npcs[index].machine_state,
+      check_body_state: body } };
 }
 
 function appendUnique(current = [], additions = [], identity, code) {

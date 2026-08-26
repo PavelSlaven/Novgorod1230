@@ -1,0 +1,171 @@
+{
+  "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+  "binding_set_id": "lower_dvina_trace_phase_1a_materialization_bindings_v21",
+  "revision": 21,
+  "status": "approved",
+  "scenario_id": "lower_dvina_trace_v1",
+  "scenario_definition_revision": 25,
+  "superseded_binding_ref": {
+    "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-1a-v20/materialization-bindings.json",
+    "id": "lower_dvina_trace_phase_1a_materialization_bindings_v20",
+    "revision": 20,
+    "schema": "rus.lower_dvina_trace_phase_1a_materialization_bindings.v1",
+    "digest": "60ef3d186e1d558b4a77d233c7a3e66c661f3765afe4fd749f8fe927776d966c"
+  },
+  "binding_resolution_policy": "reuse_exact_revision_23_materialization_and_prepare_fishing_camp_on_first_entry_or_fail_closed",
+  "fallback_policy": "forbidden",
+  "normalization_policy": "forbidden",
+  "action_production_materialization": {
+    "runtime_owner": "@rus/items-property",
+    "semantic_owner": "@rus/turn",
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m9-content/action-production-profile.json",
+      "id": "lower_dvina_trace_a1_open_physical_action_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_action_production_profile.v1",
+      "digest": "ba3a5feb6435f471347a8e0b868a2714f2fa59ae4c349a9acaf46285b60fa694"
+    },
+    "authority_provisioning": "atomic_new_game_stage_25",
+    "fallback_policy": "forbidden"
+  },
+  "local_fire_materialization": {
+    "process_owner": "@rus/world-processes",
+    "time_owner": "@rus/time-events-history",
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m10-content/local-fire-profile.json",
+      "id": "lower_dvina_trace_f1_local_exact_fire_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_local_fire_profile.v1",
+      "digest": "6c727734d452714cbf69404e1b506d09f06321da703abb72bb549572621e988a"
+    },
+    "input_admission": "current_item_owner_state",
+    "water_extinguish": "semantic_existing_whole_portion",
+    "fallback_policy": "forbidden"
+  },
+  "spatial_semantic_materialization": {
+    "persistence_owner": "P16_combined_atomic_committer",
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m12-content/spatial-semantic-profile.json",
+      "id": "lower_dvina_trace_s1_spatial_semantic_profile_v3",
+      "revision": 3,
+      "schema": "rus.lower_dvina_trace_spatial_semantic_profile.v1",
+      "digest": "6f098af0e8be7a5acff46a270668b71055add42e535ff376578785a715159f86"
+    },
+    "authority_provisioning": "atomic_new_game_first_entry_p16",
+    "fallback_policy": "forbidden"
+  },
+  "first_entry_preparation": {
+    "route_command_id": "lower_dvina_trace.follow_path_to_fishing_camp",
+    "route_ref": "trace_ld_v1_route_wreck_to_camp",
+    "materialization_timing": "on_first_successful_entry_only",
+    "source": {
+      "location_profile_ref": "trace_ld_v1_loc_wreck_shore",
+      "canonical_g5_ref": {
+        "entity_ref": {
+          "entity_kind": "canonical_spatial_node",
+          "entity_id": "trace_ld_v1_g5_wreck_shore"
+        },
+        "authoring_version": "1"
+      },
+      "materialization_profile_ref": {
+        "entity_ref": {
+          "entity_kind": "scene_materialization_profile",
+          "entity_id": "trace_ld_v1_smp_wreck_shore"
+        },
+        "authoring_version": "1"
+      }
+    },
+    "destination": {
+      "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+      "g4_node_ref": "g4v3__gn_nov_g3_xp017_yp026_r2_vikhtuy_river_approach",
+      "g5": {
+        "canonical_ref": {
+          "entity_ref": {
+            "entity_kind": "canonical_spatial_node",
+            "entity_id": "trace_ld_v1_g5_fishing_camp"
+          },
+          "authoring_version": "1"
+        },
+        "materialization_profile_ref": {
+          "entity_ref": {
+            "entity_kind": "scene_materialization_profile",
+            "entity_id": "trace_ld_v1_smp_fishing_camp"
+          },
+          "authoring_version": "1"
+        },
+        "origin": "canonical"
+      },
+      "scene_baseline": {
+        "profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "status": "prepare_on_first_entry"
+      },
+      "g6": {
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "materialization_profile": "trace_ld_v1_smp_fishing_camp",
+        "status": "prepare_on_first_entry",
+        "s1_topology_slot": {
+          "source_scene_template_ref": {
+            "entity_ref": {
+              "entity_kind": "scene_template",
+              "entity_id": "trace_ld_v1_tpl_fishing_camp"
+            },
+            "authoring_version": "1"
+          },
+          "g6_slot_key": "s1_open_one_space",
+          "position_slot_key": "s1_open_one_space.interior",
+          "movement_edge_slot_keys": [
+            "s1_open_one_space.out",
+            "s1_open_one_space.back"
+          ],
+          "visibility_link_slot_keys": [
+            "s1_open_one_space.visible_out",
+            "s1_open_one_space.visible_back"
+          ]
+        }
+      },
+      "entry_position": {
+        "position_kind": "scene_position",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp"
+      }
+    },
+    "authored_initial_npc_placements": [
+      {
+        "participant_slot_ref": "eremey_fisher",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "scene"
+      },
+      {
+        "participant_slot_ref": "background_fisher_1",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "background"
+      },
+      {
+        "participant_slot_ref": "background_fisher_2",
+        "location_profile_ref": "trace_ld_v1_loc_fishing_camp",
+        "scene_template_ref": "trace_ld_v1_tpl_fishing_camp",
+        "position_profile_ref": "trace_ld_v1_g5_anchor_fishing_camp_working_camp_v1",
+        "zone_ref": "working_camp",
+        "materialization_depth": "background"
+      }
+    ]
+  },
+  "npc_actor_step_activation": {
+    "profile_ref": {
+      "path": "data/world-catalogs/novgorod/lower-dvina-trace-v1/phase-m13-content/npc-actor-step-profile.json",
+      "id": "lower_dvina_trace_npc_actor_step_profile_v1",
+      "revision": 1,
+      "schema": "rus.lower_dvina_trace_npc_actor_step_profile.v1",
+      "digest": "2b0ce389f10913982d5667cf0f1bf01f9292eab47f5d63a497737a430aaa950d"
+    },
+    "fallback_policy": "forbidden"
+  }
+}

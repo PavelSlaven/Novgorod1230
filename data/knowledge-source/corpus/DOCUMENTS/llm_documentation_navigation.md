@@ -92,6 +92,16 @@ keys. В пределах finite code-owned envelope model supplies open ordinar
 semantic detail; server лишь P16-revalidates и SQL-commits owner proposal.
 N1 и unrelated profiles не активируются.
 
+Revision 25 / M13 / Phase 1A v21 / Phase 1B v20 /
+`spatial-v3-production-v13` — прямой non-selectable child v12. Он публикует
+approved NPC actor-step Phase-7 profile: существующая boundary Жданко — первый
+текущий activation participant/probe. Runtime NPC actor-step — общий текущий actor-step
+owner-capability path: он допускает зарегистрированные и применимые к current
+state операции и NPC-safe current refs, без whitelist actions/refs/owners и
+специальной action logic Жданко. S1 остаётся в отдельном prepared revision-24
+gate. Runtime-catalog activation этим release не меняется, а v12/revision-24
+artifacts остаются immutable historical paths.
+
 Active player contract остаётся единственной semantic boundary свободной
 заявки игрока после exact fast path. Revision 14 дополнительно активирует
 conversation path: общие `npc_decision_signal_v1` и

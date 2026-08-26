@@ -163,6 +163,24 @@ test('A1 generic check preflights every qualitative outcome before RNG',
     assert.deepEqual(calls, { activities: 0, rng: 0, preflight: 1 });
   });
 
+test('A1 generic check omits non-A1 outcomes from preflight', async () => {
+  const calls = { activities: 0, rng: 0, preflight: 0 };
+  const exactPorts = ports(calls);
+  exactPorts.preflightActionProduction = async ({ operations }) => {
+    calls.preflight += 1;
+    assert.equal(operations.length, 4);
+    assert.equal(operations.every((operation) =>
+      operation.op === 'request_item_use' && operation.action_production != null), true);
+  };
+  const plan = genericPlan();
+  plan.check.outcomes.failure_with_consequence.operations = [];
+  await executeTurnStepActorStep({ plan, request, workingProjection: {},
+    preparedChainContext: chainContext(), preparedOrdinaryPlan: null,
+    preparedActionProductionPlans: [], registry: registry(calls), ports: exactPorts
+  });
+  assert.equal(calls.preflight, 1);
+});
+
 test('valid A1 preflight is read once before one generic check', async () => {
   const calls = { activities: 0, rng: 0, preflight: 0 };
   const exactPorts = ports(calls);

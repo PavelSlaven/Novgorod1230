@@ -2,9 +2,10 @@ import { compareRefs, ref, refKey } from
   './lower-dvina-trace-m2-conversation-shared.js';
 
 export function initialConversationParticipantRefs(context) {
-  return canonicalRefs(context.activeSession?.active_participant_refs ?? [
-    ref('player_character', context.state.actor_id)
-  ]);
+  return canonicalRefs(context.conversationActorRefs
+    ?? context.activeSession?.active_participant_refs ?? [
+      ref('player_character', context.state.actor_id)
+    ]);
 }
 
 export function addContributionParticipants(

@@ -22,11 +22,11 @@ import {
 } from '../runtime/load-spatial-v3-bindings.js';
 import { serverError } from '../errors.js';
 import { deriveActivatedReleaseFromReadback } from './production-v2-activation-state.js'; export { deriveActivatedReleaseFromReadback };
-export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v12';
+export const SPATIAL_V3_PRODUCTION_RELEASE_ID = 'spatial-v3-production-v13';
 export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
   release_id: SPATIAL_V3_PRODUCTION_RELEASE_ID,
   composition_id: 'builtin:production-spatial-v3',
-  contract_version: '4.10.0-spatial-semantic.1',
+  contract_version: '4.11.0-npc-semantic.1',
   temporal_contract_id: 'temporal-world-v1.1',
   party_schema_version: 'party_runtime_v3_first_playable',
   world_revision_id:
@@ -53,15 +53,15 @@ export const SPATIAL_V3_PRODUCTION_RELEASE = Object.freeze({
     SPATIAL_V3_TARGET_MIGRATION_CHAIN_DIGEST,
   authoritative_reads: 'spatial_v3_only',
   authoritative_writes: 'spatial_v3_only',
-  rollback_source_release_id: 'spatial-v3-production-v11',
+  rollback_source_release_id: 'spatial-v3-production-v12',
   rollback_runtime_selectable: false,
   parent_release_exact_pins: Object.freeze({
     world_revision_id:
-      'novgorod_spatial_v3_production_v4_candidate_001',
+      'novgorod_spatial_v3_production_v5_candidate_001',
     world_catalog_digest:
-      'acbcbba0ceae0b894e879aff097ed077a9b96e0d6d466c98d0d768ac6d3daf79',
+      'e616cdd4b7a09db06b7adb7b3faf2a82e0840d6aa286ad65ebbd97e0b86260ad',
     world_catalog_manifest_sha256:
-      '64511daaf22c234c1c8568c2674f162a23b3b4924e52135a45b05f698f8380cb'
+      '6dcc825732bc745d3eb74ab586f8a0964ad3ede86bcda2adebe3a591902ef85c'
   }),
   boundary_crossing_capability: 'ready_for_runtime_acceptance',
   npc_conversation_capability: 'ready_for_runtime_acceptance',

@@ -18,8 +18,9 @@ import { resolveTracePhase7Contracts } from './lower-dvina-trace-phase-7-contrac
 
 export function resolveTracePhase2InheritedContracts({ state, bundle }) {
   const revision = bundle.definition_revision;
-  const ready = revision !== 24 || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
-  const enabled = (first) => revision >= first && revision <= 24;
+  const ready = ![24, 25].includes(revision)
+    || state.first_entry_preparation?.spatial_v3?.target?.status === 'prepared';
+  const enabled = (first) => revision >= first && revision <= 25;
   return {
     phase3Contracts: enabled(9) ? resolveTracePhase3Contracts({ state, bundle }) : null,
     phase4Contracts: enabled(10) && ready ? resolveTracePhase4Contracts({ state, bundle }) : null,
@@ -35,11 +36,16 @@ export function buildTracePhase2Registry(context) {
     combatCommand,
     contracts,
     createTurnStepWorldProcessResolver,
+    createBoundaryNpcOwnerCapabilities,
+    createBoundaryNpcDirectOperations,
     genericOwners,
     idempotencyKey,
     inputDigest,
     localFireProfile,
     npcAutonomousModel,
+    npcOwnerCapabilities,
+    directHandlers,
+    directOperationContract,
     npcCombatModel,
     npcDecisionSelector,
     npcSemanticModel,
@@ -53,6 +59,7 @@ export function buildTracePhase2Registry(context) {
     phase9,
     playerConversationModel,
     randomSourceFactory,
+    runNpcConversationExchange,
     repository,
     requestId,
     revalidateStateVersion,
@@ -117,17 +124,28 @@ export function buildTracePhase2Registry(context) {
       ? [
           createTracePhase7FireRestCommand({
             contracts: phase7Contracts,
+            conversationBindings: phase3Contracts?.conversationBindings ?? null,
+            conversationActivity: phase3Contracts?.talk ?? null,
             continuationTargetRefs: turn10?.companionTargetRefs ?? [],
             inputDigest,
             npcAutonomousModel,
             semanticActivityScheduleOwner: genericOwners?.semanticActivityScheduleOwner,
             genericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-            localFireProfile: [22, 23, 24].includes(bundle.definition_revision) ? localFireProfile : null,
+            localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
             worldProcessResolver:
-              [22, 23, 24].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
+              [22, 23, 24, 25].includes(bundle.definition_revision) && typeof createTurnStepWorldProcessResolver === 'function' && localFireProfile?.profile?.status === 'approved'
                 ? createTurnStepWorldProcessResolver({ partyId, requestId, inputDigest })
                 : null,
             projectNpcWorldProcessCapability: projectLowerDvinaTraceF1NpcCapability,
+            npcOwnerCapabilities,
+            directHandlers,
+            directOperationContract,
+            createBoundaryNpcOwnerCapabilities,
+            createBoundaryNpcDirectOperations,
+            runNpcConversationExchange: typeof runNpcConversationExchange !== 'function'
+              ? null
+              : (input) => runNpcConversationExchange({ ...input,
+                revalidateStateVersion }),
             randomSource: turnRandomSource,
             temporalAdvanceOwner,
             revalidateStateVersion,

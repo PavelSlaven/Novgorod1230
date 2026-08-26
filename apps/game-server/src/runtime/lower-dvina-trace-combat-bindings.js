@@ -28,13 +28,16 @@ export function traceCombatBindingForActor(actorId, context) {
   const npc = context.state.npcs?.find(({ instance_id: id }) => id === actorId);
   const slot = npc?.participant_slot_ref;
   const phase8 = context.bindings.phase_8;
-  if (context.session?.scope_ref?.entity_id === phase8?.scope_location_ref) {
+  const scope = context.session?.scope_ref?.entity_id
+    ?? npc?.machine_state?.location_ref ?? npc?.location_profile_ref;
+  if (phase8 != null && scope === phase8.scope_location_ref) {
     if (slot === phase8.actor_slot) return phase8;
     return phase8.participant_roles?.[
       /^background_fisher_[12]$/.test(slot) ? 'participating_fisher' : slot]
       ?? null;
   }
-  return slot === context.bindings.phase_4?.actor_slot
+  return scope === context.bindings.phase_4?.scope_location_ref
+    && slot === context.bindings.phase_4?.actor_slot
     ? context.bindings.phase_4 : null;
 }
 

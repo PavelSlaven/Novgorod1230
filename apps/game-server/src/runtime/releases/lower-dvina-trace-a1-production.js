@@ -1,6 +1,9 @@
 import { createActionProducedTransitionPlanner,
-  resolveActionProducedAllocationMechanics } from
+  resolveActionProducedAllocationMechanics,
+  selectActionProducedPropertySource } from
   '@rus/items-property/action-produced-transition';
+import { actionProducedResultSemanticContract } from
+  '@rus/items-property/action-produced-result';
 import { createActionProducedAtomicWritePlan } from
   '../../infrastructure/postgres/action-produced-atomic-write-plan.js';
 import { loadActionProducedCommittedContext } from
@@ -18,6 +21,14 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   if (!pool?.query) {
     throw new TypeError('A1 production resolver dependencies are required.');
   }
+  const actionProductionContract = Object.freeze({
+    ...actionProducedResultSemanticContract(),
+    max_new_entities: profile.max_new_entities,
+    allowed_identity_modes: Object.freeze([...profile.allowed_identity_modes]),
+    allowed_origins: Object.freeze([...profile.allowed_origins]),
+    allowed_result_classes: Object.freeze([...profile.allowed_result_classes]),
+    allowed_output_classes: Object.freeze([...profile.allowed_output_classes])
+  });
   return ({ partyId, requestId, applyWorkingProjection }) => {
     const load = async (rawEnvelope, requireEvidence) => {
       const envelope = snapshot(rawEnvelope);
@@ -27,7 +38,8 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       const { actorRef, stepIndex, rootTurnId, stateVersion, turnNumber,
         actionRef, qualitative, sourceRefs, toolRefs } = resolveA1OperationScope(
         envelope, envelope.operation, profile, requireEvidence);
-      const changeSetId = `change:${partyId}:turn-step:${turnNumber}`;
+      const changeSetId = resolveChangeSetId({ envelope, partyId, rootTurnId,
+        turnNumber });
       const loaded = await loadActionProducedCommittedContext(pool, {
         party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
         action_ref: actionRef, step_index: stepIndex,
@@ -46,6 +58,47 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         actionRef, qualitative, sourceRefs, toolRefs, changeSetId, loaded };
     };
     return Object.freeze({
+      actionProductionContract,
+      async referencesApplicable(rawInput) {
+        const input = referenceApplicabilityInput(rawInput, partyId, profile);
+        try {
+          await loadActionProducedCommittedContext(pool, input);
+          return true;
+        } catch (error) {
+          if (['ACTION_PRODUCED_ITEM_ACCESS_DENIED',
+            'ACTION_PRODUCED_ITEM_GAP'].includes(error?.code)) return false;
+          throw error;
+        }
+      },
+      async actionProductionCapability(rawInput) {
+        const input = referenceApplicabilityInput(rawInput, partyId, profile);
+        const loaded = await loadActionProducedCommittedContext(pool, input);
+        const source = loaded.source_snapshots[0];
+        const item = loaded.row_pins.find(({ item_id: id }) =>
+          id === source.entity_ref)?.item;
+        const partialAllowed = source.finite_resource === null;
+        return Object.freeze({ partial_independent_allowed: partialAllowed,
+          partial_preserve_secondary_allowed: partialAllowed,
+          removable_physical_fact_refs: currentPhysicalFactRefs(item) });
+      },
+      async referencesJointlyApplicable(rawInput) {
+        if (rawInput?.identity_mode !== 'independent_outputs') {
+          fail('TRACE_A1_SCOPE_INVALID');
+        }
+        const input = referenceApplicabilityInput(rawInput, partyId, profile);
+        try {
+          const loaded = await loadActionProducedCommittedContext(pool, input);
+          selectActionProducedPropertySource(loaded.source_snapshots);
+          return true;
+        } catch (error) {
+          if (['ACTION_PRODUCED_ITEM_ACCESS_DENIED',
+            'ACTION_PRODUCED_ITEM_GAP',
+            'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS'].includes(error?.code)) {
+            return false;
+          }
+          throw error;
+        }
+      },
       async preflight(rawEnvelope) {
         const boundary = snapshot(rawEnvelope);
         if (boundary === INVALID_ACTION_PRODUCED_DATA) {
@@ -106,6 +159,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           return Object.freeze({
             working_projection: structuredClone(envelope.working_projection),
             summary: 'action_production:no_useful_result', write_fragments: [],
+            duration_minutes: 0,
             action_production_atomic_write_plan: null
           });
         }
@@ -125,12 +179,32 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           summary: semantic.identity_mode === 'no_useful_result'
             ? 'action_production:no_useful_result'
             : 'action_production:physical_change',
-          write_fragments: [],
+          write_fragments: [], duration_minutes: 0,
           action_production_atomic_write_plan: atomicPlan
         });
       }
     });
   };
+}
+
+function currentPhysicalFactRefs(item) {
+  const metadata = item?.state?.ordinary_metadata;
+  const facts = [...(metadata?.semantic_facts ?? []),
+    ...(metadata?.physical_inscriptions ?? [])];
+  return [...new Set(facts.map((fact) => fact?.fact_id ?? fact?.fact_ref)
+    .filter(text))];
+}
+
+function resolveChangeSetId({ envelope, partyId, rootTurnId, turnNumber }) {
+  const standard = `change:${partyId}:turn-step:${turnNumber}`;
+  const phase7 = `change:${partyId}:trace-phase7:${turnNumber}`;
+  const requested = envelope.request?.change_set_id;
+  if (requested == null) return standard;
+  if (requested === standard) return requested;
+  if (requested === phase7 && rootTurnId === `turn:${partyId}:${turnNumber}`) {
+    return requested;
+  }
+  fail('TRACE_A1_SCOPE_INVALID');
 }
 
 function validateLoadedProfile(value) {
@@ -165,5 +239,36 @@ function technicalPolicy(profile) {
     max_new_entities: profile.max_new_entities
   };
 }
+
+function referenceApplicabilityInput(raw, partyId, profile) {
+  const actorRef = raw?.actor_ref;
+  const itemRef = raw?.item_ref;
+  const sourceRefs = raw?.source_refs;
+  const toolRefs = raw?.tool_refs;
+  const stateVersion = Number(raw?.committed_state_version);
+  const rootTurnId = raw?.root_turn_id;
+  const stepIndex = raw?.step_index;
+  if (!text(actorRef) || !text(itemRef) || !refs(sourceRefs, false)
+      || !refs(toolRefs, true) || sourceRefs[0] !== itemRef
+      || sourceRefs.some((ref) => toolRefs.includes(ref))
+      || !Number.isSafeInteger(stateVersion) || stateVersion < 0
+      || !text(rootTurnId) || !Number.isSafeInteger(stepIndex)
+      || stepIndex < 1 || stepIndex > 8) fail('TRACE_A1_SCOPE_INVALID');
+  return {
+    party_id: partyId, actor_ref: actorRef, root_turn_id: rootTurnId,
+    action_ref: `a1:references:${rootTurnId}:${stepIndex}`,
+    step_index: stepIndex, context_ref: profile.context_ref,
+    expected_party_state_version: stateVersion,
+    source_refs: structuredClone(sourceRefs), tool_refs: structuredClone(toolRefs),
+    admission_profile: admissionProfile(profile, stateVersion),
+    technical_policy: technicalPolicy(profile)
+  };
+}
+
+function refs(value, allowEmpty) { return Array.isArray(value)
+  && (allowEmpty || value.length > 0) && value.every(text)
+  && new Set(value).size === value.length; }
+function text(value) { return typeof value === 'string'
+  && value.trim() === value && value.length > 0; }
 
 function fail(code) { throw Object.assign(new Error(code), { code }); }

@@ -185,15 +185,14 @@ function expectedEntity(pin, role, actorRef, contextVersion, finite,
   const accessState = prepared ? 'quick'
     : actionProducedAccessState(placement, accessContainer, actorRef,
       accessAnchorId);
-  const holderRef = placement.holder_character_id === actorRef
-    ? actorRef : null;
+  const holderRef = [placement.holder_character_id, placement.holder_npc_id]
+    .includes(actorRef) ? actorRef : null;
   if (!exact(pin.entity_snapshot, ENTITY_KEYS)
       || !Number.isSafeInteger(item.state_version) || item.state_version < 1
       || item.state?.lifecycle_status != null
         && item.state.lifecycle_status !== 'active'
       || !prepared && !actionProducedPlacementAccessible(placement,
         accessContainer, actorRef, accessAnchorId)
-      || placement.holder_npc_id !== null
       || !validOwnership(ownership)
       || !actionProducedControllerPermitted(ownership, role, actorRef)) {
     fail('ACTION_PRODUCED_PLAN_INVALID');

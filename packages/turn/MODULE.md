@@ -154,6 +154,13 @@ P16 change set и лишь затем запускает обычную narratio
 Revision 19 / `spatial-v3-production-v9` наследует этот orchestration без
 нового semantic mode; actor appearance materialization остаётся code-owned, а
 портрет строится только как read-time player-safe projection.
+Current `spatial-v3-production-v13` pins Lower Dvina Trace revision 25 / M13 /
+Phase 1A v21 / Phase 1B v20 и активирует approved Phase-7 autonomous NPC
+actor-step profile. Общий current NPC actor-step path принимает только зарегистрированные
+и state-applicable owner capabilities с текущими NPC-safe refs; exact
+`operation_contract` и handler остаются общими owner contracts, без scenario
+action/ref/owner whitelist, special Жданко action logic или fallback. Жданко —
+первый activation participant/probe.
 
 O1 активирует internal ordinary branch только внутри существующего
 `request_discovery`; нового public op и scenario-local resolver нет. После
@@ -167,8 +174,11 @@ classification/coverage/policy fields. Normalized discovery query (NFKC,
 trim, collapse whitespace, ru-RU lowercase) вместе с exact target выводит
 code-owned candidate identity и передаётся model только как `candidate_hint`;
 это не noun/recipe allowlist и не authority. Exact retry сохраняет identity,
-другой normalized query получает другую identity. Один discovery имеет общий
-лимит двух semantic calls; structural repair расходует оставшийся call, а
+другой normalized query получает другую identity. O1 plan отдельно хранит
+выбранную semantic target в `semantic_target_ref`, тогда как `scope_ref`
+остаётся G6 simulation scope; P16 связывает owner output с exact
+`request_discovery` target до commit. Один discovery имеет общий лимит двух
+semantic calls; structural repair расходует оставшийся call, а
 Stage A repair при исчерпанном лимите завершается seed-only без Stage B. Turn принимает positive только после independent
 supporting-basis/property/placement admission `@rus/items-property`, собирает
 один ordinary P16 plan после revalidation и передаёт его persistence owner;

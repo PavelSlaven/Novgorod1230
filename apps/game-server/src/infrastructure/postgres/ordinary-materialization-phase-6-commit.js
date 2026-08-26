@@ -11,6 +11,7 @@ import {
   normalizeSupportingBases,
   normalizePropertyPlacementBase,
   ownData,
+  phase6Keys,
   safeVersion,
   sameText,
   sameTextList,
@@ -50,7 +51,7 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   }
   exact(value, phase6Keys(value, false));
   const scope = exact(value.scope_ref, ['entity_kind','entity_id']), pins = exact(value.expected_versions, ['party_state_version','ordinary_state_version','catalog_version','property_version','placement_version','supporting_basis_catalog_version','supporting_basis_catalog_digest','property_placement_context_digest']);
-  text(value.party_id); text(scope.entity_kind); text(scope.entity_id); text(value.request_identity); text(value.input_digest); text(value.transition_digest); text(pins.supporting_basis_catalog_digest); text(pins.property_placement_context_digest); Object.entries(pins).filter(([key])=>!key.endsWith('_digest')).forEach(([,entry])=>version(entry));
+  text(value.party_id); text(scope.entity_kind); text(scope.entity_id); text(value.request_identity); text(value.input_digest); text(value.transition_digest); text(pins.supporting_basis_catalog_digest); text(pins.property_placement_context_digest); if (Object.hasOwn(value, 'semantic_target_ref')) text(value.semantic_target_ref); Object.entries(pins).filter(([key])=>!key.endsWith('_digest')).forEach(([,entry])=>version(entry));
   if (!RESOLUTIONS.has(value.resolution)) fail('ORDINARY_PHASE6_PLAN_INVALID');
   const aggregate = assertAndNormalizeOrdinaryAggregate(value.next_aggregate), resolution = aggregate.presence_resolutions.at(-1), lastTransition = value.transitions?.at(-1), seedOnly = value.transitions?.length === 1 && lastTransition?.kind === 'seed';
   const transitionFailures = [
@@ -107,25 +108,8 @@ export function createOrdinaryMaterializationAtomicWritePlan(value = {}) {
   const initialization = value.finite_resource_initialization == null ? null
     : validateFiniteResourceInitialization(value.finite_resource_initialization,
       finite, value.request_identity);
-  const plan = { schema:'ordinary_materialization_atomic_write_plan_v1', party_id:value.party_id, scope_ref:scope, request_identity:value.request_identity, input_digest:value.input_digest, transition_digest:value.transition_digest, expected_versions:pins, expected_supporting_basis_catalog:expectedBases, new_prepared_bases:newBases, next_supporting_basis_catalog:bases, next_supporting_basis_catalog_version:nextBasisVersion, next_supporting_basis_catalog_digest:nextBasisDigest, expected_property_placement_context:propertyPlacement, ...(enablementPin == null ? {} : { enablement_pin: enablementPin }), ...(finite == null ? {} : { finite_resource_transition: finite }), ...(initialization == null ? {} : { finite_resource_initialization: initialization }), resolution:value.resolution, transitions:value.transitions, next_aggregate:aggregate, item:value.item };
+  const plan = { schema:'ordinary_materialization_atomic_write_plan_v1', party_id:value.party_id, scope_ref:scope, ...(Object.hasOwn(value, 'semantic_target_ref') ? { semantic_target_ref:value.semantic_target_ref } : {}), request_identity:value.request_identity, input_digest:value.input_digest, transition_digest:value.transition_digest, expected_versions:pins, expected_supporting_basis_catalog:expectedBases, new_prepared_bases:newBases, next_supporting_basis_catalog:bases, next_supporting_basis_catalog_version:nextBasisVersion, next_supporting_basis_catalog_digest:nextBasisDigest, expected_property_placement_context:propertyPlacement, ...(enablementPin == null ? {} : { enablement_pin: enablementPin }), ...(finite == null ? {} : { finite_resource_transition: finite }), ...(initialization == null ? {} : { finite_resource_initialization: initialization }), resolution:value.resolution, transitions:value.transitions, next_aggregate:aggregate, item:value.item };
   return freezePhase6Data({ ...plan, write_plan_digest:canonicalDigest(plan) });
-}
-
-function phase6Keys(value, sealed) {
-  const keys = ['party_id','scope_ref','request_identity','input_digest',
-    'transition_digest','expected_versions','expected_supporting_basis_catalog',
-    'new_prepared_bases','next_supporting_basis_catalog',
-    'next_supporting_basis_catalog_version','next_supporting_basis_catalog_digest',
-    'expected_property_placement_context'];
-  if (Object.hasOwn(value, 'enablement_pin')) keys.push('enablement_pin');
-  if (Object.hasOwn(value, 'finite_resource_transition')) {
-    keys.push('finite_resource_transition');
-  }
-  if (Object.hasOwn(value, 'finite_resource_initialization')) {
-    keys.push('finite_resource_initialization');
-  }
-  keys.push('resolution','transitions','next_aggregate','item');
-  return sealed ? ['schema', ...keys, 'write_plan_digest'] : keys;
 }
 
 function validateFiniteResourceInitialization(value, transition,

@@ -240,7 +240,9 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
   resolution, item = null, finiteResourceEffects = null }) {
   const expected = enabled.version_pins;
   const plan = sealAtomicWritePlan({ party_id: partyId,
-    scope_ref: structuredClone(scopeRef), request_identity: requestIdentity,
+    scope_ref: structuredClone(scopeRef),
+    semantic_target_ref: enabled.semantic_target_ref,
+    request_identity: requestIdentity,
     input_digest: canonicalDigest({ inputDigest, request_id: requestIdentity }),
     transition_digest: canonicalDigest(transitions.at(-1)),
     expected_versions: structuredClone(expected),
@@ -261,6 +263,7 @@ function resolvedPlan({ request, enabled, partyId, scopeRef, inputDigest,
       : structuredClone(finiteResourceEffects)) });
   return Object.freeze({ working_projection: request.working_projection,
     write_fragments: [], summary: 'ordinary discovery resolved',
+    duration_minutes: 0,
     player_response_boundary: true,
     ordinary_materialization_atomic_write_plan: plan });
 }
@@ -353,6 +356,7 @@ function sourceRefs({ envelope, proposed, execution, property, permissionRefs })
 function ordinaryNoop(request) { return Object.freeze({
   working_projection: structuredClone(request?.working_projection ?? {}),
   write_fragments: [], summary: 'ordinary discovery unavailable',
+  duration_minutes: 0,
   player_response_boundary: true }); }
 function ordinaryState(a) { return { seeded: a.seeded,
   density_band: a.density_band,

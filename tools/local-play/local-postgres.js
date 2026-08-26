@@ -26,6 +26,10 @@ const PARTY_SENTINELS = Object.freeze([
   'party_runtime.parties',
   'party_runtime.party_catalog_pins'
 ]);
+const POSTGRES_INITIALIZATION_MARKERS = Object.freeze([
+  'PostgreSQL init process complete; ready for start up.',
+  'PostgreSQL Database directory appears to contain a database; Skipping initialization'
+]);
 
 export function localPlayError(code, message) {
   const error = new Error(message);
@@ -210,9 +214,12 @@ function hasRequiredRoles(commandRunner, settings) {
 
 async function waitForPostgres(commandRunner, sleep, settings) {
   for (let attempt = 0; attempt < 120; attempt += 1) {
-    if (commandRunner(['exec', settings.container, 'pg_isready', '-U', 'postgres',
-      '-d', 'postgres']).status === 0) return;
-    await sleep(250);
+    const logs = commandRunner(['logs', settings.container]);
+    const initialized = POSTGRES_INITIALIZATION_MARKERS.some((marker) =>
+      `${logs.stdout ?? ''}\n${logs.stderr ?? ''}`.includes(marker));
+    if (initialized && commandRunner(['exec', settings.container, 'pg_isready', '-U',
+      'postgres', '-d', 'postgres']).status === 0) return;
+    if (attempt + 1 < 120) await sleep(250);
   }
   throw localPlayError('LOCAL_POSTGRES_NOT_READY', 'Local PostgreSQL did not become ready.');
 }

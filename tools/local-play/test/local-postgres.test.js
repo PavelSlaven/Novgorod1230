@@ -60,9 +60,48 @@ test('existing database without a required role fails before opening pools', asy
     if (args[0] === 'version' || args.includes('pg_isready')) return { status: 0, stdout: '' };
     if (args[0] === 'volume') return { status: 0, stdout: JSON.stringify([{ Labels: { [LOCAL_POSTGRES.label]: '1' } }]) };
     if (args[0] === 'container') return { status: 0, stdout: JSON.stringify([container]) };
+    if (args[0] === 'logs') return { status: 0, stdout: 'PostgreSQL Database directory appears to contain a database; Skipping initialization', stderr: '' };
     if (args.at(-1)?.includes('pg_database')) return { status: 0, stdout: `postgres\n${LOCAL_POSTGRES.worldDatabase}\n${LOCAL_POSTGRES.partyDatabase}\n` };
     if (args.at(-1)?.includes('pg_roles')) return { status: 0, stdout: `${LOCAL_POSTGRES.worldUser}\n` };
     throw new Error(`unexpected Docker command: ${args.join(' ')}`);
   };
   await assert.rejects(ensureLocalPostgres({ commandRunner }), { code: 'LOCAL_POSTGRES_PARTIAL' });
+});
+
+test('PostgreSQL readiness waits for initialization marker before listing databases', async () => {
+  const container = {
+    State: { Running: true },
+    Config: { Image: LOCAL_POSTGRES.image, Labels: { [LOCAL_POSTGRES.label]: '1' } },
+    Mounts: [{ Type: 'volume', Name: LOCAL_POSTGRES.volume, Destination: '/var/lib/postgresql/data' }],
+    HostConfig: { PortBindings: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '' }] } },
+    NetworkSettings: { Ports: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '54321' }] } }
+  };
+  let logCalls = 0;
+  let markerSeen = false;
+  let listedBeforeMarker = false;
+  const commandRunner = (args) => {
+    if (args[0] === 'version' || args.includes('pg_isready')) return { status: 0, stdout: '' };
+    if (args[0] === 'volume') return { status: 0, stdout: JSON.stringify([{ Labels: { [LOCAL_POSTGRES.label]: '1' } }]) };
+    if (args[0] === 'container') return { status: 0, stdout: JSON.stringify([container]) };
+    if (args[0] === 'logs') {
+      logCalls += 1;
+      markerSeen = logCalls > 1;
+      return { status: 0, stdout: markerSeen
+        ? 'PostgreSQL init process complete; ready for start up.' : '', stderr: '' };
+    }
+    if (args.at(-1)?.includes('pg_database')) {
+      listedBeforeMarker = !markerSeen;
+      return { status: 0, stdout: `postgres\n${LOCAL_POSTGRES.worldDatabase}\n${LOCAL_POSTGRES.partyDatabase}\n` };
+    }
+    if (args.at(-1)?.includes('pg_roles')) return { status: 0, stdout: `${LOCAL_POSTGRES.worldUser}\n${LOCAL_POSTGRES.partyUser}\n` };
+    throw new Error(`unexpected Docker command: ${args.join(' ')}`);
+  };
+  const queries = [query(1, worldSentinels), query(1, partySentinels)];
+  await ensureLocalPostgres({
+    commandRunner,
+    createPool: () => ({ query: queries.shift(), end: async () => {} }),
+    sleep: async () => {}
+  });
+  assert.equal(listedBeforeMarker, false);
+  assert.equal(logCalls, 2);
 });

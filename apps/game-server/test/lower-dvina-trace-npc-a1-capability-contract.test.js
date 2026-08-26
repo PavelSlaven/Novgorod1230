@@ -44,6 +44,14 @@ test('A1 projects semantic bounds and joint source applicability', async () => {
     createActionProductionOwner: () => ({
       actionProductionContract,
       referencesApplicable: async () => true,
+      actionProductionCapability: async ({ item_ref }) => item_ref === 'safe-source'
+        ? { partial_independent_allowed: true,
+          partial_preserve_secondary_allowed: true,
+          removable_physical_fact_refs: ['fact:current'] }
+        : item_ref === 'foreign-source'
+          ? { partial_independent_allowed: false,
+            partial_preserve_secondary_allowed: false,
+            removable_physical_fact_refs: [] } : undefined,
       referencesJointlyApplicable: async ({ source_refs }) =>
         !source_refs.includes('foreign-source') || source_refs.length === 1,
       preflight: async () => { ownerCalls += 1; },
@@ -60,7 +68,10 @@ test('A1 projects semantic bounds and joint source applicability', async () => {
     independent_output_source_groups: [
       ['safe-source', 'safe-tool'], ['foreign-source']
     ],
-    ...actionProductionContract
+    ...actionProductionContract,
+    partial_independent_source_refs: ['safe-source'],
+    partial_preserve_secondary_source_refs: ['safe-source'],
+    removable_physical_fact_refs_by_source: { 'safe-source': ['fact:current'] }
   });
 
   const compatible = independentOutput(['safe-source', 'safe-tool'], 2);
@@ -68,8 +79,34 @@ test('A1 projects semantic bounds and joint source applicability', async () => {
   const overProfile = independentOutput(['safe-source'], 5);
   const wrongExtent = independentOutput(['safe-source'], 1);
   wrongExtent.action_production.material_extent = 'minor';
+  const finitePartial = independentOutput(['foreign-source'], 1);
+  Object.assign(finitePartial.action_production, { result_class: 'partial_transformation',
+    material_extent: 'minor' });
+  finitePartial.action_production.result_descriptor.source_fact_delta = {
+    physical_description: 'остаток источника', qualitative_facts: [],
+    removed_physical_fact_refs: [], physical_form: 'compact' };
+  const nonFinitePartial = structuredClone(finitePartial);
+  nonFinitePartial.item_ref = 'safe-source';
+  nonFinitePartial.action_production.source_refs = ['safe-source'];
+  const finiteSecondary = independentOutput(['safe-source', 'foreign-source'], 1);
+  Object.assign(finiteSecondary.action_production, { identity_mode: 'preserve_source',
+    origin: null, requested_output_count: null, material_extent: 'minor' });
+  const finiteSecondaryWhole = structuredClone(finiteSecondary);
+  finiteSecondaryWhole.action_production.material_extent = 'whole';
+  const removedForeignFact = independentOutput(['safe-source'], 1);
+  Object.assign(removedForeignFact.action_production, { identity_mode: 'preserve_source',
+    origin: null, requested_output_count: null, material_extent: null });
+  removedForeignFact.action_production.result_descriptor.removed_physical_fact_refs =
+    ['fact:foreign'];
+  const removedCurrentFact = structuredClone(removedForeignFact);
+  removedCurrentFact.action_production.result_descriptor.removed_physical_fact_refs =
+    ['fact:current'];
   assert.equal(action.supports({ operation: compatible }), true);
-  for (const operation of [mixed, overProfile, wrongExtent]) {
+  assert.equal(action.supports({ operation: nonFinitePartial }), true);
+  assert.equal(action.supports({ operation: finiteSecondaryWhole }), true);
+  assert.equal(action.supports({ operation: removedCurrentFact }), true);
+  for (const operation of [mixed, overProfile, wrongExtent, finitePartial,
+    finiteSecondary, removedForeignFact]) {
     assert.equal(action.supports({ operation }), false);
     assertRejectedBeforeOwner(operation, action.capability);
   }

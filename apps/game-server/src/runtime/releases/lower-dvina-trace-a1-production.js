@@ -70,6 +70,17 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
           throw error;
         }
       },
+      async actionProductionCapability(rawInput) {
+        const input = referenceApplicabilityInput(rawInput, partyId, profile);
+        const loaded = await loadActionProducedCommittedContext(pool, input);
+        const source = loaded.source_snapshots[0];
+        const item = loaded.row_pins.find(({ item_id: id }) =>
+          id === source.entity_ref)?.item;
+        const partialAllowed = source.finite_resource === null;
+        return Object.freeze({ partial_independent_allowed: partialAllowed,
+          partial_preserve_secondary_allowed: partialAllowed,
+          removable_physical_fact_refs: currentPhysicalFactRefs(item) });
+      },
       async referencesJointlyApplicable(rawInput) {
         if (rawInput?.identity_mode !== 'independent_outputs') {
           fail('TRACE_A1_SCOPE_INVALID');
@@ -174,6 +185,14 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
       }
     });
   };
+}
+
+function currentPhysicalFactRefs(item) {
+  const metadata = item?.state?.ordinary_metadata;
+  const facts = [...(metadata?.semantic_facts ?? []),
+    ...(metadata?.physical_inscriptions ?? [])];
+  return [...new Set(facts.map((fact) => fact?.fact_id ?? fact?.fact_ref)
+    .filter(text))];
 }
 
 function resolveChangeSetId({ envelope, partyId, rootTurnId, turnNumber }) {

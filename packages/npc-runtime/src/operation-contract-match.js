@@ -257,12 +257,46 @@ function actionProductionBoundsMatch(action, contract) {
       || !allowed(action.result_class, contract, 'allowed_result_classes')
       || !nullableAllowed(action.output_class, contract,
         'allowed_output_classes')) return false;
+  if (action.identity_mode === 'independent_outputs'
+      && action.result_class === 'partial_transformation'
+      && (Object.hasOwn(contract, 'partial_independent_source_refs')
+        && (!Array.isArray(contract.partial_independent_source_refs)
+        || action.source_refs.some((ref) =>
+          !contract.partial_independent_source_refs.includes(ref))))) {
+    return false;
+  }
+  if (action.identity_mode === 'preserve_source'
+      && action.material_extent !== 'whole'
+      && (Object.hasOwn(contract, 'partial_preserve_secondary_source_refs')
+        && (!Array.isArray(contract.partial_preserve_secondary_source_refs)
+        || action.source_refs.slice(1).some((ref) =>
+          !contract.partial_preserve_secondary_source_refs.includes(ref))))) {
+    return false;
+  }
+  const removed = removedPhysicalFactRefs(action);
+  if (removed.length > 0 && Object.hasOwn(contract,
+    'removable_physical_fact_refs_by_source')) {
+    const allowedRefs = contract.removable_physical_fact_refs_by_source?.[
+      action.source_refs[0]];
+    if (!Array.isArray(allowedRefs)
+        || removed.some((ref) => !allowedRefs.includes(ref))) return false;
+  }
   return action.identity_mode !== 'independent_outputs'
     || !Object.hasOwn(contract, 'independent_output_source_groups')
     || Array.isArray(contract.independent_output_source_groups)
       && contract.independent_output_source_groups.some((group) =>
         Array.isArray(group)
           && sourcesWithinGroup(action.source_refs, group));
+}
+
+function removedPhysicalFactRefs(action) {
+  if (action.identity_mode === 'preserve_source') {
+    return action.result_descriptor?.removed_physical_fact_refs ?? [];
+  }
+  return action.identity_mode === 'independent_outputs'
+      && action.result_class === 'partial_transformation'
+    ? action.result_descriptor?.source_fact_delta?.removed_physical_fact_refs ?? []
+    : [];
 }
 
 function allowed(value, contract, key) {

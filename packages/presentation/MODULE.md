@@ -9,10 +9,10 @@
 - `FirstGameScreen` и `TurnScreen` version 1;
 - Character, Inventory, People, Route, Map, Journal и Diagnostic panels;
 - optional exact `portrait_spec_v1` внутри player-safe active interlocutor;
-- additive optional selectors: top-level `scene_asset_id` and
-  `active_interlocutor.portrait_asset_id`; presentation validates only their
-  player-safe DTO shapes and does not select assets, read positions or infer
-  identity;
+- additive presentation data in versioned read models: presentation carries it
+  and validates only panel/read-model shapes it owns. In People,
+  `active_interlocutor.portrait_asset_id` is an optional non-empty string;
+  presentation does not select assets, read positions or infer identity;
 - visible-only validation и leak rejection;
 - compatibility `createPublicViewModel`;
 - first-screen delivery attempt, acknowledgement и Stage 27 intent handoff.
@@ -51,9 +51,10 @@ write beliefs, or alter the P08 fail-closed port boundary.
 - diagnostic panel разрешён только при явном developer mode и также не содержит hidden state.
 - active interlocutor appearance, если передан, проходит общий строгий
   `portrait_spec_v1` validator; свободные appearance-поля запрещены.
-- `scene_asset_id` остаётся optional top-level player-safe selector; web
-  применяет собственный closed allowlist. `portrait_asset_id` — optional
-  non-empty string: presentation не превращает unknown ID в leak/error и
-  оставляет browser его fallback policy.
+- Presentation does not validate top-level `scene_asset_id` shape or own an
+  exact scene catalog. The game-web public validator owns both its exact
+  authored eight-value scene catalog and top-level `scene_asset_id` validation.
+- `portrait_asset_id` is an optional non-empty string in the People panel;
+  presentation leaves an unknown ID to browser fallback policy.
 - Эти selectors не являются persisted world state, visibility/knowledge write,
   source/evidence или обратным каналом из art в factual truth.

@@ -20,11 +20,13 @@ Game-web accepts exactly these values:
 - `lower-dvina-fishing-camp`
 - `lower-dvina-zhdanko-storehouse-exterior`
 
-The public web validator rejects an unknown `scene_asset_id`. A missing selector
-continues through generic-environment selection and then the existing
-procedural landscape. The renderer itself also fails closed to procedural when
-called directly with an unknown selector. Client must not derive an authored ID
-from prose, labels, location refs, node IDs, weather, or another visible field.
+The public web validator rejects an unknown `scene_asset_id`. Render selection
+uses a known exact selector first; otherwise, it uses a supported generic
+environment profile. It falls back to procedural landscape only when neither
+selection is available or the selected bitmap fails to load or draw. Thus, a
+direct renderer call with an unknown selector does not disable generic authored
+selection. Client must not derive an authored ID from prose, labels, location
+refs, node IDs, weather, or another visible field.
 
 ## Generic catalogue
 

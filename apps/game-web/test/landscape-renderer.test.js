@@ -421,7 +421,7 @@ test('interiors select natural or dark without weather foreground', () => {
   }
 });
 
-test('missing axes only default authored selection and portrait lighting', () => {
+test('missing axes default asset and light', () => {
   const model = buildLandscapeRenderModel(screen({
     profile: 'env.local_variable', dayPart: null, weather: null
   }));
@@ -432,6 +432,12 @@ test('missing axes only default authored selection and portrait lighting', () =>
   assert.equal(model.semantics.weather, null);
   assert.deepEqual(model.portraitLighting,
     buildLandscapeRenderModel(screen()).portraitLighting);
+});
+
+test('unknown exact uses generic',()=> {
+  const m=buildLandscapeRenderModel({...screen({profile:'env.main_river_channel'}),scene_asset_id:'x'});
+  assert.equal(m.assetUrl,'/assets/landscape/main_river/day-clear.webp');
+  assert.equal(m.semantics.environmentProfile,'env.main_river_channel');
 });
 
 test('unknown authored selectors and text fall back to neutral procedural model', () => {

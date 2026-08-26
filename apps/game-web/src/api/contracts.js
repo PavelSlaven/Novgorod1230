@@ -1,5 +1,6 @@
 import { webError } from '../shared/errors.js';
 import {
+  LANDSCAPE_SCENE_ASSET_IDS,
   validActiveInterlocutor,
   validCurrentTask,
   validLandscapeContext
@@ -18,6 +19,7 @@ const FORBIDDEN_KEYS = new Set([
   , 'coordinate', 'coordinates', 'layout_x', 'layout_y', 'bearing', 'distance',
   'trace', 'traces', 'raw_trace', 'raw_traces', 'binding', 'bindings', 'endpoint_binding', 'endpoint_bindings'
 ]);
+const LANDSCAPE_SCENE_ASSET_ID_SET = new Set(LANDSCAPE_SCENE_ASSET_IDS);
 
 export function validateApiEnvelope(value) {
   if (!plain(value) || value.version !== 1 || value.schema !== 'rus_api_success' || value.ok !== true) {
@@ -46,6 +48,13 @@ export function validatePublicScreen(screen) {
 }
 
 function validateSceneAffordances(screen) {
+  if (Object.hasOwn(screen, 'scene_asset_id')
+      && !LANDSCAPE_SCENE_ASSET_ID_SET.has(screen.scene_asset_id)) {
+    throw webError(
+      'LANDSCAPE_SCENE_ASSET_INVALID',
+      'scene_asset_id must use an approved landscape scene asset.'
+    );
+  }
   if (!validLandscapeContext(screen.visible_context ?? {})) {
     throw webError(
       'LANDSCAPE_AFFORDANCE_INVALID',

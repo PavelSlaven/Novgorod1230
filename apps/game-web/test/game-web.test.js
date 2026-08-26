@@ -14,7 +14,6 @@ import { renderConversationPortrait } from
 import { renderCurrentTask } from
   '../src/features/current-task/render.js';
 import { renderLandscape } from '../src/features/landscape/render.js';
-import { SAMPLE_PORTRAIT_SPEC } from '../src/portrait-lab/sample.js';
 import { renderMapPanel, renderSceneMinimap } from
   '../src/features/map/render.js';
 
@@ -101,6 +100,61 @@ test('public screen validates exact optional scene affordances', () => {
           active_interlocutor: {
             ...valid.panels.people.data.active_interlocutor,
             physical_description: 'не должен пройти контракт'
+          }
+        }
+      }
+    }
+  }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
+  assert.doesNotThrow(() => validatePublicScreen({
+    ...valid,
+    scene_asset_id: 'lower-dvina-wreck-shore'
+  }));
+  assert.doesNotThrow(() => validatePublicScreen(valid));
+  assert.throws(() => validatePublicScreen({
+    ...valid,
+    scene_asset_id: 'unknown-scene'
+  }), { code: 'LANDSCAPE_SCENE_ASSET_INVALID' });
+  assert.doesNotThrow(() => validatePublicScreen({
+    ...valid,
+    panels: {
+      ...valid.panels,
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            ...valid.panels.people.data.active_interlocutor,
+            portrait_asset_id: 'unregistered-fisherman-portrait'
+          }
+        }
+      }
+    }
+  }));
+  assert.throws(() => validatePublicScreen({
+    ...valid,
+    panels: {
+      ...valid.panels,
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            ...valid.panels.people.data.active_interlocutor,
+            portrait_asset_id: 'unregistered-fisherman-portrait',
+            physical_description: 'не должен пройти контракт'
+          }
+        }
+      }
+    }
+  }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
+  assert.throws(() => validatePublicScreen({
+    ...valid,
+    panels: {
+      ...valid.panels,
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            ...valid.panels.people.data.active_interlocutor,
+            portrait_asset_id: '   '
           }
         }
       }
@@ -243,10 +297,32 @@ test('new-game view keeps free text and scenario inputs as separate branches', (
 });
 
 test('game shell has factual context, neutral viewport, independent input and no fake geography', () => {
-  const screen = { ...firstScreen(), action_panel: { suggested_actions: [] } };
+  const screen = {
+    ...firstScreen(),
+    action_panel: { suggested_actions: [] },
+    panels: {
+      ...firstScreen().panels,
+      people: {
+        visible: true,
+        data: {
+          active_interlocutor: {
+            entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+            display_label: 'Еремей',
+            portrait_asset_id: 'lower-dvina-eremey'
+          }
+        }
+      }
+    }
+  };
   const html = renderScreen(screen, { openingStatus: 'acknowledged' });
   assert.match(html, /data-screen-schema="first_game_screen"/u);
   assert.match(html, /scene-viewport/u);
+  assert.match(html, /data-scene-weather-canvas/u);
+  const landscape = html.indexOf('data-landscape-canvas');
+  const portrait = html.indexOf('data-conversation-portrait-canvas');
+  const label = html.indexOf('<strong>Еремей</strong>');
+  const weather = html.indexOf('data-scene-weather-canvas');
+  assert.ok(landscape < portrait && portrait < label && label < weather);
   assert.match(html, /Берег Двины/u);
   assert.match(html, /Позднее лето/u);
   assert.match(html, /data-turn-form/u);
@@ -415,34 +491,6 @@ test('conversation portrait uses only the canonical interlocutor field', () => {
       }
     }
   }), '');
-});
-
-test('conversation portrait uses an explicit valid spec and rejects malformed appearance', () => {
-  const active = {
-    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
-    display_label: 'Еремей',
-    portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
-  };
-  const screen = {
-    ...firstScreen(),
-    panels: { people: { visible: true, data: { active_interlocutor: active } } }
-  };
-  assert.doesNotThrow(() => validatePublicScreen(screen));
-  const portrait = renderConversationPortrait(screen);
-  assert.match(portrait, /data-conversation-portrait-canvas/u);
-  assert.doesNotMatch(portrait, /<svg/u);
-  assert.throws(() => validatePublicScreen({
-    ...screen,
-    panels: { people: { visible: true, data: {
-      active_interlocutor: {
-        ...active,
-        portrait_spec_v1: {
-          ...SAMPLE_PORTRAIT_SPEC,
-          inferred_from_name: true
-        }
-      }
-    } } }
-  }), { code: 'ACTIVE_INTERLOCUTOR_INVALID' });
 });
 
 test('minimap uses only sorted public nodes and links and keeps text facts', () => {

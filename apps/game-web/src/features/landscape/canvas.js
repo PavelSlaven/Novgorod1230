@@ -4,14 +4,32 @@ import {
   strokeHandmade
 } from '../../shared/handmade-canvas.js';
 import { deterministicUnit } from '../../shared/deterministic-random.js';
+import { loadImage } from '../../shared/image-cache.js';
 import { drawAtmosphereAndFinishing } from './canvas-atmosphere.js';
 import { buildLandscapeGeometry } from './geometry.js';
 import { buildLandscapeRenderModel } from './render-model.js';
 
-export function renderLandscapeCanvas(canvas, screen) {
+export async function renderLandscapeCanvas(canvas, screen, {
+  imageLoader = loadImage,
+  isCurrent = () => true
+} = {}) {
   const context = canvas?.getContext?.('2d');
   if (!context) throw new TypeError('Landscape Canvas 2D context is required.');
   const model = buildLandscapeRenderModel(screen);
+  if (model.assetUrl) {
+    try {
+      const image = await imageLoader(model.assetUrl);
+      if (!isCurrent()) return cancelled(model);
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return Object.freeze({
+        model, cancelled: false, authored: true, fallback: false
+      });
+    } catch {
+      if (!isCurrent()) return cancelled(model);
+    }
+  }
+  if (!isCurrent()) return cancelled(model);
   const geometry = buildLandscapeGeometry(model);
   const scaleX = Number(canvas.width || model.width) / model.width;
   const scaleY = Number(canvas.height || model.height) / model.height;
@@ -20,7 +38,15 @@ export function renderLandscapeCanvas(canvas, screen) {
   context.scale(scaleX, scaleY);
   drawLandscape(context, model, geometry);
   context.restore();
-  return Object.freeze({ model, geometry });
+  return Object.freeze({
+    model, geometry, cancelled: false, authored: false, fallback: true
+  });
+}
+
+export { renderForegroundWeather } from './canvas-atmosphere.js';
+
+function cancelled(model) {
+  return Object.freeze({ model, cancelled: true, authored: false, fallback: false });
 }
 
 function drawLandscape(context, model, geometry) {

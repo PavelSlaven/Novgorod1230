@@ -18,8 +18,10 @@ and adds no second transaction owner.
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
 - После чтения committed screen/state владеет server-side adapter, который
-  фильтрует active interlocutor identity/equipment и добавляет неперсистентный
-  `portrait_spec_v1` к public response.
+  фильтрует active interlocutor identity/equipment и добавляет неперсистентные
+  presentation-only selectors: `portrait_spec_v1`, optional
+  `active_interlocutor.portrait_asset_id` и optional top-level
+  `scene_asset_id` к public response.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
 
 ## Не владеет
@@ -32,6 +34,15 @@ and adds no second transaction owner.
 - `./production-spatial-v3` exports the sole production composition.
 - `./production-v2-migration-source` exports v2 PostgreSQL helpers only for explicit migration/rollback tooling; it exports no runtime composition.
 - `createPortraitSpecNormalizer` выполняет единственный text-to-JSON вызов, повторно валидирует provider output до HTTP response и не поддерживает fallback на прежние named-garment enums.
+- Scene selector выбирается только из committed player position: zone имеет
+  приоритет над location, отсутствие exact server mapping опускает поле.
+  Portrait selector выбирается только для единственного committed NPC,
+  прошедшего player-safe active-interlocutor projection; server mapping не
+  публикует participant slot или другую internal identity.
+- Selectors вычисляются после committed read, не пишутся в `party_runtime`,
+  visibility/knowledge или world-base и не участвуют в admission, narration,
+  mechanics либо truth. Их exact web asset allowlist/fallback принадлежат
+  `@rus/game-web`, не server.
 - Target infrastructure factories `createSpatialV3CombinedAtomicCommitter` and
   `createTemporalPresentationPostgresStore` remain server-owned adapters; they
   accept only validated sealed plans/explicit pool transactions and are not

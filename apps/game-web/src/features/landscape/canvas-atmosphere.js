@@ -1,6 +1,50 @@
 import { strokeHandmade } from '../../shared/handmade-canvas.js';
 import { deterministicUnit } from '../../shared/deterministic-random.js';
 
+export function renderForegroundWeather(canvas, model) {
+  const context = canvas?.getContext?.('2d');
+  if (!context) throw new TypeError('Landscape Canvas 2D context is required.');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  const weather = model?.foregroundWeather;
+  if (!weather) return;
+  const width = Number(canvas.width || model.width);
+  const height = Number(canvas.height || model.height);
+  const seed = model.seeds.weather;
+  if (weather === 'rain') {
+    context.strokeStyle = 'rgba(66, 84, 102, .42)';
+    context.lineWidth = 1;
+    for (let index = 0; index < 62; index += 1) {
+      const x = deterministicUnit(seed, 1500 + index * 3) * width;
+      const y = deterministicUnit(seed, 1501 + index * 3) * height;
+      context.beginPath();
+      context.moveTo(x, y);
+      context.lineTo(x - 7, y + 12 + deterministicUnit(seed,
+        1502 + index * 3) * 24);
+      context.stroke();
+    }
+  } else if (weather === 'snow') {
+    context.fillStyle = 'rgba(238, 233, 220, .78)';
+    for (let index = 0; index < 54; index += 1) {
+      context.beginPath();
+      context.arc(
+        deterministicUnit(seed, 1700 + index * 3) * width,
+        deterministicUnit(seed, 1701 + index * 3) * height,
+        1.2 + deterministicUnit(seed, 1702 + index * 3) * 2.4,
+        0, Math.PI * 2
+      );
+      context.fill();
+    }
+  } else if (weather === 'fog') {
+    const gradient = context.createLinearGradient(0, height * .2, 0,
+      height * .9);
+    gradient.addColorStop(0, 'rgba(228, 224, 211, 0)');
+    gradient.addColorStop(.48, 'rgba(228, 224, 211, .62)');
+    gradient.addColorStop(1, 'rgba(228, 224, 211, 0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, width, height);
+  }
+}
+
 export function drawAtmosphereAndFinishing(context, model, geometry) {
   drawWeather(context, model);
   drawFinishing(context, model, geometry);

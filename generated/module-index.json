@@ -46,6 +46,7 @@
         "feature renderers для прозы, персонажа, инвентаря, людей, маршрутов, карты, журнала, действий и diagnostics",
         "browser bootstrap и обработкой пользовательских намерений",
         "существующим `renderLandscape(screen)` как единственным владельцем game",
+        "selection landscape: известный exact `scene_asset_id` выбирает exact",
         "процедурной композицией landscape + active interlocutor в существующем",
         "отдельной экспериментальной страницей `/portrait-lab`, direct-JSON input controller и Canvas 2D renderer без portrait-specific RNG/hash",
         "скрытой portrait geometry/armature, scene-level visibility/occlusion для контуров, цветовых patches и лицевых деталей, а также единым stroke-first ink pass; приглушённые patches не владеют контурами и могут быть отключены через renderer option `fills: false`",
@@ -362,6 +363,7 @@
         "`FirstGameScreen` и `TurnScreen` version 1",
         "Character, Inventory, People, Route, Map, Journal и Diagnostic panels",
         "optional exact `portrait_spec_v1` внутри player-safe active interlocutor",
+        "additive presentation data in versioned read models: presentation carries it",
         "visible-only validation и leak rejection",
         "compatibility `createPublicViewModel`",
         "first-screen delivery attempt, acknowledgement и Stage 27 intent handoff"

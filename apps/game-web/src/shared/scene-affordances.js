@@ -1,7 +1,7 @@
 import { validatePortraitSpecV1 } from '../portrait-lab/contract.js';
 
 const INTERLOCUTOR_KEYS = new Set([
-  'entity_ref', 'display_label', 'role_label', 'portrait_spec_v1'
+  'entity_ref', 'display_label', 'role_label', 'portrait_asset_id', 'portrait_spec_v1'
 ]);
 const ENTITY_REF_KEYS = new Set(['entity_kind', 'entity_id']);
 export const LANDSCAPE_ENVIRONMENT_PROFILES = Object.freeze([
@@ -21,6 +21,16 @@ export const LANDSCAPE_NODE_CATEGORIES = Object.freeze([
   'spatial.g3.built_site',
   'spatial.g3.resource_site',
   'spatial.g3.recurrent_site'
+]);
+export const LANDSCAPE_SCENE_ASSET_IDS = Object.freeze([
+  'lower-dvina-old-drying-shed-interior',
+  'lower-dvina-old-drying-shed-exterior',
+  'lower-dvina-wreck-shore',
+  'lower-dvina-zhdanko-storehouse-interior',
+  'lower-dvina-fishing-camp-firepit',
+  'lower-dvina-zhdanko-river-descent',
+  'lower-dvina-fishing-camp',
+  'lower-dvina-zhdanko-storehouse-exterior'
 ]);
 
 const ENVIRONMENT_PROFILE = new Map([
@@ -54,6 +64,8 @@ export function validActiveInterlocutor(value) {
   }
   if (Object.hasOwn(value, 'role_label')
       && !nonEmptyText(value.role_label)) return false;
+  if (Object.hasOwn(value, 'portrait_asset_id')
+      && !nonEmptyText(value.portrait_asset_id)) return false;
   return !Object.hasOwn(value, 'portrait_spec_v1')
     || validatePortraitSpecV1(value.portrait_spec_v1).length === 0;
 }

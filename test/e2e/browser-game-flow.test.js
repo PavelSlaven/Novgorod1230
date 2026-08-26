@@ -18,6 +18,8 @@ import {
 } from '@rus/presentation/spatial-v3-projection';
 import { SAMPLE_PORTRAIT_SPEC } from
   '../../apps/game-web/src/portrait-lab/sample.js';
+import { PORTRAIT_EMOTIONS } from
+  '../../apps/game-web/src/features/conversation-portrait/authored-portrait.js';
 
 const executablePath = [
   process.env.RUS_CHROMIUM_PATH,
@@ -27,6 +29,40 @@ const executablePath = [
   '/usr/bin/chromium-browser',
   '/usr/bin/google-chrome'
 ].find((item) => item && existsSync(item));
+
+const VISUAL_CASES = Object.freeze([
+  ['generic-day', { day_part: 'day' }],
+  ['generic-night', { day_part: 'night' }],
+  ['generic-rain', { weather: 'rain' }],
+  ['generic-snow', { weather: 'snow' }],
+  ['generic-fog', { weather: 'fog' }],
+  ['lower-dvina-normal', { scene_asset_id: 'lower-dvina-wreck-shore' }],
+  ['lower-dvina-rain', {
+    scene_asset_id: 'lower-dvina-wreck-shore', weather: 'rain'
+  }],
+  ['lower-dvina-snow', {
+    scene_asset_id: 'lower-dvina-wreck-shore', weather: 'snow'
+  }],
+  ['interior-natural', {
+    scene_asset_id: 'lower-dvina-old-drying-shed-interior', day_part: 'day'
+  }],
+  ['interior-dark', {
+    scene_asset_id: 'lower-dvina-old-drying-shed-interior', day_part: 'night'
+  }],
+  ['authored-emotions', { portrait: 'authored', emotions: PORTRAIT_EMOTIONS }],
+  ['runtime-procedural', { portrait: 'procedural' }],
+  ['svg-fallback', { portrait: 'svg' }],
+  ['broken-landscape', {
+    scene_asset_id: 'lower-dvina-zhdanko-river-descent', brokenLandscape: true
+  }],
+  ['broken-authored-with-spec', {
+    portrait: 'authored', portrait_asset_id: 'lower-dvina-onisim', brokenPortrait: true
+  }],
+  ['broken-authored-without-spec', {
+    portrait: 'authored', portrait_asset_id: 'lower-dvina-onisim', spec: false,
+    brokenPortrait: true
+  }]
+]);
 
 function createRecordedRoot(records) {
   let partyNumber = 0;
@@ -180,6 +216,9 @@ function stage26Fixture(partyId) {
 }
 
 function turnFixture(input) {
+  const visual = VISUAL_CASES.find(([name]) => input.raw_text
+    .startsWith(`visual:${name}:`));
+  if (visual) return visualTurnFixture(input, visual[1]);
   const leaking = input.raw_text === 'Проверка утечки';
   const conversationEnded = input.raw_text === 'Закончить разговор';
   const targetProjection = createSpatialV3PlayerProjection({
@@ -268,9 +307,54 @@ function turnFixture(input) {
   };
 }
 
+function visualTurnFixture(input, visual) {
+  const spec = structuredClone(SAMPLE_PORTRAIT_SPEC);
+  const emotion = input.raw_text.split(':').at(-1);
+  if (visual.emotions) spec.expression.emotion = emotion;
+  const active = visual.portrait === 'svg'
+    ? { entity_ref: { entity_kind: 'npc', entity_id: 'npc-svg' }, display_label: 'Староста' }
+    : visual.portrait === 'authored'
+      ? {
+          entity_ref: { entity_kind: 'npc', entity_id: 'npc-authored' },
+          display_label: 'Микула',
+          portrait_asset_id: visual.portrait_asset_id ?? 'lower-dvina-mikula',
+          ...(visual.spec === false ? {} : { portrait_spec_v1: spec })
+        }
+      : {
+          entity_ref: { entity_kind: 'npc', entity_id: 'npc-procedural' },
+          display_label: 'Проводник', portrait_spec_v1: spec
+        };
+  return {
+    version: 1,
+    schema: 'turn_result',
+    party_id: input.party_id,
+    turn_id: `turn-${input.turn_number}`,
+    turn_number: input.turn_number,
+    status: 'resolved', mode: 'attention', summary: { outcome: 'observed' },
+    commit: { status: 'committed' },
+    screen: {
+      version: 1, schema: 'turn_screen', screen_status: 'ready',
+      party_id: input.party_id, turn_id: `turn-${input.turn_number}`,
+      turn_number: input.turn_number, main_prose: 'Сцена обновилась.',
+      ...(visual.scene_asset_id ? { scene_asset_id: visual.scene_asset_id } : {}),
+      visible_context: {
+        location_label: 'Берег Нижней Двины',
+        environment: {
+          profile_id: 'env.land_path', node_category: 'spatial.g3.route_site'
+        },
+        weather: visual.weather ?? 'clear', day_part: visual.day_part ?? 'day'
+      },
+      input_panel: { input_contract: 'intent_not_fact' },
+      action_panel: { suggested_actions: [] },
+      panels: { people: { visible: true, data: { active_interlocutor: active } } }
+    }
+  };
+}
+
 test('browser preserves production API semantics through the Lovable UI', {
-  skip: !executablePath && 'Chromium executable not found.', timeout: 120_000
+  timeout: 120_000
 }, async (t) => {
+  assert.ok(executablePath, 'Chromium executable is required for browser e2e.');
   const records = {
     newGames: [], acknowledgements: [], turns: [], screenReads: [],
     slowTurn: Promise.withResolvers()
@@ -518,3 +602,183 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(await page.evaluate(() => localStorage.getItem('rus.theme')), themeAfter);
   assert.equal(await page.locator('[data-continue-party]').count(), 0);
 });
+
+test('browser renders the PR82 scene-asset matrix and fallbacks', {
+  timeout: 120_000
+}, async (t) => {
+  assert.ok(executablePath, 'Chromium executable is required for browser e2e.');
+  const records = {
+    newGames: [], acknowledgements: [], turns: [], screenReads: [],
+    slowTurn: Promise.withResolvers()
+  };
+  const here = dirname(fileURLToPath(import.meta.url));
+  const server = createGameHttpServer({
+    root: createRecordedRoot(records),
+    staticAssets: createStaticAssetResolver({
+      webRoot: resolve(here, '../../apps/game-web'),
+      contractsRoot: resolve(here, '../../packages/contracts/src')
+    }),
+    developerMode: true
+  });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  t.after(() => records.slowTurn.resolve());
+  const browser = await chromium.launch({
+    executablePath, headless: true,
+    args: ['--no-sandbox', '--no-proxy-server', '--proxy-bypass-list=*']
+  });
+  t.after(() => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  const requests = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.addInitScript(() => {
+    const original = CanvasRenderingContext2D.prototype.drawImage;
+    window.__sceneDrawImages = [];
+    CanvasRenderingContext2D.prototype.drawImage = function(source, ...args) {
+      window.__sceneDrawImages.push(source?.currentSrc ?? source?.src ?? 'canvas');
+      return original.call(this, source, ...args);
+    };
+  });
+  await page.goto(`http://127.0.0.1:${address.port}`);
+  await page.click('[data-start-new-game]');
+  await page.fill('[data-new-game-form] textarea', 'Проверить сцены');
+  await page.click('[data-new-game-form] button[type="submit"]');
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    await page.waitForSelector('[data-retry-opening-ack]');
+    await page.click('[data-retry-opening-ack]');
+  }
+  await page.waitForSelector('[data-turn-form] textarea:not([disabled])');
+
+  for (const [name, visual] of VISUAL_CASES) {
+    const emotions = visual.emotions ?? ['neutral'];
+    for (const emotion of emotions) {
+      const expectedLandscape = landscapeAssetFor(visual);
+      const abortPattern = visual.brokenLandscape
+        ? /\/assets\/landscape\/lower-dvina\/zhdanko-river-descent\/day-clear\.webp$/
+        : visual.brokenPortrait
+          ? /\/assets\/portrait\/lower-dvina\/onisim\//
+          : null;
+      const abort = abortPattern ? (route) => route.abort() : null;
+      if (abort) await page.route(abortPattern, abort);
+      await page.evaluate(() => { window.__sceneDrawImages = []; });
+      await page.fill('[data-turn-form] textarea', `visual:${name}:${emotion}`);
+      await page.click('[data-turn-form] button[type="submit"]');
+      await page.waitForSelector('[data-screen-schema="turn_screen"]');
+      await page.waitForFunction(() => {
+        const canvas = document.querySelector('[data-landscape-canvas]');
+        if (!canvas) return false;
+        const pixels = canvas.getContext('2d').getImageData(0, 0, 32, 32).data;
+        return [...pixels].some((value, index) => index % 4 === 3 && value > 0);
+      });
+      if (abort) await page.unroute(abortPattern, abort);
+
+      const landscape = page.locator('[data-landscape]');
+      const classes = await landscape.getAttribute('class');
+      assert.match(classes, new RegExp(`landscape--weather-${visual.weather ?? 'clear'}`));
+      assert.match(classes, new RegExp(`landscape--day-${visual.day_part ?? 'day'}`));
+      if (expectedLandscape) assert.ok(requests
+        .some((url) => url.endsWith(expectedLandscape)), `${name} requests ${expectedLandscape}`);
+      const landscapeSignature = await canvasSignature(page, '[data-landscape-canvas]');
+      assert.ok(landscapeSignature.alpha > 0, `${name} landscape is non-empty`);
+      if (['rain', 'snow', 'fog'].includes(visual.weather)) {
+        await page.waitForFunction(() => {
+          const canvas = document.querySelector('[data-scene-weather-canvas]');
+          return canvas && [...canvas.getContext('2d').getImageData(0, 200, 1280, 320).data]
+            .some((value, index) => index % 4 === 3 && value > 0);
+        });
+      }
+      const weatherAlpha = await weatherSignature(page);
+      assert.equal(weatherAlpha.alpha > 0, ['rain', 'snow', 'fog'].includes(visual.weather),
+        `${name} foreground weather alpha`);
+      assert.deepEqual(await page.locator('.scene-viewport-shell').evaluate((root) =>
+        [...root.children].map((child) => child.tagName)),
+      ['SECTION', 'ASIDE', 'CANVAS'], `${name} keeps weather above the scene layers`);
+
+      if (visual.brokenLandscape) assert.equal(await page.evaluate(() =>
+        window.__sceneDrawImages.some((url) => url.includes(
+          '/assets/landscape/lower-dvina/zhdanko-river-descent/day-clear.webp'
+        ))), false, 'aborted authored landscape must not leave a stale draw');
+      await assertPortraitCase(page, name, visual, emotion);
+    }
+  }
+});
+
+function landscapeAssetFor(visual) {
+  const day = visual.day_part ?? 'day';
+  const weather = visual.weather ?? 'clear';
+  if (visual.scene_asset_id === 'lower-dvina-old-drying-shed-interior') {
+    return `/assets/landscape/lower-dvina/old-drying-shed-interior/${
+      ['dusk', 'night'].includes(day) ? 'dark' : 'natural'}.webp`;
+  }
+  if (visual.scene_asset_id?.startsWith('lower-dvina-')) {
+    return `/assets/landscape/lower-dvina/${visual.scene_asset_id
+      .replace('lower-dvina-', '')}/${day}-${weather}.webp`;
+  }
+  return `/assets/landscape/field_road/${day}-${weather}.webp`;
+}
+
+async function canvasSignature(page, selector) {
+  return page.locator(selector).evaluate((canvas) => {
+    const data = canvas.getContext('2d').getImageData(0, 0, 64, 64).data;
+    let alpha = 0;
+    let signature = 0;
+    for (let index = 0; index < data.length; index += 4) {
+      alpha += data[index + 3];
+      signature = (signature * 31 + data[index] + data[index + 1]
+        + data[index + 2] + data[index + 3]) >>> 0;
+    }
+    return { alpha, signature };
+  });
+}
+
+async function assertPortraitCase(page, name, visual, emotion) {
+  const canvas = page.locator('[data-conversation-portrait-canvas]');
+  if (name === 'svg-fallback') {
+    assert.equal(await canvas.count(), 0);
+    assert.equal(await page.locator('[data-conversation-portrait] svg').isVisible(), true);
+    return;
+  }
+  if (name === 'broken-authored-without-spec') {
+    await page.waitForFunction(() => document.querySelector(
+      '[data-conversation-portrait-fallback]')?.hidden === false);
+    assert.equal(await canvas.isHidden(), true);
+    return;
+  }
+  await page.waitForFunction(() => {
+    const canvas = document.querySelector('[data-conversation-portrait-canvas]');
+    return canvas && [...canvas.getContext('2d').getImageData(200, 100, 368, 600).data]
+      .some((value, index) => index % 4 === 3 && value > 0);
+  });
+  assert.ok((await portraitSignature(page)).alpha > 0,
+    `${name} portrait is non-empty`);
+  if (visual.portrait !== 'authored') {
+    assert.equal(await canvas.evaluate((element) => element.getContext('2d')
+      .getImageData(0, 0, 1, 1).data[3]), 0, `${name} keeps portrait transparent`);
+    return;
+  }
+  if (visual.brokenPortrait) {
+    assert.equal(await page.locator('[data-conversation-portrait-fallback]').count(), 0);
+    return;
+  }
+  const sources = await page.evaluate(() => window.__sceneDrawImages.filter((url) =>
+    url.includes('/assets/portrait/lower-dvina/mikula/')));
+  assert.deepEqual(sources.slice(-3).map((url) => url.replace(/^.*\/mikula/, '')), [
+    '/outfit.png', '/outfit.png', `/heads/${emotion}.png`
+  ], `${name} composes outfit before head`);
+}
+
+async function portraitSignature(page) {
+  return page.locator('[data-conversation-portrait-canvas]').evaluate((canvas) => {
+    const data = canvas.getContext('2d').getImageData(200, 100, 368, 600).data;
+    return { alpha: data.filter((_, index) => index % 4 === 3)
+      .reduce((sum, value) => sum + value, 0) };
+  });
+}
+
+async function weatherSignature(page) {
+  return page.locator('[data-scene-weather-canvas]').evaluate((canvas) => {
+    const data = canvas.getContext('2d').getImageData(0, 200, 1280, 320).data;
+    return { alpha: data.filter((_, index) => index % 4 === 3)
+      .reduce((sum, value) => sum + value, 0) };
+  });
+}

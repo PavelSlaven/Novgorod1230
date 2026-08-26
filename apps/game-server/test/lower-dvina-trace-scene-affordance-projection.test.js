@@ -154,6 +154,40 @@ test('moving away removes a stale active interlocutor panel', () => {
   assert.equal(moved.panels.people, undefined);
 });
 
+test('projects Lower Dvina scene assets with zone precedence', () => {
+  const scenes = [
+    ['trace_ld_v1_loc_wreck_shore', null, 'lower-dvina-wreck-shore'],
+    ['trace_ld_v1_loc_fishing_camp', null, 'lower-dvina-fishing-camp'],
+    ['trace_ld_v1_loc_old_drying_shed', null,
+      'lower-dvina-old-drying-shed-exterior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', null,
+      'lower-dvina-zhdanko-storehouse-exterior'],
+    ['trace_ld_v1_loc_fishing_camp', 'fire_rest_area',
+      'lower-dvina-fishing-camp-firepit'],
+    ['trace_ld_v1_loc_old_drying_shed', 'shed_interior',
+      'lower-dvina-old-drying-shed-interior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'storehouse_interior',
+      'lower-dvina-zhdanko-storehouse-interior'],
+    ['trace_ld_v1_loc_zhdanko_storehouse', 'river_access',
+      'lower-dvina-zhdanko-river-descent']
+  ];
+  for (const [locationRef, zoneRef, expected] of scenes) {
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: payload({ position: { location_ref: locationRef, zone_ref: zoneRef } }),
+      screen: { panels: {} }
+    });
+    assert.equal(projected.scene_asset_id, expected);
+  }
+});
+
+test('removes stale scene asset when position has no mapping', () => {
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: payload({ position: { location_ref: 'unknown', zone_ref: 'unknown' } }),
+    screen: { scene_asset_id: 'lower-dvina-wreck-shore', panels: {} }
+  });
+  assert.equal(Object.hasOwn(projected, 'scene_asset_id'), false);
+});
+
 test('active interlocutor gets a non-persisted portrait from sanitized committed equipment', () => {
   const state = payload();
   state.npcs[0].identity_state = {
@@ -177,6 +211,63 @@ test('active interlocutor gets a non-persisted portrait from sanitized committed
   assert.equal(Object.hasOwn(state, 'portrait_spec_v1'), false);
   assert.equal(Object.hasOwn(state.npcs[0], 'portrait_spec_v1'), false);
 });
+
+for (const [slot, portraitAssetId] of [
+  ['player_clerk', 'lower-dvina-mikula'],
+  ['onisim_boatman', 'lower-dvina-onisim'],
+  ['eremey_fisher', 'lower-dvina-eremey'],
+  ['ratsha_storehouse_helper', 'lower-dvina-ratsha'],
+  ['zhdanko_storehouse_controller', 'lower-dvina-zhdanko'],
+  ['background_fisher_1', 'lower-dvina-fisher-1'],
+  ['background_fisher_2', 'lower-dvina-fisher-2']
+]) {
+  test(`active interlocutor gets ${slot} mapped portrait asset`, () => {
+    const state = payload();
+    state.npcs[0].participant_slot_ref = slot;
+    const before = structuredClone(state);
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: state,
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    const interlocutor = projected.panels.people.data.active_interlocutor;
+    assert.equal(interlocutor.portrait_asset_id, portraitAssetId);
+    assert.doesNotMatch(JSON.stringify(projected), /participant_slot_ref/);
+    assert.deepEqual(state, before);
+  });
+}
+
+test('ambiguous committed NPC match keeps active interlocutor without portrait asset', () => {
+  const state = payload();
+  state.npcs[0].participant_slot_ref = 'eremey_fisher';
+  state.npcs.push({ actor_id: 'npc-eremey', participant_slot_ref: 'onisim_boatman' });
+  const projected = projectLowerDvinaTraceScreenPanels({
+    payload: state,
+    screen: { panels: {}, visible_context: visibleContext() }
+  });
+  const interlocutor = projected.panels.people.data.active_interlocutor;
+  assert.deepEqual(interlocutor.entity_ref, {
+    entity_kind: 'npc', entity_id: 'npc-eremey'
+  });
+  assert.equal(Object.hasOwn(interlocutor, 'portrait_asset_id'), false);
+});
+
+for (const slot of [undefined, 'runtime_unknown']) {
+  test(`unmapped ${slot ?? 'missing'} portrait slot keeps active portrait spec`, () => {
+    const state = payload();
+    state.npcs[0].participant_slot_ref = slot;
+    state.npcs[0].identity_state = portraitIdentity();
+    state.items = [portraitGarment({
+      itemId: 'eremey-shirt', slot: 'base_garment', color: 'undyed_linen'
+    })];
+    const projected = projectLowerDvinaTraceScreenPanels({
+      payload: state,
+      screen: { panels: {}, visible_context: visibleContext() }
+    });
+    const interlocutor = projected.panels.people.data.active_interlocutor;
+    assert.equal(Object.hasOwn(interlocutor, 'portrait_asset_id'), false);
+    assert.equal(interlocutor.portrait_spec_v1.person.age, 'adult');
+  });
+}
 
 for (const concealedState of ['hidden', 'concealed']) {
   test(`nested ${concealedState} equipment is excluded from portrait`, () => {
@@ -223,5 +314,14 @@ function portraitGarment({ itemId, slot, color, visibilityState }) {
         secondary_visible_color: null, headwear_kind: 'none'
       }
     }
+  };
+}
+
+function portraitIdentity() {
+  return {
+    canonical_name: 'Еремей', sex_category: 'male', age_category: 'adult',
+    appearance: { build: 'average', skin_tone: 'light', face_shape: 'oval',
+      hair: { color: 'dark_brown', length: 'short', style: 'straight',
+        facial_hair: 'none' }, eyes: { color: 'gray' } }
   };
 }

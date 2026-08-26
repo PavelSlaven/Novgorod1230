@@ -201,10 +201,13 @@ test('static asset resolver serves only allowlisted web paths', async () => {
   const root = await mkdtemp(join(tmpdir(), 'rus-web-'));
   const contractsRoot = await mkdtemp(join(tmpdir(), 'rus-contracts-'));
   await mkdir(join(root, 'public'), { recursive: true });
+  await mkdir(join(root, 'public', 'assets'), { recursive: true });
   await mkdir(join(root, 'src'), { recursive: true });
   await writeFile(join(root, 'public', 'index.html'), '<h1>RUS</h1>');
   await writeFile(join(root, 'public', 'portrait-lab.html'), '<h1>Portrait Lab</h1>');
   await writeFile(join(root, 'src', 'main.js'), 'export {};');
+  await writeFile(join(root, 'public', 'assets', 'portrait.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47]));
+  await writeFile(join(root, 'public', 'assets', 'map.webp'), Buffer.from('RIFF'));
   await writeFile(join(contractsRoot, 'portrait-spec-v1.js'), 'export const schema = 1;');
   const resolver = createStaticAssetResolver({ webRoot: root, contractsRoot });
   assert.match((await resolver.read('/')).body.toString(), /RUS/u);
@@ -213,6 +216,17 @@ test('static asset resolver serves only allowlisted web paths', async () => {
     (await resolver.read('/packages/contracts/src/portrait-spec-v1.js')).body.toString(),
     /schema/u
   );
+  assert.deepEqual((await resolver.read('/assets/portrait.png')), {
+    body: Buffer.from([0x89, 0x50, 0x4e, 0x47]), contentType: 'image/png'
+  });
+  assert.deepEqual((await resolver.read('/assets/map.webp')), {
+    body: Buffer.from('RIFF'), contentType: 'image/webp'
+  });
+  assert.equal(await resolver.read('/assets/'), null);
+  assert.equal(await resolver.read('/assets/./portrait.png'), null);
+  assert.equal(await resolver.read('/assets/../secret.txt'), null);
+  assert.equal(await resolver.read('/assets/..\\secret.txt'), null);
+  assert.equal(await resolver.read('/assets/missing.gif'), null);
   assert.equal(await resolver.read('/../package.json'), null);
   assert.equal(await resolver.read('/secret.txt'), null);
 });

@@ -93,17 +93,27 @@ test('scene affordance panels accept only exact player-safe fields', () => {
     active_interlocutor: {
       entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
       display_label: 'Еремей',
-      role_label: 'рыбак'
+      role_label: 'рыбак',
+      portrait_asset_id: 'unregistered-fisherman-portrait'
     }
   });
   assert.deepEqual(people.data.active_interlocutor, {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
     display_label: 'Еремей',
-    role_label: 'рыбак'
+    role_label: 'рыбак',
+    portrait_asset_id: 'unregistered-fisherman-portrait'
   });
   for (const active_interlocutor of [{
     entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
     display_label: ''
+  }, {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: 'Еремей',
+    portrait_asset_id: '   '
+  }, {
+    entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
+    display_label: 'Еремей',
+    portrait_asset_id: ['portrait-1']
   }, {
     entity_ref: { entity_kind: 'npc', entity_id: 'npc-eremey' },
     display_label: 'Еремей',

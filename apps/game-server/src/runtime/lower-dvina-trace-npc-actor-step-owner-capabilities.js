@@ -1,5 +1,6 @@
 /** Adapts active owner factories to one Phase 7 NPC actor-step. */
-import { npcSafeSnapshotHasEntityEvidence } from '@rus/npc-runtime';
+import { matchesOperationContract, npcSafeSnapshotHasEntityEvidence } from
+  '@rus/npc-runtime';
 import { createNpcContainerCapability } from './lower-dvina-trace-npc-actor-step-container-capability.js';
 import { applyActionProducedRuntimeProjection } from './lower-dvina-trace-action-produced-runtime.js';
 import { initializeRuntimeState } from './lower-dvina-trace-turn-step-item-support.js';
@@ -83,8 +84,10 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
     });
     const itemRefs = npcSafeItemRefs(state, npc);
     if (typeof createActionProductionOwner === 'function' && itemRefs.length > 0) {
-      const referenceInput = ({ item_ref, source_refs, tool_refs }) => ({
+      const referenceInput = ({ item_ref, source_refs, tool_refs,
+        identity_mode = null }) => ({
         actor_ref: npcRef, item_ref, source_refs, tool_refs,
+        ...(identity_mode === null ? {} : { identity_mode }),
         root_turn_id: `turn:${partyId}:${Number(state.party_state?.turn_number) + 1}`,
         step_index: 1,
         committed_state_version: Number(state.party_state?.state_version)
@@ -95,17 +98,26 @@ export function createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
       const owner = ownerFor(requestId);
       const applicable = typeof owner?.referencesApplicable === 'function'
         ? await applicableNpcA1Refs(owner, itemRefs, referenceInput)
-        : { source_refs: itemRefs, tool_refs: itemRefs };
+        : { source_refs: itemRefs, tool_refs: itemRefs,
+          independent_output_source_groups: [itemRefs] };
       const applicableRefs = applicable;
+      const actionProductionContract = {
+        source_refs: [...applicableRefs.source_refs],
+        tool_refs: [...applicableRefs.tool_refs],
+        independent_output_source_groups: structuredClone(
+          applicableRefs.independent_output_source_groups),
+        ...structuredClone(owner?.actionProductionContract ?? {})
+      };
+      const capability = { owner: '@rus/items-property',
+        item_refs: [...applicableRefs.source_refs], use_kinds: ['other'],
+        action_production: actionProductionContract };
       if (typeof projectionOwner === 'function' && typeof owner?.execute === 'function'
           && applicableRefs.source_refs.length > 0) capabilities.push({
-        operation: 'request_item_use', capability: { owner: '@rus/items-property',
-          item_refs: [...applicableRefs.source_refs], use_kinds: ['other'],
-          action_production: { source_refs: [...applicableRefs.source_refs],
-            tool_refs: [...applicableRefs.tool_refs] } },
+        operation: 'request_item_use', capability,
         isApplicable: () => true,
-        supports: ({ operation }) => npcA1OperationSupported(
-          operation, npcRef, applicableRefs),
+        supports: ({ operation }) => operation?.op === 'request_item_use'
+          && operation.actor_ref === npcRef
+          && matchesOperationContract(operation, capability),
         preflight: (execution) => {
           const activeOwner = ownerFor(execution.request.request_id);
           if (typeof activeOwner.preflight !== 'function') {
@@ -161,28 +173,28 @@ async function applicableNpcA1Refs(owner, refs, input) {
       tool_refs.push(ref);
     }
   }
-  return { source_refs, tool_refs };
-}
-
-function npcA1OperationSupported(operation, npcRef, refs) {
-  const action = operation?.action_production;
-  const sources = action?.source_refs;
-  const tools = action?.tool_refs;
-  return operation?.actor_ref === npcRef && operation.use_kind === 'other'
-    && Array.isArray(sources) && sources.length > 0
-    && Array.isArray(tools) && sources[0] === operation.item_ref
-    && new Set(sources).size === sources.length
-    && new Set(tools).size === tools.length
-    && !sources.some((ref) => tools.includes(ref))
-    && sources.every((ref) => refs.source_refs.includes(ref))
-    && tools.every((ref) => refs.tool_refs.includes(ref))
-    && sameRefSet(operation.target_refs, [...sources.slice(1), ...tools]);
-}
-
-function sameRefSet(left, right) {
-  return Array.isArray(left) && Array.isArray(right)
-    && left.length === right.length && new Set(left).size === left.length
-    && left.every((ref) => right.includes(ref));
+  const independent_output_source_groups = []; // ponytail: bulk if inventory grows.
+  for (const ref of source_refs) {
+    let joined = false;
+    for (const group of independent_output_source_groups) {
+      if (typeof owner.referencesJointlyApplicable === 'function'
+          && await owner.referencesJointlyApplicable(input({
+            item_ref: group[0], source_refs: [...group, ref], tool_refs: [],
+            identity_mode: 'independent_outputs'
+          }))) {
+        group.push(ref);
+        joined = true;
+        break;
+      }
+    }
+    if (!joined) independent_output_source_groups.push([ref]);
+  }
+  if (typeof owner.referencesJointlyApplicable !== 'function'
+      && independent_output_source_groups.length > 1) {
+    independent_output_source_groups.splice(0,
+      independent_output_source_groups.length, [...source_refs]);
+  }
+  return { source_refs, tool_refs, independent_output_source_groups };
 }
 
 function createNpcA1ProjectionOwner({ state, npc, itemRefs }) {

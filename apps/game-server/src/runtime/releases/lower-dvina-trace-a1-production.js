@@ -1,6 +1,9 @@
 import { createActionProducedTransitionPlanner,
-  resolveActionProducedAllocationMechanics } from
+  resolveActionProducedAllocationMechanics,
+  selectActionProducedPropertySource } from
   '@rus/items-property/action-produced-transition';
+import { actionProducedResultSemanticContract } from
+  '@rus/items-property/action-produced-result';
 import { createActionProducedAtomicWritePlan } from
   '../../infrastructure/postgres/action-produced-atomic-write-plan.js';
 import { loadActionProducedCommittedContext } from
@@ -18,6 +21,14 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
   if (!pool?.query) {
     throw new TypeError('A1 production resolver dependencies are required.');
   }
+  const actionProductionContract = Object.freeze({
+    ...actionProducedResultSemanticContract(),
+    max_new_entities: profile.max_new_entities,
+    allowed_identity_modes: Object.freeze([...profile.allowed_identity_modes]),
+    allowed_origins: Object.freeze([...profile.allowed_origins]),
+    allowed_result_classes: Object.freeze([...profile.allowed_result_classes]),
+    allowed_output_classes: Object.freeze([...profile.allowed_output_classes])
+  });
   return ({ partyId, requestId, applyWorkingProjection }) => {
     const load = async (rawEnvelope, requireEvidence) => {
       const envelope = snapshot(rawEnvelope);
@@ -47,6 +58,7 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         actionRef, qualitative, sourceRefs, toolRefs, changeSetId, loaded };
     };
     return Object.freeze({
+      actionProductionContract,
       async referencesApplicable(rawInput) {
         const input = referenceApplicabilityInput(rawInput, partyId, profile);
         try {
@@ -55,6 +67,24 @@ export function createLowerDvinaTraceA1ProductionResolverFactory({
         } catch (error) {
           if (['ACTION_PRODUCED_ITEM_ACCESS_DENIED',
             'ACTION_PRODUCED_ITEM_GAP'].includes(error?.code)) return false;
+          throw error;
+        }
+      },
+      async referencesJointlyApplicable(rawInput) {
+        if (rawInput?.identity_mode !== 'independent_outputs') {
+          fail('TRACE_A1_SCOPE_INVALID');
+        }
+        const input = referenceApplicabilityInput(rawInput, partyId, profile);
+        try {
+          const loaded = await loadActionProducedCommittedContext(pool, input);
+          selectActionProducedPropertySource(loaded.source_snapshots);
+          return true;
+        } catch (error) {
+          if (['ACTION_PRODUCED_ITEM_ACCESS_DENIED',
+            'ACTION_PRODUCED_ITEM_GAP',
+            'ITEM_ACTION_PRODUCED_PROPERTY_AMBIGUOUS'].includes(error?.code)) {
+            return false;
+          }
           throw error;
         }
       },

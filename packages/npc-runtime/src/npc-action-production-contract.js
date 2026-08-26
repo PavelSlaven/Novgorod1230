@@ -1,5 +1,4 @@
-import { actionProducedOutputRequiresTool,
-  validateActionProducedOutputClass } from '@rus/items-property';
+import { validateActionProducedQualitativeShape } from '@rus/items-property';
 import { exactKeys, stableId, uniqueStableIds } from './internal.js';
 import {
   finiteInteger,
@@ -25,14 +24,12 @@ export function validateNpcActionProduction(value, operation) {
     || (value.material_extent !== null && !stableId(value.material_extent))
     || (value.output_class !== null && !stableId(value.output_class))
     || !validateDescriptor(value.result_descriptor)
-    || !validateActionProducedOutputClass(value.output_class, value.result_class,
-      value.identity_mode)) return false;
+    || !validateActionProducedQualitativeShape(value)) return false;
   return value.source_refs[0] === operation.item_ref
     && !value.source_refs.some((ref) => value.tool_refs.includes(ref))
     && sameRefSet(operation.target_refs, [
       ...value.source_refs.slice(1), ...value.tool_refs
-    ]) && (!actionProducedOutputRequiresTool(value.output_class)
-      || value.tool_refs.length > 0);
+    ]);
 }
 
 export function npcActionProductionRefs(value) {

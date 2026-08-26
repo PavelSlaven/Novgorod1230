@@ -153,9 +153,10 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
       contracts.npcSemanticProfile = n1Profile();
       contracts.genericCheckContext.attributes.push({ attribute_ref: 'strength',
         label: 'сила', value: 10 });
+      const loadedA1Profile = await loadLowerDvinaTraceA1Profile();
       const npcActorStep = createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory({
         createActionProductionOwner: createLowerDvinaTraceA1ProductionResolverFactory({
-          pool: a1Pool(state, rows), loadedProfile: await loadLowerDvinaTraceA1Profile()
+          pool: a1Pool(state, rows), loadedProfile: loadedA1Profile
         })
       });
       const npcOwnerCapabilities = await npcActorStep({ partyId: state.party_id,
@@ -163,10 +164,16 @@ test('Phase 7 composes checked production A1 outcome and semantic time once',
         state, phase7Contracts: contracts });
       const actionCapability = npcOwnerCapabilities.find(({ operation: name }) =>
         name === 'request_item_use');
-      assert.deepEqual(actionCapability?.capability.action_production, {
-        source_refs: ['npc-source-twig', 'npc-tool-knife'],
-        tool_refs: ['npc-source-twig', 'npc-tool-knife']
-      });
+      const projectedA1 = actionCapability?.capability.action_production;
+      assert.deepEqual(projectedA1.source_refs,
+        ['npc-source-twig', 'npc-tool-knife']);
+      assert.deepEqual(projectedA1.tool_refs,
+        ['npc-source-twig', 'npc-tool-knife']);
+      assert.deepEqual(projectedA1.independent_output_source_groups,
+        [['npc-source-twig', 'npc-tool-knife']]);
+      assert.equal(projectedA1.max_new_entities, 4);
+      assert.deepEqual(projectedA1.allowed_identity_modes,
+        loadedA1Profile.profile.allowed_identity_modes);
       const consequence = await run({ state, contracts, randomSource: {
         next() { rngCalls += 1; return roll; }
       }, genericCheckContextOwner: checkContext(contracts),

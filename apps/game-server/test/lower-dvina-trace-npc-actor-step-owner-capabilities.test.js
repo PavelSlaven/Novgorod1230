@@ -5,8 +5,6 @@ import { createLowerDvinaTraceNpcActorStepOwnerCapabilitiesFactory } from
   '../src/runtime/lower-dvina-trace-npc-actor-step-owner-capabilities.js';
 import { createTraceTurnRuntime } from
   '../src/runtime/releases/spatial-v3-production-trace-runtime.js';
-import { mergePhase7Capability } from
-  '../src/runtime/lower-dvina-trace-phase-7-owner-registry.js';
 
 test('runtime injects owner adapters and handoffs', async () => {
   let captured;
@@ -92,22 +90,6 @@ test('adapters expose NPC-safe refs and call owner', async () => {
   assert.ok(!Object.hasOwn(calls[1][1], 'player_safe_state'));
 });
 
-test('A1 subset capability merges with item owner', () => {
-  const contract = mergePhase7Capability({ owner: '@rus/items-property', allowed: [
-    { item_ref: 'road-bag', use_kind: 'operate', target_refs: ['shore'] }
-  ] }, { owner: '@rus/items-property', item_refs: ['source', 'tool'],
-    use_kinds: ['other'], action_production: {
-      source_refs: ['source', 'tool'], tool_refs: ['source', 'tool'] } });
-  assert.equal(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
-    item_ref: 'road-bag', use_kind: 'operate', target_refs: ['shore'] }, contract), true);
-  assert.equal(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
-    item_ref: 'source', use_kind: 'other', target_refs: ['tool'], action_production: {
-      source_refs: ['source'], tool_refs: ['tool'] } }, contract), true);
-  assert.equal(matchesOperationContract({ op: 'request_item_use', actor_ref: 'npc',
-    item_ref: 'source', use_kind: 'other', target_refs: ['hidden'], action_production: {
-      source_refs: ['source'], tool_refs: ['hidden'] } }, contract), false);
-});
-
 test('A1 capability needs no Strength probe', async () => {
   const state = stateWithNpc();
   const phase7Contracts = contracts(state);
@@ -155,12 +137,13 @@ test('A1 advertises owner refs and target binding', async () => {
   const [action] = await factory({ partyId: 'party', requestId: 'request',
     inputDigest: 'digest', state, phase7Contracts: contracts(state) });
   assert.deepEqual(action.capability.action_production, {
-    source_refs: ['safe-source', 'safe-tool'], tool_refs: ['safe-source', 'safe-tool']
+    source_refs: ['safe-source', 'safe-tool'], tool_refs: ['safe-source', 'safe-tool'],
+    independent_output_source_groups: [['safe-source', 'safe-tool']]
   });
-  assert.equal(action.supports({ operation: { actor_ref: 'npc',
+  assert.equal(action.supports({ operation: { op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: ['safe-tool'],
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } } }), true);
-  assert.equal(action.supports({ operation: { actor_ref: 'npc',
+  assert.equal(action.supports({ operation: { op: 'request_item_use', actor_ref: 'npc',
     item_ref: 'safe-source', use_kind: 'other', target_refs: [],
     action_production: { source_refs: ['safe-source'], tool_refs: ['safe-tool'] } } }), false);
 });
@@ -190,7 +173,8 @@ test('A1 admits revealed open-container items to P16',
     assert.ok(action, JSON.stringify(capabilities.map(({ operation }) => operation)));
     assert.deepEqual(action.capability.action_production, {
       source_refs: ['stored-source', 'stored-tool'],
-      tool_refs: ['stored-source', 'stored-tool']
+      tool_refs: ['stored-source', 'stored-tool'],
+      independent_output_source_groups: [['stored-source', 'stored-tool']]
     });
     const result = await action.execute(execution({ op: 'request_item_use',
       actor_ref: 'npc', item_ref: 'stored-source', use_kind: 'other',

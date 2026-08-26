@@ -121,6 +121,33 @@ test('A1 capability marker requires the exact profile and installed resolver',
     }), /Exact loaded A1 profile is required/u);
   });
 
+test('A1 owner projects its validated semantic operation bounds', async () => {
+  const loadedProfile = await loadLowerDvinaTraceA1Profile();
+  const createOwner = createLowerDvinaTraceA1ProductionResolverFactory({
+    pool: { query: async () => ({ rows: [] }) }, loadedProfile
+  });
+  const owner = createOwner({ partyId: 'party', requestId: 'request' });
+  assert.deepEqual(owner.actionProductionContract, {
+    semantic_contract: 'action_produced_result_v1',
+    material_extent_rules: {
+      preserve_source: { one_source: [null],
+        multiple_sources: ['minor', 'half', 'major', 'whole'] },
+      independent_outputs: { partial_transformation: ['minor', 'half', 'major'],
+        other: ['whole'] },
+      no_useful_result: [null]
+    },
+    allowed_physical_forms: ['compact', 'regular', 'long', 'bulky'],
+    max_new_entities: loadedProfile.profile.max_new_entities,
+    allowed_identity_modes: loadedProfile.profile.allowed_identity_modes,
+    allowed_origins: loadedProfile.profile.allowed_origins,
+    allowed_result_classes: loadedProfile.profile.allowed_result_classes,
+    allowed_output_classes: loadedProfile.profile.allowed_output_classes
+  });
+  assert.equal(Object.isFrozen(owner.actionProductionContract), true);
+  assert.equal(Object.isFrozen(owner.actionProductionContract
+    .allowed_identity_modes), true);
+});
+
 test('A1 admits unchecked domain request but keeps checked evidence strict', () => {
   const unchecked = a1EvidenceEnvelope();
   assert.equal(Object.hasOwn(unchecked, 'check_result'), false);

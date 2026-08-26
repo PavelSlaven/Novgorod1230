@@ -1,3 +1,4 @@
+import { validateActionProducedQualitativeShape } from '@rus/items-property';
 import { exactKeys, record, stableId, uniqueStableIds } from './internal.js';
 
 export function validateWorldProcessOperation(value) {
@@ -236,7 +237,47 @@ function exactActionProductionRefs(operation, contract) {
     && !sources.some((ref) => tools.includes(ref))
     && sources.every((ref) => contract.source_refs.includes(ref))
     && tools.every((ref) => contract.tool_refs.includes(ref))
+    && actionProductionBoundsMatch(action, contract)
     && sameIdSet(operation.target_refs, [...sources.slice(1), ...tools]);
+}
+
+function actionProductionBoundsMatch(action, contract) {
+  if (Object.hasOwn(contract, 'semantic_contract')
+      && (contract.semantic_contract !== 'action_produced_result_v1'
+        || !validateActionProducedQualitativeShape(action))) return false;
+  if (Object.hasOwn(contract, 'max_new_entities')
+      && (!Number.isSafeInteger(contract.max_new_entities)
+        || action.requested_output_count !== null
+          && (!Number.isSafeInteger(action.requested_output_count)
+            || action.requested_output_count > contract.max_new_entities))) {
+    return false;
+  }
+  if (!allowed(action.identity_mode, contract, 'allowed_identity_modes')
+      || !nullableAllowed(action.origin, contract, 'allowed_origins')
+      || !allowed(action.result_class, contract, 'allowed_result_classes')
+      || !nullableAllowed(action.output_class, contract,
+        'allowed_output_classes')) return false;
+  return action.identity_mode !== 'independent_outputs'
+    || !Object.hasOwn(contract, 'independent_output_source_groups')
+    || Array.isArray(contract.independent_output_source_groups)
+      && contract.independent_output_source_groups.some((group) =>
+        Array.isArray(group)
+          && sourcesWithinGroup(action.source_refs, group));
+}
+
+function allowed(value, contract, key) {
+  return !Object.hasOwn(contract, key)
+    || Array.isArray(contract[key]) && contract[key].includes(value);
+}
+
+function nullableAllowed(value, contract, key) {
+  return !Object.hasOwn(contract, key)
+    || Array.isArray(contract[key])
+      && (value === null || contract[key].includes(value));
+}
+
+function sourcesWithinGroup(sources, group) {
+  return sources.every((ref) => group.includes(ref));
 }
 
 function sameIdSet(left, right) {

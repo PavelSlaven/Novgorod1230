@@ -15,6 +15,9 @@ import { createActionProducedOutputAuthority,
 import { ACTION_PRODUCED_OUTPUT_CLASSES, actionProducedOutputRequiresTool,
   validateActionProducedOutputClass } from
   './action-produced-output-class.js';
+import { actionProducedResultSemanticContract,
+  validateActionProducedQualitativeShape } from
+  './action-produced-result.js';
 import { actionProducedPhysicalFactTexts,
   mergeActionProducedPhysicalFacts } from
   './action-produced-output-semantics.js';
@@ -179,6 +182,7 @@ export {
   deriveLocalFireFuelClassification,
   itemPlacementIsPhysicallyAccessible,
   actionProducedOutputRequiresTool,
+  actionProducedResultSemanticContract,
   actionProducedPhysicalFactTexts,
   buildExistingContainerOrdinarySeedRequest,
   classifyExistingContainerContents,
@@ -195,6 +199,7 @@ export {
   planApprovedItemZoneTransition,
   validateActionProducedOutputAuthority,
   validateActionProducedOutputClass,
+  validateActionProducedQualitativeShape,
   validateItem
 };
 

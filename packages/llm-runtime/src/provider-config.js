@@ -315,6 +315,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     provider: shared.enabled ? shared.provider : 'deepseek',
     apiKey: shared.enabled ? shared.apiKey : null,
     baseUrl: shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL),
+    requestTimeoutMs: readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) || 120000,
     api: scopeDefaults.api,
     model: readRoleModel(defaults, env, shared.model),
     thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,
@@ -566,10 +567,7 @@ function applyRuntimeSafetyNormalization(config) {
   config.responseFormat = { type: 'json_object' };
 }
 
-function normalizeBaseUrl(value) {
-  const trimmed = value?.trim();
-  return trimmed ? trimmed.replace(/\/+$/, '') : DEFAULT_DEEPSEEK_BASE_URL;
-}
+function normalizeBaseUrl(value) { return value?.trim().replace(/\/+$/, '') || DEFAULT_DEEPSEEK_BASE_URL; }
 
 function buildContextBudget(defaults) {
   if (!defaults || typeof defaults !== 'object') return null;
@@ -582,17 +580,14 @@ function buildContextBudget(defaults) {
   };
 }
 
-function readText(value) {
-  const text = String(value ?? '').trim();
-  return text || '';
-}
+function readText(value) { return String(value ?? '').trim(); }
 
 function readPositiveInt(value) {
-  const numeric = Number(value);
-  return Number.isInteger(numeric) && numeric > 0 ? numeric : null;
+  const n = Number(value);
+  return Number.isInteger(n) && n > 0 ? n : null;
 }
 
 function readNumber(value) {
-  const numeric = Number(value);
-  return Number.isFinite(numeric) ? numeric : null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
 }

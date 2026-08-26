@@ -51,6 +51,7 @@ Release: `0.23.0-migration.24`
 | `@rus/db-tools` | `tools/db-tools` | Автономные контракты и проверки для export/import/seed/audit операций БД. Инструмент не является runtime adapter и не выполняет SQL сам. |
 | `@rus/docs-tools` | `tools/docs-tools` | Автономные инструменты проверки document graph/RAG и воспроизводимой генерации канонической документации. |
 | `@rus/finalization` | `tools/finalization` | Автономный migration-tool для доказуемой финализации модульной миграции после staged cutover. Он проверяет release evidence, фиксирует автоматические gates и отделяет их от действий, которые может подтвердить только оператор или владелец проекта. |
+| `tools/local-play` | `tools/local-play` | Поддерживаемый localhost launcher `npm run play:local` для первой локальной игры через текущий production runtime. |
 | `@rus/map-maker` | `tools/map-maker` | Автономный редакторский инструмент для импорта, проверки, раскладки и экспорта игровых графов G0-G5. Инструмент не участвует в new-game/turn runtime и не изменяет каноническую БД. |
 | `@rus/runtime-catalog-activation-tooling` | `tools/runtime-catalog-activation` | Operator-only tooling для baseline registration, exact overlay compilation, import/readback и append-only domain catalog activation. |
 | `@rus/shadow-run` | `tools/shadow-run` | Автономный migration-tool для двойного запуска утверждённого corpus старого и модульного маршрутов. Инструмент исполняет только явно зарегистрированные parity/isolation tests, агрегирует структурные категории сравнения и выпускает machine-readable и Markdown отчёты. |

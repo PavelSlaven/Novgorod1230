@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requestTurnStepPlan } from '@rus/turn';
+import { requestTurnStepPlan, validateTurnStepPlan } from '@rus/turn';
 import {
+  createLowerDvinaTraceNarrationService,
   createLowerDvinaTraceTurnStepModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
@@ -69,6 +70,33 @@ test('turn step model sends the validated request to the isolated planner role',
     'create no spaceship or other entity',
     'do not move the actor'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
+});
+
+test('turn step planner prompt supplies current complete plan shape', async () => {
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    } }
+  });
+  await model(request());
+  const example = JSON.parse(prompt.match(
+    /Use this full valid shape \(echo[^\n]*\):\n(\{[^\n]+\})/u
+  )[1]);
+  assert.equal(validateTurnStepPlan(example).ok, true);
+  assert.deepEqual(Object.keys(example), [
+    'schema', 'request_id', 'committed_state_version', 'working_revision',
+    'step_index', 'interpretation', 'resolution', 'goal_result', 'activity',
+    'operations', 'check', 'continuation', 'clarification', 'reason_code',
+    'reason'
+  ]);
+  for (const obsoleteKey of [
+    'actor_id', 'action_summary', 'semantic_activity', 'activity_type',
+    'activity_moment', 'activity_goal', 'activity_context', 'next_step',
+    'domain_request'
+  ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
+  assert.match(prompt, /Do not use obsolete keys interpretation\.actor_id/u);
 });
 
 test('impossible jump and absent spaceship plans stay grounded model contracts',
@@ -166,6 +194,32 @@ test('turn step model fails closed for missing runner or non-object output', asy
       { code: 'TRACE_PHASE_2_DEPENDENCY_MISSING' }
     );
   }
+});
+
+test('narration audit sends compact contract example with sufficient exact role budget', async () => {
+  const calls = [];
+  const narration = createLowerDvinaTraceNarrationService({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      return { output: call.role_id === 'legacy.narrator.dossier'
+        ? { version: 1, schema: 'narration_output', output_id: 'out-1', prose: 'Двор тих.', action_options: [], used_references: [], self_check: {} }
+        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible facts only'] } };
+    } }
+  });
+  await narration.run({
+    version: 1, schema: 'narration_request', request_id: 'narration-1',
+    surface: 'turn', visible_context: {}
+  });
+  const audit = calls[1];
+  assert.equal(audit.role_id, 'legacy.narrator.audit');
+  assert.deepEqual(audit.overrides, { temperature: 0, maxTokens: 1800 });
+  const example = JSON.parse(audit.messages[0].content.match(
+    /Complete valid passing example: (\{[^.]+\})\./u
+  )[1]);
+  assert.deepEqual(example, {
+    version: 1, schema: 'narration_audit', pass: true,
+    concerns: [], evidence: ['visible facts only']
+  });
 });
 
 function groundedPlan(input, current) {

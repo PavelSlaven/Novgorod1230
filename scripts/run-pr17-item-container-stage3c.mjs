@@ -21,13 +21,13 @@ if (plan.status !== 'ready') throw new Error(`PR17_STAGE3C_PLAN_BLOCKED:${plan.e
 
 if (mode === 'dry-run') {
   process.stdout.write(`${JSON.stringify(summary({ mode, plan, applied: false }), null, 2)}\n`);
-} else if (mode === 'lifecycle') {
+} else if (mode === 'lifecycle' || mode === 'local-play') {
   const databaseUrl = process.env.PR17_TEST_DATABASE_URL;
   if (!databaseUrl) throw new Error('PR17_TEST_DATABASE_URL_REQUIRED');
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
   const client = await pool.connect();
   try {
-    const database = await assertIsolatedDatabase(client);
+    const database = await assertDatabaseForMode(client, mode);
     await initializeSchema(client);
     await bootstrapExternalReferences(client, input.mappings, input.parent_revision);
     const rollback = await verifyRollback(plan, client);
@@ -73,10 +73,13 @@ function loadPromotionInput(path) {
   };
 }
 
-async function assertIsolatedDatabase(client) {
+async function assertDatabaseForMode(client, selectedMode) {
   const result = await client.query('SELECT current_database() AS database');
   const database = result.rows[0]?.database;
-  if (!/^pr17_[a-z0-9_]+$/u.test(String(database ?? ''))) throw new Error(`PR17_ISOLATED_DATABASE_REQUIRED:${database}`);
+  const allowed = selectedMode === 'local-play'
+    ? database === 'novgorod_world'
+    : /^pr17_[a-z0-9_]+$/u.test(String(database ?? ''));
+  if (!allowed) throw new Error(`PR17_${selectedMode === 'local-play' ? 'LOCAL_PLAY' : 'ISOLATED'}_DATABASE_REQUIRED:${database}`);
   return database;
 }
 

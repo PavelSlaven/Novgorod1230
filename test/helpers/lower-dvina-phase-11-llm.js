@@ -56,11 +56,23 @@ export function createCanonicalPhase11LlmResponder({
   let turn10Actors = null;
   return async ({ model, input }) => {
     if (model === 'fixture-intent-router') return resolveIntent(input);
+    if (model === 'fixture-spatial-semantic-descriptor') {
+      return {
+        schema: 'rus.s1_spatial_semantic_proposal.v1',
+        request_id: input.request_id,
+        name: 'Низкая плетёная загородка',
+        description: 'Сырая плетёная загородка у берега, без особого значения.',
+        semantic_requirements:
+          input.approved_envelope.required_semantic_requirements ?? []
+      };
+    }
     if (['fixture-turn-step-planner', 'fixture-turn-step-planner-repair']
       .includes(model)) {
       const request = input.request ?? input;
-      if (String(request.root_player_action).trim().toLowerCase()
-        .replace(/[.!?]+$/u, '') === 'осмотреться') {
+      if (['осмотреться', 'осматриваюсь вокруг'].includes(
+        String(request.root_player_action).trim().toLowerCase()
+          .replace(/[.!?]+$/u, '')
+      )) {
         return generalLookModel(request);
       }
       const plan = planTurnStep(request, turn10Actors);

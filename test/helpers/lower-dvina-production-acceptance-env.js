@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 import pg from 'pg';
@@ -14,30 +13,8 @@ import { createStaticAssetResolver } from
   '../../apps/game-server/src/http/static-assets.js';
 import { createGameHttpServer, listen } from
   '../../apps/game-server/src/http/server.js';
-import {
-  applyFirstPlayableV2ActivationBundle,
-  buildFirstPlayableV2ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/first-playable-v2-activation.js';
-import {
-  applySpatialV3ProductionV12ActivationBundle,
-  buildSpatialV3ProductionV12ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/spatial-v3-production-v12-activation.js';
-import {
-  applyLowerDvinaBoundaryV3ActivationBundle,
-  buildLowerDvinaBoundaryV3ActivationBundle
-} from '../../tools/runtime-catalog-activation/src/lower-dvina-boundary-v3-activation.js';
-import {
-  runPartyRuntimeCatalogMigration,
-  runWorldRuntimeCatalogMigration
-} from '../../tools/runtime-catalog-activation/src/forward-migrations.js';
-import { buildLowerDvinaBoundaryV1ImportSql } from
-  '../../tools/spatial-v3/lower-dvina-boundary-v1-importer.mjs';
-import { buildLowerDvinaV2ImportSql } from
-  '../../tools/spatial-v3/lower-dvina-v2-importer.mjs';
-import { buildCharacterAppearanceV1ImportSql } from
-  '../../tools/spatial-v3/character-appearance-v1-importer.mjs';
-import { buildS1AuthoringV5ImportSql } from
-  '../../tools/spatial-v3/s1-authoring-v5-importer.mjs';
+import { installActivatedRuntimeCatalog } from
+  '../../tools/local-play/production-setup.js';
 import { startLocalLlmProviderFixture } from
   './local-llm-provider-fixture.js';
 
@@ -62,7 +39,7 @@ export async function startLowerDvinaProductionAcceptanceEnv({
     const worldUrl = databaseUrl({
       container: postgresContainer,
       user: 'world_operator',
-      database: 'pr17_phase11_world'
+      database: 'novgorod_world'
     });
     const partyUrl = databaseUrl({
       container: postgresContainer,
@@ -75,7 +52,8 @@ export async function startLowerDvinaProductionAcceptanceEnv({
       worldPool,
       partyPool,
       worldUrl,
-      repositoryRoot
+      repositoryRoot,
+      authorizationRef: 'Phase 11 isolated production acceptance'
     });
     const env = {
       ...process.env,
@@ -177,113 +155,6 @@ export async function startLowerDvinaProductionAcceptanceEnv({
   }
 }
 
-async function installActivatedRuntimeCatalog({
-  worldPool,
-  partyPool,
-  worldUrl,
-  repositoryRoot
-}) {
-  const lifecycle = spawnSync(
-    process.execPath,
-    ['scripts/run-pr17-item-container-stage3c.mjs', '--mode', 'lifecycle'],
-    {
-      cwd: repositoryRoot,
-      encoding: 'utf8',
-      timeout: 180_000,
-      env: { ...process.env, PR17_TEST_DATABASE_URL: worldUrl }
-    }
-  );
-  assert.equal(lifecycle.status, 0, lifecycle.stderr);
-  const lifecycleResult = JSON.parse(lifecycle.stdout);
-  assert.equal(lifecycleResult.pass, true);
-  for (const file of ['18.sql', '19.sql', '20.sql']) {
-    await worldPool.query(await readFile(
-      resolve(repositoryRoot, 'infra/world-base/schema', file),
-      'utf8'
-    ));
-  }
-  await worldPool.query(await buildLowerDvinaV2ImportSql({
-    root: repositoryRoot
-  }));
-  const partyMigrations = (await readdir(resolve(
-    repositoryRoot,
-    'schemas/party-db'
-  ))).filter((file) => /^\d+.*\.sql$/u.test(file)).sort();
-  const catalogIndex = partyMigrations.findIndex((file) =>
-    file.startsWith('012_'));
-  assert.equal(catalogIndex, 11);
-  for (const file of partyMigrations.slice(0, catalogIndex)) {
-    await partyPool.query(await readFile(
-      resolve(repositoryRoot, 'schemas/party-db', file),
-      'utf8'
-    ));
-  }
-  await Promise.all([
-    runWorldRuntimeCatalogMigration(worldPool),
-    runPartyRuntimeCatalogMigration(partyPool)
-  ]);
-  const commitSha = execFileSync('git', ['rev-parse', 'HEAD'], {
-    cwd: repositoryRoot,
-    encoding: 'utf8'
-  }).trim();
-  const v2Bundle = await buildFirstPlayableV2ActivationBundle({
-    worldPool,
-    partyPool,
-    repositoryRoot,
-    gitCommitSha: commitSha,
-    authorizationRef: 'Phase 11 isolated production acceptance'
-  });
-  await applyFirstPlayableV2ActivationBundle({
-    worldPool,
-    partyPool,
-    bundle: v2Bundle
-  });
-  await worldPool.query(await buildLowerDvinaBoundaryV1ImportSql({
-    root: repositoryRoot
-  }));
-  const v3Bundle = await buildLowerDvinaBoundaryV3ActivationBundle({
-    worldPool,
-    partyPool,
-    repositoryRoot,
-    gitCommitSha: commitSha,
-    authorizationRef: 'Phase 11 isolated production acceptance'
-  });
-  await applyLowerDvinaBoundaryV3ActivationBundle({
-    worldPool,
-    partyPool,
-    bundle: v3Bundle
-  });
-  await worldPool.query(await readFile(
-    resolve(repositoryRoot, 'infra/world-base/schema/21.sql'),
-    'utf8'
-  ));
-  await worldPool.query(await buildCharacterAppearanceV1ImportSql({
-    root: repositoryRoot
-  }));
-  await worldPool.query(await buildS1AuthoringV5ImportSql({
-    root: repositoryRoot
-  }));
-  const v12Bundle = await buildSpatialV3ProductionV12ActivationBundle({
-    worldPool,
-    partyPool,
-    repositoryRoot,
-    gitCommitSha: commitSha,
-    authorizationRef: 'Character appearance isolated production acceptance'
-  });
-  await applySpatialV3ProductionV12ActivationBundle({
-    worldPool,
-    partyPool,
-    bundle: v12Bundle
-  });
-  return Object.freeze({
-    pinManifestDigest:
-      v12Bundle.compatibility_manifest.compatible_world_pin_manifest_digest,
-    v2Bundle,
-    v3Bundle,
-    v12Bundle
-  });
-}
-
 function startPostgres(name) {
   const result = docker([
     'run', '-d', '--name', name, '-p', '127.0.0.1::5432',
@@ -295,7 +166,7 @@ function startPostgres(name) {
 
 function initializeAcceptanceDatabases(container) {
   for (const [user, database] of [
-    ['world_operator', 'pr17_phase11_world'],
+    ['world_operator', 'novgorod_world'],
     ['party_operator', 'phase11_party']
   ]) {
     const role = docker([

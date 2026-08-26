@@ -2,8 +2,6 @@ import { createHash } from 'node:crypto';
 import { explainJsonObjectParse } from '@rus/contracts/json';
 import { resolveLlmExecutionConfig } from './provider-config.js';
 
-const REQUEST_TIMEOUT_MS = 30000;
-
 export function describeRoleLlmCall({ scope, roleId = null, tierId = null,
   env = process.env, overrides = null } = {}) {
   const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env,
@@ -107,7 +105,11 @@ export function createScopedChatCompletionClient({
 async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   const startedAt = Date.now();
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(new Error('DeepSeek request timeout')), REQUEST_TIMEOUT_MS);
+  let timedOut = false;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort(new Error('DeepSeek request timeout'));
+  }, config.requestTimeoutMs);
   const configHash = hashConfig(config);
   let responseData = null;
   let callError = null;
@@ -179,7 +181,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
     }, telemetry);
   } catch (error) {
     callError = {
-      code: error?.name === 'AbortError' ? 'timeout' : 'transport_error',
+      code: timedOut ? 'timeout' : 'transport_error',
       message: String(error?.message ?? error ?? 'Unknown transport error'),
       retryable: true
     };

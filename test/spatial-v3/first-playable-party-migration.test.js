@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
+  getSpatialV3TargetMigrationsBeforeCatalogMigration,
   SPATIAL_V3_TARGET_MIGRATIONS
 } from '../../apps/game-server/src/infrastructure/postgres/spatial-v3-target-migrations.js';
 
@@ -87,6 +88,10 @@ const localFireSql = readFileSync(
 );
 test('target chain appends migrations 011 through 030 in exact order', () => {
   assert.equal(SPATIAL_V3_TARGET_MIGRATIONS.length, 30);
+  assert.deepEqual(
+    getSpatialV3TargetMigrationsBeforeCatalogMigration(),
+    SPATIAL_V3_TARGET_MIGRATIONS.slice(0, 11)
+  );
   assert.deepEqual(SPATIAL_V3_TARGET_MIGRATIONS.slice(-20), [sql,
     externalOwnershipSql, obligationsSql, resumeTerminalSql, turnStepItemsSql,
     npcSemanticConversationSql, conversationTranscriptSql, phase7ContainerSql,

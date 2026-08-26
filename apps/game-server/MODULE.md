@@ -17,6 +17,7 @@ and adds no second transaction owner.
 ## Владеет
 
 - Владеет production composition, HTTP `/api/v1/*`, pool/probe/migrations, physical `party_runtime` transaction/Stage 25/combined atomic commit adapters, session/delivery stores and `createTemporalPresentationPostgresStore`.
+- Запускается как обычный production server entry. `tools/local-play` снаружи подготавливает только local Docker/PostgreSQL, актуальные env/pin и HTTP readiness; server не владеет launcher, Docker bootstrap или local reset.
 - После чтения committed screen/state владеет server-side adapter, который
   фильтрует active interlocutor identity/equipment и добавляет неперсистентные
   presentation-only selectors: `portrait_spec_v1`, optional

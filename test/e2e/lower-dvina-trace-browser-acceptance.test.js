@@ -19,7 +19,7 @@ const CHROME_PATH = [
 ].find((candidate) => candidate && existsSync(candidate));
 const PHASE2_GENERAL_LOOK = ['look', 'Осмотреться'];
 
-test('Chromium completes revision 19 through production-v9 and PostgreSQL', {
+test('Chromium restores a saved party through production-v13 and PostgreSQL', {
   timeout: 360_000,
   skip: !CHROME_PATH && 'Chrome or Chromium executable not found.'
 }, async (context) => {
@@ -27,6 +27,10 @@ test('Chromium completes revision 19 through production-v9 and PostgreSQL', {
     llmRespond: createCanonicalPhase11LlmResponder()
   });
   context.after(() => environment.close());
+  const health = await fetch(`${environment.baseUrl}/api/v1/health`);
+  assert.equal(health.ok, true);
+  assert.equal((await health.json()).data.release_id,
+    'spatial-v3-production-v13');
   const browser = await chromium.launch({ executablePath: CHROME_PATH,
     headless: true, args: ['--no-sandbox', '--no-proxy-server'] });
   context.after(() => browser.close());
@@ -164,10 +168,26 @@ test('Chromium completes revision 19 through production-v9 and PostgreSQL', {
     if (id === 'rest') {
       const calls = environment.llm.requests.length;
       await environment.restartRoot();
+      const restartedHealth = await fetch(
+        `${environment.baseUrl}/api/v1/health`
+      );
+      assert.equal(restartedHealth.ok, true);
+      assert.equal((await restartedHealth.json()).data.release_id,
+        'spatial-v3-production-v13');
       await page.goto(environment.baseUrl);
       await page.waitForSelector('[data-continue-party]');
+      const restoredScreen = page.waitForResponse((candidate) =>
+        candidate.request().method() === 'GET'
+          && new URL(candidate.url()).pathname ===
+            `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
       await page.click('[data-continue-party]');
+      assert.equal((await restoredScreen).ok(), true);
       await page.waitForSelector('[data-turn-form]');
+      await page.waitForSelector(
+        '[data-landscape], [data-conversation-portrait-canvas]'
+      );
+      assert.equal(await page.locator('.error').count(), 0,
+        await page.textContent('body'));
       assert.equal(environment.llm.requests.length, calls);
     }
   }

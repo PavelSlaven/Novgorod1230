@@ -21,53 +21,17 @@
   сохраняются как объяснение исходных разрывов и порядка работ, но не описывают
   текущее production-состояние.
 
-## Статус spatial v3 / Temporal World v4
+## Текущий runtime
 
-Базовая Spatial v3 authoring-компиляция P12 утверждена: canonical manifest
-содержит 37 SHA-256-pinned datasets и `data_gaps: []`; dependency closure
-включает 195 canonical G5, 358 physical exit pairs, 600 typed edge mappings,
-17 scene families, 195 profiles и 195 candidates. Это не является production
-activation.
+Локальный запуск использует production release
+`spatial-v3-production-v13` с `builtin:production-spatial-v3` и
+`builtin:spatial-v3-production-v13`. Spatial v3 и Temporal World v4 —
+единственные владельцы authoritative reads/writes; runtime fallback запрещён.
+`versioned production activation cutover` завершён на stage `13`.
 
-Temporal World v4 реализован как current target amendment
-`temporal-world-v1.1` / `4.4.0-target.1`: exact rational game time,
-interruptible activities, deterministic temporal boundaries, NPC/carrier/
-environment/remote updates и post-commit narration. Его профильный норматив
-имеет status `active` после полной implementation acceptance и независимого
-критика.
-
-Exact-head P28 release evidence принят в merged PR #19: обязательный CI,
-hash-bound critic evidence и merge proof прошли live-проверку. Это разрешение
-само не выполняло production write и не меняло composition. Последующая цепочка
-`versioned production activation cutover` доведена до current release
-`spatial-v3-production-v9`: composition, authoritative reads/writes, target
-migration path, runtime pins и rollback release identity переключаются одной
-версией. Spatial v3/Temporal World v4 остаются sole production owner.
-Startup принимает только завершённую cutover stage `13`; release фиксирует
-approved Spatial world revision/manifest, `temporal-world-v1.1`, exact
-dependency pins и существующий `rus.runtime_catalog_pin.v2` lifecycle.
-Production v8 сохранён только как explicit rollback source; partial
-activation, dual write, authoritative mixed read и v9→v8 runtime fallback
-запрещены.
-
-Lower Dvina Trace revision 13 активировал одну player semantic boundary:
-exact registered command выполняется без LLM, остальной свободный ввод идёт
-через `turn_step_request_v1` → `turn_step_plan_v1` в `@rus/turn`. Revision 14
-активировал Phase 3–4 conversation: meaningful NPC response использует общие
-`npc_decision_signal_v1` → `npc_decision_boundary_v1` с
-`decision_mode = conversation`. Production v5 дополнительно активирует Phase 7:
-«Отдых у огня» длится ровно 30 минут, на 25-й минуте возникает autonomous
-decision boundary Жданко, а approved schedule action занимает 5 минут.
-Revision 16 / production v6 активирует persisted combat session, semantic NPC
-combat intent и общий automatic exchange. Revision 17 / production v7
-добавляет Phase 9 property/evidence/temporary-disposition path, а revision 18 /
-production v8 — deterministic Phase 10 completion и player-safe epilogue.
-Phase 11 подтверждает этот immutable v8 path. Revision 19 / production v9
-добавляет canonical actor appearance, реальные equipped garment instances и
-read-time `portrait_spec_v1`. Время, RNG, mechanics, persistence и player-safe
-visibility остаются code-owned; bounded selection сохраняется только для
-genuinely closed choices и явно pinned historical revisions, не как semantic
-fallback.
+Текущий сценарий — Lower Dvina Trace. Свободный ввод проходит через
+`turn_step_request_v1` → `turn_step_plan_v1`; время, RNG, mechanics и
+persistence остаются code-owned.
 
 ## Основные принципы
 
@@ -108,15 +72,22 @@ LLM выбирает закрытые варианты либо возвраща
 
 ## Быстрый запуск
 
-Требуется Node.js 22+.
+Для локальной игры нужны Node.js 22+, Docker и ключ DeepSeek.
 
-```bash
+```powershell
 npm ci
-npm test
-npm start
+$env:DEEPSEEK_API_KEY = '...'
+npm run play:local
 ```
 
-CLI-запуск:
+После readiness откройте <http://127.0.0.1:3000>. Launcher создаёт локальную
+PostgreSQL при первом запуске; повторный `npm run play:local` использует ту же
+party DB, поэтому сохранения переживают остановку Node.js и Docker container.
+
+`npm start` — low-level entry для уже подготовленного production environment;
+он не запускает Docker и не готовит базы.
+
+CLI-запуск без local launcher:
 
 ```bash
 npm run start:cli

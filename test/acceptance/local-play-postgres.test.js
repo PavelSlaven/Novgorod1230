@@ -66,9 +66,11 @@ test('local play persists a free turn and replays it after a server restart',
     assert.equal(beforeRestart.state_version, beforeTurn.state_version + 1);
 
     await stop(child);
+    assert.equal(docker(['container', 'stop', settings.container]).status, 0);
     localPlay = await startLocalPlay({ env, localPostgresSettings: settings,
       log: () => {} });
     child = localPlay.child;
+    assert.equal(localPlay.postgres.state, 'existing');
     const screen = await get(port,
       `/api/v1/parties/${encodeURIComponent(partyId)}/screen`);
     assert.equal(JSON.stringify(screen).includes('hidden_truth'), false);

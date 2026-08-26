@@ -37,13 +37,14 @@ test('Docker inspect parsing and ownership reject foreign resources', () => {
   const container = parseDockerInspect(JSON.stringify([{
     Config: { Image: LOCAL_POSTGRES.image, Labels: { [LOCAL_POSTGRES.label]: '1' } },
     Mounts: [{ Type: 'volume', Name: LOCAL_POSTGRES.volume, Destination: '/var/lib/postgresql/data' }],
-    NetworkSettings: { Ports: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '54321' }] } }
+    HostConfig: { PortBindings: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '' }] } },
+    NetworkSettings: { Ports: {} }
   }]), 'container');
   assert.doesNotThrow(() => assertLocalPostgresOwnership({ volume, container }));
   assert.throws(() => assertLocalPostgresOwnership({ volume: { Labels: {} } }),
     { code: 'LOCAL_POSTGRES_VOLUME_CONFLICT' });
   assert.throws(() => assertLocalPostgresOwnership({ volume, container: { ...container,
-    NetworkSettings: { Ports: { '5432/tcp': [{ HostIp: '0.0.0.0', HostPort: '54321' }] } }
+    HostConfig: { PortBindings: { '5432/tcp': [{ HostIp: '0.0.0.0', HostPort: '' }] } }
   } }), { code: 'LOCAL_POSTGRES_CONTAINER_CONFLICT' });
 });
 
@@ -52,6 +53,7 @@ test('existing database without a required role fails before opening pools', asy
     State: { Running: true },
     Config: { Image: LOCAL_POSTGRES.image, Labels: { [LOCAL_POSTGRES.label]: '1' } },
     Mounts: [{ Type: 'volume', Name: LOCAL_POSTGRES.volume, Destination: '/var/lib/postgresql/data' }],
+    HostConfig: { PortBindings: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '' }] } },
     NetworkSettings: { Ports: { '5432/tcp': [{ HostIp: '127.0.0.1', HostPort: '54321' }] } }
   };
   const commandRunner = (args) => {

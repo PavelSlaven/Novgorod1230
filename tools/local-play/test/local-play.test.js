@@ -46,11 +46,33 @@ test('occupied port fails before provider preflight and PostgreSQL setup', async
   assert.equal(postgresCalled, false);
 });
 
-test('provider exception becomes safe local-play error', async () => {
-  const cause = new Error('provider response body must not be printed');
-  await assert.rejects(startLocalPlay({ env: { DEEPSEEK_API_KEY: 'x' }, checkDocker: () => {}, providerProbe: async () => { throw cause; }, isPortAvailable: async () => true }), (error) => error.code === 'LOCAL_PLAY_PROVIDER_UNAVAILABLE' && error.message === 'DeepSeek provider preflight failed.' && error.cause === undefined);
+test('provider preflight classifies unauthorized safely', async () => {
+  await assertProviderFailure('http_401', 'LOCAL_PLAY_PROVIDER_UNAUTHORIZED');
+  await assertProviderFailure('http_403', 'LOCAL_PLAY_PROVIDER_UNAUTHORIZED');
+});
+
+test('provider preflight classifies timeout safely', async () => {
+  await assertProviderFailure('timeout', 'LOCAL_PLAY_PROVIDER_TIMEOUT');
+});
+
+test('provider preflight classifies unavailable safely', async () => {
+  await assertProviderFailure('transport_error', 'LOCAL_PLAY_PROVIDER_UNAVAILABLE');
 });
 
 test('readiness reports server exit', async () => {
   await assert.rejects(assertReadiness({ baseUrl: 'http://test', attempts: 1, child: { exitCode: 1 } }), { code: 'LOCAL_PLAY_SERVER_EXITED' });
 });
+
+async function assertProviderFailure(providerCode, expectedCode) {
+  const cause = new Error('provider response body and key must not be printed');
+  cause.code = providerCode;
+  await assert.rejects(startLocalPlay({
+    env: { DEEPSEEK_API_KEY: 'secret' },
+    checkDocker: () => {},
+    providerProbe: async () => { throw cause; },
+    isPortAvailable: async () => true
+  }), (error) => error.code === expectedCode
+    && !error.message.includes(cause.message)
+    && !error.message.includes('secret')
+    && error.cause === undefined);
+}

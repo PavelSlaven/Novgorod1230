@@ -106,8 +106,8 @@ export async function startLocalPlay({
   let provider;
   try {
     provider = await providerProbe(createProductionLlmRoleRunner({ env }));
-  } catch {
-    throw localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE', 'DeepSeek provider preflight failed.');
+  } catch (error) {
+    throw providerPreflightError(error);
   }
   if (provider?.ok !== true) {
     throw localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE', 'DeepSeek provider preflight failed.');
@@ -150,6 +150,19 @@ function assertHealth(health) {
   if (!health || Object.entries(expected).some(([key, value]) => health[key] !== value)) {
     throw localPlayError('LOCAL_PLAY_READINESS_INVALID', 'Game server health does not match active production release.');
   }
+}
+
+function providerPreflightError(error) {
+  if (error?.code === 'http_401' || error?.code === 'http_403') {
+    return localPlayError('LOCAL_PLAY_PROVIDER_UNAUTHORIZED',
+      'DeepSeek provider authentication failed.');
+  }
+  if (error?.code === 'timeout') {
+    return localPlayError('LOCAL_PLAY_PROVIDER_TIMEOUT',
+      'DeepSeek provider preflight timed out.');
+  }
+  return localPlayError('LOCAL_PLAY_PROVIDER_UNAVAILABLE',
+    'DeepSeek provider preflight failed.');
 }
 
 async function readSuccess(fetchImpl, url) {

@@ -57,9 +57,10 @@ export function assertLocalPostgresOwnership({ volume, container, settings = LOC
   const mounted = container.Mounts?.some((mount) => mount.Type === 'volume'
     && mount.Name === settings.volume
     && mount.Destination === '/var/lib/postgresql/data');
-  const bindings = container.NetworkSettings?.Ports?.['5432/tcp'];
+  const bindings = container.HostConfig?.PortBindings?.['5432/tcp'];
   const loopback = Array.isArray(bindings) && bindings.length > 0 && bindings.every(
-    (binding) => binding.HostIp === '127.0.0.1' && /^\d+$/u.test(binding.HostPort)
+    (binding) => binding.HostIp === '127.0.0.1'
+      && (binding.HostPort === '' || /^\d+$/u.test(binding.HostPort))
   );
   if (!owned(container.Config?.Labels)
       || container.Config?.Image !== settings.image
@@ -166,10 +167,13 @@ function inspect(commandRunner, args, resource) {
 }
 
 function containerPort(container) {
-  const port = container.NetworkSettings?.Ports?.['5432/tcp']?.[0]?.HostPort;
-  if (!/^\d+$/u.test(port ?? '')) throw localPlayError('LOCAL_POSTGRES_PORT_INVALID',
+  const bindings = container.NetworkSettings?.Ports?.['5432/tcp'];
+  const loopback = Array.isArray(bindings) && bindings.length > 0 && bindings.every(
+    (binding) => binding.HostIp === '127.0.0.1' && /^\d+$/u.test(binding.HostPort)
+  );
+  if (!loopback) throw localPlayError('LOCAL_POSTGRES_PORT_INVALID',
     'Local PostgreSQL has no loopback port.');
-  return port;
+  return bindings[0].HostPort;
 }
 
 function listDatabases(commandRunner, settings) {

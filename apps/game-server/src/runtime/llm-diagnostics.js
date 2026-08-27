@@ -41,6 +41,7 @@ export function buildLlmTurnReport({ party_id, request_id, calls = [] } = {}) {
     error_category: text(call.error_category ?? call.errorCategory) || null,
     repair: call.repair === true || /repair/u.test(text(call.role ?? call.roleId)),
     config_hash: text(call.config_hash ?? call.configHash) || null,
+    output_contract_mode: text(call.output_contract_mode ?? call.outputContractMode) || null,
     usage: usage(call.usage ?? call.tokenUsage)
   }));
   const durations = waterfall.map((call) => call.duration_ms).sort((a, b) => a - b);
@@ -51,6 +52,8 @@ export function buildLlmTurnReport({ party_id, request_id, calls = [] } = {}) {
     input_tokens: total.input_tokens + call.usage.input_tokens,
     output_tokens: total.output_tokens + call.usage.output_tokens
   }), { input_tokens: 0, output_tokens: 0 });
+  const providerTotals = waterfall.map((call) => call.usage.total_tokens).filter((total) => total !== undefined);
+  if (providerTotals.length > 0) tokens.total_tokens = providerTotals.reduce((total, value) => total + value, 0);
   const count = waterfall.length;
   return Object.freeze({
     version: 1,
@@ -81,11 +84,20 @@ function redactCall(record = {}) {
     error_category: record.error_category ?? record.errorCategory,
     repair: record.repair === true,
     config_hash: record.config_hash ?? record.configHash,
+    output_contract_mode: record.output_contract_mode ?? record.outputContractMode,
     usage: record.usage ?? record.tokenUsage
   };
 }
-function usage(value = {}) { return Object.freeze({ input_tokens: number(value?.prompt_tokens ?? value?.input_tokens), output_tokens: number(value?.completion_tokens ?? value?.output_tokens) }); }
+function usage(value = {}) {
+  const total = nonNegative(value?.total_tokens ?? value?.totalTokens);
+  return Object.freeze({
+    input_tokens: number(value?.prompt_tokens ?? value?.input_tokens),
+    output_tokens: number(value?.completion_tokens ?? value?.output_tokens),
+    ...(total === null ? {} : { total_tokens: total })
+  });
+}
 function percentile(values, fraction) { if (!values.length) return 0; return values[Math.min(values.length - 1, Math.ceil(values.length * fraction) - 1)]; }
 function rate(value, total) { return total === 0 ? 0 : value / total; }
-function number(value) { return Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : 0; }
+function nonNegative(value) { return Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null; }
+function number(value) { return nonNegative(value) ?? 0; }
 function text(value) { return String(value ?? '').trim(); }

@@ -7,6 +7,8 @@ import {
 } from '../src/internal/lower-dvina-trace-ordinary-stage-b-eval.js';
 import { createOrdinaryMaterializationModel } from
   '../src/runtime/ordinary-materialization-llm.js';
+import { buildOrdinaryMaterializationMessages } from
+  '../src/runtime/ordinary-materialization-llm.js';
 import { loadLowerDvinaTraceOrdinaryStageBApproval } from
   '../src/internal/lower-dvina-trace-ordinary-stage-b-approval.js';
 import { buildOrdinaryMaterializationPresenceRequest } from
@@ -14,6 +16,8 @@ import { buildOrdinaryMaterializationPresenceRequest } from
 import { describeRoleLlmCall } from '@rus/llm-runtime';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
+import { createOrdinaryMaterializationStageBQualifier } from
+  '../src/runtime/ordinary-materialization-stage-b-qualification.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -110,13 +114,13 @@ test('production O1 model verifies the activation receipt without live probes',
     assert.equal(calls.length, 2, 'a repeated direct repair never reaches the LLM');
   });
 
-test('custom O1 role requires its exact approved Stage B receipt identity',
+test('custom O1 role uses its qualified exact identity without gameplay eval',
   async () => {
     const contract = await evalContract();
-    const settings = createLlmSettingsOwner();
-    settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
-      model: 'local-model', api_key: null });
     let runner;
+    const settings = createLlmSettingsOwner({ qualifyCustom: async (candidate) =>
+      runner.describe({ scope: 'turn_runtime', role_id: 'ordinary_materialization',
+        overrides: { temperature: 0, maxTokens: 6000 }, provider_snapshot: candidate }) });
     runner = createLlmRoleRunnerAdapter({ settings, execute: async (input) => {
       const request = JSON.parse(input.messages[1].content);
       const identity = runner.describe({ scope: input.scope, role_id: input.roleId,
@@ -126,24 +130,97 @@ test('custom O1 role requires its exact approved Stage B receipt identity',
         role_id: input.roleId, tier_id: input.tierId, durationMs: 1,
         config_hash: identity.config_hash };
     } });
-    const defaultReceipt = await loadLowerDvinaTraceOrdinaryStageBApproval();
-    const rejected = createOrdinaryMaterializationModel({ roleRunner: runner,
-      stageBApprovalReceipt: defaultReceipt });
-    await assert.rejects(rejected.verifyStageBCutover({ eval_contract: contract }), {
-      code: 'TRACE_ORDINARY_MODEL_CONFIG_DRIFT' });
-    const approval = structuredClone(defaultReceipt);
-    approval.model_identity = runner.describe({ scope: 'turn_runtime',
-      role_id: 'ordinary_materialization', overrides: { temperature: 0, maxTokens: 6000 } });
+    await settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
+      model: 'local-model', api_key: null });
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
     const model = createOrdinaryMaterializationModel({ roleRunner: runner,
-      stageBApprovalReceipt: approval });
+      stageBApprovalReceipt: approval,
+      qualifiedO1Identity: () => settings.ordinaryMaterializationIdentity() });
     await model.verifyStageBCutover({ eval_contract: contract });
     assert.deepEqual(await model(presenceRequest('ложка'), { repair: null }),
       absentPlan(presenceRequest('ложка')));
-    settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
+    await settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
       model: 'other-local-model', api_key: null });
-    await assert.rejects(model(presenceRequest('ковш'), { repair: null }), {
-      code: 'TRACE_ORDINARY_MODEL_CONFIG_DRIFT' });
+    assert.deepEqual(await model(presenceRequest('ковш'), { repair: null }),
+      absentPlan(presenceRequest('ковш')));
   });
+
+test('custom O1 call keeps its approved identity snapshot while it is in flight',
+  async () => {
+    const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const oldIdentity = { provider: 'openai_compatible', model: 'old-model',
+      scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'old' };
+    const newIdentity = { ...oldIdentity, model: 'new-model', config_hash: 'new' };
+    let current = oldIdentity;
+    const pending = [];
+    const model = createOrdinaryMaterializationModel({ stageBApprovalReceipt: approval,
+      qualifiedO1Identity: () => current,
+      roleRunner: { isCustomProvider() { return true; }, run(input) {
+        return new Promise((resolve) => pending.push({ input, resolve }));
+      } } });
+    const firstRequest = presenceRequest('ложка');
+    const first = model(firstRequest, { repair: null });
+    current = newIdentity;
+    pending.shift().resolve({ output: absentPlan(firstRequest), provider_record: oldIdentity });
+    assert.deepEqual(await first, absentPlan(firstRequest));
+    const secondRequest = presenceRequest('ковш');
+    const second = model(secondRequest, { repair: null });
+    pending.shift().resolve({ output: absentPlan(secondRequest), provider_record: newIdentity });
+    assert.deepEqual(await second, absentPlan(secondRequest));
+  });
+
+test('custom Stage B qualification uses production messages, unique case refs, and never applies settings', async () => {
+  const contract = await evalContract();
+  const calls = [];
+  const candidate = { mode: 'custom', compatibility: 'openai_compatible',
+    baseUrl: 'http://127.0.0.1:11434/v1', model: 'candidate', apiKey: null };
+  const identity = { provider: 'openai_compatible', model: 'candidate',
+    scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'candidate-config' };
+  const qualifier = createOrdinaryMaterializationStageBQualifier({
+    evalContract: contract,
+    roleRunner: { describe(input) { assert.deepEqual(input.provider_snapshot, candidate); return identity; },
+      async run(input) { calls.push(input); const request = JSON.parse(input.messages[1].content);
+        return { output: absentPlan(request), provider_record: identity }; } }
+  });
+  const owner = createLlmSettingsOwner({ qualifyCustom: qualifier });
+  await owner.probe({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
+    api_key: null });
+  assert.equal(owner.read().mode, 'default');
+  assert.equal(calls.length, contract.cases.length);
+  assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));
+  const requests = calls.map((call) => JSON.parse(call.messages[1].content));
+  assert.equal(new Set(requests.map((request) => request.request_id)).size,
+    contract.cases.length);
+  assert.equal(new Set(requests.map((request) => request.candidate_query.candidate_key)).size,
+    contract.cases.length);
+  assert.equal(new Set(requests.map((request) => request.candidate_query.coverage_key)).size,
+    contract.cases.length);
+  for (const call of calls) {
+    const request = JSON.parse(call.messages[1].content);
+    assert.deepEqual(call.messages, buildOrdinaryMaterializationMessages(request));
+  }
+  await owner.apply({ mode: 'custom', base_url: candidate.baseUrl, model: candidate.model,
+    api_key: null });
+  assert.deepEqual(owner.ordinaryMaterializationIdentity(), identity);
+});
+
+test('custom Stage B qualification rejects schema-invalid evaluator-safe output', async () => {
+  const contract = await evalContract();
+  const identity = modelIdentity();
+  const qualifier = createOrdinaryMaterializationStageBQualifier({
+    evalContract: contract,
+    roleRunner: { describe() { return identity; }, async run(input) {
+      const request = JSON.parse(input.messages[1].content);
+      return { output: { ...absentPlan(request), unexpected: true },
+        provider_record: identity };
+    } }
+  });
+  await assert.rejects(qualifier({}), (error) => {
+    assert.equal(error.code, 'LLM_SETTINGS_ORDINARY_STAGE_B_QUALIFICATION_FAILED');
+    assert.deepEqual(error.details.failed_case_ids, contract.cases.map(({ id }) => id).sort());
+    return true;
+  });
+});
 
 test('production O1 response boundary rejects accessors without reading them',
   async () => {

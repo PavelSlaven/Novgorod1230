@@ -1,44 +1,77 @@
 import { serverError } from '../errors.js';
 
-export function createLlmSettingsOwner() {
+export function createLlmSettingsOwner({ qualifyCustom = null, now = Date.now } = {}) {
   let active = defaultSnapshot();
+  let qualifiedO1Identity = null;
+  let generation = 0;
   return Object.freeze({
     read() { return publicSnapshot(active); },
     providerSnapshot() { return active; },
-    apply(input) {
-      const next = normalizeSettings(input);
+    ordinaryMaterializationIdentity() { return qualifiedO1Identity; },
+    async apply(input) {
+      const next = normalizeSettings(input, active);
+      const applyingGeneration = ++generation;
+      const qualified = next.mode === 'custom'
+        ? await qualify(next, qualifyCustom) : null;
+      if (applyingGeneration !== generation) throw serverError(
+        'LLM_SETTINGS_APPLY_STALE', 'LLM settings apply was superseded.', { status: 409 });
       active = next;
+      qualifiedO1Identity = qualified;
       return publicSnapshot(active);
     },
+    async probe(input) {
+      const candidate = input?.mode === 'custom' && Object.hasOwn(input, 'baseUrl')
+        ? input : normalizeCustom(input, active);
+      const started = now();
+      await qualify(candidate, qualifyCustom);
+      return Object.freeze({ ok: true, provider: 'openai_compatible',
+        model: candidate.model, category: 'ok', duration_ms: now() - started });
+    },
     reset() {
+      generation += 1;
       active = defaultSnapshot();
+      qualifiedO1Identity = null;
       return publicSnapshot(active);
     }
   });
+}
+
+async function qualify(candidate, qualifyCustom) {
+  if (typeof qualifyCustom !== 'function') {
+    throw serverError('LLM_SETTINGS_QUALIFICATION_UNAVAILABLE',
+      'Custom LLM qualification is unavailable.', { status: 503 });
+  }
+  const identity = await qualifyCustom(candidate);
+  if (identity == null || typeof identity !== 'object') {
+    throw serverError('LLM_SETTINGS_QUALIFICATION_INVALID',
+      'Custom LLM qualification returned no identity.', { status: 503 });
+  }
+  return Object.freeze({ ...identity });
 }
 
 export function normalizeLlmSettingsCandidate(input) {
   return normalizeCustom(input);
 }
 
-function normalizeSettings(input) {
+function normalizeSettings(input, active) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   if (input.mode === 'default') {
     assertFields(input, ['mode']);
     return defaultSnapshot();
   }
-  if (input.mode === 'custom') return normalizeCustom(input);
+  if (input.mode === 'custom') return normalizeCustom(input, active);
   invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be default or custom.');
 }
 
-function normalizeCustom(input) {
+function normalizeCustom(input, active = null) {
   if (!plain(input)) invalid('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.');
   assertFields(input, ['mode', 'compatibility', 'base_url', 'model', 'api_key']);
   if (input.mode !== 'custom') invalid('LLM_SETTINGS_MODE_INVALID', 'mode must be custom.');
   if (input.compatibility != null && input.compatibility !== 'openai_compatible') invalid('LLM_SETTINGS_COMPATIBILITY_INVALID', 'compatibility must be openai_compatible.');
   const baseUrl = normalizeUrl(input.base_url);
   const model = requiredText(input.model, 'LLM_SETTINGS_MODEL_REQUIRED', 'model is required.');
-  const apiKey = optionalText(input.api_key, 'LLM_SETTINGS_API_KEY_INVALID', 'api_key must be a string.');
+  const apiKey = optionalText(input.api_key, 'LLM_SETTINGS_API_KEY_INVALID', 'api_key must be a string.')
+    ?? (active?.mode === 'custom' && active.baseUrl === baseUrl ? active.apiKey : null);
   return Object.freeze({ mode: 'custom', compatibility: 'openai_compatible', baseUrl, model, apiKey });
 }
 

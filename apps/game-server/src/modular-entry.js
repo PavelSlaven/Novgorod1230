@@ -8,18 +8,26 @@ import { createProductionLlmRoleRunner } from './infrastructure/provider/deepsee
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
 import { createLlmSettingsOwner } from './runtime/llm-settings.js';
 import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
+import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
+import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from './internal/lower-dvina-trace-ordinary-materialization-profile.js';
 
 const config = assertModularStartupConfig(readServerConfig());
-const llmSettings = createLlmSettingsOwner();
+const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
+const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
+const llmSettings = createLlmSettingsOwner({
+  qualifyCustom: createOrdinaryMaterializationStageBQualifier({
+    roleRunner: qualificationRunner,
+    evalContract: ordinaryProfile.stage_b_classification_eval
+  })
+});
 const llmDiagnostics = createLlmDiagnostics();
 const runtimeConfig = { ...config, llmSettings, llmDiagnostics };
 const productionRoot = await loadConfiguredComposition(config.compositionModule, { env: process.env, config: runtimeConfig });
-const probeRunner = createProductionLlmRoleRunner({ env: process.env, settings: llmSettings });
 const root = Object.freeze({
   ...productionRoot,
   getLlmSettings: () => llmSettings.read(),
   applyLlmSettings: (input) => llmSettings.apply(input),
-  probeLlmSettings: (candidate) => probeRunner.probe(candidate),
+  probeLlmSettings: (candidate) => llmSettings.probe(candidate),
   getLlmTurnReport: (input) => llmDiagnostics.report(input)
 });
 const here = dirname(fileURLToPath(import.meta.url));

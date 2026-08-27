@@ -42,6 +42,12 @@
         "fact_changes": [],
         "reason_code": "water_extinguishes"
       },
+      "expected": {
+        "required_values": {
+          "process_outcome": "complete",
+          "reason_code": "water_extinguishes"
+        }
+      },
       "validator": "world_process_step_plan"
     },
     {
@@ -73,7 +79,16 @@
           "bird_eye"
         ],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "interpretation.adaptation": "reality_limited",
+          "resolution": "direct",
+          "goal_result": "not_achieved",
+          "check": null
+        },
+        "allowed_values": {
+          "activity.effort": ["moderate"]
+        }
       },
       "expected_output": {
         "schema": "turn_step_plan_v1",
@@ -133,7 +148,13 @@
         "forbidden_operations": [
           "create_entity",
           "request_movement"
-        ]
+        ],
+        "required_values": {
+          "interpretation.adaptation": "make_believe",
+          "resolution": "direct",
+          "goal_result": "not_achieved",
+          "check": null
+        }
       },
       "expected_output": {
         "schema": "turn_step_plan_v1",
@@ -219,6 +240,14 @@
         "combat_statement": null,
         "reason": "Protect myself."
       },
+      "expected": {
+        "required_operations": ["set_combat_intent"],
+        "required_values": {
+          "operation.intent_kind": "engage",
+          "operation.force_limit": "ordinary",
+          "operation.risk_posture": "ordinary"
+        }
+      },
       "validator": "npc_combat_plan"
     },
     {
@@ -278,6 +307,14 @@
         },
         "combat_statement": null,
         "reason": "Protect myself."
+      },
+      "expected": {
+        "required_operations": ["set_combat_intent"],
+        "required_values": {
+          "operation.intent_kind": "engage",
+          "operation.force_limit": "ordinary",
+          "operation.risk_posture": "ordinary"
+        }
       },
       "validator": "npc_combat_plan"
     },
@@ -345,6 +382,15 @@
         "check": null,
         "reason_code": "local_fire_needed",
         "reason": "Нужен огонь."
+      },
+      "expected": {
+        "required_operations": ["request_world_process"],
+        "required_values": {
+          "resolution": "domain_request",
+          "goal_result": "pending",
+          "operations.0.process_action": "start",
+          "operations.0.process_kind": "fire"
+        }
       },
       "validator": "npc_step_plan"
     },
@@ -429,6 +475,13 @@
         },
         "reason_code": "observe",
         "reason": "NPC осматривается."
+      },
+      "expected": {
+        "required_values": {
+          "resolution": "generic_check",
+          "check.attribute_ref": "attention",
+          "check.difficulty_id": "ordinary"
+        }
       },
       "validator": "npc_step_plan"
     },
@@ -515,6 +568,13 @@
         "reason_code": "observe",
         "reason": "NPC осматривается."
       },
+      "expected": {
+        "required_values": {
+          "resolution": "generic_check",
+          "check.attribute_ref": "attention",
+          "check.difficulty_id": "ordinary"
+        }
+      },
       "validator": "npc_step_plan"
     },
     {
@@ -586,7 +646,12 @@
         "required_operations": [],
         "forbidden_operations": [
           "emit_interaction"
-        ]
+        ],
+        "required_values": {
+          "contribution_kind": "speech",
+          "resolution": "automatic",
+          "interpretation.adaptation": "historical_equivalent"
+        }
       },
       "expected_output": {
         "schema": "player_conversation_contribution_plan_v1",
@@ -713,7 +778,12 @@
         "required_operations": [],
         "forbidden_operations": [
           "emit_interaction"
-        ]
+        ],
+        "required_values": {
+          "contribution_kind": "speech",
+          "resolution": "automatic",
+          "interpretation.adaptation": "historical_equivalent"
+        }
       },
       "expected_output": {
         "schema": "player_conversation_contribution_plan_v1",
@@ -851,7 +921,12 @@
         "required_operations": [
           "emit_interaction"
         ],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "input_mode": "verbatim",
+          "contribution_kind": "speech",
+          "resolution": "automatic"
+        }
       },
       "expected_output": {
         "schema": "player_conversation_contribution_plan_v1",
@@ -1037,7 +1112,14 @@
         "required_operations": [
           "emit_interaction"
         ],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "contribution_kind": "speech",
+          "resolution": "check_required",
+          "speech.dominant_act": "inform",
+          "check.attribute_ref": "influence",
+          "check.skill_ref": "communication"
+        }
       },
       "expected_output": {
         "schema": "conversation_contribution_plan_v1",
@@ -1253,7 +1335,14 @@
         "required_operations": [
           "emit_interaction"
         ],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "contribution_kind": "speech",
+          "resolution": "check_required",
+          "speech.dominant_act": "inform",
+          "check.attribute_ref": "influence",
+          "check.skill_ref": "communication"
+        }
       },
       "expected_output": {
         "schema": "conversation_contribution_plan_v1",
@@ -1370,7 +1459,12 @@
         ],
         "forbidden_refs": [],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "seeded",
+          "density_band_proposal": "ordinary",
+          "background_groups.0.functional_bucket": "other_ordinary"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1438,7 +1532,13 @@
           "document_like"
         ],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "materialize",
+          "entities.0.authority_class": "ordinary",
+          "entities.0.admission_class": "common_mundane",
+          "entities.0.semantic_descriptor.semantic_type": "cordage"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1521,7 +1621,11 @@
           "weapon_or_armament"
         ],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "absent",
+          "presence_resolutions.0.resolution": "absent"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1574,7 +1678,11 @@
           "currency_or_precious"
         ],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "absent",
+          "presence_resolutions.0.resolution": "absent"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1627,7 +1735,11 @@
           "document_like"
         ],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "absent",
+          "presence_resolutions.0.resolution": "absent"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1681,7 +1793,12 @@
         ],
         "forbidden_refs": [],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "seeded",
+          "density_band_proposal": "ordinary",
+          "background_groups.0.functional_bucket": "other_ordinary"
+        }
       },
       "expected_output": {
         "schema": "ordinary_materialization_plan_v1",
@@ -1741,7 +1858,13 @@
         "required_refs": [],
         "forbidden_refs": [],
         "required_operations": [],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "interpretation.adaptation": "literal",
+          "resolution": "direct",
+          "goal_result": "achieved",
+          "check": null
+        }
       },
       "expected_output": {
         "schema": "turn_step_plan_v1",
@@ -1803,7 +1926,12 @@
         "required_operations": [
           "request_discovery"
         ],
-        "forbidden_operations": []
+        "forbidden_operations": [],
+        "required_values": {
+          "resolution": "domain_request",
+          "goal_result": "pending",
+          "operations.0.discovery_kind": "look"
+        }
       },
       "expected_output": {
         "schema": "turn_step_plan_v1",

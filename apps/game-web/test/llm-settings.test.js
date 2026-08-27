@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createApiClient, createUiStore, renderAppState } from '../src/index.js';
 import { rememberLlmSettings, storedLlmSettings } from '../src/app/llm-settings-preferences.js';
-import { assertLlmProbeSuccess, llmSettingsCandidate } from '../src/app/llm-settings.js';
+import { assertLlmProbeSuccess, createLlmSettingsController, llmSettingsCandidate } from '../src/app/llm-settings.js';
 
 test('LLM API client uses game-server routes and preserves error envelopes', async () => {
   const calls = [];
@@ -44,6 +44,22 @@ test('LLM preferences restore non-secret fields without persisting API key', () 
     mode: 'custom', base_url: 'http://127.0.0.1:8000/v1', model: 'local', api_key_present: false
   });
   assert.doesNotMatch(values.get('rus.llm_settings'), /secret/u);
+});
+
+test('LLM local draft survives default server settings after restart', async () => {
+  const store = createUiStore();
+  store.setLlmSettingsDraft({
+    mode: 'custom', base_url: 'http://127.0.0.1:8000/v1', model: 'local', api_key_present: false
+  });
+  await createLlmSettingsController({
+    root: { querySelector: () => ({ focus() {} }) },
+    api: { getLlmSettings: async () => ({ mode: 'default', base_url: null, model: null, api_key_present: false }) },
+    store, storage: null
+  }).open();
+  const state = store.getState();
+  assert.equal(state.llmSettings.mode, 'default');
+  assert.equal(state.llmSettingsDraft.model, 'local');
+  assert.match(renderAppState(state), /name="model" value="local"/u);
 });
 
 test('LLM settings overlay has required controls and never renders key', () => {

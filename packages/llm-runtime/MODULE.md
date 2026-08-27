@@ -53,7 +53,7 @@ Foundation tests и production provider integration suite.
 ## Eval
 
 Frozen player-safe role corpus: `data/model-evals/llm-runtime/frozen-role-requests-v1.json`.
-Runner вызывает тот же `executeRoleLlmCall`; CLI требует `LLM_EVAL_MODE=default` для project-default DeepSeek config либо `LLM_EVAL_MODE=custom` с обеими `LLM_EVAL_BASE_URL` и `LLM_EVAL_MODEL`. Eval не запускается сам и не делает implicit network call. Для exported role validators runner вызывает owner-native validator; S1 и world-process остаются boundary-owned и пока не имеют public validator для этого tool.
+Runner вызывает тот же `executeRoleLlmCall`; CLI требует `LLM_EVAL_MODE=default` для project-default DeepSeek config либо `LLM_EVAL_MODE=custom` с обеими `LLM_EVAL_BASE_URL` и `LLM_EVAL_MODEL`. Eval не запускается сам и не делает implicit network call. Для exported role validators runner вызывает owner-native validator; S1 остаётся boundary-owned без public validator, а world-process использует public `validateWorldProcessStepPlan` из `@rus/turn`.
 
 ## Совместимость
 

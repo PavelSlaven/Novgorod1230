@@ -145,14 +145,17 @@ test('operational LLM settings never enter persisted game sessions', async () =>
       return sessions.save(partyId, value);
     }
   };
-  const settings = createLlmSettingsOwner();
+  const settings = createLlmSettingsOwner({ qualifyCustom: async () => ({
+    provider: 'openai_compatible', model: 'local', scope: 'turn_runtime',
+    role_id: 'ordinary_materialization', config_hash: 'test'
+  }) });
   const root = createGameCompositionRoot({
     newGameWorkflow: { run: async () => ({ status: 'approved', artifact: stage26Fixture() }) },
     turnWorkflow: { run: async () => turnResult() }, sessionStore, llmSettings: settings,
     now: () => '2026-07-12T10:00:00.000Z'
   });
   await root.startNewGame({ start_text: 'Первое начало' });
-  settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1', model: 'local', api_key: 'secret-key' });
+  await settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1', model: 'local', api_key: 'secret-key' });
   await root.startNewGame({ start_text: 'Второе начало' });
   assert.deepEqual(saved.map((session) => [session.schema, Object.keys(session).sort()]), [
     [saved[0].schema, Object.keys(saved[0]).sort()],

@@ -46,14 +46,14 @@ export function createGameCompositionRoot({
       return llmSettings.read();
     },
 
-    applyLlmSettings(input) {
+    async applyLlmSettings(input) {
       if (llmSettings == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
       return llmSettings.apply(input);
     },
 
     async probeLlmSettings(candidate) {
-      if (llmRoleRunner == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
-      return llmRoleRunner.probe(candidate);
+      if (llmSettings == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
+      return llmSettings.probe(candidate);
     },
 
     async listScenarios() {

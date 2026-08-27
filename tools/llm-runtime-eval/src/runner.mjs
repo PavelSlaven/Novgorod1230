@@ -1,4 +1,5 @@
 import { executeRoleLlmCall } from '@rus/llm-runtime';
+import { isDeepStrictEqual } from 'node:util';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
 import {
@@ -34,8 +35,13 @@ function scoreFixture(fixture, call) {
     errors.push(...validateRoleOutput(fixture, output));
     errors.push(...validateExpected(fixture.expected ?? {}, output));
   }
+  const manual = fixture.expected?.manual_rubric === true;
+  const scored = !manual && isScored(fixture.expected);
+  const quality_status = manual ? 'manual' : scored
+    ? (errors.length === 0 ? 'automated_passed' : 'automated_failed') : 'unscored';
   return { fixture_id: fixture.id, role_id: fixture.role_id, repair: fixture.repair === true,
-    status: call.status, pass: errors.length === 0, errors, duration_ms: call.durationMs,
+    scored, manual, quality_status, status: call.status, pass: quality_status === 'automated_passed',
+    valid: errors.length === 0, errors, duration_ms: call.durationMs,
     usage: call.usage ?? null, model: call.model, provider: call.provider };
 }
 
@@ -65,7 +71,23 @@ function validateExpected(expected, output) {
   const operations = collectOperations(output);
   for (const op of expected.required_operations ?? []) if (!operations.has(op)) errors.push(`missing_operation:${op}`);
   for (const op of expected.forbidden_operations ?? []) if (operations.has(op)) errors.push(`forbidden_operation:${op}`);
+  for (const [path, value] of Object.entries(expected.required_values ?? {})) {
+    if (!isDeepStrictEqual(valueAt(output, path), value)) errors.push(`unexpected_value:${path}`);
+  }
+  for (const [path, values] of Object.entries(expected.allowed_values ?? {})) {
+    if (!values.some((value) => isDeepStrictEqual(valueAt(output, path), value))) errors.push(`disallowed_value:${path}`);
+  }
   return errors;
+}
+
+function valueAt(value, path) {
+  return path.split('.').reduce((current, key) => current?.[key], value);
+}
+function isScored(expected) {
+  return ['required_refs', 'forbidden_refs', 'required_operations', 'forbidden_operations']
+    .some((key) => expected?.[key]?.length > 0)
+    || Object.keys(expected?.required_values ?? {}).length > 0
+    || Object.keys(expected?.allowed_values ?? {}).length > 0;
 }
 
 function messagePayload(messages) {
@@ -104,15 +126,25 @@ function summarize(calls) {
   const durations = calls.map(({ duration_ms }) => duration_ms).sort((a, b) => a - b);
   const sum = (key) => calls.reduce((n, call) => n + Number(call.usage?.[key] ?? 0), 0);
   const count = (predicate) => calls.filter(predicate).length;
-  const rate = (count) => calls.length ? count / calls.length : 0;
-  const errors = count(({ pass }) => !pass);
+  const rate = (value, denominator = calls.length) => denominator ? value / denominator : 0;
+  const automatedPassed = count(({ quality_status }) => quality_status === 'automated_passed');
+  const automatedFailed = count(({ quality_status }) => quality_status === 'automated_failed');
+  const scored = count(({ scored }) => scored);
+  const manual = count(({ manual }) => manual);
+  const validationFailures = count(({ valid }) => !valid);
   const schemaFailures = count(({ errors }) => errors.includes('json_object_required'));
   const validatorFailures = count(({ errors }) => errors.some((error) => error.startsWith('validator:')));
   const rubricFailures = count(({ errors }) => errors.some((error) => /^(missing|forbidden)_/.test(error)));
-  return { calls: calls.length, passed: count(({ pass }) => pass), errors, error_rate: rate(errors),
+  const semanticFailures = count(({ errors }) => errors.some((error) => /^(unexpected|disallowed)_value:/.test(error)));
+  return { calls: calls.length, automated_passed: automatedPassed, automated_failed: automatedFailed,
+    quality_denominator: scored, quality_pass_rate: rate(automatedPassed, scored),
+    passed: automatedPassed, errors: automatedFailed, error_rate: rate(automatedFailed, scored),
+    validation_failures: validationFailures,
     schema_failures: schemaFailures, schema_failure_rate: rate(schemaFailures),
     validator_failures: validatorFailures, validator_failure_rate: rate(validatorFailures),
     rubric_failures: rubricFailures, rubric_failure_rate: rate(rubricFailures),
+    semantic_failures: semanticFailures, semantic_failure_rate: rate(semanticFailures),
+    scored, unscored: calls.length - scored - manual, manual,
     repairs: count(({ repair }) => repair), repair_rate: rate(count(({ repair }) => repair)), p50_ms: percentile(durations, .5),
     p95_ms: percentile(durations, .95), input_tokens: sum('prompt_tokens'), output_tokens: sum('completion_tokens') };
 }

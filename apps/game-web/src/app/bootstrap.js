@@ -23,7 +23,7 @@ export function bootstrapGameWeb({
   const partyStorage = storage ?? availableLocalStorage();
   store.setRememberedPartyId(partyStorage?.getItem?.(PARTY_STORAGE_KEY));
   store.setTheme(storedTheme(partyStorage) ?? preferredTheme());
-  store.setLlmSettings(storedLlmSettings(partyStorage));
+  store.setLlmSettingsDraft(storedLlmSettings(partyStorage));
   const llmSettings = createLlmSettingsController({
     root, api, store, storage: partyStorage
   });

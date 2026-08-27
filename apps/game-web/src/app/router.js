@@ -41,6 +41,7 @@ export function renderAppState(state) {
     newGameDraft: state.newGameDraft,
     turnDraft: state.turnDraft,
     llmSettings: state.llmSettings,
+    llmSettingsDraft: state.llmSettingsDraft,
     llmSettingsMessage: state.llmSettingsMessage
   };
   const content = state.view === 'new_game'
@@ -103,8 +104,8 @@ function renderOpeningState({ openingStatus, error } = {}) {
   return '';
 }
 
-function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettings, llmSettingsMessage } = {}) {
-  if (activeOverlay === 'llm_settings') return renderLlmSettingsOverlay(llmSettings, llmSettingsMessage);
+function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettings, llmSettingsDraft, llmSettingsMessage } = {}) {
+  if (activeOverlay === 'llm_settings') return renderLlmSettingsOverlay(llmSettingsDraft ?? llmSettings, llmSettings, llmSettingsMessage);
   if (!activeOverlay || screen.panels?.[activeOverlay]?.visible !== true) return '';
   const title = activeOverlay === 'diagnostic'
     ? 'Диагностика'
@@ -114,13 +115,13 @@ function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettin
   return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Сведения партии</p><h2 id="overlay-title">${escapeHtml(title)}</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body">${body}</div></section></div>`;
 }
 
-function renderLlmSettingsOverlay(settings = {}, message = null) {
+function renderLlmSettingsOverlay(settings = {}, activeSettings = {}, message = null) {
   const custom = settings?.mode === 'custom';
   const baseUrl = escapeHtml(settings?.base_url ?? '');
   const model = escapeHtml(settings?.model ?? '');
   const disabled = custom ? '' : ' disabled';
   const note = message ? `<p class="llm-settings-message${message.kind === 'error' ? ' error' : ''}" role="${message.kind === 'error' ? 'alert' : 'status'}">${escapeHtml(message.text)}</p>` : '';
-  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="default"${custom ? '' : ' checked'}> По умолчанию</label><label><input type="radio" name="mode" value="custom"${custom ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${settings?.api_key_present ? ', ключ уже задан на сервере' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Сбросить к умолчанию</button></div></form></div></section></div>`;
+  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="default"${custom ? '' : ' checked'}> По умолчанию</label><label><input type="radio" name="mode" value="custom"${custom ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${activeSettings?.api_key_present ? ', ключ уже задан на сервере' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Сбросить к умолчанию</button></div></form></div></section></div>`;
 }
 
 function panelBody(kind, screen, options) {

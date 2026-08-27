@@ -78,7 +78,8 @@ export function createTraceTurnRuntime({
   });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
-    roleRunner, stageBApprovalReceipt: ordinaryStageBApproval
+    roleRunner, stageBApprovalReceipt: ordinaryStageBApproval,
+    qualifiedO1Identity: config.llmSettings?.ordinaryMaterializationIdentity
   });
   const ordinaryEnablements =
     createPostgresOrdinaryMaterializationEnablementRepository({pool:partyPool});

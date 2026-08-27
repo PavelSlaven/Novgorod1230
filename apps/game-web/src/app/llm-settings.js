@@ -20,6 +20,7 @@ export function createLlmSettingsController({ root, api, store, storage }) {
       try {
         const settings = await api.resetLlmSettings();
         rememberLlmSettings(storage, settings);
+        store.setLlmSettingsDraft(settings);
         store.setLlmSettings(settings, { kind: 'success', text: 'Возвращены настройки по умолчанию.' });
       } catch (error) {
         store.setLlmSettingsMessage({ kind: 'error', text: llmErrorText(error) });
@@ -41,6 +42,7 @@ export function createLlmSettingsController({ root, api, store, storage }) {
       } else {
         const settings = result.settings ?? result;
         rememberLlmSettings(storage, settings);
+        store.setLlmSettingsDraft(settings);
         store.setLlmSettings(settings, { kind: 'success', text: 'Настройки применены.' });
       }
     } catch (error) {

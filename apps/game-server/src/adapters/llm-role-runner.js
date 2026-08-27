@@ -5,16 +5,19 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
   if (settings != null && typeof settings.providerSnapshot !== 'function') throw new TypeError('settings.providerSnapshot is required.');
   return Object.freeze({
     describe({ scope, role_id = null, tier_id = null,
-      overrides = null } = {}) {
-      const runtimeProviderOverride = toProviderOverride(settings?.providerSnapshot());
+      overrides = null, provider_snapshot = null } = {}) {
+      const runtimeProviderOverride = toProviderOverride(
+        provider_snapshot ?? settings?.providerSnapshot());
       return describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
     },
     isCustomProvider() { return settings?.providerSnapshot()?.mode === 'custom'; },
-    async run({ scope, role_id = null, tier_id = null, messages = [], overrides = null } = {}) {
+    async run({ scope, role_id = null, tier_id = null, messages = [],
+      overrides = null, provider_snapshot = null } = {}) {
       if (!String(scope ?? '').trim()) throw new TypeError('scope is required.');
       if (!Array.isArray(messages)) throw new TypeError('messages must be an array.');
-      const runtimeProviderOverride = toProviderOverride(settings?.providerSnapshot());
+      const runtimeProviderOverride = toProviderOverride(
+        provider_snapshot ?? settings?.providerSnapshot());
       const result = await execute({
         scope,
         roleId: role_id,

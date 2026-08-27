@@ -4,6 +4,8 @@ import { autonomousTurnRoleDefaults } from
   './autonomous-role-defaults.js';
 import { CombatTurnRuntimeRoles, combatTurnRoleDefaults } from
   './combat-role-defaults.js';
+import { applyProviderOverrides, normalizeBaseUrl, normalizeRequestUrl, resolveRuntimeProviderOverride } from
+  './provider-request.js';
 import {
   NEW_GAME_VISIBLE_CONTEXT_ROLE_MAX_TOKENS,
   NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS,
@@ -262,8 +264,6 @@ const SCOPE_DEFAULTS = Object.freeze({
   [LLM_SCOPES.PORTRAIT_LAB]: { api: 'chat.completions' }
 });
 
-const ALLOWED_OVERRIDE_KEYS = new Set(['maxTokens', 'temperature', 'topP']);
-
 export function getProviderConfig(env = process.env) {
   const apiKey = env.DEEPSEEK_API_KEY?.trim() ?? '';
   if (!apiKey) {
@@ -284,7 +284,8 @@ export function getProviderConfig(env = process.env) {
   };
 }
 
-export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null, env = process.env, overrides = null } = {}) {
+export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
+  env = process.env, overrides = null, runtimeProviderOverride = null } = {}) {
   const shared = getProviderConfig(env);
   const scopeKey = String(scope ?? '').trim();
   const scopeDefaults = SCOPE_DEFAULTS[scopeKey];
@@ -307,17 +308,25 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     if (!defaults) return disabledResolution('unknown_role', scopeKey, roleId, tierId);
   }
 
+  const runtimeProvider = resolveRuntimeProviderOverride(runtimeProviderOverride);
+  if (!runtimeProvider.ok) {
+    return disabledResolution('invalid_provider_config', scopeKey, roleId, tierId);
+  }
+  const provider = runtimeProvider.config;
+
   const config = {
-    enabled: shared.enabled,
+    enabled: provider ? true : shared.enabled,
     scope: scopeKey,
     role_id: roleId ?? null,
     tier_id: tierId ?? null,
-    provider: shared.enabled ? shared.provider : 'deepseek',
-    apiKey: shared.enabled ? shared.apiKey : null,
-    baseUrl: shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL),
-    requestTimeoutMs: readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) || 120000,
+    provider: provider?.provider ?? (shared.enabled ? shared.provider : 'deepseek'),
+    compatibility: provider?.compatibility ?? 'deepseek',
+    apiKey: provider?.apiKey ?? (shared.enabled ? shared.apiKey : null),
+    baseUrl: provider?.baseUrl ?? (shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
+    requestUrl: provider?.requestUrl ?? normalizeRequestUrl(shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
+    requestTimeoutMs: provider?.requestTimeoutMs ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`]) ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? 120000,
     api: scopeDefaults.api,
-    model: readRoleModel(defaults, env, shared.model),
+    model: provider?.model ?? readRoleModel(defaults, env, shared.model),
     thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,
     reasoningEffort: defaults.reasoningEffort ? (readText(env[`${defaults.envPrefix}_REASONING_EFFORT`]) || defaults.reasoningEffort) : null,
     responseFormat: defaults.responseFormat
@@ -339,10 +348,10 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     parseJson: defaults.parseJson === true
   };
 
-  applyAllowedOverrides(config, overrides);
+  applyProviderOverrides(config, overrides);
   applyRuntimeSafetyNormalization(config);
 
-  if (!shared.enabled) {
+  if (!config.enabled) {
     return {
       enabled: false,
       reason: 'missing_api_key',
@@ -536,27 +545,6 @@ function readRoleModel(defaults, env, sharedModel) {
   return sharedModel ?? defaults.model ?? DEFAULT_DEEPSEEK_MODEL;
 }
 
-function applyAllowedOverrides(config, overrides) {
-  if (!overrides || typeof overrides !== 'object') return;
-  for (const [key, value] of Object.entries(overrides)) {
-    if (!ALLOWED_OVERRIDE_KEYS.has(key)) continue;
-    if (key === 'maxTokens') {
-      const parsed = readPositiveInt(value);
-      if (parsed) config.maxTokens = parsed;
-      continue;
-    }
-    if (key === 'temperature') {
-      const parsed = readNumber(value);
-      if (parsed != null) config.temperature = parsed;
-      continue;
-    }
-    if (key === 'topP') {
-      const parsed = readNumber(value);
-      if (parsed != null) config.topP = parsed;
-    }
-  }
-}
-
 function applyRuntimeSafetyNormalization(config) {
   if (config.outputContractMode === OutputContractModes.PLAIN_TEXT) {
     config.parseJson = false;
@@ -566,8 +554,6 @@ function applyRuntimeSafetyNormalization(config) {
   config.parseJson = true;
   config.responseFormat = { type: 'json_object' };
 }
-
-function normalizeBaseUrl(value) { return value?.trim().replace(/\/+$/, '') || DEFAULT_DEEPSEEK_BASE_URL; }
 
 function buildContextBudget(defaults) {
   if (!defaults || typeof defaults !== 'object') return null;

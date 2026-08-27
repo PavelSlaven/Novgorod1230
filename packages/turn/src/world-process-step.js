@@ -22,7 +22,7 @@ export async function resolveWorldProcessStep({ request,
   catch (error) { throw turnFailure('TURN_WORLD_PROCESS_STEP_MODEL_FAILED',
     'World-process semantic step failed.', { cause: message(error) }); }
   const plan = snapshot(raw);
-  if (!validPlan(plan, safeRequest)) fail('TURN_WORLD_PROCESS_STEP_PLAN_INVALID');
+  if (!validateWorldProcessStepPlan(plan, safeRequest)) fail('TURN_WORLD_PROCESS_STEP_PLAN_INVALID');
   return deepFreeze(plan);
 }
 
@@ -72,7 +72,7 @@ function timestamp(value) {
     && BigInt(value.subminute_numerator) < BigInt(value.subminute_denominator);
 }
 
-function validPlan(value, request) {
+export function validateWorldProcessStepPlan(value, request) {
   if (!exact(value, PLAN_KEYS)
       || value.schema !== 'world_process_step_plan_v1'
       || value.request_id !== request.request_id

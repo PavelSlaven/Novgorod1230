@@ -14,7 +14,7 @@ import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-co
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
 import { projectLowerDvinaTracePlayerSafeState } from './lower-dvina-trace-player-safe-state.js';
 import { createLowerDvinaTraceTurnStepGenericOwners } from './lower-dvina-trace-turn-step-generic-owners.js';
-import { createStateVersionRevalidator, executeTraceTurnWithAutonomousRetry, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
+import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validateConversationDependencies, validatePhase2RuntimeDependencies } from './lower-dvina-trace-phase-2-runtime-input.js';
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
 import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
@@ -32,17 +32,16 @@ export function createLowerDvinaTracePhase2Runtime({
   turnStepPackingCalculator = null,
   turnStepSemanticActivityOwner = null,
   turnStepOrdinaryDiscoveryResolver = null,
-  createTurnStepOrdinaryDiscoveryResolver = null,
-  createTurnStepOrdinaryContainerContentsResolver = null,
+  createTurnStepOrdinaryDiscoveryResolver = null, createTurnStepOrdinaryContainerContentsResolver = null,
   ordinaryDiscoveryEnablementMarker = null,
   createTurnStepAmbientOrdinaryPortionAdmission = null,
   requireTurnStepAmbientOrdinaryAdmission = false,
   createTurnStepActionProductionOwner = null,
   actionProductionProfile = null,
-  createTurnStepWorldProcessResolver = null,
-  localFireProfile = null,
+  createTurnStepWorldProcessResolver = null, localFireProfile = null,
   createTurnStepSpatialSemanticResolver = null,
   spatialSemanticProfile = null,
+  llmDiagnostics = null,
   temporalAdvanceOwner = undefined,
   now = () => new Date().toISOString(),
   bundleLoader = ({ scenarioDefinitionRevision }) => loadLowerDvinaTraceMaterializationBundle({
@@ -293,7 +292,8 @@ export function createLowerDvinaTracePhase2Runtime({
           result,
         });
       };
-      return executeTraceTurnWithAutonomousRetry(executeAttempt);
+      return executeTraceTurnWithDiagnostics(llmDiagnostics,
+        { party_id: partyId, request_id: requestId }, executeAttempt);
     },
   });
 }

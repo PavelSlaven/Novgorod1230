@@ -52,6 +52,7 @@ import { lowerDvinaTraceLocalFireTemporalRegistration } from
 import { serverError } from '../../errors.js';
 import { runLowerDvinaTraceNpcConversationExchange } from
   '../lower-dvina-trace-npc-initiated-conversation.js';
+import { createLlmDiagnostics } from '../llm-diagnostics.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -70,8 +71,10 @@ export function createTraceTurnRuntime({
         { status: 503 });
     }
   });
+  const llmDiagnostics = config.llmDiagnostics
+    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null });
   const roleRunner = createProductionLlmRoleRunner({
-    env, telemetry: config.telemetry ?? null
+    env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null
   });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
@@ -182,6 +185,7 @@ export function createTraceTurnRuntime({
     ),
     temporalAdvanceOwner,
     turnStepPackingCalculator: calculatePackingSlots,
-    decisionSecret
+    decisionSecret,
+    llmDiagnostics
   });
 }

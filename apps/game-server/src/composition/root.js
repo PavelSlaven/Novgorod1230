@@ -15,6 +15,8 @@ export function createGameCompositionRoot({
   newGameWorkflow,
   turnWorkflow,
   sessionStore,
+  llmSettings = null,
+  llmRoleRunner = null,
   scenarioRegistry = null,
   deliveryStore = null,
   now = () => new Date().toISOString()
@@ -31,10 +33,27 @@ export function createGameCompositionRoot({
     requireMethod(scenarioRegistry, 'listPublic', 'scenarioRegistry');
     requireMethod(scenarioRegistry, 'resolveForNewGame', 'scenarioRegistry');
   }
+  if (llmSettings != null) requireMethod(llmSettings, 'read', 'llmSettings');
+  if (llmRoleRunner != null) requireMethod(llmRoleRunner, 'probe', 'llmRoleRunner');
 
   return Object.freeze({
     health() {
       return Object.freeze({ status: 'ok', service: '@rus/game-server', api_version: 1 });
+    },
+
+    getLlmSettings() {
+      if (llmSettings == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
+      return llmSettings.read();
+    },
+
+    applyLlmSettings(input) {
+      if (llmSettings == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
+      return llmSettings.apply(input);
+    },
+
+    async probeLlmSettings(candidate) {
+      if (llmRoleRunner == null) throw serverError('LLM_SETTINGS_UNAVAILABLE', 'LLM settings are unavailable.', { status: 503 });
+      return llmRoleRunner.probe(candidate);
     },
 
     async listScenarios() {

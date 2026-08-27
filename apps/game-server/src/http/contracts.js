@@ -1,5 +1,6 @@
 import { assertPublicPayload } from '../public-boundary.js';
 import { serverError } from '../errors.js';
+import { normalizeLlmSettingsCandidate } from '../runtime/llm-settings.js';
 
 export const HTTP_API_VERSION = 1;
 export const API_SUCCESS_SCHEMA = 'rus_api_success';
@@ -59,6 +60,15 @@ export function validateTurnRequest(body) {
     throw serverError('TURN_INPUT_REQUIRED', 'raw_text or selected_action_option_id is required.', { status: 400 });
   }
   return body;
+}
+
+export function validateLlmSettingsRequest(body) {
+  if (!plain(body)) throw serverError('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.', { status: 400 });
+  return body;
+}
+
+export function validateLlmSettingsProbeRequest(body) {
+  return normalizeLlmSettingsCandidate(body);
 }
 
 function text(value) { return String(value ?? '').trim(); }

@@ -21,6 +21,10 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
   };
   return Object.freeze({
     health: () => request('/api/v1/health'),
+    getLlmSettings: () => request('/api/v1/llm-settings'),
+    testLlmSettings: (input) => request('/api/v1/llm-settings/test', post(input)),
+    applyLlmSettings: (input) => request('/api/v1/llm-settings', put(input)),
+    resetLlmSettings: () => request('/api/v1/llm-settings', put({ mode: 'default' })),
     listScenarios: () => request('/api/v1/scenarios'),
     normalizePortraitSpec: (input) => request('/api/v1/portrait-spec', post(input)),
     startNewGame: (input) => request('/api/v1/new-games', post(input)),
@@ -30,3 +34,4 @@ export function createApiClient({ baseUrl = '', fetchImpl = globalThis.fetch } =
   });
 }
 function post(body) { return { method: 'POST', body: JSON.stringify(body ?? {}) }; }
+function put(body) { return { method: 'PUT', body: JSON.stringify(body ?? {}) }; }

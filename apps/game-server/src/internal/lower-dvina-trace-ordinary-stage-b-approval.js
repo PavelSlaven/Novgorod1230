@@ -52,7 +52,6 @@ function valid(receipt, profile) {
     && receipt.profile_digest === LOWER_DVINA_TRACE_ORDINARY_PROFILE_DIGEST
     && receipt.eval_contract_digest === canonicalDigest(contract)
     && exact(identity, ['provider','model','scope','role_id','config_hash'])
-    && identity.provider === 'deepseek'
     && identity.scope === 'turn_runtime'
     && identity.role_id === 'ordinary_materialization'
     && [identity.model, identity.config_hash, receipt.result_digest]

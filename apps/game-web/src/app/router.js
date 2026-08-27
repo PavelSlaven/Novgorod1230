@@ -25,7 +25,7 @@ export function renderScreen(screen, options = {}) {
   const disabled = options.loading === true || !openingReady;
   const navigationDisabled = options.loading === true
     || options.openingStatus === 'pending';
-  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
+  return `<div class="game-app"><header class="game-header"><button class="brand-button" type="button" data-return-start${navigationDisabled ? ' disabled' : ''}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(options.theme)}</button></div></header><main class="game-screen" data-screen-schema="${escapeHtml(screen.schema)}">${renderContext(screen)}${renderPanelNavigation(screen, options)}${renderSceneViewport(screen)}<section class="reader-column">${renderCurrentTask(screen)}${renderProse(screen)}${renderOpeningState(options)}${renderActions(screen, { disabled, draft: options.turnDraft })}</section></main>${renderOverlay(screen, options)}</div>`;
 }
 
 export function renderAppState(state) {
@@ -39,19 +39,21 @@ export function renderAppState(state) {
     activeOverlay: state.activeOverlay,
     openingStatus: state.opening?.status,
     newGameDraft: state.newGameDraft,
-    turnDraft: state.turnDraft
+    turnDraft: state.turnDraft,
+    llmSettings: state.llmSettings,
+    llmSettingsMessage: state.llmSettingsMessage
   };
   const content = state.view === 'new_game'
     ? renderNewGame(options)
     : state.view === 'game'
       ? renderScreen(state.screen, options)
       : renderLanding(options);
-  return `${content}${renderStatus(state)}`;
+  return `${content}${state.view === 'game' ? '' : renderOverlay(state.screen, options)}${renderStatus(state)}`;
 }
 
 function renderLanding({ rememberedPartyId = null, theme = 'light', loading = false } = {}) {
   const disabled = loading ? ' disabled' : '';
-  return `<main class="start-screen"><div class="theme-corner"><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div><section class="start-card" aria-labelledby="chronicle-title"><p class="eyebrow">Хроника</p><h1 id="chronicle-title">Русь, лета 6738</h1><p class="start-description">Текстовое путешествие по Руси XIII века. Ты ведёшь одного человека; мир ведёт себя сам.</p><div class="start-actions"><button class="button-primary" type="button" data-start-new-game${disabled}>Новая игра</button>${rememberedPartyId ? `<button class="button-secondary" type="button" data-continue-party${disabled}>Продолжить</button>` : ''}</div><button class="theme-text" type="button" data-theme-toggle>Сменить освещение</button></section></main>`;
+  return `<main class="start-screen"><div class="theme-corner"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div><section class="start-card" aria-labelledby="chronicle-title"><p class="eyebrow">Хроника</p><h1 id="chronicle-title">Русь, лета 6738</h1><p class="start-description">Текстовое путешествие по Руси XIII века. Ты ведёшь одного человека; мир ведёт себя сам.</p><div class="start-actions"><button class="button-primary" type="button" data-start-new-game${disabled}>Новая игра</button>${rememberedPartyId ? `<button class="button-secondary" type="button" data-continue-party${disabled}>Продолжить</button>` : ''}</div><button class="theme-text" type="button" data-theme-toggle>Сменить освещение</button></section></main>`;
 }
 
 function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light', loading = false } = {}) {
@@ -60,7 +62,7 @@ function renderNewGame({ scenarios = [], newGameDraft = '', theme = 'light', loa
     return `<article class="scenario-card"><div><h3>${escapeHtml(scenario.title)}</h3><p>${escapeHtml(scenario.description)}</p></div><button class="button-secondary" type="button" data-scenario-id="${escapeHtml(scenario.scenario_id)}"${unavailable || loading ? ' disabled' : ''}>Начать</button></article>`;
   }).join('');
   const disabled = loading ? ' disabled' : '';
-  return `<div class="new-game-page"><header class="game-header"><button class="brand-button" type="button" data-return-start${disabled}><span>Хроника</span><strong>Русь</strong></button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></header><main class="new-game-screen"><section class="new-game-intro"><p class="eyebrow">Новая запись</p><h1>Кем ты окажешься?</h1><p>Опиши человека или начальную ситуацию. Игра сохранит ядро идеи, но приведёт её к эпохе и социальному порядку.</p></section><form class="new-game-form" data-new-game-form><label for="start-text">Начало истории</label><textarea id="start-text" name="start_text" required placeholder="Например: молодой лодочник ищет пропавший товар…"${disabled}>${escapeHtml(newGameDraft)}</textarea><div class="form-actions"><button class="button-quiet" type="button" data-return-start${disabled}>Назад</button><button class="button-primary" type="submit"${disabled}>Начать историю</button></div></form><section class="scenario-section"><div class="section-heading"><p class="eyebrow">Готовые истории</p><h2>Сценарии</h2></div><div class="scenario-list">${scenarioButtons || '<p class="empty-state">Опубликованных сценариев сейчас нет.</p>'}</div></section></main></div>`;
+  return `<div class="new-game-page"><header class="game-header"><button class="brand-button" type="button" data-return-start${disabled}><span>Хроника</span><strong>Русь</strong></button><div class="header-actions"><button class="icon-button" type="button" data-llm-settings-open aria-label="Настройки LLM">⚙</button><button class="icon-button" type="button" data-theme-toggle aria-label="Сменить тему">${themeIcon(theme)}</button></div></header><main class="new-game-screen"><section class="new-game-intro"><p class="eyebrow">Новая запись</p><h1>Кем ты окажешься?</h1><p>Опиши человека или начальную ситуацию. Игра сохранит ядро идеи, но приведёт её к эпохе и социальному порядку.</p></section><form class="new-game-form" data-new-game-form><label for="start-text">Начало истории</label><textarea id="start-text" name="start_text" required placeholder="Например: молодой лодочник ищет пропавший товар…"${disabled}>${escapeHtml(newGameDraft)}</textarea><div class="form-actions"><button class="button-quiet" type="button" data-return-start${disabled}>Назад</button><button class="button-primary" type="submit"${disabled}>Начать историю</button></div></form><section class="scenario-section"><div class="section-heading"><p class="eyebrow">Готовые истории</p><h2>Сценарии</h2></div><div class="scenario-list">${scenarioButtons || '<p class="empty-state">Опубликованных сценариев сейчас нет.</p>'}</div></section></main></div>`;
 }
 
 function renderContext(screen) {
@@ -101,7 +103,8 @@ function renderOpeningState({ openingStatus, error } = {}) {
   return '';
 }
 
-function renderOverlay(screen, { activeOverlay, developerMode = false } = {}) {
+function renderOverlay(screen, { activeOverlay, developerMode = false, llmSettings, llmSettingsMessage } = {}) {
+  if (activeOverlay === 'llm_settings') return renderLlmSettingsOverlay(llmSettings, llmSettingsMessage);
   if (!activeOverlay || screen.panels?.[activeOverlay]?.visible !== true) return '';
   const title = activeOverlay === 'diagnostic'
     ? 'Диагностика'
@@ -109,6 +112,15 @@ function renderOverlay(screen, { activeOverlay, developerMode = false } = {}) {
   if (!title) return '';
   const body = panelBody(activeOverlay, screen, { developerMode });
   return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Сведения партии</p><h2 id="overlay-title">${escapeHtml(title)}</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body">${body}</div></section></div>`;
+}
+
+function renderLlmSettingsOverlay(settings = {}, message = null) {
+  const custom = settings?.mode === 'custom';
+  const baseUrl = escapeHtml(settings?.base_url ?? '');
+  const model = escapeHtml(settings?.model ?? '');
+  const disabled = custom ? '' : ' disabled';
+  const note = message ? `<p class="llm-settings-message${message.kind === 'error' ? ' error' : ''}" role="${message.kind === 'error' ? 'alert' : 'status'}">${escapeHtml(message.text)}</p>` : '';
+  return `<div class="overlay-backdrop" data-overlay-backdrop><section class="overlay-panel" data-overlay-panel role="dialog" aria-modal="true" aria-labelledby="overlay-title" tabindex="-1"><header><p class="eyebrow">Настройки</p><h2 id="overlay-title">LLM</h2><button class="overlay-close" type="button" data-overlay-close aria-label="Закрыть">×</button></header><div class="overlay-body"><form class="llm-settings-form" data-llm-settings-form><fieldset><legend>Режим</legend><label><input type="radio" name="mode" value="default"${custom ? '' : ' checked'}> По умолчанию</label><label><input type="radio" name="mode" value="custom"${custom ? ' checked' : ''}> Свой OpenAI-compatible endpoint</label></fieldset><label class="input-label">API base URL<input name="base_url" type="url" value="${baseUrl}" placeholder="http://127.0.0.1:8000/v1"${disabled}></label><label class="input-label">Model<input name="model" value="${model}"${disabled}></label><label class="input-label">API key <small>необязательно${settings?.api_key_present ? ', ключ уже задан на сервере' : ''}</small><input name="api_key" type="password" autocomplete="off"${disabled}></label>${note}<div class="form-actions"><button class="button-secondary" type="submit" name="llm_action" value="test"${disabled}>Проверить</button><button class="button-primary" type="submit" name="llm_action" value="apply">Применить</button><button class="button-quiet" type="submit" name="llm_action" value="reset">Сбросить к умолчанию</button></div></form></div></section></div>`;
 }
 
 function panelBody(kind, screen, options) {

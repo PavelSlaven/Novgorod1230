@@ -12,6 +12,8 @@ import { loadLowerDvinaTraceOrdinaryStageBApproval } from
 import { buildOrdinaryMaterializationPresenceRequest } from
   '../src/runtime/ordinary-materialization-seed-request.js';
 import { describeRoleLlmCall } from '@rus/llm-runtime';
+import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
+import { createLlmSettingsOwner } from '../src/runtime/llm-settings.js';
 
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
@@ -106,6 +108,41 @@ test('production O1 model verifies the activation receipt without live probes',
       code: 'TRACE_ORDINARY_MODEL_CALL_SEQUENCE_INVALID'
     });
     assert.equal(calls.length, 2, 'a repeated direct repair never reaches the LLM');
+  });
+
+test('custom O1 role requires its exact approved Stage B receipt identity',
+  async () => {
+    const contract = await evalContract();
+    const settings = createLlmSettingsOwner();
+    settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
+      model: 'local-model', api_key: null });
+    let runner;
+    runner = createLlmRoleRunnerAdapter({ settings, execute: async (input) => {
+      const request = JSON.parse(input.messages[1].content);
+      const identity = runner.describe({ scope: input.scope, role_id: input.roleId,
+        tier_id: input.tierId, overrides: input.overrides });
+      return { status: 'ok', parsed_json: absentPlan(request),
+        provider: identity.provider, model: identity.model, scope: input.scope,
+        role_id: input.roleId, tier_id: input.tierId, durationMs: 1,
+        config_hash: identity.config_hash };
+    } });
+    const defaultReceipt = await loadLowerDvinaTraceOrdinaryStageBApproval();
+    const rejected = createOrdinaryMaterializationModel({ roleRunner: runner,
+      stageBApprovalReceipt: defaultReceipt });
+    await assert.rejects(rejected.verifyStageBCutover({ eval_contract: contract }), {
+      code: 'TRACE_ORDINARY_MODEL_CONFIG_DRIFT' });
+    const approval = structuredClone(defaultReceipt);
+    approval.model_identity = runner.describe({ scope: 'turn_runtime',
+      role_id: 'ordinary_materialization', overrides: { temperature: 0, maxTokens: 6000 } });
+    const model = createOrdinaryMaterializationModel({ roleRunner: runner,
+      stageBApprovalReceipt: approval });
+    await model.verifyStageBCutover({ eval_contract: contract });
+    assert.deepEqual(await model(presenceRequest('ложка'), { repair: null }),
+      absentPlan(presenceRequest('ложка')));
+    settings.apply({ mode: 'custom', base_url: 'http://127.0.0.1:11434/v1',
+      model: 'other-local-model', api_key: null });
+    await assert.rejects(model(presenceRequest('ковш'), { repair: null }), {
+      code: 'TRACE_ORDINARY_MODEL_CONFIG_DRIFT' });
   });
 
 test('production O1 response boundary rejects accessors without reading them',

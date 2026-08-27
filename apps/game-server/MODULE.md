@@ -24,6 +24,8 @@ and adds no second transaction owner.
   `active_interlocutor.portrait_asset_id` и optional top-level
   `scene_asset_id` к public response.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
+- Владеет одним server-side in-memory LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Custom OpenAI-compatible base URL/model/key применяются атомарно к новым calls через `@rus/llm-runtime`; API key не входит в read model, persistence, save/replay или telemetry gameplay.
+- В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
 
 ## Не владеет
 

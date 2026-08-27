@@ -9,8 +9,10 @@ import { phase10PendingScreen, phase10VisibleEnvelope, phase10Writes,
 
 export async function commitLowerDvinaTracePhase10({ partyId,
   phase10Contracts, loadState, committer,
-  presentationIdempotencyKey = null }) {
-  const state = await loadState(partyId, { presentationIdempotencyKey });
+  presentationIdempotencyKey = null, turnBudget = null }) {
+  const state = await loadState(partyId, {
+    presentationIdempotencyKey, turnBudget
+  });
   if (!tracePhase10Pending(state)) {
     if (validCommittedCompletion(state)) return completionAnchor(state, true);
     fail('TRACE_PHASE_10_PRECONDITION_INVALID');
@@ -86,9 +88,11 @@ export async function commitLowerDvinaTracePhase10({ partyId,
   });
   if (!built.ok) fail('TRACE_PHASE_10_WRITE_PLAN_REJECTED', built.error);
   const committed = await committer.commit({ plan: built.plan,
-    created_at_turn: state.party_state.turn_number });
+    created_at_turn: state.party_state.turn_number, turnBudget });
   if (!committed.ok) {
-    const replayed = await loadState(partyId, { presentationIdempotencyKey });
+    const replayed = await loadState(partyId, {
+      presentationIdempotencyKey, turnBudget
+    });
     if (committed.error?.code === 'idempotency_conflict'
         && validCommittedCompletion(replayed)
         && replayed.completion.source_commit_version === sourceVersion) {

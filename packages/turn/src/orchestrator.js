@@ -24,7 +24,7 @@ export async function runTurnWorkflow(input = {}, services = {}, options = {}) {
     stages,
     input: deepFreeze({ version: 1, schema: 'turn_workflow_state' }),
     services,
-    registry: null,
+    transient: true,
     onEvent: (event) => events.push(structuredClone(event))
   });
 

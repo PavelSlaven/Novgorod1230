@@ -28,9 +28,14 @@ console.log(JSON.stringify({ output: outputPath, ...report.aggregates.total }));
 
 function gitMetadata() {
   try {
+    const checkout_sha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
+    const dirty = execFileSync('git', ['status', '--porcelain'], {
+      cwd: root,
+      encoding: 'utf8'
+    }).trim().length > 0;
     return {
-      checkout_sha: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-      dirty: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim().length > 0
+      checkout_sha,
+      dirty
     };
   } catch {
     return { checkout_sha: null, dirty: null };

@@ -53,6 +53,8 @@ function fixture({
   llmDiagnostics = null,
   beforeSemanticResolve = null,
   beforeRandomSource = null,
+  afterCommittedVisibleRead = null,
+  afterNarration = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -417,7 +419,9 @@ function fixture({
     },
     async loadPhase2VisibleContext() {
       events.push('read_committed_visible');
-      return committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      const visible = committedVisible?.visible_payload ? phase2VisibleContextFromPayload(committedVisible.visible_payload) : structuredClone(committedVisible);
+      afterCommittedVisibleRead?.();
+      return visible;
     },
     async persistPhase2Screen({ inputDigest, result }) {
       events.push('persist_screen');
@@ -573,7 +577,9 @@ function fixture({
             final_audit: null,
           };
         }
-        return approvedNarration(input.request_id);
+        const narration = approvedNarration(input.request_id);
+        afterNarration?.();
+        return narration;
       },
     },
     ...(llmDiagnostics ? { llmDiagnostics } : {}),

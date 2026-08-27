@@ -7,7 +7,9 @@ import {
   TURN_WORKFLOW_STAGE_PLAN,
   createTurnAvailableActionSet,
   createTurnCommandRegistry,
+  createTurnStepExecutionRegistry,
   resolveTurnSemanticIntent,
+  runTurnStepLoop,
   runTurnWorkflow,
   validateTurnWorkflowStagePlan
 } from '../src/index.js';
@@ -15,12 +17,13 @@ import {
   createLegacyTurnCompatibilityAdapter,
   createPartyTurnRuntimeState
 } from '../src/compat/index.js';
-import { createTurnWorkflowContext } from '../src/context.js';
+import { createTurnWorkflowContext, setTrustedTurnWorkflowStage } from '../src/context.js';
 import { createTurnStageDefinitions } from '../src/workflow-stages.js';
 import { deepFreeze } from '@rus/kernel';
 import {
   createServices,
   input,
+  turnStepPlan,
   validVisibleContext
 } from './turn-workflow-fixture.js';
 
@@ -52,19 +55,27 @@ test('turn stages reuse frozen prior artifacts while checkpointing new output', 
     normalized.playerInput);
 });
 
-test('turn context isolates default output and clones trusted snapshots', () => {
+test('turn context isolates output and snapshots', () => {
   const context = createTurnWorkflowContext();
   const mutable = { nested: { value: 1 } };
   context.setStage('default', mutable);
   mutable.nested.value = 2;
   assert.equal(context.getStage('default').nested.value, 1);
-  assert.throws(() => context.setStage('bad', {}, { trustedFrozen: true }),
-    /trustedFrozen/u);
   const frozen = deepFreeze({ nested: { value: 3 } });
-  context.setStage('trusted', frozen, { trustedFrozen: true });
+  context.setStage('trusted', frozen);
   const snapshot = context.snapshot();
   assert.notEqual(snapshot.stages.trusted, frozen);
   assert.deepEqual(snapshot.stages.trusted, frozen);
+});
+
+test('internal workflow stage retention requires a frozen artifact', () => {
+  const context = createTurnWorkflowContext();
+  assert.throws(() => setTrustedTurnWorkflowStage(context, 'bad', {}),
+    /frozen/u);
+  const output = deepFreeze({ value: 1 });
+  setTrustedTurnWorkflowStage(context, 'trusted', output);
+  assert.notEqual(context.getStage('trusted'), output);
+  assert.deepEqual(context.getStage('trusted'), output);
 });
 
 test('full modular turn runs a code command, approved check, commit and screen projection', async () => {
@@ -514,6 +525,103 @@ test('committed state is reloaded after intent resolution and before RNG', async
   assert.equal(reads, 2);
   assert.equal(rolls, 0);
   assert.equal(commits.length, 0);
+});
+
+test('revalidation may use a version owner without reloading the snapshot',
+  async () => {
+    let reads = 0;
+    let revalidations = 0;
+    const { services } = createServices([], {
+      stateReader: {
+        async read() {
+          reads += 1;
+          return {
+            party_state: { party_id: 'party-1', state_version: 0 },
+            current_position: {
+              region_id: 'region-novgorod', place_id: 'place-gate'
+            },
+            clock_weather_light: {
+              clock: { day: 1, hour: 9, minute: 0 }, weather: {}, light: {}
+            },
+            visible_context: validVisibleContext(),
+            character_knowledge_map: [],
+            relevant_hidden_state: { hidden_sentinel: 'must_not_leak' },
+            relevant_events: []
+          };
+        },
+        async revalidate() {
+          revalidations += 1;
+          return 0;
+        }
+      }
+    });
+    await runTurnWorkflow(input(), services);
+    assert.equal(reads, 1);
+    assert.equal(revalidations, 1);
+  });
+
+test('stale version-only revalidation aborts before commit', async () => {
+  const { services, commits } = createServices([], {
+    stateReader: {
+      async read() {
+        return {
+          party_state: { party_id: 'party-1', state_version: 0 },
+          current_position: {
+            region_id: 'region-novgorod', place_id: 'place-gate'
+          },
+          clock_weather_light: {
+            clock: { day: 1, hour: 9, minute: 0 }, weather: {}, light: {}
+          },
+          visible_context: validVisibleContext(),
+          character_knowledge_map: [],
+          relevant_hidden_state: {},
+          relevant_events: []
+        };
+      },
+      async revalidate() {
+        return 1;
+      }
+    }
+  });
+  await assert.rejects(
+    () => runTurnWorkflow(input(), services),
+    { code: 'TURN_SEMANTIC_STATE_STALE' }
+  );
+  assert.equal(commits.length, 0);
+});
+
+test('turn-step actor remains immutable across model calls and trace', async () => {
+  const actor = { actor_ref: 'actor-1', identity: { name: 'Микула' } };
+  const seenActors = [];
+  const result = await runTurnStepLoop({
+    requestId: 'actor-freeze-request',
+    rootTurnId: 'actor-freeze-turn',
+    committedStateVersion: 0,
+    rootPlayerAction: 'осмотреть телегу',
+    actor,
+    initialWorkingProjection: { actor_ref: 'actor-1' }
+  }, {
+    executionRegistry: createTurnStepExecutionRegistry({
+      applySemanticActivity: async ({ working_projection }) => ({
+        working_projection, summary: 'момент', write_fragments: []
+      })
+    }),
+    projectPlayerSafeState: async ({ working_projection }) => working_projection,
+    revalidateCommittedState: async () => ({ state_version: 0 }),
+    turnStepModel: async (request) => {
+      seenActors.push(structuredClone(request.actor));
+      assert.throws(() => { request.actor.identity.name = 'подмена'; },
+        TypeError);
+      return turnStepPlan(request, request.step_index === 1 ? {
+        goal_result: 'pending',
+        continuation: { remaining_intent: 'закончить осмотр', depends_on_refs: [] }
+      } : {});
+    }
+  });
+  assert.deepEqual(actor, { actor_ref: 'actor-1', identity: { name: 'Микула' } });
+  assert.deepEqual(seenActors, [actor, actor]);
+  assert.deepEqual(result.step_traces.map(({ plan_request }) => plan_request.actor),
+    [actor, actor]);
 });
 
 test('RandomSource is required only when an approved check request exists', async () => {

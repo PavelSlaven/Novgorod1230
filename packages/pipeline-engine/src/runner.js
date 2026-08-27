@@ -1,7 +1,14 @@
 import { assertStageDefinition } from '@rus/contracts';
 import { ArtifactRegistry } from './artifact-registry.js';
 
-export async function runStageGraph({ stages, input, services = {}, registry = new ArtifactRegistry(), onEvent = null }) {
+export async function runStageGraph({ stages, input, services = {}, transient = false,
+  registry = transient ? null : new ArtifactRegistry(), onEvent = null }) {
+  if (transient && registry != null) {
+    throw new TypeError('Transient stage graphs cannot retain an artifact registry.');
+  }
+  if (!transient && registry == null) {
+    throw new TypeError('Use transient: true to run without an artifact registry.');
+  }
   let current = input;
   for (const rawStage of stages) {
     const stage = assertStageDefinition(rawStage);

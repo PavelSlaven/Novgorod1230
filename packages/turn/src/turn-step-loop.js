@@ -110,11 +110,11 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   const seen = new Set();
 
   while (stepIndex <= identity.maxInternalSteps) {
-    const playerSafeState = await ports.projectPlayerSafeState(deepFreeze({
+    const playerSafeState = deepFreeze(await ports.projectPlayerSafeState(deepFreeze({
       working_projection: structuredClone(workingProjection),
       completed_steps: structuredClone(completedSteps),
       local_fire_atomic_write_plans: structuredClone(localFirePlans)
-    }));
+    })));
     const request = {
       schema: 'turn_step_request_v1',
       request_id: `${identity.requestId}:step:${stepIndex}`,
@@ -126,8 +126,8 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
       root_player_action: identity.rootPlayerAction,
       remaining_intent: remainingIntent,
       completed_steps: structuredClone(completedSteps),
-      actor: structuredClone(identity.actor),
-      player_safe_state: structuredClone(playerSafeState)
+      actor: identity.actor,
+      player_safe_state: playerSafeState
     };
     const inputDigest = sha256({
       remaining_intent: remainingIntent,
@@ -443,7 +443,7 @@ function normalizeInput(input) {
     rootPlayerAction,
     committedStateVersion,
     maxInternalSteps,
-    actor: cloneObject(input.actor, 'TURN_STEP_LOOP_INPUT_INVALID')
+    actor: deepFreeze(cloneObject(input.actor, 'TURN_STEP_LOOP_INPUT_INVALID'))
   };
 }
 

@@ -215,7 +215,7 @@ function transactionOwner(client, lockKeys, shouldFailSettle = () => false) {
     await client.query('BEGIN');
     try {
       const result = await work({ query: async (sql, params) => {
-        if (sql.includes('pg_advisory_xact_lock')) lockKeys.push(params[0]);
+        if (sql.includes('pg_advisory_xact_lock')) lockKeys.push(...params[0]);
         if (shouldFailSettle() && sql.startsWith('UPDATE party_runtime.party_command_idempotency SET status=')) {
           throw new Error('injected idempotency settlement failure');
         }
@@ -229,6 +229,79 @@ function transactionOwner(client, lockKeys, shouldFailSettle = () => false) {
     }
   };
 }
+
+test('P16 releases a client acquired after gameplay deadline without SQL',
+  async () => {
+    const plan = await makePlan({
+      planId: 'deadline-late', idempotencyId: 'deadline-late-idem',
+      idempotencyKey: 'deadline-late-key', changeSetId: 'deadline-late-change'
+    });
+    let released = 0, queries = 0;
+    const client = {
+      query() { queries += 1; },
+      release() { released += 1; }
+    };
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
+      pool: { connect(callback) {
+        setTimeout(() => callback(null, client, () => client.release()), 10);
+      } },
+      recheck: async () => ({ ok: true })
+    });
+    const turnBudget = {
+      assertWithinDeadline() {},
+      remaining: () => ({ deadline_ms: 1, llm_budget_ms: 1 })
+    };
+    await assert.rejects(committer.commit({ plan, turnBudget }), (error) => {
+      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      assert.equal(error.deadline_exceeded, true);
+      return true;
+    });
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    assert.equal(queries, 0);
+    assert.equal(released, 1);
+  });
+
+test('P16 bounds advisory lock with remaining deadline then rolls back',
+  async () => {
+    const plan = await makePlan({
+      planId: 'deadline-lock', idempotencyId: 'deadline-lock-idem',
+      idempotencyKey: 'deadline-lock-key', changeSetId: 'deadline-lock-change'
+    });
+    const queries = [];
+    const client = {
+      async query(sql, values) {
+        queries.push([sql, values]);
+        if (sql.includes('pg_advisory_xact_lock')) {
+          throw Object.assign(
+            new Error('canceling statement due to lock timeout'),
+            { code: '55P03' }
+          );
+        }
+        return { rowCount: 0, rows: [] };
+      },
+      release() {}
+    };
+    const committer = createSpatialV3PostgresCombinedAtomicCommitter({
+      pool: { connect(callback) { callback(null, client, () => client.release()); } },
+      recheck: async () => ({ ok: true })
+    });
+    await assert.rejects(committer.commit({ plan, turnBudget: {
+      assertWithinDeadline() {},
+      remaining: () => ({ deadline_ms: 321.8, llm_budget_ms: 321.8 })
+    } }), (error) => {
+      assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
+      assert.equal(error.deadline_exceeded, true);
+      return true;
+    });
+    assert.deepEqual(queries.slice(0, 3), [
+      ['SET statement_timeout = 321', undefined], ['BEGIN', undefined],
+      ["SELECT set_config('statement_timeout', $1, true), set_config('lock_timeout', $1, true)",
+        ['321']]
+    ]);
+    assert.match(queries[3][0], /pg_advisory_xact_lock/u);
+    assert.equal(queries.at(-2)[0], 'ROLLBACK');
+    assert.equal(queries.at(-1)[0], 'RESET statement_timeout');
+  });
 
 test('P16 Node committer executes sealed plans against isolated PostgreSQL', async (t) => {
   if (docker(['version']).status !== 0) return t.skip('Docker required');

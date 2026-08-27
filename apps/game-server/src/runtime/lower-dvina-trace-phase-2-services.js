@@ -47,6 +47,9 @@ import { withLowerDvinaTraceCurrentScene } from
   './lower-dvina-trace-turn-step-current-scene.js';
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
+import { runWithinTurnDeadline } from './llm-turn-budget.js';
+import { createLowerDvinaTracePhase2StateReader } from
+  './lower-dvina-trace-phase-2-state-reader.js';
 
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
@@ -170,16 +173,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       : null;
   return {
     commandRegistry: registry,
-    stateReader: {
-      async read(request) {
-        const committedState = request.revalidation === true
-          ? await repository.loadPhase2State(partyId, {
-              presentationIdempotencyKey: idempotencyKey
-            })
-          : structuredClone(state);
-        return projectCurrentScene(committedState);
-      }
-    },
+    stateReader: createLowerDvinaTracePhase2StateReader({ repository, partyId,
+      idempotencyKey, state, projectCurrentScene, turnBudget }),
     semanticResolver,
     ...(turnStepModel ? { turnStepModel } : {}),
     ...(turnStepPlayerSafeStateProjector ? {
@@ -266,31 +261,38 @@ export function buildLowerDvinaTracePhase2Services(context) {
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
-          phase10Contracts,
-          turnStepApprovedOwners
+          phase10Contracts, turnStepApprovedOwners, turnBudget
         });
       }
     },
     persistedVisibleReader: {
       read(request) {
-        return repository.loadPhase2VisibleContext({ partyId, commit: request.commit });
+        return runWithinTurnDeadline(turnBudget, () => repository.loadPhase2VisibleContext({
+          partyId, commit: request.commit, turnBudget
+        }));
       }
     },
-    narrator,
+    narrator: {
+      ...narrator,
+      run(request) {
+        return runWithinTurnDeadline(turnBudget, () => narrator.run(request));
+      }
+    },
     screenProjector: {
       project({ defaultScreen }) {
-        return {
+        turnBudget?.assertWithinDeadline();
+        const screen = {
           ...defaultScreen,
           delivery_state: { ...defaultScreen.delivery_state, generated_at: issuedAt },
           scenario_id: 'lower_dvina_trace_v1',
           screen_kind: 'trace_turn',
           opening_screen_digest: state.opening_identity.opening_screen_digest
         };
+        turnBudget?.assertWithinDeadline();
+        return screen;
       }
     }
   };
 }
 
-function addMinutes(value, minutes) {
-  return new Date(Date.parse(value) + minutes * 60000).toISOString();
-}
+function addMinutes(value, minutes) { return new Date(Date.parse(value) + minutes * 60000).toISOString(); }

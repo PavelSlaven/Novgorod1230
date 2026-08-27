@@ -45,12 +45,12 @@ export async function resolveBoundTurnStepCommand({
     throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTOR_MISSING',
       'Semantic step admission requires a player-safe state projector.');
   }
-  const projected = await services.playerSafeStateProjector(deepFreeze({
-    committed_state: structuredClone(committedState),
+  const projected = deepFreeze(await services.playerSafeStateProjector(deepFreeze({
+    committed_state: committedState,
     actor_id: routingContext.actor_id ?? playerInput.party_id,
     party_id: playerInput.party_id,
     turn_number: playerInput.turn_number
-  }));
+  })));
   if (!plain(projected) || !plain(projected.actor)
       || !plain(projected.player_safe_state)) {
     throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID',
@@ -60,7 +60,7 @@ export async function resolveBoundTurnStepCommand({
     ({ option_id: optionId }) => optionId
   ));
   const selectedCommands = [];
-  let firstProjection = structuredClone(projected.player_safe_state);
+  let firstProjection = projected.player_safe_state;
   const initialWorkingProjection = initialWorkingProjectionFrom(projected);
   const externalRegistry = services.turnStepExecutionRegistry ?? null;
   if (externalRegistry != null) {
@@ -283,7 +283,7 @@ export async function resolveBoundTurnStepCommand({
     rootTurnId: `turn:${playerInput.party_id}:${playerInput.turn_number}`,
     committedStateVersion: actionSet.state_version,
     rootPlayerAction: playerInput.raw_text,
-    actor: structuredClone(projected.actor),
+    actor: projected.actor,
     initialWorkingProjection,
     maxInternalSteps: 8
   }, {
@@ -342,14 +342,14 @@ export async function resolveBoundTurnStepCommand({
         firstProjection = null;
         return first;
       }
-      const next = await services.playerSafeStateProjector(deepFreeze({
-        committed_state: structuredClone(committedState),
+      const next = deepFreeze(await services.playerSafeStateProjector(deepFreeze({
+        committed_state: committedState,
         working_projection: structuredClone(workingProjection),
         completed_steps:structuredClone(completedSteps),local_fire_atomic_write_plans:structuredClone(localFirePlans),
         actor_id: routingContext.actor_id ?? playerInput.party_id,
         party_id: playerInput.party_id,
         turn_number: playerInput.turn_number
-      }));
+      })));
       if (!plain(next) || !plain(next.player_safe_state)) {
         throw turnCommandError('TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID',
           'Player-safe projector must return actor and player_safe_state objects.');
@@ -357,7 +357,7 @@ export async function resolveBoundTurnStepCommand({
       return next.player_safe_state;
     },
     async revalidateCommittedState({ step_index: stepIndex }) {
-      return services.stateReader.read({
+      const request = {
         party_id: playerInput.party_id,
         turn_number: playerInput.turn_number,
         requested_blocks: structuredClone(registry.stateBlocks()),
@@ -365,7 +365,10 @@ export async function resolveBoundTurnStepCommand({
         revalidation: true,
         turn_step: true,
         step_index: stepIndex
-      });
+      };
+      return typeof services.stateReader.revalidate === 'function'
+        ? services.stateReader.revalidate(request)
+        : services.stateReader.read(request);
     }
   });
   const command = commandWithDraftWrites({
@@ -432,9 +435,7 @@ function commandWithDraftWrites({ command, registry, loopResult }) {
 function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
-function plain(value) {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
+function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
   if (!['inspect', 'search'].includes(operation?.discovery_kind)
       || !Array.isArray(operation.target_refs)

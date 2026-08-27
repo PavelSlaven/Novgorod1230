@@ -43,6 +43,12 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
       if (available && available.deadline_ms <= GAMEPLAY_DETERMINISTIC_RESERVE_MS) {
         throw exhausted(available, true);
       }
+    },
+    assertWithinDeadline() {
+      const available = remaining();
+      if (available && available.deadline_ms <= 0) {
+        throw exhausted(available);
+      }
     }
   });
 }
@@ -51,11 +57,19 @@ export function isRepairRole(roleId, contract = null) {
   return contract?.repair === true || /repair/u.test(String(roleId ?? ''));
 }
 
+export async function runWithinTurnDeadline(turnBudget, execute) {
+  turnBudget?.assertWithinDeadline();
+  const result = await execute();
+  turnBudget?.assertWithinDeadline();
+  return result;
+}
+
 export function exhausted(remaining, budgetExhausted = false) {
   const error = new Error('Gameplay LLM turn budget is exhausted.');
   error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
   error.deadline_exceeded = remaining.deadline_ms <= 0;
-  error.budget_exhausted = budgetExhausted || remaining.llm_budget_ms <= 0;
+  error.budget_exhausted = budgetExhausted
+    || (!error.deadline_exceeded && remaining.llm_budget_ms <= 0);
   error.remaining_llm_budget_ms = remaining.llm_budget_ms;
   error.remaining_turn_deadline_ms = remaining.deadline_ms;
   return error;

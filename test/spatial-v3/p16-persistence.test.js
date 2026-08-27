@@ -565,6 +565,7 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
   }
 
   const calls = [];
+  let lockQueryCount = 0;
   const committer = createSpatialV3CombinedAtomicCommitter({
     recheck: async ({ transaction, check }) => {
       calls.push(`recheck:${check.kind}`);
@@ -602,7 +603,10 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
     },
     withTransaction: async (work) => work({
       query: async (sql, params = []) => {
-        if (sql.includes('pg_advisory_xact_lock')) calls.push(`lock:${params[0]}`);
+        if (sql.includes('pg_advisory_xact_lock')) {
+          lockQueryCount += 1;
+          calls.push(...params[0].map((key) => `lock:${key}`));
+        }
         else if (sql.includes('FROM party_runtime.preparation_snapshots')) calls.push('preparation-read');
         else if (sql.includes('party_command_idempotency') && sql.startsWith('SELECT')) return { rows: [] };
         else if ((sql.startsWith('INSERT INTO party_runtime.') || sql.startsWith('UPDATE party_runtime.'))
@@ -618,6 +622,7 @@ test('P16 first-entry locks the prepared baseline scope before absence recheck a
   const baselineReadIndex = calls.indexOf('preparation-read');
   const firstWriteIndex = calls.indexOf('domain-write');
   assert.ok(baselineLockIndex >= 0);
+  assert.equal(lockQueryCount, 1);
   assert.ok(baselineReadIndex > baselineLockIndex);
   assert.ok(firstWriteIndex > baselineReadIndex);
   assert.ok(committed.lock_keys.includes('06:idempotency:p:first_entry:key'));

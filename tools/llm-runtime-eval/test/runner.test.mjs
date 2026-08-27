@@ -39,10 +39,12 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     });
     assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
       scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
+      config_hash: report.results.find(({ role_id }) => role_id === 'turn_step_planner').config_hash,
       request_timeout_ms: 10000, thinking: 'disabled', reasoning_effort: null, max_tokens: 8000,
       context_budget: { targetInputTokens: 100000, comfortableInputTokens: 220000,
         hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000 }
     });
+    assert.equal(report.results.every(({ config_hash }) => typeof config_hash === 'string' && config_hash.length > 0), true);
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

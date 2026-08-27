@@ -1,5 +1,8 @@
-import { executeRoleLlmCall } from '@rus/llm-runtime';
-import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
+import {
+  describeRoleLlmCall,
+  executeRoleLlmCall,
+  resolveLlmExecutionConfig
+} from '@rus/llm-runtime';
 import { isDeepStrictEqual } from 'node:util';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
@@ -36,6 +39,7 @@ function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
       const { config } = resolution;
       return {
         scope, role_id, provider: config.provider, model: config.model,
+        config_hash: describeRoleLlmCall({ scope, roleId: role_id, env, runtimeProviderOverride }).config_hash,
         request_timeout_ms: config.requestTimeoutMs, thinking: config.thinking?.type ?? null,
         reasoning_effort: config.reasoningEffort ?? null, max_tokens: config.maxTokens,
         context_budget: config.contextBudget
@@ -60,7 +64,8 @@ function scoreFixture(fixture, call) {
   return { fixture_id: fixture.id, role_id: fixture.role_id, repair: fixture.repair === true,
     scored, manual, quality_status, status: call.status, pass: quality_status === 'automated_passed',
     valid: errors.length === 0, errors, duration_ms: call.durationMs,
-    usage: call.usage ?? null, model: call.model, provider: call.provider };
+    usage: call.usage ?? null, model: call.model, provider: call.provider,
+    config_hash: call.config_hash };
 }
 
 function validateRoleOutput(fixture, output) {

@@ -3,7 +3,7 @@ export function initialWorkingProjectionFrom(projected) {
     projected, 'initial_working_projection'
   );
   if (descriptor == null) {
-    return structuredClone(projected.player_safe_state);
+    return projected.player_safe_state;
   }
   if (descriptor.enumerable !== true || !Object.hasOwn(descriptor, 'value')
       || !plain(descriptor.value)) {
@@ -11,7 +11,7 @@ export function initialWorkingProjectionFrom(projected) {
       'Player-safe projector initial_working_projection must be an own data object.'
     ), { code: 'TURN_STEP_PLAYER_SAFE_PROJECTION_INVALID' });
   }
-  return structuredClone(descriptor.value);
+  return descriptor.value;
 }
 
 function plain(value) {

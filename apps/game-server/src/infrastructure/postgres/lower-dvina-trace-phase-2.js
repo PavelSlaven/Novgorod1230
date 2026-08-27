@@ -35,6 +35,9 @@ import { withCommittedRuntimeContainers } from './lower-dvina-trace-phase-2-comm
 import { loadPhase2JourneyLocation } from './lower-dvina-trace-phase-2-journey-location.js';
 import { loadPhase2VisibleContext } from './lower-dvina-trace-phase-2-visible-context.js';
 import { withSpatialSemanticCommittedState } from './spatial-semantic-readback.js';
+import { queryWithTurnDeadline, withTurnDeadlineQueryPool } from './query-with-turn-deadline.js';
+import { loadPhase2StateVersion } from './lower-dvina-trace-phase-2-state-version.js';
+import { runWithinTurnDeadline } from '../../runtime/llm-turn-budget.js';
 export { normalizeJourneyLocation, normalizeJourneyLocationRows } from
   './lower-dvina-trace-phase-2-journey-location.js';
 export function createLowerDvinaTracePhase2PostgresRepository({
@@ -47,14 +50,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       'Phase 2 PostgreSQL repository requires pool and P16 committer.'
     );
   }
-  const phase1A = createLowerDvinaTracePhase1ARepository({
-    query: partyPool.query.bind(partyPool)
-  });
   async function loadPhase2State(
     partyId,
-    { presentationIdempotencyKey = null } = {}
+    { presentationIdempotencyKey = null, turnBudget = null } = {}
   ) {
-    const head = await partyPool.query(
+    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
+    const phase1A = createLowerDvinaTracePhase1ARepository({
+      query: readPool.query.bind(readPool)
+    });
+    const head = await readPool.query(
       `SELECT p.state_version AS party_state_version,
               p.world_revision_id,p.world_catalog_digest,
               s.state_version AS session_state_version,
@@ -97,12 +101,12 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     }
     if (Number(row.party_state_version) === 0) {
       const temporalSourceProof =
-        await loadTracePhase2TemporalSourceProof(partyPool, partyId);
+        await loadTracePhase2TemporalSourceProof(readPool, partyId);
       const initial = await loadInitialTracePhase2State({
         partyId,
         row,
         phase1A,
-        partyPool,
+        partyPool: readPool,
         temporalSourceProof
       });
       const visible = withPhase2CurrentVisibleContext(
@@ -112,7 +116,7 @@ export function createLowerDvinaTracePhase2PostgresRepository({
           openingScreenDigest: row.stage26_result.opening_screen_digest
         })
       );
-      return withSpatialSemanticCommittedState(partyPool, partyId, { ...visible,
+      return withSpatialSemanticCommittedState(readPool, partyId, { ...visible,
         local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime) });
     }
     const payload = row.state_payload;
@@ -125,31 +129,31 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       presentationIdempotencyKey
     });
     const temporalSourceProof =
-      await loadTracePhase2TemporalSourceProof(partyPool, partyId);
+      await loadTracePhase2TemporalSourceProof(readPool, partyId);
     let semanticDecisionTraces = [], semanticDecisionInputs = [];
     if (payload.schema === 'rus.lower_dvina_trace_turn_snapshot.v2') {
       ({
         decisionTraces: semanticDecisionTraces,
         decisionInputs: semanticDecisionInputs
-      } = await assertPhase3NormalizedRows(partyPool, payload, row));
-      await assertPhase4NormalizedRows(partyPool, payload, row);
-      await assertPhase5NormalizedRows(partyPool, payload, row);
-      await assertPhase6NormalizedRows(partyPool, payload, row);
-      await assertPhase7NormalizedRows(partyPool, payload, row);
-      await assertTurnStepNormalizedRows(partyPool, payload, row);
-      await assertCombatSessionRows(partyPool, payload);
-      await assertPhase9NormalizedRows(partyPool, payload);
-      await assertPhase10NormalizedRows(partyPool, payload, row);
+      } = await assertPhase3NormalizedRows(readPool, payload, row));
+      await assertPhase4NormalizedRows(readPool, payload, row);
+      await assertPhase5NormalizedRows(readPool, payload, row);
+      await assertPhase6NormalizedRows(readPool, payload, row);
+      await assertPhase7NormalizedRows(readPool, payload, row);
+      await assertTurnStepNormalizedRows(readPool, payload, row);
+      await assertCombatSessionRows(readPool, payload);
+      await assertPhase9NormalizedRows(readPool, payload);
+      await assertPhase10NormalizedRows(readPool, payload, row);
     } else {
-      await assertPhase2NormalizedRows(partyPool, payload, row);
+      await assertPhase2NormalizedRows(readPool, payload, row);
     }
     const loadedPayload = structuredClone(payload);
     const journeyLocation = await loadPhase2JourneyLocation(
-      partyPool, partyId, loadedPayload.actor_id);
+      readPool, partyId, loadedPayload.actor_id);
     if (journeyLocation != null) loadedPayload.journey_location = journeyLocation;
     hydrateSemanticDecisionReplay(
       loadedPayload, semanticDecisionTraces, semanticDecisionInputs);
-    return withSpatialSemanticCommittedState(partyPool, partyId, await withCommittedRuntimeContainers(partyPool, partyId, {
+    return withSpatialSemanticCommittedState(readPool, partyId, await withCommittedRuntimeContainers(readPool, partyId, {
       ...loadedPayload,
       world_identity: {
         world_revision_id: row.world_revision_id,
@@ -161,20 +165,21 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       local_fire_runtime:structuredClone(temporalSourceProof.local_fire_runtime)
       }));
   }
-  async function loadPhase2Replay({ partyId, idempotencyKey }) {
+  async function loadPhase2Replay({ partyId, idempotencyKey, turnBudget = null }) {
+    const readPool = withTurnDeadlineQueryPool(partyPool, turnBudget);
     return loadCurrentOrHistoricalPhase2Replay({
-      partyPool, partyId, idempotencyKey, loadState: loadPhase2State
+      partyPool: readPool, partyId, idempotencyKey,
+      loadState: (id, options) => loadPhase2State(id, { ...options, turnBudget })
     });
   }
-
-  async function replayPhase2Turn({ partyId, replay, narrator }) {
+  async function replayPhase2Turn({ partyId, replay, narrator, turnBudget = null }) {
     if (replay.screen?.screen_status !== 'committed_presentation_pending') {
       return replay.public_result;
     }
     const visibleContext = await loadPhase2VisibleContext(partyPool, {
-      commit: replay.state.last_turn.visible_package
+      commit: replay.state.last_turn.visible_package, turnBudget
     });
-    const narration = await narrator.run({
+    const narration = await runWithinTurnDeadline(turnBudget, () => narrator.run({
       version: 1,
       schema: 'narration_request',
       request_id: replay.screen.turn_id,
@@ -194,10 +199,11 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         no_new_world_facts: true
       },
       max_repairs: 1
-    });
+    }));
     return persistPhase2Screen({
       partyId,
       inputDigest: replay.input_digest,
+      turnBudget,
       result: {
         commit: {
           state_version: replay.state.party_state.state_version,
@@ -222,11 +228,15 @@ export function createLowerDvinaTracePhase2PostgresRepository({
   }
 
   async function commitPhase2Turn(input) {
-    return commitLowerDvinaTracePhase2({
-      ...input,
-      loadState: loadCommittablePhase2State,
-      committer
-    });
+    return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
+  }
+
+  function commitPorts(turnBudget = null) {
+    if (turnBudget == null) return { loadState: loadCommittablePhase2State,
+      committer };
+    return { loadState: (partyId, options = {}) => loadCommittablePhase2State(
+      partyId, { ...options, turnBudget }),
+    committer: { commit: (input) => committer.commit({ ...input, turnBudget }) } };
   }
 
   async function loadCommittablePhase2State(...args) {
@@ -235,19 +245,19 @@ export function createLowerDvinaTracePhase2PostgresRepository({
     );
   }
 
-  async function persistPhase2Screen({ partyId, inputDigest, result }) {
+  async function persistPhase2Screen({ partyId, inputDigest, result, turnBudget = null }) {
     const anchor = result.commit;
     const narration =
       result.narration ?? result.checkpoint?.stages?.narration;
     const narrationOutputDigest =
       narration.presentation?.output_digest
       ?? canonicalDigest(narration.approved_output);
-    const payload = (await partyPool.query(
-      `SELECT state_payload
+    const payload = (await queryWithTurnDeadline(partyPool, {
+      text: `SELECT state_payload
          FROM party_runtime.party_state_snapshots
-        WHERE party_id=$1 AND state_version=$2`,
-      [partyId, anchor.state_version]
-    )).rows[0]?.state_payload;
+       WHERE party_id=$1 AND state_version=$2`,
+      values: [partyId, anchor.state_version]
+    }, turnBudget)).rows[0]?.state_payload;
     if (payload?.last_turn?.input_digest !== inputDigest) {
       throw phase2IntegrityError();
     }
@@ -266,22 +276,23 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       }
     });
     screen.screen_digest = phase2ScreenDigest(screen);
-    const updated = await partyPool.query(
-      `UPDATE party_runtime.party_server_sessions
+    const updated = await queryWithTurnDeadline(partyPool, {
+      text: `UPDATE party_runtime.party_server_sessions
           SET screen=$2::jsonb,updated_at=now()
         WHERE party_id=$1 AND last_turn_id=$3`,
-      [partyId, json(screen), result.turn_id]
-    );
+      values: [partyId, json(screen), result.turn_id]
+    }, turnBudget);
     if (updated.rowCount !== 1) throw phase2IntegrityError();
     return phase2PublicResult({ payload, screen });
   }
   return Object.freeze({
     loadPhase2State,
+    loadPhase2StateVersion: (partyId, options) =>
+      loadPhase2StateVersion(partyPool, partyId, options),
     loadPhase2Replay,
     replayPhase2Turn,
     commitPhase2Turn,
-    commitPhase10FollowUp: (input) => commitLowerDvinaTracePhase10({ ...input,
-      loadState: loadCommittablePhase2State, committer }),
+    commitPhase10FollowUp: (input) => commitLowerDvinaTracePhase10({ ...input, ...commitPorts(input.turnBudget) }),
     loadPhase2VisibleContext: (input) => loadPhase2VisibleContext(partyPool, input),
     persistPhase2Screen
   });

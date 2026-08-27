@@ -24,7 +24,7 @@
 
 ## Контракты
 
-Каждый stage получает точный input, выполняется через переданный handler и возвращает утверждённый результат либо typed failure.
+Каждый stage получает точный input, выполняется через переданный handler и возвращает утверждённый результат либо typed failure. По умолчанию approved artifacts сохраняются в `ArtifactRegistry`. Короткий workflow с собственным checkpoint может явно выбрать `transient: true`; тогда registry и digest-retention отсутствуют до завершения вызова.
 
 ## Допустимые зависимости
 

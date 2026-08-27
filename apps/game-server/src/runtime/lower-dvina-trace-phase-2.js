@@ -18,6 +18,7 @@ import { createStateVersionRevalidator, executeTraceTurnWithDiagnostics, validat
 import { createTraceCombatCommand } from './lower-dvina-trace-combat-command.js';
 import { buildTracePhase2TurnRequest } from './lower-dvina-trace-phase-2-turn-request.js';
 import { createLowerDvinaTraceNpcActorStepDirectOperations } from './lower-dvina-trace-npc-actor-step-direct-operations.js';
+import { runWithinTurnDeadline } from './llm-turn-budget.js';
 export function createLowerDvinaTracePhase2Runtime({
   repository, semanticResolver, turnStepModel = null,
   playerConversationModel = null, npcSemanticModel = null, npcAutonomousModel = null, runNpcConversationExchange = null,
@@ -60,10 +61,8 @@ export function createLowerDvinaTracePhase2Runtime({
       const { requestId, idempotencyKey, rawText, inputDigest } =
         buildTracePhase2TurnRequest({ partyId, input });
       const executeAttempt = async () => {
-        let replay = await repository.loadPhase2Replay({
-          partyId,
-          idempotencyKey,
-        });
+        const turnBudget = llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null;
+        let replay = await repository.loadPhase2Replay({ partyId, idempotencyKey, turnBudget });
         if (replay) {
           if (replay.input_digest !== inputDigest) {
             throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
@@ -74,14 +73,18 @@ export function createLowerDvinaTracePhase2Runtime({
             replay,
             repository,
             bundleLoader,
+            turnBudget,
           });
-          return repository.replayPhase2Turn ? repository.replayPhase2Turn({ partyId, replay, narrator }) : replay.public_result;
+          return repository.replayPhase2Turn
+            ? repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
+            : replay.public_result;
         }
         const [state, phase2Bundle] = await Promise.all([
           repository.loadPhase2State(partyId, {
             presentationIdempotencyKey: idempotencyKey,
+            turnBudget,
           }),
-          phase2BundleLoader(),
+          runWithinTurnDeadline(turnBudget, () => phase2BundleLoader()),
         ]);
         const scenarioDefinitionRevision = committedTraceScenarioDefinitionRevision(state);
         validateConversationDependencies({
@@ -90,7 +93,7 @@ export function createLowerDvinaTracePhase2Runtime({
           npcSemanticModel,
           npcAutonomousModel, npcOwnerCapabilities, npcCombatModel,
         });
-        const bundle = await bundleLoader({ scenarioDefinitionRevision });
+        const bundle = await runWithinTurnDeadline(turnBudget, () => bundleLoader({ scenarioDefinitionRevision }));
         const contracts = resolveTracePhase2Contracts({
           state,
           bundle,
@@ -124,6 +127,7 @@ export function createLowerDvinaTracePhase2Runtime({
           repository,
           partyId,
           idempotencyKey,
+          turnBudget,
         });
         const phase8 = createTracePhase8Runtime({
           state,
@@ -203,6 +207,7 @@ export function createLowerDvinaTracePhase2Runtime({
           revalidateStateVersion,
           state,
           temporalAdvanceOwner,
+          turnBudget,
           turn10,
           turnRandomSource,
         });
@@ -281,16 +286,11 @@ export function createLowerDvinaTracePhase2Runtime({
               turnStepPackingCalculator,
               narrator,
               randomSourceFactory,
-              randomSource: turnRandomSource, decisionSecret, decisionNow: now,
-              turnBudget: llmTurnBudget ?? llmDiagnostics?.turnBudget ?? null,
+              randomSource: turnRandomSource, decisionSecret, decisionNow: now, turnBudget,
             }),
             { now: issuedAt, requestId },
           );
-        return repository.persistPhase2Screen({
-          partyId,
-          inputDigest,
-          result,
-        });
+        return runWithinTurnDeadline(turnBudget, () => repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
       };
       return executeTraceTurnWithDiagnostics(llmDiagnostics,
         { party_id: partyId, request_id: requestId }, executeAttempt);

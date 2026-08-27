@@ -84,11 +84,17 @@ test('keeps objective evidence conclusions hidden without visible lineage',
   });
 
 test('commits one zero-time follow-up and exact retry is a no-op', async () => {
-  let current = phase9State(), commitCalls = 0, capturedPlan = null;
-  const loadState = async () => structuredClone(current);
-  const committer = { async commit({ plan }) {
+  let current = phase9State(), commitCalls = 0, capturedPlan = null,
+    capturedTurnBudget = null;
+  const turnBudget = {};
+  const loadState = async (_partyId, options) => {
+    assert.equal(options.turnBudget, turnBudget);
+    return structuredClone(current);
+  };
+  const committer = { async commit({ plan, turnBudget: budget }) {
     commitCalls += 1;
     capturedPlan = plan;
+    capturedTurnBudget = budget;
     const snapshot = plan.inserts.find(({ target_table: table }) =>
       table === 'party_state_snapshots').record.state_payload;
     current = structuredClone(snapshot);
@@ -96,7 +102,7 @@ test('commits one zero-time follow-up and exact retry is a no-op', async () => {
   } };
   const first = await commitLowerDvinaTracePhase10({ partyId: 'party-1',
     phase10Contracts: contracts, loadState, committer,
-    presentationIdempotencyKey: 'turn-idem-7' });
+    presentationIdempotencyKey: 'turn-idem-7', turnBudget });
   assert.equal(first.state_version, 26);
   assert.equal(first.turn_number, 7);
   assert.equal(commitCalls, 1);
@@ -113,10 +119,11 @@ test('commits one zero-time follow-up and exact retry is a no-op', async () => {
   assert.equal(capturedPlan.visible_package_envelope.visible_payload
     .known_context.some((line) => line.includes('продолжают существовать')),
   true);
+  assert.equal(capturedTurnBudget, turnBudget);
 
   const replay = await commitLowerDvinaTracePhase10({ partyId: 'party-1',
     phase10Contracts: contracts, loadState, committer,
-    presentationIdempotencyKey: 'turn-idem-7' });
+    presentationIdempotencyKey: 'turn-idem-7', turnBudget });
   assert.equal(replay.replayed, true);
   assert.equal(commitCalls, 1);
   assert.equal(replay.package_digest, first.package_digest);
@@ -131,11 +138,13 @@ test('restart after Phase 9 resumes completion before replay narration',
       request_id: input.request_id, idempotency_key: input.idempotency_key,
       raw_text: input.raw_text });
     let state = phase9State(), completionCalls = 0, replayCalls = 0;
+    const turnBudget = { assertWithinDeadline() {} };
     const repository = {
       async loadPhase2Replay() { return { input_digest: inputDigest,
         state: structuredClone(state), public_result: { premature: true },
         screen: { screen_status: 'committed_presentation_pending' } }; },
-      async commitPhase10FollowUp() {
+      async commitPhase10FollowUp({ turnBudget: budget }) {
+        assert.equal(budget, turnBudget);
         completionCalls += 1;
         state.completion = { status: 'committed', outcome: { schema:
           'rus.trace_composite_completion_outcome.v1' },
@@ -160,13 +169,58 @@ test('restart after Phase 9 resumes completion before replay narration',
       playerConversationModel: model, npcSemanticModel: model,
       npcAutonomousModel: model, npcCombatModel: model,
       narrator: { run: model }, randomSourceFactory: () => {
-        rngCalls += 1; return {}; }, decisionSecret: 'secret' });
+        rngCalls += 1; return {}; }, decisionSecret: 'secret',
+      llmTurnBudget: turnBudget });
     const result = await runtime.submitTurn({ partyId: 'party-1', input });
     assert.deepEqual(result, { completion_replayed: true });
     assert.equal(completionCalls, 1);
     assert.equal(replayCalls, 1);
     assert.equal(modelCalls, 0);
     assert.equal(rngCalls, 0);
+  });
+
+test('expired deadline during pending replay loader skips commit and narration',
+  async () => {
+    const input = { request_id: 'turn-request-8',
+      idempotency_key: 'turn-idem-8', raw_text: 'продолжить' };
+    const inputDigest = canonicalDigest({ party_id: 'party-1',
+      request_id: input.request_id, idempotency_key: input.idempotency_key,
+      raw_text: input.raw_text });
+    let expired = false, commitCalls = 0, replayCalls = 0;
+    const turnBudget = { assertWithinDeadline() {
+      if (!expired) return;
+      const error = new Error('Gameplay LLM turn budget is exhausted.');
+      error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
+      throw error;
+    } };
+    const repository = {
+      async loadPhase2Replay() { return { input_digest: inputDigest,
+        state: phase9State(), public_result: {},
+        screen: { screen_status: 'committed_presentation_pending' } }; },
+      async commitPhase10FollowUp() { commitCalls += 1; },
+      async replayPhase2Turn() { replayCalls += 1; },
+      async loadPhase2State() { throw new Error('unexpected load'); },
+      async commitPhase2Turn() { throw new Error('unexpected commit'); },
+      async loadPhase2VisibleContext() { throw new Error('unexpected load'); },
+      async persistPhase2Screen() { throw new Error('unexpected screen'); }
+    };
+    const model = async () => ({});
+    const runtime = createLowerDvinaTracePhase2Runtime({ repository,
+      semanticResolver: model, turnStepModel: model,
+      playerConversationModel: model, npcSemanticModel: model,
+      npcAutonomousModel: model, npcCombatModel: model,
+      narrator: { run: model }, randomSourceFactory: () => ({}),
+      decisionSecret: 'secret', llmTurnBudget: turnBudget,
+      bundleLoader: async () => {
+        await Promise.resolve();
+        expired = true;
+        return bundle;
+      } });
+
+    await assert.rejects(runtime.submitTurn({ partyId: 'party-1', input }),
+      { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+    assert.equal(commitCalls, 0);
+    assert.equal(replayCalls, 0);
   });
 
 function phase9State() {

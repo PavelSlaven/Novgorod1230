@@ -661,14 +661,29 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
       const abort = abortPattern ? (route) => route.abort() : null;
       if (abort) await page.route(abortPattern, abort);
       await page.evaluate(() => { window.__sceneDrawImages = []; });
-      await page.fill('[data-turn-form] textarea', `visual:${name}:${emotion}`);
-      await page.click('[data-turn-form] button[type="submit"]');
-      await page.waitForSelector('[data-screen-schema="turn_screen"]');
-      await page.waitForFunction(() => {
+      await page.locator('[data-landscape-canvas]').evaluate((canvas) => {
+        canvas.__e2ePreviousScene = true;
+      });
+      const rawText = `visual:${name}:${emotion}`;
+      await page.fill('[data-turn-form] textarea', rawText);
+      await Promise.all([
+        page.waitForResponse((response) => response.request().method() === 'POST'
+          && /\/api\/v1\/parties\/[^/]+\/turns$/u.test(
+            new URL(response.url()).pathname)
+          && response.request().postData() === JSON.stringify({ raw_text: rawText })),
+        page.click('[data-turn-form] button[type="submit"]')
+      ]);
+      await page.waitForFunction(({ weather, dayPart }) => {
+        const screen = document.querySelector('[data-screen-schema="turn_screen"]');
+        const landscape = document.querySelector('[data-landscape]');
         const canvas = document.querySelector('[data-landscape-canvas]');
-        if (!canvas) return false;
+        if (!screen || !landscape?.classList.contains(`landscape--weather-${weather}`)
+          || !landscape.classList.contains(`landscape--day-${dayPart}`)
+          || !canvas || canvas.__e2ePreviousScene) return false;
         const pixels = canvas.getContext('2d').getImageData(0, 0, 32, 32).data;
         return [...pixels].some((value, index) => index % 4 === 3 && value > 0);
+      }, {
+        weather: visual.weather ?? 'clear', dayPart: visual.day_part ?? 'day'
       });
       if (abort) await page.unroute(abortPattern, abort);
 

@@ -19,10 +19,15 @@ test('pipeline can skip artifact retention for transient workflows', async () =>
       status: 'approved', artifact: { value: 1 }
     }) }],
     input: null,
-    registry: null
+    transient: true
   });
   assert.equal(result.status, 'approved');
   assert.equal(result.registry, null);
+});
+
+test('pipeline requires explicit transient mode when artifact retention is absent', async () => {
+  await assert.rejects(() => runStageGraph({ stages: [], input: null,
+    registry: null }), /transient/u);
 });
 
 test('registry rejects overwrite', () => {

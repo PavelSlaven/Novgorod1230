@@ -15,7 +15,6 @@ import {
 } from './new-game-role-defaults.js';
 export {NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS, NewGameTierIds, NewGameVisibleContextRoles };
 
-const DEFAULT_DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
 
 export const LLM_SCOPES = Object.freeze({
@@ -119,25 +118,15 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
   },
   [TurnRuntimeRoles.ORCHESTRATOR]: {
-    envPrefix: 'TURN_ORCHESTRATOR', model: 'deepseek-v4-pro', thinking: 'enabled', reasoningEffort: 'max',
+    envPrefix: 'TURN_ORCHESTRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 12000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_mode_resolution', parseJson: true,
     targetInputTokens: 120000, comfortableInputTokens: 250000, hardInputLimitTokens: 700000, reserveOutputTokens: 12000, reserveRepairTokens: 50000
   },
   [TurnRuntimeRoles.AUDITOR]: {
-    envPrefix: 'TURN_AUDITOR',
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
-    responseFormat: 'json_object',
-    maxTokens: 8000,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'turn_resolution_audit',
-    parseJson: true,
-    targetInputTokens: 100000,
-    comfortableInputTokens: 220000,
-    hardInputLimitTokens: 600000,
-    reserveOutputTokens: 8000,
-    reserveRepairTokens: 30000
+    envPrefix: 'TURN_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 8000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'turn_resolution_audit', parseJson: true, targetInputTokens: 100000, comfortableInputTokens: 220000,
+    hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000
   },
   [TurnRuntimeRoles.FORMAT_REPAIRER]: {
     envPrefix: 'TURN_FORMAT_REPAIR',
@@ -158,9 +147,9 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
     envPrefix: 'TURN_STEP_PLANNER',
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
     responseFormat: 'json_object',
     maxTokens: 8000,
     outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
@@ -324,7 +313,7 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
     apiKey: provider?.apiKey ?? (shared.enabled ? shared.apiKey : null),
     baseUrl: provider?.baseUrl ?? (shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
     requestUrl: provider?.requestUrl ?? normalizeRequestUrl(shared.enabled ? shared.baseUrl : normalizeBaseUrl(env.DEEPSEEK_BASE_URL)),
-    requestTimeoutMs: provider?.requestTimeoutMs ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`]) ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? 120000,
+    requestTimeoutMs: provider?.requestTimeoutMs ?? readPositiveInt(env[`${defaults.envPrefix}_REQUEST_TIMEOUT_MS`]) ?? readPositiveInt(env.DEEPSEEK_REQUEST_TIMEOUT_MS) ?? (scopeKey !== LLM_SCOPES.TURN_RUNTIME ? 120000 : String(roleId).includes('repair') ? 6000 : 10000),
     api: scopeDefaults.api,
     model: provider?.model ?? readRoleModel(defaults, env, shared.model),
     thinking: defaults.thinking ? { type: readText(env[`${defaults.envPrefix}_THINKING`]) || defaults.thinking } : undefined,

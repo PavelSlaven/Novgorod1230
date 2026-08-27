@@ -43,11 +43,12 @@ test('active O1 cutover pins the complete adversarial Stage B corpus', async () 
     eval_contract: contract, outputs
   }), { pass: true, failed_case_ids: [] });
   const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
-  assert.deepEqual(approval.model_identity, describeRoleLlmCall({
+  const { request_timeout_ms, ...identity } = describeRoleLlmCall({
     scope: 'turn_runtime', roleId: 'ordinary_materialization',
     env: { DEEPSEEK_API_KEY: 'identity-only' },
     overrides: { temperature: 0, maxTokens: 6000 }
-  }));
+  });
+  assert.deepEqual(approval.model_identity, identity);
 });
 
 test('Stage B eval catches sensitive materialization hidden behind common fields', async () => {
@@ -187,6 +188,7 @@ test('custom Stage B qualification uses production messages, unique case refs, a
     api_key: null });
   assert.equal(owner.read().mode, 'default');
   assert.equal(calls.length, contract.cases.length);
+  assert.ok(calls.every((call) => call.overrides.requestTimeoutMs === 120000));
   assert.ok(calls.every((call) => call.provider_snapshot.model === 'candidate'));
   const requests = calls.map((call) => JSON.parse(call.messages[1].content));
   assert.equal(new Set(requests.map((request) => request.request_id)).size,

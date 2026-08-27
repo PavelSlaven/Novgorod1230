@@ -68,6 +68,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     turnStepOrdinaryResultPolicy,
     turnStepApprovedOwners,
     turnStepPackingCalculator,
+    turnBudget,
     narrator, randomSourceFactory, randomSource: injectedRandomSource,
     temporalAdvanceOwner,
     decisionSecret, phase3Contracts,
@@ -260,6 +261,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     }),
     partyStore: {
       commit(writePlan) {
+        turnBudget?.assertCanCommit();
         return repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,

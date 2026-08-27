@@ -11,9 +11,11 @@ export async function runStageGraph({ stages, input, services = {}, registry = n
       onEvent?.({ type: 'stage_stopped', stageId: stage.id, result });
       return { status: result?.status ?? 'failed', stage_id: stage.id, result, registry };
     }
-    registry.put(`stage:${stage.id}`, result.artifact, { stageName: stage.name });
+    const record = registry?.put(`stage:${stage.id}`, result.artifact,
+      { stageName: stage.name });
     current = result.artifact;
-    onEvent?.({ type: 'stage_approved', stageId: stage.id, digest: registry.require(`stage:${stage.id}`).digest });
+    onEvent?.({ type: 'stage_approved', stageId: stage.id,
+      digest: record?.digest ?? null });
   }
   return { status: 'approved', artifact: current, registry };
 }

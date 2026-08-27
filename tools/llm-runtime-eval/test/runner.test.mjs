@@ -17,7 +17,10 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   try {
     const { port } = server.address();
-    const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' } });
+    const report = await runFrozenRoleEval({ corpus, runtimeProviderOverride: { compatibility: 'openai_compatible', baseUrl: `http://127.0.0.1:${port}/v1`, model: 'fixture-model' }, metadata: {
+      git: { checkout_sha: 'fixture-sha', dirty: false },
+      corpus: { path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 4 }
+    } });
     assert.equal(report.fixture_count, 21);
     assert.equal(report.aggregates.total.passed, 21);
     assert.equal(report.aggregates.total.errors, 0);
@@ -29,6 +32,17 @@ test('frozen corpus runs through runtime override and reports deterministic aggr
     assert.equal(report.aggregates.total.input_tokens, 42);
     assert.equal(report.aggregates.total.output_tokens, 63);
     assert.ok(report.aggregates.total.p95_ms >= report.aggregates.total.p50_ms);
+    assert.deepEqual(report.metadata.execution, { passes: 1, concurrency: 1 });
+    assert.deepEqual(report.metadata.git, { checkout_sha: 'fixture-sha', dirty: false });
+    assert.deepEqual(report.metadata.corpus, {
+      path: 'data/model-evals/llm-runtime/frozen-role-requests-v1.json', version: 4
+    });
+    assert.deepEqual(report.metadata.role_config_policy.find(({ role_id }) => role_id === 'turn_step_planner'), {
+      scope: 'turn_runtime', role_id: 'turn_step_planner', provider: 'openai_compatible', model: 'fixture-model',
+      request_timeout_ms: 10000, thinking: 'disabled', reasoning_effort: null, max_tokens: 8000,
+      context_budget: { targetInputTokens: 100000, comfortableInputTokens: 220000,
+        hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000 }
+    });
   } finally { await new Promise((resolve) => server.close(resolve)); }
 });
 

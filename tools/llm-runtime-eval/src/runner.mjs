@@ -1,4 +1,5 @@
 import { executeRoleLlmCall } from '@rus/llm-runtime';
+import { resolveLlmExecutionConfig } from '@rus/llm-runtime';
 import { isDeepStrictEqual } from 'node:util';
 import { validateOrdinaryMaterializationPlanV1 } from '@rus/contracts';
 import { resolveActionProducedCombatWeaponClass } from '@rus/combat-health';
@@ -10,11 +11,12 @@ import {
 } from '@rus/npc-runtime';
 import { validateTurnStepPlan, validateWorldProcessStepPlan } from '@rus/turn';
 
-export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env = process.env } = {}) {
+export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env = process.env, metadata = {} } = {}) {
   const fixtures = Array.isArray(corpus?.fixtures) ? corpus.fixtures : [];
   if (corpus?.schema !== 'rus.llm_runtime_frozen_role_requests.v1' || !fixtures.length) {
     throw new TypeError('Invalid frozen role eval corpus.');
   }
+  const role_config_policy = appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride });
   const results = [];
   for (const fixture of fixtures) {
     const call = await executeRoleLlmCall({ scope: fixture.scope, roleId: fixture.role_id,
@@ -22,7 +24,23 @@ export async function runFrozenRoleEval({ corpus, runtimeProviderOverride, env =
     results.push(scoreFixture(fixture, call));
   }
   return { schema: 'rus.llm_runtime_eval_report.v1', corpus_version: corpus.corpus_version,
+    metadata: { execution: { passes: 1, concurrency: 1 }, ...metadata, role_config_policy },
     fixture_count: results.length, results, aggregates: aggregate(results) };
+}
+
+function appliedRoleConfigPolicy(fixtures, { env, runtimeProviderOverride }) {
+  return [...new Map(fixtures.map(({ scope, role_id }) => [`${scope}:${role_id}`, { scope, role_id }])).values()]
+    .map(({ scope, role_id }) => {
+      const resolution = resolveLlmExecutionConfig({ scope, roleId: role_id, env, runtimeProviderOverride });
+      if (!resolution.enabled) return { scope, role_id, status: 'unavailable', reason: resolution.reason };
+      const { config } = resolution;
+      return {
+        scope, role_id, provider: config.provider, model: config.model,
+        request_timeout_ms: config.requestTimeoutMs, thinking: config.thinking?.type ?? null,
+        reasoning_effort: config.reasoningEffort ?? null, max_tokens: config.maxTokens,
+        context_budget: config.contextBudget
+      };
+    });
 }
 
 function scoreFixture(fixture, call) {

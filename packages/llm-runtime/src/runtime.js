@@ -11,6 +11,7 @@ export function describeRoleLlmCall({ scope, roleId = null, tierId = null,
   const config = resolution.config;
   return Object.freeze({ provider: config.provider, model: config.model,
     scope: config.scope, role_id: config.role_id,
+    request_timeout_ms: config.requestTimeoutMs,
     config_hash: hashConfig(config) });
 }
 
@@ -234,6 +235,7 @@ function buildResult(base, telemetry) {
   };
 
   telemetry?.onCall?.({
+    started_at_ms: base.startedAt,
     provider: result.provider,
     providerMode: result.provider,
     model: result.model,

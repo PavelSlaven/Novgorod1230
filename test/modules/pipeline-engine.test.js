@@ -13,6 +13,18 @@ test('pipeline stores approved immutable artifacts', async () => {
   assert.equal(result.registry.has('stage:1'), true);
 });
 
+test('pipeline can skip artifact retention for transient workflows', async () => {
+  const result = await runStageGraph({
+    stages: [{ id: 1, name: 'one', execute: async () => ({
+      status: 'approved', artifact: { value: 1 }
+    }) }],
+    input: null,
+    registry: null
+  });
+  assert.equal(result.status, 'approved');
+  assert.equal(result.registry, null);
+});
+
 test('registry rejects overwrite', () => {
   const registry = new ArtifactRegistry();
   registry.put('x', { value: 1 });

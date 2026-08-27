@@ -53,6 +53,7 @@ import { serverError } from '../../errors.js';
 import { runLowerDvinaTraceNpcConversationExchange } from
   '../lower-dvina-trace-npc-initiated-conversation.js';
 import { createLlmDiagnostics } from '../llm-diagnostics.js';
+import { createLlmTurnBudget } from '../llm-turn-budget.js';
 
 export function createTraceTurnRuntime({
   partyPool, committer, env, config, ordinaryMaterializationProfile,
@@ -71,10 +72,12 @@ export function createTraceTurnRuntime({
         { status: 503 });
     }
   });
+  const turnBudget = config.llmTurnBudget ?? config.llmDiagnostics?.turnBudget
+    ?? createLlmTurnBudget();
   const llmDiagnostics = config.llmDiagnostics
-    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null });
+    ?? createLlmDiagnostics({ telemetry: config.telemetry ?? null, turnBudget });
   const roleRunner = createProductionLlmRoleRunner({
-    env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null
+    env, telemetry: llmDiagnostics.telemetry, settings: config.llmSettings ?? null, turnBudget
   });
   const narrationService = createLowerDvinaTraceNarrationService({ roleRunner });
   const ordinaryMaterializationModel = createOrdinaryMaterializationModel({
@@ -187,6 +190,7 @@ export function createTraceTurnRuntime({
     temporalAdvanceOwner,
     turnStepPackingCalculator: calculatePackingSlots,
     decisionSecret,
+    llmTurnBudget: turnBudget,
     llmDiagnostics
   });
 }

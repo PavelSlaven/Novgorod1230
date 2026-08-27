@@ -26,9 +26,9 @@ export function conversationTurnRoleDefaults(contractModes) {
 function semanticRole(envPrefix, expectedSchema, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
     responseFormat: 'json_object',
     maxTokens: 8000,
     outputContractMode,

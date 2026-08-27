@@ -6,6 +6,7 @@ export { createInMemorySessionStore } from './adapters/session-store.js';
 export { createLlmRoleRunnerAdapter } from './adapters/llm-role-runner.js';
 export { createLlmSettingsOwner, normalizeLlmSettingsCandidate } from './runtime/llm-settings.js';
 export { createLlmDiagnostics, buildLlmTurnReport } from './runtime/llm-diagnostics.js';
+export { createLlmTurnBudget } from './runtime/llm-turn-budget.js';
 export { createWorldBaseAdapter } from './adapters/world-base.js';
 export { createPartyStoreAdapter } from './adapters/party-store.js';
 export { createNewGameWorkflowAdapter, createTurnWorkflowAdapter } from './adapters/workflows.js';

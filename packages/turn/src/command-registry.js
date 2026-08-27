@@ -64,14 +64,15 @@ export async function createTurnAvailableActionSet({
   const included = [];
   const handlers = new Map();
   const availabilityDecisions = new Map();
+  const availabilityContext = deepFreeze({
+    committed_state: structuredClone(committedState),
+    actor_id: actorId,
+    policy_pins: structuredClone(policyPins),
+    action_set_evaluation: true
+  });
   for (const command of registry.registered()) {
     assertApprovedRecordBinding(command, policyPins);
-    const availability = await command.availability(deepFreeze({
-      committed_state: structuredClone(committedState),
-      actor_id: actorId,
-      policy_pins: structuredClone(policyPins),
-      action_set_evaluation: true
-    }));
+    const availability = await command.availability(availabilityContext);
     if (availability?.can_attempt !== true || availability.status === 'blocked') continue;
     const option = {
       option_id: command.option_id,

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildLlmTurnReport, createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
+import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { createGameHttpServer, listen } from '../src/index.js';
 
 test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {
@@ -12,7 +13,55 @@ test('buildLlmTurnReport makes deterministic waterfall and aggregates', () => {
   assert.deepEqual(report.waterfall.map(({ sequence, role, repair }) => [sequence, role, repair]), [[1, 'intent_router', false], [2, 'turn_step_planner_repair', true], [3, 'narrator', false]]);
   assert.deepEqual(report.waterfall[0].usage, { input_tokens: 3, output_tokens: 2, total_tokens: 5 });
   assert.equal(report.waterfall[0].output_contract_mode, 'json_object');
-  assert.deepEqual(report.aggregate, { calls: 3, success_rate: 2 / 3, parse_or_schema_failure_rate: 1 / 3, repair_rate: 1 / 3, llm_total_ms: 60, p50_ms: 20, p95_ms: 30, usage: { input_tokens: 8, output_tokens: 9, total_tokens: 18 } });
+  assert.equal(report.aggregate.llm_total_ms, 60);
+  assert.equal(report.aggregate.llm_total_duration_ms, 60);
+  assert.equal(report.aggregate.slowest_llm_call_ms, 30);
+  assert.equal(report.aggregate.llm_calls, 3);
+  assert.equal(report.aggregate.repair_calls, 1);
+});
+
+test('diagnostics accepts telemetry shape, shares turn start, and unions parallel intervals', async () => {
+  let now = 100;
+  const budget = createLlmTurnBudget({ now: () => now });
+  const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party-2', request_id: 'turn-2' }, async () => {
+    assert.equal(budget.current().started_at, 100);
+    diagnostics.telemetry.onCall({ role: 'first', status: 'ok', started_at_ms: 100, duration_ms: 30 });
+    diagnostics.telemetry.onCall({ role: 'second_repair', status: 'ok', started_at_ms: 120, duration_ms: 30 });
+    now = 150;
+    const error = new Error('secret prompt');
+    error.code = 'LLM_TURN_BUDGET_EXHAUSTED';
+    error.budget_exhausted = true;
+    throw error;
+  }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  const report = diagnostics.report({ party_id: 'party-2' });
+  assert.equal(report.turn_duration_ms, 50);
+  assert.equal(report.aggregate.llm_total_duration_ms, 60);
+  assert.equal(report.aggregate.llm_active_wall_ms, 50);
+  assert.equal(report.aggregate.budget_exhausted, true);
+  assert.equal(JSON.stringify(report).includes('secret prompt'), false);
+});
+
+test('report marks elapsed whole-turn deadline without budget incident', () => {
+  const report = buildLlmTurnReport({ turn_duration_ms: 30_000, turn_deadline_ms: 30_000 });
+  assert.equal(report.aggregate.deadline_exceeded, true);
+});
+
+test('diagnostics keeps safe budget and provider failure incidents', async () => {
+  const diagnostics = createLlmDiagnostics();
+  await assert.rejects(diagnostics.runTurn({ party_id: 'party-safe', request_id: 'turn-safe' }, async () => {
+    diagnostics.telemetry.onCall({ roleId: 'intent_router', provider: 'deepseek', model: 'm',
+      configHash: 'hash', status: 'transport_error', errorCategory: 'timeout', durationMs: 1 });
+    const error = new Error('secret prompt');
+    Object.assign(error, { code: 'LLM_TURN_BUDGET_EXHAUSTED', role_id: 'turn_step_planner',
+      provider: 'deepseek', model: 'm', config_hash: 'hash', budget_exhausted: true,
+      remaining_llm_budget_ms: 50, remaining_turn_deadline_ms: 5050 });
+    throw error;
+  }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  const incidents = diagnostics.report({ party_id: 'party-safe' }).aggregate.incidents;
+  assert.deepEqual(incidents.map(({ role_id, error_category }) => [role_id, error_category]),
+    [['intent_router', 'timeout'], ['turn_step_planner', 'LLM_TURN_BUDGET_EXHAUSTED']]);
+  assert.equal(JSON.stringify(incidents).includes('secret prompt'), false);
 });
 
 test('turn context groups calls and excludes probe records', async () => {

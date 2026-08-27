@@ -50,6 +50,9 @@ function fixture({
   localFireProfile = null,
   createTurnStepWorldProcessResolver = null,
   worldBaseReferenceSnapshot = undefined,
+  llmDiagnostics = null,
+  beforeSemanticResolve = null,
+  beforeRandomSource = null,
 } = {}) {
   const partyId = 'party:trace-phase-2';
   const instance = phase1AInstance(partyId, materializationBundle,
@@ -495,6 +498,7 @@ function fixture({
     now: () => '2026-07-30T08:00:00.000Z',
     semanticResolver: async (input) => {
       semanticInput = structuredClone(input);
+      beforeSemanticResolve?.(input);
       if (semantic === 'unknown' || semantic === 'ambiguous') {
         return {
           status: 'unknown',
@@ -544,6 +548,7 @@ function fixture({
       };
     },
     randomSourceFactory: () => {
+      beforeRandomSource?.();
       const source = createSeededRandomSource('lower-dvina-trace-phase-2-acceptance');
       return {
         next() {
@@ -571,6 +576,7 @@ function fixture({
         return approvedNarration(input.request_id);
       },
     },
+    ...(llmDiagnostics ? { llmDiagnostics } : {}),
   });
   return {
     bodyUpdateCount: () => bodyUpdateCount,

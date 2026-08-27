@@ -31,8 +31,8 @@ export function combatTurnRoleDefaults(contractModes) {
 
 function semanticRole(envPrefix, outputContractMode) {
   return {
-    envPrefix, model: 'deepseek-v4-pro', thinking: 'enabled',
-    reasoningEffort: 'high', responseFormat: 'json_object', maxTokens: 8000,
+    envPrefix, model: 'deepseek-v4-flash', thinking: 'disabled',
+    reasoningEffort: null, responseFormat: 'json_object', maxTokens: 8000,
     outputContractMode, expectedSchema: 'npc_combat_intent_plan_v1',
     parseJson: true, targetInputTokens: 100000, comfortableInputTokens: 220000,
     hardInputLimitTokens: 600000, reserveOutputTokens: 8000,

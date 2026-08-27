@@ -26,6 +26,7 @@ and adds no second transaction owner.
 - Экспериментально владеет `POST /api/v1/portrait-spec` и одним server-side DeepSeek-вызовом, который преобразует свободный текст только в валидный `portrait_spec_v1`, включая перевод названий одежды в закрытые конструктивные категории neckline/sleeve/outer/fabric/trim.
 - Владеет одним server-side in-memory LLM settings owner: `GET/PUT /api/v1/llm-settings` и `POST /api/v1/llm-settings/test`. Custom OpenAI-compatible base URL/model/key применяются атомарно к новым calls через `@rus/llm-runtime`; API key не входит в read model, persistence, save/replay или telemetry gameplay.
 - В developer mode публикует transient `GET /api/v1/developer/llm-turn-reports/:partyId` (optional `/:requestId`): latest per-party waterfall и aggregate LLM calls, коррелированные существующей парой party/request ID. In-memory retention bounded; report не содержит prompts, hidden state, key или Authorization; probe calls исключены.
+- Владеет одним logical context для `submitTurn`: 30 с на весь ход, из них до 25 с на критический LLM path и 5 с детерминированного резерва. Role runner применяет одинаковый clamp к default и custom provider; autonomous retry остаётся в том же context и не получает новый budget. До provider call исчерпанный budget даёт controlled `LLM_TURN_BUDGET_EXHAUSTED`. Diagnostics показывает union wall time параллельных calls и их sum duration; `Promise.race`, detached work и обход общего context запрещены. Это gameplay deadline, не 120-секундный transport safeguard для admin/eval и других non-gameplay calls.
 
 ## Не владеет
 
@@ -260,7 +261,7 @@ outcome воды вне SQL transaction.
 
 ## Ошибки, зависимости и effects
 
-Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed.
+Uses `pg` only under `src/infrastructure/postgres`; `GameServerError`/server error envelopes, startup probes and adapter failures are explicit. This is the persistence and external-I/O boundary: owns pool/transaction/HTTP/provider calls and rejects invalid schema, hidden public payload, stale knowledge artifacts and unqualified targets. No deterministic runtime fallback is allowed. P16 factual commit remains atomic; post-commit narration failure is presentation handling, not a rollback promise for an already committed turn.
 
 ## Production activation и тесты
 

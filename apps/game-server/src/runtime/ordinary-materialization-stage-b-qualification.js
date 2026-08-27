@@ -15,7 +15,7 @@ export function createOrdinaryMaterializationStageBQualifier({ roleRunner,
   }
   return async (candidate) => {
     const invocation = { scope: 'turn_runtime', role_id: 'ordinary_materialization',
-      overrides: { temperature: 0, maxTokens: 6000 }, provider_snapshot: candidate };
+      overrides: { temperature: 0, maxTokens: 6000, requestTimeoutMs: 120000 }, provider_snapshot: candidate };
     const identity = roleRunner.describe(invocation);
     try {
       const responses = await Promise.all(evalContract.cases.map(async (probe) => {

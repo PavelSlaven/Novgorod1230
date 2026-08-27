@@ -11,9 +11,9 @@ const customProvider = {
   model: 'local-model'
 };
 
-test('request timeout uses positive DEEPSEEK_REQUEST_TIMEOUT_MS or its 120 s default', () => {
+test('turn runtime defaults to 10 s, while invalid or explicit environment values keep fallback precedence', () => {
   for (const [value, expected] of [
-    [undefined, 120000], ['', 120000], ['invalid', 120000], ['0', 120000], ['-1', 120000], ['1.5', 120000], ['60000', 60000]
+    [undefined, 10000], ['', 10000], ['invalid', 10000], ['0', 10000], ['-1', 10000], ['1.5', 10000], ['60000', 60000]
   ]) {
     const resolution = resolveLlmExecutionConfig({
       scope: 'turn_runtime',
@@ -22,6 +22,13 @@ test('request timeout uses positive DEEPSEEK_REQUEST_TIMEOUT_MS or its 120 s def
     });
     assert.equal(resolution.config.requestTimeoutMs, expected);
   }
+});
+
+test('non-turn scopes retain 120 s transport fallback', () => {
+  const resolution = resolveLlmExecutionConfig({
+    scope: 'new_game', tierId: 'tier_1_fast', env: { DEEPSEEK_API_KEY: 'test-key' }
+  });
+  assert.equal(resolution.config.requestTimeoutMs, 120000);
 });
 
 test('aborted request reports deterministic retryable timeout', async () => {
@@ -85,6 +92,31 @@ test('config hash retains DeepSeek base endpoint and canonicalizes custom reques
       ...customProvider, baseUrl: 'http://127.0.0.1:8000/v1/chat/completions'
     }
   }).config_hash);
+});
+
+test('call description exposes resolved timeout and telemetry exposes redacted start time', async () => {
+  const description = describeRoleLlmCall({
+    scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' }
+  });
+  assert.equal(description.request_timeout_ms, 10000);
+
+  const originalFetch = globalThis.fetch;
+  let call;
+  globalThis.fetch = async () => ({
+    ok: true, json: async () => ({ choices: [{ message: { content: '{}' } }] })
+  });
+  try {
+    await executeRoleLlmCall({
+      scope: 'turn_runtime', roleId, messages: [{ role: 'user', content: 'secret prompt' }],
+      env: { DEEPSEEK_API_KEY: 'secret-key' }, telemetry: { onCall: (value) => { call = value; } }
+    });
+    assert.equal(Number.isFinite(call.started_at_ms), true);
+    assert.equal(call.started_at_ms > 0, true);
+    assert.equal(JSON.stringify(call).includes('secret'), false);
+    assert.equal(JSON.stringify(call).includes('prompt'), false);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test('generic provider omits empty authorization and DeepSeek-only payload fields', async () => {
@@ -154,6 +186,10 @@ test('DeepSeek retains extensions and timeout precedence is per-call, provider, 
     overrides: { requestTimeoutMs: 400 }
   });
   assert.equal(defaultResolution.config.requestTimeoutMs, 400);
+  assert.equal(resolveLlmExecutionConfig({
+    scope: 'turn_runtime', roleId, env: { DEEPSEEK_API_KEY: 'test-key' },
+    overrides: { requestTimeoutMs: 500 }
+  }).config.requestTimeoutMs, 500);
 
   const originalFetch = globalThis.fetch;
   let payload;

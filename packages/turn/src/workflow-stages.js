@@ -212,21 +212,22 @@ function approved(artifact) {
 }
 
 function next(state, key, value, context) {
-  context.setStage(stageNameForKey(key), value);
+  const carriesCapability = ['actionSet', 'modeResolution', 'writePlan']
+    .includes(key);
+  const appended = deepFreeze(carriesCapability ? value : structuredClone(value));
+  context.setStage(stageNameForKey(key), appended, { trustedFrozen: true });
   // The action set, semantic mode and write plan carry in-process capability
   // seals. Cloning deliberately strips the corresponding validation capability.
-  const serializable = Object.fromEntries(
+  const previous = Object.fromEntries(
     Object.entries(state).filter(([name]) =>
       !['actionSet', 'modeResolution', 'writePlan'].includes(name))
   );
-  return deepFreeze({
-    ...structuredClone(serializable),
+  return Object.freeze({
+    ...previous,
     ...(state.actionSet ? { actionSet: state.actionSet } : {}),
     ...(state.modeResolution ? { modeResolution: state.modeResolution } : {}),
     ...(state.writePlan ? { writePlan: state.writePlan } : {}),
-    [key]: ['actionSet', 'modeResolution', 'writePlan'].includes(key)
-      ? value
-      : structuredClone(value)
+    [key]: appended
   });
 }
 

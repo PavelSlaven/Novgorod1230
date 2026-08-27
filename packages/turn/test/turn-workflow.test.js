@@ -15,6 +15,9 @@ import {
   createLegacyTurnCompatibilityAdapter,
   createPartyTurnRuntimeState
 } from '../src/compat/index.js';
+import { createTurnWorkflowContext } from '../src/context.js';
+import { createTurnStageDefinitions } from '../src/workflow-stages.js';
+import { deepFreeze } from '@rus/kernel';
 import {
   createServices,
   input,
@@ -24,6 +27,44 @@ import {
 test('turn stage plan is exact and declarative', () => {
   assert.equal(validateTurnWorkflowStagePlan(TURN_WORKFLOW_STAGE_PLAN), TURN_WORKFLOW_STAGE_PLAN);
   assert.deepEqual(TURN_WORKFLOW_STAGE_PLAN.map((stage) => stage.id), TURN_WORKFLOW_STAGE_IDS);
+});
+
+test('turn stages reuse frozen prior artifacts while checkpointing new output', async () => {
+  const { services } = createServices();
+  const rawInput = input();
+  const context = createTurnWorkflowContext({
+    partyId: rawInput.party_id,
+    requestId: rawInput.request_id,
+    turnNumber: rawInput.turn_number,
+    now: '2026-07-12T10:00:00.000Z'
+  });
+  const [normalize, load] = createTurnStageDefinitions({
+    context, services, rawInput, now: '2026-07-12T10:00:00.000Z'
+  });
+  const normalized = (await normalize.execute({ input: deepFreeze({
+    version: 1, schema: 'turn_workflow_state'
+  }) })).artifact;
+  const loaded = (await load.execute({ input: normalized })).artifact;
+  assert.equal(Object.isFrozen(loaded.playerInput), true);
+  assert.equal(loaded.playerInput, normalized.playerInput);
+  assert.notEqual(context.getStage('normalize_intent'), normalized.playerInput);
+  assert.deepEqual(context.snapshot().stages.normalize_intent,
+    normalized.playerInput);
+});
+
+test('turn context isolates default output and clones trusted snapshots', () => {
+  const context = createTurnWorkflowContext();
+  const mutable = { nested: { value: 1 } };
+  context.setStage('default', mutable);
+  mutable.nested.value = 2;
+  assert.equal(context.getStage('default').nested.value, 1);
+  assert.throws(() => context.setStage('bad', {}, { trustedFrozen: true }),
+    /trustedFrozen/u);
+  const frozen = deepFreeze({ nested: { value: 3 } });
+  context.setStage('trusted', frozen, { trustedFrozen: true });
+  const snapshot = context.snapshot();
+  assert.notEqual(snapshot.stages.trusted, frozen);
+  assert.deepEqual(snapshot.stages.trusted, frozen);
 });
 
 test('full modular turn runs a code command, approved check, commit and screen projection', async () => {
@@ -120,7 +161,7 @@ test('available action set is committed-state-driven, complete, sorted and raw-t
       }
     },
     availability(context) {
-      seen.push(structuredClone(context));
+      seen.push(context);
       return {
         version: 1,
         schema: 'turn_availability_decision',
@@ -162,6 +203,9 @@ test('available action set is committed-state-driven, complete, sorted and raw-t
   assert.equal(left.options_digest, right.options_digest);
   assert.equal(JSON.stringify(left).includes('culprit'), false);
   assert.equal(seen.every((entry) => !('raw_text' in entry)), true);
+  assert.equal(seen[0], seen[1]);
+  assert.throws(() => { seen[0].committed_state.party_state.state_version = 8; },
+    TypeError);
 });
 
 test('zero regex matches invokes bounded semantic resolver and preserves the approved option_id', async () => {

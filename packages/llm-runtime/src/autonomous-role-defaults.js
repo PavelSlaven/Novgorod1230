@@ -14,9 +14,9 @@ export function autonomousTurnRoleDefaults(contractModes) {
 function semanticRole(envPrefix, outputContractMode) {
   return {
     envPrefix,
-    model: 'deepseek-v4-pro',
-    thinking: 'enabled',
-    reasoningEffort: 'high',
+    model: 'deepseek-v4-flash',
+    thinking: 'disabled',
+    reasoningEffort: null,
     responseFormat: 'json_object',
     maxTokens: 8000,
     outputContractMode,

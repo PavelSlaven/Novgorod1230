@@ -13,6 +13,8 @@
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
+Production `turn_runtime` по умолчанию использует Flash-first роли без heavy reasoning: primary — `deepseek-v4-flash` с выключенным thinking и timeout 10 с, structural repair — тот же Flash с timeout 6 с. Runtime per-call override может только ужесточить эти игровые лимиты в composition owner; он не расширяет их. Transport fallback 120 с относится только к non-gameplay scope, включая admin и eval, а не к gameplay deadline. Custom OpenAI-compatible provider остаётся single-model configuration: transport не подбирает fallback model или provider.
+
 ## Не делает
 
 - не пишет prompts доменных этапов;
@@ -40,7 +42,7 @@ Domain modules, apps, legacy runtime, БД и UI.
 
 ## Инварианты
 
-Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ.
+Provider/model настройки выбираются только через role config; transport не сочиняет отсутствующий смысловой ответ и не создаёт fallback chain. Gameplay timeout — это роль/turn policy внешнего runtime owner, не общий 120-секундный transport safeguard.
 
 ## Ошибки
 

@@ -8,8 +8,12 @@ export function createTurnWorkflowContext({ requestId, partyId, turnNumber, now,
     partyId: text(partyId) || null,
     turnNumber: Number(turnNumber) || 0,
     now: text(now) || new Date().toISOString(),
-    setStage(stageId, output) {
-      stages.set(String(stageId), structuredClone(output));
+    setStage(stageId, output, { trustedFrozen = false } = {}) {
+      if (trustedFrozen && !Object.isFrozen(output)) {
+        throw new TypeError('trustedFrozen stage output must be frozen.');
+      }
+      stages.set(String(stageId), trustedFrozen
+        ? output : structuredClone(output));
       events.push({ type: 'stage_completed', stage_id: String(stageId) });
       return output;
     },

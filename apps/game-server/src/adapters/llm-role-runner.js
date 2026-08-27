@@ -1,6 +1,7 @@
 import { describeRoleLlmCall, executeRoleLlmCall } from '@rus/llm-runtime';
+import { isRepairRole } from '../runtime/llm-turn-budget.js';
 
-export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null, settings = null, execute = executeRoleLlmCall } = {}) {
+export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null, settings = null, turnBudget = null, execute = executeRoleLlmCall } = {}) {
   if (typeof execute !== 'function') throw new TypeError('execute must be a function.');
   if (settings != null && typeof settings.providerSnapshot !== 'function') throw new TypeError('settings.providerSnapshot is required.');
   return Object.freeze({
@@ -18,12 +19,26 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       if (!Array.isArray(messages)) throw new TypeError('messages must be an array.');
       const runtimeProviderOverride = toProviderOverride(
         provider_snapshot ?? settings?.providerSnapshot());
+      const description = describeRoleLlmCall({ scope, roleId: role_id, tierId: tier_id,
+        overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
+      const requestedTimeoutMs = description?.request_timeout_ms
+        ?? description?.config?.requestTimeoutMs ?? overrides?.requestTimeoutMs ?? null;
+      let requestTimeoutMs;
+      try {
+        requestTimeoutMs = turnBudget?.clamp({ requestedTimeoutMs,
+          repair: isRepairRole(role_id, description?.contract) });
+      } catch (error) {
+        Object.assign(error, safeBudgetIdentity(description, role_id));
+        throw error;
+      }
+      const effectiveOverrides = requestTimeoutMs == null ? overrides
+        : { ...(overrides ?? {}), requestTimeoutMs };
       const result = await execute({
         scope,
         roleId: role_id,
         tierId: tier_id,
         messages,
-        overrides,
+        overrides: effectiveOverrides,
         ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}),
         env,
         telemetry
@@ -56,7 +71,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
       const result = await execute({
         scope: 'turn_runtime', roleId: 'intent_router',
         messages: [{ role: 'user', content: 'Reply with {}.' }],
-        overrides: { maxTokens: 16, temperature: 0 }, runtimeProviderOverride,
+        overrides: { maxTokens: 16, temperature: 0, requestTimeoutMs: 120000 }, runtimeProviderOverride,
         telemetry: probeTelemetry(telemetry)
       });
       return Object.freeze({
@@ -76,4 +91,12 @@ function toProviderOverride(snapshot) {
 function probeTelemetry(telemetry) {
   if (typeof telemetry?.onCall !== 'function') return telemetry;
   return Object.freeze({ onCall(record) { telemetry.onCall({ ...record, call_type: 'probe' }); } });
+}
+function safeBudgetIdentity(description, roleId) {
+  return {
+    role_id: String(description?.role_id ?? roleId ?? '').trim() || null,
+    provider: String(description?.provider ?? '').trim() || null,
+    model: String(description?.model ?? '').trim() || null,
+    config_hash: String(description?.config_hash ?? '').trim() || null,
+  };
 }

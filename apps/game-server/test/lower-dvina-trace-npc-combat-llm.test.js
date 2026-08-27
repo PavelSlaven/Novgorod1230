@@ -15,4 +15,19 @@ test('combat model uses the registered decider and repair roles', async () => {
     validation_errors: ['invalid'] } }), output);
   assert.equal(calls[0].role_id, 'npc_combat_decider');
   assert.equal(calls[1].role_id, 'npc_combat_decider_format_repair');
+  for (const call of calls) {
+    const prompt = call.messages[0].content;
+    for (const phrase of [
+      'Use this complete JSON shape:',
+      '"schema":"npc_combat_intent_plan_v1"',
+      '"npc_ref":{"entity_kind":"npc","entity_id":"<copy request.npc_ref.entity_id>"}',
+      '"op":"set_combat_intent"',
+      '"target_refs":[]',
+      '"protected_refs":[]',
+      '"scope_ref":null',
+      '"destination_ref":null',
+      'Copy intent_kind, force_limit, risk_posture,',
+      'candidate sets; never invent, rename, or combine closed values/refs.'
+    ]) assert.equal(prompt.includes(phrase), true, phrase);
+  }
 });

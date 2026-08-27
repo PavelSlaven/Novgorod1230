@@ -1,10 +1,22 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { requestTurnStepPlan, validateTurnStepPlan } from '@rus/turn';
+import {
+  requestTurnStepPlan,
+  validateTurnStepPlan,
+  validateWorldProcessStepPlan
+} from '@rus/turn';
+import {
+  validateConversationContributionPlan,
+  validatePlayerConversationContributionPlan
+} from '@rus/npc-runtime';
 import {
   createLowerDvinaTraceNarrationService,
+  createLowerDvinaTraceNpcSemanticModel,
+  createLowerDvinaTracePlayerConversationModel,
   createLowerDvinaTraceTurnStepModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { createLowerDvinaTraceWorldProcessStepModel } from
+  '../src/runtime/lower-dvina-trace-world-process-llm.js';
 
 function request(overrides = {}) {
   return {
@@ -60,12 +72,10 @@ test('turn step model sends the validated request to the isolated planner role',
     'narration',
     'NPC decision',
     'Delegate movement',
-    'A general look around at already visible surroundings is direct',
-    'semantic activity moment/none',
+    'A general look around already visible surroundings uses the mapped',
+    'achieved direct result',
     'Focused inspect or search for hidden or new details uses discovery',
-    'impossible high jump',
-    'reality_limited real human jump',
-    'no bird-eye view',
+    'A reality_limited physical attempt uses the mapped moderate effort',
     'absent spaceship is make_believe',
     'create no spaceship or other entity',
     'do not move the actor'
@@ -99,6 +109,180 @@ test('turn step planner prompt supplies current complete plan shape', async () =
   assert.match(prompt, /Do not use obsolete keys interpretation\.actor_id/u);
 });
 
+test('turn step planner prompt maps grounded and visible-look contracts',
+  async () => {
+    let prompt;
+    const model = createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      } }
+    });
+    await model(request());
+    const mappings = JSON.parse(prompt.match(
+      /Use these mappings[^\n]*:\n(\{[^\n]+\})/u
+    )[1]);
+    assert.deepEqual(mappings.reality_limited_physical_attempt, {
+      interpretation: { adaptation: 'reality_limited' },
+      resolution: 'direct', goal_result: 'not_achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'moderate' },
+      operations: [], check: null
+    });
+    assert.deepEqual(mappings.visible_general_look, {
+      interpretation: { adaptation: 'literal' },
+      resolution: 'direct', goal_result: 'achieved',
+      activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+      operations: [], check: null
+    });
+    assert.deepEqual(mappings.spatial_grounded_look, {
+      resolution: 'domain_request', goal_result: 'pending',
+      activity: { owner: 'domain', duration_class: null, effort: null },
+      operations: [{ op: 'request_discovery',
+        actor_ref: '<copy current actor ref from request>',
+        discovery_kind: 'look',
+        target_refs: ['<copy spatial_semantic.position_ref from request>'],
+        query: '<brief look query>' }],
+      check: null
+    });
+    assert.match(prompt, /use only request or operation-contract enum values/u);
+    assert.match(prompt, /do not substitute or invent refs/u);
+  });
+
+test('conversation prompts supply complete shapes and request-bound mappings',
+  async () => {
+    const calls = [];
+    const roleRunner = { async run(call) {
+      calls.push(call);
+      return { output: {} };
+    } };
+    await createLowerDvinaTracePlayerConversationModel({ roleRunner })({});
+    await createLowerDvinaTraceNpcSemanticModel({ roleRunner })({});
+
+    const [player, npc] = calls.map(({ messages }) => messages[0].content);
+    const playerShape = JSON.parse(player.match(
+      /Use this complete JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+    )[1]);
+    const npcShape = JSON.parse(npc.match(
+      /Use this complete JSON shape;[^\n]*:\n(\{[^\n]+\})/u
+    )[1]);
+    const mappings = JSON.parse(player.match(
+      /Use these mappings for matching cases:\n(\{[^\n]+\})/u
+    )[1]);
+    assert.equal(playerShape.schema,
+      'player_conversation_contribution_plan_v1');
+    assert.equal(playerShape.input_mode, '<verbatim or intent_paraphrase>');
+    assert.deepEqual(Object.keys(playerShape), [
+      'schema', 'request_id', 'conversation_id', 'state_version', 'speaker_ref',
+      'input_mode', 'contribution_kind', 'primary_addressee_ref',
+      'intended_addressee_refs', 'affected_actor_refs', 'speech',
+      'interpretation', 'resolution', 'activity', 'supporting_operations',
+      'check', 'handoff'
+    ]);
+    assert.equal(npcShape.schema, 'conversation_contribution_plan_v1');
+    assert.deepEqual(Object.keys(npcShape), [
+      'schema', 'request_id', 'boundary_id', 'conversation_id', 'exchange_id',
+      'state_version', 'speaker_ref', 'contribution_kind',
+      'primary_addressee_ref', 'intended_addressee_refs',
+      'affected_actor_refs', 'speech', 'interpretation', 'resolution',
+      'activity', 'supporting_operations', 'check', 'handoff', 'reason'
+    ]);
+    assert.deepEqual(mappings.ordinary_speech, {
+      contribution_kind: 'speech', interpretation: { adaptation: 'literal' },
+      resolution: 'automatic', supporting_operations: [], check: null,
+      handoff: null
+    });
+    const nonSpeechKinds = [
+      'silence', 'leave_conversation', 'action_handoff', 'combat_handoff'
+    ];
+    assert.deepEqual(nonSpeechKinds.map((kind) =>
+      mappings[kind].contribution_kind), nonSpeechKinds);
+    for (const kind of nonSpeechKinds) {
+      assert.equal(mappings[kind].contribution_kind, kind);
+      assert.equal(mappings[kind].speech, null);
+      assert.deepEqual(mappings[kind].supporting_operations, []);
+      assert.equal(mappings[kind].check, null);
+    }
+    assert.equal(mappings.action_handoff.handoff.kind, 'actor_step');
+    assert.equal(mappings.combat_handoff.handoff.kind, 'combat');
+    assert.equal(mappings.social_check.resolution, 'check_required');
+    assert.deepEqual(Object.keys(mappings.social_check.check.outcomes), [
+      'clean_success', 'success', 'success_with_cost',
+      'failure_with_consequence', 'severe_failure'
+    ]);
+    for (const prompt of [player, npc]) {
+      assert.match(prompt, /emit_interaction/u);
+      assert.match(prompt, /operation_contract/u);
+      assert.match(prompt, /check_required/u);
+      assert.match(prompt, /do not invent or substitute refs/u);
+    }
+    assert.match(player, /input_mode verbatim/u);
+    assert.match(npc, /decision_scope allowed check refs/u);
+    for (const prompt of [player, npc]) {
+      assert.match(prompt, /speech: null/u);
+      assert.match(prompt, /refs\/handoff only from request contract/u);
+    }
+  });
+
+test('conversation non-speech mappings have validator-valid shapes', () => {
+  const variants = [{ kind: 'silence', handoff: null }, {
+    kind: 'leave_conversation', handoff: null
+  }, {
+    kind: 'action_handoff', handoff: { kind: 'actor_step', intent: 'continue' }
+  }, {
+    kind: 'combat_handoff', handoff: {
+      kind: 'combat', intent: 'fight',
+      target_actor_refs: [{ entity_kind: 'npc', entity_id: 'npc-1' }]
+    }
+  }];
+  for (const { kind, handoff } of variants) {
+    const body = {
+      contribution_kind: kind, primary_addressee_ref: null,
+      intended_addressee_refs: [], affected_actor_refs: [], speech: null,
+      interpretation: { intent: kind, grounded_contribution: kind,
+        adaptation: 'literal' }, resolution: 'automatic',
+      activity: { duration_class: 'brief', effort: 'none' },
+      supporting_operations: [], check: null, handoff
+    };
+    assert.equal(validatePlayerConversationContributionPlan({
+      schema: 'player_conversation_contribution_plan_v1', request_id: 'request-1',
+      conversation_id: 'conversation-1', state_version: 1,
+      speaker_ref: { entity_kind: 'player_character', entity_id: 'player-1' },
+      input_mode: 'intent_paraphrase', ...body
+    }), true, kind);
+    assert.equal(validateConversationContributionPlan({
+      schema: 'conversation_contribution_plan_v1', request_id: 'request-1',
+      boundary_id: 'boundary-1', conversation_id: 'conversation-1',
+      exchange_id: 'exchange-1', state_version: 1,
+      speaker_ref: { entity_kind: 'npc', entity_id: 'npc-1' }, ...body,
+      reason: 'NPC chooses this contribution.'
+    }), true, kind);
+  }
+});
+
+test('world process prompt supplies complete bounded plan shape', async () => {
+  let prompt;
+  const input = worldProcessRequest();
+  const model = createLowerDvinaTraceWorldProcessStepModel({
+    roleRunner: { async run(call) {
+      prompt = call.messages[0].content;
+      return { output: { schema: 'world_process_step_plan_v1' } };
+    } }
+  });
+  await model(input);
+  const shape = JSON.parse(prompt.match(
+    /Use this complete valid shape:\n(\{[^\n]+\})/u
+  )[1]);
+  assert.equal(validateWorldProcessStepPlan(shape, input), true);
+  assert.deepEqual(Object.keys(shape), [
+    'schema', 'request_id', 'process_ref', 'process_state_version',
+    'interpretation', 'process_outcome', 'affected_refs', 'fact_changes',
+    'reason_code'
+  ]);
+  assert.equal(shape.process_outcome, input.allowed_outcomes[0]);
+  assert.deepEqual(shape.fact_changes, []);
+  assert.match(prompt, /affected_refs may contain only unique refs supplied by request/u);
+});
+
 test('impossible jump and absent spaceship plans stay grounded model contracts',
   async (t) => {
     const cases = [{
@@ -128,7 +312,7 @@ test('impossible jump and absent spaceship plans stay grounded model contracts',
             async run(call) {
               assert.equal(call.messages[0].content.includes(
                 current.name === 'jump'
-                  ? 'reality_limited real human jump'
+                  ? 'reality_limited physical attempt uses the mapped moderate effort'
                   : 'absent spaceship is make_believe'), true);
               return { output: groundedPlan(input, current) };
             }
@@ -247,5 +431,22 @@ function groundedPlan(input, current) {
     clarification: null,
     reason_code: current.reasonCode,
     reason: 'Фактическая попытка не создаёт невозможный результат.'
+  };
+}
+
+function worldProcessRequest() {
+  return {
+    schema: 'world_process_step_request_v1', request_id: 'world-process-42',
+    party_state_version: 7, process_state_version: 2,
+    process_mode: 'local_exact', process_kind: 'fire',
+    process: { process_ref: 'fire:1', scope_ref: 'shore:1',
+      causal_basis_ref: 'hearth:1', status: 'active',
+      started_at: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
+      next_boundary_at: { whole_minutes: '1', subminute_numerator: '0', subminute_denominator: '1' },
+      fuel_bindings: [{ fuel_ref: 'wood:1', fuel_class: 'ordinary_solid_fuel_unit' }] },
+    current_timestamp: { whole_minutes: '0', subminute_numerator: '0', subminute_denominator: '1' },
+    trigger: 'actor_affected', subject_state: { source_refs: ['water:1'] },
+    environment_state: { scope_ref: 'shore:1' },
+    allowed_outcomes: ['no_effect', 'continue', 'complete']
   };
 }

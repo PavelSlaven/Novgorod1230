@@ -22,6 +22,8 @@ import { createOrdinaryMaterializationStageBQualifier } from
 const profileUrl = new URL('../../../data/world-catalogs/novgorod/'
   + 'lower-dvina-trace-v1/phase-m7-content/'
   + 'ordinary-materialization-profile.json', import.meta.url);
+const frozenRoleRequestsUrl = new URL('../../../data/model-evals/llm-runtime/'
+  + 'frozen-role-requests-v1.json', import.meta.url);
 
 async function evalContract() {
   const profile = JSON.parse(await readFile(profileUrl, 'utf8'));
@@ -68,6 +70,42 @@ test('Stage B eval catches sensitive materialization hidden behind common fields
     assert.equal(report.pass, false, probe.id);
     assert.deepEqual(report.failed_case_ids, [probe.id]);
   }
+});
+
+test('ordinary materialization prompt keeps a supported free candidate materializable', () => {
+  const request = presenceRequest('ложка');
+  const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
+  assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.match(prompt, /resolve_presence permits materialize, absent, no_change, or authority_required/u);
+  assert.match(prompt, /absent fallback only when committed context cannot support materialization/u);
+  assert.match(prompt, /lack of a pre-supplied descriptor alone is not a reason for absent/u);
+  assert.match(prompt, /derive the ordinary semantic descriptor from candidate_query\.candidate_hint/u);
+  assert.match(prompt, /availability_class is common or context_bound/u);
+  assert.match(prompt, /policy_refs\.allowed_admission_classes/u);
+  assert.doesNotMatch(prompt, /простая верёвка|cordage/u);
+  assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
+});
+
+test('frozen ordinary probes ship production-built messages', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  for (const fixture of corpus.fixtures.filter(({ role_id }) =>
+    role_id === 'ordinary_materialization')) {
+    const request = JSON.parse(fixture.messages.at(-1).content);
+    const errors = fixture.repair ? JSON.parse(fixture.messages[0].content.match(
+      /Validation errors: (.+)$/u)[1]) : null;
+    assert.deepEqual(fixture.messages, buildOrdinaryMaterializationMessages(request,
+      { repair: errors == null ? null : {
+        schema: 'ordinary_materialization_repair_context_v1',
+        original_output: null, validation_errors: errors } }));
+  }
+});
+
+test('ordinary materialization prompt maps Stage A to its candidate-free fallback', () => {
+  const stageB = presenceRequest('ложка');
+  const request = { ...stageB, mode: 'seed_scope', candidate_query: null };
+  const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
+  assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
 test('Stage B eval boundary rejects accessors without reading them', async () => {

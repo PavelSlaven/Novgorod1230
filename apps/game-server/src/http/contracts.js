@@ -1,6 +1,5 @@
 import { assertPublicPayload } from '../public-boundary.js';
 import { serverError } from '../errors.js';
-import { normalizeLlmSettingsCandidate } from '../runtime/llm-settings.js';
 
 export const HTTP_API_VERSION = 1;
 export const API_SUCCESS_SCHEMA = 'rus_api_success';
@@ -68,7 +67,7 @@ export function validateLlmSettingsRequest(body) {
 }
 
 export function validateLlmSettingsProbeRequest(body) {
-  return normalizeLlmSettingsCandidate(body);
+  return validateLlmSettingsRequest(body);
 }
 
 function text(value) { return String(value ?? '').trim(); }

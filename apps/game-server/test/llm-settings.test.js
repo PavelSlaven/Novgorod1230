@@ -158,5 +158,40 @@ test('LLM settings HTTP routes redact secrets and reject invalid input without c
   assert.deepEqual((await reset.json()).data, { mode: 'default', base_url: null, model: null, api_key_present: false, compatibility: 'deepseek' });
 });
 
+test('LLM settings probe HTTP route reuses key only for active endpoint', async (t) => {
+  const candidates = [];
+  const owner = createLlmSettingsOwner({ qualifyCustom: async (candidate) => {
+    candidates.push(candidate);
+    return identity();
+  } });
+  const root = createGameCompositionRoot({
+    newGameWorkflow: { run: async () => ({}) }, turnWorkflow: { run: async () => ({}) },
+    sessionStore: createInMemorySessionStore(), llmSettings: owner
+  });
+  const server = createGameHttpServer({ root });
+  const address = await listen(server, { host: '127.0.0.1', port: 0 });
+  t.after(() => server.close());
+  const url = `http://127.0.0.1:${address.port}/api/v1/llm-settings`;
+  const applied = await fetch(url, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(custom) });
+  assert.equal(applied.status, 200);
+  candidates.length = 0;
+  const blankKey = { ...custom, api_key: '' };
+  const unknown = await fetch(`${url}/test`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...blankKey, extra: true }) });
+  const invalidKey = await fetch(`${url}/test`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...blankKey, api_key: 1 }) });
+  assert.equal(unknown.status, 400);
+  assert.equal((await unknown.json()).error.code, 'LLM_SETTINGS_FIELD_UNKNOWN');
+  assert.equal(invalidKey.status, 400);
+  assert.equal((await invalidKey.json()).error.code, 'LLM_SETTINGS_API_KEY_INVALID');
+  assert.equal(candidates.length, 0);
+  const same = await fetch(`${url}/test`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(blankKey) });
+  const other = await fetch(`${url}/test`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...blankKey, base_url: 'http://127.0.0.1:11435/v1/' }) });
+  assert.equal(same.status, 200);
+  assert.equal(other.status, 200);
+  assert.equal(candidates[0].apiKey, 'secret-key');
+  assert.equal(candidates[1].apiKey, null);
+  assert.equal(owner.providerSnapshot().apiKey, 'secret-key');
+  assert.equal(owner.providerSnapshot().baseUrl, 'http://127.0.0.1:11434/v1');
+});
+
 function identity() { return { provider: 'openai_compatible', model: 'local-model',
   scope: 'turn_runtime', role_id: 'ordinary_materialization', config_hash: 'qualified' }; }

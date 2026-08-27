@@ -8,7 +8,8 @@ import {
   storedPendingOpeningAck,
   storePendingOpeningAck
 } from './pending-opening-ack.js';
-
+import { storedLlmSettings } from './llm-settings-preferences.js';
+import { createLlmSettingsController } from './llm-settings.js';
 const PARTY_STORAGE_KEY = 'rus.party_id';
 const THEME_STORAGE_KEY = 'rus.theme';
 
@@ -22,6 +23,10 @@ export function bootstrapGameWeb({
   const partyStorage = storage ?? availableLocalStorage();
   store.setRememberedPartyId(partyStorage?.getItem?.(PARTY_STORAGE_KEY));
   store.setTheme(storedTheme(partyStorage) ?? preferredTheme());
+  store.setLlmSettingsDraft(storedLlmSettings(partyStorage));
+  const llmSettings = createLlmSettingsController({
+    root, api, store, storage: partyStorage
+  });
 
   const render = () => {
     const state = store.getState();
@@ -40,6 +45,10 @@ export function bootstrapGameWeb({
     const FormElement = root.ownerDocument.defaultView.HTMLFormElement;
     if (!(form instanceof FormElement)) return;
     event.preventDefault();
+    if (form.matches('[data-llm-settings-form]')) {
+      await llmSettings.submit(form, event.submitter?.value);
+      return;
+    }
     if (flowNavigationBlocked(store.getState())) return;
     if (form.matches('[data-new-game-form]')) {
       const raw = String(new root.ownerDocument.defaultView.FormData(form)
@@ -82,6 +91,12 @@ export function bootstrapGameWeb({
     }
   });
 
+  root.addEventListener('change', (event) => {
+    if (event.target.matches?.('[data-llm-settings-form] input[name="mode"]')) {
+      llmSettings.setFieldsDisabled(event.target.value !== 'custom');
+    }
+  });
+
   root.addEventListener('click', async (event) => {
     const target = event.target;
     const startButton = target.closest?.('[data-start-new-game]');
@@ -95,6 +110,7 @@ export function bootstrapGameWeb({
       return store.showLanding();
     }
     if (target.closest?.('[data-theme-toggle]')) return toggleTheme();
+    if (target.closest?.('[data-llm-settings-open]')) return llmSettings.open();
     if (target.closest?.('[data-dismiss-error]')) return store.clearError();
     const continueButton = target.closest?.('[data-continue-party]');
     if (continueButton) {
@@ -233,7 +249,9 @@ export function bootstrapGameWeb({
   function closeOverlay() {
     const kind = store.getState().activeOverlay;
     store.closeOverlay();
-    root.querySelector(`[data-overlay-open="${kind}"]`)?.focus();
+    root.querySelector(kind === 'llm_settings'
+      ? '[data-llm-settings-open]'
+      : `[data-overlay-open="${kind}"]`)?.focus();
   }
 
   return Object.freeze({ api, store, render });

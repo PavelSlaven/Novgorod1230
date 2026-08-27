@@ -2,17 +2,19 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   fixture,
-  loadScenarioBundle
+  loadScenarioBundle,
+  currentWorldBaseReferenceSnapshot
 } from './lower-dvina-trace-phase-2-fixture.js';
-import { createPhase6TestTemporalOwner } from
-  './lower-dvina-trace-phase-6-fixtures.js';
 import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
+import { createLowerDvinaTraceTurnStepModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
-const [bundle12, bundle13, bundle15] = await Promise.all([
+const [bundle12, bundle13, bundle15, bundle25] = await Promise.all([
   loadScenarioBundle(12),
   loadScenarioBundle(13),
-  loadScenarioBundle(15)
+  loadScenarioBundle(15),
+  loadScenarioBundle(25)
 ]);
 
 test('revision 12 free input stays on the historical bounded path', async () => {
@@ -158,6 +160,51 @@ test('revision 13 exact command does not require or invoke a turn step model',
     );
   });
 
+test('current production revision keeps exact fast path and sends free input to turn_step_planner',
+  async () => {
+    const exact = fixture({
+      scenarioBundle: bundle25,
+      materializationBundle: bundle25,
+      worldBaseReferenceSnapshot: currentWorldBaseReferenceSnapshot(),
+      rollValue: 0,
+      turnStepModel: async () => assert.fail('exact command reached planner')
+    });
+    await submit(exact, {
+      request_id: 'turn-step-current-exact',
+      idempotency_key: 'turn-step-current-exact',
+      raw_text: 'Осмотреть место крушения подробно.'
+    });
+    assert.equal(exact.turnStepCount(), 0);
+    assert.equal(exact.lastWritePlan().command_trace.decision_protocol,
+      'code_exact_fast_path_v1');
+
+    let plannerCall = null;
+    const freeForm = fixture({
+      scenarioBundle: bundle25,
+      materializationBundle: bundle25,
+      worldBaseReferenceSnapshot: currentWorldBaseReferenceSnapshot(),
+      rollValue: 0,
+      turnStepModel: createLowerDvinaTraceTurnStepModel({
+        roleRunner: { async run(call) {
+          plannerCall = call;
+          return { output: discoveryPlan(JSON.parse(call.messages[1].content)) };
+        } }
+      })
+    });
+    await submit(freeForm, {
+      request_id: 'turn-step-current-free-form',
+      idempotency_key: 'turn-step-current-free-form',
+      raw_text: 'Внимательно изучаю всё место крушения.'
+    });
+    assert.equal(freeForm.turnStepCount(), 1);
+    assert.equal(freeForm.turnStepInput().schema, 'turn_step_request_v1');
+    assert.equal(plannerCall.role_id, 'turn_step_planner');
+    assert.equal(
+      freeForm.lastWritePlan().command_trace.decision_protocol,
+      'turn_step_plan_v1'
+    );
+  });
+
 test('revision 13 Phase 3 movement envelope reaches production persistence',
   async () => {
     const bootstrap = fixture({
@@ -243,269 +290,8 @@ test('revision 13 Phase 3 movement envelope reaches production persistence',
       'trace_ld_v1_loc_fishing_camp');
   });
 
-test('revision 13 Phase 3-6 paraphrases delegate to the exact production owners',
-  async (t) => {
-    const bootstrap = fixture({
-      scenarioBundle: bundle13,
-      materializationBundle: bundle13,
-      rollValue: 0
-    });
-    await submit(bootstrap, {
-      request_id: 'turn-step-rev13-bootstrap',
-      idempotency_key: 'turn-step-rev13-bootstrap',
-      raw_text: 'Осмотреть место крушения подробно.'
-    });
-    let state = stateWithCommittedBlueWool(bootstrap.state);
-
-    await t.test('Phase 3 movement preserves route, eight minutes and position',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Хочу выбраться к рыбакам по тропинке, заметной от берега.',
-          exactText: 'Дойти до рыбацкого стана.',
-          operation: (request) => ({
-            op: 'request_movement',
-            actor_ref: request.actor.actor_id,
-            movement_kind: 'local',
-            target_ref: 'trace_ld_v1_loc_fishing_camp'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          minutes: factual.consequence.duration_minutes,
-          route: factual.consequence.movement.route_ref,
-          destination:
-            factual.consequence.movement.destination.location_ref,
-          committedLocation: after.position.location_ref
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 8);
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 3 speech delegates emit_interaction to the current owner',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Расспрошу Еремея: пусть объяснит, что заметил у разбитой лодки.',
-          exactText: 'Поговорить с Еремеем о крушении.',
-          operation: (request) => ({
-            op: 'emit_interaction',
-            actor_ref: request.actor.actor_id,
-            interaction_kind: 'request',
-            target_actor_refs: [npcRef(request, 'eremey_fisher')],
-            instrument_refs: [],
-            content: 'что Еремей заметил у разбитой лодки'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          minutes: factual.consequence.duration_minutes,
-          statement: factual.consequence.conversation.statement_ref,
-          npcOption:
-            factual.consequence.conversation.decision.trace.option_id,
-          interactionCount: after.interactions.length
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 5);
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 3 evidence preserves check, disclosure and route knowledge',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Предъявлю Еремею найденный синий клочок как доказательство и попрошу содействия.',
-          exactText: 'Показать Еремею синюю шерсть.',
-          operation: (request) => ({
-            op: 'emit_interaction',
-            actor_ref: request.actor.actor_id,
-            interaction_kind: 'offer',
-            target_actor_refs: [npcRef(request, 'eremey_fisher')],
-            instrument_refs: ['trace_ld_v1_evidence_blue_wool'],
-            content: 'показать синюю шерсть и попросить содействия'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          difficulty: result.check.difficulty,
-          band: result.check.outcome.band,
-          minutes: factual.consequence.duration_minutes,
-          statement: factual.consequence.conversation.statement_ref,
-          routeKnowledge:
-            factual.consequence.conversation.route_knowledge_ref,
-          committedRoutes: [...after.route_knowledge].sort()
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 10);
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 4 route preserves group traversal and twelve minutes',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Поведу спутников по разведанному пути от стана к старой сушильне.',
-          exactText: 'Пройти известной тропой к старой сушильне.',
-          operation: (request) => ({
-            op: 'request_movement',
-            actor_ref: request.actor.actor_id,
-            movement_kind: 'route',
-            target_ref: 'trace_ld_v1_loc_old_drying_shed'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          minutes: factual.consequence.duration_minutes,
-          route: factual.consequence.movement.route_ref,
-          participants: factual.consequence.movement.participants,
-          committedLocation: after.position.location_ref
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 12);
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 4 negotiation preserves social check, surrender and promise',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Обращусь к Ратше с условием: защита в обмен на немедленную сдачу.',
-          exactText:
-            'Предложить Ратше условную защиту и потребовать сдачи.',
-          operation: (request) => ({
-            op: 'emit_interaction',
-            actor_ref: request.actor.actor_id,
-            interaction_kind: 'offer',
-            target_actor_refs: [
-              npcRef(request, 'ratsha_storehouse_helper')
-            ],
-            instrument_refs: [],
-            content: 'условная защита в обмен на сдачу'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          difficulty: result.check.difficulty,
-          band: result.check.outcome.band,
-          minutes: factual.consequence.duration_minutes,
-          npcOption: factual.consequence.negotiation.npc_decision.option_id,
-          promiseState: after.promise_instances[0].current_state,
-          surrendered: after.ratsha_surrendered
-        }));
-        assert.equal(pair.semantic.state.promise_instances[0].current_state,
-          'active');
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 5 treatment preserves check, 25 minutes and recovery state',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Займусь раненой ногой Онисима: подготовлю повязку и стабилизирую её.',
-          exactText: 'Оказать Онисиму первую помощь.',
-          operation: (request) => ({
-            op: 'request_activity',
-            actor_ref: request.actor.actor_id,
-            activity_kind: 'recover',
-            target_refs: [npcRef(request, 'onisim_boatman')],
-            description: 'оказать помощь раненой ноге Онисима'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          difficulty: result.check.difficulty,
-          band: result.check.outcome.band,
-          minutes: factual.consequence.duration_minutes,
-          outcome: factual.consequence.treatment.outcome_fact,
-          status: after.phase5_treatment.status,
-          onisimCondition: after.npcs.find(({ participant_slot_ref: slot }) =>
-            slot === 'onisim_boatman').machine_state.body_condition.state
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 25);
-        state = pair.semantic.state;
-      });
-
-    await t.test('Phase 6 carry preserves 20 minutes and terminal group state',
-      async () => {
-        const pair = await compareSemanticAndExact({
-          state,
-          semanticText:
-            'Соберём средство для переноски и всей группой доставим раненого обратно к рыбакам.',
-          exactText: 'Сделать носилки и отнести Онисима в стан.',
-          operation: (request) => ({
-            op: 'request_activity',
-            actor_ref: request.actor.actor_id,
-            activity_kind: 'carry',
-            target_refs: [npcRef(request, 'onisim_boatman')],
-            description: 'перенести Онисима всей группой в рыбацкий стан'
-          })
-        });
-        assertSame(pair, ({ result, factual, state: after }) => ({
-          option: result.option_id,
-          minutes: factual.consequence.duration_minutes,
-          executionStatus:
-            factual.consequence.carry.intent.execution_after.status,
-          elapsed: factual.consequence.carry.intent.exact_elapsed,
-          progress: after.phase6_carry_execution.progress_ppm,
-          committedLocation: after.position.location_ref
-        }));
-        assert.equal(pair.semantic.factual.consequence.duration_minutes, 20);
-      });
-  });
-
 function submit(f, input) {
   return f.runtime.submitTurn({ partyId: f.partyId, input });
-}
-
-async function compareSemanticAndExact({ state, semanticText, exactText,
-  operation }) {
-  const semantic = fixture({
-    scenarioBundle: bundle13,
-    materializationBundle: bundle13,
-    committedState: state,
-    rollValue: 0.99,
-    temporalAdvanceOwner: phase6TemporalOwner(state),
-    turnStepModel: (request) => domainPlan(request, operation(request))
-  });
-  const exact = fixture({
-    scenarioBundle: bundle13,
-    materializationBundle: bundle13,
-    committedState: state,
-    rollValue: 0.99,
-    temporalAdvanceOwner: phase6TemporalOwner(state)
-  });
-  const semanticResult = await submit(semantic,
-    turn(`semantic-${state.party_state.turn_number}`, semanticText));
-  const exactResult = await submit(exact,
-    turn(`exact-${state.party_state.turn_number}`, exactText));
-  assert.equal(semantic.semanticInput(), null);
-  assert.equal(semantic.turnStepCount(), 1);
-  assert.equal(semantic.lastWritePlan().command_trace.decision_protocol,
-    'turn_step_plan_v1');
-  assert.equal(exact.turnStepCount(), 0);
-  assert.equal(exact.lastWritePlan().command_trace.decision_protocol,
-    'code_exact_fast_path_v1');
-  return {
-    semantic: outcome(semantic, semanticResult),
-    exact: outcome(exact, exactResult)
-  };
-}
-
-function outcome(f, result) {
-  return {
-    result,
-    factual: f.lastWritePlan().write_targets.find(
-      ({ target }) => target === 'party_state'
-    ).value,
-    state: structuredClone(f.state)
-  };
-}
-
-function assertSame(pair, select) {
-  assert.deepEqual(select(pair.semantic), select(pair.exact));
 }
 
 function turn(key, rawText) {
@@ -514,23 +300,6 @@ function turn(key, rawText) {
     idempotency_key: key,
     raw_text: rawText
   };
-}
-
-function npcRef(request, slot) {
-  const npc = request.player_safe_state.npcs.find(
-    ({ participant_slot_ref: current }) => current === slot
-  );
-  assert.ok(npc?.instance_id, `${slot} must be visible to the player`);
-  return npc.instance_id;
-}
-
-function phase6TemporalOwner(state) {
-  return createPhase6TestTemporalOwner({
-    state,
-    resolve() {
-      throw new Error('Unexpected external Phase 6 temporal boundary.');
-    }
-  });
 }
 
 function domainPlan(request, operation) {

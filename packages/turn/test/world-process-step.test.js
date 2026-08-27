@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { resolveWorldProcessStep } from '../src/world-process-step.js';
+import { resolveWorldProcessStep, validateWorldProcessStepPlan } from '../src/index.js';
 
 function request() {
   return {
-    schema: 'world_process_step_request_v1', request_id: 'req:water',
+    schema: 'world_process_step_request_v1', request_id: 'req:water:world-process',
     party_state_version: 7, process_state_version: 2,
     process_mode: 'local_exact', process_kind: 'fire',
     process: { process_ref: 'fire:1', scope_ref: 'anchor:shore',
@@ -14,8 +14,8 @@ function request() {
         fuel_class: 'ordinary_solid_fuel_unit' }] },
     current_timestamp: timestamp(2), trigger: 'actor_affected',
     subject_state: { source_refs: ['water'],
-      facts: ['water portion'], quantities: [{ ref: 'water', value: 1,
-        unit: 'portion' }] },
+      facts: ['existing water portion'], quantities: [{ ref: 'water', value: 1,
+        unit: 'item', mass_grams: 1000 }] },
     environment_state: { scope_ref: 'anchor:shore', facts: [] },
     allowed_outcomes: ['no_effect', 'continue', 'complete']
   };
@@ -35,6 +35,7 @@ test('world process semantic step accepts only a bounded qualitative result', as
   assert.equal(seen.length, 1);
   assert.equal(Object.isFrozen(seen[0]), true);
   assert.equal(result.process_outcome, 'complete');
+  assert.equal(validateWorldProcessStepPlan(result, request()), true);
 });
 
 test('world process request requires the exact objective process projection',
@@ -65,7 +66,7 @@ function timestamp(wholeMinutes) {
 test('world process semantic step rejects unrequested effects and numeric deltas', async () => {
   await assert.rejects(resolveWorldProcessStep({ request: request(),
     worldProcessStepModel: async () => ({
-      schema: 'world_process_step_plan_v1', request_id: 'req:water',
+      schema: 'world_process_step_plan_v1', request_id: 'req:water:world-process',
       process_ref: 'fire:1', process_state_version: 2,
       interpretation: { grounded_transition: 'water extinguishes fire' },
       process_outcome: 'complete', affected_refs: ['item:foreign'],

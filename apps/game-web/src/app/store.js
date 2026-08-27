@@ -14,6 +14,9 @@ export function createUiStore(initial = {}) {
     theme: theme(initial.theme),
     newGameDraft: '',
     turnDraft: '',
+    llmSettings: null,
+    llmSettingsDraft: null,
+    llmSettingsMessage: null,
     opening: freeze({ status: 'idle', clientAckId: null, acknowledgedAt: null })
   });
   const listeners = new Set();
@@ -72,6 +75,18 @@ export function createUiStore(initial = {}) {
     },
     setTheme(value) {
       state = freeze({ ...state, theme: theme(value) });
+      publish();
+    },
+    setLlmSettings(settings, message = null) {
+      state = freeze({ ...state, llmSettings: settings ? structuredClone(settings) : null, llmSettingsMessage: message });
+      publish();
+    },
+    setLlmSettingsDraft(settings) {
+      state = freeze({ ...state, llmSettingsDraft: settings ? structuredClone(settings) : null });
+      publish();
+    },
+    setLlmSettingsMessage(message) {
+      state = freeze({ ...state, llmSettingsMessage: message });
       publish();
     },
     openOverlay(kind) {

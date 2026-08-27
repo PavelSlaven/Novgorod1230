@@ -1,7 +1,7 @@
 import { createLlmRoleRunnerAdapter } from '../../adapters/llm-role-runner.js';
 
-export function createProductionLlmRoleRunner({ env = process.env, telemetry = null } = {}) {
-  return createLlmRoleRunnerAdapter({ env, telemetry });
+export function createProductionLlmRoleRunner({ env = process.env, telemetry = null, settings = null } = {}) {
+  return createLlmRoleRunnerAdapter({ env, telemetry, settings });
 }
 
 export async function probeLlmProvider(runner, { scope = 'turn_runtime', roleId = 'intent_router' } = {}) {

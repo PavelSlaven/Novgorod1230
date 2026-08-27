@@ -61,5 +61,14 @@ export function validateTurnRequest(body) {
   return body;
 }
 
+export function validateLlmSettingsRequest(body) {
+  if (!plain(body)) throw serverError('LLM_SETTINGS_BODY_INVALID', 'LLM settings must be an object.', { status: 400 });
+  return body;
+}
+
+export function validateLlmSettingsProbeRequest(body) {
+  return validateLlmSettingsRequest(body);
+}
+
 function text(value) { return String(value ?? '').trim(); }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }

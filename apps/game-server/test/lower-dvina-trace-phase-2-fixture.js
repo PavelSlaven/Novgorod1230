@@ -1,5 +1,6 @@
 import {
   approvedNarration,
+  currentWorldBaseReferenceSnapshot,
   phase1AInstance,
   replaceState,
   unexpectedNpcAutonomousModel,
@@ -48,9 +49,11 @@ function fixture({
   createTurnStepActionProductionOwner = null,
   localFireProfile = null,
   createTurnStepWorldProcessResolver = null,
+  worldBaseReferenceSnapshot = undefined,
 } = {}) {
   const partyId = 'party:trace-phase-2';
-  const instance = phase1AInstance(partyId, materializationBundle);
+  const instance = phase1AInstance(partyId, materializationBundle,
+    worldBaseReferenceSnapshot);
   const state =
     committedState == null
       ? {
@@ -81,6 +84,8 @@ function fixture({
           },
           ...fixturePhase2VisibleState(instance, materializationBundle),
           materialization_trace: structuredClone(instance.trace),
+          first_entry_preparation: structuredClone(
+            instance.first_entry_preparation ?? null),
           prepared_scenes: structuredClone(instance.immediate.prepared_scenes ?? []),
           npcs: structuredClone(instance.immediate.npcs ?? []),
           promise_instances: structuredClone(instance.immediate.promise_instances ?? []),
@@ -597,3 +602,4 @@ function fixture({
   };
 }
 export { bundle, bundle9, fixture, loadScenarioBundle };
+export { currentWorldBaseReferenceSnapshot };

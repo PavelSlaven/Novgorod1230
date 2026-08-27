@@ -1,11 +1,12 @@
 import { createHash } from 'node:crypto';
 import { explainJsonObjectParse } from '@rus/contracts/json';
 import { resolveLlmExecutionConfig } from './provider-config.js';
+import { buildProviderRequestPayload } from './provider-request.js';
 
 export function describeRoleLlmCall({ scope, roleId = null, tierId = null,
-  env = process.env, overrides = null } = {}) {
+  env = process.env, overrides = null, runtimeProviderOverride = null } = {}) {
   const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env,
-    overrides });
+    overrides, runtimeProviderOverride });
   if (!resolution.enabled) return null;
   const config = resolution.config;
   return Object.freeze({ provider: config.provider, model: config.model,
@@ -20,9 +21,11 @@ export async function executeRoleLlmCall({
   messages,
   env = process.env,
   telemetry = null,
-  overrides = null
+  overrides = null,
+  runtimeProviderOverride = null
 } = {}) {
-  const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env, overrides });
+  const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env, overrides,
+    runtimeProviderOverride });
   if (!resolution.enabled) {
     return {
       raw_text: '',
@@ -57,7 +60,8 @@ export function createScopedChatCompletionClient({
   env = process.env,
   telemetry = null,
   roleResolver = null,
-  tierResolver = null
+  tierResolver = null,
+  runtimeProviderOverride = null
 } = {}) {
   return {
     chat: {
@@ -76,7 +80,8 @@ export function createScopedChatCompletionClient({
               maxTokens: payload.max_tokens,
               temperature: payload.temperature,
               topP: payload.top_p
-            }
+            },
+            runtimeProviderOverride
           });
 
           if (result.status === 'provider_disabled') {
@@ -108,28 +113,28 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   let timedOut = false;
   const timeout = setTimeout(() => {
     timedOut = true;
-    controller.abort(new Error('DeepSeek request timeout'));
+    controller.abort(new Error('Provider request timeout'));
   }, config.requestTimeoutMs);
   const configHash = hashConfig(config);
   let responseData = null;
   let callError = null;
 
   try {
-    const response = await fetch(`${config.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
+    const response = await fetch(config.requestUrl, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${config.apiKey}`,
+        ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(buildRequestPayload(config, messages)),
+      body: JSON.stringify(buildProviderRequestPayload(config, messages)),
       signal: controller.signal
     });
 
     if (!response.ok) {
-      const body = await safeReadText(response);
+      const body = await safeReadText(response, config.apiKey);
       callError = {
         code: `http_${response.status}`,
-        message: `DeepSeek request failed (${response.status}): ${body}`,
+        message: `Provider request failed (${response.status}): ${body}`,
         retryable: response.status >= 500 || response.status === 429
       };
       return buildResult({
@@ -141,7 +146,21 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
       }, telemetry);
     }
 
-    responseData = await response.json();
+    try {
+      responseData = await response.json();
+    } catch {
+      return buildResult({
+        config,
+        startedAt,
+        status: 'transport_error',
+        error: {
+          code: 'invalid_response',
+          message: 'Provider returned an invalid response.',
+          retryable: false
+        },
+        configHash
+      }, telemetry);
+    }
     const rawText = String(responseData?.choices?.[0]?.message?.content ?? '');
     if (config.parseJson) {
       const parsed = explainJsonObjectParse(rawText);
@@ -182,7 +201,7 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   } catch (error) {
     callError = {
       code: timedOut ? 'timeout' : 'transport_error',
-      message: String(error?.message ?? error ?? 'Unknown transport error'),
+      message: timedOut ? 'Provider request timeout.' : 'Provider request failed.',
       retryable: true
     };
     return buildResult({
@@ -195,19 +214,6 @@ async function invokeResolvedLlmCall({ config, messages, telemetry = null }) {
   } finally {
     clearTimeout(timeout);
   }
-}
-
-function buildRequestPayload(config, messages) {
-  return {
-    model: config.model,
-    messages,
-    max_tokens: config.maxTokens,
-    ...(config.responseFormat ? { response_format: config.responseFormat } : {}),
-    ...(config.thinking ? { thinking: config.thinking } : {}),
-    ...(config.reasoningEffort ? { reasoning_effort: config.reasoningEffort } : {}),
-    ...(config.temperature != null ? { temperature: config.temperature } : {}),
-    ...(config.topP != null ? { top_p: config.topP } : {})
-  };
 }
 
 function buildResult(base, telemetry) {
@@ -229,13 +235,14 @@ function buildResult(base, telemetry) {
 
   telemetry?.onCall?.({
     provider: result.provider,
+    providerMode: result.provider,
     model: result.model,
     scope: result.scope,
     roleId: result.role_id,
     tierId: result.tier_id,
     durationMs: result.durationMs,
-    status: result.status === 'ok' ? 'ok' : 'error',
-    error: result.error?.message ?? null,
+    status: result.status,
+    errorCategory: result.error?.code ?? null,
     tokenUsage: result.usage ?? null,
     configHash: result.config_hash,
     outputContractMode: result.output_contract_mode,
@@ -252,7 +259,7 @@ function hashConfig(config) {
     role_id: config.role_id ?? null,
     tier_id: config.tier_id ?? null,
     provider: config.provider,
-    base_url: sanitizeBaseUrl(config.baseUrl),
+    base_url: sanitizeHashBaseUrl(config.baseUrl),
     model: config.model,
     thinking: config.thinking ?? null,
     reasoning_effort: config.reasoningEffort ?? null,
@@ -276,9 +283,20 @@ function sanitizeBaseUrl(value) {
   }
 }
 
-async function safeReadText(response) {
+function sanitizeHashBaseUrl(value) {
   try {
-    return await response.text();
+    const url = new URL(String(value ?? ''));
+    url.pathname = url.pathname.replace(/\/chat\/completions\/?$/, '');
+    return sanitizeBaseUrl(url);
+  } catch {
+    return 'invalid-base-url';
+  }
+}
+
+async function safeReadText(response, apiKey) {
+  try {
+    const body = (await response.text()).slice(0, 512);
+    return apiKey ? body.replaceAll(apiKey, '[redacted]') : body;
   } catch {
     return '<unable to read response body>';
   }

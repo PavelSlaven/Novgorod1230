@@ -24,6 +24,12 @@ export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
   return executeAttempt();
 }
 
+export function executeTraceTurnWithDiagnostics(llmDiagnostics, context,
+  executeAttempt) {
+  const run = () => executeTraceTurnWithAutonomousRetry(executeAttempt);
+  return llmDiagnostics?.runTurn ? llmDiagnostics.runTurn(context, run) : run();
+}
+
 export function validateConversationDependencies({
   scenarioDefinitionRevision,
   playerConversationModel,

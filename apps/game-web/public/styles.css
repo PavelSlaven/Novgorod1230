@@ -39,9 +39,9 @@
 * { box-sizing: border-box; }
 html { min-height: 100%; background: var(--paper); }
 body { min-width: 320px; min-height: 100vh; margin: 0; background: var(--paper); color: var(--ink); }
-button, textarea { font: inherit; }
+button, textarea, input { font: inherit; }
 button { color: inherit; }
-button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+button:focus-visible, textarea:focus-visible, input:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
 }
@@ -84,7 +84,7 @@ button:disabled { cursor: not-allowed; opacity: .38; }
     radial-gradient(circle at 50% 45%, rgba(255, 250, 237, .28), transparent 36rem),
     var(--paper);
 }
-.theme-corner { position: absolute; top: 1.25rem; right: 1.25rem; }
+.theme-corner { position: absolute; top: 1.25rem; right: 1.25rem; display: flex; }
 .start-card { width: min(100%, 42rem); text-align: center; }
 .start-card h1, .new-game-screen h1 {
   margin: 0;
@@ -346,6 +346,14 @@ textarea {
 .overlay-close { position: absolute; top: 1rem; right: 1rem; width: 2.5rem; height: 2.5rem; background: transparent; font-size: 1.6rem; }
 .overlay-close:hover { background: var(--line-soft); }
 .overlay-body { max-height: calc(78vh - 6rem); padding: 1.5rem; overflow: auto; }
+.llm-settings-form { display: grid; gap: 1rem; }
+.llm-settings-form fieldset { display: grid; gap: .5rem; margin: 0; padding: .8rem; border: 1px solid var(--line-soft); }
+.llm-settings-form label { display: grid; gap: .35rem; }
+.llm-settings-form fieldset label { display: block; }
+.llm-settings-form input:not([type="radio"]) { width: 100%; min-height: 2.7rem; padding: .55rem .7rem; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--ink); }
+.llm-settings-form small { color: var(--ink-muted); font: .72rem/1.3 var(--font-ui); text-transform: none; letter-spacing: 0; }
+.llm-settings-message { margin: 0; color: var(--ink-muted); }
+.llm-settings-message.error { color: var(--cinnabar); }
 .detail-list { display: grid; gap: 0; margin: 0; }
 .detail-row { display: grid; grid-template-columns: minmax(8rem, .8fr) 1.4fr; gap: 1rem; padding: .75rem 0; border-bottom: 1px solid var(--line-soft); }
 .detail-row dt { color: var(--ink-muted); font: 500 .74rem/1.4 var(--font-ui); }

@@ -9,6 +9,7 @@
 - role descriptors и tier-конфигурацией;
 - разрешением model/thinking/token/JSON-mode параметров;
 - единым вызовом chat-completion transport;
+- redacted telemetry `onCall` с provider/model/role/duration/status/error category/config hash и usage, без prompt, key или Authorization;
 - scoped client adapter для composition root.
 - отдельной JSON-role `portrait_spec_normalizer` в scope `portrait_lab` с настраиваемой моделью.
 
@@ -21,7 +22,7 @@
 
 ## Публичный API
 
-`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
+`executeRoleLlmCall`, `createScopedChatCompletionClient`, `resolveLlmExecutionConfig` и публичные role registries new-game. Первые три принимают optional `runtimeProviderOverride` (`compatibility`, `baseUrl`/`requestUrl`, `model`, optional `apiKey`/`requestTimeoutMs`): `openai_compatible` нормализуется к одному `chat/completions` URL, а DeepSeek остаётся default. Combat добавляет planner/repair roles для `npc_combat_intent_plan_v1` и deterministic `combat_weapon_classification` для bounded `rus.combat.action_produced_weapon_classification.v1` без repair-loop.
 
 Portrait Lab использует одну role без repair/fallback chain; смысловой результат валидирует authoritative `portrait_spec_v1` owner вне transport слоя.
 
@@ -48,6 +49,11 @@ Provider/model настройки выбираются только через r
 ## Тесты
 
 Foundation tests и production provider integration suite.
+
+## Eval
+
+Frozen player-safe role corpus: `data/model-evals/llm-runtime/frozen-role-requests-v1.json`.
+Runner вызывает тот же `executeRoleLlmCall`; CLI требует `LLM_EVAL_MODE=default` для project-default DeepSeek config либо `LLM_EVAL_MODE=custom` с обеими `LLM_EVAL_BASE_URL` и `LLM_EVAL_MODEL`. Eval не запускается сам и не делает implicit network call. Для exported role validators runner вызывает owner-native validator; S1 остаётся boundary-owned без public validator, а world-process использует public `validateWorldProcessStepPlan` из `@rus/turn`.
 
 ## Совместимость
 

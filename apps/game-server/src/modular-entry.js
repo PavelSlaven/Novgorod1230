@@ -6,9 +6,30 @@ import { createGameHttpServer, listen } from './http/server.js';
 import { loadConfiguredComposition } from './runtime/load-composition.js';
 import { createProductionLlmRoleRunner } from './infrastructure/provider/deepseek.js';
 import { createPortraitSpecNormalizer } from './portrait-lab/normalizer.js';
+import { createLlmSettingsOwner } from './runtime/llm-settings.js';
+import { createLlmDiagnostics } from './runtime/llm-diagnostics.js';
+import { createOrdinaryMaterializationStageBQualifier } from './runtime/ordinary-materialization-stage-b-qualification.js';
+import { loadLowerDvinaTraceOrdinaryMaterializationProfile } from './internal/lower-dvina-trace-ordinary-materialization-profile.js';
 
 const config = assertModularStartupConfig(readServerConfig());
-const root = await loadConfiguredComposition(config.compositionModule, { env: process.env, config });
+const ordinaryProfile = await loadLowerDvinaTraceOrdinaryMaterializationProfile();
+const qualificationRunner = createProductionLlmRoleRunner({ env: process.env });
+const llmSettings = createLlmSettingsOwner({
+  qualifyCustom: createOrdinaryMaterializationStageBQualifier({
+    roleRunner: qualificationRunner,
+    evalContract: ordinaryProfile.stage_b_classification_eval
+  })
+});
+const llmDiagnostics = createLlmDiagnostics();
+const runtimeConfig = { ...config, llmSettings, llmDiagnostics };
+const productionRoot = await loadConfiguredComposition(config.compositionModule, { env: process.env, config: runtimeConfig });
+const root = Object.freeze({
+  ...productionRoot,
+  getLlmSettings: () => llmSettings.read(),
+  applyLlmSettings: (input) => llmSettings.apply(input),
+  probeLlmSettings: (candidate) => llmSettings.probe(candidate),
+  getLlmTurnReport: (input) => llmDiagnostics.report(input)
+});
 const here = dirname(fileURLToPath(import.meta.url));
 const webRoot = resolve(here, '../../game-web');
 const contractsRoot = resolve(here, '../../../packages/contracts/src');
@@ -16,10 +37,10 @@ const server = createGameHttpServer({
   root,
   staticAssets: createStaticAssetResolver({ webRoot, contractsRoot }),
   portraitNormalizer: createPortraitSpecNormalizer({
-    roleRunner: createProductionLlmRoleRunner({ env: process.env })
+    roleRunner: createProductionLlmRoleRunner({ env: process.env, settings: llmSettings })
   }),
   maxBodyBytes: config.maxBodyBytes,
-  developerMode: config.developerMode
+  developerMode: runtimeConfig.developerMode
 });
 const address = await listen(server, config);
 console.log(`@rus/game-server modular HTTP listening on http://${config.host}:${address.port}`);

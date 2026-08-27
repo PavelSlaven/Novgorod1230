@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto';
 import {
   errorEnvelope,
   successEnvelope,
+  validateLlmSettingsProbeRequest,
+  validateLlmSettingsRequest,
   validateNewGameRequest,
   validateOpeningAckRequest,
   validateTurnRequest
@@ -24,7 +26,7 @@ export function createHttpHandler({
       const route = matchApiRoute(request.method, url.pathname);
       if (route) {
         const data = await executeRoute(route, {
-          request, root, portraitNormalizer, maxBodyBytes
+          request, root, portraitNormalizer, maxBodyBytes, developerMode
         });
         return sendJson(response, route.status ?? 200, successEnvelope(data, { requestId }));
       }
@@ -43,7 +45,12 @@ export function createHttpHandler({
 export function matchApiRoute(method, pathname) {
   if (method === 'GET' && pathname === '/api/v1/health') return { id: 'health', status: 200 };
   if (method === 'GET' && pathname === '/api/v1/scenarios') return { id: 'scenarios', status: 200 };
+  if (method === 'GET' && pathname === '/api/v1/llm-settings') return { id: 'llm_settings', status: 200 };
+  if (method === 'PUT' && pathname === '/api/v1/llm-settings') return { id: 'llm_settings_apply', status: 200 };
+  if (method === 'POST' && pathname === '/api/v1/llm-settings/test') return { id: 'llm_settings_probe', status: 200 };
   if (method === 'POST' && pathname === '/api/v1/portrait-spec') return { id: 'portrait_spec', status: 200 };
+  const report = pathname.match(/^\/api\/v1\/developer\/llm-turn-reports\/([^/]+)(?:\/([^/]+))?$/u);
+  if (method === 'GET' && report) return { id: 'llm_turn_report', partyId: decodeURIComponent(report[1]), requestId: report[2] == null ? null : decodeURIComponent(report[2]), status: 200 };
   if (method === 'POST' && pathname === '/api/v1/new-games') return { id: 'new_game', status: 201 };
   const screen = pathname.match(/^\/api\/v1\/parties\/([^/]+)\/screen$/u);
   if (method === 'GET' && screen) return { id: 'party_screen', partyId: decodeURIComponent(screen[1]), status: 200 };
@@ -57,8 +64,19 @@ export function matchApiRoute(method, pathname) {
 async function executeRoute(route, context) {
   if (route.id === 'health') return context.root.health();
   if (route.id === 'scenarios') return context.root.listScenarios();
+  if (route.id === 'llm_settings') return context.root.getLlmSettings();
+  if (route.id === 'llm_turn_report') {
+    if (context.developerMode !== true || typeof context.root.getLlmTurnReport !== 'function') {
+      throw Object.assign(new Error('Route not found.'), { code: 'ROUTE_NOT_FOUND', status: 404 });
+    }
+    const report = context.root.getLlmTurnReport({ party_id: route.partyId, request_id: route.requestId });
+    if (report == null) throw Object.assign(new Error('LLM turn report not found.'), { code: 'LLM_TURN_REPORT_NOT_FOUND', status: 404 });
+    return report;
+  }
   if (route.id === 'party_screen') return context.root.getPartyScreen(route.partyId);
   const body = await readJsonBody(context.request, { maxBytes: context.maxBodyBytes });
+  if (route.id === 'llm_settings_apply') return context.root.applyLlmSettings(validateLlmSettingsRequest(body));
+  if (route.id === 'llm_settings_probe') return context.root.probeLlmSettings(validateLlmSettingsProbeRequest(body));
   if (route.id === 'portrait_spec') {
     if (typeof context.portraitNormalizer?.normalize !== 'function') {
       throw Object.assign(new Error('Portrait normalizer is unavailable.'), {

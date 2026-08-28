@@ -695,6 +695,36 @@ test('one invalid NPC response receives one structural repair attempt', async ()
   assert.equal(calls[1].repair.validation_errors.length, 1);
 });
 
+test('invalid NPC dominant_act repair identifies its enum path', async () => {
+  const decisionRequest = request();
+  const calls = [];
+  const invalidPlan = plan(decisionRequest);
+  invalidPlan.speech.dominant_act = 'deny';
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      calls.push(context);
+      return calls.length === 1 ? invalidPlan : plan(decisionRequest);
+    },
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'planned');
+  assert.equal(calls.length, 2);
+  assert.deepEqual(calls[1].repair.validation_errors, [{
+    code: 'invalid_enum',
+    path: '$.speech.dominant_act',
+    message: 'dominant_act must be one of the allowed values.',
+    allowed_values: [
+      'greet', 'farewell', 'question', 'answer', 'inform', 'request',
+      'command', 'offer', 'accept', 'refuse', 'negotiate', 'promise',
+      'threaten', 'accuse', 'confess', 'evade', 'warn', 'challenge',
+      'apologize'
+    ]
+  }]);
+});
+
 test('one retryable NPC semantic inconsistency receives one repair', async () => {
   const decisionRequest = request();
   const calls = [];

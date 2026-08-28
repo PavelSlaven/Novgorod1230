@@ -174,6 +174,17 @@ function validateSpeech(value) {
     && validateResponseExpectation(value.response_expectation);
 }
 
+export function diagnoseConversationPlanDominantAct(value) {
+  if (value?.contribution_kind !== 'speech' || !plainRecord(value.speech)
+    || DOMINANT_ACTS.has(value.speech.dominant_act)) return [];
+  return freeze([{
+    code: 'invalid_enum',
+    path: '$.speech.dominant_act',
+    message: 'dominant_act must be one of the allowed values.',
+    allowed_values: [...DOMINANT_ACTS]
+  }]);
+}
+
 function validateInterpretation(value) {
   return exactKeys(value, ['intent', 'grounded_contribution', 'adaptation'])
     && nonEmptyText(value.intent)

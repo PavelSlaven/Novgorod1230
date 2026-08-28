@@ -2,6 +2,7 @@ import { isDeepStrictEqual } from 'node:util';
 import { deepFreeze } from '@rus/kernel';
 import { canonicalDigest } from '@rus/materialization';
 import {
+  diagnoseConversationPlanDominantAct,
   validateConversationContributionPlan,
   validateNpcActionDecisionRequest,
   validateNpcCombatDecisionRequest,
@@ -264,7 +265,10 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             boundary_id: currentBoundary.boundary_id }
         );
       }
-      repair = repairContext(rawPlan, domainResult?.errors ?? null);
+      const structuralErrors = !structurallyValid && mode === 'conversation'
+        ? diagnoseConversationPlanDominantAct(rawPlan) : [];
+      repair = repairContext(rawPlan, domainResult?.errors
+        ?? (structuralErrors.length > 0 ? structuralErrors : null));
     }
 
     return plannedProposal(

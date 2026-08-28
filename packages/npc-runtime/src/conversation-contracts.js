@@ -27,6 +27,7 @@ import { validateAllowedContributionReferences } from
 export {
   buildConversationSession,
   buildConversationStatementEvent,
+  diagnoseConversationPlanDominantAct,
   buildPlayerConversationContributionPlan,
   buildPlayerConversationInput,
   validateConversationSession,

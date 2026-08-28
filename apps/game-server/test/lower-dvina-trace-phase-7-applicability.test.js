@@ -414,6 +414,42 @@ test('Phase 7 generic check uses live NPC body and load, not binding snapshot',
     assert.equal(modifiers.equipment, -2);
   });
 
+test('Phase 7 suppresses generic check without live body',
+  async () => {
+    const state = phase7CommittedState();
+    const zhdanko = state.npcs.find(
+      ({ instance_id: id }) => id === 'zhdanko-1'
+    );
+    delete zhdanko.check_body_state;
+    const contracts = approvedPhase7Contracts(state);
+    const requests = [];
+    let calls = 0;
+    const consequence = await phase7Command({
+      state,
+      contracts,
+      model: async (request, { repair }) => {
+        requests.push(request);
+        calls += 1;
+        if (calls === 1) {
+          assert.equal(repair, null);
+          return phase7GenericCheckPlan(request);
+        }
+        assert.notEqual(repair, null);
+        return phase7DirectPlan(request);
+      }
+    }).consequence({
+      retrievedState: state,
+      playerInput: phase7PlayerInput(state, 'generic-check-data-gap')
+    });
+
+    assert.deepEqual(requests[0].decision_scope.allowed_attribute_refs, []);
+    assert.deepEqual(requests[0].decision_scope.allowed_skill_refs, []);
+    assert.equal(calls, 2);
+    assert.equal(consequence.status, 'resolved');
+    assert.equal(consequence.phase7.autonomous.proposal.plan.resolution,
+      'direct');
+  });
+
 test('Phase 7 composes an approved generic-check additional activity',
   async () => {
     const state = phase7CommittedState();

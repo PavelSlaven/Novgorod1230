@@ -81,6 +81,7 @@ export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, bou
   const npc = (state.npcs ?? []).find(
     ({ instance_id }) => instance_id === contracts.zhdanko.instance_id
   ) ?? contracts.zhdanko;
+  const executableGenericCheck = hasExecutableGenericCheckEnvelope(npc);
   const policy = contracts.npcPolicy ?? {};
   const previousDecisions = (state.npc_semantic_decision_refs ?? [])
     .filter(({ npc_ref: npcRef }) => npcRef?.entity_id === npc.instance_id)
@@ -99,9 +100,10 @@ export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, bou
     boundary,
     npc_snapshot: {
       ...npc,
-      attributes: structuredClone(
-        contracts.genericCheckContext?.attributes ?? []),
-      skills: structuredClone(contracts.genericCheckContext?.skills ?? []),
+      attributes: executableGenericCheck ? structuredClone(
+        contracts.genericCheckContext?.attributes ?? []) : [],
+      skills: executableGenericCheck ? structuredClone(
+        contracts.genericCheckContext?.skills ?? []) : [],
       goals: policyEntries(policy.goals, 'goal_ref'),
       fears: policyEntries(policy.fears, 'fear_ref'),
       obligations: obligationEntries(policy.relations_and_obligations)
@@ -136,6 +138,16 @@ export function buildTracePhase7NpcActionDecisionRequest({ state, contracts, bou
     resolved_signals: orderedSignals,
     operation_contract: operationContract
   });
+}
+
+function hasExecutableGenericCheckEnvelope(npc) {
+  const body = npc?.check_body_state;
+  const load = [npc?.machine_state?.load_category,
+    npc?.inventory?.load_category].find((value) =>
+    typeof value === 'string' && value.length > 0);
+  return [body?.health, body?.satiety, body?.energy].every(Number.isFinite)
+    && Array.isArray(body?.active_conditions)
+    && typeof load === 'string' && load.length > 0;
 }
 
 function policyEntries(values, refKey) {

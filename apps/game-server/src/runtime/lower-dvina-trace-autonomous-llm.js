@@ -49,13 +49,10 @@ function operationMappings(request) {
         outcomes: GENERIC_CHECK_OUTCOMES
       }
     } } : {}),
-    request_world_process: (requestOperations.request_world_process ?? []).map(
-      (operation) => ({ resolution: 'domain_request', operation })
-    ),
+    request_world_process: requestOperations.request_world_process ?? [],
     ...Object.fromEntries(Object.entries(requestOperations)
       .filter(([op]) => op !== 'request_world_process')
-      .map(([op, operations]) =>
-        [op, operations.map((operation) => ({ resolution: 'domain_request', operation }))]))
+      .map(([op, operations]) => [op, operations]))
   };
   return JSON.stringify(mappings);
 }
@@ -161,7 +158,7 @@ function bindRequestDerivedOperation(plan, request) {
   const candidates = requestDerivedOperations(request);
   if (!Array.isArray(plan.operations)) return plan;
   return { ...plan, operations: plan.operations.map((value) => {
-    const family = value?.op ?? value?.operation_kind;
+    const family = value?.op ?? value?.operation_kind ?? value?.operation?.op;
     const operations = candidates[family];
     return operations?.length === 1 ? operations[0] : value;
   }) };

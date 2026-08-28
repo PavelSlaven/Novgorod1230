@@ -204,6 +204,7 @@ test('autonomous prompt maps complete request-derived activity, item, and moveme
       target_ref: 'river_access' }
   ]) assert.equal(prompt.includes(JSON.stringify(operation)), true,
     JSON.stringify(operation));
+  assert.equal(prompt.includes('"operation":{"op":"request_activity"'), false);
   assert.equal(prompt.includes('never a capability summary'), true);
 });
 
@@ -229,8 +230,34 @@ test('autonomous adapter canonicalizes a uniquely selected malformed movement DT
   }]);
 });
 
+test('autonomous adapter canonicalizes a uniquely selected mapped operation wrapper', async () => {
+  const operation = { resolution: 'domain_request', operation: {
+    op: 'request_activity', actor_ref: 'other-npc', activity_kind: 'carry',
+    target_refs: ['other-bag', 'other-river'], description: 'Wrong request.'
+  } };
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: [operation]
+    } }; } }
+  });
+  const plan = await model({
+    ...request,
+    decision_scope: { operation_contract: { request_activity: { allowed: [{
+      activity_kind: 'carry', target_refs: ['trace_ld_v1_container_road_bag',
+        'river_access']
+    }] } } }
+  });
+  assert.deepEqual(plan.operations, [{
+    op: 'request_activity', actor_ref: 'zhdanko', activity_kind: 'carry',
+    target_refs: ['trace_ld_v1_container_road_bag', 'river_access'],
+    description: 'Execute supplied activity request.'
+  }]);
+});
+
 test('autonomous adapter does not guess ambiguous activity or item DTOs', async () => {
-  const operation = { operation_kind: 'request_activity' };
+  const operation = { resolution: 'domain_request', operation: {
+    op: 'request_activity'
+  } };
   const model = createLowerDvinaTraceNpcAutonomousModel({
     roleRunner: { async run() { return { output: {
       resolution: 'domain_request', goal_result: 'pending', operations: [operation]

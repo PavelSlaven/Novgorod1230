@@ -241,6 +241,36 @@ test('NPC required candidate is validator-valid and preserves operation', async 
     /"op":"emit_interaction"/u);
 });
 
+test('NPC route disclosure candidate is validator-valid and preserves route refs', async () => {
+  const required = {
+    required_supporting_operation: { op: 'disclose_known_route',
+      route_ref: 'route-1', source_knowledge_scope_ref: 'knowledge-1' }
+  };
+  const request = npcRequest(required);
+  request.allowed_references.entity_refs.push(ref('route', 'route-1'));
+  request.allowed_references.knowledge_refs.push(
+    ref('knowledge_scope', 'knowledge-1'));
+  request.decision_scope.operation_contract = { disclose_known_route: {} };
+  const candidate = requiredNpcConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  assert.equal(validateConversationContributionPlan(candidate, request), true);
+  assert.deepEqual(candidate.primary_addressee_ref,
+    ref('player_character', 'player-1'));
+  assert.equal(candidate.speech.dominant_act, 'inform');
+  assert.deepEqual(candidate.speech.interaction_tags, ['route_disclosure']);
+  assert.deepEqual(candidate.speech.claims[0].source_knowledge_refs,
+    [ref('knowledge_scope', 'knowledge-1')]);
+  assert.deepEqual(candidate.speech.claims[0].mentioned_entity_refs,
+    [ref('route', 'route-1')]);
+  assert.equal(candidate.speech.claims[0].speaker_posture, 'believed_true');
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+  const fixture = runner(() => npcPlan(request));
+  await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
+  assert.match(fixture.calls[0].messages[0].content,
+    /"route_ref":"route-1"/u);
+});
+
 test('player required candidate is validator-valid and preserves operation', () => {
   const required = {
     verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',

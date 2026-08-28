@@ -78,11 +78,10 @@ test('turn step model sends the validated request to the isolated planner role',
     'A general look around already visible surroundings uses the mapped',
     'achieved direct result',
     'Focused inspect or search for hidden or new details uses discovery',
-    'A reality_limited physical attempt uses the mapped moderate effort',
-    'absent fantastical referent is make_believe',
-    'referent absent from player-safe state',
-    'create no referent or other entity',
-    'do not move the actor'
+    'never grant an impossible result',
+    'create an absent referent',
+    'move the actor for make_believe',
+    'Classify interpretation.adaptation by the stated goal'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
 });
 
@@ -175,7 +174,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     assert.match(prompt, /do not substitute or invent refs/u);
   });
 
-test('turn step planner prompt prioritizes an absent fantastical referent',
+test('turn step planner prompt has stated-goal adaptation triage',
   async () => {
     let prompt;
     const model = createLowerDvinaTraceTurnStepModel({
@@ -185,14 +184,11 @@ test('turn step planner prompt prioritizes an absent fantastical referent',
       } }
     });
     await model(request());
-    assert.match(prompt,
-      /Classify the goal’s required referent before its physical verb/u);
-    assert.match(prompt,
-      /fantastical referent requires make_believe despite physical-action wording/u);
-    assert.match(prompt,
-      /Do not infer a fantastical referent from player intent/u);
-    assert.match(prompt,
-      /reality_limited only when both referent and attempted action are real and present/u);
+    assert.match(prompt, /adaptation by the stated goal, not whether the actor can pantomime it/u);
+    assert.match(prompt, /First: an absent fantastical required referent means make_believe/u);
+    assert.match(prompt, /Otherwise: real or ordinary referents with a physically limited action mean reality_limited/u);
+    assert.match(prompt, /Otherwise: literal/u);
+    assert.match(prompt, /ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery\/domain flow/u);
   });
 
 test('conversation prompts supply complete shapes and request-bound mappings',
@@ -363,8 +359,8 @@ test('impossible jump and absent spaceship plans stay grounded model contracts',
             async run(call) {
               assert.equal(call.messages[0].content.includes(
                 current.name === 'jump'
-                  ? 'reality_limited physical attempt uses the mapped moderate effort'
-                  : 'referent absent from player-safe state'), true);
+                  ? 'real or ordinary referents with a physically limited action mean reality_limited'
+                  : 'absent fantastical required referent means make_believe'), true);
               return { output: groundedPlan(input, current) };
             }
           }

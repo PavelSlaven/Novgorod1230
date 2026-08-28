@@ -55,6 +55,7 @@ export function createLowerDvinaTraceTurnStepModel({
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             'Do not infer a fantastical referent from player intent: it is absent unless player-safe state identifies it as a visible entity or capability.',
+            'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
             repairing
               ? 'Repair only listed validation errors; preserve echoed request identity and unrelated fields. For domain_owner_unavailable, preserve intent with a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
               : 'Plan only the next executable semantic step and preserve any remaining intent.'

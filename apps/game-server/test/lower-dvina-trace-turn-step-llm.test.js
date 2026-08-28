@@ -190,6 +190,8 @@ test('turn step planner prompt prioritizes an absent fantastical referent',
     assert.match(prompt,
       /fantastical referent requires make_believe despite physical-action wording/u);
     assert.match(prompt,
+      /Do not infer a fantastical referent from player intent/u);
+    assert.match(prompt,
       /reality_limited only when both referent and attempted action are real and present/u);
   });
 

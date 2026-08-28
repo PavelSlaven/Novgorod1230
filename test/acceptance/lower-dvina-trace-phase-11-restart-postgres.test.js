@@ -46,6 +46,8 @@ test('revision 25 survives production restart and exact replay through Phase 10'
         );
         assert.equal(environment.llm.requests.length, calls,
           'replay after restart must not invoke the provider');
+        environment.llm.requests.length = 0;
+        environment.llm.responses.length = 0;
       }
     }
     const [lastId, lastText] = PHASE11_CANONICAL_TURNS.at(-1);
@@ -118,6 +120,8 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
     for (const [id, text] of PHASE11_CANONICAL_TURNS.slice(0, 10)) {
       eremeyResult = await submit(environment, eremey, `eremey-${id}`, text);
     }
+    environment.llm.requests.length = 0;
+    environment.llm.responses.length = 0;
     for (let ordinal = 1; ordinal <= 5; ordinal += 1) {
       const state = await latestState(environment, eremey);
       if (state.player_response_boundary == null) break;

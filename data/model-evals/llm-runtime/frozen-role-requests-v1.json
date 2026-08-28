@@ -1,6 +1,6 @@
 {
   "schema": "rus.llm_runtime_frozen_role_requests.v1",
-  "corpus_version": 7,
+  "corpus_version": 8,
   "provenance": "Exact production messages and request DTOs frozen from active role builders and public owner validator fixtures. Excludes fragments without a public validator/callable boundary available to this runner.",
   "fixtures": [
     {
@@ -1530,7 +1530,6 @@
       ],
       "expected": {
         "required_refs": [
-          "ordinary layer",
           "basis",
           "property",
           "disclosure"
@@ -1876,7 +1875,6 @@
       ],
       "expected": {
         "required_refs": [
-          "ordinary layer",
           "basis",
           "property",
           "disclosure"

@@ -141,18 +141,6 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
-test('ordinary materialization prompt preserves a required seed semantic ref', () => {
-  const stageB = presenceRequest('ложка');
-  const request = { ...stageB, mode: 'seed_scope', candidate_query: null,
-    seeding_objective: { required_semantic_ref: 'ordinary layer' },
-    authority_envelope: { stage: 'seed_scope', density_bands: ['ordinary'],
-      disclosure_policy_refs: ['disclosure'], group_bases: [{ basis_ref: 'basis',
-        basis_state: 'committed', functional_buckets: ['other_ordinary'],
-        allowed_admission_classes: ['common_mundane'], permission_refs: [] }] } };
-  const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
-  assert.match(prompt, /"descriptor":"ordinary layer"/u);
-});
-
 test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
   const source = presenceRequest('любой предмет');
   const preparedBasis = 'ordinary_group_prepared';

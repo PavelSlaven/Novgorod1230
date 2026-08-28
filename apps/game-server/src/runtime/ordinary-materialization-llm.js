@@ -109,7 +109,7 @@ function ordinaryMaterializationResponseShape(request) {
     if (!plain(group)) return null;
     return { ...base, resolution: 'seeded',
       density_band_proposal: authority.density_bands[0], background_groups: [{
-        descriptor: seedDescriptor(request),
+        descriptor: '<semantic_group_descriptor>',
         functional_bucket: group.functional_buckets[0], availability_class: 'common',
         allowed_admission_classes: group.allowed_admission_classes,
         causal_basis: { basis_kind: 'seed_scope', basis_refs: [group.basis_ref] },
@@ -153,14 +153,6 @@ function ordinaryMaterializationResponseShape(request) {
         packing_slot_cost: '<semantic_integer_packing_slot_cost>',
         quantity: { value: '<semantic_integer_quantity>', unit: 'item' }, container: null }
     }], reason_code: 'materialize' };
-}
-
-function seedDescriptor(request) {
-  const objective = request?.seeding_objective;
-  const ref = typeof objective === 'string' ? objective
-    : objective?.required_semantic_ref ?? objective?.semantic_ref
-      ?? objective?.required_semantic_refs?.[0];
-  return text(ref) ? ref : '<semantic_group_descriptor>';
 }
 
 function exactRepairContext(context) {

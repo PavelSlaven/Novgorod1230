@@ -42,6 +42,18 @@ test('frozen role fixtures ship exact production-built messages', async () => {
   }
 });
 
+test('Stage A frozen fixtures leave descriptor semantic while retaining code-owned assertions', async () => {
+  const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
+  for (const fixture of corpus.fixtures.filter(({ id }) =>
+    id === 'ordinary-stage-a-seed-shore' || id === 'ordinary-stage-a-repair-seed-shore')) {
+    assert.deepEqual(fixture.expected.required_refs, ['basis', 'property', 'disclosure']);
+    assert.deepEqual(fixture.expected.required_values, {
+      resolution: 'seeded', density_band_proposal: 'ordinary',
+      'background_groups.0.functional_bucket': 'other_ordinary'
+    });
+  }
+});
+
 async function productionMessages(fixture) {
   if (fixture.role_id === 'ordinary_materialization') {
     const request = fixture.repair

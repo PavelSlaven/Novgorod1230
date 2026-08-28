@@ -89,6 +89,69 @@ test('autonomous prompt maps supplied world-process and generic-check values', a
     '"source_refs":["fuel"]', '"attribute_ref":"<one of allowed_attribute_refs>"',
     '"difficulty_id":"<trivial|ordinary|risky|dangerous|limit|nearly_impossible>"',
     'empty top-level operations']) assert.equal(prompt.includes(value), true, value);
+  assert.equal(prompt.includes(JSON.stringify({
+    schema: 'npc_step_plan_v1', request_id: 'decision-1', root_turn_id: 'turn-1',
+    boundary_id: 'boundary-1', committed_state_version: 1, working_revision: 0,
+    decision_index: 1, npc_ref: 'zhdanko',
+    interpretation: { npc_goal: '<current goal>',
+      grounded_attempt: '<nearest grounded attempt>', adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_world_process', actor_ref: 'zhdanko',
+      process_action: 'start', process_ref: null, process_kind: 'fire',
+      source_refs: ['fuel'], target_refs: ['flint'],
+      description: '<brief grounded attempt>' }],
+    check: null, reason_code: '<reason_code>', reason: '<brief subjective reason>'
+  })), true);
+});
+
+test('autonomous adapter binds incomplete world-process plans to one request mapping', async () => {
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: []
+    } }; } }
+  });
+  const scopedRequest = {
+    ...request,
+    decision_scope: { operation_contract: { request_world_process: { allowed: [{
+      process_action: 'start', process_ref: null, process_kind: 'fire',
+      source_refs: ['fuel'], target_refs: ['flint']
+    }] } } }
+  };
+
+  const plan = await model(scopedRequest);
+  assert.deepEqual(plan.operations, [{
+    op: 'request_world_process', actor_ref: request.npc_ref,
+    process_action: 'start', process_ref: null, process_kind: 'fire',
+    source_refs: ['fuel'], target_refs: ['flint'],
+    description: 'Execute supplied world-process request.'
+  }]);
+});
+
+test('autonomous adapter replaces mismatched world-process mapping', async () => {
+  const model = createLowerDvinaTraceNpcAutonomousModel({
+    roleRunner: { async run() { return { output: {
+      resolution: 'domain_request', goal_result: 'pending', operations: [{
+        op: 'request_world_process', process_action: 'affect',
+        process_ref: 'other-process', process_kind: 'other',
+        source_refs: ['other-fuel'], target_refs: []
+      }]
+    } }; } }
+  });
+  const scopedRequest = {
+    ...request,
+    decision_scope: { operation_contract: { request_world_process: { allowed: [{
+      process_action: 'start', process_ref: null, process_kind: 'fire',
+      source_refs: ['fuel'], target_refs: ['flint']
+    }] } } }
+  };
+
+  const [operation] = (await model(scopedRequest)).operations;
+  assert.equal(operation.process_action, 'start');
+  assert.equal(operation.process_ref, null);
+  assert.equal(operation.process_kind, 'fire');
+  assert.deepEqual(operation.source_refs, ['fuel']);
+  assert.deepEqual(operation.target_refs, ['flint']);
 });
 
 test('autonomous adapter fails closed for missing runner or non-object output', async () => {

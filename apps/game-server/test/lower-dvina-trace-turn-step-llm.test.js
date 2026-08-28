@@ -77,6 +77,7 @@ test('turn step model sends the validated request to the isolated planner role',
     'Focused inspect or search for hidden or new details uses discovery',
     'A reality_limited physical attempt uses the mapped moderate effort',
     'absent fantastical referent is make_believe',
+    'referent absent from player-safe state',
     'create no referent or other entity',
     'do not move the actor'
   ]) assert.equal(prompt.includes(phrase), true, phrase);
@@ -243,7 +244,10 @@ test('conversation prompts supply complete shapes and request-bound mappings',
     for (const prompt of [player, npc]) {
       assert.match(prompt, /speech: null/u);
       assert.match(prompt, /refs\/handoff only from request contract/u);
+      assert.match(prompt, /greet, farewell, question, answer, inform/u);
+      assert.match(prompt, /supporting_operations must be \[required_supporting_operation\]/u);
     }
+    assert.match(npc, /required_check\.attribute_ref, skill_ref, and difficulty_band/u);
   });
 
 test('conversation non-speech mappings have validator-valid shapes', () => {
@@ -337,7 +341,7 @@ test('impossible jump and absent spaceship plans stay grounded model contracts',
               assert.equal(call.messages[0].content.includes(
                 current.name === 'jump'
                   ? 'reality_limited physical attempt uses the mapped moderate effort'
-                  : 'absent fantastical referent is make_believe'), true);
+                  : 'referent absent from player-safe state'), true);
               return { output: groundedPlan(input, current) };
             }
           }

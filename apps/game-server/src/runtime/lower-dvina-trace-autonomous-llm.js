@@ -58,12 +58,36 @@ function operationMappings(request) {
   });
 }
 
+function singleWorldProcessCandidate(request) {
+  const allowed = request?.decision_scope?.operation_contract
+    ?.request_world_process?.allowed;
+  if (!Array.isArray(allowed) || allowed.length !== 1) return null;
+  const entry = allowed[0];
+  return JSON.stringify({
+    schema: 'npc_step_plan_v1', request_id: request.request_id,
+    root_turn_id: request.root_turn_id, boundary_id: request.boundary_id,
+    committed_state_version: request.committed_state_version,
+    working_revision: request.working_revision,
+    decision_index: request.decision_index, npc_ref: request.npc_ref,
+    interpretation: { npc_goal: '<current goal>',
+      grounded_attempt: '<nearest grounded attempt>', adaptation: 'literal' },
+    resolution: 'domain_request', goal_result: 'pending',
+    activity: { owner: 'domain', duration_class: null, effort: null },
+    operations: [{ op: 'request_world_process', actor_ref: request.npc_ref,
+      process_action: entry.process_action, process_ref: entry.process_ref,
+      process_kind: entry.process_kind, source_refs: entry.source_refs,
+      target_refs: entry.target_refs, description: '<brief grounded attempt>' }],
+    check: null, reason_code: '<reason_code>', reason: '<brief subjective reason>'
+  });
+}
+
 export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
   if (typeof roleRunner?.run !== 'function') {
     throw dependencyError('Configured LLM role runner is required.');
   }
   return async function planNpcAutonomousAction(request, context = {}) {
     const repair = context.repair ?? null;
+    const candidate = singleWorldProcessCandidate(request);
     const response = await roleRunner.run({
       scope: 'turn_runtime',
       role_id: repair
@@ -75,6 +99,9 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
           'Return exactly one plain JSON object matching npc_step_plan_v1.',
           `Use this complete valid shape; angle-bracket values are placeholders, never emit them literally:\n${planShape(request)}`,
           `Use these request-derived operation mappings exactly:\n${operationMappings(request)}`,
+          ...(candidate === null ? [] : [
+            `This complete request-derived candidate is valid; replace its goal, attempt, reason code, and reason text:\n${candidate}`
+          ]),
           'Copy every identity field exactly from request. For domain_request use',
           'goal_result pending, domain activity, null check, and exactly one',
           'allowed domain operation. For request_world_process, copy one whole',
@@ -113,7 +140,34 @@ export function createLowerDvinaTraceNpcAutonomousModel({ roleRunner } = {}) {
     if (!plainObject(response?.output)) {
       throw dependencyError('NPC autonomous decider returned no JSON object.');
     }
-    return response.output;
+    return bindSingleWorldProcessRequest(response.output, request);
+  };
+}
+
+function bindSingleWorldProcessRequest(plan, request) {
+  const allowed = request?.decision_scope?.operation_contract
+    ?.request_world_process?.allowed;
+  if (plan.resolution !== 'domain_request' || plan.goal_result !== 'pending'
+      || !Array.isArray(allowed) || allowed.length !== 1) return plan;
+
+  const operation = worldProcessOperation(allowed[0], request.npc_ref);
+  if (Array.isArray(plan.operations) && plan.operations.length === 0) {
+    return { ...plan, operations: [operation] };
+  }
+  const index = Array.isArray(plan.operations)
+    ? plan.operations.findIndex((value) => value?.op === 'request_world_process')
+    : -1;
+  return index < 0 ? plan
+    : { ...plan, operations: plan.operations.map((value, current) =>
+      current === index ? operation : value) };
+}
+
+function worldProcessOperation(entry, actor_ref) {
+  return {
+    op: 'request_world_process', actor_ref, process_action: entry.process_action,
+    process_ref: entry.process_ref, process_kind: entry.process_kind,
+    source_refs: entry.source_refs, target_refs: entry.target_refs,
+    description: 'Execute supplied world-process request.'
   };
 }
 

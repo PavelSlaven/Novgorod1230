@@ -114,10 +114,81 @@ test('frozen ordinary probes carry code-owned Stage A and Stage B envelopes', as
 
 test('ordinary materialization prompt maps Stage A to its candidate-free fallback', () => {
   const stageB = presenceRequest('ложка');
-  const request = { ...stageB, mode: 'seed_scope', candidate_query: null };
+  const request = { ...stageB, mode: 'seed_scope', candidate_query: null,
+    authority_envelope: { stage: 'seed_scope', density_bands: ['ordinary'],
+      disclosure_policy_refs: ['disclosure'], group_bases: [{ basis_ref: 'basis',
+        basis_state: 'committed', functional_buckets: ['other_ordinary'],
+        allowed_admission_classes: ['common_mundane'], permission_refs: [] }] } };
   const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(prompt, /seed_scope permits only seeded or no_change/u);
+  assert.match(prompt, /"resolution":"seeded"/u);
+  assert.match(prompt, /"descriptor":"<semantic_group_descriptor>"/u);
+  assert.match(prompt, /"basis_refs":\["basis"\]/u);
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
+});
+
+test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
+  const source = presenceRequest('любой предмет');
+  const request = { ...source, policy_refs: { ...source.policy_refs,
+    allowed_supporting_bases: [{ basis_ref: 'basis', basis_state: 'committed' }] },
+  authority_envelope: { ...source.authority_envelope,
+    allowed_supporting_bases: [{ basis_ref: 'basis', basis_state: 'committed' }] } };
+  const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
+  assert.match(admitted, /"resolution":"materialize"/u);
+  assert.match(admitted, /"admission_class":"common_mundane"/u);
+  assert.match(admitted, /"property_basis_ref":"property"/u);
+  assert.match(admitted, /"position_ref":"bench"/u);
+
+  const restricted = { ...request, authority_envelope: {
+    ...request.authority_envelope,
+    candidate: { ...request.authority_envelope.candidate,
+      admission_class: 'weapon_or_armament' }
+  } };
+  const prompt = buildOrdinaryMaterializationMessages(restricted)[0].content;
+  assert.match(prompt, /"resolution":"absent"/u);
+  assert.match(prompt, new RegExp(`"candidate_key":"${restricted.candidate_query.candidate_key}"`, 'u'));
+  assert.match(prompt, new RegExp(`"coverage_key":"${restricted.candidate_query.coverage_key}"`, 'u'));
+});
+
+test('production O1 binds incomplete Flash output to its request envelope', async () => {
+  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+  const request = { ...presenceRequest('верёвка'), policy_refs: {
+    ...presenceRequest('верёвка').policy_refs,
+    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }]
+  }, authority_envelope: { ...presenceRequest('верёвка').authority_envelope,
+    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }]
+  } };
+  const roleRunner = { async run() { return { provider_record: modelIdentity(),
+    output: { resolution: 'materialize', reason_code: 'found', entities: [{
+      semantic_descriptor: { semantic_type: 'cordage', name: 'верёвка', facts: [] },
+      presence_expectation: 'routine', supporting_basis_ref: 'stage-b',
+      causal_basis: { basis_kind: 'ordinary_presence', basis_refs: ['stage-b'] },
+      placement_proposal: { position_ref: 'bench' }, mechanics_proposal: {
+        mass_grams: 350, external_hand_cost: 0, carry_form: 'compact',
+        packing_slot_cost: 1, quantity: { value: 1, unit: 'item' }, container: null
+      } }] } }; } };
+  const output = await createOrdinaryMaterializationModel({ roleRunner,
+    stageBApprovalReceipt: approval })(request, { repair: null });
+  assert.equal(output.schema, 'ordinary_materialization_plan_v1');
+  assert.equal(output.entities[0].admission_class, 'common_mundane');
+  assert.equal(output.entities[0].property_basis_ref, 'property');
+  assert.equal(output.entities[0].semantic_descriptor.name, 'верёвка');
+});
+
+test('production O1 turns a Stage A request-shaped no_change into a plan', async () => {
+  const approval = await loadLowerDvinaTraceOrdinaryStageBApproval();
+  const request = { ...presenceRequest('ложка'), mode: 'seed_scope',
+    candidate_query: null };
+  const output = await createOrdinaryMaterializationModel({
+    stageBApprovalReceipt: approval, roleRunner: { async run() {
+      return { provider_record: modelIdentity(), output: {
+        ...request, resolution: 'no_change' } };
+    } }
+  })(request, { repair: null });
+  assert.deepEqual(output, { schema: 'ordinary_materialization_plan_v1',
+    request_id: request.request_id, resolution: 'no_change',
+    density_band_proposal: null, background_groups: [], entities: [],
+    presence_resolutions: [], reason_code: 'no_change' });
 });
 
 test('Stage B eval boundary rejects accessors without reading them', async () => {

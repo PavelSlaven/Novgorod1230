@@ -11,12 +11,13 @@ const RESTRICTED = new Set(['specialized_or_valuable','weapon_or_armament',
 
 export async function resolveOrdinaryMaterializationPresence({ envelope, ordinaryMaterializationModel, workingProjection, basisCatalog, beforeModel, repairAvailable = () => true, codeOwnedResolution = null } = {}) {
   const input = envelopeOf(envelope), projection = projectionOf(input.request, workingProjection);
-  const early = preflight(input, projection, basisCatalog, codeOwnedResolution); if (early) return early;
-  if (codeOwnedResolution !== null) {
-    if (!['absent', 'no_change', 'authority_required'].includes(codeOwnedResolution)) {
+  const codeResolution = codeOwnedResolution ?? forbiddenAdmission(input);
+  const early = preflight(input, projection, basisCatalog, codeResolution); if (early) return early;
+  if (codeResolution !== null) {
+    if (!['absent', 'no_change', 'authority_required'].includes(codeResolution)) {
       fail('TURN_ORDINARY_PRESENCE_CODE_OWNED_RESOLUTION_INVALID');
     }
-    return negative(input, { resolution: codeOwnedResolution }, projection, false);
+    return negative(input, { resolution: codeResolution }, projection, false);
   }
   if (beforeModel != null) {
     if (typeof beforeModel !== 'function') fail('TURN_ORDINARY_PRESENCE_CUTOVER_INVALID');
@@ -130,14 +131,18 @@ function envelopeOf(value) {
     if (i.candidate_key !== candidate_key || i.coverage_key !== coverage_key
         || i.category_key !== category_key || i.context_version !== context_version
         || i.policy_version !== e.request.policy_refs.ordinary_presence_policy_ref
-        || !e.request.policy_refs.allowed_admission_classes.includes(i.admission_class)
-        || permissionsFor(i, e.request) === null
         || authority?.stage === 'resolve_presence' && !sameCandidateAuthority(
           authority.candidate, i)) {
       fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID');
     }
   } catch { fail('TURN_ORDINARY_PRESENCE_ENVELOPE_INVALID'); }
   return freeze(e);
+}
+function forbiddenAdmission(input) {
+  const { identity, request } = input;
+  return !request.policy_refs.allowed_admission_classes.includes(
+    identity.admission_class) || permissionsFor(identity, request) === null
+    ? 'authority_required' : null;
 }
 function sameCandidateAuthority(authority, identity) { return authority.semantic_type
   === identity.semantic_type && authority.functional_bucket === identity.functional_bucket

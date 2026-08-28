@@ -121,7 +121,7 @@ test('turn step planner prompt supplies current complete plan shape', async () =
     'activity_moment', 'activity_goal', 'activity_context', 'next_step',
     'domain_request'
   ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
-  assert.match(prompt, /Do not use obsolete keys interpretation\.actor_id/u);
+  assert.match(prompt, /continuation\.next_step[\s\S]*two fields[\s\S]*remaining_intent[\s\S]*depends_on_refs is \[\][\s\S]*copied player-safe refs[\s\S]*no other fields/u);
 });
 
 test('turn step planner prompt maps grounded and visible-look contracts',
@@ -136,7 +136,7 @@ test('turn step planner prompt maps grounded and visible-look contracts',
     const input = request();
     await model(input);
     const mappings = JSON.parse(prompt.match(
-      /Use these mappings[^\n]*:\n(\{[^\n]+\})/u
+      /Use these mappings[^\n]*:\n(\{[^\n]+?\}) Do not use obsolete keys/u
     )[1]);
     assert.deepEqual(mappings.reality_limited_physical_attempt, {
       interpretation: { adaptation: 'reality_limited' },

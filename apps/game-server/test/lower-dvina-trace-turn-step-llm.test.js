@@ -94,7 +94,7 @@ test('turn step planner prompt preserves only compound intent outside capability
     } }
   });
   await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
-  assert.match(prompt, /available_domain_operations[\s\S]*operation unchanged[\s\S]*action_production only when no supplied operation covers it[\s\S]*Sentence boundary is a continuation boundary[\s\S]*first independently executable sentence[\s\S]*later non-empty sentences[\s\S]*preserve all of them in continuation[\s\S]*goal_result pending[\s\S]*never let one selected operation consume them[\s\S]*Only clauses inside the same sentence may form one composite operation[\s\S]*explicitly represents their single event[\s\S]*Every domain_request uses goal_result pending[\s\S]*continuation is present, goal_result must be pending/u);
+  assert.match(prompt, /available_domain_operations[\s\S]*operation unchanged[\s\S]*Final continuation override for direct reality_limited or make_believe[\s\S]*stated action, purpose, manner, result, or qualifier[\s\S]*same grounding, not continuation[\s\S]*independently executable without that premise[\s\S]*every later sentence[\s\S]*continuation to null/u);
 });
 
 test('turn step planner prompt supplies current complete plan shape', async () => {
@@ -420,7 +420,7 @@ test('repair role receives only the original request and structural errors', asy
   assert.deepEqual(payload.structural_errors, structuralErrors);
   assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
   assert.equal(seen.messages[0].content.includes(
-    'direct semantic plan limited to visible facts and physical reality'), true);
+    'owner absence is not evidence of impossibility or fantasy'), true);
   assert.equal(JSON.stringify(payload).includes('invalid_output'), false);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

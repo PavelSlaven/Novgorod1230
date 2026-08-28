@@ -9,12 +9,15 @@ import {
   validateConversationContributionPlan,
   validatePlayerConversationContributionPlan
 } from '@rus/npc-runtime';
+import { validateNarrationOutput } from '@rus/narration';
 import {
   createLowerDvinaTraceNarrationService,
   createLowerDvinaTraceNpcSemanticModel,
   createLowerDvinaTracePlayerConversationModel,
   createLowerDvinaTraceTurnStepModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { requestTurnStepPlanWithRepair } from
+  '../../../packages/turn/src/turn-step-loop.js';
 import { createLowerDvinaTraceWorldProcessStepModel } from
   '../src/runtime/lower-dvina-trace-world-process-llm.js';
 
@@ -410,6 +413,70 @@ test('repair role receives only the original request and structural errors', asy
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });
 
+test('primary JSON parse failure uses one structural repair only', async () => {
+  const calls = [];
+  const input = request();
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
+        code: 'json_parse_failed'
+      });
+      return { output: groundedPlan(input, {
+        adaptation: 'literal', groundedAttempt: 'открыть сундук',
+        effort: 'light', reasonCode: 'repaired'
+      }) };
+    } }
+  });
+  const result = await requestTurnStepPlanWithRepair({
+    request: input, turnStepModel: model
+  });
+  assert.equal(result.repaired, true);
+  assert.deepEqual(calls.map(({ role_id }) => role_id), [
+    'turn_step_planner', 'turn_step_planner_repair'
+  ]);
+  const repairPayload = JSON.parse(calls[1].messages[1].content);
+  assert.equal(JSON.stringify(repairPayload).includes('bad JSON'), false);
+  assert.equal(repairPayload.structural_errors.length > 0, true);
+});
+
+test('planner errors other than primary JSON parsing do not repair', async () => {
+  let calls = 0;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run() {
+      calls += 1;
+      throw Object.assign(new Error('provider failed'), { code: 'http_500' });
+    } }
+  });
+  await assert.rejects(requestTurnStepPlanWithRepair({
+    request: request(), turnStepModel: model
+  }), { code: 'http_500' });
+  assert.equal(calls, 1);
+});
+
+test('invalid repaired plan does not receive a second repair', async () => {
+  const calls = [];
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      calls.push(call);
+      if (calls.length === 1) throw Object.assign(new Error('bad JSON'), {
+        code: 'json_parse_failed'
+      });
+      return { output: {} };
+    } }
+  });
+  await assert.rejects(requestTurnStepPlanWithRepair({
+    request: request(), turnStepModel: model
+  }), (error) => {
+    assert.equal(error.code, 'TURN_STEP_PLAN_INVALID');
+    assert.equal(error.details.repair_attempted, true);
+    return true;
+  });
+  assert.deepEqual(calls.map(({ role_id }) => role_id), [
+    'turn_step_planner', 'turn_step_planner_repair'
+  ]);
+});
+
 test('turn step model fails closed for missing runner or non-object output', async () => {
   assert.throws(
     () => createLowerDvinaTraceTurnStepModel(),
@@ -426,13 +493,16 @@ test('turn step model fails closed for missing runner or non-object output', asy
   }
 });
 
-test('narration audit sends compact contract example with sufficient exact role budget', async () => {
+test('narration roles receive complete narration_output shape and audit budget', async () => {
   const calls = [];
+  const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'Двор тих.', action_options: [], used_references: [], self_check: {} };
   const narration = createLowerDvinaTraceNarrationService({
     roleRunner: { async run(call) {
       calls.push(call);
       return { output: call.role_id === 'legacy.narrator.dossier'
-        ? { version: 1, schema: 'narration_output', output_id: 'out-1', prose: 'Двор тих.', action_options: [], used_references: [], self_check: {} }
+        ? {}
+        : call.role_id === 'legacy.narrator.dossier_repair'
+          ? repairedOutput
         : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible facts only'] } };
     } }
   });
@@ -440,7 +510,15 @@ test('narration audit sends compact contract example with sufficient exact role 
     version: 1, schema: 'narration_request', request_id: 'narration-1',
     surface: 'turn', visible_context: {}
   });
-  const audit = calls[1];
+  const shape = '{"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}';
+  const repairShape = shape.replace('<request_id>', '<request.request_id>');
+  assert.equal(calls[0].messages[0].content.includes(shape), true);
+  assert.equal(calls[0].messages[0].content.includes('Copy request_id exactly into output_id'), true);
+  assert.equal(calls[1].role_id, 'legacy.narrator.dossier_repair');
+  assert.equal(calls[1].messages[0].content.includes(repairShape), true);
+  assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
+  assert.equal(validateNarrationOutput(repairedOutput).ok, true);
+  const audit = calls[2];
   assert.equal(audit.role_id, 'legacy.narrator.audit');
   assert.deepEqual(audit.overrides, { temperature: 0, maxTokens: 1800 });
   const example = JSON.parse(audit.messages[0].content.match(

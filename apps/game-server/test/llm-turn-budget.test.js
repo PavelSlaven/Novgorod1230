@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
+import { createLowerDvinaTraceTurnStepModel } from
+  '../src/runtime/lower-dvina-trace-phase-2-llm.js';
 
 test('turn budget clamps calls, preserves lower override, and isolates contexts', async () => {
   let now = 0;
@@ -73,6 +75,31 @@ test('production role runner forwards turn budget to adapter', async () => {
   await runner.run({ scope: 'turn_runtime', role_id: 'turn_step_planner',
     overrides: { requestTimeoutMs: 500 } });
   assert.equal(calls[0].overrides.requestTimeoutMs, 321);
+});
+
+test('planner JSON repair keeps the shared repair budget', async () => {
+  let now = 0;
+  const calls = [];
+  const budget = createLlmTurnBudget({ now: () => now });
+  const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
+    execute: async (input) => {
+      calls.push(input);
+      return calls.length === 1
+        ? { status: 'parse_error', error: { code: 'json_parse_failed' } }
+        : { status: 'ok', parsed_json: {}, provider: 'deepseek',
+          model: 'deepseek-v4-flash', durationMs: 1 };
+    } });
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: runner });
+  await budget.runTurn(async () => {
+    assert.deepEqual(await model({}), {});
+    now = 20_000;
+    await model({}, { structural_errors: [] });
+  });
+  assert.deepEqual(calls.map(({ roleId }) => roleId), [
+    'turn_step_planner', 'turn_step_planner_repair'
+  ]);
+  assert.equal(calls[0].overrides.requestTimeoutMs, 10_000);
+  assert.equal(calls[1].overrides.requestTimeoutMs, 5_000);
 });
 
 test('production runner clamps executor then blocks exhausted next call', async () => {

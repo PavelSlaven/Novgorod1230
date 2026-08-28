@@ -39,32 +39,38 @@ export function createLowerDvinaTraceTurnStepModel({
             structuredClone(repairContext.structural_errors ?? [])
         }
       : request;
-    const response = await roleRunner.run({
-      scope: 'turn_runtime',
-      role_id: repairing
-        ? 'turn_step_planner_repair'
-        : 'turn_step_planner',
-      messages: [{
-        role: 'system',
-        content: [
-          'Return only one JSON object with schema turn_step_plan_v1.',
-          'Do not add Markdown, prose outside JSON, or unknown fields.',
-           `Use this full valid shape (echo request_id, committed_state_version, working_revision, and step_index exactly from request):\n${TURN_STEP_PLAN_EXAMPLE}`,
-          `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
-          ...TURN_STEP_PLANNER_INSTRUCTIONS,
-          repairing
-            ? 'Repair only the listed structural errors; preserve the echoed request identity and do not reinterpret unrelated fields.'
-            : 'Plan only the next executable semantic step and preserve any remaining intent.'
-        ].join(' ')
-      }, {
-        role: 'user',
-        content: JSON.stringify(payload)
-      }],
-      overrides: {
-        temperature: 0,
-        maxTokens: repairing ? 4000 : 8000
-      }
-    });
+    let response;
+    try {
+      response = await roleRunner.run({
+        scope: 'turn_runtime',
+        role_id: repairing
+          ? 'turn_step_planner_repair'
+          : 'turn_step_planner',
+        messages: [{
+          role: 'system',
+          content: [
+            'Return only one JSON object with schema turn_step_plan_v1.',
+            'Do not add Markdown, prose outside JSON, or unknown fields.',
+             `Use this full valid shape (echo request_id, committed_state_version, working_revision, and step_index exactly from request):\n${TURN_STEP_PLAN_EXAMPLE}`,
+            `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
+            ...TURN_STEP_PLANNER_INSTRUCTIONS,
+            repairing
+              ? 'Repair only the listed structural errors; preserve the echoed request identity and do not reinterpret unrelated fields.'
+              : 'Plan only the next executable semantic step and preserve any remaining intent.'
+          ].join(' ')
+        }, {
+          role: 'user',
+          content: JSON.stringify(payload)
+        }],
+        overrides: {
+          temperature: 0,
+          maxTokens: repairing ? 4000 : 8000
+        }
+      });
+    } catch (error) {
+      if (!repairing && error?.code === 'json_parse_failed') return {};
+      throw error;
+    }
     if (!response?.output || typeof response.output !== 'object'
         || Array.isArray(response.output)) {
       throw dependencyError('Turn step planner returned no JSON object.');
@@ -161,7 +167,7 @@ export function createLowerDvinaTraceNarrationService({
       generate: (request) => runNarrationRole(
         roleRunner,
         'legacy.narrator.dossier',
-        'Return only narration_output JSON grounded exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
+        'Return only one JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Ground prose, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
         request
       )
     },
@@ -178,7 +184,7 @@ export function createLowerDvinaTraceNarrationService({
       repair: (request) => runNarrationRole(
         roleRunner,
         'legacy.narrator.dossier_repair',
-        'Repair only the JSON shape requested by the embedded contract.',
+        'Return only one repaired JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request.request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request.request_id exactly into output_id; do not emit angle brackets literally. Repair JSON shape only; prose, action_options, used_references, and self_check must remain grounded exclusively in request.visible_context.',
         request
       )
     },

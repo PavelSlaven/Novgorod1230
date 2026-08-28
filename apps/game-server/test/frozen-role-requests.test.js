@@ -6,6 +6,7 @@ import {
   createLowerDvinaTracePlayerConversationModel,
   createLowerDvinaTraceTurnStepModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
+import { requestTurnStepPlan } from '@rus/turn';
 import { createLowerDvinaTraceNpcAutonomousModel } from
   '../src/runtime/lower-dvina-trace-autonomous-llm.js';
 import { createLowerDvinaTraceNpcCombatModel } from
@@ -52,6 +53,39 @@ test('Stage A frozen fixtures leave descriptor semantic while retaining code-own
       'background_groups.0.functional_bucket': 'other_ordinary'
     });
   }
+});
+
+test('unowned domain intent uses one direct planner step', async () => {
+  const request = {
+    schema: 'turn_step_request_v1', request_id: 'unowned-domain-probe',
+    root_turn_id: 'turn:probe', committed_state_version: 1,
+    working_revision: 0, step_index: 1, max_internal_steps: 8,
+    root_player_action: 'unowned-domain-probe',
+    remaining_intent: 'unowned-domain-probe', completed_steps: [],
+    actor: { actor_ref: 'actor:probe' }, player_safe_state: {}
+  };
+  let calls = 0;
+  const model = createLowerDvinaTraceTurnStepModel({ roleRunner: {
+    async run(call) {
+      calls += 1;
+      assert.match(call.messages[0].content,
+        /domain_request only when player_safe_state contains the exact/u);
+      return { output: {
+        schema: 'turn_step_plan_v1', request_id: request.request_id,
+        committed_state_version: 1, working_revision: 0, step_index: 1,
+        interpretation: { player_goal: request.root_player_action,
+          grounded_attempt: request.remaining_intent, adaptation: 'literal' },
+        resolution: 'direct', goal_result: 'achieved',
+        activity: { owner: 'semantic', duration_class: 'moment', effort: 'none' },
+        operations: [], check: null, continuation: null, clarification: null,
+        reason_code: 'unowned_domain_capability', reason: 'No owner.'
+      } };
+    }
+  } });
+  const plan = await requestTurnStepPlan({ request, turnStepModel: model });
+  assert.equal(plan.resolution, 'direct');
+  assert.deepEqual(plan.operations, []);
+  assert.equal(calls, 1);
 });
 
 async function productionMessages(fixture) {

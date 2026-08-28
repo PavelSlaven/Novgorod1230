@@ -408,7 +408,9 @@ test('repair role receives only the original request and structural errors', asy
   assert.deepEqual(Object.keys(payload).sort(), ['request', 'structural_errors']);
   assert.deepEqual(payload.request, input);
   assert.deepEqual(payload.structural_errors, structuralErrors);
-  assert.equal(seen.messages[0].content.includes('Repair only the listed structural errors'), true);
+  assert.equal(seen.messages[0].content.includes('Repair only listed validation errors'), true);
+  assert.equal(seen.messages[0].content.includes(
+    'direct semantic plan limited to visible facts and physical reality'), true);
   assert.equal(JSON.stringify(payload).includes('invalid_output'), false);
   assert.equal(JSON.stringify(payload).includes('turn_step_repair_context_v1'), false);
 });

@@ -2,10 +2,14 @@ import { deepFreeze } from '@rus/kernel';
 import { createTurnStepExecutionRegistry, requireTurnStepExecutionRegistry, runTurnStepLoop } from './turn-step-loop.js';
 import { TURN_STEP_OPERATION_BATCH_TARGET } from './turn-step-operation-batch.js';
 import { assertValid, validateAvailabilityDecision, validateConsequencePackage } from './validators.js';
-import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js'; import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } from './turn-step-spatial-semantic-remainder.js';
+import { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
+import { resolveTurnStepDomainOwner } from './turn-step-domain-owner-resolution.js';
+import { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
+import { isSpatialSemanticRemainderInScope, resolveSpatialSemanticRemainder } from './turn-step-spatial-semantic-remainder.js';
 import { initialWorkingProjectionFrom } from './turn-step-player-safe-projection.js';
 import { resolveWorldProcessRemainder } from './turn-step-world-process-remainder.js';
 export { isActionProductionOwnerInScope } from './turn-step-action-produced-remainder.js';
+export { isOrdinaryDiscoveryInScope } from './turn-step-ordinary-discovery.js';
 const DOMAIN_STEP_OPERATIONS = new Set([
   'request_discovery',
   'request_container_access',
@@ -13,6 +17,7 @@ const DOMAIN_STEP_OPERATIONS = new Set([
   'request_item_use',
   'request_activity',
   'emit_interaction',
+  'request_conversation',
   'request_combat',
   'request_world_process'
 ]);
@@ -66,6 +71,10 @@ export async function resolveBoundTurnStepCommand({
   if (externalRegistry != null) {
     requireTurnStepExecutionRegistry(externalRegistry);
   }
+  const preflightDomainPlan = createTurnStepDomainOwnerPreflight({
+    externalRegistry, semanticBindings, availableOptions, actor: projected.actor,
+    committedState, services
+  });
   const direct = Object.fromEntries([...DIRECT_STEP_OPERATIONS].map((op) => [
     op,
     async (execution) => {
@@ -81,101 +90,63 @@ export async function resolveBoundTurnStepCommand({
     op,
     async (execution) => {
       const operation = execution.operation;
-      const externalHandler = externalRegistry?.domain?.(operation);
-      if (typeof externalHandler === 'function') {
-        return externalHandler(execution);
-      }
-      const matches = semanticBindings.filter(({ command, binding }) =>
-        ((execution.prepared_chain_context?.prior_effect_count ?? 0) > 0
-          || availableOptions.has(command.option_id))
-        && binding.operation === operation.op
-        && binding.matches(deepFreeze({
-          operation: structuredClone(operation),
-          plan: structuredClone(execution.plan),
-          actor: structuredClone(projected.actor),
-          player_safe_state: structuredClone(
-            execution.request.player_safe_state
-          ),
-          committed_state: structuredClone(committedState)
-        })) === true);
-      if (matches.length === 0 && operation.op === 'request_discovery') {
+      const owner = preflightDomainPlan.resolve({ operation,
+        plan: execution.plan, request: execution.request, actor: projected.actor,
+        playerSafeState: execution.request.player_safe_state, committedState,
+        externalRegistry, semanticBindings, availableOptions,
+        preparedChainContext: execution.prepared_chain_context, services,
+        isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+        isActionProductionOwnerInScope });
+      if (owner.kind === 'external') return owner.handler(execution);
+      if (owner.kind === 'ordinary_discovery') {
         const ordinaryResolver =
           services.turnStepOrdinaryDiscoveryResolver;
-        if (typeof ordinaryResolver === 'function'
-            && isOrdinaryDiscoveryInScope({
-              operation,
-              playerSafeState: execution.request.player_safe_state
-            })) {
-          return ordinaryResolver(deepFreeze({
-            schema: 'turn_step_ordinary_discovery_request_v1',
-            operation: structuredClone(operation),
-            plan: structuredClone(execution.plan),
-            request: structuredClone(execution.request),
-            actor: structuredClone(projected.actor),
-            working_projection: structuredClone(execution.working_projection),
-            committed_state: structuredClone(committedState),
-            prepared_chain_context:
-              structuredClone(execution.prepared_chain_context)
-          }));
-        }
+        return ordinaryResolver(deepFreeze({
+          schema: 'turn_step_ordinary_discovery_request_v1',
+          operation: structuredClone(operation),
+          plan: structuredClone(execution.plan),
+          request: structuredClone(execution.request),
+          actor: structuredClone(projected.actor),
+          working_projection: structuredClone(execution.working_projection),
+          committed_state: structuredClone(committedState),
+          prepared_chain_context:
+            structuredClone(execution.prepared_chain_context)
+        }));
       }
-      if (matches.length === 0) {
+      if (owner.kind === 'world_process') {
         const worldProcess = resolveWorldProcessRemainder({ operation,
           execution, projected, committedState, services });
         if (worldProcess !== null) return worldProcess;
       }
-      if (matches.length === 0) {
+      if (owner.kind === 'spatial') {
         const spatialResolver = services.turnStepSpatialSemanticResolver;
-        if (typeof spatialResolver === 'function'
-            && isSpatialSemanticRemainderInScope({ operation,
-              playerSafeState: execution.request.player_safe_state })) {
-          return resolveSpatialSemanticRemainder({ resolver: spatialResolver,
-            execution, actor: projected.actor, committedState });
-        }
+        return resolveSpatialSemanticRemainder({ resolver: spatialResolver,
+          execution, actor: projected.actor, committedState });
       }
-      if (matches.length === 0) {
+      if (owner.kind === 'action_production') {
         const actionProductionOwner =
           services.turnStepActionProductionOwner;
-        if (typeof actionProductionOwner === 'function'
-            && isActionProductionOwnerInScope({
-              operation,
-              playerSafeState: execution.request.player_safe_state,
-              remainingIntent: execution.request.remaining_intent
-            })) {
-          const checked = execution.check_result != null;
-          return actionProductionOwner(deepFreeze({
-            schema: checked
-              ? 'turn_step_action_produced_remainder_request_v2'
-              : 'turn_step_action_produced_remainder_request_v1',
-            operation: structuredClone(operation),
-            plan: structuredClone(execution.plan),
-            request: structuredClone(execution.request),
-            actor: structuredClone(projected.actor),
-            working_projection:
-              structuredClone(execution.working_projection),
-            ...(checked ? {
-              check_result: structuredClone(execution.check_result)
-            } : {}),
-            committed_state: structuredClone(committedState),
-            prepared_chain_context:
-              structuredClone(execution.prepared_chain_context),
-            prepared_ordinary_materialization_atomic_write_plan:
-              structuredClone(execution
-                .prepared_ordinary_materialization_atomic_write_plan),
-            prepared_action_production_atomic_write_plans: structuredClone(
-              execution.prepared_action_production_atomic_write_plans)
-          }));
-        }
+        const checked = execution.check_result != null;
+        return actionProductionOwner(deepFreeze({
+          schema: checked
+            ? 'turn_step_action_produced_remainder_request_v2'
+            : 'turn_step_action_produced_remainder_request_v1',
+          operation: structuredClone(operation),
+          plan: structuredClone(execution.plan),
+          request: structuredClone(execution.request),
+          actor: structuredClone(projected.actor),
+          working_projection: structuredClone(execution.working_projection),
+          ...(checked ? { check_result: structuredClone(execution.check_result) } : {}),
+          committed_state: structuredClone(committedState),
+          prepared_chain_context: structuredClone(execution.prepared_chain_context),
+          prepared_ordinary_materialization_atomic_write_plan: structuredClone(
+            execution.prepared_ordinary_materialization_atomic_write_plan),
+          prepared_action_production_atomic_write_plans: structuredClone(
+            execution.prepared_action_production_atomic_write_plans)
+        }));
       }
-      if (matches.length !== 1) {
-        throw turnCommandError(
-          matches.length === 0
-            ? 'TURN_STEP_DOMAIN_BINDING_MISSING'
-            : 'TURN_STEP_DOMAIN_BINDING_AMBIGUOUS',
-          'Semantic domain request must resolve to exactly one available owner.'
-        );
-      }
-      const selectedCommand = matches[0].command;
+      if (owner.kind !== 'binding') throw domainOwnerResolutionError(owner);
+      const selectedCommand = owner.command;
       const preparedOwner = services.turnStepPreparedDomainEffect;
       const supportsPreparedEffect = typeof preparedOwner?.supports === 'function'
         && preparedOwner.supports(deepFreeze({
@@ -299,6 +270,7 @@ export async function resolveBoundTurnStepCommand({
       services.turnStepActionProductionPreflight(deepFreeze({
         ...structuredClone(execution), actor: structuredClone(projected.actor),
         committed_state: structuredClone(committedState) })),
+    semanticPlanValidator: preflightDomainPlan,
     admitPreparedDomainPlan: async ({ plan, request,
       prepared_chain_context: preparedChainContext }) => {
       const operation = plan.operations[0];
@@ -436,64 +408,61 @@ function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
-export function isOrdinaryDiscoveryInScope({ operation, playerSafeState }) {
-  if (!['inspect', 'search'].includes(operation?.discovery_kind)
-      || !Array.isArray(operation.target_refs)
-      || operation.target_refs.length !== 1
-      || typeof operation.query !== 'string'
-      || operation.query.trim().length === 0
-      || !ordinaryDiscoveryAvailable(playerSafeState)) {
-    return false;
-  }
-  return exactVisibleScope(playerSafeState).has(operation.target_refs[0]);
-}
-function ordinaryDiscoveryAvailable(playerSafeState) {
-  const resolution = ownDataProperty(playerSafeState, 'ordinary_resolution');
-  const marker = ownPlainDataRecord(resolution, [
-    'discovery_available', 'container_resolution_available'
-  ]);
-  return marker?.discovery_available === true
-    && marker.container_resolution_available === false;
-}
-function exactVisibleScope(...projections) {
-  const refs = new Set();
-  for (const projection of projections) {
-    addRef(refs, projection?.position?.location_ref);
-    for (const entity of projection?.visible_entities ?? []) {
-      addRef(refs, entity?.entity_ref);
+export function createTurnStepDomainOwnerPreflight({ externalRegistry,
+  semanticBindings, availableOptions, actor, committedState, services }) {
+  const cachedOwners = new Map();
+  const resolve = ({ operation, plan, request, preparedChainContext }) => {
+    const key = JSON.stringify([plan, request, preparedChainContext, operation]);
+    const cached = cachedOwners.get(key);
+    if (cached != null) return cached;
+    const owner = resolveTurnStepDomainOwner({ operation, plan, request, actor,
+      playerSafeState: request.player_safe_state, committedState,
+      externalRegistry, semanticBindings, availableOptions, preparedChainContext,
+      services, isOrdinaryDiscoveryInScope, isSpatialSemanticRemainderInScope,
+      isActionProductionOwnerInScope });
+    cachedOwners.set(key, owner);
+    return owner;
+  };
+  const validate = ({ plan, request,
+    prepared_chain_context: preparedChainContext }) => {
+    const errors = [];
+    for (const { operation, path } of plannedDomainOperations(plan)) {
+      const owner = resolve({ operation, plan, request, preparedChainContext });
+      if (owner.kind === 'ambiguous') throw domainOwnerResolutionError(owner);
+      if (owner.kind === 'missing') errors.push({ path,
+        rule: 'domain_owner_unavailable', code: 'domain_owner_unavailable',
+        message: 'must resolve to one available domain owner' });
     }
-    for (const entity of projection?.visible_objects ?? []) {
-      addRef(refs, entity?.entity_ref);
+    if (errors.length !== 0) throw turnCommandError('TURN_STEP_PLAN_INVALID',
+      'Semantic plan references an unavailable domain owner.', { errors });
+  };
+  validate.resolve = resolve;
+  return validate;
+}
+
+function* plannedDomainOperations(plan) {
+  for (const [index, operation] of (plan.operations ?? []).entries()) {
+    if (isDomainStepOperation(operation?.op)) yield { operation,
+      path: `$.operations.${index}` };
+  }
+  for (const [band, outcome] of Object.entries(plan.check?.outcomes ?? {})) {
+    for (const [index, operation] of (outcome.operations ?? []).entries()) {
+      if (isDomainStepOperation(operation?.op)) yield { operation,
+        path: `$.check.outcomes.${band}.operations.${index}` };
     }
   }
-  return refs;
 }
-function addRef(refs, value) {
-  if (typeof value === 'string' && value.length > 0) refs.add(value);
+
+function domainOwnerResolutionError(owner) {
+  return turnCommandError(
+    owner.kind === 'ambiguous'
+      ? 'TURN_STEP_DOMAIN_BINDING_AMBIGUOUS'
+      : 'TURN_STEP_DOMAIN_BINDING_MISSING',
+    'Semantic domain request must resolve to exactly one available owner.');
 }
-function ownPlainDataRecord(value, keys) {
-  if (value == null || typeof value !== 'object' || Array.isArray(value)
-      || (Object.getPrototypeOf(value) !== Object.prototype
-        && Object.getPrototypeOf(value) !== null)
-      || Object.getOwnPropertySymbols(value).length !== 0) return null;
-  const names = Object.getOwnPropertyNames(value);
-  if (names.length !== keys.length
-      || !keys.every((key) => names.includes(key))) return null;
-  const output = {};
-  for (const key of keys) {
-    const descriptor = Object.getOwnPropertyDescriptor(value, key);
-    if (descriptor == null || descriptor.enumerable !== true
-        || !Object.hasOwn(descriptor, 'value')) return null;
-    output[key] = descriptor.value;
-  }
-  return output;
-}
-function ownDataProperty(value, key) {
-  if (value == null || typeof value !== 'object') return undefined;
-  const descriptor = Object.getOwnPropertyDescriptor(value, key);
-  return descriptor?.enumerable === true && Object.hasOwn(descriptor, 'value')
-    ? descriptor.value : undefined;
-}
-function turnCommandError(code, message) {
-  return Object.assign(new Error(message), { code });
+
+function turnCommandError(code, message, details = undefined) {
+  return Object.assign(new Error(message), { code,
+    ...(details === undefined ? {} : { details: deepFreeze(structuredClone(details)) })
+  });
 }

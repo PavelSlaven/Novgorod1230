@@ -55,7 +55,7 @@ export function createLowerDvinaTraceTurnStepModel({
             `Use these mappings for the matching cases; angle-bracket values mean copy from request and must never be emitted literally:\n${TURN_STEP_PLAN_MAPPINGS}`,
             ...TURN_STEP_PLANNER_INSTRUCTIONS,
             repairing
-              ? 'Repair only the listed structural errors; preserve the echoed request identity and do not reinterpret unrelated fields.'
+              ? 'Repair only listed validation errors; preserve echoed request identity and unrelated fields. For domain_owner_unavailable, preserve intent with a direct semantic plan limited to visible facts and physical reality unless an exact code-owned capability is available; code still owns exact mechanics and state.'
               : 'Plan only the next executable semantic step and preserve any remaining intent.'
           ].join(' ')
         }, {

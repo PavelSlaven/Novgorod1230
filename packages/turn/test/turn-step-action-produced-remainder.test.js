@@ -370,14 +370,14 @@ test('A1 scope gate accepts player-safe item refs or visible items',
         }
       });
       await assert.rejects(() => runTurnWorkflow(actionInput(), services), {
-        code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+        code: 'TURN_STEP_PLAN_INVALID'
       }, entry.name);
     }
     assert.equal(calls, 0);
 
     const missingPort = servicesFor({ resolver: null, targetRefs: [] });
     await assert.rejects(() => runTurnWorkflow(actionInput(), missingPort), {
-      code: 'TURN_STEP_DOMAIN_BINDING_MISSING'
+      code: 'TURN_STEP_PLAN_INVALID'
     });
   });
 

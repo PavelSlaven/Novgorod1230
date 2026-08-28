@@ -139,9 +139,10 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
     }
     seen.add(inputDigest);
 
-    const { plan, repaired } = await requestTurnStepPlanWithRepair({
-      request,
+    const { plan, repaired } = await requestTurnStepPlanWithRepair({ request,
       turnStepModel: ports.turnStepModel,
+      semanticPlanValidator: ports.semanticPlanValidator,
+      preparedChainContext,
       allowRepair: preparedEffects.length === 0
     });
     await revalidateBaseVersion({
@@ -308,14 +309,15 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
   });
 }
 
-export async function requestTurnStepPlanWithRepair({
-  request,
-  turnStepModel,
+export async function requestTurnStepPlanWithRepair({ request, turnStepModel,
+  semanticPlanValidator = null,
+  preparedChainContext = null,
   allowRepair = true
 }) {
   try {
     return {
-      plan: await requestTurnStepPlan({ request, turnStepModel }),
+      plan: await requestAndValidateTurnStepPlan({ request, turnStepModel,
+        semanticPlanValidator, preparedChainContext }),
       repaired: false
     };
   } catch (error) {
@@ -328,17 +330,18 @@ export async function requestTurnStepPlanWithRepair({
       });
       throw error;
     }
-    const repairContext = deepFreeze({
-      schema: 'turn_step_repair_context_v1',
+    const repairContext = deepFreeze({ schema: 'turn_step_repair_context_v1',
       attempt: 2,
       structural_errors: structuredClone(error.details?.errors ?? [])
     });
     try {
       return {
-        plan: await requestTurnStepPlan({
+        plan: await requestAndValidateTurnStepPlan({
           request,
           turnStepModel: (safeRequest) =>
-            turnStepModel(safeRequest, repairContext)
+            turnStepModel(safeRequest, repairContext),
+          semanticPlanValidator,
+          preparedChainContext
         }),
         repaired: true
       };
@@ -354,13 +357,19 @@ export async function requestTurnStepPlanWithRepair({
   }
 }
 
+async function requestAndValidateTurnStepPlan({ request, turnStepModel,
+  semanticPlanValidator, preparedChainContext }) {
+  const plan = await requestTurnStepPlan({ request, turnStepModel });
+  if (typeof semanticPlanValidator === 'function') {
+    await semanticPlanValidator(deepFreeze({ plan, request: structuredClone(request),
+      prepared_chain_context: structuredClone(preparedChainContext) }));
+  }
+  return plan;
+}
 function initialPreparedChainContext(value) {
   if (value == null) return null;
-  return buildTurnStepPreparedChainContext({
-    priorEffectCount: 0,
-    currentClock: value.current_clock,
-    currentBodyState: value.current_body_state
-  });
+  return buildTurnStepPreparedChainContext({ priorEffectCount: 0,
+    currentClock: value.current_clock, currentBodyState: value.current_body_state });
 }
 
 async function revalidateBaseVersion({
@@ -469,17 +478,14 @@ function requireRegistry(registry) {
 }
 
 function requireFunction(value, code, label) {
-  if (typeof value !== 'function') {
-    throw turnFailure(code, `${label} must be an injected function.`);
-  }
+  if (typeof value !== 'function') throw turnFailure(code,
+    `${label} must be an injected function.`);
   return value;
 }
 
 function cloneObject(value, code) {
   if (!plain(value)) throw turnFailure(code, 'Expected a JSON object.');
-  try {
-    return structuredClone(value);
-  } catch {
+  try { return structuredClone(value); } catch {
     throw turnFailure(code, 'Expected cloneable JSON data.');
   }
 }
@@ -489,6 +495,4 @@ function plain(value) {
     && !Array.isArray(value);
 }
 
-function text(value) {
-  return String(value ?? '').trim();
-}
+function text(value) { return String(value ?? '').trim(); }

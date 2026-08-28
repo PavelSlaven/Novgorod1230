@@ -69,8 +69,9 @@ test('interrupted Ratsha social check resumes without reroll or another LLM',
     let checkCalls = 0;
     const first = await runPhase4({ state, contracts,
       rawText: 'Ратша, отвечай.', inputDigest: digest('2'),
-      responseKind: 'lie',
-      checkResult: checkResult(contracts.check.check_id, 'success'),
+      responseKind: 'bargain',
+      checkResult: checkResult(contracts.check.check_id,
+        'failure_with_consequence'),
       checkRequest, offerStage,
       npcSocialCheckResolver: async ({ request }) => {
         checkCalls += 1;
@@ -108,7 +109,7 @@ test('interrupted Ratsha social check resumes without reroll or another LLM',
     assert.equal(resumed.playerCalls, 0);
     assert.equal(resumed.npcCalls, 0);
     assert.equal(resumed.result.pending_npc_execution, null);
-    assert.equal(resumed.result.response_kind, 'lie');
+    assert.equal(resumed.result.response_kind, 'bargain');
     assert.equal(resumed.result.statements.length, 1);
     assert.equal(resumed.result.statements[0].social_delivery_result
       .outcome_band, 'success_with_cost');

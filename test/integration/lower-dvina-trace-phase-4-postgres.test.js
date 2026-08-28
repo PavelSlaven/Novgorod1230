@@ -207,7 +207,6 @@ test('Phase 4 PostgreSQL path commits, replays, rolls back, and rejects tamperin
     party.party_id
   );
 
-  await runLiePath({ pool, release, runtimeCatalogPin });
   await runBargainPath({ pool, release, runtimeCatalogPin });
   await runCombatHandoffPath({ pool, release, runtimeCatalogPin });
   await assertInterruptedSurrenderRestart({
@@ -571,65 +570,6 @@ function approvedNarration(requestId) {
     final_audit: { version: 1, schema: 'narration_audit', pass: true,
       concerns: [], evidence: [] }, repair_request: null,
     generation_history: [], audit_history: [], repair_history: [], diagnostics: {} };
-}
-
-async function runLiePath({ pool, release, runtimeCatalogPin }) {
-  const counters = { rng: 0, npc: 0 };
-  const runtime = buildRuntime({
-    pool,
-    release,
-    runtimeCatalogPin,
-    ratshaResponseKind: 'lie',
-    counters
-  });
-  const party = await createParty(runtime, 'phase-4-lie');
-  await advanceToCampWithRouteKnowledge(runtime, party.party_id, 'lie');
-  await runtime.submitTurn(party.party_id,
-    turn('phase-4-lie-route',
-      'Пройти известной тропой к старой сушильне.'));
-  const before = await latestSnapshot(pool, party.party_id);
-  const input = turn('phase-4-lie-attempt',
-    'Предложить Ратше условную защиту и потребовать сдачи.');
-  const result = await runtime.submitTurn(party.party_id, input);
-  assert.deepEqual(result.conversation.semantic_exchange, {
-    response_kind: 'lie',
-    npc_utterance: 'Я здесь случайно и никого не видел.',
-    disclosed_route_ref: null
-  });
-  const after = await latestSnapshot(pool, party.party_id);
-  assert.equal(
-    Number(after.clock.whole_minutes) - Number(before.clock.whole_minutes),
-    10
-  );
-  await assertNonSurrenderSemanticRows(pool, party.party_id, 'lie');
-  const lie = after.interactions.find(({ interaction_id: id }) =>
-    id.endsWith(':lie'));
-  assert.equal(lie?.truth_projection, 'speaker_statement_only');
-  assert.equal(lie?.objective_truth_write, 'forbidden');
-  assert.equal(lie?.claims[0]?.speaker_posture, 'knowingly_false');
-  const forbiddenTruth = (await pool.query(
-    `SELECT count(*)::int AS count
-       FROM party_runtime.party_character_knowledge
-      WHERE party_id=$1
-        AND fact_id IN (
-          'principal_zhdanko',
-          'principal_zhdanko_established',
-          'hidden_event_sequence',
-          'hidden_motive'
-        )`,
-    [party.party_id]
-  )).rows[0].count;
-  assert.equal(forbiddenTruth, 0);
-  const beforeReplay = { ...counters };
-  const restarted = buildRuntime({
-    pool,
-    release,
-    runtimeCatalogPin,
-    ratshaResponseKind: 'lie',
-    counters
-  });
-  assert.deepEqual(await restarted.submitTurn(party.party_id, input), result);
-  assert.deepEqual(counters, beforeReplay);
 }
 
 async function runBargainPath({ pool, release, runtimeCatalogPin }) {

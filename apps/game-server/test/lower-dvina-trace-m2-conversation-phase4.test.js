@@ -254,7 +254,7 @@ test('revisions 14 and 15 accept exact Phase 4 semantic lineage', () => {
   }), { code: 'TRACE_M2_PHASE_4_SEMANTIC_LINEAGE_INVALID' });
 });
 
-test('the same code-owned social check exposes delivery cues but does not choose Ratsha branch', async () => {
+test('successful social check exposes only Ratsha surrender follow-up', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
   const common = {
     state,
@@ -264,33 +264,32 @@ test('the same code-owned social check exposes delivery cues but does not choose
     offerStage,
     checkRequest
   };
-  const lied = await runPhase4({
+  const surrendered = await runPhase4({
     ...common,
     inputDigest: digest('3'),
-    responseKind: 'lie'
-  });
-  const bargained = await runPhase4({
-    ...common,
-    inputDigest: digest('4'),
-    responseKind: 'bargain'
+    responseKind: 'surrender'
   });
 
-  assert.equal(lied.result.response_kind, 'lie');
-  assert.equal(bargained.result.response_kind, 'bargain');
+  assert.equal(surrendered.result.response_kind, 'surrender');
   assert.deepEqual(
-    lied.npcRequest.social_context.delivery_cues,
+    surrendered.npcRequest.decision_scope.operation_contract,
+    { commit_surrender: {
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender'
+    } }
+  );
+  assert.deepEqual(surrendered.npcRequest.decision_scope
+    .required_supporting_operation, { op: 'commit_surrender' });
+  assert.equal(surrendered.npcRequest.decision_scope.combat_handoff_available,
+    false);
+  assert.deepEqual(
+    surrendered.npcRequest.social_context.delivery_cues,
     ['delivery_credible_with_visible_cost']
   );
-  assert.deepEqual(
-    bargained.npcRequest.social_context.delivery_cues,
-    lied.npcRequest.social_context.delivery_cues
-  );
-  assert.equal(lied.npcRequest.social_context.offer_stage_ref,
+  assert.equal(surrendered.npcRequest.social_context.offer_stage_ref,
     offerStage.fact_id);
-  assert.equal(lied.npcRequest.social_context.offer_policy_ref,
+  assert.equal(surrendered.npcRequest.social_context.offer_policy_ref,
     contracts.promisePolicy.policy_id);
-  assert.deepEqual(lied.result.social_delivery_result,
-    bargained.result.social_delivery_result);
 });
 
 test('partial offer perception does not disclose offer or policy refs to Ratsha',
@@ -391,69 +390,45 @@ test('incapacitated Ratsha does not receive a conversation LLM request',
     assert.equal(exchange.result.response_kind, null);
   });
 
-test('Ratsha semantic boundary also accepts ordinary valid speech without a scenario outcome', async () => {
+test('Ratsha check admission maps success to surrender and failure to hostile follow-ups', async () => {
   const { state, contracts, offerStage, checkRequest } = phase4ArrivalState();
-  const responseKinds = [
-    'surrender',
-    'lie',
-    'bargain',
-    'speech',
-    'silence',
-    'leave_conversation',
-    'combat_handoff'
-  ];
-  const digestCharacters = ['6', '7', '8', 'd', '9', 'f', 'e'];
-  const results = new Map();
-
-  for (const [index, responseKind] of responseKinds.entries()) {
+  for (const [responseKind, band, character] of [
+    ['surrender', 'success', '6'],
+    ['bargain', 'failure_with_consequence', '7'],
+    ['combat_handoff', 'severe_failure', '8']
+  ]) {
     const exchange = await runPhase4({
       state,
       contracts,
       rawText: 'Что ты ответишь?',
-      inputDigest: digest(digestCharacters[index]),
+      inputDigest: digest(character),
       responseKind,
-      checkResult: checkResult(contracts.check.check_id, 'success'),
+      checkResult: checkResult(contracts.check.check_id, band),
       offerStage,
       checkRequest
     });
-    results.set(responseKind, exchange.result);
     assert.equal(exchange.result.response_kind, responseKind);
     assert.equal(exchange.npcCalls, 1);
-    if (responseKind === 'silence') {
-      assert.equal(exchange.result.silence, true);
-    } else {
-      assert.ok(exchange.result[responseKind]);
-    }
-    if (responseKind === 'leave_conversation') {
-      const projected = projectPhase4Negotiation({
-        state,
-        contracts,
-        result: exchange.result,
-        inputDigest: digest(digestCharacters[index])
-      });
-      assert.equal(projected.conversation_sessions.at(-1).status, 'ended');
-    }
   }
-
-  for (const responseKind of [
-    'lie', 'bargain', 'speech', 'silence', 'leave_conversation',
-    'combat_handoff'
-  ]) {
-    assert.equal(results.get(responseKind).commitment, null);
-    assert.equal(results.get(responseKind).knife_transition_eligibility, null);
+  for (const [index, [responseKind, band, code]] of [
+    ['lie', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['bargain', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['speech', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['silence', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['leave_conversation', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['combat_handoff', 'success', 'TURN_NPC_PLAN_INVALID'],
+    ['surrender', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['lie', 'severe_failure', 'TURN_NPC_PLAN_INVALID'],
+    ['speech', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
+    ['silence', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED'],
+    ['leave_conversation', 'severe_failure', 'TURN_CONVERSATION_NPC_APPLY_FAILED']
+  ].entries()) {
+    await assert.rejects(runPhase4({ state, contracts,
+      rawText: 'Что ты ответишь?', inputDigest: digest('0123456789a'[index]),
+      responseKind, checkResult: checkResult(contracts.check.check_id, band),
+      offerStage, checkRequest
+    }), { code });
   }
-  const combat = results.get('combat_handoff');
-  assert.deepEqual(combat.combat_handoff, {
-    kind: 'combat',
-    intent: 'transfer control to the combat owner',
-    target_actor_refs: [ref('player_character', state.actor_id)]
-  });
-  assert.equal(combat.exchange.session_status, 'suspended');
-  assert.equal(combat.statements.length, 1);
-  assert.deepEqual(combat.objective_truth_writes, []);
-  assert.equal(Object.hasOwn(combat, 'attack'), false);
-  assert.equal(Object.hasOwn(combat, 'harm'), false);
-  assert.equal(Object.hasOwn(combat, 'escape'), false);
 });
 
 test('Ratsha combat handoff rejects a target outside the request safe context',
@@ -465,7 +440,7 @@ test('Ratsha combat handoff rejects a target outside the request safe context',
       rawText: 'Что ты сделаешь?',
       inputDigest: digest('a'),
       responseKind: 'combat_handoff',
-      checkResult: checkResult(contracts.check.check_id, 'success'),
+      checkResult: checkResult(contracts.check.check_id, 'failure_with_consequence'),
       offerStage,
       checkRequest,
       transformNpcPlan: (plan) => {
@@ -528,9 +503,9 @@ test('late Ratsha surrender applies after another NPC contribution', async () =>
     responseKind: (_request, callIndex) =>
       callIndex === 1 ? 'bargain'
         : callIndex === 2 ? 'speech' : 'surrender',
-    checkResult: checkResult(contracts.check.check_id, 'success'),
+    checkResult: null,
     offerStage,
-    checkRequest,
+    checkRequest: null,
     transformNpcPlan(plan, { call_index: callIndex }) {
       const targetRef = callIndex === 1 ? fisherRef
         : callIndex === 2 ? ratshaRef : null;
@@ -572,7 +547,7 @@ test('late Ratsha combat handoff terminates the causal exchange', async () => {
     responseKind: (_request, callIndex) =>
       callIndex === 1 ? 'bargain'
         : callIndex === 2 ? 'speech' : 'combat_handoff',
-    checkResult: checkResult(contracts.check.check_id, 'success'),
+    checkResult: checkResult(contracts.check.check_id, 'failure_with_consequence'),
     offerStage,
     checkRequest,
     transformNpcPlan(plan, { call_index: callIndex }) {
@@ -608,9 +583,9 @@ test('silence and combat handoff have closed player-safe post-commit and replay 
       rawText: 'Что ты ответишь?',
       inputDigest: digest(digestCharacter),
       responseKind,
-      checkResult: checkResult(contracts.check.check_id, 'success'),
+      checkResult: null,
       offerStage,
-      checkRequest
+      checkRequest: null
     });
     assert.equal(
       exchange.result.statements.filter(
@@ -724,7 +699,7 @@ test('only surrender activates the party-local commitment and projects the knife
     .sort();
   assert.deepEqual(transitionSignalCategories, ['others', 'others', 'self']);
 
-  const lie = await runPhase4({
+  await assert.rejects(runPhase4({
     state,
     contracts,
     rawText: 'Сдавайся.',
@@ -733,15 +708,5 @@ test('only surrender activates the party-local commitment and projects the knife
     checkResult: checkResult(contracts.check.check_id, 'success'),
     offerStage,
     checkRequest
-  });
-  const liedState = projectPhase4Negotiation({
-    state,
-    contracts,
-    result: lie.result,
-    inputDigest: digest('b')
-  });
-  assert.equal(liedState.promise_instances[0].current_state, 'offered');
-  assert.equal(liedState.ratsha_surrendered, undefined);
-  assert.equal(liedState.npc_decision_signals.some(({ signal }) =>
-    signal.source_event_ref.entity_kind === 'item_property_transition'), false);
+  }), { code: 'TURN_NPC_PLAN_INVALID' });
 });

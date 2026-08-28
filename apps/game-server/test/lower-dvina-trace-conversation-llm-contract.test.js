@@ -296,6 +296,25 @@ test('player required candidate is validator-valid and preserves operation', () 
     [required.required_supporting_operation]);
 });
 
+test('player promise candidate is validator-valid with target from safe context', () => {
+  const required = {
+    verbatim_utterance_text: 'Предложить Ратше условную защиту и потребовать сдачи.',
+    target_npc_ref: ref('npc', 'npc-1'), required_resolution: 'check_required',
+    required_check: { attribute_ref: 'influence', skill_ref: 'conversation',
+      difficulty_band: 'hard' },
+    required_supporting_operation: { op: 'offer_conditional_protection' }
+  };
+  const request = playerRequest(required);
+  request.operation_contract = { offer_conditional_protection: {} };
+  const candidate = requiredPlayerConversationCandidate(request);
+  assert.notEqual(candidate, null);
+  assert.equal(validatePlayerConversationContributionPlan(candidate, request), true);
+  assert.deepEqual(candidate.primary_addressee_ref, required.target_npc_ref);
+  assert.deepEqual(candidate.supporting_operations,
+    [required.required_supporting_operation]);
+  assert.deepEqual(candidate.check.attribute_ref, required.required_check.attribute_ref);
+});
+
 test('player required candidate is omitted for target outside allowed actors', () => {
   const request = playerRequest({
     required_resolution: 'check_required',

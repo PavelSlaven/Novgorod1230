@@ -3,6 +3,8 @@ import test from 'node:test';
 import {
   resolveTracePhase4Contracts
 } from '../src/runtime/lower-dvina-trace-phase-4-contracts.js';
+import { prepareTracePhase4PlayerConversationPlan } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-player.js';
 import {
   phase2PublicResult
 } from '../src/infrastructure/postgres/lower-dvina-trace-phase-2-projection.js';
@@ -112,6 +114,49 @@ test('Phase 4 does not create a promise or check for an ordinary question', asyn
   assert.equal(availability.causal_stages.some(
     ({ schema }) => schema === 'rus.trace_promise_offer_stage.v1'
   ), false);
+});
+
+test('exact Phase 4 promise input requires one valid promise contribution', async () => {
+  const { state, contracts } = phase4ArrivalState();
+  const requests = [];
+  const { playerConversationModel } = createM2ConversationModels();
+  const prepare = (raw_text, model = playerConversationModel) =>
+    prepareTracePhase4PlayerConversationPlan({
+    state, contracts, playerInput: { raw_text }, inputDigest: digest('promise'),
+    playerConversationModel: async (request) => {
+      requests.push(structuredClone(request));
+      return model(request);
+    }, revalidateStateVersion: async () => state.party_state.state_version
+  });
+  const plan = await prepare(
+    '  Предложить Ратше  условную защиту и потребовать сдачи.  ');
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].player_safe_context.required_resolution,
+    'check_required');
+  assert.deepEqual(requests[0].player_safe_context.required_check, {
+    attribute_ref: contracts.check.attribute, skill_ref: contracts.check.skill,
+    difficulty_band: contracts.check.check_id
+  });
+  assert.deepEqual(requests[0].player_safe_context.required_supporting_operation,
+    { op: 'offer_conditional_protection' });
+  assert.equal(plan.resolution, 'check_required');
+  assert.deepEqual(plan.supporting_operations,
+    [{ op: 'offer_conditional_protection' }]);
+
+  const ordinary = await prepare('Ратша, кто велел тебе прийти сюда?',
+    async (request) => {
+      const ordinaryPlan = structuredClone(await playerConversationModel(request));
+      ordinaryPlan.resolution = 'automatic';
+      ordinaryPlan.check = null;
+      ordinaryPlan.supporting_operations = [];
+      return ordinaryPlan;
+    });
+  assert.equal(requests.length, 2);
+  assert.equal(requests[1].player_safe_context.required_resolution, undefined);
+  assert.equal(requests[1].player_safe_context.required_supporting_operation,
+    undefined);
+  assert.equal(ordinary.resolution, 'automatic');
+  assert.deepEqual(ordinary.supporting_operations, []);
 });
 
 test('Phase 4 action-set evaluation does not invoke the conversation interpreter', async () => {

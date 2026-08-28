@@ -16,6 +16,12 @@ import {
 
 const PLAYER_PLAN_STAGE_SCHEMA =
   'rus.trace_player_conversation_plan_stage.v1';
+const REGISTERED_PHASE4_PROMISE_INPUT =
+  'предложить ратше условную защиту и потребовать сдачи.';
+
+function normalizeRegisteredInput(value) {
+  return String(value ?? '').trim().toLowerCase().replace(/\s+/gu, ' ');
+}
 
 export async function prepareTracePhase3PlayerConversationPlan(input) {
   const { contracts } = input;
@@ -54,6 +60,8 @@ export async function prepareTracePhase4PlayerConversationPlan(input) {
   const target = contracts.actors.ratsha_storehouse_helper;
   const actualNpcActors = Object.entries(contracts.actors)
     .map(([ref, actor]) => ({ ref, ...structuredClone(actor) }));
+  const requiresPromise = normalizeRegisteredInput(input.playerInput?.raw_text)
+    === REGISTERED_PHASE4_PROMISE_INPUT;
   return prepareM2PlayerConversationPlan(createM2ConversationContext({
     ...input,
     phase: 'phase_4',
@@ -61,6 +69,15 @@ export async function prepareTracePhase4PlayerConversationPlan(input) {
     offerStage: null,
     targetActor: { ref: 'ratsha_storehouse_helper', ...target },
     actualNpcActors,
+    ...(requiresPromise ? {
+      requiredResolution: 'check_required',
+      requiredCheck: {
+        attribute_ref: contracts.check.attribute,
+        skill_ref: contracts.check.skill,
+        difficulty_band: contracts.check.check_id
+      },
+      requiredSupportingOperation: { op: PROMISE_OPERATION }
+    } : {}),
     playerOperationContract: {
       [PROMISE_OPERATION]: {
         owner: '@rus/social-law',

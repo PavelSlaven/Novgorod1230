@@ -121,11 +121,14 @@ export const CONVERSATION_PLAN_MAPPINGS = JSON.stringify({
 });
 
 export function requiredPlayerConversationCandidate(request) {
-  const context = request?.player_safe_context, check = context?.required_check, operation = context?.required_supporting_operation, addressee = operation?.target_ref;
+  const context = request?.player_safe_context, check = context?.required_check, operation = context?.required_supporting_operation;
+  const promiseOffer = operation?.op === 'offer_conditional_protection'
+    && Object.keys(operation).length === 1;
+  const addressee = promiseOffer ? context?.target_npc_ref : operation?.target_ref;
   if (context?.required_resolution !== 'check_required' || !check || !['attribute_ref', 'skill_ref', 'difficulty_band'].every((key) => typeof check[key] === 'string' && check[key].trim()) || !operation || Array.isArray(operation) || typeof operation.op !== 'string' || !operation.op.trim() || !context?.allowed_duration_classes?.length || !context?.allowed_references?.actor_refs?.some((reference) => reference?.entity_kind === addressee?.entity_kind && reference?.entity_id === addressee?.entity_id)) return null;
   return {
     schema: 'player_conversation_contribution_plan_v1', request_id: request.request_id, conversation_id: request.conversation_id, state_version: request.state_version, speaker_ref: request.speaker_ref, input_mode: context.verbatim_utterance_text ? 'verbatim' : 'intent_paraphrase', contribution_kind: 'speech', primary_addressee_ref: structuredClone(addressee), intended_addressee_refs: [structuredClone(addressee)], affected_actor_refs: [],
-    speech: { utterance_text: context.verbatim_utterance_text ?? '<semantic player speech>', dominant_act: '<one allowed dominant_act>', interaction_tags: [], topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } }, interpretation: { intent: '<semantic intent>', grounded_contribution: '<semantic grounded contribution>', adaptation: 'literal' },
+    speech: { utterance_text: context.verbatim_utterance_text ?? (promiseOffer ? 'Предложить условную защиту за сдачу.' : '<semantic player speech>'), dominant_act: promiseOffer ? 'offer' : '<one allowed dominant_act>', interaction_tags: [], topic_refs: [], claims: [], response_expectation: { kind: 'none', target_refs: [] } }, interpretation: { intent: promiseOffer ? 'предложить условную защиту за сдачу' : '<semantic intent>', grounded_contribution: promiseOffer ? 'предложить Ратше условную защиту' : '<semantic grounded contribution>', adaptation: 'literal' },
     resolution: 'check_required', activity: { duration_class: context.allowed_duration_classes[0], effort: 'none' }, supporting_operations: [structuredClone(operation)],
     check: { purpose: '<semantic check purpose>', ...check, outcomes: { clean_success: { delivery_quality: 'compelling', observable_effects: [] }, success: { delivery_quality: 'credible', observable_effects: [] }, success_with_cost: { delivery_quality: 'credible_with_visible_cost', observable_effects: [] }, failure_with_consequence: { delivery_quality: 'unconvincing', observable_effects: [] }, severe_failure: { delivery_quality: 'transparently_manipulative', observable_effects: [] } } }, handoff: null };
 }

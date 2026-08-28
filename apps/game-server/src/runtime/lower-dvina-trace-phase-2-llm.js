@@ -114,7 +114,7 @@ export function createLowerDvinaTraceNpcSemanticModel({
         : 'npc_conversation_responder',
       messages: [{
         role: 'system',
-        content: npcConversationInstructions(repair)
+        content: npcConversationInstructions(repair, request)
       }, {
         role: 'user',
         content: JSON.stringify(repair ? {

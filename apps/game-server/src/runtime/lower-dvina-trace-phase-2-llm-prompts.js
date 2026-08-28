@@ -162,7 +162,52 @@ export function playerConversationInstructions(repair) {
   ].join(' ');
 }
 
-export function npcConversationInstructions(repair) {
+export function requiredNpcConversationCandidate(request) {
+  const scope = request?.decision_scope;
+  const check = scope?.required_check;
+  const operation = scope?.required_supporting_operation;
+  const addressee = operation?.target_ref;
+  if (scope?.required_resolution !== 'check_required'
+      || !check || !['attribute_ref', 'skill_ref', 'difficulty_band'].every(
+        (key) => typeof check[key] === 'string' && check[key].trim())
+      || !operation || Array.isArray(operation)
+      || typeof operation.op !== 'string' || !operation.op.trim()
+      || !scope?.allowed_duration_classes?.length
+      || !request?.allowed_references?.actor_refs?.some((reference) =>
+        reference?.entity_kind === addressee?.entity_kind
+        && reference?.entity_id === addressee?.entity_id)
+  ) return null;
+  return {
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: request.npc_ref, contribution_kind: 'speech',
+    primary_addressee_ref: structuredClone(addressee),
+    intended_addressee_refs: [structuredClone(addressee)],
+    affected_actor_refs: [],
+    speech: { utterance_text: '<semantic NPC speech>',
+      dominant_act: '<one allowed dominant_act>', interaction_tags: [],
+      topic_refs: [], claims: [],
+      response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: '<semantic intent>',
+      grounded_contribution: '<semantic grounded contribution>',
+      adaptation: 'literal' },
+    resolution: 'check_required',
+    activity: { duration_class: scope.allowed_duration_classes[0],
+      effort: 'none' },
+    supporting_operations: [structuredClone(operation)],
+    check: { purpose: '<semantic check purpose>', ...check, outcomes: {
+      clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+      success: { delivery_quality: 'credible', observable_effects: [] },
+      success_with_cost: { delivery_quality: 'credible_with_visible_cost', observable_effects: [] },
+      failure_with_consequence: { delivery_quality: 'unconvincing', observable_effects: [] },
+      severe_failure: { delivery_quality: 'transparently_manipulative', observable_effects: [] }
+    } }, handoff: null, reason: '<semantic NPC reason>'
+  };
+}
+
+export function npcConversationInstructions(repair, request = null) {
+  const requiredCandidate = requiredNpcConversationCandidate(request);
   return [
     'Return only one plain JSON object matching exactly schema',
     'conversation_contribution_plan_v1 with one contribution.',
@@ -197,6 +242,10 @@ export function npcConversationInstructions(repair) {
     'Do not resolve RNG, exact time, consequences, database writes,',
     'or narration. Social delivery never dictates the NPC response.',
     'The NPC reason is internal and must not appear in speech or narration.',
+    ...(requiredCandidate === null ? [] : [
+      'Required conversation candidate: copy every non-placeholder value exactly; replace only semantic placeholders.',
+      JSON.stringify(requiredCandidate)
+    ]),
     repair
       ? 'Repair only structure, refs, and enum values. Preserve the original contribution meaning.'
       : 'Ordinary valid speech is allowed without a scenario outcome operation.'

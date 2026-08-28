@@ -7,11 +7,18 @@ import {
   validatePlayerConversationInput
 } from '@rus/npc-runtime';
 import { requestPlayerConversationContribution } from '@rus/turn';
+import { classifyRatshaPlan } from
+  '../src/runtime/lower-dvina-trace-m2-conversation-plans.js';
 import {
   createLowerDvinaTraceNpcSemanticModel,
   createLowerDvinaTracePlayerConversationModel
 } from '../src/runtime/lower-dvina-trace-phase-2-llm.js';
-import { requiredNpcConversationCandidate, requiredPlayerConversationCandidate } from
+import {
+  npcConversationCandidates,
+  npcConversationInstructions,
+  requiredNpcConversationCandidate,
+  requiredPlayerConversationCandidate
+} from
   '../src/runtime/lower-dvina-trace-phase-2-llm-prompts.js';
 
 const ref = (entity_kind, entity_id) => ({ entity_kind, entity_id });
@@ -284,6 +291,43 @@ test('NPC participation request states acceptance binding choice', async () => {
     /accepting, promising, or agreeing means choose exactly one allowed binding/u);
   assert.match(fixture.calls[0].messages[0].content,
     /The NPC chooses the binding/u);
+});
+
+test('Phase 8 NPC prompt supplies validator-valid surrender and combat forms', () => {
+  const request = npcRequest({ combat_handoff_available: true,
+    operation_contract: { commit_surrender: {
+      required_dominant_acts: ['accept', 'promise', 'confess'],
+      required_interaction_tag: 'surrender'
+    } } });
+  request.allowed_references.entity_refs = [];
+  request.allowed_references.combat_target_refs = [
+    ref('player_character', 'player-1')
+  ];
+  assert.equal(validateNpcConversationResponseRequest(request), true);
+  const candidates = npcConversationCandidates(request);
+  assert.equal(candidates.length, 3);
+  assert.equal(candidates.every((candidate) =>
+    validateConversationContributionPlan(candidate, request)), true);
+  const [speech, surrender, combat] = candidates;
+  assert.equal(classifyRatshaPlan(speech).kind, 'speech');
+  assert.deepEqual(speech.supporting_operations, []);
+  assert.equal(classifyRatshaPlan(surrender).kind, 'surrender');
+  assert.deepEqual(surrender.supporting_operations, [{ op: 'commit_surrender' }]);
+  assert.equal(surrender.speech.dominant_act, 'accept');
+  assert.equal(classifyRatshaPlan(combat).kind, 'combat_handoff');
+  const malformedRefs = structuredClone(request);
+  delete malformedRefs.allowed_references.combat_target_refs;
+  assert.equal(npcConversationCandidates(malformedRefs).length, 2);
+  for (const prompt of [npcConversationInstructions(false, request),
+    npcConversationInstructions(true, request)]) {
+    for (const candidate of candidates) {
+      assert.equal(prompt.includes(JSON.stringify(candidate)), true);
+    }
+    assert.match(prompt, /not an exhaustive choice set/u);
+    assert.match(prompt, /Ordinary speech may use any allowed dominant_act/u);
+    assert.match(prompt, /silence and leave_conversation mappings available/u);
+    assert.doesNotMatch(prompt, /Choose exactly one/u);
+  }
 });
 
 test('player required candidate is validator-valid and preserves operation', () => {

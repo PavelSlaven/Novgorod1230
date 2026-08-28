@@ -263,8 +263,67 @@ export function requiredNpcConversationCandidate(request) {
   };
 }
 
+export function npcConversationCandidates(request) {
+  const scope = request?.decision_scope;
+  const combatTargetRefs = Array.isArray(
+    request?.allowed_references?.combat_target_refs
+  ) ? request.allowed_references.combat_target_refs : [];
+  const playerRefs = request?.allowed_references?.actor_refs?.filter(
+    ({ entity_kind: kind }) => kind === 'player_character'
+  ) ?? [];
+  if (scope?.required_resolution !== undefined
+      || scope?.required_supporting_operation !== undefined
+      || !Object.hasOwn(scope?.operation_contract ?? {}, 'commit_surrender')
+      || playerRefs.length !== 1
+      || !scope.allowed_duration_classes?.includes('domain_owned')) return [];
+  const player = playerRefs[0];
+  const speech = ({ utterance_text, dominant_act, interaction_tags,
+    supporting_operations }) => ({
+    schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+    boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+    exchange_id: request.exchange_id, state_version: request.state_version,
+    speaker_ref: structuredClone(request.npc_ref), contribution_kind: 'speech',
+    primary_addressee_ref: structuredClone(player),
+    intended_addressee_refs: [structuredClone(player)], affected_actor_refs: [],
+    speech: { utterance_text, dominant_act, interaction_tags, topic_refs: [],
+      claims: [], response_expectation: { kind: 'none', target_refs: [] } },
+    interpretation: { intent: '<semantic NPC intent>',
+      grounded_contribution: '<semantic grounded contribution>',
+      adaptation: 'literal' }, resolution: 'automatic',
+    activity: { duration_class: 'domain_owned', effort: 'none' },
+    supporting_operations, check: null, handoff: null,
+    reason: '<semantic NPC reason>'
+  });
+  return [
+    speech({ utterance_text: '<semantic NPC speech>', dominant_act: 'answer',
+      interaction_tags: [], supporting_operations: [] }),
+    speech({ utterance_text: '<semantic NPC surrender speech>', dominant_act: 'accept',
+      interaction_tags: ['surrender'],
+      supporting_operations: [{ op: 'commit_surrender' }]
+    }),
+    ...(scope.combat_handoff_available
+        && combatTargetRefs.length > 0 ? [{
+      schema: 'conversation_contribution_plan_v1', request_id: request.request_id,
+      boundary_id: request.boundary_id, conversation_id: request.conversation_id,
+      exchange_id: request.exchange_id, state_version: request.state_version,
+      speaker_ref: structuredClone(request.npc_ref),
+      contribution_kind: 'combat_handoff', primary_addressee_ref: null,
+      intended_addressee_refs: [], affected_actor_refs: [], speech: null,
+      interpretation: { intent: '<semantic combat handoff intent>',
+        grounded_contribution: '<semantic combat handoff>', adaptation: 'literal' },
+      resolution: 'automatic',
+      activity: { duration_class: 'domain_owned', effort: 'none' },
+      supporting_operations: [], check: null, handoff: { kind: 'combat',
+        intent: '<semantic combat handoff intent>', target_actor_refs:
+          structuredClone(combatTargetRefs) },
+      reason: '<semantic NPC reason>'
+    }] : [])
+  ];
+}
+
 export function npcConversationInstructions(repair, request = null) {
   const requiredCandidate = requiredNpcConversationCandidate(request);
+  const candidates = npcConversationCandidates(request);
   const participationBindings = request?.decision_scope?.operation_contract
     ?.commit_route_participation?.allowed_bindings;
   return [
@@ -311,6 +370,10 @@ export function npcConversationInstructions(repair, request = null) {
     ...(requiredCandidate === null ? [] : [
       'Required conversation candidate: copy every non-placeholder value exactly; replace only semantic placeholders.',
       JSON.stringify(requiredCandidate)
+    ]),
+    ...(candidates.length === 0 ? [] : [
+      'These are request-derived structural examples for matching semantic choices, not an exhaustive choice set. Ordinary speech may use any allowed dominant_act. Surrender is optional; for surrender speech, use exactly {"op":"commit_surrender"}, the surrender tag, and any interchangeable permitted dominant_act: accept, promise, or confess. Keep explicitly permitted silence and leave_conversation mappings available.',
+      JSON.stringify(candidates)
     ]),
     repair
       ? 'Repair only structure, refs, and enum values. Preserve the original contribution meaning.'

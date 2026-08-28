@@ -47,10 +47,15 @@ test('canonical local fixture copies exact required player operation', async () 
     speaker_ref: operation.actor_ref,
     player_safe_context: {
       target_npc_ref: operation.target_ref,
-      required_supporting_operation: operation,
-      available_check: {
+      required_resolution: 'check_required',
+      required_check: {
         attribute_ref: 'attribute:presence', skill_ref: 'skill:persuasion',
         difficulty_band: 'hard'
+      },
+      required_supporting_operation: operation,
+      available_check: {
+        attribute_ref: 'attribute:strength', skill_ref: 'skill:athletics',
+        difficulty_band: 'ordinary'
       }
     }
   };
@@ -62,6 +67,9 @@ test('canonical local fixture copies exact required player operation', async () 
     const plan = await createCanonicalPhase11LlmResponder()({ model,
       input: { request } });
     assert.equal(plan.resolution, 'check_required');
+    assert.equal(plan.check.attribute_ref, 'attribute:presence');
+    assert.equal(plan.check.skill_ref, 'skill:persuasion');
+    assert.equal(plan.check.difficulty_band, 'hard');
     assert.deepEqual(plan.supporting_operations, [operation]);
     assert.notStrictEqual(plan.supporting_operations[0], operation);
   }

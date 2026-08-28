@@ -105,10 +105,7 @@ export function createCanonicalPhase11LlmResponder({
         intendedAddresseeRefs: turn10Addressees
           ?? [request.player_safe_context.target_npc_ref]
       });
-      const operation = request.player_safe_context.required_supporting_operation;
-      return operation ? {
-        ...plan, supporting_operations: [structuredClone(operation)]
-      } : plan;
+      return plan;
     }
     if (['fixture-npc-conversation-responder',
       'fixture-npc-conversation-responder-repair'].includes(model)) {

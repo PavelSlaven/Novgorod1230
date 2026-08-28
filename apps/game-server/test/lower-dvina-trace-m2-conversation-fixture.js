@@ -64,9 +64,7 @@ export function createM2ConversationModels({
         request.player_safe_context.required_supporting_operation
         || request.player_safe_context.offer_policy_ref
       ),
-      offer: Boolean(request.player_safe_context.offer_policy_ref),
-      evidence: request.player_safe_context.required_supporting_operation
-        === 'present_item_as_evidence'
+      offer: Boolean(request.player_safe_context.offer_policy_ref)
     }),
     npcSemanticModel: (request) => {
       const routeOperation = request.decision_scope
@@ -364,11 +362,14 @@ export function playerPlan(request, {
   inputMode = 'verbatim',
   utteranceText = request.raw_text,
   offer = false,
-  evidence = false,
+  evidence,
   primaryAddresseeRef = request.player_safe_context.target_npc_ref,
   intendedAddresseeRefs = [request.player_safe_context.target_npc_ref]
 } = {}) {
-  const availableCheck = request.player_safe_context.available_check;
+  const context = request.player_safe_context;
+  const requiredCheck = context.required_check ?? context.available_check;
+  if (context.required_resolution) checkRequired =
+    context.required_resolution === 'check_required';
   return {
     schema: 'player_conversation_contribution_plan_v1',
     request_id: request.request_id,
@@ -384,36 +385,23 @@ export function playerPlan(request, {
       utteranceText,
       dominantAct: 'request'
     }),
-    interpretation: interpretation('speak the exact player utterance'),
+    interpretation: interpretation('speak exact utterance'),
     resolution: checkRequired ? 'check_required' : 'automatic',
     activity: activity(),
-    supporting_operations: offer ? [{
-      op: 'offer_conditional_protection'
-    }] : evidence ? [{
-      op: 'emit_interaction',
-      interaction_kind: 'present_item_as_evidence',
-      actor_ref: request.speaker_ref,
-      target_ref: request.player_safe_context.target_npc_ref,
-      entity_ref: request.player_safe_context.available_evidence.item_ref
-    }] : [],
+    supporting_operations: context.required_supporting_operation
+      ? [structuredClone(context.required_supporting_operation)] : offer
+        ? [{ op: 'offer_conditional_protection' }] : evidence ? [{
+          op: 'emit_interaction', interaction_kind: 'present_item_as_evidence',
+          actor_ref: request.speaker_ref,
+          target_ref: context.target_npc_ref,
+          entity_ref: context.available_evidence.item_ref
+        }] : [],
     check: checkRequired ? {
       purpose: 'resolve social delivery',
-      attribute_ref: availableCheck.attribute_ref,
-      skill_ref: availableCheck.skill_ref,
-      difficulty_band: availableCheck.difficulty_band,
-      outcomes: {
-        clean_success: { delivery_quality: 'compelling', observable_effects: [] },
-        success: { delivery_quality: 'credible', observable_effects: [] },
-        success_with_cost: {
-          delivery_quality: 'credible_with_visible_cost', observable_effects: []
-        },
-        failure_with_consequence: {
-          delivery_quality: 'unconvincing', observable_effects: []
-        },
-        severe_failure: {
-          delivery_quality: 'transparently_manipulative', observable_effects: []
-        }
-      }
+      attribute_ref: requiredCheck.attribute_ref,
+      skill_ref: requiredCheck.skill_ref,
+      difficulty_band: requiredCheck.difficulty_band,
+      outcomes: { clean_success: { delivery_quality: 'compelling', observable_effects: [] }, success: { delivery_quality: 'credible', observable_effects: [] }, success_with_cost: { delivery_quality: 'credible_with_visible_cost', observable_effects: [] }, failure_with_consequence: { delivery_quality: 'unconvincing', observable_effects: [] }, severe_failure: { delivery_quality: 'transparently_manipulative', observable_effects: [] } }
     } : null,
     handoff: null
   };

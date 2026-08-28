@@ -138,8 +138,11 @@ test('Phase 8 carries every committed escort into route and combat', async () =>
   state.route_participant_commitments.push({ npc_ref: ref(second.instance_id),
     role: 'escort' });
   const ids = { ...actorIds(state), escorts: fishers.map(({ instance_id: id }) => id) };
+  const responders = [];
+  const playerRequests = [];
   const conversation = createM2ConversationModels({
-    ratshaResponseKind: 'combat_handoff'
+    ratshaResponseKind: 'combat_handoff',
+    onNpcCall: ({ npc_ref: npc }) => responders.push(npc.entity_id)
   });
   const runtime = fixture({ scenarioBundle: bundle,
     materializationBundle: bundle, committedState: state, rollValue: 0.5,
@@ -148,7 +151,10 @@ test('Phase 8 carries every committed escort into route and combat', async () =>
       ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
       ...lowerDvinaTraceCombatTemporalEffectRegistrations()
     ] }), turnStepModel: (request) => phase8Plan(request, ids),
-    playerConversationModel: conversation.playerConversationModel,
+    playerConversationModel: (request) => {
+      playerRequests.push(request);
+      return conversation.playerConversationModel(request);
+    },
     npcSemanticModel: conversation.npcSemanticModel,
     npcCombatModel: (request) => combatPlan(request, ids) });
 
@@ -158,6 +164,9 @@ test('Phase 8 carries every committed escort into route and combat', async () =>
   runtime.state.position.g5_anchor_id);
   const participantIds = runtime.state.combat_sessions[0].participant_states
     .map(({ actor_ref: actor }) => actor.entity_id);
+  assert.deepEqual(playerRequests[0].player_safe_context
+    .required_intended_addressee_refs, [ref(ids.zhdanko)]);
+  assert.deepEqual(responders, [ids.zhdanko]);
   assert.equal(ids.escorts.every((id) => participantIds.includes(id)), true);
   assert.equal(runtime.npcCombatCount(), 5);
 });

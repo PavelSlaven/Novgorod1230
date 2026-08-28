@@ -56,9 +56,13 @@ export function validateTurnStepRequest(value) {
   } else for (const [index, candidate] of
     (value.prepared_followup_candidates ?? []).entries()) {
     const path = `$.prepared_followup_candidates[${index}]`;
-    if (!strict(candidate, path, ['prepared_followup_ref', 'operation'], errors)) continue;
+    if (!strict(candidate, path, [
+      'prepared_followup_ref', 'precursor_operation', 'operation'
+    ], errors)) continue;
     requiredText(candidate.prepared_followup_ref,
       `${path}.prepared_followup_ref`, errors);
+    jsonProjection(candidate.precursor_operation,
+      `${path}.precursor_operation`, errors);
     jsonProjection(candidate.operation, `${path}.operation`, errors);
   }
   if (Number.isInteger(value.step_index) && value.step_index > 8) {

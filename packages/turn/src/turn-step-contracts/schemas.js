@@ -116,9 +116,10 @@ export const TURN_STEP_REQUEST_V1_SCHEMA = deepFreeze({
       summary: textSchema
     }),
     prepared_followup_candidate: strictObject([
-      'prepared_followup_ref', 'operation'
+      'prepared_followup_ref', 'precursor_operation', 'operation'
     ], {
       prepared_followup_ref: refSchema,
+      precursor_operation: { $ref: '#/$defs/json_object' },
       operation: { $ref: '#/$defs/json_object' }
     })
   }

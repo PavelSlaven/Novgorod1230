@@ -121,8 +121,35 @@ test('turn step planner prompt supplies current complete plan shape', async () =
     'activity_moment', 'activity_goal', 'activity_context', 'next_step',
     'domain_request'
   ]) assert.equal(obsoleteKey in example, false, obsoleteKey);
-  assert.match(prompt, /continuation\.next_step[\s\S]*two fields[\s\S]*remaining_intent[\s\S]*depends_on_refs is \[\][\s\S]*copied player-safe refs[\s\S]*no other fields/u);
+  assert.match(prompt, /continuation\.next_step[\s\S]*remaining_intent[\s\S]*depends_on_refs as \[\][\s\S]*copied player-safe refs[\s\S]*prepared_followup_ref[\s\S]*request prepared_followup_candidate[\s\S]*no other fields/u);
 });
+
+test('turn step planner prompt maps optional prepared followup without forcing it',
+  async () => {
+    let prompt;
+    const candidate = {
+      prepared_followup_ref: 'generic-followup',
+      precursor_operation: { op: 'request_generic_prepare', actor_ref: 'actor_mikula' },
+      operation: { op: 'request_generic_work', actor_ref: 'actor_mikula' }
+    };
+    const model = createLowerDvinaTraceTurnStepModel({
+      roleRunner: { async run(call) {
+        prompt = call.messages[0].content;
+        return { output: output() };
+      } }
+    });
+    await model(request({
+      remaining_intent: 'сделать несвязанное действие',
+      prepared_followup_candidates: [candidate]
+    }));
+    assert.match(prompt, /current operation matches its precursor_operation[\s\S]*operation semantically matches next uncovered intent[\s\S]*unrelated continuation or another precursor has no prepared_followup_ref/u);
+    assert.equal(prompt.includes(JSON.stringify(candidate)), true);
+    assert.equal(prompt.includes(JSON.stringify([{
+      remaining_intent: '<copy next uncovered intent>',
+      depends_on_refs: ['<copy only required player-safe refs>'],
+      prepared_followup_ref: candidate.prepared_followup_ref
+    }])), true);
+  });
 
 test('turn step planner prompt maps grounded and visible-look contracts',
   async () => {

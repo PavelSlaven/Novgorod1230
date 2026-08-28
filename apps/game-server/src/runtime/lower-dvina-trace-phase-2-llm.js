@@ -58,7 +58,7 @@ export function createLowerDvinaTraceTurnStepModel({
             'Classify interpretation.adaptation by the stated goal, not whether the actor can pantomime it. First: an absent fantastical required referent means make_believe. Otherwise: real or ordinary referents with a physically limited action mean reality_limited. Otherwise: literal. An ordinary unknown or absent referent is not thereby fantastical; preserve existing discovery/domain flow.',
             'When available_domain_operations contains an operation that covers the intent, use that operation unchanged; use action_production only when no supplied operation covers it.',
             ...(request.prepared_followup_candidates?.length ? [
-              'prepared_followup_candidates is a closed code-owned mapping. Only copy one candidate prepared_followup_ref exactly into continuation.prepared_followup_ref when its operation is the intended next continuation. This marker neither reserves nor executes it; next step is independently planned and revalidated. Never invent a marker.'
+              preparedFollowupPrompt(request.prepared_followup_candidates)
             ] : []),
             'Plan exactly one executable step. Sentence boundary is a continuation boundary. Plan only the first independently executable sentence. If request.remaining_intent has later non-empty sentences, always preserve all of them in continuation, use goal_result pending, and never let one selected operation consume them. Only clauses inside the same sentence may form one composite operation, and only when that operation explicitly represents their single event. One selected domain operation covers only its own grounded event; it may cover multiple verbs only when the selected operation explicitly represents every clause. Matching one clause, shared actor, place, time, or generic owner does not extend coverage. Preserve every independent uncovered clause in continuation, and use continuation null only when none remains. Every domain_request uses goal_result pending, including a complete composite with continuation null: pending means code-owned execution, not unhandled intent. If continuation is present, goal_result must be pending and continuation.remaining_intent must preserve every independent uncovered clause. Final continuation override for direct reality_limited or make_believe: a same-sentence clause whose stated action, purpose, manner, result, or qualifier depends on the same impossible or physically limited premise is covered by the same grounding, not continuation. Preserve only clauses independently executable without that premise and every later sentence; if none remain, set continuation to null.',
             repairing
@@ -84,6 +84,20 @@ export function createLowerDvinaTraceTurnStepModel({
     }
     return response.output;
   };
+}
+function preparedFollowupPrompt(candidates) {
+  return [
+    'prepared_followup_candidates is a closed code-owned mapping:',
+    JSON.stringify(candidates),
+    'Select a candidate only if the plan current operation matches its precursor_operation and its operation semantically matches next uncovered intent; an unrelated continuation or another precursor has no prepared_followup_ref.',
+    'When selected, copy its prepared_followup_ref exactly alongside remaining_intent and depends_on_refs in the complete continuation object:',
+    JSON.stringify(candidates.map(({ prepared_followup_ref }) => ({
+      remaining_intent: '<copy next uncovered intent>',
+      depends_on_refs: ['<copy only required player-safe refs>'],
+      prepared_followup_ref
+    }))),
+    'This marker neither reserves nor executes it; next step is independently planned and revalidated. Never invent a marker.'
+  ].join(' ');
 }
 /** Server-only O1 role: its request is built from committed enablement data. */
 export { createOrdinaryMaterializationModel } from './ordinary-materialization-llm.js';

@@ -117,6 +117,78 @@ test('planner receives only available exact domain operation DTOs', async () => 
   assert.deepEqual((await run(false)).available_domain_operations, []);
 });
 
+test('prepared followup candidates bind each available precursor to its successor',
+  async () => {
+    const parentA = activity('prepare-a');
+    const parentB = activity('prepare-b');
+    const successor = activity('continue');
+    const unrelated = activity('unrelated');
+    const { services } = createServices();
+    services.playerSafeStateProjector = () => ({
+      actor: { actor_ref: 'party-1' }, player_safe_state: {}
+    });
+    services.turnStepExecutionRegistry = createTurnStepExecutionRegistry({
+      applySemanticActivity: async ({ working_projection }) => ({
+        working_projection, write_fragments: []
+      })
+    });
+    const base = services.commandRegistry.get('inspect_cart');
+    const command = (id, operation, preparedFollowupRef = null) => ({
+      ...base, command_id: id, option_id: id,
+      ...(preparedFollowupRef == null ? {} : {
+        prepared_followup_ref: preparedFollowupRef
+      }),
+      semantic_binding: {
+        binding_id: id, operation: 'request_activity', operation_dto: operation,
+        matches: ({ operation: candidate }) => candidate.description === operation.description
+      }
+    });
+    services.commandRegistry = createTurnCommandRegistry([
+      command('parent-a', parentA, 'successor'),
+      command('parent-b', parentB, 'successor'),
+      command('successor', successor),
+      command('unrelated', unrelated)
+    ]);
+    let captured;
+    services.turnStepModel = (request) => {
+      captured = request;
+      return turnStepPlan(request);
+    };
+    await runTurnWorkflow(workflowInput(), services);
+    assert.deepEqual(captured.prepared_followup_candidates, [
+      { prepared_followup_ref: 'successor', precursor_operation: parentA,
+        operation: successor },
+      { prepared_followup_ref: 'successor', precursor_operation: parentB,
+        operation: successor }
+    ]);
+
+    const bindings = [
+      ['parent-a', parentA, 'successor'],
+      ['parent-b', parentB, 'successor'],
+      ['successor', successor],
+      ['unrelated', unrelated]
+    ].map(([id, operation, preparedFollowupRef]) => ({
+      command: { option_id: id, prepared_followup_ref: preparedFollowupRef },
+      binding: {
+        operation: 'request_activity',
+        matches: ({ operation: candidate }) => candidate.description === operation.description
+      }
+    }));
+    const validate = createTurnStepDomainOwnerPreflight({ externalRegistry: null,
+      semanticBindings: bindings, availableOptions: new Set(bindings.map(
+        ({ command }) => command.option_id)), actor: { actor_ref: 'party-1' },
+      committedState: {}, services: {} });
+    const request = { player_safe_state: {} };
+    const markerPlan = (operation, marker) => ({ operations: [operation],
+      continuation: { prepared_followup_ref: marker }, check: null });
+    assert.doesNotThrow(() => validate({ plan: markerPlan(parentA, 'successor'),
+      request, prepared_chain_context: null }));
+    assert.doesNotThrow(() => validate({ plan: markerPlan(parentB, 'successor'),
+      request, prepared_chain_context: null }));
+    assert.throws(() => validate({ plan: markerPlan(unrelated, 'successor'),
+      request, prepared_chain_context: null }), { code: 'TURN_STEP_PLAN_INVALID' });
+  });
+
 test('prepared continuation recomputes domain operation DTOs from current state', async () => {
   const dto = { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'recover', target_refs: [], description: 'Помочь.' };
   const { services } = createServices([], { command: {
@@ -204,6 +276,11 @@ function clock(value) {
 
 function body() {
   return { health: 100, satiety: 100, energy: 100, active_conditions: [] };
+}
+
+function activity(description) {
+  return { op: 'request_activity', actor_ref: 'party-1', activity_kind: 'wait',
+    target_refs: [], description };
 }
 
 test('structural then unavailable owner consumes no third repair', async () => {

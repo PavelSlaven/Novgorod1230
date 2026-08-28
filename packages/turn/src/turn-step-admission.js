@@ -436,18 +436,20 @@ function recordSelectedCommand(commands, command) {
   commands.push(command);
 }
 function initialPreparedFollowupCandidates(semanticBindings, availableOptions) {
-  const candidates = new Map();
-  for (const { command } of semanticBindings) {
+  const candidates = [];
+  for (const { command, binding } of semanticBindings) {
     const ref = command.prepared_followup_ref;
     if (!availableOptions.has(command.option_id)
+        || binding.operation_dto == null
         || typeof ref !== 'string' || ref.length === 0) continue;
     const successors = semanticBindings.filter(({ command: candidate, binding }) =>
       candidate.command_id === ref && binding.operation_dto != null);
     if (successors.length !== 1) continue;
-    candidates.set(ref, { prepared_followup_ref: ref,
+    candidates.push({ prepared_followup_ref: ref,
+      precursor_operation: structuredClone(binding.operation_dto),
       operation: structuredClone(successors[0].binding.operation_dto) });
   }
-  return [...candidates.values()];
+  return candidates;
 }
 function plain(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 export function createTurnStepDomainOwnerPreflight({ externalRegistry,

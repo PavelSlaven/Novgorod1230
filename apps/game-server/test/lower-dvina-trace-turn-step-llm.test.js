@@ -85,6 +85,18 @@ test('turn step model sends the validated request to the isolated planner role',
   ]) assert.equal(prompt.includes(phrase), true, phrase);
 });
 
+test('turn step planner prompt preserves unhandled compound intent', async () => {
+  let prompt;
+  const model = createLowerDvinaTraceTurnStepModel({
+    roleRunner: { async run(call) {
+      prompt = call.messages[0].content;
+      return { output: output() };
+    } }
+  });
+  await model(request({ remaining_intent: 'сначала отдохнуть, потом поговорить' }));
+  assert.match(prompt, /exactly one next executable step[\s\S]*full request\.remaining_intent[\s\S]*independent clause or later sequence[\s\S]*goal_result must be pending[\s\S]*continuation\.remaining_intent[\s\S]*continuation is null only when this step exhausts full remaining_intent/u);
+});
+
 test('turn step planner prompt supplies current complete plan shape', async () => {
   let prompt;
   const model = createLowerDvinaTraceTurnStepModel({

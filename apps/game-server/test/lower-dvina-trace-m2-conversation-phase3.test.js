@@ -463,6 +463,41 @@ test('evidence presentation requires and executes its supporting operation', asy
   }), { code: 'TRACE_M2_PHASE_3_EVIDENCE_EVENT_INVALID' });
 });
 
+test('recognized successful evidence requires Eremey to disclose exact route', async () => {
+  const state = phase3State();
+  const contracts = resolveTracePhase3Contracts({ state, bundle: revision14Bundle });
+  withAccessibleBlueWool(state, contracts);
+  const successfulCheck = {
+    ...checkResult(contracts.check.check_id, 'success'),
+    outcome: { band: 'success', success: true }
+  };
+  const exchange = await runPhase3({
+    state,
+    contracts,
+    rawText: 'Вот синяя шерсть с берега. Покажи дорогу к старой сушильне.',
+    inputDigest: digest('b'),
+    responseKind: 'route_disclosure',
+    checkResult: successfulCheck,
+    playerPlanOptions: { evidence: true },
+    transformNpcPlan: (plan, { call_index: callIndex }) => callIndex === 1
+      ? { ...plan, supporting_operations: [] }
+      : plan
+  });
+
+  const requiredOperation = {
+    op: 'disclose_known_route',
+    route_ref: 'trace_ld_v1_route_camp_to_shed',
+    source_knowledge_scope_ref: contracts.eremeyKnowledge.knowledge_scope_ref
+  };
+  assert.deepEqual(
+    exchange.npcRequests[0].decision_scope.required_supporting_operation,
+    requiredOperation
+  );
+  assert.equal(exchange.npcCalls, 2);
+  assert.equal(exchange.result.response_kind, 'route_disclosure');
+  assert.equal(exchange.result.route_disclosure.route_ref, requiredOperation.route_ref);
+});
+
 test('hearing evidence words without seeing the item creates only communication signal', async () => {
   const state = phase3State();
   const eremey = state.npcs.find(
@@ -481,7 +516,10 @@ test('hearing evidence words without seeing the item creates only communication 
     rawText: 'Вот синяя шерсть с берега. Что ты знаешь?',
     inputDigest: digest('e'),
     responseKind: 'withhold',
-    checkResult: checkResult(contracts.check.check_id, 'success'),
+    checkResult: {
+      ...checkResult(contracts.check.check_id, 'success'),
+      outcome: { band: 'success', success: true }
+    },
     playerPlanOptions: { evidence: true }
   });
 
@@ -493,6 +531,13 @@ test('hearing evidence words without seeing the item creates only communication 
     Object.hasOwn(
       exchange.npcRequest.social_context,
       'presented_evidence_ref'
+    ),
+    false
+  );
+  assert.equal(
+    Object.hasOwn(
+      exchange.npcRequest.decision_scope,
+      'required_supporting_operation'
     ),
     false
   );

@@ -122,6 +122,15 @@ export async function resolveTracePhase3ConversationExchange({
       ?? playerPlan ?? await prepareM2PlayerConversationPlan(initialContext);
   const evidencePresented = effectivePlayerPlan === null ? false
     : phase3PresentedEvidence({ state, contracts, plan: effectivePlayerPlan });
+  const requiredNpcRouteOperation = evidencePresented
+    && effectiveCheckResult?.outcome?.success === true
+    ? {
+        op: ROUTE_OPERATION,
+        route_ref: routeRef,
+        source_knowledge_scope_ref:
+          contracts.eremeyKnowledge.knowledge_scope_ref
+      }
+    : undefined;
   const mapping = contracts.conversationSignalMappings?.[
     evidencePresented ? 'evidence' : 'question'
   ];
@@ -133,6 +142,12 @@ export async function resolveTracePhase3ConversationExchange({
   }
   const context = {
     ...initialContext,
+    npcDecisionScope: {
+      ...initialContext.npcDecisionScope,
+      ...(requiredNpcRouteOperation === undefined ? {} : {
+        required_supporting_operation: requiredNpcRouteOperation
+      })
+    },
     evidencePresented,
     evidencePresentation: evidencePresented ? Object.freeze({
       schema: 'conversation_supporting_operation_event_v1',

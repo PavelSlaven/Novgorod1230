@@ -52,6 +52,10 @@ export function buildNpcDecision(context, working, boundary,
   );
   const presentedEvidenceRecognized = resolvedRecords.some(({ signal }) =>
     recognizedPresentedEvidenceSignal(context, working, signal));
+  const requiredSupportingOperation = context.phase === 'phase_3'
+    && !presentedEvidenceRecognized
+    ? undefined
+    : context.npcDecisionScope.required_supporting_operation;
   const perceivedMessage = perceivedBoundaryMessage(
     context, working, resolvedRecords
   );
@@ -136,9 +140,9 @@ export function buildNpcDecision(context, working, boundary,
         required_resolution: context.npcDecisionScope.required_resolution,
         required_check: structuredClone(context.npcDecisionScope.required_check)
       }),
-      ...(context.npcDecisionScope.required_supporting_operation === undefined
+      ...(requiredSupportingOperation === undefined
         ? {} : { required_supporting_operation: structuredClone(
-          context.npcDecisionScope.required_supporting_operation) })
+          requiredSupportingOperation) })
     }
   });
   const persistedTrace = (context.state.npc_semantic_decision_traces ?? [])

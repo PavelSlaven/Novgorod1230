@@ -4,6 +4,8 @@ import { serverError } from '../../errors.js';
 import { buildTracePhase10Completion, tracePhase10Pending } from
   '../../runtime/lower-dvina-trace-phase-10-completion.js';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { phase10PendingScreen, phase10VisibleEnvelope, phase10Writes,
   nextPhase10State } from './lower-dvina-trace-phase-10-writes.js';
 
@@ -14,7 +16,8 @@ export async function commitLowerDvinaTracePhase10({ partyId,
     presentationIdempotencyKey, turnBudget
   });
   if (!tracePhase10Pending(state)) {
-    if (validCommittedCompletion(state)) return completionAnchor(state, true);
+    if (validCommittedCompletion(state)) return completionAnchor(state, true,
+      phase10Contracts);
     fail('TRACE_PHASE_10_PRECONDITION_INVALID');
   }
   const sourceVersion = state.party_state.state_version;
@@ -96,14 +99,17 @@ export async function commitLowerDvinaTracePhase10({ partyId,
     if (committed.error?.code === 'idempotency_conflict'
         && validCommittedCompletion(replayed)
         && replayed.completion.source_commit_version === sourceVersion) {
-      return completionAnchor(replayed, true);
+      return completionAnchor(replayed, true, phase10Contracts);
     }
     fail('TRACE_PHASE_10_COMMIT_FAILED', committed.error);
   }
   return { ...committed, state_version: nextVersion,
     turn_number: state.party_state.turn_number,
     package_id: envelope.package_id, package_digest: envelope.package_digest,
-    completion: structuredClone(next.completion) };
+    completion: structuredClone(next.completion),
+    committed_public_result: committedPendingPhase2PublicResult({
+      payload: next, screen
+    }) };
 }
 
 function validCommittedCompletion(state) {
@@ -113,12 +119,29 @@ function validCommittedCompletion(state) {
     && state.completion.change_set_id
       === state.last_turn?.visible_package?.change_set_id;
 }
-function completionAnchor(state, replayed) {
+function completionAnchor(state, replayed, contracts) {
+  const sourceVersion = state.completion.source_commit_version;
+  const source = structuredClone(state);
+  delete source.completion;
+  source.party_state.state_version = sourceVersion;
+  const { terminalProjection } = buildTracePhase10Completion({ state: source,
+    contracts });
+  const envelope = phase10VisibleEnvelope({ partyId: state.party_id, state,
+    nextVersion: state.party_state.state_version,
+    changeSetId: state.completion.change_set_id,
+    idemId: `idem:${state.party_id}:${canonicalDigest(
+      `completion:${state.party_id}:${sourceVersion}`).slice(0, 20)}`,
+    contracts, terminalProjection });
+  const screen = phase10PendingScreen({ state, envelope,
+    nextVersion: state.party_state.state_version });
   return { ok: true, replayed, state_version: state.party_state.state_version,
     turn_number: state.party_state.turn_number,
     package_id: state.last_turn.visible_package.package_id,
     package_digest: state.last_turn.visible_package.package_digest,
-    completion: structuredClone(state.completion) };
+    completion: structuredClone(state.completion),
+    committed_public_result: committedPendingPhase2PublicResult({
+      payload: state, screen
+    }) };
 }
 const digest = (value) => `sha256:${String(value).replace('sha256:', '')}`;
 function fail(code, details = null) { throw serverError(code,

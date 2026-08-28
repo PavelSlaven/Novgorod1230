@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { newDb, DataType } from 'pg-mem';
+import { runPartyRuntimeMigrations } from '../../apps/game-server/src/infrastructure/postgres/migrations.js';
 import {
-  runPartyRuntimeMigrations,
   createPostgresSessionStore,
   createPostgresDeliveryStore
-} from '@rus/game-server/production-v2-migration-source';
+} from '../../apps/game-server/src/infrastructure/postgres/session-store.js';
 
 function createPool() {
   const db = newDb({ autoCreateForeignKeyIndices: true });

@@ -13,6 +13,8 @@ import {
   buildPhase2Snapshot,
   commitPhase2BodyState
 } from './lower-dvina-trace-phase-2-state.js';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import {
   assertPhase2CurrentStateVersion
 } from './lower-dvina-trace-phase-2-commit-admission.js';
@@ -68,9 +70,13 @@ export async function commitLowerDvinaTracePhase2({
       return committed;
     }
     if (phase10Contracts == null) return committed;
-    return commitLowerDvinaTracePhase10({ partyId, phase10Contracts,
-      loadState, committer, presentationIdempotencyKey:
-        factual.player_input.idempotency_key });
+    try {
+      return await commitLowerDvinaTracePhase10({ partyId, phase10Contracts,
+        loadState, committer, presentationIdempotencyKey:
+          factual.player_input.idempotency_key });
+    } catch {
+      return committed;
+    }
   }
   if (factual?.consequence?.combat_kind) return commitLowerDvinaTraceCombat({
     partyId, writePlan, inputDigest, loadState, committer
@@ -159,6 +165,9 @@ export async function commitLowerDvinaTracePhase2({
     nextVersion, turnNumber, changeSetId, idemId, clue, inputDigest,
     nextBodyState
   }), turnStep.writes);
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: snapshot, screen: pendingScreen
+  });
   const built = await buildP16Plan({
     partyId, state, factual, visibleEnvelope, writes, nextVersion,
     turnNumber, changeSetId, idemId, inputDigest, contracts,
@@ -182,7 +191,8 @@ export async function commitLowerDvinaTracePhase2({
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }
 

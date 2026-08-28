@@ -153,7 +153,7 @@ export function createFirstPlayablePartyRepository({ partyPool } = {}) {
       });
     },
 
-    loadSession: (partyId) => loadSession(partyPool, partyId),
+    loadSession: (partyId, options) => loadSession(partyPool, partyId, options),
 
     async loadTurnSnapshot(partyId) {
       const loaded = await partyPool.query(

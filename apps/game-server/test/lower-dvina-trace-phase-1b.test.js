@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
-  createFirstPlayablePublicRuntime
-} from '../src/runtime/first-playable-public-runtime.js';
+  createLowerDvinaTracePublicRuntime
+} from '../src/runtime/lower-dvina-trace-public-runtime.js';
 import {
   loadLowerDvinaTracePhase1BPublication,
   TRACE_PHASE_1B_APPROVED_MATERIALIZER_VERSION,
@@ -14,6 +14,8 @@ import {
   buildLowerDvinaTraceOpeningScreen
 } from '../src/runtime/lower-dvina-trace-opening.js';
 import { hash } from '../src/runtime/first-playable/shared.js';
+import { createLlmDiagnostics } from '../src/runtime/llm-diagnostics.js';
+import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import {
   canonicalDigest,
   MATERIALIZER_VERSION,
@@ -30,17 +32,10 @@ const runtimeCatalogPin = Object.freeze({
   catalog_revision_id: 'phase-1b-test-catalog'
 });
 
-test('Phase 1B publishes trace beside unchanged boatman metadata', async () => {
+test('Phase 1B publishes only trace metadata', async () => {
   const runtime = createRuntime(fixture());
   const catalog = await runtime.listScenarios();
   assert.deepEqual(catalog.scenarios, [
-    {
-      scenario_id: 'lower_dvina_late_summer_open_water_v1',
-      title: 'Нижняя Двина: позднее лето',
-      description:
-        'Лодочник на защищённой высокой площадке у открытой воды.',
-      available: true
-    },
     {
       scenario_id: 'lower_dvina_trace_v1',
       title: 'След на Нижней Двине',
@@ -49,6 +44,20 @@ test('Phase 1B publishes trace beside unchanged boatman metadata', async () => {
       available: true
     }
   ]);
+});
+
+test('public start accepts only current trace scenario', async () => {
+  const runtime = createRuntime(fixture());
+  await assert.rejects(
+    () => runtime.startNewGame({ start_text: 'Начать путь' }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
+  );
+  await assert.rejects(
+    () => runtime.startNewGame({
+      scenario_id: 'lower_dvina_late_summer_open_water_v1'
+    }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
+  );
 });
 
 test('trace dispatch commits before its safe screen', async () => {
@@ -100,125 +109,6 @@ test('trace dispatch commits before its safe screen', async () => {
   ]) assert.doesNotMatch(serialized, new RegExp(forbidden, 'u'));
 });
 
-test('boatman and baseline dispatch preserve the existing creator', async () => {
-  const f = fixture();
-  const runtime = createRuntime(f);
-  const boatman = await runtime.startNewGame({
-    scenario_id: 'lower_dvina_late_summer_open_water_v1',
-    request_id: 'boatman-unchanged'
-  });
-  const baseline = await runtime.startNewGame({
-    start_text: 'Начать путь',
-    request_id: 'baseline-unchanged'
-  });
-  assert.equal(f.repository.createInitialCalls, 2);
-  assert.equal(f.materializeCalls.length, 0);
-  assert.equal(boatman.screen.schema, 'first_game_screen');
-  assert.equal(baseline.screen.schema, 'first_game_screen');
-  await assert.rejects(
-    () => runtime.startNewGame({
-      scenario_id: 'unknown_scenario',
-      request_id: 'unknown'
-    }),
-    { code: 'SCENARIO_NOT_SUPPORTED' }
-  );
-  assert.equal(f.repository.createInitialCalls, 2);
-  assert.equal(f.materializeCalls.length, 0);
-});
-
-test('new-game identity rejects trace and boatman reuse in both orders', async () => {
-  for (const [label, firstInput, secondInput] of [
-    [
-      'trace-to-boatman',
-      { scenario_id: 'lower_dvina_trace_v1' },
-      { scenario_id: 'lower_dvina_late_summer_open_water_v1' }
-    ],
-    [
-      'boatman-to-trace',
-      { scenario_id: 'lower_dvina_late_summer_open_water_v1' },
-      { scenario_id: 'lower_dvina_trace_v1' }
-    ],
-    [
-      'baseline-to-boatman',
-      { start_text: 'Начать путь' },
-      { scenario_id: 'lower_dvina_late_summer_open_water_v1' }
-    ],
-    [
-      'boatman-to-baseline',
-      { scenario_id: 'lower_dvina_late_summer_open_water_v1' },
-      { start_text: 'Начать путь' }
-    ]
-  ]) {
-    const f = fixture();
-    const runtime = createRuntime(f);
-    await runtime.startNewGame({
-      ...firstInput,
-      request_id: `creation-identity-${label}`
-    });
-    await assert.rejects(
-      () => runtime.startNewGame({
-        ...secondInput,
-        request_id: `creation-identity-${label}`
-      }),
-      { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-    );
-    assert.equal(f.repository.sessions.size, 1);
-  }
-});
-
-test('non-trace party sharing the materializer version bypasses trace validation', async () => {
-  const f = fixture();
-  const partyId = 'party:other-materialized-scenario';
-  const screen = {
-    version: 1,
-    schema: 'first_game_screen',
-    screen_status: 'ready',
-    party_id: partyId
-  };
-  f.repository.sessions.set(partyId, {
-    request_id: 'other-materialized-scenario',
-    stage26_result: null,
-    delivery_attempt: { status: 'sent' },
-    delivery_ack_result: null,
-    screen,
-    turn_number: 0,
-    last_turn_id: null,
-    state_version: 1,
-    party_materializer_version: MATERIALIZER_VERSION,
-    party_scenario_manifest_digest: 'f'.repeat(64),
-    party_snapshot_schema: 'rus.other_scenario_snapshot.v1'
-  });
-  assert.deepEqual(
-    await createRuntime(f).getPartyScreen(partyId),
-    { party_id: partyId, turn_number: 0, screen }
-  );
-});
-
-test('new-game identity rejects changed normalized start input', async () => {
-  const f = fixture();
-  const runtime = createRuntime(f);
-  await runtime.startNewGame({
-    start_text: 'Начать путь',
-    player_name: 'Путник',
-    request_id: 'changed-start-input'
-  });
-  await assert.rejects(
-    () => runtime.startNewGame({
-      start_text: 'Начать другой путь',
-      player_name: 'Путник',
-      request_id: 'changed-start-input'
-    }),
-    { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-  );
-  await assert.rejects(
-    () => runtime.startNewGame({
-      start_text: 'Начать путь',
-      player_name: 'Другой путник',
-      request_id: 'changed-start-input'
-    }),
-    { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-  );
-});
 
 test('trace recovery rehydrates Phase 1A and attaches one stable session', async () => {
   const f = fixture({ failFirstAttach: true });
@@ -373,7 +263,7 @@ test('restart rejects tampered trace screen and session identity', async () => {
       'scenario marker',
       (session) => {
         session.stage26_result.scenario_id =
-          'lower_dvina_late_summer_open_water_v1';
+          'wrong_trace_scenario';
       }
     ],
     [
@@ -478,7 +368,7 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
   });
   const session = f.repository.sessions.get(started.party_id);
   session.stage26_result.scenario_id =
-    'lower_dvina_late_summer_open_water_v1';
+    'wrong_trace_scenario';
   await assert.rejects(
     () => runtime.acknowledgeOpening(started.party_id, {
       client_ack_id: 'must-not-commit'
@@ -486,6 +376,34 @@ test('acknowledgement rejects a tampered trace marker before mutation', async ()
     { code: 'TRACE_PHASE_1B_SESSION_READ_INVALID' }
   );
   assert.equal(session.delivery_ack_result, null);
+});
+
+test('public turn deadline includes initial session read', async () => {
+  let now = 0;
+  let exhaustRead = false;
+  const budget = createLlmTurnBudget({ now: () => now });
+  const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
+  const f = fixture({ onLoadSession({ options }) {
+    if (!exhaustRead) return;
+    assert.equal(options.turnBudget, budget);
+    now = 30_000;
+  } });
+  const opening = await createRuntime(f).startNewGame({
+    scenario_id: 'lower_dvina_trace_v1', request_id: 'deadline-opening'
+  });
+  await createRuntime(f).acknowledgeOpening(opening.party_id, { client_ack_id: 'deadline-ack' });
+  exhaustRead = true;
+  let submitted = 0;
+  const runtime = createRuntime(f, {
+    llmDiagnostics: diagnostics,
+    async submitTurn() { submitted += 1; }
+  });
+  await assert.rejects(() => runtime.submitTurn(opening.party_id, {
+    request_id: 'deadline-initial-read', raw_text: 'Осматриваюсь'
+  }), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  assert.equal(submitted, 0);
+  assert.equal(diagnostics.report({ party_id: opening.party_id,
+    request_id: 'deadline-initial-read' }).turn_duration_ms, 30_000);
 });
 
 test('first acknowledgement is immutable and exact replay performs no write', async () => {
@@ -551,8 +469,8 @@ test('projection leak or failed materialization creates no session', async () =>
   assert.equal(invalidScreen.repository.sessions.size, 0);
 });
 
-function createRuntime(f) {
-  return createFirstPlayablePublicRuntime({
+function createRuntime(f, traceTurnRuntime = null) {
+  return createLowerDvinaTracePublicRuntime({
     partyPool: { connect() {} },
     committer: { commit() {} },
     release,
@@ -566,6 +484,7 @@ function createRuntime(f) {
       f.events.push('project');
       return f.projector(input);
     },
+    traceTurnRuntime,
     partyRepository: f.repository
   });
 }
@@ -576,7 +495,8 @@ function fixture({
   visibleExtra = {},
   projectorOverride = null,
   publicationLoader = null,
-  committedRequest = null
+  committedRequest = null,
+  onLoadSession = null
 } = {}) {
   const sessions = new Map();
   const events = [];
@@ -653,8 +573,9 @@ function fixture({
       }
       sessions.set(input.partyId, next);
     },
-    async loadSession(partyId) {
+    async loadSession(partyId, options = {}) {
       events.push('loadSession');
+      onLoadSession?.({ partyId, options });
       const value = sessions.get(partyId);
       if (!value) throw error('PARTY_NOT_FOUND');
       return structuredClone(value);

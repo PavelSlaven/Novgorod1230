@@ -4,11 +4,8 @@ import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { chromium } from 'playwright-core';
-import { computeStage26ScreenDigest } from '@rus/contracts';
 import {
-  createGameCompositionRoot,
   createGameHttpServer,
-  createInMemorySessionStore,
   createStaticAssetResolver,
   listen
 } from '@rus/game-server';
@@ -66,48 +63,32 @@ const VISUAL_CASES = Object.freeze([
 
 function createRecordedRoot(records) {
   let partyNumber = 0;
-  let nowTick = 0;
+  const sessions = new Map();
   const acknowledgementAttempts = new Map();
-  const root = createGameCompositionRoot({
-    newGameWorkflow: {
-      run: async (input) => {
-        if (input.start_text === 'Сломать создание') {
-          return { status: 'rejected' };
-        }
-        partyNumber += 1;
-        return {
-          status: 'approved',
-          artifact: stage26Fixture(`party-e2e-${partyNumber}`)
-        };
-      }
-    },
-    turnWorkflow: { run: async (input) => turnFixture(input) },
-    sessionStore: createInMemorySessionStore(),
-    scenarioRegistry: {
-      listPublic: async () => [{
+  return Object.freeze({
+    health: () => ({ status: 'ok', service: '@rus/game-server', api_version: 1 }),
+    listScenarios: async () => ({
+      version: 1,
+      schema: 'public_scenario_catalog',
+      scenarios: [{
         scenario_id: 'lower_dvina_trace_v1',
         title: 'След на Нижней Двине',
         description: 'Позднее лето, разбитая лодья и пропавший груз.',
         available: true
-      }],
-      resolveForNewGame: async (scenarioId) => scenarioId === 'lower_dvina_trace_v1'
-        ? {
-            start_text: 'Начать опубликованный сценарий Нижней Двины.',
-            player_name: 'Микула',
-            scenario_context: { scenario_id: 'lower_dvina_trace_v1' }
-          }
-        : null
-    },
-    now: () => new Date(
-      Date.parse('2026-07-12T12:30:00.000Z') + nowTick++ * 1_000
-    ).toISOString()
-  });
-  return Object.freeze({
-    health: () => root.health(),
-    listScenarios: () => root.listScenarios(),
+      }]
+    }),
     async startNewGame(input) {
       records.newGames.push(structuredClone(input));
-      return root.startNewGame(input);
+      if (input.scenario_id !== 'lower_dvina_trace_v1') {
+        throw Object.assign(new Error('Scenario is not supported.'), {
+          code: 'SCENARIO_NOT_SUPPORTED', status: 400
+        });
+      }
+      partyNumber += 1;
+      const partyId = `party-e2e-${partyNumber}`;
+      const screen = openingFixture(partyId);
+      sessions.set(partyId, { screen, turnNumber: 0 });
+      return { party_id: partyId, screen };
     },
     async acknowledgeOpening(partyId, input) {
       records.acknowledgements.push({ partyId, input: structuredClone(input) });
@@ -119,37 +100,51 @@ function createRecordedRoot(records) {
         });
       }
       if (partyId === 'party-e2e-2' && attempt === 1) {
-        await root.acknowledgeOpening(partyId, input);
         throw Object.assign(new Error('Acknowledgement response was lost.'), {
           code: 'ACK_RESPONSE_LOST', status: 503
         });
       }
-      return root.acknowledgeOpening(partyId, input);
+      return { party_id: partyId, delivery_status: 'acknowledged' };
     },
     async submitTurn(partyId, input) {
       records.turns.push({ partyId, input: structuredClone(input) });
       if (input.raw_text === 'Медленный ход') {
         await records.slowTurn.promise;
       }
-      return root.submitTurn(partyId, input);
+      const session = sessions.get(partyId);
+      if (!session) throw Object.assign(new Error('Party session was not found.'), {
+        code: 'PARTY_NOT_FOUND', status: 404
+      });
+      const result = turnFixture({
+        ...input,
+        party_id: partyId,
+        turn_number: session.turnNumber + 1
+      });
+      sessions.set(partyId, { screen: result.screen, turnNumber: result.turn_number });
+      return { party_id: partyId, screen: result.screen, turn: result };
     },
     async getPartyScreen(partyId) {
       records.screenReads.push(partyId);
-      return root.getPartyScreen(partyId);
+      const session = sessions.get(partyId);
+      if (!session) throw Object.assign(new Error('Party session was not found.'), {
+        code: 'PARTY_NOT_FOUND', status: 404
+      });
+      return { party_id: partyId, turn_number: session.turnNumber, screen: session.screen };
     }
   });
 }
 
-function stage26Fixture(partyId) {
-  const screen = {
+function openingFixture(partyId) {
+  return {
     version: 1,
     schema: 'first_game_screen',
     screen_status: 'ready',
     party_id: partyId,
-    main_prose: 'Перед тобой открывается дорога к Новгороду.',
+    scenario_id: 'lower_dvina_trace_v1',
+    main_prose: 'Ты приходишь в себя на берегу Нижней Двины после крушения.',
     visible_context: {
-      location_label: 'Дорога у Новгорода',
-      calendar: 'Лето 6738',
+      location_label: 'Берег Нижней Двины',
+      calendar: '20 августа 1230 года',
       environment: {
         profile_id: 'env.land_path',
         node_category: 'spatial.g3.route_site',
@@ -158,69 +153,25 @@ function stage26Fixture(partyId) {
       weather: 'clear',
       day_part: 'day'
     },
-    action_panel: {
-      suggested_actions: [{ option_id: 'look', label: 'Осмотреться' }]
-    },
-    position_panel: { position_ref: { g1_id: 'g1-1', g2_id: 'g2-1' } },
+    action_panel: { suggested_actions: [] },
     panels: {
       character: {
         visible: true,
-        data: { name: '<script>bad()</script>Иван', role: 'Лодочник', health: 9 }
+        data: { name: '<script>bad()</script>Микула', role: 'Приказчик', health: 9 }
       },
-      map: {
-        visible: true,
-        data: {
-          scene_map: { nodes: [{
-            token: 'road', label: 'Дорога', certainty: 'known', layout_order: 1
-          }, {
-            token: 'gate', label: 'Городские ворота', certainty: 'known',
-            layout_order: 2
-          }], links: [{ from_token: 'road', to_token: 'gate' }] },
-          world_signals: [{ approximate_area: 'у ворот', approximate_direction: 'впереди' }]
-        }
-      },
-      journal: {
-        visible: true,
-        data: { current_task: 'Добраться до городских ворот' }
-      },
-      people: {
-        visible: true,
-        data: {
-          active_interlocutor: {
-            entity_ref: { entity_kind: 'npc', entity_id: 'npc-guide' },
-            display_label: 'Проводник', role_label: 'местный человек',
-            portrait_spec_v1: SAMPLE_PORTRAIT_SPEC
-          }
-        }
-      }
+      route: { visible: true, data: { current_place: 'Берег Нижней Двины' } }
     },
-    delivery_state: { message_id: `message-${partyId}` }
-  };
-  return {
-    version: 1,
-    schema: 'stage26_first_game_screen_result',
-    pass: true,
-    request_id: `request-${partyId}`,
-    party_id: partyId,
-    transaction_id: `tx-${partyId}`,
-    first_game_screen: screen,
-    screen_digest: computeStage26ScreenDigest(screen),
-    visible_context_package_digest: 'sha256:visible',
-    narrator_output_digest: 'sha256:narrator',
-    delivery_permission: {
-      can_create_delivery_attempt: true,
-      can_show_screen: true,
-      can_accept_first_turn_intent: true
-    }
+    delivery_state: { message_id: `opening:${partyId}` }
   };
 }
 
 function turnFixture(input) {
-  const visual = VISUAL_CASES.find(([name]) => input.raw_text
+  const rawText = String(input.raw_text ?? '');
+  const visual = VISUAL_CASES.find(([name]) => rawText
     .startsWith(`visual:${name}:`));
   if (visual) return visualTurnFixture(input, visual[1]);
-  const leaking = input.raw_text === 'Проверка утечки';
-  const conversationEnded = input.raw_text === 'Закончить разговор';
+  const leaking = rawText === 'Проверка утечки';
+  const conversationEnded = rawText === 'Закончить разговор';
   const targetProjection = createSpatialV3PlayerProjection({
     journey_execution: {
       status: 'suspended_at_scene',
@@ -263,8 +214,9 @@ function turnFixture(input) {
     commit: { status: 'committed' },
     screen: {
       version: 1,
-      schema: 'turn_screen',
+      schema: 'lower_dvina_trace_turn_screen',
       screen_status: 'ready',
+      scenario_id: 'lower_dvina_trace_v1',
       party_id: input.party_id,
       turn_id: `turn-${input.turn_number}`,
       turn_number: input.turn_number,
@@ -333,7 +285,8 @@ function visualTurnFixture(input, visual) {
     status: 'resolved', mode: 'attention', summary: { outcome: 'observed' },
     commit: { status: 'committed' },
     screen: {
-      version: 1, schema: 'turn_screen', screen_status: 'ready',
+      version: 1, schema: 'lower_dvina_trace_turn_screen', screen_status: 'ready',
+      scenario_id: 'lower_dvina_trace_v1',
       party_id: input.party_id, turn_id: `turn-${input.turn_number}`,
       turn_number: input.turn_number, main_prose: 'Сцена обновилась.',
       ...(visual.scene_asset_id ? { scene_asset_id: visual.scene_asset_id } : {}),
@@ -386,18 +339,10 @@ test('browser preserves production API semantics through the Lovable UI', {
 
   await page.click('[data-start-new-game]');
   await page.waitForSelector('[data-new-game-form]');
-  await page.fill('[data-new-game-form] textarea', '   ');
-  await page.click('[data-new-game-form] button[type="submit"]');
-  await page.waitForSelector('.error-toast');
-  assert.equal(records.newGames.length, 0, 'blank start_text must not be sent');
-  await page.click('[data-dismiss-error]');
-
-  await page.fill('[data-new-game-form] textarea', 'Начать в Новгороде');
-  await page.click('[data-new-game-form] button[type="submit"]');
-  await page.waitForSelector('[data-screen-schema="first_game_screen"]');
+  await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-retry-opening-ack]');
   assert.equal(await page.locator('[data-turn-form] textarea:disabled').count(), 1);
-  assert.deepEqual(records.newGames[0], { start_text: 'Начать в Новгороде' });
+  assert.deepEqual(records.newGames[0], { scenario_id: 'lower_dvina_trace_v1' });
   const firstPendingAck = await page.evaluate(() => JSON.parse(
     localStorage.getItem('rus.pending_opening_ack') ?? 'null'
   ));
@@ -423,44 +368,23 @@ test('browser preserves production API semantics through the Lovable UI', {
     'rus.pending_opening_ack'
   )), null);
   assert.equal(await page.locator('script:not([src])').count(), 0);
-  assert.match(await page.textContent('[data-current-task]'),
-    /Добраться до городских ворот/u);
   assert.match(await page.getAttribute('[data-landscape]', 'class'),
     /landscape--weather-clear/u);
   assert.equal(await page.locator('[data-landscape-canvas]').count(), 1);
   assert.ok(await page.locator('[data-landscape-canvas]').evaluate(
     (canvas) => canvas.toDataURL().length > 1_000
   ));
-  assert.match(await page.textContent('[data-conversation-portrait]'),
-    /Проводник|местный человек/u);
-  assert.equal(await page.locator(
-    '[data-conversation-portrait-canvas]'
-  ).count(), 1);
-  assert.equal(await page.locator(
-    '[data-conversation-portrait-canvas]'
-  ).evaluate((canvas) => canvas.getContext('2d')
-    .getImageData(0, 0, 1, 1).data[3]), 0,
-  'procedural portrait background must remain transparent');
-
   await page.click('[data-overlay-open="character"]');
   await page.waitForSelector('[data-overlay-panel]');
   assert.equal(await page.evaluate(() => document.activeElement?.hasAttribute('data-overlay-panel')), true);
-  assert.match(await page.textContent('[data-overlay-panel]'), /Иван|Лодочник/u);
+  assert.match(await page.textContent('[data-overlay-panel]'), /Микула|Приказчик/u);
   await page.keyboard.press('Escape');
   assert.equal(await page.locator('[data-overlay-panel]').count(), 0);
   assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('data-overlay-open')), 'character');
 
-  await page.click('[data-overlay-open="map"]');
-  await page.waitForSelector('[data-scene-minimap]');
-  assert.equal(await page.locator('[data-map-node]').count(), 2);
-  assert.equal(await page.locator('[data-map-link]').count(), 1);
-  assert.match(await page.textContent('[data-overlay-panel]'),
-    /Расположение условно|Городские ворота|у ворот/u);
-  await page.keyboard.press('Escape');
-
   await page.fill('[data-turn-form] textarea', 'Осматриваюсь');
   await page.click('[data-turn-form] button[type="submit"]');
-  await page.waitForSelector('[data-screen-schema="turn_screen"]');
+  await page.waitForSelector('[data-screen-schema="lower_dvina_trace_turn_screen"]');
   assert.deepEqual(records.turns[0].input, { raw_text: 'Осматриваюсь' });
   assert.equal(await page.locator('[data-action-id]').count(), 0);
   const body = await page.textContent('body');
@@ -491,7 +415,7 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(records.screenReads.length, readsBeforeReload,
     'reload must remain on landing without loading the remembered party');
   await page.click('[data-continue-party]');
-  await page.waitForSelector('[data-screen-schema="turn_screen"]');
+  await page.waitForSelector('[data-screen-schema="lower_dvina_trace_turn_screen"]');
   assert.equal(await page.locator('[data-landscape]').evaluate(
     (element) => element.outerHTML
   ), turnLandscape, 'reload must reproduce the same deterministic landscape');
@@ -506,11 +430,6 @@ test('browser preserves production API semantics through the Lovable UI', {
 
   await page.click('[data-return-start]');
   await page.click('[data-start-new-game]');
-  await page.fill('[data-new-game-form] textarea', 'Сломать создание');
-  await page.click('[data-new-game-form] button[type="submit"]');
-  await page.waitForSelector('.error-toast');
-  assert.equal(await page.evaluate(() => localStorage.getItem('rus.party_id')), 'party-e2e-1');
-  await page.click('[data-dismiss-error]');
   await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   await page.waitForSelector('[data-retry-opening-ack]');
   const responseLossAck = records.acknowledgements.at(-1).input;
@@ -538,9 +457,10 @@ test('browser preserves production API semantics through the Lovable UI', {
     'rus.pending_opening_ack'
   )), null);
 
-  await page.click('[data-action-id="look"]');
-  await page.waitForSelector('[data-screen-schema="turn_screen"]');
-  assert.deepEqual(records.turns[1].input, { selected_action_option_id: 'look' });
+  await page.fill('[data-turn-form] textarea', 'Осматриваюсь снова');
+  await page.click('[data-turn-form] button[type="submit"]');
+  await page.waitForSelector('[data-screen-schema="lower_dvina_trace_turn_screen"]');
+  assert.deepEqual(records.turns[1].input, { raw_text: 'Осматриваюсь снова' });
 
   const themeBefore = await page.getAttribute('html', 'data-theme');
   await page.click('[data-theme-toggle]');
@@ -567,7 +487,7 @@ test('browser preserves production API semantics through the Lovable UI', {
   assert.equal(records.turns.length, slowTurnCount,
     'a deferred turn must ignore repeated form submission');
   await page.evaluate(() => document.querySelector('[data-return-start]')?.click());
-  assert.equal(await page.locator('[data-screen-schema="turn_screen"]').count(), 1);
+  assert.equal(await page.locator('[data-screen-schema="lower_dvina_trace_turn_screen"]').count(), 1);
   assert.equal(await page.locator('[data-start-new-game]').count(), 0,
     'a deferred turn must not allow switching to another game flow');
   records.slowTurn.resolve();
@@ -641,8 +561,7 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
   });
   await page.goto(`http://127.0.0.1:${address.port}`);
   await page.click('[data-start-new-game]');
-  await page.fill('[data-new-game-form] textarea', 'Проверить сцены');
-  await page.click('[data-new-game-form] button[type="submit"]');
+  await page.click('[data-scenario-id="lower_dvina_trace_v1"]');
   for (let attempt = 0; attempt < 2; attempt += 1) {
     await page.waitForSelector('[data-retry-opening-ack]');
     await page.click('[data-retry-opening-ack]');
@@ -674,7 +593,8 @@ test('browser renders the PR82 scene-asset matrix and fallbacks', {
         page.click('[data-turn-form] button[type="submit"]')
       ]);
       await page.waitForFunction(({ weather, dayPart }) => {
-        const screen = document.querySelector('[data-screen-schema="turn_screen"]');
+        const screen = document.querySelector(
+          '[data-screen-schema="lower_dvina_trace_turn_screen"]');
         const landscape = document.querySelector('[data-landscape]');
         const canvas = document.querySelector('[data-landscape-canvas]');
         if (!screen || !landscape?.classList.contains(`landscape--weather-${weather}`)

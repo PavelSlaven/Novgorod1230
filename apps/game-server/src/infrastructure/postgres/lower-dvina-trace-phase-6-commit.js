@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { integrateSpatialV3TemporalWriteFragments } from
   '@rus/turn/spatial-v3-temporal-write-integration';
@@ -132,6 +134,9 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     integrated.error);
   const built = await builder.build(integrated.input);
   if (!built.ok) fail('TRACE_PHASE_6_WRITE_PLAN_REJECTED', built.error);
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: next, screen: pendingScreen
+  });
   const committed = await committer.commit({
     plan: built.plan,
     created_at_turn: turnNumber
@@ -142,10 +147,10 @@ export async function commitLowerDvinaTracePhase6({ partyId, writePlan,
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }
-
 function phase6AdmissionPhysicalKeys(intent, partyId) {
   const participantIds = [
     ...intent.participant_bindings.initial_carrier_ids.slice(1),
@@ -170,7 +175,6 @@ function phase6AdmissionPhysicalKeys(intent, partyId) {
     ...containerIds.map((id) => `party_runtime.party_containers:${id}`)
   ];
 }
-
 export async function buildLowerDvinaTracePhase6Commit({ partyId, factual,
   state, inputDigest, visibleContext, phase6Contracts }) {
   const writePlan = {
@@ -190,7 +194,6 @@ export async function buildLowerDvinaTracePhase6Commit({ partyId, factual,
   });
   return captured;
 }
-
 function assertOwnerResult({ factual, state, changeSetId, idemId }) {
   const carry = factual.consequence.carry;
   const intent = carry.intent;
@@ -210,7 +213,6 @@ function assertOwnerResult({ factual, state, changeSetId, idemId }) {
     fail('TRACE_PHASE_6_OWNER_RESULT_INVALID');
   }
 }
-
 function expectedVersions({ state, factual }) {
   const intent = factual.consequence.carry.intent;
   const values = [
@@ -239,7 +241,6 @@ function expectedVersions({ state, factual }) {
   }
   return values;
 }
-
 function commitRechecks({ partyId, state, factual, phase6Contracts,
   inputDigest }) {
   const carry = factual.consequence.carry;
@@ -273,7 +274,6 @@ function commitRechecks({ partyId, state, factual, phase6Contracts,
     sealedCheck('change_set', { canonical_input_digest: inputDigest })
   ];
 }
-
 function ownerKeys(factual, state) {
   const intent = factual.consequence.carry.intent;
   return [...new Set([

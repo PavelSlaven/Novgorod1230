@@ -7,7 +7,7 @@ import { createSeededRandomSource } from '@rus/checks-rng';
 import { addElapsedTime } from '@rus/time-events-history';
 import { canonicalDigest } from '@rus/materialization';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
-import { createFirstPlayablePublicRuntime } from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+import { createLowerDvinaTracePublicRuntime } from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { createLowerDvinaTracePhase1BProductionAdapter } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-1b.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from '../../apps/game-server/src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
@@ -124,7 +124,7 @@ function buildRuntime({ pool, release, runtimeCatalogPin, counters = null,
     narrator: createLowerDvinaTracePhase2DurableNarrator({ partyPool: pool, narrationService: { async run(request) { return narration(request.request_id); } } }),
     randomSourceFactory: ({ request_id }) => { if (counters) counters.rng_factories += 1; const source = createSeededRandomSource(`phase-6:${request_id}`); return { next: () => { if (counters) counters.rng_draws += 1; return 0.99; }, snapshot: () => source.snapshot() }; },
     npcDecisionSelector: async (request) => { const selected = request.options.find(({ option_id }) => option_id === (request.options.some(({ option_id }) => option_id === 'surrender_without_confession') ? 'surrender_without_confession' : 'accept_first_aid')); assert.ok(selected); return { request_id: request.request_id, state_version: request.state_version, option_id: selected.option_id, command_token: selected.command_token }; }, decisionSecret: 'phase-6-postgres-secret', temporalAdvanceOwner: phase6TemporalOwner(temporalBoundaryResolver), now: () => { if (counters) counters.now += 1; return '2026-07-30T08:00:00.000Z'; } });
-  return createFirstPlayablePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer, release, runtimeCatalogPin, traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({ partyPool: pool, worldPool: pool, release, runtimeCatalogPin }), traceTurnRuntime });
 }
 function phase6TemporalOwner(resolve) {
   const source = (source_kind, ruleId, policyId) => ({

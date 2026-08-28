@@ -561,20 +561,20 @@ test('new repeated inspection follows the pinned retry policy without duplicatin
   );
 });
 
-test('narration failure happens after factual commit and cannot roll it back', async () => {
+test('narration failure after factual commit returns its pending public result', async () => {
   const f = fixture({ narrationFails: true });
-  await assert.rejects(
-    () => f.runtime.submitTurn({
-      partyId: f.partyId,
-      input: {
-        request_id: 'phase2-narration-failure',
-        idempotency_key: 'phase2-narration-failure',
-        raw_text:
-          'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-      }
-    }),
-    /narration_flow_result invalid/u
-  );
+  const result = await f.runtime.submitTurn({
+    partyId: f.partyId,
+    input: {
+      request_id: 'phase2-narration-failure',
+      idempotency_key: 'phase2-narration-failure',
+      raw_text:
+        'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
+    }
+  });
+  assert.equal(result.turn_number, 1);
+  assert.equal(result.state_version, 2);
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
   assert.equal(f.commitCount(), 1);
   assert.equal(f.rollCount(), 1);
   assert.equal(f.state.party_state.state_version, 2);

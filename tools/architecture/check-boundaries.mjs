@@ -47,14 +47,6 @@ for (const sourceRoot of ['apps', 'packages']) {
     if (/legacy[\\/]DOCUMENTS|DOCUMENTS[\\/]documents-kg/u.test(source)) violations.push(`${rel}: production source may not reference legacy DOCUMENTS`);
   }
 }
-const knowledgeProductionComposition = await readFile(
-  join(root, 'apps/game-server/src/composition/production-v2-rollback-source.js'),
-  'utf8'
-);
-for (const required of ['createKnowledgeSourceReader', 'createFileSystemKnowledgeSourceStorage', 'knowledgeSource.verifyCorpus()', 'knowledgeSource.getGeneratedIndexStatus()', 'basePorts = Object.freeze({ knowledgeSource']) {
-  if (!knowledgeProductionComposition.includes(required)) violations.push(`production-v2 rollback source missing knowledge-source gate: ${required}`);
-}
-
 const stage26FacadePath = join(root, 'legacy/src/world/new-game-pipeline/stages/stage26-first-game-screen.js');
 const stage26Facade = await readFile(stage26FacadePath, 'utf8');
 if (!stage26Facade.includes("@rus/new-game/stages/stage-26/compat")) violations.push('legacy Stage 26 must delegate to the modular compatibility entry point');
@@ -637,8 +629,11 @@ for (const spec of [
 }
 
 const narrationFlowSource = await readFile(join(root, 'packages/narration/src/flow.js'), 'utf8');
-for (const required of ['writer.generate', 'auditor.audit', 'formatRepairer.repair', 'seniorWriter.repair', 'seniorAuditor.audit', 'router.route']) {
+for (const required of ['writer.generate', 'formatRepairer.repair']) {
   if (!narrationFlowSource.includes(required)) violations.push(`Narration flow is missing explicit port ${required}`);
+}
+for (const forbidden of ['auditor.audit', 'seniorWriter.repair', 'seniorAuditor.audit', 'router.route']) {
+  if (narrationFlowSource.includes(forbidden)) violations.push(`Narration flow must not restore LLM auditor/router/senior cascade port ${forbidden}`);
 }
 if (!narrationFlowSource.includes('detectHiddenLeaks')) violations.push('Narration flow must enforce hidden leak detection');
 const presentationScreensSource = await readFile(join(root, 'packages/presentation/src/read-models/screens.js'), 'utf8');

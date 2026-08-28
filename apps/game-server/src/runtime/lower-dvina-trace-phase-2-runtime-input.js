@@ -33,6 +33,7 @@ export async function executeTraceTurnWithAutonomousRetry(executeAttempt) {
 export function executeTraceTurnWithDiagnostics(llmDiagnostics, context,
   executeAttempt) {
   const run = () => executeTraceTurnWithAutonomousRetry(executeAttempt);
+  if (llmDiagnostics?.turnBudget?.current?.()) return run();
   return llmDiagnostics?.runTurn ? llmDiagnostics.runTurn(context, run) : run();
 }
 

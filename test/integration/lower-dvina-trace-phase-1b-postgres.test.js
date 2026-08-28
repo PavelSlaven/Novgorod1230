@@ -1,13 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
 import { spawnSync } from 'node:child_process';
 import { readFile, readdir } from 'node:fs/promises';
 import pg from 'pg';
 import {
-  createFirstPlayablePublicRuntime
-} from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+  createLowerDvinaTracePublicRuntime
+} from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import {
   createLowerDvinaTracePhase1BProductionAdapter,
   readPartyDatabaseSchemaSnapshot
@@ -159,7 +158,7 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
       ? adapterTransform(adapter)
       : adapter;
     return {
-      runtime: createFirstPlayablePublicRuntime({
+      runtime: createLowerDvinaTracePublicRuntime({
         partyPool: pool,
         committer: { commit: async () => ({ ok: true }) },
         release,
@@ -190,12 +189,22 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
   const base = `http://127.0.0.1:${server.address().port}`;
 
   const catalog = await api(base, '/api/v1/scenarios');
+  const scenarioIds = catalog.data.scenarios.map(({ scenario_id: id }) => id);
   assert.deepEqual(
-    catalog.data.scenarios.map(({ scenario_id: id }) => id),
-    [
-      'lower_dvina_late_summer_open_water_v1',
-      'lower_dvina_trace_v1'
-    ]
+    scenarioIds,
+    ['lower_dvina_trace_v1']
+  );
+  assert.equal(
+    scenarioIds.includes('lower_dvina_late_summer_open_water_v1'),
+    false
+  );
+  assert.equal(scenarioIds.includes('lower_dvina_trace_v1'), true);
+  await assert.rejects(
+    () => api(base, '/api/v1/new-games', {
+      scenario_id: 'lower_dvina_late_summer_open_water_v1',
+      request_id: 'phase-1b-legacy-public'
+    }),
+    { code: 'SCENARIO_NOT_SUPPORTED' }
   );
   const publicRequest = {
     scenario_id: 'lower_dvina_trace_v1',
@@ -388,113 +397,6 @@ test('Phase 1B public HTTP start commits, attaches, acknowledges and restarts', 
     1
   );
 
-  const legacyInput = {
-    start_text: 'Начать старую партию',
-    player_name: 'Старый путник',
-    request_id: 'phase-1b-legacy-start-text'
-  };
-  const legacyStarted =
-    await restarted.runtime.startNewGame(legacyInput);
-  const legacySnapshot = (await pool.query(
-    `SELECT state_payload
-       FROM party_runtime.party_state_snapshots
-      WHERE party_id=$1 AND state_version=0`,
-    [legacyStarted.party_id]
-  )).rows[0].state_payload;
-  delete legacySnapshot.creation_identity;
-  await pool.query(
-    `UPDATE party_runtime.party_state_snapshots
-        SET state_payload=$2::jsonb,state_digest=$3
-      WHERE party_id=$1 AND state_version=0`,
-    [
-      legacyStarted.party_id,
-      JSON.stringify(legacySnapshot),
-      createHash('sha256')
-        .update(JSON.stringify(legacySnapshot))
-        .digest('hex')
-    ]
-  );
-  const legacyBeforeReplay = (await pool.query(
-    `SELECT updated_at
-       FROM party_runtime.party_server_sessions
-      WHERE party_id=$1`,
-    [legacyStarted.party_id]
-  )).rows[0];
-  const legacyRunCount = await count(
-    pool,
-    'party_runtime.party_materialization_runs',
-    legacyStarted.party_id
-  );
-  const legacyReplayed =
-    await restarted.runtime.startNewGame(legacyInput);
-  assert.equal(legacyReplayed.party_id, legacyStarted.party_id);
-  assert.deepEqual(legacyReplayed.screen, legacyStarted.screen);
-  assert.equal(
-    await count(pool, 'party_runtime.party_materialization_runs',
-      legacyStarted.party_id),
-    legacyRunCount
-  );
-  assert.equal(
-    await count(pool, 'party_runtime.party_server_sessions',
-      legacyStarted.party_id),
-    1
-  );
-  assert.equal(
-    (await pool.query(
-      `SELECT updated_at
-         FROM party_runtime.party_server_sessions
-        WHERE party_id=$1`,
-      [legacyStarted.party_id]
-    )).rows[0].updated_at.toISOString(),
-    legacyBeforeReplay.updated_at.toISOString()
-  );
-  await assert.rejects(
-    () => restarted.runtime.startNewGame({
-      scenario_id: 'lower_dvina_late_summer_open_water_v1',
-      request_id: legacyInput.request_id
-    }),
-    { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-  );
-  await assert.rejects(
-    () => restarted.runtime.startNewGame({
-      ...legacyInput,
-      player_name: 'Другой старый путник'
-    }),
-    { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-  );
-
-  for (const [firstScenario, secondScenario] of [
-    [
-      'lower_dvina_trace_v1',
-      'lower_dvina_late_summer_open_water_v1'
-    ],
-    [
-      'lower_dvina_late_summer_open_water_v1',
-      'lower_dvina_trace_v1'
-    ]
-  ]) {
-    const requestId = `phase-1b-cross-${firstScenario}`;
-    const firstParty = await restarted.runtime.startNewGame({
-      scenario_id: firstScenario,
-      request_id: requestId
-    });
-    const exactReplay = await restarted.runtime.startNewGame({
-      scenario_id: firstScenario,
-      request_id: requestId
-    });
-    assert.deepEqual(exactReplay.screen, firstParty.screen);
-    await assert.rejects(
-      () => restarted.runtime.startNewGame({
-        scenario_id: secondScenario,
-        request_id: requestId
-      }),
-      { code: 'NEW_GAME_CREATION_IDENTITY_CONFLICT' }
-    );
-    assert.equal(
-      await count(pool, 'party_runtime.parties', firstParty.party_id),
-      1
-    );
-  }
 });
 
 async function installActivatedRuntimeCatalog({ pool, databaseUrl }) {

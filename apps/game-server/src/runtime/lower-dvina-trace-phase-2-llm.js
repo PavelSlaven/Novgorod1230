@@ -1,6 +1,6 @@
 import { createNarrationService } from '@rus/narration';
 import { serverError } from '../errors.js';
-import { NARRATION_AUDIT_MAX_TOKENS, NARRATION_AUDIT_PROMPT, SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions } from './lower-dvina-trace-phase-2-llm-prompts.js';
+import { SEMANTIC_RESOLVER_PROMPT, TURN_STEP_PLANNER_INSTRUCTIONS, TURN_STEP_PLAN_EXAMPLE, TURN_STEP_PLAN_MAPPINGS, npcConversationInstructions, playerConversationInstructions } from './lower-dvina-trace-phase-2-llm-prompts.js';
 export { createLowerDvinaTraceNpcAutonomousModel } from './lower-dvina-trace-autonomous-llm.js';
 export { createLowerDvinaTraceNpcCombatModel } from './lower-dvina-trace-combat-llm.js';
 export function createLowerDvinaTraceSemanticResolver({
@@ -168,62 +168,24 @@ export function createLowerDvinaTraceNarrationService({
     writer: {
       generate: (request) => runNarrationRole(
         roleRunner,
-        'legacy.narrator.dossier',
+        'gameplay_narrator',
         'Return only one JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request_id exactly into output_id; do not emit angle brackets literally. Ground prose, action_options, used_references, and self_check exclusively in visible_context. An actionable object may be named only when it is already in the approved visible projection; narration never creates, discovers, or promotes an entity.',
         request
-      )
-    },
-    auditor: {
-      audit: (request) => runNarrationRole(
-        roleRunner,
-        'legacy.narrator.audit',
-        NARRATION_AUDIT_PROMPT,
-        request,
-        NARRATION_AUDIT_MAX_TOKENS
       )
     },
     formatRepairer: {
       repair: (request) => runNarrationRole(
         roleRunner,
-        'legacy.narrator.dossier_repair',
+        'gameplay_narrator_format_repair',
         'Return only one repaired JSON object. Required complete shape: {"version":1,"schema":"narration_output","output_id":"<request.request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}. Copy request.request_id exactly into output_id; do not emit angle brackets literally. Repair JSON shape only; prose, action_options, used_references, and self_check must remain grounded exclusively in request.visible_context.',
         request
       )
-    },
-    seniorWriter: {
-      repair: (request) => runNarrationRole(
-        roleRunner,
-        'legacy.narrator.repair',
-        'Return a corrected narration_output using only visible facts.',
-        request
-      )
-    },
-    seniorAuditor: {
-      audit: (request) => runNarrationRole(
-        roleRunner,
-        'legacy.narrator.audit',
-        NARRATION_AUDIT_PROMPT,
-        request,
-        NARRATION_AUDIT_MAX_TOKENS
-      )
-    },
-    router: {
-      async route(request) {
-        return {
-          version: 1,
-          schema: 'narration_repair_route',
-          route: request.repairs_remaining > 0
-            ? 'semantic_rewrite'
-            : 'block',
-          reason: 'VISIBLE_ONLY_AUDIT_FAILED'
-        };
-      }
     }
   });
 }
 async function runNarrationRole(roleRunner, roleId, instruction, request, maxTokens) {
   const response = await roleRunner.run({
-    scope: 'legacy_world',
+    scope: 'turn_runtime',
     role_id: roleId,
     messages: [{
       role: 'system',

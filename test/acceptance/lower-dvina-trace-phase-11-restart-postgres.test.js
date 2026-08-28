@@ -83,25 +83,9 @@ test('revision 25 survives production restart and exact replay through Phase 10'
 
     const catalog = await get(environment, '/api/v1/scenarios');
     assert.ok(catalog.scenarios.some(({ scenario_id: id }) =>
-      id === 'lower_dvina_late_summer_open_water_v1'));
-    const boatman = await post(environment, '/api/v1/new-games', {
-      scenario_id: 'lower_dvina_late_summer_open_water_v1',
-      request_id: 'phase11-boatman-new-game'
-    });
-    await post(environment,
-      `/api/v1/parties/${encodeURIComponent(boatman.party_id)}/opening-ack`, {
-        client_ack_id: 'phase11-boatman-opening-ack'
-      });
-    const optionId = boatman.screen.action_panel.suggested_actions[0]
-      .option_id;
-    const boatmanTurn = await post(environment,
-      `/api/v1/parties/${encodeURIComponent(boatman.party_id)}/turns`, {
-        request_id: 'phase11-boatman-turn',
-        idempotency_key: 'phase11-boatman-turn',
-        selected_action_option_id: optionId
-      });
-    assert.equal(boatmanTurn.screen.schema, 'turn_screen');
-    assert.equal(boatmanTurn.screen.screen_status, 'ready');
+      id === 'lower_dvina_trace_v1'));
+    assert.equal(catalog.scenarios.some(({ scenario_id: id }) =>
+      id === 'lower_dvina_late_summer_open_water_v1'), false);
   });
 
 test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alternatives',

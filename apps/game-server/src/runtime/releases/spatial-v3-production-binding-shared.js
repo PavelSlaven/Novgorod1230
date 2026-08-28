@@ -2,8 +2,8 @@ import {
   loadActiveRuntimeCatalogPin
 } from '../../infrastructure/postgres/spatial-v3-production-readiness.js';
 import {
-  createFirstPlayablePublicRuntime
-} from '../first-playable-public-runtime.js';
+  createLowerDvinaTracePublicRuntime
+} from '../lower-dvina-trace-public-runtime.js';
 import {
   firstPlayableCommitRecheck as baseCommitRecheck
 } from '../../infrastructure/postgres/first-playable/recheck.js';
@@ -137,7 +137,7 @@ export async function createSpatialV3ProductionBindings(
       if (typeof technicalCore?.executeReleaseOperation !== 'function') {
         throw new TypeError('technical spatial-v3 core is required');
       }
-      publicRuntime ??= createFirstPlayablePublicRuntime({
+      publicRuntime ??= createLowerDvinaTracePublicRuntime({
         partyPool: ports.partyPool,
         committer,
         release,

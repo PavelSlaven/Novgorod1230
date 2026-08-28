@@ -4,19 +4,9 @@ import {
   createFirstPlayablePartyRepository
 } from '../infrastructure/postgres/first-playable/repository.js';
 import {
-  initialState,
-  openingScreen
-} from './first-playable/projection.js';
-import {
-  SCENARIO_ID,
   hash,
-  json,
-  resolvePlayerProfile
+  json
 } from './first-playable/shared.js';
-import {
-  baselinePlayer,
-  scenarioCatalog
-} from './first-playable/setup.js';
 import {
   loadLowerDvinaTracePhase1BPublication
 } from '../internal/lower-dvina-trace-phase-1b-publication.js';
@@ -30,17 +20,12 @@ import {
   replayExistingLowerDvinaTraceStart
 } from './lower-dvina-trace-start-replay.js';
 import {
-  isLowerDvinaTraceSession,
   TRACE_SCENARIO_ID,
   validateLowerDvinaTraceSessionRead
 } from './lower-dvina-trace-session.js';
-import {
-  submitFirstPlayableTurn
-} from './first-playable-turn-runtime.js';
 
-export function createFirstPlayablePublicRuntime({
+export function createLowerDvinaTracePublicRuntime({
   partyPool,
-  committer,
   release,
   runtimeCatalogPin,
   now = () => new Date().toISOString(),
@@ -51,8 +36,7 @@ export function createFirstPlayablePublicRuntime({
   traceOpeningProjector = buildLowerDvinaTraceOpeningScreen,
   partyRepository = null
 } = {}) {
-  if (!release?.release_id || !runtimeCatalogPin?.catalog_revision_id
-      || typeof committer?.commit !== 'function') {
+  if (!release?.release_id || !runtimeCatalogPin?.catalog_revision_id) {
     throw new TypeError(
       'exact release, runtime catalog pin and P16 committer are required'
     );
@@ -68,14 +52,21 @@ export function createFirstPlayablePublicRuntime({
       world_revision_id: release.world_revision_id,
       production_activation: release.production_activation === true
     }),
-    listScenarios: async () =>
-      scenarioCatalog(await publicationLoader()),
+    listScenarios: async () => {
+      const publication = await publicationLoader();
+      return {
+        version: 1,
+        schema: 'public_scenario_catalog',
+        scenarios: [{
+          scenario_id: publication.public_projection.scenario_id,
+          ...structuredClone(publication.public_projection.public_metadata)
+        }]
+      };
+    },
     startNewGame: (input) => startNewGame({
       input,
       release,
-      runtimeCatalogPin,
       repository,
-      now,
       idFactory,
       traceStartAdapter,
       publicationLoader,
@@ -89,14 +80,12 @@ export function createFirstPlayablePublicRuntime({
     }),
     getPartyScreen: async (partyId) => {
       const session = await repository.loadSession(partyId);
-      if (isLowerDvinaTraceSession(session)) {
-        validateLowerDvinaTraceSessionRead({ partyId, session });
-        if (Number(session.turn_number) > 0) {
-          await traceTurnRuntime?.validateSessionRead?.({
-            partyId,
-            session
-          });
-        }
+      validateLowerDvinaTraceSessionRead({ partyId, session });
+      if (Number(session.turn_number) > 0) {
+        await traceTurnRuntime?.validateSessionRead?.({
+          partyId,
+          session
+        });
       }
       return {
         party_id: partyId,
@@ -105,8 +94,11 @@ export function createFirstPlayablePublicRuntime({
       };
     },
     submitTurn: async (partyId, input) => {
-      const session = await repository.loadSession(partyId);
-      if (isLowerDvinaTraceSession(session)) {
+      const requestId = String(input?.request_id ?? `turn:${idFactory()}`);
+      const submit = async () => {
+        const turnBudget = traceTurnRuntime?.llmDiagnostics?.turnBudget ?? null;
+        const session = await repository.loadSession(partyId, { turnBudget });
+        turnBudget?.assertWithinDeadline?.();
         validateLowerDvinaTraceSessionRead({ partyId, session });
         if (typeof traceTurnRuntime?.submitTurn !== 'function') {
           throw serverError(
@@ -121,9 +113,6 @@ export function createFirstPlayablePublicRuntime({
             session
           });
         }
-        const requestId = String(
-          input?.request_id ?? `turn:${idFactory()}`
-        );
         return traceTurnRuntime.submitTurn({
           partyId,
           input: {
@@ -133,15 +122,11 @@ export function createFirstPlayablePublicRuntime({
           },
           session
         });
-      }
-      return submitFirstPlayableTurn({
-        partyId,
-        input,
-        release,
-        repository,
-        committer,
-        idFactory
-      });
+      };
+      return traceTurnRuntime?.llmDiagnostics?.runTurn
+        ? traceTurnRuntime.llmDiagnostics.runTurn(
+          { party_id: partyId, request_id: requestId }, submit)
+        : submit();
     }
   });
 }
@@ -149,52 +134,35 @@ export function createFirstPlayablePublicRuntime({
 async function startNewGame({
   input = {},
   release,
-  runtimeCatalogPin,
   repository,
-  now,
   idFactory,
   traceStartAdapter,
   publicationLoader,
   traceOpeningProjector
 }) {
   const scenario = String(input.scenario_id ?? '').trim();
-  const baseline = String(input.start_text ?? '').trim();
-  if ((scenario === '') === (baseline === '')) {
-    throw serverError(
-      'NEW_GAME_INPUT_BRANCH_REQUIRED',
-      'Exactly one of start_text or scenario_id is required.',
-      { status: 400 }
-    );
-  }
-  if (scenario
-    && scenario !== SCENARIO_ID
-    && scenario !== TRACE_SCENARIO_ID) {
+  if (scenario !== TRACE_SCENARIO_ID || String(input.start_text ?? '').trim()) {
     throw serverError(
       'SCENARIO_NOT_SUPPORTED',
       'Scenario is not supported.',
-      { status: 409 }
+      { status: 400 }
     );
   }
   const requestId = String(input.request_id ?? `new-game:${idFactory()}`);
   const partyId = `party:${hash(requestId).slice(0, 24)}`;
-  const launchBranch = scenario ? 'scenario_id' : 'start_text';
-  const effectivePlayerName = scenario
-    ? null
-    : String(input.player_name ?? '').trim() || 'Путник';
-  const branchInputDigest = hash(json(scenario
-    ? { launch_branch: launchBranch, scenario_id: scenario }
-    : {
-        launch_branch: launchBranch,
-        start_text: baseline,
-        player_name: effectivePlayerName
-      }));
+  const launchBranch = 'scenario_id';
+  const effectivePlayerName = null;
+  const branchInputDigest = hash(json({
+    launch_branch: launchBranch,
+    scenario_id: scenario
+  }));
   const creationIdentity = Object.freeze({
     version: 1,
     schema: 'rus.first_playable_public_creation_identity.v1',
     party_id: partyId,
     request_id_digest: hash(requestId),
     launch_branch: launchBranch,
-    scenario_id: scenario || null,
+    scenario_id: scenario,
     effective_player_name: effectivePlayerName,
     branch_input_digest: branchInputDigest
   });
@@ -202,63 +170,27 @@ async function startNewGame({
     partyId,
     creationIdentity
   });
-  if (scenario === TRACE_SCENARIO_ID) {
-    const replayed = await replayExistingLowerDvinaTraceStart({
-      partyId,
-      requestId,
-      repository
-    });
-    if (replayed) return replayed;
-    return startLowerDvinaTrace({
-      requestId,
-      partyId,
-      creationIdentity,
-      release,
-      repository,
-      traceStartAdapter,
-      publicationLoader,
-      traceOpeningProjector
-    });
-  }
-  const player = scenario
-    ? resolvePlayerProfile(requestId)
-    : baselinePlayer(input.player_name, requestId);
-  const state = initialState({
+  const replayed = await replayExistingLowerDvinaTraceStart({
     partyId,
     requestId,
-    player,
-    scenario: Boolean(scenario),
+    repository
+  });
+  if (replayed) return replayed;
+  return startLowerDvinaTrace({
+    requestId,
+    partyId,
     creationIdentity,
     release,
-    runtimeCatalogPin
+    repository,
+    traceStartAdapter,
+    publicationLoader,
+    traceOpeningProjector
   });
-  const screen = openingScreen(state);
-  await repository.createInitial({
-    state,
-    screen,
-    release,
-    runtimeCatalogPin,
-    now: now()
-  });
-  const persisted = await repository.loadSession(partyId);
-  return {
-    request_id: requestId,
-    party_id: partyId,
-    screen: persisted.screen,
-    delivery: {
-      delivery_attempt_id: `delivery:${partyId}`,
-      message_id: `opening:${partyId}`,
-      screen_digest: hash(json(persisted.screen)),
-      status: 'sent',
-      awaiting_client_ack: true
-    }
-  };
 }
 
 async function acknowledgeOpening({
   partyId,
   input = {},
-  release,
   repository,
   now
 }) {
@@ -271,25 +203,18 @@ async function acknowledgeOpening({
     );
   }
   const before = await repository.loadSession(partyId);
-  if (isLowerDvinaTraceSession(before)) {
-    validateLowerDvinaTraceSessionRead({ partyId, session: before });
-  }
+  validateLowerDvinaTraceSessionRead({ partyId, session: before });
   const acknowledgement = await repository.acknowledgeOpening({
     partyId,
     clientAckId,
     acknowledgedAt: now()
   });
   const session = await repository.loadSession(partyId);
-  if (isLowerDvinaTraceSession(session)) {
-    validateLowerDvinaTraceSessionRead({ partyId, session });
-  }
+  validateLowerDvinaTraceSessionRead({ partyId, session });
   return {
     party_id: partyId,
     message_id: `opening:${partyId}`,
-    screen_digest:
-      session.stage26_result?.scenario_id === TRACE_SCENARIO_ID
-        ? session.delivery_attempt?.screen_digest
-        : hash(json(session.screen)),
+    screen_digest: session.delivery_attempt?.screen_digest,
     delivery_status: 'acknowledged',
     acknowledged_at: acknowledgement.acknowledged_at
   };

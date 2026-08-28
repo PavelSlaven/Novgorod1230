@@ -2,15 +2,14 @@
 
 ## Назначение
 
-Единый безопасный workflow генерации, аудита и ремонта прозы для первого экрана и обычного хода.
+Единый безопасный workflow генерации и ограниченного ремонта прозы для первого экрана и обычного хода.
 
 ## Владеет
 
-- versioned `narration_request`, `narration_output`, `narration_audit` и `narration_flow_result`;
+- versioned `narration_request`, `narration_output` и `narration_flow_result`;
 - проверкой visible-only входа;
-- bounded generation → audit → repair → senior audit;
-- историей генераций, аудитов и ремонтов;
-- typed upstream repair request при невозможности утвердить прозу.
+- exactly one writer call → deterministic schema/visible-only/hidden-leak validation → at most one format/contract repair → repeat deterministic validation;
+- историей генераций и ремонтов.
 
 ## Не делает
 
@@ -29,12 +28,13 @@
 
 ## Порты
 
-`writer.generate`, `auditor.audit`, `formatRepairer.repair`, `seniorWriter.repair`, `seniorAuditor.audit`, `router.route`.
+`writer.generate`, `formatRepairer.repair`.
 
 ## Инварианты
 
 - narrator получает только validated visible context;
 - semantic failure не превращается в deterministic prose fallback;
-- repair ограничен счётчиком и всегда повторно аудируется;
+- repair ограничен одним вызовом и всегда повторно валидируется детерминированно;
+- normal gameplay path не вызывает LLM auditor, router или senior cascade;
 - approved result содержит ровно один утверждённый output;
 - upstream repair не вызывает persistence.

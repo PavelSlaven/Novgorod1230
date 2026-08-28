@@ -1,4 +1,6 @@
 import { canonicalDigest } from '@rus/materialization';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { createCombinedWritePlanBuilder } from '@rus/turn';
 import { expected, sealedCheck } from './first-playable/plan-shared.js';
 import { assertPhase2CurrentStateVersion } from './lower-dvina-trace-phase-2-commit-admission.js';
@@ -136,9 +138,11 @@ export async function commitLowerDvinaTracePhase4({ partyId, writePlan, inputDig
   });
   const built = await builder.build(integratedInput);
   if (!built.ok) throw fail('TRACE_PHASE_4_WRITE_PLAN_REJECTED', built.error);
+  const committedPublicResult = committedPendingPhase2PublicResult({ payload: next, screen: pendingScreen });
   const committed = await committer.commit({ plan: built.plan, created_at_turn: turnNumber });
   if (!committed.ok) throw fail('TRACE_PHASE_4_COMMIT_FAILED', committed.error);
-  return { ...committed, state_version: nextVersion, turn_number: turnNumber, package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest };
+  return { ...committed, state_version: nextVersion, turn_number: turnNumber, package_id: visibleEnvelope.package_id, package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult };
 }
 function fail(code, details = null) { return serverError(code, 'Phase 4 factual commit failed closed.', { status: 409, details }); }
 

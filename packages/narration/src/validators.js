@@ -26,6 +26,9 @@ export function validateNarrationRequest(value) {
 export function validateNarrationOutput(value) {
   const errors = [];
   if (!plain(value)) return fail('narration output must be an object');
+  for (const key of Object.keys(value)) {
+    if (!['version', 'schema', 'output_id', 'prose', 'action_options', 'used_references', 'self_check'].includes(key)) errors.push(`forbidden field: ${key}`);
+  }
   if (value.version !== 1 || value.schema !== NARRATION_OUTPUT_SCHEMA) errors.push(`expected ${NARRATION_OUTPUT_SCHEMA} version 1`);
   requiredText(errors, value.output_id, 'output_id');
   requiredText(errors, value.prose, 'prose');

@@ -406,6 +406,17 @@ function fixture({
         package_digest: committedVisible.package_digest ?? committedVisible.canonical_digest ?? null,
         visible_package_digest: committedVisible.canonical_digest ?? null,
       };
+      commit.committed_public_result = {
+        party_id: partyId,
+        turn_number: state.party_state.turn_number,
+        state_version: state.party_state.state_version,
+        option_id: factual.mode_resolution.option_id,
+        screen: {
+          schema: 'lower_dvina_trace_turn_screen',
+          screen_status: 'committed_presentation_pending',
+          turn_id: factual.mode_resolution.turn_id
+        }
+      };
       replays.set(factual.player_input.idempotency_key, {
         input_digest: inputDigest,
         factual,

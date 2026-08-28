@@ -114,7 +114,7 @@ test('turn integrates the canonical narration flow and versioned TurnScreen', as
         return {
           version: 1,
           schema: 'narration_output',
-          output_id: `output:${request.request_id}`,
+          output_id: request.request_id,
           prose: 'На площади медленно тянется разговор.',
           action_options: [],
           used_references: [],

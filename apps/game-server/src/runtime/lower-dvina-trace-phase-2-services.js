@@ -48,9 +48,7 @@ import { withLowerDvinaTraceCurrentScene } from
 import { createLowerDvinaTraceTurnStepPlayerSafeProjector } from
   './lower-dvina-trace-phase-2-player-safe.js';
 import { runWithinTurnDeadline } from './llm-turn-budget.js';
-import { createLowerDvinaTracePhase2StateReader } from
-  './lower-dvina-trace-phase-2-state-reader.js';
-
+import { createLowerDvinaTracePhase2StateReader } from './lower-dvina-trace-phase-2-state-reader.js';
 export function buildLowerDvinaTracePhase2Services(context) {
   const {
     partyId, requestId, idempotencyKey, inputDigest, issuedAt,
@@ -78,6 +76,7 @@ export function buildLowerDvinaTracePhase2Services(context) {
     phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
     turn10Contracts, phase8Contracts, phase9Contracts, phase10Contracts
   } = context;
+  let committedPublicResult = null;
   const randomSource = injectedRandomSource ?? randomSourceFactory({
     party_id: partyId,
     request_id: requestId,
@@ -92,10 +91,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
       { status: 409 }
     );
   }
-  const workingProjectionAuthority =
-    createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
-  const projectCurrentScene = (committedState) =>
-    withLowerDvinaTraceCurrentScene({ committedState, locationProfiles });
+  const workingProjectionAuthority = createLowerDvinaTracePlayerSafeWorkingProjectionAuthority();
+  const projectCurrentScene = (committedState) => withLowerDvinaTraceCurrentScene({ committedState, locationProfiles });
   const temporalAdvance = createTracePhase9TemporalAdvance({ fallback:
     createTracePhase8TemporalAdvance({ fallback:
       createTracePhase7TemporalAdvance({
@@ -255,14 +252,16 @@ export function buildLowerDvinaTracePhase2Services(context) {
     }) }) }) }) })
     }),
     partyStore: {
-      commit(writePlan) {
+      async commit(writePlan) {
         turnBudget?.assertCanCommit();
-        return repository.commitPhase2Turn({
+        const committed = await repository.commitPhase2Turn({
           partyId, writePlan, inputDigest, contracts, phase3Contracts,
           phase4Contracts, phase5Contracts, phase6Contracts, phase7Contracts,
           turn10Contracts, phase8Contracts, phase9Contracts,
           phase10Contracts, turnStepApprovedOwners, turnBudget
         });
+        committedPublicResult = committed.committed_public_result ?? null;
+        return committed;
       }
     },
     persistedVisibleReader: {
@@ -275,7 +274,9 @@ export function buildLowerDvinaTracePhase2Services(context) {
     narrator: {
       ...narrator,
       run(request) {
-        return runWithinTurnDeadline(turnBudget, () => narrator.run(request));
+        return runWithinTurnDeadline(turnBudget, () => narrator.run({
+          ...request, turnBudget
+        }));
       }
     },
     screenProjector: {
@@ -291,8 +292,8 @@ export function buildLowerDvinaTracePhase2Services(context) {
         turnBudget?.assertWithinDeadline();
         return screen;
       }
-    }
+    },
+    committedPublicResult: () => committedPublicResult
   };
 }
-
 function addMinutes(value, minutes) { return new Date(Date.parse(value) + minutes * 60000).toISOString(); }

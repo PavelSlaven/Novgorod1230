@@ -8,7 +8,7 @@ import { resolveTracePhase2Contracts } from './lower-dvina-trace-phase-2-contrac
 import { createTracePhase8Runtime } from './lower-dvina-trace-phase-8-runtime.js';
 import { createTracePhase9Runtime } from './lower-dvina-trace-phase-9-runtime.js';
 import { resolveTracePhase10Contracts } from './lower-dvina-trace-phase-10-completion.js';
-import { completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
+import { committedPendingReplayResult, completePendingTracePhase10Replay } from './lower-dvina-trace-phase-10-replay.js';
 import { createTraceTurn10Runtime } from './lower-dvina-trace-turn-10-runtime.js';
 import { committedTraceScenarioDefinitionRevision } from './lower-dvina-trace-committed-revision.js';
 import { buildLowerDvinaTracePhase2Services } from './lower-dvina-trace-phase-2-services.js';
@@ -67,17 +67,25 @@ export function createLowerDvinaTracePhase2Runtime({
           if (replay.input_digest !== inputDigest) {
             throw serverError('TRACE_PHASE_2_IDEMPOTENCY_CONFLICT', 'The idempotency identity is already bound to another input.', { status: 409 });
           }
-          replay = await completePendingTracePhase10Replay({
-            partyId,
-            idempotencyKey,
-            replay,
-            repository,
-            bundleLoader,
-            turnBudget,
-          });
-          return repository.replayPhase2Turn
-            ? repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
-            : replay.public_result;
+          try {
+            replay = await completePendingTracePhase10Replay({
+              partyId,
+              idempotencyKey,
+              replay,
+              repository,
+              bundleLoader,
+              turnBudget,
+            });
+            return repository.replayPhase2Turn
+              ? repository.replayPhase2Turn({ partyId, replay, narrator, turnBudget })
+              : replay.public_result;
+          } catch (error) {
+            const pending = committedPendingReplayResult({
+              partyId, idempotencyKey, inputDigest, replay
+            });
+            if (pending != null) return pending;
+            throw error;
+          }
         }
         const [state, phase2Bundle] = await Promise.all([
           repository.loadPhase2State(partyId, {
@@ -211,8 +219,45 @@ export function createLowerDvinaTracePhase2Runtime({
           turn10,
           turnRandomSource,
         });
-        const issuedAt = now(),
-          result = await runTurnWorkflow(
+        const issuedAt = now();
+        const services = buildLowerDvinaTracePhase2Services({
+          partyId, requestId,
+          idempotencyKey, inputDigest,
+          issuedAt, state,
+          contracts, phase3Contracts,
+          phase4Contracts, phase5Contracts,
+          phase6Contracts, phase7Contracts,
+          turn10Contracts, phase8Contracts,
+          phase9Contracts, phase10Contracts,
+          registry, repository,
+          semanticResolver, turnStepModel,
+          npcAutonomousModel, npcCombatModel,
+          playerSafeStateProjector,
+          locationProfiles: bundle.location_topology_set.location_profiles,
+          turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner, turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
+          turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner, turnStepGenericBodyEffect: genericOwners?.bodyEffect,
+          turnStepOrdinaryDiscoveryResolver, createTurnStepOrdinaryDiscoveryResolver,
+          createTurnStepOrdinaryContainerContentsResolver, ordinaryDiscoveryEnablementMarker,
+          createTurnStepActionProductionOwner: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null, actionProductionProfile: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? actionProductionProfile : null,
+          createTurnStepWorldProcessResolver: [22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null, localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
+          createTurnStepSpatialSemanticResolver:
+            activeSpatialSemanticProfile == null
+              ? null : createTurnStepSpatialSemanticResolver,
+          spatialSemanticProfile: activeSpatialSemanticProfile,
+          admitAmbientOrdinaryPortion:
+            typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
+              ? createTurnStepAmbientOrdinaryPortionAdmission({
+                  committedState: state,
+                })
+              : null,
+          requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
+          turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
+          turnStepApprovedOwners: genericOwners, turnStepPackingCalculator,
+          narrator, randomSourceFactory,
+          randomSource: turnRandomSource, decisionSecret, decisionNow: now, turnBudget,
+        });
+        try {
+          const result = await runTurnWorkflow(
             {
               party_id: partyId,
               turn_number: Number(state.party_state.turn_number) + 1,
@@ -233,64 +278,16 @@ export function createLowerDvinaTracePhase2Runtime({
                 ],
               },
             },
-            buildLowerDvinaTracePhase2Services({
-              partyId,
-              requestId,
-              idempotencyKey,
-              inputDigest,
-              issuedAt,
-              state,
-              contracts,
-              phase3Contracts,
-              phase4Contracts,
-              phase5Contracts,
-              phase6Contracts,
-              phase7Contracts,
-              turn10Contracts,
-              phase8Contracts,
-              phase9Contracts,
-              phase10Contracts,
-              registry,
-              repository,
-              semanticResolver,
-              turnStepModel,
-              npcAutonomousModel,
-              npcCombatModel,
-              playerSafeStateProjector,
-              locationProfiles: bundle.location_topology_set.location_profiles,
-              turnStepBodyEventOwner: turnStepBodyEventOwner ?? genericOwners?.bodyEventOwner,
-              turnStepSemanticActivityOwner: turnStepSemanticActivityOwner ?? genericOwners?.semanticActivityOwner,
-              turnStepGenericCheckContextOwner: genericOwners?.genericCheckContextOwner,
-              turnStepGenericBodyEffect: genericOwners?.bodyEffect,
-              turnStepOrdinaryDiscoveryResolver,
-              createTurnStepOrdinaryDiscoveryResolver,
-              createTurnStepOrdinaryContainerContentsResolver,
-              ordinaryDiscoveryEnablementMarker,
-              createTurnStepActionProductionOwner: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepActionProductionOwner : null,
-              actionProductionProfile: [21, 22, 23, 24, 25].includes(bundle.definition_revision) ? actionProductionProfile : null,
-              createTurnStepWorldProcessResolver: [22, 23, 24, 25].includes(bundle.definition_revision) ? createTurnStepWorldProcessResolver : null,
-              localFireProfile: [22, 23, 24, 25].includes(bundle.definition_revision) ? localFireProfile : null,
-              createTurnStepSpatialSemanticResolver:
-                activeSpatialSemanticProfile == null
-                  ? null : createTurnStepSpatialSemanticResolver,
-              spatialSemanticProfile: activeSpatialSemanticProfile,
-              admitAmbientOrdinaryPortion:
-                typeof createTurnStepAmbientOrdinaryPortionAdmission === 'function'
-                  ? createTurnStepAmbientOrdinaryPortionAdmission({
-                      committedState: state,
-                    })
-                  : null,
-              requireAmbientOrdinaryAdmission: requireTurnStepAmbientOrdinaryAdmission === true,
-              turnStepOrdinaryResultPolicy: genericOwners?.ordinaryResultPolicy,
-              turnStepApprovedOwners: genericOwners,
-              turnStepPackingCalculator,
-              narrator,
-              randomSourceFactory,
-              randomSource: turnRandomSource, decisionSecret, decisionNow: now, turnBudget,
-            }),
+            services,
             { now: issuedAt, requestId },
           );
-        return runWithinTurnDeadline(turnBudget, () => repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
+          return await runWithinTurnDeadline(turnBudget, () =>
+            repository.persistPhase2Screen({ partyId, inputDigest, result, turnBudget }));
+        } catch (error) {
+          if (services.committedPublicResult() != null)
+            return services.committedPublicResult();
+          throw error;
+        }
       };
       return executeTraceTurnWithDiagnostics(llmDiagnostics,
         { party_id: partyId, request_id: requestId }, executeAttempt);

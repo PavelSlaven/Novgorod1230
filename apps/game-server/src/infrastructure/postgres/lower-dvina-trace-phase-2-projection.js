@@ -43,6 +43,11 @@ export function phase2PublicResult({ payload, screen }) {
   });
 }
 
+export function committedPendingPhase2PublicResult({ payload, screen }) {
+  return phase2PublicResult({ payload: structuredClone(payload),
+    screen: structuredClone(screen) });
+}
+
 function semanticNegotiationCandidate(negotiation) {
   return negotiation?.semantic_exchange_projection != null
       || negotiation?.semantic_exchange != null

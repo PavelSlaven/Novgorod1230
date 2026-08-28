@@ -19,6 +19,8 @@ import {
 import {
   buildLowerDvinaTracePendingScreen
 } from './lower-dvina-trace-turn-presentation.js';
+import { committedPendingPhase2PublicResult } from
+  './lower-dvina-trace-phase-2-projection.js';
 import { applyOrdinaryMaterializationProjection, ordinaryPlanFromWritePlan } from './lower-dvina-trace-ordinary-p16.js';
 import { createActionProducedAtomicWritePlan } from
   './action-produced-atomic-write-plan.js';
@@ -163,6 +165,9 @@ export async function commitLowerDvinaTraceTurnStep({
     rootWrites,
     turnStep.writes
   );
+  const committedPublicResult = committedPendingPhase2PublicResult({
+    payload: turnStep.snapshot, screen: pendingScreen
+  });
   if (spatialSemanticPlan != null) {
     writes.inserts.push(...spatialSemanticRows(spatialSemanticPlan));
   }
@@ -189,7 +194,8 @@ export async function commitLowerDvinaTraceTurnStep({
     state_version: nextVersion,
     turn_number: turnNumber,
     package_id: visibleEnvelope.package_id,
-    package_digest: visibleEnvelope.package_digest
+    package_digest: visibleEnvelope.package_digest,
+    committed_public_result: committedPublicResult
   };
 }
 

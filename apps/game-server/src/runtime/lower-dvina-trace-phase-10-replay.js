@@ -30,3 +30,50 @@ export async function completePendingTracePhase10Replay({ partyId,
   }
   return completed;
 }
+
+export function committedPendingReplayResult({ partyId, idempotencyKey,
+  inputDigest, replay }) {
+  const state = replay?.state, turn = state?.last_turn, screen = replay?.screen;
+  const anchor = screen?.current_projection_anchor, visible = turn?.visible_package;
+  const result = replay?.public_result;
+  const strings = [state?.party_id, turn?.idempotency_key, replay?.input_digest,
+    screen?.screen_status, screen?.turn_id, screen?.party_id,
+    anchor?.package_id, anchor?.package_digest, visible?.package_id,
+    visible?.package_digest, result?.party_id, result?.option_id,
+    result?.screen?.screen_status, result?.screen?.turn_id,
+    result?.screen?.party_id, result?.screen?.current_projection_anchor?.package_id,
+    result?.screen?.current_projection_anchor?.package_digest, turn?.option_id];
+  if (!strings.every((value) => typeof value === 'string' && value.length > 0)
+      || screen.screen_status !== 'committed_presentation_pending'
+      || state.party_id !== partyId || turn.idempotency_key !== idempotencyKey
+      || replay.input_digest !== inputDigest
+      || !Number.isInteger(state?.party_state?.state_version)
+      || !Number.isInteger(state?.party_state?.turn_number)
+      || !Number.isInteger(screen?.turn_number)
+      || !Number.isInteger(anchor?.committed_state_version)
+      || !Number.isInteger(result?.turn_number)
+      || !Number.isInteger(result?.state_version)
+      || !Number.isInteger(result?.screen?.turn_number)
+      || !Number.isInteger(result?.screen?.current_projection_anchor
+        ?.committed_state_version)
+      || screen.party_id !== partyId
+      || screen.turn_number !== state.party_state.turn_number
+      || anchor?.committed_state_version !== state.party_state.state_version
+      || anchor?.package_id !== visible?.package_id
+      || anchor?.package_digest !== visible?.package_digest
+      || result?.party_id !== partyId
+      || result.turn_number !== state.party_state.turn_number
+      || result.state_version !== state.party_state.state_version
+      || result.option_id !== turn.option_id
+      || result.screen?.screen_status !== screen.screen_status
+      || result.screen?.turn_id !== screen.turn_id
+      || result.screen?.party_id !== screen.party_id
+      || result.screen?.turn_number !== screen.turn_number
+      || result.screen?.current_projection_anchor?.committed_state_version
+        !== anchor.committed_state_version
+      || result.screen?.current_projection_anchor?.package_id !== anchor.package_id
+      || result.screen?.current_projection_anchor?.package_digest !== anchor.package_digest) {
+    return null;
+  }
+  return structuredClone(result);
+}

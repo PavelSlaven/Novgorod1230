@@ -6,8 +6,8 @@ import pg from 'pg';
 import { canonicalDigest } from '@rus/materialization';
 import { createSeededRandomSource } from '@rus/checks-rng';
 import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
-import { createFirstPlayablePublicRuntime } from
-  '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+import { createLowerDvinaTracePublicRuntime } from
+  '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import { createLowerDvinaTracePhase2Runtime } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
@@ -268,7 +268,7 @@ function buildRuntime({ pool, release, runtimeCatalogPin, ids }) {
       effect_registrations:
         lowerDvinaTraceConversationTemporalEffectRegistrations() }),
     now: () => '2026-08-12T08:00:00.000Z' });
-  return createFirstPlayablePublicRuntime({ partyPool: pool, committer,
+  return createLowerDvinaTracePublicRuntime({ partyPool: pool, committer,
     release, runtimeCatalogPin,
     traceStartAdapter: createLowerDvinaTracePhase1BProductionAdapter({
       partyPool: pool, worldPool: pool, release, runtimeCatalogPin }),

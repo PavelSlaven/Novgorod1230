@@ -70,8 +70,6 @@ const RELEASE_IDENTITY_FIELDS = Object.freeze([
   'target_migration_count',
   'target_migration_chain_digest',
   'compatible_world_pin_manifest_digest',
-  'rollback_source_release_id',
-  'rollback_runtime_selectable',
   'release_status',
   'production_activation',
   'runtime_selectable_in_canonical_production',

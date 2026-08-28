@@ -24,9 +24,18 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
     current,
     remaining,
     async runTurn(execute, { startedAt = now() } = {}) {
+      if (current()) return execute();
       const started_at = startedAt;
-      return storage.run(Object.freeze({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
-        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS }), execute);
+      return storage.run({ started_at, turn_deadline_ms: GAMEPLAY_TURN_DEADLINE_MS,
+        llm_budget_ms: GAMEPLAY_LLM_BUDGET_MS, repair_claim: null }, execute);
+    },
+    claimRepair({ roleId = null } = {}) {
+      const turn = current();
+      if (!turn) return null;
+      if (turn.repair_claim != null) throw repairClaimed(turn.repair_claim, roleId);
+      const claim = Object.freeze({ role_id: String(roleId ?? '').trim() || null });
+      turn.repair_claim = claim;
+      return claim;
     },
     clamp({ requestedTimeoutMs = null, repair = false } = {}) {
       const available = remaining();
@@ -54,7 +63,7 @@ export function createLlmTurnBudget({ now = () => Date.now() } = {}) {
 }
 
 export function isRepairRole(roleId, contract = null) {
-  return contract?.repair === true || /repair/u.test(String(roleId ?? ''));
+  return contract?.repair === true || REPAIR_ROLE_IDS.has(String(roleId ?? ''));
 }
 
 export async function runWithinTurnDeadline(turnBudget, execute) {
@@ -74,5 +83,22 @@ export function exhausted(remaining, budgetExhausted = false) {
   error.remaining_turn_deadline_ms = remaining.deadline_ms;
   return error;
 }
+
+export function repairClaimed(claim, roleId) {
+  const error = new Error('Gameplay turn repair budget is already claimed.');
+  error.code = 'LLM_TURN_REPAIR_ALREADY_CLAIMED';
+  error.claimed_repair_role_id = claim.role_id;
+  error.repair_role_id = String(roleId ?? '').trim() || null;
+  return error;
+}
+
+const REPAIR_ROLE_IDS = new Set([
+  'turn_step_planner_repair',
+  'player_conversation_interpreter_format_repair',
+  'npc_conversation_responder_format_repair',
+  'npc_autonomous_decider_format_repair',
+  'npc_combat_decider_format_repair',
+  'gameplay_narrator_format_repair'
+]);
 
 function positive(value) { return Number.isFinite(Number(value)) && Number(value) > 0 ? Number(value) : null; }

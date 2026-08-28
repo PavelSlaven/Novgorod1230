@@ -4,16 +4,14 @@ import test from 'node:test';
 import { resolveLlmExecutionConfig } from '../src/provider-config.js';
 
 const gameplayNarrationRoles = {
-  'legacy.narrator.dossier': ['json_object_with_schema', 'narration_output'],
-  'legacy.narrator.audit': ['json_object_with_schema', 'semantic_audit'],
-  'legacy.narrator.dossier_repair': ['json_repair', 'narration_output'],
-  'legacy.narrator.repair': ['json_repair', 'narration_output']
+  gameplay_narrator: ['json_object_with_schema', 'narration_output'],
+  gameplay_narrator_format_repair: ['json_repair', 'narration_output']
 };
 
 for (const [roleId, [outputContractMode, expectedSchema]] of Object.entries(gameplayNarrationRoles)) {
   test(`${roleId} uses Flash without reasoning`, () => {
     const resolution = resolveLlmExecutionConfig({
-      scope: 'legacy_world',
+      scope: 'turn_runtime',
       roleId,
       env: {
         DEEPSEEK_API_KEY: 'test',
@@ -34,7 +32,7 @@ for (const [roleId, [outputContractMode, expectedSchema]] of Object.entries(game
 
 test('custom narration provider retains its model override', () => {
   const resolution = resolveLlmExecutionConfig({
-    scope: 'legacy_world', roleId: 'legacy.narrator.dossier',
+    scope: 'turn_runtime', roleId: 'gameplay_narrator',
     runtimeProviderOverride: {
       compatibility: 'openai_compatible', baseUrl: 'http://127.0.0.1:8000/v1',
       model: 'local-narrator'

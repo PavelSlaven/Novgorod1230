@@ -493,41 +493,38 @@ test('turn step model fails closed for missing runner or non-object output', asy
   }
 });
 
-test('narration roles receive complete narration_output shape and audit budget', async () => {
+test('narration uses one current writer role and one targeted repair at most', async () => {
   const calls = [];
   const repairedOutput = { version: 1, schema: 'narration_output', output_id: 'narration-1', prose: 'Двор тих.', action_options: [], used_references: [], self_check: {} };
   const narration = createLowerDvinaTraceNarrationService({
     roleRunner: { async run(call) {
       calls.push(call);
-      return { output: call.role_id === 'legacy.narrator.dossier'
+      return { output: call.role_id === 'gameplay_narrator'
         ? {}
-        : call.role_id === 'legacy.narrator.dossier_repair'
+        : call.role_id === 'gameplay_narrator_format_repair'
           ? repairedOutput
-        : { version: 1, schema: 'narration_audit', pass: true, concerns: [], evidence: ['visible facts only'] } };
+        : null };
     } }
   });
   await narration.run({
     version: 1, schema: 'narration_request', request_id: 'narration-1',
-    surface: 'turn', visible_context: {}
+    surface: 'turn', visible_context: {
+      version: 1, schema: 'visible_context_package', visible_scene: 'Двор тих.',
+      visible_changes: [], sensory_details: [], visible_npc: [], visible_objects: [],
+      known_context: [], uncertainties: [], allowed_tensions: [], do_not_imply: []
+    }
   });
   const shape = '{"version":1,"schema":"narration_output","output_id":"<request_id>","prose":"<visible-only prose>","action_options":[],"used_references":[],"self_check":{}}';
   const repairShape = shape.replace('<request_id>', '<request.request_id>');
   assert.equal(calls[0].messages[0].content.includes(shape), true);
   assert.equal(calls[0].messages[0].content.includes('Copy request_id exactly into output_id'), true);
-  assert.equal(calls[1].role_id, 'legacy.narrator.dossier_repair');
+  assert.equal(calls[0].scope, 'turn_runtime');
+  assert.equal(calls[0].role_id, 'gameplay_narrator');
+  assert.equal(calls[1].role_id, 'gameplay_narrator_format_repair');
   assert.equal(calls[1].messages[0].content.includes(repairShape), true);
   assert.equal(calls[1].messages[0].content.includes('request.visible_context'), true);
   assert.equal(validateNarrationOutput(repairedOutput).ok, true);
-  const audit = calls[2];
-  assert.equal(audit.role_id, 'legacy.narrator.audit');
-  assert.deepEqual(audit.overrides, { temperature: 0, maxTokens: 1800 });
-  const example = JSON.parse(audit.messages[0].content.match(
-    /Complete valid passing example: (\{[^.]+\})\./u
-  )[1]);
-  assert.deepEqual(example, {
-    version: 1, schema: 'narration_audit', pass: true,
-    concerns: [], evidence: ['visible facts only']
-  });
+  assert.equal(calls.length, 2);
 });
 
 function groundedPlan(input, current) {

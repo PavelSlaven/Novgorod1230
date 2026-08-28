@@ -1,7 +1,8 @@
 import { serverError } from '../../../errors.js';
+import { withTurnDeadlineQueryPool } from '../query-with-turn-deadline.js';
 
-export async function loadSession(pool, partyId) {
-  const result = await pool.query(
+export async function loadSession(pool, partyId, { turnBudget = null } = {}) {
+  const result = await withTurnDeadlineQueryPool(pool, turnBudget).query(
     `SELECT s.request_id,s.stage26_result,s.delivery_attempt,
             s.delivery_ack_result,s.screen,s.turn_number,s.last_turn_id,
             s.state_version,s.updated_at,

@@ -5,6 +5,7 @@ import {
 import {
   createTemporalPresentationPostgresStore
 } from './temporal-presentation-store.js';
+import { queryWithTurnDeadline } from './query-with-turn-deadline.js';
 
 export function createLowerDvinaTracePhase2DurableNarrator({
   partyPool,
@@ -20,10 +21,14 @@ export function createLowerDvinaTracePhase2DurableNarrator({
     ?? createTemporalPresentationPostgresStore({ pool: partyPool });
   return Object.freeze({
     async run(request) {
+      const turnBudget = request.turnBudget ?? null;
+      const narrationRequest = { ...request };
+      delete narrationRequest.turnBudget;
       const envelope = await loadEnvelope(
         partyPool,
         request.request_id,
-        request.visible_context
+        request.visible_context,
+        turnBudget
       );
       const identity = {
         party_id: envelope.party_id,
@@ -32,7 +37,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
         presentation_idempotency_key:
           `presentation:${envelope.package_id}:${envelope.package_digest}`
       };
-      const claimed = await store.claimPresentationAttempt(identity);
+      const claimed = await store.claimPresentationAttempt({ ...identity, turnBudget });
       if (!claimed?.ok) throw presentationError();
       if (claimed.disposition === 'delivered'
           || claimed.disposition === 'output_ready') {
@@ -41,7 +46,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
           throw presentationError();
         }
         if (claimed.disposition === 'output_ready') {
-          await finalize(store, identity, claimed, envelope);
+          await finalize(store, identity, claimed, envelope, turnBudget);
         }
         return withPresentation(flow, claimed.narration_result);
       }
@@ -52,10 +57,11 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       }
       let flow;
       try {
-        flow = await narrationService.run(request);
+        flow = await narrationService.run(narrationRequest);
       } catch (error) {
         await store.finalizePresentationAttempt({
           ...identity,
+          turnBudget,
           attempt_id: claimed.attempt_id,
           claim_token: claimed.claim_token,
           presentation_status: 'failed_retryable',
@@ -70,6 +76,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
           || !flow.approved_output?.prose) {
         await store.finalizePresentationAttempt({
           ...identity,
+          turnBudget,
           attempt_id: claimed.attempt_id,
           claim_token: claimed.claim_token,
           presentation_status: 'failed_retryable',
@@ -88,6 +95,7 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       });
       const persisted = await store.persistNarrationOutput({
         ...identity,
+        turnBudget,
         attempt_id: claimed.attempt_id,
         claim_token: claimed.claim_token,
         narration_result: persistedNarration,
@@ -99,22 +107,20 @@ export function createLowerDvinaTracePhase2DurableNarrator({
       await finalize(store, identity, {
         attempt_id: claimed.attempt_id,
         output_digest: persistedNarration.canonical_digest
-      }, envelope);
+      }, envelope, turnBudget);
       return withPresentation(flow, persistedNarration);
     }
   });
 }
 
-async function loadEnvelope(pool, turnId, visibleContext) {
-  const result = await pool.query(
-    `SELECT package_id,party_id,turn_id,committed_state_version,
+async function loadEnvelope(pool, turnId, visibleContext, turnBudget = null) {
+  const result = await queryWithTurnDeadline(pool, { text: `SELECT package_id,party_id,turn_id,committed_state_version,
             change_set_id,package_digest,visible_payload,
             presentation_status,projection_policy_ref,dependency_pins,
             idempotency_record_id
        FROM party_runtime.party_visible_packages
       WHERE turn_id=$1`,
-    [turnId]
-  );
+    values: [turnId] }, turnBudget);
   const expectedContextDigest = canonicalDigest(visibleContext);
   const matches = result.rows.filter((candidate) =>
     candidate.package_digest
@@ -142,11 +148,12 @@ function sealNarration({ envelope, flow }) {
   };
 }
 
-async function finalize(store, identity, attempt, envelope) {
+async function finalize(store, identity, attempt, envelope, turnBudget = null) {
   const outputDigest =
     attempt.output_digest ?? attempt.narration_result?.canonical_digest;
   const finalized = await store.finalizePresentationAttempt({
     ...identity,
+    turnBudget,
     attempt_id: attempt.attempt_id,
     presentation_status: 'delivered',
     output_digest: outputDigest

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
+import { createLlmTurnBudget, isRepairRole } from '../src/runtime/llm-turn-budget.js';
 import { createLlmRoleRunnerAdapter } from '../src/adapters/llm-role-runner.js';
 import { createProductionLlmRoleRunner } from '../src/infrastructure/provider/deepseek.js';
 import { createLowerDvinaTraceTurnStepModel } from
@@ -24,6 +24,70 @@ test('turn budget clamps calls, preserves lower override, and isolates contexts'
   assert.equal(budget.current(), null);
 });
 
+test('repair claim is single, atomic, and not reset by a nested turn context', async () => {
+  const budget = createLlmTurnBudget();
+  await budget.runTurn(async () => {
+    assert.deepEqual(budget.claimRepair({ roleId: 'turn_step_planner_repair' }),
+      { role_id: 'turn_step_planner_repair' });
+    await budget.runTurn(async () => {
+      assert.throws(() => budget.claimRepair({ roleId: 'gameplay_narrator_format_repair' }),
+        { code: 'LLM_TURN_REPAIR_ALREADY_CLAIMED' });
+    });
+  });
+  await budget.runTurn(async () => {
+    const claims = await Promise.allSettled([
+      Promise.resolve().then(() => budget.claimRepair({ roleId: 'turn_step_planner_repair' })),
+      Promise.resolve().then(() => budget.claimRepair({ roleId: 'npc_autonomous_decider_format_repair' }))
+    ]);
+    assert.equal(claims.filter(({ status }) => status === 'fulfilled').length, 1);
+    assert.equal(claims.filter(({ reason }) => reason?.code
+      === 'LLM_TURN_REPAIR_ALREADY_CLAIMED').length, 1);
+  });
+  assert.equal(budget.claimRepair({ roleId: 'turn_step_planner_repair' }), null);
+});
+
+test('registered gameplay repair roles and explicit ordinary repair marker claim budget', async () => {
+  for (const roleId of [
+    'turn_step_planner_repair', 'player_conversation_interpreter_format_repair',
+    'npc_conversation_responder_format_repair', 'npc_autonomous_decider_format_repair',
+    'npc_combat_decider_format_repair', 'gameplay_narrator_format_repair'
+  ]) assert.equal(isRepairRole(roleId), true, roleId);
+  assert.equal(isRepairRole('ordinary_materialization'), false);
+  const budget = createLlmTurnBudget();
+  const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
+    execute: async () => ({ status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' }) });
+  await budget.runTurn(() => runner.run({ scope: 'turn_runtime',
+    role_id: 'ordinary_materialization', repair: true }));
+});
+
+test('cross-path gameplay repairs keep one claim and block provider', async () => {
+  for (const { first, second, nested = false } of [
+    { first: 'turn_step_planner_repair', second: 'gameplay_narrator_format_repair' },
+    { first: 'player_conversation_interpreter_format_repair',
+      second: 'npc_conversation_responder_format_repair' },
+    { first: 'npc_autonomous_decider_format_repair',
+      second: 'turn_step_planner_repair', nested: true }
+  ]) {
+    const calls = [];
+    const budget = createLlmTurnBudget();
+    const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
+      execute: async (input) => {
+        calls.push(input);
+        return { status: 'ok', parsed_json: {}, provider: 'deepseek', model: 'm' };
+      } });
+    await budget.runTurn(async () => {
+      await runner.run({ scope: 'turn_runtime', role_id: first });
+      const retry = () => runner.run({ scope: 'turn_runtime', role_id: second });
+      await assert.rejects(nested ? budget.runTurn(retry) : retry(), (error) => {
+        assert.equal(error.code, 'LLM_TURN_REPAIR_ALREADY_CLAIMED');
+        assert.equal(error.claimed_repair_role_id, first);
+        return true;
+      });
+    });
+    assert.equal(calls.length, 1, `${first} → ${second}`);
+  }
+});
+
 test('role runner does not call exhausted provider and clamps custom providers', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
@@ -42,7 +106,7 @@ test('role runner does not call exhausted provider and clamps custom providers',
   assert.equal(calls.length, 1);
 });
 
-test('gameplay narrator calls clamp legacy transport defaults and retain custom provider', async () => {
+test('gameplay narrator calls clamp turn-runtime defaults and retain custom provider', async () => {
   const calls = [];
   const budget = createLlmTurnBudget();
   const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
@@ -53,8 +117,8 @@ test('gameplay narrator calls clamp legacy transport defaults and retain custom 
         model: 'local-narrator', durationMs: 1 };
     } });
   await budget.runTurn(async () => {
-    await runner.run({ scope: 'legacy_world', role_id: 'legacy.narrator.dossier' });
-    await runner.run({ scope: 'legacy_world', role_id: 'legacy.narrator.repair' });
+    await runner.run({ scope: 'turn_runtime', role_id: 'gameplay_narrator' });
+    await runner.run({ scope: 'turn_runtime', role_id: 'gameplay_narrator_format_repair' });
   });
   assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs), [10_000, 6_000]);
   assert.deepEqual(calls.map((call) => call.runtimeProviderOverride.model),

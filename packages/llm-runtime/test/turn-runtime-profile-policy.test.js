@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
+import * as llmRuntime from '../src/index.js';
+import { LLM_SCOPES, TurnRuntimeRoles, resolveLlmExecutionConfig } from '../src/provider-config.js';
 
 const env = { DEEPSEEK_API_KEY: 'test-key' };
 const customProvider = {
@@ -27,4 +28,21 @@ test('custom provider keeps its model instead of turn default model', () => {
   });
   assert.equal(config.model, 'local-model');
   assert.equal(config.provider, 'openai_compatible');
+});
+
+test('public runtime policy excludes retired legacy and new-game LLM families', () => {
+  assert.deepEqual(Object.values(LLM_SCOPES).sort(), ['portrait_lab', 'turn_runtime']);
+  assert.equal('LegacyWorldRoles' in llmRuntime, false);
+  assert.equal('NewGameVisibleContextRoles' in llmRuntime, false);
+  assert.equal('NewGameKnowledgeHiddenRoles' in llmRuntime, false);
+  assert.equal('NewGameG5PlacementRoles' in llmRuntime, false);
+  for (const retiredRole of ['orchestrator', 'auditor', 'format_repairer']) {
+    assert.equal(Object.values(TurnRuntimeRoles).includes(retiredRole), false);
+  }
+  assert.equal(resolveLlmExecutionConfig({
+    scope: 'legacy_world', roleId: 'legacy.narrator.dossier', env
+  }).reason, 'provider_disabled');
+  assert.equal(resolveLlmExecutionConfig({
+    scope: 'new_game', tierId: 'tier_1_fast', env
+  }).reason, 'provider_disabled');
 });

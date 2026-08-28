@@ -10,8 +10,8 @@ import { createTemporalAdvanceOwner } from '@rus/turn/temporal-advance';
 import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-m2-conversation-temporal-effect-owner.js';
 import {
-  createFirstPlayablePublicRuntime
-} from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+  createLowerDvinaTracePublicRuntime
+} from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
@@ -491,6 +491,15 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
   let narrationCalls = 0;
   let retrySemanticCalls = 0;
   let retryRolls = 0;
+  const retryNarrationService = {
+    async run(request) {
+      narrationCalls += 1;
+      if (narrationCalls === 1) {
+        throw new Error('retryable narration failure');
+      }
+      return approvedNarration(request.request_id);
+    }
+  };
   const retryRuntime = buildRuntime({
     pool,
     release,
@@ -501,15 +510,7 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     randomDrawObserver() {
       retryRolls += 1;
     },
-    narrationService: {
-      async run(request) {
-        narrationCalls += 1;
-        if (narrationCalls === 1) {
-          throw new Error('retryable narration failure');
-        }
-        return approvedNarration(request.request_id);
-      }
-    }
+    narrationService: retryNarrationService
   });
   const retryParty = await retryRuntime.startNewGame({
     scenario_id: 'lower_dvina_trace_v1',
@@ -524,10 +525,18 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     raw_text:
       'Хочу внимательно изучить повреждения судна и всё, что осталось на берегу.'
   };
-  await assert.rejects(
-    () => retryRuntime.submitTurn(retryParty.party_id, retryInput),
-    /retryable narration failure/u
+  const pendingNarrationResult = await retryRuntime.submitTurn(
+    retryParty.party_id,
+    retryInput
   );
+  assert.equal(pendingNarrationResult.screen.screen_status,
+    'committed_presentation_pending');
+  assert.equal(pendingNarrationResult.screen.main_prose,
+    'Факты хода сохранены; повествование ожидает повторной доставки.');
+  const pendingScreen = (await retryRuntime.getPartyScreen(
+    retryParty.party_id
+  )).screen;
+  assert.deepEqual(pendingScreen, pendingNarrationResult.screen);
   assert.equal(await count(pool, 'party_runtime.party_check_resolutions',
     retryParty.party_id), 1);
   assert.equal(await count(pool, 'party_runtime.party_body_temporal_history',
@@ -558,11 +567,27 @@ test('Phase 2 free-text inspection commits atomically, restarts and rejects tamp
     )).rows[0].whole_minutes,
     '333075'
   );
-  const afterNarrationRetry = await retryRuntime.submitTurn(
+  const retryRestart = buildRuntime({
+    pool,
+    release,
+    runtimeCatalogPin,
+    semanticObserver() {
+      retrySemanticCalls += 1;
+    },
+    randomDrawObserver() {
+      retryRolls += 1;
+    },
+    narrationService: retryNarrationService
+  });
+  const afterNarrationRetry = await retryRestart.submitTurn(
     retryParty.party_id,
     retryInput
   );
   assert.equal(afterNarrationRetry.option_id, 'inspect_wreck_in_detail');
+  assert.deepEqual(pendingNarrationResult, {
+    ...afterNarrationRetry,
+    screen: pendingScreen
+  });
   assert.equal(narrationCalls, 2);
   assert.equal(retrySemanticCalls, 1);
   assert.equal(retryRolls, 1);
@@ -1057,7 +1082,7 @@ function buildRuntime({
     decisionSecret: 'phase-2-postgres-secret',
     now: () => '2026-07-30T08:00:00.000Z'
   });
-  return createFirstPlayablePublicRuntime({
+  return createLowerDvinaTracePublicRuntime({
     partyPool: pool,
     committer,
     release,
@@ -1121,10 +1146,9 @@ async function assertConcurrentStaleCommitBlocked({
   };
   try {
     if (pendingPresentation) {
-      await assert.rejects(
-        () => runtime.submitTurn(party.party_id, firstInput),
-        /concurrent pending presentation/u
-      );
+      const pending = await runtime.submitTurn(party.party_id, firstInput);
+      assert.equal(pending.screen.screen_status,
+        'committed_presentation_pending');
     } else {
       await runtime.submitTurn(party.party_id, firstInput);
     }

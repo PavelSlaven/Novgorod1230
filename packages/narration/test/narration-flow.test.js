@@ -38,7 +38,7 @@ function output(prose = 'У ворот неподвижно стоит теле�
   return {
     version: 1,
     schema: 'narration_output',
-    output_id: 'narration-1',
+    output_id: 'turn:party-1:1',
     prose,
     action_options: [],
     used_references: [],
@@ -46,29 +46,15 @@ function output(prose = 'У ворот неподвижно стоит теле�
   };
 }
 
-function audit(pass, concerns = []) {
-  return {
-    version: 1,
-    schema: 'narration_audit',
-    pass,
-    concerns,
-    evidence: ['Compared with visible context.']
-  };
-}
-
 function ports(overrides = {}) {
   return {
     writer: { async generate() { return output(); } },
-    auditor: { async audit() { return audit(true); } },
     formatRepairer: { async repair() { return output(); } },
-    seniorWriter: { async repair() { return output('У ворот всё так же стоит телега.'); } },
-    seniorAuditor: { async audit() { return audit(true); } },
-    router: { async route() { return { version: 1, schema: 'narration_repair_route', route: 'semantic_rewrite', reason: 'UNSUPPORTED_DETAIL' }; } },
     ...overrides
   };
 }
 
-test('approves generated prose after visible-only audit', async () => {
+test('approves one generated prose output after deterministic visible-only validation', async () => {
   const result = await runNarrationFlow(request(), ports());
   assert.equal(result.status, 'approved');
   assert.equal(result.approved_output.prose, 'У ворот неподвижно стоит телега.');
@@ -85,28 +71,75 @@ test('rejects hidden data before writer execution', async () => {
   assert.equal(called, false);
 });
 
-test('routes failed audit to senior rewrite and re-audit', async () => {
-  let audits = 0;
+test('uses one targeted repair then deterministic revalidation', async () => {
+  let writerCalls = 0;
+  let repairCalls = 0;
   const p = ports({
-    auditor: { async audit() { audits += 1; return audit(false, [{ code: 'UNSUPPORTED_DETAIL', message: 'Unsupported detail.' }]); } },
-    seniorAuditor: { async audit() { audits += 1; return audit(true); } }
+    writer: { async generate() { writerCalls += 1; return {}; } },
+    formatRepairer: { async repair(input) {
+      repairCalls += 1;
+      assert.equal(input.validation_errors.length > 0, true);
+      return output('У ворот всё так же стоит телега.');
+    } }
   });
   const result = await runNarrationFlow(request(), p);
   assert.equal(result.status, 'approved');
   assert.equal(result.approved_output.prose, 'У ворот всё так же стоит телега.');
-  assert.equal(result.repair_history.some((entry) => entry.role === 'semantic_rewrite'), true);
-  assert.equal(audits, 2);
+  assert.equal(writerCalls, 1);
+  assert.equal(repairCalls, 1);
+  assert.equal(result.audit_history.length, 0);
 });
 
-test('returns typed upstream repair request without approved prose', async () => {
+test('blocks after invalid repair without another LLM call', async () => {
+  let repairCalls = 0;
   const p = ports({
-    auditor: { async audit() { return audit(false, [{ code: 'VISIBLE_CONTEXT_INSUFFICIENT', message: 'Context is insufficient.' }]); } },
-    router: { async route() { return { version: 1, schema: 'narration_repair_route', route: 'upstream_repair', reason: 'VISIBLE_CONTEXT_INSUFFICIENT', return_to: 'visible_projection' }; } }
+    writer: { async generate() { return {}; } },
+    formatRepairer: { async repair() { repairCalls += 1; return {}; } }
   });
   const result = await runNarrationFlow(request(), p);
-  assert.equal(result.status, 'repair_required');
+  assert.equal(result.status, 'blocked');
   assert.equal(result.approved_output, null);
-  assert.equal(result.repair_request.return_to, 'visible_projection');
+  assert.equal(repairCalls, 1);
+});
+
+test('repairs hidden-leak-shaped output before approval', async () => {
+  let errors;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return { ...output(), hidden_state: { secret: true } }; } },
+    formatRepairer: { async repair(input) { errors = input.validation_errors; return output(); } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(errors, ['forbidden field: hidden_state', 'hidden leak: hidden_state', 'hidden leak: hidden_state.secret']);
+});
+
+test('keeps valid writer prose', async () => {
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return output('Телега скрипит у ворот.'); } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.equal(result.approved_output.prose, 'Телега скрипит у ворот.');
+});
+
+test('repairs non-empty unsupported action_options', async () => {
+  let errors;
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return { ...output(), action_options: [{ label: 'Осмотреть телегу' }] }; } },
+    formatRepairer: { async repair(input) { errors = input.validation_errors; return output(); } }
+  }));
+  assert.equal(result.status, 'approved');
+  assert.deepEqual(errors, ['action_options must be empty until visible_context defines action candidates']);
+});
+
+test('blocks non-empty unsupported used_references after one repair', async () => {
+  let repairCalls = 0;
+  const nonEmptyReferences = { ...output(), used_references: ['scene:cart'] };
+  const result = await runNarrationFlow(request(), ports({
+    writer: { async generate() { return nonEmptyReferences; } },
+    formatRepairer: { async repair() { repairCalls += 1; return nonEmptyReferences; } }
+  }));
+  assert.equal(result.status, 'blocked');
+  assert.equal(repairCalls, 1);
+  assert.deepEqual(result.diagnostics.errors, ['used_references must be empty until visible_context defines reference vocabulary']);
 });
 
 

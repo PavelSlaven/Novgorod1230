@@ -1,4 +1,6 @@
 import { computeSpatialV3CanonicalDigest } from '@rus/contracts/spatial-v3/registry';
+import { queryWithTurnDeadline, withTurnDeadlineTransaction } from
+  './query-with-turn-deadline.js';
 
 const text = (value) => typeof value === 'string' && value.trim() ? value.trim() : null;
 const clone = (value) => structuredClone(value);
@@ -19,7 +21,10 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
   if (!pool?.connect || typeof pool.query !== 'function') throw new TypeError('temporal presentation store requires a pg pool');
   if (!Number.isSafeInteger(leaseDurationMs) || leaseDurationMs <= 0) throw new TypeError('leaseDurationMs must be a positive integer');
 
-  async function transaction(work) {
+  async function transaction(work, turnBudget = null) {
+    if (turnBudget?.remaining?.() != null) {
+      return withTurnDeadlineTransaction(pool, turnBudget, work);
+    }
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -50,8 +55,11 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
   return Object.freeze({
     async loadCommittedVisiblePackage(input = {}) {
       required(input, 'party_id', 'package_id', 'package_digest');
-      const result = await pool.query(`SELECT package_id,party_id,turn_id,committed_state_version,change_set_id,package_digest,visible_payload,presentation_status,projection_policy_ref,dependency_pins,idempotency_record_id
-        FROM party_runtime.party_visible_packages WHERE party_id=$1 AND package_id=$2 AND package_digest=$3`, [input.party_id, input.package_id, input.package_digest]);
+      const result = await queryWithTurnDeadline(pool, {
+        text: `SELECT package_id,party_id,turn_id,committed_state_version,change_set_id,package_digest,visible_payload,presentation_status,projection_policy_ref,dependency_pins,idempotency_record_id
+        FROM party_runtime.party_visible_packages WHERE party_id=$1 AND package_id=$2 AND package_digest=$3`,
+        values: [input.party_id, input.package_id, input.package_digest]
+      }, input.turnBudget);
       if (result.rowCount !== 1) return Object.freeze({ ok: false, envelope: null });
       return Object.freeze({ ok: true, envelope: clone(result.rows[0]) });
     },
@@ -87,7 +95,7 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
           WHERE job_id=$5 AND status=$6 AND state_version=$7`, [ordinal + 1, id, token, leaseAt(clock, leaseDurationMs), job.job_id, job.status, job.state_version]);
         if (claimed.rowCount !== 1) throw new Error('presentation claim CAS failed');
         return Object.freeze({ ok: true, disposition: 'claimed', attempt_id: id, claim_token: token });
-      });
+      }, input.turnBudget);
     },
 
     async persistNarrationOutput(input = {}) {
@@ -107,7 +115,7 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
           WHERE job_id=$3 AND status='in_progress' AND active_attempt_id=$4 AND claim_token=$5 AND state_version=$6 RETURNING next_attempt_ordinal`, [JSON.stringify(input.narration_result), input.output_digest, job.job_id, input.attempt_id, input.claim_token, job.state_version]);
         if (updated.rowCount !== 1) return Object.freeze({ ok: false, disposition: 'state_conflict' });
         return Object.freeze({ ok: true, disposition: 'output_ready', attempt_id: input.attempt_id, narration_result: clone(input.narration_result), output_digest: input.output_digest });
-      });
+      }, input.turnBudget);
     },
 
     async finalizePresentationAttempt(input = {}) {
@@ -133,7 +141,7 @@ export function createTemporalPresentationPostgresStore({ pool, now = () => new 
             VALUES ($1,$2,$3,'failed_retryable',$4,$5)`, [input.attempt_id, job.job_id, job.next_attempt_ordinal - 1, input.failure?.stage ?? 'narration_failed', JSON.stringify(input.failure ?? {})]);
         }
         return Object.freeze({ ok: true, presentation_status: input.presentation_status, attempt_id: input.attempt_id, output_digest: input.presentation_status === 'delivered' ? input.output_digest : null });
-      });
+      }, input.turnBudget);
     }
   });
 }

@@ -26,7 +26,8 @@ export function createLlmDiagnostics({ telemetry = null, maxReports = 100,
       try {
         return await turnBudget.runTurn(() => storage.run(turn, execute), { startedAt });
       } catch (error) {
-        if (error?.code === 'LLM_TURN_BUDGET_EXHAUSTED') turn.incidents.push(incident(error));
+        if (['LLM_TURN_BUDGET_EXHAUSTED', 'LLM_TURN_REPAIR_ALREADY_CLAIMED']
+          .includes(error?.code)) turn.incidents.push(incident(error));
         throw error;
       } finally {
         reports.delete(turn.party_id);
@@ -132,7 +133,9 @@ function incident(record = {}) {
     deadline_exceeded: record.deadline_exceeded === true,
     budget_exhausted: record.budget_exhausted === true,
     remaining_llm_budget_ms: nonNegative(record.remaining_llm_budget_ms),
-    remaining_turn_deadline_ms: nonNegative(record.remaining_turn_deadline_ms)
+    remaining_turn_deadline_ms: nonNegative(record.remaining_turn_deadline_ms),
+    repair_role_id: text(record.repair_role_id) || null,
+    claimed_repair_role_id: text(record.claimed_repair_role_id) || null
   };
 }
 function unionDuration(intervals) { let total = 0; let end = -Infinity; for (const [start, finish] of intervals.sort((a, b) => a[0] - b[0])) { if (finish <= end) continue; total += finish - Math.max(start, end); end = finish; } return total; }

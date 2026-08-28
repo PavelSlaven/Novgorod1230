@@ -14,7 +14,7 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
     },
     isCustomProvider() { return settings?.providerSnapshot()?.mode === 'custom'; },
     async run({ scope, role_id = null, tier_id = null, messages = [],
-      overrides = null, provider_snapshot = null } = {}) {
+      overrides = null, provider_snapshot = null, repair = false } = {}) {
       if (!String(scope ?? '').trim()) throw new TypeError('scope is required.');
       if (!Array.isArray(messages)) throw new TypeError('messages must be an array.');
       const runtimeProviderOverride = toProviderOverride(
@@ -23,10 +23,12 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         overrides, ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}), env });
       const requestedTimeoutMs = description?.request_timeout_ms
         ?? description?.config?.requestTimeoutMs ?? overrides?.requestTimeoutMs ?? null;
+      const isRepair = repair === true || isRepairRole(role_id, description?.contract);
       let requestTimeoutMs;
       try {
+        if (isRepair) turnBudget?.claimRepair({ roleId: role_id });
         requestTimeoutMs = turnBudget?.clamp({ requestedTimeoutMs,
-          repair: isRepairRole(role_id, description?.contract) });
+          repair: isRepair });
       } catch (error) {
         Object.assign(error, safeBudgetIdentity(description, role_id));
         throw error;
@@ -41,7 +43,8 @@ export function createLlmRoleRunnerAdapter({ env = process.env, telemetry = null
         overrides: effectiveOverrides,
         ...(runtimeProviderOverride ? { runtimeProviderOverride } : {}),
         env,
-        telemetry
+        telemetry,
+        repair: isRepair
       });
       if (result.status !== 'ok') {
         const error = new Error(result.error?.message ?? `LLM role ${role_id ?? '<unnamed>'} failed.`);

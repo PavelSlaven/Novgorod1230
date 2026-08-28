@@ -6,21 +6,11 @@ import { CombatTurnRuntimeRoles, combatTurnRoleDefaults } from
   './combat-role-defaults.js';
 import { applyProviderOverrides, normalizeBaseUrl, normalizeRequestUrl, resolveRuntimeProviderOverride } from
   './provider-request.js';
-import {
-  NEW_GAME_VISIBLE_CONTEXT_ROLE_MAX_TOKENS,
-  NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS,
-  NewGameTierIds,
-  NewGameVisibleContextRoles,
-  newGameTierDefaults
-} from './new-game-role-defaults.js';
-export {NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS, NewGameTierIds, NewGameVisibleContextRoles };
 
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-chat';
 
 export const LLM_SCOPES = Object.freeze({
-  LEGACY_WORLD: 'legacy_world',
   TURN_RUNTIME: 'turn_runtime',
-  NEW_GAME: 'new_game',
   PORTRAIT_LAB: 'portrait_lab'
 });
 
@@ -33,11 +23,10 @@ export const OutputContractModes = Object.freeze({
 
 export const TurnRuntimeRoles = Object.freeze({
   INTENT_ROUTER: 'intent_router',
-  ORCHESTRATOR: 'orchestrator',
-  AUDITOR: 'auditor',
-  FORMAT_REPAIRER: 'format_repairer',
   TURN_STEP_PLANNER: 'turn_step_planner',
   TURN_STEP_PLANNER_REPAIR: 'turn_step_planner_repair',
+  GAMEPLAY_NARRATOR: 'gameplay_narrator',
+  GAMEPLAY_NARRATOR_REPAIR: 'gameplay_narrator_format_repair',
   WORLD_PROCESS_STEP: 'world_process_step',
   ORDINARY_MATERIALIZATION: 'ordinary_materialization',
   SPATIAL_SEMANTIC_DESCRIPTOR: 'spatial_semantic_descriptor',
@@ -57,51 +46,6 @@ export const PortraitLabRoles = Object.freeze({
   SPEC_NORMALIZER: 'portrait_spec_normalizer'
 });
 
-export const LegacyWorldRoles = Object.freeze({
-  HISTORICAL_FRAME_DOSSIER: 'legacy.historical_frame.dossier',
-  HISTORICAL_FRAME_AUDIT: 'legacy.historical_frame.audit',
-  HISTORICAL_FRAME_SHAPER: 'legacy.historical_frame.shaper',
-  HISTORICAL_FRAME_REPAIR: 'legacy.historical_frame.repair',
-  SOCIAL_TISSUE_DOSSIER: 'legacy.social_tissue.dossier',
-  SOCIAL_TISSUE_AUDIT: 'legacy.social_tissue.audit',
-  SOCIAL_TISSUE_SHAPER: 'legacy.social_tissue.shaper',
-  SOCIAL_TISSUE_REPAIR: 'legacy.social_tissue.repair',
-  PLACE_SEED_DOSSIER: 'legacy.place_seed.dossier',
-  PLACE_SEED_AUDIT: 'legacy.place_seed.audit',
-  PLACE_SEED_REPAIR: 'legacy.place_seed.repair',
-  PLACE_SEED_SHAPER: 'legacy.place_seed.shaper',
-  PLAYER_SEED_DOSSIER: 'legacy.player_seed.dossier',
-  PLAYER_SEED_AUDIT: 'legacy.player_seed.audit',
-  PLAYER_SEED_SHAPER: 'legacy.player_seed.shaper',
-  PLAYER_SEED_REPAIR: 'legacy.player_seed.repair',
-  MASTER_DOSSIER: 'legacy.master.dossier',
-  MASTER_AUDIT: 'legacy.master.audit',
-  MASTER_SHAPER: 'legacy.master.shaper',
-  MASTER_REPAIR: 'legacy.master.repair',
-  VISIBLE_CONTEXT_DOSSIER: 'legacy.visible_context.dossier',
-  VISIBLE_CONTEXT_DOSSIER_REPAIR: 'legacy.visible_context.dossier_repair',
-  VISIBLE_CONTEXT_AUDIT: 'legacy.visible_context.audit',
-  VISIBLE_CONTEXT_SHAPER: 'legacy.visible_context.shaper',
-  VISIBLE_CONTEXT_REPAIR: 'legacy.visible_context.repair',
-  NARRATOR_DOSSIER: 'legacy.narrator.dossier',
-  NARRATOR_AUDIT: 'legacy.narrator.audit',
-  NARRATOR_DOSSIER_REPAIR: 'legacy.narrator.dossier_repair',
-  NARRATOR_SHAPER: 'legacy.narrator.shaper',
-  NARRATOR_REPAIR: 'legacy.narrator.repair',
-  ACTOR_PROFILES_DOSSIER: 'legacy.actor_profiles.dossier',
-  ACTOR_PROFILES_AUDIT: 'legacy.actor_profiles.audit',
-  ACTOR_PROFILES_REPAIR: 'legacy.actor_profiles.repair',
-  ACTOR_PROFILES_SHAPER: 'legacy.actor_profiles.shaper',
-  LOCATION_PROFILES_DOSSIER: 'legacy.location_profiles.dossier',
-  LOCATION_PROFILES_AUDIT: 'legacy.location_profiles.audit',
-  LOCATION_PROFILES_REPAIR: 'legacy.location_profiles.repair',
-  LOCATION_PROFILES_SHAPER: 'legacy.location_profiles.shaper',
-  RISK_AUDIT: 'legacy.risk_audit.shaper',
-  MEMORY_JOURNAL: 'legacy.memory_journal.shaper'
-});
-
-const NEW_GAME_TIER_DEFAULTS = newGameTierDefaults(OutputContractModes);
-
 const PORTRAIT_ROLE_DEFAULTS = Object.freeze({
   [PortraitLabRoles.SPEC_NORMALIZER]: {
     envPrefix: 'PORTRAIT_SPEC_NORMALIZER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
@@ -116,34 +60,6 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     envPrefix: 'TURN_INTENT_ROUTER', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
     responseFormat: 'json_object', maxTokens: 2500, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_intent_route', parseJson: true,
     targetInputTokens: 20000, comfortableInputTokens: 20000, hardInputLimitTokens: 80000, reserveOutputTokens: 2500, reserveRepairTokens: 10000
-  },
-  [TurnRuntimeRoles.ORCHESTRATOR]: {
-    envPrefix: 'TURN_ORCHESTRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 12000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'turn_mode_resolution', parseJson: true,
-    targetInputTokens: 120000, comfortableInputTokens: 250000, hardInputLimitTokens: 700000, reserveOutputTokens: 12000, reserveRepairTokens: 50000
-  },
-  [TurnRuntimeRoles.AUDITOR]: {
-    envPrefix: 'TURN_AUDITOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
-    responseFormat: 'json_object', maxTokens: 8000, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'turn_resolution_audit', parseJson: true, targetInputTokens: 100000, comfortableInputTokens: 220000,
-    hardInputLimitTokens: 600000, reserveOutputTokens: 8000, reserveRepairTokens: 30000
-  },
-  [TurnRuntimeRoles.FORMAT_REPAIRER]: {
-    envPrefix: 'TURN_FORMAT_REPAIR',
-    model: 'deepseek-v4-flash',
-    thinking: 'disabled',
-    reasoningEffort: null,
-    responseFormat: 'json_object',
-    maxTokens: 4000,
-    temperature: 0,
-    topP: 1,
-    outputContractMode: OutputContractModes.JSON_REPAIR,
-    parseJson: true,
-    targetInputTokens: 30000,
-    comfortableInputTokens: 30000,
-    hardInputLimitTokens: 100000,
-    reserveOutputTokens: 4000,
-    reserveRepairTokens: 4000
   },
   [TurnRuntimeRoles.TURN_STEP_PLANNER]: {
     envPrefix: 'TURN_STEP_PLANNER',
@@ -166,6 +82,18 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
     responseFormat: 'json_object', maxTokens: 4000, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
     expectedSchema: 'turn_step_plan_v1', parseJson: true, targetInputTokens: 30000, comfortableInputTokens: 30000,
     hardInputLimitTokens: 100000, reserveOutputTokens: 4000, reserveRepairTokens: 4000
+  },
+  [TurnRuntimeRoles.GAMEPLAY_NARRATOR]: {
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
+    expectedSchema: 'narration_output', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
+  },
+  [TurnRuntimeRoles.GAMEPLAY_NARRATOR_REPAIR]: {
+    envPrefix: 'TURN_GAMEPLAY_NARRATOR_REPAIR', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
+    responseFormat: 'json_object', maxTokens: 1800, temperature: 0, topP: 1, outputContractMode: OutputContractModes.JSON_REPAIR,
+    expectedSchema: 'narration_output', parseJson: true, targetInputTokens: 12000, comfortableInputTokens: 24000,
+    hardInputLimitTokens: 60000, reserveOutputTokens: 1800, reserveRepairTokens: 1800
   },
   [TurnRuntimeRoles.ORDINARY_MATERIALIZATION]: {
     envPrefix: 'TURN_ORDINARY_MATERIALIZATION', model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null,
@@ -194,53 +122,8 @@ const TURN_ROLE_DEFAULTS = Object.freeze({
   ...combatTurnRoleDefaults(OutputContractModes)
 });
 
-const LEGACY_WORLD_ROLE_DEFAULTS = Object.freeze({
-  [LegacyWorldRoles.HISTORICAL_FRAME_DOSSIER]: legacyTextRole('LEGACY_HISTORICAL_FRAME_DOSSIER'),
-  [LegacyWorldRoles.HISTORICAL_FRAME_AUDIT]: legacyAuditRole('LEGACY_HISTORICAL_FRAME_AUDIT'),
-  [LegacyWorldRoles.HISTORICAL_FRAME_SHAPER]: legacySchemaRole('LEGACY_HISTORICAL_FRAME_SHAPER', 'historical_frame'),
-  [LegacyWorldRoles.HISTORICAL_FRAME_REPAIR]: legacyRepairRole('LEGACY_HISTORICAL_FRAME_REPAIR', 'historical_frame'),
-  [LegacyWorldRoles.SOCIAL_TISSUE_DOSSIER]: legacyTextRole('LEGACY_SOCIAL_TISSUE_DOSSIER'),
-  [LegacyWorldRoles.SOCIAL_TISSUE_AUDIT]: legacyAuditRole('LEGACY_SOCIAL_TISSUE_AUDIT'),
-  [LegacyWorldRoles.SOCIAL_TISSUE_SHAPER]: legacySchemaRole('LEGACY_SOCIAL_TISSUE_SHAPER', 'social_tissue'),
-  [LegacyWorldRoles.SOCIAL_TISSUE_REPAIR]: legacyRepairRole('LEGACY_SOCIAL_TISSUE_REPAIR', 'social_tissue'),
-  [LegacyWorldRoles.PLACE_SEED_DOSSIER]: legacyTextRole('LEGACY_PLACE_SEED_DOSSIER'),
-  [LegacyWorldRoles.PLACE_SEED_AUDIT]: legacyAuditRole('LEGACY_PLACE_SEED_AUDIT'),
-  [LegacyWorldRoles.PLACE_SEED_REPAIR]: legacyTextRole('LEGACY_PLACE_SEED_REPAIR'),
-  [LegacyWorldRoles.PLACE_SEED_SHAPER]: legacyRepairRole('LEGACY_PLACE_SEED_SHAPER', 'place_seed'),
-  [LegacyWorldRoles.PLAYER_SEED_DOSSIER]: legacyTextRole('LEGACY_PLAYER_SEED_DOSSIER'),
-  [LegacyWorldRoles.PLAYER_SEED_AUDIT]: legacyAuditRole('LEGACY_PLAYER_SEED_AUDIT'),
-  [LegacyWorldRoles.PLAYER_SEED_SHAPER]: legacySchemaRole('LEGACY_PLAYER_SEED_SHAPER', 'player_seed'),
-  [LegacyWorldRoles.PLAYER_SEED_REPAIR]: legacyRepairRole('LEGACY_PLAYER_SEED_REPAIR', 'player_seed'),
-  [LegacyWorldRoles.MASTER_DOSSIER]: legacyTextRole('LEGACY_MASTER_DOSSIER'),
-  [LegacyWorldRoles.MASTER_AUDIT]: legacyAuditRole('LEGACY_MASTER_AUDIT'),
-  [LegacyWorldRoles.MASTER_SHAPER]: legacySchemaRole('LEGACY_MASTER_SHAPER', 'master_narrative'),
-  [LegacyWorldRoles.MASTER_REPAIR]: legacyRepairRole('LEGACY_MASTER_REPAIR', 'master_narrative'),
-  [LegacyWorldRoles.VISIBLE_CONTEXT_DOSSIER]: legacyTextRole('LEGACY_VISIBLE_CONTEXT_DOSSIER'),
-  [LegacyWorldRoles.VISIBLE_CONTEXT_DOSSIER_REPAIR]: legacyTextRole('LEGACY_VISIBLE_CONTEXT_DOSSIER_REPAIR'),
-  [LegacyWorldRoles.VISIBLE_CONTEXT_AUDIT]: legacyAuditRole('LEGACY_VISIBLE_CONTEXT_AUDIT'),
-  [LegacyWorldRoles.VISIBLE_CONTEXT_SHAPER]: legacySchemaRole('LEGACY_VISIBLE_CONTEXT_SHAPER', 'visible_context_package'),
-  [LegacyWorldRoles.VISIBLE_CONTEXT_REPAIR]: legacyRepairRole('LEGACY_VISIBLE_CONTEXT_REPAIR', 'visible_context_package'),
-  [LegacyWorldRoles.NARRATOR_DOSSIER]: gameplayNarrationRole(legacySchemaRole('LEGACY_NARRATOR_DOSSIER', 'narration_output')),
-  [LegacyWorldRoles.NARRATOR_AUDIT]: gameplayNarrationRole(legacyAuditRole('LEGACY_NARRATOR_AUDIT')),
-  [LegacyWorldRoles.NARRATOR_DOSSIER_REPAIR]: gameplayNarrationRole(legacyRepairRole('LEGACY_NARRATOR_DOSSIER_REPAIR', 'narration_output')),
-  [LegacyWorldRoles.NARRATOR_SHAPER]: legacyTextRole('LEGACY_NARRATOR_SHAPER'),
-  [LegacyWorldRoles.NARRATOR_REPAIR]: gameplayNarrationRole(legacyRepairRole('LEGACY_NARRATOR_REPAIR', 'narration_output')),
-  [LegacyWorldRoles.ACTOR_PROFILES_DOSSIER]: legacyTextRole('LEGACY_ACTOR_PROFILES_DOSSIER'),
-  [LegacyWorldRoles.ACTOR_PROFILES_AUDIT]: legacyAuditRole('LEGACY_ACTOR_PROFILES_AUDIT'),
-  [LegacyWorldRoles.ACTOR_PROFILES_REPAIR]: legacyTextRole('LEGACY_ACTOR_PROFILES_REPAIR'),
-  [LegacyWorldRoles.ACTOR_PROFILES_SHAPER]: legacySchemaRole('LEGACY_ACTOR_PROFILES_SHAPER', 'actor_profiles'),
-  [LegacyWorldRoles.LOCATION_PROFILES_DOSSIER]: legacyTextRole('LEGACY_LOCATION_PROFILES_DOSSIER'),
-  [LegacyWorldRoles.LOCATION_PROFILES_AUDIT]: legacyAuditRole('LEGACY_LOCATION_PROFILES_AUDIT'),
-  [LegacyWorldRoles.LOCATION_PROFILES_REPAIR]: legacyTextRole('LEGACY_LOCATION_PROFILES_REPAIR'),
-  [LegacyWorldRoles.LOCATION_PROFILES_SHAPER]: legacySchemaRole('LEGACY_LOCATION_PROFILES_SHAPER', 'location_profiles'),
-  [LegacyWorldRoles.RISK_AUDIT]: legacySchemaRole('LEGACY_RISK_AUDIT', 'risk_audit'),
-  [LegacyWorldRoles.MEMORY_JOURNAL]: legacySchemaRole('LEGACY_MEMORY_JOURNAL', 'memory_journal_update')
-});
-
 const SCOPE_DEFAULTS = Object.freeze({
-  [LLM_SCOPES.LEGACY_WORLD]: { api: 'chat.completions' },
   [LLM_SCOPES.TURN_RUNTIME]: { api: 'chat.completions' },
-  [LLM_SCOPES.NEW_GAME]: { api: 'chat.completions' },
   [LLM_SCOPES.PORTRAIT_LAB]: { api: 'chat.completions' }
 });
 
@@ -274,15 +157,9 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
   }
 
   let defaults = null;
-  if (scopeKey === LLM_SCOPES.LEGACY_WORLD) {
-    defaults = LEGACY_WORLD_ROLE_DEFAULTS[String(roleId ?? '').trim()];
-    if (!defaults) return disabledResolution('unknown_role', scopeKey, roleId, tierId);
-  } else if (scopeKey === LLM_SCOPES.TURN_RUNTIME) {
+  if (scopeKey === LLM_SCOPES.TURN_RUNTIME) {
     defaults = TURN_ROLE_DEFAULTS[String(roleId ?? '').trim()];
     if (!defaults) return disabledResolution('unknown_role', scopeKey, roleId, tierId);
-  } else if (scopeKey === LLM_SCOPES.NEW_GAME) {
-    defaults = NEW_GAME_TIER_DEFAULTS[String(tierId ?? '').trim()];
-    if (!defaults) return disabledResolution('unknown_tier', scopeKey, roleId, tierId);
   } else if (scopeKey === LLM_SCOPES.PORTRAIT_LAB) {
     defaults = PORTRAIT_ROLE_DEFAULTS[String(roleId ?? '').trim()];
     if (!defaults) return disabledResolution('unknown_role', scopeKey, roleId, tierId);
@@ -344,104 +221,6 @@ export function resolveLlmExecutionConfig({ scope, roleId = null, tierId = null,
   return { enabled: true, config };
 }
 
-export function getTurnRoleConfig(role, env = process.env) {
-  const result = resolveLlmExecutionConfig({
-    scope: LLM_SCOPES.TURN_RUNTIME,
-    roleId: role,
-    env
-  });
-  if (!result.enabled && result.reason === 'unknown_role') {
-    throw new Error(`Unsupported turn role config: ${String(role ?? '').trim() || '<empty>'}`);
-  }
-  return mapResolvedConfig(result, { role });
-}
-
-export function getTurnLlmRoleConfigs(env = process.env) {
-  return Object.fromEntries(Object.keys(TURN_ROLE_DEFAULTS).map((role) => [role, getTurnRoleConfig(role, env)]));
-}
-
-export function getNewGameLlmTierConfig(tier, env = process.env) {
-  const result = resolveLlmExecutionConfig({
-    scope: LLM_SCOPES.NEW_GAME,
-    tierId: tier,
-    env
-  });
-  if (!result.enabled && result.reason === 'unknown_tier') {
-    throw new Error(`Unsupported new-game LLM tier config: ${String(tier ?? '').trim() || '<empty>'}`);
-  }
-  return mapResolvedConfig(result, { tier });
-}
-
-export function getNewGameLlmTierConfigs(env = process.env) {
-  return Object.fromEntries(Object.keys(NEW_GAME_TIER_DEFAULTS).map((tier) => [tier, getNewGameLlmTierConfig(tier, env)]));
-}
-
-export function getNewGameVisibleContextRoleDescriptor(role, env = process.env) {
-  const roleId = String(role ?? '').trim();
-  const tierId = NEW_GAME_VISIBLE_CONTEXT_ROLE_TIERS[roleId];
-  if (!tierId) throw new Error(`Unsupported visible-context LLM role: ${roleId || '<empty>'}`);
-  const tierConfig = getNewGameLlmTierConfig(tierId, env);
-  return Object.freeze({
-    role: roleId,
-    model_tier: tierId,
-    provider: 'deepseek',
-    model: tierConfig.model,
-    thinking: tierConfig.thinking,
-    reasoning_effort: tierConfig.reasoningEffort,
-    response_format: tierConfig.responseFormat,
-    max_tokens: NEW_GAME_VISIBLE_CONTEXT_ROLE_MAX_TOKENS[roleId] ?? tierConfig.maxTokens
-  });
-}
-
-function mapResolvedConfig(result, extra = {}) {
-  if (!result.enabled) {
-    const defaults = extra.role ? TURN_ROLE_DEFAULTS[extra.role] : NEW_GAME_TIER_DEFAULTS[extra.tier];
-    return {
-      enabled: false,
-      provider: 'not_configured',
-      apiKey: null,
-      baseUrl: null,
-      role: extra.role ?? null,
-      tier: extra.tier ?? null,
-      model: defaults?.model ?? DEFAULT_DEEPSEEK_MODEL,
-      api: 'chat.completions',
-      thinking: defaults?.thinking ? { type: defaults.thinking } : undefined,
-      reasoningEffort: defaults?.reasoningEffort ?? null,
-      responseFormat: defaults?.responseFormat ? { type: defaults.responseFormat } : undefined,
-      maxTokens: defaults?.maxTokens ?? null,
-      temperature: defaults?.temperature ?? null,
-      topP: defaults?.topP ?? null,
-      contextBudget: buildContextBudget(defaults ?? {}),
-      outputContractMode: defaults?.outputContractMode ?? OutputContractModes.PLAIN_TEXT,
-      expectedSchema: defaults?.expectedSchema ?? null,
-      parseJson: defaults?.parseJson === true
-    };
-  }
-
-  const config = result.config;
-  return {
-    enabled: true,
-    provider: config.provider,
-    apiKey: config.apiKey,
-    baseUrl: config.baseUrl,
-    role: extra.role ?? config.role_id ?? null,
-    tier: extra.tier ?? config.tier_id ?? null,
-    scope: config.scope,
-    model: config.model,
-    api: config.api,
-    thinking: config.thinking,
-    reasoningEffort: config.reasoningEffort,
-    responseFormat: config.responseFormat,
-    maxTokens: config.maxTokens,
-    temperature: config.temperature,
-    topP: config.topP,
-    contextBudget: config.contextBudget,
-    outputContractMode: config.outputContractMode,
-    expectedSchema: config.expectedSchema,
-    parseJson: config.parseJson
-  };
-}
-
 function disabledResolution(reason, scope, roleId, tierId) {
   return {
     enabled: false,
@@ -451,31 +230,6 @@ function disabledResolution(reason, scope, roleId, tierId) {
     tier_id: tierId ?? null
   };
 }
-
-function legacyTextRole(envPrefix) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, maxTokens: 1200, outputContractMode: OutputContractModes.PLAIN_TEXT, parseJson: false, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
-
-function legacyAuditRole(envPrefix) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, responseFormat: 'json_object', maxTokens: 700, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'semantic_audit', parseJson: true, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
-
-function legacySchemaRole(envPrefix, expectedSchema) {
-  return {
-    envPrefix,
-    model: DEFAULT_DEEPSEEK_MODEL,
-    responseFormat: 'json_object',
-    maxTokens: 1800,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema,
-    parseJson: true,
-    targetInputTokens: 60000,
-    comfortableInputTokens: 120000,
-    hardInputLimitTokens: 250000,
-    reserveOutputTokens: 2000,
-    reserveRepairTokens: 12000
-  };
-}
-
-function legacyRepairRole(envPrefix, expectedSchema) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, responseFormat: 'json_object', maxTokens: 1800, outputContractMode: OutputContractModes.JSON_REPAIR, expectedSchema, parseJson: true, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
-
-function gameplayNarrationRole(defaults){return {...defaults, model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null};}
 
 function readRoleModel(defaults, env, sharedModel) {
   const roleModel = readText(env[`${defaults.envPrefix}_MODEL`]);

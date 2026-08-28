@@ -23,7 +23,8 @@ export async function executeRoleLlmCall({
   env = process.env,
   telemetry = null,
   overrides = null,
-  runtimeProviderOverride = null
+  runtimeProviderOverride = null,
+  repair = false
 } = {}) {
   const resolution = resolveLlmExecutionConfig({ scope, roleId, tierId, env, overrides,
     runtimeProviderOverride });
@@ -50,8 +51,13 @@ export async function executeRoleLlmCall({
   return invokeResolvedLlmCall({
     config: resolution.config,
     messages,
-    telemetry
+    telemetry: repair === true ? repairTelemetry(telemetry) : telemetry
   });
+}
+
+function repairTelemetry(telemetry) {
+  if (typeof telemetry?.onCall !== 'function') return telemetry;
+  return Object.freeze({ onCall(record) { telemetry.onCall({ ...record, repair: true }); } });
 }
 
 export function createScopedChatCompletionClient({

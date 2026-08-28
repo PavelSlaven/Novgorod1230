@@ -5,6 +5,12 @@ import { createLlmTurnBudget } from '../src/runtime/llm-turn-budget.js';
 import { executeTraceTurnWithDiagnostics } from '../src/runtime/lower-dvina-trace-phase-2-runtime-input.js';
 import { withTurnDeadlineQueryPool, withTurnDeadlineTransaction } from
   '../src/infrastructure/postgres/query-with-turn-deadline.js';
+import { createTemporalPresentationPostgresStore } from
+  '../src/infrastructure/postgres/temporal-presentation-store.js';
+import { createLowerDvinaTracePhase2DurableNarrator } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-presentation.js';
+import { loadSession } from
+  '../src/infrastructure/postgres/first-playable/repository-support.js';
 import { createLowerDvinaTracePhase2PostgresRepository } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2.js';
 import { createStateVersionRevalidator } from
@@ -14,6 +20,63 @@ import { createLowerDvinaTracePhase2StateReader } from
 import { computeSpatialV3CanonicalDigest } from
   '@rus/contracts/spatial-v3/registry';
 import { fixture } from './lower-dvina-trace-phase-2-fixture.js';
+
+test('temporal presentation package read uses the gameplay deadline', async () => {
+  const queries = [];
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = {
+    async query(query) {
+      queries.push(query);
+      return { rowCount: 0, rows: [] };
+    },
+    release() {}
+  };
+  const store = createTemporalPresentationPostgresStore({ pool: {
+    query() { throw new Error('unexpected direct pool query'); },
+    connect(callback) { callback(null, client, () => client.release()); }
+  } });
+  await store.loadCommittedVisiblePackage({ party_id: 'party', package_id: 'package',
+    package_digest: 'digest', turnBudget });
+  assert.equal(queries[0], 'SET statement_timeout = 1000');
+  assert.match(queries.find((query) => typeof query === 'object').text,
+    /party_visible_packages/u);
+  assert.equal(queries.at(-1), 'RESET statement_timeout');
+});
+
+test('durable narrator forwards gameplay deadline to presentation store', async () => {
+  const visiblePayload = { perceived_scene: 'Берег.', perceived_changes: [],
+    sensory_details: [], visible_npcs: [], visible_objects: [], known_context: [],
+    uncertainties: [] };
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = {
+    async query(query) {
+      if (typeof query === 'object') return { rows: [{ package_id: 'package',
+        party_id: 'party', package_digest: computeSpatialV3CanonicalDigest(visiblePayload),
+        visible_payload: visiblePayload }] };
+      return {};
+    },
+    release() {}
+  };
+  let claimInput = null;
+  const narrator = createLowerDvinaTracePhase2DurableNarrator({
+    partyPool: { query() { throw new Error('unexpected direct pool query'); },
+      connect(callback) { callback(null, client, () => client.release()); } },
+    narrationService: { async run() { throw new Error('must not run'); } },
+    presentationStore: { async claimPresentationAttempt(input) {
+      claimInput = input;
+      return { ok: true, disposition: 'in_progress', attempt_id: 'attempt' };
+    } }
+  });
+  await assert.rejects(narrator.run({ request_id: 'turn', turnBudget,
+    visible_context: { version: 1, schema: 'visible_context_package',
+      visible_scene: 'Берег.', visible_changes: [], sensory_details: [],
+      visible_npc: [], visible_objects: [], known_context: [], uncertainties: [],
+      allowed_tensions: [], do_not_imply: [] } }),
+  { code: 'TRACE_PHASE_2_NARRATION_IN_PROGRESS' });
+  assert.equal(claimInput.turnBudget, turnBudget);
+});
 
 test('Postgres read queries receive the current gameplay deadline as statement timeout', async () => {
   let remainingMs = 1_234.8;
@@ -35,6 +98,32 @@ test('Postgres read queries receive the current gameplay deadline as statement t
     ['SET statement_timeout = 1234'], [{ text: 'SELECT 1' }], ['RESET statement_timeout'],
     ['SET statement_timeout = 45'], [{ text: 'SELECT 2' }], ['RESET statement_timeout']
   ]);
+});
+
+test('initial public session read uses its gameplay deadline', async () => {
+  const queries = [];
+  const turnBudget = { assertWithinDeadline() {},
+    remaining: () => ({ deadline_ms: 1_000, llm_budget_ms: 1_000 }) };
+  const client = {
+    async query(query) {
+      queries.push(query);
+      if (typeof query === 'object') return { rows: [{
+        request_id: 'request', stage26_result: {}, delivery_attempt: {},
+        delivery_ack_result: null, screen: {}, turn_number: 0,
+        last_turn_id: null, state_version: 1, updated_at: null
+      }] };
+      return {};
+    },
+    release() {}
+  };
+  const pool = {
+    query() { throw new Error('unexpected direct pool query'); },
+    connect(callback) { callback(null, client, () => client.release()); }
+  };
+  await loadSession(pool, 'party', { turnBudget });
+  assert.equal(queries[0], 'SET statement_timeout = 1000');
+  assert.match(queries[1].text, /party_server_sessions/u);
+  assert.equal(queries[2], 'RESET statement_timeout');
 });
 
 test('Postgres acquisition after the gameplay deadline releases without querying', async () => {
@@ -106,7 +195,7 @@ test('deadline transaction rolls back when timeout setup reaches deadline', asyn
   assert.equal(queries.includes('ROLLBACK'), true);
 });
 
-test('deadline transaction reports expiry after an atomic commit without rollback', async () => {
+test('deadline transaction returns after an atomic commit without rollback', async () => {
   let expired = false;
   const queries = [];
   const exhausted = () => Object.assign(
@@ -126,8 +215,8 @@ test('deadline transaction reports expiry after an atomic commit without rollbac
     release() {}
   };
   const pool = { connect(callback) { callback(null, client); } };
-  await assert.rejects(withTurnDeadlineTransaction(pool, turnBudget,
-    (tx) => tx.query('SELECT mutation')), { code: 'LLM_TURN_BUDGET_EXHAUSTED' });
+  await withTurnDeadlineTransaction(pool, turnBudget,
+    (tx) => tx.query('SELECT mutation'));
   assert.equal(queries.includes('COMMIT'), true);
   assert.equal(queries.includes('ROLLBACK'), false);
 });
@@ -332,44 +421,20 @@ test('pre-commit reserve permits phase 2 repository commit before boundary', asy
   assert.equal(f.lastCommitInput().turnBudget, budget);
 });
 
-test('whole-turn deadline stops post-commit projection before narration or screen persistence', async () => {
+test('whole-turn deadline returns committed pending screen before narration or screen persistence', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });
   const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
   const f = fixture({ llmDiagnostics: diagnostics,
     beforeRandomSource() { now = 24_999; },
     afterCommittedVisibleRead() { now = 30_000; } });
-  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
+  const result = await f.runtime.submitTurn({ partyId: f.partyId, input: {
     request_id: 'budget-post-commit-visible',
     idempotency_key: 'budget-post-commit-visible',
     raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-  } }), (error) => {
-    assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-    assert.equal(error.deadline_exceeded, true);
-    assert.equal(error.budget_exhausted, false);
-    return true;
-  });
+  } });
   assert.equal(f.commitCount(), 1);
+  assert.equal(result.screen.screen_status, 'committed_presentation_pending');
   assert.equal(f.narratorInput(), null);
-  assert.equal(f.events.includes('persist_screen'), false);
-});
-
-test('whole-turn deadline waits for narration then stops screen persistence', async () => {
-  let now = 0;
-  const budget = createLlmTurnBudget({ now: () => now });
-  const diagnostics = createLlmDiagnostics({ now: () => now, turnBudget: budget });
-  const f = fixture({ llmDiagnostics: diagnostics,
-    beforeRandomSource() { now = 24_999; },
-    afterNarration() { now = 30_000; } });
-  await assert.rejects(f.runtime.submitTurn({ partyId: f.partyId, input: {
-    request_id: 'budget-post-commit-narration',
-    idempotency_key: 'budget-post-commit-narration',
-    raw_text: 'Осмотреть лодку, верёвку и следы. Понять, что здесь случилось.'
-  } }), (error) => {
-    assert.equal(error.code, 'LLM_TURN_BUDGET_EXHAUSTED');
-    assert.equal(error.deadline_exceeded, true);
-    return true;
-  });
-  assert.notEqual(f.narratorInput(), null);
   assert.equal(f.events.includes('persist_screen'), false);
 });

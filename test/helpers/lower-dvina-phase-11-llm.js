@@ -132,11 +132,9 @@ export function createCanonicalPhase11LlmResponder({
         companions: companionCombatChoice
       });
     }
-    if (model === 'fixture-narrator-writer') {
+    if (['fixture-gameplay-narrator', 'fixture-gameplay-narrator-repair']
+      .includes(model)) {
       return narrationOutput(input);
-    }
-    if (model === 'fixture-narrator-auditor') {
-      return narrationAudit(input);
     }
     throw new Error(`Unexpected production LLM model: ${model}`);
   };
@@ -605,19 +603,13 @@ function entityByTemplate(entities, templateId, idField) {
 }
 
 function narrationOutput(request) {
+  const narrationRequest = request.request ?? request;
   return {
     version: 1,
     schema: 'narration_output',
-    output_id: `narration:${request.request_id}`,
+    output_id: narrationRequest.request_id,
     prose: 'События хода завершены; видимые последствия сохранены.',
     action_options: [], used_references: [],
     self_check: { no_new_world_facts: true }
-  };
-}
-
-function narrationAudit() {
-  return {
-    version: 1, schema: 'narration_audit', pass: true,
-    concerns: [], evidence: ['Только persisted visible context.']
   };
 }

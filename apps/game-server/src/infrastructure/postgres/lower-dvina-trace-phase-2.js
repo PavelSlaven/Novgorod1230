@@ -198,7 +198,8 @@ export function createLowerDvinaTracePhase2PostgresRepository({
         preserve_uncertainty: true,
         no_new_world_facts: true
       },
-      max_repairs: 1
+      max_repairs: 1,
+      turnBudget
     }));
     return persistPhase2Screen({
       partyId,
@@ -226,7 +227,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       }
     });
   }
-
   async function commitPhase2Turn(input) {
     return commitLowerDvinaTracePhase2({ ...input, ...commitPorts(input.turnBudget) });
   }
@@ -238,7 +238,6 @@ export function createLowerDvinaTracePhase2PostgresRepository({
       partyId, { ...options, turnBudget }),
     committer: { commit: (input) => committer.commit({ ...input, turnBudget }) } };
   }
-
   async function loadCommittablePhase2State(...args) {
     return withoutPhase2CurrentVisibleContext(
       await loadPhase2State(...args)

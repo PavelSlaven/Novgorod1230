@@ -24,9 +24,9 @@ test('turn runtime defaults to 10 s, while invalid or explicit environment value
   }
 });
 
-test('non-turn scopes retain 120 s transport fallback', () => {
+test('portrait scope retains 120 s transport fallback', () => {
   const resolution = resolveLlmExecutionConfig({
-    scope: 'new_game', tierId: 'tier_1_fast', env: { DEEPSEEK_API_KEY: 'test-key' }
+    scope: 'portrait_lab', roleId: 'portrait_spec_normalizer', env: { DEEPSEEK_API_KEY: 'test-key' }
   });
   assert.equal(resolution.config.requestTimeoutMs, 120000);
 });

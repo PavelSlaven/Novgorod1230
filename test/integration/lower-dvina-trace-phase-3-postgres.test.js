@@ -11,8 +11,8 @@ import { lowerDvinaTraceConversationTemporalEffectRegistrations } from
 import { lowerDvinaTraceTemporalSourceRegistrations } from
   '../../apps/game-server/src/runtime/lower-dvina-trace-phase-6-temporal-source.js';
 import {
-  createFirstPlayablePublicRuntime
-} from '../../apps/game-server/src/runtime/first-playable-public-runtime.js';
+  createLowerDvinaTracePublicRuntime
+} from '../../apps/game-server/src/runtime/lower-dvina-trace-public-runtime.js';
 import {
   createLowerDvinaTracePhase2Runtime
 } from '../../apps/game-server/src/runtime/lower-dvina-trace-phase-2.js';
@@ -853,7 +853,7 @@ function buildRuntime({
     }),
     now: () => '2026-07-30T08:00:00.000Z'
   });
-  return createFirstPlayablePublicRuntime({
+  return createLowerDvinaTracePublicRuntime({
     partyPool: pool,
     committer,
     release,

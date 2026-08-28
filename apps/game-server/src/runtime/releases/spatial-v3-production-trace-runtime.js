@@ -135,7 +135,7 @@ export function createTraceTurnRuntime({
     ]
   });
   const npcRuntimePorts = createNpcRuntimePorts({ roleRunner });
-  return createPhase2RuntimeFactory({
+  const runtime = createPhase2RuntimeFactory({
     repository: createLowerDvinaTracePhase2PostgresRepository({
       partyPool, committer
     }),
@@ -193,4 +193,5 @@ export function createTraceTurnRuntime({
     llmTurnBudget: turnBudget,
     llmDiagnostics
   });
+  return Object.freeze({ ...runtime, llmDiagnostics });
 }

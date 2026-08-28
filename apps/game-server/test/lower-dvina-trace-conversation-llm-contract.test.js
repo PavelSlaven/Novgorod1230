@@ -271,6 +271,21 @@ test('NPC route disclosure candidate is validator-valid and preserves route refs
     /"route_ref":"route-1"/u);
 });
 
+test('NPC participation request states acceptance binding choice', async () => {
+  const request = npcRequest();
+  request.decision_scope.operation_contract = {
+    commit_route_participation: { allowed_bindings: [{ role: 'escort' }] }
+  };
+  const fixture = runner(() => npcPlan(request));
+
+  await createLowerDvinaTraceNpcSemanticModel(fixture)(request);
+
+  assert.match(fixture.calls[0].messages[0].content,
+    /accepting, promising, or agreeing means choose exactly one allowed binding/u);
+  assert.match(fixture.calls[0].messages[0].content,
+    /The NPC chooses the binding/u);
+});
+
 test('player required candidate is validator-valid and preserves operation', () => {
   const required = {
     verbatim_utterance_text: 'Скажи правду.', required_resolution: 'check_required',

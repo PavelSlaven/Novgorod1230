@@ -531,10 +531,10 @@ function fixture({
           },
         }
       : {}),
-    playerConversationModel: async (input) => {
+    playerConversationModel: async (input, repairContext) => {
       playerConversationCount += 1;
       playerConversationInput = structuredClone(input);
-      return playerConversationModel(input);
+      return playerConversationModel(input, repairContext);
     },
     npcSemanticModel: async (input) => {
       npcSemanticCount += 1;

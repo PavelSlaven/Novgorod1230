@@ -6,6 +6,7 @@ import {
 } from './lower-dvina-trace-m2-conversation-player.js';
 import {
   prepareTraceTurn10PlayerPlan,
+  requireTraceTurn10ParentTemporal,
   resolveTraceTurn10ConversationExchange
 } from './lower-dvina-trace-turn-10-conversation.js';
 import { TURN10_COMPANION_COMMAND } from
@@ -97,7 +98,8 @@ export function traceTurn10PreconditionSatisfied(precondition, state,
 
 function admitted(state, contracts) {
   const atCamp = state?.position?.location_ref === contracts.campLocationRef;
-  const restStatus = state?.phase7_fire_rest?.status;
+  if (state?.phase7_fire_rest?.status !== 'active') return false;
+  requireTraceTurn10ParentTemporal(state);
   const campAnchor = state.position?.g5_anchor_id
     ?? state.position?.anchor_id;
   const present = Object.values(contracts.actors).every((actor) => {
@@ -105,7 +107,7 @@ function admitted(state, contracts) {
       id === actor.instance_id);
     return (current?.anchor_id ?? current?.g5_anchor_id) === campAnchor;
   });
-  return atCamp && ['active', 'completed'].includes(restStatus) && present
+  return atCamp && present
     && !(state.route_activity_admissions ?? []).some(
       ({ activity_ref: ref }) => ref === contracts.binding.route_activity_ref);
 }

@@ -301,6 +301,22 @@ function validateContributionBody(value, request = null) {
       allowedCheckProfileRefs);
 }
 
+function validateRequiredIntendedAddressees(context) {
+  const required = context.required_intended_addressee_refs;
+  return required === undefined || uniqueContractEntityRefs(required)
+    && required.length > 0 && required.every((reference) =>
+      context.allowed_references.actor_refs.some((allowed) =>
+        refKey(allowed) === refKey(reference)));
+}
+
+function matchesRequiredIntendedAddressees(plan, request) {
+  const required = request.player_safe_context.required_intended_addressee_refs;
+  return required === undefined || plan.intended_addressee_refs.length
+    === required.length && required.every((reference) =>
+      plan.intended_addressee_refs.some((intended) =>
+        refKey(intended) === refKey(reference)));
+}
+
 function buildValidated(value, validator, contractName) {
   if (!validator(value)) {
     throw new TypeError(`${contractName} must be an exact JSON-safe contract`);
@@ -366,6 +382,7 @@ export function validatePlayerConversationInput(value) {
       value.player_safe_context.allowed_duration_classes)
     && validateAllowedContributionReferences(
       value.player_safe_context.allowed_references)
+    && validateRequiredIntendedAddressees(value.player_safe_context)
     && plainRecord(value.operation_contract)
     && validateContributionRequirement(
       value.player_safe_context, value.operation_contract)
@@ -417,6 +434,7 @@ export function validatePlayerConversationContributionPlan(value, request = null
     && value.conversation_id === request.conversation_id
     && value.state_version === request.state_version
     && refKey(value.speaker_ref) === refKey(request.speaker_ref)
+    && matchesRequiredIntendedAddressees(value, request)
     && validateContributionBody(value, request));
 }
 

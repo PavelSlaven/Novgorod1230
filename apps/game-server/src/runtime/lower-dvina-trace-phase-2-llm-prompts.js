@@ -164,6 +164,8 @@ export function playerConversationInstructions(repair, request = null) {
     'once for speech: supporting_operations must be [required_supporting_operation]',
     'with that complete object copied exactly; do not add another operation.',
     'Use only an op supplied by operation_contract.',
+    'When required_intended_addressee_refs is present, copy every listed ref',
+    'exactly into intended_addressee_refs. Do not omit or add listeners; primary_addressee_ref must be one of them.',
     'For emit_interaction, copy its exact permitted kind and actor, target,',
     'entity, and instrument refs from request; do not invent or substitute refs.',
     'Without required fields, ordinary speech remains automatic with check null',
@@ -263,6 +265,8 @@ export function requiredNpcConversationCandidate(request) {
 
 export function npcConversationInstructions(repair, request = null) {
   const requiredCandidate = requiredNpcConversationCandidate(request);
+  const participationBindings = request?.decision_scope?.operation_contract
+    ?.commit_route_participation?.allowed_bindings;
   return [
     'Return only one plain JSON object matching exactly schema',
     'conversation_contribution_plan_v1 with one contribution.',
@@ -292,6 +296,13 @@ export function npcConversationInstructions(repair, request = null) {
     'with that complete object copied exactly; do not add another operation.',
     'For emit_interaction, copy its exact permitted kind and actor, target,',
     'entity, and instrument refs from request; do not invent or substitute refs.',
+    ...(Array.isArray(participationBindings) ? [
+      'For commit_route_participation, accepting, promising, or agreeing means',
+      'choose exactly one allowed binding and copy it in supporting_operations',
+      'as {"op":"commit_route_participation", ...binding}. Refusal, silence,',
+      'or leaving may use no supporting operation. The NPC chooses the binding.',
+      `Allowed bindings: ${JSON.stringify(participationBindings)}`
+    ] : []),
     'Without required fields, ordinary speech remains automatic with check null and no',
     'supporting operation unless independently permitted by its contract.',
     'Do not resolve RNG, exact time, consequences, database writes,',

@@ -695,6 +695,30 @@ test('one invalid NPC response receives one structural repair attempt', async ()
   assert.equal(calls[1].repair.validation_errors.length, 1);
 });
 
+test('one retryable NPC semantic inconsistency receives one repair', async () => {
+  const decisionRequest = request();
+  const calls = [];
+  const result = await requestNpcSemanticDecision({
+    boundary: boundary(),
+    request: decisionRequest,
+    semanticModel: async (_request, context) => {
+      calls.push(context);
+      return plan(decisionRequest);
+    },
+    validatePlan: () => calls.length === 1 ? {
+      pass: false,
+      errors: [{ code: 'TEST_SEMANTIC_INCONSISTENCY',
+        category: 'semantic_consistency', retryable: true }]
+    } : true,
+    revalidateStateVersion: async () => 2
+  });
+
+  assert.equal(result.status, 'planned');
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1].repair.validation_errors[0].code,
+    'TEST_SEMANTIC_INCONSISTENCY');
+});
+
 test('failed uncommitted NPC decision releases its in-flight claim for retry', async () => {
   const decisionRequest = request();
   let modelCalls = 0;

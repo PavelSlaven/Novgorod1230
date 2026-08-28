@@ -87,10 +87,10 @@ function safeModelOutput(rawPlan) {
   }
 }
 
-function repairContext(rawPlan) {
+function repairContext(rawPlan, validationErrors = null) {
   return immutable({
     original_output: safeModelOutput(rawPlan),
-    validation_errors: [{
+    validation_errors: validationErrors ?? [{
       code: 'conversation_contribution_schema_invalid',
       path: '$',
       message: 'Response must match the requested NPC semantic plan schema exactly.'
@@ -245,7 +245,17 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
         continue decisionLoop;
       }
 
-      if (validatePlanForMode(rawPlan, safeRequest, mode)) break;
+      const structurallyValid = validatePlanForMode(
+        rawPlan, safeRequest, mode);
+      const domainResult = structurallyValid
+        ? planDomainResult(rawPlan, safeRequest, validatePlan) : null;
+      if (structurallyValid && domainResult?.pass !== false) break;
+      if (domainResult?.pass === false && !domainResult.errors.every(
+        ({ retryable }) => retryable === true
+      )) {
+        return domainRejectedProposal(currentBoundary, currentRequest,
+          currentSignals, rawPlan, domainResult);
+      }
       if (repair !== null) {
         fail(
           'TURN_NPC_PLAN_INVALID',
@@ -254,14 +264,9 @@ async function requestFreshDecision({ boundary, request, orderedSignals,
             boundary_id: currentBoundary.boundary_id }
         );
       }
-      repair = repairContext(rawPlan);
+      repair = repairContext(rawPlan, domainResult?.errors ?? null);
     }
 
-    const domainResult = planDomainResult(rawPlan, safeRequest, validatePlan);
-    if (domainResult !== null && domainResult.pass === false) {
-      return domainRejectedProposal(currentBoundary, currentRequest,
-        currentSignals, rawPlan, domainResult);
-    }
     return plannedProposal(
       currentBoundary, currentRequest, currentSignals, rawPlan);
   }

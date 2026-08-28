@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  createTurnAvailableActionSet,
+  createTurnCommandRegistry
+} from '@rus/turn';
+import {
   createTemporalAdvanceOwner,
   npcTemporalEffectRegistrations
 } from '@rus/turn/temporal-advance';
@@ -12,6 +16,8 @@ import { resolveTracePhase5Contracts } from
   '../src/runtime/lower-dvina-trace-phase-5-contracts.js';
 import { resolveTraceTurn10Contracts } from
   '../src/runtime/lower-dvina-trace-turn-10-contracts.js';
+import { createTraceTurn10CompanionCommand } from
+  '../src/runtime/lower-dvina-trace-turn-10-command.js';
 import { commitLowerDvinaTracePhase2 } from
   '../src/infrastructure/postgres/lower-dvina-trace-phase-2-commit.js';
 import { lowerDvinaTracePhase7TemporalEffectRegistrations } from
@@ -25,6 +31,33 @@ const bundle = await loadScenarioBundle(15);
 const COMPOUND_TURN_10 =
   'Отдохнуть у огня полчаса и подсушить одежду. '
   + 'Попросить Еремея и рыбака пойти со мной к Жданко.';
+
+test('Turn 10 companion action requires active Phase 7 parent temporal',
+  async () => {
+    const { state, contracts } = turn10State({ completedRest: false });
+    state.phase7_fire_rest = { status: 'active' };
+    state.phase7_parent_temporal = {
+      execution_id: 'phase7-rest', limit_timestamp: structuredClone(state.clock),
+      completion_effect: {}
+    };
+    state.cumulative_elapsed_minutes = 25;
+    state.active_npc_actor_steps = [{ status: 'started' }];
+    const command = createTraceTurn10CompanionCommand({ contracts,
+      inputDigest: '0'.repeat(64) });
+
+    assert.equal((await command.availability({ committed_state: state,
+      action_set_evaluation: true })).can_attempt, true);
+    assert.deepEqual((await turn10ActionSet(state, command, contracts))
+      .options.map(({ option_id: id }) => id), ['request_storehouse_companions',
+      'test_fallback']);
+
+    state.phase7_fire_rest = { status: 'completed' };
+    delete state.phase7_parent_temporal;
+    assert.equal((await command.availability({ committed_state: state,
+      action_set_evaluation: true })).status, 'blocked');
+    assert.deepEqual((await turn10ActionSet(state, command, contracts))
+      .options.map(({ option_id: id }) => id), ['test_fallback']);
+  });
 
 test('canonical Turn 10 preserves parent activity for prepared followup marker', async () => {
   const { state, contracts } = turn10State({ completedRest: false });
@@ -197,6 +230,138 @@ test('canonical Turn 10 preserves parent activity for prepared followup marker',
   assert.deepEqual(runtimeFixture.state, stateAfterFirst);
 });
 
+test('Turn 10 repairs a player plan missing required listeners', async () => {
+  const { state, contracts } = turn10State({ completedRest: false });
+  let playerCalls = 0;
+  const repairs = [];
+  const responseBoundaryActors = [];
+  const runtimeFixture = fixture({
+    scenarioBundle: bundle,
+    materializationBundle: bundle,
+    committedState: state,
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
+    }),
+    turnStepModel: (request) => turn10StepPlan(request, contracts),
+    playerConversationModel(request, context) {
+      playerCalls += 1;
+      repairs.push(context.repair);
+      const expected = [contracts.actors.eremey,
+        contracts.actors.participatingFisher, contracts.actors.otherFisher]
+        .map(({ instance_id: id }) => ref('npc', id));
+      assert.deepEqual(request.player_safe_context
+        .required_intended_addressee_refs, expected);
+      const plan = playerPlan(request, contracts);
+      return context.repair === null ? {
+        ...plan, intended_addressee_refs: [plan.primary_addressee_ref]
+      } : plan;
+    },
+    npcSemanticModel(request) {
+      responseBoundaryActors.push(request.npc_ref.entity_id);
+      return npcPlan(request, contracts);
+    },
+    npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
+  });
+
+  await runtimeFixture.runtime.submitTurn({ partyId: runtimeFixture.partyId,
+    input: { request_id: 'turn10-required-audience',
+      idempotency_key: 'turn10-required-audience', raw_text: COMPOUND_TURN_10 } });
+
+  assert.equal(playerCalls, 2);
+  assert.equal(repairs[0], null);
+  assert.ok(repairs[1]);
+  assert.deepEqual(new Set(responseBoundaryActors), new Set([
+    contracts.actors.eremey.instance_id,
+    contracts.actors.participatingFisher.instance_id,
+    contracts.actors.otherFisher.instance_id,
+    contracts.actors.ratsha.instance_id
+  ]));
+});
+
+test('Turn 10 repairs acceptance that omits its participation binding', async () => {
+  const { state, contracts } = turn10State({ completedRest: false });
+  let eremeyCalls = 0;
+  const runtimeFixture = fixture({
+    scenarioBundle: bundle,
+    materializationBundle: bundle,
+    committedState: state,
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
+    }),
+    turnStepModel: (request) => turn10StepPlan(request, contracts),
+    playerConversationModel: (request) => playerPlan(request, contracts),
+    npcSemanticModel(request) {
+      const plan = npcPlan(request, contracts);
+      if (request.npc_ref.entity_id !== contracts.actors.eremey.instance_id) {
+        return plan;
+      }
+      eremeyCalls += 1;
+      return eremeyCalls === 1 ? {
+        ...plan,
+        speech: { ...plan.speech, dominant_act: 'accept' },
+        supporting_operations: []
+      } : plan;
+    },
+    npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
+  });
+
+  await runtimeFixture.runtime.submitTurn({ partyId: runtimeFixture.partyId,
+    input: { request_id: 'turn10-repair-acceptance',
+      idempotency_key: 'turn10-repair-acceptance', raw_text: COMPOUND_TURN_10 } });
+
+  assert.equal(eremeyCalls, 2);
+  assert.ok(runtimeFixture.state.route_participant_commitments.some(
+    ({ npc_ref: npc, role }) => npc.entity_id
+      === contracts.actors.eremey.instance_id && role === 'guide'
+  ));
+});
+
+test('Turn 10 admits refusal without a participation binding', async () => {
+  const { state, contracts } = turn10State({ completedRest: false });
+  const runtimeFixture = fixture({
+    scenarioBundle: bundle,
+    materializationBundle: bundle,
+    committedState: state,
+    temporalAdvanceOwner: createTemporalAdvanceOwner({
+      effect_registrations: [
+        ...npcTemporalEffectRegistrations(),
+        ...lowerDvinaTraceConversationTemporalEffectRegistrations(),
+        ...lowerDvinaTracePhase7TemporalEffectRegistrations()
+      ]
+    }),
+    turnStepModel: (request) => turn10StepPlan(request, contracts),
+    playerConversationModel: (request) => playerPlan(request, contracts),
+    npcSemanticModel(request) {
+      const plan = npcPlan(request, contracts);
+      return request.npc_ref.entity_id
+        !== contracts.actors.participatingFisher.instance_id ? plan : {
+          ...plan,
+          speech: { ...plan.speech, utterance_text: 'Не пойду.',
+            dominant_act: 'refuse' },
+          supporting_operations: []
+        };
+    },
+    npcAutonomousModel: (request) => phase7AutonomousPlan(request, 'wait')
+  });
+
+  await runtimeFixture.runtime.submitTurn({ partyId: runtimeFixture.partyId,
+    input: { request_id: 'turn10-refuse-without-binding',
+      idempotency_key: 'turn10-refuse-without-binding', raw_text: COMPOUND_TURN_10 } });
+
+  assert.equal(runtimeFixture.state.route_participant_commitments.some(
+    ({ npc_ref: npc }) => npc.entity_id
+      === contracts.actors.participatingFisher.instance_id
+  ), false);
+});
+
 test('invented prepared followup marker repairs once then continues atomically',
   async () => {
     const { state, contracts } = turn10State({ completedRest: false });
@@ -366,6 +531,21 @@ test('a stale Phase 7 response restarts the whole root turn on current state',
       .committed_state_version, initialVersion + 1);
     assert.equal(factual.consequence.duration_minutes, 30);
   });
+
+async function turn10ActionSet(state, command, contracts) {
+  const fallback = {
+    command_id: 'test.turn10_fallback', option_id: 'test_fallback',
+    label: 'Тестовое действие', matches: () => false,
+    availability: () => ({ version: 1, schema: 'turn_availability_decision',
+      status: 'available', can_attempt: true, reasons: [], check_requests: [] }),
+    consequence: () => null, writeTargets: () => []
+  };
+  return createTurnAvailableActionSet({
+    registry: createTurnCommandRegistry([command, fallback]),
+    committedState: state, actorId: state.actor_id,
+    policyPins: [contracts.activityPin]
+  });
+}
 
 function turn10State({ completedRest = true } = {}) {
   const state = structuredClone(fixture({ scenarioBundle: bundle }).state);

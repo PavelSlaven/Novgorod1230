@@ -37,6 +37,10 @@ export function buildPlayerRequest(context) {
       committed_knowledge_refs: committedPlayerKnowledgeRefs(context.state),
       allowed_duration_classes: ['domain_owned'],
       allowed_references: allowedPlayerContributionReferences(context),
+      ...(context.requiredIntendedAddresseeRefs == null ? {} : {
+        required_intended_addressee_refs: structuredClone(
+          context.requiredIntendedAddresseeRefs)
+      }),
       ...(context.contracts.check == null ? {} : { available_check: {
         attribute_ref: context.contracts.check.attribute,
         skill_ref: context.contracts.check.skill,

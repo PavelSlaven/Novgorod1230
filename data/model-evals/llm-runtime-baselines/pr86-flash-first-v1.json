@@ -1,0 +1,100 @@
+{
+  "schema": "rus.llm_runtime_flash_first_decision_record.v1",
+  "candidate": {
+    "checkout_sha": "2c412ed747cdff0890401c389a07bf48f89c3694",
+    "clean": true,
+    "base_main_sha": "d83b0908"
+  },
+  "frozen_role_evaluation": {
+    "generated_at": null,
+    "corpus": {
+      "path": "data/model-evals/llm-runtime/frozen-role-requests-v1.json",
+      "version": 12,
+      "sha256": "5b1cd6b282f61acf3342056e33c0f83468d4dc2ef78f0ae8cd775254954009d0"
+    },
+    "execution": { "passes": 1, "concurrency": 1 },
+    "fixtures": { "count": 22, "passed": 22 },
+    "repairs": { "calls": 6, "passed": 6 },
+    "latency_ms": { "p50": 1829, "p95": 3038, "max": 3157 },
+    "tokens": { "input": 29411, "output": 4993, "total": 34404 },
+    "roles": [
+      { "role": "world_process_step", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "5d5dc95704111775" },
+      { "role": "turn_step_planner", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "db6b7bb0c3e05c9e" },
+      { "role": "npc_combat_decider", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "66784e847e932469" },
+      { "role": "npc_combat_decider_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "8a9c0c1278e42e4e" },
+      { "role": "npc_autonomous_decider", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "6043acfa6a6ebb1c" },
+      { "role": "npc_autonomous_decider_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "d0f6efc16d9d0b41" },
+      { "role": "player_conversation_interpreter", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "3f4a3ce741f28c8c" },
+      { "role": "player_conversation_interpreter_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "0cd6897c25213b4b" },
+      { "role": "npc_conversation_responder", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "5af7b2219ba9c8d7" },
+      { "role": "npc_conversation_responder_format_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "36eacffefd0dd807" },
+      { "role": "ordinary_materialization", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "af6b22db5449f13e" },
+      { "role": "turn_step_planner_repair", "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "disabled", "reasoning_effort": null, "config_hash": "46b30324698bed48" }
+    ],
+    "failures": {
+      "errors": 0,
+      "validation": 0,
+      "schema": 0,
+      "validator": 0,
+      "rubric": 0,
+      "semantic": 0,
+      "timeouts": 0,
+      "pro_calls": 0,
+      "fallback_calls": 0
+    }
+  },
+  "production_playtest": {
+    "generated_at": "2026-08-28T07:21:40.16Z",
+    "composition": "builtin:production-spatial-v3",
+    "policy": { "provider": "deepseek", "model": "deepseek-v4-flash", "thinking": "off", "whole_turn_budget_ms": 30000 },
+    "turns": [
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 6686, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 5986, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 6500, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 8445, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7828, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 6662, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 8388, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 6191, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 6558, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7050, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 5907, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 8490, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "semantic_repair_probe", "status": "resolved", "duration_ms": 8194, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 7204, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 6860, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 6122, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 7090, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "movement_intent", "status": "resolved", "duration_ms": 7418, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_craft", "status": "resolved", "duration_ms": 11177, "llm_calls": 4, "repair_calls": 1 },
+      { "scenario_class": "npc_interaction", "status": "resolved", "duration_ms": 6536, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "free_form", "status": "resolved", "duration_ms": 7289, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "combat_attempt", "status": "resolved", "duration_ms": 7793, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "dialogue", "status": "resolved", "duration_ms": 7067, "llm_calls": 3, "repair_calls": 0 },
+      { "scenario_class": "physical_observation", "status": "resolved", "duration_ms": 7699, "llm_calls": 3, "repair_calls": 0 }
+    ],
+    "aggregate": {
+      "whole_turn_latency_ms": { "p50": 7067, "p95": 8490, "max": 11177 },
+      "resolved_turns": 24,
+      "failed_turns": 0,
+      "successful_over_30s": 0,
+      "budget_exhausted_turns": 0,
+      "domain_binding_missing_turns": 0,
+      "malformed_json_failures": 0,
+      "total_llm_calls": 75,
+      "repair_calls": 3,
+      "narrator_repair_calls": 0,
+      "role_call_counts": {
+        "turn_step_planner": 24,
+        "legacy.narrator.dossier": 24,
+        "legacy.narrator.audit": 24,
+        "turn_step_planner_repair": 3
+      },
+      "model_policy_violations": 0
+    }
+  },
+  "decision": {
+    "flash_sufficient": true,
+    "hard_gate_30s_passed": true
+  }
+}

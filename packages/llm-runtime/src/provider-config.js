@@ -220,20 +220,11 @@ const LEGACY_WORLD_ROLE_DEFAULTS = Object.freeze({
   [LegacyWorldRoles.VISIBLE_CONTEXT_AUDIT]: legacyAuditRole('LEGACY_VISIBLE_CONTEXT_AUDIT'),
   [LegacyWorldRoles.VISIBLE_CONTEXT_SHAPER]: legacySchemaRole('LEGACY_VISIBLE_CONTEXT_SHAPER', 'visible_context_package'),
   [LegacyWorldRoles.VISIBLE_CONTEXT_REPAIR]: legacyRepairRole('LEGACY_VISIBLE_CONTEXT_REPAIR', 'visible_context_package'),
-  [LegacyWorldRoles.NARRATOR_DOSSIER]: legacySchemaRole(
-    'LEGACY_NARRATOR_DOSSIER',
-    'narration_output'
-  ),
-  [LegacyWorldRoles.NARRATOR_AUDIT]: legacyAuditRole('LEGACY_NARRATOR_AUDIT'),
-  [LegacyWorldRoles.NARRATOR_DOSSIER_REPAIR]: legacyRepairRole(
-    'LEGACY_NARRATOR_DOSSIER_REPAIR',
-    'narration_output'
-  ),
+  [LegacyWorldRoles.NARRATOR_DOSSIER]: gameplayNarrationRole(legacySchemaRole('LEGACY_NARRATOR_DOSSIER', 'narration_output')),
+  [LegacyWorldRoles.NARRATOR_AUDIT]: gameplayNarrationRole(legacyAuditRole('LEGACY_NARRATOR_AUDIT')),
+  [LegacyWorldRoles.NARRATOR_DOSSIER_REPAIR]: gameplayNarrationRole(legacyRepairRole('LEGACY_NARRATOR_DOSSIER_REPAIR', 'narration_output')),
   [LegacyWorldRoles.NARRATOR_SHAPER]: legacyTextRole('LEGACY_NARRATOR_SHAPER'),
-  [LegacyWorldRoles.NARRATOR_REPAIR]: legacyRepairRole(
-    'LEGACY_NARRATOR_REPAIR',
-    'narration_output'
-  ),
+  [LegacyWorldRoles.NARRATOR_REPAIR]: gameplayNarrationRole(legacyRepairRole('LEGACY_NARRATOR_REPAIR', 'narration_output')),
   [LegacyWorldRoles.ACTOR_PROFILES_DOSSIER]: legacyTextRole('LEGACY_ACTOR_PROFILES_DOSSIER'),
   [LegacyWorldRoles.ACTOR_PROFILES_AUDIT]: legacyAuditRole('LEGACY_ACTOR_PROFILES_AUDIT'),
   [LegacyWorldRoles.ACTOR_PROFILES_REPAIR]: legacyTextRole('LEGACY_ACTOR_PROFILES_REPAIR'),
@@ -461,37 +452,9 @@ function disabledResolution(reason, scope, roleId, tierId) {
   };
 }
 
-function legacyTextRole(envPrefix) {
-  return {
-    envPrefix,
-    model: DEFAULT_DEEPSEEK_MODEL,
-    maxTokens: 1200,
-    outputContractMode: OutputContractModes.PLAIN_TEXT,
-    parseJson: false,
-    targetInputTokens: 60000,
-    comfortableInputTokens: 120000,
-    hardInputLimitTokens: 250000,
-    reserveOutputTokens: 2000,
-    reserveRepairTokens: 12000
-  };
-}
+function legacyTextRole(envPrefix) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, maxTokens: 1200, outputContractMode: OutputContractModes.PLAIN_TEXT, parseJson: false, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
 
-function legacyAuditRole(envPrefix) {
-  return {
-    envPrefix,
-    model: DEFAULT_DEEPSEEK_MODEL,
-    responseFormat: 'json_object',
-    maxTokens: 700,
-    outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA,
-    expectedSchema: 'semantic_audit',
-    parseJson: true,
-    targetInputTokens: 60000,
-    comfortableInputTokens: 120000,
-    hardInputLimitTokens: 250000,
-    reserveOutputTokens: 2000,
-    reserveRepairTokens: 12000
-  };
-}
+function legacyAuditRole(envPrefix) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, responseFormat: 'json_object', maxTokens: 700, outputContractMode: OutputContractModes.JSON_OBJECT_WITH_SCHEMA, expectedSchema: 'semantic_audit', parseJson: true, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
 
 function legacySchemaRole(envPrefix, expectedSchema) {
   return {
@@ -510,22 +473,9 @@ function legacySchemaRole(envPrefix, expectedSchema) {
   };
 }
 
-function legacyRepairRole(envPrefix, expectedSchema) {
-  return {
-    envPrefix,
-    model: DEFAULT_DEEPSEEK_MODEL,
-    responseFormat: 'json_object',
-    maxTokens: 1800,
-    outputContractMode: OutputContractModes.JSON_REPAIR,
-    expectedSchema,
-    parseJson: true,
-    targetInputTokens: 60000,
-    comfortableInputTokens: 120000,
-    hardInputLimitTokens: 250000,
-    reserveOutputTokens: 2000,
-    reserveRepairTokens: 12000
-  };
-}
+function legacyRepairRole(envPrefix, expectedSchema) { return { envPrefix, model: DEFAULT_DEEPSEEK_MODEL, responseFormat: 'json_object', maxTokens: 1800, outputContractMode: OutputContractModes.JSON_REPAIR, expectedSchema, parseJson: true, targetInputTokens: 60000, comfortableInputTokens: 120000, hardInputLimitTokens: 250000, reserveOutputTokens: 2000, reserveRepairTokens: 12000 }; }
+
+function gameplayNarrationRole(defaults){return {...defaults, model: 'deepseek-v4-flash', thinking: 'disabled', reasoningEffort: null};}
 
 function readRoleModel(defaults, env, sharedModel) {
   const roleModel = readText(env[`${defaults.envPrefix}_MODEL`]);

@@ -42,6 +42,25 @@ test('role runner does not call exhausted provider and clamps custom providers',
   assert.equal(calls.length, 1);
 });
 
+test('gameplay narrator calls clamp legacy transport defaults and retain custom provider', async () => {
+  const calls = [];
+  const budget = createLlmTurnBudget();
+  const runner = createLlmRoleRunnerAdapter({ turnBudget: budget,
+    settings: { providerSnapshot: () => ({ mode: 'custom', baseUrl: 'http://local/v1', model: 'local-narrator' }) },
+    execute: async (input) => {
+      calls.push(input);
+      return { status: 'ok', parsed_json: {}, provider: 'openai_compatible',
+        model: 'local-narrator', durationMs: 1 };
+    } });
+  await budget.runTurn(async () => {
+    await runner.run({ scope: 'legacy_world', role_id: 'legacy.narrator.dossier' });
+    await runner.run({ scope: 'legacy_world', role_id: 'legacy.narrator.repair' });
+  });
+  assert.deepEqual(calls.map((call) => call.overrides.requestTimeoutMs), [10_000, 6_000]);
+  assert.deepEqual(calls.map((call) => call.runtimeProviderOverride.model),
+    ['local-narrator', 'local-narrator']);
+});
+
 test('budget rejects default calls with less than one second remaining', async () => {
   let now = 0;
   const budget = createLlmTurnBudget({ now: () => now });

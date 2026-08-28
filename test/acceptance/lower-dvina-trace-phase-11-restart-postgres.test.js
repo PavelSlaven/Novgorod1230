@@ -179,6 +179,9 @@ test('production revision 24 admits independent Ratsha, Eremey and Zhdanko alter
         WHERE party_id=$1 AND event_kind LIKE 'combat_%'`, [ratsha]
     )).rows[0].count > 0, true);
 
+    environment.llm.requests.length = 0;
+    environment.llm.responses.length = 0;
+
     responder = createCanonicalPhase11LlmResponder({
       zhdankoCombatChoice: 'break_contact',
       companionCombatChoice: 'hold',
@@ -253,7 +256,7 @@ async function submit(environment, partyId, id, rawText) {
         raw_text: rawText
       });
   } catch (error) {
-    const recentRequests = environment.llm.requests.map((entry) => ({
+    const recentRequests = environment.llm.requests.slice(-20).map((entry) => ({
       model: entry.body?.model,
       schema: entry.input?.schema,
       npc_ref: entry.input?.npc_ref,

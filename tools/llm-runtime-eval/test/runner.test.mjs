@@ -106,7 +106,7 @@ test('planner, ordinary and NPC conversation semantic mismatches fail after owne
   const conversation = structuredClone(corpus.fixtures.find(({ id }) => id === 'npc-conversation-check-required'));
   conversation.expected.required_values['speech.dominant_act'] = 'inform';
   const plannerOutput = structuredClone(planner.expected_output);
-  plannerOutput.activity.effort = 'light';
+  plannerOutput.activity.effort = 'heavy';
   const ordinaryOutput = structuredClone(ordinary.expected_output);
   ordinaryOutput.entities[0].semantic_descriptor.semantic_type = 'other_ordinary';
   const conversationOutput = structuredClone(conversation.expected_output);

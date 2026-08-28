@@ -81,13 +81,23 @@
         "required_operations": [],
         "forbidden_operations": [],
         "required_values": {
-          "interpretation.adaptation": "reality_limited",
           "resolution": "direct",
           "goal_result": "not_achieved",
-          "check": null
+          "activity.owner": "semantic",
+          "activity.duration_class": "moment",
+          "operations.length": 0,
+          "check": null,
+          "continuation": null
         },
         "allowed_values": {
+          "interpretation.adaptation": [
+            "literal",
+            "reality_limited",
+            "make_believe"
+          ],
           "activity.effort": [
+            "none",
+            "light",
             "moderate"
           ]
         }
@@ -162,10 +172,12 @@
         },
         "allowed_values": {
           "interpretation.adaptation": [
-            "make_believe",
-            "reality_limited"
+            "literal",
+            "reality_limited",
+            "make_believe"
           ],
           "activity.effort": [
+            "none",
             "light",
             "moderate"
           ]

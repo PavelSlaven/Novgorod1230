@@ -293,7 +293,11 @@ test('generic visible projector overlays F1 facts through Phase 8 and 9',
   async () => {
     const normal = { project() { throw new Error('unexpected fallback'); } };
     const phase8 = createTracePhase8VisibleProjector({
-      contracts: { actors: {} }, fallback: normal
+      contracts: { actors: {
+        zhdanko: { instance_id: 'npc-zhdanko' },
+        eremey: { instance_id: 'npc-eremey' },
+        ratsha: { instance_id: 'npc-ratsha' }
+      }, participatingFishers: [{ instance_id: 'npc-fisher' }] }, fallback: normal
     });
     const visible = createLowerDvinaTraceTurnStepVisibleProjector({
       fallback: createTracePhase9VisibleProjector({

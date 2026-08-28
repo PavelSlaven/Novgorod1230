@@ -225,16 +225,6 @@ export async function runTurnStepLoop(input = {}, ports = {}) {
         'A turn-step loop can prepare at most route and direct effect slices.');
     }
     const preparedSequenceComplete = preparedEffects.length === 2;
-    if (execution.preparedEffects.length > 0) {
-      if (repaired && execution.goalResult === 'pending'
-          && execution.continuation != null) {
-        throw turnFailure('TURN_STEP_PLAN_INVALID',
-          'A repaired plan cannot start a pending prepared-effect chain.', {
-            repair_attempted: true,
-            prepared_chain_started: true
-          });
-      }
-    }
     if (execution.checkResult) {
       checkResults.push(execution.checkResult);
       checkRequests.push(execution.checkRequest);

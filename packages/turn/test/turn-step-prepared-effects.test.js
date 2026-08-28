@@ -177,7 +177,7 @@ test('prepared time sees cumulative F1 plans without duplicating prior output',
       [actorPlan, duePlan]);
   });
 
-test('prepared chain suppresses step-two schema repair and a repaired start',
+test('prepared chain suppresses step-two schema repair but permits a repaired start',
   async (t) => {
     await t.test('invalid step two makes exactly two model calls', async () => {
       let calls = 0;
@@ -203,17 +203,26 @@ test('prepared chain suppresses step-two schema repair and a repaired start',
       assert.equal(semanticCalls, 0);
     });
 
-    await t.test('a repaired pending start fails before a third call', async () => {
+    await t.test('a repaired pending start continues the prepared chain', async () => {
       let calls = 0;
-      await assert.rejects(runTurnStepLoop(input(), ports({
+      const outcome = await runTurnStepLoop(input(), ports({
         executionRegistry: preparedRegistry(),
         turnStepModel(request) {
           calls += 1;
           if (calls === 1) return { ...routePlan(request), request_id: 'forged' };
-          return routePlan(request);
+          return calls === 2 ? routePlan(request) : directPlan(request);
         }
-      })), { code: 'TURN_STEP_PLAN_INVALID' });
-      assert.equal(calls, 2);
+      }));
+      assert.equal(calls, 3);
+      assert.equal(outcome.stop_reason, 'player_response');
+      assert.deepEqual(outcome.step_traces.map(({ repaired, applied }) =>
+        ({ repaired, applied })), [
+        { repaired: true, applied: true }, { repaired: false, applied: true }
+      ]);
+      assert.deepEqual(outcome.prepared_effect_ledger.slices.map((slice) =>
+        [slice.step_index, slice.effect_kind]), [
+        [1, 'domain_command'], [2, 'semantic_activity']
+      ]);
     });
   });
 

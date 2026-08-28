@@ -61,7 +61,7 @@ function presenceRequest({ id, query }) {
     policy_refs: { authority_policy_ref: 'stage-b', density_policy_ref: 'stage-b',
       ordinary_presence_policy_ref: 'stage-b', runtime_item_mechanics_policy_ref: 'stage-b',
       allowed_admission_classes: ['common_mundane'], context_bound_permission_refs: [],
-      allowed_supporting_bases: [] },
+      allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }] },
     ordinary_state: { seeded: true, density_band: 'ordinary', remaining_identity_budget: 1,
       background_groups: [], presence_resolutions: [], closed_observation_scopes: [] },
     technical_limits: { max_new_entities: 1, max_new_background_groups: 1,
@@ -78,5 +78,6 @@ function presenceRequest({ id, query }) {
     normalizer_version: 'stage-b', semantic_type: 'ordinary_object_candidate',
     candidate_hint: query, functional_bucket: 'other_ordinary',
     admission_class: 'common_mundane', availability_class: 'common',
-    coverage_kind: 'visible_surface', coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' } }).request;
+    coverage_kind: 'visible_surface', coverage_ref: `stage-b:${id}`, policy_version: 'stage-b' },
+  selected_supporting_basis_ref: 'stage-b' }).request;
 }

@@ -87,6 +87,20 @@ test('ordinary materialization prompt keeps a supported free candidate materiali
   assert.doesNotMatch(prompt, /Schema-valid fallback skeleton/u);
 });
 
+test('ordinary materialization absent prompt permits only its exact absent plan', () => {
+  const source = presenceRequest('ложка');
+  const request = { ...source, authority_envelope: { ...source.authority_envelope,
+    selected_supporting_basis_ref: null } };
+  const prompt = buildOrdinaryMaterializationMessages(request, { repair: {
+    schema: 'ordinary_materialization_repair_context_v1', original_output: null,
+    validation_errors: [{ path: 'resolution', keyword: 'enum' }]
+  } })[0].content;
+  assert.match(prompt, /Return this exact absent response shape/u);
+  assert.match(prompt, /"resolution":"absent"/u);
+  assert.match(prompt, /Validation errors: \[\{"path":"resolution","keyword":"enum"\}\]/u);
+  assert.doesNotMatch(prompt, /seed_scope|materialize|descriptor|mechanics|authority_required|no_change/u);
+});
+
 test('frozen ordinary probes carry code-owned Stage A and Stage B envelopes', async () => {
   const corpus = JSON.parse(await readFile(frozenRoleRequestsUrl, 'utf8'));
   const fixtures = corpus.fixtures.filter(({ role_id }) =>
@@ -127,27 +141,39 @@ test('ordinary materialization prompt maps Stage A to its candidate-free fallbac
   assert.doesNotMatch(prompt, /ordinary_candidate_/u);
 });
 
+test('ordinary materialization prompt preserves a required seed semantic ref', () => {
+  const stageB = presenceRequest('ложка');
+  const request = { ...stageB, mode: 'seed_scope', candidate_query: null,
+    seeding_objective: { required_semantic_ref: 'ordinary layer' },
+    authority_envelope: { stage: 'seed_scope', density_bands: ['ordinary'],
+      disclosure_policy_refs: ['disclosure'], group_bases: [{ basis_ref: 'basis',
+        basis_state: 'committed', functional_buckets: ['other_ordinary'],
+        allowed_admission_classes: ['common_mundane'], permission_refs: [] }] } };
+  const prompt = buildOrdinaryMaterializationMessages(request)[0].content;
+  assert.match(prompt, /"descriptor":"ordinary layer"/u);
+});
+
 test('ordinary materialization prompt carries complete code-owned Stage B shapes', () => {
   const source = presenceRequest('любой предмет');
+  const preparedBasis = 'ordinary_group_prepared';
   const request = { ...source, policy_refs: { ...source.policy_refs,
-    allowed_supporting_bases: [{ basis_ref: 'basis', basis_state: 'committed' }] },
+    allowed_supporting_bases: [{ basis_ref: 'generic_basis', basis_state: 'committed' },
+      { basis_ref: preparedBasis, basis_state: 'prepared_seed' }] },
+  ordinary_state: { ...source.ordinary_state, background_groups: [preparedBasis] },
   authority_envelope: { ...source.authority_envelope,
-    allowed_supporting_bases: [{ basis_ref: 'basis', basis_state: 'committed' }] } };
+    allowed_supporting_bases: [{ basis_ref: 'generic_basis', basis_state: 'committed' },
+      { basis_ref: preparedBasis, basis_state: 'prepared_seed' }],
+    selected_supporting_basis_ref: preparedBasis } };
   const admitted = buildOrdinaryMaterializationMessages(request)[0].content;
   assert.match(admitted, /"resolution":"materialize"/u);
   assert.match(admitted, /"admission_class":"common_mundane"/u);
   assert.match(admitted, /"property_basis_ref":"property"/u);
   assert.match(admitted, /"position_ref":"bench"/u);
-
-  const restricted = { ...request, authority_envelope: {
-    ...request.authority_envelope,
-    candidate: { ...request.authority_envelope.candidate,
-      admission_class: 'weapon_or_armament' }
-  } };
-  const prompt = buildOrdinaryMaterializationMessages(restricted)[0].content;
-  assert.match(prompt, /"resolution":"absent"/u);
-  assert.match(prompt, new RegExp(`"candidate_key":"${restricted.candidate_query.candidate_key}"`, 'u'));
-  assert.match(prompt, new RegExp(`"coverage_key":"${restricted.candidate_query.coverage_key}"`, 'u'));
+  assert.match(admitted, /"supporting_basis_ref":"ordinary_group_prepared"/u);
+  assert.match(admitted, /"mass_grams":"<semantic_integer_mass_grams>"/u);
+  assert.match(admitted, /"external_hand_cost":"<semantic_integer_external_hand_cost>"/u);
+  assert.match(admitted, /"packing_slot_cost":"<semantic_integer_packing_slot_cost>"/u);
+  assert.doesNotMatch(admitted, /"mass_grams":1/u);
 });
 
 test('production O1 binds incomplete Flash output to its request envelope', async () => {
@@ -156,7 +182,8 @@ test('production O1 binds incomplete Flash output to its request envelope', asyn
     ...presenceRequest('верёвка').policy_refs,
     allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }]
   }, authority_envelope: { ...presenceRequest('верёвка').authority_envelope,
-    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }]
+    allowed_supporting_bases: [{ basis_ref: 'stage-b', basis_state: 'committed' }],
+    selected_supporting_basis_ref: 'stage-b'
   } };
   const roleRunner = { async run() { return { provider_record: modelIdentity(),
     output: { resolution: 'materialize', reason_code: 'found', entities: [{
@@ -389,7 +416,8 @@ function presenceRequest(query) {
       density_policy_ref: 'density', ordinary_presence_policy_ref: 'presence',
       runtime_item_mechanics_policy_ref: 'mechanics',
       allowed_admission_classes: ['common_mundane'],
-      context_bound_permission_refs: [], allowed_supporting_bases: [] },
+      context_bound_permission_refs: [], allowed_supporting_bases: [{
+        basis_ref: 'generic_basis', basis_state: 'committed' }] },
     ordinary_state: { seeded: true, density_band: 'ordinary',
       remaining_identity_budget: 1, background_groups: [],
       presence_resolutions: [], closed_observation_scopes: [] },
@@ -412,7 +440,7 @@ function presenceRequest(query) {
     candidate_hint: query, functional_bucket: 'household',
     admission_class: 'common_mundane', availability_class: 'common',
     coverage_kind: 'visible_surface', coverage_ref: 'surface',
-    policy_version: 'presence' } }).request;
+    policy_version: 'presence' }, selected_supporting_basis_ref: 'generic_basis' }).request;
 }
 function absentPlan(request) { return {
   schema: 'ordinary_materialization_plan_v1', request_id: request.request_id,

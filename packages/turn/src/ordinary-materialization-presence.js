@@ -174,7 +174,27 @@ function propertyOK(input) { return scope(input.property_placement_context.scope
 function fresh(input, aggregate) { const state=input.request.ordinary_state; return input.ordinary_state_version===aggregate.state_version && aggregate.seeded===state.seeded && aggregate.density_band===state.density_band && aggregate.remaining_identity_budget===state.remaining_identity_budget && sameRefs(aggregate.background_groups.map((g)=>g.group_ref),state.background_groups) && sameRefs(aggregate.presence_resolutions.map((r)=>r.resolution_ref),state.presence_resolutions) && sameRefs(aggregate.closed_observation_scopes.map((r)=>r.coverage_key),state.closed_observation_scopes); }
 function sameRefs(a,b) { return Array.isArray(b) && a.length===b.length && a.every((v,i)=>v===b[i]); }
 function placementOK(v, s) { return v && v.state === 'committed' && scope(v.scope_ref, s); }
-function compatible(input, bases) { if (!Array.isArray(bases) || permissionsFor(input.identity,input.request) === null) return false; return bases.some((b) => { const p = record(b, Object.getOwnPropertyNames(b)); if (!p) return false; try { validateSupportingBasisAdmission({ request: input.request, candidate: { supporting_basis_ref: p.basis_ref, functional_bucket: input.identity.functional_bucket, admission_class: input.identity.admission_class, availability_class: input.identity.availability_class }, basis_catalog: bases }); return true; } catch { return false; } }); }
+function compatible(input, bases) { return selectOrdinaryMaterializationSupportingBasis({ request: input.request, identity: input.identity, basisCatalog: bases }) !== null; }
+export function selectOrdinaryMaterializationSupportingBasis({ request, identity,
+  basisCatalog } = {}) {
+  if (!Array.isArray(basisCatalog) || permissionsFor(identity, request) === null) return null;
+  for (const basis of [...basisCatalog].sort((left, right) =>
+    (left.state === 'prepared_seed' ? 0 : 1) - (right.state === 'prepared_seed' ? 0 : 1)
+      || left.basis_ref.localeCompare(right.basis_ref))) {
+    const candidate = record(basis, Object.getOwnPropertyNames(basis));
+    if (!candidate) continue;
+    try {
+      validateSupportingBasisAdmission({ request, candidate: {
+        supporting_basis_ref: candidate.basis_ref,
+        functional_bucket: identity.functional_bucket,
+        admission_class: identity.admission_class,
+        availability_class: identity.availability_class
+      }, basis_catalog: basisCatalog });
+      return candidate.basis_ref;
+    } catch {}
+  }
+  return null;
+}
 function permissionsFor(identity, request) { if (identity.admission_class === 'common_mundane') return identity.availability_class === 'common' ? [] : null; if (identity.admission_class === 'container_capable' || identity.availability_class !== 'context_bound') return null; const refs = request?.policy_refs?.context_bound_permission_refs; return Array.isArray(refs) && refs.length > 0 && new Set(refs).size === refs.length ? [...refs].sort() : null; }
 function record(v, keys) { if (!v || typeof v !== 'object' || Array.isArray(v) || Object.getPrototypeOf(v) !== Object.prototype || Object.getOwnPropertySymbols(v).length) return null; const n = Object.getOwnPropertyNames(v); if (n.length !== keys.length || keys.some((k) => !n.includes(k))) return null; const out = {}; for (const k of keys) { const d = Object.getOwnPropertyDescriptor(v,k); if (d?.enumerable !== true || !Object.hasOwn(d,'value')) return null; out[k]=d.value; } return out; }
 function jsonData(value, seen = new Set()) { if (value === null || typeof value === 'string' || typeof value === 'boolean' || (typeof value === 'number' && Number.isFinite(value))) return true; if (!value || typeof value !== 'object' || seen.has(value) || Object.getOwnPropertySymbols(value).length) return false; const array = Array.isArray(value); if (array ? Object.getPrototypeOf(value) !== Array.prototype : Object.getPrototypeOf(value) !== Object.prototype) return false; seen.add(value); for (const key of Object.getOwnPropertyNames(value)) { if (array && key === 'length') continue; const descriptor = Object.getOwnPropertyDescriptor(value,key); if (descriptor?.enumerable !== true || !Object.hasOwn(descriptor,'value') || !jsonData(descriptor.value,seen)) return false; } seen.delete(value); return true; }

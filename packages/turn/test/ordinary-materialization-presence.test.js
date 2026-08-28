@@ -134,6 +134,7 @@ test('a request-classified forbidden admission records authority_required withou
     availability_class: restricted.availability_class,
     coverage_kind: restricted.coverage_kind, coverage_ref: restricted.coverage_ref
   }, allowed_supporting_bases: structuredClone(forbidden.request.policy_refs.allowed_supporting_bases),
+  selected_supporting_basis_ref: null,
   property_basis_ref: 'property', placement_refs: ['bench'] };
   let calls = 0;
   const output = await resolveOrdinaryMaterializationPresence(input(async () => {

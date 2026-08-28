@@ -60,7 +60,8 @@ export function buildOrdinaryMaterializationSeedScopeRequest(input = {}) {
 
 /** Builds the closed Stage B request from server-classified candidate data. */
 export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
-  const outer = exactRecord(input, ['objective_context', 'candidate_context'],
+  const outer = exactRecord(input, ['objective_context', 'candidate_context',
+    'selected_supporting_basis_ref'],
     'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   const context = exactRecord(outer.objective_context, [
     'request_id', 'scope_ref', 'context_refs', 'policy_refs',
@@ -130,7 +131,8 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
     candidate_query: { candidate_key, candidate_hint: candidate.candidate_hint,
       coverage_key, evidence_weight: 0 }, technical_limits: context.technical_limits
     , authority_envelope: presenceAuthorityEnvelope({ candidate, policyRefs,
-      contextRefs, propertyPlacementContext, scopeRef })
+      contextRefs, propertyPlacementContext, scopeRef,
+      selectedSupportingBasisRef: outer.selected_supporting_basis_ref })
   }, 'ORDINARY_PRESENCE_REQUEST_INPUT_INVALID');
   try { assertOrdinaryMaterializationRequestV1(request); } catch (error) {
     throw Object.assign(new TypeError('Committed ordinary presence context is invalid.'), {
@@ -164,7 +166,7 @@ export function buildOrdinaryMaterializationPresenceRequest(input = {}) {
 }
 
 function presenceAuthorityEnvelope({ candidate, policyRefs, contextRefs,
-  propertyPlacementContext, scopeRef }) {
+  propertyPlacementContext, scopeRef, selectedSupportingBasisRef }) {
   return { stage: 'resolve_presence', candidate: {
     semantic_type: candidate.semantic_type,
     functional_bucket: candidate.functional_bucket,
@@ -172,6 +174,7 @@ function presenceAuthorityEnvelope({ candidate, policyRefs, contextRefs,
     availability_class: candidate.availability_class,
     coverage_kind: candidate.coverage_kind, coverage_ref: candidate.coverage_ref
   }, allowed_supporting_bases: structuredClone(policyRefs.allowed_supporting_bases),
+  selected_supporting_basis_ref: selectedSupportingBasisRef,
   property_basis_ref: contextRefs.property_context_ref,
   placement_refs: propertyPlacementContext.placement_catalog
     .filter((entry) => entry?.state === 'committed'

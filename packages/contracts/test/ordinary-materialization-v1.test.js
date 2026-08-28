@@ -104,6 +104,7 @@ test('ordinary authority envelope accepts code-owned choices and rejects mixed s
     admission_class: 'common_mundane', availability_class: 'common',
     coverage_kind: 'visible_surface', coverage_ref: 'surface' },
   allowed_supporting_bases: [{ basis_ref: 'basis-1', basis_state: 'committed' }],
+  selected_supporting_basis_ref: 'basis-1',
   property_basis_ref: 'property-1', placement_refs: ['position-1'] };
   assert.deepEqual(validateOrdinaryMaterializationRequestV1(request), []);
   request.authority_envelope.stage = 'seed_scope';

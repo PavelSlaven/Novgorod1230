@@ -65,7 +65,8 @@ test('ordinary Stage A builder rejects non-data values, aliases, symbols and exo
 test('ordinary Stage B builder deterministically owns candidate and coverage identity', () => {
   const objective_context = { ...objective(), ordinary_state_version: 0,
     property_placement_context: propertyPlacementContext() };
-  const input = { objective_context, candidate_context: candidateContext() };
+  const input = { objective_context, candidate_context: candidateContext(),
+    selected_supporting_basis_ref: null };
   const first = buildOrdinaryMaterializationPresenceRequest(input);
   const second = buildOrdinaryMaterializationPresenceRequest(input);
   assert.deepEqual(first, second);
@@ -76,7 +77,8 @@ test('ordinary Stage B builder deterministically owns candidate and coverage ide
       semantic_type: 'spoon', functional_bucket: 'household',
       admission_class: 'common_mundane', availability_class: 'common',
       coverage_kind: 'visible_surface', coverage_ref: 'bench' },
-    allowed_supporting_bases: [], property_basis_ref: 'property',
+    allowed_supporting_bases: [], selected_supporting_basis_ref: null,
+    property_basis_ref: 'property',
     placement_refs: ['bench'] });
   assert.match(first.identity.candidate_key, /^ordinary_candidate_/);
   assert.match(first.identity.coverage_key, /^ordinary_coverage_/);
@@ -106,7 +108,7 @@ test('ordinary Stage B builder rejects a property-basis getter without invoking 
     enumerable: true, get() { reads += 1; return 'property'; }
   });
   assert.throws(() => buildOrdinaryMaterializationPresenceRequest({ objective_context,
-    candidate_context: candidateContext() }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
+    candidate_context: candidateContext(), selected_supporting_basis_ref: null }), { code: 'ORDINARY_PRESENCE_REQUEST_OBJECTIVE_INVALID' });
   assert.equal(reads, 0);
 });
 

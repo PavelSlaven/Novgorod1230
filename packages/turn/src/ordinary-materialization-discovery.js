@@ -8,7 +8,8 @@ import {
   admitOrdinaryWorldMaterialization,
   resolveOrdinaryWorldPropertyPlacement
 } from '@rus/items-property';
-import { resolveOrdinaryMaterializationPresence } from
+import { resolveOrdinaryMaterializationPresence,
+  selectOrdinaryMaterializationSupportingBasis } from
   './ordinary-materialization-presence.js';
 import { resolveOrdinaryMaterializationSeedScope } from
   './ordinary-materialization-seed.js';
@@ -104,8 +105,13 @@ export function createOrdinaryMaterializationDiscoveryOwner({
       candidateContext: execution.candidate_context,
       query: request.operation.query });
     if (candidateContext == null) return ordinaryNoop(request);
+    const selectedSupportingBasisRef = selectOrdinaryMaterializationSupportingBasis({
+      request: { scope_ref: presenceObjective.scope_ref,
+        policy_refs: presenceObjective.policy_refs }, identity: candidateContext,
+      basisCatalog: admissionBases(bases) });
     const envelope = buildPresenceRequest({ objective_context: presenceObjective,
-      candidate_context: candidateContext });
+      candidate_context: candidateContext,
+      selected_supporting_basis_ref: selectedSupportingBasisRef });
     const presence = await resolveOrdinaryMaterializationPresence({ envelope,
       ordinaryMaterializationModel: modelBudget.invoke,
       repairAvailable: modelBudget.hasRemaining,

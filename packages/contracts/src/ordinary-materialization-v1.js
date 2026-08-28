@@ -80,10 +80,10 @@ function validateAuthorityEnvelope(value, mode, errors) {
     arrayOf(value.group_bases,`${path}.group_bases`,errors,(entry,p,e)=>{if(!exactObject(entry,['basis_ref','basis_state','functional_buckets','allowed_admission_classes','permission_refs'],p,e))return;nonemptyString(entry.basis_ref,`${p}.basis_ref`,e);enumValue(entry.basis_state,ORDINARY_MATERIALIZATION_V1_ENUMS.basis_state,`${p}.basis_state`,e);arrayOfEnum(entry.functional_buckets,ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket,`${p}.functional_buckets`,e);arrayOfEnum(entry.allowed_admission_classes,ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class,`${p}.allowed_admission_classes`,e);arrayOfStrings(entry.permission_refs,`${p}.permission_refs`,e);});
     return;
   }
-  if (!exactObject(value,['stage','candidate','allowed_supporting_bases','property_basis_ref','placement_refs'],path,errors)) return;
+  if (!exactObject(value,['stage','candidate','allowed_supporting_bases','selected_supporting_basis_ref','property_basis_ref','placement_refs'],path,errors)) return;
   stringConst(value.stage,'resolve_presence',`${path}.stage`,errors);
   if (exactObject(value.candidate,['semantic_type','functional_bucket','admission_class','availability_class','coverage_kind','coverage_ref'],`${path}.candidate`,errors)) { nonemptyString(value.candidate.semantic_type,`${path}.candidate.semantic_type`,errors);enumValue(value.candidate.functional_bucket,ORDINARY_MATERIALIZATION_V1_ENUMS.functional_bucket,`${path}.candidate.functional_bucket`,errors);enumValue(value.candidate.admission_class,ORDINARY_MATERIALIZATION_V1_ENUMS.admission_class,`${path}.candidate.admission_class`,errors);enumValue(value.candidate.availability_class,ORDINARY_MATERIALIZATION_V1_ENUMS.availability_class,`${path}.candidate.availability_class`,errors);nonemptyString(value.candidate.coverage_kind,`${path}.candidate.coverage_kind`,errors);nonemptyString(value.candidate.coverage_ref,`${path}.candidate.coverage_ref`,errors); }
-  arrayOf(value.allowed_supporting_bases,`${path}.allowed_supporting_bases`,errors,validateAllowedSupportingBasis);nonemptyString(value.property_basis_ref,`${path}.property_basis_ref`,errors);arrayOfStrings(value.placement_refs,`${path}.placement_refs`,errors);
+  arrayOf(value.allowed_supporting_bases,`${path}.allowed_supporting_bases`,errors,validateAllowedSupportingBasis);nullableString(value.selected_supporting_basis_ref,`${path}.selected_supporting_basis_ref`,errors);if(value.selected_supporting_basis_ref!==null&&!value.allowed_supporting_bases.some(({basis_ref})=>basis_ref===value.selected_supporting_basis_ref))issue(errors,`${path}.selected_supporting_basis_ref`,'enum',`${path}.selected_supporting_basis_ref must be an allowed supporting basis.`);nonemptyString(value.property_basis_ref,`${path}.property_basis_ref`,errors);arrayOfStrings(value.placement_refs,`${path}.placement_refs`,errors);
 }
 
 function validatePlan(value,errors) {
@@ -102,6 +102,7 @@ function validatePlan(value,errors) {
 }
 
 function validateScopeRef(value,path,errors){if(!exactObject(value,['entity_kind','entity_id'],path,errors))return;enumValue(value.entity_kind,ORDINARY_MATERIALIZATION_V1_ENUMS.scope_kind,`${path}.entity_kind`,errors);nonemptyString(value.entity_id,`${path}.entity_id`,errors);}
+function nullableString(value,path,errors) { if (value !== null) nonemptyString(value,path,errors); }
 
 function validateContextRefs(value,errors) {
   const path='context_refs';
@@ -221,6 +222,9 @@ function validatePlanRequestBinding(plan, request, errors) {
   for (const [index, entity] of plan.entities.entries()) {
     const path = `entities[${index}]`;
     if (!bases.has(entity.supporting_basis_ref)) issue(errors, `${path}.supporting_basis_ref`, 'enum', `${path}.supporting_basis_ref must be supplied by the request.`);
+    const selected = request.authority_envelope?.stage === 'resolve_presence'
+      ? request.authority_envelope.selected_supporting_basis_ref : null;
+    if (selected !== null && entity.supporting_basis_ref !== selected) issue(errors, `${path}.supporting_basis_ref`, 'const', `${path}.supporting_basis_ref must match the code-selected supporting basis.`);
     if (!admissions.has(entity.admission_class)) issue(errors, `${path}.admission_class`, 'enum', `${path}.admission_class must be allowed by the request.`);
     initialBinding({entity,path,policy:initialAmountPolicy,errors,issue});
   }

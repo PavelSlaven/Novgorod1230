@@ -94,19 +94,21 @@ export function createCanonicalPhase11LlmResponder({
           .filter(Boolean)
           .map((entity_id) => ({ entity_kind: 'npc', entity_id }))
         : null;
-      return playerPlan(request, {
+      const plan = playerPlan(request, {
         checkRequired: Boolean(
           request.player_safe_context.required_supporting_operation
           || request.player_safe_context.offer_policy_ref
         ),
         offer: Boolean(request.player_safe_context.offer_policy_ref),
-        evidence: request.player_safe_context.required_supporting_operation
-          === 'present_item_as_evidence',
         primaryAddresseeRef: turn10Addressees?.[0]
           ?? request.player_safe_context.target_npc_ref,
         intendedAddresseeRefs: turn10Addressees
           ?? [request.player_safe_context.target_npc_ref]
       });
+      const operation = request.player_safe_context.required_supporting_operation;
+      return operation ? {
+        ...plan, supporting_operations: [structuredClone(operation)]
+      } : plan;
     }
     if (['fixture-npc-conversation-responder',
       'fixture-npc-conversation-responder-repair'].includes(model)) {
@@ -408,7 +410,7 @@ function npcConversationPlan(request, {
   const routeOperation = request.decision_scope?.operation_contract
     ?.disclose_known_route;
   if (routeOperation && eremeyRouteResponse === 'route_disclosure') {
-    return npcSpeechPlan(request, {
+    return requiredNpcSpeechPlan(request, {
       utteranceText: 'От лагеря иди к старой сушильне по тропе.',
       dominantAct: 'inform',
       interactionTags: ['route_disclosure'],
@@ -457,6 +459,34 @@ function npcConversationPlan(request, {
       : nonSpeechPlan(request, onisimResponse);
   }
   return conversation.npcSemanticModel(request);
+}
+
+function requiredNpcSpeechPlan(request, options) {
+  const plan = npcSpeechPlan(request, options);
+  const scope = request.decision_scope;
+  if (scope?.required_resolution !== 'check_required') return plan;
+  return {
+    ...plan,
+    resolution: scope.required_resolution,
+    supporting_operations: [structuredClone(scope.required_supporting_operation)],
+    check: {
+      purpose: 'resolve social delivery',
+      ...structuredClone(scope.required_check),
+      outcomes: {
+        clean_success: { delivery_quality: 'compelling', observable_effects: [] },
+        success: { delivery_quality: 'credible', observable_effects: [] },
+        success_with_cost: {
+          delivery_quality: 'credible_with_visible_cost', observable_effects: []
+        },
+        failure_with_consequence: {
+          delivery_quality: 'unconvincing', observable_effects: []
+        },
+        severe_failure: {
+          delivery_quality: 'transparently_manipulative', observable_effects: []
+        }
+      }
+    }
+  };
 }
 
 function companionPlan(request, actors, utteranceText = 'Согласен.') {

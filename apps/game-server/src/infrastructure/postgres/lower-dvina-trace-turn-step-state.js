@@ -80,7 +80,10 @@ export function buildLowerDvinaTraceTurnStepSnapshot({
   if (envelope.body_update.applied) {
     next.body_state = commitPhase2BodyState({
       before: state.body_state,
-      proposed: envelope.body_update.state_after
+      proposed: envelope.body_update.state_after,
+      transitionedConditionIds: turnStepTransitionedConditionIds(
+        state.body_state, envelope.body_update.proposal
+      )
     });
   }
   next.last_turn = {
@@ -217,6 +220,22 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
       updated_change_set_id: changeSetId
     }
   ));
+  const transitioned = turnStepTransitionedConditionIds(
+    state.body_state, envelope.body_update.proposal
+  );
+  for (const condition of snapshot.body_state.active_conditions ?? []) {
+    if (!transitioned.has(condition.storage_condition_id)) continue;
+    writes.updates.push(row('party_actor_active_conditions',
+      `player_character:${state.actor_id}:${condition.storage_condition_id}`, {
+        party_id: partyId,
+        actor_kind: 'player_character',
+        actor_id: state.actor_id,
+        condition_id: condition.storage_condition_id,
+        condition_profile_ref: structuredClone(condition.condition_profile_ref),
+        status: 'active',
+        terminal_change_set_id: null
+      }));
+  }
   const transition = envelope.consequence?.position_transition;
   if (transition?.owner === '@rus/movement-routes') writes.updates.push(row(
     'party_journey_locations', state.journey_location.id, {
@@ -227,4 +246,41 @@ export function buildLowerDvinaTraceTurnStepRootWrites({
     }
   ));
   return writes;
+}
+
+export function turnStepTransitionedConditionIds(before, proposal) {
+  const storageById = new Map();
+  for (const condition of before.active_conditions ?? []) {
+    if (!text(condition.id) || !text(condition.storage_condition_id)
+        || storageById.has(condition.id)) failConditionTransition();
+    storageById.set(condition.id, condition.storage_condition_id);
+  }
+  const changed = new Set();
+  for (const transition of [
+    ...(proposal?.condition_transitions ?? []),
+    ...((proposal?.component_proposals ?? []).flatMap((component) =>
+      component?.condition_transitions ?? []))
+  ]) {
+    if (!text(transition?.from) || !text(transition?.to)
+        || !storageById.has(transition.from)) failConditionTransition();
+    const storageId = storageById.get(transition.from);
+    const existing = storageById.get(transition.to);
+    if (existing != null && existing !== storageId) failConditionTransition();
+    changed.add(storageId);
+    storageById.delete(transition.from);
+    storageById.set(transition.to, storageId);
+  }
+  return changed;
+}
+
+function failConditionTransition() {
+  throw serverError(
+    'TRACE_TURN_STEP_BODY_CONDITION_TRANSITION_INVALID',
+    'A turn-step body condition transition lacks an exact persisted binding.',
+    { status: 409 }
+  );
+}
+
+function text(value) {
+  return typeof value === 'string' && value.trim().length > 0;
 }

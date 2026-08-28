@@ -6,12 +6,70 @@ import {
   prepareLowerDvinaTraceTurnStepPersistence
 } from '../src/infrastructure/postgres/lower-dvina-trace-turn-step-persistence.js';
 import {
+  buildLowerDvinaTraceTurnStepRootWrites,
+  turnStepTransitionedConditionIds
+} from '../src/infrastructure/postgres/lower-dvina-trace-turn-step-state.js';
+import { commitPhase2BodyState } from
+  '../src/infrastructure/postgres/lower-dvina-trace-phase-2-state.js';
+import { turnStepCurrentVersion } from
+  '../src/infrastructure/postgres/lower-dvina-trace-turn-step-commit-plan.js';
+import {
   bindCommitEnvelopeToBatch,
   commitEnvelope
 } from './lower-dvina-trace-turn-step-envelope-fixture.js';
 
 const DIRECT_SCHEMA =
   'rus.lower_dvina_trace_turn_step_direct_operation.v1';
+
+test('turn-step ignores stale condition outcomes without current transitions', () => {
+  const state = conditionState();
+  const proposal = { condition_transitions: [], component_proposals: [{
+    condition_transitions: []
+  }] };
+  const snapshot = commitPhase2BodyState({
+    before: state.body_state,
+    proposed: structuredClone(state.body_state),
+    transitionedConditionIds: turnStepTransitionedConditionIds(
+      state.body_state, proposal)
+  });
+  const writes = rootWrites(state, snapshot, proposal);
+  assert.equal(snapshot.active_conditions[0].state_version, 4);
+  assert.equal(writes.updates.some(({ target_table: table }) =>
+    table === 'party_actor_active_conditions'), false);
+});
+
+test('turn-step writes and versions only conditions transitioned now', () => {
+  const state = conditionState();
+  const proposal = {
+    condition_transitions: [{ from: 'bruise', to: 'treated',
+      outcome: 'treated' }],
+    component_proposals: [{ condition_transitions: [{
+      from: 'treated', to: 'healed', outcome: 'healed'
+    }] }]
+  };
+  const proposed = structuredClone(state.body_state);
+  proposed.active_conditions[0].id = 'healed';
+  const snapshot = commitPhase2BodyState({
+    before: state.body_state,
+    proposed,
+    transitionedConditionIds: turnStepTransitionedConditionIds(
+      state.body_state, proposal)
+  });
+  const writes = rootWrites(state, snapshot, proposal);
+  const conditions = writes.updates.filter(({ target_table: table }) =>
+    table === 'party_actor_active_conditions');
+  assert.equal(snapshot.active_conditions[0].state_version, 5);
+  assert.deepEqual(conditions, [{
+    target_table: 'party_actor_active_conditions',
+    id: 'player_character:actor-1:condition-storage-1',
+    record: {
+      party_id: 'p', actor_kind: 'player_character', actor_id: 'actor-1',
+      condition_id: 'condition-storage-1', condition_profile_ref: { id: 'bruise' },
+      status: 'active', terminal_change_set_id: null
+    }
+  }]);
+  assert.equal(turnStepCurrentVersion(state, conditions[0]), 4);
+});
 
 test('domain-only rev13 persistence keeps the exact envelope while rev12 stays unchanged',
   () => {
@@ -383,6 +441,35 @@ function prepare({
     partyId: 'p', writePlan, state, snapshot: structuredClone(state),
     factual: canonical || commitEnvelope ? null : factualValue,
     changeSetId: 'change-1', idemId: 'idem-1'
+  });
+}
+
+function conditionState() {
+  const state = baseState();
+  Object.assign(state.party_state, {
+    session_state_version: 2, clock_state_version: 2, body_state_version: 2
+  });
+  state.body_state.active_conditions = [{
+    storage_condition_id: 'condition-storage-1', id: 'bruise', status: 'active',
+    state_version: 4, condition_outcome: 'persists',
+    condition_profile_ref: { id: 'bruise' }
+  }];
+  return state;
+}
+
+function rootWrites(state, snapshot, proposal) {
+  return buildLowerDvinaTraceTurnStepRootWrites({
+    partyId: 'p', state, snapshot: { body_state: snapshot },
+    envelope: {
+      player_input: { request_id: 'request-1' },
+      root_turn_id: 'turn:p:1',
+      body_update: { applied: true, proposal,
+        state_after: structuredClone(snapshot) },
+      time_update: { clock_after: state.clock },
+      consequence: {}
+    },
+    nextVersion: 4, turnNumber: 4, changeSetId: 'change-1', idemId: 'idem-1',
+    pendingScreen: {}, clockChanged: false
   });
 }
 

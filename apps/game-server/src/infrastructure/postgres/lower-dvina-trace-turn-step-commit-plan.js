@@ -112,10 +112,10 @@ function expectedVersions(state, writes) {
   return writes.updates
     .filter(({ target_table: table }) => TABLES[table]?.version === true)
     .map((write) => expected(write.target_table, write.id,
-      currentVersion(state, write)));
+      turnStepCurrentVersion(state, write)));
 }
 
-function currentVersion(state, write) {
+export function turnStepCurrentVersion(state, write) {
   const known = {
     parties: state.party_state.state_version,
     party_server_sessions: state.party_state.session_state_version,
@@ -124,6 +124,14 @@ function currentVersion(state, write) {
     party_journey_locations: state.journey_location?.state_version
   }[write.target_table];
   if (Number.isSafeInteger(known) && known >= 0) return known;
+  if (write.target_table === 'party_actor_active_conditions') {
+    const condition = (state.body_state.active_conditions ?? []).find(
+      ({ storage_condition_id: id }) =>
+        write.id === `player_character:${state.actor_id}:${id}`
+    );
+    if (Number.isSafeInteger(condition?.state_version)
+        && condition.state_version >= 0) return condition.state_version;
+  }
   const item = (state.items ?? []).find(({ item_id: id }) => id === write.id);
   const container = (state.containers ?? []).find(
     ({ container_id: id }) => id === write.id);

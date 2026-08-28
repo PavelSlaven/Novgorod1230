@@ -73,7 +73,8 @@ export function buildPhase2Snapshot({
   };
 }
 
-export function commitPhase2BodyState({ before, proposed }) {
+export function commitPhase2BodyState({ before, proposed,
+  transitionedConditionIds = null }) {
   const prior = new Map((before.active_conditions ?? []).map(
     (condition) => [condition.storage_condition_id, condition]
   ));
@@ -90,9 +91,13 @@ export function commitPhase2BodyState({ before, proposed }) {
       return {
         ...structuredClone(condition),
         status: 'active',
-        state_version: condition.condition_outcome
+        state_version: transitionedConditionIds?.has(
+          condition.storage_condition_id
+        )
           ? previous.state_version + 1
-          : previous.state_version
+          : transitionedConditionIds == null && condition.condition_outcome
+            ? previous.state_version + 1
+            : previous.state_version
       };
     }
   );
